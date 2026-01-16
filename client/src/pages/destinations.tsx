@@ -29,7 +29,7 @@ import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { cn } from "@/lib/utils";
-import { HERO_VERSIONS, HeroVersionKey } from "@/components/destinations-hero-versions";
+import { HERO_VERSIONS } from "@/components/destinations-hero-versions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -984,7 +984,6 @@ export default function DestinationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
-  const [heroVersion, setHeroVersion] = useState<HeroVersionKey>("V12");
 
   const destinationCount = DESTINATIONS.length;
   const regionCount = new Set(DESTINATIONS.map(d => d.region)).size;
@@ -1142,46 +1141,9 @@ export default function DestinationsPage() {
       <div className="min-h-screen bg-white dark:bg-slate-950">
         <PublicNav variant="default" />
 
-        {/* Version Selector - Fixed position for easy switching */}
-        <div className="fixed bottom-6 right-6 z-50">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white shadow-xl shadow-purple-500/30 px-4"
-                data-testid="button-version-selector"
-              >
-                <span className="mr-2">Design: {heroVersion}</span>
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 max-h-80 overflow-y-auto">
-              {(Object.keys(HERO_VERSIONS) as HeroVersionKey[]).map((key) => (
-                <DropdownMenuItem
-                  key={key}
-                  onClick={() => setHeroVersion(key)}
-                  className={cn(
-                    "flex items-center justify-between cursor-pointer",
-                    heroVersion === key && "bg-purple-50 dark:bg-purple-900/20"
-                  )}
-                  data-testid={`select-version-${key}`}
-                >
-                  <div>
-                    <div className="font-medium">{key} - {HERO_VERSIONS[key].name}</div>
-                    <div className="text-xs text-slate-500">{HERO_VERSIONS[key].description}</div>
-                  </div>
-                  {heroVersion === key && <Check className="w-4 h-4 text-[#6443F4]" />}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
         <main>
-          {/* Dynamic Hero based on selected version */}
-          {(() => {
-            const HeroComponent = HERO_VERSIONS[heroVersion].component;
-            return <HeroComponent destinationCount={destinationCount} regionCount={regionCount} />;
-          })()}
+          {/* V12 Magazine Hero - Production design */}
+          <HERO_VERSIONS.V12.component destinationCount={destinationCount} regionCount={regionCount} />
 
           <section 
             id="explore-destinations"

@@ -143,10 +143,10 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
               }}
             />
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0A1F] via-[#0B0A1F]/40 to-transparent opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-80" />
             
             {/* Glow effect on hover */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#6443F4]/30 via-transparent to-[#E84C9A]/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#6443F4]/20 via-transparent to-[#E84C9A]/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             
             {/* Title overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -345,7 +345,7 @@ export default function TravelGuidesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0A1F]">
+    <div className="min-h-screen bg-white dark:bg-slate-950">
       <SEOHead
         title="Travel Guides | TRAVI - Complete Destination Guides"
         description="Explore comprehensive travel guides for destinations worldwide. Get insider tips, local recommendations, and everything you need for your next adventure."
@@ -371,29 +371,15 @@ export default function TravelGuidesPage() {
 
       <PublicNav />
 
-      {/* Cinematic Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Video Background */}
-        <motion.div 
-          className="absolute inset-0"
-          style={{ y: shouldReduceMotion ? 0 : smoothHeroY }}
-        >
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            poster="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&h=1080&fit=crop&q=80"
-          >
-            <source src={heroVideoUrl} type="video/mp4" />
-          </video>
-          {/* Dark overlay with gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0A1F]/80 via-[#0B0A1F]/60 to-[#0B0A1F]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0A1F]/90 via-transparent to-[#0B0A1F]/60" />
-        </motion.div>
+      {/* Hero Section - Light theme aligned with site design */}
+      <section ref={heroRef} className="relative pt-28 pb-20 lg:pt-32 lg:pb-28 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-purple-950/20">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#E84C9A]/10 to-[#6443F4]/10 rounded-full blur-3xl" />
+        </div>
 
-        {/* Floating destination chips with parallax */}
+        {/* Floating destination chips - decorative only on larger screens */}
         {!shouldReduceMotion && floatingDestinations.map((dest, i) => (
           <motion.div
             key={dest.name}
@@ -407,7 +393,7 @@ export default function TravelGuidesPage() {
             transition={{ delay: 0.5 + i * 0.2, duration: 0.8 }}
           >
             <div className="group relative">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/30 shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-white/60">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-[#6443F4]/50">
                 <img 
                   src={dest.image} 
                   alt={dest.name}
@@ -420,7 +406,7 @@ export default function TravelGuidesPage() {
                   }}
                 />
               </div>
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-slate-700 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-medium text-slate-700 dark:text-slate-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-slate-100 dark:border-slate-700">
                 {dest.name}
               </div>
             </div>
@@ -429,7 +415,7 @@ export default function TravelGuidesPage() {
 
         {/* Hero Content */}
         <motion.div 
-          className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pt-32"
+          className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12"
           style={{ opacity: shouldReduceMotion ? 1 : heroOpacity }}
         >
           <div className="max-w-3xl">
@@ -439,7 +425,7 @@ export default function TravelGuidesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Badge className="mb-6 bg-gradient-to-r from-[#6443F4]/20 to-[#E84C9A]/20 text-white border border-white/20 backdrop-blur-sm px-4 py-2">
+              <Badge className="mb-6 bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] border border-[#6443F4]/20 px-4 py-2">
                 <Compass className="h-4 w-4 mr-2" />
                 TRAVEL GUIDES
               </Badge>
@@ -450,7 +436,7 @@ export default function TravelGuidesPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight"
               style={{ fontFamily: "'Chillax', sans-serif", letterSpacing: "-0.03em" }}
             >
               Your Journey
@@ -465,7 +451,7 @@ export default function TravelGuidesPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-xl text-white/80 mb-8 max-w-xl leading-relaxed"
+              className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed"
             >
               Comprehensive destination guides crafted by travel experts. 
               Discover local insights, hidden gems, and everything you need 
@@ -480,23 +466,23 @@ export default function TravelGuidesPage() {
               className="flex flex-col sm:flex-row gap-4 mb-10"
             >
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   type="text"
                   placeholder="Search destinations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-xl backdrop-blur-md focus:bg-white/20 focus:border-white/40 transition-all"
+                  className="pl-12 h-14 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-xl focus:border-[#6443F4] focus:ring-[#6443F4]/20 transition-all"
                   data-testid="search-guides-input"
                 />
               </div>
               
               <Select value={selectedLocale} onValueChange={handleLocaleChange}>
                 <SelectTrigger 
-                  className="w-48 h-14 bg-white/10 border-white/20 text-white rounded-xl backdrop-blur-md"
+                  className="w-48 h-14 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl"
                   data-testid="language-selector"
                 >
-                  <Globe className="h-4 w-4 mr-2 text-white/60" />
+                  <Globe className="h-4 w-4 mr-2 text-slate-500" />
                   <SelectValue>
                     {SUPPORTED_LANGUAGES.find(l => l.code === selectedLocale)?.nativeName || "English"}
                   </SelectValue>
@@ -520,40 +506,22 @@ export default function TravelGuidesPage() {
             >
               {heroStats.map((stat, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                    <stat.icon className="h-5 w-5 text-white/80" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 flex items-center justify-center">
+                    <stat.icon className="h-5 w-5 text-[#6443F4]" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                    <div className="text-sm text-white/60">{stat.label}</div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{stat.value}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</div>
                   </div>
                 </div>
               ))}
             </motion.div>
           </div>
         </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2"
-          >
-            <motion.div className="w-1.5 h-2.5 bg-white/60 rounded-full" />
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* Content Section */}
-      <section className="relative bg-gradient-to-b from-[#0B0A1F] via-slate-50 to-white">
-        {/* Transition gradient */}
-        <div className="h-32 bg-gradient-to-b from-[#0B0A1F] to-slate-50" />
+      <section className="relative bg-white dark:bg-slate-950 py-16">
         
         <div className="max-w-7xl mx-auto px-6 lg:px-12 pb-24">
           {isLoading ? (

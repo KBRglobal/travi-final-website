@@ -1,0 +1,90 @@
+TASK: PRE-LAUNCH HARD DISABLE + GUIDES UI FIX
+
+CONTEXT
+We are going live.
+Some sections are unfinished and must be completely disabled at code level for now.
+This is intentional scope reduction for a clean launch.
+
+IMPORTANT
+This is NOT a soft hide.
+These sections must be unreachable in production.
+
+SECTIONS TO FULLY DISABLE (TEMPORARILY)
+- /dining
+- /things-to-do
+
+REQUIRED ACTIONS
+
+1. HARD DISABLE ROUTES
+- Remove /dining and /things-to-do routes from:
+  - server routes / router config
+  - client router (wouter / react-router)
+- Requests to these paths must return:
+  - 404 (preferred) OR
+  - redirect to homepage
+- Do NOT leave active routes that render empty pages
+
+2. REMOVE FROM ALL DISCOVERY SURFACES
+- Remove from:
+  - Main navigation (PublicNav)
+  - Footer
+  - XML sitemap
+  - Any internal links
+- Verify they do NOT appear anywhere in rendered HTML
+
+3. CODE HYGIENE (IMPORTANT)
+- Do NOT delete files or logic
+- Keep components, pages, and APIs intact
+- Add clear TODO comments:
+  // TODO: Re-enable dining after data + UX is ready
+  // TODO: Re-enable things-to-do after ingestion pipeline is complete
+
+4. GUIDES PAGE UI FIX (/guides)
+- Keep all content and structure
+- Align visuals to the rest of the site:
+  - Use standard light background (same as /destinations, /attractions)
+  - Remove heavy dark overlays / experimental gradients
+  - Match typography scale, spacing, and button styles
+  - Ensure colors align with site palette (no standalone theme)
+- Guides must feel like a first-class native page
+
+5. NEWS PAGE NAVIGATION
+- Add <PublicNav /> to /news
+- Ensure active state works
+- Footer already exists – only top nav is missing
+
+6. SITEMAP FINAL STATE
+Sitemap MUST include:
+- /
+- /destinations
+- /hotels
+- /attractions
+- /guides
+- /news
+
+Sitemap MUST NOT include:
+- /dining
+- /things-to-do
+
+7. FINAL VERIFICATION
+- Direct access to /dining and /things-to-do returns 404 or redirect
+- No empty pages exist in production
+- Navigation is clean and minimal
+- Visual consistency across:
+  /destinations
+  /hotels
+  /attractions
+  /guides
+  /news
+
+DELIVERABLE
+- One clean commit
+- Short summary:
+  - Disabled sections
+  - Routes removed
+  - UI fixes applied
+- Confirmation: READY FOR PRODUCTION PUBLISH
+
+This is a launch-hardening task.
+No new features.
+No refactors beyond scope.
