@@ -7,7 +7,7 @@ import {
   MapPin, Instagram, Menu, X, ArrowRight, Globe, Star, Calendar,
   Sparkles, Tent, Baby, Wallet, Heart, Backpack,
   Hotel, Landmark, UtensilsCrossed, Ticket, Rss, Map, MapPinned,
-  Bed, Camera, Coffee, Compass, Newspaper, BookOpen, Utensils, PartyPopper,
+  Bed, Camera, Coffee, Compass, Newspaper, BookOpen,
   ChevronDown
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
@@ -159,8 +159,6 @@ const NAV_ITEMS = [
   { label: "Destinations", href: "/destinations", title: "Browse All Travel Destinations" },
   { label: "Hotels", href: "/hotels", title: "Find Hotels & Accommodation" },
   { label: "Attractions", href: "/attractions", title: "Discover Tourist Attractions" },
-  { label: "Dining", href: "/dining", title: "Explore Restaurants & Cafes" },
-  { label: "Things to Do", href: "/things-to-do", title: "Activities & Experiences" },
   { label: "Guides", href: "/guides", title: "Travel Guides & Tips" },
   { label: "News", href: "/news", title: "Latest Travel News" },
 ];
@@ -195,30 +193,6 @@ const CATEGORY_CARDS = [
   },
   { 
     id: 3, 
-    icon: Utensils, 
-    title: "Restaurants", 
-    subtitle: "Explore dining options",
-    description: "Find the best restaurants, cafes, and local cuisine in every destination",
-    linkUrl: "/dining",
-    gradient: "from-rose-500 to-pink-400",
-    bgColor: "bg-rose-50 dark:bg-rose-950/30",
-    iconBg: "bg-rose-500",
-    hoverGlow: "hover:shadow-rose-500/25"
-  },
-  { 
-    id: 4, 
-    icon: PartyPopper, 
-    title: "Things to Do", 
-    subtitle: "Activities and experiences",
-    description: "Book tours, activities, and unique experiences at your destination",
-    linkUrl: "/things-to-do",
-    gradient: "from-emerald-500 to-teal-400",
-    bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
-    iconBg: "bg-emerald-500",
-    hoverGlow: "hover:shadow-emerald-500/25"
-  },
-  { 
-    id: 5, 
     icon: Newspaper, 
     title: "Travel News", 
     subtitle: "Latest travel updates",
@@ -230,7 +204,7 @@ const CATEGORY_CARDS = [
     hoverGlow: "hover:shadow-violet-500/25"
   },
   { 
-    id: 6, 
+    id: 4, 
     icon: BookOpen, 
     title: "Travel Guides", 
     subtitle: "Complete destination guides",
