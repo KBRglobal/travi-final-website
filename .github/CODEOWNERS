@@ -1,0 +1,25 @@
+# CODEOWNERS - Define who reviews what
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything
+* @KBRglobal
+
+# Server/Backend code
+/server/ @KBRglobal
+/shared/ @KBRglobal
+
+# Client/Frontend code
+/client/ @KBRglobal
+
+# Configuration files
+/*.json @KBRglobal
+/*.config.* @KBRglobal
+/.github/ @KBRglobal
+
+# Database
+/migrations/ @KBRglobal
+/shared/schema.ts @KBRglobal
+
+# Documentation
+/docs/ @KBRglobal
+*.md @KBRglobal
