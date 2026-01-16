@@ -1,0 +1,92 @@
+ATTRACTIONS DOMAIN — FINAL EXECUTION PROMPT
+
+GOAL
+Unify the entire Attractions domain so the DATABASE is the single source of truth.
+Eliminate ALL hardcoded destination lists and sync Hub, Listing, SSR, and Sitemap.
+
+CONFIRMED FACT
+The `destinations` table already exists and is correct.
+Column `normalized_name` matches attraction city slugs.
+This table is the authoritative source.
+
+DO NOT CHANGE
+- SSR renderer logic (already DB-driven)
+- Attraction detail pages (already correct)
+- Schema.org / SEO on detail pages
+
+EXECUTE THESE TASKS IN ORDER
+
+1) API — DESTINATION SOURCE
+Create endpoint:
+GET /api/public/attraction-destinations
+
+SQL:
+SELECT
+  d.slug,
+  d.name,
+  d.country,
+  COUNT(t.id) AS count
+FROM destinations d
+JOIN tiqets_attractions t
+  ON LOWER(t.city_name) = d.normalized_name
+WHERE d.is_active = true
+GROUP BY d.slug, d.name, d.country
+ORDER BY count DESC;
+
+Return:
+{
+  destinations: [{ slug, name, country, count }],
+  total: 3408
+}
+
+RULE: No fallback arrays. If DB returns 0 rows → show empty state.
+
+2) HUB PAGE — /attractions
+File: client/src/pages/attractions.tsx
+- DELETE hardcoded DESTINATIONS array
+- Fetch ONLY from /api/public/attraction-destinations
+- Render destination cards dynamically
+- Display live counts from DB
+- Link to /attractions/:slug
+
+3) LISTING PAGE — /attractions/:destination
+File: client/src/pages/destination-attractions.tsx
+- DELETE DESTINATION_NAMES
+- Route must be /attractions/:destination
+- Fetch destination metadata from API (NOT inferred)
+- Fetch attractions via /api/public/tiqets/attractions?city=slug
+- SSR + client must use same source
+
+4) SITEMAP
+File: server/services/sitemap.ts
+- Generate URLs for:
+  /attractions
+  /attractions/:slug  (ALL destinations from DB)
+  /attractions?page=N
+- No static destination lists allowed
+
+5) SCRAPER
+File: scripts/scrape-attractions-v2.ts
+- Either:
+  - Read active destinations from DB
+  OR
+  - Validate hardcoded list against destinations table
+- No independent destination definitions
+
+6) CLEANUP VALIDATION
+Search and REMOVE any remaining:
+- DESTINATIONS arrays
+- DESTINATION_NAMES arrays
+- City hardcoding in client or server
+
+FINAL VERIFICATION REQUIRED
+- Hub shows ALL destinations from DB
+- Counts match DB exactly
+- Adding/removing a destination in DB updates site automatically
+- Sitemap includes all destination pages
+- Googlebot sees correct pagination + listings
+
+ONLY REPORT BACK WHEN:
+✔ Zero hardcoded destinations remain
+✔ Hub, listings, sitemap, SSR are fully DB-driven
+✔ Architecture diagram matches reality
