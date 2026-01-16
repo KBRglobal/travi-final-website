@@ -5871,6 +5871,89 @@ export async function registerRoutes(
     });
   });
 
+  // Public API for attraction destinations with live counts from DB
+  // SINGLE SOURCE OF TRUTH - replaces all hardcoded destination arrays
+  // Derives all data from tiqets_attractions + optional destinations metadata
+  app.get("/api/public/attraction-destinations", async (req, res) => {
+    try {
+      // Get unique cities and counts from tiqets_attractions (THE source of truth)
+      const cityCounts = await db
+        .select({
+          cityName: tiqetsAttractions.cityName,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(tiqetsAttractions)
+        .where(eq(tiqetsAttractions.status, "published"))
+        .groupBy(tiqetsAttractions.cityName)
+        .orderBy(sql`count(*) DESC`);
+      
+      // Get destination metadata for enrichment (optional)
+      const destinationMeta = await db
+        .select({
+          id: destinations.id,
+          name: destinations.name,
+          country: destinations.country,
+          image: destinations.cardImage,
+          summary: destinations.summary,
+        })
+        .from(destinations)
+        .where(eq(destinations.isActive, true));
+      
+      // Create lookup map by normalized name
+      const metaMap = new Map<string, typeof destinationMeta[0]>();
+      for (const d of destinationMeta) {
+        metaMap.set(d.id, d);
+      }
+      
+      // City-to-country fallback mapping for cities not in destinations table
+      const cityCountryFallback: Record<string, string> = {
+        "London": "United Kingdom",
+        "Paris": "France",
+        "Barcelona": "Spain",
+        "Rome": "Italy",
+        "Amsterdam": "Netherlands",
+        "New York": "USA",
+        "Dubai": "UAE",
+        "Las Vegas": "USA",
+        "Istanbul": "Turkey",
+        "Miami": "United States",
+        "Los Angeles": "United States",
+        "Singapore": "Singapore",
+        "Bangkok": "Thailand",
+        "Abu Dhabi": "United Arab Emirates",
+        "Tokyo": "Japan",
+        "Hong Kong": "China",
+      };
+      
+      // Build destinations array with data from tiqets_attractions as primary source
+      const destinationsResult = cityCounts
+        .filter(c => c.cityName) // Filter out null city names
+        .map(c => {
+          const slug = c.cityName!.toLowerCase().replace(/ /g, '-');
+          const meta = metaMap.get(slug);
+          return {
+            slug,
+            name: meta?.name || c.cityName!,
+            country: meta?.country || cityCountryFallback[c.cityName!] || "Unknown",
+            image: meta?.image || `/cards/${slug}.webp`,
+            summary: meta?.summary || null,
+            count: c.count,
+          };
+        });
+      
+      // Calculate total attractions
+      const total = destinationsResult.reduce((sum, d) => sum + d.count, 0);
+      
+      res.json({
+        destinations: destinationsResult,
+        total,
+      });
+    } catch (error: any) {
+      console.error("Error fetching attraction destinations:", error);
+      res.status(500).json({ error: "Failed to fetch attraction destinations" });
+    }
+  });
+
   // Public API for Tiqets attractions (powers public attractions page)
   app.get("/api/public/tiqets/attractions", async (req, res) => {
     try {

@@ -7,6 +7,7 @@ import {
   Building2, Utensils
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
@@ -14,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 
@@ -34,99 +36,21 @@ interface FAQItem {
   answer: string;
 }
 
+interface Destination {
+  slug: string;
+  name: string;
+  country: string;
+  image: string;
+  count: number;
+}
+
+interface DestinationsApiResponse {
+  destinations: Destination[];
+  total: number;
+}
+
 const BASE_URL = "https://travi.world";
 const CANONICAL_URL = `${BASE_URL}/attractions`;
-
-const DESTINATIONS = [
-  { 
-    slug: "dubai", 
-    name: "Dubai", 
-    country: "UAE", 
-    count: 296, 
-    image: "/attractions-hero/burj-khalifa-dubai-attraction.webp",
-    topAttraction: "Burj Khalifa",
-    seoDescription: "Book Burj Khalifa tickets, Dubai Frame, desert safaris and Dubai Mall attractions",
-    alt: "Burj Khalifa in Dubai - World's tallest building at 828 meters, top attraction in United Arab Emirates",
-    title: "Burj Khalifa Dubai"
-  },
-  { 
-    slug: "london", 
-    name: "London", 
-    country: "UK", 
-    count: 446, 
-    image: "/attractions-hero/tower-of-london-london-attraction.webp",
-    topAttraction: "Tower of London",
-    seoDescription: "Tower of London tickets, London Eye, Westminster Abbey and Harry Potter Studio tours",
-    alt: "Tower of London - Historic royal palace and UNESCO World Heritage Site, top attraction in England",
-    title: "Tower of London"
-  },
-  { 
-    slug: "paris", 
-    name: "Paris", 
-    country: "France", 
-    count: 394, 
-    image: "/attractions-hero/eiffel-tower-paris-attraction.webp",
-    topAttraction: "Eiffel Tower",
-    seoDescription: "Skip-the-line Eiffel Tower tickets, Louvre Museum, Versailles day trips and Seine cruises",
-    alt: "Eiffel Tower in Paris - Iconic iron landmark and top tourist attraction in France with 7M+ annual visitors",
-    title: "Eiffel Tower Paris"
-  },
-  { 
-    slug: "rome", 
-    name: "Rome", 
-    country: "Italy", 
-    count: 354, 
-    image: "/attractions-hero/colosseum-rome-attraction.webp",
-    topAttraction: "Colosseum",
-    seoDescription: "Colosseum underground tours, Vatican Museums, Sistine Chapel and Roman Forum tickets",
-    alt: "Colosseum in Rome - Ancient Roman amphitheater and UNESCO World Heritage Site, Italy's top attraction",
-    title: "Colosseum Rome"
-  },
-  { 
-    slug: "new-york", 
-    name: "New York", 
-    country: "USA", 
-    count: 308, 
-    image: "/attractions-hero/statue-of-liberty-new-york-attraction.webp",
-    topAttraction: "Statue of Liberty",
-    seoDescription: "Statue of Liberty ferry tickets, Empire State Building, Broadway shows and 9/11 Memorial",
-    alt: "Statue of Liberty in New York - Iconic American symbol and UNESCO World Heritage Site, top US attraction",
-    title: "Statue of Liberty New York"
-  },
-  { 
-    slug: "barcelona", 
-    name: "Barcelona", 
-    country: "Spain", 
-    count: 287, 
-    image: "/attractions-hero/sagrada-familia-barcelona-attraction.webp",
-    topAttraction: "Sagrada Familia",
-    seoDescription: "Sagrada Familia fast-track entry, Park Güell, Camp Nou tours and Gothic Quarter walks",
-    alt: "Sagrada Familia in Barcelona - Gaudi's masterpiece basilica and UNESCO World Heritage Site, top Spain attraction",
-    title: "Sagrada Familia Barcelona"
-  },
-  { 
-    slug: "tokyo", 
-    name: "Tokyo", 
-    country: "Japan", 
-    count: 312, 
-    image: "/attractions-hero/teamlab-borderless-tokyo-attraction.webp",
-    topAttraction: "teamLab Borderless",
-    seoDescription: "teamLab Borderless tickets, Tokyo Disneyland, Senso-ji Temple and Mount Fuji day trips",
-    alt: "teamLab Borderless in Tokyo - Interactive digital art museum with immersive installations, top Japan attraction",
-    title: "teamLab Borderless Tokyo"
-  },
-  { 
-    slug: "singapore", 
-    name: "Singapore", 
-    country: "Singapore", 
-    count: 189, 
-    image: "/attractions-hero/gardens-by-the-bay-singapore-attraction.webp",
-    topAttraction: "Gardens by the Bay",
-    seoDescription: "Gardens by the Bay Supertrees, Universal Studios Singapore, Marina Bay Sands and Singapore Zoo",
-    alt: "Gardens by the Bay in Singapore - Futuristic nature park with Supertrees and Cloud Forest, top Singapore attraction",
-    title: "Gardens by the Bay Singapore"
-  },
-];
 
 // Featured attractions for hero carousel - specific experiences, not destinations
 const HERO_ATTRACTIONS = [
@@ -341,7 +265,7 @@ function usePreferredMotion() {
   return !prefersReducedMotion;
 }
 
-function DestinationChip({ destination, index }: { destination: typeof DESTINATIONS[0], index: number }) {
+function DestinationChip({ destination, index }: { destination: Destination, index: number }) {
   const shouldAnimate = usePreferredMotion();
 
   return (
@@ -351,15 +275,15 @@ function DestinationChip({ destination, index }: { destination: typeof DESTINATI
       transition={{ delay: 0.3 + index * 0.05, duration: 0.4, ease: "easeOut" }}
       whileHover={shouldAnimate ? { scale: 1.05, y: -4 } : {}}
     >
-      <Link href={`/attractions/list/${destination.slug}`}>
+      <Link href={`/attractions/${destination.slug}`}>
         <div 
           className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.slug}`}
         >
           <img 
             src={destination.image} 
-            alt={destination.alt}
-            title={destination.title}
+            alt={`Things to do in ${destination.name}, ${destination.country}`}
+            title={`${destination.name} attractions`}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
             loading="lazy"
           />
@@ -380,7 +304,13 @@ export default function Attractions() {
   const [loading, setLoading] = useState(false);
   const [activeType, setActiveType] = useState("all");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-  const totalAttractions = DESTINATIONS.reduce((sum, d) => sum + d.count, 0);
+
+  const { data: destinationsData, isLoading: isLoadingDestinations } = useQuery<DestinationsApiResponse>({
+    queryKey: ['/api/public/attraction-destinations'],
+  });
+
+  const destinations = destinationsData?.destinations ?? [];
+  const totalAttractions = destinationsData?.total ?? 0;
 
   // Hero carousel state - matching homepage pattern
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -426,7 +356,7 @@ export default function Attractions() {
 
   // SEO-focused title and description
   const pageTitle = "Things to Do & Attractions – Eiffel Tower, Colosseum, Burj Khalifa & More | TRAVI";
-  const pageDescription = `Book skip-the-line tickets to top attractions worldwide. Eiffel Tower, Colosseum, Burj Khalifa, Statue of Liberty and ${totalAttractions.toLocaleString()}+ experiences in ${DESTINATIONS.length} cities. Best prices guaranteed.`;
+  const pageDescription = `Book skip-the-line tickets to top attractions worldwide. Eiffel Tower, Colosseum, Burj Khalifa, Statue of Liberty and ${totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : "thousands of"} experiences. Best prices guaranteed.`;
 
   const runSearch = useCallback(async (value: string) => {
     if (value.length < 2) {
@@ -437,7 +367,7 @@ export default function Attractions() {
     setLoading(true);
     const next: SearchResult[] = [];
 
-    DESTINATIONS.filter(
+    destinations.filter(
       (d) =>
         d.name.toLowerCase().includes(value.toLowerCase()) ||
         d.country.toLowerCase().includes(value.toLowerCase())
@@ -449,7 +379,7 @@ export default function Attractions() {
           id: d.slug,
           title: `Things to do in ${d.name}`,
           subtitle: `${d.country} - ${d.count} attractions`,
-          href: `/attractions/list/${d.slug}`,
+          href: `/attractions/${d.slug}`,
           image: d.image,
         })
       );
@@ -478,7 +408,7 @@ export default function Attractions() {
 
     setResults(next);
     setLoading(false);
-  }, []);
+  }, [destinations]);
 
   useEffect(() => {
     const t = setTimeout(() => runSearch(query), 300);
@@ -510,21 +440,21 @@ export default function Attractions() {
             },
           })),
         },
-        {
+        ...(destinations.length > 0 ? [{
           "@type": "ItemList",
           "@id": `${CANONICAL_URL}#destinations`,
           name: "Top Destinations for Attractions & Things to Do",
-          itemListElement: DESTINATIONS.map((d, i) => ({
+          itemListElement: destinations.map((d, i) => ({
             "@type": "ListItem",
             position: i + 1,
             item: {
               "@type": "TouristDestination",
               name: `Things to do in ${d.name}`,
-              description: d.seoDescription,
-              url: `${BASE_URL}/attractions/list/${d.slug}`,
+              description: `Explore attractions and experiences in ${d.name}, ${d.country}`,
+              url: `${BASE_URL}/attractions/${d.slug}`,
             },
           })),
-        },
+        }] : []),
         {
           "@type": "ItemList",
           "@id": `${CANONICAL_URL}#featured-attractions`,
@@ -545,7 +475,7 @@ export default function Attractions() {
         },
       ],
     }),
-    [pageTitle, pageDescription]
+    [pageTitle, pageDescription, destinations]
   );
 
   return (
@@ -619,7 +549,7 @@ export default function Attractions() {
                           <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-attractions-count">
-                          <span className="text-[#6443F4]">{totalAttractions.toLocaleString()}+</span> attractions in {DESTINATIONS.length} cities
+                          <span className="text-[#6443F4]">{totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : "Thousands of"}</span> attractions{destinations.length > 0 ? ` in ${destinations.length} cities` : " worldwide"}
                         </span>
                       </div>
                     </motion.div>
@@ -667,8 +597,8 @@ export default function Attractions() {
                       transition={{ duration: 0.6, delay: 0.5 }}
                     >
                       {[
-                        { num: `${(totalAttractions / 1000).toFixed(1)}K+`, label: 'ATTRACTIONS', srLabel: `Over ${totalAttractions} attractions` },
-                        { num: `${DESTINATIONS.length}`, label: 'CITIES', srLabel: `${DESTINATIONS.length} cities` },
+                        { num: totalAttractions > 0 ? `${(totalAttractions / 1000).toFixed(1)}K+` : '--', label: 'ATTRACTIONS', srLabel: `Over ${totalAttractions} attractions` },
+                        { num: destinations.length > 0 ? `${destinations.length}` : '--', label: 'CITIES', srLabel: `${destinations.length} cities` },
                         { num: '4.9', label: 'RATING', srLabel: '4.9 star rating' }
                       ].map((stat, i) => (
                         <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
@@ -788,7 +718,7 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.6 }}
                     >
-                      <Link href="/attractions/list/paris">
+                      <Link href="/attractions/paris">
                         <Button 
                           className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                           data-testid="button-explore-paris"
@@ -806,7 +736,7 @@ export default function Attractions() {
                           aria-label="Browse all destinations"
                         >
                           <Globe className="w-5 h-5 mr-2 text-[#6443F4]" />
-                          All {DESTINATIONS.length} Destinations
+                          All Destinations
                         </Button>
                       </Link>
                     </motion.div>
@@ -928,7 +858,7 @@ export default function Attractions() {
                                 <span className="text-white/60 text-sm">From</span>
                                 <span className="text-3xl font-bold text-white ml-2">{dest.price}</span>
                               </div>
-                              <Link href={`/attractions/list/${dest.slug}`}>
+                              <Link href={`/attractions/${dest.slug}`}>
                                 <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                                   Book Tickets
                                   <ArrowRight className="w-5 h-5" />
@@ -1054,7 +984,18 @@ export default function Attractions() {
               </motion.div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {DESTINATIONS.map((dest, i) => (
+                {isLoadingDestinations ? (
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="overflow-hidden rounded-lg">
+                      <Skeleton className="aspect-[4/3] w-full" />
+                    </div>
+                  ))
+                ) : destinations.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <Globe className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+                    <p className="text-slate-500 dark:text-slate-400">No destinations available at this time.</p>
+                  </div>
+                ) : destinations.map((dest, i) => (
                   <motion.div
                     key={dest.slug}
                     initial={{ opacity: 0, y: 20 }}
@@ -1062,7 +1003,7 @@ export default function Attractions() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <Link href={`/attractions/list/${dest.slug}`}>
+                    <Link href={`/attractions/${dest.slug}`}>
                       <Card 
                         className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 border-0"
                         data-testid={`destination-card-${dest.slug}`}
@@ -1070,8 +1011,8 @@ export default function Attractions() {
                         <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#6443F4]/20 to-[#8B5CF6]/20">
                           <img
                             src={dest.image}
-                            alt={dest.alt}
-                            title={dest.title}
+                            alt={`Things to do in ${dest.name}, ${dest.country}`}
+                            title={`${dest.name} attractions`}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             loading="lazy"
                             onError={(e) => {
@@ -1088,7 +1029,7 @@ export default function Attractions() {
                               {dest.count} things to do
                             </p>
                             <p className="text-white/60 text-xs mt-1">
-                              incl. {dest.topAttraction}
+                              {dest.country}
                             </p>
                           </div>
                         </div>
@@ -1323,7 +1264,7 @@ export default function Attractions() {
                   Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/attractions/list/paris">
+                  <Link href="/attractions/paris">
                     <Button
                       size="lg"
                       className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold px-8"
@@ -1333,7 +1274,7 @@ export default function Attractions() {
                       Paris Attractions
                     </Button>
                   </Link>
-                  <Link href="/attractions/list/rome">
+                  <Link href="/attractions/rome">
                     <Button
                       size="lg"
                       variant="outline"
@@ -1357,10 +1298,10 @@ export default function Attractions() {
       <nav className="sr-only" aria-label="All attraction destinations">
         <h2>Things to Do by Destination</h2>
         <ul>
-          {DESTINATIONS.map(dest => (
+          {destinations.map(dest => (
             <li key={dest.slug}>
-              <a href={`/attractions/list/${dest.slug}`}>
-                Things to do in {dest.name} - {dest.seoDescription} | {dest.count} attractions including {dest.topAttraction}
+              <a href={`/attractions/${dest.slug}`}>
+                Things to do in {dest.name}, {dest.country} | {dest.count} attractions
               </a>
             </li>
           ))}
@@ -1370,7 +1311,7 @@ export default function Attractions() {
         <ul>
           {HERO_ATTRACTIONS.map(attraction => (
             <li key={attraction.name}>
-              <a href={`/attractions/list/${attraction.slug}`}>
+              <a href={`/attractions/${attraction.slug}`}>
                 {attraction.title} - {attraction.tagline} in {attraction.city}
               </a>
             </li>
@@ -1379,7 +1320,7 @@ export default function Attractions() {
 
         <h3>Related Travel Guides</h3>
         <ul>
-          <li><a href="/hotels">Hotels Worldwide - Best rates in 16 destinations</a></li>
+          <li><a href="/hotels">Hotels Worldwide</a></li>
           <li><a href="/restaurants">Best Restaurants in Top Destinations</a></li>
           <li><a href="/destinations">Complete Travel Guides by City</a></li>
           <li><a href="/articles">Latest Travel News and Tips</a></li>

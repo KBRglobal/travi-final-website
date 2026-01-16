@@ -1,6 +1,7 @@
 import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions } from "@shared/schema";
 import { storage } from "../storage";
 import { db } from "../db";
+import { eq } from "drizzle-orm";
 
 const BASE_URL = process.env.BASE_URL || "https://travi.world";
 
@@ -271,6 +272,32 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
       priority: page.priority,
       alternates,
     });
+  }
+
+  // Dynamic destination attraction pages (from tiqets_attractions - single source of truth)
+  if (locale === "en") {
+    try {
+      const destinationCounts = await db
+        .select({
+          cityName: tiqetsAttractions.cityName,
+        })
+        .from(tiqetsAttractions)
+        .where(eq(tiqetsAttractions.status, "published"))
+        .groupBy(tiqetsAttractions.cityName);
+      
+      for (const dest of destinationCounts) {
+        if (!dest.cityName) continue;
+        const slug = dest.cityName.toLowerCase().replace(/ /g, '-');
+        urls.push({
+          loc: `${BASE_URL}/attractions/list/${slug}`,
+          lastmod: now,
+          changefreq: "daily",
+          priority: 0.85,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching destination attractions for sitemap:", error);
+    }
   }
 
   // Dynamic content pages
