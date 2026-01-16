@@ -154,8 +154,8 @@ const defaultPlaceholderImages = [
 ];
 
 export default function PublicContentDetail() {
-  const params = useParams();
-  const slug = params.slug;
+  const params = useParams<{ slug: string }>();
+  const slug = params?.slug;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { data: contents, isLoading } = useQuery<ContentWithRelations>({

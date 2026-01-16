@@ -23,7 +23,7 @@ interface HelpArticle {
 
 export default function HelpCategory() {
   const [, params] = useRoute("/help/:slug");
-  const slug = params?.slug;
+  const { slug = "" } = params ?? {};
 
   const { data, isLoading, error } = useQuery<{ category: HelpCategory }>({
     queryKey: ["/api/help/category", slug],

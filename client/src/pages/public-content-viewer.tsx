@@ -616,8 +616,7 @@ function RelatedContentSection({ contents, type }: { contents: ContentWithExtens
 
 export default function PublicContentViewer() {
   const [, params] = useRoute("/:type/:slug");
-  const slug = params?.slug;
-  const type = params?.type;
+  const { slug = "", type = "" } = params ?? {};
   const trackedRef = useRef<string | null>(null);
 
   const { data: contents, isLoading, error } = useQuery<ContentWithExtensions>({

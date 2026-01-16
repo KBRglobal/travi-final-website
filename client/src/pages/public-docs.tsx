@@ -504,12 +504,13 @@ function DocContent({ path }: { path: string }) {
 
 export default function PublicDocs() {
   const [, params] = useRoute("/docs/:path*");
+  const { ["path*"]: path = "" } = params ?? {};
   const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["Getting Started"]));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const currentPath = params?.["path*"] || "README";
+  const currentPath = path || "README";
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => {

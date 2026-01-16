@@ -2616,6 +2616,7 @@ export const DEFAULT_CONTENT_RULES = {
   keywordDensityMax: 30, // 3.0%
   dubaiMentionsMin: 5,
   maxRetries: 3,
+  contentType: null,
 };
 
 // ============================================================================

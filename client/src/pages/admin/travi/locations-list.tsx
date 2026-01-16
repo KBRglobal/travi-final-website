@@ -242,7 +242,8 @@ export default function TraviLocationsList() {
 
   const autoAssignDistrictsMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("POST", "/api/admin/travi/districts/auto-assign", { city: "Dubai" });
+      const res = await apiRequest("POST", "/api/admin/travi/districts/auto-assign", { city: "Dubai" });
+      return res.json();
     },
     onSuccess: (data: { assigned: number; skipped: number; totalLocations: number }) => {
       if (data.assigned === 0 && data.skipped > 0) {

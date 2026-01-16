@@ -14,7 +14,7 @@ import {
 
 export default function HotelDetail() {
   const [, params] = useRoute("/hotels/:hotelId");
-  const hotelId = params?.hotelId;
+  const { hotelId = "" } = params ?? {};
 
   return (
     <PageContainer>

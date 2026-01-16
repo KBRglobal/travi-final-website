@@ -521,7 +521,16 @@ export default function ContentEditor() {
   const { canPublish } = usePermissions();
 
   const isNew = !!(attractionNewMatch || hotelNewMatch || articleNewMatch || diningNewMatch || districtNewMatch || transportNewMatch || eventNewMatch || itineraryNewMatch);
-  const contentId = isNew ? undefined : (attractionMatch?.id || hotelMatch?.id || articleMatch?.id || diningMatch?.id || districtMatch?.id || transportMatch?.id || eventMatch?.id || itineraryMatch?.id);
+  const contentId = isNew ? undefined : (
+    (attractionMatch as { id?: string } | null)?.id ||
+    (hotelMatch as { id?: string } | null)?.id ||
+    (articleMatch as { id?: string } | null)?.id ||
+    (diningMatch as { id?: string } | null)?.id ||
+    (districtMatch as { id?: string } | null)?.id ||
+    (transportMatch as { id?: string } | null)?.id ||
+    (eventMatch as { id?: string } | null)?.id ||
+    (itineraryMatch as { id?: string } | null)?.id
+  );
 
   const getContentType = (): ContentType => {
     if (attractionMatch || attractionNewMatch) return "attraction";

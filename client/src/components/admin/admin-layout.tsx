@@ -141,6 +141,7 @@ export function EditorPageLayout({
 interface DashboardLayoutProps {
   title: string;
   description?: string;
+  icon?: React.ReactNode;
   actions?: React.ReactNode;
   stats?: React.ReactNode;
   children: React.ReactNode;
@@ -208,24 +209,38 @@ export function SettingsLayout({
 }
 
 interface StatCardProps {
-  label: string;
+  label?: string;
+  title?: string;
   value: string | number;
   icon?: React.ReactNode;
   trend?: {
     value: number;
     isPositive: boolean;
   };
+  description?: string;
+  loading?: boolean;
   className?: string;
 }
 
-export function StatCard({ label, value, icon, trend, className }: StatCardProps) {
+export function StatCard({ label, title, value, icon, trend, description, loading, className }: StatCardProps) {
+  const displayLabel = title || label || "";
+  
+  if (loading) {
+    return (
+      <div className={cn("bg-card border rounded-md p-4 animate-pulse", className)}>
+        <div className="h-4 bg-muted rounded w-1/3 mb-3" />
+        <div className="h-8 bg-muted rounded w-1/2" />
+      </div>
+    );
+  }
+  
   return (
     <div className={cn(
       "bg-card border rounded-md p-4 flex flex-col gap-2",
       className
     )}>
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">{label}</span>
+        <span className="text-sm text-muted-foreground">{displayLabel}</span>
         {icon && <span className="text-muted-foreground">{icon}</span>}
       </div>
       <div className="flex items-baseline gap-2">
@@ -239,6 +254,9 @@ export function StatCard({ label, value, icon, trend, className }: StatCardProps
           </span>
         )}
       </div>
+      {description && (
+        <span className="text-xs text-muted-foreground">{description}</span>
+      )}
     </div>
   );
 }
@@ -279,6 +297,7 @@ export function AdminEmptyState({ icon, title, description, action, className }:
 
 interface AdminSkeletonProps {
   rows?: number;
+  columns?: number;
   className?: string;
 }
 

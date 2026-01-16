@@ -216,24 +216,24 @@ export default function AutonomyControlPlane() {
             <StatCard
               title="Decisions (1h)"
               value={dashboard?.decisions.lastHour.total || 0}
-              icon={Activity}
+              icon={<Activity className="h-5 w-5" />}
               description={`${dashboard?.decisions.lastHour.blocked || 0} blocked`}
             />
             <StatCard
               title="Block Rate (1h)"
               value={`${(dashboard?.decisions.lastHour.blockRate || 0).toFixed(1)}%`}
-              icon={Ban}
+              icon={<Ban className="h-5 w-5" />}
               description={dashboard?.decisions.lastHour.blockRate > 20 ? "Above threshold" : "Normal"}
             />
             <StatCard
               title="Active Policies"
               value={dashboard?.policyCount || 0}
-              icon={Shield}
+              icon={<Shield className="h-5 w-5" />}
             />
             <StatCard
               title="Active Overrides"
               value={dashboard?.activeOverrides || 0}
-              icon={Zap}
+              icon={<Zap className="h-5 w-5" />}
             />
           </div>
 

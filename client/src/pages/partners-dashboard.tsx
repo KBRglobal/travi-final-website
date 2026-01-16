@@ -348,7 +348,7 @@ export default function PartnersDashboard() {
                         {conv.email || "Anonymous"}
                       </span>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" size="sm">
+                        <Badge variant="outline">
                           {conv.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">

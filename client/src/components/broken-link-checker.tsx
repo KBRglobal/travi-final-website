@@ -195,8 +195,8 @@ export function BrokenLinkChecker({
     const allResults: LinkStatus[] = [];
     let processed = 0;
 
-    for (const contents of publishedContent) {
-      const body = getContentBody(contents);
+    for (const content of publishedContent) {
+      const body = getContentBody(content);
       if (body) {
         const links = extractLinks(body);
 
@@ -208,15 +208,15 @@ export function BrokenLinkChecker({
               url,
               status: "warning",
               message: "External link",
-              contentId: contents.id,
-              contentTitle: contents.title,
+              contentId: content.id,
+              contentTitle: content.title,
             });
           } else {
             const status = checkInternalLink(url, contents);
             allResults.push({
               ...status,
-              contentId: contents.id,
-              contentTitle: contents.title,
+              contentId: content.id,
+              contentTitle: content.title,
             });
           }
         }

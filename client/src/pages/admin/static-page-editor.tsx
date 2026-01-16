@@ -727,7 +727,7 @@ export default function StaticPageEditor() {
   const [matchNew] = useRoute("/admin/static-pages/new");
   
   const isNew = matchNew;
-  const pageId = paramsEdit?.id;
+  const { id: pageId = "" } = paramsEdit ?? {};
 
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
   const [hasChanges, setHasChanges] = useState(false);

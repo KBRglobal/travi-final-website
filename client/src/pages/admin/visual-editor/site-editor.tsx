@@ -184,7 +184,7 @@ export default function SiteEditor() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [, params] = useRoute("/admin/visual-editor/:slug");
-  const slug = params?.slug;
+  const { slug = "" } = params ?? {};
   const searchString = useSearch();
   const searchParams = new URLSearchParams(searchString);
   const initialPreview = searchParams.get("preview") === "true";

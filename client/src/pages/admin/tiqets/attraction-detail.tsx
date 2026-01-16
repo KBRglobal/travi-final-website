@@ -52,7 +52,7 @@ const formSchema = z.object({
     answer: z.string(),
   })).nullable().optional(),
   primaryCategory: z.string().max(100).nullable().optional(),
-  status: z.enum(["imported", "ready", "published"]).optional(),
+  status: z.enum(["imported", "processing", "ready", "published", "archived"]).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -195,8 +195,10 @@ export default function TiqetsAttractionDetail() {
 
   const statusColors: Record<string, string> = {
     imported: "bg-blue-500/10 text-blue-600 border-blue-200",
+    processing: "bg-yellow-500/10 text-yellow-600 border-yellow-200",
     ready: "bg-green-500/10 text-green-600 border-green-200",
     published: "bg-[#6443F4]/10 text-[#6443F4] border-[#6443F4]/30",
+    archived: "bg-gray-500/10 text-gray-600 border-gray-200",
   };
 
   const highlights = form.watch("highlights") || [];
@@ -469,8 +471,10 @@ export default function TiqetsAttractionDetail() {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="imported">Imported</SelectItem>
+                                <SelectItem value="processing">Processing</SelectItem>
                                 <SelectItem value="ready">Ready</SelectItem>
                                 <SelectItem value="published">Published</SelectItem>
+                                <SelectItem value="archived">Archived</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormItem>

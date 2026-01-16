@@ -113,7 +113,7 @@ function EssentialInfoCard({ info }: { info: EssentialInfoItem }) {
 
 export default function PublicDiningDetail() {
   const [, params] = useRoute("/dining/:slug");
-  const slug = params?.slug;
+  const { slug = "" } = params ?? {};
   
   const { data: contents, isLoading } = useQuery<ContentWithRelations>({
     queryKey: [`/api/contents/slug/${slug}`],

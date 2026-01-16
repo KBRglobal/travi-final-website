@@ -90,7 +90,8 @@ export default function EntityMergePage() {
     queryKey: ["/api/admin/entities/duplicates", entityTypeFilter],
     queryFn: async () => {
       const params = entityTypeFilter !== "all" ? `?type=${entityTypeFilter}` : "";
-      return apiRequest("GET", `/api/admin/entities/duplicates${params}`);
+      const res = await apiRequest("GET", `/api/admin/entities/duplicates${params}`);
+      return res.json();
     },
   });
 
