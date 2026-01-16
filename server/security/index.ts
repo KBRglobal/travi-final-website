@@ -203,7 +203,11 @@ export function setupSecurityMiddleware(app: Express): void {
       ];
 
   // Helmet - Security headers
+  // NOTE: HSTS is DISABLED here because Cloudflare already sets it with max-age=63072000
+  // Having both creates duplicate headers with different max-age values
   app.use(helmet({
+    // Disable HSTS - Cloudflare handles this with max-age=63072000; includeSubDomains
+    strictTransportSecurity: false,
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
