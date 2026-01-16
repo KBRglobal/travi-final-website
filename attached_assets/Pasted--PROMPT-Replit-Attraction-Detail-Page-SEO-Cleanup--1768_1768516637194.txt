@@ -1,0 +1,137 @@
+📌 PROMPT ל-Replit – Attraction Detail Page (SEO & Cleanup)
+
+אנא קרא בעיון ופעל לפי הסעיפים לפי הסדר.
+
+1️⃣ אשר מצב קיים (בלי לשנות כלום עדיין)
+
+אנא אשר במפורש (כן/לא + שורה הסבר):
+	•	שקיים קובץ Source of Truth אחד בלבד:
+
+client/src/pages/attraction-detail.tsx
+
+
+	•	שאין גרסאות נוספות (v2, v3, או קבצים כפולים) בשימוש
+	•	שכל ה־routes הבאים מפנים לאותו component:
+
+/:destination/attractions/:slug          (canonical)
+/attractions/:city/:slug                 (legacy)
+/attractions/:destination/:attractionId  (legacy)
+
+
+
+אם יש קובץ נוסף שקשור לעמוד אטרקציה – ציין אותו במפורש.
+
+⸻
+
+2️⃣ Routing & Canonical – תיקון נדרש (קריטי)
+
+מצב נוכחי:
+	•	משתמש יכול להיכנס דרך URLs legacy
+	•	ה־canonical תמיד מצביע ל:
+
+/{destination}/attractions/{slug}
+
+
+
+❗ נדרש:
+	•	להציע פתרון ברור ל־301 redirect מכל legacy route אל ה־canonical
+	•	לציין איפה זה צריך להתבצע (router / middleware / server)
+	•	לא לשנות את הקובץ attraction-detail.tsx בשלב הזה
+
+⸻
+
+3️⃣ SEO Head – תיקונים נקודתיים בלבד
+
+אנא בצע רק את התיקונים הבאים (לא יותר):
+	•	החלף:
+
+og:type = "website"
+
+ל־
+
+og:type = "place"
+
+
+	•	הוסף:
+
+<meta property="og:site_name" content="TRAVI" />
+
+
+	•	הוסף:
+
+<meta name="twitter:site" content="@traviworld" />
+
+
+
+❌ לא לשנות:
+	•	title
+	•	description
+	•	canonical
+	•	og:image
+	•	twitter:image
+
+⸻
+
+4️⃣ קישורים פנימיים – חיזוק Hub Page
+
+מצב נוכחי:
+	•	יש קישורים ל־/attractions/list/{destination}
+	•	אין קישור ישיר ל־/attractions
+
+נדרש:
+	•	להוסיף קישור אחד בלבד ל־/attractions
+	•	עדיפות:
+	•	Breadcrumb
+או
+	•	Explore more section
+או
+	•	Footer internal links
+
+בחר מקום אחד בלבד.
+
+⸻
+
+5️⃣ Structured Data – לא לגעת
+
+אנא אשר:
+	•	שאין כפילויות בין:
+	•	TouristAttraction
+	•	BreadcrumbList
+	•	FAQPage
+	•	שאין צורך להוסיף או להסיר סכמות
+
+❌ לא לשנות JSON-LD בלי אישור מפורש.
+
+⸻
+
+6️⃣ Cleanup – אימות בלבד
+
+אנא אשר:
+	•	שאין imports לא בשימוש
+	•	שאין קוד legacy
+	•	שאין comments מיותרים
+	•	שאין CSS שלא בשימוש
+
+❌ אם אתה מוצא קוד כזה – דווח בלבד, אל תמחק עדיין.
+
+⸻
+
+7️⃣ פלט נדרש בסיום
+
+אנא החזר:
+	1.	סיכום קצר:
+	•	מה שינית
+	•	מה לא שינית
+	2.	רשימת קבצים שנגעת בהם (אם בכלל)
+	3.	אישור סופי:
+Attraction Detail Page is clean, canonical, and SEO-safe.
+
+⸻
+
+❗ חוקים חשובים
+	•	❌ לא ליצור קבצים חדשים
+	•	❌ לא לשנות ארכיטקטורה
+	•	❌ לא “לשפר” UX
+	•	❌ לא לגעת בתוכן שנכתב ב-AI
+	•	✅ רק תיקוני SEO נקודתיים + redirects
+

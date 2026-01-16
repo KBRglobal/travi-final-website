@@ -1,0 +1,117 @@
+You are performing a STRICT SEO + AEO QA cleanup on travi.world.
+
+This is NOT analysis-only. You must APPLY CHANGES.
+
+GOAL:
+Clean Google index, remove junk pages, enforce single source of truth, and prepare the site for long-term SEO + Answer Engine visibility.
+
+ABSOLUTE RULES:
+- No guessing
+- No placeholder / lorem ipsum content allowed anywhere
+- If content is not real → REMOVE or NOINDEX it
+- Prefer removal over keeping broken or fake content
+
+====================
+TASK 1 – REMOVE / BLOCK PLACEHOLDER PAGES (CRITICAL)
+====================
+
+Immediately do the following:
+
+1. IDENTIFY all pages that contain:
+   - lorem ipsum
+   - placeholder text
+   - generic factory content
+   - unfinished sections
+
+This includes (but is not limited to):
+- Dining pages
+- Things to Do pages
+- Any destination subpages with fake content
+
+FOR EACH SUCH PAGE:
+- If page is user-facing → apply `noindex, nofollow`
+- If page has no near-term plan → remove route entirely
+- If page was previously indexed → return `410 Gone`
+
+DO NOT keep placeholder pages live.
+
+====================
+TASK 2 – LANGUAGE & GARBAGE ROUTES CLEANUP
+====================
+
+Completely eliminate these from indexing and navigation:
+
+- /sv/*
+- /bn/*
+- Any “Coming Soon” pages
+- Any routes that return 404 but are still indexed
+
+Actions:
+- Apply 301 redirect to canonical version OR
+- Apply 410 Gone if no replacement exists
+- Ensure they are removed from sitemap
+- Ensure they are blocked from indexing
+
+====================
+TASK 3 – CANONICAL ENFORCEMENT
+====================
+
+For EVERY remaining page:
+
+- Ensure exactly ONE canonical URL
+- Add <link rel="canonical"> explicitly
+- No page should be reachable via multiple URLs
+
+Specifically verify:
+- Destinations → /destinations/:slug
+- Attractions → single canonical route
+- Lists → one route only
+
+====================
+TASK 4 – META TAG QA (WHY GOOGLE IS REWRITING TITLES)
+====================
+
+Fix Google title rewrites by enforcing:
+
+For EACH page:
+- <title> must be UNIQUE
+- Format: `[Page Topic] | TRAVI`
+- No generic titles like “Expert Travel Guides & Reviews – TRAVI”
+
+Same for meta descriptions:
+- Unique per page
+- Describes THAT page only
+- No reused templates
+
+====================
+TASK 5 – SITEMAP & ROBOTS (MANDATORY)
+====================
+
+1. Generate sitemap.xml that includes ONLY:
+   - Homepage
+   - Destinations index
+   - Destination pages
+   - Attractions with real content
+   - Legal pages (privacy, terms)
+
+2. Add robots.txt with:
+   - Sitemap reference
+   - Explicit disallow for removed routes (sv, bn, etc.)
+
+====================
+TASK 6 – QA OUTPUT (REQUIRED)
+====================
+
+At the end, output a CLEAR SUMMARY TABLE:
+
+- Pages removed (410)
+- Pages redirected (301)
+- Pages set to noindex
+- Pages kept and confirmed clean
+- Sitemap URLs count before vs after
+
+DO NOT ASK QUESTIONS.
+DO NOT PROPOSE.
+JUST EXECUTE.
+
+This is a hard cleanup for SEO + AEO readiness.

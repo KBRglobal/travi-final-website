@@ -1,0 +1,67 @@
+TASK: Move “Best Time to Visit” (Seasons / Weather) from hardcoded placeholders to database-backed content – NO UI yet.
+
+CONTEXT:
+- This is a long-term content system, not a one-off page.
+- Current implementation uses generic placeholder seasons in:
+  client/src/data/destinations.ts (genericSeasons)
+- Rendered by:
+  client/src/components/destination/BestTimeToVisit.tsx
+- This placeholder content must NOT remain in production.
+
+GOAL (STEP 1 ONLY):
+✅ Move “Best Time to Visit” data to the database
+❌ Do NOT build admin UI yet
+❌ Do NOT invent fake data
+❌ Do NOT over-engineer
+
+REQUIREMENTS:
+
+1️⃣ Database
+- Add a new structure for destination seasons (table or JSON column – choose the simplest clean option).
+- Each destination can have 0–4 seasons.
+- Each season includes:
+  - name (Spring / Summer / Fall / Winter)
+  - months (string)
+  - weatherDescription (string)
+  - crowdLevel (low | medium | high)
+  - recommendation (string)
+- Data must be editable later (design with admin in mind).
+
+2️⃣ Backend / Data Layer
+- Expose seasons data as part of destination fetch logic.
+- If a destination has NO seasons data → return null / empty array (NO placeholders).
+
+3️⃣ Frontend
+- Update BestTimeToVisit.tsx to:
+  - Render only if seasons data exists.
+  - Gracefully hide the section if no data is available.
+- Remove usage of genericSeasons entirely.
+- destinations.ts must no longer contain weather/season content.
+
+4️⃣ SEO / AEO
+- Use REAL data only (no lorem, no generic text).
+- Structure should support future:
+  - FAQ answers
+  - AI summaries
+  - Schema.org integration (not required now, but don’t block it).
+
+5️⃣ Cleanup
+- Delete or fully disconnect:
+  genericSeasons
+- Ensure no dead imports or unused code remain.
+
+6️⃣ Deliverables
+At the end, report:
+- Where seasons data now lives (DB schema / column)
+- What was removed from code
+- Confirmation that pages without data do NOT show the section
+- No UI added yet
+
+IMPORTANT:
+This is STEP 1 of a deeper system.
+Do not add admin tabs.
+Do not add migrations unrelated to this.
+Do not touch other destination sections.
+
+Ask questions ONLY if something blocks execution.
+Otherwise – implement.

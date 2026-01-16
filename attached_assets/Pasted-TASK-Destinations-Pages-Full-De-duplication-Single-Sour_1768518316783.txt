@@ -1,0 +1,89 @@
+TASK: Destinations Pages – Full De-duplication & Single Source of Truth
+
+GOAL
+There must be ONE and only ONE Destinations system.
+All legacy, v2, experiments, or unused routes/components must be removed.
+
+SOURCE OF TRUTH (CONFIRMED)
+• Main destinations index page:
+  /destinations
+• Destination detail page:
+  /destinations/:slug
+  Example: /destinations/abu-dhabi
+
+Anything else is NOT allowed unless explicitly approved.
+
+STEP 1 – CURRENT STATE DECLARATION (MANDATORY)
+Before changing anything, provide a clear table with:
+
+For EACH of the following:
+• File path
+• Route
+• Purpose
+• Is it used? (YES / NO)
+• Should it be kept? (YES / DELETE)
+
+Include:
+- All destination-related pages
+- Any v2 / public-v2 / legacy folders
+- Any components used only by old destinations pages
+- Any routes that resolve to destination content
+
+NO assumptions. If unsure – list it.
+
+STEP 2 – ROUTING RULES
+Confirm that ONLY these routes remain:
+
+• /destinations
+• /destinations/:slug
+
+If any of these exist, they must be handled explicitly:
+• /destination/*
+• /places/*
+• /city/*
+• /destinations-v2/*
+• any alternative slug pattern
+
+For any legacy route:
+- Either DELETE it
+- Or 301 redirect it → canonical destination URL
+
+No duplicate access paths allowed without redirect.
+
+STEP 3 – CANONICAL & SEO GUARANTEES
+For /destinations:
+• canonical = https://travi.world/destinations
+
+For /destinations/:slug:
+• canonical = https://travi.world/destinations/:slug
+
+Confirm:
+- No page can be accessed via two URLs without a redirect
+- No mismatched canonical
+
+STEP 4 – DELETE UNUSED CODE
+Delete (not comment):
+- Unused components
+- Empty config objects
+- Dead imports
+- Legacy destination data structures
+
+If something is empty but kept “for future” – FLAG IT, do not decide alone.
+
+STEP 5 – FINAL SUMMARY (REQUIRED)
+End with a clear checklist:
+
+✔ Single source of truth confirmed
+✔ Legacy routes handled (deleted or redirected)
+✔ Dead code removed
+✔ No duplicate destination pages
+✔ Safe to deploy
+
+IMPORTANT RULES
+- Do NOT refactor UI
+- Do NOT rename files unless required
+- Do NOT touch business logic
+- No comments in code
+- No partial cleanup
+
+If something blocks deletion – explain WHY before acting.
