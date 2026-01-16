@@ -461,7 +461,7 @@ function AdminLayout() {
         meta.setAttribute("name", name);
         document.head.appendChild(meta);
       }
-      meta.contents = contents;
+      meta.content = contents;
     };
 
     // Set robots meta tag to prevent indexing
@@ -471,7 +471,7 @@ function AdminLayout() {
     return () => {
       const meta = document.querySelector('meta[name="robots"]') as HTMLMetaElement;
       if (meta) {
-        meta.contents = "index, follow";
+        meta.content = "index, follow";
       }
     };
   }, []);

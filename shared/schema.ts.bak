@@ -2268,8 +2268,8 @@ export const teamMembers = pgTable("team_members", {
   index("IDX_team_members_user").on(table.userId),
 ]);
 
-export const insertTeamSchema = createInsertSchema(teams);
-export const insertTeamMemberSchema = createInsertSchema(teamMembers);
+export const insertTeamSchema = createInsertSchema(teams).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertTeamMemberSchema = createInsertSchema(teamMembers).omit({ id: true, joinedAt: true });
 export type InsertTeam = z.infer<typeof insertTeamSchema>;
 export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
 export type Team = typeof teams.$inferSelect;
@@ -2330,8 +2330,8 @@ export const workflowApprovals = pgTable("workflow_approvals", {
   index("IDX_workflow_approvals_approver").on(table.approverId),
 ]);
 
-export const insertWorkflowTemplateSchema = createInsertSchema(workflowTemplates);
-export const insertWorkflowInstanceSchema = createInsertSchema(workflowInstances);
+export const insertWorkflowTemplateSchema = createInsertSchema(workflowTemplates).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertWorkflowInstanceSchema = createInsertSchema(workflowInstances).omit({ id: true, submittedAt: true });
 export type InsertWorkflowTemplate = z.infer<typeof insertWorkflowTemplateSchema>;
 export type InsertWorkflowInstance = z.infer<typeof insertWorkflowInstanceSchema>;
 export type WorkflowTemplate = typeof workflowTemplates.$inferSelect;
@@ -2364,7 +2364,7 @@ export const activities = pgTable("activities", {
   index("IDX_activities_created").on(table.createdAt),
 ]);
 
-export const insertActivitySchema = createInsertSchema(activities);
+export const insertActivitySchema = createInsertSchema(activities).omit({ id: true, createdAt: true });
 export type InsertActivity = z.infer<typeof insertActivitySchema>;
 export type Activity = typeof activities.$inferSelect;
 
@@ -2382,7 +2382,7 @@ export const contentLocks = pgTable("content_locks", {
   index("IDX_content_locks_expires").on(table.expiresAt),
 ]);
 
-export const insertContentLockSchema = createInsertSchema(contentLocks);
+export const insertContentLockSchema = createInsertSchema(contentLocks).omit({ id: true, lockedAt: true });
 export type InsertContentLock = z.infer<typeof insertContentLockSchema>;
 export type ContentLock = typeof contentLocks.$inferSelect;
 
@@ -2411,7 +2411,7 @@ export const notifications = pgTable("notifications", {
   index("IDX_notifications_created").on(table.createdAt),
 ]);
 
-export const insertNotificationSchema = createInsertSchema(notifications);
+export const insertNotificationSchema = createInsertSchema(notifications).omit({ id: true, createdAt: true });
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
 
@@ -2453,7 +2453,7 @@ export const webhookLogs = pgTable("webhook_logs", {
   index("IDX_webhook_logs_created").on(table.createdAt),
 ]);
 
-export const insertWebhookSchema = createInsertSchema(webhooks);
+export const insertWebhookSchema = createInsertSchema(webhooks).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertWebhook = z.infer<typeof insertWebhookSchema>;
 export type Webhook = typeof webhooks.$inferSelect;
 export type WebhookLog = typeof webhookLogs.$inferSelect;
@@ -2477,7 +2477,7 @@ export const comments = pgTable("comments", {
   index("IDX_comments_author").on(table.authorId),
 ]);
 
-export const insertCommentSchema = createInsertSchema(comments);
+export const insertCommentSchema = createInsertSchema(comments).omit({ id: true, createdAt: true });
 export type InsertComment = z.infer<typeof insertCommentSchema>;
 export type Comment = typeof comments.$inferSelect;
 
@@ -2499,7 +2499,7 @@ export const scheduledTasks = pgTable("scheduled_tasks", {
   index("IDX_scheduled_tasks_target").on(table.targetType, table.targetId),
 ]);
 
-export const insertScheduledTaskSchema = createInsertSchema(scheduledTasks);
+export const insertScheduledTaskSchema = createInsertSchema(scheduledTasks).omit({ id: true, createdAt: true });
 export type InsertScheduledTask = z.infer<typeof insertScheduledTaskSchema>;
 export type ScheduledTask = typeof scheduledTasks.$inferSelect;
 
@@ -2572,7 +2572,7 @@ export const contentRules = pgTable("content_rules", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertContentRulesSchema = createInsertSchema(contentRules);
+export const insertContentRulesSchema = createInsertSchema(contentRules).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertContentRules = z.infer<typeof insertContentRulesSchema>;
 export type ContentRules = typeof contentRules.$inferSelect;
 
@@ -3024,27 +3024,27 @@ export const dataExports = pgTable("data_exports", {
 ]);
 
 // Insert schemas and types for new tables
-export const insertEmailTemplateSchema = createInsertSchema(emailTemplates);
-export const insertEmailTemplateBlockSchema = createInsertSchema(emailTemplateBlocks);
-export const insertSubscriberSegmentSchema = createInsertSchema(subscriberSegments);
-export const insertSegmentConditionSchema = createInsertSchema(segmentConditions);
-export const insertNewsletterAbTestSchema = createInsertSchema(newsletterAbTests);
-export const insertDripCampaignSchema = createInsertSchema(dripCampaigns);
-export const insertDripCampaignStepSchema = createInsertSchema(dripCampaignSteps);
-export const insertDripCampaignEnrollmentSchema = createInsertSchema(dripCampaignEnrollments);
-export const insertBehavioralTriggerSchema = createInsertSchema(behavioralTriggers);
-export const insertIntegrationConnectionSchema = createInsertSchema(integrationConnections);
-export const insertScheduledReportSchema = createInsertSchema(scheduledReports);
-export const insertContentCalendarItemSchema = createInsertSchema(contentCalendarItems);
-export const insertRealtimeSessionSchema = createInsertSchema(realtimeSessions);
-export const insertUserJourneySchema = createInsertSchema(userJourneys);
-export const insertJourneyTouchpointSchema = createInsertSchema(journeyTouchpoints);
-export const insertConversionFunnelSchema = createInsertSchema(conversionFunnels);
-export const insertFunnelStepSchema = createInsertSchema(funnelSteps);
-export const insertFunnelEventSchema = createInsertSchema(funnelEvents);
-export const insertCohortSchema = createInsertSchema(cohorts);
-export const insertCustomReportSchema = createInsertSchema(customReports);
-export const insertDataExportSchema = createInsertSchema(dataExports);
+export const insertEmailTemplateSchema = createInsertSchema(emailTemplates).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertEmailTemplateBlockSchema = createInsertSchema(emailTemplateBlocks).omit({ id: true, createdAt: true });
+export const insertSubscriberSegmentSchema = createInsertSchema(subscriberSegments).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertSegmentConditionSchema = createInsertSchema(segmentConditions).omit({ id: true, createdAt: true });
+export const insertNewsletterAbTestSchema = createInsertSchema(newsletterAbTests).omit({ id: true, createdAt: true });
+export const insertDripCampaignSchema = createInsertSchema(dripCampaigns).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertDripCampaignStepSchema = createInsertSchema(dripCampaignSteps).omit({ id: true, createdAt: true });
+export const insertDripCampaignEnrollmentSchema = createInsertSchema(dripCampaignEnrollments).omit({ id: true });
+export const insertBehavioralTriggerSchema = createInsertSchema(behavioralTriggers).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertIntegrationConnectionSchema = createInsertSchema(integrationConnections).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertScheduledReportSchema = createInsertSchema(scheduledReports).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertContentCalendarItemSchema = createInsertSchema(contentCalendarItems).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertRealtimeSessionSchema = createInsertSchema(realtimeSessions).omit({ id: true });
+export const insertUserJourneySchema = createInsertSchema(userJourneys).omit({ id: true });
+export const insertJourneyTouchpointSchema = createInsertSchema(journeyTouchpoints).omit({ id: true });
+export const insertConversionFunnelSchema = createInsertSchema(conversionFunnels).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertFunnelStepSchema = createInsertSchema(funnelSteps).omit({ id: true, createdAt: true });
+export const insertFunnelEventSchema = createInsertSchema(funnelEvents).omit({ id: true });
+export const insertCohortSchema = createInsertSchema(cohorts).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCustomReportSchema = createInsertSchema(customReports).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertDataExportSchema = createInsertSchema(dataExports).omit({ id: true, createdAt: true, updatedAt: true });
 
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = z.infer<typeof insertEmailTemplateSchema>;
@@ -7953,19 +7953,19 @@ export const update9987PublicHolidays = pgTable("update_9987_public_holidays", {
 ]);
 
 // Insert schemas
-export const insertUpdate9987CountrySchema = createInsertSchema(update9987Countries);
-export const insertUpdate9987StateSchema = createInsertSchema(update9987States);
-export const insertUpdate9987CitySchema = createInsertSchema(update9987Cities);
-export const insertUpdate9987PoiSchema = createInsertSchema(update9987Pois);
-export const insertUpdate9987GuideSchema = createInsertSchema(update9987Guides);
-export const insertUpdate9987OverturePoiSchema = createInsertSchema(update9987OverturePois);
-export const insertUpdate9987TourpediaPoiSchema = createInsertSchema(update9987TourpediaPois);
-export const insertUpdate9987WikivoyagePoiSchema = createInsertSchema(update9987WikivoyagePois);
-export const insertUpdate9987GeonameSchema = createInsertSchema(update9987Geonames);
-export const insertUpdate9987EmbeddingSchema = createInsertSchema(update9987Embeddings);
-export const insertUpdate9987SlipoPoiSchema = createInsertSchema(update9987SlipoPois);
-export const insertUpdate9987FoursquarePoiSchema = createInsertSchema(update9987FoursquarePois);
-export const insertUpdate9987PublicHolidaySchema = createInsertSchema(update9987PublicHolidays);
+export const insertUpdate9987CountrySchema = createInsertSchema(update9987Countries).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987StateSchema = createInsertSchema(update9987States).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987CitySchema = createInsertSchema(update9987Cities).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987PoiSchema = createInsertSchema(update9987Pois).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987GuideSchema = createInsertSchema(update9987Guides).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987OverturePoiSchema = createInsertSchema(update9987OverturePois).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987TourpediaPoiSchema = createInsertSchema(update9987TourpediaPois).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987WikivoyagePoiSchema = createInsertSchema(update9987WikivoyagePois).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUpdate9987GeonameSchema = createInsertSchema(update9987Geonames).omit({ id: true, createdAt: true });
+export const insertUpdate9987EmbeddingSchema = createInsertSchema(update9987Embeddings).omit({ id: true, createdAt: true });
+export const insertUpdate9987SlipoPoiSchema = createInsertSchema(update9987SlipoPois).omit({ id: true, createdAt: true });
+export const insertUpdate9987FoursquarePoiSchema = createInsertSchema(update9987FoursquarePois).omit({ id: true, createdAt: true });
+export const insertUpdate9987PublicHolidaySchema = createInsertSchema(update9987PublicHolidays).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Types
 export type Update9987Country = typeof update9987Countries.$inferSelect;

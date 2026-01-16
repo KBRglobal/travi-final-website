@@ -118,7 +118,7 @@ function extractEntities(content: {
   const contentType = content.type || 'article';
 
   // Extract entities from metadata if available
-  const metadataEntities = (content.metadata?.entities || []) as Array<{
+  const metadataEntities = ((content as any).metadata?.entities || []) as Array<{
     id: string;
     type: string;
     name: string;

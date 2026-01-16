@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["gh", "amp", "jq"]
+packages = ["gh", "amp", "jq", "nano"]
 
 [deployment]
 deploymentTarget = "autoscale"

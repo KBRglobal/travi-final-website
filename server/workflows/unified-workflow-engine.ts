@@ -1204,7 +1204,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        metadata: { workflowState: state } as unknown as Record<string, unknown>,
+        ...( { metadata: { workflowState: state } } as any ),
       })
       .where(eq(contents.id, contentId));
 
@@ -1225,7 +1225,7 @@ export const contentReviewEngine = {
 
     if (!content) return null;
 
-    const metadata = content.metadata as Record<string, unknown>;
+    const metadata = (content as any).metadata as Record<string, unknown>;
     return (metadata?.workflowState as ContentWorkflowState) || null;
   },
 
@@ -1295,7 +1295,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        metadata: { workflowState: state } as unknown as Record<string, unknown>,
+        ...( { metadata: { workflowState: state } } as any ),
       })
       .where(eq(contents.id, contentId));
 
@@ -1344,7 +1344,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        metadata: { workflowState: state } as unknown as Record<string, unknown>,
+        ...( { metadata: { workflowState: state } } as any ),
       })
       .where(eq(contents.id, contentId));
 
@@ -1435,7 +1435,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        metadata: { workflowState: state } as unknown as Record<string, unknown>,
+        ...( { metadata: { workflowState: state } } as any ),
       })
       .where(eq(contents.id, contentId));
 
@@ -1452,7 +1452,7 @@ export const contentReviewEngine = {
 
     const pendingReviews: ContentWorkflowState[] = [];
     for (const content of allContents) {
-      const metadata = content.metadata as Record<string, unknown>;
+      const metadata = (content as any).metadata as Record<string, unknown>;
       const workflowState = metadata?.workflowState as ContentWorkflowState;
 
       if (workflowState &&
@@ -1475,7 +1475,7 @@ export const contentReviewEngine = {
 
     const contentsByStage: ContentWorkflowState[] = [];
     for (const content of allContents) {
-      const metadata = content.metadata as Record<string, unknown>;
+      const metadata = (content as any).metadata as Record<string, unknown>;
       const workflowState = metadata?.workflowState as ContentWorkflowState;
 
       if (workflowState && workflowState.currentStage === stage) {
