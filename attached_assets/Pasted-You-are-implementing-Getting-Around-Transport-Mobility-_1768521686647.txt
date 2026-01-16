@@ -1,0 +1,88 @@
+You are implementing “Getting Around” (Transport & Mobility) for TRAVI destination pages.
+
+Goal
+- Replace all placeholder/lorem in the “Getting Around” section with real, destination-specific mobility data.
+- Make the section genuinely useful (operational), consistent across all destinations, and SEO/AEO-friendly.
+- No guessing. If a fact is missing, leave it blank and omit that sub-block in UI.
+
+Scope
+- Pages: Destination pages at /destinations/:slug (DestinationPageTemplate + the “Getting Around” section/component).
+- Destinations: 16 slugs:
+  abu-dhabi, amsterdam, bangkok, barcelona, dubai, hong-kong, istanbul, las-vegas, london, los-angeles, miami, new-york, paris, rome, singapore, tokyo
+
+What to build (Architecture)
+1) Data Model (DB)
+Create a normalized “mobility” structure per destination:
+- destination_slug (FK or unique key)
+- lastUpdated (timestamp)
+- sources (array of { name, url, accessedAt })  // show in UI as “Sources”
+- sections (JSON):
+  a) publicTransport
+     - overview (short)
+     - keyModes (array: metro/subway, tram, bus, ferry, commuter rail)
+     - payment (stored-value card name, contactless support yes/no, notes)
+     - officialApps (array of app names)
+     - operationalTips (array of short tips)
+  b) taxisRideHailing
+     - primaryApps (array)
+     - officialTaxiInfo (short)
+     - commonRules (e.g., “use meter”, “pickup zones”)
+  c) airportTransfers
+     - airports (array: { code?, name?, bestDefault, alternatives[], notes })
+  d) micromobility
+     - bikeShare (name/app/notes)
+     - scooters (availability + rules notes)
+  e) drivingParking
+     - rentCarRecommended (yes/no + when)
+     - tolling (system name + how rentals are billed)
+     - parkingNotes (short)
+  f) walkability
+     - walkabilitySummary (short)
+     - bestWalkAreas (array)
+     - cautions (array)
+
+2) Public API
+Expose read-only endpoint:
+GET /api/public/destinations/:slug/mobility
+- Returns 404 if no mobility data exists (do not return placeholders).
+
+3) Admin Panel
+Add a new tab in /admin/destinations/:slug:
+Tab name: “Mobility”
+- Form editor for the mobility structure above (with repeatable lists)
+- Includes “Sources” fields (name + url + accessedAt)
+- Save to DB
+- Show “Last updated”
+
+4) Frontend UI (Destination Page)
+In DestinationPageTemplate:
+- Fetch mobility data via TanStack Query from the public API.
+- Conditionally render the “Getting Around” section ONLY if mobility data exists.
+- UI requirements:
+  - Card/grid layout (clean, modern TRAVI)
+  - Each subsection collapsible (accordion) with clear icons
+  - Only render subsections that have content
+  - Add a “Sources” footer within the section (small, clean)
+  - Add “Last updated” label
+
+5) SEO/AEO
+- Add JSON-LD for the mobility section as an FAQ-style block ONLY if we have curated Q/A entries (optional later).
+- For now: ensure semantic headings (H2 for Getting Around, H3 for subsections).
+- Avoid price claims. Use operational phrasing (e.g., “Tap-to-pay available”, “stored-value card”, “designated pickup zones”).
+
+Hard Rules (No guessing)
+- Do not invent:
+  - prices, costs, travel times, distances
+  - weather, seasons, safety claims
+  - laws/regulations unless explicitly provided in the dataset
+- If missing: omit.
+
+Deliverables
+- DB migration + model
+- Admin tab “Mobility”
+- Public API endpoint
+- Destination page UI integrated + styled
+- Remove all placeholder “Getting Around” content
+- Provide a short verification checklist (routes, API 404 behavior, UI conditional rendering)
+
+After implementing the framework, WAIT for me to provide the real mobility data for each destination, then populate the admin or seed the DB with that data.

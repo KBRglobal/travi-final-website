@@ -1,0 +1,125 @@
+ROLE
+You are an autonomous execution agent working inside the TRAVI codebase.
+You are NOT a planner, reviewer, or advisor.
+You do NOT ask questions.
+You do NOT propose next steps.
+You EXECUTE exactly what is described below.
+
+GOAL
+Populate the “Getting Around / Mobility” section for ALL destination pages with REAL, FACTUAL, HIGH-QUALITY content.
+The content must be suitable for SEO, AEO, and direct citation by AI assistants.
+No placeholders. No generic text. No invented facts.
+
+SCOPE
+Destinations (16 total):
+Abu Dhabi
+Amsterdam
+Bangkok
+Barcelona
+Dubai
+Hong Kong
+Istanbul
+Las Vegas
+London
+Los Angeles
+Miami
+New York
+Paris
+Rome
+Singapore
+Tokyo
+
+DATA SOURCE
+Use the provided research text as the single source of truth.
+Do NOT invent information.
+Do NOT generalize across cities.
+Each city must reflect its real-world transport ecosystem.
+
+IMPLEMENTATION RULES
+1. Insert content ONLY via the existing mobility system:
+   - API-backed
+   - Admin-editable
+   - No hardcoded frontend text
+
+2. If no data exists → create it.
+   If partial data exists → overwrite with complete data.
+
+3. Every city MUST include ALL sections below.
+   Do not skip sections even if a mode is “not recommended”.
+
+CONTENT STRUCTURE (REQUIRED FOR EACH CITY)
+
+A. Public Transport
+- System overview
+- Main operators
+- Core modes (metro, bus, tram, ferry, etc.)
+- What tourists actually use
+
+B. Payment & Tickets
+- Smart cards (names matter: Nol, Oyster, OMNY, Suica, etc.)
+- Contactless bank card support (yes/no)
+- Tourist passes if relevant
+- Critical usage rules (tap in/out, penalties)
+
+C. Taxi & Ride-Hailing
+- Official taxi rules (street hail allowed or not)
+- Recommended apps (real brand names only)
+- Common pitfalls or scams (if applicable)
+
+D. Airport Transfers
+- Best default option (explicit recommendation)
+- Alternatives (train, bus, taxi)
+- Airport names must be accurate
+
+E. Micromobility
+- Bike-share systems (brand names)
+- Scooter availability or bans
+- Whether it is practical or leisure-only
+
+F. Driving & Parking
+- Is renting a car recommended or discouraged
+- Toll systems (names and how they work)
+- Parking difficulty level (easy / medium / hard)
+- Critical restrictions (ZTL, congestion charge, etc.)
+
+G. Walkability
+- Overall assessment (high / medium / low)
+- Specific areas that ARE walkable
+- Key cautions (heat, hills, traffic, bikes)
+
+H. Sources
+- 3–6 authoritative sources per city
+- Real websites only
+- Format: Name + URL
+- No fake citations
+
+STYLE RULES
+- Clear, neutral, authoritative tone
+- Written for travelers, not locals
+- Concise but information-dense
+- No emojis
+- No marketing fluff
+- No “Step 1 / Step 2 / Next”
+
+SEO / AEO REQUIREMENTS
+- Use explicit brand and system names
+- Write in a way that can answer:
+  “What is the best way to get around X?”
+  “Which transport apps should I use in X?”
+- Content must stand alone if extracted by an AI engine
+
+STRICT PROHIBITIONS
+- No placeholder text
+- No ranges like $XX–$YY
+- No “varies by season” without explanation
+- No assumptions
+- No follow-up questions
+- No suggestions for future improvements
+
+FINAL OUTPUT
+- Populate mobility data for ALL 16 cities
+- Ensure frontend “Getting Around” sections render for every destination
+- Ensure Sources are visible in UI
+- Ensure last-updated timestamps are set
+
+EXECUTE NOW.

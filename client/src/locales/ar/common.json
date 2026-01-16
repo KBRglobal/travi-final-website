@@ -1,0 +1,214 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "attractions": "معالم سياحية",
+    "hotels": "فنادق",
+    "dining": "مطاعم",
+    "districts": "أحياء",
+    "articles": "أخبار ومقالات",
+    "realEstate": "عقارات",
+    "events": "فعاليات",
+    "search": "بحث",
+    "language": "اللغة"
+  },
+  "common": {
+    "readMore": "اقرأ المزيد",
+    "viewAll": "عرض الكل",
+    "learnMore": "اعرف المزيد",
+    "bookNow": "احجز الآن",
+    "contactUs": "تواصل معنا",
+    "subscribe": "اشترك",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "noResults": "لا توجد نتائج",
+    "seeMore": "شاهد المزيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "close": "إغلاق",
+    "share": "مشاركة",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم النسخ!"
+  },
+  "home": {
+    "hero": {
+      "title": "اكتشف دبي",
+      "subtitle": "دليلك الشامل لمدينة الذهب",
+      "searchPlaceholder": "ابحث عن معالم، فنادق، مطاعم..."
+    },
+    "featured": "مميز",
+    "trending": "الأكثر رواجاً",
+    "topAttractions": "أفضل المعالم",
+    "bestHotels": "أفضل الفنادق",
+    "latestNews": "آخر الأخبار والمقالات"
+  },
+  "attractions": {
+    "title": "معالم دبي السياحية",
+    "subtitle": "استكشف المعالم الشهيرة والأماكن المخفية",
+    "filters": {
+      "all": "الكل",
+      "popular": "الأكثر شهرة",
+      "free": "دخول مجاني",
+      "familyFriendly": "مناسب للعائلات",
+      "outdoor": "في الهواء الطلق",
+      "indoor": "داخلي"
+    },
+    "details": {
+      "location": "الموقع",
+      "hours": "ساعات العمل",
+      "price": "السعر",
+      "duration": "المدة",
+      "tips": "نصائح محلية"
+    }
+  },
+  "hotels": {
+    "title": "فنادق دبي",
+    "subtitle": "اعثر على إقامتك المثالية",
+    "filters": {
+      "all": "جميع الفنادق",
+      "luxury": "فاخر",
+      "budget": "اقتصادي",
+      "beachfront": "على الشاطئ",
+      "cityCenter": "وسط المدينة",
+      "familyFriendly": "مناسب للعائلات"
+    },
+    "details": {
+      "priceFrom": "يبدأ من",
+      "perNight": "لليلة",
+      "amenities": "المرافق",
+      "checkIn": "تسجيل الدخول",
+      "checkOut": "تسجيل الخروج",
+      "rooms": "الغرف",
+      "rating": "التقييم"
+    },
+    "bookNow": "احجز الآن"
+  },
+  "dining": {
+    "title": "مطاعم دبي",
+    "subtitle": "تجارب طهي لكل الأذواق",
+    "filters": {
+      "all": "جميع المطاعم",
+      "fineDining": "مطاعم فاخرة",
+      "casual": "مطاعم عادية",
+      "cafes": "مقاهي",
+      "streetFood": "طعام الشارع",
+      "halal": "حلال",
+      "vegetarian": "نباتي"
+    },
+    "details": {
+      "cuisine": "المطبخ",
+      "priceRange": "نطاق الأسعار",
+      "hours": "ساعات العمل",
+      "dress": "قواعد اللباس",
+      "reservations": "الحجوزات"
+    }
+  },
+  "districts": {
+    "title": "أحياء دبي",
+    "subtitle": "استكشف أحياء دبي المتنوعة",
+    "explore": "استكشف الحي"
+  },
+  "realEstate": {
+    "title": "عقارات دبي",
+    "subtitle": "استثمر في المستقبل",
+    "offPlan": {
+      "title": "عقارات على الخارطة",
+      "subtitle": "استثمر مبكراً، ادفع أقل، اربح أكثر",
+      "findProperty": "ابحث عن عقارك المثالي",
+      "from": "يبدأ من",
+      "paymentPlan": "خطة الدفع",
+      "handover": "التسليم",
+      "developer": "المطور"
+    },
+    "filters": {
+      "all": "جميع العقارات",
+      "apartments": "شقق",
+      "villas": "فلل",
+      "townhouses": "تاون هاوس",
+      "penthouses": "بنتهاوس"
+    },
+    "features": {
+      "cryptoAccepted": "قبول العملات الرقمية",
+      "paymentPlans": "خطط دفع مرنة",
+      "goldenVisa": "مؤهل للفيزا الذهبية",
+      "roiGuarantee": "ضمان العائد"
+    }
+  },
+  "search": {
+    "placeholder": "ابحث في دبي...",
+    "results": "نتائج البحث",
+    "noResults": "لا توجد نتائج لـ",
+    "tryAgain": "جرب كلمات مفتاحية مختلفة"
+  },
+  "footer": {
+    "about": "عن ترافي",
+    "aboutTravi": "عن ترافي",
+    "aboutText": "دليلك الشامل لاكتشاف دبي - من المعالم الشهيرة إلى الأماكن المخفية.",
+    "aboutUs": "من نحن",
+    "quickLinks": "روابط سريعة",
+    "legal": "قانوني",
+    "privacy": "سياسة الخصوصية",
+    "privacyPolicy": "سياسة الخصوصية",
+    "terms": "الشروط والأحكام",
+    "termsOfService": "شروط الخدمة",
+    "contact": "تواصل معنا",
+    "contactUs": "تواصل معنا",
+    "followUs": "تابعنا",
+    "explore": "استكشف",
+    "featuredGuides": "أدلة مميزة",
+    "tools": "أدوات",
+    "currencyConverter": "محول العملات",
+    "roiCalculator": "حاسبة العائد",
+    "mortgageCalculator": "حاسبة الرهن العقاري",
+    "glossary": "المصطلحات",
+    "freeThingsToDo": "أكثر من 70 نشاط مجاني",
+    "open24Hours": "مفتوح 24 ساعة",
+    "tributeToSheikh": "تحية للشيخ محمد",
+    "lawsForTourists": "قوانين للسياح",
+    "newsletter": "اشترك في نشرتنا الإخبارية",
+    "newsletterDescription": "احصل على أحدث نصائح السفر إلى دبي والعروض الحصرية.",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "copyright": "جميع الحقوق محفوظة"
+  },
+  "errors": {
+    "404": {
+      "title": "الصفحة غير موجودة",
+      "message": "الصفحة التي تبحث عنها غير موجودة.",
+      "button": "العودة للرئيسية"
+    },
+    "500": {
+      "title": "خطأ في الخادم",
+      "message": "حدث خطأ ما من جانبنا.",
+      "button": "حاول مرة أخرى"
+    },
+    "network": {
+      "title": "خطأ في الاتصال",
+      "message": "يرجى التحقق من اتصالك بالإنترنت.",
+      "button": "إعادة المحاولة"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "ترافي - اكتشف دبي | دليلك الشامل للسفر إلى دبي",
+      "description": "استكشف أفضل المعالم والفنادق والمطاعم والأحياء في دبي. خطط لرحلتك المثالية إلى دبي مع نصائح محلية وتوصيات."
+    },
+    "attractions": {
+      "title": "معالم دبي | أفضل الأنشطة في دبي",
+      "description": "اكتشف أفضل المعالم في دبي - من برج خليفة إلى الأماكن المخفية. خطط لمغامرتك السياحية في دبي."
+    },
+    "hotels": {
+      "title": "فنادق دبي | أفضل أماكن الإقامة في دبي",
+      "description": "اعثر على الفندق المثالي في دبي لأي ميزانية. من المنتجعات الفاخرة إلى الخيارات الاقتصادية."
+    },
+    "dining": {
+      "title": "مطاعم دبي | أفضل الطعام في دبي",
+      "description": "استكشف المشهد الطهي في دبي - المطاعم الفاخرة وطعام الشارع وكل ما بينهما."
+    }
+  }
+}

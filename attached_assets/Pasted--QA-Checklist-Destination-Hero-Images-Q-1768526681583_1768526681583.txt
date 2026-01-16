@@ -1,0 +1,206 @@
+# ✅ QA Checklist - Destination Hero Images
+
+העתק את זה ושלח למפתח לאישור שהכל הוטמע:
+
+---
+
+## 📋 **QA Checklist - Hero Images Implementation**
+
+### **1. קבצי תמונות ✓**
+- [ ] כל 7 הקבצים נמצאים ב-`client/public/destination-hero/`
+- [ ] כל הקבצים בפורמט `.webp`
+- [ ] שמות הקבצים:
+  - [ ] `barcelona-destination-hero.webp`
+  - [ ] `paris-destination-hero.webp`
+  - [ ] `dubai-destination-hero.webp`
+  - [ ] `tokyo-destination-hero.webp`
+  - [ ] `new-york-destination-hero.webp`
+  - [ ] `singapore-destination-hero.webp`
+  - [ ] `london-destination-hero.webp`
+
+---
+
+### **2. Alt Text ✓**
+בדוק שכל `<img>` tag יש לו Alt Text מדויק:
+
+**Barcelona:**
+```html
+<img alt="Sagrada Familia basilica with colorful spires framed by modern architectural elements - Barcelona travel destination" />
+```
+
+**Paris:**
+```html
+<img alt="Eiffel Tower framed by colorful geometric sculptures and classic Parisian buildings - Paris romantic destination" />
+```
+
+**Dubai:**
+```html
+<img alt="Burj Khalifa towering above Dubai skyline with modern curved architecture at sunset - Dubai luxury destination" />
+```
+
+**Tokyo:**
+```html
+<img alt="Vibrant neon koi fish floating through modern colorful architecture with water reflections - Tokyo futuristic destination" />
+```
+
+**New York:**
+```html
+<img alt="Statue of Liberty with torch and crown against Manhattan skyline and colorful modern frames - New York iconic destination" />
+```
+
+**Singapore:**
+```html
+<img alt="Marina Bay Sands with Supertrees at Gardens by the Bay during golden hour - Singapore modern destination" />
+```
+
+**London:**
+```html
+<img alt="Tower of London medieval fortress with stone turrets and colorful contemporary elements - London historic destination" />
+```
+
+**Rome (אם יש):**
+```html
+<img alt="Ancient Colosseum with iconic arches and weathered stone texture at golden hour - Rome historic destination" />
+```
+
+- [ ] כל התמונות יש להן Alt Text
+- [ ] ה-Alt Text מתאר בדיוק את התמונה
+
+---
+
+### **3. Schema Markup ✓**
+בדוק שה-JSON-LD נמצא ב-`<head>` של homepage:
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Travi World-Class Destinations",
+  "numberOfItems": 7,
+  "itemListElement": [ ... ]
+}
+</script>
+```
+
+- [ ] Schema Markup מוטמע בקוד
+- [ ] כל 7 היעדים ברשימה
+- [ ] URLs נכונים לכל יעד
+- [ ] Geo coordinates נכונים
+
+---
+
+### **4. אופטימיזציה טכנית ✓**
+
+**Hero הראשי (הכרטיס הגדול):**
+```html
+<img 
+  src="/destination-hero/london-destination-hero.webp"
+  alt="..."
+  fetchpriority="high"
+  loading="eager"
+/>
+```
+- [ ] `fetchpriority="high"` על hero הראשי
+- [ ] **לא** `loading="lazy"` על hero הראשי
+
+**Carousel Thumbnails (תמונות קטנות):**
+```html
+<img 
+  src="/destination-hero/paris-destination-hero.webp"
+  alt="..."
+  loading="lazy"
+/>
+```
+- [ ] `loading="lazy"` על כל ה-thumbnails
+
+---
+
+### **5. בדיקות ויזואליות ✓**
+- [ ] כל התמונות נטענות בדף
+- [ ] התמונה הראשונה נטענת מהר (לא lazy)
+- [ ] Carousel עובד - לחיצה על thumbnail מחליפה את ה-hero
+- [ ] אין שגיאות 404 ב-Console
+- [ ] אין שגיאות בטעינת תמונות
+
+---
+
+### **6. בדיקות SEO/AEO ✓**
+
+**Google Rich Results Test:**
+- [ ] פתח: https://search.google.com/test/rich-results
+- [ ] הזן את ה-URL של homepage
+- [ ] תוצאה: "Valid items detected" / "TouristDestination found"
+
+**Schema Validator:**
+- [ ] פתח: https://validator.schema.org/
+- [ ] הדבק את ה-Schema JSON
+- [ ] אין שגיאות
+
+**View Source:**
+```html
+<!-- בדוק שזה מופיע ב-View Source -->
+<img src="/destination-hero/london-destination-hero.webp" 
+     alt="Tower of London medieval fortress..." />
+```
+- [ ] Alt Text מופיע ב-View Source (לא רק ב-Inspect)
+- [ ] Schema מופיע ב-View Source
+
+---
+
+### **7. Performance ✓**
+
+**PageSpeed Insights:**
+- [ ] פתח: https://pagespeed.web.dev/
+- [ ] הזן את ה-URL של homepage
+- [ ] בדוק:
+  - [ ] Largest Contentful Paint (LCP) < 2.5s
+  - [ ] אין אזהרות על images
+  - [ ] WebP format detected
+
+---
+
+### **8. OpenGraph (אופציונלי אבל מומלץ) ✓**
+
+```html
+<meta property="og:image" content="https://travi.com/destination-hero/london-destination-hero.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Tower of London medieval fortress..." />
+```
+
+- [ ] OG tags מוטמעים
+- [ ] בדיקה ב-Facebook Debugger: https://developers.facebook.com/tools/debug/
+
+---
+
+## 🎯 **Final Checks:**
+
+- [ ] כל 7 היעדים עובדים
+- [ ] אין שגיאות ב-Console
+- [ ] Schema Markup תקין
+- [ ] Alt Text על כל התמונות
+- [ ] Performance טוב (LCP < 2.5s)
+- [ ] Mobile responsive
+
+---
+
+## ✅ **חתימה:**
+
+- **QA נבדק על ידי:** _______________
+- **תאריך:** _______________
+- **דפדפנים נבדקו:** 
+  - [ ] Chrome
+  - [ ] Safari
+  - [ ] Firefox
+  - [ ] Mobile (iOS)
+  - [ ] Mobile (Android)
+
+**הערות/בעיות שנמצאו:**
+```
+[רשום כאן אם יש בעיות]
+```
+
+---
+
+**סטטוס כללי:** 🟢 מוכן / 🟡 דורש תיקונים / 🔴 לא מוכן

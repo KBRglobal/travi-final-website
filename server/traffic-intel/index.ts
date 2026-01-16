@@ -1,0 +1,86 @@
+/**
+ * Traffic Intelligence - Module Exports
+ *
+ * Complete traffic attribution & channel intelligence system.
+ *
+ * Feature Flags:
+ * - ENABLE_TRAFFIC_INTELLIGENCE (main feature)
+ * - ENABLE_AI_VISIBILITY_TRACKING (AI visibility)
+ */
+
+// Types
+export type {
+  TrafficChannel,
+  SearchEngine,
+  AIPlatform,
+  SocialPlatform,
+  TrafficSource,
+  TrafficAttribution,
+  AIVisibilityMetrics,
+  TrafficSummary,
+  ContentTrafficStats,
+} from './types';
+
+// Source Detection
+export {
+  detectTrafficSource,
+  detectFromRequest,
+  extractDetectionInput,
+  isAITraffic,
+  getChannelDisplayName,
+  SEARCH_ENGINE_PATTERNS,
+  AI_REFERRER_PATTERNS,
+  AI_USER_AGENT_PATTERNS,
+  SOCIAL_PATTERNS,
+} from './source-detection';
+
+// Attribution
+export {
+  AttributionStore,
+  getAttributionStore,
+  resetAttributionStore,
+  trafficTrackingMiddleware,
+  getTrafficSource,
+  getTrackedContentId,
+} from './attribution';
+
+// AI Visibility
+export {
+  AIVisibilityTracker,
+  getAIVisibilityTracker,
+  resetAIVisibilityTracker,
+} from './ai-visibility';
+
+// Routes
+export { createTrafficIntelRouter } from './routes';
+
+/**
+ * Initialize traffic intelligence system
+ */
+export function initTrafficIntelligence(): void {
+  const enabled = process.env.ENABLE_TRAFFIC_INTELLIGENCE === 'true';
+
+  if (!enabled) {
+    console.log('[TrafficIntel] Feature disabled (ENABLE_TRAFFIC_INTELLIGENCE != true)');
+    return;
+  }
+
+  const store = getAttributionStore();
+  store.start();
+
+  console.log('[TrafficIntel] Traffic intelligence initialized');
+
+  const aiEnabled = process.env.ENABLE_AI_VISIBILITY_TRACKING === 'true';
+  if (aiEnabled) {
+    console.log('[TrafficIntel] AI visibility tracking enabled');
+  }
+}
+
+/**
+ * Shutdown traffic intelligence system
+ */
+export function shutdownTrafficIntelligence(): void {
+  const store = getAttributionStore();
+  store.stop();
+  console.log('[TrafficIntel] Traffic intelligence shutdown');
+}

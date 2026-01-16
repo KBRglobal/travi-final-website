@@ -1,0 +1,61 @@
+import '@testing-library/jest-dom';
+import { afterEach, vi } from 'vitest';
+import { cleanup } from '@testing-library/react';
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});
+
+// Mock environment variables for tests
+process.env.NODE_ENV = 'test';
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
+
+// Mock console methods to reduce noise in tests (optional)
+// Uncomment if you want to suppress console output during tests
+// vi.spyOn(console, 'log').mockImplementation(() => {});
+// vi.spyOn(console, 'warn').mockImplementation(() => {});
+// vi.spyOn(console, 'error').mockImplementation(() => {});
+
+// Mock fetch globally if needed
+global.fetch = vi.fn();
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+  length: 0,
+  key: vi.fn(),
+};
+global.localStorage = localStorageMock as Storage;
+
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
+// Mock ResizeObserver
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+// Mock IntersectionObserver
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));

@@ -1,0 +1,73 @@
+You are not a human editor. You are an execution engine.
+
+Your task:
+Rewrite and enrich the **Getting Around** section for EACH destination using the EXACT data already provided to you (no guessing, no inventing, no placeholders).
+
+GOAL:
+Turn factual transport data into **decisive, traveler-ready guidance** that:
+- Helps users choose quickly
+- Works for SEO + AEO (AI answers)
+- Feels like local operational advice, not Wikipedia
+
+GLOBAL RULES (MANDATORY):
+1. DO NOT invent prices, ranges, or numbers.
+2. DO NOT add new transport modes or apps not explicitly listed.
+3. DO NOT ask questions.
+4. DO NOT leave anything generic.
+5. Everything must be written in clear, professional ENGLISH.
+6. Prefer short paragraphs. No marketing language.
+
+FOR EACH CITY, STRUCTURE EVERY SECTION EXACTLY LIKE THIS:
+
+────────────────
+PUBLIC TRANSPORT
+- Start with **Default choice** (one sentence: what most travelers should use)
+- Then **When it works best** (context: areas, trip types)
+- Then **When to avoid** (time, crowding, limitations)
+- Then **Payment & official apps** (already provided data, rewritten clearly)
+
+────────────────
+TAXIS & RIDE-HAILING
+- Start with **Best app to use** (from provided list)
+- Then **Official taxi rules** (street hail vs app, colors, legality)
+- Then **Important local tip** (scams, zones, pickup rules)
+
+────────────────
+AIRPORT TRANSFERS
+- Start with **Best default option** (who it’s best for)
+- Then **Good alternative** (when default is not ideal)
+- Mention airport name once, no repetition
+
+────────────────
+BIKES & SCOOTERS
+- Start with **Whether this is actually useful or not**
+- If useful: where + when
+- If not ideal: say so clearly
+- Mention only systems explicitly provided
+
+────────────────
+DRIVING & PARKING
+- Clear verdict: Recommended / Not recommended
+- One sentence why
+- Mention toll systems or restrictions ONLY if already provided
+
+────────────────
+WALKABILITY
+- One-line summary: walkable / partially / not walkable
+- Best walking areas (from data)
+- One clear caution if relevant (heat, hills, traffic)
+
+────────────────
+SOURCES
+- Keep sources as-is
+- Do not rewrite URLs
+- Just ensure formatting is clean
+
+IMPORTANT STYLE CONSTRAINT:
+Write as if ChatGPT itself might later answer:
+“What’s the best way to get around <CITY>?”
+—and this page should be the best possible source.
+
+EXECUTE THIS FOR **ALL PROVIDED CITIES**.
+DO NOT STOP MIDWAY.
+DO NOT ASK FOR CONFIRMATION.

@@ -1,0 +1,116 @@
+You are updating the DESTINATION HERO BADGES system.
+
+Current problem:
+All destinations show the same generic badges (e.g. “Global Travel Hub”, “Expert Guides”, “Top Rated”), which makes the UI look fake and harms SEO/AEO credibility.
+
+Goal:
+Each destination must show 2–3 CITY-SPECIFIC badges that are:
+- Fact-based (not marketing fluff)
+- Clearly differentiated between cities
+- Deterministic (rule-based, not random)
+- Reusable across the app
+
+Do NOT invent ratings, reviews, or claims.
+Do NOT reuse the same badge text across all cities.
+
+---
+
+### BADGE SYSTEM RULES
+
+Each destination card must show:
+- Exactly **2 primary badges** (top-left / top-right)
+- Optional **1 secondary badge** (contextual, below if needed)
+
+Badge types allowed:
+- City role / global relevance
+- Cultural identity
+- Travel style
+- Structural facts (capital, hub, mega-city, etc.)
+- Climate/seasonal strength (only if true)
+
+Badge format:
+- Short (2–4 words)
+- Neutral, informative
+- No emojis
+- Title Case
+
+---
+
+### REQUIRED OUTPUT
+Implement the following badges EXACTLY for these cities:
+
+#### Dubai
+Primary badges:
+- Global Travel Hub
+- Luxury & Modern City
+
+Secondary (optional):
+- Year-Round Attractions
+
+#### Paris
+Primary badges:
+- Historic Capital
+- Culture & Romance
+
+Secondary:
+- Walkable City
+
+#### Tokyo
+Primary badges:
+- Mega City
+- Tradition Meets Future
+
+Secondary:
+- Ultra-Efficient Transit
+
+#### New York
+Primary badges:
+- Global Metropolis
+- Cultural Capital
+
+Secondary:
+- City That Never Sleeps
+
+#### London
+Primary badges:
+- Historic Global Capital
+- World Financial Center
+
+Secondary:
+- Museum Capital
+
+#### Singapore
+Primary badges:
+- Smart City
+- Southeast Asia Hub
+
+Secondary:
+- Clean & Efficient
+
+#### Barcelona
+Primary badges:
+- Architecture Capital
+- Mediterranean City
+
+Secondary:
+- Art & Design Hub
+
+---
+
+### IMPLEMENTATION INSTRUCTIONS
+
+1. Remove any generic badge factory or shared badge constants.
+2. Create a per-destination badge config (by destination slug).
+3. Render badges ONLY from this config.
+4. If a destination is missing config → render NO badges (fail-safe).
+5. Do not calculate badges from ratings or mock data.
+6. Keep badge styling exactly as-is — change TEXT ONLY.
+
+---
+
+### ACCEPTANCE CHECK
+- Dubai and Paris MUST NOT share the same badges.
+- No badge should appear on more than 3 cities total.
+- Badges must feel credible if quoted by Google or ChatGPT.
+
+Proceed with implementation.

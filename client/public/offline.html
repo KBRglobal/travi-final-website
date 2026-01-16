@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - TRAVI</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .icon {
+      width: 40px;
+      height: 40px;
+      stroke: #6b7280;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    @media (min-width: 400px) {
+      .buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(to right, #7B4BA4, #E84C9A);
+      color: white;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    .btn-secondary:hover {
+      background: #f9fafb;
+    }
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    .hint {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" data-testid="container-offline">
+    <div class="icon-container">
+      <svg class="icon" viewBox="0 0 24 24" data-testid="icon-wifi-off">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+    </div>
+    
+    <h1 data-testid="text-offline-title">You're Offline</h1>
+    <p data-testid="text-offline-message">
+      It looks like you've lost your internet connection. Check your connection and try again.
+    </p>
+    
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="location.reload()" data-testid="button-offline-retry">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        Try Again
+      </button>
+      <a href="/" class="btn btn-secondary" data-testid="button-offline-home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Go Home
+      </a>
+    </div>
+    
+    <p class="hint" data-testid="text-offline-hint">
+      Some pages you've visited before may still be available offline.
+    </p>
+  </div>
+</body>
+</html>

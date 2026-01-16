@@ -1,0 +1,214 @@
+{
+  "nav": {
+    "home": "Home",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News & Guides",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language"
+  },
+  "common": {
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
+  },
+  "home": {
+    "hero": {
+      "title": "Discover Dubai",
+      "subtitle": "Your Ultimate Guide to the City of Gold",
+      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+    },
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides"
+  },
+  "attractions": {
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
+    "filters": {
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
+    },
+    "details": {
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
+    }
+  },
+  "hotels": {
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
+    "filters": {
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
+    },
+    "details": {
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
+    },
+    "bookNow": "Book Now"
+  },
+  "dining": {
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
+    "filters": {
+      "all": "All Restaurants",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafes",
+      "streetFood": "Street Food",
+      "halal": "Halal",
+      "vegetarian": "Vegetarian"
+    },
+    "details": {
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
+    }
+  },
+  "districts": {
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
+  },
+  "realEstate": {
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
+    "offPlan": {
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
+    },
+    "filters": {
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
+    },
+    "features": {
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
+    }
+  },
+  "search": {
+    "placeholder": "Search Dubai...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
+  },
+  "footer": {
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "All rights reserved"
+  },
+  "errors": {
+    "404": {
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
+    },
+    "500": {
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
+    },
+    "network": {
+      "title": "Connection Error",
+      "message": "Please check your internet connection.",
+      "button": "Retry"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
+    },
+    "attractions": {
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
+    },
+    "hotels": {
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
+    },
+    "dining": {
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+    }
+  }
+}
