@@ -45,7 +45,6 @@ import ukCommon from '../../locales/uk/common.json';
 import huCommon from '../../locales/hu/common.json';
 
 // Resources object - all 30 language translations
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const resources: Record<string, { common: any }> = {
   // Tier 1
   en: { common: enCommon },

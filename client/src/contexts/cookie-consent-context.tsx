@@ -35,9 +35,7 @@ function loadGTM() {
   
   window.__gtm_loaded = true;
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).dataLayer = (window as any).dataLayer || [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
   
   const f = document.getElementsByTagName("script")[0];
