@@ -379,5 +379,4 @@ export function registerLocalizationApiRoutes(app: Express): void {
   });
 
   app.use("/api", router);
-  console.log("[Routes] ✓ Localization API routes registered");
 }
