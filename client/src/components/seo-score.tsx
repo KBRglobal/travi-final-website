@@ -10,7 +10,7 @@ interface SeoScoreProps {
   metaTitle: string;
   metaDescription: string;
   primaryKeyword: string;
-  contents: string;
+  content: string;
   headings?: { level: number; text: string }[];
   images?: { url: string; alt: string }[];
   internalLinks?: number;
@@ -35,7 +35,7 @@ export function SeoScore({
   metaTitle,
   metaDescription,
   primaryKeyword,
-  contents,
+  content,
   headings = [],
   images = [],
   internalLinks = 0,
@@ -47,14 +47,14 @@ export function SeoScore({
       metaTitle,
       metaDescription,
       primaryKeyword,
-      contents,
+      content,
       headings,
       images,
       internalLinks,
       externalLinks,
     };
     return analyzeSeo(input);
-  }, [title, metaTitle, metaDescription, primaryKeyword, contents, headings, images, internalLinks, externalLinks]);
+  }, [title, metaTitle, metaDescription, primaryKeyword, content, headings, images, internalLinks, externalLinks]);
 
   const errors = analysis.issues.filter(i => i.type === "error");
   const warnings = analysis.issues.filter(i => i.type === "warning");

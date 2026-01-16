@@ -86,14 +86,14 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
       />
       
       <Helmet>
-        <meta name="robots" contents="index, follow" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={data.seo.canonicalUrl} />
-        <meta property="og:title" contents={data.seo.metaTitle} />
-        <meta property="og:description" contents={data.seo.metaDescription} />
-        {data.seo.ogImage && <meta property="og:image" contents={data.seo.ogImage} />}
-        <meta property="og:url" contents={data.seo.canonicalUrl} />
-        <meta property="og:type" contents="website" />
-        <meta name="twitter:card" contents="summary_large_image" />
+        <meta property="og:title" content={data.seo.metaTitle} />
+        <meta property="og:description" content={data.seo.metaDescription} />
+        {data.seo.ogImage && <meta property="og:image" content={data.seo.ogImage} />}
+        <meta property="og:url" content={data.seo.canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
         
         {/* TravelDestination Schema.org structured data */}
         <script type="application/ld+json">
