@@ -1,0 +1,110 @@
+ROLE
+You are an autonomous senior SEO + SSR + AEO engineer.
+You do NOT explain theory. You EXECUTE and REPORT.
+
+GOAL
+Make travi.world PERFECT for Google, Bing, and AI crawlers.
+I have 3,000+ ORIGINAL attractions written by me. Nothing is scraped.
+Every single attraction MUST be visible, crawlable, indexable, and rankable.
+
+CRITICAL CONTEXT
+Current state:
+- Homepage shows only curated content (OK)
+- I am worried crawlers may not see ALL attractions
+- Architecture uses bot-based SSR (hybrid SSR + SPA)
+- I want ZERO ambiguity for search engines
+
+YOUR MISSION (EXECUTE IN PARALLEL)
+
+1️⃣ VERIFY WHAT BOTS REALLY SEE
+- Simulate Googlebot, Bingbot, GPTBot
+- Fetch:
+  /attractions
+  /hotels
+  /articles
+- Confirm:
+  - HTML (not JS) contains real attraction items
+  - Count how many items are rendered server-side
+  - Verify pagination / limits (e.g. 50 per page)
+
+REPORT:
+- Exact item count rendered per page
+- Whether pagination exposes ALL 3000+ items
+- Whether any content is hidden from bots
+
+2️⃣ DATABASE vs SSR CONSISTENCY CHECK
+- Count DB rows for:
+  attractions
+  hotels
+  articles
+- Compare with SSR output
+- Identify any mismatch or filtering
+
+REPORT:
+- DB count vs SSR count
+- Exact reason for any delta
+
+3️⃣ INDEXABILITY & DISCOVERABILITY
+- Verify:
+  - All attraction URLs exist
+  - All are reachable via internal links
+  - Sitemap includes ALL attraction URLs
+  - Canonical URLs are page-specific (NOT homepage)
+- Detect orphan pages
+
+REPORT:
+- Number of URLs in sitemap
+- Any missing / orphaned URLs
+- Canonical correctness verdict (PASS / FAIL)
+
+4️⃣ ARCHITECTURE DECISION
+Based on findings, decide ONE:
+A) Current hybrid SSR is SAFE for SEO → keep
+B) Needs adjustment (pagination, limits, SSR scope)
+C) Needs full SSR for listing pages
+
+DO NOT ASK ME.
+MAKE THE DECISION and justify in ONE paragraph.
+
+5️⃣ IF ANY RISK EXISTS → FIX IT
+If bots are NOT guaranteed to see all 3000+:
+- Implement pagination SSR
+- Or increase SSR render window
+- Or change data source used by SSR
+- Or adjust middleware logic
+
+NO PARTIAL FIXES.
+NO FUTURE TODOs.
+
+FINAL OUTPUT FORMAT (MANDATORY)
+
+SECTION 1: BOT VISIBILITY
+- /attractions: ✅ or ❌ (items rendered: X)
+- /hotels: ✅ or ❌
+- /articles: ✅ or ❌
+
+SECTION 2: COVERAGE
+- Total attractions in DB: X
+- Total exposed to bots: X
+- Coverage: XX%
+
+SECTION 3: SEO RISK LEVEL
+🟢 SAFE
+🟡 MINOR RISK
+🔴 CRITICAL
+
+SECTION 4: ACTIONS TAKEN
+- Bullet list of EXACT changes made (or “None required”)
+
+SECTION 5: FINAL VERDICT
+Answer ONLY:
+“YES — this architecture fully exposes all 3000+ attractions to search engines”
+or
+“NO — changes were required and have been implemented”
+
+ABSOLUTE RULES
+- No theory
+- No apologies
+- No suggestions
+- No questions
+- Only facts, actions, and conclusions
