@@ -306,6 +306,16 @@ app.get('/sitemap', async (_req, res) => {
     res.status(status).json({ error: message });
   });
 
+  // API catch-all: Return JSON 404 for unmatched /api/* routes
+  // This MUST be before SSR middleware and SPA catch-all to prevent returning HTML
+  app.all('/api/*', (req: Request, res: Response) => {
+    res.status(404).json({
+      error: 'Not Found',
+      message: `API endpoint ${req.method} ${req.path} does not exist`,
+      _meta: { apiVersion: 'v1' }
+    });
+  });
+
   // SSR middleware for bot detection - serves pre-rendered HTML to search engines and AI crawlers
   // This must be BEFORE static serving but AFTER API routes
   app.use(approvedBotMiddleware); // Mark approved bots so they get SSR content

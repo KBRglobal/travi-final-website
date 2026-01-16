@@ -51,8 +51,10 @@ export function serveStatic(app: Express) {
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
-    // No cache for HTML SPA fallback
-    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    // Allow short caching with stale-while-revalidate for better CDN performance
+    // max-age=60: Fresh for 1 minute
+    // stale-while-revalidate=300: Serve stale for 5 minutes while revalidating in background
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
