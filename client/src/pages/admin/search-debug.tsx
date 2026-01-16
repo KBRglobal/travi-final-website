@@ -120,7 +120,7 @@ export default function SearchDebugPage() {
   const debugMutation = useMutation({
     mutationFn: async (query: string) => {
       const response = await apiRequest("GET", `/api/admin/search/debug?q=${encodeURIComponent(query)}`);
-      return response as SearchDebugResponse;
+      return response.json() as Promise<SearchDebugResponse>;
     },
     onSuccess: (data) => {
       setDebugResult(data);

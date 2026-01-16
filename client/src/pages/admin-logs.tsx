@@ -296,7 +296,7 @@ export default function AdminLogs() {
           />
           <StatsCard
             title="Warnings"
-            value={stats.byLevel.warning}
+            value={stats.byLevel.warn}
             icon={AlertTriangle}
           />
           <StatsCard

@@ -43,6 +43,8 @@ const colorOptions = [
 const tagFormSchema = insertTagSchema.extend({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
   slug: z.string().min(1, "Slug is required").max(100, "Slug is too long").regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens only"),
+  description: z.string().optional(),
+  color: z.string().optional(),
 });
 
 type TagFormValues = z.infer<typeof tagFormSchema>;

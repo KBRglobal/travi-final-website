@@ -793,7 +793,7 @@ function ScrollToTop() {
 
 export default function GuideDetailPage() {
   const [, params] = useRoute("/guides/:slug");
-  const slug = params?.slug || "";
+  const { slug = "" } = params ?? {};
   const [locale, setLocale] = useState("en");
   const [activeSection, setActiveSection] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);

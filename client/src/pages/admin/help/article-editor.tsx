@@ -44,8 +44,9 @@ export default function HelpArticleEditor() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isNew = params?.id === "new";
-  const articleId = isNew ? null : params?.id;
+  const id = (params as { id?: string } | null)?.id ?? "";
+  const isNew = id === "new";
+  const articleId = isNew ? null : id || null;
 
   const [formData, setFormData] = useState({
     categoryId: "",
@@ -94,8 +95,10 @@ export default function HelpArticleEditor() {
 
   // Create mutation
   const createArticle = useMutation({
-    mutationFn: (data: Record<string, unknown>) =>
-      apiRequest("/api/admin/help/articles", { method: "POST", body: JSON.stringify(data) }),
+    mutationFn: async (data: Record<string, unknown>) => {
+      const res = await apiRequest("/api/admin/help/articles", { method: "POST", body: JSON.stringify(data) });
+      return res.json();
+    },
     onSuccess: (response: { article: HelpArticle }) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/articles"] });
       toast({ title: "Article created" });
@@ -106,8 +109,10 @@ export default function HelpArticleEditor() {
 
   // Update mutation
   const updateArticle = useMutation({
-    mutationFn: (data: Record<string, unknown>) =>
-      apiRequest(`/api/admin/help/articles/${articleId}`, { method: "PUT", body: JSON.stringify(data) }),
+    mutationFn: async (data: Record<string, unknown>) => {
+      const res = await apiRequest(`/api/admin/help/articles/${articleId}`, { method: "PUT", body: JSON.stringify(data) });
+      return res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/articles"] });
       toast({ title: "Article saved" });
@@ -117,7 +122,10 @@ export default function HelpArticleEditor() {
 
   // Publish/Unpublish mutations
   const publishArticle = useMutation({
-    mutationFn: () => apiRequest(`/api/admin/help/articles/${articleId}/publish`, { method: "POST" }),
+    mutationFn: async () => {
+      const res = await apiRequest(`/api/admin/help/articles/${articleId}/publish`, { method: "POST" });
+      return res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/articles", articleId] });
       toast({ title: "Article published" });
@@ -125,7 +133,10 @@ export default function HelpArticleEditor() {
   });
 
   const unpublishArticle = useMutation({
-    mutationFn: () => apiRequest(`/api/admin/help/articles/${articleId}/unpublish`, { method: "POST" }),
+    mutationFn: async () => {
+      const res = await apiRequest(`/api/admin/help/articles/${articleId}/unpublish`, { method: "POST" });
+      return res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/articles", articleId] });
       toast({ title: "Article unpublished" });

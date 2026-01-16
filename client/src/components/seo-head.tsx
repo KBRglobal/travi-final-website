@@ -5,7 +5,7 @@ import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 interface SEOHeadProps {
   title: string;
   description: string;
-  canonicalPath: string;
+  canonicalPath?: string;
   ogImage?: string;
   ogType?: "website" | "article";
   publishedTime?: string;
@@ -19,7 +19,7 @@ interface SEOHeadProps {
 export function SEOHead({
   title,
   description,
-  canonicalPath,
+  canonicalPath = "",
   ogImage,
   ogType = "website",
   publishedTime,

@@ -1262,8 +1262,8 @@ function Breadcrumbs({ style }: { style: TravelStyleData }) {
 // MAIN COMPONENT
 // ============================================
 export default function TravelStyleArticle() {
-  const params = useParams();
-  const slug = params.slug as string;
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug ?? "";
   const [activeSection, setActiveSection] = useState<string>("");
 
   const travelStyle = TRAVEL_STYLES[slug];

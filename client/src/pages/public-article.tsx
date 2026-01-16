@@ -120,7 +120,7 @@ function generateFaqSchema(blocks: ContentBlock[]) {
 
 export default function PublicArticle() {
   const [, params] = useRoute("/articles/:slug");
-  const slug = params?.slug;
+  const { slug = "" } = params ?? {};
   const [activeCategory, setActiveCategory] = useState("all");
   const [email, setEmail] = useState("");
 

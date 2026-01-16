@@ -1,6 +1,11 @@
 import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
-export default function SubtleSkyBackground() {
+interface SubtleSkyBackgroundProps {
+  className?: string;
+}
+
+export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -66,6 +71,6 @@ export default function SubtleSkyBackground() {
   }, []);
 
   return (
-    <canvas ref={canvasRef} className="fixed inset-0 w-full h-full -z-10" />
+    <canvas ref={canvasRef} className={cn("fixed inset-0 w-full h-full -z-10", className)} />
   );
 }

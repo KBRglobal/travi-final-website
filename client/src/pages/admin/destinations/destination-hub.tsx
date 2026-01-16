@@ -36,7 +36,7 @@ interface DestinationDetail {
 
 export default function DestinationHubPage() {
   const [, params] = useRoute("/admin/destinations/:slug");
-  const slug = params?.slug;
+  const { slug = "" } = params ?? {};
   const [activeTab, setActiveTab] = useState("hero");
 
   const { data: destination, isLoading, error } = useQuery<DestinationDetail>({

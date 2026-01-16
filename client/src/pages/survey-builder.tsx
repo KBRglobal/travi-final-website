@@ -348,7 +348,7 @@ export default function SurveyBuilderPage() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const definition: SurveyDefinition = { questions };
-      const data = {
+      const payload = {
         title,
         description,
         slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
@@ -357,9 +357,11 @@ export default function SurveyBuilderPage() {
       };
 
       if (isNew) {
-        return apiRequest("/api/surveys", { method: "POST", body: JSON.stringify(data) });
+        const res = await apiRequest("/api/surveys", { method: "POST", body: JSON.stringify(payload) });
+        return res.json() as Promise<{ id: string }>;
       } else {
-        return apiRequest(`/api/surveys/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+        const res = await apiRequest(`/api/surveys/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
+        return res.json() as Promise<{ id: string }>;
       }
     },
     onSuccess: (data) => {

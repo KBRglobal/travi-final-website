@@ -91,18 +91,18 @@ export default function TranslationsPage() {
   });
 
   const getTranslationStatus = (contentId: string): TranslationStatus | null => {
-    const contents = contents?.find((c) => c.id === contentId);
-    if (!contents) return null;
+    const foundContent = contents?.find((c) => c.id === contentId);
+    if (!foundContent) return null;
 
     const contentTranslations = translations?.filter((t) => t.contentId === contentId) || [];
     const translatedLocales = contentTranslations.map((t) => t.locale);
-    const allLocales = SUPPORTED_LOCALES.map((l) => l.code).filter((l) => l !== "en");
+    const allLocales = SUPPORTED_LOCALES.map((l) => l.code).filter((l) => l !== "en") as Locale[];
     const pendingLocales = allLocales.filter((l) => !translatedLocales.includes(l));
 
     return {
       contentId,
-      title: contents.title,
-      type: contents.type,
+      title: foundContent.title,
+      type: foundContent.type,
       translatedLocales: translatedLocales as Locale[],
       pendingLocales: pendingLocales as Locale[],
     };

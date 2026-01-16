@@ -23,7 +23,7 @@ interface HelpArticle {
 
 export default function HelpArticle() {
   const [, params] = useRoute("/help/:categorySlug/:articleSlug");
-  const { categorySlug, articleSlug } = params || {};
+  const { categorySlug = "", articleSlug = "" } = params ?? {};
 
   const { data, isLoading, error } = useQuery<{ article: HelpArticle }>({
     queryKey: ["/api/help/article", categorySlug, articleSlug],
@@ -190,18 +190,20 @@ function RenderBlock({ block }: { block: { type: string; data: Record<string, un
         </pre>
       );
 
-    case "image":
+    case "image": {
+      const imageData = block.data as { url?: string; file?: { url?: string }; caption?: string };
       return (
         <figure>
           <img
-            src={String(block.data.url || block.data.file?.url || "")}
-            alt={String(block.data.caption || "")}
+            src={String(imageData.url || imageData.file?.url || "")}
+            alt={String(imageData.caption || "")}
           />
-          {block.data.caption && (
-            <figcaption>{String(block.data.caption)}</figcaption>
+          {imageData.caption && (
+            <figcaption>{String(imageData.caption)}</figcaption>
           )}
         </figure>
       );
+    }
 
     default:
       // Fallback for unknown block types

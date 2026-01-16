@@ -314,8 +314,9 @@ function FilterBar({
 
 function ContentCard({ contents, localePath, isRTL }: { contents: Content; localePath: (path: string) => string; isRTL: boolean }) {
   const config = categoryConfig[contents.type as CategoryType] || categoryConfig.hotels;
-  const image = contents.featuredImage || contents.heroImage || config.defaultImage;
+  const image = contents.cardImage || contents.heroImage || config.defaultImage;
   const href = localePath(`/${contents.type}s/${contents.slug}`);
+  const contentData = contents as Content & { hotel?: { starRating?: number; location?: string }; dining?: { location?: string } };
 
   return (
     <Link href={href}>
@@ -337,11 +338,11 @@ function ContentCard({ contents, localePath, isRTL }: { contents: Content; local
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            {contents.hotel?.starRating && (
+            {contentData.hotel?.starRating && (
               <div className={cn("absolute top-3 flex items-center gap-1", isRTL ? "right-3" : "left-3")}>
                 <Badge className="bg-[#F4C542]/90 text-white border-0">
                   <Star className="w-3 h-3 me-1 fill-current" />
-                  {contents.hotel.starRating}
+                  {contentData.hotel.starRating}
                 </Badge>
               </div>
             )}
@@ -350,13 +351,13 @@ function ContentCard({ contents, localePath, isRTL }: { contents: Content; local
             <h3 className="font-heading font-bold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
               {contents.title}
             </h3>
-            {contents.excerpt && (
-              <p className="text-sm text-muted-foreground line-clamp-2">{contents.excerpt}</p>
+            {contents.summary && (
+              <p className="text-sm text-muted-foreground line-clamp-2">{contents.summary}</p>
             )}
-            {(contents.hotel?.location || contents.dining?.location) && (
+            {(contentData.hotel?.location || contentData.dining?.location) && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <MapPin className="w-3 h-3" />
-                <span>{contents.hotel?.location || contents.dining?.location}</span>
+                <span>{contentData.hotel?.location || contentData.dining?.location}</span>
               </div>
             )}
             <div className="flex items-center gap-2 pt-2 text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
@@ -505,7 +506,7 @@ function CategoryPageContent({
       result = result.filter(
         (c) =>
           c.title.toLowerCase().includes(query) ||
-          c.excerpt?.toLowerCase().includes(query) ||
+          c.summary?.toLowerCase().includes(query) ||
           c.metaDescription?.toLowerCase().includes(query)
       );
     }

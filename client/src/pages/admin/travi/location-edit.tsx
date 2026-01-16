@@ -1046,7 +1046,7 @@ export default function LocationEditPage() {
                     id="h1Title"
                     name="h1Title"
                     defaultValue={englishContent.h1Title || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     data-testid="input-h1-title"
                   />
                 </div>
@@ -1063,7 +1063,7 @@ export default function LocationEditPage() {
                     name="metaTitle"
                     maxLength={60}
                     defaultValue={englishContent.metaTitle || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     data-testid="input-meta-title"
                   />
                 </div>
@@ -1080,7 +1080,7 @@ export default function LocationEditPage() {
                     name="metaDescription"
                     maxLength={160}
                     defaultValue={englishContent.metaDescription || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     data-testid="input-meta-description"
                   />
                 </div>
@@ -1141,7 +1141,7 @@ export default function LocationEditPage() {
                     id="shortDescription"
                     name="shortDescription"
                     defaultValue={englishContent.shortDescription || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     rows={3}
                     data-testid="input-short-description"
                   />
@@ -1156,7 +1156,7 @@ export default function LocationEditPage() {
                     id="whyVisit"
                     name="whyVisit"
                     defaultValue={englishContent.whyVisit || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     rows={4}
                     data-testid="input-why-visit"
                   />
@@ -1171,7 +1171,7 @@ export default function LocationEditPage() {
                     id="visitorExperience"
                     name="visitorExperience"
                     defaultValue={englishContent.visitorExperience || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     rows={5}
                     data-testid="input-visitor-experience"
                   />
@@ -1183,7 +1183,7 @@ export default function LocationEditPage() {
                     id="history"
                     name="history"
                     defaultValue={englishContent.history || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     rows={3}
                     data-testid="input-history"
                   />
@@ -1199,7 +1199,7 @@ export default function LocationEditPage() {
                     id="bestTimeToVisit"
                     name="bestTimeToVisit"
                     defaultValue={englishContent.bestTimeToVisit || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     rows={3}
                     data-testid="input-best-time"
                   />
@@ -1211,7 +1211,7 @@ export default function LocationEditPage() {
                     id="howToGetThere"
                     name="howToGetThere"
                     defaultValue={englishContent.howToGetThere || ""}
-                    onChange={() => setHasUnsavedChanges(true)}
+                    onChange={() => setArrayFieldsDirty(true)}
                     rows={3}
                     data-testid="input-how-to-get-there"
                   />
@@ -1233,7 +1233,7 @@ export default function LocationEditPage() {
                         const newHighlights = [...keyHighlights];
                         newHighlights[idx] = e.target.value;
                         setKeyHighlights(newHighlights);
-                        setHasUnsavedChanges(true);
+                        setArrayFieldsDirty(true);
                       }}
                       placeholder={`Highlight ${idx + 1}`}
                       data-testid={`input-highlight-${idx}`}
@@ -1244,7 +1244,7 @@ export default function LocationEditPage() {
                       size="icon"
                       onClick={() => {
                         setKeyHighlights(keyHighlights.filter((_, i) => i !== idx));
-                        setHasUnsavedChanges(true);
+                        setArrayFieldsDirty(true);
                       }}
                     >
                       <X className="w-4 h-4" />
@@ -1258,7 +1258,7 @@ export default function LocationEditPage() {
                     size="sm"
                     onClick={() => {
                       setKeyHighlights([...keyHighlights, ""]);
-                      setHasUnsavedChanges(true);
+                      setArrayFieldsDirty(true);
                     }}
                     data-testid="button-add-highlight"
                   >
@@ -1285,7 +1285,7 @@ export default function LocationEditPage() {
                         size="sm"
                         onClick={() => {
                           setFaq(faq.filter((_, i) => i !== idx));
-                          setHasUnsavedChanges(true);
+                          setArrayFieldsDirty(true);
                         }}
                       >
                         <Trash2 className="w-3 h-3" />
@@ -1297,7 +1297,7 @@ export default function LocationEditPage() {
                         const newFaq = [...faq];
                         newFaq[idx] = { ...newFaq[idx], question: e.target.value };
                         setFaq(newFaq);
-                        setHasUnsavedChanges(true);
+                        setArrayFieldsDirty(true);
                       }}
                       placeholder="Enter question..."
                       data-testid={`input-faq-question-${idx}`}
@@ -1308,7 +1308,7 @@ export default function LocationEditPage() {
                         const newFaq = [...faq];
                         newFaq[idx] = { ...newFaq[idx], answer: e.target.value };
                         setFaq(newFaq);
-                        setHasUnsavedChanges(true);
+                        setArrayFieldsDirty(true);
                       }}
                       placeholder="Enter answer..."
                       rows={2}
@@ -1322,7 +1322,7 @@ export default function LocationEditPage() {
                   size="sm"
                   onClick={() => {
                     setFaq([...faq, { question: "", answer: "" }]);
-                    setHasUnsavedChanges(true);
+                    setArrayFieldsDirty(true);
                   }}
                   data-testid="button-add-faq"
                 >
