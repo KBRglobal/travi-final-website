@@ -361,15 +361,15 @@ function DestinationAttractionsPage() {
 
   const cityName = destination ? slugToCityName(destination) : "";
   
-  const { data: destinationsData } = useQuery<DestinationMetadata[]>({
+  const { data: destinationsApiResponse } = useQuery<{ destinations: DestinationMetadata[], total: number }>({
     queryKey: ['/api/public/attraction-destinations'],
     staleTime: 1000 * 60 * 10,
   });
 
   const destinationMeta = useMemo(() => {
-    if (!destination || !destinationsData) return null;
-    return destinationsData.find(d => d.slug === destination) || null;
-  }, [destination, destinationsData]);
+    if (!destination || !destinationsApiResponse?.destinations) return null;
+    return destinationsApiResponse.destinations.find(d => d.slug === destination) || null;
+  }, [destination, destinationsApiResponse]);
   
   const { data: apiResponse, isLoading, error } = useQuery<TiqetsApiResponse>({
     queryKey: ['/api/public/tiqets/attractions', { city: cityName, limit: 50 }],

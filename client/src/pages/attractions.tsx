@@ -275,7 +275,7 @@ function DestinationChip({ destination, index }: { destination: Destination, ind
       transition={{ delay: 0.3 + index * 0.05, duration: 0.4, ease: "easeOut" }}
       whileHover={shouldAnimate ? { scale: 1.05, y: -4 } : {}}
     >
-      <Link href={`/attractions/${destination.slug}`}>
+      <Link href={`/attractions/list/${destination.slug}`}>
         <div 
           className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.slug}`}
@@ -379,7 +379,7 @@ export default function Attractions() {
           id: d.slug,
           title: `Things to do in ${d.name}`,
           subtitle: `${d.country} - ${d.count} attractions`,
-          href: `/attractions/${d.slug}`,
+          href: `/attractions/list/${d.slug}`,
           image: d.image,
         })
       );
@@ -858,7 +858,7 @@ export default function Attractions() {
                                 <span className="text-white/60 text-sm">From</span>
                                 <span className="text-3xl font-bold text-white ml-2">{dest.price}</span>
                               </div>
-                              <Link href={`/attractions/${dest.slug}`}>
+                              <Link href={`/attractions/list/${dest.slug}`}>
                                 <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                                   Book Tickets
                                   <ArrowRight className="w-5 h-5" />
@@ -1003,7 +1003,7 @@ export default function Attractions() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <Link href={`/attractions/${dest.slug}`}>
+                    <Link href={`/attractions/list/${dest.slug}`}>
                       <Card 
                         className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 border-0"
                         data-testid={`destination-card-${dest.slug}`}
@@ -1300,7 +1300,7 @@ export default function Attractions() {
         <ul>
           {destinations.map(dest => (
             <li key={dest.slug}>
-              <a href={`/attractions/${dest.slug}`}>
+              <a href={`/attractions/list/${dest.slug}`}>
                 Things to do in {dest.name}, {dest.country} | {dest.count} attractions
               </a>
             </li>
