@@ -120,10 +120,7 @@ export const otpCodes = pgTable("otp_codes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertOtpCodeSchema = createInsertSchema(otpCodes).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertOtpCodeSchema = createInsertSchema(otpCodes);
 
 export type InsertOtpCode = z.infer<typeof insertOtpCodeSchema>;
 export type OtpCode = typeof otpCodes.$inferSelect;
@@ -479,11 +476,7 @@ export const pageLayouts = pgTable("page_layouts", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertPageLayoutSchema = createInsertSchema(pageLayouts).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertPageLayoutSchema = createInsertSchema(pageLayouts);
 
 // Image Engine - AI Generated Images Library
 export const imageSourceEnum = pgEnum("image_source", ["gemini", "openai", "freepik", "stock", "upload"]);
@@ -515,11 +508,7 @@ export const aiGeneratedImages = pgTable("ai_generated_images", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertAiGeneratedImageSchema = createInsertSchema(aiGeneratedImages).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAiGeneratedImageSchema = createInsertSchema(aiGeneratedImages);
 
 export type InsertAiGeneratedImage = z.infer<typeof insertAiGeneratedImageSchema>;
 export type AiGeneratedImage = typeof aiGeneratedImages.$inferSelect;
@@ -535,11 +524,7 @@ export const imageCollections = pgTable("image_collections", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertImageCollectionSchema = createInsertSchema(imageCollections).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertImageCollectionSchema = createInsertSchema(imageCollections);
 
 export type InsertImageCollection = z.infer<typeof insertImageCollectionSchema>;
 export type ImageCollection = typeof imageCollections.$inferSelect;
@@ -578,11 +563,7 @@ export const mediaAssets = pgTable("media_assets", {
   index("IDX_media_assets_source").on(table.source),
 ]);
 
-export const insertMediaAssetSchema = createInsertSchema(mediaAssets).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertMediaAssetSchema = createInsertSchema(mediaAssets);
 
 export type InsertMediaAsset = z.infer<typeof insertMediaAssetSchema>;
 export type MediaAsset = typeof mediaAssets.$inferSelect;
@@ -656,11 +637,7 @@ export const mediaRecommendations = pgTable("media_recommendations", {
   index("IDX_media_recommendations_priority").on(table.priority),
 ]);
 
-export const insertMediaRecommendationSchema = createInsertSchema(mediaRecommendations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertMediaRecommendationSchema = createInsertSchema(mediaRecommendations);
 
 export type InsertMediaRecommendation = z.infer<typeof insertMediaRecommendationSchema>;
 export type MediaRecommendationRecord = typeof mediaRecommendations.$inferSelect;
@@ -810,18 +787,11 @@ export const topicClusterItems = pgTable("topic_cluster_items", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertTopicClusterSchema = createInsertSchema(topicClusters).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTopicClusterSchema = createInsertSchema(topicClusters);
 export type InsertTopicCluster = z.infer<typeof insertTopicClusterSchema>;
 export type TopicCluster = typeof topicClusters.$inferSelect;
 
-export const insertTopicClusterItemSchema = createInsertSchema(topicClusterItems).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertTopicClusterItemSchema = createInsertSchema(topicClusterItems);
 export type InsertTopicClusterItem = z.infer<typeof insertTopicClusterItemSchema>;
 export type TopicClusterItem = typeof topicClusterItems.$inferSelect;
 
@@ -874,11 +844,7 @@ export const uiTranslations = pgTable("ui_translations", {
   uniqueKeyLocale: sql`UNIQUE (${table.key}, ${table.locale})`,
 }));
 
-export const insertUiTranslationSchema = createInsertSchema(uiTranslations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertUiTranslationSchema = createInsertSchema(uiTranslations);
 export type InsertUiTranslation = z.infer<typeof insertUiTranslationSchema>;
 export type UiTranslation = typeof uiTranslations.$inferSelect;
 
@@ -945,10 +911,7 @@ export const auditLogs = pgTable("audit_logs", {
 ]);
 
 // Audit log insert schema and types
-export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({
-  id: true,
-  timestamp: true,
-});
+export const insertAuditLogSchema = createInsertSchema(auditLogs);
 
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 export type AuditLog = typeof auditLogs.$inferSelect;
@@ -1265,12 +1228,7 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({
-  id: true,
-  subscribedAt: true,
-  confirmedAt: true,
-  unsubscribedAt: true,
-});
+export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers);
 
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
@@ -1308,11 +1266,7 @@ export const propertyLeads = pgTable("property_leads", {
   notes: text("notes"),
 });
 
-export const insertPropertyLeadSchema = createInsertSchema(propertyLeads).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertPropertyLeadSchema = createInsertSchema(propertyLeads);
 
 export type InsertPropertyLead = z.infer<typeof insertPropertyLeadSchema>;
 export type PropertyLead = typeof propertyLeads.$inferSelect;
@@ -1363,18 +1317,7 @@ export const newsletterCampaigns = pgTable("newsletter_campaigns", {
   totalUnsubscribed: integer("total_unsubscribed").default(0),
 });
 
-export const insertCampaignSchema = createInsertSchema(newsletterCampaigns).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  sentAt: true,
-  totalRecipients: true,
-  totalSent: true,
-  totalOpened: true,
-  totalClicked: true,
-  totalBounced: true,
-  totalUnsubscribed: true,
-});
+export const insertCampaignSchema = createInsertSchema(newsletterCampaigns);
 
 export type InsertCampaign = z.infer<typeof insertCampaignSchema>;
 export type NewsletterCampaign = typeof newsletterCampaigns.$inferSelect;
@@ -1392,10 +1335,7 @@ export const campaignEvents = pgTable("campaign_events", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertCampaignEventSchema = createInsertSchema(campaignEvents).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertCampaignEventSchema = createInsertSchema(campaignEvents);
 
 export type InsertCampaignEvent = z.infer<typeof insertCampaignEventSchema>;
 export type CampaignEvent = typeof campaignEvents.$inferSelect;
@@ -1592,14 +1532,7 @@ export const translationJobs = pgTable("translation_jobs", {
   uniqueIndex("IDX_translation_jobs_unique").on(table.contentId, table.targetLocale),
 ]);
 
-export const insertTranslationJobSchema = createInsertSchema(translationJobs).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  completedAt: true,
-  processingStartedAt: true,
-  retryCount: true,
-});
+export const insertTranslationJobSchema = createInsertSchema(translationJobs);
 
 export type TranslationJob = typeof translationJobs.$inferSelect;
 export type InsertTranslationJob = z.infer<typeof insertTranslationJobSchema>;
@@ -1825,84 +1758,37 @@ export interface RealEstateInfoItem {
 }
 
 // Insert schemas
-export const insertUserSchema = createInsertSchema(users).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertUserSchema = createInsertSchema(users);
 
-export const insertContentSchema = createInsertSchema(contents).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertContentSchema = createInsertSchema(contents);
 
-export const insertAttractionSchema = createInsertSchema(attractions).omit({
-  id: true,
-});
+export const insertAttractionSchema = createInsertSchema(attractions);
 
-export const insertHotelSchema = createInsertSchema(hotels).omit({
-  id: true,
-});
+export const insertHotelSchema = createInsertSchema(hotels);
 
-export const insertArticleSchema = createInsertSchema(articles).omit({
-  id: true,
-});
+export const insertArticleSchema = createInsertSchema(articles);
 
-export const insertDiningSchema = createInsertSchema(dining).omit({
-  id: true,
-});
+export const insertDiningSchema = createInsertSchema(dining);
 
-export const insertDistrictSchema = createInsertSchema(districts).omit({
-  id: true,
-});
+export const insertDistrictSchema = createInsertSchema(districts);
 
-export const insertTransportSchema = createInsertSchema(transports).omit({
-  id: true,
-});
+export const insertTransportSchema = createInsertSchema(transports);
 
-export const insertEventSchema = createInsertSchema(events).omit({
-  id: true,
-});
+export const insertEventSchema = createInsertSchema(events);
 
-export const insertItinerarySchema = createInsertSchema(itineraries).omit({
-  id: true,
-});
+export const insertItinerarySchema = createInsertSchema(itineraries);
 
-export const insertRssFeedSchema = createInsertSchema(rssFeeds).omit({
-  id: true,
-  createdAt: true,
-  lastFetchedAt: true,
-});
+export const insertRssFeedSchema = createInsertSchema(rssFeeds);
 
-export const insertAffiliateLinkSchema = createInsertSchema(affiliateLinks).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAffiliateLinkSchema = createInsertSchema(affiliateLinks);
 
-export const insertMediaFileSchema = createInsertSchema(mediaFiles).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertMediaFileSchema = createInsertSchema(mediaFiles);
 
-export const insertInternalLinkSchema = createInsertSchema(internalLinks).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertInternalLinkSchema = createInsertSchema(internalLinks);
 
-export const insertTopicBankSchema = createInsertSchema(topicBank).omit({
-  id: true,
-  createdAt: true,
-  lastUsed: true,
-  timesUsed: true,
-});
+export const insertTopicBankSchema = createInsertSchema(topicBank);
 
-export const insertKeywordRepositorySchema = createInsertSchema(keywordRepository).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  usageCount: true,
-});
+export const insertKeywordRepositorySchema = createInsertSchema(keywordRepository);
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -1938,40 +1824,24 @@ export type TopicBank = typeof topicBank.$inferSelect;
 export type InsertKeywordRepository = z.infer<typeof insertKeywordRepositorySchema>;
 export type KeywordRepository = typeof keywordRepository.$inferSelect;
 
-export const insertContentVersionSchema = createInsertSchema(contentVersions).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertContentVersionSchema = createInsertSchema(contentVersions);
 export type InsertContentVersion = z.infer<typeof insertContentVersionSchema>;
 export type ContentVersion = typeof contentVersions.$inferSelect;
 
-export const insertContentFingerprintSchema = createInsertSchema(contentFingerprints).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertContentFingerprintSchema = createInsertSchema(contentFingerprints);
 export type InsertContentFingerprint = z.infer<typeof insertContentFingerprintSchema>;
 export type ContentFingerprint = typeof contentFingerprints.$inferSelect;
 
-export const insertTranslationSchema = createInsertSchema(translations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTranslationSchema = createInsertSchema(translations);
 export type InsertTranslation = z.infer<typeof insertTranslationSchema>;
 export type Translation = typeof translations.$inferSelect;
 
-export const insertHomepagePromotionSchema = createInsertSchema(homepagePromotions).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertHomepagePromotionSchema = createInsertSchema(homepagePromotions);
 export type InsertHomepagePromotion = z.infer<typeof insertHomepagePromotionSchema>;
 export type HomepagePromotion = typeof homepagePromotions.$inferSelect;
 export type HomepageSection = "featured" | "attractions" | "hotels" | "articles" | "trending" | "dining" | "events";
 
-export const insertContentViewSchema = createInsertSchema(contentViews).omit({
-  id: true,
-  viewedAt: true,
-});
+export const insertContentViewSchema = createInsertSchema(contentViews);
 export type InsertContentView = z.infer<typeof insertContentViewSchema>;
 export type ContentView = typeof contentViews.$inferSelect;
 
@@ -2042,11 +1912,7 @@ export const tags = pgTable("tags", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertTagSchema = createInsertSchema(tags).omit({
-  id: true,
-  usageCount: true,
-  createdAt: true,
-});
+export const insertTagSchema = createInsertSchema(tags);
 export type InsertTag = z.infer<typeof insertTagSchema>;
 export type Tag = typeof tags.$inferSelect;
 
@@ -2061,10 +1927,7 @@ export const contentTags = pgTable("content_tags", {
   index("IDX_content_tags_tag").on(table.tagId),
 ]);
 
-export const insertContentTagSchema = createInsertSchema(contentTags).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertContentTagSchema = createInsertSchema(contentTags);
 export type InsertContentTag = z.infer<typeof insertContentTagSchema>;
 export type ContentTag = typeof contentTags.$inferSelect;
 
@@ -2081,11 +1944,7 @@ export const contentClusters = pgTable("content_clusters", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertContentClusterSchema = createInsertSchema(contentClusters).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertContentClusterSchema = createInsertSchema(contentClusters);
 export type InsertContentCluster = z.infer<typeof insertContentClusterSchema>;
 export type ContentCluster = typeof contentClusters.$inferSelect;
 
@@ -2101,10 +1960,7 @@ export const clusterMembers = pgTable("cluster_members", {
   index("IDX_cluster_members_content").on(table.contentId),
 ]);
 
-export const insertClusterMemberSchema = createInsertSchema(clusterMembers).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertClusterMemberSchema = createInsertSchema(clusterMembers);
 export type InsertClusterMember = z.infer<typeof insertClusterMemberSchema>;
 export type ClusterMember = typeof clusterMembers.$inferSelect;
 
@@ -2124,12 +1980,7 @@ export const contentTemplates = pgTable("content_templates", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertContentTemplateSchema = createInsertSchema(contentTemplates).omit({
-  id: true,
-  usageCount: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertContentTemplateSchema = createInsertSchema(contentTemplates);
 export type InsertContentTemplate = z.infer<typeof insertContentTemplateSchema>;
 export type ContentTemplate = typeof contentTemplates.$inferSelect;
 
@@ -2144,10 +1995,7 @@ export const siteSettings = pgTable("site_settings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertSiteSettingSchema = createInsertSchema(siteSettings).omit({
-  id: true,
-  updatedAt: true,
-});
+export const insertSiteSettingSchema = createInsertSchema(siteSettings);
 export type InsertSiteSetting = z.infer<typeof insertSiteSettingSchema>;
 export type SiteSetting = typeof siteSettings.$inferSelect;
 
@@ -2185,10 +2033,7 @@ export interface SeoSuggestion {
   estimatedImpact?: string;
 }
 
-export const insertSeoAnalysisResultSchema = createInsertSchema(seoAnalysisResults).omit({
-  id: true,
-  analyzedAt: true,
-});
+export const insertSeoAnalysisResultSchema = createInsertSchema(seoAnalysisResults);
 export type InsertSeoAnalysisResult = z.infer<typeof insertSeoAnalysisResultSchema>;
 export type SeoAnalysisResult = typeof seoAnalysisResults.$inferSelect;
 
@@ -2209,10 +2054,7 @@ export const seoAuditLogs = pgTable("seo_audit_logs", {
   index("IDX_seo_audit_created").on(table.createdAt),
 ]);
 
-export const insertSeoAuditLogSchema = createInsertSchema(seoAuditLogs).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertSeoAuditLogSchema = createInsertSchema(seoAuditLogs);
 export type InsertSeoAuditLog = z.infer<typeof insertSeoAuditLogSchema>;
 export type SeoAuditLog = typeof seoAuditLogs.$inferSelect;
 
@@ -3168,20 +3010,11 @@ export const writerPerformance = pgTable("writer_performance", {
 ]);
 
 // Define schema validators
-export const insertAiWriterSchema = createInsertSchema(aiWriters).omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAiWriterSchema = createInsertSchema(aiWriters);
 
-export const insertWriterAssignmentSchema = createInsertSchema(writerAssignments).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertWriterAssignmentSchema = createInsertSchema(writerAssignments);
 
-export const insertWriterPerformanceSchema = createInsertSchema(writerPerformance).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertWriterPerformanceSchema = createInsertSchema(writerPerformance);
 
 // Define types
 export type AIWriter = typeof aiWriters.$inferSelect;
@@ -3207,10 +3040,7 @@ export const magicLinkTokens = pgTable("magic_link_tokens", {
   index("IDX_magic_link_tokens_token").on(table.token),
 ]);
 
-export const insertMagicLinkTokenSchema = createInsertSchema(magicLinkTokens).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertMagicLinkTokenSchema = createInsertSchema(magicLinkTokens);
 
 export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
 export type InsertMagicLinkToken = z.infer<typeof insertMagicLinkTokenSchema>;
@@ -3236,10 +3066,7 @@ export const contentScores = pgTable("content_scores", {
   index("IDX_content_scores_content").on(table.contentId),
 ]);
 
-export const insertContentScoreSchema = createInsertSchema(contentScores).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertContentScoreSchema = createInsertSchema(contentScores);
 
 export type ContentScore = typeof contentScores.$inferSelect;
 export type InsertContentScore = z.infer<typeof insertContentScoreSchema>;
@@ -3285,16 +3112,9 @@ export const workflowExecutions = pgTable("workflow_executions", {
   index("IDX_workflow_executions_status").on(table.status),
 ]);
 
-export const insertWorkflowSchema = createInsertSchema(workflows).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertWorkflowSchema = createInsertSchema(workflows);
 
-export const insertWorkflowExecutionSchema = createInsertSchema(workflowExecutions).omit({
-  id: true,
-  startedAt: true,
-});
+export const insertWorkflowExecutionSchema = createInsertSchema(workflowExecutions);
 
 export type Workflow = typeof workflows.$inferSelect;
 export type InsertWorkflow = z.infer<typeof insertWorkflowSchema>;
@@ -3345,16 +3165,9 @@ export const payouts = pgTable("payouts", {
   index("IDX_payouts_status").on(table.status),
 ]);
 
-export const insertPartnerSchema = createInsertSchema(partners).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertPartnerSchema = createInsertSchema(partners);
 
-export const insertPayoutSchema = createInsertSchema(payouts).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertPayoutSchema = createInsertSchema(payouts);
 
 export type Partner = typeof partners.$inferSelect;
 export type InsertPartner = z.infer<typeof insertPartnerSchema>;
@@ -3396,15 +3209,9 @@ export const abTestEvents = pgTable("ab_test_events", {
   index("IDX_ab_test_events_created").on(table.createdAt),
 ]);
 
-export const insertAbTestVariantSchema = createInsertSchema(abTestVariants).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAbTestVariantSchema = createInsertSchema(abTestVariants);
 
-export const insertAbTestEventSchema = createInsertSchema(abTestEvents).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAbTestEventSchema = createInsertSchema(abTestEvents);
 
 export type AbTestVariant = typeof abTestVariants.$inferSelect;
 export type InsertAbTestVariant = z.infer<typeof insertAbTestVariantSchema>;
@@ -3463,11 +3270,7 @@ export const realEstatePages = pgTable("real_estate_pages", {
   index("IDX_real_estate_pages_active").on(table.isActive),
 ]);
 
-export const insertRealEstatePageSchema = createInsertSchema(realEstatePages).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertRealEstatePageSchema = createInsertSchema(realEstatePages);
 
 export type RealEstatePage = typeof realEstatePages.$inferSelect;
 export type InsertRealEstatePage = z.infer<typeof insertRealEstatePageSchema>;
@@ -3488,11 +3291,7 @@ export const navigationMenus = pgTable("navigation_menus", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertNavigationMenuSchema = createInsertSchema(navigationMenus).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertNavigationMenuSchema = createInsertSchema(navigationMenus);
 
 export type NavigationMenu = typeof navigationMenus.$inferSelect;
 export type InsertNavigationMenu = z.infer<typeof insertNavigationMenuSchema>;
@@ -3518,10 +3317,7 @@ export const navigationMenuItems = pgTable("navigation_menu_items", {
   index("IDX_nav_menu_items_order").on(table.sortOrder),
 ]);
 
-export const insertNavigationMenuItemSchema = createInsertSchema(navigationMenuItems).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertNavigationMenuItemSchema = createInsertSchema(navigationMenuItems);
 
 export type NavigationMenuItem = typeof navigationMenuItems.$inferSelect;
 export type InsertNavigationMenuItem = z.infer<typeof insertNavigationMenuItemSchema>;
@@ -3540,11 +3336,7 @@ export const footerSections = pgTable("footer_sections", {
   index("IDX_footer_sections_order").on(table.sortOrder),
 ]);
 
-export const insertFooterSectionSchema = createInsertSchema(footerSections).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertFooterSectionSchema = createInsertSchema(footerSections);
 
 export type FooterSection = typeof footerSections.$inferSelect;
 export type InsertFooterSection = z.infer<typeof insertFooterSectionSchema>;
@@ -3566,10 +3358,7 @@ export const footerLinks = pgTable("footer_links", {
   index("IDX_footer_links_order").on(table.sortOrder),
 ]);
 
-export const insertFooterLinkSchema = createInsertSchema(footerLinks).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertFooterLinkSchema = createInsertSchema(footerLinks);
 
 export type FooterLink = typeof footerLinks.$inferSelect;
 export type InsertFooterLink = z.infer<typeof insertFooterLinkSchema>;
@@ -3610,11 +3399,7 @@ export const staticPages = pgTable("static_pages", {
   index("IDX_static_pages_active").on(table.isActive),
 ]);
 
-export const insertStaticPageSchema = createInsertSchema(staticPages).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertStaticPageSchema = createInsertSchema(staticPages);
 
 export type StaticPage = typeof staticPages.$inferSelect;
 export type InsertStaticPage = z.infer<typeof insertStaticPageSchema>;
@@ -3636,11 +3421,7 @@ export const homepageSections = pgTable("homepage_sections", {
   index("IDX_homepage_sections_order").on(table.sortOrder),
 ]);
 
-export const insertHomepageSectionSchema = createInsertSchema(homepageSections).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHomepageSectionSchema = createInsertSchema(homepageSections);
 
 export type HomepageSectionEntry = typeof homepageSections.$inferSelect;
 export type InsertHomepageSectionEntry = z.infer<typeof insertHomepageSectionSchema>;
@@ -3664,11 +3445,7 @@ export const homepageCards = pgTable("homepage_cards", {
   index("IDX_homepage_cards_order").on(table.sortOrder),
 ]);
 
-export const insertHomepageCardSchema = createInsertSchema(homepageCards).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHomepageCardSchema = createInsertSchema(homepageCards);
 
 export type HomepageCard = typeof homepageCards.$inferSelect;
 export type InsertHomepageCard = z.infer<typeof insertHomepageCardSchema>;
@@ -3693,11 +3470,7 @@ export const experienceCategories = pgTable("experience_categories", {
   index("IDX_experience_categories_order").on(table.sortOrder),
 ]);
 
-export const insertExperienceCategorySchema = createInsertSchema(experienceCategories).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertExperienceCategorySchema = createInsertSchema(experienceCategories);
 
 export type ExperienceCategory = typeof experienceCategories.$inferSelect;
 export type InsertExperienceCategory = z.infer<typeof insertExperienceCategorySchema>;
@@ -3720,11 +3493,7 @@ export const regionLinks = pgTable("region_links", {
   index("IDX_region_links_order").on(table.sortOrder),
 ]);
 
-export const insertRegionLinkSchema = createInsertSchema(regionLinks).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertRegionLinkSchema = createInsertSchema(regionLinks);
 
 export type RegionLink = typeof regionLinks.$inferSelect;
 export type InsertRegionLink = z.infer<typeof insertRegionLinkSchema>;
@@ -3750,11 +3519,7 @@ export const heroSlides = pgTable("hero_slides", {
   index("IDX_hero_slides_active").on(table.isActive),
 ]);
 
-export const insertHeroSlideSchema = createInsertSchema(heroSlides).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHeroSlideSchema = createInsertSchema(heroSlides);
 
 export type HeroSlide = typeof heroSlides.$inferSelect;
 export type InsertHeroSlide = z.infer<typeof insertHeroSlideSchema>;
@@ -3780,11 +3545,7 @@ export const homepageCta = pgTable("homepage_cta", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertHomepageCtaSchema = createInsertSchema(homepageCta).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHomepageCtaSchema = createInsertSchema(homepageCta);
 
 export type HomepageCta = typeof homepageCta.$inferSelect;
 export type InsertHomepageCta = z.infer<typeof insertHomepageCtaSchema>;
@@ -3809,11 +3570,7 @@ export const homepageSeoMeta = pgTable("homepage_seo_meta", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertHomepageSeoMetaSchema = createInsertSchema(homepageSeoMeta).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHomepageSeoMetaSchema = createInsertSchema(homepageSeoMeta);
 
 export type HomepageSeoMeta = typeof homepageSeoMeta.$inferSelect;
 export type InsertHomepageSeoMeta = z.infer<typeof insertHomepageSeoMetaSchema>;
@@ -3850,11 +3607,7 @@ export const cmsTranslations = pgTable("cms_translations", {
   index("IDX_cms_translations_locale").on(table.locale),
 ]);
 
-export const insertCmsTranslationSchema = createInsertSchema(cmsTranslations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertCmsTranslationSchema = createInsertSchema(cmsTranslations);
 
 export type CmsTranslation = typeof cmsTranslations.$inferSelect;
 export type InsertCmsTranslation = z.infer<typeof insertCmsTranslationSchema>;
@@ -3903,11 +3656,7 @@ export const editablePages = pgTable("editable_pages", {
   index("IDX_editable_pages_type").on(table.pageType),
 ]);
 
-export const insertEditablePageSchema = createInsertSchema(editablePages).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertEditablePageSchema = createInsertSchema(editablePages);
 
 export type EditablePage = typeof editablePages.$inferSelect;
 export type InsertEditablePage = z.infer<typeof insertEditablePageSchema>;
@@ -3963,11 +3712,7 @@ export const pageSections = pgTable("page_sections", {
   index("IDX_page_sections_key").on(table.pageId, table.sectionKey),
 ]);
 
-export const insertPageSectionSchema = createInsertSchema(pageSections).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertPageSectionSchema = createInsertSchema(pageSections);
 
 export type PageSection = typeof pageSections.$inferSelect;
 export type InsertPageSection = z.infer<typeof insertPageSectionSchema>;
@@ -3986,10 +3731,7 @@ export const sectionVersions = pgTable("section_versions", {
   index("IDX_section_versions_number").on(table.sectionId, table.versionNumber),
 ]);
 
-export const insertSectionVersionSchema = createInsertSchema(sectionVersions).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertSectionVersionSchema = createInsertSchema(sectionVersions);
 
 export type SectionVersion = typeof sectionVersions.$inferSelect;
 export type InsertSectionVersion = z.infer<typeof insertSectionVersionSchema>;
@@ -4188,10 +3930,7 @@ export const destinations = pgTable("destinations", {
   index("IDX_destinations_slug").on(table.slug),
 ]);
 
-export const insertDestinationSchema = createInsertSchema(destinations).omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertDestinationSchema = createInsertSchema(destinations);
 
 export type Destination = typeof destinations.$inferSelect;
 export type InsertDestination = z.infer<typeof insertDestinationSchema>;
@@ -4213,11 +3952,7 @@ export const destinationContent = pgTable("destination_content", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertDestinationContentSchema = createInsertSchema(destinationContent).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertDestinationContentSchema = createInsertSchema(destinationContent);
 
 export type DestinationContent = typeof destinationContent.$inferSelect;
 export type InsertDestinationContent = z.infer<typeof insertDestinationContentSchema>;
@@ -4247,11 +3982,7 @@ export const categoryPages = pgTable("category_pages", {
   index("IDX_category_pages_slug").on(table.slug),
 ]);
 
-export const insertCategoryPageSchema = createInsertSchema(categoryPages).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertCategoryPageSchema = createInsertSchema(categoryPages);
 
 export type CategoryPage = typeof categoryPages.$inferSelect;
 export type InsertCategoryPage = z.infer<typeof insertCategoryPageSchema>;
@@ -4274,10 +4005,7 @@ export const aiGenerationLogs = pgTable("ai_generation_logs", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertAiGenerationLogSchema = createInsertSchema(aiGenerationLogs).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAiGenerationLogSchema = createInsertSchema(aiGenerationLogs);
 
 export type AiGenerationLog = typeof aiGenerationLogs.$inferSelect;
 export type InsertAiGenerationLog = z.infer<typeof insertAiGenerationLogSchema>;
@@ -4300,11 +4028,7 @@ export const researchUploads = pgTable("research_uploads", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertResearchUploadSchema = createInsertSchema(researchUploads).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertResearchUploadSchema = createInsertSchema(researchUploads);
 
 export type ResearchUpload = typeof researchUploads.$inferSelect;
 export type InsertResearchUpload = z.infer<typeof insertResearchUploadSchema>;
@@ -4334,11 +4058,7 @@ export const contentSuggestions = pgTable("content_suggestions", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertContentSuggestionSchema = createInsertSchema(contentSuggestions).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertContentSuggestionSchema = createInsertSchema(contentSuggestions);
 
 export type ContentSuggestion = typeof contentSuggestions.$inferSelect;
 export type InsertContentSuggestion = z.infer<typeof insertContentSuggestionSchema>;
@@ -4505,11 +4225,7 @@ export const aeoAnswerCapsules = pgTable("aeo_answer_capsules", {
   index("IDX_aeo_capsules_citations").on(table.citationCount),
 ]);
 
-export const insertAeoAnswerCapsuleSchema = createInsertSchema(aeoAnswerCapsules).omit({
-  id: true,
-  generatedAt: true,
-  updatedAt: true,
-});
+export const insertAeoAnswerCapsuleSchema = createInsertSchema(aeoAnswerCapsules);
 export type InsertAeoAnswerCapsule = z.infer<typeof insertAeoAnswerCapsuleSchema>;
 export type AeoAnswerCapsule = typeof aeoAnswerCapsules.$inferSelect;
 
@@ -4536,10 +4252,7 @@ export const aeoCitations = pgTable("aeo_citations", {
   index("IDX_aeo_citations_platform_date").on(table.platform, table.detectedAt),
 ]);
 
-export const insertAeoCitationSchema = createInsertSchema(aeoCitations).omit({
-  id: true,
-  detectedAt: true,
-});
+export const insertAeoCitationSchema = createInsertSchema(aeoCitations);
 export type InsertAeoCitation = z.infer<typeof insertAeoCitationSchema>;
 export type AeoCitation = typeof aeoCitations.$inferSelect;
 
@@ -4565,10 +4278,7 @@ export const aeoPerformanceMetrics = pgTable("aeo_performance_metrics", {
   index("IDX_aeo_metrics_content").on(table.contentId),
 ]);
 
-export const insertAeoPerformanceMetricSchema = createInsertSchema(aeoPerformanceMetrics).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAeoPerformanceMetricSchema = createInsertSchema(aeoPerformanceMetrics);
 export type InsertAeoPerformanceMetric = z.infer<typeof insertAeoPerformanceMetricSchema>;
 export type AeoPerformanceMetric = typeof aeoPerformanceMetrics.$inferSelect;
 
@@ -4591,10 +4301,7 @@ export const aeoCrawlerLogs = pgTable("aeo_crawler_logs", {
   index("IDX_aeo_crawler_path").on(table.requestPath),
 ]);
 
-export const insertAeoCrawlerLogSchema = createInsertSchema(aeoCrawlerLogs).omit({
-  id: true,
-  crawledAt: true,
-});
+export const insertAeoCrawlerLogSchema = createInsertSchema(aeoCrawlerLogs);
 export type InsertAeoCrawlerLog = z.infer<typeof insertAeoCrawlerLogSchema>;
 export type AeoCrawlerLog = typeof aeoCrawlerLogs.$inferSelect;
 
@@ -4615,12 +4322,7 @@ export const aeoProgrammaticContent = pgTable("aeo_programmatic_content", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertAeoProgrammaticContentSchema = createInsertSchema(aeoProgrammaticContent).omit({
-  id: true,
-  lastGeneratedAt: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAeoProgrammaticContentSchema = createInsertSchema(aeoProgrammaticContent);
 export type InsertAeoProgrammaticContent = z.infer<typeof insertAeoProgrammaticContentSchema>;
 export type AeoProgrammaticContent = typeof aeoProgrammaticContent.$inferSelect;
 
@@ -4649,11 +4351,7 @@ export const socialCampaigns = pgTable("social_campaigns", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertSocialCampaignSchema = createInsertSchema(socialCampaigns).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertSocialCampaignSchema = createInsertSchema(socialCampaigns);
 export type InsertSocialCampaign = z.infer<typeof insertSocialCampaignSchema>;
 export type SocialCampaign = typeof socialCampaigns.$inferSelect;
 
@@ -4697,11 +4395,7 @@ export const socialPosts = pgTable("social_posts", {
   index("idx_social_posts_platform").on(table.platform),
 ]);
 
-export const insertSocialPostSchema = createInsertSchema(socialPosts).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertSocialPostSchema = createInsertSchema(socialPosts);
 export type InsertSocialPost = z.infer<typeof insertSocialPostSchema>;
 export type SocialPost = typeof socialPosts.$inferSelect;
 
@@ -4731,10 +4425,7 @@ export const socialAnalytics = pgTable("social_analytics", {
   periodEnd: timestamp("period_end"),
 });
 
-export const insertSocialAnalyticsSchema = createInsertSchema(socialAnalytics).omit({
-  id: true,
-  fetchedAt: true,
-});
+export const insertSocialAnalyticsSchema = createInsertSchema(socialAnalytics);
 export type InsertSocialAnalytics = z.infer<typeof insertSocialAnalyticsSchema>;
 export type SocialAnalytics = typeof socialAnalytics.$inferSelect;
 
@@ -4764,11 +4455,7 @@ export const socialCredentials = pgTable("social_credentials", {
   uniqueIndex("idx_social_credentials_user_platform").on(table.userId, table.platform),
 ]);
 
-export const insertSocialCredentialSchema = createInsertSchema(socialCredentials).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertSocialCredentialSchema = createInsertSchema(socialCredentials);
 export type InsertSocialCredential = z.infer<typeof insertSocialCredentialSchema>;
 export type SocialCredential = typeof socialCredentials.$inferSelect;
 
@@ -4813,11 +4500,7 @@ export const liveChatConversations = pgTable("live_chat_conversations", {
   index("idx_live_chat_last_message").on(table.lastMessageAt),
 ]);
 
-export const insertLiveChatConversationSchema = createInsertSchema(liveChatConversations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertLiveChatConversationSchema = createInsertSchema(liveChatConversations);
 export type InsertLiveChatConversation = z.infer<typeof insertLiveChatConversationSchema>;
 export type LiveChatConversation = typeof liveChatConversations.$inferSelect;
 
@@ -4835,10 +4518,7 @@ export const liveChatMessages = pgTable("live_chat_messages", {
   index("idx_live_chat_messages_created").on(table.createdAt),
 ]);
 
-export const insertLiveChatMessageSchema = createInsertSchema(liveChatMessages).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertLiveChatMessageSchema = createInsertSchema(liveChatMessages);
 export type InsertLiveChatMessage = z.infer<typeof insertLiveChatMessageSchema>;
 export type LiveChatMessage = typeof liveChatMessages.$inferSelect;
 
@@ -4915,12 +4595,7 @@ export const surveys = pgTable("surveys", {
   index("idx_surveys_author").on(table.authorId),
 ]);
 
-export const insertSurveySchema = createInsertSchema(surveys).omit({
-  id: true,
-  responseCount: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertSurveySchema = createInsertSchema(surveys);
 export type InsertSurvey = z.infer<typeof insertSurveySchema>;
 export type Survey = typeof surveys.$inferSelect;
 
@@ -4948,11 +4623,7 @@ export const surveyResponses = pgTable("survey_responses", {
   index("idx_survey_responses_created").on(table.createdAt),
 ]);
 
-export const insertSurveyResponseSchema = createInsertSchema(surveyResponses).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertSurveyResponseSchema = createInsertSchema(surveyResponses);
 export type InsertSurveyResponse = z.infer<typeof insertSurveyResponseSchema>;
 export type SurveyResponse = typeof surveyResponses.$inferSelect;
 
@@ -4978,11 +4649,7 @@ export const aeoAbTests = pgTable("aeo_ab_tests", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertAeoAbTestSchema = createInsertSchema(aeoAbTests).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAeoAbTestSchema = createInsertSchema(aeoAbTests);
 export type InsertAeoAbTest = z.infer<typeof insertAeoAbTestSchema>;
 export type AeoAbTest = typeof aeoAbTests.$inferSelect;
 
@@ -5003,11 +4670,7 @@ export const aeoSchemaEnhancements = pgTable("aeo_schema_enhancements", {
   index("IDX_aeo_schema_type").on(table.schemaType),
 ]);
 
-export const insertAeoSchemaEnhancementSchema = createInsertSchema(aeoSchemaEnhancements).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAeoSchemaEnhancementSchema = createInsertSchema(aeoSchemaEnhancements);
 export type InsertAeoSchemaEnhancement = z.infer<typeof insertAeoSchemaEnhancementSchema>;
 export type AeoSchemaEnhancement = typeof aeoSchemaEnhancements.$inferSelect;
 
@@ -5078,15 +4741,7 @@ export const referralCodes = pgTable("referral_codes", {
   index("idx_referral_codes_active").on(table.isActive),
 ]);
 
-export const insertReferralCodeSchema = createInsertSchema(referralCodes).omit({
-  id: true,
-  totalClicks: true,
-  totalSignups: true,
-  totalConversions: true,
-  totalCommission: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertReferralCodeSchema = createInsertSchema(referralCodes);
 export type InsertReferralCode = z.infer<typeof insertReferralCodeSchema>;
 export type ReferralCode = typeof referralCodes.$inferSelect;
 
@@ -5125,12 +4780,7 @@ export const referrals = pgTable("referrals", {
   index("idx_referrals_created").on(table.createdAt),
 ]);
 
-export const insertReferralSchema = createInsertSchema(referrals).omit({
-  id: true,
-  convertedAt: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertReferralSchema = createInsertSchema(referrals);
 export type InsertReferral = z.infer<typeof insertReferralSchema>;
 export type Referral = typeof referrals.$inferSelect;
 
@@ -5152,13 +4802,7 @@ export const referralCommissions = pgTable("referral_commissions", {
   index("idx_commissions_status").on(table.status),
 ]);
 
-export const insertReferralCommissionSchema = createInsertSchema(referralCommissions).omit({
-  id: true,
-  approvedAt: true,
-  paidAt: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertReferralCommissionSchema = createInsertSchema(referralCommissions);
 export type InsertReferralCommission = z.infer<typeof insertReferralCommissionSchema>;
 export type ReferralCommission = typeof referralCommissions.$inferSelect;
 
@@ -5443,10 +5087,7 @@ export const octopusJobs = pgTable("octopus_jobs", {
   index("IDX_octopus_jobs_input_hash").on(table.inputHash),
 ]);
 
-export const insertOctopusJobSchema = createInsertSchema(octopusJobs).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertOctopusJobSchema = createInsertSchema(octopusJobs);
 
 export type OctopusJobRecord = typeof octopusJobs.$inferSelect;
 export type InsertOctopusJob = z.infer<typeof insertOctopusJobSchema>;
@@ -5649,10 +5290,7 @@ export const tagDefinitions = pgTable("tag_definitions", {
   index("IDX_tag_definitions_destination").on(table.destinationId),
 ]);
 
-export const insertTagDefinitionSchema = createInsertSchema(tagDefinitions).omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTagDefinitionSchema = createInsertSchema(tagDefinitions);
 export type TagDefinition = typeof tagDefinitions.$inferSelect;
 export type InsertTagDefinition = z.infer<typeof insertTagDefinitionSchema>;
 
@@ -5672,10 +5310,7 @@ export const entityTags = pgTable("entity_tags", {
   uniqueIndex("IDX_entity_tags_unique").on(table.entityType, table.entityId, table.tagId),
 ]);
 
-export const insertEntityTagSchema = createInsertSchema(entityTags).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertEntityTagSchema = createInsertSchema(entityTags);
 export type EntityTag = typeof entityTags.$inferSelect;
 export type InsertEntityTag = z.infer<typeof insertEntityTagSchema>;
 
@@ -5700,11 +5335,7 @@ export const entityPlacements = pgTable("entity_placements", {
   // to avoid PostgreSQL NULL handling issues in unique indexes
 ]);
 
-export const insertEntityPlacementSchema = createInsertSchema(entityPlacements).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertEntityPlacementSchema = createInsertSchema(entityPlacements);
 export type EntityPlacement = typeof entityPlacements.$inferSelect;
 export type InsertEntityPlacement = z.infer<typeof insertEntityPlacementSchema>;
 
@@ -5836,11 +5467,7 @@ export const imageUsage = pgTable("image_usage", {
   uniqueIndex("IDX_image_usage_unique").on(table.assetId, table.pageId, table.requestedRole),
 ]);
 
-export const insertImageUsageSchema = createInsertSchema(imageUsage).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertImageUsageSchema = createInsertSchema(imageUsage);
 export type ImageUsage = typeof imageUsage.$inferSelect;
 export type InsertImageUsage = z.infer<typeof insertImageUsageSchema>;
 
@@ -5880,11 +5507,7 @@ export const helpCategories = pgTable("help_categories", {
   uniqueIndex("IDX_help_categories_slug_locale").on(table.slug, table.locale),
 ]);
 
-export const insertHelpCategorySchema = createInsertSchema(helpCategories).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHelpCategorySchema = createInsertSchema(helpCategories);
 export type HelpCategory = typeof helpCategories.$inferSelect;
 export type InsertHelpCategory = z.infer<typeof insertHelpCategorySchema>;
 
@@ -5923,11 +5546,7 @@ export const webhookOutbox = pgTable("webhook_outbox", {
   index("IDX_webhook_outbox_locked").on(table.lockedUntil),
 ]);
 
-export const insertWebhookOutboxSchema = createInsertSchema(webhookOutbox).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertWebhookOutboxSchema = createInsertSchema(webhookOutbox);
 export type InsertWebhookOutbox = z.infer<typeof insertWebhookOutboxSchema>;
 export type WebhookOutbox = typeof webhookOutbox.$inferSelect;
 
@@ -5946,9 +5565,7 @@ export const webhookDeliveries = pgTable("webhook_deliveries", {
   index("IDX_webhook_deliveries_sent").on(table.sentAt),
 ]);
 
-export const insertWebhookDeliverySchema = createInsertSchema(webhookDeliveries).omit({
-  id: true,
-});
+export const insertWebhookDeliverySchema = createInsertSchema(webhookDeliveries);
 export type InsertWebhookDelivery = z.infer<typeof insertWebhookDeliverySchema>;
 export type WebhookDelivery = typeof webhookDeliveries.$inferSelect;
 
@@ -6282,12 +5899,7 @@ export const changePlans = pgTable("change_plans", {
   uniqueIndex("IDX_change_plans_idempotency").on(table.idempotencyKey),
 ]);
 
-export const insertChangePlanSchema = createInsertSchema(changePlans).omit({
-  
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertChangePlanSchema = createInsertSchema(changePlans);
  
 // Help Articles - individual help content
 export const helpArticles = pgTable("help_articles", {
@@ -6315,12 +5927,7 @@ export const helpArticles = pgTable("help_articles", {
   uniqueIndex("IDX_help_articles_slug_locale").on(table.slug, table.locale),
 ]);
 
-export const insertHelpArticleSchema = createInsertSchema(helpArticles).omit({
-  id: true,
-  viewCount: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHelpArticleSchema = createInsertSchema(helpArticles);
 export type HelpArticle = typeof helpArticles.$inferSelect;
 export type InsertHelpArticle = z.infer<typeof insertHelpArticleSchema>;
 
@@ -6374,11 +5981,7 @@ export const autonomyBudgets = pgTable("autonomy_budgets", {
   uniqueIndex("IDX_autonomy_budgets_unique").on(table.targetKey, table.period, table.periodStart),
 ]);
 
-export const insertAutonomyBudgetSchema = createInsertSchema(autonomyBudgets).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAutonomyBudgetSchema = createInsertSchema(autonomyBudgets);
 export type AutonomyBudget = typeof autonomyBudgets.$inferSelect;
 export type InsertAutonomyBudget = z.infer<typeof insertAutonomyBudgetSchema>;
 
@@ -6403,10 +6006,7 @@ export const autonomyDecisionLogs = pgTable("autonomy_decision_logs", {
   index("IDX_autonomy_decisions_created").on(table.createdAt),
 ]);
 
-export const insertAutonomyDecisionLogSchema = createInsertSchema(autonomyDecisionLogs).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAutonomyDecisionLogSchema = createInsertSchema(autonomyDecisionLogs);
 export type AutonomyDecisionLog = typeof autonomyDecisionLogs.$inferSelect;
 export type InsertAutonomyDecisionLog = z.infer<typeof insertAutonomyDecisionLogSchema>;
 
@@ -6431,10 +6031,7 @@ export const autonomyPolicies = pgTable("autonomy_policies", {
   index("IDX_autonomy_policies_priority").on(table.priority),
 ]);
 
-export const insertAutonomyPolicySchema = createInsertSchema(autonomyPolicies).omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertAutonomyPolicySchema = createInsertSchema(autonomyPolicies);
 export type AutonomyPolicy = typeof autonomyPolicies.$inferSelect;
 export type InsertAutonomyPolicy = z.infer<typeof insertAutonomyPolicySchema>;
 
@@ -6624,10 +6221,7 @@ export const changePlanItems = pgTable("change_plan_items", {
   index("IDX_change_plan_items_status").on(table.status),
 ]);
 
-export const insertChangePlanItemSchema = createInsertSchema(changePlanItems).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertChangePlanItemSchema = createInsertSchema(changePlanItems);
 export type ChangePlanItem = typeof changePlanItems.$inferSelect;
 export type InsertChangePlanItem = z.infer<typeof insertChangePlanItemSchema>;
 
@@ -6656,10 +6250,7 @@ export const changeExecutions = pgTable("change_executions", {
   uniqueIndex("IDX_change_executions_idempotency").on(table.idempotencyKey),
 ]);
 
-export const insertChangeExecutionSchema = createInsertSchema(changeExecutions).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertChangeExecutionSchema = createInsertSchema(changeExecutions);
 export type ChangeExecution = typeof changeExecutions.$inferSelect;
 export type InsertChangeExecution = z.infer<typeof insertChangeExecutionSchema>;
 
@@ -6807,10 +6398,7 @@ export const metricSnapshots = pgTable("metric_snapshots", {
   index("IDX_metric_snapshots_period").on(table.periodStart, table.periodEnd),
 ]);
 
-export const insertMetricSnapshotSchema = createInsertSchema(metricSnapshots).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertMetricSnapshotSchema = createInsertSchema(metricSnapshots);
 export type InsertMetricSnapshot = z.infer<typeof insertMetricSnapshotSchema>;
 export type MetricSnapshot = typeof metricSnapshots.$inferSelect;
 
@@ -6860,12 +6448,7 @@ export const growthOpportunities = pgTable("growth_opportunities", {
   index("IDX_growth_opportunities_created").on(table.createdAt),
 ]);
 
-export const insertGrowthOpportunitySchema = createInsertSchema(growthOpportunities).omit({
-  id: true,
-  completedAt: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertGrowthOpportunitySchema = createInsertSchema(growthOpportunities);
 export type InsertGrowthOpportunity = z.infer<typeof insertGrowthOpportunitySchema>;
 export type GrowthOpportunity = typeof growthOpportunities.$inferSelect;
 
@@ -6911,11 +6494,7 @@ export const detectedAnomalies = pgTable("detected_anomalies", {
   index("IDX_detected_anomalies_entity").on(table.entityType, table.entityId),
 ]);
 
-export const insertDetectedAnomalySchema = createInsertSchema(detectedAnomalies).omit({
-  id: true,
-  acknowledgedAt: true,
-  detectedAt: true,
-});
+export const insertDetectedAnomalySchema = createInsertSchema(detectedAnomalies);
 export type InsertDetectedAnomaly = z.infer<typeof insertDetectedAnomalySchema>;
 export type DetectedAnomaly = typeof detectedAnomalies.$inferSelect;
 
@@ -6958,10 +6537,7 @@ export const recommendationExplanations = pgTable("recommendation_explanations",
   index("IDX_explanations_created").on(table.createdAt),
 ]);
 
-export const insertRecommendationExplanationSchema = createInsertSchema(recommendationExplanations).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertRecommendationExplanationSchema = createInsertSchema(recommendationExplanations);
 export type InsertRecommendationExplanation = z.infer<typeof insertRecommendationExplanationSchema>;
 export type RecommendationExplanation = typeof recommendationExplanations.$inferSelect;
 
@@ -7012,11 +6588,7 @@ export const dashboardConfigurations = pgTable("dashboard_configurations", {
   index("IDX_dashboard_configs_role").on(table.role),
 ]);
 
-export const insertDashboardConfigurationSchema = createInsertSchema(dashboardConfigurations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertDashboardConfigurationSchema = createInsertSchema(dashboardConfigurations);
 export type InsertDashboardConfiguration = z.infer<typeof insertDashboardConfigurationSchema>;
 export type DashboardConfiguration = typeof dashboardConfigurations.$inferSelect;
 
@@ -7057,11 +6629,7 @@ export const traviDistricts = pgTable("travi_districts", {
   uniqueIndex("IDX_travi_districts_city_slug").on(table.city, table.slug),
 ]);
 
-export const insertTraviDistrictSchema = createInsertSchema(traviDistricts).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTraviDistrictSchema = createInsertSchema(traviDistricts);
 export type InsertTraviDistrict = z.infer<typeof insertTraviDistrictSchema>;
 export type TraviDistrict = typeof traviDistricts.$inferSelect;
 
@@ -7085,11 +6653,7 @@ export const tiqetsCities = pgTable("tiqets_cities", {
   index("IDX_tiqets_cities_active").on(table.isActive),
 ]);
 
-export const insertTiqetsCitySchema = createInsertSchema(tiqetsCities).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTiqetsCitySchema = createInsertSchema(tiqetsCities);
 export type InsertTiqetsCity = z.infer<typeof insertTiqetsCitySchema>;
 export type TiqetsCity = typeof tiqetsCities.$inferSelect;
 
@@ -7222,11 +6786,7 @@ export const tiqetsAttractions = pgTable("tiqets_attractions", {
   index("IDX_tiqets_attractions_seo_slug").on(table.seoSlug),
 ]);
 
-export const insertTiqetsAttractionSchema = createInsertSchema(tiqetsAttractions).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTiqetsAttractionSchema = createInsertSchema(tiqetsAttractions);
 export type InsertTiqetsAttraction = z.infer<typeof insertTiqetsAttractionSchema>;
 export type TiqetsAttraction = typeof tiqetsAttractions.$inferSelect;
 
@@ -7344,11 +6904,7 @@ export const traviProcessingJobs = pgTable("travi_processing_jobs", {
   index("IDX_travi_processing_jobs_type").on(table.jobType),
 ]);
 
-export const insertTraviProcessingJobSchema = createInsertSchema(traviProcessingJobs).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTraviProcessingJobSchema = createInsertSchema(traviProcessingJobs);
 export type InsertTraviProcessingJob = z.infer<typeof insertTraviProcessingJobSchema>;
 export type TraviProcessingJob = typeof traviProcessingJobs.$inferSelect;
 
@@ -7394,11 +6950,7 @@ export const traviApiUsage = pgTable("travi_api_usage", {
   index("IDX_travi_api_usage_date").on(table.date),
 ]);
 
-export const insertTraviApiUsageSchema = createInsertSchema(traviApiUsage).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTraviApiUsageSchema = createInsertSchema(traviApiUsage);
 export type InsertTraviApiUsage = z.infer<typeof insertTraviApiUsageSchema>;
 export type TraviApiUsage = typeof traviApiUsage.$inferSelect;
 
@@ -7428,10 +6980,7 @@ export const traviSystemAlerts = pgTable("travi_system_alerts", {
   index("IDX_travi_system_alerts_created").on(table.createdAt),
 ]);
 
-export const insertTraviSystemAlertSchema = createInsertSchema(traviSystemAlerts).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertTraviSystemAlertSchema = createInsertSchema(traviSystemAlerts);
 export type InsertTraviSystemAlert = z.infer<typeof insertTraviSystemAlertSchema>;
 export type TraviSystemAlert = typeof traviSystemAlerts.$inferSelect;
 
@@ -7450,11 +6999,7 @@ export const traviConfig = pgTable("travi_config", {
   uniqueIndex("IDX_travi_config_key").on(table.configKey),
 ]);
 
-export const insertTraviConfigSchema = createInsertSchema(traviConfig).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTraviConfigSchema = createInsertSchema(traviConfig);
 export type InsertTraviConfig = z.infer<typeof insertTraviConfigSchema>;
 export type TraviConfig = typeof traviConfig.$inferSelect;
 
@@ -7504,11 +7049,7 @@ export const travelAdvisories = pgTable("travel_advisories", {
   index("IDX_travel_advisories_severity").on(table.severity),
 ]);
 
-export const insertTravelAdvisorySchema = createInsertSchema(travelAdvisories).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertTravelAdvisorySchema = createInsertSchema(travelAdvisories);
 export type InsertTravelAdvisory = z.infer<typeof insertTravelAdvisorySchema>;
 export type TravelAdvisory = typeof travelAdvisories.$inferSelect;
 
@@ -7537,11 +7078,7 @@ export const healthAlerts = pgTable("health_alerts", {
   index("IDX_health_alerts_issued_date").on(table.issuedDate),
 ]);
 
-export const insertHealthAlertSchema = createInsertSchema(healthAlerts).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertHealthAlertSchema = createInsertSchema(healthAlerts);
 export type InsertHealthAlert = z.infer<typeof insertHealthAlertSchema>;
 export type HealthAlert = typeof healthAlerts.$inferSelect;
 
@@ -7573,11 +7110,7 @@ export const destinationEvents = pgTable("destination_events", {
   index("IDX_destination_events_featured").on(table.featured),
 ]);
 
-export const insertDestinationEventSchema = createInsertSchema(destinationEvents).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertDestinationEventSchema = createInsertSchema(destinationEvents);
 export type InsertDestinationEvent = z.infer<typeof insertDestinationEventSchema>;
 export type DestinationEvent = typeof destinationEvents.$inferSelect;
 
@@ -7611,10 +7144,7 @@ export const visaRequirements = pgTable("visa_requirements", {
   uniqueIndex("IDX_visa_requirements_passport_destination").on(table.passportCountryCode, table.destinationCountryCode),
 ]);
 
-export const insertVisaRequirementSchema = createInsertSchema(visaRequirements).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertVisaRequirementSchema = createInsertSchema(visaRequirements);
 export type InsertVisaRequirement = z.infer<typeof insertVisaRequirementSchema>;
 export type VisaRequirement = typeof visaRequirements.$inferSelect;
 
