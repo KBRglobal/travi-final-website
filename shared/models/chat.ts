@@ -18,12 +18,12 @@ export const messages = pgTable("messages", {
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({
-  id: true,
+  id: undefined,
   createdAt: true,
 });
 
 export const insertMessageSchema = createInsertSchema(messages).omit({
-  id: true,
+  id: undefined,
   createdAt: true,
 });
 

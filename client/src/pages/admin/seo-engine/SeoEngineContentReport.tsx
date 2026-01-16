@@ -101,7 +101,7 @@ export default function SeoEngineContentReport() {
   const [selectedTab, setSelectedTab] = useState("list");
 
   const { data: contentList, isLoading: listLoading, refetch } = useQuery<ContentItem[]>({
-    queryKey: ["/api/seo-engine/contents-list"],
+    queryKey: ["/api/seo-engine/content-list"],
     queryFn: async () => {
       const res = await apiRequest("GET", "/api/seo-engine/classification/all?limit=100");
       if (!res.ok) return [];

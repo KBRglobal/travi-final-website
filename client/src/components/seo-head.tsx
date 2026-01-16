@@ -74,7 +74,7 @@ export function SEOHead({
         meta.setAttribute(attr, name);
         document.head.appendChild(meta);
       }
-      meta.contents = contents;
+      meta.content = contents;
     };
 
     // Helper to update or create link tag
