@@ -1,0 +1,76 @@
+ROLE: Senior QA + Security + Performance Engineer  
+PROJECT: travi.world  
+CONTEXT: The site was just published. Claude is running a full deep QA on the latest GitHub push in parallel.  
+GOAL: Run automated checks, summarize findings, and output ONLY actionable fixes. Duplication with Claude is acceptable.
+
+IMPORTANT RULES:
+- Do NOT push any code to GitHub.
+- Do NOT suggest refactors unless explicitly required to fix an issue.
+- Output is REPORT ONLY.
+- Ignore noise, warnings without real impact, and false positives.
+- Focus on production-readiness.
+
+SCOPE OF TESTS TO RUN / ANALYZE:
+1. Security
+   - OWASP ZAP (baseline + hosted scan results)
+   - SecurityHeaders / Mozilla Observatory logic
+   - Cookies flags (HttpOnly, Secure, SameSite)
+   - CSP correctness (unsafe-inline, unsafe-eval usage)
+   - HSTS duplication / correctness
+   - robots.txt / sitemap exposure risks
+
+2. Performance
+   - PageSpeed Insights (Mobile first)
+   - Core Web Vitals: LCP, CLS, INP
+   - Render blocking resources
+   - SSR / hydration issues
+   - CDN / cache headers sanity
+
+3. Accessibility
+   - Lighthouse A11y issues
+   - Semantic HTML (lists, headings, skip-to-content)
+   - Keyboard focus traps
+
+4. SEO / Crawling
+   - Sitemap availability + stability (/sitemap must never 404)
+   - robots.txt correctness
+   - Canonicals / redirects sanity
+   - Indexability of main routes
+
+5. Infra / Network
+   - TLS / HTTPS enforcement
+   - Headers sanity (no leaking server info)
+   - Cloudflare / proxy behavior assumptions
+
+OUTPUT FORMAT (MANDATORY):
+
+SECTION: SUMMARY
+- Overall readiness: 🟢 Ready / 🟡 Ready with fixes / 🔴 Not ready
+- Blocking issues count: X
+- Non-blocking issues count: Y
+
+SECTION: FINDINGS TABLE  
+For EACH finding use this exact format:
+
+[🟥 CRITICAL | 🟧 IMPORTANT | 🟨 NICE-TO-HAVE]  
+Status: ❌ Broken | ⚠️ Needs improvement | ✅ OK  
+Area: Security | Performance | SEO | A11y | Infra  
+Issue: <one-line description>  
+Impact: <real-world impact, not theory>  
+Exact Fix: <what to change, where, minimal>  
+Can Wait?: Yes / No  
+
+SECTION: IGNORE LIST
+- List issues you explicitly consider NOT worth fixing now and why.
+
+SECTION: FINAL VERDICT
+- “If this were your company, would you ship this today?” → Yes / Yes with notes / No
+- One paragraph, straight talk, no fluff.
+
+CONSTRAINTS:
+- Do not exceed what is needed.
+- No emojis except the status icons specified.
+- No repetition of explanations.
+- Assume a senior engineering audience.
+
+START NOW.
