@@ -202,14 +202,15 @@ const DESTINATION_DATA: Record<string, {
 interface SSRRenderOptions {
   locale?: Locale;
   path: string;
+  searchParams?: URLSearchParams;
 }
 
 /**
  * Main SSR render function - routes to appropriate renderer
  * Note: The path should already be normalized (locale stripped) by ssr-middleware
  */
-export async function renderSSR(path: string, locale: Locale = "en"): Promise<{ html: string; status: number; redirect?: string }> {
-  const options: SSRRenderOptions = { locale, path };
+export async function renderSSR(path: string, locale: Locale = "en", searchParams?: URLSearchParams): Promise<{ html: string; status: number; redirect?: string }> {
+  const options: SSRRenderOptions = { locale, path, searchParams };
   
   // Normalize path - ensure it starts with / and handle empty paths
   // Do NOT strip locale here - middleware already handles that
@@ -612,13 +613,31 @@ async function renderContentPage(
 }
 
 /**
- * Render category listing page
+ * Render category listing page with pagination support for attractions
  */
 async function renderCategoryPage(
   contentType: string,
   options: SSRRenderOptions
 ): Promise<{ html: string; status: number }> {
-  const { locale = "en" } = options;
+  const { locale = "en", searchParams } = options;
+  
+  // Pagination constants
+  const ITEMS_PER_PAGE = 50;
+  
+  // Parse page number from query params (only for attractions)
+  let currentPage = 1;
+  let totalPages = 1;
+  let totalCount = 0;
+  
+  if (contentType === "attraction" && searchParams) {
+    const pageParam = searchParams.get("page");
+    if (pageParam) {
+      const parsed = parseInt(pageParam, 10);
+      if (!isNaN(parsed) && parsed >= 1) {
+        currentPage = parsed;
+      }
+    }
+  }
   
   // Normalized content items for rendering
   interface NormalizedItem {
@@ -628,9 +647,25 @@ async function renderCategoryPage(
   }
   let normalizedItems: NormalizedItem[] = [];
   
-  // For attractions, use tiqets_attractions table which has actual data
+  // For attractions, use tiqets_attractions table which has actual data (with pagination)
   if (contentType === "attraction") {
     try {
+      // Get total count for pagination
+      const countResult = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(tiqetsAttractions);
+      
+      totalCount = countResult[0]?.count || 0;
+      totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+      
+      // Ensure current page is valid
+      if (currentPage > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+      }
+      
+      // Calculate offset
+      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+      
       const tiqetsResults = await db
         .select({
           slug: tiqetsAttractions.slug,
@@ -642,7 +677,8 @@ async function renderCategoryPage(
         })
         .from(tiqetsAttractions)
         .orderBy(desc(tiqetsAttractions.updatedAt))
-        .limit(50);
+        .limit(ITEMS_PER_PAGE)
+        .offset(offset);
       
       normalizedItems = tiqetsResults.map(item => ({
         title: item.title || item.slug,
@@ -653,7 +689,7 @@ async function renderCategoryPage(
       console.error(`[SSR] Error fetching tiqets attractions:`, error);
     }
   } else {
-    // For other content types, directly query contents table
+    // For other content types, directly query contents table (no pagination for now)
     try {
       const contentResults = await db
         .select({
@@ -683,7 +719,11 @@ async function renderCategoryPage(
     }
   }
   
-  const urlPath = `/${contentType}s`;
+  const baseUrlPath = `/${contentType}s`;
+  // For attractions with pagination, include page in canonical URL (except page 1)
+  const urlPath = contentType === "attraction" && currentPage > 1 
+    ? `${baseUrlPath}?page=${currentPage}` 
+    : baseUrlPath;
   
   const titles: Record<string, string> = {
     article: "Travel Articles & Guides",
@@ -700,10 +740,19 @@ async function renderCategoryPage(
   };
 
   const title = titles[contentType] || `${capitalizeFirst(contentType)}s`;
-  const description = descriptions[contentType] || `Browse all ${contentType}s on TRAVI.`;
+  // Add page number to description for SEO if paginated
+  const baseDescription = descriptions[contentType] || `Browse all ${contentType}s on TRAVI.`;
+  const description = contentType === "attraction" && currentPage > 1
+    ? `${baseDescription} Page ${currentPage} of ${totalPages}.`
+    : baseDescription;
+  
+  // Page title with pagination
+  const pageTitle = contentType === "attraction" && currentPage > 1
+    ? `${title} - Page ${currentPage} | ${SITE_NAME}`
+    : `${title} | ${SITE_NAME}`;
 
   const metaTags = generateMetaTags({
-    title: `${title} | ${SITE_NAME}`,
+    title: pageTitle,
     description,
     url: getCanonicalUrl(urlPath, locale),
     type: "website",
@@ -723,7 +772,7 @@ async function renderCategoryPage(
       type: "BreadcrumbList",
       breadcrumbs: [
         { name: "Home", url: getCanonicalUrl("/", locale) },
-        { name: title, url: getCanonicalUrl(urlPath, locale) },
+        { name: title, url: getCanonicalUrl(baseUrlPath, locale) },
       ],
     }),
     listItems.length > 0 ? generateStructuredData({
@@ -732,6 +781,21 @@ async function renderCategoryPage(
       locale,
     }) : "",
   ].filter(Boolean).join("\n");
+
+  // Generate pagination HTML for attractions
+  const paginationHtml = contentType === "attraction" && totalPages > 1 ? `
+          <nav aria-label="Pagination">
+            ${currentPage > 1 
+              ? `<a href="${getCanonicalUrl(`${baseUrlPath}${currentPage === 2 ? '' : `?page=${currentPage - 1}`}`, locale)}" rel="prev">Previous</a>`
+              : `<span>Previous</span>`
+            }
+            <span>Page ${currentPage} of ${totalPages}</span>
+            ${currentPage < totalPages 
+              ? `<a href="${getCanonicalUrl(`${baseUrlPath}?page=${currentPage + 1}`, locale)}" rel="next">Next</a>`
+              : `<span>Next</span>`
+            }
+          </nav>
+  ` : "";
 
   const html = wrapInHtml({
     metaTags,
@@ -752,8 +816,8 @@ async function renderCategoryPage(
       
       <main>
         <section aria-labelledby="page-heading">
-          <h1 id="page-heading">${title}</h1>
-          <p>${description}</p>
+          <h1 id="page-heading">${title}${contentType === "attraction" && currentPage > 1 ? ` - Page ${currentPage}` : ""}</h1>
+          <p>${baseDescription}</p>
           
           ${normalizedItems.length > 0 ? `
           <ul class="content-list">
@@ -766,6 +830,7 @@ async function renderCategoryPage(
               </li>
             `).join("")}
           </ul>
+          ${paginationHtml}
           ` : `<p>No ${contentType}s found.</p>`}
         </section>
       </main>
