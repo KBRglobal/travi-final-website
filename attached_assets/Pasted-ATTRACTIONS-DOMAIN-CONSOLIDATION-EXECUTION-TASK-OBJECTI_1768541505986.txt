@@ -1,0 +1,84 @@
+ATTRACTIONS DOMAIN CONSOLIDATION — EXECUTION TASK
+
+OBJECTIVE
+Make the database the ONLY source of truth for the Attractions domain.
+Eliminate all hardcoded destination arrays across client, server, and scripts.
+
+SCOPE (MANDATORY)
+
+1) API — SINGLE SOURCE OF TRUTH
+Create endpoint:
+GET /api/public/attraction-destinations
+
+SQL (example):
+SELECT
+  d.slug,
+  d.name,
+  d.country,
+  COUNT(t.id) AS count
+FROM destinations d
+JOIN tiqets_attractions t ON t.city_slug = d.slug
+WHERE d.is_active = true
+GROUP BY d.slug, d.name, d.country
+ORDER BY count DESC;
+
+Response:
+{
+  destinations: [
+    { slug, name, country, count, image }
+  ],
+  totalAttractions: 3408
+}
+
+Rules:
+- NO hardcoded arrays
+- Slugs come from destinations table only
+- Counts come from tiqets_attractions only
+
+2) HUB PAGE — /attractions
+File: client/src/pages/attractions.tsx
+- DELETE any DESTINATIONS constant
+- Fetch from /api/public/attraction-destinations
+- Render destination cards dynamically
+- Counts must exactly match DB
+
+3) LISTING PAGE — /attractions/:destination
+File: client/src/pages/destination-attractions.tsx
+- DELETE DESTINATION_NAMES
+- Route must be /attractions/:destination (no /list)
+- Fetch destination meta from destinations API/table
+- Fetch attractions from /api/public/tiqets/attractions?city=slug
+- DO NOT infer destination name from content rows
+
+4) SCRAPER
+File: scripts/scrape-attractions-v2.ts
+- Either:
+  a) Validate whitelist against destinations table
+  OR
+  b) Read active destinations directly from DB
+- No independent hardcoded city lists allowed
+
+5) SITEMAP + SSR
+- Sitemap must include:
+  /attractions
+  /attractions/:destination (ALL destinations)
+  /attractions?page=N (pagination)
+- SSR remains paginated (50/page) with rel=prev/next
+- All pages must be crawlable
+
+6) CLEANUP
+- Remove ALL remaining hardcoded destination arrays
+- There must be exactly ONE definition of destinations: the database
+
+DELIVERABLE CHECKLIST
+- Zero hardcoded destinations anywhere
+- Hub, listings, sitemap counts identical
+- Adding/removing a destination in DB updates site automatically
+- No /list routes remain
+- Verified with Googlebot UA
+
+REPORT BACK
+Only after:
+- Hardcoding fully removed
+- Counts verified
+- Sitemap + SSR confirmed
