@@ -41,7 +41,7 @@ export interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageEl
   // Responsive images
   srcset?: string;
   sizes?: string;
-  imageType?: 'hero' | 'featured' | 'contents' | 'thumbnail' | 'gallery';
+  imageType?: 'hero' | 'featured' | 'content' | 'thumbnail' | 'gallery';
 
   // Fallback
   fallback?: string;
@@ -80,7 +80,7 @@ export function LazyImage({
   fetchPriority: fetchPriorityProp,
   srcset: srcsetProp,
   sizes: sizesProp,
-  imageType = 'contents',
+  imageType = 'content',
   fallback = "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop",
   aspectRatio = "auto",
   objectFit = "cover",
@@ -294,12 +294,12 @@ export function LazyImage({
       {/* Schema metadata (hidden) */}
       {showSchema && (
         <>
-          <meta itemProp="contentUrl" contents={src} />
-          <meta itemProp="name" contents={title || alt} />
-          <meta itemProp="description" contents={alt} />
-          {width && <meta itemProp="width" contents={String(width)} />}
-          {height && <meta itemProp="height" contents={String(height)} />}
-          {datePublished && <meta itemProp="datePublished" contents={datePublished} />}
+          <meta itemProp="contentUrl" content={src} />
+          <meta itemProp="name" content={title || alt} />
+          <meta itemProp="description" content={alt} />
+          {width && <meta itemProp="width" content={String(width)} />}
+          {height && <meta itemProp="height" content={String(height)} />}
+          {datePublished && <meta itemProp="datePublished" content={datePublished} />}
         </>
       )}
 

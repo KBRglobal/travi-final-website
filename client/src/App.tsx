@@ -696,12 +696,12 @@ function PublicRouter() {
       {/* Specific destination pages must come BEFORE the generic :slug route */}
       <Route path="/destinations/ras-al-khaimah" component={RasAlKhaimahPage} />
       <Route path="/destinations/:slug" component={DestinationPage} />
-      <Redirect path="/bangkok" to="/destinations/bangkok" />
-      <Redirect path="/paris" to="/destinations/paris" />
-      <Redirect path="/istanbul" to="/destinations/istanbul" />
-      <Redirect path="/london" to="/destinations/london" />
-      <Redirect path="/new-york" to="/destinations/new-york" />
-      <Redirect path="/singapore" to="/destinations/singapore" />
+      <Route path="/bangkok">{() => <Redirect to="/destinations/bangkok" />}</Route>
+      <Route path="/paris">{() => <Redirect to="/destinations/paris" />}</Route>
+      <Route path="/istanbul">{() => <Redirect to="/destinations/istanbul" />}</Route>
+      <Route path="/london">{() => <Redirect to="/destinations/london" />}</Route>
+      <Route path="/new-york">{() => <Redirect to="/destinations/new-york" />}</Route>
+      <Route path="/singapore">{() => <Redirect to="/destinations/singapore" />}</Route>
       <Route path="/test" component={TestPage} />
       <Route path="/" component={Homepage} />
       <Route component={NotFound} />
@@ -733,7 +733,7 @@ function App() {
                   <AdminLayout />
                 ) : isV2Route ? (
                   <GeographicProvider>
-                    <PublicRouterV2 />
+                    <PublicRouter />
                   </GeographicProvider>
                 ) : (
                   <LiveEditProvider>

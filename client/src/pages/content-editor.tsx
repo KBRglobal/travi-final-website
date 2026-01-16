@@ -2761,7 +2761,7 @@ export default function ContentEditor() {
                       metaTitle={metaTitle}
                       metaDescription={metaDescription}
                       primaryKeyword={primaryKeyword}
-                      contents={seoContentText}
+                      content={seoContentText}
                       headings={seoHeadings}
                       images={seoImages}
                     />
