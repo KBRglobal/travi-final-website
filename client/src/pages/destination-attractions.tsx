@@ -60,24 +60,14 @@ interface TiqetsApiResponse {
 
 const DESTINATION_HERO_IMAGES: Record<string, string> = {};
 
-const DESTINATION_NAMES: Record<string, { name: string; country: string }> = {
-  "dubai": { name: "Dubai", country: "United Arab Emirates" },
-  "abu-dhabi": { name: "Abu Dhabi", country: "United Arab Emirates" },
-  "london": { name: "London", country: "United Kingdom" },
-  "paris": { name: "Paris", country: "France" },
-  "new-york": { name: "New York", country: "United States" },
-  "tokyo": { name: "Tokyo", country: "Japan" },
-  "singapore": { name: "Singapore", country: "Singapore" },
-  "bangkok": { name: "Bangkok", country: "Thailand" },
-  "barcelona": { name: "Barcelona", country: "Spain" },
-  "rome": { name: "Rome", country: "Italy" },
-  "amsterdam": { name: "Amsterdam", country: "Netherlands" },
-  "hong-kong": { name: "Hong Kong", country: "China" },
-  "istanbul": { name: "Istanbul", country: "Turkey" },
-  "las-vegas": { name: "Las Vegas", country: "United States" },
-  "los-angeles": { name: "Los Angeles", country: "United States" },
-  "miami": { name: "Miami", country: "United States" }
-};
+interface DestinationMetadata {
+  slug: string;
+  name: string;
+  country: string;
+  image?: string;
+  summary?: string;
+  attractionCount?: number;
+}
 
 const DESTINATION_ANSWER_CAPSULES: Record<string, { question: string; answer: string }> = {};
 
@@ -207,10 +197,6 @@ const heroAnimationStyles = `
 `;
 
 function slugToCityName(slug: string): string {
-  const destinationInfo = DESTINATION_NAMES[slug];
-  if (destinationInfo) {
-    return destinationInfo.name;
-  }
   return slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
@@ -246,12 +232,16 @@ function inferCategory(title: string, venueName: string): string {
   return "experience";
 }
 
-function transformApiResponse(apiResponse: TiqetsApiResponse, slug: string): DestinationData | null {
+function transformApiResponse(
+  apiResponse: TiqetsApiResponse, 
+  slug: string,
+  destinationMeta: DestinationMetadata | null
+): DestinationData | null {
   if (!apiResponse || !apiResponse.attractions || apiResponse.attractions.length === 0) {
     return null;
   }
   
-  const destinationInfo = DESTINATION_NAMES[slug] || { 
+  const destinationInfo = destinationMeta || { 
     name: slugToCityName(slug), 
     country: "Unknown" 
   };
@@ -371,6 +361,16 @@ function DestinationAttractionsPage() {
 
   const cityName = destination ? slugToCityName(destination) : "";
   
+  const { data: destinationsData } = useQuery<DestinationMetadata[]>({
+    queryKey: ['/api/public/attraction-destinations'],
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const destinationMeta = useMemo(() => {
+    if (!destination || !destinationsData) return null;
+    return destinationsData.find(d => d.slug === destination) || null;
+  }, [destination, destinationsData]);
+  
   const { data: apiResponse, isLoading, error } = useQuery<TiqetsApiResponse>({
     queryKey: ['/api/public/tiqets/attractions', { city: cityName, limit: 50 }],
     queryFn: async () => {
@@ -386,8 +386,8 @@ function DestinationAttractionsPage() {
   
   const data = useMemo(() => {
     if (!destination || !apiResponse) return null;
-    return transformApiResponse(apiResponse, destination);
-  }, [destination, apiResponse]);
+    return transformApiResponse(apiResponse, destination, destinationMeta);
+  }, [destination, apiResponse, destinationMeta]);
 
   const filteredAttractions = useMemo(() => {
     if (!data) return [];
