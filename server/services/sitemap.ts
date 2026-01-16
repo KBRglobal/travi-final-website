@@ -1,5 +1,6 @@
-import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions } from "@shared/schema";
 import { storage } from "../storage";
+import { db } from "../db";
 
 const BASE_URL = process.env.BASE_URL || "https://travi.world";
 
@@ -312,6 +313,37 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     }
   } catch (error) {
     console.error("Error fetching contents for sitemap:", error);
+  }
+
+  // Tiqets attractions pages (English only for now)
+  if (locale === "en") {
+    try {
+      const attractions = await db.select({
+        seoSlug: tiqetsAttractions.seoSlug,
+        updatedAt: tiqetsAttractions.updatedAt,
+      }).from(tiqetsAttractions);
+
+      let addedCount = 0;
+      for (const attraction of attractions) {
+        if (attraction.seoSlug) {
+          const attractionPath = `/attractions/${attraction.seoSlug}`;
+          const lastmod = attraction.updatedAt
+            ? new Date(attraction.updatedAt).toISOString().split("T")[0]
+            : now;
+
+          urls.push({
+            loc: `${BASE_URL}${attractionPath}`,
+            lastmod,
+            changefreq: "weekly",
+            priority: 0.6,
+          });
+          addedCount++;
+        }
+      }
+      console.log(`Sitemap: Added ${addedCount} Tiqets attractions`);
+    } catch (error) {
+      console.error("Error fetching Tiqets attractions for sitemap:", error);
+    }
   }
 
   return urls;

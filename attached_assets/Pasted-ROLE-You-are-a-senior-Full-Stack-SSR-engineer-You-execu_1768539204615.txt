@@ -1,0 +1,149 @@
+ROLE
+You are a senior Full-Stack + SSR engineer.
+You execute, diagnose, and FIX. No speculation, no theory, no TODOs.
+
+================================
+PROBLEM STATEMENT (CONFIRMED)
+================================
+
+SSR is BROKEN on listing pages.
+
+Observed behavior:
+- / (homepage) ✅ shows content
+- /attractions ❌ "No attractions found"
+- /hotels ❌ "No hotels found"
+- /articles ❌ "No articles found"
+
+This is NOT a content issue.
+This is an SSR / data-fetching / hydration issue.
+
+================================
+WHAT IS ALREADY KNOWN
+================================
+
+1. Homepage works because:
+   - Data is hardcoded OR
+   - Pre-fetched at build time OR
+   - Uses different data-loading logic
+
+2. Listing pages (/attractions, /hotels, /articles):
+   - Rely on dynamic database queries
+   - SSR render returns EMPTY state
+   - Client-side hydration MAY later fix it (but SSR output is empty)
+
+3. This is unacceptable:
+   - SEO broken
+   - Crawlers see empty pages
+   - HTML response is wrong
+
+================================
+YOUR MISSION
+================================
+
+Identify EXACTLY why SSR data loading fails on listing pages
+and FIX it end-to-end.
+
+NO GUESSING. TRACE THE EXECUTION.
+
+================================
+MANDATORY INVESTIGATION STEPS
+================================
+
+1. TRACE DATA FLOW (CRITICAL)
+
+For EACH listing page:
+- /attractions
+- /hotels
+- /articles
+
+You must trace:
+- getServerSideProps / loader / SSR entry
+- data fetch function
+- database call
+- returned props
+- render phase
+
+Answer explicitly:
+- Is the query executed during SSR? (YES/NO)
+- Does it return rows on the server? (YES/NO)
+- Does the component receive props? (YES/NO)
+
+================================
+
+2. VERIFY SERVER ENVIRONMENT
+
+Check during SSR:
+- DATABASE_URL exists
+- DB client is initialized server-side
+- No usage of `window`, `document`, or browser-only APIs
+- No conditional `if (typeof window !== "undefined")` blocking SSR fetch
+
+Log (server-side):
+- query execution
+- row count
+- errors
+
+================================
+
+3. IDENTIFY THE ROOT CAUSE (ONE OF THESE, NO OTHERS)
+
+You must conclusively determine which applies:
+
+A. SSR fetch function never runs  
+B. SSR fetch runs but DB query returns empty  
+C. SSR fetch runs but result is discarded  
+D. Hydration mismatch wipes SSR data  
+E. API route is called instead of direct DB access (BAD for SSR)  
+F. SSR is disabled for these routes unintentionally  
+
+Only ONE primary cause is acceptable.
+
+================================
+
+4. APPLY THE FIX (NOT A WORKAROUND)
+
+Depending on root cause:
+
+- If API is used → move DB query directly into SSR
+- If SSR disabled → explicitly enable SSR
+- If hydration wipes data → align initial state
+- If env missing → fix server config
+- If loader not wired → wire it properly
+
+The fix MUST:
+- Render full data in initial HTML
+- Work without JavaScript enabled
+- Show content in View Source
+
+================================
+
+5. VERIFICATION (MANDATORY)
+
+After fix, confirm ALL:
+
+- curl /attractions returns HTML with items
+- View Source shows rendered cards
+- No "No X found" in SSR HTML
+- Client hydration does NOT change content count
+- Lighthouse SEO sees content
+
+================================
+DELIVERABLE
+================================
+
+Return ONLY:
+
+SECTION: ROOT CAUSE  
+(one sentence, precise)
+
+SECTION: FIX APPLIED  
+(files + exact change)
+
+SECTION: VERIFICATION RESULTS  
+(bulleted, factual)
+
+NO explanations.
+NO future plans.
+NO questions.
+
+EXECUTE NOW.

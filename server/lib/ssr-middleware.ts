@@ -114,7 +114,10 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
   try {
     const { path, locale } = parsePathAndLocale(req.path);
     
-    const result = await renderSSR(path, locale);
+    // Pass query params to SSR renderer for pagination support
+    const searchParams = new URLSearchParams(req.query as Record<string, string>);
+    
+    const result = await renderSSR(path, locale, searchParams);
     
     // Handle redirects with proper HTTP headers
     if (result.redirect) {
