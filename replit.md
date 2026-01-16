@@ -74,7 +74,7 @@ Domain-based route modules in `server/routes/` using Router mounting pattern. Ce
 - **Image-Led Sections**: CMS-driven sections (Featured Attractions, Featured Areas, Featured Highlights) enforcing "No image = No section" rule, stored as JSONB.
 
 ### Navigation Architecture
-- **Global Navigation**: Destination-agnostic links (Destinations, Attractions, Hotels, Dining, Events, News).
+- **Global Navigation**: Destination-agnostic links (Destinations, Hotels, Attractions, Guides, News). Note: Dining and Things to Do removed from navigation (Jan 2026); /things-to-do redirects to /attractions.
 - **Dubai Sub-Navigation**: Secondary navigation for Dubai-specific content.
 - **Guards and Hooks**: `DubaiOnlyGuard` for access control, `useDestinationContext` hook.
 
