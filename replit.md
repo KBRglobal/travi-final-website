@@ -17,6 +17,20 @@ Preferred communication style: Simple, everyday language.
 - **SEO Focus**: Adherence to SEO best practices, including meta data, headings, linking, keyword integration, and a dedicated Dubai keyword database.
 - **Admin Panel Structure**: Organized into Core Content Management, Site Configuration, Automation, Monetization, Enterprise features, and Advanced Analytics.
 
+### Route Architecture (Sprint 1 - Jan 2026)
+Domain-based route modules in `server/routes/` using Router mounting pattern. Central registry at `server/routes/index.ts`:
+- **public-api.ts**: Public API (destinations, attractions, homepage config, surveys)
+- **admin-api.ts**: Admin API (logs, homepage CMS, auto-meta, hero slides)
+- **ai-api.ts**: AI content generation, image generation, SEO tools, plagiarism detection
+- **monetization-api.ts**: Affiliate links, partners, payouts management
+- **localization-api.ts**: Translations, locales, DeepL/Claude integration
+- **automation-api.ts**: Workflows, webhooks, A/B testing
+- **cms-api.ts**: Settings and homepage promotions
+- **content-routes.ts**: Content CRUD, versions, translations
+- **auth-routes.ts**: Authentication, TOTP 2FA, session security
+- **analytics-routes.ts**: Stats, content metrics, performance tracking
+- **newsletter-routes.ts**: Subscriptions, campaigns
+
 ### Technical Implementations
 - **Frontend**: React 18, TypeScript, Vite, Wouter, TanStack React Query, `@dnd-kit/sortable`.
 - **Backend**: Node.js, Express, TypeScript (ESM modules), RESTful APIs.
