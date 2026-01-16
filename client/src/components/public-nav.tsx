@@ -9,12 +9,12 @@ import { useLocale } from "@/lib/i18n/LocaleRouter";
 import { SiTiktok } from "react-icons/si";
 
 // Navigation items - used for both desktop and mobile, matching homepage design
+// TODO: Re-enable dining after data + UX is ready
+// TODO: Re-enable things-to-do after ingestion pipeline is complete
 const NAV_ITEMS = [
   { label: "Destinations", labelHe: "יעדים", href: "/destinations" },
   { label: "Hotels", labelHe: "מלונות", href: "/hotels" },
   { label: "Attractions", labelHe: "אטרקציות", href: "/attractions" },
-  { label: "Dining", labelHe: "מסעדות", href: "/dining" },
-  { label: "Things to Do", labelHe: "מה לעשות", href: "/things-to-do" },
   { label: "Guides", labelHe: "מדריכים", href: "/guides" },
   { label: "News", labelHe: "חדשות", href: "/news" },
 ];
@@ -43,11 +43,11 @@ interface NavMenu {
   items: NavItem[];
 }
 
+// TODO: Re-enable dining after data + UX is ready
 const fallbackNavLinks = [
   { href: "/attractions", label: "Attractions", labelHe: "אטרקציות", icon: "Camera" },
   { href: "/hotels", label: "Hotels", labelHe: "מלונות", icon: "Building2" },
   { href: "/districts", label: "Districts", labelHe: "שכונות", icon: "MapPin" },
-  { href: "/dining", label: "Restaurants", labelHe: "מסעדות", icon: "Utensils" },
   { href: "/shopping", label: "Shopping", labelHe: "קניות", icon: "ShoppingBag" },
   { href: "/news", label: "News", labelHe: "חדשות", icon: "Newspaper" },
 ];

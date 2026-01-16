@@ -530,8 +530,10 @@ const publicRoutes = [
   // Global category pages (destination-agnostic) - main navigation targets
   { path: "/hotels", component: HotelsPage },
   { path: "/hotels/:hotelId", component: HotelDetail },
-  { path: "/dining", component: GlobalDining },
-  { path: "/things-to-do", component: GlobalThingsToDo },
+  // TODO: Re-enable dining after data + UX is ready
+  // TODO: Re-enable things-to-do after ingestion pipeline is complete
+  // { path: "/dining", component: GlobalDining },
+  // { path: "/things-to-do", component: GlobalThingsToDo },
   { path: "/guides", component: TravelGuidesPage },
   { path: "/travel-guides", component: TravelGuidesPage },
   { path: "/travel-styles/:slug", component: TravelStyleArticle },
@@ -545,7 +547,8 @@ const publicRoutes = [
   // Category pages with location-specific logic handled internally or via sub-paths
   { path: "/attractions", component: Attractions },
   { path: "/attractions/list/:destination", component: DestinationAttractions },
-  { path: "/dining/list/:destination", component: DestinationDining },
+  // TODO: Re-enable dining after data + UX is ready
+  // { path: "/dining/list/:destination", component: DestinationDining },
   // Blueprint URL: /:destination/attractions/:slug (e.g., /dubai/attractions/burj-khalifa)
   { path: "/:destination/attractions/:slug", component: TiqetsAttractionDetail },
   // Fallback: old URL format for backwards compatibility
@@ -554,7 +557,8 @@ const publicRoutes = [
   // Detail pages for direct contents access
   { path: "/attractions/:slug", component: PublicContentViewer },
   { path: "/hotels/:slug", component: PublicContentViewer },
-  { path: "/dining/:slug", component: PublicContentViewer },
+  // TODO: Re-enable dining after data + UX is ready
+  // { path: "/dining/:slug", component: PublicContentViewer },
   // Districts now handled by DistrictsGateway and specific district pages below
   { path: "/transport/:slug", component: PublicContentViewer },
   { path: "/articles", component: PublicArticles },

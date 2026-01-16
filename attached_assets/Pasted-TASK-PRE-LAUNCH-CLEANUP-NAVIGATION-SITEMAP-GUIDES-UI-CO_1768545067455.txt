@@ -1,0 +1,69 @@
+TASK: PRE-LAUNCH CLEANUP – NAVIGATION, SITEMAP & GUIDES UI
+
+CONTEXT
+We are preparing for production launch.
+Some sections are incomplete or inconsistent and must be temporarily removed or adjusted.
+
+CURRENT ISSUES
+1. /dining – empty page (no data, no UX)
+2. /things-to-do – empty page (no data, no UX)
+3. /guides – has content but visual style is inconsistent with the rest of the site
+4. /news – missing the main top navigation (PublicNav)
+
+GOAL
+Ship a clean, consistent, crawl-safe production version.
+Only expose sections that are ready.
+
+REQUIRED ACTIONS (IN ORDER)
+
+1. TEMPORARILY DISABLE INCOMPLETE SECTIONS
+- Remove /dining and /things-to-do from:
+  - Main navigation (PublicNav)
+  - Footer links
+  - XML sitemap
+  - Any internal links
+- Do NOT delete code or routes – only hide/exclude them
+- Add a TODO comment for future re-enable
+
+2. GUIDES PAGE DESIGN ALIGNMENT (/guides)
+- Keep content and structure
+- Fix visual inconsistencies to match the rest of the site:
+  - Background: match standard light theme (no heavy dark overlays)
+  - Typography: same font scale, weights, and colors as /destinations & /attractions
+  - Buttons: use primary / secondary button styles used elsewhere
+  - Remove experimental gradients / effects that don’t exist on other pages
+- Goal: Guides should feel like a first-class page, not a separate product
+
+3. NEWS PAGE NAVIGATION
+- Add the standard <PublicNav /> to /news
+- Ensure active menu state works correctly
+- Footer already exists – only top nav is missing
+
+4. SITEMAP UPDATE
+- Remove:
+  - /dining
+  - /things-to-do
+- Keep:
+  - /destinations
+  - /hotels
+  - /attractions
+  - /guides
+  - /news
+- Verify sitemap builds without warnings
+
+5. FINAL VERIFICATION
+- Manual check:
+  - No dead links in nav
+  - No empty pages accessible
+  - Visual consistency across main sections
+- Do NOT add new features
+- Do NOT refactor unrelated code
+
+DELIVERABLE
+- One clean commit
+- Short summary of what was removed vs. fixed
+- Confirmation that site is ready for publish
+
+IMPORTANT
+This is a polish + scope-control task, not new development.
+Speed and correctness over perfection.

@@ -126,8 +126,10 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
     { path: "/attractions", priority: 0.9, changefreq: "daily" as const },
     { path: "/hotels", priority: 0.9, changefreq: "daily" as const },
-    { path: "/dining", priority: 0.8, changefreq: "daily" as const },
-    { path: "/things-to-do", priority: 0.8, changefreq: "daily" as const },
+    // TODO: Re-enable dining after data + UX is ready
+    // TODO: Re-enable things-to-do after ingestion pipeline is complete
+    // { path: "/dining", priority: 0.8, changefreq: "daily" as const },
+    // { path: "/things-to-do", priority: 0.8, changefreq: "daily" as const },
     { path: "/guides", priority: 0.8, changefreq: "daily" as const },
     { path: "/districts", priority: 0.8, changefreq: "weekly" as const },
     { path: "/articles", priority: 0.8, changefreq: "daily" as const },
