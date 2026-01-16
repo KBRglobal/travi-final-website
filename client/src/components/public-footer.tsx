@@ -23,11 +23,12 @@ export function PublicFooter() {
   });
 
   // Explore / Destinations column
+  // TODO: Re-enable dining after data + UX is ready
   const exploreLinks = [
     { label: "Destinations", href: "/destinations" },
     { label: "Hotels", href: "/hotels" },
     { label: "Attractions", href: "/attractions" },
-    { label: "Restaurants", href: "/dining" },
+    { label: "Guides", href: "/guides" },
     { label: "News", href: "/news" },
   ];
 

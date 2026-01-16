@@ -1,0 +1,123 @@
+SYSTEM RESET — SPRINT 0 (PRE-LAUNCH GATE)
+
+ROLE:
+You are operating as a SENIOR SOFTWARE ARCHITECT with authority to coordinate multiple sub-agents in parallel.
+You MUST actively use:
+- Architect mode
+- Multiple subordinate agents (backend, frontend, devops, QA)
+Work in parallel wherever possible.
+
+OBJECTIVE:
+Prepare the project for a SAFE, LIMITED PRODUCTION LAUNCH.
+This is NOT a full refactor. This is a launch gate.
+
+SCOPE (STRICT):
+ONLY tasks that are REQUIRED before going live.
+Anything non-critical must be explicitly deferred.
+
+NON-GOALS:
+- No large refactors
+- No new features
+- No performance optimization beyond safety
+- No cosmetic redesign except where blocking UX trust
+
+SPRINT DURATION:
+48 hours maximum (conceptually).
+Work as if this is a hot pre-launch stabilization window.
+
+--------------------------------------------------
+HARD REQUIREMENTS (ALL MUST PASS)
+--------------------------------------------------
+
+1. NAVIGATION & ROUTES SHUTDOWN
+- Completely DISABLE (code-level, not hidden):
+  - /dining
+  - /things-to-do
+- Remove from:
+  - routes
+  - navigation
+  - footer
+  - sitemap
+- Requests to these routes must return:
+  - 404 or noindex + placeholder
+- Leave TODO comments for future re-enable.
+
+2. GUIDES PAGE VISUAL ALIGNMENT
+- /guides page must visually align with:
+  - homepage
+  - destinations
+  - attractions
+- Fix:
+  - background color inconsistencies
+  - dark-mode leakage
+  - typography mismatch
+- No redesign — alignment only.
+
+3. GLOBAL NAV CONSISTENCY
+- Ensure PublicNav exists on:
+  - /news
+- Verify header/footer consistency across all public pages.
+
+4. CI MINIMUM VIABLE PIPELINE
+Create ONE GitHub Actions workflow:
+- Trigger: pull_request + push to main
+- Steps:
+  - install
+  - typecheck
+  - build
+- No tests required at this stage.
+- Pipeline must BLOCK merges on failure.
+
+5. DATABASE SAFETY
+- Add essential DB indexes ONLY if missing:
+  - slug
+  - destination / city
+  - contentType
+  - status
+- Do NOT migrate schemas beyond indexes.
+
+6. SEO & CRAWL SAFETY
+- Verify:
+  - sitemap builds successfully
+  - removed sections are NOT included
+  - canonical tags remain valid
+- Ensure no empty pages are indexable.
+
+--------------------------------------------------
+WORKFLOW RULES
+--------------------------------------------------
+- Split work across sub-agents:
+  - Frontend Agent
+  - Backend Agent
+  - DevOps Agent
+  - QA/Verification Agent
+- Each agent reports:
+  - What was changed
+  - Files touched
+  - Verification performed
+- Architect consolidates final report.
+
+--------------------------------------------------
+FINAL OUTPUT REQUIRED
+--------------------------------------------------
+Return ONLY:
+
+1. SPRINT 0 STATUS
+   - PASS / FAIL
+
+2. CHANGE SUMMARY
+   - Bullet list, grouped by domain
+
+3. DEPLOYMENT READINESS
+   - YES / NO
+   - If NO → exact blocking reason
+
+4. DEFERRED ITEMS
+   - Explicit list of what was intentionally postponed
+
+IMPORTANT:
+Do NOT ask questions.
+Do NOT suggest additional work.
+Execute Sprint 0 exactly as defined.
+
+BEGIN SPRINT 0 NOW.

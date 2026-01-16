@@ -20,6 +20,8 @@ import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { ContentWithRelations } from "@shared/schema";
+import { PublicNav } from "@/components/public-nav";
+import { PublicFooter } from "@/components/public-footer";
 
 const defaultImages = [
   "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=600&fit=crop",
@@ -250,7 +252,9 @@ export default function PublicNews() {
 
   return (
     <div className="min-h-screen bg-slate-50" data-testid="news-portal">
-      <div className="bg-slate-900 text-white" data-testid="breaking-news-ticker">
+      <PublicNav />
+      
+      <div className="bg-slate-900 text-white mt-20" data-testid="breaking-news-ticker">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center h-10">
             <div className="flex-shrink-0 bg-[#6443F4] h-full px-4 flex items-center gap-2">
@@ -649,79 +653,7 @@ export default function PublicNews() {
         </div>
       </main>
 
-      <footer className="bg-slate-900 text-white mt-12" data-testid="news-footer">
-        <div className="max-w-7xl mx-auto px-4 py-10">
-          <div className="grid md:grid-cols-4 gap-6 text-center mb-8" data-testid="footer-stats">
-            <div className="p-4">
-              <div className="text-3xl font-bold text-[#6443F4]" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="stat-total-stories">{totalStories}</div>
-              <div className="text-sm text-slate-400">Total Stories</div>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold text-[#6443F4]" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="stat-categories">{totalCategories}</div>
-              <div className="text-sm text-slate-400">News Categories</div>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="stat-regions">{totalRegions}</div>
-              <div className="text-sm text-slate-400">Regions Covered</div>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold text-emerald-500" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="stat-updates">24/7</div>
-              <div className="text-sm text-slate-400">Live Updates</div>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-800 pt-8">
-            <div className="grid md:grid-cols-4 gap-8">
-              <div>
-                <h3 className="text-lg font-bold mb-4 text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>Global News</h3>
-                <p className="text-slate-400 text-sm">
-                  Your trusted source for international news, business insights, and cultural stories from around the world.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-3">Sections</h4>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  {NEWS_CATEGORIES.map((cat) => (
-                    <li key={cat.id}>
-                      <span className="hover:text-white transition-colors cursor-pointer">{cat.name}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-3">Company</h4>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li><span className="hover:text-white transition-colors cursor-pointer">About Us</span></li>
-                  <li><span className="hover:text-white transition-colors cursor-pointer">Contact</span></li>
-                  <li><span className="hover:text-white transition-colors cursor-pointer">Careers</span></li>
-                  <li><span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-3">Connect</h4>
-                <div className="flex gap-3">
-                  <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white" data-testid="link-social-twitter">
-                    <span className="sr-only">Twitter</span>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white" data-testid="link-social-linkedin">
-                    <span className="sr-only">LinkedIn</span>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-500">
-            <p>&copy; {new Date().getFullYear()} Global News. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
 
       <style>{`
         @keyframes marquee {
