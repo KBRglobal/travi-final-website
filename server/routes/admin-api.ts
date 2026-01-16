@@ -1079,5 +1079,4 @@ export function registerAdminApiRoutes(app: Express): void {
 
   // Mount the router at /api/admin
   app.use("/api/admin", router);
-  console.log("[Routes] ✓ Admin API routes registered");
 }

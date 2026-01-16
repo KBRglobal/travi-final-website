@@ -9,6 +9,7 @@ import { registerAiApiRoutes } from "./ai-api";
 import { registerMonetizationApiRoutes } from "./monetization-api";
 import { registerLocalizationApiRoutes } from "./localization-api";
 import { registerAutomationApiRoutes } from "./automation-api";
+import { registerCmsApiRoutes } from "./cms-api";
 
 /**
  * Main router registry that coordinates all domain-specific route modules.
@@ -27,6 +28,7 @@ import { registerAutomationApiRoutes } from "./automation-api";
  * - monetization-api: Affiliate links, partners, payouts management
  * - localization-api: Translation management, locales, DeepL integration
  * - automation-api: Workflows, webhooks, A/B testing endpoints
+ * - cms-api: CMS configuration, site settings, homepage promotions
  *
  * Usage:
  * import { registerAllRoutes } from "./routes";
@@ -86,6 +88,11 @@ export async function registerAllRoutes(app: Express): Promise<void> {
   registerAutomationApiRoutes(app);
   console.log("[Routes] ✓ Automation API routes registered");
 
+  // CMS API routes
+  // Handles: Site settings, homepage promotions
+  registerCmsApiRoutes(app);
+  console.log("[Routes] ✓ CMS API routes registered");
+
   console.log("[Routes] All domain route modules registered successfully");
 }
 
@@ -101,4 +108,5 @@ export {
   registerMonetizationApiRoutes,
   registerLocalizationApiRoutes,
   registerAutomationApiRoutes,
+  registerCmsApiRoutes,
 };
