@@ -1,0 +1,107 @@
+ROLE: Senior Full-Stack + Security Engineer (Production mindset)
+
+CONTEXT:
+We just shipped a production-ready version of travi.world.
+A full external security / SEO / infra audit was completed (OWASP ZAP, Pentest Tools, SecurityHeaders by Snyk, urlscan.io, PageSpeed).
+Claude is running a deep QA in parallel on the latest GitHub push.
+
+OBJECTIVE:
+Apply ONLY the required fixes listed below.
+Do NOT refactor unrelated code.
+Do NOT push partial commits.
+Work locally, verify, then produce ONE final commit with a clear summary.
+
+IMPORTANT RULES:
+- No GitHub push until ALL fixes below are complete and verified
+- If a fix risks breaking production, STOP and report instead
+- Follow exact priorities (Critical → Important → Nice-to-have)
+- Output a final report with ✅ / ❌ status per item
+
+==================================================
+CRITICAL (MUST FIX NOW)
+==================================================
+
+1) Cookie Security Flags (BLOCKING)
+Issue:
+GAESA / session cookies missing HttpOnly, Secure, SameSite
+
+Impact:
+XSS + CSRF risk in production
+
+Required Fix (choose safest applicable):
+- Cloudflare Transform Rule OR
+- Backend session middleware
+
+Required cookie attributes:
+HttpOnly; Secure; SameSite=Lax
+
+Verify:
+- Rerun Pentest Tools scan
+- Confirm issue is fully resolved
+
+==================================================
+IMPORTANT (FIX IF SAFE)
+==================================================
+
+2) Duplicate HSTS Header
+Issue:
+Two Strict-Transport-Security headers with different max-age values
+
+Fix:
+- Keep ONE header only
+- max-age=63072000; includeSubDomains
+- Remove duplicate either in Cloudflare or server/helmet
+
+3) API Fallback Returns HTML
+Issue:
+Some /api/* routes return SPA HTML instead of JSON 401/404
+
+Fix:
+- Ensure /api/* unmatched routes return JSON error
+- Must be registered BEFORE SPA catch-all
+
+==================================================
+NICE TO HAVE (DO NOT BLOCK)
+==================================================
+
+4) Canonical URLs
+Issue:
+Destination pages sometimes use homepage canonical
+
+Fix:
+- Canonical must reflect current page URL dynamically
+
+5) Cache-Control Optimization
+Issue:
+Homepage uses max-age=0, no CDN benefit
+
+Fix:
+Suggested:
+public, max-age=60, stale-while-revalidate=300
+
+==================================================
+DO NOT FIX / IGNORE
+==================================================
+
+- CSP unsafe-inline / unsafe-eval (accepted React/Vite tradeoff)
+- Missing skip-to-content link
+- Server header showing "cloudflare"
+- Dev-only PostCSS warnings
+
+==================================================
+FINAL DELIVERABLE
+==================================================
+
+1) One final Git commit (no partial pushes)
+2) Final QA report in this format:
+
+[🟢 PASS] / [🟥 FAIL]
+- Issue name
+- What was changed
+- Where it was fixed
+- Verification method
+
+3) Explicit confirmation:
+"Production safe to ship: YES / NO"
+
+If anything is unclear or risky — STOP and ask before acting.
