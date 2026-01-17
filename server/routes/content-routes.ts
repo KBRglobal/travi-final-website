@@ -241,7 +241,7 @@ export function registerContentRoutes(app: Express): void {
       
       // Validate locale
       const validLocales = SUPPORTED_LOCALES.map(l => l.code);
-      if (!validLocales.includes(locale)) {
+      if (!validLocales.includes(locale as any)) {
         return res.status(400).json({ error: "Invalid locale", validLocales });
       }
 
@@ -663,7 +663,7 @@ export function registerContentRoutes(app: Express): void {
   // Content creation
   app.post("/api/contents", requirePermission("canCreate"), checkReadOnlyMode, rateLimiters.contentWrite, async (req, res) => {
     try {
-      const parsed = insertContentSchema.parse(req.body);
+      const parsed = insertContentSchema.parse(req.body) as any;
 
       if (parsed.blocks && Array.isArray(parsed.blocks)) {
         parsed.blocks = sanitizeContentBlocks(parsed.blocks);

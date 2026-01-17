@@ -504,17 +504,17 @@ export class DatabaseStorage implements IStorage {
   async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(userData)
+      .values(userData as any)
       .onConflictDoUpdate({
         target: users.id,
         set: {
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          profileImageUrl: userData.profileImageUrl,
-          ...(userData.role && { role: userData.role }),
+          email: (userData as any).email,
+          firstName: (userData as any).firstName,
+          lastName: (userData as any).lastName,
+          profileImageUrl: (userData as any).profileImageUrl,
+          ...((userData as any).role && { role: (userData as any).role }),
           updatedAt: new Date(),
-        },
+        } as any,
       })
       .returning();
     return user;
@@ -750,7 +750,7 @@ export class DatabaseStorage implements IStorage {
     // Soft delete - set deletedAt instead of actually deleting
     const [result] = await db
       .update(contents)
-      .set({ deletedAt: new Date() })
+      .set({ deletedAt: new Date() } as any)
       .where(eq(contents.id, id))
       .returning();
     return !!result;
@@ -1088,7 +1088,7 @@ export class DatabaseStorage implements IStorage {
       .set({ 
         timesUsed: sql`${topicBank.timesUsed} + 1`,
         lastUsed: new Date()
-      })
+      } as any)
       .where(eq(topicBank.id, id))
       .returning();
     return item;
@@ -1145,7 +1145,7 @@ export class DatabaseStorage implements IStorage {
       .set({ 
         usageCount: sql`${keywordRepository.usageCount} + 1`,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(keywordRepository.id, id))
       .returning();
     return item;
@@ -1189,7 +1189,7 @@ export class DatabaseStorage implements IStorage {
     const [translation] = await db
       .select()
       .from(translations)
-      .where(and(eq(translations.contentId, contentId), eq(translations.locale, locale)));
+      .where(and(eq(translations.contentId, contentId), eq(translations.locale, locale as any)));
     return translation;
   }
 
@@ -1342,7 +1342,7 @@ export class DatabaseStorage implements IStorage {
         status: "published",
         publishedAt: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, id))
       .returning();
     return content;
@@ -1384,7 +1384,7 @@ export class DatabaseStorage implements IStorage {
     for (let i = 0; i < orderedIds.length; i++) {
       await db
         .update(homepagePromotions)
-        .set({ position: i })
+        .set({ position: i } as any)
         .where(and(eq(homepagePromotions.id, orderedIds[i]), eq(homepagePromotions.section, section)));
     }
     return true;
@@ -1503,17 +1503,17 @@ export class DatabaseStorage implements IStorage {
         userAgent: data?.userAgent,
         referrer: data?.referrer,
         sessionId: data?.sessionId,
-      });
+      } as any);
 
       await tx
         .update(contents)
-        .set({ viewCount: sql`COALESCE(${contents.viewCount}, 0) + 1` })
+        .set({ viewCount: sql`COALESCE(${contents.viewCount}, 0) + 1` } as any)
         .where(eq(contents.id, contentId));
     });
   }
 
   async createAuditLog(log: InsertAuditLog): Promise<AuditLog> {
-    const [auditLog] = await db.insert(auditLogs).values(log).returning();
+    const [auditLog] = await db.insert(auditLogs).values(log as any).returning();
     return auditLog;
   }
 
@@ -1600,13 +1600,13 @@ export class DatabaseStorage implements IStorage {
     // Use upsert with increment
     const [result] = await db
       .insert(rateLimits)
-      .values({ key, count: 1, resetAt, updatedAt: new Date() })
+      .values({ key, count: 1, resetAt, updatedAt: new Date() } as any)
       .onConflictDoUpdate({
         target: rateLimits.key,
         set: {
           count: sql`${rateLimits.count} + 1`,
           updatedAt: new Date(),
-        },
+        } as any,
       })
       .returning();
     return { count: result.count, resetAt: result.resetAt };
@@ -1615,14 +1615,14 @@ export class DatabaseStorage implements IStorage {
   async resetRateLimit(key: string, resetAt: Date): Promise<void> {
     await db
       .insert(rateLimits)
-      .values({ key, count: 1, resetAt, updatedAt: new Date() })
+      .values({ key, count: 1, resetAt, updatedAt: new Date() } as any)
       .onConflictDoUpdate({
         target: rateLimits.key,
         set: {
           count: 1,
           resetAt,
           updatedAt: new Date(),
-        },
+        } as any,
       });
   }
 
@@ -1743,7 +1743,7 @@ export class DatabaseStorage implements IStorage {
 
   // Campaign Events
   async createCampaignEvent(event: InsertCampaignEvent): Promise<CampaignEvent> {
-    const [newEvent] = await db.insert(campaignEvents).values(event).returning();
+    const [newEvent] = await db.insert(campaignEvents).values(event as any).returning();
     return newEvent;
   }
 
@@ -1768,7 +1768,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createEmailTemplate(template: InsertEmailTemplate): Promise<EmailTemplate> {
-    const [newTemplate] = await db.insert(emailTemplates).values(template).returning();
+    const [newTemplate] = await db.insert(emailTemplates).values(template as any).returning();
     return newTemplate;
   }
 
@@ -1787,7 +1787,7 @@ export class DatabaseStorage implements IStorage {
 
   async incrementTemplateUsageCount(id: string): Promise<void> {
     await db.update(emailTemplates)
-      .set({ usageCount: sql`COALESCE(${emailTemplates.usageCount}, 0) + 1` })
+      .set({ usageCount: sql`COALESCE(${emailTemplates.usageCount}, 0) + 1` } as any)
       .where(eq(emailTemplates.id, id));
   }
 
@@ -1806,7 +1806,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createNewsletterAbTest(test: InsertNewsletterAbTest): Promise<NewsletterAbTest> {
-    const [newTest] = await db.insert(newsletterAbTests).values(test).returning();
+    const [newTest] = await db.insert(newsletterAbTests).values(test as any).returning();
     return newTest;
   }
 
@@ -1834,7 +1834,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createSubscriberSegment(segment: InsertSubscriberSegment): Promise<SubscriberSegment> {
-    const [newSegment] = await db.insert(subscriberSegments).values(segment).returning();
+    const [newSegment] = await db.insert(subscriberSegments).values(segment as any).returning();
     return newSegment;
   }
 
@@ -1859,7 +1859,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createSegmentCondition(condition: InsertSegmentCondition): Promise<SegmentCondition> {
-    const [newCondition] = await db.insert(segmentConditions).values(condition).returning();
+    const [newCondition] = await db.insert(segmentConditions).values(condition as any).returning();
     return newCondition;
   }
 
@@ -1884,13 +1884,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContentCluster(cluster: InsertContentCluster): Promise<ContentCluster> {
-    const [newCluster] = await db.insert(contentClusters).values(cluster).returning();
+    const [newCluster] = await db.insert(contentClusters).values(cluster as any).returning();
     return newCluster;
   }
 
   async updateContentCluster(id: string, data: Partial<InsertContentCluster>): Promise<ContentCluster | undefined> {
     const [cluster] = await db.update(contentClusters)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(contentClusters.id, id))
       .returning();
     return cluster;
@@ -1918,7 +1918,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addClusterMember(member: InsertClusterMember): Promise<ClusterMember> {
-    const [newMember] = await db.insert(clusterMembers).values(member).returning();
+    const [newMember] = await db.insert(clusterMembers).values(member as any).returning();
     return newMember;
   }
 
@@ -1929,7 +1929,7 @@ export class DatabaseStorage implements IStorage {
 
   async updateClusterMemberPosition(id: string, position: number): Promise<ClusterMember | undefined> {
     const [member] = await db.update(clusterMembers)
-      .set({ position })
+      .set({ position } as any)
       .where(eq(clusterMembers.id, id))
       .returning();
     return member;
@@ -1963,13 +1963,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTag(tag: InsertTag): Promise<Tag> {
-    const [newTag] = await db.insert(tags).values(tag).returning();
+    const [newTag] = await db.insert(tags).values(tag as any).returning();
     return newTag;
   }
 
   async updateTag(id: string, data: Partial<InsertTag>): Promise<Tag | undefined> {
     const [tag] = await db.update(tags)
-      .set(data)
+      .set(data as any)
       .where(eq(tags.id, id))
       .returning();
     return tag;
@@ -2010,8 +2010,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addContentTag(contentTag: InsertContentTag): Promise<ContentTag> {
-    const [newCt] = await db.insert(contentTags).values(contentTag).returning();
-    await this.updateTagUsageCount(contentTag.tagId);
+    const [newCt] = await db.insert(contentTags).values(contentTag as any).returning();
+    await this.updateTagUsageCount((contentTag as any).tagId);
     return newCt;
   }
 
@@ -2027,14 +2027,14 @@ export class DatabaseStorage implements IStorage {
       .from(contentTags)
       .where(eq(contentTags.tagId, tagId));
     await db.update(tags)
-      .set({ usageCount: Number(count[0]?.count || 0) })
+      .set({ usageCount: Number(count[0]?.count || 0) } as any)
       .where(eq(tags.id, tagId));
   }
 
   // Bulk Operations
   async bulkUpdateContentStatus(ids: string[], status: string): Promise<number> {
     const result = await db.update(contents)
-      .set({ status: status as any, updatedAt: new Date() })
+      .set({ status: status as any, updatedAt: new Date() } as any)
       .where(inArray(contents.id, ids))
       .returning();
     return result.length;
@@ -2113,7 +2113,7 @@ export class DatabaseStorage implements IStorage {
 
   async incrementTemplateUsage(id: string): Promise<void> {
     await db.update(contentTemplates)
-      .set({ usageCount: sql`${contentTemplates.usageCount} + 1` })
+      .set({ usageCount: sql`${contentTemplates.usageCount} + 1` } as any)
       .where(eq(contentTemplates.id, id));
   }
 
@@ -2132,14 +2132,14 @@ export class DatabaseStorage implements IStorage {
     if (existing) {
       const [updated] = await db
         .update(siteSettings)
-        .set({ value, category, updatedBy, updatedAt: new Date() })
+        .set({ value, category, updatedBy, updatedAt: new Date() } as any)
         .where(eq(siteSettings.key, key))
         .returning();
       return updated;
     }
     const [created] = await db
       .insert(siteSettings)
-      .values({ key, value, category, updatedBy })
+      .values({ key, value, category, updatedBy } as any)
       .returning();
     return created;
   }
@@ -2379,7 +2379,7 @@ export class DatabaseStorage implements IStorage {
           languages: ['en'],
           isActive: true,
           articleCount: 0
-        });
+        } as any);
         seededCount++;
       }
     }
@@ -2394,7 +2394,7 @@ export class DatabaseStorage implements IStorage {
       return undefined;
     }
     
-    const updateData: Partial<InsertAIWriter> = {};
+    const updateData: any = {};
     
     if (data.isActive !== undefined) updateData.isActive = data.isActive;
     if (data.name) updateData.name = data.name;
@@ -2404,7 +2404,7 @@ export class DatabaseStorage implements IStorage {
     
     const [updated] = await db
       .update(aiWriters)
-      .set({ ...updateData, updatedAt: new Date() })
+      .set({ ...updateData, updatedAt: new Date() } as any)
       .where(eq(aiWriters.id, id))
       .returning();
     
@@ -2474,7 +2474,7 @@ export class DatabaseStorage implements IStorage {
   async createLiveChatConversation(data: InsertLiveChatConversation): Promise<LiveChatConversation> {
     const [conversation] = await db
       .insert(liveChatConversations)
-      .values(data)
+      .values(data as any)
       .returning();
     return conversation;
   }
@@ -2482,7 +2482,7 @@ export class DatabaseStorage implements IStorage {
   async updateLiveChatConversation(id: string, data: Partial<InsertLiveChatConversation>): Promise<LiveChatConversation | undefined> {
     const [conversation] = await db
       .update(liveChatConversations)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(liveChatConversations.id, id))
       .returning();
     return conversation;
@@ -2504,7 +2504,7 @@ export class DatabaseStorage implements IStorage {
   async createLiveChatMessage(data: InsertLiveChatMessage): Promise<LiveChatMessage> {
     const [message] = await db
       .insert(liveChatMessages)
-      .values(data)
+      .values(data as any)
       .returning();
     
     // Update conversation's lastMessageAt and unread count
@@ -2514,8 +2514,8 @@ export class DatabaseStorage implements IStorage {
         lastMessageAt: new Date(),
         unreadCount: sql`${liveChatConversations.unreadCount} + 1`,
         updatedAt: new Date(),
-      })
-      .where(eq(liveChatConversations.id, data.conversationId));
+      } as any)
+      .where(eq(liveChatConversations.id, (data as any).conversationId));
     
     return message;
   }
@@ -2526,17 +2526,17 @@ export class DatabaseStorage implements IStorage {
     
     await db
       .update(liveChatMessages)
-      .set({ isRead: true })
+      .set({ isRead: true } as any)
       .where(and(
         eq(liveChatMessages.conversationId, conversationId),
         eq(liveChatMessages.senderType, oppositeType),
-        eq(liveChatMessages.isRead, false)
+        eq((liveChatMessages as any).isRead, false)
       ));
     
     // Reset unread count
     await db
       .update(liveChatConversations)
-      .set({ unreadCount: 0 })
+      .set({ unreadCount: 0 } as any)
       .where(eq(liveChatConversations.id, conversationId));
   }
 
@@ -2573,7 +2573,7 @@ export class DatabaseStorage implements IStorage {
   async createSurvey(data: InsertSurvey): Promise<Survey> {
     const [survey] = await db
       .insert(surveys)
-      .values(data)
+      .values(data as any)
       .returning();
     return survey;
   }
@@ -2581,7 +2581,7 @@ export class DatabaseStorage implements IStorage {
   async updateSurvey(id: string, data: Partial<InsertSurvey>): Promise<Survey | undefined> {
     const [survey] = await db
       .update(surveys)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(surveys.id, id))
       .returning();
     return survey;
@@ -2614,7 +2614,7 @@ export class DatabaseStorage implements IStorage {
   async createSurveyResponse(data: InsertSurveyResponse): Promise<SurveyResponse> {
     const [response] = await db
       .insert(surveyResponses)
-      .values(data)
+      .values(data as any)
       .returning();
     
     // Increment response count on survey
@@ -2623,8 +2623,8 @@ export class DatabaseStorage implements IStorage {
       .set({
         responseCount: sql`${surveys.responseCount} + 1`,
         updatedAt: new Date(),
-      })
-      .where(eq(surveys.id, data.surveyId));
+      } as any)
+      .where(eq(surveys.id, (data as any).surveyId));
     
     return response;
   }
@@ -2632,7 +2632,7 @@ export class DatabaseStorage implements IStorage {
   async updateSurveyResponse(id: string, data: Partial<InsertSurveyResponse>): Promise<SurveyResponse | undefined> {
     const [response] = await db
       .update(surveyResponses)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(surveyResponses.id, id))
       .returning();
     return response;
@@ -2647,7 +2647,7 @@ export class DatabaseStorage implements IStorage {
         .update(surveys)
         .set({
           responseCount: sql`GREATEST(${surveys.responseCount} - 1, 0)`,
-        })
+        } as any)
         .where(eq(surveys.id, response.surveyId));
     }
     return true;
@@ -2726,14 +2726,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createReferralCode(data: InsertReferralCode): Promise<ReferralCode> {
-    const [code] = await db.insert(referralCodes).values(data).returning();
+    const [code] = await db.insert(referralCodes).values(data as any).returning();
     return code;
   }
 
   async updateReferralCode(id: string, data: Partial<InsertReferralCode>): Promise<ReferralCode | undefined> {
     const [code] = await db
       .update(referralCodes)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(referralCodes.id, id))
       .returning();
     return code;
@@ -2750,7 +2750,7 @@ export class DatabaseStorage implements IStorage {
       .set({
         totalClicks: sql`${referralCodes.totalClicks} + 1`,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(referralCodes.id, id));
   }
 
@@ -2760,7 +2760,7 @@ export class DatabaseStorage implements IStorage {
       .set({
         totalSignups: sql`${referralCodes.totalSignups} + 1`,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(referralCodes.id, id));
   }
 
@@ -2771,13 +2771,13 @@ export class DatabaseStorage implements IStorage {
         totalConversions: sql`${referralCodes.totalConversions} + 1`,
         totalCommission: sql`${referralCodes.totalCommission} + ${commissionAmount}`,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(referralCodes.id, id));
   }
 
   // Referral Clicks
   async createReferralClick(data: { referralCodeId: string; ipAddress?: string; userAgent?: string; referer?: string; landingPage?: string }): Promise<ReferralClick> {
-    const [click] = await db.insert(referralClicks).values(data).returning();
+    const [click] = await db.insert(referralClicks).values(data as any).returning();
     return click;
   }
 
@@ -2812,14 +2812,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createReferral(data: InsertReferral): Promise<Referral> {
-    const [referral] = await db.insert(referrals).values(data).returning();
+    const [referral] = await db.insert(referrals).values(data as any).returning();
     return referral;
   }
 
   async updateReferral(id: string, data: Partial<InsertReferral> & { convertedAt?: Date }): Promise<Referral | undefined> {
     const [referral] = await db
       .update(referrals)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(referrals.id, id))
       .returning();
     return referral;
@@ -2843,14 +2843,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCommission(data: InsertReferralCommission): Promise<ReferralCommission> {
-    const [commission] = await db.insert(referralCommissions).values(data).returning();
+    const [commission] = await db.insert(referralCommissions).values(data as any).returning();
     return commission;
   }
 
   async updateCommission(id: string, data: Partial<InsertReferralCommission> & { approvedAt?: Date; paidAt?: Date }): Promise<ReferralCommission | undefined> {
     const [commission] = await db
       .update(referralCommissions)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(referralCommissions.id, id))
       .returning();
     return commission;
