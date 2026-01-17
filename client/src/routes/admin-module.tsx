@@ -82,12 +82,12 @@ const TiqetsIntegrations = lazy(() => import("@/pages/admin/tiqets/integrations"
 const TiqetsConfiguration = lazy(() => import("@/pages/admin/tiqets/configuration"));
 const TiqetsAttractionDetail = lazy(() => import("@/pages/admin/tiqets/attraction-detail"));
 const ContentQualityDashboard = lazy(() => import("@/pages/admin/tiqets/content-quality-dashboard"));
-const IngestionDashboard = lazy(() => import("@/pages/admin/ingestion-dashboard"));
+const IngestionDashboard = lazy(() => import("@/pages/admin/ingestion/dashboard"));
 const POIExplorer = lazy(() => import("@/pages/admin/poi-explorer"));
 const PublicHolidays = lazy(() => import("@/pages/admin/public-holidays"));
 const DestinationBrowser = lazy(() => import("@/pages/admin/destination-browser"));
 const ExternalDataExplorer = lazy(() => import("@/pages/admin/external-data-explorer"));
-const LinksDashboard = lazy(() => import("@/pages/admin/links-dashboard"));
+const LinksDashboard = lazy(() => import("@/pages/admin/links/dashboard"));
 const HelpCenterAdmin = lazy(() => import("@/pages/admin/help"));
 const HelpArticleEditor = lazy(() => import("@/pages/admin/help/article-editor"));
 const MonetizationPremium = lazy(() => import("@/pages/admin/monetization/premium"));
