@@ -86,7 +86,7 @@ function calculateHealth(signals: UnifiedSignal[], previousHealth?: HealthBreakd
       case 'content-confidence':
         componentScores.quality.push(inverted);
         break;
-      case 'revenue':
+      case 'revenue' as any:
       case 'growth-recommendations':
         componentScores.revenue.push(inverted);
         break;

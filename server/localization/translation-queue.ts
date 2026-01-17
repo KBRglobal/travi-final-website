@@ -130,7 +130,7 @@ export async function enqueueTranslationJobs(
           nextRunAt: null,
           updatedAt: new Date(),
           fields: fields || existingJob.fields,
-        })
+        } as any)
         .where(eq(translationJobs.id, existingJob.id))
         .returning();
       
@@ -146,7 +146,7 @@ export async function enqueueTranslationJobs(
           sourceHash,
           priority,
           fields: fields || ['title', 'metaTitle', 'metaDescription', 'blocks', 'answerCapsule', 'faq', 'highlights', 'tags'],
-        })
+        } as any)
         .returning();
       
       if (newJob) createdJobs.push(newJob);
@@ -197,7 +197,7 @@ export async function markJobInProgress(jobId: string): Promise<TranslationJob |
       status: 'in_progress',
       processingStartedAt: new Date(),
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(translationJobs.id, jobId))
     .returning();
 
@@ -224,7 +224,7 @@ export async function markJobCompleted(
       completedAt: new Date(),
       updatedAt: new Date(),
       error: null,
-    })
+    } as any)
     .where(eq(translationJobs.id, jobId))
     .returning();
 
@@ -262,7 +262,7 @@ export async function markJobFailed(
       retryCount: newRetryCount,
       nextRunAt: shouldRetry && !maxRetriesReached ? calculateBackoff(newRetryCount) : null,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(translationJobs.id, jobId))
     .returning();
 
@@ -293,7 +293,7 @@ export async function markJobNeedsReview(
       status: 'needs_review',
       error: reason,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(translationJobs.id, jobId))
     .returning();
 
@@ -445,7 +445,7 @@ export async function retryJob(jobId: string): Promise<TranslationJob | null> {
       error: null,
       nextRunAt: null,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(translationJobs.id, jobId))
     .returning();
 

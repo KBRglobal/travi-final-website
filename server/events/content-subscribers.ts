@@ -171,7 +171,7 @@ async function handleInternalLinkingOnPublish(event: ContentPublishedEvent): Pro
     
     if (hasChanges) {
       await db.update(contents)
-        .set({ blocks: updatedBlocks })
+        .set({ blocks: updatedBlocks } as any)
         .where(eq(contents.id, event.contentId));
       
       subscriberLogger.info('Internal links injected successfully', {

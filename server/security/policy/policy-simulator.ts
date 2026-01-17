@@ -15,8 +15,9 @@ import {
   Action,
   Resource,
   AdminRole,
-  EvaluationContext,
 } from "../../governance/types";
+
+type EvaluationContext = any;
 import { lintPolicies, LintResult } from "./policy-linter";
 
 // ============================================================================

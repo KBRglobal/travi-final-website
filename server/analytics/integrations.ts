@@ -23,7 +23,7 @@ import { eq, desc, and, lte } from "drizzle-orm";
  * Create integration connection
  */
 export async function createIntegration(data: InsertIntegrationConnection): Promise<IntegrationConnection> {
-  const [connection] = await db.insert(integrationConnections).values(data).returning();
+  const [connection] = await db.insert(integrationConnections).values(data as any).returning();
   return connection;
 }
 
@@ -41,7 +41,7 @@ export async function getIntegrations(provider?: string): Promise<IntegrationCon
  * Update integration
  */
 export async function updateIntegration(id: string, data: Partial<InsertIntegrationConnection>): Promise<IntegrationConnection | null> {
-  const [updated] = await db.update(integrationConnections).set({ ...data, updatedAt: new Date() }).where(eq(integrationConnections.id, id)).returning();
+  const [updated] = await db.update(integrationConnections).set({ ...data, updatedAt: new Date() } as any).where(eq(integrationConnections.id, id)).returning();
   return updated || null;
 }
 
@@ -150,7 +150,7 @@ export async function sendToMixpanel(connectionId: string, event: {
  * Create data export configuration
  */
 export async function createDataExport(data: InsertDataExport): Promise<DataExport> {
-  const [exportConfig] = await db.insert(dataExports).values(data).returning();
+  const [exportConfig] = await db.insert(dataExports).values(data as any).returning();
   return exportConfig;
 }
 
@@ -201,7 +201,7 @@ export async function executeDataExport(exportId: string): Promise<{ success: bo
       exportCount: (exportConfig.exportCount || 0) + 1,
       recordsExported: (exportConfig.recordsExported || 0) + data.length,
       updatedAt: new Date(),
-    }).where(eq(dataExports.id, exportId));
+    } as any).where(eq(dataExports.id, exportId));
     
     return { success: true, recordsExported: data.length };
   } catch (error: any) {
@@ -209,7 +209,7 @@ export async function executeDataExport(exportId: string): Promise<{ success: bo
       lastExportStatus: "failed",
       lastExportError: error.message,
       updatedAt: new Date(),
-    }).where(eq(dataExports.id, exportId));
+    } as any).where(eq(dataExports.id, exportId));
     
     return { success: false, recordsExported: 0, error: error.message };
   }

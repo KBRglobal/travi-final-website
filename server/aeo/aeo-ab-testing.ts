@@ -388,7 +388,7 @@ export async function applyWinningVariant(testId: string): Promise<void> {
       keyFacts: winningCapsule.keyFacts,
       differentiator: winningCapsule.differentiator,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(aeoAnswerCapsules.contentId, test.contentId));
 
   // Also update the content's answerCapsule field
@@ -397,7 +397,7 @@ export async function applyWinningVariant(testId: string): Promise<void> {
     .set({
       answerCapsule: winningCapsule.capsuleText,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(contents.id, test.contentId));
 
   aeoLogger.info('Winning variant applied', { testId, variant: test.winningVariant });

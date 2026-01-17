@@ -136,7 +136,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     description: "User role changed followed by sensitive operations",
     pattern: [
       { eventType: "role_assigned", count: 1, sameUser: true },
-      { eventType: "role_modification", count: 1, sameUser: true },
+      { eventType: "role_modification" as any, count: 1, sameUser: true },
     ],
     timeWindowMs: 60 * 60 * 1000, // 1 hour
     threshold: 1,
@@ -160,7 +160,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     name: "Mass Deletion",
     description: "Large number of delete operations",
     pattern: [
-      { eventType: "content_deleted", count: 10, operator: "gte", sameUser: true },
+      { eventType: "content_deleted" as any, count: 10, operator: "gte", sameUser: true },
     ],
     timeWindowMs: 5 * 60 * 1000,
     threshold: 1,
@@ -172,7 +172,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     name: "Bulk Data Export",
     description: "Large data export operation",
     pattern: [
-      { eventType: "data_export", count: 5, operator: "gte", sameUser: true },
+      { eventType: "data_export" as any, count: 5, operator: "gte", sameUser: true },
     ],
     timeWindowMs: 60 * 60 * 1000,
     threshold: 1,
@@ -184,7 +184,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     name: "Session Hijacking Suspected",
     description: "Same session from multiple IPs",
     pattern: [
-      { eventType: "resource_accessed", count: 2, operator: "gte", sameUser: true },
+      { eventType: "resource_accessed" as any, count: 2, operator: "gte", sameUser: true },
     ],
     timeWindowMs: 5 * 60 * 1000,
     threshold: 1,

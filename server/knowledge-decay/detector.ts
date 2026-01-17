@@ -41,7 +41,7 @@ export async function analyzeDecay(contentId: string): Promise<DecayAnalysis> {
   const contentAge = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
   const lastUpdated = Math.floor((now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
 
-  const body = contentItem.body || "";
+  const body = (contentItem as any).body || "";
   const title = contentItem.title || "";
   const fullText = `${title} ${body}`;
 

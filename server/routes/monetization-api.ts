@@ -27,7 +27,7 @@ async function logAuditEvent(
   newValue?: unknown
 ) {
   try {
-    const { logAuditEvent: logAudit } = await import("../security/audit-logger");
+    const { logAuditEvent: logAudit } = await import("../security/audit-logger") as any;
     await logAudit(req, action, entityType, entityId, description, oldValue, newValue);
   } catch (error) {
     console.error("[Monetization API] Audit log failed:", error);

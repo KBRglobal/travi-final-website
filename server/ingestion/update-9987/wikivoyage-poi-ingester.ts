@@ -277,7 +277,7 @@ export class WikivoyagePoiIngester extends BaseIngester {
           // Try to insert or update
           await db
             .insert(update9987WikivoyagePois)
-            .values(validated)
+            .values(validated as any)
             .onConflictDoNothing();
 
           created++;

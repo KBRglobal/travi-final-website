@@ -101,7 +101,7 @@ async function saveContentToDatabase(
         factCheckScore: qualityScore.factCheckScore,
         contentVersion: 2,
         lastContentUpdate: new Date(),
-      })
+      } as any)
       .where(eq(tiqetsAttractions.id, attractionId));
     
     console.log(`[Regeneration] ✅ Saved content for ${attractionId} with score ${qualityScore.overallScore}`);

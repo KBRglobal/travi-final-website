@@ -387,7 +387,7 @@ router.get('/alerts', (_req: Request, res: Response) => {
       context: alert.context,
     }));
 
-    const historyFormatted = metrics.recentHistory.map(alert => ({
+    const historyFormatted = (metrics as any).recentHistory.map((alert: any) => ({
       id: alert.id,
       type: alert.type,
       severity: alert.severity,

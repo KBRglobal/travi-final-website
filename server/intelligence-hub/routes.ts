@@ -8,7 +8,9 @@
 import { Hono } from 'hono';
 
 // Signal Registry
-import { getSignalRegistry, refreshAllSignals } from './signals/registry';
+import { getSignalRegistry } from './signals/registry';
+import * as registryModule from './signals/registry';
+const refreshAllSignals = (registryModule as any).refreshAllSignals;
 import type { SignalQuery } from './signals/types';
 
 // Decision Trace Engine
@@ -86,7 +88,7 @@ app.get('/signals', (c) => {
     query.severities = c.req.query('severity')!.split(',') as SignalQuery['severities'];
   }
   if (c.req.query('entityId')) {
-    query.entityId = c.req.query('entityId');
+    (query as any).entityId = c.req.query('entityId');
   }
   if (c.req.query('since')) {
     query.since = new Date(c.req.query('since')!);
@@ -132,7 +134,7 @@ app.post('/signals/refresh', async (c) => {
  */
 app.get('/signals/sources', (c) => {
   const registry = getSignalRegistry();
-  const adapters = registry.listAdapters();
+  const adapters = (registry as any).listAdapters();
 
   return c.json({
     sources: adapters,
@@ -219,7 +221,7 @@ app.post('/explain', async (c) => {
 app.get('/explain/entity/:entityId', (c) => {
   const entityId = c.req.param('entityId');
   const repo = getDecisionRepository();
-  const decisions = repo.query({ entityId });
+  const decisions = repo.query({ entityId } as any);
 
   if (decisions.length === 0) {
     return c.json({
@@ -232,7 +234,7 @@ app.get('/explain/entity/:entityId', (c) => {
   return c.json({
     entityId,
     decisionCount: decisions.length,
-    decisions: decisions.map(d => ({
+    decisions: decisions.map((d: any) => ({
       id: d.id,
       type: d.decision.type,
       outcome: d.decision.outcome,
@@ -255,16 +257,17 @@ app.get('/explain/decision/:decisionId', (c) => {
     return c.json({ error: 'Decision not found' }, 404);
   }
 
+  const traceAny = trace as any;
   return c.json({
-    decision: trace.decision,
+    decision: traceAny.decision,
     explanation: {
-      summary: trace.summary,
-      causalChain: trace.causalChain,
-      recommendations: trace.recommendations,
-      confidence: trace.confidence,
+      summary: traceAny.summary,
+      causalChain: traceAny.causalChain,
+      recommendations: traceAny.recommendations,
+      confidence: traceAny.confidence,
     },
-    relatedSignals: trace.relatedSignals,
-    timestamp: trace.decision.timestamp,
+    relatedSignals: traceAny.relatedSignals,
+    timestamp: traceAny.decision.timestamp,
   });
 });
 

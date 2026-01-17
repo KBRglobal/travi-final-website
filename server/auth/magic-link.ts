@@ -50,7 +50,7 @@ export const magicLinkAuth = {
         token,
         expiresAt,
         used: false,
-      });
+      } as any);
 
       // Generate magic link
       const magicLink = `${baseUrl}/auth/verify?token=${token}`;
@@ -117,7 +117,7 @@ export const magicLinkAuth = {
       // Mark token as used
       await db
         .update(magicLinkTokens)
-        .set({ used: true })
+        .set({ used: true } as any)
         .where(eq(magicLinkTokens.token, token));
 
       // Find or create user
@@ -163,7 +163,7 @@ export const magicLinkAuth = {
     try {
       const result = await db
         .delete(magicLinkTokens)
-        .where(gt(new Date(), magicLinkTokens.expiresAt));
+        .where(gt(new Date() as any, magicLinkTokens.expiresAt));
 
       return result.rowCount || 0;
     } catch (error) {

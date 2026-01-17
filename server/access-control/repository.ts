@@ -44,7 +44,7 @@ export async function initializeSystemRoles(): Promise<void> {
           priority: role.priority,
           isSystem: role.isSystem,
           isActive: true,
-        })
+        } as any)
         .returning();
 
       // Add permissions for the role
@@ -56,7 +56,7 @@ export async function initializeSystemRoles(): Promise<void> {
           scope: perm.scope,
           scopeValue: perm.scopeValue,
           isAllowed: perm.isAllowed,
-        });
+        } as any);
       }
     }
   }
@@ -114,7 +114,7 @@ export async function addPermission(
       scopeValue: permission.scopeValue,
       isAllowed: permission.isAllowed ?? true,
       conditions: permission.conditions,
-    })
+    } as any)
     .returning();
 
   clearUserContextCache();
@@ -153,7 +153,7 @@ export async function assignRole(
       scopeValue,
       expiresAt,
       isActive: true,
-    })
+    } as any)
     .onConflictDoUpdate({
       target: [
         userRoleAssignments.userId,
@@ -166,7 +166,7 @@ export async function assignRole(
         grantedAt: new Date(),
         expiresAt,
         isActive: true,
-      },
+      } as any,
     })
     .returning();
 
@@ -185,7 +185,7 @@ export async function revokeRole(
 ): Promise<void> {
   await db
     .update(userRoleAssignments)
-    .set({ isActive: false })
+    .set({ isActive: false } as any)
     .where(
       and(
         eq(userRoleAssignments.userId, userId),

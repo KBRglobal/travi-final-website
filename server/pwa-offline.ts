@@ -677,7 +677,7 @@ export const pushNotifications = {
           locale: subscription.locale,
           userAgent: subscription.userAgent || null,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(pushSubscriptions.endpoint, subscription.endpoint));
     } else {
       // Create new subscription
@@ -688,7 +688,7 @@ export const pushNotifications = {
         userId: userId || null,
         locale: subscription.locale,
         userAgent: subscription.userAgent || null,
-      });
+      } as any);
     }
   },
 

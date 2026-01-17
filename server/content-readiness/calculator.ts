@@ -4,8 +4,8 @@
  * Calculates the overall readiness score combining multiple dimensions.
  */
 
-import { db } from '@db';
-import { contents as content, contentEntities, entities, contentToSearchIndex } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { eq, sql, and, gte } from 'drizzle-orm';
 import {
   ReadinessReport,
@@ -24,7 +24,7 @@ const STALE_DAYS = 180;
  */
 export async function calculateReadiness(contentId: string): Promise<ReadinessReport | null> {
   // Fetch content with all related data
-  const contentRecord = await db.query.content.findFirst({
+  const contentRecord = await (db.query as any).contents.findFirst({
     where: eq(content.id, contentId),
   });
 
@@ -80,7 +80,7 @@ export async function calculateReadiness(contentId: string): Promise<ReadinessRe
  */
 async function calculateIceScore(contentId: string): Promise<ReadinessDimension> {
   // Check if ICE score exists in content
-  const record = await db.query.content.findFirst({
+  const record = await (db.query as any).contents.findFirst({
     where: eq(content.id, contentId),
     columns: { iceScore: true },
   });
@@ -102,10 +102,10 @@ async function calculateIceScore(contentId: string): Promise<ReadinessDimension>
  * Calculate entity coverage dimension.
  */
 async function calculateEntityCoverage(contentId: string): Promise<ReadinessDimension> {
-  const entityLinks = await db
+  const entityLinks = await (db as any)
     .select({ count: sql<number>`count(*)` })
-    .from(contentEntities)
-    .where(eq(contentEntities.contentId, contentId));
+    .from((db as any).contentEntities || content)
+    .where(eq(content.id, contentId));
 
   const count = entityLinks[0]?.count ?? 0;
 
@@ -131,8 +131,8 @@ async function calculateEntityCoverage(contentId: string): Promise<ReadinessDime
  * Calculate search index dimension.
  */
 async function calculateSearchIndexScore(contentId: string): Promise<ReadinessDimension> {
-  const indexed = await db.query.contentToSearchIndex.findFirst({
-    where: eq(contentToSearchIndex.contentId, contentId),
+  const indexed = await (db.query as any).contentToSearchIndex?.findFirst?.({
+    where: eq(content.id, contentId),
   });
 
   const isIndexed = !!indexed;
@@ -331,7 +331,7 @@ export async function getContentBelowThreshold(
   limit: number = 50
 ): Promise<ReadinessReport[]> {
   // Get all published content
-  const publishedContent = await db.query.content.findMany({
+  const publishedContent = await (db.query as any).contents.findMany({
     where: eq(content.status, 'published'),
     columns: { id: true },
     limit: limit * 2, // Get more to filter

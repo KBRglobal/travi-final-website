@@ -92,7 +92,7 @@ export async function createPolicy(
       message: policy.message,
       isActive: policy.isActive,
       createdBy,
-    })
+    } as any)
     .returning();
 
   clearPolicyCache();
@@ -116,7 +116,7 @@ export async function updatePolicy(
       ...updates,
       conditions: updates.conditions as unknown as Record<string, unknown>,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(governancePolicies.id, id))
     .returning();
 
@@ -155,7 +155,7 @@ export async function togglePolicyActive(id: string): Promise<boolean> {
 
   await db
     .update(governancePolicies)
-    .set({ isActive: !current.isActive, updatedAt: new Date() })
+    .set({ isActive: !current.isActive, updatedAt: new Date() } as any)
     .where(eq(governancePolicies.id, id));
 
   clearPolicyCache();

@@ -42,7 +42,7 @@ async function processCity(cityName: string): Promise<{ processed: number; error
       batch.map(async (attraction) => {
         try {
           await db.update(tiqetsAttractions)
-            .set({ contentGenerationStatus: "generating" })
+            .set({ contentGenerationStatus: "generating" } as any)
             .where(eq(tiqetsAttractions.id, attraction.id));
 
           const result = await generateAttractionContent(attraction);
@@ -74,7 +74,7 @@ async function processCity(cityName: string): Promise<{ processed: number; error
               contentGenerationStatus: "ready",
               contentGeneratedAt: new Date(),
               updatedAt: new Date(),
-            })
+            } as any)
             .where(eq(tiqetsAttractions.id, attraction.id));
 
           console.log(`  ✓ ${attraction.title.slice(0, 50)}... (${result.provider}, ${result.latencyMs}ms)`);
@@ -84,7 +84,7 @@ async function processCity(cityName: string): Promise<{ processed: number; error
             .set({ 
               contentGenerationStatus: "error",
               updatedAt: new Date()
-            })
+            } as any)
             .where(eq(tiqetsAttractions.id, attraction.id));
 
           console.error(`  ✗ ${attraction.title.slice(0, 50)}... - ${error}`);

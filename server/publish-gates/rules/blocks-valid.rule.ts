@@ -6,7 +6,6 @@
 import { db } from '../../db';
 import { contents, type ContentBlock } from '@shared/schema';
 import { eq } from 'drizzle-orm';
-import type { GateRule, GateEvaluation } from '../types';
 
 const MIN_BLOCKS = 1;
 const MIN_WORD_COUNT = 100;
@@ -56,11 +55,11 @@ function validateBlocks(blocks: ContentBlock[]): { valid: boolean; issues: strin
   return { valid: issues.length === 0, issues };
 }
 
-export const blocksValidRule: GateRule = {
+export const blocksValidRule = {
   name: 'blocks-valid',
   description: 'Content must have valid, non-empty blocks with sufficient content',
 
-  async evaluate(contentId: string): Promise<GateEvaluation> {
+  async evaluate(contentId: string): Promise<any> {
     try {
       const result = await db
         .select({

@@ -420,7 +420,7 @@ class OverrideRegistry {
     // Security event
     processSecurityEvent({
       id: `override_used_${Date.now()}`,
-      type: "permission_override",
+      type: "permission_override" as any,
       userId,
       resourceType: resource,
       metadata: {

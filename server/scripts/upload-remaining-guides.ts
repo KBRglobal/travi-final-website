@@ -49,7 +49,7 @@ async function main() {
         focusKeyword: guide.keyword,
         status: 'published',
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(update9987Guides.slug, guide.slug))
       .returning({ id: update9987Guides.id });
 

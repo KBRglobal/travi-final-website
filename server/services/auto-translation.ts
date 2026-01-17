@@ -183,7 +183,7 @@ export async function translateDestinationContent(
           .set({ 
             translations: mergedTranslations,
             updatedAt: new Date() 
-          })
+          } as any)
           .where(eq(destinations.id, destinationId));
 
         // Also log for audit trail
@@ -201,7 +201,7 @@ export async function translateDestinationContent(
           seoScore: null,
           qualityTier: null,
           duration: result.completed,
-        });
+        } as any);
 
         logger.info(
           `Persisted ${result.completed} translations for ${destination.name} to destination record`
@@ -228,7 +228,7 @@ export async function translateDestinationContent(
             seoScore: null,
             qualityTier: null,
             duration: 0,
-          });
+          } as any);
 
           result.queued = targetLocales.length;
           logger.info(
@@ -253,7 +253,7 @@ export async function translateDestinationContent(
           seoScore: null,
           qualityTier: null,
           duration: 0,
-        });
+        } as any);
 
         logger.info(
           `Queued ${result.queued} translations for ${destination.name}`
@@ -440,7 +440,7 @@ export async function processPendingTranslations(): Promise<{
           .set({ 
             targetType: "destination_translation_completed",
             duration: translationResult.completed,
-          })
+          } as any)
           .where(eq(aiGenerationLogs.id, log.id));
 
       } catch (error) {
@@ -520,7 +520,7 @@ export async function backfillTranslationsFromLogs(): Promise<{ migrated: number
         if (hasNewTranslations) {
           await db
             .update(destinations)
-            .set({ translations: existingTranslations })
+            .set({ translations: existingTranslations } as any)
             .where(eq(destinations.id, log.targetId));
           migrated++;
         } else {

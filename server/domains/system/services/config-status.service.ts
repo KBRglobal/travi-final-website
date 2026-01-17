@@ -112,7 +112,7 @@ export class ConfigStatusService {
         emailCampaigns: !!process.env.RESEND_API_KEY,
         cloudStorage: !!(process.env.R2_BUCKET_NAME && process.env.R2_ACCESS_KEY_ID),
       },
-      safeMode: safeMode,
+      safeMode: safeMode as any,
       ...(correlationId && { correlationId }),
     };
   }

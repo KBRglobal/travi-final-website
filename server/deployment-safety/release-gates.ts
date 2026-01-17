@@ -607,7 +607,7 @@ registerGateExecutor('dependency_check', async (_gate, _context) => {
     const { getHealthTracker } = await import('../ai-orchestrator/health-tracker');
     const tracker = getHealthTracker();
     const healthData = tracker.getAllHealth();
-    const healthyProviders = healthData.filter(h => h.status === 'healthy').length;
+    const healthyProviders = healthData.filter(h => (h as any).status === 'healthy').length;
 
     return {
       passed: true,
@@ -667,8 +667,8 @@ registerGateExecutor('integration_test', async (_gate, _context) => {
 
 registerGateExecutor('performance_check', async (_gate, _context) => {
   try {
-    const { getLatencyTracker } = await import('../monitoring/latency-tracker');
-    const tracker = getLatencyTracker();
+    const latencyModule = await import('../monitoring/latency-tracker') as any;
+    const tracker = latencyModule.getLatencyTracker();
     const stats = tracker.getOverallStats();
 
     // Check if latencies are acceptable

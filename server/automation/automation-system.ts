@@ -25,7 +25,7 @@ import { eq, desc, and, lte, gte } from "drizzle-orm";
  * Create scheduled report
  */
 export async function createScheduledReport(data: InsertScheduledReport): Promise<ScheduledReport> {
-  const [report] = await db.insert(scheduledReports).values(data).returning();
+  const [report] = await db.insert(scheduledReports).values(data as any).returning();
   return report;
 }
 
@@ -40,7 +40,7 @@ export async function getScheduledReports(): Promise<ScheduledReport[]> {
  * Update scheduled report
  */
 export async function updateScheduledReport(id: string, data: Partial<InsertScheduledReport>): Promise<ScheduledReport | null> {
-  const [updated] = await db.update(scheduledReports).set({ ...data, updatedAt: new Date() }).where(eq(scheduledReports.id, id)).returning();
+  const [updated] = await db.update(scheduledReports).set({ ...data, updatedAt: new Date() } as any).where(eq(scheduledReports.id, id)).returning();
   return updated || null;
 }
 
@@ -76,7 +76,7 @@ async function executeScheduledReport(reportId: string): Promise<void> {
     lastRunAt: new Date(),
     nextRunAt: calculateNextRunTime(report.schedule, report.scheduleConfig),
     updatedAt: new Date(),
-  }).where(eq(scheduledReports.id, reportId));
+  } as any).where(eq(scheduledReports.id, reportId));
 }
 
 /**
@@ -200,7 +200,7 @@ export async function processDueReports(): Promise<number> {
  * Create calendar item
  */
 export async function createCalendarItem(data: InsertContentCalendarItem): Promise<ContentCalendarItem> {
-  const [item] = await db.insert(contentCalendarItems).values(data).returning();
+  const [item] = await db.insert(contentCalendarItems).values(data as any).returning();
   return item;
 }
 
@@ -272,7 +272,7 @@ export async function generateAISuggestions(days: number = 30): Promise<ContentC
   // Create suggestions in database
   const created: ContentCalendarItem[] = [];
   for (const suggestion of suggestions) {
-    const [item] = await db.insert(contentCalendarItems).values(suggestion as InsertContentCalendarItem).returning();
+    const [item] = await db.insert(contentCalendarItems).values(suggestion as any).returning();
     created.push(item);
   }
   

@@ -131,7 +131,7 @@ export async function enqueue(
     nextRetryAt: null,
     inputData: payload,
     createdAt: new Date(),
-  });
+  } as any);
   
   queueLogger.info('Task enqueued', { taskId, jobId, stage, priority });
   return taskId;
@@ -236,7 +236,7 @@ export async function markRunning(taskId: string, stage: QueueStage): Promise<vo
     .set({
       status: 'running',
       startedAt: new Date(),
-    })
+    } as any)
     .where(eq(octopusJobRuns.id, taskId));
   
   runningTasks.get(stage)?.add(taskId);
@@ -268,7 +268,7 @@ export async function markCompleted(
       finishedAt: now,
       durationMs,
       outputData: result ?? null,
-    })
+    } as any)
     .where(eq(octopusJobRuns.id, taskId));
   
   runningTasks.get(stage)?.delete(taskId);
@@ -315,7 +315,7 @@ export async function markFailed(
         finishedAt: now,
         durationMs,
         retryCount: newRetryCount,
-      })
+      } as any)
       .where(eq(octopusJobRuns.id, taskId));
     
     queueLogger.error('Task failed permanently', { taskId, stage, error, retries: newRetryCount });
@@ -330,7 +330,7 @@ export async function markFailed(
         error,
         retryCount: newRetryCount,
         nextRetryAt,
-      })
+      } as any)
       .where(eq(octopusJobRuns.id, taskId));
     
     queueLogger.warn('Task scheduled for retry', { 
@@ -644,7 +644,7 @@ export async function cancelJobTasks(jobId: string): Promise<number> {
       status: 'failed',
       error: 'Job cancelled',
       completedAt: new Date(),
-    })
+    } as any)
     .where(and(
       eq(octopusJobRuns.jobId, jobId),
       inArray(octopusJobRuns.status, ['pending', 'paused'])
@@ -665,7 +665,7 @@ export async function retryJobTasks(jobId: string): Promise<number> {
       retryCount: 0,
       nextRetryAt: null,
       error: null,
-    })
+    } as any)
     .where(and(
       eq(octopusJobRuns.jobId, jobId),
       eq(octopusJobRuns.status, 'failed')

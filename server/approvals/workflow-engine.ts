@@ -106,7 +106,7 @@ export async function createApprovalRequest(
       reason: options.reason,
       metadata: options.metadata,
       expiresAt,
-    })
+    } as any)
     .returning();
 
   // Create approval steps
@@ -126,7 +126,7 @@ export async function createApprovalRequest(
       approverRole: stepConfig.approverRole,
       status: stepConfig.stepNumber === 1 ? "pending" : "pending",
       autoApproveAt,
-    });
+    } as any);
   }
 
   return {
@@ -222,7 +222,7 @@ export async function processDecision(
         decisionReason: decision.reason,
         decidedBy: decision.decidedBy,
         decidedAt: now,
-      })
+      } as any)
       .where(eq(approvalSteps.id, currentStep.id));
 
     // Check if this was the last step
@@ -233,7 +233,7 @@ export async function processDecision(
         .set({
           status: "approved",
           updatedAt: now,
-        })
+        } as any)
         .where(eq(approvalRequests.id, requestId));
 
       return {
@@ -253,7 +253,7 @@ export async function processDecision(
       .set({
         currentStep: nextStep,
         updatedAt: now,
-      })
+      } as any)
       .where(eq(approvalRequests.id, requestId));
 
     return {
@@ -274,7 +274,7 @@ export async function processDecision(
         decisionReason: decision.reason,
         decidedBy: decision.decidedBy,
         decidedAt: now,
-      })
+      } as any)
       .where(eq(approvalSteps.id, currentStep.id));
 
     await db
@@ -282,7 +282,7 @@ export async function processDecision(
       .set({
         status: "rejected",
         updatedAt: now,
-      })
+      } as any)
       .where(eq(approvalRequests.id, requestId));
 
     return {
@@ -354,7 +354,7 @@ export async function cancelRequest(
         cancelReason: reason,
       },
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(approvalRequests.id, requestId));
 
   return {

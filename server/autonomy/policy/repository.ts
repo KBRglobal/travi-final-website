@@ -62,8 +62,8 @@ function dbToPolicy(row: typeof autonomyPolicies.$inferSelect): PolicyDefinition
     },
     enabled: row.enabled,
     priority: row.priority,
-    allowedActions: (config.allowedActions as string[]) || [],
-    blockedActions: (config.blockedActions as string[]) || [],
+    allowedActions: (config.allowedActions as any) || [],
+    blockedActions: (config.blockedActions as any) || [],
     budgetLimits: (config.budgetLimits as any[]) || [],
     allowedHours: config.allowedHours as any,
     approvalLevel: (config.approvalLevel as any) || 'auto',
@@ -93,7 +93,7 @@ function policyToDb(policy: PolicyDefinition): typeof autonomyPolicies.$inferIns
       approvalLevel: policy.approvalLevel,
     },
     createdBy: policy.createdBy,
-  };
+  } as any;
 }
 
 export async function getPolicies(): Promise<PolicyDefinition[]> {
@@ -138,7 +138,7 @@ export async function createPolicy(policy: PolicyDefinition): Promise<PolicyDefi
       ...validated,
       createdAt: new Date(),
       updatedAt: new Date(),
-    })).returning(),
+    } as any)).returning(),
     OPERATION_TIMEOUT_MS
   );
 
@@ -184,7 +184,7 @@ export async function updatePolicy(
           approvalLevel: merged.approvalLevel,
         },
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(autonomyPolicies.id, id))
       .returning(),
     OPERATION_TIMEOUT_MS

@@ -90,7 +90,7 @@ export async function generateAnswerCapsule(
     // Update content with answer capsule
     await db.update(contents).set({
       answerCapsule: response.capsule,
-    }).where(eq(contents.id, contentId));
+    } as any).where(eq(contents.id, contentId));
 
     logger.info('Answer capsule generated', { contentId, wordCount });
     return response.capsule;
@@ -123,10 +123,10 @@ export async function generateFaq(
     const response = await callAI(prompt, FaqSchema);
     
     // Update entity with FAQ (stored on entity tables, not contents)
-    await updateEntityFaq(content, response.items);
+    await updateEntityFaq(content, response.items as any);
 
     logger.info('FAQ generated', { contentId, items: response.items.length });
-    return response.items;
+    return response.items as any;
   } catch (error) {
     logger.error('Failed to generate FAQ', { 
       contentId, 
@@ -156,7 +156,7 @@ export async function generateJsonLd(
   // Update content with schema
   await db.update(contents).set({
     seoSchema: schema,
-  }).where(eq(contents.id, contentId));
+  } as any).where(eq(contents.id, contentId));
 
   logger.info('JSON-LD generated', { contentId, type: schemaType });
   return schema;
@@ -201,7 +201,7 @@ export async function calculateAeoScore(contentId: string): Promise<number> {
   // Update score
   await db.update(contents).set({
     aeoScore: score,
-  }).where(eq(contents.id, contentId));
+  } as any).where(eq(contents.id, contentId));
 
   return score;
 }
@@ -430,14 +430,14 @@ async function updateEntityFaq(
   // Update hotel FAQ
   const [hotel] = await db.select().from(hotels).where(eq(hotels.contentId, content.id));
   if (hotel) {
-    await db.update(hotels).set({ faq: faqItems }).where(eq(hotels.id, hotel.id));
+    await db.update(hotels).set({ faq: faqItems } as any).where(eq(hotels.id, hotel.id));
     return;
   }
 
   // Update attraction FAQ
   const [attraction] = await db.select().from(attractions).where(eq(attractions.contentId, content.id));
   if (attraction) {
-    await db.update(attractions).set({ faq: faqItems }).where(eq(attractions.id, attraction.id));
+    await db.update(attractions).set({ faq: faqItems } as any).where(eq(attractions.id, attraction.id));
   }
 }
 

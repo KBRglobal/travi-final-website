@@ -157,7 +157,7 @@ export async function updateRequestStatus(
 
   await db
     .update(approvalRequests)
-    .set({ status, updatedAt: new Date() })
+    .set({ status, updatedAt: new Date() } as any)
     .where(eq(approvalRequests.id, requestId));
 }
 
@@ -173,7 +173,7 @@ export async function escalateRequest(requestId: string): Promise<void> {
       status: "escalated",
       escalatedAt: new Date(),
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(approvalRequests.id, requestId));
 }
 

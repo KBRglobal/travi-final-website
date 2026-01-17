@@ -473,7 +473,7 @@ async function saveCapsule(
         qualityScore: result.qualityScore,
         generatedByAI: true,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(aeoAnswerCapsules.id, existing.id));
   } else {
     // Insert new
@@ -486,7 +486,7 @@ async function saveCapsule(
       differentiator: result.differentiator,
       qualityScore: result.qualityScore,
       generatedByAI: true,
-    });
+    } as any);
   }
 
   // Also update the content's answerCapsule field
@@ -495,7 +495,7 @@ async function saveCapsule(
       answerCapsule: result.capsuleText,
       aeoScore: result.qualityScore,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(contents.id, contentId));
 }
 

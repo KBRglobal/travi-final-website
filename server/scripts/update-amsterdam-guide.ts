@@ -24,7 +24,7 @@ async function updateAmsterdamGuide() {
       metaDescription: "Discover Amsterdam in 2026: honest costs from €80/day, canal walks, bike rentals, museum tips, brown cafes. Real traveler insights for your trip.",
       focusKeyword: "Amsterdam travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'amsterdam-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   
@@ -47,7 +47,7 @@ async function updateAmsterdamGuide() {
         metaDescription: "Discover Amsterdam in 2026: honest costs from €80/day, canal walks, bike rentals, museum tips, brown cafes. Real traveler insights for your trip.",
         focusKeyword: "Amsterdam travel guide 2026",
         status: 'published',
-      })
+      } as any)
       .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
     
     if (insertResult.length > 0) {

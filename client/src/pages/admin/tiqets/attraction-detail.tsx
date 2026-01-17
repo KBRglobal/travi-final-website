@@ -146,7 +146,7 @@ export default function TiqetsAttractionDetail() {
 
   const onSubmit = (data: FormValues) => {
     const cleanedData: UpdateTiqetsAttraction = {
-      status: data.status,
+      status: data.status as any,
       h1Title: data.h1Title?.trim() || null,
       metaTitle: data.metaTitle?.trim() || null,
       metaDescription: data.metaDescription?.trim() || null,

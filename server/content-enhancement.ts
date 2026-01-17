@@ -686,7 +686,7 @@ export const relatedContent = {
     await db.insert(contentViews).values({
       contentId,
       viewedAt: new Date(),
-    });
+    } as any);
   },
 };
 

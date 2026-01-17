@@ -174,7 +174,7 @@ export async function analyzeContentLocalization(
         const versionBehind = calculateVersionBehind(sourceVersion, translationVersion);
 
         // Calculate translation word count
-        const translatedBlocks = translation.translatedBlocks as Array<{ data?: { text?: string } }> || [];
+        const translatedBlocks = (translation as any).translatedBlocks as Array<{ data?: { text?: string } }> || [];
         const translationWordCount = translatedBlocks.reduce((count, block) => {
           return count + (block.data?.text?.split(/\s+/).length || 0);
         }, 0);

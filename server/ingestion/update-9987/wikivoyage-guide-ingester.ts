@@ -100,7 +100,7 @@ export class WikivoyageGuideIngester extends BaseIngester {
             rewriteModel: rewritten.model,
             rewriteCost: rewritten.cost.toFixed(6),
             status: 'pending',
-          }).onConflictDoUpdate({
+          } as any).onConflictDoUpdate({
             target: update9987Guides.slug,
             set: {
               originalContent: content,
@@ -108,7 +108,7 @@ export class WikivoyageGuideIngester extends BaseIngester {
               rewriteModel: rewritten.model,
               rewriteCost: rewritten.cost.toFixed(6),
               updatedAt: new Date(),
-            },
+            } as any,
           });
 
           created++;

@@ -1031,7 +1031,7 @@ export const abTesting = {
       variants: variantData,
       status: "running",
       startedAt: new Date(),
-    }).returning();
+    } as any).returning();
 
     const test: ABTestLocal = {
       id: dbTest.id,
@@ -1104,7 +1104,7 @@ export const abTesting = {
 
       // Update database
       await db.update(abTestsTable)
-        .set({ variants: test.variants, updatedAt: new Date() })
+        .set({ variants: test.variants, updatedAt: new Date() } as any)
         .where(eq(abTestsTable.id, testId));
 
       // Update cache
@@ -1126,7 +1126,7 @@ export const abTesting = {
 
       // Update database
       await db.update(abTestsTable)
-        .set({ variants: test.variants, updatedAt: new Date() })
+        .set({ variants: test.variants, updatedAt: new Date() } as any)
         .where(eq(abTestsTable.id, testId));
 
       // Update cache
@@ -1171,7 +1171,7 @@ export const abTesting = {
 
       // Update database
       await db.update(abTestsTable)
-        .set({ winner: winner.id, status: "completed", updatedAt: new Date() })
+        .set({ winner: winner.id, status: "completed", updatedAt: new Date() } as any)
         .where(eq(abTestsTable.id, testId));
 
       // Update cache

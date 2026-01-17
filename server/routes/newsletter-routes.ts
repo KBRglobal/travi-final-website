@@ -359,7 +359,7 @@ export function registerNewsletterRoutes(app: Express): void {
       });
 
       // Send welcome email
-      await sendWelcomeEmail(subscriber.email, subscriber.firstName || undefined, subscriber.unsubscribeToken || undefined);
+      await sendWelcomeEmail(subscriber.email, subscriber.firstName || undefined, (subscriber as any).unsubscribeToken || undefined);
 
       console.log("[Newsletter] Subscription confirmed:", subscriber.email);
       res.send(renderConfirmationPage(true, "Thank you for confirming! Check your email for a welcome message."));
@@ -380,7 +380,7 @@ export function registerNewsletterRoutes(app: Express): void {
 
       let subscriber;
       if (token && typeof token === "string") {
-        subscriber = await storage.getNewsletterSubscriberByUnsubscribeToken(token);
+        subscriber = await (storage as any).getNewsletterSubscriberByUnsubscribeToken(token);
       } else if (email && typeof email === "string") {
         subscriber = await storage.getNewsletterSubscriberByEmail(email);
       }
@@ -431,7 +431,7 @@ export function registerNewsletterRoutes(app: Express): void {
   // Delete newsletter subscriber (admin only)
   app.delete("/api/newsletter/subscribers/:id", requirePermission("canManageUsers"), async (req, res) => {
     try {
-      const subscriber = await storage.getNewsletterSubscriberById(req.params.id);
+      const subscriber = await (storage as any).getNewsletterSubscriberById(req.params.id);
       if (!subscriber) {
         return res.status(404).json({ error: "Subscriber not found" });
       }
@@ -448,7 +448,7 @@ export function registerNewsletterRoutes(app: Express): void {
   // Update newsletter subscriber (admin only)
   app.patch("/api/newsletter/subscribers/:id", requirePermission("canManageUsers"), checkReadOnlyMode, async (req, res) => {
     try {
-      const subscriber = await storage.getNewsletterSubscriberById(req.params.id);
+      const subscriber = await (storage as any).getNewsletterSubscriberById(req.params.id);
       if (!subscriber) {
         return res.status(404).json({ error: "Subscriber not found" });
       }
@@ -536,7 +536,7 @@ export function registerNewsletterRoutes(app: Express): void {
         status: "completed",
         winnerVariant,
         completedAt: new Date(),
-      });
+      } as any);
       res.json(test);
     } catch (error) {
       console.error("Error selecting winner:", error);
@@ -557,7 +557,7 @@ export function registerNewsletterRoutes(app: Express): void {
   // Newsletter bounce stats
   app.get("/api/newsletter/bounce-stats", requirePermission("canViewAnalytics"), async (req, res) => {
     try {
-      const stats = await storage.getNewsletterBounceStats();
+      const stats = await (storage as any).getNewsletterBounceStats();
       res.json(stats);
     } catch (error) {
       console.error("Error fetching bounce stats:", error);
@@ -568,7 +568,7 @@ export function registerNewsletterRoutes(app: Express): void {
   // Newsletter segments
   app.get("/api/newsletter/segments", requirePermission("canViewAnalytics"), async (req, res) => {
     try {
-      const segments = await storage.getNewsletterSegments();
+      const segments = await (storage as any).getNewsletterSegments();
       res.json(segments);
     } catch (error) {
       console.error("Error fetching segments:", error);
@@ -586,7 +586,7 @@ export function registerNewsletterRoutes(app: Express): void {
       }
 
       // Create campaign
-      const campaign = await storage.createNewsletterCampaign({
+      const campaign = await (storage as any).createNewsletterCampaign({
         subject,
         content,
         segmentId: segmentId || null,

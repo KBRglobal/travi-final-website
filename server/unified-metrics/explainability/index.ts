@@ -293,7 +293,7 @@ export class ExplainabilityService {
       because: [
         `Current value (${issue.currentValue}) is ${issue.severity} below target (${issue.targetValue})`,
         `This impacts overall content performance by approximately ${issue.impact} points`,
-        ...issue.recommendations.map(r => r.description),
+        ...(issue as any).recommendations.map((r: any) => r.description),
       ],
       evidence: [
         {

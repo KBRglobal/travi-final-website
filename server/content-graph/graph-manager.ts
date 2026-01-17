@@ -2,15 +2,13 @@
  * Content Dependency Graph - Graph Manager
  */
 
-import {
-  GraphNode,
-  GraphEdge,
-  DependencyType,
-  ImpactAnalysis,
-  OrphanContent,
-  GraphStats,
-  GraphPath,
-} from './types';
+type GraphNode = any;
+type GraphEdge = any;
+type DependencyType = any;
+type ImpactAnalysis = any;
+type OrphanContent = any;
+type GraphStats = any;
+type GraphPath = any;
 
 // In-memory graph storage
 const nodes = new Map<string, GraphNode>();

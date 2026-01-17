@@ -477,7 +477,7 @@ router.get("/api/public/destination-content/:slug/essentials", async (req: Reque
           emoji: country[0].emoji,
           latitude: country[0].latitude,
           longitude: country[0].longitude,
-          translations: country[0].translations,
+          translations: (country[0] as any).translations,
           timezones: country[0].timezones,
         };
       }
@@ -775,7 +775,7 @@ router.put("/api/admin/destinations/:slug/mobility", async (req: Request, res: R
           isActive: true,
           version: (existing[0].version || 1) + 1,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinationContent.id, existing[0].id));
       
       res.json({
@@ -791,7 +791,7 @@ router.put("/api/admin/destinations/:slug/mobility", async (req: Request, res: R
         content: mobilityContent,
         isActive: true,
         version: 1,
-      });
+      } as any);
       
       res.json({
         success: true,

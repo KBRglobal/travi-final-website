@@ -30,7 +30,9 @@ import { queryProcessor } from "./query-processor";
 import { spellChecker } from "./spell-checker";
 import { synonymExpander } from "./synonyms";
 import { searchTelemetry } from "./search-telemetry";
-import { getEntityTypeFrequencies, type IntentEntityType } from "../session/intent-memory";
+import { getEntityTypeFrequencies } from "../session/intent-memory";
+
+type IntentEntityType = any;
 import { 
   type UnifiedIntentType, 
   type IntentSignal,

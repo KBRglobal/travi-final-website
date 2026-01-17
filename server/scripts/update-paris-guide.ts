@@ -24,7 +24,7 @@ async function updateParisGuide() {
       metaDescription: "Discover Paris in 2026: honest costs from €100/day, museum passes €62-92, Métro €2.55, local tips from residents. Realistic guide for first-timers.",
       focusKeyword: "Paris travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'paris-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

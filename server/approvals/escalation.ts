@@ -208,7 +208,7 @@ async function escalateRequest(
             autoApproveReason: "Max escalations reached",
             escalationLevel: newLevel,
           })}::jsonb`,
-        })
+        } as any)
         .where(eq(approvalRequests.id, request.id));
 
       return { requestId: request.id, action: "auto_approved", escalationLevel: newLevel };
@@ -225,7 +225,7 @@ async function escalateRequest(
             autoRejectReason: "Max escalations reached without approval",
             escalationLevel: newLevel,
           })}::jsonb`,
-        })
+        } as any)
         .where(eq(approvalRequests.id, request.id));
 
       return { requestId: request.id, action: "auto_rejected", escalationLevel: newLevel };
@@ -241,7 +241,7 @@ async function escalateRequest(
           expiredReason: "Max escalations reached",
           escalationLevel: newLevel,
         })}::jsonb`,
-      })
+      } as any)
       .where(eq(approvalRequests.id, request.id));
 
     await notifyApprovalExpired(
@@ -271,7 +271,7 @@ async function escalateRequest(
         escalatedTo: approverRole,
         escalatedAt: new Date().toISOString(),
       })}::jsonb`,
-    })
+    } as any)
     .where(eq(approvalRequests.id, request.id));
 
   // Send escalation notification
@@ -444,7 +444,7 @@ export async function manuallyEscalateRequest(
         manualEscalation: true,
         escalationReason: reason,
       })}::jsonb`,
-    })
+    } as any)
     .where(eq(approvalRequests.id, requestId));
 
   await notifyApprovalEscalated(

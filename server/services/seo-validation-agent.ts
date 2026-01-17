@@ -716,7 +716,7 @@ export class SEOValidationAgent {
   private countInternalLinks(content: ContentData): number {
     const fullText = this.getFullText(content);
     const links = fullText.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
-    const internal = links.filter(l => !l.includes("http") || l.includes("travi") || l.includes("dubai"));
+    const internal = (links as any[]).filter(l => !l.includes("http") || l.includes("travi") || l.includes("dubai"));
     return internal.length + (content.internalLinks?.length || 0);
   }
 

@@ -317,7 +317,7 @@ export class GuideRewriteService {
           faqs: faqs,
           status: 'published', // NEW: Keep as published so guides appear on /guides page
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(update9987Guides.id, guide.id));
 
       log(`[GuideRewrite] Completed ${slug} - cost: $${this.totalCost.toFixed(4)}`);
@@ -403,7 +403,7 @@ export class GuideRewriteService {
           rewrittenContent: null,
           rewriteCost: null,
           sections: null,
-        })
+        } as any)
         .where(eq(update9987Guides.id, guide.id));
     }
 

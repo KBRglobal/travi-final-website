@@ -289,7 +289,7 @@ export async function getBudgetStatus(): Promise<BudgetStatus> {
       FROM travi_api_usage
     `);
 
-    const totalSpent = parseFloat(result.rows[0]?.total_cost || '0');
+    const totalSpent = parseFloat((result.rows[0] as any)?.total_cost || '0');
     
     let status: 'ok' | 'warning' | 'critical' | 'stopped' = 'ok';
     let alertMessage: string | undefined;

@@ -53,7 +53,7 @@ export async function recordQuery(
       clickedResultId,
       locale,
       sessionId,
-    });
+    } as any);
   } catch (error) {
     logger.error('Failed to record query', {
       query,

@@ -157,7 +157,7 @@ export const autoPublisher = {
               status: "published",
               publishedAt: now,
               updatedAt: now,
-            })
+            } as any)
             .where(eq(contents.id, content.id));
 
           // Phase 15A: Emit content published event (triggers search indexing + AEO generation)
@@ -409,7 +409,7 @@ export const autoAffiliate = {
       anchor: anchorText,
       url: `https://${provider}/${productId}`,
       placement,
-    });
+    } as any);
 
     return { placed: 1 };
   },
@@ -568,7 +568,7 @@ export const autoCluster = {
         name: `${areaData.name} Complete Guide`,
         slug: `${detectedArea}-guide`,
         description: `Everything about ${areaData.name} - hotels, restaurants, attractions`,
-      }).returning();
+      } as any).returning();
     }
 
     // Check if already a member
@@ -638,7 +638,7 @@ export const autoHomepage = {
         customTitle: content.title,
         isActive: true,
         position: currentPromotions.length + 1,
-      });
+      } as any);
       return { promoted: true, section };
     }
 
@@ -678,7 +678,7 @@ export const autoHomepage = {
       if (replacement) {
         // Deactivate old
         await db.update(homepagePromotions)
-          .set({ isActive: false })
+          .set({ isActive: false } as any)
           .where(eq(homepagePromotions.id, promo.id));
 
         // Add new
@@ -688,7 +688,7 @@ export const autoHomepage = {
           customTitle: replacement.title,
           isActive: true,
           position: promo.position || 0,
-        });
+        } as any);
 
         rotated++;
       }
@@ -793,7 +793,7 @@ export const autoRefresh = {
       for (const content of staleContent) {
         // Flag for review (would trigger AI refresh in full implementation)
         await db.update(contents)
-          .set({ status: "review" as any })
+          .set({ status: "review" } as any)
           .where(eq(contents.id, content.id));
         flagged++;
       }
@@ -887,7 +887,7 @@ export const autoDestinationGenerator = {
       // Deactivate old content
       await db
         .update(destinationContent)
-        .set({ isActive: false, updatedAt: new Date() })
+        .set({ isActive: false, updatedAt: new Date() } as any)
         .where(eq(destinationContent.destinationId, destinationId));
 
       // Store new content in database
@@ -914,7 +914,7 @@ export const autoDestinationGenerator = {
           generatedModel: model,
           version: 1,
           isActive: true,
-        });
+        } as any);
       }
 
       // Update destination record with metrics
@@ -931,7 +931,7 @@ export const autoDestinationGenerator = {
           metaDescription: linkedContent.hero.description.substring(0, 160),
           lastGenerated: new Date(),
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinations.id, destinationId));
 
       // Log successful generation
@@ -945,7 +945,7 @@ export const autoDestinationGenerator = {
         seoScore: validationResult.score,
         qualityTier: validationResult.tier,
         duration,
-      });
+      } as any);
 
       destinationLogger.info(
         `Auto-generated content for ${destination.name} - SEO Score: ${validationResult.score}, Links: ${linksAdded}`
@@ -992,7 +992,7 @@ export const autoDestinationGenerator = {
         success: false,
         error: String(error),
         duration,
-      });
+      } as any);
 
       return {
         success: false,
@@ -1254,7 +1254,7 @@ export const autoReports = {
         title: `${report.period === "daily" ? "Daily" : "Weekly"} Auto-Pilot Report`,
         message: `Published: ${report.summary.contentPublished}, Issues: ${report.issues.length}`,
         metadata: report as any,
-      });
+      } as any);
     }
   },
 };

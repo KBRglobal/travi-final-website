@@ -119,7 +119,7 @@ export const autoLinking = {
 
     if (linksAdded > 0) {
       await db.update(contents)
-        .set({ blocks: blocks as any, updatedAt: new Date() })
+        .set({ blocks: blocks as any, updatedAt: new Date() } as any)
         .where(eq(contents.id, contentId));
     }
 
@@ -246,7 +246,7 @@ export const freshnessMonitor = {
       .set({
         status: "review" as any,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, contentId));
   },
 };
@@ -296,7 +296,7 @@ export const autoMeta = {
 
     // Save
     await db.update(contents)
-      .set({ metaDescription: description })
+      .set({ metaDescription: description } as any)
       .where(eq(contents.id, contentId));
 
     return description;
@@ -325,7 +325,7 @@ export const autoMeta = {
     const metaTitle = `${content.title} | ${suffix}`;
 
     await db.update(contents)
-      .set({ metaTitle })
+      .set({ metaTitle } as any)
       .where(eq(contents.id, contentId));
 
     return metaTitle;

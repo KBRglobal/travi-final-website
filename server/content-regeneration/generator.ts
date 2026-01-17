@@ -4,8 +4,8 @@
  * Safely generates improved content blocks using AI.
  */
 
-import { db } from '@db';
-import { content } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import {
   ContentBlock,
@@ -33,7 +33,7 @@ export async function generateImprovedBlocks(
   checkRateLimits();
 
   // Get current content
-  const contentRecord = await db.query.content.findFirst({
+  const contentRecord = await (db.query as any).contents.findFirst({
     where: eq(content.id, contentId),
   });
 

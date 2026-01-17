@@ -388,7 +388,7 @@ export class AnomalyDetector {
         currentValue,
         nums,
         stats,
-        thresholds,
+        thresholds as any,
         windowStart,
         new Date()
       );

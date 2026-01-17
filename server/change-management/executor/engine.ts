@@ -344,10 +344,10 @@ async function executeChange(
 // ============================================================================
 
 async function executeContentUpdate(change: ChangeItem): Promise<unknown> {
-  const contentId = parseInt(change.targetId);
+  const contentId = change.targetId;
 
   // Get current state for rollback
-  const [current] = await db.select().from(content).where(eq(content.id, contentId)).limit(1);
+  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = { ...current };
@@ -357,15 +357,15 @@ async function executeContentUpdate(change: ChangeItem): Promise<unknown> {
   await db.update(content).set({
     ...updates,
     updatedAt: new Date(),
-  }).where(eq(content.id, contentId));
+  } as any).where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
 
 async function executeContentPublish(change: ChangeItem): Promise<unknown> {
-  const contentId = parseInt(change.targetId);
+  const contentId = change.targetId;
 
-  const [current] = await db.select().from(content).where(eq(content.id, contentId)).limit(1);
+  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = { status: current.status, publishedAt: current.publishedAt };
@@ -374,15 +374,15 @@ async function executeContentPublish(change: ChangeItem): Promise<unknown> {
     status: 'published',
     publishedAt: new Date(),
     updatedAt: new Date(),
-  }).where(eq(content.id, contentId));
+  } as any).where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
 
 async function executeContentUnpublish(change: ChangeItem): Promise<unknown> {
-  const contentId = parseInt(change.targetId);
+  const contentId = change.targetId;
 
-  const [current] = await db.select().from(content).where(eq(content.id, contentId)).limit(1);
+  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = { status: current.status, publishedAt: current.publishedAt };
@@ -390,21 +390,21 @@ async function executeContentUnpublish(change: ChangeItem): Promise<unknown> {
   await db.update(content).set({
     status: 'draft',
     updatedAt: new Date(),
-  }).where(eq(content.id, contentId));
+  } as any).where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
 
 async function executeSeoUpdate(change: ChangeItem): Promise<unknown> {
-  const contentId = parseInt(change.targetId);
+  const contentId = change.targetId;
 
-  const [current] = await db.select().from(content).where(eq(content.id, contentId)).limit(1);
+  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = {
     metaTitle: current.metaTitle,
     metaDescription: current.metaDescription,
-    metaKeywords: current.metaKeywords,
+    metaKeywords: (current as any).metaKeywords,
   };
 
   const updates = change.afterValue as Record<string, unknown>;
@@ -413,7 +413,7 @@ async function executeSeoUpdate(change: ChangeItem): Promise<unknown> {
     metaDescription: updates.metaDescription as string,
     metaKeywords: updates.metaKeywords as string,
     updatedAt: new Date(),
-  }).where(eq(content.id, contentId));
+  } as any).where(eq(content.id, contentId as any));
 
   return rollbackData;
 }

@@ -131,7 +131,7 @@ export class CountriesCitiesIngester extends BaseIngester {
             emojiU: country.emojiU,
             sourceId: String(country.id),
             rawData: country,
-          }).onConflictDoUpdate({
+          } as any).onConflictDoUpdate({
             target: update9987Countries.iso2,
             set: {
               name: sql`excluded.name`,
@@ -145,7 +145,7 @@ export class CountriesCitiesIngester extends BaseIngester {
               timezones: sql`excluded.timezones`,
               rawData: sql`excluded.raw_data`,
               updatedAt: sql`now()`,
-            },
+            } as any,
           }).returning({ id: update9987Countries.id });
           
           if (result.length > 0) {
@@ -181,7 +181,7 @@ export class CountriesCitiesIngester extends BaseIngester {
             longitude: state.longitude,
             sourceId: String(state.id),
             rawData: state,
-          }).onConflictDoNothing();
+          } as any).onConflictDoNothing();
           created++;
         } catch (error) {
           updated++;
@@ -215,7 +215,7 @@ export class CountriesCitiesIngester extends BaseIngester {
             wikiDataId: city.wikiDataId,
             sourceId: String(city.id),
             rawData: city,
-          }).onConflictDoNothing();
+          } as any).onConflictDoNothing();
           created++;
         } catch (error) {
           updated++;

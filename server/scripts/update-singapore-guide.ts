@@ -24,7 +24,7 @@ async function updateSingaporeGuide() {
       metaDescription: "Discover Singapore in 2026: honest costs from $70/day, best hotels from $50, top attractions, insider tips. Realistic guide for first-time visitors.",
       focusKeyword: "Singapore travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'singapore-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

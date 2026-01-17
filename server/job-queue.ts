@@ -84,7 +84,7 @@ class JobQueue {
         retries: 0,
         maxRetries: options?.maxRetries ?? 3,
         priority: options?.priority ?? 0,
-      })
+      } as any)
       .returning();
 
     console.log(`[JobQueue] Added job ${job.id} of type ${type}`);
@@ -111,7 +111,7 @@ class JobQueue {
         retries: 0,
         maxRetries: options?.maxRetries ?? 3,
         priority: options?.priority ?? 0,
-      })
+      } as any)
       .then(() => console.log(`[JobQueue] Added job ${id} of type ${type}`))
       .catch(err => console.error(`[JobQueue] Failed to add job ${id}:`, err));
 
@@ -197,7 +197,7 @@ class JobQueue {
   private async recoverStuckJobs() {
     try {
       const result = await db.update(backgroundJobs)
-        .set({ status: "pending" })
+        .set({ status: "pending" } as any)
         .where(eq(backgroundJobs.status, "processing"))
         .returning();
 
@@ -245,7 +245,7 @@ class JobQueue {
 
       // Mark job as processing
       await db.update(backgroundJobs)
-        .set({ status: "processing", startedAt: new Date() })
+        .set({ status: "processing", startedAt: new Date() } as any)
         .where(eq(backgroundJobs.id, jobRow.id));
 
       this.processing.add(jobRow.id);
@@ -259,7 +259,7 @@ class JobQueue {
             status: "completed",
             result: result as Record<string, unknown>,
             completedAt: new Date()
-          })
+          } as any)
           .where(eq(backgroundJobs.id, jobRow.id));
 
         this.lastProcessedAt = new Date();
@@ -270,7 +270,7 @@ class JobQueue {
         if (newRetries < jobRow.maxRetries) {
           // Retry
           await db.update(backgroundJobs)
-            .set({ status: "pending", retries: newRetries })
+            .set({ status: "pending", retries: newRetries } as any)
             .where(eq(backgroundJobs.id, jobRow.id));
 
           console.warn(`[JobQueue] Job ${jobRow.id} failed, retrying (${newRetries}/${jobRow.maxRetries})`);
@@ -282,7 +282,7 @@ class JobQueue {
               retries: newRetries,
               error: error instanceof Error ? error.message : String(error),
               completedAt: new Date()
-            })
+            } as any)
             .where(eq(backgroundJobs.id, jobRow.id));
 
           console.error(`[JobQueue] Job ${jobRow.id} failed permanently:`, error);
@@ -351,7 +351,7 @@ class JobQueue {
         retries: 0,
         error: null,
         completedAt: null
-      })
+      } as any)
       .where(and(
         eq(backgroundJobs.id, id),
         eq(backgroundJobs.status, "failed")

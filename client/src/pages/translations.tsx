@@ -97,7 +97,7 @@ export default function TranslationsPage() {
     const contentTranslations = translations?.filter((t) => t.contentId === contentId) || [];
     const translatedLocales = contentTranslations.map((t) => t.locale);
     const allLocales = SUPPORTED_LOCALES.map((l) => l.code).filter((l) => l !== "en") as Locale[];
-    const pendingLocales = allLocales.filter((l) => !translatedLocales.includes(l));
+    const pendingLocales = allLocales.filter((l) => !translatedLocales.includes(l as any));
 
     return {
       contentId,

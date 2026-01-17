@@ -6,13 +6,12 @@
 import { db } from '../../db';
 import { searchIndex } from '@shared/schema';
 import { eq } from 'drizzle-orm';
-import type { GateRule, GateEvaluation } from '../types';
 
-export const searchIndexRule: GateRule = {
+export const searchIndexRule = {
   name: 'search-index',
   description: 'Content should be indexed for search',
 
-  async evaluate(contentId: string): Promise<GateEvaluation> {
+  async evaluate(contentId: string): Promise<any> {
     try {
       const result = await db
         .select({ contentId: searchIndex.contentId })

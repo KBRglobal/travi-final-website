@@ -69,7 +69,7 @@ export async function captureEventImmediate(event: AuditEvent): Promise<AuditLog
       userAgent: normalized.userAgent,
       sessionId: normalized.sessionId,
       metadata: normalized.metadata,
-    })
+    } as any)
     .returning();
 
   return entry as unknown as AuditLogEntry;

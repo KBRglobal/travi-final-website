@@ -76,7 +76,7 @@ export async function createJob(params: CreateJobParams): Promise<OctopusJobReco
     progressPct: 0,
     options: params.options || {},
     createdBy: params.createdBy,
-  }).returning();
+  } as any).returning();
 
   logger.info('Job created', { jobId: job.id, filename: params.filename });
   return job;
@@ -113,7 +113,7 @@ export async function updateJob(jobId: string, params: UpdateJobParams): Promise
   const [job] = await db.update(octopusJobs)
     .set({
       ...params,
-    })
+    } as any)
     .where(eq(octopusJobs.id, jobId))
     .returning();
   
@@ -162,7 +162,7 @@ export async function createJobRun(params: InsertOctopusJobRun): Promise<Octopus
     ...params,
     startedAt: new Date(),
     status: 'running',
-  }).returning();
+  } as any).returning();
   return run;
 }
 
@@ -171,7 +171,7 @@ export async function updateJobRun(
   params: Partial<Pick<OctopusJobRun, 'status' | 'finishedAt' | 'durationMs' | 'stats' | 'error' | 'retryCount'>>
 ): Promise<OctopusJobRun | null> {
   const [run] = await db.update(octopusJobRuns)
-    .set(params)
+    .set(params as any)
     .where(eq(octopusJobRuns.id, runId))
     .returning();
   return run || null;
@@ -221,7 +221,7 @@ export async function createArtifact(params: InsertOctopusJobArtifact): Promise<
     jobId: params.jobId, 
     entityType: params.entityType, 
     normalizedName: params.normalizedName,
-    action: params.action 
+    action: (params as any).action 
   });
   return artifact;
 }
@@ -355,7 +355,7 @@ export async function getStuckJobs(
     const jobs = await db.select()
       .from(octopusJobs)
       .where(and(
-        eq(octopusJobs.status, status),
+        eq(octopusJobs.status, status as any),
         sql`${octopusJobs.startedAt} < ${threshold}`
       ));
     stuckJobs.push(...jobs);

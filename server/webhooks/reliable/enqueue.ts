@@ -136,7 +136,7 @@ export async function enqueueWebhook(
             maxAttempts,
             nextAttemptAt: scheduledFor || new Date(),
             status: "pending",
-          })
+          } as any)
           .onConflictDoNothing({ target: webhookOutbox.idempotencyKey })
           .returning({ id: webhookOutbox.id });
 

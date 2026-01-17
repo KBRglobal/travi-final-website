@@ -105,7 +105,7 @@ export async function transitionState(
       afterState: { status: newStatus },
       ipAddress: "system",
       userAgent: "content-lifecycle",
-    });
+    } as any);
   } catch (error) {
     console.warn("Failed to create audit log for status transition:", error);
   }

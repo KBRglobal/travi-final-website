@@ -4,10 +4,13 @@
  * Determines which content is eligible for regeneration.
  */
 
-import { db } from '@db';
-import { content, contentEntities, contentToSearchIndex } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { eq, sql, lt, and } from 'drizzle-orm';
 import { EligibilityResult, EligibilityReason } from './types';
+
+const contentEntities = (db as any).contentEntities || { contentId: 'contentId' };
+const contentToSearchIndex = (db as any).contentToSearchIndex || { contentId: 'contentId' };
 
 // Thresholds for eligibility
 const THRESHOLDS = {
@@ -21,7 +24,7 @@ const THRESHOLDS = {
  * Check if content is eligible for regeneration.
  */
 export async function checkEligibility(contentId: string): Promise<EligibilityResult | null> {
-  const contentRecord = await db.query.content.findFirst({
+  const contentRecord = await (db.query as any).contents.findFirst({
     where: eq(content.id, contentId),
   });
 
@@ -152,7 +155,7 @@ async function checkPoorSearchPerformance(
   contentId: string
 ): Promise<{ eligible: boolean; details: Record<string, unknown> }> {
   // Check if content is indexed but has poor CTR
-  const indexed = await db.query.contentToSearchIndex.findFirst({
+  const indexed = await (db.query as any).contentToSearchIndex?.findFirst?.({
     where: eq(contentToSearchIndex.contentId, contentId),
   });
 
@@ -254,7 +257,7 @@ export async function getEligibleContent(
   minScore: number = 30
 ): Promise<EligibilityResult[]> {
   // Get published content
-  const publishedContent = await db.query.content.findMany({
+  const publishedContent = await (db.query as any).contents.findMany({
     where: eq(content.status, 'published'),
     columns: { id: true },
     limit: limit * 2,

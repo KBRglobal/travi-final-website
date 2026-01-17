@@ -104,13 +104,13 @@ export async function setTranslation(
       locale,
       field,
       value,
-    })
+    } as any)
     .onConflictDoUpdate({
       target: [cmsTranslations.entityType, cmsTranslations.entityId, cmsTranslations.locale, cmsTranslations.field],
       set: {
         value,
         updatedAt: new Date(),
-      }
+      } as any
     });
 }
 

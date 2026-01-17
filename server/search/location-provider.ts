@@ -65,8 +65,8 @@ async function fetchDestinationLocations(): Promise<string[]> {
   try {
     const results = await db.select({
       name: destinations.name,
-      nameHe: destinations.nameHe,
-      nameAr: destinations.nameAr,
+      nameHe: (destinations as any).nameHe,
+      nameAr: (destinations as any).nameAr,
     })
     .from(destinations)
     .where(eq(destinations.isActive, true))
@@ -94,7 +94,7 @@ async function fetchDistrictLocations(): Promise<string[]> {
   try {
     const results = await db.select({
       title: contents.title,
-      name: districts.name,
+      name: (districts as any).name,
     })
     .from(districts)
     .innerJoin(contents, eq(districts.contentId, contents.id))

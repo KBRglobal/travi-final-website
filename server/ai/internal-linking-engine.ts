@@ -539,7 +539,7 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
         id: categoryPages.id,
         slug: categoryPages.slug,
         name: categoryPages.name,
-        description: categoryPages.description,
+        description: (categoryPages as any).description,
       })
       .from(categoryPages);
 
@@ -558,7 +558,7 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
     dbLinksCache = linkableContent;
     dbLinksCacheTime = now;
 
-    logger.info(`Loaded ${linkableContent.length} linkable items from database`, {
+    (logger as any).info(`Loaded ${linkableContent.length} linkable items from database`, {
       destinations: dbDestinations.length,
       content: publishedContent.length,
       categories: categories.length,
@@ -566,7 +566,7 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
 
     return linkableContent;
   } catch (error) {
-    logger.error("Failed to load linkable content from database", {
+    (logger as any).error("Failed to load linkable content from database", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
     return dbLinksCache; // Return stale cache if available
@@ -670,7 +670,7 @@ export async function insertInternalLinksAsync(
     }
   }
 
-  logger.info(`[Async] Inserted ${links.length} internal links (target: ${minLinks}-${maxLinks})`, {
+  (logger as any).info(`[Async] Inserted ${links.length} internal links (target: ${minLinks}-${maxLinks})`, {
     totalTargets: allTargets.length,
   });
 

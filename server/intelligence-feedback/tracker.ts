@@ -32,8 +32,8 @@ export async function captureBeforeMetrics(
 
   try {
     // Capture health score
-    const { scoreContent } = await import('../content-health');
-    const healthScore = await scoreContent(targetId);
+    const contentHealth = await import('../content-health') as any;
+    const healthScore = await contentHealth.scoreContent(targetId);
     if (healthScore) {
       snapshot.healthScore = healthScore.overallScore;
     }

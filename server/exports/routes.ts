@@ -17,7 +17,7 @@ const router = Router();
 // Apply Security Gate to all export routes (except status)
 router.use((req, res, next) => {
   if (req.path === '/status') return next();
-  return exportGuard(req, res, next);
+  return exportGuard(req as any, res, next);
 });
 
 // ============================================================================

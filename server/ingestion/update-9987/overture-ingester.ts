@@ -158,7 +158,7 @@ export class OvertureIngester extends BaseIngester {
           countryCode: city.countryCode,
           cityName: city.name,
           rawData: poi,
-        }).onConflictDoUpdate({
+        } as any).onConflictDoUpdate({
           target: update9987OverturePois.overtureId,
           set: {
             name: sql`excluded.name`,
@@ -172,7 +172,7 @@ export class OvertureIngester extends BaseIngester {
             brands: sql`excluded.brands`,
             rawData: sql`excluded.raw_data`,
             updatedAt: sql`now()`,
-          },
+          } as any,
         });
         
         created++;

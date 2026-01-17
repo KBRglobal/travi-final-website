@@ -237,7 +237,7 @@ export class FunnelSimulator {
       avgValue: baseline.avgValue * (1 + lift.valueLift),
       avgCompletionTime: baseline.avgCompletionTime * (1 + lift.timeLift),
       dropOffByStep: baseline.dropOffByStep.map((step) => ({
-        stepId: step.id,
+        stepId: (step as any).id,
         rate: step.rate * (1 - lift.conversionLift * 0.3), // Proportional improvement
       })),
       bottleneckCount: Math.max(0, baseline.bottleneckCount - Math.floor(lift.conversionLift * 5)),

@@ -342,7 +342,7 @@ async function seedPlacementRules(): Promise<void> {
       conditions: rule.conditions,
       priority: rule.priority,
       isActive: true,
-    });
+    } as any);
 
     console.log(`  [OK] Created rule "${rule.name}"`);
     created++;

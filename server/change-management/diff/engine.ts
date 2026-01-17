@@ -107,7 +107,7 @@ export async function generateContentDiff(
   changes: ChangeItem[]
 ): Promise<ContentDiff> {
   // Get current content state
-  const [currentContent] = await db.select().from(content).where(eq(content.id, parseInt(contentId))).limit(1);
+  const [currentContent] = await db.select().from(content).where(eq(content.id as any, parseInt(contentId))).limit(1);
 
   const blocks: DiffBlock[] = [];
   const entityChanges = { added: [] as string[], removed: [] as string[] };

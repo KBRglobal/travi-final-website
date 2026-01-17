@@ -89,7 +89,7 @@ export async function logCrawlerVisit(input: CrawlerLogInput): Promise<boolean> 
       bytesServed: input.bytesServed,
       ipAddress: input.ipAddress,
       referer: input.referer,
-    });
+    } as any);
 
     aeoLogger.info( `Crawler visit logged: ${crawlerInfo.name} -> ${input.requestPath}`);
     return true;
@@ -117,7 +117,7 @@ export async function logCitation(input: CitationInput): Promise<string | null> 
       sessionId: input.sessionId,
       userAgent: input.userAgent,
       ipCountry: input.ipCountry,
-    }).returning({ id: aeoCitations.id });
+    } as any).returning({ id: aeoCitations.id });
 
     // Update citation count in answer capsule
     await db.execute(sql`
@@ -172,7 +172,7 @@ export async function trackAITraffic(input: TrafficInput): Promise<void> {
           revenue: input.revenue
             ? sql`${aeoPerformanceMetrics.revenue} + ${input.revenue}`
             : aeoPerformanceMetrics.revenue,
-        })
+        } as any)
         .where(eq(aeoPerformanceMetrics.id, existingMetric.id));
     } else {
       await db.insert(aeoPerformanceMetrics).values({
@@ -182,7 +182,7 @@ export async function trackAITraffic(input: TrafficInput): Promise<void> {
         clickThroughs: 1,
         conversions: input.isConversion ? 1 : 0,
         revenue: input.revenue || 0,
-      });
+      } as any);
     }
   } catch (error) {
     aeoLogger.error( "Failed to track AI traffic", { error });

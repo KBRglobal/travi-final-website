@@ -208,7 +208,7 @@ async function checkPublishGates(plan: ChangePlan): Promise<GuardResult[]> {
   if (contentIds.length > 0) {
     // Check content status
     const contents = await db.select().from(content).where(
-      inArray(content.id, contentIds)
+      inArray(content.id as any, contentIds as any)
     );
 
     const draftContent = contents.filter(c => c.status === 'draft');
@@ -217,7 +217,7 @@ async function checkPublishGates(plan: ChangePlan): Promise<GuardResult[]> {
       // Check if content passes publish requirements
       for (const item of draftContent) {
         const hasMeta = item.metaTitle && item.metaDescription;
-        const hasBody = item.body && item.body.length > 100;
+        const hasBody = (item as any).body && (item as any).body.length > 100;
 
         if (!hasMeta || !hasBody) {
           results.push({
@@ -383,7 +383,7 @@ async function checkRecentChanges(plan: ChangePlan): Promise<GuardResult[]> {
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   const contents = await db.select().from(content).where(
-    inArray(content.id, contentIds)
+    inArray(content.id as any, contentIds as any)
   );
 
   const recentlyChanged = contents.filter(

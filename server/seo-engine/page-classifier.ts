@@ -405,7 +405,7 @@ export class PageClassifier {
         results.push(result);
 
         // Update classification in database if changed
-        if (result.classification !== content.pageClassification) {
+        if (result.classification !== (content as any).pageClassification) {
           await this.updateClassification(content.id, result);
         }
       } catch (error) {

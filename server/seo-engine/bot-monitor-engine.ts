@@ -122,7 +122,7 @@ export class BotMonitorEngine {
         responseTime: visit.responseTime,
         ipAddress: visit.ipAddress,
         contentId: visit.contentId,
-      });
+      } as any);
 
       // Check for anomalies
       await this.checkForAnomalies(visit);

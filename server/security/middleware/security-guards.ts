@@ -105,7 +105,7 @@ function handleGateResult(
   if (result.blocked) {
     if (SECURITY_GATE_ENFORCE) {
       console.log(`[SecurityGuard] BLOCKED: ${context} - ${result.reason}`);
-      return res.status(403).json({
+      res.status(403).json({
         error: result.reason,
         code: result.code,
         requiresApproval: result.requiresApproval,
@@ -113,6 +113,7 @@ function handleGateResult(
         recommendations: result.recommendations,
         _securityGate: true,
       });
+      return;
     } else {
       // Advisory mode - log but allow
       console.warn(`[SecurityGuard] ADVISORY: Would block ${context} - ${result.reason}`);

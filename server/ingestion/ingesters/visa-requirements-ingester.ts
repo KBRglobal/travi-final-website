@@ -256,7 +256,7 @@ export class VisaRequirementsIngester extends BaseIngester {
                 notes: record.notes,
                 sourceUrl: SOURCE_URL,
                 lastUpdated: new Date(),
-              })
+              } as any)
               .where(eq(visaRequirements.id, existing[0].id));
             updated++;
           } else {
@@ -268,7 +268,7 @@ export class VisaRequirementsIngester extends BaseIngester {
               notes: record.notes,
               sourceUrl: SOURCE_URL,
               lastUpdated: new Date(),
-            });
+            } as any);
             created++;
           }
         } catch (error) {

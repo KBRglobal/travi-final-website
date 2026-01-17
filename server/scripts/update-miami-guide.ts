@@ -24,7 +24,7 @@ async function updateMiamiGuide() {
       metaDescription: "Plan your Miami trip: honest costs from $120/day, 10 best beaches, Art Deco District, Cuban food spots. Real tips from travelers for 2026 visits.",
       focusKeyword: "Miami travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'miami-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

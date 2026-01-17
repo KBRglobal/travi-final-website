@@ -522,7 +522,7 @@ export function initializeDefaultProbes(): void {
       const tracker = getHealthTracker();
       const healthData = tracker.getAllHealth();
 
-      const healthy = healthData.filter(h => h.status === 'healthy').length;
+      const healthy = healthData.filter(h => (h as any).status === 'healthy').length;
       const total = healthData.length;
 
       let status: ProbeStatus = 'healthy';
@@ -540,7 +540,7 @@ export function initializeDefaultProbes(): void {
         details: {
           healthyProviders: healthy,
           totalProviders: total,
-          providers: healthData.map(h => ({ provider: h.provider, status: h.status })),
+          providers: healthData.map(h => ({ provider: h.provider, status: (h as any).status })),
         },
       };
     } catch {

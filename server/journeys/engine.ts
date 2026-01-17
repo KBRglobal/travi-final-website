@@ -166,7 +166,7 @@ async function persistEvent(event: JourneyEvent): Promise<void> {
       ...event.metadata,
     },
     timestamp: event.timestamp,
-  });
+  } as any);
 }
 
 // ============================================================================
@@ -397,8 +397,8 @@ export async function getJourneySummary(
         const first = sorted[0];
         const last = sorted[sorted.length - 1];
 
-        const entryUrl = (first.properties as Record<string, unknown>)?.pageUrl as string || '/';
-        const exitUrl = (last.properties as Record<string, unknown>)?.pageUrl as string || '/';
+        const entryUrl = ((first as any).properties as Record<string, unknown>)?.pageUrl as string || '/';
+        const exitUrl = ((last as any).properties as Record<string, unknown>)?.pageUrl as string || '/';
 
         entryPages.set(entryUrl, (entryPages.get(entryUrl) || 0) + 1);
         exitPages.set(exitUrl, (exitPages.get(exitUrl) || 0) + 1);
@@ -406,7 +406,7 @@ export async function getJourneySummary(
         totalDuration += last.timestamp.getTime() - first.timestamp.getTime();
         totalSteps += sorted.length;
 
-        const hasConversion = sorted.some(e => e.eventType === 'journey.conversion');
+        const hasConversion = sorted.some(e => (e.eventType as any) === 'journey.conversion');
         if (hasConversion) totalConversions++;
       }
 

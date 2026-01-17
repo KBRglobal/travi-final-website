@@ -424,7 +424,7 @@ function extractFAQs(blocks: any[]): { question: string; answer: string }[] {
  * Convert locale to Open Graph locale format
  */
 function getOgLocale(locale: Locale): string {
-  const localeMap: Record<Locale, string> = {
+  const localeMap: Record<string, string> = {
     en: "en_US",
     ar: "ar_AE",
     hi: "hi_IN",
@@ -443,7 +443,7 @@ function getOgLocale(locale: Locale): string {
     ko: "ko_KR",
     he: "he_IL",
   };
-  return localeMap[locale] || "en_US";
+  return localeMap[locale as any] || "en_US";
 }
 
 /**

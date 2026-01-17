@@ -126,7 +126,7 @@ export async function generateAndSaveSeoSlug(attractionId: string): Promise<stri
   const uniqueSlug = await getUniqueSlug(baseSlug, attractionId);
   
   await db.update(tiqetsAttractions)
-    .set({ seoSlug: uniqueSlug, updatedAt: new Date() })
+    .set({ seoSlug: uniqueSlug, updatedAt: new Date() } as any)
     .where(eq(tiqetsAttractions.id, attractionId));
   
   return uniqueSlug;
@@ -176,7 +176,7 @@ export async function backfillSeoSlugs(options?: {
         const uniqueSlug = await getUniqueSlug(baseSlug, attraction.id);
         
         await db.update(tiqetsAttractions)
-          .set({ seoSlug: uniqueSlug })
+          .set({ seoSlug: uniqueSlug } as any)
           .where(eq(tiqetsAttractions.id, attraction.id));
         
         updated++;

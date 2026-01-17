@@ -60,7 +60,7 @@ export async function createImageUsage(params: CreateImageUsageParams): Promise<
     requestedRole: params.requestedRole as any,
     decision: (params.decision || 'pending') as any,
     decisionReason: params.decisionReason,
-  }).returning();
+  } as any).returning();
 
   logger.info('ImageUsage created', { 
     id: usage.id, 

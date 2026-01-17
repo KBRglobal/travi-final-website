@@ -57,7 +57,7 @@ export class AEOScoreEngine {
       .set({
         aeoScore: score,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, contentId));
 
     return {

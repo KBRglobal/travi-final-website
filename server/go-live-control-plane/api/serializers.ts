@@ -185,11 +185,11 @@ export function serializeCapability(cap: Capability): SerializedCapability {
     name: cap.name,
     description: cap.description,
     domain: cap.domain,
-    status: cap.status,
+    status: cap.status as any,
     riskLevel: cap.riskLevel,
     dependencies: cap.dependencies,
     dependents: cap.dependents,
-    envVarName: cap.envVarName,
+    envVarName: (cap as any).envVarName,
     requiredEnvVars: cap.requiredEnvVars,
     metadata: cap.metadata,
   };

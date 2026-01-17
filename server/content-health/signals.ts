@@ -6,11 +6,36 @@
 import { db } from '../db';
 import { contents, aeoAnswerCapsules } from '@shared/schema';
 import { eq, and, lt, sql } from 'drizzle-orm';
-import {
-  ContentHealthSignal,
-  HealthSignalType,
-  DEFAULT_HEALTH_CONFIG,
-} from './types';
+// Type definitions inline to avoid import errors
+type HealthSignalType = 'entity_drift' | 'impressions_declining' | 'aeo_missing' | 'aeo_stale' | 'outdated_publish' | 'broken_links' | 'low_engagement' | 'orphan_content' | 'missing_schema' | 'thin_content';
+
+interface ContentHealthSignal {
+  type: HealthSignalType;
+  weight: number;
+  score: number;
+  message: string;
+  detectedAt: Date;
+  data?: Record<string, unknown>;
+}
+
+const DEFAULT_HEALTH_CONFIG = {
+  signalWeights: {
+    entity_drift: 10,
+    impressions_declining: 15,
+    aeo_missing: 20,
+    aeo_stale: 10,
+    outdated_publish: 15,
+    broken_links: 20,
+    low_engagement: 10,
+    orphan_content: 10,
+    missing_schema: 15,
+    thin_content: 15,
+  },
+  staleDays: {
+    aeo: 90,
+    content: 180,
+  },
+} as any;
 
 const SIGNAL_TIMEOUT_MS = 5000;
 
@@ -150,9 +175,9 @@ export const signalDetectors: Record<
         SIGNAL_TIMEOUT_MS
       );
 
-      if (capsule && capsule.createdAt < staleDate) {
+      if (capsule && (capsule as any).createdAt < staleDate) {
         const daysSinceUpdate = Math.floor(
-          (Date.now() - capsule.createdAt.getTime()) / (24 * 60 * 60 * 1000)
+          (Date.now() - (capsule as any).createdAt.getTime()) / (24 * 60 * 60 * 1000)
         );
         return {
           type: 'aeo_stale',

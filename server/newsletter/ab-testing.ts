@@ -28,7 +28,7 @@ export async function createAbTest(
       ...data,
       statsA: { sent: 0, opened: 0, clicked: 0 },
       statsB: { sent: 0, opened: 0, clicked: 0 },
-    })
+    } as any)
     .returning();
   
   return test;
@@ -118,7 +118,7 @@ export async function recordSend(
   
   await db
     .update(newsletterAbTests)
-    .set(variant === "a" ? { statsA: updatedStats } : { statsB: updatedStats })
+    .set((variant === "a" ? { statsA: updatedStats } : { statsB: updatedStats }) as any)
     .where(eq(newsletterAbTests.id, testId));
 }
 
@@ -137,7 +137,7 @@ export async function recordOpen(
   
   await db
     .update(newsletterAbTests)
-    .set(variant === "a" ? { statsA: updatedStats } : { statsB: updatedStats })
+    .set((variant === "a" ? { statsA: updatedStats } : { statsB: updatedStats }) as any)
     .where(eq(newsletterAbTests.id, testId));
 }
 
@@ -156,7 +156,7 @@ export async function recordClick(
   
   await db
     .update(newsletterAbTests)
-    .set(variant === "a" ? { statsA: updatedStats } : { statsB: updatedStats })
+    .set((variant === "a" ? { statsA: updatedStats } : { statsB: updatedStats }) as any)
     .where(eq(newsletterAbTests.id, testId));
 }
 
@@ -211,7 +211,7 @@ export async function autoSelectWinner(testId: string): Promise<boolean> {
       winnerId: winner,
       status: "completed",
       completedAt: new Date(),
-    })
+    } as any)
     .where(eq(newsletterAbTests.id, testId));
   
   return true;

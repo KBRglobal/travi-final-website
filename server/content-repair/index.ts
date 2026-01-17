@@ -77,7 +77,7 @@ export async function simulateRepair(
       status: "simulated",
       isDryRun: true,
       simulationResult: simulation as unknown as Record<string, unknown>,
-    })
+    } as any)
     .returning();
 
   return {
@@ -121,7 +121,7 @@ export async function executeRepair(
       repairType,
       status: "running",
       isDryRun: dryRun,
-    })
+    } as any)
     .returning();
 
   try {
@@ -147,7 +147,7 @@ export async function executeRepair(
         status: "completed",
         executionResult: result,
         completedAt: new Date(),
-      })
+      } as any)
       .where(eq(contentRepairJobs.id, job.id));
 
     return {
@@ -169,7 +169,7 @@ export async function executeRepair(
         status: "failed",
         error: errorMsg,
         completedAt: new Date(),
-      })
+      } as any)
       .where(eq(contentRepairJobs.id, job.id));
 
     return {
@@ -284,7 +284,7 @@ async function performRepair(
     case "flag_for_review":
       await db
         .update(contents)
-        .set({ status: "in_review" })
+        .set({ status: "in_review" } as any)
         .where(eq(contents.id, contentId));
       return { action: "flagged", newStatus: "in_review" };
 

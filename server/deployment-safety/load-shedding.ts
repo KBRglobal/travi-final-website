@@ -165,8 +165,8 @@ export async function collectSystemMetrics(): Promise<LoadMetrics> {
   // Latency from monitoring
   let latencyP95Ms = 0;
   try {
-    const { getLatencyTracker } = await import('../monitoring/latency-tracker');
-    const tracker = getLatencyTracker();
+    const latencyTrackerModule = await import('../monitoring/latency-tracker') as any;
+    const tracker = latencyTrackerModule.getLatencyTracker();
     const stats = tracker.getOverallStats();
     latencyP95Ms = stats.p95;
   } catch {

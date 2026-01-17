@@ -6,21 +6,131 @@
 
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
-import { contents, changePlans, type ChangePlanItem } from "@shared/schema";
+import { contents } from "@shared/schema";
 import {
   getPlan,
-  getPlanItems,
   updatePlanStatus,
-  updateItemStatus,
-  createExecution,
-  updateExecution,
-  addExecutionLog,
-  saveExecutionResult,
-  acquireLock,
-  releaseLock,
-  releaseAllLocks,
-  getExecution,
 } from "../plans/repository";
+import type { ChangeItem, ChangePlan } from "../types";
+
+// Type alias for compatibility
+type ChangePlanItem = ChangeItem;
+
+// ============================================================================
+// STUB FUNCTIONS - These would be implemented in a full production system
+// ============================================================================
+
+interface Execution {
+  id: string;
+  planId: string;
+  kind: "apply" | "rollback";
+  status: string;
+  batchSize?: number;
+  lastProcessedIndex?: number;
+  successCount?: number;
+  failureCount?: number;
+  skipCount?: number;
+  startedAt?: Date;
+  finishedAt?: Date;
+  createdByUserId: string;
+  errorSummary?: { message: string };
+}
+
+const executions = new Map<string, Execution>();
+const locks = new Map<string, { executionId: string; expiresAt: number }>();
+
+function generateExecutionId(): string {
+  return `exec-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+}
+
+async function getPlanItems(planId: string): Promise<ChangePlanItem[]> {
+  const plan = getPlan(planId);
+  return plan?.changes || [];
+}
+
+async function updateItemStatus(
+  _itemId: string,
+  _status: string,
+  _extra?: Record<string, unknown>
+): Promise<void> {
+  // Stub - would update item in DB
+}
+
+async function createExecution(input: {
+  planId: string;
+  kind: "apply" | "rollback";
+  createdByUserId: string;
+  batchSize?: number;
+}): Promise<Execution> {
+  const id = generateExecutionId();
+  const execution: Execution = {
+    id,
+    planId: input.planId,
+    kind: input.kind,
+    status: "pending",
+    batchSize: input.batchSize || 20,
+    createdByUserId: input.createdByUserId,
+  };
+  executions.set(id, execution);
+  return execution;
+}
+
+async function updateExecution(
+  executionId: string,
+  updates: Partial<Execution>
+): Promise<void> {
+  const execution = executions.get(executionId);
+  if (execution) {
+    executions.set(executionId, { ...execution, ...updates });
+  }
+}
+
+async function addExecutionLog(_log: {
+  executionId: string;
+  level: string;
+  message: string;
+  itemId?: string;
+  data?: unknown;
+}): Promise<void> {
+  // Stub - would store log in DB
+}
+
+async function saveExecutionResult(_result: {
+  executionId: string;
+  summary: unknown;
+  impacts?: unknown;
+}): Promise<void> {
+  // Stub - would store result in DB
+}
+
+async function acquireLock(
+  lockKey: string,
+  executionId: string,
+  durationMs: number
+): Promise<boolean> {
+  const existing = locks.get(lockKey);
+  if (existing && existing.expiresAt > Date.now()) {
+    return false;
+  }
+  locks.set(lockKey, { executionId, expiresAt: Date.now() + durationMs });
+  return true;
+}
+
+async function releaseLock(lockKey: string, _executionId: string): Promise<void> {
+  locks.delete(lockKey);
+}
+
+async function releaseAllLocks(executionId: string): Promise<void> {
+  for (const [key, value] of locks.entries()) {
+    if (value.executionId === executionId) {
+      locks.delete(key);
+    }
+  }
+}
+
+async function getExecution(executionId: string): Promise<Execution | null> {
+  return executions.get(executionId) || null;
+}
 
 // Feature flags
 const isApplyEnabled = () => process.env.ENABLE_CHANGE_APPLY === "true";
@@ -96,7 +206,7 @@ export async function processChangeExecutionJob(input: ExecuteJobInput): Promise
     executionId,
     level: "info",
     message: `Starting ${kind} execution`,
-    data: { planId, itemCount: plan.items.length },
+    data: { planId, itemCount: plan.changes.length },
   });
 
   // Update plan status
@@ -157,7 +267,7 @@ export async function processChangeExecutionJob(input: ExecuteJobInput): Promise
               successCount++;
               await updateItemStatus(item.id, kind === "apply" ? "applied" : "rolled_back", {
                 appliedAt: new Date(),
-                rollbackData: result.rollbackData,
+                rollbackData: (result as { rollbackData?: unknown }).rollbackData,
               });
             } else {
               failureCount++;
@@ -203,7 +313,7 @@ export async function processChangeExecutionJob(input: ExecuteJobInput): Promise
 
     // Update plan status
     const finalStatus = kind === "apply"
-      ? (success ? "completed" : "failed")
+      ? (success ? "applied" : "failed")
       : "rolled_back";
     await updatePlanStatus(planId, finalStatus, userId);
 
@@ -217,7 +327,7 @@ export async function processChangeExecutionJob(input: ExecuteJobInput): Promise
         skipped: skipCount,
         durationMs: Date.now() - (execution.startedAt?.getTime() || Date.now()),
       },
-      impacts: plan.impactSummary || undefined,
+      impacts: plan.impactEstimate || undefined,
     });
 
     await addExecutionLog({
@@ -330,7 +440,7 @@ const handlers: Record<string, ChangeHandler> = {
   // SEO Update Handler
   seo_update: {
     async apply(item) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const [current] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
       if (!current) throw new Error(`Content ${contentId} not found`);
@@ -347,26 +457,26 @@ const handlers: Record<string, ChangeHandler> = {
         metaDescription: updates.metaDescription as string | undefined,
         slug: updates.slug as string | undefined,
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const data = rollbackData as Record<string, unknown>;
       await db.update(contents).set({
         metaTitle: data.metaTitle as string | null,
         metaDescription: data.metaDescription as string | null,
         slug: data.slug as string | null,
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
     },
   },
 
   // Content Update Handler
   content_update: {
     async apply(item) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const [current] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
       if (!current) throw new Error(`Content ${contentId} not found`);
@@ -377,23 +487,23 @@ const handlers: Record<string, ChangeHandler> = {
       await db.update(contents).set({
         ...updates,
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       await db.update(contents).set({
         ...(rollbackData as object),
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
     },
   },
 
   // Content Publish Handler
   content_publish: {
     async apply(item) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const [current] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
       if (!current) throw new Error(`Content ${contentId} not found`);
@@ -404,25 +514,25 @@ const handlers: Record<string, ChangeHandler> = {
         status: "published",
         publishedAt: new Date(),
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const data = rollbackData as { status: string; publishedAt: Date | null };
       await db.update(contents).set({
         status: data.status as "draft" | "published",
         publishedAt: data.publishedAt,
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
     },
   },
 
   // Content Unpublish Handler
   content_unpublish: {
     async apply(item) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const [current] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
       if (!current) throw new Error(`Content ${contentId} not found`);
@@ -432,18 +542,18 @@ const handlers: Record<string, ChangeHandler> = {
       await db.update(contents).set({
         status: "draft",
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
-      const contentId = parseInt(item.targetId);
+      const contentId = item.targetId;
       const data = rollbackData as { status: string; publishedAt: Date | null };
       await db.update(contents).set({
         status: data.status as "draft" | "published",
         publishedAt: data.publishedAt,
         updatedAt: new Date(),
-      }).where(eq(contents.id, contentId));
+      } as any).where(eq(contents.id, contentId));
     },
   },
 

@@ -337,7 +337,7 @@ export class SemanticImageSearch {
         LIMIT ${limit}
       `);
 
-      return (results as any[]).map(row => ({
+      return (results as unknown as any[]).map(row => ({
         image: {
           id: row.id,
           url: '', // URL not stored in embeddings table
@@ -393,7 +393,7 @@ export class SemanticImageSearch {
         LIMIT ${limit}
       `);
 
-      return (results as any[]).map(row => ({
+      return (results as unknown as any[]).map(row => ({
         image: {
           id: row.id,
           url: '', // URL not stored in embeddings table
@@ -497,7 +497,7 @@ export class SemanticImageSearch {
         LIMIT 1
       `);
 
-      const row = (result as any[])[0];
+      const row = (result as unknown as any[])[0];
       if (!row) return null;
 
       return {
@@ -521,7 +521,7 @@ export class SemanticImageSearch {
       const result = await db.execute(sql`
         SELECT COUNT(*) as count FROM update_9987_embeddings WHERE content_type = 'image'
       `);
-      return (result as any[])[0]?.count > 0;
+      return (result as unknown as any[])[0]?.count > 0;
     } catch (error) {
       return false;
     }

@@ -193,7 +193,7 @@ export class ExecutionPlanner {
 
     for (const item of items) {
       if ((inDegree.get(item.id) || 0) === 0) {
-        queue.push({ id: item.id, priority: item.priority });
+        queue.push({ id: item.id, priority: item.priority as any });
       }
     }
 
@@ -213,7 +213,7 @@ export class ExecutionPlanner {
 
         if (newDegree === 0) {
           const item = items.find((i) => i.id === neighbor);
-          queue.push({ id: neighbor, priority: item?.priority || 0 });
+          queue.push({ id: neighbor, priority: (item?.priority || 0) as any });
           queue.sort((a, b) => b.priority - a.priority);
         }
       }

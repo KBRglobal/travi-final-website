@@ -255,7 +255,7 @@ async function getRSSHealth(): Promise<RSSHealthSnapshot> {
     const [activeFeedsResult] = await db
       .select({ count: count() })
       .from(rssFeeds)
-      .where(gte(rssFeeds.lastFetched, oneDayAgo));
+      .where(gte((rssFeeds as any).lastFetchedAt, oneDayAgo));
 
     return {
       feedsCount: Number(feedsResult?.count || 0),

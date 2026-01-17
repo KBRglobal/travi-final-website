@@ -52,7 +52,7 @@ export class TiqetsImportService {
                 tiqetsCityId: tiqetsCity.id,
                 countryName: tiqetsCity.country_name || null,
                 updatedAt: new Date(),
-              })
+              } as any)
               .where(eq(tiqetsCities.id, match.id));
             
             log(`  ✅ ${match.name} → ${tiqetsCity.id}`);
@@ -139,7 +139,7 @@ export class TiqetsImportService {
         attractionCount: imported + updated,
         lastSyncedAt: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(tiqetsCities.tiqetsCityId, tiqetsCityId));
     
     log(`✅ ${cityName}: ${imported} new + ${updated} updated = ${imported + updated} total`);
@@ -223,7 +223,7 @@ export class TiqetsImportService {
    */
   private async saveAttraction(product: any, cityName: string): Promise<'inserted' | 'updated'> {
     // Transform Tiqets data to our format
-    const data = TiqetsTransformer.transformProduct(product, cityName);
+    const data = TiqetsTransformer.transformProduct(product, cityName) as any;
     
     // Check if already exists
     const existing = await db.select({ id: tiqetsAttractions.id })
@@ -256,13 +256,13 @@ export class TiqetsImportService {
           productUrl: data.productUrl,
           lastSyncedAt: new Date(),
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(tiqetsAttractions.tiqetsId, data.tiqetsId));
       
       return 'updated';
     } else {
       // Insert new
-      await db.insert(tiqetsAttractions).values(data);
+      await db.insert(tiqetsAttractions).values(data as any);
       return 'inserted';
     }
   }

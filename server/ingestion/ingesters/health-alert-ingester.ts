@@ -123,7 +123,7 @@ interface TransformedHealthAlert {
 }
 
 export class HealthAlertIngester extends BaseIngester {
-  source: DataSource = {
+  source = {
     id: 'health-alert',
     name: 'WHO Disease Outbreak News',
     displayName: 'Health Alerts',
@@ -136,7 +136,7 @@ export class HealthAlertIngester extends BaseIngester {
       batchSize: 100,
       retryAttempts: 3,
     },
-  };
+  } as DataSource;
 
   async ingest(): Promise<IngestionResult> {
     const startTime = Date.now();
@@ -315,7 +315,7 @@ export class HealthAlertIngester extends BaseIngester {
     return data.value;
   }
 
-  private async saveToDatabase(records: TransformedHealthAlert[]): Promise<{ created: number; updated: number }> {
+  protected async saveToDatabase(records: TransformedHealthAlert[]): Promise<{ created: number; updated: number }> {
     this.log(`Saving ${records.length} health alert records to database`);
     
     let created = 0;
@@ -366,7 +366,7 @@ export class HealthAlertIngester extends BaseIngester {
                   status: record.status,
                   sourceUrl: record.sourceUrl,
                   updatedAt: new Date(),
-                })
+                } as any)
                 .where(eq(healthAlerts.id, existingAlert[0].id));
               updated++;
             } else {
@@ -381,7 +381,7 @@ export class HealthAlertIngester extends BaseIngester {
                 source: record.donId,
                 sourceUrl: record.sourceUrl,
                 issuedDate: record.issuedDate,
-              });
+              } as any);
               created++;
             }
           } catch (error) {

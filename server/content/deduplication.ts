@@ -153,7 +153,7 @@ export async function createFingerprint(
       sourceUrl: sourceUrl ? normalizeUrl(sourceUrl) : undefined,
       sourceTitle: title,
       rssFeedId,
-    });
+    } as any);
   } catch (error: any) {
     if (error?.code !== "23505") {
       throw error;
@@ -170,7 +170,7 @@ export async function createFingerprint(
           sourceUrl: normalizeUrl(sourceUrl),
           sourceTitle: title,
           rssFeedId,
-        });
+        } as any);
       } catch (error: any) {
         if (error?.code !== "23505") {
           throw error;

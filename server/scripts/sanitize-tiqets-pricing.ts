@@ -169,7 +169,7 @@ async function run() {
             metaTitle: sanitizedMetaTitle || null,
             metaDescription: sanitizedMetaDesc || null,
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(tiqetsAttractions.id, attraction.id));
         
         updated++;

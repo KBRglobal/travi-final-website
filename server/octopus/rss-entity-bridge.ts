@@ -104,7 +104,7 @@ export async function extractEntitiesFromRssItem(
       rawContent: fullText,
       totalWords: fullText.split(/\s+/).length,
       parsedAt: new Date(),
-    };
+    } as any;
 
     // Run entity extraction with quick settings
     const extractionResult = await extractEntities(document, {

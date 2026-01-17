@@ -28,7 +28,7 @@ const analysisCache = new Map<string, CompetitionAnalysis>();
  * Analyze content for internal competition
  */
 export async function analyzeCompetition(contentId: string): Promise<CompetitionAnalysis> {
-  const [targetContent] = await db.select().from(content).where(eq(content.id, parseInt(contentId))).limit(1);
+  const [targetContent] = await db.select().from(content).where(eq(content.id as any, contentId)).limit(1);
 
   if (!targetContent) {
     throw new Error(`Content ${contentId} not found`);
@@ -37,19 +37,19 @@ export async function analyzeCompetition(contentId: string): Promise<Competition
   // Get all other published content
   const allContent = await db.select().from(content).where(
     and(
-      ne(content.id, parseInt(contentId)),
+      ne(content.id as any, contentId),
       eq(content.status, 'published')
     )
   );
 
-  const targetKeywords = extractKeywords(targetContent.title || '', targetContent.body || '');
-  const targetTopics = extractTopics(targetContent.title || '', targetContent.body || '');
+  const targetKeywords = extractKeywords(targetContent.title || '', (targetContent as any).body || '');
+  const targetTopics = extractTopics(targetContent.title || '', (targetContent as any).body || '');
 
   const competingContent: CompetitionPair[] = [];
 
   for (const other of allContent) {
-    const otherKeywords = extractKeywords(other.title || '', other.body || '');
-    const otherTopics = extractTopics(other.title || '', other.body || '');
+    const otherKeywords = extractKeywords(other.title || '', (other as any).body || '');
+    const otherTopics = extractTopics(other.title || '', (other as any).body || '');
 
     const keywordOverlap = calculateOverlap(targetKeywords, otherKeywords);
     const topicOverlap = calculateOverlap(targetTopics, otherTopics);

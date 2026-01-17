@@ -58,7 +58,7 @@ async function saveContentToDatabase(
         factCheckScore: qualityScore.factCheckScore,
         contentVersion: 2,
         lastContentUpdate: new Date(),
-      })
+      } as any)
       .where(eq(tiqetsAttractions.id, attractionId));
     
     return true;

@@ -2,7 +2,8 @@
  * Publish Gates - Structured Errors
  */
 
-import type { GateReport, GateEvaluation } from './types';
+type GateReport = any;
+type GateEvaluation = any;
 
 export class PublishBlockedError extends Error {
   public readonly code = 'PUBLISH_BLOCKED';

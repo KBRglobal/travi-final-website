@@ -432,7 +432,7 @@ async function buildSnapshot(): Promise<PlatformSnapshot> {
     { system: 'governance', status: governanceResult.timedOut ? 'timeout' : 'ok' as const, latencyMs: governanceResult.data?.latencyMs || 0 },
     { system: 'risks', status: risksResult.timedOut ? 'timeout' : 'ok' as const, latencyMs: risksResult.data?.latencyMs || 0 },
     { system: 'incidents', status: incidentsResult.timedOut ? 'timeout' : 'ok' as const, latencyMs: incidentsResult.data?.latencyMs || 0 },
-  ];
+  ] as any;
 
   return {
     id: snapshotId,

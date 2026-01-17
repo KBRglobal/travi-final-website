@@ -132,7 +132,7 @@ function buildPrompt(attraction: TiqetsAttraction): string {
   const name = attraction.title;
   
   // Get rating label (or null if below 3.8)
-  const ratingLabel = getRatingLabel(attraction.tiqetsRating as number | null);
+  const ratingLabel = getRatingLabel(attraction.tiqetsRating as unknown as number | null);
   const ratingLine = ratingLabel ? `- Visitor Rating: ${ratingLabel}` : "";
 
   return `You are a professional travel content writer creating SEO/AEO optimized content for TRAVI World.

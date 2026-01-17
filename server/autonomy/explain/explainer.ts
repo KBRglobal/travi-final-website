@@ -15,7 +15,7 @@ import {
   FEATURE_DISPLAY_NAMES,
   DECISION_TEMPLATES,
 } from './types';
-import { GuardedFeature, PolicyDecision } from '../enforcement/types';
+import { GuardedFeature } from '../enforcement/types';
 import { getOutcomes } from '../learning/engine';
 import { computeMetrics } from '../learning/engine';
 import { getSignals } from '../drift/detector';
@@ -123,10 +123,10 @@ export function generateActivitySummary(
   if (cached) return cached;
 
   // Get outcomes for the period
-  const outcomes = getOutcomes({ since: start, until: end });
+  const outcomes = getOutcomes({ since: start, until: end } as any);
 
   // Get metrics
-  const metrics = computeMetrics({ start, end });
+  const metrics = computeMetrics({ start, end } as any);
 
   // Get drift signals
   const signals = getSignals({ status: 'new' });
@@ -143,7 +143,7 @@ export function generateActivitySummary(
   const narrative = buildNarrative(filteredOutcomes, metrics, audience);
 
   // Build highlights
-  const highlights = buildHighlights(metrics, audience);
+  const highlights = buildHighlights(metrics as any, audience);
 
   // Build feature summaries
   const featureSummaries = buildFeatureSummaries(filteredOutcomes, audience);

@@ -21,7 +21,7 @@ async function main() {
       focusKeyword: 'Ras al-Khaimah travel guide 2026',
       status: 'published',
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'ras-al-khaimah-travel-guide'))
     .returning({ id: update9987Guides.id });
 

@@ -172,7 +172,7 @@ export const commissionCalculator = {
           method,
           periodStart,
           periodEnd,
-        })
+        } as any)
         .returning();
 
       return payout[0].id;
@@ -221,7 +221,7 @@ export const commissionCalculator = {
           status: "completed",
           referenceId,
           processedAt: new Date(),
-        })
+        } as any)
         .where(eq(payouts.id, payoutId));
 
       return true;
@@ -262,7 +262,7 @@ export const commissionCalculator = {
         .where(eq(payouts.partnerId, partnerId));
 
       if (startDate && endDate) {
-        payoutQuery = payoutQuery.where(
+        payoutQuery = (payoutQuery as any).where(
           and(
             gte(payouts.createdAt, startDate),
             lte(payouts.createdAt, endDate)

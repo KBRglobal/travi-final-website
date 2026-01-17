@@ -361,7 +361,7 @@ async function logPolicyEvaluation(
         resourceId: context.resourceId,
         result: allowed ? "allowed" : "blocked",
         reason: `Effect: ${effect}`,
-      });
+      } as any);
     }
   } catch (error) {
     console.error("[PolicyEnforcement] Failed to log evaluation:", error);
@@ -508,7 +508,7 @@ export async function auditPolicyViolation(
         messages: result.messages,
         warnings: result.warnings,
       },
-    });
+    } as any);
   } catch (error) {
     console.error("[PolicyEnforcement] Failed to audit violation:", error);
   }

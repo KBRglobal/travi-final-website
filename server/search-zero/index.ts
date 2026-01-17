@@ -115,13 +115,13 @@ export async function recordZeroResult(query: string): Promise<void> {
       intent,
       count: 1,
       lastSeenAt: new Date(),
-    })
+    } as any)
     .onConflictDoUpdate({
       target: searchZeroResults.normalizedQuery,
       set: {
         count: sql`${searchZeroResults.count} + 1`,
         lastSeenAt: new Date(),
-      },
+      } as any,
     });
 }
 

@@ -42,7 +42,7 @@ async function runChecks(): Promise<ReadinessCheck[]> {
         id: 'platform_readiness',
         name: 'Platform Readiness',
         category: 'platform',
-        status: result.status === 'READY' ? 'pass' : result.status === 'WARNING' ? 'warn' : 'fail',
+        status: result.status === 'READY' ? 'pass' : (result.status as any) === 'WARNING' ? 'warn' : 'fail',
         score: result.score,
         message: `Score: ${result.score}, Blockers: ${result.blockers.length}`,
         checkedAt: now,
@@ -79,7 +79,7 @@ async function runChecks(): Promise<ReadinessCheck[]> {
     const gm = await import('../platform-governor');
     if (gm.isPlatformGovernorEnabled()) {
       const restrictions = gm.getActiveRestrictions();
-      const hasBlocking = restrictions.some(r => r.decision === 'BLOCK');
+      const hasBlocking = restrictions.some(r => (r as any).decision === 'BLOCK');
       checks.push({
         id: 'platform_governor',
         name: 'Platform Governor',

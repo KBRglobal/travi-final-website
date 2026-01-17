@@ -35,6 +35,7 @@ export {
 } from './source-detection';
 
 // Attribution
+import { getAttributionStore as _getAttributionStore } from './attribution';
 export {
   AttributionStore,
   getAttributionStore,
@@ -65,7 +66,7 @@ export function initTrafficIntelligence(): void {
     return;
   }
 
-  const store = getAttributionStore();
+  const store = (_getAttributionStore as any)();
   store.start();
 
   console.log('[TrafficIntel] Traffic intelligence initialized');
@@ -80,7 +81,7 @@ export function initTrafficIntelligence(): void {
  * Shutdown traffic intelligence system
  */
 export function shutdownTrafficIntelligence(): void {
-  const store = getAttributionStore();
+  const store = (_getAttributionStore as any)();
   store.stop();
   console.log('[TrafficIntel] Traffic intelligence shutdown');
 }

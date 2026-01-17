@@ -201,7 +201,7 @@ async function createApprovalRequest(
         resourceType,
         recordCount,
       },
-    })
+    } as any)
     .returning({ id: approvalRequests.id });
 
   return result.id;
@@ -337,7 +337,7 @@ async function auditExport(
         resourceType,
         recordCount,
       },
-    });
+    } as any);
   } catch (error) {
     console.error("[ExportCenter] Failed to audit:", error);
   }

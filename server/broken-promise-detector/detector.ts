@@ -34,7 +34,7 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
   const promises: BrokenPromise[] = [];
   const title = contentItem.title || "";
   const metaDescription = contentItem.metaDescription || "";
-  const body = contentItem.body || "";
+  const body = (contentItem as any).body || "";
 
   // Check title promises
   for (const pattern of PROMISE_PATTERNS.filter(p => p.type === 'title')) {

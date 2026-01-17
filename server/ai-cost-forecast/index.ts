@@ -70,7 +70,7 @@ export async function recordAiCost(
     costCents,
     contentId,
     jobId,
-  });
+  } as any);
 }
 
 /**

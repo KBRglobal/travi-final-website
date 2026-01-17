@@ -24,7 +24,7 @@ async function updateHongKongGuide() {
       metaDescription: "Discover Hong Kong in 2026: honest costs from HK$600/day, Victoria Peak, dim sum guide, MTR tips. Real traveler insights for first-timers.",
       focusKeyword: "Hong Kong travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'hong-kong-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

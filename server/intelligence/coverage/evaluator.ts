@@ -290,7 +290,7 @@ export async function evaluateAllContentCoverage(
         .from(contents)
         .where(sql`${contents.id} > ${cursor}`)
         .orderBy(contents.id)
-        .limit(safeBatchSize + 1);
+        .limit(safeBatchSize + 1) as any;
     }
 
     const contentIds = await query;

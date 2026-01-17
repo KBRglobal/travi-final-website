@@ -345,7 +345,7 @@ export class IntentGraphQueryEngine {
       case 'outcome':
         return `Outcome: ${(node as OutcomeNode).outcomeType}`;
       default:
-        return node.id;
+        return (node as any).id;
     }
   }
 

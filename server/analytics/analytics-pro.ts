@@ -42,7 +42,7 @@ export async function startJourney(data: Omit<InsertUserJourney, "touchpointCoun
     ...data,
     touchpointCount: 0,
     durationSeconds: 0,
-  }).returning();
+  } as any).returning();
   return journey;
 }
 
@@ -60,13 +60,13 @@ export async function addTouchpoint(journeyId: string, data: Omit<InsertJourneyT
     journeyId,
     stepNumber,
     ...data,
-  }).returning();
+  } as any).returning();
   
   // Update journey
   await db.update(userJourneys).set({
     touchpointCount: stepNumber,
-    endPage: data.pageUrl,
-  }).where(eq(userJourneys.id, journeyId));
+    endPage: (data as any).pageUrl,
+  } as any).where(eq(userJourneys.id, journeyId));
   
   return touchpoint;
 }
@@ -87,7 +87,7 @@ export async function endJourney(journeyId: string, converted: boolean = false, 
     converted,
     conversionType,
     conversionValue,
-  }).where(eq(userJourneys.id, journeyId));
+  } as any).where(eq(userJourneys.id, journeyId));
 }
 
 /**
@@ -116,7 +116,7 @@ export async function getVisitorJourneys(visitorId: string): Promise<UserJourney
  * Create funnel
  */
 export async function createFunnel(data: InsertConversionFunnel): Promise<ConversionFunnel> {
-  const [funnel] = await db.insert(conversionFunnels).values(data).returning();
+  const [funnel] = await db.insert(conversionFunnels).values(data as any).returning();
   return funnel;
 }
 
@@ -124,7 +124,7 @@ export async function createFunnel(data: InsertConversionFunnel): Promise<Conver
  * Add step to funnel
  */
 export async function addFunnelStep(funnelId: string, data: Omit<InsertFunnelStep, "funnelId">): Promise<FunnelStep> {
-  const [step] = await db.insert(funnelSteps).values({ funnelId, ...data }).returning();
+  const [step] = await db.insert(funnelSteps).values({ funnelId, ...data } as any).returning();
   return step;
 }
 
@@ -164,7 +164,7 @@ export async function trackFunnelProgress(funnelId: string, sessionId: string, v
       currentStep,
       completed,
       completedAt: completed ? new Date() : undefined,
-    }).where(eq(funnelEvents.id, existing.id));
+    } as any).where(eq(funnelEvents.id, existing.id));
   } else {
     // Create new
     await db.insert(funnelEvents).values({
@@ -173,7 +173,7 @@ export async function trackFunnelProgress(funnelId: string, sessionId: string, v
       visitorId,
       currentStep,
       completed: false,
-    });
+    } as any);
   }
   
   // Update step stats
@@ -195,7 +195,7 @@ async function updateFunnelStats(funnelId: string): Promise<void> {
     totalConversions,
     conversionRate,
     updatedAt: new Date(),
-  }).where(eq(conversionFunnels.id, funnelId));
+  } as any).where(eq(conversionFunnels.id, funnelId));
   
   // Update step-level stats
   const funnel = await getFunnelWithSteps(funnelId);
@@ -212,7 +212,7 @@ async function updateFunnelStats(funnelId: string): Promise<void> {
       exitCount,
       conversionCount,
       dropoffRate,
-    }).where(eq(funnelSteps.id, step.id));
+    } as any).where(eq(funnelSteps.id, step.id));
   }
 }
 
@@ -224,7 +224,7 @@ async function updateFunnelStats(funnelId: string): Promise<void> {
  * Create cohort
  */
 export async function createCohort(data: InsertCohort): Promise<Cohort> {
-  const [cohort] = await db.insert(cohorts).values(data).returning();
+  const [cohort] = await db.insert(cohorts).values(data as any).returning();
   return cohort;
 }
 
@@ -293,7 +293,7 @@ export async function analyzeCohortRetention(cohortId: string): Promise<any> {
     userCount: uniqueVisitors,
     retentionData,
     updatedAt: new Date(),
-  }).where(eq(cohorts.id, cohortId));
+  } as any).where(eq(cohorts.id, cohortId));
   
   return {
     cohort,
@@ -310,7 +310,7 @@ export async function analyzeCohortRetention(cohortId: string): Promise<any> {
  * Create custom report
  */
 export async function createCustomReport(data: InsertCustomReport): Promise<CustomReport> {
-  const [report] = await db.insert(customReports).values(data).returning();
+  const [report] = await db.insert(customReports).values(data as any).returning();
   return report;
 }
 

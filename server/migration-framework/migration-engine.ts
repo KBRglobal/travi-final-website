@@ -172,7 +172,7 @@ export function startMigration(id: string): Migration | null {
   migration.updatedAt = new Date();
 
   migrations.set(id, migration);
-  logEvent(id, migration.status === 'pending' ? 'started' : 'resumed');
+  logEvent(id, (migration.status as any) === 'pending' ? 'started' : 'resumed');
 
   return migration;
 }

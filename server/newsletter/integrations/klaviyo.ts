@@ -189,7 +189,7 @@ export async function importSubscribersFromKlaviyo(
           status: attributes.properties?.status || "subscribed",
           source: "klaviyo",
           tags: attributes.properties?.tags || [],
-        });
+        } as any);
         imported++;
       }
     } catch (error) {
@@ -310,7 +310,7 @@ export async function importCampaignStatsFromKlaviyo(
           totalClicked: metrics.unique_clicks || 0,
           totalBounced: metrics.bounces || 0,
           totalUnsubscribed: metrics.unsubscribes || 0,
-        }).where(eq(newsletterCampaigns.id, localCampaign.id));
+        } as any).where(eq(newsletterCampaigns.id, localCampaign.id));
         
         synced++;
       }

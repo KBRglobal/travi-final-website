@@ -24,7 +24,7 @@ async function updateBangkokGuide() {
       metaDescription: "Discover Bangkok in 2026: honest costs from $40/day, Grand Palace tips, legendary street food, BTS navigation. Real traveler insights.",
       focusKeyword: "Bangkok travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'bangkok-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   
@@ -48,7 +48,7 @@ async function updateBangkokGuide() {
         metaDescription: "Discover Bangkok in 2026: honest costs from $40/day, Grand Palace tips, legendary street food, BTS navigation. Real traveler insights.",
         focusKeyword: "Bangkok travel guide 2026",
         status: 'published',
-      })
+      } as any)
       .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
     
     if (insertResult.length > 0) {

@@ -91,7 +91,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           lastError: "Endpoint not found or disabled",
           lockedUntil: null,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(webhookOutbox.id, item.id));
       return;
     }
@@ -137,7 +137,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           lastStatusCode: statusCode,
           lockedUntil: null,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(webhookOutbox.id, item.id));
 
       console.log(
@@ -162,7 +162,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           lastStatusCode: statusCode,
           lockedUntil: null,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(webhookOutbox.id, item.id));
 
       console.warn(
@@ -181,7 +181,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           lastStatusCode: statusCode,
           lockedUntil: null,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(webhookOutbox.id, item.id));
 
       console.log(
@@ -201,7 +201,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
       statusCode,
       error,
       responseBody: responseBody?.substring(0, 1000), // Truncate response
-    });
+    } as any);
   } catch (logError) {
     console.error("[ReliableWebhook] Failed to log delivery:", logError);
   }
@@ -245,7 +245,7 @@ async function processBatch(): Promise<number> {
       status: "sending",
       lockedUntil: lockUntil,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(
       and(
         sql`${webhookOutbox.id} = ANY(${itemIds})`,
@@ -351,7 +351,7 @@ async function recoverStuckItems(): Promise<void> {
         status: "pending",
         lockedUntil: null,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(
         and(
           eq(webhookOutbox.status, "sending"),

@@ -436,7 +436,7 @@ class PolicyEngine {
         policyName: policy.name,
         effect: policy.effect,
         matched: conditionsMet,
-        reason: conditionsMet ? policy.message || policy.description : undefined,
+        reason: conditionsMet ? (policy as any).message || policy.description : undefined,
       };
 
       matchedPolicies.push(evaluation);
@@ -447,7 +447,7 @@ class PolicyEngine {
         return {
           effect: "deny",
           matchedPolicies,
-          message: policy.message || `Policy "${policy.name}" denied this action`,
+          message: (policy as any).message || `Policy "${policy.name}" denied this action`,
         };
       }
 
@@ -457,7 +457,7 @@ class PolicyEngine {
         return {
           effect: "require_approval",
           matchedPolicies,
-          message: policy.message || `Policy "${policy.name}" requires approval for this action`,
+          message: (policy as any).message || `Policy "${policy.name}" requires approval for this action`,
         };
       }
     }
@@ -529,8 +529,8 @@ class PolicyEngine {
         resource,
         resourceId,
         result,
-        reason: policy.message,
-      });
+        reason: (policy as any).message,
+      } as any);
     } catch (error) {
       console.error("[PolicyEngine] Error logging evaluation:", error);
     }
@@ -592,7 +592,7 @@ class PolicyEngine {
         description: dbPolicy.description || undefined,
         effect: dbPolicy.effect as PolicyEffect,
         priority: dbPolicy.priority,
-        conditions: dbPolicy.conditions as PolicyCondition[],
+        conditions: dbPolicy.conditions as unknown as PolicyCondition[],
         actions: dbPolicy.actions as Action[],
         resources: dbPolicy.resources as Resource[],
         roles: dbPolicy.roles as AdminRole[] | undefined,

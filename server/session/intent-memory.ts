@@ -230,11 +230,11 @@ export function getEntityTypeFrequencies(
  * Returns the most frequent recent intent or 'browse' as default
  */
 export function getDominantIntent(sessionId: string): IntentType {
-  const intents = getRecentIntents(sessionId);
+  const intents = getRecentIntents(sessionId) as any;
   if (intents.length === 0) return 'browse';
   
   const counts = new Map<IntentType, number>();
-  for (const intent of intents) {
+  for (const intent of intents as any) {
     const current = counts.get(intent) || 0;
     counts.set(intent, current + 1);
   }

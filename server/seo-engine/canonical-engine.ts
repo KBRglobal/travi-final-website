@@ -274,7 +274,7 @@ export class CanonicalEngine {
         .set({
           canonicalContentId,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(contents.id, contentId));
 
       return true;
@@ -294,7 +294,7 @@ export class CanonicalEngine {
         .set({
           canonicalContentId: null,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(contents.id, contentId));
 
       return true;

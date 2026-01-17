@@ -46,14 +46,14 @@ export function analyzeFeatureForDrift(
     feature,
     since: analysisStart,
     until: now,
-  });
+  } as any);
 
   // Get baseline period outcomes
   const baselineOutcomes = getOutcomes({
     feature,
     since: baselineStart,
     until: analysisStart,
-  });
+  } as any);
 
   // Compute current metrics
   const currentMetrics = computeCurrentMetrics(currentOutcomes);

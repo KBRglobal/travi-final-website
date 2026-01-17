@@ -161,7 +161,7 @@ class ComplianceExportService {
       .orderBy(desc(governanceAuditLogs.createdAt));
 
     if (targetUserId) {
-      query = query.where(eq(governanceAuditLogs.userId, targetUserId)) as typeof query;
+      query = (query as any).where(eq(governanceAuditLogs.userId, targetUserId)) as typeof query;
     }
 
     const logs = await query.limit(10000);

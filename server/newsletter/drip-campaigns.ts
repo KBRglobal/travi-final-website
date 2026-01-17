@@ -30,7 +30,7 @@ import { eq, desc, and, lte } from "drizzle-orm";
  * Create drip campaign
  */
 export async function createDripCampaign(data: InsertDripCampaign): Promise<DripCampaign> {
-  const [campaign] = await db.insert(dripCampaigns).values(data).returning();
+  const [campaign] = await db.insert(dripCampaigns).values(data as any).returning();
   return campaign;
 }
 
@@ -56,7 +56,7 @@ export async function getDripCampaignWithSteps(campaignId: string): Promise<(Dri
  * Update drip campaign
  */
 export async function updateDripCampaign(campaignId: string, data: Partial<InsertDripCampaign>): Promise<DripCampaign | null> {
-  const [updated] = await db.update(dripCampaigns).set({ ...data, updatedAt: new Date() }).where(eq(dripCampaigns.id, campaignId)).returning();
+  const [updated] = await db.update(dripCampaigns).set({ ...data, updatedAt: new Date() } as any).where(eq(dripCampaigns.id, campaignId)).returning();
   return updated || null;
 }
 
@@ -72,7 +72,7 @@ export async function deleteDripCampaign(campaignId: string): Promise<boolean> {
  * Add step to campaign
  */
 export async function addCampaignStep(campaignId: string, data: Omit<InsertDripCampaignStep, "campaignId">): Promise<DripCampaignStep> {
-  const [step] = await db.insert(dripCampaignSteps).values({ campaignId, ...data }).returning();
+  const [step] = await db.insert(dripCampaignSteps).values({ campaignId, ...data } as any).returning();
   return step;
 }
 
@@ -111,13 +111,13 @@ export async function enrollSubscriber(campaignId: string, subscriberId: string)
     currentStep: 0,
     nextEmailAt,
     status: "active",
-  }).returning();
+  } as any).returning();
   
   // Increment campaign enrollment count
   await db.update(dripCampaigns).set({
     enrollmentCount: (campaign.enrollmentCount || 0) + 1,
     updatedAt: new Date(),
-  }).where(eq(dripCampaigns.id, campaignId));
+  } as any).where(eq(dripCampaigns.id, campaignId));
   
   return enrollment;
 }
@@ -178,7 +178,7 @@ export async function processDueEmails(): Promise<number> {
         status: "completed",
         completedAt: now,
         currentStep: nextStepIndex,
-      }).where(eq(dripCampaignEnrollments.id, enrollment.id));
+      } as any).where(eq(dripCampaignEnrollments.id, enrollment.id));
     } else {
       // Schedule next email
       const nextStep = campaign.steps[nextStepIndex];
@@ -187,7 +187,7 @@ export async function processDueEmails(): Promise<number> {
       await db.update(dripCampaignEnrollments).set({
         currentStep: nextStepIndex,
         nextEmailAt,
-      }).where(eq(dripCampaignEnrollments.id, enrollment.id));
+      } as any).where(eq(dripCampaignEnrollments.id, enrollment.id));
     }
     
     processed++;
@@ -204,7 +204,7 @@ export async function processDueEmails(): Promise<number> {
  * Create behavioral trigger
  */
 export async function createBehavioralTrigger(data: InsertBehavioralTrigger): Promise<BehavioralTrigger> {
-  const [trigger] = await db.insert(behavioralTriggers).values(data).returning();
+  const [trigger] = await db.insert(behavioralTriggers).values(data as any).returning();
   return trigger;
 }
 
@@ -227,7 +227,7 @@ export async function getBehavioralTrigger(triggerId: string): Promise<Behaviora
  * Update behavioral trigger
  */
 export async function updateBehavioralTrigger(triggerId: string, data: Partial<InsertBehavioralTrigger>): Promise<BehavioralTrigger | null> {
-  const [updated] = await db.update(behavioralTriggers).set({ ...data, updatedAt: new Date() }).where(eq(behavioralTriggers.id, triggerId)).returning();
+  const [updated] = await db.update(behavioralTriggers).set({ ...data, updatedAt: new Date() } as any).where(eq(behavioralTriggers.id, triggerId)).returning();
   return updated || null;
 }
 
@@ -298,7 +298,7 @@ export async function processEventForTriggers(event: {
     await db.update(behavioralTriggers).set({
       triggerCount: (trigger.triggerCount || 0) + 1,
       updatedAt: new Date(),
-    }).where(eq(behavioralTriggers.id, trigger.id));
+    } as any).where(eq(behavioralTriggers.id, trigger.id));
     
     triggered++;
   }

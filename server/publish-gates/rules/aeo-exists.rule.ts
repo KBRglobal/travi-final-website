@@ -6,13 +6,12 @@
 import { db } from '../../db';
 import { contents } from '@shared/schema';
 import { eq } from 'drizzle-orm';
-import type { GateRule, GateEvaluation } from '../types';
 
-export const aeoExistsRule: GateRule = {
+export const aeoExistsRule = {
   name: 'aeo-exists',
   description: 'Content must have an AEO answer capsule',
 
-  async evaluate(contentId: string): Promise<GateEvaluation> {
+  async evaluate(contentId: string): Promise<any> {
     try {
       const result = await db
         .select({

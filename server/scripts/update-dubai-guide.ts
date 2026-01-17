@@ -24,7 +24,7 @@ async function updateDubaiGuide() {
       metaDescription: "Discover Dubai in 2026: honest costs from $100/day, Burj Khalifa tips, desert safaris, Old Dubai souks, best beaches. Real traveler insights.",
       focusKeyword: "Dubai travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'dubai-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   
@@ -47,7 +47,7 @@ async function updateDubaiGuide() {
         metaDescription: "Discover Dubai in 2026: honest costs from $100/day, Burj Khalifa tips, desert safaris, Old Dubai souks, best beaches. Real traveler insights.",
         focusKeyword: "Dubai travel guide 2026",
         status: 'published',
-      })
+      } as any)
       .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
     
     if (insertResult.length > 0) {

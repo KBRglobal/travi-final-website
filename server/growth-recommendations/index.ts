@@ -168,7 +168,7 @@ export async function generateRecommendations(): Promise<GrowthRecommendation[]>
           sourceData: rec.sourceData,
           contentId: rec.contentId,
           weekOf,
-        })
+        } as any)
         .returning();
 
       stored.push({
@@ -299,7 +299,7 @@ export async function updateRecommendationStatus(
 
   const result = await db
     .update(growthRecommendations)
-    .set({ status })
+    .set({ status } as any)
     .where(eq(growthRecommendations.id, id))
     .returning({ id: growthRecommendations.id });
 

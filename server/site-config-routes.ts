@@ -115,7 +115,7 @@ router.put("/navigation/items/reorder", async (req: Request, res: Response) => {
     const { items } = req.body as { items: { id: string; sortOrder: number }[] };
     for (const item of items) {
       await db.update(navigationMenuItems)
-        .set({ sortOrder: item.sortOrder })
+        .set({ sortOrder: item.sortOrder } as any)
         .where(eq(navigationMenuItems.id, item.id));
     }
     res.json({ success: true });
@@ -387,7 +387,7 @@ router.post("/pages/:id/translate", async (req: Request, res: Response) => {
 
     // Save to database
     await db.update(staticPages)
-      .set({ translations: updatedTranslations, updatedAt: new Date() })
+      .set({ translations: updatedTranslations, updatedAt: new Date() } as any)
       .where(eq(staticPages.id, req.params.id));
 
     res.json({ 
@@ -407,7 +407,7 @@ router.post("/pages/:id/translate", async (req: Request, res: Response) => {
 
 router.get("/homepage", async (_req: Request, res: Response) => {
   try {
-    const sections = await db.select().from(homepageSections).where(eq(homepageSections.isActive, true)).orderBy(asc(homepageSections.sortOrder));
+    const sections = await db.select().from(homepageSections).where(eq((homepageSections as any).isActive, true)).orderBy(asc(homepageSections.sortOrder));
     res.json(sections);
   } catch (error) {
     console.error("Error fetching homepage sections:", error);
@@ -473,7 +473,7 @@ router.put("/settings/:key", async (req: Request, res: Response) => {
     
     if (existing.length > 0) {
       const [setting] = await db.update(siteSettings)
-        .set({ value, updatedAt: new Date() })
+        .set({ value, updatedAt: new Date() } as any)
         .where(eq(siteSettings.key, req.params.key))
         .returning();
       
@@ -490,7 +490,7 @@ router.put("/settings/:key", async (req: Request, res: Response) => {
         value,
         category: category || "general",
         description
-      }).returning();
+      } as any).returning();
       
       // Clear bot blocking cache when this setting changes
       if (req.params.key === "botBlockingDisabled") {
@@ -526,7 +526,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       slug: "main",
       location: "header",
       isActive: true
-    }).returning();
+    } as any).returning();
 
     // Add navigation items (matching current hardcoded navLinks)
     const navItems = [
@@ -545,7 +545,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
         ...item,
         isActive: true,
         openInNewTab: false
-      });
+      } as any);
     }
 
     // Create footer sections
@@ -561,7 +561,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       const [created] = await db.insert(footerSections).values({
         ...section,
         isActive: true
-      }).returning();
+      } as any).returning();
       createdSections[section.slug] = created.id;
     }
 
@@ -574,7 +574,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "News", labelHe: "חדשות", href: "/news", icon: "Compass", sortOrder: 5 },
     ];
     for (const link of exploreLinksData) {
-      await db.insert(footerLinks).values({ sectionId: createdSections.explore, ...link, isActive: true, openInNewTab: false });
+      await db.insert(footerLinks).values({ sectionId: createdSections.explore, ...link, isActive: true, openInNewTab: false } as any);
     }
 
     // Add featured guides
@@ -585,7 +585,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "Laws for Tourists", labelHe: "חוקים לתיירים", href: "/dubai/laws-for-tourists", icon: "Scale", sortOrder: 4 },
     ];
     for (const link of guidesData) {
-      await db.insert(footerLinks).values({ sectionId: createdSections.guides, ...link, isActive: true, openInNewTab: false });
+      await db.insert(footerLinks).values({ sectionId: createdSections.guides, ...link, isActive: true, openInNewTab: false } as any);
     }
 
     // Add tools
@@ -596,7 +596,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "Glossary", labelHe: "מילון מונחים", href: "/glossary", sortOrder: 4 },
     ];
     for (const link of toolsData) {
-      await db.insert(footerLinks).values({ sectionId: createdSections.tools, ...link, isActive: true, openInNewTab: false });
+      await db.insert(footerLinks).values({ sectionId: createdSections.tools, ...link, isActive: true, openInNewTab: false } as any);
     }
 
     // Add social links
@@ -608,7 +608,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "TikTok", href: "https://tiktok.com/@travidubai", icon: "SiTiktok", sortOrder: 5, openInNewTab: true },
     ];
     for (const link of socialData) {
-      await db.insert(footerLinks).values({ sectionId: createdSections.social, ...link, isActive: true });
+      await db.insert(footerLinks).values({ sectionId: createdSections.social, ...link, isActive: true } as any);
     }
 
     res.json({ 

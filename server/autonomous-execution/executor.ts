@@ -334,7 +334,7 @@ export class Executor {
   /**
    * Apply a single change
    */
-  private async applyChange(change: ExecutionChange, mode: ExecutionPlan['mode']): Promise<void> {
+  private async applyChange(change: any, mode: ExecutionPlan['mode']): Promise<void> {
     // Simulate change application
     await this.simulateDelay(50);
 

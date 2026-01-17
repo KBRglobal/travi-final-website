@@ -359,7 +359,7 @@ class SecurityEventLogger {
         requestId: event.requestId,
         ...event.metadata,
       },
-    });
+    } as any);
   }
 
   /**

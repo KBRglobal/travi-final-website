@@ -6,13 +6,12 @@
 import { db } from '../../db';
 import { entityTags } from '@shared/schema';
 import { eq, count } from 'drizzle-orm';
-import type { GateRule, GateEvaluation } from '../types';
 
-export const entityCoverageRule: GateRule = {
+export const entityCoverageRule = {
   name: 'entity-coverage',
   description: 'Content must have at least one entity attached',
 
-  async evaluate(contentId: string): Promise<GateEvaluation> {
+  async evaluate(contentId: string): Promise<any> {
     try {
       const result = await db
         .select({ count: count() })

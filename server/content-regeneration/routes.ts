@@ -20,8 +20,8 @@ import {
   approveProposal,
   autoApplyProposals,
 } from './applier';
-import { db } from '@db';
-import { content } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 
 const router = Router();
@@ -104,7 +104,7 @@ router.post('/:contentId/generate', requireEnabled, async (req: Request, res: Re
     }
 
     // Get current blocks
-    const contentRecord = await db.query.content.findFirst({
+    const contentRecord = await (db.query as any).contents.findFirst({
       where: eq(content.id, contentId),
     });
 

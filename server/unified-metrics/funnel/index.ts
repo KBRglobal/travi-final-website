@@ -496,7 +496,7 @@ export class FunnelSystem {
     let bottleneck: FunnelAnalysis['bottleneck'] = null;
     let maxDropOff = 0;
     for (const stage of stageData) {
-      if (stage.order > 1 && stage.dropOffRate > maxDropOff) {
+      if ((stage as any).order > 1 && stage.dropOffRate > maxDropOff) {
         maxDropOff = stage.dropOffRate;
         bottleneck = {
           stageId: stage.stageId,
