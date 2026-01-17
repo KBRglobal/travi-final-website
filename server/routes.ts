@@ -19138,8 +19138,10 @@ Return as valid JSON.`,
         const cityName = destFolder.name!.toLowerCase().replace(/\s+/g, "-");
         const cityPath = path.join(baseDestPath, cityName);
 
-        if (!fs.existsSync(cityPath)) {
-          fs.mkdirSync(cityPath, { recursive: true });
+        try {
+          await fs.promises.access(cityPath);
+        } catch {
+          await fs.promises.mkdir(cityPath, { recursive: true });
         }
 
         console.log(`[GoogleDrive] Processing city folder: ${destFolder.name}`);
@@ -19157,14 +19159,17 @@ Return as valid JSON.`,
 
             const filePath = path.join(cityPath, file.name);
 
-            if (fs.existsSync(filePath)) {
+            try {
+              await fs.promises.access(filePath);
               report.skipped.push({ city: cityName, file: file.name, reason: "File already exists" });
               continue;
+            } catch {
+              // File doesn't exist, proceed with download
             }
 
             try {
               const buffer = await downloadFile(file.id);
-              fs.writeFileSync(filePath, buffer);
+              await fs.promises.writeFile(filePath, buffer);
               report.downloaded.push({ city: cityName, file: file.name, path: `/images/destinations/${cityName}/${file.name}` });
               console.log(`[GoogleDrive] Downloaded: ${cityName}/${file.name}`);
             } catch (downloadErr: any) {
