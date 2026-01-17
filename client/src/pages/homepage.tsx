@@ -517,7 +517,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
 
   return (
     <section 
-      className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-24 pb-16 md:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden" 
+      className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
       data-testid="hero-section"
       aria-label="Welcome to TRAVI World - Your trusted travel resource"
     >
@@ -551,14 +551,11 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
         {/* Left Content */}
         <div className="flex-1 max-w-xl text-center lg:text-left">
           {/* Badge - UI Standard (white bg + shadow-lg + animated dot) */}
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-[#6443F4]/10 border border-[#6443F4]/20">
-              <div className="relative flex items-center justify-center">
-                <span className="absolute w-3 h-3 rounded-full bg-[#6443F4] animate-ping opacity-75" />
-                <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
-              </div>
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-home-count">
-                Trusted by <span className="text-[#6443F4]">100K+</span> travelers worldwide
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Trusted by 17 destinations worldwide
               </span>
             </div>
           </div>
