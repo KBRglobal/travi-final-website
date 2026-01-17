@@ -1,6 +1,0 @@
-"include": [
-  "client/src/**/*",
-  "server/routes/**/*",
-  "server/webhooks/**/*",
-  "shared/**/*"
-]
