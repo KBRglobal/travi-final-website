@@ -51,7 +51,6 @@ defaultBucketID = "replit-objstore-bbbec3d1-9961-48ff-80a6-2b195804ed08"
 DEV_AUTO_AUTH = "true"
 ENABLE_SITEMAP_V2 = "true"
 BASE_URL = "https://travi.world"
-TIQETS_API_TOKEN = "tqat-xqHbh8v9Mo1SbPGigjbfMmvK03jCgv0W"
 TIQETS_PARTNER_ID = "travi-182933"
 APP_URL = "https://travi.world"
 
