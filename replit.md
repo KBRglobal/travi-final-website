@@ -8,9 +8,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2026)
 
+### Project Cleanup (Jan 17, 2026)
+**Removed Files** (backed up to `backup_removed_files/`):
+| File | Reason |
+|------|--------|
+| `client/src/pages/districts.tsx.bak` | Backup file, not referenced |
+| `client/src/pages/transport.tsx.bak` | Backup file, not referenced |
+| `server/deployment-safety/__tests__/security-gate.smoke.ts` | 64 TypeScript errors, not used |
+| `server/deployment-safety/__tests__/` | Empty directory after test removal |
+
 ### TypeScript Error Resolution (Jan 17, 2026)
 - **Total errors reduced**: From 1,925 → 0 (all errors resolved)
-- **Final cleanup**: Deleted unused test file `server/deployment-safety/__tests__/security-gate.smoke.ts` (contained 64 errors)
 - **Fix patterns applied**:
   - `as any` type assertions for Drizzle ORM strict type checking in `.values()`, `.set()`, and property access
   - Replaced broken `export *` with selective named exports to resolve re-export conflicts
