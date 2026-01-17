@@ -1,5 +1,0 @@
-import ContentList from './content-list";
-
-export default function Transport() {
-  return <ContentList type="transport" />;
-}
