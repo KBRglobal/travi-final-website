@@ -22,6 +22,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { SEOHead } from "@/components/seo-head";
 
 type LoginStep = "credentials" | "totp" | "recovery";
 
@@ -243,6 +244,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <SEOHead
+        title="Login"
+        description="Login to TRAVI admin panel"
+        canonicalPath="/login"
+        noIndex={true}
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           {step === "credentials" && (

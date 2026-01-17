@@ -22,6 +22,7 @@ export interface MetaTagsOptions {
   author?: string;
   section?: string;
   tags?: string[];
+  noIndex?: boolean;
 }
 
 export interface StructuredDataOptions {
@@ -60,6 +61,7 @@ export function generateMetaTags(options: MetaTagsOptions): string {
     author,
     section,
     tags = [],
+    noIndex = false,
   } = options;
 
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
@@ -90,7 +92,9 @@ export function generateMetaTags(options: MetaTagsOptions): string {
     `<meta name="twitter:image" content="${escapeHtml(image)}">`,
     `<meta name="twitter:image:alt" content="${escapeHtml(title)}">`,
     
-    `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">`,
+    noIndex 
+      ? `<meta name="robots" content="noindex, nofollow">`
+      : `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">`,
   ];
 
   if (publishedTime) {

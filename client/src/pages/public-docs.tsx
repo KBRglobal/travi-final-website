@@ -25,6 +25,7 @@ import {
   Home,
   ArrowLeft
 } from "lucide-react";
+import { SEOHead } from "@/components/seo-head";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -532,6 +533,12 @@ export default function PublicDocs() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEOHead
+        title="TRAVI Documentation"
+        description="Internal API and developer documentation for TRAVI CMS"
+        canonicalPath="/docs"
+        noIndex={true}
+      />
       {/* Inject styles */}
       <style dangerouslySetInnerHTML={{ __html: gitbookStyles }} />
 

@@ -1,10 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShieldX, Mail } from "lucide-react";
+import { SEOHead } from "@/components/seo-head";
 
 export default function AccessDenied() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <SEOHead
+        title="Access Denied"
+        description="You don't have permission to access this page"
+        canonicalPath="/access-denied"
+        noIndex={true}
+      />
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
