@@ -1,7 +1,7 @@
-import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions } from "@shared/schema";
+import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions, helpCategories, helpArticles } from "@shared/schema";
 import { storage } from "../storage";
 import { db } from "../db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 const BASE_URL = process.env.BASE_URL || "https://travi.world";
 
@@ -177,12 +177,18 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/shopping", priority: 0.6, changefreq: "weekly" as const },
     { path: "/news", priority: 0.7, changefreq: "daily" as const },
 
-    // Legal Pages
+    // Legal Pages (canonical + common aliases for user discovery)
     { path: "/privacy", priority: 0.3, changefreq: "yearly" as const },
+    { path: "/privacy-policy", priority: 0.3, changefreq: "yearly" as const },
     { path: "/terms", priority: 0.3, changefreq: "yearly" as const },
+    { path: "/terms-conditions", priority: 0.3, changefreq: "yearly" as const },
     { path: "/cookies", priority: 0.3, changefreq: "yearly" as const },
+    { path: "/cookie-policy", priority: 0.3, changefreq: "yearly" as const },
     { path: "/security", priority: 0.3, changefreq: "yearly" as const },
     { path: "/affiliate-disclosure", priority: 0.3, changefreq: "yearly" as const },
+    
+    // Travel Guides (alias for /guides)
+    { path: "/travel-guides", priority: 0.8, changefreq: "weekly" as const },
 
     // About & Contact
     { path: "/about", priority: 0.5, changefreq: "monthly" as const },
@@ -309,6 +315,70 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
       console.log(`Sitemap: Added ${addedCount} Tiqets attractions`);
     } catch (error) {
       console.error("Error fetching Tiqets attractions for sitemap:", error);
+    }
+  }
+
+  // Help Center pages (categories and articles from database)
+  if (locale === "en") {
+    try {
+      // Get active help categories
+      const categories = await db.select({
+        slug: helpCategories.slug,
+        updatedAt: helpCategories.updatedAt,
+      }).from(helpCategories)
+        .where(eq(helpCategories.isActive, true));
+
+      let helpCount = 0;
+      for (const category of categories) {
+        if (category.slug) {
+          const categoryPath = `/help/${category.slug}`;
+          const lastmod = category.updatedAt
+            ? new Date(category.updatedAt).toISOString().split("T")[0]
+            : now;
+
+          urls.push({
+            loc: `${BASE_URL}${categoryPath}`,
+            lastmod,
+            changefreq: "weekly",
+            priority: 0.5,
+          });
+          helpCount++;
+
+          // Get published articles in this category
+          const articles = await db.select({
+            slug: helpArticles.slug,
+            updatedAt: helpArticles.updatedAt,
+            categorySlug: helpCategories.slug,
+          }).from(helpArticles)
+            .innerJoin(helpCategories, eq(helpArticles.categoryId, helpCategories.id))
+            .where(and(
+              eq(helpCategories.slug, category.slug),
+              eq(helpArticles.status, "published")
+            ));
+
+          for (const article of articles) {
+            if (article.slug && article.categorySlug) {
+              const articlePath = `/help/${article.categorySlug}/${article.slug}`;
+              const articleLastmod = article.updatedAt
+                ? new Date(article.updatedAt).toISOString().split("T")[0]
+                : now;
+
+              urls.push({
+                loc: `${BASE_URL}${articlePath}`,
+                lastmod: articleLastmod,
+                changefreq: "monthly",
+                priority: 0.4,
+              });
+              helpCount++;
+            }
+          }
+        }
+      }
+      if (helpCount > 0) {
+        console.log(`Sitemap: Added ${helpCount} help center pages`);
+      }
+    } catch (error) {
+      console.error("Error fetching help center pages for sitemap:", error);
     }
   }
 
