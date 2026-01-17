@@ -1695,8 +1695,8 @@ async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOption
   const canonicalSlug = attraction.seoSlug || slug;
 
   const title = attraction.title || slug;
-  // Use correct field names from schema: description, tiqetsSummary, or tiqetsDescription
-  const description = attraction.description || attraction.tiqetsSummary || attraction.tiqetsDescription || "";
+  // Use correct field names from schema: metaDescription (100% coverage), description, tiqetsSummary, tiqetsDescription
+  const description = attraction.metaDescription || attraction.description || attraction.tiqetsSummary || attraction.tiqetsDescription || "";
   // Schema uses cityName, not city
   const city = attraction.cityName || "";
   // Get image from tiqetsImages array or images array
