@@ -53,6 +53,7 @@ ENABLE_SITEMAP_V2 = "true"
 BASE_URL = "https://travi.world"
 TIQETS_API_TOKEN = "tqat-xqHbh8v9Mo1SbPGigjbfMmvK03jCgv0W"
 TIQETS_PARTNER_ID = "travi-182933"
+APP_URL = "https://travi.world"
 
 [userenv.production]
 FRONTEND_ONLY = "false"
