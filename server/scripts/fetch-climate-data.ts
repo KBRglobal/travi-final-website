@@ -301,7 +301,7 @@ async function storeSeasonData(destinationId: string, seasons: SeasonData[]): Pr
           qualityTier: "publish",
           generatedBy: "open-meteo",
           generatedModel: "historical-archive",
-        })
+        } as any)
         .where(eq(destinationContent.id, existing[0].id));
       console.log(`[ClimateData] Updated seasons for ${destinationId}`);
     } else {
@@ -315,7 +315,7 @@ async function storeSeasonData(destinationId: string, seasons: SeasonData[]): Pr
         generatedModel: "historical-archive",
         version: 1,
         isActive: true,
-      });
+      } as any);
       console.log(`[ClimateData] Inserted seasons for ${destinationId}`);
     }
     

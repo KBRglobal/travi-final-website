@@ -152,7 +152,7 @@ export function registerWriterRoutes(app: Express) {
         }
 
         // Generate content
-        const result = await writerEngine.generateContent(validatedData);
+        const result = await writerEngine.generateContent(validatedData as any);
 
         res.json(result);
       } catch (error) {
@@ -215,7 +215,7 @@ export function registerWriterRoutes(app: Express) {
       try {
         const validatedData = assignWriterSchema.parse(req.body);
 
-        const assignment = await assignmentSystem.assignWriter(validatedData);
+        const assignment = await assignmentSystem.assignWriter(validatedData as any);
 
         // Save assignment to database
         await db.insert(writerAssignments).values({

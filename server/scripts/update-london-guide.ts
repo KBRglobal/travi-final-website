@@ -24,7 +24,7 @@ async function updateLondonGuide() {
       metaDescription: "Discover London in 2026: honest costs from £70/day, 11 best neighborhoods, transport tips, free museums. Realistic guide for first-time visitors.",
       focusKeyword: "London travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'london-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

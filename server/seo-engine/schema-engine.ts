@@ -575,7 +575,7 @@ export class SchemaEngine {
 
     // Also add as TravelAction
     const travelSchema: SchemaNode = {
-      '@type': 'TravelAction',
+      '@type': 'TravelAction' as any,
       '@id': `${url}#travel`,
       name: content.title,
       description: content.metaDescription,
@@ -596,7 +596,7 @@ export class SchemaEngine {
     const url = `${baseUrl}/transport/${content.slug}`;
 
     const transportSchema: SchemaNode = {
-      '@type': 'Service',
+      '@type': 'Service' as any,
       '@id': `${url}#transport`,
       name: content.title,
       description: content.metaDescription,

@@ -115,7 +115,7 @@ export async function getOrCreateBudgetCounter(
         failuresCount: 0,
         contentMutations: 0,
         aiSpendCents: 0,
-      })
+      } as any)
       .returning(),
     BUDGET_OPERATION_TIMEOUT_MS
   );
@@ -172,7 +172,7 @@ export async function incrementBudgetCounter(
         contentMutations: sql`${autonomyBudgets.contentMutations} + ${increments.contentMutations || 0}`,
         aiSpendCents: sql`${autonomyBudgets.aiSpendCents} + ${increments.aiSpendCents || 0}`,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(
         and(
           eq(autonomyBudgets.targetKey, targetKey),
@@ -298,7 +298,7 @@ export async function resetBudget(
       contentMutations: 0,
       aiSpendCents: 0,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(and(...conditions))
     .returning();
 

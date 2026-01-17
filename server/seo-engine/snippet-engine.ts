@@ -375,7 +375,7 @@ export class SnippetEngine {
       (e) => e.type === 'faq' && e.quality !== 'missing'
     );
 
-    return (hasDefinition && (hasList || hasTable)) || (hasFAQ?.quality === 'excellent');
+    return Boolean((hasDefinition && (hasList || hasTable)) || (hasFAQ?.quality === 'excellent'));
   }
 
   /**

@@ -133,7 +133,7 @@ async function seedDestinations() {
           internalLinks: 0,
           externalLinks: 0,
           h2Count: 0,
-        }).onConflictDoNothing();
+        } as any).onConflictDoNothing();
       }
       
       logger.info(`Seeded ${DESTINATIONS.length} destinations`);
@@ -294,7 +294,7 @@ async function generateDestinationContent(
         success: false,
         error: String(error),
         duration,
-      });
+      } as any);
       
       markProviderFailed(provider.name);
       continue;
@@ -581,7 +581,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         // Deactivate old content
         await db
           .update(destinationContent)
-          .set({ isActive: false, updatedAt: new Date() })
+          .set({ isActive: false, updatedAt: new Date() } as any)
           .where(eq(destinationContent.destinationId, destinationId));
 
         // Insert new content records
@@ -597,7 +597,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             generatedModel: model,
             version: 1,
             isActive: true,
-          });
+          } as any);
         }
 
         // Update destination record with metrics
@@ -614,7 +614,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             metaDescription: linkedContent.hero.description.substring(0, 160),
             lastGenerated: new Date(),
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(destinations.id, destinationId));
 
         // Log successful generation
@@ -628,7 +628,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           seoScore: validationResult.score,
           qualityTier: validationResult.tier,
           duration,
-        });
+        } as any);
 
         logger.info(`Successfully generated and saved content for ${destination.name} with ${linksAdded} internal links`);
 
@@ -711,7 +711,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             // Store content - deactivate old, insert new
             await db
               .update(destinationContent)
-              .set({ isActive: false, updatedAt: new Date() })
+              .set({ isActive: false, updatedAt: new Date() } as any)
               .where(eq(destinationContent.destinationId, destination.id));
 
             const contentTypes = [
@@ -737,7 +737,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
                 generatedModel: model,
                 version: 1,
                 isActive: true,
-              });
+              } as any);
             }
 
             // Update destination
@@ -754,7 +754,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
                 metaDescription: linkedContent.hero.description.substring(0, 160),
                 lastGenerated: new Date(),
                 updatedAt: new Date(),
-              })
+              } as any)
               .where(eq(destinations.id, destination.id));
 
             // Log success
@@ -767,7 +767,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
               seoScore: validationResult.score,
               qualityTier: validationResult.tier,
               duration,
-            });
+            } as any);
 
             results.push({
               destinationId: destination.id,
@@ -925,7 +925,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
               internalLinks: 0,
               externalLinks: 0,
               h2Count: 0,
-            });
+            } as any);
           }
         }
 
@@ -945,7 +945,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
                 wordCount: metrics.wordCount,
                 h2Count: metrics.h2Count,
                 updatedAt: new Date(),
-              })
+              } as any)
               .where(eq(destinations.id, dest.id));
           } else if (dest.isActive) {
             await db
@@ -954,7 +954,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
                 status: "partial",
                 hasPage: true,
                 updatedAt: new Date(),
-              })
+              } as any)
               .where(eq(destinations.id, dest.id));
           }
         }
@@ -1360,7 +1360,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             ogImage,
             canonicalUrl,
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(destinations.id, id))
           .returning();
         
@@ -1384,7 +1384,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
    */
   app.get(
     "/api/destination-intelligence/:id/featured-sections",
-    requirePermission("read:content"),
+    requirePermission("canEdit"),
     async (req: Request, res: Response): Promise<void> => {
       try {
         const { id } = req.params;
@@ -1419,7 +1419,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
    */
   app.patch(
     "/api/destination-intelligence/:id/featured-sections",
-    requirePermission("write:content"),
+    requirePermission("canEdit"),
     async (req: Request, res: Response): Promise<void> => {
       try {
         const { id } = req.params;

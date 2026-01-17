@@ -225,7 +225,7 @@ router.put("/api/aeo/capsules/:id/approve", async (req: Request, res: Response) 
         approvedBy: userId,
         approvedAt: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(aeoAnswerCapsules.id, id));
 
     res.json({ success: true });
@@ -252,7 +252,7 @@ router.put("/api/aeo/capsules/:id", async (req: Request, res: Response) => {
         differentiator,
         generatedByAI: false, // Mark as manually edited
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(aeoAnswerCapsules.id, id));
 
     res.json({ success: true });
@@ -526,7 +526,7 @@ router.post("/api/aeo/programmatic", async (req: Request, res: Response) => {
       targetCount: targetCount || 0,
       priority: priority || 0,
       isActive: true,
-    }).returning();
+    } as any).returning();
 
     res.json({ success: true, template: result[0] });
   } catch (error) {
@@ -581,7 +581,7 @@ router.post("/api/aeo/tests", async (req: Request, res: Response) => {
       status: "draft",
       minSampleSize: minSampleSize || 100,
       confidenceLevel: confidenceLevel || 95,
-    }).returning();
+    } as any).returning();
 
     res.json({ success: true, test: result[0] });
   } catch (error) {
@@ -603,7 +603,7 @@ router.put("/api/aeo/tests/:id/start", async (req: Request, res: Response) => {
         status: "running",
         startDate: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(aeoAbTests.id, id));
 
     res.json({ success: true });
@@ -628,7 +628,7 @@ router.put("/api/aeo/tests/:id/stop", async (req: Request, res: Response) => {
         endDate: new Date(),
         winningVariantId,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(aeoAbTests.id, id));
 
     res.json({ success: true });

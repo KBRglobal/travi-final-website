@@ -113,7 +113,7 @@ export async function calculateConfidence(contentId: string): Promise<Confidence
       factConsistencyScore,
       sourceFreshnessScore,
       hallucinationRiskScore,
-    })
+    } as any)
     .onConflictDoUpdate({
       target: contentConfidenceScores.contentId,
       set: {
@@ -124,7 +124,7 @@ export async function calculateConfidence(contentId: string): Promise<Confidence
         sourceFreshnessScore,
         hallucinationRiskScore,
         calculatedAt: new Date(),
-      },
+      } as any,
     });
 
   return {

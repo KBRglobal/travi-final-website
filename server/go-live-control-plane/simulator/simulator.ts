@@ -503,10 +503,10 @@ function generateRollbackSteps(inputs: SimulationInput[]): string[] {
 
     switch (input.action) {
       case 'enable':
-        steps.push(`Disable ${cap.name}: unset ${cap.envVarName}`);
+        steps.push(`Disable ${cap.name}: unset ${(cap as any).envVarName}`);
         break;
       case 'disable':
-        steps.push(`Re-enable ${cap.name}: set ${cap.envVarName}=true`);
+        steps.push(`Re-enable ${cap.name}: set ${(cap as any).envVarName}=true`);
         break;
       case 'toggle':
         steps.push(`Toggle ${cap.name} back to original state`);

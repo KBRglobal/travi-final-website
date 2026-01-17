@@ -135,7 +135,7 @@ export async function detectOrphans(options?: {
             isOrphan: true,
             orphanedAt: now,
             updatedAt: now,
-          })
+          } as any)
           .where(eq(mediaAssets.id, asset.id));
         result.newOrphans++;
         result.orphanCount++;
@@ -150,7 +150,7 @@ export async function detectOrphans(options?: {
             isOrphan: false,
             orphanedAt: null,
             updatedAt: now,
-          })
+          } as any)
           .where(eq(mediaAssets.id, asset.id));
         result.recoveredAssets++;
       }

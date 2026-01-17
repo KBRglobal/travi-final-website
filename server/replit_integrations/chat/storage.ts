@@ -1,6 +1,9 @@
 import { db } from "../../db";
-import { conversations, messages } from "@shared/schema";
+import { liveChatConversations, liveChatMessages } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
+
+const conversations = liveChatConversations as any;
+const messages = liveChatMessages as any;
 
 export interface IChatStorage {
   getConversation(id: number): Promise<typeof conversations.$inferSelect | undefined>;
@@ -22,7 +25,7 @@ export const chatStorage: IChatStorage = {
   },
 
   async createConversation(title: string) {
-    const [conversation] = await db.insert(conversations).values({ title }).returning();
+    const [conversation] = await db.insert(conversations).values({ title }).returning() as any;
     return conversation;
   },
 
@@ -36,7 +39,7 @@ export const chatStorage: IChatStorage = {
   },
 
   async createMessage(conversationId: number, role: string, content: string) {
-    const [message] = await db.insert(messages).values({ conversationId, role, content }).returning();
+    const [message] = await db.insert(messages).values({ conversationId, role, content }).returning() as any;
     return message;
   },
 };

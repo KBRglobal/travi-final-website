@@ -38,7 +38,7 @@ export async function createSegment(
 ): Promise<SubscriberSegment> {
   const [segment] = await db
     .insert(subscriberSegments)
-    .values(data)
+    .values(data as any)
     .returning();
   
   return segment;
@@ -92,7 +92,7 @@ export async function updateSegment(
 ): Promise<SubscriberSegment | null> {
   const [updated] = await db
     .update(subscriberSegments)
-    .set({ ...data, updatedAt: new Date() })
+    .set({ ...data, updatedAt: new Date() } as any)
     .where(eq(subscriberSegments.id, segmentId))
     .returning();
   
@@ -126,7 +126,7 @@ export async function addCondition(
     .values({
       segmentId,
       ...data,
-    })
+    } as any)
     .returning();
   
   return condition;
@@ -247,7 +247,7 @@ export async function updateSegmentCount(segmentId: string): Promise<number> {
   
   await db
     .update(subscriberSegments)
-    .set({ subscriberCount: count, updatedAt: new Date() })
+    .set({ subscriberCount: count, updatedAt: new Date() } as any)
     .where(eq(subscriberSegments.id, segmentId));
   
   return count;

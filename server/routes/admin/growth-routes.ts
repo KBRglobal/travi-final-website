@@ -266,7 +266,7 @@ export function registerGrowthRoutes(app: Express) {
         const contentTranslations = existingTranslations.filter(t => t.contentId === content.id);
         const translatedLocales = contentTranslations.map(t => t.locale);
         const missingLocales = locales
-          .filter(l => !translatedLocales.includes(l.code))
+          .filter(l => !translatedLocales.includes(l.code as any))
           .map(l => ({ code: l.code, name: l.name, nativeName: l.nativeName }));
 
         return {

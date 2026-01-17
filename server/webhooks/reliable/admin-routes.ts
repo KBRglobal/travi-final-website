@@ -187,7 +187,7 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
             nextAttemptAt: new Date(),
             lockedUntil: null,
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(webhookOutbox.id, id))
           .returning();
 

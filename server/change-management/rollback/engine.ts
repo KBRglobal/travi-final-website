@@ -238,7 +238,7 @@ async function rollbackContentChange(change: ChangeItem, item: RollbackItem): Pr
   await db.update(content).set({
     ...restoreData,
     updatedAt: new Date(),
-  }).where(eq(content.id, contentId));
+  } as any).where(eq(content.id, contentId as any));
 }
 
 async function rollbackCanonicalChange(change: ChangeItem, item: RollbackItem): Promise<void> {

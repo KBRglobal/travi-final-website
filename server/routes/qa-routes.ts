@@ -234,7 +234,7 @@ export function registerQaRoutes(app: Express) {
         branch,
         userId,
         totalItems: itemIds.length,
-      }).returning();
+      } as any).returning();
 
       // Create check results for each item
       if (itemIds.length > 0) {
@@ -293,7 +293,7 @@ export function registerQaRoutes(app: Express) {
           skippedItems: skipped,
           score: isNaN(score) ? 0 : score,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(qaRuns.id, req.params.id))
         .returning();
 
@@ -341,7 +341,7 @@ export function registerQaRoutes(app: Express) {
           failedItems: failed,
           skippedItems: skipped,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(qaRuns.id, result.runId));
 
       res.json(result);
@@ -367,7 +367,7 @@ export function registerQaRoutes(app: Express) {
             checkedBy: userId,
             checkedAt: new Date(),
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(qaCheckResults.id, update.id));
       }
 

@@ -163,7 +163,7 @@ async function findOrCreateArticleImage(
     
     if (foundImage) {
       await db.update(aiGeneratedImages)
-        .set({ usageCount: (foundImage.usageCount || 0) + 1, updatedAt: new Date() })
+        .set({ usageCount: (foundImage.usageCount || 0) + 1, updatedAt: new Date() } as any)
         .where(eq(aiGeneratedImages.id, foundImage.id));
       
       return {
@@ -235,7 +235,7 @@ async function findOrCreateArticleImage(
             caption: aiImage.caption || topic,
             size: 0,
             usageCount: 1,
-          }).returning();
+          } as any).returning();
           
           return {
             url: aiImage.url,
@@ -290,7 +290,7 @@ async function findOrCreateArticleImage(
       caption: bestResult.title || topic,
       size: imageBuffer.byteLength,
       usageCount: 1,
-    }).returning();
+    } as any).returning();
     
     console.log(`[Image Finder] Successfully imported Freepik image: ${savedImage.id}`);
     
@@ -1320,7 +1320,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
             });
             console.log(`[AI Images] Stored: ${result.image.url}`);
           } else {
-            console.error(`[AI Images] Failed to store ${image.filename}:`, result.error);
+            console.error(`[AI Images] Failed to store ${image.filename}:`, (result as any).error);
           }
         } catch (imgError) {
           console.error(`[AI Images] Error storing image ${image.filename}:`, imgError);
@@ -1368,7 +1368,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       });
 
       if (!result.success) {
-        return res.status(500).json({ error: result.error || "Failed to store generated image" });
+        return res.status(500).json({ error: (result as any).error || "Failed to store generated image" });
       }
 
       res.json({ url: result.image.url, filename: result.image.filename });

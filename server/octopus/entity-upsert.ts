@@ -518,7 +518,7 @@ async function createNewEntity(
       octopusJobId: sourceJobId,
       sourceHash: fingerprint.hash,
       generatedByAI: true,
-    }).returning();
+    } as any).returning();
     
     // Create type-specific record
     let entityId: string;
@@ -532,7 +532,7 @@ async function createNewEntity(
         starRating: hotelData.starRating,
         amenities: hotelData.amenities || [],
         targetAudience: hotelData.targetAudience || [],
-      }).returning();
+      } as any).returning();
       entityId = record.id;
     } else if (tableType === "attraction") {
       const attractionData = extracted as any;
@@ -549,7 +549,7 @@ async function createNewEntity(
           label: h,
           description: "",
         })) || [],
-      }).returning();
+      } as any).returning();
       entityId = record.id;
     } else if (tableType === "dining") {
       const diningData = extracted as any;
@@ -562,7 +562,7 @@ async function createNewEntity(
           : diningData.cuisineType,
         priceRange: diningData.priceRange,
         targetAudience: diningData.targetAudience || [],
-      }).returning();
+      } as any).returning();
       entityId = record.id;
     } else if (tableType === "district") {
       const districtData = extracted as any;
@@ -577,7 +577,7 @@ async function createNewEntity(
           label: k,
           description: "",
         })) || [],
-      }).returning();
+      } as any).returning();
       entityId = record.id;
     } else {
       throw new Error(`Unknown table type: ${tableType}`);
@@ -820,7 +820,7 @@ async function updateExistingEntity(
   
   if (Object.keys(contentUpdates).length > 0) {
     await db.update(contents)
-      .set({ ...contentUpdates, updatedAt: new Date() })
+      .set({ ...contentUpdates, updatedAt: new Date() } as any)
       .where(eq(contents.id, existing.content.id));
   }
   

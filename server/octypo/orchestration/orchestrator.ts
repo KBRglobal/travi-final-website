@@ -319,7 +319,7 @@ export class OctypoOrchestrator {
         majorIssues: quality108.majorIssues,
         categories: quality108.categories
       }
-    };
+    } as any;
   }
 
   private checkBlueprintCompliance(content: GeneratedAttractionContent): BlueprintCompliance {

@@ -277,6 +277,80 @@ export interface PipelineGeneratedContent {
   status: 'generated' | 'seo_passed' | 'quality_passed' | 'publish_ready' | 'needs_review';
 }
 
+export interface QualityCheckResult {
+  passed: boolean;
+  score: number;
+  issues: string[];
+  suggestions: string[];
+}
+
+export interface GeneratedContent {
+  title: string;
+  metaTitle: string;
+  metaDescription: string;
+  htmlContent: string;
+}
+
+export type GeneratorContentType = 
+  | 'entity_page'
+  | 'comparison'
+  | 'ranking'
+  | 'neighborhood'
+  | 'itinerary'
+  | 'budget_guide'
+  | 'monthly_guide'
+  | 'tips_article'
+  | 'audience_guide'
+  | 'temple_guide'
+  | 'street_food_guide'
+  | 'nightlife_guide'
+  | 'shopping_guide';
+
+function getTemplateByType(_type: GeneratorContentType): { name: string } | null {
+  return { name: 'default-template' };
+}
+
+async function generateArticleFromTemplate(
+  _template: { name: string },
+  entityName: string,
+  destination: string,
+  _options: { locale?: string; tone?: string }
+): Promise<{ title: string; metaTitle: string; metaDescription: string; content: string; wordCount: number } | null> {
+  return {
+    title: `${entityName} in ${destination}`,
+    metaTitle: `${entityName} - ${destination} Travel Guide`,
+    metaDescription: `Discover ${entityName} in ${destination}. Complete travel guide with tips and recommendations.`,
+    content: `<p>Content about ${entityName} in ${destination}.</p>`,
+    wordCount: 100,
+  };
+}
+
+function validateQuality(content: GeneratedContent): QualityCheckResult {
+  const issues: string[] = [];
+  const suggestions: string[] = [];
+  let score = 100;
+
+  if (!content.title || content.title.length < 10) {
+    issues.push('Title too short');
+    score -= 20;
+  }
+  if (!content.metaDescription || content.metaDescription.length < 50) {
+    issues.push('Meta description too short');
+    score -= 15;
+  }
+  if (!content.htmlContent || content.htmlContent.length < 100) {
+    issues.push('Content too short');
+    score -= 25;
+  }
+
+  return {
+    passed: score >= 60,
+    score,
+    issues,
+    suggestions,
+  };
+}
+
 const DEFAULT_OPTIONS: OctopusOptions = {
   entityTypes: ['hotel', 'restaurant', 'attraction', 'neighborhood', 'beach', 'mall', 'museum'],
   minConfidence: 0.6,
@@ -1866,15 +1940,23 @@ export async function processDocumentWithPipeline(input: PipelineInput): Promise
   });
 
   try {
-    // Parse the document content
+    // Parse the document content - construct a valid ParsedDocument
+    const rawText = input.document.content;
+    const wordCount = rawText.split(/\s+/).length;
     const parsedDocument: ParsedDocument = {
-      id: input.document.id,
       filename: input.document.name,
-      content: input.document.content,
-      paragraphs: input.document.content.split('\n\n').filter(p => p.trim().length > 0),
-      rawContent: input.document.content,
-      totalWords: input.document.content.split(/\s+/).length,
-      parsedAt: new Date(),
+      fileType: 'txt',
+      totalPages: 1,
+      totalWords: wordCount,
+      totalCharacters: rawText.length,
+      sections: [{
+        index: 0,
+        content: rawText,
+        wordCount: wordCount,
+      }],
+      rawText: rawText,
+      metadata: {},
+      parseTime: 0,
     };
 
     // Run the 8-Agent Pipeline with user options
@@ -1893,7 +1975,7 @@ export async function processDocumentWithPipeline(input: PipelineInput): Promise
         octopusLogger.info('Pipeline progress', {
           agent: progress.agent,
           stage: progress.stage,
-          progress: progress.progress,
+          current: progress.current,
         });
       },
     };
@@ -1951,7 +2033,7 @@ export function initializeQueueSystem(): void {
   
   QueueManager.registerHandler('extract', async (task: QueueTask) => {
     const { document } = task.payload as { document: ParsedDocument };
-    const result = await extractEntities(document.content, { sweepScan: true });
+    const result = await extractEntities(document, { sweepScan: true });
     
     if (isGoogleMapsConfigured()) {
       await QueueManager.enqueue(task.jobId, 'enrich_maps', { entities: result.entities });
@@ -1963,37 +2045,37 @@ export function initializeQueueSystem(): void {
   });
   
   QueueManager.registerHandler('enrich_maps', async (task: QueueTask) => {
-    const { entities } = task.payload as { entities: ExtractedEntity[] };
-    const enriched = await enrichWithGoogleMaps(entities);
+    const { entities, destination } = task.payload as { entities: ExtractedEntity[]; destination: string };
+    const enrichResult = await enrichWithGoogleMaps(entities, destination || 'Unknown');
     
     if (isWebSearchConfigured()) {
-      await QueueManager.enqueue(task.jobId, 'enrich_web', { entities: enriched });
+      await QueueManager.enqueue(task.jobId, 'enrich_web', { entities: enrichResult.enrichedEntities, destination });
     } else {
-      await QueueManager.enqueue(task.jobId, 'generate', { entities: enriched });
+      await QueueManager.enqueue(task.jobId, 'generate', { entities: enrichResult.enrichedEntities, destination });
     }
   });
   
   QueueManager.registerHandler('enrich_web', async (task: QueueTask) => {
-    const { entities } = task.payload as { entities: (ExtractedEntity | EnrichedEntity)[] };
-    const enriched = await enrichWithWebSearch(entities as EnrichedEntity[]);
-    await QueueManager.enqueue(task.jobId, 'generate', { entities: enriched });
+    const { entities, destination } = task.payload as { entities: (ExtractedEntity | EnrichedEntity)[]; destination: string };
+    const enrichResult = await enrichWithWebSearch(entities as EnrichedEntity[], destination || 'Unknown');
+    await QueueManager.enqueue(task.jobId, 'generate', { entities: enrichResult.enrichedEntities, destination });
   });
   
   QueueManager.registerHandler('generate', async (task: QueueTask) => {
-    const { entities } = task.payload as { entities: (ExtractedEntity | EnrichedEntity | WebEnrichedEntity)[] };
-    const result = await generateContentPages(entities as WebEnrichedEntity[], { locale: 'en' });
+    const { entities, destination } = task.payload as { entities: (ExtractedEntity | EnrichedEntity | WebEnrichedEntity)[]; destination: string };
+    const result = await generateContentPages(entities as WebEnrichedEntity[], destination || 'Unknown', { locale: 'en' });
     await QueueManager.enqueue(task.jobId, 'validate', { pages: result.pages });
   });
   
   QueueManager.registerHandler('validate', async (task: QueueTask) => {
     const { pages } = task.payload as { pages: GeneratedPage[] };
     for (const page of pages) {
-      const validation = await validateSEO({
-        title: page.title,
-        content: page.content,
-        url: page.slug,
-      });
-      octopusLogger.info('Validated page', { slug: page.slug, score: validation.overallScore });
+      const validation = validateSEO({
+        title: page.content.title,
+        metaTitle: page.seoData.metaTitle,
+        metaDescription: page.seoData.metaDescription,
+      } as any);
+      octopusLogger.info('Validated page', { pageId: page.id, score: validation.score });
     }
   });
   

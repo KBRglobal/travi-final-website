@@ -550,8 +550,8 @@ export async function collectMetricsFromMonitoring(deploymentId: string): Promis
 
   try {
     // Get latency metrics
-    const { getLatencyTracker } = await import('../monitoring/latency-tracker');
-    const tracker = getLatencyTracker();
+    const latencyTrackerModule = await import('../monitoring/latency-tracker') as any;
+    const tracker = latencyTrackerModule.getLatencyTracker();
     const stats = tracker.getOverallStats();
 
     // Update canary metrics with real data

@@ -759,7 +759,7 @@ export const approvalWorkflowEngine = {
         reason: options.reason,
         metadata: options.metadata,
         expiresAt,
-      })
+      } as any)
       .returning();
 
     // Create approval steps
@@ -779,7 +779,7 @@ export const approvalWorkflowEngine = {
         approverRole: stepConfig.approverRole,
         status: stepConfig.stepNumber === 1 ? "pending" : "pending",
         autoApproveAt,
-      });
+      } as any);
     }
 
     return {
@@ -874,7 +874,7 @@ export const approvalWorkflowEngine = {
           decisionReason: decision.reason,
           decidedBy: decision.decidedBy,
           decidedAt: now,
-        })
+        } as any)
         .where(eq(approvalSteps.id, currentStep.id));
 
       // Check if this was the last step
@@ -885,7 +885,7 @@ export const approvalWorkflowEngine = {
           .set({
             status: "approved",
             updatedAt: now,
-          })
+          } as any)
           .where(eq(approvalRequests.id, requestId));
 
         return {
@@ -905,7 +905,7 @@ export const approvalWorkflowEngine = {
         .set({
           currentStep: nextStep,
           updatedAt: now,
-        })
+        } as any)
         .where(eq(approvalRequests.id, requestId));
 
       return {
@@ -926,7 +926,7 @@ export const approvalWorkflowEngine = {
           decisionReason: decision.reason,
           decidedBy: decision.decidedBy,
           decidedAt: now,
-        })
+        } as any)
         .where(eq(approvalSteps.id, currentStep.id));
 
       await db
@@ -934,7 +934,7 @@ export const approvalWorkflowEngine = {
         .set({
           status: "rejected",
           updatedAt: now,
-        })
+        } as any)
         .where(eq(approvalRequests.id, requestId));
 
       return {
@@ -1005,7 +1005,7 @@ export const approvalWorkflowEngine = {
           cancelReason: reason,
         },
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(approvalRequests.id, requestId));
 
     return {

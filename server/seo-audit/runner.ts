@@ -2,8 +2,8 @@
  * Technical SEO Audit - Audit Runner
  */
 
-import { db } from '@db';
-import { content } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import {
   AuditResult,
@@ -46,7 +46,7 @@ export async function runFullAudit(
 
   try {
     // Get all published content
-    const allContent = await db.query.content.findMany({
+    const allContent = await (db.query as any).contents.findMany({
       where: eq(content.status, 'published'),
     });
 
@@ -193,7 +193,7 @@ export function getAllAudits(limit: number = 10): AuditResult[] {
  * Run a single check only.
  */
 export async function runSingleCheck(type: SeoCheckType): Promise<CheckResult | null> {
-  const allContent = await db.query.content.findMany({
+  const allContent = await (db.query as any).contents.findMany({
     where: eq(content.status, 'published'),
   });
 

@@ -73,7 +73,7 @@ export async function recordTimelineEvent(
       eventData: options?.eventData,
       actorId: options?.actorId,
       actorType: options?.actorType || "system",
-    })
+    } as any)
     .returning({ id: contentTimelineEvents.id });
 
   return event?.id || null;

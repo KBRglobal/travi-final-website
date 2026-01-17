@@ -182,7 +182,7 @@ export class TourpediaIngester extends BaseIngester {
                 countryCode: countryCode,
                 externalLinks: place.url ? { url: place.url } : null,
                 rawData: place,
-              })
+              } as any)
               .onConflictDoNothing();
 
             created++;

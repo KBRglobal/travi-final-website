@@ -24,7 +24,7 @@ async function updateLosAngelesGuide() {
       metaDescription: "Discover LA in 2026: honest costs from $120/day, 8 best neighborhoods, Hollywood to beaches. Realistic guide for first-time visitors with verified tips.",
       focusKeyword: "Los Angeles travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'los-angeles-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

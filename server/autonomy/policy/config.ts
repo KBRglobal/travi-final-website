@@ -128,9 +128,9 @@ export const FEATURE_POLICIES: PolicyDefinition[] = [
 // Generate target key for budget tracking
 export function generateTargetKey(target: PolicyTarget): string {
   const parts = [target.type];
-  if (target.feature) parts.push(target.feature);
-  if (target.entity) parts.push(target.entity);
-  if (target.locale) parts.push(target.locale);
+  if (target.feature) parts.push(target.feature as any);
+  if (target.entity) parts.push(target.entity as any);
+  if (target.locale) parts.push(target.locale as any);
   return parts.join(':');
 }
 

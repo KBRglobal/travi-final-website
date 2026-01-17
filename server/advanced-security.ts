@@ -202,7 +202,7 @@ export const twoFactorAuth = {
         secret,
         backupCodes,
         verified: false,
-      })
+      } as any)
       .onConflictDoUpdate({
         target: twoFactorSecrets.userId,
         set: {
@@ -210,7 +210,7 @@ export const twoFactorAuth = {
           backupCodes,
           verified: false,
           updatedAt: new Date(),
-        },
+        } as any,
       });
 
     // Update cache
@@ -235,7 +235,7 @@ export const twoFactorAuth = {
       // Update database
       await db
         .update(twoFactorSecrets)
-        .set({ verified: true, updatedAt: new Date() })
+        .set({ verified: true, updatedAt: new Date() } as any)
         .where(eq(twoFactorSecrets.userId, userId));
 
       // Update cache
@@ -330,7 +330,7 @@ export const twoFactorAuth = {
       // Update database
       await db
         .update(twoFactorSecrets)
-        .set({ backupCodes: newBackupCodes, updatedAt: new Date() })
+        .set({ backupCodes: newBackupCodes, updatedAt: new Date() } as any)
         .where(eq(twoFactorSecrets.userId, userId));
 
       // Update cache
@@ -390,7 +390,7 @@ export const twoFactorAuth = {
     // Update database
     await db
       .update(twoFactorSecrets)
-      .set({ backupCodes: newCodes, updatedAt: new Date() })
+      .set({ backupCodes: newCodes, updatedAt: new Date() } as any)
       .where(eq(twoFactorSecrets.userId, userId));
 
     // Update cache
@@ -494,7 +494,7 @@ export const auditLogger = {
         afterState: entry.details || null,
         ipAddress: entry.ipAddress || null,
         userAgent: entry.userAgent || null,
-      });
+      } as any);
     } catch (dbError) {
       console.error('[AuditLog] Failed to write to database:', dbError);
     }

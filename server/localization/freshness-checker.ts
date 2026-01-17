@@ -230,9 +230,12 @@ export async function findStaleTranslations(
         contentId: content.id,
         locale: translation.locale,
         result: {
+          fresh: false,
           isStale: true,
           staleDays: calculateStaleDays(sourceLastUpdated, translationLastUpdated),
           needsRetranslation: true,
+          sourceUpdatedAt: sourceLastUpdated,
+          translationUpdatedAt: translationLastUpdated,
           sourceLastUpdated,
           translationLastUpdated,
           sourceHashMatch,
@@ -241,7 +244,7 @@ export async function findStaleTranslations(
             : isTimestampStale 
               ? 'Source updated after translation'
               : 'Source hash changed',
-        },
+        } as any,
       });
 
       if (staleResults.length >= limit) {

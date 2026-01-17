@@ -16,7 +16,9 @@ import {
   DEFAULT_SIMULATOR_CONFIG,
   SimulatorConfig,
 } from './types';
-import { GuardedFeature, PolicyDecision } from '../enforcement/types';
+import { GuardedFeature } from '../enforcement/types';
+
+type PolicyDecision = 'ALLOW' | 'BLOCK' | 'WARN';
 import { getOutcomes } from '../learning/engine';
 
 // Bounded storage for simulation results
@@ -49,38 +51,39 @@ export function loadHistoricalDecisions(
     since: timeRange.start,
     until: timeRange.end,
     feature: features?.[0], // Filter by first feature if specified
-  });
+  } as any);
 
   // Convert to historical decisions
   const decisions: HistoricalDecision[] = [];
 
   for (const o of outcomes) {
-    if (features && features.length > 0 && !features.includes(o.feature)) {
+    const rec = o as any;
+    if (features && features.length > 0 && !features.includes(rec.feature)) {
       continue;
     }
 
     if (decisions.length >= limit) break;
 
     decisions.push({
-      id: o.id,
-      feature: o.feature,
-      action: o.action,
-      timestamp: o.decisionAt,
-      originalDecision: o.decision,
+      id: rec.id,
+      feature: rec.feature,
+      action: rec.action,
+      timestamp: rec.decisionAt,
+      originalDecision: rec.decision,
       context: {
-        entityId: o.entityId,
-        requesterId: o.requesterId,
-        estimatedCost: (o.metadata?.estimatedCost as number) || undefined,
-        estimatedTokens: (o.metadata?.estimatedTokens as number) || undefined,
-        metadata: o.metadata,
+        entityId: rec.entityId,
+        requesterId: rec.requesterId,
+        estimatedCost: (rec.metadata?.estimatedCost as number) || undefined,
+        estimatedTokens: (rec.metadata?.estimatedTokens as number) || undefined,
+        metadata: rec.metadata,
       },
       outcome: {
-        tokensUsed: o.tokensUsed,
-        costCents: (o.metadata?.cost as number) || 0,
-        latencyMs: o.latencyMs,
-        success: o.outcome === 'confirmed_correct' || o.outcome === 'recovery_success',
-        hadIncident: o.outcome === 'incident_after_allow' || o.outcome === 'recovery_failed',
-        wasOverridden: o.outcome === 'override_applied',
+        tokensUsed: rec.tokensUsed,
+        costCents: (rec.metadata?.cost as number) || 0,
+        latencyMs: rec.latencyMs,
+        success: rec.outcome === 'confirmed_correct' || rec.outcome === 'recovery_success',
+        hadIncident: rec.outcome === 'incident_after_allow' || rec.outcome === 'recovery_failed',
+        wasOverridden: rec.outcome === 'override_applied',
       },
     });
   }

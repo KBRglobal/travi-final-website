@@ -62,7 +62,7 @@ export async function scheduleContent(
       .set({
         scheduledAt,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, contentId));
 
     return { success: true };
@@ -98,7 +98,7 @@ export async function cancelSchedule(
       .set({
         scheduledAt: null,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, contentId));
 
     return { success: true };
@@ -167,7 +167,7 @@ export async function publishContent(
         status: 'published',
         publishedAt: now,
         updatedAt: now,
-      })
+      } as any)
       .where(and(
         eq(contents.id, contentId),
         eq(contents.status, 'draft') // Only update if still draft

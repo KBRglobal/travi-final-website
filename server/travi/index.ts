@@ -16,9 +16,35 @@ export * from './checkpoint-manager';
 export * from './ai-orchestrator';
 export * from './destination-seeder';
 export * from './wikipedia-client';
-export * from './osm-client';
-export * from './tripadvisor-client';
-export * from './location-discovery';
+export {
+  OSM_ATTRIBUTION,
+  searchInBoundingBox,
+  searchNearPoint,
+  getElementDetails,
+  extractMetadata,
+  getBoundingBox,
+  mergeWithWikipedia,
+  isOsmAvailable,
+} from './osm-client';
+export type { OSMLocation, OSMSearchResult } from './osm-client';
+export {
+  TRIPADVISOR_ATTRIBUTION,
+  searchByCity,
+  getLocationDetails,
+  isTripAdvisorAvailable,
+  discoverAllInCity,
+} from './tripadvisor-client';
+export type { TripAdvisorLocation, TripAdvisorSearchResult } from './tripadvisor-client';
+export {
+  discoverLocations,
+  discoverAllCategories,
+  getDiscoveryStats,
+} from './location-discovery';
+export type {
+  DiscoveredLocation,
+  DiscoveryResult,
+  LocationCategory,
+} from './location-discovery';
 export * from './google-places-client';
 export * from './freepik-client';
 export * from './processing-orchestrator';
@@ -29,9 +55,6 @@ export type { UsageStats, BudgetStatus, ServiceType } from './budget-manager';
 export type { RetryResult, RetryOptions } from './retry-handler';
 export type { CheckpointData, JobState } from './checkpoint-manager';
 export type { WikipediaLocation, WikipediaSearchResult } from './wikipedia-client';
-export type { OSMLocation, OSMSearchResult } from './osm-client';
-export type { TripAdvisorLocation, TripAdvisorSearchResult } from './tripadvisor-client';
-export type { DiscoveredLocation, DiscoveryResult, LocationCategory } from './location-discovery';
 export type { GooglePlaceDetails, PlaceSearchResult } from './google-places-client';
 export type { FreepikImage, FreepikSearchResult } from './freepik-client';
 

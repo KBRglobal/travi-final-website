@@ -344,7 +344,7 @@ function createRecommendationsForSignal(signal: FeedbackSignal): FeedbackRecomme
         signal,
         action: 'flag_for_review',
         target: 'readiness',
-        reason: `${signal.context.stateChanges} state changes in ${signal.context.windowMs / 3600000}h`,
+        reason: `${signal.context.stateChanges} state changes in ${(signal.context.windowMs as any) / 3600000}h`,
         autoApply: false,
         createdAt: new Date(),
         acknowledged: false,

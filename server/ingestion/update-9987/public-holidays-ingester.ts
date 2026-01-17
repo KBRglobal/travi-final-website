@@ -82,6 +82,9 @@ const WHITELISTED_COUNTRY_CODES = [
 ];
 
 export class PublicHolidaysIngester extends BaseIngester {
+  validate(): boolean { return true; }
+  transform(data: unknown): unknown { return data; }
+  
   source: DataSource = {
     id: 'public-holidays',
     name: 'Public Holidays (Nager.Date)',
@@ -211,7 +214,7 @@ export class PublicHolidaysIngester extends BaseIngester {
               launchYear: holiday.launchYear,
               types: holiday.types,
               updatedAt: new Date(),
-            })
+            } as any)
             .where(sql`id = ${existing[0].id}`);
           updated++;
         } else {
@@ -229,7 +232,7 @@ export class PublicHolidaysIngester extends BaseIngester {
               counties: holiday.counties,
               launchYear: holiday.launchYear,
               types: holiday.types,
-            });
+            } as any);
           created++;
         }
       } catch (error) {

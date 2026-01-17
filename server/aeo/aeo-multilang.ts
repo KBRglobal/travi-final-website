@@ -294,7 +294,7 @@ async function saveCapsuleTranslation(
         qualityScore: capsule.qualityScore,
         generatedByAI: capsule.translatedBy === 'ai',
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(aeoAnswerCapsules.id, existing.id));
   } else {
     await db.insert(aeoAnswerCapsules).values({
@@ -306,7 +306,7 @@ async function saveCapsuleTranslation(
       differentiator: capsule.differentiator,
       qualityScore: capsule.qualityScore,
       generatedByAI: capsule.translatedBy === 'ai',
-    });
+    } as any);
   }
 }
 

@@ -39,7 +39,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to get link health metrics", { error });
+      (logger.error as any)("Failed to get link health metrics", { error });
       res.status(500).json({ success: false, error: "Failed to get link health metrics" });
     }
   });
@@ -56,7 +56,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to find orphan pages", { error });
+      (logger.error as any)("Failed to find orphan pages", { error });
       res.status(500).json({ success: false, error: "Failed to find orphan pages" });
     }
   });
@@ -71,7 +71,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to get content link stats", { error });
+      (logger.error as any)("Failed to get content link stats", { error });
       res.status(500).json({ success: false, error: "Failed to get content link stats" });
     }
   });
@@ -88,7 +88,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to get link opportunities", { error });
+      (logger.error as any)("Failed to get link opportunities", { error });
       res.status(500).json({ success: false, error: "Failed to get link opportunities" });
     }
   });
@@ -102,7 +102,7 @@ export function registerLinkManagementRoutes(app: Router) {
           id: contents.id,
           type: contents.type,
           title: contents.title,
-          contentBlocks: contents.contentBlocks,
+          contentBlocks: (contents as any).contentBlocks ?? contents.blocks,
         })
         .from(contents)
         .where(eq(contents.id, contentId))
@@ -134,7 +134,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to process content links", { error });
+      (logger.error as any)("Failed to process content links", { error });
       res.status(500).json({ success: false, error: "Failed to process content links" });
     }
   });
@@ -179,7 +179,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to batch process links", { error });
+      (logger.error as any)("Failed to batch process links", { error });
       res.status(500).json({ success: false, error: "Failed to batch process links" });
     }
   });
@@ -207,7 +207,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to get recent links", { error });
+      (logger.error as any)("Failed to get recent links", { error });
       res.status(500).json({ success: false, error: "Failed to get recent links" });
     }
   });
@@ -250,7 +250,7 @@ export function registerLinkManagementRoutes(app: Router) {
         _meta: { apiVersion: "v1" },
       });
     } catch (error) {
-      logger.error("Failed to get top linked pages", { error });
+      (logger.error as any)("Failed to get top linked pages", { error });
       res.status(500).json({ success: false, error: "Failed to get top linked pages" });
     }
   });

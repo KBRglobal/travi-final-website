@@ -328,13 +328,13 @@ async function processLocation(
   // AI content is MANDATORY - if missing, mark as invalid
   if (!aiContent && !options.skipAI) {
     validationResult.isValid = false;
-    validationResult.errors.push('AI content is required but was not generated');
+    (validationResult.errors as any).push('AI content is required but was not generated');
   }
 
   // Check FAQ count - must have at least 7
   if (aiContent && (!aiContent.faq || aiContent.faq.length < 7)) {
     validationResult.isValid = false;
-    validationResult.errors.push(`FAQ incomplete: ${aiContent.faq?.length || 0}/7 questions`);
+    (validationResult.errors as any).push(`FAQ incomplete: ${aiContent.faq?.length || 0}/7 questions`);
   }
 
   // Additional validation: check for prices in AI content
@@ -345,16 +345,16 @@ async function processLocation(
       aiContent.whyVisit,
       ...aiContent.keyHighlights,
       ...aiContent.faq.map(f => f.answer),
-    ].join(' '));
+    ].join(' ') as any, undefined as any);
 
     if (!priceCheck.isValid) {
       validationResult.isValid = false;
-      validationResult.errors.push(...priceCheck.errors);
+      (validationResult.errors as any).push(...priceCheck.errors);
     }
   }
 
   // Add processing errors to validation result
-  validationResult.errors.push(...errors);
+  (validationResult.errors as any).push(...errors);
 
   console.log(`[${location.name}] Final status: ${validationResult.isValid ? '✅ READY' : '❌ ERROR'}`);
   if (validationResult.errors.length > 0) {
@@ -460,8 +460,8 @@ async function saveErrorLocation(
   errorMessage: string
 ): Promise<void> {
   const sourceWikipediaId = location.sources.wikipedia?.url || null;
-  const sourceOsmId = location.sources.osm?.nodeId?.toString() || null;
-  const sourceTripAdvisorId = location.sources.tripadvisor?.id || null;
+  const sourceOsmId = (location.sources.osm as any)?.nodeId?.toString() || (location.sources.osm as any)?.id?.toString() || null;
+  const sourceTripAdvisorId = (location.sources.tripadvisor as any)?.id || (location.sources.tripadvisor as any)?.locationId || null;
 
   await db.execute(sql`
     INSERT INTO travi_locations (
@@ -512,8 +512,8 @@ async function saveLocationToDatabase(
   try {
     // Extract source IDs based on source type
     const sourceWikipediaId = location.sources.wikipedia?.url || null;
-    const sourceOsmId = location.sources.osm?.nodeId?.toString() || null;
-    const sourceTripAdvisorId = location.sources.tripadvisor?.id || null;
+    const sourceOsmId = (location.sources.osm as any)?.nodeId?.toString() || (location.sources.osm as any)?.id?.toString() || null;
+    const sourceTripAdvisorId = (location.sources.tripadvisor as any)?.id || (location.sources.tripadvisor as any)?.locationId || null;
 
     // Insert location - using existing schema columns
     // Status is 'ready' if complete, 'error' if something failed
@@ -664,7 +664,7 @@ async function saveLocationToDatabase(
 export async function getProcessingStatus(): Promise<{
   aiStatus: ReturnType<typeof getAIStatus>;
   budgetStatus: ReturnType<typeof getBudgetStatus>;
-  usageStats: Awaited<ReturnType<typeof getUsageStats>>;
+  usageStats: Awaited<ReturnType<typeof getTodayUsageStats>>;
   isPaused: boolean;
   googlePlacesAvailable: boolean;
   freepikAvailable: boolean;
@@ -673,7 +673,7 @@ export async function getProcessingStatus(): Promise<{
   return {
     aiStatus: getAIStatus(),
     budgetStatus: getBudgetStatus(),
-    usageStats: await getUsageStats(),
+    usageStats: await getTodayUsageStats() as any,
     isPaused: isProcessingPaused(),
     googlePlacesAvailable: isGooglePlacesAvailable(),
     freepikAvailable: isFreepikAvailable(),

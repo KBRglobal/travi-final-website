@@ -179,7 +179,7 @@ async function acquireJob(providerName: string): Promise<{ id: string; name: str
         contentGenerationLockedBy: providerName,
         contentGenerationLockedAt: now,
         contentGenerationAttempts: sql`COALESCE(${tiqetsAttractions.contentGenerationAttempts}, 0) + 1`,
-      })
+      } as any)
       .where(eq(tiqetsAttractions.id, candidate.id));
 
     return { id: candidate.id, name: candidate.name || "Unknown" };
@@ -199,7 +199,7 @@ async function completeJob(attractionId: string, providerName: string): Promise<
       contentGenerationLockedAt: null,
       contentGenerationProvider: providerName,
       contentGenerationCompletedAt: new Date(),
-    })
+    } as any)
     .where(eq(tiqetsAttractions.id, attractionId));
 
   completedJobs++;
@@ -228,7 +228,7 @@ async function failJob(attractionId: string, error: string, providerName?: strin
       contentGenerationLastError: error,
       // Store which provider failed so we can rotate on retry
       contentGenerationProvider: providerName || null,
-    })
+    } as any)
     .where(eq(tiqetsAttractions.id, attractionId));
 
   if (isFinalFailure) {
@@ -259,7 +259,7 @@ async function releaseStaleLocks(): Promise<number> {
       contentGenerationStatus: "pending",
       contentGenerationLockedBy: null,
       contentGenerationLockedAt: null,
-    })
+    } as any)
     .where(
       and(
         eq(tiqetsAttractions.contentGenerationStatus, "in_progress"),
@@ -641,7 +641,7 @@ export async function resetFailedAttractions(options: {
       contentGenerationLockedBy: null,
       contentGenerationLockedAt: null,
       // Keep the last error for debugging purposes
-    })
+    } as any)
     .where(inArray(tiqetsAttractions.id, attractionIds));
 
   logger.info({

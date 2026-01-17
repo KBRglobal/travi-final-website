@@ -1128,9 +1128,9 @@ export class MultiModelProvider {
    * Force refresh of provider initialization
    */
   refresh(): void {
-    this.anthropicClient = null;
-    this.openaiClient = null;
-    this.geminiClient = null;
+    (this as any).anthropicClients = [];
+    (this as any).openaiClients = [];
+    (this as any).geminiClient = null;
     this.providers = [];
     this.initializeProviders();
   }

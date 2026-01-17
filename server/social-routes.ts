@@ -41,7 +41,7 @@ export function registerSocialRoutes(app: Express) {
   app.post("/api/social/campaigns", requirePermission("canEdit"), async (req: Request, res: Response) => {
     try {
       const parsed = insertSocialCampaignSchema.parse(req.body);
-      const [campaign] = await db.insert(socialCampaigns).values(parsed).returning();
+      const [campaign] = await db.insert(socialCampaigns).values(parsed as any).returning();
       res.json(campaign);
     } catch (error) {
       console.error("[Social] Error creating campaign:", error);
@@ -81,7 +81,7 @@ export function registerSocialRoutes(app: Express) {
       });
       const parsed = updateSchema.parse(req.body);
       const [campaign] = await db.update(socialCampaigns)
-        .set({ ...parsed, updatedAt: new Date() })
+        .set({ ...parsed, updatedAt: new Date() } as any)
         .where(eq(socialCampaigns.id, req.params.id))
         .returning();
       res.json(campaign);
@@ -133,7 +133,7 @@ export function registerSocialRoutes(app: Express) {
   app.post("/api/social/posts", requirePermission("canEdit"), async (req: Request, res: Response) => {
     try {
       const parsed = insertSocialPostSchema.parse(req.body);
-      const [post] = await db.insert(socialPosts).values(parsed).returning();
+      const [post] = await db.insert(socialPosts).values(parsed as any).returning();
       res.json(post);
     } catch (error) {
       console.error("[Social] Error creating post:", error);
@@ -171,7 +171,7 @@ export function registerSocialRoutes(app: Express) {
       });
       const parsed = updateSchema.parse(req.body);
       const [post] = await db.update(socialPosts)
-        .set({ ...parsed, updatedAt: new Date() })
+        .set({ ...parsed, updatedAt: new Date() } as any)
         .where(eq(socialPosts.id, req.params.id))
         .returning();
       res.json(post);
@@ -201,7 +201,7 @@ export function registerSocialRoutes(app: Express) {
           scheduledAt: new Date(scheduledAt), 
           status: "scheduled",
           updatedAt: new Date() 
-        })
+        } as any)
         .where(eq(socialPosts.id, req.params.id))
         .returning();
       res.json(post);

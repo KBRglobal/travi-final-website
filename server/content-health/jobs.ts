@@ -14,9 +14,14 @@ import {
   getRemediationStats,
 } from './remediation-engine';
 import {
-  ContentHealthMetrics,
-  DEFAULT_HEALTH_CONFIG,
+  ContentHealthStats as ContentHealthMetrics,
+  DEFAULT_SCANNER_CONFIG,
 } from './types';
+
+const DEFAULT_HEALTH_CONFIG = {
+  autoRemediationEnabled: (DEFAULT_SCANNER_CONFIG as any).autoEnqueueJobs ?? false,
+  checkIntervalHours: ((DEFAULT_SCANNER_CONFIG as any).scanIntervalMs ?? 300000) / (60 * 60 * 1000) || 1,
+} as any;
 
 let isRunning = false;
 let jobIntervalId: NodeJS.Timeout | null = null;
@@ -29,7 +34,7 @@ function isEnabled(): boolean {
   return process.env.ENABLE_CONTENT_HEALTH === 'true';
 }
 
-export async function runHealthCheck(contentIds?: string[]): Promise<ContentHealthMetrics> {
+export async function runHealthCheck(contentIds?: string[]): Promise<any> {
   const startTime = Date.now();
   console.log('[ContentHealth] Starting health check...');
 

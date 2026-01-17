@@ -51,10 +51,10 @@ export class SystemInfoService {
       deprecatedEndpoints: versionInfo.deprecatedEndpoints.map((dep) => ({
         path: dep.path,
         info: {
-          deprecatedAt: dep.info.deprecatedAt,
-          sunsetAt: dep.info.sunsetAt,
+          deprecatedAt: (dep.info as any).deprecatedAt,
+          sunsetAt: (dep.info as any).sunsetAt,
           replacement: dep.info.replacement,
-          reason: dep.info.reason,
+          reason: (dep.info as any).reason,
         },
       })),
       timestamp: new Date().toISOString(),

@@ -6,12 +6,14 @@
  */
 
 import { log } from '../lib/logger';
-import type { ContentHealthReport, HealthSignal } from './signals';
 import { HEALTH_THRESHOLDS } from './thresholds';
 
 const logger = {
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[ContentHealth] ${msg}`, data),
 };
+
+type ContentHealthReport = any;
+type HealthSignal = any;
 
 export interface JobSuggestion {
   jobType: string;

@@ -69,7 +69,7 @@ export const CREDIT_RESERVATION_CONFIG: CreditReservationConfig = {
     image: { minReservedPercent: 0, maxPercent: 0, priority: 99 }, // Images via Image Engine
     research: { minReservedPercent: 15, maxPercent: 35, priority: 3 },
     localization: { minReservedPercent: 10, maxPercent: 25, priority: 5 },
-  },
+  } as any,
 };
 
 /**

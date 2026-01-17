@@ -206,7 +206,7 @@ export class EventIngester extends BaseIngester {
         const seedEvents = SEED_EVENTS[citySlug] || [];
         if (seedEvents.length > 0) {
           const transformedSeeds = seedEvents.map(seed => this.transformSeedEvent(seed, citySlug, cityInfo.country));
-          const saveResult = await this.saveToDatabase(transformedSeeds, citySlug);
+          const saveResult = await this.saveEventsToDatabase(transformedSeeds, citySlug);
           
           totalProcessed += seedEvents.length;
           totalCreated += saveResult.created;
@@ -227,7 +227,7 @@ export class EventIngester extends BaseIngester {
             const transformedRecords = validRecords.map(item => 
               this.transform(item, citySlug, cityInfo.country)
             );
-            const saveResult = await this.saveToDatabase(transformedRecords, citySlug);
+            const saveResult = await this.saveEventsToDatabase(transformedRecords, citySlug);
             
             totalProcessed += rawData.length;
             totalCreated += saveResult.created;
@@ -310,7 +310,7 @@ export class EventIngester extends BaseIngester {
     return Boolean(record.event?.value && record.eventLabel?.value);
   }
 
-  transform(data: unknown, citySlug: string, countryCode: string): TransformedEvent {
+  transform(data: unknown, citySlug?: string, countryCode?: string): TransformedEvent {
     const record = data as WikidataEvent;
     
     // Extract Wikidata Q ID
@@ -420,7 +420,7 @@ export class EventIngester extends BaseIngester {
     return data.results.bindings;
   }
 
-  private async saveToDatabase(records: TransformedEvent[], citySlug: string): Promise<{ created: number; updated: number }> {
+  private async saveEventsToDatabase(records: TransformedEvent[], citySlug: string): Promise<{ created: number; updated: number }> {
     this.log(`Saving ${records.length} event records for ${citySlug}`);
     
     let created = 0;
@@ -467,7 +467,7 @@ export class EventIngester extends BaseIngester {
               ticketUrl: record.ticketUrl,
               imageUrl: record.imageUrl,
               updatedAt: new Date(),
-            })
+            } as any)
             .where(eq(destinationEvents.id, existingEvent[0].id));
           updated++;
         } else {
@@ -484,7 +484,7 @@ export class EventIngester extends BaseIngester {
             imageUrl: record.imageUrl,
             status: 'upcoming',
             featured: false,
-          });
+          } as any);
           created++;
         }
       } catch (error) {

@@ -139,7 +139,7 @@ export const premiumContent = {
         currency: options.currency,
         accessType: options.accessType,
         subscriptionTier: options.subscriptionTier,
-      })
+      } as any)
       .onConflictDoUpdate({
         target: premiumContentTable.contentId,
         set: {
@@ -150,7 +150,7 @@ export const premiumContent = {
           accessType: options.accessType,
           subscriptionTier: options.subscriptionTier,
           updatedAt: new Date(),
-        },
+        } as any,
       })
       .returning();
 
@@ -244,7 +244,7 @@ export const premiumContent = {
         paymentId: paymentDetails.paymentId,
         status: "completed",
         expiresAt,
-      })
+      } as any)
       .returning();
 
     return {
@@ -449,7 +449,7 @@ export const businessListings = {
         startDate: data.startDate,
         endDate: data.endDate,
         settings: data.settings,
-      })
+      } as any)
       .returning();
 
     return this.mapToBusinessListing(listing);
@@ -516,7 +516,7 @@ export const businessListings = {
   async trackImpression(listingId: string): Promise<void> {
     await db
       .update(businessListingsTable)
-      .set({ impressions: sql`${businessListingsTable.impressions} + 1` })
+      .set({ impressions: sql`${businessListingsTable.impressions} + 1` } as any)
       .where(eq(businessListingsTable.id, listingId));
   },
 
@@ -526,7 +526,7 @@ export const businessListings = {
   async trackClick(listingId: string): Promise<void> {
     await db
       .update(businessListingsTable)
-      .set({ clicks: sql`${businessListingsTable.clicks} + 1` })
+      .set({ clicks: sql`${businessListingsTable.clicks} + 1` } as any)
       .where(eq(businessListingsTable.id, listingId));
   },
 
@@ -675,13 +675,13 @@ export const leadGeneration = {
         budget: data.budget,
         source: data.source,
         status: "new",
-      })
+      } as any)
       .returning();
 
     // Update business lead count
     await db
       .update(businessListingsTable)
-      .set({ leads: sql`${businessListingsTable.leads} + 1` })
+      .set({ leads: sql`${businessListingsTable.leads} + 1` } as any)
       .where(eq(businessListingsTable.id, data.businessId));
 
     return mapToLead(lead);
@@ -748,7 +748,7 @@ export const leadGeneration = {
         status,
         notes,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(leadsTable.id, leadId))
       .returning();
 
@@ -756,7 +756,7 @@ export const leadGeneration = {
     if (status === "converted" && wasNew) {
       await db
         .update(businessListingsTable)
-        .set({ conversions: sql`${businessListingsTable.conversions} + 1` })
+        .set({ conversions: sql`${businessListingsTable.conversions} + 1` } as any)
         .where(eq(businessListingsTable.id, currentLead.businessId));
     }
 

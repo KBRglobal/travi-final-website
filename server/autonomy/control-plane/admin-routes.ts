@@ -96,7 +96,7 @@ router.post('/policies', async (req: Request, res: Response) => {
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: (req as any).userId,
-    });
+    } as any);
 
     res.status(201).json({ policy });
   } catch (error) {
@@ -121,7 +121,7 @@ router.patch('/policies/:id', async (req: Request, res: Response) => {
       });
     }
 
-    const policy = await updatePolicy(id, parsed.data);
+    const policy = await updatePolicy(id, parsed.data as any);
     if (!policy) {
       return res.status(404).json({ error: 'Policy not found' });
     }
@@ -231,7 +231,7 @@ router.get('/decisions', async (req: Request, res: Response) => {
       feature: feature as string,
       decision: decision as 'ALLOW' | 'WARN' | 'BLOCK',
       limit: limit ? parseInt(limit as string, 10) : 100,
-    });
+    } as any);
 
     res.json({ decisions });
   } catch (error) {
@@ -339,7 +339,7 @@ router.post('/simulate', async (req: Request, res: Response) => {
       });
     }
 
-    const result = await simulateEvaluation(parsed.data);
+    const result = await simulateEvaluation(parsed.data as any);
     res.json(result);
   } catch (error) {
     console.error('[ControlPlane] Simulation error:', error);
@@ -360,7 +360,7 @@ router.get('/blocked-jobs', async (req: Request, res: Response) => {
     const decisions = await getRecentDecisions({
       decision: 'BLOCK',
       limit: 50,
-    });
+    } as any);
 
     // Filter for job-related blocks
     const blockedJobs = decisions.filter(d =>

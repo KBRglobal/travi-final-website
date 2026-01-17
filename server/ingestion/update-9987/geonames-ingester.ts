@@ -216,7 +216,7 @@ export class GeonamesIngester extends BaseIngester {
           timezone: record.timezone,
           modificationDate: record.modificationDate,
           h3Index: record.h3Index,
-        }).onConflictDoNothing();
+        } as any).onConflictDoNothing();
         
         created++;
       } catch (error) {

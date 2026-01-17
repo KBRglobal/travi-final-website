@@ -360,7 +360,7 @@ export async function createTemplate(
     .values({
       ...data,
       isPrebuilt: false,
-    })
+    } as any)
     .returning();
   
   return template;
@@ -384,7 +384,7 @@ export async function createFromPrebuilt(
       category: prebuilt.category,
       isPrebuilt: true,
       createdBy: userId,
-    })
+    } as any)
     .returning();
   
   // Create blocks
@@ -395,7 +395,7 @@ export async function createFromPrebuilt(
       order: block.order,
       content: block.content,
       styles: block.styles,
-    });
+    } as any);
   }
   
   return template;
@@ -441,7 +441,7 @@ export async function updateTemplate(
 ): Promise<EmailTemplate | null> {
   const [updated] = await db
     .update(emailTemplates)
-    .set({ ...data, updatedAt: new Date() })
+    .set({ ...data, updatedAt: new Date() } as any)
     .where(eq(emailTemplates.id, templateId))
     .returning();
   
@@ -471,7 +471,7 @@ export async function addBlock(
     .values({
       templateId,
       ...data,
-    })
+    } as any)
     .returning();
   
   return block;
@@ -514,7 +514,7 @@ export async function reorderBlocks(
   for (let i = 0; i < blockIds.length; i++) {
     await db
       .update(emailTemplateBlocks)
-      .set({ order: i })
+      .set({ order: i } as any)
       .where(eq(emailTemplateBlocks.id, blockIds[i]));
   }
 }
@@ -540,7 +540,7 @@ export async function duplicateTemplate(
       category: original.category,
       isPrebuilt: false,
       createdBy: userId,
-    })
+    } as any)
     .returning();
   
   // Duplicate blocks
@@ -551,7 +551,7 @@ export async function duplicateTemplate(
       order: block.order,
       content: block.content,
       styles: block.styles,
-    });
+    } as any);
   }
   
   return newTemplate;

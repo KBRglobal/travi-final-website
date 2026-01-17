@@ -2,10 +2,8 @@
  * Content Health - Threshold Configuration
  */
 
-import type { HealthSignal } from './signals';
-
 export interface ThresholdConfig {
-  signal: HealthSignal;
+  signal: any;
   severity: 'low' | 'medium' | 'high' | 'critical';
   weight: number; // Impact on health score (0-100)
   suggestedJob: string;
@@ -61,6 +59,6 @@ export const MIN_ICE_SCORE = 40;
 export const MIN_WORD_COUNT = 300;
 export const MIN_INTERNAL_LINKS = 2;
 
-export function getThresholdForSignal(signal: HealthSignal): ThresholdConfig | undefined {
+export function getThresholdForSignal(signal: any): ThresholdConfig | undefined {
   return HEALTH_THRESHOLDS.find(t => t.signal === signal);
 }

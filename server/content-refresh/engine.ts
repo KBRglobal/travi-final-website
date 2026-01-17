@@ -82,7 +82,7 @@ async function getContentMetrics(contentId: string): Promise<RefreshMetrics | nu
       .where(
         and(
           eq(contentViews.contentId, contentId),
-          gte(contentViews.createdAt, thirtyDaysAgo)
+          gte((contentViews as any).createdAt, thirtyDaysAgo)
         )
       );
 
@@ -93,8 +93,8 @@ async function getContentMetrics(contentId: string): Promise<RefreshMetrics | nu
       .where(
         and(
           eq(contentViews.contentId, contentId),
-          gte(contentViews.createdAt, sixtyDaysAgo),
-          lte(contentViews.createdAt, thirtyDaysAgo)
+          gte((contentViews as any).createdAt, sixtyDaysAgo),
+          lte((contentViews as any).createdAt, thirtyDaysAgo)
         )
       );
 
@@ -106,23 +106,23 @@ async function getContentMetrics(contentId: string): Promise<RefreshMetrics | nu
 
     // Get revenue events
     const [revenueLast30] = await db
-      .select({ total: sql<number>`COALESCE(SUM((${analyticsEvents.properties}->>'value')::numeric), 0)::int` })
+      .select({ total: sql<number>`COALESCE(SUM((${(analyticsEvents as any).properties}->>'value')::numeric), 0)::int` })
       .from(analyticsEvents)
       .where(
         and(
           eq(analyticsEvents.contentId, contentId),
-          eq(analyticsEvents.eventType, 'revenue.conversion'),
+          eq(analyticsEvents.eventType as any, 'revenue.conversion'),
           gte(analyticsEvents.timestamp, thirtyDaysAgo)
         )
       );
 
     const [revenuePrev30] = await db
-      .select({ total: sql<number>`COALESCE(SUM((${analyticsEvents.properties}->>'value')::numeric), 0)::int` })
+      .select({ total: sql<number>`COALESCE(SUM((${(analyticsEvents as any).properties}->>'value')::numeric), 0)::int` })
       .from(analyticsEvents)
       .where(
         and(
           eq(analyticsEvents.contentId, contentId),
-          eq(analyticsEvents.eventType, 'revenue.conversion'),
+          eq(analyticsEvents.eventType as any, 'revenue.conversion'),
           gte(analyticsEvents.timestamp, sixtyDaysAgo),
           lte(analyticsEvents.timestamp, thirtyDaysAgo)
         )
@@ -141,7 +141,7 @@ async function getContentMetrics(contentId: string): Promise<RefreshMetrics | nu
       .where(
         and(
           eq(analyticsEvents.contentId, contentId),
-          sql`${analyticsEvents.properties}->>'resultCount' = '0'`,
+          sql`${(analyticsEvents as any).properties}->>'resultCount' = '0'`,
           gte(analyticsEvents.timestamp, thirtyDaysAgo)
         )
       );

@@ -570,7 +570,7 @@ export async function seedQaChecklist() {
       icon: categoryData.icon,
       description: categoryData.description,
       sortOrder: catIdx,
-    }).returning();
+    } as any).returning();
 
     console.log(`Created category: ${category.name}`);
 
@@ -588,7 +588,7 @@ export async function seedQaChecklist() {
         severity: item.severity,
         checkGuidelines: item.checkGuidelines,
         sortOrder: itemIdx,
-      });
+      } as any);
     }
 
     console.log(`  - Added ${categoryData.items.length} items`);

@@ -99,7 +99,7 @@ export async function calculateDecay(contentId: string): Promise<DecayResult | n
       impressionsDelta,
       freshnessScore,
       iceScoreDelta,
-    })
+    } as any)
     .onConflictDoUpdate({
       target: contentDecayScores.contentId,
       set: {
@@ -110,7 +110,7 @@ export async function calculateDecay(contentId: string): Promise<DecayResult | n
         freshnessScore,
         iceScoreDelta,
         calculatedAt: new Date(),
-      },
+      } as any,
     });
 
   return {

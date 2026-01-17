@@ -214,9 +214,9 @@ export function getRollbackInstructions(
     if (!cap) continue;
 
     if (step.action === 'enable') {
-      instructions.push(`Disable ${cap.name}: unset ${cap.envVarName} or set to 'false'`);
+      instructions.push(`Disable ${cap.name}: unset ${(cap as any).envVarName} or set to 'false'`);
     } else {
-      instructions.push(`Re-enable ${cap.name}: set ${cap.envVarName}=true`);
+      instructions.push(`Re-enable ${cap.name}: set ${(cap as any).envVarName}=true`);
     }
   }
 

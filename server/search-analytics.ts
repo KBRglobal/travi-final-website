@@ -48,7 +48,7 @@ export const searchAnalytics = {
         resultsCount,
         locale,
         sessionId: sessionId || null,
-      })
+      } as any)
       .returning();
 
     // Invalidate analytics cache
@@ -70,7 +70,7 @@ export const searchAnalytics = {
    */
   async logClick(searchId: string, resultId: string): Promise<void> {
     await db.update(searchQueries)
-      .set({ clickedResultId: resultId })
+      .set({ clickedResultId: resultId } as any)
       .where(eq(searchQueries.id, searchId));
   },
 

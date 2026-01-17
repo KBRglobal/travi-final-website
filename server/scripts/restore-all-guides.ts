@@ -47,7 +47,7 @@ async function restoreGuides() {
           focusKeyword: `${guide.title} travel guide 2026`,
           status: 'published',
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(update9987Guides.slug, guide.slug))
         .returning({ id: update9987Guides.id });
 

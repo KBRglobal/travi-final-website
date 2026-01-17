@@ -3,8 +3,8 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { db } from '@db';
-import { content } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { isContentBacklogEnabled } from './types';
 import { collectAllIdeas } from './collector';
 import { getScoringBreakdown } from './scorer';
@@ -181,7 +181,7 @@ router.post('/:id/convert-to-draft', requireEnabled, async (req: Request, res: R
         locale: 'en',
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .returning();
 
     // Mark backlog item as converted

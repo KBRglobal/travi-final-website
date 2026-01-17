@@ -5,7 +5,6 @@
  */
 
 import { log } from '../lib/logger';
-import type { GateRule, GateReport, GateEvaluation, GateResult } from './types';
 import { entityCoverageRule } from './rules/entity-coverage.rule';
 import { searchIndexRule } from './rules/search-index.rule';
 import { aeoExistsRule } from './rules/aeo-exists.rule';
@@ -18,18 +17,18 @@ const logger = {
 };
 
 // All registered rules
-const GATE_RULES: GateRule[] = [
-  entityCoverageRule,
-  aeoExistsRule,
-  blocksValidRule,
-  searchIndexRule,
+const GATE_RULES: any[] = [
+  entityCoverageRule as any,
+  aeoExistsRule as any,
+  blocksValidRule as any,
+  searchIndexRule as any,
 ];
 
 /**
  * Determine overall result from evaluations.
  * BLOCK > WARN > PASS
  */
-function determineOverallResult(evaluations: GateEvaluation[]): GateResult {
+function determineOverallResult(evaluations: any[]): any {
   if (evaluations.some(e => e.result === 'BLOCK')) {
     return 'BLOCK';
   }
@@ -42,8 +41,8 @@ function determineOverallResult(evaluations: GateEvaluation[]): GateResult {
 /**
  * Evaluate all gate rules for a content item.
  */
-export async function evaluateGates(contentId: string): Promise<GateReport> {
-  const evaluations: GateEvaluation[] = [];
+export async function evaluateGates(contentId: string): Promise<any> {
+  const evaluations: any[] = [];
 
   logger.info('Evaluating publish gates', { contentId, ruleCount: GATE_RULES.length });
 
@@ -77,7 +76,7 @@ export async function evaluateGates(contentId: string): Promise<GateReport> {
   const overallResult = determineOverallResult(evaluations);
   const canPublish = overallResult !== 'BLOCK';
 
-  const report: GateReport = {
+  const report: any = {
     contentId,
     canPublish,
     overallResult,

@@ -76,7 +76,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
         source,
         status: 'running',
         startedAt: new Date(),
-      }).returning();
+      } as any).returning();
 
       // Run ingestion (async - will complete in background for large datasets)
       const ingester = ingesters[source]();
@@ -95,7 +95,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
               recordsCreated: result.recordsCreated,
               recordsUpdated: result.recordsUpdated,
               errors: result.errors,
-            })
+            } as any)
             .where(eq(update9987IngestionRuns.id, runRecord.id));
 
           return res.json({
@@ -112,7 +112,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
               status: 'failed',
               completedAt: new Date(),
               errors: [{ message: errorMessage }],
-            })
+            } as any)
             .where(eq(update9987IngestionRuns.id, runRecord.id));
 
           throw error;
@@ -140,7 +140,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
               recordsCreated: result.recordsCreated,
               recordsUpdated: result.recordsUpdated,
               errors: result.errors,
-            })
+            } as any)
             .where(eq(update9987IngestionRuns.id, runRecord.id));
 
           log.info(`[Ingestion] Completed ingestion for ${source}`, result);
@@ -152,7 +152,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
               status: 'failed',
               completedAt: new Date(),
               errors: [{ message: errorMessage }],
-            })
+            } as any)
             .where(eq(update9987IngestionRuns.id, runRecord.id));
 
           log.error(`[Ingestion] Failed ingestion for ${source}`, undefined, { error: errorMessage });
@@ -250,7 +250,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
         source,
         status: 'pending',
         startedAt: new Date(),
-      }).returning();
+      } as any).returning();
       runIds.push(runRecord.id);
     }
 
@@ -269,7 +269,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
 
         try {
           await db.update(update9987IngestionRuns)
-            .set({ status: 'running' })
+            .set({ status: 'running' } as any)
             .where(eq(update9987IngestionRuns.id, runId));
 
           const ingester = ingesters[source]();
@@ -283,7 +283,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
               recordsCreated: result.recordsCreated,
               recordsUpdated: result.recordsUpdated,
               errors: result.errors,
-            })
+            } as any)
             .where(eq(update9987IngestionRuns.id, runId));
 
           log.info(`[Ingestion] Completed ${source}`, result);
@@ -295,7 +295,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
               status: 'failed',
               completedAt: new Date(),
               errors: [{ message: errorMessage }],
-            })
+            } as any)
             .where(eq(update9987IngestionRuns.id, runId));
 
           log.error(`[Ingestion] Failed ${source}`, undefined, { error: errorMessage });
@@ -310,7 +310,7 @@ export function registerAdminIngestionRoutes(app: Express): void {
    */
   app.get('/api/admin/ingestion/stats', requireAuth, async (req: Request, res: Response) => {
     try {
-      const stats = await db.execute<{ table_name: string; count: string }[]>(`
+      const stats = await db.execute(`
         SELECT 'public_holidays' as table_name, COUNT(*)::text as count FROM update_9987_public_holidays
         UNION ALL
         SELECT 'wikivoyage_pois', COUNT(*)::text FROM update_9987_wikivoyage_pois
@@ -332,10 +332,10 @@ export function registerAdminIngestionRoutes(app: Express): void {
         SELECT 'guides', COUNT(*)::text FROM update_9987_guides
         UNION ALL
         SELECT 'pois', COUNT(*)::text FROM update_9987_pois
-      `);
+      `) as any;
 
       const statsObject: Record<string, number> = {};
-      for (const row of stats.rows) {
+      for (const row of stats.rows as any[]) {
         statsObject[row.table_name] = parseInt(row.count);
       }
 

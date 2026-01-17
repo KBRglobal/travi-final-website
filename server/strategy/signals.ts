@@ -37,7 +37,7 @@ export const contentHealthCollector: SignalCollector = {
 
     try {
       // Dynamic import to avoid circular dependencies
-      const { scoreContent } = await import('../content-health');
+      const { scoreContent } = await import('../content-health') as any;
       const healthScore = await withTimeout(
         scoreContent(contentId),
         SIGNAL_TIMEOUT_MS,

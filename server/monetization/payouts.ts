@@ -72,7 +72,7 @@ export const payoutManager = {
           method: request.method,
           periodStart: request.periodStart,
           periodEnd: request.periodEnd,
-        })
+        } as any)
         .returning();
 
       return payout[0].id;
@@ -107,7 +107,7 @@ export const payoutManager = {
       // Update status to processing
       await db
         .update(payouts)
-        .set({ status: "processing" })
+        .set({ status: "processing" } as any)
         .where(eq(payouts.id, payoutId));
 
       // Process payment based on method
@@ -128,7 +128,7 @@ export const payoutManager = {
           status: "completed",
           referenceId,
           processedAt: new Date(),
-        })
+        } as any)
         .where(eq(payouts.id, payoutId));
 
       return true;
@@ -138,7 +138,7 @@ export const payoutManager = {
       // Mark as failed
       await db
         .update(payouts)
-        .set({ status: "failed" })
+        .set({ status: "failed" } as any)
         .where(eq(payouts.id, payoutId));
 
       return false;
@@ -346,7 +346,7 @@ export const payoutManager = {
 
       await db
         .update(payouts)
-        .set({ status: "failed" })
+        .set({ status: "failed" } as any)
         .where(eq(payouts.id, payoutId));
 
       return true;

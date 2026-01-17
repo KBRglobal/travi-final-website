@@ -367,12 +367,12 @@ export async function persistTaggingResults(
         tagId: tag.tagId,
         confidence: Math.round(tag.confidence * 100), // Store as 0-100 integer
         source: "ai",
-      }).onConflictDoUpdate({
-        target: [entityTags.entityType, entityTags.entityId, entityTags.tagId],
+      } as any).onConflictDoUpdate({
+        target: [entityTags.entityType, entityTags.entityId, entityTags.tagId] as any,
         set: {
           confidence: Math.round(tag.confidence * 100),
           source: "ai",
-        },
+        } as any,
       });
       tagsUpserted++;
     } catch (error) {
@@ -394,14 +394,14 @@ export async function persistTaggingResults(
         priority: placement.priority || 0,
         reason: placement.reason || null,
         isActive: true,
-      }).onConflictDoUpdate({
-        target: [entityPlacements.entityType, entityPlacements.entityId, entityPlacements.surface, entityPlacements.destinationId],
+      } as any).onConflictDoUpdate({
+        target: [entityPlacements.entityType, entityPlacements.entityId, entityPlacements.surface, entityPlacements.destinationId] as any,
         set: {
           priority: placement.priority || 0,
           reason: placement.reason || null,
           isActive: true,
           updatedAt: new Date(),
-        },
+        } as any,
       });
       placementsUpserted++;
     } catch (error) {
@@ -469,8 +469,8 @@ export async function tagEntity(
       success: true,
       entityId,
       entityType,
-      tags: output.tags,
-      placements: output.placements,
+      tags: output.tags as Array<{ tagId: string; confidence: number }>,
+      placements: output.placements as Array<{ surface: string; eligible: boolean; priority?: number; reason?: string }>,
       tagsUpserted,
       placementsUpserted,
     };

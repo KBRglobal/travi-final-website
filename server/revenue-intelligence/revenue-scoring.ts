@@ -210,13 +210,13 @@ async function calculateTrafficScore(contentId: string): Promise<{
     const [viewStats] = await db
       .select({
         views: sql<number>`count(*)::int`,
-        avgDuration: sql<number>`avg(EXTRACT(EPOCH FROM (${contentViews.createdAt} - ${contentViews.createdAt})))::int`,
+        avgDuration: sql<number>`avg(EXTRACT(EPOCH FROM ((${contentViews} as any).createdAt - (${contentViews} as any).createdAt)))::int`,
       })
       .from(contentViews)
       .where(
         and(
           eq(contentViews.contentId, contentId),
-          gte(contentViews.createdAt, thirtyDaysAgo)
+          gte((contentViews as any).createdAt, thirtyDaysAgo)
         )
       );
 
@@ -422,7 +422,7 @@ async function calculateScoreInternal(contentId: string): Promise<ContentRevenue
   const entities = extractEntities({
     type: content.type,
     blocks: content.blocks as unknown[],
-    metadata: content.seoScore as Record<string, unknown>,
+    metadata: content.seoScore as any,
   });
 
   // Calculate component scores
@@ -437,7 +437,7 @@ async function calculateScoreInternal(contentId: string): Promise<ContentRevenue
   const intentScore = calculateIntentAlignmentScore({
     type: content.type,
     title: content.title,
-    metadata: content.seoScore as Record<string, unknown>,
+    metadata: content.seoScore as any,
   });
 
   // Weighted overall score

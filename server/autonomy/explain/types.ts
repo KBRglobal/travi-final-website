@@ -3,7 +3,8 @@
  * Explains autonomy decisions in human-readable language
  */
 
-import { GuardedFeature, PolicyDecision } from '../enforcement/types';
+import { GuardedFeature } from '../enforcement/types';
+type PolicyDecision = any;
 import { BudgetPeriod } from '../policy/types';
 
 /**

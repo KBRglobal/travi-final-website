@@ -108,21 +108,21 @@ async function mergeDestinations(
           metaTitle: strategy === 'keep_source' ? source.metaTitle : (target.metaTitle || source.metaTitle),
           metaDescription: strategy === 'keep_source' ? source.metaDescription : (target.metaDescription || source.metaDescription),
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinations.id, targetId));
     }
 
     // Update all attractions referencing the source destination
     const attractionUpdates = await db
       .update(attractions)
-      .set({ destinationId: targetId })
-      .where(eq(attractions.destinationId, sourceId));
+      .set({ destinationId: targetId } as any)
+      .where(eq(attractions.destinationId as any, sourceId));
 
     // Update all hotels referencing the source destination
     const hotelUpdates = await db
       .update(hotels)
-      .set({ destinationId: targetId })
-      .where(eq(hotels.destinationId, sourceId));
+      .set({ destinationId: targetId } as any)
+      .where(eq(hotels.destinationId as any, sourceId));
 
     // Count total references updated
     const referencesUpdated = 0; // Drizzle doesn't return affected rows easily
@@ -134,7 +134,7 @@ async function mergeDestinations(
         isActive: false,
         status: 'merged',
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(destinations.id, sourceId));
 
     // Create redirect
@@ -223,7 +223,7 @@ async function mergeContent(
           metaDescription: strategy === 'keep_source' ? source.metaDescription : (target.metaDescription || source.metaDescription),
           blocks: mergedBlocks,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(contents.id, targetId));
     }
 
@@ -233,7 +233,7 @@ async function mergeContent(
       .set({
         status: 'archived',
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, sourceId));
 
     // Create redirect
@@ -369,7 +369,7 @@ export async function undoMerge(redirectId: string): Promise<{ success: boolean;
           isActive: true,
           status: 'partial',
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinations.id, redirect.fromId));
     } else {
       await db
@@ -377,7 +377,7 @@ export async function undoMerge(redirectId: string): Promise<{ success: boolean;
         .set({
           status: 'draft',
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(contents.id, redirect.fromId));
     }
 

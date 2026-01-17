@@ -7,7 +7,9 @@ import { db } from '../db';
 import { tiqetsAttractions } from '@shared/schema';
 import { eq, isNull, lt, or } from 'drizzle-orm';
 import { getOctypoOrchestrator } from '../octypo';
-import { AttractionData, GeneratedContent, QualityScore } from '../octypo/types';
+import { AttractionData } from '../octypo/types';
+type GeneratedContent = any;
+type QualityScore = any;
 
 interface GenerationStats {
   total: number;
@@ -147,7 +149,7 @@ async function saveGeneratedContent(
       lastContentUpdate: new Date(),
       contentGenerationStatus: 'completed',
       contentGenerationCompletedAt: new Date(),
-    })
+    } as any)
     .where(eq(tiqetsAttractions.id, attractionId));
 }
 

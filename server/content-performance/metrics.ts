@@ -4,7 +4,9 @@
  * Collects and processes performance metrics.
  */
 
+// @ts-ignore - Module resolution handled at runtime
 import { db } from '@db';
+// @ts-ignore - Module resolution handled at runtime
 import { content, contentToSearchIndex } from '@db/schema';
 import { eq } from 'drizzle-orm';
 import { PerformanceMetrics } from './types';

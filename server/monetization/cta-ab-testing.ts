@@ -81,7 +81,7 @@ export const ctaAbTesting = {
           targetUrl: config.targetUrl,
           trafficAllocation: config.trafficAllocation,
           createdBy: userId,
-        })
+        } as any)
         .returning();
 
       const testId = test[0].id;
@@ -95,7 +95,7 @@ export const ctaAbTesting = {
           config: variant.config as unknown as Record<string, unknown>,
           isControl: variant.isControl,
           weight: variant.weight,
-        });
+        } as any);
       }
 
       return testId;
@@ -115,7 +115,7 @@ export const ctaAbTesting = {
         .set({
           status: "running",
           startDate: new Date(),
-        })
+        } as any)
         .where(eq(abTests.id, testId));
 
       return true;
@@ -135,7 +135,7 @@ export const ctaAbTesting = {
         .set({
           status: "completed",
           endDate: new Date(),
-        })
+        } as any)
         .where(eq(abTests.id, testId));
 
       return true;
@@ -224,7 +224,7 @@ export const ctaAbTesting = {
         userId,
         sessionId,
         metadata: metadata as unknown as Record<string, unknown>,
-      });
+      } as any);
 
       // Update variant stats using atomic increment
       const updateField =
@@ -376,15 +376,15 @@ export const ctaAbTesting = {
     endDate: Date | null;
   }>> {
     try {
-      let query = db.select().from(abTests);
+      let query = db.select().from(abTests) as any;
 
       if (status) {
-        query = query.where(eq(abTests.status, status));
+        query = query.where(eq(abTests.status, status as any));
       }
 
       const tests = await query;
 
-      return tests.map(test => ({
+      return tests.map((test: any) => ({
         id: test.id,
         name: test.name,
         type: test.type,

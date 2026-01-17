@@ -226,7 +226,7 @@ export async function generateDestinationImages(
       logger.info({ destinationId }, "Generating hero image");
       
       const heroPrompt = await generateImagePrompt({
-        contentType: 'destination',
+        contentType: 'destination' as any,
         title: `${destination.name} Travel Guide`,
         description: `Hero banner image for ${destination.name}, ${destination.country} travel destination page`,
         location: destination.name,
@@ -261,7 +261,7 @@ export async function generateDestinationImages(
                 heroImage: storedUrl,
                 heroImageAlt: heroAlt,
                 updatedAt: new Date(),
-              })
+              } as any)
               .where(eq(destinations.id, destinationId));
             
             result.heroGenerated = true;
@@ -284,7 +284,7 @@ export async function generateDestinationImages(
       
       for (const section of sectionsToGenerate) {
         const sectionPrompt = await generateImagePrompt({
-          contentType: 'destination',
+          contentType: 'destination' as any,
           title: `${destination.name} ${section}`,
           description: `${section} section image for ${destination.name}, ${destination.country}`,
           location: destination.name,
@@ -344,7 +344,7 @@ export async function generateDestinationImages(
             images: allImages,
             lastImageGenerated: new Date(),
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(destinations.id, destinationId));
         
         result.sectionImages = newImages;
@@ -357,7 +357,7 @@ export async function generateDestinationImages(
       .set({
         lastImageGenerated: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(destinations.id, destinationId));
     
     result.totalCost = totalCost;
@@ -373,7 +373,7 @@ export async function generateDestinationImages(
       prompt: `Generated ${result.heroGenerated ? 1 : 0} hero + ${result.sectionImagesGenerated} section images`,
       success: true,
       duration: result.duration,
-    });
+    } as any);
     
     logger.info({
       destinationId,
@@ -400,7 +400,7 @@ export async function generateDestinationImages(
       success: false,
       error: errorMessage,
       duration,
-    });
+    } as any);
     
     return {
       destinationId,

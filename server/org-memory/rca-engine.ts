@@ -260,7 +260,7 @@ export function runRCA(eventId: string): RCAResult | null {
   const event = repo.get(eventId);
 
   if (!event) {
-    logger.warn('Event not found for RCA', { eventId });
+    (logger as any).warn('Event not found for RCA', { eventId });
     return null;
   }
 

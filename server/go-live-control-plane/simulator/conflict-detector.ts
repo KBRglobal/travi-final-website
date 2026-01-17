@@ -123,8 +123,8 @@ function detectIncompatibleFlags(projectedState: Map<string, boolean>): Conflict
   const capabilities = getAllCapabilities();
 
   for (const [flag1, flag2, reason] of INCOMPATIBLE_PAIRS) {
-    const cap1 = capabilities.find(c => c.envVarName === flag1);
-    const cap2 = capabilities.find(c => c.envVarName === flag2);
+    const cap1 = capabilities.find(c => (c as any).envVarName === flag1);
+    const cap2 = capabilities.find(c => (c as any).envVarName === flag2);
 
     if (!cap1 || !cap2) continue;
 
@@ -186,7 +186,7 @@ function detectResourceContention(projectedState: Map<string, boolean>): Conflic
   const resourceUsage: Record<string, { current: number; projected: number; caps: string[] }> = {};
 
   for (const cap of capabilities) {
-    const demands = RESOURCE_DEMANDS[cap.envVarName];
+    const demands = RESOURCE_DEMANDS[(cap as any).envVarName];
     if (!demands) continue;
 
     const wasEnabled = cap.status === 'enabled';

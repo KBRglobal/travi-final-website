@@ -52,7 +52,7 @@ async function flushDecisionBuffer() {
   const toFlush = decisionBuffer.splice(0, decisionBuffer.length);
 
   try {
-    await db.insert(autonomyDecisionLogs).values(toFlush);
+    await db.insert(autonomyDecisionLogs).values(toFlush as any);
   } catch (error) {
     console.error('[Enforcement] Failed to flush decision buffer:', error);
     // Re-add failed entries (up to max buffer size)
@@ -107,12 +107,12 @@ async function checkOverride(targetKey: string, feature: GuardedFeature): Promis
       .where(
         and(
           eq(autonomyDecisionLogs.targetKey, targetKey),
-          eq(autonomyDecisionLogs.feature, feature),
-          eq(autonomyDecisionLogs.overrideUsed, true),
-          gt(autonomyDecisionLogs.evaluatedAt, new Date())
+          eq((autonomyDecisionLogs as any).feature, feature),
+          eq((autonomyDecisionLogs as any).overrideUsed, true),
+          gt((autonomyDecisionLogs as any).evaluatedAt, new Date())
         )
       )
-      .orderBy(desc(autonomyDecisionLogs.evaluatedAt))
+      .orderBy(desc((autonomyDecisionLogs as any).evaluatedAt))
       .limit(1);
 
     // Note: Overrides are stored separately, this is a simplified check

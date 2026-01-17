@@ -166,7 +166,7 @@ function calculatePlacements(
       position: i,
       entityId: entity?.id,
       productType: entity?.type,
-    });
+    } as any);
   }
 
   return placements;

@@ -3,7 +3,8 @@
  * Replay historical traffic against hypothetical policies
  */
 
-import { GuardedFeature, PolicyDecision } from '../enforcement/types';
+import { GuardedFeature } from '../enforcement/types';
+type PolicyDecision = any;
 import { BudgetPeriod, BudgetLimit } from '../policy/types';
 
 /**

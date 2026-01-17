@@ -234,7 +234,7 @@ export async function scanUploadsAndIndex(options?: {
 
         if (existing.length === 0) {
           // Insert new asset
-          await db.insert(mediaAssets).values(assetData);
+          await db.insert(mediaAssets).values(assetData as any);
           result.filesIndexed++;
         } else {
           // Update existing asset
@@ -245,7 +245,7 @@ export async function scanUploadsAndIndex(options?: {
               mimeType: file.mimeType,
               lastScannedAt: new Date(),
               ...(checksum && { checksum }),
-            })
+            } as any)
             .where(eq(mediaAssets.id, existing[0].id));
           result.filesUpdated++;
         }

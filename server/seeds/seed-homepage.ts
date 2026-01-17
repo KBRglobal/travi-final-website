@@ -51,7 +51,7 @@ export async function seedHomepage(): Promise<{ success: boolean; message: strin
         metaDescriptionHe: "המדריך המקיף ביותר לאטרקציות, מלונות והמקומות הסודיים של דובאי. נכתב על ידי מומחים מקומיים ב-17 שפות.",
         isPublished: true,
         publishedAt: new Date(),
-      })
+      } as any)
       .returning();
 
     const sectionsData: SeedSectionData[] = [
@@ -391,7 +391,7 @@ export async function seedHomepage(): Promise<{ success: boolean; message: strin
         isVisible: true,
         showOnMobile: true,
         showOnDesktop: true,
-      });
+      } as any);
     }
 
     console.log(`[Seed] Homepage created with ${sectionsData.length} sections`);
@@ -483,7 +483,7 @@ export async function seedCategoryPage(type: "hotels" | "dining" | "districts" |
         metaDescriptionHe: config.metaDescriptionHe,
         isPublished: true,
         publishedAt: new Date(),
-      })
+      } as any)
       .returning();
 
     await db.insert(pageSections).values({
@@ -496,7 +496,7 @@ export async function seedCategoryPage(type: "hotels" | "dining" | "districts" |
       subtitleHe: config.metaDescriptionHe,
       sortOrder: 1,
       isVisible: true,
-    });
+    } as any);
 
     await db.insert(pageSections).values({
       pageId: page.id,
@@ -516,7 +516,7 @@ export async function seedCategoryPage(type: "hotels" | "dining" | "districts" |
       },
       sortOrder: 2,
       isVisible: true,
-    });
+    } as any);
 
     console.log(`[Seed] ${type} category page created`);
     return { 

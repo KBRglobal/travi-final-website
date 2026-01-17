@@ -468,7 +468,7 @@ export function registerAutoPilotRoutes(app: Express) {
         
         if (qualityResult.canPublish) {
           await db.update(contents)
-            .set({ status: "approved" as any })
+            .set({ status: "approved" } as any)
             .where(eq(contents.id, content.id));
           approved++;
         }

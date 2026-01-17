@@ -177,9 +177,9 @@ async function persistEvent(event: RevenueEvent): Promise<void> {
     await db.insert(analyticsEvents).values({
       eventType: `revenue.${event.eventType}`,
       contentId: event.contentId,
-      userId: event.userId,
       sessionId: event.sessionId,
-      properties: {
+      metadata: {
+        userId: event.userId,
         entityId: event.entityId,
         affiliateId: event.affiliateId,
         zoneId: event.zoneId,
@@ -189,7 +189,7 @@ async function persistEvent(event: RevenueEvent): Promise<void> {
         ...event.metadata,
       },
       timestamp: event.timestamp,
-    });
+    } as any);
   } catch (error) {
     // Re-throw to be caught by caller
     throw error;
@@ -290,7 +290,7 @@ export async function getAttributionSummary(
     const byEntity: Record<string, { impressions: number; clicks: number; conversions: number; revenue: number }> = {};
 
     for (const event of events) {
-      const props = event.properties as Record<string, unknown> || {};
+      const props = (event as any).metadata as Record<string, unknown> || {};
       const eventType = event.eventType?.replace('revenue.', '') as RevenueEventType;
       const affiliateId = props.affiliateId as string || 'unknown';
       const entityId = props.entityId as string || 'unknown';
@@ -412,7 +412,7 @@ export async function getAggregateStats(
     let revenue = 0;
 
     for (const event of events) {
-      const props = event.properties as Record<string, unknown> || {};
+      const props = (event as any).metadata as Record<string, unknown> || {};
       const eventType = event.eventType?.replace('revenue.', '') as RevenueEventType;
       const value = (props.value as number) || 0;
 
@@ -459,27 +459,30 @@ export async function getEventsByTrackingId(
       .where(
         and(
           sql`${analyticsEvents.eventType} LIKE 'revenue.%'`,
-          sql`${analyticsEvents.properties}->>'trackingId' = ${trackingId}`
+          sql`${(analyticsEvents as any).metadata}->>'trackingId' = ${trackingId}`
         )
       )
       .orderBy(desc(analyticsEvents.timestamp))
       .limit(limit);
 
-    return events.map(e => ({
-      id: e.id,
-      eventType: (e.eventType?.replace('revenue.', '') || 'unknown') as RevenueEventType,
-      contentId: e.contentId || '',
-      entityId: (e.properties as Record<string, unknown>)?.entityId as string,
-      affiliateId: ((e.properties as Record<string, unknown>)?.affiliateId || 'generic') as AffiliatePartnerType,
-      zoneId: (e.properties as Record<string, unknown>)?.zoneId as string || '',
-      trackingId: (e.properties as Record<string, unknown>)?.trackingId as string || '',
-      sessionId: e.sessionId || undefined,
-      userId: e.userId || undefined,
-      value: (e.properties as Record<string, unknown>)?.value as number,
-      currency: (e.properties as Record<string, unknown>)?.currency as string || 'USD',
-      timestamp: e.timestamp,
-      metadata: e.properties as Record<string, unknown>,
-    }));
+    return events.map(e => {
+      const meta = (e as any).metadata as Record<string, unknown> || {};
+      return {
+        id: e.id,
+        eventType: (e.eventType?.replace('revenue.', '') || 'unknown') as RevenueEventType,
+        contentId: e.contentId || '',
+        entityId: meta.entityId as string,
+        affiliateId: (meta.affiliateId || 'generic') as AffiliatePartnerType,
+        zoneId: meta.zoneId as string || '',
+        trackingId: meta.trackingId as string || '',
+        sessionId: e.sessionId || undefined,
+        userId: meta.userId as string || undefined,
+        value: meta.value as number,
+        currency: meta.currency as string || 'USD',
+        timestamp: e.timestamp,
+        metadata: meta,
+      };
+    });
   } catch (error) {
     logger.error({ trackingId, error }, 'Failed to get events by tracking ID');
     return [];

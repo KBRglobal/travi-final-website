@@ -568,7 +568,7 @@ export async function saveSchemaEnhancement(
         schemaData,
         updatedAt: new Date(),
         validationStatus: "pending",
-      })
+      } as any)
       .where(eq(aeoSchemaEnhancements.id, existing.id));
   } else {
     await db.insert(aeoSchemaEnhancements).values({
@@ -577,7 +577,7 @@ export async function saveSchemaEnhancement(
       schemaData,
       isActive: true,
       validationStatus: "pending",
-    });
+    } as any);
   }
 }
 
@@ -645,7 +645,7 @@ export async function batchGenerateSchemas(
         .set({
           seoSchema: schema as any,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(contents.id, contentId));
 
       results.success++;

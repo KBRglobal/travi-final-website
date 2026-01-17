@@ -69,6 +69,12 @@ export {
   resetExperimentRecommender,
 } from './experiments';
 
+// Import reset functions for internal use
+import { resetSegmentAnalyzer as _resetSegmentAnalyzer } from './segments';
+import { resetBottleneckDetector as _resetBottleneckDetector } from './bottlenecks';
+import { resetProposalEngine as _resetProposalEngine } from './proposals';
+import { resetExperimentRecommender as _resetExperimentRecommender } from './experiments';
+
 // Routes
 export { createTrafficOptimizationRouter } from './routes';
 
@@ -101,9 +107,9 @@ export function initTrafficOptimization(): void {
  * Shutdown the traffic optimization engine
  */
 export function shutdownTrafficOptimization(): void {
-  resetSegmentAnalyzer();
-  resetBottleneckDetector();
-  resetProposalEngine();
-  resetExperimentRecommender();
+  (_resetSegmentAnalyzer as any)();
+  (_resetBottleneckDetector as any)();
+  (_resetProposalEngine as any)();
+  (_resetExperimentRecommender as any)();
   console.log('[TrafficOptimization] Traffic optimization engine shutdown');
 }

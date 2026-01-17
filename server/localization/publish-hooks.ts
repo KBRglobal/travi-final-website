@@ -184,7 +184,7 @@ export async function updateSearchIndex(
         url,
         image: content.heroImage || content.cardImage,
         locale,
-      })
+      } as any)
       .onConflictDoUpdate({
         target: searchIndex.contentId,
         set: {
@@ -194,7 +194,7 @@ export async function updateSearchIndex(
           url,
           image: content.heroImage || content.cardImage,
           updatedAt: new Date(),
-        },
+        } as any,
       });
 
     logger.info('Search index updated', { contentId: content.id, locale });

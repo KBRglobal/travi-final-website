@@ -331,7 +331,7 @@ async function generateAllGuides() {
             images: images,
             status: 'published',
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(update9987Guides.slug, dest.slug))
           .returning({ id: update9987Guides.id });
 

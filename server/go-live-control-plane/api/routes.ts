@@ -101,7 +101,7 @@ glcpRouter.get('/dashboard', requireGLCP, async (req, res) => {
     const capabilities = getAllCapabilities();
     const readiness = await evaluateReadiness({ useCache: true });
     const executions = listExecutions({ limit: 100 });
-    const domains = groupByDomain(capabilities);
+    const domains = (groupByDomain as any)(capabilities);
 
     const byRisk: Record<RiskLevel, number> = { low: 0, medium: 0, high: 0, critical: 0 };
     const byDomain: Record<string, { enabled: number; disabled: number }> = {};
@@ -112,8 +112,8 @@ glcpRouter.get('/dashboard', requireGLCP, async (req, res) => {
 
     for (const [domain, caps] of Object.entries(domains)) {
       byDomain[domain] = {
-        enabled: caps.filter(c => c.status === 'enabled').length,
-        disabled: caps.filter(c => c.status === 'disabled').length,
+        enabled: (caps as any).filter((c: any) => c.status === 'enabled').length,
+        disabled: (caps as any).filter((c: any) => c.status === 'disabled').length,
       };
     }
 

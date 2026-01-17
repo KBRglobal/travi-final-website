@@ -186,12 +186,12 @@ export class SEOActionEngine {
     // Add auto-fix actions if no blocks
     if (blocks.length === 0) {
       // Auto-generate schema if missing
-      if (!content.schemaMarkup) {
+      if (!(content as any).schemaMarkup) {
         actions.push(this.createAction(contentId, 'GENERATE_SCHEMA', 'MEDIUM', 'Missing structured data'));
       }
 
       // Auto-set canonical if missing
-      if (!content.canonicalUrl) {
+      if (!(content as any).canonicalUrl) {
         actions.push(this.createAction(contentId, 'SET_CANONICAL', 'MEDIUM', 'Missing canonical URL'));
       }
 

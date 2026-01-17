@@ -97,7 +97,6 @@ export async function syncSubscriberToMailchimp(
   if (!subscriber) throw new Error("Subscriber not found");
   
   // Hash email for Mailchimp
-  import crypto from "crypto";
   const emailHash = crypto
     .createHash("md5")
     .update(subscriber.email.toLowerCase())
@@ -194,7 +193,7 @@ export async function importSubscribersFromMailchimp(
           status: member.status === "subscribed" ? "subscribed" : "unsubscribed",
           source: "mailchimp",
           tags: member.tags?.map((t: any) => t.name) || [],
-        });
+        } as any);
         imported++;
       }
     } catch (error) {
@@ -319,7 +318,7 @@ export async function importCampaignStatsFromMailchimp(
           totalClicked: report.clicks?.unique_clicks || 0,
           totalBounced: report.bounces?.hard_bounces || 0,
           totalUnsubscribed: report.unsubscribed || 0,
-        }).where(eq(newsletterCampaigns.id, localCampaign.id));
+        } as any).where(eq(newsletterCampaigns.id, localCampaign.id));
         
         synced++;
       }

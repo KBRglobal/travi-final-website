@@ -99,7 +99,7 @@ function hashState(state: Record<string, unknown>): string {
  * Get content lifecycle with all events
  */
 export async function getContentLifecycle(contentId: string): Promise<ContentLifecycle> {
-  const [contentItem] = await db.select().from(content).where(eq(content.id, parseInt(contentId))).limit(1);
+  const [contentItem] = await db.select().from(content).where(eq(content.id as any, parseInt(contentId))).limit(1);
 
   if (!contentItem) {
     throw new Error(`Content ${contentId} not found`);
@@ -122,7 +122,7 @@ export async function getContentLifecycle(contentId: string): Promise<ContentLif
   return {
     contentId,
     contentTitle: contentItem.title || 'Untitled',
-    contentType: contentItem.contentType || 'unknown',
+    contentType: (contentItem as any).contentType || 'unknown',
     createdAt: contentItem.createdAt ? new Date(contentItem.createdAt) : new Date(),
     createdBy: events.find(e => e.type === 'created')?.userId,
     currentStatus: contentItem.status || 'draft',

@@ -42,24 +42,24 @@ const DEFAULT_WORKFLOWS: ApprovalWorkflow[] = [
         stepNumber: 1,
         name: "Editor Review",
         type: "role",
-        approverRoles: ["editor", "manager", "admin"],
+        approverRoles: ["editor", "manager", "admin"] as any,
         requiredApprovals: 1,
         timeoutHours: 24,
         escalateTo: {
           type: "role",
-          roles: ["manager"],
+          roles: ["manager"] as any,
         },
       },
       {
         stepNumber: 2,
         name: "Manager Approval",
         type: "role",
-        approverRoles: ["manager", "admin", "super_admin"],
+        approverRoles: ["manager", "admin", "super_admin"] as any,
         requiredApprovals: 1,
         timeoutHours: 48,
         escalateTo: {
           type: "role",
-          roles: ["admin"],
+          roles: ["admin"] as any,
         },
       },
     ],
@@ -79,7 +79,7 @@ const DEFAULT_WORKFLOWS: ApprovalWorkflow[] = [
         stepNumber: 1,
         name: "Manager Approval",
         type: "role",
-        approverRoles: ["manager", "admin", "super_admin"],
+        approverRoles: ["manager", "admin", "super_admin"] as any,
         requiredApprovals: 1,
         timeoutHours: 72,
       },
@@ -100,7 +100,7 @@ const DEFAULT_WORKFLOWS: ApprovalWorkflow[] = [
         stepNumber: 1,
         name: "Admin Approval",
         type: "role",
-        approverRoles: ["admin", "super_admin"],
+        approverRoles: ["admin", "super_admin"] as any,
         requiredApprovals: 1,
         timeoutHours: 24,
       },
@@ -121,7 +121,7 @@ const DEFAULT_WORKFLOWS: ApprovalWorkflow[] = [
         stepNumber: 1,
         name: "Admin Review",
         type: "role",
-        approverRoles: ["admin", "super_admin"],
+        approverRoles: ["admin", "super_admin"] as any,
         requiredApprovals: 1,
         timeoutHours: 24,
       },
@@ -129,7 +129,7 @@ const DEFAULT_WORKFLOWS: ApprovalWorkflow[] = [
         stepNumber: 2,
         name: "Super Admin Approval",
         type: "role",
-        approverRoles: ["super_admin"],
+        approverRoles: ["super_admin"] as any,
         requiredApprovals: 1,
         timeoutHours: 48,
       },
@@ -220,7 +220,7 @@ class ApprovalWorkflowService {
           action: params.action,
         },
         expiresAt: dueAt,
-      })
+      } as any)
       .returning();
 
     // Create first step
@@ -310,7 +310,7 @@ class ApprovalWorkflowService {
         decisionReason: params.reason,
         decidedBy: params.decidedBy,
         decidedAt: new Date(),
-      })
+      } as any)
       .where(
         and(
           eq(approvalSteps.requestId, params.requestId),
@@ -338,7 +338,7 @@ class ApprovalWorkflowService {
         .set({
           status: "rejected",
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(approvalRequests.id, params.requestId));
 
       return {
@@ -360,7 +360,7 @@ class ApprovalWorkflowService {
         .set({
           status: "approved",
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(approvalRequests.id, params.requestId));
 
       return {
@@ -389,7 +389,7 @@ class ApprovalWorkflowService {
         status: "in_progress",
         updatedAt: new Date(),
         expiresAt: dueAt,
-      })
+      } as any)
       .where(eq(approvalRequests.id, params.requestId));
 
     const nextStep = await this.createStepRecord(params.requestId, nextWorkflowStep, dueAt);
@@ -429,7 +429,7 @@ class ApprovalWorkflowService {
         status: "escalated",
         escalatedAt: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(approvalRequests.id, params.requestId));
 
     await logApprovalEvent({
@@ -582,7 +582,7 @@ class ApprovalWorkflowService {
           .set({
             status: "expired",
             updatedAt: now,
-          })
+          } as any)
           .where(eq(approvalRequests.id, request.id));
 
         await logApprovalEvent({
@@ -620,7 +620,7 @@ class ApprovalWorkflowService {
       autoApproveAt: step.autoApprove && step.timeoutHours
         ? new Date(Date.now() + step.timeoutHours * 60 * 60 * 1000)
         : undefined,
-    });
+    } as any);
 
     return {
       id: stepId,

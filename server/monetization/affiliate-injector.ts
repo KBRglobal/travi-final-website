@@ -128,7 +128,7 @@ export const affiliateInjector = {
                 .update(partners)
                 .set({
                   totalClicks: (partner.totalClicks || 0) + 1,
-                })
+                } as any)
                 .where(eq(partners.id, partner.id));
             }
 
@@ -146,7 +146,7 @@ export const affiliateInjector = {
           .update(contents)
           .set({
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(contents.id, contentId));
       }
 
@@ -218,7 +218,7 @@ export const affiliateInjector = {
           .update(partners)
           .set({
             totalClicks: (partner[0].totalClicks || 0) + 1,
-          })
+          } as any)
           .where(eq(partners.id, partner[0].id));
       }
     } catch (error) {
@@ -245,7 +245,7 @@ export const affiliateInjector = {
           .set({
             totalConversions: (partner[0].totalConversions || 0) + 1,
             totalEarnings: (partner[0].totalEarnings || 0) + commission,
-          })
+          } as any)
           .where(eq(partners.id, partner[0].id));
       }
     } catch (error) {

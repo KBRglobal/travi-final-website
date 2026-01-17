@@ -99,7 +99,7 @@ export async function createCategory(input: CreateCategoryInput): Promise<HelpCa
       icon: input.icon,
       locale: input.locale || 'en',
       order: input.order || 0,
-    })
+    } as any)
     .returning();
   return result[0];
 }
@@ -110,7 +110,7 @@ export async function updateCategory(id: string, input: UpdateCategoryInput): Pr
     .set({
       ...input,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(helpCategories.id, id))
     .returning();
   return result[0] || null;
@@ -223,7 +223,7 @@ export async function createArticle(input: CreateArticleInput): Promise<HelpArti
       locale: input.locale || 'en',
       order: input.order || 0,
       authorId: input.authorId,
-    })
+    } as any)
     .returning();
   return result[0];
 }
@@ -283,7 +283,7 @@ export async function incrementArticleViewCount(id: string): Promise<void> {
     .update(helpArticles)
     .set({
       viewCount: sql`${helpArticles.viewCount} + 1`,
-    })
+    } as any)
     .where(eq(helpArticles.id, id));
 }
 

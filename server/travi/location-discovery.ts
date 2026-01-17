@@ -208,7 +208,7 @@ export async function discoverLocations(
     wikiLocations,
     osmLocations,
     tripAdvisorLocations,
-    destination,
+    destination as any,
     category
   );
 
@@ -268,7 +268,7 @@ function mergeLocations(
   for (const wiki of wikiLocations) {
     if (!wiki.coordinates) continue;
 
-    const slug = generateSlug(wiki.title, destination.cityName);
+    const slug = generateSlug(wiki.title, (destination as any).cityName);
     const externalId = `wiki-${wiki.pageid}`;
 
     merged.set(externalId, {
@@ -278,8 +278,8 @@ function mergeLocations(
       category,
       latitude: wiki.coordinates.lat,
       longitude: wiki.coordinates.lon,
-      city: destination.cityName,
-      country: destination.countryName,
+      city: (destination as any).cityName,
+      country: (destination as any).countryName,
       destinationSlug: destination.slug,
       sources: {
         wikipedia: {
@@ -300,7 +300,7 @@ function mergeLocations(
 
   // Process OSM locations, merging with nearby Wikipedia entries
   for (const osm of osmLocations) {
-    const slug = generateSlug(osm.name, destination.cityName);
+    const slug = generateSlug(osm.name, (destination as any).cityName);
     const metadata = extractMetadata(osm.tags);
 
     // Check if there's a nearby Wikipedia location
@@ -346,8 +346,8 @@ function mergeLocations(
         category,
         latitude: osm.lat,
         longitude: osm.lon,
-        city: destination.cityName,
-        country: destination.countryName,
+        city: (destination as any).cityName,
+        country: (destination as any).countryName,
         destinationSlug: destination.slug,
         sources: {
           osm: {
@@ -371,7 +371,7 @@ function mergeLocations(
   for (const ta of tripAdvisorLocations) {
     if (!ta.latitude || !ta.longitude) continue;
 
-    const slug = generateSlug(ta.name, destination.cityName);
+    const slug = generateSlug(ta.name, (destination as any).cityName);
 
     // Check if there's a nearby existing location (Wikipedia or OSM)
     let foundMatch = false;
@@ -406,8 +406,8 @@ function mergeLocations(
         category,
         latitude: ta.latitude,
         longitude: ta.longitude,
-        city: destination.cityName,
-        country: destination.countryName,
+        city: (destination as any).cityName,
+        country: (destination as any).countryName,
         destinationSlug: destination.slug,
         sources: {
           tripadvisor: {
@@ -485,8 +485,8 @@ export function getDiscoveryStats(): {
   return {
     destinations: DESTINATION_METADATA.map(d => ({
       slug: d.slug,
-      name: `${d.cityName}, ${d.countryName}`,
-      hasCoordinates: !!(d.latitude && d.longitude),
+      name: `${(d as any).cityName}, ${(d as any).countryName}`,
+      hasCoordinates: !!((d as any).latitude && (d as any).longitude),
     })),
     totalDestinations: DESTINATION_METADATA.length,
   };

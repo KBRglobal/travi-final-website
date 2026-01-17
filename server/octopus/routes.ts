@@ -938,7 +938,7 @@ router.post('/placement-rules', async (req: Request, res: Response) => {
       conditions,
       priority: priority ?? 0,
       isActive: true,
-    }).returning();
+    } as any).returning();
 
     octopusLogger.info('Created placement rule', { ruleId: rule.id, name });
     res.json({

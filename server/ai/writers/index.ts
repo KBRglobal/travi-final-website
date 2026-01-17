@@ -23,9 +23,9 @@ export {
   generateIntro,
   rewriteInVoice,
   optimizeForSeo,
-  type WriteContentRequest,
   type WriteContentResponse,
 } from "./writer-engine";
+export type WriteContentRequest = any;
 
 // Export assignment system
 export {

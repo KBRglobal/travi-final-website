@@ -24,7 +24,7 @@ async function updateTokyoGuide() {
       metaDescription: "Discover Tokyo in 2026: honest costs from $100/day, best hotels from $60, top attractions, insider tips. Realistic guide for first-time visitors.",
       focusKeyword: "Tokyo travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'tokyo-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

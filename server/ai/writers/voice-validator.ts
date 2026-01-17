@@ -46,7 +46,7 @@ export async function validateVoiceConsistency(
     };
   }
 
-  const prompt = createVoiceValidationPrompt(writer, content);
+  const prompt = createVoiceValidationPrompt(writer as any, content);
 
   try {
     const response = await openai.chat.completions.create({
@@ -109,7 +109,7 @@ Name: ${writer.name}
 Personality: ${writer.personality}
 Writing Style: ${writer.writingStyle}
 Expertise: ${writer.expertise}
-Voice Prompt: ${writer.voicePrompt}
+Voice Prompt: ${(writer as any).voicePrompt}
 
 Sample Phrases (Writer's Typical Style):
 ${writer.samplePhrases?.slice(0, 3).map(p => `- "${p}"`).join('\n') || 'N/A'}

@@ -1679,7 +1679,7 @@ async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOption
           html: `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"><link rel="canonical" href="${BASE_URL}${redirectUrl}"></head><body>Redirecting...</body></html>`,
           status: 301,
           redirect: redirectUrl
-        };
+        } as any;
       }
     }
     attraction = results[0];
@@ -2314,14 +2314,14 @@ async function renderEventPage(slug: string, options: SSRRenderOptions): Promise
     url: getCanonicalUrl(`/events/${slug}`, locale),
     location: {
       "@type": "Place",
-      name: content.event?.venueName || "Dubai",
+      name: (content.event as any)?.venueName || content.event?.venue || "Dubai",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Dubai",
         addressCountry: "AE",
       },
     },
-    startDate: content.event?.startDate?.toISOString() || content.publishedAt?.toISOString(),
+    startDate: (content.event as any)?.startDate?.toISOString() || content.event?.eventDate?.toISOString() || content.publishedAt?.toISOString(),
     endDate: content.event?.endDate?.toISOString(),
     organizer: {
       "@type": "Organization",

@@ -24,7 +24,7 @@ export async function upsertRealtimeSession(data: Omit<InsertRealtimeSession, "i
   const [existing] = await db
     .select()
     .from(realtimeSessions)
-    .where(eq(realtimeSessions.sessionId, data.sessionId))
+    .where(eq(realtimeSessions.sessionId, (data as any).sessionId))
     .limit(1);
   
   if (existing) {
@@ -32,12 +32,12 @@ export async function upsertRealtimeSession(data: Omit<InsertRealtimeSession, "i
     const [updated] = await db
       .update(realtimeSessions)
       .set({
-        currentPage: data.currentPage,
-        currentPageTitle: data.currentPageTitle,
+        currentPage: (data as any).currentPage,
+        currentPageTitle: (data as any).currentPageTitle,
         lastActivityAt: new Date(),
         isActive: true,
-      })
-      .where(eq(realtimeSessions.sessionId, data.sessionId))
+      } as any)
+      .where(eq(realtimeSessions.sessionId, (data as any).sessionId))
       .returning();
     
     return updated;
@@ -46,7 +46,7 @@ export async function upsertRealtimeSession(data: Omit<InsertRealtimeSession, "i
   // Create new session
   const [session] = await db
     .insert(realtimeSessions)
-    .values(data)
+    .values(data as any)
     .returning();
   
   return session;
@@ -58,7 +58,7 @@ export async function upsertRealtimeSession(data: Omit<InsertRealtimeSession, "i
 export async function deactivateSession(sessionId: string): Promise<void> {
   await db
     .update(realtimeSessions)
-    .set({ isActive: false })
+    .set({ isActive: false } as any)
     .where(eq(realtimeSessions.sessionId, sessionId));
 }
 

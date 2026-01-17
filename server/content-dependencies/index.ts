@@ -56,10 +56,10 @@ export async function addDependency(
 
   await db
     .insert(contentDependencies)
-    .values({ sourceId, targetId, dependencyType, weight })
+    .values({ sourceId, targetId, dependencyType, weight } as any)
     .onConflictDoUpdate({
       target: [contentDependencies.sourceId, contentDependencies.targetId],
-      set: { dependencyType, weight },
+      set: { dependencyType, weight } as any,
     });
 
   // Invalidate cache

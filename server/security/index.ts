@@ -345,7 +345,21 @@ export * from './adapters';
 
 // --- Security Kernel ---
 // Fail-closed core with threat levels and bypass detection
-export * from './core/security-kernel';
+// Note: SecurityMode, ThreatLevel, getSecurityMode, setSecurityMode already exported from ./authority
+export {
+  initSecurityKernel,
+  isSecurityInitialized,
+  getThreatLevel,
+  setThreatLevel,
+  triggerLockdown,
+  shouldAllow,
+  recordViolation,
+  recordBlock,
+  getKernelStatus,
+  verifyKernelIntegrity,
+  detectBypassAttempt,
+  onThreatLevelChange
+} from './core/security-kernel';
 
 // --- RBAC Enforcer ---
 // Complete role-permission matrix with fail-closed middleware
@@ -370,7 +384,14 @@ export * from './exfiltration/exfiltration-guard';
 
 // --- Compliance Evidence ---
 // SOC2, ISO27001, GDPR evidence generation with chain integrity
-export * from './compliance/evidence-generator';
+// Note: EvidenceType already exported from ./authority
+export {
+  generateEvidence,
+  generateComplianceReport,
+  exportEvidencePackage,
+  verifyEvidenceChain,
+  evidenceGenerator
+} from './compliance/evidence-generator';
 
 // --- Drift Detection ---
 // Continuous security configuration monitoring
@@ -378,7 +399,15 @@ export * from './drift/drift-scanner';
 
 // --- Security Modes ---
 // Autonomous monitor/enforce/lockdown mode management
-export * from './modes/security-modes';
+// Note: SecurityMode, getSecurityMode, setSecurityMode already exported from ./authority or ./core/security-kernel
+// Note: ThreatFactor already exported from ./intelligence/security-intelligence
+export {
+  startAutoModeMonitoring,
+  getModeConfiguration,
+  isOperationAllowed,
+  modeCheckMiddleware,
+  securityModeManager
+} from './modes/security-modes';
 
 // --- Executive Dashboard ---
 // Real-time security posture and threat status API
@@ -391,19 +420,41 @@ export { securityDashboardRouter } from './api/security-dashboard';
 
 // --- Security Gate ---
 // Single enforcement point for ALL critical actions
-export * from './gate/security-gate';
+// Note: SecurityGateError already exported from ./authority
+export {
+  securityGateMiddleware,
+  requiresSecurityGate,
+  getGateStatistics,
+  resetGateStatistics
+} from './gate/security-gate';
 
 // --- Autonomy Controller ---
 // Security mode integration with all autopilot systems
-export * from './autonomy/autonomy-controller';
+// Note: AutonomyImpact already exported from ./authority
+export {
+  autonomyController,
+  autonomyRouter
+} from './autonomy/autonomy-controller';
 
 // --- Override Registry ---
 // Centralized, auditable security override management
-export * from './overrides/override-registry';
+// Note: OverrideRequest, OverrideType already exported from ./authority
+export {
+  overrideRegistry,
+  overrideRouter
+} from './overrides/override-registry';
 
 // --- Threat Propagator ---
 // Cross-system threat response coordination
-export * from './adapters/threat-propagator';
+// Note: SystemAdapter already exported from ./authority
+export {
+  threatPropagator,
+  propagateThreat,
+  propagateAnomaly,
+  propagateHighRiskUser,
+  registerThreatAdapter,
+  getThreatAdapterStatuses
+} from './adapters/threat-propagator';
 
 // --- Unified Evidence ---
 // Automatic compliance evidence from all systems
@@ -420,9 +471,7 @@ import { startDriftMonitoring, captureBaseline } from './drift/drift-scanner';
 import { threatPropagator } from './adapters/threat-propagator';
 import { logAdminEvent } from '../governance/security-logger';
 
-// Re-export routers for app integration
-export { autonomyRouter } from './autonomy/autonomy-controller';
-export { overrideRouter } from './overrides/override-registry';
+// Note: autonomyRouter and overrideRouter already exported above
 
 export interface SecurityOSConfig {
   enableAutoMode?: boolean;

@@ -15,7 +15,7 @@ async function publishAllArticles() {
       .set({ 
         status: "published",
         publishedAt: new Date()
-      })
+      } as any)
       .where(
         and(
           eq(contents.type, "article"),
@@ -33,7 +33,7 @@ async function publishAllArticles() {
       .set({ 
         status: "published",
         publishedAt: new Date()
-      })
+      } as any)
       .where(
         and(
           eq(contents.type, "hotel"),
@@ -50,7 +50,7 @@ async function publishAllArticles() {
       .update(contents)
       .set({ 
         deletedAt: null
-      })
+      } as any)
       .where(
         and(
           eq(contents.status, "published"),

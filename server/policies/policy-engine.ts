@@ -242,7 +242,7 @@ async function logEvaluation(
       resourceId: context.resourceId,
       result,
       reason: policy.message,
-    });
+    } as any);
   } catch (error) {
     console.error("[Policies] Error logging evaluation:", error);
   }

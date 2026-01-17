@@ -284,7 +284,7 @@ export async function processTranslationJob(job: TranslationJob): Promise<void> 
         status: 'completed',
         translationProvider: usedProvider,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(translations.id, existingTranslation.id));
   } else {
     await db
@@ -295,7 +295,7 @@ export async function processTranslationJob(job: TranslationJob): Promise<void> 
         ...translatedData,
         status: 'completed',
         translationProvider: usedProvider,
-      });
+      } as any);
   }
 
   logger.info('Translation completed', { contentId, targetLocale, provider: usedProvider });
@@ -364,7 +364,7 @@ async function translateContentHighlights(
           text: translation,
           translatedAt: new Date(),
           translationProvider: provider,
-        })
+        } as any)
         .where(eq(contentHighlightTranslations.id, existing.id));
     } else {
       await db
@@ -375,7 +375,7 @@ async function translateContentHighlights(
           text: translation,
           translatedAt: new Date(),
           translationProvider: provider,
-        });
+        } as any);
     }
   }
 

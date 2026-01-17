@@ -54,7 +54,7 @@ export async function detectGaps(
 
   // Process low-engagement queries
   const lowEngagementGaps = processQueryGroup(
-    lowClickQueries.filter(q => q.avgResultsCount > 0), // Has results but low clicks
+    lowClickQueries.filter(q => (q as any).avgResultsCount > 0), // Has results but low clicks
     'low_engagement',
     () => `gap-le-${++gapIdCounter}`
   );
@@ -65,8 +65,8 @@ export async function detectGaps(
 
   return {
     gaps: sortGapsByPriority(gaps),
-    totalZeroResultQueries: zeroResultQueries.reduce((sum, q) => sum + q.searchCount, 0),
-    totalLowEngagementQueries: lowClickQueries.reduce((sum, q) => sum + q.searchCount, 0),
+    totalZeroResultQueries: zeroResultQueries.reduce((sum, q) => sum + (q as any).searchCount, 0),
+    totalLowEngagementQueries: lowClickQueries.reduce((sum, q) => sum + (q as any).searchCount, 0),
     topMissingTopics,
     analyzedAt: new Date(),
   };
@@ -91,11 +91,11 @@ function processQueryGroup(
   for (const [normalizedQuery, clusterQueries] of clusters) {
     // Get stats for this cluster
     const clusterStats = queries.filter(q => clusterQueries.includes(q.query));
-    const totalSearches = clusterStats.reduce((sum, q) => sum + q.searchCount, 0);
+    const totalSearches = clusterStats.reduce((sum, q) => sum + (q as any).searchCount, 0);
     const avgResultsCount =
-      clusterStats.reduce((sum, q) => sum + q.avgResultsCount * q.searchCount, 0) / totalSearches;
+      clusterStats.reduce((sum, q) => sum + (q as any).avgResultsCount * (q as any).searchCount, 0) / totalSearches;
     const avgClickRate =
-      clusterStats.reduce((sum, q) => sum + q.clickRate * q.searchCount, 0) / totalSearches;
+      clusterStats.reduce((sum, q) => sum + q.clickRate * (q as any).searchCount, 0) / totalSearches;
 
     // Skip low-volume clusters
     if (totalSearches < 2) continue;

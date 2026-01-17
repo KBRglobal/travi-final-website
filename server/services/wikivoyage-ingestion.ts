@@ -292,7 +292,7 @@ export async function importWikivoyageGuide(
           publishedAt: new Date(),
           updatedAt: new Date(),
           rawData: { source: "wikivoyage", locales: Object.keys(translations) } as any,
-        })
+        } as any)
         .where(eq(update9987Guides.slug, slug));
       console.log(`[Wikivoyage] Updated guide for ${destinationId}`);
     } else {
@@ -305,7 +305,7 @@ export async function importWikivoyageGuide(
         status: "published",
         publishedAt: new Date(),
         rawData: { source: "wikivoyage", locales: Object.keys(translations) } as any,
-      });
+      } as any);
       console.log(`[Wikivoyage] Created guide for ${destinationId}`);
     }
   } catch (error) {

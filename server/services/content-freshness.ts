@@ -365,7 +365,7 @@ export async function refreshStaleContent(destinationId: string): Promise<Refres
         metaDescription: linkedContent.hero.description.substring(0, 160),
         lastGenerated: new Date(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(destinations.id, destinationId));
 
     await db.insert(aiGenerationLogs).values({
@@ -378,7 +378,7 @@ export async function refreshStaleContent(destinationId: string): Promise<Refres
       seoScore: validationResult.score,
       qualityTier: validationResult.tier,
       duration: genDuration,
-    });
+    } as any);
 
     const totalDuration = Date.now() - startTime;
 
@@ -411,7 +411,7 @@ export async function refreshStaleContent(destinationId: string): Promise<Refres
       success: false,
       error: errorMessage,
       duration: totalDuration,
-    });
+    } as any);
 
     logger.error({
       destinationId,
@@ -471,8 +471,8 @@ async function createStaleNotifications(
           score: d.freshnessScore,
           severity: d.staleSeverity,
         })),
-      } as any,
-    });
+      },
+    } as any);
 
     notificationsCreated++;
   }

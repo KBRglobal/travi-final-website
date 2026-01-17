@@ -24,7 +24,7 @@ async function updateBarcelonaGuide() {
       metaDescription: "Discover Barcelona in 2026: honest costs from €80/day, Sagrada Familia tips, Gothic Quarter walks, tapas trails. Real traveler insights.",
       focusKeyword: "Barcelona travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'barcelona-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

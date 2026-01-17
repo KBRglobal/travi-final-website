@@ -174,8 +174,8 @@ export function registerPublicApiRoutes(app: Express): void {
         hero: {
           title: destination.heroTitle || `Discover ${destination.name}`,
           subtitle: destination.heroSubtitle || destination.summary || `Explore the best of ${destination.name}`,
-          ctaText: destination.heroCtaText || "Start Exploring",
-          ctaLink: destination.heroCtaLink || `/destinations/${destination.id}/attractions`,
+          ctaText: (destination as any).heroCtaText || "Start Exploring",
+          ctaLink: (destination as any).heroCtaLink || `/destinations/${destination.id}/attractions`,
           images: heroImages,
         },
         featuredAttractions: destination.featuredAttractions || [],
@@ -826,15 +826,15 @@ export function registerPublicApiRoutes(app: Express): void {
         return null;
       };
 
-      const { priceUsd, priceLocal, priceFrom, ...attrWithoutPrices } = attr;
+      const { priceUsd, priceLocal, priceFrom, ...attrWithoutPrices } = attr as any;
       const enrichedAttraction = {
         ...attrWithoutPrices,
         name: attr.title,
         destination: attr.cityName,
         country: destination === 'dubai' ? 'UAE' : destination,
-        image: attr.imageUrl,
-        rating: Number(attr.rating) || 4.5,
-        reviews: Number(attr.reviewCount) || 100,
+        image: (attr as any).imageUrl,
+        rating: Number((attr as any).rating) || 4.5,
+        reviews: Number((attr as any).reviewCount) || 100,
         duration: attr.duration || '2-3 hours',
         category: attr.primaryCategory || 'Attraction',
         location: {
@@ -876,7 +876,7 @@ export function registerPublicApiRoutes(app: Express): void {
         relatedAttractions: relatedAttractions.map(r => ({
           id: r.id,
           name: r.title,
-          image: r.imageUrl,
+          image: (r as any).imageUrl,
           category: r.primaryCategory || 'Attraction',
           href: `/${destination}/attractions/${r.seoSlug || r.slug}`,
           seoSlug: r.seoSlug,

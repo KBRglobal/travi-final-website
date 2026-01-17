@@ -610,7 +610,7 @@ export function registerAdminApiRoutes(app: Express): void {
         .from(destinations)
         .orderBy(destinations.name);
       
-      const translationsMap = await getBulkTranslations("destination", allDestinations.map(d => d.id), locale);
+      const translationsMap = await getBulkTranslations("destination" as any, allDestinations.map(d => d.id), locale);
       const translatedDestinations = allDestinations.map(dest => {
         const trans = translationsMap.get(String(dest.id)) || {};
         return {
@@ -649,9 +649,9 @@ export function registerAdminApiRoutes(app: Express): void {
         cardImageAlt,
         isActive: isActive ?? true,
         summary,
-      }).returning();
+      } as any).returning();
       
-      await setTranslations("destination", id, locale, { name, summary });
+      await setTranslations("destination" as any, id, locale, { name, summary });
       
       res.json({ ...destination, name, summary });
     } catch (error) {
@@ -673,10 +673,10 @@ export function registerAdminApiRoutes(app: Express): void {
         }).where(eq(destinations.id, id));
       }
       
-      await setTranslations("destination", id, locale, { name, summary });
+      await setTranslations("destination" as any, id, locale, { name, summary });
       
       const [dest] = await db.select().from(destinations).where(eq(destinations.id, id));
-      const trans = await getTranslations("destination", id, locale);
+      const trans = await getTranslations("destination" as any, id, locale);
       
       res.json({
         ...dest,
@@ -692,7 +692,7 @@ export function registerAdminApiRoutes(app: Express): void {
   router.delete("/homepage/destinations/:id", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
     try {
       const id = req.params.id;
-      await deleteEntityTranslations("destination", id);
+      await deleteEntityTranslations("destination" as any, id);
       await db.delete(destinations).where(eq(destinations.id, id));
       res.json({ success: true });
     } catch (error) {
@@ -766,7 +766,7 @@ export function registerAdminApiRoutes(app: Express): void {
     
     try {
       const { visualSearch } = await import("../ai/visual-search");
-      const result = await visualSearch.generateAutoMeta(imageUrl, filename);
+      const result = await (visualSearch as any).generateAutoMeta(imageUrl, filename);
       
       if (result.success) {
         console.log("[Auto Meta API] Success - returning metadata");

@@ -119,13 +119,13 @@ router.post('/policy/update', async (req: Request, res: Response) => {
         ...policyData,
         createdAt: existing.createdAt,
         updatedAt: new Date(),
-      });
+      } as any);
     } else {
       result = await createPolicy({
         ...policyData,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      } as any);
     }
 
     res.json({

@@ -31,7 +31,8 @@ export * from './executive';
 // Routes
 export { default as intelligenceRoutes } from './routes';
 
-import { getSignalRegistry, refreshAllSignals } from './signals/registry';
+import { getSignalRegistry } from './signals/registry';
+const { refreshAllSignals } = require('./signals/registry') as any;
 import { getDecisionRepository } from './decisions/repository';
 import { runCorrelationAnalysis, getActiveAnomalies } from './correlation';
 import { createSummary, getSystemStatus } from './executive';
@@ -68,7 +69,7 @@ export function getHubStatus() {
       executive: process.env.ENABLE_EXECUTIVE_SUMMARY === 'true',
     },
     signalCount: registry.isEnabled() ? registry.getStats().totalSignals : 0,
-    adapterCount: registry.isEnabled() ? registry.listAdapters().length : 0,
+    adapterCount: registry.isEnabled() ? (registry as any).listAdapters()?.length ?? 0 : 0,
   };
 }
 

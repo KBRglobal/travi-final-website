@@ -412,7 +412,7 @@ export class ContentFactory {
       wordCount: (content as any).metadata.wordCount,
       generatedByAI: true,
       publishedAt: new Date(),
-    }).returning({ id: contents.id });
+    } as any).returning({ id: contents.id });
 
     const contentId = inserted.id;
 

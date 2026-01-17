@@ -299,16 +299,16 @@ export async function linkEntityToDestination(
   try {
     switch (entityType) {
       case "hotel":
-        await db.update(hotels).set({ destinationId }).where(eq(hotels.id, entityId));
+        await db.update(hotels).set({ destinationId } as any).where(eq(hotels.id, entityId));
         break;
       case "attraction":
-        await db.update(attractions).set({ destinationId }).where(eq(attractions.id, entityId));
+        await db.update(attractions).set({ destinationId } as any).where(eq(attractions.id, entityId));
         break;
       case "district":
-        await db.update(districts).set({ destinationId }).where(eq(districts.id, entityId));
+        await db.update(districts).set({ destinationId } as any).where(eq(districts.id, entityId));
         break;
       case "dining":
-        await db.update(dining).set({ destinationId }).where(eq(dining.id, entityId));
+        await db.update(dining).set({ destinationId } as any).where(eq(dining.id, entityId));
         break;
       default:
         graphLogger.warn("Unknown entity type for linking", { entityType, entityId });
@@ -350,7 +350,7 @@ export async function linkHotelToDistricts(
           districtId,
           confidence,
           source,
-        });
+        } as any);
         linked++;
       }
     }

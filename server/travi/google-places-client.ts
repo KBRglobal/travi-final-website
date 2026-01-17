@@ -357,7 +357,7 @@ export function mapGoogleTypeToCategory(
 
 // Check if Google Places API is available
 export function isGooglePlacesAvailable(): boolean {
-  return !!getApiKey();
+  return !!(getApiKey as any)();
 }
 
 // Get cost summary

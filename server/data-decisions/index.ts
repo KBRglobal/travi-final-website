@@ -50,6 +50,12 @@ export {
   dataDriftDetector,
 } from './health';
 
+// Local imports for internal use
+import { decisionEngine as _decisionEngine, type MetricData as _MetricData } from './engine';
+import { type MetricHistory as _MetricHistory } from './confidence';
+import { autonomousLoop as _autonomousLoop } from './loop';
+import { systemHealthMonitor as _systemHealthMonitor } from './health';
+
 // Governance
 export {
   AutopilotController,
@@ -105,8 +111,8 @@ interface DataDecisionSystemConfig {
   autopilotMode?: 'off' | 'supervised' | 'full';
   startLoop?: boolean;
   startHealthMonitor?: boolean;
-  metricsProvider?: () => Promise<MetricData[]>;
-  historyProvider?: (metricId: string) => Promise<MetricHistory | null>;
+  metricsProvider?: () => Promise<_MetricData[]>;
+  historyProvider?: (metricId: string) => Promise<_MetricHistory | null>;
 }
 
 /**
@@ -124,25 +130,25 @@ export function initializeDataDecisionSystem(config: DataDecisionSystemConfig = 
   } = config;
 
   // Set autopilot mode (defaults to 'off')
-  decisionEngine.setAutopilotMode(autopilotMode);
+  (_decisionEngine as any).setAutopilotMode(autopilotMode);
 
   // Configure loop providers
   if (metricsProvider) {
-    autonomousLoop.setMetricsProvider(metricsProvider);
+    (_autonomousLoop as any).setMetricsProvider(metricsProvider);
   }
 
   if (historyProvider) {
-    autonomousLoop.setHistoryProvider(historyProvider);
+    (_autonomousLoop as any).setHistoryProvider(historyProvider);
   }
 
   // Start health monitor
   if (startHealthMonitor) {
-    systemHealthMonitor.start();
+    (_systemHealthMonitor as any).start();
   }
 
   // Start autonomous loop
   if (startLoop) {
-    autonomousLoop.start();
+    (_autonomousLoop as any).start();
   }
 
   console.log(`[DataDecisions] System initialized - Mode: ${autopilotMode}`);
@@ -152,7 +158,7 @@ export function initializeDataDecisionSystem(config: DataDecisionSystemConfig = 
  * Shutdown the Data Decision System
  */
 export function shutdownDataDecisionSystem(): void {
-  autonomousLoop.stop();
-  systemHealthMonitor.stop();
+  (_autonomousLoop as any).stop();
+  (_systemHealthMonitor as any).stop();
   console.log('[DataDecisions] System shutdown complete');
 }

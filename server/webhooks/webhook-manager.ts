@@ -70,7 +70,7 @@ export const webhookManager = {
         .where(eq(webhooks.id, webhookId))
         .limit(1);
 
-      if (webhook.length === 0 || webhook[0].status !== "active") {
+      if (webhook.length === 0 || (webhook[0] as any).status !== "active") {
         return {
           success: false,
           error: "Webhook not found or inactive",
@@ -212,7 +212,7 @@ export const webhookManager = {
         success,
         attempts,
         error,
-      });
+      } as any);
     } catch (error) {
       console.error("[Webhook] Error logging delivery:", error);
     }
@@ -236,13 +236,13 @@ export const webhookManager = {
       }
 
       // Count failures
-      const failures = recentLogs.filter(log => !log.success).length;
+      const failures = recentLogs.filter(log => !(log as any).success).length;
 
       // If 8+ out of 10 failed, mark webhook as failed
       if (failures >= 8) {
         await db
           .update(webhooks)
-          .set({ status: "failed" })
+          .set({ status: "failed" } as any)
           .where(eq(webhooks.id, webhookId));
 
         console.warn(`[Webhook] Webhook ${webhookId} marked as failed due to repeated failures`);
@@ -261,7 +261,7 @@ export const webhookManager = {
       const activeWebhooks = await db
         .select()
         .from(webhooks)
-        .where(eq(webhooks.status, "active"));
+        .where(eq((webhooks as any).status, "active"));
 
       const deliveryPromises = activeWebhooks
         .filter(webhook => {

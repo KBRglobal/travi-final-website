@@ -176,7 +176,7 @@ export const subscribers = {
             status: "pending_confirmation",
             unsubscribedAt: null,
             updatedAt: new Date()
-          })
+          } as any)
           .where(eq(newsletterSubscribers.id, existing.id));
         subscriber.status = "pending";
         subscriber.unsubscribedAt = undefined;
@@ -197,7 +197,7 @@ export const subscribers = {
         preferences: options.preferences || { frequency: "weekly", categories: [] },
         confirmToken: confirmationToken,
         isActive: true,
-      })
+      } as any)
       .returning();
 
     const subscriber = dbToSubscriber(newSub);
@@ -235,7 +235,7 @@ export const subscribers = {
         confirmedAt: new Date(),
         confirmToken: null, // Clear the token
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterSubscribers.id, row.id))
       .returning();
 
@@ -258,7 +258,7 @@ export const subscribers = {
         unsubscribedAt: new Date(),
         isActive: false,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterSubscribers.email, email.toLowerCase()))
       .returning();
 
@@ -289,7 +289,7 @@ export const subscribers = {
       .set({
         preferences: mergedPreferences,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterSubscribers.id, subscriberId))
       .returning();
 
@@ -313,7 +313,7 @@ export const subscribers = {
       .set({
         tags: mergedTags,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterSubscribers.id, subscriberId))
       .returning();
 
@@ -440,7 +440,7 @@ export const campaigns = {
         targetTags: data.targetTags || null,
         targetLocales: data.targetLocales || null,
         scheduledAt: data.scheduledAt || null,
-      })
+      } as any)
       .returning();
 
     return dbToCampaign(row);
@@ -462,7 +462,7 @@ export const campaigns = {
         status: "scheduled",
         scheduledAt,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterCampaigns.id, campaignId))
       .returning();
 
@@ -487,7 +487,7 @@ export const campaigns = {
 
     // Mark as sending
     await db.update(newsletterCampaigns)
-      .set({ status: "sending", updatedAt: new Date() })
+      .set({ status: "sending", updatedAt: new Date() } as any)
       .where(eq(newsletterCampaigns.id, campaignId));
 
     const campaign = dbToCampaign(existing);
@@ -506,7 +506,7 @@ export const campaigns = {
         campaignId,
         subscriberId: subscriber.id,
         eventType: "sent",
-      });
+      } as any);
       sentCount++;
     }
 
@@ -518,7 +518,7 @@ export const campaigns = {
         totalSent: sentCount,
         totalRecipients: targetSubscribers.length,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterCampaigns.id, campaignId));
 
     return {
@@ -536,14 +536,14 @@ export const campaigns = {
       campaignId,
       subscriberId,
       eventType: "opened",
-    });
+    } as any);
 
     // Increment campaign open count
     await db.update(newsletterCampaigns)
       .set({
         totalOpened: sql`${newsletterCampaigns.totalOpened} + 1`,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterCampaigns.id, campaignId));
 
     // Increment subscriber open count
@@ -551,7 +551,7 @@ export const campaigns = {
       .set({
         emailsOpened: sql`${newsletterSubscribers.emailsOpened} + 1`,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterSubscribers.id, subscriberId));
   },
 
@@ -565,14 +565,14 @@ export const campaigns = {
       subscriberId,
       eventType: "clicked",
       metadata: { url },
-    });
+    } as any);
 
     // Increment campaign click count
     await db.update(newsletterCampaigns)
       .set({
         totalClicked: sql`${newsletterCampaigns.totalClicked} + 1`,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterCampaigns.id, campaignId));
 
     // Increment subscriber click count
@@ -580,7 +580,7 @@ export const campaigns = {
       .set({
         emailsClicked: sql`${newsletterSubscribers.emailsClicked} + 1`,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(newsletterSubscribers.id, subscriberId));
   },
 
@@ -747,7 +747,7 @@ async function seedDefaultSequences(): Promise<void> {
         triggerValue: seq.triggerValue || null,
         emails: seq.emails,
         isActive: seq.isActive,
-      });
+      } as any);
     }
   }
 }
@@ -826,7 +826,7 @@ export const automatedSequencesObj = {
       .set({
         ...updates,
         updatedAt: new Date()
-      })
+      } as any)
       .where(eq(automatedSequences.id, id))
       .returning();
 

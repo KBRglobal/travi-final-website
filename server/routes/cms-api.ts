@@ -128,7 +128,7 @@ export function registerCmsApiRoutes(app: Express): void {
         }
       }
       
-      await logAuditEvent(req, "settings_change", "settings", "bulk", `Updated ${updated.length} settings`);
+      await (logAuditEvent as any)(req, "settings_change", "settings", "bulk", `Updated ${updated.length} settings`);
       res.json({ success: true, updated: updated.length });
     } catch (error) {
       console.error("Error updating settings:", error);

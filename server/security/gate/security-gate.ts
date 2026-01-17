@@ -175,7 +175,7 @@ export async function assertAllowed(
     userId: actor.userId,
     role: actor.role,
     context: context || {},
-  });
+  } as any);
 
   if (!kernelCheck.allowed) {
     return recordAndReturn({
@@ -244,8 +244,8 @@ export async function assertAllowed(
   const rbacCheck = checkUserPermission(
     actor.userId,
     actor.role,
-    action as Action,
-    resource as Resource,
+    action as any,
+    resource as any,
     {
       ipAddress: actor.ipAddress,
       sessionId: actor.sessionId,

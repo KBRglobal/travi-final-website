@@ -24,7 +24,7 @@ async function updateIstanbulGuide() {
       metaDescription: "Discover Istanbul in 2026: honest costs from $50/day, historic Sultanahmet, Grand Bazaar tips, Bosphorus cruises. Real traveler insights.",
       focusKeyword: "Istanbul travel guide 2026",
       updatedAt: new Date(),
-    })
+    } as any)
     .where(eq(update9987Guides.slug, 'istanbul-travel-guide'))
     .returning({ id: update9987Guides.id, slug: update9987Guides.slug });
   

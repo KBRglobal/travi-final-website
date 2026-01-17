@@ -4,8 +4,8 @@
  * Applies approved proposals to content.
  */
 
-import { db } from '@db';
-import { content } from '@db/schema';
+import { db } from '../db';
+import { contents as content } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import { RegenerationProposal, ContentBlock } from './types';
 import { getProposal, updateProposalStatus } from './repository';
@@ -37,7 +37,7 @@ export async function applyProposal(
 
   try {
     // Get current content
-    const contentRecord = await db.query.content.findFirst({
+    const contentRecord = await (db.query as any).contents.findFirst({
       where: eq(content.id, proposal.contentId),
     });
 
@@ -51,7 +51,7 @@ export async function applyProposal(
       .set({
         blocks: proposal.generatedBlocks,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(content.id, proposal.contentId));
 
     // Update proposal status
@@ -81,7 +81,7 @@ export async function previewProposal(
     return null;
   }
 
-  const contentRecord = await db.query.content.findFirst({
+  const contentRecord = await (db.query as any).contents.findFirst({
     where: eq(content.id, proposal.contentId),
   });
 

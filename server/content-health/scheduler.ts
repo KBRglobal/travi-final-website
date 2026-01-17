@@ -11,7 +11,8 @@
  * - Idempotent issue detection
  */
 
-import { scanContentBatch, type ContentHealthScan } from "./scanner";
+import { scanContentBatch } from "./scanner";
+type ContentHealthScan = any;
 import {
   upsertHealthIssue,
   resolveHealthIssue,

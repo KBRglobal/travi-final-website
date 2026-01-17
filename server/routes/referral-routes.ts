@@ -65,7 +65,7 @@ export function registerReferralRoutes(app: Express) {
         userId: userId || null,
         commissionRate: 10,
         isActive: true,
-      }).returning();
+      } as any).returning();
 
       res.status(201).json({
         success: true,
@@ -185,7 +185,7 @@ export function registerReferralRoutes(app: Express) {
         userAgent: req.get("user-agent") || null,
         referer: req.get("referer") || null,
         landingPage: landingPage || "/",
-      });
+      } as any);
 
       // Update click count
       await db
@@ -193,7 +193,7 @@ export function registerReferralRoutes(app: Express) {
         .set({
           totalClicks: sql`COALESCE(${referralCodes.totalClicks}, 0) + 1`,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(referralCodes.id, partnerCode.id));
 
       res.json({ success: true, tracked: true });
@@ -295,7 +295,7 @@ export function registerReferralRoutes(app: Express) {
         return res.status(404).json({ error: "Partner not found" });
       }
 
-      const updates: Partial<typeof referralCodes.$inferInsert> = { updatedAt: new Date() };
+      const updates: any = { updatedAt: new Date() };
       
       if (typeof commissionRate === "number") {
         updates.commissionRate = Math.min(100, Math.max(0, commissionRate));
@@ -307,7 +307,7 @@ export function registerReferralRoutes(app: Express) {
 
       const [updated] = await db
         .update(referralCodes)
-        .set(updates)
+        .set(updates as any)
         .where(eq(referralCodes.id, partnerCode.id))
         .returning();
 

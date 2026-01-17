@@ -71,7 +71,7 @@ router.post("/pages", isAuthenticated, async (req: Request, res: Response) => {
     
     const existingPage = await db.select()
       .from(editablePages)
-      .where(eq(editablePages.slug, validatedData.slug));
+      .where(eq(editablePages.slug, (validatedData as any).slug));
     
     if (existingPage.length > 0) {
       return res.status(400).json({ 
@@ -87,7 +87,7 @@ router.post("/pages", isAuthenticated, async (req: Request, res: Response) => {
       .values({
         ...validatedData,
         lastEditedBy: userId,
-      })
+      } as any)
       .returning();
     
     res.status(201).json(page);
@@ -199,7 +199,7 @@ router.post("/sections", isAuthenticated, async (req: Request, res: Response) =>
     
     const existingSections = await db.select()
       .from(pageSections)
-      .where(eq(pageSections.pageId, validatedData.pageId))
+      .where(eq(pageSections.pageId, (validatedData as any).pageId))
       .orderBy(desc(pageSections.sortOrder));
     
     const maxSortOrder = existingSections.length > 0 ? (existingSections[0].sortOrder || 0) : 0;
@@ -207,9 +207,9 @@ router.post("/sections", isAuthenticated, async (req: Request, res: Response) =>
     const [section] = await db.insert(pageSections)
       .values({
         ...validatedData,
-        sortOrder: validatedData.sortOrder ?? maxSortOrder + 1,
+        sortOrder: (validatedData as any).sortOrder ?? maxSortOrder + 1,
         lastEditedBy: userId,
-      })
+      } as any)
       .returning();
     
     await db.insert(sectionVersions)
@@ -234,7 +234,7 @@ router.post("/sections", isAuthenticated, async (req: Request, res: Response) =>
         },
         changedBy: userId,
         changeDescription: "Initial creation",
-      });
+      } as any);
     
     res.status(201).json(section);
   } catch (error) {
@@ -309,7 +309,7 @@ async function updateSectionHandler(req: Request, res: Response) {
         },
         changedBy: userId,
         changeDescription: req.body.changeDescription || `Updated to version ${newVersionNumber}`,
-      });
+      } as any);
     
     res.json({ 
       ...section, 
@@ -380,7 +380,7 @@ router.put("/sections/reorder", isAuthenticated, async (req: Request, res: Respo
           sortOrder: item.sortOrder,
           lastEditedBy: userId,
           updatedAt: new Date()
-        })
+        } as any)
         .where(eq(pageSections.id, item.id));
     }
     
@@ -461,7 +461,7 @@ router.post("/sections/:id/restore/:versionNumber", isAuthenticated, async (req:
         dataHe: versionData.dataHe as Record<string, unknown>,
         lastEditedBy: userId,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(pageSections.id, req.params.id))
       .returning();
     
@@ -480,7 +480,7 @@ router.post("/sections/:id/restore/:versionNumber", isAuthenticated, async (req:
         data: version.data,
         changedBy: userId,
         changeDescription: `Restored from version ${versionNumber}`,
-      });
+      } as any);
     
     res.json({ 
       ...restoredSection, 
