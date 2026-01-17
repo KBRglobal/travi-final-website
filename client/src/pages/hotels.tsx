@@ -794,8 +794,8 @@ export default function GlobalHotels() {
               <div className="max-w-[90rem] mx-auto w-full">
                 <div className="grid lg:grid-cols-2 gap-8 items-center">
 
-                  {/* Left Side - Content */}
-                  <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24">
+                  {/* Left Side - Content - Text first on mobile (order-1) */}
+                  <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24 order-1">
 
                     {/* Top Badge */}
                     <motion.div 
@@ -959,8 +959,8 @@ export default function GlobalHotels() {
                     </motion.div>
                   </div>
 
-                  {/* Right Side - Bento Grid Gallery */}
-                  <div className="relative px-6 sm:px-12 lg:px-8 lg:pr-12 xl:pr-16">
+                  {/* Right Side - Bento Grid Gallery - Second on mobile (order-2) */}
+                  <div className="relative px-6 sm:px-12 lg:px-8 lg:pr-12 xl:pr-16 order-2">
                     <motion.div 
                       className="relative w-full max-w-lg mx-auto flex flex-col lg:h-[65vh] lg:min-h-[500px]"
                       initial={{ opacity: 0, x: 40 }}
