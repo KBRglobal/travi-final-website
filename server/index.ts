@@ -40,6 +40,39 @@ setupMonitoring(app);
 // Apply CORS to all requests (from existing security.ts)
 app.use(corsMiddleware);
 
+// Lighthouse Security Headers Middleware (HSTS, CSP, Trusted Types)
+app.use((req, res, next) => {
+  // HSTS - Force HTTPS (only in production)
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains; preload'
+    );
+  }
+  
+  // Content Security Policy with Trusted Types
+  res.setHeader(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: https: blob:",
+      "font-src 'self' https://fonts.gstatic.com",
+      "connect-src 'self' https://www.google-analytics.com https://api.tiqets.com wss: ws:",
+      "frame-ancestors 'self'",
+      "require-trusted-types-for 'script'",
+    ].join('; ')
+  );
+  
+  // Additional security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  next();
+});
+
 // Enable gzip/deflate compression for all responses
 app.use(compression({
   level: 6, // Balanced compression level
