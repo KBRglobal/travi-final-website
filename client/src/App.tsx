@@ -21,7 +21,6 @@ import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 
 // Lazy load all pages for better performance
-const ComingSoon = lazy(() => import("@/pages/coming-soon"));
 const Homepage = lazy(() => import("@/pages/homepage"));
 const Attractions = lazy(() => import("@/pages/attractions"));
 const HotelsPage = lazy(() => import("@/pages/hotels"));
@@ -40,17 +39,17 @@ const PublicEvents = lazy(() => import("@/pages/public-events"));
 const PublicSearch = lazy(() => import("@/pages/public-search"));
 const PublicOffPlan = lazy(() => import("@/pages/public-off-plan"));
 const GlossaryHub = lazy(() => import("@/pages/glossary-hub"));
-const RasAlKhaimahPage = lazy(() => import("@/pages/public-v2/ras-al-khaimah"));
-const WynnAlMarjanGuidePage = lazy(() => import("@/pages/public-v2/guides/wynn-al-marjan-guide"));
-const JebelJaisAdventureGuidePage = lazy(() => import("@/pages/public-v2/guides/jebel-jais-adventure-guide"));
-const DubaiToRakTransportPage = lazy(() => import("@/pages/public-v2/guides/dubai-to-rak-transport"));
-const DubaiVsRakComparisonPage = lazy(() => import("@/pages/public-v2/guides/dubai-vs-rak-comparison"));
-const WhereToStayRakPage = lazy(() => import("@/pages/public-v2/guides/where-to-stay-rak"));
-const RakRealEstateInvestmentPage = lazy(() => import("@/pages/public-v2/guides/rak-real-estate-investment"));
+const RasAlKhaimahPage = lazy(() => import("@/pages/public/ras-al-khaimah"));
+const WynnAlMarjanGuidePage = lazy(() => import("@/pages/public/guides/wynn-al-marjan-guide"));
+const JebelJaisAdventureGuidePage = lazy(() => import("@/pages/public/guides/jebel-jais-adventure-guide"));
+const DubaiToRakTransportPage = lazy(() => import("@/pages/public/guides/dubai-to-rak-transport"));
+const DubaiVsRakComparisonPage = lazy(() => import("@/pages/public/guides/dubai-vs-rak-comparison"));
+const WhereToStayRakPage = lazy(() => import("@/pages/public/guides/where-to-stay-rak"));
+const RakRealEstateInvestmentPage = lazy(() => import("@/pages/public/guides/rak-real-estate-investment"));
 const DestinationsLanding = lazy(() => import("@/pages/destinations"));
 const DestinationPage = lazy(() => import("@/pages/destination-page"));
 
-const TraviLocationPage = lazy(() => import("@/pages/public-v2/travi-location-page"));
+const TraviLocationPage = lazy(() => import("@/pages/public/travi-location-page"));
 const PublicShopping = lazy(() => import("@/pages/public-shopping"));
 const PublicNews = lazy(() => import("@/pages/public-news"));
 const Dashboard = lazy(() => import("@/pages/dashboard"));
@@ -525,7 +524,6 @@ function AdminLayout() {
 const publicRoutes = [
   { path: "/login", component: Login },
   { path: "/access-denied", component: AccessDenied },
-  { path: "/coming-soon", component: ComingSoon },
   { path: "/search", component: PublicSearch },
   // Global category pages (destination-agnostic) - main navigation targets
   { path: "/hotels", component: HotelsPage },

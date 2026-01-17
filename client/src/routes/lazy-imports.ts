@@ -1,11 +1,9 @@
 import { lazy } from "react";
 
 // Public Pages
-export const ComingSoon = lazy(() => import("@/pages/coming-soon"));
 export const Homepage = lazy(() => import("@/pages/homepage"));
 export const Attractions = lazy(() => import("@/pages/attractions"));
 export const HotelsPage = lazy(() => import("@/pages/hotels"));
-export const PublicDining = lazy(() => import("@/pages/public-dining"));
 export const PublicArticles = lazy(() => import("@/pages/public-articles"));
 export const PublicEvents = lazy(() => import("@/pages/public-events"));
 export const PublicSearch = lazy(() => import("@/pages/public-search"));
@@ -198,7 +196,6 @@ export const RealEstateEditor = lazy(() => import("@/pages/admin/real-estate-edi
 export const OctopusDashboard = lazy(() => import("@/pages/admin/octopus-dashboard"));
 
 // TRAVI Content Generation Engine
-export const TraviGeneratorDashboard = lazy(() => import("@/pages/admin-travi-generator"));
 export const TraviLocationsList = lazy(() => import("@/pages/admin/travi/locations-list"));
 export const TraviLocationEdit = lazy(() => import("@/pages/admin/travi/location-edit"));
 export const TraviLocationPreview = lazy(() => import("@/pages/admin/travi/location-preview"));
