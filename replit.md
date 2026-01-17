@@ -8,6 +8,26 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2026)
 
+### Documentation Cleanup (Jan 17, 2026)
+**Major cleanup of outdated MD files** - 155 files removed, 7 kept:
+
+**Kept Files:**
+- `README.md` - Project overview
+- `PRD.md` - Product requirements
+- `replit.md` - Agent memory/project state
+- `docs/API.md` - API documentation
+- `docs/CHANGELOG.md` - Change history
+- `docs/CONTRIBUTING.md` - Contribution guidelines
+- `docs/SECURITY.md` - Security policies
+
+**Deleted (backed up to `backup_removed_files/docs_cleanup/`):**
+- 12 root-level MD files (WORKPLAN.md, design-system.md, component-*.md, etc.)
+- 10 directories with 56 files (docs/audit, docs/product, docs/data, etc.)
+- 10 PHASE*.md files
+- 4 UI_*.md files
+- 8 AI agent files (ai-*.md, agent-*.md)
+- 30+ miscellaneous outdated docs
+
 ### Project Cleanup (Jan 17, 2026)
 **Removed Files** (backed up to `backup_removed_files/`):
 | File | Reason |
