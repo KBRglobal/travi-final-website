@@ -42,13 +42,13 @@ export const teamsService = {
   },
 
   async create(data: InsertTeam): Promise<Team> {
-    const [team] = await db.insert(teams).values(data).returning();
+    const [team] = await db.insert(teams).values(data as any).returning();
     return team;
   },
 
   async update(id: string, data: Partial<InsertTeam>): Promise<Team | null> {
     const [team] = await db.update(teams)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data, updatedAt: new Date() } as any)
       .where(eq(teams.id, id))
       .returning();
     return team || null;
@@ -80,7 +80,7 @@ export const teamsService = {
   },
 
   async addMember(data: InsertTeamMember): Promise<TeamMember> {
-    const [member] = await db.insert(teamMembers).values(data).returning();
+    const [member] = await db.insert(teamMembers).values(data as any).returning();
     return member;
   },
 
@@ -133,7 +133,7 @@ export const workflowsService = {
       submittedBy,
       status: "pending",
       currentStep: 0,
-    }).returning();
+    } as any).returning();
 
     // Create first approval step
     const template = await this.getTemplateById(templateId);
@@ -142,7 +142,7 @@ export const workflowsService = {
         instanceId: instance.id,
         stepNumber: 0,
         status: "pending",
-      });
+      } as any);
     }
 
     return instance;
@@ -175,7 +175,7 @@ export const workflowsService = {
 
     // Update current approval
     await db.update(workflowApprovals)
-      .set({ status: "approved", approverId, comment, decidedAt: new Date() })
+      .set({ status: "approved", approverId, comment, decidedAt: new Date() } as any)
       .where(and(
         eq(workflowApprovals.instanceId, instanceId),
         eq(workflowApprovals.stepNumber, currentStep)
@@ -185,7 +185,7 @@ export const workflowsService = {
     if (currentStep < steps.length - 1) {
       // Move to next step
       const [updated] = await db.update(workflowInstances)
-        .set({ currentStep: currentStep + 1, status: "in_progress" })
+        .set({ currentStep: currentStep + 1, status: "in_progress" } as any)
         .where(eq(workflowInstances.id, instanceId))
         .returning();
 
@@ -194,13 +194,13 @@ export const workflowsService = {
         instanceId,
         stepNumber: currentStep + 1,
         status: "pending",
-      });
+      } as any);
 
       return updated;
     } else {
       // Final approval - complete workflow
       const [updated] = await db.update(workflowInstances)
-        .set({ status: "approved", completedAt: new Date() })
+        .set({ status: "approved", completedAt: new Date() } as any)
         .where(eq(workflowInstances.id, instanceId))
         .returning();
 
@@ -216,7 +216,7 @@ export const workflowsService = {
 
     // Update current approval
     await db.update(workflowApprovals)
-      .set({ status: "rejected", approverId, comment, decidedAt: new Date() })
+      .set({ status: "rejected", approverId, comment, decidedAt: new Date() } as any)
       .where(and(
         eq(workflowApprovals.instanceId, instanceId),
         eq(workflowApprovals.stepNumber, currentStep)
@@ -224,7 +224,7 @@ export const workflowsService = {
 
     // Reject the whole workflow
     const [updated] = await db.update(workflowInstances)
-      .set({ status: "rejected", completedAt: new Date() })
+      .set({ status: "rejected", completedAt: new Date() } as any)
       .where(eq(workflowInstances.id, instanceId))
       .returning();
 
@@ -238,7 +238,7 @@ export const workflowsService = {
 
 export const activityService = {
   async log(data: InsertActivity): Promise<Activity> {
-    const [activity] = await db.insert(activities).values(data).returning();
+    const [activity] = await db.insert(activities).values(data as any).returning();
     return activity;
   },
 
@@ -315,14 +315,14 @@ export const lockService = {
       userId,
       expiresAt: new Date(Date.now() + LOCK_DURATION_MINUTES * 60 * 1000),
       isActive: true,
-    }).returning();
+    } as any).returning();
 
     return lock;
   },
 
   async releaseLock(contentId: string, userId: string): Promise<void> {
     await db.update(contentLocks)
-      .set({ isActive: false })
+      .set({ isActive: false } as any)
       .where(and(
         eq(contentLocks.contentId, contentId),
         eq(contentLocks.userId, userId),
@@ -355,7 +355,7 @@ export const lockService = {
 
   async cleanupExpired(): Promise<number> {
     const result = await db.update(contentLocks)
-      .set({ isActive: false })
+      .set({ isActive: false } as any)
       .where(and(
         eq(contentLocks.isActive, true),
         lt(contentLocks.expiresAt, new Date())
@@ -370,7 +370,7 @@ export const lockService = {
    */
   async forceUnlock(contentId: string): Promise<void> {
     await db.update(contentLocks)
-      .set({ isActive: false })
+      .set({ isActive: false } as any)
       .where(and(
         eq(contentLocks.contentId, contentId),
         eq(contentLocks.isActive, true)
@@ -416,13 +416,13 @@ export const lockService = {
 
 export const notificationsService = {
   async create(data: InsertNotification): Promise<Notification> {
-    const [notification] = await db.insert(notifications).values(data).returning();
+    const [notification] = await db.insert(notifications).values(data as any).returning();
     return notification;
   },
 
   async createMany(data: InsertNotification[]): Promise<Notification[]> {
     if (data.length === 0) return [];
-    return db.insert(notifications).values(data).returning();
+    return db.insert(notifications).values(data as any).returning();
   },
 
   async getForUser(userId: string, options?: { unreadOnly?: boolean; limit?: number }): Promise<Notification[]> {
@@ -449,7 +449,7 @@ export const notificationsService = {
 
   async markAsRead(id: string, userId: string): Promise<void> {
     await db.update(notifications)
-      .set({ isRead: true, readAt: new Date() })
+      .set({ isRead: true, readAt: new Date() } as any)
       .where(and(
         eq(notifications.id, id),
         eq(notifications.userId, userId)
@@ -458,7 +458,7 @@ export const notificationsService = {
 
   async markAllAsRead(userId: string): Promise<void> {
     await db.update(notifications)
-      .set({ isRead: true, readAt: new Date() })
+      .set({ isRead: true, readAt: new Date() } as any)
       .where(and(
         eq(notifications.userId, userId),
         eq(notifications.isRead, false)
@@ -490,7 +490,7 @@ export const webhooksService = {
 
   async create(data: InsertWebhook): Promise<Webhook> {
     // Generate secret if not provided
-    const secret = data.secret || crypto.randomBytes(32).toString("hex");
+    const secret = (data as any).secret || crypto.randomBytes(32).toString("hex");
     const [webhook] = await db.insert(webhooks).values({ ...data, secret } as any).returning();
     return webhook;
   },
@@ -546,7 +546,7 @@ export const webhooksService = {
           responseStatus: 0,
           error: `SSRF blocked: ${ssrfCheck.error}`,
           duration: Date.now() - startTime,
-        });
+        } as any);
         return;
       }
 
@@ -577,7 +577,7 @@ export const webhooksService = {
         responseStatus: response.status,
         responseBody: responseBody.substring(0, 1000),
         duration,
-      });
+      } as any);
 
       // Retry on 5xx errors (server errors)
       if (response.status >= 500 && attempt < MAX_RETRIES) {
@@ -595,7 +595,7 @@ export const webhooksService = {
         payload,
         error: `Attempt ${attempt}: ${errorMsg}`,
         duration,
-      });
+      } as any);
 
       // Retry on network errors
       if (attempt < MAX_RETRIES) {
@@ -653,7 +653,7 @@ export const commentsService = {
 
   async update(id: string, body: string): Promise<Comment | null> {
     const [comment] = await db.update(comments)
-      .set({ body, editedAt: new Date() })
+      .set({ body, editedAt: new Date() } as any)
       .where(eq(comments.id, id))
       .returning();
     return comment || null;
@@ -665,7 +665,7 @@ export const commentsService = {
 
   async resolve(id: string, resolvedBy: string): Promise<Comment | null> {
     const [comment] = await db.update(comments)
-      .set({ isResolved: true, resolvedBy, resolvedAt: new Date() })
+      .set({ isResolved: true, resolvedBy, resolvedAt: new Date() } as any)
       .where(eq(comments.id, id))
       .returning();
     return comment || null;
@@ -673,7 +673,7 @@ export const commentsService = {
 
   async unresolve(id: string): Promise<Comment | null> {
     const [comment] = await db.update(comments)
-      .set({ isResolved: false, resolvedBy: null, resolvedAt: null })
+      .set({ isResolved: false, resolvedBy: null, resolvedAt: null } as any)
       .where(eq(comments.id, id))
       .returning();
     return comment || null;
@@ -686,7 +686,7 @@ export const commentsService = {
 
 export const scheduledTasksService = {
   async create(data: InsertScheduledTask): Promise<ScheduledTask> {
-    const [task] = await db.insert(scheduledTasks).values(data).returning();
+    const [task] = await db.insert(scheduledTasks).values(data as any).returning();
     return task;
   },
 
@@ -701,19 +701,19 @@ export const scheduledTasksService = {
 
   async markCompleted(id: string): Promise<void> {
     await db.update(scheduledTasks)
-      .set({ status: "completed", executedAt: new Date() })
+      .set({ status: "completed", executedAt: new Date() } as any)
       .where(eq(scheduledTasks.id, id));
   },
 
   async markFailed(id: string, error: string): Promise<void> {
     await db.update(scheduledTasks)
-      .set({ status: "failed", error, executedAt: new Date() })
+      .set({ status: "failed", error, executedAt: new Date() } as any)
       .where(eq(scheduledTasks.id, id));
   },
 
   async cancel(id: string): Promise<void> {
     await db.update(scheduledTasks)
-      .set({ status: "cancelled" })
+      .set({ status: "cancelled" } as any)
       .where(eq(scheduledTasks.id, id));
   },
 
