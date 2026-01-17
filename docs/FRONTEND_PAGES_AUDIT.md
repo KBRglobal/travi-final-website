@@ -1,6 +1,6 @@
 # TRAVI.world - Frontend Pages Complete Audit
 > Last Updated: January 17, 2026
-> Generated from: `client/src/routes/index.ts`, `client/src/routes/lazy-imports.ts`, `client/src/pages/`
+> Generated from: Database queries, `client/src/routes/index.ts`, `client/src/pages/`
 
 ---
 
@@ -8,13 +8,45 @@
 
 | Metric | Count |
 |--------|-------|
-| Total Page Files | 161 |
-| Public Routes Defined | 46 |
-| Admin Routes | ~90 |
-| Working Public Pages | ~50 |
-| Pages Excluded from Sitemap | ~15 |
-| Dynamic Attraction Pages | 3,408 |
-| Commented/Not Implemented | ~40 |
+| **Total Page Files** | 161 |
+| **Public Routes Defined** | 46 |
+| **Admin Routes** | ~90 |
+| **Working Public Pages** | ~50 |
+| **Pages Excluded from Sitemap** | ~15 |
+| **Commented/Not Implemented** | ~40 |
+
+### Dynamic Content (from Database)
+
+| Content Type | Count | Status |
+|--------------|-------|--------|
+| **Tiqets Attractions** | 3,408 | Published |
+| **Articles** | 84 | Published |
+| **Hotels (contents table)** | 1 | Published |
+| **Transport** | 1 | Published |
+| **Hotels (hotels table)** | 1 | - |
+| **Destinations** | 19 | Active |
+
+### Attractions by City (16 Cities)
+
+| City | Count |
+|------|-------|
+| London | 446 |
+| Paris | 394 |
+| Barcelona | 382 |
+| Rome | 354 |
+| Amsterdam | 318 |
+| New York | 308 |
+| Dubai | 296 |
+| Las Vegas | 166 |
+| Istanbul | 138 |
+| Miami | 129 |
+| Los Angeles | 127 |
+| Singapore | 119 |
+| Bangkok | 106 |
+| Abu Dhabi | 60 |
+| Tokyo | 52 |
+| Hong Kong | 13 |
+| **TOTAL** | **3,408** |
 
 ---
 
@@ -43,7 +75,7 @@
 | `/attractions` | `attractions.tsx` | ✅ PUBLIC | Attractions hub |
 | `/hotels` | `hotels.tsx` | ✅ PUBLIC | Hotels hub |
 | `/dining` | `global-dining.tsx` | ✅ PUBLIC | Dining hub |
-| `/articles` | `public-articles.tsx` | ✅ PUBLIC | Articles hub |
+| `/articles` | `public-articles.tsx` | ✅ PUBLIC | Articles hub (84 articles) |
 | `/events` | `public-events.tsx` | ✅ PUBLIC | Events hub |
 | `/news` | `public-news.tsx` | ✅ PUBLIC | News hub |
 | `/shopping` | `public-shopping.tsx` | ✅ PUBLIC | Shopping hub |
@@ -69,31 +101,31 @@
 | `/help/:slug` | `help/category.tsx` | ⚠️ BROKEN | ❌ REMOVED | - |
 | `/help/:categorySlug/:articleSlug` | `help/article.tsx` | ⚠️ BROKEN | ❌ REMOVED | - |
 
-**Notes:** Shows "Help center is currently unavailable" - all routes broken
+**Notes:** Shows "Help center is currently unavailable" - DB tables don't exist yet
 
 ---
 
-## 4. DESTINATION PAGES
+## 4. DESTINATION PAGES (19 in DB, 17 Active Routes)
 
-### 16 Active Cities
-| Path | Status | Notes |
-|------|--------|-------|
-| `/destinations/dubai` | ✅ PUBLIC | Main destination |
-| `/destinations/paris` | ✅ PUBLIC | |
-| `/destinations/tokyo` | ✅ PUBLIC | |
-| `/destinations/new-york` | ✅ PUBLIC | |
-| `/destinations/london` | ✅ PUBLIC | |
-| `/destinations/barcelona` | ✅ PUBLIC | |
-| `/destinations/singapore` | ✅ PUBLIC | |
-| `/destinations/bangkok` | ✅ PUBLIC | |
-| `/destinations/abu-dhabi` | ✅ PUBLIC | |
-| `/destinations/amsterdam` | ✅ PUBLIC | |
-| `/destinations/hong-kong` | ✅ PUBLIC | |
-| `/destinations/istanbul` | ✅ PUBLIC | |
-| `/destinations/las-vegas` | ✅ PUBLIC | |
-| `/destinations/los-angeles` | ✅ PUBLIC | |
-| `/destinations/miami` | ✅ PUBLIC | |
-| `/destinations/rome` | ✅ PUBLIC | |
+### 17 Active City Pages
+| Path | Status | Attractions Count |
+|------|--------|-------------------|
+| `/destinations/dubai` | ✅ PUBLIC | 296 |
+| `/destinations/paris` | ✅ PUBLIC | 394 |
+| `/destinations/tokyo` | ✅ PUBLIC | 52 |
+| `/destinations/new-york` | ✅ PUBLIC | 308 |
+| `/destinations/london` | ✅ PUBLIC | 446 |
+| `/destinations/barcelona` | ✅ PUBLIC | 382 |
+| `/destinations/singapore` | ✅ PUBLIC | 119 |
+| `/destinations/bangkok` | ✅ PUBLIC | 106 |
+| `/destinations/abu-dhabi` | ✅ PUBLIC | 60 |
+| `/destinations/amsterdam` | ✅ PUBLIC | 318 |
+| `/destinations/hong-kong` | ✅ PUBLIC | 13 |
+| `/destinations/istanbul` | ✅ PUBLIC | 138 |
+| `/destinations/las-vegas` | ✅ PUBLIC | 166 |
+| `/destinations/los-angeles` | ✅ PUBLIC | 127 |
+| `/destinations/miami` | ✅ PUBLIC | 129 |
+| `/destinations/rome` | ✅ PUBLIC | 354 |
 | `/destinations/ras-al-khaimah` | ✅ PUBLIC | Special RAK page |
 
 ### Destination Redirects (NOT in Sitemap)
@@ -108,32 +140,67 @@
 
 ---
 
-## 5. ATTRACTION PAGES
+## 5. ATTRACTION PAGES (3,408 Total)
 
 ### Static Routes
-| Path | Component File | Status |
-|------|----------------|--------|
-| `/attractions` | `attractions.tsx` | ✅ PUBLIC |
-| `/attractions/list/:destination` | `destination-attractions.tsx` | ✅ PUBLIC |
+| Path | Component File | Status | Notes |
+|------|----------------|--------|-------|
+| `/attractions` | `attractions.tsx` | ✅ PUBLIC | Main hub |
+| `/attractions/list/:destination` | `destination-attractions.tsx` | ✅ PUBLIC | 16 city lists |
 
-### Dynamic Routes (3,408 Tiqets Attractions)
+### Attraction List Pages (16 Cities)
+| Path | Status | Count |
+|------|--------|-------|
+| `/attractions/list/london` | ✅ PUBLIC | 446 |
+| `/attractions/list/paris` | ✅ PUBLIC | 394 |
+| `/attractions/list/barcelona` | ✅ PUBLIC | 382 |
+| `/attractions/list/rome` | ✅ PUBLIC | 354 |
+| `/attractions/list/amsterdam` | ✅ PUBLIC | 318 |
+| `/attractions/list/new-york` | ✅ PUBLIC | 308 |
+| `/attractions/list/dubai` | ✅ PUBLIC | 296 |
+| `/attractions/list/las-vegas` | ✅ PUBLIC | 166 |
+| `/attractions/list/istanbul` | ✅ PUBLIC | 138 |
+| `/attractions/list/miami` | ✅ PUBLIC | 129 |
+| `/attractions/list/los-angeles` | ✅ PUBLIC | 127 |
+| `/attractions/list/singapore` | ✅ PUBLIC | 119 |
+| `/attractions/list/bangkok` | ✅ PUBLIC | 106 |
+| `/attractions/list/abu-dhabi` | ✅ PUBLIC | 60 |
+| `/attractions/list/tokyo` | ✅ PUBLIC | 52 |
+| `/attractions/list/hong-kong` | ✅ PUBLIC | 13 |
+
+### Dynamic Attraction Detail Pages (3,408)
 | Path Pattern | Component File | Status | Notes |
 |--------------|----------------|--------|-------|
-| `/attractions/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC | Canonical URL |
-| `/attractions/:seoSlug` | `public-content-viewer.tsx` | ✅ PUBLIC | SEO-optimized slug |
+| `/attractions/:seoSlug` | `public-content-viewer.tsx` | ✅ PUBLIC | Canonical URL |
+
+**Note:** All 3,408 attraction detail pages are in sitemap
 
 ---
 
-## 6. HOTELS
+## 6. ARTICLES (84 Published)
 
+| Path | Component File | Status | Notes |
+|------|----------------|--------|-------|
+| `/articles` | `public-articles.tsx` | ✅ PUBLIC | Hub page |
+| `/articles/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC | 84 article pages |
+
+**Database:** 84 articles with status "published"
+
+---
+
+## 7. HOTELS
+
+### Static Routes
 | Path | Component File | Status |
 |------|----------------|--------|
 | `/hotels` | `hotels.tsx` | ✅ PUBLIC |
 | `/hotels/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
 
+**Database:** 1 hotel in contents table, 1 in hotels table
+
 ---
 
-## 7. DINING
+## 8. DINING
 
 | Path | Component File | Status |
 |------|----------------|--------|
@@ -142,26 +209,35 @@
 
 ---
 
-## 8. ARTICLES & EVENTS
+## 9. EVENTS
 
 | Path | Component File | Status |
 |------|----------------|--------|
-| `/articles` | `public-articles.tsx` | ✅ PUBLIC |
-| `/articles/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
 | `/events` | `public-events.tsx` | ✅ PUBLIC |
 | `/events/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
 
 ---
 
-## 9. TRANSPORT
+## 10. TRANSPORT (1 Published)
 
 | Path | Component File | Status |
 |------|----------------|--------|
 | `/transport/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
 
+**Database:** 1 transport article with status "published"
+
 ---
 
-## 10. GUIDES & TRAVEL CONTENT
+## 11. NEWS & SHOPPING
+
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/news` | `public-news.tsx` | ✅ PUBLIC |
+| `/shopping` | `public-shopping.tsx` | ✅ PUBLIC |
+
+---
+
+## 12. GUIDES & TRAVEL CONTENT
 
 ### Guide Hub
 | Path | Component File | Status |
@@ -169,7 +245,7 @@
 | `/guides` | `global-guides.tsx` | ✅ PUBLIC |
 | `/travel-guides` | `travel-guides.tsx` | 📝 ALIAS |
 
-### RAK Guides (6 Implemented)
+### RAK Guides (6 Static Pages)
 | Path | Component File | Status |
 |------|----------------|--------|
 | `/guides/wynn-al-marjan-island` | `public/guides/wynn-al-marjan-guide.tsx` | ✅ PUBLIC |
@@ -187,7 +263,7 @@
 
 ---
 
-## 11. OFF-PLAN REAL ESTATE
+## 13. OFF-PLAN REAL ESTATE
 
 ### Active Pages
 | Path | Component File | Status |
@@ -195,33 +271,35 @@
 | `/dubai-real-estate` | `public-off-plan.tsx` | ✅ PUBLIC |
 | `/dubai-off-plan-properties` | `public-off-plan.tsx` | ✅ PUBLIC |
 
-### NOT Implemented (Commented Out in routes/index.ts)
-- `/dubai-off-plan-investment-guide`
-- `/how-to-buy-dubai-off-plan`
-- `/dubai-off-plan-payment-plans`
-- `/best-off-plan-projects-dubai-2026`
-- `/dubai-off-plan-business-bay`
-- `/dubai-off-plan-marina`
-- `/dubai-off-plan-jvc`
-- `/dubai-off-plan-palm-jumeirah`
-- `/dubai-off-plan-creek-harbour`
-- `/dubai-off-plan-al-furjan`
-- `/dubai-off-plan-villas`
-- `/off-plan-emaar`
-- `/off-plan-damac`
-- `/off-plan-nakheel`
-- `/off-plan-meraas`
-- `/off-plan-sobha`
-- `/off-plan-crypto-payments`
-- `/off-plan-usdt`
-- `/off-plan-golden-visa`
-- `/off-plan-post-handover`
-- `/off-plan-escrow`
-- `/off-plan-vs-ready`
+### NOT Implemented (22 Routes Commented Out)
+| Route | Type |
+|-------|------|
+| `/dubai-off-plan-investment-guide` | Guide |
+| `/how-to-buy-dubai-off-plan` | Guide |
+| `/dubai-off-plan-payment-plans` | Guide |
+| `/best-off-plan-projects-dubai-2026` | Guide |
+| `/dubai-off-plan-business-bay` | Area |
+| `/dubai-off-plan-marina` | Area |
+| `/dubai-off-plan-jvc` | Area |
+| `/dubai-off-plan-palm-jumeirah` | Area |
+| `/dubai-off-plan-creek-harbour` | Area |
+| `/dubai-off-plan-al-furjan` | Area |
+| `/dubai-off-plan-villas` | Type |
+| `/off-plan-emaar` | Developer |
+| `/off-plan-damac` | Developer |
+| `/off-plan-nakheel` | Developer |
+| `/off-plan-meraas` | Developer |
+| `/off-plan-sobha` | Developer |
+| `/off-plan-crypto-payments` | Payment |
+| `/off-plan-usdt` | Payment |
+| `/off-plan-golden-visa` | Visa |
+| `/off-plan-post-handover` | Guide |
+| `/off-plan-escrow` | Guide |
+| `/off-plan-vs-ready` | Comparison |
 
 ---
 
-## 12. LEGAL PAGES
+## 14. LEGAL PAGES
 
 ### Canonical URLs
 | Path | Component File | Status |
@@ -241,7 +319,7 @@
 
 ---
 
-## 13. ABOUT & CONTACT
+## 15. ABOUT & CONTACT
 
 | Path | Component File | Status |
 |------|----------------|--------|
@@ -250,7 +328,7 @@
 
 ---
 
-## 14. PARTNERS / REFERRAL
+## 16. PARTNERS / REFERRAL
 
 | Path | Component File | Status | Sitemap | noIndex |
 |------|----------------|--------|---------|---------|
@@ -259,7 +337,7 @@
 
 ---
 
-## 15. SURVEYS
+## 17. SURVEYS
 
 | Path | Component File | Status | Sitemap | noIndex |
 |------|----------------|--------|---------|---------|
@@ -267,7 +345,7 @@
 
 ---
 
-## 16. AUTHENTICATION & UTILITY PAGES
+## 18. AUTHENTICATION & UTILITY PAGES
 
 | Path | Component File | Status | Sitemap | noIndex |
 |------|----------------|--------|---------|---------|
@@ -278,7 +356,7 @@
 
 ---
 
-## 17. DOCUMENTATION
+## 19. DOCUMENTATION
 
 | Path | Component File | Status | Sitemap | noIndex |
 |------|----------------|--------|---------|---------|
@@ -287,73 +365,85 @@
 
 ---
 
-## 18. NOT IMPLEMENTED ROUTES (Commented Out)
+## 20. NOT IMPLEMENTED ROUTES (40+ Commented Out)
 
-### Comparison Pages
-- `/compare-off-plan-vs-ready`
-- `/compare-jvc-vs-dubai-south`
-- `/compare-emaar-vs-damac`
-- `/compare-downtown-vs-marina`
-- `/compare-60-40-vs-80-20`
-- `/compare-sobha-vs-meraas`
-- `/compare-crypto-vs-bank-transfer`
-- `/compare-business-bay-vs-jlt`
-- `/compare-new-vs-resale`
-- `/compare-nakheel-vs-azizi`
-- `/compare-villa-vs-apartment`
-- `/compare-studio-vs-1bed`
+### Comparison Pages (12)
+| Route | Description |
+|-------|-------------|
+| `/compare-off-plan-vs-ready` | Off-plan vs Ready comparison |
+| `/compare-jvc-vs-dubai-south` | Area comparison |
+| `/compare-emaar-vs-damac` | Developer comparison |
+| `/compare-downtown-vs-marina` | Area comparison |
+| `/compare-60-40-vs-80-20` | Payment plan comparison |
+| `/compare-sobha-vs-meraas` | Developer comparison |
+| `/compare-crypto-vs-bank-transfer` | Payment comparison |
+| `/compare-business-bay-vs-jlt` | Area comparison |
+| `/compare-new-vs-resale` | Property comparison |
+| `/compare-nakheel-vs-azizi` | Developer comparison |
+| `/compare-villa-vs-apartment` | Type comparison |
+| `/compare-studio-vs-1bed` | Type comparison |
 
-### Tools
-- `/tools-roi-calculator`
-- `/tools-payment-calculator`
-- `/tools-affordability-calculator`
-- `/tools-currency-converter`
-- `/tools-fees-calculator`
-- `/tools-rental-yield-calculator`
-- `/tools-mortgage-calculator`
+### Tools (7)
+| Route | Description |
+|-------|-------------|
+| `/tools-roi-calculator` | ROI Calculator |
+| `/tools-payment-calculator` | Payment Calculator |
+| `/tools-affordability-calculator` | Affordability Calculator |
+| `/tools-currency-converter` | Currency Converter |
+| `/tools-fees-calculator` | Fees/Stamp Duty Calculator |
+| `/tools-rental-yield-calculator` | Rental Yield Calculator |
+| `/tools-mortgage-calculator` | Mortgage Calculator |
 
-### Case Studies
-- `/case-study-jvc-investor`
-- `/case-study-crypto-buyer`
-- `/case-study-golden-visa`
-- `/case-study-expat-family`
-- `/case-study-investor-flip`
-- `/case-study-portfolio-diversification`
-- `/case-study-off-plan-launch`
-- `/case-study-retirement-planning`
+### Case Studies (8)
+| Route | Description |
+|-------|-------------|
+| `/case-study-jvc-investor` | JVC Investor Story |
+| `/case-study-crypto-buyer` | Crypto Buyer Story |
+| `/case-study-golden-visa` | Golden Visa Story |
+| `/case-study-expat-family` | Expat Family Story |
+| `/case-study-investor-flip` | Investor Flip Story |
+| `/case-study-portfolio-diversification` | Portfolio Story |
+| `/case-study-off-plan-launch` | Off-Plan Launch Story |
+| `/case-study-retirement-planning` | Retirement Story |
 
-### Pillar Pages
-- `/dubai-roi-rental-yields`
-- `/dubai-legal-security-guide`
+### Pillar Pages (2)
+| Route | Description |
+|-------|-------------|
+| `/dubai-roi-rental-yields` | ROI & Rental Yields Pillar |
+| `/dubai-legal-security-guide` | Legal Security Pillar |
 
-### Landing Pages
-- `/dubai/free-things-to-do`
-- `/dubai/laws-for-tourists`
-- `/dubai/sheikh-mohammed-bin-rashid`
-- `/dubai/24-hours-open`
+### Landing Pages (4)
+| Route | Description |
+|-------|-------------|
+| `/dubai/free-things-to-do` | Free Activities Landing |
+| `/dubai/laws-for-tourists` | Tourist Laws Landing |
+| `/dubai/sheikh-mohammed-bin-rashid` | Sheikh Mohammed Landing |
+| `/dubai/24-hours-open` | 24/7 Dubai Landing |
 
-### Districts
-- `/districts`
-- `/districts/downtown-dubai`
-- `/districts/dubai-marina`
-- `/districts/jbr-jumeirah-beach-residence`
-- `/districts/palm-jumeirah`
-- `/districts/jumeirah`
-- `/districts/business-bay`
-- `/districts/old-dubai`
-- `/districts/dubai-creek-harbour`
-- `/districts/dubai-south`
-- `/districts/al-barsha`
-- `/districts/difc`
-- `/districts/dubai-hills-estate`
-- `/districts/jvc`
-- `/districts/bluewaters-island`
-- `/districts/international-city`
-- `/districts/al-karama`
+### Districts (17)
+| Route | Description |
+|-------|-------------|
+| `/districts` | Districts Gateway |
+| `/districts/downtown-dubai` | Downtown Dubai |
+| `/districts/dubai-marina` | Dubai Marina |
+| `/districts/jbr-jumeirah-beach-residence` | JBR |
+| `/districts/palm-jumeirah` | Palm Jumeirah |
+| `/districts/jumeirah` | Jumeirah |
+| `/districts/business-bay` | Business Bay |
+| `/districts/old-dubai` | Old Dubai |
+| `/districts/dubai-creek-harbour` | Creek Harbour |
+| `/districts/dubai-south` | Dubai South |
+| `/districts/al-barsha` | Al Barsha |
+| `/districts/difc` | DIFC |
+| `/districts/dubai-hills-estate` | Dubai Hills Estate |
+| `/districts/jvc` | JVC |
+| `/districts/bluewaters-island` | Bluewaters Island |
+| `/districts/international-city` | International City |
+| `/districts/al-karama` | Al Karama |
 
 ---
 
-## 19. ADMIN PAGES (90+ Pages)
+## 21. ADMIN PAGES (~90 Pages)
 
 All admin pages are under `/admin/*` and require authentication.
 **Sitemap:** NO | **noIndex:** YES (implicit - not public)
@@ -364,7 +454,6 @@ All admin pages are under `/admin/*` and require authentication.
 | `/admin` | `dashboard.tsx` |
 | `/admin/content` | `content-list.tsx` |
 | `/admin/content/:id` | `content-editor.tsx` |
-| `/admin/content/:id/versions` | - |
 | `/admin/ai-article` | `ai-article-generator.tsx` |
 | `/admin/topic-bank` | `topic-bank.tsx` |
 | `/admin/keywords` | `keywords.tsx` |
@@ -492,33 +581,53 @@ All admin pages are under `/admin/*` and require authentication.
 
 ---
 
-## 20. LOCALIZED ROUTES
+## 22. LOCALIZED ROUTES
 
 All public routes support 16 locale prefixes:
-- Tier 1: `ar`, `hi`
-- Tier 2: `zh`, `ru`, `ur`, `fr`
-- Tier 3: `de`, `fa`, `bn`, `fil`
-- Tier 4: `es`, `tr`, `it`, `ja`, `ko`, `he`
+- **Tier 1:** `ar`, `hi`
+- **Tier 2:** `zh`, `ru`, `ur`, `fr`
+- **Tier 3:** `de`, `fa`, `bn`, `fil`
+- **Tier 4:** `es`, `tr`, `it`, `ja`, `ko`, `he`
 
 **Current Status:** Only English (no prefix or `/en`) is active. Other locales blocked in robots.txt.
 
 ---
 
-## SITEMAP STATUS SUMMARY
+## SITEMAP SUMMARY
+
+### Total URLs in Sitemap
+
+| Category | Count |
+|----------|-------|
+| Homepage | 1 |
+| Core Hubs (destinations, attractions, hotels, etc.) | 10 |
+| Destination Pages | 17 |
+| Attraction List Pages | 16 |
+| Attraction Detail Pages (Tiqets) | 3,408 |
+| Guide Pages (RAK + hub) | 7 |
+| Legal Pages (canonical + aliases) | 8 |
+| About/Contact/Partners Join | 3 |
+| Real Estate Pages | 2 |
+| Travel Guides Alias | 1 |
+| **Dynamic Content:** | |
+| - Articles | 84 |
+| - Hotels (contents) | 1 |
+| - Transport | 1 |
+| **TOTAL** | **~3,559** |
 
 ### Excluded from Sitemap ❌
 | Route | Reason |
 |-------|--------|
 | `/search` | Legacy internal |
-| `/help` (all routes) | Broken |
-| `/docs` (all routes) | Internal |
-| `/test` | Internal |
-| `/login` | Auth |
-| `/access-denied` | Internal |
-| `/coming-soon` | Internal |
+| `/help` (all routes) | Broken (DB tables don't exist) |
+| `/docs` (all routes) | Internal documentation |
+| `/test` | Internal test page |
+| `/login` | Auth page |
+| `/access-denied` | Internal error page |
+| `/coming-soon` | Placeholder |
 | `/partners/dashboard` | Auth required |
-| `/survey/:slug` | Internal |
-| `/admin/*` | Admin (100+ routes) |
+| `/survey/:slug` | Internal surveys |
+| `/admin/*` | Admin panel (100+ routes) |
 | All destination redirects | Redirects |
 
 ### noIndex Added ✅
@@ -535,25 +644,7 @@ All public routes support 16 locale prefixes:
 
 ---
 
-## ESTIMATED SITEMAP COUNT
-
-| Category | Count |
-|----------|-------|
-| Homepage | 1 |
-| Core Hubs | 10 |
-| Destination Pages | 17 |
-| Attraction List Pages | 16 |
-| Guide Pages | 7 |
-| Legal Pages | 8 |
-| About/Contact/Partners Join | 3 |
-| Real Estate | 2 |
-| Attraction Details (Tiqets) | 3,408 |
-| Dynamic Content (DB) | Variable |
-| **TOTAL** | ~3,472+ |
-
----
-
-## ALL PAGE FILES (161 Total)
+## ALL 161 PAGE FILES
 
 ```
 client/src/pages/
