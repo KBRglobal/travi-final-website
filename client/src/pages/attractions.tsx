@@ -529,7 +529,7 @@ export default function Attractions() {
               <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(#6443F4 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
             </div>
 
-            <div className="relative z-10 min-h-screen flex items-center py-16">
+              <div className="relative z-10 min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24">
               <div className="max-w-[90rem] mx-auto w-full">
                 <div className="grid lg:grid-cols-2 gap-8 items-center">
 
