@@ -7,11 +7,11 @@ interface SkipLinkProps {
 }
 
 export function SkipLink({ 
-  href = "#main-contents", 
+  href = "#main-content", 
   className,
   isRTL = false 
 }: SkipLinkProps) {
-  const text = isRTL ? "דלג לתוכן הראשי" : "Skip to main contents";
+  const text = isRTL ? "דלג לתוכן הראשי" : "Skip to main content";
   
   return (
     <a

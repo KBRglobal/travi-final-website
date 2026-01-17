@@ -730,7 +730,7 @@ function App() {
                 Skip to main content
               </a>
               <Suspense fallback={<PageLoader />}>
-                <main id="main-content">
+                <main id="main-content" tabIndex={-1}>
                 {isAdminRoute ? (
                   <AdminLayout />
                 ) : isV2Route ? (

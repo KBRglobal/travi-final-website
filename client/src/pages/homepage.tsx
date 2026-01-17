@@ -456,6 +456,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
       <style>{heroAnimationStyles}</style>
 
       <Helmet>
+        <link rel="preload" as="image" href="/hero/dubai-hero.webp" fetchPriority="high" />
         <script type="application/ld+json">{websiteSchema}</script>
         <script type="application/ld+json">{organizationSchema}</script>
         <script type="application/ld+json">{breadcrumbSchema}</script>
