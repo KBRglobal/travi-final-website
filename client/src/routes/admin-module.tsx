@@ -17,7 +17,7 @@ const TabCountBadge = lazy(() => import("@/components/multi-tab-editor").then(m 
 const ContentExpiryAlerts = lazy(() => import("@/components/content-expiry-alerts").then(m => ({ default: m.ContentExpiryAlerts })));
 
 const Dashboard = lazy(() => import("@/pages/admin/IntelligenceDashboard"));
-const ContentList = lazy(() => import("@/pages/admin/content-list"));
+const ContentList = lazy(() => import("@/pages/content-list"));
 const ContentEditor = lazy(() => import("@/pages/admin/content-editor"));
 const RssFeeds = lazy(() => import("@/pages/admin/rss-feeds"));
 const AIArticleGenerator = lazy(() => import("@/pages/admin/ai-article-generator"));
