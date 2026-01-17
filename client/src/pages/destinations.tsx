@@ -29,7 +29,7 @@ import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { cn } from "@/lib/utils";
-import { HERO_VERSIONS } from "@/components/destinations-hero-versions";
+import { DestinationsHero } from "@/components/destinations-hero";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -1142,8 +1142,7 @@ export default function DestinationsPage() {
         <PublicNav variant="default" />
 
         <main>
-          {/* V12 Magazine Hero - Production design */}
-          <HERO_VERSIONS.V12.component destinationCount={destinationCount} regionCount={regionCount} />
+          <DestinationsHero destinationCount={destinationCount} regionCount={regionCount} />
 
           <section 
             id="explore-destinations"
