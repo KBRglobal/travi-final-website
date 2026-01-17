@@ -4,6 +4,42 @@
 
 ---
 
+## 🏙️ DUBAI PAGES - COMPLETE LIST
+
+> All Dubai-specific pages are marked with 🏙️ throughout this document
+
+### Active Dubai Pages (8 Working)
+| Path | Type | Status |
+|------|------|--------|
+| `/destinations/dubai` | Destination Hub | ✅ PUBLIC |
+| `/attractions/list/dubai` | Attractions List | ✅ PUBLIC |
+| `/attractions/:slug` (296 Dubai attractions) | Attraction Details | ✅ PUBLIC |
+| `/dubai-real-estate` | Real Estate Hub | ✅ PUBLIC |
+| `/dubai-off-plan-properties` | Off-Plan Properties | ✅ PUBLIC |
+| `/search` | Dubai Search (Legacy) | 🔧 INTERNAL |
+| `/guides/dubai-to-rak-transport` | Transport Guide | ✅ PUBLIC |
+| `/guides/dubai-vs-rak` | Comparison Guide | ✅ PUBLIC |
+
+### Not Implemented Dubai Pages (72 Total)
+
+| Category | Count | Examples |
+|----------|-------|----------|
+| **Off-Plan Real Estate** | 22 | `/dubai-off-plan-investment-guide`, `/dubai-off-plan-marina`, `/off-plan-emaar` |
+| **Districts** | 17 | `/districts/downtown-dubai`, `/districts/dubai-marina`, `/districts/palm-jumeirah` |
+| **Comparisons** | 12 | `/compare-downtown-vs-marina`, `/compare-emaar-vs-damac`, `/compare-jvc-vs-dubai-south` |
+| **Case Studies** | 8 | `/case-study-jvc-investor`, `/case-study-golden-visa`, `/case-study-crypto-buyer` |
+| **Tools** | 7 | `/tools-roi-calculator`, `/tools-payment-calculator`, `/tools-mortgage-calculator` |
+| **Landing Pages** | 4 | `/dubai/free-things-to-do`, `/dubai/laws-for-tourists`, `/dubai/24-hours-open` |
+| **Pillar Pages** | 2 | `/dubai-roi-rental-yields`, `/dubai-legal-security-guide` |
+| **TOTAL** | **72** | |
+
+### Dubai Attractions (296 in Database)
+- All 296 Dubai attractions are in the sitemap
+- Path pattern: `/attractions/:seoSlug`
+- Source: Tiqets integration
+
+---
+
 ## Summary Statistics
 
 | Metric | Count |
@@ -14,6 +50,7 @@
 | **Working Public Pages** | ~50 |
 | **Pages Excluded from Sitemap** | ~15 |
 | **Commented/Not Implemented** | ~40 |
+| **🏙️ Dubai-Specific Pages** | ~50 |
 
 ### Dynamic Content (from Database)
 
@@ -36,7 +73,7 @@
 | Rome | 354 |
 | Amsterdam | 318 |
 | New York | 308 |
-| Dubai | 296 |
+| 🏙️ Dubai | 296 |
 | Las Vegas | 166 |
 | Istanbul | 138 |
 | Miami | 129 |
@@ -83,13 +120,13 @@
 
 ---
 
-## 2. SEARCH PAGE
+## 2. SEARCH PAGE 🏙️
 
 | Path | Component File | Status | Sitemap | noIndex |
 |------|----------------|--------|---------|---------|
 | `/search` | `public-search.tsx` | 🔧 INTERNAL | ❌ REMOVED | ✅ ADDED |
 
-**Notes:** Legacy Dubai search - shows "Search Dubai" - internal use only
+**Notes:** 🏙️ Legacy Dubai search - shows "Search Dubai" - internal use only
 
 ---
 
@@ -110,7 +147,7 @@
 ### 17 Active City Pages
 | Path | Status | Attractions Count |
 |------|--------|-------------------|
-| `/destinations/dubai` | ✅ PUBLIC | 296 |
+| 🏙️ `/destinations/dubai` | ✅ PUBLIC | 296 |
 | `/destinations/paris` | ✅ PUBLIC | 394 |
 | `/destinations/tokyo` | ✅ PUBLIC | 52 |
 | `/destinations/new-york` | ✅ PUBLIC | 308 |
@@ -157,7 +194,7 @@
 | `/attractions/list/rome` | ✅ PUBLIC | 354 |
 | `/attractions/list/amsterdam` | ✅ PUBLIC | 318 |
 | `/attractions/list/new-york` | ✅ PUBLIC | 308 |
-| `/attractions/list/dubai` | ✅ PUBLIC | 296 |
+| 🏙️ `/attractions/list/dubai` | ✅ PUBLIC | 296 |
 | `/attractions/list/las-vegas` | ✅ PUBLIC | 166 |
 | `/attractions/list/istanbul` | ✅ PUBLIC | 138 |
 | `/attractions/list/miami` | ✅ PUBLIC | 129 |
@@ -250,8 +287,8 @@
 |------|----------------|--------|
 | `/guides/wynn-al-marjan-island` | `public/guides/wynn-al-marjan-guide.tsx` | ✅ PUBLIC |
 | `/guides/jebel-jais-adventure` | `public/guides/jebel-jais-adventure-guide.tsx` | ✅ PUBLIC |
-| `/guides/dubai-to-rak-transport` | `public/guides/dubai-to-rak-transport.tsx` | ✅ PUBLIC |
-| `/guides/dubai-vs-rak` | `public/guides/dubai-vs-rak-comparison.tsx` | ✅ PUBLIC |
+| 🏙️ `/guides/dubai-to-rak-transport` | `public/guides/dubai-to-rak-transport.tsx` | ✅ PUBLIC |
+| 🏙️ `/guides/dubai-vs-rak` | `public/guides/dubai-vs-rak-comparison.tsx` | ✅ PUBLIC |
 | `/guides/where-to-stay-rak` | `public/guides/where-to-stay-rak.tsx` | ✅ PUBLIC |
 | `/guides/rak-real-estate-investment` | `public/guides/rak-real-estate-investment.tsx` | ✅ PUBLIC |
 
@@ -263,39 +300,39 @@
 
 ---
 
-## 13. OFF-PLAN REAL ESTATE
+## 13. OFF-PLAN REAL ESTATE 🏙️
 
-### Active Pages
+### Active Pages 🏙️
 | Path | Component File | Status |
 |------|----------------|--------|
-| `/dubai-real-estate` | `public-off-plan.tsx` | ✅ PUBLIC |
-| `/dubai-off-plan-properties` | `public-off-plan.tsx` | ✅ PUBLIC |
+| 🏙️ `/dubai-real-estate` | `public-off-plan.tsx` | ✅ PUBLIC |
+| 🏙️ `/dubai-off-plan-properties` | `public-off-plan.tsx` | ✅ PUBLIC |
 
-### NOT Implemented (22 Routes Commented Out)
+### NOT Implemented (22 Routes Commented Out) 🏙️
 | Route | Type |
 |-------|------|
-| `/dubai-off-plan-investment-guide` | Guide |
-| `/how-to-buy-dubai-off-plan` | Guide |
-| `/dubai-off-plan-payment-plans` | Guide |
-| `/best-off-plan-projects-dubai-2026` | Guide |
-| `/dubai-off-plan-business-bay` | Area |
-| `/dubai-off-plan-marina` | Area |
-| `/dubai-off-plan-jvc` | Area |
-| `/dubai-off-plan-palm-jumeirah` | Area |
-| `/dubai-off-plan-creek-harbour` | Area |
-| `/dubai-off-plan-al-furjan` | Area |
-| `/dubai-off-plan-villas` | Type |
-| `/off-plan-emaar` | Developer |
-| `/off-plan-damac` | Developer |
-| `/off-plan-nakheel` | Developer |
-| `/off-plan-meraas` | Developer |
-| `/off-plan-sobha` | Developer |
-| `/off-plan-crypto-payments` | Payment |
-| `/off-plan-usdt` | Payment |
-| `/off-plan-golden-visa` | Visa |
-| `/off-plan-post-handover` | Guide |
-| `/off-plan-escrow` | Guide |
-| `/off-plan-vs-ready` | Comparison |
+| 🏙️ `/dubai-off-plan-investment-guide` | Guide |
+| 🏙️ `/how-to-buy-dubai-off-plan` | Guide |
+| 🏙️ `/dubai-off-plan-payment-plans` | Guide |
+| 🏙️ `/best-off-plan-projects-dubai-2026` | Guide |
+| 🏙️ `/dubai-off-plan-business-bay` | Area |
+| 🏙️ `/dubai-off-plan-marina` | Area |
+| 🏙️ `/dubai-off-plan-jvc` | Area |
+| 🏙️ `/dubai-off-plan-palm-jumeirah` | Area |
+| 🏙️ `/dubai-off-plan-creek-harbour` | Area |
+| 🏙️ `/dubai-off-plan-al-furjan` | Area |
+| 🏙️ `/dubai-off-plan-villas` | Type |
+| 🏙️ `/off-plan-emaar` | Developer |
+| 🏙️ `/off-plan-damac` | Developer |
+| 🏙️ `/off-plan-nakheel` | Developer |
+| 🏙️ `/off-plan-meraas` | Developer |
+| 🏙️ `/off-plan-sobha` | Developer |
+| 🏙️ `/off-plan-crypto-payments` | Payment |
+| 🏙️ `/off-plan-usdt` | Payment |
+| 🏙️ `/off-plan-golden-visa` | Visa |
+| 🏙️ `/off-plan-post-handover` | Guide |
+| 🏙️ `/off-plan-escrow` | Guide |
+| 🏙️ `/off-plan-vs-ready` | Comparison |
 
 ---
 
@@ -367,79 +404,79 @@
 
 ## 20. NOT IMPLEMENTED ROUTES (40+ Commented Out)
 
-### Comparison Pages (12)
+### Comparison Pages (12) 🏙️
 | Route | Description |
 |-------|-------------|
-| `/compare-off-plan-vs-ready` | Off-plan vs Ready comparison |
-| `/compare-jvc-vs-dubai-south` | Area comparison |
-| `/compare-emaar-vs-damac` | Developer comparison |
-| `/compare-downtown-vs-marina` | Area comparison |
-| `/compare-60-40-vs-80-20` | Payment plan comparison |
-| `/compare-sobha-vs-meraas` | Developer comparison |
-| `/compare-crypto-vs-bank-transfer` | Payment comparison |
-| `/compare-business-bay-vs-jlt` | Area comparison |
-| `/compare-new-vs-resale` | Property comparison |
-| `/compare-nakheel-vs-azizi` | Developer comparison |
-| `/compare-villa-vs-apartment` | Type comparison |
-| `/compare-studio-vs-1bed` | Type comparison |
+| 🏙️ `/compare-off-plan-vs-ready` | Off-plan vs Ready comparison |
+| 🏙️ `/compare-jvc-vs-dubai-south` | Area comparison |
+| 🏙️ `/compare-emaar-vs-damac` | Developer comparison |
+| 🏙️ `/compare-downtown-vs-marina` | Area comparison |
+| 🏙️ `/compare-60-40-vs-80-20` | Payment plan comparison |
+| 🏙️ `/compare-sobha-vs-meraas` | Developer comparison |
+| 🏙️ `/compare-crypto-vs-bank-transfer` | Payment comparison |
+| 🏙️ `/compare-business-bay-vs-jlt` | Area comparison |
+| 🏙️ `/compare-new-vs-resale` | Property comparison |
+| 🏙️ `/compare-nakheel-vs-azizi` | Developer comparison |
+| 🏙️ `/compare-villa-vs-apartment` | Type comparison |
+| 🏙️ `/compare-studio-vs-1bed` | Type comparison |
 
-### Tools (7)
+### Tools (7) 🏙️
 | Route | Description |
 |-------|-------------|
-| `/tools-roi-calculator` | ROI Calculator |
-| `/tools-payment-calculator` | Payment Calculator |
-| `/tools-affordability-calculator` | Affordability Calculator |
-| `/tools-currency-converter` | Currency Converter |
-| `/tools-fees-calculator` | Fees/Stamp Duty Calculator |
-| `/tools-rental-yield-calculator` | Rental Yield Calculator |
-| `/tools-mortgage-calculator` | Mortgage Calculator |
+| 🏙️ `/tools-roi-calculator` | ROI Calculator |
+| 🏙️ `/tools-payment-calculator` | Payment Calculator |
+| 🏙️ `/tools-affordability-calculator` | Affordability Calculator |
+| 🏙️ `/tools-currency-converter` | Currency Converter |
+| 🏙️ `/tools-fees-calculator` | Fees/Stamp Duty Calculator |
+| 🏙️ `/tools-rental-yield-calculator` | Rental Yield Calculator |
+| 🏙️ `/tools-mortgage-calculator` | Mortgage Calculator |
 
-### Case Studies (8)
+### Case Studies (8) 🏙️
 | Route | Description |
 |-------|-------------|
-| `/case-study-jvc-investor` | JVC Investor Story |
-| `/case-study-crypto-buyer` | Crypto Buyer Story |
-| `/case-study-golden-visa` | Golden Visa Story |
-| `/case-study-expat-family` | Expat Family Story |
-| `/case-study-investor-flip` | Investor Flip Story |
-| `/case-study-portfolio-diversification` | Portfolio Story |
-| `/case-study-off-plan-launch` | Off-Plan Launch Story |
-| `/case-study-retirement-planning` | Retirement Story |
+| 🏙️ `/case-study-jvc-investor` | JVC Investor Story |
+| 🏙️ `/case-study-crypto-buyer` | Crypto Buyer Story |
+| 🏙️ `/case-study-golden-visa` | Golden Visa Story |
+| 🏙️ `/case-study-expat-family` | Expat Family Story |
+| 🏙️ `/case-study-investor-flip` | Investor Flip Story |
+| 🏙️ `/case-study-portfolio-diversification` | Portfolio Story |
+| 🏙️ `/case-study-off-plan-launch` | Off-Plan Launch Story |
+| 🏙️ `/case-study-retirement-planning` | Retirement Story |
 
-### Pillar Pages (2)
+### Pillar Pages (2) 🏙️
 | Route | Description |
 |-------|-------------|
-| `/dubai-roi-rental-yields` | ROI & Rental Yields Pillar |
-| `/dubai-legal-security-guide` | Legal Security Pillar |
+| 🏙️ `/dubai-roi-rental-yields` | ROI & Rental Yields Pillar |
+| 🏙️ `/dubai-legal-security-guide` | Legal Security Pillar |
 
-### Landing Pages (4)
+### Landing Pages (4) 🏙️
 | Route | Description |
 |-------|-------------|
-| `/dubai/free-things-to-do` | Free Activities Landing |
-| `/dubai/laws-for-tourists` | Tourist Laws Landing |
-| `/dubai/sheikh-mohammed-bin-rashid` | Sheikh Mohammed Landing |
-| `/dubai/24-hours-open` | 24/7 Dubai Landing |
+| 🏙️ `/dubai/free-things-to-do` | Free Activities Landing |
+| 🏙️ `/dubai/laws-for-tourists` | Tourist Laws Landing |
+| 🏙️ `/dubai/sheikh-mohammed-bin-rashid` | Sheikh Mohammed Landing |
+| 🏙️ `/dubai/24-hours-open` | 24/7 Dubai Landing |
 
-### Districts (17)
+### Districts (17) 🏙️
 | Route | Description |
 |-------|-------------|
-| `/districts` | Districts Gateway |
-| `/districts/downtown-dubai` | Downtown Dubai |
-| `/districts/dubai-marina` | Dubai Marina |
-| `/districts/jbr-jumeirah-beach-residence` | JBR |
-| `/districts/palm-jumeirah` | Palm Jumeirah |
-| `/districts/jumeirah` | Jumeirah |
-| `/districts/business-bay` | Business Bay |
-| `/districts/old-dubai` | Old Dubai |
-| `/districts/dubai-creek-harbour` | Creek Harbour |
-| `/districts/dubai-south` | Dubai South |
-| `/districts/al-barsha` | Al Barsha |
-| `/districts/difc` | DIFC |
-| `/districts/dubai-hills-estate` | Dubai Hills Estate |
-| `/districts/jvc` | JVC |
-| `/districts/bluewaters-island` | Bluewaters Island |
-| `/districts/international-city` | International City |
-| `/districts/al-karama` | Al Karama |
+| 🏙️ `/districts` | Districts Gateway |
+| 🏙️ `/districts/downtown-dubai` | Downtown Dubai |
+| 🏙️ `/districts/dubai-marina` | Dubai Marina |
+| 🏙️ `/districts/jbr-jumeirah-beach-residence` | JBR |
+| 🏙️ `/districts/palm-jumeirah` | Palm Jumeirah |
+| 🏙️ `/districts/jumeirah` | Jumeirah |
+| 🏙️ `/districts/business-bay` | Business Bay |
+| 🏙️ `/districts/old-dubai` | Old Dubai |
+| 🏙️ `/districts/dubai-creek-harbour` | Creek Harbour |
+| 🏙️ `/districts/dubai-south` | Dubai South |
+| 🏙️ `/districts/al-barsha` | Al Barsha |
+| 🏙️ `/districts/difc` | DIFC |
+| 🏙️ `/districts/dubai-hills-estate` | Dubai Hills Estate |
+| 🏙️ `/districts/jvc` | JVC |
+| 🏙️ `/districts/bluewaters-island` | Bluewaters Island |
+| 🏙️ `/districts/international-city` | International City |
+| 🏙️ `/districts/al-karama` | Al Karama |
 
 ---
 
