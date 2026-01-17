@@ -64,11 +64,6 @@
 
   html {
     font-family: 'Satoshi';
-    background-image: url('/travi-bg.webp');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     background-color: #d4e6f0;
   }
   

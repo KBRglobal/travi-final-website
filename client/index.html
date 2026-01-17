@@ -7,13 +7,18 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-    <!-- Performance Hints - Preconnect to critical origins -->
-    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://fonts.cdnfonts.com">
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <!-- Performance Hints - Preload critical fonts (self-hosted) -->
+    <link rel="preload" href="/fonts/Satoshi-Regular_1767041885349.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/fonts/Satoshi-Medium_1767041885349.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/fonts/Satoshi-Bold_1767041885349.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/fonts/Chillax-Variable_1767041885348.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- Preload LCP hero image (first slide) -->
+    <link rel="preload" href="/hero/dubai-hero.webp" as="image" type="image/webp" fetchpriority="high">
+    
+    <!-- Preconnect to external image origins -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">

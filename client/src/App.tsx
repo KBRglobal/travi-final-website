@@ -15,8 +15,10 @@ import { LocaleProvider } from "@/lib/i18n/LocaleRouter";
 import { FavoritesProvider } from "@/hooks/use-favorites";
 import { LiveEditProvider } from "@/components/live-edit";
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
-import { CookieConsentBanner } from "@/components/cookie-consent-banner";
-import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+
+// Lazy load non-critical components for performance
+const CookieConsentBanner = lazy(() => import("@/components/cookie-consent-banner").then(m => ({ default: m.CookieConsentBanner })));
+const PWAInstallPrompt = lazy(() => import("@/components/pwa-install-prompt").then(m => ({ default: m.PWAInstallPrompt })));
 import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 
@@ -745,8 +747,10 @@ function App() {
                 </main>
               </Suspense>
               <Toaster />
-              <CookieConsentBanner />
-              <PWAInstallPrompt />
+              <Suspense fallback={null}>
+                <CookieConsentBanner />
+                <PWAInstallPrompt />
+              </Suspense>
             </TooltipProvider>
           </FavoritesProvider>
         </LocaleProvider>

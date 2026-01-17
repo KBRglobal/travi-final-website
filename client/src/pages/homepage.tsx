@@ -13,7 +13,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { SiTiktok } from "react-icons/si";
 import { SEOHead } from "@/components/seo-head";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
 import { PublicFooter } from "@/components/public-footer";
@@ -45,6 +45,61 @@ const heroAnimationStyles = `
   @keyframes rotate-slow {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  @keyframes blob-pulse-1 {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.4; }
+  }
+
+  @keyframes blob-pulse-2 {
+    0%, 100% { transform: scale(1); opacity: 0.25; }
+    50% { transform: scale(1.15); opacity: 0.35; }
+  }
+
+  @keyframes float-badge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes loading-pulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+  }
+
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounce-in {
+    0% { opacity: 0; transform: scale(0.8) translateY(50px); }
+    50% { transform: scale(1.05) translateY(-5px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .blob-animate-1 {
+    animation: blob-pulse-1 8s ease-in-out infinite;
+  }
+
+  .blob-animate-2 {
+    animation: blob-pulse-2 10s ease-in-out 1s infinite;
+  }
+
+  .float-badge {
+    animation: float-badge 2s ease-in-out infinite;
+  }
+
+  .loading-pulse {
+    animation: loading-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out both;
+  }
+
+  .animate-bounce-in {
+    animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
 
   .animated-gradient-text {
@@ -272,14 +327,11 @@ interface HomepageConfig {
 function LoadingScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 dark:from-slate-900 dark:to-slate-950">
+      <style>{heroAnimationStyles}</style>
       <div className="text-center">
-        <motion.div 
-          className="w-24 h-24 mx-auto mb-4"
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
+        <div className="w-24 h-24 mx-auto mb-4 loading-pulse">
           <Mascot size={96} variant="light-bg" />
-        </motion.div>
+        </div>
         <p className="text-slate-600 dark:text-slate-400 font-medium">Loading amazing destinations...</p>
       </div>
     </div>
@@ -287,23 +339,39 @@ function LoadingScreen() {
 }
 
 // ============================================
-// ANIMATED SECTION
+// ANIMATED SECTION - CSS-based (no framer-motion for performance)
 // ============================================
 function AnimatedSection({ children, className, delay = 0, ariaLabel }: { children: React.ReactNode; className?: string; delay?: number; ariaLabel?: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef<HTMLElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "-100px" }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <motion.section
+    <section
       ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-      transition={{ duration: 0.8, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={className}
+      className={cn(
+        className,
+        "transition-all duration-700 ease-out",
+        isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
+      )}
+      style={{ transitionDelay: `${delay}s` }}
       aria-label={ariaLabel}
     >
       {children}
-    </motion.section>
+    </section>
   );
 }
 
@@ -464,17 +532,13 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
         <script type="application/ld+json">{collectionPageSchema}</script>
       </Helmet>
 
-      {/* Animated decorative blobs */}
-      <motion.div 
-        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.4, 0.3] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      {/* Decorative blobs - CSS animated for performance */}
+      <div 
+        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-1"
         aria-hidden="true"
       />
-      <motion.div 
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.35, 0.25] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      <div 
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-2"
         aria-hidden="true"
       />
 
@@ -487,12 +551,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
         {/* Left Content */}
         <div className="flex-1 max-w-xl text-center lg:text-left">
           {/* Badge - UI Standard (white bg + shadow-lg + animated dot) */}
-          <motion.div 
-            className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="mb-8">
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-[#6443F4]/10 border border-[#6443F4]/20">
               <div className="relative flex items-center justify-center">
                 <span className="absolute w-3 h-3 rounded-full bg-[#6443F4] animate-ping opacity-75" />
@@ -502,15 +561,10 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                 Trusted by <span className="text-[#6443F4]">100K+</span> travelers worldwide
               </span>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Animated Gradient Headline */}
-          <motion.h1 
-            className="mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+          {/* Gradient Headline */}
+          <h1 className="mb-6">
             <span 
               className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2" 
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
@@ -527,26 +581,18 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
               {/* Gradient underline accent */}
               <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p 
+          <p 
             id="hero-description"
             className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
           >
             Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">16 destinations</span> worldwide. 
             Discover detailed guides for <span className="font-medium text-slate-700 dark:text-slate-300">3,000+ attractions</span>.
-          </motion.p>
+          </p>
 
           {/* Stats */}
-          <motion.dl 
-            className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
+          <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8">
             {[
               { num: '3,000+', label: 'ATTRACTIONS', srLabel: 'Over 3000 attractions covered' },
               { num: '16', label: 'DESTINATIONS', srLabel: '16 destinations worldwide' },
@@ -563,15 +609,10 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                 {i < 2 && <div className="hidden sm:block w-px h-10 sm:h-12 bg-gradient-to-b from-transparent via-slate-200 dark:via-slate-700 to-transparent" aria-hidden="true" />}
               </div>
             ))}
-          </motion.dl>
+          </dl>
 
           {/* Simple CTA Buttons */}
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
+          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
             <Link href="/destinations">
               <Button 
                 className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
@@ -589,14 +630,11 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                 View Guides
               </Button>
             </Link>
-          </motion.div>
+          </div>
 
           {/* Dots */}
-          <motion.div 
+          <div 
             className="flex gap-2 mt-8 justify-center lg:justify-start"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
             role="tablist"
             aria-label="Destination carousel navigation"
           >
@@ -615,20 +653,18 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                 )}
               />
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* Right Image */}
         <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
           <div className="absolute -inset-4 bg-gradient-to-r from-[#6443F4]/20 via-[#F24294]/10 to-[#6443F4]/20 rounded-[2rem] blur-xl opacity-60" aria-hidden="true" />
 
-          <motion.div 
+          <div 
             className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
             role="tabpanel"
           >
+            {/* Keep AnimatePresence for image carousel - necessary for UX */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -653,12 +689,12 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
               </motion.div>
             </AnimatePresence>
 
-            {/* Location badge */}
-            <motion.div 
-              className="absolute bottom-6 left-6 right-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isAnimating ? 0 : 1, y: isAnimating ? 20 : 0 }}
-              transition={{ duration: 0.5 }}
+            {/* Location badge - CSS transitions for performance */}
+            <div 
+              className={cn(
+                "absolute bottom-6 left-6 right-6 transition-all duration-500",
+                isAnimating ? "opacity-0 translate-y-5" : "opacity-100 translate-y-0"
+              )}
             >
               <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
                 <div className="flex items-center gap-3">
@@ -671,29 +707,20 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Popular badge - UI Standard (animated dot) */}
-            <motion.div 
-              className="absolute top-6 right-6 inline-flex items-center gap-2 bg-white/95 dark:bg-slate-800 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-purple-500/10 border border-[#6443F4]/20"
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
+            {/* Popular badge - CSS animated for performance */}
+            <div className="absolute top-6 right-6 inline-flex items-center gap-2 bg-white/95 dark:bg-slate-800 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-purple-500/10 border border-[#6443F4]/20 float-badge">
               <div className="relative flex items-center justify-center">
                 <span className="absolute w-2.5 h-2.5 rounded-full bg-[#6443F4] animate-ping opacity-75" />
                 <span className="relative w-2 h-2 rounded-full bg-[#6443F4]" />
               </div>
               <span className="text-xs font-semibold text-[#6443F4]">Popular</span>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Floating cards */}
-          <motion.div 
-            className="absolute -left-4 top-1/4 bg-white dark:bg-slate-800 rounded-xl shadow-xl p-3 hidden lg:block border border-slate-100 dark:border-slate-700"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
+          {/* Floating cards - static for performance */}
+          <div className="absolute -left-4 top-1/4 bg-white dark:bg-slate-800 rounded-xl shadow-xl p-3 hidden lg:block border border-slate-100 dark:border-slate-700">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-md">
                 <Ticket className="w-4 h-4 text-white" aria-hidden="true" />
@@ -703,14 +730,9 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                 <div className="text-slate-500">Available</div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div 
-            className="absolute -right-2 bottom-1/3 bg-white dark:bg-slate-800 rounded-xl shadow-xl p-3 hidden lg:block border border-slate-100 dark:border-slate-700"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 1 }}
-          >
+          <div className="absolute -right-2 bottom-1/3 bg-white dark:bg-slate-800 rounded-xl shadow-xl p-3 hidden lg:block border border-slate-100 dark:border-slate-700">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md">
                 <Star className="w-4 h-4 text-white" aria-hidden="true" />
@@ -720,7 +742,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
                 <div className="text-slate-500">Reviews</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
@@ -776,16 +798,10 @@ function CategoriesSection() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4"
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4">
             <Compass className="w-4 h-4 text-[#6443F4]" aria-hidden="true" />
             <span className="text-xs font-semibold tracking-wide text-[#6443F4] uppercase">Browse Travel Categories</span>
-          </motion.div>
+          </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
             Explore by Type
           </h2>
@@ -799,12 +815,10 @@ function CategoriesSection() {
           {CATEGORY_CARDS.map((card, index) => {
             const IconComponent = card.icon;
             return (
-              <motion.div
+              <div
                 key={card.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 80}ms` }}
               >
                 <Link href={card.linkUrl} title={card.description}>
                   <article className={cn(
@@ -842,7 +856,7 @@ function CategoriesSection() {
                     )} aria-hidden="true" />
                   </article>
                 </Link>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -888,12 +902,10 @@ function FAQSection() {
 
         <div className="space-y-4" itemScope itemType="https://schema.org/FAQPage">
           {FAQ_ITEMS.map((faq, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${index * 100}ms` }}
               itemScope
               itemProp="mainEntity"
               itemType="https://schema.org/Question"
@@ -917,25 +929,23 @@ function FAQSection() {
                     aria-hidden="true"
                   />
                 </button>
-                <AnimatePresence>
-                  {openIndex === index && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      itemScope
-                      itemProp="acceptedAnswer"
-                      itemType="https://schema.org/Answer"
-                    >
-                      <p className="px-6 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed" itemProp="text">
-                        {faq.a}
-                      </p>
-                    </motion.div>
+                <div
+                  className={cn(
+                    "grid transition-all duration-300 ease-out",
+                    openIndex === index ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                   )}
-                </AnimatePresence>
+                  itemScope
+                  itemProp="acceptedAnswer"
+                  itemType="https://schema.org/Answer"
+                >
+                  <div className="overflow-hidden">
+                    <p className="px-6 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed" itemProp="text">
+                      {faq.a}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -1153,7 +1163,7 @@ export default function Homepage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {featuredDestinations.slice(0, 8).map((dest: any, index: number) => (
-                  <motion.article key={dest.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.05 }}>
+                  <article key={dest.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                     <Link href={dest.slug || `/destinations/${dest.id}`} title={`${dest.name} Travel Guide - Hotels, Attractions & Things to Do`}>
                       <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 h-full">
                         <div className="relative h-48 sm:h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -1184,7 +1194,7 @@ export default function Homepage() {
                         </CardContent>
                       </Card>
                     </Link>
-                  </motion.article>
+                  </article>
                 ))}
               </div>
 
@@ -1216,7 +1226,7 @@ export default function Homepage() {
                 {experienceCategories.map((category: any, index: number) => {
                   const IconComponent = getIconComponent(category.icon);
                   return (
-                    <motion.article key={category.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.05 }}>
+                    <article key={category.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                       <Link href={category.href || `/${category.slug}`} title={`${category.name} - Complete Travel Guide ${CURRENT_YEAR}`}>
                         <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 bg-white dark:bg-slate-900 h-full">
                           <div className="relative h-40 sm:h-48 overflow-hidden">
@@ -1248,7 +1258,7 @@ export default function Homepage() {
                           </CardContent>
                         </Card>
                       </Link>
-                    </motion.article>
+                    </article>
                   );
                 })}
               </div>
@@ -1284,7 +1294,7 @@ export default function Homepage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {regionLinks.map((region: any, index: number) => (
-                  <motion.div key={region.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: index * 0.1 }}>
+                  <div key={region.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
                     <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm p-6 h-full">
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
                         <Globe className="w-5 h-5 text-[#6443F4]" aria-hidden="true" />
@@ -1305,7 +1315,7 @@ export default function Homepage() {
                         ))}
                       </ul>
                     </Card>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1339,26 +1349,19 @@ function TraviMascotHelper() {
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 100, scale: 0.8 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-center gap-1"
-      >
-        <motion.button
+      <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-center gap-1 animate-bounce-in">
+        <button
           onClick={() => setIsChatOpen(true)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] p-0.5 sm:p-1 shadow-lg shadow-[#6443F4]/30 overflow-hidden transition-shadow hover:shadow-xl"
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] p-0.5 sm:p-1 shadow-lg shadow-[#6443F4]/30 overflow-hidden transition-all hover:shadow-xl hover:scale-105 active:scale-95"
           aria-label="Open chat with TRAVI assistant"
           title="Chat with TRAVI travel assistant"
         >
           <Mascot size={64} variant="light-bg" />
-        </motion.button>
+        </button>
         <span className="text-[10px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 bg-white/90 dark:bg-slate-800/90 px-2 py-0.5 rounded-full shadow-sm">
           Chat with us
         </span>
-      </motion.div>
+      </div>
 
       <LiveChatWidget isOpen={isChatOpen} onOpenChange={setIsChatOpen} showFloatingButton={false} />
     </>
