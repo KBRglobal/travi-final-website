@@ -158,7 +158,8 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
       />
 
       <main 
-        id="main-contents" 
+        id="main-content" 
+        tabIndex={-1}
         className="min-h-screen bg-transparent"
         data-testid={`destination-page-${data.id}`}
       >
