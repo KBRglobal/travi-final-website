@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   MapPin, ArrowRight, Bed, Camera, Newspaper, BookOpen, 
-  Compass, ChevronDown, Menu, X 
+  Compass, ChevronDown, Menu, X, Heart, Sparkles, Tent, Baby, Wallet, Backpack, Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
@@ -39,6 +40,15 @@ const CATEGORY_CARDS = [
   { id: 2, icon: Camera, title: "Attractions", subtitle: "Must-see places", linkUrl: "/attractions", bgColor: "bg-amber-50 dark:bg-amber-950/30", iconBg: "bg-amber-500" },
   { id: 3, icon: Newspaper, title: "Travel News", subtitle: "Latest updates", linkUrl: "/news", bgColor: "bg-violet-50 dark:bg-violet-950/30", iconBg: "bg-violet-500" },
   { id: 4, icon: BookOpen, title: "Guides", subtitle: "Destination guides", linkUrl: "/guides", bgColor: "bg-indigo-50 dark:bg-indigo-950/30", iconBg: "bg-indigo-500" },
+];
+
+const EXPERIENCE_CATEGORIES = [
+  { id: 1, name: "Luxury Travel", description: "Premium travel experiences and exclusive destinations", slug: "luxury", image: "/experiences/experiences-luxury-resort-infinity-pool.webp", imageAlt: "Luxury resort with infinity pool overlooking ocean", icon: Sparkles, href: "/travel-styles/luxury-travel-complete-guide-2026" },
+  { id: 2, name: "Adventure & Outdoors", description: "Thrilling outdoor experiences and adventures", slug: "adventure", image: "/experiences/experiences-adventure-hiker-mountain-trail-snowy-peaks.webp", imageAlt: "Hiker on mountain trail with snowy peaks", icon: Tent, href: "/travel-styles/adventure-outdoors-complete-guide-2026" },
+  { id: 3, name: "Family Travel", description: "Family-friendly destinations and activities", slug: "family", image: "/experiences/picnic-modern-architecture-outdoor-activity.webp", imageAlt: "Family enjoying outdoor picnic activity", icon: Baby, href: "/travel-styles/family-travel-complete-guide-2026" },
+  { id: 4, name: "Budget Travel", description: "Affordable travel options and destinations", slug: "budget", image: "/experiences/solo-travel-backpack-map-camera-desert-architecture.webp", imageAlt: "Budget travel backpack with map and camera", icon: Wallet, href: "/travel-styles/budget-travel-complete-guide-2026" },
+  { id: 5, name: "Honeymoon & Romance", description: "Romantic getaways and honeymoon destinations", slug: "romance", image: "/experiences/romantic-couple-beach-sunset-modern-architecture.webp", imageAlt: "Romantic couple watching sunset on beach", icon: Heart, href: "/travel-styles/honeymoon-romance-complete-guide-2026" },
+  { id: 6, name: "Solo Travel", description: "Perfect destinations for solo travelers", slug: "solo", image: "/experiences/solo-traveler-canoe-mountain-lake-archway-reflection.webp", imageAlt: "Solo traveler in canoe on peaceful mountain lake", icon: Backpack, href: "/travel-styles/solo-travel-complete-guide-2026" },
 ];
 
 const FAQ_ITEMS = [
@@ -174,7 +184,7 @@ function HeroSection() {
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/ogImage.jpg`} />
-        <link rel="preload" as="image" href="/destinations-hero/dubai/dubai/dubai-hero-burj-khalifa-palms-sunset.webp" />
+        <link rel="preload" as="image" href="/travi-hero-worldwide.jpeg" />
         <script type="application/ld+json">{websiteSchema}</script>
         <script type="application/ld+json">{organizationSchema}</script>
         <script type="application/ld+json">{faqSchema}</script>
@@ -184,9 +194,9 @@ function HeroSection() {
         <div className="flex-1 max-w-xl text-center lg:text-left">
           <div className="mb-6">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white dark:bg-slate-800 shadow-md border border-[#6443F4]/20">
-              <span className="w-2 h-2 rounded-full bg-[#6443F4]" />
+              <Globe className="w-4 h-4 text-[#6443F4]" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Trusted by <span className="text-[#6443F4]">100K+</span> travelers
+                Your Gateway to <span className="text-[#6443F4]">World Adventures</span>
               </span>
             </div>
           </div>
@@ -257,9 +267,9 @@ function HeroSection() {
         <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
           <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
             <img 
-              src="/destinations-hero/dubai/dubai/dubai-hero-burj-khalifa-palms-sunset.webp" 
-              alt="Dubai skyline with Burj Khalifa tower at sunset - explore Dubai travel guide" 
-              title="Dubai Travel Guide - Attractions, Hotels & Things to Do"
+              src="/travi-hero-worldwide.jpeg" 
+              alt="TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more" 
+              title="TRAVI World - Travel Guides for Global Destinations"
               className="w-full h-full object-cover"
               width={600}
               height={750}
@@ -273,11 +283,11 @@ function HeroSection() {
               <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-white" />
+                    <Globe className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <div className="font-bold text-slate-900 dark:text-white">Dubai, UAE</div>
-                    <div className="text-sm text-slate-500">City of Dreams</div>
+                    <div className="font-bold text-slate-900 dark:text-white">Worldwide</div>
+                    <div className="text-sm text-slate-500">Explore the World</div>
                   </div>
                 </div>
               </div>
@@ -395,6 +405,64 @@ function CategoriesSection() {
                   </div>
                 </article>
               </Link>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TravelStylesSection() {
+  return (
+    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900" aria-label="Travel style categories">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+            Find Your Perfect Travel Style
+          </h2>
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            Explore destinations by travel experience
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {EXPERIENCE_CATEGORIES.map((category) => {
+            const IconComponent = category.icon;
+            return (
+              <article key={category.id}>
+                <Link href={category.href} title={`${category.name} - Complete Travel Guide ${CURRENT_YEAR}`}>
+                  <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white dark:bg-slate-800 h-full">
+                    <div className="relative h-40 sm:h-48 overflow-hidden">
+                      {category.image ? (
+                        <img 
+                          src={category.image} 
+                          alt={category.imageAlt} 
+                          title={category.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                          loading="lazy"
+                          width={400}
+                          height={250}
+                          decoding="async"
+                        />
+                      ) : (
+                        <div className="h-full bg-[#6443F4] flex items-center justify-center">
+                          <IconComponent className="w-16 h-16 text-white/90 group-hover:scale-110 transition-transform" aria-hidden="true" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" aria-hidden="true" />
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="text-lg sm:text-xl font-bold text-white mb-1" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{category.name}</h3>
+                        <p className="text-sm text-white/80 line-clamp-2">{category.description}</p>
+                      </div>
+                    </div>
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <span className="text-sm font-medium text-[#6443F4]">Explore guides</span>
+                      <ArrowRight className="w-4 h-4 text-[#6443F4] group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                    </CardContent>
+                  </Card>
+                </Link>
+              </article>
             );
           })}
         </div>
@@ -548,6 +616,7 @@ export default function HomepageFast() {
         <HeroSection />
         <DestinationsSection />
         <CategoriesSection />
+        <TravelStylesSection />
         <FAQSection />
         <NewsletterSectionLite />
       </main>
