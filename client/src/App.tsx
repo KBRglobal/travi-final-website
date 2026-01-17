@@ -1,4 +1,4 @@
-import { useEffect, Suspense, lazy } from "react";
+import { useEffect, Suspense, lazy, useState } from "react";
 import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -23,7 +23,8 @@ import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 
 // Lazy load all pages for better performance
-const Homepage = lazy(() => import("@/pages/homepage"));
+// Use fast homepage for performance (static hero, no framer-motion)
+const Homepage = lazy(() => import("@/pages/homepage-fast"));
 const Attractions = lazy(() => import("@/pages/attractions"));
 const HotelsPage = lazy(() => import("@/pages/hotels"));
 const HotelDetail = lazy(() => import("@/pages/hotel-detail"));
@@ -188,14 +189,25 @@ const TestPage = lazy(() => import("@/pages/test"));
 import * as Components from "@/routes/lazy-imports";
 
 
-// Eager load AI Assistant as it's critical UI
-import { AIAssistant } from "@/components/ai-assistant";
-import { CommandPalette, useCommandPalette } from "@/components/command-palette";
-import { KeyboardShortcuts, useKeyboardShortcuts } from "@/components/keyboard-shortcuts";
-import { NotificationsCenter } from "@/components/notifications-center";
-import { MultiTabProvider, EditorTabBar, TabCountBadge } from "@/components/multi-tab-editor";
-import { ContentExpiryAlerts } from "@/components/content-expiry-alerts";
+// Lazy load admin-only components for better public page performance
+const AIAssistant = lazy(() => import("@/components/ai-assistant").then(m => ({ default: m.AIAssistant })));
+const CommandPalette = lazy(() => import("@/components/command-palette").then(m => ({ default: m.CommandPalette })));
+const KeyboardShortcuts = lazy(() => import("@/components/keyboard-shortcuts").then(m => ({ default: m.KeyboardShortcuts })));
+const NotificationsCenter = lazy(() => import("@/components/notifications-center").then(m => ({ default: m.NotificationsCenter })));
+const MultiTabProvider = lazy(() => import("@/components/multi-tab-editor").then(m => ({ default: m.MultiTabProvider })));
+const EditorTabBar = lazy(() => import("@/components/multi-tab-editor").then(m => ({ default: m.EditorTabBar })));
+const TabCountBadge = lazy(() => import("@/components/multi-tab-editor").then(m => ({ default: m.TabCountBadge })));
+const ContentExpiryAlerts = lazy(() => import("@/components/content-expiry-alerts").then(m => ({ default: m.ContentExpiryAlerts })));
 import { ErrorBoundary } from "@/components/error-boundary";
+// Hooks for admin command palette/shortcuts - only imported when used in AdminLayout
+const useCommandPaletteHook = () => {
+  const [open, setOpen] = useState(false);
+  return { open, setOpen };
+};
+const useKeyboardShortcutsHook = () => {
+  const [open, setOpen] = useState(false);
+  return { open, setOpen };
+};
 
 // Loading fallback component
 function PageLoader() {
@@ -438,8 +450,8 @@ function AdminRouter() {
 
 function AdminLayout() {
   const { user, isLoading, isAuthenticated } = useAuth();
-  const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
-  const { open: shortcutsOpen, setOpen: setShortcutsOpen } = useKeyboardShortcuts();
+  const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPaletteHook();
+  const { open: shortcutsOpen, setOpen: setShortcutsOpen } = useKeyboardShortcutsHook();
   const style = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",

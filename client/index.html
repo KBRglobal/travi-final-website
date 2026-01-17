@@ -106,14 +106,23 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
     <!-- Travelpayouts Affiliate Verification Script -->
-    <!-- Required for affiliate program verification - loads on all pages -->
-    <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
-      (function () {
-          var script = document.createElement("script");
-          script.async = 1;
-          script.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
-          document.head.appendChild(script);
-      })();
+    <!-- Deferred for performance - loads after page interactive -->
+    <script>
+      if (typeof requestIdleCallback !== 'undefined') {
+        requestIdleCallback(function() {
+          var s = document.createElement("script");
+          s.async = 1;
+          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
+          document.head.appendChild(s);
+        });
+      } else {
+        setTimeout(function() {
+          var s = document.createElement("script");
+          s.async = 1;
+          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
+          document.head.appendChild(s);
+        }, 2000);
+      }
     </script>
   </head>
   <body>
