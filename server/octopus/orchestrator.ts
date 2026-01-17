@@ -1262,7 +1262,7 @@ export async function startProcessingJobFromFile(
   const fs = await import('fs');
   const path = await import('path');
 
-  const buffer = fs.readFileSync(filePath);
+  const buffer = await fs.promises.readFile(filePath);
   const filename = path.basename(filePath);
   const ext = path.extname(filePath).toLowerCase();
 
