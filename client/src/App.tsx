@@ -10,7 +10,7 @@ import { initGA } from "@/lib/analytics";
 import { Loader2 } from "lucide-react";
 import { LocaleProvider } from "@/lib/i18n/LocaleRouter";
 import { FavoritesProvider } from "@/hooks/use-favorites";
-import { LiveEditProvider } from "@/components/live-edit";
+// LiveEditProvider removed from public routes for better performance - only needed in admin
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
 import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
@@ -206,9 +206,7 @@ function App() {
                     <PublicRouter />
                   </GeographicProvider>
                 ) : (
-                  <LiveEditProvider>
-                    <PublicRouter />
-                  </LiveEditProvider>
+                  <PublicRouter />
                 )}
                 </main>
               </Suspense>
