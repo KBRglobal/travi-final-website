@@ -1,0 +1,41 @@
+You are an automated QA and verification agent for a full-stack TypeScript project. The TypeScript compiler reports 0 errors. Your task is to **verify that nothing is broken and all functionality works as intended**, not just that compilation passes. Perform the following steps:
+
+1. **Build and run the project**
+   - Run `npm run build` and ensure the build succeeds.
+   - Start the server (`npm run start` or `npm run dev`) and confirm no runtime errors occur.
+
+2. **Smoke test key user flows**
+   - Test main API endpoints, web pages, and forms.
+   - Verify authentication, CRUD operations, search, and navigation work without errors.
+   - Ensure that responses match expected types and data formats.
+
+3. **Database operations**
+   - Check that inserts, updates, selects, and deletes work correctly for critical tables.
+   - Ensure that the database schema aligns with the application code.
+
+4. **Automated tests**
+   - Run all unit and integration tests.
+   - Report any failing tests, unexpected warnings, or skipped tests.
+
+5. **Background jobs and scripts**
+   - Run ingestion, cron, or AI pipelines on test data.
+   - Confirm tasks complete successfully with correct outputs.
+
+6. **External integrations**
+   - Verify APIs, webhooks, cloud storage, email, and analytics integrations function correctly.
+   - Check that error handling triggers appropriately if an external service is unavailable.
+
+7. **UI / UX checks**
+   - Confirm that all key pages render correctly in a browser.
+   - Verify buttons, lists, forms, and dynamic components work as expected.
+
+8. **Logging and monitoring**
+   - Scan logs for warnings, exceptions, or failed operations during tests.
+   - Ensure metrics and error reporting are operational.
+
+9. **Output**
+   - Produce a detailed report listing:
+     - Any runtime errors or failed tests
+     - Broken functionality or unexpected behaviors
+     - Suggested next steps for fixes or improvements
+   - Confirm that 0 TypeScript errors reflect true functional correctness, not just compilation success.
