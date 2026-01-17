@@ -1,68 +1,81 @@
-# TRAVI.world - Frontend Pages Audit
-> Last Updated: January 2026
-
-## Summary
-Total Routes Analyzed: 80+
-Working Public Pages: ~50
-Pages to Exclude from Sitemap: ~15
-Dynamic Pages: 3,400+
+# TRAVI.world - Frontend Pages Complete Audit
+> Last Updated: January 17, 2026
+> Generated from: `client/src/routes/index.ts`, `client/src/routes/lazy-imports.ts`, `client/src/pages/`
 
 ---
 
-## Page Classification Legend
+## Summary Statistics
 
-| Status | Meaning | Sitemap | Index |
-|--------|---------|---------|-------|
-| ✅ PUBLIC | Working, public-facing | YES | YES |
-| ⚠️ BROKEN | Route exists but page broken | NO | NO |
-| 🔒 AUTH | Requires authentication | NO | NO |
-| 🔧 INTERNAL | Internal/dev tool | NO | NO |
-| 🔄 REDIRECT | Redirects to another page | NO | NO |
-| 📝 ALIAS | Alternate URL for same page | OPTIONAL | YES (with canonical) |
+| Metric | Count |
+|--------|-------|
+| Total Page Files | 161 |
+| Public Routes Defined | 46 |
+| Admin Routes | ~90 |
+| Working Public Pages | ~50 |
+| Pages Excluded from Sitemap | ~15 |
+| Dynamic Attraction Pages | 3,408 |
+| Commented/Not Implemented | ~40 |
 
 ---
 
-## 1. CORE PAGES
+## Classification Legend
 
-| Path | Status | Component | Notes |
-|------|--------|-----------|-------|
-| `/` | ✅ PUBLIC | Homepage | Main landing page |
-| `/destinations` | ✅ PUBLIC | DestinationsLanding | Destinations hub |
-| `/attractions` | ✅ PUBLIC | Attractions | Attractions hub |
-| `/hotels` | ✅ PUBLIC | HotelsPage | Hotels hub |
-| `/dining` | ✅ PUBLIC | PublicDining | Dining hub |
-| `/articles` | ✅ PUBLIC | PublicArticles | Articles hub |
-| `/events` | ✅ PUBLIC | PublicEvents | Events hub |
-| `/news` | ✅ PUBLIC | PublicNews | News hub |
-| `/shopping` | ✅ PUBLIC | PublicShopping | Shopping hub |
-| `/glossary` | ✅ PUBLIC | GlossaryHub | Glossary hub |
+| Status | Meaning | Sitemap | noIndex |
+|--------|---------|---------|---------|
+| ✅ PUBLIC | Working, public-facing | YES | NO |
+| ⚠️ BROKEN | Route exists but broken | NO | YES |
+| 🔒 AUTH | Requires authentication | NO | YES |
+| 🔧 INTERNAL | Internal/dev tool | NO | YES |
+| 🔄 REDIRECT | Redirects to another page | NO | - |
+| 📝 ALIAS | Alternate URL for same page | OPTIONAL | NO (canonical) |
+| 🛠️ ADMIN | Admin panel pages | NO | YES |
+| ⏸️ NOT IMPL | Commented out/not implemented | NO | - |
+
+---
+
+## 1. CORE PUBLIC PAGES
+
+### Main Hubs
+| Path | Component File | Status | Notes |
+|------|----------------|--------|-------|
+| `/` | `homepage.tsx` | ✅ PUBLIC | Main landing page |
+| `/destinations` | `destinations.tsx` | ✅ PUBLIC | Destinations hub |
+| `/attractions` | `attractions.tsx` | ✅ PUBLIC | Attractions hub |
+| `/hotels` | `hotels.tsx` | ✅ PUBLIC | Hotels hub |
+| `/dining` | `global-dining.tsx` | ✅ PUBLIC | Dining hub |
+| `/articles` | `public-articles.tsx` | ✅ PUBLIC | Articles hub |
+| `/events` | `public-events.tsx` | ✅ PUBLIC | Events hub |
+| `/news` | `public-news.tsx` | ✅ PUBLIC | News hub |
+| `/shopping` | `public-shopping.tsx` | ✅ PUBLIC | Shopping hub |
+| `/glossary` | `glossary-hub.tsx` | ✅ PUBLIC | Glossary hub |
 
 ---
 
 ## 2. SEARCH PAGE
 
-| Path | Status | Component | Notes |
-|------|--------|-----------|-------|
-| `/search` | 🔧 INTERNAL | PublicSearch | Legacy Dubai search - shows "Search Dubai" - EXCLUDE from sitemap |
+| Path | Component File | Status | Sitemap | noIndex |
+|------|----------------|--------|---------|---------|
+| `/search` | `public-search.tsx` | 🔧 INTERNAL | ❌ REMOVED | ✅ ADDED |
 
-**Action Required:** Remove from sitemap, add noindex
+**Notes:** Legacy Dubai search - shows "Search Dubai" - internal use only
 
 ---
 
 ## 3. HELP CENTER
 
-| Path | Status | Component | Notes |
-|------|--------|-----------|-------|
-| `/help` | ⚠️ BROKEN | HelpCenterPublic | Shows "Help center is currently unavailable" |
-| `/help/:slug` | ⚠️ BROKEN | HelpCategory | Depends on /help |
-| `/help/:categorySlug/:articleSlug` | ⚠️ BROKEN | HelpArticle | Depends on /help |
+| Path | Component File | Status | Sitemap | noIndex |
+|------|----------------|--------|---------|---------|
+| `/help` | `help/index.tsx` | ⚠️ BROKEN | ❌ REMOVED | ✅ ADDED |
+| `/help/:slug` | `help/category.tsx` | ⚠️ BROKEN | ❌ REMOVED | - |
+| `/help/:categorySlug/:articleSlug` | `help/article.tsx` | ⚠️ BROKEN | ❌ REMOVED | - |
 
-**Action Required:** Remove all /help routes from sitemap until fixed
+**Notes:** Shows "Help center is currently unavailable" - all routes broken
 
 ---
 
-## 4. DESTINATION PAGES (16 Cities)
+## 4. DESTINATION PAGES
 
+### 16 Active Cities
 | Path | Status | Notes |
 |------|--------|-------|
 | `/destinations/dubai` | ✅ PUBLIC | Main destination |
@@ -83,8 +96,7 @@ Dynamic Pages: 3,400+
 | `/destinations/rome` | ✅ PUBLIC | |
 | `/destinations/ras-al-khaimah` | ✅ PUBLIC | Special RAK page |
 
-### Destination Redirects (Do NOT include in sitemap)
-
+### Destination Redirects (NOT in Sitemap)
 | Path | Status | Redirects To |
 |------|--------|--------------|
 | `/bangkok` | 🔄 REDIRECT | /destinations/bangkok |
@@ -98,206 +110,432 @@ Dynamic Pages: 3,400+
 
 ## 5. ATTRACTION PAGES
 
-### Static Pages
-| Path | Status | Notes |
-|------|--------|-------|
-| `/attractions` | ✅ PUBLIC | Main attractions hub |
-| `/attractions/list/:destination` | ✅ PUBLIC | Per-city attraction lists (16 cities) |
+### Static Routes
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/attractions` | `attractions.tsx` | ✅ PUBLIC |
+| `/attractions/list/:destination` | `destination-attractions.tsx` | ✅ PUBLIC |
 
-### Dynamic Pages (3,408 from Tiqets)
-| Path Pattern | Status | Notes |
-|--------------|--------|-------|
-| `/attractions/:seoSlug` | ✅ PUBLIC | Main canonical URL for attractions |
-| `/attractions/:city/:slug` | 📝 ALIAS | Alternative URL format |
-| `/:destination/attractions/:slug` | 📝 ALIAS | Alternative URL format |
-| `/attractions/:destination/:attractionId` | 📝 ALIAS | Alternative URL format |
-
-**Recommendation:** Only include `/attractions/:seoSlug` in sitemap (canonical URL)
+### Dynamic Routes (3,408 Tiqets Attractions)
+| Path Pattern | Component File | Status | Notes |
+|--------------|----------------|--------|-------|
+| `/attractions/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC | Canonical URL |
+| `/attractions/:seoSlug` | `public-content-viewer.tsx` | ✅ PUBLIC | SEO-optimized slug |
 
 ---
 
-## 6. GUIDES & TRAVEL CONTENT
+## 6. HOTELS
+
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/hotels` | `hotels.tsx` | ✅ PUBLIC |
+| `/hotels/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
+
+---
+
+## 7. DINING
+
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/dining` | `global-dining.tsx` | ✅ PUBLIC |
+| `/dining/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
+
+---
+
+## 8. ARTICLES & EVENTS
+
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/articles` | `public-articles.tsx` | ✅ PUBLIC |
+| `/articles/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
+| `/events` | `public-events.tsx` | ✅ PUBLIC |
+| `/events/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
+
+---
+
+## 9. TRANSPORT
+
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/transport/:slug` | `public-content-viewer.tsx` | ✅ PUBLIC |
+
+---
+
+## 10. GUIDES & TRAVEL CONTENT
 
 ### Guide Hub
-| Path | Status | Notes |
-|------|--------|-------|
-| `/guides` | ✅ PUBLIC | Guides hub page |
-| `/travel-guides` | 📝 ALIAS | Alias for /guides |
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/guides` | `global-guides.tsx` | ✅ PUBLIC |
+| `/travel-guides` | `travel-guides.tsx` | 📝 ALIAS |
 
 ### RAK Guides (6 Implemented)
-| Path | Status | Notes |
-|------|--------|-------|
-| `/guides/wynn-al-marjan-island` | ✅ PUBLIC | Wynn casino guide |
-| `/guides/jebel-jais-adventure` | ✅ PUBLIC | Mountain adventure guide |
-| `/guides/dubai-to-rak-transport` | ✅ PUBLIC | Transport guide |
-| `/guides/dubai-vs-rak` | ✅ PUBLIC | Comparison guide |
-| `/guides/where-to-stay-rak` | ✅ PUBLIC | Accommodation guide |
-| `/guides/rak-real-estate-investment` | ✅ PUBLIC | Investment guide |
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/guides/wynn-al-marjan-island` | `public/guides/wynn-al-marjan-guide.tsx` | ✅ PUBLIC |
+| `/guides/jebel-jais-adventure` | `public/guides/jebel-jais-adventure-guide.tsx` | ✅ PUBLIC |
+| `/guides/dubai-to-rak-transport` | `public/guides/dubai-to-rak-transport.tsx` | ✅ PUBLIC |
+| `/guides/dubai-vs-rak` | `public/guides/dubai-vs-rak-comparison.tsx` | ✅ PUBLIC |
+| `/guides/where-to-stay-rak` | `public/guides/where-to-stay-rak.tsx` | ✅ PUBLIC |
+| `/guides/rak-real-estate-investment` | `public/guides/rak-real-estate-investment.tsx` | ✅ PUBLIC |
 
 ### Dynamic Guides
-| Path | Status | Notes |
-|------|--------|-------|
-| `/guides/:slug` | ✅ PUBLIC | Dynamic guide pages (DB-driven) |
-| `/travel-styles/:slug` | ✅ PUBLIC | Travel style articles |
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/guides/:slug` | `guide-detail.tsx` | ✅ PUBLIC |
+| `/travel-styles/:slug` | `travel-style-article.tsx` | ✅ PUBLIC |
 
 ---
 
-## 7. HOTELS
+## 11. OFF-PLAN REAL ESTATE
 
-| Path | Status | Notes |
-|------|--------|-------|
-| `/hotels` | ✅ PUBLIC | Hotels hub |
-| `/hotels/:hotelId` | ✅ PUBLIC | Hotel detail by ID |
-| `/hotels/:slug` | ✅ PUBLIC | Hotel detail by slug |
+### Active Pages
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/dubai-real-estate` | `public-off-plan.tsx` | ✅ PUBLIC |
+| `/dubai-off-plan-properties` | `public-off-plan.tsx` | ✅ PUBLIC |
+
+### NOT Implemented (Commented Out in routes/index.ts)
+- `/dubai-off-plan-investment-guide`
+- `/how-to-buy-dubai-off-plan`
+- `/dubai-off-plan-payment-plans`
+- `/best-off-plan-projects-dubai-2026`
+- `/dubai-off-plan-business-bay`
+- `/dubai-off-plan-marina`
+- `/dubai-off-plan-jvc`
+- `/dubai-off-plan-palm-jumeirah`
+- `/dubai-off-plan-creek-harbour`
+- `/dubai-off-plan-al-furjan`
+- `/dubai-off-plan-villas`
+- `/off-plan-emaar`
+- `/off-plan-damac`
+- `/off-plan-nakheel`
+- `/off-plan-meraas`
+- `/off-plan-sobha`
+- `/off-plan-crypto-payments`
+- `/off-plan-usdt`
+- `/off-plan-golden-visa`
+- `/off-plan-post-handover`
+- `/off-plan-escrow`
+- `/off-plan-vs-ready`
 
 ---
 
-## 8. OFF-PLAN REAL ESTATE
-
-| Path | Status | Notes |
-|------|--------|-------|
-| `/dubai-real-estate` | ✅ PUBLIC | Real estate hub |
-| `/dubai-off-plan-properties` | ✅ PUBLIC | Off-plan properties |
-
-### NOT Implemented (Commented Out)
-- /dubai-off-plan-investment-guide
-- /how-to-buy-dubai-off-plan
-- /dubai-off-plan-payment-plans
-- /best-off-plan-projects-dubai-2026
-- All area-specific off-plan pages
-- All developer-specific pages
-
----
-
-## 9. LEGAL PAGES
+## 12. LEGAL PAGES
 
 ### Canonical URLs
-| Path | Status | Notes |
-|------|--------|-------|
-| `/privacy` | ✅ PUBLIC | Privacy policy |
-| `/terms` | ✅ PUBLIC | Terms & conditions |
-| `/cookies` | ✅ PUBLIC | Cookie policy |
-| `/security` | ✅ PUBLIC | Security policy |
-| `/affiliate-disclosure` | ✅ PUBLIC | Affiliate disclosure |
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/privacy` | `privacy.tsx` | ✅ PUBLIC |
+| `/terms` | `terms.tsx` | ✅ PUBLIC |
+| `/cookies` | `cookies.tsx` | ✅ PUBLIC |
+| `/security` | `security.tsx` | ✅ PUBLIC |
+| `/affiliate-disclosure` | `affiliate-disclosure.tsx` | ✅ PUBLIC |
 
-### Alias URLs (Same content, different URL)
-| Path | Status | Canonical |
-|------|--------|-----------|
-| `/privacy-policy` | 📝 ALIAS | /privacy |
-| `/terms-conditions` | 📝 ALIAS | /terms |
-| `/cookie-policy` | 📝 ALIAS | /cookies |
-
-**Recommendation:** Include aliases in sitemap with rel=canonical pointing to main URL
+### Alias URLs
+| Path | Canonical | Status |
+|------|-----------|--------|
+| `/privacy-policy` | `/privacy` | 📝 ALIAS |
+| `/terms-conditions` | `/terms` | 📝 ALIAS |
+| `/cookie-policy` | `/cookies` | 📝 ALIAS |
 
 ---
 
-## 10. ABOUT & CONTACT
+## 13. ABOUT & CONTACT
 
-| Path | Status | Notes |
-|------|--------|-------|
-| `/about` | ✅ PUBLIC | About page |
-| `/contact` | ✅ PUBLIC | Contact page |
-
----
-
-## 11. PARTNERS
-
-| Path | Status | Notes |
-|------|--------|-------|
-| `/partners/join` | ✅ PUBLIC | Partner signup |
-| `/partners/dashboard` | 🔒 AUTH | Partner dashboard - requires login |
+| Path | Component File | Status |
+|------|----------------|--------|
+| `/about` | `about.tsx` | ✅ PUBLIC |
+| `/contact` | `contact.tsx` | ✅ PUBLIC |
 
 ---
 
-## 12. DOCUMENTATION
+## 14. PARTNERS / REFERRAL
 
-| Path | Status | Notes |
-|------|--------|-------|
-| `/docs` | 🔧 INTERNAL | API/Dev documentation |
-| `/docs/:path*` | 🔧 INTERNAL | Doc subpages |
-
-**Action Required:** Remove from sitemap, add noindex
+| Path | Component File | Status | Sitemap | noIndex |
+|------|----------------|--------|---------|---------|
+| `/partners/join` | `partners-join.tsx` | ✅ PUBLIC | YES | NO |
+| `/partners/dashboard` | `partners-dashboard.tsx` | 🔒 AUTH | NO | ✅ ADDED |
 
 ---
 
-## 13. AUTHENTICATION & UTILITY
+## 15. SURVEYS
 
-| Path | Status | Notes |
-|------|--------|-------|
-| `/login` | 🔒 AUTH | Login page |
-| `/access-denied` | 🔧 INTERNAL | Access denied error |
-| `/test` | 🔧 INTERNAL | Test page |
-| `/coming-soon` | 🔧 INTERNAL | Coming soon placeholder |
-
-**Action Required:** Remove all from sitemap, add noindex
+| Path | Component File | Status | Sitemap | noIndex |
+|------|----------------|--------|---------|---------|
+| `/survey/:slug` | `public-survey.tsx` | 🔧 INTERNAL | NO | ✅ ADDED |
 
 ---
 
-## 14. SURVEYS
+## 16. AUTHENTICATION & UTILITY PAGES
 
-| Path | Status | Notes |
-|------|--------|-------|
-| `/survey/:slug` | 🔧 INTERNAL | Survey pages - internal |
-
-**Action Required:** Remove from sitemap
-
----
-
-## 15. DYNAMIC CONTENT PAGES
-
-| Path | Status | Notes |
-|------|--------|-------|
-| `/articles/:slug` | ✅ PUBLIC | Article detail |
-| `/events/:slug` | ✅ PUBLIC | Event detail |
-| `/dining/:slug` | ✅ PUBLIC | Dining/restaurant detail |
-| `/transport/:slug` | ✅ PUBLIC | Transport info |
+| Path | Component File | Status | Sitemap | noIndex |
+|------|----------------|--------|---------|---------|
+| `/login` | `login.tsx` | 🔒 AUTH | ❌ REMOVED | ✅ ADDED |
+| `/access-denied` | `access-denied.tsx` | 🔧 INTERNAL | ❌ REMOVED | ✅ ADDED |
+| `/coming-soon` | - | 🔧 INTERNAL | NO | - |
+| `/test` | `test.tsx` | 🔧 INTERNAL | ❌ REMOVED | ✅ ADDED |
 
 ---
 
-## 16. LOCALIZED ROUTES
+## 17. DOCUMENTATION
 
-All public routes are duplicated with locale prefixes:
-- `/ar/...` (Arabic)
-- `/he/...` (Hebrew)
-- `/zh/...` (Chinese)
-- etc.
-
-**Current Status:** Only English (`/en` or no prefix) is active. All other locales blocked in robots.txt.
+| Path | Component File | Status | Sitemap | noIndex |
+|------|----------------|--------|---------|---------|
+| `/docs` | `public-docs.tsx` | 🔧 INTERNAL | ❌ REMOVED | ✅ ADDED |
+| `/docs/:path*` | `public-docs.tsx` | 🔧 INTERNAL | ❌ REMOVED | ✅ ADDED |
 
 ---
 
-## SITEMAP CLEANUP ACTIONS
+## 18. NOT IMPLEMENTED ROUTES (Commented Out)
 
-### REMOVE from Sitemap:
-1. `/search` - Legacy internal search
-2. `/help` - Broken
-3. `/help/:slug` - Broken (depends on /help)
-4. `/help/:categorySlug/:articleSlug` - Broken
-5. `/docs` - Internal documentation
-6. `/docs/:path*` - Internal documentation
-7. `/test` - Test page
-8. `/login` - Auth page
-9. `/access-denied` - Error page
-10. `/coming-soon` - Placeholder
-11. `/partners/dashboard` - Auth required
-12. `/survey/:slug` - Internal surveys
-13. All destination redirects (`/bangkok`, `/paris`, etc.)
+### Comparison Pages
+- `/compare-off-plan-vs-ready`
+- `/compare-jvc-vs-dubai-south`
+- `/compare-emaar-vs-damac`
+- `/compare-downtown-vs-marina`
+- `/compare-60-40-vs-80-20`
+- `/compare-sobha-vs-meraas`
+- `/compare-crypto-vs-bank-transfer`
+- `/compare-business-bay-vs-jlt`
+- `/compare-new-vs-resale`
+- `/compare-nakheel-vs-azizi`
+- `/compare-villa-vs-apartment`
+- `/compare-studio-vs-1bed`
 
-### KEEP in Sitemap:
-1. Homepage
-2. All category hubs (destinations, attractions, hotels, etc.)
-3. All 17 destination pages
-4. All 16 attraction list pages
-5. All 3,408 attraction detail pages
-6. All 7 guide pages
-7. Legal pages (both canonical and aliases)
-8. About, Contact
-9. Partners join page
-10. Dynamic content (articles, events, dining, transport) from DB
+### Tools
+- `/tools-roi-calculator`
+- `/tools-payment-calculator`
+- `/tools-affordability-calculator`
+- `/tools-currency-converter`
+- `/tools-fees-calculator`
+- `/tools-rental-yield-calculator`
+- `/tools-mortgage-calculator`
+
+### Case Studies
+- `/case-study-jvc-investor`
+- `/case-study-crypto-buyer`
+- `/case-study-golden-visa`
+- `/case-study-expat-family`
+- `/case-study-investor-flip`
+- `/case-study-portfolio-diversification`
+- `/case-study-off-plan-launch`
+- `/case-study-retirement-planning`
+
+### Pillar Pages
+- `/dubai-roi-rental-yields`
+- `/dubai-legal-security-guide`
+
+### Landing Pages
+- `/dubai/free-things-to-do`
+- `/dubai/laws-for-tourists`
+- `/dubai/sheikh-mohammed-bin-rashid`
+- `/dubai/24-hours-open`
+
+### Districts
+- `/districts`
+- `/districts/downtown-dubai`
+- `/districts/dubai-marina`
+- `/districts/jbr-jumeirah-beach-residence`
+- `/districts/palm-jumeirah`
+- `/districts/jumeirah`
+- `/districts/business-bay`
+- `/districts/old-dubai`
+- `/districts/dubai-creek-harbour`
+- `/districts/dubai-south`
+- `/districts/al-barsha`
+- `/districts/difc`
+- `/districts/dubai-hills-estate`
+- `/districts/jvc`
+- `/districts/bluewaters-island`
+- `/districts/international-city`
+- `/districts/al-karama`
 
 ---
 
-## ESTIMATED FINAL SITEMAP COUNT
+## 19. ADMIN PAGES (90+ Pages)
+
+All admin pages are under `/admin/*` and require authentication.
+**Sitemap:** NO | **noIndex:** YES (implicit - not public)
+
+### Content Management
+| Path | Component File |
+|------|----------------|
+| `/admin` | `dashboard.tsx` |
+| `/admin/content` | `content-list.tsx` |
+| `/admin/content/:id` | `content-editor.tsx` |
+| `/admin/content/:id/versions` | - |
+| `/admin/ai-article` | `ai-article-generator.tsx` |
+| `/admin/topic-bank` | `topic-bank.tsx` |
+| `/admin/keywords` | `keywords.tsx` |
+| `/admin/clusters` | `clusters.tsx` |
+| `/admin/tags` | `tags.tsx` |
+| `/admin/templates` | `content-templates.tsx` |
+| `/admin/calendar` | `admin/Calendar.tsx` |
+
+### RSS & Affiliate
+| Path | Component File |
+|------|----------------|
+| `/admin/rss` | `rss-feeds.tsx` |
+| `/admin/affiliate-links` | `affiliate-links.tsx` |
+
+### Media & Images
+| Path | Component File |
+|------|----------------|
+| `/admin/media` | `media-library.tsx` |
+| `/admin/image-engine` | `admin-image-engine.tsx` |
+
+### Destinations
+| Path | Component File |
+|------|----------------|
+| `/admin/destinations` | `admin/destinations/destinations-list.tsx` |
+| `/admin/destinations/:id` | `admin/destinations/destination-hub.tsx` |
+| `/admin/destination-intelligence` | `admin/destination-intelligence.tsx` |
+
+### Tiqets Integration
+| Path | Component File |
+|------|----------------|
+| `/admin/tiqets` | `admin/tiqets/dashboard.tsx` |
+| `/admin/tiqets/destinations` | `admin/tiqets/destinations.tsx` |
+| `/admin/tiqets/integrations` | `admin/tiqets/integrations.tsx` |
+| `/admin/tiqets/configuration` | `admin/tiqets/configuration.tsx` |
+| `/admin/tiqets/content-quality` | `admin/tiqets/content-quality.tsx` |
+| `/admin/tiqets/attraction/:id` | `admin/tiqets/attraction-detail.tsx` |
+
+### TRAVI Content Engine
+| Path | Component File |
+|------|----------------|
+| `/admin/travi` | `admin/travi/locations-list.tsx` |
+| `/admin/travi/edit/:id` | `admin/travi/location-edit.tsx` |
+| `/admin/travi/preview/:id` | `admin/travi/location-preview.tsx` |
+| `/admin/travi/configuration` | `admin/travi/configuration.tsx` |
+| `/admin/travi/data-collection` | `admin/travi/data-collection.tsx` |
+| `/admin/travi/api-keys` | `admin/travi/api-keys.tsx` |
+
+### SEO & Analytics
+| Path | Component File |
+|------|----------------|
+| `/admin/seo-audit` | `seo-audit.tsx` |
+| `/admin/seo-engine` | `admin/seo-engine/index.tsx` |
+| `/admin/analytics` | `analytics.tsx` |
+| `/admin/aeo` | `admin/aeo-dashboard.tsx` |
+| `/admin/growth` | `admin/growth-dashboard.tsx` |
+| `/admin/intelligence` | `admin/IntelligenceDashboard.tsx` |
+
+### Site Configuration
+| Path | Component File |
+|------|----------------|
+| `/admin/settings` | `settings.tsx` |
+| `/admin/site-settings` | `admin/site-settings.tsx` |
+| `/admin/navigation` | `admin/navigation-manager.tsx` |
+| `/admin/footer` | `admin/footer-manager.tsx` |
+| `/admin/homepage` | `admin/homepage-editor.tsx` |
+| `/admin/homepage-promotions` | `homepage-promotions.tsx` |
+| `/admin/static-pages` | `admin/static-pages.tsx` |
+| `/admin/static-pages/:id` | `admin/static-page-editor.tsx` |
+| `/admin/page-builder` | `admin/page-builder.tsx` |
+
+### Monetization
+| Path | Component File |
+|------|----------------|
+| `/admin/premium` | `admin/monetization/premium-content.tsx` |
+| `/admin/listings` | `admin/monetization/business-listings.tsx` |
+| `/admin/leads` | `admin/monetization/lead-management.tsx` |
+| `/admin/affiliate-dashboard` | `admin/monetization/affiliate-dashboard.tsx` |
+| `/admin/referrals` | `admin/referrals.tsx` |
+
+### Enterprise
+| Path | Component File |
+|------|----------------|
+| `/admin/teams` | `admin/enterprise/teams.tsx` |
+| `/admin/workflows` | `admin/enterprise/workflows.tsx` |
+| `/admin/webhooks` | `admin/enterprise/webhooks.tsx` |
+| `/admin/activity` | `admin/enterprise/activity-feed.tsx` |
+
+### Governance
+| Path | Component File |
+|------|----------------|
+| `/admin/governance` | `admin/governance/index.tsx` |
+| `/admin/governance/roles` | `admin/governance/roles.tsx` |
+| `/admin/governance/users` | `admin/governance/users.tsx` |
+| `/admin/governance/policies` | `admin/governance/policies.tsx` |
+| `/admin/governance/approvals` | `admin/governance/approvals.tsx` |
+| `/admin/governance/audit` | `admin/governance/audit.tsx` |
+
+### Operations
+| Path | Component File |
+|------|----------------|
+| `/admin/operations` | `admin/operations-dashboard.tsx` |
+| `/admin/system-health` | `admin/system-health.tsx` |
+| `/admin/security` | `admin/security.tsx` |
+| `/admin/logs` | `admin-logs.tsx` |
+| `/admin/audit-logs` | `audit-logs.tsx` |
+| `/admin/console` | `admin/console.tsx` |
+
+### Other Admin
+| Path | Component File |
+|------|----------------|
+| `/admin/users` | `users.tsx` |
+| `/admin/newsletter` | `newsletter-subscribers.tsx` |
+| `/admin/campaigns` | `campaigns.tsx` |
+| `/admin/translations` | `translations.tsx` |
+| `/admin/help` | `admin/help/index.tsx` |
+| `/admin/help/article/:id` | `admin/help/article-editor.tsx` |
+| `/admin/surveys` | `surveys.tsx` |
+| `/admin/surveys/:id` | `survey-builder.tsx` |
+| `/admin/surveys/:id/responses` | `survey-responses.tsx` |
+| `/admin/social` | `admin/social/social-dashboard.tsx` |
+| `/admin/auto-pilot` | `admin/auto-pilot.tsx` |
+| `/admin/octopus` | `admin/octopus-dashboard.tsx` |
+| `/admin/qa` | `admin/qa-dashboard.tsx` |
+| `/admin/alerts` | `admin/alerts.tsx` |
+
+---
+
+## 20. LOCALIZED ROUTES
+
+All public routes support 16 locale prefixes:
+- Tier 1: `ar`, `hi`
+- Tier 2: `zh`, `ru`, `ur`, `fr`
+- Tier 3: `de`, `fa`, `bn`, `fil`
+- Tier 4: `es`, `tr`, `it`, `ja`, `ko`, `he`
+
+**Current Status:** Only English (no prefix or `/en`) is active. Other locales blocked in robots.txt.
+
+---
+
+## SITEMAP STATUS SUMMARY
+
+### Excluded from Sitemap ❌
+| Route | Reason |
+|-------|--------|
+| `/search` | Legacy internal |
+| `/help` (all routes) | Broken |
+| `/docs` (all routes) | Internal |
+| `/test` | Internal |
+| `/login` | Auth |
+| `/access-denied` | Internal |
+| `/coming-soon` | Internal |
+| `/partners/dashboard` | Auth required |
+| `/survey/:slug` | Internal |
+| `/admin/*` | Admin (100+ routes) |
+| All destination redirects | Redirects |
+
+### noIndex Added ✅
+| Route | File |
+|-------|------|
+| `/search` | `public-search.tsx` |
+| `/help` | `help/index.tsx` |
+| `/login` | `login.tsx` |
+| `/access-denied` | `access-denied.tsx` |
+| `/docs` | `public-docs.tsx` |
+| `/test` | `test.tsx` |
+| `/partners/dashboard` | `partners-dashboard.tsx` |
+| `/survey/:slug` | `public-survey.tsx` |
+
+---
+
+## ESTIMATED SITEMAP COUNT
 
 | Category | Count |
 |----------|-------|
@@ -307,8 +545,209 @@ All public routes are duplicated with locale prefixes:
 | Attraction List Pages | 16 |
 | Guide Pages | 7 |
 | Legal Pages | 8 |
-| About/Contact/Partners | 3 |
+| About/Contact/Partners Join | 3 |
 | Real Estate | 2 |
 | Attraction Details (Tiqets) | 3,408 |
 | Dynamic Content (DB) | Variable |
 | **TOTAL** | ~3,472+ |
+
+---
+
+## ALL PAGE FILES (161 Total)
+
+```
+client/src/pages/
+├── about.tsx
+├── access-denied.tsx
+├── admin/
+│   ├── aeo-dashboard.tsx
+│   ├── ai-quality-tools.tsx
+│   ├── alerts.tsx
+│   ├── analytics/
+│   │   ├── customer-journey.tsx
+│   │   ├── plagiarism-check.tsx
+│   │   └── semantic-search.tsx
+│   ├── api-keys-setup.tsx
+│   ├── AutonomyControlPlane.tsx
+│   ├── auto-pilot.tsx
+│   ├── Calendar.tsx
+│   ├── change-management.tsx
+│   ├── chat-inbox.tsx
+│   ├── console.tsx
+│   ├── content-intelligence.tsx
+│   ├── destination-intelligence.tsx
+│   ├── destinations/
+│   │   ├── destination-hub.tsx
+│   │   ├── destinations-list.tsx
+│   │   ├── index.tsx
+│   │   └── tabs/
+│   │       ├── destination-hero-tab.tsx
+│   │       ├── destination-mobility-tab.tsx
+│   │       ├── destination-sections-tab.tsx
+│   │       └── destination-seo-tab.tsx
+│   ├── districts-management.tsx
+│   ├── enterprise/
+│   │   ├── activity-feed.tsx
+│   │   ├── teams.tsx
+│   │   ├── webhooks.tsx
+│   │   └── workflows.tsx
+│   ├── entity-merge.tsx
+│   ├── external-data-explorer.tsx
+│   ├── footer-manager.tsx
+│   ├── governance/
+│   │   ├── approvals.tsx
+│   │   ├── audit.tsx
+│   │   ├── index.tsx
+│   │   ├── policies.tsx
+│   │   ├── roles.tsx
+│   │   └── users.tsx
+│   ├── growth-dashboard.tsx
+│   ├── help/
+│   │   ├── article-editor.tsx
+│   │   └── index.tsx
+│   ├── homepage-editor.tsx
+│   ├── ingestion/
+│   │   └── dashboard.tsx
+│   ├── IntelligenceDashboard.tsx
+│   ├── landing-pages-management.tsx
+│   ├── links/
+│   │   └── dashboard.tsx
+│   ├── monetization/
+│   │   ├── affiliate-dashboard.tsx
+│   │   ├── business-listings.tsx
+│   │   ├── lead-management.tsx
+│   │   └── premium-content.tsx
+│   ├── navigation-manager.tsx
+│   ├── octopus-dashboard.tsx
+│   ├── off-plan-management.tsx
+│   ├── operations-dashboard.tsx
+│   ├── page-builder.tsx
+│   ├── qa-dashboard.tsx
+│   ├── real-estate-editor.tsx
+│   ├── real-estate-management.tsx
+│   ├── referrals.tsx
+│   ├── research/
+│   │   ├── index.tsx
+│   │   └── suggestions.tsx
+│   ├── search-debug.tsx
+│   ├── security.tsx
+│   ├── seo-engine/
+│   │   ├── index.tsx
+│   │   ├── SeoEngineActionsQueue.tsx
+│   │   ├── SeoEngineContentReport.tsx
+│   │   └── SeoEngineDashboard.tsx
+│   ├── site-settings.tsx
+│   ├── social/
+│   │   └── social-dashboard.tsx
+│   ├── static-page-editor.tsx
+│   ├── static-pages.tsx
+│   ├── system-health.tsx
+│   ├── tiqets/
+│   │   ├── attraction-detail.tsx
+│   │   ├── configuration.tsx
+│   │   ├── content-quality.tsx
+│   │   ├── dashboard.tsx
+│   │   ├── destinations.tsx
+│   │   └── integrations.tsx
+│   ├── travi/
+│   │   ├── api-keys.tsx
+│   │   ├── configuration.tsx
+│   │   ├── data-collection.tsx
+│   │   ├── location-edit.tsx
+│   │   ├── location-preview.tsx
+│   │   └── locations-list.tsx
+│   ├── visual-editor/
+│   │   ├── components/
+│   │   │   ├── blocks/
+│   │   │   │   └── index.tsx
+│   │   │   └── BlockSettings.tsx
+│   │   ├── site-editor.tsx
+│   │   └── sites-dashboard.tsx
+│   └── writers/
+│       ├── NewsroomDashboard.tsx
+│       └── WritersManagement.tsx
+├── admin-image-engine.tsx
+├── admin-logs.tsx
+├── affiliate-disclosure.tsx
+├── affiliate-links.tsx
+├── ai-article-generator.tsx
+├── analytics.tsx
+├── article-page.tsx
+├── attraction-detail.tsx
+├── attractions.tsx
+├── audit-logs.tsx
+├── campaigns.tsx
+├── clusters.tsx
+├── contact.tsx
+├── content-calendar.tsx
+├── content-editor.tsx
+├── content-list.tsx
+├── content-rules.tsx
+├── content-templates.tsx
+├── cookies.tsx
+├── dashboard.tsx
+├── destination-attractions.tsx
+├── destination-browser.tsx
+├── destination-dining.tsx
+├── destination-page.tsx
+├── destinations.tsx
+├── global-dining.tsx
+├── global-guides.tsx
+├── global-things-to-do.tsx
+├── glossary-hub.tsx
+├── guide-detail.tsx
+├── help/
+│   ├── article.tsx
+│   ├── category.tsx
+│   └── index.tsx
+├── homepage-fast.tsx
+├── homepage-promotions.tsx
+├── homepage.tsx
+├── hotel-detail.tsx
+├── hotels.tsx
+├── keywords.tsx
+├── login.tsx
+├── media-library.tsx
+├── newsletter-subscribers.tsx
+├── not-found.tsx
+├── partners-dashboard.tsx
+├── partners-join.tsx
+├── poi-explorer.tsx
+├── privacy.tsx
+├── public/
+│   ├── category-listing-page.tsx
+│   ├── guides/
+│   │   ├── dubai-to-rak-transport.tsx
+│   │   ├── dubai-vs-rak-comparison.tsx
+│   │   ├── jebel-jais-adventure-guide.tsx
+│   │   ├── rak-real-estate-investment.tsx
+│   │   ├── where-to-stay-rak.tsx
+│   │   └── wynn-al-marjan-guide.tsx
+│   ├── ras-al-khaimah.tsx
+│   └── travi-location-page.tsx
+├── public-articles.tsx
+├── public-content-viewer.tsx
+├── public-docs.tsx
+├── public-events.tsx
+├── public-holidays.tsx
+├── public-news.tsx
+├── public-off-plan.tsx
+├── public-search.tsx
+├── public-shopping.tsx
+├── public-survey.tsx
+├── rss-feeds.tsx
+├── security.tsx
+├── seo-audit.tsx
+├── settings.tsx
+├── survey-builder.tsx
+├── survey-responses.tsx
+├── surveys.tsx
+├── tags.tsx
+├── terms.tsx
+├── test.tsx
+├── topic-bank.tsx
+├── translations.tsx
+├── travel-guides.tsx
+├── travel-style-article.tsx
+└── users.tsx
+```
