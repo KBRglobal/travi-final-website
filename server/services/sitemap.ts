@@ -120,23 +120,22 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
   const urls: SitemapUrl[] = [];
   const now = new Date().toISOString().split("T")[0];
 
-  // Static pages
+  // Static pages - ONLY pages that are actually implemented
+  // Verified against client/src/routes/index.ts and client/src/App.tsx
   const staticPages = [
+    // Core Pages
     { path: "", priority: 1.0, changefreq: "daily" as const },
+    { path: "/search", priority: 0.7, changefreq: "daily" as const },
+
+    // Main Category Pages
     { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
     { path: "/attractions", priority: 0.9, changefreq: "daily" as const },
     { path: "/hotels", priority: 0.9, changefreq: "daily" as const },
-    // TODO: Re-enable dining after data + UX is ready
-    // TODO: Re-enable things-to-do after ingestion pipeline is complete
-    // { path: "/dining", priority: 0.8, changefreq: "daily" as const },
-    // { path: "/things-to-do", priority: 0.8, changefreq: "daily" as const },
-    { path: "/guides", priority: 0.8, changefreq: "daily" as const },
-    { path: "/districts", priority: 0.8, changefreq: "weekly" as const },
+    { path: "/dining", priority: 0.8, changefreq: "daily" as const },
     { path: "/articles", priority: 0.8, changefreq: "daily" as const },
-    { path: "/real-estate", priority: 0.9, changefreq: "daily" as const },
     { path: "/events", priority: 0.7, changefreq: "daily" as const },
 
-    // Destination Pages
+    // Destination Pages (16 Tiqets cities)
     { path: "/destinations/dubai", priority: 0.9, changefreq: "weekly" as const },
     { path: "/destinations/paris", priority: 0.9, changefreq: "weekly" as const },
     { path: "/destinations/tokyo", priority: 0.9, changefreq: "weekly" as const },
@@ -153,106 +152,44 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/destinations/los-angeles", priority: 0.8, changefreq: "weekly" as const },
     { path: "/destinations/miami", priority: 0.8, changefreq: "weekly" as const },
     { path: "/destinations/rome", priority: 0.8, changefreq: "weekly" as const },
+    { path: "/destinations/ras-al-khaimah", priority: 0.8, changefreq: "weekly" as const },
 
-    // Travel Style Guides
-    { path: "/travel-styles/luxury-travel-complete-guide-2026", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/travel-styles/adventure-outdoors-complete-guide-2026", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/travel-styles/family-travel-complete-guide-2026", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/travel-styles/budget-travel-complete-guide-2026", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/travel-styles/honeymoon-romance-complete-guide-2026", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/travel-styles/solo-travel-complete-guide-2026", priority: 0.7, changefreq: "monthly" as const },
-
-    // Off-Plan Property Pages
+    // Off-Plan Real Estate (only implemented pages)
     { path: "/dubai-real-estate", priority: 0.9, changefreq: "daily" as const },
     { path: "/dubai-off-plan-properties", priority: 0.9, changefreq: "daily" as const },
-    { path: "/dubai-off-plan-investment-guide", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/how-to-buy-dubai-off-plan", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-payment-plans", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/best-off-plan-projects-dubai-2026", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-business-bay", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-marina", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-jvc", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-palm-jumeirah", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-creek-harbour", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-al-furjan", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-off-plan-villas", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-emaar", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-damac", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-nakheel", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-meraas", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-sobha", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-crypto-payments", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-usdt", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-golden-visa", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-post-handover", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-escrow", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/off-plan-vs-ready", priority: 0.7, changefreq: "weekly" as const },
 
-    // District Pages
-    { path: "/districts/downtown-dubai", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/districts/dubai-marina", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/districts/jbr-jumeirah-beach-residence", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/palm-jumeirah", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/districts/jumeirah", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/business-bay", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/old-dubai", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/dubai-creek-harbour", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/dubai-south", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/al-barsha", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/difc", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/dubai-hills-estate", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/jvc", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/bluewaters-island", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/districts/international-city", priority: 0.6, changefreq: "weekly" as const },
-    { path: "/districts/al-karama", priority: 0.6, changefreq: "weekly" as const },
+    // Guides Hub + RAK Guides
+    { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
+    { path: "/guides/wynn-al-marjan-island", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/guides/jebel-jais-adventure", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/guides/dubai-to-rak-transport", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/guides/dubai-vs-rak", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/guides/where-to-stay-rak", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/guides/rak-real-estate-investment", priority: 0.7, changefreq: "monthly" as const },
 
-    // Tool Pages
-    { path: "/tools-roi-calculator", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/tools-payment-calculator", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/tools-affordability-calculator", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/tools-currency-converter", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/tools-fees-calculator", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/tools-rental-yield-calculator", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/tools-mortgage-calculator", priority: 0.7, changefreq: "monthly" as const },
+    // Help Center
+    { path: "/help", priority: 0.6, changefreq: "weekly" as const },
 
-    // Comparison Pages
-    { path: "/compare-off-plan-vs-ready", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-jvc-vs-dubai-south", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-emaar-vs-damac", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-downtown-vs-marina", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-60-40-vs-80-20", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-sobha-vs-meraas", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-crypto-vs-bank-transfer", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-business-bay-vs-jlt", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-new-vs-resale", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-nakheel-vs-azizi", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-villa-vs-apartment", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/compare-studio-vs-1bed", priority: 0.6, changefreq: "monthly" as const },
-
-    // Case Studies
-    { path: "/case-study-jvc-investor", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-crypto-buyer", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-golden-visa", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-expat-family", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-investor-flip", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-portfolio-diversification", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-off-plan-launch", priority: 0.6, changefreq: "monthly" as const },
-    { path: "/case-study-retirement-planning", priority: 0.6, changefreq: "monthly" as const },
-
-    // Pillar Content
-    { path: "/dubai-roi-rental-yields", priority: 0.7, changefreq: "weekly" as const },
-    { path: "/dubai-legal-security-guide", priority: 0.7, changefreq: "weekly" as const },
-
-    // Other Pages
+    // Glossary
     { path: "/glossary", priority: 0.6, changefreq: "monthly" as const },
+
+    // Shopping & News
     { path: "/shopping", priority: 0.6, changefreq: "weekly" as const },
     { path: "/news", priority: 0.7, changefreq: "daily" as const },
+
+    // Legal Pages
     { path: "/privacy", priority: 0.3, changefreq: "yearly" as const },
     { path: "/terms", priority: 0.3, changefreq: "yearly" as const },
     { path: "/cookies", priority: 0.3, changefreq: "yearly" as const },
     { path: "/security", priority: 0.3, changefreq: "yearly" as const },
+    { path: "/affiliate-disclosure", priority: 0.3, changefreq: "yearly" as const },
+
+    // About & Contact
     { path: "/about", priority: 0.5, changefreq: "monthly" as const },
     { path: "/contact", priority: 0.5, changefreq: "monthly" as const },
+
+    // Partner Pages
+    { path: "/partners/join", priority: 0.5, changefreq: "monthly" as const },
   ];
 
   for (const page of staticPages) {
