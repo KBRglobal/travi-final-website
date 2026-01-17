@@ -74,7 +74,7 @@ function Header({ mobileMenuOpen, setMobileMenuOpen }: { mobileMenuOpen: boolean
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2" data-testid="link-logo">
             <Logo size={32} variant="light-bg" />
-            <span className="font-bold text-xl text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>TRAVI</span>
+            <span className="font-bold text-xl text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>world</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
