@@ -125,7 +125,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
   const staticPages = [
     // Core Pages
     { path: "", priority: 1.0, changefreq: "daily" as const },
-    { path: "/search", priority: 0.7, changefreq: "daily" as const },
+    // /search - EXCLUDED: Legacy internal Dubai search page, not public-facing
 
     // Main Category Pages
     { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
@@ -167,8 +167,8 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/guides/where-to-stay-rak", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/rak-real-estate-investment", priority: 0.7, changefreq: "monthly" as const },
 
-    // Help Center
-    { path: "/help", priority: 0.6, changefreq: "weekly" as const },
+    // Help Center - EXCLUDED: Currently broken ("Help center is currently unavailable")
+    // { path: "/help", priority: 0.6, changefreq: "weekly" as const },
 
     // Glossary
     { path: "/glossary", priority: 0.6, changefreq: "monthly" as const },
@@ -318,7 +318,9 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     }
   }
 
-  // Help Center pages (categories and articles from database)
+  // Help Center pages - DISABLED: Help center is currently broken
+  // Uncomment when help center is fixed and working
+  /*
   if (locale === "en") {
     try {
       // Get active help categories
@@ -381,6 +383,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
       console.error("Error fetching help center pages for sitemap:", error);
     }
   }
+  */
 
   return urls;
 }

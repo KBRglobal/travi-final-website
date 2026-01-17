@@ -11,6 +11,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
+import { SEOHead } from "@/components/seo-head";
 
 interface SearchResult {
   contentId: string;
@@ -194,6 +195,12 @@ export default function PublicSearch() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
+      <SEOHead
+        title="Search Dubai"
+        description="Search for attractions, hotels, restaurants, and more in Dubai"
+        canonicalPath="/search"
+        noIndex={true}
+      />
       <SubtleSkyBackground />
       <PublicNav variant="transparent" />
 

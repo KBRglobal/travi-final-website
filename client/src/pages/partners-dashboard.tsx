@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageContainer } from "@/components/public-layout";
+import SEOHead from "@/components/seo-head";
 import { 
   MousePointer2, 
   Users, 
@@ -94,6 +95,7 @@ export default function PartnersDashboard() {
   if (!searchCode) {
     return (
       <PageContainer>
+        <SEOHead title="Partner Dashboard" noIndex />
         <div className="container mx-auto px-4 py-16 max-w-md">
           <Card>
             <CardHeader>
@@ -172,6 +174,7 @@ export default function PartnersDashboard() {
 
   return (
     <PageContainer>
+      <SEOHead title="Partner Dashboard" noIndex />
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>

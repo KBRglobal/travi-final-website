@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HelpCircle, Search, FolderOpen, FileText, ChevronRight } from "lucide-react";
+import { SEOHead } from "@/components/seo-head";
 
 interface HelpCategory {
   id: string;
@@ -48,6 +49,12 @@ export default function HelpCenter() {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-12">
+        <SEOHead
+          title="Help Center"
+          description="TRAVI Help Center - Find answers to your questions"
+          canonicalPath="/help"
+          noIndex={true}
+        />
         <div className="text-center">
           <HelpCircle className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
           <h1 className="text-2xl font-bold mb-2">Help Center</h1>
@@ -62,6 +69,12 @@ export default function HelpCenter() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <SEOHead
+        title="Help Center"
+        description="TRAVI Help Center - Find answers to your questions"
+        canonicalPath="/help"
+        noIndex={true}
+      />
       {/* Hero Section */}
       <div className="bg-primary/5 border-b">
         <div className="container mx-auto px-4 py-12 md:py-16">

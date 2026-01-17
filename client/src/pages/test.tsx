@@ -576,10 +576,10 @@ export default function GlobalHotels() {
       <style>{heroAnimationStyles}</style>
 
       <Helmet>
-        <title>Hotels Worldwide - Find Your Perfect Stay in 16 Destinations | TRAVI</title>
-        <meta name="description" content="Browse 10,000+ hotels across 16 destinations worldwide. From budget-friendly to luxury 5-star resorts in Dubai, Paris, London, New York, Tokyo and more with TRAVI." />
-        <meta name="keywords" content="hotels worldwide, hotel booking, Dubai hotels, Paris hotels, luxury hotels, budget hotels, boutique hotels, travel accommodation" />
-        <meta name="robots" content="index, follow" />
+        <title>Test Page | TRAVI</title>
+        <meta name="description" content="Internal test page - not for public use" />
+        <meta name="keywords" content="test, internal" />
+        <meta name="robots" content="noindex, nofollow" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Hotels Worldwide | TRAVI" />
         <meta name="twitter:description" content="10,000+ hotels across 16 destinations. From budget to luxury." />
