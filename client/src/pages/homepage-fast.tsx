@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicFooter } from "@/components/public-footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { Logo } from "@/components/logo";
+import { useIsDesktop } from "@/hooks/use-mobile";
 
 const SITE_URL = "https://travi.world";
 const SITE_NAME = "TRAVI World";
@@ -134,6 +135,8 @@ function Header({ mobileMenuOpen, setMobileMenuOpen }: { mobileMenuOpen: boolean
 }
 
 function HeroSection() {
+  const isDesktop = useIsDesktop();
+  
   const websiteSchema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -184,7 +187,7 @@ function HeroSection() {
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/ogImage.jpg`} />
-        <link rel="preload" as="image" href="/travi-hero-worldwide.jpeg" />
+        {isDesktop && <link rel="preload" as="image" href="/travi-hero-worldwide.jpeg" />}
         <script type="application/ld+json">{websiteSchema}</script>
         <script type="application/ld+json">{organizationSchema}</script>
         <script type="application/ld+json">{faqSchema}</script>
@@ -264,36 +267,38 @@ function HeroSection() {
           </div>
         </div>
 
-        <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
-          <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
-            <img 
-              src="/travi-hero-worldwide.jpeg" 
-              alt="TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more" 
-              title="TRAVI World - Travel Guides for Global Destinations"
-              className="w-full h-full object-cover"
-              width={600}
-              height={750}
-              loading="eager"
-              decoding="async"
-              {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-            
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] flex items-center justify-center flex-shrink-0">
-                    <Globe className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-slate-900 dark:text-white">Worldwide</div>
-                    <div className="text-sm text-slate-500">Explore the World</div>
+        {isDesktop && (
+          <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
+            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
+              <img 
+                src="/travi-hero-worldwide.jpeg" 
+                alt="TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more" 
+                title="TRAVI World - Travel Guides for Global Destinations"
+                className="w-full h-full object-cover"
+                width={600}
+                height={750}
+                loading="eager"
+                decoding="async"
+                {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900 dark:text-white">Worldwide</div>
+                      <div className="text-sm text-slate-500">Explore the World</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <nav className="sr-only" aria-label="All destination guides">
