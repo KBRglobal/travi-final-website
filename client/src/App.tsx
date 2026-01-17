@@ -726,7 +726,11 @@ function App() {
         <LocaleProvider>
           <FavoritesProvider>
             <TooltipProvider>
+              <a href="#main-content" className="skip-link">
+                Skip to main content
+              </a>
               <Suspense fallback={<PageLoader />}>
+                <main id="main-content">
                 {isAdminRoute ? (
                   <AdminLayout />
                 ) : isV2Route ? (
@@ -738,6 +742,7 @@ function App() {
                     <PublicRouter />
                   </LiveEditProvider>
                 )}
+                </main>
               </Suspense>
               <Toaster />
               <CookieConsentBanner />
