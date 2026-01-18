@@ -8,6 +8,32 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2026)
 
+### Dubai Destination Pages Integration (Jan 18, 2026)
+**72 Dubai pages deployed under `/destinations/dubai/` hierarchy**
+
+**Route Structure:**
+- Districts: `/destinations/dubai/districts` (gateway) + 16 individual district pages
+- Off-Plan: `/destinations/dubai/off-plan/*` (22 pages for real estate investment)
+- Comparisons: `/destinations/dubai/compare/*` (12 comparison pages)
+- Tools: `/destinations/dubai/tools/*` (7 calculator tools)
+- Case Studies: `/destinations/dubai/case-studies/*` (8 investor stories)
+- Pillar Pages: `/destinations/dubai/roi-rental-yields`, `/destinations/dubai/legal-security-guide`
+- Landing Pages: `/destinations/dubai/free-things-to-do`, etc.
+
+**Key Implementation Files:**
+- `client/src/routes/dubai-routes.ts` - Dedicated route exports for all 72 Dubai pages
+- `client/src/pages/dubai/index.ts` - Barrel exports for all Dubai page components
+- `client/src/pages/dubai/components/` - 7 shared section components (DubaiHero, DubaiKeyStats, DubaiFAQ, etc.)
+- `client/src/pages/dubai/templates/` - 7 page templates for each category
+- `client/src/pages/dubai/layouts/DubaiPageLayout.tsx` - Wrapper with PublicNav, PublicFooter, SEOHead
+
+**Bug Fixes Applied:**
+- Routes integrated into App.tsx via `...dubaiRoutes` spread in publicRoutes array
+- Fixed link paths from `/dubai/` to `/destinations/dubai/districts/`
+- Fixed district slugs to match route definitions (downtown instead of downtown-dubai)
+- Made DubaiKeyStats icon property optional with TrendingUp fallback
+- Replaced non-existent "Beach" icon with "Waves" in LandingFreeDubai.tsx
+
 ### Travel Guides Hero Redesign (Jan 18, 2026)
 **UI Consistency Update** - Travel Guides hero section (`travel-guides.tsx`) redesigned to match Attractions page style:
 - **Badge**: Blue dot with ping animation (replaced gradient badge)

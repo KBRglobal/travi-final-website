@@ -6,11 +6,11 @@ export default function DistrictDIFC() {
     <DubaiDistrictTemplate
       title="DIFC Dubai Guide 2026 - Financial Centre & Gate Avenue"
       metaDescription="Discover DIFC (Dubai International Financial Centre), the financial hub of the Middle East. Guide to Gate Avenue, dining, art galleries, and apartments in DIFC."
-      canonicalPath="/dubai/difc"
+      canonicalPath="/destinations/dubai/districts/difc"
       keywords={["difc dubai", "dubai financial centre", "gate avenue difc", "difc restaurants", "difc apartments", "difc art gallery"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "DIFC", href: "/dubai/difc" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "DIFC", href: "/destinations/dubai/districts/difc" }
       ]}
       hero={{
         title: "DIFC - Dubai International Financial Centre",

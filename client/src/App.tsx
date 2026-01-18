@@ -14,6 +14,7 @@ import { FavoritesProvider } from "@/hooks/use-favorites";
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
 import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
+import { dubaiRoutes } from "@/routes/dubai-routes";
 
 const CookieConsentBanner = lazy(() => import("@/components/cookie-consent-banner").then(m => ({ default: m.CookieConsentBanner })));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa-install-prompt").then(m => ({ default: m.PWAInstallPrompt })));
@@ -131,6 +132,7 @@ const publicRoutes = [
   { path: "/partners/join", component: PartnersJoin },
   { path: "/partners/dashboard", component: PartnersDashboard },
   ...createAliasRoutes(),
+  ...dubaiRoutes,
 ];
 
 const LOCALE_PREFIXES = [

@@ -6,11 +6,11 @@ export default function DistrictDubaiMarina() {
     <DubaiDistrictTemplate
       title="Dubai Marina Guide 2026 - Waterfront Living & Attractions"
       metaDescription="Discover Dubai Marina, the world's largest man-made marina. Guide to Marina Walk, yacht clubs, restaurants, nightlife, and luxury apartments in Dubai Marina."
-      canonicalPath="/dubai/dubai-marina"
+      canonicalPath="/destinations/dubai/districts/marina"
       keywords={["dubai marina", "marina walk", "dubai marina apartments", "dubai marina restaurants", "dubai marina nightlife", "marina yacht club"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Dubai Marina", href: "/dubai/dubai-marina" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Dubai Marina", href: "/destinations/dubai/districts/marina" }
       ]}
       hero={{
         title: "Dubai Marina",

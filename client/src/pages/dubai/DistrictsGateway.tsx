@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
-import { MapPin, Search, Building2, Palmtree, Briefcase, Home, ArrowRight, Filter } from "lucide-react";
+import { MapPin, Search, Building2, Palmtree, Briefcase, Home, ArrowRight, Filter, Users, Map, TrendingUp, LayoutGrid } from "lucide-react";
 import { DubaiPageLayout } from "./layouts/DubaiPageLayout";
 import { DubaiHero, DubaiKeyStats, DubaiFAQ, DubaiCTA } from "./components";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +20,7 @@ interface DistrictCard {
 const districts: DistrictCard[] = [
   {
     name: "Downtown Dubai",
-    slug: "downtown-dubai",
+    slug: "downtown",
     description: "Home to Burj Khalifa, Dubai Mall, and spectacular fountain shows",
     category: "luxury",
     badges: ["Burj Khalifa", "Dubai Mall"],
@@ -28,7 +28,7 @@ const districts: DistrictCard[] = [
   },
   {
     name: "Dubai Marina",
-    slug: "dubai-marina",
+    slug: "marina",
     description: "World's largest man-made marina with 200+ towers and waterfront dining",
     category: "luxury",
     badges: ["Waterfront", "Nightlife"],
@@ -76,7 +76,7 @@ const districts: DistrictCard[] = [
   },
   {
     name: "Dubai Creek Harbour",
-    slug: "dubai-creek-harbour",
+    slug: "creek-harbour",
     description: "Visionary waterfront destination home to the future tallest structure",
     category: "residential",
     badges: ["Creek Tower", "Emaar"],
@@ -108,7 +108,7 @@ const districts: DistrictCard[] = [
   },
   {
     name: "Dubai Hills Estate",
-    slug: "dubai-hills",
+    slug: "hills-estate",
     description: "Premium green community with championship golf and family amenities",
     category: "residential",
     badges: ["Golf Course", "Emaar"],
@@ -206,10 +206,10 @@ export default function DistrictsGateway() {
       <DubaiKeyStats
         title="Dubai at a Glance"
         stats={[
-          { value: "16+", label: "Major Districts", subtext: "Unique communities" },
-          { value: "3.5M", label: "Population", subtext: "Growing annually" },
-          { value: "4,114", label: "sq km", subtext: "Total area" },
-          { value: "8%", label: "Avg Yield", subtext: "Rental returns" }
+          { value: "16+", label: "Major Districts", subtext: "Unique communities", icon: LayoutGrid },
+          { value: "3.5M", label: "Population", subtext: "Growing annually", icon: Users },
+          { value: "4,114", label: "sq km", subtext: "Total area", icon: Map },
+          { value: "8%", label: "Avg Yield", subtext: "Rental returns", icon: TrendingUp }
         ]}
         columns={4}
       />
@@ -267,7 +267,7 @@ export default function DistrictsGateway() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {categoryDistricts.map((district) => (
-                  <Link key={district.slug} href={`/dubai/${district.slug}`}>
+                  <Link key={district.slug} href={`/destinations/dubai/districts/${district.slug}`}>
                     <Card className="hover-elevate cursor-pointer h-full overflow-hidden group" data-testid={`card-district-${district.slug}`}>
                       {district.image && (
                         <div className="h-32 overflow-hidden">

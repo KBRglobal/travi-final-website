@@ -6,11 +6,11 @@ export default function DistrictDowntownDubai() {
     <DubaiDistrictTemplate
       title="Downtown Dubai Guide 2026 - Burj Khalifa, Dubai Mall & More"
       metaDescription="Explore Downtown Dubai, home to Burj Khalifa, Dubai Mall, and Dubai Fountain. Complete guide to attractions, hotels, restaurants, and real estate in Downtown Dubai."
-      canonicalPath="/dubai/downtown-dubai"
+      canonicalPath="/destinations/dubai/districts/downtown"
       keywords={["downtown dubai", "burj khalifa", "dubai mall", "dubai fountain", "downtown dubai hotels", "downtown dubai apartments"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Downtown Dubai", href: "/dubai/downtown-dubai" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Downtown Dubai", href: "/destinations/dubai/districts/downtown" }
       ]}
       hero={{
         title: "Downtown Dubai",

@@ -6,11 +6,11 @@ export default function DistrictBluewaters() {
     <DubaiDistrictTemplate
       title="Bluewaters Island Dubai Guide 2026 - Ain Dubai & Caesars"
       metaDescription="Explore Bluewaters Island, home to Ain Dubai (world's largest observation wheel). Guide to Caesars Palace, Cove Beach, dining, and luxury apartments."
-      canonicalPath="/dubai/bluewaters"
+      canonicalPath="/destinations/dubai/districts/bluewaters"
       keywords={["bluewaters island", "ain dubai", "caesars palace dubai", "cove beach", "bluewaters apartments", "bluewaters restaurants"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Bluewaters", href: "/dubai/bluewaters" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Bluewaters", href: "/destinations/dubai/districts/bluewaters" }
       ]}
       hero={{
         title: "Bluewaters Island",

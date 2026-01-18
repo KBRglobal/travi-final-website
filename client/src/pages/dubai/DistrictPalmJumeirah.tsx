@@ -6,11 +6,11 @@ export default function DistrictPalmJumeirah() {
     <DubaiDistrictTemplate
       title="Palm Jumeirah Guide 2026 - Dubai's Iconic Island"
       metaDescription="Explore Palm Jumeirah, Dubai's world-famous palm-shaped island. Guide to Atlantis, luxury resorts, beach clubs, villas, and apartments on Palm Jumeirah."
-      canonicalPath="/dubai/palm-jumeirah"
+      canonicalPath="/destinations/dubai/districts/palm-jumeirah"
       keywords={["palm jumeirah", "atlantis dubai", "palm jumeirah villas", "palm jumeirah apartments", "palm jumeirah hotels", "palm jumeirah beach"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Palm Jumeirah", href: "/dubai/palm-jumeirah" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Palm Jumeirah", href: "/destinations/dubai/districts/palm-jumeirah" }
       ]}
       hero={{
         title: "Palm Jumeirah",

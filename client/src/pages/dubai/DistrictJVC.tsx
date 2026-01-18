@@ -6,11 +6,11 @@ export default function DistrictJVC() {
     <DubaiDistrictTemplate
       title="JVC Dubai Guide 2026 - Jumeirah Village Circle"
       metaDescription="Discover JVC (Jumeirah Village Circle), one of Dubai's most affordable and family-friendly communities. Guide to apartments, villas, amenities, and investment in JVC."
-      canonicalPath="/dubai/jvc"
+      canonicalPath="/destinations/dubai/districts/jvc"
       keywords={["jvc dubai", "jumeirah village circle", "jvc apartments", "jvc villas", "jvc investment", "jvc rental yield"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "JVC", href: "/dubai/jvc" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "JVC", href: "/destinations/dubai/districts/jvc" }
       ]}
       hero={{
         title: "Jumeirah Village Circle",
