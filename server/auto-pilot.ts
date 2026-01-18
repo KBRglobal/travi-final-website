@@ -50,6 +50,18 @@ import {
   type RunFreshnessCheckResult 
 } from "./services/content-freshness";
 import { emitContentPublished } from "./events";
+import Parser from "rss-parser";
+import { topicClusters, topicClusterItems } from "@shared/schema";
+import { updateRssProcessingStats } from "./routes/admin/observability-routes";
+
+// RSS Parser instance
+const rssParser = new Parser({
+  timeout: 30000,
+  headers: {
+    'User-Agent': 'Travi-CMS/1.0 (+https://travi.world)',
+    'Accept': 'application/rss+xml, application/xml, text/xml',
+  },
+});
 
 // ============================================================================
 // AUTO-PILOT CONFIGURATION
@@ -740,23 +752,107 @@ export const autoRss = {
   },
 
   /**
-   * Process single RSS feed
+   * Process single RSS feed - fetches and stores items
    */
   async processFeed(feedId: string): Promise<{ fetched: number; imported: number }> {
-    // This would fetch and parse the RSS feed
-    // For now, return placeholder
-    console.log(`[AutoPilot] Processing RSS feed ${feedId}`);
-
-    // GAP C: Entity extraction hook (feature-flagged)
-    // When RSS items are imported, trigger entity extraction if enabled
-    // This is non-blocking - extraction runs in background
-    if (isRssEntityExtractionEnabled()) {
-      console.log(`[AutoPilot] RSS entity extraction enabled for feed ${feedId}`);
-      // processRssItemEntities would be called here for each imported item
-      // Example: processRssItemEntities(itemId, feedId, title, content, description, destination);
+    console.log(`[AutoPilot/RSS] Processing feed ${feedId}`);
+    
+    // Get feed details
+    const [feed] = await db.select().from(rssFeeds).where(eq(rssFeeds.id, feedId));
+    if (!feed) {
+      console.error(`[AutoPilot/RSS] Feed not found: ${feedId}`);
+      return { fetched: 0, imported: 0 };
     }
 
-    return { fetched: 0, imported: 0 };
+    try {
+      // Fetch and parse RSS feed
+      console.log(`[AutoPilot/RSS] Fetching: ${feed.url}`);
+      const parsedFeed = await rssParser.parseURL(feed.url);
+      const items = parsedFeed.items || [];
+      console.log(`[AutoPilot/RSS] Fetched ${items.length} items from ${feed.name}`);
+
+      let imported = 0;
+
+      for (const item of items.slice(0, autoPilotConfig.maxAutoImportPerFeed)) {
+        try {
+          // Check if item already exists (by source URL)
+          const existingItems = await db.select({ id: topicClusterItems.id })
+            .from(topicClusterItems)
+            .where(eq(topicClusterItems.sourceUrl, item.link || ''))
+            .limit(1);
+
+          if (existingItems.length > 0) {
+            console.log(`[AutoPilot/RSS] Item already exists: ${item.title?.substring(0, 50)}...`);
+            continue;
+          }
+
+          // Find or create a topic cluster for this feed
+          let cluster = await this.findOrCreateClusterForFeed(feed);
+
+          // Insert the RSS item
+          await db.insert(topicClusterItems).values({
+            clusterId: cluster.id,
+            rssFeedId: feedId,
+            sourceUrl: item.link || '',
+            sourceTitle: item.title || 'Untitled',
+            sourceDescription: item.contentSnippet || item.content || item.description || '',
+            pubDate: item.pubDate ? new Date(item.pubDate) : null,
+            isUsedInMerge: false,
+          });
+
+          imported++;
+          console.log(`[AutoPilot/RSS] Imported: ${item.title?.substring(0, 50)}...`);
+
+          // Update processing stats
+          updateRssProcessingStats({
+            itemsProcessed: imported,
+            lastRunTime: new Date(),
+          });
+
+        } catch (itemError: any) {
+          console.error(`[AutoPilot/RSS] Failed to import item: ${itemError.message}`);
+        }
+      }
+
+      // Update lastFetchedAt on the feed
+      await db.update(rssFeeds)
+        .set({ lastFetchedAt: new Date() })
+        .where(eq(rssFeeds.id, feedId));
+
+      console.log(`[AutoPilot/RSS] Feed ${feed.name}: fetched=${items.length}, imported=${imported}`);
+      return { fetched: items.length, imported };
+
+    } catch (error: any) {
+      console.error(`[AutoPilot/RSS] Failed to fetch feed ${feed.name}: ${error.message}`);
+      return { fetched: 0, imported: 0 };
+    }
+  },
+
+  /**
+   * Find or create a topic cluster for RSS feed items
+   */
+  async findOrCreateClusterForFeed(feed: typeof rssFeeds.$inferSelect): Promise<typeof topicClusters.$inferSelect> {
+    const clusterTopic = `RSS: ${feed.name}`;
+    
+    // Try to find existing cluster for this feed
+    const existingClusters = await db.select()
+      .from(topicClusters)
+      .where(eq(topicClusters.topic, clusterTopic))
+      .limit(1);
+
+    if (existingClusters.length > 0) {
+      return existingClusters[0];
+    }
+
+    // Create new cluster
+    const [newCluster] = await db.insert(topicClusters).values({
+      topic: clusterTopic,
+      status: 'pending',
+      articleCount: 0,
+    }).returning();
+
+    console.log(`[AutoPilot/RSS] Created cluster for feed: ${feed.name}`);
+    return newCluster;
   },
 };
 
