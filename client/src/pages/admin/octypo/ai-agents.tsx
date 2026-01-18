@@ -1,102 +1,97 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   FileText,
-  MapPin,
-  Star,
   ShieldCheck,
-  Search as SearchIcon,
 } from "lucide-react";
 
-interface Agent {
+interface WriterAgent {
   id: string;
   name: string;
   specialty: string;
-  type: "writer" | "validator";
-  description: string;
-  languages: string[];
-  stats: {
-    generated: number;
-    successRate: string;
-    avgQuality: number;
-    avgSeo: number;
-  };
-  icon: typeof FileText;
-  active: boolean;
+  expertise: string[];
+  contentCount: number;
 }
 
-const mockAgents: Agent[] = [
-  {
-    id: "1",
-    name: "Article Writer",
-    specialty: "General Travel Articles",
-    type: "writer",
-    description: "Creates engaging travel articles",
-    languages: ["English", "Hebrew"],
-    stats: { generated: 245, successRate: "94%", avgQuality: 87, avgSeo: 82 },
-    icon: FileText,
-    active: true,
-  },
-  {
-    id: "2",
-    name: "Guide Writer",
-    specialty: "Destination Guides",
-    type: "writer",
-    description: "Creates comprehensive guides",
-    languages: ["English", "Hebrew", "Arabic"],
-    stats: { generated: 156, successRate: "92%", avgQuality: 89, avgSeo: 85 },
-    icon: MapPin,
-    active: true,
-  },
-  {
-    id: "3",
-    name: "Review Writer",
-    specialty: "Hotel & Restaurant Reviews",
-    type: "writer",
-    description: "Writes balanced reviews",
-    languages: ["English"],
-    stats: { generated: 312, successRate: "91%", avgQuality: 85, avgSeo: 80 },
-    icon: Star,
-    active: true,
-  },
-  {
-    id: "4",
-    name: "Fact Checker",
-    specialty: "Factual Accuracy",
-    type: "validator",
-    description: "Verifies facts and claims",
-    languages: ["English"],
-    stats: { generated: 890, successRate: "98%", avgQuality: 95, avgSeo: 0 },
-    icon: ShieldCheck,
-    active: true,
-  },
-  {
-    id: "5",
-    name: "SEO Optimizer",
-    specialty: "SEO Enhancement",
-    type: "validator",
-    description: "Optimizes content for search",
-    languages: ["English"],
-    stats: { generated: 567, successRate: "97%", avgQuality: 0, avgSeo: 94 },
-    icon: SearchIcon,
-    active: true,
-  },
-];
+interface ValidatorAgent {
+  id: string;
+  name: string;
+  specialty: string;
+}
+
+interface OctypoStats {
+  totalAttractions: number;
+  pendingContent: number;
+  generatedContent: number;
+  writerAgentCount: number;
+  validatorAgentCount: number;
+  avgQualityScore: number;
+}
 
 export default function OctypoAIAgentsPage() {
   const [activeTab, setActiveTab] = useState("all");
 
-  const writers = mockAgents.filter(a => a.type === "writer");
-  const validators = mockAgents.filter(a => a.type === "validator");
+  const { data: writersData, isLoading: writersLoading } = useQuery<WriterAgent[]>({
+    queryKey: ['/api/octypo/agents/writers'],
+  });
 
-  const filteredAgents = mockAgents.filter((agent) => {
+  const { data: validatorsData, isLoading: validatorsLoading } = useQuery<ValidatorAgent[]>({
+    queryKey: ['/api/octypo/agents/validators'],
+  });
+
+  const { data: statsData } = useQuery<OctypoStats>({
+    queryKey: ['/api/octypo/agents/stats'],
+  });
+
+  const writers = writersData || [];
+  const validators = validatorsData || [];
+  const isLoading = writersLoading || validatorsLoading;
+
+  const allAgents = [
+    ...writers.map(w => ({ ...w, type: 'writer' as const })),
+    ...validators.map(v => ({ ...v, type: 'validator' as const })),
+  ];
+
+  const filteredAgents = allAgents.filter((agent) => {
     if (activeTab === "all") return true;
     if (activeTab === "writers") return agent.type === "writer";
     if (activeTab === "validators") return agent.type === "validator";
     return true;
   });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6" data-testid="octypo-ai-agents-page">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold" data-testid="text-page-title">AI Agents</h1>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3 mb-4">
+                  <Skeleton className="h-10 w-10 rounded-lg" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                </div>
+                <Skeleton className="h-3 w-full mb-4" />
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6" data-testid="octypo-ai-agents-page">
@@ -107,7 +102,7 @@ export default function OctypoAIAgentsPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList data-testid="tabs-filter">
           <TabsTrigger value="all" data-testid="tab-all">
-            All Agents <Badge variant="secondary" className="ml-2">{mockAgents.length}</Badge>
+            All Agents <Badge variant="secondary" className="ml-2">{allAgents.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="writers" data-testid="tab-writers">
             Writers <Badge variant="secondary" className="ml-2">{writers.length}</Badge>
@@ -118,6 +113,35 @@ export default function OctypoAIAgentsPage() {
         </TabsList>
       </Tabs>
 
+      {statsData && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="pt-4">
+              <p className="text-xs text-muted-foreground">Total Attractions</p>
+              <p className="text-2xl font-bold">{statsData.totalAttractions}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4">
+              <p className="text-xs text-muted-foreground">Generated Content</p>
+              <p className="text-2xl font-bold">{statsData.generatedContent}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4">
+              <p className="text-xs text-muted-foreground">Pending</p>
+              <p className="text-2xl font-bold">{statsData.pendingContent}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4">
+              <p className="text-xs text-muted-foreground">Avg Quality Score</p>
+              <p className="text-2xl font-bold">{statsData.avgQualityScore.toFixed(1)}</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredAgents.map((agent) => (
           <Card key={agent.id} data-testid={`agent-card-${agent.id}`}>
@@ -125,57 +149,61 @@ export default function OctypoAIAgentsPage() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 rounded-lg bg-muted">
-                    <agent.icon className="h-5 w-5 text-primary" />
+                    {agent.type === 'writer' ? (
+                      <FileText className="h-5 w-5 text-primary" />
+                    ) : (
+                      <ShieldCheck className="h-5 w-5 text-primary" />
+                    )}
                   </div>
                   <div>
                     <h3 className="font-semibold">{agent.name}</h3>
                     <p className="text-sm text-muted-foreground">{agent.specialty}</p>
                   </div>
                 </div>
-                {agent.active && (
-                  <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                    Active
-                  </Badge>
-                )}
+                <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  Active
+                </Badge>
               </div>
 
               <p className="text-sm text-muted-foreground mb-4">
-                {agent.description}
+                {agent.type === 'writer' ? 'AI Writer Agent' : 'AI Validator Agent'}
               </p>
 
-              <div className="mb-4">
-                <p className="text-xs text-muted-foreground mb-2">Languages</p>
-                <div className="flex flex-wrap gap-1">
-                  {agent.languages.map((lang, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {lang}
-                    </Badge>
-                  ))}
+              {agent.type === 'writer' && 'expertise' in agent && agent.expertise.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs text-muted-foreground mb-2">Expertise</p>
+                  <div className="flex flex-wrap gap-1">
+                    {agent.expertise.map((exp, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {exp}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                 <div>
-                  <p className="text-xs text-muted-foreground">Generated</p>
-                  <p className="text-xl font-bold">{agent.stats.generated}</p>
+                  <p className="text-xs text-muted-foreground">Type</p>
+                  <p className="text-lg font-semibold capitalize">{agent.type}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Success Rate</p>
-                  <p className="text-xl font-bold">{agent.stats.successRate}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Avg Quality</p>
-                  <p className="text-xl font-bold">{agent.stats.avgQuality || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Avg SEO</p>
-                  <p className="text-xl font-bold">{agent.stats.avgSeo || "-"}</p>
-                </div>
+                {agent.type === 'writer' && 'contentCount' in agent && (
+                  <div>
+                    <p className="text-xs text-muted-foreground">Content Count</p>
+                    <p className="text-lg font-semibold">{agent.contentCount}</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {filteredAgents.length === 0 && (
+        <div className="text-center py-12 text-muted-foreground">
+          No agents found
+        </div>
+      )}
     </div>
   );
 }
