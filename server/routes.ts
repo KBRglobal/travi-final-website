@@ -221,8 +221,6 @@ import { registerAllRoutes } from "./routes/index.js";
 // AEO (Answer Engine Optimization) routes
 import { aeoRoutes, aeoTrackingMiddleware } from "./aeo";
 import { getVersionInfo } from "./middleware/api-versioning";
-// Octypo Engine Routes (Content Generation)
-import octopusRoutes from "./routes/admin/octopus-routes";
 // Localization Engine (Translation Queue + AEO)
 import localizationRoutes from "./localization/routes";
 // Simulation Mode (TASK 9 - Read-only "what if" analysis)
@@ -18429,12 +18427,6 @@ Return as valid JSON.`,
 
   // Register AEO routes (includes robots.txt, llms.txt, and API endpoints)
   app.use(aeoRoutes);
-
-  // ============================================================================
-  // OCTOPUS/OCTYPO ENGINE ROUTES
-  // Content generation from research documents (PDF/Word)
-  // ============================================================================
-  app.use('/api/octopus', octopusRoutes);
 
   // ============================================================================
   // LOCALIZATION ENGINE ROUTES
