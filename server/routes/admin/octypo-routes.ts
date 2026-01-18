@@ -6,8 +6,8 @@
 
 import { Router, type Request, type Response } from 'express';
 import { db } from '../../db';
-import { tiqetsAttractions } from '@shared/schema';
-import { eq, isNull, isNotNull, sql, desc } from 'drizzle-orm';
+import { tiqetsAttractions, contents, workflowInstances, aiWriters } from '@shared/schema';
+import { eq, isNull, isNotNull, sql, desc, and, gte } from 'drizzle-orm';
 import { log } from '../../lib/logger';
 import { 
   AgentRegistry, 
@@ -16,6 +16,7 @@ import {
   generateAttractionWithOctypo,
   getOctypoOrchestrator,
 } from '../../octypo';
+import { octypoState } from '../../octypo/state';
 
 const router = Router();
 
@@ -159,7 +160,6 @@ router.get('/queue', async (req: Request, res: Response) => {
     const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
     const offset = parseInt(req.query.offset as string) || 0;
 
-    // Use raw SQL to avoid Drizzle issues with empty result sets
     const countResult = await db.execute(sql`
       SELECT count(*)::int as count 
       FROM tiqets_attractions 
@@ -167,7 +167,6 @@ router.get('/queue', async (req: Request, res: Response) => {
     `);
     const total = (countResult.rows[0] as any)?.count ?? 0;
 
-    // Only run the main query if there are results
     let attractions: any[] = [];
     if (total > 0) {
       attractions = await db.select({
@@ -372,14 +371,8 @@ router.get('/jobs/:jobId', async (req: Request, res: Response) => {
 });
 
 // ============================================================================
-// AUTOPILOT STATE (in-memory for demo)
+// AUTOPILOT CONFIG (in-memory state for config options)
 // ============================================================================
-
-interface AutopilotState {
-  running: boolean;
-  mode: 'full' | 'content-only' | 'review-only' | 'translation-only';
-  startedAt: string | null;
-}
 
 interface AutopilotConfig {
   autoExplodeContent: boolean;
@@ -389,12 +382,6 @@ interface AutopilotConfig {
   rssIngestion: boolean;
   googleDriveSync: boolean;
 }
-
-let autopilotState: AutopilotState = {
-  running: true,
-  mode: 'full',
-  startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-};
 
 let autopilotConfig: AutopilotConfig = {
   autoExplodeContent: true,
@@ -406,77 +393,56 @@ let autopilotConfig: AutopilotConfig = {
 };
 
 // ============================================================================
-// DESTINATIONS ENDPOINTS
+// DESTINATIONS ENDPOINTS - REAL DATA
 // ============================================================================
 
 /**
  * GET /api/octypo/destinations
- * Returns list of destinations with health metrics
+ * Returns list of destinations with health metrics from real database
  */
 router.get('/destinations', async (_req: Request, res: Response) => {
   try {
-    const destinations = [
-      {
-        id: 'tel-aviv',
-        name: 'Tel Aviv',
-        health: 94,
-        status: 'Running',
-        coverage: 87,
-        budgetToday: 12.50,
+    const destinationStats = await db.execute(sql`
+      SELECT 
+        city_name,
+        COUNT(*)::int as total_attractions,
+        COUNT(CASE WHEN ai_content IS NOT NULL THEN 1 END)::int as with_content,
+        COALESCE(AVG(CASE WHEN ai_content IS NOT NULL THEN (ai_content->>'qualityScore')::numeric END), 0)::numeric(5,2) as avg_quality,
+        MAX(CASE WHEN ai_content IS NOT NULL THEN ai_content->>'generatedAt' END) as last_updated
+      FROM tiqets_attractions
+      WHERE city_name IS NOT NULL AND city_name != ''
+      GROUP BY city_name
+      ORDER BY total_attractions DESC
+      LIMIT 50
+    `);
+
+    const destinations = (destinationStats.rows as any[]).map(row => {
+      const total = row.total_attractions || 0;
+      const withContent = row.with_content || 0;
+      const health = total > 0 ? Math.round((withContent / total) * 100) : 0;
+      const coverage = total > 0 ? Math.round((withContent / total) * 100) : 0;
+      
+      let status = 'Initializing';
+      if (health >= 90) status = 'Running';
+      else if (health >= 50) status = 'Growing';
+      else if (health >= 20) status = 'Initializing';
+      else status = 'New';
+
+      return {
+        id: row.city_name.toLowerCase().replace(/\s+/g, '-'),
+        name: row.city_name,
+        health,
+        status,
+        coverage,
+        budgetToday: 0,
         budgetLimit: 50.00,
-        alerts: 0,
-        contentCount: 156,
-        lastUpdated: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'jerusalem',
-        name: 'Jerusalem',
-        health: 78,
-        status: 'Growing',
-        coverage: 65,
-        budgetToday: 8.75,
-        budgetLimit: 50.00,
-        alerts: 2,
-        contentCount: 89,
-        lastUpdated: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'haifa',
-        name: 'Haifa',
-        health: 45,
-        status: 'Initializing',
-        coverage: 23,
-        budgetToday: 3.20,
-        budgetLimit: 50.00,
-        alerts: 5,
-        contentCount: 34,
-        lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'dubai',
-        name: 'Dubai',
-        health: 98,
-        status: 'Running',
-        coverage: 95,
-        budgetToday: 18.90,
-        budgetLimit: 75.00,
-        alerts: 0,
-        contentCount: 312,
-        lastUpdated: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'barcelona',
-        name: 'Barcelona',
-        health: 91,
-        status: 'Running',
-        coverage: 82,
-        budgetToday: 14.30,
-        budgetLimit: 60.00,
-        alerts: 1,
-        contentCount: 198,
-        lastUpdated: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-      },
-    ];
+        alerts: health < 50 ? Math.floor((100 - health) / 20) : 0,
+        contentCount: withContent,
+        totalAttractions: total,
+        avgQuality: parseFloat(row.avg_quality) || 0,
+        lastUpdated: row.last_updated || null,
+      };
+    });
 
     res.json({ destinations });
   } catch (error) {
@@ -486,29 +452,52 @@ router.get('/destinations', async (_req: Request, res: Response) => {
 });
 
 // ============================================================================
-// AUTOPILOT ENDPOINTS
+// AUTOPILOT ENDPOINTS - REAL STATE
 // ============================================================================
 
 /**
  * GET /api/octypo/autopilot/status
- * Returns autopilot status and stats
+ * Returns autopilot status using real OctypoRunState
  */
 router.get('/autopilot/status', async (_req: Request, res: Response) => {
   try {
+    const isRunning = octypoState.isRunning();
+    const lastCompleted = octypoState.getLastCompleted();
+    const lastActivity = octypoState.getLastActivity();
+    const stateStats = octypoState.getStats();
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayIso = today.toISOString().split('T')[0];
+    
+    const todayStats = await db.execute(sql`
+      SELECT 
+        COUNT(CASE WHEN ai_content->>'generatedAt' >= ${todayIso} THEN 1 END)::int as content_generated_today,
+        COUNT(CASE WHEN content_generation_status = 'failed' AND ai_content->>'generatedAt' >= ${todayIso} THEN 1 END)::int as errors_today
+      FROM tiqets_attractions
+      WHERE ai_content IS NOT NULL
+    `);
+    
+    const statsRow = (todayStats.rows[0] as any) || {};
+
     const status = {
-      running: autopilotState.running,
-      mode: autopilotState.mode,
-      startedAt: autopilotState.startedAt,
+      running: isRunning,
+      mode: 'full' as const,
+      startedAt: lastActivity?.toISOString() || null,
+      lastCompleted: lastCompleted?.toISOString() || null,
       stats: {
-        contentGeneratedToday: 47,
-        translationsToday: 124,
-        publishedToday: 23,
-        tasksCompletedToday: 89,
-        imagesProcessedToday: 156,
-        errorsToday: 2,
+        contentGeneratedToday: statsRow.content_generated_today || 0,
+        translationsToday: 0,
+        publishedToday: 0,
+        tasksCompletedToday: statsRow.content_generated_today || 0,
+        imagesProcessedToday: 0,
+        errorsToday: statsRow.errors_today || stateStats.failedCount,
+        failedQueueSize: stateStats.failedCount,
+        successRate: Math.round(stateStats.successRate * 100),
+        concurrency: stateStats.concurrency,
       },
-      uptime: autopilotState.startedAt 
-        ? Math.floor((Date.now() - new Date(autopilotState.startedAt).getTime()) / 1000)
+      uptime: lastActivity 
+        ? Math.floor((Date.now() - lastActivity.getTime()) / 1000)
         : 0,
     };
 
@@ -527,18 +516,18 @@ router.post('/autopilot/start', async (req: Request, res: Response) => {
   try {
     const { mode = 'full' } = req.body;
     
-    autopilotState = {
-      running: true,
-      mode: mode as AutopilotState['mode'],
-      startedAt: new Date().toISOString(),
-    };
-
+    octypoState.setRunning(true);
+    
     log.info(`[Octypo] Autopilot started in ${mode} mode`);
     
     res.json({ 
       success: true, 
       message: `Autopilot started in ${mode} mode`,
-      state: autopilotState,
+      state: {
+        running: true,
+        mode,
+        startedAt: new Date().toISOString(),
+      },
     });
   } catch (error) {
     log.error('[Octypo] Failed to start autopilot', error);
@@ -552,18 +541,18 @@ router.post('/autopilot/start', async (req: Request, res: Response) => {
  */
 router.post('/autopilot/stop', async (_req: Request, res: Response) => {
   try {
-    autopilotState = {
-      running: false,
-      mode: autopilotState.mode,
-      startedAt: null,
-    };
+    octypoState.setRunning(false);
 
     log.info('[Octypo] Autopilot stopped');
     
     res.json({ 
       success: true, 
       message: 'Autopilot stopped',
-      state: autopilotState,
+      state: {
+        running: false,
+        mode: 'full',
+        startedAt: null,
+      },
     });
   } catch (error) {
     log.error('[Octypo] Failed to stop autopilot', error);
@@ -621,60 +610,41 @@ router.patch('/autopilot/config', async (req: Request, res: Response) => {
 
 /**
  * GET /api/octypo/autopilot/pipeline
- * Returns pipeline status for each processing stage
+ * Returns pipeline status based on real queue state
  */
 router.get('/autopilot/pipeline', async (_req: Request, res: Response) => {
   try {
+    const queueStats = await db.execute(sql`
+      SELECT 
+        COUNT(CASE WHEN ai_content IS NULL THEN 1 END)::int as pending,
+        COUNT(CASE WHEN ai_content IS NOT NULL THEN 1 END)::int as processed,
+        COUNT(CASE WHEN content_generation_status = 'failed' THEN 1 END)::int as failed
+      FROM tiqets_attractions
+    `);
+    
+    const stats = (queueStats.rows[0] as any) || {};
+    const failedQueue = octypoState.getFailedQueue();
+
     const pipeline = [
       {
-        id: 'rss-ingestion',
-        name: 'RSS Ingestion',
-        status: 'running',
-        itemsProcessed: 156,
-        itemsPending: 23,
-        lastRun: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-        avgProcessingTime: 2.3,
-        errorRate: 0.5,
+        id: 'content-generation',
+        name: 'Content Generation',
+        status: octypoState.isRunning() ? 'running' : 'idle',
+        itemsProcessed: stats.processed || 0,
+        itemsPending: stats.pending || 0,
+        lastRun: octypoState.getLastActivity()?.toISOString() || null,
+        avgProcessingTime: 45.0,
+        errorRate: stats.processed > 0 ? ((stats.failed / stats.processed) * 100) : 0,
       },
       {
-        id: 'entity-extraction',
-        name: 'Entity Extraction',
-        status: 'running',
-        itemsProcessed: 142,
-        itemsPending: 37,
-        lastRun: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
-        avgProcessingTime: 4.7,
-        errorRate: 1.2,
-      },
-      {
-        id: 'translation',
-        name: 'Translation',
-        status: 'running',
-        itemsProcessed: 89,
-        itemsPending: 67,
-        lastRun: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
-        avgProcessingTime: 8.2,
-        errorRate: 0.3,
-      },
-      {
-        id: 'image-fetching',
-        name: 'Image Fetching',
-        status: 'idle',
-        itemsProcessed: 234,
-        itemsPending: 12,
-        lastRun: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-        avgProcessingTime: 3.1,
-        errorRate: 2.1,
-      },
-      {
-        id: 'quality-check',
-        name: 'Quality Check',
-        status: 'running',
-        itemsProcessed: 78,
-        itemsPending: 45,
-        lastRun: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-        avgProcessingTime: 1.5,
-        errorRate: 0.0,
+        id: 'failed-retry',
+        name: 'Failed Retry Queue',
+        status: failedQueue.length > 0 ? 'pending' : 'idle',
+        itemsProcessed: 0,
+        itemsPending: failedQueue.length,
+        lastRun: null,
+        avgProcessingTime: 0,
+        errorRate: 0,
       },
     ];
 
@@ -687,89 +657,29 @@ router.get('/autopilot/pipeline', async (_req: Request, res: Response) => {
 
 /**
  * GET /api/octypo/autopilot/tasks
- * Returns active task queue with progress
+ * Returns active tasks from the failed queue
  */
 router.get('/autopilot/tasks', async (_req: Request, res: Response) => {
   try {
-    const tasks = [
-      {
-        id: 'task-001',
-        title: 'Barcelona Travel Guide',
-        type: 'content-generation',
-        progress: 85,
-        status: 'running',
-        writer: 'Sarah Mitchell',
-        startedAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
-        estimatedCompletion: new Date(Date.now() + 3 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'task-002',
-        title: 'Tokyo Hotels Collection',
-        type: 'content-generation',
-        progress: 62,
-        status: 'running',
-        writer: 'Michael Chen',
-        startedAt: new Date(Date.now() - 8 * 60 * 1000).toISOString(),
-        estimatedCompletion: new Date(Date.now() + 7 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'task-003',
-        title: 'Paris Restaurants Guide',
-        type: 'content-generation',
-        progress: 45,
-        status: 'running',
-        writer: 'Fatima Al-Rashid',
-        startedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-        estimatedCompletion: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'task-004',
-        title: 'Dubai Desert Safari',
-        type: 'translation',
-        progress: 78,
-        status: 'running',
-        targetLanguages: ['ar', 'fr', 'de', 'es'],
-        startedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-        estimatedCompletion: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'task-005',
-        title: 'London Museums Guide',
-        type: 'image-fetching',
-        progress: 92,
-        status: 'running',
-        imagesFound: 23,
-        imagesNeeded: 25,
-        startedAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
-        estimatedCompletion: new Date(Date.now() + 2 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'task-006',
-        title: 'Rome Historical Sites',
-        type: 'quality-check',
-        progress: 30,
-        status: 'pending',
-        startedAt: null,
-        estimatedCompletion: null,
-      },
-      {
-        id: 'task-007',
-        title: 'Singapore Street Food',
-        type: 'content-generation',
-        progress: 0,
-        status: 'pending',
-        writer: 'David Rodriguez',
-        startedAt: null,
-        estimatedCompletion: null,
-      },
-    ];
+    const failedQueue = octypoState.getFailedQueue();
+    
+    const tasks = failedQueue.map((item, idx) => ({
+      id: `task-${item.id}`,
+      title: item.title,
+      type: 'content-generation',
+      progress: 0,
+      status: 'pending',
+      retryCount: item.retryCount,
+      lastError: item.lastError,
+      failedAt: item.failedAt.toISOString(),
+    }));
 
     res.json({ 
       tasks,
       summary: {
-        running: tasks.filter(t => t.status === 'running').length,
-        pending: tasks.filter(t => t.status === 'pending').length,
-        completed: 89,
+        running: 0,
+        pending: tasks.length,
+        completed: 0,
       },
     });
   } catch (error) {
@@ -779,166 +689,74 @@ router.get('/autopilot/tasks', async (_req: Request, res: Response) => {
 });
 
 // ============================================================================
-// CONTENT ENDPOINTS
+// CONTENT ENDPOINTS - REAL DATA
 // ============================================================================
 
 /**
  * GET /api/octypo/content
- * Returns content list with metadata
+ * Returns content list from real contents table
  */
 router.get('/content', async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
     const offset = parseInt(req.query.offset as string) || 0;
-    const status = req.query.status as string;
-    const type = req.query.type as string;
+    const statusFilter = req.query.status as string;
+    const typeFilter = req.query.type as string;
 
-    const contentItems = [
-      {
-        id: 'content-001',
-        title: 'Ultimate Guide to Barcelona Architecture',
-        type: 'Guide',
-        status: 'Published',
-        writer: 'Sarah Mitchell',
-        writerId: 'writer-sarah',
-        score: 96,
-        seoScore: 94,
-        wordCount: 2450,
-        publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-002',
-        title: 'Tokyo Street Food: Hidden Gems',
-        type: 'Article',
-        status: 'Published',
-        writer: 'Fatima Al-Rashid',
-        writerId: 'writer-fatima',
-        score: 92,
-        seoScore: 89,
-        wordCount: 1850,
-        publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-003',
-        title: 'Dubai Luxury Hotels 2026',
-        type: 'Guide',
-        status: 'Draft',
-        writer: 'Michael Chen',
-        writerId: 'writer-michael',
-        score: 78,
-        seoScore: 72,
-        wordCount: 1200,
-        publishedAt: null,
-        updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-004',
-        title: 'Paris Walking Tours: Left Bank',
-        type: 'Article',
-        status: 'Needs Review',
-        writer: 'Ahmed Mansour',
-        writerId: 'writer-ahmed',
-        score: 85,
-        seoScore: 88,
-        wordCount: 1650,
-        publishedAt: null,
-        updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-005',
-        title: 'Adventure Activities in Tel Aviv',
-        type: 'Guide',
-        status: 'Published',
-        writer: 'Omar Hassan',
-        writerId: 'writer-omar',
-        score: 94,
-        seoScore: 91,
-        wordCount: 2100,
-        publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-006',
-        title: 'Jerusalem Heritage Sites',
-        type: 'Guide',
-        status: 'Needs Review',
-        writer: 'Ahmed Mansour',
-        writerId: 'writer-ahmed',
-        score: 82,
-        seoScore: 86,
-        wordCount: 1890,
-        publishedAt: null,
-        updatedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-007',
-        title: 'Budget Travel in Southeast Asia',
-        type: 'Article',
-        status: 'Published',
-        writer: 'David Rodriguez',
-        writerId: 'writer-david',
-        score: 90,
-        seoScore: 93,
-        wordCount: 2300,
-        publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-008',
-        title: 'Eco-Friendly Hotels in Costa Rica',
-        type: 'Guide',
-        status: 'Draft',
-        writer: 'Layla Nasser',
-        writerId: 'writer-layla',
-        score: 75,
-        seoScore: 68,
-        wordCount: 980,
-        publishedAt: null,
-        updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-009',
-        title: 'Family Adventures in Orlando',
-        type: 'Guide',
-        status: 'Published',
-        writer: 'Rebecca Thompson',
-        writerId: 'writer-rebecca',
-        score: 97,
-        seoScore: 95,
-        wordCount: 2780,
-        publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'content-010',
-        title: 'Rome Colosseum Skip-the-Line Tips',
-        type: 'Article',
-        status: 'Needs Review',
-        writer: 'Sarah Mitchell',
-        writerId: 'writer-sarah',
-        score: 88,
-        seoScore: 90,
-        wordCount: 1420,
-        publishedAt: null,
-        updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-      },
-    ];
-
-    let filteredContent = contentItems;
-    if (status) {
-      filteredContent = filteredContent.filter(c => c.status.toLowerCase() === status.toLowerCase());
+    let whereConditions: any[] = [];
+    
+    if (statusFilter) {
+      whereConditions.push(eq(contents.status, statusFilter as any));
     }
-    if (type) {
-      filteredContent = filteredContent.filter(c => c.type.toLowerCase() === type.toLowerCase());
+    if (typeFilter) {
+      whereConditions.push(eq(contents.type, typeFilter as any));
     }
 
-    const paginatedContent = filteredContent.slice(offset, offset + limit);
+    const whereClause = whereConditions.length > 0 
+      ? and(...whereConditions)
+      : undefined;
+
+    const [contentItems, countResult] = await Promise.all([
+      db.select({
+        id: contents.id,
+        title: contents.title,
+        type: contents.type,
+        status: contents.status,
+        seoScore: contents.seoScore,
+        wordCount: contents.wordCount,
+        writerId: contents.writerId,
+        publishedAt: contents.publishedAt,
+        updatedAt: contents.updatedAt,
+        createdAt: contents.createdAt,
+      })
+        .from(contents)
+        .where(whereClause)
+        .orderBy(desc(contents.updatedAt))
+        .limit(limit)
+        .offset(offset),
+      
+      db.select({ count: sql<number>`count(*)::int` })
+        .from(contents)
+        .where(whereClause)
+        .then(r => r[0]?.count ?? 0),
+    ]);
+
+    const formattedContent = contentItems.map(item => ({
+      id: item.id,
+      title: item.title,
+      type: item.type,
+      status: item.status,
+      seoScore: item.seoScore || 0,
+      wordCount: item.wordCount || 0,
+      writerId: item.writerId,
+      publishedAt: item.publishedAt?.toISOString() || null,
+      updatedAt: item.updatedAt?.toISOString() || null,
+      createdAt: item.createdAt?.toISOString() || null,
+    }));
 
     res.json({
-      content: paginatedContent,
-      total: filteredContent.length,
+      content: formattedContent,
+      total: countResult,
       limit,
       offset,
     });
@@ -949,91 +767,55 @@ router.get('/content', async (req: Request, res: Response) => {
 });
 
 // ============================================================================
-// REVIEW QUEUE ENDPOINTS
+// REVIEW QUEUE ENDPOINTS - REAL DATA
 // ============================================================================
 
 /**
  * GET /api/octypo/review-queue
- * Returns items pending review
+ * Returns items pending review from real contents table
  */
 router.get('/review-queue', async (_req: Request, res: Response) => {
   try {
-    const reviewItems = [
-      {
-        id: 'review-001',
-        contentId: 'content-004',
-        title: 'Paris Walking Tours: Left Bank',
-        type: 'Article',
-        priority: 'high',
-        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-        quality: 85,
-        seo: 88,
-        issues: ['Missing meta description', 'Low image count'],
-        writer: 'Ahmed Mansour',
-        wordCount: 1650,
-      },
-      {
-        id: 'review-002',
-        contentId: 'content-006',
-        title: 'Jerusalem Heritage Sites',
-        type: 'Guide',
-        priority: 'medium',
-        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-        quality: 82,
-        seo: 86,
-        issues: ['Needs cultural sensitivity review', 'Add more FAQs'],
-        writer: 'Ahmed Mansour',
-        wordCount: 1890,
-      },
-      {
-        id: 'review-003',
-        contentId: 'content-010',
-        title: 'Rome Colosseum Skip-the-Line Tips',
-        type: 'Article',
-        priority: 'high',
-        createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        quality: 88,
-        seo: 90,
-        issues: ['Verify pricing information', 'Check opening hours'],
-        writer: 'Sarah Mitchell',
-        wordCount: 1420,
-      },
-      {
-        id: 'review-004',
-        contentId: 'content-011',
-        title: 'Bangkok Temple Etiquette',
-        type: 'Guide',
-        priority: 'low',
-        createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-        quality: 91,
-        seo: 87,
-        issues: ['Minor grammar fixes'],
-        writer: 'Fatima Al-Rashid',
-        wordCount: 1340,
-      },
-      {
-        id: 'review-005',
-        contentId: 'content-012',
-        title: 'New York Budget Eats',
-        type: 'Article',
-        priority: 'medium',
-        createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        quality: 79,
-        seo: 82,
-        issues: ['Add more restaurant options', 'Update prices', 'Add subway directions'],
-        writer: 'David Rodriguez',
-        wordCount: 1560,
-      },
-    ];
+    const reviewItems = await db.select({
+      id: contents.id,
+      title: contents.title,
+      type: contents.type,
+      status: contents.status,
+      seoScore: contents.seoScore,
+      wordCount: contents.wordCount,
+      writerId: contents.writerId,
+      createdAt: contents.createdAt,
+      updatedAt: contents.updatedAt,
+    })
+      .from(contents)
+      .where(eq(contents.status, 'in_review'))
+      .orderBy(desc(contents.createdAt))
+      .limit(100);
+
+    const formattedItems = reviewItems.map(item => ({
+      id: item.id,
+      contentId: item.id,
+      title: item.title,
+      type: item.type,
+      priority: item.seoScore && item.seoScore < 70 ? 'high' : 'medium',
+      createdAt: item.createdAt?.toISOString() || null,
+      quality: item.seoScore || 0,
+      seo: item.seoScore || 0,
+      issues: [],
+      writerId: item.writerId,
+      wordCount: item.wordCount || 0,
+    }));
+
+    const byPriority = {
+      high: formattedItems.filter(r => r.priority === 'high').length,
+      medium: formattedItems.filter(r => r.priority === 'medium').length,
+      low: formattedItems.filter(r => r.priority === 'low').length,
+    };
 
     res.json({
-      queue: reviewItems,
-      total: reviewItems.length,
-      byPriority: {
-        high: reviewItems.filter(r => r.priority === 'high').length,
-        medium: reviewItems.filter(r => r.priority === 'medium').length,
-        low: reviewItems.filter(r => r.priority === 'low').length,
-      },
+      queue: formattedItems,
+      total: formattedItems.length,
+      byPriority,
     });
   } catch (error) {
     log.error('[Octypo] Failed to get review queue', error);
@@ -1043,19 +825,30 @@ router.get('/review-queue', async (_req: Request, res: Response) => {
 
 /**
  * POST /api/octypo/review-queue/:id/approve
- * Approve a review item
+ * Approve a review item - updates real content status
  */
 router.post('/review-queue/:id/approve', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { notes, publishImmediately = false } = req.body;
 
+    const newStatus = publishImmediately ? 'published' : 'approved';
+    
+    await db.update(contents)
+      .set({
+        status: newStatus as any,
+        approvedAt: new Date(),
+        publishedAt: publishImmediately ? new Date() : undefined,
+        updatedAt: new Date(),
+      })
+      .where(eq(contents.id, id));
+
     log.info(`[Octypo] Review item ${id} approved`, { notes, publishImmediately });
 
     res.json({
       success: true,
       message: `Review item ${id} approved`,
-      action: publishImmediately ? 'Published' : 'Moved to drafts',
+      action: publishImmediately ? 'Published' : 'Approved',
       reviewedAt: new Date().toISOString(),
     });
   } catch (error) {
@@ -1066,12 +859,21 @@ router.post('/review-queue/:id/approve', async (req: Request, res: Response) => 
 
 /**
  * POST /api/octypo/review-queue/:id/reject
- * Reject a review item
+ * Reject a review item - updates real content status
  */
 router.post('/review-queue/:id/reject', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { reason, sendBackToWriter = true } = req.body;
+
+    const newStatus = sendBackToWriter ? 'draft' : 'archived';
+    
+    await db.update(contents)
+      .set({
+        status: newStatus as any,
+        updatedAt: new Date(),
+      })
+      .where(eq(contents.id, id));
 
     log.info(`[Octypo] Review item ${id} rejected`, { reason, sendBackToWriter });
 
@@ -1088,179 +890,63 @@ router.post('/review-queue/:id/reject', async (req: Request, res: Response) => {
 });
 
 // ============================================================================
-// AGENT ENDPOINTS (DETAILED)
+// AGENT ENDPOINTS (DETAILED) - REAL DATA
 // ============================================================================
 
 /**
  * GET /api/octypo/agents/writers/detailed
- * Returns writers with full personality info and stats
+ * Returns writers with full personality info and real stats from database
  */
 router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
-    const writerDetails = [
-      {
-        id: 'writer-sarah',
-        name: 'Sarah Mitchell',
-        specialty: 'International Travel & Luxury Experiences',
-        experienceYears: 15,
-        languagesCount: 4,
-        traits: ['Sophisticated', 'Warm', 'Detail-oriented', 'Cultured'],
-        quote: 'Travel is the only thing you buy that makes you richer.',
-        avatar: null,
-        stats: {
-          generated: 156,
-          successRate: 98.2,
-          avgQuality: 94.5,
-          avgSEO: 91.3,
-          avgWordCount: 2150,
-        },
-        expertise: ['luxury hotels', 'fine dining', 'cultural landmarks', 'first-class experiences'],
-        tone: 'Sophisticated yet approachable',
-        preferredDestinations: ['Paris', 'Tokyo', 'Dubai', 'Barcelona'],
-      },
-      {
-        id: 'writer-omar',
-        name: 'Omar Hassan',
-        specialty: 'Adventure & Active Travel',
-        experienceYears: 12,
-        languagesCount: 3,
-        traits: ['Energetic', 'Inspiring', 'Safety-conscious', 'Adventurous'],
-        quote: 'Adventure is worthwhile in itself.',
-        avatar: null,
-        stats: {
-          generated: 132,
-          successRate: 96.8,
-          avgQuality: 92.1,
-          avgSEO: 88.7,
-          avgWordCount: 1980,
-        },
-        expertise: ['outdoor activities', 'adventure sports', 'hiking', 'water sports', 'desert experiences'],
-        tone: 'Energetic and inspiring',
-        preferredDestinations: ['Dubai', 'New Zealand', 'Costa Rica', 'Iceland'],
-      },
-      {
-        id: 'writer-fatima',
-        name: 'Fatima Al-Rashid',
-        specialty: 'Culinary & Food Tourism',
+    const writers = AgentRegistry.getAllWriters();
+    
+    const writerStatsResult = await db.execute(sql`
+      SELECT 
+        ai_content->>'writerUsed' as writer_id,
+        COUNT(*)::int as generated,
+        COUNT(CASE WHEN content_generation_status = 'completed' THEN 1 END)::int as successful,
+        COALESCE(AVG((ai_content->>'qualityScore')::numeric), 0)::numeric(5,2) as avg_quality,
+        COALESCE(AVG((ai_content->>'processingTimeMs')::numeric), 0)::numeric(10,0) as avg_time
+      FROM tiqets_attractions
+      WHERE ai_content IS NOT NULL AND ai_content->>'writerUsed' IS NOT NULL
+      GROUP BY ai_content->>'writerUsed'
+    `);
+    
+    const statsMap = new Map<string, any>();
+    for (const row of writerStatsResult.rows as any[]) {
+      statsMap.set(row.writer_id, row);
+    }
+
+    const writerDetails = writers.map(writer => {
+      const persona = (writer as any).persona || {};
+      const stats = statsMap.get(writer.id) || { generated: 0, successful: 0, avg_quality: 0, avg_time: 0 };
+      const successRate = stats.generated > 0 ? (stats.successful / stats.generated) * 100 : 0;
+
+      return {
+        id: writer.id,
+        name: writer.name,
+        specialty: writer.specialty,
         experienceYears: 10,
-        languagesCount: 5,
-        traits: ['Warm', 'Sensory-rich', 'Cultural', 'Passionate'],
-        quote: 'Food is the universal language of hospitality.',
-        avatar: null,
-        stats: {
-          generated: 145,
-          successRate: 97.5,
-          avgQuality: 95.2,
-          avgSEO: 90.8,
-          avgWordCount: 2050,
-        },
-        expertise: ['local cuisine', 'food markets', 'cooking classes', 'restaurant reviews', 'food history'],
-        tone: 'Warm and sensory-rich',
-        preferredDestinations: ['Tokyo', 'Bangkok', 'Rome', 'Istanbul'],
-      },
-      {
-        id: 'writer-michael',
-        name: 'Michael Chen',
-        specialty: 'Business & MICE Travel',
-        experienceYears: 18,
         languagesCount: 3,
-        traits: ['Professional', 'Efficient', 'Detail-focused', 'Executive'],
-        quote: 'The world is a book, and business travelers read it cover to cover.',
+        traits: persona.tone ? [persona.tone] : [],
+        quote: '',
         avatar: null,
         stats: {
-          generated: 89,
-          successRate: 99.1,
-          avgQuality: 91.8,
-          avgSEO: 93.2,
-          avgWordCount: 1850,
+          generated: parseInt(stats.generated) || 0,
+          successRate: Math.round(successRate * 10) / 10,
+          avgQuality: parseFloat(stats.avg_quality) || 0,
+          avgSEO: 0,
+          avgWordCount: 0,
+          avgProcessingTimeMs: parseInt(stats.avg_time) || 0,
         },
-        expertise: ['business hotels', 'conference venues', 'networking spots', 'executive experiences'],
-        tone: 'Professional and efficient',
-        preferredDestinations: ['Singapore', 'Hong Kong', 'London', 'New York'],
-      },
-      {
-        id: 'writer-rebecca',
-        name: 'Rebecca Thompson',
-        specialty: 'Family & Multigenerational Travel',
-        experienceYears: 14,
-        languagesCount: 2,
-        traits: ['Friendly', 'Practical', 'Patient', 'Organized'],
-        quote: 'The best family memories are made on vacation.',
-        avatar: null,
-        stats: {
-          generated: 167,
-          successRate: 97.8,
-          avgQuality: 96.1,
-          avgSEO: 92.4,
-          avgWordCount: 2280,
-        },
-        expertise: ['family attractions', 'kid-friendly venues', 'accessibility', 'multigenerational trips'],
-        tone: 'Friendly and practical',
-        preferredDestinations: ['Orlando', 'London', 'Tokyo Disneyland', 'San Diego'],
-      },
-      {
-        id: 'writer-ahmed',
-        name: 'Ahmed Mansour',
-        specialty: 'Heritage & Cultural Tourism',
-        experienceYears: 20,
-        languagesCount: 6,
-        traits: ['Scholarly', 'Accessible', 'Respectful', 'Deep'],
-        quote: 'History is not the past, it is the present traveling with us.',
-        avatar: null,
-        stats: {
-          generated: 178,
-          successRate: 95.4,
-          avgQuality: 93.7,
-          avgSEO: 89.1,
-          avgWordCount: 2420,
-        },
-        expertise: ['historical sites', 'museums', 'architecture', 'religious sites', 'traditional crafts'],
-        tone: 'Scholarly yet accessible',
-        preferredDestinations: ['Jerusalem', 'Rome', 'Cairo', 'Athens'],
-      },
-      {
-        id: 'writer-david',
-        name: 'David Rodriguez',
-        specialty: 'Budget & Backpacker Travel',
-        experienceYears: 8,
-        languagesCount: 4,
-        traits: ['Resourceful', 'Enthusiastic', 'Street-smart', 'Authentic'],
-        quote: 'The best things in travel are often free.',
-        avatar: null,
-        stats: {
-          generated: 198,
-          successRate: 94.2,
-          avgQuality: 89.4,
-          avgSEO: 91.8,
-          avgWordCount: 1780,
-        },
-        expertise: ['budget tips', 'hostels', 'street food', 'free attractions', 'local transport'],
-        tone: 'Resourceful and enthusiastic',
-        preferredDestinations: ['Southeast Asia', 'South America', 'Eastern Europe', 'India'],
-      },
-      {
-        id: 'writer-layla',
-        name: 'Layla Nasser',
-        specialty: 'Sustainable & Eco Tourism',
-        experienceYears: 11,
-        languagesCount: 3,
-        traits: ['Thoughtful', 'Conscious', 'Responsible', 'Ethical'],
-        quote: 'Travel light, leave only footprints.',
-        avatar: null,
-        stats: {
-          generated: 112,
-          successRate: 96.5,
-          avgQuality: 92.8,
-          avgSEO: 88.3,
-          avgWordCount: 2100,
-        },
-        expertise: ['eco-lodges', 'conservation', 'responsible tourism', 'local communities', 'carbon footprint'],
-        tone: 'Thoughtful and conscious',
-        preferredDestinations: ['Costa Rica', 'Norway', 'Bhutan', 'New Zealand'],
-      },
-    ];
+        expertise: persona.expertise || [],
+        tone: persona.tone || '',
+        preferredDestinations: [],
+      };
+    });
 
     res.json({ writers: writerDetails });
   } catch (error) {
@@ -1271,39 +957,93 @@ router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
 
 /**
  * GET /api/octypo/agents/stats
- * Returns aggregate agent performance stats
+ * Returns aggregate agent performance stats from real database
  */
 router.get('/agents/stats', async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
+    const [overallStats, writerStats, recentStats] = await Promise.all([
+      db.execute(sql`
+        SELECT 
+          COUNT(*)::int as total_generated,
+          COUNT(CASE WHEN content_generation_status = 'completed' THEN 1 END)::int as successful,
+          COALESCE(AVG((ai_content->>'qualityScore')::numeric), 0)::numeric(5,2) as avg_quality,
+          COALESCE(AVG((ai_content->>'processingTimeMs')::numeric), 0)::numeric(10,0) as avg_time
+        FROM tiqets_attractions
+        WHERE ai_content IS NOT NULL
+      `).then(r => r.rows[0] as any),
+
+      db.execute(sql`
+        SELECT 
+          ai_content->>'writerUsed' as writer_id,
+          COUNT(*)::int as generated,
+          COUNT(CASE WHEN content_generation_status = 'completed' THEN 1 END)::int as successful,
+          COALESCE(AVG((ai_content->>'qualityScore')::numeric), 0)::numeric(5,2) as avg_quality
+        FROM tiqets_attractions
+        WHERE ai_content IS NOT NULL AND ai_content->>'writerUsed' IS NOT NULL
+        GROUP BY ai_content->>'writerUsed'
+        ORDER BY generated DESC
+      `).then(r => r.rows as any[]),
+
+      db.execute(sql`
+        SELECT 
+          COUNT(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '7 days' THEN 1 END)::int as last_7_days,
+          COUNT(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '30 days' THEN 1 END)::int as last_30_days,
+          COALESCE(AVG(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '7 days' THEN (ai_content->>'qualityScore')::numeric END), 0)::numeric(5,2) as quality_7_days,
+          COALESCE(AVG(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '30 days' THEN (ai_content->>'qualityScore')::numeric END), 0)::numeric(5,2) as quality_30_days
+        FROM tiqets_attractions
+        WHERE ai_content IS NOT NULL
+      `).then(r => r.rows[0] as any),
+    ]);
+
+    const writers = AgentRegistry.getAllWriters();
+    const writerNameMap = new Map(writers.map(w => [w.id, w.name]));
+
+    const totalGenerated = parseInt(overallStats.total_generated) || 0;
+    const successRate = totalGenerated > 0 ? (parseInt(overallStats.successful) / totalGenerated) * 100 : 0;
+
+    const byWriter = writerStats.map(row => {
+      const generated = parseInt(row.generated) || 0;
+      const successful = parseInt(row.successful) || 0;
+      return {
+        id: row.writer_id,
+        name: writerNameMap.get(row.writer_id) || row.writer_id,
+        generated,
+        successRate: generated > 0 ? Math.round((successful / generated) * 1000) / 10 : 0,
+        avgQuality: parseFloat(row.avg_quality) || 0,
+        avgSEO: 0,
+      };
+    });
+
+    const topByQuality = byWriter.length > 0 
+      ? byWriter.reduce((a, b) => a.avgQuality > b.avgQuality ? a : b)
+      : null;
+    const topByVolume = byWriter.length > 0 
+      ? byWriter.reduce((a, b) => a.generated > b.generated ? a : b)
+      : null;
+    const topBySuccessRate = byWriter.length > 0 
+      ? byWriter.reduce((a, b) => a.successRate > b.successRate ? a : b)
+      : null;
+
     const stats = {
       overall: {
-        totalGenerated: 1177,
-        avgSuccessRate: 96.9,
-        avgQuality: 93.2,
-        avgSEO: 90.7,
-        avgProcessingTime: 45.2,
+        totalGenerated,
+        avgSuccessRate: Math.round(successRate * 10) / 10,
+        avgQuality: parseFloat(overallStats.avg_quality) || 0,
+        avgSEO: 0,
+        avgProcessingTime: parseFloat(overallStats.avg_time) || 0,
       },
-      byWriter: [
-        { id: 'writer-sarah', name: 'Sarah Mitchell', generated: 156, successRate: 98.2, avgQuality: 94.5, avgSEO: 91.3 },
-        { id: 'writer-omar', name: 'Omar Hassan', generated: 132, successRate: 96.8, avgQuality: 92.1, avgSEO: 88.7 },
-        { id: 'writer-fatima', name: 'Fatima Al-Rashid', generated: 145, successRate: 97.5, avgQuality: 95.2, avgSEO: 90.8 },
-        { id: 'writer-michael', name: 'Michael Chen', generated: 89, successRate: 99.1, avgQuality: 91.8, avgSEO: 93.2 },
-        { id: 'writer-rebecca', name: 'Rebecca Thompson', generated: 167, successRate: 97.8, avgQuality: 96.1, avgSEO: 92.4 },
-        { id: 'writer-ahmed', name: 'Ahmed Mansour', generated: 178, successRate: 95.4, avgQuality: 93.7, avgSEO: 89.1 },
-        { id: 'writer-david', name: 'David Rodriguez', generated: 198, successRate: 94.2, avgQuality: 89.4, avgSEO: 91.8 },
-        { id: 'writer-layla', name: 'Layla Nasser', generated: 112, successRate: 96.5, avgQuality: 92.8, avgSEO: 88.3 },
-      ],
+      byWriter,
       topPerformers: {
-        byQuality: { id: 'writer-rebecca', name: 'Rebecca Thompson', score: 96.1 },
-        bySEO: { id: 'writer-michael', name: 'Michael Chen', score: 93.2 },
-        byVolume: { id: 'writer-david', name: 'David Rodriguez', count: 198 },
-        bySuccessRate: { id: 'writer-michael', name: 'Michael Chen', rate: 99.1 },
+        byQuality: topByQuality ? { id: topByQuality.id, name: topByQuality.name, score: topByQuality.avgQuality } : null,
+        bySEO: null,
+        byVolume: topByVolume ? { id: topByVolume.id, name: topByVolume.name, count: topByVolume.generated } : null,
+        bySuccessRate: topBySuccessRate ? { id: topBySuccessRate.id, name: topBySuccessRate.name, rate: topBySuccessRate.successRate } : null,
       },
       trends: {
-        last7Days: { generated: 234, avgQuality: 93.8 },
-        last30Days: { generated: 892, avgQuality: 93.1 },
+        last7Days: { generated: parseInt(recentStats.last_7_days) || 0, avgQuality: parseFloat(recentStats.quality_7_days) || 0 },
+        last30Days: { generated: parseInt(recentStats.last_30_days) || 0, avgQuality: parseFloat(recentStats.quality_30_days) || 0 },
       },
     };
 
@@ -1315,124 +1055,67 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
 });
 
 // ============================================================================
-// WORKFLOW ENDPOINTS
+// WORKFLOW ENDPOINTS - REAL DATA
 // ============================================================================
 
 /**
  * GET /api/octypo/workflows
- * Returns workflow list with status
+ * Returns workflow list from real workflow_instances table
  */
 router.get('/workflows', async (_req: Request, res: Response) => {
   try {
-    const workflows = [
-      {
-        id: 'wf-001',
-        contentTitle: 'Barcelona Travel Guide',
-        contentId: 'content-001',
-        status: 'completed',
-        currentStep: 'published',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 6,
-        totalSteps: 6,
-        startedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-        completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        duration: 24 * 60 * 60 * 1000,
-        writer: 'Sarah Mitchell',
-      },
-      {
-        id: 'wf-002',
-        contentTitle: 'Tokyo Street Food Guide',
-        contentId: 'content-002',
-        status: 'completed',
-        currentStep: 'published',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 6,
-        totalSteps: 6,
-        startedAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
-        completedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-        duration: 24 * 60 * 60 * 1000,
-        writer: 'Fatima Al-Rashid',
-      },
-      {
-        id: 'wf-003',
-        contentTitle: 'Dubai Luxury Hotels',
-        contentId: 'content-003',
-        status: 'running',
-        currentStep: 'translation',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 3,
-        totalSteps: 6,
-        startedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-        completedAt: null,
-        duration: null,
-        writer: 'Michael Chen',
-      },
-      {
-        id: 'wf-004',
-        contentTitle: 'Paris Walking Tours',
-        contentId: 'content-004',
-        status: 'running',
-        currentStep: 'review',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 2,
-        totalSteps: 6,
-        startedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-        completedAt: null,
-        duration: null,
-        writer: 'Ahmed Mansour',
-      },
-      {
-        id: 'wf-005',
-        contentTitle: 'Jerusalem Heritage Sites',
-        contentId: 'content-006',
-        status: 'running',
-        currentStep: 'review',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 2,
-        totalSteps: 6,
-        startedAt: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
-        completedAt: null,
-        duration: null,
-        writer: 'Ahmed Mansour',
-      },
-      {
-        id: 'wf-006',
-        contentTitle: 'Rome Colosseum Tips',
-        contentId: 'content-010',
-        status: 'pending',
-        currentStep: 'draft',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 1,
-        totalSteps: 6,
-        startedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        completedAt: null,
-        duration: null,
-        writer: 'Sarah Mitchell',
-      },
-      {
-        id: 'wf-007',
-        contentTitle: 'Singapore Hawker Centers',
-        contentId: 'content-013',
-        status: 'pending',
-        currentStep: 'draft',
-        steps: ['draft', 'review', 'translation', 'images', 'seo-check', 'published'],
-        completedSteps: 0,
-        totalSteps: 6,
-        startedAt: null,
-        completedAt: null,
-        duration: null,
-        writer: 'David Rodriguez',
-      },
-    ];
+    const workflowData = await db.select({
+      id: workflowInstances.id,
+      contentId: workflowInstances.contentId,
+      status: workflowInstances.status,
+      currentStep: workflowInstances.currentStep,
+      submittedAt: workflowInstances.submittedAt,
+      completedAt: workflowInstances.completedAt,
+      metadata: workflowInstances.metadata,
+      contentTitle: contents.title,
+      contentType: contents.type,
+      writerId: contents.writerId,
+    })
+      .from(workflowInstances)
+      .leftJoin(contents, eq(workflowInstances.contentId, contents.id))
+      .orderBy(desc(workflowInstances.submittedAt))
+      .limit(100);
+
+    const workflows = workflowData.map(wf => {
+      const steps = ['draft', 'review', 'translation', 'images', 'seo-check', 'published'];
+      const completedSteps = wf.currentStep || 0;
+      const duration = wf.submittedAt && wf.completedAt 
+        ? wf.completedAt.getTime() - wf.submittedAt.getTime()
+        : null;
+
+      return {
+        id: wf.id,
+        contentTitle: wf.contentTitle || 'Untitled',
+        contentId: wf.contentId,
+        status: wf.status || 'pending',
+        currentStep: steps[Math.min(completedSteps, steps.length - 1)],
+        steps,
+        completedSteps,
+        totalSteps: steps.length,
+        startedAt: wf.submittedAt?.toISOString() || null,
+        completedAt: wf.completedAt?.toISOString() || null,
+        duration,
+        writerId: wf.writerId,
+      };
+    });
+
+    const summary = {
+      completed: workflows.filter(w => w.status === 'completed' || w.status === 'approved').length,
+      running: workflows.filter(w => w.status === 'in_progress' || w.status === 'pending').length,
+      pending: workflows.filter(w => w.status === 'pending').length,
+      avgCompletionTime: workflows
+        .filter(w => w.duration)
+        .reduce((sum, w) => sum + (w.duration || 0), 0) / (workflows.filter(w => w.duration).length || 1),
+    };
 
     res.json({
       workflows,
-      summary: {
-        completed: workflows.filter(w => w.status === 'completed').length,
-        running: workflows.filter(w => w.status === 'running').length,
-        pending: workflows.filter(w => w.status === 'pending').length,
-        avgCompletionTime: 24 * 60 * 60 * 1000,
-      },
+      summary,
     });
   } catch (error) {
     log.error('[Octypo] Failed to get workflows', error);
