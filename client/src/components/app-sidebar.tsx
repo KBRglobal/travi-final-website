@@ -173,9 +173,15 @@ const sidebarModules: NavModule[] = [
     id: "octypo-engine",
     title: "Octypo Engine",
     icon: Bot,
+    defaultOpen: true,
     items: [
-      { title: "Dashboard", url: "/admin/octypo", icon: Bot, requiredPermission: "canEdit" },
-      { title: "Queue", url: "/admin/octypo?tab=queue", icon: Clock, requiredPermission: "canEdit" },
+      { title: "Dashboard", url: "/admin/octypo/dashboard", icon: LayoutDashboard },
+      { title: "Autopilot", url: "/admin/octypo/autopilot", icon: Zap },
+      { title: "Content", url: "/admin/octypo/content", icon: FileText },
+      { title: "Review Queue", url: "/admin/octypo/review-queue", icon: Eye },
+      { title: "Writers Room", url: "/admin/octypo/writers-room", icon: PenTool },
+      { title: "AI Agents", url: "/admin/octypo/ai-agents", icon: Bot },
+      { title: "Workflows", url: "/admin/octypo/workflows", icon: Workflow },
     ],
   },
   {

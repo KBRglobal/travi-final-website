@@ -124,6 +124,13 @@ const SeoEngineDashboard = lazy(() => import("@/pages/admin/seo-engine/SeoEngine
 const SeoEngineContentReport = lazy(() => import("@/pages/admin/seo-engine/SeoEngineContentReport"));
 const SeoEngineActionsQueue = lazy(() => import("@/pages/admin/seo-engine/SeoEngineActionsQueue"));
 const OctypoDashboard = lazy(() => import("@/pages/admin/octypo-dashboard"));
+const OctypoDashboardNew = lazy(() => import("@/pages/admin/octypo/dashboard"));
+const OctypoAutopilot = lazy(() => import("@/pages/admin/octypo/autopilot"));
+const OctypoContent = lazy(() => import("@/pages/admin/octypo/content"));
+const OctypoReviewQueue = lazy(() => import("@/pages/admin/octypo/review-queue"));
+const OctypoWritersRoom = lazy(() => import("@/pages/admin/octypo/writers-room"));
+const OctypoAIAgents = lazy(() => import("@/pages/admin/octypo/ai-agents"));
+const OctypoWorkflows = lazy(() => import("@/pages/admin/octypo/workflows"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function AdminPageLoader() {
@@ -283,6 +290,13 @@ function AdminRouter() {
         <Route path="/admin/seo-engine/contents" component={SeoEngineContentReport} />
         <Route path="/admin/seo-engine/actions" component={SeoEngineActionsQueue} />
         <Route path="/admin/octypo" component={OctypoDashboard} />
+        <Route path="/admin/octypo/dashboard" component={OctypoDashboardNew} />
+        <Route path="/admin/octypo/autopilot" component={OctypoAutopilot} />
+        <Route path="/admin/octypo/content" component={OctypoContent} />
+        <Route path="/admin/octypo/review-queue" component={OctypoReviewQueue} />
+        <Route path="/admin/octypo/writers-room" component={OctypoWritersRoom} />
+        <Route path="/admin/octypo/ai-agents" component={OctypoAIAgents} />
+        <Route path="/admin/octypo/workflows" component={OctypoWorkflows} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
