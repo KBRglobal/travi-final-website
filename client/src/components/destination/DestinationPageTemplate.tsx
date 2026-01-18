@@ -201,10 +201,12 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
 
 
         {/* 4b. TOP POIs - Hotels and Restaurants from TourPedia (barcelona, amsterdam) */}
-        <TopPOIs
-          destinationId={data.id}
-          destinationName={data.name}
-        />
+        <div id="hotels" className="scroll-mt-24">
+          <TopPOIs
+            destinationId={data.id}
+            destinationName={data.name}
+          />
+        </div>
 
         {/* 5. EDITORIAL NEWS - Magazine/media style headlines */}
         <div id="news" className="scroll-mt-24">
