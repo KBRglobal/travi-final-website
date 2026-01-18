@@ -9,7 +9,7 @@ import { consoleLogger } from "./console-logger";
 import { ssrMiddleware } from "./lib/ssr-middleware";
 import { setupMonitoring } from "./monitoring";
 import { apiVersioningMiddleware } from "./middleware/api-versioning";
-import { startJobWatchdog, stopJobWatchdog, initializeQueueSystem, shutdownQueueSystem } from "./octopus";
+// [REMOVED] Octopus imports - migrated to Octypo v2
 import { initializeContentSubscribers } from "./events";
 import { bootstrapFoundationMiddleware, initializeFoundationEvents } from "./foundation";
 import { validateRequiredEnvVars } from "./config/env-validator";
@@ -500,13 +500,7 @@ app.get('/sitemap', async (_req, res) => {
     stopTiqetsBackgroundGenerator();
     log("[TiqetsBackground] Background generator stopped", "server");
     
-    // Stop Octopus job watchdog
-    stopJobWatchdog();
-    log("[Octopus] Job watchdog stopped", "octopus");
-    
-    // Stop Octopus queue system worker
-    shutdownQueueSystem();
-    log("[Octopus] Queue system stopped", "octopus");
+    // [REMOVED] Octopus shutdown - migrated to Octypo v2
 
     // Stop accepting new connections
     httpServer.close(() => {

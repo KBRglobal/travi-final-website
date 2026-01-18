@@ -28,7 +28,8 @@ import {
 } from "./ai/auto-image-generator";
 import { automation } from "./automation";
 import { contentIntelligence } from "./content-intelligence";
-import { isRssEntityExtractionEnabled, processRssItemEntities } from "./octopus/rss-entity-bridge";
+// [REMOVED] Octopus RSS entity extraction - migrated to Octypo v2
+const isRssEntityExtractionEnabled = () => false; // Disabled - Octypo v2 handles this
 import { DUBAI_AREAS } from "./services/image-seo-service";
 import { jobQueue } from "./job-queue";
 import { cache } from "./cache";
