@@ -59,6 +59,8 @@ import {
   LayoutGrid,
   List,
   Kanban,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { ContentKanban } from "@/components/contents-kanban";
 import type { ContentWithRelations, Tag as TagType } from "@shared/schema";
@@ -458,12 +460,60 @@ export default function ContentList({ type }: ContentListProps) {
             Manage your {config.title.toLowerCase()} pages ({config.wordTarget})
           </p>
         </div>
-        <Link href={`${config.basePath}/new`}>
-          <Button data-testid={`button-new-${type}`}>
-            <Plus className="h-4 w-4 mr-2" />
-            New {config.singular}
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2" data-testid={`button-magic-ai-${type}`}>
+                <Sparkles className="h-4 w-4 text-purple-500" />
+                Magic AI
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem
+                onClick={() => navigate(`${config.basePath}/new?ai=true`)}
+                data-testid={`menu-item-magic-generate-${type}`}
+              >
+                <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+                Generate New {config.singular}
+              </DropdownMenuItem>
+              {selectedIds.length > 0 && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      toast({
+                        title: "Coming Soon",
+                        description: "Bulk translation generation will be available soon.",
+                      });
+                    }}
+                    data-testid="menu-item-magic-bulk-translate"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Translations ({selectedIds.length})
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      toast({
+                        title: "Coming Soon",
+                        description: "Bulk image generation will be available soon.",
+                      });
+                    }}
+                    data-testid="menu-item-magic-bulk-images"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Images ({selectedIds.length})
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Link href={`${config.basePath}/new`}>
+            <Button data-testid={`button-new-${type}`}>
+              <Plus className="h-4 w-4 mr-2" />
+              New {config.singular}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Card>
