@@ -406,8 +406,8 @@ function CollapsibleNavGroup({
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel 
             className={cn(
-              "flex items-center justify-between cursor-pointer hover:bg-sidebar-accent/50 rounded-md px-2 py-1.5 transition-colors",
-              hasActiveItem && "text-primary"
+              "flex items-center justify-between cursor-pointer rounded-md px-2 py-1.5",
+              hasActiveItem && "font-medium"
             )}
             data-testid={`nav-group-${module.id}`}
           >

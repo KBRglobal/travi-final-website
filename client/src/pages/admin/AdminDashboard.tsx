@@ -252,24 +252,18 @@ function HealthScoreCard({ score, loading }: { score: number; loading?: boolean 
     return "text-red-600 dark:text-red-400";
   };
 
-  const getScoreBg = (value: number) => {
-    if (value >= 80) return "bg-green-100 dark:bg-green-900/30";
-    if (value >= 60) return "bg-yellow-100 dark:bg-yellow-900/30";
-    return "bg-red-100 dark:bg-red-900/30";
-  };
-
   return (
-    <Card className={cn(getScoreBg(score))} data-testid="card-health-score">
+    <Card data-testid="card-health-score">
       <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-        <CardTitle className="text-sm font-medium">Content Health Score</CardTitle>
-        <Activity className="h-4 w-4" />
+        <CardTitle className="text-sm font-medium text-muted-foreground">Content Health</CardTitle>
+        <Activity className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className={cn("text-3xl font-bold", getScoreColor(score))}>
+        <div className={cn("text-2xl font-bold", getScoreColor(score))}>
           {score}%
         </div>
         <p className="text-xs text-muted-foreground mt-1">
-          Based on SEO, completeness & freshness
+          SEO, completeness & freshness
         </p>
       </CardContent>
     </Card>
@@ -405,7 +399,7 @@ function ActivityFeed({
       {activities.map((activity) => (
         <div
           key={activity.id}
-          className="flex items-start gap-3 p-3 rounded-lg hover-elevate transition-colors"
+          className="flex items-start gap-3 p-3 rounded-lg border-b border-border/50 last:border-b-0"
           data-testid={`activity-item-${activity.id}`}
         >
           <Avatar className="h-8 w-8">
@@ -442,50 +436,37 @@ const quickActions = [
     label: "Create Attraction",
     icon: MapPin,
     href: "/admin/attractions/new",
-    color: "text-blue-600 dark:text-blue-400",
     testId: "button-create-attraction",
   },
   {
     label: "Create Article",
     icon: Newspaper,
     href: "/admin/articles/new",
-    color: "text-green-600 dark:text-green-400",
     testId: "button-create-article",
   },
   {
     label: "Generate with AI",
     icon: Bot,
     href: "/admin/octopus",
-    color: "text-purple-600 dark:text-purple-400",
     testId: "button-generate-ai",
   },
   {
     label: "Run SEO Audit",
     icon: Search,
     href: "/admin/seo-audit",
-    color: "text-orange-600 dark:text-orange-400",
     testId: "button-seo-audit",
   },
   {
     label: "Bulk Translate",
     icon: Languages,
     href: "/admin/translations",
-    color: "text-cyan-600 dark:text-cyan-400",
     testId: "button-bulk-translate",
   },
   {
     label: "View Analytics",
     icon: BarChart3,
     href: "/admin/analytics",
-    color: "text-indigo-600 dark:text-indigo-400",
     testId: "button-view-analytics",
-  },
-  {
-    label: "Export Data",
-    icon: Download,
-    href: "/admin/settings",
-    color: "text-slate-600 dark:text-slate-400",
-    testId: "button-export-data",
   },
 ];
 
@@ -601,12 +582,12 @@ export default function AdminDashboard() {
                   <Button
                     key={action.href}
                     variant="ghost"
-                    className="w-full justify-start gap-3 h-auto py-3"
+                    className="w-full justify-start gap-3"
                     asChild
                     data-testid={action.testId}
                   >
                     <Link href={action.href}>
-                      <action.icon className={cn("h-5 w-5", action.color)} />
+                      <action.icon className="h-4 w-4 text-muted-foreground" />
                       <span>{action.label}</span>
                     </Link>
                   </Button>
