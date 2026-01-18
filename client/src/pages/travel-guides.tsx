@@ -124,6 +124,7 @@ const HERO_GUIDES = [
   { 
     name: "Paris", 
     city: "France",
+    attractions: 2847,
     image: "/cards/paris.webp", 
     alt: "Paris travel guide - Eiffel Tower and city skyline",
     title: "Paris Travel Guide",
@@ -133,6 +134,7 @@ const HERO_GUIDES = [
   { 
     name: "Dubai", 
     city: "UAE",
+    attractions: 856,
     image: "/cards/dubai.webp", 
     alt: "Dubai travel guide - Burj Khalifa and downtown skyline",
     title: "Dubai Travel Guide"
@@ -140,6 +142,7 @@ const HERO_GUIDES = [
   { 
     name: "Tokyo", 
     city: "Japan",
+    attractions: 3412,
     image: "/cards/tokyo.webp", 
     alt: "Tokyo travel guide - cityscape and temples",
     title: "Tokyo Travel Guide"
@@ -147,6 +150,7 @@ const HERO_GUIDES = [
   { 
     name: "New York", 
     city: "USA",
+    attractions: 2156,
     image: "/cards/new-york.webp", 
     alt: "New York travel guide - Manhattan skyline",
     title: "New York Travel Guide"
@@ -154,6 +158,7 @@ const HERO_GUIDES = [
   { 
     name: "London", 
     city: "UK",
+    attractions: 1923,
     image: "/cards/london.webp", 
     alt: "London travel guide - Big Ben and Thames",
     title: "London Travel Guide"
@@ -562,33 +567,6 @@ export default function TravelGuidesPage() {
                   </div>
                 </motion.div>
 
-                {/* Language Selector */}
-                <motion.div
-                  className="flex flex-wrap gap-3"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                >
-                  <Select value={selectedLocale} onValueChange={handleLocaleChange}>
-                    <SelectTrigger 
-                      className="w-56 h-12 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl"
-                      data-testid="language-selector"
-                    >
-                      <Languages className="h-4 w-4 mr-2 text-[#6443F4]" />
-                      <SelectValue>
-                        {SUPPORTED_LANGUAGES.find(l => l.code === selectedLocale)?.nativeName || "English"}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SUPPORTED_LANGUAGES.map(lang => (
-                        <SelectItem key={lang.code} value={lang.code}>
-                          {lang.nativeName} ({lang.label})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </motion.div>
-
                 {/* Carousel Dots */}
                 <motion.div 
                   className="flex gap-2 mt-8 justify-center lg:justify-start"
@@ -659,7 +637,7 @@ export default function TravelGuidesPage() {
                         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
                           <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                           <span className="font-bold text-slate-800">4.9</span>
-                          <span className="text-slate-500 text-sm">(Expert Guide)</span>
+                          <span className="text-slate-500 text-sm">({dest.attractions.toLocaleString()} attractions)</span>
                         </div>
                         <motion.div 
                           className="relative px-4 py-2 rounded-full bg-gradient-to-r from-[#6443F4] to-[#F24294] text-white text-sm font-semibold shadow-lg"
