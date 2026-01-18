@@ -158,14 +158,16 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/destinations/dubai/real-estate", priority: 0.9, changefreq: "daily" as const },
     { path: "/destinations/dubai/off-plan", priority: 0.9, changefreq: "daily" as const },
 
-    // Guides Hub + RAK Guides
+    // Guides Hub + RAK Guides (RAK guides stay under /guides, Dubai guides under /destinations/dubai/guides)
     { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
     { path: "/guides/wynn-al-marjan-island", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/jebel-jais-adventure", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/guides/dubai-to-rak-transport", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/guides/dubai-vs-rak", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/where-to-stay-rak", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/rak-real-estate-investment", priority: 0.7, changefreq: "monthly" as const },
+    
+    // Dubai-specific guides under /destinations/dubai/
+    { path: "/destinations/dubai/guides/rak-transport", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/destinations/dubai/guides/rak-comparison", priority: 0.7, changefreq: "monthly" as const },
 
     // Help Center - EXCLUDED: Currently broken ("Help center is currently unavailable")
     // { path: "/help", priority: 0.6, changefreq: "weekly" as const },
