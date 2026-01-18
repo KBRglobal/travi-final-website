@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useLocation } from "wouter";
 
 /**
@@ -8,14 +8,28 @@ import { useLocation } from "wouter";
 export function useUrlState<T extends Record<string, string>>(
   defaults: T
 ): [T, (updates: Partial<T>) => void] {
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
+  
+  // Stabilize defaults reference to prevent infinite re-renders
+  const defaultsRef = useRef(defaults);
+  const stableDefaults = useMemo(() => {
+    // Only update if keys or values changed
+    const current = defaultsRef.current;
+    const keys = Object.keys(defaults);
+    const currentKeys = Object.keys(current);
+    if (keys.length !== currentKeys.length || keys.some(k => defaults[k] !== current[k])) {
+      defaultsRef.current = defaults;
+      return defaults;
+    }
+    return current;
+  }, [JSON.stringify(defaults)]);
 
   // Parse current URL params
   const getParamsFromUrl = useCallback((): T => {
     const params = new URLSearchParams(window.location.search);
-    const result = { ...defaults };
+    const result = { ...stableDefaults };
 
-    for (const key of Object.keys(defaults)) {
+    for (const key of Object.keys(stableDefaults)) {
       const value = params.get(key);
       if (value !== null) {
         (result as Record<string, string>)[key] = value;
@@ -23,13 +37,21 @@ export function useUrlState<T extends Record<string, string>>(
     }
 
     return result;
-  }, [defaults]);
+  }, [stableDefaults]);
 
   const [state, setState] = useState<T>(getParamsFromUrl);
 
   // Sync state from URL on mount and URL changes
   useEffect(() => {
-    setState(getParamsFromUrl());
+    const newState = getParamsFromUrl();
+    // Only update if state actually changed
+    setState(prev => {
+      const keys = Object.keys(newState);
+      if (keys.length !== Object.keys(prev).length || keys.some(k => newState[k] !== prev[k])) {
+        return newState;
+      }
+      return prev;
+    });
   }, [location, getParamsFromUrl]);
 
   // Update URL when state changes
@@ -40,7 +62,7 @@ export function useUrlState<T extends Record<string, string>>(
 
       for (const [key, value] of Object.entries(newState)) {
         // Only add non-default values to URL
-        if (value && value !== defaults[key as keyof T]) {
+        if (value && value !== stableDefaults[key as keyof T]) {
           params.set(key, value);
         }
       }
@@ -52,7 +74,7 @@ export function useUrlState<T extends Record<string, string>>(
       window.history.replaceState(null, "", newPath);
       setState(newState);
     },
-    [state, defaults, location]
+    [state, stableDefaults, location]
   );
 
   return [state, updateState];

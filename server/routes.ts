@@ -204,6 +204,7 @@ import { controlPlaneRoutes, initControlPlane } from "./autonomy/control-plane";
 import { initEnforcement } from "./autonomy/enforcement";
 import { helpAdminRoutes, helpPublicRoutes } from "./help";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
+import octypoRoutes from "./routes/admin/octypo-routes";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
 import { growthOSRoutes } from "./growth-os";
 import traviRoutes from "./travi/routes";
@@ -17203,6 +17204,11 @@ Return as valid JSON.`,
   // TRAVI CONTENT GENERATION (Data collection, AI processing, location discovery)
   // ============================================================================
   app.use("/api/travi", requireAuth, requirePermission("canEdit"), traviRoutes);
+
+  // ============================================================================
+  // OCTYPO ENGINE (AI Content Generation System - Writers, Validators, Orchestrator)
+  // ============================================================================
+  app.use("/api/octypo", requireAuth, requirePermission("canEdit"), octypoRoutes);
 
   // ============================================================================
   // ENHANCEMENTS (Readability, CTAs, Search, Popups, Newsletter, Monetization, PWA)
