@@ -131,6 +131,8 @@ const OctypoReviewQueue = lazy(() => import("@/pages/admin/octypo/review-queue")
 const OctypoWritersRoom = lazy(() => import("@/pages/admin/octypo/writers-room"));
 const OctypoAIAgents = lazy(() => import("@/pages/admin/octypo/ai-agents"));
 const OctypoWorkflows = lazy(() => import("@/pages/admin/octypo/workflows"));
+const OctypoEngines = lazy(() => import("@/pages/admin/octypo/engines"));
+const OctypoQueueMonitor = lazy(() => import("@/pages/admin/octypo/queue-monitor"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function AdminPageLoader() {
@@ -297,6 +299,8 @@ function AdminRouter() {
         <Route path="/admin/octypo/writers-room" component={OctypoWritersRoom} />
         <Route path="/admin/octypo/ai-agents" component={OctypoAIAgents} />
         <Route path="/admin/octypo/workflows" component={OctypoWorkflows} />
+        <Route path="/admin/octypo/engines" component={OctypoEngines} />
+        <Route path="/admin/octypo/queue-monitor" component={OctypoQueueMonitor} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
