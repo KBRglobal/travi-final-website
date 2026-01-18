@@ -73,10 +73,10 @@ export async function seedHomepage(): Promise<{ success: boolean; message: strin
           searchPlaceholder: "Search attractions, hotels, restaurants...",
           mascotImage: MASCOT_IMAGE,
           quickLinks: [
-            { label: "Laws for Tourists", href: "/dubai/laws-for-tourists" },
-            { label: "Sheikh Mohammed", href: "/dubai/sheikh-mohammed-bin-rashid" },
-            { label: "24 Hours Open", href: "/dubai/24-hours-open" },
-            { label: "Free Things To Do", href: "/dubai/free-things-to-do" },
+            { label: "Laws for Tourists", href: "/destinations/dubai/laws-for-tourists" },
+            { label: "Sheikh Mohammed", href: "/destinations/dubai/sheikh-mohammed" },
+            { label: "24 Hours Open", href: "/destinations/dubai/24-hours-open" },
+            { label: "Free Things To Do", href: "/destinations/dubai/free-things-to-do" },
           ],
           stats: [
             { icon: "book", label: "Guides", dynamic: true },
@@ -88,10 +88,10 @@ export async function seedHomepage(): Promise<{ success: boolean; message: strin
           searchPlaceholder: "חיפוש אטרקציות, מלונות, מסעדות...",
           mascotImage: MASCOT_IMAGE,
           quickLinks: [
-            { label: "חוקים לתיירים", href: "/he/dubai/laws-for-tourists" },
-            { label: "שייח' מוחמד", href: "/he/dubai/sheikh-mohammed-bin-rashid" },
-            { label: "פתוח 24 שעות", href: "/he/dubai/24-hours-open" },
-            { label: "דברים בחינם לעשות", href: "/he/dubai/free-things-to-do" },
+            { label: "חוקים לתיירים", href: "/he/destinations/dubai/laws-for-tourists" },
+            { label: "שייח' מוחמד", href: "/he/destinations/dubai/sheikh-mohammed" },
+            { label: "פתוח 24 שעות", href: "/he/destinations/dubai/24-hours-open" },
+            { label: "דברים בחינם לעשות", href: "/he/destinations/dubai/free-things-to-do" },
           ],
           stats: [
             { icon: "book", label: "מדריכים", dynamic: true },

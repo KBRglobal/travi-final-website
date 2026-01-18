@@ -536,7 +536,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "Dining", labelHe: "מסעדות", href: "/dining", icon: "Utensils", sortOrder: 4 },
       { label: "Shopping", labelHe: "קניות", href: "/shopping", icon: "ShoppingBag", sortOrder: 5 },
       { label: "News", labelHe: "חדשות", href: "/news", icon: "Compass", sortOrder: 6 },
-      { label: "Real Estate", labelHe: "נדל\"ן", href: "/dubai-off-plan-properties", icon: "Sparkles", sortOrder: 7, isHighlighted: true, highlightStyle: "gradient" },
+      { label: "Real Estate", labelHe: "נדל\"ן", href: "/destinations/dubai/off-plan", icon: "Sparkles", sortOrder: 7, isHighlighted: true, highlightStyle: "gradient" },
     ];
 
     for (const item of navItems) {
@@ -579,10 +579,10 @@ router.post("/seed", async (_req: Request, res: Response) => {
 
     // Add featured guides
     const guidesData = [
-      { label: "Free Things to Do", labelHe: "דברים בחינם לעשות", href: "/dubai/free-things-to-do", icon: "Gift", sortOrder: 1 },
-      { label: "Open 24 Hours", labelHe: "פתוח 24 שעות", href: "/dubai/24-hours-open", icon: "Coffee", sortOrder: 2 },
-      { label: "Tribute to Sheikh Mohammed", labelHe: "מחווה לשייח' מוחמד", href: "/dubai/sheikh-mohammed-bin-rashid", icon: "Crown", sortOrder: 3 },
-      { label: "Laws for Tourists", labelHe: "חוקים לתיירים", href: "/dubai/laws-for-tourists", icon: "Scale", sortOrder: 4 },
+      { label: "Free Things to Do", labelHe: "דברים בחינם לעשות", href: "/destinations/dubai/free-things-to-do", icon: "Gift", sortOrder: 1 },
+      { label: "Open 24 Hours", labelHe: "פתוח 24 שעות", href: "/destinations/dubai/24-hours-open", icon: "Coffee", sortOrder: 2 },
+      { label: "Tribute to Sheikh Mohammed", labelHe: "מחווה לשייח' מוחמד", href: "/destinations/dubai/sheikh-mohammed", icon: "Crown", sortOrder: 3 },
+      { label: "Laws for Tourists", labelHe: "חוקים לתיירים", href: "/destinations/dubai/laws-for-tourists", icon: "Scale", sortOrder: 4 },
     ];
     for (const link of guidesData) {
       await db.insert(footerLinks).values({ sectionId: createdSections.guides, ...link, isActive: true, openInNewTab: false } as any);

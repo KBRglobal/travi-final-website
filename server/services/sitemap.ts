@@ -154,9 +154,9 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/destinations/rome", priority: 0.8, changefreq: "weekly" as const },
     { path: "/destinations/ras-al-khaimah", priority: 0.8, changefreq: "weekly" as const },
 
-    // Off-Plan Real Estate (only implemented pages)
-    { path: "/dubai-real-estate", priority: 0.9, changefreq: "daily" as const },
-    { path: "/dubai-off-plan-properties", priority: 0.9, changefreq: "daily" as const },
+    // Dubai Real Estate (under /destinations/dubai/ hierarchy)
+    { path: "/destinations/dubai/real-estate", priority: 0.9, changefreq: "daily" as const },
+    { path: "/destinations/dubai/off-plan", priority: 0.9, changefreq: "daily" as const },
 
     // Guides Hub + RAK Guides
     { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
