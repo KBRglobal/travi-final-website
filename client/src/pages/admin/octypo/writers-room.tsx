@@ -1,12 +1,37 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Users, ShieldCheck, Target } from "lucide-react";
 
-interface Writer {
+interface WriterFromAPI {
+  id: string;
+  name: string;
+  specialty: string;
+  experienceYears: number;
+  languagesCount: number;
+  traits: string[];
+  stats: {
+    generated: number;
+    successRate: number;
+    avgQuality: number;
+    avgProcessingTimeMs: number;
+  };
+  expertise: string[];
+  tone: string;
+}
+
+interface ValidatorFromAPI {
+  id: string;
+  name: string;
+  specialty: string;
+}
+
+interface DisplayWriter {
   id: string;
   name: string;
   initials: string;
@@ -20,122 +45,86 @@ interface Writer {
   color: string;
 }
 
-const mockWriters: Writer[] = [
-  {
-    id: "1",
-    name: "Sarah Mitchell",
-    initials: "SM",
-    specialty: "Long-form Travel Articles",
-    type: "writer",
-    description: "Sarah is a seasoned travel journalist with a passion for uncovering the soul of every destination. With 12 years of...",
-    experience: 12,
-    languages: 3,
-    traits: ["Creative", "Warm", "Adventurous"],
-    quote: "Every destination has a story waiting to be told.",
-    color: "bg-teal-500",
-  },
-  {
-    id: "2",
-    name: "Michael Chen",
-    initials: "MC",
-    specialty: "Day-by-Day Itineraries",
-    type: "writer",
-    description: "Michael is the master of logistics, turning complex multi-destination trips into seamless day-by-day adventures. His...",
-    experience: 8,
-    languages: 3,
-    traits: ["Analytical", "Detail-oriented", "Methodical"],
-    quote: "The best trip is a well-planned trip.",
-    color: "bg-green-500",
-  },
-  {
-    id: "3",
-    name: "David Rodriguez",
-    initials: "DR",
-    specialty: "Comprehensive Destination Guides",
-    type: "writer",
-    description: "David writes the definitive guides that travelers print out and stuff in their backpacks.",
-    experience: 15,
-    languages: 4,
-    traits: ["Passionate", "Warm", "Enthusiastic"],
-    quote: "To understand a place, you must walk its streets and talk to its people.",
-    color: "bg-purple-500",
-  },
-  {
-    id: "4",
-    name: "Rebecca Thompson",
-    initials: "RT",
-    specialty: "Hotel & Restaurant Reviews",
-    type: "writer",
-    description: "Rebecca specializes in hospitality reviews with an eye for detail and quality.",
-    experience: 7,
-    languages: 2,
-    traits: ["Critical", "Fair", "Thorough"],
-    quote: "Great hospitality transforms a good trip into an unforgettable one.",
-    color: "bg-pink-500",
-  },
-  {
-    id: "5",
-    name: "Ahmed Mansour",
-    initials: "AM",
-    specialty: "Budget Travel Tips",
-    type: "writer",
-    description: "Ahmed helps travelers make the most of their budget without sacrificing experiences.",
-    experience: 10,
-    languages: 5,
-    traits: ["Practical", "Resourceful", "Friendly"],
-    quote: "The best experiences don't always come with the highest price tag.",
-    color: "bg-orange-500",
-  },
-  {
-    id: "6",
-    name: "Layla Nasser",
-    initials: "LN",
-    specialty: "Local Events & Festivals",
-    type: "writer",
-    description: "Layla captures the spirit of local celebrations and cultural events.",
-    experience: 6,
-    languages: 3,
-    traits: ["Enthusiastic", "Cultural", "Vibrant"],
-    quote: "Festivals reveal the heart of a culture.",
-    color: "bg-yellow-500",
-  },
-  {
-    id: "7",
-    name: "Fact Checker",
-    initials: "FC",
-    specialty: "Factual Accuracy",
-    type: "validator",
-    description: "Verifies facts and claims in all content.",
-    experience: 10,
-    languages: 1,
-    traits: ["Accurate", "Thorough", "Reliable"],
-    quote: "Facts matter.",
-    color: "bg-blue-500",
-  },
-  {
-    id: "8",
-    name: "SEO Optimizer",
-    initials: "SO",
-    specialty: "SEO Enhancement",
-    type: "seo",
-    description: "Optimizes content for search engines.",
-    experience: 8,
-    languages: 1,
-    traits: ["Technical", "Strategic", "Data-driven"],
-    quote: "Great content deserves to be found.",
-    color: "bg-indigo-500",
-  },
+const AVATAR_COLORS = [
+  "bg-teal-500",
+  "bg-green-500",
+  "bg-purple-500",
+  "bg-pink-500",
+  "bg-orange-500",
+  "bg-yellow-500",
+  "bg-blue-500",
+  "bg-indigo-500",
+  "bg-rose-500",
+  "bg-cyan-500",
 ];
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function mapWriterToDisplay(writer: WriterFromAPI, index: number): DisplayWriter {
+  return {
+    id: writer.id,
+    name: writer.name,
+    initials: getInitials(writer.name),
+    specialty: writer.specialty,
+    type: "writer",
+    description: `Specialized in ${writer.expertise?.join(", ") || writer.specialty}. ${writer.stats?.generated > 0 ? `Has generated ${writer.stats.generated} pieces of content.` : ""}`,
+    experience: writer.experienceYears || 0,
+    languages: writer.languagesCount || 0,
+    traits: writer.traits || [],
+    quote: writer.tone ? `Writing tone: ${writer.tone}` : "",
+    color: AVATAR_COLORS[index % AVATAR_COLORS.length],
+  };
+}
+
+function mapValidatorToDisplay(validator: ValidatorFromAPI, index: number): DisplayWriter {
+  const isValidator = validator.specialty.toLowerCase().includes("fact") || 
+                      validator.specialty.toLowerCase().includes("valid") ||
+                      validator.specialty.toLowerCase().includes("accuracy");
+  return {
+    id: validator.id,
+    name: validator.name,
+    initials: getInitials(validator.name),
+    specialty: validator.specialty,
+    type: isValidator ? "validator" : "seo",
+    description: `Specialized in ${validator.specialty}.`,
+    experience: 0,
+    languages: 0,
+    traits: [],
+    quote: "",
+    color: AVATAR_COLORS[(index + 5) % AVATAR_COLORS.length],
+  };
+}
 
 export default function OctypoWritersRoomPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
-  const writers = mockWriters.filter(w => w.type === "writer");
-  const validators = mockWriters.filter(w => w.type === "validator");
-  const seoSpecialists = mockWriters.filter(w => w.type === "seo");
+  const { data: writersData, isLoading: isLoadingWriters } = useQuery<{ writers: WriterFromAPI[] }>({
+    queryKey: ['/api/octypo/agents/writers/detailed'],
+  });
 
-  const filteredWriters = mockWriters.filter((writer) => {
+  const { data: validatorsData, isLoading: isLoadingValidators } = useQuery<ValidatorFromAPI[]>({
+    queryKey: ['/api/octypo/agents/validators'],
+  });
+
+  const isLoading = isLoadingWriters || isLoadingValidators;
+
+  const writerAgents: DisplayWriter[] = (writersData?.writers || []).map(mapWriterToDisplay);
+  const validatorAgents: DisplayWriter[] = (validatorsData || []).map(mapValidatorToDisplay);
+
+  const allAgents = [...writerAgents, ...validatorAgents];
+  const writers = allAgents.filter(w => w.type === "writer");
+  const validators = allAgents.filter(w => w.type === "validator");
+  const seoSpecialists = allAgents.filter(w => w.type === "seo");
+
+  const filteredWriters = allAgents.filter((writer) => {
     const matchesSearch = 
       writer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       writer.specialty.toLowerCase().includes(searchQuery.toLowerCase());
@@ -187,7 +176,7 @@ export default function OctypoWritersRoomPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList data-testid="tabs-filter">
             <TabsTrigger value="all" data-testid="tab-all">
-              All Agents ({mockWriters.length})
+              All Agents ({allAgents.length})
             </TabsTrigger>
             <TabsTrigger value="writers" data-testid="tab-writers">
               Writers ({writers.length})
@@ -208,6 +197,33 @@ export default function OctypoWritersRoomPage() {
           Our specialized writers create engaging travel content across different formats and styles.
         </p>
 
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card key={i} className="overflow-hidden">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-16 w-full mb-4" />
+                  <div className="flex gap-2 mb-4">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                  <div className="flex gap-1 mb-4">
+                    <Skeleton className="h-5 w-14 rounded-full" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                  <Skeleton className="h-10 w-full" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredWriters.map((writer) => (
             <Card key={writer.id} className="overflow-hidden" data-testid={`writer-card-${writer.id}`}>
@@ -246,13 +262,16 @@ export default function OctypoWritersRoomPage() {
                   ))}
                 </div>
 
-                <p className="text-sm italic text-muted-foreground border-l-2 border-primary/30 pl-3">
-                  "{writer.quote}"
-                </p>
+                {writer.quote && (
+                  <p className="text-sm italic text-muted-foreground border-l-2 border-primary/30 pl-3">
+                    "{writer.quote}"
+                  </p>
+                )}
               </CardContent>
             </Card>
           ))}
         </div>
+        )}
       </div>
     </div>
   );
