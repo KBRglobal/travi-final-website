@@ -6,11 +6,11 @@ export default function DistrictAlBarsha() {
     <DubaiDistrictTemplate
       title="Al Barsha Dubai Guide 2026 - Mall of the Emirates District"
       metaDescription="Explore Al Barsha, a popular residential area home to Mall of the Emirates. Guide to Ski Dubai, restaurants, apartments, and villas in Al Barsha."
-      canonicalPath="/dubai/al-barsha"
+      canonicalPath="/destinations/dubai/districts/al-barsha"
       keywords={["al barsha dubai", "mall of the emirates", "ski dubai", "al barsha apartments", "al barsha villas", "al barsha restaurants"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Al Barsha", href: "/dubai/al-barsha" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Al Barsha", href: "/destinations/dubai/districts/al-barsha" }
       ]}
       hero={{
         title: "Al Barsha",

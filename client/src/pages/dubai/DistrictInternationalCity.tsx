@@ -6,11 +6,11 @@ export default function DistrictInternationalCity() {
     <DubaiDistrictTemplate
       title="International City Dubai Guide 2026 - Affordable Living"
       metaDescription="Discover International City, one of Dubai's most affordable communities. Guide to themed clusters, Dragon Mart, apartments, and budget-friendly living."
-      canonicalPath="/dubai/international-city"
+      canonicalPath="/destinations/dubai/districts/international-city"
       keywords={["international city dubai", "dragon mart dubai", "international city apartments", "cheap rent dubai", "affordable dubai", "budget dubai living"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "International City", href: "/dubai/international-city" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "International City", href: "/destinations/dubai/districts/international-city" }
       ]}
       hero={{
         title: "International City",

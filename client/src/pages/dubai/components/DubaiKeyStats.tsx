@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
@@ -6,7 +6,7 @@ export interface DubaiKeyStat {
   value: string;
   label: string;
   subtext?: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
 }
 
 export interface DubaiKeyStatsProps {
@@ -66,7 +66,7 @@ export function DubaiKeyStats({
           viewport={{ once: true, margin: "-100px" }}
         >
           {stats.map((stat, index) => {
-            const Icon = stat.icon;
+            const Icon = stat.icon || TrendingUp;
             return (
               <motion.div key={index} variants={itemVariants}>
                 <Card className={`text-center ${variant === "compact" ? "p-4" : "p-6"} h-full`}>

@@ -6,11 +6,11 @@ export default function DistrictOldDubai() {
     <DubaiDistrictTemplate
       title="Old Dubai Guide 2026 - Deira, Bur Dubai & Gold Souk"
       metaDescription="Explore Old Dubai including Deira and Bur Dubai. Visit the Gold Souk, Spice Souk, Dubai Creek, Al Fahidi, and experience authentic Emirati culture."
-      canonicalPath="/dubai/old-dubai"
+      canonicalPath="/destinations/dubai/districts/old-dubai"
       keywords={["old dubai", "deira dubai", "bur dubai", "gold souk dubai", "spice souk", "dubai creek", "al fahidi"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Old Dubai", href: "/dubai/old-dubai" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Old Dubai", href: "/destinations/dubai/districts/old-dubai" }
       ]}
       hero={{
         title: "Old Dubai",

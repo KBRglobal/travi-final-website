@@ -6,11 +6,11 @@ export default function DistrictDubaiSouth() {
     <DubaiDistrictTemplate
       title="Dubai South Guide 2026 - Expo City & Airport District"
       metaDescription="Discover Dubai South, the city within a city near Al Maktoum Airport. Guide to Expo City, affordable housing, and investment in Dubai South."
-      canonicalPath="/dubai/dubai-south"
+      canonicalPath="/destinations/dubai/districts/dubai-south"
       keywords={["dubai south", "expo city dubai", "al maktoum airport", "dubai south apartments", "dubai south villas", "expo dubai"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Dubai South", href: "/dubai/dubai-south" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Dubai South", href: "/destinations/dubai/districts/dubai-south" }
       ]}
       hero={{
         title: "Dubai South",
