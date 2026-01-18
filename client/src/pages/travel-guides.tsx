@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import { SEOHead } from "@/components/seo-head";
 import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
-import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
@@ -62,46 +62,102 @@ interface GuidesResponse {
   offset: number;
 }
 
-// Hero video for travel guides
-const heroVideoUrl = "https://videos.pexels.com/video-files/3015510/3015510-uhd_2560_1440_24fps.mp4";
+// Hero animation styles (matching attractions.tsx)
+const heroAnimationStyles = `
+  @keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 
-// Floating destination images for parallax effect with reliable fallbacks
-const floatingDestinations = [
-  { 
-    name: "Dubai", 
-    image: "/cards/dubai.webp", 
-    fallback: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=200&h=200&fit=crop&q=80",
-    x: 10, 
-    y: 20 
-  },
+  @keyframes morph {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  }
+
+  @keyframes rotate-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .animated-gradient-text {
+    background: linear-gradient(
+      135deg,
+      #6443F4 0%,
+      #8B5CF6 30%,
+      #F24294 70%,
+      #6443F4 100%
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 6s ease infinite;
+  }
+
+  .morph-blob {
+    animation: morph 8s ease-in-out infinite;
+  }
+
+  .rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  .bento-card {
+    border-radius: 1.5rem;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .thumb-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .thumb-item:hover, .thumb-item.active {
+    transform: scale(1.05);
+  }
+`;
+
+// Hero guide destinations for the interactive card gallery
+const HERO_GUIDES = [
   { 
     name: "Paris", 
+    city: "France",
     image: "/cards/paris.webp", 
-    fallback: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=200&h=200&fit=crop&q=80",
-    x: 75, 
-    y: 30 
+    alt: "Paris travel guide - Eiffel Tower and city skyline",
+    title: "Paris Travel Guide",
+    loading: "eager" as const,
+    fetchPriority: "high" as const
+  },
+  { 
+    name: "Dubai", 
+    city: "UAE",
+    image: "/cards/dubai.webp", 
+    alt: "Dubai travel guide - Burj Khalifa and downtown skyline",
+    title: "Dubai Travel Guide"
   },
   { 
     name: "Tokyo", 
+    city: "Japan",
     image: "/cards/tokyo.webp", 
-    fallback: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=200&h=200&fit=crop&q=80",
-    x: 15, 
-    y: 65 
+    alt: "Tokyo travel guide - cityscape and temples",
+    title: "Tokyo Travel Guide"
   },
   { 
     name: "New York", 
+    city: "USA",
     image: "/cards/new-york.webp", 
-    fallback: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=200&h=200&fit=crop&q=80",
-    x: 80, 
-    y: 70 
+    alt: "New York travel guide - Manhattan skyline",
+    title: "New York Travel Guide"
   },
-];
-
-// Stats for the hero section
-const heroStats = [
-  { icon: Map, value: "50+", label: "Destinations" },
-  { icon: Languages, value: "24", label: "Languages" },
-  { icon: Users, value: "1M+", label: "Travelers Helped" },
+  { 
+    name: "London", 
+    city: "UK",
+    image: "/cards/london.webp", 
+    alt: "London travel guide - Big Ben and Thames",
+    title: "London Travel Guide"
+  },
 ];
 
 // Enhanced guide card with premium styling
@@ -280,17 +336,11 @@ export default function TravelGuidesPage() {
   const [location] = useLocation();
   const [selectedLocale, setSelectedLocale] = useState("en");
   const [searchQuery, setSearchQuery] = useState("");
-  const heroRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const shouldReduceMotion = useReducedMotion();
   
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const smoothHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
+  const dest = HERO_GUIDES[currentIndex];
+  const goTo = (i: number) => setCurrentIndex(i);
 
   const { data, isLoading, error } = useQuery<GuidesResponse>({
     queryKey: ["/api/public/guides", selectedLocale],
@@ -345,8 +395,10 @@ export default function TravelGuidesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
-      <SEOHead
+    <>
+      <style>{heroAnimationStyles}</style>
+      <div className="min-h-screen bg-white dark:bg-slate-950">
+        <SEOHead
         title="Travel Guides | TRAVI - Complete Destination Guides"
         description="Explore comprehensive travel guides for destinations worldwide. Get insider tips, local recommendations, and everything you need for your next adventure."
         canonicalPath="/guides"
@@ -371,153 +423,305 @@ export default function TravelGuidesPage() {
 
       <PublicNav />
 
-      {/* Hero Section - Light theme aligned with site design */}
-      <section ref={heroRef} className="relative pt-28 pb-20 lg:pt-32 lg:pb-28 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-purple-950/20">
-        {/* Decorative background elements */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#E84C9A]/10 to-[#6443F4]/10 rounded-full blur-3xl" />
+      {/* Split-Screen Immersive Hero - Matching attractions.tsx style */}
+      <section 
+        className="relative min-h-screen bg-slate-50 dark:bg-slate-950"
+        data-testid="hero-section"
+        aria-label="Explore travel guides for destinations worldwide"
+      >
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          {/* Morphing blobs - adapted for dark mode */}
+          <div className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-200/40 via-pink-100/30 to-purple-100/40 dark:from-purple-900/30 dark:via-pink-900/20 dark:to-purple-900/30 morph-blob blur-3xl" />
+          <div className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-blue-100/30 via-purple-100/20 to-pink-100/30 dark:from-blue-900/20 dark:via-purple-900/15 dark:to-pink-900/20 morph-blob blur-3xl" style={{ animationDelay: '-4s' }} />
+
+          {/* Rotating gradient ring - opacity adjusted for dark mode */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rotate-slow opacity-10 dark:opacity-20">
+            <div className="w-full h-full rounded-full border-[40px] border-transparent" style={{ borderTopColor: '#6443F4', borderRightColor: '#F24294' }} />
+          </div>
+
+          {/* Grid dots - adjusted for dark mode */}
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(#6443F4 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
         </div>
 
-        {/* Floating destination chips - decorative only on larger screens */}
-        {!shouldReduceMotion && floatingDestinations.map((dest, i) => (
-          <motion.div
-            key={dest.name}
-            className="absolute hidden lg:block"
-            style={{ 
-              left: `${dest.x}%`, 
-              top: `${dest.y}%`,
-            }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 + i * 0.2, duration: 0.8 }}
-          >
-            <div className="group relative">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:border-[#6443F4]/50">
-                <img 
-                  src={dest.image} 
-                  alt={dest.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (target.src !== dest.fallback) {
-                      target.src = dest.fallback;
-                    }
-                  }}
-                />
+        <div className="relative z-10 min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24">
+          <div className="max-w-[90rem] mx-auto w-full">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+
+              {/* Left Side - Content */}
+              <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24">
+
+                {/* Top Badge - Blue dot style */}
+                <motion.div 
+                  className="mb-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                >
+                  <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-[#6443F4]/10 border border-[#6443F4]/20">
+                    <div className="relative flex items-center justify-center">
+                      <span className="absolute w-3 h-3 rounded-full bg-[#6443F4] animate-ping opacity-75" />
+                      <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-guides-count">
+                      <span className="text-[#6443F4]">{data?.total ? `${data.total}+` : "50+"}</span> guides in <span className="text-[#6443F4]">{SUPPORTED_LANGUAGES.length}</span> languages
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* Main Headline - SEO focused with underline accent */}
+                <motion.h1 
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <span 
+                    className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
+                    style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                  >
+                    Travel
+                  </span>
+                  <span className="relative inline-block">
+                    <span 
+                      className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
+                      style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                    >
+                      Guides
+                    </span>
+                    {/* Gradient underline accent */}
+                    <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
+                  </span>
+                </motion.h1>
+
+                {/* Subtitle */}
+                <motion.p 
+                  className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.35 }}
+                >
+                  <span className="font-medium text-slate-700 dark:text-slate-300">In-depth travel guides</span> for Paris, Dubai, Tokyo, and top destinations worldwide. Local tips, hidden gems, and insider recommendations.
+                </motion.p>
+
+                {/* Inline Stats Row (attractions pattern) */}
+                <motion.dl 
+                  className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                >
+                  {[
+                    { num: data?.total ? `${data.total}+` : '50+', label: 'GUIDES', srLabel: `Over ${data?.total || 50} travel guides` },
+                    { num: `${SUPPORTED_LANGUAGES.length}`, label: 'LANGUAGES', srLabel: `${SUPPORTED_LANGUAGES.length} languages` },
+                    { num: '4.9', label: 'RATING', srLabel: '4.9 star rating' }
+                  ].map((stat, i) => (
+                    <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                      <div className="text-center lg:text-left">
+                        <dt className="sr-only">{stat.srLabel}</dt>
+                        <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+                          {stat.num}
+                        </dd>
+                        <div className="text-[10px] sm:text-[11px] text-slate-400 tracking-wider mt-1" aria-hidden="true">{stat.label}</div>
+                      </div>
+                      {i < 2 && <div className="hidden sm:block w-px h-10 sm:h-12 bg-gradient-to-b from-transparent via-slate-200 dark:via-slate-700 to-transparent" aria-hidden="true" />}
+                    </div>
+                  ))}
+                </motion.dl>
+
+                {/* Search Bar with Button */}
+                <motion.div 
+                  className="relative max-w-xl w-full mb-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.55 }}
+                >
+                  <div className="absolute -inset-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
+                  <div className="relative flex items-center bg-white dark:bg-slate-800 backdrop-blur-xl rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <Search className="w-5 h-5 text-[#6443F4] ml-5 shrink-0" aria-hidden="true" />
+                    <Input
+                      type="text"
+                      placeholder="Search Paris, Dubai, Tokyo guides..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="flex-1 h-14 md:h-16 border-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-0 text-base md:text-lg"
+                      data-testid="search-guides-input"
+                      aria-label="Search travel guides by destination"
+                    />
+                    <Button
+                      onClick={() => {
+                        const el = document.getElementById('guides-grid');
+                        el?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="mr-2 md:mr-3 rounded-lg bg-[#6443F4] text-white"
+                      data-testid="button-hero-search"
+                      aria-label="Search guides"
+                    >
+                      Search
+                    </Button>
+                  </div>
+                </motion.div>
+
+                {/* Language Selector */}
+                <motion.div
+                  className="flex flex-wrap gap-3"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <Select value={selectedLocale} onValueChange={handleLocaleChange}>
+                    <SelectTrigger 
+                      className="w-56 h-12 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl"
+                      data-testid="language-selector"
+                    >
+                      <Languages className="h-4 w-4 mr-2 text-[#6443F4]" />
+                      <SelectValue>
+                        {SUPPORTED_LANGUAGES.find(l => l.code === selectedLocale)?.nativeName || "English"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SUPPORTED_LANGUAGES.map(lang => (
+                        <SelectItem key={lang.code} value={lang.code}>
+                          {lang.nativeName} ({lang.label})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </motion.div>
+
+                {/* Carousel Dots */}
+                <motion.div 
+                  className="flex gap-2 mt-8 justify-center lg:justify-start"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                  role="tablist"
+                  aria-label="Guide carousel navigation"
+                >
+                  {HERO_GUIDES.map((d, i) => (
+                    <button
+                      key={i}
+                      onClick={() => goTo(i)}
+                      role="tab"
+                      aria-selected={currentIndex === i}
+                      aria-label={`View ${d.name} guide`}
+                      className={cn(
+                        "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
+                        currentIndex === i 
+                          ? "w-8 bg-gradient-to-r from-[#6443F4] to-[#8B5CF6]" 
+                          : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
+                      )}
+                    />
+                  ))}
+                </motion.div>
               </div>
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-medium text-slate-700 dark:text-slate-200 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-slate-100 dark:border-slate-700">
-                {dest.name}
+
+              {/* Right Side - Bento Grid Gallery */}
+              <div className="relative px-6 sm:px-12 lg:px-8 lg:pr-12 xl:pr-16">
+                <motion.div 
+                  className="relative w-full max-w-lg mx-auto flex flex-col lg:h-[65vh] lg:min-h-[500px]"
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+
+                  {/* Main Featured Image */}
+                  <div 
+                    className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 rounded-2xl overflow-hidden"
+                    role="region"
+                    aria-label="Featured guide"
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.img 
+                        key={currentIndex}
+                        src={dest.image} 
+                        alt={dest.alt}
+                        title={dest.title}
+                        width={1200}
+                        height={1600}
+                        className="w-full h-full object-cover"
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.7 }}
+                        loading={dest.loading || "lazy"}
+                        {...(dest.fetchPriority && { fetchpriority: dest.fetchPriority })}
+                      />
+                    </AnimatePresence>
+
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
+
+                    {/* Content overlay */}
+                    <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
+                      {/* Top Row */}
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                          <span className="font-bold text-slate-800">4.9</span>
+                          <span className="text-slate-500 text-sm">(Expert Guide)</span>
+                        </div>
+                        <motion.div 
+                          className="relative px-4 py-2 rounded-full bg-gradient-to-r from-[#6443F4] to-[#F24294] text-white text-sm font-semibold shadow-lg"
+                          animate={{ scale: [1, 1.02, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
+                          In-Depth
+                        </motion.div>
+                      </div>
+
+                      {/* Bottom Content */}
+                      <div>
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+                          {dest.name}
+                        </h3>
+                        <p className="text-white/80 mb-4">{dest.city} Travel Guide</p>
+                        <Link href={`/guides/${dest.name.toLowerCase().replace(' ', '-')}-travel-guide?locale=${selectedLocale}`}>
+                          <Button 
+                            className="rounded-full bg-white/20 backdrop-blur-md hover:bg-white/30 text-white border border-white/30 px-6"
+                            data-testid={`button-read-${dest.name.toLowerCase()}-guide`}
+                          >
+                            Read Guide
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Thumbnail Navigation */}
+                  <div 
+                    className="flex gap-2 mt-4 justify-center"
+                    role="tablist"
+                    aria-label="Guide thumbnail navigation"
+                  >
+                    {HERO_GUIDES.map((guide, i) => (
+                      <button
+                        key={i}
+                        onClick={() => goTo(i)}
+                        role="tab"
+                        aria-selected={currentIndex === i}
+                        aria-label={`View ${guide.name} guide`}
+                        className={cn(
+                          "w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-300",
+                          currentIndex === i 
+                            ? "border-[#6443F4] ring-2 ring-[#6443F4]/30 scale-110" 
+                            : "border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100"
+                        )}
+                      >
+                        <img 
+                          src={guide.image} 
+                          alt={guide.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
               </div>
             </div>
-          </motion.div>
-        ))}
-
-        {/* Hero Content */}
-        <motion.div 
-          className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12"
-          style={{ opacity: shouldReduceMotion ? 1 : heroOpacity }}
-        >
-          <div className="max-w-3xl">
-            {/* Category label */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Badge className="mb-6 bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] border border-[#6443F4]/20 px-4 py-2">
-                <Compass className="h-4 w-4 mr-2" />
-                TRAVEL GUIDES
-              </Badge>
-            </motion.div>
-
-            {/* Main headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight"
-              style={{ fontFamily: "'Chillax', sans-serif", letterSpacing: "-0.03em" }}
-            >
-              Your Journey
-              <br />
-              <span className="bg-gradient-to-r from-[#6443F4] via-[#A78BFA] to-[#E84C9A] bg-clip-text text-transparent">
-                Starts Here
-              </span>
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed"
-            >
-              Comprehensive destination guides crafted by travel experts. 
-              Discover local insights, hidden gems, and everything you need 
-              to plan your perfect adventure.
-            </motion.p>
-
-            {/* Search and language selector */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 mb-10"
-            >
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  type="text"
-                  placeholder="Search destinations..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-xl focus:border-[#6443F4] focus:ring-[#6443F4]/20 transition-all"
-                  data-testid="search-guides-input"
-                />
-              </div>
-              
-              <Select value={selectedLocale} onValueChange={handleLocaleChange}>
-                <SelectTrigger 
-                  className="w-48 h-14 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl"
-                  data-testid="language-selector"
-                >
-                  <Globe className="h-4 w-4 mr-2 text-slate-500" />
-                  <SelectValue>
-                    {SUPPORTED_LANGUAGES.find(l => l.code === selectedLocale)?.nativeName || "English"}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {SUPPORTED_LANGUAGES.map(lang => (
-                    <SelectItem key={lang.code} value={lang.code}>
-                      {lang.nativeName} ({lang.label})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </motion.div>
-
-            {/* Stats row */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-wrap gap-8"
-            >
-              {heroStats.map((stat, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 flex items-center justify-center">
-                    <stat.icon className="h-5 w-5 text-[#6443F4]" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{stat.value}</div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Content Section */}
@@ -638,5 +842,6 @@ export default function TravelGuidesPage() {
 
       <PublicFooter />
     </div>
+    </>
   );
 }
