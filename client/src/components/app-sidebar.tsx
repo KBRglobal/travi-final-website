@@ -206,7 +206,7 @@ const sidebarModules: NavModule[] = [
     title: "Video Engine",
     icon: Video,
     items: [
-      { title: "Video Generation", url: "/admin/video-engine", icon: PlayCircle, requiredPermission: "canCreate" },
+      { title: "Video Generation", url: "/admin/media", icon: PlayCircle, requiredPermission: "canCreate", hidden: true, hiddenReason: "Video engine not yet implemented" },
       { title: "Video Library", url: "/admin/media?type=video", icon: Library, requiredPermission: "canAccessMediaLibrary" },
     ],
   },
