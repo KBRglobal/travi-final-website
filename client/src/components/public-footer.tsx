@@ -24,9 +24,10 @@ export function PublicFooter() {
 
   // Explore / Destinations column
   // TODO: Re-enable dining after data + UX is ready
+  // TODO: Re-enable hotels after hotel content is added to CMS
   const exploreLinks = [
     { label: "Destinations", href: "/destinations" },
-    { label: "Hotels", href: "/hotels" },
+    // { label: "Hotels", href: "/hotels" }, // DISABLED - no hotel content in CMS yet
     { label: "Attractions", href: "/attractions" },
     { label: "Guides", href: "/guides" },
     { label: "News", href: "/news" },

@@ -1,6 +1,7 @@
 /**
- * TopPOIs Component - Hotels and Restaurants from TourPedia
- * Displays top hotels and restaurants for destinations with TourPedia data.
+ * TopPOIs Component - Restaurants from TourPedia
+ * Displays top restaurants for destinations with TourPedia data.
+ * NOTE: Hotels section disabled - no hotel content in CMS yet
  */
 
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +10,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowRight, MapPin, Building2, UtensilsCrossed } from "lucide-react";
+import { ArrowRight, MapPin, UtensilsCrossed } from "lucide-react";
+// NOTE: Building2 icon removed - hotels section disabled, no hotel content in CMS yet
 import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface POI {
@@ -45,15 +47,16 @@ const DESTINATIONS_WITH_TOURPEDIA = ["barcelona", "amsterdam"];
 export function TopPOIs({ destinationId, destinationName }: TopPOIsProps) {
   const hasTourPediaData = DESTINATIONS_WITH_TOURPEDIA.includes(destinationId.toLowerCase());
 
-  const { data: hotelsData, isLoading: hotelsLoading } = useQuery<POIResponse>({
-    queryKey: ["/api/destinations", destinationId, "pois", "accommodation"],
-    queryFn: async () => {
-      const res = await fetch(`/api/destinations/${destinationId}/pois?category=accommodation&limit=6`);
-      if (!res.ok) throw new Error("Failed to fetch hotels");
-      return res.json();
-    },
-    enabled: hasTourPediaData,
-  });
+  // NOTE: Hotels query disabled - no hotel content in CMS yet
+  // const { data: hotelsData, isLoading: hotelsLoading } = useQuery<POIResponse>({
+  //   queryKey: ["/api/destinations", destinationId, "pois", "accommodation"],
+  //   queryFn: async () => {
+  //     const res = await fetch(`/api/destinations/${destinationId}/pois?category=accommodation&limit=6`);
+  //     if (!res.ok) throw new Error("Failed to fetch hotels");
+  //     return res.json();
+  //   },
+  //   enabled: hasTourPediaData,
+  // });
 
   const { data: restaurantsData, isLoading: restaurantsLoading } = useQuery<POIResponse>({
     queryKey: ["/api/destinations", destinationId, "pois", "restaurant"],
@@ -69,11 +72,10 @@ export function TopPOIs({ destinationId, destinationName }: TopPOIsProps) {
     return null;
   }
 
-  const hotels = hotelsData?.data || [];
   const restaurants = restaurantsData?.data || [];
-  const isLoading = hotelsLoading || restaurantsLoading;
+  const isLoading = restaurantsLoading;
 
-  if (!isLoading && hotels.length === 0 && restaurants.length === 0) {
+  if (!isLoading && restaurants.length === 0) {
     return null;
   }
 
@@ -83,32 +85,19 @@ export function TopPOIs({ destinationId, destinationName }: TopPOIsProps) {
       data-testid="section-top-pois"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {(isLoading || hotels.length > 0) && (
-          <POISection
-            title={`Top Hotels in ${destinationName}`}
-            subtitle="Discover the best places to stay"
-            icon={<Building2 className="w-4 h-4" />}
-            pois={hotels}
-            isLoading={hotelsLoading}
-            viewAllLink={`/destinations/${destinationId}/hotels`}
-            viewAllText="View All Hotels"
-            testIdPrefix="hotel"
-          />
-        )}
+        {/* NOTE: Hotels section disabled - no hotel content in CMS yet */}
 
         {(isLoading || restaurants.length > 0) && (
-          <div className={hotels.length > 0 ? "mt-16 md:mt-24" : ""}>
-            <POISection
-              title={`Where to Eat in ${destinationName}`}
-              subtitle="Explore the best dining experiences"
-              icon={<UtensilsCrossed className="w-4 h-4" />}
-              pois={restaurants}
-              isLoading={restaurantsLoading}
-              viewAllLink={`/destinations/${destinationId}/dining`}
-              viewAllText="View All Restaurants"
-              testIdPrefix="restaurant"
-            />
-          </div>
+          <POISection
+            title={`Where to Eat in ${destinationName}`}
+            subtitle="Explore the best dining experiences"
+            icon={<UtensilsCrossed className="w-4 h-4" />}
+            pois={restaurants}
+            isLoading={restaurantsLoading}
+            viewAllLink={`/destinations/${destinationId}/dining`}
+            viewAllText="View All Restaurants"
+            testIdPrefix="restaurant"
+          />
         )}
       </div>
     </section>

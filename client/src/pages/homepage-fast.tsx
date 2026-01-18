@@ -29,8 +29,9 @@ const DESTINATIONS = [
   { id: "bangkok", name: "Bangkok", country: "Thailand", slug: "/destinations/bangkok", cardImage: "/cards/bangkok.webp", cardImageAlt: "Bangkok Grand Palace temple at sunrise" },
 ];
 
+// TODO: Re-enable hotels card after hotel content is added to CMS
 const CATEGORY_CARDS = [
-  { id: 1, icon: Bed, title: "Hotels", subtitle: "Find your perfect stay", linkUrl: "/hotels", bgColor: "bg-blue-50 dark:bg-blue-950/30", iconBg: "bg-blue-500" },
+  // { id: 1, icon: Bed, title: "Hotels", subtitle: "Find your perfect stay", linkUrl: "/hotels", bgColor: "bg-blue-50 dark:bg-blue-950/30", iconBg: "bg-blue-500" }, // DISABLED - no hotel content in CMS yet
   { id: 2, icon: Camera, title: "Attractions", subtitle: "Must-see places", linkUrl: "/attractions", bgColor: "bg-amber-50 dark:bg-amber-950/30", iconBg: "bg-amber-500" },
   { id: 3, icon: Newspaper, title: "Travel News", subtitle: "Latest updates", linkUrl: "/news", bgColor: "bg-violet-50 dark:bg-violet-950/30", iconBg: "bg-violet-500" },
   { id: 4, icon: BookOpen, title: "Guides", subtitle: "Destination guides", linkUrl: "/guides", bgColor: "bg-indigo-50 dark:bg-indigo-950/30", iconBg: "bg-indigo-500" },

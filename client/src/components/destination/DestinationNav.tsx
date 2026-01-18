@@ -16,9 +16,10 @@ interface DestinationNavProps {
   destinationSlug: string;
 }
 
+// TODO: Re-enable hotels tab after hotel content is added to CMS
 const NAV_SECTIONS = [
   { id: "attractions", label: "Attractions", icon: MapPin },
-  { id: "hotels", label: "Stay", icon: Hotel },
+  // { id: "hotels", label: "Stay", icon: Hotel }, // DISABLED - no hotel content in CMS yet
   { id: "news", label: "News", icon: Newspaper },
   { id: "best-time", label: "When to Go", icon: Calendar },
   { id: "getting-around", label: "Getting Around", icon: Car },
