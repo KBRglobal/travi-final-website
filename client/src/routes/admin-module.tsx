@@ -340,9 +340,9 @@ export default function AdminLayout() {
     <Suspense fallback={<AdminPageLoader />}>
       <MultiTabProvider>
         <SidebarProvider style={style as React.CSSProperties}>
-          <div className="flex h-screen w-full">
+          <div className="flex h-screen w-full bg-background">
             <AppSidebar user={user} />
-            <div className="flex flex-col flex-1 min-w-0">
+            <div className="flex flex-col flex-1 min-w-0 bg-muted/30">
               <header className="flex items-center justify-between gap-4 p-3 border-b sticky top-0 z-50 bg-background">
                 <div className="flex items-center gap-3">
                   <SidebarTrigger data-testid="button-sidebar-toggle" />
