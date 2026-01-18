@@ -15,6 +15,7 @@ import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
 import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 import { dubaiRoutes } from "@/routes/dubai-routes";
+import { DESTINATION_IDS } from "@/types/destination";
 
 const CookieConsentBanner = lazy(() => import("@/components/cookie-consent-banner").then(m => ({ default: m.CookieConsentBanner })));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa-install-prompt").then(m => ({ default: m.PWAInstallPrompt })));
@@ -80,6 +81,71 @@ function PageLoader() {
   );
 }
 
+const destinationIds = new Set(DESTINATION_IDS);
+const isValidCity = (slug: string) => destinationIds.has(slug as any);
+
+// Hash-based redirect helper - uses window.location.href for hash navigation
+// since Wouter doesn't natively support hash fragments
+function HashRedirect({ city, hash }: { city: string; hash: string }) {
+  useEffect(() => {
+    window.location.href = `/destinations/${city}#${hash}`;
+  }, [city, hash]);
+  return null;
+}
+
+// Non-hash redirect - uses Wouter's Redirect for proper SPA navigation
+function CityAttractionsRedirect({ params }: { params: { city: string } }) {
+  return <Redirect to={`/attractions/list/${params.city}`} />;
+}
+
+// Hash redirect for /hotels/:city routes
+function CityHotelsRedirect({ params }: { params: { city: string } }) {
+  if (isValidCity(params.city)) {
+    return <HashRedirect city={params.city} hash="hotels" />;
+  }
+  return <PublicContentViewer />;
+}
+
+// Hash redirect for /destinations/:city/hotels
+function DestinationHotelsRedirect({ params }: { params: { city: string } }) {
+  return <HashRedirect city={params.city} hash="hotels" />;
+}
+
+// Hash redirect for /destinations/:city/news
+function DestinationNewsRedirect({ params }: { params: { city: string } }) {
+  return <HashRedirect city={params.city} hash="news" />;
+}
+
+// Hash redirect for /destinations/:city/when-to-go
+function DestinationWhenToGoRedirect({ params }: { params: { city: string } }) {
+  return <HashRedirect city={params.city} hash="best-time" />;
+}
+
+// Hash redirect for /destinations/:city/getting-around
+function DestinationGettingAroundRedirect({ params }: { params: { city: string } }) {
+  return <HashRedirect city={params.city} hash="getting-around" />;
+}
+
+// Hash redirect for /destinations/:city/faq
+function DestinationFaqRedirect({ params }: { params: { city: string } }) {
+  return <HashRedirect city={params.city} hash="faq" />;
+}
+
+// Non-hash redirect for attractions search - preserves query parameters
+function AttractionsSearchRedirect() {
+  const [location] = useLocation();
+  const searchParams = new URL(window.location.href).search;
+  return <Redirect to={`/search${searchParams}`} />;
+}
+
+// Non-hash redirect for guide city routes
+function GuideCityRedirect({ params }: { params: { city: string } }) {
+  if (isValidCity(params.city)) {
+    return <Redirect to={`/guides/${params.city}-travel-guide`} />;
+  }
+  return <GuideDetailPage />;
+}
+
 const publicRoutes = [
   { path: "/login", component: Login },
   { path: "/access-denied", component: AccessDenied },
@@ -143,6 +209,30 @@ const LOCALE_PREFIXES = [
 function PublicRouter() {
   return (
     <Switch>
+      {/* Redirect routes - must be BEFORE generic routes */}
+      <Route path="/attractions/search">{() => <AttractionsSearchRedirect />}</Route>
+      <Route path="/destinations/:city/attractions">{(params) => <CityAttractionsRedirect params={params} />}</Route>
+      <Route path="/destinations/:city/hotels">{(params) => <DestinationHotelsRedirect params={params} />}</Route>
+      <Route path="/destinations/:city/news">{(params) => <DestinationNewsRedirect params={params} />}</Route>
+      <Route path="/destinations/:city/when-to-go">{(params) => <DestinationWhenToGoRedirect params={params} />}</Route>
+      <Route path="/destinations/:city/getting-around">{(params) => <DestinationGettingAroundRedirect params={params} />}</Route>
+      <Route path="/destinations/:city/faq">{(params) => <DestinationFaqRedirect params={params} />}</Route>
+      {DESTINATION_IDS.map((city) => (
+        <Route key={`city-attractions-${city}`} path={`/${city}/attractions`}>
+          {() => <Redirect to={`/attractions/list/${city}`} />}
+        </Route>
+      ))}
+      {DESTINATION_IDS.map((city) => (
+        <Route key={`hotels-city-${city}`} path={`/hotels/${city}`}>
+          {() => <HashRedirect city={city} hash="hotels" />}
+        </Route>
+      ))}
+      {DESTINATION_IDS.map((city) => (
+        <Route key={`guides-city-${city}`} path={`/guides/${city}`}>
+          {() => <Redirect to={`/guides/${city}-travel-guide`} />}
+        </Route>
+      ))}
+
       <Route path="/en/:city/attractions/:slug" component={TraviLocationPage} />
       <Route path="/en/:city/hotels/:slug" component={TraviLocationPage} />
       <Route path="/en/:city/restaurants/:slug" component={TraviLocationPage} />
