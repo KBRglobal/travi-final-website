@@ -12,8 +12,8 @@
 import type { DestinationPageData, DestinationId, DestinationMood } from "@/types/destination";
 
 // Helper to generate placeholder content
-const loremShort = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.";
-const loremMedium = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.";
+const loremShort = "Discover the unique blend of culture, history, and modern attractions that make this destination special.";
+const loremMedium = "Experience the best of this destination with our comprehensive travel guide. From iconic landmarks to hidden gems, we'll help you plan the perfect trip with insider tips and practical advice.";
 
 // Generic quick facts template
 const createQuickFacts = (currency: string, language: string) => [
@@ -41,11 +41,11 @@ const createFAQs = (name: string) => [
   },
   {
     question: `Do I need a visa to visit ${name}?`,
-    answer: "Visa requirements vary by nationality. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Please check with your local embassy for current requirements.",
+    answer: "Visa requirements vary by nationality. Check with your local embassy or consulate for the most current requirements before your trip.",
   },
   {
     question: `How many days should I spend in ${name}?`,
-    answer: "Lorem ipsum dolor sit amet. Most travelers recommend X-Y days to see the main attractions and experience local culture.",
+    answer: "Most travelers recommend 3-5 days to see the main attractions and experience local culture. Plan extra time if you want to explore beyond the city center.",
   },
   {
     question: `Is ${name} safe for tourists?`,
@@ -53,7 +53,7 @@ const createFAQs = (name: string) => [
   },
   {
     question: `What is the local currency in ${name}?`,
-    answer: "Lorem ipsum dolor sit amet. Credit cards are widely accepted, but carrying some local currency is recommended for smaller vendors.",
+    answer: "Credit cards are widely accepted at hotels, restaurants, and major attractions. Carrying some local currency is recommended for smaller vendors, markets, and taxis.",
   },
   {
     question: `How do I get from the airport to the city center?`,
@@ -65,7 +65,7 @@ const createFAQs = (name: string) => [
   },
   {
     question: `What should I pack for a trip to ${name}?`,
-    answer: "Lorem ipsum dolor sit amet. Pack according to the season and planned activities. Comfortable walking shoes are essential.",
+    answer: "Pack according to the season and your planned activities. Comfortable walking shoes are essential, as most destinations are best explored on foot.",
   },
 ];
 

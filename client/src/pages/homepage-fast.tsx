@@ -125,7 +125,7 @@ function HeroSection() {
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/ogImage.jpg`} />
-        {isDesktop && <link rel="preload" as="image" href="/travi-hero-worldwide.jpeg" />}
+        {isDesktop && <link rel="preload" as="image" href="/hero/travi-world-mascot-globe-city-sunset.jpeg" />}
         <script type="application/ld+json">{websiteSchema}</script>
         <script type="application/ld+json">{organizationSchema}</script>
         <script type="application/ld+json">{faqSchema}</script>
@@ -209,7 +209,7 @@ function HeroSection() {
           <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
               <img 
-                src="/travi-hero-worldwide.jpeg" 
+                src="/hero/travi-world-mascot-globe-city-sunset.jpeg" 
                 alt="TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more" 
                 title="TRAVI World - Travel Guides for Global Destinations"
                 className="w-full h-full object-cover"
