@@ -216,18 +216,20 @@ export default function DestinationsListPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem
-                onClick={() => toast({ title: "Coming Soon", description: "AI destination generation will be available soon." })}
+                disabled
+                className="text-muted-foreground"
                 data-testid="menu-item-magic-generate-destination"
               >
-                <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
-                Generate New Destination
+                <Sparkles className="h-4 w-4 mr-2" />
+                New Destination (Coming Soon)
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => toast({ title: "Coming Soon", description: "Bulk image generation will be available soon." })}
+                disabled
+                className="text-muted-foreground"
                 data-testid="menu-item-magic-bulk-images-destinations"
               >
                 <Image className="h-4 w-4 mr-2" />
-                Generate Missing Images
+                Bulk Images (Coming Soon)
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
