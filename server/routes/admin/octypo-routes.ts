@@ -17,6 +17,9 @@ import {
   getOctypoOrchestrator,
 } from '../../octypo';
 import { octypoState } from '../../octypo/state';
+import { EngineRegistry } from '../../services/engine-registry';
+import { getQueueStats } from '../../ai/request-queue';
+import { jobQueue } from '../../job-queue';
 
 const router = Router();
 
@@ -1120,6 +1123,145 @@ router.get('/workflows', async (_req: Request, res: Response) => {
   } catch (error) {
     log.error('[Octypo] Failed to get workflows', error);
     res.status(500).json({ error: 'Failed to retrieve workflows' });
+  }
+});
+
+/**
+ * GET /api/octypo/engines
+ * Returns all AI engines with their status
+ */
+router.get('/engines', async (_req: Request, res: Response) => {
+  try {
+    EngineRegistry.initialize();
+    const engines = EngineRegistry.getAllEngines();
+    const stats = EngineRegistry.getStats();
+    
+    const engineList = engines.map(engine => ({
+      id: engine.id,
+      name: engine.name,
+      provider: engine.provider,
+      model: engine.model,
+      isHealthy: engine.isHealthy,
+      errorCount: engine.errorCount,
+      successCount: engine.successCount,
+      lastError: engine.lastError || null,
+      lastUsed: engine.lastUsed?.toISOString() || null,
+    }));
+
+    res.json({
+      engines: engineList,
+      stats: {
+        total: stats.total,
+        healthy: stats.healthy,
+        unhealthy: stats.total - stats.healthy,
+        byProvider: stats.byProvider,
+      },
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get engines', error);
+    res.status(500).json({ error: 'Failed to retrieve engines' });
+  }
+});
+
+/**
+ * GET /api/octypo/engines/stats
+ * Returns aggregate engine statistics
+ */
+router.get('/engines/stats', async (_req: Request, res: Response) => {
+  try {
+    EngineRegistry.initialize();
+    const engines = EngineRegistry.getAllEngines();
+    const stats = EngineRegistry.getStats();
+    
+    const totalRequests = engines.reduce((sum, e) => sum + e.successCount + e.errorCount, 0);
+    const totalSuccess = engines.reduce((sum, e) => sum + e.successCount, 0);
+    const successRate = totalRequests > 0 ? (totalSuccess / totalRequests * 100).toFixed(1) : '100.0';
+
+    res.json({
+      total: stats.total,
+      healthy: stats.healthy,
+      unhealthy: stats.total - stats.healthy,
+      byProvider: stats.byProvider,
+      performance: {
+        totalRequests,
+        successfulRequests: totalSuccess,
+        failedRequests: totalRequests - totalSuccess,
+        successRate: parseFloat(successRate),
+      },
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get engine stats', error);
+    res.status(500).json({ error: 'Failed to retrieve engine stats' });
+  }
+});
+
+/**
+ * GET /api/octypo/ai-queue/status
+ * Returns AI request queue status with rate limiting info
+ */
+router.get('/ai-queue/status', async (_req: Request, res: Response) => {
+  try {
+    const queueStats = getQueueStats();
+    
+    res.json({
+      queue: {
+        length: queueStats.queueLength,
+        processing: queueStats.processing,
+        activeRequests: queueStats.activeRequests,
+        completedRequests: queueStats.completedRequests,
+        failedRequests: queueStats.failedRequests,
+      },
+      providers: queueStats.providers.map(p => ({
+        name: p.name,
+        available: p.available,
+        tokens: p.tokens,
+        maxTokens: p.maxTokens,
+        requestsThisMinute: p.requestsThisMinute,
+        requestsThisHour: p.requestsThisHour,
+        blockedUntil: p.blockedUntil,
+        waitTimeSeconds: p.waitTimeSeconds,
+        status: p.status,
+      })),
+      estimatedWait: queueStats.estimatedWait,
+      estimatedWaitSeconds: queueStats.estimatedWaitSeconds,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get AI queue status', error);
+    res.status(500).json({ error: 'Failed to retrieve AI queue status' });
+  }
+});
+
+/**
+ * GET /api/octypo/job-queue/status
+ * Returns background job queue status from PostgreSQL
+ */
+router.get('/job-queue/status', async (_req: Request, res: Response) => {
+  try {
+    const stats = await jobQueue.getStats();
+    const recentJobs = await jobQueue.getRecentJobs(20);
+    
+    res.json({
+      stats,
+      recentJobs: recentJobs.map(job => ({
+        id: job.id,
+        type: job.type,
+        status: job.status,
+        priority: job.priority,
+        retries: job.retries,
+        maxRetries: job.maxRetries,
+        error: job.error || null,
+        createdAt: job.createdAt.toISOString(),
+        startedAt: job.startedAt?.toISOString() || null,
+        completedAt: job.completedAt?.toISOString() || null,
+      })),
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get job queue status', error);
+    res.status(500).json({ error: 'Failed to retrieve job queue status' });
   }
 });
 
