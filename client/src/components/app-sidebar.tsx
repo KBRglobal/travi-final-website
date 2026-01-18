@@ -86,6 +86,7 @@ import {
   Library,
   Bot,
   Database,
+  Cpu,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -182,6 +183,8 @@ const sidebarModules: NavModule[] = [
       { title: "Writers Room", url: "/admin/octypo/writers-room", icon: PenTool },
       { title: "AI Agents", url: "/admin/octypo/ai-agents", icon: Bot },
       { title: "Workflows", url: "/admin/octypo/workflows", icon: Workflow },
+      { title: "AI Engines", url: "/admin/octypo/engines", icon: Cpu },
+      { title: "Queue Monitor", url: "/admin/octypo/queue-monitor", icon: Activity },
     ],
   },
   {
