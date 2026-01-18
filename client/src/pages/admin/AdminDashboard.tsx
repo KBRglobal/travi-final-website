@@ -82,98 +82,7 @@ interface ActivityItem {
   };
 }
 
-const mockStats: DashboardStats = {
-  contents: {
-    total: 2847,
-    attractions: 1256,
-    articles: 892,
-    destinations: 245,
-    pages: 454,
-  },
-  status: {
-    published: 2134,
-    draft: 713,
-  },
-  languages: {
-    active: 30,
-    total: 30,
-  },
-  healthScore: 87,
-  aiGeneration: {
-    completed: 1523,
-    pending: 47,
-    failed: 12,
-  },
-  storage: {
-    used: 12.4,
-    total: 50,
-    unit: "GB",
-  },
-};
-
-const mockActivity: ActivityItem[] = [
-  {
-    id: "1",
-    type: "content_published",
-    description: "Published 'Top 10 Attractions in Dubai 2026'",
-    timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-    user: { name: "Sarah Chen", avatar: "" },
-    metadata: { contentType: "article", contentTitle: "Top 10 Attractions in Dubai 2026" },
-  },
-  {
-    id: "2",
-    type: "ai_generated",
-    description: "AI generated content for 'Barcelona Travel Guide'",
-    timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-    user: { name: "Octopus AI", avatar: "" },
-    metadata: { contentType: "destination", contentTitle: "Barcelona Travel Guide" },
-  },
-  {
-    id: "3",
-    type: "content_edited",
-    description: "Updated pricing for 'Burj Khalifa At The Top'",
-    timestamp: new Date(Date.now() - 1000 * 60 * 32).toISOString(),
-    user: { name: "Michael Torres", avatar: "" },
-    metadata: { contentType: "attraction", contentTitle: "Burj Khalifa At The Top" },
-  },
-  {
-    id: "4",
-    type: "user_login",
-    description: "Admin logged in from Tel Aviv, Israel",
-    timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-    user: { name: "David Levy", avatar: "" },
-  },
-  {
-    id: "5",
-    type: "content_created",
-    description: "Created new attraction 'Gardens by the Bay'",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-    user: { name: "Emma Wilson", avatar: "" },
-    metadata: { contentType: "attraction", contentTitle: "Gardens by the Bay" },
-  },
-  {
-    id: "6",
-    type: "system_event",
-    description: "SEO audit completed - 23 issues found",
-    timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
-    user: { name: "System", avatar: "" },
-  },
-  {
-    id: "7",
-    type: "ai_generated",
-    description: "Bulk translation completed for 15 articles (Hebrew)",
-    timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-    user: { name: "Octopus AI", avatar: "" },
-  },
-  {
-    id: "8",
-    type: "content_published",
-    description: "Published 'Tokyo Nightlife Guide 2026'",
-    timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-    user: { name: "Sarah Chen", avatar: "" },
-    metadata: { contentType: "article", contentTitle: "Tokyo Nightlife Guide 2026" },
-  },
-];
+// No mock data - show N/A when real data is unavailable
 
 function StatsCardSkeleton() {
   return (
@@ -243,7 +152,7 @@ function StatsCard({
   );
 }
 
-function HealthScoreCard({ score, loading }: { score: number; loading?: boolean }) {
+function HealthScoreCard({ score, loading }: { score?: number; loading?: boolean }) {
   if (loading) return <StatsCardSkeleton />;
 
   const getScoreColor = (value: number) => {
@@ -259,12 +168,14 @@ function HealthScoreCard({ score, loading }: { score: number; loading?: boolean 
         <Activity className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className={cn("text-2xl font-bold", getScoreColor(score))}>
-          {score}%
+        <div className={cn("text-2xl font-bold", score != null ? getScoreColor(score) : "text-muted-foreground")}>
+          {score != null ? `${score}%` : "N/A"}
         </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          SEO, completeness & freshness
-        </p>
+        {score != null && (
+          <p className="text-xs text-muted-foreground mt-1">
+            SEO, completeness & freshness
+          </p>
+        )}
       </CardContent>
     </Card>
   );
@@ -274,7 +185,7 @@ function AIGenerationCard({
   stats,
   loading,
 }: {
-  stats: DashboardStats["aiGeneration"];
+  stats?: DashboardStats["aiGeneration"];
   loading?: boolean;
 }) {
   if (loading) return <StatsCardSkeleton />;
@@ -286,21 +197,23 @@ function AIGenerationCard({
         <Sparkles className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{stats.completed.toLocaleString()}</div>
-        <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center gap-1 text-xs">
-            <CheckCircle2 className="h-3 w-3 text-green-500" />
-            <span className="text-muted-foreground">{stats.completed}</span>
+        <div className="text-2xl font-bold">{stats?.completed?.toLocaleString() ?? "N/A"}</div>
+        {stats && (
+          <div className="flex items-center gap-3 mt-2">
+            <div className="flex items-center gap-1 text-xs">
+              <CheckCircle2 className="h-3 w-3 text-green-500" />
+              <span className="text-muted-foreground">{stats.completed}</span>
+            </div>
+            <div className="flex items-center gap-1 text-xs">
+              <Clock className="h-3 w-3 text-yellow-500" />
+              <span className="text-muted-foreground">{stats.pending}</span>
+            </div>
+            <div className="flex items-center gap-1 text-xs">
+              <AlertCircle className="h-3 w-3 text-red-500" />
+              <span className="text-muted-foreground">{stats.failed}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1 text-xs">
-            <Clock className="h-3 w-3 text-yellow-500" />
-            <span className="text-muted-foreground">{stats.pending}</span>
-          </div>
-          <div className="flex items-center gap-1 text-xs">
-            <AlertCircle className="h-3 w-3 text-red-500" />
-            <span className="text-muted-foreground">{stats.failed}</span>
-          </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -310,12 +223,12 @@ function StorageCard({
   storage,
   loading,
 }: {
-  storage: DashboardStats["storage"];
+  storage?: DashboardStats["storage"];
   loading?: boolean;
 }) {
   if (loading) return <StatsCardSkeleton />;
 
-  const usagePercent = Math.round((storage.used / storage.total) * 100);
+  const usagePercent = storage ? Math.round((storage.used / storage.total) * 100) : 0;
 
   return (
     <Card data-testid="card-storage">
@@ -325,23 +238,25 @@ function StorageCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {storage.used} {storage.unit}
+          {storage ? `${storage.used} ${storage.unit}` : "N/A"}
         </div>
-        <div className="mt-2">
-          <div className="flex justify-between text-xs text-muted-foreground mb-1">
-            <span>{usagePercent}% used</span>
-            <span>{storage.total} {storage.unit} total</span>
+        {storage && (
+          <div className="mt-2">
+            <div className="flex justify-between text-xs text-muted-foreground mb-1">
+              <span>{usagePercent}% used</span>
+              <span>{storage.total} {storage.unit} total</span>
+            </div>
+            <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div
+                className={cn(
+                  "h-full rounded-full transition-all",
+                  usagePercent > 90 ? "bg-red-500" : usagePercent > 70 ? "bg-yellow-500" : "bg-primary"
+                )}
+                style={{ width: `${usagePercent}%` }}
+              />
+            </div>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all",
-                usagePercent > 90 ? "bg-red-500" : usagePercent > 70 ? "bg-yellow-500" : "bg-primary"
-              )}
-              style={{ width: `${usagePercent}%` }}
-            />
-          </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -381,7 +296,7 @@ function ActivityFeed({
   activities,
   loading,
 }: {
-  activities: ActivityItem[];
+  activities?: ActivityItem[];
   loading?: boolean;
 }) {
   if (loading) {
@@ -390,6 +305,14 @@ function ActivityFeed({
         {[1, 2, 3, 4, 5].map((i) => (
           <ActivityItemSkeleton key={i} />
         ))}
+      </div>
+    );
+  }
+
+  if (!activities || activities.length === 0) {
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        No recent activity
       </div>
     );
   }
@@ -481,10 +404,10 @@ export default function AdminDashboard() {
     staleTime: 30000,
   });
 
-  const stats = statsData || mockStats;
-  const activities = activityData || mockActivity;
-  const isStatsLoading = statsLoading && !statsData;
-  const isActivityLoading = activityLoading && !activityData;
+  const stats = statsData;
+  const activities = activityData;
+  const isStatsLoading = statsLoading;
+  const isActivityLoading = activityLoading;
 
   const handleRefresh = () => {
     refetchStats();
@@ -520,28 +443,28 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <StatsCard
             title="Total Content"
-            value={stats.contents.total.toLocaleString()}
+            value={stats?.contents?.total?.toLocaleString() ?? "N/A"}
             icon={FileText}
-            description={`${stats.contents.attractions} attractions, ${stats.contents.articles} articles`}
+            description={stats?.contents ? `${stats.contents.attractions} attractions, ${stats.contents.articles} articles` : undefined}
             loading={isStatsLoading}
           />
           <StatsCard
             title="Published vs Draft"
-            value={`${stats.status.published} / ${stats.status.draft}`}
+            value={stats?.status ? `${stats.status.published} / ${stats.status.draft}` : "N/A"}
             icon={CheckCircle2}
-            description={`${Math.round((stats.status.published / stats.contents.total) * 100)}% published`}
+            description={stats?.status && stats?.contents?.total ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published` : undefined}
             loading={isStatsLoading}
           />
           <StatsCard
             title="Active Languages"
-            value={`${stats.languages.active} / ${stats.languages.total}`}
+            value={stats?.languages ? `${stats.languages.active} / ${stats.languages.total}` : "N/A"}
             icon={Globe}
-            description="Full multilingual coverage"
+            description={stats?.languages ? "Full multilingual coverage" : undefined}
             loading={isStatsLoading}
           />
-          <HealthScoreCard score={stats.healthScore} loading={isStatsLoading} />
-          <AIGenerationCard stats={stats.aiGeneration} loading={isStatsLoading} />
-          <StorageCard storage={stats.storage} loading={isStatsLoading} />
+          <HealthScoreCard score={stats?.healthScore} loading={isStatsLoading} />
+          <AIGenerationCard stats={stats?.aiGeneration} loading={isStatsLoading} />
+          <StorageCard storage={stats?.storage} loading={isStatsLoading} />
         </div>
       </div>
 
