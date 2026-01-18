@@ -15,7 +15,25 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
+  Sparkles,
+  ChevronDown,
+  Filter,
+  Image,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 interface Destination {
   id: string;
@@ -59,6 +77,9 @@ function getStatusBadge(destination: Destination) {
 
 export default function DestinationsListPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "complete" | "partial" | "empty">("all");
+  const [hasImagesFilter, setHasImagesFilter] = useState<"all" | "yes" | "no">("all");
+  const { toast } = useToast();
 
   const { data: destinations = [], isLoading } = useQuery<Destination[]>({
     queryKey: ["/api/public/destinations"],
@@ -66,10 +87,21 @@ export default function DestinationsListPage() {
 
   const filteredDestinations = destinations.filter((dest) => {
     const query = searchQuery.toLowerCase();
-    return (
-      dest.name.toLowerCase().includes(query) ||
-      dest.country.toLowerCase().includes(query)
-    );
+    const matchesSearch = dest.name.toLowerCase().includes(query) ||
+      dest.country.toLowerCase().includes(query);
+    
+    // Status filter
+    const hasHero = !!dest.heroTitle;
+    const hasImage = !!dest.cardImage;
+    const status = hasHero && hasImage ? "complete" : (hasHero || hasImage ? "partial" : "empty");
+    const matchesStatus = statusFilter === "all" || status === statusFilter;
+    
+    // Has images filter
+    const matchesImages = hasImagesFilter === "all" || 
+      (hasImagesFilter === "yes" && hasImage) ||
+      (hasImagesFilter === "no" && !hasImage);
+    
+    return matchesSearch && matchesStatus && matchesImages;
   });
 
   const groupedByCountry = filteredDestinations.reduce((acc, dest) => {
@@ -173,21 +205,75 @@ export default function DestinationsListPage() {
       title="Destinations"
       description="Manage travel destinations"
       actions={
-        <Button data-testid="button-add-destination">
-          <Plus className="w-4 h-4 mr-2" />
-          New Destination
-        </Button>
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2" data-testid="button-magic-ai-destinations">
+                <Sparkles className="h-4 w-4 text-purple-500" />
+                Magic AI
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem
+                onClick={() => toast({ title: "Coming Soon", description: "AI destination generation will be available soon." })}
+                data-testid="menu-item-magic-generate-destination"
+              >
+                <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+                Generate New Destination
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => toast({ title: "Coming Soon", description: "Bulk image generation will be available soon." })}
+                data-testid="menu-item-magic-bulk-images-destinations"
+              >
+                <Image className="h-4 w-4 mr-2" />
+                Generate Missing Images
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button data-testid="button-add-destination">
+            <Plus className="w-4 h-4 mr-2" />
+            New Destination
+          </Button>
+        </div>
       }
       filters={
-        <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search destinations..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-            data-testid="input-search-destinations"
-          />
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search destinations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+              data-testid="input-search-destinations"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+              <SelectTrigger className="w-32" data-testid="select-status-filter">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="complete">Complete</SelectItem>
+                <SelectItem value="partial">Partial</SelectItem>
+                <SelectItem value="empty">Empty</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={hasImagesFilter} onValueChange={(v) => setHasImagesFilter(v as typeof hasImagesFilter)}>
+              <SelectTrigger className="w-32" data-testid="select-images-filter">
+                <Image className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Images" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="yes">Has Image</SelectItem>
+                <SelectItem value="no">No Image</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       }
     >
