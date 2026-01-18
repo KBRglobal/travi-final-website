@@ -221,12 +221,7 @@ import { registerAllRoutes } from "./routes/index.js";
 // AEO (Answer Engine Optimization) routes
 import { aeoRoutes, aeoTrackingMiddleware } from "./aeo";
 import { getVersionInfo } from "./middleware/api-versioning";
-// Octopus Engine (Content Generation from Documents)
-import { octopusRoutes, getQueueStatus, QueueManager } from "./octopus";
-// Entity extraction for RSS articles (TASK 4: Wire RSS → Entity Extraction)
-import { extractEntities } from "./octopus/entity-extractor";
-import type { ParsedDocument } from "./octopus/document-parser";
-import { batchUpsertEntities } from "./octopus/entity-upsert";
+// [REMOVED] Octopus Engine - migrated to Octypo v2
 // Localization Engine (Translation Queue + AEO)
 import localizationRoutes from "./localization/routes";
 // Simulation Mode (TASK 9 - Read-only "what if" analysis)
@@ -1997,45 +1992,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
         result.articlesGenerated++;
         console.log(`[RSS Auto-Process] Generated article: "${mergedData.title}" (${wordCount} words)`);
 
-        // TASK 4: Entity extraction for RSS articles (non-blocking enhancement)
-        // Only process high-quality content (500+ chars) to avoid wasting AI calls
-        if (textContent && textContent.length > 500) {
-          try {
-            const parsedDoc: ParsedDocument = {
-              filename: 'rss-article',
-              fileType: 'txt',
-              totalPages: 1,
-              totalWords: wordCount,
-              totalCharacters: textContent.length,
-              sections: [{
-                index: 0,
-                title: mergedData.title || cluster.topic || 'RSS Article',
-                content: textContent,
-                wordCount: wordCount,
-              }],
-              metadata: {
-                title: mergedData.title || cluster.topic,
-              },
-              rawText: textContent,
-              parseTime: 0,
-            };
-
-            const extraction = await extractEntities(parsedDoc);
-
-            if (extraction.entities.length > 0) {
-              // Use 'dubai' as default destination hint since most RSS content is Dubai-focused
-              // In future, could detect destination from content or cluster metadata
-              const destinationHint = 'dubai';
-              const upsertResult = await batchUpsertEntities(extraction.entities, destinationHint, content.id);
-              console.log(`[RSS Auto-Process] Entity extraction complete for "${mergedData.title}": ${extraction.entities.length} entities found, ${upsertResult.created} created, ${upsertResult.updated} updated`);
-            } else {
-              console.log(`[RSS Auto-Process] No entities extracted from "${mergedData.title}"`);
-            }
-          } catch (entityErr) {
-            // Entity extraction is optional - don't fail the RSS flow
-            console.warn(`[RSS Auto-Process] Entity extraction failed (non-blocking) for "${mergedData.title}":`, entityErr instanceof Error ? entityErr.message : String(entityErr));
-          }
-        }
+        // [REMOVED] Entity extraction moved to Octypo v2
 
         // Auto-translate to all 16 target languages (background, non-blocking)
         console.log(`[RSS Auto-Process] Starting automatic translation for article: ${content.id}`);
@@ -3783,60 +3740,17 @@ export async function registerRoutes(
     res.json(status);
   });
 
-  // Worker health endpoint - shows Octopus job processing status (Phase 14 P0)
+  // Worker health endpoint - stub (Octopus removed, using Octypo v2)
   app.get("/api/system/workers", requireAuth, async (_req: Request, res: Response) => {
-    try {
-      const queueStatus = await getQueueStatus();
-      const heartbeat = QueueManager.getWorkerHeartbeat();
-      const stats = await QueueManager.getStats();
-      
-      // Count currently processing jobs
-      const processingJobs = Object.values(queueStatus.runningCounts).reduce((a, b) => a + b, 0);
-      
-      // Count queue depth (pending tasks)
-      const queueDepth = stats.pending + (stats.paused || 0);
-      
-      // Determine processing mode
-      // The system supports both inline (default) and queue-based (background) processing
-      const workerInfo = {
-        mode: queueStatus.isWorkerRunning ? 'queue' : 'inline',
-        healthy: true,
-        note: queueStatus.isWorkerRunning 
-          ? 'Background queue worker active - jobs processed asynchronously' 
-          : 'Jobs processed synchronously during request',
-        workers: queueStatus.isWorkerRunning ? [{
-          id: 'queue-worker-1',
-          status: queueStatus.isPaused ? 'paused' : 'running',
-          lastPoll: new Date().toISOString(),
-          pauseReason: queueStatus.pauseReason,
-          resumeAt: queueStatus.resumeAt,
-        }] : [],
-        lastProcessedAt: heartbeat.lastProcessedAt?.toISOString() || null,
-        heartbeat: {
-          pollCount: heartbeat.pollCount,
-          isRunning: heartbeat.isRunning,
-        },
-        queueDepth,
-        processingJobs,
-        stats: {
-          pending: stats.pending,
-          running: stats.running,
-          completed: stats.completed,
-          failed: stats.failed,
-        },
-        concurrency: queueStatus.concurrencyLimits,
-        runningByStage: queueStatus.runningCounts,
-      };
-      
-      res.json(workerInfo);
-    } catch (error: any) {
-      res.status(500).json({
-        mode: 'unknown',
-        healthy: false,
-        error: error.message,
-        note: 'Failed to fetch worker status',
-      });
-    }
+    res.json({
+      mode: 'inline',
+      healthy: true,
+      note: 'Octypo v2 handles content generation',
+      workers: [],
+      queueDepth: 0,
+      processingJobs: 0,
+      stats: { pending: 0, running: 0, completed: 0, failed: 0 },
+    });
   });
 
   // ============================================================================
@@ -18515,11 +18429,7 @@ Return as valid JSON.`,
   // Register AEO routes (includes robots.txt, llms.txt, and API endpoints)
   app.use(aeoRoutes);
 
-  // ============================================================================
-  // OCTOPUS ENGINE ROUTES
-  // Content generation from research documents (PDF/Word)
-  // ============================================================================
-  app.use('/api/octopus', octopusRoutes);
+  // [REMOVED] Octopus Engine routes - migrated to Octypo v2
 
   // ============================================================================
   // LOCALIZATION ENGINE ROUTES
