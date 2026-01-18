@@ -124,7 +124,7 @@ const HERO_GUIDES = [
   { 
     name: "Paris", 
     city: "France",
-    attractions: 2847,
+    tagline: "Art & Romance",
     image: "/cards/paris.webp", 
     alt: "Paris travel guide - Eiffel Tower and city skyline",
     title: "Paris Travel Guide",
@@ -134,7 +134,7 @@ const HERO_GUIDES = [
   { 
     name: "Dubai", 
     city: "UAE",
-    attractions: 856,
+    tagline: "Luxury & Sun",
     image: "/cards/dubai.webp", 
     alt: "Dubai travel guide - Burj Khalifa and downtown skyline",
     title: "Dubai Travel Guide"
@@ -142,7 +142,7 @@ const HERO_GUIDES = [
   { 
     name: "Tokyo", 
     city: "Japan",
-    attractions: 3412,
+    tagline: "Culture & Tech",
     image: "/cards/tokyo.webp", 
     alt: "Tokyo travel guide - cityscape and temples",
     title: "Tokyo Travel Guide"
@@ -150,7 +150,7 @@ const HERO_GUIDES = [
   { 
     name: "New York", 
     city: "USA",
-    attractions: 2156,
+    tagline: "City Explorer",
     image: "/cards/new-york.webp", 
     alt: "New York travel guide - Manhattan skyline",
     title: "New York Travel Guide"
@@ -158,7 +158,7 @@ const HERO_GUIDES = [
   { 
     name: "London", 
     city: "UK",
-    attractions: 1923,
+    tagline: "Royal Heritage",
     image: "/cards/london.webp", 
     alt: "London travel guide - Big Ben and Thames",
     title: "London Travel Guide"
@@ -635,9 +635,7 @@ export default function TravelGuidesPage() {
                       {/* Top Row */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
-                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                          <span className="font-bold text-slate-800">4.9</span>
-                          <span className="text-slate-500 text-sm">({dest.attractions.toLocaleString()} attractions)</span>
+                          <span className="font-semibold text-slate-800">{dest.tagline}</span>
                         </div>
                         <motion.div 
                           className="relative px-4 py-2 rounded-full bg-gradient-to-r from-[#6443F4] to-[#F24294] text-white text-sm font-semibold shadow-lg"
