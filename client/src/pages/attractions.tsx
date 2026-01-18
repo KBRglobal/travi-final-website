@@ -537,10 +537,7 @@ export default function Attractions() {
                   <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24">
 
                     {/* Top Badge */}
- Right Side
-                    
-                    <Interactive Hero
-                      motion.div 
+                    <motion.div 
                       className="mb-8"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
