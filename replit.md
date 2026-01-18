@@ -27,7 +27,7 @@ Preferred communication style: Simple, everyday language.
 - **API Keys Management**: Centralized management for external service API keys using AES-256-GCM encryption at rest, stored in `travi_api_keys` with audit trail.
 - **API**: Swagger UI for documentation, OpenAPI Spec, URL-based API versioning.
 - **CI/CD**: GitHub Actions for automated testing and deployment.
-- **Octopus v2 Content Engine**: Graph-based content generation with PostgreSQL persistence, queue infrastructure, entity resolution, AI tagging, and placement rules.
+- **Octopus v2 Content Engine**: Graph-based content generation with PostgreSQL persistence, queue infrastructure, entity resolution, AI tagging, and placement rules. Dashboard API routes at `/api/octopus/*` connect frontend to local Octypo engine (stats, jobs, entities, capabilities, queue-status).
 - **Localization Automation + AEO Engine**: Multi-locale translation queue with multi-provider chain (DeepL, Anthropic, OpenAI, Replit AI) and Answer Engine Optimization (AEO) for generating answer capsules, FAQs, and JSON-LD schema.
 - **SEO/AEO Module**: Centralized SEO optimization with versioned prompt templates, output normalization, and regeneration guards.
 - **Image Handling**: Tracks image usage and fallback frequency. `SafeImage` component ensures image safety with error fallbacks.
