@@ -22,8 +22,9 @@ const PWAInstallPrompt = lazy(() => import("@/components/pwa-install-prompt").th
 
 const Homepage = lazy(() => import("@/pages/homepage-fast"));
 const Attractions = lazy(() => import("@/pages/attractions"));
-const HotelsPage = lazy(() => import("@/pages/hotels"));
-const HotelDetail = lazy(() => import("@/pages/hotel-detail"));
+// NOTE: Hotel imports disabled - no hotel content in CMS yet
+// const HotelsPage = lazy(() => import("@/pages/hotels"));
+// const HotelDetail = lazy(() => import("@/pages/hotel-detail"));
 const TiqetsAttractionDetail = lazy(() => import("@/pages/attraction-detail"));
 const DestinationAttractions = lazy(() => import("@/pages/destination-attractions"));
 const TravelGuidesPage = lazy(() => import("@/pages/travel-guides"));
@@ -98,18 +99,17 @@ function CityAttractionsRedirect({ params }: { params: { city: string } }) {
   return <Redirect to={`/attractions/list/${params.city}`} />;
 }
 
-// Hash redirect for /hotels/:city routes
-function CityHotelsRedirect({ params }: { params: { city: string } }) {
-  if (isValidCity(params.city)) {
-    return <HashRedirect city={params.city} hash="hotels" />;
-  }
-  return <PublicContentViewer />;
-}
+// NOTE: Hotel redirects disabled - no hotel content in CMS yet
+// function CityHotelsRedirect({ params }: { params: { city: string } }) {
+//   if (isValidCity(params.city)) {
+//     return <HashRedirect city={params.city} hash="hotels" />;
+//   }
+//   return <PublicContentViewer />;
+// }
 
-// Hash redirect for /destinations/:city/hotels
-function DestinationHotelsRedirect({ params }: { params: { city: string } }) {
-  return <HashRedirect city={params.city} hash="hotels" />;
-}
+// function DestinationHotelsRedirect({ params }: { params: { city: string } }) {
+//   return <HashRedirect city={params.city} hash="hotels" />;
+// }
 
 // Hash redirect for /destinations/:city/news
 function DestinationNewsRedirect({ params }: { params: { city: string } }) {
@@ -150,8 +150,9 @@ const publicRoutes = [
   { path: "/login", component: Login },
   { path: "/access-denied", component: AccessDenied },
   { path: "/search", component: PublicSearch },
-  { path: "/hotels", component: HotelsPage },
-  { path: "/hotels/:hotelId", component: HotelDetail },
+  // NOTE: Hotel routes disabled - no hotel content in CMS yet
+  // { path: "/hotels", component: HotelsPage },
+  // { path: "/hotels/:hotelId", component: HotelDetail },
   { path: "/guides", component: TravelGuidesPage },
   { path: "/travel-guides", component: TravelGuidesPage },
   { path: "/travel-styles/:slug", component: TravelStyleArticle },
@@ -168,7 +169,7 @@ const publicRoutes = [
   { path: "/attractions/:city/:slug", component: TiqetsAttractionDetail },
   { path: "/attractions/:destination/:attractionId", component: TiqetsAttractionDetail },
   { path: "/attractions/:slug", component: PublicContentViewer },
-  { path: "/hotels/:slug", component: PublicContentViewer },
+  // { path: "/hotels/:slug", component: PublicContentViewer }, // NOTE: Disabled - no hotel content in CMS yet
   { path: "/transport/:slug", component: PublicContentViewer },
   { path: "/articles", component: PublicArticles },
   { path: "/articles/:slug", component: PublicContentViewer },
@@ -212,7 +213,8 @@ function PublicRouter() {
       {/* Redirect routes - must be BEFORE generic routes */}
       <Route path="/attractions/search">{() => <AttractionsSearchRedirect />}</Route>
       <Route path="/destinations/:city/attractions">{(params) => <CityAttractionsRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/hotels">{(params) => <DestinationHotelsRedirect params={params} />}</Route>
+      {/* NOTE: Hotel redirects disabled - no hotel content in CMS yet */}
+      {/* <Route path="/destinations/:city/hotels">{(params) => <DestinationHotelsRedirect params={params} />}</Route> */}
       <Route path="/destinations/:city/news">{(params) => <DestinationNewsRedirect params={params} />}</Route>
       <Route path="/destinations/:city/when-to-go">{(params) => <DestinationWhenToGoRedirect params={params} />}</Route>
       <Route path="/destinations/:city/getting-around">{(params) => <DestinationGettingAroundRedirect params={params} />}</Route>
@@ -222,11 +224,12 @@ function PublicRouter() {
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
       ))}
-      {DESTINATION_IDS.map((city) => (
+      {/* NOTE: Hotel city routes disabled - no hotel content in CMS yet */}
+      {/* {DESTINATION_IDS.map((city) => (
         <Route key={`hotels-city-${city}`} path={`/hotels/${city}`}>
           {() => <HashRedirect city={city} hash="hotels" />}
         </Route>
-      ))}
+      ))} */}
       {DESTINATION_IDS.map((city) => (
         <Route key={`guides-city-${city}`} path={`/guides/${city}`}>
           {() => <Redirect to={`/guides/${city}-travel-guide`} />}
@@ -234,7 +237,8 @@ function PublicRouter() {
       ))}
 
       <Route path="/en/:city/attractions/:slug" component={TraviLocationPage} />
-      <Route path="/en/:city/hotels/:slug" component={TraviLocationPage} />
+      {/* NOTE: Hotel routes disabled - no hotel content in CMS yet */}
+      {/* <Route path="/en/:city/hotels/:slug" component={TraviLocationPage} /> */}
       <Route path="/en/:city/restaurants/:slug" component={TraviLocationPage} />
       
       {LOCALE_PREFIXES.map((locale) => (
