@@ -8,6 +8,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2026)
 
+### Travel Guides Hero Redesign (Jan 18, 2026)
+**UI Consistency Update** - Travel Guides hero section (`travel-guides.tsx`) redesigned to match Attractions page style:
+- **Badge**: Blue dot with ping animation (replaced gradient badge)
+- **Title**: "Travel Guides" with animated-gradient-text class (gradient flow animation)
+- **Layout**: Split-screen 2-column grid (left: content, right: bento gallery)
+- **Stats**: Inline style with vertical dividers ("24 Languages | Worldwide | Free Access")
+- **Search**: Gradient glow background with Search button
+- **Hero Card**: Interactive bento-style gallery with 5-thumbnail navigation dots
+- **Animations**: heroAnimationStyles CSS injection for gradient-flow, morph-blob, rotate-slow, bento-card, thumb-item
+- **Cleanup**: Removed unused floatingDestinations, heroStats, parallax hooks (useScroll, useTransform, useSpring), useRef import
+
 ### Documentation Cleanup (Jan 17, 2026)
 **Major cleanup of outdated MD files** - 155 files removed, 7 kept:
 
