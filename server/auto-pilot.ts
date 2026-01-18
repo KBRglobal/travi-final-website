@@ -815,9 +815,16 @@ export const autoRss = {
       }
 
       // Update lastFetchedAt on the feed
-      await db.update(rssFeeds)
-        .set({ lastFetchedAt: new Date() })
-        .where(eq(rssFeeds.id, feedId));
+      try {
+        const now = new Date();
+        const result = await db.update(rssFeeds)
+          .set({ lastFetchedAt: now })
+          .where(eq(rssFeeds.id, feedId))
+          .returning({ id: rssFeeds.id, lastFetchedAt: rssFeeds.lastFetchedAt });
+        console.log(`[AutoPilot/RSS] Updated lastFetchedAt for feed ${feed.name}:`, result);
+      } catch (updateError: any) {
+        console.error(`[AutoPilot/RSS] Failed to update lastFetchedAt: ${updateError.message}`, updateError.stack);
+      }
 
       console.log(`[AutoPilot/RSS] Feed ${feed.name}: fetched=${items.length}, imported=${imported}`);
       return { fetched: items.length, imported };
