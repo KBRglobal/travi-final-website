@@ -200,8 +200,9 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
         </div>
 
 
-        {/* 4b. TOP POIs - Hotels and Restaurants from TourPedia (barcelona, amsterdam) */}
-        <div id="hotels" className="scroll-mt-24">
+        {/* 4b. TOP POIs - Restaurants from TourPedia (barcelona, amsterdam) */}
+        {/* NOTE: Hotels section disabled - no hotel content in CMS yet */}
+        <div id="restaurants" className="scroll-mt-24">
           <TopPOIs
             destinationId={data.id}
             destinationName={data.name}
