@@ -170,6 +170,15 @@ const sidebarModules: NavModule[] = [
     ],
   },
   {
+    id: "octypo-engine",
+    title: "Octypo Engine",
+    icon: Bot,
+    items: [
+      { title: "Dashboard", url: "/admin/octypo", icon: Bot, requiredPermission: "canEdit" },
+      { title: "Queue", url: "/admin/octypo?tab=queue", icon: Clock, requiredPermission: "canEdit" },
+    ],
+  },
+  {
     id: "news-rss",
     title: "News & RSS",
     icon: Newspaper,
