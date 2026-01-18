@@ -81,6 +81,7 @@ const TiqetsDestinations = lazy(() => import("@/pages/admin/tiqets/destinations"
 const TiqetsIntegrations = lazy(() => import("@/pages/admin/tiqets/integrations"));
 const TiqetsConfiguration = lazy(() => import("@/pages/admin/tiqets/configuration"));
 const TiqetsAttractionDetail = lazy(() => import("@/pages/admin/tiqets/attraction-detail"));
+const TiqetsAttractionsList = lazy(() => import("@/pages/admin/tiqets-attractions-list"));
 const ContentQualityDashboard = lazy(() => import("@/pages/admin/tiqets/content-quality"));
 const IngestionDashboard = lazy(() => import("@/pages/admin/ingestion/dashboard"));
 const POIExplorer = lazy(() => import("@/pages/poi-explorer"));
@@ -146,9 +147,8 @@ function AdminRouter() {
     <Suspense fallback={<AdminPageLoader />}>
       <Switch>
         <Route path="/admin" component={Dashboard} />
-        <Route path="/admin/attractions">{() => <AdminContentList type="attraction" />}</Route>
-        <Route path="/admin/attractions/new" component={ContentEditor} />
-        <Route path="/admin/attractions/:id" component={ContentEditor} />
+        <Route path="/admin/attractions" component={TiqetsAttractionsList} />
+        <Route path="/admin/tiqets/attractions/:id" component={TiqetsAttractionDetail} />
         <Route path="/admin/hotels">{() => <AdminContentList type="hotel" />}</Route>
         <Route path="/admin/hotels/new" component={ContentEditor} />
         <Route path="/admin/hotels/:id" component={ContentEditor} />
