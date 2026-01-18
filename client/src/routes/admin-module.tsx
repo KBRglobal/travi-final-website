@@ -123,6 +123,7 @@ const ChangeManagement = lazy(() => import("@/pages/admin/change-management"));
 const SeoEngineDashboard = lazy(() => import("@/pages/admin/seo-engine/SeoEngineDashboard"));
 const SeoEngineContentReport = lazy(() => import("@/pages/admin/seo-engine/SeoEngineContentReport"));
 const SeoEngineActionsQueue = lazy(() => import("@/pages/admin/seo-engine/SeoEngineActionsQueue"));
+const OctypoDashboard = lazy(() => import("@/pages/admin/octypo-dashboard"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function AdminPageLoader() {
@@ -281,6 +282,7 @@ function AdminRouter() {
         <Route path="/admin/seo-engine" component={SeoEngineDashboard} />
         <Route path="/admin/seo-engine/contents" component={SeoEngineContentReport} />
         <Route path="/admin/seo-engine/actions" component={SeoEngineActionsQueue} />
+        <Route path="/admin/octypo" component={OctypoDashboard} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
