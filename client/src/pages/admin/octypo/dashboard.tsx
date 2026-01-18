@@ -8,6 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -38,6 +49,10 @@ import {
   Play,
   Square,
   Bot,
+  Rss,
+  FileText,
+  Lightbulb,
+  Loader2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -102,6 +117,25 @@ interface AIQueueStatus {
   }>;
 }
 
+interface RssFeed {
+  id: string;
+  name: string;
+  url: string;
+  category: string | null;
+  isActive: boolean;
+  destinationId: string | null;
+  destinationName: string | null;
+  language: string | null;
+}
+
+interface SourceDestination {
+  id: string;
+  name: string;
+  country: string | null;
+  destinationLevel: string | null;
+  rssFeedCount: number;
+}
+
 function getStatusColor(status: string) {
   switch (status) {
     case "Running":
@@ -121,6 +155,12 @@ export default function OctypoDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [healthFilter, setHealthFilter] = useState("all");
+  const [isJobDialogOpen, setIsJobDialogOpen] = useState(false);
+  const [sourceType, setSourceType] = useState<"rss" | "topic" | "manual">("rss");
+  const [selectedDestination, setSelectedDestination] = useState<string>("");
+  const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
+  const [topicKeywords, setTopicKeywords] = useState("");
+  const [priority, setPriority] = useState<"low" | "normal" | "high">("normal");
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -146,6 +186,77 @@ export default function OctypoDashboardPage() {
     queryKey: ['/api/octypo/ai-queue/status'],
     refetchInterval: 10000,
   });
+
+  const { data: sourceDestinations } = useQuery<{ destinations: SourceDestination[] }>({
+    queryKey: ['/api/octypo/sources/destinations'],
+    enabled: isJobDialogOpen,
+  });
+
+  const { data: rssFeeds } = useQuery<{ feeds: RssFeed[] }>({
+    queryKey: ['/api/octypo/sources/rss', selectedDestination],
+    enabled: isJobDialogOpen && sourceType === 'rss',
+  });
+
+  const createJobMutation = useMutation({
+    mutationFn: (config: { 
+      sourceType: string; 
+      destination?: string;
+      rssFeedIds?: string[];
+      topicKeywords?: string[];
+      priority: string;
+    }) => apiRequest('/api/octypo/jobs/create', { method: 'POST', body: config }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/octypo/job-queue/status'] });
+      toast({ 
+        title: "Content Job Created", 
+        description: `Created ${data.jobsCreated} content generation job(s)` 
+      });
+      setIsJobDialogOpen(false);
+      resetJobForm();
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create content job", 
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const resetJobForm = () => {
+    setSourceType("rss");
+    setSelectedDestination("");
+    setSelectedFeeds([]);
+    setTopicKeywords("");
+    setPriority("normal");
+  };
+
+  const handleCreateJob = () => {
+    if (sourceType === "rss" && selectedFeeds.length === 0) {
+      toast({ title: "Error", description: "Please select at least one RSS feed", variant: "destructive" });
+      return;
+    }
+    if (sourceType === "topic" && !topicKeywords.trim()) {
+      toast({ title: "Error", description: "Please enter topic keywords", variant: "destructive" });
+      return;
+    }
+
+    createJobMutation.mutate({
+      sourceType,
+      destination: selectedDestination || undefined,
+      rssFeedIds: sourceType === "rss" ? selectedFeeds : undefined,
+      topicKeywords: sourceType === "topic" ? topicKeywords.split(",").map(k => k.trim()).filter(Boolean) : undefined,
+      priority,
+    });
+  };
+
+  const toggleFeedSelection = (feedId: string) => {
+    setSelectedFeeds(prev => 
+      prev.includes(feedId) 
+        ? prev.filter(id => id !== feedId)
+        : [...prev, feedId]
+    );
+  };
 
   const startAutopilot = useMutation({
     mutationFn: () => apiRequest('/api/octypo/autopilot/start', { method: 'POST' }),
@@ -249,9 +360,9 @@ export default function OctypoDashboardPage() {
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button data-testid="button-new-destination">
+          <Button onClick={() => setIsJobDialogOpen(true)} data-testid="button-new-content-job">
             <Plus className="h-4 w-4 mr-2" />
-            New Destination
+            New Content Job
           </Button>
         </div>
       </div>
@@ -510,6 +621,189 @@ export default function OctypoDashboardPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={isJobDialogOpen} onOpenChange={setIsJobDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="h-5 w-5 text-primary" />
+              Create Content Generation Job
+            </DialogTitle>
+            <DialogDescription>
+              Configure a new content generation job. Select your data source and destination.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            <div className="space-y-2">
+              <Label>Destination (Optional)</Label>
+              <Select value={selectedDestination} onValueChange={setSelectedDestination}>
+                <SelectTrigger data-testid="select-job-destination">
+                  <SelectValue placeholder="All destinations" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All destinations</SelectItem>
+                  {sourceDestinations?.destinations?.map((dest) => (
+                    <SelectItem key={dest.id} value={dest.id}>
+                      {dest.name} {dest.rssFeedCount > 0 && `(${dest.rssFeedCount} feeds)`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Source Type</Label>
+              <div className="grid grid-cols-3 gap-3">
+                <Button
+                  type="button"
+                  variant={sourceType === "rss" ? "default" : "outline"}
+                  className="flex flex-col items-center gap-2 h-auto py-4"
+                  onClick={() => setSourceType("rss")}
+                  data-testid="button-source-rss"
+                >
+                  <Rss className="h-5 w-5" />
+                  <span>RSS Feeds</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={sourceType === "topic" ? "default" : "outline"}
+                  className="flex flex-col items-center gap-2 h-auto py-4"
+                  onClick={() => setSourceType("topic")}
+                  data-testid="button-source-topic"
+                >
+                  <Lightbulb className="h-5 w-5" />
+                  <span>Topics</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={sourceType === "manual" ? "default" : "outline"}
+                  className="flex flex-col items-center gap-2 h-auto py-4"
+                  onClick={() => setSourceType("manual")}
+                  data-testid="button-source-manual"
+                >
+                  <FileText className="h-5 w-5" />
+                  <span>Manual</span>
+                </Button>
+              </div>
+            </div>
+
+            {sourceType === "rss" && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Select RSS Feeds</Label>
+                  <span className="text-sm text-muted-foreground">
+                    {selectedFeeds.length} selected
+                  </span>
+                </div>
+                <div className="border rounded-lg max-h-[200px] overflow-y-auto">
+                  {rssFeeds?.feeds && rssFeeds.feeds.length > 0 ? (
+                    rssFeeds.feeds.map((feed) => (
+                      <div
+                        key={feed.id}
+                        className="flex items-center gap-3 p-3 border-b last:border-b-0 hover-elevate cursor-pointer"
+                        onClick={() => toggleFeedSelection(feed.id)}
+                        data-testid={`feed-item-${feed.id}`}
+                      >
+                        <Checkbox
+                          checked={selectedFeeds.includes(feed.id)}
+                          onCheckedChange={() => toggleFeedSelection(feed.id)}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">{feed.name}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {feed.destinationName || "No destination"} 
+                            {feed.category && ` • ${feed.category}`}
+                          </div>
+                        </div>
+                        {feed.isActive ? (
+                          <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Active</Badge>
+                        ) : (
+                          <Badge variant="secondary">Inactive</Badge>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-muted-foreground">
+                      <Rss className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>No RSS feeds available</p>
+                      {selectedDestination && (
+                        <p className="text-sm">Try selecting a different destination</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {sourceType === "topic" && (
+              <div className="space-y-2">
+                <Label>Topic Keywords</Label>
+                <Textarea
+                  placeholder="Enter keywords separated by commas (e.g., Dubai Marina, Burj Khalifa, desert safari)"
+                  value={topicKeywords}
+                  onChange={(e) => setTopicKeywords(e.target.value)}
+                  className="min-h-[100px]"
+                  data-testid="input-topic-keywords"
+                />
+                <p className="text-xs text-muted-foreground">
+                  AI will generate content based on these topics
+                </p>
+              </div>
+            )}
+
+            {sourceType === "manual" && (
+              <div className="p-4 border rounded-lg bg-muted/50 text-center">
+                <FileText className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-muted-foreground">
+                  Manual content entry coming soon. Use RSS or Topics for now.
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label>Priority</Label>
+              <Select value={priority} onValueChange={(v) => setPriority(v as any)}>
+                <SelectTrigger data-testid="select-priority">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low - Process when queue is empty</SelectItem>
+                  <SelectItem value="normal">Normal - Standard queue priority</SelectItem>
+                  <SelectItem value="high">High - Process immediately</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsJobDialogOpen(false)}
+              data-testid="button-cancel-job"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleCreateJob}
+              disabled={createJobMutation.isPending || sourceType === "manual"}
+              data-testid="button-create-job"
+            >
+              {createJobMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Job
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
