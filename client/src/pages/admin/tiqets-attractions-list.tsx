@@ -301,8 +301,7 @@ export default function TiqetsAttractionsList() {
               selectable
               selectedIds={selectedIds}
               onSelectionChange={setSelectedIds}
-              getRowId={(row) => row.id}
-              searchable={false}
+              getItemId={(row) => row.id}
             />
           )}
         </CardContent>
