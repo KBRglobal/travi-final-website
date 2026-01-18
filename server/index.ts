@@ -129,6 +129,70 @@ app.use((req, res, next) => {
   next();
 });
 
+// SEO Fix: 301 Redirects for legacy Dubai paths to new /destinations/dubai/ hierarchy
+// This ensures search engines and users are directed to the canonical URLs
+app.use((req, res, next) => {
+  const path = req.path;
+  
+  // Map of old Dubai paths to new destinations hierarchy
+  const dubaiRedirects: Record<string, string> = {
+    // Real estate paths
+    '/dubai-real-estate': '/destinations/dubai/real-estate',
+    '/dubai-off-plan-properties': '/destinations/dubai/off-plan',
+    
+    // Landing pages
+    '/dubai/laws-for-tourists': '/destinations/dubai/laws-for-tourists',
+    '/dubai/sheikh-mohammed-bin-rashid': '/destinations/dubai/sheikh-mohammed',
+    '/dubai/24-hours-open': '/destinations/dubai/24-hours-open',
+    '/dubai/free-things-to-do': '/destinations/dubai/free-things-to-do',
+    
+    // Attractions
+    '/attractions/list/dubai': '/destinations/dubai/attractions',
+    
+    // Dubai districts (common ones)
+    '/districts/downtown-dubai': '/destinations/dubai/districts/downtown',
+    '/districts/dubai-marina': '/destinations/dubai/districts/marina',
+    '/districts/palm-jumeirah': '/destinations/dubai/districts/palm-jumeirah',
+    '/districts/jbr': '/destinations/dubai/districts/jbr',
+    '/districts/business-bay': '/destinations/dubai/districts/business-bay',
+    
+    // Dubai guides
+    '/guides/dubai-to-rak-transport': '/destinations/dubai/guides/rak-transport',
+    '/guides/dubai-vs-rak': '/destinations/dubai/guides/rak-comparison',
+  };
+  
+  // Check exact matches first
+  if (dubaiRedirects[path]) {
+    const queryString = Object.keys(req.query).length 
+      ? '?' + new URLSearchParams(req.query as Record<string, string>).toString() 
+      : '';
+    return res.redirect(301, dubaiRedirects[path] + queryString);
+  }
+  
+  // Handle dynamic /dubai/* routes (excluding API paths)
+  // Redirect /dubai/anything to /destinations/dubai/anything
+  if (path.startsWith('/dubai/') && !path.includes('/api/')) {
+    const newPath = '/destinations' + path;
+    const queryString = Object.keys(req.query).length 
+      ? '?' + new URLSearchParams(req.query as Record<string, string>).toString() 
+      : '';
+    return res.redirect(301, newPath + queryString);
+  }
+  
+  // Handle district pages with dubai in slug that should redirect
+  // /districts/dubai-* → /destinations/dubai/districts/*
+  if (path.startsWith('/districts/dubai-')) {
+    const districtSlug = path.replace('/districts/dubai-', '');
+    const newPath = `/destinations/dubai/districts/${districtSlug}`;
+    const queryString = Object.keys(req.query).length 
+      ? '?' + new URLSearchParams(req.query as Record<string, string>).toString() 
+      : '';
+    return res.redirect(301, newPath + queryString);
+  }
+  
+  next();
+});
+
 // API Versioning middleware - supports /api/v1/* URL prefix and Accept header versioning
 // Existing /api/* routes continue to work, /api/v1/* routes are also available
 app.use(apiVersioningMiddleware);
