@@ -36,78 +36,87 @@ export const publicRoutes: RouteDefinition[] = [
   { path: "/help/:slug", component: Components.HelpCategory },
   { path: "/help/:categorySlug/:articleSlug", component: Components.HelpArticle },
 
-  // Off-Plan Real Estate
+  // ============================================
+  // DUBAI-SPECIFIC ROUTES (under /destinations/dubai/)
+  // ============================================
+  
+  // Dubai Real Estate
+  { path: "/destinations/dubai/real-estate", component: Components.PublicOffPlan },
+  { path: "/destinations/dubai/off-plan", component: Components.PublicOffPlan },
+  
+  // Legacy redirects (keep for SEO, redirect to new paths)
   { path: "/dubai-real-estate", component: Components.PublicOffPlan },
   { path: "/dubai-off-plan-properties", component: Components.PublicOffPlan },
-  // Off-Plan pages (not yet implemented)
-  // { path: "/dubai-off-plan-investment-guide", component: Components.OffPlanInvestmentGuide },
-  // { path: "/how-to-buy-dubai-off-plan", component: Components.OffPlanHowToBuy },
-  // { path: "/dubai-off-plan-payment-plans", component: Components.OffPlanPaymentPlans },
-  // { path: "/best-off-plan-projects-dubai-2026", component: Components.OffPlanBest2026 },
-  // { path: "/dubai-off-plan-business-bay", component: Components.OffPlanBusinessBay },
-  // { path: "/dubai-off-plan-marina", component: Components.OffPlanDubaiMarina },
-  // { path: "/dubai-off-plan-jvc", component: Components.OffPlanJVC },
-  // { path: "/dubai-off-plan-palm-jumeirah", component: Components.OffPlanPalmJumeirah },
-  // { path: "/dubai-off-plan-creek-harbour", component: Components.OffPlanCreekHarbour },
-  // { path: "/dubai-off-plan-al-furjan", component: Components.OffPlanAlFurjan },
-  // { path: "/dubai-off-plan-villas", component: Components.OffPlanVillas },
-  // { path: "/off-plan-emaar", component: Components.OffPlanEmaar },
-  // { path: "/off-plan-damac", component: Components.OffPlanDamac },
-  // { path: "/off-plan-nakheel", component: Components.OffPlanNakheel },
-  // { path: "/off-plan-meraas", component: Components.OffPlanMeraas },
-  // { path: "/off-plan-sobha", component: Components.OffPlanSobha },
-  // { path: "/off-plan-crypto-payments", component: Components.OffPlanCryptoPayments },
-  // { path: "/off-plan-usdt", component: Components.OffPlanUSDT },
-  // { path: "/off-plan-golden-visa", component: Components.OffPlanGoldenVisa },
-  // { path: "/off-plan-post-handover", component: Components.OffPlanPostHandover },
-  // { path: "/off-plan-escrow", component: Components.OffPlanEscrow },
-  // { path: "/off-plan-vs-ready", component: Components.OffPlanVsReady },
+  
+  // Dubai Off-Plan pages (not yet implemented)
+  // { path: "/destinations/dubai/off-plan/investment-guide", component: Components.OffPlanInvestmentGuide },
+  // { path: "/destinations/dubai/off-plan/how-to-buy", component: Components.OffPlanHowToBuy },
+  // { path: "/destinations/dubai/off-plan/payment-plans", component: Components.OffPlanPaymentPlans },
+  // { path: "/destinations/dubai/off-plan/best-projects-2026", component: Components.OffPlanBest2026 },
+  // { path: "/destinations/dubai/off-plan/business-bay", component: Components.OffPlanBusinessBay },
+  // { path: "/destinations/dubai/off-plan/marina", component: Components.OffPlanDubaiMarina },
+  // { path: "/destinations/dubai/off-plan/jvc", component: Components.OffPlanJVC },
+  // { path: "/destinations/dubai/off-plan/palm-jumeirah", component: Components.OffPlanPalmJumeirah },
+  // { path: "/destinations/dubai/off-plan/creek-harbour", component: Components.OffPlanCreekHarbour },
+  // { path: "/destinations/dubai/off-plan/al-furjan", component: Components.OffPlanAlFurjan },
+  // { path: "/destinations/dubai/off-plan/villas", component: Components.OffPlanVillas },
+  // { path: "/destinations/dubai/off-plan/developers/emaar", component: Components.OffPlanEmaar },
+  // { path: "/destinations/dubai/off-plan/developers/damac", component: Components.OffPlanDamac },
+  // { path: "/destinations/dubai/off-plan/developers/nakheel", component: Components.OffPlanNakheel },
+  // { path: "/destinations/dubai/off-plan/developers/meraas", component: Components.OffPlanMeraas },
+  // { path: "/destinations/dubai/off-plan/developers/sobha", component: Components.OffPlanSobha },
+  // { path: "/destinations/dubai/off-plan/crypto-payments", component: Components.OffPlanCryptoPayments },
+  // { path: "/destinations/dubai/off-plan/usdt", component: Components.OffPlanUSDT },
+  // { path: "/destinations/dubai/off-plan/golden-visa", component: Components.OffPlanGoldenVisa },
+  // { path: "/destinations/dubai/off-plan/post-handover", component: Components.OffPlanPostHandover },
+  // { path: "/destinations/dubai/off-plan/escrow", component: Components.OffPlanEscrow },
+  // { path: "/destinations/dubai/off-plan/vs-ready", component: Components.OffPlanVsReady },
 
-  // Comparison Pages (not yet implemented)
-  // { path: "/compare-off-plan-vs-ready", component: Components.CompareOffPlanVsReady },
-  // { path: "/compare-jvc-vs-dubai-south", component: Components.CompareJVCvsDubaiSouth },
-  // { path: "/compare-emaar-vs-damac", component: Components.CompareEmaarVsDamac },
-  // { path: "/compare-downtown-vs-marina", component: Components.CompareDowntownVsMarina },
-  // { path: "/compare-60-40-vs-80-20", component: Components.Compare6040vs8020 },
-  // { path: "/compare-sobha-vs-meraas", component: Components.CompareSobhaVsMeraas },
-  // { path: "/compare-crypto-vs-bank-transfer", component: Components.CompareCryptoVsBankTransfer },
-  // { path: "/compare-business-bay-vs-jlt", component: Components.CompareBusinessBayVsJLT },
-  // { path: "/compare-new-vs-resale", component: Components.CompareNewVsResale },
-  // { path: "/compare-nakheel-vs-azizi", component: Components.CompareNakheelVsAzizi },
-  // { path: "/compare-villa-vs-apartment", component: Components.CompareVillaVsApartment },
-  // { path: "/compare-studio-vs-1bed", component: Components.CompareStudioVs1Bed },
+  // Dubai Comparison Pages (not yet implemented)
+  // { path: "/destinations/dubai/compare/off-plan-vs-ready", component: Components.CompareOffPlanVsReady },
+  // { path: "/destinations/dubai/compare/jvc-vs-dubai-south", component: Components.CompareJVCvsDubaiSouth },
+  // { path: "/destinations/dubai/compare/emaar-vs-damac", component: Components.CompareEmaarVsDamac },
+  // { path: "/destinations/dubai/compare/downtown-vs-marina", component: Components.CompareDowntownVsMarina },
+  // { path: "/destinations/dubai/compare/payment-plans", component: Components.Compare6040vs8020 },
+  // { path: "/destinations/dubai/compare/sobha-vs-meraas", component: Components.CompareSobhaVsMeraas },
+  // { path: "/destinations/dubai/compare/crypto-vs-bank", component: Components.CompareCryptoVsBankTransfer },
+  // { path: "/destinations/dubai/compare/business-bay-vs-jlt", component: Components.CompareBusinessBayVsJLT },
+  // { path: "/destinations/dubai/compare/new-vs-resale", component: Components.CompareNewVsResale },
+  // { path: "/destinations/dubai/compare/nakheel-vs-azizi", component: Components.CompareNakheelVsAzizi },
+  // { path: "/destinations/dubai/compare/villa-vs-apartment", component: Components.CompareVillaVsApartment },
+  // { path: "/destinations/dubai/compare/studio-vs-1bed", component: Components.CompareStudioVs1Bed },
 
-  // Tools (not yet implemented)
-  // { path: "/tools-roi-calculator", component: Components.ToolsROICalculator },
-  // { path: "/tools-payment-calculator", component: Components.ToolsPaymentCalculator },
-  // { path: "/tools-affordability-calculator", component: Components.ToolsAffordabilityCalculator },
-  // { path: "/tools-currency-converter", component: Components.ToolsCurrencyConverter },
-  // { path: "/tools-fees-calculator", component: Components.ToolsStampDutyCalculator },
-  // { path: "/tools-rental-yield-calculator", component: Components.ToolsRentalYieldCalculator },
-  // { path: "/tools-mortgage-calculator", component: Components.ToolsMortgageCalculator },
+  // Dubai Tools (not yet implemented)
+  // { path: "/destinations/dubai/tools/roi-calculator", component: Components.ToolsROICalculator },
+  // { path: "/destinations/dubai/tools/payment-calculator", component: Components.ToolsPaymentCalculator },
+  // { path: "/destinations/dubai/tools/affordability-calculator", component: Components.ToolsAffordabilityCalculator },
+  // { path: "/destinations/dubai/tools/currency-converter", component: Components.ToolsCurrencyConverter },
+  // { path: "/destinations/dubai/tools/fees-calculator", component: Components.ToolsStampDutyCalculator },
+  // { path: "/destinations/dubai/tools/rental-yield-calculator", component: Components.ToolsRentalYieldCalculator },
+  // { path: "/destinations/dubai/tools/mortgage-calculator", component: Components.ToolsMortgageCalculator },
 
-  // Case Studies (not yet implemented)
-  // { path: "/case-study-jvc-investor", component: Components.CaseStudyInvestorJVC },
-  // { path: "/case-study-crypto-buyer", component: Components.CaseStudyCryptoBuyer },
-  // { path: "/case-study-golden-visa", component: Components.CaseStudyGoldenVisa },
-  // { path: "/case-study-expat-family", component: Components.CaseStudyExpatFamily },
-  // { path: "/case-study-investor-flip", component: Components.CaseStudyInvestorFlip },
-  // { path: "/case-study-portfolio-diversification", component: Components.CaseStudyPortfolioDiversification },
-  // { path: "/case-study-off-plan-launch", component: Components.CaseStudyOffPlanLaunch },
-  // { path: "/case-study-retirement-planning", component: Components.CaseStudyRetirementPlanning },
+  // Dubai Case Studies (not yet implemented)
+  // { path: "/destinations/dubai/case-studies/jvc-investor", component: Components.CaseStudyInvestorJVC },
+  // { path: "/destinations/dubai/case-studies/crypto-buyer", component: Components.CaseStudyCryptoBuyer },
+  // { path: "/destinations/dubai/case-studies/golden-visa", component: Components.CaseStudyGoldenVisa },
+  // { path: "/destinations/dubai/case-studies/expat-family", component: Components.CaseStudyExpatFamily },
+  // { path: "/destinations/dubai/case-studies/investor-flip", component: Components.CaseStudyInvestorFlip },
+  // { path: "/destinations/dubai/case-studies/portfolio", component: Components.CaseStudyPortfolioDiversification },
+  // { path: "/destinations/dubai/case-studies/off-plan-launch", component: Components.CaseStudyOffPlanLaunch },
+  // { path: "/destinations/dubai/case-studies/retirement", component: Components.CaseStudyRetirementPlanning },
 
-  // Pillar Pages (not yet implemented)
-  // { path: "/dubai-roi-rental-yields", component: Components.PillarROIRentalYields },
-  // { path: "/dubai-legal-security-guide", component: Components.PillarLegalSecurity },
+  // Dubai Pillar Pages (not yet implemented)
+  // { path: "/destinations/dubai/roi-rental-yields", component: Components.PillarROIRentalYields },
+  // { path: "/destinations/dubai/legal-security-guide", component: Components.PillarLegalSecurity },
 
   // Glossary
   { path: "/glossary", component: Components.GlossaryHub },
 
-  // Landing Pages (not yet implemented)
-  // { path: "/dubai/free-things-to-do", component: Components.LandingFreeDubai },
-  // { path: "/dubai/laws-for-tourists", component: Components.LandingDubaiLaws },
-  // { path: "/dubai/sheikh-mohammed-bin-rashid", component: Components.LandingSheikhMohammed },
-  // { path: "/dubai/24-hours-open", component: Components.LandingDubai247 },
+  // Dubai Landing Pages (not yet implemented)
+  // { path: "/destinations/dubai/free-things-to-do", component: Components.LandingFreeDubai },
+  // { path: "/destinations/dubai/laws-for-tourists", component: Components.LandingDubaiLaws },
+  // { path: "/destinations/dubai/sheikh-mohammed", component: Components.LandingSheikhMohammed },
+  // { path: "/destinations/dubai/24-hours-open", component: Components.LandingDubai247 },
 
   // Shopping & News
   { path: "/shopping", component: Components.PublicShopping },
@@ -138,24 +147,24 @@ export const publicRoutes: RouteDefinition[] = [
   { path: "/partners/join", component: Components.PartnersJoin },
   { path: "/partners/dashboard", component: Components.PartnersDashboard },
 
-  // District Pages (not yet implemented)
-  // { path: "/districts", component: Components.DistrictsGateway },
-  // { path: "/districts/downtown-dubai", component: Components.DistrictDowntownDubai },
-  // { path: "/districts/dubai-marina", component: Components.DistrictDubaiMarina },
-  // { path: "/districts/jbr-jumeirah-beach-residence", component: Components.DistrictJBR },
-  // { path: "/districts/palm-jumeirah", component: Components.DistrictPalmJumeirah },
-  // { path: "/districts/jumeirah", component: Components.DistrictJumeirah },
-  // { path: "/districts/business-bay", component: Components.DistrictBusinessBay },
-  // { path: "/districts/old-dubai", component: Components.DistrictOldDubai },
-  // { path: "/districts/dubai-creek-harbour", component: Components.DistrictDubaiCreekHarbour },
-  // { path: "/districts/dubai-south", component: Components.DistrictDubaiSouth },
-  // { path: "/districts/al-barsha", component: Components.DistrictAlBarsha },
-  // { path: "/districts/difc", component: Components.DistrictDIFC },
-  // { path: "/districts/dubai-hills-estate", component: Components.DistrictDubaiHills },
-  // { path: "/districts/jvc", component: Components.DistrictJVC },
-  // { path: "/districts/bluewaters-island", component: Components.DistrictBluewaters },
-  // { path: "/districts/international-city", component: Components.DistrictInternationalCity },
-  // { path: "/districts/al-karama", component: Components.DistrictAlKarama },
+  // Dubai District Pages (not yet implemented)
+  // { path: "/destinations/dubai/districts", component: Components.DistrictsGateway },
+  // { path: "/destinations/dubai/districts/downtown", component: Components.DistrictDowntownDubai },
+  // { path: "/destinations/dubai/districts/marina", component: Components.DistrictDubaiMarina },
+  // { path: "/destinations/dubai/districts/jbr", component: Components.DistrictJBR },
+  // { path: "/destinations/dubai/districts/palm-jumeirah", component: Components.DistrictPalmJumeirah },
+  // { path: "/destinations/dubai/districts/jumeirah", component: Components.DistrictJumeirah },
+  // { path: "/destinations/dubai/districts/business-bay", component: Components.DistrictBusinessBay },
+  // { path: "/destinations/dubai/districts/old-dubai", component: Components.DistrictOldDubai },
+  // { path: "/destinations/dubai/districts/creek-harbour", component: Components.DistrictDubaiCreekHarbour },
+  // { path: "/destinations/dubai/districts/dubai-south", component: Components.DistrictDubaiSouth },
+  // { path: "/destinations/dubai/districts/al-barsha", component: Components.DistrictAlBarsha },
+  // { path: "/destinations/dubai/districts/difc", component: Components.DistrictDIFC },
+  // { path: "/destinations/dubai/districts/hills-estate", component: Components.DistrictDubaiHills },
+  // { path: "/destinations/dubai/districts/jvc", component: Components.DistrictJVC },
+  // { path: "/destinations/dubai/districts/bluewaters", component: Components.DistrictBluewaters },
+  // { path: "/destinations/dubai/districts/international-city", component: Components.DistrictInternationalCity },
+  // { path: "/destinations/dubai/districts/al-karama", component: Components.DistrictAlKarama },
 ];
 
 // Admin routes (not exported as we keep them in App.tsx for now)
