@@ -1265,4 +1265,221 @@ router.get('/job-queue/status', async (_req: Request, res: Response) => {
   }
 });
 
+// ============================================================================
+// CONTENT JOB CREATION
+// ============================================================================
+
+interface ContentJobConfig {
+  destination?: string;
+  sourceType: 'rss' | 'topic' | 'manual';
+  rssFeedIds?: string[];
+  topicKeywords?: string[];
+  manualContent?: { title: string; description: string }[];
+  quantity?: number;
+  priority?: 'low' | 'normal' | 'high';
+}
+
+/**
+ * POST /api/octypo/jobs/create
+ * Create a new content generation job
+ */
+router.post('/jobs/create', async (req: Request, res: Response) => {
+  try {
+    ensureInitialized();
+    
+    const config: ContentJobConfig = req.body;
+    
+    if (!config.sourceType) {
+      return res.status(400).json({ error: 'Source type is required' });
+    }
+
+    const priority = config.priority === 'high' ? 10 : config.priority === 'low' ? 1 : 5;
+    const createdJobs: { id: string; type: string; destination?: string }[] = [];
+    
+    if (config.sourceType === 'rss') {
+      if (!config.rssFeedIds || config.rssFeedIds.length === 0) {
+        return res.status(400).json({ error: 'At least one RSS feed is required' });
+      }
+      
+      const { rssFeeds } = await import('@shared/schema');
+      const { inArray } = await import('drizzle-orm');
+      
+      const feeds = await db.select()
+        .from(rssFeeds)
+        .where(inArray(rssFeeds.id, config.rssFeedIds));
+      
+      for (const feed of feeds) {
+        const jobId = await jobQueue.addJob('ai_generate' as any, {
+          jobType: 'rss-content-generation',
+          feedId: feed.id,
+          feedUrl: feed.url,
+          feedName: feed.name,
+          destination: config.destination || feed.destinationId,
+          category: feed.category,
+        }, { priority });
+        
+        createdJobs.push({
+          id: jobId,
+          type: 'rss-content-generation',
+          destination: config.destination || feed.destinationId || undefined,
+        });
+      }
+      
+      log.info(`[Octypo] Created ${createdJobs.length} RSS content jobs`);
+    } 
+    else if (config.sourceType === 'topic') {
+      if (!config.topicKeywords || config.topicKeywords.length === 0) {
+        return res.status(400).json({ error: 'At least one topic keyword is required' });
+      }
+      
+      const quantity = Math.min(config.quantity || 5, 20);
+      
+      const jobId = await jobQueue.addJob('ai_generate' as any, {
+        jobType: 'topic-content-generation',
+        keywords: config.topicKeywords,
+        destination: config.destination,
+        quantity,
+      }, { priority });
+      
+      createdJobs.push({
+        id: jobId,
+        type: 'topic-content-generation',
+        destination: config.destination,
+      });
+      
+      log.info(`[Octypo] Created topic content job for keywords: ${config.topicKeywords.join(', ')}`);
+    }
+    else if (config.sourceType === 'manual') {
+      if (!config.manualContent || config.manualContent.length === 0) {
+        return res.status(400).json({ error: 'Manual content items required' });
+      }
+      
+      for (const item of config.manualContent) {
+        const jobId = await jobQueue.addJob('ai_generate' as any, {
+          jobType: 'manual-content-generation',
+          title: item.title,
+          description: item.description,
+          destination: config.destination,
+        }, { priority });
+        
+        createdJobs.push({
+          id: jobId,
+          type: 'manual-content-generation',
+          destination: config.destination,
+        });
+      }
+      
+      log.info(`[Octypo] Created ${createdJobs.length} manual content jobs`);
+    }
+    
+    res.json({
+      success: true,
+      jobsCreated: createdJobs.length,
+      jobs: createdJobs,
+      message: `Created ${createdJobs.length} content generation job(s)`,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to create content job', error);
+    res.status(500).json({ error: 'Failed to create content job', message: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
+
+/**
+ * GET /api/octypo/sources/rss
+ * Get available RSS feeds for content generation
+ */
+router.get('/sources/rss', async (req: Request, res: Response) => {
+  try {
+    const { rssFeeds, destinations } = await import('@shared/schema');
+    const { eq, isNull } = await import('drizzle-orm');
+    
+    const destinationId = req.query.destination as string | undefined;
+    
+    let feeds;
+    if (destinationId) {
+      feeds = await db.select({
+        id: rssFeeds.id,
+        name: rssFeeds.name,
+        url: rssFeeds.url,
+        category: rssFeeds.category,
+        isActive: rssFeeds.isActive,
+        destinationId: rssFeeds.destinationId,
+        language: rssFeeds.language,
+      })
+        .from(rssFeeds)
+        .where(eq(rssFeeds.destinationId, destinationId));
+    } else {
+      feeds = await db.select({
+        id: rssFeeds.id,
+        name: rssFeeds.name,
+        url: rssFeeds.url,
+        category: rssFeeds.category,
+        isActive: rssFeeds.isActive,
+        destinationId: rssFeeds.destinationId,
+        language: rssFeeds.language,
+      })
+        .from(rssFeeds);
+    }
+    
+    const allDestinations = await db.select({
+      id: destinations.id,
+      name: destinations.name,
+    }).from(destinations);
+    
+    const destMap = new Map(allDestinations.map(d => [d.id, d.name]));
+    
+    res.json({
+      feeds: feeds.map(f => ({
+        ...f,
+        destinationName: f.destinationId ? destMap.get(f.destinationId) : null,
+      })),
+      totalCount: feeds.length,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get RSS sources', error);
+    res.status(500).json({ error: 'Failed to retrieve RSS sources' });
+  }
+});
+
+/**
+ * GET /api/octypo/sources/destinations
+ * Get list of destinations for job creation
+ */
+router.get('/sources/destinations', async (_req: Request, res: Response) => {
+  try {
+    const { destinations } = await import('@shared/schema');
+    
+    const allDests = await db.select({
+      id: destinations.id,
+      name: destinations.name,
+      country: destinations.country,
+      destinationLevel: destinations.destinationLevel,
+    }).from(destinations);
+    
+    const feedCounts = await db.execute(sql`
+      SELECT destination_id, COUNT(*)::int as feed_count 
+      FROM rss_feeds 
+      WHERE destination_id IS NOT NULL 
+      GROUP BY destination_id
+    `);
+    
+    const feedCountMap = new Map(
+      (feedCounts.rows as any[]).map(r => [r.destination_id, r.feed_count])
+    );
+    
+    res.json({
+      destinations: allDests.map(d => ({
+        ...d,
+        rssFeedCount: feedCountMap.get(d.id) || 0,
+      })),
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get destinations', error);
+    res.status(500).json({ error: 'Failed to retrieve destinations' });
+  }
+});
+
 export default router;
