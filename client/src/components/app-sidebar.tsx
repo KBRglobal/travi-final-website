@@ -159,17 +159,6 @@ const sidebarModules: NavModule[] = [
     ],
   },
   {
-    id: "octopus",
-    title: "Octopus Engine",
-    icon: Bot,
-    items: [
-      { title: "Content Generator", url: "/admin/octopus", icon: Lightbulb, requiredPermission: "canCreate" },
-      { title: "Research Hub", url: "/admin/topic-bank", icon: Search, requiredPermission: "canCreate" },
-      { title: "Templates", url: "/admin/templates", icon: LayoutTemplate, requiredPermission: "canCreate" },
-      { title: "Settings", url: "/admin/travi/config", icon: Settings, requiredPermission: "canManageSettings" },
-    ],
-  },
-  {
     id: "ai-writers",
     title: "AI Writers",
     icon: PenTool,
