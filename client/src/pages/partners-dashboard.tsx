@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageContainer } from "@/components/public-layout";
-import SEOHead from "@/components/seo-head";
+import { SEOHead } from "@/components/seo-head";
 import { 
   MousePointer2, 
   Users, 
