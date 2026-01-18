@@ -477,34 +477,22 @@ export default function ContentList({ type }: ContentListProps) {
                 <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
                 Generate New {config.singular}
               </DropdownMenuItem>
-              {selectedIds.length > 0 && (
-                <>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      toast({
-                        title: "Coming Soon",
-                        description: "Bulk translation generation will be available soon.",
-                      });
-                    }}
-                    data-testid="menu-item-magic-bulk-translate"
-                  >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Generate Translations ({selectedIds.length})
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      toast({
-                        title: "Coming Soon",
-                        description: "Bulk image generation will be available soon.",
-                      });
-                    }}
-                    data-testid="menu-item-magic-bulk-images"
-                  >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Generate Images ({selectedIds.length})
-                  </DropdownMenuItem>
-                </>
-              )}
+              <DropdownMenuItem
+                disabled
+                className="text-muted-foreground"
+                data-testid="menu-item-magic-bulk-translate"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Bulk Translations (Coming Soon)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled
+                className="text-muted-foreground"
+                data-testid="menu-item-magic-bulk-images"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Bulk Images (Coming Soon)
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Link href={`${config.basePath}/new`}>
