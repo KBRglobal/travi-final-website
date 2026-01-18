@@ -1,7 +1,7 @@
 import { DubaiLandingTemplate } from "./templates/DubaiLandingTemplate";
 import { getDubaiPageBySlug } from "@/data/dubai-pages";
 import { 
-  Beach, 
+  Waves, 
   Building2, 
   Droplets, 
   Trees, 
@@ -32,7 +32,7 @@ export default function LandingFreeDubai() {
       }}
       highlights={[
         {
-          icon: Beach,
+          icon: Waves,
           title: "Public Beaches",
           description: "JBR Beach, Kite Beach, La Mer, and Marina Beach offer free access with stunning views of Dubai's skyline and crystal-clear waters.",
         },

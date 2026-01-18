@@ -6,11 +6,11 @@ export default function DistrictJumeirah() {
     <DubaiDistrictTemplate
       title="Jumeirah Dubai Guide 2026 - Beach Road & Luxury Villas"
       metaDescription="Discover Jumeirah, Dubai's prestigious coastal neighborhood. Guide to Jumeirah Beach Road, Burj Al Arab, La Mer, luxury villas, and upscale dining in Jumeirah."
-      canonicalPath="/dubai/jumeirah"
+      canonicalPath="/destinations/dubai/districts/jumeirah"
       keywords={["jumeirah dubai", "jumeirah beach road", "burj al arab", "la mer dubai", "jumeirah villas", "jumeirah restaurants"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Jumeirah", href: "/dubai/jumeirah" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Jumeirah", href: "/destinations/dubai/districts/jumeirah" }
       ]}
       hero={{
         title: "Jumeirah",

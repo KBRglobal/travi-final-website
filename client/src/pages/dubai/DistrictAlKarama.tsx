@@ -6,11 +6,11 @@ export default function DistrictAlKarama() {
     <DubaiDistrictTemplate
       title="Al Karama Dubai Guide 2026 - Shopping & Local Culture"
       metaDescription="Explore Al Karama, Dubai's vibrant multicultural neighborhood. Guide to Karama Market, restaurants, Metro access, affordable apartments, and local experiences."
-      canonicalPath="/dubai/al-karama"
+      canonicalPath="/destinations/dubai/districts/al-karama"
       keywords={["al karama dubai", "karama market", "karama shopping", "karama restaurants", "karama apartments", "cheap shopping dubai"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Al Karama", href: "/dubai/al-karama" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Al Karama", href: "/destinations/dubai/districts/al-karama" }
       ]}
       hero={{
         title: "Al Karama",

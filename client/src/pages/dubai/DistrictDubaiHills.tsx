@@ -6,11 +6,11 @@ export default function DistrictDubaiHills() {
     <DubaiDistrictTemplate
       title="Dubai Hills Estate Guide 2026 - Family Community & Golf"
       metaDescription="Explore Dubai Hills Estate, a premium family community by Emaar. Guide to Dubai Hills Mall, golf course, schools, villas, and apartments in Dubai Hills."
-      canonicalPath="/dubai/dubai-hills"
+      canonicalPath="/destinations/dubai/districts/hills-estate"
       keywords={["dubai hills estate", "dubai hills mall", "dubai hills golf", "dubai hills villas", "dubai hills apartments", "emaar dubai hills"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Dubai Hills", href: "/dubai/dubai-hills" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Dubai Hills", href: "/destinations/dubai/districts/hills-estate" }
       ]}
       hero={{
         title: "Dubai Hills Estate",

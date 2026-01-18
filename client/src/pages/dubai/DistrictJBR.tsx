@@ -6,11 +6,11 @@ export default function DistrictJBR() {
     <DubaiDistrictTemplate
       title="JBR Dubai Guide 2026 - Jumeirah Beach Residence & The Walk"
       metaDescription="Complete guide to JBR (Jumeirah Beach Residence) in Dubai. Explore The Walk, JBR Beach, dining, shopping, and beachfront apartments at JBR."
-      canonicalPath="/dubai/jbr"
+      canonicalPath="/destinations/dubai/districts/jbr"
       keywords={["jbr dubai", "jumeirah beach residence", "the walk jbr", "jbr beach", "jbr apartments", "jbr restaurants"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "JBR", href: "/dubai/jbr" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "JBR", href: "/destinations/dubai/districts/jbr" }
       ]}
       hero={{
         title: "Jumeirah Beach Residence",

@@ -6,11 +6,11 @@ export default function DistrictDubaiCreekHarbour() {
     <DubaiDistrictTemplate
       title="Dubai Creek Harbour Guide 2026 - Future Landmark District"
       metaDescription="Explore Dubai Creek Harbour, home to the upcoming Dubai Creek Tower. Guide to Creek Beach, shopping, dining, and off-plan investment in Creek Harbour."
-      canonicalPath="/dubai/dubai-creek-harbour"
+      canonicalPath="/destinations/dubai/districts/creek-harbour"
       keywords={["dubai creek harbour", "creek harbour", "dubai creek tower", "creek beach dubai", "emaar creek harbour", "creek harbour apartments"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Dubai Creek Harbour", href: "/dubai/dubai-creek-harbour" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Dubai Creek Harbour", href: "/destinations/dubai/districts/creek-harbour" }
       ]}
       hero={{
         title: "Dubai Creek Harbour",

@@ -6,11 +6,11 @@ export default function DistrictBusinessBay() {
     <DubaiDistrictTemplate
       title="Business Bay Dubai Guide 2026 - CBD Living & Investment"
       metaDescription="Complete guide to Business Bay, Dubai's central business district. Explore Business Bay apartments, offices, Dubai Canal, dining, and investment opportunities."
-      canonicalPath="/dubai/business-bay"
+      canonicalPath="/destinations/dubai/districts/business-bay"
       keywords={["business bay dubai", "business bay apartments", "dubai canal", "business bay offices", "business bay towers", "business bay investment"]}
       breadcrumbs={[
-        { label: "Districts", href: "/dubai/districts" },
-        { label: "Business Bay", href: "/dubai/business-bay" }
+        { label: "Districts", href: "/destinations/dubai/districts" },
+        { label: "Business Bay", href: "/destinations/dubai/districts/business-bay" }
       ]}
       hero={{
         title: "Business Bay",
