@@ -1,7 +1,7 @@
 /**
  * DestinationPageData TypeScript Interface
  * Complete data shape for destination pages - all sections and content.
- * Use explicit placeholders (lorem ipsum, $XX-$YY) where real data is unavailable.
+ * Use explicit placeholders ($XX-$YY for prices) where real data is unavailable.
  */
 
 // Individual hero image in carousel
@@ -41,7 +41,7 @@ export interface QuickFact {
 export interface Experience {
   id: string;
   title: string;
-  description: string; // Short description or lorem ipsum placeholder
+  description: string; // Short description
   duration: string; // e.g., "2-3 hours" or "X-Y hours" placeholder
   priceRange: string; // e.g., "$XX-$YY" placeholder format
   imageUrl: string | null;
@@ -62,7 +62,7 @@ export interface NeighborhoodFAQ {
 export interface Neighborhood {
   id: string;
   name: string;
-  description: string; // Area description or lorem ipsum
+  description: string; // Area description
   highlights: string[]; // Key features of the area
   priceLevel: string; // "$", "$$", "$$$", or "$$$$"
   imageUrl: string | null; // Large atmospheric image of the area
@@ -98,7 +98,7 @@ export interface TransportOption {
 
 export interface FAQ {
   question: string; // Destination-specific question
-  answer: string; // Answer or lorem ipsum placeholder
+  answer: string; // Answer text
 }
 
 export interface DestinationCTAData {

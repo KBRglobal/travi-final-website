@@ -3,7 +3,7 @@
  * Factory pattern data for all 16 destinations.
  * 
  * PLACEHOLDER CONTENT POLICY:
- * - Uses lorem ipsum for descriptions
+ * - Uses generic travel descriptions (no lorem ipsum)
  * - Uses $XX-$YY format for pricing
  * - Uses X-Y hours for durations
  * - NEVER invents real-world facts (weather, visa rules, costs)
@@ -11,9 +11,9 @@
 
 import type { DestinationPageData, DestinationId, DestinationMood } from "@/types/destination";
 
-// Helper to generate placeholder content
-const loremShort = "Discover the unique blend of culture, history, and modern attractions that make this destination special.";
-const loremMedium = "Experience the best of this destination with our comprehensive travel guide. From iconic landmarks to hidden gems, we'll help you plan the perfect trip with insider tips and practical advice.";
+// Helper to generate placeholder content (natural travel language, no lorem ipsum)
+const descriptionShort = "A destination rich in culture and experiences waiting to be explored.";
+const descriptionMedium = "Plan your perfect trip with local insights and travel tips. Find the best times to visit, top attractions, and practical travel advice.";
 
 // Generic quick facts template
 const createQuickFacts = (currency: string, language: string) => [
@@ -37,7 +37,7 @@ const createQuickFacts = (currency: string, language: string) => [
 const createFAQs = (name: string) => [
   {
     question: `What is the best time to visit ${name}?`,
-    answer: loremMedium,
+    answer: "The best time to visit depends on your preferences and planned activities. Check the seasonal guide for detailed weather information.",
   },
   {
     question: `Do I need a visa to visit ${name}?`,
@@ -49,7 +49,7 @@ const createFAQs = (name: string) => [
   },
   {
     question: `Is ${name} safe for tourists?`,
-    answer: loremMedium + " Always exercise normal precautions and stay aware of your surroundings.",
+    answer: "Generally safe for tourists. Always exercise normal precautions and stay aware of your surroundings.",
   },
   {
     question: `What is the local currency in ${name}?`,
@@ -57,11 +57,11 @@ const createFAQs = (name: string) => [
   },
   {
     question: `How do I get from the airport to the city center?`,
-    answer: loremMedium + " Multiple transport options available including taxi, bus, and train services.",
+    answer: "Multiple transport options are available including taxi, bus, and train services. Check the Getting Around section for details.",
   },
   {
     question: `What are the must-see attractions in ${name}?`,
-    answer: loremMedium,
+    answer: "Explore our attractions guide for the top sights and experiences in this destination.",
   },
   {
     question: `What should I pack for a trip to ${name}?`,
@@ -74,7 +74,7 @@ const createExperiences = (name: string) => [
   {
     id: "exp-1",
     title: `Historic ${name} Walking Tour`,
-    description: loremShort,
+    description: descriptionShort,
     duration: "2-3 hours",
     priceRange: "$XX-$YY",
     imageUrl: null,
@@ -83,7 +83,7 @@ const createExperiences = (name: string) => [
   {
     id: "exp-2",
     title: `${name} Food & Culture Experience`,
-    description: loremShort,
+    description: descriptionShort,
     duration: "3-4 hours",
     priceRange: "$XX-$YY",
     imageUrl: null,
@@ -92,7 +92,7 @@ const createExperiences = (name: string) => [
   {
     id: "exp-3",
     title: `Sunset Views of ${name}`,
-    description: loremShort,
+    description: descriptionShort,
     duration: "2-3 hours",
     priceRange: "$XX-$YY",
     imageUrl: null,
@@ -101,7 +101,7 @@ const createExperiences = (name: string) => [
   {
     id: "exp-4",
     title: `${name} Museum & Art Tour`,
-    description: loremShort,
+    description: descriptionShort,
     duration: "3-4 hours",
     priceRange: "$XX-$YY",
     imageUrl: null,
@@ -110,7 +110,7 @@ const createExperiences = (name: string) => [
   {
     id: "exp-5",
     title: `Day Trip from ${name}`,
-    description: loremShort,
+    description: descriptionShort,
     duration: "6-8 hours",
     priceRange: "$XXX-$YYY",
     imageUrl: null,
@@ -119,7 +119,7 @@ const createExperiences = (name: string) => [
   {
     id: "exp-6",
     title: `${name} Nightlife Experience`,
-    description: loremShort,
+    description: descriptionShort,
     duration: "3-4 hours",
     priceRange: "$XX-$YY",
     imageUrl: null,
@@ -132,7 +132,7 @@ const createNeighborhoods = (name: string) => [
   {
     id: "nb-1",
     name: "Historic Center",
-    description: loremMedium,
+    description: "The heart of the city with major landmarks and cultural attractions within walking distance.",
     highlights: ["Walking distance", "Landmarks", "Dining"],
     priceLevel: "$$$",
     imageUrl: "https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=800&h=600&fit=crop",
@@ -142,7 +142,7 @@ const createNeighborhoods = (name: string) => [
   {
     id: "nb-2",
     name: "Business District",
-    description: loremMedium,
+    description: "Modern high-rise hotels with excellent transport links and upscale shopping options.",
     highlights: ["Modern hotels", "Transport", "Shopping"],
     priceLevel: "$$$$",
     imageUrl: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop",
@@ -152,7 +152,7 @@ const createNeighborhoods = (name: string) => [
   {
     id: "nb-3",
     name: "Arts Quarter",
-    description: loremMedium,
+    description: "Creative neighborhood with galleries, independent cafes, and boutique shopping.",
     highlights: ["Galleries", "Cafes", "Boutiques"],
     priceLevel: "$$",
     imageUrl: "https://images.unsplash.com/photo-1533158307587-828f0a76ef46?w=800&h=600&fit=crop",
@@ -162,7 +162,7 @@ const createNeighborhoods = (name: string) => [
   {
     id: "nb-4",
     name: "Waterfront Area",
-    description: loremMedium,
+    description: "Scenic waterfront location with great views, restaurants, and nightlife options.",
     highlights: ["Views", "Restaurants", "Nightlife"],
     priceLevel: "$$$",
     imageUrl: "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=600&fit=crop",
@@ -172,7 +172,7 @@ const createNeighborhoods = (name: string) => [
   {
     id: "nb-5",
     name: "Budget-Friendly Zone",
-    description: loremMedium,
+    description: "Affordable area with local character, markets, and hostels for budget travelers.",
     highlights: ["Local vibe", "Markets", "Hostels"],
     priceLevel: "$",
     imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop",
@@ -182,7 +182,7 @@ const createNeighborhoods = (name: string) => [
   {
     id: "nb-6",
     name: "Residential Area",
-    description: loremMedium,
+    description: "Quiet streets with parks, offering a glimpse into everyday local life.",
     highlights: ["Quiet streets", "Parks", "Local life"],
     priceLevel: "$$",
     imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",

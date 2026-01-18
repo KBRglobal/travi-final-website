@@ -1,7 +1,6 @@
 /**
  * WhereToStay Section Component
  * Neighborhood/area cards with descriptions.
- * Uses lorem ipsum placeholders where descriptions unavailable.
  */
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
