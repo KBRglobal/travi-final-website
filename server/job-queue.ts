@@ -175,6 +175,18 @@ class JobQueue {
   }
 
   /**
+   * Get recent jobs (for admin dashboard)
+   */
+  async getRecentJobs(limit: number = 20): Promise<Job[]> {
+    const rows = await db.select()
+      .from(backgroundJobs)
+      .orderBy(desc(backgroundJobs.createdAt))
+      .limit(limit);
+
+    return rows.map(dbToJob);
+  }
+
+  /**
    * Start processing jobs
    */
   private startProcessing() {
