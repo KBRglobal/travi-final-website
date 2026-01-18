@@ -566,5 +566,173 @@ export function registerAutoPilotRoutes(app: Express) {
     }
   });
 
+  // ============================================================================
+  // RSS FEED MANAGEMENT - Import & Migration
+  // ============================================================================
+
+  // One-time migration: Add destination_id, language, region to rss_feeds (Railway DB)
+  app.post("/api/auto-pilot/rss/migrate-schema", requirePermission("canManageSettings"), async (req, res) => {
+    try {
+      const { db } = await import("./db");
+      const { sql } = await import("drizzle-orm");
+      
+      console.log("[AutoPilot/RSS] Running schema migration on Railway DB...");
+      
+      await db.execute(sql`
+        ALTER TABLE rss_feeds 
+        ADD COLUMN IF NOT EXISTS destination_id varchar,
+        ADD COLUMN IF NOT EXISTS language text DEFAULT 'en',
+        ADD COLUMN IF NOT EXISTS region text
+      `);
+      
+      console.log("[AutoPilot/RSS] Schema migration completed");
+      res.json({ success: true, message: "Schema migration completed" });
+    } catch (error: any) {
+      console.error("[AutoPilot/RSS] Migration error:", error);
+      res.status(500).json({ error: "Migration failed: " + error.message });
+    }
+  });
+
+  // Import RSS feeds from JSON with destination assignment
+  app.post("/api/auto-pilot/rss/import-feeds", requirePermission("canManageSettings"), async (req, res) => {
+    try {
+      const { db } = await import("./db");
+      const { rssFeeds, destinations } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      
+      // Map JSON categories to DB enum values
+      const categoryMap: Record<string, string | null> = {
+        local_news: "news",
+        lifestyle_entertainment: "events",
+        business_property: "news",
+        travel_tourism: "attractions",
+        food_dining: "food",
+        aviation: "transport",
+        general: "news",
+        lifestyle: "events",
+        business: "news",
+        culture: "events",
+        travel: "attractions",
+        property: "news",
+        sports: "events",
+        entertainment: "events",
+        food: "food",
+        real_estate: "news",
+        hospitality: "hotels",
+        expat_living: "tips",
+        travel_lifestyle: "attractions",
+        uk_news: "news",
+        europe_news: "news",
+        news: "news"
+      };
+      
+      const feedData = req.body as {
+        metadata?: { total_destinations: number };
+        destinations: Array<{
+          destination: string;
+          region: string;
+          feeds: Array<{
+            category: string;
+            source: string;
+            rss_url: string;
+            language: string;
+          }>;
+        }>;
+      };
+
+      if (!feedData.destinations || !Array.isArray(feedData.destinations)) {
+        return res.status(400).json({ error: "Invalid feed data format" });
+      }
+
+      // Build destination name to ID mapping
+      const allDestinations = await db.select().from(destinations);
+      const destMap: Record<string, string> = {};
+      for (const d of allDestinations) {
+        destMap[d.name.toLowerCase()] = d.id;
+        destMap[d.id.toLowerCase()] = d.id;
+      }
+
+      let imported = 0;
+      let updated = 0;
+      let errors: string[] = [];
+
+      for (const destEntry of feedData.destinations) {
+        const destName = destEntry.destination.toLowerCase();
+        const destId = destMap[destName] || destMap[destName.replace(/\s+/g, '-')];
+        
+        if (!destId) {
+          errors.push(`Destination not found: ${destEntry.destination}`);
+          continue;
+        }
+
+        for (const feed of destEntry.feeds) {
+          try {
+            // Map category to enum value
+            const mappedCategory = categoryMap[feed.category] || null;
+            
+            // Check if feed URL already exists
+            const existing = await db.select().from(rssFeeds).where(eq(rssFeeds.url, feed.rss_url));
+            
+            if (existing.length > 0) {
+              // Update existing feed with destination
+              await db.update(rssFeeds)
+                .set({ 
+                  destinationId: destId,
+                  language: feed.language,
+                  region: destEntry.region,
+                  category: mappedCategory as any
+                })
+                .where(eq(rssFeeds.url, feed.rss_url));
+              updated++;
+            } else {
+              // Insert new feed
+              await db.insert(rssFeeds).values({
+                name: feed.source,
+                url: feed.rss_url,
+                category: mappedCategory as any,
+                destinationId: destId,
+                language: feed.language,
+                region: destEntry.region,
+                isActive: true,
+                fetchIntervalMinutes: 60
+              });
+              imported++;
+            }
+          } catch (feedError: any) {
+            errors.push(`Failed to import ${feed.source}: ${feedError.message}`);
+          }
+        }
+      }
+
+      res.json({ 
+        success: true, 
+        imported, 
+        updated, 
+        errors: errors.slice(0, 10),
+        totalErrors: errors.length 
+      });
+    } catch (error: any) {
+      console.error("[AutoPilot/RSS] Import error:", error);
+      res.status(500).json({ error: "Import failed: " + error.message });
+    }
+  });
+
+  // Get RSS feeds by destination
+  app.get("/api/auto-pilot/rss/by-destination/:destId", requireAuth, async (req, res) => {
+    try {
+      const { db } = await import("./db");
+      const { rssFeeds } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      
+      const { destId } = req.params;
+      const feeds = await db.select().from(rssFeeds).where(eq(rssFeeds.destinationId, destId));
+      
+      res.json({ feeds, count: feeds.length });
+    } catch (error: any) {
+      console.error("[AutoPilot/RSS] Error getting feeds by destination:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   console.log("[AutoPilot] Routes registered");
 }
