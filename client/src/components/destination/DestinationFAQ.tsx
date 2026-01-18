@@ -1,7 +1,6 @@
 /**
  * DestinationFAQ Section Component
  * 8-12 destination-specific questions with Accordion.
- * Uses lorem ipsum placeholder answers where needed.
  */
 
 import {
