@@ -62,8 +62,8 @@ export default function GlossaryHub() {
   });
 
   const breadcrumbItems = [
-    { label: "Off-Plan", href: "/dubai-off-plan-properties" },
-    { label: "Learn", href: "/dubai-off-plan-properties" },
+    { label: "Off-Plan", href: "/destinations/dubai/off-plan" },
+    { label: "Learn", href: "/destinations/dubai/off-plan" },
     { label: "Glossary" }
   ];
 
@@ -84,7 +84,7 @@ export default function GlossaryHub() {
   return (
     <div className="min-h-screen bg-background">
       <OffPlanStatsBar />
-      <OffPlanSubNav activeHref="/dubai-off-plan-properties" />
+      <OffPlanSubNav activeHref="/destinations/dubai/off-plan" />
       
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <OffPlanBreadcrumb items={breadcrumbItems} />
@@ -235,11 +235,11 @@ export default function GlossaryHub() {
         <RelatedLinks
           title="Related Learning Resources"
           links={[
-            { href: "/dubai-off-plan-investment-guide", title: "Investment Guide" },
+            { href: "/destinations/dubai/off-plan-investment-guide", title: "Investment Guide" },
             { href: "/how-to-buy-dubai-off-plan", title: "How to Buy" },
             { href: "/off-plan-escrow", title: "Escrow Protection" },
             { href: "/off-plan-golden-visa", title: "Golden Visa Guide" },
-            { href: "/dubai-off-plan-payment-plans", title: "Payment Plans" },
+            { href: "/destinations/dubai/off-plan-payment-plans", title: "Payment Plans" },
             { href: "/tools-roi-calculator", title: "ROI Calculator" }
           ]}
         />
