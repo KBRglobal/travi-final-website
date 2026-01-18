@@ -190,6 +190,17 @@ app.use((req, res, next) => {
     return res.redirect(301, newPath + queryString);
   }
   
+  // Handle legacy Dubai guides pattern
+  // /guides/dubai-* → /destinations/dubai/guides/*
+  if (path.startsWith('/guides/dubai-')) {
+    const guideSlug = path.replace('/guides/dubai-', '');
+    const newPath = `/destinations/dubai/guides/${guideSlug}`;
+    const queryString = Object.keys(req.query).length 
+      ? '?' + new URLSearchParams(req.query as Record<string, string>).toString() 
+      : '';
+    return res.redirect(301, newPath + queryString);
+  }
+  
   next();
 });
 
@@ -321,8 +332,8 @@ app.get('/sitemap', async (_req, res) => {
       <li><a href="${baseUrl}/articles">Articles</a></li>
       <li><a href="${baseUrl}/guides/wynn-al-marjan-island">Wynn Al Marjan Island Guide</a></li>
       <li><a href="${baseUrl}/guides/jebel-jais-adventure">Jebel Jais Adventure Guide</a></li>
-      <li><a href="${baseUrl}/guides/dubai-to-rak-transport">Dubai to RAK Transport Guide</a></li>
-      <li><a href="${baseUrl}/guides/dubai-vs-rak">Dubai vs RAK Comparison</a></li>
+      <li><a href="${baseUrl}/destinations/dubai/guides/rak-transport">Dubai to RAK Transport Guide</a></li>
+      <li><a href="${baseUrl}/destinations/dubai/guides/rak-comparison">Dubai vs RAK Comparison</a></li>
       <li><a href="${baseUrl}/guides/where-to-stay-rak">Where to Stay in RAK</a></li>
       <li><a href="${baseUrl}/guides/rak-real-estate-investment">RAK Real Estate Investment Guide</a></li>
     </ul>
