@@ -559,18 +559,18 @@ const quickActions = [
     description: "Create article with AI",
   },
   {
-    label: "New Destination",
+    label: "Destinations",
     icon: Globe,
-    href: "/admin/destinations/new",
-    testId: "button-new-destination",
-    description: "Add destination",
+    href: "/admin/destinations",
+    testId: "button-destinations",
+    description: "Manage destinations",
   },
   {
-    label: "Generate Images",
+    label: "Image Engine",
     icon: ImagePlus,
-    href: "/admin/images/generate",
-    testId: "button-generate-images",
-    description: "Open AI image generator",
+    href: "/admin/image-engine",
+    testId: "button-image-engine",
+    description: "AI image generator",
   },
   {
     label: "Run Octopus",
@@ -587,11 +587,11 @@ const quickActions = [
     description: "Open analytics",
   },
   {
-    label: "Manage Queue",
+    label: "SEO Actions",
     icon: ClipboardList,
-    href: "/admin/queue",
-    testId: "button-manage-queue",
-    description: "Review pending items",
+    href: "/admin/seo-engine/actions",
+    testId: "button-seo-actions",
+    description: "Review pending SEO items",
   },
 ];
 
@@ -662,7 +662,7 @@ export default function AdminDashboard() {
             icon={FileText}
             description={stats?.contents ? `${stats.contents.destinations} destinations, ${stats.contents.articles} articles` : undefined}
             loading={isStatsLoading}
-            href="/admin/content"
+            href="/admin/attractions"
           />
           
           {/* Media Assets */}
@@ -702,7 +702,7 @@ export default function AdminDashboard() {
             icon={ClipboardList}
             description={stats?.pendingTasks ? `${stats.pendingTasks.review} review, ${stats.pendingTasks.scheduled} scheduled` : undefined}
             loading={isStatsLoading}
-            href="/admin/queue"
+            href="/admin/seo-engine/actions"
           />
           
           {/* System Health */}
@@ -718,7 +718,7 @@ export default function AdminDashboard() {
           icon={CheckCircle2}
           description={stats?.status && stats?.contents?.total ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published` : undefined}
           loading={isStatsLoading}
-          href="/admin/content"
+          href="/admin/attractions"
         />
         <ClickableStatsCard
           title="Active Languages"
