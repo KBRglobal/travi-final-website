@@ -68,7 +68,6 @@ const RealEstateEditor = lazy(() => import("@/pages/admin/real-estate-editor"));
 const WritersManagement = lazy(() => import("@/pages/admin/writers/WritersManagement"));
 const NewsroomDashboard = lazy(() => import("@/pages/admin/writers/NewsroomDashboard"));
 const AdminChatInbox = lazy(() => import("@/pages/admin/chat-inbox"));
-const OctopusDashboard = lazy(() => import("@/pages/admin/octopus-dashboard"));
 const TraviGeneratorDashboard = lazy(() => import("@/pages/admin/IntelligenceDashboard"));
 const TraviLocationsList = lazy(() => import("@/pages/admin/travi/locations-list"));
 const TraviLocationEdit = lazy(() => import("@/pages/admin/travi/location-edit"));
@@ -226,7 +225,6 @@ function AdminRouter() {
         <Route path="/admin/writers" component={WritersManagement} />
         <Route path="/admin/writers/newsroom" component={NewsroomDashboard} />
         <Route path="/admin/chat" component={AdminChatInbox} />
-        <Route path="/admin/octopus" component={OctopusDashboard} />
         <Route path="/admin/travi-generator" component={TraviGeneratorDashboard} />
         <Route path="/admin/travi/locations" component={TraviLocationsList} />
         <Route path="/admin/travi/locations/:id" component={TraviLocationEdit} />
