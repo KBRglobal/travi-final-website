@@ -19,7 +19,7 @@ const OFF_PLAN_PAGES = {
   guides: [
     {
       title: "Investment Guide",
-      path: "/dubai-off-plan-investment-guide",
+      path: "/destinations/dubai/off-plan-investment-guide",
       description: "Comprehensive guide to off-plan property investment in Dubai",
       icon: BookOpen,
       editable: false,
@@ -33,21 +33,21 @@ const OFF_PLAN_PAGES = {
     },
     {
       title: "Payment Plans",
-      path: "/dubai-off-plan-payment-plans",
+      path: "/destinations/dubai/off-plan-payment-plans",
       description: "Understanding payment plans and financing options",
       icon: CreditCard,
       editable: false,
     },
     {
       title: "Legal & Security",
-      path: "/dubai-legal-security-guide",
+      path: "/destinations/dubai/legal-security-guide",
       description: "Legal framework and buyer protections in Dubai",
       icon: Shield,
       editable: false,
     },
     {
       title: "ROI & Rental Yields",
-      path: "/dubai-roi-rental-yields",
+      path: "/destinations/dubai/roi-rental-yields",
       description: "Understanding rental yields and return on investment",
       icon: TrendingUp,
       editable: false,
@@ -56,49 +56,49 @@ const OFF_PLAN_PAGES = {
   locations: [
     {
       title: "Business Bay",
-      path: "/dubai-off-plan-business-bay",
+      path: "/destinations/dubai/off-plan-business-bay",
       description: "Off-plan properties in Business Bay district",
       icon: Building2,
       editable: false,
     },
     {
       title: "Dubai Marina",
-      path: "/dubai-off-plan-marina",
+      path: "/destinations/dubai/off-plan-marina",
       description: "Off-plan properties in Dubai Marina",
       icon: Building2,
       editable: false,
     },
     {
       title: "JVC (Jumeirah Village Circle)",
-      path: "/dubai-off-plan-jvc",
+      path: "/destinations/dubai/off-plan-jvc",
       description: "Off-plan properties in JVC",
       icon: Building2,
       editable: false,
     },
     {
       title: "Palm Jumeirah",
-      path: "/dubai-off-plan-palm-jumeirah",
+      path: "/destinations/dubai/off-plan-palm-jumeirah",
       description: "Luxury off-plan on Palm Jumeirah",
       icon: Building2,
       editable: false,
     },
     {
       title: "Creek Harbour",
-      path: "/dubai-off-plan-creek-harbour",
+      path: "/destinations/dubai/off-plan-creek-harbour",
       description: "Off-plan at Dubai Creek Harbour",
       icon: Building2,
       editable: false,
     },
     {
       title: "Al Furjan",
-      path: "/dubai-off-plan-al-furjan",
+      path: "/destinations/dubai/off-plan-al-furjan",
       description: "Off-plan properties in Al Furjan",
       icon: Building2,
       editable: false,
     },
     {
       title: "Villas & Townhouses",
-      path: "/dubai-off-plan-villas",
+      path: "/destinations/dubai/off-plan-villas",
       description: "Off-plan villas and townhouse developments",
       icon: Home,
       editable: false,
@@ -256,7 +256,7 @@ export default function OffPlanManagement() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
-            <Link href="/dubai-real-estate" target="_blank">
+            <Link href="/destinations/dubai/real-estate" target="_blank">
               <ExternalLink className="h-4 w-4 mr-2" />
               View Public Page
             </Link>

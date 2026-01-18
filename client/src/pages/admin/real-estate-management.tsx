@@ -61,10 +61,10 @@ const CATEGORY_INFO = {
 };
 
 const PAGE_URL_MAP: Record<string, string> = {
-  "investment-guide": "/dubai-off-plan-investment-guide",
+  "investment-guide": "/destinations/dubai/off-plan-investment-guide",
   "how-to-buy": "/how-to-buy-dubai-off-plan",
-  "payment-plans": "/dubai-off-plan-payment-plans",
-  "best-2026": "/dubai-best-off-plan-2026",
+  "payment-plans": "/destinations/dubai/off-plan-payment-plans",
+  "best-2026": "/destinations/dubai/best-off-plan-2026",
   "roi-guide": "/pillar-roi-rental-yields",
   "legal-guide": "/pillar-legal-security",
   "glossary": "/glossary-hub",
@@ -162,7 +162,7 @@ export default function RealEstateManagement() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild>
-            <Link href="/dubai-real-estate" target="_blank">
+            <Link href="/destinations/dubai/real-estate" target="_blank">
               <ExternalLink className="h-4 w-4 mr-2" />
               View Public Hub
             </Link>
