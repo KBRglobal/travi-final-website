@@ -135,25 +135,61 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="heroTitle">Hero Title</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="heroTitle">Hero Title</Label>
+                <span 
+                  className={`text-xs ${
+                    heroTitle.length < 20 || heroTitle.length > 60 
+                      ? 'text-destructive font-medium' 
+                      : 'text-muted-foreground'
+                  }`}
+                  data-testid="text-hero-title-count"
+                >
+                  {heroTitle.length}/60 {heroTitle.length > 0 && heroTitle.length < 20 && "(min 20)"}
+                </span>
+              </div>
               <Input
                 id="heroTitle"
                 value={heroTitle}
                 onChange={(e) => setHeroTitle(e.target.value)}
                 placeholder={`Discover ${destination.name}`}
+                className={heroTitle.length > 0 && (heroTitle.length < 20 || heroTitle.length > 60) ? 'border-destructive' : ''}
                 data-testid="input-hero-title"
               />
+              {heroTitle.length > 0 && (heroTitle.length < 20 || heroTitle.length > 60) && (
+                <p className="text-xs text-destructive" data-testid="text-hero-title-warning">
+                  Title should be 20-60 characters for optimal display
+                </p>
+              )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="heroSubtitle">Hero Subtitle</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="heroSubtitle">Hero Subtitle</Label>
+                <span 
+                  className={`text-xs ${
+                    heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120)
+                      ? 'text-destructive font-medium' 
+                      : 'text-muted-foreground'
+                  }`}
+                  data-testid="text-hero-subtitle-count"
+                >
+                  {heroSubtitle.length}/120 {heroSubtitle.length > 0 && heroSubtitle.length < 40 && "(min 40)"}
+                </span>
+              </div>
               <Textarea
                 id="heroSubtitle"
                 value={heroSubtitle}
                 onChange={(e) => setHeroSubtitle(e.target.value)}
                 placeholder="Enter a compelling description..."
                 rows={3}
+                className={heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120) ? 'border-destructive' : ''}
                 data-testid="input-hero-subtitle"
               />
+              {heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120) && (
+                <p className="text-xs text-destructive" data-testid="text-hero-subtitle-warning">
+                  Subtitle should be 40-120 characters for optimal display
+                </p>
+              )}
             </div>
             <Button 
               onClick={handleSave} 
