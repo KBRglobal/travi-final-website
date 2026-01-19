@@ -56,24 +56,17 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
   const [formData, setFormData] = useState<Partial<PageSeo>>({});
   const [jsonLdInput, setJsonLdInput] = useState("");
 
-  const { data: seoData, isLoading } = useQuery<PageSeo>({
+  const [isNewRecord, setIsNewRecord] = useState(false);
+
+  const { data: seoData, isLoading } = useQuery<PageSeo | null>({
     queryKey: ["/api/admin/page-seo", pagePath],
     queryFn: async () => {
       const res = await fetch(`/api/admin/page-seo${pagePath}`);
       if (res.status === 404) {
-        return {
-          pagePath,
-          pageLabel,
-          metaTitle: null,
-          metaDescription: null,
-          canonicalUrl: null,
-          ogTitle: null,
-          ogDescription: null,
-          ogImage: null,
-          robotsMeta: "index, follow",
-          jsonLdSchema: null,
-        };
+        setIsNewRecord(true);
+        return null;
       }
+      setIsNewRecord(false);
       return res.json();
     },
   });
@@ -101,6 +94,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
         ...data,
         pageLabel,
         jsonLdSchema,
+        fieldOwner: "/admin/page-seo", // Field ownership enforcement
       });
     },
     onSuccess: () => {
@@ -207,6 +201,12 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
         <CardDescription>
           Configure SEO metadata for the {pageLabel} page. All values are stored in the database with no auto-generation or fallbacks.
         </CardDescription>
+        {isNewRecord && (
+          <div className="mt-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-md border border-amber-200 dark:border-amber-800">
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm">No SEO data exists in the database for this page. Fill in the fields below and save to create the record.</span>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="meta" className="w-full">
@@ -387,46 +387,80 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
           </TabsContent>
 
           <TabsContent value="preview" className="space-y-6">
-            <div className="border rounded-lg p-6 bg-muted/30">
-              <h3 className="text-sm font-medium mb-4 text-muted-foreground">Google Search Preview</h3>
-              <div className="space-y-1">
-                <div className="text-blue-600 text-lg hover:underline cursor-pointer">
-                  {formData.metaTitle || "(No title set)"}
-                </div>
-                <div className="text-green-700 text-sm">
-                  {formData.canonicalUrl || `https://travi.world${pagePath}`}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {formData.metaDescription || "(No description set)"}
-                </div>
+            {(!formData.metaTitle && !formData.metaDescription) ? (
+              <div className="border border-dashed rounded-lg p-8 text-center bg-muted/20">
+                <XCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="font-medium text-lg mb-2">No SEO Data Available</h3>
+                <p className="text-muted-foreground text-sm">
+                  Enter meta title and description in the Meta Tags tab to see a preview.
+                  <br />
+                  All SEO data must be explicitly set - no defaults or fallbacks are used.
+                </p>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="border rounded-lg p-6 bg-muted/30">
+                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">Google Search Preview</h3>
+                  <div className="space-y-1">
+                    {formData.metaTitle ? (
+                      <div className="text-blue-600 text-lg hover:underline cursor-pointer">
+                        {formData.metaTitle}
+                      </div>
+                    ) : (
+                      <div className="text-destructive text-lg border border-dashed border-destructive/50 rounded px-2 py-1 bg-destructive/5">
+                        Required: Set meta title in Meta Tags tab
+                      </div>
+                    )}
+                    <div className="text-green-700 text-sm">
+                      {formData.canonicalUrl || `https://travi.world${pagePath}`}
+                    </div>
+                    {formData.metaDescription ? (
+                      <div className="text-sm text-gray-600">
+                        {formData.metaDescription}
+                      </div>
+                    ) : (
+                      <div className="text-destructive text-sm border border-dashed border-destructive/50 rounded px-2 py-1 bg-destructive/5">
+                        Required: Set meta description in Meta Tags tab
+                      </div>
+                    )}
+                  </div>
+                </div>
 
-            <div className="border rounded-lg p-6 bg-muted/30">
-              <h3 className="text-sm font-medium mb-4 text-muted-foreground">Social Media Preview</h3>
-              <div className="border rounded-lg overflow-hidden max-w-md">
-                {formData.ogImage ? (
-                  <img 
-                    src={formData.ogImage} 
-                    alt="OG Preview" 
-                    className="w-full h-40 object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-40 bg-muted flex items-center justify-center text-muted-foreground">
-                    No image set
-                  </div>
-                )}
-                <div className="p-3 bg-card">
-                  <div className="text-xs text-muted-foreground uppercase">travi.world</div>
-                  <div className="font-medium mt-1">
-                    {formData.ogTitle || formData.metaTitle || "(No OG title set)"}
-                  </div>
-                  <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                    {formData.ogDescription || formData.metaDescription || "(No OG description set)"}
+                <div className="border rounded-lg p-6 bg-muted/30">
+                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">Social Media Preview</h3>
+                  <div className="border rounded-lg overflow-hidden max-w-md">
+                    {formData.ogImage ? (
+                      <img 
+                        src={formData.ogImage} 
+                        alt="OG Preview" 
+                        className="w-full h-40 object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-40 bg-muted flex items-center justify-center text-muted-foreground border-b">
+                        Set OG image in Open Graph tab
+                      </div>
+                    )}
+                    <div className="p-3 bg-card">
+                      <div className="text-xs text-muted-foreground uppercase">travi.world</div>
+                      {(formData.ogTitle || formData.metaTitle) ? (
+                        <div className="font-medium mt-1">
+                          {formData.ogTitle || formData.metaTitle}
+                        </div>
+                      ) : (
+                        <div className="text-destructive text-sm mt-1">Required: Set OG or meta title</div>
+                      )}
+                      {(formData.ogDescription || formData.metaDescription) ? (
+                        <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                          {formData.ogDescription || formData.metaDescription}
+                        </div>
+                      ) : (
+                        <div className="text-destructive text-sm mt-1">Required: Set OG or meta description</div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </TabsContent>
         </Tabs>
 
