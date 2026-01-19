@@ -58,21 +58,23 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
   const [heroTitle, setHeroTitle] = useState(destination.heroTitle || "");
   const [heroSubtitle, setHeroSubtitle] = useState(destination.heroSubtitle || "");
 
+  const heroUrl = `/api/destination-intelligence/${destinationId}/hero`;
+  
   const { data: heroData, isLoading } = useQuery<HeroData>({
-    queryKey: ["/api/destination-intelligence/hero", destinationId],
+    queryKey: [heroUrl],
     enabled: !!destinationId,
   });
 
   const saveMutation = useMutation({
     mutationFn: async (data: { heroTitle: string; heroSubtitle: string }) => {
-      return apiRequest(`/api/destination-intelligence/destinations/${destinationId}/hero`, {
+      return apiRequest(heroUrl, {
         method: "PATCH",
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/destination-intelligence/hero", destinationId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations", destinationId] });
+      queryClient.invalidateQueries({ queryKey: [heroUrl] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/destinations/${destinationId}`] });
       toast({
         title: "Hero updated",
         description: "Your changes have been saved successfully.",

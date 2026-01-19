@@ -64,20 +64,22 @@ const SECTION_TYPES = {
 export default function DestinationSectionsTab({ destinationId, destination }: DestinationSectionsTabProps) {
   const { toast } = useToast();
 
+  const sectionsUrl = `/api/admin/destinations/${destinationId}/sections`;
+  
   const { data: sections = [], isLoading } = useQuery<ContentSection[]>({
-    queryKey: ["/api/admin/destinations", destinationId, "sections"],
+    queryKey: [sectionsUrl],
     enabled: !!destinationId,
   });
 
   const toggleMutation = useMutation({
     mutationFn: async ({ sectionId, isVisible }: { sectionId: string; isVisible: boolean }) => {
-      return apiRequest(`/api/admin/destinations/${destinationId}/sections/${sectionId}`, {
+      return apiRequest(`${sectionsUrl}/${sectionId}`, {
         method: "PATCH",
-        body: JSON.stringify({ isVisible }),
+        body: { isVisible },
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations", destinationId, "sections"] });
+      queryClient.invalidateQueries({ queryKey: [sectionsUrl] });
       toast({
         title: "Section updated",
         description: "Visibility setting saved.",
