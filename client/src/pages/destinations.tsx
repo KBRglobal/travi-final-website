@@ -656,19 +656,21 @@ interface PageSeoData {
 export default function DestinationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: destinations, isLoading, isError, refetch } = useQuery<APIDestination[]>({
+  const { data: destinations, isLoading: destinationsLoading, isError, refetch } = useQuery<APIDestination[]>({
     queryKey: ["/api/public/destinations"],
   });
 
-  const { data: pageSeo } = useQuery<PageSeoData>({
+  const { data: pageSeo, isLoading: seoLoading } = useQuery<PageSeoData>({
     queryKey: ["/api/public/page-seo", "/destinations"],
     queryFn: async () => {
       const res = await fetch("/api/public/page-seo/destinations");
       return res.json();
     },
+    staleTime: 30000, // Cache SEO for 30 seconds to avoid flashing
   });
 
-  if (isLoading) {
+  // Wait for both destinations AND SEO data to load
+  if (destinationsLoading || seoLoading) {
     return <LoadingState />;
   }
 
