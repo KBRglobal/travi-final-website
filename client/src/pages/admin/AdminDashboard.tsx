@@ -17,17 +17,12 @@ import {
   FileText,
   Globe,
   Sparkles,
-  HardDrive,
-  TrendingUp,
   CheckCircle2,
   Clock,
   AlertCircle,
   Plus,
   Newspaper,
   Bot,
-  Search,
-  Languages,
-  BarChart3,
   RefreshCw,
   MapPin,
   User,
@@ -37,13 +32,9 @@ import {
   Activity,
   Layers,
   Image,
-  Video,
   Bell,
   ClipboardList,
-  Server,
-  Eye,
   ArrowRight,
-  Calendar,
   AlertTriangle,
   CheckCircle,
   Info,
@@ -69,10 +60,6 @@ interface DashboardStats {
     total: number;
     online: number;
   };
-  traffic: {
-    today: number;
-    pageViews: number;
-  };
   pendingTasks: {
     review: number;
     scheduled: number;
@@ -82,25 +69,10 @@ interface DashboardStats {
     published: number;
     draft: number;
   };
-  languages: {
-    active: number;
-    total: number;
-  };
-  healthScore: number;
   aiGeneration: {
     completed: number;
     pending: number;
     failed: number;
-  };
-  storage: {
-    used: number;
-    total: number;
-    unit: string;
-  };
-  systemHealth: {
-    status: "healthy" | "degraded" | "critical";
-    apiUptime: number;
-    errors: number;
   };
 }
 
@@ -161,7 +133,6 @@ function ClickableStatsCard({
   value,
   icon: Icon,
   description,
-  trend,
   loading,
   href,
 }: {
@@ -169,7 +140,6 @@ function ClickableStatsCard({
   value: string | number;
   icon: React.ElementType;
   description?: string;
-  trend?: { value: number; positive: boolean };
   loading?: boolean;
   href?: string;
 }) {
@@ -201,15 +171,6 @@ function ClickableStatsCard({
         {description && (
           <p className="text-xs text-muted-foreground mt-1">{description}</p>
         )}
-        {trend && (
-          <div className={cn(
-            "flex items-center gap-1 text-xs mt-1",
-            trend.positive ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-          )}>
-            <TrendingUp className={cn("h-3 w-3", !trend.positive && "rotate-180")} />
-            <span>{trend.positive ? "+" : ""}{trend.value}%</span>
-          </div>
-        )}
         {href && (
           <div className="flex items-center gap-1 text-xs text-primary mt-2">
             <span>View details</span>
@@ -221,85 +182,8 @@ function ClickableStatsCard({
   );
 }
 
-function SystemHealthCard({ 
-  health, 
-  loading 
-}: { 
-  health?: DashboardStats["systemHealth"]; 
-  loading?: boolean;
-}) {
-  if (loading) return <StatsCardSkeleton />;
-
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case "healthy": return "text-green-600 dark:text-green-400";
-      case "degraded": return "text-yellow-600 dark:text-yellow-400";
-      case "critical": return "text-red-600 dark:text-red-400";
-      default: return "text-muted-foreground";
-    }
-  };
-
-  const getStatusIcon = (status?: string) => {
-    switch (status) {
-      case "healthy": return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "degraded": return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
-      case "critical": return <AlertCircle className="h-5 w-5 text-red-500" />;
-      default: return <Server className="h-5 w-5 text-muted-foreground" />;
-    }
-  };
-
-  return (
-    <Card data-testid="card-system-health">
-      <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">System Health</CardTitle>
-        <Server className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-2">
-          {getStatusIcon(health?.status)}
-          <span className={cn("text-2xl font-bold capitalize", getStatusColor(health?.status))}>
-            {health?.status || "N/A"}
-          </span>
-        </div>
-        {health && (
-          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-            <span>{health.apiUptime}% uptime</span>
-            <span>{health.errors} errors</span>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function HealthScoreCard({ score, loading }: { score?: number; loading?: boolean }) {
-  if (loading) return <StatsCardSkeleton />;
-
-  const getScoreColor = (value: number) => {
-    if (value >= 80) return "text-green-600 dark:text-green-400";
-    if (value >= 60) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
-
-  return (
-    <Card data-testid="card-health-score">
-      <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Content Health</CardTitle>
-        <Activity className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className={cn("text-2xl font-bold", score != null ? getScoreColor(score) : "text-muted-foreground")}>
-          {score != null ? `${score}%` : "N/A"}
-        </div>
-        {score != null && (
-          <p className="text-xs text-muted-foreground mt-1">
-            SEO, completeness & freshness
-          </p>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
+// REMOVED: SystemHealthCard - no real health checks exist
+// REMOVED: HealthScoreCard - calculated from hardcoded values
 
 function AIGenerationCard({
   stats,
@@ -322,16 +206,14 @@ function AIGenerationCard({
           <div className="flex items-center gap-3 mt-2">
             <div className="flex items-center gap-1 text-xs">
               <CheckCircle2 className="h-3 w-3 text-green-500" />
-              <span className="text-muted-foreground">{stats.completed}</span>
+              <span className="text-muted-foreground">{stats.completed} completed</span>
             </div>
-            <div className="flex items-center gap-1 text-xs">
-              <Clock className="h-3 w-3 text-yellow-500" />
-              <span className="text-muted-foreground">{stats.pending}</span>
-            </div>
-            <div className="flex items-center gap-1 text-xs">
-              <AlertCircle className="h-3 w-3 text-red-500" />
-              <span className="text-muted-foreground">{stats.failed}</span>
-            </div>
+            {stats.failed > 0 && (
+              <div className="flex items-center gap-1 text-xs">
+                <AlertCircle className="h-3 w-3 text-red-500" />
+                <span className="text-muted-foreground">{stats.failed} failed</span>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
@@ -339,48 +221,7 @@ function AIGenerationCard({
   );
 }
 
-function StorageCard({
-  storage,
-  loading,
-}: {
-  storage?: DashboardStats["storage"];
-  loading?: boolean;
-}) {
-  if (loading) return <StatsCardSkeleton />;
-
-  const usagePercent = storage ? Math.round((storage.used / storage.total) * 100) : 0;
-
-  return (
-    <Card data-testid="card-storage">
-      <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Storage Usage</CardTitle>
-        <HardDrive className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">
-          {storage ? `${storage.used} ${storage.unit}` : "N/A"}
-        </div>
-        {storage && (
-          <div className="mt-2">
-            <div className="flex justify-between text-xs text-muted-foreground mb-1">
-              <span>{usagePercent}% used</span>
-              <span>{storage.total} {storage.unit} total</span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className={cn(
-                  "h-full rounded-full transition-all",
-                  usagePercent > 90 ? "bg-red-500" : usagePercent > 70 ? "bg-yellow-500" : "bg-primary"
-                )}
-                style={{ width: `${usagePercent}%` }}
-              />
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
+// REMOVED: StorageCard - no real storage tracking exists
 
 function getActivityIcon(type: ActivityItem["type"]) {
   switch (type) {
@@ -573,18 +414,18 @@ const quickActions = [
     description: "AI image generator",
   },
   {
-    label: "Run Octopus",
+    label: "Run Octypo",
     icon: Bot,
-    href: "/admin/octopus",
-    testId: "button-run-octopus",
-    description: "Start content generation",
+    href: "/admin/octypo",
+    testId: "button-run-octypo",
+    description: "AI content generation engine",
   },
   {
-    label: "View Analytics",
-    icon: BarChart3,
-    href: "/admin/analytics",
-    testId: "button-view-analytics",
-    description: "Open analytics",
+    label: "Attractions",
+    icon: MapPin,
+    href: "/admin/attractions",
+    testId: "button-attractions",
+    description: "Manage attractions content",
   },
   {
     label: "SEO Actions",
@@ -623,9 +464,8 @@ export default function AdminDashboard() {
     refetchNotifications();
   };
 
-  const totalPendingTasks = (stats?.pendingTasks?.review || 0) + 
-                            (stats?.pendingTasks?.scheduled || 0) + 
-                            (stats?.pendingTasks?.aiQueue || 0);
+  // Only use real pending tasks count (drafts awaiting review)
+  const totalPendingTasks = stats?.pendingTasks?.review || 0;
 
   return (
     <div className="p-6 space-y-6" data-testid="admin-dashboard">
@@ -648,14 +488,14 @@ export default function AdminDashboard() {
         </Button>
       </div>
 
-      {/* Stats Cards Row - According to Spec */}
+      {/* Stats Cards Row - REAL DATA ONLY */}
       <div>
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <Layers className="h-5 w-5" />
           Overview
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          {/* Total Content */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          {/* Total Content - REAL: queries contents table */}
           <ClickableStatsCard
             title="Total Content"
             value={stats?.contents?.total?.toLocaleString() ?? "N/A"}
@@ -665,71 +505,62 @@ export default function AdminDashboard() {
             href="/admin/attractions"
           />
           
-          {/* Media Assets */}
+          {/* Media Assets - REAL: queries images table only */}
           <ClickableStatsCard
-            title="Media Assets"
-            value={stats?.media ? `${stats.media.images + stats.media.videos}` : "N/A"}
+            title="Images"
+            value={stats?.media?.images?.toLocaleString() ?? "N/A"}
             icon={Image}
-            description={stats?.media ? `${stats.media.images} images, ${stats.media.videos} videos` : undefined}
+            description="Total images in media library"
             loading={isStatsLoading}
             href="/admin/media"
           />
           
-          {/* Active Users */}
+          {/* Active Users - REAL: queries users table */}
           <ClickableStatsCard
-            title="Active Users"
-            value={stats?.users ? `${stats.users.online} / ${stats.users.total}` : "N/A"}
+            title="Registered Users"
+            value={stats?.users?.total?.toString() ?? "N/A"}
             icon={Users}
-            description={stats?.users ? `${stats.users.online} online` : undefined}
+            description="Total registered users"
             loading={isStatsLoading}
             href="/admin/users"
           />
           
-          {/* Today's Traffic */}
+          {/* Pending Tasks - REAL: queries draft content */}
           <ClickableStatsCard
-            title="Today's Traffic"
-            value={stats?.traffic?.today?.toLocaleString() ?? "N/A"}
-            icon={Eye}
-            description={stats?.traffic ? `${stats.traffic.pageViews} page views` : undefined}
-            loading={isStatsLoading}
-            href="/admin/analytics"
-          />
-          
-          {/* Pending Tasks */}
-          <ClickableStatsCard
-            title="Pending Tasks"
+            title="Pending Review"
             value={totalPendingTasks.toString()}
             icon={ClipboardList}
-            description={stats?.pendingTasks ? `${stats.pendingTasks.review} review, ${stats.pendingTasks.scheduled} scheduled` : undefined}
+            description={stats?.pendingTasks ? `${stats.pendingTasks.review} drafts to review` : undefined}
             loading={isStatsLoading}
             href="/admin/seo-engine/actions"
           />
           
-          {/* System Health */}
-          <SystemHealthCard health={stats?.systemHealth} loading={isStatsLoading} />
+          {/* AI Generation - REAL: queries ai_generation_logs + tiqets */}
+          <AIGenerationCard stats={stats?.aiGeneration} loading={isStatsLoading} />
         </div>
       </div>
 
-      {/* Secondary Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Secondary Stats Row - REAL DATA ONLY */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Published vs Draft - REAL: queries contents by status */}
         <ClickableStatsCard
           title="Published vs Draft"
-          value={stats?.status ? `${stats.status.published} / ${stats.status.draft}` : "N/A"}
+          value={stats?.status ? `${stats.status.published} published / ${stats.status.draft} drafts` : "N/A"}
           icon={CheckCircle2}
-          description={stats?.status && stats?.contents?.total ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published` : undefined}
+          description={stats?.status && stats?.contents?.total && stats.contents.total > 0 ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published` : undefined}
           loading={isStatsLoading}
           href="/admin/attractions"
         />
+        
+        {/* Attractions Count - REAL: same as contents.total */}
         <ClickableStatsCard
-          title="Active Languages"
-          value={stats?.languages ? `${stats.languages.active} / ${stats.languages.total}` : "N/A"}
-          icon={Globe}
-          description={stats?.languages ? "Full multilingual coverage" : undefined}
+          title="Attractions"
+          value={stats?.contents?.attractions?.toLocaleString() ?? "N/A"}
+          icon={MapPin}
+          description="Total attractions in system"
           loading={isStatsLoading}
-          href="/admin/translations"
+          href="/admin/attractions"
         />
-        <HealthScoreCard score={stats?.healthScore} loading={isStatsLoading} />
-        <AIGenerationCard stats={stats?.aiGeneration} loading={isStatsLoading} />
       </div>
 
       {/* Main Content Grid */}
@@ -808,10 +639,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Storage Card at bottom */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StorageCard storage={stats?.storage} loading={isStatsLoading} />
-      </div>
+      {/* REMOVED: Storage Card - no real storage tracking exists */}
     </div>
   );
 }
