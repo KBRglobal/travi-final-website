@@ -1582,6 +1582,7 @@ export function registerAdminApiRoutes(app: Express): void {
         slug: destinations.slug,
         country: destinations.country,
         cardImage: destinations.cardImage,
+        cardImageAlt: destinations.cardImageAlt,
         heroImage: destinations.heroImage,
       })
         .from(destinations)
@@ -1592,6 +1593,107 @@ export function registerAdminApiRoutes(app: Express): void {
     } catch (error) {
       console.error("Error fetching available destinations:", error);
       res.status(500).json({ error: "Failed to fetch available destinations" });
+    }
+  });
+
+  // Upload card image for a destination
+  router.post("/destinations/:id/card-image", requirePermission("canEdit"), checkReadOnlyMode, upload.single("image"), async (req: Request, res: Response) => {
+    try {
+      const destinationId = req.params.id;
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ error: "No image file provided" });
+      }
+
+      // Verify destination exists
+      const [destination] = await db.select().from(destinations).where(eq(destinations.id, destinationId));
+      if (!destination) {
+        return res.status(404).json({ error: "Destination not found" });
+      }
+
+      // MIME type validation
+      const allowedMimes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+      if (!allowedMimes.includes(file.mimetype)) {
+        return res.status(400).json({ 
+          error: `Invalid file type. Allowed: ${allowedMimes.join(", ")}` 
+        });
+      }
+
+      // Generate SEO-safe filename using destination name
+      const ext = file.mimetype.split("/")[1];
+      const sanitizedName = destination.name
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 50);
+      const timestamp = Date.now();
+      const filename = `destination-card-${sanitizedName}-${timestamp}.${ext}`;
+
+      // Process image with sharp for card optimization (smaller size)
+      const optimizedBuffer = await sharp(file.buffer)
+        .resize(800, 600, { fit: "cover", withoutEnlargement: true })
+        .jpeg({ quality: 85 })
+        .toBuffer();
+
+      // Store in object storage
+      const { StorageManager } = await import("../storage-manager");
+      const storage = StorageManager.getInstance();
+      const storagePath = `destination-cards/${filename}`;
+      await storage.uploadBuffer(optimizedBuffer, storagePath, "image/jpeg");
+
+      // Get public URL
+      const url = storage.getPublicUrl(storagePath);
+
+      // Update destination with new card image
+      const alt = req.body.alt || `${destination.name} - Travel destination card`;
+      await db.update(destinations)
+        .set({
+          cardImage: url,
+          cardImageAlt: alt,
+          updatedAt: new Date(),
+        })
+        .where(eq(destinations.id, destinationId));
+
+      res.json({
+        filename,
+        url,
+        path: storagePath,
+        alt,
+        success: true,
+      });
+    } catch (error) {
+      console.error("Error uploading destination card image:", error);
+      res.status(500).json({ error: "Failed to upload card image" });
+    }
+  });
+
+  // Update destination card alt text (without changing image)
+  router.patch("/destinations/:id/card-alt", requirePermission("canEdit"), checkReadOnlyMode, async (req: Request, res: Response) => {
+    try {
+      const destinationId = req.params.id;
+      const { alt } = req.body;
+
+      if (!alt || typeof alt !== "string") {
+        return res.status(400).json({ error: "Alt text is required" });
+      }
+
+      const [updated] = await db.update(destinations)
+        .set({
+          cardImageAlt: alt,
+          updatedAt: new Date(),
+        })
+        .where(eq(destinations.id, destinationId))
+        .returning();
+
+      if (!updated) {
+        return res.status(404).json({ error: "Destination not found" });
+      }
+
+      res.json({ success: true, cardImageAlt: alt });
+    } catch (error) {
+      console.error("Error updating card alt text:", error);
+      res.status(500).json({ error: "Failed to update alt text" });
     }
   });
 
