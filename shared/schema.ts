@@ -3621,6 +3621,30 @@ export type HomepageSeoMeta = typeof homepageSeoMeta.$inferSelect;
 export type InsertHomepageSeoMeta = z.infer<typeof insertHomepageSeoMetaSchema>;
 
 // ============================================
+// Page SEO - Generic SEO configuration for any page path
+// ============================================
+export const pageSeo = pgTable("page_seo", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pagePath: varchar("page_path", { length: 255 }).notNull().unique(), // e.g. "/destinations", "/hotels", "/guides"
+  pageLabel: varchar("page_label", { length: 255 }), // Human-readable label for admin UI
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  canonicalUrl: text("canonical_url"),
+  ogTitle: text("og_title"),
+  ogDescription: text("og_description"),
+  ogImage: text("og_image"),
+  robotsMeta: text("robots_meta").default("index, follow"),
+  jsonLdSchema: jsonb("json_ld_schema"), // Editable JSON-LD structured data
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPageSeoSchema = createInsertSchema(pageSeo).omit({ id: true, createdAt: true, updatedAt: true });
+
+export type PageSeo = typeof pageSeo.$inferSelect;
+export type InsertPageSeo = z.infer<typeof insertPageSeoSchema>;
+
+// ============================================
 // CMS Translations System - Language-agnostic localization
 // ============================================
 
