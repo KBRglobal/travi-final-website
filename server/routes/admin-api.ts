@@ -1270,6 +1270,43 @@ export function registerAdminApiRoutes(app: Express): void {
       const pagePath = "/" + req.params.pagePath;
       const { pageLabel, metaTitle, metaDescription, canonicalUrl, ogTitle, ogDescription, ogImage, robotsMeta, jsonLdSchema } = req.body;
 
+      // Field Ownership Enforcement: This route is the ONLY authorized writer for page_seo fields
+      // Owner: /admin/page-seo (PageSeoEditor component)
+      // Contract: shared/field-ownership.ts - DESTINATIONS_INDEX_SEO
+      const { fieldOwner } = req.body;
+      const AUTHORIZED_OWNER = "/admin/page-seo";
+      
+      if (!fieldOwner || fieldOwner !== AUTHORIZED_OWNER) {
+        console.warn(`[FieldOwnership] Unauthorized write attempt to page_seo from: ${fieldOwner || "unknown"}`);
+        return res.status(403).json({
+          error: "Field ownership violation",
+          message: `Only ${AUTHORIZED_OWNER} component is authorized to modify page SEO fields`,
+          code: "FIELD_OWNERSHIP_VIOLATION",
+        });
+      }
+      
+      // Character limit validation (Field Ownership enforcement)
+      const errors: string[] = [];
+      if (metaTitle && (metaTitle.length < 30 || metaTitle.length > 60)) {
+        errors.push(`Meta title must be 30-60 characters (current: ${metaTitle.length})`);
+      }
+      if (metaDescription && (metaDescription.length < 120 || metaDescription.length > 160)) {
+        errors.push(`Meta description must be 120-160 characters (current: ${metaDescription.length})`);
+      }
+      if (ogTitle && (ogTitle.length < 40 || ogTitle.length > 70)) {
+        errors.push(`OG title must be 40-70 characters (current: ${ogTitle.length})`);
+      }
+      if (ogDescription && (ogDescription.length < 120 || ogDescription.length > 160)) {
+        errors.push(`OG description must be 120-160 characters (current: ${ogDescription.length})`);
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ 
+          error: "Validation failed", 
+          details: errors,
+          code: "CHARACTER_LIMIT_VIOLATION" 
+        });
+      }
+
       // Check if exists
       const [existing] = await db.select().from(pageSeo).where(eq(pageSeo.pagePath, pagePath));
 
