@@ -57,6 +57,16 @@ Preferred communication style: Simple, everyday language.
 - **Image System**: Strict separation of hero and card images.
 - **CTA System**: Defined hierarchy for Primary, Secondary, and Tertiary CTAs with placement restrictions.
 - **Content Types & Hierarchy**: Structured content for Destinations (Country → City → Area), Category Pages, Items (Attractions, Hotels, Articles), and News Articles.
+- **Field Ownership Contracts** (`shared/field-ownership.ts`): Defines ONE COMPONENT, ONE FIELD principle - each SEO/content field has a single authoritative admin component. Prevents data conflicts and enforces "Railway PostgreSQL as single source of truth" with no auto-generation or fallbacks.
+
+### SEO Management
+- **Page SEO Editor** (`/admin/page-seo`): Centralized control for index page SEO (destinations, hotels, attractions, guides). Database-driven with NO fallbacks.
+- **Character Limits**: Enforced limits with red warning indicators:
+  - Meta Title: 30-60 characters
+  - Meta Description: 120-160 characters
+  - Hero Title: 20-60 characters
+  - Hero Subtitle: 40-120 characters
+- **AI SEO Generation**: `/api/ai/generate-page-seo` endpoint with Magic Button in editor, includes quality scoring (title, description, overall) and improvement suggestions.
 
 ## External Dependencies
 
