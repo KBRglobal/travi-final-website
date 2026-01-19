@@ -21,6 +21,7 @@ import {
   setTranslations,
   deleteEntityTranslations,
 } from "../cms-translations";
+import { DESTINATIONS_INDEX_SEO, validateCharacterLimits } from "@shared/field-ownership";
 import multer from "multer";
 import sharp from "sharp";
 
@@ -1237,7 +1238,8 @@ export function registerAdminApiRoutes(app: Express): void {
   // ============================================================================
 
   // Get all page SEO configurations
-  router.get("/page-seo", requirePermission("canManageSettings"), async (_req: Request, res: Response) => {
+  // Uses dedicated canEditPageSeo permission for Field Ownership enforcement
+  router.get("/page-seo", requirePermission("canEditPageSeo"), async (_req: Request, res: Response) => {
     try {
       const allPageSeo = await db.select().from(pageSeo);
       res.json(allPageSeo);
@@ -1248,7 +1250,8 @@ export function registerAdminApiRoutes(app: Express): void {
   });
 
   // Get SEO for a specific page path
-  router.get("/page-seo/:pagePath(*)", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
+  // Uses dedicated canEditPageSeo permission for Field Ownership enforcement
+  router.get("/page-seo/:pagePath(*)", requirePermission("canEditPageSeo"), async (req: Request, res: Response) => {
     try {
       const pagePath = "/" + req.params.pagePath;
       const [seoData] = await db.select().from(pageSeo).where(eq(pageSeo.pagePath, pagePath));
@@ -1265,39 +1268,68 @@ export function registerAdminApiRoutes(app: Express): void {
   });
 
   // Create or update SEO for a page
-  router.put("/page-seo/:pagePath(*)", requirePermission("canManageSettings"), checkReadOnlyMode, async (req: Request, res: Response) => {
+  // Uses dedicated canEditPageSeo permission for Field Ownership enforcement
+  // This is the ONLY write surface for page_seo fields, enforced via capability
+  router.put("/page-seo/:pagePath(*)", requirePermission("canEditPageSeo"), checkReadOnlyMode, async (req: Request, res: Response) => {
     try {
       const pagePath = "/" + req.params.pagePath;
       const { pageLabel, metaTitle, metaDescription, canonicalUrl, ogTitle, ogDescription, ogImage, robotsMeta, jsonLdSchema } = req.body;
 
-      // Field Ownership Enforcement: This route is the ONLY authorized writer for page_seo fields
+      // Field Ownership Enforcement using shared/field-ownership.ts contract
+      // This route is the ONLY authorized writer for page_seo fields.
       // Owner: /admin/page-seo (PageSeoEditor component)
-      // Contract: shared/field-ownership.ts - DESTINATIONS_INDEX_SEO
-      const { fieldOwner } = req.body;
-      const AUTHORIZED_OWNER = "/admin/page-seo";
+      const ROUTE_OWNER = "/admin/page-seo";
+      const CONTRACT = DESTINATIONS_INDEX_SEO;
       
-      if (!fieldOwner || fieldOwner !== AUTHORIZED_OWNER) {
-        console.warn(`[FieldOwnership] Unauthorized write attempt to page_seo from: ${fieldOwner || "unknown"}`);
+      // Verify this route is the authorized owner per the contract
+      const contractFields = CONTRACT.fields;
+      for (const [fieldName, fieldConfig] of Object.entries(contractFields)) {
+        if (fieldConfig.owner !== ROUTE_OWNER) {
+          console.error(`[FieldOwnership] Contract violation: ${fieldName} is owned by ${fieldConfig.owner}, not ${ROUTE_OWNER}`);
+          return res.status(500).json({
+            error: "Contract configuration error",
+            message: `Field ${fieldName} has mismatched ownership in contract`,
+            code: "CONTRACT_VIOLATION",
+          });
+        }
+      }
+      
+      // Build allowed fields from the contract
+      const ALLOWED_FIELDS = new Set([
+        ...Object.keys(contractFields),
+        "pagePath", "pageLabel", "fieldOwner" // Additional metadata fields
+      ]);
+      
+      // Validate that only allowed fields are being submitted
+      const submittedFields = Object.keys(req.body);
+      const invalidFields = submittedFields.filter(f => !ALLOWED_FIELDS.has(f));
+      if (invalidFields.length > 0) {
+        console.warn(`[FieldOwnership] Invalid fields submitted to ${ROUTE_OWNER}: ${invalidFields.join(", ")}`);
         return res.status(403).json({
           error: "Field ownership violation",
-          message: `Only ${AUTHORIZED_OWNER} component is authorized to modify page SEO fields`,
+          message: `Fields not allowed: ${invalidFields.join(", ")}. This route only manages page SEO fields defined in the ownership contract.`,
           code: "FIELD_OWNERSHIP_VIOLATION",
         });
       }
       
-      // Character limit validation (Field Ownership enforcement)
+      // Character limit validation using contract limits
       const errors: string[] = [];
-      if (metaTitle && (metaTitle.length < 30 || metaTitle.length > 60)) {
-        errors.push(`Meta title must be 30-60 characters (current: ${metaTitle.length})`);
-      }
-      if (metaDescription && (metaDescription.length < 120 || metaDescription.length > 160)) {
-        errors.push(`Meta description must be 120-160 characters (current: ${metaDescription.length})`);
-      }
-      if (ogTitle && (ogTitle.length < 40 || ogTitle.length > 70)) {
-        errors.push(`OG title must be 40-70 characters (current: ${ogTitle.length})`);
-      }
-      if (ogDescription && (ogDescription.length < 120 || ogDescription.length > 160)) {
-        errors.push(`OG description must be 120-160 characters (current: ${ogDescription.length})`);
+      const fieldValues: Record<string, string | null> = { metaTitle, metaDescription, ogTitle, ogDescription };
+      
+      for (const [fieldName, fieldConfig] of Object.entries(contractFields)) {
+        const limits = (fieldConfig as any).limits;
+        if (limits && fieldValues[fieldName]) {
+          const value = fieldValues[fieldName] as string;
+          const validation = validateCharacterLimits(value, limits);
+          if (!validation.valid) {
+            const limitDesc = `${limits.min}-${limits.max}`;
+            if (validation.tooShort) {
+              errors.push(`${fieldName} must be at least ${limits.min} characters (current: ${value.length})`);
+            } else if (validation.tooLong) {
+              errors.push(`${fieldName} must be at most ${limits.max} characters (current: ${value.length})`);
+            }
+          }
+        }
       }
       if (errors.length > 0) {
         return res.status(400).json({ 
@@ -1353,7 +1385,8 @@ export function registerAdminApiRoutes(app: Express): void {
   });
 
   // Delete SEO for a page
-  router.delete("/page-seo/:pagePath(*)", requirePermission("canManageSettings"), checkReadOnlyMode, async (req: Request, res: Response) => {
+  // Uses dedicated canEditPageSeo permission for Field Ownership enforcement
+  router.delete("/page-seo/:pagePath(*)", requirePermission("canEditPageSeo"), checkReadOnlyMode, async (req: Request, res: Response) => {
     try {
       const pagePath = "/" + req.params.pagePath;
       await db.delete(pageSeo).where(eq(pageSeo.pagePath, pagePath));

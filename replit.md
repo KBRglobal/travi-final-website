@@ -64,9 +64,13 @@ Preferred communication style: Simple, everyday language.
 - **Character Limits**: Enforced limits with red warning indicators:
   - Meta Title: 30-60 characters
   - Meta Description: 120-160 characters
-  - Hero Title: 20-60 characters
-  - Hero Subtitle: 40-120 characters
+  - OG Title: 40-70 characters
+  - OG Description: 120-160 characters
 - **AI SEO Generation**: `/api/ai/generate-page-seo` endpoint with Magic Button in editor, includes quality scoring (title, description, overall) and improvement suggestions.
+- **Capability-Based Field Ownership**: Dedicated `canEditPageSeo` permission in ROLE_PERMISSIONS enforces exclusive write access to page_seo table. Routes use `requirePermission("canEditPageSeo")` for capability-based authorization. Contract validation at `/api/admin/page-seo/:pagePath` returns:
+  - 403 FIELD_OWNERSHIP_VIOLATION for unauthorized fields
+  - 500 CONTRACT_VIOLATION for configuration errors
+  - 400 CHARACTER_LIMIT_VIOLATION for invalid lengths
 
 ## External Dependencies
 
