@@ -115,13 +115,18 @@ export default function AuditLogs() {
 
   const canViewAuditLogs = getCanViewAuditLogs(permissionsResponse);
 
+  // Build URL with query parameters as a string to avoid [object Object] issue
+  const buildAuditLogsUrl = () => {
+    const params = new URLSearchParams();
+    if (actionFilter !== "all") params.set("actionType", actionFilter);
+    if (entityFilter !== "all") params.set("entityType", entityFilter);
+    params.set("limit", String(pageSize));
+    params.set("offset", String(page * pageSize));
+    return `/api/audit-logs?${params.toString()}`;
+  };
+
   const { data, isLoading } = useQuery<AuditLogsResponse>({
-    queryKey: ["/api/audit-logs", { 
-      actionType: actionFilter !== "all" ? actionFilter : undefined,
-      entityType: entityFilter !== "all" ? entityFilter : undefined,
-      limit: pageSize, 
-      offset: page * pageSize 
-    }],
+    queryKey: [buildAuditLogsUrl()],
     enabled: canViewAuditLogs,
   });
 

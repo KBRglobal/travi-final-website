@@ -55,6 +55,7 @@ TIQETS_PARTNER_ID = "travi-182933"
 APP_URL = "https://travi.world"
 ADMIN_EMAIL = "traviquackson@gmail.com"
 FROM_EMAIL = "onboarding@resend.dev"
+ENABLE_AUDIT_LOGS = "true"
 
 [userenv.production]
 FRONTEND_ONLY = "false"
