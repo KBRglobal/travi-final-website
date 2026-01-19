@@ -185,14 +185,14 @@ export function registerPublicApiRoutes(app: Express): void {
           ctaLink: destination.heroCTALink,
           images: heroImages,
         },
-        // SEO data from database
+        // SEO data from database - NO FALLBACKS (Railway PostgreSQL is source of truth)
         seo: {
-          metaTitle: destination.metaTitle || `${destination.name} Travel Guide | TRAVI`,
-          metaDescription: destination.metaDescription || `Discover the best of ${destination.name}`,
-          canonicalUrl: destination.canonicalUrl || `https://travi.world/destinations/${destination.id}`,
-          ogImage: destination.ogImage || destination.cardImage,
-          ogTitle: destination.ogTitle || destination.metaTitle,
-          ogDescription: destination.ogDescription || destination.metaDescription,
+          metaTitle: destination.metaTitle,
+          metaDescription: destination.metaDescription,
+          canonicalUrl: destination.canonicalUrl,
+          ogImage: destination.ogImage,
+          ogTitle: destination.ogTitle,
+          ogDescription: destination.ogDescription,
         },
         // Featured sections from database
         featuredAttractions: destination.featuredAttractions || [],
