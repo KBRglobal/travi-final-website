@@ -123,6 +123,7 @@ const ChangeManagement = lazy(() => import("@/pages/admin/change-management"));
 const SeoEngineDashboard = lazy(() => import("@/pages/admin/seo-engine/SeoEngineDashboard"));
 const SeoEngineContentReport = lazy(() => import("@/pages/admin/seo-engine/SeoEngineContentReport"));
 const SeoEngineActionsQueue = lazy(() => import("@/pages/admin/seo-engine/SeoEngineActionsQueue"));
+const PageSeoManagement = lazy(() => import("@/pages/admin/page-seo-editor"));
 const OctypoDashboard = lazy(() => import("@/pages/admin/octypo-dashboard"));
 const OctypoDashboardNew = lazy(() => import("@/pages/admin/octypo/dashboard"));
 const OctypoAutopilot = lazy(() => import("@/pages/admin/octypo/autopilot"));
@@ -291,6 +292,7 @@ function AdminRouter() {
         <Route path="/admin/seo-engine" component={SeoEngineDashboard} />
         <Route path="/admin/seo-engine/contents" component={SeoEngineContentReport} />
         <Route path="/admin/seo-engine/actions" component={SeoEngineActionsQueue} />
+        <Route path="/admin/page-seo" component={PageSeoManagement} />
         <Route path="/admin/octypo" component={OctypoDashboard} />
         <Route path="/admin/octypo/dashboard" component={OctypoDashboardNew} />
         <Route path="/admin/octypo/autopilot" component={OctypoAutopilot} />

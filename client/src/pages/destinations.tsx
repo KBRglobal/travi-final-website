@@ -15,7 +15,7 @@ import {
   RefreshCw,
   Loader2
 } from "lucide-react";
-import { SEOHead } from "@/components/seo-head";
+// SEO is now fully controlled via database - no SEOHead component needed
 import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
@@ -641,11 +641,31 @@ function EmptyState() {
   );
 }
 
+interface PageSeoData {
+  pagePath: string;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  canonicalUrl: string | null;
+  ogTitle: string | null;
+  ogDescription: string | null;
+  ogImage: string | null;
+  robotsMeta: string | null;
+  jsonLdSchema: any;
+}
+
 export default function DestinationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: destinations, isLoading, isError, refetch } = useQuery<APIDestination[]>({
     queryKey: ["/api/public/destinations"],
+  });
+
+  const { data: pageSeo } = useQuery<PageSeoData>({
+    queryKey: ["/api/public/page-seo", "/destinations"],
+    queryFn: async () => {
+      const res = await fetch("/api/public/page-seo/destinations");
+      return res.json();
+    },
   });
 
   if (isLoading) {
@@ -671,24 +691,33 @@ export default function DestinationsPage() {
 
   return (
     <>
-      <SEOHead
-        title={`${destinationCount} Destination Guides - Travel Tips & More | TRAVI`}
-        description={`Explore TRAVI's expert travel guides for ${destinationCount} destinations worldwide. Local insights, attractions, and comprehensive guides in 17 languages.`}
-        canonicalPath="/destinations"
-      />
-
+      {/* SEO from database - NO FALLBACKS, NO COUNT-BASED TITLES */}
       <Helmet>
-        <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="travel destinations, city guides, destination guides, travel planning, world destinations" />
+        {pageSeo?.metaTitle && <title>{pageSeo.metaTitle}</title>}
+        {pageSeo?.metaDescription && <meta name="description" content={pageSeo.metaDescription} />}
+        {pageSeo?.canonicalUrl && <link rel="canonical" href={pageSeo.canonicalUrl} />}
+        {pageSeo?.robotsMeta && <meta name="robots" content={pageSeo.robotsMeta} />}
+        
+        {/* Open Graph from database */}
+        {pageSeo?.ogTitle && <meta property="og:title" content={pageSeo.ogTitle} />}
+        {pageSeo?.ogDescription && <meta property="og:description" content={pageSeo.ogDescription} />}
+        {pageSeo?.ogImage && <meta property="og:image" content={pageSeo.ogImage} />}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageSeo?.canonicalUrl || "https://travi.world/destinations"} />
+        
+        {/* Twitter Card - derived from OG if available */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${destinationCount} Destination Guides | TRAVI`} />
-        <meta name="twitter:description" content="Expert travel guides for destinations worldwide." />
+        {pageSeo?.ogTitle && <meta name="twitter:title" content={pageSeo.ogTitle} />}
+        {pageSeo?.ogDescription && <meta name="twitter:description" content={pageSeo.ogDescription} />}
+        {pageSeo?.ogImage && <meta name="twitter:image" content={pageSeo.ogImage} />}
 
+        {/* Hreflang tags */}
         <link rel="alternate" hrefLang="x-default" href="https://travi.world/destinations" />
         {SUPPORTED_LANGUAGES.map(lang => (
           <link key={lang.code} rel="alternate" hrefLang={lang.code} href={`https://travi.world/${lang.code}/destinations`} />
         ))}
 
+        {/* Preload first destination image if available */}
         {destinations[0]?.cardImage && (
           <link 
             rel="preload" 
@@ -697,84 +726,12 @@ export default function DestinationsPage() {
           />
         )}
 
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "TRAVI",
-            "url": "https://travi.world",
-            "logo": "https://travi.world/logo.png",
-            "description": `Human Decision Intelligence Company providing comprehensive travel guides for ${destinationCount} destinations worldwide`,
-            "foundingDate": "2024",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "contactType": "Customer Service",
-              "availableLanguage": SUPPORTED_LANGUAGES.map(l => l.code)
-            },
-            "sameAs": [
-              "https://www.instagram.com/travi_world",
-              "https://www.tiktok.com/@travi.world"
-            ]
-          })}
-        </script>
-
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            "name": "Travi World-Class Destinations",
-            "description": "Handpicked travel experiences, insider tips, and comprehensive guides to help you discover extraordinary places",
-            "numberOfItems": destinations.length,
-            "itemListElement": destinations.map((dest, index) => ({
-              "@type": "ListItem",
-              "position": index + 1,
-              "item": {
-                "@type": "TouristDestination",
-                "@id": `https://travi.world/destinations/${dest.id}`,
-                "name": dest.name,
-                "description": dest.summary || `Explore ${dest.name}`,
-                "url": `https://travi.world/destinations/${dest.id}`,
-                "image": `https://travi.world${dest.cardImage || `/cards/${dest.id}.webp`}`
-              }
-            }))
-          })}
-        </script>
-
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://travi.world"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Destinations",
-                "item": "https://travi.world/destinations"
-              }
-            ]
-          })}
-        </script>
-
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": DESTINATIONS_FAQ.map(faq => ({
-              "@type": "Question",
-              "name": faq.q,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": faq.a
-              }
-            }))
-          })}
-        </script>
+        {/* JSON-LD from database - admin-controlled structured data */}
+        {pageSeo?.jsonLdSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(pageSeo.jsonLdSchema)}
+          </script>
+        )}
       </Helmet>
 
       <div className="min-h-screen bg-white dark:bg-slate-950">
