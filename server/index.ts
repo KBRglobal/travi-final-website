@@ -15,6 +15,7 @@ import { bootstrapFoundationMiddleware, initializeFoundationEvents } from "./fou
 import { validateRequiredEnvVars } from "./config/env-validator";
 import { startTiqetsBackgroundGenerator, stopTiqetsBackgroundGenerator } from "./services/tiqets-background-generator";
 import { runProductionSeed } from "./lib/production-seed";
+import { registerOctypoJobHandler } from "./octypo/job-handler";
 import { db } from "./db";
 import { destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
@@ -474,6 +475,10 @@ app.get('/sitemap', async (_req, res) => {
       // Start Tiqets background content generator
       startTiqetsBackgroundGenerator();
       log("[TiqetsBackground] Content generation automation ENABLED", "server");
+      
+      // Register Octypo V2 content generation job handler
+      registerOctypoJobHandler();
+      log("[OctypoV2] Content generation job handler registered", "server");
       
       // Auto-publish draft content for SSR visibility
       import("./scripts/publish-articles").then(({ publishAllArticles }) => {

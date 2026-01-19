@@ -222,6 +222,13 @@ class JobQueue {
   }
 
   /**
+   * Start job processing (public method)
+   */
+  start() {
+    this.startProcessing();
+  }
+
+  /**
    * Stop processing jobs
    */
   stopProcessing() {
