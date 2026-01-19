@@ -165,12 +165,17 @@ export interface GenerationResult {
   success: boolean;
   content?: GeneratedAttractionContent;
   qualityScore?: ContentQualityScore;
+  quality108?: number | null; // 108-point quality score
   engineUsed: string;
   writerId: string;
+  writerUsed?: string; // Alias for writerId
   validationResults: ValidationResult[];
   retryCount: number;
   generationTimeMs: number;
+  processingTimeMs?: number; // Alias for generationTimeMs
   linkProcessorResult?: LinkProcessorResult;
+  error?: string;
+  errors?: string[]; // Multiple errors array
 }
 
 // Updated to match USER's 108-point scoring system

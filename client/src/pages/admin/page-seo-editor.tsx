@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -58,11 +58,15 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
       }
       return res.json();
     },
-    onSuccess: (data: PageSeo) => {
-      setFormData(data);
-      setJsonLdInput(data.jsonLdSchema ? JSON.stringify(data.jsonLdSchema, null, 2) : "");
-    },
   });
+
+  // Sync form data when SEO data is loaded
+  useEffect(() => {
+    if (seoData) {
+      setFormData(seoData);
+      setJsonLdInput(seoData.jsonLdSchema ? JSON.stringify(seoData.jsonLdSchema, null, 2) : "");
+    }
+  }, [seoData]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: Partial<PageSeo>) => {

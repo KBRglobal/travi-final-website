@@ -4248,7 +4248,7 @@ export async function registerRoutes(
         // P0-3 FIX: If MFA required, issue pre-auth token instead of creating session
         // Session is only created AFTER TOTP verification in /api/totp/validate
         if (requiresMfa) {
-          const preAuthResult = createPreAuthToken(user.id, user.username || user.email, {
+          const preAuthResult = await createPreAuthToken(user.id, user.username || user.email, {
             ipAddress: ip,
             userAgent: req.get('User-Agent') || '',
             riskScore: contextResult.riskScore,
@@ -4829,7 +4829,7 @@ export async function registerRoutes(
       }
 
       // Verify the pre-auth token
-      const preAuthContext = verifyPreAuthToken(preAuthToken);
+      const preAuthContext = await verifyPreAuthToken(preAuthToken);
       if (!preAuthContext) {
         logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
           success: false,
@@ -4901,7 +4901,7 @@ export async function registerRoutes(
       }
 
       // TOTP valid - consume the pre-auth token (single use)
-      consumePreAuthToken(preAuthToken);
+      await consumePreAuthToken(preAuthToken);
       
       // Clear TOTP attempts on success
       totpAttempts.delete(userId);
@@ -4985,7 +4985,7 @@ export async function registerRoutes(
       }
 
       // Verify the pre-auth token
-      const preAuthContext = verifyPreAuthToken(preAuthToken);
+      const preAuthContext = await verifyPreAuthToken(preAuthToken);
       if (!preAuthContext) {
         return res.status(401).json({
           error: "Invalid or expired pre-auth token. Please log in again.",
@@ -5040,7 +5040,7 @@ export async function registerRoutes(
       recoveryAttempts.delete(userId);
 
       // Consume the pre-auth token (single use)
-      consumePreAuthToken(preAuthToken);
+      await consumePreAuthToken(preAuthToken);
 
       // Remove used recovery code
       recoveryCodes.splice(codeIndex, 1);

@@ -185,13 +185,13 @@ router.get('/queue', async (req: Request, res: Response) => {
         title: tiqetsAttractions.title,
         cityName: tiqetsAttractions.cityName,
         primaryCategory: tiqetsAttractions.primaryCategory,
-        priceFrom: tiqetsAttractions.priceFrom,
-        rating: tiqetsAttractions.rating,
-        reviewCount: tiqetsAttractions.reviewCount,
+        priceFrom: tiqetsAttractions.priceUsd,
+        rating: tiqetsAttractions.tiqetsRating,
+        reviewCount: tiqetsAttractions.tiqetsReviewCount,
       })
         .from(tiqetsAttractions)
         .where(isNull(tiqetsAttractions.aiContent))
-        .orderBy(desc(tiqetsAttractions.reviewCount))
+        .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
         .limit(limit)
         .offset(offset);
     }
@@ -216,8 +216,8 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
   try {
     ensureInitialized();
 
-    const attractionId = parseInt(req.params.attractionId, 10);
-    if (isNaN(attractionId)) {
+    const attractionId = req.params.attractionId;
+    if (!attractionId) {
       return res.status(400).json({ error: 'Invalid attraction ID' });
     }
 
@@ -242,10 +242,10 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
       wheelchairAccess: attraction.wheelchairAccess || undefined,
       tiqetsDescription: attraction.tiqetsDescription || undefined,
       tiqetsHighlights: attraction.tiqetsHighlights || undefined,
-      priceFrom: attraction.priceFrom || undefined,
-      rating: attraction.rating ? parseFloat(String(attraction.rating)) : undefined,
-      reviewCount: attraction.reviewCount || undefined,
-      address: attraction.address || undefined,
+      priceFrom: attraction.priceUsd || undefined,
+      rating: attraction.tiqetsRating ? parseFloat(String(attraction.tiqetsRating)) : undefined,
+      reviewCount: attraction.tiqetsReviewCount || undefined,
+      address: attraction.venueAddress || undefined,
       coordinates: attraction.latitude && attraction.longitude 
         ? { lat: parseFloat(String(attraction.latitude)), lng: parseFloat(String(attraction.longitude)) }
         : undefined,

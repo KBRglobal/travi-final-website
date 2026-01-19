@@ -27,6 +27,8 @@ const buttonVariants = cva(
         "brand-secondary": "text-[#24103E] border-2 border-[#24103E] rounded-[16px] bg-white hover:bg-slate-50 shadow-[0_4px_15px_rgba(36,16,62,0.1)]",
         // On-image button - solid white for use over images/dark backgrounds
         "on-image": "bg-white text-[#1e1b4b] border-none rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)]",
+        // Link variant - text-only button that looks like a link
+        link: "text-primary underline-offset-4 hover:underline border-transparent bg-transparent",
       },
       // Heights are set as "min" heights, because sometimes Ai will place large amount of contents
       // inside buttons. With a min-height they will look appropriate with small amounts of contents,
