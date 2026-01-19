@@ -325,25 +325,27 @@ export default function PublicNews() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50" data-testid="news-portal">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" data-testid="news-portal">
       <PublicNav />
       
-      <div className="bg-slate-900 text-white mt-20" data-testid="breaking-news-ticker">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center h-10">
-            <div className="flex-shrink-0 bg-[#6443F4] h-full px-4 flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
+      <div className="relative mt-16 overflow-hidden" data-testid="breaking-news-ticker">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#6443F4] via-purple-600 to-cyan-500 opacity-90" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtOS45NDEgMC0xOCA4LjA1OS0xOCAxOHM4LjA1OSAxOCAxOCAxOCAxOC04LjA1OSAxOC0xOC04LjA1OS0xOC0xOC0xOHptMCAzMmMtNy43MzIgMC0xNC02LjI2OC0xNC0xNHM2LjI2OC0xNCAxNC0xNCAxNCA2LjI2OCAxNCAxNC02LjI2OCAxNC0xNCAxNHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjAyIi8+PC9nPjwvc3ZnPg==')] opacity-30" />
+        <div className="relative max-w-7xl mx-auto">
+          <div className="flex items-center h-12">
+            <div className="flex-shrink-0 bg-white/20 backdrop-blur-sm h-full px-5 flex items-center gap-3 border-r border-white/10">
+              <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
               </span>
-              <Zap className="w-3.5 h-3.5" />
-              <span className="text-xs font-bold tracking-wide uppercase">Breaking</span>
+              <Zap className="w-4 h-4 text-white" />
+              <span className="text-xs font-bold tracking-widest uppercase text-white">Breaking</span>
             </div>
-            <div className="overflow-hidden flex-1 px-4">
-              <div className="animate-marquee whitespace-nowrap flex items-center gap-8">
+            <div className="overflow-hidden flex-1 px-6">
+              <div className="animate-marquee whitespace-nowrap flex items-center gap-12">
                 {[...breakingNews, ...breakingNews].map((news, i) => (
-                  <span key={i} className="text-sm flex items-center gap-3">
-                    <span className="w-1 h-1 rounded-full bg-white/50" />
+                  <span key={i} className="text-sm text-white font-medium flex items-center gap-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                     {news}
                   </span>
                 ))}
@@ -353,59 +355,65 @@ export default function PublicNews() {
         </div>
       </div>
 
-      <header className="bg-white border-b border-slate-200" data-testid="news-header">
-        <div className="max-w-7xl mx-auto px-4 py-5">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-6">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="text-portal-title">
-                Global News
-              </h1>
-              <div className="hidden md:flex items-center gap-2 text-sm text-slate-500">
-                <span className="font-medium">{format(new Date(), "EEEE")}</span>
-                <span className="text-slate-300">|</span>
+      <header className="relative bg-gradient-to-b from-slate-900/50 to-transparent backdrop-blur-xl border-b border-white/5" data-testid="news-header">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between gap-6 flex-wrap">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6443F4] to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                  <Globe className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="text-portal-title">
+                    TRAVI NEWS
+                  </h1>
+                  <div className="text-xs text-cyan-400 font-medium tracking-widest uppercase">International Edition</div>
+                </div>
+              </div>
+              <div className="hidden lg:flex items-center gap-4 text-sm text-white/60 border-l border-white/10 pl-8">
+                <span className="font-semibold text-white">{format(new Date(), "EEEE")}</span>
+                <span className="w-1 h-1 rounded-full bg-white/30" />
                 <span>{format(new Date(), "MMMM d, yyyy")}</span>
-                <span className="text-slate-300">|</span>
-                <span className="text-[#6443F4] font-medium">International Edition</span>
               </div>
             </div>
-            <form onSubmit={handleSearch} className="flex items-center gap-2 flex-1 max-w-md">
+            <form onSubmit={handleSearch} className="flex items-center gap-3 flex-1 max-w-md">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                 <Input
                   type="search"
-                  placeholder="Search news, topics, regions..."
+                  placeholder="Search worldwide news..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-slate-50 border-slate-200 focus:bg-white"
+                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:bg-white/10 focus:border-cyan-500/50"
                   data-testid="input-search"
                 />
               </div>
-              <Button type="submit" className="bg-[#6443F4] text-white" data-testid="button-search">
+              <Button type="submit" className="bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0 shadow-lg shadow-purple-500/20" data-testid="button-search">
                 Search
               </Button>
             </form>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="hidden sm:flex border-slate-200 gap-2" data-testid="button-subscribe-header">
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" className="border-white/20 text-white bg-white/5 gap-2 backdrop-blur-sm" data-testid="button-subscribe-header">
                 <Mail className="w-4 h-4" />
                 Subscribe
               </Button>
-              <Button variant="ghost" size="icon" data-testid="button-notifications">
-                <Bell className="w-5 h-5 text-slate-600" />
+              <Button variant="ghost" size="icon" className="text-white/60" data-testid="button-notifications">
+                <Bell className="w-5 h-5" />
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <nav className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm" data-testid="nav-categories">
+      <nav className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-white/5" data-testid="nav-categories">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto py-1 scrollbar-hide">
+          <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-hide">
             <Button
               variant={activeCategory === "all" ? "default" : "ghost"}
               size="sm"
               className={cn(
                 "font-medium whitespace-nowrap",
-                activeCategory === "all" ? "bg-[#6443F4] text-white" : "text-slate-700"
+                activeCategory === "all" ? "bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0" : "text-white/70"
               )}
               onClick={() => setActiveCategory("all")}
               data-testid="button-category-all"
@@ -418,8 +426,8 @@ export default function PublicNews() {
                 variant={activeCategory === cat.id ? "default" : "ghost"}
                 size="sm"
                 className={cn(
-                  "gap-1.5 whitespace-nowrap",
-                  activeCategory === cat.id ? "bg-[#6443F4] text-white" : "text-slate-600"
+                  "gap-2 whitespace-nowrap",
+                  activeCategory === cat.id ? "bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0" : "text-white/60"
                 )}
                 onClick={() => setActiveCategory(cat.id)}
                 data-testid={`button-category-${cat.id}`}
@@ -437,38 +445,48 @@ export default function PublicNews() {
           <div className="lg:col-span-8">
             {heroArticle && (
               <Link href={localePath(`/articles/${heroArticle.slug}`)}>
-                <article className="group cursor-pointer relative overflow-hidden rounded-lg" data-testid="card-hero-article">
+                <article className="group cursor-pointer relative overflow-hidden rounded-2xl ring-1 ring-white/10" data-testid="card-hero-article">
                   <div className="aspect-[16/9] relative">
                     <img
                       src={heroArticle.heroImage || defaultImages[0]}
                       alt={heroArticle.heroImageAlt || heroArticle.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                      <Badge className="bg-[#6443F4] text-white border-0 mb-3" data-testid="badge-top-story">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#6443F4]/20 to-cyan-500/10 opacity-60" />
+                    <div className="absolute top-4 left-4 flex items-center gap-2">
+                      <Badge className="bg-gradient-to-r from-[#6443F4] to-purple-600 text-white border-0 shadow-lg" data-testid="badge-top-story">
+                        <span className="relative flex h-1.5 w-1.5 mr-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
+                        </span>
                         Top Story
                       </Badge>
-                      <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="text-hero-headline">
+                      <Badge className="bg-white/20 backdrop-blur-md text-white border-0">
+                        {heroArticle.article?.category || "World"}
+                      </Badge>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+                      <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-2xl" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="text-hero-headline">
                         {heroArticle.title}
                       </h2>
-                      <p className="text-white/80 text-sm md:text-base lg:text-lg line-clamp-2 mb-4 max-w-3xl" data-testid="text-hero-excerpt">
+                      <p className="text-white/90 text-sm md:text-base lg:text-lg line-clamp-2 mb-5 max-w-3xl" data-testid="text-hero-excerpt">
                         {heroArticle.metaDescription}
                       </p>
-                      <div className="flex items-center gap-4 text-white/70 text-sm flex-wrap">
-                        <span className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-5 text-white/80 text-sm flex-wrap">
+                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
                           <User className="w-4 h-4" />
-                          Editorial Team
-                        </span>
-                        <span>{getArticleDate(heroArticle)}</span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {getReadTime(heroArticle)}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="w-4 h-4" />
-                          {formatViews(heroArticle.viewCount || 0)} views
-                        </span>
+                          <span>Editorial Team</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-cyan-400" />
+                          <span>{getReadTime(heroArticle)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Eye className="w-4 h-4 text-cyan-400" />
+                          <span>{formatViews(heroArticle.viewCount || 0)} views</span>
+                        </div>
+                        <span className="text-white/60">{getArticleDate(heroArticle)}</span>
                       </div>
                     </div>
                   </div>
@@ -478,32 +496,36 @@ export default function PublicNews() {
           </div>
 
           <aside className="lg:col-span-4 space-y-4" data-testid="sidebar-secondary-stories">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
-                <TrendingUp className="w-4 h-4 text-[#6443F4]" />
+            <div className="flex items-center justify-between bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+              <h3 className="font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
                 Also Today
               </h3>
+              <Badge className="bg-cyan-500/20 text-cyan-400 border-0">{secondaryHeroArticles.length} stories</Badge>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {secondaryHeroArticles.map((article, idx) => (
                 <Link key={article.id} href={localePath(`/articles/${article.slug}`)}>
-                  <Card className="group cursor-pointer overflow-hidden bg-white p-0" data-testid={`card-secondary-${idx + 1}`}>
+                  <Card className="group cursor-pointer overflow-hidden bg-white/5 backdrop-blur-sm border-white/10 p-0 hover:bg-white/10 transition-all" data-testid={`card-secondary-${idx + 1}`}>
                     <div className="flex">
-                      <div className="w-28 h-24 flex-shrink-0">
+                      <div className="w-28 h-24 flex-shrink-0 relative">
                         <img
                           src={article.heroImage || defaultImages[(idx + 1) % 6]}
                           alt={article.heroImageAlt || article.title}
                           className="w-full h-full object-cover"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-slate-900/50" />
                       </div>
                       <div className="flex-1 p-3 min-w-0">
-                        <Badge variant="secondary" className={`${getCategoryColor(article.article?.category)} text-white border-0 text-[10px] mb-1.5`}>
+                        <Badge variant="secondary" className="bg-[#6443F4]/80 text-white border-0 text-[10px] mb-1.5">
                           {article.article?.category || "News"}
                         </Badge>
-                        <h4 className="font-semibold text-slate-900 text-sm line-clamp-2 group-hover:text-[#6443F4] transition-colors">
+                        <h4 className="font-semibold text-white text-sm line-clamp-2 group-hover:text-cyan-400 transition-colors">
                           {article.title}
                         </h4>
-                        <span className="text-xs text-slate-500 mt-1 block">{getTimeAgo(article)}</span>
+                        <span className="text-xs text-white/50 mt-1 block">{getTimeAgo(article)}</span>
                       </div>
                     </div>
                   </Card>
