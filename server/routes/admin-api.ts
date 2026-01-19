@@ -1083,8 +1083,8 @@ export function registerAdminApiRoutes(app: Express): void {
 
   router.get("/analytics/stats", requirePermission("canManageSettings"), async (_req: Request, res: Response) => {
     try {
-      const { contents, articles, destinations, images } = await import("@shared/schema");
-      const { count, sql } = await import("drizzle-orm");
+      const { contents, articles, destinations, images, users, aiGenerationLogs, tiqetsAttractions } = await import("@shared/schema");
+      const { count, sql, eq } = await import("drizzle-orm");
       
       // Get content counts
       const [contentStats] = await db.select({
@@ -1119,14 +1119,51 @@ export function registerAdminApiRoutes(app: Express): void {
         imageCount = 0;
       }
       
-      // Calculate health score
-      const totalContent = contentStats?.total || 0;
+      // Get REAL user count from database
+      let userTotal = 0;
+      try {
+        const [userStats] = await db.select({
+          total: count(),
+        }).from(users);
+        userTotal = userStats?.total || 0;
+      } catch {
+        userTotal = 0;
+      }
+      
+      // Get REAL AI generation stats from ai_generation_logs
+      let aiCompleted = 0;
+      let aiFailed = 0;
+      try {
+        const [completedStats] = await db.select({
+          count: count(),
+        }).from(aiGenerationLogs).where(eq(aiGenerationLogs.success, true));
+        aiCompleted = completedStats?.count || 0;
+        
+        const [failedStats] = await db.select({
+          count: count(),
+        }).from(aiGenerationLogs).where(eq(aiGenerationLogs.success, false));
+        aiFailed = failedStats?.count || 0;
+      } catch {
+        // Table may not exist yet
+      }
+      
+      // Get Tiqets content generation stats (as additional AI generation tracking)
+      let tiqetsCompleted = 0;
+      try {
+        const [tiqetsStats] = await db.select({
+          count: count(),
+        }).from(tiqetsAttractions).where(eq(tiqetsAttractions.status, "completed"));
+        tiqetsCompleted = tiqetsStats?.count || 0;
+      } catch {
+        // Table may not exist
+      }
+      
+      const totalAiCompleted = aiCompleted + tiqetsCompleted;
       const published = publishedCount?.count || 0;
-      const healthScore = totalContent > 0 ? Math.round((published / totalContent) * 100) : 0;
       
       const stats = {
         contents: {
-          total: totalContent,
+          total: contentStats?.total || 0,
           attractions: contentStats?.total || 0,
           articles: articleStats?.total || 0,
           destinations: destinationStats?.total || 0,
@@ -1134,47 +1171,26 @@ export function registerAdminApiRoutes(app: Express): void {
         },
         media: {
           images: imageCount,
-          videos: 0,
-          storageUsed: "0 MB",
+          videos: 0, // No video tracking exists
+          storageUsed: "N/A",
         },
-        // TODO: Integrate with user system when implemented
         users: {
-          total: 1,
-          online: 1,
-        },
-        // TODO: Integrate with analytics when implemented
-        traffic: {
-          today: 0,
-          pageViews: 0,
+          total: userTotal,
+          online: 0, // No real session tracking exists
         },
         pendingTasks: {
           review: draftCount?.count || 0,
-          scheduled: 0,
-          aiQueue: 0,
+          scheduled: 0, // No scheduling system exists
+          aiQueue: 0, // No AI queue tracking exists
         },
         status: {
           published: published,
           draft: draftCount?.count || 0,
         },
-        languages: {
-          active: 30,
-          total: 30,
-        },
-        healthScore,
         aiGeneration: {
-          completed: 0,
-          pending: 0,
-          failed: 0,
-        },
-        storage: {
-          used: 0,
-          total: 10,
-          unit: "GB",
-        },
-        systemHealth: {
-          status: "healthy" as const,
-          apiUptime: 99.9,
-          errors: 0,
+          completed: totalAiCompleted,
+          pending: 0, // No pending queue tracking
+          failed: aiFailed,
         },
       };
       
