@@ -227,6 +227,33 @@ function isSensitiveTopic(title: string, description: string): { sensitive: bool
   return { sensitive: false };
 }
 
+const DESTINATION_KEYWORDS: Array<{ keywords: string[]; destinationId: string }> = [
+  { keywords: ['japan', 'tokyo', 'osaka', 'kyoto', 'japanese', 'shinkansen'], destinationId: 'tokyo' },
+  { keywords: ['thailand', 'bangkok', 'thai', 'phuket'], destinationId: 'bangkok' },
+  { keywords: ['singapore', 'singaporean'], destinationId: 'singapore' },
+  { keywords: ['dubai', 'uae', 'emirati', 'emirates', 'burj'], destinationId: 'dubai' },
+  { keywords: ['abu dhabi', 'abu-dhabi'], destinationId: 'abu-dhabi' },
+  { keywords: ['ras al khaimah', 'ras-al-khaimah'], destinationId: 'ras-al-khaimah' },
+  { keywords: ['paris', 'france', 'french', 'eiffel'], destinationId: 'paris' },
+  { keywords: ['london', 'britain', 'british', 'uk', 'england'], destinationId: 'london' },
+  { keywords: ['istanbul', 'turkey', 'turkish'], destinationId: 'istanbul' },
+  { keywords: ['new york', 'nyc', 'manhattan', 'brooklyn'], destinationId: 'new-york' },
+  { keywords: ['los angeles', 'hollywood', 'california', 'la'], destinationId: 'los-angeles' },
+  { keywords: ['miami', 'florida'], destinationId: 'miami' },
+];
+
+function detectDestinationFromContent(title: string, description: string): string | null {
+  const combined = `${title} ${description}`.toLowerCase();
+  
+  for (const entry of DESTINATION_KEYWORDS) {
+    if (entry.keywords.some(kw => combined.includes(kw.toLowerCase()))) {
+      return entry.destinationId;
+    }
+  }
+  
+  return null;
+}
+
 async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ success: boolean; generated: number; skipped: number; errors: string[]; contentIds: string[] }> {
   console.log(`[OctypoJobHandler] Processing RSS job for feed: ${data.feedName}`);
   
@@ -246,8 +273,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
   
   console.log(`[OctypoJobHandler] Found ${items.length} items in feed`);
   
-  const destinationId = data.destination || feed.destinationId || 'dubai';
-  const coords = await getDestinationCoordinates(destinationId);
+  const defaultDestinationId = data.destination || feed.destinationId || null;
   
   let generated = 0;
   let skipped = 0;
@@ -262,6 +288,12 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
         skipped++;
         continue;
       }
+      
+      const detectedDestination = detectDestinationFromContent(item.title, item.description);
+      const destinationId = detectedDestination || defaultDestinationId || 'global';
+      console.log(`[OctypoJobHandler] Detected destination: ${destinationId} for "${item.title.substring(0, 50)}..."`);
+      
+      const coords = await getDestinationCoordinates(destinationId);
       
       const slug = item.title.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
@@ -284,11 +316,11 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
         slug: slug,
         description: item.description || item.title,
         destinationId: destinationId,
-        primaryCategory: data.category || feed.category || 'attractions',
+        primaryCategory: data.category || feed.category || 'news',
         secondaryCategories: [],
         address: '',
-        latitude: coords?.lat || 25.2048,
-        longitude: coords?.lng || 55.2708,
+        latitude: coords?.lat || 0,
+        longitude: coords?.lng || 0,
         sourceUrl: item.link,
         locale: feed.language || 'en',
       };

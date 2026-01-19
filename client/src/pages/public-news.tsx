@@ -61,23 +61,81 @@ const NEWS_CATEGORIES = [
   { id: "opinion", name: "Opinion", icon: MessageSquare },
 ];
 
+const DESTINATION_TO_REGION: Record<string, { region: string; code: string }> = {
+  'dubai': { region: 'Middle East', code: 'ME' },
+  'abu-dhabi': { region: 'Middle East', code: 'ME' },
+  'ras-al-khaimah': { region: 'Middle East', code: 'ME' },
+  'tokyo': { region: 'Asia Pacific', code: 'AP' },
+  'bangkok': { region: 'Asia Pacific', code: 'AP' },
+  'singapore': { region: 'Asia Pacific', code: 'AP' },
+  'paris': { region: 'Europe', code: 'EU' },
+  'london': { region: 'Europe', code: 'EU' },
+  'istanbul': { region: 'Europe', code: 'EU' },
+  'new-york': { region: 'Americas', code: 'NA' },
+  'los-angeles': { region: 'Americas', code: 'NA' },
+  'miami': { region: 'Americas', code: 'NA' },
+};
+
+const KEYWORD_TO_REGION: Array<{ keywords: string[]; region: string; code: string }> = [
+  { keywords: ['japan', 'tokyo', 'osaka', 'kyoto', 'japanese'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['china', 'beijing', 'shanghai', 'chinese'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['thailand', 'bangkok', 'thai'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['singapore', 'singaporean'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['korea', 'seoul', 'korean'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['india', 'mumbai', 'delhi', 'indian'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['australia', 'sydney', 'melbourne'], region: 'Asia Pacific', code: 'AP' },
+  { keywords: ['dubai', 'uae', 'abu dhabi', 'emirates', 'emirati'], region: 'Middle East', code: 'ME' },
+  { keywords: ['saudi', 'riyadh', 'jeddah'], region: 'Middle East', code: 'ME' },
+  { keywords: ['qatar', 'doha'], region: 'Middle East', code: 'ME' },
+  { keywords: ['israel', 'tel aviv', 'jerusalem'], region: 'Middle East', code: 'ME' },
+  { keywords: ['france', 'paris', 'french'], region: 'Europe', code: 'EU' },
+  { keywords: ['uk', 'london', 'britain', 'british', 'england'], region: 'Europe', code: 'EU' },
+  { keywords: ['germany', 'berlin', 'munich', 'german'], region: 'Europe', code: 'EU' },
+  { keywords: ['italy', 'rome', 'milan', 'italian'], region: 'Europe', code: 'EU' },
+  { keywords: ['spain', 'madrid', 'barcelona', 'spanish'], region: 'Europe', code: 'EU' },
+  { keywords: ['portugal', 'lisbon'], region: 'Europe', code: 'EU' },
+  { keywords: ['usa', 'america', 'american', 'u.s.', 'united states'], region: 'Americas', code: 'NA' },
+  { keywords: ['new york', 'los angeles', 'miami', 'california', 'texas'], region: 'Americas', code: 'NA' },
+  { keywords: ['canada', 'toronto', 'vancouver', 'canadian'], region: 'Americas', code: 'NA' },
+  { keywords: ['mexico', 'cancun', 'mexican'], region: 'Americas', code: 'NA' },
+  { keywords: ['brazil', 'rio', 'sao paulo'], region: 'Americas', code: 'NA' },
+  { keywords: ['africa', 'egypt', 'cairo', 'morocco', 'south africa', 'kenya'], region: 'Africa', code: 'AF' },
+];
+
+function detectRegionFromContent(title: string, destinationId?: string | null): { region: string; code: string } {
+  if (destinationId && DESTINATION_TO_REGION[destinationId]) {
+    return DESTINATION_TO_REGION[destinationId];
+  }
+  
+  const titleLower = title.toLowerCase();
+  for (const entry of KEYWORD_TO_REGION) {
+    if (entry.keywords.some(kw => titleLower.includes(kw))) {
+      return { region: entry.region, code: entry.code };
+    }
+  }
+  
+  return { region: 'Global', code: 'GL' };
+}
+
 function getRegionsFromArticles(articles: ContentWithRelations[]): { name: string; articles: number; code: string }[] {
-  const regionMap = new Map<string, number>();
-  const regionCodes: Record<string, string> = {
-    'Middle East': 'ME',
-    'UAE': 'ME',
-    'Dubai': 'ME',
-    'Asia': 'AP',
-    'Europe': 'EU',
-    'Americas': 'NA',
-    'Africa': 'AF',
-  };
+  const regionMap = new Map<string, { count: number; code: string }>();
   
-  regionMap.set('Middle East', articles.length);
+  articles.forEach(article => {
+    const destId = article.article?.destinationId || null;
+    const { region, code } = detectRegionFromContent(article.title, destId);
+    
+    const existing = regionMap.get(region);
+    if (existing) {
+      existing.count++;
+    } else {
+      regionMap.set(region, { count: 1, code });
+    }
+  });
   
-  return [
-    { name: 'Middle East', articles: regionMap.get('Middle East') || 0, code: 'ME' },
-  ].filter(r => r.articles > 0);
+  return Array.from(regionMap.entries())
+    .map(([name, data]) => ({ name, articles: data.count, code: data.code }))
+    .sort((a, b) => b.articles - a.articles)
+    .slice(0, 6);
 }
 
 function formatViews(views: number): string {
@@ -587,10 +645,10 @@ export default function PublicNews() {
                 )) : (
                   <Card className="bg-white p-4 text-center col-span-full">
                     <div className="w-12 h-12 rounded-full bg-[#6443F4] mx-auto mb-3 flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">ME</span>
+                      <Globe className="w-6 h-6 text-white" />
                     </div>
-                    <h4 className="font-semibold text-slate-900 text-sm mb-1">Middle East</h4>
-                    <span className="text-xs text-slate-500">{totalStories} stories</span>
+                    <h4 className="font-semibold text-slate-900 text-sm mb-1">Global Coverage</h4>
+                    <span className="text-xs text-slate-500">News from around the world</span>
                   </Card>
                 )}
               </div>
