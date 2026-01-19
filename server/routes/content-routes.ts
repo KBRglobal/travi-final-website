@@ -413,12 +413,11 @@ export function registerContentRoutes(app: Express): void {
     }
   });
 
-  // Public API for destinations
+  // Public API for destinations - DATABASE IS SINGLE SOURCE OF TRUTH
+  // NO static fallbacks, NO limits - returns ALL active destinations with mood fields
   app.get("/api/public/destinations", async (req, res) => {
     try {
-      const { limit, level } = req.query;
-      const maxLimit = Math.min(parseInt(limit as string) || 12, 24);
-
+      // Fetch ALL active destinations from database with mood/hero fields
       const allDestinations = await db
         .select({
           id: destinations.id,
@@ -429,11 +428,15 @@ export function registerContentRoutes(app: Express): void {
           cardImage: destinations.cardImage,
           cardImageAlt: destinations.cardImageAlt,
           summary: destinations.summary,
+          heroImage: destinations.heroImage,
+          heroImageAlt: destinations.heroImageAlt,
+          moodVibe: destinations.moodVibe,
+          moodTagline: destinations.moodTagline,
+          moodPrimaryColor: destinations.moodPrimaryColor,
         })
         .from(destinations)
         .where(eq(destinations.isActive, true))
-        .orderBy(destinations.name)
-        .limit(maxLimit);
+        .orderBy(destinations.name);
 
       res.json(allDestinations);
     } catch (error) {
