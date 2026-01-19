@@ -63,6 +63,7 @@ interface AvailableDestination {
   slug: string;
   country: string;
   cardImage: string | null;
+  cardImageAlt: string | null;
   heroImage: string | null;
 }
 
@@ -87,6 +88,8 @@ export default function DestinationsIndexEditor() {
   
   const [uploadingSlide, setUploadingSlide] = useState<string | null>(null);
   const [newSlideDestinationId, setNewSlideDestinationId] = useState("");
+  const [uploadingCard, setUploadingCard] = useState<string | null>(null);
+  const [cardAltEdits, setCardAltEdits] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (config) {
@@ -261,6 +264,72 @@ export default function DestinationsIndexEditor() {
     return dest ? `${dest.name}, ${dest.country}` : destinationId;
   };
 
+  const handleUploadCardImage = async (destinationId: string, file: File) => {
+    setUploadingCard(destinationId);
+    
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      
+      const alt = cardAltEdits[destinationId] || `${getDestinationName(destinationId)} - Travel destination`;
+      formData.append("alt", alt);
+      
+      const response = await fetch(`/api/admin/destinations/${destinationId}/card-image`, {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations-index/available-destinations"] });
+      
+      toast({
+        title: "Card image uploaded",
+        description: "Destination card image has been uploaded successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload card image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingCard(null);
+    }
+  };
+
+  const handleSaveCardAlt = async (destinationId: string) => {
+    const alt = cardAltEdits[destinationId];
+    if (!alt) return;
+    
+    try {
+      const response = await fetch(`/api/admin/destinations/${destinationId}/card-alt`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ alt }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to save alt text");
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations-index/available-destinations"] });
+      
+      toast({
+        title: "Alt text saved",
+        description: "Card image alt text has been updated.",
+      });
+    } catch (error) {
+      toast({
+        title: "Save failed",
+        description: "Failed to save alt text. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (configLoading || destinationsLoading) {
     return (
       <div className="container mx-auto py-8 space-y-6">
@@ -303,6 +372,10 @@ export default function DestinationsIndexEditor() {
           <TabsTrigger value="hero" data-testid="tab-hero">
             <ImageIcon className="w-4 h-4 mr-2" />
             Hero Carousel
+          </TabsTrigger>
+          <TabsTrigger value="cards" data-testid="tab-cards">
+            <ImageIcon className="w-4 h-4 mr-2" />
+            Destination Cards
           </TabsTrigger>
           <TabsTrigger value="content" data-testid="tab-content">
             <Settings className="w-4 h-4 mr-2" />
@@ -518,6 +591,95 @@ export default function DestinationsIndexEditor() {
                   Save Carousel
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="cards" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5" />
+                Destination Card Images
+              </CardTitle>
+              <CardDescription>
+                Upload and manage card images for each destination. These images appear in destination grids and listings.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {availableDestinations?.map((dest) => (
+                  <Card key={dest.id} className="overflow-hidden">
+                    <div className="aspect-[4/3] bg-muted relative">
+                      {dest.cardImage ? (
+                        <img
+                          src={dest.cardImage}
+                          alt={dest.cardImageAlt || dest.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ImageIcon className="w-12 h-12 text-muted-foreground opacity-50" />
+                        </div>
+                      )}
+                      {uploadingCard === dest.id && (
+                        <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+                          <Loader2 className="w-8 h-8 animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-4 space-y-3">
+                      <div className="font-medium">{dest.name}</div>
+                      <div className="text-sm text-muted-foreground">{dest.country}</div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor={`card-alt-${dest.id}`} className="text-xs">Alt Text (Required for SEO)</Label>
+                        <Input
+                          id={`card-alt-${dest.id}`}
+                          value={cardAltEdits[dest.id] ?? dest.cardImageAlt ?? ""}
+                          onChange={(e) => setCardAltEdits({ ...cardAltEdits, [dest.id]: e.target.value })}
+                          placeholder={`${dest.name} - Travel destination`}
+                          className="text-sm"
+                          data-testid={`input-card-alt-${dest.id}`}
+                        />
+                        {cardAltEdits[dest.id] && cardAltEdits[dest.id] !== dest.cardImageAlt && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSaveCardAlt(dest.id)}
+                            data-testid={`button-save-alt-${dest.id}`}
+                          >
+                            <Save className="w-3 h-3 mr-1" />
+                            Save Alt
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-xs">Upload Card Image</Label>
+                        <Input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleUploadCardImage(dest.id, file);
+                          }}
+                          disabled={uploadingCard === dest.id}
+                          className="text-sm"
+                          data-testid={`input-card-upload-${dest.id}`}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              {(!availableDestinations || availableDestinations.length === 0) && (
+                <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
+                  <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>No active destinations found. Add destinations to manage their card images.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
