@@ -97,7 +97,6 @@ const MonetizationAffiliates = lazy(() => import("@/pages/admin/monetization/aff
 const EnterpriseTeams = lazy(() => import("@/pages/admin/enterprise/teams"));
 const EnterpriseWorkflows = lazy(() => import("@/pages/admin/enterprise/workflows"));
 const EnterpriseWebhooks = lazy(() => import("@/pages/admin/enterprise/webhooks"));
-const EnterpriseActivity = lazy(() => import("@/pages/admin/enterprise/activity-feed"));
 const GovernanceDashboard = lazy(() => import("@/pages/admin/governance"));
 const GovernanceRoles = lazy(() => import("@/pages/admin/governance/roles"));
 const GovernanceUsers = lazy(() => import("@/pages/admin/governance/users"));
@@ -264,7 +263,6 @@ function AdminRouter() {
         <Route path="/admin/enterprise/teams" component={EnterpriseTeams} />
         <Route path="/admin/enterprise/workflows" component={EnterpriseWorkflows} />
         <Route path="/admin/enterprise/webhooks" component={EnterpriseWebhooks} />
-        <Route path="/admin/enterprise/activity" component={EnterpriseActivity} />
         <Route path="/admin/governance" component={GovernanceDashboard} />
         <Route path="/admin/governance/roles" component={GovernanceRoles} />
         <Route path="/admin/governance/users" component={GovernanceUsers} />
