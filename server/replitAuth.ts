@@ -146,12 +146,25 @@ export async function setupAuth(app: Express) {
       return verified(new Error("Email is required for login."), undefined);
     }
     
-    // STRICT EMAIL RESTRICTION: Only allow specific admin email
-    const ALLOWED_EMAIL = "traviquackson@gmail.com";
-    if (email.toLowerCase() !== ALLOWED_EMAIL.toLowerCase()) {
-      console.log(`Login rejected: unauthorized email ${email} (only ${ALLOWED_EMAIL} is allowed)`);
-      return verified(new Error(`Access denied. Only ${ALLOWED_EMAIL} can log in.`), undefined);
+    // STRICT ACCESS RESTRICTION: Only allow specific admin emails or GitHub usernames
+    const ALLOWED_EMAILS = ["traviquackson@gmail.com", "mzgdubai@gmail.com"];
+    const ALLOWED_USERNAMES = ["kbrglobal"];
+    
+    // Get username from claims (GitHub returns preferred_username or nickname)
+    const username = (claims["preferred_username"] || claims["nickname"] || claims["name"] || "") as string;
+    
+    const emailAllowed = ALLOWED_EMAILS.some(e => e.toLowerCase() === email.toLowerCase());
+    const usernameAllowed = ALLOWED_USERNAMES.some(u => u.toLowerCase() === username.toLowerCase());
+    
+    console.log(`[Auth] Login attempt - email: ${email}, username: ${username}`);
+    
+    if (!emailAllowed && !usernameAllowed) {
+      console.log(`Login rejected: unauthorized - email ${email}, username ${username}`);
+      return verified(new Error(`Access denied. You are not authorized to access this application.`), undefined);
     }
+    
+    console.log(`[Auth] Login approved for: ${email} (username: ${username})`);
+    
     
     // Check if user exists and is active
     const existingUser = await storage.getUserByEmail(email);
@@ -216,8 +229,7 @@ export async function setupAuth(app: Express) {
   app.get("/api/access-denied-info", (req, res) => {
     res.json({ 
       error: "Access denied", 
-      message: "This application is restricted to authorized users only.",
-      allowedEmail: "traviquackson@gmail.com"
+      message: "This application is restricted to authorized administrators only."
     });
   });
 
