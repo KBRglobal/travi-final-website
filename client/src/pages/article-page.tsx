@@ -58,6 +58,7 @@ export interface ArticlePageProps {
   ctaDescription?: string; // Optional CTA description
   ctaButtonText?: string; // Optional CTA button text
   ctaButtonHref?: string; // Optional CTA button href
+  ctaButtonUrl?: string; // Alias for ctaButtonHref (backward compatibility)
 }
 
 export default function ArticlePage({
