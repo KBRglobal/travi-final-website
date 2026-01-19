@@ -833,6 +833,77 @@ Return valid JSON-LD that can be embedded in a webpage.`,
     }
   });
 
+  // Generate SEO metadata for index pages (destinations, hotels, attractions, etc.)
+  router.post("/generate-page-seo", requirePermission("canCreate"), rateLimiters.ai, checkAiUsageLimit, async (req, res) => {
+    if (safeMode.aiDisabled) {
+      return res.status(503).json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
+    }
+    try {
+      const aiClient = getAIClient();
+      if (!aiClient) {
+        return res.status(503).json({ error: "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi." });
+      }
+      const { client: openai, provider } = aiClient;
+
+      const { pagePath, pageLabel, context } = req.body;
+
+      if (!pagePath || !pageLabel) {
+        return res.status(400).json({ error: "pagePath and pageLabel are required" });
+      }
+
+      const response = await openai.chat.completions.create({
+        model: provider === "openai" ? "gpt-4o" : getModelForProvider(provider),
+        messages: [
+          {
+            role: "system",
+            content: `You are an SEO expert specializing in travel content. Generate optimized SEO metadata for the Travi travel platform.
+
+STRICT CHARACTER LIMITS:
+- metaTitle: MUST be 30-60 characters (optimal for search engines)
+- metaDescription: MUST be 120-160 characters (optimal for SERP snippets)
+- ogTitle: Can be slightly longer, 40-70 characters
+- ogDescription: Same as metaDescription, 120-160 characters
+
+BRAND GUIDELINES:
+- Site name: TRAVI or Travi World
+- Brand focus: Travel guides, destinations, local experiences
+- Tone: Inspiring, helpful, authoritative
+
+Return a JSON object with:
+{
+  "metaTitle": "...",
+  "metaDescription": "...",
+  "ogTitle": "...",
+  "ogDescription": "...",
+  "canonicalUrl": "https://travi.world${pagePath}",
+  "robotsMeta": "index, follow",
+  "score": {
+    "titleScore": 0-100,
+    "descriptionScore": 0-100,
+    "overall": 0-100
+  },
+  "suggestions": ["suggestion 1", "suggestion 2"]
+}`,
+          },
+          {
+            role: "user",
+            content: `Generate SEO metadata for the "${pageLabel}" page at path "${pagePath}".
+${context ? `Additional context: ${context}` : ""}
+
+Remember to follow the character limits strictly!`,
+          },
+        ],
+        response_format: { type: "json_object" },
+      });
+
+      const result = safeParseJson(response.choices[0].message.content || "{}", {});
+      res.json(result);
+    } catch (error) {
+      console.error("Error generating page SEO:", error);
+      res.status(500).json({ error: "Failed to generate page SEO" });
+    }
+  });
+
   router.post("/generate-hotel", requirePermission("canCreate"), rateLimiters.ai, checkAiUsageLimit, async (req, res) => {
     if (safeMode.aiDisabled) {
       return res.status(503).json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
