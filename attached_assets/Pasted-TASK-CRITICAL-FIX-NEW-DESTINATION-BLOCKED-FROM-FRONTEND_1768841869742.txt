@@ -1,0 +1,90 @@
+TASK — CRITICAL FIX: NEW DESTINATION BLOCKED FROM FRONTEND
+
+CONTEXT:
+A new destination ("test") was created via Admin.
+It EXISTS in Railway PostgreSQL but does NOT appear on the public frontend.
+
+Root causes have already been IDENTIFIED:
+
+BUG 1 — HARDCODED WHITELIST (SEVERITY: CRITICAL)
+File: server/routes/public-api.ts
+There is a hardcoded ALLOWED_DESTINATION_IDS Set that blocks ANY new destination
+from being accessible via the public API.
+
+This violates:
+- Database as single source of truth
+- Admin-controlled content
+- Ability to add destinations without code
+
+BUG 2 — is_active DEFAULT BROKEN
+The "test" destination has:
+- is_active = false
+Even though the schema claims default(true), the Admin create flow results in false.
+
+Because:
+- List endpoint filters by is_active = true
+- Single endpoint is blocked by whitelist
+
+RESULT:
+New destinations are silently excluded from frontend.
+
+--------------------------------
+OBJECTIVE (NON-NEGOTIABLE)
+--------------------------------
+Fix the system so that ANY destination created via Admin:
+
+- Appears in Admin list
+- Appears in GET /api/public/destinations (if is_active = true)
+- Appears on /destinations page
+- Is accessible via /destinations/{slug}
+- Requires NO code changes to be publicly visible
+
+--------------------------------
+REQUIRED FIXES (ALL REQUIRED)
+--------------------------------
+
+1) REMOVE HARDCODED WHITELIST (MANDATORY)
+- Delete ALLOWED_DESTINATION_IDS logic entirely
+- Public API must rely ONLY on database state
+- Validity = exists in DB + is_active = true
+
+2) FIX is_active DEFAULT AT CREATION
+- Ensure Admin create endpoint explicitly sets:
+  is_active = true
+- Do NOT rely on schema defaults implicitly
+- Add validation so Admin cannot create a destination with is_active = null/false unintentionally
+
+3) UPDATE EXISTING TEST DATA
+- Update "test" destination:
+  is_active = true
+- Verify it appears in API and frontend
+
+--------------------------------
+MANDATORY VERIFICATION (NO EXCEPTIONS)
+--------------------------------
+
+A) SQL PROOF (Railway PostgreSQL)
+- Show "test" destination with is_active = true
+
+B) API PROOF
+- GET /api/public/destinations includes "test"
+- GET /api/public/destinations/test returns destination data
+
+C) FRONTEND PROOF
+- "test" appears on /destinations page
+- /destinations/test loads successfully
+
+D) NEGATIVE PROOF
+- Grep confirms NO remaining whitelist logic in public-api.ts
+- No hardcoded destination IDs anywhere in public routing
+
+--------------------------------
+FINAL RULES
+--------------------------------
+- Do NOT add new fallbacks
+- Do NOT add new whitelists
+- Do NOT patch frontend to hide backend bugs
+- Do NOT mark complete without proofs
+
+Fix this FIRST.
+Do NOT proceed to schemas, media, or other features until this is fully resolved.
