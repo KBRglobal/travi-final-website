@@ -51,6 +51,7 @@ const DestinationIntelligencePage = lazy(() => import("@/pages/admin/destination
 const DestinationsListPage = lazy(() => import("@/pages/admin/destinations/destinations-list"));
 const DestinationHubPage = lazy(() => import("@/pages/admin/destinations/destination-hub"));
 const DestinationNewPage = lazy(() => import("@/pages/admin/destinations/destination-new"));
+const DestinationsIndexEditorPage = lazy(() => import("@/pages/admin/destinations/destinations-index-editor"));
 const SecurityPage = lazy(() => import("@/pages/admin/security"));
 const SiteSettingsPage = lazy(() => import("@/pages/admin/site-settings"));
 const NavigationManagerPage = lazy(() => import("@/pages/admin/navigation-manager"));
@@ -222,6 +223,7 @@ function AdminRouter() {
         <Route path="/admin/destination-intelligence" component={DestinationIntelligencePage} />
         <Route path="/admin/destinations" component={DestinationsListPage} />
         <Route path="/admin/destinations/new" component={DestinationNewPage} />
+        <Route path="/admin/destinations/index-editor" component={DestinationsIndexEditorPage} />
         <Route path="/admin/destinations/:slug" component={DestinationHubPage} />
         <Route path="/admin/security" component={SecurityPage} />
         <Route path="/admin/site-settings" component={SiteSettingsPage} />

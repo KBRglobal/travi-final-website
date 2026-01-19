@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
@@ -6,16 +6,46 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
-const HERO_DESTINATIONS = [
-  { id: "dubai", name: "Dubai", slug: "dubai", country: "UAE", heroImage: "/destination-hero/dubai-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop", cityType: "Global Travel Hub", travelStyle: "Luxury & Modern City", secondaryBadge: "Nov–Mar" },
-  { id: "paris", name: "Paris", slug: "paris", country: "France", heroImage: "/destination-hero/paris-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop", cityType: "Historic Capital", travelStyle: "Culture & Romance", secondaryBadge: "3–5 days" },
-  { id: "tokyo", name: "Tokyo", slug: "tokyo", country: "Japan", heroImage: "/destination-hero/tokyo-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop", cityType: "Mega City", travelStyle: "Tradition Meets Future", secondaryBadge: "Mar–Apr, Oct–Nov" },
-  { id: "new-york", name: "New York", slug: "new-york", country: "USA", heroImage: "/destination-hero/new-york-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop", cityType: "Global Metropolis", travelStyle: "Cultural Capital", secondaryBadge: "4–6 days" },
-  { id: "london", name: "London", slug: "london", country: "UK", heroImage: "/destination-hero/london-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop", cityType: "Historic Global Capital", travelStyle: "World Financial Center", secondaryBadge: "May–Sep" },
-  { id: "singapore", name: "Singapore", slug: "singapore", country: "Singapore", heroImage: "/destination-hero/singapore-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=300&fit=crop", cityType: "Smart City", travelStyle: "Southeast Asia Hub", secondaryBadge: "2–4 days" },
-  { id: "barcelona", name: "Barcelona", slug: "barcelona", country: "Spain", heroImage: "/destination-hero/barcelona-destination-hero.jpeg", fallback: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop", cityType: "Architecture Capital", travelStyle: "Mediterranean City", secondaryBadge: "Apr–Jun, Sep" },
-];
+interface HeroSlide {
+  id: string;
+  destinationId: string;
+  filename: string;
+  alt: string;
+  order: number;
+  isActive: boolean;
+  cityType?: string;
+  travelStyle?: string;
+  secondaryBadge?: string;
+  destination?: {
+    id: string;
+    name: string;
+    slug: string;
+    country: string;
+  };
+}
+
+interface HeroConfig {
+  heroSlides: HeroSlide[];
+  heroTitle: string | null;
+  heroSubtitle: string | null;
+  heroDescription: string | null;
+  heroCTAText: string | null;
+  heroCTALink: string | null;
+}
+
+interface DisplayDestination {
+  id: string;
+  name: string;
+  slug: string;
+  country: string;
+  heroImage: string;
+  alt: string;
+  cityType: string;
+  travelStyle: string;
+  secondaryBadge: string;
+}
 
 const heroAnimationStyles = `
   @keyframes gradient-flow {
@@ -64,22 +94,57 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
   const shouldAnimate = usePreferredMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const dest = HERO_DESTINATIONS[currentIndex];
+  
+  const { data: heroConfig } = useQuery<HeroConfig>({
+    queryKey: ["/api/public/destinations-index/hero"],
+  });
+  
+  const displayDestinations = useMemo<DisplayDestination[]>(() => {
+    if (heroConfig?.heroSlides && heroConfig.heroSlides.length > 0) {
+      return heroConfig.heroSlides
+        .filter((slide) => slide.filename && slide.isActive)
+        .map((slide) => ({
+          id: slide.destination?.id || slide.destinationId,
+          name: slide.destination?.name || "Destination",
+          slug: slide.destination?.slug || "",
+          country: slide.destination?.country || "",
+          heroImage: slide.filename,
+          alt: slide.alt || `${slide.destination?.name || "Destination"} travel guide`,
+          cityType: slide.cityType || "",
+          travelStyle: slide.travelStyle || "",
+          secondaryBadge: slide.secondaryBadge || "",
+        }));
+    }
+    return [];
+  }, [heroConfig]);
+  
+  const heroTitle = heroConfig?.heroTitle || "Discover World-Class";
+  const heroSubtitle = heroConfig?.heroSubtitle || "Destinations";
+  const heroDescription = heroConfig?.heroDescription || "Handpicked travel experiences, insider tips, and comprehensive guides to help you discover extraordinary places.";
+  const heroCTAText = heroConfig?.heroCTAText || "Start Exploring";
+  const heroCTALink = heroConfig?.heroCTALink || "#explore-destinations";
+  
+  const hasSlides = displayDestinations.length > 0;
+  const dest = hasSlides ? displayDestinations[currentIndex] : null;
 
   useEffect(() => {
-    const nextIndex = (currentIndex + 1) % HERO_DESTINATIONS.length;
-    const img = new Image();
-    img.src = HERO_DESTINATIONS[nextIndex].fallback;
-  }, [currentIndex]);
+    if (!hasSlides || displayDestinations.length <= 1) return;
+    const nextIndex = (currentIndex + 1) % displayDestinations.length;
+    const nextImage = displayDestinations[nextIndex]?.heroImage;
+    if (nextImage) {
+      const img = new Image();
+      img.src = nextImage;
+    }
+  }, [currentIndex, displayDestinations, hasSlides]);
 
   useEffect(() => {
-    if (!shouldAnimate) return;
+    if (!shouldAnimate || !hasSlides) return;
     
     let animationTimeout: NodeJS.Timeout;
     const timer = setInterval(() => {
       setIsAnimating(true);
       animationTimeout = setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % HERO_DESTINATIONS.length);
+        setCurrentIndex((prev) => (prev + 1) % displayDestinations.length);
         setIsAnimating(false);
       }, 500);
     }, 5000);
@@ -88,10 +153,10 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
       clearInterval(timer);
       clearTimeout(animationTimeout);
     };
-  }, [shouldAnimate]);
+  }, [shouldAnimate, displayDestinations.length, hasSlides]);
 
   const goTo = (index: number): void => {
-    if (index !== currentIndex && !isAnimating) {
+    if (index !== currentIndex && !isAnimating && hasSlides) {
       setIsAnimating(true);
       setTimeout(() => {
         setCurrentIndex(index);
@@ -143,14 +208,14 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                 className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                Discover World-Class
+                {heroTitle}
               </span>
               <span className="relative inline-block">
                 <span 
                   className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 >
-                  Destinations
+                  {heroSubtitle}
                 </span>
                 <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
               </span>
@@ -162,7 +227,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.2 }}
             >
-              Handpicked travel experiences, insider tips, and comprehensive guides to help you discover extraordinary places.
+              {heroDescription}
             </motion.p>
             
             <motion.div 
@@ -171,10 +236,10 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.3 }}
             >
-              <Link href="#explore-destinations">
+              <Link href={heroCTALink}>
                 <Button className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30">
                   <Compass className="w-5 h-5 mr-2" />
-                  Start Exploring
+                  {heroCTAText}
                 </Button>
               </Link>
               <Link href="/travel-guides">
@@ -209,114 +274,150 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
           </div>
 
           {/* Right - Gallery - Second on mobile (order-2), right on desktop (lg:order-2) */}
-          <div className="order-2 lg:order-2 relative px-2 sm:px-4 lg:px-0" data-testid="destinations-hero-gallery">
-            <motion.div 
-              className="relative w-full max-w-lg mx-auto flex flex-col lg:h-[65vh] lg:min-h-[500px]"
-              initial={shouldAnimate ? { opacity: 0, x: 40 } : {}}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              
-              <div 
-                className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 transition-all duration-400"
-                role="region"
-                aria-label="Featured destination gallery"
+          {hasSlides && dest && (
+            <div className="order-2 lg:order-2 relative px-2 sm:px-4 lg:px-0" data-testid="destinations-hero-gallery">
+              <motion.div 
+                className="relative w-full max-w-lg mx-auto flex flex-col lg:h-[65vh] lg:min-h-[500px]"
+                initial={shouldAnimate ? { opacity: 0, x: 40 } : {}}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <AnimatePresence mode="wait">
-                  <motion.img 
-                    key={currentIndex}
-                    src={dest.heroImage || dest.fallback} 
-                    alt={`${dest.name} - ${dest.country}`}
-                    title={`Explore ${dest.name}`}
-                    className="w-full h-full object-cover"
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.7 }}
-                    loading={currentIndex === 0 ? "eager" : "lazy"}
-                  />
-                </AnimatePresence>
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
-                
-                <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
-                  <div className="flex items-start justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
-                      <Building2 className="w-4 h-4 text-[#6443F4]" />
-                      <span className="font-bold text-slate-800">{dest.cityType}</span>
-                    </div>
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
-                      <Heart className="w-4 h-4 text-[#F24294]" />
-                      <span className="font-medium text-slate-700">{dest.travelStyle}</span>
-                    </div>
-                  </div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: isAnimating ? 0 : 1, y: isAnimating ? 20 : 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <div className="flex items-center gap-2 text-white/80 mb-3">
-                      <MapPin className="w-5 h-5" />
-                      <span className="font-medium">{dest.country}</span>
-                    </div>
-                    
-                    <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{dest.name}</h2>
-                    
-                    {dest.secondaryBadge && (
-                      <span className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white/90 text-sm mb-6">
-                        {dest.secondaryBadge}
-                      </span>
-                    )}
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-white/60 text-sm">Explore</span>
-                        <span className="text-2xl font-bold text-white ml-2">{dest.name}</span>
-                      </div>
-                      <Link href={`/destinations/${dest.slug}`}>
-                        <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
-                          Discover
-                          <ArrowRight className="w-5 h-5" />
-                        </button>
-                      </Link>
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-
-              <div 
-                className="mt-4 flex justify-center gap-3 p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-xl dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 flex-shrink-0"
-                role="tablist"
-                aria-label="Destination carousel thumbnails"
-              >
-                {HERO_DESTINATIONS.slice(0, 5).map((destination, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => goTo(i)} 
-                    className={cn(
-                      "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20 transition-all",
-                      currentIndex === i 
-                        ? "ring-[#6443F4] active" 
-                        : "ring-transparent hover:ring-[#6443F4]/50"
-                    )}
-                    data-testid={`thumbnail-${i}`}
-                    role="tab"
-                    aria-selected={currentIndex === i}
-                    aria-label={`View ${destination.name}, ${destination.country}`}
-                  >
-                    <img 
-                      src={destination.heroImage || destination.fallback} 
-                      alt={`${destination.name} thumbnail`} 
+                <div 
+                  className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 transition-all duration-400"
+                  role="region"
+                  aria-label="Featured destination gallery"
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.img 
+                      key={currentIndex}
+                      src={dest.heroImage} 
+                      alt={dest.alt}
+                      title={`Explore ${dest.name}`}
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.7 }}
+                      loading={currentIndex === 0 ? "eager" : "lazy"}
                     />
-                  </button>
-                ))}
-              </div>
+                  </AnimatePresence>
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
+                  
+                  <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      {dest.cityType && (
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
+                          <Building2 className="w-4 h-4 text-[#6443F4]" />
+                          <span className="font-bold text-slate-800">{dest.cityType}</span>
+                        </div>
+                      )}
+                      {dest.travelStyle && (
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
+                          <Heart className="w-4 h-4 text-[#F24294]" />
+                          <span className="font-medium text-slate-700">{dest.travelStyle}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: isAnimating ? 0 : 1, y: isAnimating ? 20 : 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <div className="flex items-center gap-2 text-white/80 mb-3">
+                        <MapPin className="w-5 h-5" />
+                        <span className="font-medium">{dest.country}</span>
+                      </div>
+                      
+                      <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{dest.name}</h2>
+                      
+                      {dest.secondaryBadge && (
+                        <span className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white/90 text-sm mb-6">
+                          {dest.secondaryBadge}
+                        </span>
+                      )}
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-white/60 text-sm">Explore</span>
+                          <span className="text-2xl font-bold text-white ml-2">{dest.name}</span>
+                        </div>
+                        <Link href={`/destinations/${dest.slug}`}>
+                          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
+                            Discover
+                            <ArrowRight className="w-5 h-5" />
+                          </button>
+                        </Link>
+                      </div>
+                    </motion.div>
+                  </div>
+                </div>
 
-            </motion.div>
-          </div>
+                {displayDestinations.length > 1 && (
+                  <div 
+                    className="mt-4 flex justify-center gap-3 p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-xl dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 flex-shrink-0"
+                    role="tablist"
+                    aria-label="Destination carousel thumbnails"
+                  >
+                    {displayDestinations.slice(0, 5).map((destination, i) => (
+                      <button 
+                        key={i}
+                        onClick={() => goTo(i)} 
+                        className={cn(
+                          "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20 transition-all",
+                          currentIndex === i 
+                            ? "ring-[#6443F4] active" 
+                            : "ring-transparent hover:ring-[#6443F4]/50"
+                        )}
+                        data-testid={`thumbnail-${i}`}
+                        role="tab"
+                        aria-selected={currentIndex === i}
+                        aria-label={`View ${destination.name}, ${destination.country}`}
+                      >
+                        <img 
+                          src={destination.heroImage} 
+                          alt={`${destination.alt || destination.name} - thumbnail`} 
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+              </motion.div>
+            </div>
+          )}
+          
+          {/* Placeholder when no slides are configured */}
+          {!hasSlides && (
+            <div className="order-2 lg:order-2 relative px-2 sm:px-4 lg:px-0" data-testid="destinations-hero-placeholder">
+              <motion.div 
+                className="relative w-full max-w-lg mx-auto flex flex-col lg:h-[65vh] lg:min-h-[500px]"
+                initial={shouldAnimate ? { opacity: 0, x: 40 } : {}}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <div 
+                  className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden flex items-center justify-center"
+                  role="region"
+                  aria-label="Featured destination placeholder"
+                >
+                  <div className="text-center p-8">
+                    <Compass className="w-16 h-16 text-[#6443F4]/50 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-400 mb-2">
+                      Explore Destinations
+                    </h3>
+                    <p className="text-slate-500 dark:text-slate-500 max-w-xs">
+                      Browse our collection of handpicked travel destinations below
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
         </div>
       </div>
     </section>

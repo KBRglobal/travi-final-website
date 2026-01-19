@@ -12,7 +12,9 @@ import {
   homepageSeoMeta,
   destinations,
   pageSeo,
+  destinationsIndexConfig,
   SUPPORTED_LOCALES,
+  DestinationsIndexHeroSlide,
 } from "@shared/schema";
 import { requirePermission, checkReadOnlyMode } from "../security";
 import {
@@ -1394,6 +1396,202 @@ export function registerAdminApiRoutes(app: Express): void {
     } catch (error) {
       console.error("Error deleting page SEO:", error);
       res.status(500).json({ error: "Failed to delete page SEO" });
+    }
+  });
+
+  // ============================================================================
+  // DESTINATIONS INDEX CONFIG ROUTES - Hero carousel for /destinations page
+  // ============================================================================
+
+  // Get destinations index config
+  router.get("/destinations-index/config", requirePermission("canView"), async (req: Request, res: Response) => {
+    try {
+      const [config] = await db.select().from(destinationsIndexConfig).limit(1);
+      
+      if (!config) {
+        // Return empty config structure if none exists
+        return res.json({
+          id: null,
+          heroSlides: [],
+          heroTitle: null,
+          heroSubtitle: null,
+          heroDescription: null,
+          heroCTAText: null,
+          heroCTALink: null,
+        });
+      }
+      
+      res.json(config);
+    } catch (error) {
+      console.error("Error fetching destinations index config:", error);
+      res.status(500).json({ error: "Failed to fetch destinations index config" });
+    }
+  });
+
+  // Update destinations index config
+  router.put("/destinations-index/config", requirePermission("canEdit"), checkReadOnlyMode, async (req: Request, res: Response) => {
+    try {
+      const { 
+        heroSlides,
+        heroTitle, 
+        heroSubtitle, 
+        heroDescription, 
+        heroCTAText, 
+        heroCTALink 
+      } = req.body;
+
+      // Get existing config or create new one
+      const [existing] = await db.select().from(destinationsIndexConfig).limit(1);
+
+      if (existing) {
+        const [updated] = await db.update(destinationsIndexConfig)
+          .set({
+            heroSlides: heroSlides ?? existing.heroSlides,
+            heroTitle: heroTitle ?? existing.heroTitle,
+            heroSubtitle: heroSubtitle ?? existing.heroSubtitle,
+            heroDescription: heroDescription ?? existing.heroDescription,
+            heroCTAText: heroCTAText ?? existing.heroCTAText,
+            heroCTALink: heroCTALink ?? existing.heroCTALink,
+            updatedAt: new Date(),
+          })
+          .where(eq(destinationsIndexConfig.id, existing.id))
+          .returning();
+        res.json(updated);
+      } else {
+        // Create new config
+        const [created] = await db.insert(destinationsIndexConfig)
+          .values({
+            heroSlides: heroSlides ?? [],
+            heroTitle,
+            heroSubtitle,
+            heroDescription,
+            heroCTAText,
+            heroCTALink,
+          })
+          .returning();
+        res.status(201).json(created);
+      }
+    } catch (error) {
+      console.error("Error saving destinations index config:", error);
+      res.status(500).json({ error: "Failed to save destinations index config" });
+    }
+  });
+
+  // Update hero slides (carousel management)
+  router.put("/destinations-index/hero-slides", requirePermission("canEdit"), checkReadOnlyMode, async (req: Request, res: Response) => {
+    try {
+      const { heroSlides } = req.body as { heroSlides: DestinationsIndexHeroSlide[] };
+
+      if (!Array.isArray(heroSlides)) {
+        return res.status(400).json({ error: "heroSlides must be an array" });
+      }
+
+      // Validate each slide has required fields
+      for (const slide of heroSlides) {
+        if (!slide.id || !slide.destinationId || !slide.filename || !slide.alt) {
+          return res.status(400).json({ 
+            error: "Each slide must have id, destinationId, filename, and alt (required for SEO)" 
+          });
+        }
+      }
+
+      // Get existing config or create new one
+      const [existing] = await db.select().from(destinationsIndexConfig).limit(1);
+
+      if (existing) {
+        const [updated] = await db.update(destinationsIndexConfig)
+          .set({
+            heroSlides,
+            updatedAt: new Date(),
+          })
+          .where(eq(destinationsIndexConfig.id, existing.id))
+          .returning();
+        res.json(updated);
+      } else {
+        // Create new config with slides
+        const [created] = await db.insert(destinationsIndexConfig)
+          .values({ heroSlides })
+          .returning();
+        res.status(201).json(created);
+      }
+    } catch (error) {
+      console.error("Error saving hero slides:", error);
+      res.status(500).json({ error: "Failed to save hero slides" });
+    }
+  });
+
+  // Upload hero image for destinations index carousel
+  router.post("/destinations-index/hero-image", requirePermission("canEdit"), checkReadOnlyMode, upload.single("image"), async (req: Request, res: Response) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        return res.status(400).json({ error: "No image file provided" });
+      }
+
+      // MIME type validation
+      const allowedMimes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+      if (!allowedMimes.includes(file.mimetype)) {
+        return res.status(400).json({ 
+          error: `Invalid file type. Allowed: ${allowedMimes.join(", ")}` 
+        });
+      }
+
+      // Generate SEO-safe filename
+      const ext = file.mimetype.split("/")[1];
+      const sanitizedName = (req.body.alt || "destinations-hero")
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 50);
+      const timestamp = Date.now();
+      const filename = `destinations-index-hero-${sanitizedName}-${timestamp}.${ext}`;
+
+      // Process image with sharp for optimization
+      const optimizedBuffer = await sharp(file.buffer)
+        .resize(1920, 1080, { fit: "cover", withoutEnlargement: true })
+        .jpeg({ quality: 85 })
+        .toBuffer();
+
+      // Store in object storage
+      const { StorageManager } = await import("../storage-manager");
+      const storage = StorageManager.getInstance();
+      const storagePath = `destinations-index-hero/${filename}`;
+      await storage.uploadBuffer(optimizedBuffer, storagePath, "image/jpeg");
+
+      // Get public URL
+      const url = storage.getPublicUrl(storagePath);
+
+      res.json({
+        filename,
+        url,
+        path: storagePath,
+        success: true,
+      });
+    } catch (error) {
+      console.error("Error uploading hero image:", error);
+      res.status(500).json({ error: "Failed to upload hero image" });
+    }
+  });
+
+  // Get all active destinations for dropdown selection
+  router.get("/destinations-index/available-destinations", requirePermission("canView"), async (req: Request, res: Response) => {
+    try {
+      const activeDestinations = await db.select({
+        id: destinations.id,
+        name: destinations.name,
+        slug: destinations.slug,
+        country: destinations.country,
+        cardImage: destinations.cardImage,
+        heroImage: destinations.heroImage,
+      })
+        .from(destinations)
+        .where(eq(destinations.isActive, true))
+        .orderBy(destinations.name);
+
+      res.json(activeDestinations);
+    } catch (error) {
+      console.error("Error fetching available destinations:", error);
+      res.status(500).json({ error: "Failed to fetch available destinations" });
     }
   });
 
