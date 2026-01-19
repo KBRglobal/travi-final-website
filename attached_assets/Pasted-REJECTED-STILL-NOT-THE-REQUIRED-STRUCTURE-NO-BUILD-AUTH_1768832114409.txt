@@ -1,0 +1,94 @@
+REJECTED — STILL NOT THE REQUIRED STRUCTURE. NO BUILD AUTHORIZATION.
+
+You did NOT submit the task list with the exact required structure.
+You replaced required steps with generalized wording again.
+
+This is not a misunderstanding — this is a process violation.
+
+WE ARE STILL IN PLAN MODE.
+
+--------------------------------
+WHY THIS IS REJECTED (FACTUAL)
+--------------------------------
+
+Your submission:
+
+- Does NOT include:
+  - “Ghost Destinations Investigation & Permanent Fix”
+  - Explicit mention of Bali / Sydney
+  - Seed / import / fallback investigation
+  - Permanent guard requirement
+
+- Does NOT include:
+  - Explicit “One-time Migration: Static Destination Data → PostgreSQL”
+  - What data is migrated
+  - Read-only static phase
+  - Verification before deletion
+
+- Does NOT preserve:
+  - Required step names
+  - Required order
+  - Required specificity
+
+This means:
+You are still abstracting instead of committing to the hard requirements.
+
+--------------------------------
+THIS IS THE LAST ACCEPTABLE INPUT FORMAT
+--------------------------------
+
+You MUST respond with THIS EXACT LIST, UNCHANGED IN STRUCTURE OR WORDING.
+You may NOT rename items. You may NOT shorten them.
+
+COPY–PASTE AND SEND AS-IS:
+
+	1.	Ghost Destinations Investigation & Permanent Fix (Severity 1)
+	•	Identify exact code paths injecting unsupported destinations (e.g. Bali, Sydney)
+	•	Remove them from seed/import/fallback sources
+	•	Purge existing DB rows explicitly
+	•	Add a permanent guard to prevent re-injection
+	•	Document the guard
+	2.	One-time Migration: Static Destination Data → PostgreSQL
+	•	Migrate hero, SEO, media paths, mood/theme, summaries
+	•	Verify DB contains complete data for ALL supported destinations
+	•	Static files remain read-only during migration
+	3.	Create Public Destinations API (List + Single)
+	•	Read ONLY from PostgreSQL
+	•	Filter by is_active=true
+	4.	Update Frontend Destinations List Page
+	•	Replace static arrays with API calls
+	•	NO fallback to static data allowed
+	5.	Update Frontend Single Destination Page
+	•	Replace static data access with API calls
+	•	Hero, SEO, media, mood must come from DB
+	6.	Remove Admin Destination Sections Tab
+	•	Remove UI
+	•	Remove routes
+	•	Remove dead code
+	7.	Filter Admin Destinations List
+	•	Show ONLY is_active=true destinations
+	•	Confirm removed destinations do not reappear
+	8.	Remove ALL Static Destination Files
+	•	Delete only AFTER migration + frontend switch verified
+	9.	QA — Admin → Frontend Hero Test
+	•	Change Hero Title in Admin
+	•	Save
+	•	Refresh frontend
+	•	Visually confirm change
+	10.	QA — Admin → Frontend SEO Test
+	•	Change Meta Title in Admin
+	•	Save
+	•	View page source
+	•	Confirm  updated
+
+--------------------------------
+UNTIL THIS IS DONE
+--------------------------------
+
+- ❌ No Build mode
+- ❌ No execution
+- ❌ No code changes
+- ❌ No partial approval
+
+Send the list EXACTLY as above.
+Only then execution will be authorized.

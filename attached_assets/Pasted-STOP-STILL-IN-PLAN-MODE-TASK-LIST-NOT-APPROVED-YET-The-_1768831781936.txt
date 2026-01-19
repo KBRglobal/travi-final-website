@@ -1,0 +1,76 @@
+STOP — STILL IN PLAN MODE. TASK LIST NOT APPROVED YET.
+
+The task list you provided is NOT approved as-is.
+Before switching to Build mode, you MUST REWRITE the task list with the following corrections and clarifications.
+
+REQUIRED REWRITE — PLANNING VERSION ONLY (NO BUILD):
+
+1) EXPLICIT SOURCE OF TRUTH (MANDATORY)
+- State explicitly at the top:
+  “PostgreSQL places/destinations table is the ONLY source of truth.”
+- Confirm that ALL frontend and admin reads will come from this source ONLY.
+
+2) GHOST CITIES — MUST BE A DEDICATED STEP (SEVERITY 1)
+Your list currently says:
+- “Remove specific cities from data” ❌ (too vague)
+
+You MUST rewrite this step as:
+- Identify exact code path(s) that inject unsupported cities (e.g. Bali, Sydney)
+- Remove them from seed / import / fallback sources
+- Purge them from DB
+- Add a permanent guard to prevent re-injection
+- Document the guard
+
+This step must appear BEFORE any migration or data fill.
+
+3) DATA MIGRATION CLARITY
+Your items:
+- “Fill in place details from files”
+- “Remove old static place data”
+
+These are ambiguous.
+
+You MUST clarify:
+- Which files (exact paths)
+- Whether this is a one-time migration script
+- When static data is removed (must be AFTER successful DB backfill + frontend switch)
+
+4) FRONTEND SCOPE MUST BE EXPLICIT
+Rewrite:
+- “Update places list on website”
+- “Update single place page display”
+
+To explicitly state:
+- Replace static arrays with API calls
+- No fallback to static data allowed
+- Loading/error states acceptable, static data is not
+
+5) ADMIN SCOPE MUST BE EXPLICIT
+Rewrite:
+- “Show only active places for admin”
+
+To include:
+- Admin list source
+- Filtering logic (is_active=true)
+- Confirmation that inactive places are not rendered publicly
+
+6) QA STEPS MUST BE AT THE END AND UNCHANGED
+Your last steps are correct, but must explicitly say:
+- QA is performed by executing real Admin actions
+- Visual verification on public frontend is mandatory
+- No report without proof
+
+--------------------------------
+REQUIRED OUTPUT FROM YOU (PLAN MODE ONLY)
+--------------------------------
+
+Resend the task list rewritten with:
+- Explicit sources
+- Explicit file paths where relevant
+- Explicit order
+- No vague verbs
+
+ONLY after that rewrite will approval be granted to switch to Build mode.
+
+DO NOT SWITCH MODES YET.
+WAIT FOR APPROVAL.

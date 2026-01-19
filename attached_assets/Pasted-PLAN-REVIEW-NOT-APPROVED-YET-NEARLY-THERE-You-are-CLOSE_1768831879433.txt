@@ -1,0 +1,78 @@
+PLAN REVIEW — NOT APPROVED YET (NEARLY THERE)
+
+You are CLOSE, but this task list is still missing two CRITICAL planning elements.
+Until they are added, we CANNOT switch to Build mode.
+
+WHAT IS GOOD (ACKNOWLEDGED):
+- Source of Truth is explicitly declared ✅
+- No static data / no fallback rule is clear ✅
+- Admin vs Frontend responsibility is implied ✅
+- QA steps are present (hero + meta title tests) ✅
+
+WHAT IS MISSING (BLOCKERS):
+
+--------------------------------
+1) GHOST DESTINATIONS — SEVERITY 1 (MISSING)
+--------------------------------
+
+Your plan DOES NOT mention the recurring issue of unsupported / ghost destinations.
+
+This is NOT optional and NOT implied.
+It MUST appear as an explicit, early task.
+
+You MUST add a task that includes ALL of the following:
+- Identify the exact code path(s) injecting unsupported destinations (e.g. Bali, Sydney)
+- Remove them from seed / import / fallback sources
+- Purge existing DB rows explicitly
+- Add a permanent guard to prevent re-injection
+- Document the guard
+
+Without this step, execution is NOT approved.
+
+--------------------------------
+2) DATA MIGRATION STEP IS TOO VAGUE
+--------------------------------
+
+You removed:
+“Fill in place details from files”
+
+But you did NOT replace it with a clear migration step.
+
+You MUST explicitly include:
+- One-time migration from existing static destination files
+- Exact intent: backfill hero, SEO, media paths, mood, etc. into DB
+- Confirmation that static files are deleted ONLY AFTER successful migration
+
+Right now:
+“Delete old static destination data” ❌ is unsafe without migration context.
+
+--------------------------------
+REQUIRED FINAL TASK LIST STRUCTURE (PLAN MODE)
+
+Your corrected list MUST look like this (structure-wise):
+
+1. Ghost Destinations Investigation & Removal (Severity 1)
+2. One-time Migration: Static Destination Data → PostgreSQL
+3. Create Public API for Destinations (list + single)
+4. Update Frontend Destinations List Page to API (no fallback)
+5. Update Frontend Single Destination Page to API (no fallback)
+6. Remove Admin Destination Sections Tab (code + UI)
+7. Filter Admin Destinations List to is_active=true
+8. Remove ALL static destination files after verification
+9. QA: Change Hero Title in Admin → verify frontend
+10. QA: Change Meta Title in Admin → verify <title>
+
+--------------------------------
+NEXT STEP
+--------------------------------
+
+Resend the task list ONE LAST TIME with:
+- Ghost destinations step added
+- Explicit migration step added
+- Order preserved
+
+Once that is done:
+You will receive **explicit BUILD AUTHORIZATION**.
+
+DO NOT EXECUTE YET.
+WAIT FOR APPROVAL.
