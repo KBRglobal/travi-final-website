@@ -1,66 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
-import { 
-  Loader2, 
-  LogIn, 
-  Shield, 
-  Smartphone, 
-  Key,
-  ArrowLeft,
-  AlertTriangle,
-  Mail
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { LogIn, Shield } from "lucide-react";
+import { SiGoogle, SiGithub } from "react-icons/si";
 import { SEOHead } from "@/components/seo-head";
-
-type LoginStep = "credentials" | "totp" | "recovery" | "email" | "email-verify";
-
-interface LoginResponse {
-  success: boolean;
-  user?: any;
-  requiresMfa?: boolean;
-  isNewDevice?: boolean;
-  riskScore?: number;
-  preAuthToken?: string;
-  preAuthExpiresAt?: string;
-  securityContext?: {
-    deviceTrusted: boolean;
-    country?: string;
-  };
-  error?: string;
-}
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
-  const { toast } = useToast();
-  
-  const [step, setStep] = useState<LoginStep>("credentials");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [totpCode, setTotpCode] = useState("");
-  const [recoveryCode, setRecoveryCode] = useState("");
-  const [rememberDevice, setRememberDevice] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loginData, setLoginData] = useState<LoginResponse | null>(null);
-  const [attemptsRemaining, setAttemptsRemaining] = useState<number | null>(null);
-  
-  // Email OTP login state
-  const [emailForOtp, setEmailForOtp] = useState("");
-  const [emailOtpCode, setEmailOtpCode] = useState("");
-  const [devCode, setDevCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -68,715 +17,70 @@ export default function Login() {
     }
   }, [isAuthenticated, setLocation]);
 
-  const handleCredentialsSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!username || !password) {
-      toast({
-        title: "Error",
-        description: "Please enter both username and password",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data: LoginResponse = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
-
-      if (data.requiresMfa) {
-        setLoginData(data);
-        setStep("totp");
-        toast({
-          title: "Verification Required",
-          description: "Please enter your authenticator code",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Logged in successfully",
-        });
-        window.location.href = "/";
-      }
-    } catch (error: any) {
-      toast({
-        title: "Login Failed",
-        description: error.message || "Invalid credentials",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleTotpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!totpCode || totpCode.length !== 6) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid 6-digit code",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/totp/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          code: totpCode,
-          preAuthToken: loginData?.preAuthToken 
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.code === 'PREAUTH_INVALID' || data.error?.includes('pre-auth token')) {
-          toast({
-            title: "Session Expired",
-            description: "Your verification session expired. Please log in again.",
-            variant: "destructive",
-          });
-          resetToCredentials();
-          return;
-        }
-        if (data.attemptsRemaining !== undefined) {
-          setAttemptsRemaining(data.attemptsRemaining);
-        }
-        throw new Error(data.error || "Invalid verification code");
-      }
-
-      if (rememberDevice) {
-        try {
-          await fetch("/api/security/device/trust", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          });
-        } catch (e) {
-          console.warn("Failed to trust device:", e);
-        }
-      }
-
-      toast({
-        title: "Success",
-        description: "Verification successful",
-      });
-      window.location.href = "/";
-    } catch (error: any) {
-      toast({
-        title: "Verification Failed",
-        description: error.message || "Invalid code",
-        variant: "destructive",
-      });
-      setTotpCode("");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleRecoverySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!recoveryCode || recoveryCode.length < 6) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid recovery code",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/totp/validate-recovery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          recoveryCode: recoveryCode.toUpperCase().replace(/-/g, ""),
-          preAuthToken: loginData?.preAuthToken 
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.code === 'PREAUTH_INVALID' || data.error?.includes('pre-auth token')) {
-          toast({
-            title: "Session Expired",
-            description: "Your verification session expired. Please log in again.",
-            variant: "destructive",
-          });
-          resetToCredentials();
-          return;
-        }
-        throw new Error(data.error || "Invalid recovery code");
-      }
-
-      toast({
-        title: "Success",
-        description: `Recovery code accepted. ${data.remainingCodes} codes remaining.`,
-      });
-      window.location.href = "/";
-    } catch (error: any) {
-      toast({
-        title: "Recovery Failed",
-        description: error.message || "Invalid recovery code",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleTotpChange = (value: string) => {
-    setTotpCode(value);
-    if (value.length === 6) {
-      const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
-      setTimeout(() => handleTotpSubmit(syntheticEvent), 100);
-    }
-  };
-
-  const resetToCredentials = () => {
-    setStep("credentials");
-    setTotpCode("");
-    setRecoveryCode("");
-    setLoginData(null);
-    setAttemptsRemaining(null);
-    setEmailForOtp("");
-    setEmailOtpCode("");
-  };
-
-  // Email OTP request
-  const handleEmailOtpRequest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!emailForOtp || !emailForOtp.includes('@')) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/auth/email-otp/request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailForOtp }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to send code");
-      }
-
-      // In dev mode, the code is returned in the response
-      if (data._devCode) {
-        setDevCode(data._devCode);
-        toast({
-          title: "DEV: Code Ready",
-          description: `Your code is: ${data._devCode}`,
-          duration: 30000,
-        });
-      } else {
-        toast({
-          title: "Code Sent",
-          description: "Check your email for the login code",
-        });
-      }
-      setStep("email-verify");
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to send code",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Email OTP verify
-  const handleEmailOtpVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!emailOtpCode || emailOtpCode.length !== 6) {
-      toast({
-        title: "Error",
-        description: "Please enter the 6-digit code",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/auth/email-otp/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailForOtp, code: emailOtpCode }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.attemptsRemaining !== undefined) {
-          setAttemptsRemaining(data.attemptsRemaining);
-        }
-        throw new Error(data.error || "Invalid code");
-      }
-
-      toast({
-        title: "Success",
-        description: "Login successful!",
-      });
-      window.location.href = "/";
-    } catch (error: any) {
-      toast({
-        title: "Verification Failed",
-        description: error.message || "Invalid code",
-        variant: "destructive",
-      });
-      setEmailOtpCode("");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleEmailOtpChange = (value: string) => {
-    setEmailOtpCode(value);
-    if (value.length === 6) {
-      const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
-      setTimeout(() => handleEmailOtpVerify(syntheticEvent), 100);
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     );
   }
 
+  const handleSignIn = () => {
+    window.location.href = "/api/login";
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <SEOHead
-        title="Login"
-        description="Login to TRAVI admin panel"
-        canonicalPath="/login"
-        noIndex={true}
+    <>
+      <SEOHead 
+        title="Login - Travi CMS"
+        description="Sign in to access the Travi CMS admin panel"
+        noindex={true}
       />
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          {step === "credentials" && (
-            <>
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <LogIn className="h-6 w-6" />
-                Travi CMS
-              </CardTitle>
-              <CardDescription>
-                Sign in to manage your travel contents
-              </CardDescription>
-            </>
-          )}
-          {step === "totp" && (
-            <>
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <Shield className="h-6 w-6 text-primary" />
-                Two-Factor Authentication
-              </CardTitle>
-              <CardDescription>
-                Enter the code from your authenticator app
-              </CardDescription>
-            </>
-          )}
-          {step === "recovery" && (
-            <>
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <Key className="h-6 w-6 text-primary" />
-                Recovery Code
-              </CardTitle>
-              <CardDescription>
-                Enter one of your backup recovery codes
-              </CardDescription>
-            </>
-          )}
-          {step === "email" && (
-            <>
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <Mail className="h-6 w-6 text-primary" />
-                Email Login
-              </CardTitle>
-              <CardDescription>
-                We'll send a code to your email
-              </CardDescription>
-            </>
-          )}
-          {step === "email-verify" && (
-            <>
-              <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <Mail className="h-6 w-6 text-primary" />
-                Verify Code
-              </CardTitle>
-              <CardDescription>
-                Enter the 6-digit code sent to your email
-              </CardDescription>
-            </>
-          )}
-        </CardHeader>
-        <CardContent>
-          {step === "credentials" && (
-            <form onSubmit={handleCredentialsSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  disabled={isSubmitting}
-                  data-testid="input-username"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={isSubmitting}
-                  data-testid="input-password"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting}
-                data-testid="button-login"
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-gray-800 p-4">
+        <Card className="w-full max-w-md shadow-xl">
+          <CardHeader className="text-center space-y-2">
+            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+              <Shield className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl font-bold">Travi CMS</CardTitle>
+            <CardDescription className="text-base">
+              Sign in with your Google or GitHub account
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <div className="space-y-3">
+              <Button 
+                onClick={handleSignIn}
+                className="w-full gap-3"
+                size="lg"
+                data-testid="button-sign-in-google"
               >
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <LogIn className="mr-2 h-4 w-4" />
-                )}
-                Sign In
+                <SiGoogle className="w-5 h-5" />
+                Sign in with Google
               </Button>
               
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or</span>
-                </div>
-              </div>
-
-              <Button
-                type="button"
+              <Button 
+                onClick={handleSignIn}
                 variant="outline"
-                className="w-full"
-                onClick={() => setStep("email")}
-                data-testid="button-email-login"
+                className="w-full gap-3"
+                size="lg"
+                data-testid="button-sign-in-github"
               >
-                <Mail className="mr-2 h-4 w-4" />
-                Login with Email Code
+                <SiGithub className="w-5 h-5" />
+                Sign in with GitHub
               </Button>
-            </form>
-          )}
-
-          {step === "email" && (
-            <form onSubmit={handleEmailOtpRequest} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email-otp">Email Address</Label>
-                <Input
-                  id="email-otp"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={emailForOtp}
-                  onChange={(e) => setEmailForOtp(e.target.value)}
-                  disabled={isSubmitting}
-                  data-testid="input-email-otp"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting}
-                data-testid="button-send-code"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Mail className="mr-2 h-4 w-4" />
-                )}
-                Send Code
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={resetToCredentials}
-                className="w-full text-muted-foreground"
-                data-testid="button-back-from-email"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to login
-              </Button>
-            </form>
-          )}
-
-          {step === "email-verify" && (
-            <form onSubmit={handleEmailOtpVerify} className="space-y-6">
-              {attemptsRemaining !== null && attemptsRemaining < 3 && (
-                <Alert variant="destructive">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    {attemptsRemaining} attempt{attemptsRemaining !== 1 ? "s" : ""} remaining
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="flex justify-center">
-                <InputOTP
-                  maxLength={6}
-                  value={emailOtpCode}
-                  onChange={handleEmailOtpChange}
-                  disabled={isSubmitting}
-                  data-testid="input-email-otp-code"
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || emailOtpCode.length !== 6}
-                data-testid="button-verify-email-code"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Mail className="mr-2 h-4 w-4" />
-                )}
-                Verify Code
-              </Button>
-
-              <div className="flex flex-col gap-2 text-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setStep("email"); setEmailOtpCode(""); setAttemptsRemaining(null); }}
-                  className="text-muted-foreground"
-                  data-testid="button-resend-code"
-                >
-                  <Mail className="mr-2 h-4 w-4" />
-                  Request new code
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetToCredentials}
-                  className="text-muted-foreground"
-                  data-testid="button-back-from-verify"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to login
-                </Button>
-              </div>
-            </form>
-          )}
-
-          {step === "totp" && (
-            <form onSubmit={handleTotpSubmit} className="space-y-6">
-              {loginData?.isNewDevice && (
-                <Alert>
-                  <Smartphone className="h-4 w-4" />
-                  <AlertDescription>
-                    New device detected. Please verify your identity.
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              {attemptsRemaining !== null && attemptsRemaining < 3 && (
-                <Alert variant="destructive">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    {attemptsRemaining} attempt{attemptsRemaining !== 1 ? "s" : ""} remaining before lockout
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="flex justify-center">
-                <InputOTP
-                  maxLength={6}
-                  value={totpCode}
-                  onChange={handleTotpChange}
-                  disabled={isSubmitting}
-                  data-testid="input-totp"
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember-device"
-                  checked={rememberDevice}
-                  onCheckedChange={(checked) => setRememberDevice(checked === true)}
-                  data-testid="checkbox-remember-device"
-                />
-                <Label
-                  htmlFor="remember-device"
-                  className="text-sm cursor-pointer"
-                >
-                  Remember this device for 30 days
-                </Label>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || totpCode.length !== 6}
-                data-testid="button-verify-totp"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Shield className="mr-2 h-4 w-4" />
-                )}
-                Verify
-              </Button>
-
-              <div className="flex flex-col gap-2 text-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setStep("recovery")}
-                  className="text-muted-foreground"
-                  data-testid="button-use-recovery"
-                >
-                  <Key className="mr-2 h-4 w-4" />
-                  Use a recovery code instead
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetToCredentials}
-                  className="text-muted-foreground"
-                  data-testid="button-back-to-login"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to login
-                </Button>
-              </div>
-            </form>
-          )}
-
-          {step === "recovery" && (
-            <form onSubmit={handleRecoverySubmit} className="space-y-6">
-              <Alert>
-                <Key className="h-4 w-4" />
-                <AlertDescription>
-                  Recovery codes are single-use. After using this code, it will be invalidated.
-                </AlertDescription>
-              </Alert>
-
-              <div className="space-y-2">
-                <Label htmlFor="recovery-code">Recovery Code</Label>
-                <Input
-                  id="recovery-code"
-                  type="text"
-                  placeholder="XXXX-XXXX-XXXX"
-                  value={recoveryCode}
-                  onChange={(e) => setRecoveryCode(e.target.value.toUpperCase())}
-                  disabled={isSubmitting}
-                  className="font-mono text-center text-lg tracking-wider"
-                  data-testid="input-recovery-code"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || recoveryCode.length < 6}
-                data-testid="button-verify-recovery"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Key className="mr-2 h-4 w-4" />
-                )}
-                Verify Recovery Code
-              </Button>
-
-              <div className="flex flex-col gap-2 text-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setStep("totp")}
-                  className="text-muted-foreground"
-                  data-testid="button-use-totp"
-                >
-                  <Smartphone className="mr-2 h-4 w-4" />
-                  Use authenticator app instead
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetToCredentials}
-                  className="text-muted-foreground"
-                  data-testid="button-back-to-login-recovery"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to login
-                </Button>
-              </div>
-            </form>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            </div>
+            
+            <div className="text-center text-sm text-muted-foreground pt-4 border-t">
+              <p className="flex items-center justify-center gap-2">
+                <LogIn className="w-4 h-4" />
+                Secure authentication via Replit
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }
