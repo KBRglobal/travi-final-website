@@ -140,7 +140,7 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
   const [formData, setFormData] = useState<MobilityData>(emptyMobilityData);
 
   const { data: mobilityResponse, isLoading } = useQuery<MobilityApiResponse>({
-    queryKey: ["/api/admin/destinations", destinationId, "mobility"],
+    queryKey: [`/api/admin/destinations/${destinationId}/mobility`],
     enabled: !!destinationId,
   });
 
@@ -157,11 +157,11 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
     mutationFn: async (data: MobilityData) => {
       return apiRequest(`/api/admin/destinations/${destinationId}/mobility`, {
         method: "PUT",
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations", destinationId, "mobility"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/destinations/${destinationId}/mobility`] });
       queryClient.invalidateQueries({ queryKey: [`/api/public/destinations/${destinationId}/mobility`] });
       toast({
         title: "Mobility data saved",

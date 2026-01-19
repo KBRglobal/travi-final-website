@@ -55,20 +55,22 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
 
+  const seoUrl = `/api/admin/destinations/${destinationId}/seo`;
+  
   const { data: seoData, isLoading } = useQuery<SEOData>({
-    queryKey: ["/api/admin/destinations", destinationId, "seo"],
+    queryKey: [seoUrl],
     enabled: !!destinationId,
   });
 
   const saveMutation = useMutation({
     mutationFn: async (data: { metaTitle: string; metaDescription: string }) => {
-      return apiRequest(`/api/admin/destinations/${destinationId}/seo`, {
+      return apiRequest(seoUrl, {
         method: "PATCH",
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations", destinationId, "seo"] });
+      queryClient.invalidateQueries({ queryKey: [seoUrl] });
       toast({
         title: "SEO settings saved",
         description: "Your meta tags have been updated.",

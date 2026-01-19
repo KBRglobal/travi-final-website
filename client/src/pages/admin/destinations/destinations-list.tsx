@@ -15,8 +15,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
-  Sparkles,
-  ChevronDown,
   Filter,
   Image,
 } from "lucide-react";
@@ -27,13 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
 
 interface Destination {
   id: string;
@@ -43,32 +34,34 @@ interface Destination {
   destinationLevel: string;
   cardImage: string | null;
   cardImageAlt: string | null;
+  heroImage: string | null;
+  heroTitle: string | null;
+  heroSubtitle: string | null;
   summary: string | null;
-  isActive?: boolean;
-  heroTitle?: string | null;
+  isActive: boolean;
 }
 
 function getStatusBadge(destination: Destination) {
   const hasHero = !!destination.heroTitle;
-  const hasImage = !!destination.cardImage;
+  const hasImage = !!(destination.cardImage || destination.heroImage);
   
   if (hasHero && hasImage) {
     return (
-      <Badge variant="default" className="bg-green-600 gap-1">
+      <Badge variant="default" className="bg-green-600 gap-1" data-testid={`badge-status-complete-${destination.id}`}>
         <CheckCircle2 className="w-3 h-3" />
         Complete
       </Badge>
     );
   } else if (hasHero || hasImage) {
     return (
-      <Badge variant="secondary" className="bg-amber-500 text-white gap-1">
+      <Badge variant="secondary" className="bg-amber-500 text-white gap-1" data-testid={`badge-status-partial-${destination.id}`}>
         <AlertTriangle className="w-3 h-3" />
         Partial
       </Badge>
     );
   }
   return (
-    <Badge variant="outline" className="gap-1">
+    <Badge variant="outline" className="gap-1" data-testid={`badge-status-empty-${destination.id}`}>
       <XCircle className="w-3 h-3" />
       Empty
     </Badge>
@@ -79,20 +72,21 @@ export default function DestinationsListPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "complete" | "partial" | "empty">("all");
   const [hasImagesFilter, setHasImagesFilter] = useState<"all" | "yes" | "no">("all");
-  const { toast } = useToast();
 
   const { data: destinations = [], isLoading } = useQuery<Destination[]>({
-    queryKey: ["/api/public/destinations"],
+    queryKey: ["/api/admin/destinations"],
   });
 
   const filteredDestinations = destinations.filter((dest) => {
-    const query = searchQuery.toLowerCase();
-    const matchesSearch = dest.name.toLowerCase().includes(query) ||
-      dest.country.toLowerCase().includes(query);
+    const query = searchQuery.toLowerCase().trim();
+    // Use startsWith for prefix-based matching (better UX)
+    const matchesSearch = !query || 
+      dest.name.toLowerCase().startsWith(query) ||
+      dest.country.toLowerCase().startsWith(query);
     
     // Status filter
     const hasHero = !!dest.heroTitle;
-    const hasImage = !!dest.cardImage;
+    const hasImage = !!(dest.cardImage || dest.heroImage);
     const status = hasHero && hasImage ? "complete" : (hasHero || hasImage ? "partial" : "empty");
     const matchesStatus = statusFilter === "all" || status === statusFilter;
     
@@ -148,10 +142,10 @@ export default function DestinationsListPage() {
             <div key={country}>
               <div className="flex items-center gap-2 mb-4">
                 <Globe className="w-5 h-5 text-muted-foreground" />
-                <h2 className="text-lg font-semibold text-foreground">
+                <h2 className="text-lg font-semibold text-foreground" data-testid={`heading-country-${country.toLowerCase().replace(/\s+/g, '-')}`}>
                   {country}
                 </h2>
-                <Badge variant="secondary">{dests.length}</Badge>
+                <Badge variant="secondary" data-testid={`badge-count-${country.toLowerCase().replace(/\s+/g, '-')}`}>{dests.length}</Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {dests.map((dest) => (
@@ -160,16 +154,17 @@ export default function DestinationsListPage() {
                     href={`/admin/destinations/${dest.id}`}
                     data-testid={`link-destination-${dest.id}`}
                   >
-                    <Card className="overflow-hidden hover-elevate cursor-pointer h-full">
+                    <Card className="overflow-hidden hover-elevate cursor-pointer h-full" data-testid={`card-destination-${dest.id}`}>
                       <div className="aspect-video relative bg-muted">
-                        {dest.cardImage ? (
+                        {(dest.cardImage || dest.heroImage) ? (
                           <img
-                            src={dest.cardImage}
+                            src={dest.cardImage || dest.heroImage || ""}
                             alt={dest.cardImageAlt || dest.name}
                             className="w-full h-full object-cover"
+                            data-testid={`img-destination-${dest.id}`}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-full h-full flex items-center justify-center" data-testid={`placeholder-destination-${dest.id}`}>
                             <MapPin className="w-8 h-8 text-muted-foreground" />
                           </div>
                         )}
@@ -180,10 +175,10 @@ export default function DestinationsListPage() {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between gap-2">
                           <div className="min-w-0">
-                            <h3 className="font-semibold text-foreground truncate">
+                            <h3 className="font-semibold text-foreground truncate" data-testid={`text-destination-name-${dest.id}`}>
                               {dest.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground truncate">
+                            <p className="text-sm text-muted-foreground truncate" data-testid={`text-destination-country-${dest.id}`}>
                               {dest.country}
                             </p>
                           </div>
@@ -205,39 +200,12 @@ export default function DestinationsListPage() {
       title="Destinations"
       description="Manage travel destinations"
       actions={
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2" data-testid="button-magic-ai-destinations">
-                <Sparkles className="h-4 w-4 text-purple-500" />
-                Magic AI
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem
-                disabled
-                className="text-muted-foreground"
-                data-testid="menu-item-magic-generate-destination"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                New Destination (Coming Soon)
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled
-                className="text-muted-foreground"
-                data-testid="menu-item-magic-bulk-images-destinations"
-              >
-                <Image className="h-4 w-4 mr-2" />
-                Bulk Images (Coming Soon)
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <Link href="/admin/destinations/new">
           <Button data-testid="button-add-destination">
             <Plus className="w-4 h-4 mr-2" />
             New Destination
           </Button>
-        </div>
+        </Link>
       }
       filters={
         <div className="flex flex-col sm:flex-row gap-4 w-full">
@@ -258,10 +226,10 @@ export default function DestinationsListPage() {
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="complete">Complete</SelectItem>
-                <SelectItem value="partial">Partial</SelectItem>
-                <SelectItem value="empty">Empty</SelectItem>
+                <SelectItem value="all" data-testid="select-status-option-all">All Status</SelectItem>
+                <SelectItem value="complete" data-testid="select-status-option-complete">Complete</SelectItem>
+                <SelectItem value="partial" data-testid="select-status-option-partial">Partial</SelectItem>
+                <SelectItem value="empty" data-testid="select-status-option-empty">Empty</SelectItem>
               </SelectContent>
             </Select>
             <Select value={hasImagesFilter} onValueChange={(v) => setHasImagesFilter(v as typeof hasImagesFilter)}>
@@ -270,9 +238,9 @@ export default function DestinationsListPage() {
                 <SelectValue placeholder="Images" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="yes">Has Image</SelectItem>
-                <SelectItem value="no">No Image</SelectItem>
+                <SelectItem value="all" data-testid="select-images-option-all">All</SelectItem>
+                <SelectItem value="yes" data-testid="select-images-option-yes">Has Image</SelectItem>
+                <SelectItem value="no" data-testid="select-images-option-no">No Image</SelectItem>
               </SelectContent>
             </Select>
           </div>
