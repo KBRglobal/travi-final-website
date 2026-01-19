@@ -3,7 +3,10 @@ import { storage } from "../storage";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import bcrypt from "bcrypt";
-import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
+import crypto from "crypto";
+import { ROLE_PERMISSIONS, type UserRole, emailOtpCodes as emailOtpCodesTable } from "@shared/schema";
+import { db } from "../db";
+import { eq, and, gt, sql } from "drizzle-orm";
 import {
   isAuthenticated,
 } from "../replitAuth";
@@ -1022,4 +1025,250 @@ export function registerAuthRoutes(app: Express): void {
 
   // NOTE: DEV auto-login endpoint is now registered in routes.ts AFTER setupAuth
   // to ensure session middleware is available
+
+  // ============================================
+  // EMAIL OTP LOGIN (Simple email-based login)
+  // Database-backed for persistence across restarts
+  // ============================================
+  
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
+  const OTP_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
+  const MAX_OTP_ATTEMPTS = 5;
+
+  // Helper: Ensure email_otp_codes table exists (runtime DDL)
+  async function ensureEmailOtpTable(): Promise<void> {
+    try {
+      await db.execute(sql`
+        CREATE TABLE IF NOT EXISTS email_otp_codes (
+          id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+          email VARCHAR NOT NULL,
+          code_hash VARCHAR NOT NULL,
+          attempts INTEGER NOT NULL DEFAULT 0,
+          expires_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
+        )
+      `);
+      await db.execute(sql`
+        CREATE INDEX IF NOT EXISTS idx_email_otp_codes_email ON email_otp_codes(email)
+      `);
+    } catch (err) {
+      console.log("[EmailOTP] Table check/create:", err);
+    }
+  }
+  
+  // Initialize table on startup
+  ensureEmailOtpTable().then(() => console.log("[EmailOTP] Table verified/created"));
+
+  // Hash function for OTP codes
+  function hashCode(code: string): string {
+    return crypto.createHash('sha256').update(code).digest('hex');
+  }
+
+  // Request OTP - only for admin email
+  app.post("/api/auth/email-otp/request", loginRateLimiter, async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+      
+      // Only allow the admin email
+      if (!ADMIN_EMAIL || normalizedEmail !== ADMIN_EMAIL.toLowerCase()) {
+        // Security: Don't reveal if email exists - generic message
+        console.log(`[EmailOTP] Unauthorized email attempt: ${normalizedEmail.substring(0, 5)}***`);
+        return res.status(200).json({ 
+          success: true, 
+          message: "If this email is registered, you will receive a code shortly" 
+        });
+      }
+
+      // Generate 6-digit OTP
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const codeHash = hashCode(code);
+      const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS);
+
+      // Delete any existing OTP for this email
+      await db.execute(sql`DELETE FROM email_otp_codes WHERE email = ${normalizedEmail}`);
+      
+      // Store OTP in database
+      await db.execute(sql`
+        INSERT INTO email_otp_codes (email, code_hash, attempts, expires_at)
+        VALUES (${normalizedEmail}, ${codeHash}, 0, ${expiresAt})
+      `);
+
+      // Send email via Resend
+      try {
+        const { Resend } = await import("resend");
+        const resendApiKey = process.env.RESEND_API_KEY;
+        
+        if (resendApiKey) {
+          const resend = new Resend(resendApiKey);
+          await resend.emails.send({
+            from: process.env.FROM_EMAIL || "Travi CMS <noreply@traviapp.com>",
+            to: normalizedEmail,
+            subject: "Your Travi CMS Login Code",
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #333; text-align: center;">Travi CMS Login</h2>
+                <p style="color: #666; text-align: center;">Your login code is:</p>
+                <div style="background: #f5f5f5; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
+                  <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #333;">${code}</span>
+                </div>
+                <p style="color: #999; font-size: 12px; text-align: center;">
+                  This code expires in 5 minutes. If you didn't request this, ignore this email.
+                </p>
+              </div>
+            `,
+          });
+          console.log(`[EmailOTP] Code sent to ${normalizedEmail.substring(0, 5)}***`);
+        } else {
+          // Fallback for development - log code
+          console.log(`[EmailOTP] DEV MODE - Code for ${normalizedEmail}: ${code}`);
+        }
+      } catch (emailError) {
+        console.error("[EmailOTP] Failed to send email:", emailError);
+        // Still return success to not leak info
+      }
+
+      res.json({ 
+        success: true, 
+        message: "If this email is registered, you will receive a code shortly",
+        expiresIn: OTP_EXPIRY_MS / 1000
+      });
+
+    } catch (error) {
+      console.error("[EmailOTP] Error:", error);
+      res.status(500).json({ error: "Failed to process request" });
+    }
+  });
+
+  // Verify OTP and login
+  app.post("/api/auth/email-otp/verify", loginRateLimiter, async (req: Request, res: Response) => {
+    try {
+      const { email, code } = req.body;
+      
+      if (!email || !code) {
+        return res.status(400).json({ error: "Email and code are required" });
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+      
+      // Get OTP from database
+      const otpRecords = await db.execute(sql`
+        SELECT id, code_hash, attempts, expires_at 
+        FROM email_otp_codes 
+        WHERE email = ${normalizedEmail}
+        LIMIT 1
+      `);
+      
+      const otpData = otpRecords.rows[0] as { id: string; code_hash: string; attempts: number; expires_at: Date } | undefined;
+
+      // Check if OTP exists
+      if (!otpData) {
+        return res.status(400).json({ error: "Invalid or expired code" });
+      }
+
+      // Check expiry
+      if (new Date() > new Date(otpData.expires_at)) {
+        await db.execute(sql`DELETE FROM email_otp_codes WHERE email = ${normalizedEmail}`);
+        return res.status(400).json({ error: "Code has expired. Please request a new one." });
+      }
+
+      // Check attempts
+      if (otpData.attempts >= MAX_OTP_ATTEMPTS) {
+        await db.execute(sql`DELETE FROM email_otp_codes WHERE email = ${normalizedEmail}`);
+        return res.status(429).json({ error: "Too many attempts. Please request a new code." });
+      }
+
+      // Verify code
+      const codeHash = hashCode(code.trim());
+      if (otpData.code_hash !== codeHash) {
+        await db.execute(sql`
+          UPDATE email_otp_codes 
+          SET attempts = attempts + 1 
+          WHERE email = ${normalizedEmail}
+        `);
+        return res.status(400).json({ 
+          error: "Invalid code", 
+          attemptsRemaining: MAX_OTP_ATTEMPTS - otpData.attempts - 1 
+        });
+      }
+
+      // OTP is valid - delete it
+      await db.execute(sql`DELETE FROM email_otp_codes WHERE email = ${normalizedEmail}`);
+
+      // Find admin user by email
+      const allUsers = await storage.getAllUsers();
+      let adminUser = allUsers.find(u => u.email?.toLowerCase() === normalizedEmail);
+
+      // If no user with this email, get the first admin user
+      if (!adminUser) {
+        adminUser = allUsers.find(u => u.role === 'admin');
+      }
+
+      if (!adminUser) {
+        return res.status(500).json({ error: "Admin user not found" });
+      }
+
+      // Create session
+      const authReq = req as AuthRequest;
+      if (!authReq.session) {
+        console.error("[EmailOTP] Session not available");
+        return res.status(500).json({ error: "Session not available" });
+      }
+
+      authReq.session.userId = adminUser.id;
+
+      // Use passport to login
+      const userForPassport = {
+        claims: {
+          sub: adminUser.id,
+          email: adminUser.email || normalizedEmail,
+          name: adminUser.name || "Admin",
+        },
+      };
+
+      authReq.login(userForPassport, (err: unknown) => {
+        if (err) {
+          console.error("[EmailOTP] Login error:", err);
+          return res.status(500).json({ error: "Failed to create session" });
+        }
+
+        authReq.session.save((saveErr: unknown) => {
+          if (saveErr) {
+            console.error("[EmailOTP] Session save error:", saveErr);
+          }
+
+          console.log(`[EmailOTP] Login successful for ${normalizedEmail.substring(0, 5)}***`);
+          
+          // Log audit event
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_SUCCESS, {
+            success: true,
+            userId: adminUser!.id,
+            resource: 'auth',
+            action: 'email_otp_login',
+            details: { method: 'email_otp', email: normalizedEmail.substring(0, 5) + '***' }
+          });
+
+          res.json({
+            success: true,
+            message: "Login successful",
+            user: {
+              id: adminUser!.id,
+              email: adminUser!.email,
+              name: adminUser!.name,
+              role: adminUser!.role,
+            }
+          });
+        });
+      });
+
+    } catch (error) {
+      console.error("[EmailOTP] Verify error:", error);
+      res.status(500).json({ error: "Failed to verify code" });
+    }
+  });
 }

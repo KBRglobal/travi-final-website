@@ -3071,6 +3071,26 @@ export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
 export type InsertMagicLinkToken = z.infer<typeof insertMagicLinkTokenSchema>;
 
 // ============================================================================
+// EMAIL OTP AUTHENTICATION TABLES
+// ============================================================================
+
+export const emailOtpCodes = pgTable("email_otp_codes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").notNull(),
+  codeHash: varchar("code_hash").notNull(),
+  attempts: integer("attempts").notNull().default(0),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("IDX_email_otp_codes_email").on(table.email),
+]);
+
+export const insertEmailOtpCodeSchema = createInsertSchema(emailOtpCodes);
+
+export type EmailOtpCode = typeof emailOtpCodes.$inferSelect;
+export type InsertEmailOtpCode = z.infer<typeof insertEmailOtpCodeSchema>;
+
+// ============================================================================
 // AI CONTENT SCORING TABLES
 // ============================================================================
 
