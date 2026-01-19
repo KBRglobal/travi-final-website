@@ -11,6 +11,7 @@ import {
   homepageCta,
   homepageSeoMeta,
   destinations,
+  pageSeo,
   SUPPORTED_LOCALES,
 } from "@shared/schema";
 import { requirePermission, checkReadOnlyMode } from "../security";
@@ -1228,6 +1229,101 @@ export function registerAdminApiRoutes(app: Express): void {
     } catch (error) {
       console.error("Error fetching notifications:", error);
       res.status(500).json({ error: "Failed to fetch notifications" });
+    }
+  });
+
+  // ============================================================================
+  // PAGE SEO ROUTES - Generic SEO configuration for any page
+  // ============================================================================
+
+  // Get all page SEO configurations
+  router.get("/page-seo", requirePermission("canManageSettings"), async (_req: Request, res: Response) => {
+    try {
+      const allPageSeo = await db.select().from(pageSeo);
+      res.json(allPageSeo);
+    } catch (error) {
+      console.error("Error fetching page SEO list:", error);
+      res.status(500).json({ error: "Failed to fetch page SEO configurations" });
+    }
+  });
+
+  // Get SEO for a specific page path
+  router.get("/page-seo/:pagePath(*)", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
+    try {
+      const pagePath = "/" + req.params.pagePath;
+      const [seoData] = await db.select().from(pageSeo).where(eq(pageSeo.pagePath, pagePath));
+      
+      if (!seoData) {
+        return res.status(404).json({ error: "Page SEO not found", pagePath });
+      }
+      
+      res.json(seoData);
+    } catch (error) {
+      console.error("Error fetching page SEO:", error);
+      res.status(500).json({ error: "Failed to fetch page SEO" });
+    }
+  });
+
+  // Create or update SEO for a page
+  router.put("/page-seo/:pagePath(*)", requirePermission("canManageSettings"), checkReadOnlyMode, async (req: Request, res: Response) => {
+    try {
+      const pagePath = "/" + req.params.pagePath;
+      const { pageLabel, metaTitle, metaDescription, canonicalUrl, ogTitle, ogDescription, ogImage, robotsMeta, jsonLdSchema } = req.body;
+
+      // Check if exists
+      const [existing] = await db.select().from(pageSeo).where(eq(pageSeo.pagePath, pagePath));
+
+      if (existing) {
+        // Update
+        const [updated] = await db.update(pageSeo)
+          .set({
+            pageLabel,
+            metaTitle,
+            metaDescription,
+            canonicalUrl,
+            ogTitle,
+            ogDescription,
+            ogImage,
+            robotsMeta,
+            jsonLdSchema,
+            updatedAt: new Date(),
+          })
+          .where(eq(pageSeo.pagePath, pagePath))
+          .returning();
+        res.json(updated);
+      } else {
+        // Create
+        const [created] = await db.insert(pageSeo)
+          .values({
+            pagePath,
+            pageLabel,
+            metaTitle,
+            metaDescription,
+            canonicalUrl,
+            ogTitle,
+            ogDescription,
+            ogImage,
+            robotsMeta,
+            jsonLdSchema,
+          })
+          .returning();
+        res.status(201).json(created);
+      }
+    } catch (error) {
+      console.error("Error saving page SEO:", error);
+      res.status(500).json({ error: "Failed to save page SEO" });
+    }
+  });
+
+  // Delete SEO for a page
+  router.delete("/page-seo/:pagePath(*)", requirePermission("canManageSettings"), checkReadOnlyMode, async (req: Request, res: Response) => {
+    try {
+      const pagePath = "/" + req.params.pagePath;
+      await db.delete(pageSeo).where(eq(pageSeo.pagePath, pagePath));
+      res.json({ success: true, deleted: pagePath });
+    } catch (error) {
+      console.error("Error deleting page SEO:", error);
+      res.status(500).json({ error: "Failed to delete page SEO" });
     }
   });
 
