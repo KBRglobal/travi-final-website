@@ -39,6 +39,9 @@ import {
   CheckCircle,
   Info,
   ImagePlus,
+  Heart,
+  Database,
+  Server,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -100,6 +103,25 @@ interface Notification {
   timestamp: string;
   read: boolean;
   actionUrl?: string;
+}
+
+interface SystemHealthResponse {
+  status: "healthy" | "degraded" | "unhealthy";
+  timestamp: string;
+  uptime: number;
+  version: string;
+  checks?: {
+    database?: {
+      status: "healthy" | "warning" | "unhealthy";
+      latency?: number;
+      message?: string;
+    };
+    memory?: {
+      status: "healthy" | "warning" | "unhealthy";
+      usage?: number;
+      message?: string;
+    };
+  };
 }
 
 function StatsCardSkeleton() {
@@ -182,8 +204,84 @@ function ClickableStatsCard({
   );
 }
 
-// REMOVED: SystemHealthCard - no real health checks exist
-// REMOVED: HealthScoreCard - calculated from hardcoded values
+function SystemHealthCard({
+  health,
+  loading,
+}: {
+  health?: SystemHealthResponse;
+  loading?: boolean;
+}) {
+  if (loading) return <StatsCardSkeleton />;
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "healthy": return "text-green-500";
+      case "warning": 
+      case "degraded": return "text-yellow-500";
+      case "unhealthy": return "text-red-500";
+      default: return "text-muted-foreground";
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "healthy": return "default";
+      case "degraded": return "secondary";
+      case "unhealthy": return "destructive";
+      default: return "outline";
+    }
+  };
+
+  const formatUptime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours >= 24) {
+      const days = Math.floor(hours / 24);
+      return `${days}d ${hours % 24}h`;
+    }
+    return `${hours}h ${minutes}m`;
+  };
+
+  return (
+    <Card data-testid="card-system-health">
+      <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">System Health</CardTitle>
+        <Heart className={cn("h-4 w-4", health ? getStatusColor(health.status) : "text-muted-foreground")} />
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant={health ? getStatusBadge(health.status) as "default" | "secondary" | "destructive" | "outline" : "outline"}>
+            {health?.status?.toUpperCase() ?? "UNKNOWN"}
+          </Badge>
+        </div>
+        {health && (
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-xs">
+              <Server className="h-3 w-3 text-muted-foreground" />
+              <span className="text-muted-foreground">Uptime: {formatUptime(health.uptime)}</span>
+            </div>
+            {health.checks?.database && (
+              <div className="flex items-center gap-2 text-xs">
+                <Database className={cn("h-3 w-3", getStatusColor(health.checks.database.status))} />
+                <span className="text-muted-foreground">
+                  DB: {health.checks.database.latency ?? 0}ms
+                </span>
+              </div>
+            )}
+            {health.checks?.memory && (
+              <div className="flex items-center gap-2 text-xs">
+                <Activity className={cn("h-3 w-3", getStatusColor(health.checks.memory.status))} />
+                <span className="text-muted-foreground">
+                  Memory: {health.checks.memory.usage ?? 0}%
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 function AIGenerationCard({
   stats,
@@ -452,16 +550,25 @@ export default function AdminDashboard() {
     staleTime: 30000,
   });
 
+  // Query real system health endpoint
+  const { data: healthData, isLoading: healthLoading, refetch: refetchHealth } = useQuery<SystemHealthResponse>({
+    queryKey: ["/api/health"],
+    staleTime: 30000,
+  });
+
   const stats = statsData;
   const activities = activityData;
   const notifications = notificationsData;
+  const health = healthData;
   const isStatsLoading = statsLoading;
   const isActivityLoading = activityLoading;
+  const isHealthLoading = healthLoading;
 
   const handleRefresh = () => {
     refetchStats();
     refetchActivity();
     refetchNotifications();
+    refetchHealth();
   };
 
   // Only use real pending tasks count (drafts awaiting review)
@@ -495,14 +602,14 @@ export default function AdminDashboard() {
           Overview
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {/* Total Content - REAL: queries contents table */}
+          {/* Total Content - REAL: aggregate of all content types */}
           <ClickableStatsCard
             title="Total Content"
             value={stats?.contents?.total?.toLocaleString() ?? "N/A"}
             icon={FileText}
-            description={stats?.contents ? `${stats.contents.destinations} destinations, ${stats.contents.articles} articles` : undefined}
+            description={stats?.contents ? `${stats.contents.attractions} attractions, ${stats.contents.destinations} destinations, ${stats.contents.articles} articles` : undefined}
             loading={isStatsLoading}
-            href="/admin/attractions"
+            href="/admin/contents-intelligence"
           />
           
           {/* Media Assets - REAL: queries images table only */}
@@ -541,7 +648,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Secondary Stats Row - REAL DATA ONLY */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Published vs Draft - REAL: queries contents by status */}
         <ClickableStatsCard
           title="Published vs Draft"
@@ -549,10 +656,10 @@ export default function AdminDashboard() {
           icon={CheckCircle2}
           description={stats?.status && stats?.contents?.total && stats.contents.total > 0 ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published` : undefined}
           loading={isStatsLoading}
-          href="/admin/attractions"
+          href="/admin/contents-intelligence"
         />
         
-        {/* Attractions Count - REAL: same as contents.total */}
+        {/* Attractions Count - REAL: from contents table */}
         <ClickableStatsCard
           title="Attractions"
           value={stats?.contents?.attractions?.toLocaleString() ?? "N/A"}
@@ -561,6 +668,9 @@ export default function AdminDashboard() {
           loading={isStatsLoading}
           href="/admin/attractions"
         />
+        
+        {/* System Health - REAL: from /api/health endpoint */}
+        <SystemHealthCard health={health} loading={isHealthLoading} />
       </div>
 
       {/* Main Content Grid */}
