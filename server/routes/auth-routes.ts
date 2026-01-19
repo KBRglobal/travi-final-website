@@ -1133,10 +1133,13 @@ export function registerAuthRoutes(app: Express): void {
         // Still return success to not leak info
       }
 
+      // In development, include the code in response for testing
+      const isDev = process.env.NODE_ENV === 'development';
       res.json({ 
         success: true, 
         message: "If this email is registered, you will receive a code shortly",
-        expiresIn: OTP_EXPIRY_MS / 1000
+        expiresIn: OTP_EXPIRY_MS / 1000,
+        ...(isDev && { _devCode: code }) // Only included in development!
       });
 
     } catch (error) {
@@ -1201,11 +1204,11 @@ export function registerAuthRoutes(app: Express): void {
       await db.execute(sql`DELETE FROM email_otp_codes WHERE email = ${normalizedEmail}`);
 
       // Find admin user by email
-      const allUsers = await storage.getAllUsers();
-      let adminUser = allUsers.find(u => u.email?.toLowerCase() === normalizedEmail);
+      let adminUser = await storage.getUserByEmail(normalizedEmail);
 
-      // If no user with this email, get the first admin user
+      // If no user with this email, get the first admin user from the list
       if (!adminUser) {
+        const allUsers = await storage.getUsers();
         adminUser = allUsers.find(u => u.role === 'admin');
       }
 
