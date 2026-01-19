@@ -90,11 +90,14 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
         }
       }
       
+      // Filter out database metadata fields per field ownership contract
+      // Only send SEO-specific fields that are allowed by the contract
+      const { id, createdAt, updatedAt, _meta, ...seoFields } = data as any;
+      
       return apiRequest("PUT", `/api/admin/page-seo${pagePath}`, {
-        ...data,
+        ...seoFields,
         pageLabel,
         jsonLdSchema,
-        fieldOwner: "/admin/page-seo", // Field ownership enforcement
       });
     },
     onSuccess: () => {

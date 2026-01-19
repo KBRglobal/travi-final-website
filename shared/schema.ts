@@ -33,6 +33,7 @@ export const ROLE_PERMISSIONS = {
     canAccessMediaLibrary: true,
     canAccessAffiliates: true,
     canViewAll: true,
+    canEditPageSeo: true, // Dedicated permission for page SEO management (Field Ownership enforcement)
   },
   editor: {
     canCreate: true,
@@ -48,6 +49,7 @@ export const ROLE_PERMISSIONS = {
     canAccessMediaLibrary: true,
     canAccessAffiliates: true,
     canViewAll: true,
+    canEditPageSeo: true, // Editors can manage page SEO
   },
   author: {
     canCreate: true,
@@ -63,6 +65,7 @@ export const ROLE_PERMISSIONS = {
     canAccessMediaLibrary: false,
     canAccessAffiliates: false,
     canViewAll: false,
+    canEditPageSeo: false, // Authors cannot manage page SEO
   },
   contributor: {
     canCreate: true,
@@ -78,6 +81,7 @@ export const ROLE_PERMISSIONS = {
     canAccessMediaLibrary: false,
     canAccessAffiliates: false,
     canViewAll: false,
+    canEditPageSeo: false, // Contributors cannot manage page SEO
   },
   viewer: {
     canCreate: false,
@@ -93,6 +97,7 @@ export const ROLE_PERMISSIONS = {
     canAccessMediaLibrary: false,
     canAccessAffiliates: false,
     canViewAll: true,
+    canEditPageSeo: false, // Viewers cannot manage page SEO
   },
 } as const;
 
