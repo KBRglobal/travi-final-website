@@ -21,6 +21,13 @@ import { EngineRegistry } from '../../services/engine-registry';
 import { getQueueStats } from '../../ai/request-queue';
 import { jobQueue } from '../../job-queue';
 import { manuallyProcessJob } from '../../octypo/job-handler';
+import { 
+  startRSSScheduler, 
+  stopRSSScheduler, 
+  updateRSSSchedulerConfig, 
+  getRSSSchedulerStatus,
+  manualTrigger as triggerRSSScheduler
+} from '../../octypo/rss-scheduler';
 
 const router = Router();
 
@@ -1555,6 +1562,114 @@ router.post('/jobs/:jobId/process', async (req: Request, res: Response) => {
       message: error instanceof Error ? error.message : 'Unknown error',
       _meta: { apiVersion: 'v1' },
     });
+  }
+});
+
+/**
+ * GET /api/octypo/rss-scheduler/status
+ * Get RSS scheduler status and configuration
+ */
+router.get('/rss-scheduler/status', async (_req: Request, res: Response) => {
+  try {
+    const status = getRSSSchedulerStatus();
+    res.json({
+      ...status,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get RSS scheduler status', error);
+    res.status(500).json({ error: 'Failed to get scheduler status' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss-scheduler/start
+ * Start the RSS scheduler with optional config
+ */
+router.post('/rss-scheduler/start', async (req: Request, res: Response) => {
+  try {
+    const { dailyLimit, intervalMinutes } = req.body || {};
+    
+    const config: Record<string, number | boolean> = { enabled: true };
+    if (dailyLimit !== undefined) config.dailyLimit = dailyLimit;
+    if (intervalMinutes !== undefined) config.intervalMinutes = intervalMinutes;
+    
+    startRSSScheduler(config);
+    
+    const status = getRSSSchedulerStatus();
+    res.json({
+      message: 'RSS scheduler started',
+      ...status,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to start RSS scheduler', error);
+    res.status(500).json({ error: 'Failed to start scheduler' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss-scheduler/stop
+ * Stop the RSS scheduler
+ */
+router.post('/rss-scheduler/stop', async (_req: Request, res: Response) => {
+  try {
+    stopRSSScheduler();
+    res.json({
+      message: 'RSS scheduler stopped',
+      running: false,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to stop RSS scheduler', error);
+    res.status(500).json({ error: 'Failed to stop scheduler' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss-scheduler/config
+ * Update RSS scheduler configuration
+ */
+router.post('/rss-scheduler/config', async (req: Request, res: Response) => {
+  try {
+    const { dailyLimit, intervalMinutes, enabled } = req.body || {};
+    
+    const config: Record<string, number | boolean> = {};
+    if (dailyLimit !== undefined) config.dailyLimit = dailyLimit;
+    if (intervalMinutes !== undefined) config.intervalMinutes = intervalMinutes;
+    if (enabled !== undefined) config.enabled = enabled;
+    
+    updateRSSSchedulerConfig(config);
+    
+    const status = getRSSSchedulerStatus();
+    res.json({
+      message: 'RSS scheduler config updated',
+      ...status,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to update RSS scheduler config', error);
+    res.status(500).json({ error: 'Failed to update config' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss-scheduler/trigger
+ * Manually trigger RSS scheduler cycle
+ */
+router.post('/rss-scheduler/trigger', async (_req: Request, res: Response) => {
+  try {
+    log.info('[Octypo] Manual RSS scheduler trigger requested');
+    const result = await triggerRSSScheduler();
+    res.json({
+      message: 'RSS scheduler cycle triggered',
+      created: result.created,
+      remaining: result.remaining,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to trigger RSS scheduler', error);
+    res.status(500).json({ error: 'Failed to trigger scheduler' });
   }
 });
 
