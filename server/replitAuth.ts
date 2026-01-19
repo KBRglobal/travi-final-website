@@ -146,6 +146,13 @@ export async function setupAuth(app: Express) {
       return verified(new Error("Email is required for login."), undefined);
     }
     
+    // STRICT EMAIL RESTRICTION: Only allow specific admin email
+    const ALLOWED_EMAIL = "traviquackson@gmail.com";
+    if (email.toLowerCase() !== ALLOWED_EMAIL.toLowerCase()) {
+      console.log(`Login rejected: unauthorized email ${email} (only ${ALLOWED_EMAIL} is allowed)`);
+      return verified(new Error(`Access denied. Only ${ALLOWED_EMAIL} can log in.`), undefined);
+    }
+    
     // Check if user exists and is active
     const existingUser = await storage.getUserByEmail(email);
     if (existingUser && !existingUser.isActive) {

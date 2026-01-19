@@ -4067,9 +4067,11 @@ export async function registerRoutes(
         return next();
       }
       
-      // Skip public endpoints
-      const publicPaths = ['/api/public/', '/api/auth/', '/api/dev/', '/api/health'];
-      if (publicPaths.some(p => req.path.startsWith(p))) {
+      // Skip public endpoints and auth routes
+      // Note: req.path excludes the mount prefix when middleware is mounted at "/api"
+      const publicPaths = ['/public/', '/auth/', '/dev/', '/health'];
+      const authRoutes = ['/login', '/logout', '/callback'];
+      if (publicPaths.some(p => req.path.startsWith(p)) || authRoutes.includes(req.path)) {
         return next();
       }
       
