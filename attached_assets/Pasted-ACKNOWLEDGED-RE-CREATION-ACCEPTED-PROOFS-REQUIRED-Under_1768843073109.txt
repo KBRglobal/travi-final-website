@@ -1,0 +1,106 @@
+ACKNOWLEDGED — RE-CREATION ACCEPTED, PROOFS REQUIRED
+
+Understood that test-city was cleaned earlier.
+Re-create it and provide FULL PROOF SET as defined below.
+No partial delivery will be accepted.
+
+--------------------------------
+MANDATORY EXECUTION STEPS
+--------------------------------
+
+1) RE-CREATE DESTINATION (ADMIN ONLY)
+- Create a new destination via Admin:
+  name: Test City
+  slug: test-city
+- Ensure:
+  is_active = true
+- Do NOT insert manually via SQL except where explicitly requested for proof.
+
+--------------------------------
+2) CODE PROOF — DESTINATION BLOCKERS REMOVED
+--------------------------------
+
+Provide exact code snippets (file + line numbers):
+
+A) public-api.ts
+- Proof that NO whitelist / allowed IDs logic exists
+- Grep or diff showing ALLOWED_DESTINATION_IDS is fully removed
+
+B) destination-intelligence.ts
+- Proof that NO purge / SUPPORTED_DESTINATION_IDS logic exists
+- Confirm no auto-delete on startup based on hardcoded IDs
+
+--------------------------------
+3) SQL PROOF — RAILWAY POSTGRESQL ONLY
+--------------------------------
+
+Run against Railway PostgreSQL (RAILWAY_DATABASE_URL):
+
+SELECT id, slug, is_active
+FROM destinations
+WHERE slug = 'test-city';
+
+AND:
+
+SELECT COUNT(*) FROM destinations;
+
+Expected:
+- test-city present
+- is_active = true
+- total count reflects +1 destination
+
+Explicitly state:
+“This query was run against Railway PostgreSQL.”
+
+--------------------------------
+4) API PROOF
+--------------------------------
+
+A) List endpoint:
+GET /api/public/destinations
+- test-city included
+- total count matches DB
+
+B) Single endpoint:
+GET /api/public/destinations/test-city
+- Status 200
+- Returns hero, mood, SEO fields
+
+--------------------------------
+5) RESTART PERSISTENCE PROOF (CRITICAL)
+--------------------------------
+
+- Restart server
+- Re-run:
+  - SQL query for test-city
+  - GET /api/public/destinations/test-city
+
+Result must be IDENTICAL.
+No deletion. No filtering. No mutation.
+
+--------------------------------
+6) FRONTEND PROOF
+--------------------------------
+
+- /destinations page:
+  - Test City visible
+- /destinations/test-city:
+  - Page loads
+  - Hero renders
+- Network tab:
+  - API response visible
+  - Data comes from Railway (no static fallback)
+
+--------------------------------
+FINAL RULE
+--------------------------------
+
+Do NOT summarize.
+Do NOT say “fixed”.
+Deliver proofs in the order above.
+
+Only after all proofs are verified will this blocker be CLOSED
+and we will proceed to:
+Hero Media
+OG
+Schemas
