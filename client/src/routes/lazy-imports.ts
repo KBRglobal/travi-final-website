@@ -51,6 +51,10 @@ export const PartnersDashboard = lazy(() => import("@/pages/partners-dashboard")
 export const Login = lazy(() => import("@/pages/login"));
 export const AccessDenied = lazy(() => import("@/pages/access-denied"));
 export const NotFound = lazy(() => import("@/pages/not-found"));
+export const ComingSoon = lazy(() => import("@/pages/coming-soon"));
+
+// Public Dining Page
+export const PublicDining = lazy(() => import("@/pages/global-dining"));
 
 // Admin Pages
 export const Dashboard = lazy(() => import("@/pages/dashboard"));
@@ -107,7 +111,7 @@ export const RealEstateManagement = lazy(() => import("@/pages/admin/real-estate
 export const RealEstateEditor = lazy(() => import("@/pages/admin/real-estate-editor"));
 
 // Octopus Content Generation Engine
-export const OctopusDashboard = lazy(() => import("@/pages/admin/octopus-dashboard"));
+export const OctopusDashboard = lazy(() => import("@/pages/admin/octypo-dashboard"));
 
 // TRAVI Content Generation Engine
 export const TraviLocationsList = lazy(() => import("@/pages/admin/travi/locations-list"));
@@ -147,7 +151,8 @@ export const MonetizationAffiliates = lazy(() => import("@/pages/admin/monetizat
 export const EnterpriseTeams = lazy(() => import("@/pages/admin/enterprise/teams"));
 export const EnterpriseWorkflows = lazy(() => import("@/pages/admin/enterprise/workflows"));
 export const EnterpriseWebhooks = lazy(() => import("@/pages/admin/enterprise/webhooks"));
-export const EnterpriseActivity = lazy(() => import("@/pages/admin/enterprise/activity-feed"));
+// EnterpriseActivity - activity-feed.tsx not created yet, using teams as placeholder
+export const EnterpriseActivity = lazy(() => import("@/pages/admin/enterprise/teams"));
 
 // Governance Pages
 export const GovernanceDashboard = lazy(() => import("@/pages/admin/governance/index"));

@@ -130,6 +130,11 @@ export interface DestinationPageData {
   faqs: FAQ[];
   cta: DestinationCTAData;
   seo: DestinationSEO;
+  // Optional extended properties for API responses
+  featuredAttractions?: unknown[];
+  featuredAreas?: unknown[];
+  featuredHighlights?: unknown[];
+  transport?: TransportOption[]; // Alias for transportOptions
 }
 
 // All 16 destination IDs for the factory pattern

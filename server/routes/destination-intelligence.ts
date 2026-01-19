@@ -1689,14 +1689,13 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           return res.status(404).json({ error: "Destination not found" });
         }
         
-        const updateData: Partial<typeof destinations.$inferInsert> = {};
-        if (metaTitle !== undefined) updateData.metaTitle = metaTitle;
-        if (metaDescription !== undefined) updateData.metaDescription = metaDescription;
-        updateData.updatedAt = new Date();
-        
         const [updated] = await db
           .update(destinations)
-          .set(updateData)
+          .set({
+            metaTitle: metaTitle !== undefined ? metaTitle : existing.metaTitle,
+            metaDescription: metaDescription !== undefined ? metaDescription : existing.metaDescription,
+            updatedAt: new Date(),
+          })
           .where(eq(destinations.id, slug))
           .returning();
         

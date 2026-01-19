@@ -1084,7 +1084,7 @@ export function registerAdminApiRoutes(app: Express): void {
 
   router.get("/analytics/stats", requirePermission("canManageSettings"), async (_req: Request, res: Response) => {
     try {
-      const { contents, articles, destinations, images, users, aiGenerationLogs, tiqetsAttractions } = await import("@shared/schema");
+      const { contents, articles, destinations, users, aiGenerationLogs, tiqetsAttractions } = await import("@shared/schema");
       const { count, sql, eq } = await import("drizzle-orm");
       
       // Get content counts
@@ -1109,12 +1109,12 @@ export function registerAdminApiRoutes(app: Express): void {
         count: count(),
       }).from(contents).where(sql`${contents.status} = 'draft'`);
       
-      // Get image counts
+      // Get image counts (from tiqetsAttractions with images)
       let imageCount = 0;
       try {
         const [imgStats] = await db.select({
           total: count(),
-        }).from(images);
+        }).from(tiqetsAttractions).where(sql`${tiqetsAttractions.tiqetsImages} IS NOT NULL`);
         imageCount = imgStats?.total || 0;
       } catch {
         imageCount = 0;
