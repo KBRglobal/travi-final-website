@@ -7,6 +7,28 @@ import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
+import { pool } from "./db";
+
+// Ensure session table exists
+async function ensureSessionTable(): Promise<void> {
+  try {
+    const createTableSQL = `
+      CREATE TABLE IF NOT EXISTS sessions (
+        sid VARCHAR NOT NULL PRIMARY KEY,
+        sess JSONB NOT NULL,
+        expire TIMESTAMP NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON sessions(expire);
+    `;
+    await pool.query(createTableSQL);
+    console.log('[Session] Table verified/created successfully');
+  } catch (error) {
+    console.error('[Session] Failed to ensure table exists:', error);
+  }
+}
+
+// Initialize session table on module load
+ensureSessionTable();
 
 const getOidcConfig = memoize(
   async () => {
