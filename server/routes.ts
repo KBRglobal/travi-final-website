@@ -68,7 +68,8 @@ import {
   affiliateClicks,
   users,
 } from "@shared/schema";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated, getSession } from "./replitAuth";
+import passport from "passport";
 import { makeRenderSafeHomepageConfig } from "./lib/homepage-fallbacks";
 import { z } from "zod";
 import {
@@ -2062,6 +2063,18 @@ export async function registerRoutes(
   // Destination content routes (guide sections, holidays, essentials)
   const destinationContentRouter = (await import("./routes/destination-content-routes")).default;
   app.use(destinationContentRouter);
+
+  // ============================================================================
+  // SESSION MIDDLEWARE (BEFORE AUTH ROUTES)
+  // Session must be initialized before auth routes that use req.session
+  // ============================================================================
+  app.use(getSession());
+  app.use(passport.initialize());
+  app.use(passport.session());
+  
+  // Serialize/deserialize for passport (required for session support)
+  passport.serializeUser((user: Express.User, cb) => cb(null, user));
+  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
   // ============================================================================
   // DOMAIN-BASED ROUTE ORGANIZATION
