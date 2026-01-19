@@ -17,6 +17,7 @@ import {
   XCircle,
   Filter,
   Image,
+  Settings2,
 } from "lucide-react";
 import {
   Select,
@@ -200,12 +201,20 @@ export default function DestinationsListPage() {
       title="Destinations"
       description="Manage travel destinations"
       actions={
-        <Link href="/admin/destinations/new">
-          <Button data-testid="button-add-destination">
-            <Plus className="w-4 h-4 mr-2" />
-            New Destination
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/destinations/index-editor">
+            <Button variant="outline" data-testid="button-destinations-index-editor">
+              <Settings2 className="w-4 h-4 mr-2" />
+              Index Page Editor
+            </Button>
+          </Link>
+          <Link href="/admin/destinations/new">
+            <Button data-testid="button-add-destination">
+              <Plus className="w-4 h-4 mr-2" />
+              New Destination
+            </Button>
+          </Link>
+        </div>
       }
       filters={
         <div className="flex flex-col sm:flex-row gap-4 w-full">

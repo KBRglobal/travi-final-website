@@ -13,6 +13,7 @@ import {
   homepageCta,
   homepageSeoMeta,
   pageSeo,
+  destinationsIndexConfig,
   contents,
   pageLayouts,
   tiqetsAttractions,
@@ -58,6 +59,65 @@ export function registerPublicApiRoutes(app: Express): void {
     } catch (error) {
       console.error("Error fetching public contents:", error);
       res.status(500).json({ error: "Failed to fetch contents" });
+    }
+  });
+
+  // Public API for destinations index hero carousel
+  // Database-driven hero configuration for /destinations page
+  router.get("/destinations-index/hero", async (req, res) => {
+    try {
+      const [config] = await db.select().from(destinationsIndexConfig).limit(1);
+      
+      if (!config || !config.heroSlides || (config.heroSlides as any[]).length === 0) {
+        // Return empty array - no fallbacks per CMS contract
+        return res.json({
+          heroSlides: [],
+          heroTitle: null,
+          heroSubtitle: null,
+          heroDescription: null,
+          heroCTAText: null,
+          heroCTALink: null,
+        });
+      }
+      
+      // Get active slides sorted by order
+      const activeSlides = (config.heroSlides as any[])
+        .filter((slide: any) => slide.isActive)
+        .sort((a: any, b: any) => a.order - b.order);
+      
+      // Enrich slides with destination data
+      const enrichedSlides = [];
+      for (const slide of activeSlides) {
+        const [destination] = await db
+          .select({
+            id: destinations.id,
+            name: destinations.name,
+            slug: destinations.slug,
+            country: destinations.country,
+          })
+          .from(destinations)
+          .where(eq(destinations.id, slide.destinationId))
+          .limit(1);
+        
+        if (destination) {
+          enrichedSlides.push({
+            ...slide,
+            destination,
+          });
+        }
+      }
+      
+      res.json({
+        heroSlides: enrichedSlides,
+        heroTitle: config.heroTitle,
+        heroSubtitle: config.heroSubtitle,
+        heroDescription: config.heroDescription,
+        heroCTAText: config.heroCTAText,
+        heroCTALink: config.heroCTALink,
+      });
+    } catch (error) {
+      console.error("Error fetching destinations index hero:", error);
+      res.status(500).json({ error: "Failed to fetch destinations index hero" });
     }
   });
 
