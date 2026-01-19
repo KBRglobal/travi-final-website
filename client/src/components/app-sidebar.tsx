@@ -139,7 +139,6 @@ const sidebarModules: NavModule[] = [
     defaultOpen: true,
     items: [
       { title: "Overview", url: "/admin", icon: LayoutDashboard },
-      { title: "Activity Feed", url: "/admin/enterprise/activity", icon: Activity, requiredPermission: "canViewAuditLogs" },
       { title: "Quick Actions", url: "/admin/qa", icon: Zap, requiredPermission: "canManageSettings" },
     ],
   },
