@@ -14,9 +14,68 @@
  */
 
 import crypto from 'crypto';
-import { db } from '../db';
+import { db, pool } from '../db';
 import { preAuthTokens } from '@shared/schema';
 import { eq, lt } from 'drizzle-orm';
+
+/**
+ * Ensure the pre_auth_tokens table exists in the database
+ * This handles the case where schema hasn't been migrated to Railway
+ */
+async function ensureTableExists(): Promise<void> {
+  try {
+    // First ensure the uuid extension is available
+    await pool.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
+    
+    const createTableSQL = `
+      CREATE TABLE IF NOT EXISTS pre_auth_tokens (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        token_hash VARCHAR NOT NULL UNIQUE,
+        user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        username VARCHAR NOT NULL,
+        nonce VARCHAR NOT NULL,
+        ip_address VARCHAR,
+        user_agent TEXT,
+        risk_score INTEGER,
+        device_fingerprint TEXT,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS "IDX_pre_auth_token_hash" ON pre_auth_tokens(token_hash);
+      CREATE INDEX IF NOT EXISTS "IDX_pre_auth_expires" ON pre_auth_tokens(expires_at);
+    `;
+    await pool.query(createTableSQL);
+    console.log('[PreAuth] Table verified/created successfully');
+  } catch (error) {
+    // If FK constraint fails (users table doesn't exist yet), try without it
+    try {
+      const fallbackSQL = `
+        CREATE TABLE IF NOT EXISTS pre_auth_tokens (
+          id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+          token_hash VARCHAR NOT NULL UNIQUE,
+          user_id VARCHAR NOT NULL,
+          username VARCHAR NOT NULL,
+          nonce VARCHAR NOT NULL,
+          ip_address VARCHAR,
+          user_agent TEXT,
+          risk_score INTEGER,
+          device_fingerprint TEXT,
+          expires_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS "IDX_pre_auth_token_hash" ON pre_auth_tokens(token_hash);
+        CREATE INDEX IF NOT EXISTS "IDX_pre_auth_expires" ON pre_auth_tokens(expires_at);
+      `;
+      await pool.query(fallbackSQL);
+      console.log('[PreAuth] Table created (without FK constraint)');
+    } catch (fallbackError) {
+      console.error('[PreAuth] Failed to ensure table exists:', fallbackError);
+    }
+  }
+}
+
+// Initialize table on module load
+ensureTableExists();
 
 /**
  * Pre-auth token configuration
