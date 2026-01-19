@@ -65,7 +65,7 @@ export function registerPublicApiRoutes(app: Express): void {
   router.get("/destinations", async (req, res) => {
     try {
       const { limit, level } = req.query;
-      const maxLimit = Math.min(parseInt(limit as string) || 12, 24);
+      const maxLimit = Math.min(parseInt(limit as string) || 50, 50);
 
       const allDestinations = await db
         .select({
@@ -77,11 +77,15 @@ export function registerPublicApiRoutes(app: Express): void {
           cardImage: destinations.cardImage,
           cardImageAlt: destinations.cardImageAlt,
           summary: destinations.summary,
+          heroImage: destinations.heroImage,
+          heroImageAlt: destinations.heroImageAlt,
+          moodVibe: destinations.moodVibe,
+          moodTagline: destinations.moodTagline,
+          moodPrimaryColor: destinations.moodPrimaryColor,
         })
         .from(destinations)
         .where(eq(destinations.isActive, true))
-        .orderBy(destinations.name)
-        .limit(maxLimit);
+        .orderBy(destinations.name);
 
       res.json(allDestinations);
     } catch (error) {
