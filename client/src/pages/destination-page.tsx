@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { DestinationPageTemplate } from "@/components/destination";
-import { getDestinationBySlug, DESTINATION_SLUGS } from "@/data/destinations";
+import { getDestinationBySlug } from "@/data/destinations";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -81,8 +81,8 @@ export default function DestinationPage() {
     );
   }
   
-  // 404 handling for invalid slugs
-  if (!apiData && !staticData) {
+  // 404 handling - API is single source of truth
+  if (!apiData) {
     return (
       <main className="min-h-screen bg-transparent flex items-center justify-center p-4">
         <Card className="max-w-md w-full bg-card/80 backdrop-blur-md border border-border/30 shadow-lg">
@@ -108,21 +108,6 @@ export default function DestinationPage() {
                   Back to Home
                 </Button>
               </Link>
-            </div>
-            
-            <div className="mt-8 pt-6 border-t">
-              <p className="text-xs text-muted-foreground mb-3">
-                Available destinations:
-              </p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {DESTINATION_SLUGS.map((destSlug) => (
-                  <Link key={destSlug} href={`/destinations/${destSlug}`}>
-                    <span className="text-xs text-primary hover:underline" data-testid={`link-destination-${destSlug}`}>
-                      {destSlug}
-                    </span>
-                  </Link>
-                ))}
-              </div>
             </div>
           </CardContent>
         </Card>
