@@ -1,0 +1,115 @@
+PLANNING FEEDBACK — PLAN IS INCOMPLETE AND NOT ACCEPTABLE AS-IS
+
+STATUS:
+This plan is TOO GENERIC and DOES NOT address the core failures that were documented.
+It risks repeating the same mistake: building “something new” without fixing the broken source-of-truth problem.
+
+BEFORE THIS PLAN CAN BE APPROVED, IT MUST BE REWRITTEN TO INCLUDE THE FOLLOWING — IN PLANNING ONLY.
+
+--------------------------------
+WHAT IS MISSING FROM THE PLAN
+--------------------------------
+
+1) SOURCE-OF-TRUTH EXPLICITNESS (CRITICAL)
+Your plan does NOT explicitly state:
+- What is the SINGLE source of truth for Destinations
+- What existing sources currently exist
+- Which ones will be deprecated and removed
+
+You MUST explicitly list:
+- Frontend current source(s)
+- Admin current source(s)
+- Any static / seed / fallback / AI / external sources
+- Which ONE becomes authoritative
+
+Without this, “Add destination data to storage” is meaningless.
+
+2) GHOST DESTINATIONS (RECURRING BUG) — NOT ADDRESSED
+Your plan does NOT mention:
+- Unsupported destinations (Bali, Sydney, etc.)
+- The fact that this issue has occurred before
+- Investigation of HOW they are being injected
+
+You MUST add a dedicated planning step:
+- Trace exact creation path of ghost destinations
+- Identify code responsible
+- Plan permanent prevention (not just cleanup)
+
+3) FRONTEND CONTENT OWNERSHIP — NOT DEFINED
+Your plan mentions:
+“Get destination list from new source”
+“Get single destination from new source”
+
+But does NOT specify:
+- Which frontend sections will switch
+- What happens to existing frontend-rendered content
+- Whether Hero / Sections / SEO / Mobility are included
+
+You MUST explicitly list:
+- Hero content
+- Content sections
+- Images / Media
+- SEO
+- Mobility / Transport
+and state whether each will:
+- Move to Admin control
+- Or be removed from Admin entirely
+
+4) ADMIN FEATURES ARE IGNORED
+Your plan does NOT mention:
+- Broken toggles
+- Broken Add Section
+- Broken Edit
+- Empty Content Sections vs frontend content
+- Non-functional SEO tab
+
+These MUST be part of the plan, even if the decision is to REMOVE them.
+
+5) QA IS TOO VAGUE
+“Test editing destination visible on frontend” is insufficient.
+
+You MUST define:
+- Exact action(s) to test (e.g. change Hero title)
+- Exact expected frontend change
+- Who performs the test (agent simulating real user)
+
+--------------------------------
+REQUIRED PLAN REWRITE (STRUCTURE)
+--------------------------------
+
+Rewrite the plan using THIS structure:
+
+1. Current Architecture Mapping
+   - List all current data sources for Destinations (Admin + Frontend)
+   - Identify conflicts and duplications
+
+2. Source of Truth Decision
+   - Declare the single authoritative source
+   - List sources to be removed or deprecated
+
+3. Ghost Destinations Investigation
+   - Identify exact injection paths
+   - Plan prevention mechanism
+
+4. Destination Data Model Scope
+   - Explicitly list which fields are managed by Admin
+   - Explicitly list which frontend sections are affected
+
+5. Migration Strategy
+   - How existing frontend content will be migrated or replaced
+   - How to avoid breaking live pages
+
+6. QA Plan (Operator-Based)
+   - Exact actions
+   - Exact verification steps
+   - Frontend confirmation required
+
+--------------------------------
+RULE
+--------------------------------
+
+DO NOT PROCEED TO IMPLEMENTATION
+until this rewritten plan is reviewed and approved.
+
+This is still PLANNING MODE.
+Generic task lists are not sufficient.

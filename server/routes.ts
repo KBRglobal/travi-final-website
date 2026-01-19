@@ -6032,6 +6032,7 @@ export async function registerRoutes(
       }
       
       // Return destination data with hero images and featured sections
+      // ALL DATA FROM DATABASE - NO STATIC FALLBACKS
       res.json({
         id: destination.id,
         name: destination.name,
@@ -6040,7 +6041,7 @@ export async function registerRoutes(
         summary: destination.summary,
         cardImage: destination.cardImage,
         cardImageAlt: destination.cardImageAlt,
-        // Hero data
+        // Hero data from database
         hero: {
           title: destination.heroTitle || `Discover ${destination.name}`,
           subtitle: destination.heroSubtitle || destination.summary || `Explore the best of ${destination.name}`,
@@ -6048,17 +6049,26 @@ export async function registerRoutes(
           ctaLink: destination.heroCTALink || `/destinations/${destination.id}/attractions`,
           images: heroImages,
         },
+        // SEO data from database
+        seo: {
+          metaTitle: destination.metaTitle || `${destination.name} Travel Guide | TRAVI`,
+          metaDescription: destination.metaDescription || `Discover the best of ${destination.name}`,
+          canonicalUrl: destination.canonicalUrl || `https://travi.world/destinations/${destination.id}`,
+          ogImage: destination.ogImage || destination.cardImage,
+          ogTitle: destination.ogTitle || destination.metaTitle,
+          ogDescription: destination.ogDescription || destination.metaDescription,
+        },
         // Featured sections from database
         featuredAttractions: destination.featuredAttractions || [],
         featuredAreas: destination.featuredAreas || [],
         featuredHighlights: destination.featuredHighlights || [],
-        // Mood/vibe for styling
+        // Mood/vibe for styling FROM DATABASE (no hardcoded values)
         mood: {
-          primaryColor: "#1E40AF",
-          gradientFrom: "rgba(0,0,0,0.6)",
-          gradientTo: "rgba(0,0,0,0.3)",
-          vibe: "cosmopolitan",
-          tagline: `Experience ${destination.name}`,
+          primaryColor: destination.moodPrimaryColor || "#1E40AF",
+          gradientFrom: destination.moodGradientFrom || "rgba(0,0,0,0.6)",
+          gradientTo: destination.moodGradientTo || "rgba(0,0,0,0.3)",
+          vibe: destination.moodVibe || "cosmopolitan",
+          tagline: destination.moodTagline || `Experience ${destination.name}`,
         },
       });
     } catch (error) {
