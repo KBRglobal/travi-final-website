@@ -1,0 +1,73 @@
+TASK — DESTINATIONS LIST SEO: FULL CONTROL, NO HARD-CODED META
+
+CONTEXT:
+This is a production SEO-critical page.
+URL: /destinations
+Currently the page <title> and meta tags are hard-coded (e.g. “18 Destination Guides”).
+The moment a destination is added or removed, the meta becomes incorrect and harms SEO.
+
+THIS IS UNACCEPTABLE.
+SEO must NEVER depend on item count or static strings.
+
+GOAL:
+Give FULL ADMIN CONTROL over ALL SEO metadata for the DESTINATIONS LIST PAGE
+(no code changes required in the future to adjust SEO).
+
+REQUIREMENTS (MANDATORY):
+
+1. REMOVE ALL HARD-CODED SEO
+- No static <title>
+- No dynamic titles based on count (❌ “18 destinations”, ❌ “X guides”)
+- No fallback strings that change implicitly
+
+2. ADMIN-CONTROLLED SEO (SOURCE OF TRUTH = DATABASE)
+Create a dedicated SEO configuration for:
+Page: Destinations List (/destinations)
+
+Fields required (ALL editable in Admin):
+- meta_title
+- meta_description
+- canonical_url
+- og_title
+- og_description
+- og_image
+- robots (index/follow)
+- optional: schema override
+
+3. RENDERING RULES (STRICT):
+- Frontend MUST read SEO only from DB
+- If a field is empty → do NOT auto-generate a replacement
+- Empty field = empty output (no silent fallbacks)
+
+4. SCHEMA / STRUCTURED DATA:
+- Add editable JSON-LD for the destinations list page
+- Admin must be able to update schema content WITHOUT code
+- No hard-coded schema strings in frontend
+
+5. ADMIN UX:
+- Clear section: “Destinations Page SEO”
+- Show live preview of:
+  - <title>
+  - meta description
+  - OG preview
+- Validation only for length limits (no auto-text)
+
+6. QA / PROOF REQUIRED:
+- Change meta_title in Admin → refresh /destinations → browser tab updates
+- Add a new destination → meta DOES NOT change
+- Remove a destination → meta DOES NOT change
+- View page source → values match DB exactly
+- Network tab → SEO data comes from API (Railway PostgreSQL)
+
+SUCCESS CRITERIA:
+- SEO for /destinations is 100% stable, predictable, and editable
+- Destination count NEVER affects meta output
+- Marketing/SEO team can optimize without touching code
+
+FAIL CONDITIONS:
+- Any hard-coded string remains
+- Any “smart” auto-generation
+- Any dependency on destination count
+- Any fallback that hides missing data
+
+EXECUTE ONLY AFTER ACKNOWLEDGING THESE RULES.
