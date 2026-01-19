@@ -164,7 +164,8 @@ export default function DestinationPage() {
     experiences: staticData?.experiences || [],
     neighborhoods: staticData?.neighborhoods || [],
     seasons: staticData?.seasons || [],
-    transport: staticData?.transport || [],
+    transportOptions: staticData?.transportOptions || staticData?.transport || [],
+    transport: staticData?.transportOptions || staticData?.transport || [], // Fallback to either property
     faqs: staticData?.faqs || [],
     cta: staticData?.cta || {
       headline: `Start planning your trip to ${apiData?.name || ''}`,

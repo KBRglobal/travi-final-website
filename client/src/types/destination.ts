@@ -137,6 +137,13 @@ export interface DestinationPageData {
   transport?: TransportOption[]; // Alias for transportOptions
 }
 
+// Partial version of DestinationPageData for API responses that may not include all fields
+export type PartialDestinationPageData = Partial<DestinationPageData> & {
+  id: string;
+  name: string;
+  country: string;
+};
+
 // All 16 destination IDs for the factory pattern
 export const DESTINATION_IDS = [
   "abu-dhabi",

@@ -143,7 +143,7 @@ export const preAuthTokens = pgTable("pre_auth_tokens", {
   index("IDX_pre_auth_expires").on(table.expiresAt),
 ]);
 
-export const insertPreAuthTokenSchema = createInsertSchema(preAuthTokens).omit({ id: true, createdAt: true });
+export const insertPreAuthTokenSchema = createInsertSchema(preAuthTokens);
 export type InsertPreAuthToken = z.infer<typeof insertPreAuthTokenSchema>;
 export type PreAuthToken = typeof preAuthTokens.$inferSelect;
 
@@ -3639,7 +3639,7 @@ export const pageSeo = pgTable("page_seo", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertPageSeoSchema = createInsertSchema(pageSeo).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPageSeoSchema = createInsertSchema(pageSeo);
 
 export type PageSeo = typeof pageSeo.$inferSelect;
 export type InsertPageSeo = z.infer<typeof insertPageSeoSchema>;
