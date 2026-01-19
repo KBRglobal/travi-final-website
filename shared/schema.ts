@@ -3650,6 +3650,42 @@ export type PageSeo = typeof pageSeo.$inferSelect;
 export type InsertPageSeo = z.infer<typeof insertPageSeoSchema>;
 
 // ============================================
+// Destinations Index Config - Hero carousel for /destinations page
+// ============================================
+
+// Hero carousel slide type for destinations index
+export interface DestinationsIndexHeroSlide {
+  id: string;
+  destinationId: string;      // Reference to destination in destinations table
+  filename: string;           // Image filename in object storage
+  alt: string;                // Alt text for SEO (required)
+  order: number;              // Display order in carousel
+  isActive: boolean;          // Whether to show in carousel
+  cityType?: string;          // E.g. "Global Travel Hub"
+  travelStyle?: string;       // E.g. "Luxury & Modern City"
+  secondaryBadge?: string;    // E.g. "Nov–Mar"
+}
+
+export const destinationsIndexConfig = pgTable("destinations_index_config", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Hero carousel slides (ordered list)
+  heroSlides: jsonb("hero_slides").$type<DestinationsIndexHeroSlide[]>().default([]),
+  // Hero section content (DB-driven, no fallbacks)
+  heroTitle: text("hero_title"),
+  heroSubtitle: text("hero_subtitle"),
+  heroDescription: text("hero_description"),
+  heroCTAText: varchar("hero_cta_text"),
+  heroCTALink: varchar("hero_cta_link"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertDestinationsIndexConfigSchema = createInsertSchema(destinationsIndexConfig);
+
+export type DestinationsIndexConfig = typeof destinationsIndexConfig.$inferSelect;
+export type InsertDestinationsIndexConfig = z.infer<typeof insertDestinationsIndexConfigSchema>;
+
+// ============================================
 // CMS Translations System - Language-agnostic localization
 // ============================================
 
