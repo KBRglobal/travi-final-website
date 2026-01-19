@@ -68,8 +68,8 @@ export function registerPublicApiRoutes(app: Express): void {
     try {
       const [config] = await db.select().from(destinationsIndexConfig).limit(1);
       
-      if (!config || !config.heroSlides || (config.heroSlides as any[]).length === 0) {
-        // Return empty array - no fallbacks per CMS contract
+      // No config at all - return empty values per CMS contract (no fallbacks)
+      if (!config) {
         return res.json({
           heroSlides: [],
           heroTitle: null,
@@ -80,8 +80,9 @@ export function registerPublicApiRoutes(app: Express): void {
         });
       }
       
-      // Get active slides sorted by order
-      const activeSlides = (config.heroSlides as any[])
+      // Get active slides sorted by order (may be empty, that's OK)
+      const heroSlidesArray = Array.isArray(config.heroSlides) ? config.heroSlides : [];
+      const activeSlides = heroSlidesArray
         .filter((slide: any) => slide.isActive)
         .sort((a: any, b: any) => a.order - b.order);
       
@@ -107,13 +108,14 @@ export function registerPublicApiRoutes(app: Express): void {
         }
       }
       
+      // Return database values - no fallbacks per CMS contract
       res.json({
         heroSlides: enrichedSlides,
-        heroTitle: config.heroTitle,
-        heroSubtitle: config.heroSubtitle,
-        heroDescription: config.heroDescription,
-        heroCTAText: config.heroCTAText,
-        heroCTALink: config.heroCTALink,
+        heroTitle: config.heroTitle ?? null,
+        heroSubtitle: config.heroSubtitle ?? null,
+        heroDescription: config.heroDescription ?? null,
+        heroCTAText: config.heroCTAText ?? null,
+        heroCTALink: config.heroCTALink ?? null,
       });
     } catch (error) {
       console.error("Error fetching destinations index hero:", error);
