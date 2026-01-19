@@ -125,6 +125,28 @@ export const insertOtpCodeSchema = createInsertSchema(otpCodes);
 export type InsertOtpCode = z.infer<typeof insertOtpCodeSchema>;
 export type OtpCode = typeof otpCodes.$inferSelect;
 
+// Pre-auth tokens table for MFA flow (persisted to survive server restarts)
+export const preAuthTokens = pgTable("pre_auth_tokens", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tokenHash: varchar("token_hash").notNull().unique(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  username: varchar("username").notNull(),
+  nonce: varchar("nonce").notNull(),
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
+  riskScore: integer("risk_score"),
+  deviceFingerprint: text("device_fingerprint"),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => [
+  index("IDX_pre_auth_token_hash").on(table.tokenHash),
+  index("IDX_pre_auth_expires").on(table.expiresAt),
+]);
+
+export const insertPreAuthTokenSchema = createInsertSchema(preAuthTokens).omit({ id: true, createdAt: true });
+export type InsertPreAuthToken = z.infer<typeof insertPreAuthTokenSchema>;
+export type PreAuthToken = typeof preAuthTokens.$inferSelect;
+
 // Users table - with username/password auth and role-based permissions
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
