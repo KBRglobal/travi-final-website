@@ -42,6 +42,29 @@ interface DestinationConfig {
   isActive: boolean;
 }
 
+/**
+ * SUPPORTED DESTINATIONS - OFFICIAL LIST
+ * ========================================
+ * GUARD: Only destinations in this list may exist in the database.
+ * SEVERITY 1 BUG FIX: Bali and Sydney were removed on 2025-01-19 as they are
+ * unsupported destinations that were incorrectly appearing in admin panels.
+ * 
+ * DO NOT ADD destinations that:
+ * - Have no public-facing content pages
+ * - Are not part of the official Travi destination roadmap
+ * - Were not explicitly approved for the CMS
+ * 
+ * If a destination needs to be added, it must be:
+ * 1. Added to this array with isActive: true
+ * 2. Have corresponding frontend pages created
+ * 3. Have admin content management support
+ */
+const SUPPORTED_DESTINATION_IDS = new Set([
+  "dubai", "paris", "bangkok", "istanbul", "london", "new-york", "singapore",
+  "tokyo", "barcelona", "rome", "amsterdam", "hong-kong", "las-vegas",
+  "abu-dhabi", "ras-al-khaimah", "los-angeles", "miami"
+]);
+
 const DESTINATIONS: DestinationConfig[] = [
   { id: "dubai", name: "Dubai", country: "UAE", isActive: true },
   { id: "paris", name: "Paris", country: "France", isActive: true },
@@ -50,14 +73,18 @@ const DESTINATIONS: DestinationConfig[] = [
   { id: "london", name: "London", country: "United Kingdom", isActive: true },
   { id: "new-york", name: "New York", country: "USA", isActive: true },
   { id: "singapore", name: "Singapore", country: "Singapore", isActive: true },
-  { id: "tokyo", name: "Tokyo", country: "Japan", isActive: false },
-  { id: "barcelona", name: "Barcelona", country: "Spain", isActive: false },
-  { id: "rome", name: "Rome", country: "Italy", isActive: false },
-  { id: "amsterdam", name: "Amsterdam", country: "Netherlands", isActive: false },
-  { id: "hong-kong", name: "Hong Kong", country: "China", isActive: false },
-  { id: "las-vegas", name: "Las Vegas", country: "USA", isActive: false },
-  { id: "sydney", name: "Sydney", country: "Australia", isActive: false },
-  { id: "bali", name: "Bali", country: "Indonesia", isActive: false },
+  { id: "tokyo", name: "Tokyo", country: "Japan", isActive: true },
+  { id: "barcelona", name: "Barcelona", country: "Spain", isActive: true },
+  { id: "rome", name: "Rome", country: "Italy", isActive: true },
+  { id: "amsterdam", name: "Amsterdam", country: "Netherlands", isActive: true },
+  { id: "hong-kong", name: "Hong Kong", country: "China", isActive: true },
+  { id: "las-vegas", name: "Las Vegas", country: "USA", isActive: true },
+  { id: "abu-dhabi", name: "Abu Dhabi", country: "UAE", isActive: true },
+  { id: "ras-al-khaimah", name: "Ras Al Khaimah", country: "UAE", isActive: true },
+  { id: "los-angeles", name: "Los Angeles", country: "USA", isActive: true },
+  { id: "miami", name: "Miami", country: "USA", isActive: true },
+  // NOTE: Bali and Sydney were REMOVED - they are unsupported destinations
+  // See SUPPORTED_DESTINATION_IDS guard above
 ];
 
 // Generated destination content structure
@@ -109,15 +136,48 @@ interface GeneratedDestinationContent {
   }>;
 }
 
-// Seed the database with destinations if empty
+/**
+ * Seed the database with destinations if empty
+ * 
+ * PERMANENT GUARD (SEVERITY 1 FIX - 2025-01-19):
+ * This function includes a guard that:
+ * 1. Only seeds destinations that exist in SUPPORTED_DESTINATION_IDS
+ * 2. Purges any unsupported destinations on every startup
+ * 3. Logs all purge operations for audit trail
+ * 
+ * This prevents ghost destinations (like Bali, Sydney) from ever reappearing.
+ */
 async function seedDestinations() {
   try {
+    // GUARD: Purge any unsupported destinations that might exist in DB
+    // This runs on EVERY startup to ensure database integrity
+    const allDbDestinations = await db.select({ id: destinations.id, name: destinations.name }).from(destinations);
+    const unsupportedDestinations = allDbDestinations.filter(d => !SUPPORTED_DESTINATION_IDS.has(d.id));
+    
+    if (unsupportedDestinations.length > 0) {
+      logger.warn({ 
+        unsupported: unsupportedDestinations.map(d => d.id) 
+      }, `GUARD: Purging ${unsupportedDestinations.length} unsupported destinations from database`);
+      
+      for (const unsupported of unsupportedDestinations) {
+        await db.delete(destinations).where(eq(destinations.id, unsupported.id));
+        logger.info({ id: unsupported.id, name: unsupported.name }, "GUARD: Purged unsupported destination");
+      }
+    }
+
+    // Now seed only if empty
     const existing = await db.select().from(destinations).limit(1);
     
     if (existing.length === 0) {
       logger.info("Seeding destinations table with initial data");
       
       for (const dest of DESTINATIONS) {
+        // GUARD: Double-check destination is in supported list before seeding
+        if (!SUPPORTED_DESTINATION_IDS.has(dest.id)) {
+          logger.warn({ id: dest.id }, "GUARD: Skipping unsupported destination in seed array");
+          continue;
+        }
+        
         const normalizedName = dest.name.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
         await db.insert(destinations).values({
           id: dest.id,
@@ -136,7 +196,7 @@ async function seedDestinations() {
         } as any).onConflictDoNothing();
       }
       
-      logger.info(`Seeded ${DESTINATIONS.length} destinations`);
+      logger.info(`Seeded ${DESTINATIONS.length} supported destinations`);
     } else {
       logger.info("Destinations table already has data, skipping seed");
     }

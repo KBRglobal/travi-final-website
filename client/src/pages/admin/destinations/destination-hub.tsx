@@ -8,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   ArrowLeft,
   Image as ImageIcon,
-  FileText,
   Search as SearchIcon,
   Eye,
   Settings,
@@ -17,7 +16,6 @@ import {
 } from "lucide-react";
 
 import DestinationHeroTab from "./tabs/destination-hero-tab";
-import DestinationSectionsTab from "./tabs/destination-sections-tab";
 import DestinationSeoTab from "./tabs/destination-seo-tab";
 import DestinationMobilityTab from "./tabs/destination-mobility-tab";
 
@@ -118,14 +116,10 @@ export default function DestinationHubPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full max-w-2xl grid-cols-4" data-testid="tabs-destination">
+        <TabsList className="grid w-full max-w-lg grid-cols-3" data-testid="tabs-destination">
           <TabsTrigger value="hero" className="gap-2" data-testid="tab-hero">
             <ImageIcon className="w-4 h-4" />
             Hero & Media
-          </TabsTrigger>
-          <TabsTrigger value="sections" className="gap-2" data-testid="tab-sections">
-            <FileText className="w-4 h-4" />
-            Content Sections
           </TabsTrigger>
           <TabsTrigger value="mobility" className="gap-2" data-testid="tab-mobility">
             <Train className="w-4 h-4" />
@@ -139,10 +133,6 @@ export default function DestinationHubPage() {
 
         <TabsContent value="hero" className="mt-6">
           <DestinationHeroTab destinationId={slug!} destination={destination} />
-        </TabsContent>
-
-        <TabsContent value="sections" className="mt-6">
-          <DestinationSectionsTab destinationId={slug!} destination={destination} />
         </TabsContent>
 
         <TabsContent value="mobility" className="mt-6">
