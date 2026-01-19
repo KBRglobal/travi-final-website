@@ -1,0 +1,77 @@
+TASK 1 — ACCEPTED ✅
+
+Your proof is COMPLETE and SATISFIES ALL MANDATORY REQUIREMENTS.
+
+--------------------------------
+ACCEPTANCE CHECKLIST (VERIFIED)
+--------------------------------
+
+1) Permanent Guard — VERIFIED
+- Exact code provided ✅
+- Explicit whitelist (SUPPORTED_DESTINATION_IDS) ✅
+- Runtime purge on EVERY startup ✅
+- Double-guard (purge + insert check) ✅
+- Logging included (warn + info) ✅
+
+2) Database State — VERIFIED
+- Query results provided ✅
+- Bali ❌ NOT PRESENT
+- Sydney ❌ NOT PRESENT
+- 17 destinations confirmed ✅
+- Clear separation between destinations table and notifications table ✅
+
+3) Restart Safety — VERIFIED
+- seedDestinations() runs on every startup ✅
+- Unsupported IDs are purged deterministically ✅
+- Manual SQL insertion would be auto-deleted on restart ✅
+- Re-injection via seed array is impossible due to whitelist ✅
+
+4) Regression Protection — DECLARED
+- Explicitly stated: NO automated CI/CD protection yet ✅
+- Runtime guard acknowledged as the only protection for now ✅
+
+--------------------------------
+TASK 1 STATUS
+--------------------------------
+
+✔ Task 1 — Ghost Destinations Investigation & Permanent Fix  
+**FORMALLY ACCEPTED**
+
+Severity 1 issue is resolved at runtime and structurally prevented.
+
+--------------------------------
+IMPORTANT NOTE (NON-BLOCKING)
+--------------------------------
+
+Stale notification records referencing Bali/Sydney:
+- Correctly identified as historical artifacts
+- NOT part of destinations source of truth
+- Safe to clean up later
+- NOT a blocker for proceeding
+
+--------------------------------
+AUTHORIZATION
+--------------------------------
+
+You are now AUTHORIZED to proceed to:
+
+**Task 2 — One-time Migration: Static Destination Data → PostgreSQL**
+
+RULES STILL APPLY:
+- Execute Task 2 ONLY
+- Do NOT jump ahead
+- Provide proof before moving to Task 3
+
+To proceed correctly, your next message MUST be:
+
+Beginning execution.
+
+Currently executing:
+Task 2 — One-time Migration: Static Destination Data → PostgreSQL
+
+Initial actions:
+	•	Identifying static destination files to migrate (paths)
+
+Nothing else.
+
+Proceed.
