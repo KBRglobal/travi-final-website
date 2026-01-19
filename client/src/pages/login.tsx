@@ -139,8 +139,17 @@ export default function Login() {
       const data = await response.json();
 
       if (!response.ok) {
-        if (data.remainingAttempts !== undefined) {
-          setAttemptsRemaining(data.remainingAttempts);
+        if (data.code === 'PREAUTH_INVALID' || data.error?.includes('pre-auth token')) {
+          toast({
+            title: "Session Expired",
+            description: "Your verification session expired. Please log in again.",
+            variant: "destructive",
+          });
+          resetToCredentials();
+          return;
+        }
+        if (data.attemptsRemaining !== undefined) {
+          setAttemptsRemaining(data.attemptsRemaining);
         }
         throw new Error(data.error || "Invalid verification code");
       }
@@ -199,6 +208,15 @@ export default function Login() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (data.code === 'PREAUTH_INVALID' || data.error?.includes('pre-auth token')) {
+          toast({
+            title: "Session Expired",
+            description: "Your verification session expired. Please log in again.",
+            variant: "destructive",
+          });
+          resetToCredentials();
+          return;
+        }
         throw new Error(data.error || "Invalid recovery code");
       }
 
