@@ -13,7 +13,8 @@ import {
   Smartphone, 
   Key,
   ArrowLeft,
-  AlertTriangle
+  AlertTriangle,
+  Mail
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -24,7 +25,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SEOHead } from "@/components/seo-head";
 
-type LoginStep = "credentials" | "totp" | "recovery";
+type LoginStep = "credentials" | "totp" | "recovery" | "email" | "email-verify";
 
 interface LoginResponse {
   success: boolean;
@@ -55,6 +56,10 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginData, setLoginData] = useState<LoginResponse | null>(null);
   const [attemptsRemaining, setAttemptsRemaining] = useState<number | null>(null);
+  
+  // Email OTP login state
+  const [emailForOtp, setEmailForOtp] = useState("");
+  const [emailOtpCode, setEmailOtpCode] = useState("");
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -250,6 +255,106 @@ export default function Login() {
     setRecoveryCode("");
     setLoginData(null);
     setAttemptsRemaining(null);
+    setEmailForOtp("");
+    setEmailOtpCode("");
+  };
+
+  // Email OTP request
+  const handleEmailOtpRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!emailForOtp || !emailForOtp.includes('@')) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/email-otp/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailForOtp }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send code");
+      }
+
+      toast({
+        title: "Code Sent",
+        description: "Check your email for the login code",
+      });
+      setStep("email-verify");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send code",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Email OTP verify
+  const handleEmailOtpVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!emailOtpCode || emailOtpCode.length !== 6) {
+      toast({
+        title: "Error",
+        description: "Please enter the 6-digit code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/email-otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailForOtp, code: emailOtpCode }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.attemptsRemaining !== undefined) {
+          setAttemptsRemaining(data.attemptsRemaining);
+        }
+        throw new Error(data.error || "Invalid code");
+      }
+
+      toast({
+        title: "Success",
+        description: "Login successful!",
+      });
+      window.location.href = "/";
+    } catch (error: any) {
+      toast({
+        title: "Verification Failed",
+        description: error.message || "Invalid code",
+        variant: "destructive",
+      });
+      setEmailOtpCode("");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEmailOtpChange = (value: string) => {
+    setEmailOtpCode(value);
+    if (value.length === 6) {
+      const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
+      setTimeout(() => handleEmailOtpVerify(syntheticEvent), 100);
+    }
   };
 
   if (isLoading) {
@@ -303,6 +408,28 @@ export default function Login() {
               </CardDescription>
             </>
           )}
+          {step === "email" && (
+            <>
+              <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                <Mail className="h-6 w-6 text-primary" />
+                Email Login
+              </CardTitle>
+              <CardDescription>
+                We'll send a code to your email
+              </CardDescription>
+            </>
+          )}
+          {step === "email-verify" && (
+            <>
+              <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                <Mail className="h-6 w-6 text-primary" />
+                Verify Code
+              </CardTitle>
+              <CardDescription>
+                Enter the 6-digit code sent to your email
+              </CardDescription>
+            </>
+          )}
         </CardHeader>
         <CardContent>
           {step === "credentials" && (
@@ -344,6 +471,138 @@ export default function Login() {
                 )}
                 Sign In
               </Button>
+              
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Or</span>
+                </div>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => setStep("email")}
+                data-testid="button-email-login"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Login with Email Code
+              </Button>
+            </form>
+          )}
+
+          {step === "email" && (
+            <form onSubmit={handleEmailOtpRequest} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email-otp">Email Address</Label>
+                <Input
+                  id="email-otp"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={emailForOtp}
+                  onChange={(e) => setEmailForOtp(e.target.value)}
+                  disabled={isSubmitting}
+                  data-testid="input-email-otp"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isSubmitting}
+                data-testid="button-send-code"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Mail className="mr-2 h-4 w-4" />
+                )}
+                Send Code
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={resetToCredentials}
+                className="w-full text-muted-foreground"
+                data-testid="button-back-from-email"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to login
+              </Button>
+            </form>
+          )}
+
+          {step === "email-verify" && (
+            <form onSubmit={handleEmailOtpVerify} className="space-y-6">
+              {attemptsRemaining !== null && attemptsRemaining < 3 && (
+                <Alert variant="destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    {attemptsRemaining} attempt{attemptsRemaining !== 1 ? "s" : ""} remaining
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <div className="flex justify-center">
+                <InputOTP
+                  maxLength={6}
+                  value={emailOtpCode}
+                  onChange={handleEmailOtpChange}
+                  disabled={isSubmitting}
+                  data-testid="input-email-otp-code"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isSubmitting || emailOtpCode.length !== 6}
+                data-testid="button-verify-email-code"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Mail className="mr-2 h-4 w-4" />
+                )}
+                Verify Code
+              </Button>
+
+              <div className="flex flex-col gap-2 text-center">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setStep("email"); setEmailOtpCode(""); setAttemptsRemaining(null); }}
+                  className="text-muted-foreground"
+                  data-testid="button-resend-code"
+                >
+                  <Mail className="mr-2 h-4 w-4" />
+                  Request new code
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={resetToCredentials}
+                  className="text-muted-foreground"
+                  data-testid="button-back-from-verify"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to login
+                </Button>
+              </div>
             </form>
           )}
 
