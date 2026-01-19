@@ -625,32 +625,52 @@ export default function PublicNews() {
             <section data-testid="section-regional">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
-                  <MapPin className="w-5 h-5 text-[#6443F4]" />
-                  Regional Coverage
+                  <Globe className="w-5 h-5 text-[#6443F4]" />
+                  Worldwide Coverage
                 </h2>
               </div>
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {regions.length > 0 ? regions.map((region) => (
-                  <Card
-                    key={region.name}
-                    className="group cursor-pointer bg-white p-4 text-center hover:border-[#6443F4]/30 transition-colors"
-                    data-testid={`card-region-${region.code.toLowerCase()}`}
-                  >
-                    <div className="w-12 h-12 rounded-full bg-[#6443F4] mx-auto mb-3 flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">{region.code}</span>
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-[#6443F4] to-cyan-600 p-6">
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-4 left-8 w-32 h-32 rounded-full border border-white/20" />
+                  <div className="absolute top-12 right-16 w-48 h-48 rounded-full border border-white/10" />
+                  <div className="absolute bottom-8 left-1/4 w-24 h-24 rounded-full border border-white/15" />
+                </div>
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-white" />
                     </div>
-                    <h4 className="font-semibold text-slate-900 text-sm mb-1">{region.name}</h4>
-                    <span className="text-xs text-slate-500">{region.articles} stories</span>
-                  </Card>
-                )) : (
-                  <Card className="bg-white p-4 text-center col-span-full">
-                    <div className="w-12 h-12 rounded-full bg-[#6443F4] mx-auto mb-3 flex items-center justify-center">
-                      <Globe className="w-6 h-6 text-white" />
+                    <div>
+                      <h3 className="text-white font-bold text-lg">Your Window to the World</h3>
+                      <p className="text-white/70 text-sm">News from every corner of the globe</p>
                     </div>
-                    <h4 className="font-semibold text-slate-900 text-sm mb-1">Global Coverage</h4>
-                    <span className="text-xs text-slate-500">News from around the world</span>
-                  </Card>
-                )}
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-6">
+                    {[
+                      { name: 'Asia Pacific', code: 'AP', color: 'from-rose-500 to-orange-500' },
+                      { name: 'Europe', code: 'EU', color: 'from-blue-500 to-indigo-500' },
+                      { name: 'Americas', code: 'NA', color: 'from-emerald-500 to-teal-500' },
+                      { name: 'Middle East', code: 'ME', color: 'from-amber-500 to-yellow-500' },
+                      { name: 'Africa', code: 'AF', color: 'from-purple-500 to-pink-500' },
+                    ].map((r) => {
+                      const regionData = regions.find(reg => reg.code === r.code);
+                      const count = regionData?.articles || 0;
+                      return (
+                        <div
+                          key={r.code}
+                          className="group cursor-pointer bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center hover:bg-white/20 transition-all hover:scale-105"
+                          data-testid={`card-region-${r.code.toLowerCase()}`}
+                        >
+                          <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${r.color} mx-auto mb-2 flex items-center justify-center shadow-lg`}>
+                            <span className="text-white font-bold text-xs">{r.code}</span>
+                          </div>
+                          <h4 className="font-semibold text-white text-xs mb-0.5">{r.name}</h4>
+                          <span className="text-white/60 text-[10px]">{count > 0 ? `${count} stories` : 'Coming soon'}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </section>
           </div>
