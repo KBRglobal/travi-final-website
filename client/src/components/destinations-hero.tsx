@@ -118,11 +118,15 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
     return [];
   }, [heroConfig]);
   
-  const heroTitle = heroConfig?.heroTitle || "Discover World-Class";
-  const heroSubtitle = heroConfig?.heroSubtitle || "Destinations";
-  const heroDescription = heroConfig?.heroDescription || "Handpicked travel experiences, insider tips, and comprehensive guides to help you discover extraordinary places.";
-  const heroCTAText = heroConfig?.heroCTAText || "Start Exploring";
-  const heroCTALink = heroConfig?.heroCTALink || "#explore-destinations";
+  // Database-driven only - no fallback text per CMS contract
+  const heroTitle = heroConfig?.heroTitle ?? null;
+  const heroSubtitle = heroConfig?.heroSubtitle ?? null;
+  const heroDescription = heroConfig?.heroDescription ?? null;
+  const heroCTAText = heroConfig?.heroCTAText ?? null;
+  const heroCTALink = heroConfig?.heroCTALink ?? null;
+  
+  // Check if we have any content to display
+  const hasHeroContent = heroTitle || heroSubtitle || heroDescription;
   
   const hasSlides = displayDestinations.length > 0;
   const dest = hasSlides ? displayDestinations[currentIndex] : null;
@@ -198,37 +202,45 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               </div>
             </motion.div>
             
-            <motion.h1 
-              className="mb-6" 
-              initial={shouldAnimate ? { opacity: 0, y: 30 } : {}} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: 0.1 }}
-            >
-              <span 
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+            {(heroTitle || heroSubtitle) && (
+              <motion.h1 
+                className="mb-6" 
+                initial={shouldAnimate ? { opacity: 0, y: 30 } : {}} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: 0.1 }}
               >
-                {heroTitle}
-              </span>
-              <span className="relative inline-block">
-                <span 
-                  className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
-                  style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                >
-                  {heroSubtitle}
-                </span>
-                <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
-              </span>
-            </motion.h1>
+                {heroTitle && (
+                  <span 
+                    className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
+                    style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                  >
+                    {heroTitle}
+                  </span>
+                )}
+                {heroSubtitle && (
+                  <span className="relative inline-block">
+                    <span 
+                      className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
+                      style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                    >
+                      {heroSubtitle}
+                    </span>
+                    <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
+                  </span>
+                )}
+              </motion.h1>
+            )}
             
-            <motion.p 
-              className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-md leading-relaxed"
-              initial={shouldAnimate ? { opacity: 0, y: 20 } : {}} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: 0.2 }}
-            >
-              {heroDescription}
-            </motion.p>
+            {heroDescription && (
+              <motion.p 
+                className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-md leading-relaxed"
+                initial={shouldAnimate ? { opacity: 0, y: 20 } : {}} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: 0.2 }}
+              >
+                {heroDescription}
+              </motion.p>
+            )}
             
             <motion.div 
               className="flex flex-wrap gap-4 mb-10" 
@@ -236,12 +248,14 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: 0.3 }}
             >
-              <Link href={heroCTALink}>
-                <Button className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30">
-                  <Compass className="w-5 h-5 mr-2" />
-                  {heroCTAText}
-                </Button>
-              </Link>
+              {heroCTAText && heroCTALink && (
+                <Link href={heroCTALink}>
+                  <Button className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30">
+                    <Compass className="w-5 h-5 mr-2" />
+                    {heroCTAText}
+                  </Button>
+                </Link>
+              )}
               <Link href="/travel-guides">
                 <Button variant="outline" className="rounded-full px-6 py-6 text-base font-semibold border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                   <BookOpen className="w-5 h-5 mr-2" />
