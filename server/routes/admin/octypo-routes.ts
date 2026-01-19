@@ -20,6 +20,7 @@ import { octypoState } from '../../octypo/state';
 import { EngineRegistry } from '../../services/engine-registry';
 import { getQueueStats } from '../../ai/request-queue';
 import { jobQueue } from '../../job-queue';
+import { manuallyProcessJob } from '../../octypo/job-handler';
 
 const router = Router();
 
@@ -370,6 +371,39 @@ router.get('/jobs/:jobId', async (req: Request, res: Response) => {
   } catch (error) {
     log.error('[Octypo] Failed to get job', error);
     res.status(500).json({ error: 'Failed to retrieve job' });
+  }
+});
+
+/**
+ * GET /api/octypo/queue-status
+ * Returns status of the background job queue
+ */
+router.get('/queue-status', async (_req: Request, res: Response) => {
+  try {
+    const stats = await jobQueue.getStats();
+    const pendingJobs = await jobQueue.getJobsByStatus('pending');
+    const processingJobs = await jobQueue.getJobsByStatus('processing');
+    
+    res.json({
+      stats,
+      pendingJobs: pendingJobs.slice(0, 20).map(j => ({
+        id: j.id,
+        type: j.type,
+        status: j.status,
+        createdAt: j.createdAt,
+        data: j.data,
+      })),
+      processingJobs: processingJobs.map(j => ({
+        id: j.id,
+        type: j.type,
+        status: j.status,
+        startedAt: j.startedAt,
+        data: j.data,
+      })),
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get queue status', error);
+    res.status(500).json({ error: 'Failed to retrieve queue status' });
   }
 });
 
@@ -1479,6 +1513,48 @@ router.get('/sources/destinations', async (_req: Request, res: Response) => {
   } catch (error) {
     log.error('[Octypo] Failed to get destinations', error);
     res.status(500).json({ error: 'Failed to retrieve destinations' });
+  }
+});
+
+/**
+ * POST /api/octypo/jobs/:jobId/process
+ * Manually trigger processing of a specific job
+ */
+router.post('/jobs/:jobId/process', async (req: Request, res: Response) => {
+  try {
+    const { jobId } = req.params;
+    
+    if (!jobId) {
+      return res.status(400).json({ error: 'Job ID is required' });
+    }
+    
+    log.info(`[Octypo] Manually processing job: ${jobId}`);
+    
+    const result = await manuallyProcessJob(jobId);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        jobId,
+        result: result.result,
+        message: 'Job processed successfully',
+        _meta: { apiVersion: 'v1' },
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        jobId,
+        error: result.error,
+        _meta: { apiVersion: 'v1' },
+      });
+    }
+  } catch (error) {
+    log.error('[Octypo] Failed to process job', error);
+    res.status(500).json({ 
+      error: 'Failed to process job', 
+      message: error instanceof Error ? error.message : 'Unknown error',
+      _meta: { apiVersion: 'v1' },
+    });
   }
 });
 
