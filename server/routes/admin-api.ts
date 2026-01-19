@@ -1148,11 +1148,12 @@ export function registerAdminApiRoutes(app: Express): void {
       }
       
       // Get Tiqets content generation stats (as additional AI generation tracking)
+      // NOTE: Tiqets attractions use "published" status when generation is complete
       let tiqetsCompleted = 0;
       try {
         const [tiqetsStats] = await db.select({
           count: count(),
-        }).from(tiqetsAttractions).where(eq(tiqetsAttractions.status, "completed"));
+        }).from(tiqetsAttractions).where(eq(tiqetsAttractions.status, "published"));
         tiqetsCompleted = tiqetsStats?.count || 0;
       } catch {
         // Table may not exist
@@ -1161,12 +1162,18 @@ export function registerAdminApiRoutes(app: Express): void {
       const totalAiCompleted = aiCompleted + tiqetsCompleted;
       const published = publishedCount?.count || 0;
       
+      // Calculate REAL aggregate total content across all content types
+      const attractionsCount = contentStats?.total || 0;
+      const articlesCount = articleStats?.total || 0;
+      const destinationsCount = destinationStats?.total || 0;
+      const aggregateTotalContent = attractionsCount + articlesCount + destinationsCount;
+      
       const stats = {
         contents: {
-          total: contentStats?.total || 0,
-          attractions: contentStats?.total || 0,
-          articles: articleStats?.total || 0,
-          destinations: destinationStats?.total || 0,
+          total: aggregateTotalContent, // Sum of ALL content types
+          attractions: attractionsCount,
+          articles: articlesCount,
+          destinations: destinationsCount,
           pages: 0,
         },
         media: {
