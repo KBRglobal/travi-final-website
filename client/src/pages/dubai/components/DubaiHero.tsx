@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export interface DubaiHeroBadge {
-  label: string;
+  label?: string;
+  text?: string; // Backward-compatible alias for label
   icon?: LucideIcon;
-  variant?: "default" | "outline" | "highlight";
+  variant?: "default" | "outline" | "highlight" | "secondary";
 }
 
 export interface DubaiHeroProps {
@@ -14,6 +15,7 @@ export interface DubaiHeroProps {
   subtitle?: string;
   description?: string;
   image?: string;
+  backgroundImage?: string; // Backward-compatible alias for image
   imageAlt?: string;
   badges?: DubaiHeroBadge[];
   topBadge?: string;
@@ -24,6 +26,7 @@ export interface DubaiHeroProps {
   showScrollIndicator?: boolean;
   minHeight?: string;
   overlay?: "dark" | "light" | "gradient";
+  stats?: Array<{ label: string; value: string }>; // Backward-compatible for templates using stats
 }
 
 export function DubaiHero({
@@ -31,6 +34,7 @@ export function DubaiHero({
   subtitle,
   description,
   image,
+  backgroundImage,
   imageAlt,
   badges,
   topBadge,
@@ -42,6 +46,7 @@ export function DubaiHero({
   minHeight = "85vh",
   overlay = "gradient",
 }: DubaiHeroProps) {
+  const heroImage = image || backgroundImage;
   const overlayClasses = {
     dark: "bg-black/70",
     light: "bg-black/40",
@@ -53,10 +58,10 @@ export function DubaiHero({
       className="relative flex items-center justify-center overflow-hidden"
       style={{ minHeight }}
     >
-      {image && (
+      {heroImage && (
         <div className="absolute inset-0">
           <img 
-            src={image}
+            src={heroImage}
             alt={imageAlt || title}
             className="w-full h-full object-cover"
             loading="eager"
@@ -65,7 +70,7 @@ export function DubaiHero({
         </div>
       )}
       
-      {!image && (
+      {!heroImage && (
         <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary to-primary/80" />
       )}
       
@@ -101,10 +106,12 @@ export function DubaiHero({
           <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
             {badges.map((badge, index) => {
               const Icon = badge.icon;
+              const badgeText = badge.text || badge.label || "";
               const variantClasses = {
                 default: "bg-white/10 text-white border-white/30",
                 outline: "bg-white/10 text-white border-white/30",
                 highlight: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+                secondary: "bg-white/20 text-white border-white/40",
               };
               return (
                 <Badge 
@@ -113,7 +120,7 @@ export function DubaiHero({
                   className={`${variantClasses[badge.variant || "default"]} backdrop-blur-sm px-4 py-2`}
                 >
                   {Icon && <Icon className="w-4 h-4 mr-2" />}
-                  {badge.label}
+                  {badgeText}
                 </Badge>
               );
             })}

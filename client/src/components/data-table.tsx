@@ -28,6 +28,7 @@ export interface Action<T> {
   label: string;
   onClick: (item: T) => void;
   variant?: "default" | "destructive";
+  icon?: React.ReactNode;
 }
 
 interface DataTableProps<T> {

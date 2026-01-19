@@ -37,22 +37,9 @@ interface ManualJobData {
 type OctypoJobData = RSSJobData | TopicJobData | ManualJobData;
 
 async function getDestinationCoordinates(destinationId: string): Promise<{ lat: number; lng: number } | null> {
-  try {
-    const [dest] = await db.select({
-      latitude: destinations.latitude,
-      longitude: destinations.longitude,
-    })
-      .from(destinations)
-      .where(eq(destinations.id, destinationId))
-      .limit(1);
-    
-    if (dest && dest.latitude && dest.longitude) {
-      return { lat: Number(dest.latitude), lng: Number(dest.longitude) };
-    }
-    return null;
-  } catch {
-    return null;
-  }
+  // Note: destinations table doesn't have lat/lng columns - return null
+  // Coordinates can be added to the destination data structure if needed later
+  return null;
 }
 
 async function saveGeneratedContent(
@@ -63,6 +50,14 @@ async function saveGeneratedContent(
   content: GeneratedAttractionContent,
   jobId?: string
 ): Promise<{ contentId: string; attractionId: string }> {
+  // Calculate word count from content sections
+  const calculatedWordCount = [
+    content.introduction,
+    content.whatToExpect,
+    content.visitorTips,
+    content.howToGetThere,
+  ].filter(Boolean).join(' ').split(/\s+/).length;
+
   const [contentRecord] = await db.insert(contents)
     .values({
       type: 'attraction',
@@ -82,7 +77,7 @@ async function saveGeneratedContent(
       seoSchema: content.schemaPayload,
       generatedByAI: true,
       octopusJobId: jobId,
-      wordCount: content.wordCount || 0,
+      wordCount: calculatedWordCount,
     })
     .returning();
 
@@ -94,7 +89,7 @@ async function saveGeneratedContent(
       introText: content.introduction,
       expandedIntroText: content.whatToExpect,
       visitorTips: content.visitorTips ? [content.visitorTips] : [],
-      faq: content.faq || [],
+      faq: content.faqs || [],
     })
     .returning();
 
@@ -113,6 +108,13 @@ async function saveGeneratedArticle(
   sourceUrl?: string,
   jobId?: string
 ): Promise<{ contentId: string; articleId: string }> {
+  // Calculate word count from content sections
+  const calculatedWordCount = [
+    content.introduction,
+    content.whatToExpect,
+    content.visitorTips,
+  ].filter(Boolean).join(' ').split(/\s+/).length;
+
   const [contentRecord] = await db.insert(contents)
     .values({
       type: 'article',
@@ -131,7 +133,7 @@ async function saveGeneratedArticle(
       seoSchema: content.schemaPayload,
       generatedByAI: true,
       octopusJobId: jobId,
-      wordCount: content.wordCount || 0,
+      wordCount: calculatedWordCount,
       publishedAt: new Date(),
     })
     .returning();
@@ -145,7 +147,7 @@ async function saveGeneratedArticle(
       excerpt: content.introduction?.substring(0, 200),
       publishDate: new Date(),
       relatedDestinationIds: [destinationId],
-      faq: content.faq || [],
+      faq: content.faqs || [],
     })
     .returning();
 

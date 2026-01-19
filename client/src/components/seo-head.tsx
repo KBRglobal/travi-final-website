@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useLocale } from "@/lib/i18n/LocaleRouter";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 
-interface SEOHeadProps {
+export interface SEOHeadProps {
   title: string;
-  description: string;
+  description?: string; // Made optional - use empty string if not provided
   canonicalPath?: string;
   ogImage?: string;
   ogType?: "website" | "article";
@@ -13,12 +13,13 @@ interface SEOHeadProps {
   author?: string;
   keywords?: string[];
   noIndex?: boolean;
+  noindex?: boolean; // Alias for noIndex (lowercase variant)
   availableTranslations?: Locale[];
 }
 
 export function SEOHead({
   title,
-  description,
+  description = "",
   canonicalPath = "",
   ogImage,
   ogType = "website",
@@ -27,8 +28,11 @@ export function SEOHead({
   author,
   keywords,
   noIndex = false,
+  noindex,
   availableTranslations,
 }: SEOHeadProps) {
+  // Resolve noindex from either prop (noIndex takes precedence if both provided)
+  const shouldNoIndex = noIndex || noindex || false;
   const { locale, isRTL, localePath } = useLocale();
 
   // Helper to generate localized URL for a specific locale
@@ -100,7 +104,7 @@ export function SEOHead({
     if (author) {
       setMetaTag("author", author);
     }
-    if (noIndex) {
+    if (shouldNoIndex) {
       setMetaTag("robots", "noindex, nofollow");
     } else {
       setMetaTag("robots", "index, follow");
@@ -170,7 +174,7 @@ export function SEOHead({
     modifiedTime,
     author,
     keywords,
-    noIndex,
+    shouldNoIndex,
     locale,
     hreflangUrls,
     baseUrl,

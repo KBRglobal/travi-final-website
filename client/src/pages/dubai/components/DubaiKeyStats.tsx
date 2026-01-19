@@ -6,6 +6,7 @@ export interface DubaiKeyStat {
   value: string;
   label: string;
   subtext?: string;
+  description?: string; // Backward-compatible alias for subtext
   icon?: LucideIcon;
 }
 
@@ -80,9 +81,9 @@ export function DubaiKeyStats({
                     <div className="text-sm text-muted-foreground mt-1">
                       {stat.label}
                     </div>
-                    {stat.subtext && (
+                    {(stat.subtext || stat.description) && (
                       <div className="text-xs text-primary font-medium mt-1">
-                        {stat.subtext}
+                        {stat.subtext || stat.description}
                       </div>
                     )}
                   </CardContent>

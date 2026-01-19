@@ -3,15 +3,33 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
+interface CTAAction {
+  label: string;
+  href?: string;
+  icon?: LucideIcon;
+  onClick?: () => void;
+}
+
 export interface DubaiCTAProps {
   title: string;
   subtitle?: string;
   description?: string;
-  primaryLabel: string;
+  // Nested action objects (preferred)
+  primaryAction?: CTAAction;
+  secondaryAction?: CTAAction;
+  // Another variant: nested primaryButton/secondaryButton objects
+  primaryButton?: { text?: string; label?: string; href?: string };
+  secondaryButton?: { text?: string; label?: string; href?: string };
+  // Legacy flat props (backward compatible)
+  primaryLabel?: string;
+  primaryButtonText?: string; // Alias for primaryLabel
+  primaryButtonHref?: string; // Alias for primaryHref
   primaryIcon?: LucideIcon;
   onPrimaryClick?: () => void;
   primaryHref?: string;
   secondaryLabel?: string;
+  secondaryButtonText?: string; // Alias for secondaryLabel
+  secondaryButtonHref?: string; // Alias for secondaryHref
   secondaryIcon?: LucideIcon;
   onSecondaryClick?: () => void;
   secondaryHref?: string;
@@ -24,18 +42,37 @@ export function DubaiCTA({
   title,
   subtitle,
   description,
-  primaryLabel,
-  primaryIcon: PrimaryIcon,
-  onPrimaryClick,
-  primaryHref,
-  secondaryLabel,
-  secondaryIcon: SecondaryIcon,
-  onSecondaryClick,
-  secondaryHref,
+  primaryAction,
+  secondaryAction,
+  primaryButton,
+  secondaryButton,
+  primaryLabel: legacyPrimaryLabel,
+  primaryButtonText,
+  primaryButtonHref,
+  primaryIcon: LegacyPrimaryIcon,
+  onPrimaryClick: legacyOnPrimaryClick,
+  primaryHref: legacyPrimaryHref,
+  secondaryLabel: legacySecondaryLabel,
+  secondaryButtonText,
+  secondaryButtonHref,
+  secondaryIcon: LegacySecondaryIcon,
+  onSecondaryClick: legacyOnSecondaryClick,
+  secondaryHref: legacySecondaryHref,
   badges,
   variant = "default",
   backgroundImage,
 }: DubaiCTAProps) {
+  // Resolve primary action (prefer nested, fallback to primaryButton, then legacy flat props)
+  const primaryLabel = primaryAction?.label || primaryButton?.text || primaryButton?.label || legacyPrimaryLabel || primaryButtonText || "";
+  const PrimaryIcon = primaryAction?.icon || LegacyPrimaryIcon;
+  const onPrimaryClick = primaryAction?.onClick || legacyOnPrimaryClick;
+  const primaryHref = primaryAction?.href || primaryButton?.href || legacyPrimaryHref || primaryButtonHref;
+  
+  // Resolve secondary action
+  const secondaryLabel = secondaryAction?.label || secondaryButton?.text || secondaryButton?.label || legacySecondaryLabel || secondaryButtonText;
+  const SecondaryIcon = secondaryAction?.icon || LegacySecondaryIcon;
+  const onSecondaryClick = secondaryAction?.onClick || legacyOnSecondaryClick;
+  const secondaryHref = secondaryAction?.href || secondaryButton?.href || legacySecondaryHref || secondaryButtonHref;
   const bgClasses = {
     default: "bg-primary text-primary-foreground",
     gradient: "bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground",

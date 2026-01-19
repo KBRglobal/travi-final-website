@@ -2,10 +2,17 @@ import { Calendar, Clock, MapPin, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
+export interface SubsectionItem {
+  id?: string;
+  title: string;
+  content: string;
+}
+
 export interface ArticleSection {
   id: string;
   title: string;
   content: string;
+  subsections?: SubsectionItem[]; // Optional subsections with optional id
 }
 
 export interface RelatedArticle {
@@ -15,6 +22,11 @@ export interface RelatedArticle {
   excerpt: string;
   category: string;
   readTime: string;
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
 }
 
 export interface ArticlePageProps {
@@ -41,6 +53,11 @@ export interface ArticlePageProps {
   sections: ArticleSection[];
   keyTakeaways?: string[];
   relatedArticles?: RelatedArticle[];
+  faqs?: FAQItem[]; // Optional FAQs section
+  ctaTitle?: string; // Optional CTA title
+  ctaDescription?: string; // Optional CTA description
+  ctaButtonText?: string; // Optional CTA button text
+  ctaButtonHref?: string; // Optional CTA button href
 }
 
 export default function ArticlePage({
