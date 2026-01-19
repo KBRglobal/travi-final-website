@@ -198,13 +198,13 @@ export function registerPublicApiRoutes(app: Express): void {
         featuredAttractions: destination.featuredAttractions || [],
         featuredAreas: destination.featuredAreas || [],
         featuredHighlights: destination.featuredHighlights || [],
-        // Mood/vibe for styling FROM DATABASE (no hardcoded values)
+        // Mood/vibe for styling - NO FALLBACKS (Railway PostgreSQL is source of truth)
         mood: {
-          primaryColor: destination.moodPrimaryColor || "#1E40AF",
-          gradientFrom: destination.moodGradientFrom || "rgba(0,0,0,0.6)",
-          gradientTo: destination.moodGradientTo || "rgba(0,0,0,0.3)",
-          vibe: destination.moodVibe || "cosmopolitan",
-          tagline: destination.moodTagline || `Experience ${destination.name}`,
+          primaryColor: destination.moodPrimaryColor,
+          gradientFrom: destination.moodGradientFrom,
+          gradientTo: destination.moodGradientTo,
+          vibe: destination.moodVibe,
+          tagline: destination.moodTagline,
         },
       });
     } catch (error) {
