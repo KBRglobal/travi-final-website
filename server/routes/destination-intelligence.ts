@@ -1487,6 +1487,42 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
   // ============================================================================
 
   /**
+   * GET /api/admin/destinations
+   * Returns all destinations for admin management (including inactive)
+   */
+  app.get(
+    "/api/admin/destinations",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        // Return ALL destinations sorted alphabetically by name
+        const allDestinations = await db
+          .select({
+            id: destinations.id,
+            name: destinations.name,
+            country: destinations.country,
+            slug: destinations.slug,
+            destinationLevel: destinations.destinationLevel,
+            cardImage: destinations.cardImage,
+            cardImageAlt: destinations.cardImageAlt,
+            heroImage: destinations.heroImage,
+            heroTitle: destinations.heroTitle,
+            heroSubtitle: destinations.heroSubtitle,
+            summary: destinations.summary,
+            isActive: destinations.isActive,
+          })
+          .from(destinations)
+          .orderBy(destinations.name);
+        
+        res.json(allDestinations);
+      } catch (error) {
+        logger.error({ error: String(error) }, "Failed to fetch admin destinations");
+        res.status(500).json({ error: "Failed to fetch destinations" });
+      }
+    }
+  );
+
+  /**
    * GET /api/admin/destinations/:slug
    * Returns detailed destination data for the admin hub
    */
@@ -1610,6 +1646,111 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
       } catch (error) {
         logger.error({ error: String(error) }, "Failed to fetch destination SEO");
         res.status(500).json({ error: "Failed to fetch destination SEO" });
+      }
+    }
+  );
+
+  /**
+   * PATCH /api/admin/destinations/:slug/seo
+   * Update SEO data for a destination
+   */
+  app.patch(
+    "/api/admin/destinations/:slug/seo",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        const { slug } = req.params;
+        const { metaTitle, metaDescription } = req.body;
+        
+        const [existing] = await db
+          .select()
+          .from(destinations)
+          .where(eq(destinations.id, slug));
+        
+        if (!existing) {
+          return res.status(404).json({ error: "Destination not found" });
+        }
+        
+        const updateData: Partial<typeof destinations.$inferInsert> = {};
+        if (metaTitle !== undefined) updateData.metaTitle = metaTitle;
+        if (metaDescription !== undefined) updateData.metaDescription = metaDescription;
+        updateData.updatedAt = new Date();
+        
+        const [updated] = await db
+          .update(destinations)
+          .set(updateData)
+          .where(eq(destinations.id, slug))
+          .returning();
+        
+        logger.info(`Updated SEO for destination ${slug}`);
+        
+        res.json({
+          success: true,
+          metaTitle: updated.metaTitle,
+          metaDescription: updated.metaDescription,
+        });
+      } catch (error) {
+        logger.error({ error: String(error) }, "Failed to update destination SEO");
+        res.status(500).json({ error: "Failed to update destination SEO" });
+      }
+    }
+  );
+
+  /**
+   * POST /api/admin/destinations
+   * Create a new destination
+   */
+  app.post(
+    "/api/admin/destinations",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        const { name, country, destinationLevel = "city" } = req.body;
+        
+        if (!name || !country) {
+          return res.status(400).json({ error: "Name and country are required" });
+        }
+        
+        // Generate slug from name
+        const slug = name.toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+        
+        // Check for duplicates
+        const [existing] = await db
+          .select()
+          .from(destinations)
+          .where(eq(destinations.id, slug));
+        
+        if (existing) {
+          return res.status(409).json({ error: "A destination with this name already exists" });
+        }
+        
+        const [newDestination] = await db
+          .insert(destinations)
+          .values({
+            id: slug,
+            name,
+            country,
+            slug,
+            destinationLevel,
+            isActive: false,
+            status: "empty",
+            hasPage: false,
+            seoScore: 0,
+            wordCount: 0,
+            internalLinks: 0,
+            externalLinks: 0,
+            h2Count: 0,
+          })
+          .returning();
+        
+        logger.info(`Created new destination: ${name} (${slug})`);
+        
+        res.status(201).json(newDestination);
+      } catch (error) {
+        logger.error({ error: String(error) }, "Failed to create destination");
+        res.status(500).json({ error: "Failed to create destination" });
       }
     }
   );

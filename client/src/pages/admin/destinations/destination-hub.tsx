@@ -39,8 +39,10 @@ export default function DestinationHubPage() {
   const { slug = "" } = params ?? {};
   const [activeTab, setActiveTab] = useState("hero");
 
+  const destinationUrl = `/api/admin/destinations/${slug}`;
+  
   const { data: destination, isLoading, error } = useQuery<DestinationDetail>({
-    queryKey: ["/api/admin/destinations", slug],
+    queryKey: [destinationUrl],
     enabled: !!slug,
   });
 
