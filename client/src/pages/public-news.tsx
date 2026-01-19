@@ -32,16 +32,25 @@ const defaultImages = [
   "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
 ];
 
-const TRENDING_TOPICS = [
-  { term: "Global economy outlook 2026", count: 24 },
-  { term: "AI regulation updates", count: 18 },
-  { term: "Climate summit results", count: 15 },
-  { term: "Tech layoffs analysis", count: 12 },
-  { term: "Travel restrictions update", count: 9 },
-  { term: "Renewable energy", count: 8 },
-  { term: "Digital currency", count: 7 },
-  { term: "Space exploration", count: 6 },
-];
+function extractTrendingTopics(articles: ContentWithRelations[]): { term: string; count: number }[] {
+  const wordFreq = new Map<string, number>();
+  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been', 'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'what', 'which', 'who', 'whom', 'whose', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'also', 'now', 'here', 'there', 'then', 'once', 'new', 'first', 'last', 'long', 'great', 'little', 'own', 'after', 'before', 'about', 'into']);
+  
+  articles.forEach(article => {
+    const words = article.title.toLowerCase().split(/\s+/);
+    words.forEach(word => {
+      const clean = word.replace(/[^a-z]/g, '');
+      if (clean.length > 3 && !stopWords.has(clean)) {
+        wordFreq.set(clean, (wordFreq.get(clean) || 0) + 1);
+      }
+    });
+  });
+  
+  return Array.from(wordFreq.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([term, count]) => ({ term: term.charAt(0).toUpperCase() + term.slice(1), count }));
+}
 
 const NEWS_CATEGORIES = [
   { id: "world", name: "World", icon: Globe },
@@ -52,19 +61,24 @@ const NEWS_CATEGORIES = [
   { id: "opinion", name: "Opinion", icon: MessageSquare },
 ];
 
-const REGIONS = [
-  { name: "Americas", articles: 24, code: "NA" },
-  { name: "Europe", articles: 31, code: "EU" },
-  { name: "Asia Pacific", articles: 28, code: "AP" },
-  { name: "Middle East", articles: 16, code: "ME" },
-  { name: "Africa", articles: 12, code: "AF" },
-];
-
-const OPINION_AUTHORS = [
-  { name: "Sarah Mitchell", role: "Economics Editor", avatar: "SM" },
-  { name: "James Chen", role: "Tech Columnist", avatar: "JC" },
-  { name: "Maria Santos", role: "Culture Critic", avatar: "MS" },
-];
+function getRegionsFromArticles(articles: ContentWithRelations[]): { name: string; articles: number; code: string }[] {
+  const regionMap = new Map<string, number>();
+  const regionCodes: Record<string, string> = {
+    'Middle East': 'ME',
+    'UAE': 'ME',
+    'Dubai': 'ME',
+    'Asia': 'AP',
+    'Europe': 'EU',
+    'Americas': 'NA',
+    'Africa': 'AF',
+  };
+  
+  regionMap.set('Middle East', articles.length);
+  
+  return [
+    { name: 'Middle East', articles: regionMap.get('Middle East') || 0, code: 'ME' },
+  ].filter(r => r.articles > 0);
+}
 
 function formatViews(views: number): string {
   if (views >= 1000000) return `${(views / 1000000).toFixed(1)}M`;
@@ -209,10 +223,12 @@ export default function PublicNews() {
   const liveUpdates = articles.slice(0, 10);
   const regionalArticles = articles.slice(15, 25);
   const breakingNews = useMemo(() => getBreakingNews(articles), [articles]);
+  const trendingTopics = useMemo(() => extractTrendingTopics(articles), [articles]);
+  const regions = useMemo(() => getRegionsFromArticles(articles), [articles]);
 
   const totalStories = articles.length;
   const totalCategories = NEWS_CATEGORIES.length;
-  const totalRegions = REGIONS.length;
+  const totalRegions = regions.length;
 
   if (isLoading) {
     return (
@@ -528,12 +544,12 @@ export default function PublicNews() {
                       <div className="flex items-center gap-3 mb-4">
                         <Avatar className="w-12 h-12">
                           <AvatarFallback className="bg-slate-100 text-slate-600 text-sm font-medium">
-                            {OPINION_AUTHORS[idx % 3].avatar}
+                            {article.title.split(' ').slice(0, 2).map(w => w[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium text-slate-900 text-sm">{OPINION_AUTHORS[idx % 3].name}</div>
-                          <div className="text-xs text-slate-500">{OPINION_AUTHORS[idx % 3].role}</div>
+                          <div className="font-medium text-slate-900 text-sm">{article.article?.category || "Editorial"}</div>
+                          <div className="text-xs text-slate-500">{getReadTime(article)}</div>
                         </div>
                       </div>
                       <Quote className="w-6 h-6 text-[#6443F4]/30 mb-2" />
@@ -556,7 +572,7 @@ export default function PublicNews() {
                 </h2>
               </div>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {REGIONS.map((region) => (
+                {regions.length > 0 ? regions.map((region) => (
                   <Card
                     key={region.name}
                     className="group cursor-pointer bg-white p-4 text-center hover:border-[#6443F4]/30 transition-colors"
@@ -568,7 +584,15 @@ export default function PublicNews() {
                     <h4 className="font-semibold text-slate-900 text-sm mb-1">{region.name}</h4>
                     <span className="text-xs text-slate-500">{region.articles} stories</span>
                   </Card>
-                ))}
+                )) : (
+                  <Card className="bg-white p-4 text-center col-span-full">
+                    <div className="w-12 h-12 rounded-full bg-[#6443F4] mx-auto mb-3 flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">ME</span>
+                    </div>
+                    <h4 className="font-semibold text-slate-900 text-sm mb-1">Middle East</h4>
+                    <span className="text-xs text-slate-500">{totalStories} stories</span>
+                  </Card>
+                )}
               </div>
             </section>
           </div>
@@ -605,7 +629,7 @@ export default function PublicNews() {
                 Trending Topics
               </h3>
               <div className="flex flex-wrap gap-2">
-                {TRENDING_TOPICS.map((topic, idx) => (
+                {trendingTopics.length > 0 ? trendingTopics.map((topic, idx) => (
                   <Badge
                     key={topic.term}
                     variant="outline"
@@ -615,7 +639,9 @@ export default function PublicNews() {
                     {topic.term}
                     <span className="ml-1.5 text-slate-400">{topic.count}</span>
                   </Badge>
-                ))}
+                )) : (
+                  <span className="text-slate-500 text-sm">No trending topics yet. Check back soon!</span>
+                )}
               </div>
             </section>
 

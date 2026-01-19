@@ -156,19 +156,34 @@ SELF-CHECK BEFORE OUTPUT:
 
 IF YOUR TOTAL IS BELOW 1800 WORDS: Go back and expand each section to hit the minimum word counts.
 
-OUTPUT: Valid JSON only, no markdown code blocks.`;
+CRITICAL OUTPUT FORMAT:
+- Your ENTIRE response must be a valid JSON object - nothing else
+- Start DIRECTLY with { - no preamble, no explanation, no "Here's the JSON:"
+- End with } - no commentary after
+- No markdown code blocks, no backticks
+- If you cannot generate content, still return valid JSON with empty strings
+
+Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"...", ...}`;
   }
 
   private parseResponse(text: string, attractionTitle?: string): GeneratedAttractionContent {
     let jsonString = text.trim();
     
-    // Check for AI refusal/safety responses before JSON parsing
+    // Check for AI non-JSON responses before parsing
     const refusalPatterns = [
       /^I'm sorry/i,
       /^I cannot/i,
       /^I apologize/i,
       /^Unfortunately/i,
       /^I'm unable/i,
+      /^I need to/i,
+      /^I appreciate/i,
+      /^I understand/i,
+      /^Thank you/i,
+      /^Let me/i,
+      /^As an AI/i,
+      /^I'll help/i,
+      /^Here's/i,
     ];
     
     for (const pattern of refusalPatterns) {

@@ -7,7 +7,7 @@
 import { jobQueue } from '../job-queue';
 import { generateAttractionWithOctypo } from './index';
 import { db } from '../db';
-import { rssFeeds, contents, attractions, destinations, backgroundJobs } from '@shared/schema';
+import { rssFeeds, contents, attractions, articles, destinations, backgroundJobs } from '@shared/schema';
 import { eq, sql } from 'drizzle-orm';
 import { AttractionData, GeneratedAttractionContent } from './types';
 
@@ -103,6 +103,57 @@ async function saveGeneratedContent(
   return { contentId: contentRecord.id, attractionId: attractionRecord.id };
 }
 
+async function saveGeneratedArticle(
+  title: string,
+  slug: string,
+  destinationId: string,
+  category: string,
+  content: GeneratedAttractionContent,
+  feedId: string,
+  sourceUrl?: string,
+  jobId?: string
+): Promise<{ contentId: string; articleId: string }> {
+  const [contentRecord] = await db.insert(contents)
+    .values({
+      type: 'article',
+      status: 'published',
+      title: title,
+      slug: slug,
+      metaTitle: content.metaTitle || title,
+      metaDescription: content.metaDescription || content.introduction?.substring(0, 160),
+      summary: content.introduction?.substring(0, 200),
+      answerCapsule: content.answerCapsule,
+      blocks: [
+        { type: 'text', contents: { text: content.introduction || '' } },
+        { type: 'text', contents: { text: content.whatToExpect || '' } },
+        { type: 'text', contents: { text: content.visitorTips || '' } },
+      ].filter(b => b.contents.text),
+      seoSchema: content.schemaPayload,
+      generatedByAI: true,
+      octopusJobId: jobId,
+      wordCount: content.wordCount || 0,
+      publishedAt: new Date(),
+    })
+    .returning();
+
+  const [articleRecord] = await db.insert(articles)
+    .values({
+      contentId: contentRecord.id,
+      category: category as any,
+      sourceRssFeedId: feedId,
+      sourceUrl: sourceUrl,
+      excerpt: content.introduction?.substring(0, 200),
+      publishDate: new Date(),
+      relatedDestinationIds: [destinationId],
+      faq: content.faq || [],
+    })
+    .returning();
+
+  console.log(`[OctypoJobHandler] Saved article: ${contentRecord.id}, article: ${articleRecord.id}`);
+  
+  return { contentId: contentRecord.id, articleId: articleRecord.id };
+}
+
 async function updateJobStatus(jobId: string, status: 'completed' | 'failed', result?: unknown, error?: string): Promise<void> {
   try {
     await db.update(backgroundJobs)
@@ -150,7 +201,33 @@ async function fetchRSSItems(feedUrl: string): Promise<{ title: string; descript
   }
 }
 
-async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ success: boolean; generated: number; errors: string[]; contentIds: string[] }> {
+const SENSITIVE_TOPIC_KEYWORDS = [
+  'kill', 'dead', 'death', 'die', 'dies', 'died', 'dying',
+  'murder', 'murdered', 'homicide', 'manslaughter',
+  'crash', 'collision', 'accident', 'fatal',
+  'terror', 'terrorist', 'attack', 'bomb', 'bombing', 'explosion',
+  'war', 'conflict', 'invasion', 'military strike',
+  'disaster', 'tragedy', 'catastrophe',
+  'shooting', 'shot', 'gunfire', 'gunman',
+  'victim', 'victims', 'casualties',
+  'hostage', 'kidnap', 'abduct',
+  'suicide', 'suicide bombing',
+  'epidemic', 'pandemic', 'outbreak', 'virus spread',
+];
+
+function isSensitiveTopic(title: string, description: string): { sensitive: boolean; reason?: string } {
+  const combined = `${title} ${description}`.toLowerCase();
+  
+  for (const keyword of SENSITIVE_TOPIC_KEYWORDS) {
+    if (combined.includes(keyword.toLowerCase())) {
+      return { sensitive: true, reason: `Contains sensitive keyword: "${keyword}"` };
+    }
+  }
+  
+  return { sensitive: false };
+}
+
+async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ success: boolean; generated: number; skipped: number; errors: string[]; contentIds: string[] }> {
   console.log(`[OctypoJobHandler] Processing RSS job for feed: ${data.feedName}`);
   
   const [feed] = await db.select()
@@ -159,12 +236,12 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
     .limit(1);
   
   if (!feed) {
-    return { success: false, generated: 0, errors: ['RSS feed not found in database'], contentIds: [] };
+    return { success: false, generated: 0, skipped: 0, errors: ['RSS feed not found in database'], contentIds: [] };
   }
   
   const items = await fetchRSSItems(feed.url);
   if (items.length === 0) {
-    return { success: false, generated: 0, errors: ['No items found in RSS feed'], contentIds: [] };
+    return { success: false, generated: 0, skipped: 0, errors: ['No items found in RSS feed'], contentIds: [] };
   }
   
   console.log(`[OctypoJobHandler] Found ${items.length} items in feed`);
@@ -173,11 +250,19 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
   const coords = await getDestinationCoordinates(destinationId);
   
   let generated = 0;
+  let skipped = 0;
   const errors: string[] = [];
   const contentIds: string[] = [];
   
   for (const item of items) {
     try {
+      const sensitivityCheck = isSensitiveTopic(item.title, item.description);
+      if (sensitivityCheck.sensitive) {
+        console.log(`[OctypoJobHandler] Skipping sensitive topic: "${item.title}" - ${sensitivityCheck.reason}`);
+        skipped++;
+        continue;
+      }
+      
       const slug = item.title.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '')
@@ -211,17 +296,19 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
       const result = await generateAttractionWithOctypo(attractionData);
       
       if (result.success && result.content) {
-        const saved = await saveGeneratedContent(
+        const saved = await saveGeneratedArticle(
           item.title,
           slug,
           destinationId,
-          attractionData.primaryCategory,
+          data.category || feed.category || 'news',
           result.content,
+          feed.id,
+          item.link,
           jobId
         );
         
         contentIds.push(saved.contentId);
-        console.log(`[OctypoJobHandler] Generated and saved content for: ${item.title}`);
+        console.log(`[OctypoJobHandler] Generated and saved article for: ${item.title}`);
         generated++;
       } else {
         errors.push(`Failed to generate for: ${item.title} - ${result.error || 'Unknown error'}`);
@@ -232,7 +319,12 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
     }
   }
   
-  return { success: generated > 0, generated, errors, contentIds };
+  await db.update(rssFeeds)
+    .set({ lastFetchedAt: new Date() })
+    .where(eq(rssFeeds.id, feed.id));
+  
+  console.log(`[OctypoJobHandler] RSS job complete - Generated: ${generated}, Skipped: ${skipped}, Errors: ${errors.length}`);
+  return { success: generated > 0 || skipped > 0, generated, skipped, errors, contentIds };
 }
 
 async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ success: boolean; generated: number; errors: string[]; contentIds: string[] }> {
