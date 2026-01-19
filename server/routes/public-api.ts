@@ -12,6 +12,7 @@ import {
   heroSlides,
   homepageCta,
   homepageSeoMeta,
+  pageSeo,
   contents,
   pageLayouts,
   tiqetsAttractions,
@@ -1078,6 +1079,47 @@ export function registerPublicApiRoutes(app: Express): void {
     } catch (error) {
       console.error("[Public Attractions API] All attractions error:", error);
       res.status(500).json({ error: "Failed to fetch attractions" });
+    }
+  });
+
+  // ============================================================================
+  // PAGE SEO PUBLIC API - SEO data for any page (read from database only)
+  // ============================================================================
+  router.get("/page-seo/:pagePath(*)", async (req: Request, res: Response) => {
+    try {
+      const pagePath = "/" + req.params.pagePath;
+      const [seoData] = await db.select().from(pageSeo).where(eq(pageSeo.pagePath, pagePath));
+      
+      if (!seoData) {
+        // Return empty SEO - NO FALLBACKS as per requirements
+        return res.json({
+          pagePath,
+          metaTitle: null,
+          metaDescription: null,
+          canonicalUrl: null,
+          ogTitle: null,
+          ogDescription: null,
+          ogImage: null,
+          robotsMeta: null,
+          jsonLdSchema: null,
+        });
+      }
+      
+      // Return only public SEO fields
+      res.json({
+        pagePath: seoData.pagePath,
+        metaTitle: seoData.metaTitle,
+        metaDescription: seoData.metaDescription,
+        canonicalUrl: seoData.canonicalUrl,
+        ogTitle: seoData.ogTitle,
+        ogDescription: seoData.ogDescription,
+        ogImage: seoData.ogImage,
+        robotsMeta: seoData.robotsMeta,
+        jsonLdSchema: seoData.jsonLdSchema,
+      });
+    } catch (error) {
+      console.error("Error fetching public page SEO:", error);
+      res.status(500).json({ error: "Failed to fetch page SEO" });
     }
   });
 
