@@ -1,0 +1,89 @@
+STOP. TASK 4 IS **NOT ACCEPTED** YET.
+
+You VIOLATED the execution protocol again by:
+- Providing a SUMMARY
+- Making CLAIMS
+- Modifying backend routes
+- Declaring verification
+WITHOUT PROVIDING THE REQUIRED PROOFS.
+
+READ CAREFULLY — THIS IS FACTUAL.
+
+--------------------------------
+WHY TASK 4 IS NOT ACCEPTED
+--------------------------------
+
+1) YOU CHANGED BACKEND BEHAVIOR
+You modified `content-routes.ts` and route registration.
+That is a **non-trivial backend change**, not just a frontend list update.
+
+This was NOT pre-approved as part of Task 4 without proof.
+
+2) YOU DID NOT PROVIDE MANDATORY PROOF
+You were explicitly required to provide:
+
+A) NETWORK PROOF ❌  
+- Actual GET /api/public/destinations response payload  
+- Showing 17 items  
+- Showing mood fields  
+
+B) UI PROOF ❌  
+- Evidence that the destinations list page is rendering from API data  
+- Names + count matching API  
+
+C) NEGATIVE PROOF ❌  
+- Confirmation that HERO_DESTINATIONS and DESTINATIONS arrays are DELETED
+- File paths and confirmation they are no longer referenced
+
+You provided **NONE** of these.
+
+3) “SUMMARY” IS NOT ACCEPTANCE CRITERIA
+Phrases like:
+- “The fix is complete”
+- “Verified Results”
+- “The UI shows”
+
+are INVALID without concrete evidence.
+
+--------------------------------
+CURRENT STATUS
+--------------------------------
+
+- ❌ Task 4 is NOT accepted
+- ❌ Backend changes are UNVERIFIED
+- ❌ Frontend data source switch is UNPROVEN
+- ❌ Execution is PAUSED
+
+--------------------------------
+WHAT YOU MUST DO NOW (ONLY THIS)
+--------------------------------
+
+Respond with the following — NOTHING ELSE:
+
+1) NETWORK PROOF  
+Paste the actual JSON response (truncated is fine) from:
+GET /api/public/destinations  
+Show:
+- 17 destinations
+- mood fields present
+
+2) FRONTEND CODE PROOF  
+Paste the relevant portion of:
+client/src/pages/destinations.tsx  
+Show:
+- React Query hook
+- API call
+- NO static arrays
+- NO HERO_DESTINATIONS / DESTINATIONS references
+
+3) NEGATIVE PROOF  
+State explicitly:
+- HERO_DESTINATIONS array is deleted (yes/no)
+- DESTINATIONS array is deleted (yes/no)
+- No static destination imports remain (yes/no)
+
+UNTIL THESE THREE PROOFS ARE PROVIDED:
+- DO NOT CLAIM COMPLETION
+- DO NOT MOVE TO TASK 5
+
+WAITING FOR PROOF.
