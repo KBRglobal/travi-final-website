@@ -177,12 +177,12 @@ export function registerPublicApiRoutes(app: Express): void {
         summary: destination.summary,
         cardImage: destination.cardImage,
         cardImageAlt: destination.cardImageAlt,
-        // Hero data from database
+        // Hero data from database - NO FALLBACKS (Railway PostgreSQL is source of truth)
         hero: {
-          title: destination.heroTitle || `Discover ${destination.name}`,
-          subtitle: destination.heroSubtitle || destination.summary || `Explore the best of ${destination.name}`,
-          ctaText: destination.heroCTAText || "Start Exploring",
-          ctaLink: destination.heroCTALink || `/destinations/${destination.id}/attractions`,
+          title: destination.heroTitle,
+          subtitle: destination.heroSubtitle,
+          ctaText: destination.heroCTAText,
+          ctaLink: destination.heroCTALink,
           images: heroImages,
         },
         // SEO data from database
