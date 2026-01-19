@@ -135,42 +135,57 @@ export async function setupAuth(app: Express) {
   ) => {
     const claims = tokens.claims();
     if (!claims) {
-      console.log(`Login rejected: no claims provided`);
+      console.log(`[Auth] Login rejected: no claims provided`);
       return verified(new Error("Authentication claims are required."), undefined);
     }
     
-    const email = claims["email"] as string | undefined;
-    
-    if (!email) {
-      console.log(`Login rejected: no email provided`);
-      return verified(new Error("Email is required for login."), undefined);
-    }
+    // Log ALL claims for debugging (helps identify what OIDC returns)
+    console.log(`[Auth] OIDC Claims received:`, JSON.stringify({
+      sub: claims["sub"],
+      email: claims["email"],
+      name: claims["name"],
+      preferred_username: claims["preferred_username"],
+      nickname: claims["nickname"],
+      first_name: claims["first_name"],
+      last_name: claims["last_name"],
+    }));
     
     // STRICT ACCESS RESTRICTION: Only allow specific admin emails or GitHub usernames
     const ALLOWED_EMAILS = ["traviquackson@gmail.com", "mzgdubai@gmail.com"];
     const ALLOWED_USERNAMES = ["kbrglobal"];
     
-    // Get username from claims (GitHub returns preferred_username or nickname)
-    const username = (claims["preferred_username"] || claims["nickname"] || claims["name"] || "") as string;
+    const email = (claims["email"] as string | undefined)?.toLowerCase() || "";
     
-    const emailAllowed = ALLOWED_EMAILS.some(e => e.toLowerCase() === email.toLowerCase());
-    const usernameAllowed = ALLOWED_USERNAMES.some(u => u.toLowerCase() === username.toLowerCase());
+    // Get username from multiple possible claim fields
+    const username = (
+      claims["preferred_username"] || 
+      claims["nickname"] || 
+      claims["name"] || 
+      claims["sub"] || 
+      ""
+    ) as string;
     
-    console.log(`[Auth] Login attempt - email: ${email}, username: ${username}`);
+    const emailAllowed = email && ALLOWED_EMAILS.some(e => e.toLowerCase() === email);
+    const usernameAllowed = username && ALLOWED_USERNAMES.some(u => u.toLowerCase() === username.toLowerCase());
     
+    console.log(`[Auth] Login attempt - email: "${email}", username: "${username}", emailAllowed: ${emailAllowed}, usernameAllowed: ${usernameAllowed}`);
+    
+    // Allow login if EITHER email OR username is authorized
     if (!emailAllowed && !usernameAllowed) {
-      console.log(`Login rejected: unauthorized - email ${email}, username ${username}`);
+      console.log(`[Auth] Login REJECTED: unauthorized - email "${email}", username "${username}"`);
       return verified(new Error(`Access denied. You are not authorized to access this application.`), undefined);
     }
     
-    console.log(`[Auth] Login approved for: ${email} (username: ${username})`);
+    console.log(`[Auth] Login APPROVED for: ${email || username}`);
     
     
-    // Check if user exists and is active
-    const existingUser = await storage.getUserByEmail(email);
-    if (existingUser && !existingUser.isActive) {
-      console.log(`Login rejected for deactivated user: ${email}`);
-      return verified(new Error("Your account has been deactivated. Please contact an administrator."), undefined);
+    // Check if user exists and is active (only if email is provided)
+    if (email) {
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser && !existingUser.isActive) {
+        console.log(`[Auth] Login rejected for deactivated user: ${email}`);
+        return verified(new Error("Your account has been deactivated. Please contact an administrator."), undefined);
+      }
     }
     
     const user = {};
