@@ -60,6 +60,7 @@ export default function Login() {
   // Email OTP login state
   const [emailForOtp, setEmailForOtp] = useState("");
   const [emailOtpCode, setEmailOtpCode] = useState("");
+  const [devCode, setDevCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -286,10 +287,20 @@ export default function Login() {
         throw new Error(data.error || "Failed to send code");
       }
 
-      toast({
-        title: "Code Sent",
-        description: "Check your email for the login code",
-      });
+      // In dev mode, the code is returned in the response
+      if (data._devCode) {
+        setDevCode(data._devCode);
+        toast({
+          title: "DEV: Code Ready",
+          description: `Your code is: ${data._devCode}`,
+          duration: 30000,
+        });
+      } else {
+        toast({
+          title: "Code Sent",
+          description: "Check your email for the login code",
+        });
+      }
       setStep("email-verify");
     } catch (error: any) {
       toast({
