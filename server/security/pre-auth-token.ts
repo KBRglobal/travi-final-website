@@ -8,11 +8,15 @@
  * - After password verification, a short-lived HMAC-signed token is issued
  * - Token must be presented with valid TOTP code to complete login
  * - Tokens expire in 5 minutes and are single-use
+ * - Tokens are stored in database to survive server restarts
  * 
  * This prevents the security gap where session exists before MFA completion.
  */
 
 import crypto from 'crypto';
+import { db } from '../db';
+import { preAuthTokens } from '@shared/schema';
+import { eq, lt } from 'drizzle-orm';
 
 /**
  * Pre-auth token configuration
@@ -48,7 +52,7 @@ function getSigningSecret(): string {
  * Pending login entry
  * Stores context that will be used when completing login after TOTP
  */
-interface PendingLogin {
+export interface PendingLogin {
   userId: string;
   username: string;
   createdAt: number;
@@ -61,29 +65,23 @@ interface PendingLogin {
 }
 
 /**
- * In-memory store for pending logins
- * Key: token hash (we never store the full token)
- */
-const pendingLogins = new Map<string, PendingLogin>();
-
-/**
  * Cleanup interval reference
  */
 let cleanupTimerId: NodeJS.Timeout | null = null;
 
 /**
- * Start cleanup timer for expired tokens
+ * Start cleanup timer for expired tokens (database cleanup)
  */
 function startCleanupTimer(): void {
   if (cleanupTimerId) return;
   
-  cleanupTimerId = setInterval(() => {
-    const now = Date.now();
-    pendingLogins.forEach((entry, key) => {
-      if (entry.expiresAt < now) {
-        pendingLogins.delete(key);
-      }
-    });
+  cleanupTimerId = setInterval(async () => {
+    try {
+      const now = new Date();
+      await db.delete(preAuthTokens).where(lt(preAuthTokens.expiresAt, now));
+    } catch (error) {
+      console.error('[PreAuth] Database cleanup error:', error);
+    }
   }, 60 * 1000); // Every minute
   
   cleanupTimerId.unref();
@@ -140,7 +138,7 @@ interface PreAuthTokenPayload {
  * This token proves password was verified but session is NOT created yet.
  * Must be presented with valid TOTP code to complete login.
  */
-export function createPreAuthToken(
+export async function createPreAuthToken(
   userId: string,
   username: string,
   context: {
@@ -149,7 +147,7 @@ export function createPreAuthToken(
     riskScore?: number;
     deviceFingerprint?: string;
   }
-): { token: string; expiresAt: number } {
+): Promise<{ token: string; expiresAt: number }> {
   const now = Date.now();
   const expiresAt = now + PRE_AUTH_CONFIG.tokenExpiry;
   const nonce = generateNonce();
@@ -169,23 +167,27 @@ export function createPreAuthToken(
   // Token format: base64url(payload).signature
   const token = `${payloadBase64}.${signature}`;
   
-  // Store pending login entry (keyed by token hash)
+  // Store in database (keyed by token hash)
   const tokenHash = hashTokenForStorage(token);
-  const pendingEntry: PendingLogin = {
-    userId,
-    username,
-    createdAt: now,
-    expiresAt,
-    ipAddress: context.ipAddress,
-    userAgent: context.userAgent,
-    riskScore: context.riskScore,
-    deviceFingerprint: context.deviceFingerprint,
-    nonce,
-  };
   
-  pendingLogins.set(tokenHash, pendingEntry);
-  
-  console.log(`[PreAuth] Token created for user ${username.substring(0, 3)}*** (expires in ${PRE_AUTH_CONFIG.tokenExpiry / 1000 / 60} min)`);
+  try {
+    await db.insert(preAuthTokens).values({
+      tokenHash,
+      userId,
+      username,
+      nonce,
+      ipAddress: context.ipAddress,
+      userAgent: context.userAgent,
+      riskScore: context.riskScore,
+      deviceFingerprint: context.deviceFingerprint,
+      expiresAt: new Date(expiresAt),
+    });
+    
+    console.log(`[PreAuth] Token created for user ${username.substring(0, 3)}*** (expires in ${PRE_AUTH_CONFIG.tokenExpiry / 1000 / 60} min)`);
+  } catch (error) {
+    console.error('[PreAuth] Failed to store token in database:', error);
+    throw new Error('Failed to create pre-auth token');
+  }
   
   return { token, expiresAt };
 }
@@ -195,7 +197,7 @@ export function createPreAuthToken(
  * 
  * Returns null if token is invalid, expired, or already used
  */
-export function verifyPreAuthToken(token: string): PendingLogin | null {
+export async function verifyPreAuthToken(token: string): Promise<PendingLogin | null> {
   if (!token || typeof token !== 'string') {
     return null;
   }
@@ -232,28 +234,55 @@ export function verifyPreAuthToken(token: string): PendingLogin | null {
     return null;
   }
   
-  // Look up pending login
+  // Look up pending login from database
   const tokenHash = hashTokenForStorage(token);
-  const pendingLogin = pendingLogins.get(tokenHash);
   
-  if (!pendingLogin) {
-    console.log('[PreAuth] Token not found (may be already used)');
+  try {
+    const [dbToken] = await db
+      .select()
+      .from(preAuthTokens)
+      .where(eq(preAuthTokens.tokenHash, tokenHash))
+      .limit(1);
+    
+    if (!dbToken) {
+      console.log('[PreAuth] Token not found (may be already used or server restarted)');
+      return null;
+    }
+    
+    // Check database expiration as well
+    if (dbToken.expiresAt < new Date()) {
+      console.log('[PreAuth] Token expired (db check)');
+      return null;
+    }
+    
+    // Verify nonce matches
+    if (dbToken.nonce !== payload.nonce) {
+      console.log('[PreAuth] Token nonce mismatch');
+      return null;
+    }
+    
+    // Verify userId matches
+    if (dbToken.userId !== payload.userId) {
+      console.log('[PreAuth] Token userId mismatch');
+      return null;
+    }
+    
+    // Return PendingLogin format
+    return {
+      userId: dbToken.userId,
+      username: dbToken.username,
+      createdAt: dbToken.createdAt ? dbToken.createdAt.getTime() : Date.now(),
+      expiresAt: dbToken.expiresAt.getTime(),
+      ipAddress: dbToken.ipAddress || '',
+      userAgent: dbToken.userAgent || '',
+      riskScore: dbToken.riskScore || undefined,
+      deviceFingerprint: dbToken.deviceFingerprint || undefined,
+      nonce: dbToken.nonce,
+    };
+  } catch (error) {
+    console.error('[PreAuth] Database error during verification:', error);
     return null;
   }
-  
-  // Verify nonce matches
-  if (pendingLogin.nonce !== payload.nonce) {
-    console.log('[PreAuth] Token nonce mismatch');
-    return null;
-  }
-  
-  // Verify userId matches
-  if (pendingLogin.userId !== payload.userId) {
-    console.log('[PreAuth] Token userId mismatch');
-    return null;
-  }
-  
-  return pendingLogin;
 }
 
 /**
@@ -261,37 +290,54 @@ export function verifyPreAuthToken(token: string): PendingLogin | null {
  * 
  * This invalidates the token so it cannot be reused
  */
-export function consumePreAuthToken(token: string): boolean {
+export async function consumePreAuthToken(token: string): Promise<boolean> {
   const tokenHash = hashTokenForStorage(token);
-  const existed = pendingLogins.has(tokenHash);
-  pendingLogins.delete(tokenHash);
   
-  if (existed) {
-    console.log('[PreAuth] Token consumed successfully');
+  try {
+    const result = await db
+      .delete(preAuthTokens)
+      .where(eq(preAuthTokens.tokenHash, tokenHash));
+    
+    const deleted = (result as any).rowCount > 0;
+    
+    if (deleted) {
+      console.log('[PreAuth] Token consumed successfully');
+    }
+    
+    return deleted;
+  } catch (error) {
+    console.error('[PreAuth] Database error during token consumption:', error);
+    return false;
   }
-  
-  return existed;
 }
 
 /**
  * Get pending login stats for monitoring
  */
-export function getPreAuthStats(): {
+export async function getPreAuthStats(): Promise<{
   pendingCount: number;
   oldestPendingAge?: number;
-} {
-  const now = Date.now();
-  let oldestAge: number | undefined;
-  
-  pendingLogins.forEach((entry) => {
-    const age = now - entry.createdAt;
-    if (oldestAge === undefined || age > oldestAge) {
-      oldestAge = age;
-    }
-  });
-  
-  return {
-    pendingCount: pendingLogins.size,
-    oldestPendingAge: oldestAge ? Math.floor(oldestAge / 1000) : undefined, // seconds
-  };
+}> {
+  try {
+    const tokens = await db.select().from(preAuthTokens);
+    const now = Date.now();
+    let oldestAge: number | undefined;
+    
+    tokens.forEach((token) => {
+      if (token.createdAt) {
+        const age = now - token.createdAt.getTime();
+        if (oldestAge === undefined || age > oldestAge) {
+          oldestAge = age;
+        }
+      }
+    });
+    
+    return {
+      pendingCount: tokens.length,
+      oldestPendingAge: oldestAge ? Math.floor(oldestAge / 1000) : undefined, // seconds
+    };
+  } catch (error) {
+    console.error('[PreAuth] Database error getting stats:', error);
+    return { pendingCount: 0 };
+  }
 }
