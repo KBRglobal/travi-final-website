@@ -100,47 +100,26 @@ export function registerPublicApiRoutes(app: Express): void {
     try {
       const { id } = req.params;
 
+      // Query destination by ID with is_active check - NO HARDCODED WHITELIST
+      // Database is single source of truth - any destination with is_active=true is accessible
       const [destination] = await db
         .select()
         .from(destinations)
-        .where(eq(destinations.id, id))
+        .where(and(eq(destinations.id, id), eq(destinations.isActive, true)))
         .limit(1);
 
       if (!destination) {
         return res.status(404).json({ error: "Destination not found" });
       }
 
-      const ALLOWED_DESTINATION_IDS = new Set([
-        "dubai", "abu-dhabi", "ras-al-khaimah", "bangkok", "barcelona", "paris", "london",
-        "new-york", "singapore", "tokyo", "rome", "amsterdam", "hong-kong",
-        "las-vegas", "los-angeles", "miami", "istanbul"
-      ]);
-
-      if (!ALLOWED_DESTINATION_IDS.has(id)) {
-        console.warn(`[Security] Rejected non-whitelisted destination ID: ${id}`);
-        return res.status(404).json({ error: "Destination not found" });
-      }
-
-      const folderMappings: Record<string, string[]> = {
-        "dubai": ["dubai", "dubai/dubai"],
-        "abu-dhabi": ["abudhabi", "abu-dhabi"],
-        "bangkok": ["bangkok"],
-        "barcelona": ["barcelona", "barcelona/barcelona"],
-        "paris": ["paris"],
-        "london": ["london"],
-        "new-york": ["newyork", "new-york"],
-        "singapore": ["singapore", "Singapore", "Singapore/singapore"],
-        "tokyo": ["tokyo"],
-        "rome": ["rome"],
-        "amsterdam": ["amsterdam", "Amsterdam", "Amsterdam/amsterdam"],
-        "hong-kong": ["hongkong", "hong-kong"],
-        "las-vegas": ["lasvegas", "las-vegas"],
-        "los-angeles": ["losangeles", "los-angeles"],
-        "miami": ["miami"],
-        "istanbul": ["istanbul"],
-      };
-
-      const possibleFolders = folderMappings[id] || [];
+      // Dynamic folder mapping for hero images - use destination ID and common variations
+      const possibleFolders = [
+        id,
+        `${id}/${id}`,
+        id.replace(/-/g, ""),
+        id.charAt(0).toUpperCase() + id.slice(1),
+        `${id.charAt(0).toUpperCase() + id.slice(1)}/${id}`,
+      ];
       let heroImages: Array<{ filename: string; url: string; alt: string; order: number }> = [];
 
       for (const folder of possibleFolders) {
