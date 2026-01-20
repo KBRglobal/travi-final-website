@@ -309,6 +309,7 @@ const sidebarModules: NavModule[] = [
       { title: "Webhooks", url: "/admin/enterprise/webhooks", icon: Webhook, requiredPermission: "canManageSettings" },
       { title: "API Keys", url: "/admin/travi/api-keys", icon: Key, requiredPermission: "canManageSettings" },
       { title: "Import/Export", url: "/admin/ingestion", icon: Import, requiredPermission: "canManageSettings" },
+      { title: "Tiqets Import", url: "/admin/tiqets/attractions-import", icon: MapPin, requiredPermission: "canCreate" },
     ],
   },
   {
