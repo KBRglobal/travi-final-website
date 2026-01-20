@@ -206,7 +206,8 @@
     "newsletterDescription": "קבל את טיפי הנסיעה האחרונים לדובאי ומבצעים בלעדיים",
     "emailPlaceholder": "הכנס את האימייל שלך",
     "allRightsReserved": "כל הזכויות שמורות.",
-    "copyright": "כל הזכויות שמורות"
+    "copyright": "© {{year}} {{brand}}. כל הזכויות שמורות.",
+    "emailAriaLabel": "שלח אימייל ל-TRAVI"
   },
   "errors": {
     "404": {

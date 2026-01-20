@@ -216,7 +216,8 @@
     "newsletterDescription": "احصل على أحدث نصائح السفر إلى دبي والعروض الحصرية.",
     "emailPlaceholder": "أدخل بريدك الإلكتروني",
     "allRightsReserved": "جميع الحقوق محفوظة.",
-    "copyright": "جميع الحقوق محفوظة"
+    "copyright": "© {{year}} {{brand}}. جميع الحقوق محفوظة.",
+    "emailAriaLabel": "إرسال بريد إلكتروني إلى ترافي"
   },
   "errors": {
     "404": {
