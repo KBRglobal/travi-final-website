@@ -196,8 +196,8 @@ export default function PublicSearch() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
       <SEOHead
-        title="Search Dubai"
-        description="Search for attractions, hotels, restaurants, and more in Dubai"
+        title="Search | TRAVI World"
+        description="Search for attractions, guides, destinations and travel experiences worldwide"
         canonicalPath="/search"
         noIndex={true}
       />
@@ -241,7 +241,7 @@ export default function PublicSearch() {
               <Search className="w-5 h-5 text-[#6443F4] shrink-0" aria-hidden="true" />
               <input
                 type="text"
-                placeholder={t('nav.searchPlaceholder') || "Search Dubai..."}
+                placeholder={t('nav.searchPlaceholder') || "Search attractions, guides, destinations..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent outline-none py-3 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 text-base"
@@ -294,7 +294,7 @@ export default function PublicSearch() {
                 {t('search.startSearching') || "Start Searching"}
               </h2>
               <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md mx-auto">
-                {t('search.enterQuery') || "Enter a search term to find hotels, attractions, restaurants and more in Dubai."}
+                {t('search.enterQuery') || "Enter a search term to find attractions, guides, destinations and more."}
               </p>
               
               <div className="flex flex-wrap items-center justify-center gap-3">
