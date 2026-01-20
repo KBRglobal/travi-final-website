@@ -87,11 +87,6 @@ app.use(compression({
   }
 }));
 
-// 301 Redirects Middleware - handles SEO redirects before routes
-// Redirects: /adventure, /family, /romance, /privacy-policy, www to non-www, /search?q=* to /search
-app.use(redirectMiddleware);
-console.log('[Redirects] 301 redirect middleware registered');
-
 const httpServer = createServer(app);
 
 declare module "http" {
@@ -122,6 +117,11 @@ app.use(sanitizeInput);
 // Extracts locale from URL prefix, validates, and sets req.locale + headers
 app.use(localeMiddleware);
 console.log('[Locale] Locale resolution middleware registered');
+
+// 301 Redirects Middleware - handles SEO redirects AFTER locale detection
+// This ensures Content-Language/Vary headers are set even for redirected responses
+app.use(redirectMiddleware);
+console.log('[Redirects] 301 redirect middleware registered');
 
 // SEO Fix: Redirect unsupported locale paths to prevent duplicate content
 // /sv/* is not a supported route prefix (only in i18n translations, not routing)
