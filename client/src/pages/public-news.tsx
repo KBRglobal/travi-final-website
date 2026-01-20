@@ -469,6 +469,7 @@ export default function PublicNews() {
             </div>
           </section>
         ) : (
+        <>
         <section className="grid lg:grid-cols-12 gap-6 mb-12" data-testid="section-hero">
           <div className="lg:col-span-8">
             {heroArticle && (
@@ -809,6 +810,7 @@ export default function PublicNews() {
             </section>
           </aside>
         </div>
+        </>
         )}
       </main>
 
