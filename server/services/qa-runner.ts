@@ -418,4 +418,55 @@ export class QaRunner {
       });
     }
   }
+
+  /**
+   * Run quick automated checks without creating a full QA run
+   * This is used for the dashboard display of health status
+   */
+  static async runQuickChecks(): Promise<Array<{ key: string; name: string; passed: boolean; message: string; duration?: number; category?: string }>> {
+    console.log("[QA Runner] Running quick automated checks...");
+    
+    const checks = [
+      { key: "homepage_loads", name: "Homepage Loads", category: "infrastructure" },
+      { key: "destinations_loads", name: "Destinations Page Loads", category: "infrastructure" },
+      { key: "attractions_loads", name: "Attractions Page Loads", category: "infrastructure" },
+      { key: "api_health", name: "API Health Check", category: "infrastructure" },
+      { key: "db_connectivity", name: "Database Connectivity", category: "infrastructure" },
+      { key: "db_query_performance", name: "Database Query Performance", category: "infrastructure" },
+      { key: "server_response_time", name: "Server Response Time", category: "reliability_resilience" },
+      { key: "error_handling", name: "Error Handling", category: "reliability_resilience" },
+      { key: "env_database_url", name: "Database URL Configured", category: "infrastructure" },
+      { key: "env_session_secret", name: "Session Secret Configured", category: "infrastructure" },
+    ];
+
+    const results: Array<{ key: string; name: string; passed: boolean; message: string; duration?: number; category?: string }> = [];
+
+    for (const check of checks) {
+      try {
+        const result = await this.executeCheck(check.key, null);
+        results.push({
+          key: check.key,
+          name: check.name,
+          passed: result.passed,
+          message: result.message,
+          duration: result.duration,
+          category: check.category,
+        });
+      } catch (error) {
+        results.push({
+          key: check.key,
+          name: check.name,
+          passed: false,
+          message: `Check failed: ${String(error)}`,
+          category: check.category,
+        });
+      }
+    }
+
+    const passed = results.filter(r => r.passed).length;
+    const failed = results.filter(r => !r.passed).length;
+    console.log(`[QA Runner] Quick checks complete: ${passed} passed, ${failed} failed`);
+
+    return results;
+  }
 }

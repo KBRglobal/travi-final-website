@@ -522,6 +522,90 @@ export function registerQaRoutes(app: Express) {
   });
 
   // ============================================================================
+  // AUTOMATED CHECKS (QUICK RUN)
+  // ============================================================================
+
+  // Run automated checks without creating a full QA run
+  // This is for the dashboard display of quick health checks
+  app.post("/api/qa/run-automated", requireAuth, async (req: Request, res: Response) => {
+    try {
+      console.log("[QA Routes] Running automated health checks...");
+      
+      const results = await QaRunner.runQuickChecks();
+      
+      res.json({
+        success: true,
+        timestamp: new Date().toISOString(),
+        results,
+        summary: {
+          total: results.length,
+          passed: results.filter(r => r.passed).length,
+          failed: results.filter(r => !r.passed).length,
+        }
+      });
+    } catch (error) {
+      console.error("Error running automated checks:", error);
+      res.status(500).json({ error: "Failed to run automated checks" });
+    }
+  });
+
+  // Get last automated check results (cached/stored)
+  app.get("/api/qa/automated-status", requireAuth, async (req: Request, res: Response) => {
+    try {
+      // Get most recent completed run
+      const lastRun = await db.query.qaRuns.findFirst({
+        where: eq(qaRuns.status, "completed"),
+        orderBy: [desc(qaRuns.completedAt)],
+        with: {
+          results: {
+            with: {
+              item: {
+                with: {
+                  category: true,
+                }
+              }
+            }
+          }
+        }
+      });
+
+      if (!lastRun) {
+        return res.json({
+          hasData: false,
+          message: "No completed QA runs found. Run a QA check first.",
+        });
+      }
+
+      // Group results by category
+      const byCategory: Record<string, { passed: number; failed: number; total: number }> = {};
+      
+      for (const result of lastRun.results || []) {
+        const catKey = result.item?.category?.key || "unknown";
+        if (!byCategory[catKey]) {
+          byCategory[catKey] = { passed: 0, failed: 0, total: 0 };
+        }
+        byCategory[catKey].total++;
+        if (result.status === "passed") byCategory[catKey].passed++;
+        if (result.status === "failed") byCategory[catKey].failed++;
+      }
+
+      res.json({
+        hasData: true,
+        lastRunId: lastRun.id,
+        lastRunAt: lastRun.completedAt,
+        score: lastRun.score,
+        passed: lastRun.passedItems,
+        failed: lastRun.failedItems,
+        total: lastRun.totalItems,
+        byCategory,
+      });
+    } catch (error) {
+      console.error("Error fetching automated status:", error);
+      res.status(500).json({ error: "Failed to fetch automated status" });
+    }
+  });
+
+  // ============================================================================
   // STATS & REPORTS
   // ============================================================================
 

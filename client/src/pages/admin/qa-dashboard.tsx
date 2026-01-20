@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -135,6 +135,22 @@ const SEVERITY_CONFIG = {
   low: { color: "bg-blue-500", label: "Low" },
 };
 
+interface AutomatedCheckResult {
+  key: string;
+  name: string;
+  passed: boolean;
+  message: string;
+  duration?: number;
+  category?: string;
+}
+
+interface AutomatedCheckResponse {
+  success: boolean;
+  timestamp: string;
+  results: AutomatedCheckResult[];
+  summary: { total: number; passed: number; failed: number };
+}
+
 export default function QaDashboard() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
@@ -142,6 +158,7 @@ export default function QaDashboard() {
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [severityFilter, setSeverityFilter] = useState<string>("all");
+  const [automatedResults, setAutomatedResults] = useState<AutomatedCheckResponse | null>(null);
   const [newRunData, setNewRunData] = useState({
     name: "",
     description: "",
@@ -167,6 +184,40 @@ export default function QaDashboard() {
     queryKey: ["/api/qa/runs", activeRunId],
     enabled: !!activeRunId,
   });
+
+  // Automated checks mutation
+  const runAutomatedChecksMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/qa/run-automated", {});
+      return res.json() as Promise<AutomatedCheckResponse>;
+    },
+    onSuccess: (data) => {
+      setAutomatedResults(data);
+      toast({
+        title: `Automated checks complete: ${data.summary.passed}/${data.summary.total} passed`,
+        variant: data.summary.failed > 0 ? "destructive" : "default",
+      });
+    },
+    onError: (error: Error) => {
+      toast({ title: error.message || "Failed to run automated checks", variant: "destructive" });
+    },
+  });
+
+  // Auto-run health checks on first load
+  const hasAutoRun = useRef(false);
+  useEffect(() => {
+    if (!hasAutoRun.current) {
+      hasAutoRun.current = true;
+      apiRequest("POST", "/api/qa/run-automated", {})
+        .then(res => res.json())
+        .then((data: AutomatedCheckResponse) => {
+          setAutomatedResults(data);
+        })
+        .catch(() => {
+          // Silent fail on auto-run
+        });
+    }
+  }, []);
 
   // Mutations
   const seedMutation = useMutation({
@@ -317,10 +368,25 @@ export default function QaDashboard() {
           <h1 className="text-3xl font-bold">QA Checklist Dashboard</h1>
           <p className="text-muted-foreground">Comprehensive system quality assurance</p>
         </div>
-        <Button onClick={() => setNewRunDialogOpen(true)}>
-          <Play className="mr-2 h-4 w-4" />
-          Start New QA Run
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => runAutomatedChecksMutation.mutate()}
+            disabled={runAutomatedChecksMutation.isPending}
+            data-testid="button-run-automated-checks"
+          >
+            {runAutomatedChecksMutation.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Play className="mr-2 h-4 w-4" />
+            )}
+            Run Quick Health Checks
+          </Button>
+          <Button onClick={() => setNewRunDialogOpen(true)} data-testid="button-start-qa-run">
+            <ClipboardCheck className="mr-2 h-4 w-4" />
+            Start Full QA Run
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -382,6 +448,64 @@ export default function QaDashboard() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
+          {/* Automated Check Results */}
+          {automatedResults && (
+            <Card className="border-2 border-primary/20">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                      Quick Health Check Results
+                    </CardTitle>
+                    <CardDescription>
+                      Last run: {new Date(automatedResults.timestamp).toLocaleString()}
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">{automatedResults.summary.passed}</div>
+                      <div className="text-xs text-muted-foreground">Passed</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-red-600">{automatedResults.summary.failed}</div>
+                      <div className="text-xs text-muted-foreground">Failed</div>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                  {automatedResults.results.map((result) => (
+                    <div
+                      key={result.key}
+                      className={cn(
+                        "flex items-center gap-2 p-2 rounded-lg text-sm",
+                        result.passed ? "bg-green-50 dark:bg-green-950/30" : "bg-red-50 dark:bg-red-950/30"
+                      )}
+                      data-testid={`check-result-${result.key}`}
+                    >
+                      {result.passed ? (
+                        <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      ) : (
+                        <XCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{result.name}</div>
+                        <div className="text-xs text-muted-foreground truncate">{result.message}</div>
+                      </div>
+                      {result.duration && (
+                        <span className="text-xs text-muted-foreground flex-shrink-0">
+                          {result.duration}ms
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Categories Summary */}
             <Card>
