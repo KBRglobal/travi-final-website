@@ -533,7 +533,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
               <Users className="h-4 w-4 text-primary" />
             </div>
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-sm font-medium truncate">{user.username}</span>
+              <span className="text-sm font-medium truncate">{user.firstName || user.email || 'User'}</span>
               <span className="text-xs text-muted-foreground capitalize">{user.role}</span>
             </div>
           </div>

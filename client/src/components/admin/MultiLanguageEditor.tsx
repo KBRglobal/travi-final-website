@@ -171,7 +171,7 @@ export function MultiLanguageEditor({
     (e: React.KeyboardEvent) => {
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         const allLocales = SUPPORTED_LOCALES.map((l) => l.code);
-        const currentIndex = allLocales.indexOf(selectedLocale);
+        const currentIndex = allLocales.findIndex((code) => code === selectedLocale);
         const direction = e.key === "ArrowLeft" ? -1 : 1;
         const newIndex =
           (currentIndex + direction + allLocales.length) % allLocales.length;

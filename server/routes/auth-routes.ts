@@ -1250,10 +1250,9 @@ export function registerAuthRoutes(app: Express): void {
           // Log audit event
           logSecurityEventFromRequest(req, SecurityEventType.LOGIN_SUCCESS, {
             success: true,
-            userId: adminUser!.id,
             resource: 'auth',
             action: 'email_otp_login',
-            details: { method: 'email_otp', email: normalizedEmail.substring(0, 5) + '***' }
+            details: { method: 'email_otp', email: normalizedEmail.substring(0, 5) + '***', userId: adminUser!.id }
           });
 
           res.json({

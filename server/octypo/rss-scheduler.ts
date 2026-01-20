@@ -62,7 +62,7 @@ async function createRSSJob(feed: typeof rssFeeds.$inferSelect): Promise<string 
     const jobId = await jobQueue.addJob('ai_generate', jobData, { priority: 5 });
     
     await db.update(rssFeeds)
-      .set({ lastFetchedAt: new Date() })
+      .set({ lastFetchedAt: new Date() } as any)
       .where(eq(rssFeeds.id, feed.id));
     
     console.log(`[RSSScheduler] Created job ${jobId} for feed: ${feed.name}`);
