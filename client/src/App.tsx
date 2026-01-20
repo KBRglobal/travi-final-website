@@ -242,6 +242,14 @@ function PublicRouter() {
         </Route>
       ))}
 
+      {/* Travel style year-based URL redirects (SEO: 301 equivalent) */}
+      <Route path="/travel-styles/luxury-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/luxury-travel-complete-guide" />}</Route>
+      <Route path="/travel-styles/adventure-outdoors-complete-guide-2026">{() => <Redirect to="/travel-styles/adventure-outdoors-complete-guide" />}</Route>
+      <Route path="/travel-styles/family-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/family-travel-complete-guide" />}</Route>
+      <Route path="/travel-styles/budget-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/budget-travel-complete-guide" />}</Route>
+      <Route path="/travel-styles/honeymoon-romance-complete-guide-2026">{() => <Redirect to="/travel-styles/honeymoon-romance-complete-guide" />}</Route>
+      <Route path="/travel-styles/solo-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/solo-travel-complete-guide" />}</Route>
+
       <Route path="/en/:city/attractions/:slug" component={TraviLocationPage} />
       {/* NOTE: Hotel routes disabled - no hotel content in CMS yet */}
       {/* <Route path="/en/:city/hotels/:slug" component={TraviLocationPage} /> */}

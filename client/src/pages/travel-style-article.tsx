@@ -206,8 +206,8 @@ function generateHowToSchema(style: TravelStyleData) {
 // ============================================
 
 const TRAVEL_STYLES: Record<string, TravelStyleData> = {
-  "luxury-travel-complete-guide-2026": {
-    slug: "luxury-travel-complete-guide-2026",
+  "luxury-travel-complete-guide": {
+    slug: "luxury-travel-complete-guide",
     title: "Luxury Travel Complete Guide 2026",
     shortTitle: "Luxury Travel",
     metaTitle: "Luxury Travel Guide 2026 - Planning, Tips & 5-Star Experiences | TRAVI",
@@ -390,8 +390,8 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       { question: "How to get room upgrades?", answer: "Join loyalty programs, achieve elite status, book direct, use Virtuoso advisors, mention special occasions, arrive midweek, use premium credit cards." }
     ]
   },
-  "adventure-outdoors-complete-guide-2026": {
-    slug: "adventure-outdoors-complete-guide-2026",
+  "adventure-outdoors-complete-guide": {
+    slug: "adventure-outdoors-complete-guide",
     title: "Adventure & Outdoors Travel Complete Guide 2026",
     shortTitle: "Adventure Travel",
     metaTitle: "Adventure Travel Guide 2026 - Hiking, Diving & Outdoor Tips | TRAVI",
@@ -559,8 +559,8 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       { question: "What insurance do I need?", answer: "Specialized adventure insurance covering: adventure sports, evacuation $250,000+, medical $100,000-250,000, trip cancellation, gear coverage, 24/7 assistance. Cost $200-800 for 2 weeks. NON-NEGOTIABLE." }
     ]
   },
-  "family-travel-complete-guide-2026": {
-    slug: "family-travel-complete-guide-2026",
+  "family-travel-complete-guide": {
+    slug: "family-travel-complete-guide",
     title: "Family Travel Complete Guide 2026",
     shortTitle: "Family Travel",
     metaTitle: "Family Travel Guide 2026 - Tips for Traveling with Kids | TRAVI",
@@ -752,8 +752,8 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       { question: "Best family-friendly destinations?", answer: "Theme parks (Orlando, Anaheim), beaches (Caribbean, Mediterranean), Europe cities (London, Paris with planning), Asia (Bali, Thailand), National Parks (US, Canada). Match to kids' ages and interests." }
     ]
   },
-  "budget-travel-complete-guide-2026": {
-    slug: "budget-travel-complete-guide-2026",
+  "budget-travel-complete-guide": {
+    slug: "budget-travel-complete-guide",
     title: "Budget Travel Complete Guide 2026",
     shortTitle: "Budget Travel",
     metaTitle: "Budget Travel Guide 2026 - Money-Saving Tips & Cheap Destinations | TRAVI",
@@ -885,8 +885,8 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       { question: "How long can I travel on $10,000?", answer: "SE Asia: 12-18 months ($20-30/day). Eastern Europe: 8-12 months. Latin America: 8-14 months. Mixed regions: 10-15 months with strategic planning." }
     ]
   },
-  "honeymoon-romance-complete-guide-2026": {
-    slug: "honeymoon-romance-complete-guide-2026",
+  "honeymoon-romance-complete-guide": {
+    slug: "honeymoon-romance-complete-guide",
     title: "Honeymoon & Romance Travel Complete Guide 2026",
     shortTitle: "Honeymoon & Romance",
     metaTitle: "Honeymoon & Romance Travel Guide 2026 - Planning Tips | TRAVI",
@@ -1053,8 +1053,8 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       { question: "Should we do all-inclusive?", answer: "All-inclusive pros: Predictable costs, everything handled, often good value for honeymooners. Cons: Less flexibility, can feel repetitive, limited local experiences. Consider hybrid: Start all-inclusive (recover from wedding), then explore independently." }
     ]
   },
-  "solo-travel-complete-guide-2026": {
-    slug: "solo-travel-complete-guide-2026",
+  "solo-travel-complete-guide": {
+    slug: "solo-travel-complete-guide",
     title: "Solo Travel Complete Guide 2026",
     shortTitle: "Solo Travel",
     metaTitle: "Solo Travel Guide 2026 - Safety Tips & Best Destinations | TRAVI",
