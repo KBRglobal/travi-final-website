@@ -43,7 +43,7 @@ export function PublicFooter() {
               style={{ fontFamily: "'Chillax', var(--font-sans)", fontWeight: 700, lineHeight: 1.2 }}
             >Your Trusted Travel Resource</h2>
             <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-sm">
-              Comprehensive travel information for 16 destinations worldwide.
+              Comprehensive travel information for 17 destinations worldwide.
             </p>
           </div>
 

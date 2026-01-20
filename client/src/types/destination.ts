@@ -144,7 +144,7 @@ export type PartialDestinationPageData = Partial<DestinationPageData> & {
   country: string;
 };
 
-// All 16 destination IDs for the factory pattern
+// All 17 destination IDs for the factory pattern
 export const DESTINATION_IDS = [
   "abu-dhabi",
   "amsterdam", 

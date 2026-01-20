@@ -341,7 +341,7 @@ const HOTEL_CATEGORIES = [
 const HOTELS_FAQ = [
   {
     q: "What types of hotels does TRAVI feature?",
-    a: "TRAVI features a comprehensive range of accommodations across 16 destinations worldwide - from budget-friendly options and boutique hotels to premium 4-star properties and luxury 5-star resorts. Our directory includes over 10,000 verified properties to suit every travel style and budget."
+    a: "TRAVI features a comprehensive range of accommodations across 17 destinations worldwide - from budget-friendly options and boutique hotels to premium 4-star properties and luxury 5-star resorts. Our directory includes over 10,000 verified properties to suit every travel style and budget."
   },
   {
     q: "Which destinations have the most hotels on TRAVI?",
@@ -582,7 +582,7 @@ export default function GlobalHotels() {
         <meta name="robots" content="noindex, nofollow" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Hotels Worldwide | TRAVI" />
-        <meta name="twitter:description" content="10,000+ hotels across 16 destinations. From budget to luxury." />
+        <meta name="twitter:description" content="10,000+ hotels across 17 destinations. From budget to luxury." />
         <link rel="canonical" href="https://travi.world/hotels" />
 
         {/* Preload critical images */}
@@ -611,7 +611,7 @@ export default function GlobalHotels() {
             "@context": "https://schema.org",
             "@type": "ItemList",
             "name": "Hotel Destinations",
-            "description": "Browse 10,000+ hotels across 16 destinations worldwide",
+            "description": "Browse 10,000+ hotels across 17 destinations worldwide",
             "numberOfItems": HOTEL_DESTINATIONS.length,
             "itemListElement": HOTEL_DESTINATIONS.map((dest, index) => ({
               "@type": "ListItem",
@@ -757,7 +757,7 @@ export default function GlobalHotels() {
                   transition={{ duration: 0.6, delay: 0.3 }}
                   className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed"
                 >
-                  Discover exceptional 4 and 5-star properties across 16 destinations. 
+                  Discover exceptional 4 and 5-star properties across 17 destinations. 
                   Curated luxury accommodations for unforgettable stays.
                 </motion.p>
 
@@ -826,7 +826,7 @@ export default function GlobalHotels() {
                     What makes TRAVI hotel listings unique?
                   </h2>
                   <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-                    TRAVI features a comprehensive collection of hotels across 16 destinations worldwide, 
+                    TRAVI features a comprehensive collection of hotels across 17 destinations worldwide, 
                     from budget-friendly options to luxury 5-star resorts. With over 10,000 properties 
                     offering diverse amenities including spa facilities, dining options, and exceptional 
                     guest experiences, you'll find the perfect stay for any budget and travel style.
