@@ -559,7 +559,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md">
               <span className="w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Trusted by 17 destinations worldwide
+                {t("home.hero.badge", { count: siteStats?.destinations || 17 })}
               </span>
             </div>
           </div>
@@ -570,14 +570,14 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
               className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2" 
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
             >
-              Your Trusted Travel
+              {t("home.hero.headlinePart1")}
             </span>
             <span className="relative inline-block">
               <span 
                 className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                Resource
+                {t("home.hero.headlinePart2")}
               </span>
               {/* Gradient underline accent */}
               <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
@@ -587,17 +587,20 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
           <p 
             id="hero-description"
             className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
-          >
-            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">{siteStats?.destinations || 17} destinations</span> worldwide. 
-            Discover detailed guides for <span className="font-medium text-slate-700 dark:text-slate-300">{(siteStats?.attractions || 3000).toLocaleString()}+ attractions</span>.
-          </p>
+            dangerouslySetInnerHTML={{
+              __html: t("home.hero.description", {
+                destinations: `<span class="font-medium text-slate-700 dark:text-slate-300">${siteStats?.destinations || 17}</span>`,
+                attractions: `<span class="font-medium text-slate-700 dark:text-slate-300">${(siteStats?.attractions || 3000).toLocaleString()}</span>`
+              })
+            }}
+          />
 
           {/* Stats */}
           <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8">
             {[
-              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: t("home.stats.attractions"), srLabel: `Over ${(siteStats?.attractions || 3000).toLocaleString()} attractions covered` },
-              { num: String(siteStats?.destinations || 17), label: t("home.stats.destinations"), srLabel: `${siteStats?.destinations || 17} destinations worldwide` },
-              { num: '17+', label: t("home.stats.languages"), srLabel: 'Multilingual platform with additional languages rolling out' }
+              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: t("home.stats.attractions"), srLabel: t("home.srLabel.attractions", { count: (siteStats?.attractions || 3000).toLocaleString() }) },
+              { num: String(siteStats?.destinations || 17), label: t("home.stats.destinations"), srLabel: t("home.srLabel.destinations", { count: siteStats?.destinations || 17 }) },
+              { num: '17+', label: t("home.stats.languages"), srLabel: t("home.srLabel.languages") }
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                 <div className="text-center lg:text-left">
@@ -637,7 +640,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
           <div 
             className="flex gap-2 mt-8 justify-center lg:justify-start"
             role="tablist"
-            aria-label="Destination carousel navigation"
+            aria-label={t("home.hero.carouselLabel")}
           >
             {HERO_DESTINATIONS.map((d, i) => (
               <button
@@ -645,7 +648,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
                 onClick={() => goTo(i)}
                 role="tab"
                 aria-selected={currentIndex === i}
-                aria-label={`View ${d.name} - ${d.tagline}`}
+                aria-label={t("home.hero.viewDestination", { name: d.name, tagline: d.tagline })}
                 className={cn(
                   "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
                   currentIndex === i 
