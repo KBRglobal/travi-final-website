@@ -1,0 +1,75 @@
+TASK: G2-A-05 DESTINATIONS PAGE — HARD VERIFICATION + 30-LOCALE COMPLETION (PLAN ONLY)
+
+CONTEXT:
+You marked G2A-05 (Destinations page localization) as complete.
+I need strict verification and completion to full Genesis standards:
+- 30 locales (not 17)
+- Zero hardcoded visible strings
+- RTL correctness for ar/he/fa/ur
+- No Dubai bias
+- No silent fallbacks
+
+IMPORTANT:
+Stay in PLAN mode. Do NOT start Build. Output only a task checklist + proofs required.
+
+GOALS:
+1) Prove the Destinations page is fully localized (UI + accessibility labels).
+2) Ensure all translation keys exist for ALL 30 locales, not just en/ar/he.
+3) Ensure RTL visuals are correct and not just dir="rtl".
+4) Ensure no remaining literal English strings on the Destinations route.
+5) Ensure no wrong namespaces or key collisions.
+
+REQUIRED DELIVERABLES (STRICT):
+
+A) 30-LOCALE COVERAGE MATRIX
+- List the 30 supported locales used by the app (source of truth file).
+- Confirm the following keys exist in EVERY locale JSON:
+  - destinations.hero.ariaLabel
+  - destinations.hero.badgeText (with {count})
+  - destinations.hero.title.part1/part2/part3 (or whatever exact structure you used)
+  - destinations.hero.description
+  - destinations.stats.destinations
+  - destinations.stats.countries
+  - destinations.cta.exploreAll
+If any locale is missing, list it explicitly.
+
+B) NO LITERAL STRINGS AUDIT (DESTINATIONS ROUTE)
+Run a targeted grep/audit limited to:
+- client/src/pages/destinations.tsx
+- client/src/components/destinations-hero.tsx (or exact path)
+- any hero components used by Destinations
+Return the list of remaining string literals that can appear to the user (if any).
+The expectation is ZERO.
+
+C) RTL VISUAL & INTERACTION CHECKLIST
+For /ar/destinations and /he/destinations:
+- Confirm text alignment uses text-start/text-end (no left/right).
+- Confirm spacing uses logical padding/margins (ps/pe) where needed.
+- Confirm chevrons/arrows are mirrored if present.
+- Confirm any carousel/scroll container direction is correct.
+If no such UI exists on Destinations, explicitly state “not applicable” and why.
+
+D) NAMESPACE / KEY HYGIENE
+- Confirm you used the correct namespace (“common” vs “destinations”) consistently.
+- Ensure no accidental cross-page keys (e.g., home.stats.*) remain.
+- Provide the final key list you added/modified.
+
+E) ACCEPTANCE TESTS (MANUAL + AUTOMATABLE)
+Provide:
+1) Manual steps to verify:
+   - /destinations (en)
+   - /ar/destinations
+   - /he/destinations
+   - One additional LTR locale (e.g., /fr/destinations)
+2) A Playwright test spec proposal (not code yet) to assert:
+   - h1 is not English in /ar and /he
+   - aria-label is localized
+   - button text localized
+   - stats labels localized
+
+OUTPUT FORMAT:
+- First: “Status: PASS/FAIL” for each section A–E
+- Then: A numbered task list to finish missing items
+- Do NOT start Build, do NOT modify code in this response
+
+START.
