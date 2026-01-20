@@ -120,22 +120,19 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
   const urls: SitemapUrl[] = [];
   const now = new Date().toISOString().split("T")[0];
 
-  // Static pages - ONLY pages that are actually implemented
-  // Verified against client/src/routes/index.ts and client/src/App.tsx
+  // Static pages - ONLY real, indexable pages
+  // Updated January 2026: Global travel platform (no Dubai bias at top level)
   const staticPages = [
     // Core Pages
     { path: "", priority: 1.0, changefreq: "daily" as const },
-    // /search - EXCLUDED: Legacy internal Dubai search page, not public-facing
 
-    // Main Category Pages
+    // Main Category Pages (ONLY pages with real content)
     { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
     { path: "/attractions", priority: 0.9, changefreq: "daily" as const },
-    { path: "/hotels", priority: 0.9, changefreq: "daily" as const },
-    { path: "/dining", priority: 0.8, changefreq: "daily" as const },
-    { path: "/articles", priority: 0.8, changefreq: "daily" as const },
-    { path: "/events", priority: 0.7, changefreq: "daily" as const },
+    { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
+    { path: "/news", priority: 0.7, changefreq: "daily" as const },
 
-    // Destination Pages (16 Tiqets cities)
+    // Destination Pages (17 cities)
     { path: "/destinations/dubai", priority: 0.9, changefreq: "weekly" as const },
     { path: "/destinations/paris", priority: 0.9, changefreq: "weekly" as const },
     { path: "/destinations/tokyo", priority: 0.9, changefreq: "weekly" as const },
@@ -154,45 +151,26 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     { path: "/destinations/rome", priority: 0.8, changefreq: "weekly" as const },
     { path: "/destinations/ras-al-khaimah", priority: 0.8, changefreq: "weekly" as const },
 
-    // Dubai Real Estate (under /destinations/dubai/ hierarchy)
+    // Dubai-specific content (allowed under /destinations/dubai/ hierarchy)
     { path: "/destinations/dubai/real-estate", priority: 0.9, changefreq: "daily" as const },
     { path: "/destinations/dubai/off-plan", priority: 0.9, changefreq: "daily" as const },
+    { path: "/destinations/dubai/guides/rak-transport", priority: 0.7, changefreq: "monthly" as const },
+    { path: "/destinations/dubai/guides/rak-comparison", priority: 0.7, changefreq: "monthly" as const },
 
-    // Guides Hub + RAK Guides (RAK guides stay under /guides, Dubai guides under /destinations/dubai/guides)
-    { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
+    // Guide Pages (global)
     { path: "/guides/wynn-al-marjan-island", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/jebel-jais-adventure", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/where-to-stay-rak", priority: 0.7, changefreq: "monthly" as const },
     { path: "/guides/rak-real-estate-investment", priority: 0.7, changefreq: "monthly" as const },
-    
-    // Dubai-specific guides under /destinations/dubai/
-    { path: "/destinations/dubai/guides/rak-transport", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/destinations/dubai/guides/rak-comparison", priority: 0.7, changefreq: "monthly" as const },
 
-    // Help Center - EXCLUDED: Currently broken ("Help center is currently unavailable")
-    // { path: "/help", priority: 0.6, changefreq: "weekly" as const },
-
-    // Glossary
-    { path: "/glossary", priority: 0.6, changefreq: "monthly" as const },
-
-    // Shopping & News
-    { path: "/shopping", priority: 0.6, changefreq: "weekly" as const },
-    { path: "/news", priority: 0.7, changefreq: "daily" as const },
-
-    // Legal Pages (canonical + common aliases for user discovery)
+    // Legal Pages (canonical only - no duplicates)
     { path: "/privacy", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/privacy-policy", priority: 0.3, changefreq: "yearly" as const },
     { path: "/terms", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/terms-conditions", priority: 0.3, changefreq: "yearly" as const },
     { path: "/cookies", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/cookie-policy", priority: 0.3, changefreq: "yearly" as const },
     { path: "/security", priority: 0.3, changefreq: "yearly" as const },
     { path: "/affiliate-disclosure", priority: 0.3, changefreq: "yearly" as const },
-    
-    // Travel Guides (alias for /guides)
-    { path: "/travel-guides", priority: 0.8, changefreq: "weekly" as const },
 
-    // About & Contact
+    // Company Pages
     { path: "/about", priority: 0.5, changefreq: "monthly" as const },
     { path: "/contact", priority: 0.5, changefreq: "monthly" as const },
 
