@@ -49,6 +49,7 @@ export function ArticleHero({
           alt={heroImageAlt || title}
           className="w-full h-full object-cover"
           loading="eager"
+          {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
         />
       </div>
 

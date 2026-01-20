@@ -65,6 +65,7 @@ export function DubaiHero({
             alt={imageAlt || title}
             className="w-full h-full object-cover"
             loading="eager"
+            {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
           />
           <div className={`absolute inset-0 ${overlayClasses[overlay]}`} />
         </div>

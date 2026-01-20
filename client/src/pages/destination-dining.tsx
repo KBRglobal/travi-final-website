@@ -200,6 +200,7 @@ export default function DestinationDiningPage() {
             alt={`${cityName} restaurants`}
             className="w-full h-full object-cover"
             loading="eager"
+            {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
         </div>

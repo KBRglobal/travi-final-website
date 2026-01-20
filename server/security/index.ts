@@ -183,6 +183,7 @@ export function setupSecurityMiddleware(app: Express): void {
   // ============================================================================
 
   // Build script-src based on STRICT_CSP mode
+  // PostHog domains: us.i.posthog.com (ingestion), us-assets.i.posthog.com (assets)
   const scriptSrcDirective = STRICT_CSP
     ? [
         "'self'",
@@ -191,6 +192,8 @@ export function setupSecurityMiddleware(app: Express): void {
         "https://www.googletagmanager.com",
         "https://www.google-analytics.com",
         "https://emrld.ltd", // Travelpayouts affiliate verification
+        "https://us-assets.i.posthog.com", // PostHog analytics assets
+        "https://us.i.posthog.com", // PostHog analytics
       ]
     : [
         "'self'",
@@ -200,6 +203,8 @@ export function setupSecurityMiddleware(app: Express): void {
         "https://www.googletagmanager.com",
         "https://www.google-analytics.com",
         "https://emrld.ltd", // Travelpayouts affiliate verification
+        "https://us-assets.i.posthog.com", // PostHog analytics assets
+        "https://us.i.posthog.com", // PostHog analytics
       ];
 
   // Helmet - Security headers
@@ -242,6 +247,8 @@ export function setupSecurityMiddleware(app: Express): void {
           "https://images.unsplash.com",
           "https://www.google-analytics.com",
           "https://emrld.ltd",  // Travelpayouts affiliate tracking
+          "https://us.i.posthog.com",  // PostHog analytics ingestion
+          "https://us-assets.i.posthog.com",  // PostHog assets
           "wss:",  // WebSocket connections
         ],
         // Explicit frame-src - controls what can be loaded in iframes
