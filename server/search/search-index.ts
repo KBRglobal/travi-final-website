@@ -14,6 +14,7 @@ import {
   articles,
   attractions,
   categoryPages,
+  tiqetsAttractions,
 } from "@shared/schema";
 
 export interface SearchResult {
@@ -267,6 +268,58 @@ async function searchAttractions(query: string, limit: number): Promise<SearchRe
 }
 
 /**
+ * Search across Tiqets attractions (external attractions data)
+ * Searches by city name, title, and meta content
+ */
+async function searchTiqetsAttractions(query: string, limit: number): Promise<SearchResult[]> {
+  const searchPattern = `%${query}%`;
+  
+  const results = await db
+    .select({
+      id: tiqetsAttractions.id,
+      title: tiqetsAttractions.title,
+      seoSlug: tiqetsAttractions.seoSlug,
+      cityName: tiqetsAttractions.cityName,
+      metaTitle: tiqetsAttractions.metaTitle,
+      metaDescription: tiqetsAttractions.metaDescription,
+      description: tiqetsAttractions.description,
+      tiqetsImages: tiqetsAttractions.tiqetsImages,
+      tiqetsRating: tiqetsAttractions.tiqetsRating,
+      updatedAt: tiqetsAttractions.updatedAt,
+    })
+    .from(tiqetsAttractions)
+    .where(
+      or(
+        ilike(tiqetsAttractions.title, searchPattern),
+        ilike(tiqetsAttractions.cityName, searchPattern),
+        ilike(tiqetsAttractions.metaTitle, searchPattern),
+        ilike(tiqetsAttractions.metaDescription, searchPattern),
+        ilike(tiqetsAttractions.venueName, searchPattern),
+        ilike(tiqetsAttractions.primaryCategory, searchPattern)
+      )
+    )
+    .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
+    .limit(limit);
+
+  return results.map((r, idx) => {
+    const images = r.tiqetsImages as Array<{ medium?: string; large?: string; alt_text?: string }> | null;
+    const thumbnail = images?.[0]?.medium || images?.[0]?.large || null;
+    
+    return {
+      type: "attraction" as const,
+      id: r.id,
+      title: r.title,
+      slug: r.seoSlug || r.id,
+      thumbnail,
+      excerpt: r.metaDescription || r.description?.substring(0, 160) || `Explore ${r.title} in ${r.cityName}`,
+      score: 92 - idx,
+      publishedAt: r.updatedAt,
+      viewCount: null,
+    };
+  });
+}
+
+/**
  * Central search function - queries all entity types in parallel
  */
 export async function searchAll(options: SearchIndexQuery): Promise<SearchResult[]> {
@@ -286,6 +339,7 @@ export async function searchAll(options: SearchIndexQuery): Promise<SearchResult
   }
   if (!types || types.includes("attraction")) {
     searchPromises.push(searchAttractions(normalizedQuery, limitPerType));
+    searchPromises.push(searchTiqetsAttractions(normalizedQuery, limitPerType));
   }
   if (!types || types.includes("hotel")) {
     searchPromises.push(searchHotels(normalizedQuery, limitPerType));
@@ -374,6 +428,7 @@ export const searchIndex = {
   searchAll,
   searchDestinations,
   searchAttractions,
+  searchTiqetsAttractions,
   searchHotels,
   searchArticles,
   searchCategories,

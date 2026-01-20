@@ -5,7 +5,7 @@ import {
   Clock, ChevronRight, TrendingUp, Mail, ArrowRight,
   Globe, Eye, Search, Bell, Zap, Briefcase, Cpu,
   Theater, Plane, MessageSquare, Loader2, MapPin,
-  Radio, User, Quote
+  Radio, User, Quote, Newspaper
 } from "lucide-react";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 import { Badge } from "@/components/ui/badge";
@@ -441,6 +441,34 @@ export default function PublicNews() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 py-8" data-testid="news-main">
+        {articles.length === 0 ? (
+          <section className="text-center py-20" data-testid="section-empty-state">
+            <div className="max-w-md mx-auto">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#6443F4]/20 to-cyan-500/20 flex items-center justify-center mx-auto mb-6">
+                <Newspaper className="w-10 h-10 text-[#6443F4]" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+                No News Articles Yet
+              </h2>
+              <p className="text-white/60 mb-6">
+                We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link href="/">
+                  <Button className="bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0" data-testid="button-explore-home">
+                    Explore Destinations
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/guides">
+                  <Button variant="outline" className="border-white/20 text-white bg-white/5" data-testid="button-view-guides">
+                    View Travel Guides
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        ) : (
         <section className="grid lg:grid-cols-12 gap-6 mb-12" data-testid="section-hero">
           <div className="lg:col-span-8">
             {heroArticle && (
@@ -781,6 +809,7 @@ export default function PublicNews() {
             </section>
           </aside>
         </div>
+        )}
       </main>
 
       <PublicFooter />
