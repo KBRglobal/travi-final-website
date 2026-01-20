@@ -314,6 +314,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.7 }}
                       loading={currentIndex === 0 ? "eager" : "lazy"}
+                      {...(currentIndex === 0 ? { fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement> : {})}
                     />
                   </AnimatePresence>
                   

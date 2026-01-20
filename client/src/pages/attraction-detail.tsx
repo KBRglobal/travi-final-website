@@ -179,6 +179,7 @@ function HeroSection({
           alt={attraction.title}
           className="w-full h-full object-cover"
           loading="eager"
+          {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
           onError={(e) => {
             (e.target as HTMLImageElement).src = "/cards/dubai.webp";
           }}

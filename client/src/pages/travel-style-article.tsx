@@ -1388,6 +1388,7 @@ export default function TravelStyleArticle() {
             className="absolute inset-0 w-full h-full object-cover"
             itemProp="image"
             loading="eager"
+            {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
             width={1200}
             height={630}
           />
