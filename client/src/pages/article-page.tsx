@@ -82,6 +82,7 @@ export default function ArticlePage({
           alt={heroImage.alt}
           className="w-full h-full object-cover"
           loading="eager"
+          {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-6 left-6 right-6">

@@ -350,6 +350,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
               width={1200}
               height={550}
               loading="eager"
+              {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0B0A1F]/80 via-[#0B0A1F]/40 to-transparent" />
             <div className="absolute inset-0 flex items-center">
