@@ -8,6 +8,32 @@ import { SUPPORTED_LOCALES, type Locale, type ContentBlock, translationBatchJobs
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 
+// ============================================================================
+// TRANSLATION SYSTEM CONTROL
+// ============================================================================
+// HARD DISABLE: Automatic translation is permanently disabled.
+// Manual translation via admin UI is still allowed when explicitly triggered.
+// To re-enable automatic translation, set this to true (NOT RECOMMENDED).
+export const TRANSLATION_ENABLED = false;
+
+export class TranslationDisabledError extends Error {
+  constructor(message: string = 'Automatic translation is permanently disabled') {
+    super(message);
+    this.name = 'TranslationDisabledError';
+  }
+}
+
+/**
+ * Guard function - throws if automatic translation is attempted
+ */
+export function assertTranslationEnabled(context: string = 'translation'): void {
+  if (!TRANSLATION_ENABLED) {
+    throw new TranslationDisabledError(
+      `[${context}] Automatic translation is disabled. Use manual translation in admin UI.`
+    );
+  }
+}
+
 // Generate a hash of the content for tracking translation freshness
 export function generateContentHash(content: {
   title?: string;
@@ -637,6 +663,7 @@ async function translateBlock(
 }
 
 // Translate full content (title, meta, blocks)
+// GUARDED: Throws TranslationDisabledError if automatic translation is disabled
 export async function translateContent(
   content: {
     title?: string;
@@ -647,6 +674,9 @@ export async function translateContent(
   sourceLocale: Locale,
   targetLocale: Locale
 ): Promise<ContentTranslation> {
+  // HARD DISABLE: Check at every entry point
+  assertTranslationEnabled('translateContent');
+  
   const result: ContentTranslation = {};
 
   // Translate title
@@ -702,6 +732,7 @@ export async function translateContent(
 }
 
 // Translate content to all supported languages
+// GUARDED: Throws TranslationDisabledError if automatic translation is disabled
 export async function translateToAllLanguages(
   content: {
     title?: string;
@@ -712,6 +743,9 @@ export async function translateToAllLanguages(
   sourceLocale: Locale = "en",
   targetTiers?: number[] // Optional: only translate to specific tiers
 ): Promise<Map<Locale, ContentTranslation>> {
+  // HARD DISABLE: Check at every entry point
+  assertTranslationEnabled('translateToAllLanguages');
+  
   const results = new Map<Locale, ContentTranslation>();
 
   // Filter locales based on tier if specified
@@ -745,11 +779,15 @@ export async function translateToAllLanguages(
 }
 
 // Translate tags to a target language
+// GUARDED: Throws TranslationDisabledError if automatic translation is disabled
 export async function translateTags(
   tags: string[],
   sourceLocale: Locale,
   targetLocale: Locale
 ): Promise<string[]> {
+  // HARD DISABLE: Check at every entry point
+  assertTranslationEnabled('translateTags');
+  
   if (tags.length === 0) return [];
 
   const translatedTags = await Promise.all(

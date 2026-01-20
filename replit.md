@@ -28,7 +28,16 @@ Preferred communication style: Simple, everyday language.
 - **API**: Swagger UI for documentation, OpenAPI Spec, URL-based API versioning.
 - **CI/CD**: GitHub Actions for automated testing and deployment.
 - **Octopus v2 Content Engine**: Graph-based content generation with PostgreSQL persistence, queue infrastructure, entity resolution, AI tagging, and placement rules. Dashboard API routes at `/api/octopus/*` connect frontend to local Octypo engine (stats, jobs, entities, capabilities, queue-status).
-- **Localization Automation + AEO Engine**: Multi-locale translation queue with multi-provider chain (DeepL, Anthropic, OpenAI, Replit AI) and Answer Engine Optimization (AEO) for generating answer capsules, FAQs, and JSON-LD schema.
+- **Localization System (NO-AUTOMATIC-TRANSLATION Architecture)**: 
+  - **HARD DISABLED (January 2026)**: All automatic translation is permanently disabled. Translations must be done manually via admin UI.
+  - **Translation Guards**: All translation entry points (`translateContent`, `translateToAllLanguages`, `translateTags`, `translateDestinationContent`) throw `TranslationDisabledError` via `assertTranslationEnabled` guard.
+  - **Disabled Components**: Translation queue, translation worker, publish hooks auto-translate, auto-pilot translation triggers, RSS auto-translate, and all translation API endpoints (return 410 Gone).
+  - **i18next Infrastructure**: Static UI strings and locale routing preserved via i18next for client-side localization.
+  - **AEO Engine**: Answer Engine Optimization for generating answer capsules, FAQs, and JSON-LD schema (still active, translation-independent).
+- **Localized Assets System**: New `localized_assets` table for per-locale media (hero, card, gallery, OG, thumbnail, banner, logo). 
+  - **API Routes**: `/api/localized-assets/:entityType/:entityId` with locale/usage fallback logic (requested → en → 404).
+  - **Admin Routes**: `/api/admin/localized-assets` for CRUD with strict Zod enum validation.
+  - **Frontend Hooks**: `useLocalizedContent`, `useLocalizedAsset`, `useLocalizedAssets` with automatic fallback handling.
 - **SEO/AEO Module**: Centralized SEO optimization with versioned prompt templates, output normalization, and regeneration guards.
 - **Image Handling**: Tracks image usage and fallback frequency. `SafeImage` component ensures image safety with error fallbacks.
 - **Tiqets Integration**: Attraction data import system for 16 whitelisted cities. Images and descriptions are AI-generated, not imported. Pricing is for internal sorting/filtering only.
@@ -77,7 +86,7 @@ Preferred communication style: Simple, everyday language.
 - **Database**: PostgreSQL (`DATABASE_URL`), `connect-pg-simple`.
 - **Object Storage**: Replit Object Storage (`@replit/object-storage`).
 - **AI Services**: Anthropic, OpenAI, DeepSeek, OpenRouter.
-- **Translation**: DeepL API.
+- **Translation**: DISABLED - All automatic translation is permanently disabled. Manual translation only via admin UI.
 - **Social Media APIs**: LinkedIn, Twitter/X, Facebook, Instagram.
 - **Affiliate Programs**: Booking.com, GetYourGuide, TripAdvisor, Tiqets.
 - **Analytics**: Google Tag Manager (GTM-WVXXVS6L).

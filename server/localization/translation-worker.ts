@@ -1,13 +1,21 @@
 /**
  * Phase 6: Translation Worker
  * 
- * Processes translation jobs from the queue with:
+ * DISABLED (January 2026): Automatic translation is permanently disabled.
+ * All translations must be done manually via admin UI.
+ * 
+ * Original features (now disabled):
  * - 8 AI providers with language-family optimization (NO DeepL)
  * - Exponential backoff on rate limits
  * - Parallel field translation
  * - Content block translation
  * - SEO-optimized translations
  */
+
+// ============================================================================
+// TRANSLATION WORKER - DISABLED
+// ============================================================================
+const TRANSLATION_WORKER_ENABLED = false;
 
 import { db } from '../db';
 import { 
@@ -384,8 +392,15 @@ async function translateContentHighlights(
 
 /**
  * Run the translation worker loop
+ * DISABLED (January 2026): Automatic translation is permanently disabled.
  */
 export async function runWorkerLoop(): Promise<void> {
+  // GUARD: Translation worker is disabled
+  if (!TRANSLATION_WORKER_ENABLED) {
+    logger.info('Translation worker DISABLED - not processing any jobs');
+    return; // Exit immediately, do not loop
+  }
+
   while (true) {
     try {
       const job = await getNextPendingJob();

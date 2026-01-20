@@ -1,0 +1,63 @@
+PLAN MODE — FINAL LOCALIZATION SYSTEM DECISION (NO CODE YET)
+
+CONTEXT
+We are moving to FULL site localization for 30 languages.
+Scope includes: all static pages, all dynamic pages (destinations, attractions, guides, articles), full SEO (meta/OG/JSON-LD/hreflang), full RTL, and FULL media localization (per-locale image + per-locale filename + per-locale alt/title/caption).
+DeepL is disabled due to cost. We want ONE final system, remove everything else.
+
+GOAL
+Propose ONE final localization architecture using what already exists in the repo, then produce a deletion/disable list and a minimal set of schema/API/frontend adjustments.
+Deliver: a concrete final decision + exact actions list (what to delete, what to keep, what to refactor), then only after approval switch to BUILD.
+
+HARD REQUIREMENTS
+1) No automatic translation on publish, no background translation queue, no hidden triggers. Translation/generation must be manual and explicit.
+2) Keep i18next + locale router + RTL support (do not replace the i18n framework).
+3) English is canonical fallback. Locale-specific content renders if exists, else fallback to English, else render nothing.
+4) All dynamic entities must be localized: destination pages, attractions pages, content pages.
+5) Media localization must be first-class: localized filename and localized alt/title/caption. Must support per-locale hero, card, gallery, OG image.
+6) Sitemap must be per-locale and always use BASE_URL=https://travi.world (never replit dev domains).
+7) Keep costs low: prefer manual workflows + optional AI assist (Claude/OpenAI/Gemini) ONLY when manually triggered, never automatic.
+
+TASK: READ-ONLY AUDIT + FINAL DECISION
+A) CONFIRM CURRENT BUILDING BLOCKS (facts, with file paths)
+- Frontend: i18next + locale router + RTL implementation (what is already good and should stay)
+- Backend: contents (canonical), translations table, uiTranslations table, fallback hierarchy
+- Existing page_seo system
+- Current media storage / public folder conventions
+
+B) CHOOSE THE FINAL SYSTEM (must choose ONE)
+Option 1 (Preferred if feasible): Use existing translations table for ALL content localization + add a dedicated Localized Assets table for media:
+- translations(contentId, locale, title, metaTitle, metaDescription, blocks, etc.)
+- localized_assets(entityType, entityId, locale, usage, src, filename, alt, title, caption, ogImageFlag, updatedAt)
+
+Option 2: Extend translations table with a JSONB media field (hero/card/gallery/og) and DO NOT create a new table.
+
+Pick the best option for our codebase and explain why in 5-8 bullet points.
+
+C) DELETE/DISABLE EVERYTHING NOT NEEDED
+Provide an exact checklist of what to REMOVE or HARD-DISABLE (with file paths), specifically:
+- translation queue + worker
+- publish hooks auto enqueue
+- RSS auto-translation
+- auto-pilot translation triggers
+- all translation endpoints that trigger AI automatically
+We still want to KEEP manual admin-controlled “Generate/Translate” actions, but only if explicitly clicked.
+
+D) REQUIRED MINIMAL CHANGES (no code yet, just list)
+1) DB schema changes (exact tables/columns/indexes needed)
+2) API changes (endpoints to fetch localized pages/content + localized media)
+3) Frontend changes (how pages resolve localized content/media + RTL)
+4) SEO changes (hreflang, canonical rules, per-locale sitemap, image sitemap)
+5) Admin UI changes (where to edit translations + assets per locale, with a “Magic” assist button that ONLY suggests, never auto-publishes)
+
+E) OUTPUT FORMAT (STRICT)
+Return ONLY:
+1) FINAL DECISION: Option X
+2) KEEP LIST (paths)
+3) REMOVE/DISABLE LIST (paths)
+4) REQUIRED CHANGES LIST (DB/API/FE/SEO/Admin)
+5) BUILD SWITCH CRITERIA (what must be true before switching to BUILD)
+
+Do NOT write any code. Do NOT ask questions. If you must assume, make the safest assumption and proceed.
+
+Now execute this audit + final decision.
