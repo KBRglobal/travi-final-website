@@ -1,0 +1,136 @@
+MODE: EXECUTION — ZERO TOLERANCE
+
+ROLE: You are an engineer, not an analyst. Stop planning. Execute.
+
+OBJECTIVE:
+ABSOLUTELY DISABLE ALL AUTOMATIC TRANSLATION.
+NO AI. NO QUEUES. NO PUBLISH HOOKS. NO RSS. NO BUTTONS.
+Localization remains DB-driven only (manual content per locale).
+
+THIS IS A HARD SHUTDOWN, NOT A REFACTOR.
+
+========================
+MANDATORY ACTIONS (DO ALL)
+========================
+
+1) KILL TRANSLATION AT SOURCE (NON-NEGOTIABLE)
+File: server/services/translation-service.ts
+
+- Add a top-level guard:
+  throw new Error("TRANSLATION_DISABLED");
+
+- This must execute BEFORE any provider logic.
+- DeepL, OpenAI, Claude, Gemini, ALL providers become unreachable.
+
+PROOF REQUIRED:
+- Any attempt to translate throws immediately.
+- No outbound HTTP calls possible.
+
+------------------------
+
+2) STOP THE QUEUE COMPLETELY
+Files:
+- server/localization/translation-queue.ts
+- server/localization/translation-worker.ts
+
+Actions:
+- REMOVE / COMMENT OUT polling loop (setInterval / while loop)
+- Add runtime guard:
+  if (true) return; // queue disabled
+
+- Worker must NEVER run, even if jobs exist in DB.
+
+PROOF REQUIRED:
+- No logs every 5 seconds
+- Queue table row count does NOT decrease over time
+
+------------------------
+
+3) REMOVE ALL TRIGGERS (THIS IS WHERE IT KEEPS COMING BACK)
+FILES TO FIX:
+
+- server/localization/publish-hooks.ts
+  ❌ Remove enqueueTranslationsForContent()
+
+- server/auto-pilot.ts
+  ❌ FORCE autoTranslateOnPublish = false
+  ❌ Remove any triggerTranslation() calls
+
+- RSS import logic (routes.ts ~1990+)
+  ❌ REMOVE auto-translate on RSS ingest
+
+PROOF REQUIRED:
+- Publishing content creates ZERO translation jobs
+- RSS import creates ZERO translation jobs
+
+------------------------
+
+4) BLOCK ALL TRANSLATION APIS (HARD BLOCK)
+ENDPOINTS (ALL OF THEM):
+
+- /api/translations/:contentId/translate
+- /api/auto-pilot/translations/:id/trigger
+- /api/auto-pilot/bulk/translate
+- ANY endpoint that enqueues translation
+
+RESPONSE:
+- HTTP 410 GONE
+- Body: { error: "Translation permanently disabled" }
+
+PROOF REQUIRED:
+- Hitting endpoint returns 410
+- No DB writes occur
+
+------------------------
+
+5) ADMIN UI — REMOVE THE BUTTONS
+Files: admin UI (wherever translation buttons live)
+
+Actions:
+- DELETE “Translate”
+- DELETE “Auto translate”
+- DELETE “Bulk translate”
+- NO feature flags, NO hidden toggles — REMOVE.
+
+PROOF REQUIRED:
+- Screenshot or code proof: buttons do not exist
+
+------------------------
+
+6) FINAL SAFETY NET (FAIL CLOSED)
+Add a shared constant:
+TRANSLATION_ENABLED = false
+
+Any translation-related file must check it and immediately exit.
+
+========================
+FINAL VERIFICATION (REQUIRED)
+========================
+
+You MUST provide:
+
+1) grep results showing NO calls to:
+   - enqueueTranslation
+   - triggerTranslation
+   - autoTranslate
+   - translateContent
+
+2) Publish content → confirm:
+   - translation tables unchanged
+   - no background jobs created
+
+3) RSS import → confirm:
+   - no translations created
+
+4) Logs:
+   - No translation queue polling
+   - No worker execution
+
+5) API test:
+   - Translation endpoints return 410
+
+FAILURE TO PROVIDE PROOF = TASK FAILED.
+
+EXECUTE NOW.
+NO MORE PLANS.
+NO MORE DISCUSSION.
