@@ -54,7 +54,7 @@ export function registerSearchRoutes(app: Express) {
         return res.status(400).json({ error: "Query parameter 'q' is required" });
       }
 
-      const limit = parseInt(req.query.limit as string) || 20;
+      const limit = parseInt(req.query.limit as string) || 50;
       const page = parseInt(req.query.page as string) || 1;
       const type = Array.isArray(req.query.type) 
         ? req.query.type as string[]
