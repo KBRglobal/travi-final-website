@@ -60,7 +60,7 @@ export class QaRunner {
                 details: checkResult.details,
               },
               updatedAt: new Date(),
-            })
+            } as any)
             .where(eq(qaCheckResults.id, result.id));
           
           if (checkResult.passed) passedCount++;
@@ -95,7 +95,7 @@ export class QaRunner {
           score,
           notes: `Automated: ${checkedCount} checks executed (${passedCount} passed, ${failedCount} failed). Manual: ${notChecked} pending.`,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(qaRuns.id, runId));
 
       console.log(`[QA Runner] Run ${runId} completed. Score: ${score}%, Passed: ${passed}, Failed: ${failed}`);
@@ -107,7 +107,7 @@ export class QaRunner {
           status: "failed", 
           notes: `Runner error: ${String(error)}`,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(qaRuns.id, runId));
     }
   }
