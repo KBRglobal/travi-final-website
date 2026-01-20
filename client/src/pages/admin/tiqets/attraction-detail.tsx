@@ -181,11 +181,11 @@ export default function TiqetsAttractionDetail() {
             <Button
               variant="outline"
               className="mt-4"
-              onClick={() => navigate("/admin/tiqets/destinations")}
-              data-testid="button-back-to-destinations"
+              onClick={() => navigate("/admin/attractions")}
+              data-testid="button-back-to-attractions"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Destinations
+              Back to Attractions
             </Button>
           </CardContent>
         </Card>
@@ -213,7 +213,7 @@ export default function TiqetsAttractionDetail() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/admin/tiqets/destinations")}
+            onClick={() => navigate("/admin/attractions")}
             data-testid="button-back"
           >
             <ArrowLeft className="h-4 w-4" />
