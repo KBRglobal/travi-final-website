@@ -146,6 +146,14 @@ function GuideCityRedirect({ params }: { params: { city: string } }) {
   return <GuideDetailPage />;
 }
 
+// Smart redirect for /attractions/:slug - redirects to /attractions/list/:city if slug is valid city
+function AttractionsSlugRedirect({ params }: { params: { slug: string } }) {
+  if (isValidCity(params.slug)) {
+    return <Redirect to={`/attractions/list/${params.slug}`} />;
+  }
+  return <PublicContentViewer />;
+}
+
 const publicRoutes = [
   { path: "/login", component: Login },
   { path: "/access-denied", component: AccessDenied },
@@ -233,6 +241,12 @@ function PublicRouter() {
       {DESTINATION_IDS.map((city) => (
         <Route key={`guides-city-${city}`} path={`/guides/${city}`}>
           {() => <Redirect to={`/guides/${city}-travel-guide`} />}
+        </Route>
+      ))}
+      {/* Smart redirect: /attractions/:city -> /attractions/list/:city for valid destination IDs */}
+      {DESTINATION_IDS.map((city) => (
+        <Route key={`attractions-city-redirect-${city}`} path={`/attractions/${city}`}>
+          {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
       ))}
 
