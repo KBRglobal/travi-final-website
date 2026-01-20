@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { Router } from "express";
 import { db } from "../db";
 import { storage } from "../storage";
-import { eq, and, desc, sql, ilike, or } from "drizzle-orm";
+import { eq, and, desc, sql, ilike, or, not, notIlike } from "drizzle-orm";
 import {
   destinations,
   homepageSections,
@@ -130,6 +130,7 @@ export function registerPublicApiRoutes(app: Express): void {
       const { limit, level } = req.query;
       const maxLimit = Math.min(parseInt(limit as string) || 50, 50);
 
+      console.log("[PublicAPI] Fetching destinations with notIlike filter for test");
       const allDestinations = await db
         .select({
           id: destinations.id,
@@ -147,7 +148,10 @@ export function registerPublicApiRoutes(app: Express): void {
           moodPrimaryColor: destinations.moodPrimaryColor,
         })
         .from(destinations)
-        .where(eq(destinations.isActive, true))
+        .where(and(
+          eq(destinations.isActive, true),
+          notIlike(destinations.name, '%test%')
+        ))
         .orderBy(destinations.name);
 
       res.json(allDestinations);
@@ -365,7 +369,10 @@ export function registerPublicApiRoutes(app: Express): void {
           summary: destinations.summary,
         })
         .from(destinations)
-        .where(eq(destinations.isActive, true));
+        .where(and(
+          eq(destinations.isActive, true),
+          notIlike(destinations.name, '%test%')
+        ));
 
       const metaMap = new Map<string, typeof destinationMeta[0]>();
       for (const d of destinationMeta) {
@@ -1182,6 +1189,39 @@ export function registerPublicApiRoutes(app: Express): void {
     } catch (error) {
       console.error("Error fetching public page SEO:", error);
       res.status(500).json({ error: "Failed to fetch page SEO" });
+    }
+  });
+
+  // ============================================================================
+  // PUBLIC STATS API - Dynamic counts from database (single source of truth)
+  // ============================================================================
+  router.get("/stats", async (_req: Request, res: Response) => {
+    try {
+      const [destinationCount] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(destinations)
+        .where(and(
+          eq(destinations.isActive, true),
+          notIlike(destinations.name, '%test%')
+        ));
+      
+      const [attractionCount] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(tiqetsAttractions);
+      
+      const [publishedContentCount] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(contents)
+        .where(eq(contents.status, "published"));
+      
+      res.json({
+        destinations: destinationCount?.count || 0,
+        attractions: attractionCount?.count || 0,
+        publishedContent: publishedContentCount?.count || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching public stats:", error);
+      res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
 

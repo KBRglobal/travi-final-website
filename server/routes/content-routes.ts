@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
 import { z } from "zod";
 import { db } from "../db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, notIlike } from "drizzle-orm";
 import {
   insertContentSchema,
   SUPPORTED_LOCALES,
@@ -415,9 +415,11 @@ export function registerContentRoutes(app: Express): void {
 
   // Public API for destinations - DATABASE IS SINGLE SOURCE OF TRUTH
   // NO static fallbacks, NO limits - returns ALL active destinations with mood fields
+  // Filter out test destinations from public API
   app.get("/api/public/destinations", async (req, res) => {
     try {
       // Fetch ALL active destinations from database with mood/hero fields
+      // Exclude test destinations from public API responses
       const allDestinations = await db
         .select({
           id: destinations.id,
@@ -435,7 +437,10 @@ export function registerContentRoutes(app: Express): void {
           moodPrimaryColor: destinations.moodPrimaryColor,
         })
         .from(destinations)
-        .where(eq(destinations.isActive, true))
+        .where(and(
+          eq(destinations.isActive, true),
+          notIlike(destinations.name, '%test%')
+        ))
         .orderBy(destinations.name);
 
       res.json(allDestinations);
