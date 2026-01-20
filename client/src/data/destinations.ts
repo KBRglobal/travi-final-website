@@ -278,7 +278,7 @@ const abuDhabiHeroImages = [
   },
 ];
 
-// All 16 destinations with their data
+// Base destination data (16 entries - RAK handled separately as 17th destination)
 const baseDestinationData: Record<DestinationId, DestinationPageData> = {
   "abu-dhabi": createDestinationData(
     "abu-dhabi", "Abu Dhabi", "United Arab Emirates", "AED (Dirham)", "Arabic, English"
