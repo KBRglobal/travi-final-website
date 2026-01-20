@@ -64,8 +64,10 @@ export async function onContentStatusChange(
     // 1. Generate AEO for EN (source) first
     await generateAeoForContent(contentId);
 
-    // 2. Enqueue translation jobs for all locales
-    await enqueueTranslationsForContent(content);
+    // 2. Enqueue translation jobs for all locales - DISABLED (January 2026)
+    // Translation is now manual-only via admin UI
+    // await enqueueTranslationsForContent(content);
+    logger.info('Translation auto-enqueue DISABLED - use admin UI for manual translations');
 
     // 3. Update search index for EN
     await updateSearchIndex(content, 'en');
@@ -259,7 +261,9 @@ export async function onTranslationComplete(
 }
 
 /**
- * Manually trigger hooks for a content item (admin action)
+ * Trigger hooks manually for a content item (admin action)
+ * NOTE: Translation queueing is DISABLED (January 2026)
+ * All translations must be done manually via admin UI.
  */
 export async function triggerHooksManually(contentId: string): Promise<{
   success: boolean;
@@ -278,7 +282,7 @@ export async function triggerHooksManually(contentId: string): Promise<{
   }
 
   let aeoGenerated = false;
-  let translationsQueued = 0;
+  const translationsQueued = 0; // DISABLED: Auto-translation is permanently disabled
   let searchIndexUpdated = false;
 
   try {
@@ -288,12 +292,9 @@ export async function triggerHooksManually(contentId: string): Promise<{
     logger.error('Manual AEO generation failed', { contentId });
   }
 
-  try {
-    const jobs = await enqueueTranslationJobs(content.id, 'en', 10);
-    translationsQueued = jobs.length;
-  } catch (e) {
-    logger.error('Manual translation queue failed', { contentId });
-  }
+  // DISABLED (January 2026): Translation queueing is permanently disabled
+  // All translations must be done manually via admin UI
+  logger.info('Translation queueing DISABLED - use admin UI for manual translations', { contentId });
 
   try {
     await updateSearchIndex(content, 'en');
@@ -312,27 +313,13 @@ export async function triggerHooksManually(contentId: string): Promise<{
 
 /**
  * Batch process all published content
+ * DISABLED (January 2026): Translation queueing is permanently disabled
  */
 export async function batchProcessPublishedContent(
   limit: number = 100
 ): Promise<number> {
-  const publishedContent = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.status, 'published'))
-    .limit(limit);
-
-  let processed = 0;
-
-  for (const content of publishedContent) {
-    try {
-      await enqueueTranslationsForContent(content);
-      processed++;
-    } catch (error) {
-      logger.error('Batch processing failed for content', { contentId: content.id });
-    }
-  }
-
-  logger.info('Batch processing completed', { processed, total: publishedContent.length });
-  return processed;
+  // DISABLED: Automatic translation queueing is permanently disabled
+  // All translations must be done manually via admin UI
+  logger.info('Batch translation processing DISABLED - use admin UI for manual translations');
+  return 0;
 }

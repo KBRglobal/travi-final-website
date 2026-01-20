@@ -209,6 +209,7 @@ import octypoRoutes from "./routes/admin/octypo-routes";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
 import { growthOSRoutes } from "./growth-os";
 import traviRoutes from "./travi/routes";
+import localizedAssetsRoutes from "./routes/localized-assets-routes";
 
 import { registerEnhancementRoutes } from "./enhancement-routes";
 import { registerCustomerJourneyRoutes } from "./customer-journey-routes";
@@ -1385,12 +1386,22 @@ const DEEPL_SUPPORTED_LOCALES = ["ar", "zh", "ru", "fr", "de", "es", "tr", "it",
 const GPT_FALLBACK_LOCALES = ["hi", "ur", "fa"] as const; // Languages supported by GPT but not DeepL
 const TARGET_LOCALES = [...DEEPL_SUPPORTED_LOCALES, ...GPT_FALLBACK_LOCALES] as const;
 
+/**
+ * DISABLED (January 2026): Automatic translation is permanently disabled.
+ * All translations must be done manually via admin UI.
+ * This function now returns immediately without performing any translation.
+ */
 async function translateArticleToAllLanguages(contentId: string, content: {
   title: string;
   metaTitle?: string | null;
   metaDescription?: string | null;
   blocks?: any[];
 }): Promise<{ success: number; failed: number; errors: string[] }> {
+  // HARD DISABLE: Automatic translation is permanently disabled
+  console.log(`[Auto-Translation] DISABLED - Manual translation only via admin UI for content ${contentId}`);
+  return { success: 0, failed: 0, errors: ['Automatic translation is disabled'] };
+  
+  // ORIGINAL CODE PRESERVED BELOW FOR REFERENCE (NEVER EXECUTED)
   const result = { success: 0, failed: 0, errors: [] as string[] };
   
   try {
@@ -1995,18 +2006,9 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
 
         // [REMOVED] Entity extraction moved to Octypo v2
 
-        // Auto-translate to all 16 target languages (background, non-blocking)
-        console.log(`[RSS Auto-Process] Starting automatic translation for article: ${content.id}`);
-        translateArticleToAllLanguages(content.id, {
-          title: content.title,
-          metaTitle: content.metaTitle,
-          metaDescription: content.metaDescription,
-          blocks: content.blocks as any[],
-        }).then((translationResult) => {
-          console.log(`[RSS Auto-Process] Translation complete for ${content.id}: ${translationResult.success} successful, ${translationResult.failed} failed`);
-        }).catch((err) => {
-          console.error(`[RSS Auto-Process] Translation error for ${content.id}:`, err);
-        });
+        // Auto-translate to all 16 target languages - DISABLED (January 2026)
+        // Translation is now manual-only via admin UI
+        console.log(`[RSS Auto-Process] Auto-translation DISABLED - use admin UI for manual translations for article: ${content.id}`);
 
       } catch (clusterError) {
         const errorMsg = `Failed to generate article for cluster "${cluster.topic}": ${clusterError}`;
@@ -7967,18 +7969,9 @@ export async function registerRoutes(
         mergedContentId: content.id,
       });
 
-      // Auto-translate to all 16 target languages (background, non-blocking)
-      console.log(`[Merge] Starting automatic translation for article: ${content.id}`);
-      translateArticleToAllLanguages(content.id, {
-        title: content.title,
-        metaTitle: content.metaTitle,
-        metaDescription: content.metaDescription,
-        blocks: content.blocks as any[],
-      }).then((translationResult) => {
-        console.log(`[Merge] Translation complete for ${content.id}: ${translationResult.success} successful, ${translationResult.failed} failed`);
-      }).catch((err) => {
-        console.error(`[Merge] Translation error for ${content.id}:`, err);
-      });
+      // Auto-translate to all 16 target languages - DISABLED (January 2026)
+      // Translation is now manual-only via admin UI
+      console.log(`[Merge] Auto-translation DISABLED - use admin UI for manual translations for article: ${content.id}`);
 
       res.status(201).json({
         message: `Successfully merged ${items.length} articles using ${personalityData?.name || "Professional"} personality`,
@@ -7989,7 +7982,7 @@ export async function registerRoutes(
         personality: personalityKey,
         structure: "standard",
         wordCount,
-        translationsQueued: TARGET_LOCALES.length,
+        translationsQueued: 0, // No auto-translation
       });
     } catch (error) {
       console.error("Error merging cluster:", error);
@@ -17225,6 +17218,11 @@ Return as valid JSON.`,
   // Feature flag: ENABLE_MEDIA_INTELLIGENCE=true
   // ============================================================================
   app.use("/api/admin/media-intelligence", mediaIntelligenceRoutes);
+
+  // ============================================================================
+  // LOCALIZED ASSETS (Per-locale media management)
+  // ============================================================================
+  app.use(localizedAssetsRoutes);
 
   // ============================================================================
   // GROWTH OS (Autonomous Growth Operating System)

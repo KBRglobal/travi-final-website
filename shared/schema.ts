@@ -878,6 +878,64 @@ export const insertUiTranslationSchema = createInsertSchema(uiTranslations);
 export type InsertUiTranslation = z.infer<typeof insertUiTranslationSchema>;
 export type UiTranslation = typeof uiTranslations.$inferSelect;
 
+// ============================================================================
+// LOCALIZED ASSETS - Per-locale media (hero, card, gallery, OG images)
+// ============================================================================
+// Entity types that can have localized assets
+export const localizedAssetEntityTypeEnum = pgEnum("localized_asset_entity_type", [
+  "content", "destination", "attraction", "hotel", "article", "guide", "page"
+]);
+
+// Asset usage types
+export const localizedAssetUsageEnum = pgEnum("localized_asset_usage", [
+  "hero", "card", "gallery", "og", "thumbnail", "banner", "logo"
+]);
+
+export const localizedAssets = pgTable("localized_assets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: localizedAssetEntityTypeEnum("entity_type").notNull(),
+  entityId: varchar("entity_id").notNull(),
+  locale: localeEnum("locale").notNull(),
+  usage: localizedAssetUsageEnum("usage").notNull(),
+  src: text("src").notNull(), // URL or path to the image
+  filename: text("filename"), // Localized filename for downloads/SEO
+  alt: text("alt"), // Localized alt text
+  title: text("title"), // Localized title attribute
+  caption: text("caption"), // Localized caption
+  width: integer("width"), // Image dimensions
+  height: integer("height"),
+  mimeType: varchar("mime_type"), // e.g., "image/webp"
+  fileSize: integer("file_size"), // Bytes
+  isOgImage: boolean("is_og_image").default(false), // Flag for OG image sitemap
+  sortOrder: integer("sort_order").default(0), // For gallery ordering
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  uniqueIndex("IDX_localized_assets_entity_locale_usage").on(
+    table.entityType, table.entityId, table.locale, table.usage
+  ),
+  index("IDX_localized_assets_entity").on(table.entityType, table.entityId),
+  index("IDX_localized_assets_locale").on(table.locale),
+  index("IDX_localized_assets_og").on(table.isOgImage),
+]);
+
+// Zod enum validators derived from Drizzle pgEnum values
+export const localizedAssetEntityTypes = ["content", "destination", "attraction", "hotel", "article", "guide", "page"] as const;
+export const localizedAssetUsages = ["hero", "card", "gallery", "og", "thumbnail", "banner", "logo"] as const;
+export const supportedLocales = ["en", "ar", "hi", "zh", "ru", "ur", "fr", "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he"] as const;
+
+export const insertLocalizedAssetSchema = createInsertSchema(localizedAssets, {
+  entityType: z.enum(localizedAssetEntityTypes),
+  locale: z.enum(supportedLocales),
+  usage: z.enum(localizedAssetUsages),
+}).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertLocalizedAsset = z.infer<typeof insertLocalizedAssetSchema>;
+export type LocalizedAsset = typeof localizedAssets.$inferSelect;
+
 // Homepage Promotions table - for curating homepage sections
 export const homepageSectionEnum = pgEnum("homepage_section", ["featured", "attractions", "hotels", "articles", "trending", "dining", "events"]);
 

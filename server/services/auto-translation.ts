@@ -14,7 +14,12 @@ import {
 } from "@shared/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { createLogger } from "../lib/logger";
-import { translateContent, batchTranslation, generateContentHash } from "./translation-service";
+import { 
+  translateContent, 
+  generateContentHash,
+  assertTranslationEnabled,
+  TranslationDisabledError
+} from "./translation-service";
 
 const logger = createLogger("auto-translation");
 
@@ -29,8 +34,12 @@ const TRANSLATION_PRIORITY: Locale[] = [
 // CONFIGURATION
 // ============================================================================
 
+/**
+ * DISABLED (January 2026): Automatic translation is permanently disabled.
+ * All translations must be done manually via admin UI.
+ */
 export const autoTranslationConfig = {
-  enabled: true,
+  enabled: false, // HARD DISABLE: All translation must be done manually via admin UI
   maxTranslationsPerDay: 50,
   priorityTiers: [1, 2], // Only auto-translate tier 1 and 2 languages
   delayBetweenTranslations: 2000, // ms between API calls
@@ -51,6 +60,9 @@ interface DestinationTranslationResult {
 /**
  * Queue translations for a newly generated destination
  * Called automatically after destination content generation
+ * 
+ * DISABLED (January 2026): All automatic translation is permanently disabled.
+ * This function now throws TranslationDisabledError immediately.
  */
 export async function translateDestinationContent(
   destinationId: string,
@@ -59,6 +71,9 @@ export async function translateDestinationContent(
     immediate?: boolean; // Translate now vs. queue for batch
   }
 ): Promise<DestinationTranslationResult> {
+  // HARD DISABLE: Throws TranslationDisabledError
+  assertTranslationEnabled('translateDestinationContent');
+  
   if (!autoTranslationConfig.enabled) {
     logger.info("Auto-translation is disabled");
     return { queued: 0, completed: 0, failed: 0, errors: [] };

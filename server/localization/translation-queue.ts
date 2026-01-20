@@ -68,8 +68,16 @@ function calculateBackoff(retryCount: number): Date {
   return new Date(Date.now() + backoffMs);
 }
 
+// ============================================================================
+// TRANSLATION QUEUE - DISABLED (January 2026)
+// ============================================================================
+// Automatic translation queueing is permanently disabled.
+// All translations must be done manually via admin UI.
+const TRANSLATION_QUEUE_ENABLED = false;
+
 /**
  * Enqueue translation jobs for all locales when content is approved/published
+ * DISABLED: Returns empty array, does NOT create jobs
  */
 export async function enqueueTranslationJobs(
   contentId: string,
@@ -77,6 +85,12 @@ export async function enqueueTranslationJobs(
   priority: number = 0,
   fields?: TranslationJobField[]
 ): Promise<TranslationJob[]> {
+  // GUARD: Translation queue is disabled
+  if (!TRANSLATION_QUEUE_ENABLED) {
+    logger.info('Translation queue DISABLED - no jobs created', { contentId });
+    return [];
+  }
+
   const targetLocales = SUPPORTED_LOCALES
     .map(l => l.code)
     .filter(code => code !== sourceLocale);

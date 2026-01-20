@@ -169,16 +169,14 @@ export function registerAutoPilotRoutes(app: Express) {
     }
   });
 
-  // Trigger translation for content
+  // Trigger translation for content - DISABLED (January 2026)
   app.post("/api/auto-pilot/translations/:contentId/trigger", requirePermission("canEdit"), async (req, res) => {
-    try {
-      const { contentId } = req.params;
-      const result = await autoPilotSystem.translator.triggerTranslation(contentId);
-      res.json({ success: true, ...result });
-    } catch (error) {
-      console.error("[AutoPilot] Error triggering translation:", error);
-      res.status(500).json({ error: "Failed to trigger translation" });
-    }
+    // Automatic translation is permanently disabled
+    res.status(410).json({ 
+      error: "Translation permanently disabled",
+      message: "Automatic translation is disabled. Use admin UI for manual translations.",
+      code: "TRANSLATION_DISABLED"
+    });
   });
 
   // ============================================================================
@@ -481,28 +479,14 @@ export function registerAutoPilotRoutes(app: Express) {
     }
   });
 
-  // Bulk translate published content
+  // Bulk translate published content - DISABLED (January 2026)
   app.post("/api/auto-pilot/bulk/translate", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const { db } = await import("./db");
-      const { contents } = await import("@shared/schema");
-      const { eq } = await import("drizzle-orm");
-
-      // Get published content that needs translation
-      const publishedContent = await db.select()
-        .from(contents)
-        .where(eq(contents.status, "published" as any));
-
-      // Queue translations (would trigger translation service)
-      const queued = publishedContent.length;
-
-      // In a real implementation, this would trigger the translation service
-      // For now, just return the count
-      res.json({ success: true, queued, message: "Translation jobs queued" });
-    } catch (error) {
-      console.error("[AutoPilot] Bulk translate error:", error);
-      res.status(500).json({ error: "Failed to bulk translate" });
-    }
+    // Automatic translation is permanently disabled
+    res.status(410).json({ 
+      error: "Translation permanently disabled",
+      message: "Automatic bulk translation is disabled. Use admin UI for manual translations.",
+      code: "TRANSLATION_DISABLED"
+    });
   });
 
   // Bulk quality check - uses autoPilotSystem for consistent quality gates
