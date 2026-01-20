@@ -1,0 +1,78 @@
+TASK: Genesis G1 — Localization Infrastructure (NO content translation yet)
+
+MODE: BUILD
+SCOPE: Infrastructure only. No UI copy translation. No AI translation. No content changes.
+
+OBJECTIVE:
+Prepare the system for full localization by ensuring language resolution, headers, sitemap, and performance are correct and consistent across locales.
+
+DO NOT:
+- Translate any text
+- Add or modify UI strings
+- Trigger any translation engines
+- Change content meaning
+- Touch attractions content
+
+APPROVED TASKS (ONLY THESE):
+
+1. Check translation and asset fields
+- Verify `translations` table supports all locales
+- Verify `localized_assets` has alt / caption fields
+- No schema expansion unless something is missing
+
+2. Add language finder from URL
+- Detect locale from URL prefix (/{locale}/...)
+- Validate against SUPPORTED_LOCALES
+- Fallback order: URL → default "en"
+- Do NOT use browser language detection
+
+3. Create language switching service
+- Central service/helper that resolves current locale
+- Exposes: locale, isRTL, fallbackLocale
+- No translation logic inside
+
+4. Apply language finder to public pages
+- Ensure all public routes receive resolved locale
+- Locale must be accessible to:
+  - APIs
+  - SEOHead
+  - Schema
+- No UI rewiring yet
+
+5. Update sitemap for languages
+- Generate sitemap index
+- Generate per-locale sitemaps (sitemap-ar.xml, sitemap-fr.xml, etc.)
+- URLs must be correct and canonical
+- No dev / replit domains anywhere
+
+6. Check language links for SEO
+- Ensure hreflang is correct and complete
+- Ensure canonical rules are respected
+- English has no prefix, others do
+
+7. Add language to page header
+- Inject `Content-Language` header
+- Add `Vary: Accept-Language`
+- Based strictly on URL locale
+
+8. Improve website speed for languages
+- Ensure locale-aware caching (no cross-locale cache pollution)
+- No performance regressions
+- No new heavy middleware
+
+DELIVERABLES:
+- Working locale resolution from URL
+- Correct headers per locale
+- Correct hreflang + sitemap per locale
+- Zero translation side effects
+- Zero UI text changes
+
+STOP CONDITIONS:
+- If a task requires translating text → STOP
+- If a task requires AI → STOP
+- If scope expands beyond infrastructure → STOP
+
+REPORT BACK WITH:
+- What files were touched
+- Proof (curl / sitemap URLs / headers)
+- Confirmation no translation logic ran
