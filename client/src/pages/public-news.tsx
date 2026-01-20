@@ -537,6 +537,7 @@ export default function PublicNews() {
 
         <div className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 space-y-12">
+            {topStories.length > 0 && (
             <section data-testid="section-top-stories">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
@@ -606,7 +607,9 @@ export default function PublicNews() {
                 ))}
               </div>
             </section>
+            )}
 
+            {opinionArticles.length > 0 && (
             <section data-testid="section-opinion">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
@@ -643,6 +646,7 @@ export default function PublicNews() {
                 ))}
               </div>
             </section>
+            )}
 
             <section data-testid="section-regional">
               <div className="flex items-center justify-between mb-6">
