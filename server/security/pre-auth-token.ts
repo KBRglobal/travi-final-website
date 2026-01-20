@@ -240,7 +240,7 @@ export async function createPreAuthToken(
       riskScore: context.riskScore,
       deviceFingerprint: context.deviceFingerprint,
       expiresAt: new Date(expiresAt),
-    });
+    } as any);
     
     console.log(`[PreAuth] Token created for user ${username.substring(0, 3)}*** (expires in ${PRE_AUTH_CONFIG.tokenExpiry / 1000 / 60} min)`);
   } catch (error) {

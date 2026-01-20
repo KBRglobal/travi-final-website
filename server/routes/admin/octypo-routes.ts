@@ -231,7 +231,7 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
     }
 
     const attractionData = {
-      id: attraction.id,
+      id: parseInt(String(attraction.id), 10) || Date.now(),
       title: attraction.title || '',
       cityName: attraction.cityName || '',
       venueName: attraction.venueName || undefined,
@@ -242,7 +242,7 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
       wheelchairAccess: attraction.wheelchairAccess || undefined,
       tiqetsDescription: attraction.tiqetsDescription || undefined,
       tiqetsHighlights: attraction.tiqetsHighlights || undefined,
-      priceFrom: attraction.priceUsd || undefined,
+      priceFrom: attraction.priceUsd ? parseFloat(String(attraction.priceUsd)) : undefined,
       rating: attraction.tiqetsRating ? parseFloat(String(attraction.tiqetsRating)) : undefined,
       reviewCount: attraction.tiqetsReviewCount || undefined,
       address: attraction.venueAddress || undefined,
@@ -267,7 +267,7 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
             processingTimeMs: result.generationTimeMs,
           },
           contentGenerationStatus: 'completed',
-        })
+        } as any)
         .where(eq(tiqetsAttractions.id, attractionId as any));
 
       log.info(`[Octypo] Content generation completed for attraction ${attractionId}`);
@@ -275,7 +275,7 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
       await db.update(tiqetsAttractions)
         .set({
           contentGenerationStatus: 'failed',
-        })
+        } as any)
         .where(eq(tiqetsAttractions.id, attractionId));
     }
 
@@ -880,11 +880,11 @@ router.post('/review-queue/:id/approve', async (req: Request, res: Response) => 
     
     await db.update(contents)
       .set({
-        status: newStatus as any,
+        status: newStatus,
         approvedAt: new Date(),
         publishedAt: publishImmediately ? new Date() : undefined,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, id));
 
     log.info(`[Octypo] Review item ${id} approved`, { notes, publishImmediately });
@@ -914,9 +914,9 @@ router.post('/review-queue/:id/reject', async (req: Request, res: Response) => {
     
     await db.update(contents)
       .set({
-        status: newStatus as any,
+        status: newStatus,
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(contents.id, id));
 
     log.info(`[Octypo] Review item ${id} rejected`, { reason, sendBackToWriter });
@@ -1149,7 +1149,7 @@ router.get('/workflows', async (_req: Request, res: Response) => {
     });
 
     const summary = {
-      completed: workflows.filter(w => w.status === 'completed' || w.status === 'approved').length,
+      completed: workflows.filter(w => (w.status as string) === 'completed' || w.status === 'approved').length,
       running: workflows.filter(w => w.status === 'in_progress' || w.status === 'pending').length,
       pending: workflows.filter(w => w.status === 'pending').length,
       avgCompletionTime: workflows

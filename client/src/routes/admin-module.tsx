@@ -145,7 +145,9 @@ function AdminPageLoader() {
   );
 }
 
-function AdminContentList({ type }: { type: string }) {
+type ContentType = "attraction" | "hotel" | "article" | "dining" | "district" | "transport" | "event" | "itinerary" | "landing_page" | "case_study" | "off_plan";
+
+function AdminContentList({ type }: { type: ContentType }) {
   return (
     <Suspense fallback={<AdminPageLoader />}>
       <ContentList type={type} />

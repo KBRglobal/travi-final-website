@@ -78,7 +78,7 @@ async function saveGeneratedContent(
       generatedByAI: true,
       octopusJobId: jobId,
       wordCount: calculatedWordCount,
-    })
+    } as any)
     .returning();
 
   const [attractionRecord] = await db.insert(attractions)
@@ -90,7 +90,7 @@ async function saveGeneratedContent(
       expandedIntroText: content.whatToExpect,
       visitorTips: content.visitorTips ? [content.visitorTips] : [],
       faq: content.faqs || [],
-    })
+    } as any)
     .returning();
 
   console.log(`[OctypoJobHandler] Saved content: ${contentRecord.id}, attraction: ${attractionRecord.id}`);
@@ -135,20 +135,20 @@ async function saveGeneratedArticle(
       octopusJobId: jobId,
       wordCount: calculatedWordCount,
       publishedAt: new Date(),
-    })
+    } as any)
     .returning();
 
   const [articleRecord] = await db.insert(articles)
     .values({
       contentId: contentRecord.id,
-      category: category as any,
+      category: category,
       sourceRssFeedId: feedId,
       sourceUrl: sourceUrl,
       excerpt: content.introduction?.substring(0, 200),
       publishDate: new Date(),
       relatedDestinationIds: [destinationId],
       faq: content.faqs || [],
-    })
+    } as any)
     .returning();
 
   console.log(`[OctypoJobHandler] Saved article: ${contentRecord.id}, article: ${articleRecord.id}`);
@@ -161,10 +161,10 @@ async function updateJobStatus(jobId: string, status: 'completed' | 'failed', re
     await db.update(backgroundJobs)
       .set({
         status,
-        result: result as any,
+        result: result,
         error: error,
         completedAt: new Date(),
-      })
+      } as any)
       .where(eq(backgroundJobs.id, jobId));
   } catch (err) {
     console.error(`[OctypoJobHandler] Failed to update job status:`, err);
@@ -313,18 +313,13 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
       }
       
       const attractionData: AttractionData = {
-        id: `rss-${feed.id}-${Date.now()}`,
+        id: parseInt(feed.id, 10) || Date.now(),
         title: item.title,
-        slug: slug,
-        description: item.description || item.title,
-        destinationId: destinationId,
+        cityName: destinationId,
         primaryCategory: data.category || feed.category || 'news',
         secondaryCategories: [],
         address: '',
-        latitude: coords?.lat || 0,
-        longitude: coords?.lng || 0,
-        sourceUrl: item.link,
-        locale: feed.language || 'en',
+        coordinates: coords || undefined,
       };
       
       const result = await generateAttractionWithOctypo(attractionData);
@@ -354,7 +349,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
   }
   
   await db.update(rssFeeds)
-    .set({ lastFetchedAt: new Date() })
+    .set({ lastFetchedAt: new Date() } as any)
     .where(eq(rssFeeds.id, feed.id));
   
   console.log(`[OctypoJobHandler] RSS job complete - Generated: ${generated}, Skipped: ${skipped}, Errors: ${errors.length}`);
@@ -389,17 +384,13 @@ async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ su
       }
       
       const attractionData: AttractionData = {
-        id: `topic-${destinationId}-${Date.now()}`,
+        id: Date.now(),
         title: keyword,
-        slug: slug,
-        description: `Comprehensive guide about ${keyword}`,
-        destinationId: destinationId,
+        cityName: destinationId,
         primaryCategory: 'attractions',
         secondaryCategories: [],
         address: '',
-        latitude: coords?.lat || 25.2048,
-        longitude: coords?.lng || 55.2708,
-        locale: 'en',
+        coordinates: coords || undefined,
       };
       
       const result = await generateAttractionWithOctypo(attractionData);
@@ -451,17 +442,14 @@ async function processManualJob(data: ManualJobData, jobId?: string): Promise<{ 
     }
     
     const attractionData: AttractionData = {
-      id: `manual-${destinationId}-${Date.now()}`,
+      id: Date.now(),
       title: data.title,
-      slug: slug,
-      description: data.description || data.title,
-      destinationId: destinationId,
+      cityName: destinationId,
+      tiqetsDescription: data.description || data.title,
       primaryCategory: 'attractions',
       secondaryCategories: [],
       address: '',
-      latitude: coords?.lat || 25.2048,
-      longitude: coords?.lng || 55.2708,
-      locale: 'en',
+      coordinates: coords || undefined,
     };
     
     const result = await generateAttractionWithOctypo(attractionData);
@@ -553,7 +541,7 @@ export async function manuallyProcessJob(jobId: string): Promise<{ success: bool
     }
     
     await db.update(backgroundJobs)
-      .set({ status: 'processing', startedAt: new Date() })
+      .set({ status: 'processing', startedAt: new Date() } as any)
       .where(eq(backgroundJobs.id, jobId));
     
     const result = await handleOctypoJob(job.data as OctypoJobData, jobId);

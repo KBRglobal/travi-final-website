@@ -121,7 +121,7 @@ function getRegionsFromArticles(articles: ContentWithRelations[]): { name: strin
   const regionMap = new Map<string, { count: number; code: string }>();
   
   articles.forEach(article => {
-    const destId = article.article?.destinationId || null;
+    const destId = article.article?.relatedDestinationIds?.[0] || null;
     const { region, code } = detectRegionFromContent(article.title, destId);
     
     const existing = regionMap.get(region);

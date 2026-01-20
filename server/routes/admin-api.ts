@@ -1358,7 +1358,7 @@ export function registerAdminApiRoutes(app: Express): void {
             robotsMeta,
             jsonLdSchema,
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(pageSeo.pagePath, pagePath))
           .returning();
         res.json(updated);
@@ -1376,7 +1376,7 @@ export function registerAdminApiRoutes(app: Express): void {
             ogImage,
             robotsMeta,
             jsonLdSchema,
-          })
+          } as any)
           .returning();
         res.status(201).json(created);
       }
@@ -1404,7 +1404,7 @@ export function registerAdminApiRoutes(app: Express): void {
   // ============================================================================
 
   // Get destinations index config
-  router.get("/destinations-index/config", requirePermission("canView"), async (req: Request, res: Response) => {
+  router.get("/destinations-index/config", requirePermission("canViewAll"), async (req: Request, res: Response) => {
     try {
       const [config] = await db.select().from(destinationsIndexConfig).limit(1);
       
@@ -1574,7 +1574,7 @@ export function registerAdminApiRoutes(app: Express): void {
   });
 
   // Get all active destinations for dropdown selection
-  router.get("/destinations-index/available-destinations", requirePermission("canView"), async (req: Request, res: Response) => {
+  router.get("/destinations-index/available-destinations", requirePermission("canViewAll"), async (req: Request, res: Response) => {
     try {
       const activeDestinations = await db.select({
         id: destinations.id,
@@ -1652,7 +1652,7 @@ export function registerAdminApiRoutes(app: Express): void {
           cardImage: url,
           cardImageAlt: alt,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinations.id, destinationId));
 
       res.json({
@@ -1682,7 +1682,7 @@ export function registerAdminApiRoutes(app: Express): void {
         .set({
           cardImageAlt: alt,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinations.id, destinationId))
         .returning();
 

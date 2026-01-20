@@ -680,8 +680,8 @@ export function registerAutoPilotRoutes(app: Express) {
                   destinationId: destId,
                   language: feed.language,
                   region: destEntry.region,
-                  category: mappedCategory as any
-                })
+                  category: mappedCategory
+                } as any)
                 .where(eq(rssFeeds.url, feed.rss_url));
               updated++;
             } else {
@@ -689,13 +689,13 @@ export function registerAutoPilotRoutes(app: Express) {
               await db.insert(rssFeeds).values({
                 name: feed.source,
                 url: feed.rss_url,
-                category: mappedCategory as any,
+                category: mappedCategory,
                 destinationId: destId,
                 language: feed.language,
                 region: destEntry.region,
                 isActive: true,
                 fetchIntervalMinutes: 60
-              });
+              } as any);
               imported++;
             }
           } catch (feedError: any) {

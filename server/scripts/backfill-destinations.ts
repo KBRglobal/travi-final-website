@@ -342,7 +342,7 @@ async function backfillDestinations() {
           ogImage: data.cardImage,
           canonicalUrl: data.canonicalUrl,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(destinations.id, id))
         .returning({ id: destinations.id });
 
