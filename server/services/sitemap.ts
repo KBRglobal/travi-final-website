@@ -3,7 +3,7 @@ import { storage } from "../storage";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
 
-const BASE_URL = process.env.BASE_URL || "https://travi.world";
+const BASE_URL = "https://travi.world";
 
 // ===========================================
 // ACTIVE LANGUAGES FILTER
