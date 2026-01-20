@@ -50,7 +50,18 @@
       "title": "Explore the World with TRAVI",
       "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
       "searchPlaceholder": "Search attractions, hotels, restaurants...",
-      "cta": "Start Exploring"
+      "cta": "Start Exploring",
+      "badge": "Trusted by {{count}} destinations worldwide",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}"
+    },
+    "srLabel": {
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
     "featured": "Featured",
     "trending": "Trending Now",

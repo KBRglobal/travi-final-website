@@ -50,7 +50,18 @@
       "title": "استكشف العالم مع TRAVI",
       "subtitle": "دليلك الشامل للسفر إلى 17 وجهة حول العالم",
       "searchPlaceholder": "ابحث عن معالم، فنادق، مطاعم...",
-      "cta": "ابدأ الاستكشاف"
+      "cta": "ابدأ الاستكشاف",
+      "badge": "موثوق به في {{count}} وجهة حول العالم",
+      "headlinePart1": "مصدرك الموثوق",
+      "headlinePart2": "للسفر",
+      "description": "معلومات سفر شاملة لـ {{destinations}} وجهة حول العالم. اكتشف أدلة مفصلة لأكثر من {{attractions}} معلم سياحي.",
+      "carouselLabel": "التنقل في شريط الوجهات",
+      "viewDestination": "عرض {{name}} - {{tagline}}"
+    },
+    "srLabel": {
+      "attractions": "أكثر من {{count}} معلم سياحي مغطى",
+      "destinations": "{{count}} وجهة حول العالم",
+      "languages": "منصة متعددة اللغات مع إضافة المزيد من اللغات"
     },
     "featured": "مميز",
     "trending": "الأكثر رواجاً",

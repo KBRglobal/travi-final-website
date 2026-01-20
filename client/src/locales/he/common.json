@@ -50,7 +50,18 @@
       "title": "גלה את העולם עם TRAVI",
       "subtitle": "המדריך המקיף שלך ל-17 יעדים ברחבי העולם",
       "searchPlaceholder": "חפש אטרקציות, מלונות, מסעדות...",
-      "cta": "התחל לגלות"
+      "cta": "התחל לגלות",
+      "badge": "מהימן ב-{{count}} יעדים ברחבי העולם",
+      "headlinePart1": "המשאב המהימן שלך",
+      "headlinePart2": "לנסיעות",
+      "description": "מידע מקיף על נסיעות ל-{{destinations}} יעדים ברחבי העולם. גלה מדריכים מפורטים ליותר מ-{{attractions}} אטרקציות.",
+      "carouselLabel": "ניווט בקרוסלת היעדים",
+      "viewDestination": "צפה ב{{name}} - {{tagline}}"
+    },
+    "srLabel": {
+      "attractions": "מעל {{count}} אטרקציות מכוסות",
+      "destinations": "{{count}} יעדים ברחבי העולם",
+      "languages": "פלטפורמה רב-לשונית עם שפות נוספות מתווספות"
     },
     "featured": "מומלצים",
     "trending": "פופולרי עכשיו",
