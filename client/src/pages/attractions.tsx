@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
@@ -52,7 +53,19 @@ interface DestinationsApiResponse {
 const BASE_URL = "https://travi.world";
 const CANONICAL_URL = `${BASE_URL}/attractions`;
 
-// Featured attractions for hero carousel - specific experiences, not destinations
+/**
+ * SEO CONTENT EXCEPTIONS - INTENTIONALLY NOT LOCALIZED
+ * 
+ * The following content remains hardcoded in English for SEO optimization:
+ * - HERO_ATTRACTIONS: Attraction names, cities, taglines, categories (proper nouns + rich snippets)
+ * - POPULAR_SEARCHES: Search terms matching tourist query patterns
+ * - FAQ_DATA: Question/answer pairs for FAQ schema markup
+ * - JSON-LD structured data: Schema.org markup for search engines
+ * - sr-only navigation (bottom of page): Hidden SEO-optimized anchor text for crawlers
+ * 
+ * Rationale: Attraction names are proper nouns that tourists search for in English globally.
+ * Schema.org structured data requires consistent language for search engine indexing.
+ */
 const HERO_ATTRACTIONS = [
   { 
     name: "Eiffel Tower", 
@@ -154,12 +167,12 @@ const HERO_ATTRACTIONS = [
 ];
 
 const ATTRACTION_TYPES = [
-  { id: "all", label: "All Types", searchTerm: "" },
-  { id: "museum", label: "Museums", searchTerm: "museum" },
-  { id: "landmark", label: "Landmarks", searchTerm: "landmark" },
-  { id: "tour", label: "Tours", searchTerm: "tour" },
-  { id: "theme-park", label: "Theme Parks", searchTerm: "theme park" },
-  { id: "show", label: "Shows", searchTerm: "show" },
+  { id: "all", labelKey: "attractions.types.all", searchTerm: "" },
+  { id: "museum", labelKey: "attractions.types.museums", searchTerm: "museum" },
+  { id: "landmark", labelKey: "attractions.types.landmarks", searchTerm: "landmark" },
+  { id: "tour", labelKey: "attractions.types.tours", searchTerm: "tour" },
+  { id: "theme-park", labelKey: "attractions.types.themeParks", searchTerm: "theme park" },
+  { id: "show", labelKey: "attractions.types.shows", searchTerm: "show" },
 ];
 
 const POPULAR_SEARCHES = [
@@ -266,6 +279,7 @@ function usePreferredMotion() {
 }
 
 function DestinationChip({ destination, index }: { destination: Destination, index: number }) {
+  const { t } = useTranslation();
   const shouldAnimate = usePreferredMotion();
 
   return (
@@ -282,14 +296,14 @@ function DestinationChip({ destination, index }: { destination: Destination, ind
         >
           <img 
             src={destination.image} 
-            alt={`Things to do in ${destination.name}, ${destination.country}`}
+            alt={t("attractions.thingsToDoIn", { name: `${destination.name}, ${destination.country}` })}
             title={`${destination.name} attractions`}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
             loading="lazy"
           />
           <div className="flex flex-col">
             <span className="text-slate-900 dark:text-white font-medium text-sm leading-tight">{destination.name}</span>
-            <span className="text-slate-500 dark:text-slate-400 text-[10px] leading-tight">{destination.count} things to do</span>
+            <span className="text-slate-500 dark:text-slate-400 text-[10px] leading-tight">{t("attractions.chip.thingsToDo", { count: destination.count })}</span>
           </div>
         </div>
       </Link>
@@ -298,6 +312,7 @@ function DestinationChip({ destination, index }: { destination: Destination, ind
 }
 
 export default function Attractions() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -512,7 +527,7 @@ export default function Attractions() {
           <section 
             className="relative min-h-screen bg-slate-50 dark:bg-slate-950"
             data-testid="hero-section"
-            aria-label="Book tickets to top attractions worldwide"
+            aria-label={t("attractions.hero.sectionLabel")}
           >
             {/* Background Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
@@ -549,7 +564,7 @@ export default function Attractions() {
                           <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-attractions-count">
-                          <span className="text-[#6443F4]">{totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : "Thousands of"}</span> attractions{destinations.length > 0 ? ` in ${destinations.length} cities` : " worldwide"}
+                          <span className="text-[#6443F4]">{totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : ""}</span> {totalAttractions > 0 ? t("attractions.hero.badge", { count: totalAttractions.toLocaleString(), cities: destinations.length }) : t("attractions.hero.badgeThousands")}
                         </span>
                       </div>
                     </motion.div>
@@ -565,14 +580,14 @@ export default function Attractions() {
                         className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
                         style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                       >
-                        Things to Do
+                        {t("attractions.hero.headlinePart1")}
                       </span>
                       <span className="relative inline-block">
                         <span 
                           className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
                           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                         >
-                          Worldwide
+                          {t("attractions.hero.headlinePart2")}
                         </span>
                         {/* Gradient underline accent */}
                         <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
@@ -585,9 +600,8 @@ export default function Attractions() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.35 }}
-                    >
-                      <span className="font-medium text-slate-700 dark:text-slate-300">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.
-                    </motion.p>
+                      dangerouslySetInnerHTML={{ __html: t("attractions.hero.description") }}
+                    />
 
                     {/* Inline Stats Row (Homepage pattern) */}
                     <motion.dl 
@@ -597,9 +611,9 @@ export default function Attractions() {
                       transition={{ duration: 0.6, delay: 0.5 }}
                     >
                       {[
-                        { num: totalAttractions > 0 ? `${(totalAttractions / 1000).toFixed(1)}K+` : '--', label: 'ATTRACTIONS', srLabel: `Over ${totalAttractions} attractions` },
-                        { num: destinations.length > 0 ? `${destinations.length}` : '--', label: 'CITIES', srLabel: `${destinations.length} cities` },
-                        { num: '4.9', label: 'RATING', srLabel: '4.9 star rating' }
+                        { num: totalAttractions > 0 ? `${(totalAttractions / 1000).toFixed(1)}K+` : '--', label: t("attractions.stats.attractions"), srLabel: t("attractions.srLabel.attractions", { count: totalAttractions }) },
+                        { num: destinations.length > 0 ? `${destinations.length}` : '--', label: t("attractions.stats.cities"), srLabel: t("attractions.srLabel.cities", { count: destinations.length }) },
+                        { num: '4.9', label: t("attractions.stats.rating"), srLabel: t("attractions.srLabel.rating", { rating: 4.9 }) }
                       ].map((stat, i) => (
                         <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                           <div className="text-center lg:text-left">
@@ -626,20 +640,20 @@ export default function Attractions() {
                         <Search className="w-5 h-5 text-[#6443F4] ml-5 shrink-0" aria-hidden="true" />
                         <Input
                           type="text"
-                          placeholder="Search Eiffel Tower, Colosseum, Burj Khalifa..."
+                          placeholder={t("attractions.hero.searchPlaceholder")}
                           value={query}
                           onChange={(e) => setQuery(e.target.value)}
                           className="flex-1 h-14 md:h-16 border-0 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-0 text-base md:text-lg"
                           data-testid="input-hero-search"
-                          aria-label="Search attractions by name or city"
+                          aria-label={t("attractions.hero.searchAriaLabel")}
                         />
                         <Button
                           onClick={() => query.length >= 2 && navigate(`/search?q=${encodeURIComponent(query)}`)}
                           className="mr-2 md:mr-3 rounded-lg bg-[#6443F4] text-white"
                           data-testid="button-hero-search"
-                          aria-label="Search attractions"
+                          aria-label={t("attractions.hero.searchButtonAriaLabel")}
                         >
-                          Search
+                          {t("attractions.hero.searchButton")}
                         </Button>
                       </div>
 
@@ -699,7 +713,7 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.58 }}
                     >
-                      <span className="text-sm text-slate-400">Popular:</span>
+                      <span className="text-sm text-slate-400">{t("attractions.search.popular")}</span>
                       {POPULAR_SEARCHES.slice(0, 4).map((search) => (
                         <button
                           key={search}
@@ -722,9 +736,9 @@ export default function Attractions() {
                         <Button 
                           className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                           data-testid="button-explore-paris"
-                          aria-label="Things to do in Paris"
+                          aria-label={t("attractions.search.thingsToDoIn", { city: "Paris" })}
                         >
-                          Things to Do in Paris
+                          {t("attractions.search.thingsToDoIn", { city: "Paris" })}
                           <ArrowRight className="w-5 h-5 ml-2" aria-hidden="true" />
                         </Button>
                       </Link>
@@ -733,10 +747,10 @@ export default function Attractions() {
                           variant="outline"
                           className="rounded-full bg-white hover:bg-slate-50 text-slate-700 px-8 py-6 text-base font-medium border-2 border-slate-200 hover:border-slate-300 transition-colors duration-200"
                           data-testid="button-browse-destinations"
-                          aria-label="Browse all destinations"
+                          aria-label={t("attractions.sections.allDestinations")}
                         >
                           <Globe className="w-5 h-5 mr-2 text-[#6443F4]" />
-                          All Destinations
+                          {t("attractions.sections.allDestinations")}
                         </Button>
                       </Link>
                     </motion.div>
@@ -748,7 +762,7 @@ export default function Attractions() {
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.6, delay: 0.7 }}
                       role="tablist"
-                      aria-label="Attraction carousel navigation"
+                      aria-label={t("attractions.search.ariaCarouselNav")}
                     >
                       {HERO_ATTRACTIONS.map((d, i) => (
                         <button
@@ -756,7 +770,7 @@ export default function Attractions() {
                           onClick={() => goTo(i)}
                           role="tab"
                           aria-selected={currentIndex === i}
-                          aria-label={`View ${d.name} in ${d.city}`}
+                          aria-label={t("attractions.search.ariaViewInCity", { name: d.name, city: d.city })}
                           className={cn(
                             "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
                             currentIndex === i 
@@ -781,7 +795,7 @@ export default function Attractions() {
                       <div 
                         className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2"
                         role="region"
-                        aria-label="Featured attraction"
+                        aria-label={t("attractions.gallery.ariaFeaturedAttraction")}
                       >
                         <AnimatePresence mode="wait">
                           <motion.img 
@@ -818,7 +832,7 @@ export default function Attractions() {
                               animate={{ scale: [1, 1.02, 1] }}
                               transition={{ duration: 2, repeat: Infinity }}
                             >
-                              Skip the Line
+                              {t("attractions.gallery.skipTheLine")}
                             </motion.div>
                           </div>
 
@@ -844,7 +858,7 @@ export default function Attractions() {
                             <div className="flex flex-wrap items-center gap-4 mb-6">
                               <div className="flex items-center gap-2 text-white/80">
                                 <Clock className="w-5 h-5" />
-                                <span>2-3 hours</span>
+                                <span>{t("attractions.gallery.duration")}</span>
                               </div>
                               <div className="flex items-center gap-2 text-white/80">
                                 <Ticket className="w-5 h-5" />
@@ -855,12 +869,12 @@ export default function Attractions() {
                             {/* Price and CTA */}
                             <div className="flex items-center justify-between">
                               <div>
-                                <span className="text-white/60 text-sm">From</span>
+                                <span className="text-white/60 text-sm">{t("attractions.gallery.priceFrom")}</span>
                                 <span className="text-3xl font-bold text-white ml-2">{dest.price}</span>
                               </div>
                               <Link href={`/attractions/list/${dest.slug}`}>
                                 <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
-                                  Book Tickets
+                                  {t("attractions.gallery.bookTickets")}
                                   <ArrowRight className="w-5 h-5" />
                                 </button>
                               </Link>
@@ -873,7 +887,7 @@ export default function Attractions() {
                       <div 
                         className="mt-4 flex justify-center gap-3 p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-xl dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 flex-shrink-0"
                         role="tablist"
-                        aria-label="Attraction carousel thumbnails"
+                        aria-label={t("attractions.gallery.ariaThumbnails")}
                       >
                         {HERO_ATTRACTIONS.slice(0, 5).map((attraction, i) => (
                           <button 
@@ -888,7 +902,7 @@ export default function Attractions() {
                             data-testid={`thumbnail-${i}`}
                             role="tab"
                             aria-selected={currentIndex === i}
-                            aria-label={`${attraction.name} tickets in ${attraction.city}`}
+                            aria-label={t("attractions.gallery.ariaTicketsIn", { name: attraction.name, city: attraction.city })}
                           >
                             <img 
                               src={attraction.image} 
@@ -917,8 +931,8 @@ export default function Attractions() {
                               <TrendingUp className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                              <div className="font-bold text-slate-800 dark:text-white">Free Cancellation</div>
-                              <div className="text-sm text-slate-500">24h before visit</div>
+                              <div className="font-bold text-slate-800 dark:text-white">{t("attractions.gallery.freeCancellation")}</div>
+                              <div className="text-sm text-slate-500">{t("attractions.gallery.freeCancellationDesc")}</div>
                             </div>
                           </div>
                         </motion.div>
@@ -940,8 +954,8 @@ export default function Attractions() {
                               <Ticket className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                              <div className="font-bold text-slate-800 dark:text-white">Mobile Tickets</div>
-                              <div className="text-sm text-slate-500">Instant delivery</div>
+                              <div className="font-bold text-slate-800 dark:text-white">{t("attractions.gallery.mobileTickets")}</div>
+                              <div className="text-sm text-slate-500">{t("attractions.gallery.instantDelivery")}</div>
                             </div>
                           </div>
                         </motion.div>
@@ -965,10 +979,10 @@ export default function Attractions() {
               >
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-                    Things to Do by Destination
+                    {t("attractions.browse.title")}
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400 mt-2">
-                    Find attractions and experiences in the world's top cities
+                    {t("attractions.browse.desc")}
                   </p>
                 </div>
                 <Link href="/destinations">
@@ -977,7 +991,7 @@ export default function Attractions() {
                     className="hidden sm:flex items-center gap-2 border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
                     data-testid="button-view-all-destinations"
                   >
-                    All Destinations
+                    {t("attractions.sections.allDestinations")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
@@ -993,7 +1007,7 @@ export default function Attractions() {
                 ) : destinations.length === 0 ? (
                   <div className="col-span-full text-center py-12">
                     <Globe className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-                    <p className="text-slate-500 dark:text-slate-400">No destinations available at this time.</p>
+                    <p className="text-slate-500 dark:text-slate-400">{t("attractions.browse.noDestinations")}</p>
                   </div>
                 ) : destinations.map((dest, i) => (
                   <motion.div
@@ -1026,7 +1040,7 @@ export default function Attractions() {
                             </h3>
                             <p className="text-white/80 text-sm flex items-center gap-1 mt-1">
                               <Ticket className="w-3.5 h-3.5" />
-                              {dest.count} things to do
+                              {t("attractions.browse.thingsToDo", { count: dest.count })}
                             </p>
                             <p className="text-white/60 text-xs mt-1">
                               {dest.country}
@@ -1046,7 +1060,7 @@ export default function Attractions() {
                     className="border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
                     data-testid="button-view-all-destinations-mobile"
                   >
-                    All Destinations
+                    {t("attractions.sections.allDestinations")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
@@ -1065,13 +1079,13 @@ export default function Attractions() {
               >
                 <Badge className="mb-4 bg-[#6443F4]/10 text-[#6443F4] border-0">
                   <TrendingUp className="w-3.5 h-3.5 mr-1.5" />
-                  Why Book With Us
+                  {t("attractions.sections.whyBookBadge")}
                 </Badge>
                 <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-                  Skip the Lines, Save Time
+                  {t("attractions.sections.whyBookTitle")}
                 </h2>
                 <p className="text-slate-600 dark:text-slate-400 mt-2 max-w-xl mx-auto">
-                  Book tickets in advance and enjoy hassle-free entry to top attractions
+                  {t("attractions.sections.whyBookDesc")}
                 </p>
               </motion.div>
 
@@ -1098,7 +1112,7 @@ export default function Attractions() {
                     }}
                     data-testid={`filter-type-${type.id}`}
                   >
-                    {type.label}
+                    {t(type.labelKey)}
                   </Button>
                 ))}
               </div>
@@ -1106,26 +1120,26 @@ export default function Attractions() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                   { 
-                    title: "Skip-the-Line Tickets", 
-                    desc: "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+                    titleKey: "attractions.features.skipTheLine", 
+                    descKey: "attractions.features.skipTheLineDesc",
                     icon: Ticket,
                     color: "bg-[#6443F4]"
                   },
                   { 
-                    title: "Mobile Tickets", 
-                    desc: "Instant delivery to your phone - show your ticket and enter",
+                    titleKey: "attractions.features.mobileTickets", 
+                    descKey: "attractions.features.mobileTicketsDesc",
                     icon: Sparkles,
                     color: "bg-[#8B5CF6]"
                   },
                   { 
-                    title: "Free Cancellation", 
-                    desc: "Plans change? Cancel up to 24 hours before for a full refund",
+                    titleKey: "attractions.features.freeCancellation", 
+                    descKey: "attractions.features.freeCancellationDesc",
                     icon: Globe2,
                     color: "bg-emerald-500"
                   },
                 ].map((feature, i) => (
                   <motion.div
-                    key={feature.title}
+                    key={feature.titleKey}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -1136,10 +1150,10 @@ export default function Attractions() {
                         <feature.icon className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                        {feature.title}
+                        {t(feature.titleKey)}
                       </h3>
                       <p className="text-slate-600 dark:text-slate-400">
-                        {feature.desc}
+                        {t(feature.descKey)}
                       </p>
                     </Card>
                   </motion.div>
@@ -1158,10 +1172,10 @@ export default function Attractions() {
                 className="text-center mb-12"
               >
                 <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-                  Attraction Booking Tips & FAQs
+                  {t("attractions.sections.faq")}
                 </h2>
                 <p className="text-slate-600 dark:text-slate-400 mt-2">
-                  Answers to common questions about visiting top attractions
+                  {t("attractions.sections.faqDesc")}
                 </p>
               </motion.div>
 
@@ -1222,27 +1236,27 @@ export default function Attractions() {
           <section className="py-10 px-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
-                Explore More Travel Guides
+                {t("attractions.exploreLinks.title")}
               </h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Link href="/hotels" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <Building2 className="w-5 h-5 text-[#6443F4]" />
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Hotels Worldwide</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.exploreLinks.hotelsWorldwide")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
                 <Link href="/restaurants" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <Utensils className="w-5 h-5 text-[#6443F4]" />
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Best Restaurants</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.exploreLinks.bestRestaurants")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
                 <Link href="/destinations" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <Globe className="w-5 h-5 text-[#6443F4]" />
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">All Destinations</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.sections.allDestinations")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
                 <Link href="/articles" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <TrendingUp className="w-5 h-5 text-[#6443F4]" />
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Travel News</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.exploreLinks.travelNews")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
               </div>
@@ -1258,10 +1272,10 @@ export default function Attractions() {
                 viewport={{ once: true }}
               >
                 <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                  Ready to Explore?
+                  {t("attractions.cta.title")}
                 </h2>
                 <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-                  Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.
+                  {t("attractions.cta.desc")}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/attractions/list/paris">
@@ -1271,7 +1285,7 @@ export default function Attractions() {
                       data-testid="button-paris-attractions"
                     >
                       <Ticket className="w-5 h-5 mr-2" />
-                      Paris Attractions
+                      {t("attractions.cta.parisAttractions")}
                     </Button>
                   </Link>
                   <Link href="/attractions/list/rome">
@@ -1282,7 +1296,7 @@ export default function Attractions() {
                       data-testid="button-rome-attractions"
                     >
                       <Ticket className="w-5 h-5 mr-2" />
-                      Rome Attractions
+                      {t("attractions.cta.romeAttractions")}
                     </Button>
                   </Link>
                 </div>

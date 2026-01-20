@@ -95,6 +95,39 @@
   "attractions": {
     "title": "معالم دبي السياحية",
     "subtitle": "استكشف المعالم الشهيرة والأماكن المخفية",
+    "hero": {
+      "badge": "{{count}}+ معلم سياحي في {{cities}} مدينة",
+      "badgeThousands": "آلاف المعالم السياحية حول العالم",
+      "headlinePart1": "أشياء للقيام بها",
+      "headlinePart2": "حول العالم",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">تذاكر بدون انتظار</span> لبرج إيفل والكولوسيوم وبرج خليفة وأفضل المعالم السياحية في باريس وروما ودبي والمزيد.",
+      "searchPlaceholder": "ابحث عن برج إيفل، الكولوسيوم، برج خليفة...",
+      "carouselLabel": "شريط المعالم السياحية المميزة",
+      "sectionLabel": "احجز تذاكر لأفضل المعالم السياحية حول العالم",
+      "searchAriaLabel": "ابحث عن المعالم السياحية بالاسم أو المدينة",
+      "searchButton": "بحث",
+      "searchButtonAriaLabel": "البحث عن المعالم السياحية"
+    },
+    "stats": {
+      "attractions": "المعالم",
+      "cities": "المدن",
+      "rating": "التقييم"
+    },
+    "srLabel": {
+      "attractions": "أكثر من {{count}} معلم سياحي",
+      "cities": "{{count}} مدينة",
+      "rating": "تقييم {{rating}} نجوم"
+    },
+    "types": {
+      "all": "جميع الأنواع",
+      "museums": "المتاحف",
+      "landmarks": "المعالم",
+      "tours": "الجولات",
+      "themeParks": "المتنزهات الترفيهية",
+      "shows": "العروض"
+    },
+    "thingsToDoIn": "أشياء للقيام بها في {{name}}",
+    "countAttractions": "{{country}} - {{count}} معلم سياحي",
     "filters": {
       "all": "الكل",
       "popular": "الأكثر شهرة",
@@ -109,6 +142,64 @@
       "price": "السعر",
       "duration": "المدة",
       "tips": "نصائح محلية"
+    },
+    "sections": {
+      "destinations": "استكشف المعالم السياحية حسب الوجهة",
+      "destinationsDesc": "اختر مدينة لاكتشاف أشياء رائعة للقيام بها",
+      "faq": "الأسئلة الشائعة",
+      "faqDesc": "احصل على إجابات حول حجز المعالم السياحية حول العالم",
+      "whyBookBadge": "لماذا تحجز معنا",
+      "whyBookTitle": "تخطى الطوابير، وفر الوقت",
+      "whyBookDesc": "احجز التذاكر مسبقاً واستمتع بدخول سهل لأفضل المعالم السياحية",
+      "allDestinations": "جميع الوجهات"
+    },
+    "features": {
+      "skipTheLine": "تذاكر بدون انتظار",
+      "skipTheLineDesc": "تجاوز الطوابير في برج إيفل والكولوسيوم والفاتيكان والمزيد",
+      "mobileTickets": "تذاكر على الهاتف",
+      "mobileTicketsDesc": "توصيل فوري لهاتفك - اعرض تذكرتك وادخل",
+      "freeCancellation": "إلغاء مجاني",
+      "freeCancellationDesc": "تغيرت خططك؟ ألغِ قبل 24 ساعة واسترد المبلغ بالكامل"
+    },
+    "browse": {
+      "title": "أنشطة حسب الوجهة",
+      "desc": "اكتشف المعالم والتجارب في أشهر مدن العالم",
+      "thingsToDo": "{{count}} نشاط",
+      "noDestinations": "لا توجد وجهات متاحة حالياً."
+    },
+    "exploreLinks": {
+      "title": "استكشف المزيد من أدلة السفر",
+      "hotelsWorldwide": "فنادق حول العالم",
+      "bestRestaurants": "أفضل المطاعم",
+      "travelNews": "أخبار السفر"
+    },
+    "cta": {
+      "title": "جاهز للاستكشاف؟",
+      "desc": "احجز تذاكر بدون انتظار لبرج إيفل والكولوسيوم وبرج خليفة وأشهر المعالم السياحية.",
+      "parisAttractions": "معالم باريس",
+      "romeAttractions": "معالم روما"
+    },
+    "search": {
+      "popular": "رائج:",
+      "thingsToDoIn": "أنشطة في {{city}}",
+      "ariaCarouselNav": "التنقل في دائرة المعالم",
+      "ariaViewInCity": "عرض {{name}} في {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "معلم سياحي مميز",
+      "ariaThumbnails": "صور مصغرة لدائرة المعالم",
+      "ariaTicketsIn": "تذاكر {{name}} في {{city}}",
+      "priceFrom": "من",
+      "bookTickets": "احجز التذاكر",
+      "skipTheLine": "تخطى الطابور",
+      "duration": "2-3 ساعات",
+      "freeCancellation": "إلغاء مجاني",
+      "freeCancellationDesc": "قبل 24 ساعة من الزيارة",
+      "mobileTickets": "تذاكر على الهاتف",
+      "instantDelivery": "توصيل فوري"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} نشاط للقيام به"
     }
   },
   "hotels": {

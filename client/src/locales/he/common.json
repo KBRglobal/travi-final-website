@@ -95,6 +95,39 @@
   "attractions": {
     "title": "אטרקציות בדובאי",
     "subtitle": "גלה ציוני דרך איקוניים ומקומות נסתרים",
+    "hero": {
+      "badge": "{{count}}+ אטרקציות ב-{{cities}} ערים",
+      "badgeThousands": "אלפי אטרקציות ברחבי העולם",
+      "headlinePart1": "דברים לעשות",
+      "headlinePart2": "ברחבי העולם",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">כרטיסים ללא תור</span> למגדל אייפל, הקולוסאום, בורג' חליפה ואטרקציות מובילות בפריז, רומא, דובאי ועוד.",
+      "searchPlaceholder": "חפש מגדל אייפל, קולוסאום, בורג' חליפה...",
+      "carouselLabel": "קרוסלת אטרקציות מומלצות",
+      "sectionLabel": "הזמן כרטיסים לאטרקציות מובילות ברחבי העולם",
+      "searchAriaLabel": "חפש אטרקציות לפי שם או עיר",
+      "searchButton": "חיפוש",
+      "searchButtonAriaLabel": "חפש אטרקציות"
+    },
+    "stats": {
+      "attractions": "אטרקציות",
+      "cities": "ערים",
+      "rating": "דירוג"
+    },
+    "srLabel": {
+      "attractions": "מעל {{count}} אטרקציות",
+      "cities": "{{count}} ערים",
+      "rating": "דירוג {{rating}} כוכבים"
+    },
+    "types": {
+      "all": "כל הסוגים",
+      "museums": "מוזיאונים",
+      "landmarks": "ציוני דרך",
+      "tours": "סיורים",
+      "themeParks": "פארקי שעשועים",
+      "shows": "הופעות"
+    },
+    "thingsToDoIn": "דברים לעשות ב{{name}}",
+    "countAttractions": "{{country}} - {{count}} אטרקציות",
     "filters": {
       "all": "הכל",
       "popular": "הכי פופולרי",
@@ -109,6 +142,64 @@
       "price": "מחיר",
       "duration": "משך זמן",
       "tips": "טיפים מקומיים"
+    },
+    "sections": {
+      "destinations": "גלה אטרקציות לפי יעד",
+      "destinationsDesc": "בחר עיר לגלות דברים מדהימים לעשות",
+      "faq": "שאלות נפוצות",
+      "faqDesc": "קבל תשובות על הזמנת אטרקציות ברחבי העולם",
+      "whyBookBadge": "למה להזמין איתנו",
+      "whyBookTitle": "דלג על התורים, חסוך זמן",
+      "whyBookDesc": "הזמן כרטיסים מראש ותיהנה מכניסה קלה לאטרקציות מובילות",
+      "allDestinations": "כל היעדים"
+    },
+    "features": {
+      "skipTheLine": "כרטיסים ללא תור",
+      "skipTheLineDesc": "עבור ליד התורים במגדל אייפל, הקולוסאום, הוותיקן ועוד",
+      "mobileTickets": "כרטיסים בנייד",
+      "mobileTicketsDesc": "משלוח מיידי לטלפון שלך - הצג את הכרטיס והיכנס",
+      "freeCancellation": "ביטול חינם",
+      "freeCancellationDesc": "התוכניות השתנו? בטל עד 24 שעות לפני וקבל החזר מלא"
+    },
+    "browse": {
+      "title": "דברים לעשות לפי יעד",
+      "desc": "גלה אטרקציות וחוויות בערים המובילות בעולם",
+      "thingsToDo": "{{count}} דברים לעשות",
+      "noDestinations": "אין יעדים זמינים כרגע."
+    },
+    "exploreLinks": {
+      "title": "גלה עוד מדריכי טיולים",
+      "hotelsWorldwide": "מלונות ברחבי העולם",
+      "bestRestaurants": "המסעדות הטובות ביותר",
+      "travelNews": "חדשות טיולים"
+    },
+    "cta": {
+      "title": "מוכן לחקור?",
+      "desc": "הזמן כרטיסים ללא תור למגדל אייפל, הקולוסאום, בורג' חליפה ואטרקציות מובילות.",
+      "parisAttractions": "אטרקציות פריז",
+      "romeAttractions": "אטרקציות רומא"
+    },
+    "search": {
+      "popular": "פופולרי:",
+      "thingsToDoIn": "דברים לעשות ב{{city}}",
+      "ariaCarouselNav": "ניווט בקרוסלת האטרקציות",
+      "ariaViewInCity": "הצג {{name}} ב{{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "אטרקציה מומלצת",
+      "ariaThumbnails": "תמונות ממוזערות של קרוסלת האטרקציות",
+      "ariaTicketsIn": "כרטיסים ל{{name}} ב{{city}}",
+      "priceFrom": "מ-",
+      "bookTickets": "הזמן כרטיסים",
+      "skipTheLine": "דלג על התור",
+      "duration": "2-3 שעות",
+      "freeCancellation": "ביטול חינם",
+      "freeCancellationDesc": "24 שעות לפני הביקור",
+      "mobileTickets": "כרטיסים בנייד",
+      "instantDelivery": "משלוח מיידי"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} דברים לעשות"
     }
   },
   "hotels": {
