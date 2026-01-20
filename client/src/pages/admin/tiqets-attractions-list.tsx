@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  Edit2,
 } from "lucide-react";
 
 interface TiqetsAttraction {
@@ -120,7 +121,7 @@ export default function TiqetsAttractionsList() {
       cell: (attraction) => (
         <div className="flex flex-col gap-1">
           <Link
-            href={`/admin/tiqets/attractions/${attraction.id}`}
+            href={`/admin/attractions/${attraction.id}`}
             className="font-medium hover:underline text-foreground line-clamp-2"
             data-testid={`link-attraction-${attraction.id}`}
           >
@@ -174,10 +175,10 @@ export default function TiqetsAttractionsList() {
 
   const actions: Action<TiqetsAttraction>[] = [
     {
-      label: "View Details",
-      icon: <Eye className="h-4 w-4" />,
+      label: "Edit",
+      icon: <Edit2 className="h-4 w-4" />,
       onClick: (attraction) => {
-        window.location.href = `/admin/tiqets/attractions/${attraction.id}`;
+        window.location.href = `/admin/attractions/${attraction.id}`;
       },
     },
     {

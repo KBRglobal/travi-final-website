@@ -160,11 +160,8 @@ function AdminRouter() {
     <Suspense fallback={<AdminPageLoader />}>
       <Switch>
         <Route path="/admin" component={Dashboard} />
-        <Route path="/admin/attractions">{() => <AdminContentList type="attraction" />}</Route>
-        <Route path="/admin/attractions/new" component={ContentEditor} />
-        <Route path="/admin/attractions/:id" component={ContentEditor} />
-        <Route path="/admin/tiqets/attractions-import" component={TiqetsAttractionsList} />
-        <Route path="/admin/tiqets/attractions/:id" component={TiqetsAttractionDetail} />
+        <Route path="/admin/attractions" component={TiqetsAttractionsList} />
+        <Route path="/admin/attractions/:id" component={TiqetsAttractionDetail} />
         <Route path="/admin/hotels">{() => <AdminContentList type="hotel" />}</Route>
         <Route path="/admin/hotels/new" component={ContentEditor} />
         <Route path="/admin/hotels/:id" component={ContentEditor} />
