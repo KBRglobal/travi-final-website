@@ -18,7 +18,7 @@ export const translations = {
       guides: "Guides",
       realEstate: "Real Estate",
       search: "Search",
-      searchPlaceholder: "Search Dubai...",
+      searchPlaceholder: "Search attractions, guides, destinations...",
       menu: "Menu",
       close: "Close",
     },
@@ -42,7 +42,7 @@ export const translations = {
       handPickedDestinations: "Hand-picked destinations just for you",
       // New comprehensive translations
       skipToMain: "Skip to main content",
-      searchLabel: "Search Dubai experiences",
+      searchLabel: "Search travel experiences",
       searchPlaceholder: "Where do you want to go?",
       comingSoon: "Coming Soon",
       comingSoonExplore: "We're curating the best Dubai experiences for you. Check back soon for hand-picked destinations!",
@@ -345,7 +345,7 @@ export const translations = {
     },
     // Search
     search: {
-      pageTitle: "Search Dubai",
+      pageTitle: "Search",
       noResults: "No results found",
       tryAgain: "Try different keywords",
       results: "results",
