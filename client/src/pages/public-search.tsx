@@ -297,7 +297,7 @@ export default function PublicSearch() {
                 {t('search.enterQuery') || "Enter a search term to find attractions, guides, destinations and more."}
               </p>
               
-              <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
                 <Link href={localePath("/hotels")}>
                   <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                     <Building2 className="w-4 h-4" />
@@ -310,18 +310,45 @@ export default function PublicSearch() {
                     {t('nav.attractions')}
                   </Button>
                 </Link>
-                <Link href={localePath("/dining")}>
+                <Link href={localePath("/guides")}>
                   <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-                    <UtensilsCrossed className="w-4 h-4" />
-                    {t('nav.dining')}
+                    <BookOpen className="w-4 h-4" />
+                    {t('nav.guides')}
                   </Button>
                 </Link>
-                <Link href={localePath("/districts")}>
+                <Link href={localePath("/destinations")}>
                   <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                     <Map className="w-4 h-4" />
-                    {t('nav.districts')}
+                    Destinations
                   </Button>
                 </Link>
+              </div>
+
+              <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Popular destinations</p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {[
+                    { name: "Paris", slug: "paris" },
+                    { name: "Rome", slug: "rome" },
+                    { name: "London", slug: "london" },
+                    { name: "Barcelona", slug: "barcelona" },
+                    { name: "Dubai", slug: "dubai" },
+                    { name: "Tokyo", slug: "tokyo" },
+                    { name: "New York", slug: "new-york" },
+                    { name: "Amsterdam", slug: "amsterdam" },
+                  ].map((dest) => (
+                    <Link key={dest.slug} href={localePath(`/attractions/list/${dest.slug}`)}>
+                      <Badge 
+                        variant="secondary" 
+                        className="cursor-pointer hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-colors px-3 py-1.5"
+                        data-testid={`badge-destination-${dest.slug}`}
+                      >
+                        <MapPin className="w-3 h-3 mr-1" />
+                        {dest.name}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </motion.div>
           ) : (
@@ -379,25 +406,49 @@ export default function PublicSearch() {
                     {t('search.tryAgain') || "Try adjusting your search terms or browse our categories below."}
                   </p>
                   
-                  <div className="flex flex-wrap items-center justify-center gap-3">
-                    <Link href={localePath("/hotels")}>
-                      <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-                        <Building2 className="w-4 h-4" />
-                        {t('nav.hotels')}
-                      </Button>
-                    </Link>
+                  <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
                     <Link href={localePath("/attractions")}>
                       <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                         <Mountain className="w-4 h-4" />
                         {t('nav.attractions')}
                       </Button>
                     </Link>
-                    <Link href={localePath("/news")}>
+                    <Link href={localePath("/guides")}>
                       <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                         <BookOpen className="w-4 h-4" />
-                        {t('nav.news')}
+                        {t('nav.guides')}
                       </Button>
                     </Link>
+                    <Link href={localePath("/destinations")}>
+                      <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                        <Map className="w-4 h-4" />
+                        Destinations
+                      </Button>
+                    </Link>
+                  </div>
+
+                  <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Or try a popular destination</p>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      {[
+                        { name: "Paris", slug: "paris" },
+                        { name: "Rome", slug: "rome" },
+                        { name: "London", slug: "london" },
+                        { name: "Barcelona", slug: "barcelona" },
+                        { name: "Dubai", slug: "dubai" },
+                        { name: "Tokyo", slug: "tokyo" },
+                      ].map((dest) => (
+                        <Link key={dest.slug} href={localePath(`/attractions/list/${dest.slug}`)}>
+                          <Badge 
+                            variant="secondary" 
+                            className="cursor-pointer hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-colors px-3 py-1.5"
+                          >
+                            <MapPin className="w-3 h-3 mr-1" />
+                            {dest.name}
+                          </Badge>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               )}
