@@ -1,15 +1,25 @@
 {
   "nav": {
     "home": "Home",
+    "destinations": "Destinations",
     "attractions": "Attractions",
     "hotels": "Hotels",
+    "guides": "Guides",
     "dining": "Dining",
     "districts": "Districts",
-    "articles": "News & Guides",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
     "realEstate": "Real Estate",
     "events": "Events",
     "search": "Search",
-    "language": "Language"
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok"
   },
   "common": {
     "readMore": "Read More",
@@ -37,15 +47,39 @@
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring"
     },
     "featured": "Featured",
     "trending": "Trending Now",
     "topAttractions": "Top Attractions",
     "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "latestNews": "Latest News & Guides",
+    "sections": {
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated"
+    },
+    "cta": {
+      "exploreDestinations": "Explore All Destinations",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip"
+    },
+    "stats": {
+      "destinations": "Destinations",
+      "attractions": "Attractions",
+      "languages": "Languages"
+    }
   },
   "attractions": {
     "title": "Dubai Attractions",
@@ -148,7 +182,7 @@
   "footer": {
     "about": "About Travi",
     "aboutTravi": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
     "aboutUs": "About Us",
     "quickLinks": "Quick Links",
     "legal": "Legal",
@@ -160,6 +194,14 @@
     "contactUs": "Contact Us",
     "followUs": "Follow Us",
     "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
+    "cookies": "Cookies",
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
     "featuredGuides": "Featured Guides",
     "tools": "Tools",
     "currencyConverter": "Currency Converter",

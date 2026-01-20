@@ -1,29 +1,31 @@
 import { Link } from "wouter";
 import { useLocale } from "@/lib/i18n/LocaleRouter";
 import { useCookieConsent } from "@/contexts/cookie-consent-context";
+import { useTranslation } from "react-i18next";
 
 export function PublicFooter() {
   const { localePath, isRTL } = useLocale();
   const { openSettings: openCookieSettings } = useCookieConsent();
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   const exploreLinks = [
-    { label: "Destinations", href: "/destinations" },
-    { label: "Attractions", href: "/attractions" },
+    { key: "nav.destinations", href: "/destinations" },
+    { key: "nav.attractions", href: "/attractions" },
   ];
 
   const travelLinks = [
-    { label: "All Guides", href: "/guides" },
-    { label: "News", href: "/news" },
+    { key: "footer.allGuides", href: "/guides" },
+    { key: "nav.news", href: "/news" },
   ];
 
   const companyLinks = [
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
-    { label: "Terms", href: "/terms" },
-    { label: "Privacy", href: "/privacy" },
-    { label: "Cookies", href: "/cookies" },
-    { label: "Security", href: "/security" },
+    { key: "footer.aboutUs", href: "/about" },
+    { key: "footer.contactUs", href: "/contact" },
+    { key: "footer.termsOfService", href: "/terms" },
+    { key: "footer.privacyPolicy", href: "/privacy" },
+    { key: "footer.cookies", href: "/cookies" },
+    { key: "footer.security", href: "/security" },
   ];
 
   return (
@@ -32,7 +34,7 @@ export function PublicFooter() {
       dir={isRTL ? "rtl" : "ltr"} 
       data-testid="footer" 
       role="contentinfo" 
-      aria-label="Site footer"
+      aria-label={t("footer.ariaLabel", "Site footer")}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
@@ -41,9 +43,9 @@ export function PublicFooter() {
             <h2 
               className="text-2xl sm:text-3xl lg:text-3xl font-bold text-foreground leading-tight"
               style={{ fontFamily: "'Chillax', var(--font-sans)", fontWeight: 700, lineHeight: 1.2 }}
-            >Your Trusted Travel Resource</h2>
+            >{t("footer.tagline", "Your Trusted Travel Resource")}</h2>
             <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-sm">
-              Comprehensive travel information for 17 destinations worldwide.
+              {t("footer.aboutText")}
             </p>
           </div>
 
@@ -52,7 +54,7 @@ export function PublicFooter() {
               
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
-                  Explore
+                  {t("footer.explore")}
                 </h3>
                 <ul className="space-y-3" role="list">
                   {exploreLinks.map((link) => (
@@ -60,9 +62,9 @@ export function PublicFooter() {
                       <Link 
                         href={localePath(link.href)} 
                         className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-                        data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                        data-testid={`link-footer-${link.href.replace('/', '')}`}
                       >
-                        {link.label}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
@@ -71,7 +73,7 @@ export function PublicFooter() {
 
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
-                  Travel
+                  {t("footer.travel", "Travel")}
                 </h3>
                 <ul className="space-y-3" role="list">
                   {travelLinks.map((link) => (
@@ -79,9 +81,9 @@ export function PublicFooter() {
                       <Link 
                         href={localePath(link.href)} 
                         className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-                        data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                        data-testid={`link-footer-${link.href.replace('/', '')}`}
                       >
-                        {link.label}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
@@ -90,7 +92,7 @@ export function PublicFooter() {
 
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
-                  Company
+                  {t("footer.company", "Company")}
                 </h3>
                 <ul className="space-y-3" role="list">
                   {companyLinks.map((link) => (
@@ -98,19 +100,19 @@ export function PublicFooter() {
                       <Link 
                         href={localePath(link.href)} 
                         className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-                        data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                        data-testid={`link-footer-${link.href.replace('/', '')}`}
                       >
-                        {link.label}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
                   <li>
                     <button
                       onClick={openCookieSettings}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer text-left"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer text-start"
                       data-testid="button-cookie-settings"
                     >
-                      Cookie Settings
+                      {t("footer.cookieSettings", "Cookie Settings")}
                     </button>
                   </li>
                 </ul>
@@ -123,7 +125,7 @@ export function PublicFooter() {
       <div className="border-t border-border/20 dark:border-border/30 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-muted-foreground">
-            <span>© {currentYear} TRAVI. All rights reserved.</span>
+            <span>© {currentYear} TRAVI. {t("footer.allRightsReserved")}</span>
             <a 
               href="mailto:info@travi.world" 
               className="hover:text-foreground transition-colors duration-200"
