@@ -23,21 +23,40 @@ const STATIC_REDIRECTS: RedirectRule[] = [
   { from: '/privacy-policy', to: '/privacy', exact: true },
 ];
 
+/**
+ * Get the canonical protocol, respecting proxy headers
+ */
+function getProtocol(req: Request): string {
+  const forwardedProto = req.get('x-forwarded-proto');
+  if (forwardedProto) {
+    return forwardedProto.split(',')[0].trim();
+  }
+  return req.protocol || 'https';
+}
+
+/**
+ * Get the canonical host without port (for production redirects)
+ */
+function getCanonicalHost(host: string): string {
+  return host.replace(/^www\./, '').replace(/:\d+$/, '');
+}
+
 export function redirectMiddleware(req: Request, res: Response, next: NextFunction): void {
   const host = req.get('host') || '';
   const path = req.path;
   const fullUrl = req.originalUrl;
 
   if (host.startsWith('www.')) {
-    const newHost = host.replace(/^www\./, '');
-    const protocol = req.protocol || 'https';
-    const newUrl = `${protocol}://${newHost}${fullUrl}`;
+    const canonicalHost = getCanonicalHost(host);
+    const protocol = getProtocol(req);
+    const newUrl = `${protocol}://${canonicalHost}${fullUrl}`;
     console.log(`[Redirects] www to non-www: ${host}${fullUrl} → ${newUrl}`);
     res.redirect(301, newUrl);
     return;
   }
 
-  if (path === '/search' && req.query.q) {
+  const normalizedSearchPath = path.toLowerCase().replace(/\/+$/, '') || '/';
+  if (normalizedSearchPath === '/search' && req.query.q) {
     console.log(`[Redirects] Search query strip: ${fullUrl} → /search`);
     res.redirect(301, '/search');
     return;
