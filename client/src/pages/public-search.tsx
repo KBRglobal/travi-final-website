@@ -171,7 +171,7 @@ export default function PublicSearch() {
   const debouncedQuery = useDebounce(searchQuery, 300);
 
   const { data: searchResponse, isLoading, isFetching } = useQuery<SearchResponse>({
-    queryKey: ["/api/search", debouncedQuery, locale],
+    queryKey: ["/api/public/search", debouncedQuery, locale],
     queryFn: async () => {
       if (!debouncedQuery.trim()) {
         return { results: [], total: 0, page: 1, limit: 20, query: "", searchTime: 0 };
@@ -181,7 +181,7 @@ export default function PublicSearch() {
         limit: "20",
         ...(locale && { locale }),
       });
-      const response = await fetch(`/api/search?${params}`);
+      const response = await fetch(`/api/public/search?${params}`);
       if (!response.ok) {
         throw new Error("Search failed");
       }
