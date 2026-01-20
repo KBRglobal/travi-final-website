@@ -34,6 +34,12 @@ Preferred communication style: Simple, everyday language.
   - **Disabled Components**: Translation queue, translation worker, publish hooks auto-translate, auto-pilot translation triggers, RSS auto-translate, and all translation API endpoints (return 410 Gone).
   - **i18next Infrastructure**: Static UI strings and locale routing preserved via i18next for client-side localization.
   - **AEO Engine**: Answer Engine Optimization for generating answer capsules, FAQs, and JSON-LD schema (still active, translation-independent).
+  - **Genesis G1 Infrastructure (January 2026)**: Complete localization infrastructure with:
+    - **Locale Middleware** (`server/middleware/locale.ts`): URL-based locale extraction, RTL detection, `req.locale`/`req.isRTL` augmentation
+    - **Locale Service** (`server/services/locale-service.ts`): Translation fallback pattern (requested → en → null), localized URL helpers
+    - **Multi-locale Sitemaps**: All 17 locales activated in sitemap index with per-locale sitemap files
+    - **HTTP Headers**: `Content-Language` and `Vary: Accept-Language` headers on all responses
+    - **hreflang Tags**: Complete implementation in SEOHead for all 17 locales plus x-default
 - **Localized Assets System**: New `localized_assets` table for per-locale media (hero, card, gallery, OG, thumbnail, banner, logo). 
   - **API Routes**: `/api/localized-assets/:entityType/:entityId` with locale/usage fallback logic (requested → en → 404).
   - **Admin Routes**: `/api/admin/localized-assets` for CRUD with strict Zod enum validation.
