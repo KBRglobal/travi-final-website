@@ -13,7 +13,7 @@ authenticator.options = { window: 1 };
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { Resend } from "resend";
-import { eq, like, or, desc, and, sql, inArray, ilike } from "drizzle-orm";
+import { eq, like, or, desc, and, sql, inArray, ilike, notIlike } from "drizzle-orm";
 import {
   insertContentSchema,
   insertAttractionSchema,
@@ -5691,9 +5691,11 @@ export async function registerRoutes(
 
   // Public API for destinations (homepage discovery section)
   // CRITICAL: Database is single source of truth - no static fallbacks
+  // Filter out test destinations from public API
   app.get("/api/public/destinations", async (req, res) => {
     try {
       // Fetch ALL active destinations from database with mood/hero fields
+      // Exclude test destinations from public API responses
       const allDestinations = await db
         .select({
           id: destinations.id,
@@ -5711,7 +5713,10 @@ export async function registerRoutes(
           moodPrimaryColor: destinations.moodPrimaryColor,
         })
         .from(destinations)
-        .where(eq(destinations.isActive, true))
+        .where(and(
+          eq(destinations.isActive, true),
+          notIlike(destinations.name, '%test%')
+        ))
         .orderBy(destinations.name);
       
       res.json(allDestinations);

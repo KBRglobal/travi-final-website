@@ -378,7 +378,7 @@ function AnimatedSection({ children, className, delay = 0, ariaLabel }: { childr
 // ============================================
 // HERO SECTION WITH OPTIMIZED SCHEMA
 // ============================================
-function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIndexChange: (idx: number) => void }) {
+function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: number; onIndexChange: (idx: number) => void; siteStats?: { destinations: number; attractions: number } }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const dest = HERO_DESTINATIONS[currentIndex];
 
@@ -584,15 +584,15 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
             id="hero-description"
             className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
           >
-            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">17 destinations</span> worldwide. 
-            Discover detailed guides for <span className="font-medium text-slate-700 dark:text-slate-300">3,000+ attractions</span>.
+            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">{siteStats?.destinations || 17} destinations</span> worldwide. 
+            Discover detailed guides for <span className="font-medium text-slate-700 dark:text-slate-300">{(siteStats?.attractions || 3000).toLocaleString()}+ attractions</span>.
           </p>
 
           {/* Stats */}
           <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8">
             {[
-              { num: '3,000+', label: 'ATTRACTIONS', srLabel: 'Over 3000 attractions covered' },
-              { num: '17', label: 'DESTINATIONS', srLabel: '17 destinations worldwide' },
+              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: 'ATTRACTIONS', srLabel: `Over ${(siteStats?.attractions || 3000).toLocaleString()} attractions covered` },
+              { num: String(siteStats?.destinations || 17), label: 'DESTINATIONS', srLabel: `${siteStats?.destinations || 17} destinations worldwide` },
               { num: '17+', label: 'LANGUAGES', srLabel: 'Multilingual platform with additional languages rolling out' }
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
@@ -963,6 +963,11 @@ export default function Homepage() {
     queryKey: ['/api/public/homepage-config'],
   });
 
+  // Fetch dynamic stats from API
+  const { data: siteStats } = useQuery<{ destinations: number; attractions: number; publishedContent: number }>({
+    queryKey: ['/api/public/stats'],
+  });
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -1136,7 +1141,7 @@ export default function Homepage() {
 
         <main id="main-content" role="main" tabIndex={-1}>
           {/* HERO */}
-          <SplitHero currentIndex={currentHeroIndex} onIndexChange={setCurrentHeroIndex} />
+          <SplitHero currentIndex={currentHeroIndex} onIndexChange={setCurrentHeroIndex} siteStats={siteStats} />
 
           {/* CATEGORIES */}
           <CategoriesSection />
