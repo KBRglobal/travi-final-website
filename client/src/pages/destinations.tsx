@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,7 +16,6 @@ import {
   RefreshCw,
   Loader2
 } from "lucide-react";
-// SEO is now fully controlled via database - no SEOHead component needed
 import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
@@ -95,24 +95,7 @@ const SUPPORTED_LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt' },
 ];
 
-const DESTINATIONS_FAQ = [
-  {
-    q: "How many destinations does TRAVI cover?",
-    a: "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location."
-  },
-  {
-    q: "What information is included in TRAVI destination guides?",
-    a: "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information."
-  },
-  {
-    q: "Can I search for destinations?",
-    a: "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page."
-  },
-  {
-    q: "What are the featured destinations on TRAVI?",
-    a: "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
-  }
-];
+const FAQ_KEYS = ["1", "2", "3", "4"] as const;
 
 function usePreferredMotion() {
   const prefersReducedMotion = useReducedMotion();
@@ -155,6 +138,7 @@ function DestinationChip({ destination, index }: { destination: APIDestination, 
 }
 
 function LightHero({ destinations }: { destinations: APIDestination[] }) {
+  const { t } = useTranslation();
   const shouldAnimate = usePreferredMotion();
   const destinationCount = destinations.length;
   const countryCount = new Set(destinations.map(d => d.country)).size;
@@ -163,7 +147,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
     <section 
       className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
       data-testid="destinations-hero"
-      aria-label="Destinations overview"
+      aria-label={t("destinations.hero.ariaLabel")}
     >
       <style>{heroAnimationStyles}</style>
       
@@ -197,7 +181,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
             >
               <Globe className="w-4 h-4 text-[#6443F4]" aria-hidden="true" />
               <span className="text-xs font-semibold tracking-wide text-[#6443F4] uppercase">
-                {destinationCount} Destinations Worldwide
+                {t("destinations.hero.badge", { count: destinationCount })}
               </span>
             </motion.div>
 
@@ -212,19 +196,19 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
                 className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2" 
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                Discover
+                {t("destinations.hero.discover")}
               </span>
               <span 
                 className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                World-Class
+                {t("destinations.hero.worldClass")}
               </span>
               <span 
                 className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight" 
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                Destinations
+                {t("destinations.hero.destinations")}
               </span>
             </motion.h1>
 
@@ -235,7 +219,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
               transition={{ duration: 0.6, delay: 0.4 }}
               data-testid="destinations-page-intro"
             >
-              Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.
+              {t("destinations.hero.description")}
             </motion.p>
 
             <motion.dl 
@@ -245,8 +229,8 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               {[
-                { num: destinationCount.toString(), label: 'DESTINATIONS', icon: MapPin },
-                { num: countryCount.toString(), label: 'COUNTRIES', icon: Globe },
+                { num: destinationCount.toString(), label: t("destinations.stats.destinations"), icon: MapPin },
+                { num: countryCount.toString(), label: t("destinations.stats.countries"), icon: Globe },
               ].map((stat, i) => (
                 <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                   <div className="text-center lg:text-left flex items-center gap-3">
@@ -276,7 +260,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
                   className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-8 py-6 text-base font-medium shadow-lg shadow-purple-500/20 transition-colors duration-200"
                   data-testid="button-explore-destinations"
                 >
-                  Explore All Destinations
+                  {t("destinations.hero.exploreAll")}
                   <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
                 </Button>
               </Link>
@@ -302,6 +286,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
 }
 
 function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -329,7 +314,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
   const current = featuredDestinations[currentIndex];
 
   return (
-    <div className="relative group" role="region" aria-label="Featured destinations carousel" aria-roledescription="carousel">
+    <div className="relative group" role="region" aria-label={t("destinations.carousel.label")} aria-roledescription="carousel">
       <div className="overflow-hidden rounded-3xl shadow-2xl shadow-slate-300/50 dark:shadow-slate-900/60">
         <AnimatePresence mode="wait">
           <motion.div
@@ -341,11 +326,11 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
             className="relative aspect-[2.2/1] w-full"
             role="group"
             aria-roledescription="slide"
-            aria-label={`Slide ${currentIndex + 1} of ${featuredDestinations.length}: ${current.name}`}
+            aria-label={t("destinations.carousel.slideOf", { current: currentIndex + 1, total: featuredDestinations.length, name: current.name })}
           >
             <img
               src={current.heroImage || current.cardImage || `/cards/${current.id}.webp`}
-              alt={`${current.name} travel guide - ${current.cardImageAlt || current.name}`}
+              alt={current.cardImageAlt || t("destinations.card.travelGuideAlt", { name: current.name })}
               className="w-full h-full object-cover"
               width={1200}
               height={550}
@@ -362,7 +347,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                 >
                   <Badge className="mb-4 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white border-0 text-xs px-4 py-1.5 font-medium shadow-lg">
                     <Sparkles className="w-3 h-3 mr-1.5 fill-current" aria-hidden="true" />
-                    {current.moodVibe || "Destination"}
+                    {current.moodVibe || t("destinations.card.destination")}
                   </Badge>
                 </motion.div>
                 <motion.h3
@@ -398,7 +383,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                 >
                   <Link href={`/destinations/${current.id}`}>
                     <Button className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                      Explore {current.name}
+                      {t("destinations.card.explore")} {current.name}
                       <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                     </Button>
                   </Link>
@@ -415,11 +400,11 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
           variant="ghost"
           onClick={goPrev}
           className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md text-white border border-white/25 hover:bg-white/25 transition-all duration-200"
-          aria-label="Previous destination"
+          aria-label={t("destinations.carousel.previous")}
         >
           <ChevronLeft className="w-4 h-4" aria-hidden="true" />
         </Button>
-        <div className="flex gap-1.5 px-2" role="tablist" aria-label="Carousel navigation">
+        <div className="flex gap-1.5 px-2" role="tablist" aria-label={t("destinations.carousel.label")}>
           {featuredDestinations.map((dest, idx) => (
             <button
               key={idx}
@@ -432,7 +417,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
               )}
               role="tab"
               aria-selected={idx === currentIndex}
-              aria-label={`Go to ${dest.name}`}
+              aria-label={t("destinations.carousel.goTo", { name: dest.name })}
               data-testid={`carousel-dot-${idx}`}
             />
           ))}
@@ -442,7 +427,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
           variant="ghost"
           onClick={goNext}
           className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md text-white border border-white/25 hover:bg-white/25 transition-all duration-200"
-          aria-label="Next destination"
+          aria-label={t("destinations.carousel.next")}
         >
           <ChevronRight className="w-4 h-4" aria-hidden="true" />
         </Button>
@@ -452,6 +437,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
 }
 
 function DestinationCard({ destination, index }: { destination: APIDestination; index: number }) {
+  const { t } = useTranslation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
@@ -504,14 +490,14 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
 
           <CardContent className="p-4 bg-white dark:bg-slate-800/80">
             <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
-              {destination.summary || destination.moodTagline || `Explore ${destination.name}`}
+              {destination.summary || destination.moodTagline || t("destinations.card.exploreFallback", { name: destination.name })}
             </p>
             <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {destination.destinationLevel || "City"}
+                {destination.destinationLevel || t("destinations.card.defaultLevel")}
               </span>
               <span className="flex items-center text-[#6443F4] font-medium text-sm transition-all duration-300 group-hover:gap-1.5">
-                Explore
+                {t("destinations.card.explore")}
                 <ArrowRight className="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-0.5 transition-transform duration-300" aria-hidden="true" />
               </span>
             </div>
@@ -523,6 +509,8 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
 }
 
 function DestinationsFAQ() {
+  const { t } = useTranslation();
+  
   return (
     <section 
       className="py-20 px-4 sm:px-6 bg-slate-50 dark:bg-slate-900/70" 
@@ -541,15 +529,15 @@ function DestinationsFAQ() {
             className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3"
             style={{ fontFamily: "'Chillax', var(--font-sans)" }}
           >
-            Frequently Asked Questions
+            {t("destinations.faq.title")}
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Everything you need to know about TRAVI destination guides
+            {t("destinations.faq.subtitle")}
           </p>
         </motion.div>
 
         <div className="space-y-4">
-          {DESTINATIONS_FAQ.map((faq, i) => (
+          {FAQ_KEYS.map((key, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -559,10 +547,10 @@ function DestinationsFAQ() {
               className="bg-white dark:bg-slate-800/80 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/50"
             >
               <h3 className="text-base font-semibold text-slate-900 dark:text-white mb-2">
-                {faq.q}
+                {t(`destinations.faq.q${key}`)}
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                {faq.a}
+                {t(`destinations.faq.a${key}`)}
               </p>
             </motion.div>
           ))}
@@ -573,6 +561,8 @@ function DestinationsFAQ() {
 }
 
 function LoadingState() {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
@@ -583,10 +573,10 @@ function LoadingState() {
           className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
         >
-          Loading Destinations
+          {t("destinations.loading.title")}
         </h2>
         <p className="text-slate-600 dark:text-slate-400">
-          Fetching the latest destination data...
+          {t("destinations.loading.message")}
         </p>
       </div>
     </div>
@@ -594,6 +584,8 @@ function LoadingState() {
 }
 
 function ErrorState({ onRetry }: { onRetry: () => void }) {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
@@ -604,17 +596,17 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
           className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
         >
-          Unable to Load Destinations
+          {t("destinations.error.title")}
         </h2>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
-          We're having trouble loading destination data. Please try again later.
+          {t("destinations.error.message")}
         </p>
         <Button 
           onClick={onRetry}
           className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
         >
           <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
-          Refresh Page
+          {t("destinations.error.refresh")}
         </Button>
       </div>
     </div>
@@ -622,6 +614,8 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 function EmptyState() {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
@@ -632,10 +626,10 @@ function EmptyState() {
           className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
         >
-          No Destinations Available
+          {t("destinations.empty.title")}
         </h2>
         <p className="text-slate-600 dark:text-slate-400">
-          No destinations are currently available. Please check back later.
+          {t("destinations.empty.message")}
         </p>
       </div>
     </div>
@@ -655,6 +649,7 @@ interface PageSeoData {
 }
 
 export default function DestinationsPage() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: destinations, isLoading: destinationsLoading, isError, refetch } = useQuery<APIDestination[]>({
@@ -761,10 +756,10 @@ export default function DestinationsPage() {
                       className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3"
                       style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                     >
-                      Featured Destinations
+                      {t("destinations.sections.featured")}
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 text-base max-w-xl">
-                      Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.
+                      {t("destinations.sections.featuredDesc")}
                     </p>
                   </div>
                   
@@ -773,7 +768,7 @@ export default function DestinationsPage() {
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <Input
                         type="search"
-                        placeholder="Search destinations..."
+                        placeholder={t("destinations.search.placeholder")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-10 pr-4 h-11 w-full sm:w-64 rounded-xl border-slate-200 dark:border-slate-700 focus:border-[#6443F4] focus:ring-[#6443F4]/20"
@@ -797,10 +792,10 @@ export default function DestinationsPage() {
                     className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2"
                     style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   >
-                    All Destinations
+                    {t("destinations.sections.all")}
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400">
-                    {filteredDestinations.length} destinations found
+                    {t("destinations.sections.count", { count: filteredDestinations.length })}
                   </p>
                 </motion.div>
 
@@ -820,10 +815,10 @@ export default function DestinationsPage() {
                       <Globe className="w-8 h-8 text-slate-400" />
                     </div>
                     <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                      No destinations found
+                      {t("destinations.search.noResults")}
                     </h3>
                     <p className="text-slate-600 dark:text-slate-400 mb-4">
-                      Try adjusting your search criteria
+                      {t("destinations.search.tryAdjusting")}
                     </p>
                     <Button
                       variant="outline"
@@ -831,7 +826,7 @@ export default function DestinationsPage() {
                       className="rounded-full"
                       data-testid="button-clear-filters"
                     >
-                      Clear Search
+                      {t("destinations.search.clearSearch")}
                     </Button>
                   </motion.div>
                 )}
