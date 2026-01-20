@@ -432,7 +432,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   for (const searchQuery of searchQueries) {
     const results = await searchAll({
       query: searchQuery,
-      limit: limit * 2,
+      limit: 0, // NO LIMIT - fetch ALL matches
       types,
     });
 
@@ -446,24 +446,25 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
 
   // Check if exact match found
   if (allResults.length > 0) {
+    const totalBeforePagination = allResults.length;
     allResults = applyRankingSignals(allResults, trimmedQuery, sessionId, activeIntent || undefined);
-    allResults = allResults.slice(0, limit);
+    const paginatedResults = allResults.slice(0, limit);
     recordLoopStep('search', 'content_discovery');
 
     searchTelemetry.track({
       query: trimmedQuery,
-      resultCount: allResults.length,
+      resultCount: paginatedResults.length,
       fallback: false,
       responseTimeMs: Date.now() - startTime,
     });
 
     return {
-      results: allResults,
+      results: paginatedResults,
       fallback: false,
       fallbackUsed: false,
       fallbackStage: "exact_match",
       query: trimmedQuery,
-      total: allResults.length,
+      total: allResults.length, // Total BEFORE pagination
       suggestions: [],
       message: generateFallbackMessage("exact_match", trimmedQuery),
       expansion: {
@@ -481,29 +482,30 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   if (spellResult.wasChanged && spellResult.confidence >= 0.6) {
     const fuzzyResults = await searchAll({
       query: spellResult.corrected,
-      limit: limit * 2,
+      limit: 0, // NO LIMIT - fetch ALL matches
       types,
     });
 
     if (fuzzyResults.length > 0) {
       let rankedResults = applyRankingSignals(fuzzyResults, spellResult.corrected, sessionId, activeIntent || undefined);
-      rankedResults = rankedResults.slice(0, limit);
+      const totalFuzzy = rankedResults.length;
+      const paginatedFuzzy = rankedResults.slice(0, limit);
       recordLoopStep('search', 'content_discovery');
 
       searchTelemetry.track({
         query: trimmedQuery,
-        resultCount: rankedResults.length,
+        resultCount: paginatedFuzzy.length,
         fallback: true,
         responseTimeMs: Date.now() - startTime,
       });
 
       return {
-        results: rankedResults,
+        results: paginatedFuzzy,
         fallback: true,
         fallbackUsed: true,
         fallbackStage: "fuzzy_match",
         query: trimmedQuery,
-        total: rankedResults.length,
+        total: totalFuzzy, // Total BEFORE pagination
         suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
         message: generateFallbackMessage("fuzzy_match", trimmedQuery, spellResult.corrected),
         expansion: {
@@ -527,11 +529,9 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   
   if (synonymExpansion.expanded.length > processed.tokens.length) {
     for (const synonymTerm of synonymExpansion.expanded) {
-      if (seenIds.size >= limit * 2) break;
-      
       const synonymResults = await searchAll({
         query: synonymTerm,
-        limit: Math.ceil(limit / 2),
+        limit: 0, // NO LIMIT - fetch ALL matches
         types,
       });
 
@@ -545,23 +545,24 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
 
     if (allResults.length > 0) {
       allResults = applyRankingSignals(allResults, trimmedQuery, sessionId, activeIntent || undefined);
-      allResults = allResults.slice(0, limit);
+      const totalSynonym = allResults.length;
+      const paginatedSynonym = allResults.slice(0, limit);
       recordLoopStep('search', 'content_discovery');
 
       searchTelemetry.track({
         query: trimmedQuery,
-        resultCount: allResults.length,
+        resultCount: paginatedSynonym.length,
         fallback: true,
         responseTimeMs: Date.now() - startTime,
       });
 
       return {
-        results: allResults,
+        results: paginatedSynonym,
         fallback: true,
         fallbackUsed: true,
         fallbackStage: "synonym_match",
         query: trimmedQuery,
-        total: allResults.length,
+        total: totalSynonym, // Total BEFORE pagination
         suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
         message: generateFallbackMessage("synonym_match", trimmedQuery),
         expansion: {

@@ -37,8 +37,9 @@ export interface SearchIndexQuery {
 
 /**
  * Search across destinations table
+ * NO LIMIT - fetch ALL matches
  */
-async function searchDestinations(query: string, limit: number): Promise<SearchResult[]> {
+async function searchDestinations(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
   
   const results = await db
@@ -64,8 +65,7 @@ async function searchDestinations(query: string, limit: number): Promise<SearchR
         )
       )
     )
-    .orderBy(desc(destinations.seoScore))
-    .limit(limit);
+    .orderBy(desc(destinations.seoScore));
 
   return results.map((r, idx) => ({
     type: "destination" as const,
@@ -82,8 +82,9 @@ async function searchDestinations(query: string, limit: number): Promise<SearchR
 
 /**
  * Search across hotels (via contents + hotels tables)
+ * NO LIMIT - fetch ALL matches
  */
-async function searchHotels(query: string, limit: number): Promise<SearchResult[]> {
+async function searchHotels(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
   
   const results = await db
@@ -113,8 +114,7 @@ async function searchHotels(query: string, limit: number): Promise<SearchResult[
         )
       )
     )
-    .orderBy(desc(contents.viewCount))
-    .limit(limit);
+    .orderBy(desc(contents.viewCount));
 
   return results.map((r, idx) => ({
     type: "hotel" as const,
@@ -131,8 +131,9 @@ async function searchHotels(query: string, limit: number): Promise<SearchResult[
 
 /**
  * Search across articles (via contents + articles tables)
+ * NO LIMIT - fetch ALL matches
  */
-async function searchArticles(query: string, limit: number): Promise<SearchResult[]> {
+async function searchArticles(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
   
   const results = await db
@@ -163,8 +164,7 @@ async function searchArticles(query: string, limit: number): Promise<SearchResul
         )
       )
     )
-    .orderBy(desc(contents.publishedAt))
-    .limit(limit);
+    .orderBy(desc(contents.publishedAt));
 
   return results.map((r, idx) => ({
     type: "article" as const,
@@ -181,8 +181,9 @@ async function searchArticles(query: string, limit: number): Promise<SearchResul
 
 /**
  * Search across category pages
+ * NO LIMIT - fetch ALL matches
  */
-async function searchCategories(query: string, limit: number): Promise<SearchResult[]> {
+async function searchCategories(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
   
   const results = await db
@@ -201,8 +202,7 @@ async function searchCategories(query: string, limit: number): Promise<SearchRes
         ilike(categoryPages.metaTitle, searchPattern),
         ilike(categoryPages.metaDescription, searchPattern)
       )
-    )
-    .limit(limit);
+    );
 
   return results.map((r, idx) => ({
     type: "category" as const,
@@ -219,8 +219,9 @@ async function searchCategories(query: string, limit: number): Promise<SearchRes
 
 /**
  * Search across attractions (via contents + attractions tables)
+ * NO LIMIT - fetch ALL matches
  */
-async function searchAttractions(query: string, limit: number): Promise<SearchResult[]> {
+async function searchAttractions(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
   
   const results = await db
@@ -251,8 +252,7 @@ async function searchAttractions(query: string, limit: number): Promise<SearchRe
         )
       )
     )
-    .orderBy(desc(contents.viewCount))
-    .limit(limit);
+    .orderBy(desc(contents.viewCount));
 
   return results.map((r, idx) => ({
     type: "attraction" as const,
@@ -270,8 +270,9 @@ async function searchAttractions(query: string, limit: number): Promise<SearchRe
 /**
  * Search across Tiqets attractions (external attractions data)
  * Searches by city name, title, and meta content
+ * NO LIMIT - fetch ALL matches
  */
-async function searchTiqetsAttractions(query: string, limit: number): Promise<SearchResult[]> {
+async function searchTiqetsAttractions(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
   
   const results = await db
@@ -298,8 +299,7 @@ async function searchTiqetsAttractions(query: string, limit: number): Promise<Se
         ilike(tiqetsAttractions.primaryCategory, searchPattern)
       )
     )
-    .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
-    .limit(limit);
+    .orderBy(desc(tiqetsAttractions.tiqetsReviewCount));
 
   return results.map((r, idx) => {
     const images = r.tiqetsImages as Array<{ medium?: string; large?: string; alt_text?: string }> | null;
@@ -321,43 +321,44 @@ async function searchTiqetsAttractions(query: string, limit: number): Promise<Se
 
 /**
  * Central search function - queries all entity types in parallel
+ * NO LIMITS on individual queries - fetch ALL matches, apply limit ONLY at end
  */
 export async function searchAll(options: SearchIndexQuery): Promise<SearchResult[]> {
-  const { query, limit = 20, types } = options;
+  const { query, limit = 50, types } = options;
   
   if (!query || query.trim().length === 0) {
     return [];
   }
 
   const normalizedQuery = query.trim().toLowerCase();
-  const limitPerType = Math.ceil(limit / 5);
+  // NO limitPerType - each source fetches ALL matching results
 
   const searchPromises: Promise<SearchResult[]>[] = [];
 
   if (!types || types.includes("destination")) {
-    searchPromises.push(searchDestinations(normalizedQuery, limitPerType));
+    searchPromises.push(searchDestinations(normalizedQuery));
   }
   if (!types || types.includes("attraction")) {
-    searchPromises.push(searchAttractions(normalizedQuery, limitPerType));
-    searchPromises.push(searchTiqetsAttractions(normalizedQuery, limitPerType));
+    searchPromises.push(searchAttractions(normalizedQuery));
+    searchPromises.push(searchTiqetsAttractions(normalizedQuery));
   }
   if (!types || types.includes("hotel")) {
-    searchPromises.push(searchHotels(normalizedQuery, limitPerType));
+    searchPromises.push(searchHotels(normalizedQuery));
   }
   if (!types || types.includes("article")) {
-    searchPromises.push(searchArticles(normalizedQuery, limitPerType));
+    searchPromises.push(searchArticles(normalizedQuery));
   }
   if (!types || types.includes("category")) {
-    searchPromises.push(searchCategories(normalizedQuery, limitPerType));
+    searchPromises.push(searchCategories(normalizedQuery));
   }
 
   const results = await Promise.all(searchPromises);
   
-  // Flatten and sort by score
-  return results
-    .flat()
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit);
+  // Flatten, sort by score, THEN apply limit (pagination done by caller)
+  const allResults = results.flat().sort((a, b) => b.score - a.score);
+  
+  // Return total count for pagination
+  return limit > 0 ? allResults.slice(0, limit) : allResults;
 }
 
 /**
