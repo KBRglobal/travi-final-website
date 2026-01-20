@@ -33,6 +33,7 @@ export interface SearchResponse {
   results: SearchResultItem[];
   total: number;
   page: number;
+  pageSize: number;
   totalPages: number;
   query: {
     original: string;
@@ -62,13 +63,14 @@ export const searchEngine = {
     const intent = await intentClassifier.classify(query.q, query.locale);
 
     // 3. Run parallel searches (text + tiqets + destinations + semantic)
+    // NO LIMITS on source queries - fetch ALL matches, paginate AFTER merge
     const [textResults, tiqetsResults, destinationResults, semanticResults] = await Promise.all([
       this.fullTextSearch(processedQuery.normalized, query),
-      this.searchTiqetsAttractions(processedQuery.normalized, query.limit || 20),
-      this.searchDestinations(processedQuery.normalized, query.limit || 20),
+      this.searchTiqetsAttractions(processedQuery.normalized),
+      this.searchDestinations(processedQuery.normalized),
       semanticSearch.search({
         query: query.q,
-        limit: Math.min((query.limit || 20) * 2, 50),
+        limit: 100,
         contentTypes: intent.suggestedFilters.contentTypes || query.type,
         locale: query.locale,
         threshold: 0.3,
@@ -93,11 +95,11 @@ export const searchEngine = {
       intent
     );
 
-    // 5. Apply pagination
+    // 5. Apply pagination AFTER merge (no limits before this point)
     const page = query.page || 1;
-    const limit = query.limit || 20;
-    const start = (page - 1) * limit;
-    const paginatedResults = fusedResults.slice(start, start + limit);
+    const pageSize = query.limit || 50;
+    const start = (page - 1) * pageSize;
+    const paginatedResults = fusedResults.slice(start, start + pageSize);
 
     // 6. Log search for analytics
     await this.logSearch(query, fusedResults.length, Date.now() - startTime);
@@ -106,7 +108,8 @@ export const searchEngine = {
       results: paginatedResults,
       total: fusedResults.length,
       page,
-      totalPages: Math.ceil(fusedResults.length / limit),
+      pageSize,
+      totalPages: Math.ceil(fusedResults.length / pageSize),
       query: {
         original: query.q,
         normalized: processedQuery.normalized,
@@ -170,8 +173,9 @@ export const searchEngine = {
   /**
    * Search Tiqets attractions directly (3400+ attractions across 16 cities)
    * Pure PostgreSQL ILIKE - no OpenAI dependency
+   * NO LIMIT - fetch ALL matches, pagination applied after merge
    */
-  async searchTiqetsAttractions(query: string, limit: number): Promise<SearchResultItem[]> {
+  async searchTiqetsAttractions(query: string): Promise<SearchResultItem[]> {
     try {
       const searchPattern = `%${query}%`;
       
@@ -198,8 +202,7 @@ export const searchEngine = {
             ilike(tiqetsAttractions.primaryCategory, searchPattern)
           )
         )
-        .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
-        .limit(limit);
+        .orderBy(desc(tiqetsAttractions.tiqetsReviewCount));
 
       return results.map((r, idx) => {
         const images = r.tiqetsImages as Array<{ medium?: string; large?: string }> | null;
@@ -225,8 +228,9 @@ export const searchEngine = {
   /**
    * Search destinations directly
    * Pure PostgreSQL ILIKE - no OpenAI dependency
+   * NO LIMIT - fetch ALL matches, pagination applied after merge
    */
-  async searchDestinations(query: string, limit: number): Promise<SearchResultItem[]> {
+  async searchDestinations(query: string): Promise<SearchResultItem[]> {
     try {
       const searchPattern = `%${query}%`;
       
@@ -247,8 +251,7 @@ export const searchEngine = {
             ilike(destinations.slug, searchPattern)
           )
         )
-        .orderBy(desc(destinations.seoScore))
-        .limit(limit);
+        .orderBy(desc(destinations.seoScore));
 
       return results.map((r, idx) => {
         const slug = r.slug?.startsWith('/') ? r.slug : `/destinations/${r.slug}`;
