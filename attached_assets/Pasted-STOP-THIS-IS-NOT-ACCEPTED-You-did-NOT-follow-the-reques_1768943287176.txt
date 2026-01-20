@@ -1,0 +1,61 @@
+STOP. THIS IS NOT ACCEPTED.
+
+You did NOT follow the requested deliverable. You gave a high-level summary with no verifiable inventory, no route list, no file references, no template-by-template zone breakdown, and you even introduced claims like “200+ routes” without proof.
+
+RE-DO THE TASK IN READ-ONLY MODE.
+
+OUTPUT REQUIREMENTS (STRICT):
+Return a single document with 4 sections only:
+
+SECTION A — ROUTES INVENTORY (EXHAUSTIVE)
+List EVERY PUBLIC FRONTEND ROUTE pattern that exists in the app (from client routing).
+For each route include:
+- Route pattern
+- Component file path
+- Whether it’s static / dynamic
+- Notes if it’s destination-scoped or guide-scoped
+Exclude ONLY: Tiqets attractions DETAIL pages (but keep attractions index and city listing if they exist).
+
+SECTION B — TEMPLATE ZONE MAP (EXHAUSTIVE)
+For EACH template/component in Section A, list ALL content zones, explicitly:
+- Hero (title/subtitle/description/badges/CTA)
+- Body sections (each block/section)
+- Cards (title/description/labels)
+- FAQs
+- Empty states
+- Errors
+- SEOHead fields
+- Images (hero/gallery/cards/OG)
+- alt/title/captions
+Do not skip anything. If you are unsure, open the component and enumerate what renders.
+
+SECTION C — SOURCE OF TRUTH PER ZONE
+For each zone from Section B, specify exactly:
+- Source type: hardcoded | i18next key | DB/API field | derived (computed)
+- The exact key/field name (e.g. page_seo.metaTitle, destinationsIndexConfig.heroTitle, t('search.placeholder'))
+- Fallback behavior (requested locale → en → empty) if applicable
+
+SECTION D — GAP LIST (ACTIONABLE, FACTUAL)
+Only facts:
+- Which zones are NOT localizable today and why (missing API fields, hardcoded strings, no locale param, etc.)
+- Which zones already support locale (and how)
+
+HARD RULES:
+- NO recommendations.
+- NO phases.
+- NO “high priority/medium priority”.
+- NO vague claims (“many pages”, “200 routes”).
+- This is an inventory and mapping only.
+
+PROCESS RULE:
+You must build Sections A–C directly from the codebase:
+- client/src/App.tsx and/or route registry files
+- the actual component files referenced by routes
+Use grep/search across client/src for routes and SEOHead usage as needed.
+
+DELIVERABLE COMPLETENESS CHECK:
+At the end, include a line:
+“COVERAGE: X routes listed, Y templates mapped, Z zones enumerated”
+where X/Y/Z are actual counts from your output.
+
+NOW DO IT AGAIN, PROPERLY.
