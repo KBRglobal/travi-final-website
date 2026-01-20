@@ -122,7 +122,7 @@ export default function OctypoDashboard() {
 
   const generateMutation = useMutation({
     mutationFn: async (attractionId: number) => {
-      return apiRequest(`/api/octypo/generate/${attractionId}`, { method: "POST" });
+      return apiRequest(`/api/octypo/generate/${attractionId}`, { method: "POST" }) as Promise<{ qualityScore?: number }>;
     },
     onSuccess: (data) => {
       toast({

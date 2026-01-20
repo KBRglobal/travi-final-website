@@ -1695,7 +1695,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             metaTitle: metaTitle !== undefined ? metaTitle : existing.metaTitle,
             metaDescription: metaDescription !== undefined ? metaDescription : existing.metaDescription,
             updatedAt: new Date(),
-          })
+          } as any)
           .where(eq(destinations.id, slug))
           .returning();
         
@@ -1759,7 +1759,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             internalLinks: 0,
             externalLinks: 0,
             h2Count: 0,
-          })
+          } as any)
           .returning();
         
         logger.info(`Created new destination: ${name} (${slug})`);

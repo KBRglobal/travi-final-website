@@ -798,7 +798,7 @@ export const autoRss = {
             sourceDescription: item.contentSnippet || item.content || item.description || '',
             pubDate: item.pubDate ? new Date(item.pubDate) : null,
             isUsedInMerge: false,
-          });
+          } as any);
 
           imported++;
           console.log(`[AutoPilot/RSS] Imported: ${item.title?.substring(0, 50)}...`);
@@ -818,7 +818,7 @@ export const autoRss = {
       try {
         const now = new Date();
         const result = await db.update(rssFeeds)
-          .set({ lastFetchedAt: now })
+          .set({ lastFetchedAt: now } as any)
           .where(eq(rssFeeds.id, feedId))
           .returning({ id: rssFeeds.id, lastFetchedAt: rssFeeds.lastFetchedAt });
         console.log(`[AutoPilot/RSS] Updated lastFetchedAt for feed ${feed.name}:`, result);
@@ -856,7 +856,7 @@ export const autoRss = {
       topic: clusterTopic,
       status: 'pending',
       articleCount: 0,
-    }).returning();
+    } as any).returning();
 
     console.log(`[AutoPilot/RSS] Created cluster for feed: ${feed.name}`);
     return newCluster;
