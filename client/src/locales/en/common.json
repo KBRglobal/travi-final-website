@@ -216,7 +216,8 @@
     "newsletterDescription": "Get the latest Dubai travel tips and updates.",
     "emailPlaceholder": "Enter your email",
     "allRightsReserved": "All rights reserved.",
-    "copyright": "All rights reserved"
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {

@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { key: "nav.destinations", href: "/destinations" },
   { key: "nav.attractions", href: "/attractions" },
   { key: "nav.guides", href: "/guides" },
-  { key: "nav.articles", href: "/news" },
+  { key: "nav.news", href: "/news" },
 ];
 
 const iconMap: Record<string, LucideIcon> = {
@@ -46,7 +46,7 @@ const fallbackNavLinks = [
   { href: "/attractions", key: "nav.attractions", icon: "Camera" },
   { href: "/districts", key: "nav.districts", icon: "MapPin" },
   { href: "/shopping", key: "nav.shopping", icon: "ShoppingBag" },
-  { href: "/news", key: "nav.articles", icon: "Newspaper" },
+  { href: "/news", key: "nav.news", icon: "Newspaper" },
 ];
 
 interface PublicNavProps {

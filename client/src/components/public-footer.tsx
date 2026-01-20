@@ -34,7 +34,7 @@ export function PublicFooter() {
       dir={isRTL ? "rtl" : "ltr"} 
       data-testid="footer" 
       role="contentinfo" 
-      aria-label={t("footer.ariaLabel", "Site footer")}
+      aria-label={t("footer.ariaLabel")}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
@@ -43,7 +43,7 @@ export function PublicFooter() {
             <h2 
               className="text-2xl sm:text-3xl lg:text-3xl font-bold text-foreground leading-tight"
               style={{ fontFamily: "'Chillax', var(--font-sans)", fontWeight: 700, lineHeight: 1.2 }}
-            >{t("footer.tagline", "Your Trusted Travel Resource")}</h2>
+            >{t("footer.tagline")}</h2>
             <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-sm">
               {t("footer.aboutText")}
             </p>
@@ -73,7 +73,7 @@ export function PublicFooter() {
 
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
-                  {t("footer.travel", "Travel")}
+                  {t("footer.travel")}
                 </h3>
                 <ul className="space-y-3" role="list">
                   {travelLinks.map((link) => (
@@ -92,7 +92,7 @@ export function PublicFooter() {
 
               <div>
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
-                  {t("footer.company", "Company")}
+                  {t("footer.company")}
                 </h3>
                 <ul className="space-y-3" role="list">
                   {companyLinks.map((link) => (
@@ -112,7 +112,7 @@ export function PublicFooter() {
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer text-start"
                       data-testid="button-cookie-settings"
                     >
-                      {t("footer.cookieSettings", "Cookie Settings")}
+                      {t("footer.cookieSettings")}
                     </button>
                   </li>
                 </ul>
@@ -125,11 +125,12 @@ export function PublicFooter() {
       <div className="border-t border-border/20 dark:border-border/30 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-muted-foreground">
-            <span>© {currentYear} TRAVI. {t("footer.allRightsReserved")}</span>
+            <span>{t("footer.copyright", { year: currentYear, brand: "TRAVI" })}</span>
             <a 
               href="mailto:info@travi.world" 
               className="hover:text-foreground transition-colors duration-200"
               data-testid="link-footer-email"
+              aria-label={t("footer.emailAriaLabel")}
             >
               info@travi.world
             </a>
