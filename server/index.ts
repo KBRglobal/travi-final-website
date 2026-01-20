@@ -20,6 +20,7 @@ import { db } from "./db";
 import { destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { redirectMiddleware } from "./middleware/redirects";
+import { localeMiddleware } from "./middleware/locale";
 
 // Validate environment variables before starting the application
 validateRequiredEnvVars();
@@ -116,6 +117,11 @@ app.use(express.urlencoded({
 
 // Sanitize incoming request data (remove null bytes, control chars)
 app.use(sanitizeInput);
+
+// Genesis G1: Locale resolution middleware
+// Extracts locale from URL prefix, validates, and sets req.locale + headers
+app.use(localeMiddleware);
+console.log('[Locale] Locale resolution middleware registered');
 
 // SEO Fix: Redirect unsupported locale paths to prevent duplicate content
 // /sv/* is not a supported route prefix (only in i18n translations, not routing)

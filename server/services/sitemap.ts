@@ -9,8 +9,27 @@ const BASE_URL = "https://travi.world";
 // ACTIVE LANGUAGES FILTER
 // Only generate sitemaps for languages that are actually live
 // Update this array when new translations go live
+// Genesis G1: All 17 locales enabled for infrastructure
 // ===========================================
-const ACTIVE_LOCALES: Locale[] = ["en"];
+const ACTIVE_LOCALES: Locale[] = [
+  "en",  // English - primary
+  "ar",  // Arabic
+  "hi",  // Hindi
+  "zh",  // Chinese
+  "ru",  // Russian
+  "ur",  // Urdu
+  "fr",  // French
+  "de",  // German
+  "fa",  // Persian
+  "bn",  // Bengali
+  "fil", // Filipino
+  "es",  // Spanish
+  "tr",  // Turkish
+  "it",  // Italian
+  "ja",  // Japanese
+  "ko",  // Korean
+  "he",  // Hebrew
+];
 
 // Helper to check if a locale is active
 function isLocaleActive(locale: Locale): boolean {
