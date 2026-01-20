@@ -1,0 +1,82 @@
+TASK: Full Frontend Content Mapping for Localization (READ-ONLY)
+
+GOAL:
+Create a COMPLETE, EXHAUSTIVE inventory of ALL frontend content that must be localized.
+This is NOT implementation. This is analysis + documentation only.
+
+SCOPE (IMPORTANT):
+- Include ALL frontend pages, templates, and internal pages
+- Include dynamic pages (destinations, guides, travel styles, news, search, etc.)
+- Include internal pages per destination and per guide
+- EXCLUDE Tiqets attractions detail pages for now
+- INCLUDE all content blocks, FAQs, SEO, images, alt text, captions
+- INCLUDE static + dynamic content
+- INCLUDE RTL considerations
+- DO NOT translate anything
+- DO NOT change code
+- DO NOT build schemas yet
+
+DELIVERABLE:
+A structured document that answers:
+
+1) PAGE & TEMPLATE INVENTORY
+For each frontend route/template:
+- Route pattern (e.g. /destinations/:slug)
+- Template/component file
+- Instances count (how many pages use this template)
+- Whether content is static or DB-driven
+
+2) CONTENT ZONES PER TEMPLATE
+For EACH template, list ALL zones explicitly:
+Example:
+- Hero (title, subtitle, CTA, badges)
+- Intro / overview
+- Dynamic sections
+- FAQs
+- Related content
+- SEO (title, meta, OG)
+- Images (hero, gallery, OG)
+- Alt text / captions
+
+3) TRANSLATABILITY AUDIT
+For EACH zone:
+- Is it currently localized? (YES / PARTIAL / NO)
+- Where does the data come from? (hardcoded / DB / config / JSON)
+- Known issues (e.g. “FAQ not translated”, “only hero translated”)
+
+4) IMAGE & MEDIA AUDIT
+For EACH template:
+- What images exist?
+- Are images locale-aware today? (YES / NO)
+- Is alt text localized? (YES / NO)
+- Is filename / semantic meaning locale-dependent?
+
+5) OUTPUT FORMAT
+Return a clear, hierarchical structure:
+- By template
+- Then by zones
+- With clear bullet points
+No opinions, no solutions, no code.
+
+IMPORTANT:
+This mapping will be used to design FULL localization (30 languages, RTL, SEO-perfect).
+Assume zero trust in existing translation coverage.
+Be paranoid and exhaustive.
+
+START WITH:
+Homepage
+Destinations Index
+Destination Page
+Guides Index
+Guide Page
+Travel Style Page
+Attractions Index
+Search Page
+News Page
+Static Pages (About, Contact, Legal)
+Global UI (header, footer, empty states)
+
+END RESULT:
+A definitive “localization surface map” of the entire frontend.
+
+BEGIN.
