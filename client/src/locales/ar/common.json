@@ -1,15 +1,25 @@
 {
   "nav": {
     "home": "الرئيسية",
+    "destinations": "الوجهات",
     "attractions": "معالم سياحية",
     "hotels": "فنادق",
+    "guides": "أدلة السفر",
     "dining": "مطاعم",
     "districts": "أحياء",
-    "articles": "أخبار ومقالات",
+    "articles": "أخبار",
+    "news": "أخبار",
+    "shopping": "تسوق",
     "realEstate": "عقارات",
     "events": "فعاليات",
     "search": "بحث",
-    "language": "اللغة"
+    "language": "اللغة",
+    "mainNavigation": "القائمة الرئيسية",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "logoAlt": "ترافي - دليل السفر",
+    "followInstagram": "تابع ترافي على انستغرام",
+    "followTikTok": "تابع ترافي على تيك توك"
   },
   "common": {
     "readMore": "اقرأ المزيد",
@@ -37,15 +47,39 @@
   },
   "home": {
     "hero": {
-      "title": "اكتشف دبي",
-      "subtitle": "دليلك الشامل لمدينة الذهب",
-      "searchPlaceholder": "ابحث عن معالم، فنادق، مطاعم..."
+      "title": "استكشف العالم مع TRAVI",
+      "subtitle": "دليلك الشامل للسفر إلى 17 وجهة حول العالم",
+      "searchPlaceholder": "ابحث عن معالم، فنادق، مطاعم...",
+      "cta": "ابدأ الاستكشاف"
     },
     "featured": "مميز",
     "trending": "الأكثر رواجاً",
     "topAttractions": "أفضل المعالم",
     "bestHotels": "أفضل الفنادق",
-    "latestNews": "آخر الأخبار والمقالات"
+    "latestNews": "آخر الأخبار والمقالات",
+    "sections": {
+      "destinations": "استكشف الوجهات",
+      "destinationsDesc": "اكتشف مجموعتنا المختارة من وجهات السفر العالمية",
+      "categories": "تصفح حسب الفئة",
+      "categoriesDesc": "اعثر على ما تبحث عنه بالضبط",
+      "experiences": "السفر حسب التجربة",
+      "experiencesDesc": "اختر أسلوب سفرك",
+      "faq": "الأسئلة الشائعة",
+      "faqDesc": "كل ما تحتاج معرفته عن TRAVI",
+      "regions": "استكشف حسب المنطقة",
+      "newsletter": "ابقَ على اطلاع"
+    },
+    "cta": {
+      "exploreDestinations": "استكشف جميع الوجهات",
+      "viewAll": "عرض الكل",
+      "startExploring": "ابدأ الاستكشاف",
+      "planTrip": "خطط لرحلتك"
+    },
+    "stats": {
+      "destinations": "وجهة",
+      "attractions": "معلم سياحي",
+      "languages": "لغة"
+    }
   },
   "attractions": {
     "title": "معالم دبي السياحية",
@@ -148,7 +182,7 @@
   "footer": {
     "about": "عن ترافي",
     "aboutTravi": "عن ترافي",
-    "aboutText": "دليلك الشامل لاكتشاف دبي - من المعالم الشهيرة إلى الأماكن المخفية.",
+    "aboutText": "معلومات سفر شاملة لـ 17 وجهة حول العالم.",
     "aboutUs": "من نحن",
     "quickLinks": "روابط سريعة",
     "legal": "قانوني",
@@ -160,6 +194,14 @@
     "contactUs": "تواصل معنا",
     "followUs": "تابعنا",
     "explore": "استكشف",
+    "travel": "السفر",
+    "company": "الشركة",
+    "allGuides": "جميع الأدلة",
+    "cookies": "ملفات تعريف الارتباط",
+    "security": "الأمان",
+    "cookieSettings": "إعدادات ملفات تعريف الارتباط",
+    "tagline": "مصدرك الموثوق للسفر",
+    "ariaLabel": "تذييل الموقع",
     "featuredGuides": "أدلة مميزة",
     "tools": "أدوات",
     "currencyConverter": "محول العملات",

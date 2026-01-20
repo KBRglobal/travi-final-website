@@ -1,15 +1,25 @@
 {
   "nav": {
     "home": "בית",
+    "destinations": "יעדים",
     "attractions": "אטרקציות",
     "hotels": "מלונות",
+    "guides": "מדריכים",
     "dining": "מסעדות",
     "districts": "שכונות",
-    "articles": "חדשות ומדריכים",
+    "articles": "חדשות",
+    "news": "חדשות",
+    "shopping": "קניות",
     "realEstate": "נדל\"ן",
     "events": "אירועים",
     "search": "חיפוש",
-    "language": "שפה"
+    "language": "שפה",
+    "mainNavigation": "ניווט ראשי",
+    "openMenu": "פתח תפריט",
+    "closeMenu": "סגור תפריט",
+    "logoAlt": "TRAVI - מדריך נסיעות",
+    "followInstagram": "עקבו אחרי TRAVI באינסטגרם",
+    "followTikTok": "עקבו אחרי TRAVI בטיקטוק"
   },
   "common": {
     "readMore": "קרא עוד",
@@ -37,15 +47,39 @@
   },
   "home": {
     "hero": {
-      "title": "גלה את דובאי",
-      "subtitle": "המדריך המלא שלך לעיר הזהב",
-      "searchPlaceholder": "חפש אטרקציות, מלונות, מסעדות..."
+      "title": "גלה את העולם עם TRAVI",
+      "subtitle": "המדריך המקיף שלך ל-17 יעדים ברחבי העולם",
+      "searchPlaceholder": "חפש אטרקציות, מלונות, מסעדות...",
+      "cta": "התחל לגלות"
     },
     "featured": "מומלצים",
     "trending": "פופולרי עכשיו",
     "topAttractions": "אטרקציות מובילות",
     "bestHotels": "המלונות הטובים ביותר",
-    "latestNews": "חדשות ומדריכים אחרונים"
+    "latestNews": "חדשות ומדריכים אחרונים",
+    "sections": {
+      "destinations": "גלה יעדים",
+      "destinationsDesc": "גלה את אוסף יעדי הנסיעות העולמיים שלנו",
+      "categories": "עיין לפי קטגוריה",
+      "categoriesDesc": "מצא בדיוק את מה שאתה מחפש",
+      "experiences": "נסיעות לפי חוויה",
+      "experiencesDesc": "בחר את סגנון הנסיעה שלך",
+      "faq": "שאלות נפוצות",
+      "faqDesc": "כל מה שצריך לדעת על TRAVI",
+      "regions": "גלה לפי אזור",
+      "newsletter": "הישאר מעודכן"
+    },
+    "cta": {
+      "exploreDestinations": "גלה את כל היעדים",
+      "viewAll": "צפה בהכל",
+      "startExploring": "התחל לגלות",
+      "planTrip": "תכנן את הטיול שלך"
+    },
+    "stats": {
+      "destinations": "יעדים",
+      "attractions": "אטרקציות",
+      "languages": "שפות"
+    }
   },
   "attractions": {
     "title": "אטרקציות בדובאי",
@@ -147,21 +181,31 @@
   },
   "footer": {
     "about": "אודות Travi",
-    "aboutText": "המדריך המלא שלך לחוויית דובאי - מאטרקציות איקוניות ועד מקומות נסתרים.",
+    "aboutTravi": "אודות Travi",
+    "aboutText": "מידע מקיף על נסיעות ל-17 יעדים ברחבי העולם.",
+    "aboutUs": "אודותינו",
     "quickLinks": "קישורים מהירים",
     "legal": "משפטי",
     "privacy": "מדיניות פרטיות",
+    "privacyPolicy": "מדיניות פרטיות",
     "terms": "תנאי שימוש",
+    "termsOfService": "תנאי שירות",
     "contact": "צור קשר",
+    "contactUs": "צור קשר",
     "followUs": "עקבו אחרינו",
-    "newsletter": {
-      "title": "הישאר מעודכן",
-      "subtitle": "קבל את טיפי הנסיעה האחרונים לדובאי ומבצעים בלעדיים",
-      "placeholder": "הכנס את האימייל שלך",
-      "button": "הירשם",
-      "success": "תודה שנרשמת!",
-      "error": "משהו השתבש. נסה שוב."
-    },
+    "explore": "גלה",
+    "travel": "נסיעות",
+    "company": "חברה",
+    "allGuides": "כל המדריכים",
+    "cookies": "עוגיות",
+    "security": "אבטחה",
+    "cookieSettings": "הגדרות עוגיות",
+    "tagline": "מקור הנסיעות המהימן שלך",
+    "ariaLabel": "כותרת תחתונה של האתר",
+    "newsletter": "הישאר מעודכן",
+    "newsletterDescription": "קבל את טיפי הנסיעה האחרונים לדובאי ומבצעים בלעדיים",
+    "emailPlaceholder": "הכנס את האימייל שלך",
+    "allRightsReserved": "כל הזכויות שמורות.",
     "copyright": "כל הזכויות שמורות"
   },
   "errors": {

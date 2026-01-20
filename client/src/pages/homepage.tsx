@@ -22,6 +22,8 @@ import { LiveChatWidget } from "@/components/live-chat-widget";
 import { NewsletterSection } from "@/components/homepage/NewsletterSection";
 import { useQuery } from "@tanstack/react-query";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/lib/i18n/LocaleRouter";
 
 import { Logo, Mascot } from "@/components/logo";
 
@@ -325,6 +327,7 @@ interface HomepageConfig {
 // LOADING COMPONENT
 // ============================================
 function LoadingScreen() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 dark:from-slate-900 dark:to-slate-950">
       <style>{heroAnimationStyles}</style>
@@ -332,7 +335,7 @@ function LoadingScreen() {
         <div className="w-24 h-24 mx-auto mb-4 loading-pulse">
           <Mascot size={96} variant="light-bg" />
         </div>
-        <p className="text-slate-600 dark:text-slate-400 font-medium">Loading amazing destinations...</p>
+        <p className="text-slate-600 dark:text-slate-400 font-medium">{t("common.loading")}</p>
       </div>
     </div>
   );
@@ -379,6 +382,7 @@ function AnimatedSection({ children, className, delay = 0, ariaLabel }: { childr
 // HERO SECTION WITH OPTIMIZED SCHEMA
 // ============================================
 function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: number; onIndexChange: (idx: number) => void; siteStats?: { destinations: number; attractions: number } }) {
+  const { t } = useTranslation();
   const [isAnimating, setIsAnimating] = useState(false);
   const dest = HERO_DESTINATIONS[currentIndex];
 
@@ -591,9 +595,9 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
           {/* Stats */}
           <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8">
             {[
-              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: 'ATTRACTIONS', srLabel: `Over ${(siteStats?.attractions || 3000).toLocaleString()} attractions covered` },
-              { num: String(siteStats?.destinations || 17), label: 'DESTINATIONS', srLabel: `${siteStats?.destinations || 17} destinations worldwide` },
-              { num: '17+', label: 'LANGUAGES', srLabel: 'Multilingual platform with additional languages rolling out' }
+              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: t("home.stats.attractions"), srLabel: `Over ${(siteStats?.attractions || 3000).toLocaleString()} attractions covered` },
+              { num: String(siteStats?.destinations || 17), label: t("home.stats.destinations"), srLabel: `${siteStats?.destinations || 17} destinations worldwide` },
+              { num: '17+', label: t("home.stats.languages"), srLabel: 'Multilingual platform with additional languages rolling out' }
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                 <div className="text-center lg:text-left">
@@ -615,7 +619,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
                 className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                 aria-describedby="hero-description"
               >
-                Explore Destinations
+                {t("home.cta.exploreDestinations")}
                 <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
               </Button>
             </Link>
@@ -624,7 +628,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
                 variant="outline" 
                 className="rounded-full bg-white hover:bg-slate-50 text-slate-700 px-8 py-6 text-base font-medium border-2 border-slate-200 hover:border-slate-300 transition-colors duration-200"
               >
-                View Guides
+                {t("common.viewAll")}
               </Button>
             </Link>
           </div>
@@ -866,6 +870,7 @@ function CategoriesSection() {
 // FAQ SECTION - OPTIMIZED FOR FEATURED SNIPPETS
 // ============================================
 function FAQSection() {
+  const { t } = useTranslation();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqSchema = JSON.stringify({
@@ -890,10 +895,10 @@ function FAQSection() {
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
-            Frequently Asked Questions
+            {t("home.sections.faq")}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
-            Everything you need to know about TRAVI World
+            {t("home.sections.faqDesc")}
           </p>
         </div>
 
@@ -958,6 +963,8 @@ export default function Homepage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
+  const { t } = useTranslation();
+  const { locale, isRTL, localePath } = useLocale();
 
   const { data: config, isLoading } = useQuery<HomepageConfig>({
     queryKey: ['/api/public/homepage-config'],
