@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { 
   MapPin, ArrowRight, Compass, Building2, Heart, BookOpen
@@ -91,6 +92,7 @@ interface DestinationsHeroProps {
 }
 
 export function DestinationsHero({ destinationCount, regionCount }: DestinationsHeroProps) {
+  const { t } = useTranslation();
   const shouldAnimate = usePreferredMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -103,20 +105,23 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
     if (heroConfig?.heroSlides && heroConfig.heroSlides.length > 0) {
       return heroConfig.heroSlides
         .filter((slide) => slide.filename && slide.isActive)
-        .map((slide) => ({
-          id: slide.destination?.id || slide.destinationId,
-          name: slide.destination?.name || "Destination",
-          slug: slide.destination?.slug || "",
-          country: slide.destination?.country || "",
-          heroImage: slide.filename,
-          alt: slide.alt || `${slide.destination?.name || "Destination"} travel guide`,
-          cityType: slide.cityType || "",
-          travelStyle: slide.travelStyle || "",
-          secondaryBadge: slide.secondaryBadge || "",
-        }));
+        .map((slide) => {
+          const destName = slide.destination?.name || t("destinations.card.destination");
+          return {
+            id: slide.destination?.id || slide.destinationId,
+            name: destName,
+            slug: slide.destination?.slug || "",
+            country: slide.destination?.country || "",
+            heroImage: slide.filename,
+            alt: slide.alt || t("destinations.card.travelGuideAlt", { name: destName }),
+            cityType: slide.cityType || "",
+            travelStyle: slide.travelStyle || "",
+            secondaryBadge: slide.secondaryBadge || "",
+          };
+        });
     }
     return [];
-  }, [heroConfig]);
+  }, [heroConfig, t]);
   
   // Database-driven only - no fallback text per CMS contract
   const heroTitle = heroConfig?.heroTitle ?? null;
@@ -197,7 +202,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                   <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                 </div>
                 <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-destinations-count">
-                  Trusted by <span className="text-[#6443F4]">{destinationCount}</span> destinations worldwide
+                  {t("destinations.hero.trustedBy", { count: destinationCount })}
                 </span>
               </div>
             </motion.div>
@@ -259,7 +264,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               <Link href="/travel-guides">
                 <Button variant="outline" className="rounded-full px-6 py-6 text-base font-semibold border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                   <BookOpen className="w-5 h-5 mr-2" />
-                  Travel Guides
+                  {t("destinations.hero.travelGuides")}
                 </Button>
               </Link>
             </motion.div>
@@ -272,17 +277,17 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
             >
               <div className="text-center">
                 <div className="text-3xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{destinationCount}</div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">Destinations</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t("destinations.stats.destinations")}</div>
               </div>
               <div className="w-px h-10 bg-slate-200 dark:bg-slate-700" />
               <div className="text-center">
                 <div className="text-3xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{regionCount}</div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">Regions</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t("destinations.stats.regions")}</div>
               </div>
               <div className="w-px h-10 bg-slate-200 dark:bg-slate-700" />
               <div className="text-center">
                 <div className="text-3xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>17</div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">Languages</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">{t("destinations.stats.languages")}</div>
               </div>
             </motion.div>
           </div>
@@ -356,12 +361,12 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                       
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-white/60 text-sm">Explore</span>
+                          <span className="text-white/60 text-sm">{t("destinations.hero.explore")}</span>
                           <span className="text-2xl font-bold text-white ml-2">{dest.name}</span>
                         </div>
                         <Link href={`/destinations/${dest.slug}`}>
                           <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
-                            Discover
+                            {t("destinations.hero.discoverButton")}
                             <ArrowRight className="w-5 h-5" />
                           </button>
                         </Link>
@@ -423,10 +428,10 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                   <div className="text-center p-8">
                     <Compass className="w-16 h-16 text-[#6443F4]/50 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-400 mb-2">
-                      Explore Destinations
+                      {t("destinations.hero.explorePlaceholder")}
                     </h3>
                     <p className="text-slate-500 dark:text-slate-500 max-w-xs">
-                      Browse our collection of handpicked travel destinations below
+                      {t("destinations.hero.browseCollection")}
                     </p>
                   </div>
                 </div>
