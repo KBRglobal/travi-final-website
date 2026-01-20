@@ -1,0 +1,51 @@
+MODE: PLAN (NO CODE YET)
+
+TASK: Fix Attractions City Pages 404 + Remove Dubai Bias
+
+CONTEXT:
+- /attractions (main page) works.
+- City category pages like /attractions/paris, /attractions/dubai, /attractions/london currently return 404.
+- There is at least one button on /attractions (e.g., "Things to Do in Paris") that links to /attractions/paris, causing broken internal navigation.
+- We must show ONLY real data (no fake numbers, no placeholders).
+- We must NOT turn the product into a “Dubai site”. Global-first.
+
+GOAL:
+Decide and implement the correct architecture for city-level attractions pages so:
+1) No internal links point to 404.
+2) City-level pages exist and display real, query-driven data OR (if intentionally not supported) all links are removed/redirected safely.
+3) No Dubai-hardcoded routing or copy.
+
+DELIVERABLE NOW (PLAN ONLY):
+Return a concrete plan with:
+A) Truth table: which city-level route pattern is the intended one in the codebase:
+   - Option 1: /attractions/[city]
+   - Option 2: /attractions/list/[city]
+   - Option 3: another existing pattern
+Provide evidence from current routes configuration.
+
+B) Decision:
+Choose ONE canonical route pattern for city pages and justify it based on existing data sources (e.g., tiqetsAttractions, seoSlug, cityName, published status).
+
+C) Fix Strategy:
+- If city pages SHOULD exist:
+  1) Define route + page component location
+  2) Define API query contract (input slug -> cityName mapping, published-only)
+  3) Define empty-state behavior (real “no results”, not placeholders)
+  4) Define internal link updates (all buttons/cards/chips must link to canonical route)
+  5) Define redirect strategy from legacy paths (301 where applicable)
+
+- If city pages should NOT exist (not in scope):
+  1) Identify every UI element linking to /attractions/[city] (buttons, cards, footer, anywhere)
+  2) Remove those links or redirect them to /attractions with a query filter (real filtering)
+  3) Ensure zero 404 from internal navigation
+
+D) Verification checklist:
+- Confirm clicking “Things to Do in Paris” does NOT lead to 404.
+- Confirm canonical city page (or filtered /attractions) returns HTTP 200.
+- Confirm page displays real attractions (published only).
+- Confirm no “Search Dubai” or Dubai-specific hardcoding appears in Attractions flows.
+
+IMPORTANT:
+- Do not write code yet.
+- Do not change unrelated areas.
+- Output the plan in numbered steps with exact file paths you will touch in BUILD mode.

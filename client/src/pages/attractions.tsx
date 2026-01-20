@@ -718,7 +718,7 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.6 }}
                     >
-                      <Link href="/attractions/paris">
+                      <Link href="/attractions/list/paris">
                         <Button 
                           className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                           data-testid="button-explore-paris"
@@ -1264,7 +1264,7 @@ export default function Attractions() {
                   Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/attractions/paris">
+                  <Link href="/attractions/list/paris">
                     <Button
                       size="lg"
                       className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold px-8"
@@ -1274,7 +1274,7 @@ export default function Attractions() {
                       Paris Attractions
                     </Button>
                   </Link>
-                  <Link href="/attractions/rome">
+                  <Link href="/attractions/list/rome">
                     <Button
                       size="lg"
                       variant="outline"
