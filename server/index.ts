@@ -19,6 +19,7 @@ import { registerOctypoJobHandler } from "./octypo/job-handler";
 import { db } from "./db";
 import { destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { redirectMiddleware } from "./middleware/redirects";
 
 // Validate environment variables before starting the application
 validateRequiredEnvVars();
@@ -84,6 +85,12 @@ app.use(compression({
     return compression.filter(req, res);
   }
 }));
+
+// 301 Redirects Middleware - handles SEO redirects before routes
+// Redirects: /adventure, /family, /romance, /privacy-policy, www to non-www, /search?q=* to /search
+app.use(redirectMiddleware);
+console.log('[Redirects] 301 redirect middleware registered');
+
 const httpServer = createServer(app);
 
 declare module "http" {
