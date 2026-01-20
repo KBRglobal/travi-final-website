@@ -146,14 +146,6 @@ function GuideCityRedirect({ params }: { params: { city: string } }) {
   return <GuideDetailPage />;
 }
 
-// Smart redirect for /attractions/:slug - redirects to /attractions/list/:city if slug is valid city
-function AttractionsSlugRedirect({ params }: { params: { slug: string } }) {
-  if (isValidCity(params.slug)) {
-    return <Redirect to={`/attractions/list/${params.slug}`} />;
-  }
-  return <PublicContentViewer />;
-}
-
 const publicRoutes = [
   { path: "/login", component: Login },
   { path: "/access-denied", component: AccessDenied },
