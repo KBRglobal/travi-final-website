@@ -390,6 +390,49 @@ export async function getPopularDestinations(limit: number = 6): Promise<SearchR
 }
 
 /**
+ * Get popular search suggestions from various sources
+ */
+export async function getPopularSearchSuggestions(limit: number = 10): Promise<string[]> {
+  const suggestions: string[] = [];
+  
+  // 1. Get top destinations
+  const topDestinations = await db
+    .select({ name: destinations.name })
+    .from(destinations)
+    .where(eq(destinations.isActive, true))
+    .orderBy(desc(destinations.seoScore))
+    .limit(Math.ceil(limit / 2));
+    
+  suggestions.push(...topDestinations.map(d => d.name));
+  
+  // 2. Get popular Tiqets attractions if we need more
+  if (suggestions.length < limit) {
+    const topAttractions = await db
+      .select({ title: tiqetsAttractions.title })
+      .from(tiqetsAttractions)
+      .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
+      .limit(limit - suggestions.length);
+      
+    suggestions.push(...topAttractions.map(a => a.title));
+  }
+  
+  // 3. Get popular articles if still need more
+  if (suggestions.length < limit) {
+    const topArticles = await db
+      .select({ title: contents.title })
+      .from(contents)
+      .where(and(eq(contents.type, "article"), eq(contents.status, "published")))
+      .orderBy(desc(contents.viewCount))
+      .limit(limit - suggestions.length);
+      
+    suggestions.push(...topArticles.map(a => a.title));
+  }
+  
+  // Dedupe and limit
+  return [...new Set(suggestions)].slice(0, limit);
+}
+
+/**
  * Get recent articles for fallback
  */
 export async function getRecentArticles(limit: number = 4): Promise<SearchResult[]> {

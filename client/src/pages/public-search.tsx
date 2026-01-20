@@ -135,7 +135,7 @@ function SearchResultCard({ result, index }: { result: SearchResult; index: numb
               {result.title}
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 flex-1">
-              {result.metaDescription || "Explore this amazing destination in Dubai."}
+              {result.metaDescription || "Explore this amazing destination and its unique experiences."}
             </p>
           </div>
         </Card>

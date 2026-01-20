@@ -23,6 +23,7 @@ import {
   searchAll, 
   getPopularDestinations, 
   getRecentArticles,
+  getPopularSearchSuggestions,
   type SearchResult 
 } from "./search-index";
 import { queryExpander, expandQuery } from "./query-expander";
@@ -297,7 +298,8 @@ export function applyIntentBoost(
  */
 function generateSuggestions(
   query: string, 
-  spellResult: { corrected: string; wasChanged: boolean; suggestions?: string[] }
+  spellResult: { corrected: string; wasChanged: boolean; suggestions?: string[] },
+  popularSuggestions: string[] = []
 ): string[] {
   const suggestions: string[] = [];
   
@@ -311,16 +313,9 @@ function generateSuggestions(
     suggestions.push(...spellResult.suggestions.slice(0, 2));
   }
   
-  // Add common fallback suggestions based on query patterns
-  const queryLower = query.toLowerCase();
-  if (queryLower.includes('hotel') || queryLower.includes('stay')) {
-    suggestions.push('dubai hotels');
-  }
-  if (queryLower.includes('eat') || queryLower.includes('food') || queryLower.includes('restaurant')) {
-    suggestions.push('dubai restaurants');
-  }
-  if (queryLower.includes('see') || queryLower.includes('visit') || queryLower.includes('attraction')) {
-    suggestions.push('dubai attractions');
+  // Add popular suggestions
+  if (popularSuggestions.length > 0) {
+    suggestions.push(...popularSuggestions.slice(0, 3));
   }
   
   // Dedupe and limit
@@ -395,7 +390,10 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
 
   // === EMPTY QUERY: Return popular content ===
   if (!trimmedQuery) {
-    const fallbackResults = await getFallbackResults(limit);
+    const [fallbackResults, popularSuggestions] = await Promise.all([
+      getFallbackResults(limit),
+      getPopularSearchSuggestions(5)
+    ]);
     
     searchTelemetry.track({
       query: "",
@@ -411,7 +409,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
       fallbackStage: "popular_fallback",
       query: "",
       total: fallbackResults.length,
-      suggestions: ["dubai", "burj khalifa", "dubai mall", "palm jumeirah"],
+      suggestions: popularSuggestions,
       message: "Explore popular destinations:",
     };
   }
@@ -506,7 +504,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
         fallbackStage: "fuzzy_match",
         query: trimmedQuery,
         total: rankedResults.length,
-        suggestions: generateSuggestions(trimmedQuery, spellResult),
+        suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
         message: generateFallbackMessage("fuzzy_match", trimmedQuery, spellResult.corrected),
         expansion: {
           original: expansion.original,
@@ -564,7 +562,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
         fallbackStage: "synonym_match",
         query: trimmedQuery,
         total: allResults.length,
-        suggestions: generateSuggestions(trimmedQuery, spellResult),
+        suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
         message: generateFallbackMessage("synonym_match", trimmedQuery),
         expansion: {
           original: expansion.original,
@@ -594,7 +592,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
     fallbackStage: "popular_fallback",
     query: trimmedQuery,
     total: fallbackResults.length,
-    suggestions: generateSuggestions(trimmedQuery, spellResult),
+    suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
     message: generateFallbackMessage("popular_fallback", trimmedQuery),
     expansion: {
       original: expansion.original,
