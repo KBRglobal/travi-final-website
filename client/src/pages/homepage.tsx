@@ -153,11 +153,11 @@ const SUPPORTED_LANGUAGES = [
 const FAQ_ITEMS = [
   {
     q: "What is TRAVI World?",
-    a: "TRAVI World is a comprehensive travel information platform covering 16 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities. Our multilingual platform is updated daily, with additional languages rolling out."
+    a: "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities. Our multilingual platform is updated daily, with additional languages rolling out."
   },
   {
     q: "How many destinations does TRAVI cover?",
-    a: "TRAVI World covers 16 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome."
+    a: "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome."
   },
   {
     q: "Is TRAVI World content available in multiple languages?",
@@ -173,7 +173,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How often is TRAVI World content updated?",
-    a: "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 16 destinations."
+    a: "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
   }
 ];
 
@@ -227,7 +227,7 @@ const CATEGORY_CARDS = [
     icon: Bed, 
     title: "Hotels", 
     subtitle: "Find your perfect stay",
-    description: "Compare hotels, resorts, and accommodation options across 16 destinations worldwide",
+    description: "Compare hotels, resorts, and accommodation options across 17 destinations worldwide",
     linkUrl: "/hotels",
     gradient: "from-blue-500 to-cyan-400",
     bgColor: "bg-blue-50 dark:bg-blue-950/30",
@@ -417,7 +417,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
     "name": SITE_NAME,
     "alternateName": ["TRAVI", "TRAVI Travel Guide", "TRAVI Travel"],
     "url": SITE_URL,
-    "description": "Comprehensive travel information for 16 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+    "description": "Comprehensive travel information for 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
     "inLanguage": "en-US",
     "publisher": {
       "@id": `${SITE_URL}/#organization`
@@ -445,7 +445,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
       "height": 512
     },
     "image": `${SITE_URL}/ogImage.jpg`,
-    "description": "Your trusted travel resource for 16 destinations worldwide with 3,000+ attractions, hotels, and restaurants reviewed.",
+    "description": "Your trusted travel resource for 17 destinations worldwide with 3,000+ attractions, hotels, and restaurants reviewed.",
     "foundingDate": "2021",
     "sameAs": [
       "https://www.instagram.com/travi_world",
@@ -500,7 +500,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
     "@id": `${SITE_URL}/#webpage`,
     "url": SITE_URL,
     "name": `${SITE_NAME} - Travel Guides for Hotels, Attractions & Things to Do`,
-    "description": "Your complete travel guide for 16 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+    "description": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
     "isPartOf": {
       "@id": `${SITE_URL}/#website`
     },
@@ -584,7 +584,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
             id="hero-description"
             className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
           >
-            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">16 destinations</span> worldwide. 
+            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">17 destinations</span> worldwide. 
             Discover detailed guides for <span className="font-medium text-slate-700 dark:text-slate-300">3,000+ attractions</span>.
           </p>
 
@@ -592,7 +592,7 @@ function SplitHero({ currentIndex, onIndexChange }: { currentIndex: number; onIn
           <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8">
             {[
               { num: '3,000+', label: 'ATTRACTIONS', srLabel: 'Over 3000 attractions covered' },
-              { num: '16', label: 'DESTINATIONS', srLabel: '16 destinations worldwide' },
+              { num: '17', label: 'DESTINATIONS', srLabel: '17 destinations worldwide' },
               { num: '17+', label: 'LANGUAGES', srLabel: 'Multilingual platform with additional languages rolling out' }
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
@@ -1011,8 +1011,8 @@ export default function Homepage() {
   });
 
   // UNIQUE, KEYWORD-RICH META TITLE & DESCRIPTION
-  const pageTitle = seoMeta?.metaTitle || `${SITE_NAME} - Travel Guides for 16 Destinations | Hotels, Attractions & Things to Do ${CURRENT_YEAR}`;
-  const pageDescription = seoMeta?.metaDescription || `Your complete travel guide for 16 destinations worldwide. Expert reviews of 3,000+ hotels, attractions, restaurants, and activities. Plan your trip with ${SITE_NAME} - updated daily.`;
+  const pageTitle = seoMeta?.metaTitle || `${SITE_NAME} - Travel Guides for 17 Destinations | Hotels, Attractions & Things to Do ${CURRENT_YEAR}`;
+  const pageDescription = seoMeta?.metaDescription || `Your complete travel guide for 17 destinations worldwide. Expert reviews of 3,000+ hotels, attractions, restaurants, and activities. Plan your trip with ${SITE_NAME} - updated daily.`;
 
   return (
     <>

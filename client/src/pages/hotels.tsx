@@ -674,7 +674,7 @@ export default function GlobalHotels() {
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Best Hotels in Dubai, Paris, London & Tokyo" />
-        <meta name="twitter:description" content="Compare 10,000+ hotels in 16 destinations. From $25/night." />
+        <meta name="twitter:description" content="Compare 10,000+ hotels in 17 destinations. From $25/night." />
         <meta name="twitter:image" content="https://travi.world/cards/dubai.webp" />
 
         <link rel="canonical" href="https://travi.world/hotels" />
@@ -687,7 +687,7 @@ export default function GlobalHotels() {
             "@context": "https://schema.org",
             "@type": "WebPage",
             "name": "Best Hotels Worldwide - Dubai, Paris, London, Tokyo & More",
-            "description": "Find the best hotels near top attractions in 16 destinations worldwide",
+            "description": "Find the best hotels near top attractions in 17 destinations worldwide",
             "url": "https://travi.world/hotels",
             "isPartOf": {
               "@type": "WebSite",
@@ -715,7 +715,7 @@ export default function GlobalHotels() {
             "@context": "https://schema.org",
             "@type": "ItemList",
             "name": "Best Hotel Destinations Worldwide",
-            "description": "Top 16 cities for hotels - Dubai, Paris, London, New York, Tokyo and more",
+            "description": "Top 17 cities for hotels - Dubai, Paris, London, New York, Tokyo and more",
             "numberOfItems": HOTEL_DESTINATIONS.length,
             "itemListElement": HOTEL_DESTINATIONS.map((dest, index) => ({
               "@type": "ListItem",
@@ -810,7 +810,7 @@ export default function GlobalHotels() {
                           <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-hotels-count">
-                          Compare <span className="text-[#6443F4]">{totalHotels.toLocaleString()}+</span> hotels in 16 cities
+                          Compare <span className="text-[#6443F4]">{totalHotels.toLocaleString()}+</span> hotels in 17 cities
                         </span>
                       </div>
                     </motion.div>
@@ -953,7 +953,7 @@ export default function GlobalHotels() {
                           aria-label="View all hotel destinations"
                         >
                           <Globe className="w-5 h-5 text-[#6443F4] mr-2" aria-hidden="true" />
-                          All 16 Destinations
+                          All 17 Destinations
                         </Button>
                       </Link>
                     </motion.div>

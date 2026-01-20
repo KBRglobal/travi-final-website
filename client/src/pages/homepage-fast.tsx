@@ -47,10 +47,10 @@ const EXPERIENCE_CATEGORIES = [
 ];
 
 const FAQ_ITEMS = [
-  { q: "What is TRAVI World?", a: "TRAVI World is a comprehensive travel information platform covering 16 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities." },
-  { q: "How many destinations does TRAVI cover?", a: "TRAVI World covers 16 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome." },
+  { q: "What is TRAVI World?", a: "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities." },
+  { q: "How many destinations does TRAVI cover?", a: "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome." },
   { q: "Is TRAVI World free to use?", a: "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost." },
-  { q: "How often is content updated?", a: "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 16 destinations." },
+  { q: "How often is content updated?", a: "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations." },
 ];
 
 const ALL_DESTINATIONS_SEO = [
@@ -82,7 +82,7 @@ function HeroSection() {
     "@id": `${SITE_URL}/#website`,
     "name": SITE_NAME,
     "url": SITE_URL,
-    "description": "Comprehensive travel information for 16 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+    "description": "Comprehensive travel information for 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
     "inLanguage": "en-US",
     "potentialAction": {
       "@type": "SearchAction",
@@ -98,7 +98,7 @@ function HeroSection() {
     "name": SITE_NAME,
     "url": SITE_URL,
     "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png`, "width": 512, "height": 512 },
-    "description": "Your trusted travel resource for 16 destinations worldwide.",
+    "description": "Your trusted travel resource for 17 destinations worldwide.",
   });
 
   const faqSchema = JSON.stringify({
@@ -119,10 +119,10 @@ function HeroSection() {
     >
       <Helmet>
         <title>{"TRAVI World - Travel Guides for Hotels, Attractions & Things to Do | " + CURRENT_YEAR}</title>
-        <meta name="description" content="Your complete travel guide for 16 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places." />
+        <meta name="description" content="Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places." />
         <link rel="canonical" href={SITE_URL} />
         <meta property="og:title" content="TRAVI World - Travel Guides for Hotels, Attractions & Things to Do" />
-        <meta property="og:description" content="Your complete travel guide for 16 destinations worldwide with 3,000+ attractions, hotels, and restaurants." />
+        <meta property="og:description" content="Your complete travel guide for 17 destinations worldwide with 3,000+ attractions, hotels, and restaurants." />
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/ogImage.jpg`} />
@@ -162,7 +162,7 @@ function HeroSection() {
           </h1>
 
           <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
-            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">16 destinations</span> worldwide. 
+            Comprehensive travel information for <span className="font-medium text-slate-700 dark:text-slate-300">17 destinations</span> worldwide. 
             Discover detailed guides for <span className="font-medium text-slate-700 dark:text-slate-300">3,000+ attractions</span>.
           </p>
 
