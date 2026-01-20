@@ -12,6 +12,7 @@ import {
 } from "@shared/schema";
 import { requireAuth, requirePermission } from "../security";
 import { z } from "zod";
+import { QaRunner } from "../services/qa-runner";
 
 type AuthRequest = Request & {
   user?: { claims?: { sub: string; email?: string; name?: string } };
@@ -246,6 +247,11 @@ export function registerQaRoutes(app: Express) {
           }))
         );
       }
+
+      // Trigger automated checks in the background
+      QaRunner.run(run.id).catch(err => {
+        console.error(`Background QA runner failed for run ${run.id}:`, err);
+      });
 
       res.status(201).json(run);
     } catch (error) {
