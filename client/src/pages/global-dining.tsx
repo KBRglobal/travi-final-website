@@ -403,7 +403,7 @@ const INSIDER_TIPS = [
 const DINING_FAQ = [
   {
     q: "How do I find the best restaurants on TRAVI?",
-    a: "TRAVI curates restaurants across 16 destinations with over 9,000 dining options. Filter by cuisine type, dining experience (romantic, family, business), price range, and location. Each listing includes ratings, reviews, and insider tips from local experts."
+    a: "TRAVI curates restaurants across 17 destinations with over 9,000 dining options. Filter by cuisine type, dining experience (romantic, family, business), price range, and location. Each listing includes ratings, reviews, and insider tips from local experts."
   },
   {
     q: "What types of dining experiences does TRAVI cover?",
@@ -666,13 +666,13 @@ export default function GlobalDining() {
       <style>{heroAnimationStyles}</style>
 
       <Helmet>
-        <title>Dining Guide Worldwide - 9,000+ Restaurants in 16 Destinations | TRAVI</title>
-        <meta name="description" content="Discover 9,000+ curated restaurants across 16 destinations. From Michelin-starred fine dining to authentic street food in Paris, Tokyo, New York, and more." />
+        <title>Dining Guide Worldwide - 9,000+ Restaurants in 17 Destinations | TRAVI</title>
+        <meta name="description" content="Discover 9,000+ curated restaurants across 17 destinations. From Michelin-starred fine dining to authentic street food in Paris, Tokyo, New York, and more." />
         <meta name="keywords" content="restaurants worldwide, fine dining, best restaurants, food guide, Paris restaurants, Tokyo dining, New York restaurants, street food" />
         <meta name="robots" content="index, follow" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Dining Guide Worldwide | TRAVI" />
-        <meta name="twitter:description" content="9,000+ restaurants across 16 destinations." />
+        <meta name="twitter:description" content="9,000+ restaurants across 17 destinations." />
         <link rel="canonical" href="https://travi.world/dining" />
 
         {/* Preload critical images */}
@@ -701,7 +701,7 @@ export default function GlobalDining() {
             "@context": "https://schema.org",
             "@type": "ItemList",
             "name": "Dining Destinations",
-            "description": "Discover 9,000+ restaurants across 16 destinations worldwide",
+            "description": "Discover 9,000+ restaurants across 17 destinations worldwide",
             "numberOfItems": DINING_DESTINATIONS.length,
             "itemListElement": DINING_DESTINATIONS.map((dest, index) => ({
               "@type": "ListItem",
@@ -815,7 +815,7 @@ export default function GlobalDining() {
                 {/* Subtitle */}
                 <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-8 leading-relaxed">
                   Discover extraordinary culinary experiences curated by local experts 
-                  across 16 destinations worldwide.
+                  across 17 destinations worldwide.
                 </p>
 
                 {/* Stats Row */}
@@ -876,7 +876,7 @@ export default function GlobalDining() {
                     What makes TRAVI dining guides unique?
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                    TRAVI curates {totalRestaurants.toLocaleString()}+ restaurants across 16 destinations, from Michelin-starred 
+                    TRAVI curates {totalRestaurants.toLocaleString()}+ restaurants across 17 destinations, from Michelin-starred 
                     fine dining to authentic street food. Each listing is reviewed by local experts with 
                     insider tips on best times to visit, dress codes, and local customs. Find the perfect 
                     spot for any occasion - romantic dinners, family gatherings, or business meetings.

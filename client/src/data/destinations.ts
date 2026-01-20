@@ -1,6 +1,6 @@
 /**
  * Destination Placeholder Data
- * Factory pattern data for all 16 destinations.
+ * Factory pattern data for all 17 destinations.
  * 
  * PLACEHOLDER CONTENT POLICY:
  * - Uses generic travel descriptions (no lorem ipsum)
