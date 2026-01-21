@@ -7,6 +7,7 @@
  * - POST /api/octypo/pilot/generate - Generate content for an attraction in a specific locale
  * - GET /api/octypo/pilot/content/:entityId/:locale - Get generated content for rendering
  * - GET /api/octypo/pilot/status/:entityId/:locale - Check generation status
+ * - GET /api/octypo/pilot/system-status - Get localization system infrastructure status
  */
 
 import { Router, Request, Response } from "express";
@@ -14,7 +15,12 @@ import { z } from "zod";
 import { db } from "../../db";
 import { tiqetsAttractions, pilotLocalizedContent } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
-import { generatePilotContent, getPilotContent, type PilotGenerationRequest } from "./localization-pilot";
+import { 
+  generatePilotContent, 
+  getPilotContent, 
+  getLocalizationSystemStatus,
+  type PilotGenerationRequest 
+} from "./localization-pilot";
 import type { AttractionData } from "../types";
 
 const router = Router();
@@ -255,6 +261,80 @@ router.get("/attractions/available", async (_req: Request, res: Response) => {
     
   } catch (error) {
     console.error("[PilotAPI] Attractions list error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/system-status", async (_req: Request, res: Response) => {
+  try {
+    const status = await getLocalizationSystemStatus();
+    
+    return res.json({
+      success: true,
+      systemStatus: status.status,
+      infrastructure: status.infrastructure,
+      aiProviders: status.aiProviders,
+      execution: status.execution,
+      message: status.status === "blocked_ai" 
+        ? "Localization system infrastructure is COMPLETE. AI providers are currently unavailable."
+        : status.status === "running"
+        ? "Content generation is in progress."
+        : "Localization system is ready for content generation.",
+    });
+    
+  } catch (error) {
+    console.error("[PilotAPI] System status error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/execution-payload", async (_req: Request, res: Response) => {
+  try {
+    const availableAttractions = await db
+      .select({
+        id: tiqetsAttractions.id,
+        title: tiqetsAttractions.title,
+        cityName: tiqetsAttractions.cityName,
+      })
+      .from(tiqetsAttractions)
+      .where(eq(tiqetsAttractions.status, "published"))
+      .limit(1);
+    
+    if (availableAttractions.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "No published attractions available for pilot",
+      });
+    }
+    
+    const attraction = availableAttractions[0];
+    
+    const payload = {
+      entityType: "attraction" as const,
+      entityId: attraction.id,
+      destination: attraction.cityName,
+      locale: "en" as const,
+      strict: true,
+    };
+    
+    return res.json({
+      success: true,
+      message: "Execution payload ready. Call POST /api/octypo/pilot/generate with this payload when AI providers are available.",
+      payload,
+      samplePayloads: {
+        english: { ...payload, locale: "en" },
+        arabic: { ...payload, locale: "ar" },
+      },
+    });
+    
+  } catch (error) {
+    console.error("[PilotAPI] Execution payload error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
