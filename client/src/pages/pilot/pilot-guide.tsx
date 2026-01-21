@@ -55,10 +55,6 @@ export default function PilotGuidePage() {
   
   const { data, isLoading, error } = useQuery<GuideContentResponse>({
     queryKey: ["/api/octypo/pilot/guides/content", guideSlug, locale],
-    queryFn: async () => {
-      const response = await fetch(`/api/octypo/pilot/guides/content/${guideSlug}/${locale}`);
-      return response.json();
-    },
     enabled: !!guideSlug && ["en", "ar"].includes(locale),
   });
   
