@@ -1,0 +1,81 @@
+TASK: Eliminate Mixed-Language UI — Enforce Single-Locale Rendering (EN / AR)
+
+CONTEXT:
+The app currently renders a MIX of languages on the same page (e.g., Arabic + English / Hebrew fragments).
+This is NOT a translation problem — it is a STATE & FALLBACK problem.
+Result: parts of the UI are localized, others fall back to default English or legacy literals.
+
+OBJECTIVE (STRICT):
+At runtime, EVERY rendered string on a page must come from ONE locale ONLY.
+If a translation key is missing → show a clear fallback marker or English consistently — NEVER mix languages.
+
+ROOT CAUSES TO FIX:
+1. i18next fallback behavior is leaking English strings.
+2. Some components use hardcoded literals instead of t().
+3. Some keys exist in one locale JSON but not others.
+4. Multiple translation namespaces are partially loaded.
+5. Legacy arrays/constants still bypass i18next.
+6. RTL pages render LTR fallback text from default namespace.
+
+MANDATORY RULES (NO EXCEPTIONS):
+- ZERO hardcoded user-facing strings in JSX.
+- ZERO implicit fallbacks to another language.
+- ONE active locale per request.
+- ONE namespace load per page (validated).
+- If key is missing → render "[MISSING_TRANSLATION:key]" visibly.
+
+IMPLEMENTATION STEPS (DO IN ORDER):
+1. i18next CONFIG
+   - disable fallbackLng OR set fallbackLng = currentLocale ONLY
+   - enable returnNull = false
+   - enable returnEmptyString = false
+   - enable missingKeyHandler with console + UI marker
+
+2. GLOBAL AUDIT
+   - grep for raw strings in /pages and /components
+   - remove all legacy constants (arrays, labels, titles)
+   - replace EVERYTHING with t()
+
+3. TRANSLATION PARITY CHECK
+   - write a script that compares:
+     en/common.json vs ar/common.json (and others)
+   - fail build if keys mismatch
+
+4. COMPONENT SAFETY WRAPPER
+   - create <LocalizedText /> helper
+   - forbid direct t() usage without namespace
+   - log missing keys with component name
+
+5. PAGE-LEVEL GUARANTEE
+   - each page declares:
+     const { t } = useTranslation("common")
+   - forbid cross-namespace access
+
+6. RTL VALIDATION (AR ONLY)
+   - test /ar with:
+     hero
+     cards
+     CTAs
+     footer
+     FAQ
+   - confirm ZERO English words appear
+
+ACCEPTANCE CRITERIA:
+- Visiting /ar shows 100% Arabic OR explicit [MISSING_TRANSLATION:*]
+- Visiting /en shows 100% English
+- NO page shows mixed languages
+- NO silent fallbacks
+- NO hardcoded literals remain
+- Build fails on missing keys
+
+OUTPUT REQUIRED:
+- Short report: which files were fixed
+- Screenshot proof: /en and /ar homepage
+- Confirmation: “Mixed-language rendering eliminated”
+
+IMPORTANT:
+Do NOT translate content.
+Do NOT add new copy.
+This task is about CONSISTENCY, not language quality.
+
+START IMMEDIATELY.
