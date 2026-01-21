@@ -748,5 +748,50 @@
       "invalidTitle": "Invalid email",
       "invalidDesc": "Please enter a valid email address."
     }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
+    },
+    "contact": {
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries"
+    },
+    "privacy": {
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026"
+    },
+    "terms": {
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026"
+    }
   }
 }
