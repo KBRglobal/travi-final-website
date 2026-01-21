@@ -46,26 +46,86 @@ interface GuideContentResponse {
   message?: string;
 }
 
+// Supported locales for batch pilot
+const PILOT_LOCALES = ["en", "ar", "fr"] as const;
+type PilotLocale = typeof PILOT_LOCALES[number];
+const RTL_LOCALES: PilotLocale[] = ["ar"];
+
+// Localized labels for UI text
+const LOCALE_LABELS: Record<PilotLocale, {
+  introduction: string;
+  whatToExpect: string;
+  highlights: string;
+  tips: string;
+  faq: string;
+  pendingTitle: string;
+  pendingDescription: string;
+  systemInfo: string;
+  noFallback: string;
+  nativeGen: string;
+  purityGate: string;
+}> = {
+  en: {
+    introduction: "Introduction",
+    whatToExpect: "What to Expect",
+    highlights: "Highlights",
+    tips: "Travel Tips",
+    faq: "Frequently Asked Questions",
+    pendingTitle: "Localized Content Pending Generation",
+    pendingDescription: "Localized content for this guide is pending generation. No English fallback is available.",
+    systemInfo: "System Information",
+    noFallback: "No English fallback (enforcement active)",
+    nativeGen: "Content will be generated natively in target locale",
+    purityGate: "Locale purity gate: ≥98% target language required",
+  },
+  ar: {
+    introduction: "مقدمة",
+    whatToExpect: "ماذا تتوقع",
+    highlights: "أبرز النقاط",
+    tips: "نصائح السفر",
+    faq: "الأسئلة الشائعة",
+    pendingTitle: "المحتوى قيد الإنشاء",
+    pendingDescription: "سيتم إنشاء المحتوى المحلي لهذا الدليل قريباً. لا يوجد محتوى إنجليزي كبديل.",
+    systemInfo: "معلومات النظام",
+    noFallback: "لا يوجد احتياطي للغة الإنجليزية",
+    nativeGen: "يتم إنشاء المحتوى مباشرة باللغة العربية",
+    purityGate: "نسبة نقاء اللغة المطلوبة: ≥98%",
+  },
+  fr: {
+    introduction: "Introduction",
+    whatToExpect: "À quoi s'attendre",
+    highlights: "Points forts",
+    tips: "Conseils de voyage",
+    faq: "Questions fréquentes",
+    pendingTitle: "Contenu localisé en attente de génération",
+    pendingDescription: "Le contenu localisé pour ce guide est en cours de génération. Pas de contenu anglais de secours.",
+    systemInfo: "Informations système",
+    noFallback: "Pas de contenu anglais de secours (règle active)",
+    nativeGen: "Le contenu sera généré nativement dans la langue cible",
+    purityGate: "Seuil de pureté linguistique: ≥98% requis",
+  },
+};
+
 export default function PilotGuidePage() {
   const params = useParams<{ locale: string; guideSlug: string }>();
-  const locale = params.locale as "en" | "ar";
+  const locale = params.locale as PilotLocale;
   const guideSlug = params.guideSlug;
   
-  const isRTL = locale === "ar";
+  const isRTL = RTL_LOCALES.includes(locale);
   
   const { data, isLoading, error } = useQuery<GuideContentResponse>({
     queryKey: ["/api/octypo/pilot/guides/content", guideSlug, locale],
-    enabled: !!guideSlug && ["en", "ar"].includes(locale),
+    enabled: !!guideSlug && PILOT_LOCALES.includes(locale as PilotLocale),
   });
   
-  if (!["en", "ar"].includes(locale)) {
+  if (!PILOT_LOCALES.includes(locale as PilotLocale)) {
     return (
       <div className="container mx-auto py-8" data-testid="pilot-guide-invalid-locale">
         <Alert variant="destructive" data-testid="alert-invalid-locale">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle data-testid="text-error-title">Invalid Locale</AlertTitle>
           <AlertDescription data-testid="text-error-description">
-            GUIDE_FAIL: locale must be 'en' or 'ar' only. Got: {locale}
+            GUIDE_FAIL: locale must be 'en', 'ar', or 'fr' only. Got: {locale}
           </AlertDescription>
         </Alert>
       </div>
