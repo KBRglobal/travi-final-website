@@ -21,6 +21,10 @@
     "followInstagram": "עקבו אחרי TRAVI באינסטגרם",
     "followTikTok": "עקבו אחרי TRAVI בטיקטוק"
   },
+  "breadcrumbs": {
+    "ariaLabel": "ניווט נתיב",
+    "dubai": "דובאי"
+  },
   "common": {
     "readMore": "קרא עוד",
     "viewAll": "צפה בהכל",

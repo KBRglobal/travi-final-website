@@ -77,19 +77,22 @@ export function Breadcrumbs({
       {allItems.map((item, index) => {
         const isLast = index === allItems.length - 1;
         const isFirst = index === 0;
+        const displayLabel = getLabel(item);
+        const itemKey = item.labelKey || item.label || item.href || `breadcrumb-${index}`;
+        const testIdSuffix = (item.labelKey || item.label || item.href || `item-${index}`).toLowerCase().replace(/[.\s]/g, '-');
         
         return (
-          <div key={item.label} className="flex items-center">
+          <div key={itemKey} className="flex items-center">
             {index > 0 && <Separator />}
             
             {item.href && !isLast ? (
               <Link
                 href={localePath(item.href)}
                 className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 hover:text-[#6443F4] transition-colors whitespace-nowrap"
-                data-testid={`breadcrumb-link-${item.label.toLowerCase().replace(/\s/g, '-')}`}
+                data-testid={`breadcrumb-link-${testIdSuffix}`}
               >
                 {isFirst && <Home className="w-3.5 h-3.5" aria-hidden="true" />}
-                <span>{getLabel(item)}</span>
+                <span>{displayLabel}</span>
               </Link>
             ) : (
               <span 
@@ -97,7 +100,7 @@ export function Breadcrumbs({
                 data-testid="breadcrumb-current"
                 aria-current="page"
               >
-                {getLabel(item)}
+                {displayLabel}
               </span>
             )}
           </div>
