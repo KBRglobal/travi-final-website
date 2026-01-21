@@ -286,7 +286,8 @@ function PublicRouter() {
       <Route path="/new-york">{() => <Redirect to="/destinations/new-york" />}</Route>
       <Route path="/singapore">{() => <Redirect to="/destinations/singapore" />}</Route>
       <Route path="/test" component={TestPage} />
-      <Route path="/" component={Homepage} />
+      <Route path="/">{() => <Redirect to="/en" />}</Route>
+      <Route path="/en" component={Homepage} />
       <Route component={NotFound} />
     </Switch>
   );
