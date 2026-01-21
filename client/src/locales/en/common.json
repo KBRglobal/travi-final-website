@@ -515,5 +515,176 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
+    },
+    "stats": {
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
+    },
+    "journey": {
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
+    },
+    "ideaLab": {
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
+    },
+    "archetype": {
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
+      },
+      "culture": {
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
+      },
+      "foodie": {
+        "name": "Culinary Traveler",
+        "description": "Local cuisines and dining experiences"
+      },
+      "wellness": {
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
+      },
+      "budget": {
+        "name": "Budget Explorer",
+        "description": "Maximum experiences, minimum spend"
+      },
+      "luxury": {
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
+      }
+    },
+    "editorial": {
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
+    },
+    "gallery": {
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire"
+    },
+    "writers": {
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
+    },
+    "map": {
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
+    },
+    "newsletter": {
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
+    },
+    "header": {
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
+    },
+    "breaking": {
+      "label": "Breaking"
+    },
+    "search": {
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
+    },
+    "empty": {
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
+    },
+    "hero": {
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
+    },
+    "views": "{{count}} views",
+    "viewAll": "View All",
+    "sidebar": {
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
+    },
+    "sections": {
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
+    },
+    "worldwide": {
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
+    },
+    "newsletter": {
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
+    }
   }
 }
