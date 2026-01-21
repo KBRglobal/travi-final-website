@@ -462,8 +462,8 @@ export async function saveLocalizedGuideContent(
   if (!request.destination || request.destination.trim() === "") {
     throw new Error("GUIDE_FAIL: destination is REQUIRED - no fallback allowed");
   }
-  if (!request.locale || !["en", "ar"].includes(request.locale)) {
-    throw new Error("GUIDE_FAIL: locale must be 'en' or 'ar' only");
+  if (!request.locale || !["en", "ar", "fr"].includes(request.locale)) {
+    throw new Error("GUIDE_FAIL: locale must be 'en', 'ar', or 'fr' only");
   }
   
   const exemptions = [request.guideSlug, request.destination].filter(Boolean);
@@ -567,6 +567,7 @@ export async function saveLocalizedGuideContent(
 export async function getGuideLocalizationStatus(guideSlug: string): Promise<{
   en: { exists: boolean; status?: string };
   ar: { exists: boolean; status?: string };
+  fr: { exists: boolean; status?: string };
 }> {
   const results = await db
     .select({ locale: pilotLocalizedGuides.locale, status: pilotLocalizedGuides.status })
@@ -575,10 +576,12 @@ export async function getGuideLocalizationStatus(guideSlug: string): Promise<{
   
   const enResult = results.find(r => r.locale === "en");
   const arResult = results.find(r => r.locale === "ar");
+  const frResult = results.find(r => r.locale === "fr");
   
   return {
     en: { exists: !!enResult, status: enResult?.status },
     ar: { exists: !!arResult, status: arResult?.status },
+    fr: { exists: !!frResult, status: frResult?.status },
   };
 }
 
