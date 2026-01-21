@@ -83,15 +83,47 @@ const resources: Record<string, { common: any }> = {
   hu: { common: huCommon },
 };
 
-// Initialize i18next
+// Missing key handler - logs and returns visible marker
+const missingKeyHandler = (
+  lngs: readonly string[],
+  ns: string,
+  key: string,
+  fallbackValue: string,
+  updateMissing: boolean,
+  options: any
+) => {
+  // Only log in development to avoid console spam in production
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(`[MISSING_TRANSLATION] locale="${lngs[0]}" ns="${ns}" key="${key}"`);
+  }
+};
+
+// Initialize i18next with NO silent fallback - single locale only
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
+    
+    // CRITICAL: Disable fallback to prevent mixed-language UI
+    // Set to false to completely disable fallback
+    fallbackLng: false,
+    
     defaultNS: 'common',
     ns: ['common'],
+    
+    // Return the key itself when missing (we format it below)
+    returnNull: false,
+    returnEmptyString: false,
+    
+    // Show visible marker for missing keys instead of silent fallback
+    saveMissing: true,
+    missingKeyHandler,
+    
+    // Format missing keys as visible markers
+    parseMissingKeyHandler: (key: string) => {
+      return `[MISSING:${key}]`;
+    },
 
     interpolation: {
       escapeValue: false, // React already escapes
