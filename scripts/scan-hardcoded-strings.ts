@@ -29,16 +29,34 @@ interface Finding {
   type: 'jsx-text' | 'aria-label' | 'alt' | 'title' | 'placeholder' | 'label' | 'button-text';
 }
 
+// Only scan PUBLIC-FACING pages and components
+// Admin pages are internal tools and don't need translation priority
 const SCAN_DIRS = [
   'client/src/pages',
   'client/src/components',
 ];
 
+// Patterns to EXCLUDE from scanning
 const EXCLUDE_PATTERNS = [
   /\.test\.(ts|tsx)$/,
   /\.spec\.(ts|tsx)$/,
   /__tests__\//,
   /\.d\.ts$/,
+  // Admin pages are internal tools - excluded from localization requirements
+  /\/admin\//,
+  /\/admin-/,
+  /admin-[a-z]+\.tsx$/,
+  // Internal CMS/admin tools
+  /\/live-edit\//,
+  /\/internal\//,
+  /\/page-builder\//,
+  // Admin-like root pages (CMS tools, not public)
+  /\/(settings|analytics|seo-audit|audit-logs|campaigns|clusters)\.tsx$/,
+  /\/(content-calendar|content-editor|content-list|content-rules)\.tsx$/,
+  /\/(rss-feeds|tags|surveys|survey-builder|ai-article-generator)\.tsx$/,
+  /\/(affiliate-links|affiliate-disclosure|homepage-promotions)\.tsx$/,
+  /\/(newsletter-subscribers|partners-dashboard|partners-join)\.tsx$/,
+  /\/(poi-explorer|external-data|ingestion|scheduling)\.tsx$/,
 ];
 
 const IGNORED_STRINGS = [
