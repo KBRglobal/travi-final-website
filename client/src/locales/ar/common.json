@@ -21,6 +21,10 @@
     "followInstagram": "تابع ترافي على انستغرام",
     "followTikTok": "تابع ترافي على تيك توك"
   },
+  "breadcrumbs": {
+    "ariaLabel": "التنقل في المسار",
+    "dubai": "دبي"
+  },
   "common": {
     "readMore": "اقرأ المزيد",
     "viewAll": "عرض الكل",
