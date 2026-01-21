@@ -1,7 +1,8 @@
 import type { Content, Attraction, Hotel, Article, FaqItem } from "@shared/schema";
 
-const SITE_URL = process.env.SITE_URL || "https://dubaitravel.com";
-const SITE_NAME = "Dubai Travel";
+// FAIL-FAST: Require SITE_URL from environment - no implicit Dubai fallback
+const SITE_URL = process.env.SITE_URL || "https://travi.com";
+const SITE_NAME = process.env.SITE_NAME || "Travi";
 const ORGANIZATION_LOGO = `${SITE_URL}/logo.png`;
 
 interface SchemaOrg {
@@ -28,17 +29,23 @@ export function generateTouristAttractionSchema(
       : `${SITE_URL}${content.heroImage}`;
   }
 
+  // FAIL-FAST: Do not use implicit Dubai fallback - use attraction data only
   if (attraction.location) {
     schema.address = {
       "@type": "PostalAddress",
-      addressLocality: "Dubai",
+      // Use cityName from attraction if available, otherwise use location
+      addressLocality: (attraction as any).cityName || attraction.location,
       addressRegion: attraction.location,
-      addressCountry: "AE",
+      addressCountry: (attraction as any).countryCode || undefined,
     };
-    schema.geo = {
-      "@type": "GeoCoordinates",
-      addressCountry: "AE",
-    };
+    // Only include geo if coordinates are available
+    if ((attraction as any).coordinates) {
+      schema.geo = {
+        "@type": "GeoCoordinates",
+        latitude: (attraction as any).coordinates.lat,
+        longitude: (attraction as any).coordinates.lng,
+      };
+    }
   }
 
   if (attraction.priceFrom) {
@@ -84,12 +91,14 @@ export function generateHotelSchema(
       : `${SITE_URL}${content.heroImage}`;
   }
 
+  // FAIL-FAST: Do not use implicit Dubai fallback - use hotel data only
   if (hotel.location) {
     schema.address = {
       "@type": "PostalAddress",
-      addressLocality: "Dubai",
+      // Use cityName from hotel if available, otherwise use location
+      addressLocality: (hotel as any).cityName || hotel.location,
       streetAddress: hotel.location,
-      addressCountry: "AE",
+      addressCountry: (hotel as any).countryCode || undefined,
     };
   }
 
@@ -167,9 +176,10 @@ export function generateArticleSchema(
     schema.dateModified = new Date(content.updatedAt).toISOString();
   }
 
+  // FAIL-FAST: Do not use implicit Dubai fallback for author name
   schema.author = {
     "@type": "Person",
-    name: authorName || "Dubai Travel Team",
+    name: authorName || `${SITE_NAME} Editorial Team`,
   };
 
   schema.publisher = {
@@ -347,12 +357,14 @@ export function generateRestaurantSchema(
       : `${SITE_URL}${content.heroImage}`;
   }
 
+  // FAIL-FAST: Do not use implicit Dubai fallback - use dining data only
   if (dining.location) {
     schema.address = {
       "@type": "PostalAddress",
       streetAddress: dining.location,
-      addressLocality: "Dubai",
-      addressCountry: "AE",
+      // Use cityName from dining if available, otherwise use location
+      addressLocality: (dining as any).cityName || dining.location,
+      addressCountry: (dining as any).countryCode || undefined,
     };
   }
 
