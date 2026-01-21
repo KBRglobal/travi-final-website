@@ -566,6 +566,27 @@
     "subscribe": "[NEEDS_TRANSLATION] Subscribe",
     "success": "[NEEDS_TRANSLATION] You're subscribed! Check your inbox."
   },
+  "cookies": {
+    "title": "[NEEDS_TRANSLATION] We value your privacy",
+    "description": "[NEEDS_TRANSLATION] We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "[NEEDS_TRANSLATION] Manage",
+    "rejectAll": "[NEEDS_TRANSLATION] Reject All",
+    "acceptAll": "[NEEDS_TRANSLATION] Accept All",
+    "preferencesTitle": "[NEEDS_TRANSLATION] Cookie Preferences",
+    "savePreferences": "[NEEDS_TRANSLATION] Save Preferences",
+    "essential": {
+      "title": "[NEEDS_TRANSLATION] Essential Cookies",
+      "description": "[NEEDS_TRANSLATION] Required for the website to function properly"
+    },
+    "analytics": {
+      "title": "[NEEDS_TRANSLATION] Analytics Cookies",
+      "description": "[NEEDS_TRANSLATION] Help us understand how visitors interact with our website"
+    },
+    "marketing": {
+      "title": "[NEEDS_TRANSLATION] Marketing Cookies",
+      "description": "[NEEDS_TRANSLATION] Used to deliver personalized advertisements"
+    }
+  },
   "meta": {
     "home": {
       "title": "ترافي - اكتشف دبي | دليلك الشامل للسفر إلى دبي",
@@ -822,7 +843,79 @@
       "titleHighlight": "ترافي العالمية",
       "subtitle": "مصدرك الموثوق لمعلومات السفر الشاملة وأدلة الوجهات، نساعد الملايين على استكشاف العالم بثقة.",
       "ctaExplore": "استكشف الوجهات",
-      "ctaContact": "تواصل معنا"
+      "ctaContact": "تواصل معنا",
+      "stats": {
+        "destinations": "[NEEDS_TRANSLATION] Destinations",
+        "articles": "[NEEDS_TRANSLATION] Articles",
+        "support": "[NEEDS_TRANSLATION] Travel Support",
+        "coverage": "[NEEDS_TRANSLATION] Coverage",
+        "cities": "[NEEDS_TRANSLATION] 16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "[NEEDS_TRANSLATION] Who We Are"
+      },
+      "mission": {
+        "title": "[NEEDS_TRANSLATION] Our Mission"
+      },
+      "services": {
+        "badge": "[NEEDS_TRANSLATION] Our Services",
+        "title": "[NEEDS_TRANSLATION] What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "[NEEDS_TRANSLATION] Destination Guides",
+          "description": "[NEEDS_TRANSLATION] Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "[NEEDS_TRANSLATION] Attraction Information",
+          "description": "[NEEDS_TRANSLATION] Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "[NEEDS_TRANSLATION] Hotel Guides",
+          "description": "[NEEDS_TRANSLATION] Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "[NEEDS_TRANSLATION] Restaurant Recommendations",
+          "description": "[NEEDS_TRANSLATION] Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "[NEEDS_TRANSLATION] Travel Articles",
+          "description": "[NEEDS_TRANSLATION] Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "[NEEDS_TRANSLATION] Latest Travel News",
+          "description": "[NEEDS_TRANSLATION] Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "[NEEDS_TRANSLATION] Editorial Independence",
+        "affiliateTitle": "[NEEDS_TRANSLATION] Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "[NEEDS_TRANSLATION] Our Foundation",
+        "title": "[NEEDS_TRANSLATION] Our Values",
+        "accuracy": {
+          "title": "[NEEDS_TRANSLATION] Accuracy",
+          "description": "[NEEDS_TRANSLATION] We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "[NEEDS_TRANSLATION] Transparency",
+          "description": "[NEEDS_TRANSLATION] We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "[NEEDS_TRANSLATION] User-Focused",
+          "description": "[NEEDS_TRANSLATION] Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "[NEEDS_TRANSLATION] Let's Connect",
+        "title": "[NEEDS_TRANSLATION] Get in Touch"
+      },
+      "company": {
+        "title": "[NEEDS_TRANSLATION] Company Information",
+        "contactTitle": "[NEEDS_TRANSLATION] Contact Information",
+        "contactForm": "[NEEDS_TRANSLATION] Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "تواصل معنا | ترافي العالمية",
@@ -839,7 +932,37 @@
       "importantNote": "ملاحظة مهمة",
       "importantNoteSubtitle": "يرجى القراءة قبل التواصل معنا",
       "ourOffice": "مكتبنا",
-      "ourOfficeSubtitle": "للمراسلات الرسمية والاستفسارات البريدية"
+      "ourOfficeSubtitle": "للمراسلات الرسمية والاستفسارات البريدية",
+      "travelCompanion": "[NEEDS_TRANSLATION] Your travel companion",
+      "urgentNote": "[NEEDS_TRANSLATION] For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "[NEEDS_TRANSLATION] Urgent",
+      "options": {
+        "generalInquiries": {
+          "title": "[NEEDS_TRANSLATION] General Inquiries",
+          "description": "[NEEDS_TRANSLATION] Questions about our travel guides and contents"
+        },
+        "privacyInquiries": {
+          "title": "[NEEDS_TRANSLATION] Privacy Inquiries",
+          "description": "[NEEDS_TRANSLATION] Data access, deletion, and privacy requests"
+        },
+        "visitWebsite": {
+          "title": "[NEEDS_TRANSLATION] Visit Our Website",
+          "description": "[NEEDS_TRANSLATION] Explore destinations and travel inspiration"
+        },
+        "responseTime": {
+          "title": "[NEEDS_TRANSLATION] Response Time",
+          "description": "[NEEDS_TRANSLATION] We aim to respond promptly",
+          "action": "[NEEDS_TRANSLATION] 2-3 business days"
+        }
+      },
+      "helpTopics": {
+        "general": "[NEEDS_TRANSLATION] General inquiries about our travel guides and contents",
+        "feedback": "[NEEDS_TRANSLATION] Feedback and suggestions for improvement",
+        "reporting": "[NEEDS_TRANSLATION] Reporting contents errors or outdated information",
+        "business": "[NEEDS_TRANSLATION] Business and partnership inquiries",
+        "media": "[NEEDS_TRANSLATION] Media and press inquiries",
+        "privacy": "[NEEDS_TRANSLATION] Privacy-related requests (data access, deletion, etc.)"
+      }
     },
     "privacy": {
       "metaTitle": "سياسة الخصوصية | ترافي العالمية",
@@ -847,7 +970,42 @@
       "badge": "خصوصيتك تهمنا",
       "title": "سياسة الخصوصية",
       "subtitle": "نحن ملتزمون بحماية خصوصيتك والشفافية في ممارسات البيانات. تعرف على كيفية جمع ترافي العالمية واستخدام وحماية معلوماتك.",
-      "effectiveDate": "تاريخ السريان: 1 يناير 2026"
+      "effectiveDate": "تاريخ السريان: 1 يناير 2026",
+      "features": {
+        "dataProtection": {
+          "title": "[NEEDS_TRANSLATION] Data Protection",
+          "description": "[NEEDS_TRANSLATION] Your data is protected"
+        },
+        "minimalCollection": {
+          "title": "[NEEDS_TRANSLATION] Minimal Collection",
+          "description": "[NEEDS_TRANSLATION] We collect only what's needed"
+        },
+        "transparency": {
+          "title": "[NEEDS_TRANSLATION] Full Transparency",
+          "description": "[NEEDS_TRANSLATION] Clear about our practices"
+        },
+        "yourControl": {
+          "title": "[NEEDS_TRANSLATION] Your Control",
+          "description": "[NEEDS_TRANSLATION] Manage your preferences"
+        }
+      },
+      "sections": {
+        "whoWeAre": "[NEEDS_TRANSLATION] 1. Who We Are",
+        "informationCollect": "[NEEDS_TRANSLATION] 2. Information We Collect",
+        "howWeUse": "[NEEDS_TRANSLATION] 3. How We Use Your Information",
+        "legalBasis": "[NEEDS_TRANSLATION] 4. Legal Basis for Processing (GDPR)",
+        "cookies": "[NEEDS_TRANSLATION] 5. Cookies and Tracking Technologies",
+        "thirdParty": "[NEEDS_TRANSLATION] 6. Third-Party Services",
+        "aiContent": "[NEEDS_TRANSLATION] 7. AI-Generated Content",
+        "internationalTransfers": "[NEEDS_TRANSLATION] 8. International Data Transfers",
+        "dataRetention": "[NEEDS_TRANSLATION] 9. Data Retention",
+        "privacyRights": "[NEEDS_TRANSLATION] 10. Your Privacy Rights",
+        "californiaRights": "[NEEDS_TRANSLATION] 11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "[NEEDS_TRANSLATION] 12. Children's Privacy",
+        "dataSecurity": "[NEEDS_TRANSLATION] 13. Data Security",
+        "changes": "[NEEDS_TRANSLATION] 14. Changes to This Policy",
+        "contactUs": "[NEEDS_TRANSLATION] 15. Contact Us"
+      }
     },
     "terms": {
       "metaTitle": "الشروط والأحكام | ترافي العالمية",
@@ -855,7 +1013,43 @@
       "badge": "اتفاقية قانونية",
       "title": "الشروط والأحكام",
       "subtitle": "يرجى قراءة هذه الشروط بعناية قبل استخدام ترافي العالمية. يخضع وصولك واستخدامك لمنصتنا لهذه الشروط.",
-      "lastUpdated": "آخر تحديث: 1 يناير 2026"
+      "lastUpdated": "آخر تحديث: 1 يناير 2026",
+      "importantNotice": "[NEEDS_TRANSLATION] Important Legal Notice",
+      "keyPoints": {
+        "editorial": {
+          "title": "[NEEDS_TRANSLATION] Editorial Platform",
+          "description": "[NEEDS_TRANSLATION] Travel guides & destination contents"
+        },
+        "affiliate": {
+          "title": "[NEEDS_TRANSLATION] Affiliate Links",
+          "description": "[NEEDS_TRANSLATION] Commission-based recommendations"
+        },
+        "aiGenerated": {
+          "title": "[NEEDS_TRANSLATION] AI-Generated",
+          "description": "[NEEDS_TRANSLATION] Content created with AI assistance"
+        },
+        "privacy": {
+          "title": "[NEEDS_TRANSLATION] Your Privacy",
+          "description": "[NEEDS_TRANSLATION] Data protection guaranteed"
+        }
+      },
+      "sections": {
+        "operator": "[NEEDS_TRANSLATION] Operator / Legal Entity",
+        "purpose": "[NEEDS_TRANSLATION] 1. Purpose & Scope of Use",
+        "affiliateDisclosure": "[NEEDS_TRANSLATION] 2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "[NEEDS_TRANSLATION] 3. AI-Generated Content Disclaimer",
+        "newsletter": "[NEEDS_TRANSLATION] 4. Newsletter & Communications",
+        "userConduct": "[NEEDS_TRANSLATION] 5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "[NEEDS_TRANSLATION] 6. Intellectual Property & Limited License",
+        "dmca": "[NEEDS_TRANSLATION] 7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "[NEEDS_TRANSLATION] 8. Accuracy, Availability & Disclaimers",
+        "liability": "[NEEDS_TRANSLATION] 9. Limitation of Liability & Force Majeure",
+        "indemnification": "[NEEDS_TRANSLATION] 10. Indemnification",
+        "privacyCookies": "[NEEDS_TRANSLATION] 11. Privacy, Cookies & Data Protection",
+        "accessibility": "[NEEDS_TRANSLATION] 12. Accessibility Statement",
+        "governingLaw": "[NEEDS_TRANSLATION] 13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "[NEEDS_TRANSLATION] 14. Modifications, Severability & General Provisions"
+      }
     }
   }
 }

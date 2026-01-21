@@ -42,6 +42,15 @@ Preferred communication style: Simple, everyday language.
     - TravelStylesSection: t("home.experiences.*")
     - NewsletterSectionLite: t("newsletter.*")
     - RTL CSS applied: text-start/end, ms-/me-, start-/end-, rtl:rotate-180 for directional icons
+  - **Static Pages Localization (COMPLETED January 2026)**: All static pages fully localized via t() calls:
+    - **Contact Page**: pages.contact.options.*, helpTopics.*, travelCompanion, urgentNote
+    - **About Page**: pages.about.stats.*, offerings.*, values.*, whoWeAre.*, mission.*, services.*, editorial.*, connect.*, company.* (body text marked OUT_OF_SCOPE)
+    - **Privacy Page**: pages.privacy.features.*, sections.* (legal body text marked OUT_OF_SCOPE)
+    - **Terms Page**: pages.terms.keyPoints.*, sections.*, importantNotice (legal body text marked OUT_OF_SCOPE)
+    - **Cookie Consent Banner**: cookies.title, description, manage, acceptAll, rejectAll, preferencesTitle, savePreferences, essential.*, analytics.*, marketing.*
+    - **Translation Parity**: EN and AR locales maintain identical key structure (728 keys each)
+    - **AR Locale Pattern**: All untranslated strings use "[NEEDS_TRANSLATION] {English}" format for visibility
+    - **Parity Check Script**: scripts/check-translation-parity.ts validates key structure between locales
   - **Genesis G1 Infrastructure (January 2026)**: Complete localization infrastructure with:
     - **Locale Middleware** (`server/middleware/locale.ts`): URL-based locale extraction, RTL detection, `req.locale`/`req.isRTL` augmentation
     - **Locale Service** (`server/services/locale-service.ts`): Translation fallback pattern (requested → en → null), localized URL helpers
