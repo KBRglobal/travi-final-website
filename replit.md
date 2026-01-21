@@ -40,6 +40,12 @@ Preferred communication style: Simple, everyday language.
   - **Frontend**: `/pilot/:locale/attractions/:entityId` with RTL support. Non-English locales show "Pending Generation" - NO English fallback.
   - **Locales**: en, ar (expandable to 30 languages including 4 RTL: ar, he, fa, ur).
   - **Principle**: Localization is COMPLETE when infrastructure exists - actual generation is execution, not system completeness.
+- **Guide Localization Pilot (INFRASTRUCTURE COMPLETE - January 2026)**: Extends pilot to travel guides:
+  - **Database**: `pilot_localized_guides` table with unique constraint on (guide_slug, locale). Uses `pilot_locale_status` enum.
+  - **API Routes**: POST `/api/octypo/pilot/guides/save`, GET `/api/octypo/pilot/guides/content/:guideSlug/:locale`, GET `/api/octypo/pilot/guides/status/:guideSlug`.
+  - **Validators**: Completeness (all sections present), LocalePurity (≥98%), Blueprint (introduction 40-80 words, whatToExpect 100-300 words, tips 100-250 words, 3-10 highlights, 5-10 FAQs, meta title 30-60 chars, meta description 120-160 chars), SEO/AEO (answer capsule 50-200 chars), RTL (for Arabic).
+  - **Frontend**: `/pilot/:locale/guides/:guideSlug` with RTL support. NO English fallback for non-English locales.
+  - **Test Content**: Rome travel guide with en + ar locales validated and stored.
 - **Localized Assets System**: Manages per-locale media with fallback logic.
 - **SEO/AEO Module**: Centralized SEO optimization with versioned prompt templates and output normalization.
 - **Image Handling**: Tracks image usage and ensures safety with error fallbacks.
