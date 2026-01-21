@@ -40,12 +40,20 @@ Preferred communication style: Simple, everyday language.
   - **Frontend**: `/pilot/:locale/attractions/:entityId` with RTL support. Non-English locales show "Pending Generation" - NO English fallback.
   - **Locales**: en, ar (expandable to 30 languages including 4 RTL: ar, he, fa, ur).
   - **Principle**: Localization is COMPLETE when infrastructure exists - actual generation is execution, not system completeness.
-- **Guide Localization Pilot (INFRASTRUCTURE COMPLETE - January 2026)**: Extends pilot to travel guides:
+- **Guide Localization Pilot (BATCH PILOT COMPLETE - January 2026)**: Extends pilot to travel guides:
+  - **STATUS**: Batch pilot complete with 5 guides × 3 locales (en, ar, fr) = 15 guide-locale pairs published.
   - **Database**: `pilot_localized_guides` table with unique constraint on (guide_slug, locale). Uses `pilot_locale_status` enum.
   - **API Routes**: POST `/api/octypo/pilot/guides/save`, GET `/api/octypo/pilot/guides/content/:guideSlug/:locale`, GET `/api/octypo/pilot/guides/status/:guideSlug`.
-  - **Validators**: Completeness (all sections present), LocalePurity (≥98%), Blueprint (introduction 40-80 words, whatToExpect 100-300 words, tips 100-250 words, 3-10 highlights, 5-10 FAQs, meta title 30-60 chars, meta description 120-160 chars), SEO/AEO (answer capsule 50-200 chars), RTL (for Arabic).
-  - **Frontend**: `/pilot/:locale/guides/:guideSlug` with RTL support. NO English fallback for non-English locales.
-  - **Test Content**: Rome travel guide with en + ar locales validated and stored.
+  - **Validators**: Completeness (all sections present), LocalePurity (≥98% - extended for French accented characters), Blueprint (introduction 40-80 words, whatToExpect 100-300 words, tips 100-250 words, 3-10 highlights, 5-10 FAQs, meta title 30-60 chars, meta description 120-160 chars), SEO/AEO (answer capsule 50-200 chars), RTL (for Arabic only).
+  - **Frontend**: `/pilot/:locale/guides/:guideSlug` with RTL support. NO English fallback for non-English locales. UI labels localized for en, ar, fr.
+  - **Batch Content**: Rome, Paris, Dubai, Tokyo, New York travel guides with all 3 locales validated and stored.
+  - **Scaling to 30 Locales - Blockers Identified**:
+    1. **LOCALE_LABELS expansion**: Need to add 27 more locale entries in `pilot-guide.tsx` for all UI text.
+    2. **calculateLocalePurity regex**: Need additional script regexes for CJK (Chinese, Japanese, Korean), Cyrillic (Russian, Ukrainian), Thai, Greek, Hebrew, Persian, Hindi/Devanagari, etc.
+    3. **RTL_LOCALES array**: Need to expand for Hebrew (he), Persian/Farsi (fa), Urdu (ur).
+    4. **og:locale meta tag**: Need mapping for all 30 locale codes.
+    5. **AI Provider Availability**: Native content generation requires AI providers to generate content natively in each target language.
+    6. **Validator word counting**: May need locale-specific word counting for languages without whitespace (CJK).
 - **Localized Assets System**: Manages per-locale media with fallback logic.
 - **SEO/AEO Module**: Centralized SEO optimization with versioned prompt templates and output normalization.
 - **Image Handling**: Tracks image usage and ensures safety with error fallbacks.
