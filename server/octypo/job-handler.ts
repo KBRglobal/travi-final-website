@@ -359,7 +359,14 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
 async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ success: boolean; generated: number; errors: string[]; contentIds: string[] }> {
   console.log(`[OctypoJobHandler] Processing topic job for keywords: ${data.keywords.join(', ')}`);
   
-  const destinationId = data.destination || 'dubai';
+  // FAIL-FAST: Destination is required - no silent defaults
+  if (!data.destination) {
+    const error = '[OctypoJobHandler] FAIL: destination is required for topic job - no implicit defaults allowed';
+    console.error(error);
+    return { success: false, generated: 0, errors: [error], contentIds: [] };
+  }
+  
+  const destinationId = data.destination;
   const coords = await getDestinationCoordinates(destinationId);
   
   let generated = 0;
@@ -423,7 +430,14 @@ async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ su
 async function processManualJob(data: ManualJobData, jobId?: string): Promise<{ success: boolean; generated: number; errors: string[]; contentIds: string[] }> {
   console.log(`[OctypoJobHandler] Processing manual job for: ${data.title}`);
   
-  const destinationId = data.destination || 'dubai';
+  // FAIL-FAST: Destination is required - no silent defaults
+  if (!data.destination) {
+    const error = '[OctypoJobHandler] FAIL: destination is required for manual job - no implicit defaults allowed';
+    console.error(error);
+    return { success: false, generated: 0, errors: [error], contentIds: [] };
+  }
+  
+  const destinationId = data.destination;
   const coords = await getDestinationCoordinates(destinationId);
   
   try {

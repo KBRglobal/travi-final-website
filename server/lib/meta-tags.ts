@@ -340,10 +340,11 @@ export function generateStructuredData(options: StructuredDataOptions): string {
           ...(eventInfo.endDate && { endDate: eventInfo.endDate }),
           location: {
             "@type": "Place",
-            name: eventInfo.venue || eventInfo.location || "Dubai",
+            // FAIL-FAST: Do not use implicit Dubai fallback - use provided venue/location or generic
+            name: eventInfo.venue || eventInfo.location || content.title,
             address: {
               "@type": "PostalAddress",
-              addressLocality: eventInfo.location || "Dubai",
+              addressLocality: eventInfo.location || undefined,
               addressCountry: "AE",
             },
           },

@@ -570,7 +570,26 @@ export class SnippetEngine {
    */
   private buildQuickAnswer(content: any, typeData: any): string {
     const title = content.title;
-    const location = typeData?.location || 'Dubai';
+    // FAIL-FAST: Do not use implicit Dubai fallback for location
+    const location = typeData?.location;
+    
+    if (!location) {
+      // Return generic answer without location when not provided
+      switch (content.type) {
+        case 'attraction':
+          return `${title} is a popular attraction.`;
+        case 'hotel':
+          const starsNoLoc = typeData?.starRating ? `${typeData.starRating}-star` : '';
+          return `${title} is a ${starsNoLoc} hotel.`;
+        case 'dining':
+          const cuisineNoLoc = typeData?.cuisineType || '';
+          return `${title} is a ${cuisineNoLoc} restaurant.`;
+        case 'district':
+          return `${title} is a vibrant neighborhood.`;
+        default:
+          return `${title} is a featured destination.`;
+      }
+    }
 
     switch (content.type) {
       case 'attraction':

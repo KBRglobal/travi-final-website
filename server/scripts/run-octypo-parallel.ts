@@ -52,11 +52,20 @@ async function getAttractionsToGenerate(limit: number): Promise<(AttractionData 
     )
     .limit(limit);
 
-  return attractions.map((a, idx) => ({
+  // FAIL-FAST: Filter out attractions without cityName - no implicit defaults
+  return attractions
+    .filter(a => {
+      if (!a.cityName) {
+        console.warn(`[OctypoParallel] Skipping attraction ${a.id} - no cityName (no implicit defaults)`);
+        return false;
+      }
+      return true;
+    })
+    .map((a, idx) => ({
     id: idx,
     originalId: a.id,
     title: a.title || 'Unknown',
-    cityName: a.cityName || 'Dubai',
+    cityName: a.cityName,
     venueName: a.venueName || undefined,
     duration: a.duration || undefined,
     primaryCategory: a.primaryCategory || undefined,
