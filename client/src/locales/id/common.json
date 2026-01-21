@@ -14,7 +14,10 @@
       "browseCollection": "Telusuri koleksi destinasi pilihan kami",
       "explore": "Jelajahi",
       "discoverButton": "Temukan",
-      "ariaLabel": "Ikhtisar destinasi"
+      "ariaLabel": "Ikhtisar destinasi",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINASI",
@@ -39,7 +42,8 @@
       "previous": "Destinasi sebelumnya",
       "next": "Destinasi berikutnya",
       "goTo": "Pergi ke {{name}}",
-      "slideOf": "Slide {{current}} dari {{total}}: {{name}}"
+      "slideOf": "Slide {{current}} dari {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Jelajahi",

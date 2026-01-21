@@ -14,7 +14,10 @@
       "browseCollection": "Duyệt bộ sưu tập điểm đến được tuyển chọn",
       "explore": "Khám phá",
       "discoverButton": "Khám phá",
-      "ariaLabel": "Tổng quan điểm đến"
+      "ariaLabel": "Tổng quan điểm đến",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "ĐIỂM ĐẾN",
@@ -39,7 +42,8 @@
       "previous": "Điểm đến trước",
       "next": "Điểm đến tiếp theo",
       "goTo": "Đi đến {{name}}",
-      "slideOf": "Slide {{current}} trong {{total}}: {{name}}"
+      "slideOf": "Slide {{current}} trong {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Khám phá",

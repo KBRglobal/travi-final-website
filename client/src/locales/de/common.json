@@ -213,7 +213,10 @@
       "browseCollection": "Durchstöbern Sie unsere handverlesene Sammlung von Reisezielen",
       "explore": "Erkunden",
       "discoverButton": "Entdecken",
-      "ariaLabel": "Reiseziele Übersicht"
+      "ariaLabel": "Reiseziele Übersicht",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "REISEZIELE",
@@ -238,7 +241,8 @@
       "previous": "Vorheriges Reiseziel",
       "next": "Nächstes Reiseziel",
       "goTo": "Zu {{name}} gehen",
-      "slideOf": "Folie {{current}} von {{total}}: {{name}}"
+      "slideOf": "Folie {{current}} von {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Erkunden",

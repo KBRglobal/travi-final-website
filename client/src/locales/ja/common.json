@@ -213,7 +213,10 @@
       "browseCollection": "厳選された目的地コレクションを閲覧",
       "explore": "探索",
       "discoverButton": "発見",
-      "ariaLabel": "目的地の概要"
+      "ariaLabel": "目的地の概要",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "目的地",
@@ -238,7 +241,8 @@
       "previous": "前の目的地",
       "next": "次の目的地",
       "goTo": "{{name}} に移動",
-      "slideOf": "スライド {{current}}/{{total}}: {{name}}"
+      "slideOf": "スライド {{current}}/{{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "探索",

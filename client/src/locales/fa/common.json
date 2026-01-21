@@ -213,7 +213,10 @@
       "browseCollection": "مجموعه مقاصد منتخب ما را مرور کنید",
       "explore": "کاوش",
       "discoverButton": "کشف",
-      "ariaLabel": "نمای کلی مقاصد"
+      "ariaLabel": "نمای کلی مقاصد",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "مقاصد",
@@ -238,7 +241,8 @@
       "previous": "مقصد قبلی",
       "next": "مقصد بعدی",
       "goTo": "رفتن به {{name}}",
-      "slideOf": "اسلاید {{current}} از {{total}}: {{name}}"
+      "slideOf": "اسلاید {{current}} از {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "کاوش",

@@ -213,7 +213,10 @@
       "browseCollection": "浏览我们精选的旅行目的地",
       "explore": "探索",
       "discoverButton": "发现",
-      "ariaLabel": "目的地概览"
+      "ariaLabel": "目的地概览",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "目的地",
@@ -238,7 +241,8 @@
       "previous": "上一个目的地",
       "next": "下一个目的地",
       "goTo": "前往 {{name}}",
-      "slideOf": "幻灯片 {{current}}/{{total}}: {{name}}"
+      "slideOf": "幻灯片 {{current}}/{{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "探索",

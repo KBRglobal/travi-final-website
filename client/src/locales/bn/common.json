@@ -213,7 +213,10 @@
       "browseCollection": "আমাদের নির্বাচিত গন্তব্য সংগ্রহ ব্রাউজ করুন",
       "explore": "অন্বেষণ",
       "discoverButton": "আবিষ্কার",
-      "ariaLabel": "গন্তব্য পর্যালোচনা"
+      "ariaLabel": "গন্তব্য পর্যালোচনা",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "গন্তব্য",
@@ -238,7 +241,8 @@
       "previous": "আগের গন্তব্য",
       "next": "পরের গন্তব্য",
       "goTo": "{{name}} এ যান",
-      "slideOf": "স্লাইড {{current}}/{{total}}: {{name}}"
+      "slideOf": "স্লাইড {{current}}/{{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "অন্বেষণ",

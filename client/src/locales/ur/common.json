@@ -213,7 +213,10 @@
       "browseCollection": "ہماری منتخب منزلوں کا مجموعہ دیکھیں",
       "explore": "دریافت",
       "discoverButton": "دریافت کریں",
-      "ariaLabel": "منزلوں کا جائزہ"
+      "ariaLabel": "منزلوں کا جائزہ",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "منزلیں",
@@ -238,7 +241,8 @@
       "previous": "پچھلی منزل",
       "next": "اگلی منزل",
       "goTo": "{{name}} پر جائیں",
-      "slideOf": "سلائیڈ {{current}} از {{total}}: {{name}}"
+      "slideOf": "سلائیڈ {{current}} از {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "دریافت",

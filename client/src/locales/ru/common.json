@@ -213,7 +213,10 @@
       "browseCollection": "Просмотрите нашу коллекцию избранных направлений",
       "explore": "Исследовать",
       "discoverButton": "Открыть",
-      "ariaLabel": "Обзор направлений"
+      "ariaLabel": "Обзор направлений",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "НАПРАВЛЕНИЙ",
@@ -238,7 +241,8 @@
       "previous": "Предыдущее",
       "next": "Следующее",
       "goTo": "Перейти к {{name}}",
-      "slideOf": "Слайд {{current}} из {{total}}: {{name}}"
+      "slideOf": "Слайд {{current}} из {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Исследовать",
