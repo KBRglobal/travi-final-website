@@ -7,28 +7,45 @@ const BASE_URL = "https://travi.world";
 
 // ===========================================
 // ACTIVE LANGUAGES FILTER
-// Only generate sitemaps for languages that are actually live
-// Update this array when new translations go live
-// Genesis G1: All 17 locales enabled for infrastructure
+// All 30 locales enabled for infrastructure
+// January 2026: Expanded from 17 to 30 locales
 // ===========================================
 const ACTIVE_LOCALES: Locale[] = [
+  // Tier 1 - Core Markets
   "en",  // English - primary
   "ar",  // Arabic
   "hi",  // Hindi
+  // Tier 2 - High ROI Markets
   "zh",  // Chinese
   "ru",  // Russian
   "ur",  // Urdu
   "fr",  // French
+  "id",  // Indonesian
+  // Tier 3 - Growing Markets (Southeast Asia focus)
   "de",  // German
   "fa",  // Persian
   "bn",  // Bengali
   "fil", // Filipino
+  "th",  // Thai
+  "vi",  // Vietnamese
+  "ms",  // Malay
+  // Tier 4 - Niche Markets
   "es",  // Spanish
   "tr",  // Turkish
   "it",  // Italian
   "ja",  // Japanese
   "ko",  // Korean
   "he",  // Hebrew
+  "pt",  // Portuguese
+  // Tier 5 - European Expansion
+  "nl",  // Dutch
+  "pl",  // Polish
+  "sv",  // Swedish
+  "el",  // Greek
+  "cs",  // Czech
+  "ro",  // Romanian
+  "uk",  // Ukrainian
+  "hu",  // Hungarian
 ];
 
 // Helper to check if a locale is active
@@ -633,11 +650,8 @@ Allow: /
 
 # ===========================================
 # BLOCK INACTIVE LANGUAGE PATHS
-# Remove from this list when translations go live
+# January 2026: All 30 locales are now active
 # ===========================================
-User-agent: *
-Disallow: /sv/
-Disallow: /bn/
 ${inactiveLocalePaths}
 
 # ===========================================
