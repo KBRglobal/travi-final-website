@@ -1,0 +1,87 @@
+TASK: GLOBAL LOCALIZATION CONSISTENCY — SINGLE-LANGUAGE GUARANTEE (EN + AR)
+
+CONTEXT:
+The app currently renders mixed-language UIs due to:
+- Silent i18next fallback behavior
+- Hardcoded English literals alongside t() usage
+- Partial translation coverage
+
+This is UNACCEPTABLE.
+Each page must render in ONE language ONLY.
+Missing translations must be EXPLICITLY VISIBLE.
+
+LANGUAGE POLICY (STRICT):
+- EN = default reference language
+- AR = sole RTL reference language
+- NO silent fallback to English
+- NO mixed-language rendering
+- Hebrew and other locales exist but are OUT OF SCOPE for this task
+
+OBJECTIVES:
+1. Enforce single-locale rendering per page
+2. Eliminate silent fallbacks
+3. Make missing translations impossible to miss
+4. Prevent regressions at build time
+
+REQUIRED IMPLEMENTATION (ALL):
+
+A. i18next HARD MODE
+- Set fallbackLng = false
+- Disable returnNull / returnEmptyString
+- Use custom missingKeyHandler to render:
+  [NEEDS_TRANSLATION:key]
+- Log console warning in dev:
+  [MISSING_TRANSLATION] locale="ar" key="..."
+
+B. GLOBAL HARD-CODED STRING AUDIT
+- Scan ALL client components/pages
+- ZERO visible user-facing strings allowed unless:
+  - Wrapped with t()
+  - Or explicitly marked OUT_OF_SCOPE (legal body text only)
+- Replace literals with translation keys
+- DO NOT translate content automatically
+
+C. TRANSLATION PARITY ENFORCEMENT
+- Build-time script that:
+  - Compares en vs ar JSON keys
+  - Fails build on:
+    • Missing keys
+    • Extra keys
+- Command example:
+  npx tsx scripts/check-translation-parity.ts
+
+D. PLACEHOLDER STRATEGY (AR)
+- For every missing AR key:
+  Value must be:
+  "[NEEDS_TRANSLATION]"
+- NO English allowed as placeholder
+- Goal: visual completeness + translator visibility
+
+E. RTL VALIDATION (AR ONLY)
+- Test these routes:
+  /ar
+  /ar/about
+  /ar/contact
+  /ar/privacy
+  /ar/terms
+- Verify:
+  - dir="rtl"
+  - No English leakage
+  - Icons, arrows, alignment correct
+
+SUCCESS CRITERIA (MANDATORY):
+- EN pages: 0 placeholders, 0 warnings
+- AR pages: 0 English strings visible
+- Missing content shows ONLY [NEEDS_TRANSLATION]
+- Build FAILS if parity breaks
+- Screenshots confirm single-language UI
+
+DELIVERABLE:
+- Code changes committed
+- Parity script passing
+- Before/after screenshots (EN + AR)
+- Short confirmation report:
+  “Single-language enforcement complete. No silent fallbacks.”
+
+START IMMEDIATELY.
+DO NOT STOP UNTIL ALL CRITERIA ARE MET.
