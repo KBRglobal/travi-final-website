@@ -206,6 +206,7 @@ import { initEnforcement } from "./autonomy/enforcement";
 import { helpAdminRoutes, helpPublicRoutes } from "./help";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
 import octypoRoutes from "./routes/admin/octypo-routes";
+import pilotLocalizationRoutes from "./octypo/pilot/routes";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
 import { growthOSRoutes } from "./growth-os";
 import traviRoutes from "./travi/routes";
@@ -17247,6 +17248,11 @@ Return as valid JSON.`,
   // OCTYPO ENGINE (AI Content Generation System - Writers, Validators, Orchestrator)
   // ============================================================================
   app.use("/api/octypo", requireAuth, requirePermission("canEdit"), octypoRoutes);
+
+  // ============================================================================
+  // PILOT: Octypo × Localization Integration (Isolated for pilot testing)
+  // ============================================================================
+  app.use("/api/octypo/pilot", requireAuth, requirePermission("canEdit"), pilotLocalizationRoutes);
 
   // ============================================================================
   // ENHANCEMENTS (Readability, CTAs, Search, Popups, Newsletter, Monetization, PWA)

@@ -1,0 +1,265 @@
+/**
+ * PILOT: Octypo × Localization API Routes
+ * ========================================
+ * Isolated endpoints for the localization pilot.
+ * 
+ * ENDPOINTS:
+ * - POST /api/octypo/pilot/generate - Generate content for an attraction in a specific locale
+ * - GET /api/octypo/pilot/content/:entityId/:locale - Get generated content for rendering
+ * - GET /api/octypo/pilot/status/:entityId/:locale - Check generation status
+ */
+
+import { Router, Request, Response } from "express";
+import { z } from "zod";
+import { db } from "../../db";
+import { tiqetsAttractions, pilotLocalizedContent } from "@shared/schema";
+import { eq, and } from "drizzle-orm";
+import { generatePilotContent, getPilotContent, type PilotGenerationRequest } from "./localization-pilot";
+import type { AttractionData } from "../types";
+
+const router = Router();
+
+const generateRequestSchema = z.object({
+  entityType: z.literal("attraction"),
+  entityId: z.string().min(1, "entityId is required"),
+  destination: z.string().min(1, "destination is REQUIRED - no fallback allowed"),
+  locale: z.enum(["en", "ar"]),
+});
+
+router.post("/generate", async (req: Request, res: Response) => {
+  try {
+    const parseResult = generateRequestSchema.safeParse(req.body);
+    
+    if (!parseResult.success) {
+      return res.status(400).json({
+        success: false,
+        error: "PILOT_FAIL: Invalid input contract",
+        details: parseResult.error.errors.map(e => `${e.path.join(".")}: ${e.message}`),
+      });
+    }
+    
+    const { entityType, entityId, destination, locale } = parseResult.data;
+    
+    console.log(`[PilotAPI] Generate request: ${entityType}/${entityId} locale=${locale} destination=${destination}`);
+    
+    const attraction = await db
+      .select()
+      .from(tiqetsAttractions)
+      .where(eq(tiqetsAttractions.id, entityId))
+      .limit(1);
+    
+    if (attraction.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: `Attraction not found: ${entityId}`,
+      });
+    }
+    
+    // FAIL-FAST: cityName is required, no fallback to destination
+    if (!attraction[0].cityName) {
+      return res.status(422).json({
+        success: false,
+        error: `PILOT_FAIL: Attraction ${entityId} is missing cityName - no fallback allowed`,
+      });
+    }
+    
+    const attractionData: AttractionData = {
+      id: attraction[0].id,
+      title: attraction[0].title,
+      slug: attraction[0].slug,
+      cityName: attraction[0].cityName,
+      venueName: attraction[0].venueName || undefined,
+      duration: attraction[0].duration || undefined,
+      primaryCategory: attraction[0].primaryCategory || "general",
+      rating: attraction[0].tiqetsRating ? parseFloat(attraction[0].tiqetsRating) : undefined,
+      reviewCount: attraction[0].tiqetsReviewCount || 0,
+      tiqetsDescription: attraction[0].tiqetsDescription || undefined,
+      tiqetsHighlights: attraction[0].tiqetsHighlights as string[] || [],
+      priceFrom: attraction[0].priceUsd ? parseFloat(attraction[0].priceUsd) : undefined,
+    };
+    
+    const request: PilotGenerationRequest = {
+      entityType,
+      entityId,
+      destination,
+      locale,
+    };
+    
+    const result = await generatePilotContent(request, attractionData);
+    
+    if (result.success) {
+      return res.json({
+        success: true,
+        entityId: result.entityId,
+        locale: result.locale,
+        destination: result.destination,
+        contentId: result.contentId,
+        validationResults: result.validationResults,
+        writerAgent: result.writerAgent,
+        engineUsed: result.engineUsed,
+        generationTimeMs: result.generationTimeMs,
+      });
+    } else {
+      return res.status(422).json({
+        success: false,
+        entityId: result.entityId,
+        locale: result.locale,
+        destination: result.destination,
+        failureReason: result.failureReason,
+        validationResults: result.validationResults,
+        generationTimeMs: result.generationTimeMs,
+      });
+    }
+    
+  } catch (error) {
+    console.error("[PilotAPI] Generation error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/content/:entityId/:locale", async (req: Request, res: Response) => {
+  try {
+    const { entityId, locale } = req.params;
+    
+    if (!["en", "ar"].includes(locale)) {
+      return res.status(400).json({
+        success: false,
+        error: "PILOT_FAIL: locale must be 'en' or 'ar' only",
+      });
+    }
+    
+    const content = await getPilotContent("attraction", entityId, locale as "en" | "ar");
+    
+    if (!content) {
+      return res.status(404).json({
+        success: false,
+        error: `No published content found for attraction ${entityId} in locale ${locale}`,
+      });
+    }
+    
+    return res.json({
+      success: true,
+      content: {
+        id: content.id,
+        entityType: content.entityType,
+        entityId: content.entityId,
+        locale: content.locale,
+        destination: content.destination,
+        introduction: content.introduction,
+        whatToExpect: content.whatToExpect,
+        visitorTips: content.visitorTips,
+        howToGetThere: content.howToGetThere,
+        faq: content.faq,
+        answerCapsule: content.answerCapsule,
+        metaTitle: content.metaTitle,
+        metaDescription: content.metaDescription,
+        imageAlt: content.imageAlt,
+        imageCaption: content.imageCaption,
+        localePurityScore: content.localePurityScore,
+        status: content.status,
+      },
+    });
+    
+  } catch (error) {
+    console.error("[PilotAPI] Content fetch error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/status/:entityId/:locale", async (req: Request, res: Response) => {
+  try {
+    const { entityId, locale } = req.params;
+    
+    if (!["en", "ar"].includes(locale)) {
+      return res.status(400).json({
+        success: false,
+        error: "PILOT_FAIL: locale must be 'en' or 'ar' only",
+      });
+    }
+    
+    const result = await db
+      .select({
+        id: pilotLocalizedContent.id,
+        status: pilotLocalizedContent.status,
+        localePurityScore: pilotLocalizedContent.localePurityScore,
+        failureReason: pilotLocalizedContent.failureReason,
+        validationResults: pilotLocalizedContent.validationResults,
+        createdAt: pilotLocalizedContent.createdAt,
+        updatedAt: pilotLocalizedContent.updatedAt,
+      })
+      .from(pilotLocalizedContent)
+      .where(
+        and(
+          eq(pilotLocalizedContent.entityType, "attraction"),
+          eq(pilotLocalizedContent.entityId, entityId),
+          eq(pilotLocalizedContent.locale, locale)
+        )
+      )
+      .limit(1);
+    
+    if (result.length === 0) {
+      return res.json({
+        success: true,
+        exists: false,
+        entityId,
+        locale,
+      });
+    }
+    
+    return res.json({
+      success: true,
+      exists: true,
+      entityId,
+      locale,
+      status: result[0].status,
+      localePurityScore: result[0].localePurityScore,
+      failureReason: result[0].failureReason,
+      validationResults: result[0].validationResults,
+      createdAt: result[0].createdAt,
+      updatedAt: result[0].updatedAt,
+    });
+    
+  } catch (error) {
+    console.error("[PilotAPI] Status check error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/attractions/available", async (_req: Request, res: Response) => {
+  try {
+    const availableAttractions = await db
+      .select({
+        id: tiqetsAttractions.id,
+        title: tiqetsAttractions.title,
+        slug: tiqetsAttractions.slug,
+        cityName: tiqetsAttractions.cityName,
+      })
+      .from(tiqetsAttractions)
+      .where(eq(tiqetsAttractions.status, "published"))
+      .limit(10);
+    
+    return res.json({
+      success: true,
+      count: availableAttractions.length,
+      attractions: availableAttractions,
+    });
+    
+  } catch (error) {
+    console.error("[PilotAPI] Attractions list error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+export default router;

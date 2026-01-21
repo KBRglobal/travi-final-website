@@ -446,6 +446,106 @@ export class OctypoOrchestrator {
     }
     return text.split(/\s+/).filter(w => w.length > 0).length;
   }
+
+  /**
+   * PILOT: Generate attraction content with explicit locale parameter
+   * This method generates NATIVE content in the target locale (not translation)
+   * Used by the Octypo × Localization pilot
+   */
+  async generateAttractionContentWithLocale(
+    attraction: AttractionData,
+    locale: "en" | "ar"
+  ): Promise<GenerationResult> {
+    await this.initialize();
+    
+    const startTime = Date.now();
+    let retryCount = 0;
+    let lastContent: GeneratedAttractionContent | undefined;
+    let lastQualityScore: ContentQualityScore | undefined;
+    let lastValidationResults: ValidationResult[] = [];
+    
+    const writer = getWriterForAttraction(attraction.primaryCategory || 'general');
+    if (!writer) {
+      throw new Error('No writer agent available');
+    }
+    
+    console.log(`[OctypoOrchestrator] Starting locale-aware generation: ${attraction.title}`);
+    console.log(`[OctypoOrchestrator] Locale: ${locale}`);
+    console.log(`[OctypoOrchestrator] Writer: ${writer.name} (${writer.specialty})`);
+    
+    while (retryCount < this.config.maxRetries) {
+      try {
+        const content = retryCount === 0 
+          ? await writer.executeWithLocale({
+              attractionId: attraction.id,
+              attractionData: attraction,
+              sections: ['introduction', 'whatToExpect', 'visitorTips', 'howToGetThere', 'faq', 'answerCapsule', 'metaTitle', 'metaDescription'],
+              targetWordCount: 2500,
+              locale: locale, // PILOT: Use explicit locale parameter
+            })
+          : await this.regenerateWithCorrections(attraction, lastContent!, lastValidationResults);
+        
+        content.schemaPayload = schemaGenerator.generateTouristAttractionSchema(attraction, content);
+        
+        // Skip LLM validators for pilot - we use our own validators
+        const validationResults: ValidationResult[] = [];
+        const qualityScore = this.calculateQualityScore(content, validationResults);
+        
+        lastContent = content;
+        lastQualityScore = qualityScore;
+        lastValidationResults = validationResults;
+        
+        console.log(`[OctypoOrchestrator] Locale ${locale} attempt ${retryCount + 1}: Score=${qualityScore.overallScore}`);
+        
+        // For pilot, we return after first successful generation
+        // Validation is done by pilot validators, not here
+        if (lastContent) {
+          return {
+            success: true,
+            content: lastContent,
+            qualityScore: lastQualityScore,
+            engineUsed: 'multi-engine',
+            writerId: writer.id,
+            validationResults: lastValidationResults,
+            retryCount,
+            generationTimeMs: Date.now() - startTime,
+          };
+        }
+        
+        retryCount++;
+        
+      } catch (error) {
+        console.error(`[OctypoOrchestrator] Error on locale ${locale} attempt ${retryCount + 1}:`, error);
+        retryCount++;
+        
+        if (retryCount >= this.config.maxRetries) {
+          return {
+            success: false,
+            content: lastContent,
+            qualityScore: lastQualityScore,
+            engineUsed: 'unknown',
+            writerId: writer.id,
+            validationResults: lastValidationResults,
+            retryCount,
+            generationTimeMs: Date.now() - startTime,
+          };
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+    
+    return {
+      success: lastQualityScore?.passed ?? false,
+      content: lastContent,
+      qualityScore: lastQualityScore,
+      engineUsed: 'multi-engine',
+      writerId: writer.id,
+      validationResults: lastValidationResults,
+      retryCount,
+      generationTimeMs: Date.now() - startTime,
+    };
+  }
 }
 
 let orchestratorInstance: OctypoOrchestrator | null = null;
