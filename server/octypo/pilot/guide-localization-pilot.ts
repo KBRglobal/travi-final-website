@@ -130,6 +130,157 @@ export interface GuideLocalizationResult {
 }
 
 // ============================================================================
+// SEO/AEO ARTIFACT BUILDER (Template-Based, Deterministic)
+// ============================================================================
+
+export interface OpenGraphArtifact {
+  title: string;
+  description: string;
+  type: "article";
+  locale: string;
+  url: string;
+  siteName: string;
+}
+
+export interface TwitterCardArtifact {
+  card: "summary_large_image";
+  title: string;
+  description: string;
+  site?: string;
+}
+
+export interface ArticleSchema {
+  "@type": "Article";
+  headline: string;
+  description: string;
+  inLanguage: string;
+  mainEntityOfPage: { "@type": "WebPage"; "@id": string };
+  publisher: { "@type": "Organization"; name: string };
+  datePublished?: string;
+  dateModified?: string;
+}
+
+export interface FAQPageSchema {
+  "@type": "FAQPage";
+  mainEntity: Array<{
+    "@type": "Question";
+    name: string;
+    acceptedAnswer: { "@type": "Answer"; text: string };
+  }>;
+}
+
+export interface SpeakableSchema {
+  "@type": "SpeakableSpecification";
+  cssSelector: string[];
+}
+
+export interface JsonLdArtifact {
+  "@context": "https://schema.org";
+  "@graph": Array<ArticleSchema | FAQPageSchema | { "@type": "WebPage"; speakable: SpeakableSchema }>;
+}
+
+export interface SeoArtifacts {
+  openGraph: OpenGraphArtifact;
+  twitterCard: TwitterCardArtifact;
+  jsonLd: JsonLdArtifact;
+}
+
+const LOCALE_TO_OG_LOCALE: Record<PilotLocale, string> = {
+  en: "en_US",
+  ar: "ar_AE",
+  fr: "fr_FR",
+};
+
+const LOCALE_TO_LANGUAGE_CODE: Record<PilotLocale, string> = {
+  en: "en",
+  ar: "ar",
+  fr: "fr",
+};
+
+export function buildSeoArtifacts(
+  content: GeneratedGuideContent,
+  locale: PilotLocale,
+  guideSlug: string,
+  destination: string,
+  baseUrl: string = ""
+): SeoArtifacts {
+  const url = `${baseUrl}/pilot/${locale}/guides/${guideSlug}`;
+  const title = content.metaTitle || guideSlug;
+  const description = content.metaDescription || "";
+  const ogLocale = LOCALE_TO_OG_LOCALE[locale];
+  const langCode = LOCALE_TO_LANGUAGE_CODE[locale];
+  
+  const openGraph: OpenGraphArtifact = {
+    title,
+    description,
+    type: "article",
+    locale: ogLocale,
+    url,
+    siteName: "Travi CMS",
+  };
+  
+  const twitterCard: TwitterCardArtifact = {
+    card: "summary_large_image",
+    title,
+    description,
+  };
+  
+  const articleSchema: ArticleSchema = {
+    "@type": "Article",
+    headline: title,
+    description,
+    inLanguage: langCode,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Travi CMS",
+    },
+    dateModified: new Date().toISOString(),
+  };
+  
+  const faqPageSchema: FAQPageSchema = {
+    "@type": "FAQPage",
+    mainEntity: (content.faq || []).map(item => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+  
+  const speakableSpec: SpeakableSchema = {
+    "@type": "SpeakableSpecification",
+    cssSelector: [
+      '[data-testid="text-answer-capsule"]',
+      '[data-testid="text-introduction"]',
+    ],
+  };
+  
+  const jsonLd: JsonLdArtifact = {
+    "@context": "https://schema.org",
+    "@graph": [
+      articleSchema,
+      ...(content.faq && content.faq.length > 0 ? [faqPageSchema] : []),
+      {
+        "@type": "WebPage",
+        speakable: speakableSpec,
+      },
+    ],
+  };
+  
+  return {
+    openGraph,
+    twitterCard,
+    jsonLd,
+  };
+}
+
+// ============================================================================
 // GUIDE-SPECIFIC VALIDATORS
 // ============================================================================
 

@@ -25,8 +25,10 @@ import {
   getLocalizedGuideContent,
   saveLocalizedGuideContent,
   getGuideLocalizationStatus,
+  buildSeoArtifacts,
   type GuideLocalizationRequest,
   type GeneratedGuideContent,
+  type PilotLocale,
 } from "./guide-localization-pilot";
 import type { AttractionData } from "../types";
 
@@ -443,7 +445,7 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
       });
     }
     
-    const result = await getLocalizedGuideContent(guideSlug, locale as "en" | "ar" | "fr");
+    const result = await getLocalizedGuideContent(guideSlug, locale as PilotLocale);
     
     if (!result.found || !result.content) {
       return res.status(404).json({
@@ -457,12 +459,22 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
       });
     }
     
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const seoArtifacts = buildSeoArtifacts(
+      result.content as GeneratedGuideContent,
+      locale as PilotLocale,
+      guideSlug,
+      result.content.destination || "travel",
+      baseUrl
+    );
+    
     return res.json({
       success: true,
       exists: true,
       guideSlug,
       locale,
       content: result.content,
+      seoArtifacts,
     });
     
   } catch (error) {
