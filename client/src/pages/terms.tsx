@@ -1,5 +1,7 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/hooks/use-locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -12,9 +14,12 @@ import {
 const termsMascot = "/logos/Mascot_for_Dark_Background.png";
 
 export default function TermsPage() {
+  const { t } = useTranslation();
+  const { isRTL } = useLocale();
+
   useDocumentMeta({
-    title: "Terms & Conditions | TRAVI",
-    description: "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+    title: t("pages.terms.metaTitle"),
+    description: t("pages.terms.metaDescription"),
   });
 
   const keyPoints = [
@@ -26,43 +31,43 @@ export default function TermsPage() {
 
   return (
     <PublicLayout>
-      {/* Hero Section with gradient and mascot */}
-      <section className="relative pt-28 pb-20 overflow-hidden">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background" />
-        
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#6443F4]/10 rounded-full blur-3xl" />
-        <div className="absolute top-40 right-10 w-80 h-80 bg-[#6443F4]/10 rounded-full blur-3xl" />
-        
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Hero Content */}
-            <div className="text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#6443F4]/20">
-                <FileText className="w-4 h-4 text-[#6443F4]" />
-                <span className="text-sm font-medium text-[#6443F4]">Legal Agreement</span>
-              </div>
-              
-              <h1 
-                className="text-4xl md:text-5xl font-bold mb-6"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                data-testid="heading-terms"
-              >
-                <span className="text-[#6443F4]">
-                  Terms & Conditions
-                </span>
-              </h1>
-              
-              <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-                Please read these terms carefully before using TRAVI World. 
-                Your access to and use of our platform is subject to these conditions.
-              </p>
+      <div dir={isRTL ? "rtl" : "ltr"}>
+        {/* Hero Section with gradient and mascot */}
+        <section className="relative pt-28 pb-20 overflow-hidden">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background" />
+          
+          {/* Decorative elements */}
+          <div className="absolute top-20 left-10 w-64 h-64 bg-[#6443F4]/10 rounded-full blur-3xl" />
+          <div className="absolute top-40 right-10 w-80 h-80 bg-[#6443F4]/10 rounded-full blur-3xl" />
+          
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Hero Content */}
+              <div className="text-center lg:text-start">
+                <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#6443F4]/20">
+                  <FileText className="w-4 h-4 text-[#6443F4]" />
+                  <span className="text-sm font-medium text-[#6443F4]">{t("pages.terms.badge")}</span>
+                </div>
+                
+                <h1 
+                  className="text-4xl md:text-5xl font-bold mb-6"
+                  style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                  data-testid="heading-terms"
+                >
+                  <span className="text-[#6443F4]">
+                    {t("pages.terms.title")}
+                  </span>
+                </h1>
+                
+                <p className="text-lg text-muted-foreground mb-8 max-w-xl">
+                  {t("pages.terms.subtitle")}
+                </p>
 
-              <p className="text-sm text-muted-foreground">
-                Last updated: 1 January 2026
-              </p>
-            </div>
+                <p className="text-sm text-muted-foreground">
+                  {t("pages.terms.lastUpdated")}
+                </p>
+              </div>
 
             {/* Mascot Visual */}
             <div className="relative flex justify-center">
@@ -628,6 +633,7 @@ export default function TermsPage() {
           </div>
         </div>
       </section>
+      </div>
     </PublicLayout>
   );
 }

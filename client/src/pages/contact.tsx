@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
+import { useLocale } from "@/hooks/use-locale";
 import { 
   Mail, MapPin, Globe, Clock, HelpCircle, 
   Building2, MessageSquare, Shield, Send, Sparkles
@@ -18,9 +20,12 @@ const stagger = {
 };
 
 export default function ContactPage() {
+  const { t } = useTranslation();
+  const { isRTL } = useLocale();
+
   useDocumentMeta({
-    title: "Contact Us | TRAVI World",
-    description: "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+    title: t("pages.contact.metaTitle"),
+    description: t("pages.contact.metaDescription"),
   });
 
   const contactOptions = [
@@ -68,7 +73,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-white dark:bg-slate-950" dir={isRTL ? "rtl" : "ltr"}>
       <SubtleSkyBackground />
       <PublicNav variant="transparent" />
 
@@ -76,7 +81,7 @@ export default function ContactPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <motion.div 
-              className="flex-1 text-center lg:text-left"
+              className="flex-1 text-center lg:text-start"
               initial="hidden"
               animate="visible"
               variants={stagger}
@@ -86,7 +91,7 @@ export default function ContactPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 mb-6"
               >
                 <Sparkles className="w-4 h-4 text-[#6443F4]" />
-                <span className="text-sm font-medium text-[#6443F4] dark:text-[#6443F4]">We'd love to hear from you</span>
+                <span className="text-sm font-medium text-[#6443F4] dark:text-[#6443F4]">{t("pages.contact.badge")}</span>
               </motion.div>
 
               <motion.h1 
@@ -95,15 +100,15 @@ export default function ContactPage() {
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-contact"
               >
-                <span className="text-slate-900 dark:text-white">Let's </span>
-                <span className="text-[#6443F4]">Connect</span>
+                <span className="text-slate-900 dark:text-white">{t("pages.contact.titlePart1")} </span>
+                <span className="text-[#6443F4]">{t("pages.contact.titlePart2")}</span>
               </motion.h1>
 
               <motion.p 
                 variants={fadeInUp}
                 className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 mb-8"
               >
-                Have questions about your next adventure? We're here to help you explore the world with confidence.
+                {t("pages.contact.subtitle")}
               </motion.p>
 
               <motion.a 
@@ -113,7 +118,7 @@ export default function ContactPage() {
                 data-testid="button-send-message"
               >
                 <Send className="w-5 h-5" />
-                Send us a message
+                {t("pages.contact.cta")}
               </motion.a>
             </motion.div>
 
@@ -157,10 +162,10 @@ export default function ContactPage() {
               className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4"
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
             >
-              Get in Touch
+              {t("pages.contact.getInTouch")}
             </h2>
             <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Choose the best way to reach us. We're committed to responding promptly.
+              {t("pages.contact.getInTouchSubtitle")}
             </p>
           </motion.div>
 
@@ -228,10 +233,10 @@ export default function ContactPage() {
                 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                How Can We Help?
+                {t("pages.contact.howCanWeHelp")}
               </h2>
               <p className="text-slate-600 dark:text-slate-400 mb-8">
-                We're here to assist with any questions or feedback you might have about our travel contents and services.
+                {t("pages.contact.howCanWeHelpSubtitle")}
               </p>
 
               <ul className="space-y-4">
@@ -270,10 +275,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
-                      Important Note
+                      {t("pages.contact.importantNote")}
                     </h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                      Please read before contacting us
+                      {t("pages.contact.importantNoteSubtitle")}
                     </p>
                   </div>
                 </div>
@@ -316,10 +321,10 @@ export default function ContactPage() {
                     className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
                     style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   >
-                    Our Office
+                    {t("pages.contact.ourOffice")}
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    For official correspondence and postal inquiries
+                    {t("pages.contact.ourOfficeSubtitle")}
                   </p>
 
                   <div className="flex items-start gap-4">
