@@ -3,6 +3,7 @@ import { HelmetProvider } from "react-helmet-async";
 import posthog from "posthog-js";
 import App from "./App";
 import "./index.css";
+import "./lib/i18n/config";
 
 if (import.meta.env.VITE_POSTHOG_KEY) {
   posthog.init(import.meta.env.VITE_POSTHOG_KEY, {

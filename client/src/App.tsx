@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { initGA } from "@/lib/analytics";
 import { Loader2 } from "lucide-react";
-import { LocaleProvider } from "@/lib/i18n/LocaleRouter";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { FavoritesProvider } from "@/hooks/use-favorites";
 // LiveEditProvider removed from public routes for better performance - only needed in admin
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
