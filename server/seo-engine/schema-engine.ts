@@ -275,23 +275,29 @@ export class SchemaEngine {
 
     schemas.push(attractionSchema);
 
-    // Add Place schema for geo-location
-    schemas.push({
-      '@type': 'Place',
-      '@id': `${url}#place`,
-      name: content.title,
-      address: attraction?.location ? {
-        '@type': 'PostalAddress',
-        addressLocality: attraction.location,
-        addressRegion: 'Dubai',
-        addressCountry: 'AE',
-      } : undefined,
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: 25.2048, // Default Dubai coordinates
-        longitude: 55.2708,
-      },
-    });
+    // Add Place schema for geo-location - only if location data is available
+    // FAIL-FAST: Do not use implicit Dubai coordinates - require explicit location data
+    if (attraction?.location) {
+      schemas.push({
+        '@type': 'Place',
+        '@id': `${url}#place`,
+        name: content.title,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: attraction.location,
+          // FAIL-FAST: Do not use implicit Dubai region - use location data only
+          addressCountry: 'AE',
+        },
+        // Only include geo if coordinates are explicitly provided
+        ...(attraction?.coordinates ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: attraction.coordinates.lat,
+            longitude: attraction.coordinates.lng,
+          }
+        } : {})
+      });
+    }
 
     return schemas;
   }

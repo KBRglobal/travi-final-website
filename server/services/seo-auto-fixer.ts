@@ -333,7 +333,8 @@ export class SEOAutoFixer {
     try {
       const title = (article.title as string) || "";
       const intro = (article.introduction as string) || title;
-      const primaryKw = (article.primaryKeyword as string) || title.split(" ")[0] || "Dubai";
+      // FAIL-FAST: Do not use implicit Dubai fallback for primary keyword
+      const primaryKw = (article.primaryKeyword as string) || title.split(" ")[0] || "";
 
       // Extract first meaningful sentence
       const sentences = intro.split(/[.!?]/);
@@ -425,13 +426,14 @@ export class SEOAutoFixer {
         };
       }
 
+      // FAIL-FAST: Do not use implicit Dubai fallback for primary keyword
       return {
         field: "primaryKeyword",
         originalValue: null,
-        fixedValue: "Dubai",
+        fixedValue: "",
         fixType: "fallback",
-        success: true,
-        message: "Using fallback primary keyword: Dubai"
+        success: false,
+        message: "FAIL: No primary keyword available - destination context required (no implicit defaults)"
       };
     } catch (e) {
       return {
@@ -526,7 +528,8 @@ export class SEOAutoFixer {
 
   private fixImageAltText(article: Record<string, unknown>, index: number, image: Record<string, unknown>): FixResult {
     try {
-      const title = (article.title as string) || "Dubai";
+      // FAIL-FAST: Do not use implicit Dubai fallback for image alt text
+      const title = (article.title as string) || "Image";
       const filename = (image.filename as string) || (image.url as string) || "";
 
       // Extract context from filename

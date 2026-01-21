@@ -2314,10 +2314,11 @@ async function renderEventPage(slug: string, options: SSRRenderOptions): Promise
     url: getCanonicalUrl(`/events/${slug}`, locale),
     location: {
       "@type": "Place",
-      name: (content.event as any)?.venueName || content.event?.venue || "Dubai",
+      // FAIL-FAST: Do not use implicit Dubai fallback - use provided venue or event title
+      name: (content.event as any)?.venueName || content.event?.venue || content.title,
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Dubai",
+        addressLocality: (content.event as any)?.location || undefined,
         addressCountry: "AE",
       },
     },

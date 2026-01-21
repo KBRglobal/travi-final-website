@@ -707,12 +707,13 @@ export function registerImageRoutes(app: Express) {
 
       const seoContext: ImageSEOContext = {
         contentType: (contentType || "article") as ContentType,
-        entityName: contentTitle || "Dubai Image",
+        // FAIL-FAST: Do not use implicit Dubai fallback for entity name or location
+        entityName: contentTitle || entitySlug || "Image",
         entitySlug,
         category: categoryMap[contentType] || "hero",
         purpose: "content" as ImagePurpose,
         location: {
-          area: existingTags?.contentLocation || "Dubai",
+          area: existingTags?.contentLocation || undefined,
         },
         language: "en",
       };

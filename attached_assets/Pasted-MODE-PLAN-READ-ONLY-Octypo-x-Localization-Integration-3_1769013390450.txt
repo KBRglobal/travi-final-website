@@ -1,0 +1,131 @@
+MODE: PLAN (READ-ONLY) — Octypo x Localization Integration (30 locales, SEO/AEO-native, no “translation vibe”)
+
+CONTEXT
+We already have Octypo with:
+- 72+ engines, job queue, retries, writers/validators, section-level generation, BLUEPRINT_REQUIREMENTS.
+- Current implementation is effectively EN-first. locale param exists but multi-locale pipeline, per-locale SEO/AEO keyword strategy, batching, cost caps, and page×locale status tracking are NOT implemented.
+We want FULL localization by AI (native writing per locale, not literal translation), including page sections like FAQ/meta/answer capsule, and media text (alt/caption/title/OG) via localized_assets.
+
+GOAL (HARD)
+1) Support generating ONE PAGE in ONE LOCALE end-to-end (all sections) with Octypo, and storing it correctly.
+2) Scale to 30 locales: batch jobs (page × locale), concurrency-safe, resumable, observable, budget-controlled.
+3) Enforce “single-language only” output: never mix EN fallback in localized render. Missing keys should be visible markers (already exists on FE), but Octypo must generate locale-native content that sounds like a local human, using local SEO intent/keywords.
+4) No “manual one-by-one”. We use the Octypo queue/orchestration to run bulk localization.
+
+DELIVERABLE
+Produce a concrete PLAN with:
+A) Data model changes (if needed)
+B) API endpoints + payload contracts
+C) Job types + idempotency rules
+D) Per-locale keyword strategy layer (SEO/AEO)
+E) Cost/budget caps + provider throttling
+F) Coverage tracking (page×locale)
+G) Rollout steps + verification commands
+
+STRICT CONSTRAINTS
+- Do NOT implement in this response. PLAN ONLY.
+- Do NOT rely on DeepL or any paid translation API. AI-native generation only.
+- Do NOT silently fallback to English for content generation. If locale generation fails, job fails with explicit reason and no partial write.
+- Must remain compatible with current Octypo backgroundJobs queue + validators.
+
+--------------------------------------------------------------------
+1) DEFINE THE “LOCALIZATION UNIT”
+Pick ONE canonical unit and stick to it across the system:
+- entityType: "staticPage" | "destination" | "guide" | "news" | "indexPage" | "travelStyle" (adjust to actual codebase)
+- entityId: slug or id
+- locale: one of 30
+- sections: the fixed list already used by Octypo (introduction, whatToExpect, visitorTips, howToGetThere, faq, answerCapsule, metaTitle, metaDescription) PLUS any page-specific blocks that exist in real UI.
+
+Output must be “page-complete”: either all required sections exist OR none stored.
+
+2) STORAGE / VERSIONING (MUST BE DECIDED)
+We need deterministic re-runs and coverage tracking.
+Propose schema additions:
+- localized_generation_runs table (or extend backgroundJobs.result schema) to track:
+  { entityType, entityId, locale, runId, status, engineUsed, qualityScore, createdAt, updatedAt, hashInput, hashPromptVersion }
+- Ensure idempotency: unique(entityType, entityId, locale, promptVersion) so re-run can be “replace” or “create new version” by policy.
+
+Decide policy:
+- Option 1: overwrite latest translation row per locale
+- Option 2: keep versions + “activeVersionId”
+
+Write the plan with the chosen policy and why.
+
+3) KEYWORD/INTENT STRATEGY LAYER (SEO + AEO, LOCALE-NATIVE)
+Implement a NEW module (PLAN only) that produces per-locale “Search Intent Pack”:
+Input:
+- entityType/entityId locale
+- destination context (if any)
+- existing analytics keywords if present (if not, define fallback)
+Output:
+- primary intent (informational/commercial/navigational)
+- 8–20 local keywords (not translated; locale-native phrasing)
+- 5–10 Q/A queries for AEO
+- style guardrails (tone, taboo words, cultural fit)
+- “do-not-say” list to avoid unnatural phrasing (e.g., Hebrew/Israeli slang issues noted)
+
+Where it plugs:
+- before WriterTask creation: WriterTask receives intentPack + localeStyleProfile.
+- validators must check: “sounds local” heuristic + banned-phrases.
+
+4) MULTI-LOCALE BATCHING
+Add new job type:
+- jobType: "localize_page"
+Payload:
+  { entityType, entityId, locales: string[], promptVersion, force?: boolean, dryRun?: boolean }
+Execution model:
+- fan-out to child jobs: one backgroundJobs row per (entityType, entityId, locale)
+- parent job tracks progress aggregation
+
+Concurrency:
+- limit by locale group (e.g., max 2 locales concurrently per provider)
+- reuse existing provider suspension but add “locale lane” throttling to avoid hot-spotting
+
+Retries:
+- retries apply per child job
+- on repeated failures: mark locale as failed with explicit error code (quota, validation, provider, etc.)
+
+5) COST CAPS / BUDGET
+Add plan for cost control:
+- token estimation per section
+- maxTokensPerJob, maxTokensPerDay, maxUSDPerDay (if USD not possible, token-based)
+- if budget exceeded: queue pauses, jobs remain pending with reason “budget_exceeded”
+
+6) WRITING + VALIDATION GUARANTEES
+All-or-nothing writes:
+- generate sections in memory first
+- run validators
+- only then write to DB
+Validation must include:
+- completeness: all required sections exist
+- locale purity: no English leakage above threshold (allow proper nouns)
+- SEO/AEO compliance: includes intent keywords naturally, includes Q/A quality
+- schema/meta: metaTitle/metaDescription length targets per locale
+
+7) INTEGRATION POINTS WITH EXISTING DB/ADMIN
+Decide where localized output is stored:
+- For content entities already using translations table: store per-locale fields there
+- For media: use localized_assets for per-locale alt/caption/title/og variants
+Define admin endpoints for:
+- triggering batch localization
+- viewing coverage by locale
+- approving/publishing generated drafts (if you keep draft state)
+
+8) VERIFICATION / QA
+Provide a concrete verification list:
+- CLI: create job for 1 page × 2 locales
+- check DB rows created
+- confirm FE shows ONE language only (no EN fallback)
+- confirm sitemap/hreflang for localized page exists
+- run parity/script scanners if applicable
+- show sample “job result JSON” shape
+
+--------------------------------------------------------------------
+OUTPUT FORMAT REQUIRED
+Return:
+1) A numbered PLAN (8–12 items) with file/module names you will create/modify
+2) Explicit schemas/JSON contracts (request/response) for new endpoints
+3) Exact job lifecycle states and idempotency rules
+4) A short “Phase rollout” (Pilot → Batch → Full) with stop conditions
+
+DO NOT ASK ME QUESTIONS. Make reasonable assumptions and state them briefly.
