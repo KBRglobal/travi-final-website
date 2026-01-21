@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useCookieConsent } from "@/contexts/cookie-consent-context";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -7,6 +8,7 @@ import { X, Cookie, Settings, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function CookieConsentBanner() {
+  const { t } = useTranslation();
   const { showBanner, acceptAll, rejectNonEssential, savePreferences, preferences } = useCookieConsent();
   const [showManage, setShowManage] = useState(false);
   const [localPrefs, setLocalPrefs] = useState({
@@ -44,10 +46,9 @@ export function CookieConsentBanner() {
                   <Cookie className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg mb-1">We value your privacy</h3>
+                  <h3 className="font-semibold text-lg mb-1">{t("cookies.title")}</h3>
                   <p className="text-sm text-muted-foreground">
-                    We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. 
-                    By clicking "Accept All", you consent to our use of cookies.
+                    {t("cookies.description")}
                   </p>
                 </div>
               </div>
@@ -61,7 +62,7 @@ export function CookieConsentBanner() {
                   data-testid="button-manage-cookies"
                 >
                   <Settings className="w-4 h-4" />
-                  Manage
+                  {t("cookies.manage")}
                 </Button>
                 <Button
                   variant="outline"
@@ -69,14 +70,14 @@ export function CookieConsentBanner() {
                   onClick={rejectNonEssential}
                   data-testid="button-reject-cookies"
                 >
-                  Reject All
+                  {t("cookies.rejectAll")}
                 </Button>
                 <Button
                   size="sm"
                   onClick={acceptAll}
                   data-testid="button-accept-cookies"
                 >
-                  Accept All
+                  {t("cookies.acceptAll")}
                 </Button>
               </div>
             </div>
@@ -85,14 +86,14 @@ export function CookieConsentBanner() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Shield className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-lg">Cookie Preferences</h3>
+                  <h3 className="font-semibold text-lg">{t("cookies.preferencesTitle")}</h3>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setShowManage(false)}
                   data-testid="button-close-manage"
-                  aria-label="Close cookie preferences"
+                  aria-label={t("common.close")}
                 >
                   <X className="w-4 h-4" aria-hidden="true" />
                 </Button>
@@ -101,9 +102,9 @@ export function CookieConsentBanner() {
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                   <div>
-                    <Label className="font-medium">Essential Cookies</Label>
+                    <Label className="font-medium">{t("cookies.essential.title")}</Label>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Required for the website to function properly
+                      {t("cookies.essential.description")}
                     </p>
                   </div>
                   <Switch checked disabled data-testid="switch-essential" />
@@ -111,9 +112,9 @@ export function CookieConsentBanner() {
 
                 <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                   <div>
-                    <Label htmlFor="analytics" className="font-medium">Analytics Cookies</Label>
+                    <Label htmlFor="analytics" className="font-medium">{t("cookies.analytics.title")}</Label>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Help us understand how visitors interact with our website
+                      {t("cookies.analytics.description")}
                     </p>
                   </div>
                   <Switch
@@ -126,9 +127,9 @@ export function CookieConsentBanner() {
 
                 <div className="flex items-center justify-between p-3 bg-muted rounded-md">
                   <div>
-                    <Label htmlFor="marketing" className="font-medium">Marketing Cookies</Label>
+                    <Label htmlFor="marketing" className="font-medium">{t("cookies.marketing.title")}</Label>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Used to deliver personalized advertisements
+                      {t("cookies.marketing.description")}
                     </p>
                   </div>
                   <Switch
@@ -146,14 +147,14 @@ export function CookieConsentBanner() {
                   size="sm"
                   onClick={() => setShowManage(false)}
                 >
-                  Back
+                  {t("common.back")}
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => savePreferences(localPrefs)}
                   data-testid="button-save-preferences"
                 >
-                  Save Preferences
+                  {t("cookies.savePreferences")}
                 </Button>
               </div>
             </div>

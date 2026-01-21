@@ -23,10 +23,10 @@ export default function TermsPage() {
   });
 
   const keyPoints = [
-    { icon: Globe, title: "Editorial Platform", description: "Travel guides & destination contents" },
-    { icon: Handshake, title: "Affiliate Links", description: "Commission-based recommendations" },
-    { icon: Eye, title: "AI-Generated", description: "Content created with AI assistance" },
-    { icon: Shield, title: "Your Privacy", description: "Data protection guaranteed" },
+    { icon: Globe, title: t("pages.terms.keyPoints.editorial.title"), description: t("pages.terms.keyPoints.editorial.description") },
+    { icon: Handshake, title: t("pages.terms.keyPoints.affiliate.title"), description: t("pages.terms.keyPoints.affiliate.description") },
+    { icon: Eye, title: t("pages.terms.keyPoints.aiGenerated.title"), description: t("pages.terms.keyPoints.aiGenerated.description") },
+    { icon: Shield, title: t("pages.terms.keyPoints.privacy.title"), description: t("pages.terms.keyPoints.privacy.description") },
   ];
 
   return (
@@ -124,7 +124,8 @@ export default function TermsPage() {
                   <AlertTriangle className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">Important Legal Notice</h3>
+                  <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">{t("pages.terms.importantNotice")}</h3>
+                  {/* OUT_OF_SCOPE: Legal body text */}
                   <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed">
                     These Terms constitute a legally binding agreement between you and the operator of TRAVI World. By accessing or using this Website, you agree to be bound by these Terms. If you do not agree, do not use the Website.
                   </p>
@@ -145,10 +146,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
-                Operator / Legal Entity
+                {t("pages.terms.sections.operator")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p className="text-muted-foreground leading-relaxed">
                 TRAVI World ("https://travi.world", the "Website", "Platform", "we", "us", "our") is operated by <strong className="text-foreground">KBR Global Creative Consulting Ltd</strong>, a private company limited by shares incorporated in Gibraltar (Company No. 125571) with its registered office at:
               </p>
@@ -175,10 +177,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
-                1. Purpose & Scope of Use
+                {t("pages.terms.sections.purpose")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 TRAVI World is a digital media and editorial platform dedicated to travel and tourism contents. We publish travel-related news, destination guides, attraction reviews, hotel information, and curated outbound links to third-party service providers (such as Booking.com, GetYourGuide, Viator, Skyscanner, Expedia, and others).
               </p>
@@ -199,10 +202,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Scale className="w-5 h-5 text-white" />
                 </div>
-                2. Affiliate Disclosure & Third-Party Transactions
+                {t("pages.terms.sections.affiliateDisclosure")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <div>
                 <h4 className="font-semibold text-foreground mb-2">Affiliate Links</h4>
                 <p>
@@ -224,10 +228,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
                   <AlertTriangle className="w-5 h-5 text-white" />
                 </div>
-                3. AI-Generated Content Disclaimer
+                {t("pages.terms.sections.aiDisclaimer")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-amber-900 dark:text-amber-100 leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <div>
                 <h4 className="font-semibold mb-2">Automated Content Creation</h4>
                 <p>
@@ -255,10 +260,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Mail className="w-5 h-5 text-white" />
                 </div>
-                4. Newsletter & Communications
+                {t("pages.terms.sections.newsletter")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We offer an optional newsletter service for users who wish to receive travel updates, destination highlights, and promotional contents. By subscribing to our newsletter, you:
               </p>
@@ -284,10 +290,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
-                5. User Conduct & Prohibited Actions
+                {t("pages.terms.sections.userConduct")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>By using the Website, you agree not to:</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Use the Website for any unlawful, harmful, defamatory, obscene, or abusive purpose</li>
@@ -314,10 +321,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
-                6. Intellectual Property & Limited License
+                {t("pages.terms.sections.intellectualProperty")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 Unless otherwise credited, all original contents on the Website—including articles, text, graphics, layout, design, trademarks, logos, software, and compilations—is the intellectual property of TRAVI World or its licensors and is protected by applicable copyright, trademark, and other intellectual property laws.
               </p>
@@ -339,10 +347,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
-                7. Notice-and-Takedown (DMCA & Similar)
+                {t("pages.terms.sections.dmca")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 If you believe that contents on the Website infringes your intellectual property rights, please send a written notice to our Designated Agent:
               </p>
@@ -368,10 +377,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Eye className="w-5 h-5 text-white" />
                 </div>
-                8. Accuracy, Availability & Disclaimers
+                {t("pages.terms.sections.disclaimers")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <div>
                 <h4 className="font-semibold text-foreground mb-2">"AS IS" and "AS AVAILABLE"</h4>
                 <p>
@@ -396,10 +406,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Scale className="w-5 h-5 text-white" />
                 </div>
-                9. Limitation of Liability & Force Majeure
+                {t("pages.terms.sections.liability")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <div>
                 <h4 className="font-semibold text-foreground mb-2">Limitation of Liability</h4>
                 <p>
@@ -430,10 +441,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
-                10. Indemnification
+                {t("pages.terms.sections.indemnification")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 You agree to indemnify, defend, and hold harmless TRAVI World, KBR Global Creative Consulting Ltd, and their respective directors, officers, employees, agents, affiliates, and partners from and against any and all claims, liabilities, damages, losses, costs, and expenses (including reasonable legal fees and court costs) arising out of or related to: (a) your breach of these Terms; (b) your use or misuse of the Website; (c) your violation of any applicable law, regulation, or third-party rights; or (d) any contents you submit or transmit through the Website.
               </p>
@@ -446,10 +458,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Lock className="w-5 h-5 text-white" />
                 </div>
-                11. Privacy, Cookies & Data Protection
+                {t("pages.terms.sections.privacyCookies")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 Our data collection and processing practices are described in detail in our{" "}
                 <Link href="/privacy" className="text-[#6443F4] hover:underline font-medium" data-testid="link-privacy-policy">Privacy Policy</Link> and{" "}
@@ -484,10 +497,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Accessibility className="w-5 h-5 text-white" />
                 </div>
-                12. Accessibility Statement
+                {t("pages.terms.sections.accessibility")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We are committed to digital accessibility and strive to ensure that the Website conforms to the Web Content Accessibility Guidelines (WCAG) 2.2 Level AA standards. If you experience any difficulty accessing contents or functionality on the Website, please contact us at{" "}
                 <a href="mailto:info@travi.world" className="text-[#6443F4] hover:underline" data-testid="link-accessibility-email">info@travi.world</a> (subject line: "Accessibility"). We will make reasonable efforts to provide the requested information in an alternative format and to remediate accessibility barriers.
@@ -501,10 +515,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Gavel className="w-5 h-5 text-white" />
                 </div>
-                13. Governing Law, Dispute Resolution & Jurisdiction
+                {t("pages.terms.sections.governingLaw")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <div>
                 <h4 className="font-semibold text-foreground mb-2">Governing Law</h4>
                 <p>
@@ -538,10 +553,11 @@ export default function TermsPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <RefreshCw className="w-5 h-5 text-white" />
                 </div>
-                14. Modifications, Severability & General Provisions
+                {t("pages.terms.sections.modifications")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <div>
                 <h4 className="font-semibold text-foreground mb-2">Modifications</h4>
                 <p>
