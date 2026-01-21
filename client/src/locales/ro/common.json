@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Destinații în Întreaga Lume",
+      "trustedBy": "De încredere pentru {{count}} destinații",
+      "discover": "Descoperă",
+      "worldClass": "De Clasă Mondială",
+      "destinations": "Destinații",
+      "description": "Ghiduri de călătorie selectate cu expertiză locală pentru cele mai captivante orașe din lume.",
+      "exploreAll": "Explorează Toate Destinațiile",
+      "travelGuides": "Ghiduri de Călătorie",
+      "explorePlaceholder": "Explorează Destinații",
+      "browseCollection": "Răsfoiește colecția noastră de destinații selectate",
+      "explore": "Explorează",
+      "discoverButton": "Descoperă",
+      "ariaLabel": "Prezentare generală a destinațiilor"
+    },
+    "stats": {
+      "destinations": "DESTINAȚII",
+      "countries": "ȚĂRI",
+      "regions": "Regiuni",
+      "languages": "Limbi"
+    },
+    "sections": {
+      "featured": "Destinații Recomandate",
+      "featuredDesc": "Destinații selectate cu experiențe excepționale.",
+      "all": "Toate Destinațiile",
+      "count": "{{count}} destinații găsite"
+    },
+    "search": {
+      "placeholder": "Caută destinații...",
+      "noResults": "Nu s-au găsit destinații",
+      "tryAdjusting": "Încercați să ajustați criteriile de căutare",
+      "clearSearch": "Șterge Căutarea"
+    },
+    "carousel": {
+      "label": "Carusel destinații recomandate",
+      "previous": "Destinația anterioară",
+      "next": "Următoarea destinație",
+      "goTo": "Mergi la {{name}}",
+      "slideOf": "Slide {{current}} din {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Explorează",
+      "defaultLevel": "Oraș",
+      "exploreFallback": "Explorează {{name}}",
+      "destination": "Destinație",
+      "travelGuideAlt": "Ghid de călătorie {{name}}"
+    },
+    "faq": {
+      "title": "Întrebări Frecvente",
+      "subtitle": "Totul despre ghidurile de destinații TRAVI",
+      "q1": "Câte destinații acoperă TRAVI?",
+      "a1": "TRAVI acoperă destinații majore din Orientul Mijlociu, Europa, Asia și America.",
+      "q2": "Ce informații sunt incluse?",
+      "a2": "Fiecare ghid include atracții, cazare, bucătărie locală și sfaturi de călătorie.",
+      "q3": "Pot căuta destinații?",
+      "a3": "Da, puteți căuta după nume sau țară.",
+      "q4": "Care sunt destinațiile recomandate pe TRAVI?",
+      "a4": "Destinațiile recomandate oferă experiențe excepționale."
+    },
+    "loading": {
+      "title": "Se Încarcă Destinațiile",
+      "message": "Se obțin cele mai recente date..."
+    },
+    "error": {
+      "title": "Nu Se Poate Încărca",
+      "message": "Vă rugăm să încercați din nou mai târziu.",
+      "refresh": "Reîmprospătează Pagina"
+    },
+    "empty": {
+      "title": "Nu Există Destinații Disponibile",
+      "message": "Momentan nu există destinații disponibile."
+    }
+  }
+}

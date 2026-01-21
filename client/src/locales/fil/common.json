@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Destinasyon sa Buong Mundo",
+      "trustedBy": "Pinagkakatiwalaan ng {{count}} destinasyon",
+      "discover": "Tuklasin",
+      "worldClass": "World-Class",
+      "destinations": "Mga Destinasyon",
+      "description": "Mga travel guide na may lokal na expertise para sa pinakakaakit-akit na mga lungsod sa mundo.",
+      "exploreAll": "Tuklasin Lahat ng Destinasyon",
+      "travelGuides": "Mga Travel Guide",
+      "explorePlaceholder": "Tuklasin ang Mga Destinasyon",
+      "browseCollection": "I-browse ang aming koleksyon ng mga piniling destinasyon",
+      "explore": "Tuklasin",
+      "discoverButton": "Tuklasin",
+      "ariaLabel": "Pangkalahatang-ideya ng mga destinasyon"
+    },
+    "stats": {
+      "destinations": "DESTINASYON",
+      "countries": "BANSA",
+      "regions": "Mga Rehiyon",
+      "languages": "Mga Wika"
+    },
+    "sections": {
+      "featured": "Mga Tampok na Destinasyon",
+      "featuredDesc": "Mga piniling destinasyon na may pambihirang karanasan.",
+      "all": "Lahat ng Destinasyon",
+      "count": "{{count}} destinasyon ang nahanap"
+    },
+    "search": {
+      "placeholder": "Maghanap ng destinasyon...",
+      "noResults": "Walang nahanap na destinasyon",
+      "tryAdjusting": "Subukang ayusin ang iyong pamantayan sa paghahanap",
+      "clearSearch": "I-clear ang Paghahanap"
+    },
+    "carousel": {
+      "label": "Carousel ng mga tampok na destinasyon",
+      "previous": "Nakaraang destinasyon",
+      "next": "Susunod na destinasyon",
+      "goTo": "Pumunta sa {{name}}",
+      "slideOf": "Slide {{current}} ng {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Tuklasin",
+      "defaultLevel": "Lungsod",
+      "exploreFallback": "Tuklasin ang {{name}}",
+      "destination": "Destinasyon",
+      "travelGuideAlt": "{{name}} travel guide"
+    },
+    "faq": {
+      "title": "Mga Madalas Itanong",
+      "subtitle": "Lahat tungkol sa mga destination guide ng TRAVI",
+      "q1": "Ilang destinasyon ang sakop ng TRAVI?",
+      "a1": "Sinasaklaw ng TRAVI ang mga pangunahing destinasyon sa Middle East, Europe, Asia, at Americas.",
+      "q2": "Anong impormasyon ang kasama?",
+      "a2": "Kasama sa bawat guide ang mga atraksyon, tirahan, lokal na pagkain, at mga tip sa paglalakbay.",
+      "q3": "Maaari ba akong maghanap ng mga destinasyon?",
+      "a3": "Oo, maaari kang maghanap ayon sa pangalan o bansa.",
+      "q4": "Ano ang mga tampok na destinasyon sa TRAVI?",
+      "a4": "Ang mga tampok na destinasyon ay nag-aalok ng pambihirang karanasan."
+    },
+    "loading": {
+      "title": "Naglo-load ng Mga Destinasyon",
+      "message": "Kinukuha ang pinakabagong data..."
+    },
+    "error": {
+      "title": "Hindi Ma-load",
+      "message": "Subukan ulit mamaya.",
+      "refresh": "I-refresh ang Pahina"
+    },
+    "empty": {
+      "title": "Walang Destinasyon",
+      "message": "Kasalukuyang walang available na destinasyon."
+    }
   }
 }

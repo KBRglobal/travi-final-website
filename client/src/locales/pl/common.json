@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Miejsc Docelowych na Świecie",
+      "trustedBy": "Zaufało nam {{count}} miejsc docelowych",
+      "discover": "Odkryj",
+      "worldClass": "Światowej Klasy",
+      "destinations": "Miejsca Docelowe",
+      "description": "Starannie wyselekcjonowane przewodniki z lokalną wiedzą dla najpiękniejszych miast świata.",
+      "exploreAll": "Odkryj Wszystkie Miejsca",
+      "travelGuides": "Przewodniki Podróżne",
+      "explorePlaceholder": "Odkryj Miejsca Docelowe",
+      "browseCollection": "Przeglądaj naszą kolekcję wybranych miejsc docelowych",
+      "explore": "Odkryj",
+      "discoverButton": "Odkryj",
+      "ariaLabel": "Przegląd miejsc docelowych"
+    },
+    "stats": {
+      "destinations": "MIEJSCA",
+      "countries": "KRAJE",
+      "regions": "Regiony",
+      "languages": "Języki"
+    },
+    "sections": {
+      "featured": "Polecane Miejsca",
+      "featuredDesc": "Wyselekcjonowane miejsca z wyjątkowymi doświadczeniami.",
+      "all": "Wszystkie Miejsca",
+      "count": "Znaleziono {{count}} miejsc"
+    },
+    "search": {
+      "placeholder": "Szukaj miejsc...",
+      "noResults": "Nie znaleziono miejsc",
+      "tryAdjusting": "Spróbuj dostosować kryteria wyszukiwania",
+      "clearSearch": "Wyczyść Wyszukiwanie"
+    },
+    "carousel": {
+      "label": "Karuzela polecanych miejsc",
+      "previous": "Poprzednie miejsce",
+      "next": "Następne miejsce",
+      "goTo": "Przejdź do {{name}}",
+      "slideOf": "Slajd {{current}} z {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Odkryj",
+      "defaultLevel": "Miasto",
+      "exploreFallback": "Odkryj {{name}}",
+      "destination": "Miejsce Docelowe",
+      "travelGuideAlt": "Przewodnik po {{name}}"
+    },
+    "faq": {
+      "title": "Często Zadawane Pytania",
+      "subtitle": "Wszystko o przewodnikach TRAVI",
+      "q1": "Ile miejsc docelowych obejmuje TRAVI?",
+      "a1": "TRAVI obejmuje główne miejsca docelowe na Bliskim Wschodzie, w Europie, Azji i obu Amerykach.",
+      "q2": "Jakie informacje są zawarte?",
+      "a2": "Każdy przewodnik zawiera atrakcje, zakwaterowanie, lokalną kuchnię i wskazówki podróżne.",
+      "q3": "Czy mogę wyszukiwać miejsca?",
+      "a3": "Tak, możesz wyszukiwać po nazwie lub kraju.",
+      "q4": "Jakie są polecane miejsca na TRAVI?",
+      "a4": "Polecane miejsca oferują wyjątkowe doświadczenia."
+    },
+    "loading": {
+      "title": "Ładowanie Miejsc",
+      "message": "Pobieranie najnowszych danych..."
+    },
+    "error": {
+      "title": "Nie Można Załadować",
+      "message": "Spróbuj ponownie później.",
+      "refresh": "Odśwież Stronę"
+    },
+    "empty": {
+      "title": "Brak Dostępnych Miejsc",
+      "message": "Obecnie nie ma dostępnych miejsc docelowych."
+    }
+  }
+}

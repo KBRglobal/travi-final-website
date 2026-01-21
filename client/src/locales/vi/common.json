@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Điểm đến Toàn cầu",
+      "trustedBy": "Được tin tưởng bởi {{count}} điểm đến",
+      "discover": "Khám phá",
+      "worldClass": "Đẳng cấp Thế giới",
+      "destinations": "Điểm đến",
+      "description": "Hướng dẫn du lịch được tuyển chọn với chuyên môn địa phương cho các thành phố quyến rũ nhất thế giới.",
+      "exploreAll": "Khám phá Tất cả Điểm đến",
+      "travelGuides": "Hướng dẫn Du lịch",
+      "explorePlaceholder": "Khám phá Điểm đến",
+      "browseCollection": "Duyệt bộ sưu tập điểm đến được tuyển chọn",
+      "explore": "Khám phá",
+      "discoverButton": "Khám phá",
+      "ariaLabel": "Tổng quan điểm đến"
+    },
+    "stats": {
+      "destinations": "ĐIỂM ĐẾN",
+      "countries": "QUỐC GIA",
+      "regions": "Vùng",
+      "languages": "Ngôn ngữ"
+    },
+    "sections": {
+      "featured": "Điểm đến Nổi bật",
+      "featuredDesc": "Điểm đến được tuyển chọn với trải nghiệm đặc biệt.",
+      "all": "Tất cả Điểm đến",
+      "count": "Tìm thấy {{count}} điểm đến"
+    },
+    "search": {
+      "placeholder": "Tìm kiếm điểm đến...",
+      "noResults": "Không tìm thấy điểm đến",
+      "tryAdjusting": "Thử điều chỉnh tiêu chí tìm kiếm",
+      "clearSearch": "Xóa Tìm kiếm"
+    },
+    "carousel": {
+      "label": "Băng chuyền điểm đến nổi bật",
+      "previous": "Điểm đến trước",
+      "next": "Điểm đến tiếp theo",
+      "goTo": "Đi đến {{name}}",
+      "slideOf": "Slide {{current}} trong {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Khám phá",
+      "defaultLevel": "Thành phố",
+      "exploreFallback": "Khám phá {{name}}",
+      "destination": "Điểm đến",
+      "travelGuideAlt": "Hướng dẫn du lịch {{name}}"
+    },
+    "faq": {
+      "title": "Câu hỏi Thường gặp",
+      "subtitle": "Mọi thứ về hướng dẫn điểm đến TRAVI",
+      "q1": "TRAVI bao phủ bao nhiêu điểm đến?",
+      "a1": "TRAVI bao phủ các điểm đến chính ở Trung Đông, Châu Âu, Châu Á và Châu Mỹ.",
+      "q2": "Thông tin nào được bao gồm?",
+      "a2": "Mỗi hướng dẫn bao gồm điểm tham quan, chỗ ở, ẩm thực địa phương và mẹo du lịch.",
+      "q3": "Tôi có thể tìm kiếm điểm đến không?",
+      "a3": "Có, bạn có thể tìm theo tên hoặc quốc gia.",
+      "q4": "Điểm đến nổi bật trên TRAVI là gì?",
+      "a4": "Điểm đến nổi bật mang đến trải nghiệm đặc biệt."
+    },
+    "loading": {
+      "title": "Đang tải Điểm đến",
+      "message": "Đang lấy dữ liệu mới nhất..."
+    },
+    "error": {
+      "title": "Không thể Tải",
+      "message": "Vui lòng thử lại sau.",
+      "refresh": "Làm mới Trang"
+    },
+    "empty": {
+      "title": "Không có Điểm đến",
+      "message": "Hiện không có điểm đến nào."
+    }
+  }
+}

@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Destinationer Världen Över",
+      "trustedBy": "Litar på av {{count}} destinationer",
+      "discover": "Upptäck",
+      "worldClass": "Världsklass",
+      "destinations": "Destinationer",
+      "description": "Noggrant utvalda reseguider med lokal expertis för världens mest fängslande städer.",
+      "exploreAll": "Utforska Alla Destinationer",
+      "travelGuides": "Reseguider",
+      "explorePlaceholder": "Utforska Destinationer",
+      "browseCollection": "Bläddra i vår samling av utvalda destinationer",
+      "explore": "Utforska",
+      "discoverButton": "Upptäck",
+      "ariaLabel": "Översikt av destinationer"
+    },
+    "stats": {
+      "destinations": "DESTINATIONER",
+      "countries": "LÄNDER",
+      "regions": "Regioner",
+      "languages": "Språk"
+    },
+    "sections": {
+      "featured": "Utvalda Destinationer",
+      "featuredDesc": "Handplockade destinationer med exceptionella upplevelser.",
+      "all": "Alla Destinationer",
+      "count": "{{count}} destinationer hittades"
+    },
+    "search": {
+      "placeholder": "Sök destinationer...",
+      "noResults": "Inga destinationer hittades",
+      "tryAdjusting": "Försök justera dina sökkriterier",
+      "clearSearch": "Rensa Sökning"
+    },
+    "carousel": {
+      "label": "Karusell med utvalda destinationer",
+      "previous": "Föregående destination",
+      "next": "Nästa destination",
+      "goTo": "Gå till {{name}}",
+      "slideOf": "Bild {{current}} av {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Utforska",
+      "defaultLevel": "Stad",
+      "exploreFallback": "Utforska {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} reseguide"
+    },
+    "faq": {
+      "title": "Vanliga Frågor",
+      "subtitle": "Allt om TRAVI destinationsguider",
+      "q1": "Hur många destinationer täcker TRAVI?",
+      "a1": "TRAVI täcker stora destinationer i Mellanöstern, Europa, Asien och Amerika.",
+      "q2": "Vilken information ingår?",
+      "a2": "Varje guide innehåller attraktioner, boende, lokal mat och resetips.",
+      "q3": "Kan jag söka efter destinationer?",
+      "a3": "Ja, du kan söka efter namn eller land.",
+      "q4": "Vilka är de utvalda destinationerna på TRAVI?",
+      "a4": "Utvalda destinationer erbjuder exceptionella upplevelser."
+    },
+    "loading": {
+      "title": "Laddar Destinationer",
+      "message": "Hämtar senaste data..."
+    },
+    "error": {
+      "title": "Kan Inte Ladda",
+      "message": "Försök igen senare.",
+      "refresh": "Uppdatera Sidan"
+    },
+    "empty": {
+      "title": "Inga Destinationer Tillgängliga",
+      "message": "Det finns för närvarande inga tillgängliga destinationer."
+    }
+  }
+}
