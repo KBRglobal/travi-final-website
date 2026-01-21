@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import { LiveChatWidget } from "@/components/live-chat-widget";

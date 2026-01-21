@@ -10,6 +10,7 @@ interface LocaleContextType {
   isRTL: boolean;
   localeInfo: (typeof SUPPORTED_LOCALES)[number] | undefined;
   availableLocales: typeof SUPPORTED_LOCALES;
+  localePath: (path: string) => string;
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
@@ -81,12 +82,19 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
 
   const localeInfo = SUPPORTED_LOCALES.find((l) => l.code === locale);
 
+  const localePath = (path: string): string => {
+    if (locale === "en") return path;
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    return `/${locale}${cleanPath}`;
+  };
+
   const value: LocaleContextType = {
     locale,
     setLocale: handleSetLocale,
     isRTL: currentIsRTL,
     localeInfo,
     availableLocales: SUPPORTED_LOCALES,
+    localePath,
   };
 
   return (

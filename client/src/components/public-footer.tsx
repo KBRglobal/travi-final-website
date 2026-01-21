@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useCookieConsent } from "@/contexts/cookie-consent-context";
 import { useTranslation } from "react-i18next";
 
