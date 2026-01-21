@@ -268,8 +268,12 @@ export function buildSeoArtifacts(
       ...(content.faq && content.faq.length > 0 ? [faqPageSchema] : []),
       {
         "@type": "WebPage",
+        "@id": url,
+        url: url,
+        name: title,
+        inLanguage: langCode,
         speakable: speakableSpec,
-      },
+      } as { "@type": "WebPage"; speakable: SpeakableSchema },
     ],
   };
   

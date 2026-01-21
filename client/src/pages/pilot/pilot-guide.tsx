@@ -37,12 +37,40 @@ interface GuideContent {
   localePurityScore?: number;
 }
 
+interface OpenGraphArtifact {
+  title: string;
+  description: string;
+  type: "article";
+  locale: string;
+  url: string;
+  siteName: string;
+}
+
+interface TwitterCardArtifact {
+  card: "summary_large_image";
+  title: string;
+  description: string;
+  site?: string;
+}
+
+interface JsonLdArtifact {
+  "@context": "https://schema.org";
+  "@graph": Array<unknown>;
+}
+
+interface SeoArtifacts {
+  openGraph: OpenGraphArtifact;
+  twitterCard: TwitterCardArtifact;
+  jsonLd: JsonLdArtifact;
+}
+
 interface GuideContentResponse {
   success: boolean;
   exists: boolean;
   guideSlug: string;
   locale: string;
   content?: GuideContent;
+  seoArtifacts?: SeoArtifacts;
   message?: string;
 }
 
@@ -179,6 +207,7 @@ export default function PilotGuidePage() {
   }
   
   const content = data.content;
+  const seoArtifacts = data.seoArtifacts;
   const labels = LOCALE_LABELS[locale] || LOCALE_LABELS.en;
   
   return (
@@ -187,11 +216,44 @@ export default function PilotGuidePage() {
         <html lang={locale} dir={isRTL ? "rtl" : "ltr"} />
         <title>{content.metaTitle || `Guide: ${guideSlug}`}</title>
         <meta name="description" content={content.metaDescription || ""} />
-        <meta property="og:locale" content={locale === "ar" ? "ar_AE" : locale === "fr" ? "fr_FR" : "en_US"} />
-        <link rel="canonical" href={`/pilot/${locale}/guides/${guideSlug}`} />
+        
+        {/* OpenGraph - from API seoArtifacts */}
+        {seoArtifacts?.openGraph && (
+          <>
+            <meta property="og:title" content={seoArtifacts.openGraph.title} />
+            <meta property="og:description" content={seoArtifacts.openGraph.description} />
+            <meta property="og:type" content={seoArtifacts.openGraph.type} />
+            <meta property="og:locale" content={seoArtifacts.openGraph.locale} />
+            <meta property="og:url" content={seoArtifacts.openGraph.url} />
+            <meta property="og:site_name" content={seoArtifacts.openGraph.siteName} />
+          </>
+        )}
+        
+        {/* Twitter Card - from API seoArtifacts */}
+        {seoArtifacts?.twitterCard && (
+          <>
+            <meta name="twitter:card" content={seoArtifacts.twitterCard.card} />
+            <meta name="twitter:title" content={seoArtifacts.twitterCard.title} />
+            <meta name="twitter:description" content={seoArtifacts.twitterCard.description} />
+          </>
+        )}
+        
+        <link rel="canonical" href={seoArtifacts?.openGraph.url || `/pilot/${locale}/guides/${guideSlug}`} />
         {PILOT_LOCALES.filter(l => l !== locale).map(altLocale => (
-          <link key={altLocale} rel="alternate" hrefLang={altLocale} href={`/pilot/${altLocale}/guides/${guideSlug}`} />
+          <link 
+            key={altLocale} 
+            rel="alternate" 
+            hrefLang={altLocale} 
+            href={seoArtifacts?.openGraph.url.replace(`/${locale}/`, `/${altLocale}/`) || `/pilot/${altLocale}/guides/${guideSlug}`} 
+          />
         ))}
+        
+        {/* JSON-LD Schema - from API seoArtifacts */}
+        {seoArtifacts?.jsonLd && (
+          <script type="application/ld+json">
+            {JSON.stringify(seoArtifacts.jsonLd)}
+          </script>
+        )}
       </Helmet>
       
       <div 
