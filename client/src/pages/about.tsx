@@ -20,40 +20,40 @@ export default function AboutPage() {
   });
 
   const offerings = [
-    { icon: MapPin, title: "Destination Guides", description: "Comprehensive information about cities and regions around the world" },
-    { icon: Star, title: "Attraction Information", description: "Details about must-see sights and unique experiences" },
-    { icon: Hotel, title: "Hotel Guides", description: "Information about accommodation options for every budget" },
-    { icon: Utensils, title: "Restaurant Recommendations", description: "Dining options for every taste and preference" },
-    { icon: Plane, title: "Travel Articles", description: "Tips, insights, and travel inspiration" },
-    { icon: Newspaper, title: "Latest Travel News", description: "Stay informed with curated travel updates" },
+    { icon: MapPin, title: t("pages.about.offerings.destinations.title"), description: t("pages.about.offerings.destinations.description") },
+    { icon: Star, title: t("pages.about.offerings.attractions.title"), description: t("pages.about.offerings.attractions.description") },
+    { icon: Hotel, title: t("pages.about.offerings.hotels.title"), description: t("pages.about.offerings.hotels.description") },
+    { icon: Utensils, title: t("pages.about.offerings.restaurants.title"), description: t("pages.about.offerings.restaurants.description") },
+    { icon: Plane, title: t("pages.about.offerings.articles.title"), description: t("pages.about.offerings.articles.description") },
+    { icon: Newspaper, title: t("pages.about.offerings.news.title"), description: t("pages.about.offerings.news.description") },
   ];
 
   const values = [
     { 
       icon: ShieldCheck, 
-      title: "Accuracy", 
-      description: "We strive to provide accurate and reliable information, regularly updating our contents",
+      title: t("pages.about.values.accuracy.title"), 
+      description: t("pages.about.values.accuracy.description"),
       color: "#6443F4"
     },
     { 
       icon: BookOpen, 
-      title: "Transparency", 
-      description: "We are clear about our affiliate relationships and how we operate",
+      title: t("pages.about.values.transparency.title"), 
+      description: t("pages.about.values.transparency.description"),
       color: "#6443F4"
     },
     { 
       icon: Heart, 
-      title: "User-Focused", 
-      description: "Our contents is designed to help travelers make informed decisions",
+      title: t("pages.about.values.userFocused.title"), 
+      description: t("pages.about.values.userFocused.description"),
       color: "#F4C542"
     },
   ];
 
   const stats = [
-    { value: "16+", label: "Destinations" },
-    { value: "1000+", label: "Articles" },
-    { value: "24/7", label: "Travel Support" },
-    { value: "Global", label: "Coverage" },
+    { value: "16+", label: t("pages.about.stats.destinations") },
+    { value: "1000+", label: t("pages.about.stats.articles") },
+    { value: "24/7", label: t("pages.about.stats.support") },
+    { value: "Global", label: t("pages.about.stats.coverage") },
   ];
 
   return (
@@ -130,8 +130,8 @@ export default function AboutPage() {
                       <Globe className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Destinations</p>
-                      <p className="font-bold text-foreground">16+ Cities</p>
+                      <p className="text-xs text-muted-foreground">{t("pages.about.stats.destinations")}</p>
+                      <p className="font-bold text-foreground">{t("pages.about.stats.cities")}</p>
                     </div>
                   </div>
                 </div>
@@ -174,9 +174,10 @@ export default function AboutPage() {
                   className="text-2xl font-bold text-foreground"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 >
-                  Who We Are
+                  {t("pages.about.whoWeAre.title")}
                 </h2>
               </div>
+              {/* OUT_OF_SCOPE: Editorial body text */}
               <div className="space-y-4 text-muted-foreground">
                 <p>
                   TRAVI World is an independent travel information platform dedicated to providing 
@@ -205,9 +206,10 @@ export default function AboutPage() {
                   className="text-2xl font-bold text-foreground"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 >
-                  Our Mission
+                  {t("pages.about.mission.title")}
                 </h2>
               </div>
+              {/* OUT_OF_SCOPE: Editorial body text */}
               <div className="space-y-4 text-muted-foreground">
                 <p>
                   Our mission is to provide accurate, up-to-date travel information to help travelers 
@@ -237,14 +239,15 @@ export default function AboutPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 mb-4">
               <Compass className="w-4 h-4 text-[#6443F4]" />
-              <span className="text-sm font-medium text-[#6443F4]">Our Services</span>
+              <span className="text-sm font-medium text-[#6443F4]">{t("pages.about.services.badge")}</span>
             </div>
             <h2 
               className="text-3xl md:text-4xl font-bold text-foreground mb-4"
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
             >
-              What We Offer
+              {t("pages.about.services.title")}
             </h2>
+            {/* OUT_OF_SCOPE: Editorial body text */}
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Comprehensive travel resources designed to help you explore the world with confidence
             </p>
@@ -280,10 +283,11 @@ export default function AboutPage() {
                 className="text-2xl font-bold text-foreground"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                Editorial Independence
+                {t("pages.about.editorial.title")}
               </h2>
             </div>
             
+            {/* OUT_OF_SCOPE: Editorial body text */}
             <p className="text-muted-foreground mb-6">
               TRAVI World is an independent travel information resource. Our editorial contents is 
               reviewed internally to maintain quality and accuracy. We are committed to providing 
@@ -294,7 +298,8 @@ export default function AboutPage() {
             <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 p-6">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#F4C542]/20 to-transparent rounded-full blur-2xl" />
               <div className="relative">
-                <p className="font-semibold text-amber-800 dark:text-amber-200 mb-2">Affiliate Disclosure</p>
+                <p className="font-semibold text-amber-800 dark:text-amber-200 mb-2">{t("pages.about.editorial.affiliateTitle")}</p>
+                {/* OUT_OF_SCOPE: Editorial body text */}
                 <p className="text-amber-700 dark:text-amber-300 text-sm">
                   Some contents on our website contains affiliate links. When you click these links and make a purchase, 
                   we may earn a commission at no additional cost to you. Please see our{' '}
@@ -315,14 +320,15 @@ export default function AboutPage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 mb-4">
               <Heart className="w-4 h-4 text-[#6443F4]" />
-              <span className="text-sm font-medium text-[#6443F4]">Our Foundation</span>
+              <span className="text-sm font-medium text-[#6443F4]">{t("pages.about.values.badge")}</span>
             </div>
             <h2 
               className="text-3xl md:text-4xl font-bold text-foreground mb-4"
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
             >
-              Our Values
+              {t("pages.about.values.title")}
             </h2>
+            {/* OUT_OF_SCOPE: Editorial body text */}
             <p className="text-muted-foreground max-w-2xl mx-auto">
               The principles that guide everything we do at TRAVI World
             </p>
@@ -383,15 +389,16 @@ export default function AboutPage() {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm mb-6">
             <Mail className="w-4 h-4 text-white" />
-            <span className="text-sm font-medium text-white">Let's Connect</span>
+            <span className="text-sm font-medium text-white">{t("pages.about.connect.badge")}</span>
           </div>
           
           <h2 
             className="text-3xl md:text-4xl font-bold text-white mb-4"
             style={{ fontFamily: "'Chillax', var(--font-sans)" }}
           >
-            Get in Touch
+            {t("pages.about.connect.title")}
           </h2>
+          {/* OUT_OF_SCOPE: Editorial body text */}
           <p className="text-white/80 max-w-2xl mx-auto mb-8">
             We value your feedback and inquiries. Whether you have questions, suggestions, or 
             would like to report any issues with our contents, we'd love to hear from you.
@@ -401,7 +408,7 @@ export default function AboutPage() {
             <Link href="/contact">
               <Button className="rounded-xl px-8 bg-white text-[#6443F4] hover:bg-white/90">
                 <Mail className="w-4 h-4 mr-2" />
-                Contact Us
+                {t("common.contactUs")}
               </Button>
             </Link>
             <a href="mailto:info@travi.world">
@@ -425,7 +432,7 @@ export default function AboutPage() {
                 className="text-2xl font-bold text-foreground"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
-                Company Information
+                {t("pages.about.company.title")}
               </h2>
             </div>
             
@@ -441,7 +448,7 @@ export default function AboutPage() {
               </div>
               
               <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6">
-                <p className="font-semibold text-foreground text-lg mb-3">Contact Information</p>
+                <p className="font-semibold text-foreground text-lg mb-3">{t("pages.about.company.contactTitle")}</p>
                 <div className="space-y-3">
                   <a 
                     href="mailto:info@travi.world" 
@@ -455,7 +462,7 @@ export default function AboutPage() {
                     className="flex items-center gap-3 text-muted-foreground hover:text-[#6443F4] transition-colors"
                   >
                     <Globe className="w-5 h-5" />
-                    Contact Form
+                    {t("pages.about.company.contactForm")}
                   </Link>
                 </div>
               </div>

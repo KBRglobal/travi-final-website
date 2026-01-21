@@ -31,45 +31,45 @@ export default function ContactPage() {
   const contactOptions = [
     {
       icon: Mail,
-      title: "General Inquiries",
-      description: "Questions about our travel guides and contents",
+      title: t("pages.contact.options.generalInquiries.title"),
+      description: t("pages.contact.options.generalInquiries.description"),
       action: "info@travi.world",
       href: "mailto:info@travi.world",
       testId: "link-contact-email",
     },
     {
       icon: Shield,
-      title: "Privacy Inquiries",
-      description: "Data access, deletion, and privacy requests",
+      title: t("pages.contact.options.privacyInquiries.title"),
+      description: t("pages.contact.options.privacyInquiries.description"),
       action: "privacy@travi.world",
       href: "mailto:privacy@travi.world",
       testId: "link-privacy-email",
     },
     {
       icon: Globe,
-      title: "Visit Our Website",
-      description: "Explore destinations and travel inspiration",
+      title: t("pages.contact.options.visitWebsite.title"),
+      description: t("pages.contact.options.visitWebsite.description"),
       action: "travi.world",
       href: "https://travi.world",
       testId: "link-contact-website",
     },
     {
       icon: Clock,
-      title: "Response Time",
-      description: "We aim to respond promptly",
-      action: "2-3 business days",
+      title: t("pages.contact.options.responseTime.title"),
+      description: t("pages.contact.options.responseTime.description"),
+      action: t("pages.contact.options.responseTime.action"),
       href: null,
       testId: "text-response-time",
     },
   ];
 
   const helpTopics = [
-    "General inquiries about our travel guides and contents",
-    "Feedback and suggestions for improvement",
-    "Reporting contents errors or outdated information",
-    "Business and partnership inquiries",
-    "Media and press inquiries",
-    "Privacy-related requests (data access, deletion, etc.)",
+    t("pages.contact.helpTopics.general"),
+    t("pages.contact.helpTopics.feedback"),
+    t("pages.contact.helpTopics.reporting"),
+    t("pages.contact.helpTopics.business"),
+    t("pages.contact.helpTopics.media"),
+    t("pages.contact.helpTopics.privacy"),
   ];
 
   return (
@@ -141,7 +141,7 @@ export default function ContactPage() {
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg border border-slate-200 dark:border-slate-700">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="w-5 h-5 text-[#6443F4]" />
-                    <span className="font-medium text-slate-900 dark:text-white">Your travel companion</span>
+                    <span className="font-medium text-slate-900 dark:text-white">{t("pages.contact.travelCompanion")}</span>
                   </div>
                 </div>
               </div>
@@ -283,6 +283,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
+                {/* OUT_OF_SCOPE: Legal body text */}
                 <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl p-5">
                   <p className="text-amber-800 dark:text-amber-200 text-sm leading-relaxed">
                     <strong>TRAVI World</strong> is an independent travel information resource. 
@@ -293,8 +294,7 @@ export default function ContactPage() {
                 </div>
 
                 <p className="mt-5 text-sm text-slate-600 dark:text-slate-400">
-                  For urgent matters, please include <strong className="text-slate-900 dark:text-white">"Urgent"</strong> in your email subject line. 
-                  We prioritize responses based on the nature of the inquiry.
+                  {t("pages.contact.urgentNote", { urgentLabel: `"${t("pages.contact.urgentLabel")}"` })}
                 </p>
               </div>
             </motion.div>

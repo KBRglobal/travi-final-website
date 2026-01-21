@@ -22,10 +22,10 @@ export default function PrivacyPage() {
   });
 
   const privacyFeatures = [
-    { icon: Shield, title: "Data Protection", description: "Your data is protected" },
-    { icon: Lock, title: "Minimal Collection", description: "We collect only what's needed" },
-    { icon: Eye, title: "Full Transparency", description: "Clear about our practices" },
-    { icon: Database, title: "Your Control", description: "Manage your preferences" },
+    { icon: Shield, title: t("pages.privacy.features.dataProtection.title"), description: t("pages.privacy.features.dataProtection.description") },
+    { icon: Lock, title: t("pages.privacy.features.minimalCollection.title"), description: t("pages.privacy.features.minimalCollection.description") },
+    { icon: Eye, title: t("pages.privacy.features.transparency.title"), description: t("pages.privacy.features.transparency.description") },
+    { icon: Database, title: t("pages.privacy.features.yourControl.title"), description: t("pages.privacy.features.yourControl.description") },
   ];
 
   return (
@@ -118,6 +118,7 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="border-l-4 border-l-[#6443F4]" data-testid="card-intro">
             <CardContent className="pt-6">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p className="text-muted-foreground leading-relaxed">
                 This Privacy Policy explains how KBR Global Creative Consulting Ltd ("TRAVI World", "we", "us", "our") collects, uses, and protects information when you visit https://travi.world (the "Website").
               </p>
@@ -139,10 +140,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
-                1. Who We Are
+                {t("pages.privacy.sections.whoWeAre")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 TRAVI World is a travel and tourism contents platform operated by:
               </p>
@@ -167,10 +169,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
-                2. Information We Collect
+                {t("pages.privacy.sections.informationCollect")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We collect minimal information to operate our Website effectively:
               </p>
@@ -220,10 +223,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
-                3. How We Use Your Information
+                {t("pages.privacy.sections.howWeUse")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We use the information we collect for the following purposes:
               </p>
@@ -243,10 +247,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
-                4. Legal Basis for Processing (GDPR)
+                {t("pages.privacy.sections.legalBasis")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 For users in the European Economic Area (EEA) and United Kingdom, we process personal data based on the following legal grounds:
               </p>
@@ -264,10 +269,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Cookie className="w-5 h-5 text-white" />
                 </div>
-                5. Cookies and Tracking Technologies
+                {t("pages.privacy.sections.cookies")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We use cookies and similar technologies to operate and improve our Website.
               </p>
@@ -299,10 +305,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
-                6. Third-Party Services
+                {t("pages.privacy.sections.thirdParty")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We work with trusted third-party service providers to operate our Website:
               </p>
@@ -346,10 +353,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <AlertCircle className="w-5 h-5 text-white" />
                 </div>
-                7. AI-Generated Content
+                {t("pages.privacy.sections.aiContent")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 Our Website uses artificial intelligence (AI) to generate and publish contents automatically. This AI-generated contents:
               </p>
@@ -375,10 +383,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
-                8. International Data Transfers
+                {t("pages.privacy.sections.internationalTransfers")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 As we work with international service providers, your information may be transferred to and processed in countries outside your country of residence, including the United States and European Union.
               </p>
@@ -399,10 +408,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <RefreshCw className="w-5 h-5 text-white" />
                 </div>
-                9. Data Retention
+                {t("pages.privacy.sections.dataRetention")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We retain information only as long as necessary:
               </p>
@@ -421,10 +431,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
-                10. Your Privacy Rights
+                {t("pages.privacy.sections.privacyRights")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 Depending on your location, you may have the following rights regarding your personal data:
               </p>
@@ -455,10 +466,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
-                11. California Privacy Rights (CCPA/CPRA)
+                {t("pages.privacy.sections.californiaRights")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA):
               </p>
@@ -480,10 +492,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Baby className="w-5 h-5 text-white" />
                 </div>
-                12. Children's Privacy
+                {t("pages.privacy.sections.childrenPrivacy")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 Our Website is intended for users aged 13 years and older. We do not knowingly collect personal information from children under 13. If we become aware that we have collected personal data from a child under 13, we will take steps to delete that information promptly.
               </p>
@@ -502,10 +515,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Lock className="w-5 h-5 text-white" />
                 </div>
-                13. Data Security
+                {t("pages.privacy.sections.dataSecurity")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We implement appropriate technical and organizational measures to protect your information, including:
               </p>
@@ -534,10 +548,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <RefreshCw className="w-5 h-5 text-white" />
                 </div>
-                14. Changes to This Policy
+                {t("pages.privacy.sections.changes")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or for other operational reasons. When we make changes:
               </p>
@@ -558,10 +573,11 @@ export default function PrivacyPage() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Mail className="w-5 h-5 text-white" />
                 </div>
-                15. Contact Us
+                {t("pages.privacy.sections.contactUs")}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-4">
+              {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
               </p>

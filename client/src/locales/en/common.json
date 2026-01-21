@@ -502,6 +502,27 @@
     "subscribe": "Subscribe",
     "success": "You're subscribed! Check your inbox."
   },
+  "cookies": {
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
+    "essential": {
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
+    },
+    "analytics": {
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
+    },
+    "marketing": {
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
+    }
+  },
   "meta": {
     "home": {
       "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
@@ -775,7 +796,37 @@
       "importantNote": "Important Note",
       "importantNoteSubtitle": "Please read before contacting us",
       "ourOffice": "Our Office",
-      "ourOfficeSubtitle": "For official correspondence and postal inquiries"
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
+      "options": {
+        "generalInquiries": {
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
+        },
+        "privacyInquiries": {
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
+        },
+        "visitWebsite": {
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
+        },
+        "responseTime": {
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
+        }
+      },
+      "helpTopics": {
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
+      }
     },
     "privacy": {
       "metaTitle": "Privacy Policy | TRAVI World",
@@ -783,7 +834,42 @@
       "badge": "Your Privacy Matters",
       "title": "Privacy Policy",
       "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
-      "effectiveDate": "Effective Date: 1 January 2026"
+      "effectiveDate": "Effective Date: 1 January 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Data Protection",
+          "description": "Your data is protected"
+        },
+        "minimalCollection": {
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
+        },
+        "transparency": {
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
+        },
+        "yourControl": {
+          "title": "Your Control",
+          "description": "Manage your preferences"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
+      }
     },
     "terms": {
       "metaTitle": "Terms & Conditions | TRAVI World",
@@ -791,7 +877,125 @@
       "badge": "Legal Agreement",
       "title": "Terms & Conditions",
       "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
-      "lastUpdated": "Last updated: 1 January 2026"
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
+      "keyPoints": {
+        "editorial": {
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
+        },
+        "affiliate": {
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
+        },
+        "aiGenerated": {
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
+        },
+        "privacy": {
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
+        }
+      },
+      "sections": {
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     }
   }
 }
