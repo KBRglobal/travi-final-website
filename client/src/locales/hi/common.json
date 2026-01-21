@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} विश्वव्यापी गंतव्य",
+      "trustedBy": "{{count}} गंतव्यों द्वारा विश्वसनीय",
+      "discover": "खोजें",
+      "worldClass": "विश्व-स्तरीय",
+      "destinations": "गंतव्य",
+      "description": "दुनिया के सबसे मनोरम शहरों के लिए स्थानीय विशेषज्ञता के साथ क्यूरेटेड यात्रा गाइड।",
+      "exploreAll": "सभी गंतव्य देखें",
+      "travelGuides": "यात्रा गाइड",
+      "explorePlaceholder": "गंतव्य खोजें",
+      "browseCollection": "नीचे हमारे चुनिंदा यात्रा गंतव्यों का संग्रह देखें",
+      "explore": "खोजें",
+      "discoverButton": "खोजें",
+      "ariaLabel": "गंतव्यों का अवलोकन"
+    },
+    "stats": {
+      "destinations": "गंतव्य",
+      "countries": "देश",
+      "regions": "क्षेत्र",
+      "languages": "भाषाएं"
+    },
+    "sections": {
+      "featured": "विशेष गंतव्य",
+      "featuredDesc": "असाधारण अनुभवों के साथ चुनिंदा गंतव्य।",
+      "all": "सभी गंतव्य",
+      "count": "{{count}} गंतव्य मिले"
+    },
+    "search": {
+      "placeholder": "गंतव्य खोजें...",
+      "noResults": "कोई गंतव्य नहीं मिला",
+      "tryAdjusting": "अपनी खोज मानदंड समायोजित करें",
+      "clearSearch": "खोज साफ़ करें"
+    },
+    "carousel": {
+      "label": "विशेष गंतव्य कैरोसेल",
+      "previous": "पिछला गंतव्य",
+      "next": "अगला गंतव्य",
+      "goTo": "{{name}} पर जाएं",
+      "slideOf": "स्लाइड {{current}} का {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "खोजें",
+      "defaultLevel": "शहर",
+      "exploreFallback": "{{name}} खोजें",
+      "destination": "गंतव्य",
+      "travelGuideAlt": "{{name}} यात्रा गाइड"
+    },
+    "faq": {
+      "title": "अक्सर पूछे जाने वाले प्रश्न",
+      "subtitle": "TRAVI गंतव्य गाइड के बारे में सब कुछ",
+      "q1": "TRAVI कितने गंतव्यों को कवर करता है?",
+      "a1": "TRAVI मध्य पूर्व, यूरोप, एशिया और अमेरिका में प्रमुख यात्रा गंतव्यों को कवर करता है।",
+      "q2": "TRAVI गाइड में क्या जानकारी शामिल है?",
+      "a2": "प्रत्येक गाइड में आकर्षण, आवास, स्थानीय व्यंजन और यात्रा जानकारी शामिल है।",
+      "q3": "क्या मैं गंतव्य खोज सकता हूं?",
+      "a3": "हां, आप नाम या देश से खोज सकते हैं।",
+      "q4": "TRAVI पर विशेष गंतव्य क्या हैं?",
+      "a4": "विशेष गंतव्य असाधारण अनुभव प्रदान करते हैं।"
+    },
+    "loading": {
+      "title": "गंतव्य लोड हो रहे हैं",
+      "message": "नवीनतम डेटा प्राप्त हो रहा है..."
+    },
+    "error": {
+      "title": "गंतव्य लोड करने में असमर्थ",
+      "message": "कृपया बाद में पुनः प्रयास करें।",
+      "refresh": "पृष्ठ रीफ्रेश करें"
+    },
+    "empty": {
+      "title": "कोई गंतव्य उपलब्ध नहीं",
+      "message": "वर्तमान में कोई गंतव्य उपलब्ध नहीं है।"
+    }
   }
 }

@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Destinazioni in Tutto il Mondo",
+      "trustedBy": "{{count}} destinazioni si fidano di noi",
+      "discover": "Scopri",
+      "worldClass": "Di Classe Mondiale",
+      "destinations": "Destinazioni",
+      "description": "Guide di viaggio curate con esperienza locale per le città più affascinanti del mondo.",
+      "exploreAll": "Esplora Tutte le Destinazioni",
+      "travelGuides": "Guide di Viaggio",
+      "explorePlaceholder": "Esplora Destinazioni",
+      "browseCollection": "Sfoglia la nostra collezione di destinazioni selezionate",
+      "explore": "Esplora",
+      "discoverButton": "Scopri",
+      "ariaLabel": "Panoramica delle destinazioni"
+    },
+    "stats": {
+      "destinations": "DESTINAZIONI",
+      "countries": "PAESI",
+      "regions": "Regioni",
+      "languages": "Lingue"
+    },
+    "sections": {
+      "featured": "Destinazioni in Evidenza",
+      "featuredDesc": "Destinazioni selezionate con esperienze eccezionali.",
+      "all": "Tutte le Destinazioni",
+      "count": "{{count}} destinazioni trovate"
+    },
+    "search": {
+      "placeholder": "Cerca destinazioni...",
+      "noResults": "Nessuna destinazione trovata",
+      "tryAdjusting": "Prova a modificare i criteri di ricerca",
+      "clearSearch": "Cancella Ricerca"
+    },
+    "carousel": {
+      "label": "Carosello destinazioni in evidenza",
+      "previous": "Destinazione precedente",
+      "next": "Destinazione successiva",
+      "goTo": "Vai a {{name}}",
+      "slideOf": "Slide {{current}} di {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Esplora",
+      "defaultLevel": "Città",
+      "exploreFallback": "Esplora {{name}}",
+      "destination": "Destinazione",
+      "travelGuideAlt": "Guida di viaggio {{name}}"
+    },
+    "faq": {
+      "title": "Domande Frequenti",
+      "subtitle": "Tutto sulle guide TRAVI",
+      "q1": "Quante destinazioni copre TRAVI?",
+      "a1": "TRAVI copre le principali destinazioni in Medio Oriente, Europa, Asia e Americhe.",
+      "q2": "Quali informazioni sono incluse?",
+      "a2": "Ogni guida include attrazioni, alloggi, cucina locale e consigli di viaggio.",
+      "q3": "Posso cercare destinazioni?",
+      "a3": "Sì, puoi cercare per nome o paese.",
+      "q4": "Quali sono le destinazioni in evidenza su TRAVI?",
+      "a4": "Le destinazioni in evidenza offrono esperienze eccezionali."
+    },
+    "loading": {
+      "title": "Caricamento Destinazioni",
+      "message": "Recupero dati più recenti..."
+    },
+    "error": {
+      "title": "Impossibile Caricare",
+      "message": "Riprova più tardi.",
+      "refresh": "Aggiorna Pagina"
+    },
+    "empty": {
+      "title": "Nessuna Destinazione",
+      "message": "Nessuna destinazione disponibile al momento."
+    }
   }
 }

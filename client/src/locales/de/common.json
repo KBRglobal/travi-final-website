@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Reiseziele weltweit",
+      "trustedBy": "{{count}} Reiseziele vertrauen uns",
+      "discover": "Entdecken",
+      "worldClass": "Weltklasse",
+      "destinations": "Reiseziele",
+      "description": "Kuratierte Reiseführer mit lokaler Expertise für die faszinierendsten Städte der Welt.",
+      "exploreAll": "Alle Reiseziele entdecken",
+      "travelGuides": "Reiseführer",
+      "explorePlaceholder": "Reiseziele erkunden",
+      "browseCollection": "Durchstöbern Sie unsere handverlesene Sammlung von Reisezielen",
+      "explore": "Erkunden",
+      "discoverButton": "Entdecken",
+      "ariaLabel": "Reiseziele Übersicht"
+    },
+    "stats": {
+      "destinations": "REISEZIELE",
+      "countries": "LÄNDER",
+      "regions": "Regionen",
+      "languages": "Sprachen"
+    },
+    "sections": {
+      "featured": "Ausgewählte Reiseziele",
+      "featuredDesc": "Handverlesene Reiseziele mit außergewöhnlichen Erlebnissen.",
+      "all": "Alle Reiseziele",
+      "count": "{{count}} Reiseziele gefunden"
+    },
+    "search": {
+      "placeholder": "Reiseziele suchen...",
+      "noResults": "Keine Reiseziele gefunden",
+      "tryAdjusting": "Versuchen Sie, Ihre Suchkriterien anzupassen",
+      "clearSearch": "Suche löschen"
+    },
+    "carousel": {
+      "label": "Karussell ausgewählter Reiseziele",
+      "previous": "Vorheriges Reiseziel",
+      "next": "Nächstes Reiseziel",
+      "goTo": "Zu {{name}} gehen",
+      "slideOf": "Folie {{current}} von {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Erkunden",
+      "defaultLevel": "Stadt",
+      "exploreFallback": "{{name}} erkunden",
+      "destination": "Reiseziel",
+      "travelGuideAlt": "{{name}} Reiseführer"
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "subtitle": "Alles über TRAVI Reiseführer",
+      "q1": "Wie viele Reiseziele deckt TRAVI ab?",
+      "a1": "TRAVI deckt wichtige Reiseziele im Nahen Osten, Europa, Asien und Amerika ab.",
+      "q2": "Welche Informationen sind enthalten?",
+      "a2": "Jeder Reiseführer enthält Attraktionen, Unterkünfte, lokale Küche und Reisetipps.",
+      "q3": "Kann ich nach Reisezielen suchen?",
+      "a3": "Ja, Sie können nach Name oder Land suchen.",
+      "q4": "Was sind die ausgewählten Reiseziele?",
+      "a4": "Ausgewählte Reiseziele bieten außergewöhnliche Erlebnisse."
+    },
+    "loading": {
+      "title": "Lade Reiseziele",
+      "message": "Rufe neueste Daten ab..."
+    },
+    "error": {
+      "title": "Laden fehlgeschlagen",
+      "message": "Bitte versuchen Sie es später erneut.",
+      "refresh": "Seite aktualisieren"
+    },
+    "empty": {
+      "title": "Keine Reiseziele verfügbar",
+      "message": "Derzeit sind keine Reiseziele verfügbar."
+    }
   }
 }

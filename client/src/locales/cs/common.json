@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Destinací po Celém Světě",
+      "trustedBy": "Důvěřuje nám {{count}} destinací",
+      "discover": "Objevte",
+      "worldClass": "Světové Třídy",
+      "destinations": "Destinace",
+      "description": "Pečlivě vybrané cestovní průvodce s místní odborností pro nejúchvatnější města světa.",
+      "exploreAll": "Prozkoumat Všechny Destinace",
+      "travelGuides": "Cestovní Průvodce",
+      "explorePlaceholder": "Prozkoumat Destinace",
+      "browseCollection": "Procházejte naši sbírku vybraných destinací",
+      "explore": "Prozkoumat",
+      "discoverButton": "Objevit",
+      "ariaLabel": "Přehled destinací"
+    },
+    "stats": {
+      "destinations": "DESTINACÍ",
+      "countries": "ZEMÍ",
+      "regions": "Regionů",
+      "languages": "Jazyků"
+    },
+    "sections": {
+      "featured": "Doporučené Destinace",
+      "featuredDesc": "Vybrané destinace s výjimečnými zážitky.",
+      "all": "Všechny Destinace",
+      "count": "Nalezeno {{count}} destinací"
+    },
+    "search": {
+      "placeholder": "Hledat destinace...",
+      "noResults": "Nenalezeny žádné destinace",
+      "tryAdjusting": "Zkuste upravit kritéria vyhledávání",
+      "clearSearch": "Vymazat Hledání"
+    },
+    "carousel": {
+      "label": "Kolotoč doporučených destinací",
+      "previous": "Předchozí destinace",
+      "next": "Další destinace",
+      "goTo": "Přejít na {{name}}",
+      "slideOf": "Snímek {{current}} z {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Prozkoumat",
+      "defaultLevel": "Město",
+      "exploreFallback": "Prozkoumat {{name}}",
+      "destination": "Destinace",
+      "travelGuideAlt": "Cestovní průvodce {{name}}"
+    },
+    "faq": {
+      "title": "Často Kladené Otázky",
+      "subtitle": "Vše o průvodcích TRAVI",
+      "q1": "Kolik destinací TRAVI pokrývá?",
+      "a1": "TRAVI pokrývá hlavní destinace na Blízkém východě, v Evropě, Asii a Americe.",
+      "q2": "Jaké informace jsou zahrnuty?",
+      "a2": "Každý průvodce obsahuje atrakce, ubytování, místní kuchyni a cestovní tipy.",
+      "q3": "Mohu vyhledávat destinace?",
+      "a3": "Ano, můžete vyhledávat podle názvu nebo země.",
+      "q4": "Jaké jsou doporučené destinace na TRAVI?",
+      "a4": "Doporučené destinace nabízejí výjimečné zážitky."
+    },
+    "loading": {
+      "title": "Načítání Destinací",
+      "message": "Získávání nejnovějších dat..."
+    },
+    "error": {
+      "title": "Nelze Načíst",
+      "message": "Zkuste to prosím později.",
+      "refresh": "Obnovit Stránku"
+    },
+    "empty": {
+      "title": "Žádné Dostupné Destinace",
+      "message": "V současné době nejsou k dispozici žádné destinace."
+    }
+  }
+}

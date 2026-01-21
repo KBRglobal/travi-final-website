@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Destinasi di Seluruh Dunia",
+      "trustedBy": "Dipercaya oleh {{count}} destinasi",
+      "discover": "Temukan",
+      "worldClass": "Kelas Dunia",
+      "destinations": "Destinasi",
+      "description": "Panduan perjalanan yang dikurasi dengan keahlian lokal untuk kota-kota paling memikat di dunia.",
+      "exploreAll": "Jelajahi Semua Destinasi",
+      "travelGuides": "Panduan Perjalanan",
+      "explorePlaceholder": "Jelajahi Destinasi",
+      "browseCollection": "Telusuri koleksi destinasi pilihan kami",
+      "explore": "Jelajahi",
+      "discoverButton": "Temukan",
+      "ariaLabel": "Ikhtisar destinasi"
+    },
+    "stats": {
+      "destinations": "DESTINASI",
+      "countries": "NEGARA",
+      "regions": "Wilayah",
+      "languages": "Bahasa"
+    },
+    "sections": {
+      "featured": "Destinasi Unggulan",
+      "featuredDesc": "Destinasi pilihan dengan pengalaman luar biasa.",
+      "all": "Semua Destinasi",
+      "count": "{{count}} destinasi ditemukan"
+    },
+    "search": {
+      "placeholder": "Cari destinasi...",
+      "noResults": "Tidak ada destinasi ditemukan",
+      "tryAdjusting": "Coba sesuaikan kriteria pencarian",
+      "clearSearch": "Hapus Pencarian"
+    },
+    "carousel": {
+      "label": "Korsel destinasi unggulan",
+      "previous": "Destinasi sebelumnya",
+      "next": "Destinasi berikutnya",
+      "goTo": "Pergi ke {{name}}",
+      "slideOf": "Slide {{current}} dari {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Jelajahi",
+      "defaultLevel": "Kota",
+      "exploreFallback": "Jelajahi {{name}}",
+      "destination": "Destinasi",
+      "travelGuideAlt": "Panduan perjalanan {{name}}"
+    },
+    "faq": {
+      "title": "Pertanyaan yang Sering Diajukan",
+      "subtitle": "Semua tentang panduan destinasi TRAVI",
+      "q1": "Berapa banyak destinasi yang dicakup TRAVI?",
+      "a1": "TRAVI mencakup destinasi utama di Timur Tengah, Eropa, Asia, dan Amerika.",
+      "q2": "Informasi apa yang termasuk?",
+      "a2": "Setiap panduan mencakup atraksi, akomodasi, kuliner lokal, dan tips perjalanan.",
+      "q3": "Bisakah saya mencari destinasi?",
+      "a3": "Ya, Anda bisa mencari berdasarkan nama atau negara.",
+      "q4": "Apa destinasi unggulan di TRAVI?",
+      "a4": "Destinasi unggulan menawarkan pengalaman luar biasa."
+    },
+    "loading": {
+      "title": "Memuat Destinasi",
+      "message": "Mengambil data terbaru..."
+    },
+    "error": {
+      "title": "Gagal Memuat",
+      "message": "Silakan coba lagi nanti.",
+      "refresh": "Segarkan Halaman"
+    },
+    "empty": {
+      "title": "Tidak Ada Destinasi",
+      "message": "Tidak ada destinasi yang tersedia saat ini."
+    }
+  }
+}

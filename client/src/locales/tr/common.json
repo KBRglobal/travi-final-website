@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Dünya Çapında Destinasyon",
+      "trustedBy": "{{count}} destinasyonun güveni",
+      "discover": "Keşfet",
+      "worldClass": "Dünya Standartlarında",
+      "destinations": "Destinasyonlar",
+      "description": "Dünyanın en büyüleyici şehirleri için yerel uzmanlıkla hazırlanmış seyahat rehberleri.",
+      "exploreAll": "Tüm Destinasyonları Keşfet",
+      "travelGuides": "Seyahat Rehberleri",
+      "explorePlaceholder": "Destinasyonları Keşfet",
+      "browseCollection": "Seçilmiş destinasyon koleksiyonumuza göz atın",
+      "explore": "Keşfet",
+      "discoverButton": "Keşfet",
+      "ariaLabel": "Destinasyonlara genel bakış"
+    },
+    "stats": {
+      "destinations": "DESTİNASYON",
+      "countries": "ÜLKE",
+      "regions": "Bölgeler",
+      "languages": "Diller"
+    },
+    "sections": {
+      "featured": "Öne Çıkan Destinasyonlar",
+      "featuredDesc": "Olağanüstü deneyimlerle seçilmiş destinasyonlar.",
+      "all": "Tüm Destinasyonlar",
+      "count": "{{count}} destinasyon bulundu"
+    },
+    "search": {
+      "placeholder": "Destinasyon ara...",
+      "noResults": "Destinasyon bulunamadı",
+      "tryAdjusting": "Arama kriterlerinizi ayarlamayı deneyin",
+      "clearSearch": "Aramayı Temizle"
+    },
+    "carousel": {
+      "label": "Öne çıkan destinasyonlar karuseli",
+      "previous": "Önceki destinasyon",
+      "next": "Sonraki destinasyon",
+      "goTo": "{{name}} adresine git",
+      "slideOf": "Slayt {{current}}/{{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Keşfet",
+      "defaultLevel": "Şehir",
+      "exploreFallback": "{{name}} keşfet",
+      "destination": "Destinasyon",
+      "travelGuideAlt": "{{name}} seyahat rehberi"
+    },
+    "faq": {
+      "title": "Sık Sorulan Sorular",
+      "subtitle": "TRAVI destinasyon rehberleri hakkında her şey",
+      "q1": "TRAVI kaç destinasyonu kapsıyor?",
+      "a1": "TRAVI, Orta Doğu, Avrupa, Asya ve Amerika'daki başlıca destinasyonları kapsıyor.",
+      "q2": "Hangi bilgiler dahil?",
+      "a2": "Her rehber gezilecek yerler, konaklama, yerel mutfak ve seyahat ipuçları içerir.",
+      "q3": "Destinasyon arayabilir miyim?",
+      "a3": "Evet, ada veya ülkeye göre arama yapabilirsiniz.",
+      "q4": "TRAVI'daki öne çıkan destinasyonlar nelerdir?",
+      "a4": "Öne çıkan destinasyonlar olağanüstü deneyimler sunar."
+    },
+    "loading": {
+      "title": "Destinasyonlar Yükleniyor",
+      "message": "En son veriler alınıyor..."
+    },
+    "error": {
+      "title": "Yüklenemedi",
+      "message": "Lütfen daha sonra tekrar deneyin.",
+      "refresh": "Sayfayı Yenile"
+    },
+    "empty": {
+      "title": "Destinasyon Yok",
+      "message": "Şu anda mevcut destinasyon yok."
+    }
   }
 }

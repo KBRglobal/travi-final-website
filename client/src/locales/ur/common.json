@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} عالمی منزلیں",
+      "trustedBy": "{{count}} منزلوں کا اعتماد",
+      "discover": "دریافت کریں",
+      "worldClass": "عالمی معیار",
+      "destinations": "منزلیں",
+      "description": "دنیا کے سب سے دلکش شہروں کے لیے مقامی مہارت کے ساتھ سفری رہنما۔",
+      "exploreAll": "تمام منزلیں دیکھیں",
+      "travelGuides": "سفری رہنما",
+      "explorePlaceholder": "منزلیں تلاش کریں",
+      "browseCollection": "ہماری منتخب منزلوں کا مجموعہ دیکھیں",
+      "explore": "دریافت",
+      "discoverButton": "دریافت کریں",
+      "ariaLabel": "منزلوں کا جائزہ"
+    },
+    "stats": {
+      "destinations": "منزلیں",
+      "countries": "ممالک",
+      "regions": "علاقے",
+      "languages": "زبانیں"
+    },
+    "sections": {
+      "featured": "نمایاں منزلیں",
+      "featuredDesc": "غیر معمولی تجربات کے ساتھ منتخب منزلیں۔",
+      "all": "تمام منزلیں",
+      "count": "{{count}} منزلیں ملیں"
+    },
+    "search": {
+      "placeholder": "منزلیں تلاش کریں...",
+      "noResults": "کوئی منزل نہیں ملی",
+      "tryAdjusting": "اپنے تلاش کے معیار کو ایڈجسٹ کریں",
+      "clearSearch": "تلاش صاف کریں"
+    },
+    "carousel": {
+      "label": "نمایاں منزلوں کا کیروسل",
+      "previous": "پچھلی منزل",
+      "next": "اگلی منزل",
+      "goTo": "{{name}} پر جائیں",
+      "slideOf": "سلائیڈ {{current}} از {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "دریافت",
+      "defaultLevel": "شہر",
+      "exploreFallback": "{{name}} دریافت کریں",
+      "destination": "منزل",
+      "travelGuideAlt": "{{name}} سفری رہنما"
+    },
+    "faq": {
+      "title": "اکثر پوچھے گئے سوالات",
+      "subtitle": "TRAVI منزل گائیڈز کے بارے میں سب کچھ",
+      "q1": "TRAVI کتنی منزلوں کا احاطہ کرتا ہے؟",
+      "a1": "TRAVI مشرق وسطی، یورپ، ایشیا اور امریکہ میں اہم سیاحتی مقامات کا احاطہ کرتا ہے۔",
+      "q2": "TRAVI گائیڈز میں کیا معلومات شامل ہیں؟",
+      "a2": "ہر گائیڈ میں پرکشش مقامات، رہائش، مقامی کھانے اور سفری معلومات شامل ہیں۔",
+      "q3": "کیا میں منزلیں تلاش کر سکتا ہوں؟",
+      "a3": "جی ہاں، آپ نام یا ملک سے تلاش کر سکتے ہیں۔",
+      "q4": "TRAVI پر نمایاں منزلیں کیا ہیں؟",
+      "a4": "نمایاں منزلیں غیر معمولی تجربات فراہم کرتی ہیں۔"
+    },
+    "loading": {
+      "title": "منزلیں لوڈ ہو رہی ہیں",
+      "message": "تازہ ترین ڈیٹا حاصل ہو رہا ہے..."
+    },
+    "error": {
+      "title": "منزلیں لوڈ کرنے میں ناکام",
+      "message": "بعد میں دوبارہ کوشش کریں۔",
+      "refresh": "صفحہ ریفریش کریں"
+    },
+    "empty": {
+      "title": "کوئی منزل دستیاب نہیں",
+      "message": "فی الحال کوئی منزل دستیاب نہیں ہے۔"
+    }
   }
 }

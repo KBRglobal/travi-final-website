@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} の世界中の目的地",
+      "trustedBy": "{{count}} の目的地から信頼されています",
+      "discover": "発見",
+      "worldClass": "ワールドクラス",
+      "destinations": "目的地",
+      "description": "世界で最も魅力的な都市のための、地元の専門知識を持つキュレーションされた旅行ガイド。",
+      "exploreAll": "すべての目的地を探索",
+      "travelGuides": "旅行ガイド",
+      "explorePlaceholder": "目的地を探索",
+      "browseCollection": "厳選された目的地コレクションを閲覧",
+      "explore": "探索",
+      "discoverButton": "発見",
+      "ariaLabel": "目的地の概要"
+    },
+    "stats": {
+      "destinations": "目的地",
+      "countries": "国",
+      "regions": "地域",
+      "languages": "言語"
+    },
+    "sections": {
+      "featured": "注目の目的地",
+      "featuredDesc": "特別な体験を提供する厳選された目的地。",
+      "all": "すべての目的地",
+      "count": "{{count}} 件の目的地が見つかりました"
+    },
+    "search": {
+      "placeholder": "目的地を検索...",
+      "noResults": "目的地が見つかりません",
+      "tryAdjusting": "検索条件を調整してみてください",
+      "clearSearch": "検索をクリア"
+    },
+    "carousel": {
+      "label": "注目の目的地カルーセル",
+      "previous": "前の目的地",
+      "next": "次の目的地",
+      "goTo": "{{name}} に移動",
+      "slideOf": "スライド {{current}}/{{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "探索",
+      "defaultLevel": "都市",
+      "exploreFallback": "{{name}} を探索",
+      "destination": "目的地",
+      "travelGuideAlt": "{{name}} 旅行ガイド"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "subtitle": "TRAVI目的地ガイドについて",
+      "q1": "TRAVIはいくつの目的地をカバーしていますか？",
+      "a1": "TRAVIは中東、ヨーロッパ、アジア、アメリカの主要な目的地をカバーしています。",
+      "q2": "どのような情報が含まれていますか？",
+      "a2": "各ガイドには観光スポット、宿泊施設、郷土料理、旅行のヒントが含まれています。",
+      "q3": "目的地を検索できますか？",
+      "a3": "はい、名前または国で検索できます。",
+      "q4": "TRAVIの注目の目的地とは？",
+      "a4": "注目の目的地は特別な体験を提供します。"
+    },
+    "loading": {
+      "title": "目的地を読み込み中",
+      "message": "最新データを取得中..."
+    },
+    "error": {
+      "title": "読み込みに失敗しました",
+      "message": "後でもう一度お試しください。",
+      "refresh": "ページを更新"
+    },
+    "empty": {
+      "title": "目的地がありません",
+      "message": "現在利用可能な目的地はありません。"
+    }
   }
 }
