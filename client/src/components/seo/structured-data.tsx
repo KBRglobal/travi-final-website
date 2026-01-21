@@ -1,7 +1,11 @@
 import { Helmet } from "react-helmet-async";
 
 // Base organization schema for the site
-export function OrganizationSchema() {
+interface OrganizationSchemaProps {
+  locale?: string;
+}
+
+export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -9,6 +13,7 @@ export function OrganizationSchema() {
     url: "https://travi.world",
     logo: "https://travi.world/logo.png",
     description: "Your ultimate guide to Dubai - attractions, hotels, dining, and more.",
+    inLanguage: locale,
     sameAs: [
       "https://twitter.com/travi",
       "https://facebook.com/travi",
@@ -17,7 +22,7 @@ export function OrganizationSchema() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      availableLanguage: ["English", "Arabic", "Hebrew", "Hindi"],
+      availableLanguage: ["English", "Arabic", "French", "German", "Spanish", "Portuguese", "Chinese", "Japanese", "Hindi"],
     },
   };
 
@@ -38,6 +43,7 @@ interface AttractionSchemaProps {
   reviewCount?: number;
   priceRange?: string;
   openingHours?: string[];
+  locale?: string;
 }
 
 export function AttractionSchema({
@@ -49,6 +55,7 @@ export function AttractionSchema({
   reviewCount,
   priceRange,
   openingHours,
+  locale = "en",
 }: AttractionSchemaProps) {
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -56,6 +63,7 @@ export function AttractionSchema({
     name,
     description,
     image,
+    inLanguage: locale,
     address: address
       ? {
           "@type": "PostalAddress",
@@ -98,6 +106,7 @@ interface HotelSchemaProps {
   reviewCount?: number;
   priceRange?: string;
   starRating?: number;
+  locale?: string;
 }
 
 export function HotelSchema({
@@ -109,6 +118,7 @@ export function HotelSchema({
   reviewCount,
   priceRange,
   starRating,
+  locale = "en",
 }: HotelSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -116,6 +126,7 @@ export function HotelSchema({
     name,
     description,
     image,
+    inLanguage: locale,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Dubai",
@@ -157,6 +168,7 @@ interface RestaurantSchemaProps {
   priceRange?: string;
   cuisineType?: string;
   servesCuisine?: string[];
+  locale?: string;
 }
 
 export function RestaurantSchema({
@@ -169,6 +181,7 @@ export function RestaurantSchema({
   priceRange,
   cuisineType,
   servesCuisine,
+  locale = "en",
 }: RestaurantSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -176,6 +189,7 @@ export function RestaurantSchema({
     name,
     description,
     image,
+    inLanguage: locale,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Dubai",
@@ -209,6 +223,7 @@ interface ArticleSchemaProps {
   datePublished?: string;
   dateModified?: string;
   author?: string;
+  locale?: string;
 }
 
 export function ArticleSchema({
@@ -218,6 +233,7 @@ export function ArticleSchema({
   datePublished,
   dateModified,
   author = "Travi Team",
+  locale = "en",
 }: ArticleSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -225,6 +241,7 @@ export function ArticleSchema({
     headline,
     description,
     image,
+    inLanguage: locale,
     datePublished,
     dateModified: dateModified || datePublished,
     author: {
@@ -258,6 +275,7 @@ interface EventSchemaProps {
   image?: string;
   price?: number;
   currency?: string;
+  locale?: string;
 }
 
 export function EventSchema({
@@ -269,6 +287,7 @@ export function EventSchema({
   image,
   price,
   currency = "AED",
+  locale = "en",
 }: EventSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -278,6 +297,7 @@ export function EventSchema({
     startDate,
     endDate: endDate || startDate,
     image,
+    inLanguage: locale,
     location: {
       "@type": "Place",
       name: location || "Dubai",
@@ -307,12 +327,14 @@ export function EventSchema({
 // Breadcrumb schema (for SEO)
 interface BreadcrumbSchemaProps {
   items: { name: string; url: string }[];
+  locale?: string;
 }
 
-export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
+export function BreadcrumbSchema({ items, locale = "en" }: BreadcrumbSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    inLanguage: locale,
     itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,

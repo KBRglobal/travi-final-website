@@ -1,5 +1,7 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/hooks/use-locale";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
@@ -9,9 +11,12 @@ import {
 } from "lucide-react";
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+  const { isRTL } = useLocale();
+
   useDocumentMeta({
-    title: "About Us | TRAVI World",
-    description: "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+    title: t("pages.about.metaTitle"),
+    description: t("pages.about.metaDescription"),
   });
 
   const offerings = [
@@ -53,6 +58,7 @@ export default function AboutPage() {
 
   return (
     <PublicLayout>
+      <div dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section with Gradient Background and Mascot */}
       <section 
         className="relative pt-28 pb-20 overflow-hidden bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background"
@@ -65,10 +71,10 @@ export default function AboutPage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-start">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-sm border border-white/20 dark:border-white/10 mb-6">
                 <Globe className="w-4 h-4 text-[#6443F4]" />
-                <span className="text-sm font-medium text-[#6443F4]">Your Travel Companion</span>
+                <span className="text-sm font-medium text-[#6443F4]">{t("pages.about.badge")}</span>
               </div>
               
               <h1 
@@ -76,27 +82,26 @@ export default function AboutPage() {
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-about"
               >
-                About{" "}
+                {t("pages.about.title")}{" "}
                 <span className="text-[#6443F4]">
-                  TRAVI World
+                  {t("pages.about.titleHighlight")}
                 </span>
               </h1>
               
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8">
-                Your trusted source for comprehensive travel information and destination guides, 
-                helping millions explore the world with confidence.
+              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:ms-0 mb-8">
+                {t("pages.about.subtitle")}
               </p>
               
               <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                 <Link href="/destinations">
                   <Button className="rounded-xl px-6 bg-[#6443F4] hover:bg-[#5339D9] text-white">
-                    Explore Destinations
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    {t("pages.about.ctaExplore")}
+                    <ArrowRight className="w-4 h-4 ms-2" />
                   </Button>
                 </Link>
                 <Link href="/contact">
                   <Button variant="outline" className="rounded-xl px-6">
-                    Get in Touch
+                    {t("pages.about.ctaContact")}
                   </Button>
                 </Link>
               </div>
@@ -465,6 +470,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      </div>
     </PublicLayout>
   );
 }

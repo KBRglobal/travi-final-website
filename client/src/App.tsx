@@ -203,8 +203,9 @@ const publicRoutes = [
 ];
 
 const LOCALE_PREFIXES = [
-  "ar", "hi", "zh", "ru", "ur", "fr",
-  "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he"
+  "en", "ar", "hi", "zh", "ru", "ur", "fr",
+  "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he",
+  "pt", "nl", "pl", "sv", "th", "vi", "id", "ms", "cs", "el", "da", "no", "ro"
 ];
 
 function PublicRouter() {
