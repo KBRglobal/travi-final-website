@@ -258,7 +258,10 @@
       "browseCollection": "Browse our collection of handpicked travel destinations below",
       "explore": "Explore",
       "discoverButton": "Discover",
-      "ariaLabel": "Destinations overview"
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINATIONS",
@@ -283,7 +286,8 @@
       "previous": "Previous destination",
       "next": "Next destination",
       "goTo": "Go to {{name}}",
-      "slideOf": "Slide {{current}} of {{total}}: {{name}}"
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Explore",
