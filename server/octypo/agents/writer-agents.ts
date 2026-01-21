@@ -107,6 +107,85 @@ export class WriterAgent extends BaseAgent {
     return content;
   }
 
+  /**
+   * PILOT: Execute with explicit locale parameter for native content generation
+   * Generates content directly in the target language (not translation)
+   */
+  async executeWithLocale(task: WriterTask): Promise<GeneratedAttractionContent> {
+    const locale = task.locale || "en";
+    this.log(`Starting locale-aware content generation for: ${task.attractionData.title} (locale: ${locale})`);
+    
+    const systemPrompt = this.buildSystemPromptWithLocale(locale);
+    const userPrompt = this.buildUserPromptWithLocale(task.attractionData, locale);
+    
+    const WRITER_TIMEOUT = 90000; // Slightly longer for non-English generation
+    const response = await this.callLLM(systemPrompt, userPrompt, WRITER_TIMEOUT);
+    const content = this.parseResponse(response, task.attractionData.title);
+    
+    this.log(`Completed locale ${locale} content generation (${this.countWords(content)} words)`);
+    return content;
+  }
+
+  private buildSystemPromptWithLocale(locale: string): string {
+    const basePrompt = this.buildSystemPrompt();
+    
+    if (locale === "ar") {
+      return `${basePrompt}
+
+═══════════════════════════════════════════════════════════════════════
+## CRITICAL: ARABIC LANGUAGE REQUIREMENTS
+═══════════════════════════════════════════════════════════════════════
+
+YOU MUST WRITE 100% IN MODERN STANDARD ARABIC (فصحى).
+- All content MUST be in Arabic script
+- Use natural Arabic phrasing, not translated English syntax
+- Write as a native Arabic speaker would write
+- Proper names (attraction names, place names) may remain in their original form or be transliterated to Arabic
+- Numbers and measurements can use Western numerals with Arabic labels
+- RTL formatting is handled by the system - just write the text
+
+DO NOT:
+- Include any English text except proper nouns
+- Use awkward translated phrases
+- Mix languages within sentences
+
+LOCALE: ar (Arabic)
+DIRECTION: RTL (right-to-left)`;
+    }
+    
+    return `${basePrompt}
+
+LOCALE: en (English)
+DIRECTION: LTR (left-to-right)`;
+  }
+
+  private buildUserPromptWithLocale(attraction: AttractionData, locale: string): string {
+    const basePrompt = buildAttractionPrompt(attraction, this.persona);
+    
+    if (locale === "ar") {
+      return `${basePrompt}
+
+═══════════════════════════════════════════════════════════════════════
+## LANGUAGE: WRITE EVERYTHING IN ARABIC (العربية)
+═══════════════════════════════════════════════════════════════════════
+
+كتابة المحتوى بالكامل باللغة العربية الفصحى.
+Write all sections in fluent Modern Standard Arabic.
+Only proper nouns (attraction names, brand names) may appear in English/Latin script.
+
+المقدمة (Introduction) - بالعربية
+ماذا تتوقع (What to Expect) - بالعربية
+نصائح للزوار (Visitor Tips) - بالعربية
+كيفية الوصول (How to Get There) - بالعربية
+الأسئلة الشائعة (FAQ) - بالعربية
+عنوان ميتا (Meta Title) - بالعربية
+وصف ميتا (Meta Description) - بالعربية
+كبسولة الإجابة (Answer Capsule) - بالعربية`;
+    }
+    
+    return basePrompt;
+  }
+
   private buildSystemPrompt(): string {
     return `${this.persona.systemPrompt}
 
