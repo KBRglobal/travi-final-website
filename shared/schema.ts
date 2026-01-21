@@ -922,7 +922,19 @@ export const localizedAssets = pgTable("localized_assets", {
 // Zod enum validators derived from Drizzle pgEnum values
 export const localizedAssetEntityTypes = ["content", "destination", "attraction", "hotel", "article", "guide", "page"] as const;
 export const localizedAssetUsages = ["hero", "card", "gallery", "og", "thumbnail", "banner", "logo"] as const;
-export const supportedLocales = ["en", "ar", "hi", "zh", "ru", "ur", "fr", "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he"] as const;
+// All 30 supported locales for Zod validation - matches SUPPORTED_LOCALES array
+export const supportedLocales = [
+  // Tier 1 - Core
+  "en", "ar", "hi",
+  // Tier 2 - High ROI
+  "zh", "ru", "ur", "fr", "id",
+  // Tier 3 - Growing (Southeast Asia focus)
+  "de", "fa", "bn", "fil", "th", "vi", "ms",
+  // Tier 4 - Niche
+  "es", "tr", "it", "ja", "ko", "he", "pt",
+  // Tier 5 - European Expansion
+  "nl", "pl", "sv", "el", "cs", "ro", "uk", "hu"
+] as const;
 
 export const insertLocalizedAssetSchema = createInsertSchema(localizedAssets, {
   entityType: z.enum(localizedAssetEntityTypes),
