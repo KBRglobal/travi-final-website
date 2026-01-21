@@ -8,11 +8,12 @@ import { Link } from "wouter";
 import { ChevronRight, Home, ChevronLeft } from "lucide-react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useDestinationContext } from "@/hooks/use-destination-context";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 export interface BreadcrumbItem {
-  label: string;
-  labelHe?: string;
+  labelKey?: string;
+  label?: string;
   href?: string;
 }
 
@@ -29,28 +30,27 @@ export function Breadcrumbs({
   showHome = true,
   showDestination = true
 }: BreadcrumbsProps) {
-  const { locale, localePath, isRTL, t } = useLocale();
-  const { isDubai, currentDestination } = useDestinationContext();
+  const { localePath, isRTL } = useLocale();
+  const { isDubai } = useDestinationContext();
+  const { t } = useTranslation();
 
   const getLabel = (item: BreadcrumbItem) => {
-    if (locale === 'he' && item.labelHe) return item.labelHe;
-    return item.label;
+    if (item.labelKey) return t(item.labelKey);
+    return item.label || "";
   };
 
   const allItems: BreadcrumbItem[] = [];
   
   if (showHome) {
     allItems.push({
-      label: "Home",
-      labelHe: "בית",
+      labelKey: "nav.home",
       href: "/"
     });
   }
 
   if (showDestination && isDubai) {
     allItems.push({
-      label: "Dubai",
-      labelHe: "דובאי",
+      labelKey: "breadcrumbs.dubai",
       href: "/destination/dubai"
     });
   }
@@ -67,7 +67,7 @@ export function Breadcrumbs({
 
   return (
     <nav 
-      aria-label="Breadcrumb"
+      aria-label={t("breadcrumbs.ariaLabel")}
       className={cn(
         "flex items-center gap-1 text-sm",
         className
@@ -109,22 +109,21 @@ export function Breadcrumbs({
 
 interface BackButtonProps {
   href?: string;
-  label?: string;
-  labelHe?: string;
+  labelKey?: string;
   className?: string;
 }
 
 export function BackButton({ 
   href, 
-  label = "Back",
-  labelHe = "חזרה",
+  labelKey = "common.back",
   className 
 }: BackButtonProps) {
-  const { locale, localePath, isRTL } = useLocale();
+  const { localePath, isRTL } = useLocale();
   const { isDubai } = useDestinationContext();
+  const { t } = useTranslation();
   
   const targetHref = href || (isDubai ? "/destination/dubai" : "/");
-  const displayLabel = locale === 'he' && labelHe ? labelHe : label;
+  const displayLabel = t(labelKey);
 
   const ArrowIcon = isRTL ? ChevronRight : ChevronLeft;
 
@@ -144,33 +143,31 @@ export function BackButton({
 }
 
 export function PageHeader({
+  titleKey,
   title,
-  titleHe,
+  subtitleKey,
   subtitle,
-  subtitleHe,
   breadcrumbs = [],
   showBackButton = true,
   backHref,
-  backLabel,
-  backLabelHe,
+  backLabelKey,
   children,
   className,
 }: {
-  title: string;
-  titleHe?: string;
+  titleKey?: string;
+  title?: string;
+  subtitleKey?: string;
   subtitle?: string;
-  subtitleHe?: string;
   breadcrumbs?: BreadcrumbItem[];
   showBackButton?: boolean;
   backHref?: string;
-  backLabel?: string;
-  backLabelHe?: string;
+  backLabelKey?: string;
   children?: React.ReactNode;
   className?: string;
 }) {
-  const { locale, isRTL } = useLocale();
-  const displayTitle = locale === 'he' && titleHe ? titleHe : title;
-  const displaySubtitle = locale === 'he' && subtitleHe ? subtitleHe : subtitle;
+  const { t } = useTranslation();
+  const displayTitle = titleKey ? t(titleKey) : title || "";
+  const displaySubtitle = subtitleKey ? t(subtitleKey) : subtitle;
 
   return (
     <div 
@@ -186,8 +183,7 @@ export function PageHeader({
           {showBackButton && (
             <BackButton 
               href={backHref} 
-              label={backLabel}
-              labelHe={backLabelHe}
+              labelKey={backLabelKey}
             />
           )}
         </div>

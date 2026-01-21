@@ -21,6 +21,10 @@
     "followInstagram": "Follow TRAVI on Instagram",
     "followTikTok": "Follow TRAVI on TikTok"
   },
+  "breadcrumbs": {
+    "ariaLabel": "Breadcrumb navigation",
+    "dubai": "Dubai"
+  },
   "common": {
     "readMore": "Read More",
     "viewAll": "View All",
