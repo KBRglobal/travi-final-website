@@ -14,7 +14,10 @@
       "browseCollection": "Procházejte naši sbírku vybraných destinací",
       "explore": "Prozkoumat",
       "discoverButton": "Objevit",
-      "ariaLabel": "Přehled destinací"
+      "ariaLabel": "Přehled destinací",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINACÍ",
@@ -39,7 +42,8 @@
       "previous": "Předchozí destinace",
       "next": "Další destinace",
       "goTo": "Přejít na {{name}}",
-      "slideOf": "Snímek {{current}} z {{total}}: {{name}}"
+      "slideOf": "Snímek {{current}} z {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Prozkoumat",

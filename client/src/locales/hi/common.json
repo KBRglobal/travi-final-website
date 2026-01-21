@@ -213,7 +213,10 @@
       "browseCollection": "नीचे हमारे चुनिंदा यात्रा गंतव्यों का संग्रह देखें",
       "explore": "खोजें",
       "discoverButton": "खोजें",
-      "ariaLabel": "गंतव्यों का अवलोकन"
+      "ariaLabel": "गंतव्यों का अवलोकन",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "गंतव्य",
@@ -238,7 +241,8 @@
       "previous": "पिछला गंतव्य",
       "next": "अगला गंतव्य",
       "goTo": "{{name}} पर जाएं",
-      "slideOf": "स्लाइड {{current}} का {{total}}: {{name}}"
+      "slideOf": "स्लाइड {{current}} का {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "खोजें",

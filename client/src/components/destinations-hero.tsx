@@ -190,7 +190,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
       <div className="w-full max-w-7xl mx-auto relative z-10">
         <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-16 items-center">
           {/* Left content - Text first on mobile (order-1), left on desktop (lg:order-1) */}
-          <div className="text-left order-1 lg:order-1" data-testid="destinations-hero-content">
+          <div className="text-start order-1 lg:order-1" data-testid="destinations-hero-content">
             <motion.div 
               className="mb-8"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
@@ -256,14 +256,14 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               {heroCTAText && heroCTALink && (
                 <Link href={heroCTALink}>
                   <Button className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30">
-                    <Compass className="w-5 h-5 mr-2" />
+                    <Compass className="w-5 h-5 me-2" />
                     {heroCTAText}
                   </Button>
                 </Link>
               )}
               <Link href="/travel-guides">
                 <Button variant="outline" className="rounded-full px-6 py-6 text-base font-semibold border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                  <BookOpen className="w-5 h-5 mr-2" />
+                  <BookOpen className="w-5 h-5 me-2" />
                   {t("destinations.hero.travelGuides")}
                 </Button>
               </Link>
@@ -305,14 +305,14 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                 <div 
                   className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 transition-all duration-400"
                   role="region"
-                  aria-label="Featured destination gallery"
+                  aria-label={t("destinations.hero.galleryAriaLabel")}
                 >
                   <AnimatePresence mode="wait">
                     <motion.img 
                       key={currentIndex}
                       src={dest.heroImage} 
                       alt={dest.alt}
-                      title={`Explore ${dest.name}`}
+                      title={t("destinations.hero.exploreTitle", { name: dest.name })}
                       className="w-full h-full object-cover"
                       initial={{ opacity: 0, scale: 1.1 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -362,12 +362,12 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="text-white/60 text-sm">{t("destinations.hero.explore")}</span>
-                          <span className="text-2xl font-bold text-white ml-2">{dest.name}</span>
+                          <span className="text-2xl font-bold text-white ms-2">{dest.name}</span>
                         </div>
                         <Link href={`/destinations/${dest.slug}`}>
                           <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                             {t("destinations.hero.discoverButton")}
-                            <ArrowRight className="w-5 h-5" />
+                            <ArrowRight className="w-5 h-5 rtl:rotate-180" />
                           </button>
                         </Link>
                       </div>
@@ -379,7 +379,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                   <div 
                     className="mt-4 flex justify-center gap-3 p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-xl dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 flex-shrink-0"
                     role="tablist"
-                    aria-label="Destination carousel thumbnails"
+                    aria-label={t("destinations.carousel.thumbnails")}
                   >
                     {displayDestinations.slice(0, 5).map((destination, i) => (
                       <button 
@@ -423,7 +423,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                 <div 
                   className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden flex items-center justify-center"
                   role="region"
-                  aria-label="Featured destination placeholder"
+                  aria-label={t("destinations.hero.placeholderAriaLabel")}
                 >
                   <div className="text-center p-8">
                     <Compass className="w-16 h-16 text-[#6443F4]/50 mx-auto mb-4" />

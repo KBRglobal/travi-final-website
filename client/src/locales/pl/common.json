@@ -14,7 +14,10 @@
       "browseCollection": "Przeglądaj naszą kolekcję wybranych miejsc docelowych",
       "explore": "Odkryj",
       "discoverButton": "Odkryj",
-      "ariaLabel": "Przegląd miejsc docelowych"
+      "ariaLabel": "Przegląd miejsc docelowych",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "MIEJSCA",
@@ -39,7 +42,8 @@
       "previous": "Poprzednie miejsce",
       "next": "Następne miejsce",
       "goTo": "Przejdź do {{name}}",
-      "slideOf": "Slajd {{current}} z {{total}}: {{name}}"
+      "slideOf": "Slajd {{current}} z {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Odkryj",

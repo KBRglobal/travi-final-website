@@ -14,7 +14,10 @@
       "browseCollection": "Bläddra i vår samling av utvalda destinationer",
       "explore": "Utforska",
       "discoverButton": "Upptäck",
-      "ariaLabel": "Översikt av destinationer"
+      "ariaLabel": "Översikt av destinationer",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINATIONER",
@@ -39,7 +42,8 @@
       "previous": "Föregående destination",
       "next": "Nästa destination",
       "goTo": "Gå till {{name}}",
-      "slideOf": "Bild {{current}} av {{total}}: {{name}}"
+      "slideOf": "Bild {{current}} av {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Utforska",

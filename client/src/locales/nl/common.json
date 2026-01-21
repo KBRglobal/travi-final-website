@@ -14,7 +14,10 @@
       "browseCollection": "Bekijk onze collectie geselecteerde bestemmingen",
       "explore": "Verkennen",
       "discoverButton": "Ontdekken",
-      "ariaLabel": "Overzicht van bestemmingen"
+      "ariaLabel": "Overzicht van bestemmingen",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "BESTEMMINGEN",
@@ -39,7 +42,8 @@
       "previous": "Vorige bestemming",
       "next": "Volgende bestemming",
       "goTo": "Ga naar {{name}}",
-      "slideOf": "Dia {{current}} van {{total}}: {{name}}"
+      "slideOf": "Dia {{current}} van {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Verkennen",
