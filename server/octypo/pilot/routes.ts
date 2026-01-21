@@ -355,7 +355,7 @@ router.get("/execution-payload", async (_req: Request, res: Response) => {
 
 const guideContentSchema = z.object({
   guideSlug: z.string().min(1, "guideSlug is required"),
-  locale: z.enum(["en", "ar"]),
+  locale: z.enum(["en", "ar", "fr"]),
   destination: z.string().min(1, "destination is REQUIRED - no fallback allowed"),
   sourceGuideId: z.number().optional(),
   content: z.object({
