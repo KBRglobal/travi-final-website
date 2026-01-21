@@ -43,11 +43,17 @@ async function getNextAttraction() {
 
   if (!attraction) return null;
 
+  // FAIL-FAST: Do not use implicit Dubai fallback - require cityName from database
+  if (!attraction.cityName) {
+    console.error(`[OctypoSimple] FAIL: Attraction ${attraction.id} has no cityName - skipping (no implicit defaults)`);
+    return null;
+  }
+  
   return {
     id: 0,
     originalId: attraction.id,
     title: attraction.title || 'Unknown',
-    cityName: attraction.cityName || 'Dubai',
+    cityName: attraction.cityName,
     venueName: attraction.venueName || undefined,
     duration: attraction.duration || undefined,
     primaryCategory: attraction.primaryCategory || undefined,

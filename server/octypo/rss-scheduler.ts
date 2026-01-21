@@ -49,13 +49,19 @@ async function getActiveRSSFeeds() {
 }
 
 async function createRSSJob(feed: typeof rssFeeds.$inferSelect): Promise<string | null> {
+  // FAIL-FAST: RSS feed must have a destinationId - no silent defaults
+  if (!feed.destinationId) {
+    console.error(`[RSSScheduler] FAIL: Feed "${feed.name}" (${feed.id}) has no destinationId - skipping job creation`);
+    return null;
+  }
+  
   try {
     const jobData = {
       jobType: 'rss-content-generation' as const,
       feedId: feed.id,
       feedUrl: feed.url,
       feedName: feed.name,
-      destination: feed.destinationId || 'dubai',
+      destination: feed.destinationId,
       category: feed.category || 'news',
     };
     

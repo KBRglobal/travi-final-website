@@ -1751,7 +1751,8 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           imageSearchTerms, // AI-generated terms first
           [articleTopic], // Article title
           articleKeywords.slice(0, 3), // Top keywords
-          [`Dubai ${category}`], // Category fallback
+          // FAIL-FAST: Do not use implicit Dubai fallback - use category only
+          [category], // Category fallback (no implicit destination)
         ];
         
         for (const searchTerms of searchAttempts) {
@@ -2430,7 +2431,12 @@ export async function registerRoutes(
       };
       
       const citySlug = String(cityId).toLowerCase();
-      const cityInfo = xoteloLocationKeys[citySlug] || { key: "g295424", name: "Dubai" };
+      // FAIL-FAST: Do not use implicit Dubai fallback for hotel city
+      const cityInfo = xoteloLocationKeys[citySlug];
+      if (!cityInfo) {
+        console.error(`[Hotels API] FAIL: Unknown city "${citySlug}" - no implicit defaults allowed`);
+        return res.status(400).json({ error: `City "${citySlug}" not supported - must be one of: ${Object.keys(xoteloLocationKeys).join(', ')}` });
+      }
       console.log(`[Hotels API] Using Xotelo API for: ${citySlug} -> location_key: ${cityInfo.key}`);
       
       // Use Xotelo free hotel list API
@@ -2690,7 +2696,8 @@ export async function registerRoutes(
         checkInTime: hotelData.checkIn || "14:00",
         checkOutTime: hotelData.checkOut || "12:00",
         seoTitle: `${hotelData.name || hotelData.hotelName} | ${hotelData.stars || 5}-Star Luxury Hotel | TRAVI`,
-        seoDescription: `Book ${hotelData.name || hotelData.hotelName} in ${hotelData.location?.city || hotelData.cityName || "Dubai"}. Premium amenities and exceptional service.`,
+        // FAIL-FAST: Do not use implicit Dubai fallback for hotel city
+        seoDescription: `Book ${hotelData.name || hotelData.hotelName}${hotelData.location?.city || hotelData.cityName ? ` in ${hotelData.location?.city || hotelData.cityName}` : ''}. Premium amenities and exceptional service.`,
         highlights: []
       };
 
@@ -16298,7 +16305,8 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             id: 0,
             originalId: attr.id,
             title: attr.title || 'Unknown',
-            cityName: attr.city_name || 'Dubai',
+            // FAIL-FAST: Do not use implicit Dubai fallback - require city_name or skip
+            cityName: attr.city_name || '',
             venueName: attr.venue_name || undefined,
             duration: attr.duration || undefined,
             primaryCategory: attr.primary_category || undefined,

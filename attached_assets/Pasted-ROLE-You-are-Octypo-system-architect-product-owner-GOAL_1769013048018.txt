@@ -1,0 +1,61 @@
+ROLE: You are Octypo system architect / product owner.
+
+GOAL:
+I need to understand exactly how to integrate my localization pipeline with Octypo as the single orchestration layer.
+
+CONTEXT:
+- We operate at scale (30 languages now, expanding).
+- We DO NOT use classic translation.
+- We generate native, local-market content using AI (SEO + AEO optimized).
+- Content must be produced per PAGE, per SECTION, per LOCALE.
+- We already have a strict localization infrastructure (no silent fallback, visible missing markers, parity enforcement).
+
+WHAT I NEED FROM YOU (FACTS ONLY):
+
+1. CORE CAPABILITIES  
+Explain precisely:
+- How Octypo handles multi-model orchestration
+- How task queues, retries, throttling, and batching work
+- Whether Octypo supports section-level execution (hero / body / FAQ / SEO / schema / media-alt)
+
+2. DATA CONTRACT  
+Describe:
+- What input schema Octypo expects (JSON shape)
+- What output schema Octypo guarantees
+- How deterministic the output is per run
+- How versioning / regeneration is handled
+
+3. MULTI-LANGUAGE GENERATION  
+Confirm:
+- Can Octypo generate ORIGINAL native content (not translation)?
+- Can it route different sections to different models?
+- Can it apply language-specific keyword strategy per locale?
+
+4. PIPELINE INTEGRATION  
+Explain:
+- Best practice to connect Octypo as a single backend service
+- Whether Octypo should be synchronous or async
+- How to safely re-run failed locales without duplicating content
+
+5. GOVERNANCE & SAFETY  
+Clarify:
+- How to prevent partial page generation
+- How to ensure “all-or-nothing” page completeness
+- How to expose execution status per page / locale
+
+6. SCALE & PERFORMANCE  
+Provide:
+- Known limits (requests, concurrency, payload size)
+- Recommended batching strategy for 30+ locales
+- Cost-control mechanisms if available
+
+CONSTRAINTS:
+- No UI walkthroughs
+- No marketing language
+- No assumptions about my stack
+- No recommendations yet — ONLY factual explanation of Octypo’s capabilities
+
+OUTPUT FORMAT:
+- Structured sections matching the questions above
+- Clear, technical, implementation-ready answers
+- No fluff, no sales tone

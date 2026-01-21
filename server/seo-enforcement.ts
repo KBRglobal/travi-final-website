@@ -482,26 +482,36 @@ export function enforceArticleSEO(article: any): any {
   
   // Ensure secondary keywords exist
   if (!result.analysis?.secondaryKeywords || result.analysis.secondaryKeywords.length === 0) {
-    const primaryKeyword = result.analysis?.primaryKeyword || result.meta?.keywords?.[0] || "dubai";
-    result.analysis = result.analysis || {};
-    result.analysis.secondaryKeywords = [
-      `${primaryKeyword} guide`,
-      `${primaryKeyword} tips`,
-      `best ${primaryKeyword}`,
-    ];
-    console.log("[SEO] Generated secondary keywords");
+    const primaryKeyword = result.analysis?.primaryKeyword || result.meta?.keywords?.[0];
+    // FAIL-FAST: Do not use implicit Dubai fallback for keywords
+    if (!primaryKeyword) {
+      console.warn("[SEO] No primary keyword available - skipping secondary keyword generation (no implicit defaults)");
+    } else {
+      result.analysis = result.analysis || {};
+      result.analysis.secondaryKeywords = [
+        `${primaryKeyword} guide`,
+        `${primaryKeyword} tips`,
+        `best ${primaryKeyword}`,
+      ];
+      console.log("[SEO] Generated secondary keywords");
+    }
   }
   
   // Ensure alt texts exist
   if (!result.article?.altTexts || result.article.altTexts.length === 0) {
-    const topic = result.meta?.title || result.article?.h1 || "Dubai attraction";
-    result.article = result.article || {};
-    result.article.altTexts = [
-      `${topic} exterior view in Dubai`,
-      `Interior view of ${topic} with visitors`,
-      `${topic} sunset atmosphere in Dubai`,
-    ];
-    console.log("[SEO] Generated alt texts");
+    const topic = result.meta?.title || result.article?.h1;
+    // FAIL-FAST: Do not use implicit Dubai fallback for alt texts
+    if (!topic) {
+      console.warn("[SEO] No topic available for alt text generation - skipping (no implicit defaults)");
+    } else {
+      result.article = result.article || {};
+      result.article.altTexts = [
+        `${topic} exterior view`,
+        `Interior view of ${topic} with visitors`,
+        `${topic} atmosphere`,
+      ];
+      console.log("[SEO] Generated alt texts");
+    }
   }
   
   console.log("[SEO] Enforcement complete");

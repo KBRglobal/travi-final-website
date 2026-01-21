@@ -604,15 +604,17 @@ export class ImageSEOService {
         name: context.entityName,
         address: {
           "@type": "PostalAddress",
-          addressLocality: areaInfo?.name || context.location?.area || "Dubai",
-          addressRegion: "Dubai",
-          addressCountry: "AE"
+          // FAIL-FAST: Do not use implicit Dubai fallback for location - use context or omit
+          addressLocality: areaInfo?.name || context.location?.area || context.entityName,
+          addressRegion: context.location?.area || areaInfo?.name || undefined,
+          addressCountry: context.location?.country || "AE"
         },
+        // FAIL-FAST: Only include geo coordinates if explicitly provided - no implicit Dubai fallback
         ...(context.location?.coordinates || areaInfo?.coordinates ? {
           geo: {
             "@type": "GeoCoordinates",
-            latitude: String(context.location?.coordinates?.latitude || areaInfo?.coordinates?.latitude || 25.2048),
-            longitude: String(context.location?.coordinates?.longitude || areaInfo?.coordinates?.longitude || 55.2708)
+            latitude: String(context.location?.coordinates?.latitude || areaInfo?.coordinates?.latitude),
+            longitude: String(context.location?.coordinates?.longitude || areaInfo?.coordinates?.longitude)
           }
         } : {})
       },

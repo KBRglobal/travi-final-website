@@ -190,10 +190,15 @@ Respond ONLY with valid JSON matching the specified structure. No markdown, no e
  * Build prompt using SEO+AEO article template
  */
 function buildTemplateBasedPrompt(template: ArticleTemplate, options: GenerationOptions): string {
+  // FAIL-FAST: Destination is required for template-based prompts - no silent defaults
+  if (!options.destination) {
+    throw new Error('[ContentGenerator] FAIL: destination is required for content generation - no implicit defaults allowed');
+  }
+  
   const year = new Date().getFullYear();
   const variables: Record<string, string> = {
     topic: options.topic,
-    destination: options.destination || "Dubai",
+    destination: options.destination,
     year: String(year),
     primary_keyword: options.targetKeyword || options.topic,
     ...(options.templateVariables ?? {}),
@@ -711,10 +716,15 @@ export async function generateSeoAeoContent(
     word_count: String(options?.wordCount || 2500),
   };
   
+  // FAIL-FAST: Destination is required - no silent defaults
+  if (!options?.destination) {
+    throw new Error('[ContentGenerator] FAIL: destination is required for attraction content generation - no implicit defaults allowed');
+  }
+  
   return generateContent({
     contentType: options?.contentType || "attraction",
     topic,
-    destination: options?.destination || "Dubai",
+    destination: options.destination,
     targetKeyword: options?.targetKeyword || topic,
     writerPersonality: options?.writerPersonality,
     additionalContext: options?.additionalContext,
@@ -738,10 +748,15 @@ export async function generateListicleContent(
     writerPersonality?: string;
   }
 ): Promise<GeneratedContent> {
+  // FAIL-FAST: Destination is required - no silent defaults
+  if (!options?.destination) {
+    throw new Error('[ContentGenerator] FAIL: destination is required for listicle content generation - no implicit defaults allowed');
+  }
+  
   return generateContent({
     contentType: "article",
     topic: `Top ${count} ${topic}`,
-    destination: options?.destination || "Dubai",
+    destination: options.destination,
     targetKeyword: options?.targetKeyword || topic,
     writerPersonality: options?.writerPersonality,
     templateId: "listicle",
@@ -767,10 +782,15 @@ export async function generateComparisonContent(
     writerPersonality?: string;
   }
 ): Promise<GeneratedContent> {
+  // FAIL-FAST: Destination is required - no silent defaults
+  if (!options?.destination) {
+    throw new Error('[ContentGenerator] FAIL: destination is required for comparison content generation - no implicit defaults allowed');
+  }
+  
   return generateContent({
     contentType: "article",
     topic: `${optionA} vs ${optionB}`,
-    destination: options?.destination || "Dubai",
+    destination: options.destination,
     targetKeyword: `${optionA} vs ${optionB}`,
     writerPersonality: options?.writerPersonality,
     templateId: "comparison",
@@ -797,10 +817,15 @@ export async function generateBudgetGuideContent(
     writerPersonality?: string;
   }
 ): Promise<GeneratedContent> {
+  // FAIL-FAST: Destination is required - no silent defaults
+  if (!options?.destination) {
+    throw new Error('[ContentGenerator] FAIL: destination is required for budget guide content generation - no implicit defaults allowed');
+  }
+  
   return generateContent({
     contentType: "article",
     topic: `${topic} on a Budget`,
-    destination: options?.destination || "Dubai",
+    destination: options.destination,
     targetKeyword: options?.targetKeyword || `${topic} budget`,
     writerPersonality: options?.writerPersonality,
     templateId: "budget-guide",

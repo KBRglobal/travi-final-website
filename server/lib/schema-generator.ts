@@ -294,11 +294,12 @@ export function generateEventSchema(
   if (event.venue || event.venueAddress) {
     schema.location = {
       "@type": "Place",
-      name: event.venue || "Dubai",
+      // FAIL-FAST: Do not use implicit Dubai fallback - use provided venue or event name
+      name: event.venue || event.name,
       address: {
         "@type": "PostalAddress",
         streetAddress: event.venueAddress,
-        addressLocality: "Dubai",
+        addressLocality: event.location || undefined,
         addressCountry: "AE",
       },
     };
