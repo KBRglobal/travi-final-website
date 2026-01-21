@@ -258,7 +258,10 @@
       "browseCollection": "עיין באוסף יעדי הטיולים שנבחרו בקפידה למטה",
       "explore": "גלה",
       "discoverButton": "גלה",
-      "ariaLabel": "סקירת יעדים"
+      "ariaLabel": "סקירת יעדים",
+      "exploreTitle": "גלה את {{name}}",
+      "galleryAriaLabel": "גלריית יעדים מומלצים",
+      "placeholderAriaLabel": "מציין מקום ליעד מומלץ"
     },
     "stats": {
       "destinations": "יעדים",
@@ -283,7 +286,8 @@
       "previous": "היעד הקודם",
       "next": "היעד הבא",
       "goTo": "עבור ל{{name}}",
-      "slideOf": "שקף {{current}} מתוך {{total}}: {{name}}"
+      "slideOf": "שקף {{current}} מתוך {{total}}: {{name}}",
+      "thumbnails": "תמונות ממוזערות של קרוסלת היעדים"
     },
     "card": {
       "explore": "גלה",
