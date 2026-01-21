@@ -59,6 +59,7 @@ const PublicContact = lazy(() => import("@/pages/contact"));
 const PublicSurvey = lazy(() => import("@/pages/public-survey"));
 const PartnersJoin = lazy(() => import("@/pages/partners-join"));
 const PilotAttractionPage = lazy(() => import("@/pages/pilot/pilot-attraction"));
+const PilotGuidePage = lazy(() => import("@/pages/pilot/pilot-guide"));
 const PartnersDashboard = lazy(() => import("@/pages/partners-dashboard"));
 const HelpCenterPublic = lazy(() => import("@/pages/help"));
 const HelpCategory = lazy(() => import("@/pages/help/category"));
@@ -165,6 +166,7 @@ const publicRoutes = [
   { path: "/guides/rak-real-estate-investment", component: RakRealEstateInvestmentPage },
   { path: "/guides/:slug", component: GuideDetailPage },
   { path: "/pilot/:locale/attractions/:entityId", component: PilotAttractionPage },
+  { path: "/pilot/:locale/guides/:guideSlug", component: PilotGuidePage },
   { path: "/attractions", component: Attractions },
   { path: "/attractions/list/:destination", component: DestinationAttractions },
   { path: "/:destination/attractions/:slug", component: TiqetsAttractionDetail },

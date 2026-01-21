@@ -166,7 +166,7 @@ export interface PilotGenerationResult {
 // LOCALE PURITY VALIDATOR - HARD GATE (≥98%)
 // ============================================================================
 
-const LOCALE_PURITY_THRESHOLD = 0.98; // 98% - HARD GATE
+export const LOCALE_PURITY_THRESHOLD = 0.98; // 98% - HARD GATE
 
 // Arabic Unicode ranges
 const ARABIC_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g;

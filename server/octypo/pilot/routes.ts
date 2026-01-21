@@ -21,6 +21,13 @@ import {
   getLocalizationSystemStatus,
   type PilotGenerationRequest 
 } from "./localization-pilot";
+import {
+  getLocalizedGuideContent,
+  saveLocalizedGuideContent,
+  getGuideLocalizationStatus,
+  type GuideLocalizationRequest,
+  type GeneratedGuideContent,
+} from "./guide-localization-pilot";
 import type { AttractionData } from "../types";
 
 const router = Router();
@@ -335,6 +342,152 @@ router.get("/execution-payload", async (_req: Request, res: Response) => {
     
   } catch (error) {
     console.error("[PilotAPI] Execution payload error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+// ============================================================================
+// GUIDE LOCALIZATION ROUTES
+// ============================================================================
+
+const guideContentSchema = z.object({
+  guideSlug: z.string().min(1, "guideSlug is required"),
+  locale: z.enum(["en", "ar"]),
+  destination: z.string().min(1, "destination is REQUIRED - no fallback allowed"),
+  sourceGuideId: z.number().optional(),
+  content: z.object({
+    introduction: z.string().optional(),
+    whatToExpect: z.string().optional(),
+    highlights: z.array(z.string()).optional(),
+    tips: z.string().optional(),
+    faq: z.array(z.object({
+      question: z.string(),
+      answer: z.string(),
+    })).optional(),
+    answerCapsule: z.string().optional(),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+  }),
+});
+
+router.post("/guides/save", async (req: Request, res: Response) => {
+  try {
+    const parseResult = guideContentSchema.safeParse(req.body);
+    
+    if (!parseResult.success) {
+      return res.status(400).json({
+        success: false,
+        error: "GUIDE_FAIL: Invalid input contract",
+        details: parseResult.error.errors.map(e => `${e.path.join(".")}: ${e.message}`),
+      });
+    }
+    
+    const { guideSlug, locale, destination, sourceGuideId, content } = parseResult.data;
+    
+    console.log(`[GuidePilotAPI] Save request: ${guideSlug} locale=${locale} destination=${destination}`);
+    
+    const request: GuideLocalizationRequest = {
+      guideSlug,
+      locale,
+      destination,
+      sourceGuideId,
+    };
+    
+    const result = await saveLocalizedGuideContent(request, content as GeneratedGuideContent, {
+      writerAgent: "manual-entry",
+      engineUsed: "human",
+    });
+    
+    if (result.success) {
+      return res.json({
+        success: true,
+        guideSlug: result.guideSlug,
+        locale: result.locale,
+        destination: result.destination,
+        contentId: result.contentId,
+        validationResults: result.validationResults,
+        generationTimeMs: result.generationTimeMs,
+      });
+    } else {
+      return res.status(422).json({
+        success: false,
+        guideSlug: result.guideSlug,
+        locale: result.locale,
+        destination: result.destination,
+        failureReason: result.failureReason,
+        validationResults: result.validationResults,
+        generationTimeMs: result.generationTimeMs,
+      });
+    }
+    
+  } catch (error) {
+    console.error("[GuidePilotAPI] Save error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Response) => {
+  try {
+    const { guideSlug, locale } = req.params;
+    
+    if (!["en", "ar"].includes(locale)) {
+      return res.status(400).json({
+        success: false,
+        error: "GUIDE_FAIL: locale must be 'en' or 'ar' only",
+      });
+    }
+    
+    const result = await getLocalizedGuideContent(guideSlug, locale as "en" | "ar");
+    
+    if (!result.found || !result.content) {
+      return res.status(404).json({
+        success: false,
+        exists: false,
+        guideSlug,
+        locale,
+        message: locale !== "en" 
+          ? "Localized content pending generation - NO English fallback"
+          : "Content not found",
+      });
+    }
+    
+    return res.json({
+      success: true,
+      exists: true,
+      guideSlug,
+      locale,
+      content: result.content,
+    });
+    
+  } catch (error) {
+    console.error("[GuidePilotAPI] Content fetch error:", error);
+    return res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error",
+    });
+  }
+});
+
+router.get("/guides/status/:guideSlug", async (req: Request, res: Response) => {
+  try {
+    const { guideSlug } = req.params;
+    
+    const status = await getGuideLocalizationStatus(guideSlug);
+    
+    return res.json({
+      success: true,
+      guideSlug,
+      locales: status,
+    });
+    
+  } catch (error) {
+    console.error("[GuidePilotAPI] Status check error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
