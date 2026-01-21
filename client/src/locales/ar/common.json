@@ -59,8 +59,17 @@
       "headlinePart1": "مصدرك الموثوق",
       "headlinePart2": "للسفر",
       "description": "معلومات سفر شاملة لـ {{destinations}} وجهة حول العالم. اكتشف أدلة مفصلة لأكثر من {{attractions}} معلم سياحي.",
+      "descriptionPart1": "[NEEDS_TRANSLATION] Comprehensive travel information for",
+      "descriptionPart2": "[NEEDS_TRANSLATION] destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "[NEEDS_TRANSLATION] attractions.",
       "carouselLabel": "التنقل في شريط الوجهات",
-      "viewDestination": "عرض {{name}} - {{tagline}}"
+      "viewDestination": "عرض {{name}} - {{tagline}}",
+      "worldwide": "[NEEDS_TRANSLATION] Worldwide",
+      "exploreWorld": "[NEEDS_TRANSLATION] Explore the World",
+      "welcomeAriaLabel": "[NEEDS_TRANSLATION] Welcome to TRAVI World",
+      "pageTitle": "[NEEDS_TRANSLATION] TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "[NEEDS_TRANSLATION] Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "[NEEDS_TRANSLATION] Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
       "attractions": "أكثر من {{count}} معلم سياحي مغطى",
@@ -82,19 +91,66 @@
       "faq": "الأسئلة الشائعة",
       "faqDesc": "كل ما تحتاج معرفته عن TRAVI",
       "regions": "استكشف حسب المنطقة",
-      "newsletter": "ابقَ على اطلاع"
+      "newsletter": "ابقَ على اطلاع",
+      "allDestinationsTitle": "[NEEDS_TRANSLATION] Travel Guides for All {{count}} Destinations",
+      "completeGuide": "[NEEDS_TRANSLATION] {{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
       "exploreDestinations": "استكشف جميع الوجهات",
+      "viewGuides": "[NEEDS_TRANSLATION] View Guides",
       "viewAll": "عرض الكل",
       "startExploring": "ابدأ الاستكشاف",
-      "planTrip": "خطط لرحلتك"
+      "planTrip": "خطط لرحلتك",
+      "viewExperience": "[NEEDS_TRANSLATION] View {{name}}"
     },
     "stats": {
       "destinations": "وجهة",
       "attractions": "معلم سياحي",
-      "languages": "لغة"
-    }
+      "languages": "لغة",
+      "attractionsNum": "[NEEDS_TRANSLATION] 3,000+",
+      "destinationsNum": "[NEEDS_TRANSLATION] 16",
+      "languagesNum": "[NEEDS_TRANSLATION] 17+",
+      "destinationsCountWithLabel": "[NEEDS_TRANSLATION] {{count}} destinations",
+      "attractionsCountWithLabel": "[NEEDS_TRANSLATION] {{count}}+ attractions"
+    },
+    "categories": {
+      "attractions": "[NEEDS_TRANSLATION] Attractions",
+      "attractionsDesc": "[NEEDS_TRANSLATION] Must-see places",
+      "news": "[NEEDS_TRANSLATION] Travel News",
+      "newsDesc": "[NEEDS_TRANSLATION] Latest updates",
+      "guides": "[NEEDS_TRANSLATION] Guides",
+      "guidesDesc": "[NEEDS_TRANSLATION] Destination guides",
+      "hotels": "[NEEDS_TRANSLATION] Hotels",
+      "hotelsDesc": "[NEEDS_TRANSLATION] Find your perfect stay"
+    },
+    "experiences": {
+      "luxury": "[NEEDS_TRANSLATION] Luxury Travel",
+      "luxuryDesc": "[NEEDS_TRANSLATION] Premium travel experiences and exclusive destinations",
+      "adventure": "[NEEDS_TRANSLATION] Adventure & Outdoors",
+      "adventureDesc": "[NEEDS_TRANSLATION] Thrilling outdoor experiences and adventures",
+      "family": "[NEEDS_TRANSLATION] Family Travel",
+      "familyDesc": "[NEEDS_TRANSLATION] Family-friendly destinations and activities",
+      "budget": "[NEEDS_TRANSLATION] Budget Travel",
+      "budgetDesc": "[NEEDS_TRANSLATION] Affordable travel options and destinations",
+      "romance": "[NEEDS_TRANSLATION] Honeymoon & Romance",
+      "romanceDesc": "[NEEDS_TRANSLATION] Romantic getaways and honeymoon destinations",
+      "solo": "[NEEDS_TRANSLATION] Solo Travel",
+      "soloDesc": "[NEEDS_TRANSLATION] Perfect destinations for solo travelers"
+    },
+    "faq": {
+      "title": "[NEEDS_TRANSLATION] Frequently Asked Questions",
+      "subtitle": "[NEEDS_TRANSLATION] Everything you need to know about TRAVI World",
+      "whatIsTravi": "[NEEDS_TRANSLATION] What is TRAVI World?",
+      "whatIsTraviAnswer": "[NEEDS_TRANSLATION] TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "[NEEDS_TRANSLATION] How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "[NEEDS_TRANSLATION] TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "[NEEDS_TRANSLATION] Is TRAVI World free to use?",
+      "isFreeAnswer": "[NEEDS_TRANSLATION] Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "[NEEDS_TRANSLATION] How often is content updated?",
+      "updateFrequencyAnswer": "[NEEDS_TRANSLATION] TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
+    },
+    "mascotAlt": "[NEEDS_TRANSLATION] TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "[NEEDS_TRANSLATION] TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
     "title": "معالم دبي السياحية",
@@ -249,6 +305,88 @@
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": {
+        "name": "[NEEDS_TRANSLATION] Dubai",
+        "country": "[NEEDS_TRANSLATION] UAE",
+        "cardAlt": "[NEEDS_TRANSLATION] Dubai skyline with Burj Khalifa tower at sunset"
+      },
+      "london": {
+        "name": "[NEEDS_TRANSLATION] London",
+        "country": "[NEEDS_TRANSLATION] UK",
+        "cardAlt": "[NEEDS_TRANSLATION] London Big Ben and Houses of Parliament"
+      },
+      "paris": {
+        "name": "[NEEDS_TRANSLATION] Paris",
+        "country": "[NEEDS_TRANSLATION] France",
+        "cardAlt": "[NEEDS_TRANSLATION] Paris Eiffel Tower illuminated at sunset"
+      },
+      "newYork": {
+        "name": "[NEEDS_TRANSLATION] New York",
+        "country": "[NEEDS_TRANSLATION] USA",
+        "cardAlt": "[NEEDS_TRANSLATION] New York Manhattan skyline with Empire State Building"
+      },
+      "tokyo": {
+        "name": "[NEEDS_TRANSLATION] Tokyo",
+        "country": "[NEEDS_TRANSLATION] Japan",
+        "cardAlt": "[NEEDS_TRANSLATION] Tokyo Shibuya crossing neon lights at night"
+      },
+      "singapore": {
+        "name": "[NEEDS_TRANSLATION] Singapore",
+        "country": "[NEEDS_TRANSLATION] Singapore",
+        "cardAlt": "[NEEDS_TRANSLATION] Singapore Marina Bay Sands and Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "[NEEDS_TRANSLATION] Barcelona",
+        "country": "[NEEDS_TRANSLATION] Spain",
+        "cardAlt": "[NEEDS_TRANSLATION] Barcelona Sagrada Familia at golden hour"
+      },
+      "bangkok": {
+        "name": "[NEEDS_TRANSLATION] Bangkok",
+        "country": "[NEEDS_TRANSLATION] Thailand",
+        "cardAlt": "[NEEDS_TRANSLATION] Bangkok Grand Palace temple at sunrise"
+      },
+      "abuDhabi": {
+        "name": "[NEEDS_TRANSLATION] Abu Dhabi",
+        "country": "[NEEDS_TRANSLATION] UAE",
+        "cardAlt": "[NEEDS_TRANSLATION] Abu Dhabi Sheikh Zayed Grand Mosque"
+      },
+      "amsterdam": {
+        "name": "[NEEDS_TRANSLATION] Amsterdam",
+        "country": "[NEEDS_TRANSLATION] Netherlands",
+        "cardAlt": "[NEEDS_TRANSLATION] Amsterdam canal with historic buildings"
+      },
+      "hongKong": {
+        "name": "[NEEDS_TRANSLATION] Hong Kong",
+        "country": "[NEEDS_TRANSLATION] China",
+        "cardAlt": "[NEEDS_TRANSLATION] Hong Kong skyline at night"
+      },
+      "istanbul": {
+        "name": "[NEEDS_TRANSLATION] Istanbul",
+        "country": "[NEEDS_TRANSLATION] Turkey",
+        "cardAlt": "[NEEDS_TRANSLATION] Istanbul Blue Mosque at sunset"
+      },
+      "lasVegas": {
+        "name": "[NEEDS_TRANSLATION] Las Vegas",
+        "country": "[NEEDS_TRANSLATION] USA",
+        "cardAlt": "[NEEDS_TRANSLATION] Las Vegas Strip at night"
+      },
+      "losAngeles": {
+        "name": "[NEEDS_TRANSLATION] Los Angeles",
+        "country": "[NEEDS_TRANSLATION] USA",
+        "cardAlt": "[NEEDS_TRANSLATION] Los Angeles Hollywood sign"
+      },
+      "miami": {
+        "name": "[NEEDS_TRANSLATION] Miami",
+        "country": "[NEEDS_TRANSLATION] USA",
+        "cardAlt": "[NEEDS_TRANSLATION] Miami Beach Art Deco district"
+      },
+      "rome": {
+        "name": "[NEEDS_TRANSLATION] Rome",
+        "country": "[NEEDS_TRANSLATION] Italy",
+        "cardAlt": "[NEEDS_TRANSLATION] Rome Colosseum at golden hour"
+      }
+    },
     "hero": {
       "badge": "{{count}} وجهة حول العالم",
       "trustedBy": "موثوق من {{count}} وجهة حول العالم",
@@ -420,6 +558,14 @@
       "button": "إعادة المحاولة"
     }
   },
+  "newsletter": {
+    "badge": "[NEEDS_TRANSLATION] Join the Adventure",
+    "title": "[NEEDS_TRANSLATION] Get Travel Magic in Your Inbox",
+    "description": "[NEEDS_TRANSLATION] Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "emailPlaceholder": "[NEEDS_TRANSLATION] your@email.com",
+    "subscribe": "[NEEDS_TRANSLATION] Subscribe",
+    "success": "[NEEDS_TRANSLATION] You're subscribed! Check your inbox."
+  },
   "meta": {
     "home": {
       "title": "ترافي - اكتشف دبي | دليلك الشامل للسفر إلى دبي",
@@ -436,6 +582,235 @@
     "dining": {
       "title": "مطاعم دبي | أفضل الطعام في دبي",
       "description": "استكشف المشهد الطهي في دبي - المطاعم الفاخرة وطعام الشارع وكل ما بينهما."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "[NEEDS_TRANSLATION] Travel Intelligence",
+      "headlinePart1": "[NEEDS_TRANSLATION] Stories That",
+      "headlinePart2": "[NEEDS_TRANSLATION] Move You",
+      "description": "[NEEDS_TRANSLATION] Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "[NEEDS_TRANSLATION] Start Your Journey",
+      "browseCollection": "[NEEDS_TRANSLATION] Browse Collection",
+      "issueBadge": "[NEEDS_TRANSLATION] Issue 47 — Winter 2026"
+    },
+    "stats": {
+      "guides": "[NEEDS_TRANSLATION] Travel Guides",
+      "destinations": "[NEEDS_TRANSLATION] Destinations",
+      "languages": "[NEEDS_TRANSLATION] Languages"
+    },
+    "journey": {
+      "badge": "[NEEDS_TRANSLATION] Your Journey, Our Guidance",
+      "title": "[NEEDS_TRANSLATION] Every Great Trip Begins with a Guide",
+      "subtitle": "[NEEDS_TRANSLATION] From dreaming to sharing, we're with you at every step"
+    },
+    "ideaLab": {
+      "badge": "[NEEDS_TRANSLATION] Idea Lab",
+      "title": "[NEEDS_TRANSLATION] Curated Inspiration",
+      "readGuide": "[NEEDS_TRANSLATION] Read Guide"
+    },
+    "archetype": {
+      "badge": "[NEEDS_TRANSLATION] Personalized for You",
+      "title": "[NEEDS_TRANSLATION] What Kind of Traveler Are You?",
+      "subtitle": "[NEEDS_TRANSLATION] Select your travel style and discover guides curated just for you",
+      "viewGuides": "[NEEDS_TRANSLATION] View {{type}} Guides"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "[NEEDS_TRANSLATION] Adventure Seeker",
+        "description": "[NEEDS_TRANSLATION] Thrilling experiences and adrenaline rushes"
+      },
+      "culture": {
+        "name": "[NEEDS_TRANSLATION] Culture Explorer",
+        "description": "[NEEDS_TRANSLATION] Art, history, and local traditions"
+      },
+      "relaxation": {
+        "name": "[NEEDS_TRANSLATION] Relaxation Guru",
+        "description": "[NEEDS_TRANSLATION] Wellness retreats and peaceful escapes"
+      },
+      "foodie": {
+        "name": "[NEEDS_TRANSLATION] Culinary Nomad",
+        "description": "[NEEDS_TRANSLATION] Local flavors and gastronomic adventures"
+      },
+      "wellness": {
+        "name": "[NEEDS_TRANSLATION] Wellness Seeker",
+        "description": "[NEEDS_TRANSLATION] Relaxation, spas, and mindful retreats"
+      },
+      "budget": {
+        "name": "[NEEDS_TRANSLATION] Smart Traveler",
+        "description": "[NEEDS_TRANSLATION] Maximum experience, minimal budget"
+      },
+      "solo": {
+        "name": "[NEEDS_TRANSLATION] Solo Explorer",
+        "description": "[NEEDS_TRANSLATION] Independent journeys and self-discovery"
+      },
+      "luxury": {
+        "name": "[NEEDS_TRANSLATION] Luxury Connoisseur",
+        "description": "[NEEDS_TRANSLATION] Premium experiences and fine living"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "[NEEDS_TRANSLATION] Dream",
+        "subtitle": "[NEEDS_TRANSLATION] Discover inspiration",
+        "guides": ["[NEEDS_TRANSLATION] Destination Guides", "[NEEDS_TRANSLATION] Photo Essays"]
+      },
+      "plan": {
+        "title": "[NEEDS_TRANSLATION] Plan",
+        "subtitle": "[NEEDS_TRANSLATION] Map your journey",
+        "guides": ["[NEEDS_TRANSLATION] Trip Planning", "[NEEDS_TRANSLATION] Visa Requirements"]
+      },
+      "prepare": {
+        "title": "[NEEDS_TRANSLATION] Prepare",
+        "subtitle": "[NEEDS_TRANSLATION] Get ready to go",
+        "guides": ["[NEEDS_TRANSLATION] Packing Lists", "[NEEDS_TRANSLATION] Safety Tips"]
+      },
+      "experience": {
+        "title": "[NEEDS_TRANSLATION] Experience",
+        "subtitle": "[NEEDS_TRANSLATION] Live the adventure",
+        "guides": ["[NEEDS_TRANSLATION] Local Insights", "[NEEDS_TRANSLATION] Hidden Gems"]
+      },
+      "share": {
+        "title": "[NEEDS_TRANSLATION] Share",
+        "subtitle": "[NEEDS_TRANSLATION] Tell your story",
+        "guides": ["[NEEDS_TRANSLATION] Travel Writing", "[NEEDS_TRANSLATION] Photography"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "[NEEDS_TRANSLATION] Weekend Escapes",
+      "offBeatenPath": "[NEEDS_TRANSLATION] Off the Beaten Path",
+      "smartTravel": "[NEEDS_TRANSLATION] Smart Travel",
+      "bucketList": "[NEEDS_TRANSLATION] Bucket List",
+      "culinary": "[NEEDS_TRANSLATION] Culinary",
+      "natureWonder": "[NEEDS_TRANSLATION] Nature & Wonder"
+    },
+    "seo": {
+      "title": "[NEEDS_TRANSLATION] Travel Guides | Expert Destination Insights",
+      "description": "[NEEDS_TRANSLATION] Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
+    },
+    "editorial": {
+      "badge": "[NEEDS_TRANSLATION] From Our Editors",
+      "title": "[NEEDS_TRANSLATION] Editorial Features",
+      "readFull": "[NEEDS_TRANSLATION] Read Full Essay"
+    },
+    "gallery": {
+      "badge": "[NEEDS_TRANSLATION] Visual Stories",
+      "title": "[NEEDS_TRANSLATION] Destinations That Inspire",
+      "categories": {
+        "city": "[NEEDS_TRANSLATION] City",
+        "mountains": "[NEEDS_TRANSLATION] Mountains",
+        "beach": "[NEEDS_TRANSLATION] Beach",
+        "safari": "[NEEDS_TRANSLATION] Safari",
+        "nature": "[NEEDS_TRANSLATION] Nature"
+      }
+    },
+    "writers": {
+      "badge": "[NEEDS_TRANSLATION] Expert Voices",
+      "title": "[NEEDS_TRANSLATION] Meet Our Writers",
+      "subtitle": "[NEEDS_TRANSLATION] The expert voices behind our most trusted travel guides",
+      "articleCount": "[NEEDS_TRANSLATION] {{count}} Articles",
+      "viewProfile": "[NEEDS_TRANSLATION] View Profile"
+    },
+    "map": {
+      "badge": "[NEEDS_TRANSLATION] Explore by Region",
+      "title": "[NEEDS_TRANSLATION] Guides Around the World",
+      "subtitle": "[NEEDS_TRANSLATION] Click any destination to discover our expert coverage",
+      "guidesAvailable": "[NEEDS_TRANSLATION] {{count}} guides available",
+      "legendDestination": "[NEEDS_TRANSLATION] Destination",
+      "legendHighlighted": "[NEEDS_TRANSLATION] Highlighted"
+    },
+    "newsletter": {
+      "badge": "[NEEDS_TRANSLATION] Join the Journey",
+      "title": "[NEEDS_TRANSLATION] Travel Stories, Weekly",
+      "description": "[NEEDS_TRANSLATION] Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "[NEEDS_TRANSLATION] Enter your email",
+      "subscribe": "[NEEDS_TRANSLATION] Subscribe",
+      "subscribing": "[NEEDS_TRANSLATION] Subscribing...",
+      "joinCount": "[NEEDS_TRANSLATION] Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "[NEEDS_TRANSLATION] Please enter a valid email",
+      "successTitle": "[NEEDS_TRANSLATION] Welcome to the journey!",
+      "successDesc": "[NEEDS_TRANSLATION] You're now subscribed to our editorial digest."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "[NEEDS_TRANSLATION] Recent",
+      "justNow": "[NEEDS_TRANSLATION] Just now",
+      "minutesAgo": "[NEEDS_TRANSLATION] {{count}}m ago",
+      "hoursAgo": "[NEEDS_TRANSLATION] {{count}}h ago",
+      "daysAgo": "[NEEDS_TRANSLATION] {{count}}d ago",
+      "minRead": "[NEEDS_TRANSLATION] {{count}} min read"
+    },
+    "header": {
+      "title": "[NEEDS_TRANSLATION] TRAVI NEWS",
+      "edition": "[NEEDS_TRANSLATION] International Edition",
+      "subscribe": "[NEEDS_TRANSLATION] Subscribe"
+    },
+    "breaking": {
+      "label": "[NEEDS_TRANSLATION] Breaking"
+    },
+    "search": {
+      "placeholder": "[NEEDS_TRANSLATION] Search worldwide news...",
+      "button": "[NEEDS_TRANSLATION] Search",
+      "title": "[NEEDS_TRANSLATION] Search",
+      "searching": "[NEEDS_TRANSLATION] Searching for \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "[NEEDS_TRANSLATION] All News",
+      "world": "[NEEDS_TRANSLATION] World",
+      "business": "[NEEDS_TRANSLATION] Business",
+      "culture": "[NEEDS_TRANSLATION] Culture",
+      "travel": "[NEEDS_TRANSLATION] Travel",
+      "tech": "[NEEDS_TRANSLATION] Tech",
+      "opinion": "[NEEDS_TRANSLATION] Opinion"
+    },
+    "empty": {
+      "title": "[NEEDS_TRANSLATION] No News Articles Yet",
+      "description": "[NEEDS_TRANSLATION] We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "[NEEDS_TRANSLATION] Explore Destinations",
+      "viewGuides": "[NEEDS_TRANSLATION] View Travel Guides"
+    },
+    "hero": {
+      "topStory": "[NEEDS_TRANSLATION] Top Story",
+      "editorialTeam": "[NEEDS_TRANSLATION] Editorial Team"
+    },
+    "views": "[NEEDS_TRANSLATION] {{count}} views",
+    "viewAll": "[NEEDS_TRANSLATION] View All",
+    "seo": {
+      "title": "[NEEDS_TRANSLATION] Travel News | Latest Stories & Updates",
+      "description": "[NEEDS_TRANSLATION] Stay informed with the latest travel news, destination updates, and industry insights from around the world."
+    },
+    "sidebar": {
+      "alsoToday": "[NEEDS_TRANSLATION] Also Today",
+      "storiesCount": "[NEEDS_TRANSLATION] {{count}} stories",
+      "liveUpdates": "[NEEDS_TRANSLATION] Live Updates",
+      "trendingTopics": "[NEEDS_TRANSLATION] Trending Topics",
+      "noTrending": "[NEEDS_TRANSLATION] No trending topics yet. Check back soon!"
+    },
+    "sections": {
+      "topStories": "[NEEDS_TRANSLATION] Top Stories",
+      "opinion": "[NEEDS_TRANSLATION] Opinion & Analysis",
+      "moreOpinion": "[NEEDS_TRANSLATION] More Opinion",
+      "worldwide": "[NEEDS_TRANSLATION] Worldwide Coverage"
+    },
+    "worldwide": {
+      "title": "[NEEDS_TRANSLATION] Your Window to the World",
+      "subtitle": "[NEEDS_TRANSLATION] News from every corner of the globe",
+      "storiesCount": "[NEEDS_TRANSLATION] {{count}} stories",
+      "comingSoon": "[NEEDS_TRANSLATION] Coming soon"
+    },
+    "newsletter": {
+      "title": "[NEEDS_TRANSLATION] Stay Informed",
+      "description": "[NEEDS_TRANSLATION] Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "[NEEDS_TRANSLATION] Enter your email",
+      "subscribe": "[NEEDS_TRANSLATION] Subscribe Free",
+      "noSpam": "[NEEDS_TRANSLATION] No spam. Unsubscribe anytime.",
+      "successTitle": "[NEEDS_TRANSLATION] Subscribed!",
+      "successDesc": "[NEEDS_TRANSLATION] Please check your email to confirm your subscription.",
+      "errorTitle": "[NEEDS_TRANSLATION] Subscription failed",
+      "errorDesc": "[NEEDS_TRANSLATION] Please try again later.",
+      "invalidTitle": "[NEEDS_TRANSLATION] Invalid email",
+      "invalidDesc": "[NEEDS_TRANSLATION] Please enter a valid email address."
     }
   },
   "pages": {
