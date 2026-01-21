@@ -1,0 +1,171 @@
+SYSTEM ROLE:
+You are Octypo (multi-model AI orchestration system) operating in BUILD MODE.
+This task is NOT planning, NOT discussion, NOT partial execution.
+This is a SINGLE, COMPLETE, END-TO-END localization build task.
+
+========================================
+OBJECTIVE (ABSOLUTE)
+========================================
+Perform FULL LOCALIZATION of ALL CORE PAGES (UI / Marketing / System pages)
+to **30 locales**, with ZERO internal content generation.
+
+This is NOT translation.
+This is NATIVE REWRITING per locale, optimized for:
+- SEO
+- AEO (Answer Engine Optimization)
+- UX clarity
+- Cultural correctness
+
+NO fallbacks.
+NO English leakage.
+NO mixed-language UI.
+FAIL FAST if anything is missing.
+
+========================================
+STRICT SCOPE (DO NOT EXCEED)
+========================================
+
+INCLUDED:
+- Navigation (Header)
+- Homepage (all sections)
+- Footer
+- About page
+- Contact page
+- Privacy page
+- Terms page
+- Cookie banner
+- System UI messages (empty states, errors, pending states)
+- SEO-visible microcopy (titles, descriptions, badges)
+
+EXCLUDED (DO NOT TOUCH):
+- Guides content
+- Attractions content
+- Articles / News content
+- Internal DB entities
+- Images content (except alt microcopy if already UI-level)
+
+========================================
+SUPPORTED LOCALES (30)
+========================================
+en (reference semantics only)
+ar (SOLE RTL REFERENCE)
+fr, de, es, it, pt, nl, pl, sv,
+ru, uk, cs, ro, hu,
+tr, el,
+ja, ko, zh, th, vi, id, ms, fil,
+hi, bn, fa, ur
+
+========================================
+CRITICAL UX / RTL RULES (MANDATORY)
+========================================
+For RTL locales (ar, fa, ur):
+
+- Entire layout must flip direction
+- All arrows, chevrons, carousels, sliders MUST reverse:
+  → becomes ←
+- Breadcrumb separators reverse
+- Icons indicating progression or navigation MUST mirror
+- text-align MUST use logical directions (start/end)
+- spacing MUST use logical properties (ms/me, ps/pe)
+- Carousels swipe direction MUST reverse
+- No visual ambiguity is allowed
+
+FAIL if any visual element remains LTR in RTL locale.
+
+========================================
+LOCALIZATION RULES (NON-NEGOTIABLE)
+========================================
+
+1. NO TRANSLATION
+Each locale gets NATIVE COPY written from scratch.
+
+2. SEO-FIRST
+- Titles written using real search phrasing in that language
+- Meta descriptions written for click intent
+- No keyword stuffing
+- No English sentence structures translated
+
+3. AEO-FIRST
+- Homepage hero MUST answer a question implicitly
+- First paragraph MUST be a direct answer (40–60 words)
+- Clear entity-first phrasing
+
+4. LANGUAGE PURITY
+- ≥ 98% locale purity
+- Proper nouns allowed
+- ZERO English UI words outside proper nouns
+- Validator MUST fail otherwise
+
+5. CONSISTENCY
+- Same semantic meaning across locales
+- Tone adjusted per culture
+- No humor drift
+- No marketing exaggeration differences
+
+========================================
+TECHNICAL ENFORCEMENT
+========================================
+
+- i18next fallback MUST remain disabled
+- Missing keys MUST FAIL build
+- Translation parity MUST be enforced across all 30 locales
+- Build MUST fail if:
+  - any key missing
+  - any hardcoded string detected
+  - any English text rendered in non-EN locale
+
+========================================
+OUTPUT FORMAT (STRICT)
+========================================
+
+For EACH locale:
+- common.json
+- nav.json
+- home.json
+- footer.json
+- pages/about.json
+- pages/contact.json
+- pages/privacy.json
+- pages/terms.json
+- system.json
+
+Keys MUST match EN structure exactly.
+Values MUST be fully localized.
+
+========================================
+VALIDATION STEPS (MANDATORY)
+========================================
+
+1. Locale parity check (30/30)
+2. Hardcoded string scanner (0 findings)
+3. RTL visual validation (AR as reference)
+4. SEO title/description sanity
+5. AEO structure validation
+6. Manual spot-check: Homepage + Nav + Footer
+
+========================================
+FAIL FAST CONDITIONS
+========================================
+STOP AND FAIL if:
+- Any locale missing any key
+- Any UI shows mixed languages
+- Any arrow/icon not mirrored in RTL
+- Any fallback logic triggered
+- Any content smells like translation
+
+========================================
+FINAL EXPECTATION
+========================================
+After completion:
+- /en works as default
+- /{locale} works flawlessly for ALL 30 locales
+- UI is 100% native per language
+- SEO/AEO ready
+- Zero technical debt added
+
+DO NOT ASK QUESTIONS.
+DO NOT PARTIAL EXECUTE.
+DO NOT SKIP LOCALES.
+DO THE FULL JOB.
+
+EXECUTE.
