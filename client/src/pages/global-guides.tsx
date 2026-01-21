@@ -26,20 +26,20 @@ const travelerArchetypes = [
 ];
 
 const journeyMilestones = [
-  { id: 1, title: "Dream", subtitle: "Discover inspiration", icon: Sparkles, guides: ["Destination Guides", "Photo Essays"] },
-  { id: 2, title: "Plan", subtitle: "Map your journey", icon: Map, guides: ["Trip Planning", "Visa Requirements"] },
-  { id: 3, title: "Prepare", subtitle: "Get ready to go", icon: BookOpen, guides: ["Packing Lists", "Safety Tips"] },
-  { id: 4, title: "Experience", subtitle: "Live the adventure", icon: Heart, guides: ["Local Insights", "Hidden Gems"] },
-  { id: 5, title: "Share", subtitle: "Tell your story", icon: Feather, guides: ["Travel Writing", "Photography"] }
+  { id: "dream", icon: Sparkles },
+  { id: "plan", icon: Map },
+  { id: "prepare", icon: BookOpen },
+  { id: "experience", icon: Heart },
+  { id: "share", icon: Feather }
 ];
 
 const ideaLabCards = [
-  { id: 1, title: "48 Hours in Tokyo", category: "Weekend Escapes", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop&q=80" },
-  { id: 2, title: "Hidden Beaches of Portugal", category: "Off the Beaten Path", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&q=80" },
-  { id: 3, title: "Budget Backpacking Europe", category: "Smart Travel", image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop&q=80" },
-  { id: 4, title: "Solo Safari Adventure", category: "Bucket List", image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&h=400&fit=crop&q=80" },
-  { id: 5, title: "Parisian Food Tour", category: "Culinary", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=400&fit=crop&q=80" },
-  { id: 6, title: "Northern Lights Chase", category: "Nature & Wonder", image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&h=400&fit=crop&q=80" }
+  { id: 1, title: "48 Hours in Tokyo", categoryKey: "weekendEscapes", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop&q=80" },
+  { id: 2, title: "Hidden Beaches of Portugal", categoryKey: "offBeatenPath", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&q=80" },
+  { id: 3, title: "Budget Backpacking Europe", categoryKey: "smartTravel", image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop&q=80" },
+  { id: 4, title: "Solo Safari Adventure", categoryKey: "bucketList", image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&h=400&fit=crop&q=80" },
+  { id: 5, title: "Parisian Food Tour", categoryKey: "culinary", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=400&fit=crop&q=80" },
+  { id: 6, title: "Northern Lights Chase", categoryKey: "natureWonder", image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&h=400&fit=crop&q=80" }
 ];
 
 const editorialSpreads = [
@@ -71,12 +71,12 @@ const featuredWriters = [
 ];
 
 const galleryImages = [
-  { id: 1, src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop&q=80", location: "Tokyo, Japan", category: "City" },
-  { id: 2, src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80", location: "Swiss Alps", category: "Mountains" },
-  { id: 3, src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop&q=80", location: "Maldives", category: "Beach" },
-  { id: 4, src: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop&q=80", location: "Paris, France", category: "City" },
-  { id: 5, src: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&h=600&fit=crop&q=80", location: "Kenya", category: "Safari" },
-  { id: 6, src: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&h=600&fit=crop&q=80", location: "Norway", category: "Nature" }
+  { id: 1, src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop&q=80", location: "Tokyo, Japan", categoryKey: "city" },
+  { id: 2, src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80", location: "Swiss Alps", categoryKey: "mountains" },
+  { id: 3, src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop&q=80", location: "Maldives", categoryKey: "beach" },
+  { id: 4, src: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop&q=80", location: "Paris, France", categoryKey: "city" },
+  { id: 5, src: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&h=600&fit=crop&q=80", location: "Kenya", categoryKey: "safari" },
+  { id: 6, src: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&h=600&fit=crop&q=80", location: "Norway", categoryKey: "nature" }
 ];
 
 const mapDestinations = [
@@ -139,8 +139,8 @@ export default function GlobalGuides() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
       <SEOHead
-        title="Travel Guides & Destination Stories - Curated Travel Content | TRAVI"
-        description="Discover curated travel guides, destination stories and local insights. From cultural experiences to adventure trips, explore the world with TRAVI's travel intelligence."
+        title={t("guides.seo.title")}
+        description={t("guides.seo.description")}
         canonicalPath="/guides"
       />
       <SubtleSkyBackground />
@@ -299,10 +299,10 @@ export default function GlobalGuides() {
                       
                       {/* Content */}
                       <div className="text-center">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">{milestone.title}</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{milestone.subtitle}</p>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">{t(`guides.milestones.${milestone.id}.title`)}</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{t(`guides.milestones.${milestone.id}.subtitle`)}</p>
                         <div className="flex flex-wrap gap-1 justify-center">
-                          {milestone.guides.map((guide, gIndex) => (
+                          {(t(`guides.milestones.${milestone.id}.guides`, { returnObjects: true }) as string[]).map((guide: string, gIndex: number) => (
                             <span 
                               key={gIndex}
                               className="text-xs px-2 py-1 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700"
@@ -403,7 +403,7 @@ export default function GlobalGuides() {
                         <div className="absolute bottom-0 left-0 right-0 p-8">
                           <div className="bg-white/20 dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl p-6 border border-white/30 dark:border-slate-700/50">
                             <span className="text-white/80 text-sm font-medium tracking-wide uppercase">
-                              {card.category}
+                              {t(`guides.categories.${card.categoryKey}`)}
                             </span>
                             <h3 
                               className="text-2xl lg:text-3xl font-bold text-white mt-2 leading-tight"
@@ -510,10 +510,10 @@ export default function GlobalGuides() {
                       />
                     </div>
                     <h3 className={`font-semibold mb-1 transition-colors ${isSelected ? 'text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300'}`}>
-                      {archetype.name}
+                      {t(`guides.archetypes.${archetype.id}.name`)}
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
-                      {archetype.description}
+                      {t(`guides.archetypes.${archetype.id}.description`)}
                     </p>
                   </motion.button>
                 );
@@ -676,7 +676,7 @@ export default function GlobalGuides() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <Badge className="mb-3 bg-white/20 backdrop-blur-sm text-white border-0">
-                    {image.category}
+                    {t(`guides.gallery.categories.${image.categoryKey}`)}
                   </Badge>
                   <h3 className="text-xl font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
                     <MapPin className="w-4 h-4 text-[#6443F4]" />

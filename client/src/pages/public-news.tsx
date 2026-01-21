@@ -203,12 +203,10 @@ export default function PublicNews() {
   const { toast } = useToast();
 
   useDocumentMeta({
-    title: "Global News | Breaking World News, Business & Culture | 2026",
-    description:
-      "Stay informed with breaking international news, business insights, cultural stories, and expert analysis. Your trusted source for global journalism.",
-    ogTitle: "Global News | Breaking International Coverage 2026",
-    ogDescription:
-      "Breaking news and in-depth coverage of world events, business, culture, travel, and opinion from trusted journalists worldwide.",
+    title: t("news.seo.title"),
+    description: t("news.seo.description"),
+    ogTitle: t("news.seo.title"),
+    ogDescription: t("news.seo.description"),
     ogType: "website",
   });
 
