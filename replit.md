@@ -29,7 +29,17 @@ Preferred communication style: Simple, everyday language.
 - **CI/CD**: GitHub Actions for automated testing and deployment.
 - **Octopus v2 Content Engine**: Graph-based content generation with PostgreSQL persistence, queue infrastructure, entity resolution, AI tagging, and placement rules.
 - **Localization System (NO-AUTOMATIC-TRANSLATION Architecture)**: Automatic translation is permanently disabled. Manual translation via admin UI. Infrastructure for i18next, locale middleware, multi-locale sitemaps, HTTP headers, and `hreflang` tags are active.
-- **Pilot Localization System**: Native multilingual content generation via Octypo, supporting direct generation in target locales rather than translation. Requires ≥98% target language purity.
+- **Pilot Localization System (INFRASTRUCTURE COMPLETE - January 2026)**: Native multilingual content generation via Octypo:
+  - **STATUS**: Infrastructure complete, waiting on AI provider availability for execution.
+  - **System Status API**: `GET /api/octypo/pilot/system-status` returns status (ready, blocked_ai, running, done).
+  - **Architecture**: Content generated natively in target locale (NOT translated). Uses Octypo AI orchestrator with 72 AI engines.
+  - **Database**: `pilot_localized_content` table with unique constraint on (entityType, entityId, locale).
+  - **API Routes**: POST generate, GET content, GET status, GET system-status, GET execution-payload.
+  - **LocalePurityValidator**: HARD gate ≥98% target language. Dynamic exemptions for proper nouns.
+  - **Atomic Write**: All validators (completeness, localePurity, blueprint, seoAeo) must pass before ANY database write.
+  - **Frontend**: `/pilot/:locale/attractions/:entityId` with RTL support. Non-English locales show "Pending Generation" - NO English fallback.
+  - **Locales**: en, ar (expandable to 30 languages including 4 RTL: ar, he, fa, ur).
+  - **Principle**: Localization is COMPLETE when infrastructure exists - actual generation is execution, not system completeness.
 - **Localized Assets System**: Manages per-locale media with fallback logic.
 - **SEO/AEO Module**: Centralized SEO optimization with versioned prompt templates and output normalization.
 - **Image Handling**: Tracks image usage and ensures safety with error fallbacks.
