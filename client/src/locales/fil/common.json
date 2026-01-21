@@ -213,7 +213,10 @@
       "browseCollection": "I-browse ang aming koleksyon ng mga piniling destinasyon",
       "explore": "Tuklasin",
       "discoverButton": "Tuklasin",
-      "ariaLabel": "Pangkalahatang-ideya ng mga destinasyon"
+      "ariaLabel": "Pangkalahatang-ideya ng mga destinasyon",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINASYON",
@@ -238,7 +241,8 @@
       "previous": "Nakaraang destinasyon",
       "next": "Susunod na destinasyon",
       "goTo": "Pumunta sa {{name}}",
-      "slideOf": "Slide {{current}} ng {{total}}: {{name}}"
+      "slideOf": "Slide {{current}} ng {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Tuklasin",

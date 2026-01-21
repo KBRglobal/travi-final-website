@@ -14,7 +14,10 @@
       "browseCollection": "เรียกดูคอลเลกชันจุดหมายที่คัดสรร",
       "explore": "สำรวจ",
       "discoverButton": "ค้นพบ",
-      "ariaLabel": "ภาพรวมจุดหมาย"
+      "ariaLabel": "ภาพรวมจุดหมาย",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "จุดหมาย",
@@ -39,7 +42,8 @@
       "previous": "จุดหมายก่อนหน้า",
       "next": "จุดหมายถัดไป",
       "goTo": "ไปที่ {{name}}",
-      "slideOf": "สไลด์ {{current}} จาก {{total}}: {{name}}"
+      "slideOf": "สไลด์ {{current}} จาก {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "สำรวจ",

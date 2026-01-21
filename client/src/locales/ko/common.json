@@ -213,7 +213,10 @@
       "browseCollection": "엄선된 여행지 컬렉션 둘러보기",
       "explore": "탐색",
       "discoverButton": "발견",
-      "ariaLabel": "여행지 개요"
+      "ariaLabel": "여행지 개요",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "여행지",
@@ -238,7 +241,8 @@
       "previous": "이전 여행지",
       "next": "다음 여행지",
       "goTo": "{{name}}(으)로 이동",
-      "slideOf": "슬라이드 {{current}}/{{total}}: {{name}}"
+      "slideOf": "슬라이드 {{current}}/{{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "탐색",

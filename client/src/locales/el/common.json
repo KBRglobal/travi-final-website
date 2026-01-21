@@ -14,7 +14,10 @@
       "browseCollection": "Περιηγηθείτε στη συλλογή επιλεγμένων προορισμών μας",
       "explore": "Εξερεύνηση",
       "discoverButton": "Ανακάλυψη",
-      "ariaLabel": "Επισκόπηση προορισμών"
+      "ariaLabel": "Επισκόπηση προορισμών",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "ΠΡΟΟΡΙΣΜΟΙ",
@@ -39,7 +42,8 @@
       "previous": "Προηγούμενος προορισμός",
       "next": "Επόμενος προορισμός",
       "goTo": "Μετάβαση σε {{name}}",
-      "slideOf": "Διαφάνεια {{current}} από {{total}}: {{name}}"
+      "slideOf": "Διαφάνεια {{current}} από {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Εξερεύνηση",

@@ -14,7 +14,10 @@
       "browseCollection": "Перегляньте нашу колекцію обраних напрямків",
       "explore": "Дослідити",
       "discoverButton": "Відкрити",
-      "ariaLabel": "Огляд напрямків"
+      "ariaLabel": "Огляд напрямків",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "НАПРЯМКІВ",
@@ -39,7 +42,8 @@
       "previous": "Попередній напрямок",
       "next": "Наступний напрямок",
       "goTo": "Перейти до {{name}}",
-      "slideOf": "Слайд {{current}} з {{total}}: {{name}}"
+      "slideOf": "Слайд {{current}} з {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Дослідити",

@@ -14,7 +14,10 @@
       "browseCollection": "Layari koleksi destinasi pilihan kami",
       "explore": "Terokai",
       "discoverButton": "Terokai",
-      "ariaLabel": "Gambaran keseluruhan destinasi"
+      "ariaLabel": "Gambaran keseluruhan destinasi",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINASI",
@@ -39,7 +42,8 @@
       "previous": "Destinasi sebelumnya",
       "next": "Destinasi seterusnya",
       "goTo": "Pergi ke {{name}}",
-      "slideOf": "Slaid {{current}} daripada {{total}}: {{name}}"
+      "slideOf": "Slaid {{current}} daripada {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Terokai",

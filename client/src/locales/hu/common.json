@@ -14,7 +14,10 @@
       "browseCollection": "Böngésszen válogatott úti cél gyűjteményünkben",
       "explore": "Felfedezés",
       "discoverButton": "Felfedezés",
-      "ariaLabel": "Úti célok áttekintése"
+      "ariaLabel": "Úti célok áttekintése",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "ÚTI CÉL",
@@ -39,7 +42,8 @@
       "previous": "Előző úti cél",
       "next": "Következő úti cél",
       "goTo": "Ugrás: {{name}}",
-      "slideOf": "Dia {{current}}/{{total}}: {{name}}"
+      "slideOf": "Dia {{current}}/{{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Felfedezés",

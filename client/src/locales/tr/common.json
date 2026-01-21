@@ -213,7 +213,10 @@
       "browseCollection": "Seçilmiş destinasyon koleksiyonumuza göz atın",
       "explore": "Keşfet",
       "discoverButton": "Keşfet",
-      "ariaLabel": "Destinasyonlara genel bakış"
+      "ariaLabel": "Destinasyonlara genel bakış",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTİNASYON",
@@ -238,7 +241,8 @@
       "previous": "Önceki destinasyon",
       "next": "Sonraki destinasyon",
       "goTo": "{{name}} adresine git",
-      "slideOf": "Slayt {{current}}/{{total}}: {{name}}"
+      "slideOf": "Slayt {{current}}/{{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Keşfet",

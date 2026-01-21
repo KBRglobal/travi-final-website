@@ -14,7 +14,10 @@
       "browseCollection": "Răsfoiește colecția noastră de destinații selectate",
       "explore": "Explorează",
       "discoverButton": "Descoperă",
-      "ariaLabel": "Prezentare generală a destinațiilor"
+      "ariaLabel": "Prezentare generală a destinațiilor",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
       "destinations": "DESTINAȚII",
@@ -39,7 +42,8 @@
       "previous": "Destinația anterioară",
       "next": "Următoarea destinație",
       "goTo": "Mergi la {{name}}",
-      "slideOf": "Slide {{current}} din {{total}}: {{name}}"
+      "slideOf": "Slide {{current}} din {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
       "explore": "Explorează",

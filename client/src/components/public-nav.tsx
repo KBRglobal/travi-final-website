@@ -117,7 +117,7 @@ export function PublicNav({
             <Link href={localePath("/")} data-testid="link-header-logo">
               <img 
                 src={traviLogo} 
-                alt={t("nav.logoAlt", "TRAVI - Travel Guide")} 
+                alt={t("nav.logoAlt")} 
                 className="h-8 md:h-10"
               />
             </Link>
