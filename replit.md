@@ -45,6 +45,13 @@ Preferred communication style: Simple, everyday language.
   - **Database**: `pilot_localized_guides` table with unique constraint on (guide_slug, locale). Uses `pilot_locale_status` enum.
   - **API Routes**: POST `/api/octypo/pilot/guides/save`, GET `/api/octypo/pilot/guides/content/:guideSlug/:locale`, GET `/api/octypo/pilot/guides/status/:guideSlug`.
   - **Validators**: Completeness (all sections present), LocalePurity (≥98% - extended for French accented characters), Blueprint (introduction 40-80 words, whatToExpect 100-300 words, tips 100-250 words, 3-10 highlights, 5-10 FAQs, meta title 30-60 chars, meta description 120-160 chars), SEO/AEO (answer capsule 50-200 chars), RTL (for Arabic only).
+  - **SEO/AEO Artifact Builder**: Template-based, deterministic builder (`buildSeoArtifacts()`) generates structured data:
+    - **OpenGraph**: og:title, og:description, og:type=article, og:locale (en_US, ar_AE, fr_FR), og:url (absolute), og:site_name
+    - **Twitter Cards**: twitter:card=summary_large_image, twitter:title, twitter:description
+    - **JSON-LD @graph**: Article schema (inLanguage), FAQPage schema (if FAQs exist), WebPage schema with Speakable specification
+    - **Speakable**: Targets `[data-testid="text-answer-capsule"]` and `[data-testid="text-introduction"]` for voice search/AEO
+    - **Design Principle**: Backend builds, frontend only renders - maintains separation of concerns
+    - **API Response**: `seoArtifacts` field included in guide content endpoint response
   - **Frontend**: `/pilot/:locale/guides/:guideSlug` with RTL support. NO English fallback for non-English locales. UI labels localized for en, ar, fr.
   - **Batch Content**: Rome, Paris, Dubai, Tokyo, New York travel guides with all 3 locales validated and stored.
   - **Scaling to 30 Locales - Blockers Identified**:
