@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { ChevronRight, ChevronLeft, Home } from "lucide-react";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useDestinationContext } from "@/hooks/use-destination-context";
 import { cn } from "@/lib/utils";
 

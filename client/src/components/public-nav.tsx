@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 const traviLogo = "/logos/Logotype_for_Dark_Background.svg";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SiTiktok } from "react-icons/si";
 
 // Navigation items - translation keys for i18next

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 
 export interface SEOHeadProps {

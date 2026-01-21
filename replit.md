@@ -34,6 +34,14 @@ Preferred communication style: Simple, everyday language.
   - **Disabled Components**: Translation queue, translation worker, publish hooks auto-translate, auto-pilot translation triggers, RSS auto-translate, and all translation API endpoints (return 410 Gone).
   - **i18next Infrastructure**: Static UI strings and locale routing preserved via i18next for client-side localization.
   - **AEO Engine**: Answer Engine Optimization for generating answer capsules, FAQs, and JSON-LD schema (still active, translation-independent).
+  - **G2-03 Homepage Localization (COMPLETED January 2026)**: All homepage sections fully localized via t() calls:
+    - HeroSection: t("home.hero.*"), t("home.stats.*") with interpolated numeric values
+    - DestinationsSection: t("destinations.cities.*.name/country/cardAlt") for 16 cities
+    - FAQSection: t("home.faq.*") for 4 FAQ items
+    - CategoriesSection: t("home.categories.*")
+    - TravelStylesSection: t("home.experiences.*")
+    - NewsletterSectionLite: t("newsletter.*")
+    - RTL CSS applied: text-start/end, ms-/me-, start-/end-, rtl:rotate-180 for directional icons
   - **Genesis G1 Infrastructure (January 2026)**: Complete localization infrastructure with:
     - **Locale Middleware** (`server/middleware/locale.ts`): URL-based locale extraction, RTL detection, `req.locale`/`req.isRTL` augmentation
     - **Locale Service** (`server/services/locale-service.ts`): Translation fallback pattern (requested → en → null), localized URL helpers
