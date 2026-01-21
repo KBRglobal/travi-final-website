@@ -556,22 +556,69 @@
         "name": "Culture Explorer",
         "description": "Art, history, and local traditions"
       },
+      "relaxation": {
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
+      },
       "foodie": {
-        "name": "Culinary Traveler",
-        "description": "Local cuisines and dining experiences"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
         "name": "Wellness Seeker",
         "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "Budget Explorer",
-        "description": "Maximum experiences, minimum spend"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
+      },
+      "solo": {
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
         "name": "Luxury Connoisseur",
         "description": "Premium experiences and fine living"
       }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
+      },
+      "plan": {
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
+      },
+      "prepare": {
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
+      },
+      "experience": {
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
+      },
+      "share": {
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
+    },
+    "seo": {
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
       "badge": "From Our Editors",
@@ -580,7 +627,14 @@
     },
     "gallery": {
       "badge": "Visual Stories",
-      "title": "Destinations That Inspire"
+      "title": "Destinations That Inspire",
+      "categories": {
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
+        "safari": "Safari",
+        "nature": "Nature"
+      }
     },
     "writers": {
       "badge": "Expert Voices",
@@ -654,6 +708,10 @@
     },
     "views": "{{count}} views",
     "viewAll": "View All",
+    "seo": {
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
+    },
     "sidebar": {
       "alsoToday": "Also Today",
       "storiesCount": "{{count}} stories",
