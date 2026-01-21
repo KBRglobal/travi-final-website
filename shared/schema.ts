@@ -1045,6 +1045,82 @@ export const insertPilotLocalizedContentSchema = createInsertSchema(pilotLocaliz
 export type InsertPilotLocalizedContent = z.infer<typeof insertPilotLocalizedContentSchema>;
 export type PilotLocalizedContent = typeof pilotLocalizedContent.$inferSelect;
 
+// ============================================================================
+// PILOT: Localized Guides Table
+// ============================================================================
+// Parallel to pilot_localized_content but for guides (travel guides, city guides, etc.)
+// Uses same atomic write pattern and locale purity validation
+
+export const pilotLocalizedGuides = pgTable("pilot_localized_guides", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Guide reference
+  guideSlug: varchar("guide_slug", { length: 255 }).notNull(),
+  
+  // Locale (en or ar only for pilot)
+  locale: varchar("locale", { length: 10 }).notNull(),
+  
+  // Destination (from guide data, required - no fallback)
+  destination: varchar("destination", { length: 100 }).notNull(),
+  
+  // Content sections (natively written, NOT translated)
+  introduction: text("introduction"),            // Answer-first, 40-60 words
+  whatToExpect: text("what_to_expect"),          // What visitors will experience
+  highlights: jsonb("highlights").$type<string[]>(), // Key points / itinerary items
+  tips: text("tips"),                            // Practical visitor tips
+  faq: jsonb("faq").$type<Array<{ question: string; answer: string }>>(), // 5-10 AEO-ready FAQs
+  answerCapsule: text("answer_capsule"),         // Featured snippet target
+  
+  // SEO meta (locale-specific)
+  metaTitle: varchar("meta_title", { length: 100 }),
+  metaDescription: text("meta_description"),
+  
+  // Original guide reference (source content ID)
+  sourceGuideId: integer("source_guide_id"),
+  
+  // Validation results (stored for audit)
+  localePurityScore: real("locale_purity_score"), // 0.0 - 1.0, must be ≥0.98
+  validationResults: jsonb("validation_results").$type<{
+    completeness: { passed: boolean; missingSections: string[] };
+    localePurity: { passed: boolean; score: number; threshold: number };
+    blueprint: { passed: boolean; issues: string[] };
+    seoAeo: { passed: boolean; issues: string[] };
+    rtl?: { passed: boolean; issues: string[] };
+  }>(),
+  
+  // Status
+  status: pilotLocaleStatusEnum("status").notNull().default("generating"),
+  failureReason: text("failure_reason"),
+  
+  // Generation metadata
+  writerAgent: varchar("writer_agent", { length: 100 }),
+  engineUsed: varchar("engine_used", { length: 100 }),
+  tokensUsed: integer("tokens_used"),
+  generationTimeMs: integer("generation_time_ms"),
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => [
+  // Unique constraint: one content per guide+locale
+  uniqueIndex("IDX_pilot_localized_guides_slug_locale").on(table.guideSlug, table.locale),
+  index("IDX_pilot_localized_guides_status").on(table.status),
+  index("IDX_pilot_localized_guides_locale").on(table.locale),
+]);
+
+// Zod schemas for pilot guides
+export const insertPilotLocalizedGuideSchema = createInsertSchema(pilotLocalizedGuides, {
+  locale: z.enum(pilotLocales),
+  destination: z.string().min(1, "Destination is required - no fallback allowed"),
+}).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertPilotLocalizedGuide = z.infer<typeof insertPilotLocalizedGuideSchema>;
+export type PilotLocalizedGuide = typeof pilotLocalizedGuides.$inferSelect;
+
 // Homepage Promotions table - for curating homepage sections
 export const homepageSectionEnum = pgEnum("homepage_section", ["featured", "attractions", "hotels", "articles", "trending", "dining", "events"]);
 
