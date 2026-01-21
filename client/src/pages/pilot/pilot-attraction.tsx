@@ -86,18 +86,59 @@ export default function PilotAttractionPage() {
   }
   
   if (error || !data?.success || !data?.content) {
+    // ENFORCEMENT: No English fallback for non-English locales
+    // Show "Localized content pending generation" state
+    const isPendingGeneration = locale !== "en";
+    
     return (
-      <div className="container mx-auto py-8" dir={isRTL ? "rtl" : "ltr"} data-testid="pilot-not-found">
-        <Alert variant="destructive" data-testid="alert-not-found">
+      <div className="container mx-auto py-8" dir={isRTL ? "rtl" : "ltr"} data-testid="pilot-content-pending">
+        <Alert variant={isPendingGeneration ? "default" : "destructive"} data-testid="alert-content-pending">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle data-testid="text-error-title">{locale === "ar" ? "محتوى غير موجود" : "Content Not Found"}</AlertTitle>
-          <AlertDescription data-testid="text-error-description">
-            {data?.error || (locale === "ar" 
-              ? `لا يوجد محتوى منشور للجذب ${entityId} باللغة ${locale}`
-              : `No published content found for attraction ${entityId} in locale ${locale}`
-            )}
+          <AlertTitle data-testid="text-pending-title">
+            {locale === "ar" 
+              ? "المحتوى قيد الإنشاء" 
+              : isPendingGeneration 
+                ? "Localized Content Pending Generation"
+                : "Content Not Found"
+            }
+          </AlertTitle>
+          <AlertDescription data-testid="text-pending-description">
+            {locale === "ar" 
+              ? `سيتم إنشاء المحتوى المحلي لهذا الجذب قريباً. لا يوجد محتوى إنجليزي كبديل.`
+              : isPendingGeneration
+                ? `Localized content for this attraction in ${locale.toUpperCase()} is pending generation. No English fallback is available.`
+                : `No published content found for attraction ${entityId} in locale ${locale}`
+            }
           </AlertDescription>
         </Alert>
+        
+        {isPendingGeneration && (
+          <div className="mt-6 p-4 bg-muted rounded-lg" data-testid="pending-info">
+            <h3 className="font-semibold mb-2" data-testid="text-pending-info-title">
+              {locale === "ar" ? "معلومات النظام" : "System Information"}
+            </h3>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li data-testid="text-no-fallback">
+                {locale === "ar" 
+                  ? "• لا يوجد احتياطي للغة الإنجليزية" 
+                  : "• No English fallback (enforcement active)"
+                }
+              </li>
+              <li data-testid="text-native-gen">
+                {locale === "ar" 
+                  ? "• يتم إنشاء المحتوى مباشرة باللغة العربية" 
+                  : "• Content will be generated natively in target locale"
+                }
+              </li>
+              <li data-testid="text-purity-gate">
+                {locale === "ar" 
+                  ? "• نسبة نقاء اللغة المطلوبة: ≥98%" 
+                  : "• Locale purity gate: ≥98% target language required"
+                }
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     );
   }

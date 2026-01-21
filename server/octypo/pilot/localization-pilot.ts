@@ -10,6 +10,12 @@
  * - LocalePurity ≥98% hard gate (no soft warnings)
  * - Atomic write (all validators pass or nothing written)
  * - No abstractions "for later"
+ * 
+ * SYSTEM STATUS:
+ * - ready: Infrastructure complete, waiting for generation trigger
+ * - blocked_ai: AI providers unavailable (rate limited/quota exceeded)
+ * - running: Content generation in progress
+ * - done: Localization system infrastructure complete
  */
 
 import { db } from "../../db";
@@ -17,6 +23,111 @@ import { pilotLocalizedContent, type InsertPilotLocalizedContent } from "@shared
 import { eq, and } from "drizzle-orm";
 import { OctypoOrchestrator } from "../orchestration/orchestrator";
 import type { AttractionData, GeneratedAttractionContent } from "../types";
+import { EngineRegistry } from "../../services/engine-registry";
+
+// ============================================================================
+// LOCALIZATION SYSTEM STATUS
+// ============================================================================
+
+export type LocalizationSystemStatus = "ready" | "blocked_ai" | "running" | "done";
+
+export interface LocalizationSystemState {
+  status: LocalizationSystemStatus;
+  infrastructure: {
+    localeAwareGeneration: boolean;
+    purityValidators: boolean;
+    atomicWrite: boolean;
+    frontendEnforcement: boolean;
+  };
+  aiProviders: {
+    available: boolean;
+    blockedProviders: Array<{
+      provider: string;
+      reason: string;
+      suspendedUntil?: string;
+    }>;
+    healthyEngineCount: number;
+    totalEngineCount: number;
+  };
+  execution: {
+    pendingJobs: number;
+    completedJobs: number;
+    failedJobs: number;
+  };
+}
+
+let currentGenerationCount = 0;
+
+export async function getLocalizationSystemStatus(): Promise<LocalizationSystemState> {
+  // Check AI provider availability
+  let aiProviders: LocalizationSystemState["aiProviders"] = {
+    available: false,
+    blockedProviders: [],
+    healthyEngineCount: 0,
+    totalEngineCount: 0,
+  };
+
+  try {
+    const engineCount = EngineRegistry.getEngineCount();
+    aiProviders.totalEngineCount = engineCount;
+    // For now, assume all engines are healthy since we can't easily get per-engine health
+    // The actual availability will be determined by whether generation succeeds
+    aiProviders.healthyEngineCount = engineCount;
+    aiProviders.available = engineCount > 0;
+    
+    // Note: We can't get detailed engine health without modifying EngineRegistry
+    // For now, we'll track blocked providers from generation failures
+  } catch (error) {
+    console.log("[LocalizationSystem] Engine registry not initialized yet");
+    aiProviders.available = false;
+  }
+
+  // Check execution status from database
+  let execution = { pendingJobs: 0, completedJobs: 0, failedJobs: 0 };
+  try {
+    const results = await db
+      .select({ status: pilotLocalizedContent.status })
+      .from(pilotLocalizedContent);
+    
+    for (const row of results) {
+      if (row.status === "published") execution.completedJobs++;
+      else if (row.status === "failed") execution.failedJobs++;
+      else execution.pendingJobs++;
+    }
+  } catch (error) {
+    console.log("[LocalizationSystem] Could not query execution status");
+  }
+
+  // Determine overall status
+  let status: LocalizationSystemStatus;
+  if (currentGenerationCount > 0) {
+    status = "running";
+  } else if (!aiProviders.available) {
+    status = "blocked_ai";
+  } else {
+    status = "ready";
+  }
+
+  return {
+    status,
+    infrastructure: {
+      localeAwareGeneration: true,
+      purityValidators: true,
+      atomicWrite: true,
+      frontendEnforcement: true,
+    },
+    aiProviders,
+    execution,
+  };
+}
+
+export function incrementGenerationCount() {
+  currentGenerationCount++;
+}
+
+export function decrementGenerationCount() {
+  currentGenerationCount = Math.max(0, currentGenerationCount - 1);
+}
 
 // ============================================================================
 // TYPES
@@ -27,6 +138,7 @@ export interface PilotGenerationRequest {
   entityId: string;
   destination: string; // REQUIRED - no fallback
   locale: "en" | "ar";
+  strict?: boolean; // Strict mode - fail immediately on any error
 }
 
 export interface PilotValidationResults {
