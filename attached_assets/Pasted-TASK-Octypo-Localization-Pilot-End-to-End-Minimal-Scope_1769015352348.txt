@@ -1,0 +1,103 @@
+TASK: Octypo × Localization Pilot (End-to-End, Minimal Scope)
+
+MODE: BUILD (no planning, no refactors outside scope)
+
+OBJECTIVE:
+Implement ONE complete localization pilot using Octypo as a native content generator (NOT translation).
+Prove a clean, single-language render with full SEO + AEO + Schema compliance.
+
+SCOPE (STRICT):
+- 1 entity only (choose ONE):
+  • attraction OR destination OR staticPage
+- 2 locales only:
+  • en (baseline)
+  • ar (RTL reference)
+- No other locales
+- No admin UI
+- No batching
+- No abstractions “for later”
+
+DEFINITION OF DONE:
+- Content is GENERATED natively per locale via Octypo (not translated)
+- Page renders in ONE language only (no English leakage in AR)
+- If any required section fails → NOTHING is written (all-or-nothing)
+- FE renders correctly for:
+  • /en/{entity}
+  • /ar/{entity}
+- Schema + SEO + Images are correct per locale
+
+IMPLEMENTATION STEPS (EXECUTE IN ORDER):
+
+1) INPUT CONTRACT
+- Define explicit input for the entity (no defaults, no fallbacks):
+  • entityType
+  • entityId
+  • destination (required)
+  • locale
+
+Fail hard if destination or locale is missing.
+
+2) OCTYPO GENERATION
+- Call Octypo with locale-aware WriterTask
+- Generate ALL sections in memory:
+  • introduction
+  • whatToExpect
+  • visitorTips
+  • howToGetThere
+  • faq
+  • answerCapsule
+  • metaTitle
+  • metaDescription
+
+3) VALIDATION (MANDATORY)
+Run validators BEFORE any DB write:
+- CompletenessValidator (all sections exist)
+- LocalePurityValidator:
+  • Arabic page must be ≥98% Arabic (excluding proper nouns)
+  • No English fallback allowed
+- BlueprintValidator (word counts, FAQ count)
+- SEO/AEO Validator (answer-first, intent match)
+
+If ANY validator fails → mark job failed, write NOTHING.
+
+4) WRITE PATH (ATOMIC)
+If all validators pass:
+- Write localized content for the entity (locale-specific fields)
+- Write localized meta (title, description)
+- Attach localized ImageObject:
+  • caption in locale
+  • alt text in locale
+  • representativeOfPage = true
+
+5) FRONTEND RENDER
+- FE consumes localized content ONLY
+- No t() fallbacks
+- No mixed-language UI
+- AR page:
+  • lang="ar"
+  • dir="rtl"
+
+6) VERIFICATION
+Provide evidence:
+- URL:
+  • /en/{entity}
+  • /ar/{entity}
+- Confirm:
+  • No English text visible on AR page
+  • Schema inLanguage matches locale
+  • FAQ schema present
+  • ImageObject present
+
+OUTPUT REQUIRED:
+- Which entity was used
+- Which Octypo engine(s) were used
+- Validation results (pass/fail per validator)
+- Confirmation that Dubai is NOT injected anywhere unless explicitly the entity
+
+IMPORTANT RULES:
+- Do NOT generalize
+- Do NOT prepare for scale
+- Do NOT touch unrelated files
+- This is a proof-of-flow, not a framework
+
+START NOW.
