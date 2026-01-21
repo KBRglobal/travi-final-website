@@ -145,25 +145,19 @@ export default function PilotGuidePage() {
   
   if (error || !data?.success || !data?.content) {
     const isPendingGeneration = locale !== "en";
+    const labels = LOCALE_LABELS[locale] || LOCALE_LABELS.en;
     
     return (
       <div className="container mx-auto py-8" dir={isRTL ? "rtl" : "ltr"} data-testid="pilot-guide-content-pending">
         <Alert variant={isPendingGeneration ? "default" : "destructive"} data-testid="alert-content-pending">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle data-testid="text-pending-title">
-            {locale === "ar" 
-              ? "المحتوى قيد الإنشاء" 
-              : isPendingGeneration 
-                ? "Localized Content Pending Generation"
-                : "Content Not Found"
-            }
+            {isPendingGeneration ? labels.pendingTitle : "Content Not Found"}
           </AlertTitle>
           <AlertDescription data-testid="text-pending-description">
-            {locale === "ar" 
-              ? `سيتم إنشاء المحتوى المحلي لهذا الدليل قريباً. لا يوجد محتوى إنجليزي كبديل.`
-              : isPendingGeneration
-                ? `Localized content for this guide in ${locale.toUpperCase()} is pending generation. No English fallback is available.`
-                : `No published content found for guide ${guideSlug} in locale ${locale}`
+            {isPendingGeneration
+              ? labels.pendingDescription
+              : `No published content found for guide ${guideSlug} in locale ${locale}`
             }
           </AlertDescription>
         </Alert>
@@ -171,27 +165,12 @@ export default function PilotGuidePage() {
         {isPendingGeneration && (
           <div className="mt-6 p-4 bg-muted rounded-lg" data-testid="pending-info">
             <h3 className="font-semibold mb-2" data-testid="text-pending-info-title">
-              {locale === "ar" ? "معلومات النظام" : "System Information"}
+              {labels.systemInfo}
             </h3>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li data-testid="text-no-fallback">
-                {locale === "ar" 
-                  ? "• لا يوجد احتياطي للغة الإنجليزية" 
-                  : "• No English fallback (enforcement active)"
-                }
-              </li>
-              <li data-testid="text-native-gen">
-                {locale === "ar" 
-                  ? "• يتم إنشاء المحتوى مباشرة باللغة العربية" 
-                  : "• Content will be generated natively in target locale"
-                }
-              </li>
-              <li data-testid="text-purity-gate">
-                {locale === "ar" 
-                  ? "• نسبة نقاء اللغة المطلوبة: ≥98%" 
-                  : "• Locale purity gate: ≥98% target language required"
-                }
-              </li>
+              <li data-testid="text-no-fallback">• {labels.noFallback}</li>
+              <li data-testid="text-native-gen">• {labels.nativeGen}</li>
+              <li data-testid="text-purity-gate">• {labels.purityGate}</li>
             </ul>
           </div>
         )}
@@ -200,6 +179,7 @@ export default function PilotGuidePage() {
   }
   
   const content = data.content;
+  const labels = LOCALE_LABELS[locale] || LOCALE_LABELS.en;
   
   return (
     <>
@@ -207,14 +187,11 @@ export default function PilotGuidePage() {
         <html lang={locale} dir={isRTL ? "rtl" : "ltr"} />
         <title>{content.metaTitle || `Guide: ${guideSlug}`}</title>
         <meta name="description" content={content.metaDescription || ""} />
-        <meta property="og:locale" content={locale === "ar" ? "ar_AE" : "en_US"} />
+        <meta property="og:locale" content={locale === "ar" ? "ar_AE" : locale === "fr" ? "fr_FR" : "en_US"} />
         <link rel="canonical" href={`/pilot/${locale}/guides/${guideSlug}`} />
-        {locale === "en" && (
-          <link rel="alternate" hrefLang="ar" href={`/pilot/ar/guides/${guideSlug}`} />
-        )}
-        {locale === "ar" && (
-          <link rel="alternate" hrefLang="en" href={`/pilot/en/guides/${guideSlug}`} />
-        )}
+        {PILOT_LOCALES.filter(l => l !== locale).map(altLocale => (
+          <link key={altLocale} rel="alternate" hrefLang={altLocale} href={`/pilot/${altLocale}/guides/${guideSlug}`} />
+        ))}
       </Helmet>
       
       <div 
@@ -272,7 +249,7 @@ export default function PilotGuidePage() {
             <section data-testid="section-introduction">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2" data-testid="heading-introduction">
                 <BookOpen className="h-5 w-5" />
-                {locale === "ar" ? "مقدمة" : "Introduction"}
+                {labels.introduction}
               </h2>
               <div className="prose dark:prose-invert max-w-none">
                 <p className="text-lg leading-relaxed whitespace-pre-wrap" data-testid="text-introduction">
@@ -286,7 +263,7 @@ export default function PilotGuidePage() {
             <section data-testid="section-what-to-expect">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2" data-testid="heading-what-to-expect">
                 <Info className="h-5 w-5" />
-                {locale === "ar" ? "ماذا تتوقع" : "What to Expect"}
+                {labels.whatToExpect}
               </h2>
               <div className="prose dark:prose-invert max-w-none">
                 <p className="text-lg leading-relaxed whitespace-pre-wrap" data-testid="text-what-to-expect">
@@ -300,7 +277,7 @@ export default function PilotGuidePage() {
             <section data-testid="section-highlights">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2" data-testid="heading-highlights">
                 <Star className="h-5 w-5" />
-                {locale === "ar" ? "أبرز النقاط" : "Highlights"}
+                {labels.highlights}
               </h2>
               <div className="grid gap-3 md:grid-cols-2">
                 {content.highlights.map((highlight, index) => (
@@ -318,7 +295,7 @@ export default function PilotGuidePage() {
             <section data-testid="section-tips">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2" data-testid="heading-tips">
                 <Lightbulb className="h-5 w-5" />
-                {locale === "ar" ? "نصائح السفر" : "Travel Tips"}
+                {labels.tips}
               </h2>
               <Card data-testid="card-tips">
                 <CardContent className="pt-6">
@@ -336,7 +313,7 @@ export default function PilotGuidePage() {
             <section data-testid="section-faq">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2" data-testid="heading-faq">
                 <HelpCircle className="h-5 w-5" />
-                {locale === "ar" ? "الأسئلة الشائعة" : "Frequently Asked Questions"}
+                {labels.faq}
               </h2>
               <div className="space-y-4">
                 {content.faq.map((item, index) => (
