@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp, jsonb, pgEnum, index, uniqueIndex, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, boolean, timestamp, jsonb, pgEnum, index, uniqueIndex, serial, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -947,6 +947,103 @@ export const insertLocalizedAssetSchema = createInsertSchema(localizedAssets, {
 });
 export type InsertLocalizedAsset = z.infer<typeof insertLocalizedAssetSchema>;
 export type LocalizedAsset = typeof localizedAssets.$inferSelect;
+
+// ============================================================================
+// PILOT: Localized Content Table (Isolated for Octypo × Localization pilot)
+// ============================================================================
+// This is a TEMPORARY table for the localization pilot.
+// Constraints:
+// - en + ar locales ONLY
+// - Attraction entity type ONLY
+// - No i18next/t() fallbacks - pure locale content
+// - LocalePurity ≥98% hard gate
+// - Atomic write (all validators pass or nothing written)
+// ============================================================================
+
+export const pilotLocaleStatusEnum = pgEnum("pilot_locale_status", [
+  "generating",  // Content generation in progress
+  "validating",  // Running validators
+  "validated",   // All validators passed
+  "failed",      // Validation failed - no content written
+  "published"    // Content ready for rendering
+]);
+
+export const pilotLocalizedContent = pgTable("pilot_localized_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Entity reference (attraction only for pilot)
+  entityType: varchar("entity_type", { length: 50 }).notNull().default("attraction"),
+  entityId: varchar("entity_id", { length: 100 }).notNull(),
+  
+  // Locale (en or ar only for pilot)
+  locale: varchar("locale", { length: 10 }).notNull(),
+  
+  // Destination (required, no fallback)
+  destination: varchar("destination", { length: 100 }).notNull(),
+  
+  // Content sections (all generated natively in locale, NOT translated)
+  introduction: text("introduction"),
+  whatToExpect: text("what_to_expect"),
+  visitorTips: text("visitor_tips"),
+  howToGetThere: text("how_to_get_there"),
+  faq: jsonb("faq").$type<Array<{ question: string; answer: string }>>(),
+  answerCapsule: text("answer_capsule"),
+  
+  // SEO meta (locale-specific)
+  metaTitle: varchar("meta_title", { length: 100 }),
+  metaDescription: text("meta_description"),
+  
+  // Image metadata (locale-specific)
+  imageAlt: text("image_alt"),
+  imageCaption: text("image_caption"),
+  
+  // Validation results (stored for audit)
+  localePurityScore: real("locale_purity_score"), // 0.0 - 1.0, must be ≥0.98
+  validationResults: jsonb("validation_results").$type<{
+    completeness: { passed: boolean; missingSections: string[] };
+    localePurity: { passed: boolean; score: number; threshold: number };
+    blueprint: { passed: boolean; issues: string[] };
+    seoAeo: { passed: boolean; issues: string[] };
+  }>(),
+  
+  // Status
+  status: pilotLocaleStatusEnum("status").notNull().default("generating"),
+  failureReason: text("failure_reason"),
+  
+  // Octypo generation metadata
+  writerAgent: varchar("writer_agent", { length: 100 }),
+  engineUsed: varchar("engine_used", { length: 100 }),
+  tokensUsed: integer("tokens_used"),
+  generationTimeMs: integer("generation_time_ms"),
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  // Unique constraint: one content per entity+locale
+  uniqueIndex("IDX_pilot_localized_content_entity_locale").on(
+    table.entityType, table.entityId, table.locale
+  ),
+  index("IDX_pilot_localized_content_status").on(table.status),
+  index("IDX_pilot_localized_content_locale").on(table.locale),
+]);
+
+// Zod schemas for pilot
+export const pilotLocales = ["en", "ar"] as const;
+export const pilotEntityTypes = ["attraction"] as const;
+
+export const insertPilotLocalizedContentSchema = createInsertSchema(pilotLocalizedContent, {
+  locale: z.enum(pilotLocales),
+  entityType: z.enum(pilotEntityTypes),
+  destination: z.string().min(1, "Destination is required - no fallback allowed"),
+}).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertPilotLocalizedContent = z.infer<typeof insertPilotLocalizedContentSchema>;
+export type PilotLocalizedContent = typeof pilotLocalizedContent.$inferSelect;
 
 // Homepage Promotions table - for curating homepage sections
 export const homepageSectionEnum = pgEnum("homepage_section", ["featured", "attractions", "hotels", "articles", "trending", "dining", "events"]);
