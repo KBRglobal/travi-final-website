@@ -258,7 +258,10 @@
       "browseCollection": "تصفح مجموعتنا من وجهات السفر المختارة بعناية أدناه",
       "explore": "استكشف",
       "discoverButton": "اكتشف",
-      "ariaLabel": "نظرة عامة على الوجهات"
+      "ariaLabel": "نظرة عامة على الوجهات",
+      "exploreTitle": "استكشف {{name}}",
+      "galleryAriaLabel": "معرض الوجهات المميزة",
+      "placeholderAriaLabel": "عنصر نائب للوجهة المميزة"
     },
     "stats": {
       "destinations": "وجهات",
@@ -283,7 +286,8 @@
       "previous": "الوجهة السابقة",
       "next": "الوجهة التالية",
       "goTo": "انتقل إلى {{name}}",
-      "slideOf": "الشريحة {{current}} من {{total}}: {{name}}"
+      "slideOf": "الشريحة {{current}} من {{total}}: {{name}}",
+      "thumbnails": "صور مصغرة لدائرة الوجهات"
     },
     "card": {
       "explore": "استكشف",
