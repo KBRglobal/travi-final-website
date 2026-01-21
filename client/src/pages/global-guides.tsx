@@ -10,6 +10,7 @@ import {
   Heart, Zap, Coffee, Sun, Users, Feather, Globe, Play, ChevronLeft
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
@@ -90,6 +91,7 @@ const mapDestinations = [
 ];
 
 export default function GlobalGuides() {
+  const { t } = useTranslation();
   const [selectedArchetype, setSelectedArchetype] = useState<string | null>(null);
   const [currentIdeaIndex, setCurrentIdeaIndex] = useState(0);
   const [hoveredDestination, setHoveredDestination] = useState<string | null>(null);
@@ -124,12 +126,12 @@ export default function GlobalGuides() {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
-      toast({ title: "Please enter a valid email", variant: "destructive" });
+      toast({ title: t("guides.newsletter.invalidEmail"), variant: "destructive" });
       return;
     }
     setIsSubscribing(true);
     await new Promise(r => setTimeout(r, 1000));
-    toast({ title: "Welcome to the journey!", description: "You're now subscribed to our editorial digest." });
+    toast({ title: t("guides.newsletter.successTitle"), description: t("guides.newsletter.successDesc") });
     setEmail("");
     setIsSubscribing(false);
   };
@@ -169,8 +171,8 @@ export default function GlobalGuides() {
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
                 <Badge className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-[#6443F4] border-0 px-4 py-2 text-sm font-medium" data-testid="badge-issue">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Issue 47 — Winter 2026
+                  <Sparkles className="w-4 h-4 me-2 rtl:rotate-0" />
+                  {t("guides.hero.issueBadge")}
                 </Badge>
               </motion.div>
             </motion.div>
@@ -189,22 +191,21 @@ export default function GlobalGuides() {
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               >
                 <p className="text-[#6443F4] text-sm font-semibold tracking-[0.2em] uppercase mb-6" data-testid="text-category-label">
-                  Travel Intelligence
+                  {t("guides.hero.categoryLabel")}
                 </p>
                 <h1 
                   className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-slate-900 dark:text-slate-100 leading-[1.05] tracking-[-0.03em] mb-8"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   data-testid="hero-headline"
                 >
-                  Stories That
+                  {t("guides.hero.headlinePart1")}
                   <br />
                   <span className="text-[#6443F4]">
-                    Move You
+                    {t("guides.hero.headlinePart2")}
                   </span>
                 </h1>
                 <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-10 max-w-lg" data-testid="hero-description">
-                  Expert-crafted guides, insider perspectives, and editorial narratives 
-                  that transform the way you experience the world.
+                  {t("guides.hero.description")}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -212,32 +213,32 @@ export default function GlobalGuides() {
                     className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-8 h-14 text-base gap-3"
                     data-testid="button-start-journey"
                   >
-                    <Play className="w-5 h-5" />
-                    Start Your Journey
+                    <Play className="w-5 h-5 rtl:rotate-180" />
+                    {t("guides.hero.startJourney")}
                   </Button>
                   <Button 
                     variant="outline"
                     className="rounded-full px-8 h-14 text-base border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
                     data-testid="button-browse-collection"
                   >
-                    Browse Collection
+                    {t("guides.hero.browseCollection")}
                   </Button>
                 </div>
 
                 <div className="flex items-center gap-8 mt-12 pt-8 border-t border-slate-100 dark:border-slate-800">
                   <div data-testid="stat-guides">
                     <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">200+</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Travel Guides</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{t("guides.stats.guides")}</p>
                   </div>
                   <div className="w-px h-12 bg-slate-200 dark:bg-slate-700" />
                   <div data-testid="stat-destinations">
                     <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">16</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Destinations</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{t("guides.stats.destinations")}</p>
                   </div>
                   <div className="w-px h-12 bg-slate-200 dark:bg-slate-700" />
                   <div data-testid="stat-writers">
                     <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">17</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Languages</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{t("guides.stats.languages")}</p>
                   </div>
                 </div>
               </motion.div>
@@ -256,18 +257,18 @@ export default function GlobalGuides() {
               transition={{ duration: 0.6 }}
             >
               <Badge className="mb-4 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-journey">
-                <Compass className="w-3 h-3 mr-2" />
-                Your Journey, Our Guidance
+                <Compass className="w-3 h-3 me-2" />
+                {t("guides.journey.badge")}
               </Badge>
               <h2 
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4 tracking-[-0.02em]"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-journey"
               >
-                Every Great Trip Begins with a Guide
+                {t("guides.journey.title")}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                From dreaming to sharing, we're with you at every step
+                {t("guides.journey.subtitle")}
               </p>
             </motion.div>
 
@@ -330,15 +331,15 @@ export default function GlobalGuides() {
             >
               <div>
                 <Badge className="mb-4 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-idea-lab">
-                  <Sparkles className="w-3 h-3 mr-2" />
-                  Idea Lab
+                  <Sparkles className="w-3 h-3 me-2" />
+                  {t("guides.ideaLab.badge")}
                 </Badge>
                 <h2 
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-[-0.02em]"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   data-testid="heading-idea-lab"
                 >
-                  Curated Inspiration
+                  {t("guides.ideaLab.title")}
                 </h2>
               </div>
               <div className="flex gap-3">
@@ -413,7 +414,7 @@ export default function GlobalGuides() {
                             <Button 
                               className="mt-4 rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-6 gap-2"
                             >
-                              Read Guide <ArrowRight className="w-4 h-4" />
+                              {t("guides.ideaLab.readGuide")} <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                             </Button>
                           </div>
                         </div>
@@ -452,18 +453,18 @@ export default function GlobalGuides() {
               viewport={{ once: true }}
             >
               <Badge className="mb-4 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-archetype">
-                <Users className="w-3 h-3 mr-2" />
-                Personalized for You
+                <Users className="w-3 h-3 me-2" />
+                {t("guides.archetype.badge")}
               </Badge>
               <h2 
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4 tracking-[-0.02em]"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-archetype"
               >
-                What Kind of Traveler Are You?
+                {t("guides.archetype.title")}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                Select your travel style and discover guides curated just for you
+                {t("guides.archetype.subtitle")}
               </p>
             </motion.div>
 
@@ -530,8 +531,8 @@ export default function GlobalGuides() {
                   className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-8 gap-2"
                   data-testid="button-view-personalized"
                 >
-                  View {travelerArchetypes.find(a => a.id === selectedArchetype)?.name} Guides
-                  <ArrowRight className="w-4 h-4" />
+                  {t("guides.archetype.viewGuides", { type: t(`guides.archetypes.${selectedArchetype}.name`) })}
+                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                 </Button>
               </motion.div>
             )}
@@ -548,15 +549,15 @@ export default function GlobalGuides() {
               viewport={{ once: true }}
             >
               <Badge className="mb-4 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-editorial">
-                <Feather className="w-3 h-3 mr-2" />
-                From Our Editors
+                <Feather className="w-3 h-3 me-2" />
+                {t("guides.editorial.badge")}
               </Badge>
               <h2 
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-[-0.02em]"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-editorial"
               >
-                Editorial Features
+                {t("guides.editorial.title")}
               </h2>
             </motion.div>
 
@@ -617,9 +618,9 @@ export default function GlobalGuides() {
                       <p className="font-semibold text-slate-900 dark:text-slate-100">{spread.author}</p>
                       <p className="text-sm text-slate-500 dark:text-slate-400">{spread.authorRole}</p>
                     </div>
-                    <Link href={`/guides/editorial/${spread.id}`} className="ml-auto">
+                    <Link href={`/guides/editorial/${spread.id}`} className="ms-auto">
                       <Button variant="outline" className="rounded-full gap-2 border-slate-300 dark:border-slate-700" data-testid={`button-read-${spread.id}`}>
-                        Read Full Essay <ChevronRight className="w-4 h-4" />
+                        {t("guides.editorial.readFull")} <ChevronRight className="w-4 h-4 rtl:rotate-180" />
                       </Button>
                     </Link>
                   </div>
@@ -638,15 +639,15 @@ export default function GlobalGuides() {
               viewport={{ once: true }}
             >
               <Badge className="mb-4 px-4 py-1.5 bg-white/10 text-white border-0" data-testid="badge-gallery">
-                <Camera className="w-3 h-3 mr-2" />
-                Visual Stories
+                <Camera className="w-3 h-3 me-2" />
+                {t("guides.gallery.badge")}
               </Badge>
               <h2 
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-[-0.02em]"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-gallery"
               >
-                Destinations That Inspire
+                {t("guides.gallery.title")}
               </h2>
             </motion.div>
           </div>
@@ -697,18 +698,18 @@ export default function GlobalGuides() {
               viewport={{ once: true }}
             >
               <Badge className="mb-4 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-writers">
-                <Feather className="w-3 h-3 mr-2" />
-                Expert Voices
+                <Feather className="w-3 h-3 me-2" />
+                {t("guides.writers.badge")}
               </Badge>
               <h2 
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4 tracking-[-0.02em]"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-writers"
               >
-                Meet Our Writers
+                {t("guides.writers.title")}
               </h2>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                The expert voices behind our most trusted travel guides
+                {t("guides.writers.subtitle")}
               </p>
             </motion.div>
 
@@ -733,7 +734,7 @@ export default function GlobalGuides() {
                       />
                     </div>
                     <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-[#6443F4] text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg">
-                      {writer.articles} Articles
+                      {t("guides.writers.articleCount", { count: writer.articles })}
                     </div>
                   </div>
 
@@ -746,7 +747,7 @@ export default function GlobalGuides() {
                     className="mt-4 text-[#6443F4] rounded-full gap-1"
                     data-testid={`button-writer-${writer.id}`}
                   >
-                    View Profile <ChevronRight className="w-4 h-4" />
+                    {t("guides.writers.viewProfile")} <ChevronRight className="w-4 h-4 rtl:rotate-180" />
                   </Button>
                 </motion.div>
               ))}
@@ -765,19 +766,19 @@ export default function GlobalGuides() {
             >
               <div>
                 <Badge className="mb-4 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-map">
-                  <Globe className="w-3 h-3 mr-2" />
-                  Explore by Region
+                  <Globe className="w-3 h-3 me-2" />
+                  {t("guides.map.badge")}
                 </Badge>
                 <h2 
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-[-0.02em]"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   data-testid="heading-map"
                 >
-                  Guides Around the World
+                  {t("guides.map.title")}
                 </h2>
               </div>
               <p className="text-lg text-slate-600 dark:text-slate-400 max-w-md">
-                Click any destination to discover our expert coverage
+                {t("guides.map.subtitle")}
               </p>
             </motion.div>
 
@@ -829,7 +830,7 @@ export default function GlobalGuides() {
                         >
                           <div className="bg-slate-900 dark:bg-slate-700 text-white px-4 py-2 rounded-xl shadow-xl whitespace-nowrap">
                             <p className="font-semibold">{dest.name}</p>
-                            <p className="text-xs text-slate-400">{dest.guides} guides available</p>
+                            <p className="text-xs text-slate-400">{t("guides.map.guidesAvailable", { count: dest.guides })}</p>
                           </div>
                           <div className="w-3 h-3 bg-slate-900 dark:bg-slate-700 transform rotate-45 absolute left-1/2 -translate-x-1/2 -bottom-1" />
                         </motion.div>
@@ -840,15 +841,15 @@ export default function GlobalGuides() {
               </div>
 
               {/* Map Legend */}
-              <div className="absolute bottom-6 left-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-slate-100 dark:border-slate-700">
+              <div className="absolute bottom-6 start-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#6443F4]" />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Destination</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("guides.map.legendDestination")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#6443F4]" />
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Highlighted</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{t("guides.map.legendHighlighted")}</span>
                   </div>
                 </div>
               </div>
@@ -872,18 +873,18 @@ export default function GlobalGuides() {
               
               <div className="relative z-10 text-center">
                 <Badge className="mb-6 px-4 py-1.5 bg-[#6443F4]/10 dark:bg-[#6443F4]/20 text-[#6443F4] border-0" data-testid="badge-newsletter">
-                  <Sparkles className="w-3 h-3 mr-2" />
-                  Join the Journey
+                  <Sparkles className="w-3 h-3 me-2" />
+                  {t("guides.newsletter.badge")}
                 </Badge>
                 <h2 
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-6 tracking-[-0.02em]"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   data-testid="heading-newsletter"
                 >
-                  Travel Stories, Weekly
+                  {t("guides.newsletter.title")}
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-10" data-testid="text-newsletter">
-                  Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.
+                  {t("guides.newsletter.description")}
                 </p>
 
                 <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -891,7 +892,7 @@ export default function GlobalGuides() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder={t("guides.newsletter.placeholder")}
                     className="flex-1 px-6 py-4 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6443F4] focus:border-transparent"
                     data-testid="input-newsletter-email"
                   />
@@ -901,13 +902,13 @@ export default function GlobalGuides() {
                     className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-8 py-4 gap-2"
                     data-testid="button-subscribe"
                   >
-                    {isSubscribing ? 'Subscribing...' : 'Subscribe'}
-                    <Send className="w-4 h-4" />
+                    {isSubscribing ? t("guides.newsletter.subscribing") : t("guides.newsletter.subscribe")}
+                    <Send className="w-4 h-4 rtl:rotate-180" />
                   </Button>
                 </form>
 
                 <p className="text-sm text-slate-500 dark:text-slate-500 mt-6">
-                  Join 50,000+ travelers who read our weekly digest
+                  {t("guides.newsletter.joinCount")}
                 </p>
               </div>
             </motion.div>

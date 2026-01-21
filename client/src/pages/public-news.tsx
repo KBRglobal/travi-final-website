@@ -15,6 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
@@ -144,36 +145,36 @@ function formatViews(views: number): string {
   return views.toString();
 }
 
-function getArticleDate(content: ContentWithRelations): string {
+function getArticleDate(content: ContentWithRelations, t?: (key: string) => string): string {
   return content.publishedAt
     ? format(new Date(content.publishedAt), "MMM d, yyyy")
     : content.createdAt
       ? format(new Date(content.createdAt), "MMM d, yyyy")
-      : "Recent";
+      : t ? t("news.time.recent") : "Recent";
 }
 
-function getTimeAgo(content: ContentWithRelations): string {
+function getTimeAgo(content: ContentWithRelations, t?: (key: string, params?: Record<string, unknown>) => string): string {
   const date = content.publishedAt || content.createdAt;
-  if (!date) return "Just now";
+  if (!date) return t ? t("news.time.justNow") : "Just now";
   const diff = Date.now() - new Date(date).getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 1) return t ? t("news.time.justNow") : "Just now";
+  if (minutes < 60) return t ? t("news.time.minutesAgo", { count: minutes }) : `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+  if (hours < 24) return t ? t("news.time.hoursAgo", { count: hours }) : `${hours}h ago`;
+  return t ? t("news.time.daysAgo", { count: Math.floor(hours / 24) }) : `${Math.floor(hours / 24)}d ago`;
 }
 
-function getReadTime(content: ContentWithRelations): string {
+function getReadTime(content: ContentWithRelations, t?: (key: string, params?: Record<string, unknown>) => string): string {
   const blocks = content.blocks as Array<{ type: string; contents?: { text?: string } }> | null;
-  if (!blocks) return "5 min read";
+  if (!blocks) return t ? t("news.time.minRead", { count: 5 }) : "5 min read";
   const textContent = blocks
     .filter((b) => b.type === "text")
     .map((b) => b.contents?.text || "")
     .join(" ");
   const wordCount = textContent.split(/\s+/).length;
   const minutes = Math.max(3, Math.ceil(wordCount / 200));
-  return `${minutes} min read`;
+  return t ? t("news.time.minRead", { count: minutes }) : `${minutes} min read`;
 }
 
 function getCategoryColor(category?: string | null): string {
@@ -194,6 +195,7 @@ function getBreakingNews(articles: ContentWithRelations[]): string[] {
 }
 
 export default function PublicNews() {
+  const { t } = useTranslation();
   const { localePath } = useLocale();
   const [email, setEmail] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -220,15 +222,15 @@ export default function PublicNews() {
     },
     onSuccess: () => {
       toast({
-        title: "Subscribed!",
-        description: "Please check your email to confirm your subscription.",
+        title: t("news.newsletter.successTitle"),
+        description: t("news.newsletter.successDesc"),
       });
       setEmail("");
     },
     onError: (error: Error) => {
       toast({
-        title: "Subscription failed",
-        description: error.message || "Please try again later.",
+        title: t("news.newsletter.errorTitle"),
+        description: error.message || t("news.newsletter.errorDesc"),
         variant: "destructive",
       });
     },
@@ -240,8 +242,8 @@ export default function PublicNews() {
       subscribeMutation.mutate(email);
     } else {
       toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
+        title: t("news.newsletter.invalidTitle"),
+        description: t("news.newsletter.invalidDesc"),
         variant: "destructive",
       });
     }
@@ -251,8 +253,8 @@ export default function PublicNews() {
     e.preventDefault();
     if (searchQuery.trim()) {
       toast({
-        title: "Search",
-        description: `Searching for "${searchQuery}"...`,
+        title: t("news.search.title"),
+        description: t("news.search.searching", { query: searchQuery }),
       });
     }
   };
@@ -339,7 +341,7 @@ export default function PublicNews() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
               </span>
               <Zap className="w-4 h-4 text-white" />
-              <span className="text-xs font-bold tracking-widest uppercase text-white">Breaking</span>
+              <span className="text-xs font-bold tracking-widest uppercase text-white">{t("news.breaking.label")}</span>
             </div>
             <div className="overflow-hidden flex-1 px-6">
               <div className="animate-marquee whitespace-nowrap flex items-center gap-12">
@@ -365,9 +367,9 @@ export default function PublicNews() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "'Chillax', var(--font-sans)" }} data-testid="text-portal-title">
-                    TRAVI NEWS
+                    {t("news.header.title")}
                   </h1>
-                  <div className="text-xs text-cyan-400 font-medium tracking-widest uppercase">International Edition</div>
+                  <div className="text-xs text-cyan-400 font-medium tracking-widest uppercase">{t("news.header.edition")}</div>
                 </div>
               </div>
               <div className="hidden lg:flex items-center gap-4 text-sm text-white/60 border-l border-white/10 pl-8">
@@ -381,21 +383,21 @@ export default function PublicNews() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                 <Input
                   type="search"
-                  placeholder="Search worldwide news..."
+                  placeholder={t("news.search.placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:bg-white/10 focus:border-cyan-500/50"
+                  className="ps-11 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:bg-white/10 focus:border-cyan-500/50"
                   data-testid="input-search"
                 />
               </div>
               <Button type="submit" className="bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0 shadow-lg shadow-purple-500/20" data-testid="button-search">
-                Search
+                {t("news.search.button")}
               </Button>
             </form>
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" className="border-white/20 text-white bg-white/5 gap-2 backdrop-blur-sm" data-testid="button-subscribe-header">
                 <Mail className="w-4 h-4" />
-                Subscribe
+                {t("news.header.subscribe")}
               </Button>
               <Button variant="ghost" size="icon" className="text-white/60" data-testid="button-notifications">
                 <Bell className="w-5 h-5" />
@@ -418,7 +420,7 @@ export default function PublicNews() {
               onClick={() => setActiveCategory("all")}
               data-testid="button-category-all"
             >
-              All News
+              {t("news.categories.all")}
             </Button>
             {NEWS_CATEGORIES.map((cat) => (
               <Button
@@ -433,7 +435,7 @@ export default function PublicNews() {
                 data-testid={`button-category-${cat.id}`}
               >
                 <cat.icon className="w-4 h-4" />
-                {cat.name}
+                {t(`news.categories.${cat.id}`)}
               </Button>
             ))}
           </div>
@@ -448,21 +450,21 @@ export default function PublicNews() {
                 <Newspaper className="w-10 h-10 text-[#6443F4]" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
-                No News Articles Yet
+                {t("news.empty.title")}
               </h2>
               <p className="text-white/60 mb-6">
-                We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.
+                {t("news.empty.description")}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/">
                   <Button className="bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0" data-testid="button-explore-home">
-                    Explore Destinations
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    {t("news.empty.exploreDestinations")}
+                    <ArrowRight className="w-4 h-4 ms-2 rtl:rotate-180" />
                   </Button>
                 </Link>
                 <Link href="/guides">
                   <Button variant="outline" className="border-white/20 text-white bg-white/5" data-testid="button-view-guides">
-                    View Travel Guides
+                    {t("news.empty.viewGuides")}
                   </Button>
                 </Link>
               </div>
@@ -485,11 +487,11 @@ export default function PublicNews() {
                     <div className="absolute inset-0 bg-gradient-to-br from-[#6443F4]/20 to-cyan-500/10 opacity-60" />
                     <div className="absolute top-4 left-4 flex items-center gap-2">
                       <Badge className="bg-gradient-to-r from-[#6443F4] to-purple-600 text-white border-0 shadow-lg" data-testid="badge-top-story">
-                        <span className="relative flex h-1.5 w-1.5 mr-1.5">
+                        <span className="relative flex h-1.5 w-1.5 me-1.5">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
                           <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
                         </span>
-                        Top Story
+                        {t("news.hero.topStory")}
                       </Badge>
                       <Badge className="bg-white/20 backdrop-blur-md text-white border-0">
                         {heroArticle.article?.category || "World"}
@@ -505,17 +507,17 @@ export default function PublicNews() {
                       <div className="flex items-center gap-5 text-white/80 text-sm flex-wrap">
                         <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
                           <User className="w-4 h-4" />
-                          <span>Editorial Team</span>
+                          <span>{t("news.hero.editorialTeam")}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-cyan-400" />
-                          <span>{getReadTime(heroArticle)}</span>
+                          <span>{getReadTime(heroArticle, t)}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Eye className="w-4 h-4 text-cyan-400" />
-                          <span>{formatViews(heroArticle.viewCount || 0)} views</span>
+                          <span>{t("news.views", { count: formatViews(heroArticle.viewCount || 0) })}</span>
                         </div>
-                        <span className="text-white/60">{getArticleDate(heroArticle)}</span>
+                        <span className="text-white/60">{getArticleDate(heroArticle, t)}</span>
                       </div>
                     </div>
                   </div>
@@ -530,9 +532,9 @@ export default function PublicNews() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-white" />
                 </div>
-                Also Today
+                {t("news.sidebar.alsoToday")}
               </h3>
-              <Badge className="bg-cyan-500/20 text-cyan-400 border-0">{secondaryHeroArticles.length} stories</Badge>
+              <Badge className="bg-cyan-500/20 text-cyan-400 border-0">{t("news.sidebar.storiesCount", { count: secondaryHeroArticles.length })}</Badge>
             </div>
             <div className="space-y-3">
               {secondaryHeroArticles.map((article, idx) => (
@@ -554,7 +556,7 @@ export default function PublicNews() {
                         <h4 className="font-semibold text-white text-sm line-clamp-2 group-hover:text-cyan-400 transition-colors">
                           {article.title}
                         </h4>
-                        <span className="text-xs text-white/50 mt-1 block">{getTimeAgo(article)}</span>
+                        <span className="text-xs text-white/50 mt-1 block">{getTimeAgo(article, t)}</span>
                       </div>
                     </div>
                   </Card>
@@ -571,10 +573,10 @@ export default function PublicNews() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
                   <Globe className="w-5 h-5 text-[#6443F4]" />
-                  Top Stories
+                  {t("news.sections.topStories")}
                 </h2>
                 <Button variant="ghost" size="sm" className="text-[#6443F4]" data-testid="link-view-all-top">
-                  View All <ChevronRight className="w-4 h-4 ml-1" />
+                  {t("news.viewAll")} <ChevronRight className="w-4 h-4 ms-1 rtl:rotate-180" />
                 </Button>
               </div>
               <div className="grid md:grid-cols-2 gap-5">
@@ -599,7 +601,7 @@ export default function PublicNews() {
                         </h3>
                         <p className="text-slate-600 text-sm line-clamp-2 mb-3">{article.metaDescription}</p>
                         <div className="flex items-center gap-3 text-xs text-slate-500">
-                          <span>{getArticleDate(article)}</span>
+                          <span>{getArticleDate(article, t)}</span>
                           <span className="w-1 h-1 rounded-full bg-slate-300" />
                           <span className="flex items-center gap-1">
                             <Eye className="w-3 h-3" />
@@ -629,7 +631,7 @@ export default function PublicNews() {
                         <h3 className="font-semibold text-slate-900 text-sm line-clamp-2 group-hover:text-[#6443F4] transition-colors">
                           {article.title}
                         </h3>
-                        <span className="text-xs text-slate-500 mt-2 block">{getTimeAgo(article)}</span>
+                        <span className="text-xs text-slate-500 mt-2 block">{getTimeAgo(article, t)}</span>
                       </div>
                     </Card>
                   </Link>
@@ -643,10 +645,10 @@ export default function PublicNews() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
                   <MessageSquare className="w-5 h-5 text-[#6443F4]" />
-                  Opinion & Analysis
+                  {t("news.sections.opinion")}
                 </h2>
                 <Button variant="ghost" size="sm" className="text-[#6443F4]" data-testid="link-view-all-opinion">
-                  More Opinion <ChevronRight className="w-4 h-4 ml-1" />
+                  {t("news.sections.moreOpinion")} <ChevronRight className="w-4 h-4 ms-1 rtl:rotate-180" />
                 </Button>
               </div>
               <div className="grid md:grid-cols-3 gap-5">
@@ -661,7 +663,7 @@ export default function PublicNews() {
                         </Avatar>
                         <div>
                           <div className="font-medium text-slate-900 text-sm">{article.article?.category || "Editorial"}</div>
-                          <div className="text-xs text-slate-500">{getReadTime(article)}</div>
+                          <div className="text-xs text-slate-500">{getReadTime(article, t)}</div>
                         </div>
                       </div>
                       <Quote className="w-6 h-6 text-[#6443F4]/30 mb-2" />
@@ -669,7 +671,7 @@ export default function PublicNews() {
                         {article.title}
                       </h3>
                       <p className="text-slate-600 text-sm line-clamp-2 italic">{article.metaDescription}</p>
-                      <span className="text-xs text-slate-400 mt-3 block">{getArticleDate(article)}</span>
+                      <span className="text-xs text-slate-400 mt-3 block">{getArticleDate(article, t)}</span>
                     </Card>
                   </Link>
                 ))}
@@ -681,7 +683,7 @@ export default function PublicNews() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
                   <Globe className="w-5 h-5 text-[#6443F4]" />
-                  Worldwide Coverage
+                  {t("news.sections.worldwide")}
                 </h2>
               </div>
               <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-[#6443F4] to-cyan-600 p-6">
@@ -696,8 +698,8 @@ export default function PublicNews() {
                       <Globe className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-white font-bold text-lg">Your Window to the World</h3>
-                      <p className="text-white/70 text-sm">News from every corner of the globe</p>
+                      <h3 className="text-white font-bold text-lg">{t("news.worldwide.title")}</h3>
+                      <p className="text-white/70 text-sm">{t("news.worldwide.subtitle")}</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-6">
@@ -720,7 +722,7 @@ export default function PublicNews() {
                             <span className="text-white font-bold text-xs">{r.code}</span>
                           </div>
                           <h4 className="font-semibold text-white text-xs mb-0.5">{r.name}</h4>
-                          <span className="text-white/60 text-[10px]">{count > 0 ? `${count} stories` : 'Coming soon'}</span>
+                          <span className="text-white/60 text-[10px]">{count > 0 ? t("news.worldwide.storiesCount", { count }) : t("news.worldwide.comingSoon")}</span>
                         </div>
                       );
                     })}
@@ -739,14 +741,14 @@ export default function PublicNews() {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
                   </span>
                   <Radio className="w-4 h-4 text-[#6443F4]" />
-                  Live Updates
+                  {t("news.sidebar.liveUpdates")}
                 </h3>
               </div>
               <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                 {liveUpdates.map((article, idx) => (
                   <Link key={article.id} href={localePath(`/articles/${article.slug}`)}>
                     <div className="group cursor-pointer p-3 rounded-md hover:bg-slate-50 transition-colors border-l-2 border-l-transparent hover:border-l-[#6443F4]" data-testid={`live-update-${idx + 1}`}>
-                      <span className="text-[10px] text-[#6443F4] font-semibold uppercase tracking-wide">{getTimeAgo(article)}</span>
+                      <span className="text-[10px] text-[#6443F4] font-semibold uppercase tracking-wide">{getTimeAgo(article, t)}</span>
                       <h4 className="text-sm text-slate-900 font-medium mt-1 line-clamp-2 group-hover:text-[#6443F4] transition-colors">
                         {article.title}
                       </h4>
@@ -759,7 +761,7 @@ export default function PublicNews() {
             <section className="bg-white rounded-lg p-5 border border-slate-200" data-testid="section-trending">
               <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
                 <TrendingUp className="w-4 h-4 text-[#6443F4]" />
-                Trending Topics
+                {t("news.sidebar.trendingTopics")}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {trendingTopics.length > 0 ? trendingTopics.map((topic, idx) => (
@@ -773,21 +775,21 @@ export default function PublicNews() {
                     <span className="ml-1.5 text-slate-400">{topic.count}</span>
                   </Badge>
                 )) : (
-                  <span className="text-slate-500 text-sm">No trending topics yet. Check back soon!</span>
+                  <span className="text-slate-500 text-sm">{t("news.sidebar.noTrending")}</span>
                 )}
               </div>
             </section>
 
             <section className="bg-[#6443F4] rounded-lg p-6" data-testid="section-newsletter">
               <Mail className="w-10 h-10 text-white/80 mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>Stay Informed</h3>
+              <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>{t("news.newsletter.title")}</h3>
               <p className="text-white/80 text-sm mb-5">
-                Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.
+                {t("news.newsletter.description")}
               </p>
               <form onSubmit={handleSubscribe} className="space-y-3">
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={t("news.newsletter.placeholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
@@ -802,11 +804,11 @@ export default function PublicNews() {
                   {subscribeMutation.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <>Subscribe Free <ArrowRight className="w-4 h-4 ml-2" /></>
+                    <>{t("news.newsletter.subscribe")} <ArrowRight className="w-4 h-4 ms-2 rtl:rotate-180" /></>
                   )}
                 </Button>
               </form>
-              <p className="text-white/60 text-xs mt-3 text-center">No spam. Unsubscribe anytime.</p>
+              <p className="text-white/60 text-xs mt-3 text-center">{t("news.newsletter.noSpam")}</p>
             </section>
           </aside>
         </div>
