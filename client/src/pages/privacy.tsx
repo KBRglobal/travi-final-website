@@ -1,5 +1,7 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/hooks/use-locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -11,9 +13,12 @@ import {
 const privacyMascot = "/logos/Mascot_for_Dark_Background.png";
 
 export default function PrivacyPage() {
+  const { t } = useTranslation();
+  const { isRTL } = useLocale();
+
   useDocumentMeta({
-    title: "Privacy Policy | TRAVI World",
-    description: "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+    title: t("pages.privacy.metaTitle"),
+    description: t("pages.privacy.metaDescription"),
   });
 
   const privacyFeatures = [
@@ -25,6 +30,7 @@ export default function PrivacyPage() {
 
   return (
     <PublicLayout>
+      <div dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section with gradient and mascot */}
       <section className="relative pt-28 pb-20 overflow-hidden">
         {/* Gradient background */}
@@ -37,10 +43,10 @@ export default function PrivacyPage() {
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-start">
               <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#6443F4]/20">
                 <Shield className="w-4 h-4 text-[#6443F4]" />
-                <span className="text-sm font-medium text-[#6443F4]">Your Privacy Matters</span>
+                <span className="text-sm font-medium text-[#6443F4]">{t("pages.privacy.badge")}</span>
               </div>
               
               <h1 
@@ -49,17 +55,16 @@ export default function PrivacyPage() {
                 data-testid="heading-privacy"
               >
                 <span className="text-[#6443F4]">
-                  Privacy Policy
+                  {t("pages.privacy.title")}
                 </span>
               </h1>
               
               <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-                We are committed to protecting your privacy and being transparent about our data practices. 
-                Learn how TRAVI World collects, uses, and protects your information.
+                {t("pages.privacy.subtitle")}
               </p>
 
               <p className="text-sm text-muted-foreground" data-testid="text-effective-date">
-                Effective Date: 1 January 2026
+                {t("pages.privacy.effectiveDate")}
               </p>
             </div>
 
@@ -636,6 +641,7 @@ export default function PrivacyPage() {
           <p className="mt-1">Operated by KBR Global Creative Consulting Ltd, Gibraltar (Company No. 125571)</p>
         </div>
       </section>
+      </div>
     </PublicLayout>
   );
 }
