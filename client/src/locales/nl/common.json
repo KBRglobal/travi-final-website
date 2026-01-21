@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Bestemmingen Wereldwijd",
+      "trustedBy": "Vertrouwd door {{count}} bestemmingen",
+      "discover": "Ontdek",
+      "worldClass": "Wereldklasse",
+      "destinations": "Bestemmingen",
+      "description": "Zorgvuldig samengestelde reisgidsen met lokale expertise voor 's werelds meest boeiende steden.",
+      "exploreAll": "Alle Bestemmingen Verkennen",
+      "travelGuides": "Reisgidsen",
+      "explorePlaceholder": "Bestemmingen Verkennen",
+      "browseCollection": "Bekijk onze collectie geselecteerde bestemmingen",
+      "explore": "Verkennen",
+      "discoverButton": "Ontdekken",
+      "ariaLabel": "Overzicht van bestemmingen"
+    },
+    "stats": {
+      "destinations": "BESTEMMINGEN",
+      "countries": "LANDEN",
+      "regions": "Regio's",
+      "languages": "Talen"
+    },
+    "sections": {
+      "featured": "Uitgelichte Bestemmingen",
+      "featuredDesc": "Geselecteerde bestemmingen met uitzonderlijke ervaringen.",
+      "all": "Alle Bestemmingen",
+      "count": "{{count}} bestemmingen gevonden"
+    },
+    "search": {
+      "placeholder": "Bestemmingen zoeken...",
+      "noResults": "Geen bestemmingen gevonden",
+      "tryAdjusting": "Probeer uw zoekcriteria aan te passen",
+      "clearSearch": "Zoekopdracht wissen"
+    },
+    "carousel": {
+      "label": "Uitgelichte bestemmingen carrousel",
+      "previous": "Vorige bestemming",
+      "next": "Volgende bestemming",
+      "goTo": "Ga naar {{name}}",
+      "slideOf": "Dia {{current}} van {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Verkennen",
+      "defaultLevel": "Stad",
+      "exploreFallback": "{{name}} verkennen",
+      "destination": "Bestemming",
+      "travelGuideAlt": "{{name}} reisgids"
+    },
+    "faq": {
+      "title": "Veelgestelde Vragen",
+      "subtitle": "Alles over TRAVI bestemmingsgidsen",
+      "q1": "Hoeveel bestemmingen dekt TRAVI?",
+      "a1": "TRAVI dekt belangrijke bestemmingen in het Midden-Oosten, Europa, Azië en Amerika.",
+      "q2": "Welke informatie is inbegrepen?",
+      "a2": "Elke gids bevat attracties, accommodatie, lokale keuken en reistips.",
+      "q3": "Kan ik bestemmingen zoeken?",
+      "a3": "Ja, u kunt zoeken op naam of land.",
+      "q4": "Wat zijn de uitgelichte bestemmingen op TRAVI?",
+      "a4": "Uitgelichte bestemmingen bieden uitzonderlijke ervaringen."
+    },
+    "loading": {
+      "title": "Bestemmingen Laden",
+      "message": "Nieuwste gegevens ophalen..."
+    },
+    "error": {
+      "title": "Kan Niet Laden",
+      "message": "Probeer het later opnieuw.",
+      "refresh": "Pagina Vernieuwen"
+    },
+    "empty": {
+      "title": "Geen Bestemmingen Beschikbaar",
+      "message": "Er zijn momenteel geen bestemmingen beschikbaar."
+    }
+  }
+}

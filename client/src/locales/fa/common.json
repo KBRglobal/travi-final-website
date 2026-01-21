@@ -198,5 +198,79 @@
       "title": "Dubai Restaurants | Best Dining in Dubai",
       "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
+  },
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} مقصد در سراسر جهان",
+      "trustedBy": "{{count}} مقصد به ما اعتماد دارند",
+      "discover": "کشف کنید",
+      "worldClass": "در سطح جهانی",
+      "destinations": "مقاصد",
+      "description": "راهنمای سفر با تخصص محلی برای جذاب‌ترین شهرهای جهان.",
+      "exploreAll": "همه مقاصد را کاوش کنید",
+      "travelGuides": "راهنمای سفر",
+      "explorePlaceholder": "کاوش مقاصد",
+      "browseCollection": "مجموعه مقاصد منتخب ما را مرور کنید",
+      "explore": "کاوش",
+      "discoverButton": "کشف",
+      "ariaLabel": "نمای کلی مقاصد"
+    },
+    "stats": {
+      "destinations": "مقاصد",
+      "countries": "کشورها",
+      "regions": "مناطق",
+      "languages": "زبان‌ها"
+    },
+    "sections": {
+      "featured": "مقاصد ویژه",
+      "featuredDesc": "مقاصد منتخب با تجربیات استثنایی.",
+      "all": "همه مقاصد",
+      "count": "{{count}} مقصد یافت شد"
+    },
+    "search": {
+      "placeholder": "جستجوی مقاصد...",
+      "noResults": "مقصدی یافت نشد",
+      "tryAdjusting": "معیارهای جستجو را تنظیم کنید",
+      "clearSearch": "پاک کردن جستجو"
+    },
+    "carousel": {
+      "label": "کاروسل مقاصد ویژه",
+      "previous": "مقصد قبلی",
+      "next": "مقصد بعدی",
+      "goTo": "رفتن به {{name}}",
+      "slideOf": "اسلاید {{current}} از {{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "کاوش",
+      "defaultLevel": "شهر",
+      "exploreFallback": "کاوش {{name}}",
+      "destination": "مقصد",
+      "travelGuideAlt": "راهنمای سفر {{name}}"
+    },
+    "faq": {
+      "title": "سوالات متداول",
+      "subtitle": "همه چیز درباره راهنماهای TRAVI",
+      "q1": "TRAVI چند مقصد را پوشش می‌دهد؟",
+      "a1": "TRAVI مقاصد اصلی در خاورمیانه، اروپا، آسیا و آمریکا را پوشش می‌دهد.",
+      "q2": "چه اطلاعاتی شامل می‌شود؟",
+      "a2": "هر راهنما شامل جاذبه‌ها، اقامتگاه، غذاهای محلی و نکات سفر است.",
+      "q3": "آیا می‌توانم مقاصد را جستجو کنم؟",
+      "a3": "بله، می‌توانید بر اساس نام یا کشور جستجو کنید.",
+      "q4": "مقاصد ویژه در TRAVI چیست؟",
+      "a4": "مقاصد ویژه تجربیات استثنایی ارائه می‌دهند."
+    },
+    "loading": {
+      "title": "در حال بارگذاری مقاصد",
+      "message": "در حال دریافت داده‌های جدید..."
+    },
+    "error": {
+      "title": "بارگذاری ناموفق",
+      "message": "لطفاً بعداً دوباره امتحان کنید.",
+      "refresh": "بازخوانی صفحه"
+    },
+    "empty": {
+      "title": "مقصدی موجود نیست",
+      "message": "در حال حاضر مقصدی موجود نیست."
+    }
   }
 }

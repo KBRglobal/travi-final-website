@@ -1,1 +1,77 @@
-{ "soon": "Coming Soon" }
+{
+  "soon": "Coming Soon",
+  "destinations": {
+    "hero": {
+      "badge": "{{count}} Úti Cél Világszerte",
+      "trustedBy": "{{count}} úti cél bízik bennünk",
+      "discover": "Fedezze fel",
+      "worldClass": "Világszínvonalú",
+      "destinations": "Úti Célok",
+      "description": "Gondosan válogatott útikalauzok helyi szakértelemmel a világ legelbűvölőbb városaihoz.",
+      "exploreAll": "Minden Úti Cél Felfedezése",
+      "travelGuides": "Útikalauzok",
+      "explorePlaceholder": "Úti Célok Felfedezése",
+      "browseCollection": "Böngésszen válogatott úti cél gyűjteményünkben",
+      "explore": "Felfedezés",
+      "discoverButton": "Felfedezés",
+      "ariaLabel": "Úti célok áttekintése"
+    },
+    "stats": {
+      "destinations": "ÚTI CÉL",
+      "countries": "ORSZÁG",
+      "regions": "Régió",
+      "languages": "Nyelv"
+    },
+    "sections": {
+      "featured": "Kiemelt Úti Célok",
+      "featuredDesc": "Válogatott úti célok kivételes élményekkel.",
+      "all": "Minden Úti Cél",
+      "count": "{{count}} úti cél található"
+    },
+    "search": {
+      "placeholder": "Úti célok keresése...",
+      "noResults": "Nem található úti cél",
+      "tryAdjusting": "Próbálja módosítani a keresési feltételeket",
+      "clearSearch": "Keresés Törlése"
+    },
+    "carousel": {
+      "label": "Kiemelt úti célok körhinta",
+      "previous": "Előző úti cél",
+      "next": "Következő úti cél",
+      "goTo": "Ugrás: {{name}}",
+      "slideOf": "Dia {{current}}/{{total}}: {{name}}"
+    },
+    "card": {
+      "explore": "Felfedezés",
+      "defaultLevel": "Város",
+      "exploreFallback": "{{name}} felfedezése",
+      "destination": "Úti Cél",
+      "travelGuideAlt": "{{name}} útikalauz"
+    },
+    "faq": {
+      "title": "Gyakori Kérdések",
+      "subtitle": "Minden a TRAVI úti cél kalauzokról",
+      "q1": "Hány úti célt fed le a TRAVI?",
+      "a1": "A TRAVI a Közel-Kelet, Európa, Ázsia és Amerika főbb úti céljait fedi le.",
+      "q2": "Milyen információk szerepelnek?",
+      "a2": "Minden kalauz tartalmaz látnivalókat, szállást, helyi konyhát és utazási tippeket.",
+      "q3": "Kereshetek úti célokat?",
+      "a3": "Igen, kereshet név vagy ország szerint.",
+      "q4": "Melyek a kiemelt úti célok a TRAVI-n?",
+      "a4": "A kiemelt úti célok kivételes élményeket kínálnak."
+    },
+    "loading": {
+      "title": "Úti Célok Betöltése",
+      "message": "Legújabb adatok lekérése..."
+    },
+    "error": {
+      "title": "Nem Sikerült Betölteni",
+      "message": "Kérjük, próbálja újra később.",
+      "refresh": "Oldal Frissítése"
+    },
+    "empty": {
+      "title": "Nincs Elérhető Úti Cél",
+      "message": "Jelenleg nincs elérhető úti cél."
+    }
+  }
+}
