@@ -4,13 +4,13 @@
  * Native locale content generation for travel guides.
  * 
  * CONSTRAINTS:
- * - en + ar locales ONLY
+ * - en, ar, fr locales ONLY (batch pilot phase)
  * - Guide entity type ONLY
  * - LocalePurity ≥98% hard gate
  * - Atomic write (all validators pass or nothing written)
  * - NO English fallback for non-English locales
  * 
- * Target: Rome travel guide (slug: rome-travel-guide)
+ * Batch Pilot: 5 guides × 3 locales = 15 content sets
  */
 
 import { db, pool } from "../../db";
@@ -85,9 +85,14 @@ async function ensureGuideTableExists(): Promise<void> {
 // TYPES
 // ============================================================================
 
+// Supported locales for batch pilot
+export type PilotLocale = "en" | "ar" | "fr";
+export const PILOT_LOCALES: PilotLocale[] = ["en", "ar", "fr"];
+export const RTL_LOCALES: PilotLocale[] = ["ar"];
+
 export interface GuideLocalizationRequest {
   guideSlug: string;
-  locale: "en" | "ar";
+  locale: PilotLocale;
   destination: string;
   sourceGuideId?: number;
 }
@@ -170,7 +175,7 @@ export function validateGuideCompleteness(content: GeneratedGuideContent): {
 
 export function validateGuideLocalePurity(
   content: GeneratedGuideContent,
-  locale: "en" | "ar",
+  locale: PilotLocale,
   exemptions: string[] = []
 ): { passed: boolean; score: number; threshold: number } {
   const allText = [
@@ -290,11 +295,12 @@ export function validateGuideSeoAeo(content: GeneratedGuideContent): {
   return { passed, issues };
 }
 
-export function validateGuideRTL(content: GeneratedGuideContent, locale: "en" | "ar"): {
+export function validateGuideRTL(content: GeneratedGuideContent, locale: PilotLocale): {
   passed: boolean;
   issues: string[];
 } {
-  if (locale !== "ar") {
+  // RTL validation only applies to Arabic
+  if (!RTL_LOCALES.includes(locale)) {
     return { passed: true, issues: [] };
   }
   
@@ -388,7 +394,7 @@ async function atomicWriteGuide(
 
 export async function getLocalizedGuideContent(
   guideSlug: string,
-  locale: "en" | "ar"
+  locale: PilotLocale
 ): Promise<{
   found: boolean;
   content?: GeneratedGuideContent & {

@@ -436,14 +436,14 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
   try {
     const { guideSlug, locale } = req.params;
     
-    if (!["en", "ar"].includes(locale)) {
+    if (!["en", "ar", "fr"].includes(locale)) {
       return res.status(400).json({
         success: false,
-        error: "GUIDE_FAIL: locale must be 'en' or 'ar' only",
+        error: "GUIDE_FAIL: locale must be 'en', 'ar', or 'fr' only",
       });
     }
     
-    const result = await getLocalizedGuideContent(guideSlug, locale as "en" | "ar");
+    const result = await getLocalizedGuideContent(guideSlug, locale as "en" | "ar" | "fr");
     
     if (!result.found || !result.content) {
       return res.status(404).json({

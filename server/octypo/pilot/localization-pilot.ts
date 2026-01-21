@@ -179,9 +179,12 @@ const UNIVERSAL_TECHNICAL_PATTERNS = [
   /\b\d{4}\b/g, // Years
 ];
 
+// Extended Latin regex for French accented characters
+const FRENCH_LATIN_REGEX = /[a-zA-ZàâäæçéèêëïîôœùûüÿÀÂÄÆÇÉÈÊËÏÎÔŒÙÛÜŸ]/g;
+
 export function calculateLocalePurity(
   text: string, 
-  targetLocale: "en" | "ar",
+  targetLocale: "en" | "ar" | "fr",
   exemptions: string[] = []
 ): number {
   if (!text || text.trim().length === 0) return 1.0;
@@ -214,6 +217,13 @@ export function calculateLocalePurity(
     
     if (totalChars === 0) return 1.0;
     return arabicChars / totalChars;
+  } else if (targetLocale === "fr") {
+    // For French, count Latin characters including French accented characters
+    const latinChars = (cleanText.match(FRENCH_LATIN_REGEX) || []).length;
+    const totalChars = cleanText.replace(/\s/g, "").length;
+    
+    if (totalChars === 0) return 1.0;
+    return latinChars / totalChars;
   } else {
     // For English, count Latin characters
     const latinChars = (cleanText.match(/[a-zA-Z]/g) || []).length;
