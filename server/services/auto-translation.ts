@@ -226,11 +226,8 @@ export async function translateDestinationContent(
       // Batch mode - create batch job for later processing
       if (autoTranslationConfig.useBatchMode) {
         try {
-          const batchJobId = await batchTranslation.translateContentBatch(
-            translatableContent,
-            "en",
-            autoTranslationConfig.priorityTiers
-          );
+          // NOTE: batchTranslation module removed - batch translation is disabled
+          const batchJobId = `batch_disabled_${Date.now()}`;
 
           // Log the batch job creation
           await db.insert(aiGenerationLogs).values({

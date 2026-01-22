@@ -1467,17 +1467,19 @@ async function translateArticleToAllLanguages(contentId: string, content: {
       
       for (const batchResult of batchResults) {
         if (batchResult.status === 'fulfilled') {
-          if (batchResult.value.success) {
+          const value = (batchResult as PromiseFulfilledResult<{ locale: string; success: boolean; error?: string }>).value;
+          if (value.success) {
             result.success++;
           } else {
             result.failed++;
-            if (batchResult.value.error) {
-              result.errors.push(batchResult.value.error);
+            if (value.error) {
+              result.errors.push(value.error);
             }
           }
         } else {
           result.failed++;
-          result.errors.push(`Batch error: ${batchResult.reason}`);
+          const reason = (batchResult as PromiseRejectedResult).reason;
+          result.errors.push(`Batch error: ${reason}`);
         }
       }
       

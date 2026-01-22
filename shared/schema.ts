@@ -936,14 +936,22 @@ export const supportedLocales = [
   "nl", "pl", "sv", "el", "cs", "ro", "uk", "hu"
 ] as const;
 
-export const insertLocalizedAssetSchema = createInsertSchema(localizedAssets, {
+export const insertLocalizedAssetSchema = z.object({
   entityType: z.enum(localizedAssetEntityTypes),
+  entityId: z.string(),
   locale: z.enum(supportedLocales),
   usage: z.enum(localizedAssetUsages),
-}).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
+  src: z.string(),
+  filename: z.string().nullable().optional(),
+  alt: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
+  caption: z.string().nullable().optional(),
+  width: z.number().nullable().optional(),
+  height: z.number().nullable().optional(),
+  mimeType: z.string().nullable().optional(),
+  fileSize: z.number().nullable().optional(),
+  isOgImage: z.boolean().optional(),
+  sortOrder: z.number().optional(),
 });
 export type InsertLocalizedAsset = z.infer<typeof insertLocalizedAssetSchema>;
 export type LocalizedAsset = typeof localizedAssets.$inferSelect;
@@ -1032,14 +1040,29 @@ export const pilotLocalizedContent = pgTable("pilot_localized_content", {
 export const pilotLocales = ["en", "ar"] as const;
 export const pilotEntityTypes = ["attraction"] as const;
 
-export const insertPilotLocalizedContentSchema = createInsertSchema(pilotLocalizedContent, {
-  locale: z.enum(pilotLocales),
+export const insertPilotLocalizedContentSchema = z.object({
   entityType: z.enum(pilotEntityTypes),
+  entityId: z.string(),
+  locale: z.enum(pilotLocales),
   destination: z.string().min(1, "Destination is required - no fallback allowed"),
-}).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
+  introduction: z.string().nullable().optional(),
+  whatToExpect: z.string().nullable().optional(),
+  visitorTips: z.string().nullable().optional(),
+  howToGetThere: z.string().nullable().optional(),
+  faq: z.array(z.object({ question: z.string(), answer: z.string() })).nullable().optional(),
+  answerCapsule: z.string().nullable().optional(),
+  metaTitle: z.string().nullable().optional(),
+  metaDescription: z.string().nullable().optional(),
+  imageAlt: z.string().nullable().optional(),
+  imageCaption: z.string().nullable().optional(),
+  localePurityScore: z.number().nullable().optional(),
+  validationResults: z.any().nullable().optional(),
+  status: z.string().optional(),
+  failureReason: z.string().nullable().optional(),
+  writerAgent: z.string().nullable().optional(),
+  engineUsed: z.string().nullable().optional(),
+  tokensUsed: z.number().nullable().optional(),
+  generationTimeMs: z.number().nullable().optional(),
 });
 
 export type InsertPilotLocalizedContent = z.infer<typeof insertPilotLocalizedContentSchema>;
@@ -1109,13 +1132,23 @@ export const pilotLocalizedGuides = pgTable("pilot_localized_guides", {
 ]);
 
 // Zod schemas for pilot guides
-export const insertPilotLocalizedGuideSchema = createInsertSchema(pilotLocalizedGuides, {
+export const insertPilotLocalizedGuideSchema = z.object({
+  guideSlug: z.string(),
   locale: z.enum(pilotLocales),
   destination: z.string().min(1, "Destination is required - no fallback allowed"),
-}).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
+  title: z.string(),
+  metaTitle: z.string().nullable().optional(),
+  metaDescription: z.string().nullable().optional(),
+  heroImageUrl: z.string().nullable().optional(),
+  heroImageAlt: z.string().nullable().optional(),
+  content: z.any().nullable().optional(),
+  status: z.string().optional(),
+  localePurity: z.number().nullable().optional(),
+  writerAgent: z.string().nullable().optional(),
+  engineUsed: z.string().nullable().optional(),
+  quality108Score: z.number().nullable().optional(),
+  validationErrors: z.any().nullable().optional(),
+  generationTimeMs: z.number().nullable().optional(),
 });
 
 export type InsertPilotLocalizedGuide = z.infer<typeof insertPilotLocalizedGuideSchema>;

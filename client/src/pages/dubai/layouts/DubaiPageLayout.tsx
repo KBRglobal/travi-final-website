@@ -35,8 +35,8 @@ export function DubaiPageLayout({
   const { isRTL } = useLocale();
 
   const defaultBreadcrumbs: BreadcrumbItem[] = [
-    { label: "Home", labelHe: "בית", href: "/" },
-    { label: "Dubai", labelHe: "דובאי", href: "/destinations/dubai" },
+    { labelKey: "nav.home", href: "/" },
+    { labelKey: "nav.dubai", label: "Dubai", href: "/destinations/dubai" },
   ];
 
   const allBreadcrumbs = [...defaultBreadcrumbs, ...breadcrumbs];

@@ -598,7 +598,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
           {/* Stats */}
           <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8">
             {[
-              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: t("home.stats.attractions"), srLabel: t("home.srLabel.attractions", { count: (siteStats?.attractions || 3000).toLocaleString() }) },
+              { num: `${(siteStats?.attractions || 3000).toLocaleString()}+`, label: t("home.stats.attractions"), srLabel: t("home.srLabel.attractions", { count: siteStats?.attractions || 3000 }) },
               { num: String(siteStats?.destinations || 17), label: t("home.stats.destinations"), srLabel: t("home.srLabel.destinations", { count: siteStats?.destinations || 17 }) },
               { num: '17+', label: t("home.stats.languages"), srLabel: t("home.srLabel.languages") }
             ].map((stat, i) => (

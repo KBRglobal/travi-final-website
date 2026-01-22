@@ -9,7 +9,8 @@ import {
   WriterTask, 
   GeneratedAttractionContent, 
   FAQ,
-  BLUEPRINT_REQUIREMENTS 
+  BLUEPRINT_REQUIREMENTS,
+  AttractionData
 } from '../types';
 import { buildAttractionPrompt } from '../prompts/content-prompts';
 

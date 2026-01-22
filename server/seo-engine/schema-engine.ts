@@ -289,11 +289,11 @@ export class SchemaEngine {
           addressCountry: 'AE',
         },
         // Only include geo if coordinates are explicitly provided
-        ...(attraction?.coordinates ? {
+        ...((attraction as any)?.coordinates ? {
           geo: {
             '@type': 'GeoCoordinates',
-            latitude: attraction.coordinates.lat,
-            longitude: attraction.coordinates.lng,
+            latitude: (attraction as any).coordinates.lat,
+            longitude: (attraction as any).coordinates.lng,
           }
         } : {})
       });

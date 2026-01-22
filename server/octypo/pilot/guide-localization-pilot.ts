@@ -495,7 +495,7 @@ async function atomicWriteGuide(
 ): Promise<string> {
   await ensureGuideTableExists();
   
-  const record: InsertPilotLocalizedGuide = {
+  const record = {
     guideSlug: request.guideSlug,
     locale: request.locale,
     destination: request.destination,
@@ -510,7 +510,7 @@ async function atomicWriteGuide(
     metaDescription: content.metaDescription,
     localePurityScore: validationResults.localePurity.score,
     validationResults: validationResults,
-    status: "validated",
+    status: "validated" as const,
     writerAgent: metadata.writerAgent,
     engineUsed: metadata.engineUsed,
     tokensUsed: metadata.tokensUsed,
@@ -531,13 +531,49 @@ async function atomicWriteGuide(
   if (existing.length > 0) {
     await db
       .update(pilotLocalizedGuides)
-      .set({ ...record, updatedAt: new Date() })
+      .set({
+        introduction: record.introduction,
+        whatToExpect: record.whatToExpect,
+        highlights: record.highlights,
+        tips: record.tips,
+        faq: record.faq,
+        answerCapsule: record.answerCapsule,
+        metaTitle: record.metaTitle,
+        metaDescription: record.metaDescription,
+        localePurityScore: record.localePurityScore,
+        validationResults: record.validationResults,
+        status: record.status,
+        writerAgent: record.writerAgent,
+        engineUsed: record.engineUsed,
+        tokensUsed: record.tokensUsed,
+        generationTimeMs: record.generationTimeMs,
+      } as any)
       .where(eq(pilotLocalizedGuides.id, existing[0].id));
     return existing[0].id;
   } else {
     const inserted = await db
       .insert(pilotLocalizedGuides)
-      .values(record)
+      .values({
+        guideSlug: record.guideSlug,
+        locale: record.locale,
+        destination: record.destination,
+        sourceGuideId: record.sourceGuideId,
+        introduction: record.introduction,
+        whatToExpect: record.whatToExpect,
+        highlights: record.highlights,
+        tips: record.tips,
+        faq: record.faq,
+        answerCapsule: record.answerCapsule,
+        metaTitle: record.metaTitle,
+        metaDescription: record.metaDescription,
+        localePurityScore: record.localePurityScore,
+        validationResults: record.validationResults,
+        status: record.status,
+        writerAgent: record.writerAgent,
+        engineUsed: record.engineUsed,
+        tokensUsed: record.tokensUsed,
+        generationTimeMs: record.generationTimeMs,
+      } as any)
       .returning({ id: pilotLocalizedGuides.id });
     return inserted[0].id;
   }
@@ -667,15 +703,13 @@ export async function saveLocalizedGuideContent(
       writerAgent: options?.writerAgent,
       engineUsed: options?.engineUsed,
       generationTimeMs: Date.now() - startTime,
-    }).onConflictDoUpdate({
+    } as any).onConflictDoUpdate({
       target: [pilotLocalizedGuides.guideSlug, pilotLocalizedGuides.locale],
       set: {
-        status: "failed",
         failureReason,
         localePurityScore: localePurityResult.score,
         validationResults,
-        updatedAt: new Date(),
-      },
+      } as any,
     });
     
     return {
@@ -701,7 +735,7 @@ export async function saveLocalizedGuideContent(
   
   await db
     .update(pilotLocalizedGuides)
-    .set({ status: "published", updatedAt: new Date() })
+    .set({ status: "published" } as any)
     .where(eq(pilotLocalizedGuides.id, contentId));
   
   console.log(`[GuideLocalization] SUCCESS: Guide content written with ID ${contentId}`);

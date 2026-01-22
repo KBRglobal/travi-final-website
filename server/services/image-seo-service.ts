@@ -607,7 +607,7 @@ export class ImageSEOService {
           // FAIL-FAST: Do not use implicit Dubai fallback for location - use context or omit
           addressLocality: areaInfo?.name || context.location?.area || context.entityName,
           addressRegion: context.location?.area || areaInfo?.name || undefined,
-          addressCountry: context.location?.country || "AE"
+          addressCountry: "AE"
         },
         // FAIL-FAST: Only include geo coordinates if explicitly provided - no implicit Dubai fallback
         ...(context.location?.coordinates || areaInfo?.coordinates ? {

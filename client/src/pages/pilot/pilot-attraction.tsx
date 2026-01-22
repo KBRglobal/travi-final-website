@@ -105,9 +105,7 @@ export default function PilotAttractionPage() {
           <AlertDescription data-testid="text-pending-description">
             {locale === "ar" 
               ? `سيتم إنشاء المحتوى المحلي لهذا الجذب قريباً. لا يوجد محتوى إنجليزي كبديل.`
-              : isPendingGeneration
-                ? `Localized content for this attraction in ${locale.toUpperCase()} is pending generation. No English fallback is available.`
-                : `No published content found for attraction ${entityId} in locale ${locale}`
+              : `No published content found for attraction ${entityId} in locale ${locale}`
             }
           </AlertDescription>
         </Alert>

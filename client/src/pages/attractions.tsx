@@ -564,7 +564,7 @@ export default function Attractions() {
                           <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                         </div>
                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300" data-testid="badge-attractions-count">
-                          <span className="text-[#6443F4]">{totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : ""}</span> {totalAttractions > 0 ? t("attractions.hero.badge", { count: totalAttractions.toLocaleString(), cities: destinations.length }) : t("attractions.hero.badgeThousands")}
+                          <span className="text-[#6443F4]">{totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : ""}</span> {totalAttractions > 0 ? t("attractions.hero.badge", { count: totalAttractions, cities: destinations.length }) : t("attractions.hero.badgeThousands")}
                         </span>
                       </div>
                     </motion.div>
