@@ -96,6 +96,17 @@ Preferred communication style: Simple, everyday language.
 - **AI SEO Generation**: Endpoint for AI-powered SEO generation with quality scoring and improvement suggestions.
 - **Capability-Based Field Ownership**: `canEditPageSeo` permission enforces exclusive write access to the `page_seo` table.
 
+### AEO (Answer Engine Optimization) Infrastructure - January 2026
+- **SSR for Bots**: Server-side rendering for search engine and AI crawler user-agents (Googlebot, Bingbot, GPTBot, etc.)
+- **Locale-Aware Canonicals**: Self-canonical URLs per language (e.g., /ar → https://travi.world/ar/) via SSR middleware
+- **og:locale Mapping**: Proper country code mapping for all 30 locales (ar → ar_AE, fr → fr_FR, zh → zh_CN, etc.)
+- **hreflang Tags**: 30 alternate language links generated for every page, with x-default pointing to English
+- **robots.txt**: Allows all 30 locale paths, permits all major crawlers including AI bots (GPTBot, Anthropic, Perplexity, etc.)
+- **llms.txt**: AI-native discovery file at /llms.txt with site description and key pages for AI crawlers
+- **IndexNow Protocol**: API endpoint at /api/seo/indexnow for instant Bing/Yandex indexing of new content
+- **Multi-language Sitemaps**: Sitemap index with per-locale sitemaps including hreflang attributes
+- **Key Files**: client/public/robots.txt, client/public/llms.txt, server/lib/ssr-renderer.ts, server/lib/meta-tags.ts, server/routes/seo-routes.ts
+
 ## External Dependencies
 
 - **Database**: PostgreSQL.
