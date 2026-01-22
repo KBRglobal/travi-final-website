@@ -1,0 +1,102 @@
+ROLE: Senior Frontend + Localization Architect (Claude Code)
+
+OBJECTIVE:
+Complete FULL localization of all CORE UI PAGES (menu + shell pages) to 30 languages.
+This task is NOT content generation and NOT Octypo-related.
+This is STRICT UI + UX + i18n correctness work.
+
+SCOPE (VERY IMPORTANT):
+- Core pages only (navigation, menu pages, layout pages, system pages)
+- NO internal content pages (guides, attractions, articles)
+- NO AI content generation
+- NO Octypo usage
+- Manual, deterministic implementation only
+
+CORE REQUIREMENTS (MUST ALL BE MET):
+
+1. LANGUAGE COVERAGE
+- Exactly 30 locales (already defined in project)
+- Every locale must fully render ALL core UI pages
+- ZERO mixed-language rendering
+- ZERO silent fallback to English
+- Missing keys must be visible (e.g. [MISSING:key])
+
+2. STRUCTURE & FILE SYSTEM
+- Enforce clean locale structure:
+  /locales/{locale}/common.json
+  /locales/{locale}/navigation.json
+  /locales/{locale}/pages.json
+- Keys must be IDENTICAL across all locales
+- Build must FAIL if any locale is missing keys
+
+3. UI & UX DIRECTIONALITY
+- Correct dir handling per locale:
+  - RTL: ar, he, fa, ur
+  - LTR: all others
+- ALL directional UI must flip correctly:
+  - Arrows
+  - Chevrons
+  - Back/Next icons
+  - Pagination
+  - Breadcrumbs
+  - Sliders / carousels
+- NO hardcoded left/right logic
+- Direction must be derived from locale only
+
+4. NAVIGATION & MENU
+- Header menu fully localized
+- Footer fully localized
+- Mobile menu fully localized
+- Language switcher:
+  - Shows current language clearly
+  - Does NOT reset page context
+  - Does NOT force English at any point
+
+5. ROUTING
+- Root "/" redirects to "/en"
+- "/{locale}" is canonical entry point
+- All core pages must exist under:
+  /{locale}/...
+- hreflang support must be correct for ALL 30 locales
+
+6. SEO FOR CORE PAGES (UI ONLY)
+- Localized:
+  - <title>
+  - meta description
+  - og:title
+  - og:description
+  - og:locale
+- No schema/content generation here — UI pages only
+
+7. ICONS & VISUAL CONSISTENCY
+- Icons must respect direction automatically
+- No duplicated icon sets per locale
+- Use logical direction (start/end) instead of left/right
+
+8. QUALITY BAR (NON-NEGOTIABLE)
+- No hardcoded strings in JSX
+- No inline English text
+- No TODOs left
+- No commented-out logic
+- Clean, readable, production-grade code
+
+DELIVERABLES:
+- All core UI pages fully localized for 30 languages
+- Verified RTL/LTR correctness
+- Verified build-time enforcement
+- No regressions in existing localization strictness
+
+DO NOT:
+- Generate marketing copy
+- Rewrite content
+- Add new features
+- Touch Octypo or AI pipelines
+
+SUCCESS CRITERIA:
+I should be able to switch to ANY of the 30 languages and:
+- See a 100% localized UI
+- Correct direction and icons
+- Correct navigation
+- Zero English leakage
+
+Proceed step by step, commit-safe, and do not skip verification.
