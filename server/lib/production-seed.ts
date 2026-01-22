@@ -11,14 +11,10 @@ import {
 } from '@shared/schema.js';
 import { count } from 'drizzle-orm';
 import { readFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { gunzipSync } from 'zlib';
-import { fileURLToPath } from 'url';
 
-const moduleDir = typeof __dirname !== 'undefined' 
-  ? __dirname 
-  : dirname(fileURLToPath(import.meta.url));
-const SEED_DATA_DIR = join(moduleDir, '..', 'data', 'seed');
+const SEED_DATA_DIR = join(process.cwd(), 'server', 'data', 'seed');
 
 async function loadTable(tableName: string): Promise<any[]> {
   const gzPath = join(SEED_DATA_DIR, `${tableName}.json.gz`);
