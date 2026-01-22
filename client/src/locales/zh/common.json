@@ -1,234 +1,357 @@
 {
   "nav": {
-    "home": "Home",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News & Guides",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language"
+    "home": "首页",
+    "destinations": "目的地",
+    "attractions": "景点",
+    "hotels": "酒店",
+    "guides": "指南",
+    "dining": "美食",
+    "districts": "地区",
+    "articles": "资讯",
+    "news": "资讯",
+    "shopping": "购物",
+    "realEstate": "房产",
+    "events": "活动",
+    "search": "搜索",
+    "language": "语言",
+    "mainNavigation": "主导航",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "logoAlt": "TRAVI - 旅行指南",
+    "followInstagram": "关注TRAVI的Instagram",
+    "followTikTok": "关注TRAVI的TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "面包屑导航",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "阅读更多",
+    "viewAll": "查看全部",
+    "learnMore": "了解更多",
+    "bookNow": "立即预订",
+    "contactUs": "联系我们",
+    "subscribe": "订阅",
+    "submit": "提交",
+    "cancel": "取消",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "loading": "加载中...",
+    "error": "发生错误",
+    "noResults": "未找到结果",
+    "seeMore": "查看更多",
+    "back": "返回",
+    "next": "下一个",
+    "previous": "上一个",
+    "close": "关闭",
+    "share": "分享",
+    "copyLink": "复制链接",
+    "copied": "已复制！"
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "与TRAVI一起探索世界",
+      "subtitle": "全球17个城市的综合旅行指南",
+      "searchPlaceholder": "搜索景点、酒店、餐厅...",
+      "cta": "开始探索",
+      "badge": "通往世界冒险的大门",
+      "headlinePart1": "值得信赖的旅行",
+      "headlinePart2": "资讯平台",
+      "description": "全球{{destinations}}个城市的旅行信息。{{attractions}}个以上景点指南。",
+      "descriptionPart1": "全球",
+      "descriptionPart2": "个城市的旅行信息。",
+      "descriptionPart3": "个以上景点。",
+      "carouselLabel": "目的地轮播导航",
+      "viewDestination": "查看{{name}} - {{tagline}}",
+      "worldwide": "全球",
+      "exploreWorld": "探索世界",
+      "welcomeAriaLabel": "欢迎来到TRAVI World",
+      "pageTitle": "TRAVI World - 酒店、景点、活动旅行指南",
+      "pageDescription": "全球17个城市的完整旅行指南。3,000个以上酒店、景点、餐厅、活动信息。",
+      "orgDescription": "全球17个城市值得信赖的旅行资讯平台。"
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "srLabel": {
+      "attractions": "{{count}}个以上景点",
+      "destinations": "全球{{count}}个城市",
+      "languages": "多语言支持平台"
+    },
+    "featured": "精选",
+    "trending": "热门趋势",
+    "topAttractions": "热门景点",
+    "bestHotels": "推荐酒店",
+    "latestNews": "最新资讯与指南",
+    "sections": {
+      "destinations": "探索目的地",
+      "destinationsDesc": "精选的全球旅行目的地集合",
+      "categories": "按类别浏览",
+      "categoriesDesc": "准确找到您需要的信息",
+      "experiences": "按体验选择旅行",
+      "experiencesDesc": "选择您的旅行风格",
+      "faq": "常见问题",
+      "faqDesc": "关于TRAVI您需要了解的一切",
+      "regions": "按地区探索",
+      "newsletter": "获取最新信息",
+      "allDestinationsTitle": "全部{{count}}个城市旅行指南",
+      "completeGuide": "{{name}}，{{country}} - 完整旅行指南"
+    },
+    "cta": {
+      "exploreDestinations": "探索目的地",
+      "viewGuides": "查看指南",
+      "viewAll": "查看全部",
+      "startExploring": "开始探索",
+      "planTrip": "规划行程",
+      "viewExperience": "查看{{name}}"
+    },
+    "stats": {
+      "destinations": "城市",
+      "attractions": "景点",
+      "languages": "支持语言",
+      "attractionsNum": "3,000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}}个城市",
+      "attractionsCountWithLabel": "{{count}}个以上景点"
+    },
+    "categories": {
+      "attractions": "景点",
+      "attractionsDesc": "必看景点",
+      "news": "旅行资讯",
+      "newsDesc": "最新消息",
+      "guides": "指南",
+      "guidesDesc": "目的地指南",
+      "hotels": "酒店",
+      "hotelsDesc": "寻找完美住宿"
+    },
+    "experiences": {
+      "luxury": "奢华旅行",
+      "luxuryDesc": "高端旅行体验和专属目的地",
+      "adventure": "冒险与户外",
+      "adventureDesc": "刺激的户外体验",
+      "family": "家庭旅行",
+      "familyDesc": "适合家庭的目的地和活动",
+      "budget": "经济旅行",
+      "budgetDesc": "实惠的旅行选择",
+      "romance": "蜜月与浪漫",
+      "romanceDesc": "浪漫之旅和蜜月目的地",
+      "solo": "独自旅行",
+      "soloDesc": "适合独行旅客的完美目的地"
+    },
+    "faq": {
+      "title": "常见问题",
+      "subtitle": "关于TRAVI World您需要了解的一切",
+      "whatIsTravi": "什么是TRAVI World？",
+      "whatIsTraviAnswer": "TRAVI World是一个综合旅行信息平台，覆盖全球17个城市，提供3,000个以上景点、酒店、餐厅和活动的详细指南。",
+      "howManyDestinations": "TRAVI覆盖多少个城市？",
+      "howManyDestinationsAnswer": "TRAVI World覆盖包括Dubai、Paris、Tokyo、New York、Barcelona、Singapore、London、Bangkok、Abu Dhabi、Amsterdam、Hong Kong、Istanbul、Las Vegas、Los Angeles、Miami、Rome在内的17个主要旅行目的地。",
+      "isFree": "TRAVI World是免费的吗？",
+      "isFreeAnswer": "是的，TRAVI World完全免费使用。您可以免费浏览数千个旅行指南、景点评论、酒店推荐和餐厅信息。",
+      "updateFrequency": "内容多久更新一次？",
+      "updateFrequencyAnswer": "TRAVI World的内容每天更新，包括最新的旅行资讯、新景点评论以及全球17个城市的酒店和餐厅信息。"
+    },
+    "mascotAlt": "TRAVI吉祥物与世界地标 - Dubai、Paris、London、Rome等旅行指南",
+    "mascotTitle": "TRAVI World - 全球目的地旅行指南"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "景点",
+    "subtitle": "探索热门景点和隐藏宝藏",
+    "hero": {
+      "badge": "{{cities}}个城市{{count}}个景点",
+      "badgeThousands": "全球景点",
+      "headlinePart1": "全球",
+      "headlinePart2": "景点",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">免排队门票</span>前往Eiffel Tower、Colosseum、Burj Khalifah等Paris、Rome、Dubai热门景点。",
+      "searchPlaceholder": "搜索Eiffel Tower、Colosseum、Burj Khalifah...",
+      "carouselLabel": "精选景点轮播",
+      "sectionLabel": "预订全球热门景点门票",
+      "searchAriaLabel": "按名称或城市搜索景点",
+      "searchButton": "搜索",
+      "searchButtonAriaLabel": "搜索景点"
+    },
+    "stats": {
+      "attractions": "景点",
+      "cities": "城市",
+      "rating": "评分"
+    },
+    "srLabel": {
+      "attractions": "{{count}}个以上景点",
+      "cities": "{{count}}个城市",
+      "rating": "{{rating}}星评分"
+    },
+    "types": {
+      "all": "所有类型",
+      "museums": "博物馆",
+      "landmarks": "地标",
+      "tours": "游览",
+      "themeParks": "主题公园",
+      "shows": "演出"
+    },
+    "thingsToDoIn": "{{name}}的景点",
+    "countAttractions": "{{country}} - {{count}}个景点",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "全部",
+      "popular": "最热门",
+      "free": "免费",
+      "familyFriendly": "适合家庭",
+      "outdoor": "户外",
+      "indoor": "室内"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "位置",
+      "hours": "营业时间",
+      "price": "价格",
+      "duration": "所需时间",
+      "tips": "实用贴士"
+    },
+    "sections": {
+      "destinations": "按城市探索景点",
+      "destinationsDesc": "选择城市发现精彩体验",
+      "faq": "常见问题",
+      "faqDesc": "关于景点预订的解答",
+      "whyBookBadge": "预订优势",
+      "whyBookTitle": "免排队节省时间",
+      "whyBookDesc": "提前预订快速进入热门景点",
+      "allDestinations": "所有城市"
+    },
+    "features": {
+      "skipTheLine": "免排队门票",
+      "skipTheLineDesc": "在Eiffel Tower、Colosseum、Vatican等无需排队入场",
+      "mobileTickets": "电子门票",
+      "mobileTicketsDesc": "即时发送至手机 - 出示门票即可入场",
+      "freeCancellation": "免费取消",
+      "freeCancellationDesc": "计划有变？24小时前免费取消"
+    },
+    "browse": {
+      "title": "按城市浏览景点",
+      "desc": "在全球热门城市寻找景点和体验",
+      "thingsToDo": "{{count}}个景点",
+      "noDestinations": "目前没有可用的城市。"
+    },
+    "exploreLinks": {
+      "title": "更多旅行指南",
+      "hotelsWorldwide": "全球酒店",
+      "bestRestaurants": "推荐餐厅",
+      "travelNews": "旅行资讯"
+    },
+    "cta": {
+      "title": "准备好探索了吗？",
+      "desc": "预订Eiffel Tower、Colosseum、Burj Khalifah等全球热门景点的免排队门票。",
+      "parisAttractions": "Paris景点",
+      "romeAttractions": "Rome景点"
+    },
+    "search": {
+      "popular": "热门：",
+      "thingsToDoIn": "{{city}}的景点",
+      "ariaCarouselNav": "景点轮播导航",
+      "ariaViewInCity": "查看{{city}}的{{name}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "精选景点",
+      "ariaThumbnails": "景点轮播缩略图",
+      "ariaTicketsIn": "{{city}}的{{name}}门票",
+      "priceFrom": "价格",
+      "bookTickets": "预订门票",
+      "skipTheLine": "免排队",
+      "duration": "2-3小时",
+      "freeCancellation": "免费取消",
+      "freeCancellationDesc": "参观前24小时",
+      "mobileTickets": "电子门票",
+      "instantDelivery": "即时发送"
+    },
+    "chip": {
+      "thingsToDo": "{{count}}个景点"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "酒店",
+    "subtitle": "找到完美住宿",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "所有酒店",
+      "luxury": "豪华",
+      "budget": "经济型",
+      "beachfront": "海滨",
+      "cityCenter": "市中心",
+      "familyFriendly": "适合家庭"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "价格",
+      "perNight": "每晚",
+      "amenities": "设施",
+      "checkIn": "入住",
+      "checkOut": "退房",
+      "rooms": "房间",
+      "rating": "评分"
     },
-    "bookNow": "Book Now"
+    "bookNow": "立即预订"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "美食",
+    "subtitle": "满足各种口味的美食体验",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
-      "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "all": "所有餐厅",
+      "fineDining": "高档餐厅",
+      "casual": "休闲餐饮",
+      "cafes": "咖啡馆",
+      "streetFood": "街头美食",
+      "halal": "清真",
+      "vegetarian": "素食"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
-    }
-  },
-  "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
-  },
-  "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
-    "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
-    },
-    "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
-    },
-    "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
-    }
-  },
-  "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
-  },
-  "footer": {
-    "about": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "contact": "Contact Us",
-    "followUs": "Follow Us",
-    "newsletter": {
-      "title": "Stay Updated",
-      "subtitle": "Get the latest Dubai travel tips and exclusive deals",
-      "placeholder": "Enter your email",
-      "button": "Subscribe",
-      "success": "Thanks for subscribing!",
-      "error": "Something went wrong. Please try again."
-    },
-    "copyright": "All rights reserved"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
-    },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
-    },
-    "network": {
-      "title": "Connection Error",
-      "message": "Please check your internet connection.",
-      "button": "Retry"
-    }
-  },
-  "meta": {
-    "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
-    },
-    "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
-    },
-    "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
-    },
-    "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "cuisine": "菜系",
+      "priceRange": "价格范围",
+      "hours": "营业时间",
+      "dress": "着装要求",
+      "reservations": "预订"
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "阿联酋", "cardAlt": "Burj Khalifah塔和日落的Dubai天际线" },
+      "london": { "name": "London", "country": "英国", "cardAlt": "Big Ben和议会大厦的London" },
+      "paris": { "name": "Paris", "country": "法国", "cardAlt": "日落中的Eiffel Tower的Paris" },
+      "newYork": { "name": "New York", "country": "美国", "cardAlt": "Empire State Building和Manhattan天际线的New York" },
+      "tokyo": { "name": "Tokyo", "country": "日本", "cardAlt": "涩谷交叉口霓虹的Tokyo" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands和滨海湾花园的Singapore" },
+      "barcelona": { "name": "Barcelona", "country": "西班牙", "cardAlt": "黄金时段Sagrada Familia的Barcelona" },
+      "bangkok": { "name": "Bangkok", "country": "泰国", "cardAlt": "日出时大皇宫的Bangkok" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "阿联酋", "cardAlt": "Sheikh Zayed大清真寺的Abu Dhabi" },
+      "amsterdam": { "name": "Amsterdam", "country": "荷兰", "cardAlt": "历史建筑和运河的Amsterdam" },
+      "hongKong": { "name": "Hong Kong", "country": "中国", "cardAlt": "夜景天际线的Hong Kong" },
+      "istanbul": { "name": "Istanbul", "country": "土耳其", "cardAlt": "日落时蓝色清真寺的Istanbul" },
+      "lasVegas": { "name": "Las Vegas", "country": "美国", "cardAlt": "夜间大道的Las Vegas" },
+      "losAngeles": { "name": "Los Angeles", "country": "美国", "cardAlt": "Hollywood标志的Los Angeles" },
+      "miami": { "name": "Miami", "country": "美国", "cardAlt": "装饰艺术区的Miami Beach" },
+      "rome": { "name": "Rome", "country": "意大利", "cardAlt": "黄金时段Colosseum的Rome" }
+    },
     "hero": {
-      "badge": "{{count}} 个全球目的地",
-      "trustedBy": "{{count}} 个目的地信赖",
-      "discover": "探索",
+      "badge": "全球{{count}}个城市",
+      "trustedBy": "全球{{count}}个城市旅行指南",
+      "discover": "发现",
       "worldClass": "世界级",
       "destinations": "目的地",
-      "description": "为世界上最迷人的城市提供本地专业策划的旅行指南。",
+      "description": "由本地专家编写的旅行指南。从热门景点到隐藏宝藏。",
       "exploreAll": "探索所有目的地",
       "travelGuides": "旅行指南",
       "explorePlaceholder": "探索目的地",
-      "browseCollection": "浏览我们精选的旅行目的地",
+      "browseCollection": "浏览我们精选的目的地集合",
       "explore": "探索",
       "discoverButton": "发现",
       "ariaLabel": "目的地概览",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "探索{{name}}",
+      "galleryAriaLabel": "精选目的地图库",
+      "placeholderAriaLabel": "精选目的地占位符"
     },
     "stats": {
-      "destinations": "目的地",
+      "destinations": "城市",
       "countries": "国家",
       "regions": "地区",
       "languages": "语言"
     },
     "sections": {
       "featured": "精选目的地",
-      "featuredDesc": "精选目的地，提供卓越体验。",
+      "featuredDesc": "提供卓越体验的精选目的地。本地信息和规划行程所需的一切。",
       "all": "所有目的地",
-      "count": "找到 {{count}} 个目的地"
+      "count": "{{count}}个目的地"
     },
     "search": {
       "placeholder": "搜索目的地...",
@@ -240,41 +363,629 @@
       "label": "精选目的地轮播",
       "previous": "上一个目的地",
       "next": "下一个目的地",
-      "goTo": "前往 {{name}}",
-      "slideOf": "幻灯片 {{current}}/{{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "goTo": "前往{{name}}",
+      "slideOf": "幻灯片{{current}}/{{total}}：{{name}}",
+      "thumbnails": "目的地轮播缩略图"
     },
     "card": {
       "explore": "探索",
       "defaultLevel": "城市",
-      "exploreFallback": "探索 {{name}}",
+      "exploreFallback": "探索{{name}}",
       "destination": "目的地",
-      "travelGuideAlt": "{{name}} 旅行指南"
+      "travelGuideAlt": "{{name}}旅行指南"
     },
     "faq": {
       "title": "常见问题",
       "subtitle": "关于TRAVI目的地指南的一切",
-      "q1": "TRAVI涵盖多少个目的地？",
-      "a1": "TRAVI涵盖中东、欧洲、亚洲和美洲的主要旅游目的地。",
+      "q1": "TRAVI覆盖多少个城市？",
+      "a1": "TRAVI以详细指南覆盖中东、欧洲、亚洲和美洲的主要旅行目的地。",
       "q2": "TRAVI指南包含哪些信息？",
-      "a2": "每个指南包括景点、住宿、当地美食和旅行信息。",
+      "a2": "每个目的地指南包含景点、住宿、当地美食、交通和实用旅行信息。",
       "q3": "我可以搜索目的地吗？",
-      "a3": "是的，您可以按名称或国家搜索。",
-      "q4": "TRAVI上的精选目的地是什么？",
-      "a4": "精选目的地提供卓越的旅行体验。"
+      "a3": "是的，您可以在目的地页面的搜索栏中按名称或国家搜索。",
+      "q4": "TRAVI的精选目的地是什么？",
+      "a4": "TRAVI的精选目的地是为从豪华到经济各种旅行者提供卓越体验的精选地点。"
     },
     "loading": {
       "title": "正在加载目的地",
-      "message": "正在获取最新数据..."
+      "message": "正在获取最新目的地数据..."
     },
     "error": {
       "title": "无法加载目的地",
-      "message": "请稍后重试。",
+      "message": "加载目的地数据时出现问题。请稍后再试。",
       "refresh": "刷新页面"
     },
     "empty": {
       "title": "暂无目的地",
-      "message": "目前没有可用的目的地。"
+      "message": "目前没有可用的目的地。请稍后再查看。"
+    }
+  },
+  "districts": {
+    "title": "地区",
+    "subtitle": "探索多样化的街区",
+    "explore": "探索地区"
+  },
+  "realEstate": {
+    "title": "房产",
+    "subtitle": "投资未来",
+    "offPlan": {
+      "title": "期房",
+      "subtitle": "早期投资，少付多得",
+      "findProperty": "寻找理想房产",
+      "from": "价格",
+      "paymentPlan": "付款计划",
+      "handover": "交付",
+      "developer": "开发商"
+    },
+    "filters": {
+      "all": "所有房产",
+      "apartments": "公寓",
+      "villas": "别墅",
+      "townhouses": "联排别墅",
+      "penthouses": "顶层公寓"
+    },
+    "features": {
+      "cryptoAccepted": "接受加密货币",
+      "paymentPlans": "灵活付款计划",
+      "goldenVisa": "Golden Visa资格",
+      "roiGuarantee": "ROI保证"
+    }
+  },
+  "search": {
+    "placeholder": "搜索景点、指南、目的地...",
+    "results": "搜索结果",
+    "noResults": "未找到结果：",
+    "tryAgain": "请尝试其他关键词"
+  },
+  "footer": {
+    "about": "关于TRAVI",
+    "aboutTravi": "关于TRAVI",
+    "aboutText": "全球17个城市的综合旅行信息。",
+    "aboutUs": "关于我们",
+    "quickLinks": "快速链接",
+    "legal": "法律信息",
+    "privacy": "隐私政策",
+    "privacyPolicy": "隐私政策",
+    "terms": "使用条款",
+    "termsOfService": "使用条款",
+    "contact": "联系我们",
+    "contactUs": "联系我们",
+    "followUs": "关注我们",
+    "explore": "探索",
+    "travel": "旅行",
+    "company": "公司信息",
+    "allGuides": "所有指南",
+    "cookies": "Cookie",
+    "security": "安全",
+    "cookieSettings": "Cookie设置",
+    "tagline": "值得信赖的旅行资讯平台",
+    "ariaLabel": "网站页脚",
+    "featuredGuides": "精选指南",
+    "tools": "工具",
+    "currencyConverter": "货币转换",
+    "roiCalculator": "ROI计算器",
+    "mortgageCalculator": "房贷计算器",
+    "glossary": "术语表",
+    "freeThingsToDo": "70多项免费活动",
+    "open24Hours": "24小时营业",
+    "tributeToSheikh": "向HH Sheikh Mohammed致敬",
+    "lawsForTourists": "游客法律指南",
+    "newsletter": "订阅新闻简报",
+    "newsletterDescription": "获取最新旅行信息和更新。",
+    "emailPlaceholder": "输入电子邮箱",
+    "allRightsReserved": "保留所有权利。",
+    "copyright": "© {{year}} {{brand}}。保留所有权利。",
+    "emailAriaLabel": "发送邮件给TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "页面未找到",
+      "message": "您查找的页面不存在。",
+      "button": "返回首页"
+    },
+    "500": {
+      "title": "服务器错误",
+      "message": "服务器端出现问题。",
+      "button": "重试"
+    },
+    "network": {
+      "title": "连接错误",
+      "message": "无法连接。请检查您的网络连接。",
+      "button": "重试"
+    }
+  },
+  "newsletter": {
+    "badge": "加入冒险",
+    "title": "通过邮件接收旅行魔法",
+    "description": "每周旅行信息、隐藏宝藏、专属优惠 - 没有垃圾邮件，只有对旅行的向往。",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "订阅",
+    "success": "订阅成功！请查看您的收件箱。"
+  },
+  "cookies": {
+    "title": "我们重视您的隐私",
+    "description": "我们使用Cookie来增强浏览体验、分析网站流量和个性化内容。点击「全部接受」即表示您同意我们使用Cookie。",
+    "manage": "管理",
+    "rejectAll": "全部拒绝",
+    "acceptAll": "全部接受",
+    "preferencesTitle": "Cookie设置",
+    "savePreferences": "保存设置",
+    "essential": {
+      "title": "必要Cookie",
+      "description": "网站正常运行所必需"
+    },
+    "analytics": {
+      "title": "分析Cookie",
+      "description": "帮助我们了解访客如何使用网站"
+    },
+    "marketing": {
+      "title": "营销Cookie",
+      "description": "用于提供个性化广告"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - 全球旅行指南｜景点、酒店、美食信息",
+      "description": "全球17个城市的景点、酒店、餐厅、地区信息。通过本地推荐规划完美旅行。"
+    },
+    "attractions": {
+      "title": "景点｜全球热门景点指南",
+      "description": "全球景点信息。从Burj Khalifah到隐藏宝藏。有助于观光规划的指南。"
+    },
+    "hotels": {
+      "title": "酒店｜全球推荐住宿",
+      "description": "适合各种预算的酒店信息。从豪华度假村到经济型选择。"
+    },
+    "dining": {
+      "title": "美食｜全球推荐餐厅",
+      "description": "探索全球美食界。从高档餐厅到街头美食。"
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "旅行智能",
+      "headlinePart1": "打动人心的",
+      "headlinePart2": "故事",
+      "description": "专家编写的指南、内部视角、改变您体验世界方式的编辑叙事。",
+      "startJourney": "开始旅程",
+      "browseCollection": "浏览合集",
+      "issueBadge": "Issue 47 — 2026冬季号"
+    },
+    "stats": {
+      "guides": "旅行指南",
+      "destinations": "目的地",
+      "languages": "语言"
+    },
+    "journey": {
+      "badge": "您的旅程，我们的指引",
+      "title": "每一次精彩旅行都从指南开始",
+      "subtitle": "从梦想到分享，每一步都有我们陪伴"
+    },
+    "ideaLab": {
+      "badge": "创意实验室",
+      "title": "精选灵感",
+      "readGuide": "阅读指南"
+    },
+    "archetype": {
+      "badge": "为您定制",
+      "title": "您是哪种旅行者？",
+      "subtitle": "选择您的旅行风格，发现为您精选的指南",
+      "viewGuides": "查看{{type}}指南"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "冒险家",
+        "description": "刺激的体验和肾上腺素"
+      },
+      "culture": {
+        "name": "文化探索者",
+        "description": "艺术、历史和当地传统"
+      },
+      "relaxation": {
+        "name": "休闲达人",
+        "description": "健康静修和宁静逃离"
+      },
+      "foodie": {
+        "name": "美食旅行者",
+        "description": "当地风味和美食冒险"
+      },
+      "wellness": {
+        "name": "健康探索者",
+        "description": "放松、水疗和正念静修"
+      },
+      "budget": {
+        "name": "精明旅行者",
+        "description": "最大体验，最小预算"
+      },
+      "solo": {
+        "name": "独行达人",
+        "description": "独立旅行和自我发现"
+      },
+      "luxury": {
+        "name": "奢华爱好者",
+        "description": "高端体验和精致生活"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "梦想",
+        "subtitle": "发现灵感",
+        "guides": ["目的地指南", "摄影散文"]
+      },
+      "plan": {
+        "title": "计划",
+        "subtitle": "制定行程",
+        "guides": ["行程规划", "签证要求"]
+      },
+      "prepare": {
+        "title": "准备",
+        "subtitle": "出发准备",
+        "guides": ["打包清单", "安全信息"]
+      },
+      "experience": {
+        "title": "体验",
+        "subtitle": "享受冒险",
+        "guides": ["本地信息", "隐藏宝藏"]
+      },
+      "share": {
+        "title": "分享",
+        "subtitle": "讲述故事",
+        "guides": ["游记", "摄影"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "周末游",
+      "offBeatenPath": "小众景点",
+      "smartTravel": "智慧旅行",
+      "bucketList": "愿望清单",
+      "culinary": "美食",
+      "natureWonder": "自然奇观"
+    },
+    "seo": {
+      "title": "旅行指南｜专家目的地洞察",
+      "description": "专家旅行指南、目的地洞察、来自全球旅行作家的推荐。现在规划完美旅行。"
+    },
+    "editorial": {
+      "badge": "编辑推荐",
+      "title": "编辑特辑",
+      "readFull": "阅读全文"
+    },
+    "gallery": {
+      "badge": "视觉故事",
+      "title": "激发灵感的目的地",
+      "categories": {
+        "city": "城市",
+        "mountains": "山脉",
+        "beach": "海滩",
+        "safari": "野生动物",
+        "nature": "自然"
+      }
+    },
+    "writers": {
+      "badge": "专家之声",
+      "title": "作者介绍",
+      "subtitle": "撰写最值得信赖旅行指南的专家们",
+      "articleCount": "{{count}}篇文章",
+      "viewProfile": "查看资料"
+    },
+    "map": {
+      "badge": "按地区探索",
+      "title": "全球指南",
+      "subtitle": "点击目的地发现专家指南",
+      "guidesAvailable": "{{count}}个指南",
+      "legendDestination": "目的地",
+      "legendHighlighted": "精选"
+    },
+    "newsletter": {
+      "badge": "加入旅程",
+      "title": "每周旅行故事",
+      "description": "每周发送精选旅行灵感、专家提示和内部信息。",
+      "placeholder": "输入电子邮箱",
+      "subscribe": "订阅",
+      "subscribing": "订阅中...",
+      "joinCount": "5万多名旅行者正在订阅",
+      "invalidEmail": "请输入有效的电子邮箱",
+      "successTitle": "欢迎加入旅程！",
+      "successDesc": "您已成功订阅编辑精选。"
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "最近",
+      "justNow": "刚刚",
+      "minutesAgo": "{{count}}分钟前",
+      "hoursAgo": "{{count}}小时前",
+      "daysAgo": "{{count}}天前",
+      "minRead": "{{count}}分钟阅读"
+    },
+    "header": {
+      "title": "TRAVI资讯",
+      "edition": "国际版",
+      "subscribe": "订阅"
+    },
+    "breaking": {
+      "label": "突发"
+    },
+    "search": {
+      "placeholder": "搜索全球资讯...",
+      "button": "搜索",
+      "title": "搜索",
+      "searching": "正在搜索\"{{query}}\"..."
+    },
+    "categories": {
+      "all": "所有资讯",
+      "world": "全球",
+      "business": "商业",
+      "culture": "文化",
+      "travel": "旅行",
+      "tech": "科技",
+      "opinion": "观点"
+    },
+    "empty": {
+      "title": "暂无资讯文章",
+      "description": "我们正在准备为您带来最新的旅行资讯和洞察。敬请期待来自全球的更新。",
+      "exploreDestinations": "探索目的地",
+      "viewGuides": "查看旅行指南"
+    },
+    "hero": {
+      "topStory": "头条故事",
+      "editorialTeam": "编辑团队"
+    },
+    "views": "{{count}}次浏览",
+    "viewAll": "查看全部",
+    "seo": {
+      "title": "旅行资讯｜最新故事和更新",
+      "description": "最新旅行资讯、目的地更新、来自全球的行业洞察。"
+    },
+    "sidebar": {
+      "alsoToday": "今日其他文章",
+      "storiesCount": "{{count}}篇文章",
+      "liveUpdates": "实时更新",
+      "trendingTopics": "热门话题",
+      "noTrending": "暂无热门话题。请稍后再查看！"
+    },
+    "sections": {
+      "topStories": "头条故事",
+      "opinion": "观点与分析",
+      "moreOpinion": "更多观点",
+      "worldwide": "全球资讯"
+    },
+    "worldwide": {
+      "title": "世界之窗",
+      "subtitle": "来自世界各地的资讯",
+      "storiesCount": "{{count}}篇文章",
+      "comingSoon": "即将推出"
+    },
+    "newsletter": {
+      "title": "获取最新信息",
+      "description": "每天早上发送当日头条故事。5万多名读者正在订阅。",
+      "placeholder": "输入电子邮箱",
+      "subscribe": "免费订阅",
+      "noSpam": "无垃圾邮件。随时取消订阅。",
+      "successTitle": "订阅成功！",
+      "successDesc": "请查看确认邮件。",
+      "errorTitle": "订阅失败",
+      "errorDesc": "请稍后重试。",
+      "invalidTitle": "无效的电子邮箱",
+      "invalidDesc": "请输入有效的电子邮箱地址。"
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "关于我们｜TRAVI World",
+      "metaDescription": "了解TRAVI World。为全球目的地提供景点、酒店、餐厅信息的独立旅行信息平台。",
+      "badge": "您的旅行伙伴",
+      "title": "About",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "通过综合旅行信息和目的地指南，帮助全球数百万旅行者自信地探索世界。",
+      "ctaExplore": "探索目的地",
+      "ctaContact": "联系我们",
+      "stats": {
+        "destinations": "目的地",
+        "articles": "文章",
+        "support": "旅行支持",
+        "coverage": "覆盖范围",
+        "cities": "16+城市"
+      },
+      "whoWeAre": {
+        "title": "关于我们"
+      },
+      "mission": {
+        "title": "我们的使命"
+      },
+      "services": {
+        "badge": "服务",
+        "title": "我们提供"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "目的地指南",
+          "description": "全球城市和地区的综合信息"
+        },
+        "attractions": {
+          "title": "景点信息",
+          "description": "必看景点和独特体验的详细信息"
+        },
+        "hotels": {
+          "title": "酒店指南",
+          "description": "各种预算的住宿选择信息"
+        },
+        "restaurants": {
+          "title": "餐厅推荐",
+          "description": "满足各种口味和偏好的餐饮选择"
+        },
+        "articles": {
+          "title": "旅行文章",
+          "description": "提示、洞察和旅行灵感"
+        },
+        "news": {
+          "title": "最新旅行资讯",
+          "description": "精选旅行更新"
+        }
+      },
+      "editorial": {
+        "title": "编辑独立性",
+        "affiliateTitle": "联盟披露"
+      },
+      "values": {
+        "badge": "基础",
+        "title": "我们的价值观",
+        "accuracy": {
+          "title": "准确性",
+          "description": "提供准确可靠的信息，定期更新内容"
+        },
+        "transparency": {
+          "title": "透明度",
+          "description": "明确披露联盟关系和运营方式"
+        },
+        "userFocused": {
+          "title": "以用户为中心",
+          "description": "设计内容帮助旅行者做出明智决定"
+        }
+      },
+      "connect": {
+        "badge": "联系",
+        "title": "联系我们"
+      },
+      "company": {
+        "title": "公司信息",
+        "contactTitle": "联系信息",
+        "contactForm": "联系表单"
+      }
+    },
+    "contact": {
+      "metaTitle": "联系我们｜TRAVI World",
+      "metaDescription": "联系TRAVI World。欢迎您对旅行信息服务的意见、问题和咨询。",
+      "badge": "联系我们",
+      "titlePart1": "让我们",
+      "titlePart2": "联系",
+      "subtitle": "对下次冒险有疑问？我们帮助您自信地探索世界。",
+      "cta": "发送消息",
+      "getInTouch": "联系我们",
+      "getInTouchSubtitle": "选择最适合的联系方式。我们会尽快回复。",
+      "howCanWeHelp": "我们能帮什么忙？",
+      "howCanWeHelpSubtitle": "欢迎您对旅行内容和服务的问题或意见。",
+      "importantNote": "重要提示",
+      "importantNoteSubtitle": "联系前请阅读",
+      "ourOffice": "办公室",
+      "ourOfficeSubtitle": "正式文件和邮寄咨询",
+      "travelCompanion": "您的旅行伙伴",
+      "urgentNote": "如有紧急事项，请在邮件主题中包含{{urgentLabel}}。我们会根据咨询性质优先处理。",
+      "urgentLabel": "紧急",
+      "options": {
+        "generalInquiries": {
+          "title": "一般咨询",
+          "description": "关于旅行指南和内容的问题"
+        },
+        "privacyInquiries": {
+          "title": "隐私咨询",
+          "description": "数据访问、删除和隐私请求"
+        },
+        "visitWebsite": {
+          "title": "访问网站",
+          "description": "探索目的地和旅行灵感"
+        },
+        "responseTime": {
+          "title": "回复时间",
+          "description": "我们会尽快回复",
+          "action": "2-3个工作日"
+        }
+      },
+      "helpTopics": {
+        "general": "关于旅行指南和内容的一般咨询",
+        "feedback": "改进意见和建议",
+        "reporting": "报告内容错误或过时信息",
+        "business": "商业和合作咨询",
+        "media": "媒体和新闻咨询",
+        "privacy": "隐私相关请求（数据访问、删除等）"
+      }
+    },
+    "privacy": {
+      "metaTitle": "隐私政策｜TRAVI World",
+      "metaDescription": "了解TRAVI World如何收集、使用和保护您的个人信息。阅读我们全面的隐私政策。",
+      "badge": "重视您的隐私",
+      "title": "隐私政策",
+      "subtitle": "我们承诺保护您的隐私并对数据处理保持透明。了解TRAVI World如何收集、使用和保护信息。",
+      "effectiveDate": "生效日期：2026年1月1日",
+      "features": {
+        "dataProtection": {
+          "title": "数据保护",
+          "description": "您的数据受到保护"
+        },
+        "minimalCollection": {
+          "title": "最少收集",
+          "description": "只收集必要信息"
+        },
+        "transparency": {
+          "title": "完全透明",
+          "description": "明确处理方式"
+        },
+        "yourControl": {
+          "title": "您的控制",
+          "description": "管理您的设置"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. 关于我们",
+        "informationCollect": "2. 收集的信息",
+        "howWeUse": "3. 信息使用方式",
+        "legalBasis": "4. 处理的法律依据（GDPR）",
+        "cookies": "5. Cookie和跟踪技术",
+        "thirdParty": "6. 第三方服务",
+        "aiContent": "7. AI生成内容",
+        "internationalTransfers": "8. 国际数据传输",
+        "dataRetention": "9. 数据保留",
+        "privacyRights": "10. 隐私权利",
+        "californiaRights": "11. 加州隐私权（CCPA/CPRA）",
+        "childrenPrivacy": "12. 儿童隐私",
+        "dataSecurity": "13. 数据安全",
+        "changes": "14. 政策变更",
+        "contactUs": "15. 联系我们"
+      }
+    },
+    "terms": {
+      "metaTitle": "使用条款｜TRAVI World",
+      "metaDescription": "阅读TRAVI World旅行信息服务使用条款。您与KBR Global Creative Consulting Ltd之间的法律协议。",
+      "badge": "法律协议",
+      "title": "使用条款",
+      "subtitle": "使用TRAVI World前请仔细阅读这些条款。访问和使用平台须遵守这些条件。",
+      "lastUpdated": "最后更新：2026年1月1日",
+      "importantNotice": "重要法律声明",
+      "keyPoints": {
+        "editorial": {
+          "title": "编辑平台",
+          "description": "旅行指南和目的地内容"
+        },
+        "affiliate": {
+          "title": "联盟链接",
+          "description": "基于佣金的推荐"
+        },
+        "aiGenerated": {
+          "title": "AI生成",
+          "description": "AI辅助创建的内容"
+        },
+        "privacy": {
+          "title": "隐私",
+          "description": "保证数据保护"
+        }
+      },
+      "sections": {
+        "operator": "运营商/法人实体",
+        "purpose": "1. 目的和使用范围",
+        "affiliateDisclosure": "2. 联盟披露和第三方交易",
+        "aiDisclaimer": "3. AI生成内容免责声明",
+        "newsletter": "4. 新闻简报和通讯",
+        "userConduct": "5. 用户行为和禁止事项",
+        "intellectualProperty": "6. 知识产权和有限许可",
+        "dmca": "7. 通知和删除（DMCA及类似）",
+        "disclaimers": "8. 准确性、可用性和免责声明",
+        "liability": "9. 责任限制和不可抗力",
+        "indemnification": "10. 赔偿",
+        "privacyCookies": "11. 隐私、Cookie和数据保护",
+        "accessibility": "12. 无障碍声明",
+        "governingLaw": "13. 适用法律、争议解决和管辖",
+        "modifications": "14. 修改、可分割性和一般条款"
+      }
     }
   }
 }

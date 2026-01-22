@@ -1,23 +1,345 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "Domů",
+    "destinations": "Destinace",
+    "attractions": "Atrakce",
+    "hotels": "Hotely",
+    "guides": "Průvodce",
+    "dining": "Restaurace",
+    "districts": "Čtvrti",
+    "articles": "Novinky",
+    "news": "Novinky",
+    "shopping": "Nakupování",
+    "realEstate": "Reality",
+    "events": "Události",
+    "search": "Hledat",
+    "language": "Jazyk",
+    "mainNavigation": "Hlavní navigace",
+    "openMenu": "Otevřít menu",
+    "closeMenu": "Zavřít menu",
+    "logoAlt": "TRAVI - Cestovní průvodce",
+    "followInstagram": "Sledujte TRAVI na Instagramu",
+    "followTikTok": "Sledujte TRAVI na TikToku"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Drobečková navigace",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "Číst Dále",
+    "viewAll": "Zobrazit Vše",
+    "learnMore": "Zjistit Více",
+    "bookNow": "Rezervovat",
+    "contactUs": "Kontaktujte Nás",
+    "subscribe": "Odebírat",
+    "submit": "Odeslat",
+    "cancel": "Zrušit",
+    "save": "Uložit",
+    "edit": "Upravit",
+    "delete": "Smazat",
+    "loading": "Načítání...",
+    "error": "Něco se pokazilo",
+    "noResults": "Žádné výsledky",
+    "seeMore": "Více",
+    "back": "Zpět",
+    "next": "Další",
+    "previous": "Předchozí",
+    "close": "Zavřít",
+    "share": "Sdílet",
+    "copyLink": "Kopírovat Odkaz",
+    "copied": "Zkopírováno!"
+  },
+  "home": {
+    "hero": {
+      "title": "Objevte Svět s TRAVI",
+      "subtitle": "Váš kompletní cestovní průvodce po 17 destinacích po celém světě",
+      "searchPlaceholder": "Hledejte atrakce, hotely, restaurace...",
+      "cta": "Začít Objevovat",
+      "badge": "Vaše Brána do Světových Dobrodružství",
+      "headlinePart1": "Váš Spolehlivý",
+      "headlinePart2": "Cestovní Zdroj",
+      "description": "Komplexní cestovní informace pro {{destinations}} destinací po celém světě. Objevte podrobné průvodce po {{attractions}}+ atrakcích.",
+      "descriptionPart1": "Komplexní cestovní informace pro",
+      "descriptionPart2": "destinací po celém světě. Objevte podrobné průvodce po",
+      "descriptionPart3": "atrakcích.",
+      "carouselLabel": "Navigace karuselu destinací",
+      "viewDestination": "Zobrazit {{name}} - {{tagline}}",
+      "worldwide": "Po Celém Světě",
+      "exploreWorld": "Prozkoumejte Svět",
+      "welcomeAriaLabel": "Vítejte v TRAVI World",
+      "pageTitle": "TRAVI World - Cestovní průvodce hotely, atrakcemi a aktivitami",
+      "pageDescription": "Váš kompletní cestovní průvodce po 17 destinacích po celém světě. Odborné informace o hotelech, atrakcích, restauracích a aktivitách pro 3 000+ míst.",
+      "orgDescription": "Váš spolehlivý cestovní zdroj pro 17 destinací po celém světě."
+    },
+    "srLabel": {
+      "attractions": "Více než {{count}} atrakcí",
+      "destinations": "{{count}} destinací po celém světě",
+      "languages": "Vícejazyčná platforma s dalšími jazyky"
+    },
+    "featured": "Doporučené",
+    "trending": "Nyní Populární",
+    "topAttractions": "Top Atrakce",
+    "bestHotels": "Nejlepší Hotely",
+    "latestNews": "Nejnovější Zprávy a Průvodce",
+    "sections": {
+      "destinations": "Prozkoumejte Destinace",
+      "destinationsDesc": "Objevte naši pečlivě vybranou sbírku světových destinací",
+      "categories": "Procházet podle Kategorie",
+      "categoriesDesc": "Najděte přesně to, co hledáte",
+      "experiences": "Cestování podle Zážitku",
+      "experiencesDesc": "Vyberte si svůj cestovní styl",
+      "faq": "Často Kladené Otázky",
+      "faqDesc": "Vše, co potřebujete vědět o TRAVI",
+      "regions": "Prozkoumejte podle Regionu",
+      "newsletter": "Buďte Informováni",
+      "allDestinationsTitle": "Cestovní průvodce pro všech {{count}} destinací",
+      "completeGuide": "{{name}}, {{country}} - Kompletní Průvodce"
+    },
+    "cta": {
+      "exploreDestinations": "Prozkoumat Destinace",
+      "viewGuides": "Zobrazit Průvodce",
+      "viewAll": "Zobrazit Vše",
+      "startExploring": "Začít Objevovat",
+      "planTrip": "Naplánovat Cestu",
+      "viewExperience": "Zobrazit {{name}}"
+    },
+    "stats": {
+      "destinations": "DESTINACÍ",
+      "attractions": "ATRAKCÍ",
+      "languages": "JAZYKŮ",
+      "attractionsNum": "3 000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} destinací",
+      "attractionsCountWithLabel": "{{count}}+ atrakcí"
+    },
+    "categories": {
+      "attractions": "Atrakce",
+      "attractionsDesc": "Místa, která musíte vidět",
+      "news": "Cestovní Zprávy",
+      "newsDesc": "Nejnovější aktualizace",
+      "guides": "Průvodce",
+      "guidesDesc": "Průvodce destinacemi",
+      "hotels": "Hotely",
+      "hotelsDesc": "Najděte ideální ubytování"
+    },
+    "experiences": {
+      "luxury": "Luxusní Cestování",
+      "luxuryDesc": "Prémiové cestovní zážitky a exkluzivní destinace",
+      "adventure": "Dobrodružství a Příroda",
+      "adventureDesc": "Vzrušující outdoorové aktivity a dobrodružství",
+      "family": "Rodinné Cestování",
+      "familyDesc": "Destinace a aktivity vhodné pro rodiny",
+      "budget": "Ekonomické Cestování",
+      "budgetDesc": "Cenově dostupné cestovní možnosti a destinace",
+      "romance": "Líbánky a Romantika",
+      "romanceDesc": "Romantické výlety a svatební cesty",
+      "solo": "Cestování o Samotě",
+      "soloDesc": "Ideální destinace pro samostatné cestovatele"
+    },
+    "faq": {
+      "title": "Často Kladené Otázky",
+      "subtitle": "Vše, co potřebujete vědět o TRAVI World",
+      "whatIsTravi": "Co je TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World je komplexní platforma cestovních informací pokrývající 17 destinací po celém světě s podrobnými průvodci pro 3 000+ atrakcí, hotelů, restaurací a aktivit.",
+      "howManyDestinations": "Kolik destinací TRAVI pokrývá?",
+      "howManyDestinationsAnswer": "TRAVI World pokrývá 17 hlavních cestovních destinací včetně Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami a Rome.",
+      "isFree": "Je TRAVI World zdarma?",
+      "isFreeAnswer": "Ano, TRAVI World je zcela zdarma. Procházejte tisíce cestovních průvodců, recenzí atrakcí, doporučení hotelů a návrhů restaurací bez poplatků.",
+      "updateFrequency": "Jak často je obsah aktualizován?",
+      "updateFrequencyAnswer": "Obsah TRAVI World je aktualizován denně s nejnovějšími cestovními zprávami, novými recenzemi atrakcí a aktualizovanými informacemi o hotelech a restauracích ve všech 17 destinacích."
+    },
+    "mascotAlt": "Maskot TRAVI se světovými památkami - objevte cestovní průvodce pro Dubai, Paris, London, Rome a další",
+    "mascotTitle": "TRAVI World - Cestovní průvodce světovými destinacemi"
+  },
+  "attractions": {
+    "title": "Atrakce",
+    "subtitle": "Objevte ikonické památky a skryté poklady",
+    "hero": {
+      "badge": "{{count}} atrakcí v {{cities}} městech",
+      "badgeThousands": "Tisíce atrakcí po celém světě",
+      "headlinePart1": "Co Dělat",
+      "headlinePart2": "Po Celém Světě",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Vstupenky bez fronty</span> na Eiffelovku, Koloseum, Burj Khalifa a top atrakce v Paris, Rome, Dubai a dalších.",
+      "searchPlaceholder": "Hledejte Eiffelovka, Koloseum, Burj Khalifa...",
+      "carouselLabel": "Karusel doporučených atrakcí",
+      "sectionLabel": "Rezervujte vstupenky na top atrakce po celém světě",
+      "searchAriaLabel": "Hledejte atrakce podle názvu nebo města",
+      "searchButton": "Hledat",
+      "searchButtonAriaLabel": "Hledat atrakce"
+    },
+    "stats": {
+      "attractions": "ATRAKCÍ",
+      "cities": "MĚST",
+      "rating": "HODNOCENÍ"
+    },
+    "srLabel": {
+      "attractions": "Více než {{count}} atrakcí",
+      "cities": "{{count}} měst",
+      "rating": "Hodnocení {{rating}} hvězd"
+    },
+    "types": {
+      "all": "Všechny Typy",
+      "museums": "Muzea",
+      "landmarks": "Památky",
+      "tours": "Prohlídky",
+      "themeParks": "Zábavní Parky",
+      "shows": "Představení"
+    },
+    "thingsToDoIn": "Co dělat v {{name}}",
+    "countAttractions": "{{country}} - {{count}} atrakcí",
+    "filters": {
+      "all": "Vše",
+      "popular": "Nejpopulárnější",
+      "free": "Vstup Zdarma",
+      "familyFriendly": "Pro Rodiny",
+      "outdoor": "Venku",
+      "indoor": "Uvnitř"
+    },
+    "details": {
+      "location": "Umístění",
+      "hours": "Otevírací Doba",
+      "price": "Cena",
+      "duration": "Délka",
+      "tips": "Tipy"
+    },
+    "sections": {
+      "destinations": "Prozkoumejte Atrakce podle Destinace",
+      "destinationsDesc": "Vyberte město a objevte úžasné věci k vidění",
+      "faq": "Často Kladené Otázky",
+      "faqDesc": "Odpovědi na otázky o rezervaci atrakcí po celém světě",
+      "whyBookBadge": "Proč Rezervovat u Nás",
+      "whyBookTitle": "Vynechejte Fronty, Ušetřete Čas",
+      "whyBookDesc": "Rezervujte vstupenky předem a užijte si bezproblémový vstup do top atrakcí",
+      "allDestinations": "Všechny Destinace"
+    },
+    "features": {
+      "skipTheLine": "Vstupenky Bez Fronty",
+      "skipTheLineDesc": "Projděte kolem front na Eiffelovku, Koloseum, Vatikán a další",
+      "mobileTickets": "Mobilní Vstupenky",
+      "mobileTicketsDesc": "Okamžité doručení na telefon - ukažte vstupenku a vstupte",
+      "freeCancellation": "Zrušení Zdarma",
+      "freeCancellationDesc": "Změnily se plány? Zrušte do 24 hodin před návštěvou pro plnou refundaci"
+    },
+    "browse": {
+      "title": "Co Dělat podle Destinace",
+      "desc": "Najděte atrakce a zážitky v nejlepších městech světa",
+      "thingsToDo": "{{count}} aktivit",
+      "noDestinations": "Momentálně nejsou dostupné žádné destinace."
+    },
+    "exploreLinks": {
+      "title": "Prozkoumejte Další Průvodce",
+      "hotelsWorldwide": "Hotely po Celém Světě",
+      "bestRestaurants": "Nejlepší Restaurace",
+      "travelNews": "Cestovní Zprávy"
+    },
+    "cta": {
+      "title": "Připraveni Objevovat?",
+      "desc": "Rezervujte vstupenky bez fronty na Eiffelovku, Koloseum, Burj Khalifa a top atrakce po celém světě.",
+      "parisAttractions": "Atrakce Paris",
+      "romeAttractions": "Atrakce Rome"
+    },
+    "search": {
+      "popular": "Populární:",
+      "thingsToDoIn": "Co dělat v {{city}}",
+      "ariaCarouselNav": "Navigace karuselu atrakcí",
+      "ariaViewInCity": "Zobrazit {{name}} v {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Doporučená atrakce",
+      "ariaThumbnails": "Miniatury karuselu atrakcí",
+      "ariaTicketsIn": "Vstupenky {{name}} v {{city}}",
+      "priceFrom": "Od",
+      "bookTickets": "Rezervovat Vstupenky",
+      "skipTheLine": "Bez Fronty",
+      "duration": "2-3 hodiny",
+      "freeCancellation": "Zrušení Zdarma",
+      "freeCancellationDesc": "24 hod. před návštěvou",
+      "mobileTickets": "Mobilní Vstupenky",
+      "instantDelivery": "Okamžité doručení"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} aktivit"
+    }
+  },
+  "hotels": {
+    "title": "Hotely",
+    "subtitle": "Najděte ideální ubytování",
+    "filters": {
+      "all": "Všechny Hotely",
+      "luxury": "Luxusní",
+      "budget": "Ekonomické",
+      "beachfront": "U Pláže",
+      "cityCenter": "V Centru",
+      "familyFriendly": "Pro Rodiny"
+    },
+    "details": {
+      "priceFrom": "Od",
+      "perNight": "za noc",
+      "amenities": "Vybavení",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Pokoje",
+      "rating": "Hodnocení"
+    },
+    "bookNow": "Rezervovat"
+  },
+  "dining": {
+    "title": "Restaurace",
+    "subtitle": "Kulinářské zážitky pro každý vkus",
+    "filters": {
+      "all": "Všechny Restaurace",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Kavárny",
+      "streetFood": "Pouliční Jídlo",
+      "halal": "Halal",
+      "vegetarian": "Vegetariánské"
+    },
+    "details": {
+      "cuisine": "Kuchyně",
+      "priceRange": "Cenová Kategorie",
+      "hours": "Otevírací Doba",
+      "dress": "Dress Code",
+      "reservations": "Rezervace"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "SAE", "cardAlt": "Panorama Dubai s věží Burj Khalifa při západu slunce" },
+      "london": { "name": "London", "country": "Velká Británie", "cardAlt": "London Big Ben a budova Parlamentu" },
+      "paris": { "name": "Paris", "country": "Francie", "cardAlt": "Paris Eiffelovka osvětlená při západu slunce" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan s Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japonsko", "cardAlt": "Tokyo křižovatka Shibuya neonová světla v noci" },
+      "singapore": { "name": "Singapore", "country": "Singapur", "cardAlt": "Singapore Marina Bay Sands a Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Španělsko", "cardAlt": "Barcelona Sagrada Familia při zlaté hodince" },
+      "bangkok": { "name": "Bangkok", "country": "Thajsko", "cardAlt": "Bangkok Grand Palace chrám při východu slunce" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "SAE", "cardAlt": "Abu Dhabi mešita Sheikh Zayed" },
+      "amsterdam": { "name": "Amsterdam", "country": "Nizozemsko", "cardAlt": "Amsterdam kanál s historickými budovami" },
+      "hongKong": { "name": "Hong Kong", "country": "Čína", "cardAlt": "Hong Kong panorama v noci" },
+      "istanbul": { "name": "Istanbul", "country": "Turecko", "cardAlt": "Istanbul Modrá mešita při západu slunce" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip v noci" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles nápis Hollywood" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach čtvrť Art Deco" },
+      "rome": { "name": "Rome", "country": "Itálie", "cardAlt": "Rome Koloseum při zlaté hodince" }
+    },
     "hero": {
       "badge": "{{count}} Destinací po Celém Světě",
-      "trustedBy": "Důvěřuje nám {{count}} destinací",
+      "trustedBy": "Důvěřuje nám {{count}} destinací po celém světě",
       "discover": "Objevte",
       "worldClass": "Světové Třídy",
       "destinations": "Destinace",
-      "description": "Pečlivě vybrané cestovní průvodce s místní odborností pro nejúchvatnější města světa.",
+      "description": "Pečlivě vybrané cestovní průvodce s místní odborností pro nejúchvatnější města světa. Od ikonických památek po skryté poklady.",
       "exploreAll": "Prozkoumat Všechny Destinace",
       "travelGuides": "Cestovní Průvodce",
       "explorePlaceholder": "Prozkoumat Destinace",
-      "browseCollection": "Procházejte naši sbírku vybraných destinací",
+      "browseCollection": "Procházejte naši sbírku vybraných destinací níže",
       "explore": "Prozkoumat",
       "discoverButton": "Objevit",
       "ariaLabel": "Přehled destinací",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Prozkoumat {{name}}",
+      "galleryAriaLabel": "Galerie doporučených destinací",
+      "placeholderAriaLabel": "Zástupný obrázek destinace"
     },
     "stats": {
       "destinations": "DESTINACÍ",
@@ -27,7 +349,7 @@
     },
     "sections": {
       "featured": "Doporučené Destinace",
-      "featuredDesc": "Vybrané destinace s výjimečnými zážitky.",
+      "featuredDesc": "Pečlivě vybrané destinace s výjimečnými zážitky, místními tipy a vším potřebným pro plánování dokonalé cesty.",
       "all": "Všechny Destinace",
       "count": "Nalezeno {{count}} destinací"
     },
@@ -38,12 +360,12 @@
       "clearSearch": "Vymazat Hledání"
     },
     "carousel": {
-      "label": "Kolotoč doporučených destinací",
+      "label": "Karusel doporučených destinací",
       "previous": "Předchozí destinace",
       "next": "Další destinace",
       "goTo": "Přejít na {{name}}",
       "slideOf": "Snímek {{current}} z {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Miniatury karuselu destinací"
     },
     "card": {
       "explore": "Prozkoumat",
@@ -56,26 +378,614 @@
       "title": "Často Kladené Otázky",
       "subtitle": "Vše o průvodcích TRAVI",
       "q1": "Kolik destinací TRAVI pokrývá?",
-      "a1": "TRAVI pokrývá hlavní destinace na Blízkém východě, v Evropě, Asii a Americe.",
-      "q2": "Jaké informace jsou zahrnuty?",
-      "a2": "Každý průvodce obsahuje atrakce, ubytování, místní kuchyni a cestovní tipy.",
+      "a1": "TRAVI pokrývá hlavní cestovní destinace na Blízkém východě, v Evropě, Asii a Americe s komplexními průvodci pro každou lokaci.",
+      "q2": "Jaké informace jsou zahrnuty v průvodcích TRAVI?",
+      "a2": "Každý průvodce obsahuje podrobné popisy atrakcí, možnosti ubytování, místní kuchyni, tipy na dopravu a praktické cestovní informace.",
       "q3": "Mohu vyhledávat destinace?",
-      "a3": "Ano, můžete vyhledávat podle názvu nebo země.",
+      "a3": "Ano, TRAVI umožňuje vyhledávat destinace podle názvu nebo země pomocí vyhledávacího pole na stránce destinací.",
       "q4": "Jaké jsou doporučené destinace na TRAVI?",
-      "a4": "Doporučené destinace nabízejí výjimečné zážitky."
+      "a4": "Doporučené destinace TRAVI jsou pečlivě vybrané lokace nabízející výjimečné zážitky pro cestovatele s různými zájmy, od luxusu po ekonomické cestování."
     },
     "loading": {
       "title": "Načítání Destinací",
       "message": "Získávání nejnovějších dat..."
     },
     "error": {
-      "title": "Nelze Načíst",
-      "message": "Zkuste to prosím později.",
+      "title": "Nelze Načíst Destinace",
+      "message": "Máme potíže s načítáním dat destinací. Zkuste to prosím později.",
       "refresh": "Obnovit Stránku"
     },
     "empty": {
       "title": "Žádné Dostupné Destinace",
-      "message": "V současné době nejsou k dispozici žádné destinace."
+      "message": "V současné době nejsou k dispozici žádné destinace. Zkontrolujte později."
+    }
+  },
+  "districts": {
+    "title": "Čtvrti",
+    "subtitle": "Prozkoumejte rozmanité čtvrti",
+    "explore": "Prozkoumat Čtvrť"
+  },
+  "realEstate": {
+    "title": "Reality",
+    "subtitle": "Investujte do budoucnosti",
+    "offPlan": {
+      "title": "Novostavby",
+      "subtitle": "Investujte Brzy, Plaťte Méně, Získejte Více",
+      "findProperty": "Najít Ideální Nemovitost",
+      "from": "Od",
+      "paymentPlan": "Splátkový Plán",
+      "handover": "Předání",
+      "developer": "Developer"
+    },
+    "filters": {
+      "all": "Všechny Nemovitosti",
+      "apartments": "Byty",
+      "villas": "Vily",
+      "townhouses": "Řadové Domy",
+      "penthouses": "Penthousy"
+    },
+    "features": {
+      "cryptoAccepted": "Krypto Přijímáno",
+      "paymentPlans": "Flexibilní Splátkové Plány",
+      "goldenVisa": "Nárok na Golden Visa",
+      "roiGuarantee": "Garance ROI"
+    }
+  },
+  "search": {
+    "placeholder": "Hledejte atrakce, průvodce, destinace...",
+    "results": "Výsledky Hledání",
+    "noResults": "Žádné výsledky pro",
+    "tryAgain": "Zkuste jiná klíčová slova"
+  },
+  "footer": {
+    "about": "O TRAVI",
+    "aboutTravi": "O TRAVI",
+    "aboutText": "Komplexní cestovní informace pro 17 destinací po celém světě.",
+    "aboutUs": "O Nás",
+    "quickLinks": "Rychlé Odkazy",
+    "legal": "Právní",
+    "privacy": "Zásady Ochrany Osobních Údajů",
+    "privacyPolicy": "Zásady Ochrany Osobních Údajů",
+    "terms": "Obchodní Podmínky",
+    "termsOfService": "Podmínky Služby",
+    "contact": "Kontakt",
+    "contactUs": "Kontaktujte Nás",
+    "followUs": "Sledujte Nás",
+    "explore": "Prozkoumejte",
+    "travel": "Cestování",
+    "company": "Společnost",
+    "allGuides": "Všechny Průvodce",
+    "cookies": "Cookies",
+    "security": "Bezpečnost",
+    "cookieSettings": "Nastavení Cookies",
+    "tagline": "Váš Spolehlivý Cestovní Zdroj",
+    "ariaLabel": "Patička webu",
+    "featuredGuides": "Doporučené Průvodce",
+    "tools": "Nástroje",
+    "currencyConverter": "Převodník Měn",
+    "roiCalculator": "Kalkulačka ROI",
+    "mortgageCalculator": "Hypoteční Kalkulačka",
+    "glossary": "Slovníček",
+    "freeThingsToDo": "70+ Věcí Zdarma",
+    "open24Hours": "Otevřeno 24 Hodin",
+    "tributeToSheikh": "Pocta JV Sheikh Mohammed",
+    "lawsForTourists": "Zákony pro Turisty",
+    "newsletter": "Přihlaste se k odběru novinek",
+    "newsletterDescription": "Získejte nejnovější cestovní tipy a aktualizace.",
+    "emailPlaceholder": "Zadejte váš e-mail",
+    "allRightsReserved": "Všechna práva vyhrazena.",
+    "copyright": "© {{year}} {{brand}}. Všechna práva vyhrazena.",
+    "emailAriaLabel": "Poslat e-mail TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Stránka Nenalezena",
+      "message": "Stránka, kterou hledáte, neexistuje.",
+      "button": "Domů"
+    },
+    "500": {
+      "title": "Chyba Serveru",
+      "message": "Na naší straně se něco pokazilo.",
+      "button": "Zkusit Znovu"
+    },
+    "network": {
+      "title": "Chyba Připojení",
+      "message": "Nelze se připojit. Zkontrolujte své internetové připojení.",
+      "button": "Opakovat"
+    }
+  },
+  "newsletter": {
+    "badge": "Připojte se k Dobrodružství",
+    "title": "Cestovní Kouzlo do Vaší Schránky",
+    "description": "Týdenní tipy, skryté poklady a exkluzivní nabídky - žádný spam, jen touha cestovat.",
+    "emailPlaceholder": "vas@email.cz",
+    "subscribe": "Odebírat",
+    "success": "Jste přihlášeni! Zkontrolujte svou schránku."
+  },
+  "cookies": {
+    "title": "Vážíme si vašeho soukromí",
+    "description": "Používáme cookies pro zlepšení vašeho prohlížení, analýzu návštěvnosti a personalizaci obsahu. Kliknutím na \"Přijmout Vše\" souhlasíte s naším používáním cookies.",
+    "manage": "Spravovat",
+    "rejectAll": "Odmítnout Vše",
+    "acceptAll": "Přijmout Vše",
+    "preferencesTitle": "Předvolby Cookies",
+    "savePreferences": "Uložit Předvolby",
+    "essential": {
+      "title": "Nezbytné Cookies",
+      "description": "Vyžadované pro správné fungování webu"
+    },
+    "analytics": {
+      "title": "Analytické Cookies",
+      "description": "Pomáhají nám pochopit, jak návštěvníci používají náš web"
+    },
+    "marketing": {
+      "title": "Marketingové Cookies",
+      "description": "Používané pro zobrazování personalizovaných reklam"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Objevte Svět | Váš Kompletní Cestovní Průvodce",
+      "description": "Objevte nejlepší atrakce, hotely, restaurace a čtvrti. Naplánujte ideální cestu s tipy od místních a doporučeními."
+    },
+    "attractions": {
+      "title": "Atrakce | Top Věci k Vidění po Celém Světě",
+      "description": "Objevte nejlepší atrakce - od Eiffelovky po skryté poklady. Naplánujte svou návštěvu."
+    },
+    "hotels": {
+      "title": "Hotely | Nejlepší Ubytování",
+      "description": "Najděte ideální hotel pro každý rozpočet. Od luxusních resortů po ekonomické možnosti."
+    },
+    "dining": {
+      "title": "Restaurace | Nejlepší Místa k Jídlu",
+      "description": "Objevte kulinářskou scénu - fine dining, pouliční jídlo a vše mezi tím."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Cestovní Inteligence",
+      "headlinePart1": "Příběhy, Které",
+      "headlinePart2": "Vás Osloví",
+      "description": "Expertně vytvořené průvodce, místní perspektivy a redakční příběhy, které změní způsob, jakým zažíváte svět.",
+      "startJourney": "Začít Cestu",
+      "browseCollection": "Procházet Sbírku",
+      "issueBadge": "Vydání 47 — Zima 2026"
+    },
+    "stats": {
+      "guides": "Cestovních Průvodců",
+      "destinations": "Destinací",
+      "languages": "Jazyků"
+    },
+    "journey": {
+      "badge": "Vaše Cesta, Naše Vedení",
+      "title": "Každá Skvělá Cesta Začíná Průvodcem",
+      "subtitle": "Od snění po sdílení, jsme s vámi na každém kroku"
+    },
+    "ideaLab": {
+      "badge": "Laboratoř Nápadů",
+      "title": "Kurátorská Inspirace",
+      "readGuide": "Číst Průvodce"
+    },
+    "archetype": {
+      "badge": "Personalizováno pro Vás",
+      "title": "Jaký Typ Cestovatele Jste?",
+      "subtitle": "Vyberte si svůj cestovní styl a objevte průvodce vytvořené přímo pro vás",
+      "viewGuides": "Zobrazit Průvodce pro {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Hledač Dobrodružství",
+        "description": "Vzrušující zážitky a adrenalín"
+      },
+      "culture": {
+        "name": "Průzkumník Kultury",
+        "description": "Umění, historie a místní tradice"
+      },
+      "relaxation": {
+        "name": "Guru Relaxace",
+        "description": "Wellness pobyty a klidné útočiště"
+      },
+      "foodie": {
+        "name": "Kulinářský Nomád",
+        "description": "Místní chutě a gastronomická dobrodružství"
+      },
+      "wellness": {
+        "name": "Hledač Wellness",
+        "description": "Relaxace, lázně a mindfulness pobyty"
+      },
+      "budget": {
+        "name": "Chytrý Cestovatel",
+        "description": "Maximální zážitky, minimální rozpočet"
+      },
+      "solo": {
+        "name": "Sólový Průzkumník",
+        "description": "Nezávislé cesty a sebeobjevování"
+      },
+      "luxury": {
+        "name": "Znalec Luxusu",
+        "description": "Prémiové zážitky a vybraný životní styl"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Snít",
+        "subtitle": "Objevte inspiraci",
+        "guides": ["Průvodce Destinacemi", "Fotoreportáže"]
+      },
+      "plan": {
+        "title": "Plánovat",
+        "subtitle": "Zmapujte svou cestu",
+        "guides": ["Plánování Cesty", "Vízové Požadavky"]
+      },
+      "prepare": {
+        "title": "Připravit",
+        "subtitle": "Připravte se na cestu",
+        "guides": ["Seznamy Balení", "Bezpečnostní Tipy"]
+      },
+      "experience": {
+        "title": "Zažít",
+        "subtitle": "Prožijte dobrodružství",
+        "guides": ["Místní Tipy", "Skryté Poklady"]
+      },
+      "share": {
+        "title": "Sdílet",
+        "subtitle": "Vyprávějte svůj příběh",
+        "guides": ["Cestopisné Psaní", "Fotografie"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Víkendové Výlety",
+      "offBeatenPath": "Mimo Vyšlapané Cesty",
+      "smartTravel": "Chytré Cestování",
+      "bucketList": "Seznam Přání",
+      "culinary": "Kulinářské",
+      "natureWonder": "Příroda a Zázraky"
+    },
+    "seo": {
+      "title": "Cestovní Průvodce | Odborné Tipy pro Destinace",
+      "description": "Objevte expertní cestovní průvodce, tipy pro destinace a rady od naší globální sítě cestovatelských autorů. Naplánujte si dokonalou cestu ještě dnes."
+    },
+    "editorial": {
+      "badge": "Od Našich Redaktorů",
+      "title": "Redakční Články",
+      "readFull": "Číst Celý Článek"
+    },
+    "gallery": {
+      "badge": "Vizuální Příběhy",
+      "title": "Destinace, Které Inspirují",
+      "categories": {
+        "city": "Město",
+        "mountains": "Hory",
+        "beach": "Pláž",
+        "safari": "Safari",
+        "nature": "Příroda"
+      }
+    },
+    "writers": {
+      "badge": "Expertní Hlasy",
+      "title": "Poznejte Naše Autory",
+      "subtitle": "Expertní hlasy za našimi nejdůvěryhodnějšími cestovními průvodci",
+      "articleCount": "{{count}} Článků",
+      "viewProfile": "Zobrazit Profil"
+    },
+    "map": {
+      "badge": "Prozkoumejte podle Regionu",
+      "title": "Průvodce po Celém Světě",
+      "subtitle": "Klikněte na libovolnou destinaci a objevte naše expertní pokrytí",
+      "guidesAvailable": "{{count}} průvodců k dispozici",
+      "legendDestination": "Destinace",
+      "legendHighlighted": "Zvýrazněné"
+    },
+    "newsletter": {
+      "badge": "Připojte se k Cestě",
+      "title": "Cestovní Příběhy Každý Týden",
+      "description": "Kurátorská cestovní inspirace, expertní tipy a insider pohledy doručované do vaší schránky každý týden.",
+      "placeholder": "Zadejte váš e-mail",
+      "subscribe": "Odebírat",
+      "subscribing": "Přihlašuji...",
+      "joinCount": "Připojte se k 50 000+ cestovatelům, kteří čtou náš týdenní přehled",
+      "invalidEmail": "Zadejte platný e-mail",
+      "successTitle": "Vítejte na cestě!",
+      "successDesc": "Nyní jste přihlášeni k odběru našeho redakčního přehledu."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "Nedávné",
+      "justNow": "Právě teď",
+      "minutesAgo": "před {{count}}m",
+      "hoursAgo": "před {{count}}h",
+      "daysAgo": "před {{count}}d",
+      "minRead": "{{count}} min čtení"
+    },
+    "header": {
+      "title": "TRAVI ZPRÁVY",
+      "edition": "Mezinárodní Vydání",
+      "subscribe": "Odebírat"
+    },
+    "breaking": {
+      "label": "Aktuální"
+    },
+    "search": {
+      "placeholder": "Hledejte zprávy z celého světa...",
+      "button": "Hledat",
+      "title": "Hledat",
+      "searching": "Hledám \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Všechny Zprávy",
+      "world": "Svět",
+      "business": "Byznys",
+      "culture": "Kultura",
+      "travel": "Cestování",
+      "tech": "Technologie",
+      "opinion": "Názory"
+    },
+    "empty": {
+      "title": "Zatím Žádné Články",
+      "description": "Pracujeme na tom, abychom vám přinesli nejnovější cestovní zprávy a postřehy. Brzy se vraťte pro aktualizace z celého světa.",
+      "exploreDestinations": "Prozkoumat Destinace",
+      "viewGuides": "Zobrazit Průvodce"
+    },
+    "hero": {
+      "topStory": "Hlavní Zpráva",
+      "editorialTeam": "Redakční Tým"
+    },
+    "views": "{{count}} zobrazení",
+    "viewAll": "Zobrazit Vše",
+    "seo": {
+      "title": "Cestovní Zprávy | Nejnovější Příběhy a Aktualizace",
+      "description": "Zůstaňte informováni s nejnovějšími cestovními zprávami, aktualizacemi destinací a průmyslovými poznatky z celého světa."
+    },
+    "sidebar": {
+      "alsoToday": "Také Dnes",
+      "storiesCount": "{{count}} příběhů",
+      "liveUpdates": "Živé Aktualizace",
+      "trendingTopics": "Populární Témata",
+      "noTrending": "Zatím žádná populární témata. Brzy se vraťte!"
+    },
+    "sections": {
+      "topStories": "Hlavní Zprávy",
+      "opinion": "Názory a Analýzy",
+      "moreOpinion": "Více Názorů",
+      "worldwide": "Celosvětové Pokrytí"
+    },
+    "worldwide": {
+      "title": "Vaše Okno do Světa",
+      "subtitle": "Zprávy z každého koutu zeměkoule",
+      "storiesCount": "{{count}} příběhů",
+      "comingSoon": "Již brzy"
+    },
+    "newsletter": {
+      "title": "Zůstaňte Informováni",
+      "description": "Získejte nejdůležitější příběhy dne doručené do vaší schránky každé ráno. Připojte se k 50 000+ čtenářům.",
+      "placeholder": "Zadejte váš e-mail",
+      "subscribe": "Odebírat Zdarma",
+      "noSpam": "Žádný spam. Odhlásit se lze kdykoli.",
+      "successTitle": "Přihlášeno!",
+      "successDesc": "Zkontrolujte prosím svůj e-mail pro potvrzení odběru.",
+      "errorTitle": "Přihlášení selhalo",
+      "errorDesc": "Zkuste to prosím později.",
+      "invalidTitle": "Neplatný e-mail",
+      "invalidDesc": "Zadejte prosím platnou e-mailovou adresu."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "O Nás | TRAVI World",
+      "metaDescription": "Poznejte TRAVI World, nezávislý zdroj cestovních informací poskytující komplexní průvodce, atrakce, hotely a restaurace pro destinace po celém světě.",
+      "badge": "Váš Cestovní Společník",
+      "title": "O",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Váš spolehlivý zdroj komplexních cestovních informací a průvodců destinacemi, který pomáhá milionům objevovat svět s jistotou.",
+      "ctaExplore": "Prozkoumat Destinace",
+      "ctaContact": "Kontaktujte Nás",
+      "stats": {
+        "destinations": "Destinací",
+        "articles": "Článků",
+        "support": "Cestovní Podpora",
+        "coverage": "Pokrytí",
+        "cities": "16+ Měst"
+      },
+      "whoWeAre": {
+        "title": "Kdo Jsme"
+      },
+      "mission": {
+        "title": "Naše Mise"
+      },
+      "services": {
+        "badge": "Naše Služby",
+        "title": "Co Nabízíme"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Průvodce Destinacemi",
+          "description": "Komplexní informace o městech a regionech po celém světě"
+        },
+        "attractions": {
+          "title": "Informace o Atrakcích",
+          "description": "Detaily o povinných místech a unikátních zážitcích"
+        },
+        "hotels": {
+          "title": "Průvodce Hotely",
+          "description": "Informace o ubytování pro každý rozpočet"
+        },
+        "restaurants": {
+          "title": "Doporučení Restaurací",
+          "description": "Možnosti stravování pro každý vkus a preference"
+        },
+        "articles": {
+          "title": "Cestovní Články",
+          "description": "Tipy, postřehy a cestovní inspirace"
+        },
+        "news": {
+          "title": "Nejnovější Cestovní Zprávy",
+          "description": "Zůstaňte informováni s kurátorskými aktualizacemi"
+        }
+      },
+      "editorial": {
+        "title": "Redakční Nezávislost",
+        "affiliateTitle": "Affiliate Prohlášení"
+      },
+      "values": {
+        "badge": "Náš Základ",
+        "title": "Naše Hodnoty",
+        "accuracy": {
+          "title": "Přesnost",
+          "description": "Snažíme se poskytovat přesné a spolehlivé informace, pravidelně aktualizujeme náš obsah"
+        },
+        "transparency": {
+          "title": "Transparentnost",
+          "description": "Jsme otevření ohledně našich affiliate vztahů a způsobu fungování"
+        },
+        "userFocused": {
+          "title": "Zaměření na Uživatele",
+          "description": "Náš obsah je navržen tak, aby cestovatelům pomohl činit informovaná rozhodnutí"
+        }
+      },
+      "connect": {
+        "badge": "Spojme Se",
+        "title": "Kontaktujte Nás"
+      },
+      "company": {
+        "title": "Informace o Společnosti",
+        "contactTitle": "Kontaktní Informace",
+        "contactForm": "Kontaktní Formulář"
+      }
+    },
+    "contact": {
+      "metaTitle": "Kontakt | TRAVI World",
+      "metaDescription": "Spojte se s TRAVI World. Vítáme vaši zpětnou vazbu, dotazy a poptávky ohledně našich cestovních informačních služeb.",
+      "badge": "Rádi od vás uslyšíme",
+      "titlePart1": "Pojďme",
+      "titlePart2": "se Spojit",
+      "subtitle": "Máte otázky ohledně vašeho příštího dobrodružství? Jsme tu, abychom vám pomohli objevovat svět s jistotou.",
+      "cta": "Napište nám",
+      "getInTouch": "Kontaktujte Nás",
+      "getInTouchSubtitle": "Vyberte si nejlepší způsob, jak nás kontaktovat. Zavazujeme se k rychlé odpovědi.",
+      "howCanWeHelp": "Jak Vám Můžeme Pomoci?",
+      "howCanWeHelpSubtitle": "Jsme tu, abychom pomohli s jakýmikoli dotazy nebo zpětnou vazbou ohledně našeho cestovního obsahu a služeb.",
+      "importantNote": "Důležitá Poznámka",
+      "importantNoteSubtitle": "Přečtěte si prosím před kontaktováním",
+      "ourOffice": "Naše Kancelář",
+      "ourOfficeSubtitle": "Pro oficiální korespondenci a poštovní dotazy",
+      "travelCompanion": "Váš cestovní společník",
+      "urgentNote": "Pro naléhavé záležitosti prosím uveďte {{urgentLabel}} v předmětu e-mailu. Odpovědi prioritizujeme podle povahy dotazu.",
+      "urgentLabel": "Naléhavé",
+      "options": {
+        "generalInquiries": {
+          "title": "Obecné Dotazy",
+          "description": "Otázky ohledně našich cestovních průvodců a obsahu"
+        },
+        "privacyInquiries": {
+          "title": "Dotazy k Soukromí",
+          "description": "Přístup k datům, mazání a žádosti o soukromí"
+        },
+        "visitWebsite": {
+          "title": "Navštivte Náš Web",
+          "description": "Prozkoumejte destinace a cestovní inspiraci"
+        },
+        "responseTime": {
+          "title": "Doba Odpovědi",
+          "description": "Snažíme se odpovídat rychle",
+          "action": "2-3 pracovní dny"
+        }
+      },
+      "helpTopics": {
+        "general": "Obecné dotazy ohledně našich cestovních průvodců a obsahu",
+        "feedback": "Zpětná vazba a návrhy na zlepšení",
+        "reporting": "Hlášení chyb v obsahu nebo zastaralých informací",
+        "business": "Obchodní a partnerské dotazy",
+        "media": "Mediální a tiskové dotazy",
+        "privacy": "Žádosti týkající se soukromí (přístup k datům, mazání atd.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Zásady Ochrany Osobních Údajů | TRAVI World",
+      "metaDescription": "Zjistěte, jak TRAVI World shromažďuje, používá a chrání vaše osobní údaje. Přečtěte si naše komplexní zásady ochrany osobních údajů.",
+      "badge": "Na Vašem Soukromí Záleží",
+      "title": "Zásady Ochrany Osobních Údajů",
+      "subtitle": "Jsme odhodláni chránit vaše soukromí a být transparentní ohledně našich datových praktik. Zjistěte, jak TRAVI World shromažďuje, používá a chrání vaše informace.",
+      "effectiveDate": "Datum účinnosti: 1. ledna 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Ochrana Dat",
+          "description": "Vaše data jsou chráněna"
+        },
+        "minimalCollection": {
+          "title": "Minimální Sběr",
+          "description": "Shromažďujeme pouze to, co je potřeba"
+        },
+        "transparency": {
+          "title": "Plná Transparentnost",
+          "description": "Jasní ohledně našich praktik"
+        },
+        "yourControl": {
+          "title": "Vaše Kontrola",
+          "description": "Spravujte své preference"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Kdo Jsme",
+        "informationCollect": "2. Informace, Které Shromažďujeme",
+        "howWeUse": "3. Jak Používáme Vaše Informace",
+        "legalBasis": "4. Právní Základ pro Zpracování (GDPR)",
+        "cookies": "5. Cookies a Sledovací Technologie",
+        "thirdParty": "6. Služby Třetích Stran",
+        "aiContent": "7. AI-Generovaný Obsah",
+        "internationalTransfers": "8. Mezinárodní Přenosy Dat",
+        "dataRetention": "9. Uchovávání Dat",
+        "privacyRights": "10. Vaše Práva na Soukromí",
+        "californiaRights": "11. Práva na Soukromí v Kalifornii (CCPA/CPRA)",
+        "childrenPrivacy": "12. Soukromí Dětí",
+        "dataSecurity": "13. Zabezpečení Dat",
+        "changes": "14. Změny Těchto Zásad",
+        "contactUs": "15. Kontaktujte Nás"
+      }
+    },
+    "terms": {
+      "metaTitle": "Obchodní Podmínky | TRAVI World",
+      "metaDescription": "Přečtěte si obchodní podmínky pro používání cestovních informačních služeb TRAVI World. Právní smlouva mezi vámi a KBR Global Creative Consulting Ltd.",
+      "badge": "Právní Smlouva",
+      "title": "Obchodní Podmínky",
+      "subtitle": "Přečtěte si prosím tyto podmínky pečlivě před použitím TRAVI World. Váš přístup a používání naší platformy podléhá těmto podmínkám.",
+      "lastUpdated": "Poslední aktualizace: 1. ledna 2026",
+      "importantNotice": "Důležité Právní Upozornění",
+      "keyPoints": {
+        "editorial": {
+          "title": "Redakční Platforma",
+          "description": "Cestovní průvodce a obsah destinací"
+        },
+        "affiliate": {
+          "title": "Affiliate Odkazy",
+          "description": "Doporučení na základě provizí"
+        },
+        "aiGenerated": {
+          "title": "AI-Generované",
+          "description": "Obsah vytvořený s pomocí AI"
+        },
+        "privacy": {
+          "title": "Vaše Soukromí",
+          "description": "Ochrana dat garantována"
+        }
+      },
+      "sections": {
+        "operator": "Provozovatel / Právní Subjekt",
+        "purpose": "1. Účel a Rozsah Použití",
+        "affiliateDisclosure": "2. Affiliate Prohlášení a Transakce Třetích Stran",
+        "aiDisclaimer": "3. Prohlášení o AI-Generovaném Obsahu",
+        "newsletter": "4. Newsletter a Komunikace",
+        "userConduct": "5. Chování Uživatelů a Zakázané Akce",
+        "intellectualProperty": "6. Duševní Vlastnictví a Omezená Licence",
+        "dmca": "7. Notice-and-Takedown (DMCA a Podobné)",
+        "disclaimers": "8. Přesnost, Dostupnost a Prohlášení",
+        "liability": "9. Omezení Odpovědnosti a Vyšší Moc",
+        "indemnification": "10. Odškodnění",
+        "privacyCookies": "11. Soukromí, Cookies a Ochrana Dat",
+        "accessibility": "12. Prohlášení o Přístupnosti",
+        "governingLaw": "13. Rozhodné Právo, Řešení Sporů a Jurisdikce",
+        "modifications": "14. Změny, Oddělitelnost a Obecná Ustanovení"
+      }
     }
   }
 }
