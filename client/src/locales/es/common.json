@@ -19,7 +19,11 @@
     "closeMenu": "Cerrar menú",
     "logoAlt": "TRAVI - Guía de Viajes",
     "followInstagram": "Siga a TRAVI en Instagram",
-    "followTikTok": "Siga a TRAVI en TikTok"
+    "followTikTok": "Siga a TRAVI en TikTok",
+    "changeLanguage": "Cambiar idioma",
+    "selectLanguage": "Seleccionar idioma",
+    "popularLanguages": "Idiomas populares",
+    "allLanguages": "Todos los idiomas"
   },
   "breadcrumbs": {
     "ariaLabel": "Navegación de migas de pan",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "EAU", "cardAlt": "Horizonte de Dubai con la torre Burj Khalifa al atardecer" },
-      "london": { "name": "London", "country": "Reino Unido", "cardAlt": "Big Ben y el Parlamento de London" },
-      "paris": { "name": "Paris", "country": "Francia", "cardAlt": "Torre Eiffel iluminada al atardecer" },
-      "newYork": { "name": "New York", "country": "Estados Unidos", "cardAlt": "Horizonte de Manhattan con el Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japón", "cardAlt": "Cruce de Shibuya con luces de neón por la noche" },
-      "singapore": { "name": "Singapore", "country": "Singapur", "cardAlt": "Marina Bay Sands y Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "España", "cardAlt": "Sagrada Familia en la hora dorada" },
-      "bangkok": { "name": "Bangkok", "country": "Tailandia", "cardAlt": "Gran Palacio al amanecer" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "EAU", "cardAlt": "Gran Mezquita Sheikh Zayed" },
-      "amsterdam": { "name": "Amsterdam", "country": "Países Bajos", "cardAlt": "Canales de Amsterdam con edificios históricos" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Horizonte de Hong Kong por la noche" },
-      "istanbul": { "name": "Istanbul", "country": "Turquía", "cardAlt": "Mezquita Azul al atardecer" },
-      "lasVegas": { "name": "Las Vegas", "country": "Estados Unidos", "cardAlt": "Las Vegas Strip por la noche" },
-      "losAngeles": { "name": "Los Angeles", "country": "Estados Unidos", "cardAlt": "Cartel de Hollywood" },
-      "miami": { "name": "Miami", "country": "Estados Unidos", "cardAlt": "Distrito Art Déco de Miami Beach" },
-      "rome": { "name": "Rome", "country": "Italia", "cardAlt": "Coliseo en la hora dorada" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "EAU",
+        "cardAlt": "Horizonte de Dubai con la torre Burj Khalifa al atardecer"
+      },
+      "london": {
+        "name": "London",
+        "country": "Reino Unido",
+        "cardAlt": "Big Ben y el Parlamento de London"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Francia",
+        "cardAlt": "Torre Eiffel iluminada al atardecer"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "Estados Unidos",
+        "cardAlt": "Horizonte de Manhattan con el Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japón",
+        "cardAlt": "Cruce de Shibuya con luces de neón por la noche"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapur",
+        "cardAlt": "Marina Bay Sands y Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "España",
+        "cardAlt": "Sagrada Familia en la hora dorada"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Tailandia",
+        "cardAlt": "Gran Palacio al amanecer"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "EAU",
+        "cardAlt": "Gran Mezquita Sheikh Zayed"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Países Bajos",
+        "cardAlt": "Canales de Amsterdam con edificios históricos"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Horizonte de Hong Kong por la noche"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turquía",
+        "cardAlt": "Mezquita Azul al atardecer"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "Estados Unidos",
+        "cardAlt": "Las Vegas Strip por la noche"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "Estados Unidos",
+        "cardAlt": "Cartel de Hollywood"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "Estados Unidos",
+        "cardAlt": "Distrito Art Déco de Miami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Italia",
+        "cardAlt": "Coliseo en la hora dorada"
+      }
     },
     "hero": {
       "badge": "{{count}} destinos en todo el mundo",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Soñar",
         "subtitle": "Descubrir inspiración",
-        "guides": ["Guías de destinos", "Ensayos fotográficos"]
+        "guides": [
+          "Guías de destinos",
+          "Ensayos fotográficos"
+        ]
       },
       "plan": {
         "title": "Planificar",
         "subtitle": "Trazar su viaje",
-        "guides": ["Planificación de viaje", "Requisitos de visa"]
+        "guides": [
+          "Planificación de viaje",
+          "Requisitos de visa"
+        ]
       },
       "prepare": {
         "title": "Preparar",
         "subtitle": "Estar listo para partir",
-        "guides": ["Listas de equipaje", "Consejos de seguridad"]
+        "guides": [
+          "Listas de equipaje",
+          "Consejos de seguridad"
+        ]
       },
       "experience": {
         "title": "Vivir",
         "subtitle": "Vivir la aventura",
-        "guides": ["Consejos locales", "Tesoros ocultos"]
+        "guides": [
+          "Consejos locales",
+          "Tesoros ocultos"
+        ]
       },
       "share": {
         "title": "Compartir",
         "subtitle": "Contar su historia",
-        "guides": ["Escritura de viajes", "Fotografía"]
+        "guides": [
+          "Escritura de viajes",
+          "Fotografía"
+        ]
       }
     },
     "seo": {
@@ -669,6 +752,14 @@
       "legendHighlighted": "Destacado"
     },
     "categories": {
+      "all": "Todo",
+      "city": "Guías de ciudades",
+      "food": "Gastronomía",
+      "culture": "Cultura",
+      "adventure": "Aventura",
+      "luxury": "Lujo",
+      "budget": "Económico",
+      "family": "Familia",
       "weekendEscapes": "Escapadas de fin de semana",
       "offBeatenPath": "Fuera de lo común",
       "smartTravel": "Viajar inteligente",
@@ -708,22 +799,6 @@
       "title": "Narrativas de viaje excepcionales",
       "subtitle": "Una colección cuidadosamente seleccionada de guías e historias de viaje",
       "viewAll": "Ver toda la colección"
-    },
-    "categories": {
-      "all": "Todo",
-      "city": "Guías de ciudades",
-      "food": "Gastronomía",
-      "culture": "Cultura",
-      "adventure": "Aventura",
-      "luxury": "Lujo",
-      "budget": "Económico",
-      "family": "Familia",
-      "weekendEscapes": "Escapadas de fin de semana",
-      "offBeatenPath": "Fuera de lo común",
-      "smartTravel": "Viajar inteligente",
-      "bucketList": "Lista de deseos",
-      "culinary": "Gastronomía",
-      "natureWonder": "Naturaleza y maravillas"
     }
   },
   "destination": {

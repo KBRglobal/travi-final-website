@@ -8,6 +8,7 @@ const traviLogo = "/logos/Logotype_for_Dark_Background.svg";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SiTiktok } from "react-icons/si";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 // Navigation items - translation keys for i18next
 const NAV_ITEMS = [
@@ -144,8 +145,11 @@ export function PublicNav({
               })}
             </nav>
 
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <LanguageSwitcher className="hidden sm:flex" />
+              <LanguageSwitcher variant="compact" className="sm:hidden" />
+              
+              <div className="hidden md:flex items-center gap-3">
                 <a 
                   href="https://www.instagram.com/travi_world" 
                   target="_blank" 

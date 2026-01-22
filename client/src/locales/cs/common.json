@@ -19,7 +19,11 @@
     "closeMenu": "Zavřít menu",
     "logoAlt": "TRAVI - Cestovní průvodce",
     "followInstagram": "Sledujte TRAVI na Instagramu",
-    "followTikTok": "Sledujte TRAVI na TikToku"
+    "followTikTok": "Sledujte TRAVI na TikToku",
+    "changeLanguage": "Změnit jazyk",
+    "selectLanguage": "Vybrat jazyk",
+    "popularLanguages": "Populární jazyky",
+    "allLanguages": "Všechny jazyky"
   },
   "breadcrumbs": {
     "ariaLabel": "Drobečková navigace",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "SAE", "cardAlt": "Panorama Dubai s věží Burj Khalifa při západu slunce" },
-      "london": { "name": "London", "country": "Velká Británie", "cardAlt": "London Big Ben a budova Parlamentu" },
-      "paris": { "name": "Paris", "country": "Francie", "cardAlt": "Paris Eiffelovka osvětlená při západu slunce" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan s Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japonsko", "cardAlt": "Tokyo křižovatka Shibuya neonová světla v noci" },
-      "singapore": { "name": "Singapore", "country": "Singapur", "cardAlt": "Singapore Marina Bay Sands a Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Španělsko", "cardAlt": "Barcelona Sagrada Familia při zlaté hodince" },
-      "bangkok": { "name": "Bangkok", "country": "Thajsko", "cardAlt": "Bangkok Grand Palace chrám při východu slunce" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "SAE", "cardAlt": "Abu Dhabi mešita Sheikh Zayed" },
-      "amsterdam": { "name": "Amsterdam", "country": "Nizozemsko", "cardAlt": "Amsterdam kanál s historickými budovami" },
-      "hongKong": { "name": "Hong Kong", "country": "Čína", "cardAlt": "Hong Kong panorama v noci" },
-      "istanbul": { "name": "Istanbul", "country": "Turecko", "cardAlt": "Istanbul Modrá mešita při západu slunce" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip v noci" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles nápis Hollywood" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach čtvrť Art Deco" },
-      "rome": { "name": "Rome", "country": "Itálie", "cardAlt": "Rome Koloseum při zlaté hodince" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "SAE",
+        "cardAlt": "Panorama Dubai s věží Burj Khalifa při západu slunce"
+      },
+      "london": {
+        "name": "London",
+        "country": "Velká Británie",
+        "cardAlt": "London Big Ben a budova Parlamentu"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Francie",
+        "cardAlt": "Paris Eiffelovka osvětlená při západu slunce"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan s Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japonsko",
+        "cardAlt": "Tokyo křižovatka Shibuya neonová světla v noci"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapur",
+        "cardAlt": "Singapore Marina Bay Sands a Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Španělsko",
+        "cardAlt": "Barcelona Sagrada Familia při zlaté hodince"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thajsko",
+        "cardAlt": "Bangkok Grand Palace chrám při východu slunce"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "SAE",
+        "cardAlt": "Abu Dhabi mešita Sheikh Zayed"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Nizozemsko",
+        "cardAlt": "Amsterdam kanál s historickými budovami"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Čína",
+        "cardAlt": "Hong Kong panorama v noci"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turecko",
+        "cardAlt": "Istanbul Modrá mešita při západu slunce"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip v noci"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles nápis Hollywood"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Miami Beach čtvrť Art Deco"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Itálie",
+        "cardAlt": "Rome Koloseum při zlaté hodince"
+      }
     },
     "hero": {
       "badge": "{{count}} Destinací po Celém Světě",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Snít",
         "subtitle": "Objevte inspiraci",
-        "guides": ["Průvodce Destinacemi", "Fotoreportáže"]
+        "guides": [
+          "Průvodce Destinacemi",
+          "Fotoreportáže"
+        ]
       },
       "plan": {
         "title": "Plánovat",
         "subtitle": "Zmapujte svou cestu",
-        "guides": ["Plánování Cesty", "Vízové Požadavky"]
+        "guides": [
+          "Plánování Cesty",
+          "Vízové Požadavky"
+        ]
       },
       "prepare": {
         "title": "Připravit",
         "subtitle": "Připravte se na cestu",
-        "guides": ["Seznamy Balení", "Bezpečnostní Tipy"]
+        "guides": [
+          "Seznamy Balení",
+          "Bezpečnostní Tipy"
+        ]
       },
       "experience": {
         "title": "Zažít",
         "subtitle": "Prožijte dobrodružství",
-        "guides": ["Místní Tipy", "Skryté Poklady"]
+        "guides": [
+          "Místní Tipy",
+          "Skryté Poklady"
+        ]
       },
       "share": {
         "title": "Sdílet",
         "subtitle": "Vyprávějte svůj příběh",
-        "guides": ["Cestopisné Psaní", "Fotografie"]
+        "guides": [
+          "Cestopisné Psaní",
+          "Fotografie"
+        ]
       }
     },
     "categories": {

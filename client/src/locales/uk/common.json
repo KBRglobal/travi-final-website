@@ -19,7 +19,11 @@
     "closeMenu": "Закрити меню",
     "logoAlt": "TRAVI - Путівник",
     "followInstagram": "Слідкуйте за TRAVI в Instagram",
-    "followTikTok": "Слідкуйте за TRAVI в TikTok"
+    "followTikTok": "Слідкуйте за TRAVI в TikTok",
+    "changeLanguage": "Змінити мову",
+    "selectLanguage": "Вибрати мову",
+    "popularLanguages": "Популярні мови",
+    "allLanguages": "Усі мови"
   },
   "breadcrumbs": {
     "ariaLabel": "Навігація хлібними крихтами",

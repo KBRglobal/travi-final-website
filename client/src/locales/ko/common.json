@@ -19,7 +19,11 @@
     "closeMenu": "메뉴 닫기",
     "logoAlt": "TRAVI - 여행 가이드",
     "followInstagram": "TRAVI Instagram 팔로우",
-    "followTikTok": "TRAVI TikTok 팔로우"
+    "followTikTok": "TRAVI TikTok 팔로우",
+    "changeLanguage": "언어 변경",
+    "selectLanguage": "언어 선택",
+    "popularLanguages": "인기 언어",
+    "allLanguages": "모든 언어"
   },
   "breadcrumbs": {
     "ariaLabel": "경로 탐색",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Burj Khalifah 타워와 일몰의 Dubai 스카이라인" },
-      "london": { "name": "London", "country": "영국", "cardAlt": "Big Ben과 국회의사당의 London" },
-      "paris": { "name": "Paris", "country": "프랑스", "cardAlt": "일몰에 빛나는 Eiffel Tower의 Paris" },
-      "newYork": { "name": "New York", "country": "미국", "cardAlt": "Empire State Building과 Manhattan 스카이라인의 New York" },
-      "tokyo": { "name": "Tokyo", "country": "일본", "cardAlt": "시부야 교차로 네온의 Tokyo" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands와 Gardens by the Bay의 Singapore" },
-      "barcelona": { "name": "Barcelona", "country": "스페인", "cardAlt": "골든 아워의 Sagrada Familia의 Barcelona" },
-      "bangkok": { "name": "Bangkok", "country": "태국", "cardAlt": "일출의 왕궁의 Bangkok" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Sheikh Zayed Grand Mosque의 Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "네덜란드", "cardAlt": "역사적 건물과 운하의 Amsterdam" },
-      "hongKong": { "name": "Hong Kong", "country": "중국", "cardAlt": "야경 스카이라인의 Hong Kong" },
-      "istanbul": { "name": "Istanbul", "country": "터키", "cardAlt": "일몰의 Blue Mosque의 Istanbul" },
-      "lasVegas": { "name": "Las Vegas", "country": "미국", "cardAlt": "밤의 스트립의 Las Vegas" },
-      "losAngeles": { "name": "Los Angeles", "country": "미국", "cardAlt": "Hollywood 사인의 Los Angeles" },
-      "miami": { "name": "Miami", "country": "미국", "cardAlt": "아르데코 지구의 Miami Beach" },
-      "rome": { "name": "Rome", "country": "이탈리아", "cardAlt": "골든 아워의 Colosseum의 Rome" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Burj Khalifah 타워와 일몰의 Dubai 스카이라인"
+      },
+      "london": {
+        "name": "London",
+        "country": "영국",
+        "cardAlt": "Big Ben과 국회의사당의 London"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "프랑스",
+        "cardAlt": "일몰에 빛나는 Eiffel Tower의 Paris"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "미국",
+        "cardAlt": "Empire State Building과 Manhattan 스카이라인의 New York"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "일본",
+        "cardAlt": "시부야 교차로 네온의 Tokyo"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Marina Bay Sands와 Gardens by the Bay의 Singapore"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "스페인",
+        "cardAlt": "골든 아워의 Sagrada Familia의 Barcelona"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "태국",
+        "cardAlt": "일출의 왕궁의 Bangkok"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Sheikh Zayed Grand Mosque의 Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "네덜란드",
+        "cardAlt": "역사적 건물과 운하의 Amsterdam"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "중국",
+        "cardAlt": "야경 스카이라인의 Hong Kong"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "터키",
+        "cardAlt": "일몰의 Blue Mosque의 Istanbul"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "미국",
+        "cardAlt": "밤의 스트립의 Las Vegas"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "미국",
+        "cardAlt": "Hollywood 사인의 Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "미국",
+        "cardAlt": "아르데코 지구의 Miami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "이탈리아",
+        "cardAlt": "골든 아워의 Colosseum의 Rome"
+      }
     },
     "hero": {
       "badge": "전 세계 {{count}}개 도시",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "꿈꾸기",
         "subtitle": "영감 발견",
-        "guides": ["여행지 가이드", "포토 에세이"]
+        "guides": [
+          "여행지 가이드",
+          "포토 에세이"
+        ]
       },
       "plan": {
         "title": "계획하기",
         "subtitle": "일정 만들기",
-        "guides": ["여행 계획", "비자 요건"]
+        "guides": [
+          "여행 계획",
+          "비자 요건"
+        ]
       },
       "prepare": {
         "title": "준비하기",
         "subtitle": "출발 준비",
-        "guides": ["짐 싸기 리스트", "안전 정보"]
+        "guides": [
+          "짐 싸기 리스트",
+          "안전 정보"
+        ]
       },
       "experience": {
         "title": "체험하기",
         "subtitle": "모험 즐기기",
-        "guides": ["현지 정보", "숨겨진 보석"]
+        "guides": [
+          "현지 정보",
+          "숨겨진 보석"
+        ]
       },
       "share": {
         "title": "공유하기",
         "subtitle": "이야기 나누기",
-        "guides": ["여행기", "사진 촬영"]
+        "guides": [
+          "여행기",
+          "사진 촬영"
+        ]
       }
     },
     "categories": {
@@ -772,12 +855,12 @@
   },
   "pages": {
     "about": {
-      "metaTitle": "회사 소개｜TRAVI World",
-      "metaDescription": "TRAVI World 소개. 전 세계 여행지의 관광명소, 호텔, 레스토랑 정보를 제공하는 독립 여행 정보 플랫폼.",
-      "badge": "당신의 여행 파트너",
-      "title": "About",
+      "metaTitle": "TRAVI World 소개｜신뢰할 수 있는 여행 정보",
+      "metaDescription": "TRAVI World 소개 - 전 세계 여행지의 종합 가이드를 제공하는 독립 여행 정보 플랫폼을 알아보세요.",
+      "badge": "TRAVI World 소개",
+      "title": "발견하기",
       "titleHighlight": "TRAVI World",
-      "subtitle": "종합 여행 정보와 여행지 가이드로 전 세계 수백만 여행자를 자신 있게 지원.",
+      "subtitle": "전 세계 여행지를 종합 가이드와 현지 인사이트로 탐험할 수 있는 신뢰할 수 있는 여행 정보.",
       "ctaExplore": "여행지 탐색",
       "ctaContact": "문의하기",
       "stats": {
@@ -985,88 +1068,6 @@
         "accessibility": "12. 접근성 선언",
         "governingLaw": "13. 준거법, 분쟁 해결, 관할",
         "modifications": "14. 변경, 분리 가능성, 일반 조항"
-      }
-    },
-    "about": {
-      "metaTitle": "TRAVI World 소개｜신뢰할 수 있는 여행 정보",
-      "metaDescription": "TRAVI World 소개 - 전 세계 여행지의 종합 가이드를 제공하는 독립 여행 정보 플랫폼을 알아보세요.",
-      "badge": "TRAVI World 소개",
-      "title": "발견하기",
-      "titleHighlight": "TRAVI World",
-      "subtitle": "전 세계 여행지를 종합 가이드와 현지 인사이트로 탐험할 수 있는 신뢰할 수 있는 여행 정보.",
-      "ctaExplore": "여행지 탐색",
-      "ctaContact": "문의하기",
-      "stats": {
-        "destinations": "여행지",
-        "articles": "기사",
-        "support": "여행 지원",
-        "coverage": "커버리지",
-        "cities": "16개 이상 도시"
-      },
-      "whoWeAre": {
-        "title": "회사 소개"
-      },
-      "mission": {
-        "title": "우리의 미션"
-      },
-      "services": {
-        "badge": "서비스",
-        "title": "제공하는 것"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "여행지 가이드",
-          "description": "전 세계 도시와 지역의 종합 정보"
-        },
-        "attractions": {
-          "title": "관광명소 정보",
-          "description": "필수 방문 장소와 독특한 체험의 상세 정보"
-        },
-        "hotels": {
-          "title": "호텔 가이드",
-          "description": "모든 예산의 숙박 옵션 정보"
-        },
-        "restaurants": {
-          "title": "레스토랑 추천",
-          "description": "모든 입맛과 취향에 맞는 다이닝 옵션"
-        },
-        "articles": {
-          "title": "여행 기사",
-          "description": "팁, 인사이트, 여행 영감"
-        },
-        "news": {
-          "title": "최신 여행 뉴스",
-          "description": "엄선된 여행 업데이트"
-        }
-      },
-      "editorial": {
-        "title": "에디토리얼 독립성",
-        "affiliateTitle": "제휴 공개"
-      },
-      "values": {
-        "badge": "기반",
-        "title": "우리의 가치",
-        "accuracy": {
-          "title": "정확성",
-          "description": "정확하고 신뢰할 수 있는 정보를 제공하며 정기적으로 콘텐츠 업데이트"
-        },
-        "transparency": {
-          "title": "투명성",
-          "description": "제휴 관계와 운영 방식을 명확히 공개"
-        },
-        "userFocused": {
-          "title": "사용자 중심",
-          "description": "여행자가 정보에 기반한 결정을 내릴 수 있도록 콘텐츠 설계"
-        }
-      },
-      "connect": {
-        "badge": "연결하기",
-        "title": "문의하기"
-      },
-      "company": {
-        "title": "회사 정보",
-        "contactTitle": "연락처 정보",
-        "contactForm": "문의 양식"
       }
     }
   }

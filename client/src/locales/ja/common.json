@@ -19,7 +19,11 @@
     "closeMenu": "メニューを閉じる",
     "logoAlt": "TRAVI - 旅行ガイド",
     "followInstagram": "TRAVIのInstagramをフォロー",
-    "followTikTok": "TRAVIのTikTokをフォロー"
+    "followTikTok": "TRAVIのTikTokをフォロー",
+    "changeLanguage": "言語を変更",
+    "selectLanguage": "言語を選択",
+    "popularLanguages": "人気の言語",
+    "allLanguages": "すべての言語"
   },
   "breadcrumbs": {
     "ariaLabel": "パンくずナビゲーション",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Burj Khalifahタワーと夕日のDubaiスカイライン" },
-      "london": { "name": "London", "country": "イギリス", "cardAlt": "Big Benと国会議事堂のLondon" },
-      "paris": { "name": "Paris", "country": "フランス", "cardAlt": "夕日に照らされたEiffel TowerのParis" },
-      "newYork": { "name": "New York", "country": "アメリカ", "cardAlt": "Empire State BuildingとManhattanスカイラインのNew York" },
-      "tokyo": { "name": "Tokyo", "country": "日本", "cardAlt": "渋谷交差点のネオンが輝くTokyo" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay SandsとGardens by the BayのSingapore" },
-      "barcelona": { "name": "Barcelona", "country": "スペイン", "cardAlt": "ゴールデンアワーのSagrada FamiliaのBarcelona" },
-      "bangkok": { "name": "Bangkok", "country": "タイ", "cardAlt": "日の出の王宮のBangkok" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Sheikh Zayed Grand MosqueのAbu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "オランダ", "cardAlt": "歴史的建物と運河のAmsterdam" },
-      "hongKong": { "name": "Hong Kong", "country": "中国", "cardAlt": "夜のスカイラインのHong Kong" },
-      "istanbul": { "name": "Istanbul", "country": "トルコ", "cardAlt": "夕日のBlue MosqueのIstanbul" },
-      "lasVegas": { "name": "Las Vegas", "country": "アメリカ", "cardAlt": "夜のストリップのLas Vegas" },
-      "losAngeles": { "name": "Los Angeles", "country": "アメリカ", "cardAlt": "HollywoodサインのLos Angeles" },
-      "miami": { "name": "Miami", "country": "アメリカ", "cardAlt": "アールデコ地区のMiami Beach" },
-      "rome": { "name": "Rome", "country": "イタリア", "cardAlt": "ゴールデンアワーのColosseumのRome" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Burj Khalifahタワーと夕日のDubaiスカイライン"
+      },
+      "london": {
+        "name": "London",
+        "country": "イギリス",
+        "cardAlt": "Big Benと国会議事堂のLondon"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "フランス",
+        "cardAlt": "夕日に照らされたEiffel TowerのParis"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "アメリカ",
+        "cardAlt": "Empire State BuildingとManhattanスカイラインのNew York"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "日本",
+        "cardAlt": "渋谷交差点のネオンが輝くTokyo"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Marina Bay SandsとGardens by the BayのSingapore"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "スペイン",
+        "cardAlt": "ゴールデンアワーのSagrada FamiliaのBarcelona"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "タイ",
+        "cardAlt": "日の出の王宮のBangkok"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Sheikh Zayed Grand MosqueのAbu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "オランダ",
+        "cardAlt": "歴史的建物と運河のAmsterdam"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "中国",
+        "cardAlt": "夜のスカイラインのHong Kong"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "トルコ",
+        "cardAlt": "夕日のBlue MosqueのIstanbul"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "アメリカ",
+        "cardAlt": "夜のストリップのLas Vegas"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "アメリカ",
+        "cardAlt": "HollywoodサインのLos Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "アメリカ",
+        "cardAlt": "アールデコ地区のMiami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "イタリア",
+        "cardAlt": "ゴールデンアワーのColosseumのRome"
+      }
     },
     "hero": {
       "badge": "世界{{count}}都市",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "夢見る",
         "subtitle": "インスピレーションを発見",
-        "guides": ["旅行先ガイド", "フォトエッセイ"]
+        "guides": [
+          "旅行先ガイド",
+          "フォトエッセイ"
+        ]
       },
       "plan": {
         "title": "計画する",
         "subtitle": "旅程を作成",
-        "guides": ["旅行計画", "ビザ要件"]
+        "guides": [
+          "旅行計画",
+          "ビザ要件"
+        ]
       },
       "prepare": {
         "title": "準備する",
         "subtitle": "出発準備",
-        "guides": ["持ち物リスト", "安全情報"]
+        "guides": [
+          "持ち物リスト",
+          "安全情報"
+        ]
       },
       "experience": {
         "title": "体験する",
         "subtitle": "冒険を楽しむ",
-        "guides": ["地元情報", "穴場スポット"]
+        "guides": [
+          "地元情報",
+          "穴場スポット"
+        ]
       },
       "share": {
         "title": "共有する",
         "subtitle": "ストーリーを語る",
-        "guides": ["旅行記", "写真撮影"]
+        "guides": [
+          "旅行記",
+          "写真撮影"
+        ]
       }
     },
     "categories": {

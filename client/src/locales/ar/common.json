@@ -19,7 +19,11 @@
     "closeMenu": "إغلاق القائمة",
     "logoAlt": "ترافي - دليل السفر",
     "followInstagram": "تابع ترافي على انستغرام",
-    "followTikTok": "تابع ترافي على تيك توك"
+    "followTikTok": "تابع ترافي على تيك توك",
+    "changeLanguage": "تغيير اللغة",
+    "selectLanguage": "اختر اللغة",
+    "popularLanguages": "اللغات الشائعة",
+    "allLanguages": "جميع اللغات"
   },
   "breadcrumbs": {
     "ariaLabel": "التنقل في المسار",

@@ -19,7 +19,11 @@
     "closeMenu": "Menu sluiten",
     "logoAlt": "TRAVI - Reisgids",
     "followInstagram": "Volg TRAVI op Instagram",
-    "followTikTok": "Volg TRAVI op TikTok"
+    "followTikTok": "Volg TRAVI op TikTok",
+    "changeLanguage": "Taal wijzigen",
+    "selectLanguage": "Taal selecteren",
+    "popularLanguages": "Populaire talen",
+    "allLanguages": "Alle talen"
   },
   "breadcrumbs": {
     "ariaLabel": "Broodkruimelnavigatie",

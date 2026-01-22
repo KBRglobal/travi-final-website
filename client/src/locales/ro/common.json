@@ -19,7 +19,11 @@
     "closeMenu": "Închide meniu",
     "logoAlt": "TRAVI - Ghid de călătorie",
     "followInstagram": "Urmărește TRAVI pe Instagram",
-    "followTikTok": "Urmărește TRAVI pe TikTok"
+    "followTikTok": "Urmărește TRAVI pe TikTok",
+    "changeLanguage": "Schimbă limba",
+    "selectLanguage": "Selectează limba",
+    "popularLanguages": "Limbi populare",
+    "allLanguages": "Toate limbile"
   },
   "breadcrumbs": {
     "ariaLabel": "Navigare cu pesmeți",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "EAU", "cardAlt": "Panorama Dubai cu turnul Burj Khalifa la apus" },
-      "london": { "name": "London", "country": "Marea Britanie", "cardAlt": "London Big Ben și Parlamentul" },
-      "paris": { "name": "Paris", "country": "Franța", "cardAlt": "Paris Turnul Eiffel iluminat la apus" },
-      "newYork": { "name": "New York", "country": "SUA", "cardAlt": "New York Manhattan cu Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japonia", "cardAlt": "Tokyo intersecția Shibuya lumini neon noaptea" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands și Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spania", "cardAlt": "Barcelona Sagrada Familia la ora de aur" },
-      "bangkok": { "name": "Bangkok", "country": "Thailanda", "cardAlt": "Bangkok Grand Palace templu la răsărit" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "EAU", "cardAlt": "Abu Dhabi moscheea Sheikh Zayed" },
-      "amsterdam": { "name": "Amsterdam", "country": "Olanda", "cardAlt": "Amsterdam canal cu clădiri istorice" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong panorama noaptea" },
-      "istanbul": { "name": "Istanbul", "country": "Turcia", "cardAlt": "Istanbul Moscheea Albastră la apus" },
-      "lasVegas": { "name": "Las Vegas", "country": "SUA", "cardAlt": "Las Vegas Strip noaptea" },
-      "losAngeles": { "name": "Los Angeles", "country": "SUA", "cardAlt": "Los Angeles semnul Hollywood" },
-      "miami": { "name": "Miami", "country": "SUA", "cardAlt": "Miami Beach cartierul Art Deco" },
-      "rome": { "name": "Rome", "country": "Italia", "cardAlt": "Rome Colosseum la ora de aur" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "EAU",
+        "cardAlt": "Panorama Dubai cu turnul Burj Khalifa la apus"
+      },
+      "london": {
+        "name": "London",
+        "country": "Marea Britanie",
+        "cardAlt": "London Big Ben și Parlamentul"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Franța",
+        "cardAlt": "Paris Turnul Eiffel iluminat la apus"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "SUA",
+        "cardAlt": "New York Manhattan cu Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japonia",
+        "cardAlt": "Tokyo intersecția Shibuya lumini neon noaptea"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Singapore Marina Bay Sands și Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spania",
+        "cardAlt": "Barcelona Sagrada Familia la ora de aur"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailanda",
+        "cardAlt": "Bangkok Grand Palace templu la răsărit"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "EAU",
+        "cardAlt": "Abu Dhabi moscheea Sheikh Zayed"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Olanda",
+        "cardAlt": "Amsterdam canal cu clădiri istorice"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Hong Kong panorama noaptea"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turcia",
+        "cardAlt": "Istanbul Moscheea Albastră la apus"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "SUA",
+        "cardAlt": "Las Vegas Strip noaptea"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "SUA",
+        "cardAlt": "Los Angeles semnul Hollywood"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "SUA",
+        "cardAlt": "Miami Beach cartierul Art Deco"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Italia",
+        "cardAlt": "Rome Colosseum la ora de aur"
+      }
     },
     "hero": {
       "badge": "{{count}} Destinații în Întreaga Lume",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Visează",
         "subtitle": "Descoperă inspirația",
-        "guides": ["Ghiduri de Destinații", "Eseuri Foto"]
+        "guides": [
+          "Ghiduri de Destinații",
+          "Eseuri Foto"
+        ]
       },
       "plan": {
         "title": "Planifică",
         "subtitle": "Trasează-ți drumul",
-        "guides": ["Planificarea Călătoriei", "Cerințe de Viză"]
+        "guides": [
+          "Planificarea Călătoriei",
+          "Cerințe de Viză"
+        ]
       },
       "prepare": {
         "title": "Pregătește-te",
         "subtitle": "Fii gata de drum",
-        "guides": ["Liste de Împachetat", "Sfaturi de Siguranță"]
+        "guides": [
+          "Liste de Împachetat",
+          "Sfaturi de Siguranță"
+        ]
       },
       "experience": {
         "title": "Experimentează",
         "subtitle": "Trăiește aventura",
-        "guides": ["Perspective Locale", "Comori Ascunse"]
+        "guides": [
+          "Perspective Locale",
+          "Comori Ascunse"
+        ]
       },
       "share": {
         "title": "Împărtășește",
         "subtitle": "Spune-ți povestea",
-        "guides": ["Scriere de Călătorie", "Fotografie"]
+        "guides": [
+          "Scriere de Călătorie",
+          "Fotografie"
+        ]
       }
     },
     "categories": {
