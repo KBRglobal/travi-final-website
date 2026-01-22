@@ -144,7 +144,7 @@ function HeroSection() {
           </h1>
 
           <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
-            {t("home.hero.descriptionPart1")} <span className="font-medium text-slate-700 dark:text-slate-300">{t("home.stats.destinationsCountWithLabel", { count: 17 })}</span> {t("home.hero.descriptionPart2")} <span className="font-medium text-slate-700 dark:text-slate-300">{t("home.stats.attractionsCountWithLabel", { count: "3,000" })}</span>.
+            {t("home.hero.descriptionPart1")} <span className="font-medium text-slate-700 dark:text-slate-300">{t("home.stats.destinationsCountWithLabel", { count: 17 })}</span> {t("home.hero.descriptionPart2")} <span className="font-medium text-slate-700 dark:text-slate-300">{t("home.stats.attractionsCountWithLabel", { count: 3000 })}</span>.
           </p>
 
           <dl className="flex flex-wrap justify-center lg:justify-start items-center gap-6 mb-8">

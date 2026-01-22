@@ -79,9 +79,8 @@ router.post("/generate", async (req: Request, res: Response) => {
     }
     
     const attractionData: AttractionData = {
-      id: attraction[0].id,
+      id: parseInt(attraction[0].id, 10),
       title: attraction[0].title,
-      slug: attraction[0].slug,
       cityName: attraction[0].cityName,
       venueName: attraction[0].venueName || undefined,
       duration: attraction[0].duration || undefined,

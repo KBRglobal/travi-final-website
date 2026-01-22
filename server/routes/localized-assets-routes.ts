@@ -96,10 +96,10 @@ router.get("/api/localized-assets/:entityType/:entityId/:locale/:usage", async (
 
     const [asset] = await db.select().from(localizedAssets)
       .where(and(
-        eq(localizedAssets.entityType, entityTypeResult.data),
+        eq(localizedAssets.entityType, entityTypeResult.data as any),
         eq(localizedAssets.entityId, entityId),
-        eq(localizedAssets.locale, localeResult.data),
-        eq(localizedAssets.usage, usageResult.data)
+        eq(localizedAssets.locale, localeResult.data as any),
+        eq(localizedAssets.usage, usageResult.data as any)
       ));
 
     if (!asset) {
@@ -131,14 +131,14 @@ router.get("/api/localized-assets/:entityType/:entityId/:locale/:usage", async (
 
 router.post("/api/admin/localized-assets", requirePermission("canEdit"), async (req: Request, res: Response) => {
   try {
-    const data = insertLocalizedAssetSchema.parse(req.body);
+    const data = insertLocalizedAssetSchema.parse(req.body) as any;
 
     const [existing] = await db.select().from(localizedAssets)
       .where(and(
-        eq(localizedAssets.entityType, data.entityType as any),
+        eq(localizedAssets.entityType, data.entityType),
         eq(localizedAssets.entityId, data.entityId),
-        eq(localizedAssets.locale, data.locale as any),
-        eq(localizedAssets.usage, data.usage as any)
+        eq(localizedAssets.locale, data.locale),
+        eq(localizedAssets.usage, data.usage)
       ));
 
     if (existing) {

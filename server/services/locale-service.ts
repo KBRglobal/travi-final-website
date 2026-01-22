@@ -60,7 +60,7 @@ export async function getTranslationWithFallback<T extends Record<string, unknow
     const [translation] = await db
       .select()
       .from(translations)
-      .where(and(eq(translations.contentId, contentId), eq(translations.locale, locale)))
+      .where(and(eq(translations.contentId, contentId), eq(translations.locale, locale as any)))
       .limit(1);
 
     if (translation) {

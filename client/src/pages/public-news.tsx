@@ -513,7 +513,7 @@ export default function PublicNews() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Eye className="w-4 h-4 text-cyan-400" />
-                          <span>{t("news.views", { count: formatViews(heroArticle.viewCount || 0) })}</span>
+                          <span>{t("news.views", { count: heroArticle.viewCount || 0 })}</span>
                         </div>
                         <span className="text-white/60">{getArticleDate(heroArticle, t)}</span>
                       </div>
