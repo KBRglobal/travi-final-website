@@ -1,222 +1,345 @@
 {
   "nav": {
-    "home": "Home",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News & Guides",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language"
+    "home": "ہوم",
+    "destinations": "منزلیں",
+    "attractions": "سیاحتی مقامات",
+    "hotels": "ہوٹل",
+    "guides": "سفری رہنما",
+    "dining": "کھانے کے مقامات",
+    "districts": "علاقے",
+    "articles": "خبریں",
+    "news": "خبریں",
+    "shopping": "خریداری",
+    "realEstate": "جائیداد",
+    "events": "تقریبات",
+    "search": "تلاش",
+    "language": "زبان",
+    "mainNavigation": "اہم نیویگیشن",
+    "openMenu": "مینو کھولیں",
+    "closeMenu": "مینو بند کریں",
+    "logoAlt": "TRAVI - سفری رہنما",
+    "followInstagram": "انسٹاگرام پر TRAVI کو فالو کریں",
+    "followTikTok": "ٹک ٹاک پر TRAVI کو فالو کریں"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "بریڈکرمب نیویگیشن",
+    "dubai": "دبئی"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "مزید پڑھیں",
+    "viewAll": "سب دیکھیں",
+    "learnMore": "مزید جانیں",
+    "bookNow": "ابھی بک کریں",
+    "contactUs": "ہم سے رابطہ کریں",
+    "subscribe": "سبسکرائب کریں",
+    "submit": "جمع کریں",
+    "cancel": "منسوخ",
+    "save": "محفوظ کریں",
+    "edit": "ترمیم",
+    "delete": "حذف",
+    "loading": "لوڈ ہو رہا ہے...",
+    "error": "کچھ غلط ہو گیا",
+    "noResults": "کوئی نتائج نہیں ملے",
+    "seeMore": "مزید دیکھیں",
+    "back": "واپس",
+    "next": "اگلا",
+    "previous": "پچھلا",
+    "close": "بند کریں",
+    "share": "شیئر کریں",
+    "copyLink": "لنک کاپی کریں",
+    "copied": "کاپی ہو گیا!"
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "TRAVI کے ساتھ دنیا کی سیر کریں",
+      "subtitle": "دنیا بھر کی 17 منزلوں کے لیے آپ کا جامع سفری رہنما",
+      "searchPlaceholder": "سیاحتی مقامات، ہوٹل، ریستوران تلاش کریں...",
+      "cta": "دریافت شروع کریں",
+      "badge": "عالمی سفر کا آپ کا دروازہ",
+      "headlinePart1": "آپ کا معتبر سفری",
+      "headlinePart2": "ذریعہ",
+      "description": "دنیا بھر میں {{destinations}} منزلوں کے لیے جامع سفری معلومات۔ {{attractions}}+ سیاحتی مقامات کے تفصیلی رہنما دریافت کریں۔",
+      "descriptionPart1": "جامع سفری معلومات",
+      "descriptionPart2": "منزلوں کے لیے۔ تفصیلی رہنما دریافت کریں",
+      "descriptionPart3": "سیاحتی مقامات۔",
+      "carouselLabel": "منزل کیروسل نیویگیشن",
+      "viewDestination": "{{name}} دیکھیں - {{tagline}}",
+      "worldwide": "دنیا بھر میں",
+      "exploreWorld": "دنیا دریافت کریں",
+      "welcomeAriaLabel": "TRAVI World میں خوش آمدید",
+      "pageTitle": "TRAVI World - ہوٹل، سیاحتی مقامات اور سرگرمیوں کے سفری رہنما",
+      "pageDescription": "دنیا بھر کی 17 منزلوں کے لیے آپ کا مکمل سفری رہنما۔ 3,000+ مقامات کے لیے ماہرانہ معلومات۔",
+      "orgDescription": "دنیا بھر کی 17 منزلوں کے لیے آپ کا معتبر سفری ذریعہ۔"
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "srLabel": {
+      "attractions": "{{count}} سے زیادہ سیاحتی مقامات شامل",
+      "destinations": "{{count}} عالمی منزلیں",
+      "languages": "متعدد زبانوں کا پلیٹ فارم"
+    },
+    "featured": "نمایاں",
+    "trending": "رجحان میں",
+    "topAttractions": "بہترین سیاحتی مقامات",
+    "bestHotels": "بہترین ہوٹل",
+    "latestNews": "تازہ ترین خبریں اور رہنما",
+    "sections": {
+      "destinations": "منزلیں دریافت کریں",
+      "destinationsDesc": "عالمی سفری منزلوں کا ہمارا منتخب مجموعہ دریافت کریں",
+      "categories": "زمرے کے مطابق تلاش کریں",
+      "categoriesDesc": "جو آپ ڈھونڈ رہے ہیں وہ بالکل تلاش کریں",
+      "experiences": "تجربے کے مطابق سفر",
+      "experiencesDesc": "اپنا سفری انداز منتخب کریں",
+      "faq": "اکثر پوچھے گئے سوالات",
+      "faqDesc": "TRAVI کے بارے میں سب کچھ جانیں",
+      "regions": "علاقے کے مطابق دریافت کریں",
+      "newsletter": "اپ ڈیٹ رہیں",
+      "allDestinationsTitle": "تمام {{count}} منزلوں کے سفری رہنما",
+      "completeGuide": "{{name}}، {{country}} - مکمل سفری رہنما"
+    },
+    "cta": {
+      "exploreDestinations": "منزلیں دریافت کریں",
+      "viewGuides": "رہنما دیکھیں",
+      "viewAll": "سب دیکھیں",
+      "startExploring": "دریافت شروع کریں",
+      "planTrip": "اپنا سفر منصوبہ بنائیں",
+      "viewExperience": "{{name}} دیکھیں"
+    },
+    "stats": {
+      "destinations": "منزلیں",
+      "attractions": "سیاحتی مقامات",
+      "languages": "زبانیں",
+      "attractionsNum": "3,000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} منزلیں",
+      "attractionsCountWithLabel": "{{count}}+ سیاحتی مقامات"
+    },
+    "categories": {
+      "attractions": "سیاحتی مقامات",
+      "attractionsDesc": "ضرور دیکھنے والے مقامات",
+      "news": "سفری خبریں",
+      "newsDesc": "تازہ ترین اپ ڈیٹس",
+      "guides": "رہنما",
+      "guidesDesc": "منزل کے رہنما",
+      "hotels": "ہوٹل",
+      "hotelsDesc": "اپنی مثالی قیام تلاش کریں"
+    },
+    "experiences": {
+      "luxury": "پرتعیش سفر",
+      "luxuryDesc": "اعلیٰ سفری تجربات اور خصوصی منزلیں",
+      "adventure": "ایڈونچر اور آؤٹ ڈور",
+      "adventureDesc": "پرجوش آؤٹ ڈور تجربات اور مہم جوئی",
+      "family": "خاندانی سفر",
+      "familyDesc": "خاندان دوست منزلیں اور سرگرمیاں",
+      "budget": "بجٹ سفر",
+      "budgetDesc": "کفایتی سفری اختیارات اور منزلیں",
+      "romance": "ہنی مون اور رومانس",
+      "romanceDesc": "رومانوی چھٹیاں اور ہنی مون منزلیں",
+      "solo": "اکیلے سفر",
+      "soloDesc": "اکیلے مسافروں کے لیے بہترین منزلیں"
+    },
+    "faq": {
+      "title": "اکثر پوچھے گئے سوالات",
+      "subtitle": "TRAVI World کے بارے میں سب کچھ جانیں",
+      "whatIsTravi": "TRAVI World کیا ہے؟",
+      "whatIsTraviAnswer": "TRAVI World ایک جامع سفری معلومات کا پلیٹ فارم ہے جو دنیا بھر کی 17 منزلوں کا احاطہ کرتا ہے اور 3,000+ سیاحتی مقامات، ہوٹلوں، ریستوران اور سرگرمیوں کے تفصیلی رہنما فراہم کرتا ہے۔",
+      "howManyDestinations": "TRAVI کتنی منزلوں کا احاطہ کرتا ہے؟",
+      "howManyDestinationsAnswer": "TRAVI World 17 اہم سفری منزلوں کا احاطہ کرتا ہے جن میں دبئی، پیرس، ٹوکیو، نیویارک، بارسلونا، سنگاپور، لندن، بینکاک، ابوظہبی، ایمسٹرڈیم، ہانگ کانگ، استنبول، لاس ویگاس، لاس اینجلس، میامی اور روم شامل ہیں۔",
+      "isFree": "کیا TRAVI World استعمال کرنا مفت ہے؟",
+      "isFreeAnswer": "جی ہاں، TRAVI World استعمال کرنا بالکل مفت ہے۔ ہزاروں سفری رہنما، سیاحتی مقامات کے جائزے، ہوٹل کی سفارشات اور ریستوران کی تجاویز بغیر کسی لاگت کے براؤز کریں۔",
+      "updateFrequency": "مواد کتنی بار اپ ڈیٹ ہوتا ہے؟",
+      "updateFrequencyAnswer": "TRAVI World کا مواد روزانہ تازہ ترین سفری خبروں، نئے سیاحتی مقامات کے جائزوں اور تمام 17 منزلوں میں ہوٹلوں اور ریستوران کے بارے میں اپ ڈیٹ معلومات کے ساتھ اپ ڈیٹ ہوتا ہے۔"
+    },
+    "mascotAlt": "TRAVI ماسکوٹ عالمی نشانیوں کے ساتھ - دبئی، پیرس، لندن، روم اور مزید کے سفری رہنما دریافت کریں",
+    "mascotTitle": "TRAVI World - عالمی منزلوں کے سفری رہنما"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "سیاحتی مقامات",
+    "subtitle": "مشہور نشانیاں اور پوشیدہ خزانے دریافت کریں",
+    "hero": {
+      "badge": "{{cities}} شہروں میں {{count}} سیاحتی مقامات",
+      "badgeThousands": "دنیا بھر میں ہزاروں سیاحتی مقامات",
+      "headlinePart1": "کرنے کی چیزیں",
+      "headlinePart2": "دنیا بھر میں",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">قطار کے بغیر ٹکٹ</span> ایفل ٹاور، کولوسیم، برج خلیفہ اور پیرس، روم، دبئی کے بہترین مقامات کے لیے۔",
+      "searchPlaceholder": "ایفل ٹاور، کولوسیم، برج خلیفہ تلاش کریں...",
+      "carouselLabel": "نمایاں سیاحتی مقامات کا کیروسل",
+      "sectionLabel": "دنیا بھر کے بہترین مقامات کے ٹکٹ بک کریں",
+      "searchAriaLabel": "نام یا شہر سے سیاحتی مقامات تلاش کریں",
+      "searchButton": "تلاش",
+      "searchButtonAriaLabel": "سیاحتی مقامات تلاش کریں"
+    },
+    "stats": {
+      "attractions": "سیاحتی مقامات",
+      "cities": "شہر",
+      "rating": "درجہ بندی"
+    },
+    "srLabel": {
+      "attractions": "{{count}} سے زیادہ سیاحتی مقامات",
+      "cities": "{{count}} شہر",
+      "rating": "{{rating}} ستارہ درجہ بندی"
+    },
+    "types": {
+      "all": "تمام اقسام",
+      "museums": "میوزیم",
+      "landmarks": "نشانیاں",
+      "tours": "ٹور",
+      "themeParks": "تھیم پارکس",
+      "shows": "شوز"
+    },
+    "thingsToDoIn": "{{name}} میں کرنے کی چیزیں",
+    "countAttractions": "{{country}} - {{count}} سیاحتی مقامات",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "سب",
+      "popular": "سب سے مقبول",
+      "free": "مفت داخلہ",
+      "familyFriendly": "خاندان دوست",
+      "outdoor": "باہر",
+      "indoor": "اندر"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "مقام",
+      "hours": "کھلنے کے اوقات",
+      "price": "قیمت",
+      "duration": "دورانیہ",
+      "tips": "اندرونی تجاویز"
+    },
+    "sections": {
+      "destinations": "منزل کے مطابق سیاحتی مقامات دریافت کریں",
+      "destinationsDesc": "کرنے کی شاندار چیزیں دریافت کرنے کے لیے شہر منتخب کریں",
+      "faq": "اکثر پوچھے گئے سوالات",
+      "faqDesc": "دنیا بھر میں سیاحتی مقامات کی بکنگ کے بارے میں جوابات حاصل کریں",
+      "whyBookBadge": "ہمارے ساتھ کیوں بک کریں",
+      "whyBookTitle": "قطاروں کو چھوڑیں، وقت بچائیں",
+      "whyBookDesc": "پہلے سے ٹکٹ بک کریں اور بہترین مقامات میں آسان داخلے کا لطف اٹھائیں",
+      "allDestinations": "تمام منزلیں"
+    },
+    "features": {
+      "skipTheLine": "قطار کے بغیر ٹکٹ",
+      "skipTheLineDesc": "ایفل ٹاور، کولوسیم، ویٹیکن اور مزید میں قطاروں کو چھوڑیں",
+      "mobileTickets": "موبائل ٹکٹ",
+      "mobileTicketsDesc": "فوری طور پر آپ کے فون پر - ٹکٹ دکھائیں اور داخل ہوں",
+      "freeCancellation": "مفت منسوخی",
+      "freeCancellationDesc": "منصوبے بدل گئے؟ 24 گھنٹے پہلے منسوخ کریں مکمل واپسی کے لیے"
+    },
+    "browse": {
+      "title": "منزل کے مطابق کرنے کی چیزیں",
+      "desc": "دنیا کے بہترین شہروں میں سیاحتی مقامات اور تجربات تلاش کریں",
+      "thingsToDo": "{{count}} کرنے کی چیزیں",
+      "noDestinations": "اس وقت کوئی منزل دستیاب نہیں۔"
+    },
+    "exploreLinks": {
+      "title": "مزید سفری رہنما دریافت کریں",
+      "hotelsWorldwide": "دنیا بھر میں ہوٹل",
+      "bestRestaurants": "بہترین ریستوران",
+      "travelNews": "سفری خبریں"
+    },
+    "cta": {
+      "title": "دریافت کے لیے تیار ہیں؟",
+      "desc": "ایفل ٹاور، کولوسیم، برج خلیفہ اور دنیا بھر کے بہترین مقامات کے قطار کے بغیر ٹکٹ بک کریں۔",
+      "parisAttractions": "پیرس کے سیاحتی مقامات",
+      "romeAttractions": "روم کے سیاحتی مقامات"
+    },
+    "search": {
+      "popular": "مقبول:",
+      "thingsToDoIn": "{{city}} میں کرنے کی چیزیں",
+      "ariaCarouselNav": "سیاحتی مقامات کیروسل نیویگیشن",
+      "ariaViewInCity": "{{city}} میں {{name}} دیکھیں"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "نمایاں سیاحتی مقام",
+      "ariaThumbnails": "سیاحتی مقامات کیروسل تھمب نیلز",
+      "ariaTicketsIn": "{{city}} میں {{name}} کے ٹکٹ",
+      "priceFrom": "سے",
+      "bookTickets": "ٹکٹ بک کریں",
+      "skipTheLine": "قطار چھوڑیں",
+      "duration": "2-3 گھنٹے",
+      "freeCancellation": "مفت منسوخی",
+      "freeCancellationDesc": "دورے سے 24 گھنٹے پہلے",
+      "mobileTickets": "موبائل ٹکٹ",
+      "instantDelivery": "فوری ڈیلیوری"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} کرنے کی چیزیں"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "ہوٹل",
+    "subtitle": "اپنی مثالی قیام تلاش کریں",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "تمام ہوٹل",
+      "luxury": "پرتعیش",
+      "budget": "بجٹ دوست",
+      "beachfront": "ساحل کنارے",
+      "cityCenter": "شہر کا مرکز",
+      "familyFriendly": "خاندان دوست"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "سے",
+      "perNight": "فی رات",
+      "amenities": "سہولیات",
+      "checkIn": "چیک ان",
+      "checkOut": "چیک آؤٹ",
+      "rooms": "کمرے",
+      "rating": "درجہ بندی"
     },
-    "bookNow": "Book Now"
+    "bookNow": "ابھی بک کریں"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "کھانے کے مقامات",
+    "subtitle": "ہر ذائقے کے لیے کھانے کے تجربات",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
-      "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "all": "تمام ریستوران",
+      "fineDining": "فائن ڈائننگ",
+      "casual": "کیژول ڈائننگ",
+      "cafes": "کیفے",
+      "streetFood": "اسٹریٹ فوڈ",
+      "halal": "حلال",
+      "vegetarian": "سبزی خور"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
-    }
-  },
-  "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
-  },
-  "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
-    "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
-    },
-    "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
-    },
-    "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
-    }
-  },
-  "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
-  },
-  "footer": {
-    "about": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "contact": "Contact Us",
-    "followUs": "Follow Us",
-    "newsletter": {
-      "title": "Stay Updated",
-      "subtitle": "Get the latest Dubai travel tips and exclusive deals",
-      "placeholder": "Enter your email",
-      "button": "Subscribe",
-      "success": "Thanks for subscribing!",
-      "error": "Something went wrong. Please try again."
-    },
-    "copyright": "All rights reserved"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
-    },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
-    },
-    "network": {
-      "title": "Connection Error",
-      "message": "Please check your internet connection.",
-      "button": "Retry"
-    }
-  },
-  "meta": {
-    "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
-    },
-    "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
-    },
-    "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
-    },
-    "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "cuisine": "کچن",
+      "priceRange": "قیمت کی حد",
+      "hours": "کھلنے کے اوقات",
+      "dress": "لباس کوڈ",
+      "reservations": "ریزرویشن"
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "دبئی", "country": "متحدہ عرب امارات", "cardAlt": "غروب آفتاب میں برج خلیفہ کے ساتھ دبئی اسکائی لائن" },
+      "london": { "name": "لندن", "country": "برطانیہ", "cardAlt": "لندن بگ بین اور ہاؤسز آف پارلیمنٹ" },
+      "paris": { "name": "پیرس", "country": "فرانس", "cardAlt": "غروب آفتاب میں روشن ایفل ٹاور پیرس" },
+      "newYork": { "name": "نیویارک", "country": "امریکہ", "cardAlt": "ایمپائر اسٹیٹ بلڈنگ کے ساتھ نیویارک مین ہیٹن اسکائی لائن" },
+      "tokyo": { "name": "ٹوکیو", "country": "جاپان", "cardAlt": "رات کو نیون لائٹس میں ٹوکیو شیبویا کراسنگ" },
+      "singapore": { "name": "سنگاپور", "country": "سنگاپور", "cardAlt": "سنگاپور مرینا بے سینڈز اور گارڈنز بائی دی بے" },
+      "barcelona": { "name": "بارسلونا", "country": "سپین", "cardAlt": "سنہری گھنٹے میں بارسلونا ساگراڈا فیملیا" },
+      "bangkok": { "name": "بینکاک", "country": "تھائی لینڈ", "cardAlt": "طلوع آفتاب میں بینکاک گرینڈ پیلس مندر" },
+      "abuDhabi": { "name": "ابوظہبی", "country": "متحدہ عرب امارات", "cardAlt": "ابوظہبی شیخ زاید گرینڈ مسجد" },
+      "amsterdam": { "name": "ایمسٹرڈیم", "country": "نیدرلینڈز", "cardAlt": "تاریخی عمارتوں کے ساتھ ایمسٹرڈیم کینال" },
+      "hongKong": { "name": "ہانگ کانگ", "country": "چین", "cardAlt": "رات میں ہانگ کانگ اسکائی لائن" },
+      "istanbul": { "name": "استنبول", "country": "ترکی", "cardAlt": "غروب آفتاب میں استنبول بلیو مسجد" },
+      "lasVegas": { "name": "لاس ویگاس", "country": "امریکہ", "cardAlt": "رات میں لاس ویگاس اسٹرپ" },
+      "losAngeles": { "name": "لاس اینجلس", "country": "امریکہ", "cardAlt": "لاس اینجلس ہالی ووڈ سائن" },
+      "miami": { "name": "میامی", "country": "امریکہ", "cardAlt": "میامی بیچ آرٹ ڈیکو ڈسٹرکٹ" },
+      "rome": { "name": "روم", "country": "اٹلی", "cardAlt": "سنہری گھنٹے میں روم کولوسیم" }
+    },
     "hero": {
       "badge": "{{count}} عالمی منزلیں",
-      "trustedBy": "{{count}} منزلوں کا اعتماد",
+      "trustedBy": "{{count}} منزلوں میں قابل اعتماد",
       "discover": "دریافت کریں",
-      "worldClass": "عالمی معیار",
+      "worldClass": "عالمی معیار کی",
       "destinations": "منزلیں",
-      "description": "دنیا کے سب سے دلکش شہروں کے لیے مقامی مہارت کے ساتھ سفری رہنما۔",
-      "exploreAll": "تمام منزلیں دیکھیں",
+      "description": "دنیا کے سب سے دلکش شہروں کے لیے مقامی مہارت کے ساتھ منتخب سفری رہنما۔ مشہور نشانیوں سے پوشیدہ خزانوں تک۔",
+      "exploreAll": "تمام منزلیں دریافت کریں",
       "travelGuides": "سفری رہنما",
-      "explorePlaceholder": "منزلیں تلاش کریں",
-      "browseCollection": "ہماری منتخب منزلوں کا مجموعہ دیکھیں",
+      "explorePlaceholder": "منزلیں دریافت کریں",
+      "browseCollection": "نیچے ہماری منتخب سفری منزلوں کا مجموعہ دیکھیں",
       "explore": "دریافت",
       "discoverButton": "دریافت کریں",
       "ariaLabel": "منزلوں کا جائزہ",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "{{name}} دریافت کریں",
+      "galleryAriaLabel": "نمایاں منزل گیلری",
+      "placeholderAriaLabel": "نمایاں منزل پلیس ہولڈر"
     },
     "stats": {
       "destinations": "منزلیں",
@@ -226,7 +349,7 @@
     },
     "sections": {
       "featured": "نمایاں منزلیں",
-      "featuredDesc": "غیر معمولی تجربات کے ساتھ منتخب منزلیں۔",
+      "featuredDesc": "غیر معمولی تجربات، مقامی بصیرت اور آپ کے مثالی سفر کی منصوبہ بندی کے لیے سب کچھ کے ساتھ منتخب منزلیں۔",
       "all": "تمام منزلیں",
       "count": "{{count}} منزلیں ملیں"
     },
@@ -242,7 +365,7 @@
       "next": "اگلی منزل",
       "goTo": "{{name}} پر جائیں",
       "slideOf": "سلائیڈ {{current}} از {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "منزل کیروسل تھمب نیلز"
     },
     "card": {
       "explore": "دریافت",
@@ -253,28 +376,616 @@
     },
     "faq": {
       "title": "اکثر پوچھے گئے سوالات",
-      "subtitle": "TRAVI منزل گائیڈز کے بارے میں سب کچھ",
+      "subtitle": "TRAVI منزل رہنما کے بارے میں سب کچھ جانیں",
       "q1": "TRAVI کتنی منزلوں کا احاطہ کرتا ہے؟",
-      "a1": "TRAVI مشرق وسطی، یورپ، ایشیا اور امریکہ میں اہم سیاحتی مقامات کا احاطہ کرتا ہے۔",
-      "q2": "TRAVI گائیڈز میں کیا معلومات شامل ہیں؟",
-      "a2": "ہر گائیڈ میں پرکشش مقامات، رہائش، مقامی کھانے اور سفری معلومات شامل ہیں۔",
+      "a1": "TRAVI مشرق وسطی، یورپ، ایشیا اور امریکہ میں اہم سفری منزلوں کا احاطہ کرتا ہے ہر مقام کے لیے جامع رہنما کے ساتھ۔",
+      "q2": "TRAVI منزل رہنما میں کیا معلومات شامل ہیں؟",
+      "a2": "ہر منزل کے رہنما میں سیاحتی مقامات، رہائش کے اختیارات، مقامی کچن، نقل و حمل کی تجاویز اور عملی سفری معلومات شامل ہیں۔",
       "q3": "کیا میں منزلیں تلاش کر سکتا ہوں؟",
-      "a3": "جی ہاں، آپ نام یا ملک سے تلاش کر سکتے ہیں۔",
+      "a3": "جی ہاں، TRAVI منزلوں کے صفحے پر سرچ بار استعمال کرتے ہوئے نام یا ملک سے منزلیں تلاش کرنے کی اجازت دیتا ہے۔",
       "q4": "TRAVI پر نمایاں منزلیں کیا ہیں؟",
-      "a4": "نمایاں منزلیں غیر معمولی تجربات فراہم کرتی ہیں۔"
+      "a4": "TRAVI کی نمایاں منزلیں منتخب مقامات ہیں جو پرتعیش سے بجٹ سفر تک متنوع دلچسپیوں والے مسافروں کے لیے غیر معمولی تجربات فراہم کرتی ہیں۔"
     },
     "loading": {
       "title": "منزلیں لوڈ ہو رہی ہیں",
-      "message": "تازہ ترین ڈیٹا حاصل ہو رہا ہے..."
+      "message": "تازہ ترین منزل ڈیٹا حاصل ہو رہا ہے..."
     },
     "error": {
       "title": "منزلیں لوڈ کرنے میں ناکام",
-      "message": "بعد میں دوبارہ کوشش کریں۔",
+      "message": "منزل ڈیٹا لوڈ کرنے میں مشکل ہو رہی ہے۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
       "refresh": "صفحہ ریفریش کریں"
     },
     "empty": {
       "title": "کوئی منزل دستیاب نہیں",
-      "message": "فی الحال کوئی منزل دستیاب نہیں ہے۔"
+      "message": "فی الحال کوئی منزل دستیاب نہیں۔ براہ کرم بعد میں دوبارہ چیک کریں۔"
+    }
+  },
+  "districts": {
+    "title": "علاقے",
+    "subtitle": "متنوع محلے دریافت کریں",
+    "explore": "علاقہ دریافت کریں"
+  },
+  "realEstate": {
+    "title": "جائیداد",
+    "subtitle": "مستقبل میں سرمایہ کاری کریں",
+    "offPlan": {
+      "title": "آف پلان پراپرٹیز",
+      "subtitle": "جلدی سرمایہ کاری کریں، کم ادا کریں، زیادہ کمائیں",
+      "findProperty": "میری مثالی پراپرٹی تلاش کریں",
+      "from": "سے",
+      "paymentPlan": "ادائیگی کا منصوبہ",
+      "handover": "حوالگی",
+      "developer": "ڈویلپر"
+    },
+    "filters": {
+      "all": "تمام پراپرٹیز",
+      "apartments": "اپارٹمنٹس",
+      "villas": "ولاز",
+      "townhouses": "ٹاؤن ہاؤسز",
+      "penthouses": "پینٹ ہاؤسز"
+    },
+    "features": {
+      "cryptoAccepted": "کرپٹو قبول",
+      "paymentPlans": "لچکدار ادائیگی کے منصوبے",
+      "goldenVisa": "گولڈن ویزا کے اہل",
+      "roiGuarantee": "ROI گارنٹی"
+    }
+  },
+  "search": {
+    "placeholder": "سیاحتی مقامات، رہنما، منزلیں تلاش کریں...",
+    "results": "تلاش کے نتائج",
+    "noResults": "کے لیے کوئی نتائج نہیں ملے",
+    "tryAgain": "مختلف الفاظ آزمائیں"
+  },
+  "footer": {
+    "about": "TRAVI کے بارے میں",
+    "aboutTravi": "TRAVI کے بارے میں",
+    "aboutText": "دنیا بھر کی 17 منزلوں کے لیے جامع سفری معلومات۔",
+    "aboutUs": "ہمارے بارے میں",
+    "quickLinks": "فوری لنکس",
+    "legal": "قانونی",
+    "privacy": "رازداری کی پالیسی",
+    "privacyPolicy": "رازداری کی پالیسی",
+    "terms": "شرائط و ضوابط",
+    "termsOfService": "خدمت کی شرائط",
+    "contact": "ہم سے رابطہ کریں",
+    "contactUs": "ہم سے رابطہ کریں",
+    "followUs": "ہمیں فالو کریں",
+    "explore": "دریافت کریں",
+    "travel": "سفر",
+    "company": "کمپنی",
+    "allGuides": "تمام رہنما",
+    "cookies": "کوکیز",
+    "security": "سیکیورٹی",
+    "cookieSettings": "کوکی سیٹنگز",
+    "tagline": "آپ کا معتبر سفری ذریعہ",
+    "ariaLabel": "سائٹ فوٹر",
+    "featuredGuides": "نمایاں رہنما",
+    "tools": "ٹولز",
+    "currencyConverter": "کرنسی کنورٹر",
+    "roiCalculator": "ROI کیلکولیٹر",
+    "mortgageCalculator": "مارگیج کیلکولیٹر",
+    "glossary": "اصطلاحات",
+    "freeThingsToDo": "70+ مفت سرگرمیاں",
+    "open24Hours": "24 گھنٹے کھلا",
+    "tributeToSheikh": "شیخ محمد کو خراج تحسین",
+    "lawsForTourists": "سیاحوں کے لیے قوانین",
+    "newsletter": "ہمارے نیوز لیٹر کو سبسکرائب کریں",
+    "newsletterDescription": "تازہ ترین سفری تجاویز اور اپ ڈیٹس حاصل کریں۔",
+    "emailPlaceholder": "اپنی ای میل درج کریں",
+    "allRightsReserved": "تمام حقوق محفوظ ہیں۔",
+    "copyright": "© {{year}} {{brand}}۔ تمام حقوق محفوظ ہیں۔",
+    "emailAriaLabel": "TRAVI کو ای میل بھیجیں"
+  },
+  "errors": {
+    "404": {
+      "title": "صفحہ نہیں ملا",
+      "message": "جو صفحہ آپ ڈھونڈ رہے ہیں وہ موجود نہیں ہے۔",
+      "button": "ہوم جائیں"
+    },
+    "500": {
+      "title": "سرور کی خرابی",
+      "message": "ہماری طرف سے کچھ غلط ہو گیا۔",
+      "button": "دوبارہ کوشش کریں"
+    },
+    "network": {
+      "title": "کنکشن کی خرابی",
+      "message": "کنکشن نہیں ہو سکا۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں۔",
+      "button": "دوبارہ کوشش"
+    }
+  },
+  "newsletter": {
+    "badge": "مہم جوئی میں شامل ہوں",
+    "title": "اپنے ان باکس میں سفری جادو حاصل کریں",
+    "description": "ہفتہ وار تجاویز، پوشیدہ خزانے، اور خصوصی پیشکشیں - کوئی سپیم نہیں، صرف سفر کا جنون۔",
+    "emailPlaceholder": "آپ کی ای میل",
+    "subscribe": "سبسکرائب کریں",
+    "success": "آپ سبسکرائب ہو گئے! اپنا ان باکس چیک کریں۔"
+  },
+  "cookies": {
+    "title": "ہم آپ کی رازداری کی قدر کرتے ہیں",
+    "description": "ہم آپ کے براؤزنگ تجربے کو بہتر بنانے، سائٹ ٹریفک کا تجزیہ کرنے، اور مواد کو ذاتی بنانے کے لیے کوکیز استعمال کرتے ہیں۔ \"سب قبول کریں\" پر کلک کرکے، آپ ہماری کوکیز کے استعمال پر رضامندی دیتے ہیں۔",
+    "manage": "منظم کریں",
+    "rejectAll": "سب رد کریں",
+    "acceptAll": "سب قبول کریں",
+    "preferencesTitle": "کوکی ترجیحات",
+    "savePreferences": "ترجیحات محفوظ کریں",
+    "essential": {
+      "title": "ضروری کوکیز",
+      "description": "ویب سائٹ کے صحیح کام کے لیے ضروری"
+    },
+    "analytics": {
+      "title": "تجزیاتی کوکیز",
+      "description": "ہمیں سمجھنے میں مدد کریں کہ وزیٹرز ہماری ویب سائٹ کے ساتھ کیسے تعامل کرتے ہیں"
+    },
+    "marketing": {
+      "title": "مارکیٹنگ کوکیز",
+      "description": "ذاتی اشتہارات فراہم کرنے کے لیے استعمال"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - دنیا دریافت کریں | آپ کا حتمی سفری رہنما",
+      "description": "دنیا بھر کے بہترین سیاحتی مقامات، ہوٹل، ریستوران اور محلے دریافت کریں۔ اندرونی تجاویز اور مقامی سفارشات کے ساتھ اپنے مثالی سفر کی منصوبہ بندی کریں۔"
+    },
+    "attractions": {
+      "title": "سیاحتی مقامات | دنیا بھر میں کرنے کی بہترین چیزیں",
+      "description": "دنیا بھر کے بہترین سیاحتی مقامات دریافت کریں - مشہور نشانیوں سے پوشیدہ خزانوں تک۔ اپنی سیاحتی مہم کی منصوبہ بندی کریں۔"
+    },
+    "hotels": {
+      "title": "ہوٹل | دنیا بھر میں قیام کے بہترین مقامات",
+      "description": "کسی بھی بجٹ کے لیے مثالی ہوٹل تلاش کریں۔ پرتعیش ریزورٹس سے بجٹ دوست اختیارات تک۔"
+    },
+    "dining": {
+      "title": "ریستوران | دنیا بھر میں بہترین کھانے کے مقامات",
+      "description": "دنیا بھر کے کھانے کے منظر نامے کو دریافت کریں - فائن ڈائننگ، اسٹریٹ فوڈ، اور ہر چیز۔"
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "سفری انٹیلی جنس",
+      "headlinePart1": "کہانیاں جو",
+      "headlinePart2": "آپ کو متحرک کریں",
+      "description": "ماہر کے تیار کردہ رہنما، اندرونی نقطہ نظر، اور تحریری بیانیے جو آپ کے دنیا کے تجربے کو بدل دیتے ہیں۔",
+      "startJourney": "اپنا سفر شروع کریں",
+      "browseCollection": "مجموعہ دیکھیں",
+      "issueBadge": "شمارہ 47 — سرما 2026"
+    },
+    "stats": {
+      "guides": "سفری رہنما",
+      "destinations": "منزلیں",
+      "languages": "زبانیں"
+    },
+    "journey": {
+      "badge": "آپ کا سفر، ہماری رہنمائی",
+      "title": "ہر عظیم سفر ایک رہنما سے شروع ہوتا ہے",
+      "subtitle": "خواب دیکھنے سے شیئر کرنے تک، ہم ہر قدم پر آپ کے ساتھ ہیں"
+    },
+    "ideaLab": {
+      "badge": "آئیڈیا لیب",
+      "title": "منتخب الہام",
+      "readGuide": "رہنما پڑھیں"
+    },
+    "archetype": {
+      "badge": "آپ کے لیے ذاتی",
+      "title": "آپ کس قسم کے مسافر ہیں؟",
+      "subtitle": "اپنا سفری انداز منتخب کریں اور آپ کے لیے منتخب رہنما دریافت کریں",
+      "viewGuides": "{{type}} رہنما دیکھیں"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "مہم جو",
+        "description": "پرجوش تجربات اور ایڈرینالین رش"
+      },
+      "culture": {
+        "name": "ثقافت کے دریافت کنندہ",
+        "description": "فن، تاریخ، اور مقامی روایات"
+      },
+      "relaxation": {
+        "name": "آرام کے ماہر",
+        "description": "تندرستی کی جگہیں اور پرسکون فرار"
+      },
+      "foodie": {
+        "name": "کھانے کے شوقین",
+        "description": "مقامی ذائقے اور کھانے کی مہم جوئی"
+      },
+      "wellness": {
+        "name": "تندرستی کے متلاشی",
+        "description": "آرام، سپا، اور ذہن سازی کی جگہیں"
+      },
+      "budget": {
+        "name": "سمارٹ مسافر",
+        "description": "زیادہ سے زیادہ تجربہ، کم سے کم بجٹ"
+      },
+      "solo": {
+        "name": "اکیلے دریافت کنندہ",
+        "description": "آزاد سفر اور خود دریافت"
+      },
+      "luxury": {
+        "name": "پرتعیش شناخت کار",
+        "description": "اعلیٰ تجربات اور شاندار زندگی"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "خواب",
+        "subtitle": "الہام دریافت کریں",
+        "guides": ["منزل رہنما", "فوٹو مضامین"]
+      },
+      "plan": {
+        "title": "منصوبہ",
+        "subtitle": "اپنے سفر کا نقشہ بنائیں",
+        "guides": ["سفر کی منصوبہ بندی", "ویزا کی ضروریات"]
+      },
+      "prepare": {
+        "title": "تیاری",
+        "subtitle": "جانے کے لیے تیار ہوں",
+        "guides": ["پیکنگ لسٹ", "حفاظتی تجاویز"]
+      },
+      "experience": {
+        "title": "تجربہ",
+        "subtitle": "مہم جوئی جیئیں",
+        "guides": ["مقامی بصیرت", "پوشیدہ خزانے"]
+      },
+      "share": {
+        "title": "شیئر",
+        "subtitle": "اپنی کہانی سنائیں",
+        "guides": ["سفری تحریر", "فوٹوگرافی"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "ویک اینڈ فرار",
+      "offBeatenPath": "غیر روایتی راستے",
+      "smartTravel": "سمارٹ سفر",
+      "bucketList": "بکٹ لسٹ",
+      "culinary": "کھانے کے",
+      "natureWonder": "فطرت اور عجائبات"
+    },
+    "seo": {
+      "title": "سفری رہنما | ماہر منزل بصیرت",
+      "description": "ماہر سفری رہنما، منزل بصیرت، اور ہماری عالمی سفری مصنفین کے نیٹ ورک سے اندرونی تجاویز دریافت کریں۔ آج اپنے مثالی سفر کی منصوبہ بندی کریں۔"
+    },
+    "editorial": {
+      "badge": "ہمارے ایڈیٹرز کی طرف سے",
+      "title": "تحریری فیچرز",
+      "readFull": "مکمل مضمون پڑھیں"
+    },
+    "gallery": {
+      "badge": "بصری کہانیاں",
+      "title": "منزلیں جو الہام دیتی ہیں",
+      "categories": {
+        "city": "شہر",
+        "mountains": "پہاڑ",
+        "beach": "ساحل",
+        "safari": "سفاری",
+        "nature": "فطرت"
+      }
+    },
+    "writers": {
+      "badge": "ماہر آوازیں",
+      "title": "ہمارے مصنفین سے ملیں",
+      "subtitle": "ہمارے سب سے معتبر سفری رہنما کے پیچھے ماہر آوازیں",
+      "articleCount": "{{count}} مضامین",
+      "viewProfile": "پروفائل دیکھیں"
+    },
+    "map": {
+      "badge": "علاقے کے مطابق دریافت کریں",
+      "title": "دنیا بھر میں رہنما",
+      "subtitle": "ہماری ماہر کوریج دریافت کرنے کے لیے کسی بھی منزل پر کلک کریں",
+      "guidesAvailable": "{{count}} رہنما دستیاب",
+      "legendDestination": "منزل",
+      "legendHighlighted": "نمایاں"
+    },
+    "newsletter": {
+      "badge": "سفر میں شامل ہوں",
+      "title": "ہفتہ وار سفری کہانیاں",
+      "description": "منتخب سفری الہام، ماہر تجاویز، اور اندرونی نقطہ نظر ہر ہفتے آپ کے ان باکس میں۔",
+      "placeholder": "اپنی ای میل درج کریں",
+      "subscribe": "سبسکرائب کریں",
+      "subscribing": "سبسکرائب ہو رہا ہے...",
+      "joinCount": "50,000+ مسافروں میں شامل ہوں جو ہمارا ہفتہ وار ڈائجسٹ پڑھتے ہیں",
+      "invalidEmail": "براہ کرم درست ای میل درج کریں",
+      "successTitle": "سفر میں خوش آمدید!",
+      "successDesc": "آپ اب ہمارے تحریری ڈائجسٹ کے سبسکرائبر ہیں۔"
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "حالیہ",
+      "justNow": "ابھی ابھی",
+      "minutesAgo": "{{count}} منٹ پہلے",
+      "hoursAgo": "{{count}} گھنٹے پہلے",
+      "daysAgo": "{{count}} دن پہلے",
+      "minRead": "{{count}} منٹ پڑھنے کا وقت"
+    },
+    "header": {
+      "title": "TRAVI خبریں",
+      "edition": "بین الاقوامی ایڈیشن",
+      "subscribe": "سبسکرائب کریں"
+    },
+    "breaking": {
+      "label": "بریکنگ"
+    },
+    "search": {
+      "placeholder": "عالمی خبریں تلاش کریں...",
+      "button": "تلاش",
+      "title": "تلاش",
+      "searching": "\"{{query}}\" تلاش ہو رہا ہے..."
+    },
+    "categories": {
+      "all": "تمام خبریں",
+      "world": "عالمی",
+      "business": "کاروبار",
+      "culture": "ثقافت",
+      "travel": "سفر",
+      "tech": "ٹیکنالوجی",
+      "opinion": "رائے"
+    },
+    "empty": {
+      "title": "ابھی تک کوئی خبر نہیں",
+      "description": "ہم آپ کے لیے تازہ ترین سفری خبریں اور بصیرت لانے پر کام کر رہے ہیں۔ جلد دنیا بھر سے اپ ڈیٹس کے لیے دوبارہ چیک کریں۔",
+      "exploreDestinations": "منزلیں دریافت کریں",
+      "viewGuides": "سفری رہنما دیکھیں"
+    },
+    "hero": {
+      "topStory": "سرخی کی کہانی",
+      "editorialTeam": "تحریری ٹیم"
+    },
+    "views": "{{count}} ویوز",
+    "viewAll": "سب دیکھیں",
+    "seo": {
+      "title": "سفری خبریں | تازہ ترین کہانیاں اور اپ ڈیٹس",
+      "description": "دنیا بھر سے تازہ ترین سفری خبریں، منزل اپ ڈیٹس، اور انڈسٹری بصیرت سے باخبر رہیں۔"
+    },
+    "sidebar": {
+      "alsoToday": "آج بھی",
+      "storiesCount": "{{count}} کہانیاں",
+      "liveUpdates": "لائیو اپ ڈیٹس",
+      "trendingTopics": "رجحان میں موضوعات",
+      "noTrending": "ابھی تک کوئی رجحان موضوع نہیں۔ جلد دوبارہ چیک کریں!"
+    },
+    "sections": {
+      "topStories": "سرخی کی کہانیاں",
+      "opinion": "رائے اور تجزیہ",
+      "moreOpinion": "مزید رائے",
+      "worldwide": "عالمی کوریج"
+    },
+    "worldwide": {
+      "title": "دنیا میں آپ کی کھڑکی",
+      "subtitle": "دنیا کے ہر کونے سے خبریں",
+      "storiesCount": "{{count}} کہانیاں",
+      "comingSoon": "جلد آ رہا ہے"
+    },
+    "newsletter": {
+      "title": "باخبر رہیں",
+      "description": "ہر صبح دن کی سرخیاں اپنے ان باکس میں حاصل کریں۔ 50,000+ قارئین میں شامل ہوں۔",
+      "placeholder": "اپنی ای میل درج کریں",
+      "subscribe": "مفت سبسکرائب کریں",
+      "noSpam": "کوئی سپیم نہیں۔ کسی بھی وقت ان سبسکرائب کریں۔",
+      "successTitle": "سبسکرائب ہو گیا!",
+      "successDesc": "براہ کرم اپنی سبسکرپشن کی تصدیق کے لیے اپنی ای میل چیک کریں۔",
+      "errorTitle": "سبسکرپشن ناکام",
+      "errorDesc": "براہ کرم بعد میں دوبارہ کوشش کریں۔",
+      "invalidTitle": "غلط ای میل",
+      "invalidDesc": "براہ کرم درست ای میل ایڈریس درج کریں۔"
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "ہمارے بارے میں | TRAVI World",
+      "metaDescription": "TRAVI World کے بارے میں جانیں، ایک آزاد سفری معلومات کا ذریعہ جو دنیا بھر کی منزلوں کے لیے جامع سفری رہنما، سیاحتی مقامات، ہوٹل اور ریستوران کی معلومات فراہم کرتا ہے۔",
+      "badge": "آپ کا سفری ساتھی",
+      "title": "ہمارے بارے میں",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "جامع سفری معلومات اور منزل رہنما کے لیے آپ کا معتبر ذریعہ، لاکھوں کو اعتماد کے ساتھ دنیا دریافت کرنے میں مدد کرنا۔",
+      "ctaExplore": "منزلیں دریافت کریں",
+      "ctaContact": "رابطہ کریں",
+      "stats": {
+        "destinations": "منزلیں",
+        "articles": "مضامین",
+        "support": "سفری معاونت",
+        "coverage": "کوریج",
+        "cities": "16+ شہر"
+      },
+      "whoWeAre": {
+        "title": "ہم کون ہیں"
+      },
+      "mission": {
+        "title": "ہمارا مشن"
+      },
+      "services": {
+        "badge": "ہماری خدمات",
+        "title": "ہم کیا پیش کرتے ہیں"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "منزل رہنما",
+          "description": "دنیا بھر کے شہروں اور خطوں کے بارے میں جامع معلومات"
+        },
+        "attractions": {
+          "title": "سیاحتی مقامات کی معلومات",
+          "description": "ضرور دیکھنے والے مقامات اور منفرد تجربات کی تفصیلات"
+        },
+        "hotels": {
+          "title": "ہوٹل رہنما",
+          "description": "ہر بجٹ کے لیے رہائش کے اختیارات کی معلومات"
+        },
+        "restaurants": {
+          "title": "ریستوران کی سفارشات",
+          "description": "ہر ذائقے اور ترجیح کے لیے کھانے کے اختیارات"
+        },
+        "articles": {
+          "title": "سفری مضامین",
+          "description": "تجاویز، بصیرت، اور سفری الہام"
+        },
+        "news": {
+          "title": "تازہ ترین سفری خبریں",
+          "description": "منتخب سفری اپ ڈیٹس سے باخبر رہیں"
+        }
+      },
+      "editorial": {
+        "title": "تحریری آزادی",
+        "affiliateTitle": "ملحقہ انکشاف"
+      },
+      "values": {
+        "badge": "ہماری بنیاد",
+        "title": "ہماری اقدار",
+        "accuracy": {
+          "title": "درستگی",
+          "description": "ہم درست اور قابل اعتماد معلومات فراہم کرنے کی کوشش کرتے ہیں، باقاعدگی سے اپنے مواد کو اپ ڈیٹ کرتے ہوئے"
+        },
+        "transparency": {
+          "title": "شفافیت",
+          "description": "ہم اپنے ملحقہ تعلقات اور کام کے طریقے کے بارے میں واضح ہیں"
+        },
+        "userFocused": {
+          "title": "صارف مرکوز",
+          "description": "ہمارا مواد مسافروں کو باخبر فیصلے کرنے میں مدد کے لیے ڈیزائن کیا گیا ہے"
+        }
+      },
+      "connect": {
+        "badge": "آئیں جڑیں",
+        "title": "رابطہ کریں"
+      },
+      "company": {
+        "title": "کمپنی کی معلومات",
+        "contactTitle": "رابطے کی معلومات",
+        "contactForm": "رابطہ فارم"
+      }
+    },
+    "contact": {
+      "metaTitle": "ہم سے رابطہ کریں | TRAVI World",
+      "metaDescription": "TRAVI World سے رابطہ کریں۔ ہم آپ کی رائے، سوالات اور ہماری سفری معلومات خدمات کے بارے میں استفسارات کا خیرمقدم کرتے ہیں۔",
+      "badge": "ہم آپ سے سننا پسند کریں گے",
+      "titlePart1": "آئیں",
+      "titlePart2": "جڑیں",
+      "subtitle": "اپنی اگلی مہم جوئی کے بارے میں سوالات ہیں؟ ہم آپ کو اعتماد کے ساتھ دنیا دریافت کرنے میں مدد کے لیے یہاں ہیں۔",
+      "cta": "ہمیں پیغام بھیجیں",
+      "getInTouch": "رابطہ کریں",
+      "getInTouchSubtitle": "ہم سے رابطے کا بہترین طریقہ منتخب کریں۔ ہم فوری جواب دینے کے پابند ہیں۔",
+      "howCanWeHelp": "ہم کیسے مدد کر سکتے ہیں؟",
+      "howCanWeHelpSubtitle": "ہم یہاں ہمارے سفری مواد اور خدمات کے بارے میں کسی بھی سوال یا رائے میں مدد کے لیے ہیں۔",
+      "importantNote": "اہم نوٹ",
+      "importantNoteSubtitle": "براہ کرم ہم سے رابطہ کرنے سے پہلے پڑھیں",
+      "ourOffice": "ہمارا دفتر",
+      "ourOfficeSubtitle": "سرکاری خط و کتابت اور ڈاک استفسارات کے لیے",
+      "travelCompanion": "آپ کا سفری ساتھی",
+      "urgentNote": "فوری معاملات کے لیے، براہ کرم اپنی ای میل کی سبجیکٹ لائن میں {{urgentLabel}} شامل کریں۔ ہم استفسار کی نوعیت کی بنیاد پر جوابات کو ترجیح دیتے ہیں۔",
+      "urgentLabel": "فوری",
+      "options": {
+        "generalInquiries": {
+          "title": "عمومی استفسارات",
+          "description": "ہمارے سفری رہنما اور مواد کے بارے میں سوالات"
+        },
+        "privacyInquiries": {
+          "title": "رازداری کے استفسارات",
+          "description": "ڈیٹا تک رسائی، حذف، اور رازداری کی درخواستیں"
+        },
+        "visitWebsite": {
+          "title": "ہماری ویب سائٹ دیکھیں",
+          "description": "منزلیں اور سفری الہام دریافت کریں"
+        },
+        "responseTime": {
+          "title": "جواب کا وقت",
+          "description": "ہم فوری جواب دینے کی کوشش کرتے ہیں",
+          "action": "2-3 کاروباری دن"
+        }
+      },
+      "helpTopics": {
+        "general": "ہمارے سفری رہنما اور مواد کے بارے میں عمومی استفسارات",
+        "feedback": "بہتری کے لیے رائے اور تجاویز",
+        "reporting": "مواد کی غلطیوں یا پرانی معلومات کی رپورٹ",
+        "business": "کاروبار اور شراکت داری کے استفسارات",
+        "media": "میڈیا اور پریس استفسارات",
+        "privacy": "رازداری سے متعلق درخواستیں (ڈیٹا تک رسائی، حذف، وغیرہ)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "رازداری کی پالیسی | TRAVI World",
+      "metaDescription": "جانیں کہ TRAVI World آپ کی ذاتی معلومات کو کیسے جمع، استعمال اور محفوظ کرتا ہے۔ ہماری جامع رازداری کی پالیسی پڑھیں۔",
+      "badge": "آپ کی رازداری اہم ہے",
+      "title": "رازداری کی پالیسی",
+      "subtitle": "ہم آپ کی رازداری کی حفاظت اور ہمارے ڈیٹا کے طریقوں کے بارے میں شفاف رہنے کے پابند ہیں۔ جانیں کہ TRAVI World آپ کی معلومات کو کیسے جمع، استعمال اور محفوظ کرتا ہے۔",
+      "effectiveDate": "تاریخ نفاذ: 1 جنوری 2026",
+      "features": {
+        "dataProtection": {
+          "title": "ڈیٹا تحفظ",
+          "description": "آپ کا ڈیٹا محفوظ ہے"
+        },
+        "minimalCollection": {
+          "title": "کم سے کم جمع",
+          "description": "ہم صرف ضروری معلومات جمع کرتے ہیں"
+        },
+        "transparency": {
+          "title": "مکمل شفافیت",
+          "description": "ہمارے طریقوں کے بارے میں واضح"
+        },
+        "yourControl": {
+          "title": "آپ کا کنٹرول",
+          "description": "اپنی ترجیحات منظم کریں"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. ہم کون ہیں",
+        "informationCollect": "2. معلومات جو ہم جمع کرتے ہیں",
+        "howWeUse": "3. ہم آپ کی معلومات کو کیسے استعمال کرتے ہیں",
+        "legalBasis": "4. پروسیسنگ کی قانونی بنیاد (GDPR)",
+        "cookies": "5. کوکیز اور ٹریکنگ ٹیکنالوجیز",
+        "thirdParty": "6. فریق ثالث خدمات",
+        "aiContent": "7. AI تیار کردہ مواد",
+        "internationalTransfers": "8. بین الاقوامی ڈیٹا ٹرانسفر",
+        "dataRetention": "9. ڈیٹا برقراری",
+        "privacyRights": "10. آپ کے رازداری کے حقوق",
+        "californiaRights": "11. کیلیفورنیا رازداری کے حقوق (CCPA/CPRA)",
+        "childrenPrivacy": "12. بچوں کی رازداری",
+        "dataSecurity": "13. ڈیٹا سیکیورٹی",
+        "changes": "14. اس پالیسی میں تبدیلیاں",
+        "contactUs": "15. ہم سے رابطہ کریں"
+      }
+    },
+    "terms": {
+      "metaTitle": "شرائط و ضوابط | TRAVI World",
+      "metaDescription": "TRAVI World سفری معلومات خدمات استعمال کرنے کی شرائط و ضوابط پڑھیں۔ آپ اور KBR Global Creative Consulting Ltd کے درمیان قانونی معاہدہ۔",
+      "badge": "قانونی معاہدہ",
+      "title": "شرائط و ضوابط",
+      "subtitle": "براہ کرم TRAVI World استعمال کرنے سے پہلے یہ شرائط غور سے پڑھیں۔ ہمارے پلیٹ فارم تک آپ کی رسائی اور استعمال ان شرائط کے تابع ہے۔",
+      "lastUpdated": "آخری اپ ڈیٹ: 1 جنوری 2026",
+      "importantNotice": "اہم قانونی نوٹس",
+      "keyPoints": {
+        "editorial": {
+          "title": "تحریری پلیٹ فارم",
+          "description": "سفری رہنما اور منزل کا مواد"
+        },
+        "affiliate": {
+          "title": "ملحقہ لنکس",
+          "description": "کمیشن پر مبنی سفارشات"
+        },
+        "aiGenerated": {
+          "title": "AI تیار کردہ",
+          "description": "AI مدد سے تخلیق کردہ مواد"
+        },
+        "privacy": {
+          "title": "آپ کی رازداری",
+          "description": "ڈیٹا تحفظ کی ضمانت"
+        }
+      },
+      "sections": {
+        "operator": "آپریٹر / قانونی ادارہ",
+        "purpose": "1. مقصد اور استعمال کا دائرہ",
+        "affiliateDisclosure": "2. ملحقہ انکشاف اور فریق ثالث لین دین",
+        "aiDisclaimer": "3. AI تیار کردہ مواد کا اعلان",
+        "newsletter": "4. نیوز لیٹر اور مواصلات",
+        "userConduct": "5. صارف کا طرز عمل اور ممنوعہ اقدامات",
+        "intellectualProperty": "6. دانشورانہ املاک اور محدود لائسنس",
+        "dmca": "7. نوٹس اور ہٹانا (DMCA اور اسی طرح)",
+        "disclaimers": "8. درستگی، دستیابی اور اعلانات",
+        "liability": "9. ذمہ داری کی حد اور فورس میجر",
+        "indemnification": "10. معاوضہ",
+        "privacyCookies": "11. رازداری، کوکیز اور ڈیٹا تحفظ",
+        "accessibility": "12. رسائی کا بیان",
+        "governingLaw": "13. حکمران قانون، تنازعات کا حل اور دائرہ اختیار",
+        "modifications": "14. ترامیم، الگ کرنے کی صلاحیت اور عمومی دفعات"
+      }
     }
   }
 }

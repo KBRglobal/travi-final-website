@@ -1,280 +1,991 @@
 {
   "nav": {
-    "home": "Home",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News & Guides",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language"
+    "home": "ホーム",
+    "destinations": "旅行先",
+    "attractions": "観光スポット",
+    "hotels": "ホテル",
+    "guides": "ガイド",
+    "dining": "グルメ",
+    "districts": "エリア",
+    "articles": "ニュース",
+    "news": "ニュース",
+    "shopping": "ショッピング",
+    "realEstate": "不動産",
+    "events": "イベント",
+    "search": "検索",
+    "language": "言語",
+    "mainNavigation": "メインナビゲーション",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる",
+    "logoAlt": "TRAVI - 旅行ガイド",
+    "followInstagram": "TRAVIのInstagramをフォロー",
+    "followTikTok": "TRAVIのTikTokをフォロー"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "パンくずナビゲーション",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "続きを読む",
+    "viewAll": "すべて見る",
+    "learnMore": "詳細を見る",
+    "bookNow": "今すぐ予約",
+    "contactUs": "お問い合わせ",
+    "subscribe": "登録する",
+    "submit": "送信",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "edit": "編集",
+    "delete": "削除",
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "noResults": "結果が見つかりません",
+    "seeMore": "もっと見る",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "close": "閉じる",
+    "share": "共有",
+    "copyLink": "リンクをコピー",
+    "copied": "コピーしました！"
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "TRAVIで世界を探検しよう",
+      "subtitle": "世界17都市の総合旅行ガイド",
+      "searchPlaceholder": "観光スポット、ホテル、レストランを検索...",
+      "cta": "探検を始める",
+      "badge": "世界への冒険の入り口",
+      "headlinePart1": "信頼できる旅行",
+      "headlinePart2": "情報サイト",
+      "description": "世界{{destinations}}都市の旅行情報。{{attractions}}件以上の観光スポットガイド。",
+      "descriptionPart1": "世界",
+      "descriptionPart2": "都市の旅行情報。",
+      "descriptionPart3": "件以上の観光スポット。",
+      "carouselLabel": "旅行先カルーセルナビゲーション",
+      "viewDestination": "{{name}}を見る - {{tagline}}",
+      "worldwide": "世界中",
+      "exploreWorld": "世界を探検",
+      "welcomeAriaLabel": "TRAVI Worldへようこそ",
+      "pageTitle": "TRAVI World - ホテル・観光スポット・アクティビティの旅行ガイド",
+      "pageDescription": "世界17都市の完全旅行ガイド。3,000件以上のホテル、観光スポット、レストラン、アクティビティ情報。",
+      "orgDescription": "世界17都市の信頼できる旅行情報サイト。"
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "srLabel": {
+      "attractions": "{{count}}件以上の観光スポット",
+      "destinations": "世界{{count}}都市",
+      "languages": "多言語対応プラットフォーム"
+    },
+    "featured": "注目",
+    "trending": "人気上昇中",
+    "topAttractions": "人気の観光スポット",
+    "bestHotels": "おすすめホテル",
+    "latestNews": "最新ニュース＆ガイド",
+    "sections": {
+      "destinations": "旅行先を探す",
+      "destinationsDesc": "厳選された世界の旅行先コレクション",
+      "categories": "カテゴリーで探す",
+      "categoriesDesc": "目的に合った情報を見つける",
+      "experiences": "体験で選ぶ旅",
+      "experiencesDesc": "あなたの旅行スタイルを選ぶ",
+      "faq": "よくある質問",
+      "faqDesc": "TRAVIについて知っておくべきこと",
+      "regions": "地域で探す",
+      "newsletter": "最新情報を受け取る",
+      "allDestinationsTitle": "全{{count}}都市の旅行ガイド",
+      "completeGuide": "{{name}}、{{country}} - 完全旅行ガイド"
+    },
+    "cta": {
+      "exploreDestinations": "旅行先を探す",
+      "viewGuides": "ガイドを見る",
+      "viewAll": "すべて見る",
+      "startExploring": "探検を始める",
+      "planTrip": "旅行を計画する",
+      "viewExperience": "{{name}}を見る"
+    },
+    "stats": {
+      "destinations": "都市",
+      "attractions": "観光スポット",
+      "languages": "対応言語",
+      "attractionsNum": "3,000件以上",
+      "destinationsNum": "16",
+      "languagesNum": "17以上",
+      "destinationsCountWithLabel": "{{count}}都市",
+      "attractionsCountWithLabel": "{{count}}件以上の観光スポット"
+    },
+    "categories": {
+      "attractions": "観光スポット",
+      "attractionsDesc": "必見スポット",
+      "news": "旅行ニュース",
+      "newsDesc": "最新情報",
+      "guides": "ガイド",
+      "guidesDesc": "旅行先ガイド",
+      "hotels": "ホテル",
+      "hotelsDesc": "最適な宿泊先を探す"
+    },
+    "experiences": {
+      "luxury": "ラグジュアリー旅行",
+      "luxuryDesc": "プレミアムな旅行体験と特別な旅行先",
+      "adventure": "アドベンチャー＆アウトドア",
+      "adventureDesc": "スリル満点のアウトドア体験",
+      "family": "家族旅行",
+      "familyDesc": "家族向けの旅行先とアクティビティ",
+      "budget": "格安旅行",
+      "budgetDesc": "お手頃な旅行オプション",
+      "romance": "ハネムーン＆ロマンス",
+      "romanceDesc": "ロマンチックな旅行とハネムーン先",
+      "solo": "一人旅",
+      "soloDesc": "一人旅に最適な旅行先"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "subtitle": "TRAVI Worldについて知っておくべきこと",
+      "whatIsTravi": "TRAVI Worldとは？",
+      "whatIsTraviAnswer": "TRAVI Worldは、世界17都市をカバーし、3,000件以上の観光スポット、ホテル、レストラン、アクティビティの詳細ガイドを提供する総合旅行情報プラットフォームです。",
+      "howManyDestinations": "TRAVIは何都市をカバーしていますか？",
+      "howManyDestinationsAnswer": "TRAVI Worldは、Dubai、Paris、Tokyo、New York、Barcelona、Singapore、London、Bangkok、Abu Dhabi、Amsterdam、Hong Kong、Istanbul、Las Vegas、Los Angeles、Miami、Romeを含む17の主要旅行先をカバーしています。",
+      "isFree": "TRAVI Worldは無料ですか？",
+      "isFreeAnswer": "はい、TRAVI Worldは完全無料でご利用いただけます。何千もの旅行ガイド、観光スポットレビュー、ホテルおすすめ、レストラン情報を無料でご覧いただけます。",
+      "updateFrequency": "コンテンツはどのくらいの頻度で更新されますか？",
+      "updateFrequencyAnswer": "TRAVI Worldのコンテンツは毎日更新され、最新の旅行ニュース、新しい観光スポットレビュー、全17都市のホテル・レストラン情報が追加されます。"
+    },
+    "mascotAlt": "TRAVIマスコットと世界のランドマーク - Dubai、Paris、London、Romeなどの旅行ガイド",
+    "mascotTitle": "TRAVI World - 世界の旅行先ガイド"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "観光スポット",
+    "subtitle": "人気スポットから穴場まで探索",
+    "hero": {
+      "badge": "{{cities}}都市で{{count}}件の観光スポット",
+      "badgeThousands": "世界中の観光スポット",
+      "headlinePart1": "世界の",
+      "headlinePart2": "観光スポット",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">優先入場チケット</span>でEiffel Tower、Colosseum、Burj Khalifahなど、Paris、Rome、Dubaiの人気観光スポットへ。",
+      "searchPlaceholder": "Eiffel Tower、Colosseum、Burj Khalifahを検索...",
+      "carouselLabel": "注目の観光スポットカルーセル",
+      "sectionLabel": "世界の人気観光スポットのチケット予約",
+      "searchAriaLabel": "名前や都市で観光スポットを検索",
+      "searchButton": "検索",
+      "searchButtonAriaLabel": "観光スポットを検索"
+    },
+    "stats": {
+      "attractions": "観光スポット",
+      "cities": "都市",
+      "rating": "評価"
+    },
+    "srLabel": {
+      "attractions": "{{count}}件以上の観光スポット",
+      "cities": "{{count}}都市",
+      "rating": "{{rating}}星評価"
+    },
+    "types": {
+      "all": "すべてのタイプ",
+      "museums": "美術館・博物館",
+      "landmarks": "ランドマーク",
+      "tours": "ツアー",
+      "themeParks": "テーマパーク",
+      "shows": "ショー"
+    },
+    "thingsToDoIn": "{{name}}の観光スポット",
+    "countAttractions": "{{country}} - {{count}}件の観光スポット",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "すべて",
+      "popular": "人気順",
+      "free": "無料",
+      "familyFriendly": "家族向け",
+      "outdoor": "屋外",
+      "indoor": "屋内"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "場所",
+      "hours": "営業時間",
+      "price": "料金",
+      "duration": "所要時間",
+      "tips": "おすすめポイント"
+    },
+    "sections": {
+      "destinations": "都市別に観光スポットを探す",
+      "destinationsDesc": "都市を選んで素晴らしい体験を見つけよう",
+      "faq": "よくある質問",
+      "faqDesc": "観光スポット予約についての回答",
+      "whyBookBadge": "予約のメリット",
+      "whyBookTitle": "優先入場で時間を節約",
+      "whyBookDesc": "事前予約で人気観光スポットにスムーズに入場",
+      "allDestinations": "すべての都市"
+    },
+    "features": {
+      "skipTheLine": "優先入場チケット",
+      "skipTheLineDesc": "Eiffel Tower、Colosseum、Vaticanなどで列に並ばずに入場",
+      "mobileTickets": "モバイルチケット",
+      "mobileTicketsDesc": "スマホに即時配信 - チケットを見せるだけで入場",
+      "freeCancellation": "無料キャンセル",
+      "freeCancellationDesc": "予定変更？24時間前までキャンセル無料"
+    },
+    "browse": {
+      "title": "都市別観光スポット",
+      "desc": "世界の人気都市で観光スポットと体験を探す",
+      "thingsToDo": "{{count}}件の観光スポット",
+      "noDestinations": "現在利用可能な都市がありません。"
+    },
+    "exploreLinks": {
+      "title": "その他の旅行ガイド",
+      "hotelsWorldwide": "世界のホテル",
+      "bestRestaurants": "おすすめレストラン",
+      "travelNews": "旅行ニュース"
+    },
+    "cta": {
+      "title": "探検の準備はできましたか？",
+      "desc": "Eiffel Tower、Colosseum、Burj Khalifahなど世界の人気観光スポットの優先入場チケットを予約。",
+      "parisAttractions": "Parisの観光スポット",
+      "romeAttractions": "Romeの観光スポット"
+    },
+    "search": {
+      "popular": "人気：",
+      "thingsToDoIn": "{{city}}の観光スポット",
+      "ariaCarouselNav": "観光スポットカルーセルナビゲーション",
+      "ariaViewInCity": "{{city}}の{{name}}を見る"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "注目の観光スポット",
+      "ariaThumbnails": "観光スポットカルーセルサムネイル",
+      "ariaTicketsIn": "{{city}}の{{name}}チケット",
+      "priceFrom": "料金",
+      "bookTickets": "チケット予約",
+      "skipTheLine": "優先入場",
+      "duration": "2〜3時間",
+      "freeCancellation": "無料キャンセル",
+      "freeCancellationDesc": "訪問24時間前まで",
+      "mobileTickets": "モバイルチケット",
+      "instantDelivery": "即時配信"
+    },
+    "chip": {
+      "thingsToDo": "{{count}}件の観光スポット"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "ホテル",
+    "subtitle": "最適な宿泊先を見つける",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "すべてのホテル",
+      "luxury": "ラグジュアリー",
+      "budget": "格安",
+      "beachfront": "ビーチフロント",
+      "cityCenter": "市内中心部",
+      "familyFriendly": "家族向け"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "料金",
+      "perNight": "1泊",
+      "amenities": "設備",
+      "checkIn": "チェックイン",
+      "checkOut": "チェックアウト",
+      "rooms": "客室",
+      "rating": "評価"
     },
-    "bookNow": "Book Now"
+    "bookNow": "今すぐ予約"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "グルメ",
+    "subtitle": "あらゆる味覚に応える料理体験",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
-      "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "all": "すべてのレストラン",
+      "fineDining": "高級レストラン",
+      "casual": "カジュアルダイニング",
+      "cafes": "カフェ",
+      "streetFood": "屋台料理",
+      "halal": "ハラール",
+      "vegetarian": "ベジタリアン"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
-    }
-  },
-  "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
-  },
-  "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
-    "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
-    },
-    "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
-    },
-    "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
-    }
-  },
-  "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
-  },
-  "footer": {
-    "about": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "contact": "Contact Us",
-    "followUs": "Follow Us",
-    "newsletter": {
-      "title": "Stay Updated",
-      "subtitle": "Get the latest Dubai travel tips and exclusive deals",
-      "placeholder": "Enter your email",
-      "button": "Subscribe",
-      "success": "Thanks for subscribing!",
-      "error": "Something went wrong. Please try again."
-    },
-    "copyright": "All rights reserved"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
-    },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
-    },
-    "network": {
-      "title": "Connection Error",
-      "message": "Please check your internet connection.",
-      "button": "Retry"
-    }
-  },
-  "meta": {
-    "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
-    },
-    "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
-    },
-    "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
-    },
-    "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "cuisine": "料理ジャンル",
+      "priceRange": "価格帯",
+      "hours": "営業時間",
+      "dress": "ドレスコード",
+      "reservations": "予約"
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Burj Khalifahタワーと夕日のDubaiスカイライン" },
+      "london": { "name": "London", "country": "イギリス", "cardAlt": "Big Benと国会議事堂のLondon" },
+      "paris": { "name": "Paris", "country": "フランス", "cardAlt": "夕日に照らされたEiffel TowerのParis" },
+      "newYork": { "name": "New York", "country": "アメリカ", "cardAlt": "Empire State BuildingとManhattanスカイラインのNew York" },
+      "tokyo": { "name": "Tokyo", "country": "日本", "cardAlt": "渋谷交差点のネオンが輝くTokyo" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay SandsとGardens by the BayのSingapore" },
+      "barcelona": { "name": "Barcelona", "country": "スペイン", "cardAlt": "ゴールデンアワーのSagrada FamiliaのBarcelona" },
+      "bangkok": { "name": "Bangkok", "country": "タイ", "cardAlt": "日の出の王宮のBangkok" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Sheikh Zayed Grand MosqueのAbu Dhabi" },
+      "amsterdam": { "name": "Amsterdam", "country": "オランダ", "cardAlt": "歴史的建物と運河のAmsterdam" },
+      "hongKong": { "name": "Hong Kong", "country": "中国", "cardAlt": "夜のスカイラインのHong Kong" },
+      "istanbul": { "name": "Istanbul", "country": "トルコ", "cardAlt": "夕日のBlue MosqueのIstanbul" },
+      "lasVegas": { "name": "Las Vegas", "country": "アメリカ", "cardAlt": "夜のストリップのLas Vegas" },
+      "losAngeles": { "name": "Los Angeles", "country": "アメリカ", "cardAlt": "HollywoodサインのLos Angeles" },
+      "miami": { "name": "Miami", "country": "アメリカ", "cardAlt": "アールデコ地区のMiami Beach" },
+      "rome": { "name": "Rome", "country": "イタリア", "cardAlt": "ゴールデンアワーのColosseumのRome" }
+    },
     "hero": {
-      "badge": "{{count}} の世界中の目的地",
-      "trustedBy": "{{count}} の目的地から信頼されています",
-      "discover": "発見",
-      "worldClass": "ワールドクラス",
-      "destinations": "目的地",
-      "description": "世界で最も魅力的な都市のための、地元の専門知識を持つキュレーションされた旅行ガイド。",
-      "exploreAll": "すべての目的地を探索",
+      "badge": "世界{{count}}都市",
+      "trustedBy": "世界{{count}}都市の旅行ガイド",
+      "discover": "発見する",
+      "worldClass": "世界クラスの",
+      "destinations": "旅行先",
+      "description": "地元の専門知識で作成された旅行ガイド。人気スポットから穴場まで。",
+      "exploreAll": "すべての旅行先を探す",
       "travelGuides": "旅行ガイド",
-      "explorePlaceholder": "目的地を探索",
-      "browseCollection": "厳選された目的地コレクションを閲覧",
+      "explorePlaceholder": "旅行先を探す",
+      "browseCollection": "厳選された旅行先コレクションをご覧ください",
       "explore": "探索",
       "discoverButton": "発見",
-      "ariaLabel": "目的地の概要",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "ariaLabel": "旅行先概要",
+      "exploreTitle": "{{name}}を探索",
+      "galleryAriaLabel": "注目の旅行先ギャラリー",
+      "placeholderAriaLabel": "注目の旅行先プレースホルダー"
     },
     "stats": {
-      "destinations": "目的地",
+      "destinations": "都市",
       "countries": "国",
       "regions": "地域",
       "languages": "言語"
     },
     "sections": {
-      "featured": "注目の目的地",
-      "featuredDesc": "特別な体験を提供する厳選された目的地。",
-      "all": "すべての目的地",
-      "count": "{{count}} 件の目的地が見つかりました"
+      "featured": "注目の旅行先",
+      "featuredDesc": "特別な体験ができる厳選された旅行先。地元の情報と旅行計画に必要なすべて。",
+      "all": "すべての旅行先",
+      "count": "{{count}}件の旅行先"
     },
     "search": {
-      "placeholder": "目的地を検索...",
-      "noResults": "目的地が見つかりません",
-      "tryAdjusting": "検索条件を調整してみてください",
+      "placeholder": "旅行先を検索...",
+      "noResults": "旅行先が見つかりません",
+      "tryAdjusting": "検索条件を変更してみてください",
       "clearSearch": "検索をクリア"
     },
     "carousel": {
-      "label": "注目の目的地カルーセル",
-      "previous": "前の目的地",
-      "next": "次の目的地",
-      "goTo": "{{name}} に移動",
-      "slideOf": "スライド {{current}}/{{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "label": "注目の旅行先カルーセル",
+      "previous": "前の旅行先",
+      "next": "次の旅行先",
+      "goTo": "{{name}}へ移動",
+      "slideOf": "スライド{{current}}/{{total}}：{{name}}",
+      "thumbnails": "旅行先カルーセルサムネイル"
     },
     "card": {
       "explore": "探索",
       "defaultLevel": "都市",
-      "exploreFallback": "{{name}} を探索",
-      "destination": "目的地",
-      "travelGuideAlt": "{{name}} 旅行ガイド"
+      "exploreFallback": "{{name}}を探索",
+      "destination": "旅行先",
+      "travelGuideAlt": "{{name}}旅行ガイド"
     },
     "faq": {
       "title": "よくある質問",
-      "subtitle": "TRAVI目的地ガイドについて",
-      "q1": "TRAVIはいくつの目的地をカバーしていますか？",
-      "a1": "TRAVIは中東、ヨーロッパ、アジア、アメリカの主要な目的地をカバーしています。",
-      "q2": "どのような情報が含まれていますか？",
-      "a2": "各ガイドには観光スポット、宿泊施設、郷土料理、旅行のヒントが含まれています。",
-      "q3": "目的地を検索できますか？",
-      "a3": "はい、名前または国で検索できます。",
-      "q4": "TRAVIの注目の目的地とは？",
-      "a4": "注目の目的地は特別な体験を提供します。"
+      "subtitle": "TRAVI旅行先ガイドについて",
+      "q1": "TRAVIは何都市をカバーしていますか？",
+      "a1": "TRAVIは中東、ヨーロッパ、アジア、アメリカの主要旅行先を詳細なガイドでカバーしています。",
+      "q2": "TRAVIガイドにはどんな情報が含まれていますか？",
+      "a2": "各旅行先ガイドには、観光スポット、宿泊施設、地元料理、交通手段、実用的な旅行情報が含まれています。",
+      "q3": "旅行先を検索できますか？",
+      "a3": "はい、旅行先ページの検索バーで名前や国で検索できます。",
+      "q4": "TRAVIの注目旅行先とは？",
+      "a4": "TRAVIの注目旅行先は、ラグジュアリーから格安旅行まで、さまざまな旅行者に特別な体験を提供する厳選された場所です。"
     },
     "loading": {
-      "title": "目的地を読み込み中",
-      "message": "最新データを取得中..."
+      "title": "旅行先を読み込み中",
+      "message": "最新の旅行先データを取得中..."
     },
     "error": {
-      "title": "読み込みに失敗しました",
-      "message": "後でもう一度お試しください。",
+      "title": "旅行先を読み込めません",
+      "message": "旅行先データの読み込みに問題が発生しました。後でもう一度お試しください。",
       "refresh": "ページを更新"
     },
     "empty": {
-      "title": "目的地がありません",
-      "message": "現在利用可能な目的地はありません。"
+      "title": "旅行先がありません",
+      "message": "現在利用可能な旅行先がありません。後でもう一度ご確認ください。"
+    }
+  },
+  "districts": {
+    "title": "エリア",
+    "subtitle": "多様な街並みを探索",
+    "explore": "エリアを探索"
+  },
+  "realEstate": {
+    "title": "不動産",
+    "subtitle": "未来に投資",
+    "offPlan": {
+      "title": "オフプラン物件",
+      "subtitle": "早期投資でお得に、より多くのリターンを",
+      "findProperty": "理想の物件を見つける",
+      "from": "価格",
+      "paymentPlan": "支払いプラン",
+      "handover": "引き渡し",
+      "developer": "デベロッパー"
+    },
+    "filters": {
+      "all": "すべての物件",
+      "apartments": "アパートメント",
+      "villas": "ヴィラ",
+      "townhouses": "タウンハウス",
+      "penthouses": "ペントハウス"
+    },
+    "features": {
+      "cryptoAccepted": "暗号通貨対応",
+      "paymentPlans": "柔軟な支払いプラン",
+      "goldenVisa": "Golden Visa対象",
+      "roiGuarantee": "ROI保証"
+    }
+  },
+  "search": {
+    "placeholder": "観光スポット、ガイド、旅行先を検索...",
+    "results": "検索結果",
+    "noResults": "結果が見つかりません：",
+    "tryAgain": "別のキーワードをお試しください"
+  },
+  "footer": {
+    "about": "TRAVIについて",
+    "aboutTravi": "TRAVIについて",
+    "aboutText": "世界17都市の総合旅行情報。",
+    "aboutUs": "私たちについて",
+    "quickLinks": "クイックリンク",
+    "legal": "法的情報",
+    "privacy": "プライバシーポリシー",
+    "privacyPolicy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "termsOfService": "利用規約",
+    "contact": "お問い合わせ",
+    "contactUs": "お問い合わせ",
+    "followUs": "フォローする",
+    "explore": "探索",
+    "travel": "旅行",
+    "company": "会社情報",
+    "allGuides": "すべてのガイド",
+    "cookies": "クッキー",
+    "security": "セキュリティ",
+    "cookieSettings": "クッキー設定",
+    "tagline": "信頼できる旅行情報サイト",
+    "ariaLabel": "サイトフッター",
+    "featuredGuides": "注目のガイド",
+    "tools": "ツール",
+    "currencyConverter": "通貨換算",
+    "roiCalculator": "ROI計算機",
+    "mortgageCalculator": "住宅ローン計算機",
+    "glossary": "用語集",
+    "freeThingsToDo": "70以上の無料アクティビティ",
+    "open24Hours": "24時間営業",
+    "tributeToSheikh": "HH Sheikh Mohammedへの敬意",
+    "lawsForTourists": "観光客向け法律ガイド",
+    "newsletter": "ニュースレターに登録",
+    "newsletterDescription": "最新の旅行情報とアップデートをお届けします。",
+    "emailPlaceholder": "メールアドレスを入力",
+    "allRightsReserved": "無断複写・転載を禁じます。",
+    "copyright": "© {{year}} {{brand}}. 無断複写・転載を禁じます。",
+    "emailAriaLabel": "TRAVIにメールを送る"
+  },
+  "errors": {
+    "404": {
+      "title": "ページが見つかりません",
+      "message": "お探しのページは存在しません。",
+      "button": "ホームへ戻る"
+    },
+    "500": {
+      "title": "サーバーエラー",
+      "message": "サーバー側で問題が発生しました。",
+      "button": "再試行"
+    },
+    "network": {
+      "title": "接続エラー",
+      "message": "接続できません。インターネット接続をご確認ください。",
+      "button": "再試行"
+    }
+  },
+  "newsletter": {
+    "badge": "冒険に参加",
+    "title": "旅行の魔法をメールで受け取る",
+    "description": "週刊の旅行情報、穴場スポット、特別オファー - スパムなし、ただ旅への憧れだけ。",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "登録する",
+    "success": "登録完了！受信トレイをご確認ください。"
+  },
+  "cookies": {
+    "title": "プライバシーを大切にします",
+    "description": "当サイトでは、ブラウジング体験の向上、サイトトラフィックの分析、コンテンツのパーソナライズにクッキーを使用しています。「すべて許可」をクリックすると、クッキーの使用に同意したことになります。",
+    "manage": "管理",
+    "rejectAll": "すべて拒否",
+    "acceptAll": "すべて許可",
+    "preferencesTitle": "クッキー設定",
+    "savePreferences": "設定を保存",
+    "essential": {
+      "title": "必須クッキー",
+      "description": "ウェブサイトの正常な動作に必要"
+    },
+    "analytics": {
+      "title": "分析クッキー",
+      "description": "訪問者がサイトをどのように利用しているかを理解するのに役立ちます"
+    },
+    "marketing": {
+      "title": "マーケティングクッキー",
+      "description": "パーソナライズされた広告の配信に使用"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - 世界の旅行ガイド｜観光スポット・ホテル・グルメ情報",
+      "description": "世界17都市の観光スポット、ホテル、レストラン、エリア情報。地元のおすすめで完璧な旅行を計画。"
+    },
+    "attractions": {
+      "title": "観光スポット｜世界の人気観光地ガイド",
+      "description": "世界の観光スポット情報。Burj Khalifahから穴場まで。観光計画に役立つガイド。"
+    },
+    "hotels": {
+      "title": "ホテル｜世界のおすすめ宿泊施設",
+      "description": "あらゆる予算に対応するホテル情報。高級リゾートから格安オプションまで。"
+    },
+    "dining": {
+      "title": "グルメ｜世界のおすすめレストラン",
+      "description": "世界の料理シーンを探索。高級レストランから屋台料理まで。"
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "旅行インテリジェンス",
+      "headlinePart1": "心を動かす",
+      "headlinePart2": "ストーリー",
+      "description": "専門家が作成したガイド、インサイダー視点、世界の体験方法を変える編集ナラティブ。",
+      "startJourney": "旅を始める",
+      "browseCollection": "コレクションを見る",
+      "issueBadge": "Issue 47 — 2026年冬号"
+    },
+    "stats": {
+      "guides": "旅行ガイド",
+      "destinations": "旅行先",
+      "languages": "言語"
+    },
+    "journey": {
+      "badge": "あなたの旅、私たちのガイダンス",
+      "title": "すべての素晴らしい旅はガイドから始まる",
+      "subtitle": "夢見る段階から共有まで、すべてのステップでサポート"
+    },
+    "ideaLab": {
+      "badge": "アイデアラボ",
+      "title": "厳選されたインスピレーション",
+      "readGuide": "ガイドを読む"
+    },
+    "archetype": {
+      "badge": "あなたに合わせて",
+      "title": "あなたはどんな旅行者？",
+      "subtitle": "旅行スタイルを選んで、あなたに合ったガイドを見つけよう",
+      "viewGuides": "{{type}}ガイドを見る"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "冒険家",
+        "description": "スリル満点の体験とアドレナリン"
+      },
+      "culture": {
+        "name": "文化探求者",
+        "description": "アート、歴史、地元の伝統"
+      },
+      "relaxation": {
+        "name": "リラクゼーション達人",
+        "description": "ウェルネスリトリートと穏やかな脱出"
+      },
+      "foodie": {
+        "name": "グルメ旅行者",
+        "description": "地元の味と美食の冒険"
+      },
+      "wellness": {
+        "name": "ウェルネス探求者",
+        "description": "リラクゼーション、スパ、マインドフルなリトリート"
+      },
+      "budget": {
+        "name": "賢い旅行者",
+        "description": "最大の体験、最小の予算"
+      },
+      "solo": {
+        "name": "一人旅の達人",
+        "description": "独立した旅と自己発見"
+      },
+      "luxury": {
+        "name": "ラグジュアリー愛好家",
+        "description": "プレミアム体験と上質な暮らし"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "夢見る",
+        "subtitle": "インスピレーションを発見",
+        "guides": ["旅行先ガイド", "フォトエッセイ"]
+      },
+      "plan": {
+        "title": "計画する",
+        "subtitle": "旅程を作成",
+        "guides": ["旅行計画", "ビザ要件"]
+      },
+      "prepare": {
+        "title": "準備する",
+        "subtitle": "出発準備",
+        "guides": ["持ち物リスト", "安全情報"]
+      },
+      "experience": {
+        "title": "体験する",
+        "subtitle": "冒険を楽しむ",
+        "guides": ["地元情報", "穴場スポット"]
+      },
+      "share": {
+        "title": "共有する",
+        "subtitle": "ストーリーを語る",
+        "guides": ["旅行記", "写真撮影"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "週末トリップ",
+      "offBeatenPath": "穴場スポット",
+      "smartTravel": "賢い旅行術",
+      "bucketList": "バケットリスト",
+      "culinary": "グルメ",
+      "natureWonder": "自然と絶景"
+    },
+    "seo": {
+      "title": "旅行ガイド｜専門家による旅行先インサイト",
+      "description": "専門家の旅行ガイド、旅行先インサイト、世界中のトラベルライターからのおすすめ情報。今すぐ完璧な旅行を計画。"
+    },
+    "editorial": {
+      "badge": "編集部から",
+      "title": "編集特集",
+      "readFull": "全文を読む"
+    },
+    "gallery": {
+      "badge": "ビジュアルストーリー",
+      "title": "インスピレーションを与える旅行先",
+      "categories": {
+        "city": "都市",
+        "mountains": "山",
+        "beach": "ビーチ",
+        "safari": "サファリ",
+        "nature": "自然"
+      }
+    },
+    "writers": {
+      "badge": "専門家の声",
+      "title": "ライター紹介",
+      "subtitle": "最も信頼される旅行ガイドを執筆する専門家たち",
+      "articleCount": "{{count}}件の記事",
+      "viewProfile": "プロフィールを見る"
+    },
+    "map": {
+      "badge": "地域で探す",
+      "title": "世界のガイド",
+      "subtitle": "旅行先をクリックして専門家のガイドを見つけよう",
+      "guidesAvailable": "{{count}}件のガイド",
+      "legendDestination": "旅行先",
+      "legendHighlighted": "ハイライト"
+    },
+    "newsletter": {
+      "badge": "旅に参加",
+      "title": "週刊旅行ストーリー",
+      "description": "厳選された旅行インスピレーション、専門家のヒント、インサイダー情報を毎週お届け。",
+      "placeholder": "メールアドレスを入力",
+      "subscribe": "登録する",
+      "subscribing": "登録中...",
+      "joinCount": "5万人以上の旅行者が購読中",
+      "invalidEmail": "有効なメールアドレスを入力してください",
+      "successTitle": "旅へようこそ！",
+      "successDesc": "編集ダイジェストの購読が完了しました。"
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "最近",
+      "justNow": "たった今",
+      "minutesAgo": "{{count}}分前",
+      "hoursAgo": "{{count}}時間前",
+      "daysAgo": "{{count}}日前",
+      "minRead": "{{count}}分で読める"
+    },
+    "header": {
+      "title": "TRAVIニュース",
+      "edition": "国際版",
+      "subscribe": "購読"
+    },
+    "breaking": {
+      "label": "速報"
+    },
+    "search": {
+      "placeholder": "世界のニュースを検索...",
+      "button": "検索",
+      "title": "検索",
+      "searching": "「{{query}}」を検索中..."
+    },
+    "categories": {
+      "all": "すべてのニュース",
+      "world": "世界",
+      "business": "ビジネス",
+      "culture": "文化",
+      "travel": "旅行",
+      "tech": "テクノロジー",
+      "opinion": "オピニオン"
+    },
+    "empty": {
+      "title": "ニュース記事はまだありません",
+      "description": "最新の旅行ニュースとインサイトをお届けする準備中です。世界中からの更新情報をお楽しみに。",
+      "exploreDestinations": "旅行先を探す",
+      "viewGuides": "旅行ガイドを見る"
+    },
+    "hero": {
+      "topStory": "トップストーリー",
+      "editorialTeam": "編集チーム"
+    },
+    "views": "{{count}}閲覧",
+    "viewAll": "すべて見る",
+    "seo": {
+      "title": "旅行ニュース｜最新ストーリーとアップデート",
+      "description": "最新の旅行ニュース、旅行先アップデート、世界中からの業界インサイト情報。"
+    },
+    "sidebar": {
+      "alsoToday": "本日のその他の記事",
+      "storiesCount": "{{count}}件の記事",
+      "liveUpdates": "ライブ更新",
+      "trendingTopics": "トレンドトピック",
+      "noTrending": "トレンドトピックはまだありません。後でもう一度ご確認ください！"
+    },
+    "sections": {
+      "topStories": "トップストーリー",
+      "opinion": "オピニオンと分析",
+      "moreOpinion": "その他のオピニオン",
+      "worldwide": "世界のニュース"
+    },
+    "worldwide": {
+      "title": "世界への窓",
+      "subtitle": "世界各地からのニュース",
+      "storiesCount": "{{count}}件の記事",
+      "comingSoon": "近日公開"
+    },
+    "newsletter": {
+      "title": "最新情報を受け取る",
+      "description": "毎朝、その日のトップストーリーをお届け。5万人以上の読者が購読中。",
+      "placeholder": "メールアドレスを入力",
+      "subscribe": "無料購読",
+      "noSpam": "スパムなし。いつでも解除可能。",
+      "successTitle": "購読完了！",
+      "successDesc": "確認メールをご確認ください。",
+      "errorTitle": "購読に失敗しました",
+      "errorDesc": "後でもう一度お試しください。",
+      "invalidTitle": "無効なメールアドレス",
+      "invalidDesc": "有効なメールアドレスを入力してください。"
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "私たちについて｜TRAVI World",
+      "metaDescription": "TRAVI Worldについて。世界の旅行先の観光スポット、ホテル、レストラン情報を提供する独立した旅行情報プラットフォーム。",
+      "badge": "あなたの旅行パートナー",
+      "title": "About",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "総合旅行情報と旅行先ガイドで、世界中の何百万人もの旅行者を自信を持ってサポート。",
+      "ctaExplore": "旅行先を探す",
+      "ctaContact": "お問い合わせ",
+      "stats": {
+        "destinations": "旅行先",
+        "articles": "記事",
+        "support": "旅行サポート",
+        "coverage": "カバレッジ",
+        "cities": "16都市以上"
+      },
+      "whoWeAre": {
+        "title": "私たちについて"
+      },
+      "mission": {
+        "title": "私たちのミッション"
+      },
+      "services": {
+        "badge": "サービス",
+        "title": "提供するもの"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "旅行先ガイド",
+          "description": "世界中の都市と地域の総合情報"
+        },
+        "attractions": {
+          "title": "観光スポット情報",
+          "description": "必見スポットとユニークな体験の詳細"
+        },
+        "hotels": {
+          "title": "ホテルガイド",
+          "description": "あらゆる予算の宿泊オプション情報"
+        },
+        "restaurants": {
+          "title": "レストランおすすめ",
+          "description": "あらゆる味覚と好みに対応するダイニングオプション"
+        },
+        "articles": {
+          "title": "旅行記事",
+          "description": "ヒント、インサイト、旅行インスピレーション"
+        },
+        "news": {
+          "title": "最新旅行ニュース",
+          "description": "厳選された旅行アップデート情報"
+        }
+      },
+      "editorial": {
+        "title": "編集の独立性",
+        "affiliateTitle": "アフィリエイト開示"
+      },
+      "values": {
+        "badge": "基盤",
+        "title": "私たちの価値観",
+        "accuracy": {
+          "title": "正確性",
+          "description": "正確で信頼できる情報を提供し、定期的にコンテンツを更新"
+        },
+        "transparency": {
+          "title": "透明性",
+          "description": "アフィリエイト関係と運営方法を明確に開示"
+        },
+        "userFocused": {
+          "title": "ユーザー中心",
+          "description": "旅行者が情報に基づいた決定を下せるようにコンテンツを設計"
+        }
+      },
+      "connect": {
+        "badge": "つながろう",
+        "title": "お問い合わせ"
+      },
+      "company": {
+        "title": "会社情報",
+        "contactTitle": "連絡先情報",
+        "contactForm": "お問い合わせフォーム"
+      }
+    },
+    "contact": {
+      "metaTitle": "お問い合わせ｜TRAVI World",
+      "metaDescription": "TRAVI Worldへのお問い合わせ。旅行情報サービスに関するご意見、ご質問、お問い合わせをお待ちしております。",
+      "badge": "お問い合わせください",
+      "titlePart1": "つながり",
+      "titlePart2": "ましょう",
+      "subtitle": "次の冒険についてご質問がありますか？自信を持って世界を探索できるようサポートします。",
+      "cta": "メッセージを送る",
+      "getInTouch": "お問い合わせ",
+      "getInTouchSubtitle": "最適な連絡方法をお選びください。迅速に対応いたします。",
+      "howCanWeHelp": "どのようにお手伝いできますか？",
+      "howCanWeHelpSubtitle": "旅行コンテンツとサービスに関するご質問やご意見をお待ちしております。",
+      "importantNote": "重要なお知らせ",
+      "importantNoteSubtitle": "お問い合わせ前にお読みください",
+      "ourOffice": "オフィス",
+      "ourOfficeSubtitle": "公式書類と郵便でのお問い合わせ",
+      "travelCompanion": "あなたの旅行パートナー",
+      "urgentNote": "緊急の場合は、メールの件名に{{urgentLabel}}を含めてください。お問い合わせの性質に基づいて優先的に対応いたします。",
+      "urgentLabel": "緊急",
+      "options": {
+        "generalInquiries": {
+          "title": "一般的なお問い合わせ",
+          "description": "旅行ガイドとコンテンツに関するご質問"
+        },
+        "privacyInquiries": {
+          "title": "プライバシーに関するお問い合わせ",
+          "description": "データアクセス、削除、プライバシーリクエスト"
+        },
+        "visitWebsite": {
+          "title": "ウェブサイトを見る",
+          "description": "旅行先と旅行インスピレーションを探索"
+        },
+        "responseTime": {
+          "title": "回答時間",
+          "description": "迅速に対応いたします",
+          "action": "2〜3営業日"
+        }
+      },
+      "helpTopics": {
+        "general": "旅行ガイドとコンテンツに関する一般的なお問い合わせ",
+        "feedback": "改善のためのご意見とご提案",
+        "reporting": "コンテンツの誤りや古い情報の報告",
+        "business": "ビジネスとパートナーシップに関するお問い合わせ",
+        "media": "メディアとプレスに関するお問い合わせ",
+        "privacy": "プライバシー関連のリクエスト（データアクセス、削除など）"
+      }
+    },
+    "privacy": {
+      "metaTitle": "プライバシーポリシー｜TRAVI World",
+      "metaDescription": "TRAVI Worldが個人情報をどのように収集、使用、保護するかをご確認ください。包括的なプライバシーポリシーをお読みください。",
+      "badge": "プライバシーを大切に",
+      "title": "プライバシーポリシー",
+      "subtitle": "私たちはあなたのプライバシーを保護し、データ取り扱いについて透明性を持つことをお約束します。TRAVI Worldが情報をどのように収集、使用、保護するかをご確認ください。",
+      "effectiveDate": "発効日：2026年1月1日",
+      "features": {
+        "dataProtection": {
+          "title": "データ保護",
+          "description": "あなたのデータは保護されています"
+        },
+        "minimalCollection": {
+          "title": "最小限の収集",
+          "description": "必要なものだけを収集"
+        },
+        "transparency": {
+          "title": "完全な透明性",
+          "description": "取り扱いについて明確に"
+        },
+        "yourControl": {
+          "title": "あなたのコントロール",
+          "description": "設定を管理"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. 私たちについて",
+        "informationCollect": "2. 収集する情報",
+        "howWeUse": "3. 情報の使用方法",
+        "legalBasis": "4. 処理の法的根拠（GDPR）",
+        "cookies": "5. クッキーとトラッキング技術",
+        "thirdParty": "6. サードパーティサービス",
+        "aiContent": "7. AI生成コンテンツ",
+        "internationalTransfers": "8. 国際データ転送",
+        "dataRetention": "9. データ保持",
+        "privacyRights": "10. プライバシー権",
+        "californiaRights": "11. カリフォルニアプライバシー権（CCPA/CPRA）",
+        "childrenPrivacy": "12. 児童のプライバシー",
+        "dataSecurity": "13. データセキュリティ",
+        "changes": "14. ポリシーの変更",
+        "contactUs": "15. お問い合わせ"
+      }
+    },
+    "terms": {
+      "metaTitle": "利用規約｜TRAVI World",
+      "metaDescription": "TRAVI World旅行情報サービスの利用規約をお読みください。あなたとKBR Global Creative Consulting Ltdとの法的契約。",
+      "badge": "法的契約",
+      "title": "利用規約",
+      "subtitle": "TRAVI Worldをご利用になる前に、これらの規約を注意深くお読みください。プラットフォームへのアクセスと使用は、これらの条件に従います。",
+      "lastUpdated": "最終更新日：2026年1月1日",
+      "importantNotice": "重要な法的通知",
+      "keyPoints": {
+        "editorial": {
+          "title": "編集プラットフォーム",
+          "description": "旅行ガイドと旅行先コンテンツ"
+        },
+        "affiliate": {
+          "title": "アフィリエイトリンク",
+          "description": "手数料に基づくおすすめ"
+        },
+        "aiGenerated": {
+          "title": "AI生成",
+          "description": "AI支援で作成されたコンテンツ"
+        },
+        "privacy": {
+          "title": "プライバシー",
+          "description": "データ保護を保証"
+        }
+      },
+      "sections": {
+        "operator": "運営者/法人",
+        "purpose": "1. 目的と使用範囲",
+        "affiliateDisclosure": "2. アフィリエイト開示とサードパーティ取引",
+        "aiDisclaimer": "3. AI生成コンテンツの免責事項",
+        "newsletter": "4. ニュースレターとコミュニケーション",
+        "userConduct": "5. ユーザー行動と禁止事項",
+        "intellectualProperty": "6. 知的財産権と限定ライセンス",
+        "dmca": "7. 通知と削除（DMCAおよび類似）",
+        "disclaimers": "8. 正確性、可用性、免責事項",
+        "liability": "9. 責任の制限と不可抗力",
+        "indemnification": "10. 補償",
+        "privacyCookies": "11. プライバシー、クッキー、データ保護",
+        "accessibility": "12. アクセシビリティ声明",
+        "governingLaw": "13. 準拠法、紛争解決、管轄",
+        "modifications": "14. 変更、分離可能性、一般規定"
+      }
     }
   }
 }

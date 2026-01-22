@@ -1,33 +1,355 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "Trang chủ",
+    "destinations": "Điểm đến",
+    "attractions": "Điểm tham quan",
+    "hotels": "Khách sạn",
+    "guides": "Hướng dẫn",
+    "dining": "Ẩm thực",
+    "districts": "Quận huyện",
+    "articles": "Tin tức",
+    "news": "Tin tức",
+    "shopping": "Mua sắm",
+    "realEstate": "Bất động sản",
+    "events": "Sự kiện",
+    "search": "Tìm kiếm",
+    "language": "Ngôn ngữ",
+    "mainNavigation": "Điều hướng chính",
+    "openMenu": "Mở menu",
+    "closeMenu": "Đóng menu",
+    "logoAlt": "TRAVI - Hướng dẫn Du lịch",
+    "followInstagram": "Theo dõi TRAVI trên Instagram",
+    "followTikTok": "Theo dõi TRAVI trên TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Điều hướng đường dẫn",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "Đọc thêm",
+    "viewAll": "Xem tất cả",
+    "learnMore": "Tìm hiểu thêm",
+    "bookNow": "Đặt ngay",
+    "contactUs": "Liên hệ",
+    "subscribe": "Đăng ký",
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "noResults": "Không tìm thấy kết quả",
+    "seeMore": "Xem thêm",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "previous": "Trước đó",
+    "close": "Đóng",
+    "share": "Chia sẻ",
+    "copyLink": "Sao chép liên kết",
+    "copied": "Đã sao chép!"
+  },
+  "home": {
+    "hero": {
+      "title": "Khám phá Thế giới cùng TRAVI",
+      "subtitle": "Hướng dẫn du lịch toàn diện cho 17 điểm đến trên toàn thế giới",
+      "searchPlaceholder": "Tìm điểm tham quan, khách sạn, nhà hàng...",
+      "cta": "Bắt đầu Khám phá",
+      "badge": "Cổng vào Những Chuyến phiêu lưu Thế giới",
+      "headlinePart1": "Nguồn Thông tin Du lịch",
+      "headlinePart2": "Đáng Tin cậy",
+      "description": "Thông tin du lịch toàn diện cho {{destinations}} điểm đến trên toàn thế giới. Khám phá hướng dẫn chi tiết cho {{attractions}}+ điểm tham quan.",
+      "descriptionPart1": "Thông tin du lịch toàn diện cho",
+      "descriptionPart2": "điểm đến trên toàn thế giới. Khám phá hướng dẫn chi tiết cho",
+      "descriptionPart3": "điểm tham quan.",
+      "carouselLabel": "Điều hướng băng chuyền điểm đến",
+      "viewDestination": "Xem {{name}} - {{tagline}}",
+      "worldwide": "Toàn cầu",
+      "exploreWorld": "Khám phá Thế giới",
+      "welcomeAriaLabel": "Chào mừng đến TRAVI World",
+      "pageTitle": "TRAVI World - Hướng dẫn Du lịch cho Khách sạn, Điểm tham quan & Hoạt động",
+      "pageDescription": "Hướng dẫn du lịch hoàn chỉnh cho 17 điểm đến trên toàn thế giới. Thông tin chuyên gia về khách sạn, điểm tham quan, nhà hàng và hoạt động cho hơn 3.000 địa điểm.",
+      "orgDescription": "Nguồn thông tin du lịch đáng tin cậy cho 17 điểm đến trên toàn thế giới."
+    },
+    "srLabel": {
+      "attractions": "Hơn {{count}} điểm tham quan được giới thiệu",
+      "destinations": "{{count}} điểm đến trên toàn thế giới",
+      "languages": "Nền tảng đa ngôn ngữ với các ngôn ngữ bổ sung đang được triển khai"
+    },
+    "featured": "Nổi bật",
+    "trending": "Xu hướng Hiện tại",
+    "topAttractions": "Điểm tham quan Hàng đầu",
+    "bestHotels": "Khách sạn Tốt nhất",
+    "latestNews": "Tin tức & Hướng dẫn Mới nhất",
+    "sections": {
+      "destinations": "Khám phá Điểm đến",
+      "destinationsDesc": "Khám phá bộ sưu tập các điểm đến du lịch toàn cầu được tuyển chọn",
+      "categories": "Duyệt theo Danh mục",
+      "categoriesDesc": "Tìm chính xác những gì bạn đang tìm kiếm",
+      "experiences": "Du lịch theo Trải nghiệm",
+      "experiencesDesc": "Chọn phong cách du lịch của bạn",
+      "faq": "Câu hỏi Thường gặp",
+      "faqDesc": "Mọi thứ bạn cần biết về TRAVI",
+      "regions": "Khám phá theo Khu vực",
+      "newsletter": "Cập nhật Tin tức",
+      "allDestinationsTitle": "Hướng dẫn Du lịch cho Tất cả {{count}} Điểm đến",
+      "completeGuide": "{{name}}, {{country}} - Hướng dẫn Du lịch Hoàn chỉnh"
+    },
+    "cta": {
+      "exploreDestinations": "Khám phá Điểm đến",
+      "viewGuides": "Xem Hướng dẫn",
+      "viewAll": "Xem tất cả",
+      "startExploring": "Bắt đầu Khám phá",
+      "planTrip": "Lên kế hoạch Chuyến đi",
+      "viewExperience": "Xem {{name}}"
+    },
+    "stats": {
+      "destinations": "ĐIỂM ĐẾN",
+      "attractions": "ĐIỂM THAM QUAN",
+      "languages": "NGÔN NGỮ",
+      "attractionsNum": "3.000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} điểm đến",
+      "attractionsCountWithLabel": "{{count}}+ điểm tham quan"
+    },
+    "categories": {
+      "attractions": "Điểm tham quan",
+      "attractionsDesc": "Những địa điểm phải ghé thăm",
+      "news": "Tin tức Du lịch",
+      "newsDesc": "Cập nhật mới nhất",
+      "guides": "Hướng dẫn",
+      "guidesDesc": "Hướng dẫn điểm đến",
+      "hotels": "Khách sạn",
+      "hotelsDesc": "Tìm chỗ ở hoàn hảo"
+    },
+    "experiences": {
+      "luxury": "Du lịch Sang trọng",
+      "luxuryDesc": "Trải nghiệm du lịch cao cấp và điểm đến độc quyền",
+      "adventure": "Phiêu lưu & Ngoài trời",
+      "adventureDesc": "Trải nghiệm ngoài trời ly kỳ và phiêu lưu",
+      "family": "Du lịch Gia đình",
+      "familyDesc": "Điểm đến và hoạt động thân thiện với gia đình",
+      "budget": "Du lịch Tiết kiệm",
+      "budgetDesc": "Lựa chọn và điểm đến du lịch giá cả phải chăng",
+      "romance": "Tuần trăng mật & Lãng mạn",
+      "romanceDesc": "Kỳ nghỉ lãng mạn và điểm đến tuần trăng mật",
+      "solo": "Du lịch Một mình",
+      "soloDesc": "Điểm đến hoàn hảo cho du khách đơn thân"
+    },
+    "faq": {
+      "title": "Câu hỏi Thường gặp",
+      "subtitle": "Mọi thứ bạn cần biết về TRAVI World",
+      "whatIsTravi": "TRAVI World là gì?",
+      "whatIsTraviAnswer": "TRAVI World là nền tảng thông tin du lịch toàn diện bao gồm 17 điểm đến trên toàn thế giới với hướng dẫn chi tiết cho hơn 3.000 điểm tham quan, khách sạn, nhà hàng và hoạt động.",
+      "howManyDestinations": "TRAVI bao gồm bao nhiêu điểm đến?",
+      "howManyDestinationsAnswer": "TRAVI World bao gồm 17 điểm đến du lịch lớn bao gồm Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami và Rome.",
+      "isFree": "TRAVI World có miễn phí không?",
+      "isFreeAnswer": "Có, TRAVI World hoàn toàn miễn phí sử dụng. Duyệt hàng nghìn hướng dẫn du lịch, đánh giá điểm tham quan, gợi ý khách sạn và nhà hàng mà không tốn phí.",
+      "updateFrequency": "Nội dung được cập nhật thường xuyên như thế nào?",
+      "updateFrequencyAnswer": "Nội dung TRAVI World được cập nhật hàng ngày với tin tức du lịch mới nhất, đánh giá điểm tham quan mới và thông tin cập nhật về khách sạn và nhà hàng trên tất cả 17 điểm đến."
+    },
+    "mascotAlt": "Linh vật TRAVI với các địa danh thế giới - khám phá hướng dẫn du lịch Dubai, Paris, London, Rome và nhiều hơn nữa",
+    "mascotTitle": "TRAVI World - Hướng dẫn Du lịch cho Các điểm đến Toàn cầu"
+  },
+  "attractions": {
+    "title": "Điểm tham quan Dubai",
+    "subtitle": "Khám phá các địa danh mang tính biểu tượng và những viên ngọc ẩn giấu",
+    "hero": {
+      "badge": "{{count}} điểm tham quan tại {{cities}} thành phố",
+      "badgeThousands": "Hàng nghìn điểm tham quan trên toàn thế giới",
+      "headlinePart1": "Hoạt động",
+      "headlinePart2": "Trên Toàn cầu",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Vé ưu tiên không xếp hàng</span> đến Tháp Eiffel, Đấu trường La Mã, Burj Khalifa và các điểm tham quan hàng đầu tại Paris, Rome, Dubai và nhiều nơi khác.",
+      "searchPlaceholder": "Tìm Tháp Eiffel, Đấu trường La Mã, Burj Khalifa...",
+      "carouselLabel": "Băng chuyền điểm tham quan nổi bật",
+      "sectionLabel": "Đặt vé các điểm tham quan hàng đầu trên toàn thế giới",
+      "searchAriaLabel": "Tìm điểm tham quan theo tên hoặc thành phố",
+      "searchButton": "Tìm kiếm",
+      "searchButtonAriaLabel": "Tìm điểm tham quan"
+    },
+    "stats": {
+      "attractions": "ĐIỂM THAM QUAN",
+      "cities": "THÀNH PHỐ",
+      "rating": "ĐÁNH GIÁ"
+    },
+    "srLabel": {
+      "attractions": "Hơn {{count}} điểm tham quan",
+      "cities": "{{count}} thành phố",
+      "rating": "Đánh giá {{rating}} sao"
+    },
+    "types": {
+      "all": "Tất cả Loại",
+      "museums": "Bảo tàng",
+      "landmarks": "Địa danh",
+      "tours": "Tour tham quan",
+      "themeParks": "Công viên Giải trí",
+      "shows": "Biểu diễn"
+    },
+    "thingsToDoIn": "Hoạt động tại {{name}}",
+    "countAttractions": "{{country}} - {{count}} điểm tham quan",
+    "filters": {
+      "all": "Tất cả",
+      "popular": "Phổ biến Nhất",
+      "free": "Miễn phí",
+      "familyFriendly": "Thân thiện Gia đình",
+      "outdoor": "Ngoài trời",
+      "indoor": "Trong nhà"
+    },
+    "details": {
+      "location": "Vị trí",
+      "hours": "Giờ mở cửa",
+      "price": "Giá",
+      "duration": "Thời gian",
+      "tips": "Mẹo Nội bộ"
+    },
+    "sections": {
+      "destinations": "Khám phá Điểm tham quan theo Điểm đến",
+      "destinationsDesc": "Chọn một thành phố để khám phá các hoạt động tuyệt vời",
+      "faq": "Câu hỏi Thường gặp",
+      "faqDesc": "Nhận câu trả lời về việc đặt vé điểm tham quan trên toàn thế giới",
+      "whyBookBadge": "Tại sao Đặt với Chúng tôi",
+      "whyBookTitle": "Bỏ qua Hàng đợi, Tiết kiệm Thời gian",
+      "whyBookDesc": "Đặt vé trước và tận hưởng lối vào không phiền phức đến các điểm tham quan hàng đầu",
+      "allDestinations": "Tất cả Điểm đến"
+    },
+    "features": {
+      "skipTheLine": "Vé Ưu tiên Không Xếp hàng",
+      "skipTheLineDesc": "Đi thẳng qua hàng đợi tại Tháp Eiffel, Đấu trường La Mã, Vatican và nhiều nơi khác",
+      "mobileTickets": "Vé Điện tử",
+      "mobileTicketsDesc": "Gửi ngay đến điện thoại - xuất trình vé và vào cửa",
+      "freeCancellation": "Hủy Miễn phí",
+      "freeCancellationDesc": "Kế hoạch thay đổi? Hủy trước 24 giờ để được hoàn tiền đầy đủ"
+    },
+    "browse": {
+      "title": "Hoạt động theo Điểm đến",
+      "desc": "Tìm điểm tham quan và trải nghiệm tại các thành phố hàng đầu thế giới",
+      "thingsToDo": "{{count}} hoạt động",
+      "noDestinations": "Hiện không có điểm đến nào."
+    },
+    "exploreLinks": {
+      "title": "Khám phá Thêm Hướng dẫn Du lịch",
+      "hotelsWorldwide": "Khách sạn Toàn cầu",
+      "bestRestaurants": "Nhà hàng Tốt nhất",
+      "travelNews": "Tin tức Du lịch"
+    },
+    "cta": {
+      "title": "Sẵn sàng Khám phá?",
+      "desc": "Đặt vé ưu tiên không xếp hàng đến Tháp Eiffel, Đấu trường La Mã, Burj Khalifa và các điểm tham quan hàng đầu trên toàn thế giới.",
+      "parisAttractions": "Điểm tham quan Paris",
+      "romeAttractions": "Điểm tham quan Rome"
+    },
+    "search": {
+      "popular": "Phổ biến:",
+      "thingsToDoIn": "Hoạt động tại {{city}}",
+      "ariaCarouselNav": "Điều hướng băng chuyền điểm tham quan",
+      "ariaViewInCity": "Xem {{name}} tại {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Điểm tham quan nổi bật",
+      "ariaThumbnails": "Hình thu nhỏ băng chuyền điểm tham quan",
+      "ariaTicketsIn": "Vé {{name}} tại {{city}}",
+      "priceFrom": "Từ",
+      "bookTickets": "Đặt vé",
+      "skipTheLine": "Bỏ qua Hàng đợi",
+      "duration": "2-3 giờ",
+      "freeCancellation": "Hủy Miễn phí",
+      "freeCancellationDesc": "24 giờ trước khi tham quan",
+      "mobileTickets": "Vé Điện tử",
+      "instantDelivery": "Gửi ngay lập tức"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} hoạt động"
+    }
+  },
+  "hotels": {
+    "title": "Khách sạn Dubai",
+    "subtitle": "Tìm chỗ ở hoàn hảo",
+    "filters": {
+      "all": "Tất cả Khách sạn",
+      "luxury": "Sang trọng",
+      "budget": "Tiết kiệm",
+      "beachfront": "Bãi biển",
+      "cityCenter": "Trung tâm Thành phố",
+      "familyFriendly": "Thân thiện Gia đình"
+    },
+    "details": {
+      "priceFrom": "Từ",
+      "perNight": "mỗi đêm",
+      "amenities": "Tiện nghi",
+      "checkIn": "Nhận phòng",
+      "checkOut": "Trả phòng",
+      "rooms": "Phòng",
+      "rating": "Đánh giá"
+    },
+    "bookNow": "Đặt ngay"
+  },
+  "dining": {
+    "title": "Ẩm thực Dubai",
+    "subtitle": "Trải nghiệm ẩm thực cho mọi khẩu vị",
+    "filters": {
+      "all": "Tất cả Nhà hàng",
+      "fineDining": "Nhà hàng Cao cấp",
+      "casual": "Nhà hàng Bình dân",
+      "cafes": "Quán Cà phê",
+      "streetFood": "Ẩm thực Đường phố",
+      "halal": "Halal",
+      "vegetarian": "Chay"
+    },
+    "details": {
+      "cuisine": "Ẩm thực",
+      "priceRange": "Mức giá",
+      "hours": "Giờ mở cửa",
+      "dress": "Trang phục",
+      "reservations": "Đặt bàn"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Đường chân trời Dubai với tòa tháp Burj Khalifa lúc hoàng hôn" },
+      "london": { "name": "London", "country": "Anh", "cardAlt": "London Big Ben và Tòa nhà Quốc hội" },
+      "paris": { "name": "Paris", "country": "Pháp", "cardAlt": "Tháp Eiffel Paris lung linh lúc hoàng hôn" },
+      "newYork": { "name": "New York", "country": "Mỹ", "cardAlt": "Đường chân trời Manhattan New York với Tòa nhà Empire State" },
+      "tokyo": { "name": "Tokyo", "country": "Nhật Bản", "cardAlt": "Giao lộ Shibuya Tokyo với đèn neon ban đêm" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands và Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Tây Ban Nha", "cardAlt": "Nhà thờ Sagrada Familia Barcelona lúc hoàng hôn vàng" },
+      "bangkok": { "name": "Bangkok", "country": "Thái Lan", "cardAlt": "Cung điện Hoàng gia Bangkok lúc bình minh" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Nhà thờ Hồi giáo Sheikh Zayed Abu Dhabi" },
+      "amsterdam": { "name": "Amsterdam", "country": "Hà Lan", "cardAlt": "Kênh đào Amsterdam với các tòa nhà lịch sử" },
+      "hongKong": { "name": "Hồng Kông", "country": "Trung Quốc", "cardAlt": "Đường chân trời Hồng Kông ban đêm" },
+      "istanbul": { "name": "Istanbul", "country": "Thổ Nhĩ Kỳ", "cardAlt": "Nhà thờ Hồi giáo Blue Mosque Istanbul lúc hoàng hôn" },
+      "lasVegas": { "name": "Las Vegas", "country": "Mỹ", "cardAlt": "Dải Las Vegas Strip ban đêm" },
+      "losAngeles": { "name": "Los Angeles", "country": "Mỹ", "cardAlt": "Biển hiệu Hollywood Los Angeles" },
+      "miami": { "name": "Miami", "country": "Mỹ", "cardAlt": "Khu Art Deco bãi biển Miami" },
+      "rome": { "name": "Rome", "country": "Ý", "cardAlt": "Đấu trường La Mã Rome lúc hoàng hôn vàng" }
+    },
     "hero": {
       "badge": "{{count}} Điểm đến Toàn cầu",
-      "trustedBy": "Được tin tưởng bởi {{count}} điểm đến",
+      "trustedBy": "Được tin tưởng bởi {{count}} điểm đến trên toàn thế giới",
       "discover": "Khám phá",
       "worldClass": "Đẳng cấp Thế giới",
       "destinations": "Điểm đến",
-      "description": "Hướng dẫn du lịch được tuyển chọn với chuyên môn địa phương cho các thành phố quyến rũ nhất thế giới.",
+      "description": "Hướng dẫn du lịch được tuyển chọn với chuyên môn địa phương cho các thành phố quyến rũ nhất thế giới. Từ địa danh mang tính biểu tượng đến những viên ngọc ẩn giấu.",
       "exploreAll": "Khám phá Tất cả Điểm đến",
       "travelGuides": "Hướng dẫn Du lịch",
       "explorePlaceholder": "Khám phá Điểm đến",
-      "browseCollection": "Duyệt bộ sưu tập điểm đến được tuyển chọn",
+      "browseCollection": "Duyệt bộ sưu tập các điểm đến du lịch được tuyển chọn bên dưới",
       "explore": "Khám phá",
       "discoverButton": "Khám phá",
       "ariaLabel": "Tổng quan điểm đến",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Khám phá {{name}}",
+      "galleryAriaLabel": "Thư viện điểm đến nổi bật",
+      "placeholderAriaLabel": "Trình giữ chỗ điểm đến nổi bật"
     },
     "stats": {
       "destinations": "ĐIỂM ĐẾN",
       "countries": "QUỐC GIA",
-      "regions": "Vùng",
+      "regions": "Khu vực",
       "languages": "Ngôn ngữ"
     },
     "sections": {
       "featured": "Điểm đến Nổi bật",
-      "featuredDesc": "Điểm đến được tuyển chọn với trải nghiệm đặc biệt.",
+      "featuredDesc": "Điểm đến được tuyển chọn với trải nghiệm đặc biệt, thông tin địa phương và mọi thứ bạn cần để lên kế hoạch chuyến đi hoàn hảo.",
       "all": "Tất cả Điểm đến",
       "count": "Tìm thấy {{count}} điểm đến"
     },
@@ -43,7 +365,7 @@
       "next": "Điểm đến tiếp theo",
       "goTo": "Đi đến {{name}}",
       "slideOf": "Slide {{current}} trong {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Hình thu nhỏ băng chuyền điểm đến"
     },
     "card": {
       "explore": "Khám phá",
@@ -54,28 +376,616 @@
     },
     "faq": {
       "title": "Câu hỏi Thường gặp",
-      "subtitle": "Mọi thứ về hướng dẫn điểm đến TRAVI",
-      "q1": "TRAVI bao phủ bao nhiêu điểm đến?",
-      "a1": "TRAVI bao phủ các điểm đến chính ở Trung Đông, Châu Âu, Châu Á và Châu Mỹ.",
-      "q2": "Thông tin nào được bao gồm?",
-      "a2": "Mỗi hướng dẫn bao gồm điểm tham quan, chỗ ở, ẩm thực địa phương và mẹo du lịch.",
+      "subtitle": "Mọi thứ bạn cần biết về hướng dẫn điểm đến TRAVI",
+      "q1": "TRAVI bao gồm bao nhiêu điểm đến?",
+      "a1": "TRAVI bao gồm các điểm đến du lịch lớn trên khắp Trung Đông, Châu Âu, Châu Á và Châu Mỹ với hướng dẫn toàn diện cho mỗi địa điểm.",
+      "q2": "Thông tin nào được bao gồm trong hướng dẫn điểm đến TRAVI?",
+      "a2": "Mỗi hướng dẫn điểm đến bao gồm mô tả chi tiết về điểm tham quan, tùy chọn chỗ ở, ẩm thực địa phương, mẹo giao thông và thông tin du lịch thực tế.",
       "q3": "Tôi có thể tìm kiếm điểm đến không?",
-      "a3": "Có, bạn có thể tìm theo tên hoặc quốc gia.",
-      "q4": "Điểm đến nổi bật trên TRAVI là gì?",
-      "a4": "Điểm đến nổi bật mang đến trải nghiệm đặc biệt."
+      "a3": "Có, TRAVI cho phép tìm kiếm điểm đến theo tên hoặc quốc gia bằng thanh tìm kiếm trên trang điểm đến.",
+      "q4": "Các điểm đến nổi bật trên TRAVI là gì?",
+      "a4": "Điểm đến nổi bật của TRAVI là các địa điểm được tuyển chọn cung cấp trải nghiệm đặc biệt cho du khách với sở thích đa dạng từ du lịch sang trọng đến tiết kiệm."
     },
     "loading": {
       "title": "Đang tải Điểm đến",
-      "message": "Đang lấy dữ liệu mới nhất..."
+      "message": "Đang lấy dữ liệu điểm đến mới nhất..."
     },
     "error": {
-      "title": "Không thể Tải",
-      "message": "Vui lòng thử lại sau.",
+      "title": "Không thể Tải Điểm đến",
+      "message": "Chúng tôi đang gặp sự cố khi tải dữ liệu điểm đến. Vui lòng thử lại sau.",
       "refresh": "Làm mới Trang"
     },
     "empty": {
       "title": "Không có Điểm đến",
-      "message": "Hiện không có điểm đến nào."
+      "message": "Hiện không có điểm đến nào. Vui lòng quay lại sau."
+    }
+  },
+  "districts": {
+    "title": "Các Quận Dubai",
+    "subtitle": "Khám phá các khu phố đa dạng của Dubai",
+    "explore": "Khám phá Quận"
+  },
+  "realEstate": {
+    "title": "Bất động sản Dubai",
+    "subtitle": "Đầu tư vào tương lai",
+    "offPlan": {
+      "title": "Bất động sản Hình thành",
+      "subtitle": "Đầu tư Sớm, Trả Ít, Nhận Nhiều",
+      "findProperty": "Tìm Bất động sản Hoàn hảo",
+      "from": "Từ",
+      "paymentPlan": "Kế hoạch Thanh toán",
+      "handover": "Bàn giao",
+      "developer": "Chủ đầu tư"
+    },
+    "filters": {
+      "all": "Tất cả Bất động sản",
+      "apartments": "Căn hộ",
+      "villas": "Biệt thự",
+      "townhouses": "Nhà phố",
+      "penthouses": "Penthouse"
+    },
+    "features": {
+      "cryptoAccepted": "Chấp nhận Tiền mã hóa",
+      "paymentPlans": "Kế hoạch Thanh toán Linh hoạt",
+      "goldenVisa": "Đủ điều kiện Visa Vàng",
+      "roiGuarantee": "Đảm bảo ROI"
+    }
+  },
+  "search": {
+    "placeholder": "Tìm điểm tham quan, hướng dẫn, điểm đến...",
+    "results": "Kết quả Tìm kiếm",
+    "noResults": "Không tìm thấy kết quả cho",
+    "tryAgain": "Thử từ khóa khác"
+  },
+  "footer": {
+    "about": "Về Travi",
+    "aboutTravi": "Về Travi",
+    "aboutText": "Thông tin du lịch toàn diện cho 17 điểm đến trên toàn thế giới.",
+    "aboutUs": "Về Chúng tôi",
+    "quickLinks": "Liên kết Nhanh",
+    "legal": "Pháp lý",
+    "privacy": "Chính sách Bảo mật",
+    "privacyPolicy": "Chính sách Bảo mật",
+    "terms": "Điều khoản & Điều kiện",
+    "termsOfService": "Điều khoản Dịch vụ",
+    "contact": "Liên hệ",
+    "contactUs": "Liên hệ Chúng tôi",
+    "followUs": "Theo dõi Chúng tôi",
+    "explore": "Khám phá",
+    "travel": "Du lịch",
+    "company": "Công ty",
+    "allGuides": "Tất cả Hướng dẫn",
+    "cookies": "Cookie",
+    "security": "Bảo mật",
+    "cookieSettings": "Cài đặt Cookie",
+    "tagline": "Nguồn Thông tin Du lịch Đáng tin cậy",
+    "ariaLabel": "Chân trang",
+    "featuredGuides": "Hướng dẫn Nổi bật",
+    "tools": "Công cụ",
+    "currencyConverter": "Chuyển đổi Tiền tệ",
+    "roiCalculator": "Máy tính ROI",
+    "mortgageCalculator": "Máy tính Thế chấp",
+    "glossary": "Thuật ngữ",
+    "freeThingsToDo": "70+ Hoạt động Miễn phí",
+    "open24Hours": "Mở cửa 24 Giờ",
+    "tributeToSheikh": "Tri ân HH Sheikh Mohammed",
+    "lawsForTourists": "Luật cho Du khách",
+    "newsletter": "Đăng ký bản tin",
+    "newsletterDescription": "Nhận mẹo và cập nhật du lịch Dubai mới nhất.",
+    "emailPlaceholder": "Nhập email của bạn",
+    "allRightsReserved": "Bảo lưu mọi quyền.",
+    "copyright": "© {{year}} {{brand}}. Bảo lưu mọi quyền.",
+    "emailAriaLabel": "Gửi email đến TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Không Tìm Thấy Trang",
+      "message": "Trang bạn đang tìm không tồn tại.",
+      "button": "Về Trang chủ"
+    },
+    "500": {
+      "title": "Lỗi Máy chủ",
+      "message": "Đã xảy ra sự cố từ phía chúng tôi.",
+      "button": "Thử lại"
+    },
+    "network": {
+      "title": "Lỗi Kết nối",
+      "message": "Không thể kết nối. Vui lòng kiểm tra kết nối internet của bạn.",
+      "button": "Thử lại"
+    }
+  },
+  "newsletter": {
+    "badge": "Tham gia Cuộc phiêu lưu",
+    "title": "Nhận Điều kỳ diệu Du lịch trong Hộp thư",
+    "description": "Mẹo hàng tuần, những viên ngọc ẩn giấu và ưu đãi độc quyền - không spam, chỉ có cảm hứng du lịch.",
+    "emailPlaceholder": "email@cuaban.com",
+    "subscribe": "Đăng ký",
+    "success": "Bạn đã đăng ký! Kiểm tra hộp thư của bạn."
+  },
+  "cookies": {
+    "title": "Chúng tôi trân trọng quyền riêng tư của bạn",
+    "description": "Chúng tôi sử dụng cookie để nâng cao trải nghiệm duyệt web, phân tích lưu lượng truy cập và cá nhân hóa nội dung. Bằng cách nhấp vào \"Chấp nhận Tất cả\", bạn đồng ý với việc sử dụng cookie của chúng tôi.",
+    "manage": "Quản lý",
+    "rejectAll": "Từ chối Tất cả",
+    "acceptAll": "Chấp nhận Tất cả",
+    "preferencesTitle": "Tùy chọn Cookie",
+    "savePreferences": "Lưu Tùy chọn",
+    "essential": {
+      "title": "Cookie Thiết yếu",
+      "description": "Cần thiết để website hoạt động đúng cách"
+    },
+    "analytics": {
+      "title": "Cookie Phân tích",
+      "description": "Giúp chúng tôi hiểu cách khách truy cập tương tác với website"
+    },
+    "marketing": {
+      "title": "Cookie Tiếp thị",
+      "description": "Được sử dụng để cung cấp quảng cáo được cá nhân hóa"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Khám phá Dubai | Hướng dẫn Du lịch Dubai Tối ưu",
+      "description": "Khám phá các điểm tham quan, khách sạn, nhà hàng và khu phố tốt nhất Dubai. Lên kế hoạch chuyến đi Dubai hoàn hảo với mẹo nội bộ và gợi ý địa phương."
+    },
+    "attractions": {
+      "title": "Điểm tham quan Dubai | Những Hoạt động Hàng đầu tại Dubai",
+      "description": "Khám phá các điểm tham quan tốt nhất tại Dubai - từ Burj Khalifa đến những viên ngọc ẩn giấu. Lên kế hoạch chuyến tham quan Dubai của bạn."
+    },
+    "hotels": {
+      "title": "Khách sạn Dubai | Nơi Lưu trú Tốt nhất tại Dubai",
+      "description": "Tìm khách sạn hoàn hảo tại Dubai cho mọi ngân sách. Từ khu nghỉ dưỡng sang trọng đến lựa chọn tiết kiệm."
+    },
+    "dining": {
+      "title": "Nhà hàng Dubai | Ẩm thực Tốt nhất tại Dubai",
+      "description": "Khám phá cảnh ẩm thực Dubai - nhà hàng cao cấp, ẩm thực đường phố và mọi thứ ở giữa."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Thông tin Du lịch",
+      "headlinePart1": "Những Câu chuyện",
+      "headlinePart2": "Truyền cảm hứng",
+      "description": "Hướng dẫn được biên soạn chuyên gia, góc nhìn nội bộ và những câu chuyện biên tập chuyển đổi cách bạn trải nghiệm thế giới.",
+      "startJourney": "Bắt đầu Hành trình",
+      "browseCollection": "Duyệt Bộ sưu tập",
+      "issueBadge": "Số 47 — Đông 2026"
+    },
+    "stats": {
+      "guides": "Hướng dẫn Du lịch",
+      "destinations": "Điểm đến",
+      "languages": "Ngôn ngữ"
+    },
+    "journey": {
+      "badge": "Hành trình của Bạn, Hướng dẫn của Chúng tôi",
+      "title": "Mọi Chuyến đi Tuyệt vời Bắt đầu với một Hướng dẫn",
+      "subtitle": "Từ mơ mộng đến chia sẻ, chúng tôi đồng hành cùng bạn ở mọi bước"
+    },
+    "ideaLab": {
+      "badge": "Phòng Ý tưởng",
+      "title": "Cảm hứng Được tuyển chọn",
+      "readGuide": "Đọc Hướng dẫn"
+    },
+    "archetype": {
+      "badge": "Cá nhân hóa cho Bạn",
+      "title": "Bạn là Loại Du khách nào?",
+      "subtitle": "Chọn phong cách du lịch và khám phá hướng dẫn được tuyển chọn cho bạn",
+      "viewGuides": "Xem Hướng dẫn {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Người Tìm kiếm Phiêu lưu",
+        "description": "Trải nghiệm ly kỳ và cảm giác mạnh"
+      },
+      "culture": {
+        "name": "Người Khám phá Văn hóa",
+        "description": "Nghệ thuật, lịch sử và truyền thống địa phương"
+      },
+      "relaxation": {
+        "name": "Chuyên gia Thư giãn",
+        "description": "Kỳ nghỉ chăm sóc sức khỏe và nơi ẩn náu yên bình"
+      },
+      "foodie": {
+        "name": "Du khách Ẩm thực",
+        "description": "Hương vị địa phương và phiêu lưu ẩm thực"
+      },
+      "wellness": {
+        "name": "Người Tìm kiếm Sức khỏe",
+        "description": "Thư giãn, spa và kỳ nghỉ chánh niệm"
+      },
+      "budget": {
+        "name": "Du khách Thông minh",
+        "description": "Trải nghiệm tối đa, ngân sách tối thiểu"
+      },
+      "solo": {
+        "name": "Người Khám phá Một mình",
+        "description": "Hành trình độc lập và khám phá bản thân"
+      },
+      "luxury": {
+        "name": "Người Sành điệu Sang trọng",
+        "description": "Trải nghiệm cao cấp và cuộc sống tinh tế"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Mơ ước",
+        "subtitle": "Khám phá cảm hứng",
+        "guides": ["Hướng dẫn Điểm đến", "Bài viết Ảnh"]
+      },
+      "plan": {
+        "title": "Lên kế hoạch",
+        "subtitle": "Vạch ra hành trình",
+        "guides": ["Lập kế hoạch Chuyến đi", "Yêu cầu Visa"]
+      },
+      "prepare": {
+        "title": "Chuẩn bị",
+        "subtitle": "Sẵn sàng lên đường",
+        "guides": ["Danh sách Đóng gói", "Mẹo An toàn"]
+      },
+      "experience": {
+        "title": "Trải nghiệm",
+        "subtitle": "Sống trọn cuộc phiêu lưu",
+        "guides": ["Thông tin Địa phương", "Những Viên ngọc Ẩn giấu"]
+      },
+      "share": {
+        "title": "Chia sẻ",
+        "subtitle": "Kể câu chuyện của bạn",
+        "guides": ["Viết về Du lịch", "Nhiếp ảnh"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Kỳ nghỉ Cuối tuần",
+      "offBeatenPath": "Điểm đến Khác biệt",
+      "smartTravel": "Du lịch Thông minh",
+      "bucketList": "Danh sách Phải đến",
+      "culinary": "Ẩm thực",
+      "natureWonder": "Thiên nhiên & Kỳ quan"
+    },
+    "seo": {
+      "title": "Hướng dẫn Du lịch | Thông tin Điểm đến Chuyên gia",
+      "description": "Khám phá hướng dẫn du lịch chuyên gia, thông tin điểm đến và mẹo nội bộ từ mạng lưới nhà văn du lịch toàn cầu. Lên kế hoạch chuyến đi hoàn hảo hôm nay."
+    },
+    "editorial": {
+      "badge": "Từ Ban Biên tập",
+      "title": "Bài viết Đặc sắc",
+      "readFull": "Đọc Toàn bộ Bài viết"
+    },
+    "gallery": {
+      "badge": "Câu chuyện Hình ảnh",
+      "title": "Điểm đến Truyền cảm hứng",
+      "categories": {
+        "city": "Thành phố",
+        "mountains": "Núi non",
+        "beach": "Bãi biển",
+        "safari": "Safari",
+        "nature": "Thiên nhiên"
+      }
+    },
+    "writers": {
+      "badge": "Tiếng nói Chuyên gia",
+      "title": "Gặp gỡ Các Tác giả",
+      "subtitle": "Những tiếng nói chuyên gia đằng sau các hướng dẫn du lịch đáng tin cậy nhất",
+      "articleCount": "{{count}} Bài viết",
+      "viewProfile": "Xem Hồ sơ"
+    },
+    "map": {
+      "badge": "Khám phá theo Khu vực",
+      "title": "Hướng dẫn Khắp Thế giới",
+      "subtitle": "Nhấp vào bất kỳ điểm đến nào để khám phá thông tin chuyên gia",
+      "guidesAvailable": "{{count}} hướng dẫn có sẵn",
+      "legendDestination": "Điểm đến",
+      "legendHighlighted": "Được đánh dấu"
+    },
+    "newsletter": {
+      "badge": "Tham gia Hành trình",
+      "title": "Câu chuyện Du lịch, Hàng tuần",
+      "description": "Cảm hứng du lịch được tuyển chọn, mẹo chuyên gia và góc nhìn nội bộ được gửi đến hộp thư của bạn mỗi tuần.",
+      "placeholder": "Nhập email của bạn",
+      "subscribe": "Đăng ký",
+      "subscribing": "Đang đăng ký...",
+      "joinCount": "Tham gia 50.000+ du khách đọc bản tin hàng tuần của chúng tôi",
+      "invalidEmail": "Vui lòng nhập email hợp lệ",
+      "successTitle": "Chào mừng đến với hành trình!",
+      "successDesc": "Bạn đã đăng ký bản tin biên tập của chúng tôi."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "Gần đây",
+      "justNow": "Vừa xong",
+      "minutesAgo": "{{count}} phút trước",
+      "hoursAgo": "{{count}} giờ trước",
+      "daysAgo": "{{count}} ngày trước",
+      "minRead": "{{count}} phút đọc"
+    },
+    "header": {
+      "title": "TIN TỨC TRAVI",
+      "edition": "Phiên bản Quốc tế",
+      "subscribe": "Đăng ký"
+    },
+    "breaking": {
+      "label": "Tin nóng"
+    },
+    "search": {
+      "placeholder": "Tìm tin tức toàn cầu...",
+      "button": "Tìm kiếm",
+      "title": "Tìm kiếm",
+      "searching": "Đang tìm \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Tất cả Tin tức",
+      "world": "Thế giới",
+      "business": "Kinh doanh",
+      "culture": "Văn hóa",
+      "travel": "Du lịch",
+      "tech": "Công nghệ",
+      "opinion": "Quan điểm"
+    },
+    "empty": {
+      "title": "Chưa có Bài báo",
+      "description": "Chúng tôi đang làm việc để mang đến tin tức và thông tin du lịch mới nhất. Hãy quay lại sớm để cập nhật từ khắp nơi trên thế giới.",
+      "exploreDestinations": "Khám phá Điểm đến",
+      "viewGuides": "Xem Hướng dẫn Du lịch"
+    },
+    "hero": {
+      "topStory": "Tin Hàng đầu",
+      "editorialTeam": "Đội ngũ Biên tập"
+    },
+    "views": "{{count}} lượt xem",
+    "viewAll": "Xem Tất cả",
+    "seo": {
+      "title": "Tin tức Du lịch | Câu chuyện & Cập nhật Mới nhất",
+      "description": "Cập nhật tin tức du lịch mới nhất, thông tin điểm đến và thông tin ngành từ khắp nơi trên thế giới."
+    },
+    "sidebar": {
+      "alsoToday": "Cũng trong Hôm nay",
+      "storiesCount": "{{count}} câu chuyện",
+      "liveUpdates": "Cập nhật Trực tiếp",
+      "trendingTopics": "Chủ đề Thịnh hành",
+      "noTrending": "Chưa có chủ đề thịnh hành. Hãy quay lại sớm!"
+    },
+    "sections": {
+      "topStories": "Tin Hàng đầu",
+      "opinion": "Quan điểm & Phân tích",
+      "moreOpinion": "Thêm Quan điểm",
+      "worldwide": "Phạm vi Toàn cầu"
+    },
+    "worldwide": {
+      "title": "Cửa sổ nhìn ra Thế giới",
+      "subtitle": "Tin tức từ mọi nơi trên toàn cầu",
+      "storiesCount": "{{count}} câu chuyện",
+      "comingSoon": "Sắp ra mắt"
+    },
+    "newsletter": {
+      "title": "Luôn Cập nhật",
+      "description": "Nhận tin tức hàng đầu trong ngày vào hộp thư mỗi sáng. Tham gia 50.000+ độc giả.",
+      "placeholder": "Nhập email của bạn",
+      "subscribe": "Đăng ký Miễn phí",
+      "noSpam": "Không spam. Hủy đăng ký bất cứ lúc nào.",
+      "successTitle": "Đã đăng ký!",
+      "successDesc": "Vui lòng kiểm tra email để xác nhận đăng ký.",
+      "errorTitle": "Đăng ký thất bại",
+      "errorDesc": "Vui lòng thử lại sau.",
+      "invalidTitle": "Email không hợp lệ",
+      "invalidDesc": "Vui lòng nhập địa chỉ email hợp lệ."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "Về Chúng tôi | TRAVI World",
+      "metaDescription": "Tìm hiểu về TRAVI World, nguồn thông tin du lịch độc lập cung cấp hướng dẫn du lịch toàn diện, điểm tham quan, khách sạn và thông tin nhà hàng cho các điểm đến trên toàn thế giới.",
+      "badge": "Người bạn đồng hành Du lịch",
+      "title": "Về",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Nguồn thông tin du lịch đáng tin cậy và hướng dẫn điểm đến toàn diện, giúp hàng triệu người khám phá thế giới với sự tự tin.",
+      "ctaExplore": "Khám phá Điểm đến",
+      "ctaContact": "Liên hệ",
+      "stats": {
+        "destinations": "Điểm đến",
+        "articles": "Bài viết",
+        "support": "Hỗ trợ Du lịch",
+        "coverage": "Phạm vi",
+        "cities": "16+ Thành phố"
+      },
+      "whoWeAre": {
+        "title": "Chúng tôi là Ai"
+      },
+      "mission": {
+        "title": "Sứ mệnh của Chúng tôi"
+      },
+      "services": {
+        "badge": "Dịch vụ của Chúng tôi",
+        "title": "Chúng tôi Cung cấp"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Hướng dẫn Điểm đến",
+          "description": "Thông tin toàn diện về các thành phố và khu vực trên toàn thế giới"
+        },
+        "attractions": {
+          "title": "Thông tin Điểm tham quan",
+          "description": "Chi tiết về các địa điểm phải ghé thăm và trải nghiệm độc đáo"
+        },
+        "hotels": {
+          "title": "Hướng dẫn Khách sạn",
+          "description": "Thông tin về các tùy chọn chỗ ở cho mọi ngân sách"
+        },
+        "restaurants": {
+          "title": "Gợi ý Nhà hàng",
+          "description": "Lựa chọn ẩm thực cho mọi khẩu vị và sở thích"
+        },
+        "articles": {
+          "title": "Bài viết Du lịch",
+          "description": "Mẹo, thông tin và cảm hứng du lịch"
+        },
+        "news": {
+          "title": "Tin tức Du lịch Mới nhất",
+          "description": "Luôn cập nhật với tin tức du lịch được tuyển chọn"
+        }
+      },
+      "editorial": {
+        "title": "Độc lập Biên tập",
+        "affiliateTitle": "Tiết lộ Liên kết"
+      },
+      "values": {
+        "badge": "Nền tảng của Chúng tôi",
+        "title": "Giá trị của Chúng tôi",
+        "accuracy": {
+          "title": "Chính xác",
+          "description": "Chúng tôi nỗ lực cung cấp thông tin chính xác và đáng tin cậy, thường xuyên cập nhật nội dung"
+        },
+        "transparency": {
+          "title": "Minh bạch",
+          "description": "Chúng tôi rõ ràng về mối quan hệ liên kết và cách chúng tôi hoạt động"
+        },
+        "userFocused": {
+          "title": "Tập trung Người dùng",
+          "description": "Nội dung được thiết kế để giúp du khách đưa ra quyết định sáng suốt"
+        }
+      },
+      "connect": {
+        "badge": "Hãy Kết nối",
+        "title": "Liên hệ"
+      },
+      "company": {
+        "title": "Thông tin Công ty",
+        "contactTitle": "Thông tin Liên hệ",
+        "contactForm": "Mẫu Liên hệ"
+      }
+    },
+    "contact": {
+      "metaTitle": "Liên hệ | TRAVI World",
+      "metaDescription": "Liên hệ với TRAVI World. Chúng tôi hoan nghênh phản hồi, câu hỏi và thắc mắc về dịch vụ thông tin du lịch của chúng tôi.",
+      "badge": "Chúng tôi rất muốn nghe từ bạn",
+      "titlePart1": "Hãy",
+      "titlePart2": "Kết nối",
+      "subtitle": "Có câu hỏi về chuyến phiêu lưu tiếp theo? Chúng tôi ở đây để giúp bạn khám phá thế giới với sự tự tin.",
+      "cta": "Gửi tin nhắn",
+      "getInTouch": "Liên hệ",
+      "getInTouchSubtitle": "Chọn cách tốt nhất để liên hệ. Chúng tôi cam kết phản hồi nhanh chóng.",
+      "howCanWeHelp": "Chúng tôi có thể Giúp gì?",
+      "howCanWeHelpSubtitle": "Chúng tôi ở đây để hỗ trợ mọi câu hỏi hoặc phản hồi về nội dung và dịch vụ du lịch của chúng tôi.",
+      "importantNote": "Lưu ý Quan trọng",
+      "importantNoteSubtitle": "Vui lòng đọc trước khi liên hệ",
+      "ourOffice": "Văn phòng của Chúng tôi",
+      "ourOfficeSubtitle": "Cho thư từ chính thức và thắc mắc bưu điện",
+      "travelCompanion": "Người bạn đồng hành du lịch",
+      "urgentNote": "Đối với vấn đề khẩn cấp, vui lòng bao gồm {{urgentLabel}} trong dòng chủ đề email. Chúng tôi ưu tiên phản hồi dựa trên tính chất của yêu cầu.",
+      "urgentLabel": "Khẩn cấp",
+      "options": {
+        "generalInquiries": {
+          "title": "Thắc mắc Chung",
+          "description": "Câu hỏi về hướng dẫn du lịch và nội dung"
+        },
+        "privacyInquiries": {
+          "title": "Thắc mắc Quyền riêng tư",
+          "description": "Yêu cầu truy cập dữ liệu, xóa và quyền riêng tư"
+        },
+        "visitWebsite": {
+          "title": "Truy cập Website",
+          "description": "Khám phá điểm đến và cảm hứng du lịch"
+        },
+        "responseTime": {
+          "title": "Thời gian Phản hồi",
+          "description": "Chúng tôi cố gắng phản hồi nhanh chóng",
+          "action": "2-3 ngày làm việc"
+        }
+      },
+      "helpTopics": {
+        "general": "Thắc mắc chung về hướng dẫn du lịch và nội dung",
+        "feedback": "Phản hồi và đề xuất cải tiến",
+        "reporting": "Báo cáo lỗi nội dung hoặc thông tin lỗi thời",
+        "business": "Thắc mắc kinh doanh và hợp tác",
+        "media": "Thắc mắc truyền thông và báo chí",
+        "privacy": "Yêu cầu liên quan đến quyền riêng tư (truy cập dữ liệu, xóa, v.v.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Chính sách Bảo mật | TRAVI World",
+      "metaDescription": "Tìm hiểu cách TRAVI World thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn. Đọc chính sách bảo mật toàn diện của chúng tôi.",
+      "badge": "Quyền riêng tư của Bạn Quan trọng",
+      "title": "Chính sách Bảo mật",
+      "subtitle": "Chúng tôi cam kết bảo vệ quyền riêng tư của bạn và minh bạch về các hoạt động dữ liệu. Tìm hiểu cách TRAVI World thu thập, sử dụng và bảo vệ thông tin của bạn.",
+      "effectiveDate": "Ngày có hiệu lực: 1 tháng 1 năm 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Bảo vệ Dữ liệu",
+          "description": "Dữ liệu của bạn được bảo vệ"
+        },
+        "minimalCollection": {
+          "title": "Thu thập Tối thiểu",
+          "description": "Chúng tôi chỉ thu thập những gì cần thiết"
+        },
+        "transparency": {
+          "title": "Minh bạch Hoàn toàn",
+          "description": "Rõ ràng về các hoạt động"
+        },
+        "yourControl": {
+          "title": "Quyền kiểm soát của Bạn",
+          "description": "Quản lý tùy chọn của bạn"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Chúng tôi là Ai",
+        "informationCollect": "2. Thông tin Chúng tôi Thu thập",
+        "howWeUse": "3. Cách Chúng tôi Sử dụng Thông tin",
+        "legalBasis": "4. Cơ sở Pháp lý để Xử lý (GDPR)",
+        "cookies": "5. Cookie và Công nghệ Theo dõi",
+        "thirdParty": "6. Dịch vụ Bên thứ ba",
+        "aiContent": "7. Nội dung do AI Tạo ra",
+        "internationalTransfers": "8. Chuyển Dữ liệu Quốc tế",
+        "dataRetention": "9. Lưu giữ Dữ liệu",
+        "privacyRights": "10. Quyền Riêng tư của Bạn",
+        "californiaRights": "11. Quyền Riêng tư California (CCPA/CPRA)",
+        "childrenPrivacy": "12. Quyền Riêng tư Trẻ em",
+        "dataSecurity": "13. Bảo mật Dữ liệu",
+        "changes": "14. Thay đổi Chính sách này",
+        "contactUs": "15. Liên hệ Chúng tôi"
+      }
+    },
+    "terms": {
+      "metaTitle": "Điều khoản & Điều kiện | TRAVI World",
+      "metaDescription": "Đọc điều khoản và điều kiện sử dụng dịch vụ thông tin du lịch TRAVI World. Thỏa thuận pháp lý giữa bạn và KBR Global Creative Consulting Ltd.",
+      "badge": "Thỏa thuận Pháp lý",
+      "title": "Điều khoản & Điều kiện",
+      "subtitle": "Vui lòng đọc kỹ các điều khoản này trước khi sử dụng TRAVI World. Việc truy cập và sử dụng nền tảng của chúng tôi phụ thuộc vào các điều kiện này.",
+      "lastUpdated": "Cập nhật lần cuối: 1 tháng 1 năm 2026",
+      "importantNotice": "Thông báo Pháp lý Quan trọng",
+      "keyPoints": {
+        "editorial": {
+          "title": "Nền tảng Biên tập",
+          "description": "Hướng dẫn du lịch & nội dung điểm đến"
+        },
+        "affiliate": {
+          "title": "Liên kết Tiếp thị",
+          "description": "Gợi ý dựa trên hoa hồng"
+        },
+        "aiGenerated": {
+          "title": "Nội dung AI",
+          "description": "Nội dung được tạo với sự hỗ trợ của AI"
+        },
+        "privacy": {
+          "title": "Quyền riêng tư của Bạn",
+          "description": "Bảo vệ dữ liệu được đảm bảo"
+        }
+      },
+      "sections": {
+        "operator": "Đơn vị Điều hành / Pháp nhân",
+        "purpose": "1. Mục đích & Phạm vi Sử dụng",
+        "affiliateDisclosure": "2. Tiết lộ Liên kết & Giao dịch Bên thứ ba",
+        "aiDisclaimer": "3. Tuyên bố Miễn trừ Nội dung AI",
+        "newsletter": "4. Bản tin & Liên lạc",
+        "userConduct": "5. Hành vi Người dùng & Hành động Bị cấm",
+        "intellectualProperty": "6. Sở hữu Trí tuệ & Giấy phép Hạn chế",
+        "dmca": "7. Thông báo và Gỡ bỏ (DMCA & Tương tự)",
+        "disclaimers": "8. Độ Chính xác, Tính Khả dụng & Tuyên bố Miễn trừ",
+        "liability": "9. Giới hạn Trách nhiệm & Bất khả kháng",
+        "indemnification": "10. Bồi thường",
+        "privacyCookies": "11. Quyền riêng tư, Cookie & Bảo vệ Dữ liệu",
+        "accessibility": "12. Tuyên bố Khả năng Tiếp cận",
+        "governingLaw": "13. Luật Điều chỉnh, Giải quyết Tranh chấp & Quyền Tài phán",
+        "modifications": "14. Sửa đổi, Tính Có thể Tách rời & Điều khoản Chung"
+      }
     }
   }
 }

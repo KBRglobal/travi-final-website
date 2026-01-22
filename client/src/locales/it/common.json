@@ -1,222 +1,345 @@
 {
   "nav": {
     "home": "Home",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News & Guides",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language"
+    "destinations": "Destinazioni",
+    "attractions": "Attrazioni",
+    "hotels": "Hotel",
+    "guides": "Guide",
+    "dining": "Ristoranti",
+    "districts": "Quartieri",
+    "articles": "Notizie",
+    "news": "Notizie",
+    "shopping": "Shopping",
+    "realEstate": "Immobiliare",
+    "events": "Eventi",
+    "search": "Cerca",
+    "language": "Lingua",
+    "mainNavigation": "Navigazione principale",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu",
+    "logoAlt": "TRAVI - Guida di Viaggio",
+    "followInstagram": "Segui TRAVI su Instagram",
+    "followTikTok": "Segui TRAVI su TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Navigazione breadcrumb",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "Continua a leggere",
+    "viewAll": "Vedi tutto",
+    "learnMore": "Scopri di più",
+    "bookNow": "Prenota ora",
+    "contactUs": "Contattaci",
+    "subscribe": "Iscriviti",
+    "submit": "Invia",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "noResults": "Nessun risultato trovato",
+    "seeMore": "Vedi di più",
+    "back": "Indietro",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "close": "Chiudi",
+    "share": "Condividi",
+    "copyLink": "Copia link",
+    "copied": "Copiato!"
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "Esplora il mondo con TRAVI",
+      "subtitle": "La guida di viaggio completa per 17 destinazioni in tutto il mondo",
+      "searchPlaceholder": "Cerca attrazioni, hotel, ristoranti...",
+      "cta": "Inizia a esplorare",
+      "badge": "La porta verso le avventure nel mondo",
+      "headlinePart1": "La risorsa di viaggio",
+      "headlinePart2": "di fiducia",
+      "description": "Informazioni di viaggio complete per {{destinations}} destinazioni in tutto il mondo. Scopri guide dettagliate per {{attractions}}+ attrazioni.",
+      "descriptionPart1": "Informazioni di viaggio complete per",
+      "descriptionPart2": "destinazioni in tutto il mondo. Scopri guide dettagliate per",
+      "descriptionPart3": "attrazioni.",
+      "carouselLabel": "Navigazione carosello destinazioni",
+      "viewDestination": "Visualizza {{name}} - {{tagline}}",
+      "worldwide": "Mondiale",
+      "exploreWorld": "Esplora il mondo",
+      "welcomeAriaLabel": "Benvenuto su TRAVI World",
+      "pageTitle": "TRAVI World - Guide di viaggio per hotel, attrazioni e attività",
+      "pageDescription": "La guida di viaggio completa per 17 destinazioni in tutto il mondo. Informazioni esperte su hotel, attrazioni, ristoranti e attività per oltre 3.000 luoghi.",
+      "orgDescription": "La risorsa di viaggio di fiducia per 17 destinazioni in tutto il mondo."
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "srLabel": {
+      "attractions": "Oltre {{count}} attrazioni coperte",
+      "destinations": "{{count}} destinazioni in tutto il mondo",
+      "languages": "Piattaforma multilingue con lingue aggiuntive in arrivo"
+    },
+    "featured": "In evidenza",
+    "trending": "Di tendenza",
+    "topAttractions": "Migliori attrazioni",
+    "bestHotels": "Migliori hotel",
+    "latestNews": "Ultime notizie e guide",
+    "sections": {
+      "destinations": "Esplora le destinazioni",
+      "destinationsDesc": "Scopri la nostra selezione di destinazioni di viaggio in tutto il mondo",
+      "categories": "Sfoglia per categoria",
+      "categoriesDesc": "Trova esattamente ciò che cerchi",
+      "experiences": "Viaggia per esperienza",
+      "experiencesDesc": "Scegli il tuo stile di viaggio",
+      "faq": "Domande frequenti",
+      "faqDesc": "Tutto quello che devi sapere su TRAVI",
+      "regions": "Esplora per regione",
+      "newsletter": "Rimani aggiornato",
+      "allDestinationsTitle": "Guide di viaggio per tutte le {{count}} destinazioni",
+      "completeGuide": "{{name}}, {{country}} - Guida di viaggio completa"
+    },
+    "cta": {
+      "exploreDestinations": "Esplora le destinazioni",
+      "viewGuides": "Vedi le guide",
+      "viewAll": "Vedi tutto",
+      "startExploring": "Inizia a esplorare",
+      "planTrip": "Pianifica il viaggio",
+      "viewExperience": "Vedi {{name}}"
+    },
+    "stats": {
+      "destinations": "DESTINAZIONI",
+      "attractions": "ATTRAZIONI",
+      "languages": "LINGUE",
+      "attractionsNum": "3.000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} destinazioni",
+      "attractionsCountWithLabel": "{{count}}+ attrazioni"
+    },
+    "categories": {
+      "attractions": "Attrazioni",
+      "attractionsDesc": "Luoghi imperdibili",
+      "news": "Notizie di viaggio",
+      "newsDesc": "Ultimi aggiornamenti",
+      "guides": "Guide",
+      "guidesDesc": "Guide delle destinazioni",
+      "hotels": "Hotel",
+      "hotelsDesc": "Trova il tuo alloggio ideale"
+    },
+    "experiences": {
+      "luxury": "Viaggi di lusso",
+      "luxuryDesc": "Esperienze premium e destinazioni esclusive",
+      "adventure": "Avventura e outdoor",
+      "adventureDesc": "Esperienze emozionanti all'aperto e avventure",
+      "family": "Viaggi in famiglia",
+      "familyDesc": "Destinazioni e attività per tutta la famiglia",
+      "budget": "Viaggi economici",
+      "budgetDesc": "Opzioni di viaggio convenienti e destinazioni accessibili",
+      "romance": "Luna di miele e romanticismo",
+      "romanceDesc": "Fughe romantiche e destinazioni per luna di miele",
+      "solo": "Viaggi in solitaria",
+      "soloDesc": "Destinazioni perfette per viaggiatori solitari"
+    },
+    "faq": {
+      "title": "Domande frequenti",
+      "subtitle": "Tutto quello che devi sapere su TRAVI World",
+      "whatIsTravi": "Cos'è TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World è una piattaforma completa di informazioni di viaggio che copre 17 destinazioni in tutto il mondo con guide dettagliate per oltre 3.000 attrazioni, hotel, ristoranti e attività.",
+      "howManyDestinations": "Quante destinazioni copre TRAVI?",
+      "howManyDestinationsAnswer": "TRAVI World copre 17 principali destinazioni di viaggio tra cui Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami e Rome.",
+      "isFree": "TRAVI World è gratuito?",
+      "isFreeAnswer": "Sì, TRAVI World è completamente gratuito. Sfoglia migliaia di guide di viaggio, recensioni di attrazioni, raccomandazioni di hotel e suggerimenti di ristoranti senza alcun costo.",
+      "updateFrequency": "Con quale frequenza viene aggiornato il contenuto?",
+      "updateFrequencyAnswer": "Il contenuto di TRAVI World viene aggiornato quotidianamente con le ultime notizie di viaggio, nuove recensioni di attrazioni e informazioni aggiornate su hotel e ristoranti in tutte le 17 destinazioni."
+    },
+    "mascotAlt": "Mascotte TRAVI con monumenti del mondo - esplora guide di viaggio per Dubai, Paris, London, Rome e altro",
+    "mascotTitle": "TRAVI World - Guide di viaggio per destinazioni globali"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "Attrazioni Dubai",
+    "subtitle": "Esplora monumenti iconici e tesori nascosti",
+    "hero": {
+      "badge": "{{count}} attrazioni in {{cities}} città",
+      "badgeThousands": "Migliaia di attrazioni in tutto il mondo",
+      "headlinePart1": "Cosa fare",
+      "headlinePart2": "nel mondo",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Biglietti salta-fila</span> per Torre Eiffel, Colosseo, Burj Khalifa e le migliori attrazioni di Paris, Rome, Dubai e altro.",
+      "searchPlaceholder": "Cerca Torre Eiffel, Colosseo, Burj Khalifa...",
+      "carouselLabel": "Carosello attrazioni in evidenza",
+      "sectionLabel": "Prenota biglietti per le migliori attrazioni mondiali",
+      "searchAriaLabel": "Cerca attrazioni per nome o città",
+      "searchButton": "Cerca",
+      "searchButtonAriaLabel": "Cerca attrazioni"
+    },
+    "stats": {
+      "attractions": "ATTRAZIONI",
+      "cities": "CITTÀ",
+      "rating": "VALUTAZIONE"
+    },
+    "srLabel": {
+      "attractions": "Oltre {{count}} attrazioni",
+      "cities": "{{count}} città",
+      "rating": "Valutazione {{rating}} stelle"
+    },
+    "types": {
+      "all": "Tutti i tipi",
+      "museums": "Musei",
+      "landmarks": "Monumenti",
+      "tours": "Tour",
+      "themeParks": "Parchi tematici",
+      "shows": "Spettacoli"
+    },
+    "thingsToDoIn": "Cosa fare a {{name}}",
+    "countAttractions": "{{country}} - {{count}} attrazioni",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "Tutto",
+      "popular": "Più popolari",
+      "free": "Ingresso gratuito",
+      "familyFriendly": "Adatto alle famiglie",
+      "outdoor": "All'aperto",
+      "indoor": "Al coperto"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "Posizione",
+      "hours": "Orari di apertura",
+      "price": "Prezzo",
+      "duration": "Durata",
+      "tips": "Consigli degli esperti"
+    },
+    "sections": {
+      "destinations": "Esplora attrazioni per destinazione",
+      "destinationsDesc": "Scegli una città per scoprire attività incredibili",
+      "faq": "Domande frequenti",
+      "faqDesc": "Risposte sulla prenotazione di attrazioni in tutto il mondo",
+      "whyBookBadge": "Perché prenotare con noi",
+      "whyBookTitle": "Salta le code, risparmia tempo",
+      "whyBookDesc": "Prenota i biglietti in anticipo e goditi un accesso senza problemi",
+      "allDestinations": "Tutte le destinazioni"
+    },
+    "features": {
+      "skipTheLine": "Biglietti salta-fila",
+      "skipTheLineDesc": "Salta le code alla Torre Eiffel, al Colosseo, al Vaticano e altro",
+      "mobileTickets": "Biglietti mobile",
+      "mobileTicketsDesc": "Consegna istantanea sul telefono - mostra il biglietto ed entra",
+      "freeCancellation": "Cancellazione gratuita",
+      "freeCancellationDesc": "Cambio di programma? Cancella fino a 24 ore prima per rimborso completo"
+    },
+    "browse": {
+      "title": "Attività per destinazione",
+      "desc": "Trova attrazioni ed esperienze nelle migliori città del mondo",
+      "thingsToDo": "{{count}} attività",
+      "noDestinations": "Nessuna destinazione disponibile al momento."
+    },
+    "exploreLinks": {
+      "title": "Esplora altre guide di viaggio",
+      "hotelsWorldwide": "Hotel nel mondo",
+      "bestRestaurants": "Migliori ristoranti",
+      "travelNews": "Notizie di viaggio"
+    },
+    "cta": {
+      "title": "Pronto a esplorare?",
+      "desc": "Prenota biglietti salta-fila per Torre Eiffel, Colosseo, Burj Khalifa e le migliori attrazioni mondiali.",
+      "parisAttractions": "Attrazioni Paris",
+      "romeAttractions": "Attrazioni Rome"
+    },
+    "search": {
+      "popular": "Popolari:",
+      "thingsToDoIn": "Cosa fare a {{city}}",
+      "ariaCarouselNav": "Navigazione carosello attrazioni",
+      "ariaViewInCity": "Vedi {{name}} a {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Attrazione in evidenza",
+      "ariaThumbnails": "Miniature carosello attrazioni",
+      "ariaTicketsIn": "Biglietti {{name}} a {{city}}",
+      "priceFrom": "Da",
+      "bookTickets": "Prenota biglietti",
+      "skipTheLine": "Salta-fila",
+      "duration": "2-3 ore",
+      "freeCancellation": "Cancellazione gratuita",
+      "freeCancellationDesc": "24h prima della visita",
+      "mobileTickets": "Biglietti mobile",
+      "instantDelivery": "Consegna istantanea"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} attività"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "Hotel Dubai",
+    "subtitle": "Trova il tuo alloggio ideale",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "Tutti gli hotel",
+      "luxury": "Lusso",
+      "budget": "Economico",
+      "beachfront": "Fronte mare",
+      "cityCenter": "Centro città",
+      "familyFriendly": "Adatto alle famiglie"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
+      "priceFrom": "Da",
+      "perNight": "a notte",
+      "amenities": "Servizi",
       "checkIn": "Check-in",
       "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "rooms": "Camere",
+      "rating": "Valutazione"
     },
-    "bookNow": "Book Now"
+    "bookNow": "Prenota ora"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "Ristoranti Dubai",
+    "subtitle": "Esperienze culinarie per tutti i gusti",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
+      "all": "Tutti i ristoranti",
+      "fineDining": "Alta cucina",
+      "casual": "Informale",
+      "cafes": "Caffetterie",
+      "streetFood": "Cibo di strada",
       "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "vegetarian": "Vegetariano"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
-    }
-  },
-  "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
-  },
-  "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
-    "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
-    },
-    "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
-    },
-    "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
-    }
-  },
-  "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
-  },
-  "footer": {
-    "about": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "contact": "Contact Us",
-    "followUs": "Follow Us",
-    "newsletter": {
-      "title": "Stay Updated",
-      "subtitle": "Get the latest Dubai travel tips and exclusive deals",
-      "placeholder": "Enter your email",
-      "button": "Subscribe",
-      "success": "Thanks for subscribing!",
-      "error": "Something went wrong. Please try again."
-    },
-    "copyright": "All rights reserved"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
-    },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
-    },
-    "network": {
-      "title": "Connection Error",
-      "message": "Please check your internet connection.",
-      "button": "Retry"
-    }
-  },
-  "meta": {
-    "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
-    },
-    "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
-    },
-    "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
-    },
-    "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "cuisine": "Cucina",
+      "priceRange": "Fascia di prezzo",
+      "hours": "Orari di apertura",
+      "dress": "Dress code",
+      "reservations": "Prenotazioni"
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "EAU", "cardAlt": "Skyline di Dubai con la torre Burj Khalifa al tramonto" },
+      "london": { "name": "London", "country": "Regno Unito", "cardAlt": "Big Ben e il Parlamento di London" },
+      "paris": { "name": "Paris", "country": "Francia", "cardAlt": "Torre Eiffel illuminata al tramonto" },
+      "newYork": { "name": "New York", "country": "Stati Uniti", "cardAlt": "Skyline di Manhattan con l'Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Giappone", "cardAlt": "Incrocio di Shibuya con luci al neon di notte" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands e Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spagna", "cardAlt": "Sagrada Familia all'ora dorata" },
+      "bangkok": { "name": "Bangkok", "country": "Thailandia", "cardAlt": "Grande Palazzo all'alba" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "EAU", "cardAlt": "Grande Moschea Sheikh Zayed" },
+      "amsterdam": { "name": "Amsterdam", "country": "Paesi Bassi", "cardAlt": "Canale di Amsterdam con edifici storici" },
+      "hongKong": { "name": "Hong Kong", "country": "Cina", "cardAlt": "Skyline di Hong Kong di notte" },
+      "istanbul": { "name": "Istanbul", "country": "Turchia", "cardAlt": "Moschea Blu al tramonto" },
+      "lasVegas": { "name": "Las Vegas", "country": "Stati Uniti", "cardAlt": "Las Vegas Strip di notte" },
+      "losAngeles": { "name": "Los Angeles", "country": "Stati Uniti", "cardAlt": "Scritta Hollywood" },
+      "miami": { "name": "Miami", "country": "Stati Uniti", "cardAlt": "Quartiere Art Déco di Miami Beach" },
+      "rome": { "name": "Rome", "country": "Italia", "cardAlt": "Colosseo all'ora dorata" }
+    },
     "hero": {
-      "badge": "{{count}} Destinazioni in Tutto il Mondo",
-      "trustedBy": "{{count}} destinazioni si fidano di noi",
+      "badge": "{{count}} destinazioni in tutto il mondo",
+      "trustedBy": "Riferimento per {{count}} destinazioni in tutto il mondo",
       "discover": "Scopri",
-      "worldClass": "Di Classe Mondiale",
-      "destinations": "Destinazioni",
-      "description": "Guide di viaggio curate con esperienza locale per le città più affascinanti del mondo.",
-      "exploreAll": "Esplora Tutte le Destinazioni",
-      "travelGuides": "Guide di Viaggio",
-      "explorePlaceholder": "Esplora Destinazioni",
-      "browseCollection": "Sfoglia la nostra collezione di destinazioni selezionate",
+      "worldClass": "destinazioni",
+      "destinations": "di classe mondiale",
+      "description": "Guide di viaggio con competenza locale per le città più affascinanti del mondo. Dai monumenti iconici ai tesori nascosti.",
+      "exploreAll": "Esplora tutte le destinazioni",
+      "travelGuides": "Guide di viaggio",
+      "explorePlaceholder": "Esplora le destinazioni",
+      "browseCollection": "Sfoglia la nostra selezione di destinazioni di viaggio qui sotto",
       "explore": "Esplora",
       "discoverButton": "Scopri",
       "ariaLabel": "Panoramica delle destinazioni",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Esplora {{name}}",
+      "galleryAriaLabel": "Galleria delle destinazioni in evidenza",
+      "placeholderAriaLabel": "Segnaposto per destinazione in evidenza"
     },
     "stats": {
       "destinations": "DESTINAZIONI",
@@ -225,24 +348,24 @@
       "languages": "Lingue"
     },
     "sections": {
-      "featured": "Destinazioni in Evidenza",
-      "featuredDesc": "Destinazioni selezionate con esperienze eccezionali.",
-      "all": "Tutte le Destinazioni",
+      "featured": "Destinazioni in evidenza",
+      "featuredDesc": "Destinazioni selezionate con esperienze eccezionali, consigli locali e tutto ciò di cui hai bisogno per pianificare il viaggio perfetto.",
+      "all": "Tutte le destinazioni",
       "count": "{{count}} destinazioni trovate"
     },
     "search": {
       "placeholder": "Cerca destinazioni...",
       "noResults": "Nessuna destinazione trovata",
       "tryAdjusting": "Prova a modificare i criteri di ricerca",
-      "clearSearch": "Cancella Ricerca"
+      "clearSearch": "Cancella ricerca"
     },
     "carousel": {
-      "label": "Carosello destinazioni in evidenza",
+      "label": "Carosello delle destinazioni in evidenza",
       "previous": "Destinazione precedente",
       "next": "Destinazione successiva",
       "goTo": "Vai a {{name}}",
       "slideOf": "Slide {{current}} di {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Miniature carosello destinazioni"
     },
     "card": {
       "explore": "Esplora",
@@ -252,29 +375,803 @@
       "travelGuideAlt": "Guida di viaggio {{name}}"
     },
     "faq": {
-      "title": "Domande Frequenti",
-      "subtitle": "Tutto sulle guide TRAVI",
+      "title": "Domande frequenti",
+      "subtitle": "Tutto quello che devi sapere sulle guide di destinazione TRAVI",
       "q1": "Quante destinazioni copre TRAVI?",
-      "a1": "TRAVI copre le principali destinazioni in Medio Oriente, Europa, Asia e Americhe.",
-      "q2": "Quali informazioni sono incluse?",
-      "a2": "Ogni guida include attrazioni, alloggi, cucina locale e consigli di viaggio.",
+      "a1": "TRAVI copre le principali destinazioni di viaggio in Medio Oriente, Europa, Asia e Americhe con guide complete per ogni luogo.",
+      "q2": "Quali informazioni sono incluse nelle guide TRAVI?",
+      "a2": "Ogni guida di destinazione include descrizioni dettagliate che coprono attrazioni, opzioni di alloggio, cucina locale, consigli sui trasporti e informazioni pratiche di viaggio.",
       "q3": "Posso cercare destinazioni?",
-      "a3": "Sì, puoi cercare per nome o paese.",
+      "a3": "Sì, TRAVI permette di cercare destinazioni per nome o paese utilizzando la barra di ricerca nella pagina delle destinazioni.",
       "q4": "Quali sono le destinazioni in evidenza su TRAVI?",
-      "a4": "Le destinazioni in evidenza offrono esperienze eccezionali."
+      "a4": "Le destinazioni in evidenza di TRAVI sono luoghi selezionati che offrono esperienze eccezionali per viaggiatori con interessi diversi, dal viaggio di lusso al viaggio economico."
     },
     "loading": {
-      "title": "Caricamento Destinazioni",
-      "message": "Recupero dati più recenti..."
+      "title": "Caricamento destinazioni",
+      "message": "Recupero degli ultimi dati delle destinazioni..."
     },
     "error": {
-      "title": "Impossibile Caricare",
-      "message": "Riprova più tardi.",
-      "refresh": "Aggiorna Pagina"
+      "title": "Impossibile caricare le destinazioni",
+      "message": "Stiamo riscontrando difficoltà nel caricare i dati delle destinazioni. Riprova più tardi.",
+      "refresh": "Aggiorna pagina"
     },
     "empty": {
-      "title": "Nessuna Destinazione",
-      "message": "Nessuna destinazione disponibile al momento."
+      "title": "Nessuna destinazione disponibile",
+      "message": "Nessuna destinazione è attualmente disponibile. Torna più tardi."
+    }
+  },
+  "districts": {
+    "title": "Quartieri Dubai",
+    "subtitle": "Esplora i diversi quartieri di Dubai",
+    "explore": "Esplora quartiere"
+  },
+  "realEstate": {
+    "title": "Immobiliare Dubai",
+    "subtitle": "Investi nel futuro",
+    "offPlan": {
+      "title": "Proprietà sulla carta",
+      "subtitle": "Investi presto, paga meno, guadagna di più",
+      "findProperty": "Trova la mia proprietà ideale",
+      "from": "Da",
+      "paymentPlan": "Piano di pagamento",
+      "handover": "Consegna",
+      "developer": "Costruttore"
+    },
+    "filters": {
+      "all": "Tutte le proprietà",
+      "apartments": "Appartamenti",
+      "villas": "Ville",
+      "townhouses": "Villette a schiera",
+      "penthouses": "Attici"
+    },
+    "features": {
+      "cryptoAccepted": "Cripto accettata",
+      "paymentPlans": "Piani di pagamento flessibili",
+      "goldenVisa": "Idoneo per Golden Visa",
+      "roiGuarantee": "Garanzia di rendimento"
+    }
+  },
+  "search": {
+    "placeholder": "Cerca attrazioni, guide, destinazioni...",
+    "results": "Risultati di ricerca",
+    "noResults": "Nessun risultato trovato per",
+    "tryAgain": "Prova con altre parole chiave"
+  },
+  "footer": {
+    "about": "Informazioni su Travi",
+    "aboutTravi": "Informazioni su Travi",
+    "aboutText": "Informazioni di viaggio complete per 17 destinazioni in tutto il mondo.",
+    "aboutUs": "Chi siamo",
+    "quickLinks": "Link rapidi",
+    "legal": "Legale",
+    "privacy": "Privacy",
+    "privacyPolicy": "Informativa sulla privacy",
+    "terms": "Termini e condizioni",
+    "termsOfService": "Termini di servizio",
+    "contact": "Contatti",
+    "contactUs": "Contattaci",
+    "followUs": "Seguici",
+    "explore": "Esplora",
+    "travel": "Viaggi",
+    "company": "Azienda",
+    "allGuides": "Tutte le guide",
+    "cookies": "Cookie",
+    "security": "Sicurezza",
+    "cookieSettings": "Impostazioni cookie",
+    "tagline": "La risorsa di viaggio di fiducia",
+    "ariaLabel": "Piè di pagina del sito",
+    "featuredGuides": "Guide in evidenza",
+    "tools": "Strumenti",
+    "currencyConverter": "Convertitore di valuta",
+    "roiCalculator": "Calcolatore di rendimento",
+    "mortgageCalculator": "Calcolatore mutuo",
+    "glossary": "Glossario",
+    "freeThingsToDo": "70+ attività gratuite",
+    "open24Hours": "Aperto 24 ore",
+    "tributeToSheikh": "Omaggio a S.A. Sheikh Mohammed",
+    "lawsForTourists": "Leggi per i turisti",
+    "newsletter": "Iscriviti alla newsletter",
+    "newsletterDescription": "Ricevi gli ultimi consigli di viaggio e aggiornamenti.",
+    "emailPlaceholder": "Inserisci la tua email",
+    "allRightsReserved": "Tutti i diritti riservati.",
+    "copyright": "© {{year}} {{brand}}. Tutti i diritti riservati.",
+    "emailAriaLabel": "Invia email a TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Pagina non trovata",
+      "message": "La pagina che cerchi non esiste.",
+      "button": "Vai alla home"
+    },
+    "500": {
+      "title": "Errore del server",
+      "message": "Qualcosa è andato storto da parte nostra.",
+      "button": "Riprova"
+    },
+    "network": {
+      "title": "Errore di connessione",
+      "message": "Impossibile connettersi. Verifica la connessione internet.",
+      "button": "Riprova"
+    }
+  },
+  "newsletter": {
+    "badge": "Unisciti all'avventura",
+    "title": "Ricevi la magia del viaggio nella tua casella di posta",
+    "description": "Consigli settimanali, tesori nascosti e offerte esclusive - niente spam, solo voglia di viaggiare.",
+    "emailPlaceholder": "tua@email.com",
+    "subscribe": "Iscriviti",
+    "success": "Sei iscritto! Controlla la tua casella di posta."
+  },
+  "cookies": {
+    "title": "Rispettiamo la tua privacy",
+    "description": "Utilizziamo i cookie per migliorare la tua esperienza di navigazione, analizzare il traffico del sito e personalizzare i contenuti. Cliccando su \"Accetta tutto\", acconsenti all'uso dei cookie.",
+    "manage": "Gestisci",
+    "rejectAll": "Rifiuta tutto",
+    "acceptAll": "Accetta tutto",
+    "preferencesTitle": "Preferenze cookie",
+    "savePreferences": "Salva preferenze",
+    "essential": {
+      "title": "Cookie essenziali",
+      "description": "Necessari per il corretto funzionamento del sito"
+    },
+    "analytics": {
+      "title": "Cookie analitici",
+      "description": "Ci aiutano a capire come i visitatori interagiscono con il nostro sito"
+    },
+    "marketing": {
+      "title": "Cookie di marketing",
+      "description": "Utilizzati per mostrare pubblicità personalizzate"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "Travi - Scopri Dubai | La guida di viaggio definitiva",
+      "description": "Esplora le migliori attrazioni, hotel, ristoranti e quartieri di Dubai. Pianifica il viaggio perfetto con consigli di esperti e raccomandazioni locali."
+    },
+    "attractions": {
+      "title": "Attrazioni Dubai | Le migliori attività a Dubai",
+      "description": "Scopri le migliori attrazioni di Dubai - dal Burj Khalifa ai tesori nascosti. Pianifica la tua avventura turistica."
+    },
+    "hotels": {
+      "title": "Hotel Dubai | I migliori alloggi a Dubai",
+      "description": "Trova l'hotel perfetto a Dubai per ogni budget. Dai resort di lusso alle opzioni economiche."
+    },
+    "dining": {
+      "title": "Ristoranti Dubai | La migliore gastronomia a Dubai",
+      "description": "Esplora la scena culinaria di Dubai - alta cucina, cibo di strada e tutto il resto."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Intelligenza di viaggio",
+      "headlinePart1": "Storie che",
+      "headlinePart2": "ti trasportano",
+      "description": "Guide elaborate da esperti, prospettive di insider e narrazioni editoriali che trasformano il modo in cui vivi il mondo.",
+      "startJourney": "Inizia il viaggio",
+      "browseCollection": "Sfoglia la collezione",
+      "issueBadge": "Numero 47 — Inverno 2026"
+    },
+    "stats": {
+      "guides": "Guide di viaggio",
+      "destinations": "Destinazioni",
+      "languages": "Lingue"
+    },
+    "journey": {
+      "badge": "Il tuo viaggio, la nostra guida",
+      "title": "Ogni grande viaggio inizia con una guida",
+      "subtitle": "Dal sogno alla condivisione, ti accompagniamo in ogni passo"
+    },
+    "ideaLab": {
+      "badge": "Laboratorio di idee",
+      "title": "Ispirazione curata",
+      "readGuide": "Leggi la guida"
+    },
+    "archetype": {
+      "badge": "Personalizzato per te",
+      "title": "Che tipo di viaggiatore sei?",
+      "subtitle": "Seleziona il tuo stile di viaggio e scopri guide su misura",
+      "viewGuides": "Vedi guide {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Cercatore di avventure",
+        "description": "Esperienze emozionanti e scariche di adrenalina"
+      },
+      "culture": {
+        "name": "Esploratore culturale",
+        "description": "Arte, storia e tradizioni locali"
+      },
+      "relaxation": {
+        "name": "Guru del relax",
+        "description": "Ritiri benessere e fughe tranquille"
+      },
+      "foodie": {
+        "name": "Nomade culinario",
+        "description": "Sapori locali e avventure gastronomiche"
+      },
+      "wellness": {
+        "name": "Cercatore di benessere",
+        "description": "Relax, spa e ritiri consapevoli"
+      },
+      "budget": {
+        "name": "Viaggiatore intelligente",
+        "description": "Massima esperienza, minimo budget"
+      },
+      "solo": {
+        "name": "Esploratore solitario",
+        "description": "Viaggi indipendenti e scoperta di sé"
+      },
+      "luxury": {
+        "name": "Intenditore del lusso",
+        "description": "Esperienze premium e vita raffinata"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Sognare",
+        "subtitle": "Scoprire l'ispirazione",
+        "guides": ["Guide alle destinazioni", "Saggi fotografici"]
+      },
+      "plan": {
+        "title": "Pianificare",
+        "subtitle": "Tracciare il percorso",
+        "guides": ["Pianificazione del viaggio", "Requisiti per il visto"]
+      },
+      "prepare": {
+        "title": "Preparare",
+        "subtitle": "Essere pronti a partire",
+        "guides": ["Liste bagagli", "Consigli di sicurezza"]
+      },
+      "experience": {
+        "title": "Vivere",
+        "subtitle": "Vivere l'avventura",
+        "guides": ["Consigli locali", "Tesori nascosti"]
+      },
+      "share": {
+        "title": "Condividere",
+        "subtitle": "Raccontare la tua storia",
+        "guides": ["Scrittura di viaggio", "Fotografia"]
+      }
+    },
+    "seo": {
+      "title": "Guide di viaggio | Approfondimenti esperti sulle destinazioni",
+      "description": "Scopri guide di viaggio esperte e consigli da insider. Pianifica il tuo viaggio perfetto oggi."
+    },
+    "editorial": {
+      "badge": "Dai nostri editori",
+      "title": "Articoli editoriali",
+      "readFull": "Leggi l'articolo completo"
+    },
+    "gallery": {
+      "badge": "Storie visive",
+      "title": "Destinazioni che ispirano",
+      "categories": {
+        "city": "Città",
+        "mountains": "Montagne",
+        "beach": "Spiaggia",
+        "safari": "Safari",
+        "nature": "Natura"
+      }
+    },
+    "writers": {
+      "badge": "Voci esperte",
+      "title": "Incontra i nostri autori",
+      "subtitle": "Le voci esperte dietro le nostre guide di viaggio più affidabili",
+      "articleCount": "{{count}} articoli",
+      "viewProfile": "Vedi profilo"
+    },
+    "map": {
+      "badge": "Esplora per regione",
+      "title": "Guide in tutto il mondo",
+      "subtitle": "Clicca su qualsiasi destinazione per scoprire la nostra copertura esperta",
+      "guidesAvailable": "{{count}} guide disponibili",
+      "legendDestination": "Destinazione",
+      "legendHighlighted": "In evidenza"
+    },
+    "categories": {
+      "weekendEscapes": "Fughe del fine settimana",
+      "offBeatenPath": "Fuori dai sentieri battuti",
+      "smartTravel": "Viaggiare intelligente",
+      "bucketList": "Lista dei desideri",
+      "culinary": "Gastronomia",
+      "natureWonder": "Natura e meraviglie"
+    },
+    "newsletter": {
+      "badge": "Unisciti al viaggio",
+      "title": "Storie di viaggio, settimanalmente",
+      "description": "Ispirazione di viaggio curata, consigli di esperti e prospettive esclusive nella tua casella di posta ogni settimana.",
+      "placeholder": "Inserisci la tua email",
+      "subscribe": "Iscriviti",
+      "subscribing": "Iscrizione...",
+      "joinCount": "Unisciti a oltre 50.000 viaggiatori che leggono il nostro riassunto settimanale",
+      "invalidEmail": "Inserisci un'email valida",
+      "successTitle": "Benvenuto nel viaggio!",
+      "successDesc": "Ora sei iscritto al nostro riassunto editoriale."
+    },
+    "browse": {
+      "title": "Sfoglia le guide di viaggio",
+      "subtitle": "Esplora le guide per destinazione e categoria",
+      "categories": "Categorie",
+      "destinations": "Destinazioni",
+      "allCategories": "Tutte le categorie",
+      "allDestinations": "Tutte le destinazioni",
+      "loading": "Caricamento guide...",
+      "noResults": "Nessuna guida trovata",
+      "tryAdjusting": "Prova a modificare i filtri"
+    },
+    "card": {
+      "readTime": "{{minutes}} min di lettura",
+      "readArticle": "Leggi l'articolo"
+    },
+    "collection": {
+      "badge": "Collezione curata",
+      "title": "Narrazioni di viaggio eccezionali",
+      "subtitle": "Una collezione accuratamente selezionata di guide e storie di viaggio",
+      "viewAll": "Vedi tutta la collezione"
+    },
+    "categories": {
+      "all": "Tutto",
+      "city": "Guide città",
+      "food": "Gastronomia",
+      "culture": "Cultura",
+      "adventure": "Avventura",
+      "luxury": "Lusso",
+      "budget": "Economico",
+      "family": "Famiglia",
+      "weekendEscapes": "Fughe del fine settimana",
+      "offBeatenPath": "Fuori dai sentieri battuti",
+      "smartTravel": "Viaggiare intelligente",
+      "bucketList": "Lista dei desideri",
+      "culinary": "Gastronomia",
+      "natureWonder": "Natura e meraviglie"
+    }
+  },
+  "destination": {
+    "navigation": {
+      "overview": "Panoramica",
+      "attractions": "Attrazioni",
+      "hotels": "Hotel",
+      "dining": "Ristoranti",
+      "districts": "Quartieri",
+      "events": "Eventi",
+      "guides": "Guide"
+    },
+    "quickFacts": {
+      "title": "Informazioni rapide",
+      "language": "Lingua",
+      "currency": "Valuta",
+      "timezone": "Fuso orario",
+      "population": "Popolazione",
+      "bestTime": "Periodo migliore"
+    },
+    "bestTimeToVisit": {
+      "title": "Periodo migliore per visitare",
+      "subtitle": "Pianifica il viaggio nella stagione ideale",
+      "spring": "Primavera",
+      "summer": "Estate",
+      "autumn": "Autunno",
+      "winter": "Inverno",
+      "peak": "Alta stagione",
+      "shoulder": "Media stagione",
+      "low": "Bassa stagione"
+    },
+    "gettingAround": {
+      "title": "Come spostarsi",
+      "subtitle": "Opzioni di trasporto e consigli per muoversi",
+      "metro": "Metro",
+      "bus": "Autobus",
+      "taxi": "Taxi",
+      "rideshare": "Ride sharing",
+      "walking": "A piedi",
+      "bicycle": "Bicicletta"
+    },
+    "topExperiences": {
+      "title": "Esperienze imperdibili",
+      "subtitle": "Le migliori cose da fare e vedere",
+      "seeAll": "Vedi tutte le esperienze"
+    },
+    "whereToStay": {
+      "title": "Dove alloggiare",
+      "subtitle": "Opzioni di alloggio per tutti i budget e stili",
+      "luxury": "Lusso",
+      "midRange": "Fascia media",
+      "budget": "Economico",
+      "viewHotels": "Vedi hotel"
+    },
+    "localCuisine": {
+      "title": "Cucina locale",
+      "subtitle": "Delizie culinarie e specialità da provare",
+      "mustTry": "Da provare assolutamente",
+      "viewRestaurants": "Vedi ristoranti"
+    },
+    "safetyTips": {
+      "title": "Consigli di sicurezza",
+      "subtitle": "Informazioni importanti per i viaggiatori",
+      "emergency": "Numeri di emergenza",
+      "health": "Salute",
+      "customs": "Dogana"
+    },
+    "faq": {
+      "title": "Domande frequenti",
+      "subtitle": "Tutto quello che devi sapere prima di partire"
+    },
+    "cta": {
+      "planTrip": "Pianifica il viaggio",
+      "bookHotel": "Prenota hotel",
+      "exploreAttractions": "Esplora le attrazioni",
+      "viewGuides": "Vedi le guide"
+    }
+  },
+  "accessibility": {
+    "skipToMain": "Vai al contenuto principale",
+    "skipToNav": "Vai alla navigazione",
+    "openInNewTab": "Si apre in nuova scheda",
+    "externalLink": "Link esterno",
+    "menuExpanded": "Menu espanso",
+    "menuCollapsed": "Menu chiuso",
+    "closeDialog": "Chiudi finestra di dialogo",
+    "loading": "Caricamento contenuto",
+    "loadingComplete": "Caricamento completato"
+  },
+  "seo": {
+    "schemas": {
+      "organization": "Organizzazione",
+      "website": "Sito web",
+      "breadcrumb": "Breadcrumb",
+      "article": "Articolo",
+      "hotel": "Hotel",
+      "restaurant": "Ristorante",
+      "attraction": "Attrazione"
+    }
+  },
+  "time": {
+    "now": "Adesso",
+    "today": "Oggi",
+    "tomorrow": "Domani",
+    "yesterday": "Ieri",
+    "thisWeek": "Questa settimana",
+    "thisMonth": "Questo mese",
+    "minutesAgo": "{{count}} minuti fa",
+    "hoursAgo": "{{count}} ore fa",
+    "daysAgo": "{{count}} giorni fa"
+  },
+  "currency": {
+    "usd": "Dollaro statunitense",
+    "eur": "Euro",
+    "gbp": "Sterlina britannica",
+    "aed": "Dirham emiratino",
+    "jpy": "Yen giapponese",
+    "sgd": "Dollaro di Singapore",
+    "thb": "Baht thailandese",
+    "hkd": "Dollaro di Hong Kong",
+    "try": "Lira turca"
+  },
+  "regions": {
+    "middleEast": "Medio Oriente",
+    "europe": "Europa",
+    "asia": "Asia",
+    "americas": "Americhe",
+    "africa": "Africa",
+    "oceania": "Oceania"
+  },
+  "ratings": {
+    "excellent": "Eccellente",
+    "veryGood": "Molto buono",
+    "good": "Buono",
+    "average": "Nella media",
+    "poor": "Scarso",
+    "basedOn": "Basato su {{count}} recensioni"
+  },
+  "booking": {
+    "checkAvailability": "Verifica disponibilità",
+    "selectDate": "Seleziona data",
+    "selectTime": "Seleziona orario",
+    "guests": "Ospiti",
+    "adults": "Adulti",
+    "children": "Bambini",
+    "infants": "Neonati",
+    "addToCart": "Aggiungi al carrello",
+    "proceedToCheckout": "Procedi al pagamento",
+    "instantConfirmation": "Conferma istantanea",
+    "freeCancellation": "Cancellazione gratuita"
+  },
+  "news": {
+    "time": {
+      "recent": "Recente",
+      "justNow": "Proprio ora",
+      "minutesAgo": "{{count}} min fa",
+      "hoursAgo": "{{count}} ore fa",
+      "daysAgo": "{{count}} giorni fa",
+      "minRead": "{{count}} min di lettura"
+    },
+    "header": {
+      "title": "TRAVI NOTIZIE",
+      "edition": "Edizione internazionale",
+      "subscribe": "Iscriviti"
+    },
+    "breaking": {
+      "label": "Ultima ora"
+    },
+    "search": {
+      "placeholder": "Cerca notizie nel mondo...",
+      "button": "Cerca",
+      "title": "Cerca",
+      "searching": "Ricerca di '{{query}}'..."
+    },
+    "categories": {
+      "all": "Tutte le notizie",
+      "world": "Mondo",
+      "business": "Business",
+      "culture": "Cultura",
+      "travel": "Viaggi",
+      "tech": "Tecnologia",
+      "opinion": "Opinione"
+    },
+    "empty": {
+      "title": "Nessun articolo disponibile",
+      "description": "Stiamo lavorando per portarti le ultime notizie di viaggio. Torna presto per aggiornamenti da tutto il mondo.",
+      "exploreDestinations": "Esplora le destinazioni",
+      "viewGuides": "Vedi le guide di viaggio"
+    },
+    "hero": {
+      "topStory": "In primo piano",
+      "editorialTeam": "Team editoriale"
+    },
+    "views": "{{count}} visualizzazioni",
+    "viewAll": "Vedi tutto",
+    "seo": {
+      "title": "Notizie di viaggio | Ultime storie e aggiornamenti",
+      "description": "Rimani informato con le ultime notizie di viaggio, aggiornamenti sulle destinazioni e approfondimenti del settore da tutto il mondo."
+    },
+    "sidebar": {
+      "alsoToday": "Anche oggi",
+      "storiesCount": "{{count}} articoli",
+      "liveUpdates": "Aggiornamenti in diretta",
+      "trendingTopics": "Argomenti di tendenza",
+      "noTrending": "Nessun argomento di tendenza ancora. Torna presto!"
+    },
+    "sections": {
+      "topStories": "In primo piano",
+      "opinion": "Opinione e analisi",
+      "moreOpinion": "Altre opinioni",
+      "worldwide": "Copertura mondiale"
+    },
+    "worldwide": {
+      "title": "La tua finestra sul mondo",
+      "subtitle": "Notizie da ogni angolo del mondo",
+      "storiesCount": "{{count}} articoli",
+      "comingSoon": "Prossimamente"
+    },
+    "newsletter": {
+      "title": "Rimani informato",
+      "description": "Ricevi le principali notizie del giorno ogni mattina. Unisciti a oltre 50.000 lettori.",
+      "placeholder": "Inserisci la tua email",
+      "subscribe": "Iscriviti gratis",
+      "noSpam": "Niente spam. Cancellati quando vuoi.",
+      "successTitle": "Iscritto!",
+      "successDesc": "Controlla la tua email per confermare l'iscrizione.",
+      "errorTitle": "Iscrizione fallita",
+      "errorDesc": "Riprova più tardi.",
+      "invalidTitle": "Email non valida",
+      "invalidDesc": "Inserisci un indirizzo email valido."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "Chi siamo | TRAVI World",
+      "metaDescription": "Scopri TRAVI World, una risorsa di viaggio indipendente che fornisce guide complete per destinazioni in tutto il mondo.",
+      "badge": "Il tuo compagno di viaggio",
+      "title": "Chi siamo",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "La tua fonte di fiducia per informazioni di viaggio complete, aiutando milioni di persone a esplorare il mondo con fiducia.",
+      "ctaExplore": "Esplora le destinazioni",
+      "ctaContact": "Contattaci",
+      "stats": {
+        "destinations": "Destinazioni",
+        "articles": "Articoli",
+        "support": "Supporto viaggi",
+        "coverage": "Copertura",
+        "cities": "16+ città"
+      },
+      "whoWeAre": {
+        "title": "Chi siamo"
+      },
+      "mission": {
+        "title": "La nostra missione"
+      },
+      "services": {
+        "badge": "I nostri servizi",
+        "title": "Cosa offriamo"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Guide alle destinazioni",
+          "description": "Informazioni complete su città e regioni di tutto il mondo"
+        },
+        "attractions": {
+          "title": "Informazioni sulle attrazioni",
+          "description": "Dettagli su luoghi imperdibili ed esperienze uniche"
+        },
+        "hotels": {
+          "title": "Guide agli hotel",
+          "description": "Informazioni sulle opzioni di alloggio per ogni budget"
+        },
+        "restaurants": {
+          "title": "Consigli sui ristoranti",
+          "description": "Opzioni di ristorazione per ogni gusto"
+        },
+        "articles": {
+          "title": "Articoli di viaggio",
+          "description": "Consigli, approfondimenti e ispirazione di viaggio"
+        },
+        "news": {
+          "title": "Ultime notizie di viaggio",
+          "description": "Rimani informato con aggiornamenti di viaggio selezionati"
+        }
+      },
+      "editorial": {
+        "title": "Indipendenza editoriale",
+        "affiliateTitle": "Dichiarazione di affiliazione"
+      },
+      "values": {
+        "badge": "Le nostre basi",
+        "title": "I nostri valori",
+        "accuracy": {
+          "title": "Accuratezza",
+          "description": "Ci impegniamo a fornire informazioni accurate e affidabili"
+        },
+        "transparency": {
+          "title": "Trasparenza",
+          "description": "Siamo chiari sulle nostre partnership e sul nostro funzionamento"
+        },
+        "userFocused": {
+          "title": "Orientato all'utente",
+          "description": "I nostri contenuti aiutano i viaggiatori a prendere decisioni informate"
+        }
+      },
+      "connect": {
+        "badge": "Restiamo in contatto",
+        "title": "Contattaci"
+      },
+      "company": {
+        "title": "Informazioni aziendali",
+        "contactTitle": "Informazioni di contatto",
+        "contactForm": "Modulo di contatto"
+      }
+    },
+    "contact": {
+      "metaTitle": "Contatti | TRAVI World",
+      "metaDescription": "Contatta TRAVI World. Accogliamo con piacere feedback, domande e richieste sui nostri servizi di informazioni di viaggio.",
+      "badge": "Ci farebbe piacere sentirti",
+      "titlePart1": "Restiamo",
+      "titlePart2": "in contatto",
+      "subtitle": "Domande sulla tua prossima avventura? Siamo qui per aiutarti a esplorare il mondo con fiducia.",
+      "cta": "Inviaci un messaggio",
+      "getInTouch": "Contattaci",
+      "getInTouchSubtitle": "Scegli il modo migliore per raggiungerci. Ci impegniamo a rispondere prontamente.",
+      "howCanWeHelp": "Come possiamo aiutarti?",
+      "howCanWeHelpSubtitle": "Siamo qui per rispondere a qualsiasi domanda o feedback sui nostri contenuti e servizi di viaggio.",
+      "importantNote": "Nota importante",
+      "importantNoteSubtitle": "Leggi prima di contattarci",
+      "ourOffice": "Il nostro ufficio",
+      "ourOfficeSubtitle": "Per corrispondenza ufficiale e richieste postali",
+      "travelCompanion": "Il tuo compagno di viaggio",
+      "urgentNote": "Per questioni urgenti, includi {{urgentLabel}} nell'oggetto dell'email.",
+      "urgentLabel": "Urgente",
+      "options": {
+        "generalInquiries": {
+          "title": "Richieste generali",
+          "description": "Domande sulle nostre guide e contenuti di viaggio"
+        },
+        "privacyInquiries": {
+          "title": "Richieste sulla privacy",
+          "description": "Accesso ai dati, cancellazione e richieste sulla privacy"
+        },
+        "visitWebsite": {
+          "title": "Visita il nostro sito",
+          "description": "Esplora destinazioni e ispirazione di viaggio"
+        },
+        "responseTime": {
+          "title": "Tempo di risposta",
+          "description": "Ci impegniamo a rispondere rapidamente",
+          "action": "2-3 giorni lavorativi"
+        }
+      },
+      "helpTopics": {
+        "general": "Richieste generali sulle nostre guide e contenuti di viaggio",
+        "feedback": "Feedback e suggerimenti per migliorare",
+        "reporting": "Segnalazione di errori nei contenuti o informazioni obsolete",
+        "business": "Richieste commerciali e di partnership",
+        "media": "Richieste media e stampa",
+        "privacy": "Richieste relative alla privacy"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Informativa sulla Privacy | TRAVI World",
+      "metaDescription": "Scopri come TRAVI World raccoglie, utilizza e protegge le tue informazioni personali.",
+      "badge": "La tua privacy conta",
+      "title": "Informativa sulla Privacy",
+      "subtitle": "Ci impegniamo a proteggere la tua privacy ed essere trasparenti sulle nostre pratiche relative ai dati.",
+      "effectiveDate": "Data di entrata in vigore: 1 gennaio 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Protezione dei dati",
+          "description": "I tuoi dati sono protetti"
+        },
+        "minimalCollection": {
+          "title": "Raccolta minima",
+          "description": "Raccogliamo solo il necessario"
+        },
+        "transparency": {
+          "title": "Trasparenza totale",
+          "description": "Chiari sulle nostre pratiche"
+        },
+        "yourControl": {
+          "title": "Il tuo controllo",
+          "description": "Gestisci le tue preferenze"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Chi siamo",
+        "informationCollect": "2. Informazioni che raccogliamo",
+        "howWeUse": "3. Come utilizziamo le tue informazioni",
+        "legalBasis": "4. Base giuridica del trattamento (GDPR)",
+        "cookies": "5. Cookie e tecnologie di tracciamento",
+        "thirdParty": "6. Servizi di terze parti",
+        "aiContent": "7. Contenuti generati dall'IA",
+        "internationalTransfers": "8. Trasferimenti internazionali di dati",
+        "dataRetention": "9. Conservazione dei dati",
+        "privacyRights": "10. I tuoi diritti sulla privacy",
+        "californiaRights": "11. Diritti sulla privacy della California (CCPA/CPRA)",
+        "childrenPrivacy": "12. Privacy dei bambini",
+        "dataSecurity": "13. Sicurezza dei dati",
+        "changes": "14. Modifiche a questa politica",
+        "contactUs": "15. Contattaci"
+      }
+    },
+    "terms": {
+      "metaTitle": "Termini e Condizioni | TRAVI World",
+      "metaDescription": "Leggi i termini e le condizioni per l'utilizzo dei servizi di informazioni di viaggio di TRAVI World.",
+      "badge": "Accordo legale",
+      "title": "Termini e Condizioni",
+      "subtitle": "Leggi attentamente questi termini prima di utilizzare TRAVI World.",
+      "lastUpdated": "Ultimo aggiornamento: 1 gennaio 2026",
+      "importantNotice": "Avviso legale importante",
+      "keyPoints": {
+        "editorial": {
+          "title": "Piattaforma editoriale",
+          "description": "Guide di viaggio e contenuti sulle destinazioni"
+        },
+        "affiliate": {
+          "title": "Link di affiliazione",
+          "description": "Raccomandazioni basate su commissioni"
+        },
+        "aiGenerated": {
+          "title": "Generato dall'IA",
+          "description": "Contenuti creati con assistenza IA"
+        },
+        "privacy": {
+          "title": "La tua privacy",
+          "description": "Protezione dei dati garantita"
+        }
+      },
+      "sections": {
+        "operator": "Operatore / Entità legale",
+        "purpose": "1. Scopo e ambito di utilizzo",
+        "affiliateDisclosure": "2. Divulgazione affiliazione e transazioni di terze parti",
+        "aiDisclaimer": "3. Disclaimer sui contenuti generati dall'IA",
+        "newsletter": "4. Newsletter e comunicazioni",
+        "userConduct": "5. Condotta dell'utente e azioni vietate",
+        "intellectualProperty": "6. Proprietà intellettuale e licenza limitata",
+        "dmca": "7. Notifica e rimozione (DMCA e simili)",
+        "disclaimers": "8. Accuratezza, disponibilità e disclaimer",
+        "liability": "9. Limitazione di responsabilità e forza maggiore",
+        "indemnification": "10. Manleva",
+        "privacyCookies": "11. Privacy, cookie e protezione dei dati",
+        "accessibility": "12. Dichiarazione di accessibilità",
+        "governingLaw": "13. Legge applicabile e giurisdizione",
+        "modifications": "14. Modifiche e disposizioni generali"
+      }
     }
   }
 }
