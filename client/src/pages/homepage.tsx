@@ -23,7 +23,7 @@ import { NewsletterSection } from "@/components/homepage/NewsletterSection";
 import { useQuery } from "@tanstack/react-query";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 import { Logo, Mascot } from "@/components/logo";
 
@@ -383,6 +383,7 @@ function AnimatedSection({ children, className, delay = 0, ariaLabel }: { childr
 // ============================================
 function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: number; onIndexChange: (idx: number) => void; siteStats?: { destinations: number; attractions: number } }) {
   const { t } = useTranslation();
+  const { localePath } = useLocale();
   const [isAnimating, setIsAnimating] = useState(false);
   const dest = HERO_DESTINATIONS[currentIndex];
 
@@ -617,7 +618,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
 
           {/* Simple CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-            <Link href="/destinations">
+            <Link href={localePath("/destinations")}>
               <Button 
                 className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                 aria-describedby="hero-description"
@@ -626,7 +627,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
                 <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true" />
               </Button>
             </Link>
-            <Link href="/guides">
+            <Link href={localePath("/guides")}>
               <Button 
                 variant="outline" 
                 className="rounded-full bg-white hover:bg-slate-50 text-slate-700 px-8 py-6 text-base font-medium border-2 border-slate-200 hover:border-slate-300 transition-colors duration-200"
@@ -756,7 +757,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
         <ul>
           {ALL_DESTINATIONS_SEO.map((d) => (
             <li key={d.slug}>
-              <a href={`/destinations/${d.slug}`}>
+              <a href={localePath(`/destinations/${d.slug}`)}>
                 {d.name}, {d.country} - Complete Travel Guide {CURRENT_YEAR} with Hotels, Attractions, Restaurants and Things to Do
               </a>
             </li>
@@ -771,6 +772,7 @@ function SplitHero({ currentIndex, onIndexChange, siteStats }: { currentIndex: n
 // CATEGORIES SECTION WITH IMPROVED SCHEMA
 // ============================================
 function CategoriesSection() {
+  const { localePath } = useLocale();
   const categoriesSchema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -824,7 +826,7 @@ function CategoriesSection() {
                 className="animate-fade-in-up"
                 style={{ animationDelay: `${index * 80}ms` }}
               >
-                <Link href={card.linkUrl} title={card.description}>
+                <Link href={localePath(card.linkUrl)} title={card.description}>
                   <article className={cn(
                     "group relative p-6 rounded-2xl transition-all duration-300 cursor-pointer h-full",
                     "hover:shadow-2xl hover:-translate-y-2",
@@ -1154,7 +1156,7 @@ export default function Homepage() {
                     {sections['destinations']?.subtitle || "Discover travel guides for destinations around the world"}
                   </p>
                 </div>
-                <Link href="/destinations" className="hidden sm:inline-flex items-center gap-2 text-[#6443F4] font-semibold hover:gap-3 transition-all" title="View all travel destinations">
+                <Link href={localePath("/destinations")} className="hidden sm:inline-flex items-center gap-2 text-[#6443F4] font-semibold hover:gap-3 transition-all" title="View all travel destinations">
                   View All <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>
               </div>
@@ -1198,7 +1200,7 @@ export default function Homepage() {
 
               <div className="text-center mt-8 sm:hidden">
                 <Button className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white gap-2" asChild>
-                  <Link href="/destinations" title="Browse all travel destinations">View All Destinations <ArrowRight className="w-4 h-4" aria-hidden="true" /></Link>
+                  <Link href={localePath("/destinations")} title="Browse all travel destinations">View All Destinations <ArrowRight className="w-4 h-4" aria-hidden="true" /></Link>
                 </Button>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,6 +58,7 @@ interface DashboardData {
 
 export default function PartnersDashboard() {
   const { toast } = useToast();
+  const { localePath } = useLocale();
   const [location] = useLocation();
   const urlParams = new URLSearchParams(location.split("?")[1] || "");
   const codeFromUrl = urlParams.get("code") || "";
@@ -116,7 +118,7 @@ export default function PartnersDashboard() {
               </div>
               <p className="text-sm text-muted-foreground">
                 Don't have a code?{" "}
-                <a href="/partners/join" className="text-primary hover:underline" data-testid="link-join">
+                <a href={localePath("/partners/join")} className="text-primary hover:underline" data-testid="link-join">
                   Join the partner program
                 </a>
               </p>
@@ -161,7 +163,7 @@ export default function PartnersDashboard() {
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                <a href="/partners/join" className="text-primary hover:underline">
+                <a href={localePath("/partners/join")} className="text-primary hover:underline">
                   Register as a new partner
                 </a>
               </p>

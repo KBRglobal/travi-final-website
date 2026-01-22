@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface SearchResult {
   type: "city" | "attraction";
@@ -281,6 +282,7 @@ function usePreferredMotion() {
 function DestinationChip({ destination, index }: { destination: Destination, index: number }) {
   const { t } = useTranslation();
   const shouldAnimate = usePreferredMotion();
+  const { localePath } = useLocale();
 
   return (
     <motion.div
@@ -289,7 +291,7 @@ function DestinationChip({ destination, index }: { destination: Destination, ind
       transition={{ delay: 0.3 + index * 0.05, duration: 0.4, ease: "easeOut" }}
       whileHover={shouldAnimate ? { scale: 1.05, y: -4 } : {}}
     >
-      <Link href={`/attractions/list/${destination.slug}`}>
+      <Link href={localePath(`/attractions/list/${destination.slug}`)}>
         <div 
           className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.slug}`}
@@ -313,6 +315,7 @@ function DestinationChip({ destination, index }: { destination: Destination, ind
 
 export default function Attractions() {
   const { t } = useTranslation();
+  const { localePath } = useLocale();
   const [, navigate] = useLocation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -732,7 +735,7 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.6 }}
                     >
-                      <Link href="/attractions/list/paris">
+                      <Link href={localePath("/attractions/list/paris")}>
                         <Button 
                           className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                           data-testid="button-explore-paris"
@@ -872,7 +875,7 @@ export default function Attractions() {
                                 <span className="text-white/60 text-sm">{t("attractions.gallery.priceFrom")}</span>
                                 <span className="text-3xl font-bold text-white ml-2">{dest.price}</span>
                               </div>
-                              <Link href={`/attractions/list/${dest.slug}`}>
+                              <Link href={localePath(`/attractions/list/${dest.slug}`)}>
                                 <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                                   {t("attractions.gallery.bookTickets")}
                                   <ArrowRight className="w-5 h-5" />
@@ -985,7 +988,7 @@ export default function Attractions() {
                     {t("attractions.browse.desc")}
                   </p>
                 </div>
-                <Link href="/destinations">
+                <Link href={localePath("/destinations")}>
                   <Button 
                     variant="outline" 
                     className="hidden sm:flex items-center gap-2 border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
@@ -1017,7 +1020,7 @@ export default function Attractions() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <Link href={`/attractions/list/${dest.slug}`}>
+                    <Link href={localePath(`/attractions/list/${dest.slug}`)}>
                       <Card 
                         className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 border-0"
                         data-testid={`destination-card-${dest.slug}`}
@@ -1054,7 +1057,7 @@ export default function Attractions() {
               </div>
 
               <div className="mt-6 text-center sm:hidden">
-                <Link href="/destinations">
+                <Link href={localePath("/destinations")}>
                   <Button 
                     variant="outline" 
                     className="border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
@@ -1239,22 +1242,22 @@ export default function Attractions() {
                 {t("attractions.exploreLinks.title")}
               </h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Link href="/hotels" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                <Link href={localePath("/hotels")} className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <Building2 className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.exploreLinks.hotelsWorldwide")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
-                <Link href="/restaurants" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                <Link href={localePath("/restaurants")} className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <Utensils className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.exploreLinks.bestRestaurants")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
-                <Link href="/destinations" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                <Link href={localePath("/destinations")} className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <Globe className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.sections.allDestinations")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
-                <Link href="/articles" className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                <Link href={localePath("/articles")} className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
                   <TrendingUp className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("attractions.exploreLinks.travelNews")}</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
@@ -1278,7 +1281,7 @@ export default function Attractions() {
                   {t("attractions.cta.desc")}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/attractions/list/paris">
+                  <Link href={localePath("/attractions/list/paris")}>
                     <Button
                       size="lg"
                       className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold px-8"
@@ -1288,7 +1291,7 @@ export default function Attractions() {
                       {t("attractions.cta.parisAttractions")}
                     </Button>
                   </Link>
-                  <Link href="/attractions/list/rome">
+                  <Link href={localePath("/attractions/list/rome")}>
                     <Button
                       size="lg"
                       variant="outline"
@@ -1314,7 +1317,7 @@ export default function Attractions() {
         <ul>
           {destinations.map(dest => (
             <li key={dest.slug}>
-              <a href={`/attractions/list/${dest.slug}`}>
+              <a href={localePath(`/attractions/list/${dest.slug}`)}>
                 Things to do in {dest.name}, {dest.country} | {dest.count} attractions
               </a>
             </li>
@@ -1325,7 +1328,7 @@ export default function Attractions() {
         <ul>
           {HERO_ATTRACTIONS.map(attraction => (
             <li key={attraction.name}>
-              <a href={`/attractions/${attraction.slug}`}>
+              <a href={localePath(`/attractions/${attraction.slug}`)}>
                 {attraction.title} - {attraction.tagline} in {attraction.city}
               </a>
             </li>
@@ -1334,10 +1337,10 @@ export default function Attractions() {
 
         <h3>Related Travel Guides</h3>
         <ul>
-          <li><a href="/hotels">Hotels Worldwide</a></li>
-          <li><a href="/restaurants">Best Restaurants in Top Destinations</a></li>
-          <li><a href="/destinations">Complete Travel Guides by City</a></li>
-          <li><a href="/articles">Latest Travel News and Tips</a></li>
+          <li><a href={localePath("/hotels")}>Hotels Worldwide</a></li>
+          <li><a href={localePath("/restaurants")}>Best Restaurants in Top Destinations</a></li>
+          <li><a href={localePath("/destinations")}>Complete Travel Guides by City</a></li>
+          <li><a href={localePath("/articles")}>Latest Travel News and Tips</a></li>
         </ul>
       </nav>
     </>

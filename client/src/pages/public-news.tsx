@@ -454,13 +454,13 @@ export default function PublicNews() {
                 {t("news.empty.description")}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/">
+                <Link href={localePath("/")}>
                   <Button className="bg-gradient-to-r from-[#6443F4] to-cyan-500 text-white border-0" data-testid="button-explore-home">
                     {t("news.empty.exploreDestinations")}
                     <ArrowRight className="w-4 h-4 ms-2 rtl:rotate-180" />
                   </Button>
                 </Link>
-                <Link href="/guides">
+                <Link href={localePath("/guides")}>
                   <Button variant="outline" className="border-white/20 text-white bg-white/5" data-testid="button-view-guides">
                     {t("news.empty.viewGuides")}
                   </Button>

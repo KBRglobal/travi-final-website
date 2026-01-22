@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Helmet } from "react-helmet-async";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { 
   Star, MapPin, Globe, Crown, Sparkles, Building2, Award, 
   Wifi, Car, Utensils, Dumbbell, Waves, Bed, ArrowRight,
@@ -364,6 +365,7 @@ const HOTELS_FAQ = [
 function HotelDestinationCard({ destination, index }: { destination: typeof HOTEL_DESTINATIONS[0]; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const { localePath } = useLocale();
 
   return (
     <motion.article
@@ -374,7 +376,7 @@ function HotelDestinationCard({ destination, index }: { destination: typeof HOTE
       className="group h-full"
       data-testid={`hotel-card-${destination.slug}`}
     >
-      <Link href={`/hotels/${destination.slug}`}>
+      <Link href={localePath(`/hotels/${destination.slug}`)}>
         <Card className="h-full overflow-hidden border-0 bg-white dark:bg-slate-800/60 shadow-lg hover:shadow-2xl dark:shadow-slate-900/50 transition-all duration-500 group-hover:-translate-y-2">
           <div className="relative aspect-[4/3] overflow-hidden">
             <img
@@ -553,6 +555,7 @@ export default function GlobalHotels() {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true });
+  const { localePath } = useLocale();
 
   const totalHotels = HOTEL_DESTINATIONS.reduce((sum, d) => {
     const count = parseInt(d.hotelCount.replace(/[^0-9]/g, ''));
@@ -1135,7 +1138,7 @@ export default function GlobalHotels() {
                   exceptional accommodations worldwide.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Link href="/hotels/dubai">
+                  <Link href={localePath("/hotels/dubai")}>
                     <Button 
                       size="lg" 
                       className="rounded-full bg-white text-[#6443F4] hover:bg-white/95 hover:scale-105 px-8 py-6 text-base font-bold shadow-2xl shadow-black/20 h-auto transition-all duration-300"
@@ -1144,7 +1147,7 @@ export default function GlobalHotels() {
                       <ArrowRight className="w-5 h-5 ml-2" aria-hidden="true" />
                     </Button>
                   </Link>
-                  <Link href="/destinations">
+                  <Link href={localePath("/destinations")}>
                     <Button 
                       size="lg" 
                       variant="outline"
@@ -1173,7 +1176,7 @@ export default function GlobalHotels() {
                 .filter(d => d.region === region.name)
                 .map(dest => (
                   <li key={dest.slug}>
-                    <a href={`/hotels/${dest.slug}`}>
+                    <a href={localePath(`/hotels/${dest.slug}`)}>
                       {dest.name} Hotels - {dest.hotelCount} properties from budget to luxury | 
                       {dest.priceRange}/night in {dest.country}
                     </a>

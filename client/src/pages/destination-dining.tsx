@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "wouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
@@ -126,6 +127,7 @@ const staggerContainer = {
 };
 
 export default function DestinationDiningPage() {
+  const { localePath } = useLocale();
   const { slug } = useParams<{ slug: string }>();
   const [categoryFilter, setCategoryFilter] = useState<string>("restaurant");
   const [page, setPage] = useState(0);
@@ -172,7 +174,7 @@ export default function DestinationDiningPage() {
           <h1 className="text-3xl font-bold mb-4">Destination Not Found</h1>
           <p className="text-muted-foreground mb-8">Please select a valid destination.</p>
           <Button asChild>
-            <Link href="/destinations">Browse Destinations</Link>
+            <Link href={localePath("/destinations")}>Browse Destinations</Link>
           </Button>
         </div>
         <PublicFooter />
@@ -211,11 +213,11 @@ export default function DestinationDiningPage() {
             data-testid="breadcrumbs"
             aria-label="Breadcrumb"
           >
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <Link href={localePath("/")} className="hover:text-white transition-colors">Home</Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href="/destinations" className="hover:text-white transition-colors">Destinations</Link>
+            <Link href={localePath("/destinations")} className="hover:text-white transition-colors">Destinations</Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href={`/destinations/${slug}`} className="hover:text-white transition-colors">{cityName}</Link>
+            <Link href={localePath(`/destinations/${slug}`)} className="hover:text-white transition-colors">{cityName}</Link>
             <ChevronRight className="w-4 h-4" />
             <span className="text-white font-medium">Dining</span>
           </nav>
@@ -465,7 +467,7 @@ export default function DestinationDiningPage() {
                   Show All POIs
                 </Button>
                 <Button asChild className="bg-[#6443F4] hover:bg-[#5339D9]">
-                  <Link href="/destinations">Browse Destinations</Link>
+                  <Link href={localePath("/destinations")}>Browse Destinations</Link>
                 </Button>
               </div>
             </div>
@@ -489,19 +491,19 @@ export default function DestinationDiningPage() {
 
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild variant="outline" className="rounded-xl">
-              <Link href={`/destinations/${slug}/hotels`}>
+              <Link href={localePath(`/destinations/${slug}/hotels`)}>
                 <Star className="w-4 h-4 mr-2" />
                 View Hotels
               </Link>
             </Button>
             <Button asChild variant="outline" className="rounded-xl">
-              <Link href={`/destinations/${slug}`}>
+              <Link href={localePath(`/destinations/${slug}`)}>
                 <MapPin className="w-4 h-4 mr-2" />
                 Destination Guide
               </Link>
             </Button>
             <Button asChild className="bg-[#6443F4] hover:bg-[#5339D9] rounded-xl">
-              <Link href="/dining">
+              <Link href={localePath("/dining")}>
                 <Utensils className="w-4 h-4 mr-2" />
                 Browse All Restaurants
               </Link>

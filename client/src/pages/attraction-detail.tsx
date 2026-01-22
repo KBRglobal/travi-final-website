@@ -2,6 +2,7 @@ import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -157,12 +158,14 @@ function HeroSection({
   attraction, 
   heroImage,
   destination,
-  onAffiliateClick
+  onAffiliateClick,
+  localePath
 }: { 
   attraction: TiqetsAttraction;
   heroImage: string;
   destination: string;
   onAffiliateClick: () => void;
+  localePath: (path: string) => string;
 }) {
   const title = attraction.h1Title || attraction.title;
   const rating = attraction.tiqetsRating || "4.5";
@@ -199,12 +202,12 @@ function HeroSection({
             aria-label="Breadcrumb"
             data-testid="nav-breadcrumb"
           >
-            <Link href="/" className="hover:text-white transition-colors" data-testid="breadcrumb-home">
+            <Link href={localePath("/")} className="hover:text-white transition-colors" data-testid="breadcrumb-home">
               Home
             </Link>
             <ChevronRight className="w-4 h-4" />
             <Link 
-              href="/attractions" 
+              href={localePath("/attractions")} 
               className="hover:text-white transition-colors"
               data-testid="breadcrumb-all-attractions"
             >
@@ -212,7 +215,7 @@ function HeroSection({
             </Link>
             <ChevronRight className="w-4 h-4" />
             <Link 
-              href={`/destinations/${destination.toLowerCase()}`} 
+              href={localePath(`/destinations/${destination.toLowerCase()}`)} 
               className="hover:text-white transition-colors capitalize"
               data-testid="breadcrumb-destination"
             >
@@ -220,7 +223,7 @@ function HeroSection({
             </Link>
             <ChevronRight className="w-4 h-4" />
             <Link 
-              href={`/attractions/list/${destination.toLowerCase()}`} 
+              href={localePath(`/attractions/list/${destination.toLowerCase()}`)} 
               className="hover:text-white transition-colors"
               data-testid="breadcrumb-attractions"
             >
@@ -1064,10 +1067,12 @@ function FAQSection({ faqs, attractionName }: { faqs: FAQItem[] | null; attracti
 
 function RelatedAttractionsSection({ 
   attractions, 
-  currentCity 
+  currentCity,
+  localePath
 }: { 
   attractions: TiqetsAttraction[]; 
   currentCity: string;
+  localePath: (path: string) => string;
 }) {
   if (!attractions || attractions.length === 0) return null;
 
@@ -1096,7 +1101,7 @@ function RelatedAttractionsSection({
             return (
               <Link
                 key={attraction.id}
-                href={`/${currentCity.toLowerCase()}/attractions/${attraction.seoSlug || attraction.slug}`}
+                href={localePath(`/${currentCity.toLowerCase()}/attractions/${attraction.seoSlug || attraction.slug}`)}
                 className="flex-shrink-0 w-72 snap-start"
                 data-testid={`related-attraction-${index}`}
               >
@@ -1185,6 +1190,7 @@ function StickyBookingCTA({ attractionName, productUrl, onAffiliateClick }: { at
 }
 
 export default function AttractionDetail() {
+  const { localePath } = useLocale();
   const params = useParams<{ destination?: string; city?: string; slug: string }>();
   
   const destination = params.destination || params.city || '';
@@ -1341,12 +1347,13 @@ export default function AttractionDetail() {
           heroImage={heroImage}
           destination={destination}
           onAffiliateClick={trackAffiliateClick}
+          localePath={localePath}
         />
         
         {/* Top CTA - Explore More Attractions */}
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
           <Link 
-            href={`/attractions/list/${destination.toLowerCase()}`}
+            href={localePath(`/attractions/list/${destination.toLowerCase()}`)}
             className="inline-flex items-center gap-2 text-[#6443F4] hover:text-[#5539d4] font-medium transition-colors group"
             data-testid="link-explore-more-top"
           >
@@ -1381,6 +1388,7 @@ export default function AttractionDetail() {
           <RelatedAttractionsSection 
             attractions={relatedAttractions}
             currentCity={destination}
+            localePath={localePath}
           />
           
           {/* Bottom CTA - Explore More Attractions */}
@@ -1389,7 +1397,7 @@ export default function AttractionDetail() {
               Looking for more things to do in {attraction.cityName || destination}?
             </p>
             <Link 
-              href={`/attractions/list/${destination.toLowerCase()}`}
+              href={localePath(`/attractions/list/${destination.toLowerCase()}`)}
               data-testid="link-explore-more-bottom"
             >
               <Button 
