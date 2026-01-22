@@ -1,1073 +1,1004 @@
 {
   "nav": {
-    "home": "Laman Utama",
-    "destinations": "Destinasi",
-    "attractions": "Tarikan",
-    "hotels": "Hotel",
-    "guides": "Panduan",
-    "dining": "Restoran",
-    "districts": "Daerah",
-    "articles": "Berita",
-    "news": "Berita",
-    "shopping": "Membeli-belah",
-    "realEstate": "Hartanah",
-    "events": "Acara",
-    "search": "Cari",
-    "language": "Bahasa",
-    "mainNavigation": "Navigasi utama",
-    "openMenu": "Buka menu",
-    "closeMenu": "Tutup menu",
-    "logoAlt": "TRAVI - Panduan Perjalanan",
-    "followInstagram": "Ikuti TRAVI di Instagram",
-    "followTikTok": "Ikuti TRAVI di TikTok",
-    "changeLanguage": "Ubah bahasa",
-    "selectLanguage": "Pilih bahasa",
-    "popularLanguages": "Bahasa populer",
-    "allLanguages": "Semua bahasa"
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "Navigasi breadcrumb",
+    "ariaLabel": "Breadcrumb navigation",
     "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Baca Lagi",
-    "viewAll": "Lihat Semua",
-    "learnMore": "Ketahui Lebih Lanjut",
-    "bookNow": "Tempah Sekarang",
-    "contactUs": "Hubungi Kami",
-    "subscribe": "Langgan",
-    "submit": "Hantar",
-    "cancel": "Batal",
-    "save": "Simpan",
-    "edit": "Sunting",
-    "delete": "Padam",
-    "loading": "Memuatkan...",
-    "error": "Sesuatu tidak kena",
-    "noResults": "Tiada hasil dijumpai",
-    "seeMore": "Lihat Lagi",
-    "back": "Kembali",
-    "next": "Seterusnya",
-    "previous": "Sebelumnya",
-    "close": "Tutup",
-    "share": "Kongsi",
-    "copyLink": "Salin Pautan",
-    "copied": "Disalin!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "Terokai Dunia Bersama TRAVI",
-      "subtitle": "Panduan perjalanan lengkap anda ke 17 destinasi di seluruh dunia",
-      "searchPlaceholder": "Cari tarikan, hotel, restoran...",
-      "cta": "Mula Meneroka",
-      "badge": "Pintu Gerbang Anda ke Pengembaraan Dunia",
-      "headlinePart1": "Sumber Perjalanan",
-      "headlinePart2": "Dipercayai",
-      "description": "Maklumat perjalanan lengkap untuk {{destinations}} destinasi di seluruh dunia. Temui panduan terperinci untuk {{attractions}}+ tarikan.",
-      "descriptionPart1": "Maklumat perjalanan lengkap untuk",
-      "descriptionPart2": "destinasi di seluruh dunia. Temui panduan terperinci untuk",
-      "descriptionPart3": "tarikan.",
-      "carouselLabel": "Navigasi karusel destinasi",
-      "viewDestination": "Lihat {{name}} - {{tagline}}",
-      "worldwide": "Seluruh Dunia",
-      "exploreWorld": "Terokai Dunia",
-      "welcomeAriaLabel": "Selamat datang ke TRAVI World",
-      "pageTitle": "TRAVI World - Panduan Perjalanan untuk Hotel, Tarikan & Aktiviti",
-      "pageDescription": "Panduan perjalanan lengkap anda untuk 17 destinasi di seluruh dunia. Maklumat pakar tentang hotel, tarikan, restoran dan aktiviti untuk 3,000+ tempat.",
-      "orgDescription": "Sumber perjalanan dipercayai anda untuk 17 destinasi di seluruh dunia."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "Lebih {{count}} tarikan diliputi",
-      "destinations": "{{count}} destinasi di seluruh dunia",
-      "languages": "Platform berbilang bahasa dengan bahasa tambahan akan datang"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "Pilihan",
-    "trending": "Sedang Trending",
-    "topAttractions": "Tarikan Teratas",
-    "bestHotels": "Hotel Terbaik",
-    "latestNews": "Berita & Panduan Terkini",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "Terokai Destinasi",
-      "destinationsDesc": "Temui koleksi destinasi perjalanan global pilihan kami",
-      "categories": "Layari mengikut Kategori",
-      "categoriesDesc": "Cari dengan tepat apa yang anda inginkan",
-      "experiences": "Perjalanan mengikut Pengalaman",
-      "experiencesDesc": "Pilih gaya perjalanan anda",
-      "faq": "Soalan Lazim",
-      "faqDesc": "Semua yang perlu anda ketahui tentang TRAVI",
-      "regions": "Terokai mengikut Wilayah",
-      "newsletter": "Kekal Dikemaskini",
-      "allDestinationsTitle": "Panduan Perjalanan untuk Semua {{count}} Destinasi",
-      "completeGuide": "{{name}}, {{country}} - Panduan Perjalanan Lengkap"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "Terokai Destinasi",
-      "viewGuides": "Lihat Panduan",
-      "viewAll": "Lihat Semua",
-      "startExploring": "Mula Meneroka",
-      "planTrip": "Rancang Perjalanan Anda",
-      "viewExperience": "Lihat {{name}}"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "DESTINASI",
-      "attractions": "TARIKAN",
-      "languages": "BAHASA",
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
       "attractionsNum": "3,000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} destinasi",
-      "attractionsCountWithLabel": "{{count}}+ tarikan"
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "Tarikan",
-      "attractionsDesc": "Tempat wajib lawat",
-      "news": "Berita Perjalanan",
-      "newsDesc": "Kemaskini terkini",
-      "guides": "Panduan",
-      "guidesDesc": "Panduan destinasi",
-      "hotels": "Hotel",
-      "hotelsDesc": "Cari penginapan sempurna"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "Perjalanan Mewah",
-      "luxuryDesc": "Pengalaman perjalanan premium dan destinasi eksklusif",
-      "adventure": "Pengembaraan & Luar",
-      "adventureDesc": "Pengalaman luar yang mendebarkan",
-      "family": "Perjalanan Keluarga",
-      "familyDesc": "Destinasi dan aktiviti mesra keluarga",
-      "budget": "Perjalanan Bajet",
-      "budgetDesc": "Pilihan perjalanan mampu milik",
-      "romance": "Bulan Madu & Romantik",
-      "romanceDesc": "Percutian romantik dan destinasi bulan madu",
-      "solo": "Perjalanan Solo",
-      "soloDesc": "Destinasi sempurna untuk pelancong solo"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "Soalan Lazim",
-      "subtitle": "Semua yang perlu anda ketahui tentang TRAVI World",
-      "whatIsTravi": "Apakah TRAVI World?",
-      "whatIsTraviAnswer": "TRAVI World adalah platform maklumat perjalanan komprehensif yang meliputi 17 destinasi di seluruh dunia dengan panduan terperinci untuk 3,000+ tarikan, hotel, restoran dan aktiviti.",
-      "howManyDestinations": "Berapa banyak destinasi yang diliputi TRAVI?",
-      "howManyDestinationsAnswer": "TRAVI World meliputi 17 destinasi perjalanan utama termasuk Dubai, Paris, Tokyo, New York, Barcelona, Singapura, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami dan Rom.",
-      "isFree": "Adakah TRAVI World percuma?",
-      "isFreeAnswer": "Ya, TRAVI World percuma sepenuhnya untuk digunakan. Layari beribu-ribu panduan perjalanan, ulasan tarikan, cadangan hotel dan cadangan restoran tanpa sebarang kos.",
-      "updateFrequency": "Berapa kerap kandungan dikemaskini?",
-      "updateFrequencyAnswer": "Kandungan TRAVI World dikemaskini setiap hari dengan berita perjalanan terkini, ulasan tarikan baharu dan maklumat terkini tentang hotel dan restoran di semua 17 destinasi."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "Maskot TRAVI dengan mercu tanda dunia - terokai panduan perjalanan untuk Dubai, Paris, London, Rom dan banyak lagi",
-    "mascotTitle": "TRAVI World - Panduan Perjalanan untuk Destinasi Global"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "Tarikan Dubai",
-    "subtitle": "Terokai mercu tanda ikonik dan permata tersembunyi",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{count}} tarikan di {{cities}} bandar",
-      "badgeThousands": "Beribu-ribu tarikan di seluruh dunia",
-      "headlinePart1": "Aktiviti Menarik",
-      "headlinePart2": "Seluruh Dunia",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Tiket tanpa beratur</span> ke Menara Eiffel, Colosseum, Burj Khalifa dan tarikan teratas di Paris, Rom, Dubai dan banyak lagi.",
-      "searchPlaceholder": "Cari Menara Eiffel, Colosseum, Burj Khalifa...",
-      "carouselLabel": "Karusel tarikan pilihan",
-      "sectionLabel": "Tempah tiket ke tarikan teratas di seluruh dunia",
-      "searchAriaLabel": "Cari tarikan mengikut nama atau bandar",
-      "searchButton": "Cari",
-      "searchButtonAriaLabel": "Cari tarikan"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "TARIKAN",
-      "cities": "BANDAR",
-      "rating": "PENILAIAN"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "Lebih {{count}} tarikan",
-      "cities": "{{count}} bandar",
-      "rating": "Penilaian {{rating}} bintang"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "Semua Jenis",
-      "museums": "Muzium",
-      "landmarks": "Mercu Tanda",
-      "tours": "Lawatan",
-      "themeParks": "Taman Tema",
-      "shows": "Persembahan"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "Aktiviti di {{name}}",
-    "countAttractions": "{{country}} - {{count}} tarikan",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "Semua",
-      "popular": "Paling Popular",
-      "free": "Masuk Percuma",
-      "familyFriendly": "Mesra Keluarga",
-      "outdoor": "Luar",
-      "indoor": "Dalam"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "Lokasi",
-      "hours": "Waktu Operasi",
-      "price": "Harga",
-      "duration": "Tempoh",
-      "tips": "Tips Orang Dalam"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "Terokai Tarikan mengikut Destinasi",
-      "destinationsDesc": "Pilih bandar untuk menemui aktiviti menarik",
-      "faq": "Soalan Lazim",
-      "faqDesc": "Dapatkan jawapan tentang tempahan tarikan di seluruh dunia",
-      "whyBookBadge": "Mengapa Tempah Dengan Kami",
-      "whyBookTitle": "Langkau Barisan, Jimat Masa",
-      "whyBookDesc": "Tempah tiket lebih awal dan nikmati kemasukan tanpa kerumitan ke tarikan teratas",
-      "allDestinations": "Semua Destinasi"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "Tiket Tanpa Beratur",
-      "skipTheLineDesc": "Langkau barisan di Menara Eiffel, Colosseum, Vatican dan banyak lagi",
-      "mobileTickets": "Tiket Mudah Alih",
-      "mobileTicketsDesc": "Penghantaran segera ke telefon anda - tunjuk tiket dan masuk",
-      "freeCancellation": "Pembatalan Percuma",
-      "freeCancellationDesc": "Rancangan berubah? Batal sehingga 24 jam sebelum untuk bayaran balik penuh"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "Aktiviti mengikut Destinasi",
-      "desc": "Cari tarikan dan pengalaman di bandar-bandar teratas dunia",
-      "thingsToDo": "{{count}} aktiviti",
-      "noDestinations": "Tiada destinasi tersedia pada masa ini."
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "Terokai Lebih Banyak Panduan Perjalanan",
-      "hotelsWorldwide": "Hotel Seluruh Dunia",
-      "bestRestaurants": "Restoran Terbaik",
-      "travelNews": "Berita Perjalanan"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "Sedia untuk Meneroka?",
-      "desc": "Tempah tiket tanpa beratur ke Menara Eiffel, Colosseum, Burj Khalifa dan tarikan teratas di seluruh dunia.",
-      "parisAttractions": "Tarikan Paris",
-      "romeAttractions": "Tarikan Rom"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
       "popular": "Popular:",
-      "thingsToDoIn": "Aktiviti di {{city}}",
-      "ariaCarouselNav": "Navigasi karusel tarikan",
-      "ariaViewInCity": "Lihat {{name}} di {{city}}"
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Tarikan pilihan",
-      "ariaThumbnails": "Lakaran kecil karusel tarikan",
-      "ariaTicketsIn": "Tiket {{name}} di {{city}}",
-      "priceFrom": "Dari",
-      "bookTickets": "Tempah Tiket",
-      "skipTheLine": "Tanpa Beratur",
-      "duration": "2-3 jam",
-      "freeCancellation": "Pembatalan Percuma",
-      "freeCancellationDesc": "24 jam sebelum lawatan",
-      "mobileTickets": "Tiket Mudah Alih",
-      "instantDelivery": "Penghantaran segera"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}} aktiviti"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "Hotel Dubai",
-    "subtitle": "Cari penginapan sempurna anda",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "Semua Hotel",
-      "luxury": "Mewah",
-      "budget": "Bajet",
-      "beachfront": "Tepi Pantai",
-      "cityCenter": "Pusat Bandar",
-      "familyFriendly": "Mesra Keluarga"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "Dari",
-      "perNight": "semalam",
-      "amenities": "Kemudahan",
-      "checkIn": "Daftar Masuk",
-      "checkOut": "Daftar Keluar",
-      "rooms": "Bilik",
-      "rating": "Penilaian"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "Tempah Sekarang"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "Restoran Dubai",
-    "subtitle": "Pengalaman kulinari untuk setiap citarasa",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "Semua Restoran",
-      "fineDining": "Santapan Mewah",
-      "casual": "Santapan Kasual",
-      "cafes": "Kafe",
-      "streetFood": "Makanan Jalanan",
+      "all": "All Restaurants",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafes",
+      "streetFood": "Street Food",
       "halal": "Halal",
       "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "Masakan",
-      "priceRange": "Julat Harga",
-      "hours": "Waktu Operasi",
-      "dress": "Kod Pakaian",
-      "reservations": "Tempahan"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "Dubai",
-        "country": "UAE",
-        "cardAlt": "Pemandangan Dubai dengan menara Burj Khalifa pada waktu senja"
-      },
-      "london": {
-        "name": "London",
-        "country": "UK",
-        "cardAlt": "London Big Ben dan Bangunan Parlimen"
-      },
-      "paris": {
-        "name": "Paris",
-        "country": "Perancis",
-        "cardAlt": "Menara Eiffel Paris diterangi pada waktu senja"
-      },
-      "newYork": {
-        "name": "New York",
-        "country": "AS",
-        "cardAlt": "Pemandangan Manhattan New York dengan Empire State Building"
-      },
-      "tokyo": {
-        "name": "Tokyo",
-        "country": "Jepun",
-        "cardAlt": "Persimpangan Shibuya Tokyo dengan lampu neon pada waktu malam"
-      },
-      "singapore": {
-        "name": "Singapura",
-        "country": "Singapura",
-        "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay"
-      },
-      "barcelona": {
-        "name": "Barcelona",
-        "country": "Sepanyol",
-        "cardAlt": "Sagrada Familia Barcelona pada waktu keemasan"
-      },
-      "bangkok": {
-        "name": "Bangkok",
-        "country": "Thailand",
-        "cardAlt": "Istana Besar Bangkok pada waktu matahari terbit"
-      },
-      "abuDhabi": {
-        "name": "Abu Dhabi",
-        "country": "UAE",
-        "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi"
-      },
-      "amsterdam": {
-        "name": "Amsterdam",
-        "country": "Belanda",
-        "cardAlt": "Terusan Amsterdam dengan bangunan bersejarah"
-      },
-      "hongKong": {
-        "name": "Hong Kong",
-        "country": "China",
-        "cardAlt": "Pemandangan Hong Kong pada waktu malam"
-      },
-      "istanbul": {
-        "name": "Istanbul",
-        "country": "Turki",
-        "cardAlt": "Masjid Biru Istanbul pada waktu senja"
-      },
-      "lasVegas": {
-        "name": "Las Vegas",
-        "country": "AS",
-        "cardAlt": "Las Vegas Strip pada waktu malam"
-      },
-      "losAngeles": {
-        "name": "Los Angeles",
-        "country": "AS",
-        "cardAlt": "Papan tanda Hollywood Los Angeles"
-      },
-      "miami": {
-        "name": "Miami",
-        "country": "AS",
-        "cardAlt": "Daerah Art Deco Miami Beach"
-      },
-      "rome": {
-        "name": "Rom",
-        "country": "Itali",
-        "cardAlt": "Colosseum Rom pada waktu keemasan"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "{{count}} Destinasi Seluruh Dunia",
-      "trustedBy": "Dipercayai oleh {{count}} destinasi di seluruh dunia",
-      "discover": "Temui",
-      "worldClass": "Bertaraf Dunia",
-      "destinations": "Destinasi",
-      "description": "Panduan perjalanan yang dikurasi dengan kepakaran tempatan untuk bandar-bandar paling menarik di dunia. Dari mercu tanda ikonik hingga permata tersembunyi.",
-      "exploreAll": "Terokai Semua Destinasi",
-      "travelGuides": "Panduan Perjalanan",
-      "explorePlaceholder": "Terokai Destinasi",
-      "browseCollection": "Layari koleksi destinasi perjalanan pilihan kami di bawah",
-      "explore": "Terokai",
-      "discoverButton": "Temui",
-      "ariaLabel": "Gambaran keseluruhan destinasi",
-      "exploreTitle": "Terokai {{name}}",
-      "galleryAriaLabel": "Galeri destinasi pilihan",
-      "placeholderAriaLabel": "Pemegang tempat destinasi pilihan"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "DESTINASI",
-      "countries": "NEGARA",
-      "regions": "Wilayah",
-      "languages": "Bahasa"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "Destinasi Pilihan",
-      "featuredDesc": "Destinasi pilihan dengan pengalaman luar biasa, pandangan tempatan dan semua yang anda perlukan untuk merancang perjalanan sempurna.",
-      "all": "Semua Destinasi",
-      "count": "{{count}} destinasi dijumpai"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "Cari destinasi...",
-      "noResults": "Tiada destinasi dijumpai",
-      "tryAdjusting": "Cuba laraskan kriteria carian anda",
-      "clearSearch": "Padam Carian"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "Karusel destinasi pilihan",
-      "previous": "Destinasi sebelumnya",
-      "next": "Destinasi seterusnya",
-      "goTo": "Pergi ke {{name}}",
-      "slideOf": "Slaid {{current}} daripada {{total}}: {{name}}",
-      "thumbnails": "Lakaran kecil karusel destinasi"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "Terokai",
-      "defaultLevel": "Bandar",
-      "exploreFallback": "Terokai {{name}}",
-      "destination": "Destinasi",
-      "travelGuideAlt": "Panduan perjalanan {{name}}"
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "Soalan Lazim",
-      "subtitle": "Semua yang perlu anda ketahui tentang panduan destinasi TRAVI",
-      "q1": "Berapa banyak destinasi yang diliputi TRAVI?",
-      "a1": "TRAVI meliputi destinasi perjalanan utama di Timur Tengah, Eropah, Asia dan Amerika dengan panduan komprehensif untuk setiap lokasi.",
-      "q2": "Maklumat apa yang disertakan dalam panduan destinasi TRAVI?",
-      "a2": "Setiap panduan destinasi termasuk penerangan terperinci meliputi tarikan, pilihan penginapan, masakan tempatan, tips pengangkutan dan maklumat perjalanan praktikal.",
-      "q3": "Bolehkah saya mencari destinasi?",
-      "a3": "Ya, TRAVI membenarkan pencarian destinasi mengikut nama atau negara menggunakan bar carian di halaman destinasi.",
-      "q4": "Apakah destinasi pilihan di TRAVI?",
-      "a4": "Destinasi pilihan TRAVI adalah lokasi terpilih yang menawarkan pengalaman luar biasa untuk pelancong dengan minat pelbagai dari perjalanan mewah hingga bajet."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "Memuatkan Destinasi",
-      "message": "Mendapatkan data destinasi terkini..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "Gagal Memuatkan Destinasi",
-      "message": "Kami menghadapi masalah memuatkan data destinasi. Sila cuba lagi kemudian.",
-      "refresh": "Muat Semula Halaman"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "Tiada Destinasi Tersedia",
-      "message": "Tiada destinasi tersedia pada masa ini. Sila semak semula kemudian."
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "Daerah Dubai",
-    "subtitle": "Terokai kejiranan pelbagai Dubai",
-    "explore": "Terokai Daerah"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "Hartanah Dubai",
-    "subtitle": "Melabur untuk masa depan",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "Hartanah Dalam Pembinaan",
-      "subtitle": "Labur Awal, Bayar Kurang, Untung Lebih",
-      "findProperty": "Cari Hartanah Sempurna Saya",
-      "from": "Dari",
-      "paymentPlan": "Pelan Pembayaran",
-      "handover": "Serahan",
-      "developer": "Pemaju"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "Semua Hartanah",
-      "apartments": "Apartmen",
-      "villas": "Vila",
-      "townhouses": "Rumah Bandar",
-      "penthouses": "Penthouse"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "Kripto Diterima",
-      "paymentPlans": "Pelan Pembayaran Fleksibel",
-      "goldenVisa": "Layak Visa Emas",
-      "roiGuarantee": "Jaminan ROI"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "Cari tarikan, panduan, destinasi...",
-    "results": "Hasil Carian",
-    "noResults": "Tiada hasil dijumpai untuk",
-    "tryAgain": "Cuba kata kunci berbeza"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "Tentang Travi",
-    "aboutTravi": "Tentang Travi",
-    "aboutText": "Maklumat perjalanan lengkap untuk 17 destinasi di seluruh dunia.",
-    "aboutUs": "Tentang Kami",
-    "quickLinks": "Pautan Pantas",
-    "legal": "Undang-undang",
-    "privacy": "Dasar Privasi",
-    "privacyPolicy": "Dasar Privasi",
-    "terms": "Terma & Syarat",
-    "termsOfService": "Terma Perkhidmatan",
-    "contact": "Hubungi Kami",
-    "contactUs": "Hubungi Kami",
-    "followUs": "Ikuti Kami",
-    "explore": "Terokai",
-    "travel": "Perjalanan",
-    "company": "Syarikat",
-    "allGuides": "Semua Panduan",
-    "cookies": "Kuki",
-    "security": "Keselamatan",
-    "cookieSettings": "Tetapan Kuki",
-    "tagline": "Sumber Perjalanan Dipercayai Anda",
-    "ariaLabel": "Kaki halaman laman web",
-    "featuredGuides": "Panduan Pilihan",
-    "tools": "Alatan",
-    "currencyConverter": "Penukar Mata Wang",
-    "roiCalculator": "Kalkulator ROI",
-    "mortgageCalculator": "Kalkulator Gadai Janji",
-    "glossary": "Glosari",
-    "freeThingsToDo": "70+ Aktiviti Percuma",
-    "open24Hours": "Buka 24 Jam",
-    "tributeToSheikh": "Penghargaan kepada YAB Sheikh Mohammed",
-    "lawsForTourists": "Undang-undang untuk Pelancong",
-    "newsletter": "Langgan buletin kami",
-    "newsletterDescription": "Dapatkan tips perjalanan Dubai terkini dan kemaskini.",
-    "emailPlaceholder": "Masukkan e-mel anda",
-    "allRightsReserved": "Hak cipta terpelihara.",
-    "copyright": "© {{year}} {{brand}}. Hak cipta terpelihara.",
-    "emailAriaLabel": "Hantar e-mel kepada TRAVI"
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
+    "cookies": "Cookies",
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "Halaman Tidak Dijumpai",
-      "message": "Halaman yang anda cari tidak wujud.",
-      "button": "Ke Laman Utama"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "Ralat Pelayan",
-      "message": "Sesuatu tidak kena di pihak kami.",
-      "button": "Cuba Lagi"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "Ralat Sambungan",
-      "message": "Tidak dapat bersambung. Sila periksa sambungan internet anda.",
-      "button": "Cuba Semula"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "Sertai Pengembaraan",
-    "title": "Dapatkan Keajaiban Perjalanan dalam Peti Masuk Anda",
-    "description": "Tips mingguan, permata tersembunyi dan tawaran eksklusif - tiada spam, hanya keinginan mengembara.",
-    "emailPlaceholder": "anda@email.com",
-    "subscribe": "Langgan",
-    "success": "Anda telah dilanggan! Semak peti masuk anda."
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "Kami menghargai privasi anda",
-    "description": "Kami menggunakan kuki untuk meningkatkan pengalaman pelayaran anda, menganalisis trafik laman dan memperibadikan kandungan. Dengan mengklik \"Terima Semua\", anda bersetuju dengan penggunaan kuki kami.",
-    "manage": "Urus",
-    "rejectAll": "Tolak Semua",
-    "acceptAll": "Terima Semua",
-    "preferencesTitle": "Keutamaan Kuki",
-    "savePreferences": "Simpan Keutamaan",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "Kuki Penting",
-      "description": "Diperlukan untuk laman web berfungsi dengan betul"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "Kuki Analitik",
-      "description": "Membantu kami memahami bagaimana pelawat berinteraksi dengan laman web kami"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "Kuki Pemasaran",
-      "description": "Digunakan untuk menyampaikan iklan yang diperibadikan"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "Travi - Temui Dubai | Panduan Perjalanan Dubai Terbaik Anda",
-      "description": "Terokai tarikan, hotel, restoran dan kejiranan terbaik Dubai. Rancang perjalanan Dubai sempurna anda dengan tips orang dalam dan cadangan tempatan."
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "Tarikan Dubai | Aktiviti Teratas di Dubai",
-      "description": "Temui tarikan terbaik di Dubai - dari Burj Khalifa hingga permata tersembunyi. Rancang pengembaraan pelancongan Dubai anda."
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "Hotel Dubai | Tempat Penginapan Terbaik di Dubai",
-      "description": "Cari hotel sempurna di Dubai untuk sebarang bajet. Dari resort mewah hingga pilihan mesra bajet."
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "Restoran Dubai | Santapan Terbaik di Dubai",
-      "description": "Terokai adegan kulinari Dubai - santapan mewah, makanan jalanan dan semua di antaranya."
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Kecerdasan Perjalanan",
-      "headlinePart1": "Cerita Yang",
-      "headlinePart2": "Menggerakkan Anda",
-      "description": "Panduan pakar, perspektif orang dalam dan naratif editorial yang mengubah cara anda mengalami dunia.",
-      "startJourney": "Mulakan Perjalanan Anda",
-      "browseCollection": "Layari Koleksi",
-      "issueBadge": "Edisi 47 — Musim Sejuk 2026"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "Panduan Perjalanan",
-      "destinations": "Destinasi",
-      "languages": "Bahasa"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "Perjalanan Anda, Panduan Kami",
-      "title": "Setiap Perjalanan Hebat Bermula dengan Panduan",
-      "subtitle": "Dari bermimpi hingga berkongsi, kami bersama anda di setiap langkah"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "Makmal Idea",
-      "title": "Inspirasi Terkurasi",
-      "readGuide": "Baca Panduan"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "Diperibadikan untuk Anda",
-      "title": "Apakah Jenis Pelancong Anda?",
-      "subtitle": "Pilih gaya perjalanan anda dan temui panduan yang dikurasi khas untuk anda",
-      "viewGuides": "Lihat Panduan {{type}}"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "Pencari Pengembaraan",
-        "description": "Pengalaman mendebarkan dan lonjakan adrenalin"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "Peneroka Budaya",
-        "description": "Seni, sejarah dan tradisi tempatan"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "Guru Relaksasi",
-        "description": "Retret kesejahteraan dan pelarian aman"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "Nomad Kulinari",
-        "description": "Perisa tempatan dan pengembaraan gastronomi"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "Pencari Kesejahteraan",
-        "description": "Relaksasi, spa dan retret penuh kesedaran"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "Pelancong Bijak",
-        "description": "Pengalaman maksimum, bajet minimum"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "Peneroka Solo",
-        "description": "Perjalanan bebas dan penemuan diri"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "Pakar Kemewahan",
-        "description": "Pengalaman premium dan kehidupan mewah"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Impian",
-        "subtitle": "Temui inspirasi",
-        "guides": [
-          "Panduan Destinasi",
-          "Esei Foto"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "Rancang",
-        "subtitle": "Petakan perjalanan anda",
-        "guides": [
-          "Perancangan Perjalanan",
-          "Keperluan Visa"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "Sedia",
-        "subtitle": "Bersedia untuk pergi",
-        "guides": [
-          "Senarai Pembungkusan",
-          "Tips Keselamatan"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "Alami",
-        "subtitle": "Jalani pengembaraan",
-        "guides": [
-          "Pandangan Tempatan",
-          "Permata Tersembunyi"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "Kongsi",
-        "subtitle": "Ceritakan kisah anda",
-        "guides": [
-          "Penulisan Perjalanan",
-          "Fotografi"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "Pelarian Hujung Minggu",
-      "offBeatenPath": "Luar Laluan Biasa",
-      "smartTravel": "Perjalanan Bijak",
-      "bucketList": "Senarai Impian",
-      "culinary": "Kulinari",
-      "natureWonder": "Alam Semula Jadi & Keajaiban"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "Panduan Perjalanan | Pandangan Destinasi Pakar",
-      "description": "Temui panduan perjalanan pakar, pandangan destinasi dan tips orang dalam dari rangkaian penulis perjalanan global kami. Rancang perjalanan sempurna anda hari ini."
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "Dari Editor Kami",
-      "title": "Ciri Editorial",
-      "readFull": "Baca Esei Penuh"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "Cerita Visual",
-      "title": "Destinasi yang Memberi Inspirasi",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "Bandar",
-        "mountains": "Gunung",
-        "beach": "Pantai",
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
         "safari": "Safari",
-        "nature": "Alam Semula Jadi"
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "Suara Pakar",
-      "title": "Temui Penulis Kami",
-      "subtitle": "Suara pakar di sebalik panduan perjalanan paling dipercayai kami",
-      "articleCount": "{{count}} Artikel",
-      "viewProfile": "Lihat Profil"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "Terokai mengikut Wilayah",
-      "title": "Panduan di Seluruh Dunia",
-      "subtitle": "Klik mana-mana destinasi untuk menemui liputan pakar kami",
-      "guidesAvailable": "{{count}} panduan tersedia",
-      "legendDestination": "Destinasi",
-      "legendHighlighted": "Disorot"
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "Sertai Perjalanan",
-      "title": "Cerita Perjalanan, Mingguan",
-      "description": "Inspirasi perjalanan terkurasi, tips pakar dan perspektif orang dalam dihantar ke peti masuk anda setiap minggu.",
-      "placeholder": "Masukkan e-mel anda",
-      "subscribe": "Langgan",
-      "subscribing": "Melanggan...",
-      "joinCount": "Sertai 50,000+ pelancong yang membaca ringkasan mingguan kami",
-      "invalidEmail": "Sila masukkan e-mel yang sah",
-      "successTitle": "Selamat datang ke perjalanan!",
-      "successDesc": "Anda kini dilanggan kepada ringkasan editorial kami."
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {
     "time": {
-      "recent": "Terkini",
-      "justNow": "Baru sahaja",
-      "minutesAgo": "{{count}}m lalu",
-      "hoursAgo": "{{count}}j lalu",
-      "daysAgo": "{{count}}h lalu",
-      "minRead": "{{count}} min baca"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "BERITA TRAVI",
-      "edition": "Edisi Antarabangsa",
-      "subscribe": "Langgan"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "Terkini"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "Cari berita seluruh dunia...",
-      "button": "Cari",
-      "title": "Cari",
-      "searching": "Mencari \"{{query}}\"..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "Semua Berita",
-      "world": "Dunia",
-      "business": "Perniagaan",
-      "culture": "Budaya",
-      "travel": "Perjalanan",
-      "tech": "Teknologi",
-      "opinion": "Pendapat"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "Belum Ada Artikel Berita",
-      "description": "Kami sedang berusaha membawakan berita dan pandangan perjalanan terkini kepada anda. Semak semula tidak lama lagi untuk kemaskini dari seluruh dunia.",
-      "exploreDestinations": "Terokai Destinasi",
-      "viewGuides": "Lihat Panduan Perjalanan"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "Cerita Teratas",
-      "editorialTeam": "Pasukan Editorial"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}} paparan",
-    "viewAll": "Lihat Semua",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "Berita Perjalanan | Cerita & Kemaskini Terkini",
-      "description": "Kekal dimaklumkan dengan berita perjalanan terkini, kemaskini destinasi dan pandangan industri dari seluruh dunia."
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "Juga Hari Ini",
-      "storiesCount": "{{count}} cerita",
-      "liveUpdates": "Kemaskini Langsung",
-      "trendingTopics": "Topik Trending",
-      "noTrending": "Tiada topik trending lagi. Semak semula tidak lama lagi!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "Cerita Teratas",
-      "opinion": "Pendapat & Analisis",
-      "moreOpinion": "Lebih Pendapat",
-      "worldwide": "Liputan Seluruh Dunia"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "Tingkap Anda ke Dunia",
-      "subtitle": "Berita dari setiap sudut dunia",
-      "storiesCount": "{{count}} cerita",
-      "comingSoon": "Akan datang"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "Kekal Dimaklumkan",
-      "description": "Dapatkan cerita teratas hari ini dihantar ke peti masuk anda setiap pagi. Sertai 50,000+ pembaca.",
-      "placeholder": "Masukkan e-mel anda",
-      "subscribe": "Langgan Percuma",
-      "noSpam": "Tiada spam. Berhenti langgan bila-bila masa.",
-      "successTitle": "Dilanggan!",
-      "successDesc": "Sila semak e-mel anda untuk mengesahkan langganan anda.",
-      "errorTitle": "Langganan gagal",
-      "errorDesc": "Sila cuba lagi kemudian.",
-      "invalidTitle": "E-mel tidak sah",
-      "invalidDesc": "Sila masukkan alamat e-mel yang sah."
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "Tentang TRAVI World | Sumber Perjalanan Dipercayai Anda",
-      "metaDescription": "Ketahui tentang TRAVI World - platform maklumat perjalanan bebas yang menyediakan panduan komprehensif untuk destinasi di seluruh dunia.",
-      "badge": "Tentang TRAVI World",
-      "title": "Temui",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "Sumber perjalanan dipercayai anda untuk meneroka destinasi di seluruh dunia dengan panduan komprehensif dan pandangan tempatan.",
-      "ctaExplore": "Terokai Destinasi",
-      "ctaContact": "Hubungi Kami",
-      "stats": {
-        "destinations": "Destinasi",
-        "articles": "Artikel",
-        "support": "Sokongan Perjalanan",
-        "coverage": "Liputan",
-        "cities": "16+ Bandar"
-      },
-      "whoWeAre": {
-        "title": "Siapa Kami"
-      },
-      "mission": {
-        "title": "Misi Kami"
-      },
-      "services": {
-        "badge": "Perkhidmatan Kami",
-        "title": "Apa Yang Kami Tawarkan"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "Panduan Destinasi",
-          "description": "Maklumat komprehensif tentang bandar dan wilayah di seluruh dunia"
-        },
-        "attractions": {
-          "title": "Maklumat Tarikan",
-          "description": "Butiran tentang tarikan wajib lawat dan pengalaman unik"
-        },
-        "hotels": {
-          "title": "Panduan Hotel",
-          "description": "Maklumat tentang pilihan penginapan untuk setiap bajet"
-        },
-        "restaurants": {
-          "title": "Cadangan Restoran",
-          "description": "Pilihan santapan untuk setiap citarasa dan keutamaan"
-        },
-        "articles": {
-          "title": "Artikel Perjalanan",
-          "description": "Tips, pandangan dan inspirasi perjalanan"
-        },
-        "news": {
-          "title": "Berita Perjalanan Terkini",
-          "description": "Kekal dimaklumkan dengan kemaskini perjalanan terkurasi"
-        }
-      },
-      "editorial": {
-        "title": "Kebebasan Editorial",
-        "affiliateTitle": "Pendedahan Afiliasi"
-      },
-      "values": {
-        "badge": "Asas Kami",
-        "title": "Nilai Kami",
-        "accuracy": {
-          "title": "Ketepatan",
-          "description": "Kami berusaha menyediakan maklumat tepat dan boleh dipercayai, mengemaskini kandungan kami secara berkala"
-        },
-        "transparency": {
-          "title": "Ketelusan",
-          "description": "Kami jelas tentang hubungan afiliasi kami dan cara kami beroperasi"
-        },
-        "userFocused": {
-          "title": "Fokus Pengguna",
-          "description": "Kandungan kami direka untuk membantu pelancong membuat keputusan bermaklumat"
-        }
-      },
-      "connect": {
-        "badge": "Mari Berhubung",
-        "title": "Hubungi Kami"
-      },
-      "company": {
-        "title": "Maklumat Syarikat",
-        "contactTitle": "Maklumat Hubungan",
-        "contactForm": "Borang Hubungan"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "Hubungi Kami | TRAVI World",
-      "metaDescription": "Hubungi TRAVI World. Kami mengalu-alukan maklum balas, soalan dan pertanyaan anda tentang perkhidmatan maklumat perjalanan kami.",
-      "badge": "Kami ingin mendengar daripada anda",
-      "titlePart1": "Mari",
-      "titlePart2": "Berhubung",
-      "subtitle": "Ada soalan tentang pengembaraan seterusnya? Kami di sini untuk membantu anda meneroka dunia dengan yakin.",
-      "cta": "Hantar mesej kepada kami",
-      "getInTouch": "Hubungi Kami",
-      "getInTouchSubtitle": "Pilih cara terbaik untuk menghubungi kami. Kami komited untuk memberi respons segera.",
-      "howCanWeHelp": "Bagaimana Kami Boleh Membantu?",
-      "howCanWeHelpSubtitle": "Kami di sini untuk membantu dengan sebarang soalan atau maklum balas yang mungkin anda ada tentang kandungan dan perkhidmatan perjalanan kami.",
-      "importantNote": "Nota Penting",
-      "importantNoteSubtitle": "Sila baca sebelum menghubungi kami",
-      "ourOffice": "Pejabat Kami",
-      "ourOfficeSubtitle": "Untuk surat-menyurat rasmi dan pertanyaan pos",
-      "travelCompanion": "Teman perjalanan anda",
-      "urgentNote": "Untuk perkara segera, sila sertakan {{urgentLabel}} dalam baris subjek e-mel anda. Kami mengutamakan respons berdasarkan sifat pertanyaan.",
-      "urgentLabel": "Segera",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "Pertanyaan Umum",
-          "description": "Soalan tentang panduan perjalanan dan kandungan kami"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "Pertanyaan Privasi",
-          "description": "Akses data, pemadaman dan permintaan privasi"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "Lawati Laman Web Kami",
-          "description": "Terokai destinasi dan inspirasi perjalanan"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "Masa Respons",
-          "description": "Kami bertujuan untuk memberi respons segera",
-          "action": "2-3 hari perniagaan"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "Pertanyaan umum tentang panduan perjalanan dan kandungan kami",
-        "feedback": "Maklum balas dan cadangan untuk penambahbaikan",
-        "reporting": "Melaporkan ralat kandungan atau maklumat lapuk",
-        "business": "Pertanyaan perniagaan dan perkongsian",
-        "media": "Pertanyaan media dan akhbar",
-        "privacy": "Permintaan berkaitan privasi (akses data, pemadaman, dll.)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "Dasar Privasi | TRAVI World",
-      "metaDescription": "Ketahui bagaimana TRAVI World mengumpul, menggunakan dan melindungi maklumat peribadi anda. Baca dasar privasi komprehensif kami.",
-      "badge": "Privasi Anda Penting",
-      "title": "Dasar Privasi",
-      "subtitle": "Kami komited untuk melindungi privasi anda dan bersikap telus tentang amalan data kami. Ketahui bagaimana TRAVI World mengumpul, menggunakan dan melindungi maklumat anda.",
-      "effectiveDate": "Tarikh Berkuat Kuasa: 1 Januari 2026",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "Perlindungan Data",
-          "description": "Data anda dilindungi"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "Pengumpulan Minimum",
-          "description": "Kami hanya mengumpul apa yang diperlukan"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "Ketelusan Penuh",
-          "description": "Jelas tentang amalan kami"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "Kawalan Anda",
-          "description": "Urus keutamaan anda"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "1. Siapa Kami",
-        "informationCollect": "2. Maklumat yang Kami Kumpul",
-        "howWeUse": "3. Bagaimana Kami Menggunakan Maklumat Anda",
-        "legalBasis": "4. Asas Undang-undang untuk Pemprosesan (GDPR)",
-        "cookies": "5. Kuki dan Teknologi Penjejakan",
-        "thirdParty": "6. Perkhidmatan Pihak Ketiga",
-        "aiContent": "7. Kandungan Dijana AI",
-        "internationalTransfers": "8. Pemindahan Data Antarabangsa",
-        "dataRetention": "9. Penyimpanan Data",
-        "privacyRights": "10. Hak Privasi Anda",
-        "californiaRights": "11. Hak Privasi California (CCPA/CPRA)",
-        "childrenPrivacy": "12. Privasi Kanak-kanak",
-        "dataSecurity": "13. Keselamatan Data",
-        "changes": "14. Perubahan kepada Dasar Ini",
-        "contactUs": "15. Hubungi Kami"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "Terma & Syarat | TRAVI World",
-      "metaDescription": "Baca terma dan syarat untuk menggunakan perkhidmatan maklumat perjalanan TRAVI World. Perjanjian undang-undang antara anda dan KBR Global Creative Consulting Ltd.",
-      "badge": "Perjanjian Undang-undang",
-      "title": "Terma & Syarat",
-      "subtitle": "Sila baca terma ini dengan teliti sebelum menggunakan TRAVI World. Akses dan penggunaan platform kami adalah tertakluk kepada syarat-syarat ini.",
-      "lastUpdated": "Kemaskini terakhir: 1 Januari 2026",
-      "importantNotice": "Notis Undang-undang Penting",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "Platform Editorial",
-          "description": "Panduan perjalanan & kandungan destinasi"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "Pautan Afiliasi",
-          "description": "Cadangan berasaskan komisen"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "Dijana AI",
-          "description": "Kandungan dicipta dengan bantuan AI"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "Privasi Anda",
-          "description": "Perlindungan data dijamin"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "Pengendali / Entiti Undang-undang",
-        "purpose": "1. Tujuan & Skop Penggunaan",
-        "affiliateDisclosure": "2. Pendedahan Afiliasi & Transaksi Pihak Ketiga",
-        "aiDisclaimer": "3. Penafian Kandungan Dijana AI",
-        "newsletter": "4. Buletin & Komunikasi",
-        "userConduct": "5. Kelakuan Pengguna & Tindakan Dilarang",
-        "intellectualProperty": "6. Harta Intelek & Lesen Terhad",
-        "dmca": "7. Notis-dan-Takedown (DMCA & Serupa)",
-        "disclaimers": "8. Ketepatan, Ketersediaan & Penafian",
-        "liability": "9. Had Liabiliti & Force Majeure",
-        "indemnification": "10. Ganti Rugi",
-        "privacyCookies": "11. Privasi, Kuki & Perlindungan Data",
-        "accessibility": "12. Kenyataan Kebolehcapaian",
-        "governingLaw": "13. Undang-undang yang Mentadbir, Penyelesaian Pertikaian & Bidang Kuasa",
-        "modifications": "14. Pengubahsuaian, Kebolehpisahan & Peruntukan Umum"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }

@@ -1,1132 +1,1004 @@
 {
   "nav": {
-    "home": "Hem",
-    "destinations": "Destinationer",
-    "attractions": "Attraktioner",
-    "hotels": "Hotell",
-    "guides": "Reseguider",
-    "dining": "Restauranger",
-    "districts": "Stadsdelar",
-    "articles": "Nyheter",
-    "news": "Nyheter",
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
     "shopping": "Shopping",
-    "realEstate": "Fastigheter",
-    "events": "Evenemang",
-    "search": "Sök",
-    "language": "Språk",
-    "mainNavigation": "Huvudnavigering",
-    "openMenu": "Öppna meny",
-    "closeMenu": "Stäng meny",
-    "logoAlt": "TRAVI - Reseguide",
-    "followInstagram": "Följ TRAVI på Instagram",
-    "followTikTok": "Följ TRAVI på TikTok",
-    "changeLanguage": "Ändra språk",
-    "selectLanguage": "Välj språk",
-    "popularLanguages": "Populära språk",
-    "allLanguages": "Alla språk"
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "Brödsmulnavigering",
+    "ariaLabel": "Breadcrumb navigation",
     "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Läs Mer",
-    "viewAll": "Visa Alla",
-    "learnMore": "Läs Mer",
-    "bookNow": "Boka Nu",
-    "contactUs": "Kontakta Oss",
-    "subscribe": "Prenumerera",
-    "submit": "Skicka",
-    "cancel": "Avbryt",
-    "save": "Spara",
-    "edit": "Redigera",
-    "delete": "Ta Bort",
-    "loading": "Laddar...",
-    "error": "Något gick fel",
-    "noResults": "Inga resultat hittades",
-    "seeMore": "Se Mer",
-    "back": "Tillbaka",
-    "next": "Nästa",
-    "previous": "Föregående",
-    "close": "Stäng",
-    "share": "Dela",
-    "copyLink": "Kopiera Länk",
-    "copied": "Kopierat!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "Upptäck Världen med TRAVI",
-      "subtitle": "Er kompletta reseguide till 17 destinationer världen över",
-      "searchPlaceholder": "Sök attraktioner, hotell, restauranger...",
-      "cta": "Börja Utforska",
-      "badge": "Er Port till Världsäventyr",
-      "headlinePart1": "Er Pålitliga",
-      "headlinePart2": "Resekälla",
-      "description": "Omfattande reseinformation för {{destinations}} destinationer världen över. Upptäck detaljerade guider för {{attractions}}+ attraktioner.",
-      "descriptionPart1": "Omfattande reseinformation för",
-      "descriptionPart2": "destinationer världen över. Upptäck detaljerade guider för",
-      "descriptionPart3": "attraktioner.",
-      "carouselLabel": "Destinationskarusell navigering",
-      "viewDestination": "Visa {{name}} - {{tagline}}",
-      "worldwide": "Världen över",
-      "exploreWorld": "Utforska Världen",
-      "welcomeAriaLabel": "Välkommen till TRAVI World",
-      "pageTitle": "TRAVI World - Reseguider för Hotell, Attraktioner och Aktiviteter",
-      "pageDescription": "Er kompletta reseguide för 17 destinationer världen över. Expertinformation om hotell, attraktioner, restauranger och aktiviteter för 3 000+ platser.",
-      "orgDescription": "Er pålitliga resekälla för 17 destinationer världen över."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "Över {{count}} attraktioner täckta",
-      "destinations": "{{count}} destinationer världen över",
-      "languages": "Flerspråkig plattform med fler språk på väg"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "Utvalda",
-    "trending": "Populärt Nu",
-    "topAttractions": "Topp Attraktioner",
-    "bestHotels": "Bästa Hotellen",
-    "latestNews": "Senaste Nytt och Guider",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "Utforska Destinationer",
-      "destinationsDesc": "Upptäck vår noggrant utvalda samling av globala resmål",
-      "categories": "Bläddra efter Kategori",
-      "categoriesDesc": "Hitta exakt det ni söker",
-      "experiences": "Res efter Upplevelse",
-      "experiencesDesc": "Välj er resstil",
-      "faq": "Vanliga Frågor",
-      "faqDesc": "Allt ni behöver veta om TRAVI",
-      "regions": "Utforska efter Region",
-      "newsletter": "Håll Er Uppdaterade",
-      "allDestinationsTitle": "Reseguider för Alla {{count}} Destinationer",
-      "completeGuide": "{{name}}, {{country}} - Komplett Reseguide"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "Utforska Destinationer",
-      "viewGuides": "Visa Guider",
-      "viewAll": "Visa Alla",
-      "startExploring": "Börja Utforska",
-      "planTrip": "Planera Er Resa",
-      "viewExperience": "Visa {{name}}"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "DESTINATIONER",
-      "attractions": "ATTRAKTIONER",
-      "languages": "SPRÅK",
-      "attractionsNum": "3 000+",
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
+      "attractionsNum": "3,000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} destinationer",
-      "attractionsCountWithLabel": "{{count}}+ attraktioner"
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "Attraktioner",
-      "attractionsDesc": "Måste-se platser",
-      "news": "Resenyheter",
-      "newsDesc": "Senaste uppdateringarna",
-      "guides": "Guider",
-      "guidesDesc": "Destinationsguider",
-      "hotels": "Hotell",
-      "hotelsDesc": "Hitta ert perfekta boende"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "Lyxresor",
-      "luxuryDesc": "Premium reseupplevelser och exklusiva destinationer",
-      "adventure": "Äventyr och Natur",
-      "adventureDesc": "Spännande utomhusaktiviteter och äventyr",
-      "family": "Familjeresor",
-      "familyDesc": "Familjevänliga destinationer och aktiviteter",
-      "budget": "Budgetresor",
-      "budgetDesc": "Prisvärda resealternativ och destinationer",
-      "romance": "Bröllopsresa och Romantik",
-      "romanceDesc": "Romantiska utflykter och bröllopsdestinationer",
-      "solo": "Soloresor",
-      "soloDesc": "Perfekta destinationer för ensamma resenärer"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "Vanliga Frågor",
-      "subtitle": "Allt ni behöver veta om TRAVI World",
-      "whatIsTravi": "Vad är TRAVI World?",
-      "whatIsTraviAnswer": "TRAVI World är en omfattande reseinformationsplattform som täcker 17 destinationer världen över med detaljerade guider för 3 000+ attraktioner, hotell, restauranger och aktiviteter.",
-      "howManyDestinations": "Hur många destinationer täcker TRAVI?",
-      "howManyDestinationsAnswer": "TRAVI World täcker 17 stora resmål inklusive Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami och Rome.",
-      "isFree": "Är TRAVI World gratis att använda?",
-      "isFreeAnswer": "Ja, TRAVI World är helt gratis att använda. Bläddra igenom tusentals reseguider, attraktionsrecensioner, hotellrekommendationer och restaurangförslag utan kostnad.",
-      "updateFrequency": "Hur ofta uppdateras innehållet?",
-      "updateFrequencyAnswer": "TRAVI World-innehåll uppdateras dagligen med de senaste resenyheterna, nya attraktionsrecensioner och uppdaterad information om hotell och restauranger i alla 17 destinationer."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "TRAVI-maskot med världsberömda landmärken - upptäck reseguider för Dubai, Paris, London, Rome och mer",
-    "mascotTitle": "TRAVI World - Reseguider för Globala Destinationer"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "Attraktioner",
-    "subtitle": "Upptäck ikoniska landmärken och dolda pärlor",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{count}} attraktioner i {{cities}} städer",
-      "badgeThousands": "Tusentals attraktioner världen över",
-      "headlinePart1": "Saker att Göra",
-      "headlinePart2": "Världen Över",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Slipp-kön biljetter</span> till Eiffeltornet, Colosseum, Burj Khalifa och toppattraktioner i Paris, Rome, Dubai och mer.",
-      "searchPlaceholder": "Sök Eiffeltornet, Colosseum, Burj Khalifa...",
-      "carouselLabel": "Karusell med utvalda attraktioner",
-      "sectionLabel": "Boka biljetter till toppattraktioner världen över",
-      "searchAriaLabel": "Sök attraktioner efter namn eller stad",
-      "searchButton": "Sök",
-      "searchButtonAriaLabel": "Sök attraktioner"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "ATTRAKTIONER",
-      "cities": "STÄDER",
-      "rating": "BETYG"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "Över {{count}} attraktioner",
-      "cities": "{{count}} städer",
-      "rating": "{{rating}} stjärnors betyg"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "Alla Typer",
-      "museums": "Museer",
-      "landmarks": "Landmärken",
-      "tours": "Turer",
-      "themeParks": "Nöjesparker",
-      "shows": "Shower"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "Saker att göra i {{name}}",
-    "countAttractions": "{{country}} - {{count}} attraktioner",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "Alla",
-      "popular": "Mest Populära",
-      "free": "Gratis Inträde",
-      "familyFriendly": "Familjevänligt",
-      "outdoor": "Utomhus",
-      "indoor": "Inomhus"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "Plats",
-      "hours": "Öppettider",
-      "price": "Pris",
-      "duration": "Längd",
-      "tips": "Insidertips"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "Utforska Attraktioner efter Destination",
-      "destinationsDesc": "Välj en stad för att upptäcka fantastiska saker att göra",
-      "faq": "Vanliga Frågor",
-      "faqDesc": "Få svar om att boka attraktioner världen över",
-      "whyBookBadge": "Varför Boka hos Oss",
-      "whyBookTitle": "Slipp Köerna, Spara Tid",
-      "whyBookDesc": "Boka biljetter i förväg och njut av problemfritt inträde till toppattraktioner",
-      "allDestinations": "Alla Destinationer"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "Slipp-Kön Biljetter",
-      "skipTheLineDesc": "Gå förbi köerna vid Eiffeltornet, Colosseum, Vatikanen och mer",
-      "mobileTickets": "Mobila Biljetter",
-      "mobileTicketsDesc": "Direkt leverans till din telefon - visa biljetten och gå in",
-      "freeCancellation": "Gratis Avbokning",
-      "freeCancellationDesc": "Ändrade planer? Avboka upp till 24 timmar innan för full återbetalning"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "Saker att Göra efter Destination",
-      "desc": "Hitta attraktioner och upplevelser i världens toppstäder",
-      "thingsToDo": "{{count}} saker att göra",
-      "noDestinations": "Inga destinationer tillgängliga för tillfället."
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "Utforska Fler Reseguider",
-      "hotelsWorldwide": "Hotell Världen Över",
-      "bestRestaurants": "Bästa Restaurangerna",
-      "travelNews": "Resenyheter"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "Redo att Utforska?",
-      "desc": "Boka slipp-kön biljetter till Eiffeltornet, Colosseum, Burj Khalifa och toppattraktioner världen över.",
-      "parisAttractions": "Paris Attraktioner",
-      "romeAttractions": "Rome Attraktioner"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
-      "popular": "Populärt:",
-      "thingsToDoIn": "Saker att göra i {{city}}",
-      "ariaCarouselNav": "Attraktionskarusell navigering",
-      "ariaViewInCity": "Visa {{name}} i {{city}}"
+      "popular": "Popular:",
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Utvald attraktion",
-      "ariaThumbnails": "Attraktionskarusell miniatyrbilder",
-      "ariaTicketsIn": "{{name}} biljetter i {{city}}",
-      "priceFrom": "Från",
-      "bookTickets": "Boka Biljetter",
-      "skipTheLine": "Slipp Kön",
-      "duration": "2-3 timmar",
-      "freeCancellation": "Gratis Avbokning",
-      "freeCancellationDesc": "24 tim före besök",
-      "mobileTickets": "Mobila Biljetter",
-      "instantDelivery": "Omedelbar leverans"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}} saker att göra"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "Hotell",
-    "subtitle": "Hitta ert perfekta boende",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "Alla Hotell",
-      "luxury": "Lyx",
-      "budget": "Budgetvänligt",
-      "beachfront": "Vid Stranden",
-      "cityCenter": "Centrum",
-      "familyFriendly": "Familjevänligt"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "Från",
-      "perNight": "per natt",
-      "amenities": "Bekvämligheter",
-      "checkIn": "Incheckning",
-      "checkOut": "Utcheckning",
-      "rooms": "Rum",
-      "rating": "Betyg"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "Boka Nu"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "Restauranger",
-    "subtitle": "Kulinariska upplevelser för alla smaker",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "Alla Restauranger",
+      "all": "All Restaurants",
       "fineDining": "Fine Dining",
       "casual": "Casual Dining",
-      "cafes": "Kaféer",
+      "cafes": "Cafes",
       "streetFood": "Street Food",
       "halal": "Halal",
-      "vegetarian": "Vegetariskt"
+      "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "Kök",
-      "priceRange": "Prisklass",
-      "hours": "Öppettider",
-      "dress": "Klädkod",
-      "reservations": "Reservationer"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "Dubai",
-        "country": "Förenade Arabemiraten",
-        "cardAlt": "Dubai skyline med Burj Khalifa vid solnedgång"
-      },
-      "london": {
-        "name": "London",
-        "country": "Storbritannien",
-        "cardAlt": "London Big Ben och Houses of Parliament"
-      },
-      "paris": {
-        "name": "Paris",
-        "country": "Frankrike",
-        "cardAlt": "Paris Eiffeltornet upplyst vid solnedgång"
-      },
-      "newYork": {
-        "name": "New York",
-        "country": "USA",
-        "cardAlt": "New York Manhattan skyline med Empire State Building"
-      },
-      "tokyo": {
-        "name": "Tokyo",
-        "country": "Japan",
-        "cardAlt": "Tokyo Shibuya korsning neonljus nattetid"
-      },
-      "singapore": {
-        "name": "Singapore",
-        "country": "Singapore",
-        "cardAlt": "Singapore Marina Bay Sands och Gardens by the Bay"
-      },
-      "barcelona": {
-        "name": "Barcelona",
-        "country": "Spanien",
-        "cardAlt": "Barcelona Sagrada Familia vid gyllene timmen"
-      },
-      "bangkok": {
-        "name": "Bangkok",
-        "country": "Thailand",
-        "cardAlt": "Bangkok Grand Palace tempel vid soluppgång"
-      },
-      "abuDhabi": {
-        "name": "Abu Dhabi",
-        "country": "Förenade Arabemiraten",
-        "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque"
-      },
-      "amsterdam": {
-        "name": "Amsterdam",
-        "country": "Nederländerna",
-        "cardAlt": "Amsterdam kanal med historiska byggnader"
-      },
-      "hongKong": {
-        "name": "Hong Kong",
-        "country": "Kina",
-        "cardAlt": "Hong Kong skyline nattetid"
-      },
-      "istanbul": {
-        "name": "Istanbul",
-        "country": "Turkiet",
-        "cardAlt": "Istanbul Blå Moskén vid solnedgång"
-      },
-      "lasVegas": {
-        "name": "Las Vegas",
-        "country": "USA",
-        "cardAlt": "Las Vegas Strip nattetid"
-      },
-      "losAngeles": {
-        "name": "Los Angeles",
-        "country": "USA",
-        "cardAlt": "Los Angeles Hollywood-skylten"
-      },
-      "miami": {
-        "name": "Miami",
-        "country": "USA",
-        "cardAlt": "Miami Beach Art Deco-distriktet"
-      },
-      "rome": {
-        "name": "Rome",
-        "country": "Italien",
-        "cardAlt": "Rome Colosseum vid gyllene timmen"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "{{count}} Destinationer Världen Över",
-      "trustedBy": "Litad på av {{count}} destinationer världen över",
-      "discover": "Upptäck",
-      "worldClass": "Världsklass",
-      "destinations": "Destinationer",
-      "description": "Noggrant utvalda reseguider med lokal expertis för världens mest fängslande städer. Från ikoniska landmärken till dolda pärlor.",
-      "exploreAll": "Utforska Alla Destinationer",
-      "travelGuides": "Reseguider",
-      "explorePlaceholder": "Utforska Destinationer",
-      "browseCollection": "Bläddra i vår samling av handplockade resmål nedan",
-      "explore": "Utforska",
-      "discoverButton": "Upptäck",
-      "ariaLabel": "Översikt av destinationer",
-      "exploreTitle": "Utforska {{name}}",
-      "galleryAriaLabel": "Galleri med utvalda destinationer",
-      "placeholderAriaLabel": "Platshållare för utvald destination"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "DESTINATIONER",
-      "countries": "LÄNDER",
-      "regions": "Regioner",
-      "languages": "Språk"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "Utvalda Destinationer",
-      "featuredDesc": "Handplockade destinationer med exceptionella upplevelser, lokala insikter och allt ni behöver för att planera er perfekta resa.",
-      "all": "Alla Destinationer",
-      "count": "{{count}} destinationer hittades"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "Sök destinationer...",
-      "noResults": "Inga destinationer hittades",
-      "tryAdjusting": "Försök justera era sökkriterier",
-      "clearSearch": "Rensa Sökning"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "Karusell med utvalda destinationer",
-      "previous": "Föregående destination",
-      "next": "Nästa destination",
-      "goTo": "Gå till {{name}}",
-      "slideOf": "Bild {{current}} av {{total}}: {{name}}",
-      "thumbnails": "Destinationskarusell miniatyrbilder"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "Utforska",
-      "defaultLevel": "Stad",
-      "exploreFallback": "Utforska {{name}}",
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
       "destination": "Destination",
-      "travelGuideAlt": "{{name}} reseguide"
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "Vanliga Frågor",
-      "subtitle": "Allt om TRAVI destinationsguider",
-      "q1": "Hur många destinationer täcker TRAVI?",
-      "a1": "TRAVI täcker stora resmål i Mellanöstern, Europa, Asien och Amerika med omfattande guider för varje plats.",
-      "q2": "Vilken information ingår i TRAVI destinationsguider?",
-      "a2": "Varje destinationsguide innehåller detaljerade beskrivningar av attraktioner, boendealternativ, lokal mat, transporttips och praktisk reseinformation.",
-      "q3": "Kan jag söka efter destinationer?",
-      "a3": "Ja, TRAVI låter er söka destinationer efter namn eller land via sökfältet på destinationssidan.",
-      "q4": "Vilka är de utvalda destinationerna på TRAVI?",
-      "a4": "TRAVIs utvalda destinationer är handplockade platser som erbjuder exceptionella upplevelser för resenärer med olika intressen, från lyx till budgetresor."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "Laddar Destinationer",
-      "message": "Hämtar senaste destinationsdata..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "Kan Inte Ladda Destinationer",
-      "message": "Vi har problem med att ladda destinationsdata. Försök igen senare.",
-      "refresh": "Uppdatera Sidan"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "Inga Destinationer Tillgängliga",
-      "message": "Det finns inga tillgängliga destinationer för tillfället. Kom tillbaka senare."
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "Stadsdelar",
-    "subtitle": "Utforska olika stadsdelar",
-    "explore": "Utforska Stadsdel"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "Fastigheter",
-    "subtitle": "Investera i framtiden",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "Nybyggnadsprojekt",
-      "subtitle": "Investera Tidigt, Betala Mindre, Vinn Mer",
-      "findProperty": "Hitta Min Perfekta Fastighet",
-      "from": "Från",
-      "paymentPlan": "Betalningsplan",
-      "handover": "Överlämning",
-      "developer": "Utvecklare"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "Alla Fastigheter",
-      "apartments": "Lägenheter",
-      "villas": "Villor",
-      "townhouses": "Radhus",
-      "penthouses": "Takvåningar"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "Krypto Accepteras",
-      "paymentPlans": "Flexibla Betalningsplaner",
-      "goldenVisa": "Golden Visa Berättigad",
-      "roiGuarantee": "ROI Garanti"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "Sök attraktioner, guider, destinationer...",
-    "results": "Sökresultat",
-    "noResults": "Inga resultat hittades för",
-    "tryAgain": "Prova andra sökord"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "Om TRAVI",
-    "aboutTravi": "Om TRAVI",
-    "aboutText": "Omfattande reseinformation för 17 destinationer världen över.",
-    "aboutUs": "Om Oss",
-    "quickLinks": "Snabblänkar",
-    "legal": "Juridiskt",
-    "privacy": "Integritetspolicy",
-    "privacyPolicy": "Integritetspolicy",
-    "terms": "Villkor",
-    "termsOfService": "Användarvillkor",
-    "contact": "Kontakt",
-    "contactUs": "Kontakta Oss",
-    "followUs": "Följ Oss",
-    "explore": "Utforska",
-    "travel": "Resa",
-    "company": "Företag",
-    "allGuides": "Alla Guider",
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
     "cookies": "Cookies",
-    "security": "Säkerhet",
-    "cookieSettings": "Cookie-inställningar",
-    "tagline": "Er Pålitliga Resekälla",
-    "ariaLabel": "Sidfot",
-    "featuredGuides": "Utvalda Guider",
-    "tools": "Verktyg",
-    "currencyConverter": "Valutaomvandlare",
-    "roiCalculator": "ROI Kalkylator",
-    "mortgageCalculator": "Bolånekalkylator",
-    "glossary": "Ordlista",
-    "freeThingsToDo": "70+ Gratis Aktiviteter",
-    "open24Hours": "Öppet 24 Timmar",
-    "tributeToSheikh": "Hyllning till HH Sheikh Mohammed",
-    "lawsForTourists": "Lagar för Turister",
-    "newsletter": "Prenumerera på vårt nyhetsbrev",
-    "newsletterDescription": "Få de senaste resetipsen och uppdateringarna.",
-    "emailPlaceholder": "Ange er e-post",
-    "allRightsReserved": "Alla rättigheter förbehållna.",
-    "copyright": "© {{year}} {{brand}}. Alla rättigheter förbehållna.",
-    "emailAriaLabel": "Skicka e-post till TRAVI"
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "Sidan Hittades Inte",
-      "message": "Sidan ni letar efter existerar inte.",
-      "button": "Till Startsidan"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "Serverfel",
-      "message": "Något gick fel på vår sida.",
-      "button": "Försök Igen"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "Anslutningsfel",
-      "message": "Kan inte ansluta. Kontrollera er internetanslutning.",
-      "button": "Försök Igen"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "Gå Med i Äventyret",
-    "title": "Få Resemagi i Er Inkorg",
-    "description": "Veckotips, dolda pärlor och exklusiva erbjudanden - ingen spam, bara reslust.",
-    "emailPlaceholder": "er@email.se",
-    "subscribe": "Prenumerera",
-    "success": "Ni är prenumerant! Kolla er inkorg."
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "Vi värdesätter er integritet",
-    "description": "Vi använder cookies för att förbättra er surfupplevelse, analysera trafik och anpassa innehåll. Genom att klicka på \"Acceptera Alla\" samtycker ni till vår användning av cookies.",
-    "manage": "Hantera",
-    "rejectAll": "Avvisa Alla",
-    "acceptAll": "Acceptera Alla",
-    "preferencesTitle": "Cookie-preferenser",
-    "savePreferences": "Spara Preferenser",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "Nödvändiga Cookies",
-      "description": "Krävs för att webbplatsen ska fungera korrekt"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "Analys Cookies",
-      "description": "Hjälper oss förstå hur besökare interagerar med vår webbplats"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "Marknadsföring Cookies",
-      "description": "Används för att leverera anpassade annonser"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "TRAVI - Upptäck Världen | Er Ultimata Reseguide",
-      "description": "Upptäck de bästa attraktionerna, hotellen, restaurangerna och stadsdelarna. Planera er perfekta resa med insidertips och lokala rekommendationer."
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "Attraktioner | Topp Saker att Se",
-      "description": "Upptäck de bästa attraktionerna - från Eiffeltornet till dolda pärlor. Planera ert besök."
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "Hotell | Bästa Boenden",
-      "description": "Hitta det perfekta hotellet för varje budget. Från lyxresorter till budgetvänliga alternativ."
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "Restauranger | Bästa Matställen",
-      "description": "Upptäck den kulinariska scenen - fine dining, street food och allt däremellan."
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Reseintelligens",
-      "headlinePart1": "Berättelser som",
-      "headlinePart2": "Berör",
-      "description": "Expertutformade guider, insiderperspektiv och redaktionella berättelser som förändrar hur ni upplever världen.",
-      "startJourney": "Börja Er Resa",
-      "browseCollection": "Bläddra i Samlingen",
-      "issueBadge": "Utgåva 47 — Vinter 2026"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "Reseguider",
-      "destinations": "Destinationer",
-      "languages": "Språk"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "Er Resa, Vår Vägledning",
-      "title": "Varje Fantastisk Resa Börjar med en Guide",
-      "subtitle": "Från drömmar till minnen, vi är med er varje steg"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "Idélabb",
-      "title": "Inspiration för Ert Nästa Äventyr",
-      "subtitle": "Upptäck destinationer som passar er resstil",
-      "readGuide": "Läs Guide"
-    },
-    "curatedGuides": {
-      "badge": "Utvalda Guider",
-      "title": "Handplockade Resamlingar",
-      "subtitle": "Tematiska guider för varje resenär"
-    },
-    "localVoices": {
-      "badge": "Lokala Röster",
-      "title": "Insikter från Lokala Experter",
-      "subtitle": "Autentiska perspektiv från människor som känner dessa städer"
-    },
-    "travelTools": {
-      "badge": "Reseverktyg",
-      "title": "Verktyg för Er Resa",
-      "subtitle": "Allt ni behöver för att planera och boka"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "Personligt för Er",
-      "title": "Vilken Typ av Resenär Är Ni?",
-      "subtitle": "Välj er resstil och upptäck guider anpassade just för er",
-      "viewGuides": "Visa {{type}} Guider"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "Äventyrssökare",
-        "description": "Spännande upplevelser och adrenalinkickar"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "Kulturupptäckare",
-        "description": "Konst, historia och lokala traditioner"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "Avkopplingsguru",
-        "description": "Wellnessresorter och fridfulla utflykter"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "Kulinarisk Nomad",
-        "description": "Lokala smaker och gastronomiska äventyr"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "Wellnesssökare",
-        "description": "Avkoppling, spa och mindful retreats"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "Smart Resenär",
-        "description": "Maximal upplevelse, minimal budget"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "Soloutforskare",
-        "description": "Självständiga resor och självupptäckt"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "Lyxkännare",
-        "description": "Premiumupplevelser och förfinat liv"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Dröm",
-        "subtitle": "Upptäck inspiration",
-        "guides": [
-          "Destinationsguider",
-          "Fotoessäer"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "Planera",
-        "subtitle": "Kartlägg er resa",
-        "guides": [
-          "Reseplanering",
-          "Visumkrav"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "Förbered",
-        "subtitle": "Gör er redo",
-        "guides": [
-          "Packlistor",
-          "Säkerhetstips"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "Upplev",
-        "subtitle": "Lev äventyret",
-        "guides": [
-          "Lokala Insikter",
-          "Dolda Pärlor"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "Dela",
-        "subtitle": "Berätta er historia",
-        "guides": [
-          "Reseskrivande",
-          "Fotografi"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "Helgutflykter",
-      "offBeatenPath": "Utanför Allfarvägarna",
-      "smartTravel": "Smart Resande",
-      "bucketList": "Bucketlist",
-      "culinary": "Kulinariskt",
-      "natureWonder": "Natur och Under"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "Reseguider | Expertinsikter om Destinationer",
-      "description": "Upptäck expertreseguider, destinationsinsikter och insidertips från vårt globala nätverk av reseskribenter. Planera er perfekta resa idag."
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "Från Vår Redaktion",
-      "title": "Redaktionella Artiklar",
-      "readFull": "Läs Hela Essän"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "Visuella Berättelser",
-      "title": "Destinationer Som Inspirerar",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "Stad",
-        "mountains": "Berg",
-        "beach": "Strand",
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
         "safari": "Safari",
-        "nature": "Natur"
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "Expertröster",
-      "title": "Träffa Våra Skribenter",
-      "subtitle": "Expertrösterna bakom våra mest pålitliga reseguider",
-      "articleCount": "{{count}} Artiklar",
-      "viewProfile": "Visa Profil"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "Utforska efter Region",
-      "title": "Guider Över Hela Världen",
-      "subtitle": "Klicka på valfri destination för att upptäcka vår expertis",
-      "guidesAvailable": "{{count}} guider tillgängliga",
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
       "legendDestination": "Destination",
-      "legendHighlighted": "Markerad"
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "Gå Med i Resan",
-      "title": "Reseberättelser, Varje Vecka",
-      "description": "Noggrant utvald reseinspiration, experttips och insiderperspektiv levererade till er inkorg varje vecka.",
-      "placeholder": "Ange er e-post",
-      "subscribe": "Prenumerera",
-      "subscribing": "Prenumererar...",
-      "joinCount": "Gå med i 50 000+ resenärer som läser vårt veckodigest",
-      "invalidEmail": "Ange en giltig e-postadress",
-      "successTitle": "Välkommen till resan!",
-      "successDesc": "Ni är nu prenumerant på vårt redaktionella nyhetsbrev."
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
-  },
-  "destination": {
-    "overview": "Översikt",
-    "attractions": "Attraktioner",
-    "hotels": "Hotell",
-    "dining": "Restauranger",
-    "districts": "Stadsdelar",
-    "events": "Evenemang",
-    "travelTips": "Resetips",
-    "weather": "Väder",
-    "currency": "Valuta",
-    "language": "Språk",
-    "timezone": "Tidszon",
-    "bestTimeToVisit": "Bästa Tiden att Besöka",
-    "gettingAround": "Transportera Sig",
-    "safetyTips": "Säkerhetstips",
-    "localCustoms": "Lokala Seder",
-    "usefulPhrases": "Användbara Fraser",
-    "emergencyNumbers": "Nödnummer",
-    "visaInfo": "Visuminformation",
-    "healthInfo": "Hälsoinformation"
-  },
-  "soon": "Kommer Snart",
-  "accessibility": {
-    "skipToContent": "Hoppa till innehåll",
-    "mainContent": "Huvudinnehåll",
-    "navigation": "Navigering",
-    "openInNewTab": "Öppnas i ny flik",
-    "externalLink": "Extern länk"
-  },
-  "time": {
-    "today": "Idag",
-    "yesterday": "Igår",
-    "daysAgo": "{{count}} dagar sedan",
-    "hoursAgo": "{{count}} timmar sedan",
-    "minutesAgo": "{{count}} minuter sedan",
-    "justNow": "Just nu"
-  },
-  "validation": {
-    "required": "Detta fält är obligatoriskt",
-    "email": "Ange en giltig e-postadress",
-    "minLength": "Minst {{count}} tecken krävs",
-    "maxLength": "Högst {{count}} tecken tillåtna"
   },
   "news": {
     "time": {
-      "recent": "Senaste",
-      "justNow": "Just nu",
-      "minutesAgo": "{{count}} min sedan",
-      "hoursAgo": "{{count}} tim sedan",
-      "daysAgo": "{{count}} dagar sedan",
-      "minRead": "{{count}} min läsning"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "TRAVI NYHETER",
-      "edition": "Internationell Utgåva",
-      "subscribe": "Prenumerera"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "Senaste Nytt"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "Sök världsnyheter...",
-      "button": "Sök",
-      "title": "Sök",
-      "searching": "Söker efter \"{{query}}\"..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "Alla Nyheter",
-      "world": "Världen",
-      "business": "Affärer",
-      "culture": "Kultur",
-      "travel": "Resor",
-      "tech": "Teknik",
-      "opinion": "Åsikt"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "Inga Nyhetsartiklar Ännu",
-      "description": "Vi arbetar på att ge er de senaste resenyheterna och insikterna. Kom tillbaka snart för uppdateringar från hela världen.",
-      "exploreDestinations": "Utforska Destinationer",
-      "viewGuides": "Visa Reseguider"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "Topphistoria",
-      "editorialTeam": "Redaktionsteam"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}} visningar",
-    "viewAll": "Visa Alla",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "Resenyheter | Senaste Berättelser och Uppdateringar",
-      "description": "Håll er informerade med de senaste resenyheterna, destinationsuppdateringar och branschinsikter från hela världen."
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "Också Idag",
-      "storiesCount": "{{count}} berättelser",
-      "liveUpdates": "Direktuppdateringar",
-      "trendingTopics": "Trendande Ämnen",
-      "noTrending": "Inga trendande ämnen ännu. Kom tillbaka snart!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "Toppberättelser",
-      "opinion": "Åsikt och Analys",
-      "moreOpinion": "Fler Åsikter",
-      "worldwide": "Global Täckning"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "Ert Fönster mot Världen",
-      "subtitle": "Nyheter från varje hörn av världen",
-      "storiesCount": "{{count}} berättelser",
-      "comingSoon": "Kommer snart"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "Håll Er Informerade",
-      "description": "Få dagens toppberättelser levererade till er inkorg varje morgon. Gå med i 50 000+ läsare.",
-      "placeholder": "Ange er e-post",
-      "subscribe": "Prenumerera Gratis",
-      "noSpam": "Ingen spam. Avsluta prenumeration när som helst.",
-      "successTitle": "Prenumererad!",
-      "successDesc": "Kolla er e-post för att bekräfta prenumerationen.",
-      "errorTitle": "Prenumeration misslyckades",
-      "errorDesc": "Försök igen senare.",
-      "invalidTitle": "Ogiltig e-post",
-      "invalidDesc": "Ange en giltig e-postadress."
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "Om TRAVI World | Er Pålitliga Resekälla",
-      "metaDescription": "Lär er om TRAVI World - en oberoende reseinformationsplattform med omfattande guider för destinationer världen över.",
-      "badge": "Om TRAVI World",
-      "title": "Upptäck",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "Er pålitliga resekälla för att utforska destinationer världen över med omfattande guider och lokala insikter.",
-      "ctaExplore": "Utforska Destinationer",
-      "ctaContact": "Kontakta Oss",
-      "stats": {
-        "destinations": "Destinationer",
-        "articles": "Artiklar",
-        "support": "Resstöd",
-        "coverage": "Täckning",
-        "cities": "16+ Städer"
-      },
-      "whoWeAre": {
-        "title": "Vilka Vi Är"
-      },
-      "mission": {
-        "title": "Vårt Uppdrag"
-      },
-      "services": {
-        "badge": "Våra Tjänster",
-        "title": "Vad Vi Erbjuder"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "Destinationsguider",
-          "description": "Omfattande information om städer och regioner världen över"
-        },
-        "attractions": {
-          "title": "Attraktionsinformation",
-          "description": "Detaljer om måste-se platser och unika upplevelser"
-        },
-        "hotels": {
-          "title": "Hotellguider",
-          "description": "Information om boendealternativ för varje budget"
-        },
-        "restaurants": {
-          "title": "Restaurangrekommendationer",
-          "description": "Matsällskap för varje smak och preferens"
-        },
-        "articles": {
-          "title": "Researtiklar",
-          "description": "Tips, insikter och reseinspiration"
-        },
-        "news": {
-          "title": "Senaste Resenyheter",
-          "description": "Håll er informerade med kurerade reseuppdateringar"
-        }
-      },
-      "editorial": {
-        "title": "Redaktionellt Oberoende",
-        "affiliateTitle": "Affiliateupplysning"
-      },
-      "values": {
-        "badge": "Vår Grund",
-        "title": "Våra Värderingar",
-        "accuracy": {
-          "title": "Noggrannhet",
-          "description": "Vi strävar efter att ge korrekt och pålitlig information, regelbundet uppdaterad"
-        },
-        "transparency": {
-          "title": "Transparens",
-          "description": "Vi är tydliga om våra affiliaterelationer och hur vi verkar"
-        },
-        "userFocused": {
-          "title": "Användarfokus",
-          "description": "Vårt innehåll är utformat för att hjälpa resenärer fatta informerade beslut"
-        }
-      },
-      "connect": {
-        "badge": "Låt Oss Ansluta",
-        "title": "Kontakta Oss"
-      },
-      "company": {
-        "title": "Företagsinformation",
-        "contactTitle": "Kontaktinformation",
-        "contactForm": "Kontaktformulär"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "Kontakt | TRAVI World",
-      "metaDescription": "Kontakta TRAVI World. Vi välkomnar er feedback, frågor och förfrågningar om våra reseinformationstjänster.",
-      "badge": "Vi vill gärna höra från er",
-      "titlePart1": "Låt Oss",
-      "titlePart2": "Ansluta",
-      "subtitle": "Har ni frågor om ert nästa äventyr? Vi är här för att hjälpa er utforska världen med självförtroende.",
-      "cta": "Skicka oss ett meddelande",
-      "getInTouch": "Kontakta Oss",
-      "getInTouchSubtitle": "Välj det bästa sättet att nå oss. Vi strävar efter att svara snabbt.",
-      "howCanWeHelp": "Hur Kan Vi Hjälpa?",
-      "howCanWeHelpSubtitle": "Vi är här för att hjälpa med frågor eller feedback om vårt innehåll och tjänster.",
-      "importantNote": "Viktig Information",
-      "importantNoteSubtitle": "Läs innan ni kontaktar oss",
-      "ourOffice": "Vårt Kontor",
-      "ourOfficeSubtitle": "För officiell korrespondens och postförfrågningar",
-      "travelCompanion": "Er resepartner",
-      "urgentNote": "För brådskande ärenden, inkludera {{urgentLabel}} i ämnesraden. Vi prioriterar svar baserat på ärendets karaktär.",
-      "urgentLabel": "Brådskande",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "Allmänna Förfrågningar",
-          "description": "Frågor om våra reseguider och innehåll"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "Integritetsförfrågningar",
-          "description": "Dataåtkomst, radering och integritetsbegäranden"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "Besök Vår Webbplats",
-          "description": "Utforska destinationer och reseinspiration"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "Svarstid",
-          "description": "Vi strävar efter att svara snabbt",
-          "action": "2-3 arbetsdagar"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "Allmänna frågor om våra reseguider och innehåll",
-        "feedback": "Feedback och förbättringsförslag",
-        "reporting": "Rapportering av fel eller föråldrad information",
-        "business": "Affärs- och partnerskapsförfrågningar",
-        "media": "Media- och pressförfrågningar",
-        "privacy": "Integritetsrelaterade begäranden (dataåtkomst, radering, etc.)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "Integritetspolicy | TRAVI World",
-      "metaDescription": "Läs om hur TRAVI World samlar in, använder och skyddar er personliga information. Läs vår omfattande integritetspolicy.",
-      "badge": "Er Integritet Spelar Roll",
-      "title": "Integritetspolicy",
-      "subtitle": "Vi är engagerade i att skydda er integritet och vara transparenta om våra datapraktiker. Läs om hur TRAVI World samlar in, använder och skyddar er information.",
-      "effectiveDate": "Giltig från: 1 januari 2026",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "Dataskydd",
-          "description": "Era data är skyddade"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "Minimal Insamling",
-          "description": "Vi samlar endast in det nödvändiga"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "Full Transparens",
-          "description": "Tydliga om våra praktiker"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "Er Kontroll",
-          "description": "Hantera era preferenser"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "1. Vilka Vi Är",
-        "informationCollect": "2. Information Vi Samlar In",
-        "howWeUse": "3. Hur Vi Använder Er Information",
-        "legalBasis": "4. Rättslig Grund för Behandling (GDPR)",
-        "cookies": "5. Cookies och Spårningsteknologier",
-        "thirdParty": "6. Tredjepartstjänster",
-        "aiContent": "7. AI-Genererat Innehåll",
-        "internationalTransfers": "8. Internationella Dataöverföringar",
-        "dataRetention": "9. Datalagring",
-        "privacyRights": "10. Era Integritetsrättigheter",
-        "californiaRights": "11. Kaliforniska Integritetsrättigheter (CCPA/CPRA)",
-        "childrenPrivacy": "12. Barns Integritet",
-        "dataSecurity": "13. Datasäkerhet",
-        "changes": "14. Ändringar i Denna Policy",
-        "contactUs": "15. Kontakta Oss"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "Villkor | TRAVI World",
-      "metaDescription": "Läs villkoren för att använda TRAVI Worlds reseinformationstjänster. Juridiskt avtal mellan er och KBR Global Creative Consulting Ltd.",
-      "badge": "Juridiskt Avtal",
-      "title": "Villkor",
-      "subtitle": "Läs dessa villkor noggrant innan ni använder TRAVI World. Er åtkomst till och användning av vår plattform omfattas av dessa villkor.",
-      "lastUpdated": "Senast uppdaterad: 1 januari 2026",
-      "importantNotice": "Viktig Juridisk Information",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "Redaktionell Plattform",
-          "description": "Reseguider och destinationsinnehåll"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "Affiliatelänkar",
-          "description": "Provisionsbaserade rekommendationer"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "AI-Genererat",
-          "description": "Innehåll skapat med AI-assistans"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "Er Integritet",
-          "description": "Dataskydd garanterat"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "Operatör / Juridisk Enhet",
-        "purpose": "1. Syfte och Användningsomfång",
-        "affiliateDisclosure": "2. Affiliateupplysning och Tredjepartstransaktioner",
-        "aiDisclaimer": "3. AI-Genererat Innehåll Friskrivning",
-        "newsletter": "4. Nyhetsbrev och Kommunikation",
-        "userConduct": "5. Användarbeteende och Förbjudna Handlingar",
-        "intellectualProperty": "6. Immateriella Rättigheter och Begränsad Licens",
-        "dmca": "7. Notice-and-Takedown (DMCA och Liknande)",
-        "disclaimers": "8. Noggrannhet, Tillgänglighet och Friskrivningar",
-        "liability": "9. Ansvarsbegränsning och Force Majeure",
-        "indemnification": "10. Skadeslöshet",
-        "privacyCookies": "11. Integritet, Cookies och Dataskydd",
-        "accessibility": "12. Tillgänglighetsförklaring",
-        "governingLaw": "13. Tillämplig Lag, Tvistelösning och Jurisdiktion",
-        "modifications": "14. Ändringar, Delbarhet och Allmänna Bestämmelser"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }

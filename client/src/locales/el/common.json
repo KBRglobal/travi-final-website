@@ -1,1073 +1,1004 @@
 {
   "nav": {
-    "home": "Αρχική",
-    "destinations": "Προορισμοί",
-    "attractions": "Αξιοθέατα",
-    "hotels": "Ξενοδοχεία",
-    "guides": "Οδηγοί",
-    "dining": "Εστιατόρια",
-    "districts": "Περιοχές",
-    "articles": "Νέα",
-    "news": "Νέα",
-    "shopping": "Αγορές",
-    "realEstate": "Ακίνητα",
-    "events": "Εκδηλώσεις",
-    "search": "Αναζήτηση",
-    "language": "Γλώσσα",
-    "mainNavigation": "Κύρια πλοήγηση",
-    "openMenu": "Άνοιγμα μενού",
-    "closeMenu": "Κλείσιμο μενού",
-    "logoAlt": "TRAVI - Ταξιδιωτικός Οδηγός",
-    "followInstagram": "Ακολουθήστε το TRAVI στο Instagram",
-    "followTikTok": "Ακολουθήστε το TRAVI στο TikTok",
-    "changeLanguage": "Αλλαγή γλώσσας",
-    "selectLanguage": "Επιλογή γλώσσας",
-    "popularLanguages": "Δημοφιλείς γλώσσες",
-    "allLanguages": "Όλες οι γλώσσες"
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "Πλοήγηση ψίχουλων",
+    "ariaLabel": "Breadcrumb navigation",
     "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Διαβάστε Περισσότερα",
-    "viewAll": "Δείτε Όλα",
-    "learnMore": "Μάθετε Περισσότερα",
-    "bookNow": "Κράτηση Τώρα",
-    "contactUs": "Επικοινωνήστε",
-    "subscribe": "Εγγραφή",
-    "submit": "Υποβολή",
-    "cancel": "Ακύρωση",
-    "save": "Αποθήκευση",
-    "edit": "Επεξεργασία",
-    "delete": "Διαγραφή",
-    "loading": "Φόρτωση...",
-    "error": "Κάτι πήγε στραβά",
-    "noResults": "Δεν βρέθηκαν αποτελέσματα",
-    "seeMore": "Περισσότερα",
-    "back": "Πίσω",
-    "next": "Επόμενο",
-    "previous": "Προηγούμενο",
-    "close": "Κλείσιμο",
-    "share": "Κοινοποίηση",
-    "copyLink": "Αντιγραφή Συνδέσμου",
-    "copied": "Αντιγράφηκε!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "Εξερευνήστε τον Κόσμο με το TRAVI",
-      "subtitle": "Ο πλήρης ταξιδιωτικός οδηγός σας για 17 προορισμούς παγκοσμίως",
-      "searchPlaceholder": "Αναζητήστε αξιοθέατα, ξενοδοχεία, εστιατόρια...",
-      "cta": "Ξεκινήστε την Εξερεύνηση",
-      "badge": "Η Πύλη σας στις Παγκόσμιες Περιπέτειες",
-      "headlinePart1": "Η Αξιόπιστη Ταξιδιωτική",
-      "headlinePart2": "Πηγή σας",
-      "description": "Ολοκληρωμένες ταξιδιωτικές πληροφορίες για {{destinations}} προορισμούς παγκοσμίως. Ανακαλύψτε λεπτομερείς οδηγούς για {{attractions}}+ αξιοθέατα.",
-      "descriptionPart1": "Ολοκληρωμένες ταξιδιωτικές πληροφορίες για",
-      "descriptionPart2": "προορισμούς παγκοσμίως. Ανακαλύψτε λεπτομερείς οδηγούς για",
-      "descriptionPart3": "αξιοθέατα.",
-      "carouselLabel": "Πλοήγηση καρουσέλ προορισμών",
-      "viewDestination": "Δείτε {{name}} - {{tagline}}",
-      "worldwide": "Παγκοσμίως",
-      "exploreWorld": "Εξερευνήστε τον Κόσμο",
-      "welcomeAriaLabel": "Καλώς ήρθατε στο TRAVI World",
-      "pageTitle": "TRAVI World - Ταξιδιωτικοί Οδηγοί για Ξενοδοχεία, Αξιοθέατα και Δραστηριότητες",
-      "pageDescription": "Ο πλήρης ταξιδιωτικός οδηγός σας για 17 προορισμούς παγκοσμίως. Εξειδικευμένες πληροφορίες για ξενοδοχεία, αξιοθέατα, εστιατόρια και δραστηριότητες για 3.000+ τοποθεσίες.",
-      "orgDescription": "Η αξιόπιστη ταξιδιωτική πηγή σας για 17 προορισμούς παγκοσμίως."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "Πάνω από {{count}} αξιοθέατα",
-      "destinations": "{{count}} προορισμοί παγκοσμίως",
-      "languages": "Πολύγλωσση πλατφόρμα με επιπλέον γλώσσες"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "Προτεινόμενα",
-    "trending": "Δημοφιλή Τώρα",
-    "topAttractions": "Κορυφαία Αξιοθέατα",
-    "bestHotels": "Καλύτερα Ξενοδοχεία",
-    "latestNews": "Τελευταία Νέα και Οδηγοί",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "Εξερευνήστε Προορισμούς",
-      "destinationsDesc": "Ανακαλύψτε την επιμελημένη συλλογή μας με παγκόσμιους προορισμούς",
-      "categories": "Περιήγηση ανά Κατηγορία",
-      "categoriesDesc": "Βρείτε ακριβώς αυτό που ψάχνετε",
-      "experiences": "Ταξιδέψτε ανά Εμπειρία",
-      "experiencesDesc": "Επιλέξτε το ταξιδιωτικό σας στυλ",
-      "faq": "Συχνές Ερωτήσεις",
-      "faqDesc": "Όλα όσα πρέπει να γνωρίζετε για το TRAVI",
-      "regions": "Εξερεύνηση ανά Περιοχή",
-      "newsletter": "Μείνετε Ενημερωμένοι",
-      "allDestinationsTitle": "Ταξιδιωτικοί Οδηγοί για όλους τους {{count}} Προορισμούς",
-      "completeGuide": "{{name}}, {{country}} - Πλήρης Οδηγός"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "Εξερεύνηση Προορισμών",
-      "viewGuides": "Δείτε Οδηγούς",
-      "viewAll": "Δείτε Όλα",
-      "startExploring": "Ξεκινήστε την Εξερεύνηση",
-      "planTrip": "Σχεδιάστε το Ταξίδι σας",
-      "viewExperience": "Δείτε {{name}}"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "ΠΡΟΟΡΙΣΜΟΙ",
-      "attractions": "ΑΞΙΟΘΕΑΤΑ",
-      "languages": "ΓΛΩΣΣΕΣ",
-      "attractionsNum": "3.000+",
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
+      "attractionsNum": "3,000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} προορισμοί",
-      "attractionsCountWithLabel": "{{count}}+ αξιοθέατα"
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "Αξιοθέατα",
-      "attractionsDesc": "Σημεία που πρέπει να δείτε",
-      "news": "Ταξιδιωτικά Νέα",
-      "newsDesc": "Τελευταίες ενημερώσεις",
-      "guides": "Οδηγοί",
-      "guidesDesc": "Οδηγοί προορισμών",
-      "hotels": "Ξενοδοχεία",
-      "hotelsDesc": "Βρείτε την ιδανική διαμονή"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "Πολυτελή Ταξίδια",
-      "luxuryDesc": "Premium ταξιδιωτικές εμπειρίες και αποκλειστικοί προορισμοί",
-      "adventure": "Περιπέτεια και Φύση",
-      "adventureDesc": "Συναρπαστικές υπαίθριες δραστηριότητες και περιπέτειες",
-      "family": "Οικογενειακά Ταξίδια",
-      "familyDesc": "Προορισμοί και δραστηριότητες φιλικοί προς οικογένειες",
-      "budget": "Οικονομικά Ταξίδια",
-      "budgetDesc": "Προσιτές ταξιδιωτικές επιλογές και προορισμοί",
-      "romance": "Μήνας του Μέλιτος και Ρομαντισμός",
-      "romanceDesc": "Ρομαντικές αποδράσεις και προορισμοί για ζευγάρια",
-      "solo": "Ταξίδια Μόνος",
-      "soloDesc": "Ιδανικοί προορισμοί για μεμονωμένους ταξιδιώτες"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "Συχνές Ερωτήσεις",
-      "subtitle": "Όλα όσα πρέπει να γνωρίζετε για το TRAVI World",
-      "whatIsTravi": "Τι είναι το TRAVI World;",
-      "whatIsTraviAnswer": "Το TRAVI World είναι μια ολοκληρωμένη πλατφόρμα ταξιδιωτικών πληροφοριών που καλύπτει 17 προορισμούς παγκοσμίως με λεπτομερείς οδηγούς για 3.000+ αξιοθέατα, ξενοδοχεία, εστιατόρια και δραστηριότητες.",
-      "howManyDestinations": "Πόσους προορισμούς καλύπτει το TRAVI;",
-      "howManyDestinationsAnswer": "Το TRAVI World καλύπτει 17 μεγάλους ταξιδιωτικούς προορισμούς συμπεριλαμβανομένων Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami και Rome.",
-      "isFree": "Είναι το TRAVI World δωρεάν;",
-      "isFreeAnswer": "Ναι, το TRAVI World είναι εντελώς δωρεάν. Περιηγηθείτε σε χιλιάδες ταξιδιωτικούς οδηγούς, κριτικές αξιοθέατων, προτάσεις ξενοδοχείων και συστάσεις εστιατορίων χωρίς χρέωση.",
-      "updateFrequency": "Πόσο συχνά ενημερώνεται το περιεχόμενο;",
-      "updateFrequencyAnswer": "Το περιεχόμενο του TRAVI World ενημερώνεται καθημερινά με τα τελευταία ταξιδιωτικά νέα, νέες κριτικές αξιοθέατων και ενημερωμένες πληροφορίες για ξενοδοχεία και εστιατόρια σε όλους τους 17 προορισμούς."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "Μασκότ TRAVI με παγκόσμια αξιοθέατα - ανακαλύψτε ταξιδιωτικούς οδηγούς για Dubai, Paris, London, Rome και άλλα",
-    "mascotTitle": "TRAVI World - Ταξιδιωτικοί Οδηγοί για Παγκόσμιους Προορισμούς"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "Αξιοθέατα",
-    "subtitle": "Ανακαλύψτε εμβληματικά σημεία και κρυμμένους θησαυρούς",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{count}} αξιοθέατα σε {{cities}} πόλεις",
-      "badgeThousands": "Χιλιάδες αξιοθέατα παγκοσμίως",
-      "headlinePart1": "Τι να Κάνετε",
-      "headlinePart2": "Παγκοσμίως",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Εισιτήρια χωρίς αναμονή</span> για τον Πύργο του Άιφελ, το Κολοσσαίο, το Burj Khalifa και κορυφαία αξιοθέατα σε Paris, Rome, Dubai και άλλα.",
-      "searchPlaceholder": "Αναζήτηση Πύργος Άιφελ, Κολοσσαίο, Burj Khalifa...",
-      "carouselLabel": "Καρουσέλ προτεινόμενων αξιοθέατων",
-      "sectionLabel": "Κλείστε εισιτήρια για κορυφαία αξιοθέατα παγκοσμίως",
-      "searchAriaLabel": "Αναζήτηση αξιοθέατων ανά όνομα ή πόλη",
-      "searchButton": "Αναζήτηση",
-      "searchButtonAriaLabel": "Αναζήτηση αξιοθέατων"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "ΑΞΙΟΘΕΑΤΑ",
-      "cities": "ΠΟΛΕΙΣ",
-      "rating": "ΒΑΘΜΟΛΟΓΙΑ"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "Πάνω από {{count}} αξιοθέατα",
-      "cities": "{{count}} πόλεις",
-      "rating": "Βαθμολογία {{rating}} αστέρων"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "Όλοι οι Τύποι",
-      "museums": "Μουσεία",
-      "landmarks": "Αξιοθέατα",
-      "tours": "Ξεναγήσεις",
-      "themeParks": "Θεματικά Πάρκα",
-      "shows": "Παραστάσεις"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "Τι να κάνετε στο {{name}}",
-    "countAttractions": "{{country}} - {{count}} αξιοθέατα",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "Όλα",
-      "popular": "Πιο Δημοφιλή",
-      "free": "Δωρεάν Είσοδος",
-      "familyFriendly": "Για Οικογένειες",
-      "outdoor": "Υπαίθρια",
-      "indoor": "Εσωτερικά"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "Τοποθεσία",
-      "hours": "Ώρες Λειτουργίας",
-      "price": "Τιμή",
-      "duration": "Διάρκεια",
-      "tips": "Συμβουλές"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "Εξερευνήστε Αξιοθέατα ανά Προορισμό",
-      "destinationsDesc": "Επιλέξτε μια πόλη για να ανακαλύψετε καταπληκτικά πράγματα να κάνετε",
-      "faq": "Συχνές Ερωτήσεις",
-      "faqDesc": "Απαντήσεις για κρατήσεις αξιοθέατων παγκοσμίως",
-      "whyBookBadge": "Γιατί να Κλείσετε σε Εμάς",
-      "whyBookTitle": "Παρακάμψτε τις Ουρές, Εξοικονομήστε Χρόνο",
-      "whyBookDesc": "Κλείστε εισιτήρια εκ των προτέρων και απολαύστε είσοδο χωρίς προβλήματα",
-      "allDestinations": "Όλοι οι Προορισμοί"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "Εισιτήρια Χωρίς Αναμονή",
-      "skipTheLineDesc": "Περάστε μπροστά από τις ουρές στον Πύργο του Άιφελ, το Κολοσσαίο, το Βατικανό και άλλα",
-      "mobileTickets": "Ηλεκτρονικά Εισιτήρια",
-      "mobileTicketsDesc": "Άμεση παράδοση στο τηλέφωνό σας - δείξτε το εισιτήριο και μπείτε",
-      "freeCancellation": "Δωρεάν Ακύρωση",
-      "freeCancellationDesc": "Άλλαξαν τα σχέδια; Ακυρώστε έως 24 ώρες πριν για πλήρη επιστροφή"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "Τι να Κάνετε ανά Προορισμό",
-      "desc": "Βρείτε αξιοθέατα και εμπειρίες στις κορυφαίες πόλεις του κόσμου",
-      "thingsToDo": "{{count}} δραστηριότητες",
-      "noDestinations": "Δεν υπάρχουν διαθέσιμοι προορισμοί αυτή τη στιγμή."
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "Εξερευνήστε Περισσότερους Οδηγούς",
-      "hotelsWorldwide": "Ξενοδοχεία Παγκοσμίως",
-      "bestRestaurants": "Καλύτερα Εστιατόρια",
-      "travelNews": "Ταξιδιωτικά Νέα"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "Έτοιμοι να Εξερευνήσετε;",
-      "desc": "Κλείστε εισιτήρια χωρίς αναμονή για τον Πύργο του Άιφελ, το Κολοσσαίο, το Burj Khalifa και κορυφαία αξιοθέατα παγκοσμίως.",
-      "parisAttractions": "Αξιοθέατα Paris",
-      "romeAttractions": "Αξιοθέατα Rome"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
-      "popular": "Δημοφιλή:",
-      "thingsToDoIn": "Τι να κάνετε στο {{city}}",
-      "ariaCarouselNav": "Πλοήγηση καρουσέλ αξιοθέατων",
-      "ariaViewInCity": "Δείτε {{name}} στο {{city}}"
+      "popular": "Popular:",
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Προτεινόμενο αξιοθέατο",
-      "ariaThumbnails": "Μικρογραφίες καρουσέλ αξιοθέατων",
-      "ariaTicketsIn": "Εισιτήρια {{name}} στο {{city}}",
-      "priceFrom": "Από",
-      "bookTickets": "Κράτηση Εισιτηρίων",
-      "skipTheLine": "Χωρίς Αναμονή",
-      "duration": "2-3 ώρες",
-      "freeCancellation": "Δωρεάν Ακύρωση",
-      "freeCancellationDesc": "24 ώρες πριν την επίσκεψη",
-      "mobileTickets": "Ηλεκτρονικά Εισιτήρια",
-      "instantDelivery": "Άμεση παράδοση"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}} δραστηριότητες"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "Ξενοδοχεία",
-    "subtitle": "Βρείτε την ιδανική διαμονή",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "Όλα τα Ξενοδοχεία",
-      "luxury": "Πολυτελή",
-      "budget": "Οικονομικά",
-      "beachfront": "Παραλιακά",
-      "cityCenter": "Κέντρο Πόλης",
-      "familyFriendly": "Για Οικογένειες"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "Από",
-      "perNight": "ανά διανυκτέρευση",
-      "amenities": "Παροχές",
-      "checkIn": "Άφιξη",
-      "checkOut": "Αναχώρηση",
-      "rooms": "Δωμάτια",
-      "rating": "Βαθμολογία"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "Κράτηση Τώρα"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "Εστιατόρια",
-    "subtitle": "Γαστρονομικές εμπειρίες για κάθε γούστο",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "Όλα τα Εστιατόρια",
+      "all": "All Restaurants",
       "fineDining": "Fine Dining",
       "casual": "Casual Dining",
-      "cafes": "Καφετέριες",
+      "cafes": "Cafes",
       "streetFood": "Street Food",
       "halal": "Halal",
-      "vegetarian": "Χορτοφαγικά"
+      "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "Κουζίνα",
-      "priceRange": "Εύρος Τιμών",
-      "hours": "Ώρες Λειτουργίας",
-      "dress": "Ντύσιμο",
-      "reservations": "Κρατήσεις"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "Dubai",
-        "country": "ΗΑΕ",
-        "cardAlt": "Ο ορίζοντας του Dubai με τον πύργο Burj Khalifa στο ηλιοβασίλεμα"
-      },
-      "london": {
-        "name": "London",
-        "country": "Ηνωμένο Βασίλειο",
-        "cardAlt": "London Big Ben και Βουλή"
-      },
-      "paris": {
-        "name": "Paris",
-        "country": "Γαλλία",
-        "cardAlt": "Ο Πύργος του Άιφελ φωτισμένος στο ηλιοβασίλεμα"
-      },
-      "newYork": {
-        "name": "New York",
-        "country": "ΗΠΑ",
-        "cardAlt": "Ο ορίζοντας του Manhattan με το Empire State Building"
-      },
-      "tokyo": {
-        "name": "Tokyo",
-        "country": "Ιαπωνία",
-        "cardAlt": "Διασταύρωση Shibuya με νέον τη νύχτα"
-      },
-      "singapore": {
-        "name": "Singapore",
-        "country": "Σιγκαπούρη",
-        "cardAlt": "Singapore Marina Bay Sands και Gardens by the Bay"
-      },
-      "barcelona": {
-        "name": "Barcelona",
-        "country": "Ισπανία",
-        "cardAlt": "Barcelona Sagrada Familia στη χρυσή ώρα"
-      },
-      "bangkok": {
-        "name": "Bangkok",
-        "country": "Ταϊλάνδη",
-        "cardAlt": "Ναός Grand Palace της Bangkok στην ανατολή"
-      },
-      "abuDhabi": {
-        "name": "Abu Dhabi",
-        "country": "ΗΑΕ",
-        "cardAlt": "Τέμενος Sheikh Zayed του Abu Dhabi"
-      },
-      "amsterdam": {
-        "name": "Amsterdam",
-        "country": "Ολλανδία",
-        "cardAlt": "Κανάλι του Amsterdam με ιστορικά κτίρια"
-      },
-      "hongKong": {
-        "name": "Hong Kong",
-        "country": "Κίνα",
-        "cardAlt": "Ο ορίζοντας του Hong Kong τη νύχτα"
-      },
-      "istanbul": {
-        "name": "Istanbul",
-        "country": "Τουρκία",
-        "cardAlt": "Μπλε Τζαμί της Istanbul στο ηλιοβασίλεμα"
-      },
-      "lasVegas": {
-        "name": "Las Vegas",
-        "country": "ΗΠΑ",
-        "cardAlt": "Las Vegas Strip τη νύχτα"
-      },
-      "losAngeles": {
-        "name": "Los Angeles",
-        "country": "ΗΠΑ",
-        "cardAlt": "Επιγραφή Hollywood του Los Angeles"
-      },
-      "miami": {
-        "name": "Miami",
-        "country": "ΗΠΑ",
-        "cardAlt": "Miami Beach συνοικία Art Deco"
-      },
-      "rome": {
-        "name": "Rome",
-        "country": "Ιταλία",
-        "cardAlt": "Κολοσσαίο της Rome στη χρυσή ώρα"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "{{count}} Προορισμοί Παγκοσμίως",
-      "trustedBy": "Εμπιστοσύνη από {{count}} προορισμούς παγκοσμίως",
-      "discover": "Ανακαλύψτε",
-      "worldClass": "Παγκόσμιας Κλάσης",
-      "destinations": "Προορισμοί",
-      "description": "Επιμελημένοι ταξιδιωτικοί οδηγοί με τοπική εμπειρογνωμοσύνη για τις πιο συναρπαστικές πόλεις του κόσμου. Από εμβληματικά σημεία έως κρυμμένους θησαυρούς.",
-      "exploreAll": "Εξερευνήστε Όλους τους Προορισμούς",
-      "travelGuides": "Ταξιδιωτικοί Οδηγοί",
-      "explorePlaceholder": "Εξερεύνηση Προορισμών",
-      "browseCollection": "Περιηγηθείτε στη συλλογή επιλεγμένων προορισμών μας παρακάτω",
-      "explore": "Εξερεύνηση",
-      "discoverButton": "Ανακάλυψη",
-      "ariaLabel": "Επισκόπηση προορισμών",
-      "exploreTitle": "Εξερεύνηση {{name}}",
-      "galleryAriaLabel": "Γκαλερί προτεινόμενων προορισμών",
-      "placeholderAriaLabel": "Placeholder προτεινόμενου προορισμού"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "ΠΡΟΟΡΙΣΜΟΙ",
-      "countries": "ΧΩΡΕΣ",
-      "regions": "Περιοχές",
-      "languages": "Γλώσσες"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "Προτεινόμενοι Προορισμοί",
-      "featuredDesc": "Επιμελημένοι προορισμοί με εξαιρετικές εμπειρίες, τοπικές συμβουλές και όλα όσα χρειάζεστε για να σχεδιάσετε το τέλειο ταξίδι.",
-      "all": "Όλοι οι Προορισμοί",
-      "count": "Βρέθηκαν {{count}} προορισμοί"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "Αναζήτηση προορισμών...",
-      "noResults": "Δεν βρέθηκαν προορισμοί",
-      "tryAdjusting": "Δοκιμάστε να προσαρμόσετε τα κριτήρια αναζήτησης",
-      "clearSearch": "Εκκαθάριση Αναζήτησης"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "Καρουσέλ προτεινόμενων προορισμών",
-      "previous": "Προηγούμενος προορισμός",
-      "next": "Επόμενος προορισμός",
-      "goTo": "Μετάβαση σε {{name}}",
-      "slideOf": "Διαφάνεια {{current}} από {{total}}: {{name}}",
-      "thumbnails": "Μικρογραφίες καρουσέλ προορισμών"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "Εξερεύνηση",
-      "defaultLevel": "Πόλη",
-      "exploreFallback": "Εξερεύνηση {{name}}",
-      "destination": "Προορισμός",
-      "travelGuideAlt": "Ταξιδιωτικός οδηγός {{name}}"
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "Συχνές Ερωτήσεις",
-      "subtitle": "Όλα για τους οδηγούς προορισμών TRAVI",
-      "q1": "Πόσους προορισμούς καλύπτει το TRAVI;",
-      "a1": "Το TRAVI καλύπτει μεγάλους ταξιδιωτικούς προορισμούς στη Μέση Ανατολή, την Ευρώπη, την Ασία και την Αμερική με ολοκληρωμένους οδηγούς για κάθε τοποθεσία.",
-      "q2": "Ποιες πληροφορίες περιλαμβάνονται στους οδηγούς TRAVI;",
-      "a2": "Κάθε οδηγός προορισμού περιλαμβάνει λεπτομερείς περιγραφές αξιοθέατων, επιλογές διαμονής, τοπική κουζίνα, συμβουλές μεταφοράς και πρακτικές ταξιδιωτικές πληροφορίες.",
-      "q3": "Μπορώ να αναζητήσω προορισμούς;",
-      "a3": "Ναι, το TRAVI σας επιτρέπει να αναζητείτε προορισμούς ανά όνομα ή χώρα χρησιμοποιώντας τη γραμμή αναζήτησης στη σελίδα προορισμών.",
-      "q4": "Ποιοι είναι οι προτεινόμενοι προορισμοί στο TRAVI;",
-      "a4": "Οι προτεινόμενοι προορισμοί του TRAVI είναι επιλεγμένες τοποθεσίες που προσφέρουν εξαιρετικές εμπειρίες για ταξιδιώτες με διαφορετικά ενδιαφέροντα, από πολυτελή έως οικονομικά ταξίδια."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "Φόρτωση Προορισμών",
-      "message": "Λήψη τελευταίων δεδομένων..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "Αδυναμία Φόρτωσης Προορισμών",
-      "message": "Αντιμετωπίζουμε πρόβλημα με τη φόρτωση δεδομένων. Δοκιμάστε ξανά αργότερα.",
-      "refresh": "Ανανέωση Σελίδας"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "Δεν Υπάρχουν Διαθέσιμοι Προορισμοί",
-      "message": "Δεν υπάρχουν διαθέσιμοι προορισμοί αυτή τη στιγμή. Ελέγξτε αργότερα."
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "Περιοχές",
-    "subtitle": "Εξερευνήστε διαφορετικές γειτονιές",
-    "explore": "Εξερεύνηση Περιοχής"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "Ακίνητα",
-    "subtitle": "Επενδύστε στο μέλλον",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "Ακίνητα υπό Κατασκευή",
-      "subtitle": "Επενδύστε Νωρίς, Πληρώστε Λιγότερα, Κερδίστε Περισσότερα",
-      "findProperty": "Βρείτε το Τέλειο Ακίνητο",
-      "from": "Από",
-      "paymentPlan": "Πλάνο Πληρωμών",
-      "handover": "Παράδοση",
-      "developer": "Κατασκευαστής"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "Όλα τα Ακίνητα",
-      "apartments": "Διαμερίσματα",
-      "villas": "Βίλες",
-      "townhouses": "Μεζονέτες",
-      "penthouses": "Ρετιρέ"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "Αποδοχή Κρυπτονομισμάτων",
-      "paymentPlans": "Ευέλικτα Πλάνα Πληρωμών",
-      "goldenVisa": "Δικαίωμα Golden Visa",
-      "roiGuarantee": "Εγγύηση Απόδοσης"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "Αναζήτηση αξιοθέατων, οδηγών, προορισμών...",
-    "results": "Αποτελέσματα Αναζήτησης",
-    "noResults": "Δεν βρέθηκαν αποτελέσματα για",
-    "tryAgain": "Δοκιμάστε διαφορετικές λέξεις-κλειδιά"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "Σχετικά με το TRAVI",
-    "aboutTravi": "Σχετικά με το TRAVI",
-    "aboutText": "Ολοκληρωμένες ταξιδιωτικές πληροφορίες για 17 προορισμούς παγκοσμίως.",
-    "aboutUs": "Σχετικά με Εμάς",
-    "quickLinks": "Γρήγοροι Σύνδεσμοι",
-    "legal": "Νομικά",
-    "privacy": "Πολιτική Απορρήτου",
-    "privacyPolicy": "Πολιτική Απορρήτου",
-    "terms": "Όροι και Προϋποθέσεις",
-    "termsOfService": "Όροι Υπηρεσίας",
-    "contact": "Επικοινωνία",
-    "contactUs": "Επικοινωνήστε Μαζί Μας",
-    "followUs": "Ακολουθήστε Μας",
-    "explore": "Εξερεύνηση",
-    "travel": "Ταξίδια",
-    "company": "Εταιρεία",
-    "allGuides": "Όλοι οι Οδηγοί",
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
     "cookies": "Cookies",
-    "security": "Ασφάλεια",
-    "cookieSettings": "Ρυθμίσεις Cookies",
-    "tagline": "Η Αξιόπιστη Ταξιδιωτική Πηγή σας",
-    "ariaLabel": "Υποσέλιδο ιστοσελίδας",
-    "featuredGuides": "Προτεινόμενοι Οδηγοί",
-    "tools": "Εργαλεία",
-    "currencyConverter": "Μετατροπέας Νομισμάτων",
-    "roiCalculator": "Υπολογιστής Απόδοσης",
-    "mortgageCalculator": "Υπολογιστής Στεγαστικού",
-    "glossary": "Γλωσσάρι",
-    "freeThingsToDo": "70+ Δωρεάν Δραστηριότητες",
-    "open24Hours": "Ανοιχτά 24 Ώρες",
-    "tributeToSheikh": "Φόρος Τιμής στον Sheikh Mohammed",
-    "lawsForTourists": "Νόμοι για Τουρίστες",
-    "newsletter": "Εγγραφείτε στο newsletter μας",
-    "newsletterDescription": "Λάβετε τις τελευταίες ταξιδιωτικές συμβουλές και ενημερώσεις.",
-    "emailPlaceholder": "Εισάγετε το email σας",
-    "allRightsReserved": "Με επιφύλαξη παντός δικαιώματος.",
-    "copyright": "© {{year}} {{brand}}. Με επιφύλαξη παντός δικαιώματος.",
-    "emailAriaLabel": "Στείλτε email στο TRAVI"
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "Η Σελίδα Δεν Βρέθηκε",
-      "message": "Η σελίδα που ψάχνετε δεν υπάρχει.",
-      "button": "Αρχική"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "Σφάλμα Διακομιστή",
-      "message": "Κάτι πήγε στραβά από πλευράς μας.",
-      "button": "Δοκιμάστε Ξανά"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "Σφάλμα Σύνδεσης",
-      "message": "Αδυναμία σύνδεσης. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο.",
-      "button": "Επανάληψη"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "Γίνετε Μέρος της Περιπέτειας",
-    "title": "Ταξιδιωτική Μαγεία στα Εισερχόμενά σας",
-    "description": "Εβδομαδιαίες συμβουλές, κρυμμένοι θησαυροί και αποκλειστικές προσφορές - χωρίς spam, μόνο ταξιδιωτικό πάθος.",
-    "emailPlaceholder": "email@paradeigma.gr",
-    "subscribe": "Εγγραφή",
-    "success": "Εγγραφήκατε! Ελέγξτε τα εισερχόμενά σας."
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "Σεβόμαστε την ιδιωτικότητά σας",
-    "description": "Χρησιμοποιούμε cookies για να βελτιώσουμε την εμπειρία περιήγησής σας, να αναλύσουμε την επισκεψιμότητα και να εξατομικεύσουμε το περιεχόμενο. Κάνοντας κλικ στο \"Αποδοχή Όλων\", συναινείτε στη χρήση cookies.",
-    "manage": "Διαχείριση",
-    "rejectAll": "Απόρριψη Όλων",
-    "acceptAll": "Αποδοχή Όλων",
-    "preferencesTitle": "Προτιμήσεις Cookies",
-    "savePreferences": "Αποθήκευση Προτιμήσεων",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "Απαραίτητα Cookies",
-      "description": "Απαιτούνται για τη σωστή λειτουργία του ιστοτόπου"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "Cookies Ανάλυσης",
-      "description": "Μας βοηθούν να κατανοήσουμε πώς αλληλεπιδρούν οι επισκέπτες με τον ιστότοπό μας"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "Cookies Μάρκετινγκ",
-      "description": "Χρησιμοποιούνται για την προβολή εξατομικευμένων διαφημίσεων"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "TRAVI - Εξερευνήστε τον Κόσμο | Ο Πλήρης Ταξιδιωτικός Οδηγός σας",
-      "description": "Ανακαλύψτε τα καλύτερα αξιοθέατα, ξενοδοχεία, εστιατόρια και γειτονιές. Σχεδιάστε το τέλειο ταξίδι σας με τοπικές συμβουλές και συστάσεις."
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "Αξιοθέατα | Κορυφαία Σημεία Ενδιαφέροντος Παγκοσμίως",
-      "description": "Ανακαλύψτε τα καλύτερα αξιοθέατα - από τον Πύργο του Άιφελ έως κρυμμένους θησαυρούς. Σχεδιάστε την επίσκεψή σας."
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "Ξενοδοχεία | Οι Καλύτερες Διαμονές",
-      "description": "Βρείτε το τέλειο ξενοδοχείο για κάθε προϋπολογισμό. Από πολυτελή θέρετρα έως οικονομικές επιλογές."
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "Εστιατόρια | Τα Καλύτερα Μέρη για Φαγητό",
-      "description": "Ανακαλύψτε τη γαστρονομική σκηνή - fine dining, street food και όλα τα ενδιάμεσα."
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Ταξιδιωτική Ευφυΐα",
-      "headlinePart1": "Ιστορίες που",
-      "headlinePart2": "σας Συγκινούν",
-      "description": "Οδηγοί από ειδικούς, τοπικές προοπτικές και συντακτικές αφηγήσεις που μεταμορφώνουν τον τρόπο που βιώνετε τον κόσμο.",
-      "startJourney": "Ξεκινήστε το Ταξίδι σας",
-      "browseCollection": "Περιηγηθείτε στη Συλλογή",
-      "issueBadge": "Τεύχος 47 — Χειμώνας 2026"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "Ταξιδιωτικοί Οδηγοί",
-      "destinations": "Προορισμοί",
-      "languages": "Γλώσσες"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "Το Ταξίδι σας, η Καθοδήγησή μας",
-      "title": "Κάθε Υπέροχο Ταξίδι Ξεκινά με έναν Οδηγό",
-      "subtitle": "Από το όνειρο έως την κοινοποίηση, είμαστε μαζί σας σε κάθε βήμα"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "Εργαστήριο Ιδεών",
-      "title": "Επιμελημένη Έμπνευση",
-      "readGuide": "Διαβάστε τον Οδηγό"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "Εξατομικευμένο για Εσάς",
-      "title": "Τι Είδους Ταξιδιώτης Είστε;",
-      "subtitle": "Επιλέξτε το ταξιδιωτικό σας στυλ και ανακαλύψτε οδηγούς φτιαγμένους ειδικά για εσάς",
-      "viewGuides": "Δείτε Οδηγούς {{type}}"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "Αναζητητής Περιπέτειας",
-        "description": "Συναρπαστικές εμπειρίες και αδρεναλίνη"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "Εξερευνητής Πολιτισμού",
-        "description": "Τέχνη, ιστορία και τοπικές παραδόσεις"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "Γκουρού Χαλάρωσης",
-        "description": "Αποδράσεις wellness και ήρεμα καταφύγια"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "Γαστρονομικός Νομάς",
-        "description": "Τοπικές γεύσεις και γαστρονομικές περιπέτειες"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "Αναζητητής Ευεξίας",
-        "description": "Χαλάρωση, spa και αποδράσεις mindfulness"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "Έξυπνος Ταξιδιώτης",
-        "description": "Μέγιστη εμπειρία, ελάχιστο κόστος"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "Solo Εξερευνητής",
-        "description": "Ανεξάρτητα ταξίδια και αυτο-ανακάλυψη"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "Γνώστης Πολυτέλειας",
-        "description": "Premium εμπειρίες και εκλεκτός τρόπος ζωής"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Ονειρευτείτε",
-        "subtitle": "Ανακαλύψτε έμπνευση",
-        "guides": [
-          "Οδηγοί Προορισμών",
-          "Φωτογραφικά Δοκίμια"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "Σχεδιάστε",
-        "subtitle": "Χαρτογραφήστε το ταξίδι σας",
-        "guides": [
-          "Σχεδιασμός Ταξιδιού",
-          "Απαιτήσεις Βίζας"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "Προετοιμαστείτε",
-        "subtitle": "Ετοιμαστείτε να φύγετε",
-        "guides": [
-          "Λίστες Συσκευασίας",
-          "Συμβουλές Ασφάλειας"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "Ζήστε",
-        "subtitle": "Βιώστε την περιπέτεια",
-        "guides": [
-          "Τοπικές Πληροφορίες",
-          "Κρυμμένοι Θησαυροί"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "Μοιραστείτε",
-        "subtitle": "Πείτε την ιστορία σας",
-        "guides": [
-          "Ταξιδιωτική Γραφή",
-          "Φωτογραφία"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "Αποδράσεις Σαββατοκύριακου",
-      "offBeatenPath": "Εκτός Πεπατημένων",
-      "smartTravel": "Έξυπνο Ταξίδι",
-      "bucketList": "Λίστα Επιθυμιών",
-      "culinary": "Γαστρονομία",
-      "natureWonder": "Φύση και Θαύματα"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "Ταξιδιωτικοί Οδηγοί | Ειδικές Πληροφορίες Προορισμών",
-      "description": "Ανακαλύψτε ειδικούς ταξιδιωτικούς οδηγούς, πληροφορίες προορισμών και εσωτερικές συμβουλές από το παγκόσμιο δίκτυο ταξιδιωτικών συγγραφέων μας. Σχεδιάστε το τέλειο ταξίδι σας σήμερα."
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "Από τους Συντάκτες μας",
-      "title": "Συντακτικά Άρθρα",
-      "readFull": "Διαβάστε Ολόκληρο το Δοκίμιο"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "Οπτικές Ιστορίες",
-      "title": "Προορισμοί που Εμπνέουν",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "Πόλη",
-        "mountains": "Βουνά",
-        "beach": "Παραλία",
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
         "safari": "Safari",
-        "nature": "Φύση"
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "Ειδικές Φωνές",
-      "title": "Γνωρίστε τους Συγγραφείς μας",
-      "subtitle": "Οι ειδικές φωνές πίσω από τους πιο αξιόπιστους ταξιδιωτικούς οδηγούς μας",
-      "articleCount": "{{count}} Άρθρα",
-      "viewProfile": "Δείτε Προφίλ"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "Εξερεύνηση ανά Περιοχή",
-      "title": "Οδηγοί από Όλο τον Κόσμο",
-      "subtitle": "Κάντε κλικ σε οποιονδήποτε προορισμό για να ανακαλύψετε την ειδική κάλυψή μας",
-      "guidesAvailable": "{{count}} οδηγοί διαθέσιμοι",
-      "legendDestination": "Προορισμός",
-      "legendHighlighted": "Επισημασμένο"
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "Συμμετέχετε στο Ταξίδι",
-      "title": "Ταξιδιωτικές Ιστορίες, Εβδομαδιαίως",
-      "description": "Επιμελημένη ταξιδιωτική έμπνευση, ειδικές συμβουλές και εσωτερικές προοπτικές παραδίδονται στα εισερχόμενά σας κάθε εβδομάδα.",
-      "placeholder": "Εισάγετε το email σας",
-      "subscribe": "Εγγραφή",
-      "subscribing": "Γίνεται εγγραφή...",
-      "joinCount": "Συμμετέχετε σε 50.000+ ταξιδιώτες που διαβάζουν την εβδομαδιαία σύνοψή μας",
-      "invalidEmail": "Παρακαλώ εισάγετε έγκυρο email",
-      "successTitle": "Καλώς ήρθατε στο ταξίδι!",
-      "successDesc": "Τώρα είστε εγγεγραμμένοι στη συντακτική σύνοψή μας."
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {
     "time": {
-      "recent": "Πρόσφατα",
-      "justNow": "Μόλις τώρα",
-      "minutesAgo": "πριν {{count}}λ",
-      "hoursAgo": "πριν {{count}}ω",
-      "daysAgo": "πριν {{count}}μ",
-      "minRead": "{{count}} λεπτά ανάγνωσης"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "TRAVI ΕΙΔΗΣΕΙΣ",
-      "edition": "Διεθνής Έκδοση",
-      "subscribe": "Εγγραφή"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "Έκτακτο"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "Αναζήτηση παγκόσμιων ειδήσεων...",
-      "button": "Αναζήτηση",
-      "title": "Αναζήτηση",
-      "searching": "Αναζήτηση για \"{{query}}\"..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "Όλες οι Ειδήσεις",
-      "world": "Κόσμος",
-      "business": "Επιχειρήσεις",
-      "culture": "Πολιτισμός",
-      "travel": "Ταξίδια",
-      "tech": "Τεχνολογία",
-      "opinion": "Άποψη"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "Δεν Υπάρχουν Ακόμα Άρθρα",
-      "description": "Εργαζόμαστε για να σας φέρουμε τις τελευταίες ταξιδιωτικές ειδήσεις και πληροφορίες. Ελέγξτε ξανά σύντομα για ενημερώσεις από όλο τον κόσμο.",
-      "exploreDestinations": "Εξερευνήστε Προορισμούς",
-      "viewGuides": "Δείτε Ταξιδιωτικούς Οδηγούς"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "Κορυφαία Είδηση",
-      "editorialTeam": "Συντακτική Ομάδα"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}} προβολές",
-    "viewAll": "Δείτε Όλα",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "Ταξιδιωτικές Ειδήσεις | Τελευταίες Ιστορίες και Ενημερώσεις",
-      "description": "Μείνετε ενημερωμένοι με τις τελευταίες ταξιδιωτικές ειδήσεις, ενημερώσεις προορισμών και πληροφορίες κλάδου από όλο τον κόσμο."
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "Επίσης Σήμερα",
-      "storiesCount": "{{count}} ιστορίες",
-      "liveUpdates": "Ζωντανές Ενημερώσεις",
-      "trendingTopics": "Δημοφιλή Θέματα",
-      "noTrending": "Δεν υπάρχουν ακόμα δημοφιλή θέματα. Ελέγξτε ξανά σύντομα!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "Κορυφαίες Ειδήσεις",
-      "opinion": "Άποψη και Ανάλυση",
-      "moreOpinion": "Περισσότερες Απόψεις",
-      "worldwide": "Παγκόσμια Κάλυψη"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "Το Παράθυρό σας στον Κόσμο",
-      "subtitle": "Ειδήσεις από κάθε γωνιά της υφηλίου",
-      "storiesCount": "{{count}} ιστορίες",
-      "comingSoon": "Έρχεται σύντομα"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "Μείνετε Ενημερωμένοι",
-      "description": "Λάβετε τις κορυφαίες ιστορίες της ημέρας στα εισερχόμενά σας κάθε πρωί. Συμμετέχετε σε 50.000+ αναγνώστες.",
-      "placeholder": "Εισάγετε το email σας",
-      "subscribe": "Δωρεάν Εγγραφή",
-      "noSpam": "Χωρίς spam. Διαγραφή οποτεδήποτε.",
-      "successTitle": "Εγγραφήκατε!",
-      "successDesc": "Παρακαλώ ελέγξτε το email σας για επιβεβαίωση εγγραφής.",
-      "errorTitle": "Αποτυχία εγγραφής",
-      "errorDesc": "Παρακαλώ δοκιμάστε ξανά αργότερα.",
-      "invalidTitle": "Μη έγκυρο email",
-      "invalidDesc": "Παρακαλώ εισάγετε έγκυρη διεύθυνση email."
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "Σχετικά με Εμάς | TRAVI World",
-      "metaDescription": "Μάθετε για το TRAVI World, μια ανεξάρτητη πηγή ταξιδιωτικών πληροφοριών που προσφέρει ολοκληρωμένους οδηγούς, αξιοθέατα, ξενοδοχεία και πληροφορίες εστιατορίων για προορισμούς παγκοσμίως.",
-      "badge": "Ο Ταξιδιωτικός σας Σύντροφος",
-      "title": "Σχετικά με το",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "Η αξιόπιστη πηγή σας για ολοκληρωμένες ταξιδιωτικές πληροφορίες και οδηγούς προορισμών, βοηθώντας εκατομμύρια να εξερευνήσουν τον κόσμο με αυτοπεποίθηση.",
-      "ctaExplore": "Εξερευνήστε Προορισμούς",
-      "ctaContact": "Επικοινωνήστε",
-      "stats": {
-        "destinations": "Προορισμοί",
-        "articles": "Άρθρα",
-        "support": "Ταξιδιωτική Υποστήριξη",
-        "coverage": "Κάλυψη",
-        "cities": "16+ Πόλεις"
-      },
-      "whoWeAre": {
-        "title": "Ποιοι Είμαστε"
-      },
-      "mission": {
-        "title": "Η Αποστολή μας"
-      },
-      "services": {
-        "badge": "Οι Υπηρεσίες μας",
-        "title": "Τι Προσφέρουμε"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "Οδηγοί Προορισμών",
-          "description": "Ολοκληρωμένες πληροφορίες για πόλεις και περιοχές παγκοσμίως"
-        },
-        "attractions": {
-          "title": "Πληροφορίες Αξιοθέατων",
-          "description": "Λεπτομέρειες για τα must-see μέρη και μοναδικές εμπειρίες"
-        },
-        "hotels": {
-          "title": "Οδηγοί Ξενοδοχείων",
-          "description": "Πληροφορίες για επιλογές διαμονής για κάθε προϋπολογισμό"
-        },
-        "restaurants": {
-          "title": "Συστάσεις Εστιατορίων",
-          "description": "Επιλογές φαγητού για κάθε γούστο και προτίμηση"
-        },
-        "articles": {
-          "title": "Ταξιδιωτικά Άρθρα",
-          "description": "Συμβουλές, πληροφορίες και ταξιδιωτική έμπνευση"
-        },
-        "news": {
-          "title": "Τελευταίες Ταξιδιωτικές Ειδήσεις",
-          "description": "Μείνετε ενημερωμένοι με επιμελημένες ενημερώσεις"
-        }
-      },
-      "editorial": {
-        "title": "Συντακτική Ανεξαρτησία",
-        "affiliateTitle": "Δήλωση Affiliate"
-      },
-      "values": {
-        "badge": "Η Βάση μας",
-        "title": "Οι Αξίες μας",
-        "accuracy": {
-          "title": "Ακρίβεια",
-          "description": "Προσπαθούμε να παρέχουμε ακριβείς και αξιόπιστες πληροφορίες, ενημερώνοντας τακτικά το περιεχόμενό μας"
-        },
-        "transparency": {
-          "title": "Διαφάνεια",
-          "description": "Είμαστε ανοιχτοί σχετικά με τις affiliate σχέσεις μας και τον τρόπο λειτουργίας μας"
-        },
-        "userFocused": {
-          "title": "Εστίαση στον Χρήστη",
-          "description": "Το περιεχόμενό μας σχεδιάστηκε για να βοηθά τους ταξιδιώτες να λαμβάνουν ενημερωμένες αποφάσεις"
-        }
-      },
-      "connect": {
-        "badge": "Ας Συνδεθούμε",
-        "title": "Επικοινωνήστε"
-      },
-      "company": {
-        "title": "Πληροφορίες Εταιρείας",
-        "contactTitle": "Στοιχεία Επικοινωνίας",
-        "contactForm": "Φόρμα Επικοινωνίας"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "Επικοινωνία | TRAVI World",
-      "metaDescription": "Επικοινωνήστε με το TRAVI World. Καλωσορίζουμε τα σχόλια, τις ερωτήσεις και τα αιτήματά σας σχετικά με τις υπηρεσίες ταξιδιωτικών πληροφοριών μας.",
-      "badge": "Θα χαρούμε να ακούσουμε από εσάς",
-      "titlePart1": "Ας",
-      "titlePart2": "Συνδεθούμε",
-      "subtitle": "Έχετε ερωτήσεις για την επόμενη περιπέτειά σας; Είμαστε εδώ για να σας βοηθήσουμε να εξερευνήσετε τον κόσμο με αυτοπεποίθηση.",
-      "cta": "Στείλτε μας μήνυμα",
-      "getInTouch": "Επικοινωνήστε",
-      "getInTouchSubtitle": "Επιλέξτε τον καλύτερο τρόπο να επικοινωνήσετε μαζί μας. Δεσμευόμαστε να απαντήσουμε άμεσα.",
-      "howCanWeHelp": "Πώς Μπορούμε να Βοηθήσουμε;",
-      "howCanWeHelpSubtitle": "Είμαστε εδώ για να βοηθήσουμε με οποιεσδήποτε ερωτήσεις ή σχόλια σχετικά με το ταξιδιωτικό περιεχόμενο και τις υπηρεσίες μας.",
-      "importantNote": "Σημαντική Σημείωση",
-      "importantNoteSubtitle": "Παρακαλώ διαβάστε πριν επικοινωνήσετε",
-      "ourOffice": "Το Γραφείο μας",
-      "ourOfficeSubtitle": "Για επίσημη αλληλογραφία και ταχυδρομικά αιτήματα",
-      "travelCompanion": "Ο ταξιδιωτικός σας σύντροφος",
-      "urgentNote": "Για επείγοντα θέματα, παρακαλώ συμπεριλάβετε {{urgentLabel}} στο θέμα του email. Δίνουμε προτεραιότητα στις απαντήσεις βάσει της φύσης του αιτήματος.",
-      "urgentLabel": "Επείγον",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "Γενικές Ερωτήσεις",
-          "description": "Ερωτήσεις για τους ταξιδιωτικούς οδηγούς και το περιεχόμενό μας"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "Ερωτήσεις Απορρήτου",
-          "description": "Πρόσβαση δεδομένων, διαγραφή και αιτήματα απορρήτου"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "Επισκεφθείτε την Ιστοσελίδα μας",
-          "description": "Εξερευνήστε προορισμούς και ταξιδιωτική έμπνευση"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "Χρόνος Απάντησης",
-          "description": "Στοχεύουμε να απαντήσουμε άμεσα",
-          "action": "2-3 εργάσιμες ημέρες"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "Γενικές ερωτήσεις για τους ταξιδιωτικούς οδηγούς και το περιεχόμενό μας",
-        "feedback": "Σχόλια και προτάσεις για βελτίωση",
-        "reporting": "Αναφορά σφαλμάτων περιεχομένου ή παρωχημένων πληροφοριών",
-        "business": "Επιχειρηματικά και συνεργατικά αιτήματα",
-        "media": "Αιτήματα μέσων και τύπου",
-        "privacy": "Αιτήματα σχετικά με το απόρρητο (πρόσβαση δεδομένων, διαγραφή, κλπ.)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "Πολιτική Απορρήτου | TRAVI World",
-      "metaDescription": "Μάθετε πώς το TRAVI World συλλέγει, χρησιμοποιεί και προστατεύει τα προσωπικά σας στοιχεία. Διαβάστε την ολοκληρωμένη πολιτική απορρήτου μας.",
-      "badge": "Το Απόρρητό σας Μετράει",
-      "title": "Πολιτική Απορρήτου",
-      "subtitle": "Δεσμευόμαστε να προστατεύουμε το απόρρητό σας και να είμαστε διαφανείς σχετικά με τις πρακτικές δεδομένων μας. Μάθετε πώς το TRAVI World συλλέγει, χρησιμοποιεί και προστατεύει τις πληροφορίες σας.",
-      "effectiveDate": "Ημερομηνία Ισχύος: 1 Ιανουαρίου 2026",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "Προστασία Δεδομένων",
-          "description": "Τα δεδομένα σας προστατεύονται"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "Ελάχιστη Συλλογή",
-          "description": "Συλλέγουμε μόνο ό,τι χρειάζεται"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "Πλήρης Διαφάνεια",
-          "description": "Ξεκάθαροι σχετικά με τις πρακτικές μας"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "Ο Έλεγχός σας",
-          "description": "Διαχειριστείτε τις προτιμήσεις σας"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "1. Ποιοι Είμαστε",
-        "informationCollect": "2. Πληροφορίες που Συλλέγουμε",
-        "howWeUse": "3. Πώς Χρησιμοποιούμε τις Πληροφορίες σας",
-        "legalBasis": "4. Νομική Βάση Επεξεργασίας (GDPR)",
-        "cookies": "5. Cookies και Τεχνολογίες Παρακολούθησης",
-        "thirdParty": "6. Υπηρεσίες Τρίτων",
-        "aiContent": "7. Περιεχόμενο από AI",
-        "internationalTransfers": "8. Διεθνείς Μεταφορές Δεδομένων",
-        "dataRetention": "9. Διατήρηση Δεδομένων",
-        "privacyRights": "10. Τα Δικαιώματα Απορρήτου σας",
-        "californiaRights": "11. Δικαιώματα Απορρήτου Καλιφόρνιας (CCPA/CPRA)",
-        "childrenPrivacy": "12. Απόρρητο Παιδιών",
-        "dataSecurity": "13. Ασφάλεια Δεδομένων",
-        "changes": "14. Αλλαγές σε Αυτήν την Πολιτική",
-        "contactUs": "15. Επικοινωνήστε Μαζί μας"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "Όροι και Προϋποθέσεις | TRAVI World",
-      "metaDescription": "Διαβάστε τους όρους και προϋποθέσεις χρήσης των υπηρεσιών ταξιδιωτικών πληροφοριών TRAVI World. Νομική συμφωνία μεταξύ εσάς και της KBR Global Creative Consulting Ltd.",
-      "badge": "Νομική Συμφωνία",
-      "title": "Όροι και Προϋποθέσεις",
-      "subtitle": "Παρακαλώ διαβάστε προσεκτικά αυτούς τους όρους πριν χρησιμοποιήσετε το TRAVI World. Η πρόσβαση και χρήση της πλατφόρμας μας υπόκειται σε αυτές τις προϋποθέσεις.",
-      "lastUpdated": "Τελευταία ενημέρωση: 1 Ιανουαρίου 2026",
-      "importantNotice": "Σημαντική Νομική Ειδοποίηση",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "Συντακτική Πλατφόρμα",
-          "description": "Ταξιδιωτικοί οδηγοί και περιεχόμενο προορισμών"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "Σύνδεσμοι Affiliate",
-          "description": "Συστάσεις βάσει προμήθειας"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "Δημιουργία AI",
-          "description": "Περιεχόμενο που δημιουργήθηκε με βοήθεια AI"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "Το Απόρρητό σας",
-          "description": "Εγγυημένη προστασία δεδομένων"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "Φορέας Εκμετάλλευσης / Νομική Οντότητα",
-        "purpose": "1. Σκοπός και Πεδίο Χρήσης",
-        "affiliateDisclosure": "2. Δήλωση Affiliate και Συναλλαγές Τρίτων",
-        "aiDisclaimer": "3. Αποποίηση Ευθύνης Περιεχομένου AI",
-        "newsletter": "4. Newsletter και Επικοινωνίες",
-        "userConduct": "5. Συμπεριφορά Χρήστη και Απαγορευμένες Ενέργειες",
-        "intellectualProperty": "6. Πνευματική Ιδιοκτησία και Περιορισμένη Άδεια",
-        "dmca": "7. Ειδοποίηση και Αφαίρεση (DMCA και Παρόμοια)",
-        "disclaimers": "8. Ακρίβεια, Διαθεσιμότητα και Αποποιήσεις",
-        "liability": "9. Περιορισμός Ευθύνης και Ανωτέρα Βία",
-        "indemnification": "10. Αποζημίωση",
-        "privacyCookies": "11. Απόρρητο, Cookies και Προστασία Δεδομένων",
-        "accessibility": "12. Δήλωση Προσβασιμότητας",
-        "governingLaw": "13. Εφαρμοστέο Δίκαιο, Επίλυση Διαφορών και Δικαιοδοσία",
-        "modifications": "14. Τροποποιήσεις, Διαχωρισιμότητα και Γενικές Διατάξεις"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }

@@ -1,1073 +1,1004 @@
 {
   "nav": {
-    "home": "Ana Sayfa",
-    "destinations": "Destinasyonlar",
-    "attractions": "Gezilecek Yerler",
-    "hotels": "Oteller",
-    "guides": "Rehberler",
-    "dining": "Restoranlar",
-    "districts": "Semtler",
-    "articles": "Haberler",
-    "news": "Haberler",
-    "shopping": "Alışveriş",
-    "realEstate": "Emlak",
-    "events": "Etkinlikler",
-    "search": "Ara",
-    "language": "Dil",
-    "mainNavigation": "Ana navigasyon",
-    "openMenu": "Menüyü aç",
-    "closeMenu": "Menüyü kapat",
-    "logoAlt": "TRAVI - Seyahat Rehberi",
-    "followInstagram": "TRAVI'yı Instagram'da takip edin",
-    "followTikTok": "TRAVI'yı TikTok'ta takip edin",
-    "changeLanguage": "Dili değiştir",
-    "selectLanguage": "Dil seç",
-    "popularLanguages": "Popüler diller",
-    "allLanguages": "Tüm diller"
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "İz takibi navigasyonu",
+    "ariaLabel": "Breadcrumb navigation",
     "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Devamını Oku",
-    "viewAll": "Tümünü Gör",
-    "learnMore": "Daha Fazla Bilgi",
-    "bookNow": "Şimdi Rezerve Et",
-    "contactUs": "Bize Ulaşın",
-    "subscribe": "Abone Ol",
-    "submit": "Gönder",
-    "cancel": "İptal",
-    "save": "Kaydet",
-    "edit": "Düzenle",
-    "delete": "Sil",
-    "loading": "Yükleniyor...",
-    "error": "Bir şeyler yanlış gitti",
-    "noResults": "Sonuç bulunamadı",
-    "seeMore": "Daha Fazla",
-    "back": "Geri",
-    "next": "Sonraki",
-    "previous": "Önceki",
-    "close": "Kapat",
-    "share": "Paylaş",
-    "copyLink": "Bağlantıyı Kopyala",
-    "copied": "Kopyalandı!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "TRAVI ile Dünyayı Keşfedin",
-      "subtitle": "Dünya genelinde 17 destinasyon için kapsamlı seyahat rehberiniz",
-      "searchPlaceholder": "Gezilecek yer, otel, restoran arayın...",
-      "cta": "Keşfetmeye Başla",
-      "badge": "Dünya Maceralarına Kapınız",
-      "headlinePart1": "Güvenilir Seyahat",
-      "headlinePart2": "Kaynağınız",
-      "description": "Dünya genelinde {{destinations}} destinasyon için kapsamlı seyahat bilgileri. {{attractions}}+ gezilecek yer için detaylı rehberler keşfedin.",
-      "descriptionPart1": "Dünya genelinde",
-      "descriptionPart2": "destinasyon için kapsamlı seyahat bilgileri.",
-      "descriptionPart3": "gezilecek yer için detaylı rehberler keşfedin.",
-      "carouselLabel": "Destinasyon karuseli navigasyonu",
-      "viewDestination": "{{name}} - {{tagline}} görüntüle",
-      "worldwide": "Dünya Genelinde",
-      "exploreWorld": "Dünyayı Keşfedin",
-      "welcomeAriaLabel": "TRAVI World'e hoş geldiniz",
-      "pageTitle": "TRAVI World - Oteller, Gezilecek Yerler ve Aktiviteler için Seyahat Rehberleri",
-      "pageDescription": "Dünya genelinde 17 destinasyon için kapsamlı seyahat rehberiniz. 3.000+ yer için oteller, gezilecek yerler, restoranlar ve aktiviteler hakkında uzman bilgileri.",
-      "orgDescription": "Dünya genelinde 17 destinasyon için güvenilir seyahat kaynağınız."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "{{count}}+ gezilecek yer kapsanıyor",
-      "destinations": "Dünya genelinde {{count}} destinasyon",
-      "languages": "Ek dillerle çok dilli platform"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "Öne Çıkan",
-    "trending": "Şu An Popüler",
-    "topAttractions": "En İyi Gezilecek Yerler",
-    "bestHotels": "En İyi Oteller",
-    "latestNews": "Son Haberler ve Rehberler",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "Destinasyonları Keşfedin",
-      "destinationsDesc": "Özenle seçilmiş küresel destinasyon koleksiyonumuzu keşfedin",
-      "categories": "Kategoriye Göre Gözat",
-      "categoriesDesc": "Aradığınızı tam olarak bulun",
-      "experiences": "Deneyime Göre Seyahat Edin",
-      "experiencesDesc": "Seyahat tarzınızı seçin",
-      "faq": "Sıkça Sorulan Sorular",
-      "faqDesc": "TRAVI hakkında bilmeniz gereken her şey",
-      "regions": "Bölgeye Göre Keşfedin",
-      "newsletter": "Güncel Kalın",
-      "allDestinationsTitle": "Tüm {{count}} Destinasyon için Seyahat Rehberleri",
-      "completeGuide": "{{name}}, {{country}} - Kapsamlı Rehber"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "Destinasyonları Keşfet",
-      "viewGuides": "Rehberleri Görüntüle",
-      "viewAll": "Tümünü Gör",
-      "startExploring": "Keşfetmeye Başla",
-      "planTrip": "Seyahatinizi Planlayın",
-      "viewExperience": "{{name}} Görüntüle"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "DESTİNASYON",
-      "attractions": "GEZİLECEK YER",
-      "languages": "DİL",
-      "attractionsNum": "3.000+",
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
+      "attractionsNum": "3,000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} destinasyon",
-      "attractionsCountWithLabel": "{{count}}+ gezilecek yer"
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "Gezilecek Yerler",
-      "attractionsDesc": "Mutlaka görülmesi gereken yerler",
-      "news": "Seyahat Haberleri",
-      "newsDesc": "Son güncellemeler",
-      "guides": "Rehberler",
-      "guidesDesc": "Destinasyon rehberleri",
-      "hotels": "Oteller",
-      "hotelsDesc": "Mükemmel konaklamanızı bulun"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "Lüks Seyahat",
-      "luxuryDesc": "Premium seyahat deneyimleri ve özel destinasyonlar",
-      "adventure": "Macera ve Doğa",
-      "adventureDesc": "Heyecan verici açık hava aktiviteleri ve maceralar",
-      "family": "Aile Seyahati",
-      "familyDesc": "Aile dostu destinasyonlar ve aktiviteler",
-      "budget": "Bütçe Dostu Seyahat",
-      "budgetDesc": "Uygun fiyatlı seyahat seçenekleri ve destinasyonlar",
-      "romance": "Balayı ve Romantizm",
-      "romanceDesc": "Romantik kaçamaklar ve balayı destinasyonları",
-      "solo": "Yalnız Seyahat",
-      "soloDesc": "Yalnız gezginler için mükemmel destinasyonlar"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "Sıkça Sorulan Sorular",
-      "subtitle": "TRAVI World hakkında bilmeniz gereken her şey",
-      "whatIsTravi": "TRAVI World nedir?",
-      "whatIsTraviAnswer": "TRAVI World, dünya genelinde 17 destinasyonu kapsayan, 3.000+ gezilecek yer, otel, restoran ve aktivite için detaylı rehberler sunan kapsamlı bir seyahat bilgi platformudur.",
-      "howManyDestinations": "TRAVI kaç destinasyonu kapsıyor?",
-      "howManyDestinationsAnswer": "TRAVI World; Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami ve Rome dahil 17 büyük seyahat destinasyonunu kapsar.",
-      "isFree": "TRAVI World ücretsiz mi?",
-      "isFreeAnswer": "Evet, TRAVI World tamamen ücretsizdir. Binlerce seyahat rehberine, gezilecek yer değerlendirmelerine, otel önerilerine ve restoran tavsiyelerine ücretsiz göz atın.",
-      "updateFrequency": "İçerik ne sıklıkla güncelleniyor?",
-      "updateFrequencyAnswer": "TRAVI World içeriği, tüm 17 destinasyonda güncel seyahat haberleri, yeni gezilecek yer değerlendirmeleri ve otel ve restoran bilgileriyle günlük olarak güncellenmektedir."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "Dünya simgeleriyle TRAVI maskotu - Dubai, Paris, London, Rome ve daha fazlası için seyahat rehberlerini keşfedin",
-    "mascotTitle": "TRAVI World - Küresel Destinasyonlar için Seyahat Rehberleri"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "Gezilecek Yerler",
-    "subtitle": "İkonik simgeleri ve gizli hazineleri keşfedin",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{cities}} şehirde {{count}} gezilecek yer",
-      "badgeThousands": "Dünya genelinde binlerce gezilecek yer",
-      "headlinePart1": "Yapılacak Şeyler",
-      "headlinePart2": "Dünya Genelinde",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Sıra beklemeden giriş biletleri</span> Eyfel Kulesi, Kolezyum, Burj Khalifa ve Paris, Rome, Dubai ve daha fazlasındaki en iyi gezilecek yerlere.",
-      "searchPlaceholder": "Eyfel Kulesi, Kolezyum, Burj Khalifa ara...",
-      "carouselLabel": "Öne çıkan gezilecek yerler karuseli",
-      "sectionLabel": "Dünya genelindeki en iyi gezilecek yerlere bilet rezerve edin",
-      "searchAriaLabel": "Gezilecek yerleri ada veya şehre göre arayın",
-      "searchButton": "Ara",
-      "searchButtonAriaLabel": "Gezilecek yerleri ara"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "GEZİLECEK YER",
-      "cities": "ŞEHİR",
-      "rating": "DEĞERLENDİRME"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "{{count}}+ gezilecek yer",
-      "cities": "{{count}} şehir",
-      "rating": "{{rating}} yıldız değerlendirme"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "Tüm Türler",
-      "museums": "Müzeler",
-      "landmarks": "Simgeler",
-      "tours": "Turlar",
-      "themeParks": "Tema Parkları",
-      "shows": "Gösteriler"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "{{name}} içinde yapılacaklar",
-    "countAttractions": "{{country}} - {{count}} gezilecek yer",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "Tümü",
-      "popular": "En Popüler",
-      "free": "Ücretsiz Giriş",
-      "familyFriendly": "Aile Dostu",
-      "outdoor": "Açık Hava",
-      "indoor": "Kapalı Alan"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "Konum",
-      "hours": "Çalışma Saatleri",
-      "price": "Fiyat",
-      "duration": "Süre",
-      "tips": "İpuçları"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "Destinasyona Göre Gezilecek Yerleri Keşfedin",
-      "destinationsDesc": "Harika şeyler keşfetmek için bir şehir seçin",
-      "faq": "Sıkça Sorulan Sorular",
-      "faqDesc": "Dünya genelinde gezilecek yer rezervasyonu hakkında yanıtlar",
-      "whyBookBadge": "Neden Bizden Rezerve Etmelisiniz",
-      "whyBookTitle": "Sıraları Atlayın, Zaman Kazanın",
-      "whyBookDesc": "Biletlerinizi önceden rezerve edin ve sorunsuz giriş yapın",
-      "allDestinations": "Tüm Destinasyonlar"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "Sıra Beklemeden Giriş Biletleri",
-      "skipTheLineDesc": "Eyfel Kulesi, Kolezyum, Vatikan ve daha fazlasındaki sıraları atlayın",
-      "mobileTickets": "Mobil Biletler",
-      "mobileTicketsDesc": "Telefonunuza anında teslimat - biletinizi gösterin ve girin",
-      "freeCancellation": "Ücretsiz İptal",
-      "freeCancellationDesc": "Planlar değişti mi? Tam iade için ziyaretten 24 saat önce iptal edin"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "Destinasyona Göre Yapılacaklar",
-      "desc": "Dünyanın en iyi şehirlerinde gezilecek yerler ve deneyimler bulun",
-      "thingsToDo": "{{count}} yapılacak şey",
-      "noDestinations": "Şu anda mevcut destinasyon yok."
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "Daha Fazla Rehber Keşfedin",
-      "hotelsWorldwide": "Dünya Genelinde Oteller",
-      "bestRestaurants": "En İyi Restoranlar",
-      "travelNews": "Seyahat Haberleri"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "Keşfetmeye Hazır mısınız?",
-      "desc": "Eyfel Kulesi, Kolezyum, Burj Khalifa ve dünya genelindeki en iyi gezilecek yerlere sıra beklemeden giriş biletleri rezerve edin.",
-      "parisAttractions": "Paris Gezilecek Yerler",
-      "romeAttractions": "Rome Gezilecek Yerler"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
-      "popular": "Popüler:",
-      "thingsToDoIn": "{{city}} içinde yapılacaklar",
-      "ariaCarouselNav": "Gezilecek yer karuseli navigasyonu",
-      "ariaViewInCity": "{{city}} içinde {{name}} görüntüle"
+      "popular": "Popular:",
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Öne çıkan gezilecek yer",
-      "ariaThumbnails": "Gezilecek yer karuseli küçük resimleri",
-      "ariaTicketsIn": "{{city}} içinde {{name}} biletleri",
-      "priceFrom": "Fiyat",
-      "bookTickets": "Bilet Rezerve Et",
-      "skipTheLine": "Sıra Beklemeden",
-      "duration": "2-3 saat",
-      "freeCancellation": "Ücretsiz İptal",
-      "freeCancellationDesc": "Ziyaretten 24 saat önce",
-      "mobileTickets": "Mobil Biletler",
-      "instantDelivery": "Anında teslimat"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}} yapılacak şey"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "Oteller",
-    "subtitle": "Mükemmel konaklamanızı bulun",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "Tüm Oteller",
-      "luxury": "Lüks",
-      "budget": "Bütçe Dostu",
-      "beachfront": "Sahil Kenarı",
-      "cityCenter": "Şehir Merkezi",
-      "familyFriendly": "Aile Dostu"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "Fiyat",
-      "perNight": "gecelik",
-      "amenities": "Olanaklar",
-      "checkIn": "Giriş",
-      "checkOut": "Çıkış",
-      "rooms": "Odalar",
-      "rating": "Değerlendirme"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "Şimdi Rezerve Et"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "Restoranlar",
-    "subtitle": "Her damak zevkine uygun mutfak deneyimleri",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "Tüm Restoranlar",
+      "all": "All Restaurants",
       "fineDining": "Fine Dining",
       "casual": "Casual Dining",
-      "cafes": "Kafeler",
-      "streetFood": "Sokak Yemekleri",
-      "halal": "Helal",
-      "vegetarian": "Vejetaryen"
+      "cafes": "Cafes",
+      "streetFood": "Street Food",
+      "halal": "Halal",
+      "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "Mutfak",
-      "priceRange": "Fiyat Aralığı",
-      "hours": "Çalışma Saatleri",
-      "dress": "Kıyafet Kuralı",
-      "reservations": "Rezervasyonlar"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "Dubai",
-        "country": "BAE",
-        "cardAlt": "Gün batımında Burj Khalifa ile Dubai silüeti"
-      },
-      "london": {
-        "name": "London",
-        "country": "Birleşik Krallık",
-        "cardAlt": "London Big Ben ve Parlamento Binası"
-      },
-      "paris": {
-        "name": "Paris",
-        "country": "Fransa",
-        "cardAlt": "Gün batımında aydınlatılmış Paris Eyfel Kulesi"
-      },
-      "newYork": {
-        "name": "New York",
-        "country": "ABD",
-        "cardAlt": "Empire State Building ile New York Manhattan silüeti"
-      },
-      "tokyo": {
-        "name": "Tokyo",
-        "country": "Japonya",
-        "cardAlt": "Gece neon ışıklarıyla Tokyo Shibuya kavşağı"
-      },
-      "singapore": {
-        "name": "Singapore",
-        "country": "Singapur",
-        "cardAlt": "Singapore Marina Bay Sands ve Gardens by the Bay"
-      },
-      "barcelona": {
-        "name": "Barcelona",
-        "country": "İspanya",
-        "cardAlt": "Altın saatte Barcelona Sagrada Familia"
-      },
-      "bangkok": {
-        "name": "Bangkok",
-        "country": "Tayland",
-        "cardAlt": "Gün doğumunda Bangkok Grand Palace tapınağı"
-      },
-      "abuDhabi": {
-        "name": "Abu Dhabi",
-        "country": "BAE",
-        "cardAlt": "Abu Dhabi Sheikh Zayed Camii"
-      },
-      "amsterdam": {
-        "name": "Amsterdam",
-        "country": "Hollanda",
-        "cardAlt": "Tarihi binalarla Amsterdam kanalı"
-      },
-      "hongKong": {
-        "name": "Hong Kong",
-        "country": "Çin",
-        "cardAlt": "Gece Hong Kong silüeti"
-      },
-      "istanbul": {
-        "name": "Istanbul",
-        "country": "Türkiye",
-        "cardAlt": "Gün batımında Istanbul Sultanahmet Camii"
-      },
-      "lasVegas": {
-        "name": "Las Vegas",
-        "country": "ABD",
-        "cardAlt": "Gece Las Vegas Strip"
-      },
-      "losAngeles": {
-        "name": "Los Angeles",
-        "country": "ABD",
-        "cardAlt": "Los Angeles Hollywood yazısı"
-      },
-      "miami": {
-        "name": "Miami",
-        "country": "ABD",
-        "cardAlt": "Miami Beach Art Deco bölgesi"
-      },
-      "rome": {
-        "name": "Rome",
-        "country": "İtalya",
-        "cardAlt": "Altın saatte Rome Kolezyum"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "Dünya Genelinde {{count}} Destinasyon",
-      "trustedBy": "Dünya genelinde {{count}} destinasyonun güveni",
-      "discover": "Keşfedin",
-      "worldClass": "Dünya Standartlarında",
-      "destinations": "Destinasyonlar",
-      "description": "Dünyanın en büyüleyici şehirleri için yerel uzmanlıkla hazırlanmış seyahat rehberleri. İkonik simgelerden gizli hazinelere.",
-      "exploreAll": "Tüm Destinasyonları Keşfet",
-      "travelGuides": "Seyahat Rehberleri",
-      "explorePlaceholder": "Destinasyonları Keşfet",
-      "browseCollection": "Aşağıda seçilmiş destinasyon koleksiyonumuza göz atın",
-      "explore": "Keşfet",
-      "discoverButton": "Keşfet",
-      "ariaLabel": "Destinasyonlara genel bakış",
-      "exploreTitle": "{{name}} Keşfet",
-      "galleryAriaLabel": "Öne çıkan destinasyon galerisi",
-      "placeholderAriaLabel": "Öne çıkan destinasyon yer tutucusu"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "DESTİNASYON",
-      "countries": "ÜLKE",
-      "regions": "Bölge",
-      "languages": "Dil"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "Öne Çıkan Destinasyonlar",
-      "featuredDesc": "Olağanüstü deneyimler, yerel ipuçları ve mükemmel seyahatinizi planlamak için ihtiyacınız olan her şeyle özenle seçilmiş destinasyonlar.",
-      "all": "Tüm Destinasyonlar",
-      "count": "{{count}} destinasyon bulundu"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "Destinasyon ara...",
-      "noResults": "Destinasyon bulunamadı",
-      "tryAdjusting": "Arama kriterlerinizi ayarlamayı deneyin",
-      "clearSearch": "Aramayı Temizle"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "Öne çıkan destinasyonlar karuseli",
-      "previous": "Önceki destinasyon",
-      "next": "Sonraki destinasyon",
-      "goTo": "{{name}} adresine git",
-      "slideOf": "Slayt {{current}}/{{total}}: {{name}}",
-      "thumbnails": "Destinasyon karuseli küçük resimleri"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "Keşfet",
-      "defaultLevel": "Şehir",
-      "exploreFallback": "{{name}} Keşfet",
-      "destination": "Destinasyon",
-      "travelGuideAlt": "{{name}} seyahat rehberi"
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "Sıkça Sorulan Sorular",
-      "subtitle": "TRAVI destinasyon rehberleri hakkında her şey",
-      "q1": "TRAVI kaç destinasyonu kapsıyor?",
-      "a1": "TRAVI, Orta Doğu, Avrupa, Asya ve Amerika'daki büyük seyahat destinasyonlarını her konum için kapsamlı rehberlerle kapsamaktadır.",
-      "q2": "TRAVI destinasyon rehberlerinde hangi bilgiler yer alıyor?",
-      "a2": "Her destinasyon rehberi; gezilecek yerlerin detaylı açıklamaları, konaklama seçenekleri, yerel mutfak, ulaşım ipuçları ve pratik seyahat bilgilerini içerir.",
-      "q3": "Destinasyonları arayabilir miyim?",
-      "a3": "Evet, TRAVI destinasyonlar sayfasındaki arama çubuğunu kullanarak destinasyonları ada veya ülkeye göre aramanıza olanak tanır.",
-      "q4": "TRAVI'daki öne çıkan destinasyonlar nelerdir?",
-      "a4": "TRAVI'nın öne çıkan destinasyonları, lüksten bütçe dostu seyahate kadar farklı ilgi alanlarına sahip gezginler için olağanüstü deneyimler sunan özenle seçilmiş yerlerdir."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "Destinasyonlar Yükleniyor",
-      "message": "En son veriler alınıyor..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "Destinasyonlar Yüklenemedi",
-      "message": "Verileri yüklerken sorun yaşıyoruz. Lütfen daha sonra tekrar deneyin.",
-      "refresh": "Sayfayı Yenile"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "Mevcut Destinasyon Yok",
-      "message": "Şu anda mevcut destinasyon yok. Daha sonra tekrar kontrol edin."
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "Semtler",
-    "subtitle": "Çeşitli mahalleleri keşfedin",
-    "explore": "Semti Keşfet"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "Emlak",
-    "subtitle": "Geleceğe yatırım yapın",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "Proje Aşamasındaki Mülkler",
-      "subtitle": "Erken Yatırım Yapın, Az Ödeyin, Çok Kazanın",
-      "findProperty": "Mükemmel Mülkümü Bul",
-      "from": "Başlayan",
-      "paymentPlan": "Ödeme Planı",
-      "handover": "Teslim",
-      "developer": "Geliştirici"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "Tüm Mülkler",
-      "apartments": "Daireler",
-      "villas": "Villalar",
-      "townhouses": "Sıra Evler",
-      "penthouses": "Çatı Katları"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "Kripto Kabul Edilir",
-      "paymentPlans": "Esnek Ödeme Planları",
-      "goldenVisa": "Altın Vize Uygunluğu",
-      "roiGuarantee": "Yatırım Getirisi Garantisi"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "Gezilecek yerler, rehberler, destinasyonlar arayın...",
-    "results": "Arama Sonuçları",
-    "noResults": "Sonuç bulunamadı:",
-    "tryAgain": "Farklı anahtar kelimeler deneyin"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "TRAVI Hakkında",
-    "aboutTravi": "TRAVI Hakkında",
-    "aboutText": "Dünya genelinde 17 destinasyon için kapsamlı seyahat bilgileri.",
-    "aboutUs": "Hakkımızda",
-    "quickLinks": "Hızlı Bağlantılar",
-    "legal": "Yasal",
-    "privacy": "Gizlilik Politikası",
-    "privacyPolicy": "Gizlilik Politikası",
-    "terms": "Şartlar ve Koşullar",
-    "termsOfService": "Hizmet Şartları",
-    "contact": "İletişim",
-    "contactUs": "Bize Ulaşın",
-    "followUs": "Bizi Takip Edin",
-    "explore": "Keşfet",
-    "travel": "Seyahat",
-    "company": "Şirket",
-    "allGuides": "Tüm Rehberler",
-    "cookies": "Çerezler",
-    "security": "Güvenlik",
-    "cookieSettings": "Çerez Ayarları",
-    "tagline": "Güvenilir Seyahat Kaynağınız",
-    "ariaLabel": "Site altbilgisi",
-    "featuredGuides": "Öne Çıkan Rehberler",
-    "tools": "Araçlar",
-    "currencyConverter": "Döviz Çevirici",
-    "roiCalculator": "Yatırım Getirisi Hesaplayıcı",
-    "mortgageCalculator": "Mortgage Hesaplayıcı",
-    "glossary": "Sözlük",
-    "freeThingsToDo": "70+ Ücretsiz Yapılacak Şey",
-    "open24Hours": "24 Saat Açık",
-    "tributeToSheikh": "Ekselansları Sheikh Mohammed'e Saygı",
-    "lawsForTourists": "Turistler için Yasalar",
-    "newsletter": "Bültenimize abone olun",
-    "newsletterDescription": "En son seyahat ipuçlarını ve güncellemeleri alın.",
-    "emailPlaceholder": "E-postanızı girin",
-    "allRightsReserved": "Tüm hakları saklıdır.",
-    "copyright": "© {{year}} {{brand}}. Tüm hakları saklıdır.",
-    "emailAriaLabel": "TRAVI'ye e-posta gönderin"
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
+    "cookies": "Cookies",
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "Sayfa Bulunamadı",
-      "message": "Aradığınız sayfa mevcut değil.",
-      "button": "Ana Sayfaya Git"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "Sunucu Hatası",
-      "message": "Tarafımızda bir şeyler yanlış gitti.",
-      "button": "Tekrar Dene"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "Bağlantı Hatası",
-      "message": "Bağlanılamıyor. İnternet bağlantınızı kontrol edin.",
-      "button": "Yeniden Dene"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "Maceraya Katılın",
-    "title": "Seyahat Büyüsünü Gelen Kutunuzda Alın",
-    "description": "Haftalık ipuçları, gizli hazineler ve özel fırsatlar - spam yok, sadece seyahat tutkusu.",
-    "emailPlaceholder": "email@ornek.com",
-    "subscribe": "Abone Ol",
-    "success": "Abone oldunuz! Gelen kutunuzu kontrol edin."
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "Gizliliğinize değer veriyoruz",
-    "description": "Tarama deneyiminizi geliştirmek, site trafiğini analiz etmek ve içeriği kişiselleştirmek için çerezler kullanıyoruz. \"Tümünü Kabul Et\"e tıklayarak çerez kullanımımıza onay verirsiniz.",
-    "manage": "Yönet",
-    "rejectAll": "Tümünü Reddet",
-    "acceptAll": "Tümünü Kabul Et",
-    "preferencesTitle": "Çerez Tercihleri",
-    "savePreferences": "Tercihleri Kaydet",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "Zorunlu Çerezler",
-      "description": "Web sitesinin düzgün çalışması için gereklidir"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "Analiz Çerezleri",
-      "description": "Ziyaretçilerin web sitemizle nasıl etkileşime girdiğini anlamamıza yardımcı olur"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "Pazarlama Çerezleri",
-      "description": "Kişiselleştirilmiş reklamlar sunmak için kullanılır"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "TRAVI - Dünyayı Keşfedin | Kapsamlı Seyahat Rehberiniz",
-      "description": "En iyi gezilecek yerleri, otelleri, restoranları ve mahalleleri keşfedin. İç görüler ve yerel önerilerle mükemmel seyahatinizi planlayın."
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "Gezilecek Yerler | Dünya Genelinde En İyi Görülecek Yerler",
-      "description": "En iyi gezilecek yerleri keşfedin - Eyfel Kulesi'nden gizli hazinelere. Ziyaretinizi planlayın."
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "Oteller | En İyi Konaklama Yerleri",
-      "description": "Her bütçe için mükemmel oteli bulun. Lüks tatil köylerinden bütçe dostu seçeneklere."
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "Restoranlar | En İyi Yemek Yerleri",
-      "description": "Mutfak sahnesini keşfedin - fine dining, sokak yemekleri ve aradaki her şey."
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Seyahat Zekası",
-      "headlinePart1": "Sizi Etkileyen",
-      "headlinePart2": "Hikayeler",
-      "description": "Uzmanlar tarafından hazırlanan rehberler, yerel bakış açıları ve dünyayı deneyimleme şeklinizi dönüştüren editoryal anlatılar.",
-      "startJourney": "Yolculuğunuza Başlayın",
-      "browseCollection": "Koleksiyona Göz Atın",
-      "issueBadge": "Sayı 47 — Kış 2026"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "Seyahat Rehberi",
-      "destinations": "Destinasyon",
-      "languages": "Dil"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "Sizin Yolculuğunuz, Bizim Rehberliğimiz",
-      "title": "Her Harika Seyahat Bir Rehberle Başlar",
-      "subtitle": "Hayal etmekten paylaşmaya, her adımda yanınızdayız"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "Fikir Laboratuvarı",
-      "title": "Küratörlü İlham",
-      "readGuide": "Rehberi Oku"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "Sizin İçin Kişiselleştirildi",
-      "title": "Ne Tür Bir Gezginsiniz?",
-      "subtitle": "Seyahat stilinizi seçin ve tam size göre hazırlanmış rehberleri keşfedin",
-      "viewGuides": "{{type}} Rehberlerini Görüntüle"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "Macera Tutkunu",
-        "description": "Heyecan verici deneyimler ve adrenalin"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "Kültür Kaşifi",
-        "description": "Sanat, tarih ve yerel gelenekler"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "Rahatlama Uzmanı",
-        "description": "Wellness tatilleri ve huzurlu kaçamaklar"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "Gastronomi Gezgini",
-        "description": "Yerel lezzetler ve gastronomi maceraları"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "Wellness Arayıcısı",
-        "description": "Rahatlama, spa ve farkındalık tatilleri"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "Akıllı Gezgin",
-        "description": "Maksimum deneyim, minimum bütçe"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "Solo Kaşif",
-        "description": "Bağımsız yolculuklar ve kendini keşfetme"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "Lüks Meraklısı",
-        "description": "Premium deneyimler ve seçkin yaşam tarzı"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Hayal Et",
-        "subtitle": "İlhamı keşfet",
-        "guides": [
-          "Destinasyon Rehberleri",
-          "Fotoğraf Yazıları"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "Planla",
-        "subtitle": "Yolculuğunu haritala",
-        "guides": [
-          "Gezi Planlaması",
-          "Vize Gereksinimleri"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "Hazırlan",
-        "subtitle": "Yola çıkmaya hazır ol",
-        "guides": [
-          "Valiz Listeleri",
-          "Güvenlik İpuçları"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "Deneyimle",
-        "subtitle": "Maceraya atıl",
-        "guides": [
-          "Yerel Öneriler",
-          "Gizli Hazineler"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "Paylaş",
-        "subtitle": "Hikayeni anlat",
-        "guides": [
-          "Seyahat Yazarlığı",
-          "Fotoğrafçılık"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "Hafta Sonu Kaçamakları",
-      "offBeatenPath": "Keşfedilmemiş Rotalar",
-      "smartTravel": "Akıllı Seyahat",
-      "bucketList": "Yapılacaklar Listesi",
-      "culinary": "Gastronomi",
-      "natureWonder": "Doğa ve Harikalar"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "Seyahat Rehberleri | Uzman Destinasyon İçgörüleri",
-      "description": "Küresel seyahat yazarları ağımızdan uzman seyahat rehberlerini, destinasyon içgörülerini ve içeriden ipuçlarını keşfedin. Mükemmel seyahatinizi bugün planlayın."
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "Editörlerimizden",
-      "title": "Editoryal Yazılar",
-      "readFull": "Tam Makaleyi Oku"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "Görsel Hikayeler",
-      "title": "İlham Veren Destinasyonlar",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "Şehir",
-        "mountains": "Dağlar",
-        "beach": "Plaj",
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
         "safari": "Safari",
-        "nature": "Doğa"
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "Uzman Sesler",
-      "title": "Yazarlarımızla Tanışın",
-      "subtitle": "En güvenilir seyahat rehberlerimizin arkasındaki uzman sesler",
-      "articleCount": "{{count}} Makale",
-      "viewProfile": "Profili Görüntüle"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "Bölgeye Göre Keşfet",
-      "title": "Dünya Genelinde Rehberler",
-      "subtitle": "Uzman kapsamımızı keşfetmek için herhangi bir destinasyona tıklayın",
-      "guidesAvailable": "{{count}} rehber mevcut",
-      "legendDestination": "Destinasyon",
-      "legendHighlighted": "Öne Çıkan"
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "Yolculuğa Katıl",
-      "title": "Haftalık Seyahat Hikayeleri",
-      "description": "Her hafta gelen kutunuza ulaşan küratörlü seyahat ilhamı, uzman ipuçları ve içeriden bakış açıları.",
-      "placeholder": "E-posta adresinizi girin",
-      "subscribe": "Abone Ol",
-      "subscribing": "Abone olunuyor...",
-      "joinCount": "Haftalık özetimizi okuyan 50.000+ gezgine katılın",
-      "invalidEmail": "Lütfen geçerli bir e-posta girin",
-      "successTitle": "Yolculuğa hoş geldiniz!",
-      "successDesc": "Artık editoryal özetimize abonesiniz."
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {
     "time": {
-      "recent": "Güncel",
-      "justNow": "Az önce",
-      "minutesAgo": "{{count}}dk önce",
-      "hoursAgo": "{{count}}sa önce",
-      "daysAgo": "{{count}}g önce",
-      "minRead": "{{count}} dk okuma"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "TRAVI HABERLER",
-      "edition": "Uluslararası Baskı",
-      "subscribe": "Abone Ol"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "Son Dakika"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "Dünya genelinde haberleri arayın...",
-      "button": "Ara",
-      "title": "Arama",
-      "searching": "\"{{query}}\" aranıyor..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "Tüm Haberler",
-      "world": "Dünya",
-      "business": "İş Dünyası",
-      "culture": "Kültür",
-      "travel": "Seyahat",
-      "tech": "Teknoloji",
-      "opinion": "Görüş"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "Henüz Haber Yok",
-      "description": "Size en son seyahat haberleri ve içgörüleri getirmek için çalışıyoruz. Dünya genelinden güncellemeler için yakında tekrar kontrol edin.",
-      "exploreDestinations": "Destinasyonları Keşfet",
-      "viewGuides": "Seyahat Rehberlerini Gör"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "Manşet",
-      "editorialTeam": "Editöryal Ekip"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}} görüntüleme",
-    "viewAll": "Tümünü Gör",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "Seyahat Haberleri | Son Hikayeler ve Güncellemeler",
-      "description": "Dünya genelinden en son seyahat haberleri, destinasyon güncellemeleri ve sektör içgörüleriyle bilgili kalın."
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "Bugün Ayrıca",
-      "storiesCount": "{{count}} hikaye",
-      "liveUpdates": "Canlı Güncellemeler",
-      "trendingTopics": "Trend Konular",
-      "noTrending": "Henüz trend konu yok. Yakında tekrar kontrol edin!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "Manşet Haberler",
-      "opinion": "Görüş ve Analiz",
-      "moreOpinion": "Daha Fazla Görüş",
-      "worldwide": "Dünya Geneli Kapsam"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "Dünyaya Açılan Pencereniz",
-      "subtitle": "Dünyanın her köşesinden haberler",
-      "storiesCount": "{{count}} hikaye",
-      "comingSoon": "Yakında"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "Bilgili Kalın",
-      "description": "Her sabah gelen kutunuza günün önemli haberlerini alın. 50.000+ okuyucuya katılın.",
-      "placeholder": "E-posta adresinizi girin",
-      "subscribe": "Ücretsiz Abone Ol",
-      "noSpam": "Spam yok. İstediğiniz zaman abonelikten çıkın.",
-      "successTitle": "Abone oldunuz!",
-      "successDesc": "Lütfen aboneliğinizi onaylamak için e-postanızı kontrol edin.",
-      "errorTitle": "Abonelik başarısız",
-      "errorDesc": "Lütfen daha sonra tekrar deneyin.",
-      "invalidTitle": "Geçersiz e-posta",
-      "invalidDesc": "Lütfen geçerli bir e-posta adresi girin."
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "Hakkımızda | TRAVI World",
-      "metaDescription": "Dünya genelinde destinasyonlar için kapsamlı seyahat rehberleri, gezilecek yerler, oteller ve restoran bilgileri sunan bağımsız bir seyahat bilgi kaynağı olan TRAVI World hakkında bilgi edinin.",
-      "badge": "Seyahat Arkadaşınız",
-      "title": "Hakkında",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "Milyonların dünyayı güvenle keşfetmesine yardımcı olan kapsamlı seyahat bilgileri ve destinasyon rehberleri için güvenilir kaynağınız.",
-      "ctaExplore": "Destinasyonları Keşfet",
-      "ctaContact": "İletişime Geç",
-      "stats": {
-        "destinations": "Destinasyon",
-        "articles": "Makale",
-        "support": "Seyahat Desteği",
-        "coverage": "Kapsam",
-        "cities": "16+ Şehir"
-      },
-      "whoWeAre": {
-        "title": "Biz Kimiz"
-      },
-      "mission": {
-        "title": "Misyonumuz"
-      },
-      "services": {
-        "badge": "Hizmetlerimiz",
-        "title": "Ne Sunuyoruz"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "Destinasyon Rehberleri",
-          "description": "Dünya genelinde şehirler ve bölgeler hakkında kapsamlı bilgiler"
-        },
-        "attractions": {
-          "title": "Gezilecek Yer Bilgileri",
-          "description": "Görülmesi gereken yerler ve benzersiz deneyimler hakkında detaylar"
-        },
-        "hotels": {
-          "title": "Otel Rehberleri",
-          "description": "Her bütçeye uygun konaklama seçenekleri hakkında bilgiler"
-        },
-        "restaurants": {
-          "title": "Restoran Önerileri",
-          "description": "Her damak zevki ve tercih için yemek seçenekleri"
-        },
-        "articles": {
-          "title": "Seyahat Makaleleri",
-          "description": "İpuçları, içgörüler ve seyahat ilhamı"
-        },
-        "news": {
-          "title": "Son Seyahat Haberleri",
-          "description": "Küratörlü güncellemelerle bilgili kalın"
-        }
-      },
-      "editorial": {
-        "title": "Editöryal Bağımsızlık",
-        "affiliateTitle": "Affiliate Açıklaması"
-      },
-      "values": {
-        "badge": "Temelimiz",
-        "title": "Değerlerimiz",
-        "accuracy": {
-          "title": "Doğruluk",
-          "description": "Doğru ve güvenilir bilgiler sunmaya çalışıyoruz, içeriklerimizi düzenli olarak güncelliyoruz"
-        },
-        "transparency": {
-          "title": "Şeffaflık",
-          "description": "Affiliate ilişkilerimiz ve işleyişimiz hakkında açığız"
-        },
-        "userFocused": {
-          "title": "Kullanıcı Odaklı",
-          "description": "İçeriğimiz gezginlerin bilinçli kararlar vermesine yardımcı olmak için tasarlandı"
-        }
-      },
-      "connect": {
-        "badge": "Bağlantı Kuralım",
-        "title": "İletişime Geçin"
-      },
-      "company": {
-        "title": "Şirket Bilgileri",
-        "contactTitle": "İletişim Bilgileri",
-        "contactForm": "İletişim Formu"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "İletişim | TRAVI World",
-      "metaDescription": "TRAVI World ile iletişime geçin. Seyahat bilgi hizmetlerimiz hakkındaki geri bildirimlerinizi, sorularınızı ve taleplerinizi memnuniyetle karşılıyoruz.",
-      "badge": "Sizden haber almaktan mutluluk duyarız",
-      "titlePart1": "Hadi",
-      "titlePart2": "Bağlantı Kuralım",
-      "subtitle": "Bir sonraki maceranız hakkında sorularınız mı var? Dünyayı güvenle keşfetmenize yardımcı olmak için buradayız.",
-      "cta": "Bize mesaj gönderin",
-      "getInTouch": "İletişime Geçin",
-      "getInTouchSubtitle": "Bize ulaşmanın en iyi yolunu seçin. Hızlı yanıt vermeye kararlıyız.",
-      "howCanWeHelp": "Size Nasıl Yardımcı Olabiliriz?",
-      "howCanWeHelpSubtitle": "Seyahat içeriklerimiz ve hizmetlerimiz hakkındaki her türlü soru veya geri bildiriminize yardımcı olmak için buradayız.",
-      "importantNote": "Önemli Not",
-      "importantNoteSubtitle": "Lütfen bize ulaşmadan önce okuyun",
-      "ourOffice": "Ofisimiz",
-      "ourOfficeSubtitle": "Resmi yazışmalar ve posta talepleri için",
-      "travelCompanion": "Seyahat arkadaşınız",
-      "urgentNote": "Acil konular için lütfen e-posta konu satırına {{urgentLabel}} yazın. Yanıtları talebin niteliğine göre önceliklendiriyoruz.",
-      "urgentLabel": "Acil",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "Genel Sorular",
-          "description": "Seyahat rehberlerimiz ve içeriklerimiz hakkında sorular"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "Gizlilik Soruları",
-          "description": "Veri erişimi, silme ve gizlilik talepleri"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "Web Sitemizi Ziyaret Edin",
-          "description": "Destinasyonları ve seyahat ilhamını keşfedin"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "Yanıt Süresi",
-          "description": "Hızlı yanıt vermeyi hedefliyoruz",
-          "action": "2-3 iş günü"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "Seyahat rehberlerimiz ve içeriklerimiz hakkında genel sorular",
-        "feedback": "İyileştirme için geri bildirim ve öneriler",
-        "reporting": "İçerik hataları veya eski bilgilerin bildirimi",
-        "business": "İş ve ortaklık soruları",
-        "media": "Medya ve basın soruları",
-        "privacy": "Gizlilikle ilgili talepler (veri erişimi, silme, vb.)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "Gizlilik Politikası | TRAVI World",
-      "metaDescription": "TRAVI World'ün kişisel bilgilerinizi nasıl topladığını, kullandığını ve koruduğunu öğrenin. Kapsamlı gizlilik politikamızı okuyun.",
-      "badge": "Gizliliğiniz Önemli",
-      "title": "Gizlilik Politikası",
-      "subtitle": "Gizliliğinizi korumaya ve veri uygulamalarımız hakkında şeffaf olmaya kararlıyız. TRAVI World'ün bilgilerinizi nasıl topladığını, kullandığını ve koruduğunu öğrenin.",
-      "effectiveDate": "Yürürlük Tarihi: 1 Ocak 2026",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "Veri Koruma",
-          "description": "Verileriniz korunuyor"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "Minimum Toplama",
-          "description": "Sadece gerekeni topluyoruz"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "Tam Şeffaflık",
-          "description": "Uygulamalarımız hakkında açığız"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "Sizin Kontrolünüz",
-          "description": "Tercihlerinizi yönetin"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "1. Biz Kimiz",
-        "informationCollect": "2. Topladığımız Bilgiler",
-        "howWeUse": "3. Bilgilerinizi Nasıl Kullanıyoruz",
-        "legalBasis": "4. İşlemenin Hukuki Temeli (GDPR)",
-        "cookies": "5. Çerezler ve İzleme Teknolojileri",
-        "thirdParty": "6. Üçüncü Taraf Hizmetler",
-        "aiContent": "7. Yapay Zeka Tarafından Oluşturulan İçerik",
-        "internationalTransfers": "8. Uluslararası Veri Transferleri",
-        "dataRetention": "9. Veri Saklama",
-        "privacyRights": "10. Gizlilik Haklarınız",
-        "californiaRights": "11. Kaliforniya Gizlilik Hakları (CCPA/CPRA)",
-        "childrenPrivacy": "12. Çocukların Gizliliği",
-        "dataSecurity": "13. Veri Güvenliği",
-        "changes": "14. Bu Politikadaki Değişiklikler",
-        "contactUs": "15. Bize Ulaşın"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "Şartlar ve Koşullar | TRAVI World",
-      "metaDescription": "TRAVI World seyahat bilgi hizmetlerini kullanım şartları ve koşullarını okuyun. Sizinle KBR Global Creative Consulting Ltd. arasındaki yasal anlaşma.",
-      "badge": "Yasal Anlaşma",
-      "title": "Şartlar ve Koşullar",
-      "subtitle": "TRAVI World'ü kullanmadan önce lütfen bu şartları dikkatlice okuyun. Platformumuza erişiminiz ve kullanımınız bu koşullara tabidir.",
-      "lastUpdated": "Son güncelleme: 1 Ocak 2026",
-      "importantNotice": "Önemli Yasal Uyarı",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "Editöryal Platform",
-          "description": "Seyahat rehberleri ve destinasyon içerikleri"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "Affiliate Bağlantıları",
-          "description": "Komisyon bazlı öneriler"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "Yapay Zeka Üretimi",
-          "description": "Yapay zeka desteğiyle oluşturulan içerik"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "Gizliliğiniz",
-          "description": "Veri koruma garantili"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "İşletmeci / Tüzel Kişilik",
-        "purpose": "1. Amaç ve Kullanım Kapsamı",
-        "affiliateDisclosure": "2. Affiliate Açıklaması ve Üçüncü Taraf İşlemler",
-        "aiDisclaimer": "3. Yapay Zeka İçerik Feragatnamesi",
-        "newsletter": "4. Bülten ve İletişim",
-        "userConduct": "5. Kullanıcı Davranışı ve Yasaklanan Eylemler",
-        "intellectualProperty": "6. Fikri Mülkiyet ve Sınırlı Lisans",
-        "dmca": "7. Bildirim ve Kaldırma (DMCA ve Benzeri)",
-        "disclaimers": "8. Doğruluk, Erişilebilirlik ve Feragatnameler",
-        "liability": "9. Sorumluluk Sınırlaması ve Mücbir Sebepler",
-        "indemnification": "10. Tazminat",
-        "privacyCookies": "11. Gizlilik, Çerezler ve Veri Koruma",
-        "accessibility": "12. Erişilebilirlik Beyanı",
-        "governingLaw": "13. Geçerli Kanun, Uyuşmazlık Çözümü ve Yargı Yetkisi",
-        "modifications": "14. Değişiklikler, Bölünebilirlik ve Genel Hükümler"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }
