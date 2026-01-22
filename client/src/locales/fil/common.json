@@ -19,7 +19,11 @@
     "closeMenu": "Isara ang menu",
     "logoAlt": "TRAVI - Gabay sa Paglalakbay",
     "followInstagram": "Sundan ang TRAVI sa Instagram",
-    "followTikTok": "Sundan ang TRAVI sa TikTok"
+    "followTikTok": "Sundan ang TRAVI sa TikTok",
+    "changeLanguage": "Baguhin ang wika",
+    "selectLanguage": "Pumili ng wika",
+    "popularLanguages": "Mga sikat na wika",
+    "allLanguages": "Lahat ng wika"
   },
   "breadcrumbs": {
     "ariaLabel": "Nabigasyon ng breadcrumb",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Tanawin ng Dubai na may Burj Khalifa tower sa paglubog ng araw" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben at Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower na may liwanag sa paglubog ng araw" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "Tanawin ng Manhattan sa New York na may Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Shibuya crossing ng Tokyo na may neon lights sa gabi" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands ng Singapore at Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Sagrada Familia ng Barcelona sa golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Templong Grand Palace ng Bangkok sa pagsikat ng araw" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Sheikh Zayed Grand Mosque ng Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Canal ng Amsterdam na may makasaysayang gusali" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Tanawin ng Hong Kong sa gabi" },
-      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Blue Mosque ng Istanbul sa paglubog ng araw" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip sa gabi" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Hollywood sign ng Los Angeles" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Art Deco district ng Miami Beach" },
-      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Colosseum ng Rome sa golden hour" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Tanawin ng Dubai na may Burj Khalifa tower sa paglubog ng araw"
+      },
+      "london": {
+        "name": "London",
+        "country": "UK",
+        "cardAlt": "London Big Ben at Houses of Parliament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "France",
+        "cardAlt": "Paris Eiffel Tower na may liwanag sa paglubog ng araw"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "Tanawin ng Manhattan sa New York na may Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Shibuya crossing ng Tokyo na may neon lights sa gabi"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Marina Bay Sands ng Singapore at Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spain",
+        "cardAlt": "Sagrada Familia ng Barcelona sa golden hour"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Templong Grand Palace ng Bangkok sa pagsikat ng araw"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Sheikh Zayed Grand Mosque ng Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Netherlands",
+        "cardAlt": "Canal ng Amsterdam na may makasaysayang gusali"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Tanawin ng Hong Kong sa gabi"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turkey",
+        "cardAlt": "Blue Mosque ng Istanbul sa paglubog ng araw"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip sa gabi"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Hollywood sign ng Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Art Deco district ng Miami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Italy",
+        "cardAlt": "Colosseum ng Rome sa golden hour"
+      }
     },
     "hero": {
       "badge": "{{count}} Destinasyon sa Buong Mundo",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Mangarap",
         "subtitle": "Tumuklas ng inspirasyon",
-        "guides": ["Mga Gabay sa Destinasyon", "Mga Photo Essay"]
+        "guides": [
+          "Mga Gabay sa Destinasyon",
+          "Mga Photo Essay"
+        ]
       },
       "plan": {
         "title": "Magplano",
         "subtitle": "Imapa ang iyong paglalakbay",
-        "guides": ["Pagpaplano ng Biyahe", "Mga Kinakailangang Visa"]
+        "guides": [
+          "Pagpaplano ng Biyahe",
+          "Mga Kinakailangang Visa"
+        ]
       },
       "prepare": {
         "title": "Maghanda",
         "subtitle": "Maging handa na umalis",
-        "guides": ["Mga Listahan ng Dapat Dalhin", "Mga Tip sa Kaligtasan"]
+        "guides": [
+          "Mga Listahan ng Dapat Dalhin",
+          "Mga Tip sa Kaligtasan"
+        ]
       },
       "experience": {
         "title": "Maranasan",
         "subtitle": "Isabuhay ang pakikipagsapalaran",
-        "guides": ["Mga Lokal na Kaalaman", "Mga Nakatagong Yaman"]
+        "guides": [
+          "Mga Lokal na Kaalaman",
+          "Mga Nakatagong Yaman"
+        ]
       },
       "share": {
         "title": "Ibahagi",
         "subtitle": "Ikuwento ang iyong kwento",
-        "guides": ["Pagsusulat ng Paglalakbay", "Potograpiya"]
+        "guides": [
+          "Pagsusulat ng Paglalakbay",
+          "Potograpiya"
+        ]
       }
     },
     "categories": {

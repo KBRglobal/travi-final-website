@@ -19,7 +19,11 @@
     "closeMenu": "Κλείσιμο μενού",
     "logoAlt": "TRAVI - Ταξιδιωτικός Οδηγός",
     "followInstagram": "Ακολουθήστε το TRAVI στο Instagram",
-    "followTikTok": "Ακολουθήστε το TRAVI στο TikTok"
+    "followTikTok": "Ακολουθήστε το TRAVI στο TikTok",
+    "changeLanguage": "Αλλαγή γλώσσας",
+    "selectLanguage": "Επιλογή γλώσσας",
+    "popularLanguages": "Δημοφιλείς γλώσσες",
+    "allLanguages": "Όλες οι γλώσσες"
   },
   "breadcrumbs": {
     "ariaLabel": "Πλοήγηση ψίχουλων",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "ΗΑΕ", "cardAlt": "Ο ορίζοντας του Dubai με τον πύργο Burj Khalifa στο ηλιοβασίλεμα" },
-      "london": { "name": "London", "country": "Ηνωμένο Βασίλειο", "cardAlt": "London Big Ben και Βουλή" },
-      "paris": { "name": "Paris", "country": "Γαλλία", "cardAlt": "Ο Πύργος του Άιφελ φωτισμένος στο ηλιοβασίλεμα" },
-      "newYork": { "name": "New York", "country": "ΗΠΑ", "cardAlt": "Ο ορίζοντας του Manhattan με το Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Ιαπωνία", "cardAlt": "Διασταύρωση Shibuya με νέον τη νύχτα" },
-      "singapore": { "name": "Singapore", "country": "Σιγκαπούρη", "cardAlt": "Singapore Marina Bay Sands και Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Ισπανία", "cardAlt": "Barcelona Sagrada Familia στη χρυσή ώρα" },
-      "bangkok": { "name": "Bangkok", "country": "Ταϊλάνδη", "cardAlt": "Ναός Grand Palace της Bangkok στην ανατολή" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "ΗΑΕ", "cardAlt": "Τέμενος Sheikh Zayed του Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "Ολλανδία", "cardAlt": "Κανάλι του Amsterdam με ιστορικά κτίρια" },
-      "hongKong": { "name": "Hong Kong", "country": "Κίνα", "cardAlt": "Ο ορίζοντας του Hong Kong τη νύχτα" },
-      "istanbul": { "name": "Istanbul", "country": "Τουρκία", "cardAlt": "Μπλε Τζαμί της Istanbul στο ηλιοβασίλεμα" },
-      "lasVegas": { "name": "Las Vegas", "country": "ΗΠΑ", "cardAlt": "Las Vegas Strip τη νύχτα" },
-      "losAngeles": { "name": "Los Angeles", "country": "ΗΠΑ", "cardAlt": "Επιγραφή Hollywood του Los Angeles" },
-      "miami": { "name": "Miami", "country": "ΗΠΑ", "cardAlt": "Miami Beach συνοικία Art Deco" },
-      "rome": { "name": "Rome", "country": "Ιταλία", "cardAlt": "Κολοσσαίο της Rome στη χρυσή ώρα" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "ΗΑΕ",
+        "cardAlt": "Ο ορίζοντας του Dubai με τον πύργο Burj Khalifa στο ηλιοβασίλεμα"
+      },
+      "london": {
+        "name": "London",
+        "country": "Ηνωμένο Βασίλειο",
+        "cardAlt": "London Big Ben και Βουλή"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Γαλλία",
+        "cardAlt": "Ο Πύργος του Άιφελ φωτισμένος στο ηλιοβασίλεμα"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "ΗΠΑ",
+        "cardAlt": "Ο ορίζοντας του Manhattan με το Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Ιαπωνία",
+        "cardAlt": "Διασταύρωση Shibuya με νέον τη νύχτα"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Σιγκαπούρη",
+        "cardAlt": "Singapore Marina Bay Sands και Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Ισπανία",
+        "cardAlt": "Barcelona Sagrada Familia στη χρυσή ώρα"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Ταϊλάνδη",
+        "cardAlt": "Ναός Grand Palace της Bangkok στην ανατολή"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "ΗΑΕ",
+        "cardAlt": "Τέμενος Sheikh Zayed του Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Ολλανδία",
+        "cardAlt": "Κανάλι του Amsterdam με ιστορικά κτίρια"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Κίνα",
+        "cardAlt": "Ο ορίζοντας του Hong Kong τη νύχτα"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Τουρκία",
+        "cardAlt": "Μπλε Τζαμί της Istanbul στο ηλιοβασίλεμα"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "ΗΠΑ",
+        "cardAlt": "Las Vegas Strip τη νύχτα"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "ΗΠΑ",
+        "cardAlt": "Επιγραφή Hollywood του Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "ΗΠΑ",
+        "cardAlt": "Miami Beach συνοικία Art Deco"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Ιταλία",
+        "cardAlt": "Κολοσσαίο της Rome στη χρυσή ώρα"
+      }
     },
     "hero": {
       "badge": "{{count}} Προορισμοί Παγκοσμίως",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Ονειρευτείτε",
         "subtitle": "Ανακαλύψτε έμπνευση",
-        "guides": ["Οδηγοί Προορισμών", "Φωτογραφικά Δοκίμια"]
+        "guides": [
+          "Οδηγοί Προορισμών",
+          "Φωτογραφικά Δοκίμια"
+        ]
       },
       "plan": {
         "title": "Σχεδιάστε",
         "subtitle": "Χαρτογραφήστε το ταξίδι σας",
-        "guides": ["Σχεδιασμός Ταξιδιού", "Απαιτήσεις Βίζας"]
+        "guides": [
+          "Σχεδιασμός Ταξιδιού",
+          "Απαιτήσεις Βίζας"
+        ]
       },
       "prepare": {
         "title": "Προετοιμαστείτε",
         "subtitle": "Ετοιμαστείτε να φύγετε",
-        "guides": ["Λίστες Συσκευασίας", "Συμβουλές Ασφάλειας"]
+        "guides": [
+          "Λίστες Συσκευασίας",
+          "Συμβουλές Ασφάλειας"
+        ]
       },
       "experience": {
         "title": "Ζήστε",
         "subtitle": "Βιώστε την περιπέτεια",
-        "guides": ["Τοπικές Πληροφορίες", "Κρυμμένοι Θησαυροί"]
+        "guides": [
+          "Τοπικές Πληροφορίες",
+          "Κρυμμένοι Θησαυροί"
+        ]
       },
       "share": {
         "title": "Μοιραστείτε",
         "subtitle": "Πείτε την ιστορία σας",
-        "guides": ["Ταξιδιωτική Γραφή", "Φωτογραφία"]
+        "guides": [
+          "Ταξιδιωτική Γραφή",
+          "Φωτογραφία"
+        ]
       }
     },
     "categories": {

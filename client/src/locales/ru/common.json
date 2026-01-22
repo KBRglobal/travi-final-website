@@ -19,7 +19,11 @@
     "closeMenu": "Закрыть меню",
     "logoAlt": "TRAVI - Путеводитель",
     "followInstagram": "Следите за TRAVI в Instagram",
-    "followTikTok": "Следите за TRAVI в TikTok"
+    "followTikTok": "Следите за TRAVI в TikTok",
+    "changeLanguage": "Изменить язык",
+    "selectLanguage": "Выбрать язык",
+    "popularLanguages": "Популярные языки",
+    "allLanguages": "Все языки"
   },
   "breadcrumbs": {
     "ariaLabel": "Хлебные крошки",

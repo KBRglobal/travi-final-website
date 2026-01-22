@@ -19,7 +19,11 @@
     "closeMenu": "Tutup menu",
     "logoAlt": "TRAVI - Panduan Perjalanan",
     "followInstagram": "Ikuti TRAVI di Instagram",
-    "followTikTok": "Ikuti TRAVI di TikTok"
+    "followTikTok": "Ikuti TRAVI di TikTok",
+    "changeLanguage": "Ubah bahasa",
+    "selectLanguage": "Pilih bahasa",
+    "popularLanguages": "Bahasa populer",
+    "allLanguages": "Semua bahasa"
   },
   "breadcrumbs": {
     "ariaLabel": "Navigasi breadcrumb",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UEA", "cardAlt": "Cakrawala Dubai dengan menara Burj Khalifa saat matahari terbenam" },
-      "london": { "name": "London", "country": "Inggris", "cardAlt": "Big Ben London dan Gedung Parlemen" },
-      "paris": { "name": "Paris", "country": "Prancis", "cardAlt": "Menara Eiffel Paris bercahaya saat senja" },
-      "newYork": { "name": "New York", "country": "AS", "cardAlt": "Cakrawala Manhattan New York dengan Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Jepang", "cardAlt": "Penyeberangan Shibuya Tokyo dengan lampu neon di malam hari" },
-      "singapore": { "name": "Singapura", "country": "Singapura", "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spanyol", "cardAlt": "Sagrada Familia Barcelona saat golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Kuil Grand Palace Bangkok saat matahari terbit" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UEA", "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "Belanda", "cardAlt": "Kanal Amsterdam dengan bangunan bersejarah" },
-      "hongKong": { "name": "Hong Kong", "country": "Tiongkok", "cardAlt": "Cakrawala Hong Kong di malam hari" },
-      "istanbul": { "name": "Istanbul", "country": "Turki", "cardAlt": "Masjid Biru Istanbul saat matahari terbenam" },
-      "lasVegas": { "name": "Las Vegas", "country": "AS", "cardAlt": "Strip Las Vegas di malam hari" },
-      "losAngeles": { "name": "Los Angeles", "country": "AS", "cardAlt": "Tanda Hollywood Los Angeles" },
-      "miami": { "name": "Miami", "country": "AS", "cardAlt": "Distrik Art Deco Miami Beach" },
-      "rome": { "name": "Roma", "country": "Italia", "cardAlt": "Colosseum Roma saat golden hour" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UEA",
+        "cardAlt": "Cakrawala Dubai dengan menara Burj Khalifa saat matahari terbenam"
+      },
+      "london": {
+        "name": "London",
+        "country": "Inggris",
+        "cardAlt": "Big Ben London dan Gedung Parlemen"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Prancis",
+        "cardAlt": "Menara Eiffel Paris bercahaya saat senja"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "AS",
+        "cardAlt": "Cakrawala Manhattan New York dengan Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Jepang",
+        "cardAlt": "Penyeberangan Shibuya Tokyo dengan lampu neon di malam hari"
+      },
+      "singapore": {
+        "name": "Singapura",
+        "country": "Singapura",
+        "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanyol",
+        "cardAlt": "Sagrada Familia Barcelona saat golden hour"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Kuil Grand Palace Bangkok saat matahari terbit"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UEA",
+        "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Belanda",
+        "cardAlt": "Kanal Amsterdam dengan bangunan bersejarah"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Tiongkok",
+        "cardAlt": "Cakrawala Hong Kong di malam hari"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turki",
+        "cardAlt": "Masjid Biru Istanbul saat matahari terbenam"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "AS",
+        "cardAlt": "Strip Las Vegas di malam hari"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "AS",
+        "cardAlt": "Tanda Hollywood Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "AS",
+        "cardAlt": "Distrik Art Deco Miami Beach"
+      },
+      "rome": {
+        "name": "Roma",
+        "country": "Italia",
+        "cardAlt": "Colosseum Roma saat golden hour"
+      }
     },
     "hero": {
       "badge": "{{count}} Destinasi di Seluruh Dunia",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Bermimpi",
         "subtitle": "Temukan inspirasi",
-        "guides": ["Panduan Destinasi", "Esai Foto"]
+        "guides": [
+          "Panduan Destinasi",
+          "Esai Foto"
+        ]
       },
       "plan": {
         "title": "Rencanakan",
         "subtitle": "Petakan perjalanan Anda",
-        "guides": ["Perencanaan Perjalanan", "Persyaratan Visa"]
+        "guides": [
+          "Perencanaan Perjalanan",
+          "Persyaratan Visa"
+        ]
       },
       "prepare": {
         "title": "Persiapkan",
         "subtitle": "Siap berangkat",
-        "guides": ["Daftar Packing", "Tips Keamanan"]
+        "guides": [
+          "Daftar Packing",
+          "Tips Keamanan"
+        ]
       },
       "experience": {
         "title": "Alami",
         "subtitle": "Jalani petualangan",
-        "guides": ["Wawasan Lokal", "Permata Tersembunyi"]
+        "guides": [
+          "Wawasan Lokal",
+          "Permata Tersembunyi"
+        ]
       },
       "share": {
         "title": "Bagikan",
         "subtitle": "Ceritakan kisah Anda",
-        "guides": ["Penulisan Perjalanan", "Fotografi"]
+        "guides": [
+          "Penulisan Perjalanan",
+          "Fotografi"
+        ]
       }
     },
     "categories": {

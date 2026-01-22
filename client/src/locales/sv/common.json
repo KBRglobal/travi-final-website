@@ -19,7 +19,11 @@
     "closeMenu": "Stäng meny",
     "logoAlt": "TRAVI - Reseguide",
     "followInstagram": "Följ TRAVI på Instagram",
-    "followTikTok": "Följ TRAVI på TikTok"
+    "followTikTok": "Följ TRAVI på TikTok",
+    "changeLanguage": "Ändra språk",
+    "selectLanguage": "Välj språk",
+    "popularLanguages": "Populära språk",
+    "allLanguages": "Alla språk"
   },
   "breadcrumbs": {
     "ariaLabel": "Brödsmulnavigering",

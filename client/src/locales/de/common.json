@@ -19,7 +19,11 @@
     "closeMenu": "Menü schließen",
     "logoAlt": "TRAVI - Reiseführer",
     "followInstagram": "Folgen Sie TRAVI auf Instagram",
-    "followTikTok": "Folgen Sie TRAVI auf TikTok"
+    "followTikTok": "Folgen Sie TRAVI auf TikTok",
+    "changeLanguage": "Sprache ändern",
+    "selectLanguage": "Sprache auswählen",
+    "popularLanguages": "Beliebte Sprachen",
+    "allLanguages": "Alle Sprachen"
   },
   "breadcrumbs": {
     "ariaLabel": "Brotkrümelnavigation",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "VAE", "cardAlt": "Dubai Skyline mit Burj Khalifa bei Sonnenuntergang" },
-      "london": { "name": "London", "country": "Vereinigtes Königreich", "cardAlt": "Big Ben und Houses of Parliament in London" },
-      "paris": { "name": "Paris", "country": "Frankreich", "cardAlt": "Eiffelturm bei Sonnenuntergang beleuchtet" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "Manhattan Skyline mit Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Shibuya-Kreuzung mit Neonlichtern bei Nacht" },
-      "singapore": { "name": "Singapore", "country": "Singapur", "cardAlt": "Marina Bay Sands und Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spanien", "cardAlt": "Sagrada Familia zur goldenen Stunde" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Großer Palast bei Sonnenaufgang" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "VAE", "cardAlt": "Sheikh-Zayed-Moschee" },
-      "amsterdam": { "name": "Amsterdam", "country": "Niederlande", "cardAlt": "Amsterdamer Grachten mit historischen Gebäuden" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong Skyline bei Nacht" },
-      "istanbul": { "name": "Istanbul", "country": "Türkei", "cardAlt": "Blaue Moschee bei Sonnenuntergang" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip bei Nacht" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Hollywood-Schriftzug" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Art-Déco-Viertel Miami Beach" },
-      "rome": { "name": "Rome", "country": "Italien", "cardAlt": "Kolosseum zur goldenen Stunde" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "VAE",
+        "cardAlt": "Dubai Skyline mit Burj Khalifa bei Sonnenuntergang"
+      },
+      "london": {
+        "name": "London",
+        "country": "Vereinigtes Königreich",
+        "cardAlt": "Big Ben und Houses of Parliament in London"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Frankreich",
+        "cardAlt": "Eiffelturm bei Sonnenuntergang beleuchtet"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "Manhattan Skyline mit Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Shibuya-Kreuzung mit Neonlichtern bei Nacht"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapur",
+        "cardAlt": "Marina Bay Sands und Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanien",
+        "cardAlt": "Sagrada Familia zur goldenen Stunde"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Großer Palast bei Sonnenaufgang"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "VAE",
+        "cardAlt": "Sheikh-Zayed-Moschee"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Niederlande",
+        "cardAlt": "Amsterdamer Grachten mit historischen Gebäuden"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Hong Kong Skyline bei Nacht"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Türkei",
+        "cardAlt": "Blaue Moschee bei Sonnenuntergang"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip bei Nacht"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Hollywood-Schriftzug"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Art-Déco-Viertel Miami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Italien",
+        "cardAlt": "Kolosseum zur goldenen Stunde"
+      }
     },
     "hero": {
       "badge": "{{count}} Reiseziele weltweit",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Träumen",
         "subtitle": "Inspiration entdecken",
-        "guides": ["Reiseziel-Guides", "Foto-Essays"]
+        "guides": [
+          "Reiseziel-Guides",
+          "Foto-Essays"
+        ]
       },
       "plan": {
         "title": "Planen",
         "subtitle": "Ihre Reise gestalten",
-        "guides": ["Reiseplanung", "Visabestimmungen"]
+        "guides": [
+          "Reiseplanung",
+          "Visabestimmungen"
+        ]
       },
       "prepare": {
         "title": "Vorbereiten",
         "subtitle": "Reisefertig werden",
-        "guides": ["Packlisten", "Sicherheitstipps"]
+        "guides": [
+          "Packlisten",
+          "Sicherheitstipps"
+        ]
       },
       "experience": {
         "title": "Erleben",
         "subtitle": "Das Abenteuer leben",
-        "guides": ["Lokale Einblicke", "Geheimtipps"]
+        "guides": [
+          "Lokale Einblicke",
+          "Geheimtipps"
+        ]
       },
       "share": {
         "title": "Teilen",
         "subtitle": "Ihre Geschichte erzählen",
-        "guides": ["Reiseschreiben", "Fotografie"]
+        "guides": [
+          "Reiseschreiben",
+          "Fotografie"
+        ]
       }
     },
     "seo": {
@@ -669,6 +752,14 @@
       "legendHighlighted": "Hervorgehoben"
     },
     "categories": {
+      "all": "Alle",
+      "city": "Städteführer",
+      "food": "Gastronomie",
+      "culture": "Kultur",
+      "adventure": "Abenteuer",
+      "luxury": "Luxus",
+      "budget": "Budget",
+      "family": "Familie",
       "weekendEscapes": "Wochenend-Ausflüge",
       "offBeatenPath": "Abseits der Touristenpfade",
       "smartTravel": "Clever reisen",
@@ -708,22 +799,6 @@
       "title": "Außergewöhnliche Reiseerzählungen",
       "subtitle": "Eine sorgfältig ausgewählte Sammlung von Reiseführern und Reisegeschichten",
       "viewAll": "Gesamte Sammlung ansehen"
-    },
-    "categories": {
-      "all": "Alle",
-      "city": "Städteführer",
-      "food": "Gastronomie",
-      "culture": "Kultur",
-      "adventure": "Abenteuer",
-      "luxury": "Luxus",
-      "budget": "Budget",
-      "family": "Familie",
-      "weekendEscapes": "Wochenend-Ausflüge",
-      "offBeatenPath": "Abseits der Touristenpfade",
-      "smartTravel": "Clever reisen",
-      "bucketList": "Reise-Wunschliste",
-      "culinary": "Kulinarik",
-      "natureWonder": "Natur und Wunder"
     }
   },
   "destination": {

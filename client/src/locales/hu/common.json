@@ -19,7 +19,11 @@
     "closeMenu": "Menü bezárása",
     "logoAlt": "TRAVI - Útikalauz",
     "followInstagram": "Kövesse a TRAVI-t az Instagramon",
-    "followTikTok": "Kövesse a TRAVI-t a TikTokon"
+    "followTikTok": "Kövesse a TRAVI-t a TikTokon",
+    "changeLanguage": "Nyelv módosítása",
+    "selectLanguage": "Válassza ki a nyelvet",
+    "popularLanguages": "Népszerű nyelvek",
+    "allLanguages": "Minden nyelv"
   },
   "breadcrumbs": {
     "ariaLabel": "Morzsa navigáció",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "EAE", "cardAlt": "Dubai látképe a Burj Khalifa toronnyal naplementekor" },
-      "london": { "name": "London", "country": "Egyesült Királyság", "cardAlt": "London Big Ben és a Parlament" },
-      "paris": { "name": "Paris", "country": "Franciaország", "cardAlt": "Paris Eiffel-torony megvilágítva naplementekor" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan az Empire State Building-gel" },
-      "tokyo": { "name": "Tokyo", "country": "Japán", "cardAlt": "Tokyo Shibuya kereszteződés neon fények éjjel" },
-      "singapore": { "name": "Singapore", "country": "Szingapúr", "cardAlt": "Singapore Marina Bay Sands és Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spanyolország", "cardAlt": "Barcelona Sagrada Familia az arany órában" },
-      "bangkok": { "name": "Bangkok", "country": "Thaiföld", "cardAlt": "Bangkok Grand Palace templom napkeltekor" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "EAE", "cardAlt": "Abu Dhabi Sheikh Zayed mecset" },
-      "amsterdam": { "name": "Amsterdam", "country": "Hollandia", "cardAlt": "Amsterdam csatorna történelmi épületekkel" },
-      "hongKong": { "name": "Hong Kong", "country": "Kína", "cardAlt": "Hong Kong látképe éjjel" },
-      "istanbul": { "name": "Istanbul", "country": "Törökország", "cardAlt": "Istanbul Kék Mecset naplementekor" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip éjjel" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood felirat" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco negyed" },
-      "rome": { "name": "Rome", "country": "Olaszország", "cardAlt": "Rome Colosseum az arany órában" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "EAE",
+        "cardAlt": "Dubai látképe a Burj Khalifa toronnyal naplementekor"
+      },
+      "london": {
+        "name": "London",
+        "country": "Egyesült Királyság",
+        "cardAlt": "London Big Ben és a Parlament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Franciaország",
+        "cardAlt": "Paris Eiffel-torony megvilágítva naplementekor"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan az Empire State Building-gel"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japán",
+        "cardAlt": "Tokyo Shibuya kereszteződés neon fények éjjel"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Szingapúr",
+        "cardAlt": "Singapore Marina Bay Sands és Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanyolország",
+        "cardAlt": "Barcelona Sagrada Familia az arany órában"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thaiföld",
+        "cardAlt": "Bangkok Grand Palace templom napkeltekor"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "EAE",
+        "cardAlt": "Abu Dhabi Sheikh Zayed mecset"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Hollandia",
+        "cardAlt": "Amsterdam csatorna történelmi épületekkel"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Kína",
+        "cardAlt": "Hong Kong látképe éjjel"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Törökország",
+        "cardAlt": "Istanbul Kék Mecset naplementekor"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip éjjel"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles Hollywood felirat"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Miami Beach Art Deco negyed"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Olaszország",
+        "cardAlt": "Rome Colosseum az arany órában"
+      }
     },
     "hero": {
       "badge": "{{count}} Úti Cél Világszerte",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Álmodj",
         "subtitle": "Fedezd fel az inspirációt",
-        "guides": ["Úti Cél Kalauzok", "Fotóesszék"]
+        "guides": [
+          "Úti Cél Kalauzok",
+          "Fotóesszék"
+        ]
       },
       "plan": {
         "title": "Tervezz",
         "subtitle": "Térképezd fel az utad",
-        "guides": ["Utazástervezés", "Vízumkövetelmények"]
+        "guides": [
+          "Utazástervezés",
+          "Vízumkövetelmények"
+        ]
       },
       "prepare": {
         "title": "Készülj",
         "subtitle": "Készülj fel az útra",
-        "guides": ["Csomagolási Listák", "Biztonsági Tippek"]
+        "guides": [
+          "Csomagolási Listák",
+          "Biztonsági Tippek"
+        ]
       },
       "experience": {
         "title": "Tapasztald Meg",
         "subtitle": "Éld át a kalandot",
-        "guides": ["Helyi Betekintések", "Rejtett Kincsek"]
+        "guides": [
+          "Helyi Betekintések",
+          "Rejtett Kincsek"
+        ]
       },
       "share": {
         "title": "Oszd Meg",
         "subtitle": "Mesélj a történetedről",
-        "guides": ["Útirajz Írás", "Fotózás"]
+        "guides": [
+          "Útirajz Írás",
+          "Fotózás"
+        ]
       }
     },
     "categories": {

@@ -19,7 +19,11 @@
     "closeMenu": "Tutup menu",
     "logoAlt": "TRAVI - Panduan Perjalanan",
     "followInstagram": "Ikuti TRAVI di Instagram",
-    "followTikTok": "Ikuti TRAVI di TikTok"
+    "followTikTok": "Ikuti TRAVI di TikTok",
+    "changeLanguage": "Ubah bahasa",
+    "selectLanguage": "Pilih bahasa",
+    "popularLanguages": "Bahasa populer",
+    "allLanguages": "Semua bahasa"
   },
   "breadcrumbs": {
     "ariaLabel": "Navigasi breadcrumb",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Pemandangan Dubai dengan menara Burj Khalifa pada waktu senja" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben dan Bangunan Parlimen" },
-      "paris": { "name": "Paris", "country": "Perancis", "cardAlt": "Menara Eiffel Paris diterangi pada waktu senja" },
-      "newYork": { "name": "New York", "country": "AS", "cardAlt": "Pemandangan Manhattan New York dengan Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Jepun", "cardAlt": "Persimpangan Shibuya Tokyo dengan lampu neon pada waktu malam" },
-      "singapore": { "name": "Singapura", "country": "Singapura", "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Sepanyol", "cardAlt": "Sagrada Familia Barcelona pada waktu keemasan" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Istana Besar Bangkok pada waktu matahari terbit" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "Belanda", "cardAlt": "Terusan Amsterdam dengan bangunan bersejarah" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Pemandangan Hong Kong pada waktu malam" },
-      "istanbul": { "name": "Istanbul", "country": "Turki", "cardAlt": "Masjid Biru Istanbul pada waktu senja" },
-      "lasVegas": { "name": "Las Vegas", "country": "AS", "cardAlt": "Las Vegas Strip pada waktu malam" },
-      "losAngeles": { "name": "Los Angeles", "country": "AS", "cardAlt": "Papan tanda Hollywood Los Angeles" },
-      "miami": { "name": "Miami", "country": "AS", "cardAlt": "Daerah Art Deco Miami Beach" },
-      "rome": { "name": "Rom", "country": "Itali", "cardAlt": "Colosseum Rom pada waktu keemasan" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Pemandangan Dubai dengan menara Burj Khalifa pada waktu senja"
+      },
+      "london": {
+        "name": "London",
+        "country": "UK",
+        "cardAlt": "London Big Ben dan Bangunan Parlimen"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Perancis",
+        "cardAlt": "Menara Eiffel Paris diterangi pada waktu senja"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "AS",
+        "cardAlt": "Pemandangan Manhattan New York dengan Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Jepun",
+        "cardAlt": "Persimpangan Shibuya Tokyo dengan lampu neon pada waktu malam"
+      },
+      "singapore": {
+        "name": "Singapura",
+        "country": "Singapura",
+        "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Sepanyol",
+        "cardAlt": "Sagrada Familia Barcelona pada waktu keemasan"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Istana Besar Bangkok pada waktu matahari terbit"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Belanda",
+        "cardAlt": "Terusan Amsterdam dengan bangunan bersejarah"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Pemandangan Hong Kong pada waktu malam"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turki",
+        "cardAlt": "Masjid Biru Istanbul pada waktu senja"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "AS",
+        "cardAlt": "Las Vegas Strip pada waktu malam"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "AS",
+        "cardAlt": "Papan tanda Hollywood Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "AS",
+        "cardAlt": "Daerah Art Deco Miami Beach"
+      },
+      "rome": {
+        "name": "Rom",
+        "country": "Itali",
+        "cardAlt": "Colosseum Rom pada waktu keemasan"
+      }
     },
     "hero": {
       "badge": "{{count}} Destinasi Seluruh Dunia",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Impian",
         "subtitle": "Temui inspirasi",
-        "guides": ["Panduan Destinasi", "Esei Foto"]
+        "guides": [
+          "Panduan Destinasi",
+          "Esei Foto"
+        ]
       },
       "plan": {
         "title": "Rancang",
         "subtitle": "Petakan perjalanan anda",
-        "guides": ["Perancangan Perjalanan", "Keperluan Visa"]
+        "guides": [
+          "Perancangan Perjalanan",
+          "Keperluan Visa"
+        ]
       },
       "prepare": {
         "title": "Sedia",
         "subtitle": "Bersedia untuk pergi",
-        "guides": ["Senarai Pembungkusan", "Tips Keselamatan"]
+        "guides": [
+          "Senarai Pembungkusan",
+          "Tips Keselamatan"
+        ]
       },
       "experience": {
         "title": "Alami",
         "subtitle": "Jalani pengembaraan",
-        "guides": ["Pandangan Tempatan", "Permata Tersembunyi"]
+        "guides": [
+          "Pandangan Tempatan",
+          "Permata Tersembunyi"
+        ]
       },
       "share": {
         "title": "Kongsi",
         "subtitle": "Ceritakan kisah anda",
-        "guides": ["Penulisan Perjalanan", "Fotografi"]
+        "guides": [
+          "Penulisan Perjalanan",
+          "Fotografi"
+        ]
       }
     },
     "categories": {

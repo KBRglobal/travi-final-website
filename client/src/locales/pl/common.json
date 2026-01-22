@@ -19,7 +19,11 @@
     "closeMenu": "Zamknij menu",
     "logoAlt": "TRAVI - Przewodnik podróżny",
     "followInstagram": "Śledź TRAVI na Instagramie",
-    "followTikTok": "Śledź TRAVI na TikToku"
+    "followTikTok": "Śledź TRAVI na TikToku",
+    "changeLanguage": "Zmień język",
+    "selectLanguage": "Wybierz język",
+    "popularLanguages": "Popularne języki",
+    "allLanguages": "Wszystkie języki"
   },
   "breadcrumbs": {
     "ariaLabel": "Nawigacja okruszkowa",

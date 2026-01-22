@@ -19,7 +19,11 @@
     "closeMenu": "ปิดเมนู",
     "logoAlt": "TRAVI - คู่มือท่องเที่ยว",
     "followInstagram": "ติดตาม TRAVI บน Instagram",
-    "followTikTok": "ติดตาม TRAVI บน TikTok"
+    "followTikTok": "ติดตาม TRAVI บน TikTok",
+    "changeLanguage": "เปลี่ยนภาษา",
+    "selectLanguage": "เลือกภาษา",
+    "popularLanguages": "ภาษาที่นิยม",
+    "allLanguages": "ทุกภาษา"
   },
   "breadcrumbs": {
     "ariaLabel": "การนำทางเส้นทาง",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "สหรัฐอาหรับเอมิเรตส์", "cardAlt": "เส้นขอบฟ้า Dubai กับตึก Burj Khalifah ยามพระอาทิตย์ตก" },
-      "london": { "name": "London", "country": "สหราชอาณาจักร", "cardAlt": "Big Ben และรัฐสภาของ London" },
-      "paris": { "name": "Paris", "country": "ฝรั่งเศส", "cardAlt": "หอ Eiffel Tower ส่องแสงยามพระอาทิตย์ตกใน Paris" },
-      "newYork": { "name": "New York", "country": "สหรัฐอเมริกา", "cardAlt": "ตึก Empire State Building และเส้นขอบฟ้า Manhattan ของ New York" },
-      "tokyo": { "name": "Tokyo", "country": "ญี่ปุ่น", "cardAlt": "ทางข้าม Shibuya พร้อมป้ายนีออนใน Tokyo" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands และ Gardens by the Bay ของ Singapore" },
-      "barcelona": { "name": "Barcelona", "country": "สเปน", "cardAlt": "Sagrada Familia ในชั่วโมงทองของ Barcelona" },
-      "bangkok": { "name": "Bangkok", "country": "ไทย", "cardAlt": "พระบรมมหาราชวังยามพระอาทิตย์ขึ้นใน Bangkok" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "สหรัฐอาหรับเอมิเรตส์", "cardAlt": "มัสยิด Sheikh Zayed Grand Mosque ของ Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "เนเธอร์แลนด์", "cardAlt": "อาคารประวัติศาสตร์และคลองของ Amsterdam" },
-      "hongKong": { "name": "Hong Kong", "country": "จีน", "cardAlt": "เส้นขอบฟ้ายามค่ำของ Hong Kong" },
-      "istanbul": { "name": "Istanbul", "country": "ตุรกี", "cardAlt": "มัสยิด Blue Mosque ยามพระอาทิตย์ตกใน Istanbul" },
-      "lasVegas": { "name": "Las Vegas", "country": "สหรัฐอเมริกา", "cardAlt": "ถนน Strip ยามค่ำใน Las Vegas" },
-      "losAngeles": { "name": "Los Angeles", "country": "สหรัฐอเมริกา", "cardAlt": "ป้าย Hollywood ของ Los Angeles" },
-      "miami": { "name": "Miami", "country": "สหรัฐอเมริกา", "cardAlt": "ย่าน Art Deco ของ Miami Beach" },
-      "rome": { "name": "Rome", "country": "อิตาลี", "cardAlt": "Colosseum ในชั่วโมงทองของ Rome" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "สหรัฐอาหรับเอมิเรตส์",
+        "cardAlt": "เส้นขอบฟ้า Dubai กับตึก Burj Khalifah ยามพระอาทิตย์ตก"
+      },
+      "london": {
+        "name": "London",
+        "country": "สหราชอาณาจักร",
+        "cardAlt": "Big Ben และรัฐสภาของ London"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "ฝรั่งเศส",
+        "cardAlt": "หอ Eiffel Tower ส่องแสงยามพระอาทิตย์ตกใน Paris"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "สหรัฐอเมริกา",
+        "cardAlt": "ตึก Empire State Building และเส้นขอบฟ้า Manhattan ของ New York"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "ญี่ปุ่น",
+        "cardAlt": "ทางข้าม Shibuya พร้อมป้ายนีออนใน Tokyo"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Marina Bay Sands และ Gardens by the Bay ของ Singapore"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "สเปน",
+        "cardAlt": "Sagrada Familia ในชั่วโมงทองของ Barcelona"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "ไทย",
+        "cardAlt": "พระบรมมหาราชวังยามพระอาทิตย์ขึ้นใน Bangkok"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "สหรัฐอาหรับเอมิเรตส์",
+        "cardAlt": "มัสยิด Sheikh Zayed Grand Mosque ของ Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "เนเธอร์แลนด์",
+        "cardAlt": "อาคารประวัติศาสตร์และคลองของ Amsterdam"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "จีน",
+        "cardAlt": "เส้นขอบฟ้ายามค่ำของ Hong Kong"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "ตุรกี",
+        "cardAlt": "มัสยิด Blue Mosque ยามพระอาทิตย์ตกใน Istanbul"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "สหรัฐอเมริกา",
+        "cardAlt": "ถนน Strip ยามค่ำใน Las Vegas"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "สหรัฐอเมริกา",
+        "cardAlt": "ป้าย Hollywood ของ Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "สหรัฐอเมริกา",
+        "cardAlt": "ย่าน Art Deco ของ Miami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "อิตาลี",
+        "cardAlt": "Colosseum ในชั่วโมงทองของ Rome"
+      }
     },
     "hero": {
       "badge": "{{count}} จุดหมายปลายทางทั่วโลก",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "ฝัน",
         "subtitle": "ค้นพบแรงบันดาลใจ",
-        "guides": ["คู่มือจุดหมาย", "โฟโต้เอสเซย์"]
+        "guides": [
+          "คู่มือจุดหมาย",
+          "โฟโต้เอสเซย์"
+        ]
       },
       "plan": {
         "title": "วางแผน",
         "subtitle": "สร้างแผนการเดินทาง",
-        "guides": ["การวางแผนการเดินทาง", "ข้อกำหนดวีซ่า"]
+        "guides": [
+          "การวางแผนการเดินทาง",
+          "ข้อกำหนดวีซ่า"
+        ]
       },
       "prepare": {
         "title": "เตรียมตัว",
         "subtitle": "พร้อมออกเดินทาง",
-        "guides": ["รายการสิ่งของที่ต้องนำ", "ข้อมูลความปลอดภัย"]
+        "guides": [
+          "รายการสิ่งของที่ต้องนำ",
+          "ข้อมูลความปลอดภัย"
+        ]
       },
       "experience": {
         "title": "สัมผัส",
         "subtitle": "เพลิดเพลินกับการผจญภัย",
-        "guides": ["ข้อมูลท้องถิ่น", "สถานที่ลับ"]
+        "guides": [
+          "ข้อมูลท้องถิ่น",
+          "สถานที่ลับ"
+        ]
       },
       "share": {
         "title": "แชร์",
         "subtitle": "เล่าเรื่องราวของคุณ",
-        "guides": ["บันทึกการเดินทาง", "การถ่ายภาพ"]
+        "guides": [
+          "บันทึกการเดินทาง",
+          "การถ่ายภาพ"
+        ]
       }
     },
     "categories": {
