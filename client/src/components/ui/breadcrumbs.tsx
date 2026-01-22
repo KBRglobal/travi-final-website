@@ -28,10 +28,7 @@ function useAutoBreadcrumbs(): BreadcrumbItem[] {
 
   const labelMap: Record<string, string> = {
     attractions: "Attractions",
-    hotels: "Hotels",
-    dining: "Dining",
     districts: "Districts",
-    events: "Events",
     articles: "Articles",
     search: "Search",
     "real-estate": "Real Estate",

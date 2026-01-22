@@ -1338,15 +1338,10 @@ export default function GlobalHotels() {
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
                 Explore More Travel Guides
               </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid sm:grid-cols-3 gap-4">
                 <Link href={localePath("/attractions")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                   <Sparkles className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Tourist Attractions</span>
-                  <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
-                </Link>
-                <Link href={localePath("/restaurants")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                  <Utensils className="w-5 h-5 text-[#6443F4]" />
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Best Restaurants</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
                 <Link href={localePath("/destinations")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
@@ -1433,7 +1428,6 @@ export default function GlobalHotels() {
         <h3>Related Travel Guides</h3>
         <ul>
           <li><a href={localePath("/attractions")}>Tourist Attractions Worldwide</a></li>
-          <li><a href={localePath("/restaurants")}>Best Restaurants in Top Destinations</a></li>
           <li><a href={localePath("/destinations")}>Complete Travel Guides by City</a></li>
           <li><a href={localePath("/articles")}>Latest Travel News and Tips</a></li>
         </ul>

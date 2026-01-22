@@ -15,9 +15,6 @@ import { Redirect } from "wouter";
  * Value: canonical path (where it should redirect)
  */
 export const NAVIGATION_ALIASES = {
-  // Dining/Restaurants terminology fix
-  "/restaurants": "/dining",
-
   // Things to do → Attractions (conceptually similar)
   "/things-to-do": "/attractions",
 
@@ -45,8 +42,6 @@ export const createAliasRoutes = () =>
  */
 export const CANONICAL_PATHS = {
   attractions: "/attractions",
-  hotels: "/hotels",
-  restaurants: "/dining",  // canonical route, label is "Restaurants"
   districts: "/districts",
   news: "/news",           // canonical for news/articles
   shopping: "/shopping",
