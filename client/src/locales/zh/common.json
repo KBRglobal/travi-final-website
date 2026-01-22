@@ -508,7 +508,7 @@
   },
   "cookies": {
     "title": "我们重视您的隐私",
-    "description": "我们使用Cookie来增强您的浏览体验、分析网站流量并个性化内容。点击"全部接受"，即表示您同意我们使用Cookie。",
+    "description": "我们使用Cookie来增强您的浏览体验、分析网站流量并个性化内容。点击「全部接受」，即表示您同意我们使用Cookie。",
     "manage": "管理",
     "rejectAll": "全部拒绝",
     "acceptAll": "全部接受",
@@ -714,7 +714,7 @@
       "placeholder": "搜索全球新闻...",
       "button": "搜索",
       "title": "搜索",
-      "searching": "正在搜索"{{query}}"..."
+      "searching": "正在搜索「{{query}}」..."
     },
     "categories": {
       "all": "全部资讯",
