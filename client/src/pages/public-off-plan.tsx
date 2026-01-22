@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { LiveEditToggle } from "@/components/live-edit";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1188,22 +1188,22 @@ export default function PublicOffPlan() {
           <div className="py-2 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-1 min-w-max">
               {/* Main Sections */}
-              <Link href="/destinations/dubai/off-plan/investment-guide">
+              <Link href={localePath("/destinations/dubai/off-plan/investment-guide")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-investment-guide">
                   Investment Guide
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/off-plan/how-to-buy">
+              <Link href={localePath("/destinations/dubai/off-plan/how-to-buy")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-how-to-buy">
                   How to Buy
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/off-plan/payment-plans">
+              <Link href={localePath("/destinations/dubai/off-plan/payment-plans")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-payment-plans">
                   Payment Plans
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/off-plan/best-projects-2026">
+              <Link href={localePath("/destinations/dubai/off-plan/best-projects-2026")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-best-2026">
                   Best 2026
                 </Button>
@@ -1212,22 +1212,22 @@ export default function PublicOffPlan() {
               <div className="w-px h-5 bg-border mx-1" />
               
               {/* Calculators */}
-              <Link href="/destinations/dubai/tools/roi-calculator">
+              <Link href={localePath("/destinations/dubai/tools/roi-calculator")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-roi-calc">
                   ROI Calculator
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/tools/payment-calculator">
+              <Link href={localePath("/destinations/dubai/tools/payment-calculator")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-payment-calc">
                   Payment Calc
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/tools/affordability-calculator">
+              <Link href={localePath("/destinations/dubai/tools/affordability-calculator")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-afford-calc">
                   Affordability
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/tools/mortgage-calculator">
+              <Link href={localePath("/destinations/dubai/tools/mortgage-calculator")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-mortgage-calc">
                   Mortgage
                 </Button>
@@ -1236,17 +1236,17 @@ export default function PublicOffPlan() {
               <div className="w-px h-5 bg-border mx-1" />
               
               {/* Comparisons */}
-              <Link href="/destinations/dubai/compare/off-plan-vs-ready">
+              <Link href={localePath("/destinations/dubai/compare/off-plan-vs-ready")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-compare-offplan-ready">
                   Off-Plan vs Ready
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/compare/emaar-vs-damac">
+              <Link href={localePath("/destinations/dubai/compare/emaar-vs-damac")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-compare-emaar-damac">
                   Emaar vs DAMAC
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/compare/crypto-vs-bank">
+              <Link href={localePath("/destinations/dubai/compare/crypto-vs-bank")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-compare-crypto-bank">
                   Crypto vs Bank
                 </Button>
@@ -1255,22 +1255,22 @@ export default function PublicOffPlan() {
               <div className="w-px h-5 bg-border mx-1" />
               
               {/* Case Studies & Glossary */}
-              <Link href="/destinations/dubai/case-studies/jvc-investor">
+              <Link href={localePath("/destinations/dubai/case-studies/jvc-investor")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-case-jvc">
                   Case Studies
                 </Button>
               </Link>
-              <Link href="/glossary">
+              <Link href={localePath("/glossary")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-glossary">
                   Glossary
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/roi-rental-yields">
+              <Link href={localePath("/destinations/dubai/roi-rental-yields")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-roi-yields">
                   ROI Guide
                 </Button>
               </Link>
-              <Link href="/destinations/dubai/legal-security-guide">
+              <Link href={localePath("/destinations/dubai/legal-security-guide")}>
                 <Button variant="ghost" size="sm" className="text-xs" data-testid="subnav-legal">
                   Legal Guide
                 </Button>
@@ -2123,13 +2123,13 @@ export default function PublicOffPlan() {
                   <h3 className="font-bold">Calculator Tools</h3>
                 </div>
                 <ul className="space-y-2">
-                  <li><Link href="/destinations/dubai/tools/roi-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-roi">ROI Calculator</Link></li>
-                  <li><Link href="/destinations/dubai/tools/payment-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-payment">Payment Plan Calculator</Link></li>
-                  <li><Link href="/destinations/dubai/tools/affordability-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-affordability">Affordability Calculator</Link></li>
-                  <li><Link href="/tools-currency-converter" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-currency">Currency Converter</Link></li>
-                  <li><Link href="/tools-fees-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-fees">Fees Calculator</Link></li>
-                  <li><Link href="/tools-rental-yield-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-rental">Rental Yield Calculator</Link></li>
-                  <li><Link href="/destinations/dubai/tools/mortgage-calculator" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-mortgage">Mortgage Calculator</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/tools/roi-calculator")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-roi">ROI Calculator</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/tools/payment-calculator")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-payment">Payment Plan Calculator</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/tools/affordability-calculator")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-affordability">Affordability Calculator</Link></li>
+                  <li><Link href={localePath("/tools-currency-converter")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-currency">Currency Converter</Link></li>
+                  <li><Link href={localePath("/tools-fees-calculator")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-fees">Fees Calculator</Link></li>
+                  <li><Link href={localePath("/tools-rental-yield-calculator")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-rental">Rental Yield Calculator</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/tools/mortgage-calculator")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-tool-mortgage">Mortgage Calculator</Link></li>
                 </ul>
               </Card>
 
@@ -2142,14 +2142,14 @@ export default function PublicOffPlan() {
                   <h3 className="font-bold">Comparison Guides</h3>
                 </div>
                 <ul className="space-y-2">
-                  <li><Link href="/destinations/dubai/compare/off-plan-vs-ready" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-offplan-ready">Off-Plan vs Ready</Link></li>
-                  <li><Link href="/compare-jvc-vs-dubai-south" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-jvc-south">JVC vs Dubai South</Link></li>
-                  <li><Link href="/destinations/dubai/compare/emaar-vs-damac" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-emaar-damac">Emaar vs DAMAC</Link></li>
-                  <li><Link href="/compare-downtown-vs-marina" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-downtown-marina">Downtown vs Marina</Link></li>
-                  <li><Link href="/destinations/dubai/compare/crypto-vs-bank" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-crypto-bank">Crypto vs Bank Payment</Link></li>
-                  <li><Link href="/compare-villa-vs-apartment" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-villa-apt">Villa vs Apartment</Link></li>
-                  <li><Link href="/compare-studio-vs-1bed" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-studio-1bed">Studio vs 1-Bedroom</Link></li>
-                  <li><Link href="/glossary" className="text-sm text-primary hover:underline transition-colors block font-medium" data-testid="link-glossary">View All Terms</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/compare/off-plan-vs-ready")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-offplan-ready">Off-Plan vs Ready</Link></li>
+                  <li><Link href={localePath("/compare-jvc-vs-dubai-south")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-jvc-south">JVC vs Dubai South</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/compare/emaar-vs-damac")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-emaar-damac">Emaar vs DAMAC</Link></li>
+                  <li><Link href={localePath("/compare-downtown-vs-marina")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-downtown-marina">Downtown vs Marina</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/compare/crypto-vs-bank")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-crypto-bank">Crypto vs Bank Payment</Link></li>
+                  <li><Link href={localePath("/compare-villa-vs-apartment")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-villa-apt">Villa vs Apartment</Link></li>
+                  <li><Link href={localePath("/compare-studio-vs-1bed")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-compare-studio-1bed">Studio vs 1-Bedroom</Link></li>
+                  <li><Link href={localePath("/glossary")} className="text-sm text-primary hover:underline transition-colors block font-medium" data-testid="link-glossary">View All Terms</Link></li>
                 </ul>
               </Card>
 
@@ -2162,14 +2162,14 @@ export default function PublicOffPlan() {
                   <h3 className="font-bold">Investor Case Studies</h3>
                 </div>
                 <ul className="space-y-2">
-                  <li><Link href="/destinations/dubai/case-studies/jvc-investor" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-jvc">JVC Studio Investor</Link></li>
-                  <li><Link href="/case-study-crypto-buyer" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-crypto">Crypto Buyer Success</Link></li>
-                  <li><Link href="/case-study-golden-visa" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-goldenvisa">Golden Visa Journey</Link></li>
-                  <li><Link href="/case-study-expat-family" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-expat">Expat Family Home</Link></li>
-                  <li><Link href="/case-study-investor-flip" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-flip">Investor Flip Strategy</Link></li>
-                  <li><Link href="/case-study-portfolio-diversification" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-portfolio">Portfolio Diversification</Link></li>
-                  <li><Link href="/case-study-off-plan-launch" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-launch">Off-Plan Launch Day</Link></li>
-                  <li><Link href="/case-study-retirement-planning" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-retirement">Retirement Planning</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/case-studies/jvc-investor")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-jvc">JVC Studio Investor</Link></li>
+                  <li><Link href={localePath("/case-study-crypto-buyer")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-crypto">Crypto Buyer Success</Link></li>
+                  <li><Link href={localePath("/case-study-golden-visa")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-goldenvisa">Golden Visa Journey</Link></li>
+                  <li><Link href={localePath("/case-study-expat-family")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-expat">Expat Family Home</Link></li>
+                  <li><Link href={localePath("/case-study-investor-flip")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-flip">Investor Flip Strategy</Link></li>
+                  <li><Link href={localePath("/case-study-portfolio-diversification")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-portfolio">Portfolio Diversification</Link></li>
+                  <li><Link href={localePath("/case-study-off-plan-launch")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-launch">Off-Plan Launch Day</Link></li>
+                  <li><Link href={localePath("/case-study-retirement-planning")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-case-retirement">Retirement Planning</Link></li>
                 </ul>
               </Card>
 
@@ -2182,13 +2182,13 @@ export default function PublicOffPlan() {
                   <h3 className="font-bold">Guides & Resources</h3>
                 </div>
                 <ul className="space-y-2">
-                  <li><Link href="/destinations/dubai/off-plan/investment-guide" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-investment">Investment Guide</Link></li>
-                  <li><Link href="/destinations/dubai/off-plan/how-to-buy" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-howtobuy">How to Buy Off-Plan</Link></li>
-                  <li><Link href="/destinations/dubai/off-plan/payment-plans" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-payment">Payment Plan Guide</Link></li>
-                  <li><Link href="/destinations/dubai/off-plan/best-projects-2026" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-best2026">Best Projects 2026</Link></li>
-                  <li><Link href="/destinations/dubai/roi-rental-yields" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-roi">ROI & Yields Guide</Link></li>
-                  <li><Link href="/destinations/dubai/legal-security-guide" className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-legal">Legal & Security Guide</Link></li>
-                  <li><Link href="/glossary" className="text-sm text-primary hover:underline transition-colors block font-medium" data-testid="link-glossary-main">Glossary (25+ Terms)</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/off-plan/investment-guide")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-investment">Investment Guide</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/off-plan/how-to-buy")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-howtobuy">How to Buy Off-Plan</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/off-plan/payment-plans")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-payment">Payment Plan Guide</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/off-plan/best-projects-2026")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-best2026">Best Projects 2026</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/roi-rental-yields")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-roi">ROI & Yields Guide</Link></li>
+                  <li><Link href={localePath("/destinations/dubai/legal-security-guide")} className="text-sm text-muted-foreground hover:text-foreground transition-colors block" data-testid="link-guide-legal">Legal & Security Guide</Link></li>
+                  <li><Link href={localePath("/glossary")} className="text-sm text-primary hover:underline transition-colors block font-medium" data-testid="link-glossary-main">Glossary (25+ Terms)</Link></li>
                 </ul>
               </Card>
             </div>

@@ -1,5 +1,6 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCookieConsent } from "@/contexts/cookie-consent-context";
@@ -12,6 +13,7 @@ import {
 const cookiesMascot = "/logos/Mascot_for_Dark_Background.png";
 
 export default function CookiesPage() {
+  const { localePath } = useLocale();
   useDocumentMeta({
     title: "Cookie Policy | TRAVI World",
     description: "Learn about how TRAVI World uses cookies and similar technologies on our website.",
@@ -440,7 +442,7 @@ export default function CookiesPage() {
               <Settings className="w-4 h-4" />
               Manage Cookie Settings
             </Button>
-            <Link href="/privacy">
+            <Link href={localePath("/privacy")}>
               <Button variant="outline" className="gap-2" data-testid="link-privacy-policy">
                 <Shield className="w-4 h-4" />
                 View Privacy Policy

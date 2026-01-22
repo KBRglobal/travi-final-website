@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ interface HelpArticle {
 }
 
 export default function HelpCategory() {
+  const { localePath } = useLocale();
   const [, params] = useRoute("/help/:slug");
   const { slug = "" } = params ?? {};
 
@@ -58,7 +60,7 @@ export default function HelpCategory() {
             The category you're looking for doesn't exist.
           </p>
           <Button asChild>
-            <Link href="/help">Back to Help Center</Link>
+            <Link href={localePath("/help")}>Back to Help Center</Link>
           </Button>
         </div>
       </div>
@@ -72,7 +74,7 @@ export default function HelpCategory() {
       {/* Header */}
       <div className="bg-primary/5 border-b">
         <div className="container mx-auto px-4 py-8">
-          <Link href="/help" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
+          <Link href={localePath("/help")} className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Help Center
           </Link>
@@ -112,7 +114,7 @@ export default function HelpCategory() {
               {category.articles.map((article) => (
                 <Link
                   key={article.id}
-                  href={`/help/${category.slug}/${article.slug}`}
+                  href={localePath(`/help/${category.slug}/${article.slug}`)}
                 >
                   <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
                     <CardContent className="py-4 flex items-center justify-between">

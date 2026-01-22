@@ -1,5 +1,6 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 
 export default function SecurityPage() {
+  const { localePath } = useLocale();
   useDocumentMeta({
     title: "Security Policy | TRAVI World",
     description: "Learn about TRAVI World's comprehensive security measures and how we protect your data and privacy.",
@@ -287,7 +289,7 @@ export default function SecurityPage() {
                 Contact Us
               </Button>
             </a>
-            <Link href="/privacy" data-testid="link-privacy-policy">
+            <Link href={localePath("/privacy")} data-testid="link-privacy-policy">
               <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
                 <Lock className="w-4 h-4 mr-2" />
                 Privacy Policy

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { Loader2, MapPin, Clock, Star, Users, DollarSign, Building, Utensils, Tag, ArrowLeft, Ticket, Phone, Globe, ChevronRight } from "lucide-react";
 import { sanitizeHTML } from "@/lib/sanitize";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import posthog from "posthog-js";
 import type { Content, Attraction, Hotel, Dining, District, Transport, Article, HighlightItem, RoomTypeItem, FaqItem, ContentCluster, ContentWithRelations } from "@shared/schema";
 import { PublicNav } from "@/components/public-nav";
@@ -83,6 +84,7 @@ function ContentHero({
   contents: ContentWithExtensions; 
   config: typeof contentTypeConfig[string];
 }) {
+  const { localePath } = useLocale();
   const heroImage = contents.heroImage || "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920&h=800&fit=crop";
   
   return (
@@ -99,7 +101,7 @@ function ContentHero({
 
       <div className="relative z-10 flex-1 flex flex-col">
         <div className="p-6 lg:p-8 pt-24">
-          <Link href={config.backHref}>
+          <Link href={localePath(config.backHref)}>
             <Button
               variant="ghost"
               size="sm"
@@ -142,7 +144,7 @@ function ContentHero({
   );
 }
 
-function renderBlock(block: any, index: number) {
+function renderBlock(block: any, index: number, localePath?: (path: string) => string) {
   const data = block.data || block;
   
   switch (block.type) {
@@ -224,12 +226,14 @@ function renderBlock(block: any, index: number) {
       );
 
     case "cta":
+      const ctaUrl = data.buttonUrl || data.buttonLink;
+      const ctaHref = ctaUrl?.startsWith('http') ? ctaUrl : (localePath ? localePath(ctaUrl) : ctaUrl);
       return (
         <div key={index} className="py-6 text-center bg-primary/10 rounded-lg p-8">
           {data.title && <h2 className="text-2xl font-semibold mb-2">{data.title}</h2>}
           {(data.description || data.contents) && <p className="text-muted-foreground mb-4">{data.description || data.contents}</p>}
-          {data.buttonText && (data.buttonUrl || data.buttonLink) && (
-            <Link href={data.buttonUrl || data.buttonLink}>
+          {data.buttonText && ctaUrl && (
+            <Link href={ctaHref}>
               <Button data-testid="cta-button">
                 {data.buttonText}
               </Button>
@@ -564,6 +568,7 @@ function ArticleDetailView({ contents }: { contents: ContentWithExtensions }) {
 }
 
 function RelatedContentSection({ contents, type }: { contents: ContentWithExtensions; type: string }) {
+  const { localePath } = useLocale();
   const { data: relatedContent = [] } = useQuery<ContentWithRelations[]>({
     queryKey: [`/api/contents?type=${type}&status=published&limit=5`],
   });
@@ -581,7 +586,7 @@ function RelatedContentSection({ contents, type }: { contents: ContentWithExtens
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">
             More {config.backLabel}
           </h2>
-          <Link href={config.backHref}>
+          <Link href={localePath(config.backHref)}>
             <Button variant="outline" className="rounded-full" data-testid="button-view-all">
               View All <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -590,7 +595,7 @@ function RelatedContentSection({ contents, type }: { contents: ContentWithExtens
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filtered.map((item) => (
-            <Link key={item.id} href={`/${item.type}/${item.slug}`} data-testid={`related-card-${item.id}`}>
+            <Link key={item.id} href={localePath(`/${item.type}/${item.slug}`)} data-testid={`related-card-${item.id}`}>
               <Card className="overflow-hidden hover-elevate cursor-pointer h-full">
                 <div className="aspect-[4/3]">
                   <img
@@ -615,6 +620,7 @@ function RelatedContentSection({ contents, type }: { contents: ContentWithExtens
 }
 
 export default function PublicContentViewer() {
+  const { localePath } = useLocale();
   const [, params] = useRoute("/:type/:slug");
   const { slug = "", type = "" } = params ?? {};
   const trackedRef = useRef<string | null>(null);
@@ -682,13 +688,14 @@ export default function PublicContentViewer() {
   }
 
   if (error || !contents) {
+    const { localePath: getLocalePath } = useLocale();
     return (
       <div className="min-h-screen bg-background" data-testid="error-state">
         <PublicNav variant="default" />
         <div className="pt-32 text-center px-6">
           <h1 className="text-2xl font-bold mb-4">Content Not Found</h1>
           <p className="text-muted-foreground mb-6">The page you're looking for doesn't exist.</p>
-          <Link href="/">
+          <Link href={getLocalePath("/")}>
             <Button data-testid="button-go-home">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go to Homepage
@@ -722,7 +729,7 @@ export default function PublicContentViewer() {
       <main className="bg-background">
         {hasBlocks ? (
           <div className="max-w-4xl mx-auto px-6 py-12">
-            {blocks.map((block: any, index: number) => renderBlock(block, index))}
+            {blocks.map((block: any, index: number) => renderBlock(block, index, localePath))}
           </div>
         ) : (
           <div className="max-w-4xl mx-auto px-6 py-12">
