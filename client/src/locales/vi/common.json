@@ -19,7 +19,11 @@
     "closeMenu": "Đóng menu",
     "logoAlt": "TRAVI - Hướng dẫn Du lịch",
     "followInstagram": "Theo dõi TRAVI trên Instagram",
-    "followTikTok": "Theo dõi TRAVI trên TikTok"
+    "followTikTok": "Theo dõi TRAVI trên TikTok",
+    "changeLanguage": "Thay đổi ngôn ngữ",
+    "selectLanguage": "Chọn ngôn ngữ",
+    "popularLanguages": "Ngôn ngữ phổ biến",
+    "allLanguages": "Tất cả ngôn ngữ"
   },
   "breadcrumbs": {
     "ariaLabel": "Điều hướng đường dẫn",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Đường chân trời Dubai với tòa tháp Burj Khalifa lúc hoàng hôn" },
-      "london": { "name": "London", "country": "Anh", "cardAlt": "London Big Ben và Tòa nhà Quốc hội" },
-      "paris": { "name": "Paris", "country": "Pháp", "cardAlt": "Tháp Eiffel Paris lung linh lúc hoàng hôn" },
-      "newYork": { "name": "New York", "country": "Mỹ", "cardAlt": "Đường chân trời Manhattan New York với Tòa nhà Empire State" },
-      "tokyo": { "name": "Tokyo", "country": "Nhật Bản", "cardAlt": "Giao lộ Shibuya Tokyo với đèn neon ban đêm" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands và Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Tây Ban Nha", "cardAlt": "Nhà thờ Sagrada Familia Barcelona lúc hoàng hôn vàng" },
-      "bangkok": { "name": "Bangkok", "country": "Thái Lan", "cardAlt": "Cung điện Hoàng gia Bangkok lúc bình minh" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Nhà thờ Hồi giáo Sheikh Zayed Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "Hà Lan", "cardAlt": "Kênh đào Amsterdam với các tòa nhà lịch sử" },
-      "hongKong": { "name": "Hồng Kông", "country": "Trung Quốc", "cardAlt": "Đường chân trời Hồng Kông ban đêm" },
-      "istanbul": { "name": "Istanbul", "country": "Thổ Nhĩ Kỳ", "cardAlt": "Nhà thờ Hồi giáo Blue Mosque Istanbul lúc hoàng hôn" },
-      "lasVegas": { "name": "Las Vegas", "country": "Mỹ", "cardAlt": "Dải Las Vegas Strip ban đêm" },
-      "losAngeles": { "name": "Los Angeles", "country": "Mỹ", "cardAlt": "Biển hiệu Hollywood Los Angeles" },
-      "miami": { "name": "Miami", "country": "Mỹ", "cardAlt": "Khu Art Deco bãi biển Miami" },
-      "rome": { "name": "Rome", "country": "Ý", "cardAlt": "Đấu trường La Mã Rome lúc hoàng hôn vàng" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Đường chân trời Dubai với tòa tháp Burj Khalifa lúc hoàng hôn"
+      },
+      "london": {
+        "name": "London",
+        "country": "Anh",
+        "cardAlt": "London Big Ben và Tòa nhà Quốc hội"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Pháp",
+        "cardAlt": "Tháp Eiffel Paris lung linh lúc hoàng hôn"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "Mỹ",
+        "cardAlt": "Đường chân trời Manhattan New York với Tòa nhà Empire State"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Nhật Bản",
+        "cardAlt": "Giao lộ Shibuya Tokyo với đèn neon ban đêm"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Singapore Marina Bay Sands và Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Tây Ban Nha",
+        "cardAlt": "Nhà thờ Sagrada Familia Barcelona lúc hoàng hôn vàng"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thái Lan",
+        "cardAlt": "Cung điện Hoàng gia Bangkok lúc bình minh"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Nhà thờ Hồi giáo Sheikh Zayed Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Hà Lan",
+        "cardAlt": "Kênh đào Amsterdam với các tòa nhà lịch sử"
+      },
+      "hongKong": {
+        "name": "Hồng Kông",
+        "country": "Trung Quốc",
+        "cardAlt": "Đường chân trời Hồng Kông ban đêm"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Thổ Nhĩ Kỳ",
+        "cardAlt": "Nhà thờ Hồi giáo Blue Mosque Istanbul lúc hoàng hôn"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "Mỹ",
+        "cardAlt": "Dải Las Vegas Strip ban đêm"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "Mỹ",
+        "cardAlt": "Biển hiệu Hollywood Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "Mỹ",
+        "cardAlt": "Khu Art Deco bãi biển Miami"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Ý",
+        "cardAlt": "Đấu trường La Mã Rome lúc hoàng hôn vàng"
+      }
     },
     "hero": {
       "badge": "{{count}} Điểm đến Toàn cầu",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Mơ ước",
         "subtitle": "Khám phá cảm hứng",
-        "guides": ["Hướng dẫn Điểm đến", "Bài viết Ảnh"]
+        "guides": [
+          "Hướng dẫn Điểm đến",
+          "Bài viết Ảnh"
+        ]
       },
       "plan": {
         "title": "Lên kế hoạch",
         "subtitle": "Vạch ra hành trình",
-        "guides": ["Lập kế hoạch Chuyến đi", "Yêu cầu Visa"]
+        "guides": [
+          "Lập kế hoạch Chuyến đi",
+          "Yêu cầu Visa"
+        ]
       },
       "prepare": {
         "title": "Chuẩn bị",
         "subtitle": "Sẵn sàng lên đường",
-        "guides": ["Danh sách Đóng gói", "Mẹo An toàn"]
+        "guides": [
+          "Danh sách Đóng gói",
+          "Mẹo An toàn"
+        ]
       },
       "experience": {
         "title": "Trải nghiệm",
         "subtitle": "Sống trọn cuộc phiêu lưu",
-        "guides": ["Thông tin Địa phương", "Những Viên ngọc Ẩn giấu"]
+        "guides": [
+          "Thông tin Địa phương",
+          "Những Viên ngọc Ẩn giấu"
+        ]
       },
       "share": {
         "title": "Chia sẻ",
         "subtitle": "Kể câu chuyện của bạn",
-        "guides": ["Viết về Du lịch", "Nhiếp ảnh"]
+        "guides": [
+          "Viết về Du lịch",
+          "Nhiếp ảnh"
+        ]
       }
     },
     "categories": {

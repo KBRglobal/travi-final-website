@@ -19,7 +19,11 @@
     "closeMenu": "关闭菜单",
     "logoAlt": "TRAVI - 旅行指南",
     "followInstagram": "关注TRAVI的Instagram",
-    "followTikTok": "关注TRAVI的TikTok"
+    "followTikTok": "关注TRAVI的TikTok",
+    "changeLanguage": "更改语言",
+    "selectLanguage": "选择语言",
+    "popularLanguages": "热门语言",
+    "allLanguages": "所有语言"
   },
   "breadcrumbs": {
     "ariaLabel": "面包屑导航",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "阿联酋", "cardAlt": "Burj Khalifah塔和日落的Dubai天际线" },
-      "london": { "name": "London", "country": "英国", "cardAlt": "Big Ben和议会大厦的London" },
-      "paris": { "name": "Paris", "country": "法国", "cardAlt": "日落中的Eiffel Tower的Paris" },
-      "newYork": { "name": "New York", "country": "美国", "cardAlt": "Empire State Building和Manhattan天际线的New York" },
-      "tokyo": { "name": "Tokyo", "country": "日本", "cardAlt": "涩谷交叉口霓虹的Tokyo" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands和滨海湾花园的Singapore" },
-      "barcelona": { "name": "Barcelona", "country": "西班牙", "cardAlt": "黄金时段Sagrada Familia的Barcelona" },
-      "bangkok": { "name": "Bangkok", "country": "泰国", "cardAlt": "日出时大皇宫的Bangkok" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "阿联酋", "cardAlt": "Sheikh Zayed大清真寺的Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "荷兰", "cardAlt": "历史建筑和运河的Amsterdam" },
-      "hongKong": { "name": "Hong Kong", "country": "中国", "cardAlt": "夜景天际线的Hong Kong" },
-      "istanbul": { "name": "Istanbul", "country": "土耳其", "cardAlt": "日落时蓝色清真寺的Istanbul" },
-      "lasVegas": { "name": "Las Vegas", "country": "美国", "cardAlt": "夜间大道的Las Vegas" },
-      "losAngeles": { "name": "Los Angeles", "country": "美国", "cardAlt": "Hollywood标志的Los Angeles" },
-      "miami": { "name": "Miami", "country": "美国", "cardAlt": "装饰艺术区的Miami Beach" },
-      "rome": { "name": "Rome", "country": "意大利", "cardAlt": "黄金时段Colosseum的Rome" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "阿联酋",
+        "cardAlt": "Burj Khalifah塔和日落的Dubai天际线"
+      },
+      "london": {
+        "name": "London",
+        "country": "英国",
+        "cardAlt": "Big Ben和议会大厦的London"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "法国",
+        "cardAlt": "日落中的Eiffel Tower的Paris"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "美国",
+        "cardAlt": "Empire State Building和Manhattan天际线的New York"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "日本",
+        "cardAlt": "涩谷交叉口霓虹的Tokyo"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Marina Bay Sands和滨海湾花园的Singapore"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "西班牙",
+        "cardAlt": "黄金时段Sagrada Familia的Barcelona"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "泰国",
+        "cardAlt": "日出时大皇宫的Bangkok"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "阿联酋",
+        "cardAlt": "Sheikh Zayed大清真寺的Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "荷兰",
+        "cardAlt": "历史建筑和运河的Amsterdam"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "中国",
+        "cardAlt": "夜景天际线的Hong Kong"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "土耳其",
+        "cardAlt": "日落时蓝色清真寺的Istanbul"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "美国",
+        "cardAlt": "夜间大道的Las Vegas"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "美国",
+        "cardAlt": "Hollywood标志的Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "美国",
+        "cardAlt": "装饰艺术区的Miami Beach"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "意大利",
+        "cardAlt": "黄金时段Colosseum的Rome"
+      }
     },
     "hero": {
       "badge": "全球{{count}}个城市",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "梦想",
         "subtitle": "发现灵感",
-        "guides": ["目的地指南", "摄影散文"]
+        "guides": [
+          "目的地指南",
+          "摄影散文"
+        ]
       },
       "plan": {
         "title": "计划",
         "subtitle": "制定行程",
-        "guides": ["行程规划", "签证要求"]
+        "guides": [
+          "行程规划",
+          "签证要求"
+        ]
       },
       "prepare": {
         "title": "准备",
         "subtitle": "出发准备",
-        "guides": ["打包清单", "安全信息"]
+        "guides": [
+          "打包清单",
+          "安全信息"
+        ]
       },
       "experience": {
         "title": "体验",
         "subtitle": "享受冒险",
-        "guides": ["本地信息", "隐藏宝藏"]
+        "guides": [
+          "本地信息",
+          "隐藏宝藏"
+        ]
       },
       "share": {
         "title": "分享",
         "subtitle": "讲述故事",
-        "guides": ["游记", "摄影"]
+        "guides": [
+          "游记",
+          "摄影"
+        ]
       }
     },
     "categories": {

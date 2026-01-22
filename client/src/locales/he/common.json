@@ -19,7 +19,11 @@
     "closeMenu": "סגור תפריט",
     "logoAlt": "TRAVI - מדריך נסיעות",
     "followInstagram": "עקבו אחרי TRAVI באינסטגרם",
-    "followTikTok": "עקבו אחרי TRAVI בטיקטוק"
+    "followTikTok": "עקבו אחרי TRAVI בטיקטוק",
+    "changeLanguage": "החלף שפה",
+    "selectLanguage": "בחר שפה",
+    "popularLanguages": "שפות פופולריות",
+    "allLanguages": "כל השפות"
   },
   "breadcrumbs": {
     "ariaLabel": "ניווט נתיב",

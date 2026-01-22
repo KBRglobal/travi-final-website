@@ -19,7 +19,11 @@
     "closeMenu": "Menüyü kapat",
     "logoAlt": "TRAVI - Seyahat Rehberi",
     "followInstagram": "TRAVI'yı Instagram'da takip edin",
-    "followTikTok": "TRAVI'yı TikTok'ta takip edin"
+    "followTikTok": "TRAVI'yı TikTok'ta takip edin",
+    "changeLanguage": "Dili değiştir",
+    "selectLanguage": "Dil seç",
+    "popularLanguages": "Popüler diller",
+    "allLanguages": "Tüm diller"
   },
   "breadcrumbs": {
     "ariaLabel": "İz takibi navigasyonu",
@@ -306,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "BAE", "cardAlt": "Gün batımında Burj Khalifa ile Dubai silüeti" },
-      "london": { "name": "London", "country": "Birleşik Krallık", "cardAlt": "London Big Ben ve Parlamento Binası" },
-      "paris": { "name": "Paris", "country": "Fransa", "cardAlt": "Gün batımında aydınlatılmış Paris Eyfel Kulesi" },
-      "newYork": { "name": "New York", "country": "ABD", "cardAlt": "Empire State Building ile New York Manhattan silüeti" },
-      "tokyo": { "name": "Tokyo", "country": "Japonya", "cardAlt": "Gece neon ışıklarıyla Tokyo Shibuya kavşağı" },
-      "singapore": { "name": "Singapore", "country": "Singapur", "cardAlt": "Singapore Marina Bay Sands ve Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "İspanya", "cardAlt": "Altın saatte Barcelona Sagrada Familia" },
-      "bangkok": { "name": "Bangkok", "country": "Tayland", "cardAlt": "Gün doğumunda Bangkok Grand Palace tapınağı" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "BAE", "cardAlt": "Abu Dhabi Sheikh Zayed Camii" },
-      "amsterdam": { "name": "Amsterdam", "country": "Hollanda", "cardAlt": "Tarihi binalarla Amsterdam kanalı" },
-      "hongKong": { "name": "Hong Kong", "country": "Çin", "cardAlt": "Gece Hong Kong silüeti" },
-      "istanbul": { "name": "Istanbul", "country": "Türkiye", "cardAlt": "Gün batımında Istanbul Sultanahmet Camii" },
-      "lasVegas": { "name": "Las Vegas", "country": "ABD", "cardAlt": "Gece Las Vegas Strip" },
-      "losAngeles": { "name": "Los Angeles", "country": "ABD", "cardAlt": "Los Angeles Hollywood yazısı" },
-      "miami": { "name": "Miami", "country": "ABD", "cardAlt": "Miami Beach Art Deco bölgesi" },
-      "rome": { "name": "Rome", "country": "İtalya", "cardAlt": "Altın saatte Rome Kolezyum" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "BAE",
+        "cardAlt": "Gün batımında Burj Khalifa ile Dubai silüeti"
+      },
+      "london": {
+        "name": "London",
+        "country": "Birleşik Krallık",
+        "cardAlt": "London Big Ben ve Parlamento Binası"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Fransa",
+        "cardAlt": "Gün batımında aydınlatılmış Paris Eyfel Kulesi"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "ABD",
+        "cardAlt": "Empire State Building ile New York Manhattan silüeti"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japonya",
+        "cardAlt": "Gece neon ışıklarıyla Tokyo Shibuya kavşağı"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapur",
+        "cardAlt": "Singapore Marina Bay Sands ve Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "İspanya",
+        "cardAlt": "Altın saatte Barcelona Sagrada Familia"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Tayland",
+        "cardAlt": "Gün doğumunda Bangkok Grand Palace tapınağı"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "BAE",
+        "cardAlt": "Abu Dhabi Sheikh Zayed Camii"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Hollanda",
+        "cardAlt": "Tarihi binalarla Amsterdam kanalı"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Çin",
+        "cardAlt": "Gece Hong Kong silüeti"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Türkiye",
+        "cardAlt": "Gün batımında Istanbul Sultanahmet Camii"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "ABD",
+        "cardAlt": "Gece Las Vegas Strip"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "ABD",
+        "cardAlt": "Los Angeles Hollywood yazısı"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "ABD",
+        "cardAlt": "Miami Beach Art Deco bölgesi"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "İtalya",
+        "cardAlt": "Altın saatte Rome Kolezyum"
+      }
     },
     "hero": {
       "badge": "Dünya Genelinde {{count}} Destinasyon",
@@ -610,27 +678,42 @@
       "dream": {
         "title": "Hayal Et",
         "subtitle": "İlhamı keşfet",
-        "guides": ["Destinasyon Rehberleri", "Fotoğraf Yazıları"]
+        "guides": [
+          "Destinasyon Rehberleri",
+          "Fotoğraf Yazıları"
+        ]
       },
       "plan": {
         "title": "Planla",
         "subtitle": "Yolculuğunu haritala",
-        "guides": ["Gezi Planlaması", "Vize Gereksinimleri"]
+        "guides": [
+          "Gezi Planlaması",
+          "Vize Gereksinimleri"
+        ]
       },
       "prepare": {
         "title": "Hazırlan",
         "subtitle": "Yola çıkmaya hazır ol",
-        "guides": ["Valiz Listeleri", "Güvenlik İpuçları"]
+        "guides": [
+          "Valiz Listeleri",
+          "Güvenlik İpuçları"
+        ]
       },
       "experience": {
         "title": "Deneyimle",
         "subtitle": "Maceraya atıl",
-        "guides": ["Yerel Öneriler", "Gizli Hazineler"]
+        "guides": [
+          "Yerel Öneriler",
+          "Gizli Hazineler"
+        ]
       },
       "share": {
         "title": "Paylaş",
         "subtitle": "Hikayeni anlat",
-        "guides": ["Seyahat Yazarlığı", "Fotoğrafçılık"]
+        "guides": [
+          "Seyahat Yazarlığı",
+          "Fotoğrafçılık"
+        ]
       }
     },
     "categories": {
