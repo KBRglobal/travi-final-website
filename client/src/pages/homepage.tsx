@@ -1039,22 +1039,8 @@ export default function Homepage() {
         ogImage={`${SITE_URL}/ogImage.jpg`}
       />
 
-      {/* CRITICAL: Canonical tag and proper hreflang for ONLY active languages */}
+      {/* Additional site-specific meta tags */}
       <Helmet>
-        {/* Canonical - always point to main URL */}
-        <link rel="canonical" href={SITE_URL} />
-
-        {/* hreflang - ONLY EN is live, other languages coming soon */}
-        <link rel="alternate" hrefLang="x-default" href={SITE_URL} />
-        <link rel="alternate" hrefLang="en" href={SITE_URL} />
-
-        {/* Additional meta tags for better SEO */}
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="googlebot" content="index, follow" />
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content={SITE_NAME} />
-        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@travi_world" />
       </Helmet>
 

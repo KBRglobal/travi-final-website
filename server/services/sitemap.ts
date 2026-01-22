@@ -46,6 +46,8 @@ const ACTIVE_LOCALES: Locale[] = [
   "ro",  // Romanian
   "uk",  // Ukrainian
   "hu",  // Hungarian
+  "da",  // Danish
+  "no",  // Norwegian
 ];
 
 // Helper to check if a locale is active

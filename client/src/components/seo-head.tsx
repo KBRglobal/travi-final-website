@@ -1,10 +1,11 @@
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 
 export interface SEOHeadProps {
   title: string;
-  description?: string; // Made optional - use empty string if not provided
+  description?: string;
   canonicalPath?: string;
   ogImage?: string;
   ogType?: "website" | "article";
@@ -13,9 +14,19 @@ export interface SEOHeadProps {
   author?: string;
   keywords?: string[];
   noIndex?: boolean;
-  noindex?: boolean; // Alias for noIndex (lowercase variant)
+  noindex?: boolean;
   availableTranslations?: Locale[];
 }
+
+const OG_LOCALE_MAP: Record<string, string> = {
+  en: "en_US", ar: "ar_AE", hi: "hi_IN", zh: "zh_CN", ru: "ru_RU",
+  ur: "ur_PK", fr: "fr_FR", de: "de_DE", fa: "fa_IR", bn: "bn_BD",
+  fil: "fil_PH", es: "es_ES", tr: "tr_TR", it: "it_IT", ja: "ja_JP",
+  ko: "ko_KR", he: "he_IL", pt: "pt_PT", nl: "nl_NL", pl: "pl_PL",
+  sv: "sv_SE", th: "th_TH", vi: "vi_VN", id: "id_ID", ms: "ms_MY",
+  cs: "cs_CZ", el: "el_GR", da: "da_DK", no: "nb_NO", ro: "ro_RO",
+  hu: "hu_HU", uk: "uk_UA"
+};
 
 export function SEOHead({
   title,
@@ -31,18 +42,15 @@ export function SEOHead({
   noindex,
   availableTranslations,
 }: SEOHeadProps) {
-  // Resolve noindex from either prop (noIndex takes precedence if both provided)
   const shouldNoIndex = noIndex || noindex || false;
-  const { locale, isRTL, localePath } = useLocale();
+  const { locale } = useLocale();
 
-  // Helper to generate localized URL for a specific locale
   const getLocalizedUrl = (path: string, targetLocale?: Locale): string => {
     const loc = targetLocale || locale;
     if (loc === "en") return path;
     return `/${loc}${path === "/" ? "" : path}`;
   };
 
-  // Map duplicate paths to their canonical versions
   const getCanonicalPath = (path: string): string => {
     const canonicalMappings: Record<string, string> = {
       "/privacy-policy": "/privacy",
@@ -54,10 +62,8 @@ export function SEOHead({
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://travi.world";
   const normalizedCanonicalPath = getCanonicalPath(canonicalPath);
-  // Canonical URL should ALWAYS point to the non-prefixed (English) version for SEO
-  const canonicalUrl = `${baseUrl}${normalizedCanonicalPath}`;
+  const canonicalUrl = `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, locale)}`;
 
-  // Generate hreflang URLs for all available translations
   const hreflangUrls = (availableTranslations || SUPPORTED_LOCALES.map((l) => l.code)).map(
     (loc) => ({
       locale: loc,
@@ -65,122 +71,50 @@ export function SEOHead({
     })
   );
 
-  useEffect(() => {
-    // Update document title
-    document.title = title;
+  const ogLocale = OG_LOCALE_MAP[locale] || `${locale}_${locale.toUpperCase()}`;
+  const xDefaultUrl = `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, "en")}`;
 
-    // Helper to update or create meta tag
-    const setMetaTag = (name: string, contents: string, isProperty = false) => {
-      const attr = isProperty ? "property" : "name";
-      let meta = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement;
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.setAttribute(attr, name);
-        document.head.appendChild(meta);
-      }
-      meta.content = contents;
-    };
-
-    // Helper to update or create link tag
-    const setLinkTag = (rel: string, href: string, hreflang?: string) => {
-      const selector = hreflang
-        ? `link[rel="${rel}"][hreflang="${hreflang}"]`
-        : `link[rel="${rel}"]:not([hreflang])`;
-      let link = document.querySelector(selector) as HTMLLinkElement;
-      if (!link) {
-        link = document.createElement("link");
-        link.rel = rel;
-        if (hreflang) link.hreflang = hreflang;
-        document.head.appendChild(link);
-      }
-      link.href = href;
-    };
-
-    // Basic meta tags
-    setMetaTag("description", description);
-    if (keywords && keywords.length > 0) {
-      setMetaTag("keywords", keywords.join(", "));
-    }
-    if (author) {
-      setMetaTag("author", author);
-    }
-    if (shouldNoIndex) {
-      setMetaTag("robots", "noindex, nofollow");
-    } else {
-      setMetaTag("robots", "index, follow");
-    }
-
-    // Open Graph meta tags
-    setMetaTag("og:title", title, true);
-    setMetaTag("og:description", description, true);
-    setMetaTag("og:type", ogType, true);
-    setMetaTag("og:url", canonicalUrl, true);
-    setMetaTag("og:site_name", "TRAVI World", true);
-    setMetaTag("og:locale", locale.replace("-", "_"), true);
-    if (ogImage) {
-      setMetaTag("og:image", ogImage, true);
-    }
-
-    // Twitter Card meta tags
-    setMetaTag("twitter:card", "summary_large_image");
-    setMetaTag("twitter:title", title);
-    setMetaTag("twitter:description", description);
-    if (ogImage) {
-      setMetaTag("twitter:image", ogImage);
-    }
-
-    // Article-specific meta tags
-    if (ogType === "article") {
-      if (publishedTime) {
-        setMetaTag("article:published_time", publishedTime, true);
-      }
-      if (modifiedTime) {
-        setMetaTag("article:modified_time", modifiedTime, true);
-      }
-      if (author) {
-        setMetaTag("article:author", author, true);
-      }
-    }
-
-    // Canonical URL
-    setLinkTag("canonical", canonicalUrl);
-
-    // hreflang tags for international SEO
-    // Clear existing hreflang tags
-    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
-
-    // Add hreflang for each available translation
-    hreflangUrls.forEach(({ locale: loc, url }) => {
-      setLinkTag("alternate", url, loc);
-    });
-
-    // Add x-default hreflang (points to English version)
-    setLinkTag("alternate", `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, "en")}`, "x-default");
-
-    // Add alternate locale OG tags
-    hreflangUrls
-      .filter(({ locale: loc }) => loc !== locale)
-      .forEach(({ locale: loc }) => {
-        setMetaTag(`og:locale:alternate`, loc.replace("-", "_"), true);
-      });
-  }, [
-    title,
-    description,
-    canonicalUrl,
-    normalizedCanonicalPath,
-    ogImage,
-    ogType,
-    publishedTime,
-    modifiedTime,
-    author,
-    keywords,
-    shouldNoIndex,
-    locale,
-    hreflangUrls,
-    baseUrl,
-  ]);
-
-  return null; // This component only manages head tags, doesn't render anything
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      {keywords && keywords.length > 0 && (
+        <meta name="keywords" content={keywords.join(", ")} />
+      )}
+      {author && <meta name="author" content={author} />}
+      <meta name="robots" content={shouldNoIndex ? "noindex, nofollow" : "index, follow"} />
+      
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content={ogType} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:site_name" content="TRAVI World" />
+      <meta property="og:locale" content={ogLocale} />
+      {ogImage && <meta property="og:image" content={ogImage} />}
+      
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      {ogImage && <meta name="twitter:image" content={ogImage} />}
+      
+      {ogType === "article" && publishedTime && (
+        <meta property="article:published_time" content={publishedTime} />
+      )}
+      {ogType === "article" && modifiedTime && (
+        <meta property="article:modified_time" content={modifiedTime} />
+      )}
+      {ogType === "article" && author && (
+        <meta property="article:author" content={author} />
+      )}
+      
+      <link rel="canonical" href={canonicalUrl} />
+      
+      {hreflangUrls.map(({ locale: loc, url }) => (
+        <link key={loc} rel="alternate" hrefLang={loc} href={url} />
+      ))}
+      <link rel="alternate" hrefLang="x-default" href={xDefaultUrl} />
+    </Helmet>
+  );
 }
 
 // Component to inject JSON-LD structured data

@@ -2,6 +2,7 @@
 # TRAVI.World - robots.txt
 # Updated: January 2026
 # Strategy: SEO-first + AI Search Visibility
+# Full 30-language localization LIVE
 # ===========================================
 
 # ===========================================
@@ -187,30 +188,11 @@ User-agent: Expedia
 Allow: /
 
 # ===========================================
-# BLOCK DUPLICATE/INACTIVE LANGUAGE PATHS
-# These are unsupported locales causing duplicate content
-# Remove from this list when translations go live
+# ALL 30 LANGUAGES NOW LIVE
+# Full translations available for all locales
 # ===========================================
-User-agent: *
-Disallow: /sv/
-Disallow: /bn/
-Disallow: /he/
-Disallow: /ar/
-Disallow: /ru/
-Disallow: /zh/
-Disallow: /ja/
-Disallow: /ko/
-Disallow: /fr/
-Disallow: /de/
-Disallow: /es/
-Disallow: /it/
-Disallow: /pt/
-Disallow: /nl/
-Disallow: /pl/
-Disallow: /tr/
-Disallow: /th/
-Disallow: /hi/
-Disallow: /vi/
+# Supported locales: en, ar, hi, zh, ru, ur, fr, de, fa, bn, fil, es, tr, it, ja, ko, he,
+#                    pt, nl, pl, sv, th, vi, id, ms, cs, el, da, no, ro, hu, uk
 
 # ===========================================
 # DEFAULT RULE
@@ -224,10 +206,10 @@ Disallow: /coming-soon
 Disallow: /login
 Disallow: /access-denied
 Disallow: /test
+Disallow: /v2/
 
 # ===========================================
 # SITEMAPS
-# Only EN is currently active
-# Add language-specific sitemaps when translations go live
+# Multi-language sitemap index with per-locale sitemaps
 # ===========================================
 Sitemap: https://travi.world/sitemap.xml
