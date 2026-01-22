@@ -1,1004 +1,922 @@
 {
   "nav": {
-    "home": "Home",
-    "destinations": "Destinations",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "guides": "Guides",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News",
-    "news": "News",
-    "shopping": "Shopping",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language",
-    "mainNavigation": "Main navigation",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "logoAlt": "TRAVI - Travel Guide",
-    "followInstagram": "Follow TRAVI on Instagram",
-    "followTikTok": "Follow TRAVI on TikTok",
-    "changeLanguage": "Change language",
-    "selectLanguage": "Select Language",
-    "popularLanguages": "Popular Languages",
-    "allLanguages": "All Languages"
+    "home": "الرئيسية",
+    "destinations": "الوجهات",
+    "attractions": "المعالم السياحية",
+    "hotels": "الفنادق",
+    "guides": "الأدلة",
+    "dining": "المطاعم",
+    "districts": "الأحياء",
+    "articles": "الأخبار",
+    "news": "الأخبار",
+    "shopping": "التسوق",
+    "realEstate": "العقارات",
+    "events": "الفعاليات",
+    "search": "البحث",
+    "language": "اللغة",
+    "mainNavigation": "القائمة الرئيسية",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "logoAlt": "ترافي - دليلك للسفر",
+    "followInstagram": "تابعونا على إنستغرام",
+    "followTikTok": "تابعونا على تيك توك",
+    "changeLanguage": "تغيير اللغة",
+    "selectLanguage": "اختر اللغة",
+    "popularLanguages": "اللغات الشائعة",
+    "allLanguages": "جميع اللغات"
   },
   "breadcrumbs": {
-    "ariaLabel": "Breadcrumb navigation",
-    "dubai": "Dubai"
+    "ariaLabel": "التنقل بين الصفحات",
+    "dubai": "دبي"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "اقرأ المزيد",
+    "viewAll": "عرض الكل",
+    "learnMore": "معرفة المزيد",
+    "bookNow": "احجز الآن",
+    "contactUs": "تواصل معنا",
+    "subscribe": "اشترك",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "noResults": "لا توجد نتائج",
+    "seeMore": "المزيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "close": "إغلاق",
+    "share": "مشاركة",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم النسخ!"
   },
   "home": {
     "hero": {
-      "title": "Explore the World with TRAVI",
-      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
-      "searchPlaceholder": "Search attractions, hotels, restaurants...",
-      "cta": "Start Exploring",
-      "badge": "Your Gateway to World Adventures",
-      "headlinePart1": "Your Trusted Travel",
-      "headlinePart2": "Resource",
-      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
-      "descriptionPart1": "Comprehensive travel information for",
-      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
-      "descriptionPart3": "attractions.",
-      "carouselLabel": "Destination carousel navigation",
-      "viewDestination": "View {{name}} - {{tagline}}",
-      "worldwide": "Worldwide",
-      "exploreWorld": "Explore the World",
-      "welcomeAriaLabel": "Welcome to TRAVI World",
-      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
-      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
-      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
+      "title": "اكتشف العالم مع ترافي",
+      "subtitle": "دليلك الشامل لـ 17 وجهة سياحية حول العالم",
+      "searchPlaceholder": "ابحث عن المعالم، الفنادق، المطاعم...",
+      "cta": "ابدأ الاستكشاف",
+      "badge": "دليلك الشامل للسفر",
+      "headlinePart1": "كل ما تحتاجه",
+      "headlinePart2": "لرحلة مميزة",
+      "description": "أدلة سفر شاملة لـ {{destinations}} وجهة حول العالم. اكتشف معلومات تفصيلية عن أكثر من {{attractions}} معلم سياحي.",
+      "descriptionPart1": "أدلة سفر شاملة لـ",
+      "descriptionPart2": "وجهة حول العالم. اكتشف معلومات تفصيلية عن",
+      "descriptionPart3": "معلم سياحي.",
+      "carouselLabel": "معرض الوجهات السياحية",
+      "viewDestination": "اعرض {{name}} - {{tagline}}",
+      "worldwide": "حول العالم",
+      "exploreWorld": "اكتشف العالم",
+      "welcomeAriaLabel": "مرحباً بك في ترافي العالمية",
+      "pageTitle": "ترافي - دليلك الشامل للفنادق والمعالم السياحية وأفضل الأنشطة",
+      "pageDescription": "دليلك الكامل لـ 17 وجهة سياحية حول العالم. معلومات احترافية عن الفنادق والمعالم السياحية والمطاعم والأنشطة في أكثر من 3000 موقع.",
+      "orgDescription": "مصدرك الموثوق للسفر إلى 17 وجهة حول العالم."
     },
     "srLabel": {
-      "attractions": "Over {{count}} attractions covered",
-      "destinations": "{{count}} destinations worldwide",
-      "languages": "Multilingual platform with additional languages rolling out"
+      "attractions": "أكثر من {{count}} معلم سياحي",
+      "destinations": "{{count}} وجهة حول العالم",
+      "languages": "منصة متعددة اللغات مع المزيد من اللغات قريباً"
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides",
+    "featured": "مميز",
+    "trending": "الأكثر رواجاً",
+    "topAttractions": "أفضل المعالم السياحية",
+    "bestHotels": "أفضل الفنادق",
+    "latestNews": "آخر الأخبار والأدلة",
     "sections": {
-      "destinations": "Explore Destinations",
-      "destinationsDesc": "Discover our curated collection of global travel destinations",
-      "categories": "Browse by Category",
-      "categoriesDesc": "Find exactly what you're looking for",
-      "experiences": "Travel by Experience",
-      "experiencesDesc": "Choose your travel style",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Everything you need to know about TRAVI",
-      "regions": "Explore by Region",
-      "newsletter": "Stay Updated",
-      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
-      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
+      "destinations": "استكشف الوجهات",
+      "destinationsDesc": "اكتشف مجموعتنا المختارة من أجمل الوجهات السياحية",
+      "categories": "تصفح حسب الفئة",
+      "categoriesDesc": "ابحث بالضبط عما تريد",
+      "experiences": "السفر حسب التجربة",
+      "experiencesDesc": "اختر نمط سفرك المفضل",
+      "faq": "الأسئلة الشائعة",
+      "faqDesc": "كل ما تحتاج معرفته عن ترافي",
+      "regions": "استكشف حسب المنطقة",
+      "newsletter": "ابق على اطلاع",
+      "allDestinationsTitle": "أدلة السفر لجميع الـ {{count}} وجهات",
+      "completeGuide": "{{name}}، {{country}} - الدليل الشامل"
     },
     "cta": {
-      "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Guides",
-      "viewAll": "View All",
-      "startExploring": "Start Exploring",
-      "planTrip": "Plan Your Trip",
-      "viewExperience": "View {{name}}"
+      "exploreDestinations": "استكشف الوجهات",
+      "viewGuides": "شاهد الأدلة",
+      "viewAll": "عرض الكل",
+      "startExploring": "ابدأ الاستكشاف",
+      "planTrip": "خطط لرحلتك",
+      "viewExperience": "شاهد {{name}}"
     },
     "stats": {
-      "destinations": "DESTINATIONS",
-      "attractions": "ATTRACTIONS",
-      "languages": "LANGUAGES",
-      "attractionsNum": "3,000+",
+      "destinations": "وجهات",
+      "attractions": "معالم سياحية",
+      "languages": "لغات",
+      "attractionsNum": "+3,000",
       "destinationsNum": "16",
-      "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} destinations",
-      "attractionsCountWithLabel": "{{count}}+ attractions"
+      "languagesNum": "+17",
+      "destinationsCountWithLabel": "{{count}} وجهة",
+      "attractionsCountWithLabel": "{{count}}+ معلم سياحي"
     },
     "categories": {
-      "attractions": "Attractions",
-      "attractionsDesc": "Must-see places",
-      "news": "Travel News",
-      "newsDesc": "Latest updates",
-      "guides": "Guides",
-      "guidesDesc": "Destination guides",
-      "hotels": "Hotels",
-      "hotelsDesc": "Find your perfect stay"
+      "attractions": "المعالم السياحية",
+      "attractionsDesc": "أماكن لا بد من زيارتها",
+      "news": "أخبار السفر",
+      "newsDesc": "آخر التحديثات",
+      "guides": "الأدلة",
+      "guidesDesc": "أدلة الوجهات",
+      "hotels": "الفنادق",
+      "hotelsDesc": "اعثر على إقامتك المثالية"
     },
     "experiences": {
-      "luxury": "Luxury Travel",
-      "luxuryDesc": "Premium travel experiences and exclusive destinations",
-      "adventure": "Adventure & Outdoors",
-      "adventureDesc": "Thrilling outdoor experiences and adventures",
-      "family": "Family Travel",
-      "familyDesc": "Family-friendly destinations and activities",
-      "budget": "Budget Travel",
-      "budgetDesc": "Affordable travel options and destinations",
-      "romance": "Honeymoon & Romance",
-      "romanceDesc": "Romantic getaways and honeymoon destinations",
-      "solo": "Solo Travel",
-      "soloDesc": "Perfect destinations for solo travelers"
+      "luxury": "السفر الفاخر",
+      "luxuryDesc": "تجارب سفر راقية ووجهات حصرية",
+      "adventure": "المغامرات",
+      "adventureDesc": "تجارب مثيرة ومغامرات في الطبيعة",
+      "family": "السفر العائلي",
+      "familyDesc": "وجهات وأنشطة مناسبة للعائلات",
+      "budget": "السفر الاقتصادي",
+      "budgetDesc": "خيارات سفر بأسعار مناسبة",
+      "romance": "شهر العسل والرومانسية",
+      "romanceDesc": "رحلات رومانسية ووجهات شهر العسل",
+      "solo": "السفر الفردي",
+      "soloDesc": "وجهات مثالية للمسافرين المنفردين"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI World",
-      "whatIsTravi": "What is TRAVI World?",
-      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
-      "howManyDestinations": "How many destinations does TRAVI cover?",
-      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
-      "isFree": "Is TRAVI World free to use?",
-      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-      "updateFrequency": "How often is content updated?",
-      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
+      "title": "الأسئلة الشائعة",
+      "subtitle": "كل ما تحتاج معرفته عن ترافي",
+      "whatIsTravi": "ما هو ترافي؟",
+      "whatIsTraviAnswer": "ترافي هي منصة شاملة لمعلومات السفر تغطي 17 وجهة حول العالم مع أدلة تفصيلية لأكثر من 3000 معلم سياحي وفندق ومطعم ونشاط.",
+      "howManyDestinations": "كم عدد الوجهات التي تغطيها ترافي؟",
+      "howManyDestinationsAnswer": "تغطي ترافي 17 وجهة سياحية رئيسية منها دبي وباريس وطوكيو ونيويورك وبرشلونة وسنغافورة ولندن وبانكوك وأبوظبي وأمستردام وهونغ كونغ وإسطنبول ولاس فيغاس ولوس أنجلوس وميامي وروما.",
+      "isFree": "هل ترافي مجاني؟",
+      "isFreeAnswer": "نعم، ترافي مجاني بالكامل. يمكنك تصفح آلاف أدلة السفر ومراجعات المعالم السياحية وتوصيات الفنادق والمطاعم دون أي تكلفة.",
+      "updateFrequency": "كم مرة يتم تحديث المحتوى؟",
+      "updateFrequencyAnswer": "يتم تحديث محتوى ترافي يومياً بأحدث أخبار السفر ومراجعات المعالم السياحية الجديدة والمعلومات المحدثة عن الفنادق والمطاعم في جميع الوجهات الـ 17."
     },
-    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
-    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
+    "mascotAlt": "شعار ترافي مع معالم عالمية - اكتشف أدلة السفر لدبي وباريس ولندن وروما والمزيد",
+    "mascotTitle": "ترافي - أدلة السفر للوجهات العالمية"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "معالم دبي السياحية",
+    "subtitle": "اكتشف المعالم الأيقونية والكنوز المخفية",
     "hero": {
-      "badge": "{{count}} attractions in {{cities}} cities",
-      "badgeThousands": "Thousands of attractions worldwide",
-      "headlinePart1": "Things to Do",
-      "headlinePart2": "Worldwide",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
-      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
-      "carouselLabel": "Featured attractions carousel",
-      "sectionLabel": "Book tickets to top attractions worldwide",
-      "searchAriaLabel": "Search attractions by name or city",
-      "searchButton": "Search",
-      "searchButtonAriaLabel": "Search attractions"
+      "badge": "{{count}} معلم سياحي في {{cities}} مدن",
+      "badgeThousands": "آلاف المعالم السياحية حول العالم",
+      "headlinePart1": "أفضل الأنشطة",
+      "headlinePart2": "حول العالم",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">تذاكر بدون انتظار</span> لبرج إيفل والكولوسيوم وبرج خليفة وأفضل المعالم في باريس وروما ودبي والمزيد.",
+      "searchPlaceholder": "ابحث عن برج إيفل، الكولوسيوم، برج خليفة...",
+      "carouselLabel": "معرض المعالم السياحية المميزة",
+      "sectionLabel": "احجز تذاكر لأفضل المعالم السياحية حول العالم",
+      "searchAriaLabel": "البحث عن المعالم السياحية بالاسم أو المدينة",
+      "searchButton": "بحث",
+      "searchButtonAriaLabel": "البحث عن المعالم السياحية"
     },
     "stats": {
-      "attractions": "ATTRACTIONS",
-      "cities": "CITIES",
-      "rating": "RATING"
+      "attractions": "معالم سياحية",
+      "cities": "مدن",
+      "rating": "التقييم"
     },
     "srLabel": {
-      "attractions": "Over {{count}} attractions",
-      "cities": "{{count}} cities",
-      "rating": "{{rating}} star rating"
+      "attractions": "أكثر من {{count}} معلم سياحي",
+      "cities": "{{count}} مدينة",
+      "rating": "تقييم {{rating}} نجوم"
     },
     "types": {
-      "all": "All Types",
-      "museums": "Museums",
-      "landmarks": "Landmarks",
-      "tours": "Tours",
-      "themeParks": "Theme Parks",
-      "shows": "Shows"
+      "all": "جميع الأنواع",
+      "museums": "المتاحف",
+      "landmarks": "المعالم",
+      "tours": "الجولات",
+      "themeParks": "المدن الترفيهية",
+      "shows": "العروض"
     },
-    "thingsToDoIn": "Things to do in {{name}}",
-    "countAttractions": "{{country}} - {{count}} attractions",
+    "thingsToDoIn": "أفضل الأنشطة في {{name}}",
+    "countAttractions": "{{country}} - {{count}} معلم سياحي",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "الكل",
+      "popular": "الأكثر شعبية",
+      "free": "دخول مجاني",
+      "familyFriendly": "مناسب للعائلات",
+      "outdoor": "أنشطة خارجية",
+      "indoor": "أنشطة داخلية"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "الموقع",
+      "hours": "أوقات العمل",
+      "price": "السعر",
+      "duration": "المدة",
+      "tips": "نصائح مفيدة"
     },
     "sections": {
-      "destinations": "Explore Attractions by Destination",
-      "destinationsDesc": "Choose a city to discover amazing things to do",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Get answers about booking attractions worldwide",
-      "whyBookBadge": "Why Book With Us",
-      "whyBookTitle": "Skip the Lines, Save Time",
-      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
-      "allDestinations": "All Destinations"
+      "destinations": "المعالم السياحية حسب الوجهة",
+      "destinationsDesc": "اختر مدينة لتكتشف أفضل الأنشطة",
+      "faq": "الأسئلة الشائعة",
+      "faqDesc": "كل ما تحتاج معرفته عن حجز تذاكر المعالم السياحية",
+      "whyBookBadge": "لماذا تحجز معنا",
+      "whyBookTitle": "تجاوز الطوابير، وفر وقتك",
+      "whyBookDesc": "احجز تذاكرك مسبقاً واستمتع بدخول سريع إلى أفضل المعالم السياحية",
+      "allDestinations": "جميع الوجهات"
     },
     "features": {
-      "skipTheLine": "Skip-the-Line Tickets",
-      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
-      "mobileTickets": "Mobile Tickets",
-      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
-      "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
+      "skipTheLine": "تذاكر بدون انتظار",
+      "skipTheLineDesc": "تجاوز الطوابير في برج إيفل والكولوسيوم والفاتيكان والمزيد",
+      "mobileTickets": "تذاكر إلكترونية",
+      "mobileTicketsDesc": "تصلك فوراً على هاتفك - أظهر التذكرة وادخل مباشرة",
+      "freeCancellation": "إلغاء مجاني",
+      "freeCancellationDesc": "تغيرت خططك؟ ألغي حتى 24 ساعة قبل الموعد واسترد المبلغ كاملاً"
     },
     "browse": {
-      "title": "Things to Do by Destination",
-      "desc": "Find attractions and experiences in the world's top cities",
-      "thingsToDo": "{{count}} things to do",
-      "noDestinations": "No destinations available at this time."
+      "title": "أفضل الأنشطة حسب الوجهة",
+      "desc": "اعثر على المعالم السياحية والتجارب في أفضل مدن العالم",
+      "thingsToDo": "{{count}} نشاط",
+      "noDestinations": "لا توجد وجهات متاحة حالياً."
     },
     "exploreLinks": {
-      "title": "Explore More Travel Guides",
-      "hotelsWorldwide": "Hotels Worldwide",
-      "bestRestaurants": "Best Restaurants",
-      "travelNews": "Travel News"
+      "title": "اكتشف المزيد من أدلة السفر",
+      "hotelsWorldwide": "فنادق حول العالم",
+      "bestRestaurants": "أفضل المطاعم",
+      "travelNews": "أخبار السفر"
     },
     "cta": {
-      "title": "Ready to Explore?",
-      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
-      "parisAttractions": "Paris Attractions",
-      "romeAttractions": "Rome Attractions"
+      "title": "مستعد للاستكشاف؟",
+      "desc": "احجز تذاكر بدون انتظار لبرج إيفل والكولوسيوم وبرج خليفة وأفضل المعالم السياحية حول العالم.",
+      "parisAttractions": "معالم باريس",
+      "romeAttractions": "معالم روما"
     },
     "search": {
-      "popular": "Popular:",
-      "thingsToDoIn": "Things to Do in {{city}}",
-      "ariaCarouselNav": "Attraction carousel navigation",
-      "ariaViewInCity": "View {{name}} in {{city}}"
+      "popular": "الأكثر شعبية:",
+      "thingsToDoIn": "أفضل الأنشطة في {{city}}",
+      "ariaCarouselNav": "التنقل في معرض المعالم السياحية",
+      "ariaViewInCity": "شاهد {{name}} في {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Featured attraction",
-      "ariaThumbnails": "Attraction carousel thumbnails",
-      "ariaTicketsIn": "{{name}} tickets in {{city}}",
-      "priceFrom": "From",
-      "bookTickets": "Book Tickets",
-      "skipTheLine": "Skip the Line",
-      "duration": "2-3 hours",
-      "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "24h before visit",
-      "mobileTickets": "Mobile Tickets",
-      "instantDelivery": "Instant delivery"
+      "ariaFeaturedAttraction": "معلم سياحي مميز",
+      "ariaThumbnails": "صور مصغرة لمعرض المعالم السياحية",
+      "ariaTicketsIn": "تذاكر {{name}} في {{city}}",
+      "priceFrom": "من",
+      "bookTickets": "احجز التذاكر",
+      "skipTheLine": "تجاوز الطابور",
+      "duration": "2-3 ساعات",
+      "freeCancellation": "إلغاء مجاني",
+      "freeCancellationDesc": "حتى 24 ساعة قبل الزيارة",
+      "mobileTickets": "تذاكر إلكترونية",
+      "instantDelivery": "تسليم فوري"
     },
     "chip": {
-      "thingsToDo": "{{count}} things to do"
+      "thingsToDo": "{{count}} نشاط"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "فنادق دبي",
+    "subtitle": "اعثر على إقامتك المثالية",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "جميع الفنادق",
+      "luxury": "فاخر",
+      "budget": "اقتصادي",
+      "beachfront": "على الشاطئ",
+      "cityCenter": "وسط المدينة",
+      "familyFriendly": "مناسب للعائلات"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "من",
+      "perNight": "لليلة",
+      "amenities": "المرافق",
+      "checkIn": "تسجيل الدخول",
+      "checkOut": "تسجيل الخروج",
+      "rooms": "الغرف",
+      "rating": "التقييم"
     },
-    "bookNow": "Book Now"
+    "bookNow": "احجز الآن"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "مطاعم دبي",
+    "subtitle": "تجارب طهي لكل الأذواق",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
-      "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "all": "جميع المطاعم",
+      "fineDining": "مطاعم راقية",
+      "casual": "مطاعم عادية",
+      "cafes": "المقاهي",
+      "streetFood": "أكلات الشارع",
+      "halal": "حلال",
+      "vegetarian": "نباتي"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
+      "cuisine": "نوع المطبخ",
+      "priceRange": "الأسعار",
+      "hours": "أوقات العمل",
+      "dress": "قواعد الملابس",
+      "reservations": "الحجوزات"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
-      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
-      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
-      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
+      "dubai": { "name": "دبي", "country": "الإمارات", "cardAlt": "أفق دبي مع برج خليفة عند الغروب" },
+      "london": { "name": "لندن", "country": "المملكة المتحدة", "cardAlt": "ساعة بيج بن ومبنى البرلمان في لندن" },
+      "paris": { "name": "باريس", "country": "فرنسا", "cardAlt": "برج إيفل مضاء عند الغروب" },
+      "newYork": { "name": "نيويورك", "country": "الولايات المتحدة", "cardAlt": "أفق مانهاتن مع مبنى إمباير ستيت" },
+      "tokyo": { "name": "طوكيو", "country": "اليابان", "cardAlt": "معبر شيبويا بأضواء النيون في الليل" },
+      "singapore": { "name": "سنغافورة", "country": "سنغافورة", "cardAlt": "مارينا باي ساندز وحدائق الخليج" },
+      "barcelona": { "name": "برشلونة", "country": "إسبانيا", "cardAlt": "كنيسة العائلة المقدسة في الساعة الذهبية" },
+      "bangkok": { "name": "بانكوك", "country": "تايلاند", "cardAlt": "القصر الكبير في بانكوك عند الشروق" },
+      "abuDhabi": { "name": "أبوظبي", "country": "الإمارات", "cardAlt": "جامع الشيخ زايد الكبير" },
+      "amsterdam": { "name": "أمستردام", "country": "هولندا", "cardAlt": "قناة أمستردام مع المباني التاريخية" },
+      "hongKong": { "name": "هونغ كونغ", "country": "الصين", "cardAlt": "أفق هونغ كونغ في الليل" },
+      "istanbul": { "name": "إسطنبول", "country": "تركيا", "cardAlt": "المسجد الأزرق عند الغروب" },
+      "lasVegas": { "name": "لاس فيغاس", "country": "الولايات المتحدة", "cardAlt": "شارع لاس فيغاس في الليل" },
+      "losAngeles": { "name": "لوس أنجلوس", "country": "الولايات المتحدة", "cardAlt": "لافتة هوليوود" },
+      "miami": { "name": "ميامي", "country": "الولايات المتحدة", "cardAlt": "شاطئ ميامي وحي آرت ديكو" },
+      "rome": { "name": "روما", "country": "إيطاليا", "cardAlt": "الكولوسيوم في الساعة الذهبية" }
     },
     "hero": {
-      "badge": "{{count}} Destinations Worldwide",
-      "trustedBy": "Trusted by {{count}} destinations worldwide",
-      "discover": "Discover",
-      "worldClass": "World-Class",
-      "destinations": "Destinations",
-      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
-      "exploreAll": "Explore All Destinations",
-      "travelGuides": "Travel Guides",
-      "explorePlaceholder": "Explore Destinations",
-      "browseCollection": "Browse our collection of handpicked travel destinations below",
-      "explore": "Explore",
-      "discoverButton": "Discover",
-      "ariaLabel": "Destinations overview",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "badge": "{{count}} وجهة حول العالم",
+      "trustedBy": "موثوق من {{count}} وجهة حول العالم",
+      "discover": "اكتشف",
+      "worldClass": "وجهات عالمية",
+      "destinations": "مميزة",
+      "description": "أدلة سفر مختارة مع خبرة محلية لأجمل مدن العالم. من المعالم الأيقونية إلى الكنوز المخفية.",
+      "exploreAll": "استكشف جميع الوجهات",
+      "travelGuides": "أدلة السفر",
+      "explorePlaceholder": "استكشف الوجهات",
+      "browseCollection": "تصفح مجموعتنا من الوجهات السياحية المختارة أدناه",
+      "explore": "استكشف",
+      "discoverButton": "اكتشف",
+      "ariaLabel": "نظرة عامة على الوجهات",
+      "exploreTitle": "استكشف {{name}}",
+      "galleryAriaLabel": "معرض الوجهات المميزة",
+      "placeholderAriaLabel": "مساحة الوجهة المميزة"
     },
     "stats": {
-      "destinations": "DESTINATIONS",
-      "countries": "COUNTRIES",
-      "regions": "Regions",
-      "languages": "Languages"
+      "destinations": "وجهات",
+      "countries": "دول",
+      "regions": "مناطق",
+      "languages": "لغات"
     },
     "sections": {
-      "featured": "Featured Destinations",
-      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
-      "all": "All Destinations",
-      "count": "{{count}} destinations found"
+      "featured": "الوجهات المميزة",
+      "featuredDesc": "وجهات مختارة بعناية مع تجارب استثنائية ومعرفة محلية وكل ما تحتاجه لتخطيط رحلتك المثالية.",
+      "all": "جميع الوجهات",
+      "count": "تم العثور على {{count}} وجهة"
     },
     "search": {
-      "placeholder": "Search destinations...",
-      "noResults": "No destinations found",
-      "tryAdjusting": "Try adjusting your search criteria",
-      "clearSearch": "Clear Search"
+      "placeholder": "ابحث عن الوجهات...",
+      "noResults": "لم يتم العثور على وجهات",
+      "tryAdjusting": "جرب تعديل معايير البحث",
+      "clearSearch": "مسح البحث"
     },
     "carousel": {
-      "label": "Featured destinations carousel",
-      "previous": "Previous destination",
-      "next": "Next destination",
-      "goTo": "Go to {{name}}",
-      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "label": "معرض الوجهات المميزة",
+      "previous": "الوجهة السابقة",
+      "next": "الوجهة التالية",
+      "goTo": "انتقل إلى {{name}}",
+      "slideOf": "شريحة {{current}} من {{total}}: {{name}}",
+      "thumbnails": "صور مصغرة لمعرض الوجهات"
     },
     "card": {
-      "explore": "Explore",
-      "defaultLevel": "City",
-      "exploreFallback": "Explore {{name}}",
-      "destination": "Destination",
-      "travelGuideAlt": "{{name}} travel guide"
+      "explore": "استكشف",
+      "defaultLevel": "مدينة",
+      "exploreFallback": "استكشف {{name}}",
+      "destination": "وجهة",
+      "travelGuideAlt": "دليل السفر إلى {{name}}"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI destination guides",
-      "q1": "How many destinations does TRAVI cover?",
-      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
-      "q2": "What information is included in TRAVI destination guides?",
-      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
-      "q3": "Can I search for destinations?",
-      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
-      "q4": "What are the featured destinations on TRAVI?",
-      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
+      "title": "الأسئلة الشائعة",
+      "subtitle": "كل ما تحتاج معرفته عن أدلة وجهات ترافي",
+      "q1": "كم عدد الوجهات التي تغطيها ترافي؟",
+      "a1": "تغطي ترافي الوجهات السياحية الرئيسية في الشرق الأوسط وأوروبا وآسيا والأمريكتين مع أدلة شاملة لكل موقع.",
+      "q2": "ما المعلومات المتضمنة في أدلة وجهات ترافي؟",
+      "a2": "يتضمن كل دليل وجهة أوصافاً تفصيلية تغطي المعالم السياحية وخيارات الإقامة والمطبخ المحلي ونصائح النقل والمعلومات العملية للسفر.",
+      "q3": "هل يمكنني البحث عن الوجهات؟",
+      "a3": "نعم، تتيح لك ترافي البحث عن الوجهات بالاسم أو الدولة باستخدام شريط البحث في صفحة الوجهات.",
+      "q4": "ما هي الوجهات المميزة في ترافي؟",
+      "a4": "الوجهات المميزة في ترافي هي مواقع مختارة بعناية تقدم تجارب استثنائية للمسافرين باهتمامات متنوعة من السفر الفاخر إلى السفر الاقتصادي."
     },
     "loading": {
-      "title": "Loading Destinations",
-      "message": "Fetching the latest destination data..."
+      "title": "جاري تحميل الوجهات",
+      "message": "جاري جلب أحدث بيانات الوجهات..."
     },
     "error": {
-      "title": "Unable to Load Destinations",
-      "message": "We're having trouble loading destination data. Please try again later.",
-      "refresh": "Refresh Page"
+      "title": "تعذر تحميل الوجهات",
+      "message": "نواجه مشكلة في تحميل بيانات الوجهات. يرجى المحاولة مرة أخرى لاحقاً.",
+      "refresh": "تحديث الصفحة"
     },
     "empty": {
-      "title": "No Destinations Available",
-      "message": "No destinations are currently available. Please check back later."
+      "title": "لا توجد وجهات متاحة",
+      "message": "لا توجد وجهات متاحة حالياً. يرجى التحقق مرة أخرى لاحقاً."
     }
   },
   "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
+    "title": "أحياء دبي",
+    "subtitle": "استكشف أحياء دبي المتنوعة",
+    "explore": "استكشف الحي"
   },
   "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
+    "title": "عقارات دبي",
+    "subtitle": "استثمر في المستقبل",
     "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
+      "title": "عقارات على الخارطة",
+      "subtitle": "استثمر مبكراً، ادفع أقل، اربح أكثر",
+      "findProperty": "ابحث عن عقارك المثالي",
+      "from": "من",
+      "paymentPlan": "خطة السداد",
+      "handover": "التسليم",
+      "developer": "المطور"
     },
     "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
+      "all": "جميع العقارات",
+      "apartments": "الشقق",
+      "villas": "الفلل",
+      "townhouses": "المنازل",
+      "penthouses": "البنتهاوس"
     },
     "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
+      "cryptoAccepted": "نقبل العملات الرقمية",
+      "paymentPlans": "خطط سداد مرنة",
+      "goldenVisa": "مؤهل للإقامة الذهبية",
+      "roiGuarantee": "ضمان العائد"
     }
   },
   "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
+    "placeholder": "ابحث عن المعالم، الأدلة، الوجهات...",
+    "results": "نتائج البحث",
+    "noResults": "لم يتم العثور على نتائج لـ",
+    "tryAgain": "جرب كلمات بحث مختلفة"
   },
   "footer": {
-    "about": "About Travi",
-    "aboutTravi": "About Travi",
-    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
-    "aboutUs": "About Us",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "termsOfService": "Terms of Service",
-    "contact": "Contact Us",
-    "contactUs": "Contact Us",
-    "followUs": "Follow Us",
-    "explore": "Explore",
-    "travel": "Travel",
-    "company": "Company",
-    "allGuides": "All Guides",
-    "cookies": "Cookies",
-    "security": "Security",
-    "cookieSettings": "Cookie Settings",
-    "tagline": "Your Trusted Travel Resource",
-    "ariaLabel": "Site footer",
-    "featuredGuides": "Featured Guides",
-    "tools": "Tools",
-    "currencyConverter": "Currency Converter",
-    "roiCalculator": "ROI Calculator",
-    "mortgageCalculator": "Mortgage Calculator",
-    "glossary": "Glossary",
-    "freeThingsToDo": "70+ Free Things to Do",
-    "open24Hours": "Open 24 Hours",
-    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
-    "lawsForTourists": "Laws for Tourists",
-    "newsletter": "Subscribe to our newsletter",
-    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
-    "emailPlaceholder": "Enter your email",
-    "allRightsReserved": "All rights reserved.",
-    "copyright": "© {{year}} {{brand}}. All rights reserved.",
-    "emailAriaLabel": "Send email to TRAVI"
+    "about": "عن ترافي",
+    "aboutTravi": "عن ترافي",
+    "aboutText": "معلومات سفر شاملة لـ 17 وجهة حول العالم.",
+    "aboutUs": "من نحن",
+    "quickLinks": "روابط سريعة",
+    "legal": "قانوني",
+    "privacy": "سياسة الخصوصية",
+    "privacyPolicy": "سياسة الخصوصية",
+    "terms": "الشروط والأحكام",
+    "termsOfService": "شروط الخدمة",
+    "contact": "تواصل معنا",
+    "contactUs": "تواصل معنا",
+    "followUs": "تابعنا",
+    "explore": "استكشف",
+    "travel": "السفر",
+    "company": "الشركة",
+    "allGuides": "جميع الأدلة",
+    "cookies": "ملفات تعريف الارتباط",
+    "security": "الأمان",
+    "cookieSettings": "إعدادات ملفات تعريف الارتباط",
+    "tagline": "مصدرك الموثوق للسفر",
+    "ariaLabel": "تذييل الموقع",
+    "featuredGuides": "أدلة مميزة",
+    "tools": "أدوات",
+    "currencyConverter": "محول العملات",
+    "roiCalculator": "حاسبة العائد",
+    "mortgageCalculator": "حاسبة الرهن العقاري",
+    "glossary": "المصطلحات",
+    "freeThingsToDo": "أكثر من 70 نشاط مجاني",
+    "open24Hours": "مفتوح 24 ساعة",
+    "tributeToSheikh": "تحية لصاحب السمو الشيخ محمد",
+    "lawsForTourists": "قوانين للسياح",
+    "newsletter": "اشترك في نشرتنا الإخبارية",
+    "newsletterDescription": "احصل على أحدث نصائح السفر والتحديثات.",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "copyright": "© {{year}} {{brand}}. جميع الحقوق محفوظة.",
+    "emailAriaLabel": "أرسل بريداً إلكترونياً إلى ترافي"
   },
   "errors": {
     "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
+      "title": "الصفحة غير موجودة",
+      "message": "الصفحة التي تبحث عنها غير موجودة.",
+      "button": "العودة للرئيسية"
     },
     "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
+      "title": "خطأ في الخادم",
+      "message": "حدث خطأ من جانبنا.",
+      "button": "حاول مرة أخرى"
     },
     "network": {
-      "title": "Connection Error",
-      "message": "Unable to connect. Please check your internet connection.",
-      "button": "Retry"
+      "title": "خطأ في الاتصال",
+      "message": "تعذر الاتصال. يرجى التحقق من اتصالك بالإنترنت.",
+      "button": "إعادة المحاولة"
     }
   },
   "newsletter": {
-    "badge": "Join the Adventure",
-    "title": "Get Travel Magic in Your Inbox",
-    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
-    "emailPlaceholder": "your@email.com",
-    "subscribe": "Subscribe",
-    "success": "You're subscribed! Check your inbox."
+    "badge": "انضم للمغامرة",
+    "title": "احصل على إلهام السفر في بريدك",
+    "description": "نصائح أسبوعية، كنوز مخفية، وعروض حصرية - بدون إزعاج، فقط إلهام للسفر.",
+    "emailPlaceholder": "بريدك الإلكتروني",
+    "subscribe": "اشترك",
+    "success": "تم الاشتراك بنجاح! تحقق من بريدك الإلكتروني."
   },
   "cookies": {
-    "title": "We value your privacy",
-    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
-    "manage": "Manage",
-    "rejectAll": "Reject All",
-    "acceptAll": "Accept All",
-    "preferencesTitle": "Cookie Preferences",
-    "savePreferences": "Save Preferences",
+    "title": "نحن نقدر خصوصيتك",
+    "description": "نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح وتحليل حركة المرور وتخصيص المحتوى. بالنقر على \"قبول الكل\"، فإنك توافق على استخدامنا لملفات تعريف الارتباط.",
+    "manage": "إدارة",
+    "rejectAll": "رفض الكل",
+    "acceptAll": "قبول الكل",
+    "preferencesTitle": "تفضيلات ملفات تعريف الارتباط",
+    "savePreferences": "حفظ التفضيلات",
     "essential": {
-      "title": "Essential Cookies",
-      "description": "Required for the website to function properly"
+      "title": "ملفات تعريف الارتباط الأساسية",
+      "description": "مطلوبة لعمل الموقع بشكل صحيح"
     },
     "analytics": {
-      "title": "Analytics Cookies",
-      "description": "Help us understand how visitors interact with our website"
+      "title": "ملفات تعريف الارتباط التحليلية",
+      "description": "تساعدنا على فهم كيفية تفاعل الزوار مع موقعنا"
     },
     "marketing": {
-      "title": "Marketing Cookies",
-      "description": "Used to deliver personalized advertisements"
+      "title": "ملفات تعريف الارتباط التسويقية",
+      "description": "تُستخدم لعرض إعلانات مخصصة"
     }
   },
   "meta": {
     "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
+      "title": "ترافي - اكتشف دبي | دليلك الشامل لدبي",
+      "description": "اكتشف أفضل المعالم السياحية والفنادق والمطاعم والأحياء في دبي. خطط لرحلتك المثالية إلى دبي مع نصائح محلية وتوصيات."
     },
     "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
+      "title": "معالم دبي السياحية | أفضل الأنشطة في دبي",
+      "description": "اكتشف أفضل المعالم السياحية في دبي - من برج خليفة إلى الكنوز المخفية. خطط لمغامرتك السياحية في دبي."
     },
     "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
+      "title": "فنادق دبي | أفضل أماكن الإقامة في دبي",
+      "description": "اعثر على الفندق المثالي في دبي لأي ميزانية. من المنتجعات الفاخرة إلى الخيارات الاقتصادية."
     },
     "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "title": "مطاعم دبي | أفضل المطاعم في دبي",
+      "description": "استكشف المشهد الطهي في دبي - من المطاعم الراقية إلى أكلات الشارع وكل ما بينهما."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Travel Intelligence",
-      "headlinePart1": "Stories That",
-      "headlinePart2": "Move You",
-      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
-      "startJourney": "Start Your Journey",
-      "browseCollection": "Browse Collection",
-      "issueBadge": "Issue 47 — Winter 2026"
+      "categoryLabel": "معلومات السفر الذكية",
+      "headlinePart1": "قصص تلهمك",
+      "headlinePart2": "للسفر",
+      "description": "أدلة احترافية، رؤى محلية، وقصص تحريرية تغير الطريقة التي تختبر بها العالم.",
+      "startJourney": "ابدأ رحلتك",
+      "browseCollection": "تصفح المجموعة",
+      "issueBadge": "العدد 47 — شتاء 2026"
     },
     "stats": {
-      "guides": "Travel Guides",
-      "destinations": "Destinations",
-      "languages": "Languages"
+      "guides": "أدلة السفر",
+      "destinations": "الوجهات",
+      "languages": "اللغات"
     },
     "journey": {
-      "badge": "Your Journey, Our Guidance",
-      "title": "Every Great Trip Begins with a Guide",
-      "subtitle": "From dreaming to sharing, we're with you at every step"
+      "badge": "رحلتك، إرشادنا",
+      "title": "كل رحلة عظيمة تبدأ بدليل",
+      "subtitle": "من الحلم إلى المشاركة، نحن معك في كل خطوة"
     },
     "ideaLab": {
-      "badge": "Idea Lab",
-      "title": "Curated Inspiration",
-      "readGuide": "Read Guide"
+      "badge": "مختبر الأفكار",
+      "title": "إلهام مختار",
+      "readGuide": "اقرأ الدليل"
     },
     "archetype": {
-      "badge": "Personalized for You",
-      "title": "What Kind of Traveler Are You?",
-      "subtitle": "Select your travel style and discover guides curated just for you",
-      "viewGuides": "View {{type}} Guides"
+      "badge": "مخصص لك",
+      "title": "أي نوع من المسافرين أنت؟",
+      "subtitle": "اختر أسلوب سفرك واكتشف أدلة مختارة خصيصاً لك",
+      "viewGuides": "شاهد أدلة {{type}}"
     },
     "archetypes": {
       "adventure": {
-        "name": "Adventure Seeker",
-        "description": "Thrilling experiences and adrenaline rushes"
+        "name": "باحث عن المغامرات",
+        "description": "تجارب مثيرة وأدرينالين"
       },
       "culture": {
-        "name": "Culture Explorer",
-        "description": "Art, history, and local traditions"
+        "name": "مستكشف الثقافات",
+        "description": "الفن والتاريخ والتقاليد المحلية"
       },
       "relaxation": {
-        "name": "Relaxation Guru",
-        "description": "Wellness retreats and peaceful escapes"
+        "name": "خبير الاسترخاء",
+        "description": "منتجعات صحية وملاذات هادئة"
       },
       "foodie": {
-        "name": "Culinary Nomad",
-        "description": "Local flavors and gastronomic adventures"
+        "name": "الرحالة الطهوي",
+        "description": "نكهات محلية ومغامرات طهوية"
       },
       "wellness": {
-        "name": "Wellness Seeker",
-        "description": "Relaxation, spas, and mindful retreats"
+        "name": "باحث عن الصحة",
+        "description": "استرخاء ومنتجعات صحية وملاذات واعية"
       },
       "budget": {
-        "name": "Smart Traveler",
-        "description": "Maximum experience, minimal budget"
+        "name": "المسافر الذكي",
+        "description": "أقصى تجربة بأقل ميزانية"
       },
       "solo": {
-        "name": "Solo Explorer",
-        "description": "Independent journeys and self-discovery"
+        "name": "المستكشف المنفرد",
+        "description": "رحلات مستقلة واكتشاف الذات"
       },
       "luxury": {
-        "name": "Luxury Connoisseur",
-        "description": "Premium experiences and fine living"
+        "name": "عاشق الرفاهية",
+        "description": "تجارب راقية وحياة فاخرة"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Dream",
-        "subtitle": "Discover inspiration",
-        "guides": ["Destination Guides", "Photo Essays"]
+        "title": "احلم",
+        "subtitle": "اكتشف الإلهام",
+        "guides": ["أدلة الوجهات", "مقالات مصورة"]
       },
       "plan": {
-        "title": "Plan",
-        "subtitle": "Map your journey",
-        "guides": ["Trip Planning", "Visa Requirements"]
+        "title": "خطط",
+        "subtitle": "خطط لرحلتك",
+        "guides": ["تخطيط الرحلة", "متطلبات التأشيرة"]
       },
       "prepare": {
-        "title": "Prepare",
-        "subtitle": "Get ready to go",
-        "guides": ["Packing Lists", "Safety Tips"]
+        "title": "استعد",
+        "subtitle": "جهز نفسك للانطلاق",
+        "guides": ["قوائم التعبئة", "نصائح السلامة"]
       },
       "experience": {
-        "title": "Experience",
-        "subtitle": "Live the adventure",
-        "guides": ["Local Insights", "Hidden Gems"]
+        "title": "اختبر",
+        "subtitle": "عش المغامرة",
+        "guides": ["رؤى محلية", "كنوز مخفية"]
       },
       "share": {
-        "title": "Share",
-        "subtitle": "Tell your story",
-        "guides": ["Travel Writing", "Photography"]
+        "title": "شارك",
+        "subtitle": "احكِ قصتك",
+        "guides": ["كتابة السفر", "التصوير"]
       }
     },
     "categories": {
-      "weekendEscapes": "Weekend Escapes",
-      "offBeatenPath": "Off the Beaten Path",
-      "smartTravel": "Smart Travel",
-      "bucketList": "Bucket List",
-      "culinary": "Culinary",
-      "natureWonder": "Nature & Wonder"
+      "weekendEscapes": "عطلات نهاية الأسبوع",
+      "offBeatenPath": "خارج المسار المألوف",
+      "smartTravel": "السفر الذكي",
+      "bucketList": "قائمة الأحلام",
+      "culinary": "طهوي",
+      "natureWonder": "الطبيعة والعجائب"
     },
     "seo": {
-      "title": "Travel Guides | Expert Destination Insights",
-      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
+      "title": "أدلة السفر | رؤى خبراء للوجهات",
+      "description": "اكتشف أدلة السفر الاحترافية ورؤى الوجهات ونصائح محلية من شبكتنا العالمية من كتاب السفر. خطط لرحلتك المثالية اليوم."
     },
     "editorial": {
-      "badge": "From Our Editors",
-      "title": "Editorial Features",
-      "readFull": "Read Full Essay"
+      "badge": "من محررينا",
+      "title": "ميزات تحريرية",
+      "readFull": "اقرأ المقال كاملاً"
     },
     "gallery": {
-      "badge": "Visual Stories",
-      "title": "Destinations That Inspire",
+      "badge": "قصص بصرية",
+      "title": "وجهات تلهم",
       "categories": {
-        "city": "City",
-        "mountains": "Mountains",
-        "beach": "Beach",
-        "safari": "Safari",
-        "nature": "Nature"
+        "city": "مدينة",
+        "mountains": "جبال",
+        "beach": "شاطئ",
+        "safari": "سفاري",
+        "nature": "طبيعة"
       }
     },
     "writers": {
-      "badge": "Expert Voices",
-      "title": "Meet Our Writers",
-      "subtitle": "The expert voices behind our most trusted travel guides",
-      "articleCount": "{{count}} Articles",
-      "viewProfile": "View Profile"
+      "badge": "أصوات الخبراء",
+      "title": "تعرف على كتابنا",
+      "subtitle": "أصوات الخبراء وراء أدلة السفر الموثوقة",
+      "articleCount": "{{count}} مقالة",
+      "viewProfile": "عرض الملف الشخصي"
     },
     "map": {
-      "badge": "Explore by Region",
-      "title": "Guides Around the World",
-      "subtitle": "Click any destination to discover our expert coverage",
-      "guidesAvailable": "{{count}} guides available",
-      "legendDestination": "Destination",
-      "legendHighlighted": "Highlighted"
+      "badge": "استكشف حسب المنطقة",
+      "title": "أدلة حول العالم",
+      "subtitle": "انقر على أي وجهة لاكتشاف تغطيتنا الاحترافية",
+      "guidesAvailable": "{{count}} دليل متاح",
+      "legendDestination": "وجهة",
+      "legendHighlighted": "مميز"
     },
     "newsletter": {
-      "badge": "Join the Journey",
-      "title": "Travel Stories, Weekly",
-      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
-      "placeholder": "Enter your email",
-      "subscribe": "Subscribe",
-      "subscribing": "Subscribing...",
-      "joinCount": "Join 50,000+ travelers who read our weekly digest",
-      "invalidEmail": "Please enter a valid email",
-      "successTitle": "Welcome to the journey!",
-      "successDesc": "You're now subscribed to our editorial digest."
+      "badge": "انضم للرحلة",
+      "title": "قصص سفر أسبوعية",
+      "description": "إلهام سفر مختار، نصائح احترافية، ورؤى محلية تصلك في بريدك كل أسبوع.",
+      "placeholder": "أدخل بريدك الإلكتروني",
+      "subscribe": "اشترك",
+      "subscribing": "جاري الاشتراك...",
+      "joinCount": "انضم إلى 50,000+ مسافر يقرؤون نشرتنا الأسبوعية",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+      "successTitle": "مرحباً بك في الرحلة!",
+      "successDesc": "لقد اشتركت الآن في نشرتنا التحريرية."
     }
   },
   "news": {
     "time": {
-      "recent": "Recent",
-      "justNow": "Just now",
-      "minutesAgo": "{{count}}m ago",
-      "hoursAgo": "{{count}}h ago",
-      "daysAgo": "{{count}}d ago",
-      "minRead": "{{count}} min read"
+      "recent": "حديثاً",
+      "justNow": "الآن",
+      "minutesAgo": "منذ {{count}} دقيقة",
+      "hoursAgo": "منذ {{count}} ساعة",
+      "daysAgo": "منذ {{count}} يوم",
+      "minRead": "{{count}} دقائق قراءة"
     },
     "header": {
-      "title": "TRAVI NEWS",
-      "edition": "International Edition",
-      "subscribe": "Subscribe"
+      "title": "أخبار ترافي",
+      "edition": "النسخة الدولية",
+      "subscribe": "اشترك"
     },
     "breaking": {
-      "label": "Breaking"
+      "label": "عاجل"
     },
     "search": {
-      "placeholder": "Search worldwide news...",
-      "button": "Search",
-      "title": "Search",
-      "searching": "Searching for \"{{query}}\"..."
+      "placeholder": "ابحث في الأخبار العالمية...",
+      "button": "بحث",
+      "title": "بحث",
+      "searching": "البحث عن \"{{query}}\"..."
     },
     "categories": {
-      "all": "All News",
-      "world": "World",
-      "business": "Business",
-      "culture": "Culture",
-      "travel": "Travel",
-      "tech": "Tech",
-      "opinion": "Opinion"
+      "all": "جميع الأخبار",
+      "world": "العالم",
+      "business": "أعمال",
+      "culture": "ثقافة",
+      "travel": "سفر",
+      "tech": "تقنية",
+      "opinion": "رأي"
     },
     "empty": {
-      "title": "No News Articles Yet",
-      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
-      "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Travel Guides"
+      "title": "لا توجد مقالات إخبارية بعد",
+      "description": "نعمل على إحضار أحدث أخبار السفر والرؤى. تحقق مرة أخرى قريباً للحصول على تحديثات من جميع أنحاء العالم.",
+      "exploreDestinations": "استكشف الوجهات",
+      "viewGuides": "شاهد أدلة السفر"
     },
     "hero": {
-      "topStory": "Top Story",
-      "editorialTeam": "Editorial Team"
+      "topStory": "القصة الرئيسية",
+      "editorialTeam": "فريق التحرير"
     },
-    "views": "{{count}} views",
-    "viewAll": "View All",
+    "views": "{{count}} مشاهدة",
+    "viewAll": "عرض الكل",
     "seo": {
-      "title": "Travel News | Latest Stories & Updates",
-      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
+      "title": "أخبار السفر | أحدث القصص والتحديثات",
+      "description": "ابق على اطلاع بأحدث أخبار السفر وتحديثات الوجهات ورؤى الصناعة من جميع أنحاء العالم."
     },
     "sidebar": {
-      "alsoToday": "Also Today",
-      "storiesCount": "{{count}} stories",
-      "liveUpdates": "Live Updates",
-      "trendingTopics": "Trending Topics",
-      "noTrending": "No trending topics yet. Check back soon!"
+      "alsoToday": "أيضاً اليوم",
+      "storiesCount": "{{count}} قصة",
+      "liveUpdates": "تحديثات مباشرة",
+      "trendingTopics": "مواضيع رائجة",
+      "noTrending": "لا توجد مواضيع رائجة بعد. تحقق مرة أخرى قريباً!"
     },
     "sections": {
-      "topStories": "Top Stories",
-      "opinion": "Opinion & Analysis",
-      "moreOpinion": "More Opinion",
-      "worldwide": "Worldwide Coverage"
+      "topStories": "القصص الرئيسية",
+      "opinion": "الرأي والتحليل",
+      "moreOpinion": "المزيد من الآراء",
+      "worldwide": "تغطية عالمية"
     },
     "worldwide": {
-      "title": "Your Window to the World",
-      "subtitle": "News from every corner of the globe",
-      "storiesCount": "{{count}} stories",
-      "comingSoon": "Coming soon"
+      "title": "نافذتك على العالم",
+      "subtitle": "أخبار من كل زاوية في العالم",
+      "storiesCount": "{{count}} قصة",
+      "comingSoon": "قريباً"
     },
     "newsletter": {
-      "title": "Stay Informed",
-      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
-      "placeholder": "Enter your email",
-      "subscribe": "Subscribe Free",
-      "noSpam": "No spam. Unsubscribe anytime.",
-      "successTitle": "Subscribed!",
-      "successDesc": "Please check your email to confirm your subscription.",
-      "errorTitle": "Subscription failed",
-      "errorDesc": "Please try again later.",
-      "invalidTitle": "Invalid email",
-      "invalidDesc": "Please enter a valid email address."
+      "title": "ابق على اطلاع",
+      "description": "احصل على أهم قصص اليوم في بريدك كل صباح. انضم إلى 50,000+ قارئ.",
+      "placeholder": "أدخل بريدك الإلكتروني",
+      "subscribe": "اشترك مجاناً",
+      "noSpam": "بدون إزعاج. إلغاء الاشتراك في أي وقت.",
+      "successTitle": "تم الاشتراك!",
+      "successDesc": "يرجى التحقق من بريدك الإلكتروني لتأكيد اشتراكك.",
+      "errorTitle": "فشل الاشتراك",
+      "errorDesc": "يرجى المحاولة مرة أخرى لاحقاً.",
+      "invalidTitle": "بريد إلكتروني غير صحيح",
+      "invalidDesc": "يرجى إدخال عنوان بريد إلكتروني صحيح."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "About Us | TRAVI World",
-      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
-      "badge": "Your Travel Companion",
-      "title": "About",
-      "titleHighlight": "TRAVI World",
-      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
-      "ctaExplore": "Explore Destinations",
-      "ctaContact": "Get in Touch"
+      "metaTitle": "من نحن | ترافي",
+      "metaDescription": "تعرف على ترافي، مصدر مستقل لمعلومات السفر يوفر أدلة سفر شاملة ومعلومات عن المعالم السياحية والفنادق والمطاعم للوجهات حول العالم.",
+      "badge": "رفيقك في السفر",
+      "title": "عن",
+      "titleHighlight": "ترافي",
+      "subtitle": "مصدرك الموثوق للمعلومات الشاملة عن السفر وأدلة الوجهات، مساعدة الملايين على استكشاف العالم بثقة.",
+      "ctaExplore": "استكشف الوجهات",
+      "ctaContact": "تواصل معنا"
     },
     "contact": {
-      "metaTitle": "Contact Us | TRAVI World",
-      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
-      "badge": "We'd love to hear from you",
-      "titlePart1": "Let's",
-      "titlePart2": "Connect",
-      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
-      "cta": "Send us a message",
-      "getInTouch": "Get in Touch",
-      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
-      "howCanWeHelp": "How Can We Help?",
-      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
-      "importantNote": "Important Note",
-      "importantNoteSubtitle": "Please read before contacting us",
-      "ourOffice": "Our Office",
-      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
-      "travelCompanion": "Your travel companion",
-      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
-      "urgentLabel": "Urgent",
+      "metaTitle": "تواصل معنا | ترافي",
+      "metaDescription": "تواصل مع ترافي. نرحب بملاحظاتك وأسئلتك واستفساراتك حول خدمات معلومات السفر لدينا.",
+      "badge": "نود أن نسمع منك",
+      "titlePart1": "لنتواصل",
+      "titlePart2": "معاً",
+      "subtitle": "لديك أسئلة حول مغامرتك القادمة؟ نحن هنا لمساعدتك على استكشاف العالم بثقة.",
+      "cta": "أرسل لنا رسالة",
+      "getInTouch": "تواصل معنا",
+      "getInTouchSubtitle": "اختر أفضل طريقة للوصول إلينا. نحن ملتزمون بالرد بسرعة.",
+      "howCanWeHelp": "كيف يمكننا المساعدة؟",
+      "howCanWeHelpSubtitle": "نحن هنا للمساعدة في أي أسئلة أو ملاحظات لديك حول محتوى السفر وخدماتنا.",
+      "importantNote": "ملاحظة هامة",
+      "importantNoteSubtitle": "يرجى القراءة قبل التواصل معنا",
+      "ourOffice": "مكتبنا",
+      "ourOfficeSubtitle": "للمراسلات الرسمية والاستفسارات البريدية",
+      "travelCompanion": "رفيقك في السفر",
+      "urgentNote": "للأمور العاجلة، يرجى تضمين {{urgentLabel}} في عنوان بريدك الإلكتروني. نعطي الأولوية للردود بناءً على طبيعة الاستفسار.",
+      "urgentLabel": "عاجل",
       "options": {
         "generalInquiries": {
-          "title": "General Inquiries",
-          "description": "Questions about our travel guides and contents"
+          "title": "استفسارات عامة",
+          "description": "أسئلة حول أدلة السفر والمحتوى الخاص بنا"
         },
         "privacyInquiries": {
-          "title": "Privacy Inquiries",
-          "description": "Data access, deletion, and privacy requests"
+          "title": "استفسارات الخصوصية",
+          "description": "الوصول إلى البيانات والحذف وطلبات الخصوصية"
         },
         "visitWebsite": {
-          "title": "Visit Our Website",
-          "description": "Explore destinations and travel inspiration"
+          "title": "زر موقعنا",
+          "description": "استكشف الوجهات وإلهام السفر"
         },
         "responseTime": {
-          "title": "Response Time",
-          "description": "We aim to respond promptly",
-          "action": "2-3 business days"
+          "title": "وقت الاستجابة",
+          "description": "نهدف للرد بسرعة",
+          "action": "2-3 أيام عمل"
         }
       },
       "helpTopics": {
-        "general": "General inquiries about our travel guides and contents",
-        "feedback": "Feedback and suggestions for improvement",
-        "reporting": "Reporting contents errors or outdated information",
-        "business": "Business and partnership inquiries",
-        "media": "Media and press inquiries",
-        "privacy": "Privacy-related requests (data access, deletion, etc.)"
+        "general": "استفسارات عامة حول أدلة السفر والمحتوى الخاص بنا",
+        "feedback": "الملاحظات والاقتراحات للتحسين",
+        "reporting": "الإبلاغ عن أخطاء المحتوى أو معلومات قديمة",
+        "business": "استفسارات الأعمال والشراكات",
+        "media": "استفسارات الإعلام والصحافة",
+        "privacy": "طلبات تتعلق بالخصوصية (الوصول إلى البيانات والحذف وما إلى ذلك)"
       }
     },
     "privacy": {
-      "metaTitle": "Privacy Policy | TRAVI World",
-      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
-      "badge": "Your Privacy Matters",
-      "title": "Privacy Policy",
-      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
-      "effectiveDate": "Effective Date: 1 January 2026",
+      "metaTitle": "سياسة الخصوصية | ترافي",
+      "metaDescription": "تعرف على كيفية جمع ترافي واستخدام وحماية معلوماتك الشخصية. اقرأ سياسة الخصوصية الشاملة لدينا.",
+      "badge": "خصوصيتك مهمة",
+      "title": "سياسة الخصوصية",
+      "subtitle": "نحن ملتزمون بحماية خصوصيتك والشفافية حول ممارسات البيانات لدينا. تعرف على كيفية جمع ترافي واستخدام وحماية معلوماتك.",
+      "effectiveDate": "تاريخ السريان: 1 يناير 2026",
       "features": {
         "dataProtection": {
-          "title": "Data Protection",
-          "description": "Your data is protected"
+          "title": "حماية البيانات",
+          "description": "بياناتك محمية"
         },
         "minimalCollection": {
-          "title": "Minimal Collection",
-          "description": "We collect only what's needed"
+          "title": "الحد الأدنى من الجمع",
+          "description": "نجمع فقط ما هو ضروري"
         },
         "transparency": {
-          "title": "Full Transparency",
-          "description": "Clear about our practices"
+          "title": "شفافية كاملة",
+          "description": "واضحون بشأن ممارساتنا"
         },
         "yourControl": {
-          "title": "Your Control",
-          "description": "Manage your preferences"
+          "title": "تحكمك",
+          "description": "إدارة تفضيلاتك"
         }
       },
       "sections": {
-        "whoWeAre": "1. Who We Are",
-        "informationCollect": "2. Information We Collect",
-        "howWeUse": "3. How We Use Your Information",
-        "legalBasis": "4. Legal Basis for Processing (GDPR)",
-        "cookies": "5. Cookies and Tracking Technologies",
-        "thirdParty": "6. Third-Party Services",
-        "aiContent": "7. AI-Generated Content",
-        "internationalTransfers": "8. International Data Transfers",
-        "dataRetention": "9. Data Retention",
-        "privacyRights": "10. Your Privacy Rights",
-        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
-        "childrenPrivacy": "12. Children's Privacy",
-        "dataSecurity": "13. Data Security",
-        "changes": "14. Changes to This Policy",
-        "contactUs": "15. Contact Us"
+        "whoWeAre": "1. من نحن",
+        "informationCollect": "2. المعلومات التي نجمعها",
+        "howWeUse": "3. كيف نستخدم معلوماتك",
+        "legalBasis": "4. الأساس القانوني للمعالجة (GDPR)",
+        "cookies": "5. ملفات تعريف الارتباط وتقنيات التتبع",
+        "thirdParty": "6. خدمات الطرف الثالث",
+        "aiContent": "7. المحتوى المُنشأ بواسطة الذكاء الاصطناعي",
+        "internationalTransfers": "8. عمليات النقل الدولية للبيانات",
+        "dataRetention": "9. الاحتفاظ بالبيانات",
+        "privacyRights": "10. حقوق الخصوصية الخاصة بك",
+        "californiaRights": "11. حقوق الخصوصية في كاليفورنيا (CCPA/CPRA)",
+        "childrenPrivacy": "12. خصوصية الأطفال",
+        "dataSecurity": "13. أمن البيانات",
+        "changes": "14. التغييرات على هذه السياسة",
+        "contactUs": "15. تواصل معنا"
       }
     },
     "terms": {
-      "metaTitle": "Terms & Conditions | TRAVI World",
-      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
-      "badge": "Legal Agreement",
-      "title": "Terms & Conditions",
-      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
-      "lastUpdated": "Last updated: 1 January 2026",
-      "importantNotice": "Important Legal Notice",
+      "metaTitle": "الشروط والأحكام | ترافي",
+      "metaDescription": "اقرأ الشروط والأحكام لاستخدام خدمات معلومات السفر في ترافي. اتفاقية قانونية بينك وبين KBR Global Creative Consulting Ltd.",
+      "badge": "اتفاقية قانونية",
+      "title": "الشروط والأحكام",
+      "subtitle": "يرجى قراءة هذه الشروط بعناية قبل استخدام ترافي. يخضع وصولك واستخدامك لمنصتنا لهذه الشروط.",
+      "lastUpdated": "آخر تحديث: 1 يناير 2026",
+      "importantNotice": "إشعار قانوني مهم",
       "keyPoints": {
         "editorial": {
-          "title": "Editorial Platform",
-          "description": "Travel guides & destination contents"
+          "title": "منصة تحريرية",
+          "description": "أدلة سفر ومحتوى الوجهات"
         },
         "affiliate": {
-          "title": "Affiliate Links",
-          "description": "Commission-based recommendations"
+          "title": "روابط الشركاء",
+          "description": "توصيات قائمة على العمولة"
         },
         "aiGenerated": {
-          "title": "AI-Generated",
-          "description": "Content created with AI assistance"
+          "title": "مُنشأ بالذكاء الاصطناعي",
+          "description": "محتوى تم إنشاؤه بمساعدة الذكاء الاصطناعي"
         },
         "privacy": {
-          "title": "Your Privacy",
-          "description": "Data protection guaranteed"
+          "title": "خصوصيتك",
+          "description": "حماية البيانات مضمونة"
         }
       },
       "sections": {
-        "operator": "Operator / Legal Entity",
-        "purpose": "1. Purpose & Scope of Use",
-        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
-        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
-        "newsletter": "4. Newsletter & Communications",
-        "userConduct": "5. User Conduct & Prohibited Actions",
-        "intellectualProperty": "6. Intellectual Property & Limited License",
-        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
-        "disclaimers": "8. Accuracy, Availability & Disclaimers",
-        "liability": "9. Limitation of Liability & Force Majeure",
-        "indemnification": "10. Indemnification",
-        "privacyCookies": "11. Privacy, Cookies & Data Protection",
-        "accessibility": "12. Accessibility Statement",
-        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
-        "modifications": "14. Modifications, Severability & General Provisions"
-      }
-    },
-    "about": {
-      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
-      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
-      "badge": "About TRAVI World",
-      "title": "Discover",
-      "titleHighlight": "TRAVI World",
-      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
-      "ctaExplore": "Explore Destinations",
-      "ctaContact": "Contact Us",
-      "stats": {
-        "destinations": "Destinations",
-        "articles": "Articles",
-        "support": "Travel Support",
-        "coverage": "Coverage",
-        "cities": "16+ Cities"
-      },
-      "whoWeAre": {
-        "title": "Who We Are"
-      },
-      "mission": {
-        "title": "Our Mission"
-      },
-      "services": {
-        "badge": "Our Services",
-        "title": "What We Offer"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "Destination Guides",
-          "description": "Comprehensive information about cities and regions around the world"
-        },
-        "attractions": {
-          "title": "Attraction Information",
-          "description": "Details about must-see sights and unique experiences"
-        },
-        "hotels": {
-          "title": "Hotel Guides",
-          "description": "Information about accommodation options for every budget"
-        },
-        "restaurants": {
-          "title": "Restaurant Recommendations",
-          "description": "Dining options for every taste and preference"
-        },
-        "articles": {
-          "title": "Travel Articles",
-          "description": "Tips, insights, and travel inspiration"
-        },
-        "news": {
-          "title": "Latest Travel News",
-          "description": "Stay informed with curated travel updates"
-        }
-      },
-      "editorial": {
-        "title": "Editorial Independence",
-        "affiliateTitle": "Affiliate Disclosure"
-      },
-      "values": {
-        "badge": "Our Foundation",
-        "title": "Our Values",
-        "accuracy": {
-          "title": "Accuracy",
-          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
-        },
-        "transparency": {
-          "title": "Transparency",
-          "description": "We are clear about our affiliate relationships and how we operate"
-        },
-        "userFocused": {
-          "title": "User-Focused",
-          "description": "Our contents is designed to help travelers make informed decisions"
-        }
-      },
-      "connect": {
-        "badge": "Let's Connect",
-        "title": "Get in Touch"
-      },
-      "company": {
-        "title": "Company Information",
-        "contactTitle": "Contact Information",
-        "contactForm": "Contact Form"
+        "operator": "المشغل / الكيان القانوني",
+        "purpose": "1. الغرض ونطاق الاستخدام",
+        "affiliateDisclosure": "2. الإفصاح عن الشراكات والمعاملات مع أطراف ثالثة",
+        "aiDisclaimer": "3. إخلاء المسؤولية عن المحتوى المُنشأ بالذكاء الاصطناعي",
+        "newsletter": "4. النشرة الإخبارية والاتصالات",
+        "userConduct": "5. سلوك المستخدم والإجراءات المحظورة",
+        "intellectualProperty": "6. الملكية الفكرية والترخيص المحدود",
+        "dmca": "7. الإشعار والإزالة (DMCA وما شابه)",
+        "disclaimers": "8. الدقة والتوفر وإخلاء المسؤولية",
+        "liability": "9. تحديد المسؤولية والقوة القاهرة",
+        "indemnification": "10. التعويض",
+        "privacyCookies": "11. الخصوصية وملفات تعريف الارتباط وحماية البيانات",
+        "accessibility": "12. بيان إمكانية الوصول",
+        "governingLaw": "13. القانون الحاكم وتسوية النزاعات والاختصاص القضائي",
+        "modifications": "14. التعديلات والقابلية للفصل والأحكام العامة"
       }
     }
   }
