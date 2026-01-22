@@ -298,12 +298,6 @@ export default function PublicSearch() {
               </p>
               
               <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-                <Link href={localePath("/hotels")}>
-                  <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-                    <Building2 className="w-4 h-4" />
-                    {t('nav.hotels')}
-                  </Button>
-                </Link>
                 <Link href={localePath("/attractions")}>
                   <Button variant="outline" className="gap-2 rounded-full border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                     <Mountain className="w-4 h-4" />
