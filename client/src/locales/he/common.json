@@ -1,98 +1,98 @@
 {
   "nav": {
-    "home": "בית",
+    "home": "ראשי",
     "destinations": "יעדים",
     "attractions": "אטרקציות",
     "hotels": "מלונות",
     "guides": "מדריכים",
     "dining": "מסעדות",
-    "districts": "שכונות",
-    "articles": "חדשות",
+    "districts": "אזורים",
+    "articles": "כתבות",
     "news": "חדשות",
     "shopping": "קניות",
     "realEstate": "נדל\"ן",
     "events": "אירועים",
     "search": "חיפוש",
     "language": "שפה",
-    "mainNavigation": "ניווט ראשי",
-    "openMenu": "פתח תפריט",
-    "closeMenu": "סגור תפריט",
-    "logoAlt": "TRAVI - מדריך נסיעות",
-    "followInstagram": "עקבו אחרי TRAVI באינסטגרם",
-    "followTikTok": "עקבו אחרי TRAVI בטיקטוק",
-    "changeLanguage": "החלף שפה",
-    "selectLanguage": "בחר שפה",
-    "popularLanguages": "שפות פופולריות",
+    "mainNavigation": "תפריט ניווט",
+    "openMenu": "פתיחת תפריט",
+    "closeMenu": "סגירת תפריט",
+    "logoAlt": "TRAVI - מדריך טיולים",
+    "followInstagram": "עקבו אחרינו באינסטגרם",
+    "followTikTok": "עקבו אחרינו בטיקטוק",
+    "changeLanguage": "שינוי שפה",
+    "selectLanguage": "בחירת שפה",
+    "popularLanguages": "שפות נפוצות",
     "allLanguages": "כל השפות"
   },
   "breadcrumbs": {
-    "ariaLabel": "ניווט נתיב",
+    "ariaLabel": "מיקום בדף",
     "dubai": "דובאי"
   },
   "common": {
-    "readMore": "קרא עוד",
-    "viewAll": "צפה בהכל",
-    "learnMore": "למד עוד",
-    "bookNow": "הזמן עכשיו",
-    "contactUs": "צור קשר",
-    "subscribe": "הירשם",
-    "submit": "שלח",
+    "readMore": "לכתבה המלאה",
+    "viewAll": "לצפייה בהכל",
+    "learnMore": "לפרטים נוספים",
+    "bookNow": "להזמנה",
+    "contactUs": "צרו קשר",
+    "subscribe": "להרשמה",
+    "submit": "שליחה",
     "cancel": "ביטול",
-    "save": "שמור",
-    "edit": "ערוך",
-    "delete": "מחק",
+    "save": "שמירה",
+    "edit": "עריכה",
+    "delete": "מחיקה",
     "loading": "טוען...",
-    "error": "משהו השתבש",
+    "error": "אופס, משהו השתבש",
     "noResults": "לא נמצאו תוצאות",
-    "seeMore": "ראה עוד",
-    "back": "חזור",
+    "seeMore": "עוד",
+    "back": "חזרה",
     "next": "הבא",
     "previous": "הקודם",
-    "close": "סגור",
-    "share": "שתף",
-    "copyLink": "העתק קישור",
-    "copied": "הועתק!"
+    "close": "סגירה",
+    "share": "שיתוף",
+    "copyLink": "העתקת קישור",
+    "copied": "הקישור הועתק!"
   },
   "home": {
     "hero": {
-      "title": "גלה את העולם עם TRAVI",
-      "subtitle": "המדריך המקיף שלך ל-17 יעדים ברחבי העולם",
-      "searchPlaceholder": "חפש אטרקציות, מלונות, מסעדות...",
-      "cta": "התחל לגלות",
-      "badge": "מהימן ב-{{count}} יעדים ברחבי העולם",
-      "headlinePart1": "המשאב המהימן שלך",
-      "headlinePart2": "לנסיעות",
-      "description": "מידע מקיף על נסיעות ל-{{destinations}} יעדים ברחבי העולם. גלה מדריכים מפורטים ליותר מ-{{attractions}} אטרקציות.",
-      "carouselLabel": "ניווט בקרוסלת היעדים",
-      "viewDestination": "צפה ב{{name}} - {{tagline}}"
+      "title": "גלו את העולם עם TRAVI",
+      "subtitle": "המדריך שלכם ל-17 יעדים מרתקים ברחבי העולם",
+      "searchPlaceholder": "לאן נוסעים? חפשו אטרקציה, מלון או מסעדה...",
+      "cta": "בואו נתחיל",
+      "badge": "{{count}} יעדים ברחבי העולם",
+      "headlinePart1": "הכל על טיולים",
+      "headlinePart2": "במקום אחד",
+      "description": "מידע מקיף על {{destinations}} יעדים ויותר מ-{{attractions}} אטרקציות. כל מה שצריך כדי לתכנן את הטיול המושלם.",
+      "carouselLabel": "גלילת יעדים",
+      "viewDestination": "{{name}} - {{tagline}}"
     },
     "srLabel": {
-      "attractions": "מעל {{count}} אטרקציות מכוסות",
-      "destinations": "{{count}} יעדים ברחבי העולם",
-      "languages": "פלטפורמה רב-לשונית עם שפות נוספות מתווספות"
+      "attractions": "יותר מ-{{count}} אטרקציות",
+      "destinations": "{{count}} יעדים",
+      "languages": "זמין במגוון שפות"
     },
-    "featured": "מומלצים",
-    "trending": "פופולרי עכשיו",
-    "topAttractions": "אטרקציות מובילות",
-    "bestHotels": "המלונות הטובים ביותר",
-    "latestNews": "חדשות ומדריכים אחרונים",
+    "featured": "מומלץ",
+    "trending": "חם עכשיו",
+    "topAttractions": "האטרקציות הכי שוות",
+    "bestHotels": "המלונות המומלצים",
+    "latestNews": "עדכונים אחרונים",
     "sections": {
-      "destinations": "גלה יעדים",
-      "destinationsDesc": "גלה את אוסף יעדי הנסיעות העולמיים שלנו",
-      "categories": "עיין לפי קטגוריה",
-      "categoriesDesc": "מצא בדיוק את מה שאתה מחפש",
-      "experiences": "נסיעות לפי חוויה",
-      "experiencesDesc": "בחר את סגנון הנסיעה שלך",
+      "destinations": "יעדים",
+      "destinationsDesc": "גלו יעדי טיולים מדהימים מרחבי העולם",
+      "categories": "לפי קטגוריה",
+      "categoriesDesc": "מצאו בדיוק מה שאתם מחפשים",
+      "experiences": "לפי סגנון טיול",
+      "experiencesDesc": "איזה סוג של טיול מתאים לכם?",
       "faq": "שאלות נפוצות",
-      "faqDesc": "כל מה שצריך לדעת על TRAVI",
-      "regions": "גלה לפי אזור",
-      "newsletter": "הישאר מעודכן"
+      "faqDesc": "תשובות לכל השאלות על TRAVI",
+      "regions": "לפי אזור",
+      "newsletter": "הישארו מעודכנים"
     },
     "cta": {
-      "exploreDestinations": "גלה את כל היעדים",
-      "viewAll": "צפה בהכל",
-      "startExploring": "התחל לגלות",
-      "planTrip": "תכנן את הטיול שלך"
+      "exploreDestinations": "לכל היעדים",
+      "viewAll": "לצפייה בהכל",
+      "startExploring": "בואו נתחיל",
+      "planTrip": "תכננו את הטיול"
     },
     "stats": {
       "destinations": "יעדים",
@@ -102,19 +102,19 @@
   },
   "attractions": {
     "title": "אטרקציות בדובאי",
-    "subtitle": "גלה ציוני דרך איקוניים ומקומות נסתרים",
+    "subtitle": "הדברים הכי שווים לעשות בדובאי",
     "hero": {
       "badge": "{{count}}+ אטרקציות ב-{{cities}} ערים",
       "badgeThousands": "אלפי אטרקציות ברחבי העולם",
-      "headlinePart1": "דברים לעשות",
-      "headlinePart2": "ברחבי העולם",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">כרטיסים ללא תור</span> למגדל אייפל, הקולוסאום, בורג' חליפה ואטרקציות מובילות בפריז, רומא, דובאי ועוד.",
-      "searchPlaceholder": "חפש מגדל אייפל, קולוסאום, בורג' חליפה...",
-      "carouselLabel": "קרוסלת אטרקציות מומלצות",
-      "sectionLabel": "הזמן כרטיסים לאטרקציות מובילות ברחבי העולם",
-      "searchAriaLabel": "חפש אטרקציות לפי שם או עיר",
+      "headlinePart1": "מה עושים",
+      "headlinePart2": "בעולם",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">כרטיסים ללא תור</span> למגדל אייפל, הקולוסיאום, בורג' חליפה ועוד אטרקציות מובילות בפריז, רומא, דובאי ועוד.",
+      "searchPlaceholder": "חפשו מגדל אייפל, קולוסיאום, בורג' חליפה...",
+      "carouselLabel": "אטרקציות מומלצות",
+      "sectionLabel": "כרטיסים לאטרקציות מובילות",
+      "searchAriaLabel": "חיפוש אטרקציות",
       "searchButton": "חיפוש",
-      "searchButtonAriaLabel": "חפש אטרקציות"
+      "searchButtonAriaLabel": "חיפוש אטרקציות"
     },
     "stats": {
       "attractions": "אטרקציות",
@@ -122,89 +122,89 @@
       "rating": "דירוג"
     },
     "srLabel": {
-      "attractions": "מעל {{count}} אטרקציות",
+      "attractions": "{{count}}+ אטרקציות",
       "cities": "{{count}} ערים",
-      "rating": "דירוג {{rating}} כוכבים"
+      "rating": "{{rating}} כוכבים"
     },
     "types": {
-      "all": "כל הסוגים",
+      "all": "הכל",
       "museums": "מוזיאונים",
-      "landmarks": "ציוני דרך",
+      "landmarks": "אתרים מפורסמים",
       "tours": "סיורים",
       "themeParks": "פארקי שעשועים",
       "shows": "הופעות"
     },
-    "thingsToDoIn": "דברים לעשות ב{{name}}",
+    "thingsToDoIn": "מה לעשות ב{{name}}",
     "countAttractions": "{{country}} - {{count}} אטרקציות",
     "filters": {
       "all": "הכל",
       "popular": "הכי פופולרי",
-      "free": "כניסה חופשית",
-      "familyFriendly": "מתאים למשפחות",
+      "free": "חינם",
+      "familyFriendly": "לכל המשפחה",
       "outdoor": "בחוץ",
       "indoor": "בפנים"
     },
     "details": {
       "location": "מיקום",
-      "hours": "שעות פתיחה",
+      "hours": "שעות פעילות",
       "price": "מחיר",
-      "duration": "משך זמן",
-      "tips": "טיפים מקומיים"
+      "duration": "משך הביקור",
+      "tips": "טיפים"
     },
     "sections": {
-      "destinations": "גלה אטרקציות לפי יעד",
-      "destinationsDesc": "בחר עיר לגלות דברים מדהימים לעשות",
+      "destinations": "אטרקציות לפי יעד",
+      "destinationsDesc": "בחרו עיר וגלו מה אפשר לעשות שם",
       "faq": "שאלות נפוצות",
-      "faqDesc": "קבל תשובות על הזמנת אטרקציות ברחבי העולם",
-      "whyBookBadge": "למה להזמין איתנו",
-      "whyBookTitle": "דלג על התורים, חסוך זמן",
-      "whyBookDesc": "הזמן כרטיסים מראש ותיהנה מכניסה קלה לאטרקציות מובילות",
+      "faqDesc": "תשובות על הזמנת אטרקציות",
+      "whyBookBadge": "למה להזמין דרכנו",
+      "whyBookTitle": "בלי תורים, יותר זמן לטייל",
+      "whyBookDesc": "הזמינו כרטיסים מראש ותחסכו זמן יקר בתורים",
       "allDestinations": "כל היעדים"
     },
     "features": {
-      "skipTheLine": "כרטיסים ללא תור",
-      "skipTheLineDesc": "עבור ליד התורים במגדל אייפל, הקולוסאום, הוותיקן ועוד",
-      "mobileTickets": "כרטיסים בנייד",
-      "mobileTicketsDesc": "משלוח מיידי לטלפון שלך - הצג את הכרטיס והיכנס",
+      "skipTheLine": "ללא תור",
+      "skipTheLineDesc": "עוקפים את התורים במגדל אייפל, הקולוסיאום, הוותיקן ועוד",
+      "mobileTickets": "כרטיס בנייד",
+      "mobileTicketsDesc": "מקבלים את הכרטיס מיד לטלפון",
       "freeCancellation": "ביטול חינם",
-      "freeCancellationDesc": "התוכניות השתנו? בטל עד 24 שעות לפני וקבל החזר מלא"
+      "freeCancellationDesc": "ביטול עד 24 שעות לפני - החזר מלא"
     },
     "browse": {
-      "title": "דברים לעשות לפי יעד",
-      "desc": "גלה אטרקציות וחוויות בערים המובילות בעולם",
+      "title": "מה לעשות בכל יעד",
+      "desc": "אטרקציות וחוויות בערים המובילות בעולם",
       "thingsToDo": "{{count}} דברים לעשות",
       "noDestinations": "אין יעדים זמינים כרגע."
     },
     "exploreLinks": {
-      "title": "גלה עוד מדריכי טיולים",
+      "title": "עוד מדריכי טיולים",
       "hotelsWorldwide": "מלונות ברחבי העולם",
-      "bestRestaurants": "המסעדות הטובות ביותר",
+      "bestRestaurants": "מסעדות מומלצות",
       "travelNews": "חדשות טיולים"
     },
     "cta": {
-      "title": "מוכן לחקור?",
-      "desc": "הזמן כרטיסים ללא תור למגדל אייפל, הקולוסאום, בורג' חליפה ואטרקציות מובילות.",
-      "parisAttractions": "אטרקציות פריז",
-      "romeAttractions": "אטרקציות רומא"
+      "title": "מוכנים לטייל?",
+      "desc": "כרטיסים ללא תור למגדל אייפל, הקולוסיאום, בורג' חליפה ועוד.",
+      "parisAttractions": "אטרקציות בפריז",
+      "romeAttractions": "אטרקציות ברומא"
     },
     "search": {
       "popular": "פופולרי:",
-      "thingsToDoIn": "דברים לעשות ב{{city}}",
-      "ariaCarouselNav": "ניווט בקרוסלת האטרקציות",
-      "ariaViewInCity": "הצג {{name}} ב{{city}}"
+      "thingsToDoIn": "מה לעשות ב{{city}}",
+      "ariaCarouselNav": "גלילת אטרקציות",
+      "ariaViewInCity": "{{name}} ב{{city}}"
     },
     "gallery": {
       "ariaFeaturedAttraction": "אטרקציה מומלצת",
-      "ariaThumbnails": "תמונות ממוזערות של קרוסלת האטרקציות",
+      "ariaThumbnails": "תמונות אטרקציות",
       "ariaTicketsIn": "כרטיסים ל{{name}} ב{{city}}",
-      "priceFrom": "מ-",
-      "bookTickets": "הזמן כרטיסים",
-      "skipTheLine": "דלג על התור",
+      "priceFrom": "החל מ-",
+      "bookTickets": "להזמנת כרטיסים",
+      "skipTheLine": "ללא תור",
       "duration": "2-3 שעות",
       "freeCancellation": "ביטול חינם",
-      "freeCancellationDesc": "24 שעות לפני הביקור",
-      "mobileTickets": "כרטיסים בנייד",
-      "instantDelivery": "משלוח מיידי"
+      "freeCancellationDesc": "עד 24 שעות לפני",
+      "mobileTickets": "כרטיס בנייד",
+      "instantDelivery": "מיידי"
     },
     "chip": {
       "thingsToDo": "{{count}} דברים לעשות"
@@ -212,64 +212,64 @@
   },
   "hotels": {
     "title": "מלונות בדובאי",
-    "subtitle": "מצא את המקום המושלם לשהות",
+    "subtitle": "מצאו את המלון המושלם",
     "filters": {
       "all": "כל המלונות",
       "luxury": "יוקרה",
-      "budget": "תקציב נמוך",
-      "beachfront": "על חוף הים",
+      "budget": "חסכוני",
+      "beachfront": "על הים",
       "cityCenter": "מרכז העיר",
       "familyFriendly": "מתאים למשפחות"
     },
     "details": {
       "priceFrom": "החל מ-",
       "perNight": "ללילה",
-      "amenities": "מתקנים",
+      "amenities": "כלול",
       "checkIn": "צ'ק-אין",
       "checkOut": "צ'ק-אאוט",
       "rooms": "חדרים",
       "rating": "דירוג"
     },
-    "bookNow": "הזמן עכשיו"
+    "bookNow": "להזמנה"
   },
   "dining": {
     "title": "מסעדות בדובאי",
     "subtitle": "חוויות קולינריות לכל טעם",
     "filters": {
       "all": "כל המסעדות",
-      "fineDining": "אוכל גורמה",
-      "casual": "אוכל רגיל",
+      "fineDining": "שף",
+      "casual": "רגיל",
       "cafes": "בתי קפה",
       "streetFood": "אוכל רחוב",
       "halal": "חלאל",
       "vegetarian": "צמחוני"
     },
     "details": {
-      "cuisine": "מטבח",
-      "priceRange": "טווח מחירים",
-      "hours": "שעות פתיחה",
-      "dress": "קוד לבוש",
-      "reservations": "הזמנות"
+      "cuisine": "סוג מטבח",
+      "priceRange": "רמת מחירים",
+      "hours": "שעות פעילות",
+      "dress": "דרס קוד",
+      "reservations": "הזמנת מקום"
     }
   },
   "destinations": {
     "hero": {
       "badge": "{{count}} יעדים ברחבי העולם",
-      "trustedBy": "מהימן על ידי {{count}} יעדים ברחבי העולם",
-      "discover": "גלה",
+      "trustedBy": "{{count}} יעדים ברחבי העולם",
+      "discover": "גלו",
       "worldClass": "יעדים",
-      "destinations": "ברמה עולמית",
-      "description": "מדריכי טיולים אצורים עם מומחיות מקומית לערים המרתקות בעולם. מציוני דרך איקוניים ועד פנינים נסתרות.",
-      "exploreAll": "גלה את כל היעדים",
+      "destinations": "מרתקים",
+      "description": "מדריכי טיולים מפורטים לערים הכי מעניינות בעולם. מאתרים מפורסמים ועד פינות נסתרות.",
+      "exploreAll": "לכל היעדים",
       "travelGuides": "מדריכי טיולים",
-      "explorePlaceholder": "גלה יעדים",
-      "browseCollection": "עיין באוסף יעדי הטיולים שנבחרו בקפידה למטה",
-      "explore": "גלה",
-      "discoverButton": "גלה",
-      "ariaLabel": "סקירת יעדים",
-      "exploreTitle": "גלה את {{name}}",
-      "galleryAriaLabel": "גלריית יעדים מומלצים",
-      "placeholderAriaLabel": "מציין מקום ליעד מומלץ"
+      "explorePlaceholder": "חפשו יעד",
+      "browseCollection": "בחרו יעד מהרשימה",
+      "explore": "גלו",
+      "discoverButton": "גלו",
+      "ariaLabel": "יעדים",
+      "exploreTitle": "גלו את {{name}}",
+      "galleryAriaLabel": "גלריית יעדים",
+      "placeholderAriaLabel": "יעד מומלץ"
     },
     "stats": {
       "destinations": "יעדים",
@@ -279,69 +279,69 @@
     },
     "sections": {
       "featured": "יעדים מומלצים",
-      "featuredDesc": "יעדים נבחרים עם חוויות יוצאות דופן, תובנות מקומיות וכל מה שאתה צריך כדי לתכנן את הטיול המושלם שלך.",
+      "featuredDesc": "יעדים שנבחרו במיוחד עם חוויות מיוחדות וכל המידע שצריך לתכנון טיול מושלם.",
       "all": "כל היעדים",
-      "count": "נמצאו {{count}} יעדים"
+      "count": "{{count}} יעדים נמצאו"
     },
     "search": {
-      "placeholder": "חפש יעדים...",
+      "placeholder": "חיפוש יעדים...",
       "noResults": "לא נמצאו יעדים",
-      "tryAdjusting": "נסה לשנות את קריטריוני החיפוש",
-      "clearSearch": "נקה חיפוש"
+      "tryAdjusting": "נסו חיפוש אחר",
+      "clearSearch": "ניקוי"
     },
     "carousel": {
-      "label": "קרוסלת יעדים מומלצים",
-      "previous": "היעד הקודם",
-      "next": "היעד הבא",
-      "goTo": "עבור ל{{name}}",
-      "slideOf": "שקף {{current}} מתוך {{total}}: {{name}}",
-      "thumbnails": "תמונות ממוזערות של קרוסלת היעדים"
+      "label": "יעדים מומלצים",
+      "previous": "הקודם",
+      "next": "הבא",
+      "goTo": "ל{{name}}",
+      "slideOf": "{{current}} מתוך {{total}}: {{name}}",
+      "thumbnails": "תמונות יעדים"
     },
     "card": {
-      "explore": "גלה",
+      "explore": "גלו",
       "defaultLevel": "עיר",
-      "exploreFallback": "גלה את {{name}}",
+      "exploreFallback": "גלו את {{name}}",
       "destination": "יעד",
       "travelGuideAlt": "מדריך טיולים ל{{name}}"
     },
     "faq": {
       "title": "שאלות נפוצות",
-      "subtitle": "כל מה שצריך לדעת על מדריכי היעדים של TRAVI",
-      "q1": "כמה יעדים TRAVI מכסה?",
-      "a1": "TRAVI מכסה יעדי נסיעה מרכזיים במזרח התיכון, אירופה, אסיה ואמריקה עם מדריכים מקיפים לכל מיקום.",
-      "q2": "איזה מידע כלול במדריכי היעדים של TRAVI?",
-      "a2": "כל מדריך יעד כולל תיאורים מפורטים המכסים אטרקציות, אפשרויות לינה, מטבח מקומי, טיפים לתחבורה ומידע נסיעות מעשי.",
-      "q3": "האם ניתן לחפש יעדים?",
-      "a3": "כן, TRAVI מאפשר חיפוש יעדים לפי שם או מדינה באמצעות שורת החיפוש בדף היעדים.",
-      "q4": "מה הם היעדים המומלצים ב-TRAVI?",
-      "a4": "היעדים המומלצים של TRAVI הם מיקומים נבחרים המציעים חוויות יוצאות דופן למטיילים עם עניינים מגוונים מנסיעות יוקרה ועד נסיעות בתקציב."
+      "subtitle": "הכל על מדריכי היעדים של TRAVI",
+      "q1": "כמה יעדים יש ב-TRAVI?",
+      "a1": "TRAVI מכסה יעדי טיולים מרכזיים במזרח התיכון, אירופה, אסיה ואמריקה עם מדריכים מקיפים לכל מיקום.",
+      "q2": "מה כולל כל מדריך יעד?",
+      "a2": "כל מדריך כולל מידע מפורט על אטרקציות, לינה, אוכל, תחבורה וטיפים מעשיים.",
+      "q3": "אפשר לחפש יעדים?",
+      "a3": "כן, אפשר לחפש יעדים לפי שם או מדינה בדף היעדים.",
+      "q4": "מה זה היעדים המומלצים?",
+      "a4": "היעדים המומלצים הם מקומות שנבחרו במיוחד עם חוויות יוצאות דופן לכל סוגי המטיילים."
     },
     "loading": {
       "title": "טוען יעדים",
-      "message": "מביא את נתוני היעדים העדכניים..."
+      "message": "רגע, מביאים את המידע..."
     },
     "error": {
-      "title": "לא ניתן לטעון יעדים",
-      "message": "אנחנו נתקלים בבעיה בטעינת נתוני היעדים. אנא נסה שוב מאוחר יותר.",
-      "refresh": "רענן דף"
+      "title": "שגיאה בטעינה",
+      "message": "לא הצלחנו לטעון את היעדים. נסו שוב.",
+      "refresh": "רענון"
     },
     "empty": {
-      "title": "אין יעדים זמינים",
-      "message": "אין יעדים זמינים כרגע. אנא בדוק שוב מאוחר יותר."
+      "title": "אין יעדים",
+      "message": "אין יעדים זמינים כרגע. בדקו שוב מאוחר יותר."
     }
   },
   "districts": {
-    "title": "שכונות דובאי",
-    "subtitle": "גלה את השכונות המגוונות של דובאי",
-    "explore": "גלה את השכונה"
+    "title": "אזורים בדובאי",
+    "subtitle": "הכירו את השכונות של דובאי",
+    "explore": "לגלות"
   },
   "realEstate": {
     "title": "נדל\"ן בדובאי",
-    "subtitle": "השקע בעתיד",
+    "subtitle": "השקעה בעתיד",
     "offPlan": {
-      "title": "נכסים Off-Plan",
-      "subtitle": "השקע מוקדם, שלם פחות, הרוויח יותר",
-      "findProperty": "מצא את הנכס המושלם שלי",
+      "title": "נכסים מכירה מוקדמת",
+      "subtitle": "קנו מוקדם, שלמו פחות",
+      "findProperty": "מצאו את הנכס המושלם",
       "from": "החל מ-",
       "paymentPlan": "תוכנית תשלומים",
       "handover": "מסירה",
@@ -356,80 +356,80 @@
     },
     "features": {
       "cryptoAccepted": "תשלום בקריפטו",
-      "paymentPlans": "תוכניות תשלום גמישות",
-      "goldenVisa": "זכאות לויזה זהובה",
-      "roiGuarantee": "ערבות תשואה"
+      "paymentPlans": "תשלומים גמישים",
+      "goldenVisa": "ויזה זהובה",
+      "roiGuarantee": "תשואה מובטחת"
     }
   },
   "search": {
-    "placeholder": "חפש בדובאי...",
+    "placeholder": "חיפוש...",
     "results": "תוצאות חיפוש",
     "noResults": "לא נמצאו תוצאות עבור",
-    "tryAgain": "נסה מילות מפתח אחרות"
+    "tryAgain": "נסו מילים אחרות"
   },
   "footer": {
     "about": "אודות Travi",
     "aboutTravi": "אודות Travi",
-    "aboutText": "מידע מקיף על נסיעות ל-17 יעדים ברחבי העולם.",
+    "aboutText": "מידע מקיף על 17 יעדים ברחבי העולם.",
     "aboutUs": "אודותינו",
     "quickLinks": "קישורים מהירים",
-    "legal": "משפטי",
-    "privacy": "מדיניות פרטיות",
+    "legal": "מידע משפטי",
+    "privacy": "פרטיות",
     "privacyPolicy": "מדיניות פרטיות",
     "terms": "תנאי שימוש",
     "termsOfService": "תנאי שירות",
-    "contact": "צור קשר",
-    "contactUs": "צור קשר",
+    "contact": "צרו קשר",
+    "contactUs": "יצירת קשר",
     "followUs": "עקבו אחרינו",
-    "explore": "גלה",
-    "travel": "נסיעות",
-    "company": "חברה",
+    "explore": "גלו",
+    "travel": "טיולים",
+    "company": "החברה",
     "allGuides": "כל המדריכים",
     "cookies": "עוגיות",
     "security": "אבטחה",
     "cookieSettings": "הגדרות עוגיות",
-    "tagline": "מקור הנסיעות המהימן שלך",
-    "ariaLabel": "כותרת תחתונה של האתר",
-    "newsletter": "הישאר מעודכן",
-    "newsletterDescription": "קבל את טיפי הנסיעה האחרונים לדובאי ומבצעים בלעדיים",
-    "emailPlaceholder": "הכנס את האימייל שלך",
+    "tagline": "המקור שלכם לטיולים",
+    "ariaLabel": "תחתית האתר",
+    "newsletter": "עדכונים",
+    "newsletterDescription": "טיפים והצעות בלעדיות ישירות למייל",
+    "emailPlaceholder": "כתובת מייל",
     "allRightsReserved": "כל הזכויות שמורות.",
     "copyright": "© {{year}} {{brand}}. כל הזכויות שמורות.",
-    "emailAriaLabel": "שלח אימייל ל-TRAVI"
+    "emailAriaLabel": "מייל ל-TRAVI"
   },
   "errors": {
     "404": {
       "title": "הדף לא נמצא",
-      "message": "הדף שאתה מחפש לא קיים.",
-      "button": "חזור לדף הבית"
+      "message": "הדף שחיפשתם לא קיים.",
+      "button": "חזרה לדף הראשי"
     },
     "500": {
       "title": "שגיאת שרת",
       "message": "משהו השתבש אצלנו.",
-      "button": "נסה שוב"
+      "button": "נסו שוב"
     },
     "network": {
-      "title": "שגיאת חיבור",
-      "message": "בדוק את חיבור האינטרנט שלך.",
-      "button": "נסה שוב"
+      "title": "בעיית חיבור",
+      "message": "בדקו את חיבור האינטרנט.",
+      "button": "נסו שוב"
     }
   },
   "meta": {
     "home": {
-      "title": "Travi - גלה את דובאי | המדריך המלא לדובאי",
-      "description": "גלה את האטרקציות, המלונות, המסעדות והשכונות הטובות ביותר בדובאי. תכנן את הטיול המושלם שלך לדובאי עם טיפים מקומיים והמלצות."
+      "title": "Travi - גלו את דובאי | המדריך המלא",
+      "description": "גלו את האטרקציות, המלונות והמסעדות הכי שוות בדובאי. כל מה שצריך לתכנון הטיול המושלם."
     },
     "attractions": {
-      "title": "אטרקציות בדובאי | דברים לעשות בדובאי",
-      "description": "גלה את האטרקציות הטובות ביותר בדובאי - מבורג' חליפה ועד מקומות נסתרים. תכנן את הרפתקת הסיורים שלך בדובאי."
+      "title": "אטרקציות בדובאי | מה לעשות בדובאי",
+      "description": "האטרקציות הכי שוות בדובאי - מבורג' חליפה ועד מקומות נסתרים. תכננו את הטיול."
     },
     "hotels": {
-      "title": "מלונות בדובאי | היכן להתאכסן בדובאי",
-      "description": "מצא את המלון המושלם בדובאי לכל תקציב. ממלונות יוקרה ועד אפשרויות חסכוניות."
+      "title": "מלונות בדובאי | איפה לישון בדובאי",
+      "description": "מצאו את המלון המושלם בדובאי לכל תקציב - מלונות יוקרה ואופציות חסכוניות."
     },
     "dining": {
-      "title": "מסעדות בדובאי | אוכל טוב בדובאי",
-      "description": "גלה את הסצנה הקולינרית של דובאי - אוכל גורמה, אוכל רחוב, והכל ביניהם."
+      "title": "מסעדות בדובאי | לאכול בדובאי",
+      "description": "גלו את סצנת האוכל של דובאי - מסעדות שף, אוכל רחוב והכל ביניהם."
     }
   }
 }
