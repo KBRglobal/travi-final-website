@@ -63,3 +63,6 @@ DISABLE_BACKGROUND_SERVICES = "true"
 SKIP_DB_MIGRATIONS = "false"
 RUN_PROD_SEED = "true"
 SKIP_PARITY_CHECK = "true"
+
+[userenv.development]
+SKIP_PARITY_CHECK = "true"
