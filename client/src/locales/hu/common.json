@@ -1,1004 +1,922 @@
 {
   "nav": {
-    "home": "Home",
-    "destinations": "Destinations",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "guides": "Guides",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News",
-    "news": "News",
-    "shopping": "Shopping",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language",
-    "mainNavigation": "Main navigation",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "logoAlt": "TRAVI - Travel Guide",
-    "followInstagram": "Follow TRAVI on Instagram",
-    "followTikTok": "Follow TRAVI on TikTok",
-    "changeLanguage": "Change language",
-    "selectLanguage": "Select Language",
-    "popularLanguages": "Popular Languages",
-    "allLanguages": "All Languages"
+    "home": "Kezdőlap",
+    "destinations": "Úticélok",
+    "attractions": "Látnivalók",
+    "hotels": "Szállodák",
+    "guides": "Útmutatók",
+    "dining": "Éttermek",
+    "districts": "Kerületek",
+    "articles": "Hírek",
+    "news": "Hírek",
+    "shopping": "Vásárlás",
+    "realEstate": "Ingatlanok",
+    "events": "Események",
+    "search": "Keresés",
+    "language": "Nyelv",
+    "mainNavigation": "Főmenü",
+    "openMenu": "Menü megnyitása",
+    "closeMenu": "Menü bezárása",
+    "logoAlt": "TRAVI - Utazási Útmutató",
+    "followInstagram": "Kövess minket Instagramon",
+    "followTikTok": "Kövess minket TikTokon",
+    "changeLanguage": "Nyelv váltása",
+    "selectLanguage": "Nyelv kiválasztása",
+    "popularLanguages": "Népszerű nyelvek",
+    "allLanguages": "Összes nyelv"
   },
   "breadcrumbs": {
-    "ariaLabel": "Breadcrumb navigation",
-    "dubai": "Dubai"
+    "ariaLabel": "Navigációs útvonal",
+    "dubai": "Dubaj"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "Tovább olvasom",
+    "viewAll": "Összes megtekintése",
+    "learnMore": "Tudj meg többet",
+    "bookNow": "Foglalj most",
+    "contactUs": "Kapcsolat",
+    "subscribe": "Feliratkozás",
+    "submit": "Küldés",
+    "cancel": "Mégse",
+    "save": "Mentés",
+    "edit": "Szerkesztés",
+    "delete": "Törlés",
+    "loading": "Betöltés...",
+    "error": "Valami hiba történt",
+    "noResults": "Nincs találat",
+    "seeMore": "Több",
+    "back": "Vissza",
+    "next": "Következő",
+    "previous": "Előző",
+    "close": "Bezárás",
+    "share": "Megosztás",
+    "copyLink": "Link másolása",
+    "copied": "Másolva!"
   },
   "home": {
     "hero": {
-      "title": "Explore the World with TRAVI",
-      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
-      "searchPlaceholder": "Search attractions, hotels, restaurants...",
-      "cta": "Start Exploring",
-      "badge": "Your Gateway to World Adventures",
-      "headlinePart1": "Your Trusted Travel",
-      "headlinePart2": "Resource",
-      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
-      "descriptionPart1": "Comprehensive travel information for",
-      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
-      "descriptionPart3": "attractions.",
-      "carouselLabel": "Destination carousel navigation",
-      "viewDestination": "View {{name}} - {{tagline}}",
-      "worldwide": "Worldwide",
-      "exploreWorld": "Explore the World",
-      "welcomeAriaLabel": "Welcome to TRAVI World",
-      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
-      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
-      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
+      "title": "Fedezd fel a világot a TRAVI-val",
+      "subtitle": "Átfogó utazási útmutató 17 világszerte népszerű úticélhoz",
+      "searchPlaceholder": "Keress látnivalókat, szállodákat, éttermeket...",
+      "cta": "Kezdj el felfedezni",
+      "badge": "Az utazásod kezdődik itt",
+      "headlinePart1": "Megbízható utazási",
+      "headlinePart2": "forrás",
+      "description": "Átfogó utazási információk {{destinations}} világszerte népszerű úticélhoz. Fedezz fel részletes útmutatókat {{attractions}}+ látnivalóhoz.",
+      "descriptionPart1": "Átfogó utazási információk",
+      "descriptionPart2": "világszerte népszerű úticélhoz. Fedezz fel részletes útmutatókat",
+      "descriptionPart3": "látnivalóhoz.",
+      "carouselLabel": "Úticél körhinta navigáció",
+      "viewDestination": "{{name}} megtekintése - {{tagline}}",
+      "worldwide": "Világszerte",
+      "exploreWorld": "Fedezd fel a világot",
+      "welcomeAriaLabel": "Üdvözöl a TRAVI World",
+      "pageTitle": "TRAVI World - Utazási útmutatók szállodákhoz, látnivalókhoz és programokhoz",
+      "pageDescription": "Teljes körű utazási útmutató 17 világszerte népszerű úticélhoz. Szakértői információk szállodákról, látnivalókról, éttermekről és programokról több mint 3000 helyszínhez.",
+      "orgDescription": "Megbízható utazási forrásod 17 világszerte népszerű úticélhoz."
     },
     "srLabel": {
-      "attractions": "Over {{count}} attractions covered",
-      "destinations": "{{count}} destinations worldwide",
-      "languages": "Multilingual platform with additional languages rolling out"
+      "attractions": "Több mint {{count}} látnivaló",
+      "destinations": "{{count}} úticél világszerte",
+      "languages": "Többnyelvű platform további nyelvekkel"
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides",
+    "featured": "Kiemelt",
+    "trending": "Népszerű most",
+    "topAttractions": "Top látnivalók",
+    "bestHotels": "Legjobb szállodák",
+    "latestNews": "Legfrissebb hírek és útmutatók",
     "sections": {
-      "destinations": "Explore Destinations",
-      "destinationsDesc": "Discover our curated collection of global travel destinations",
-      "categories": "Browse by Category",
-      "categoriesDesc": "Find exactly what you're looking for",
-      "experiences": "Travel by Experience",
-      "experiencesDesc": "Choose your travel style",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Everything you need to know about TRAVI",
-      "regions": "Explore by Region",
-      "newsletter": "Stay Updated",
-      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
-      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
+      "destinations": "Fedezd fel az úticélokat",
+      "destinationsDesc": "Fedezd fel válogatott világszerte népszerű utazási célpontjainkat",
+      "categories": "Böngészés kategóriák szerint",
+      "categoriesDesc": "Találd meg, amit keresel",
+      "experiences": "Utazás élmények szerint",
+      "experiencesDesc": "Válaszd ki utazási stílusod",
+      "faq": "Gyakori kérdések",
+      "faqDesc": "Minden, amit a TRAVI-ról tudnod kell",
+      "regions": "Felfedezés régiók szerint",
+      "newsletter": "Maradj naprakész",
+      "allDestinationsTitle": "Utazási útmutatók mind a {{count}} úticélhoz",
+      "completeGuide": "{{name}}, {{country}} - Teljes utazási útmutató"
     },
     "cta": {
-      "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Guides",
-      "viewAll": "View All",
-      "startExploring": "Start Exploring",
-      "planTrip": "Plan Your Trip",
-      "viewExperience": "View {{name}}"
+      "exploreDestinations": "Úticélok felfedezése",
+      "viewGuides": "Útmutatók megtekintése",
+      "viewAll": "Összes megtekintése",
+      "startExploring": "Kezdj el felfedezni",
+      "planTrip": "Tervezd meg utazásod",
+      "viewExperience": "{{name}} megtekintése"
     },
     "stats": {
-      "destinations": "DESTINATIONS",
-      "attractions": "ATTRACTIONS",
-      "languages": "LANGUAGES",
-      "attractionsNum": "3,000+",
+      "destinations": "ÚTICÉL",
+      "attractions": "LÁTNIVALÓ",
+      "languages": "NYELV",
+      "attractionsNum": "3000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} destinations",
-      "attractionsCountWithLabel": "{{count}}+ attractions"
+      "destinationsCountWithLabel": "{{count}} úticél",
+      "attractionsCountWithLabel": "{{count}}+ látnivaló"
     },
     "categories": {
-      "attractions": "Attractions",
-      "attractionsDesc": "Must-see places",
-      "news": "Travel News",
-      "newsDesc": "Latest updates",
-      "guides": "Guides",
-      "guidesDesc": "Destination guides",
-      "hotels": "Hotels",
-      "hotelsDesc": "Find your perfect stay"
+      "attractions": "Látnivalók",
+      "attractionsDesc": "Kötelező látványosságok",
+      "news": "Utazási hírek",
+      "newsDesc": "Legfrissebb frissítések",
+      "guides": "Útmutatók",
+      "guidesDesc": "Úticél útmutatók",
+      "hotels": "Szállodák",
+      "hotelsDesc": "Találd meg tökéletes szállásodat"
     },
     "experiences": {
-      "luxury": "Luxury Travel",
-      "luxuryDesc": "Premium travel experiences and exclusive destinations",
-      "adventure": "Adventure & Outdoors",
-      "adventureDesc": "Thrilling outdoor experiences and adventures",
-      "family": "Family Travel",
-      "familyDesc": "Family-friendly destinations and activities",
-      "budget": "Budget Travel",
-      "budgetDesc": "Affordable travel options and destinations",
-      "romance": "Honeymoon & Romance",
-      "romanceDesc": "Romantic getaways and honeymoon destinations",
-      "solo": "Solo Travel",
-      "soloDesc": "Perfect destinations for solo travelers"
+      "luxury": "Luxus utazás",
+      "luxuryDesc": "Prémium utazási élmények és exkluzív úticélok",
+      "adventure": "Kaland és szabadtér",
+      "adventureDesc": "Izgalmas szabadtéri élmények és kalandok",
+      "family": "Családi utazás",
+      "familyDesc": "Családbarát úticélok és programok",
+      "budget": "Olcsó utazás",
+      "budgetDesc": "Megfizethető utazási lehetőségek és úticélok",
+      "romance": "Nászút és romantika",
+      "romanceDesc": "Romantikus menekülések és nászút úticélok",
+      "solo": "Egyedül utazás",
+      "soloDesc": "Tökéletes úticélok egyedül utazóknak"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI World",
-      "whatIsTravi": "What is TRAVI World?",
-      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
-      "howManyDestinations": "How many destinations does TRAVI cover?",
-      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
-      "isFree": "Is TRAVI World free to use?",
-      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-      "updateFrequency": "How often is content updated?",
-      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
+      "title": "Gyakori kérdések",
+      "subtitle": "Minden, amit a TRAVI World-ről tudnod kell",
+      "whatIsTravi": "Mi az a TRAVI World?",
+      "whatIsTraviAnswer": "A TRAVI World egy átfogó utazási információs platform, amely 17 világszerte népszerű úticélt fed le részletes útmutatókkal több mint 3000 látnivalóhoz, szállodához, étteremhez és programhoz.",
+      "howManyDestinations": "Hány úticélt fed le a TRAVI?",
+      "howManyDestinationsAnswer": "A TRAVI World 17 jelentős utazási célpontot fed le, többek között Dubajt, Párizst, Tokiót, New Yorkot, Barcelonát, Szingapúrt, Londont, Bangkokot, Abu Dhabit, Amszterdamot, Hongkongot, Isztambult, Las Vegast, Los Angelest, Miamit és Rómát.",
+      "isFree": "Ingyenes a TRAVI World használata?",
+      "isFreeAnswer": "Igen, a TRAVI World teljesen ingyenesen használható. Böngéssz több ezer utazási útmutatóban, látnivaló értékelésben, szálloda ajánlásban és étterem javaslatban ingyen.",
+      "updateFrequency": "Milyen gyakran frissül a tartalom?",
+      "updateFrequencyAnswer": "A TRAVI World tartalma naponta frissül a legfrissebb utazási hírek, új látnivaló értékelések és frissített információk szerint mind a 17 úticélhoz."
     },
-    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
-    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
+    "mascotAlt": "TRAVI kabalafigura világ nevezetességeivel - fedezd fel Dubaj, Párizs, London, Róma és több úticél utazási útmutatóit",
+    "mascotTitle": "TRAVI World - Utazási útmutatók világszerte népszerű úticélokhoz"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "Dubaj látnivalók",
+    "subtitle": "Fedezd fel az ikonikus nevezetességeket és rejtett kincseket",
     "hero": {
-      "badge": "{{count}} attractions in {{cities}} cities",
-      "badgeThousands": "Thousands of attractions worldwide",
-      "headlinePart1": "Things to Do",
-      "headlinePart2": "Worldwide",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
-      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
-      "carouselLabel": "Featured attractions carousel",
-      "sectionLabel": "Book tickets to top attractions worldwide",
-      "searchAriaLabel": "Search attractions by name or city",
-      "searchButton": "Search",
-      "searchButtonAriaLabel": "Search attractions"
+      "badge": "{{count}} látnivaló {{cities}} városban",
+      "badgeThousands": "Több ezer látnivaló világszerte",
+      "headlinePart1": "Mit érdemes megnézni",
+      "headlinePart2": "világszerte",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Sorban állás nélküli jegyek</span> az Eiffel-toronyhoz, Colosseumhoz, Burj Khalifához és top látnivalókhoz Párizsban, Rómában, Dubajban és még több helyen.",
+      "searchPlaceholder": "Keress: Eiffel-torony, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Kiemelt látnivalók körhinta",
+      "sectionLabel": "Foglalj jegyeket világszerte top látnivalókhoz",
+      "searchAriaLabel": "Keress látnivalókat név vagy város szerint",
+      "searchButton": "Keresés",
+      "searchButtonAriaLabel": "Látnivalók keresése"
     },
     "stats": {
-      "attractions": "ATTRACTIONS",
-      "cities": "CITIES",
-      "rating": "RATING"
+      "attractions": "LÁTNIVALÓ",
+      "cities": "VÁROS",
+      "rating": "ÉRTÉKELÉS"
     },
     "srLabel": {
-      "attractions": "Over {{count}} attractions",
-      "cities": "{{count}} cities",
-      "rating": "{{rating}} star rating"
+      "attractions": "Több mint {{count}} látnivaló",
+      "cities": "{{count}} város",
+      "rating": "{{rating}} csillagos értékelés"
     },
     "types": {
-      "all": "All Types",
-      "museums": "Museums",
-      "landmarks": "Landmarks",
-      "tours": "Tours",
-      "themeParks": "Theme Parks",
-      "shows": "Shows"
+      "all": "Minden típus",
+      "museums": "Múzeumok",
+      "landmarks": "Nevezetességek",
+      "tours": "Túrák",
+      "themeParks": "Vidámparkok",
+      "shows": "Előadások"
     },
-    "thingsToDoIn": "Things to do in {{name}}",
-    "countAttractions": "{{country}} - {{count}} attractions",
+    "thingsToDoIn": "Mit érdemes megnézni itt: {{name}}",
+    "countAttractions": "{{country}} - {{count}} látnivaló",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "Összes",
+      "popular": "Legnépszerűbb",
+      "free": "Ingyenes belépés",
+      "familyFriendly": "Családbarát",
+      "outdoor": "Szabadtéri",
+      "indoor": "Fedett"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "Helyszín",
+      "hours": "Nyitvatartás",
+      "price": "Ár",
+      "duration": "Időtartam",
+      "tips": "Bennfentes tippek"
     },
     "sections": {
-      "destinations": "Explore Attractions by Destination",
-      "destinationsDesc": "Choose a city to discover amazing things to do",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Get answers about booking attractions worldwide",
-      "whyBookBadge": "Why Book With Us",
-      "whyBookTitle": "Skip the Lines, Save Time",
-      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
-      "allDestinations": "All Destinations"
+      "destinations": "Fedezd fel a látnivalókat úticélok szerint",
+      "destinationsDesc": "Válassz várost és fedezd fel a csodálatos programokat",
+      "faq": "Gyakori kérdések",
+      "faqDesc": "Válaszok a világszerte látnivalók foglalásáról",
+      "whyBookBadge": "Miért foglalj nálunk",
+      "whyBookTitle": "Ugorj át a sorokat, takarítsd meg az időt",
+      "whyBookDesc": "Foglalj jegyeket előre és élvezd a problémamentes belépést a top látnivalókhoz",
+      "allDestinations": "Összes úticél"
     },
     "features": {
-      "skipTheLine": "Skip-the-Line Tickets",
-      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
-      "mobileTickets": "Mobile Tickets",
-      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
-      "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
+      "skipTheLine": "Sorban állás nélküli jegyek",
+      "skipTheLineDesc": "Sétálj el a sorok mellett az Eiffel-toronynál, Colosseumnál, Vatikánnál és még több helyen",
+      "mobileTickets": "Mobil jegyek",
+      "mobileTicketsDesc": "Azonnali kézbesítés telefonodra - mutasd meg jegyedet és lépj be",
+      "freeCancellation": "Ingyenes lemondás",
+      "freeCancellationDesc": "Változtak a tervek? Lemondás 24 órával a látogatás előtt teljes visszatérítéssel"
     },
     "browse": {
-      "title": "Things to Do by Destination",
-      "desc": "Find attractions and experiences in the world's top cities",
-      "thingsToDo": "{{count}} things to do",
-      "noDestinations": "No destinations available at this time."
+      "title": "Mit érdemes megnézni úticélok szerint",
+      "desc": "Találj látnivalókat és élményeket a világ top városaiban",
+      "thingsToDo": "{{count}} látnivaló",
+      "noDestinations": "Jelenleg nincsenek elérhető úticélok."
     },
     "exploreLinks": {
-      "title": "Explore More Travel Guides",
-      "hotelsWorldwide": "Hotels Worldwide",
-      "bestRestaurants": "Best Restaurants",
-      "travelNews": "Travel News"
+      "title": "Fedezz fel több utazási útmutatót",
+      "hotelsWorldwide": "Szállodák világszerte",
+      "bestRestaurants": "Legjobb éttermek",
+      "travelNews": "Utazási hírek"
     },
     "cta": {
-      "title": "Ready to Explore?",
-      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
-      "parisAttractions": "Paris Attractions",
-      "romeAttractions": "Rome Attractions"
+      "title": "Készen állsz a felfedezésre?",
+      "desc": "Foglalj sorban állás nélküli jegyeket az Eiffel-toronyhoz, Colosseumhoz, Burj Khalifához és világszerte top látnivalókhoz.",
+      "parisAttractions": "Párizs látnivalók",
+      "romeAttractions": "Róma látnivalók"
     },
     "search": {
-      "popular": "Popular:",
-      "thingsToDoIn": "Things to Do in {{city}}",
-      "ariaCarouselNav": "Attraction carousel navigation",
-      "ariaViewInCity": "View {{name}} in {{city}}"
+      "popular": "Népszerű:",
+      "thingsToDoIn": "Mit érdemes megnézni itt: {{city}}",
+      "ariaCarouselNav": "Látnivaló körhinta navigáció",
+      "ariaViewInCity": "{{name}} megtekintése itt: {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Featured attraction",
-      "ariaThumbnails": "Attraction carousel thumbnails",
-      "ariaTicketsIn": "{{name}} tickets in {{city}}",
-      "priceFrom": "From",
-      "bookTickets": "Book Tickets",
-      "skipTheLine": "Skip the Line",
-      "duration": "2-3 hours",
-      "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "24h before visit",
-      "mobileTickets": "Mobile Tickets",
-      "instantDelivery": "Instant delivery"
+      "ariaFeaturedAttraction": "Kiemelt látnivaló",
+      "ariaThumbnails": "Látnivaló körhinta bélyegképek",
+      "ariaTicketsIn": "{{name}} jegyek itt: {{city}}",
+      "priceFrom": "Ár",
+      "bookTickets": "Jegyek foglalása",
+      "skipTheLine": "Sor átugrása",
+      "duration": "2-3 óra",
+      "freeCancellation": "Ingyenes lemondás",
+      "freeCancellationDesc": "24 órával látogatás előtt",
+      "mobileTickets": "Mobil jegyek",
+      "instantDelivery": "Azonnali kézbesítés"
     },
     "chip": {
-      "thingsToDo": "{{count}} things to do"
+      "thingsToDo": "{{count}} látnivaló"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "Dubaj szállodák",
+    "subtitle": "Találd meg a tökéletes szállást",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "Összes szálloda",
+      "luxury": "Luxus",
+      "budget": "Kedvező árú",
+      "beachfront": "Tengerparti",
+      "cityCenter": "Belváros",
+      "familyFriendly": "Családbarát"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "Ár",
+      "perNight": "éjszakánként",
+      "amenities": "Szolgáltatások",
+      "checkIn": "Bejelentkezés",
+      "checkOut": "Kijelentkezés",
+      "rooms": "Szobák",
+      "rating": "Értékelés"
     },
-    "bookNow": "Book Now"
+    "bookNow": "Foglalj most"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "Dubaj éttermek",
+    "subtitle": "Kulináris élmények minden ízléshez",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
+      "all": "Összes étterem",
+      "fineDining": "Finom ételek",
+      "casual": "Hétköznapi",
+      "cafes": "Kávézók",
+      "streetFood": "Utcai ételek",
       "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "vegetarian": "Vegetáriánus"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
+      "cuisine": "Konyha",
+      "priceRange": "Árkategória",
+      "hours": "Nyitvatartás",
+      "dress": "Öltözködési kód",
+      "reservations": "Foglalások"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
-      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
-      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
-      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
+      "dubai": { "name": "Dubaj", "country": "UAE", "cardAlt": "Dubaj látképe a Burj Khalifa toronnyal naplementekor" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben és a Parlament" },
+      "paris": { "name": "Párizs", "country": "Franciaország", "cardAlt": "Párizs Eiffel-torony kivilágítva naplementekor" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan látképe az Empire State Buildinggel" },
+      "tokyo": { "name": "Tokió", "country": "Japán", "cardAlt": "Tokió Shibuya átkelő neon fényekkel éjszaka" },
+      "singapore": { "name": "Szingapúr", "country": "Szingapúr", "cardAlt": "Szingapúr Marina Bay Sands és Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spanyolország", "cardAlt": "Barcelona Sagrada Familia aranyórában" },
+      "bangkok": { "name": "Bangkok", "country": "Thaiföld", "cardAlt": "Bangkok Nagy Palota templom napkeltekor" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Nagymecset" },
+      "amsterdam": { "name": "Amszterdam", "country": "Hollandia", "cardAlt": "Amszterdam csatorna történelmi épületekkel" },
+      "hongKong": { "name": "Hongkong", "country": "Kína", "cardAlt": "Hongkong látképe éjszaka" },
+      "istanbul": { "name": "Isztambul", "country": "Törökország", "cardAlt": "Isztambul Kék mecset naplementekor" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip éjszaka" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood felirat" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco negyed" },
+      "rome": { "name": "Róma", "country": "Olaszország", "cardAlt": "Róma Colosseum aranyórában" }
     },
     "hero": {
-      "badge": "{{count}} Destinations Worldwide",
-      "trustedBy": "Trusted by {{count}} destinations worldwide",
-      "discover": "Discover",
-      "worldClass": "World-Class",
-      "destinations": "Destinations",
-      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
-      "exploreAll": "Explore All Destinations",
-      "travelGuides": "Travel Guides",
-      "explorePlaceholder": "Explore Destinations",
-      "browseCollection": "Browse our collection of handpicked travel destinations below",
-      "explore": "Explore",
-      "discoverButton": "Discover",
-      "ariaLabel": "Destinations overview",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "badge": "{{count}} úticél világszerte",
+      "trustedBy": "Megbízható forrás {{count}} úticélhoz világszerte",
+      "discover": "Fedezd fel",
+      "worldClass": "világszínvonalú",
+      "destinations": "úticélokat",
+      "description": "Válogatott utazási útmutatók helyi szakértelemmel a világ legelbűvölőbb városaihoz. Ikonikus nevezetességektől rejtett kincsekig.",
+      "exploreAll": "Összes úticél felfedezése",
+      "travelGuides": "Utazási útmutatók",
+      "explorePlaceholder": "Fedezd fel az úticélokat",
+      "browseCollection": "Böngéssz kézzel válogatott utazási célpontjaink között",
+      "explore": "Felfedezés",
+      "discoverButton": "Fedezd fel",
+      "ariaLabel": "Úticélok áttekintése",
+      "exploreTitle": "{{name}} felfedezése",
+      "galleryAriaLabel": "Kiemelt úticél galéria",
+      "placeholderAriaLabel": "Kiemelt úticél helyőrző"
     },
     "stats": {
-      "destinations": "DESTINATIONS",
-      "countries": "COUNTRIES",
-      "regions": "Regions",
-      "languages": "Languages"
+      "destinations": "ÚTICÉL",
+      "countries": "ORSZÁG",
+      "regions": "Régiók",
+      "languages": "Nyelvek"
     },
     "sections": {
-      "featured": "Featured Destinations",
-      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
-      "all": "All Destinations",
-      "count": "{{count}} destinations found"
+      "featured": "Kiemelt úticélok",
+      "featuredDesc": "Kézzel válogatott úticélok kivételes élményekkel, helyi betekintésekkel és mindennel, amire szükséged van a tökéletes utazáshoz.",
+      "all": "Összes úticél",
+      "count": "{{count}} úticél található"
     },
     "search": {
-      "placeholder": "Search destinations...",
-      "noResults": "No destinations found",
-      "tryAdjusting": "Try adjusting your search criteria",
-      "clearSearch": "Clear Search"
+      "placeholder": "Keress úticélokat...",
+      "noResults": "Nincs találat",
+      "tryAdjusting": "Próbáld módosítani a keresési feltételeket",
+      "clearSearch": "Keresés törlése"
     },
     "carousel": {
-      "label": "Featured destinations carousel",
-      "previous": "Previous destination",
-      "next": "Next destination",
-      "goTo": "Go to {{name}}",
-      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "label": "Kiemelt úticélok körhinta",
+      "previous": "Előző úticél",
+      "next": "Következő úticél",
+      "goTo": "Ugrás ide: {{name}}",
+      "slideOf": "{{current}}. dia a {{total}}-ból: {{name}}",
+      "thumbnails": "Úticél körhinta bélyegképek"
     },
     "card": {
-      "explore": "Explore",
-      "defaultLevel": "City",
-      "exploreFallback": "Explore {{name}}",
-      "destination": "Destination",
-      "travelGuideAlt": "{{name}} travel guide"
+      "explore": "Felfedezés",
+      "defaultLevel": "Város",
+      "exploreFallback": "{{name}} felfedezése",
+      "destination": "Úticél",
+      "travelGuideAlt": "{{name}} utazási útmutató"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI destination guides",
-      "q1": "How many destinations does TRAVI cover?",
-      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
-      "q2": "What information is included in TRAVI destination guides?",
-      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
-      "q3": "Can I search for destinations?",
-      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
-      "q4": "What are the featured destinations on TRAVI?",
-      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
+      "title": "Gyakori kérdések",
+      "subtitle": "Minden, amit a TRAVI úticél útmutatókról tudnod kell",
+      "q1": "Hány úticélt fed le a TRAVI?",
+      "a1": "A TRAVI jelentős utazási célpontokat fed le a Közel-Keleten, Európában, Ázsiában és Amerikában átfogó útmutatókkal minden helyszínhez.",
+      "q2": "Milyen információkat tartalmaznak a TRAVI úticél útmutatók?",
+      "a2": "Minden úticél útmutató részletes leírásokat tartalmaz látnivalókról, szálláslehetőségekről, helyi konyhákról, közlekedési tippekről és praktikus utazási információkról.",
+      "q3": "Tudok úticélokat keresni?",
+      "a3": "Igen, a TRAVI lehetővé teszi úticélok keresését név vagy ország szerint a keresősáv használatával az úticélok oldalon.",
+      "q4": "Melyek a kiemelt úticélok a TRAVI-n?",
+      "a4": "A TRAVI kiemelt úticéljai kézzel válogatott helyszínek, amelyek kivételes élményeket kínálnak változatos érdeklődésű utazóknak, a luxustól a költséghatékony utazásig."
     },
     "loading": {
-      "title": "Loading Destinations",
-      "message": "Fetching the latest destination data..."
+      "title": "Úticélok betöltése",
+      "message": "A legfrissebb úticél adatok lekérése..."
     },
     "error": {
-      "title": "Unable to Load Destinations",
-      "message": "We're having trouble loading destination data. Please try again later.",
-      "refresh": "Refresh Page"
+      "title": "Nem sikerült betölteni az úticélokat",
+      "message": "Probléma merült fel az úticél adatok betöltésekor. Kérjük, próbáld újra később.",
+      "refresh": "Oldal frissítése"
     },
     "empty": {
-      "title": "No Destinations Available",
-      "message": "No destinations are currently available. Please check back later."
+      "title": "Nincsenek elérhető úticélok",
+      "message": "Jelenleg nincsenek elérhető úticélok. Kérjük, nézz vissza később."
     }
   },
   "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
+    "title": "Dubaj kerületek",
+    "subtitle": "Fedezd fel Dubaj változatos városrészeit",
+    "explore": "Kerület felfedezése"
   },
   "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
+    "title": "Dubaj ingatlanok",
+    "subtitle": "Fektess be a jövőbe",
     "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
+      "title": "Tervezett ingatlanok",
+      "subtitle": "Fektess be korán, fizess kevesebbet, nyerj többet",
+      "findProperty": "Találd meg tökéletes ingatlanodat",
+      "from": "Ár",
+      "paymentPlan": "Fizetési terv",
+      "handover": "Átadás",
+      "developer": "Fejlesztő"
     },
     "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
+      "all": "Összes ingatlan",
+      "apartments": "Lakások",
+      "villas": "Villák",
+      "townhouses": "Sorházak",
+      "penthouses": "Penthouse-ok"
     },
     "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
+      "cryptoAccepted": "Kripto elfogadva",
+      "paymentPlans": "Rugalmas fizetési tervek",
+      "goldenVisa": "Golden Visa jogosult",
+      "roiGuarantee": "ROI garancia"
     }
   },
   "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
+    "placeholder": "Keress látnivalókat, útmutatókat, úticélokat...",
+    "results": "Keresési eredmények",
+    "noResults": "Nincs találat erre:",
+    "tryAgain": "Próbálj más kulcsszavakat"
   },
   "footer": {
-    "about": "About Travi",
-    "aboutTravi": "About Travi",
-    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
-    "aboutUs": "About Us",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "termsOfService": "Terms of Service",
-    "contact": "Contact Us",
-    "contactUs": "Contact Us",
-    "followUs": "Follow Us",
-    "explore": "Explore",
-    "travel": "Travel",
-    "company": "Company",
-    "allGuides": "All Guides",
-    "cookies": "Cookies",
-    "security": "Security",
-    "cookieSettings": "Cookie Settings",
-    "tagline": "Your Trusted Travel Resource",
-    "ariaLabel": "Site footer",
-    "featuredGuides": "Featured Guides",
-    "tools": "Tools",
-    "currencyConverter": "Currency Converter",
-    "roiCalculator": "ROI Calculator",
-    "mortgageCalculator": "Mortgage Calculator",
-    "glossary": "Glossary",
-    "freeThingsToDo": "70+ Free Things to Do",
-    "open24Hours": "Open 24 Hours",
-    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
-    "lawsForTourists": "Laws for Tourists",
-    "newsletter": "Subscribe to our newsletter",
-    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
-    "emailPlaceholder": "Enter your email",
-    "allRightsReserved": "All rights reserved.",
-    "copyright": "© {{year}} {{brand}}. All rights reserved.",
-    "emailAriaLabel": "Send email to TRAVI"
+    "about": "A Travi-ról",
+    "aboutTravi": "A Travi-ról",
+    "aboutText": "Átfogó utazási információk 17 világszerte népszerű úticélhoz.",
+    "aboutUs": "Rólunk",
+    "quickLinks": "Gyors linkek",
+    "legal": "Jogi információk",
+    "privacy": "Adatvédelmi szabályzat",
+    "privacyPolicy": "Adatvédelmi szabályzat",
+    "terms": "Felhasználási feltételek",
+    "termsOfService": "Szolgáltatási feltételek",
+    "contact": "Kapcsolat",
+    "contactUs": "Kapcsolatfelvétel",
+    "followUs": "Kövess minket",
+    "explore": "Felfedezés",
+    "travel": "Utazás",
+    "company": "Cég",
+    "allGuides": "Összes útmutató",
+    "cookies": "Sütik",
+    "security": "Biztonság",
+    "cookieSettings": "Süti beállítások",
+    "tagline": "Megbízható utazási forrásod",
+    "ariaLabel": "Oldal lábléc",
+    "featuredGuides": "Kiemelt útmutatók",
+    "tools": "Eszközök",
+    "currencyConverter": "Pénznem váltó",
+    "roiCalculator": "ROI kalkulátor",
+    "mortgageCalculator": "Jelzálog kalkulátor",
+    "glossary": "Szójegyzék",
+    "freeThingsToDo": "70+ ingyenes program",
+    "open24Hours": "0-24 nyitva",
+    "tributeToSheikh": "Tisztelgés HH Sheikh Mohammed előtt",
+    "lawsForTourists": "Törvények turistáknak",
+    "newsletter": "Iratkozz fel hírlevelünkre",
+    "newsletterDescription": "Kapd meg a legfrissebb Dubaj utazási tippeket és frissítéseket.",
+    "emailPlaceholder": "Add meg email címed",
+    "allRightsReserved": "Minden jog fenntartva.",
+    "copyright": "© {{year}} {{brand}}. Minden jog fenntartva.",
+    "emailAriaLabel": "Email küldése a TRAVI-nak"
   },
   "errors": {
     "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
+      "title": "Az oldal nem található",
+      "message": "A keresett oldal nem létezik.",
+      "button": "Vissza a kezdőlapra"
     },
     "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
+      "title": "Szerverhiba",
+      "message": "Valami hiba történt a szerverünkön.",
+      "button": "Próbáld újra"
     },
     "network": {
-      "title": "Connection Error",
-      "message": "Unable to connect. Please check your internet connection.",
-      "button": "Retry"
+      "title": "Kapcsolati hiba",
+      "message": "Nem sikerült csatlakozni. Ellenőrizd internetkapcsolatod.",
+      "button": "Újra"
     }
   },
   "newsletter": {
-    "badge": "Join the Adventure",
-    "title": "Get Travel Magic in Your Inbox",
-    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
-    "emailPlaceholder": "your@email.com",
-    "subscribe": "Subscribe",
-    "success": "You're subscribed! Check your inbox."
+    "badge": "Csatlakozz a kalandhoz",
+    "title": "Kapj utazási varázst postaládádba",
+    "description": "Heti tippek, rejtett kincsek és exkluzív ajánlatok - spam nélkül, csak vándorvágy.",
+    "emailPlaceholder": "te@email.hu",
+    "subscribe": "Feliratkozás",
+    "success": "Feliratkoztál! Nézd meg postaládádat."
   },
   "cookies": {
-    "title": "We value your privacy",
-    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
-    "manage": "Manage",
-    "rejectAll": "Reject All",
-    "acceptAll": "Accept All",
-    "preferencesTitle": "Cookie Preferences",
-    "savePreferences": "Save Preferences",
+    "title": "Az adatvédelmed fontos számunkra",
+    "description": "Sütiket használunk böngészési élményed javítására, oldalforgalom elemzésére és tartalom személyre szabására. Az \"Összes elfogadása\" gombra kattintva beleegyezel sütik használatába.",
+    "manage": "Kezelés",
+    "rejectAll": "Összes elutasítása",
+    "acceptAll": "Összes elfogadása",
+    "preferencesTitle": "Süti beállítások",
+    "savePreferences": "Beállítások mentése",
     "essential": {
-      "title": "Essential Cookies",
-      "description": "Required for the website to function properly"
+      "title": "Alapvető sütik",
+      "description": "A weboldal megfelelő működéséhez szükségesek"
     },
     "analytics": {
-      "title": "Analytics Cookies",
-      "description": "Help us understand how visitors interact with our website"
+      "title": "Elemzési sütik",
+      "description": "Segítenek megérteni, hogyan lépnek interakcióba látogatók weboldalunkkal"
     },
     "marketing": {
-      "title": "Marketing Cookies",
-      "description": "Used to deliver personalized advertisements"
+      "title": "Marketing sütik",
+      "description": "Személyre szabott hirdetések megjelenítésére használjuk"
     }
   },
   "meta": {
     "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
+      "title": "Travi - Fedezd fel Dubajt | Végső Dubaj utazási útmutató",
+      "description": "Fedezd fel Dubaj legjobb látnivalóit, szállodáit, éttermet és városrészeit. Tervezd meg tökéletes Dubaj utazásod bennfentes tippekkel és helyi ajánlásokkal."
     },
     "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
+      "title": "Dubaj látnivalók | Top programok Dubajban",
+      "description": "Fedezd fel Dubaj legjobb látnivalóit - a Burj Khalifától a rejtett kincsekig. Tervezd meg Dubaj városnézésedet."
     },
     "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
+      "title": "Dubaj szállodák | Legjobb szállások Dubajban",
+      "description": "Találd meg a tökéletes szállodát Dubajban bármely költségvetéshez. Luxus üdülőhelyektől kedvező árú lehetőségekig."
     },
     "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "title": "Dubaj éttermek | Legjobb éttermek Dubajban",
+      "description": "Fedezd fel Dubaj kulináris világát - finom ételektől utcai kajákig és minden köztes."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Travel Intelligence",
-      "headlinePart1": "Stories That",
-      "headlinePart2": "Move You",
-      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
-      "startJourney": "Start Your Journey",
-      "browseCollection": "Browse Collection",
-      "issueBadge": "Issue 47 — Winter 2026"
+      "categoryLabel": "Utazási intelligencia",
+      "headlinePart1": "Történetek, amelyek",
+      "headlinePart2": "megmozgatnak",
+      "description": "Szakértők által készített útmutatók, bennfentes perspektívák és szerkesztői narratívák, amelyek átalakítják a világ megtapasztalásának módját.",
+      "startJourney": "Kezdd meg utazásod",
+      "browseCollection": "Gyűjtemény böngészése",
+      "issueBadge": "47. szám — 2026 Tél"
     },
     "stats": {
-      "guides": "Travel Guides",
-      "destinations": "Destinations",
-      "languages": "Languages"
+      "guides": "Utazási útmutatók",
+      "destinations": "Úticélok",
+      "languages": "Nyelvek"
     },
     "journey": {
-      "badge": "Your Journey, Our Guidance",
-      "title": "Every Great Trip Begins with a Guide",
-      "subtitle": "From dreaming to sharing, we're with you at every step"
+      "badge": "Utazásod, útmutatásunk",
+      "title": "Minden nagyszerű utazás egy útmutatóval kezdődik",
+      "subtitle": "Az álmodozástól a megosztásig, végig veled vagyunk minden lépésnél"
     },
     "ideaLab": {
-      "badge": "Idea Lab",
-      "title": "Curated Inspiration",
-      "readGuide": "Read Guide"
+      "badge": "Ötletműhely",
+      "title": "Válogatott inspiráció",
+      "readGuide": "Útmutató olvasása"
     },
     "archetype": {
-      "badge": "Personalized for You",
-      "title": "What Kind of Traveler Are You?",
-      "subtitle": "Select your travel style and discover guides curated just for you",
-      "viewGuides": "View {{type}} Guides"
+      "badge": "Személyre szabva neked",
+      "title": "Milyen típusú utazó vagy?",
+      "subtitle": "Válaszd ki utazási stílusod és fedezd fel a neked válogatott útmutatókat",
+      "viewGuides": "{{type}} útmutatók megtekintése"
     },
     "archetypes": {
       "adventure": {
-        "name": "Adventure Seeker",
-        "description": "Thrilling experiences and adrenaline rushes"
+        "name": "Kalandkereső",
+        "description": "Izgalmas élmények és adrenalin rushok"
       },
       "culture": {
-        "name": "Culture Explorer",
-        "description": "Art, history, and local traditions"
+        "name": "Kultúra kutató",
+        "description": "Művészet, történelem és helyi hagyományok"
       },
       "relaxation": {
-        "name": "Relaxation Guru",
-        "description": "Wellness retreats and peaceful escapes"
+        "name": "Relaxáló guru",
+        "description": "Wellness üdülőhelyek és békés menekülések"
       },
       "foodie": {
-        "name": "Culinary Nomad",
-        "description": "Local flavors and gastronomic adventures"
+        "name": "Kulináris nomád",
+        "description": "Helyi ízek és gasztronómiai kalandok"
       },
       "wellness": {
-        "name": "Wellness Seeker",
-        "description": "Relaxation, spas, and mindful retreats"
+        "name": "Wellness kereső",
+        "description": "Pihenés, spa és tudatos üdülőhelyek"
       },
       "budget": {
-        "name": "Smart Traveler",
-        "description": "Maximum experience, minimal budget"
+        "name": "Okos utazó",
+        "description": "Maximum élmény, minimum költségvetés"
       },
       "solo": {
-        "name": "Solo Explorer",
-        "description": "Independent journeys and self-discovery"
+        "name": "Egyedül utazó",
+        "description": "Független utazások és önmegismerés"
       },
       "luxury": {
-        "name": "Luxury Connoisseur",
-        "description": "Premium experiences and fine living"
+        "name": "Luxus ínyenc",
+        "description": "Prémium élmények és finom életstílus"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Dream",
-        "subtitle": "Discover inspiration",
-        "guides": ["Destination Guides", "Photo Essays"]
+        "title": "Álmodozz",
+        "subtitle": "Fedezd fel az inspirációt",
+        "guides": ["Úticél útmutatók", "Fotóesszék"]
       },
       "plan": {
-        "title": "Plan",
-        "subtitle": "Map your journey",
-        "guides": ["Trip Planning", "Visa Requirements"]
+        "title": "Tervezz",
+        "subtitle": "Térképezd fel utazásod",
+        "guides": ["Utazás tervezés", "Vízum követelmények"]
       },
       "prepare": {
-        "title": "Prepare",
-        "subtitle": "Get ready to go",
-        "guides": ["Packing Lists", "Safety Tips"]
+        "title": "Készülj",
+        "subtitle": "Készülj fel az indulásra",
+        "guides": ["Csomagolási listák", "Biztonsági tippek"]
       },
       "experience": {
-        "title": "Experience",
-        "subtitle": "Live the adventure",
-        "guides": ["Local Insights", "Hidden Gems"]
+        "title": "Tapasztalj",
+        "subtitle": "Éld át a kalandot",
+        "guides": ["Helyi betekintések", "Rejtett kincsek"]
       },
       "share": {
-        "title": "Share",
-        "subtitle": "Tell your story",
-        "guides": ["Travel Writing", "Photography"]
+        "title": "Oszd meg",
+        "subtitle": "Meséld el történeted",
+        "guides": ["Utazási írás", "Fényképészet"]
       }
     },
     "categories": {
-      "weekendEscapes": "Weekend Escapes",
-      "offBeatenPath": "Off the Beaten Path",
-      "smartTravel": "Smart Travel",
-      "bucketList": "Bucket List",
-      "culinary": "Culinary",
-      "natureWonder": "Nature & Wonder"
+      "weekendEscapes": "Hétvégi menekülések",
+      "offBeatenPath": "Letaposatlan utak",
+      "smartTravel": "Okos utazás",
+      "bucketList": "Bucket lista",
+      "culinary": "Kulináris",
+      "natureWonder": "Természet és csoda"
     },
     "seo": {
-      "title": "Travel Guides | Expert Destination Insights",
-      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
+      "title": "Utazási útmutatók | Szakértői úticél betekintések",
+      "description": "Fedezd fel szakértői utazási útmutatókat, úticél betekintéseket és bennfentes tippeket globális utazási íróink hálózatától. Tervezd meg tökéletes utazásod ma."
     },
     "editorial": {
-      "badge": "From Our Editors",
-      "title": "Editorial Features",
-      "readFull": "Read Full Essay"
+      "badge": "Szerkesztőinktől",
+      "title": "Szerkesztői kiemelések",
+      "readFull": "Teljes esszé olvasása"
     },
     "gallery": {
-      "badge": "Visual Stories",
-      "title": "Destinations That Inspire",
+      "badge": "Vizuális történetek",
+      "title": "Úticélok, amelyek inspirálnak",
       "categories": {
-        "city": "City",
-        "mountains": "Mountains",
-        "beach": "Beach",
-        "safari": "Safari",
-        "nature": "Nature"
+        "city": "Város",
+        "mountains": "Hegyek",
+        "beach": "Tengerpart",
+        "safari": "Szafari",
+        "nature": "Természet"
       }
     },
     "writers": {
-      "badge": "Expert Voices",
-      "title": "Meet Our Writers",
-      "subtitle": "The expert voices behind our most trusted travel guides",
-      "articleCount": "{{count}} Articles",
-      "viewProfile": "View Profile"
+      "badge": "Szakértői hangok",
+      "title": "Ismerd meg íróinkat",
+      "subtitle": "A szakértői hangok legmegbízhatóbb utazási útmutatóink mögött",
+      "articleCount": "{{count}} cikk",
+      "viewProfile": "Profil megtekintése"
     },
     "map": {
-      "badge": "Explore by Region",
-      "title": "Guides Around the World",
-      "subtitle": "Click any destination to discover our expert coverage",
-      "guidesAvailable": "{{count}} guides available",
-      "legendDestination": "Destination",
-      "legendHighlighted": "Highlighted"
+      "badge": "Felfedezés régiók szerint",
+      "title": "Útmutatók szerte a világon",
+      "subtitle": "Kattints bármely úticélra szakértői lefedettségünk felfedezéséhez",
+      "guidesAvailable": "{{count}} útmutató elérhető",
+      "legendDestination": "Úticél",
+      "legendHighlighted": "Kiemelt"
     },
     "newsletter": {
-      "badge": "Join the Journey",
-      "title": "Travel Stories, Weekly",
-      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
-      "placeholder": "Enter your email",
-      "subscribe": "Subscribe",
-      "subscribing": "Subscribing...",
-      "joinCount": "Join 50,000+ travelers who read our weekly digest",
-      "invalidEmail": "Please enter a valid email",
-      "successTitle": "Welcome to the journey!",
-      "successDesc": "You're now subscribed to our editorial digest."
+      "badge": "Csatlakozz az utazáshoz",
+      "title": "Utazási történetek, hetente",
+      "description": "Válogatott utazási inspiráció, szakértői tippek és bennfentes perspektívák postaládádba minden héten.",
+      "placeholder": "Add meg email címed",
+      "subscribe": "Feliratkozás",
+      "subscribing": "Feliratkozás folyamatban...",
+      "joinCount": "Csatlakozz 50 000+ utazóhoz, akik olvassák heti összefoglalónkat",
+      "invalidEmail": "Adj meg érvényes email címet",
+      "successTitle": "Üdvözlünk az utazásban!",
+      "successDesc": "Feliratkoztál szerkesztői hírlevelünkre."
     }
   },
   "news": {
     "time": {
-      "recent": "Recent",
-      "justNow": "Just now",
-      "minutesAgo": "{{count}}m ago",
-      "hoursAgo": "{{count}}h ago",
-      "daysAgo": "{{count}}d ago",
-      "minRead": "{{count}} min read"
+      "recent": "Legutóbbi",
+      "justNow": "Most",
+      "minutesAgo": "{{count}} perce",
+      "hoursAgo": "{{count}} órája",
+      "daysAgo": "{{count}} napja",
+      "minRead": "{{count}} perc olvasás"
     },
     "header": {
-      "title": "TRAVI NEWS",
-      "edition": "International Edition",
-      "subscribe": "Subscribe"
+      "title": "TRAVI HÍREK",
+      "edition": "Nemzetközi kiadás",
+      "subscribe": "Feliratkozás"
     },
     "breaking": {
-      "label": "Breaking"
+      "label": "Friss"
     },
     "search": {
-      "placeholder": "Search worldwide news...",
-      "button": "Search",
-      "title": "Search",
-      "searching": "Searching for \"{{query}}\"..."
+      "placeholder": "Keress világszerte híreket...",
+      "button": "Keresés",
+      "title": "Keresés",
+      "searching": "Keresés \"{{query}}\" kifejezésre..."
     },
     "categories": {
-      "all": "All News",
-      "world": "World",
-      "business": "Business",
-      "culture": "Culture",
-      "travel": "Travel",
+      "all": "Összes hír",
+      "world": "Világ",
+      "business": "Üzlet",
+      "culture": "Kultúra",
+      "travel": "Utazás",
       "tech": "Tech",
-      "opinion": "Opinion"
+      "opinion": "Vélemény"
     },
     "empty": {
-      "title": "No News Articles Yet",
-      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
-      "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Travel Guides"
+      "title": "Még nincsenek hírek",
+      "description": "Dolgozunk azon, hogy elhozzuk legfrissebb utazási híreket és betekintéseket. Nézz vissza hamarosan frissítésekért világszerte.",
+      "exploreDestinations": "Úticélok felfedezése",
+      "viewGuides": "Utazási útmutatók megtekintése"
     },
     "hero": {
-      "topStory": "Top Story",
-      "editorialTeam": "Editorial Team"
+      "topStory": "Top történet",
+      "editorialTeam": "Szerkesztői csapat"
     },
-    "views": "{{count}} views",
-    "viewAll": "View All",
+    "views": "{{count}} megtekintés",
+    "viewAll": "Összes megtekintése",
     "seo": {
-      "title": "Travel News | Latest Stories & Updates",
-      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
+      "title": "Utazási hírek | Legfrissebb történetek és frissítések",
+      "description": "Maradj tájékozott legfrissebb utazási hírekkel, úticél frissítésekkel és iparági betekintésekkel világszerte."
     },
     "sidebar": {
-      "alsoToday": "Also Today",
-      "storiesCount": "{{count}} stories",
-      "liveUpdates": "Live Updates",
-      "trendingTopics": "Trending Topics",
-      "noTrending": "No trending topics yet. Check back soon!"
+      "alsoToday": "Szintén ma",
+      "storiesCount": "{{count}} történet",
+      "liveUpdates": "Élő frissítések",
+      "trendingTopics": "Trendi témák",
+      "noTrending": "Még nincsenek trendi témák. Nézz vissza hamarosan!"
     },
     "sections": {
-      "topStories": "Top Stories",
-      "opinion": "Opinion & Analysis",
-      "moreOpinion": "More Opinion",
-      "worldwide": "Worldwide Coverage"
+      "topStories": "Top történetek",
+      "opinion": "Vélemény és elemzés",
+      "moreOpinion": "Több vélemény",
+      "worldwide": "Világszerte lefedettség"
     },
     "worldwide": {
-      "title": "Your Window to the World",
-      "subtitle": "News from every corner of the globe",
-      "storiesCount": "{{count}} stories",
-      "comingSoon": "Coming soon"
+      "title": "Ablakod a világra",
+      "subtitle": "Hírek a világ minden szegletéből",
+      "storiesCount": "{{count}} történet",
+      "comingSoon": "Hamarosan"
     },
     "newsletter": {
-      "title": "Stay Informed",
-      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
-      "placeholder": "Enter your email",
-      "subscribe": "Subscribe Free",
-      "noSpam": "No spam. Unsubscribe anytime.",
-      "successTitle": "Subscribed!",
-      "successDesc": "Please check your email to confirm your subscription.",
-      "errorTitle": "Subscription failed",
-      "errorDesc": "Please try again later.",
-      "invalidTitle": "Invalid email",
-      "invalidDesc": "Please enter a valid email address."
+      "title": "Maradj tájékozott",
+      "description": "Kapd meg nap top történeteit postaládádba minden reggel. Csatlakozz 50 000+ olvasóhoz.",
+      "placeholder": "Add meg email címed",
+      "subscribe": "Ingyenes feliratkozás",
+      "noSpam": "Nincs spam. Leiratkozás bármikor.",
+      "successTitle": "Feliratkoztál!",
+      "successDesc": "Kérjük, ellenőrizd emailedet feliratkozásod megerősítéséhez.",
+      "errorTitle": "Feliratkozás sikertelen",
+      "errorDesc": "Kérjük, próbáld újra később.",
+      "invalidTitle": "Érvénytelen email",
+      "invalidDesc": "Kérjük, adj meg érvényes email címet."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "About Us | TRAVI World",
-      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
-      "badge": "Your Travel Companion",
-      "title": "About",
-      "titleHighlight": "TRAVI World",
-      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
-      "ctaExplore": "Explore Destinations",
-      "ctaContact": "Get in Touch"
+      "metaTitle": "Rólunk | TRAVI World",
+      "metaDescription": "Ismerd meg a TRAVI World-öt, független utazási információs forrást, amely átfogó utazási útmutatókat, látnivalókat, szállodákat és étterem információkat nyújt világszerte úticélokhoz.",
+      "badge": "Utazási társad",
+      "title": "A",
+      "titleHighlight": "TRAVI World-ről",
+      "subtitle": "Megbízható forrásod átfogó utazási információkhoz és úticél útmutatókhoz, segítve milliók világszerte felfedezését magabiztosan.",
+      "ctaExplore": "Úticélok felfedezése",
+      "ctaContact": "Lépj kapcsolatba"
     },
     "contact": {
-      "metaTitle": "Contact Us | TRAVI World",
-      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
-      "badge": "We'd love to hear from you",
-      "titlePart1": "Let's",
-      "titlePart2": "Connect",
-      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
-      "cta": "Send us a message",
-      "getInTouch": "Get in Touch",
-      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
-      "howCanWeHelp": "How Can We Help?",
-      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
-      "importantNote": "Important Note",
-      "importantNoteSubtitle": "Please read before contacting us",
-      "ourOffice": "Our Office",
-      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
-      "travelCompanion": "Your travel companion",
-      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
-      "urgentLabel": "Urgent",
+      "metaTitle": "Kapcsolat | TRAVI World",
+      "metaDescription": "Lépj kapcsolatba a TRAVI World-del. Várjuk visszajelzéseidet, kérdéseidet és megkereséseidet utazási információs szolgáltatásainkról.",
+      "badge": "Szeretnénk hallani rólad",
+      "titlePart1": "Lépjünk",
+      "titlePart2": "kapcsolatba",
+      "subtitle": "Kérdésed van következő kalandoddal kapcsolatban? Itt vagyunk, hogy segítsünk magabiztosan felfedezni a világot.",
+      "cta": "Küldj üzenetet",
+      "getInTouch": "Lépj kapcsolatba",
+      "getInTouchSubtitle": "Válaszd ki legjobb módot elérésünkre. Elkötelezettek vagyunk gyors válaszadás iránt.",
+      "howCanWeHelp": "Hogyan segíthetünk?",
+      "howCanWeHelpSubtitle": "Itt vagyunk, hogy segítsünk bármilyen kérdésben vagy visszajelzésben utazási tartalmainkkal és szolgáltatásainkkal kapcsolatban.",
+      "importantNote": "Fontos megjegyzés",
+      "importantNoteSubtitle": "Kérjük, olvasd el kapcsolatfelvétel előtt",
+      "ourOffice": "Irodánk",
+      "ourOfficeSubtitle": "Hivatalos levelezéshez és postai megkeresésekhez",
+      "travelCompanion": "Utazási társad",
+      "urgentNote": "Sürgős ügyekben kérjük, add meg {{urgentLabel}} címkét email tárgysorában. Prioritizáljuk válaszokat megkeresés természete alapján.",
+      "urgentLabel": "Sürgős",
       "options": {
         "generalInquiries": {
-          "title": "General Inquiries",
-          "description": "Questions about our travel guides and contents"
+          "title": "Általános megkeresések",
+          "description": "Kérdések utazási útmutatóinkról és tartalmunkról"
         },
         "privacyInquiries": {
-          "title": "Privacy Inquiries",
-          "description": "Data access, deletion, and privacy requests"
+          "title": "Adatvédelmi megkeresések",
+          "description": "Adat hozzáférés, törlés és adatvédelmi kérések"
         },
         "visitWebsite": {
-          "title": "Visit Our Website",
-          "description": "Explore destinations and travel inspiration"
+          "title": "Látogasd meg weboldalunkat",
+          "description": "Fedezd fel úticélokat és utazási inspirációt"
         },
         "responseTime": {
-          "title": "Response Time",
-          "description": "We aim to respond promptly",
-          "action": "2-3 business days"
+          "title": "Válaszidő",
+          "description": "Törekszünk gyors válaszadásra",
+          "action": "2-3 munkanap"
         }
       },
       "helpTopics": {
-        "general": "General inquiries about our travel guides and contents",
-        "feedback": "Feedback and suggestions for improvement",
-        "reporting": "Reporting contents errors or outdated information",
-        "business": "Business and partnership inquiries",
-        "media": "Media and press inquiries",
-        "privacy": "Privacy-related requests (data access, deletion, etc.)"
+        "general": "Általános megkeresések utazási útmutatóinkról és tartalmunkról",
+        "feedback": "Visszajelzések és fejlesztési javaslatok",
+        "reporting": "Tartalom hibák vagy elavult információk jelentése",
+        "business": "Üzleti és partnerségi megkeresések",
+        "media": "Média és sajtó megkeresések",
+        "privacy": "Adatvédelemmel kapcsolatos kérések (adat hozzáférés, törlés, stb.)"
       }
     },
     "privacy": {
-      "metaTitle": "Privacy Policy | TRAVI World",
-      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
-      "badge": "Your Privacy Matters",
-      "title": "Privacy Policy",
-      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
-      "effectiveDate": "Effective Date: 1 January 2026",
+      "metaTitle": "Adatvédelmi szabályzat | TRAVI World",
+      "metaDescription": "Tudd meg, hogyan gyűjti, használja és védi a TRAVI World személyes adataidat. Olvasd el átfogó adatvédelmi szabályzatunkat.",
+      "badge": "Adatvédelem számít",
+      "title": "Adatvédelmi szabályzat",
+      "subtitle": "Elkötelezettek vagyunk adatvédelem védelme és átláthatóság iránt adatkezelési gyakorlatainkról. Tudd meg, hogyan gyűjti, használja és védi a TRAVI World információidat.",
+      "effectiveDate": "Hatályos: 2026. január 1.",
       "features": {
         "dataProtection": {
-          "title": "Data Protection",
-          "description": "Your data is protected"
+          "title": "Adatvédelem",
+          "description": "Adataid védettek"
         },
         "minimalCollection": {
-          "title": "Minimal Collection",
-          "description": "We collect only what's needed"
+          "title": "Minimális gyűjtés",
+          "description": "Csak szükséges adatokat gyűjtünk"
         },
         "transparency": {
-          "title": "Full Transparency",
-          "description": "Clear about our practices"
+          "title": "Teljes átláthatóság",
+          "description": "Világosak gyakorlatainkról"
         },
         "yourControl": {
-          "title": "Your Control",
-          "description": "Manage your preferences"
+          "title": "Irányításod",
+          "description": "Kezeld beállításaidat"
         }
       },
       "sections": {
-        "whoWeAre": "1. Who We Are",
-        "informationCollect": "2. Information We Collect",
-        "howWeUse": "3. How We Use Your Information",
-        "legalBasis": "4. Legal Basis for Processing (GDPR)",
-        "cookies": "5. Cookies and Tracking Technologies",
-        "thirdParty": "6. Third-Party Services",
-        "aiContent": "7. AI-Generated Content",
-        "internationalTransfers": "8. International Data Transfers",
-        "dataRetention": "9. Data Retention",
-        "privacyRights": "10. Your Privacy Rights",
-        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
-        "childrenPrivacy": "12. Children's Privacy",
-        "dataSecurity": "13. Data Security",
-        "changes": "14. Changes to This Policy",
-        "contactUs": "15. Contact Us"
+        "whoWeAre": "1. Kik vagyunk",
+        "informationCollect": "2. Információk, amelyeket gyűjtünk",
+        "howWeUse": "3. Hogyan használjuk információidat",
+        "legalBasis": "4. Jogi alap feldolgozáshoz (GDPR)",
+        "cookies": "5. Sütik és követési technológiák",
+        "thirdParty": "6. Harmadik fél szolgáltatások",
+        "aiContent": "7. AI által generált tartalom",
+        "internationalTransfers": "8. Nemzetközi adatátvitelek",
+        "dataRetention": "9. Adat megőrzés",
+        "privacyRights": "10. Adatvédelmi jogaid",
+        "californiaRights": "11. Kaliforniai adatvédelmi jogok (CCPA/CPRA)",
+        "childrenPrivacy": "12. Gyermekek adatvédelme",
+        "dataSecurity": "13. Adat biztonság",
+        "changes": "14. Szabályzat változásai",
+        "contactUs": "15. Kapcsolatfelvétel"
       }
     },
     "terms": {
-      "metaTitle": "Terms & Conditions | TRAVI World",
-      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
-      "badge": "Legal Agreement",
-      "title": "Terms & Conditions",
-      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
-      "lastUpdated": "Last updated: 1 January 2026",
-      "importantNotice": "Important Legal Notice",
+      "metaTitle": "Felhasználási feltételek | TRAVI World",
+      "metaDescription": "Olvasd el TRAVI World utazási információs szolgáltatások használatának feltételeit. Jogi megállapodás közted és KBR Global Creative Consulting Ltd. között.",
+      "badge": "Jogi megállapodás",
+      "title": "Felhasználási feltételek",
+      "subtitle": "Kérjük, olvasd el figyelmesen ezeket feltételeket TRAVI World használata előtt. Hozzáférésed és platformunk használata ezeknek feltételeknek van alávetve.",
+      "lastUpdated": "Utoljára frissítve: 2026. január 1.",
+      "importantNotice": "Fontos jogi nyilatkozat",
       "keyPoints": {
         "editorial": {
-          "title": "Editorial Platform",
-          "description": "Travel guides & destination contents"
+          "title": "Szerkesztői platform",
+          "description": "Utazási útmutatók és úticél tartalmak"
         },
         "affiliate": {
-          "title": "Affiliate Links",
-          "description": "Commission-based recommendations"
+          "title": "Affiliate linkek",
+          "description": "Jutalék alapú ajánlások"
         },
         "aiGenerated": {
-          "title": "AI-Generated",
-          "description": "Content created with AI assistance"
+          "title": "AI által generált",
+          "description": "AI segítségével készített tartalom"
         },
         "privacy": {
-          "title": "Your Privacy",
-          "description": "Data protection guaranteed"
+          "title": "Adatvédelem",
+          "description": "Adatvédelem garantált"
         }
       },
       "sections": {
-        "operator": "Operator / Legal Entity",
-        "purpose": "1. Purpose & Scope of Use",
-        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
-        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
-        "newsletter": "4. Newsletter & Communications",
-        "userConduct": "5. User Conduct & Prohibited Actions",
-        "intellectualProperty": "6. Intellectual Property & Limited License",
-        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
-        "disclaimers": "8. Accuracy, Availability & Disclaimers",
-        "liability": "9. Limitation of Liability & Force Majeure",
-        "indemnification": "10. Indemnification",
-        "privacyCookies": "11. Privacy, Cookies & Data Protection",
-        "accessibility": "12. Accessibility Statement",
-        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
-        "modifications": "14. Modifications, Severability & General Provisions"
-      }
-    },
-    "about": {
-      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
-      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
-      "badge": "About TRAVI World",
-      "title": "Discover",
-      "titleHighlight": "TRAVI World",
-      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
-      "ctaExplore": "Explore Destinations",
-      "ctaContact": "Contact Us",
-      "stats": {
-        "destinations": "Destinations",
-        "articles": "Articles",
-        "support": "Travel Support",
-        "coverage": "Coverage",
-        "cities": "16+ Cities"
-      },
-      "whoWeAre": {
-        "title": "Who We Are"
-      },
-      "mission": {
-        "title": "Our Mission"
-      },
-      "services": {
-        "badge": "Our Services",
-        "title": "What We Offer"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "Destination Guides",
-          "description": "Comprehensive information about cities and regions around the world"
-        },
-        "attractions": {
-          "title": "Attraction Information",
-          "description": "Details about must-see sights and unique experiences"
-        },
-        "hotels": {
-          "title": "Hotel Guides",
-          "description": "Information about accommodation options for every budget"
-        },
-        "restaurants": {
-          "title": "Restaurant Recommendations",
-          "description": "Dining options for every taste and preference"
-        },
-        "articles": {
-          "title": "Travel Articles",
-          "description": "Tips, insights, and travel inspiration"
-        },
-        "news": {
-          "title": "Latest Travel News",
-          "description": "Stay informed with curated travel updates"
-        }
-      },
-      "editorial": {
-        "title": "Editorial Independence",
-        "affiliateTitle": "Affiliate Disclosure"
-      },
-      "values": {
-        "badge": "Our Foundation",
-        "title": "Our Values",
-        "accuracy": {
-          "title": "Accuracy",
-          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
-        },
-        "transparency": {
-          "title": "Transparency",
-          "description": "We are clear about our affiliate relationships and how we operate"
-        },
-        "userFocused": {
-          "title": "User-Focused",
-          "description": "Our contents is designed to help travelers make informed decisions"
-        }
-      },
-      "connect": {
-        "badge": "Let's Connect",
-        "title": "Get in Touch"
-      },
-      "company": {
-        "title": "Company Information",
-        "contactTitle": "Contact Information",
-        "contactForm": "Contact Form"
+        "operator": "Üzemeltető / Jogi entitás",
+        "purpose": "1. Cél és használat hatóköre",
+        "affiliateDisclosure": "2. Affiliate nyilatkozat és harmadik fél tranzakciók",
+        "aiDisclaimer": "3. AI által generált tartalom felelősség kizárás",
+        "newsletter": "4. Hírlevél és kommunikáció",
+        "userConduct": "5. Felhasználói magatartás és tiltott cselekmények",
+        "intellectualProperty": "6. Szellemi tulajdon és korlátozott licenc",
+        "dmca": "7. Értesítés és eltávolítás (DMCA és hasonló)",
+        "disclaimers": "8. Pontosság, elérhetőség és felelősség kizárások",
+        "liability": "9. Felelősség korlátozása és vis maior",
+        "indemnification": "10. Kártalanítás",
+        "privacyCookies": "11. Adatvédelem, sütik és adatvédelem",
+        "accessibility": "12. Akadálymentességi nyilatkozat",
+        "governingLaw": "13. Irányadó jog, vitarendezés és joghatóság",
+        "modifications": "14. Módosítások, elválaszthatóság és általános rendelkezések"
       }
     }
   }
