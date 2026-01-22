@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useRoute } from "wouter";
 import { marked } from "marked";
 import { sanitizeHTML } from "@/lib/sanitize";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import {
   Book,
   ChevronRight,
@@ -312,6 +313,7 @@ function Sidebar({
   isMobileOpen: boolean;
   setMobileOpen: (open: boolean) => void;
 }) {
+  const { localePath } = useLocale();
   const filteredStructure = Object.entries(docsStructure).reduce((acc, [section, data]) => {
     if (!searchQuery) {
       acc[section] = data;
@@ -348,7 +350,7 @@ function Sidebar({
       )}>
         {/* Header */}
         <div className="h-16 border-b border-gray-200 flex items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={localePath("/")} className="flex items-center gap-2">
             <Book className="h-6 w-6 text-blue-600" />
             <span className="font-bold text-lg">TRAVI Docs</span>
           </Link>
@@ -406,7 +408,7 @@ function Sidebar({
                         return (
                           <Link
                             key={item.path}
-                            href={`/docs/${item.path}`}
+                            href={localePath(`/docs/${item.path}`)}
                             onClick={() => setMobileOpen(false)}
                             className={cn(
                               "block px-3 py-1.5 text-sm rounded-md transition-colors",
@@ -432,6 +434,7 @@ function Sidebar({
 }
 
 function DocContent({ path }: { path: string }) {
+  const { localePath } = useLocale();
   const [contents, setContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -485,7 +488,7 @@ function DocContent({ path }: { path: string }) {
         <FileText className="h-16 w-16 text-gray-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">Document Not Found</h2>
         <p className="text-gray-500 mb-4">The requested documentation page could not be loaded.</p>
-        <Link href="/docs">
+        <Link href={localePath("/docs")}>
           <Button>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Docs
@@ -504,6 +507,7 @@ function DocContent({ path }: { path: string }) {
 }
 
 export default function PublicDocs() {
+  const { localePath } = useLocale();
   const [, params] = useRoute("/docs/:path*");
   const { ["path*"]: path = "" } = params ?? {};
   const [location] = useLocation();
@@ -551,7 +555,7 @@ export default function PublicDocs() {
         >
           <Menu className="h-5 w-5" />
         </Button>
-        <Link href="/" className="flex items-center gap-2">
+        <Link href={localePath("/")} className="flex items-center gap-2">
           <Book className="h-5 w-5 text-blue-600" />
           <span className="font-bold">TRAVI Docs</span>
         </Link>
@@ -574,11 +578,11 @@ export default function PublicDocs() {
         {/* Top bar */}
         <div className="sticky top-0 lg:top-0 bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between z-20">
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Link href="/" className="hover:text-gray-700">
+            <Link href={localePath("/")} className="hover:text-gray-700">
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <Link href="/docs" className="hover:text-gray-700">Docs</Link>
+            <Link href={localePath("/docs")} className="hover:text-gray-700">Docs</Link>
             <ChevronRight className="h-4 w-4" />
             <span className="text-gray-900">{currentPath.split('/').pop()?.replace('.md', '')}</span>
           </div>
@@ -602,7 +606,7 @@ export default function PublicDocs() {
           {/* Pagination */}
           <div className="mt-12 pt-8 border-t border-gray-200 flex items-center justify-between">
             {prevDoc ? (
-              <Link href={`/docs/${prevDoc.path}`}>
+              <Link href={localePath(`/docs/${prevDoc.path}`)}>
                 <Button variant="ghost" className="gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   {prevDoc.title}
@@ -611,7 +615,7 @@ export default function PublicDocs() {
             ) : <div />}
 
             {nextDoc && (
-              <Link href={`/docs/${nextDoc.path}`}>
+              <Link href={localePath(`/docs/${nextDoc.path}`)}>
                 <Button variant="ghost" className="gap-2">
                   {nextDoc.title}
                   <ChevronRight className="h-4 w-4" />

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ interface HelpArticle {
 }
 
 export default function HelpArticle() {
+  const { localePath } = useLocale();
   const [, params] = useRoute("/help/:categorySlug/:articleSlug");
   const { categorySlug = "", articleSlug = "" } = params ?? {};
 
@@ -62,7 +64,7 @@ export default function HelpArticle() {
             The article you're looking for doesn't exist.
           </p>
           <Button asChild>
-            <Link href="/help">Back to Help Center</Link>
+            <Link href={localePath("/help")}>Back to Help Center</Link>
           </Button>
         </div>
       </div>
@@ -83,11 +85,11 @@ export default function HelpArticle() {
         <div className="container mx-auto px-4 py-8">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <Link href="/help" className="hover:text-foreground">
+            <Link href={localePath("/help")} className="hover:text-foreground">
               Help Center
             </Link>
             <span>/</span>
-            <Link href={`/help/${article.category.slug}`} className="hover:text-foreground">
+            <Link href={localePath(`/help/${article.category.slug}`)} className="hover:text-foreground">
               {article.category.title}
             </Link>
           </div>
@@ -132,7 +134,7 @@ export default function HelpArticle() {
           {/* Navigation */}
           <div className="mt-8">
             <Link
-              href={`/help/${article.category.slug}`}
+              href={localePath(`/help/${article.category.slug}`)}
               className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
