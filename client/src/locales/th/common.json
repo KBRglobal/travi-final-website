@@ -1,1004 +1,1004 @@
 {
   "nav": {
-    "home": "Home",
-    "destinations": "Destinations",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "guides": "Guides",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News",
-    "news": "News",
-    "shopping": "Shopping",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language",
-    "mainNavigation": "Main navigation",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "logoAlt": "TRAVI - Travel Guide",
-    "followInstagram": "Follow TRAVI on Instagram",
-    "followTikTok": "Follow TRAVI on TikTok",
-    "changeLanguage": "Change language",
-    "selectLanguage": "Select Language",
-    "popularLanguages": "Popular Languages",
-    "allLanguages": "All Languages"
+    "home": "หน้าแรก",
+    "destinations": "จุดหมายปลายทาง",
+    "attractions": "สถานที่ท่องเที่ยว",
+    "hotels": "โรงแรม",
+    "guides": "คู่มือท่องเที่ยว",
+    "dining": "ร้านอาหาร",
+    "districts": "ย่านต่างๆ",
+    "articles": "ข่าวสาร",
+    "news": "ข่าวสาร",
+    "shopping": "ช้อปปิ้ง",
+    "realEstate": "อสังหาริมทรัพย์",
+    "events": "กิจกรรม",
+    "search": "ค้นหา",
+    "language": "ภาษา",
+    "mainNavigation": "เมนูหลัก",
+    "openMenu": "เปิดเมนู",
+    "closeMenu": "ปิดเมนู",
+    "logoAlt": "TRAVI - คู่มือท่องเที่ยว",
+    "followInstagram": "ติดตาม TRAVI บน Instagram",
+    "followTikTok": "ติดตาม TRAVI บน TikTok",
+    "changeLanguage": "เปลี่ยนภาษา",
+    "selectLanguage": "เลือกภาษา",
+    "popularLanguages": "ภาษายอดนิยม",
+    "allLanguages": "ภาษาทั้งหมด"
   },
   "breadcrumbs": {
-    "ariaLabel": "Breadcrumb navigation",
-    "dubai": "Dubai"
+    "ariaLabel": "เส้นทางการนำทาง",
+    "dubai": "ดูไบ"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "อ่านเพิ่มเติม",
+    "viewAll": "ดูทั้งหมด",
+    "learnMore": "เรียนรู้เพิ่มเติม",
+    "bookNow": "จองเลย",
+    "contactUs": "ติดต่อเรา",
+    "subscribe": "สมัครรับข้อมูล",
+    "submit": "ส่ง",
+    "cancel": "ยกเลิก",
+    "save": "บันทึก",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "noResults": "ไม่พบผลลัพธ์",
+    "seeMore": "ดูเพิ่มเติม",
+    "back": "ย้อนกลับ",
+    "next": "ถัดไป",
+    "previous": "ก่อนหน้า",
+    "close": "ปิด",
+    "share": "แชร์",
+    "copyLink": "คัดลอกลิงก์",
+    "copied": "คัดลอกแล้ว!"
   },
   "home": {
     "hero": {
-      "title": "Explore the World with TRAVI",
-      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
-      "searchPlaceholder": "Search attractions, hotels, restaurants...",
-      "cta": "Start Exploring",
-      "badge": "Your Gateway to World Adventures",
-      "headlinePart1": "Your Trusted Travel",
-      "headlinePart2": "Resource",
-      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
-      "descriptionPart1": "Comprehensive travel information for",
-      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
-      "descriptionPart3": "attractions.",
-      "carouselLabel": "Destination carousel navigation",
-      "viewDestination": "View {{name}} - {{tagline}}",
-      "worldwide": "Worldwide",
-      "exploreWorld": "Explore the World",
-      "welcomeAriaLabel": "Welcome to TRAVI World",
-      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
-      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
-      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
+      "title": "สำรวจโลกไปกับ TRAVI",
+      "subtitle": "คู่มือท่องเที่ยวครบครันสำหรับ 17 จุดหมายปลายทางทั่วโลก",
+      "searchPlaceholder": "ค้นหาสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร...",
+      "cta": "เริ่มสำรวจ",
+      "badge": "ประตูสู่การผจญภัยทั่วโลก",
+      "headlinePart1": "แหล่งข้อมูลท่องเที่ยว",
+      "headlinePart2": "ที่คุณไว้ใจได้",
+      "description": "ข้อมูลท่องเที่ยวครบครันสำหรับ {{destinations}} จุดหมายปลายทางทั่วโลก ค้นพบคู่มือโดยละเอียดสำหรับสถานที่ท่องเที่ยวกว่า {{attractions}} แห่ง",
+      "descriptionPart1": "ข้อมูลท่องเที่ยวครบครันสำหรับ",
+      "descriptionPart2": "จุดหมายปลายทางทั่วโลก ค้นพบคู่มือโดยละเอียดสำหรับ",
+      "descriptionPart3": "สถานที่ท่องเที่ยว",
+      "carouselLabel": "เลื่อนดูจุดหมายปลายทาง",
+      "viewDestination": "ดู {{name}} - {{tagline}}",
+      "worldwide": "ทั่วโลก",
+      "exploreWorld": "สำรวจโลก",
+      "welcomeAriaLabel": "ยินดีต้อนรับสู่ TRAVI World",
+      "pageTitle": "TRAVI World - คู่มือท่องเที่ยว โรงแรม สถานที่ท่องเที่ยว และกิจกรรมต่างๆ",
+      "pageDescription": "คู่มือท่องเที่ยวครบครันสำหรับ 17 จุดหมายปลายทางทั่วโลก ข้อมูลจากผู้เชี่ยวชาญเกี่ยวกับโรงแรม สถานที่ท่องเที่ยว ร้านอาหาร และกิจกรรมต่างๆ กว่า 3,000 แห่ง",
+      "orgDescription": "แหล่งข้อมูลท่องเที่ยวที่คุณไว้ใจได้สำหรับ 17 จุดหมายปลายทางทั่วโลก"
     },
     "srLabel": {
-      "attractions": "Over {{count}} attractions covered",
-      "destinations": "{{count}} destinations worldwide",
-      "languages": "Multilingual platform with additional languages rolling out"
+      "attractions": "ครอบคลุมสถานที่ท่องเที่ยวกว่า {{count}} แห่ง",
+      "destinations": "{{count}} จุดหมายปลายทางทั่วโลก",
+      "languages": "รองรับหลายภาษาพร้อมเพิ่มภาษาใหม่อย่างต่อเนื่อง"
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides",
+    "featured": "แนะนำ",
+    "trending": "กำลังฮิต",
+    "topAttractions": "สถานที่ท่องเที่ยวยอดนิยม",
+    "bestHotels": "โรงแรมแนะนำ",
+    "latestNews": "ข่าวสารและคู่มือล่าสุด",
     "sections": {
-      "destinations": "Explore Destinations",
-      "destinationsDesc": "Discover our curated collection of global travel destinations",
-      "categories": "Browse by Category",
-      "categoriesDesc": "Find exactly what you're looking for",
-      "experiences": "Travel by Experience",
-      "experiencesDesc": "Choose your travel style",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Everything you need to know about TRAVI",
-      "regions": "Explore by Region",
-      "newsletter": "Stay Updated",
-      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
-      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
+      "destinations": "สำรวจจุดหมายปลายทาง",
+      "destinationsDesc": "ค้นพบจุดหมายปลายทางท่องเที่ยวที่คัดสรรมาอย่างดี",
+      "categories": "เลือกตามหมวดหมู่",
+      "categoriesDesc": "ค้นหาสิ่งที่คุณต้องการได้อย่างแม่นยำ",
+      "experiences": "ท่องเที่ยวตามประสบการณ์",
+      "experiencesDesc": "เลือกรูปแบบการท่องเที่ยวที่เหมาะกับคุณ",
+      "faq": "คำถามที่พบบ่อย",
+      "faqDesc": "ทุกสิ่งที่คุณต้องรู้เกี่ยวกับ TRAVI",
+      "regions": "สำรวจตามภูมิภาค",
+      "newsletter": "รับข้อมูลอัพเดท",
+      "allDestinationsTitle": "คู่มือท่องเที่ยวสำหรับทั้ง {{count}} จุดหมายปลายทาง",
+      "completeGuide": "{{name}}, {{country}} - คู่มือท่องเที่ยวฉบับสมบูรณ์"
     },
     "cta": {
-      "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Guides",
-      "viewAll": "View All",
-      "startExploring": "Start Exploring",
-      "planTrip": "Plan Your Trip",
-      "viewExperience": "View {{name}}"
+      "exploreDestinations": "สำรวจจุดหมายปลายทาง",
+      "viewGuides": "ดูคู่มือ",
+      "viewAll": "ดูทั้งหมด",
+      "startExploring": "เริ่มสำรวจ",
+      "planTrip": "วางแผนทริป",
+      "viewExperience": "ดู {{name}}"
     },
     "stats": {
-      "destinations": "DESTINATIONS",
-      "attractions": "ATTRACTIONS",
-      "languages": "LANGUAGES",
+      "destinations": "จุดหมายปลายทาง",
+      "attractions": "สถานที่ท่องเที่ยว",
+      "languages": "ภาษา",
       "attractionsNum": "3,000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} destinations",
-      "attractionsCountWithLabel": "{{count}}+ attractions"
+      "destinationsCountWithLabel": "{{count}} จุดหมายปลายทาง",
+      "attractionsCountWithLabel": "สถานที่ท่องเที่ยว {{count}}+ แห่ง"
     },
     "categories": {
-      "attractions": "Attractions",
-      "attractionsDesc": "Must-see places",
-      "news": "Travel News",
-      "newsDesc": "Latest updates",
-      "guides": "Guides",
-      "guidesDesc": "Destination guides",
-      "hotels": "Hotels",
-      "hotelsDesc": "Find your perfect stay"
+      "attractions": "สถานที่ท่องเที่ยว",
+      "attractionsDesc": "สถานที่ที่ต้องไปเยือน",
+      "news": "ข่าวท่องเที่ยว",
+      "newsDesc": "อัพเดทล่าสุด",
+      "guides": "คู่มือ",
+      "guidesDesc": "คู่มือจุดหมายปลายทาง",
+      "hotels": "โรงแรม",
+      "hotelsDesc": "ค้นหาที่พักในฝัน"
     },
     "experiences": {
-      "luxury": "Luxury Travel",
-      "luxuryDesc": "Premium travel experiences and exclusive destinations",
-      "adventure": "Adventure & Outdoors",
-      "adventureDesc": "Thrilling outdoor experiences and adventures",
-      "family": "Family Travel",
-      "familyDesc": "Family-friendly destinations and activities",
-      "budget": "Budget Travel",
-      "budgetDesc": "Affordable travel options and destinations",
-      "romance": "Honeymoon & Romance",
-      "romanceDesc": "Romantic getaways and honeymoon destinations",
-      "solo": "Solo Travel",
-      "soloDesc": "Perfect destinations for solo travelers"
+      "luxury": "ท่องเที่ยวหรูหรา",
+      "luxuryDesc": "ประสบการณ์ท่องเที่ยวพรีเมียมและจุดหมายปลายทางสุดพิเศษ",
+      "adventure": "ผจญภัยและกิจกรรมกลางแจ้ง",
+      "adventureDesc": "ประสบการณ์กลางแจ้งและการผจญภัยที่น่าตื่นเต้น",
+      "family": "ท่องเที่ยวครอบครัว",
+      "familyDesc": "จุดหมายปลายทางและกิจกรรมเหมาะสำหรับครอบครัว",
+      "budget": "ท่องเที่ยวประหยัด",
+      "budgetDesc": "ตัวเลือกท่องเที่ยวและจุดหมายปลายทางราคาประหยัด",
+      "romance": "ฮันนีมูนและโรแมนติก",
+      "romanceDesc": "จุดหมายปลายทางโรแมนติกและฮันนีมูน",
+      "solo": "ท่องเที่ยวคนเดียว",
+      "soloDesc": "จุดหมายปลายทางที่เหมาะสำหรับนักเดินทางคนเดียว"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI World",
-      "whatIsTravi": "What is TRAVI World?",
-      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
-      "howManyDestinations": "How many destinations does TRAVI cover?",
-      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
-      "isFree": "Is TRAVI World free to use?",
-      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-      "updateFrequency": "How often is content updated?",
-      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
+      "title": "คำถามที่พบบ่อย",
+      "subtitle": "ทุกสิ่งที่คุณต้องรู้เกี่ยวกับ TRAVI World",
+      "whatIsTravi": "TRAVI World คืออะไร?",
+      "whatIsTraviAnswer": "TRAVI World เป็นแพลตฟอร์มข้อมูลท่องเที่ยวที่ครอบคลุม ครวม 17 จุดหมายปลายทางทั่วโลก พร้อมคู่มือโดยละเอียดสำหรับสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร และกิจกรรมต่างๆ กว่า 3,000 แห่ง",
+      "howManyDestinations": "TRAVI ครอบคลุมกี่จุดหมายปลายทาง?",
+      "howManyDestinationsAnswer": "TRAVI World ครอบคลุมจุดหมายปลายทางท่องเที่ยวสำคัญ 17 แห่ง รวมถึง ดูไบ ปารีส โตเกียว นิวยอร์ก บาร์เซโลนา สิงคโปร์ ลอนดอน กรุงเทพฯ อาบูดาบี อัมสเตอร์ดัม ฮ่องกง อิสตันบูล ลาสเวกัส ลอสแองเจลิส ไมอามี และโรม",
+      "isFree": "TRAVI World ใช้ฟรีหรือไม่?",
+      "isFreeAnswer": "ใช่ TRAVI World ให้บริการฟรีทั้งหมด เรียกดูคู่มือท่องเที่ยว รีวิวสถานที่ท่องเที่ยว คำแนะนำโรงแรม และข้อเสนอแนะร้านอาหารนับพันรายการได้โดยไม่มีค่าใช้จ่าย",
+      "updateFrequency": "อัพเดทเนื้อหาบ่อยแค่ไหน?",
+      "updateFrequencyAnswer": "เนื้อหาของ TRAVI World มีการอัพเดททุกวันพร้อมข่าวท่องเที่ยวล่าสุด รีวิวสถานที่ท่องเที่ยวใหม่ และข้อมูลอัพเดทเกี่ยวกับโรงแรมและร้านอาหารทั้ง 17 จุดหมายปลายทาง"
     },
-    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
-    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
+    "mascotAlt": "มาสคอต TRAVI พร้อมสถานที่สำคัญทั่วโลก - สำรวจคู่มือท่องเที่ยวสำหรับดูไบ ปารีส ลอนดอน โรม และอื่นๆ",
+    "mascotTitle": "TRAVI World - คู่มือท่องเที่ยวสำหรับจุดหมายปลายทางทั่วโลก"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "สถานที่ท่องเที่ยวในดูไบ",
+    "subtitle": "สำรวจสถานที่สำคัญและอัญมณีที่ซ่อนอยู่",
     "hero": {
-      "badge": "{{count}} attractions in {{cities}} cities",
-      "badgeThousands": "Thousands of attractions worldwide",
-      "headlinePart1": "Things to Do",
-      "headlinePart2": "Worldwide",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
-      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
-      "carouselLabel": "Featured attractions carousel",
-      "sectionLabel": "Book tickets to top attractions worldwide",
-      "searchAriaLabel": "Search attractions by name or city",
-      "searchButton": "Search",
-      "searchButtonAriaLabel": "Search attractions"
+      "badge": "{{count}} สถานที่ท่องเที่ยวใน {{cities}} เมือง",
+      "badgeThousands": "สถานที่ท่องเที่ยวนับพันทั่วโลก",
+      "headlinePart1": "สิ่งที่ต้องทำ",
+      "headlinePart2": "ทั่วโลก",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">ตั๋วเข้าชมแบบข้ามคิว</span>ไปหอไอเฟล โคลอสเซียม เบิร์จญ์คาลิฟา และสถานที่ท่องเที่ยวยอดนิยมในปารีส โรม ดูไบ และอื่นๆ",
+      "searchPlaceholder": "ค้นหา หอไอเฟล โคลอสเซียม เบิร์จญ์คาลิฟา...",
+      "carouselLabel": "สถานที่ท่องเที่ยวแนะนำ",
+      "sectionLabel": "จองตั๋วไปสถานที่ท่องเที่ยวยอดนิยมทั่วโลก",
+      "searchAriaLabel": "ค้นหาสถานที่ท่องเที่ยวตามชื่อหรือเมือง",
+      "searchButton": "ค้นหา",
+      "searchButtonAriaLabel": "ค้นหาสถานที่ท่องเที่ยว"
     },
     "stats": {
-      "attractions": "ATTRACTIONS",
-      "cities": "CITIES",
-      "rating": "RATING"
+      "attractions": "สถานที่ท่องเที่ยว",
+      "cities": "เมือง",
+      "rating": "คะแนน"
     },
     "srLabel": {
-      "attractions": "Over {{count}} attractions",
-      "cities": "{{count}} cities",
-      "rating": "{{rating}} star rating"
+      "attractions": "สถานที่ท่องเที่ยวกว่า {{count}} แห่ง",
+      "cities": "{{count}} เมือง",
+      "rating": "คะแนน {{rating}} ดาว"
     },
     "types": {
-      "all": "All Types",
-      "museums": "Museums",
-      "landmarks": "Landmarks",
-      "tours": "Tours",
-      "themeParks": "Theme Parks",
-      "shows": "Shows"
+      "all": "ทุกประเภท",
+      "museums": "พิพิธภัณฑ์",
+      "landmarks": "สถานที่สำคัญ",
+      "tours": "ทัวร์",
+      "themeParks": "สวนสนุก",
+      "shows": "โชว์"
     },
-    "thingsToDoIn": "Things to do in {{name}}",
-    "countAttractions": "{{country}} - {{count}} attractions",
+    "thingsToDoIn": "สิ่งที่ต้องทำใน{{name}}",
+    "countAttractions": "{{country}} - {{count}} สถานที่ท่องเที่ยว",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "ทั้งหมด",
+      "popular": "ยอดนิยมสุด",
+      "free": "เข้าฟรี",
+      "familyFriendly": "เหมาะกับครอบครัว",
+      "outdoor": "กลางแจ้ง",
+      "indoor": "ในร่ม"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "สถานที่",
+      "hours": "เวลาทำการ",
+      "price": "ราคา",
+      "duration": "ระยะเวลา",
+      "tips": "เคล็ดลับจากคนใน"
     },
     "sections": {
-      "destinations": "Explore Attractions by Destination",
-      "destinationsDesc": "Choose a city to discover amazing things to do",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Get answers about booking attractions worldwide",
-      "whyBookBadge": "Why Book With Us",
-      "whyBookTitle": "Skip the Lines, Save Time",
-      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
-      "allDestinations": "All Destinations"
+      "destinations": "สำรวจสถานที่ท่องเที่ยวตามจุดหมายปลายทาง",
+      "destinationsDesc": "เลือกเมืองเพื่อค้นพบกิจกรรมสุดเจ๋ง",
+      "faq": "คำถามที่พบบ่อย",
+      "faqDesc": "รับคำตอบเกี่ยวกับการจองสถานที่ท่องเที่ยวทั่วโลก",
+      "whyBookBadge": "ทำไมต้องจองกับเรา",
+      "whyBookTitle": "ข้ามคิว ประหยัดเวลา",
+      "whyBookDesc": "จองตั๋วล่วงหน้าและเพลิดเพลินกับการเข้าชมสถานที่ท่องเที่ยวยอดนิยมอย่างสะดวกสบาย",
+      "allDestinations": "ทุกจุดหมายปลายทาง"
     },
     "features": {
-      "skipTheLine": "Skip-the-Line Tickets",
-      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
-      "mobileTickets": "Mobile Tickets",
-      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
-      "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
+      "skipTheLine": "ตั๋วข้ามคิว",
+      "skipTheLineDesc": "เดินผ่านคิวยาวที่หอไอเฟล โคลอสเซียม วาติกัน และอื่นๆ",
+      "mobileTickets": "ตั๋วมือถือ",
+      "mobileTicketsDesc": "รับทันทีบนโทรศัพท์ของคุณ - แสดงตั๋วและเข้าได้เลย",
+      "freeCancellation": "ยกเลิกฟรี",
+      "freeCancellationDesc": "แผนเปลี่ยน? ยกเลิกได้ก่อน 24 ชั่วโมงเพื่อรับเงินคืนเต็มจำนวน"
     },
     "browse": {
-      "title": "Things to Do by Destination",
-      "desc": "Find attractions and experiences in the world's top cities",
-      "thingsToDo": "{{count}} things to do",
-      "noDestinations": "No destinations available at this time."
+      "title": "สิ่งที่ต้องทำตามจุดหมายปลายทาง",
+      "desc": "ค้นหาสถานที่ท่องเที่ยวและประสบการณ์ในเมืองชั้นนำของโลก",
+      "thingsToDo": "{{count}} สิ่งที่ต้องทำ",
+      "noDestinations": "ยังไม่มีจุดหมายปลายทางในขณะนี้"
     },
     "exploreLinks": {
-      "title": "Explore More Travel Guides",
-      "hotelsWorldwide": "Hotels Worldwide",
-      "bestRestaurants": "Best Restaurants",
-      "travelNews": "Travel News"
+      "title": "สำรวจคู่มือท่องเที่ยวเพิ่มเติม",
+      "hotelsWorldwide": "โรงแรมทั่วโลก",
+      "bestRestaurants": "ร้านอาหารแนะนำ",
+      "travelNews": "ข่าวท่องเที่ยว"
     },
     "cta": {
-      "title": "Ready to Explore?",
-      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
-      "parisAttractions": "Paris Attractions",
-      "romeAttractions": "Rome Attractions"
+      "title": "พร้อมจะสำรวจแล้วหรือยัง?",
+      "desc": "จองตั๋วข้ามคิวไปหอไอเฟล โคลอสเซียม เบิร์จญ์คาลิฟา และสถานที่ท่องเที่ยวยอดนิยมทั่วโลก",
+      "parisAttractions": "สถานที่ท่องเที่ยวในปารีส",
+      "romeAttractions": "สถานที่ท่องเที่ยวในโรม"
     },
     "search": {
-      "popular": "Popular:",
-      "thingsToDoIn": "Things to Do in {{city}}",
-      "ariaCarouselNav": "Attraction carousel navigation",
-      "ariaViewInCity": "View {{name}} in {{city}}"
+      "popular": "ยอดนิยม:",
+      "thingsToDoIn": "สิ่งที่ต้องทำใน{{city}}",
+      "ariaCarouselNav": "เลื่อนดูสถานที่ท่องเที่ยว",
+      "ariaViewInCity": "ดู {{name}} ใน{{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "Featured attraction",
-      "ariaThumbnails": "Attraction carousel thumbnails",
-      "ariaTicketsIn": "{{name}} tickets in {{city}}",
-      "priceFrom": "From",
-      "bookTickets": "Book Tickets",
-      "skipTheLine": "Skip the Line",
-      "duration": "2-3 hours",
-      "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "24h before visit",
-      "mobileTickets": "Mobile Tickets",
-      "instantDelivery": "Instant delivery"
+      "ariaFeaturedAttraction": "สถานที่ท่องเที่ยวแนะนำ",
+      "ariaThumbnails": "รูปย่อสถานที่ท่องเที่ยว",
+      "ariaTicketsIn": "ตั๋ว {{name}} ใน{{city}}",
+      "priceFrom": "เริ่มต้น",
+      "bookTickets": "จองตั๋ว",
+      "skipTheLine": "ข้ามคิว",
+      "duration": "2-3 ชั่วโมง",
+      "freeCancellation": "ยกเลิกฟรี",
+      "freeCancellationDesc": "ก่อน 24 ชม. จากการเยือน",
+      "mobileTickets": "ตั๋วมือถือ",
+      "instantDelivery": "รับทันที"
     },
     "chip": {
-      "thingsToDo": "{{count}} things to do"
+      "thingsToDo": "{{count}} สิ่งที่ต้องทำ"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "โรงแรมในดูไบ",
+    "subtitle": "ค้นหาที่พักในฝัน",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "โรงแรมทั้งหมด",
+      "luxury": "หรูหรา",
+      "budget": "ราคาประหยัด",
+      "beachfront": "ริมชายหาด",
+      "cityCenter": "ใจกลางเมือง",
+      "familyFriendly": "เหมาะกับครอบครัว"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "เริ่มต้น",
+      "perNight": "ต่อคืน",
+      "amenities": "สิ่งอำนวยความสะดวก",
+      "checkIn": "เช็คอิน",
+      "checkOut": "เช็คเอาท์",
+      "rooms": "ห้องพัก",
+      "rating": "คะแนน"
     },
-    "bookNow": "Book Now"
+    "bookNow": "จองเลย"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "ร้านอาหารในดูไบ",
+    "subtitle": "ประสบการณ์อาหารสำหรับทุกรสนิยม",
     "filters": {
-      "all": "All Restaurants",
-      "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
-      "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "all": "ร้านอาหารทั้งหมด",
+      "fineDining": "ไฟน์ไดนิ่ง",
+      "casual": "สบายๆ",
+      "cafes": "คาเฟ่",
+      "streetFood": "อาหารริมทาง",
+      "halal": "ฮาลาล",
+      "vegetarian": "เจ"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
+      "cuisine": "ประเภทอาหาร",
+      "priceRange": "ช่วงราคา",
+      "hours": "เวลาเปิด-ปิด",
+      "dress": "การแต่งกาย",
+      "reservations": "การจอง"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
-      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
-      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
-      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
+      "dubai": { "name": "ดูไบ", "country": "สหรัฐอาหรับเอมิเรตส์", "cardAlt": "ดูไบกับตึกเบิร์จญ์คาลิฟายามพระอาทิตย์ตก" },
+      "london": { "name": "ลอนดอน", "country": "สหราชอาณาจักร", "cardAlt": "ลอนดอน บิ๊กเบนและอาคารรัฐสภา" },
+      "paris": { "name": "ปารีส", "country": "ฝรั่งเศส", "cardAlt": "ปารีส หอไอเฟลยามพระอาทิตย์ตก" },
+      "newYork": { "name": "นิวยอร์ก", "country": "สหรัฐอเมริกา", "cardAlt": "นิวยอร์ก แมนฮัตตันกับตึกเอ็มไพร์สเตท" },
+      "tokyo": { "name": "โตเกียว", "country": "ญี่ปุ่น", "cardAlt": "โตเกียว ชิบูยาครอสซิ่งยามค่ำคืน" },
+      "singapore": { "name": "สิงคโปร์", "country": "สิงคโปร์", "cardAlt": "สิงคโปร์ มารีน่าเบย์แซนด์สและการ์เด้นส์บายเดอะเบย์" },
+      "barcelona": { "name": "บาร์เซโลนา", "country": "สเปน", "cardAlt": "บาร์เซโลนา ซากราดาฟามีเลียยามเย็น" },
+      "bangkok": { "name": "กรุงเทพฯ", "country": "ไทย", "cardAlt": "กรุงเทพฯ พระบรมมหาราชวังยามเช้า" },
+      "abuDhabi": { "name": "อาบูดาบี", "country": "สหรัฐอาหรับเอมิเรตส์", "cardAlt": "อาบูดาบี มัสยิดเชคซาเยด" },
+      "amsterdam": { "name": "อัมสเตอร์ดัม", "country": "เนเธอร์แลนด์", "cardAlt": "อัมสเตอร์ดัม คลองและอาคารประวัติศาสตร์" },
+      "hongKong": { "name": "ฮ่องกง", "country": "จีน", "cardAlt": "ฮ่องกง ยามค่ำคืน" },
+      "istanbul": { "name": "อิสตันบูล", "country": "ตุรกี", "cardAlt": "อิสตันบูล บลูมอสก์ยามพระอาทิตย์ตก" },
+      "lasVegas": { "name": "ลาสเวกัส", "country": "สหรัฐอเมริกา", "cardAlt": "ลาสเวกัส ยามค่ำคืน" },
+      "losAngeles": { "name": "ลอสแองเจลิส", "country": "สหรัฐอเมริกา", "cardAlt": "ลอสแองเจลิส ป้ายฮอลลีวูด" },
+      "miami": { "name": "ไมอามี", "country": "สหรัฐอเมริกา", "cardAlt": "ไมอามี บีช อาร์ตเดโค่" },
+      "rome": { "name": "โรม", "country": "อิตาลี", "cardAlt": "โรม โคลอสเซียมยามเย็น" }
     },
     "hero": {
-      "badge": "{{count}} Destinations Worldwide",
-      "trustedBy": "Trusted by {{count}} destinations worldwide",
-      "discover": "Discover",
-      "worldClass": "World-Class",
-      "destinations": "Destinations",
-      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
-      "exploreAll": "Explore All Destinations",
-      "travelGuides": "Travel Guides",
-      "explorePlaceholder": "Explore Destinations",
-      "browseCollection": "Browse our collection of handpicked travel destinations below",
-      "explore": "Explore",
-      "discoverButton": "Discover",
-      "ariaLabel": "Destinations overview",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "badge": "{{count}} จุดหมายปลายทางทั่วโลก",
+      "trustedBy": "ไว้วางใจโดย {{count}} จุดหมายปลายทางทั่วโลก",
+      "discover": "ค้นพบ",
+      "worldClass": "ระดับโลก",
+      "destinations": "จุดหมายปลายทาง",
+      "description": "คู่มือท่องเที่ยวคัดสรรพร้อมความเชี่ยวชาญท้องถิ่นสำหรับเมืองที่น่าสนใจที่สุดในโลก ตั้งแต่สถานที่สำคัญไปจนถึงอัญมณีที่ซ่อนอยู่",
+      "exploreAll": "สำรวจทุกจุดหมายปลายทาง",
+      "travelGuides": "คู่มือท่องเที่ยว",
+      "explorePlaceholder": "สำรวจจุดหมายปลายทาง",
+      "browseCollection": "เลือกดูคอลเลกชั่นจุดหมายปลายทางที่คัดสรรมาด้านล่าง",
+      "explore": "สำรวจ",
+      "discoverButton": "ค้นพบ",
+      "ariaLabel": "ภาพรวมจุดหมายปลายทาง",
+      "exploreTitle": "สำรวจ{{name}}",
+      "galleryAriaLabel": "แกลเลอรีจุดหมายปลายทางแนะนำ",
+      "placeholderAriaLabel": "จุดหมายปลายทางแนะนำ"
     },
     "stats": {
-      "destinations": "DESTINATIONS",
-      "countries": "COUNTRIES",
-      "regions": "Regions",
-      "languages": "Languages"
+      "destinations": "จุดหมายปลายทาง",
+      "countries": "ประเทศ",
+      "regions": "ภูมิภาค",
+      "languages": "ภาษา"
     },
     "sections": {
-      "featured": "Featured Destinations",
-      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
-      "all": "All Destinations",
-      "count": "{{count}} destinations found"
+      "featured": "จุดหมายปลายทางแนะนำ",
+      "featuredDesc": "จุดหมายปลายทางคัดสรรพร้อมประสบการณ์พิเศษ ข้อมูลท้องถิ่น และทุกอย่างที่คุณต้องการสำหรับการวางแผนทริปในฝัน",
+      "all": "ทุกจุดหมายปลายทาง",
+      "count": "พบ {{count}} จุดหมายปลายทาง"
     },
     "search": {
-      "placeholder": "Search destinations...",
-      "noResults": "No destinations found",
-      "tryAdjusting": "Try adjusting your search criteria",
-      "clearSearch": "Clear Search"
+      "placeholder": "ค้นหาจุดหมายปลายทาง...",
+      "noResults": "ไม่พบจุดหมายปลายทาง",
+      "tryAdjusting": "ลองปรับเงื่อนไขการค้นหา",
+      "clearSearch": "ล้างการค้นหา"
     },
     "carousel": {
-      "label": "Featured destinations carousel",
-      "previous": "Previous destination",
-      "next": "Next destination",
-      "goTo": "Go to {{name}}",
-      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "label": "จุดหมายปลายทางแนะนำ",
+      "previous": "จุดหมายปลายทางก่อนหน้า",
+      "next": "จุดหมายปลายทางถัดไป",
+      "goTo": "ไปที่{{name}}",
+      "slideOf": "สไลด์ {{current}} จาก {{total}}: {{name}}",
+      "thumbnails": "รูปย่อจุดหมายปลายทาง"
     },
     "card": {
-      "explore": "Explore",
-      "defaultLevel": "City",
-      "exploreFallback": "Explore {{name}}",
-      "destination": "Destination",
-      "travelGuideAlt": "{{name}} travel guide"
+      "explore": "สำรวจ",
+      "defaultLevel": "เมือง",
+      "exploreFallback": "สำรวจ{{name}}",
+      "destination": "จุดหมายปลายทาง",
+      "travelGuideAlt": "คู่มือท่องเที่ยว{{name}}"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI destination guides",
-      "q1": "How many destinations does TRAVI cover?",
-      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
-      "q2": "What information is included in TRAVI destination guides?",
-      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
-      "q3": "Can I search for destinations?",
-      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
-      "q4": "What are the featured destinations on TRAVI?",
-      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
+      "title": "คำถามที่พบบ่อย",
+      "subtitle": "ทุกสิ่งที่คุณต้องรู้เกี่ยวกับคู่มือจุดหมายปลายทางของ TRAVI",
+      "q1": "TRAVI ครอบคลุมกี่จุดหมายปลายทาง?",
+      "a1": "TRAVI ครอบคลุมจุดหมายปลายทางท่องเที่ยวสำคัญทั่วตะวันออกกลาง ยุโรป เอเชีย และอเมริกา พร้อมคู่มือครบครันสำหรับแต่ละสถานที่",
+      "q2": "คู่มือจุดหมายปลายทางของ TRAVI มีอะไรบ้าง?",
+      "a2": "คู่มือแต่ละจุดหมายปลายทางประกอบด้วยรายละเอียดครบครัน ทั้งสถานที่ท่องเที่ยว ตัวเลือกที่พัก อาหารท้องถิ่น เคล็ดลับการเดินทาง และข้อมูลการท่องเที่ยวที่เป็นประโยชน์",
+      "q3": "สามารถค้นหาจุดหมายปลายทางได้หรือไม่?",
+      "a3": "ได้ TRAVI ช่วยให้คุณค้นหาจุดหมายปลายทางตามชื่อหรือประเทศได้โดยใช้แถบค้นหาในหน้าจุดหมายปลายทาง",
+      "q4": "จุดหมายปลายทางแนะนำของ TRAVI คืออะไร?",
+      "a4": "จุดหมายปลายทางแนะนำของ TRAVI คือสถานที่คัดสรรที่นำเสนอประสบการณ์พิเศษสำหรับนักท่องเที่ยวที่มีความสนใจหลากหลาย ตั้งแต่ท่องเที่ยวหรูหราไปจนถึงท่องเที่ยวแบบประหยัด"
     },
     "loading": {
-      "title": "Loading Destinations",
-      "message": "Fetching the latest destination data..."
+      "title": "กำลังโหลดจุดหมายปลายทาง",
+      "message": "กำลังดึงข้อมูลจุดหมายปลายทางล่าสุด..."
     },
     "error": {
-      "title": "Unable to Load Destinations",
-      "message": "We're having trouble loading destination data. Please try again later.",
-      "refresh": "Refresh Page"
+      "title": "ไม่สามารถโหลดจุดหมายปลายทาง",
+      "message": "เรากำลังประสบปัญหาในการโหลดข้อมูลจุดหมายปลายทาง กรุณาลองใหม่ภายหลัง",
+      "refresh": "รีเฟรชหน้า"
     },
     "empty": {
-      "title": "No Destinations Available",
-      "message": "No destinations are currently available. Please check back later."
+      "title": "ยังไม่มีจุดหมายปลายทาง",
+      "message": "ยังไม่มีจุดหมายปลายทางในขณะนี้ กรุณากลับมาตรวจสอบอีกครั้งในภายหลัง"
     }
   },
   "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
+    "title": "ย่านต่างๆ ในดูไบ",
+    "subtitle": "สำรวจย่านที่หลากหลายของดูไบ",
+    "explore": "สำรวจย่าน"
   },
   "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
+    "title": "อสังหาริมทรัพย์ในดูไบ",
+    "subtitle": "ลงทุนในอนาคต",
     "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
+      "title": "อสังหาฯ ระหว่างก่อสร้าง",
+      "subtitle": "ลงทุนก่อน จ่ายน้อย ได้กำไรมาก",
+      "findProperty": "หาอสังหาฯ ที่เหมาะกับฉัน",
+      "from": "เริ่มต้น",
+      "paymentPlan": "แผนการชำระ",
+      "handover": "ส่งมอบ",
+      "developer": "ผู้พัฒนา"
     },
     "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
+      "all": "ทรัพย์สินทั้งหมด",
+      "apartments": "คอนโดมิเนียม",
+      "villas": "วิลล่า",
+      "townhouses": "ทาวน์เฮาส์",
+      "penthouses": "เพนท์เฮาส์"
     },
     "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
+      "cryptoAccepted": "รับคริปโต",
+      "paymentPlans": "แผนชำระยืดหยุ่น",
+      "goldenVisa": "มีสิทธิ์โกลเด้นวีซ่า",
+      "roiGuarantee": "รับประกัน ROI"
     }
   },
   "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
+    "placeholder": "ค้นหาสถานที่ท่องเที่ยว คู่มือ จุดหมายปลายทาง...",
+    "results": "ผลการค้นหา",
+    "noResults": "ไม่พบผลลัพธ์สำหรับ",
+    "tryAgain": "ลองคำค้นหาอื่น"
   },
   "footer": {
-    "about": "About Travi",
-    "aboutTravi": "About Travi",
-    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
-    "aboutUs": "About Us",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "termsOfService": "Terms of Service",
-    "contact": "Contact Us",
-    "contactUs": "Contact Us",
-    "followUs": "Follow Us",
-    "explore": "Explore",
-    "travel": "Travel",
-    "company": "Company",
-    "allGuides": "All Guides",
-    "cookies": "Cookies",
-    "security": "Security",
-    "cookieSettings": "Cookie Settings",
-    "tagline": "Your Trusted Travel Resource",
-    "ariaLabel": "Site footer",
-    "featuredGuides": "Featured Guides",
-    "tools": "Tools",
-    "currencyConverter": "Currency Converter",
-    "roiCalculator": "ROI Calculator",
-    "mortgageCalculator": "Mortgage Calculator",
-    "glossary": "Glossary",
-    "freeThingsToDo": "70+ Free Things to Do",
-    "open24Hours": "Open 24 Hours",
-    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
-    "lawsForTourists": "Laws for Tourists",
-    "newsletter": "Subscribe to our newsletter",
-    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
-    "emailPlaceholder": "Enter your email",
-    "allRightsReserved": "All rights reserved.",
-    "copyright": "© {{year}} {{brand}}. All rights reserved.",
-    "emailAriaLabel": "Send email to TRAVI"
+    "about": "เกี่ยวกับ Travi",
+    "aboutTravi": "เกี่ยวกับ Travi",
+    "aboutText": "ข้อมูลท่องเที่ยวครบครันสำหรับ 17 จุดหมายปลายทางทั่วโลก",
+    "aboutUs": "เกี่ยวกับเรา",
+    "quickLinks": "ลิงก์ด่วน",
+    "legal": "ข้อกฎหมาย",
+    "privacy": "นโยบายความเป็นส่วนตัว",
+    "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+    "terms": "ข้อกำหนดและเงื่อนไข",
+    "termsOfService": "เงื่อนไขการให้บริการ",
+    "contact": "ติดต่อเรา",
+    "contactUs": "ติดต่อเรา",
+    "followUs": "ติดตามเรา",
+    "explore": "สำรวจ",
+    "travel": "ท่องเที่ยว",
+    "company": "บริษัท",
+    "allGuides": "คู่มือทั้งหมด",
+    "cookies": "คุกกี้",
+    "security": "ความปลอดภัย",
+    "cookieSettings": "ตั้งค่าคุกกี้",
+    "tagline": "แหล่งข้อมูลท่องเที่ยวที่คุณไว้ใจได้",
+    "ariaLabel": "ส่วนท้ายเว็บไซต์",
+    "featuredGuides": "คู่มือแนะนำ",
+    "tools": "เครื่องมือ",
+    "currencyConverter": "แปลงสกุลเงิน",
+    "roiCalculator": "คำนวณ ROI",
+    "mortgageCalculator": "คำนวณสินเชื่อบ้าน",
+    "glossary": "อภิธานศัพท์",
+    "freeThingsToDo": "กิจกรรมฟรี 70+ กิจกรรม",
+    "open24Hours": "เปิด 24 ชั่วโมง",
+    "tributeToSheikh": "เพื่อเป็นเกียรติแก่ HH Sheikh Mohammed",
+    "lawsForTourists": "กฎหมายสำหรับนักท่องเที่ยว",
+    "newsletter": "สมัครรับจดหมายข่าว",
+    "newsletterDescription": "รับเคล็ดลับท่องเที่ยวดูไบและข้อมูลอัพเดทล่าสุด",
+    "emailPlaceholder": "ใส่อีเมล",
+    "allRightsReserved": "สงวนลิขสิทธิ์",
+    "copyright": "© {{year}} {{brand}} สงวนลิขสิทธิ์",
+    "emailAriaLabel": "ส่งอีเมลถึง TRAVI"
   },
   "errors": {
     "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
+      "title": "ไม่พบหน้า",
+      "message": "หน้าที่คุณกำลังมองหาไม่มีอยู่",
+      "button": "กลับหน้าแรก"
     },
     "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
+      "title": "เกิดข้อผิดพลาดของเซิร์ฟเวอร์",
+      "message": "เกิดข้อผิดพลาดจากทางเรา",
+      "button": "ลองอีกครั้ง"
     },
     "network": {
-      "title": "Connection Error",
-      "message": "Unable to connect. Please check your internet connection.",
-      "button": "Retry"
+      "title": "เกิดข้อผิดพลาดการเชื่อมต่อ",
+      "message": "ไม่สามารถเชื่อมต่อได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต",
+      "button": "ลองใหม่"
     }
   },
   "newsletter": {
-    "badge": "Join the Adventure",
-    "title": "Get Travel Magic in Your Inbox",
-    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "badge": "เข้าร่วมการผจญภัย",
+    "title": "รับความมหัศจรรย์แห่งการท่องเที่ยวในกล่องจดหมาย",
+    "description": "เคล็ดลับรายสัปดาห์ อัญมณีที่ซ่อนอยู่ และดีลพิเศษ - ไม่มีสแปม มีแต่ความหลงใหลในการเดินทาง",
     "emailPlaceholder": "your@email.com",
-    "subscribe": "Subscribe",
-    "success": "You're subscribed! Check your inbox."
+    "subscribe": "สมัครรับข้อมูล",
+    "success": "คุณสมัครสมาชิกแล้ว! เช็คกล่องจดหมาย"
   },
   "cookies": {
-    "title": "We value your privacy",
-    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
-    "manage": "Manage",
-    "rejectAll": "Reject All",
-    "acceptAll": "Accept All",
-    "preferencesTitle": "Cookie Preferences",
-    "savePreferences": "Save Preferences",
+    "title": "เราให้ความสำคัญกับความเป็นส่วนตัวของคุณ",
+    "description": "เราใช้คุกกี้เพื่อปรับปรุงประสบการณ์การท่องเว็บของคุณ วิเคราะห์การเข้าชมเว็บไซต์ และปรับเนื้อหาให้เหมาะสม โดยการคลิก \"ยอมรับทั้งหมด\" คุณยินยอมให้เราใช้คุกกี้",
+    "manage": "จัดการ",
+    "rejectAll": "ปฏิเสธทั้งหมด",
+    "acceptAll": "ยอมรับทั้งหมด",
+    "preferencesTitle": "การตั้งค่าคุกกี้",
+    "savePreferences": "บันทึกการตั้งค่า",
     "essential": {
-      "title": "Essential Cookies",
-      "description": "Required for the website to function properly"
+      "title": "คุกกี้จำเป็น",
+      "description": "จำเป็นสำหรับการทำงานของเว็บไซต์"
     },
     "analytics": {
-      "title": "Analytics Cookies",
-      "description": "Help us understand how visitors interact with our website"
+      "title": "คุกกี้วิเคราะห์",
+      "description": "ช่วยให้เราเข้าใจว่าผู้เยี่ยมชมโต้ตอบกับเว็บไซต์อย่างไร"
     },
     "marketing": {
-      "title": "Marketing Cookies",
-      "description": "Used to deliver personalized advertisements"
+      "title": "คุกกี้การตลาด",
+      "description": "ใช้เพื่อแสดงโฆษณาที่เหมาะสม"
     }
   },
   "meta": {
     "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
+      "title": "Travi - ค้นพบดูไบ | คู่มือท่องเที่ยวดูไบฉบับสมบูรณ์",
+      "description": "สำรวจสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร และย่านต่างๆ ที่ดีที่สุดในดูไบ วางแผนทริปดูไบในฝันของคุณพร้อมเคล็ดลับจากคนในและคำแนะนำท้องถิ่น"
     },
     "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
+      "title": "สถานที่ท่องเที่ยวในดูไบ | สิ่งที่ต้องทำในดูไบ",
+      "description": "ค้นพบสถานที่ท่องเที่ยวที่ดีที่สุดในดูไบ - ตั้งแต่เบิร์จญ์คาลิฟาไปจนถึงอัญมณีที่ซ่อนอยู่ วางแผนการท่องเที่ยวชมในดูไบ"
     },
     "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
+      "title": "โรงแรมในดูไบ | ที่พักที่ดีที่สุดในดูไบ",
+      "description": "ค้นหาโรงแรมที่เหมาะสมในดูไบสำหรับทุกงบประมาณ ตั้งแต่รีสอร์ทหรูหราไปจนถึงตัวเลือกราคาประหยัด"
     },
     "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "title": "ร้านอาหารในดูไบ | ร้านอาหารที่ดีที่สุดในดูไบ",
+      "description": "สำรวจวงการอาหารของดูไบ - ไฟน์ไดนิ่ง อาหารริมทาง และทุกอย่างระหว่างนั้น"
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "Travel Intelligence",
-      "headlinePart1": "Stories That",
-      "headlinePart2": "Move You",
-      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
-      "startJourney": "Start Your Journey",
-      "browseCollection": "Browse Collection",
-      "issueBadge": "Issue 47 — Winter 2026"
+      "categoryLabel": "ข่าวกรองการท่องเที่ยว",
+      "headlinePart1": "เรื่องราวที่",
+      "headlinePart2": "สร้างแรงบันดาลใจ",
+      "description": "คู่มือที่จัดทำโดยผู้เชี่ยวชาญ มุมมองจากคนใน และเรื่องเล่าบทบรรณาธิการที่เปลี่ยนวิธีการสัมผัสโลกของคุณ",
+      "startJourney": "เริ่มต้นการเดินทาง",
+      "browseCollection": "เลือกดูคอลเลกชั่น",
+      "issueBadge": "ฉบับที่ 47 — ฤดูหนาว 2026"
     },
     "stats": {
-      "guides": "Travel Guides",
-      "destinations": "Destinations",
-      "languages": "Languages"
+      "guides": "คู่มือท่องเที่ยว",
+      "destinations": "จุดหมายปลายทาง",
+      "languages": "ภาษา"
     },
     "journey": {
-      "badge": "Your Journey, Our Guidance",
-      "title": "Every Great Trip Begins with a Guide",
-      "subtitle": "From dreaming to sharing, we're with you at every step"
+      "badge": "การเดินทางของคุณ คำแนะนำของเรา",
+      "title": "ทุกทริปที่ยิ่งใหญ่เริ่มต้นด้วยคู่มือ",
+      "subtitle": "ตั้งแต่ฝันจนถึงการแบ่งปัน เราอยู่กับคุณทุกก้าว"
     },
     "ideaLab": {
-      "badge": "Idea Lab",
-      "title": "Curated Inspiration",
-      "readGuide": "Read Guide"
+      "badge": "แล็บไอเดีย",
+      "title": "แรงบันดาลใจคัดสรร",
+      "readGuide": "อ่านคู่มือ"
     },
     "archetype": {
-      "badge": "Personalized for You",
-      "title": "What Kind of Traveler Are You?",
-      "subtitle": "Select your travel style and discover guides curated just for you",
-      "viewGuides": "View {{type}} Guides"
+      "badge": "ปรับแต่งเฉพาะคุณ",
+      "title": "คุณเป็นนักเดินทางแบบไหน?",
+      "subtitle": "เลือกสไตล์การท่องเที่ยวของคุณและค้นพบคู่มือที่คัดสรรมาเฉพาะคุณ",
+      "viewGuides": "ดูคู่มือ{{type}}"
     },
     "archetypes": {
       "adventure": {
-        "name": "Adventure Seeker",
-        "description": "Thrilling experiences and adrenaline rushes"
+        "name": "นักผจญภัย",
+        "description": "ประสบการณ์ตื่นเต้นและความท้าทาย"
       },
       "culture": {
-        "name": "Culture Explorer",
-        "description": "Art, history, and local traditions"
+        "name": "นักสำรวจวัฒนธรรม",
+        "description": "ศิลปะ ประวัติศาสตร์ และประเพณีท้องถิ่น"
       },
       "relaxation": {
-        "name": "Relaxation Guru",
-        "description": "Wellness retreats and peaceful escapes"
+        "name": "กูรูพักผ่อน",
+        "description": "รีทรีตเพื่อสุขภาพและการพักผ่อนสงบ"
       },
       "foodie": {
-        "name": "Culinary Nomad",
-        "description": "Local flavors and gastronomic adventures"
+        "name": "เร่ร่อนสายกิน",
+        "description": "รสชาติท้องถิ่นและการผจญภัยทางอาหาร"
       },
       "wellness": {
-        "name": "Wellness Seeker",
-        "description": "Relaxation, spas, and mindful retreats"
+        "name": "นักค้นหาสุขภาพ",
+        "description": "การพักผ่อน สปา และรีทรีตเพื่อจิตใจ"
       },
       "budget": {
-        "name": "Smart Traveler",
-        "description": "Maximum experience, minimal budget"
+        "name": "นักเดินทางฉลาด",
+        "description": "ประสบการณ์สูงสุด งบประมาณต่ำสุด"
       },
       "solo": {
-        "name": "Solo Explorer",
-        "description": "Independent journeys and self-discovery"
+        "name": "นักสำรวจคนเดียว",
+        "description": "การเดินทางอิสระและการค้นพบตัวเอง"
       },
       "luxury": {
-        "name": "Luxury Connoisseur",
-        "description": "Premium experiences and fine living"
+        "name": "ผู้เชี่ยวชาญหรูหรา",
+        "description": "ประสบการณ์พรีเมียมและการใช้ชีวิตระดับสูง"
       }
     },
     "milestones": {
       "dream": {
-        "title": "Dream",
-        "subtitle": "Discover inspiration",
-        "guides": ["Destination Guides", "Photo Essays"]
+        "title": "ฝัน",
+        "subtitle": "ค้นพบแรงบันดาลใจ",
+        "guides": ["คู่มือจุดหมายปลายทาง", "เรื่องเล่าภาพถ่าย"]
       },
       "plan": {
-        "title": "Plan",
-        "subtitle": "Map your journey",
-        "guides": ["Trip Planning", "Visa Requirements"]
+        "title": "วางแผน",
+        "subtitle": "วางแผนการเดินทาง",
+        "guides": ["การวางแผนทริป", "ข้อกำหนดวีซ่า"]
       },
       "prepare": {
-        "title": "Prepare",
-        "subtitle": "Get ready to go",
-        "guides": ["Packing Lists", "Safety Tips"]
+        "title": "เตรียมตัว",
+        "subtitle": "พร้อมออกเดินทาง",
+        "guides": ["รายการเตรียมกระเป๋า", "เคล็ดลับความปลอดภัย"]
       },
       "experience": {
-        "title": "Experience",
-        "subtitle": "Live the adventure",
-        "guides": ["Local Insights", "Hidden Gems"]
+        "title": "สัมผัส",
+        "subtitle": "ใช้ชีวิตในการผจญภัย",
+        "guides": ["ข้อมูลท้องถิ่น", "อัญมณีที่ซ่อนอยู่"]
       },
       "share": {
-        "title": "Share",
-        "subtitle": "Tell your story",
-        "guides": ["Travel Writing", "Photography"]
+        "title": "แชร์",
+        "subtitle": "เล่าเรื่องราวของคุณ",
+        "guides": ["การเขียนท่องเที่ยว", "การถ่ายภาพ"]
       }
     },
     "categories": {
-      "weekendEscapes": "Weekend Escapes",
-      "offBeatenPath": "Off the Beaten Path",
-      "smartTravel": "Smart Travel",
-      "bucketList": "Bucket List",
-      "culinary": "Culinary",
-      "natureWonder": "Nature & Wonder"
+      "weekendEscapes": "พักผ่อนช่วงวันหยุด",
+      "offBeatenPath": "เส้นทางที่ไม่เคยมีใครไป",
+      "smartTravel": "ท่องเที่ยวอัจฉริยะ",
+      "bucketList": "รายการสิ่งที่ต้องทำก่อนตาย",
+      "culinary": "อาหาร",
+      "natureWonder": "ธรรมชาติและความมหัศจรรย์"
     },
     "seo": {
-      "title": "Travel Guides | Expert Destination Insights",
-      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
+      "title": "คู่มือท่องเที่ยว | ข้อมูลจุดหมายปลายทางจากผู้เชี่ยวชาญ",
+      "description": "ค้นพบคู่มือท่องเที่ยวจากผู้เชี่ยวชาญ ข้อมูลจุดหมายปลายทาง และเคล็ดลับจากคนในจากเครือข่ายนักเขียนท่องเที่ยวของเรา วางแผนทริปที่สมบูรณ์แบบวันนี้"
     },
     "editorial": {
-      "badge": "From Our Editors",
-      "title": "Editorial Features",
-      "readFull": "Read Full Essay"
+      "badge": "จากบรรณาธิการของเรา",
+      "title": "บทความพิเศษ",
+      "readFull": "อ่านบทความฉบับเต็ม"
     },
     "gallery": {
-      "badge": "Visual Stories",
-      "title": "Destinations That Inspire",
+      "badge": "เรื่องราวภาพ",
+      "title": "จุดหมายปลายทางที่สร้างแรงบันดาลใจ",
       "categories": {
-        "city": "City",
-        "mountains": "Mountains",
-        "beach": "Beach",
-        "safari": "Safari",
-        "nature": "Nature"
+        "city": "เมือง",
+        "mountains": "ภูเขา",
+        "beach": "ชายหาด",
+        "safari": "ซาฟารี",
+        "nature": "ธรรมชาติ"
       }
     },
     "writers": {
-      "badge": "Expert Voices",
-      "title": "Meet Our Writers",
-      "subtitle": "The expert voices behind our most trusted travel guides",
-      "articleCount": "{{count}} Articles",
-      "viewProfile": "View Profile"
+      "badge": "เสียงผู้เชี่ยวชาญ",
+      "title": "พบกับนักเขียนของเรา",
+      "subtitle": "เสียงผู้เชี่ยวชาญที่อยู่เบื้องหลังคู่มือท่องเที่ยวที่ไว้ใจได้ที่สุดของเรา",
+      "articleCount": "{{count}} บทความ",
+      "viewProfile": "ดูโปรไฟล์"
     },
     "map": {
-      "badge": "Explore by Region",
-      "title": "Guides Around the World",
-      "subtitle": "Click any destination to discover our expert coverage",
-      "guidesAvailable": "{{count}} guides available",
-      "legendDestination": "Destination",
-      "legendHighlighted": "Highlighted"
+      "badge": "สำรวจตามภูมิภาค",
+      "title": "คู่มือทั่วโลก",
+      "subtitle": "คลิกที่จุดหมายปลายทางใดๆ เพื่อค้นพบเนื้อหาจากผู้เชี่ยวชาญของเรา",
+      "guidesAvailable": "มี {{count}} คู่มือ",
+      "legendDestination": "จุดหมายปลายทาง",
+      "legendHighlighted": "เน้น"
     },
     "newsletter": {
-      "badge": "Join the Journey",
-      "title": "Travel Stories, Weekly",
-      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
-      "placeholder": "Enter your email",
-      "subscribe": "Subscribe",
-      "subscribing": "Subscribing...",
-      "joinCount": "Join 50,000+ travelers who read our weekly digest",
-      "invalidEmail": "Please enter a valid email",
-      "successTitle": "Welcome to the journey!",
-      "successDesc": "You're now subscribed to our editorial digest."
+      "badge": "เข้าร่วมการเดินทาง",
+      "title": "เรื่องราวการท่องเที่ยว รายสัปดาห์",
+      "description": "แรงบันดาลใจการท่องเที่ยวคัดสรร เคล็ดลับจากผู้เชี่ยวชาญ และมุมมองจากคนในส่งถึงกล่องจดหมายของคุณทุกสัปดาห์",
+      "placeholder": "ใส่อีเมล",
+      "subscribe": "สมัครรับข้อมูล",
+      "subscribing": "กำลังสมัคร...",
+      "joinCount": "เข้าร่วมนักท่องเที่ยว 50,000+ คนที่อ่านจดหมายข่าวรายสัปดาห์ของเรา",
+      "invalidEmail": "กรุณาใส่อีเมลที่ถูกต้อง",
+      "successTitle": "ยินดีต้อนรับสู่การเดินทาง!",
+      "successDesc": "ตอนนี้คุณสมัครรับจดหมายข่าวบรรณาธิการของเราแล้ว"
     }
   },
   "news": {
     "time": {
-      "recent": "Recent",
-      "justNow": "Just now",
-      "minutesAgo": "{{count}}m ago",
-      "hoursAgo": "{{count}}h ago",
-      "daysAgo": "{{count}}d ago",
-      "minRead": "{{count}} min read"
+      "recent": "ล่าสุด",
+      "justNow": "เมื่อสักครู่",
+      "minutesAgo": "{{count}} นาทีที่แล้ว",
+      "hoursAgo": "{{count}} ชม.ที่แล้ว",
+      "daysAgo": "{{count}} วันที่แล้ว",
+      "minRead": "อ่าน {{count}} นาที"
     },
     "header": {
       "title": "TRAVI NEWS",
-      "edition": "International Edition",
-      "subscribe": "Subscribe"
+      "edition": "ฉบับสากล",
+      "subscribe": "สมัครรับข้อมูล"
     },
     "breaking": {
-      "label": "Breaking"
+      "label": "ด่วน"
     },
     "search": {
-      "placeholder": "Search worldwide news...",
-      "button": "Search",
-      "title": "Search",
-      "searching": "Searching for \"{{query}}\"..."
+      "placeholder": "ค้นหาข่าวทั่วโลก...",
+      "button": "ค้นหา",
+      "title": "ค้นหา",
+      "searching": "กำลังค้นหา \"{{query}}\"..."
     },
     "categories": {
-      "all": "All News",
-      "world": "World",
-      "business": "Business",
-      "culture": "Culture",
-      "travel": "Travel",
-      "tech": "Tech",
-      "opinion": "Opinion"
+      "all": "ข่าวทั้งหมด",
+      "world": "โลก",
+      "business": "ธุรกิจ",
+      "culture": "วัฒนธรรม",
+      "travel": "ท่องเที่ยว",
+      "tech": "เทคโนโลยี",
+      "opinion": "ความคิดเห็น"
     },
     "empty": {
-      "title": "No News Articles Yet",
-      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
-      "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Travel Guides"
+      "title": "ยังไม่มีข่าว",
+      "description": "เรากำลังทำงานเพื่อนำเสนอข่าวท่องเที่ยวและข้อมูลล่าสุดให้คุณ กลับมาตรวจสอบเร็วๆ นี้สำหรับข้อมูลอัพเดทจากทั่วโลก",
+      "exploreDestinations": "สำรวจจุดหมายปลายทาง",
+      "viewGuides": "ดูคู่มือท่องเที่ยว"
     },
     "hero": {
-      "topStory": "Top Story",
-      "editorialTeam": "Editorial Team"
+      "topStory": "ข่าวเด่น",
+      "editorialTeam": "ทีมบรรณาธิการ"
     },
-    "views": "{{count}} views",
-    "viewAll": "View All",
+    "views": "{{count}} ครั้งที่ดู",
+    "viewAll": "ดูทั้งหมด",
     "seo": {
-      "title": "Travel News | Latest Stories & Updates",
-      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
+      "title": "ข่าวท่องเที่ยว | เรื่องราวและข้อมูลอัพเดทล่าสุด",
+      "description": "ติดตามข่าวท่องเที่ยวล่าสุด ข้อมูลอัพเดทจุดหมายปลายทาง และข้อมูลในวงการจากทั่วโลก"
     },
     "sidebar": {
-      "alsoToday": "Also Today",
-      "storiesCount": "{{count}} stories",
-      "liveUpdates": "Live Updates",
-      "trendingTopics": "Trending Topics",
-      "noTrending": "No trending topics yet. Check back soon!"
+      "alsoToday": "ข่าววันนี้",
+      "storiesCount": "{{count}} เรื่อง",
+      "liveUpdates": "อัพเดทสด",
+      "trendingTopics": "หัวข้อกำลังฮิต",
+      "noTrending": "ยังไม่มีหัวข้อกำลังฮิต กลับมาตรวจสอบเร็วๆ นี้!"
     },
     "sections": {
-      "topStories": "Top Stories",
-      "opinion": "Opinion & Analysis",
-      "moreOpinion": "More Opinion",
-      "worldwide": "Worldwide Coverage"
+      "topStories": "ข่าวเด่น",
+      "opinion": "ความคิดเห็นและการวิเคราะห์",
+      "moreOpinion": "ความคิดเห็นเพิ่มเติม",
+      "worldwide": "ครอบคลุมทั่วโลก"
     },
     "worldwide": {
-      "title": "Your Window to the World",
-      "subtitle": "News from every corner of the globe",
-      "storiesCount": "{{count}} stories",
-      "comingSoon": "Coming soon"
+      "title": "หน้าต่างสู่โลก",
+      "subtitle": "ข่าวจากทุกมุมโลก",
+      "storiesCount": "{{count}} เรื่อง",
+      "comingSoon": "เร็วๆ นี้"
     },
     "newsletter": {
-      "title": "Stay Informed",
-      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
-      "placeholder": "Enter your email",
-      "subscribe": "Subscribe Free",
-      "noSpam": "No spam. Unsubscribe anytime.",
-      "successTitle": "Subscribed!",
-      "successDesc": "Please check your email to confirm your subscription.",
-      "errorTitle": "Subscription failed",
-      "errorDesc": "Please try again later.",
-      "invalidTitle": "Invalid email",
-      "invalidDesc": "Please enter a valid email address."
+      "title": "ติดตามข่าวสาร",
+      "description": "รับข่าวเด่นของวันส่งถึงกล่องจดหมายทุกเช้า เข้าร่วมผู้อ่าน 50,000+ คน",
+      "placeholder": "ใส่อีเมล",
+      "subscribe": "สมัครฟรี",
+      "noSpam": "ไม่มีสแปม ยกเลิกได้ทุกเมื่อ",
+      "successTitle": "สมัครสำเร็จ!",
+      "successDesc": "กรุณาตรวจสอบอีเมลเพื่อยืนยันการสมัคร",
+      "errorTitle": "การสมัครล้มเหลว",
+      "errorDesc": "กรุณาลองใหม่ภายหลัง",
+      "invalidTitle": "อีเมลไม่ถูกต้อง",
+      "invalidDesc": "กรุณาใส่อีเมลที่ถูกต้อง"
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "About Us | TRAVI World",
-      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
-      "badge": "Your Travel Companion",
-      "title": "About",
+      "metaTitle": "เกี่ยวกับเรา | TRAVI World",
+      "metaDescription": "เรียนรู้เกี่ยวกับ TRAVI World แหล่งข้อมูลท่องเที่ยวอิสระที่ให้บริการคู่มือท่องเที่ยวครบครัน สถานที่ท่องเที่ยว โรงแรม และข้อมูลร้านอาหารสำหรับจุดหมายปลายทางทั่วโลก",
+      "badge": "เพื่อนร่วมเดินทางของคุณ",
+      "title": "เกี่ยวกับ",
       "titleHighlight": "TRAVI World",
-      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
-      "ctaExplore": "Explore Destinations",
-      "ctaContact": "Get in Touch"
+      "subtitle": "แหล่งข้อมูลที่คุณไว้ใจได้สำหรับข้อมูลท่องเที่ยวครบครันและคู่มือจุดหมายปลายทาง ช่วยให้คนนับล้านสำรวจโลกด้วยความมั่นใจ",
+      "ctaExplore": "สำรวจจุดหมายปลายทาง",
+      "ctaContact": "ติดต่อเรา"
     },
     "contact": {
-      "metaTitle": "Contact Us | TRAVI World",
-      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
-      "badge": "We'd love to hear from you",
-      "titlePart1": "Let's",
-      "titlePart2": "Connect",
-      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
-      "cta": "Send us a message",
-      "getInTouch": "Get in Touch",
-      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
-      "howCanWeHelp": "How Can We Help?",
-      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
-      "importantNote": "Important Note",
-      "importantNoteSubtitle": "Please read before contacting us",
-      "ourOffice": "Our Office",
-      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
-      "travelCompanion": "Your travel companion",
-      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
-      "urgentLabel": "Urgent",
+      "metaTitle": "ติดต่อเรา | TRAVI World",
+      "metaDescription": "ติดต่อ TRAVI World เรายินดีรับฟังความคิดเห็น คำถาม และข้อซักถามเกี่ยวกับบริการข้อมูลท่องเที่ยวของเรา",
+      "badge": "เรายินดีรับฟังจากคุณ",
+      "titlePart1": "มา",
+      "titlePart2": "เชื่อมต่อกัน",
+      "subtitle": "มีคำถามเกี่ยวกับการผจญภัยครั้งต่อไปของคุณ? เราพร้อมช่วยคุณสำรวจโลกด้วยความมั่นใจ",
+      "cta": "ส่งข้อความถึงเรา",
+      "getInTouch": "ติดต่อเรา",
+      "getInTouchSubtitle": "เลือกวิธีที่ดีที่สุดในการติดต่อเรา เรามุ่งมั่นที่จะตอบกลับอย่างรวดเร็ว",
+      "howCanWeHelp": "เราช่วยอะไรคุณได้บ้าง?",
+      "howCanWeHelpSubtitle": "เราพร้อมช่วยเหลือเกี่ยวกับคำถามหรือความคิดเห็นใดๆ เกี่ยวกับเนื้อหาและบริการท่องเที่ยวของเรา",
+      "importantNote": "หมายเหตุสำคัญ",
+      "importantNoteSubtitle": "กรุณาอ่านก่อนติดต่อเรา",
+      "ourOffice": "สำนักงานของเรา",
+      "ourOfficeSubtitle": "สำหรับการติดต่อราชการและการสอบถามทางไปรษณีย์",
+      "travelCompanion": "เพื่อนร่วมเดินทางของคุณ",
+      "urgentNote": "สำหรับเรื่องด่วน กรุณาใส่ {{urgentLabel}} ในหัวเรื่องอีเมลของคุณ เราจะจัดลำดับความสำคัญของการตอบกลับตามลักษณะของการสอบถาม",
+      "urgentLabel": "ด่วน",
       "options": {
         "generalInquiries": {
-          "title": "General Inquiries",
-          "description": "Questions about our travel guides and contents"
+          "title": "สอบถามทั่วไป",
+          "description": "คำถามเกี่ยวกับคู่มือท่องเที่ยวและเนื้อหาของเรา"
         },
         "privacyInquiries": {
-          "title": "Privacy Inquiries",
-          "description": "Data access, deletion, and privacy requests"
+          "title": "สอบถามความเป็นส่วนตัว",
+          "description": "การเข้าถึงข้อมูล การลบ และคำขอความเป็นส่วนตัว"
         },
         "visitWebsite": {
-          "title": "Visit Our Website",
-          "description": "Explore destinations and travel inspiration"
+          "title": "เยี่ยมชมเว็บไซต์",
+          "description": "สำรวจจุดหมายปลายทางและแรงบันดาลใจการท่องเที่ยว"
         },
         "responseTime": {
-          "title": "Response Time",
-          "description": "We aim to respond promptly",
-          "action": "2-3 business days"
+          "title": "เวลาตอบกลับ",
+          "description": "เรามุ่งมั่นที่จะตอบกลับอย่างรวดเร็ว",
+          "action": "2-3 วันทำการ"
         }
       },
       "helpTopics": {
-        "general": "General inquiries about our travel guides and contents",
-        "feedback": "Feedback and suggestions for improvement",
-        "reporting": "Reporting contents errors or outdated information",
-        "business": "Business and partnership inquiries",
-        "media": "Media and press inquiries",
-        "privacy": "Privacy-related requests (data access, deletion, etc.)"
+        "general": "สอบถามทั่วไปเกี่ยวกับคู่มือท่องเที่ยวและเนื้อหาของเรา",
+        "feedback": "ความคิดเห็นและข้อเสนอแนะเพื่อการปรับปรุง",
+        "reporting": "รายงานข้อผิดพลาดเนื้อหาหรือข้อมูลที่ล้าสมัย",
+        "business": "สอบถามธุรกิจและความร่วมมือ",
+        "media": "สอบถามสื่อและสื่อมวลชน",
+        "privacy": "คำขอที่เกี่ยวข้องกับความเป็นส่วนตัว (การเข้าถึงข้อมูล การลบ ฯลฯ)"
       }
     },
     "privacy": {
-      "metaTitle": "Privacy Policy | TRAVI World",
-      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
-      "badge": "Your Privacy Matters",
-      "title": "Privacy Policy",
-      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
-      "effectiveDate": "Effective Date: 1 January 2026",
+      "metaTitle": "นโยบายความเป็นส่วนตัว | TRAVI World",
+      "metaDescription": "เรียนรู้ว่า TRAVI World รวบรวม ใช้ และปกป้องข้อมูลส่วนบุคคลของคุณอย่างไร อ่านนโยบายความเป็นส่วนตัวฉบับครบถ้วนของเรา",
+      "badge": "ความเป็นส่วนตัวของคุณสำคัญ",
+      "title": "นโยบายความเป็นส่วนตัว",
+      "subtitle": "เรามุ่งมั่นที่จะปกป้องความเป็นส่วนตัวของคุณและโปร่งใสเกี่ยวกับแนวปฏิบัติด้านข้อมูลของเรา เรียนรู้ว่า TRAVI World รวบรวม ใช้ และปกป้องข้อมูลของคุณอย่างไร",
+      "effectiveDate": "มีผลตั้งแต่: 1 มกราคม 2026",
       "features": {
         "dataProtection": {
-          "title": "Data Protection",
-          "description": "Your data is protected"
+          "title": "การปกป้องข้อมูล",
+          "description": "ข้อมูลของคุณได้รับการปกป้อง"
         },
         "minimalCollection": {
-          "title": "Minimal Collection",
-          "description": "We collect only what's needed"
+          "title": "รวบรวมน้อยที่สุด",
+          "description": "เรารวบรวมเท่าที่จำเป็น"
         },
         "transparency": {
-          "title": "Full Transparency",
-          "description": "Clear about our practices"
+          "title": "โปร่งใสเต็มที่",
+          "description": "ชัดเจนเกี่ยวกับแนวปฏิบัติของเรา"
         },
         "yourControl": {
-          "title": "Your Control",
-          "description": "Manage your preferences"
+          "title": "คุณควบคุม",
+          "description": "จัดการการตั้งค่าของคุณ"
         }
       },
       "sections": {
-        "whoWeAre": "1. Who We Are",
-        "informationCollect": "2. Information We Collect",
-        "howWeUse": "3. How We Use Your Information",
-        "legalBasis": "4. Legal Basis for Processing (GDPR)",
-        "cookies": "5. Cookies and Tracking Technologies",
-        "thirdParty": "6. Third-Party Services",
-        "aiContent": "7. AI-Generated Content",
-        "internationalTransfers": "8. International Data Transfers",
-        "dataRetention": "9. Data Retention",
-        "privacyRights": "10. Your Privacy Rights",
-        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
-        "childrenPrivacy": "12. Children's Privacy",
-        "dataSecurity": "13. Data Security",
-        "changes": "14. Changes to This Policy",
-        "contactUs": "15. Contact Us"
+        "whoWeAre": "1. เราคือใคร",
+        "informationCollect": "2. ข้อมูลที่เรารวบรวม",
+        "howWeUse": "3. เราใช้ข้อมูลของคุณอย่างไร",
+        "legalBasis": "4. ฐานทางกฎหมายในการประมวลผล (GDPR)",
+        "cookies": "5. คุกกี้และเทคโนโลยีติดตาม",
+        "thirdParty": "6. บริการบุคคลที่สาม",
+        "aiContent": "7. เนื้อหาที่สร้างโดย AI",
+        "internationalTransfers": "8. การถ่ายโอนข้อมูลระหว่างประเทศ",
+        "dataRetention": "9. การเก็บรักษาข้อมูล",
+        "privacyRights": "10. สิทธิ์ความเป็นส่วนตัวของคุณ",
+        "californiaRights": "11. สิทธิ์ความเป็นส่วนตัวในแคลิฟอร์เนีย (CCPA/CPRA)",
+        "childrenPrivacy": "12. ความเป็นส่วนตัวของเด็ก",
+        "dataSecurity": "13. ความปลอดภัยของข้อมูล",
+        "changes": "14. การเปลี่ยนแปลงนโยบายนี้",
+        "contactUs": "15. ติดต่อเรา"
       }
     },
     "terms": {
-      "metaTitle": "Terms & Conditions | TRAVI World",
-      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
-      "badge": "Legal Agreement",
-      "title": "Terms & Conditions",
-      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
-      "lastUpdated": "Last updated: 1 January 2026",
-      "importantNotice": "Important Legal Notice",
+      "metaTitle": "ข้อกำหนดและเงื่อนไข | TRAVI World",
+      "metaDescription": "อ่านข้อกำหนดและเงื่อนไขสำหรับการใช้บริการข้อมูลท่องเที่ยว TRAVI World ข้อตกลงทางกฎหมายระหว่างคุณและ KBR Global Creative Consulting Ltd.",
+      "badge": "ข้อตกลงทางกฎหมาย",
+      "title": "ข้อกำหนดและเงื่อนไข",
+      "subtitle": "กรุณาอ่านข้อกำหนดเหล่านี้อย่างละเอียดก่อนใช้ TRAVI World การเข้าถึงและการใช้แพลตฟอร์มของเราอยู่ภายใต้เงื่อนไขเหล่านี้",
+      "lastUpdated": "อัพเดทล่าสุด: 1 มกราคม 2026",
+      "importantNotice": "ประกาศทางกฎหมายที่สำคัญ",
       "keyPoints": {
         "editorial": {
-          "title": "Editorial Platform",
-          "description": "Travel guides & destination contents"
+          "title": "แพลตฟอร์มบรรณาธิการ",
+          "description": "คู่มือท่องเที่ยวและเนื้อหาจุดหมายปลายทาง"
         },
         "affiliate": {
-          "title": "Affiliate Links",
-          "description": "Commission-based recommendations"
+          "title": "ลิงก์พันธมิตร",
+          "description": "คำแนะนำแบบคอมมิชชั่น"
         },
         "aiGenerated": {
-          "title": "AI-Generated",
-          "description": "Content created with AI assistance"
+          "title": "สร้างโดย AI",
+          "description": "เนื้อหาที่สร้างด้วยความช่วยเหลือของ AI"
         },
         "privacy": {
-          "title": "Your Privacy",
-          "description": "Data protection guaranteed"
+          "title": "ความเป็นส่วนตัวของคุณ",
+          "description": "รับประกันการปกป้องข้อมูล"
         }
       },
       "sections": {
-        "operator": "Operator / Legal Entity",
-        "purpose": "1. Purpose & Scope of Use",
-        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
-        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
-        "newsletter": "4. Newsletter & Communications",
-        "userConduct": "5. User Conduct & Prohibited Actions",
-        "intellectualProperty": "6. Intellectual Property & Limited License",
-        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
-        "disclaimers": "8. Accuracy, Availability & Disclaimers",
-        "liability": "9. Limitation of Liability & Force Majeure",
-        "indemnification": "10. Indemnification",
-        "privacyCookies": "11. Privacy, Cookies & Data Protection",
-        "accessibility": "12. Accessibility Statement",
-        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
-        "modifications": "14. Modifications, Severability & General Provisions"
+        "operator": "ผู้ดำเนินการ / นิติบุคคล",
+        "purpose": "1. วัตถุประสงค์และขอบเขตการใช้งาน",
+        "affiliateDisclosure": "2. การเปิดเผยพันธมิตรและการทำธุรกรรมบุคคลที่สาม",
+        "aiDisclaimer": "3. ข้อจำกัดความรับผิดเนื้อหาที่สร้างโดย AI",
+        "newsletter": "4. จดหมายข่าวและการสื่อสาร",
+        "userConduct": "5. พฤติกรรมผู้ใช้และการกระทำต้องห้าม",
+        "intellectualProperty": "6. ทรัพย์สินทางปัญญาและใบอนุญาตจำกัด",
+        "dmca": "7. ประกาศและการลบออก (DMCA และที่คล้ายกัน)",
+        "disclaimers": "8. ความถูกต้อง ความพร้อมใช้งาน และข้อจำกัดความรับผิด",
+        "liability": "9. ข้อจำกัดความรับผิดและเหตุสุดวิสัย",
+        "indemnification": "10. การชดใช้ค่าเสียหาย",
+        "privacyCookies": "11. ความเป็นส่วนตัว คุกกี้ และการปกป้องข้อมูล",
+        "accessibility": "12. คำชี้แจงการเข้าถึง",
+        "governingLaw": "13. กฎหมายที่ใช้บังคับ การระงับข้อพิพาท และเขตอำนาจศาล",
+        "modifications": "14. การแก้ไข การแยกส่วน และบทบัญญัติทั่วไป"
       }
     },
     "about": {
-      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
-      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
-      "badge": "About TRAVI World",
-      "title": "Discover",
+      "metaTitle": "เกี่ยวกับ TRAVI World | แหล่งข้อมูลท่องเที่ยวที่คุณไว้ใจได้",
+      "metaDescription": "เรียนรู้เกี่ยวกับ TRAVI World - แพลตฟอร์มข้อมูลท่องเที่ยวอิสระที่ให้บริการคู่มือครบครันสำหรับจุดหมายปลายทางทั่วโลก",
+      "badge": "เกี่ยวกับ TRAVI World",
+      "title": "ค้นพบ",
       "titleHighlight": "TRAVI World",
-      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
-      "ctaExplore": "Explore Destinations",
-      "ctaContact": "Contact Us",
+      "subtitle": "แหล่งข้อมูลท่องเที่ยวที่คุณไว้ใจได้สำหรับการสำรวจจุดหมายปลายทางทั่วโลกพร้อมคู่มือครบครันและข้อมูลท้องถิ่น",
+      "ctaExplore": "สำรวจจุดหมายปลายทาง",
+      "ctaContact": "ติดต่อเรา",
       "stats": {
-        "destinations": "Destinations",
-        "articles": "Articles",
-        "support": "Travel Support",
-        "coverage": "Coverage",
-        "cities": "16+ Cities"
+        "destinations": "จุดหมายปลายทาง",
+        "articles": "บทความ",
+        "support": "การสนับสนุนการท่องเที่ยว",
+        "coverage": "ความครอบคลุม",
+        "cities": "16+ เมือง"
       },
       "whoWeAre": {
-        "title": "Who We Are"
+        "title": "เราคือใคร"
       },
       "mission": {
-        "title": "Our Mission"
+        "title": "พันธกิจของเรา"
       },
       "services": {
-        "badge": "Our Services",
-        "title": "What We Offer"
+        "badge": "บริการของเรา",
+        "title": "สิ่งที่เรานำเสนอ"
       },
       "offerings": {
         "destinations": {
-          "title": "Destination Guides",
-          "description": "Comprehensive information about cities and regions around the world"
+          "title": "คู่มือจุดหมายปลายทาง",
+          "description": "ข้อมูลครบครันเกี่ยวกับเมืองและภูมิภาคทั่วโลก"
         },
         "attractions": {
-          "title": "Attraction Information",
-          "description": "Details about must-see sights and unique experiences"
+          "title": "ข้อมูลสถานที่ท่องเที่ยว",
+          "description": "รายละเอียดเกี่ยวกับสถานที่ที่ต้องไปเยือนและประสบการณ์ที่ไม่เหมือนใคร"
         },
         "hotels": {
-          "title": "Hotel Guides",
-          "description": "Information about accommodation options for every budget"
+          "title": "คู่มือโรงแรม",
+          "description": "ข้อมูลเกี่ยวกับตัวเลือกที่พักสำหรับทุกงบประมาณ"
         },
         "restaurants": {
-          "title": "Restaurant Recommendations",
-          "description": "Dining options for every taste and preference"
+          "title": "คำแนะนำร้านอาหาร",
+          "description": "ตัวเลือกร้านอาหารสำหรับทุกรสนิยม"
         },
         "articles": {
-          "title": "Travel Articles",
-          "description": "Tips, insights, and travel inspiration"
+          "title": "บทความท่องเที่ยว",
+          "description": "เคล็ดลับ ข้อมูล และแรงบันดาลใจการท่องเที่ยว"
         },
         "news": {
-          "title": "Latest Travel News",
-          "description": "Stay informed with curated travel updates"
+          "title": "ข่าวท่องเที่ยวล่าสุด",
+          "description": "ติดตามข้อมูลอัพเดทท่องเที่ยวที่คัดสรร"
         }
       },
       "editorial": {
-        "title": "Editorial Independence",
-        "affiliateTitle": "Affiliate Disclosure"
+        "title": "ความเป็นอิสระของบรรณาธิการ",
+        "affiliateTitle": "การเปิดเผยพันธมิตร"
       },
       "values": {
-        "badge": "Our Foundation",
-        "title": "Our Values",
+        "badge": "รากฐานของเรา",
+        "title": "ค่านิยมของเรา",
         "accuracy": {
-          "title": "Accuracy",
-          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+          "title": "ความถูกต้อง",
+          "description": "เรามุ่งมั่นให้ข้อมูลที่ถูกต้องและเชื่อถือได้ โดยอัพเดทเนื้อหาอย่างสม่ำเสมอ"
         },
         "transparency": {
-          "title": "Transparency",
-          "description": "We are clear about our affiliate relationships and how we operate"
+          "title": "ความโปร่งใส",
+          "description": "เราชัดเจนเกี่ยวกับความสัมพันธ์พันธมิตรและวิธีการดำเนินงานของเรา"
         },
         "userFocused": {
-          "title": "User-Focused",
-          "description": "Our contents is designed to help travelers make informed decisions"
+          "title": "มุ่งเน้นผู้ใช้",
+          "description": "เนื้อหาของเราออกแบบมาเพื่อช่วยให้นักท่องเที่ยวตัดสินใจอย่างรอบรู้"
         }
       },
       "connect": {
-        "badge": "Let's Connect",
-        "title": "Get in Touch"
+        "badge": "มาเชื่อมต่อกัน",
+        "title": "ติดต่อเรา"
       },
       "company": {
-        "title": "Company Information",
-        "contactTitle": "Contact Information",
-        "contactForm": "Contact Form"
+        "title": "ข้อมูลบริษัท",
+        "contactTitle": "ข้อมูลติดต่อ",
+        "contactForm": "แบบฟอร์มติดต่อ"
       }
     }
   }
