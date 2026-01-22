@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useRoute, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import DOMPurify from "dompurify";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
 import { 
@@ -175,6 +176,7 @@ function CinematicHero({
   availableLocales,
   isLoading,
   destinationName,
+  localePath,
 }: {
   heroImage: string;
   title: string;
@@ -184,6 +186,7 @@ function CinematicHero({
   availableLocales?: string[];
   isLoading: boolean;
   destinationName: string;
+  localePath: (path: string) => string;
 }) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [imageError, setImageError] = useState(false);
@@ -262,14 +265,14 @@ function CinematicHero({
             <nav aria-label="Breadcrumb" className="mb-4 md:mb-6">
               <ol className="flex items-center gap-2 text-sm text-white/70 flex-wrap">
                 <li>
-                  <Link href="/" className="hover:text-white transition-colors flex items-center gap-1" data-testid="breadcrumb-home">
+                  <Link href={localePath("/")} className="hover:text-white transition-colors flex items-center gap-1" data-testid="breadcrumb-home">
                     <Home className="h-3.5 w-3.5" />
                     Home
                   </Link>
                 </li>
                 <ChevronRight className="h-3.5 w-3.5" />
                 <li>
-                  <Link href="/guides" className="hover:text-white transition-colors" data-testid="breadcrumb-guides">
+                  <Link href={localePath("/guides")} className="hover:text-white transition-colors" data-testid="breadcrumb-guides">
                     Travel Guides
                   </Link>
                 </li>
@@ -674,7 +677,7 @@ function BestTimeToVisitSection({
   );
 }
 
-function AffiliateCTA({ destinationName, destinationSlug }: { destinationName: string; destinationSlug: string }) {
+function AffiliateCTA({ destinationName, destinationSlug, localePath }: { destinationName: string; destinationSlug: string; localePath: (path: string) => string }) {
   return (
     <AnimatedSection className="mb-12" data-testid="section-cta">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -689,7 +692,7 @@ function AffiliateCTA({ destinationName, destinationSlug }: { destinationName: s
                 <p className="text-white/80 text-sm mb-4">
                   Compare prices from 100+ booking sites and find the best deals.
                 </p>
-                <Link href={`/destinations/${destinationSlug}/hotels`}>
+                <Link href={localePath(`/destinations/${destinationSlug}/hotels`)}>
                   <Button 
                     variant="secondary" 
                     className="bg-white text-[#6443F4] hover:bg-white/90"
@@ -714,7 +717,7 @@ function AffiliateCTA({ destinationName, destinationSlug }: { destinationName: s
                 <p className="text-white/80 text-sm mb-4">
                   Skip-the-line tickets and guided tours for top attractions.
                 </p>
-                <Link href={`/destinations/${destinationSlug}`}>
+                <Link href={localePath(`/destinations/${destinationSlug}`)}>
                   <Button 
                     variant="secondary" 
                     className="bg-white text-[#E84C9A] hover:bg-white/90"
@@ -794,6 +797,7 @@ function ScrollToTop() {
 export default function GuideDetailPage() {
   const [, params] = useRoute("/guides/:slug");
   const { slug = "" } = params ?? {};
+  const { localePath } = useLocale();
   const [locale, setLocale] = useState("en");
   const [activeSection, setActiveSection] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -923,7 +927,7 @@ export default function GuideDetailPage() {
             <p className="text-slate-600 dark:text-slate-400 mb-8">
               Sorry, we couldn't find a travel guide for this destination.
             </p>
-            <Link href="/guides">
+            <Link href={localePath("/guides")}>
               <Button data-testid="back-to-guides">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Browse All Guides
@@ -980,6 +984,7 @@ export default function GuideDetailPage() {
           availableLocales={guide?.availableLocales}
           isLoading={isLoading}
           destinationName={destinationName}
+          localePath={localePath}
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -1030,7 +1035,7 @@ export default function GuideDetailPage() {
                     <HolidaysSection countryCode={countryCode} destinationName={destinationName} />
                   )}
 
-                  <AffiliateCTA destinationName={destinationName} destinationSlug={destinationId} />
+                  <AffiliateCTA destinationName={destinationName} destinationSlug={destinationId} localePath={localePath} />
 
                   {sanitizedOriginalContent ? (
                     <AnimatedSection className="mb-12" data-testid="section-original-content">

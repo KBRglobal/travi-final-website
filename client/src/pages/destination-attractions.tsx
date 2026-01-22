@@ -6,6 +6,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -355,6 +356,7 @@ function matchesDuration(attractionDuration: string, filter: string): boolean {
 
 function DestinationAttractionsPage() {
   const { destination } = useParams<{ destination: string }>();
+  const { localePath } = useLocale();
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [showBackToTop, setShowBackToTop] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -433,9 +435,9 @@ function DestinationAttractionsPage() {
             <section className="relative pt-24 pb-16 md:pt-32 md:pb-24" data-testid="section-loading-hero">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
                 <nav className="flex items-center gap-2 text-slate-500 text-sm mb-8" data-testid="breadcrumbs-loading">
-                  <Link href="/" className="hover:text-[#6443F4] transition-colors">Home</Link>
+                  <Link href={localePath("/")} className="hover:text-[#6443F4] transition-colors">Home</Link>
                   <ChevronRight className="w-4 h-4" />
-                  <Link href="/attractions" className="hover:text-[#6443F4] transition-colors">Attractions</Link>
+                  <Link href={localePath("/attractions")} className="hover:text-[#6443F4] transition-colors">Attractions</Link>
                   <ChevronRight className="w-4 h-4" />
                   <span className="text-slate-900 dark:text-white font-medium">{cityName}</span>
                 </nav>
@@ -486,9 +488,9 @@ function DestinationAttractionsPage() {
             <section className="relative pt-24 pb-16 md:pt-32 md:pb-24" data-testid="section-error-hero">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
                 <nav className="flex items-center gap-2 text-slate-500 text-sm mb-8" data-testid="breadcrumbs-error">
-                  <Link href="/" className="hover:text-[#6443F4] transition-colors">Home</Link>
+                  <Link href={localePath("/")} className="hover:text-[#6443F4] transition-colors">Home</Link>
                   <ChevronRight className="w-4 h-4" />
-                  <Link href="/attractions" className="hover:text-[#6443F4] transition-colors">Attractions</Link>
+                  <Link href={localePath("/attractions")} className="hover:text-[#6443F4] transition-colors">Attractions</Link>
                   <ChevronRight className="w-4 h-4" />
                   <span className="text-slate-900 dark:text-white font-medium">{cityName}</span>
                 </nav>
@@ -519,13 +521,13 @@ function DestinationAttractionsPage() {
                   <div className="flex flex-wrap justify-center gap-4">
                     <Button 
                       variant="outline" 
-                      onClick={() => window.location.href = '/attractions'}
+                      onClick={() => window.location.href = localePath('/attractions')}
                       data-testid="button-browse-destinations"
                     >
                       Browse All Destinations
                     </Button>
                     <Button 
-                      onClick={() => window.location.href = '/'} 
+                      onClick={() => window.location.href = localePath('/')} 
                       className="bg-[#6443F4] hover:bg-[#5539d4]"
                       data-testid="button-return-home"
                     >
@@ -641,11 +643,11 @@ function DestinationAttractionsPage() {
                 data-testid="breadcrumbs"
                 aria-label="Breadcrumb"
               >
-                <Link href="/" className="hover:text-[#6443F4] transition-colors" data-testid="link-breadcrumb-home">
+                <Link href={localePath("/")} className="hover:text-[#6443F4] transition-colors" data-testid="link-breadcrumb-home">
                   Home
                 </Link>
                 <ChevronRight className="w-4 h-4" />
-                <Link href="/attractions" className="hover:text-[#6443F4] transition-colors" data-testid="link-breadcrumb-attractions">
+                <Link href={localePath("/attractions")} className="hover:text-[#6443F4] transition-colors" data-testid="link-breadcrumb-attractions">
                   Attractions
                 </Link>
                 <ChevronRight className="w-4 h-4" />
@@ -877,7 +879,7 @@ function DestinationAttractionsPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    href={`/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`}
+                    href={localePath(`/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`)}
                     className="flex-shrink-0 w-[300px] md:w-[340px] group"
                     data-testid={`top10-card-${attraction.id}`}
                   >
@@ -1022,7 +1024,7 @@ function DestinationAttractionsPage() {
                             </div>
 
                             <a 
-                              href={`/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`}
+                              href={localePath(`/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`)}
                               className="flex items-center gap-1 text-[#6443F4] font-medium hover:underline transition-colors group/link"
                               data-testid={`link-details-${attraction.id}`}
                             >
@@ -1153,7 +1155,7 @@ function DestinationAttractionsPage() {
                   size="lg"
                   variant="outline"
                   className="border-white text-white hover:bg-white/10"
-                  onClick={() => window.location.href = `/destinations/${data.slug}`}
+                  onClick={() => window.location.href = localePath(`/destinations/${data.slug}`)}
                   data-testid="button-explore-destination"
                 >
                   Explore {data.name}

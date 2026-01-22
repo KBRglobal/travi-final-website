@@ -4,6 +4,7 @@
 
 import { useRoute, Link } from "wouter";
 import { Helmet } from "react-helmet-async";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PageContainer } from "@/components/public-layout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ import {
 export default function HotelDetail() {
   const [, params] = useRoute("/hotels/:hotelId");
   const { hotelId = "" } = params ?? {};
+  const { localePath } = useLocale();
 
   return (
     <PageContainer>
@@ -34,7 +36,7 @@ export default function HotelDetail() {
         </div>
         
         <div className="relative container mx-auto px-4 py-12 sm:py-16 md:py-20">
-          <Link href="/hotels">
+          <Link href={localePath("/hotels")}>
             <Button variant="ghost" className="text-white mb-6" data-testid="btn-back-to-hotels">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Hotels
@@ -97,7 +99,7 @@ export default function HotelDetail() {
               </Badge>
             </div>
             
-            <Link href="/hotels">
+            <Link href={localePath("/hotels")}>
               <Button className="bg-[#6443F4] hover:bg-[#5339D9] text-white" data-testid="btn-browse-hotels">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Browse All Hotels
