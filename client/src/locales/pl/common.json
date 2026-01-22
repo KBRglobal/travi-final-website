@@ -1,33 +1,419 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "Strona główna",
+    "destinations": "Miejsca docelowe",
+    "attractions": "Atrakcje",
+    "hotels": "Hotele",
+    "guides": "Przewodniki",
+    "dining": "Restauracje",
+    "districts": "Dzielnice",
+    "articles": "Aktualności",
+    "news": "Aktualności",
+    "shopping": "Zakupy",
+    "realEstate": "Nieruchomości",
+    "events": "Wydarzenia",
+    "search": "Szukaj",
+    "language": "Język",
+    "mainNavigation": "Nawigacja główna",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu",
+    "logoAlt": "TRAVI - Przewodnik podróżny",
+    "followInstagram": "Śledź TRAVI na Instagramie",
+    "followTikTok": "Śledź TRAVI na TikToku"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Nawigacja okruszkowa",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "Czytaj Więcej",
+    "viewAll": "Zobacz Wszystko",
+    "learnMore": "Dowiedz się Więcej",
+    "bookNow": "Zarezerwuj Teraz",
+    "contactUs": "Kontakt",
+    "subscribe": "Subskrybuj",
+    "submit": "Wyślij",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "loading": "Ładowanie...",
+    "error": "Coś poszło nie tak",
+    "noResults": "Nie znaleziono wyników",
+    "seeMore": "Zobacz Więcej",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "previous": "Wstecz",
+    "close": "Zamknij",
+    "share": "Udostępnij",
+    "copyLink": "Kopiuj Link",
+    "copied": "Skopiowano!"
+  },
+  "home": {
+    "hero": {
+      "title": "Odkryj Świat z TRAVI",
+      "subtitle": "Państwa kompletny przewodnik po 17 miejscach docelowych na świecie",
+      "searchPlaceholder": "Szukaj atrakcji, hoteli, restauracji...",
+      "cta": "Zacznij Odkrywać",
+      "badge": "Państwa Brama do Światowych Przygód",
+      "headlinePart1": "Państwa Zaufane Źródło",
+      "headlinePart2": "Podróżne",
+      "description": "Kompleksowe informacje turystyczne dla {{destinations}} miejsc docelowych na świecie. Odkryj szczegółowe przewodniki po {{attractions}}+ atrakcjach.",
+      "descriptionPart1": "Kompleksowe informacje turystyczne dla",
+      "descriptionPart2": "miejsc docelowych na świecie. Odkryj szczegółowe przewodniki po",
+      "descriptionPart3": "atrakcjach.",
+      "carouselLabel": "Nawigacja karuzeli miejsc docelowych",
+      "viewDestination": "Zobacz {{name}} - {{tagline}}",
+      "worldwide": "Na całym świecie",
+      "exploreWorld": "Odkryj Świat",
+      "welcomeAriaLabel": "Witamy w TRAVI World",
+      "pageTitle": "TRAVI World - Przewodniki po hotelach, atrakcjach i aktywnościach",
+      "pageDescription": "Państwa kompletny przewodnik po 17 miejscach docelowych na świecie. Eksperckie informacje o hotelach, atrakcjach, restauracjach i aktywnościach dla 3 000+ miejsc.",
+      "orgDescription": "Państwa zaufane źródło podróżne dla 17 miejsc docelowych na świecie."
+    },
+    "srLabel": {
+      "attractions": "Ponad {{count}} atrakcji objętych",
+      "destinations": "{{count}} miejsc docelowych na świecie",
+      "languages": "Platforma wielojęzyczna z dodatkowymi językami w przygotowaniu"
+    },
+    "featured": "Polecane",
+    "trending": "Teraz popularne",
+    "topAttractions": "Top Atrakcje",
+    "bestHotels": "Najlepsze Hotele",
+    "latestNews": "Najnowsze Wiadomości i Przewodniki",
+    "sections": {
+      "destinations": "Odkryj Miejsca Docelowe",
+      "destinationsDesc": "Odkryj naszą starannie wyselekcjonowaną kolekcję światowych miejsc docelowych",
+      "categories": "Przeglądaj według Kategorii",
+      "categoriesDesc": "Znajdź dokładnie to, czego Państwo szukają",
+      "experiences": "Podróżuj według Doświadczenia",
+      "experiencesDesc": "Wybierz swój styl podróżowania",
+      "faq": "Często Zadawane Pytania",
+      "faqDesc": "Wszystko, co musisz wiedzieć o TRAVI",
+      "regions": "Odkryj według Regionu",
+      "newsletter": "Bądź na Bieżąco",
+      "allDestinationsTitle": "Przewodniki po wszystkich {{count}} miejscach docelowych",
+      "completeGuide": "{{name}}, {{country}} - Kompletny Przewodnik"
+    },
+    "cta": {
+      "exploreDestinations": "Odkryj Miejsca Docelowe",
+      "viewGuides": "Zobacz Przewodniki",
+      "viewAll": "Zobacz Wszystko",
+      "startExploring": "Zacznij Odkrywać",
+      "planTrip": "Zaplanuj Podróż",
+      "viewExperience": "Zobacz {{name}}"
+    },
+    "stats": {
+      "destinations": "MIEJSC DOCELOWYCH",
+      "attractions": "ATRAKCJI",
+      "languages": "JĘZYKÓW",
+      "attractionsNum": "3 000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} miejsc docelowych",
+      "attractionsCountWithLabel": "{{count}}+ atrakcji"
+    },
+    "categories": {
+      "attractions": "Atrakcje",
+      "attractionsDesc": "Miejsca obowiązkowe",
+      "news": "Wiadomości podróżne",
+      "newsDesc": "Najnowsze aktualizacje",
+      "guides": "Przewodniki",
+      "guidesDesc": "Przewodniki po miejscach",
+      "hotels": "Hotele",
+      "hotelsDesc": "Znajdź idealne zakwaterowanie"
+    },
+    "experiences": {
+      "luxury": "Podróże Luksusowe",
+      "luxuryDesc": "Premium doświadczenia podróżne i ekskluzywne miejsca",
+      "adventure": "Przygoda i Natura",
+      "adventureDesc": "Ekscytujące aktywności na świeżym powietrzu i przygody",
+      "family": "Podróże Rodzinne",
+      "familyDesc": "Miejsca i aktywności przyjazne rodzinom",
+      "budget": "Podróże Budżetowe",
+      "budgetDesc": "Przystępne cenowo opcje podróży i miejsca",
+      "romance": "Podróż Poślubna i Romantyka",
+      "romanceDesc": "Romantyczne wyjazdy i miejsca na miesiąc miodowy",
+      "solo": "Podróże Solo",
+      "soloDesc": "Idealne miejsca dla samotnych podróżników"
+    },
+    "faq": {
+      "title": "Często Zadawane Pytania",
+      "subtitle": "Wszystko, co musisz wiedzieć o TRAVI World",
+      "whatIsTravi": "Czym jest TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World to kompleksowa platforma informacji turystycznej obejmująca 17 miejsc docelowych na świecie ze szczegółowymi przewodnikami po 3 000+ atrakcjach, hotelach, restauracjach i aktywnościach.",
+      "howManyDestinations": "Ile miejsc docelowych obejmuje TRAVI?",
+      "howManyDestinationsAnswer": "TRAVI World obejmuje 17 głównych miejsc podróży, w tym Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami i Rome.",
+      "isFree": "Czy TRAVI World jest bezpłatny?",
+      "isFreeAnswer": "Tak, TRAVI World jest całkowicie bezpłatny. Przeglądaj tysiące przewodników, recenzji atrakcji, rekomendacji hoteli i sugestii restauracji bez opłat.",
+      "updateFrequency": "Jak często aktualizowana jest treść?",
+      "updateFrequencyAnswer": "Treść TRAVI World jest aktualizowana codziennie z najnowszymi wiadomościami podróżnymi, nowymi recenzjami atrakcji i zaktualizowanymi informacjami o hotelach i restauracjach we wszystkich 17 miejscach docelowych."
+    },
+    "mascotAlt": "Maskotka TRAVI ze światowymi zabytkami - odkryj przewodniki po Dubai, Paris, London, Rome i innych",
+    "mascotTitle": "TRAVI World - Przewodniki po światowych miejscach docelowych"
+  },
+  "attractions": {
+    "title": "Atrakcje",
+    "subtitle": "Odkryj ikoniczne zabytki i ukryte perełki",
+    "hero": {
+      "badge": "{{count}} atrakcji w {{cities}} miastach",
+      "badgeThousands": "Tysiące atrakcji na świecie",
+      "headlinePart1": "Atrakcje",
+      "headlinePart2": "Na Świecie",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Bilety bez kolejki</span> na Wieżę Eiffla, Koloseum, Burj Khalifa i najlepsze atrakcje w Paris, Rome, Dubai i innych.",
+      "searchPlaceholder": "Szukaj Wieża Eiffla, Koloseum, Burj Khalifa...",
+      "carouselLabel": "Karuzela polecanych atrakcji",
+      "sectionLabel": "Zarezerwuj bilety na najlepsze atrakcje na świecie",
+      "searchAriaLabel": "Szukaj atrakcji po nazwie lub mieście",
+      "searchButton": "Szukaj",
+      "searchButtonAriaLabel": "Szukaj atrakcji"
+    },
+    "stats": {
+      "attractions": "ATRAKCJI",
+      "cities": "MIAST",
+      "rating": "OCENA"
+    },
+    "srLabel": {
+      "attractions": "Ponad {{count}} atrakcji",
+      "cities": "{{count}} miast",
+      "rating": "Ocena {{rating}} gwiazdek"
+    },
+    "types": {
+      "all": "Wszystkie Typy",
+      "museums": "Muzea",
+      "landmarks": "Zabytki",
+      "tours": "Wycieczki",
+      "themeParks": "Parki rozrywki",
+      "shows": "Spektakle"
+    },
+    "thingsToDoIn": "Co robić w {{name}}",
+    "countAttractions": "{{country}} - {{count}} atrakcji",
+    "filters": {
+      "all": "Wszystko",
+      "popular": "Najpopularniejsze",
+      "free": "Bezpłatne",
+      "familyFriendly": "Dla rodzin",
+      "outdoor": "Na zewnątrz",
+      "indoor": "Wewnątrz"
+    },
+    "details": {
+      "location": "Lokalizacja",
+      "hours": "Godziny otwarcia",
+      "price": "Cena",
+      "duration": "Czas trwania",
+      "tips": "Wskazówki"
+    },
+    "sections": {
+      "destinations": "Odkryj Atrakcje według Miejsca",
+      "destinationsDesc": "Wybierz miasto, aby odkryć niesamowite rzeczy do zrobienia",
+      "faq": "Często Zadawane Pytania",
+      "faqDesc": "Odpowiedzi na pytania o rezerwację atrakcji na świecie",
+      "whyBookBadge": "Dlaczego u Nas",
+      "whyBookTitle": "Omiń Kolejki, Oszczędź Czas",
+      "whyBookDesc": "Zarezerwuj bilety z wyprzedzeniem i ciesz się bezproblemowym wejściem do najlepszych atrakcji",
+      "allDestinations": "Wszystkie Miejsca"
+    },
+    "features": {
+      "skipTheLine": "Bilety Bez Kolejki",
+      "skipTheLineDesc": "Omiń kolejki do Wieży Eiffla, Koloseum, Watykanu i innych",
+      "mobileTickets": "Bilety Mobilne",
+      "mobileTicketsDesc": "Natychmiastowa dostawa na telefon - pokaż bilet i wejdź",
+      "freeCancellation": "Bezpłatna Anulacja",
+      "freeCancellationDesc": "Plany się zmieniły? Anuluj do 24 godzin przed wizytą, aby otrzymać pełny zwrot"
+    },
+    "browse": {
+      "title": "Atrakcje według Miejsca",
+      "desc": "Znajdź atrakcje i doświadczenia w najlepszych miastach świata",
+      "thingsToDo": "{{count}} rzeczy do zrobienia",
+      "noDestinations": "Obecnie brak dostępnych miejsc."
+    },
+    "exploreLinks": {
+      "title": "Odkryj Więcej Przewodników",
+      "hotelsWorldwide": "Hotele na Świecie",
+      "bestRestaurants": "Najlepsze Restauracje",
+      "travelNews": "Wiadomości Podróżne"
+    },
+    "cta": {
+      "title": "Gotowy do Odkrywania?",
+      "desc": "Zarezerwuj bilety bez kolejki na Wieżę Eiffla, Koloseum, Burj Khalifa i najlepsze atrakcje na świecie.",
+      "parisAttractions": "Atrakcje Paris",
+      "romeAttractions": "Atrakcje Rome"
+    },
+    "search": {
+      "popular": "Popularne:",
+      "thingsToDoIn": "Co robić w {{city}}",
+      "ariaCarouselNav": "Nawigacja karuzeli atrakcji",
+      "ariaViewInCity": "Zobacz {{name}} w {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Polecana atrakcja",
+      "ariaThumbnails": "Miniatury karuzeli atrakcji",
+      "ariaTicketsIn": "Bilety {{name}} w {{city}}",
+      "priceFrom": "Od",
+      "bookTickets": "Zarezerwuj Bilety",
+      "skipTheLine": "Bez Kolejki",
+      "duration": "2-3 godziny",
+      "freeCancellation": "Bezpłatna Anulacja",
+      "freeCancellationDesc": "24 godz. przed wizytą",
+      "mobileTickets": "Bilety Mobilne",
+      "instantDelivery": "Natychmiastowa dostawa"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} rzeczy do zrobienia"
+    }
+  },
+  "hotels": {
+    "title": "Hotele",
+    "subtitle": "Znajdź idealne zakwaterowanie",
+    "filters": {
+      "all": "Wszystkie Hotele",
+      "luxury": "Luksusowe",
+      "budget": "Budżetowe",
+      "beachfront": "Przy plaży",
+      "cityCenter": "Centrum miasta",
+      "familyFriendly": "Dla rodzin"
+    },
+    "details": {
+      "priceFrom": "Od",
+      "perNight": "za noc",
+      "amenities": "Udogodnienia",
+      "checkIn": "Zameldowanie",
+      "checkOut": "Wymeldowanie",
+      "rooms": "Pokoje",
+      "rating": "Ocena"
+    },
+    "bookNow": "Zarezerwuj Teraz"
+  },
+  "dining": {
+    "title": "Restauracje",
+    "subtitle": "Doświadczenia kulinarne dla każdego smaku",
+    "filters": {
+      "all": "Wszystkie Restauracje",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Kawiarnie",
+      "streetFood": "Street Food",
+      "halal": "Halal",
+      "vegetarian": "Wegetariańskie"
+    },
+    "details": {
+      "cuisine": "Kuchnia",
+      "priceRange": "Przedział cenowy",
+      "hours": "Godziny otwarcia",
+      "dress": "Dress code",
+      "reservations": "Rezerwacje"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": {
+        "name": "Dubai",
+        "country": "ZEA",
+        "cardAlt": "Panorama Dubai z wieżą Burj Khalifa o zachodzie słońca"
+      },
+      "london": {
+        "name": "London",
+        "country": "Wielka Brytania",
+        "cardAlt": "London Big Ben i Houses of Parliament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Francja",
+        "cardAlt": "Paris Wieża Eiffla oświetlona o zachodzie słońca"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan panorama z Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japonia",
+        "cardAlt": "Tokyo Shibuya crossing neony nocą"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapur",
+        "cardAlt": "Singapore Marina Bay Sands i Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Hiszpania",
+        "cardAlt": "Barcelona Sagrada Familia o złotej godzinie"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Tajlandia",
+        "cardAlt": "Bangkok Grand Palace świątynia o wschodzie słońca"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "ZEA",
+        "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Holandia",
+        "cardAlt": "Amsterdam kanał z zabytkowymi budynkami"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Chiny",
+        "cardAlt": "Hong Kong panorama nocą"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turcja",
+        "cardAlt": "Istanbul Błękitny Meczet o zachodzie słońca"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip nocą"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles napis Hollywood"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Miami Beach dzielnica Art Deco"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Włochy",
+        "cardAlt": "Rome Koloseum o złotej godzinie"
+      }
+    },
     "hero": {
       "badge": "{{count}} Miejsc Docelowych na Świecie",
-      "trustedBy": "Zaufało nam {{count}} miejsc docelowych",
+      "trustedBy": "Zaufało nam {{count}} miejsc docelowych na świecie",
       "discover": "Odkryj",
       "worldClass": "Światowej Klasy",
       "destinations": "Miejsca Docelowe",
-      "description": "Starannie wyselekcjonowane przewodniki z lokalną wiedzą dla najpiękniejszych miast świata.",
+      "description": "Starannie wyselekcjonowane przewodniki z lokalną wiedzą dla najbardziej fascynujących miast świata. Od ikonicznych zabytków po ukryte perełki.",
       "exploreAll": "Odkryj Wszystkie Miejsca",
       "travelGuides": "Przewodniki Podróżne",
       "explorePlaceholder": "Odkryj Miejsca Docelowe",
-      "browseCollection": "Przeglądaj naszą kolekcję wybranych miejsc docelowych",
+      "browseCollection": "Przeglądaj naszą kolekcję wybranych miejsc docelowych poniżej",
       "explore": "Odkryj",
       "discoverButton": "Odkryj",
       "ariaLabel": "Przegląd miejsc docelowych",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Odkryj {{name}}",
+      "galleryAriaLabel": "Galeria polecanych miejsc",
+      "placeholderAriaLabel": "Miejsce na polecane miejsce"
     },
     "stats": {
-      "destinations": "MIEJSCA",
-      "countries": "KRAJE",
-      "regions": "Regiony",
-      "languages": "Języki"
+      "destinations": "MIEJSC",
+      "countries": "KRAJÓW",
+      "regions": "Regionów",
+      "languages": "Języków"
     },
     "sections": {
       "featured": "Polecane Miejsca",
-      "featuredDesc": "Wyselekcjonowane miejsca z wyjątkowymi doświadczeniami.",
+      "featuredDesc": "Wyselekcjonowane miejsca z wyjątkowymi doświadczeniami, lokalnymi wskazówkami i wszystkim, czego potrzebujesz do zaplanowania idealnej podróży.",
       "all": "Wszystkie Miejsca",
       "count": "Znaleziono {{count}} miejsc"
     },
@@ -43,7 +429,7 @@
       "next": "Następne miejsce",
       "goTo": "Przejdź do {{name}}",
       "slideOf": "Slajd {{current}} z {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Miniatury karuzeli miejsc"
     },
     "card": {
       "explore": "Odkryj",
@@ -56,26 +442,688 @@
       "title": "Często Zadawane Pytania",
       "subtitle": "Wszystko o przewodnikach TRAVI",
       "q1": "Ile miejsc docelowych obejmuje TRAVI?",
-      "a1": "TRAVI obejmuje główne miejsca docelowe na Bliskim Wschodzie, w Europie, Azji i obu Amerykach.",
-      "q2": "Jakie informacje są zawarte?",
-      "a2": "Każdy przewodnik zawiera atrakcje, zakwaterowanie, lokalną kuchnię i wskazówki podróżne.",
+      "a1": "TRAVI obejmuje główne miejsca docelowe na Bliskim Wschodzie, w Europie, Azji i obu Amerykach z kompleksowymi przewodnikami dla każdej lokalizacji.",
+      "q2": "Jakie informacje są zawarte w przewodnikach TRAVI?",
+      "a2": "Każdy przewodnik zawiera szczegółowe opisy atrakcji, opcje zakwaterowania, lokalną kuchnię, wskazówki transportowe i praktyczne informacje podróżne.",
       "q3": "Czy mogę wyszukiwać miejsca?",
-      "a3": "Tak, możesz wyszukiwać po nazwie lub kraju.",
+      "a3": "Tak, TRAVI pozwala wyszukiwać miejsca po nazwie lub kraju za pomocą paska wyszukiwania na stronie miejsc docelowych.",
       "q4": "Jakie są polecane miejsca na TRAVI?",
-      "a4": "Polecane miejsca oferują wyjątkowe doświadczenia."
+      "a4": "Polecane miejsca TRAVI to starannie wybrane lokalizacje oferujące wyjątkowe doświadczenia dla podróżników o różnych zainteresowaniach, od luksusowych po budżetowe."
     },
     "loading": {
       "title": "Ładowanie Miejsc",
       "message": "Pobieranie najnowszych danych..."
     },
     "error": {
-      "title": "Nie Można Załadować",
-      "message": "Spróbuj ponownie później.",
+      "title": "Nie Można Załadować Miejsc",
+      "message": "Mamy problemy z ładowaniem danych. Spróbuj ponownie później.",
       "refresh": "Odśwież Stronę"
     },
     "empty": {
       "title": "Brak Dostępnych Miejsc",
-      "message": "Obecnie nie ma dostępnych miejsc docelowych."
+      "message": "Obecnie nie ma dostępnych miejsc. Sprawdź ponownie później."
+    }
+  },
+  "districts": {
+    "title": "Dzielnice",
+    "subtitle": "Odkryj różnorodne okolice",
+    "explore": "Odkryj Dzielnicę"
+  },
+  "realEstate": {
+    "title": "Nieruchomości",
+    "subtitle": "Zainwestuj w przyszłość",
+    "offPlan": {
+      "title": "Nieruchomości w Budowie",
+      "subtitle": "Inwestuj Wcześnie, Płać Mniej, Zyskaj Więcej",
+      "findProperty": "Znajdź Idealną Nieruchomość",
+      "from": "Od",
+      "paymentPlan": "Plan płatności",
+      "handover": "Przekazanie",
+      "developer": "Deweloper"
+    },
+    "filters": {
+      "all": "Wszystkie Nieruchomości",
+      "apartments": "Apartamenty",
+      "villas": "Wille",
+      "townhouses": "Domy szeregowe",
+      "penthouses": "Penthousy"
+    },
+    "features": {
+      "cryptoAccepted": "Akceptujemy Krypto",
+      "paymentPlans": "Elastyczne Plany Płatności",
+      "goldenVisa": "Kwalifikacja do Golden Visa",
+      "roiGuarantee": "Gwarancja ROI"
+    }
+  },
+  "search": {
+    "placeholder": "Szukaj atrakcji, przewodników, miejsc...",
+    "results": "Wyniki Wyszukiwania",
+    "noResults": "Nie znaleziono wyników dla",
+    "tryAgain": "Spróbuj innych słów kluczowych"
+  },
+  "footer": {
+    "about": "O TRAVI",
+    "aboutTravi": "O TRAVI",
+    "aboutText": "Kompleksowe informacje turystyczne dla 17 miejsc docelowych na świecie.",
+    "aboutUs": "O Nas",
+    "quickLinks": "Szybkie Linki",
+    "legal": "Prawne",
+    "privacy": "Polityka Prywatności",
+    "privacyPolicy": "Polityka Prywatności",
+    "terms": "Regulamin",
+    "termsOfService": "Warunki Usługi",
+    "contact": "Kontakt",
+    "contactUs": "Skontaktuj się z Nami",
+    "followUs": "Śledź Nas",
+    "explore": "Odkrywaj",
+    "travel": "Podróże",
+    "company": "Firma",
+    "allGuides": "Wszystkie Przewodniki",
+    "cookies": "Cookies",
+    "security": "Bezpieczeństwo",
+    "cookieSettings": "Ustawienia Cookies",
+    "tagline": "Twoje Zaufane Źródło Podróżne",
+    "ariaLabel": "Stopka strony",
+    "featuredGuides": "Polecane Przewodniki",
+    "tools": "Narzędzia",
+    "currencyConverter": "Przelicznik Walut",
+    "roiCalculator": "Kalkulator ROI",
+    "mortgageCalculator": "Kalkulator Kredytu",
+    "glossary": "Słowniczek",
+    "freeThingsToDo": "70+ Bezpłatnych Atrakcji",
+    "open24Hours": "Otwarte 24 Godziny",
+    "tributeToSheikh": "Hołd dla JKW Sheikh Mohammed",
+    "lawsForTourists": "Przepisy dla Turystów",
+    "newsletter": "Zapisz się do newslettera",
+    "newsletterDescription": "Otrzymuj najnowsze wskazówki i aktualizacje.",
+    "emailPlaceholder": "Wprowadź swój e-mail",
+    "allRightsReserved": "Wszelkie prawa zastrzeżone.",
+    "copyright": "© {{year}} {{brand}}. Wszelkie prawa zastrzeżone.",
+    "emailAriaLabel": "Wyślij e-mail do TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Strona Nie Znaleziona",
+      "message": "Strona, której szukasz, nie istnieje.",
+      "button": "Strona Główna"
+    },
+    "500": {
+      "title": "Błąd Serwera",
+      "message": "Coś poszło nie tak po naszej stronie.",
+      "button": "Spróbuj Ponownie"
+    },
+    "network": {
+      "title": "Błąd Połączenia",
+      "message": "Nie można połączyć. Sprawdź swoje połączenie internetowe.",
+      "button": "Ponów"
+    }
+  },
+  "newsletter": {
+    "badge": "Dołącz do Przygody",
+    "title": "Otrzymuj Magię Podróży w Skrzynce",
+    "description": "Cotygodniowe wskazówki, ukryte perełki i ekskluzywne oferty - bez spamu, tylko pasja podróżowania.",
+    "emailPlaceholder": "twoj@email.pl",
+    "subscribe": "Subskrybuj",
+    "success": "Zapisano! Sprawdź swoją skrzynkę."
+  },
+  "cookies": {
+    "title": "Szanujemy Państwa prywatność",
+    "description": "Używamy plików cookie, aby poprawić Państwa doświadczenie przeglądania, analizować ruch i personalizować treści. Klikając \"Akceptuj Wszystko\", wyrażają Państwo zgodę na nasze użycie plików cookie.",
+    "manage": "Zarządzaj",
+    "rejectAll": "Odrzuć Wszystko",
+    "acceptAll": "Akceptuj Wszystko",
+    "preferencesTitle": "Preferencje Cookie",
+    "savePreferences": "Zapisz Preferencje",
+    "essential": {
+      "title": "Niezbędne Cookies",
+      "description": "Wymagane do prawidłowego funkcjonowania strony"
+    },
+    "analytics": {
+      "title": "Analityczne Cookies",
+      "description": "Pomagają nam zrozumieć, jak odwiedzający korzystają z naszej strony"
+    },
+    "marketing": {
+      "title": "Marketingowe Cookies",
+      "description": "Używane do dostarczania spersonalizowanych reklam"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Odkryj Świat | Twój Kompletny Przewodnik",
+      "description": "Odkryj najlepsze atrakcje, hotele, restauracje i okolice. Zaplanuj idealną podróż z poradami i lokalnymi rekomendacjami."
+    },
+    "attractions": {
+      "title": "Atrakcje | Najlepsze Rzeczy do Zobaczenia",
+      "description": "Odkryj najlepsze atrakcje - od Wieży Eiffla po ukryte perełki. Zaplanuj swoją wizytę."
+    },
+    "hotels": {
+      "title": "Hotele | Najlepsze Miejsca na Pobyt",
+      "description": "Znajdź idealny hotel na każdy budżet. Od luksusowych kurortów po opcje budżetowe."
+    },
+    "dining": {
+      "title": "Restauracje | Najlepsze Miejsca do Jedzenia",
+      "description": "Odkryj scenę kulinarną - fine dining, street food i wszystko pomiędzy."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Inteligencja Podróżna",
+      "headlinePart1": "Historie, Które",
+      "headlinePart2": "Poruszają",
+      "description": "Ekspercko przygotowane przewodniki, perspektywy insiderów i redakcyjne narracje, które transformują sposób, w jaki doświadczasz świata.",
+      "startJourney": "Rozpocznij Podróż",
+      "browseCollection": "Przeglądaj Kolekcję",
+      "issueBadge": "Wydanie 47 — Zima 2026"
+    },
+    "stats": {
+      "guides": "Przewodników",
+      "destinations": "Miejsc",
+      "languages": "Języków"
+    },
+    "journey": {
+      "badge": "Twoja Podróż, Nasze Wsparcie",
+      "title": "Każda Wielka Podróż Zaczyna się od Przewodnika",
+      "subtitle": "Od marzeń po wspomnienia, jesteśmy z Tobą na każdym kroku"
+    },
+    "ideaLab": {
+      "badge": "Laboratorium Pomysłów",
+      "title": "Inspiracja dla Twojej Następnej Przygody",
+      "subtitle": "Odkryj miejsca pasujące do Twojego stylu podróżowania",
+      "readGuide": "Czytaj Przewodnik"
+    },
+    "curatedGuides": {
+      "badge": "Wyselekcjonowane Przewodniki",
+      "title": "Starannie Wybrane Kolekcje",
+      "subtitle": "Tematyczne przewodniki dla każdego podróżnika"
+    },
+    "localVoices": {
+      "badge": "Lokalne Głosy",
+      "title": "Wskazówki od Lokalnych Ekspertów",
+      "subtitle": "Autentyczne perspektywy od ludzi znających te miasta"
+    },
+    "travelTools": {
+      "badge": "Narzędzia Podróżne",
+      "title": "Narzędzia dla Twojej Podróży",
+      "subtitle": "Wszystko, czego potrzebujesz do planowania i rezerwacji"
+    },
+    "archetype": {
+      "badge": "Spersonalizowane dla Ciebie",
+      "title": "Jakim Typem Podróżnika Jesteś?",
+      "subtitle": "Wybierz swój styl podróżowania i odkryj przewodniki dopasowane do Ciebie",
+      "viewGuides": "Zobacz Przewodniki {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Poszukiwacz Przygód",
+        "description": "Ekscytujące przeżycia i zastrzyk adrenaliny"
+      },
+      "culture": {
+        "name": "Odkrywca Kultury",
+        "description": "Sztuka, historia i lokalne tradycje"
+      },
+      "relaxation": {
+        "name": "Mistrz Relaksu",
+        "description": "Kurorty wellness i spokojne ucieczki"
+      },
+      "foodie": {
+        "name": "Kulinarny Nomada",
+        "description": "Lokalne smaki i kulinarne przygody"
+      },
+      "wellness": {
+        "name": "Poszukiwacz Wellness",
+        "description": "Relaks, spa i uważne rekolekcje"
+      },
+      "budget": {
+        "name": "Sprytny Podróżnik",
+        "description": "Maksymalne doświadczenia, minimalny budżet"
+      },
+      "solo": {
+        "name": "Samotny Odkrywca",
+        "description": "Niezależne podróże i samopoznanie"
+      },
+      "luxury": {
+        "name": "Koneser Luksusu",
+        "description": "Premium doświadczenia i wyrafinowane życie"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Marz",
+        "subtitle": "Odkryj inspirację",
+        "guides": [
+          "Przewodniki po Miejscach",
+          "Fotoeseje"
+        ]
+      },
+      "plan": {
+        "title": "Planuj",
+        "subtitle": "Zaplanuj podróż",
+        "guides": [
+          "Planowanie Podróży",
+          "Wymagania Wizowe"
+        ]
+      },
+      "prepare": {
+        "title": "Przygotuj się",
+        "subtitle": "Przygotuj się do wyjazdu",
+        "guides": [
+          "Listy Pakowania",
+          "Wskazówki Bezpieczeństwa"
+        ]
+      },
+      "experience": {
+        "title": "Przeżywaj",
+        "subtitle": "Żyj przygodą",
+        "guides": [
+          "Lokalne Wskazówki",
+          "Ukryte Perełki"
+        ]
+      },
+      "share": {
+        "title": "Dziel się",
+        "subtitle": "Opowiedz swoją historię",
+        "guides": [
+          "Pisanie Podróżnicze",
+          "Fotografia"
+        ]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Weekendowe Wyjazdy",
+      "offBeatenPath": "Poza Utartym Szlakiem",
+      "smartTravel": "Sprytne Podróże",
+      "bucketList": "Lista Marzeń",
+      "culinary": "Kulinarne",
+      "natureWonder": "Natura i Cuda"
+    },
+    "seo": {
+      "title": "Przewodniki Podróżne | Eksperckie Wskazówki",
+      "description": "Odkryj eksperckie przewodniki podróżne, wskazówki i porady od naszej globalnej sieci pisarzy podróżniczych. Zaplanuj idealną podróż już dziś."
+    },
+    "editorial": {
+      "badge": "Od Naszej Redakcji",
+      "title": "Artykuły Redakcyjne",
+      "readFull": "Przeczytaj Cały Esej"
+    },
+    "gallery": {
+      "badge": "Wizualne Historie",
+      "title": "Miejsca, Które Inspirują",
+      "categories": {
+        "city": "Miasto",
+        "mountains": "Góry",
+        "beach": "Plaża",
+        "safari": "Safari",
+        "nature": "Natura"
+      }
+    },
+    "writers": {
+      "badge": "Głosy Ekspertów",
+      "title": "Poznaj Naszych Autorów",
+      "subtitle": "Eksperckie głosy stojące za naszymi najbardziej zaufanymi przewodnikami",
+      "articleCount": "{{count}} Artykułów",
+      "viewProfile": "Zobacz Profil"
+    },
+    "map": {
+      "badge": "Odkrywaj według Regionu",
+      "title": "Przewodniki po Całym Świecie",
+      "subtitle": "Kliknij dowolne miejsce, aby poznać naszą ekspertyzę",
+      "guidesAvailable": "{{count}} przewodników dostępnych",
+      "legendDestination": "Miejsce Docelowe",
+      "legendHighlighted": "Wyróżnione"
+    },
+    "newsletter": {
+      "badge": "Dołącz do Podróży",
+      "title": "Historie Podróżnicze, Co Tydzień",
+      "description": "Starannie dobrana inspiracja podróżnicza, eksperckie porady i perspektywy insiderów dostarczane co tydzień do Twojej skrzynki.",
+      "placeholder": "Wprowadź swój e-mail",
+      "subscribe": "Subskrybuj",
+      "subscribing": "Subskrybuję...",
+      "joinCount": "Dołącz do 50 000+ podróżników czytających nasz cotygodniowy przegląd",
+      "invalidEmail": "Wprowadź prawidłowy adres e-mail",
+      "successTitle": "Witaj w podróży!",
+      "successDesc": "Jesteś teraz zapisany do naszego redakcyjnego przeglądu."
+    }
+  },
+  "destination": {
+    "overview": "Przegląd",
+    "attractions": "Atrakcje",
+    "hotels": "Hotele",
+    "dining": "Restauracje",
+    "districts": "Dzielnice",
+    "events": "Wydarzenia",
+    "travelTips": "Wskazówki",
+    "weather": "Pogoda",
+    "currency": "Waluta",
+    "language": "Język",
+    "timezone": "Strefa czasowa",
+    "bestTimeToVisit": "Najlepszy Czas na Wizytę",
+    "gettingAround": "Komunikacja",
+    "safetyTips": "Bezpieczeństwo",
+    "localCustoms": "Lokalne Zwyczaje",
+    "usefulPhrases": "Przydatne Zwroty",
+    "emergencyNumbers": "Numery Alarmowe",
+    "visaInfo": "Informacje Wizowe",
+    "healthInfo": "Informacje Zdrowotne"
+  },
+  "soon": "Wkrótce Dostępne",
+  "accessibility": {
+    "skipToContent": "Przejdź do treści",
+    "mainContent": "Główna treść",
+    "navigation": "Nawigacja",
+    "openInNewTab": "Otwiera w nowej karcie",
+    "externalLink": "Link zewnętrzny"
+  },
+  "time": {
+    "today": "Dzisiaj",
+    "yesterday": "Wczoraj",
+    "daysAgo": "{{count}} dni temu",
+    "hoursAgo": "{{count}} godzin temu",
+    "minutesAgo": "{{count}} minut temu",
+    "justNow": "Przed chwilą"
+  },
+  "validation": {
+    "required": "To pole jest wymagane",
+    "email": "Wprowadź prawidłowy adres e-mail",
+    "minLength": "Minimum {{count}} znaków wymagane",
+    "maxLength": "Maksimum {{count}} znaków dozwolone"
+  },
+  "news": {
+    "time": {
+      "recent": "Ostatnie",
+      "justNow": "Właśnie teraz",
+      "minutesAgo": "{{count}} min temu",
+      "hoursAgo": "{{count}} godz. temu",
+      "daysAgo": "{{count}} dni temu",
+      "minRead": "{{count}} min czytania"
+    },
+    "header": {
+      "title": "TRAVI AKTUALNOŚCI",
+      "edition": "Wydanie Międzynarodowe",
+      "subscribe": "Subskrybuj"
+    },
+    "breaking": {
+      "label": "Pilne"
+    },
+    "search": {
+      "placeholder": "Szukaj wiadomości ze świata...",
+      "button": "Szukaj",
+      "title": "Szukaj",
+      "searching": "Szukam \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Wszystkie Wiadomości",
+      "world": "Świat",
+      "business": "Biznes",
+      "culture": "Kultura",
+      "travel": "Podróże",
+      "tech": "Technologia",
+      "opinion": "Opinie"
+    },
+    "empty": {
+      "title": "Brak Artykułów",
+      "description": "Pracujemy nad najnowszymi wiadomościami podróżniczymi. Wróć wkrótce po aktualizacje z całego świata.",
+      "exploreDestinations": "Odkryj Miejsca",
+      "viewGuides": "Zobacz Przewodniki"
+    },
+    "hero": {
+      "topStory": "Główna Historia",
+      "editorialTeam": "Zespół Redakcyjny"
+    },
+    "views": "{{count}} wyświetleń",
+    "viewAll": "Zobacz Wszystko",
+    "seo": {
+      "title": "Wiadomości Podróżnicze | Najnowsze Historie",
+      "description": "Bądź na bieżąco z najnowszymi wiadomościami podróżniczymi, aktualizacjami miejsc i spostrzeżeniami z całego świata."
+    },
+    "sidebar": {
+      "alsoToday": "Również Dzisiaj",
+      "storiesCount": "{{count}} historii",
+      "liveUpdates": "Na Żywo",
+      "trendingTopics": "Popularne Tematy",
+      "noTrending": "Brak popularnych tematów. Wróć wkrótce!"
+    },
+    "sections": {
+      "topStories": "Najważniejsze",
+      "opinion": "Opinie i Analizy",
+      "moreOpinion": "Więcej Opinii",
+      "worldwide": "Zasięg Globalny"
+    },
+    "worldwide": {
+      "title": "Twoje Okno na Świat",
+      "subtitle": "Wiadomości z każdego zakątka globu",
+      "storiesCount": "{{count}} historii",
+      "comingSoon": "Wkrótce"
+    },
+    "newsletter": {
+      "title": "Bądź na Bieżąco",
+      "description": "Otrzymuj najważniejsze historie dnia każdego ranka. Dołącz do 50 000+ czytelników.",
+      "placeholder": "Wprowadź e-mail",
+      "subscribe": "Zapisz się za Darmo",
+      "noSpam": "Bez spamu. Wypisz się w dowolnym momencie.",
+      "successTitle": "Zapisano!",
+      "successDesc": "Sprawdź e-mail, aby potwierdzić subskrypcję.",
+      "errorTitle": "Błąd subskrypcji",
+      "errorDesc": "Spróbuj ponownie później.",
+      "invalidTitle": "Nieprawidłowy e-mail",
+      "invalidDesc": "Wprowadź prawidłowy adres e-mail."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "O TRAVI World | Twoje Zaufane Źródło Podróżne",
+      "metaDescription": "Poznaj TRAVI World - niezależną platformę informacji turystycznych z kompleksowymi przewodnikami po miejscach na całym świecie.",
+      "badge": "O TRAVI World",
+      "title": "Odkryj",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Twoje zaufane źródło podróżne do odkrywania miejsc na całym świecie z kompleksowymi przewodnikami i lokalnymi wskazówkami.",
+      "ctaExplore": "Odkryj Miejsca",
+      "ctaContact": "Skontaktuj się",
+      "stats": {
+        "destinations": "Miejsc",
+        "articles": "Artykułów",
+        "support": "Wsparcie Podróżne",
+        "coverage": "Zasięg",
+        "cities": "16+ Miast"
+      },
+      "whoWeAre": {
+        "title": "Kim Jesteśmy"
+      },
+      "mission": {
+        "title": "Nasza Misja"
+      },
+      "services": {
+        "badge": "Nasze Usługi",
+        "title": "Co Oferujemy"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Przewodniki po Miejscach",
+          "description": "Kompleksowe informacje o miastach i regionach na świecie"
+        },
+        "attractions": {
+          "title": "Informacje o Atrakcjach",
+          "description": "Szczegóły o must-see miejscach i unikalnych doświadczeniach"
+        },
+        "hotels": {
+          "title": "Przewodniki Hotelowe",
+          "description": "Informacje o opcjach zakwaterowania na każdy budżet"
+        },
+        "restaurants": {
+          "title": "Rekomendacje Restauracji",
+          "description": "Opcje gastronomiczne dla każdego gustu i preferencji"
+        },
+        "articles": {
+          "title": "Artykuły Podróżnicze",
+          "description": "Porady, spostrzeżenia i inspiracje podróżnicze"
+        },
+        "news": {
+          "title": "Najnowsze Wiadomości",
+          "description": "Bądź na bieżąco z aktualizacjami podróżniczymi"
+        }
+      },
+      "editorial": {
+        "title": "Niezależność Redakcyjna",
+        "affiliateTitle": "Ujawnienie Afiliacji"
+      },
+      "values": {
+        "badge": "Nasza Podstawa",
+        "title": "Nasze Wartości",
+        "accuracy": {
+          "title": "Dokładność",
+          "description": "Staramy się dostarczać dokładne i wiarygodne informacje, regularnie aktualizowane"
+        },
+        "transparency": {
+          "title": "Przejrzystość",
+          "description": "Jesteśmy jasni co do naszych relacji afiliacyjnych i sposobu działania"
+        },
+        "userFocused": {
+          "title": "Skupienie na Użytkowniku",
+          "description": "Nasze treści są zaprojektowane, aby pomóc podróżnikom podejmować świadome decyzje"
+        }
+      },
+      "connect": {
+        "badge": "Połączmy się",
+        "title": "Skontaktuj się"
+      },
+      "company": {
+        "title": "Informacje o Firmie",
+        "contactTitle": "Dane Kontaktowe",
+        "contactForm": "Formularz Kontaktowy"
+      }
+    },
+    "contact": {
+      "metaTitle": "Kontakt | TRAVI World",
+      "metaDescription": "Skontaktuj się z TRAVI World. Czekamy na Twoje uwagi, pytania i zapytania dotyczące naszych usług informacji turystycznych.",
+      "badge": "Chętnie wysłuchamy",
+      "titlePart1": "Nawiążmy",
+      "titlePart2": "Kontakt",
+      "subtitle": "Masz pytania o swoją następną przygodę? Jesteśmy tu, aby pomóc Ci odkrywać świat z pewnością.",
+      "cta": "Wyślij nam wiadomość",
+      "getInTouch": "Skontaktuj się",
+      "getInTouchSubtitle": "Wybierz najlepszy sposób kontaktu. Odpowiadamy tak szybko, jak to możliwe.",
+      "howCanWeHelp": "Jak Możemy Pomóc?",
+      "howCanWeHelpSubtitle": "Jesteśmy tu, aby pomóc z pytaniami lub uwagami dotyczącymi naszych treści i usług.",
+      "importantNote": "Ważna Informacja",
+      "importantNoteSubtitle": "Przeczytaj przed kontaktem",
+      "ourOffice": "Nasze Biuro",
+      "ourOfficeSubtitle": "Dla oficjalnej korespondencji i zapytań pocztowych",
+      "travelCompanion": "Twój partner w podróży",
+      "urgentNote": "W pilnych sprawach prosimy o dodanie {{urgentLabel}} w temacie e-maila. Priorytetyzujemy odpowiedzi na podstawie charakteru zapytania.",
+      "urgentLabel": "Pilne",
+      "options": {
+        "generalInquiries": {
+          "title": "Ogólne Zapytania",
+          "description": "Pytania o nasze przewodniki i treści"
+        },
+        "privacyInquiries": {
+          "title": "Zapytania o Prywatność",
+          "description": "Dostęp do danych, usuwanie i prośby o prywatność"
+        },
+        "visitWebsite": {
+          "title": "Odwiedź Naszą Stronę",
+          "description": "Odkryj miejsca i inspiracje podróżnicze"
+        },
+        "responseTime": {
+          "title": "Czas Odpowiedzi",
+          "description": "Staramy się odpowiadać szybko",
+          "action": "2-3 dni robocze"
+        }
+      },
+      "helpTopics": {
+        "general": "Ogólne pytania o nasze przewodniki i treści",
+        "feedback": "Opinie i sugestie ulepszeń",
+        "reporting": "Zgłaszanie błędów lub nieaktualnych informacji",
+        "business": "Zapytania biznesowe i partnerskie",
+        "media": "Zapytania medialne i prasowe",
+        "privacy": "Prośby związane z prywatnością (dostęp do danych, usuwanie, itp.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Polityka Prywatności | TRAVI World",
+      "metaDescription": "Dowiedz się, jak TRAVI World gromadzi, wykorzystuje i chroni Twoje dane osobowe. Przeczytaj naszą kompleksową politykę prywatności.",
+      "badge": "Twoja Prywatność Ma Znaczenie",
+      "title": "Polityka Prywatności",
+      "subtitle": "Jesteśmy zobowiązani do ochrony Twojej prywatności i przejrzystości w naszych praktykach dotyczących danych. Dowiedz się, jak TRAVI World gromadzi, wykorzystuje i chroni Twoje informacje.",
+      "effectiveDate": "Data wejścia w życie: 1 stycznia 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Ochrona Danych",
+          "description": "Twoje dane są chronione"
+        },
+        "minimalCollection": {
+          "title": "Minimalne Zbieranie",
+          "description": "Zbieramy tylko to, co niezbędne"
+        },
+        "transparency": {
+          "title": "Pełna Przejrzystość",
+          "description": "Jasność co do naszych praktyk"
+        },
+        "yourControl": {
+          "title": "Twoja Kontrola",
+          "description": "Zarządzaj swoimi preferencjami"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Kim Jesteśmy",
+        "informationCollect": "2. Informacje, Które Gromadzimy",
+        "howWeUse": "3. Jak Wykorzystujemy Twoje Informacje",
+        "legalBasis": "4. Podstawa Prawna Przetwarzania (RODO)",
+        "cookies": "5. Cookies i Technologie Śledzące",
+        "thirdParty": "6. Usługi Podmiotów Trzecich",
+        "aiContent": "7. Treści Generowane przez AI",
+        "internationalTransfers": "8. Międzynarodowe Transfery Danych",
+        "dataRetention": "9. Przechowywanie Danych",
+        "privacyRights": "10. Twoje Prawa do Prywatności",
+        "californiaRights": "11. Kalifornijskie Prawa do Prywatności (CCPA/CPRA)",
+        "childrenPrivacy": "12. Prywatność Dzieci",
+        "dataSecurity": "13. Bezpieczeństwo Danych",
+        "changes": "14. Zmiany w Tej Polityce",
+        "contactUs": "15. Kontakt"
+      }
+    },
+    "terms": {
+      "metaTitle": "Regulamin | TRAVI World",
+      "metaDescription": "Przeczytaj regulamin korzystania z usług informacji turystycznych TRAVI World. Umowa prawna między Tobą a KBR Global Creative Consulting Ltd.",
+      "badge": "Umowa Prawna",
+      "title": "Regulamin",
+      "subtitle": "Prosimy o uważne przeczytanie tych warunków przed korzystaniem z TRAVI World. Twój dostęp i korzystanie z naszej platformy podlega tym warunkom.",
+      "lastUpdated": "Ostatnia aktualizacja: 1 stycznia 2026",
+      "importantNotice": "Ważne Ogłoszenie Prawne",
+      "keyPoints": {
+        "editorial": {
+          "title": "Platforma Redakcyjna",
+          "description": "Przewodniki i treści o miejscach"
+        },
+        "affiliate": {
+          "title": "Linki Afiliacyjne",
+          "description": "Rekomendacje oparte na prowizji"
+        },
+        "aiGenerated": {
+          "title": "Generowane przez AI",
+          "description": "Treści tworzone z pomocą AI"
+        },
+        "privacy": {
+          "title": "Twoja Prywatność",
+          "description": "Ochrona danych gwarantowana"
+        }
+      },
+      "sections": {
+        "operator": "Operator / Podmiot Prawny",
+        "purpose": "1. Cel i Zakres Użytkowania",
+        "affiliateDisclosure": "2. Ujawnienie Afiliacji i Transakcje z Podmiotami Trzecimi",
+        "aiDisclaimer": "3. Zastrzeżenie dot. Treści Generowanych przez AI",
+        "newsletter": "4. Newsletter i Komunikacja",
+        "userConduct": "5. Zachowanie Użytkownika i Zabronione Działania",
+        "intellectualProperty": "6. Własność Intelektualna i Ograniczona Licencja",
+        "dmca": "7. Notice-and-Takedown (DMCA i Podobne)",
+        "disclaimers": "8. Dokładność, Dostępność i Zastrzeżenia",
+        "liability": "9. Ograniczenie Odpowiedzialności i Siła Wyższa",
+        "indemnification": "10. Zabezpieczenie",
+        "privacyCookies": "11. Prywatność, Cookies i Ochrona Danych",
+        "accessibility": "12. Oświadczenie o Dostępności",
+        "governingLaw": "13. Prawo Właściwe, Rozstrzyganie Sporów i Jurysdykcja",
+        "modifications": "14. Modyfikacje, Rozdzielność i Postanowienia Ogólne"
+      }
     }
   }
 }

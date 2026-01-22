@@ -1,23 +1,345 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "Főoldal",
+    "destinations": "Úti Célok",
+    "attractions": "Látnivalók",
+    "hotels": "Szállodák",
+    "guides": "Útikalauzok",
+    "dining": "Éttermek",
+    "districts": "Kerületek",
+    "articles": "Hírek",
+    "news": "Hírek",
+    "shopping": "Vásárlás",
+    "realEstate": "Ingatlan",
+    "events": "Események",
+    "search": "Keresés",
+    "language": "Nyelv",
+    "mainNavigation": "Fő navigáció",
+    "openMenu": "Menü megnyitása",
+    "closeMenu": "Menü bezárása",
+    "logoAlt": "TRAVI - Útikalauz",
+    "followInstagram": "Kövesse a TRAVI-t az Instagramon",
+    "followTikTok": "Kövesse a TRAVI-t a TikTokon"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Morzsa navigáció",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "Tovább Olvasom",
+    "viewAll": "Összes Megtekintése",
+    "learnMore": "További Információ",
+    "bookNow": "Foglalás",
+    "contactUs": "Kapcsolat",
+    "subscribe": "Feliratkozás",
+    "submit": "Küldés",
+    "cancel": "Mégse",
+    "save": "Mentés",
+    "edit": "Szerkesztés",
+    "delete": "Törlés",
+    "loading": "Betöltés...",
+    "error": "Valami hiba történt",
+    "noResults": "Nincs találat",
+    "seeMore": "Több",
+    "back": "Vissza",
+    "next": "Következő",
+    "previous": "Előző",
+    "close": "Bezárás",
+    "share": "Megosztás",
+    "copyLink": "Link Másolása",
+    "copied": "Másolva!"
+  },
+  "home": {
+    "hero": {
+      "title": "Fedezze Fel a Világot a TRAVI-val",
+      "subtitle": "Teljes körű útikalauz 17 úti célhoz világszerte",
+      "searchPlaceholder": "Keressen látnivalókat, szállodákat, éttermeket...",
+      "cta": "Felfedezés Indítása",
+      "badge": "Kapuja a Világ Kalandjaiba",
+      "headlinePart1": "Megbízható",
+      "headlinePart2": "Utazási Forrás",
+      "description": "Átfogó utazási információk {{destinations}} úti célhoz világszerte. Fedezzen fel részletes útikalauzokat {{attractions}}+ látnivalóhoz.",
+      "descriptionPart1": "Átfogó utazási információk",
+      "descriptionPart2": "úti célhoz világszerte. Fedezzen fel részletes útikalauzokat",
+      "descriptionPart3": "látnivalóhoz.",
+      "carouselLabel": "Úti cél körhinta navigáció",
+      "viewDestination": "{{name}} megtekintése - {{tagline}}",
+      "worldwide": "Világszerte",
+      "exploreWorld": "Fedezze Fel a Világot",
+      "welcomeAriaLabel": "Üdvözöljük a TRAVI World-ben",
+      "pageTitle": "TRAVI World - Útikalauzok szállodákhoz, látnivalókhoz és tevékenységekhez",
+      "pageDescription": "Teljes körű útikalauz 17 úti célhoz világszerte. Szakértői információk szállodákról, látnivalókról, éttermekről és tevékenységekről 3 000+ helyre.",
+      "orgDescription": "Megbízható utazási forrás 17 úti célhoz világszerte."
+    },
+    "srLabel": {
+      "attractions": "Több mint {{count}} látnivaló",
+      "destinations": "{{count}} úti cél világszerte",
+      "languages": "Többnyelvű platform további nyelvekkel"
+    },
+    "featured": "Kiemelt",
+    "trending": "Most Népszerű",
+    "topAttractions": "Top Látnivalók",
+    "bestHotels": "Legjobb Szállodák",
+    "latestNews": "Legújabb Hírek és Kalauzok",
+    "sections": {
+      "destinations": "Fedezze Fel az Úti Célokat",
+      "destinationsDesc": "Fedezze fel gondosan válogatott globális úti cél gyűjteményünket",
+      "categories": "Böngészés Kategória Szerint",
+      "categoriesDesc": "Találja meg pontosan amit keres",
+      "experiences": "Utazás Élmény Szerint",
+      "experiencesDesc": "Válassza ki utazási stílusát",
+      "faq": "Gyakori Kérdések",
+      "faqDesc": "Minden amit tudnia kell a TRAVI-ról",
+      "regions": "Felfedezés Régió Szerint",
+      "newsletter": "Maradjon Naprakész",
+      "allDestinationsTitle": "Útikalauzok mind a {{count}} úti célhoz",
+      "completeGuide": "{{name}}, {{country}} - Teljes Útikalauz"
+    },
+    "cta": {
+      "exploreDestinations": "Úti Célok Felfedezése",
+      "viewGuides": "Kalauzok Megtekintése",
+      "viewAll": "Összes Megtekintése",
+      "startExploring": "Felfedezés Indítása",
+      "planTrip": "Utazás Tervezése",
+      "viewExperience": "{{name}} Megtekintése"
+    },
+    "stats": {
+      "destinations": "ÚTI CÉL",
+      "attractions": "LÁTNIVALÓ",
+      "languages": "NYELV",
+      "attractionsNum": "3 000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} úti cél",
+      "attractionsCountWithLabel": "{{count}}+ látnivaló"
+    },
+    "categories": {
+      "attractions": "Látnivalók",
+      "attractionsDesc": "Kötelező helyek",
+      "news": "Utazási Hírek",
+      "newsDesc": "Legújabb frissítések",
+      "guides": "Útikalauzok",
+      "guidesDesc": "Úti cél kalauzok",
+      "hotels": "Szállodák",
+      "hotelsDesc": "Találja meg a tökéletes szállást"
+    },
+    "experiences": {
+      "luxury": "Luxus Utazás",
+      "luxuryDesc": "Prémium élmények és exkluzív úti célok",
+      "adventure": "Kaland és Természet",
+      "adventureDesc": "Izgalmas szabadtéri tevékenységek és kalandok",
+      "family": "Családi Utazás",
+      "familyDesc": "Családbarát úti célok és tevékenységek",
+      "budget": "Gazdaságos Utazás",
+      "budgetDesc": "Megfizethető utazási lehetőségek és úti célok",
+      "romance": "Nászút és Romantika",
+      "romanceDesc": "Romantikus kirándulások és nászúti célpontok",
+      "solo": "Egyedül Utazás",
+      "soloDesc": "Tökéletes úti célok egyedül utazóknak"
+    },
+    "faq": {
+      "title": "Gyakori Kérdések",
+      "subtitle": "Minden amit tudnia kell a TRAVI World-ről",
+      "whatIsTravi": "Mi a TRAVI World?",
+      "whatIsTraviAnswer": "A TRAVI World egy átfogó utazási információs platform, amely 17 úti célt fed le világszerte, részletes útikalauzokkal 3 000+ látnivalóhoz, szállodához, étteremhez és tevékenységhez.",
+      "howManyDestinations": "Hány úti célt fed le a TRAVI?",
+      "howManyDestinationsAnswer": "A TRAVI World 17 fő utazási célpontot fed le, beleértve Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami és Rome városokat.",
+      "isFree": "Ingyenes a TRAVI World?",
+      "isFreeAnswer": "Igen, a TRAVI World teljesen ingyenes. Böngésszen ezer útikalauz, látnivaló-értékelés, szálloda-ajánlás és étterem-javaslat között díjmentesen.",
+      "updateFrequency": "Milyen gyakran frissül a tartalom?",
+      "updateFrequencyAnswer": "A TRAVI World tartalma naponta frissül a legújabb utazási hírekkel, új látnivaló-értékelésekkel és frissített információkkal a szállodákról és éttermekről mind a 17 úti célban."
+    },
+    "mascotAlt": "TRAVI kabalafigura világhírű látnivalókkal - fedezze fel az útikalauzokat Dubai, Paris, London, Rome és más városokhoz",
+    "mascotTitle": "TRAVI World - Útikalauzok globális úti célokhoz"
+  },
+  "attractions": {
+    "title": "Látnivalók",
+    "subtitle": "Fedezze fel az ikonikus helyeket és rejtett kincseket",
+    "hero": {
+      "badge": "{{count}} látnivaló {{cities}} városban",
+      "badgeThousands": "Ezernyi látnivaló világszerte",
+      "headlinePart1": "Látnivalók",
+      "headlinePart2": "Világszerte",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Sorállás nélküli jegyek</span> az Eiffel-toronyhoz, Colosseumhoz, Burj Khalifához és top látnivalókhoz Paris, Rome, Dubai és más városokban.",
+      "searchPlaceholder": "Keressen Eiffel-torony, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Kiemelt látnivalók körhinta",
+      "sectionLabel": "Foglaljon jegyeket a világ top látnivalóihoz",
+      "searchAriaLabel": "Keressen látnivalókat név vagy város szerint",
+      "searchButton": "Keresés",
+      "searchButtonAriaLabel": "Látnivalók keresése"
+    },
+    "stats": {
+      "attractions": "LÁTNIVALÓ",
+      "cities": "VÁROS",
+      "rating": "ÉRTÉKELÉS"
+    },
+    "srLabel": {
+      "attractions": "Több mint {{count}} látnivaló",
+      "cities": "{{count}} város",
+      "rating": "{{rating}} csillagos értékelés"
+    },
+    "types": {
+      "all": "Minden Típus",
+      "museums": "Múzeumok",
+      "landmarks": "Látnivalók",
+      "tours": "Túrák",
+      "themeParks": "Vidámparkok",
+      "shows": "Előadások"
+    },
+    "thingsToDoIn": "Látnivalók itt: {{name}}",
+    "countAttractions": "{{country}} - {{count}} látnivaló",
+    "filters": {
+      "all": "Mind",
+      "popular": "Legnépszerűbb",
+      "free": "Ingyenes Belépő",
+      "familyFriendly": "Családbarát",
+      "outdoor": "Szabadtéri",
+      "indoor": "Beltéri"
+    },
+    "details": {
+      "location": "Helyszín",
+      "hours": "Nyitvatartás",
+      "price": "Ár",
+      "duration": "Időtartam",
+      "tips": "Tippek"
+    },
+    "sections": {
+      "destinations": "Fedezze Fel a Látnivalókat Úti Cél Szerint",
+      "destinationsDesc": "Válasszon várost a csodálatos látnivalók felfedezéséhez",
+      "faq": "Gyakori Kérdések",
+      "faqDesc": "Válaszok a látnivalók foglalásáról világszerte",
+      "whyBookBadge": "Miért Nálunk Foglaljon",
+      "whyBookTitle": "Kerülje El a Sorokat, Spóroljon Időt",
+      "whyBookDesc": "Foglaljon jegyeket előre és élvezze a problémamentes belépést",
+      "allDestinations": "Minden Úti Cél"
+    },
+    "features": {
+      "skipTheLine": "Sorállás Nélküli Jegyek",
+      "skipTheLineDesc": "Haladjon el a sorok mellett az Eiffel-toronynál, Colosseumnál, Vatikánnál és máshol",
+      "mobileTickets": "Mobil Jegyek",
+      "mobileTicketsDesc": "Azonnali kézbesítés a telefonjára - mutassa meg a jegyet és lépjen be",
+      "freeCancellation": "Ingyenes Lemondás",
+      "freeCancellationDesc": "Változtak a tervei? Mondja le 24 órával korábban a teljes visszatérítésért"
+    },
+    "browse": {
+      "title": "Látnivalók Úti Cél Szerint",
+      "desc": "Találjon látnivalókat és élményeket a világ legjobb városaiban",
+      "thingsToDo": "{{count}} látnivaló",
+      "noDestinations": "Jelenleg nincs elérhető úti cél."
+    },
+    "exploreLinks": {
+      "title": "Fedezzen Fel Több Útikalauzt",
+      "hotelsWorldwide": "Szállodák Világszerte",
+      "bestRestaurants": "Legjobb Éttermek",
+      "travelNews": "Utazási Hírek"
+    },
+    "cta": {
+      "title": "Készen Áll Felfedezni?",
+      "desc": "Foglaljon sorállás nélküli jegyeket az Eiffel-toronyhoz, Colosseumhoz, Burj Khalifához és top látnivalókhoz világszerte.",
+      "parisAttractions": "Paris Látnivalók",
+      "romeAttractions": "Rome Látnivalók"
+    },
+    "search": {
+      "popular": "Népszerű:",
+      "thingsToDoIn": "Látnivalók itt: {{city}}",
+      "ariaCarouselNav": "Látnivaló körhinta navigáció",
+      "ariaViewInCity": "{{name}} megtekintése itt: {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Kiemelt látnivaló",
+      "ariaThumbnails": "Látnivaló körhinta miniatűrök",
+      "ariaTicketsIn": "{{name}} jegyek itt: {{city}}",
+      "priceFrom": "Ártól",
+      "bookTickets": "Jegyfoglalás",
+      "skipTheLine": "Sorállás Nélkül",
+      "duration": "2-3 óra",
+      "freeCancellation": "Ingyenes Lemondás",
+      "freeCancellationDesc": "24 órával a látogatás előtt",
+      "mobileTickets": "Mobil Jegyek",
+      "instantDelivery": "Azonnali kézbesítés"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} látnivaló"
+    }
+  },
+  "hotels": {
+    "title": "Szállodák",
+    "subtitle": "Találja meg a tökéletes szállást",
+    "filters": {
+      "all": "Minden Szálloda",
+      "luxury": "Luxus",
+      "budget": "Gazdaságos",
+      "beachfront": "Tengerparti",
+      "cityCenter": "Belváros",
+      "familyFriendly": "Családbarát"
+    },
+    "details": {
+      "priceFrom": "Ártól",
+      "perNight": "éjszakánként",
+      "amenities": "Felszerelés",
+      "checkIn": "Bejelentkezés",
+      "checkOut": "Kijelentkezés",
+      "rooms": "Szobák",
+      "rating": "Értékelés"
+    },
+    "bookNow": "Foglalás"
+  },
+  "dining": {
+    "title": "Éttermek",
+    "subtitle": "Kulináris élmények minden ízléshez",
+    "filters": {
+      "all": "Minden Étterem",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Kávézók",
+      "streetFood": "Utcai Étel",
+      "halal": "Halal",
+      "vegetarian": "Vegetáriánus"
+    },
+    "details": {
+      "cuisine": "Konyha",
+      "priceRange": "Árkategória",
+      "hours": "Nyitvatartás",
+      "dress": "Öltözködési Kód",
+      "reservations": "Foglalás"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "EAE", "cardAlt": "Dubai látképe a Burj Khalifa toronnyal naplementekor" },
+      "london": { "name": "London", "country": "Egyesült Királyság", "cardAlt": "London Big Ben és a Parlament" },
+      "paris": { "name": "Paris", "country": "Franciaország", "cardAlt": "Paris Eiffel-torony megvilágítva naplementekor" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan az Empire State Building-gel" },
+      "tokyo": { "name": "Tokyo", "country": "Japán", "cardAlt": "Tokyo Shibuya kereszteződés neon fények éjjel" },
+      "singapore": { "name": "Singapore", "country": "Szingapúr", "cardAlt": "Singapore Marina Bay Sands és Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spanyolország", "cardAlt": "Barcelona Sagrada Familia az arany órában" },
+      "bangkok": { "name": "Bangkok", "country": "Thaiföld", "cardAlt": "Bangkok Grand Palace templom napkeltekor" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "EAE", "cardAlt": "Abu Dhabi Sheikh Zayed mecset" },
+      "amsterdam": { "name": "Amsterdam", "country": "Hollandia", "cardAlt": "Amsterdam csatorna történelmi épületekkel" },
+      "hongKong": { "name": "Hong Kong", "country": "Kína", "cardAlt": "Hong Kong látképe éjjel" },
+      "istanbul": { "name": "Istanbul", "country": "Törökország", "cardAlt": "Istanbul Kék Mecset naplementekor" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip éjjel" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood felirat" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco negyed" },
+      "rome": { "name": "Rome", "country": "Olaszország", "cardAlt": "Rome Colosseum az arany órában" }
+    },
     "hero": {
       "badge": "{{count}} Úti Cél Világszerte",
-      "trustedBy": "{{count}} úti cél bízik bennünk",
+      "trustedBy": "{{count}} úti cél bízik bennünk világszerte",
       "discover": "Fedezze fel",
       "worldClass": "Világszínvonalú",
       "destinations": "Úti Célok",
-      "description": "Gondosan válogatott útikalauzok helyi szakértelemmel a világ legelbűvölőbb városaihoz.",
+      "description": "Gondosan válogatott útikalauzok helyi szakértelemmel a világ legelbűvölőbb városaihoz. Ikonikus helyektől a rejtett kincsekig.",
       "exploreAll": "Minden Úti Cél Felfedezése",
       "travelGuides": "Útikalauzok",
       "explorePlaceholder": "Úti Célok Felfedezése",
-      "browseCollection": "Böngésszen válogatott úti cél gyűjteményünkben",
+      "browseCollection": "Böngésszen válogatott úti cél gyűjteményünkben alább",
       "explore": "Felfedezés",
       "discoverButton": "Felfedezés",
       "ariaLabel": "Úti célok áttekintése",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "{{name}} Felfedezése",
+      "galleryAriaLabel": "Kiemelt úti célok galériája",
+      "placeholderAriaLabel": "Kiemelt úti cél helyőrző"
     },
     "stats": {
       "destinations": "ÚTI CÉL",
@@ -27,7 +349,7 @@
     },
     "sections": {
       "featured": "Kiemelt Úti Célok",
-      "featuredDesc": "Válogatott úti célok kivételes élményekkel.",
+      "featuredDesc": "Gondosan válogatott úti célok kivételes élményekkel, helyi tippekkel és mindennel, amire szüksége van a tökéletes utazás tervezéséhez.",
       "all": "Minden Úti Cél",
       "count": "{{count}} úti cél található"
     },
@@ -43,7 +365,7 @@
       "next": "Következő úti cél",
       "goTo": "Ugrás: {{name}}",
       "slideOf": "Dia {{current}}/{{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Úti cél körhinta miniatűrök"
     },
     "card": {
       "explore": "Felfedezés",
@@ -56,26 +378,614 @@
       "title": "Gyakori Kérdések",
       "subtitle": "Minden a TRAVI úti cél kalauzokról",
       "q1": "Hány úti célt fed le a TRAVI?",
-      "a1": "A TRAVI a Közel-Kelet, Európa, Ázsia és Amerika főbb úti céljait fedi le.",
-      "q2": "Milyen információk szerepelnek?",
-      "a2": "Minden kalauz tartalmaz látnivalókat, szállást, helyi konyhát és utazási tippeket.",
+      "a1": "A TRAVI a Közel-Kelet, Európa, Ázsia és Amerika főbb úti céljait fedi le átfogó kalauzokkal minden helyszínhez.",
+      "q2": "Milyen információk szerepelnek a TRAVI útikalauzokban?",
+      "a2": "Minden útikalauz részletes leírásokat tartalmaz a látnivalókról, szálláslehetőségekről, helyi konyhákról, közlekedési tippekről és gyakorlati utazási információkról.",
       "q3": "Kereshetek úti célokat?",
-      "a3": "Igen, kereshet név vagy ország szerint.",
+      "a3": "Igen, a TRAVI lehetővé teszi az úti célok keresését név vagy ország szerint az úti célok oldalán található keresősávval.",
       "q4": "Melyek a kiemelt úti célok a TRAVI-n?",
-      "a4": "A kiemelt úti célok kivételes élményeket kínálnak."
+      "a4": "A TRAVI kiemelt úti céljai gondosan válogatott helyszínek, amelyek kivételes élményeket kínálnak a legkülönbözőbb érdeklődésű utazók számára, a luxustól a gazdaságos utazásig."
     },
     "loading": {
       "title": "Úti Célok Betöltése",
       "message": "Legújabb adatok lekérése..."
     },
     "error": {
-      "title": "Nem Sikerült Betölteni",
-      "message": "Kérjük, próbálja újra később.",
+      "title": "Nem Sikerült Betölteni az Úti Célokat",
+      "message": "Problémába ütköztünk az adatok betöltésekor. Kérjük, próbálja újra később.",
       "refresh": "Oldal Frissítése"
     },
     "empty": {
       "title": "Nincs Elérhető Úti Cél",
-      "message": "Jelenleg nincs elérhető úti cél."
+      "message": "Jelenleg nincs elérhető úti cél. Nézzen vissza később."
+    }
+  },
+  "districts": {
+    "title": "Kerületek",
+    "subtitle": "Fedezze fel a változatos negyedeket",
+    "explore": "Kerület Felfedezése"
+  },
+  "realEstate": {
+    "title": "Ingatlan",
+    "subtitle": "Fektessen be a jövőbe",
+    "offPlan": {
+      "title": "Tervrajzi Ingatlanok",
+      "subtitle": "Fektessen Be Korán, Fizessen Kevesebbet, Nyerjen Többet",
+      "findProperty": "Tökéletes Ingatlan Keresése",
+      "from": "Ártól",
+      "paymentPlan": "Fizetési Terv",
+      "handover": "Átadás",
+      "developer": "Fejlesztő"
+    },
+    "filters": {
+      "all": "Minden Ingatlan",
+      "apartments": "Lakások",
+      "villas": "Villák",
+      "townhouses": "Sorházak",
+      "penthouses": "Penthouse-ok"
+    },
+    "features": {
+      "cryptoAccepted": "Kriptó Elfogadva",
+      "paymentPlans": "Rugalmas Fizetési Tervek",
+      "goldenVisa": "Golden Visa Jogosult",
+      "roiGuarantee": "ROI Garancia"
+    }
+  },
+  "search": {
+    "placeholder": "Keressen látnivalókat, kalauzokat, úti célokat...",
+    "results": "Keresési Eredmények",
+    "noResults": "Nincs találat a következőre",
+    "tryAgain": "Próbáljon más kulcsszavakat"
+  },
+  "footer": {
+    "about": "A TRAVI-ról",
+    "aboutTravi": "A TRAVI-ról",
+    "aboutText": "Átfogó utazási információk 17 úti célhoz világszerte.",
+    "aboutUs": "Rólunk",
+    "quickLinks": "Gyors Linkek",
+    "legal": "Jogi",
+    "privacy": "Adatvédelmi Irányelvek",
+    "privacyPolicy": "Adatvédelmi Irányelvek",
+    "terms": "Felhasználási Feltételek",
+    "termsOfService": "Szolgáltatási Feltételek",
+    "contact": "Kapcsolat",
+    "contactUs": "Lépjen Kapcsolatba Velünk",
+    "followUs": "Kövessen Minket",
+    "explore": "Felfedezés",
+    "travel": "Utazás",
+    "company": "Cég",
+    "allGuides": "Minden Kalauz",
+    "cookies": "Sütik",
+    "security": "Biztonság",
+    "cookieSettings": "Süti Beállítások",
+    "tagline": "Megbízható Utazási Forrása",
+    "ariaLabel": "Weboldal lábléc",
+    "featuredGuides": "Kiemelt Kalauzok",
+    "tools": "Eszközök",
+    "currencyConverter": "Pénznemváltó",
+    "roiCalculator": "ROI Kalkulátor",
+    "mortgageCalculator": "Jelzálog Kalkulátor",
+    "glossary": "Szószedet",
+    "freeThingsToDo": "70+ Ingyenes Látnivaló",
+    "open24Hours": "24 Órás Nyitvatartás",
+    "tributeToSheikh": "Tisztelgés Sheikh Mohammed Előtt",
+    "lawsForTourists": "Törvények Turistáknak",
+    "newsletter": "Iratkozzon fel hírlevelünkre",
+    "newsletterDescription": "Kapja meg a legújabb utazási tippeket és frissítéseket.",
+    "emailPlaceholder": "Adja meg e-mail címét",
+    "allRightsReserved": "Minden jog fenntartva.",
+    "copyright": "© {{year}} {{brand}}. Minden jog fenntartva.",
+    "emailAriaLabel": "E-mail küldése a TRAVI-nak"
+  },
+  "errors": {
+    "404": {
+      "title": "Az Oldal Nem Található",
+      "message": "A keresett oldal nem létezik.",
+      "button": "Főoldal"
+    },
+    "500": {
+      "title": "Szerverhiba",
+      "message": "Valami hiba történt nálunk.",
+      "button": "Próbálja Újra"
+    },
+    "network": {
+      "title": "Kapcsolódási Hiba",
+      "message": "Nem lehet csatlakozni. Ellenőrizze internetkapcsolatát.",
+      "button": "Újra"
+    }
+  },
+  "newsletter": {
+    "badge": "Csatlakozzon a Kalandhoz",
+    "title": "Utazási Varázslat a Postaládájába",
+    "description": "Heti tippek, rejtett kincsek és exkluzív ajánlatok - spam nélkül, csak utazási szenvedély.",
+    "emailPlaceholder": "email@pelda.hu",
+    "subscribe": "Feliratkozás",
+    "success": "Feliratkozott! Ellenőrizze postaládáját."
+  },
+  "cookies": {
+    "title": "Értékeljük adatvédelmét",
+    "description": "Sütiket használunk a böngészési élmény javítására, a forgalom elemzésére és a tartalom személyre szabására. Az \"Összes Elfogadása\" gombra kattintva hozzájárul a sütik használatához.",
+    "manage": "Kezelés",
+    "rejectAll": "Összes Elutasítása",
+    "acceptAll": "Összes Elfogadása",
+    "preferencesTitle": "Süti Beállítások",
+    "savePreferences": "Beállítások Mentése",
+    "essential": {
+      "title": "Alapvető Sütik",
+      "description": "Szükségesek a weboldal megfelelő működéséhez"
+    },
+    "analytics": {
+      "title": "Elemzési Sütik",
+      "description": "Segítenek megérteni, hogyan használják a látogatók weboldalunkat"
+    },
+    "marketing": {
+      "title": "Marketing Sütik",
+      "description": "Személyre szabott hirdetések megjelenítésére szolgálnak"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Fedezze Fel a Világot | Teljes Körű Útikalauz",
+      "description": "Fedezze fel a legjobb látnivalókat, szállodákat, éttermeket és negyedeket. Tervezze meg tökéletes utazását helyi tippekkel és ajánlásokkal."
+    },
+    "attractions": {
+      "title": "Látnivalók | Top Helyek Világszerte",
+      "description": "Fedezze fel a legjobb látnivalókat - az Eiffel-toronytól a rejtett kincsekig. Tervezze meg látogatását."
+    },
+    "hotels": {
+      "title": "Szállodák | Legjobb Szálláshelyek",
+      "description": "Találja meg a tökéletes szállodát minden költségvetéshez. Luxus üdülőhelyektől a gazdaságos lehetőségekig."
+    },
+    "dining": {
+      "title": "Éttermek | Legjobb Étkezőhelyek",
+      "description": "Fedezze fel a kulináris világot - fine dining, utcai étel és minden ami közte van."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Utazási Intelligencia",
+      "headlinePart1": "Történetek, Amelyek",
+      "headlinePart2": "Megérintenek",
+      "description": "Szakértők által készített útikalauzok, helyi perspektívák és szerkesztőségi narratívák, amelyek megváltoztatják a világ megtapasztalásának módját.",
+      "startJourney": "Utazás Indítása",
+      "browseCollection": "Gyűjtemény Böngészése",
+      "issueBadge": "47. Szám — Tél 2026"
+    },
+    "stats": {
+      "guides": "Útikalauz",
+      "destinations": "Úti Cél",
+      "languages": "Nyelv"
+    },
+    "journey": {
+      "badge": "Az Ön Utazása, A Mi Vezetésünk",
+      "title": "Minden Nagyszerű Utazás Egy Kalauzzal Kezdődik",
+      "subtitle": "Az álmodozástól a megosztásig, minden lépésnél Önnel vagyunk"
+    },
+    "ideaLab": {
+      "badge": "Ötletlabor",
+      "title": "Válogatott Inspiráció",
+      "readGuide": "Kalauz Olvasása"
+    },
+    "archetype": {
+      "badge": "Személyre Szabva Önnek",
+      "title": "Milyen Típusú Utazó Ön?",
+      "subtitle": "Válassza ki utazási stílusát és fedezze fel az Önnek összeállított kalauzokat",
+      "viewGuides": "{{type}} Kalauzok Megtekintése"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Kalandkereső",
+        "description": "Izgalmas élmények és adrenalin"
+      },
+      "culture": {
+        "name": "Kultúrafelfedező",
+        "description": "Művészet, történelem és helyi hagyományok"
+      },
+      "relaxation": {
+        "name": "Relaxáció Mestere",
+        "description": "Wellness elvonulások és békés menedékek"
+      },
+      "foodie": {
+        "name": "Kulináris Nomád",
+        "description": "Helyi ízek és gasztronómiai kalandok"
+      },
+      "wellness": {
+        "name": "Wellness Kereső",
+        "description": "Relaxáció, gyógyfürdők és mindfulness elvonulások"
+      },
+      "budget": {
+        "name": "Okos Utazó",
+        "description": "Maximális élmény, minimális költségvetés"
+      },
+      "solo": {
+        "name": "Szólóutazó",
+        "description": "Független utazások és önfelfedezés"
+      },
+      "luxury": {
+        "name": "Luxus Ínyenc",
+        "description": "Prémium élmények és kifinomult életstílus"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Álmodj",
+        "subtitle": "Fedezd fel az inspirációt",
+        "guides": ["Úti Cél Kalauzok", "Fotóesszék"]
+      },
+      "plan": {
+        "title": "Tervezz",
+        "subtitle": "Térképezd fel az utad",
+        "guides": ["Utazástervezés", "Vízumkövetelmények"]
+      },
+      "prepare": {
+        "title": "Készülj",
+        "subtitle": "Készülj fel az útra",
+        "guides": ["Csomagolási Listák", "Biztonsági Tippek"]
+      },
+      "experience": {
+        "title": "Tapasztald Meg",
+        "subtitle": "Éld át a kalandot",
+        "guides": ["Helyi Betekintések", "Rejtett Kincsek"]
+      },
+      "share": {
+        "title": "Oszd Meg",
+        "subtitle": "Mesélj a történetedről",
+        "guides": ["Útirajz Írás", "Fotózás"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Hétvégi Kiruccanások",
+      "offBeatenPath": "Járatlan Utakon",
+      "smartTravel": "Okos Utazás",
+      "bucketList": "Bakancs Lista",
+      "culinary": "Kulináris",
+      "natureWonder": "Természet és Csodák"
+    },
+    "seo": {
+      "title": "Útikalauzok | Szakértői Úti Cél Betekintések",
+      "description": "Fedezze fel szakértői útikalauzainkat, úti cél betekintéseinket és bennfentes tippjeinket globális útirajz-író hálózatunktól. Tervezze meg tökéletes utazását még ma."
+    },
+    "editorial": {
+      "badge": "Szerkesztőinktől",
+      "title": "Szerkesztőségi Írások",
+      "readFull": "Teljes Esszé Olvasása"
+    },
+    "gallery": {
+      "badge": "Vizuális Történetek",
+      "title": "Inspiráló Úti Célok",
+      "categories": {
+        "city": "Város",
+        "mountains": "Hegyek",
+        "beach": "Strand",
+        "safari": "Szafari",
+        "nature": "Természet"
+      }
+    },
+    "writers": {
+      "badge": "Szakértő Hangok",
+      "title": "Ismerje Meg Íróinkat",
+      "subtitle": "A szakértő hangok legmegbízhatóbb útikalauzaink mögött",
+      "articleCount": "{{count}} Cikk",
+      "viewProfile": "Profil Megtekintése"
+    },
+    "map": {
+      "badge": "Felfedezés Régiónként",
+      "title": "Kalauzok a Világ Minden Tájáról",
+      "subtitle": "Kattintson bármely úti célra szakértői lefedettségünk felfedezéséhez",
+      "guidesAvailable": "{{count}} kalauz elérhető",
+      "legendDestination": "Úti Cél",
+      "legendHighlighted": "Kiemelt"
+    },
+    "newsletter": {
+      "badge": "Csatlakozzon az Utazáshoz",
+      "title": "Úti Történetek, Hetente",
+      "description": "Válogatott utazási inspiráció, szakértői tippek és bennfentes perspektívák kézbesítve postaládájába minden héten.",
+      "placeholder": "Adja meg e-mail címét",
+      "subscribe": "Feliratkozás",
+      "subscribing": "Feliratkozás...",
+      "joinCount": "Csatlakozzon 50 000+ utazóhoz, akik heti összefoglalónkat olvassák",
+      "invalidEmail": "Kérjük, adjon meg érvényes e-mail címet",
+      "successTitle": "Üdvözöljük az utazásban!",
+      "successDesc": "Mostantól feliratkozott szerkesztőségi összefoglalónkra."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "Friss",
+      "justNow": "Épp most",
+      "minutesAgo": "{{count}}p-vel ezelőtt",
+      "hoursAgo": "{{count}}ó-val ezelőtt",
+      "daysAgo": "{{count}}n-pal ezelőtt",
+      "minRead": "{{count}} perc olvasás"
+    },
+    "header": {
+      "title": "TRAVI HÍREK",
+      "edition": "Nemzetközi Kiadás",
+      "subscribe": "Feliratkozás"
+    },
+    "breaking": {
+      "label": "Friss Hír"
+    },
+    "search": {
+      "placeholder": "Keressen világszerte híreket...",
+      "button": "Keresés",
+      "title": "Keresés",
+      "searching": "Keresés: \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Minden Hír",
+      "world": "Világ",
+      "business": "Üzlet",
+      "culture": "Kultúra",
+      "travel": "Utazás",
+      "tech": "Technológia",
+      "opinion": "Vélemény"
+    },
+    "empty": {
+      "title": "Még Nincsenek Cikkek",
+      "description": "Azon dolgozunk, hogy a legfrissebb utazási híreket és betekintéseket hozzuk el Önnek. Nézzen vissza hamarosan a világ minden tájáról érkező frissítésekért.",
+      "exploreDestinations": "Úti Célok Felfedezése",
+      "viewGuides": "Útikalauzok Megtekintése"
+    },
+    "hero": {
+      "topStory": "Kiemelt Hír",
+      "editorialTeam": "Szerkesztőség"
+    },
+    "views": "{{count}} megtekintés",
+    "viewAll": "Összes Megtekintése",
+    "seo": {
+      "title": "Utazási Hírek | Legfrissebb Történetek és Frissítések",
+      "description": "Maradjon naprakész a legfrissebb utazási hírekkel, úti cél frissítésekkel és iparági betekintésekkel a világ minden tájáról."
+    },
+    "sidebar": {
+      "alsoToday": "Ma Még",
+      "storiesCount": "{{count}} történet",
+      "liveUpdates": "Élő Frissítések",
+      "trendingTopics": "Felkapott Témák",
+      "noTrending": "Még nincsenek felkapott témák. Nézzen vissza hamarosan!"
+    },
+    "sections": {
+      "topStories": "Kiemelt Hírek",
+      "opinion": "Vélemény és Elemzés",
+      "moreOpinion": "További Vélemények",
+      "worldwide": "Világszintű Lefedettség"
+    },
+    "worldwide": {
+      "title": "Ablaka a Világra",
+      "subtitle": "Hírek a világ minden sarkából",
+      "storiesCount": "{{count}} történet",
+      "comingSoon": "Hamarosan"
+    },
+    "newsletter": {
+      "title": "Maradjon Informált",
+      "description": "Kapja meg a nap kiemelt történeteit postaládájába minden reggel. Csatlakozzon 50 000+ olvasóhoz.",
+      "placeholder": "Adja meg e-mail címét",
+      "subscribe": "Ingyenes Feliratkozás",
+      "noSpam": "Nincs spam. Bármikor leiratkozhat.",
+      "successTitle": "Feliratkozva!",
+      "successDesc": "Kérjük, ellenőrizze e-mailjét a feliratkozás megerősítéséhez.",
+      "errorTitle": "Feliratkozás sikertelen",
+      "errorDesc": "Kérjük, próbálja újra később.",
+      "invalidTitle": "Érvénytelen e-mail",
+      "invalidDesc": "Kérjük, adjon meg érvényes e-mail címet."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "Rólunk | TRAVI World",
+      "metaDescription": "Ismerje meg a TRAVI World-öt, egy független utazási információs forrást, amely átfogó kalauzokat, látnivalókat, szállásokat és éttermi információkat kínál világszerte.",
+      "badge": "Utazási Társa",
+      "title": "A",
+      "titleHighlight": "TRAVI World-ről",
+      "subtitle": "Megbízható forrása átfogó utazási információkhoz és úti cél kalauzokhoz, segítve milliókat, hogy magabiztosan fedezzék fel a világot.",
+      "ctaExplore": "Úti Célok Felfedezése",
+      "ctaContact": "Kapcsolatfelvétel",
+      "stats": {
+        "destinations": "Úti Cél",
+        "articles": "Cikk",
+        "support": "Utazási Támogatás",
+        "coverage": "Lefedettség",
+        "cities": "16+ Város"
+      },
+      "whoWeAre": {
+        "title": "Kik Vagyunk"
+      },
+      "mission": {
+        "title": "Küldetésünk"
+      },
+      "services": {
+        "badge": "Szolgáltatásaink",
+        "title": "Mit Kínálunk"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Úti Cél Kalauzok",
+          "description": "Átfogó információk városokról és régiókról világszerte"
+        },
+        "attractions": {
+          "title": "Látnivaló Információk",
+          "description": "Részletek a must-see helyekről és egyedi élményekről"
+        },
+        "hotels": {
+          "title": "Szállás Kalauzok",
+          "description": "Információk szálláskínálatról minden költségvetéshez"
+        },
+        "restaurants": {
+          "title": "Étterem Ajánlások",
+          "description": "Étkezési lehetőségek minden ízléshez és preferenciához"
+        },
+        "articles": {
+          "title": "Utazási Cikkek",
+          "description": "Tippek, betekintések és utazási inspiráció"
+        },
+        "news": {
+          "title": "Legfrissebb Utazási Hírek",
+          "description": "Maradjon informált válogatott frissítéseinkkel"
+        }
+      },
+      "editorial": {
+        "title": "Szerkesztőségi Függetlenség",
+        "affiliateTitle": "Affiliate Nyilatkozat"
+      },
+      "values": {
+        "badge": "Alapelveink",
+        "title": "Értékeink",
+        "accuracy": {
+          "title": "Pontosság",
+          "description": "Törekszünk pontos és megbízható információk nyújtására, rendszeresen frissítjük tartalmunkat"
+        },
+        "transparency": {
+          "title": "Átláthatóság",
+          "description": "Nyíltan beszélünk affiliate kapcsolatainkról és működésünkről"
+        },
+        "userFocused": {
+          "title": "Felhasználó-központú",
+          "description": "Tartalmunk segíti az utazókat megalapozott döntések meghozatalában"
+        }
+      },
+      "connect": {
+        "badge": "Kapcsolódjunk",
+        "title": "Lépjen Kapcsolatba"
+      },
+      "company": {
+        "title": "Céginformáció",
+        "contactTitle": "Kapcsolati Információ",
+        "contactForm": "Kapcsolatfelvételi Űrlap"
+      }
+    },
+    "contact": {
+      "metaTitle": "Kapcsolat | TRAVI World",
+      "metaDescription": "Lépjen kapcsolatba a TRAVI World-del. Szívesen fogadjuk visszajelzését, kérdéseit és megkereséseit utazási információs szolgáltatásainkkal kapcsolatban.",
+      "badge": "Örömmel hallanánk Öntől",
+      "titlePart1": "Lépjünk",
+      "titlePart2": "Kapcsolatba",
+      "subtitle": "Kérdése van következő kalandjával kapcsolatban? Itt vagyunk, hogy segítsünk magabiztosan felfedezni a világot.",
+      "cta": "Küldj nekünk üzenetet",
+      "getInTouch": "Kapcsolatfelvétel",
+      "getInTouchSubtitle": "Válassza a legjobb módot a kapcsolatfelvételre. Elkötelezettek vagyunk a gyors válaszadás mellett.",
+      "howCanWeHelp": "Miben Segíthetünk?",
+      "howCanWeHelpSubtitle": "Itt vagyunk, hogy segítsünk bármilyen kérdésben vagy visszajelzéssel utazási tartalmainkkal és szolgáltatásainkkal kapcsolatban.",
+      "importantNote": "Fontos Megjegyzés",
+      "importantNoteSubtitle": "Kérjük, olvassa el kapcsolatfelvétel előtt",
+      "ourOffice": "Irodánk",
+      "ourOfficeSubtitle": "Hivatalos levelezéshez és postai megkeresésekhez",
+      "travelCompanion": "Utazási társa",
+      "urgentNote": "Sürgős ügyekben kérjük, írja be a {{urgentLabel}} szót az e-mail tárgyába. Válaszainkat a megkeresés természete alapján priorizáljuk.",
+      "urgentLabel": "Sürgős",
+      "options": {
+        "generalInquiries": {
+          "title": "Általános Kérdések",
+          "description": "Kérdések útikalauzainkkal és tartalmainkkal kapcsolatban"
+        },
+        "privacyInquiries": {
+          "title": "Adatvédelmi Kérdések",
+          "description": "Adathozzáférés, törlés és adatvédelmi kérések"
+        },
+        "visitWebsite": {
+          "title": "Látogassa Meg Weboldalunkat",
+          "description": "Fedezzen fel úti célokat és utazási inspirációt"
+        },
+        "responseTime": {
+          "title": "Válaszidő",
+          "description": "Törekszünk a gyors válaszadásra",
+          "action": "2-3 munkanap"
+        }
+      },
+      "helpTopics": {
+        "general": "Általános kérdések útikalauzainkkal és tartalmainkkal kapcsolatban",
+        "feedback": "Visszajelzések és javaslatok fejlesztéshez",
+        "reporting": "Tartalmi hibák vagy elavult információk jelentése",
+        "business": "Üzleti és partnerségi megkeresések",
+        "media": "Média és sajtó megkeresések",
+        "privacy": "Adatvédelemmel kapcsolatos kérések (adathozzáférés, törlés, stb.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Adatvédelmi Irányelvek | TRAVI World",
+      "metaDescription": "Tudja meg, hogyan gyűjti, használja és védi a TRAVI World az Ön személyes adatait. Olvassa el átfogó adatvédelmi irányelveinket.",
+      "badge": "Az Ön Adatvédelme Fontos",
+      "title": "Adatvédelmi Irányelvek",
+      "subtitle": "Elkötelezettek vagyunk az Ön adatainak védelme és adatkezelési gyakorlataink átláthatósága mellett. Tudja meg, hogyan gyűjti, használja és védi a TRAVI World az Ön információit.",
+      "effectiveDate": "Hatálybalépés: 2026. január 1.",
+      "features": {
+        "dataProtection": {
+          "title": "Adatvédelem",
+          "description": "Adatai védettek"
+        },
+        "minimalCollection": {
+          "title": "Minimális Gyűjtés",
+          "description": "Csak a szükségeset gyűjtjük"
+        },
+        "transparency": {
+          "title": "Teljes Átláthatóság",
+          "description": "Nyíltak vagyunk gyakorlatainkról"
+        },
+        "yourControl": {
+          "title": "Az Ön Kontrollja",
+          "description": "Kezelje beállításait"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Kik Vagyunk",
+        "informationCollect": "2. Milyen Információkat Gyűjtünk",
+        "howWeUse": "3. Hogyan Használjuk Információit",
+        "legalBasis": "4. Adatkezelés Jogalapja (GDPR)",
+        "cookies": "5. Cookie-k és Nyomkövető Technológiák",
+        "thirdParty": "6. Harmadik Féltől Származó Szolgáltatások",
+        "aiContent": "7. AI-Generált Tartalom",
+        "internationalTransfers": "8. Nemzetközi Adattovábbítás",
+        "dataRetention": "9. Adatmegőrzés",
+        "privacyRights": "10. Adatvédelmi Jogai",
+        "californiaRights": "11. Kaliforniai Adatvédelmi Jogok (CCPA/CPRA)",
+        "childrenPrivacy": "12. Gyermekek Adatvédelme",
+        "dataSecurity": "13. Adatbiztonság",
+        "changes": "14. Irányelvek Módosítása",
+        "contactUs": "15. Kapcsolat"
+      }
+    },
+    "terms": {
+      "metaTitle": "Szolgáltatási Feltételek | TRAVI World",
+      "metaDescription": "Olvassa el a TRAVI World utazási információs szolgáltatások használatának feltételeit. Jogi megállapodás Ön és a KBR Global Creative Consulting Ltd. között.",
+      "badge": "Jogi Megállapodás",
+      "title": "Szolgáltatási Feltételek",
+      "subtitle": "Kérjük, figyelmesen olvassa el ezeket a feltételeket a TRAVI World használata előtt. Platformunk elérése és használata ezen feltételek hatálya alá tartozik.",
+      "lastUpdated": "Utoljára frissítve: 2026. január 1.",
+      "importantNotice": "Fontos Jogi Értesítés",
+      "keyPoints": {
+        "editorial": {
+          "title": "Szerkesztőségi Platform",
+          "description": "Útikalauzok és úti cél tartalmak"
+        },
+        "affiliate": {
+          "title": "Affiliate Linkek",
+          "description": "Jutalék alapú ajánlások"
+        },
+        "aiGenerated": {
+          "title": "AI-Generált",
+          "description": "AI segítséggel létrehozott tartalom"
+        },
+        "privacy": {
+          "title": "Az Ön Adatvédelme",
+          "description": "Adatvédelem garantált"
+        }
+      },
+      "sections": {
+        "operator": "Üzemeltető / Jogi Személy",
+        "purpose": "1. Cél és Felhasználási Kör",
+        "affiliateDisclosure": "2. Affiliate Nyilatkozat és Harmadik Fél Tranzakciók",
+        "aiDisclaimer": "3. AI-Generált Tartalom Nyilatkozat",
+        "newsletter": "4. Hírlevél és Kommunikáció",
+        "userConduct": "5. Felhasználói Magatartás és Tiltott Tevékenységek",
+        "intellectualProperty": "6. Szellemi Tulajdon és Korlátozott Licenc",
+        "dmca": "7. Értesítés és Eltávolítás (DMCA és Hasonló)",
+        "disclaimers": "8. Pontosság, Elérhetőség és Nyilatkozatok",
+        "liability": "9. Felelősségkorlátozás és Vis Maior",
+        "indemnification": "10. Kártalanítás",
+        "privacyCookies": "11. Adatvédelem, Cookie-k és Adatkezelés",
+        "accessibility": "12. Akadálymentességi Nyilatkozat",
+        "governingLaw": "13. Irányadó Jog, Vitarendezés és Joghatóság",
+        "modifications": "14. Módosítások, Részleges Érvénytelenség és Általános Rendelkezések"
+      }
     }
   }
 }

@@ -1,222 +1,409 @@
 {
   "nav": {
-    "home": "Home",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News & Guides",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language"
+    "home": "Главная",
+    "destinations": "Направления",
+    "attractions": "Достопримечательности",
+    "hotels": "Отели",
+    "guides": "Путеводители",
+    "dining": "Рестораны",
+    "districts": "Районы",
+    "articles": "Новости",
+    "news": "Новости",
+    "shopping": "Шоппинг",
+    "realEstate": "Недвижимость",
+    "events": "События",
+    "search": "Поиск",
+    "language": "Язык",
+    "mainNavigation": "Главная навигация",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "logoAlt": "TRAVI - Путеводитель",
+    "followInstagram": "Следите за TRAVI в Instagram",
+    "followTikTok": "Следите за TRAVI в TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Хлебные крошки",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "Читать Далее",
+    "viewAll": "Смотреть Все",
+    "learnMore": "Узнать Больше",
+    "bookNow": "Забронировать",
+    "contactUs": "Связаться с Нами",
+    "subscribe": "Подписаться",
+    "submit": "Отправить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "loading": "Загрузка...",
+    "error": "Что-то пошло не так",
+    "noResults": "Результаты не найдены",
+    "seeMore": "Ещё",
+    "back": "Назад",
+    "next": "Далее",
+    "previous": "Назад",
+    "close": "Закрыть",
+    "share": "Поделиться",
+    "copyLink": "Копировать Ссылку",
+    "copied": "Скопировано!"
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "Откройте Мир с TRAVI",
+      "subtitle": "Ваш полный путеводитель по 17 направлениям по всему миру",
+      "searchPlaceholder": "Поиск достопримечательностей, отелей, ресторанов...",
+      "cta": "Начать Исследование",
+      "badge": "Ваш Портал в Мир Приключений",
+      "headlinePart1": "Ваш Надёжный",
+      "headlinePart2": "Источник Путешествий",
+      "description": "Полная информация о путешествиях для {{destinations}} направлений по всему миру. Откройте подробные путеводители по {{attractions}}+ достопримечательностям.",
+      "descriptionPart1": "Полная информация о путешествиях для",
+      "descriptionPart2": "направлений по всему миру. Откройте подробные путеводители по",
+      "descriptionPart3": "достопримечательностям.",
+      "carouselLabel": "Навигация карусели направлений",
+      "viewDestination": "Смотреть {{name}} - {{tagline}}",
+      "worldwide": "По всему миру",
+      "exploreWorld": "Исследуйте Мир",
+      "welcomeAriaLabel": "Добро пожаловать в TRAVI World",
+      "pageTitle": "TRAVI World - Путеводители по отелям, достопримечательностям и развлечениям",
+      "pageDescription": "Ваш полный путеводитель по 17 направлениям по всему миру. Экспертная информация об отелях, достопримечательностях, ресторанах и развлечениях для 3 000+ мест.",
+      "orgDescription": "Ваш надёжный источник путешествий для 17 направлений по всему миру."
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "srLabel": {
+      "attractions": "Более {{count}} достопримечательностей",
+      "destinations": "{{count}} направлений по всему миру",
+      "languages": "Многоязычная платформа с дополнительными языками"
+    },
+    "featured": "Избранное",
+    "trending": "Популярное Сейчас",
+    "topAttractions": "Топ Достопримечательностей",
+    "bestHotels": "Лучшие Отели",
+    "latestNews": "Последние Новости и Путеводители",
+    "sections": {
+      "destinations": "Исследуйте Направления",
+      "destinationsDesc": "Откройте нашу тщательно подобранную коллекцию мировых направлений",
+      "categories": "Просмотр по Категориям",
+      "categoriesDesc": "Найдите именно то, что вы ищете",
+      "experiences": "Путешествия по Впечатлениям",
+      "experiencesDesc": "Выберите свой стиль путешествий",
+      "faq": "Часто Задаваемые Вопросы",
+      "faqDesc": "Всё, что вам нужно знать о TRAVI",
+      "regions": "Исследуйте по Регионам",
+      "newsletter": "Будьте в Курсе",
+      "allDestinationsTitle": "Путеводители по всем {{count}} направлениям",
+      "completeGuide": "{{name}}, {{country}} - Полный Путеводитель"
+    },
+    "cta": {
+      "exploreDestinations": "Исследовать Направления",
+      "viewGuides": "Смотреть Путеводители",
+      "viewAll": "Смотреть Все",
+      "startExploring": "Начать Исследование",
+      "planTrip": "Планировать Поездку",
+      "viewExperience": "Смотреть {{name}}"
+    },
+    "stats": {
+      "destinations": "НАПРАВЛЕНИЙ",
+      "attractions": "ДОСТОПРИМЕЧАТЕЛЬНОСТЕЙ",
+      "languages": "ЯЗЫКОВ",
+      "attractionsNum": "3 000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} направлений",
+      "attractionsCountWithLabel": "{{count}}+ достопримечательностей"
+    },
+    "categories": {
+      "attractions": "Достопримечательности",
+      "attractionsDesc": "Обязательные к посещению места",
+      "news": "Новости путешествий",
+      "newsDesc": "Последние обновления",
+      "guides": "Путеводители",
+      "guidesDesc": "Путеводители по направлениям",
+      "hotels": "Отели",
+      "hotelsDesc": "Найдите идеальное проживание"
+    },
+    "experiences": {
+      "luxury": "Люксовые Путешествия",
+      "luxuryDesc": "Премиальные впечатления и эксклюзивные направления",
+      "adventure": "Приключения и Природа",
+      "adventureDesc": "Захватывающие активности на свежем воздухе",
+      "family": "Семейные Путешествия",
+      "familyDesc": "Направления и развлечения для всей семьи",
+      "budget": "Бюджетные Путешествия",
+      "budgetDesc": "Доступные варианты путешествий и направления",
+      "romance": "Медовый Месяц и Романтика",
+      "romanceDesc": "Романтические поездки и направления для молодожёнов",
+      "solo": "Путешествия в Одиночку",
+      "soloDesc": "Идеальные направления для самостоятельных путешественников"
+    },
+    "faq": {
+      "title": "Часто Задаваемые Вопросы",
+      "subtitle": "Всё, что вам нужно знать о TRAVI World",
+      "whatIsTravi": "Что такое TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World — это комплексная платформа туристической информации, охватывающая 17 направлений по всему миру с подробными путеводителями по 3 000+ достопримечательностям, отелям, ресторанам и развлечениям.",
+      "howManyDestinations": "Сколько направлений охватывает TRAVI?",
+      "howManyDestinationsAnswer": "TRAVI World охватывает 17 основных туристических направлений, включая Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami и Rome.",
+      "isFree": "TRAVI World бесплатен?",
+      "isFreeAnswer": "Да, TRAVI World полностью бесплатен. Просматривайте тысячи путеводителей, обзоров достопримечательностей, рекомендаций отелей и предложений ресторанов бесплатно.",
+      "updateFrequency": "Как часто обновляется контент?",
+      "updateFrequencyAnswer": "Контент TRAVI World обновляется ежедневно с последними новостями путешествий, новыми обзорами достопримечательностей и обновлённой информацией об отелях и ресторанах во всех 17 направлениях."
+    },
+    "mascotAlt": "Маскот TRAVI с мировыми достопримечательностями - откройте путеводители по Dubai, Paris, London, Rome и другим",
+    "mascotTitle": "TRAVI World - Путеводители по мировым направлениям"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "Достопримечательности",
+    "subtitle": "Откройте знаковые места и скрытые жемчужины",
+    "hero": {
+      "badge": "{{count}} достопримечательностей в {{cities}} городах",
+      "badgeThousands": "Тысячи достопримечательностей по всему миру",
+      "headlinePart1": "Чем Заняться",
+      "headlinePart2": "По Всему Миру",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Билеты без очереди</span> на Эйфелеву башню, Колизей, Burj Khalifa и топовые достопримечательности в Paris, Rome, Dubai и других городах.",
+      "searchPlaceholder": "Поиск Эйфелева башня, Колизей, Burj Khalifa...",
+      "carouselLabel": "Карусель избранных достопримечательностей",
+      "sectionLabel": "Забронируйте билеты на топовые достопримечательности по всему миру",
+      "searchAriaLabel": "Поиск достопримечательностей по названию или городу",
+      "searchButton": "Поиск",
+      "searchButtonAriaLabel": "Искать достопримечательности"
+    },
+    "stats": {
+      "attractions": "ДОСТОПРИМЕЧАТЕЛЬНОСТЕЙ",
+      "cities": "ГОРОДОВ",
+      "rating": "РЕЙТИНГ"
+    },
+    "srLabel": {
+      "attractions": "Более {{count}} достопримечательностей",
+      "cities": "{{count}} городов",
+      "rating": "Рейтинг {{rating}} звёзд"
+    },
+    "types": {
+      "all": "Все Типы",
+      "museums": "Музеи",
+      "landmarks": "Достопримечательности",
+      "tours": "Туры",
+      "themeParks": "Парки развлечений",
+      "shows": "Шоу"
+    },
+    "thingsToDoIn": "Чем заняться в {{name}}",
+    "countAttractions": "{{country}} - {{count}} достопримечательностей",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "Все",
+      "popular": "Самые Популярные",
+      "free": "Бесплатный Вход",
+      "familyFriendly": "Для Семей",
+      "outdoor": "На Улице",
+      "indoor": "В Помещении"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "Расположение",
+      "hours": "Часы Работы",
+      "price": "Цена",
+      "duration": "Продолжительность",
+      "tips": "Советы"
+    },
+    "sections": {
+      "destinations": "Исследуйте Достопримечательности по Направлениям",
+      "destinationsDesc": "Выберите город, чтобы открыть удивительные места",
+      "faq": "Часто Задаваемые Вопросы",
+      "faqDesc": "Ответы о бронировании достопримечательностей по всему миру",
+      "whyBookBadge": "Почему Бронировать у Нас",
+      "whyBookTitle": "Пропустите Очереди, Сэкономьте Время",
+      "whyBookDesc": "Бронируйте билеты заранее и наслаждайтесь беспроблемным входом",
+      "allDestinations": "Все Направления"
+    },
+    "features": {
+      "skipTheLine": "Билеты Без Очереди",
+      "skipTheLineDesc": "Проходите мимо очередей на Эйфелеву башню, Колизей, Ватикан и другие",
+      "mobileTickets": "Мобильные Билеты",
+      "mobileTicketsDesc": "Мгновенная доставка на телефон - покажите билет и входите",
+      "freeCancellation": "Бесплатная Отмена",
+      "freeCancellationDesc": "Планы изменились? Отмените до 24 часов до визита для полного возврата"
+    },
+    "browse": {
+      "title": "Чем Заняться по Направлениям",
+      "desc": "Найдите достопримечательности и впечатления в лучших городах мира",
+      "thingsToDo": "{{count}} занятий",
+      "noDestinations": "Направления временно недоступны."
+    },
+    "exploreLinks": {
+      "title": "Исследуйте Больше Путеводителей",
+      "hotelsWorldwide": "Отели по Всему Миру",
+      "bestRestaurants": "Лучшие Рестораны",
+      "travelNews": "Новости Путешествий"
+    },
+    "cta": {
+      "title": "Готовы Исследовать?",
+      "desc": "Забронируйте билеты без очереди на Эйфелеву башню, Колизей, Burj Khalifa и топовые достопримечательности по всему миру.",
+      "parisAttractions": "Достопримечательности Paris",
+      "romeAttractions": "Достопримечательности Rome"
+    },
+    "search": {
+      "popular": "Популярное:",
+      "thingsToDoIn": "Чем заняться в {{city}}",
+      "ariaCarouselNav": "Навигация карусели достопримечательностей",
+      "ariaViewInCity": "Смотреть {{name}} в {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Избранная достопримечательность",
+      "ariaThumbnails": "Миниатюры карусели достопримечательностей",
+      "ariaTicketsIn": "Билеты {{name}} в {{city}}",
+      "priceFrom": "От",
+      "bookTickets": "Забронировать Билеты",
+      "skipTheLine": "Без Очереди",
+      "duration": "2-3 часа",
+      "freeCancellation": "Бесплатная Отмена",
+      "freeCancellationDesc": "За 24 часа до визита",
+      "mobileTickets": "Мобильные Билеты",
+      "instantDelivery": "Мгновенная доставка"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} занятий"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "Отели",
+    "subtitle": "Найдите идеальное проживание",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "Все Отели",
+      "luxury": "Люкс",
+      "budget": "Бюджетные",
+      "beachfront": "На Пляже",
+      "cityCenter": "В Центре",
+      "familyFriendly": "Для Семей"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
-      "rating": "Rating"
+      "priceFrom": "От",
+      "perNight": "за ночь",
+      "amenities": "Удобства",
+      "checkIn": "Заезд",
+      "checkOut": "Выезд",
+      "rooms": "Номера",
+      "rating": "Рейтинг"
     },
-    "bookNow": "Book Now"
+    "bookNow": "Забронировать"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "Рестораны",
+    "subtitle": "Кулинарные впечатления на любой вкус",
     "filters": {
-      "all": "All Restaurants",
+      "all": "Все Рестораны",
       "fineDining": "Fine Dining",
       "casual": "Casual Dining",
-      "cafes": "Cafes",
-      "streetFood": "Street Food",
-      "halal": "Halal",
-      "vegetarian": "Vegetarian"
+      "cafes": "Кафе",
+      "streetFood": "Уличная Еда",
+      "halal": "Халяль",
+      "vegetarian": "Вегетарианское"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
-      "dress": "Dress Code",
-      "reservations": "Reservations"
-    }
-  },
-  "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
-  },
-  "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
-    "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
-    },
-    "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
-    },
-    "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
-    }
-  },
-  "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
-  },
-  "footer": {
-    "about": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "contact": "Contact Us",
-    "followUs": "Follow Us",
-    "newsletter": {
-      "title": "Stay Updated",
-      "subtitle": "Get the latest Dubai travel tips and exclusive deals",
-      "placeholder": "Enter your email",
-      "button": "Subscribe",
-      "success": "Thanks for subscribing!",
-      "error": "Something went wrong. Please try again."
-    },
-    "copyright": "All rights reserved"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
-    },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
-    },
-    "network": {
-      "title": "Connection Error",
-      "message": "Please check your internet connection.",
-      "button": "Retry"
-    }
-  },
-  "meta": {
-    "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
-    },
-    "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
-    },
-    "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
-    },
-    "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "cuisine": "Кухня",
+      "priceRange": "Ценовой Диапазон",
+      "hours": "Часы Работы",
+      "dress": "Дресс-код",
+      "reservations": "Бронирование"
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": {
+        "name": "Dubai",
+        "country": "ОАЭ",
+        "cardAlt": "Горизонт Dubai с башней Burj Khalifa на закате"
+      },
+      "london": {
+        "name": "London",
+        "country": "Великобритания",
+        "cardAlt": "London Big Ben и здание Парламента"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Франция",
+        "cardAlt": "Paris Эйфелева башня освещённая на закате"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "США",
+        "cardAlt": "New York Манхэттен с Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Япония",
+        "cardAlt": "Tokyo перекрёсток Сибуя неоновые огни ночью"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Сингапур",
+        "cardAlt": "Singapore Marina Bay Sands и Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Испания",
+        "cardAlt": "Barcelona Sagrada Familia в золотой час"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Таиланд",
+        "cardAlt": "Bangkok Grand Palace храм на рассвете"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "ОАЭ",
+        "cardAlt": "Abu Dhabi мечеть Sheikh Zayed"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Нидерланды",
+        "cardAlt": "Amsterdam канал с историческими зданиями"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Китай",
+        "cardAlt": "Hong Kong горизонт ночью"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Турция",
+        "cardAlt": "Istanbul Голубая мечеть на закате"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "США",
+        "cardAlt": "Las Vegas Strip ночью"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "США",
+        "cardAlt": "Los Angeles надпись Hollywood"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "США",
+        "cardAlt": "Miami Beach район Art Deco"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Италия",
+        "cardAlt": "Rome Колизей в золотой час"
+      }
+    },
     "hero": {
-      "badge": "{{count}} направлений по всему миру",
-      "trustedBy": "{{count}} направлений доверяют нам",
+      "badge": "{{count}} Направлений по Всему Миру",
+      "trustedBy": "{{count}} направлений доверяют нам по всему миру",
       "discover": "Откройте",
-      "worldClass": "Мировой класс",
+      "worldClass": "Мирового Класса",
       "destinations": "Направления",
-      "description": "Тщательно подобранные путеводители с местным опытом для самых захватывающих городов мира.",
-      "exploreAll": "Все направления",
+      "description": "Тщательно подобранные путеводители с местной экспертизой для самых захватывающих городов мира. От знаковых достопримечательностей до скрытых жемчужин.",
+      "exploreAll": "Исследовать Все Направления",
       "travelGuides": "Путеводители",
-      "explorePlaceholder": "Исследовать направления",
-      "browseCollection": "Просмотрите нашу коллекцию избранных направлений",
+      "explorePlaceholder": "Исследовать Направления",
+      "browseCollection": "Просмотрите нашу коллекцию избранных направлений ниже",
       "explore": "Исследовать",
       "discoverButton": "Открыть",
       "ariaLabel": "Обзор направлений",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Исследовать {{name}}",
+      "galleryAriaLabel": "Галерея избранных направлений",
+      "placeholderAriaLabel": "Заполнитель избранного направления"
     },
     "stats": {
       "destinations": "НАПРАВЛЕНИЙ",
@@ -225,24 +412,24 @@
       "languages": "Языков"
     },
     "sections": {
-      "featured": "Избранные направления",
-      "featuredDesc": "Тщательно отобранные направления с исключительным опытом.",
-      "all": "Все направления",
+      "featured": "Избранные Направления",
+      "featuredDesc": "Тщательно отобранные направления с исключительными впечатлениями, местными советами и всем необходимым для планирования идеальной поездки.",
+      "all": "Все Направления",
       "count": "Найдено {{count}} направлений"
     },
     "search": {
       "placeholder": "Поиск направлений...",
       "noResults": "Направления не найдены",
       "tryAdjusting": "Попробуйте изменить критерии поиска",
-      "clearSearch": "Очистить поиск"
+      "clearSearch": "Очистить Поиск"
     },
     "carousel": {
       "label": "Карусель избранных направлений",
-      "previous": "Предыдущее",
-      "next": "Следующее",
+      "previous": "Предыдущее направление",
+      "next": "Следующее направление",
       "goTo": "Перейти к {{name}}",
       "slideOf": "Слайд {{current}} из {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Миниатюры карусели направлений"
     },
     "card": {
       "explore": "Исследовать",
@@ -252,29 +439,691 @@
       "travelGuideAlt": "Путеводитель по {{name}}"
     },
     "faq": {
-      "title": "Часто задаваемые вопросы",
+      "title": "Часто Задаваемые Вопросы",
       "subtitle": "Всё о путеводителях TRAVI",
       "q1": "Сколько направлений охватывает TRAVI?",
-      "a1": "TRAVI охватывает основные направления на Ближнем Востоке, в Европе, Азии и Америке.",
-      "q2": "Какая информация включена в путеводители?",
-      "a2": "Каждый путеводитель включает достопримечательности, размещение, местную кухню и советы.",
+      "a1": "TRAVI охватывает основные туристические направления на Ближнем Востоке, в Европе, Азии и Америке с полными путеводителями для каждого места.",
+      "q2": "Какая информация включена в путеводители TRAVI?",
+      "a2": "Каждый путеводитель содержит подробные описания достопримечательностей, варианты размещения, местную кухню, советы по транспорту и практическую информацию.",
       "q3": "Могу ли я искать направления?",
-      "a3": "Да, вы можете искать по названию или стране.",
+      "a3": "Да, TRAVI позволяет искать направления по названию или стране через поиск на странице направлений.",
       "q4": "Какие избранные направления на TRAVI?",
-      "a4": "Избранные направления предлагают исключительный опыт."
+      "a4": "Избранные направления TRAVI — это тщательно отобранные места, предлагающие исключительные впечатления для путешественников с разными интересами, от люкса до бюджета."
     },
     "loading": {
-      "title": "Загрузка направлений",
-      "message": "Получение данных..."
+      "title": "Загрузка Направлений",
+      "message": "Получение последних данных..."
     },
     "error": {
-      "title": "Не удалось загрузить",
-      "message": "Попробуйте позже.",
-      "refresh": "Обновить страницу"
+      "title": "Не Удалось Загрузить Направления",
+      "message": "Возникли проблемы с загрузкой данных. Попробуйте позже.",
+      "refresh": "Обновить Страницу"
     },
     "empty": {
-      "title": "Направления недоступны",
-      "message": "Сейчас нет доступных направлений."
+      "title": "Нет Доступных Направлений",
+      "message": "В настоящее время направления недоступны. Проверьте позже."
+    }
+  },
+  "districts": {
+    "title": "Районы",
+    "subtitle": "Исследуйте разнообразные кварталы",
+    "explore": "Исследовать Район"
+  },
+  "realEstate": {
+    "title": "Недвижимость",
+    "subtitle": "Инвестируйте в будущее",
+    "offPlan": {
+      "title": "Строящаяся Недвижимость",
+      "subtitle": "Инвестируйте Рано, Платите Меньше, Получайте Больше",
+      "findProperty": "Найти Идеальную Недвижимость",
+      "from": "От",
+      "paymentPlan": "План Платежей",
+      "handover": "Сдача",
+      "developer": "Застройщик"
+    },
+    "filters": {
+      "all": "Вся Недвижимость",
+      "apartments": "Квартиры",
+      "villas": "Виллы",
+      "townhouses": "Таунхаусы",
+      "penthouses": "Пентхаусы"
+    },
+    "features": {
+      "cryptoAccepted": "Принимаем Криптовалюту",
+      "paymentPlans": "Гибкие Планы Платежей",
+      "goldenVisa": "Право на Golden Visa",
+      "roiGuarantee": "Гарантия ROI"
+    }
+  },
+  "search": {
+    "placeholder": "Поиск достопримечательностей, путеводителей, направлений...",
+    "results": "Результаты Поиска",
+    "noResults": "Не найдено результатов для",
+    "tryAgain": "Попробуйте другие ключевые слова"
+  },
+  "footer": {
+    "about": "О TRAVI",
+    "aboutTravi": "О TRAVI",
+    "aboutText": "Полная информация о путешествиях для 17 направлений по всему миру.",
+    "aboutUs": "О Нас",
+    "quickLinks": "Быстрые Ссылки",
+    "legal": "Юридическая Информация",
+    "privacy": "Политика Конфиденциальности",
+    "privacyPolicy": "Политика Конфиденциальности",
+    "terms": "Условия Использования",
+    "termsOfService": "Условия Сервиса",
+    "contact": "Контакты",
+    "contactUs": "Связаться с Нами",
+    "followUs": "Следите за Нами",
+    "explore": "Исследовать",
+    "travel": "Путешествия",
+    "company": "Компания",
+    "allGuides": "Все Путеводители",
+    "cookies": "Cookies",
+    "security": "Безопасность",
+    "cookieSettings": "Настройки Cookies",
+    "tagline": "Ваш Надёжный Источник Путешествий",
+    "ariaLabel": "Подвал сайта",
+    "featuredGuides": "Избранные Путеводители",
+    "tools": "Инструменты",
+    "currencyConverter": "Конвертер Валют",
+    "roiCalculator": "Калькулятор ROI",
+    "mortgageCalculator": "Ипотечный Калькулятор",
+    "glossary": "Глоссарий",
+    "freeThingsToDo": "70+ Бесплатных Развлечений",
+    "open24Hours": "Открыто 24 Часа",
+    "tributeToSheikh": "Дань Уважения ЕВ Sheikh Mohammed",
+    "lawsForTourists": "Законы для Туристов",
+    "newsletter": "Подпишитесь на рассылку",
+    "newsletterDescription": "Получайте последние советы и обновления.",
+    "emailPlaceholder": "Введите email",
+    "allRightsReserved": "Все права защищены.",
+    "copyright": "© {{year}} {{brand}}. Все права защищены.",
+    "emailAriaLabel": "Отправить email в TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Страница Не Найдена",
+      "message": "Страница, которую вы ищете, не существует.",
+      "button": "На Главную"
+    },
+    "500": {
+      "title": "Ошибка Сервера",
+      "message": "Что-то пошло не так с нашей стороны.",
+      "button": "Попробовать Снова"
+    },
+    "network": {
+      "title": "Ошибка Соединения",
+      "message": "Не удаётся подключиться. Проверьте интернет-соединение.",
+      "button": "Повторить"
+    }
+  },
+  "newsletter": {
+    "badge": "Присоединяйтесь к Приключениям",
+    "title": "Получайте Магию Путешествий",
+    "description": "Еженедельные советы, скрытые жемчужины и эксклюзивные предложения — без спама, только страсть к путешествиям.",
+    "emailPlaceholder": "ваш@email.ru",
+    "subscribe": "Подписаться",
+    "success": "Вы подписаны! Проверьте почту."
+  },
+  "cookies": {
+    "title": "Мы ценим вашу конфиденциальность",
+    "description": "Мы используем cookies для улучшения вашего опыта, анализа трафика и персонализации контента. Нажимая \"Принять Все\", вы соглашаетесь с нашим использованием cookies.",
+    "manage": "Управлять",
+    "rejectAll": "Отклонить Все",
+    "acceptAll": "Принять Все",
+    "preferencesTitle": "Настройки Cookies",
+    "savePreferences": "Сохранить Настройки",
+    "essential": {
+      "title": "Необходимые Cookies",
+      "description": "Требуются для правильной работы сайта"
+    },
+    "analytics": {
+      "title": "Аналитические Cookies",
+      "description": "Помогают понять, как посетители взаимодействуют с сайтом"
+    },
+    "marketing": {
+      "title": "Маркетинговые Cookies",
+      "description": "Используются для показа персонализированной рекламы"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Откройте Мир | Ваш Полный Путеводитель",
+      "description": "Откройте лучшие достопримечательности, отели, рестораны и районы. Планируйте идеальную поездку с советами и рекомендациями."
+    },
+    "attractions": {
+      "title": "Достопримечательности | Лучшие Места для Посещения",
+      "description": "Откройте лучшие достопримечательности — от Эйфелевой башни до скрытых жемчужин. Планируйте визит."
+    },
+    "hotels": {
+      "title": "Отели | Лучшие Места для Проживания",
+      "description": "Найдите идеальный отель на любой бюджет. От люксовых курортов до бюджетных вариантов."
+    },
+    "dining": {
+      "title": "Рестораны | Лучшие Места для Еды",
+      "description": "Откройте кулинарную сцену — fine dining, уличная еда и всё между ними."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Туристический Интеллект",
+      "headlinePart1": "Истории, Которые",
+      "headlinePart2": "Вдохновляют",
+      "description": "Экспертные путеводители, инсайдерские перспективы и редакционные истории, которые меняют ваш опыт познания мира.",
+      "startJourney": "Начать Путешествие",
+      "browseCollection": "Просмотреть Коллекцию",
+      "issueBadge": "Выпуск 47 — Зима 2026"
+    },
+    "stats": {
+      "guides": "Путеводителей",
+      "destinations": "Направлений",
+      "languages": "Языков"
+    },
+    "journey": {
+      "badge": "Ваше Путешествие, Наше Руководство",
+      "title": "Каждое Великое Путешествие Начинается с Путеводителя",
+      "subtitle": "От мечтаний до воспоминаний, мы с вами на каждом шагу"
+    },
+    "ideaLab": {
+      "badge": "Лаборатория Идей",
+      "title": "Вдохновение для Вашего Следующего Приключения",
+      "subtitle": "Откройте направления, соответствующие вашему стилю путешествий",
+      "readGuide": "Читать Гид"
+    },
+    "curatedGuides": {
+      "badge": "Отобранные Путеводители",
+      "title": "Тщательно Подобранные Коллекции",
+      "subtitle": "Тематические путеводители для каждого путешественника"
+    },
+    "localVoices": {
+      "badge": "Местные Голоса",
+      "title": "Советы от Местных Экспертов",
+      "subtitle": "Аутентичные перспективы от людей, знающих эти города"
+    },
+    "travelTools": {
+      "badge": "Инструменты Путешествий",
+      "title": "Инструменты для Вашей Поездки",
+      "subtitle": "Всё необходимое для планирования и бронирования"
+    },
+    "archetype": {
+      "badge": "Персонализировано для Вас",
+      "title": "Какой Вы Путешественник?",
+      "subtitle": "Выберите свой стиль путешествий и откройте путеводители, созданные специально для вас",
+      "viewGuides": "Смотреть Путеводители {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Искатель Приключений",
+        "description": "Захватывающие впечатления и адреналин"
+      },
+      "culture": {
+        "name": "Исследователь Культуры",
+        "description": "Искусство, история и местные традиции"
+      },
+      "relaxation": {
+        "name": "Мастер Релаксации",
+        "description": "Wellness-курорты и спокойный отдых"
+      },
+      "foodie": {
+        "name": "Кулинарный Номад",
+        "description": "Местные вкусы и гастрономические приключения"
+      },
+      "wellness": {
+        "name": "Искатель Wellness",
+        "description": "Релаксация, спа и осознанные ретриты"
+      },
+      "budget": {
+        "name": "Умный Путешественник",
+        "description": "Максимум впечатлений, минимум затрат"
+      },
+      "solo": {
+        "name": "Одиночный Исследователь",
+        "description": "Независимые путешествия и самопознание"
+      },
+      "luxury": {
+        "name": "Ценитель Роскоши",
+        "description": "Премиальные впечатления и изысканная жизнь"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Мечтай",
+        "subtitle": "Найди вдохновение",
+        "guides": [
+          "Путеводители",
+          "Фотоэссе"
+        ]
+      },
+      "plan": {
+        "title": "Планируй",
+        "subtitle": "Составь маршрут",
+        "guides": [
+          "Планирование",
+          "Визовые требования"
+        ]
+      },
+      "prepare": {
+        "title": "Готовься",
+        "subtitle": "Собирайся в путь",
+        "guides": [
+          "Списки вещей",
+          "Советы безопасности"
+        ]
+      },
+      "experience": {
+        "title": "Испытывай",
+        "subtitle": "Живи приключением",
+        "guides": [
+          "Местные советы",
+          "Скрытые жемчужины"
+        ]
+      },
+      "share": {
+        "title": "Делись",
+        "subtitle": "Расскажи историю",
+        "guides": [
+          "Тревел-журналистика",
+          "Фотография"
+        ]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Выходные Вылазки",
+      "offBeatenPath": "Нехоженые Тропы",
+      "smartTravel": "Умные Путешествия",
+      "bucketList": "Список Желаний",
+      "culinary": "Кулинарные",
+      "natureWonder": "Природа и Чудеса"
+    },
+    "seo": {
+      "title": "Путеводители | Экспертные Советы",
+      "description": "Откройте экспертные путеводители, советы и рекомендации от нашей глобальной сети авторов. Спланируйте идеальное путешествие сегодня."
+    },
+    "editorial": {
+      "badge": "От Нашей Редакции",
+      "title": "Редакционные Материалы",
+      "readFull": "Читать Полностью"
+    },
+    "gallery": {
+      "badge": "Визуальные Истории",
+      "title": "Направления, Которые Вдохновляют",
+      "categories": {
+        "city": "Город",
+        "mountains": "Горы",
+        "beach": "Пляж",
+        "safari": "Сафари",
+        "nature": "Природа"
+      }
+    },
+    "writers": {
+      "badge": "Голоса Экспертов",
+      "title": "Наши Авторы",
+      "subtitle": "Экспертные голоса за нашими самыми надёжными путеводителями",
+      "articleCount": "{{count}} Статей",
+      "viewProfile": "Смотреть Профиль"
+    },
+    "map": {
+      "badge": "Исследуйте по Регионам",
+      "title": "Путеводители по Всему Миру",
+      "subtitle": "Нажмите на любое направление, чтобы узнать нашу экспертизу",
+      "guidesAvailable": "{{count}} путеводителей",
+      "legendDestination": "Направление",
+      "legendHighlighted": "Выделено"
+    },
+    "newsletter": {
+      "badge": "Присоединяйтесь",
+      "title": "Истории Путешествий, Еженедельно",
+      "description": "Тщательно подобранное вдохновение, экспертные советы и инсайдерские перспективы еженедельно в вашем почтовом ящике.",
+      "placeholder": "Введите email",
+      "subscribe": "Подписаться",
+      "subscribing": "Подписываю...",
+      "joinCount": "Присоединяйтесь к 50 000+ путешественникам",
+      "invalidEmail": "Введите корректный email",
+      "successTitle": "Добро пожаловать!",
+      "successDesc": "Вы подписаны на наш редакционный дайджест."
+    }
+  },
+  "destination": {
+    "overview": "Обзор",
+    "attractions": "Достопримечательности",
+    "hotels": "Отели",
+    "dining": "Рестораны",
+    "districts": "Районы",
+    "events": "События",
+    "travelTips": "Советы",
+    "weather": "Погода",
+    "currency": "Валюта",
+    "language": "Язык",
+    "timezone": "Часовой Пояс",
+    "bestTimeToVisit": "Лучшее Время для Посещения",
+    "gettingAround": "Транспорт",
+    "safetyTips": "Безопасность",
+    "localCustoms": "Местные Обычаи",
+    "usefulPhrases": "Полезные Фразы",
+    "emergencyNumbers": "Экстренные Номера",
+    "visaInfo": "Визовая Информация",
+    "healthInfo": "Здоровье"
+  },
+  "soon": "Скоро",
+  "accessibility": {
+    "skipToContent": "Перейти к контенту",
+    "mainContent": "Основной контент",
+    "navigation": "Навигация",
+    "openInNewTab": "Открывается в новой вкладке",
+    "externalLink": "Внешняя ссылка"
+  },
+  "time": {
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "daysAgo": "{{count}} дней назад",
+    "hoursAgo": "{{count}} часов назад",
+    "minutesAgo": "{{count}} минут назад",
+    "justNow": "Только что"
+  },
+  "validation": {
+    "required": "Это поле обязательно",
+    "email": "Введите корректный email",
+    "minLength": "Минимум {{count}} символов",
+    "maxLength": "Максимум {{count}} символов"
+  },
+  "news": {
+    "time": {
+      "recent": "Недавнее",
+      "justNow": "Только что",
+      "minutesAgo": "{{count}} мин назад",
+      "hoursAgo": "{{count}} ч назад",
+      "daysAgo": "{{count}} д назад",
+      "minRead": "{{count}} мин чтения"
+    },
+    "header": {
+      "title": "TRAVI НОВОСТИ",
+      "edition": "Международное Издание",
+      "subscribe": "Подписаться"
+    },
+    "breaking": {
+      "label": "Срочно"
+    },
+    "search": {
+      "placeholder": "Поиск мировых новостей...",
+      "button": "Искать",
+      "title": "Поиск",
+      "searching": "Ищем \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Все Новости",
+      "world": "Мир",
+      "business": "Бизнес",
+      "culture": "Культура",
+      "travel": "Путешествия",
+      "tech": "Технологии",
+      "opinion": "Мнения"
+    },
+    "empty": {
+      "title": "Пока Нет Новостей",
+      "description": "Мы готовим последние новости путешествий. Возвращайтесь за обновлениями со всего мира.",
+      "exploreDestinations": "Исследовать Направления",
+      "viewGuides": "Смотреть Путеводители"
+    },
+    "hero": {
+      "topStory": "Главная Новость",
+      "editorialTeam": "Редакция"
+    },
+    "views": "{{count}} просмотров",
+    "viewAll": "Смотреть Все",
+    "seo": {
+      "title": "Новости Путешествий | Последние Истории",
+      "description": "Будьте в курсе последних новостей путешествий, обновлений направлений и отраслевых инсайтов со всего мира."
+    },
+    "sidebar": {
+      "alsoToday": "Также Сегодня",
+      "storiesCount": "{{count}} историй",
+      "liveUpdates": "Прямые Обновления",
+      "trendingTopics": "Популярные Темы",
+      "noTrending": "Нет популярных тем. Возвращайтесь позже!"
+    },
+    "sections": {
+      "topStories": "Главное",
+      "opinion": "Мнения и Аналитика",
+      "moreOpinion": "Больше Мнений",
+      "worldwide": "Мировой Охват"
+    },
+    "worldwide": {
+      "title": "Ваше Окно в Мир",
+      "subtitle": "Новости со всех уголков планеты",
+      "storiesCount": "{{count}} историй",
+      "comingSoon": "Скоро"
+    },
+    "newsletter": {
+      "title": "Будьте в Курсе",
+      "description": "Получайте главные новости дня каждое утро. Присоединяйтесь к 50 000+ читателям.",
+      "placeholder": "Введите email",
+      "subscribe": "Подписаться Бесплатно",
+      "noSpam": "Без спама. Отписка в любое время.",
+      "successTitle": "Подписано!",
+      "successDesc": "Проверьте почту для подтверждения.",
+      "errorTitle": "Ошибка подписки",
+      "errorDesc": "Попробуйте позже.",
+      "invalidTitle": "Неверный email",
+      "invalidDesc": "Введите корректный email."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "О TRAVI World | Надёжный Источник Путешествий",
+      "metaDescription": "Узнайте о TRAVI World — независимой платформе туристической информации с путеводителями по всему миру.",
+      "badge": "О TRAVI World",
+      "title": "Откройте",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Ваш надёжный источник для исследования направлений по всему миру с путеводителями и местными советами.",
+      "ctaExplore": "Исследовать Направления",
+      "ctaContact": "Связаться",
+      "stats": {
+        "destinations": "Направлений",
+        "articles": "Статей",
+        "support": "Поддержка Путешествий",
+        "coverage": "Охват",
+        "cities": "16+ Городов"
+      },
+      "whoWeAre": {
+        "title": "Кто Мы"
+      },
+      "mission": {
+        "title": "Наша Миссия"
+      },
+      "services": {
+        "badge": "Наши Услуги",
+        "title": "Что Мы Предлагаем"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Путеводители",
+          "description": "Информация о городах и регионах мира"
+        },
+        "attractions": {
+          "title": "Достопримечательности",
+          "description": "Must-see места и уникальные впечатления"
+        },
+        "hotels": {
+          "title": "Отели",
+          "description": "Варианты размещения на любой бюджет"
+        },
+        "restaurants": {
+          "title": "Рестораны",
+          "description": "Гастрономия на любой вкус"
+        },
+        "articles": {
+          "title": "Статьи",
+          "description": "Советы и вдохновение"
+        },
+        "news": {
+          "title": "Новости",
+          "description": "Актуальные обновления путешествий"
+        }
+      },
+      "editorial": {
+        "title": "Редакционная Независимость",
+        "affiliateTitle": "Партнёрское Раскрытие"
+      },
+      "values": {
+        "badge": "Наша Основа",
+        "title": "Наши Ценности",
+        "accuracy": {
+          "title": "Точность",
+          "description": "Стремимся к точной и надёжной информации"
+        },
+        "transparency": {
+          "title": "Прозрачность",
+          "description": "Ясность о партнёрствах и работе"
+        },
+        "userFocused": {
+          "title": "Фокус на Пользователе",
+          "description": "Контент для принятия решений"
+        }
+      },
+      "connect": {
+        "badge": "Давайте Свяжемся",
+        "title": "Связаться"
+      },
+      "company": {
+        "title": "О Компании",
+        "contactTitle": "Контакты",
+        "contactForm": "Форма Обратной Связи"
+      }
+    },
+    "contact": {
+      "metaTitle": "Контакты | TRAVI World",
+      "metaDescription": "Свяжитесь с TRAVI World. Мы приветствуем ваши отзывы, вопросы и запросы о наших туристических услугах.",
+      "badge": "Мы будем рады услышать вас",
+      "titlePart1": "Давайте",
+      "titlePart2": "Свяжемся",
+      "subtitle": "Есть вопросы о следующем приключении? Мы поможем исследовать мир с уверенностью.",
+      "cta": "Отправить сообщение",
+      "getInTouch": "Связаться",
+      "getInTouchSubtitle": "Выберите лучший способ связи. Мы стараемся отвечать быстро.",
+      "howCanWeHelp": "Как Мы Можем Помочь?",
+      "howCanWeHelpSubtitle": "Мы готовы ответить на вопросы о наших материалах и услугах.",
+      "importantNote": "Важное Примечание",
+      "importantNoteSubtitle": "Прочтите перед обращением",
+      "ourOffice": "Наш Офис",
+      "ourOfficeSubtitle": "Для официальной корреспонденции",
+      "travelCompanion": "Ваш партнёр в путешествиях",
+      "urgentNote": "Для срочных вопросов укажите {{urgentLabel}} в теме письма. Мы приоритизируем ответы по характеру запроса.",
+      "urgentLabel": "Срочно",
+      "options": {
+        "generalInquiries": {
+          "title": "Общие Вопросы",
+          "description": "Вопросы о путеводителях и контенте"
+        },
+        "privacyInquiries": {
+          "title": "Вопросы Приватности",
+          "description": "Доступ к данным, удаление и запросы"
+        },
+        "visitWebsite": {
+          "title": "Посетите Сайт",
+          "description": "Исследуйте направления и вдохновение"
+        },
+        "responseTime": {
+          "title": "Время Ответа",
+          "description": "Стараемся отвечать быстро",
+          "action": "2-3 рабочих дня"
+        }
+      },
+      "helpTopics": {
+        "general": "Общие вопросы о путеводителях и контенте",
+        "feedback": "Отзывы и предложения по улучшению",
+        "reporting": "Сообщения об ошибках или устаревшей информации",
+        "business": "Деловые и партнёрские запросы",
+        "media": "Медиа и пресс-запросы",
+        "privacy": "Запросы приватности (доступ к данным, удаление и т.д.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Политика Конфиденциальности | TRAVI World",
+      "metaDescription": "Узнайте, как TRAVI World собирает, использует и защищает вашу личную информацию. Прочтите нашу политику конфиденциальности.",
+      "badge": "Ваша Приватность Важна",
+      "title": "Политика Конфиденциальности",
+      "subtitle": "Мы привержены защите вашей приватности и прозрачности в работе с данными. Узнайте, как TRAVI World собирает, использует и защищает вашу информацию.",
+      "effectiveDate": "Дата вступления в силу: 1 января 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Защита Данных",
+          "description": "Ваши данные защищены"
+        },
+        "minimalCollection": {
+          "title": "Минимальный Сбор",
+          "description": "Собираем только необходимое"
+        },
+        "transparency": {
+          "title": "Полная Прозрачность",
+          "description": "Ясность о наших практиках"
+        },
+        "yourControl": {
+          "title": "Ваш Контроль",
+          "description": "Управляйте предпочтениями"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Кто Мы",
+        "informationCollect": "2. Собираемая Информация",
+        "howWeUse": "3. Как Мы Используем Информацию",
+        "legalBasis": "4. Правовая Основа Обработки (GDPR)",
+        "cookies": "5. Cookies и Технологии Отслеживания",
+        "thirdParty": "6. Сторонние Сервисы",
+        "aiContent": "7. AI-Генерируемый Контент",
+        "internationalTransfers": "8. Международная Передача Данных",
+        "dataRetention": "9. Хранение Данных",
+        "privacyRights": "10. Ваши Права Приватности",
+        "californiaRights": "11. Калифорнийские Права (CCPA/CPRA)",
+        "childrenPrivacy": "12. Приватность Детей",
+        "dataSecurity": "13. Безопасность Данных",
+        "changes": "14. Изменения в Политике",
+        "contactUs": "15. Контакты"
+      }
+    },
+    "terms": {
+      "metaTitle": "Условия Использования | TRAVI World",
+      "metaDescription": "Прочтите условия использования туристических услуг TRAVI World. Соглашение между вами и KBR Global Creative Consulting Ltd.",
+      "badge": "Юридическое Соглашение",
+      "title": "Условия Использования",
+      "subtitle": "Внимательно прочтите условия перед использованием TRAVI World. Доступ к платформе регулируется этими условиями.",
+      "lastUpdated": "Обновлено: 1 января 2026",
+      "importantNotice": "Важное Юридическое Уведомление",
+      "keyPoints": {
+        "editorial": {
+          "title": "Редакционная Платформа",
+          "description": "Путеводители и контент о направлениях"
+        },
+        "affiliate": {
+          "title": "Партнёрские Ссылки",
+          "description": "Рекомендации на комиссионной основе"
+        },
+        "aiGenerated": {
+          "title": "AI-Генерируемый",
+          "description": "Контент с помощью ИИ"
+        },
+        "privacy": {
+          "title": "Ваша Приватность",
+          "description": "Защита данных гарантирована"
+        }
+      },
+      "sections": {
+        "operator": "Оператор / Юридическое Лицо",
+        "purpose": "1. Цель и Область Использования",
+        "affiliateDisclosure": "2. Раскрытие Партнёрства",
+        "aiDisclaimer": "3. Отказ от Ответственности AI",
+        "newsletter": "4. Рассылка и Коммуникации",
+        "userConduct": "5. Поведение и Запреты",
+        "intellectualProperty": "6. Интеллектуальная Собственность",
+        "dmca": "7. Notice-and-Takedown (DMCA)",
+        "disclaimers": "8. Точность и Отказ от Ответственности",
+        "liability": "9. Ограничение Ответственности",
+        "indemnification": "10. Возмещение Убытков",
+        "privacyCookies": "11. Приватность и Cookies",
+        "accessibility": "12. Доступность",
+        "governingLaw": "13. Применимое Право и Юрисдикция",
+        "modifications": "14. Изменения и Общие Положения"
+      }
     }
   }
 }

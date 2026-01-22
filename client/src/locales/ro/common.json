@@ -1,23 +1,345 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "Acasă",
+    "destinations": "Destinații",
+    "attractions": "Atracții",
+    "hotels": "Hoteluri",
+    "guides": "Ghiduri",
+    "dining": "Restaurante",
+    "districts": "Cartiere",
+    "articles": "Știri",
+    "news": "Știri",
+    "shopping": "Cumpărături",
+    "realEstate": "Imobiliare",
+    "events": "Evenimente",
+    "search": "Căutare",
+    "language": "Limbă",
+    "mainNavigation": "Navigare principală",
+    "openMenu": "Deschide meniu",
+    "closeMenu": "Închide meniu",
+    "logoAlt": "TRAVI - Ghid de călătorie",
+    "followInstagram": "Urmărește TRAVI pe Instagram",
+    "followTikTok": "Urmărește TRAVI pe TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Navigare cu pesmeți",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "Citește Mai Mult",
+    "viewAll": "Vezi Tot",
+    "learnMore": "Află Mai Mult",
+    "bookNow": "Rezervă Acum",
+    "contactUs": "Contactează-ne",
+    "subscribe": "Abonează-te",
+    "submit": "Trimite",
+    "cancel": "Anulează",
+    "save": "Salvează",
+    "edit": "Editează",
+    "delete": "Șterge",
+    "loading": "Se încarcă...",
+    "error": "Ceva nu a mers bine",
+    "noResults": "Nu s-au găsit rezultate",
+    "seeMore": "Mai Mult",
+    "back": "Înapoi",
+    "next": "Următorul",
+    "previous": "Anterior",
+    "close": "Închide",
+    "share": "Distribuie",
+    "copyLink": "Copiază Link",
+    "copied": "Copiat!"
+  },
+  "home": {
+    "hero": {
+      "title": "Descoperă Lumea cu TRAVI",
+      "subtitle": "Ghidul tău complet de călătorie pentru 17 destinații din întreaga lume",
+      "searchPlaceholder": "Caută atracții, hoteluri, restaurante...",
+      "cta": "Începe Explorarea",
+      "badge": "Poarta Ta către Aventuri Mondiale",
+      "headlinePart1": "Sursa Ta de Încredere",
+      "headlinePart2": "pentru Călătorii",
+      "description": "Informații complete de călătorie pentru {{destinations}} destinații din întreaga lume. Descoperă ghiduri detaliate pentru {{attractions}}+ atracții.",
+      "descriptionPart1": "Informații complete de călătorie pentru",
+      "descriptionPart2": "destinații din întreaga lume. Descoperă ghiduri detaliate pentru",
+      "descriptionPart3": "atracții.",
+      "carouselLabel": "Navigare carusel destinații",
+      "viewDestination": "Vezi {{name}} - {{tagline}}",
+      "worldwide": "În Toată Lumea",
+      "exploreWorld": "Explorează Lumea",
+      "welcomeAriaLabel": "Bine ai venit la TRAVI World",
+      "pageTitle": "TRAVI World - Ghiduri de călătorie pentru hoteluri, atracții și activități",
+      "pageDescription": "Ghidul tău complet de călătorie pentru 17 destinații din întreaga lume. Informații de la experți despre hoteluri, atracții, restaurante și activități pentru 3.000+ locuri.",
+      "orgDescription": "Sursa ta de încredere pentru călătorii în 17 destinații din întreaga lume."
+    },
+    "srLabel": {
+      "attractions": "Peste {{count}} atracții acoperite",
+      "destinations": "{{count}} destinații în toată lumea",
+      "languages": "Platformă multilingvă cu limbi suplimentare în dezvoltare"
+    },
+    "featured": "Recomandate",
+    "trending": "Popular Acum",
+    "topAttractions": "Top Atracții",
+    "bestHotels": "Cele Mai Bune Hoteluri",
+    "latestNews": "Ultimele Știri și Ghiduri",
+    "sections": {
+      "destinations": "Explorează Destinații",
+      "destinationsDesc": "Descoperă colecția noastră atent selectată de destinații mondiale",
+      "categories": "Navighează după Categorie",
+      "categoriesDesc": "Găsește exact ceea ce cauți",
+      "experiences": "Călătorește după Experiență",
+      "experiencesDesc": "Alege-ți stilul de călătorie",
+      "faq": "Întrebări Frecvente",
+      "faqDesc": "Tot ce trebuie să știi despre TRAVI",
+      "regions": "Explorează după Regiune",
+      "newsletter": "Rămâi la Curent",
+      "allDestinationsTitle": "Ghiduri de călătorie pentru toate cele {{count}} destinații",
+      "completeGuide": "{{name}}, {{country}} - Ghid Complet"
+    },
+    "cta": {
+      "exploreDestinations": "Explorează Destinații",
+      "viewGuides": "Vezi Ghiduri",
+      "viewAll": "Vezi Tot",
+      "startExploring": "Începe Explorarea",
+      "planTrip": "Planifică-ți Călătoria",
+      "viewExperience": "Vezi {{name}}"
+    },
+    "stats": {
+      "destinations": "DESTINAȚII",
+      "attractions": "ATRACȚII",
+      "languages": "LIMBI",
+      "attractionsNum": "3.000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} destinații",
+      "attractionsCountWithLabel": "{{count}}+ atracții"
+    },
+    "categories": {
+      "attractions": "Atracții",
+      "attractionsDesc": "Locuri de vizitat obligatoriu",
+      "news": "Știri de Călătorie",
+      "newsDesc": "Ultimele actualizări",
+      "guides": "Ghiduri",
+      "guidesDesc": "Ghiduri de destinație",
+      "hotels": "Hoteluri",
+      "hotelsDesc": "Găsește cazarea perfectă"
+    },
+    "experiences": {
+      "luxury": "Călătorii de Lux",
+      "luxuryDesc": "Experiențe premium și destinații exclusive",
+      "adventure": "Aventură și Natură",
+      "adventureDesc": "Activități în aer liber și aventuri captivante",
+      "family": "Călătorii în Familie",
+      "familyDesc": "Destinații și activități pentru familie",
+      "budget": "Călătorii Economice",
+      "budgetDesc": "Opțiuni de călătorie accesibile",
+      "romance": "Luna de Miere și Romantism",
+      "romanceDesc": "Escapade romantice și destinații pentru cuplu",
+      "solo": "Călătorii Solo",
+      "soloDesc": "Destinații perfecte pentru călătorii singuri"
+    },
+    "faq": {
+      "title": "Întrebări Frecvente",
+      "subtitle": "Tot ce trebuie să știi despre TRAVI World",
+      "whatIsTravi": "Ce este TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World este o platformă completă de informații de călătorie care acoperă 17 destinații din întreaga lume cu ghiduri detaliate pentru 3.000+ atracții, hoteluri, restaurante și activități.",
+      "howManyDestinations": "Câte destinații acoperă TRAVI?",
+      "howManyDestinationsAnswer": "TRAVI World acoperă 17 destinații majore de călătorie, inclusiv Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami și Rome.",
+      "isFree": "Este TRAVI World gratuit?",
+      "isFreeAnswer": "Da, TRAVI World este complet gratuit. Navighează prin mii de ghiduri, recenzii de atracții, recomandări de hoteluri și sugestii de restaurante fără costuri.",
+      "updateFrequency": "Cât de des este actualizat conținutul?",
+      "updateFrequencyAnswer": "Conținutul TRAVI World este actualizat zilnic cu ultimele știri de călătorie, noi recenzii de atracții și informații actualizate despre hoteluri și restaurante în toate cele 17 destinații."
+    },
+    "mascotAlt": "Mascota TRAVI cu repere mondiale - descoperă ghiduri de călătorie pentru Dubai, Paris, London, Rome și altele",
+    "mascotTitle": "TRAVI World - Ghiduri de călătorie pentru destinații globale"
+  },
+  "attractions": {
+    "title": "Atracții",
+    "subtitle": "Descoperă repere iconice și comori ascunse",
+    "hero": {
+      "badge": "{{count}} atracții în {{cities}} orașe",
+      "badgeThousands": "Mii de atracții în toată lumea",
+      "headlinePart1": "Ce să Faci",
+      "headlinePart2": "În Toată Lumea",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Bilete fără coadă</span> la Turnul Eiffel, Colosseum, Burj Khalifa și atracții de top în Paris, Rome, Dubai și altele.",
+      "searchPlaceholder": "Caută Turnul Eiffel, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Carusel atracții recomandate",
+      "sectionLabel": "Rezervă bilete la atracții de top din întreaga lume",
+      "searchAriaLabel": "Caută atracții după nume sau oraș",
+      "searchButton": "Caută",
+      "searchButtonAriaLabel": "Caută atracții"
+    },
+    "stats": {
+      "attractions": "ATRACȚII",
+      "cities": "ORAȘE",
+      "rating": "RATING"
+    },
+    "srLabel": {
+      "attractions": "Peste {{count}} atracții",
+      "cities": "{{count}} orașe",
+      "rating": "Rating {{rating}} stele"
+    },
+    "types": {
+      "all": "Toate Tipurile",
+      "museums": "Muzee",
+      "landmarks": "Repere",
+      "tours": "Tururi",
+      "themeParks": "Parcuri Tematice",
+      "shows": "Spectacole"
+    },
+    "thingsToDoIn": "Ce să faci în {{name}}",
+    "countAttractions": "{{country}} - {{count}} atracții",
+    "filters": {
+      "all": "Toate",
+      "popular": "Cele Mai Populare",
+      "free": "Intrare Gratuită",
+      "familyFriendly": "Pentru Familie",
+      "outdoor": "Exterior",
+      "indoor": "Interior"
+    },
+    "details": {
+      "location": "Locație",
+      "hours": "Program",
+      "price": "Preț",
+      "duration": "Durată",
+      "tips": "Sfaturi"
+    },
+    "sections": {
+      "destinations": "Explorează Atracții după Destinație",
+      "destinationsDesc": "Alege un oraș pentru a descoperi lucruri uimitoare de făcut",
+      "faq": "Întrebări Frecvente",
+      "faqDesc": "Răspunsuri despre rezervarea atracțiilor din întreaga lume",
+      "whyBookBadge": "De Ce să Rezervi la Noi",
+      "whyBookTitle": "Sari Peste Cozi, Economisește Timp",
+      "whyBookDesc": "Rezervă bilete în avans și bucură-te de intrare fără probleme",
+      "allDestinations": "Toate Destinațiile"
+    },
+    "features": {
+      "skipTheLine": "Bilete Fără Coadă",
+      "skipTheLineDesc": "Treci pe lângă cozile de la Turnul Eiffel, Colosseum, Vatican și altele",
+      "mobileTickets": "Bilete Mobile",
+      "mobileTicketsDesc": "Livrare instantanee pe telefon - arată biletul și intri",
+      "freeCancellation": "Anulare Gratuită",
+      "freeCancellationDesc": "S-au schimbat planurile? Anulează cu 24 de ore înainte pentru rambursare completă"
+    },
+    "browse": {
+      "title": "Ce să Faci după Destinație",
+      "desc": "Găsește atracții și experiențe în cele mai bune orașe din lume",
+      "thingsToDo": "{{count}} activități",
+      "noDestinations": "Nu sunt destinații disponibile momentan."
+    },
+    "exploreLinks": {
+      "title": "Explorează Mai Multe Ghiduri",
+      "hotelsWorldwide": "Hoteluri în Toată Lumea",
+      "bestRestaurants": "Cele Mai Bune Restaurante",
+      "travelNews": "Știri de Călătorie"
+    },
+    "cta": {
+      "title": "Gata să Explorezi?",
+      "desc": "Rezervă bilete fără coadă la Turnul Eiffel, Colosseum, Burj Khalifa și atracții de top din întreaga lume.",
+      "parisAttractions": "Atracții Paris",
+      "romeAttractions": "Atracții Rome"
+    },
+    "search": {
+      "popular": "Popular:",
+      "thingsToDoIn": "Ce să faci în {{city}}",
+      "ariaCarouselNav": "Navigare carusel atracții",
+      "ariaViewInCity": "Vezi {{name}} în {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Atracție recomandată",
+      "ariaThumbnails": "Miniaturi carusel atracții",
+      "ariaTicketsIn": "Bilete {{name}} în {{city}}",
+      "priceFrom": "De la",
+      "bookTickets": "Rezervă Bilete",
+      "skipTheLine": "Fără Coadă",
+      "duration": "2-3 ore",
+      "freeCancellation": "Anulare Gratuită",
+      "freeCancellationDesc": "24h înainte de vizită",
+      "mobileTickets": "Bilete Mobile",
+      "instantDelivery": "Livrare instantanee"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} activități"
+    }
+  },
+  "hotels": {
+    "title": "Hoteluri",
+    "subtitle": "Găsește cazarea perfectă",
+    "filters": {
+      "all": "Toate Hotelurile",
+      "luxury": "Lux",
+      "budget": "Economic",
+      "beachfront": "La Plajă",
+      "cityCenter": "În Centru",
+      "familyFriendly": "Pentru Familie"
+    },
+    "details": {
+      "priceFrom": "De la",
+      "perNight": "pe noapte",
+      "amenities": "Facilități",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Camere",
+      "rating": "Rating"
+    },
+    "bookNow": "Rezervă Acum"
+  },
+  "dining": {
+    "title": "Restaurante",
+    "subtitle": "Experiențe culinare pentru toate gusturile",
+    "filters": {
+      "all": "Toate Restaurantele",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafenele",
+      "streetFood": "Mâncare Stradală",
+      "halal": "Halal",
+      "vegetarian": "Vegetarian"
+    },
+    "details": {
+      "cuisine": "Bucătărie",
+      "priceRange": "Interval de Preț",
+      "hours": "Program",
+      "dress": "Cod Vestimentar",
+      "reservations": "Rezervări"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "EAU", "cardAlt": "Panorama Dubai cu turnul Burj Khalifa la apus" },
+      "london": { "name": "London", "country": "Marea Britanie", "cardAlt": "London Big Ben și Parlamentul" },
+      "paris": { "name": "Paris", "country": "Franța", "cardAlt": "Paris Turnul Eiffel iluminat la apus" },
+      "newYork": { "name": "New York", "country": "SUA", "cardAlt": "New York Manhattan cu Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japonia", "cardAlt": "Tokyo intersecția Shibuya lumini neon noaptea" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands și Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spania", "cardAlt": "Barcelona Sagrada Familia la ora de aur" },
+      "bangkok": { "name": "Bangkok", "country": "Thailanda", "cardAlt": "Bangkok Grand Palace templu la răsărit" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "EAU", "cardAlt": "Abu Dhabi moscheea Sheikh Zayed" },
+      "amsterdam": { "name": "Amsterdam", "country": "Olanda", "cardAlt": "Amsterdam canal cu clădiri istorice" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong panorama noaptea" },
+      "istanbul": { "name": "Istanbul", "country": "Turcia", "cardAlt": "Istanbul Moscheea Albastră la apus" },
+      "lasVegas": { "name": "Las Vegas", "country": "SUA", "cardAlt": "Las Vegas Strip noaptea" },
+      "losAngeles": { "name": "Los Angeles", "country": "SUA", "cardAlt": "Los Angeles semnul Hollywood" },
+      "miami": { "name": "Miami", "country": "SUA", "cardAlt": "Miami Beach cartierul Art Deco" },
+      "rome": { "name": "Rome", "country": "Italia", "cardAlt": "Rome Colosseum la ora de aur" }
+    },
     "hero": {
       "badge": "{{count}} Destinații în Întreaga Lume",
-      "trustedBy": "De încredere pentru {{count}} destinații",
+      "trustedBy": "De încredere pentru {{count}} destinații din întreaga lume",
       "discover": "Descoperă",
       "worldClass": "De Clasă Mondială",
       "destinations": "Destinații",
-      "description": "Ghiduri de călătorie selectate cu expertiză locală pentru cele mai captivante orașe din lume.",
+      "description": "Ghiduri de călătorie atent selectate cu expertiză locală pentru cele mai captivante orașe din lume. De la repere iconice la comori ascunse.",
       "exploreAll": "Explorează Toate Destinațiile",
       "travelGuides": "Ghiduri de Călătorie",
       "explorePlaceholder": "Explorează Destinații",
-      "browseCollection": "Răsfoiește colecția noastră de destinații selectate",
+      "browseCollection": "Răsfoiește colecția noastră de destinații selectate mai jos",
       "explore": "Explorează",
       "discoverButton": "Descoperă",
-      "ariaLabel": "Prezentare generală a destinațiilor",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "ariaLabel": "Prezentare generală destinații",
+      "exploreTitle": "Explorează {{name}}",
+      "galleryAriaLabel": "Galerie destinații recomandate",
+      "placeholderAriaLabel": "Substituent destinație recomandată"
     },
     "stats": {
       "destinations": "DESTINAȚII",
@@ -27,14 +349,14 @@
     },
     "sections": {
       "featured": "Destinații Recomandate",
-      "featuredDesc": "Destinații selectate cu experiențe excepționale.",
+      "featuredDesc": "Destinații atent selectate cu experiențe excepționale, sfaturi locale și tot ce ai nevoie pentru a planifica călătoria perfectă.",
       "all": "Toate Destinațiile",
       "count": "{{count}} destinații găsite"
     },
     "search": {
       "placeholder": "Caută destinații...",
       "noResults": "Nu s-au găsit destinații",
-      "tryAdjusting": "Încercați să ajustați criteriile de căutare",
+      "tryAdjusting": "Încearcă să ajustezi criteriile de căutare",
       "clearSearch": "Șterge Căutarea"
     },
     "carousel": {
@@ -43,7 +365,7 @@
       "next": "Următoarea destinație",
       "goTo": "Mergi la {{name}}",
       "slideOf": "Slide {{current}} din {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Miniaturi carusel destinații"
     },
     "card": {
       "explore": "Explorează",
@@ -56,26 +378,614 @@
       "title": "Întrebări Frecvente",
       "subtitle": "Totul despre ghidurile de destinații TRAVI",
       "q1": "Câte destinații acoperă TRAVI?",
-      "a1": "TRAVI acoperă destinații majore din Orientul Mijlociu, Europa, Asia și America.",
-      "q2": "Ce informații sunt incluse?",
-      "a2": "Fiecare ghid include atracții, cazare, bucătărie locală și sfaturi de călătorie.",
+      "a1": "TRAVI acoperă destinații majore de călătorie din Orientul Mijlociu, Europa, Asia și America cu ghiduri complete pentru fiecare locație.",
+      "q2": "Ce informații sunt incluse în ghidurile TRAVI?",
+      "a2": "Fiecare ghid de destinație include descrieri detaliate ale atracțiilor, opțiuni de cazare, bucătărie locală, sfaturi de transport și informații practice de călătorie.",
       "q3": "Pot căuta destinații?",
-      "a3": "Da, puteți căuta după nume sau țară.",
+      "a3": "Da, TRAVI permite căutarea destinațiilor după nume sau țară folosind bara de căutare de pe pagina de destinații.",
       "q4": "Care sunt destinațiile recomandate pe TRAVI?",
-      "a4": "Destinațiile recomandate oferă experiențe excepționale."
+      "a4": "Destinațiile recomandate TRAVI sunt locații atent selectate care oferă experiențe excepționale pentru călători cu interese diverse, de la lux la călătorii economice."
     },
     "loading": {
       "title": "Se Încarcă Destinațiile",
       "message": "Se obțin cele mai recente date..."
     },
     "error": {
-      "title": "Nu Se Poate Încărca",
-      "message": "Vă rugăm să încercați din nou mai târziu.",
+      "title": "Nu Se Pot Încărca Destinațiile",
+      "message": "Întâmpinăm probleme la încărcarea datelor. Te rugăm să încerci din nou mai târziu.",
       "refresh": "Reîmprospătează Pagina"
     },
     "empty": {
       "title": "Nu Există Destinații Disponibile",
-      "message": "Momentan nu există destinații disponibile."
+      "message": "Momentan nu există destinații disponibile. Verifică mai târziu."
+    }
+  },
+  "districts": {
+    "title": "Cartiere",
+    "subtitle": "Explorează cartiere diverse",
+    "explore": "Explorează Cartierul"
+  },
+  "realEstate": {
+    "title": "Imobiliare",
+    "subtitle": "Investește în viitor",
+    "offPlan": {
+      "title": "Proprietăți în Construcție",
+      "subtitle": "Investește Devreme, Plătește Mai Puțin, Câștigă Mai Mult",
+      "findProperty": "Găsește Proprietatea Perfectă",
+      "from": "De la",
+      "paymentPlan": "Plan de Plată",
+      "handover": "Predare",
+      "developer": "Dezvoltator"
+    },
+    "filters": {
+      "all": "Toate Proprietățile",
+      "apartments": "Apartamente",
+      "villas": "Vile",
+      "townhouses": "Case în Șir",
+      "penthouses": "Penthouse-uri"
+    },
+    "features": {
+      "cryptoAccepted": "Crypto Acceptat",
+      "paymentPlans": "Planuri de Plată Flexibile",
+      "goldenVisa": "Eligibil Golden Visa",
+      "roiGuarantee": "Garanție ROI"
+    }
+  },
+  "search": {
+    "placeholder": "Caută atracții, ghiduri, destinații...",
+    "results": "Rezultate Căutare",
+    "noResults": "Nu s-au găsit rezultate pentru",
+    "tryAgain": "Încearcă alte cuvinte cheie"
+  },
+  "footer": {
+    "about": "Despre TRAVI",
+    "aboutTravi": "Despre TRAVI",
+    "aboutText": "Informații complete de călătorie pentru 17 destinații din întreaga lume.",
+    "aboutUs": "Despre Noi",
+    "quickLinks": "Linkuri Rapide",
+    "legal": "Legal",
+    "privacy": "Politica de Confidențialitate",
+    "privacyPolicy": "Politica de Confidențialitate",
+    "terms": "Termeni și Condiții",
+    "termsOfService": "Termenii Serviciului",
+    "contact": "Contact",
+    "contactUs": "Contactează-ne",
+    "followUs": "Urmărește-ne",
+    "explore": "Explorează",
+    "travel": "Călătorii",
+    "company": "Companie",
+    "allGuides": "Toate Ghidurile",
+    "cookies": "Cookie-uri",
+    "security": "Securitate",
+    "cookieSettings": "Setări Cookie-uri",
+    "tagline": "Sursa Ta de Încredere pentru Călătorii",
+    "ariaLabel": "Subsol site",
+    "featuredGuides": "Ghiduri Recomandate",
+    "tools": "Instrumente",
+    "currencyConverter": "Convertor Valutar",
+    "roiCalculator": "Calculator ROI",
+    "mortgageCalculator": "Calculator Ipotecă",
+    "glossary": "Glosar",
+    "freeThingsToDo": "70+ Lucruri Gratuite",
+    "open24Hours": "Deschis 24 de Ore",
+    "tributeToSheikh": "Omagiu pentru AS Sheikh Mohammed",
+    "lawsForTourists": "Legi pentru Turiști",
+    "newsletter": "Abonează-te la newsletter",
+    "newsletterDescription": "Primește cele mai noi sfaturi și actualizări de călătorie.",
+    "emailPlaceholder": "Introdu email-ul tău",
+    "allRightsReserved": "Toate drepturile rezervate.",
+    "copyright": "© {{year}} {{brand}}. Toate drepturile rezervate.",
+    "emailAriaLabel": "Trimite email către TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Pagina Nu a Fost Găsită",
+      "message": "Pagina pe care o cauți nu există.",
+      "button": "Acasă"
+    },
+    "500": {
+      "title": "Eroare de Server",
+      "message": "Ceva nu a mers bine la noi.",
+      "button": "Încearcă Din Nou"
+    },
+    "network": {
+      "title": "Eroare de Conexiune",
+      "message": "Nu se poate conecta. Verifică conexiunea la internet.",
+      "button": "Reîncearcă"
+    }
+  },
+  "newsletter": {
+    "badge": "Alătură-te Aventurii",
+    "title": "Primește Magia Călătoriilor în Inbox",
+    "description": "Sfaturi săptămânale, comori ascunse și oferte exclusive - fără spam, doar pasiune pentru călătorii.",
+    "emailPlaceholder": "email@exemplu.ro",
+    "subscribe": "Abonează-te",
+    "success": "Ești abonat! Verifică inbox-ul."
+  },
+  "cookies": {
+    "title": "Respectăm confidențialitatea ta",
+    "description": "Folosim cookie-uri pentru a îmbunătăți experiența de navigare, a analiza traficul și a personaliza conținutul. Făcând clic pe \"Acceptă Tot\", ești de acord cu utilizarea cookie-urilor.",
+    "manage": "Gestionează",
+    "rejectAll": "Respinge Tot",
+    "acceptAll": "Acceptă Tot",
+    "preferencesTitle": "Preferințe Cookie-uri",
+    "savePreferences": "Salvează Preferințele",
+    "essential": {
+      "title": "Cookie-uri Esențiale",
+      "description": "Necesare pentru funcționarea corectă a site-ului"
+    },
+    "analytics": {
+      "title": "Cookie-uri Analitice",
+      "description": "Ne ajută să înțelegem cum interacționează vizitatorii cu site-ul"
+    },
+    "marketing": {
+      "title": "Cookie-uri de Marketing",
+      "description": "Folosite pentru a afișa reclame personalizate"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Descoperă Lumea | Ghidul Tău Complet de Călătorie",
+      "description": "Descoperă cele mai bune atracții, hoteluri, restaurante și cartiere. Planifică-ți călătoria perfectă cu sfaturi și recomandări locale."
+    },
+    "attractions": {
+      "title": "Atracții | Top Lucruri de Văzut în Lume",
+      "description": "Descoperă cele mai bune atracții - de la Turnul Eiffel la comori ascunse. Planifică-ți vizita."
+    },
+    "hotels": {
+      "title": "Hoteluri | Cele Mai Bune Cazări",
+      "description": "Găsește hotelul perfect pentru orice buget. De la resorturi de lux la opțiuni economice."
+    },
+    "dining": {
+      "title": "Restaurante | Cele Mai Bune Locuri de Mâncare",
+      "description": "Descoperă scena culinară - fine dining, mâncare stradală și tot ce e între ele."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Inteligență de Călătorie",
+      "headlinePart1": "Povești Care",
+      "headlinePart2": "Te Inspiră",
+      "description": "Ghiduri create de experți, perspective locale și narațiuni editoriale care transformă modul în care experimentezi lumea.",
+      "startJourney": "Începe Călătoria",
+      "browseCollection": "Răsfoiește Colecția",
+      "issueBadge": "Ediția 47 — Iarna 2026"
+    },
+    "stats": {
+      "guides": "Ghiduri de Călătorie",
+      "destinations": "Destinații",
+      "languages": "Limbi"
+    },
+    "journey": {
+      "badge": "Călătoria Ta, Ghidarea Noastră",
+      "title": "Fiecare Călătorie Grozavă Începe cu un Ghid",
+      "subtitle": "De la vis la împărtășire, suntem alături de tine la fiecare pas"
+    },
+    "ideaLab": {
+      "badge": "Laborator de Idei",
+      "title": "Inspirație Curată",
+      "readGuide": "Citește Ghidul"
+    },
+    "archetype": {
+      "badge": "Personalizat pentru Tine",
+      "title": "Ce Tip de Călător Ești?",
+      "subtitle": "Selectează stilul tău de călătorie și descoperă ghiduri create special pentru tine",
+      "viewGuides": "Vezi Ghiduri {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Căutător de Aventură",
+        "description": "Experiențe captivante și adrenalină"
+      },
+      "culture": {
+        "name": "Explorator Cultural",
+        "description": "Artă, istorie și tradiții locale"
+      },
+      "relaxation": {
+        "name": "Maestru al Relaxării",
+        "description": "Retrageri wellness și evadări liniștite"
+      },
+      "foodie": {
+        "name": "Nomad Culinar",
+        "description": "Savori locale și aventuri gastronomice"
+      },
+      "wellness": {
+        "name": "Căutător de Wellness",
+        "description": "Relaxare, spa-uri și retrageri mindfulness"
+      },
+      "budget": {
+        "name": "Călător Inteligent",
+        "description": "Experiență maximă, buget minim"
+      },
+      "solo": {
+        "name": "Explorator Solo",
+        "description": "Călătorii independente și auto-descoperire"
+      },
+      "luxury": {
+        "name": "Cunoscător de Lux",
+        "description": "Experiențe premium și stil de viață rafinat"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Visează",
+        "subtitle": "Descoperă inspirația",
+        "guides": ["Ghiduri de Destinații", "Eseuri Foto"]
+      },
+      "plan": {
+        "title": "Planifică",
+        "subtitle": "Trasează-ți drumul",
+        "guides": ["Planificarea Călătoriei", "Cerințe de Viză"]
+      },
+      "prepare": {
+        "title": "Pregătește-te",
+        "subtitle": "Fii gata de drum",
+        "guides": ["Liste de Împachetat", "Sfaturi de Siguranță"]
+      },
+      "experience": {
+        "title": "Experimentează",
+        "subtitle": "Trăiește aventura",
+        "guides": ["Perspective Locale", "Comori Ascunse"]
+      },
+      "share": {
+        "title": "Împărtășește",
+        "subtitle": "Spune-ți povestea",
+        "guides": ["Scriere de Călătorie", "Fotografie"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Evadări de Weekend",
+      "offBeatenPath": "Drumuri Nebătătorite",
+      "smartTravel": "Călătorie Inteligentă",
+      "bucketList": "Lista de Dorințe",
+      "culinary": "Culinar",
+      "natureWonder": "Natură și Minuni"
+    },
+    "seo": {
+      "title": "Ghiduri de Călătorie | Perspective Expert pentru Destinații",
+      "description": "Descoperă ghiduri de călătorie de la experți, perspective asupra destinațiilor și sfaturi de insider de la rețeaua noastră globală de scriitori de călătorie. Planifică-ți călătoria perfectă azi."
+    },
+    "editorial": {
+      "badge": "De la Editorii Noștri",
+      "title": "Articole Editoriale",
+      "readFull": "Citește Eseul Complet"
+    },
+    "gallery": {
+      "badge": "Povești Vizuale",
+      "title": "Destinații Care Inspiră",
+      "categories": {
+        "city": "Oraș",
+        "mountains": "Munți",
+        "beach": "Plajă",
+        "safari": "Safari",
+        "nature": "Natură"
+      }
+    },
+    "writers": {
+      "badge": "Voci Expert",
+      "title": "Întâlnește-ne Scriitorii",
+      "subtitle": "Vocile expert din spatele celor mai de încredere ghiduri de călătorie",
+      "articleCount": "{{count}} Articole",
+      "viewProfile": "Vezi Profilul"
+    },
+    "map": {
+      "badge": "Explorează după Regiune",
+      "title": "Ghiduri din Întreaga Lume",
+      "subtitle": "Dă click pe orice destinație pentru a descoperi acoperirea noastră expert",
+      "guidesAvailable": "{{count}} ghiduri disponibile",
+      "legendDestination": "Destinație",
+      "legendHighlighted": "Evidențiat"
+    },
+    "newsletter": {
+      "badge": "Alătură-te Călătoriei",
+      "title": "Povești de Călătorie, Săptămânal",
+      "description": "Inspirație de călătorie curată, sfaturi de la experți și perspective insider livrate în inbox-ul tău în fiecare săptămână.",
+      "placeholder": "Introdu email-ul tău",
+      "subscribe": "Abonează-te",
+      "subscribing": "Se abonează...",
+      "joinCount": "Alătură-te celor 50.000+ călători care citesc rezumatul nostru săptămânal",
+      "invalidEmail": "Te rugăm să introduci un email valid",
+      "successTitle": "Bine ai venit în călătorie!",
+      "successDesc": "Acum ești abonat la rezumatul nostru editorial."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "Recent",
+      "justNow": "Chiar acum",
+      "minutesAgo": "acum {{count}}m",
+      "hoursAgo": "acum {{count}}h",
+      "daysAgo": "acum {{count}}z",
+      "minRead": "{{count}} min citire"
+    },
+    "header": {
+      "title": "TRAVI ȘTIRI",
+      "edition": "Ediție Internațională",
+      "subscribe": "Abonează-te"
+    },
+    "breaking": {
+      "label": "Ultima Oră"
+    },
+    "search": {
+      "placeholder": "Caută știri din întreaga lume...",
+      "button": "Caută",
+      "title": "Căutare",
+      "searching": "Se caută \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Toate Știrile",
+      "world": "Lume",
+      "business": "Afaceri",
+      "culture": "Cultură",
+      "travel": "Călătorie",
+      "tech": "Tehnologie",
+      "opinion": "Opinie"
+    },
+    "empty": {
+      "title": "Încă Nu Există Articole",
+      "description": "Lucrăm să îți aducem cele mai noi știri și perspective de călătorie. Revino curând pentru actualizări din întreaga lume.",
+      "exploreDestinations": "Explorează Destinații",
+      "viewGuides": "Vezi Ghiduri de Călătorie"
+    },
+    "hero": {
+      "topStory": "Știrea Principală",
+      "editorialTeam": "Echipa Editorială"
+    },
+    "views": "{{count}} vizualizări",
+    "viewAll": "Vezi Tot",
+    "seo": {
+      "title": "Știri de Călătorie | Ultimele Povești și Actualizări",
+      "description": "Rămâi informat cu cele mai recente știri de călătorie, actualizări de destinații și perspective din industrie din întreaga lume."
+    },
+    "sidebar": {
+      "alsoToday": "Tot Astăzi",
+      "storiesCount": "{{count}} povești",
+      "liveUpdates": "Actualizări Live",
+      "trendingTopics": "Subiecte în Trend",
+      "noTrending": "Încă nu există subiecte în trend. Revino curând!"
+    },
+    "sections": {
+      "topStories": "Știrile Principale",
+      "opinion": "Opinie și Analiză",
+      "moreOpinion": "Mai Multe Opinii",
+      "worldwide": "Acoperire Mondială"
+    },
+    "worldwide": {
+      "title": "Fereastra Ta către Lume",
+      "subtitle": "Știri din fiecare colț al globului",
+      "storiesCount": "{{count}} povești",
+      "comingSoon": "În curând"
+    },
+    "newsletter": {
+      "title": "Rămâi Informat",
+      "description": "Primește știrile zilei în inbox-ul tău în fiecare dimineață. Alătură-te celor 50.000+ cititori.",
+      "placeholder": "Introdu email-ul tău",
+      "subscribe": "Abonare Gratuită",
+      "noSpam": "Fără spam. Dezabonare oricând.",
+      "successTitle": "Abonat!",
+      "successDesc": "Te rugăm să îți verifici email-ul pentru a confirma abonamentul.",
+      "errorTitle": "Abonare eșuată",
+      "errorDesc": "Te rugăm să încerci din nou mai târziu.",
+      "invalidTitle": "Email invalid",
+      "invalidDesc": "Te rugăm să introduci o adresă de email validă."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "Despre Noi | TRAVI World",
+      "metaDescription": "Află despre TRAVI World, o resursă independentă de informații de călătorie oferind ghiduri complete, atracții, hoteluri și informații despre restaurante pentru destinații din întreaga lume.",
+      "badge": "Companionul Tău de Călătorie",
+      "title": "Despre",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Sursa ta de încredere pentru informații complete de călătorie și ghiduri de destinații, ajutând milioane să exploreze lumea cu încredere.",
+      "ctaExplore": "Explorează Destinații",
+      "ctaContact": "Contactează-ne",
+      "stats": {
+        "destinations": "Destinații",
+        "articles": "Articole",
+        "support": "Suport de Călătorie",
+        "coverage": "Acoperire",
+        "cities": "16+ Orașe"
+      },
+      "whoWeAre": {
+        "title": "Cine Suntem"
+      },
+      "mission": {
+        "title": "Misiunea Noastră"
+      },
+      "services": {
+        "badge": "Serviciile Noastre",
+        "title": "Ce Oferim"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Ghiduri de Destinații",
+          "description": "Informații complete despre orașe și regiuni din întreaga lume"
+        },
+        "attractions": {
+          "title": "Informații despre Atracții",
+          "description": "Detalii despre locurile de văzut și experiențe unice"
+        },
+        "hotels": {
+          "title": "Ghiduri de Hoteluri",
+          "description": "Informații despre opțiuni de cazare pentru orice buget"
+        },
+        "restaurants": {
+          "title": "Recomandări de Restaurante",
+          "description": "Opțiuni de dining pentru orice gust și preferință"
+        },
+        "articles": {
+          "title": "Articole de Călătorie",
+          "description": "Sfaturi, perspective și inspirație de călătorie"
+        },
+        "news": {
+          "title": "Ultimele Știri de Călătorie",
+          "description": "Rămâi informat cu actualizări curate"
+        }
+      },
+      "editorial": {
+        "title": "Independență Editorială",
+        "affiliateTitle": "Dezvăluire Afiliat"
+      },
+      "values": {
+        "badge": "Fundația Noastră",
+        "title": "Valorile Noastre",
+        "accuracy": {
+          "title": "Acuratețe",
+          "description": "Ne străduim să oferim informații precise și de încredere, actualizând regulat conținutul"
+        },
+        "transparency": {
+          "title": "Transparență",
+          "description": "Suntem deschiși despre relațiile noastre de afiliat și modul în care operăm"
+        },
+        "userFocused": {
+          "title": "Focalizat pe Utilizator",
+          "description": "Conținutul nostru este conceput să ajute călătorii să ia decizii informate"
+        }
+      },
+      "connect": {
+        "badge": "Hai să Ne Conectăm",
+        "title": "Contactează-ne"
+      },
+      "company": {
+        "title": "Informații Companie",
+        "contactTitle": "Informații de Contact",
+        "contactForm": "Formular de Contact"
+      }
+    },
+    "contact": {
+      "metaTitle": "Contact | TRAVI World",
+      "metaDescription": "Ia legătura cu TRAVI World. Întâmpinăm feedback-ul, întrebările și solicitările tale despre serviciile noastre de informații de călătorie.",
+      "badge": "Ne-ar plăcea să auzim de la tine",
+      "titlePart1": "Hai să",
+      "titlePart2": "Ne Conectăm",
+      "subtitle": "Ai întrebări despre următoarea ta aventură? Suntem aici să te ajutăm să explorezi lumea cu încredere.",
+      "cta": "Trimite-ne un mesaj",
+      "getInTouch": "Contactează-ne",
+      "getInTouchSubtitle": "Alege cea mai bună modalitate de a ne contacta. Ne angajăm să răspundem prompt.",
+      "howCanWeHelp": "Cum Te Putem Ajuta?",
+      "howCanWeHelpSubtitle": "Suntem aici să asistăm cu orice întrebări sau feedback despre conținutul și serviciile noastre de călătorie.",
+      "importantNote": "Notă Importantă",
+      "importantNoteSubtitle": "Te rugăm să citești înainte de a ne contacta",
+      "ourOffice": "Biroul Nostru",
+      "ourOfficeSubtitle": "Pentru corespondență oficială și solicitări poștale",
+      "travelCompanion": "Companionul tău de călătorie",
+      "urgentNote": "Pentru chestiuni urgente, te rugăm să incluzi {{urgentLabel}} în subiectul email-ului. Prioritizăm răspunsurile în funcție de natura solicitării.",
+      "urgentLabel": "Urgent",
+      "options": {
+        "generalInquiries": {
+          "title": "Întrebări Generale",
+          "description": "Întrebări despre ghidurile și conținutul nostru de călătorie"
+        },
+        "privacyInquiries": {
+          "title": "Întrebări despre Confidențialitate",
+          "description": "Acces la date, ștergere și cereri de confidențialitate"
+        },
+        "visitWebsite": {
+          "title": "Vizitează Site-ul Nostru",
+          "description": "Explorează destinații și inspirație de călătorie"
+        },
+        "responseTime": {
+          "title": "Timp de Răspuns",
+          "description": "Ne propunem să răspundem prompt",
+          "action": "2-3 zile lucrătoare"
+        }
+      },
+      "helpTopics": {
+        "general": "Întrebări generale despre ghidurile și conținutul nostru de călătorie",
+        "feedback": "Feedback și sugestii pentru îmbunătățire",
+        "reporting": "Raportarea erorilor de conținut sau informații învechite",
+        "business": "Întrebări de afaceri și parteneriat",
+        "media": "Întrebări media și presă",
+        "privacy": "Cereri legate de confidențialitate (acces la date, ștergere, etc.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Politica de Confidențialitate | TRAVI World",
+      "metaDescription": "Află cum TRAVI World colectează, folosește și protejează informațiile tale personale. Citește politica noastră completă de confidențialitate.",
+      "badge": "Confidențialitatea Ta Contează",
+      "title": "Politica de Confidențialitate",
+      "subtitle": "Ne angajăm să îți protejăm confidențialitatea și să fim transparenți despre practicile noastre de date. Află cum TRAVI World colectează, folosește și protejează informațiile tale.",
+      "effectiveDate": "Data intrării în vigoare: 1 ianuarie 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Protecția Datelor",
+          "description": "Datele tale sunt protejate"
+        },
+        "minimalCollection": {
+          "title": "Colectare Minimă",
+          "description": "Colectăm doar ce este necesar"
+        },
+        "transparency": {
+          "title": "Transparență Completă",
+          "description": "Deschiși despre practicile noastre"
+        },
+        "yourControl": {
+          "title": "Controlul Tău",
+          "description": "Gestionează-ți preferințele"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Cine Suntem",
+        "informationCollect": "2. Informațiile pe Care le Colectăm",
+        "howWeUse": "3. Cum Folosim Informațiile Tale",
+        "legalBasis": "4. Baza Legală pentru Procesare (GDPR)",
+        "cookies": "5. Cookie-uri și Tehnologii de Urmărire",
+        "thirdParty": "6. Servicii Terțe",
+        "aiContent": "7. Conținut Generat de AI",
+        "internationalTransfers": "8. Transferuri Internaționale de Date",
+        "dataRetention": "9. Retenția Datelor",
+        "privacyRights": "10. Drepturile Tale de Confidențialitate",
+        "californiaRights": "11. Drepturi de Confidențialitate California (CCPA/CPRA)",
+        "childrenPrivacy": "12. Confidențialitatea Copiilor",
+        "dataSecurity": "13. Securitatea Datelor",
+        "changes": "14. Modificări ale Acestei Politici",
+        "contactUs": "15. Contactează-ne"
+      }
+    },
+    "terms": {
+      "metaTitle": "Termeni și Condiții | TRAVI World",
+      "metaDescription": "Citește termenii și condițiile pentru utilizarea serviciilor de informații de călătorie TRAVI World. Acord legal între tine și KBR Global Creative Consulting Ltd.",
+      "badge": "Acord Legal",
+      "title": "Termeni și Condiții",
+      "subtitle": "Te rugăm să citești acești termeni cu atenție înainte de a utiliza TRAVI World. Accesul și utilizarea platformei noastre sunt supuse acestor condiții.",
+      "lastUpdated": "Ultima actualizare: 1 ianuarie 2026",
+      "importantNotice": "Notificare Legală Importantă",
+      "keyPoints": {
+        "editorial": {
+          "title": "Platformă Editorială",
+          "description": "Ghiduri de călătorie și conținut de destinații"
+        },
+        "affiliate": {
+          "title": "Link-uri Afiliat",
+          "description": "Recomandări bazate pe comision"
+        },
+        "aiGenerated": {
+          "title": "Generat de AI",
+          "description": "Conținut creat cu asistență AI"
+        },
+        "privacy": {
+          "title": "Confidențialitatea Ta",
+          "description": "Protecția datelor garantată"
+        }
+      },
+      "sections": {
+        "operator": "Operator / Entitate Legală",
+        "purpose": "1. Scopul și Domeniul de Utilizare",
+        "affiliateDisclosure": "2. Dezvăluire Afiliat și Tranzacții Terțe",
+        "aiDisclaimer": "3. Declinare de Responsabilitate pentru Conținut AI",
+        "newsletter": "4. Newsletter și Comunicări",
+        "userConduct": "5. Conduita Utilizatorului și Acțiuni Interzise",
+        "intellectualProperty": "6. Proprietate Intelectuală și Licență Limitată",
+        "dmca": "7. Notificare și Eliminare (DMCA și Similar)",
+        "disclaimers": "8. Acuratețe, Disponibilitate și Declinări",
+        "liability": "9. Limitarea Răspunderii și Forță Majoră",
+        "indemnification": "10. Despăgubire",
+        "privacyCookies": "11. Confidențialitate, Cookie-uri și Protecția Datelor",
+        "accessibility": "12. Declarație de Accesibilitate",
+        "governingLaw": "13. Legea Aplicabilă, Rezolvarea Disputelor și Jurisdicție",
+        "modifications": "14. Modificări, Separabilitate și Prevederi Generale"
+      }
     }
   }
 }

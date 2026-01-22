@@ -1,13 +1,335 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "หน้าแรก",
+    "destinations": "จุดหมายปลายทาง",
+    "attractions": "สถานที่ท่องเที่ยว",
+    "hotels": "โรงแรม",
+    "guides": "คู่มือ",
+    "dining": "อาหาร",
+    "districts": "ย่าน",
+    "articles": "ข่าว",
+    "news": "ข่าว",
+    "shopping": "ช้อปปิ้ง",
+    "realEstate": "อสังหาริมทรัพย์",
+    "events": "กิจกรรม",
+    "search": "ค้นหา",
+    "language": "ภาษา",
+    "mainNavigation": "เมนูหลัก",
+    "openMenu": "เปิดเมนู",
+    "closeMenu": "ปิดเมนู",
+    "logoAlt": "TRAVI - คู่มือท่องเที่ยว",
+    "followInstagram": "ติดตาม TRAVI บน Instagram",
+    "followTikTok": "ติดตาม TRAVI บน TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "การนำทางเส้นทาง",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "อ่านเพิ่มเติม",
+    "viewAll": "ดูทั้งหมด",
+    "learnMore": "เรียนรู้เพิ่มเติม",
+    "bookNow": "จองเลย",
+    "contactUs": "ติดต่อเรา",
+    "subscribe": "สมัครรับข่าวสาร",
+    "submit": "ส่ง",
+    "cancel": "ยกเลิก",
+    "save": "บันทึก",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "noResults": "ไม่พบผลลัพธ์",
+    "seeMore": "ดูเพิ่มเติม",
+    "back": "กลับ",
+    "next": "ถัดไป",
+    "previous": "ก่อนหน้า",
+    "close": "ปิด",
+    "share": "แชร์",
+    "copyLink": "คัดลอกลิงก์",
+    "copied": "คัดลอกแล้ว!"
+  },
+  "home": {
+    "hero": {
+      "title": "สำรวจโลกกับ TRAVI",
+      "subtitle": "คู่มือท่องเที่ยวครบวงจร 17 เมืองทั่วโลก",
+      "searchPlaceholder": "ค้นหาสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร...",
+      "cta": "เริ่มสำรวจ",
+      "badge": "ประตูสู่การผจญภัยทั่วโลก",
+      "headlinePart1": "แหล่งข้อมูลท่องเที่ยว",
+      "headlinePart2": "ที่ไว้วางใจ",
+      "description": "ข้อมูลท่องเที่ยว {{destinations}} เมืองทั่วโลก คู่มือสถานที่ท่องเที่ยว {{attractions}} แห่งขึ้นไป",
+      "descriptionPart1": "ข้อมูลท่องเที่ยว",
+      "descriptionPart2": "เมืองทั่วโลก",
+      "descriptionPart3": "สถานที่ท่องเที่ยว",
+      "carouselLabel": "การนำทางแคโรเซลจุดหมาย",
+      "viewDestination": "ดู {{name}} - {{tagline}}",
+      "worldwide": "ทั่วโลก",
+      "exploreWorld": "สำรวจโลก",
+      "welcomeAriaLabel": "ยินดีต้อนรับสู่ TRAVI World",
+      "pageTitle": "TRAVI World - คู่มือท่องเที่ยว โรงแรม สถานที่ท่องเที่ยว กิจกรรม",
+      "pageDescription": "คู่มือท่องเที่ยวครบถ้วน 17 เมืองทั่วโลก ข้อมูลโรงแรม สถานที่ท่องเที่ยว ร้านอาหาร กิจกรรมกว่า 3,000 แห่ง",
+      "orgDescription": "แหล่งข้อมูลท่องเที่ยวที่ไว้วางใจ 17 เมืองทั่วโลก"
+    },
+    "srLabel": {
+      "attractions": "สถานที่ท่องเที่ยวกว่า {{count}} แห่ง",
+      "destinations": "{{count}} เมืองทั่วโลก",
+      "languages": "แพลตฟอร์มหลายภาษา"
+    },
+    "featured": "แนะนำ",
+    "trending": "กำลังนิยม",
+    "topAttractions": "สถานที่ท่องเที่ยวยอดนิยม",
+    "bestHotels": "โรงแรมแนะนำ",
+    "latestNews": "ข่าวและคู่มือล่าสุด",
+    "sections": {
+      "destinations": "สำรวจจุดหมายปลายทาง",
+      "destinationsDesc": "คอลเลกชันจุดหมายปลายทางที่คัดสรรทั่วโลก",
+      "categories": "ค้นหาตามหมวดหมู่",
+      "categoriesDesc": "ค้นหาข้อมูลที่คุณต้องการ",
+      "experiences": "เลือกการเดินทางตามประสบการณ์",
+      "experiencesDesc": "เลือกสไตล์การเดินทางของคุณ",
+      "faq": "คำถามที่พบบ่อย",
+      "faqDesc": "ทุกสิ่งที่คุณต้องรู้เกี่ยวกับ TRAVI",
+      "regions": "สำรวจตามภูมิภาค",
+      "newsletter": "รับข้อมูลล่าสุด",
+      "allDestinationsTitle": "คู่มือท่องเที่ยวทั้ง {{count}} เมือง",
+      "completeGuide": "{{name}}, {{country}} - คู่มือท่องเที่ยวฉบับสมบูรณ์"
+    },
+    "cta": {
+      "exploreDestinations": "สำรวจจุดหมาย",
+      "viewGuides": "ดูคู่มือ",
+      "viewAll": "ดูทั้งหมด",
+      "startExploring": "เริ่มสำรวจ",
+      "planTrip": "วางแผนการเดินทาง",
+      "viewExperience": "ดู {{name}}"
+    },
+    "stats": {
+      "destinations": "เมือง",
+      "attractions": "สถานที่ท่องเที่ยว",
+      "languages": "ภาษาที่รองรับ",
+      "attractionsNum": "3,000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} เมือง",
+      "attractionsCountWithLabel": "{{count}}+ สถานที่ท่องเที่ยว"
+    },
+    "categories": {
+      "attractions": "สถานที่ท่องเที่ยว",
+      "attractionsDesc": "สถานที่ที่ต้องไป",
+      "news": "ข่าวท่องเที่ยว",
+      "newsDesc": "อัพเดทล่าสุด",
+      "guides": "คู่มือ",
+      "guidesDesc": "คู่มือจุดหมาย",
+      "hotels": "โรงแรม",
+      "hotelsDesc": "ค้นหาที่พักที่สมบูรณ์แบบ"
+    },
+    "experiences": {
+      "luxury": "ท่องเที่ยวหรูหรา",
+      "luxuryDesc": "ประสบการณ์ท่องเที่ยวระดับพรีเมียมและจุดหมายพิเศษ",
+      "adventure": "ผจญภัยและกลางแจ้ง",
+      "adventureDesc": "ประสบการณ์กลางแจ้งที่ตื่นเต้น",
+      "family": "ท่องเที่ยวครอบครัว",
+      "familyDesc": "จุดหมายและกิจกรรมที่เหมาะกับครอบครัว",
+      "budget": "ท่องเที่ยวประหยัด",
+      "budgetDesc": "ตัวเลือกท่องเที่ยวราคาประหยัด",
+      "romance": "ฮันนีมูนและโรแมนติก",
+      "romanceDesc": "การเดินทางโรแมนติกและจุดหมายฮันนีมูน",
+      "solo": "ท่องเที่ยวคนเดียว",
+      "soloDesc": "จุดหมายที่เหมาะกับนักท่องเที่ยวคนเดียว"
+    },
+    "faq": {
+      "title": "คำถามที่พบบ่อย",
+      "subtitle": "ทุกสิ่งที่คุณต้องรู้เกี่ยวกับ TRAVI World",
+      "whatIsTravi": "TRAVI World คืออะไร?",
+      "whatIsTraviAnswer": "TRAVI World คือแพลตฟอร์มข้อมูลท่องเที่ยวครบวงจรที่ครอบคลุม 17 เมืองทั่วโลก มีคู่มือรายละเอียดสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร และกิจกรรมกว่า 3,000 แห่ง",
+      "howManyDestinations": "TRAVI ครอบคลุมกี่เมือง?",
+      "howManyDestinationsAnswer": "TRAVI World ครอบคลุม 17 จุดหมายท่องเที่ยวหลัก ได้แก่ Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami และ Rome",
+      "isFree": "TRAVI World ใช้ฟรีหรือไม่?",
+      "isFreeAnswer": "ใช่ TRAVI World ใช้งานได้ฟรีทั้งหมด คุณสามารถเข้าถึงคู่มือท่องเที่ยว รีวิวสถานที่ท่องเที่ยว แนะนำโรงแรม และข้อมูลร้านอาหารได้ฟรี",
+      "updateFrequency": "เนื้อหาอัพเดทบ่อยแค่ไหน?",
+      "updateFrequencyAnswer": "เนื้อหาของ TRAVI World อัพเดททุกวัน รวมถึงข่าวท่องเที่ยวล่าสุด รีวิวสถานที่ท่องเที่ยวใหม่ และข้อมูลโรงแรมร้านอาหารทั้ง 17 เมือง"
+    },
+    "mascotAlt": "มาสคอต TRAVI กับสถานที่สำคัญของโลก - คู่มือท่องเที่ยว Dubai, Paris, London, Rome และอื่นๆ",
+    "mascotTitle": "TRAVI World - คู่มือท่องเที่ยวจุดหมายทั่วโลก"
+  },
+  "attractions": {
+    "title": "สถานที่ท่องเที่ยว",
+    "subtitle": "สำรวจสถานที่ยอดนิยมและสถานที่ลับ",
+    "hero": {
+      "badge": "{{count}} สถานที่ท่องเที่ยวใน {{cities}} เมือง",
+      "badgeThousands": "สถานที่ท่องเที่ยวทั่วโลก",
+      "headlinePart1": "สถานที่ท่องเที่ยว",
+      "headlinePart2": "ทั่วโลก",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">บัตรเข้าชมไม่ต้องต่อคิว</span> Eiffel Tower, Colosseum, Burj Khalifah และสถานที่ท่องเที่ยวยอดนิยมใน Paris, Rome, Dubai",
+      "searchPlaceholder": "ค้นหา Eiffel Tower, Colosseum, Burj Khalifah...",
+      "carouselLabel": "แคโรเซลสถานที่ท่องเที่ยวแนะนำ",
+      "sectionLabel": "จองบัตรสถานที่ท่องเที่ยวยอดนิยมทั่วโลก",
+      "searchAriaLabel": "ค้นหาสถานที่ท่องเที่ยวตามชื่อหรือเมือง",
+      "searchButton": "ค้นหา",
+      "searchButtonAriaLabel": "ค้นหาสถานที่ท่องเที่ยว"
+    },
+    "stats": {
+      "attractions": "สถานที่ท่องเที่ยว",
+      "cities": "เมือง",
+      "rating": "คะแนน"
+    },
+    "srLabel": {
+      "attractions": "{{count}}+ สถานที่ท่องเที่ยว",
+      "cities": "{{count}} เมือง",
+      "rating": "คะแนน {{rating}} ดาว"
+    },
+    "types": {
+      "all": "ทุกประเภท",
+      "museums": "พิพิธภัณฑ์",
+      "landmarks": "สถานที่สำคัญ",
+      "tours": "ทัวร์",
+      "themeParks": "สวนสนุก",
+      "shows": "การแสดง"
+    },
+    "thingsToDoIn": "สถานที่ท่องเที่ยวใน {{name}}",
+    "countAttractions": "{{country}} - {{count}} สถานที่ท่องเที่ยว",
+    "filters": {
+      "all": "ทั้งหมด",
+      "popular": "ยอดนิยม",
+      "free": "เข้าฟรี",
+      "familyFriendly": "เหมาะกับครอบครัว",
+      "outdoor": "กลางแจ้ง",
+      "indoor": "ในร่ม"
+    },
+    "details": {
+      "location": "ที่ตั้ง",
+      "hours": "เวลาเปิด-ปิด",
+      "price": "ราคา",
+      "duration": "ระยะเวลา",
+      "tips": "เคล็ดลับ"
+    },
+    "sections": {
+      "destinations": "สำรวจสถานที่ท่องเที่ยวตามเมือง",
+      "destinationsDesc": "เลือกเมืองเพื่อค้นพบประสบการณ์ที่น่าทึ่ง",
+      "faq": "คำถามที่พบบ่อย",
+      "faqDesc": "คำตอบเกี่ยวกับการจองสถานที่ท่องเที่ยว",
+      "whyBookBadge": "ทำไมต้องจอง",
+      "whyBookTitle": "ไม่ต้องต่อคิว ประหยัดเวลา",
+      "whyBookDesc": "จองล่วงหน้าเข้าชมสถานที่ท่องเที่ยวยอดนิยมได้ทันที",
+      "allDestinations": "ทุกเมือง"
+    },
+    "features": {
+      "skipTheLine": "บัตรเข้าชมไม่ต้องต่อคิว",
+      "skipTheLineDesc": "ไม่ต้องต่อคิวที่ Eiffel Tower, Colosseum, Vatican และอื่นๆ",
+      "mobileTickets": "บัตรอิเล็กทรอนิกส์",
+      "mobileTicketsDesc": "ส่งถึงมือถือทันที - แสดงบัตรแล้วเข้าชมได้เลย",
+      "freeCancellation": "ยกเลิกฟรี",
+      "freeCancellationDesc": "แผนเปลี่ยน? ยกเลิกฟรีก่อน 24 ชั่วโมง"
+    },
+    "browse": {
+      "title": "สถานที่ท่องเที่ยวตามเมือง",
+      "desc": "ค้นหาสถานที่ท่องเที่ยวและประสบการณ์ในเมืองยอดนิยมทั่วโลก",
+      "thingsToDo": "{{count}} สถานที่ท่องเที่ยว",
+      "noDestinations": "ไม่มีเมืองที่พร้อมให้บริการในขณะนี้"
+    },
+    "exploreLinks": {
+      "title": "คู่มือท่องเที่ยวเพิ่มเติม",
+      "hotelsWorldwide": "โรงแรมทั่วโลก",
+      "bestRestaurants": "ร้านอาหารแนะนำ",
+      "travelNews": "ข่าวท่องเที่ยว"
+    },
+    "cta": {
+      "title": "พร้อมสำรวจหรือยัง?",
+      "desc": "จองบัตรเข้าชมไม่ต้องต่อคิว Eiffel Tower, Colosseum, Burj Khalifah และสถานที่ท่องเที่ยวยอดนิยมทั่วโลก",
+      "parisAttractions": "สถานที่ท่องเที่ยวใน Paris",
+      "romeAttractions": "สถานที่ท่องเที่ยวใน Rome"
+    },
+    "search": {
+      "popular": "ยอดนิยม:",
+      "thingsToDoIn": "สถานที่ท่องเที่ยวใน {{city}}",
+      "ariaCarouselNav": "การนำทางแคโรเซลสถานที่ท่องเที่ยว",
+      "ariaViewInCity": "ดู {{name}} ใน {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "สถานที่ท่องเที่ยวแนะนำ",
+      "ariaThumbnails": "ภาพขนาดย่อแคโรเซลสถานที่ท่องเที่ยว",
+      "ariaTicketsIn": "บัตร {{name}} ใน {{city}}",
+      "priceFrom": "ราคา",
+      "bookTickets": "จองบัตร",
+      "skipTheLine": "ไม่ต้องต่อคิว",
+      "duration": "2-3 ชั่วโมง",
+      "freeCancellation": "ยกเลิกฟรี",
+      "freeCancellationDesc": "ก่อนเข้าชม 24 ชั่วโมง",
+      "mobileTickets": "บัตรอิเล็กทรอนิกส์",
+      "instantDelivery": "ส่งทันที"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} สถานที่ท่องเที่ยว"
+    }
+  },
+  "hotels": {
+    "title": "โรงแรม",
+    "subtitle": "ค้นหาที่พักที่สมบูรณ์แบบ",
+    "filters": {
+      "all": "โรงแรมทั้งหมด",
+      "luxury": "หรูหรา",
+      "budget": "ประหยัด",
+      "beachfront": "ริมชายหาด",
+      "cityCenter": "ใจกลางเมือง",
+      "familyFriendly": "เหมาะกับครอบครัว"
+    },
+    "details": {
+      "priceFrom": "ราคา",
+      "perNight": "ต่อคืน",
+      "amenities": "สิ่งอำนวยความสะดวก",
+      "checkIn": "เช็คอิน",
+      "checkOut": "เช็คเอาท์",
+      "rooms": "ห้องพัก",
+      "rating": "คะแนน"
+    },
+    "bookNow": "จองเลย"
+  },
+  "dining": {
+    "title": "อาหาร",
+    "subtitle": "ประสบการณ์อาหารสำหรับทุกรสนิยม",
+    "filters": {
+      "all": "ร้านอาหารทั้งหมด",
+      "fineDining": "ร้านหรู",
+      "casual": "ร้านทั่วไป",
+      "cafes": "คาเฟ่",
+      "streetFood": "อาหารริมทาง",
+      "halal": "ฮาลาล",
+      "vegetarian": "มังสวิรัติ"
+    },
+    "details": {
+      "cuisine": "ประเภทอาหาร",
+      "priceRange": "ช่วงราคา",
+      "hours": "เวลาเปิด-ปิด",
+      "dress": "การแต่งกาย",
+      "reservations": "การจอง"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "สหรัฐอาหรับเอมิเรตส์", "cardAlt": "เส้นขอบฟ้า Dubai กับตึก Burj Khalifah ยามพระอาทิตย์ตก" },
+      "london": { "name": "London", "country": "สหราชอาณาจักร", "cardAlt": "Big Ben และรัฐสภาของ London" },
+      "paris": { "name": "Paris", "country": "ฝรั่งเศส", "cardAlt": "หอ Eiffel Tower ส่องแสงยามพระอาทิตย์ตกใน Paris" },
+      "newYork": { "name": "New York", "country": "สหรัฐอเมริกา", "cardAlt": "ตึก Empire State Building และเส้นขอบฟ้า Manhattan ของ New York" },
+      "tokyo": { "name": "Tokyo", "country": "ญี่ปุ่น", "cardAlt": "ทางข้าม Shibuya พร้อมป้ายนีออนใน Tokyo" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands และ Gardens by the Bay ของ Singapore" },
+      "barcelona": { "name": "Barcelona", "country": "สเปน", "cardAlt": "Sagrada Familia ในชั่วโมงทองของ Barcelona" },
+      "bangkok": { "name": "Bangkok", "country": "ไทย", "cardAlt": "พระบรมมหาราชวังยามพระอาทิตย์ขึ้นใน Bangkok" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "สหรัฐอาหรับเอมิเรตส์", "cardAlt": "มัสยิด Sheikh Zayed Grand Mosque ของ Abu Dhabi" },
+      "amsterdam": { "name": "Amsterdam", "country": "เนเธอร์แลนด์", "cardAlt": "อาคารประวัติศาสตร์และคลองของ Amsterdam" },
+      "hongKong": { "name": "Hong Kong", "country": "จีน", "cardAlt": "เส้นขอบฟ้ายามค่ำของ Hong Kong" },
+      "istanbul": { "name": "Istanbul", "country": "ตุรกี", "cardAlt": "มัสยิด Blue Mosque ยามพระอาทิตย์ตกใน Istanbul" },
+      "lasVegas": { "name": "Las Vegas", "country": "สหรัฐอเมริกา", "cardAlt": "ถนน Strip ยามค่ำใน Las Vegas" },
+      "losAngeles": { "name": "Los Angeles", "country": "สหรัฐอเมริกา", "cardAlt": "ป้าย Hollywood ของ Los Angeles" },
+      "miami": { "name": "Miami", "country": "สหรัฐอเมริกา", "cardAlt": "ย่าน Art Deco ของ Miami Beach" },
+      "rome": { "name": "Rome", "country": "อิตาลี", "cardAlt": "Colosseum ในชั่วโมงทองของ Rome" }
+    },
     "hero": {
       "badge": "{{count}} จุดหมายปลายทางทั่วโลก",
-      "trustedBy": "ไว้วางใจโดย {{count}} จุดหมาย",
+      "trustedBy": "คู่มือท่องเที่ยว {{count}} จุดหมายทั่วโลก",
       "discover": "ค้นพบ",
       "worldClass": "ระดับโลก",
       "destinations": "จุดหมายปลายทาง",
-      "description": "คู่มือท่องเที่ยวที่คัดสรรด้วยความเชี่ยวชาญในท้องถิ่นสำหรับเมืองที่น่าหลงใหลที่สุดในโลก",
+      "description": "คู่มือท่องเที่ยวที่คัดสรรด้วยความเชี่ยวชาญในท้องถิ่น จากสถานที่ยอดนิยมถึงสถานที่ลับ",
       "exploreAll": "สำรวจจุดหมายทั้งหมด",
       "travelGuides": "คู่มือท่องเที่ยว",
       "explorePlaceholder": "สำรวจจุดหมาย",
@@ -15,9 +337,9 @@
       "explore": "สำรวจ",
       "discoverButton": "ค้นพบ",
       "ariaLabel": "ภาพรวมจุดหมาย",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "สำรวจ {{name}}",
+      "galleryAriaLabel": "แกลเลอรีจุดหมายแนะนำ",
+      "placeholderAriaLabel": "ตัวแทนจุดหมายแนะนำ"
     },
     "stats": {
       "destinations": "จุดหมาย",
@@ -27,7 +349,7 @@
     },
     "sections": {
       "featured": "จุดหมายแนะนำ",
-      "featuredDesc": "จุดหมายที่คัดสรรพร้อมประสบการณ์พิเศษ",
+      "featuredDesc": "จุดหมายที่คัดสรรพร้อมประสบการณ์พิเศษ ข้อมูลท้องถิ่นและทุกสิ่งที่คุณต้องการสำหรับการวางแผน",
       "all": "จุดหมายทั้งหมด",
       "count": "พบ {{count}} จุดหมาย"
     },
@@ -43,7 +365,7 @@
       "next": "จุดหมายถัดไป",
       "goTo": "ไปที่ {{name}}",
       "slideOf": "สไลด์ {{current}} จาก {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "ภาพขนาดย่อแคโรเซลจุดหมาย"
     },
     "card": {
       "explore": "สำรวจ",
@@ -54,28 +376,616 @@
     },
     "faq": {
       "title": "คำถามที่พบบ่อย",
-      "subtitle": "ทุกอย่างเกี่ยวกับคู่มือ TRAVI",
+      "subtitle": "ทุกอย่างเกี่ยวกับคู่มือจุดหมาย TRAVI",
       "q1": "TRAVI ครอบคลุมกี่จุดหมาย?",
-      "a1": "TRAVI ครอบคลุมจุดหมายหลักในตะวันออกกลาง ยุโรป เอเชีย และอเมริกา",
-      "q2": "มีข้อมูลอะไรรวมอยู่?",
-      "a2": "แต่ละคู่มือมีสถานที่ท่องเที่ยว ที่พัก อาหารท้องถิ่น และเคล็ดลับการเดินทาง",
+      "a1": "TRAVI ครอบคลุมจุดหมายหลักในตะวันออกกลาง ยุโรป เอเชีย และอเมริกา พร้อมคู่มือรายละเอียด",
+      "q2": "คู่มือ TRAVI มีข้อมูลอะไรบ้าง?",
+      "a2": "แต่ละคู่มือมีสถานที่ท่องเที่ยว ที่พัก อาหารท้องถิ่น การเดินทาง และข้อมูลที่เป็นประโยชน์",
       "q3": "ฉันสามารถค้นหาจุดหมายได้ไหม?",
-      "a3": "ได้ คุณสามารถค้นหาตามชื่อหรือประเทศ",
+      "a3": "ได้ คุณสามารถค้นหาตามชื่อหรือประเทศในแถบค้นหาหน้าจุดหมาย",
       "q4": "จุดหมายแนะนำบน TRAVI คืออะไร?",
-      "a4": "จุดหมายแนะนำมอบประสบการณ์พิเศษ"
+      "a4": "จุดหมายแนะนำของ TRAVI คือสถานที่ที่คัดสรรซึ่งมอบประสบการณ์พิเศษสำหรับนักเดินทางทุกประเภท"
     },
     "loading": {
       "title": "กำลังโหลดจุดหมาย",
-      "message": "กำลังดึงข้อมูลล่าสุด..."
+      "message": "กำลังดึงข้อมูลจุดหมายล่าสุด..."
     },
     "error": {
-      "title": "โหลดไม่สำเร็จ",
-      "message": "กรุณาลองใหม่ภายหลัง",
+      "title": "ไม่สามารถโหลดจุดหมายได้",
+      "message": "เกิดปัญหาในการโหลดข้อมูลจุดหมาย กรุณาลองใหม่ภายหลัง",
       "refresh": "รีเฟรชหน้า"
     },
     "empty": {
       "title": "ไม่มีจุดหมาย",
-      "message": "ขณะนี้ไม่มีจุดหมายที่พร้อมใช้งาน"
+      "message": "ขณะนี้ไม่มีจุดหมายที่พร้อมใช้งาน กรุณาตรวจสอบอีกครั้งภายหลัง"
+    }
+  },
+  "districts": {
+    "title": "ย่าน",
+    "subtitle": "สำรวจย่านที่หลากหลาย",
+    "explore": "สำรวจย่าน"
+  },
+  "realEstate": {
+    "title": "อสังหาริมทรัพย์",
+    "subtitle": "ลงทุนในอนาคต",
+    "offPlan": {
+      "title": "โครงการก่อนสร้าง",
+      "subtitle": "ลงทุนเร็ว จ่ายน้อย ได้มาก",
+      "findProperty": "ค้นหาอสังหาริมทรัพย์ที่สมบูรณ์แบบ",
+      "from": "ราคา",
+      "paymentPlan": "แผนการชำระเงิน",
+      "handover": "ส่งมอบ",
+      "developer": "ผู้พัฒนา"
+    },
+    "filters": {
+      "all": "อสังหาริมทรัพย์ทั้งหมด",
+      "apartments": "อพาร์ทเมนท์",
+      "villas": "วิลล่า",
+      "townhouses": "ทาวน์เฮาส์",
+      "penthouses": "เพนท์เฮาส์"
+    },
+    "features": {
+      "cryptoAccepted": "รับชำระคริปโต",
+      "paymentPlans": "แผนชำระเงินยืดหยุ่น",
+      "goldenVisa": "สิทธิ์ Golden Visa",
+      "roiGuarantee": "รับประกัน ROI"
+    }
+  },
+  "search": {
+    "placeholder": "ค้นหาสถานที่ท่องเที่ยว คู่มือ จุดหมาย...",
+    "results": "ผลการค้นหา",
+    "noResults": "ไม่พบผลลัพธ์สำหรับ:",
+    "tryAgain": "ลองใช้คำค้นหาอื่น"
+  },
+  "footer": {
+    "about": "เกี่ยวกับ TRAVI",
+    "aboutTravi": "เกี่ยวกับ TRAVI",
+    "aboutText": "ข้อมูลท่องเที่ยวครบวงจร 17 เมืองทั่วโลก",
+    "aboutUs": "เกี่ยวกับเรา",
+    "quickLinks": "ลิงก์ด่วน",
+    "legal": "ข้อมูลทางกฎหมาย",
+    "privacy": "นโยบายความเป็นส่วนตัว",
+    "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+    "terms": "ข้อกำหนดการใช้งาน",
+    "termsOfService": "ข้อกำหนดการใช้งาน",
+    "contact": "ติดต่อเรา",
+    "contactUs": "ติดต่อเรา",
+    "followUs": "ติดตามเรา",
+    "explore": "สำรวจ",
+    "travel": "ท่องเที่ยว",
+    "company": "ข้อมูลบริษัท",
+    "allGuides": "คู่มือทั้งหมด",
+    "cookies": "คุกกี้",
+    "security": "ความปลอดภัย",
+    "cookieSettings": "ตั้งค่าคุกกี้",
+    "tagline": "แหล่งข้อมูลท่องเที่ยวที่ไว้วางใจ",
+    "ariaLabel": "ส่วนท้ายเว็บไซต์",
+    "featuredGuides": "คู่มือแนะนำ",
+    "tools": "เครื่องมือ",
+    "currencyConverter": "แปลงสกุลเงิน",
+    "roiCalculator": "คำนวณ ROI",
+    "mortgageCalculator": "คำนวณสินเชื่อบ้าน",
+    "glossary": "อภิธานศัพท์",
+    "freeThingsToDo": "กิจกรรมฟรี 70+ อย่าง",
+    "open24Hours": "เปิด 24 ชั่วโมง",
+    "tributeToSheikh": "เทิดเกียรติ HH Sheikh Mohammed",
+    "lawsForTourists": "กฎหมายสำหรับนักท่องเที่ยว",
+    "newsletter": "สมัครรับจดหมายข่าว",
+    "newsletterDescription": "รับข้อมูลท่องเที่ยวและอัพเดทล่าสุด",
+    "emailPlaceholder": "กรอกอีเมล",
+    "allRightsReserved": "สงวนลิขสิทธิ์",
+    "copyright": "© {{year}} {{brand}} สงวนลิขสิทธิ์",
+    "emailAriaLabel": "ส่งอีเมลถึง TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "ไม่พบหน้า",
+      "message": "หน้าที่คุณกำลังค้นหาไม่มีอยู่",
+      "button": "กลับหน้าแรก"
+    },
+    "500": {
+      "title": "ข้อผิดพลาดเซิร์ฟเวอร์",
+      "message": "เกิดข้อผิดพลาดในฝั่งเซิร์ฟเวอร์",
+      "button": "ลองอีกครั้ง"
+    },
+    "network": {
+      "title": "ข้อผิดพลาดการเชื่อมต่อ",
+      "message": "ไม่สามารถเชื่อมต่อได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต",
+      "button": "ลองอีกครั้ง"
+    }
+  },
+  "newsletter": {
+    "badge": "เข้าร่วมการผจญภัย",
+    "title": "รับเวทมนตร์ท่องเที่ยวในกล่องจดหมาย",
+    "description": "เคล็ดลับท่องเที่ยวรายสัปดาห์ สถานที่ลับ และข้อเสนอพิเศษ - ไม่มีสแปม มีแต่ความอยากเดินทาง",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "สมัครรับ",
+    "success": "สมัครสำเร็จแล้ว! ตรวจสอบกล่องจดหมายของคุณ"
+  },
+  "cookies": {
+    "title": "เราให้ความสำคัญกับความเป็นส่วนตัวของคุณ",
+    "description": "เราใช้คุกกี้เพื่อปรับปรุงประสบการณ์การท่องเว็บ วิเคราะห์การเข้าชม และปรับแต่งเนื้อหา การคลิก \"ยอมรับทั้งหมด\" หมายความว่าคุณยินยอมให้เราใช้คุกกี้",
+    "manage": "จัดการ",
+    "rejectAll": "ปฏิเสธทั้งหมด",
+    "acceptAll": "ยอมรับทั้งหมด",
+    "preferencesTitle": "ตั้งค่าคุกกี้",
+    "savePreferences": "บันทึกการตั้งค่า",
+    "essential": {
+      "title": "คุกกี้ที่จำเป็น",
+      "description": "จำเป็นสำหรับการทำงานของเว็บไซต์"
+    },
+    "analytics": {
+      "title": "คุกกี้วิเคราะห์",
+      "description": "ช่วยเราเข้าใจว่าผู้เยี่ยมชมใช้เว็บไซต์อย่างไร"
+    },
+    "marketing": {
+      "title": "คุกกี้การตลาด",
+      "description": "ใช้เพื่อแสดงโฆษณาที่ปรับแต่งตามความสนใจ"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - คู่มือท่องเที่ยวโลก | สถานที่ท่องเที่ยว โรงแรม อาหาร",
+      "description": "ข้อมูลสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร ย่าน 17 เมืองทั่วโลก วางแผนการเดินทางที่สมบูรณ์แบบด้วยคำแนะนำท้องถิ่น"
+    },
+    "attractions": {
+      "title": "สถานที่ท่องเที่ยว | คู่มือสถานที่ท่องเที่ยวยอดนิยมทั่วโลก",
+      "description": "ข้อมูลสถานที่ท่องเที่ยวทั่วโลก จาก Burj Khalifah ถึงสถานที่ลับ คู่มือที่เป็นประโยชน์สำหรับการวางแผนท่องเที่ยว"
+    },
+    "hotels": {
+      "title": "โรงแรม | ที่พักแนะนำทั่วโลก",
+      "description": "ข้อมูลโรงแรมสำหรับทุกงบประมาณ จากรีสอร์ทหรูถึงตัวเลือกประหยัด"
+    },
+    "dining": {
+      "title": "อาหาร | ร้านอาหารแนะนำทั่วโลก",
+      "description": "สำรวจวงการอาหารทั่วโลก จากร้านหรูถึงอาหารริมทาง"
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "ข้อมูลอัจฉริยะท่องเที่ยว",
+      "headlinePart1": "เรื่องราวที่",
+      "headlinePart2": "สร้างแรงบันดาลใจ",
+      "description": "คู่มือจากผู้เชี่ยวชาญ มุมมองภายใน และเรื่องเล่าที่เปลี่ยนวิธีการสัมผัสโลกของคุณ",
+      "startJourney": "เริ่มการเดินทาง",
+      "browseCollection": "ดูคอลเลกชัน",
+      "issueBadge": "Issue 47 — ฤดูหนาว 2026"
+    },
+    "stats": {
+      "guides": "คู่มือท่องเที่ยว",
+      "destinations": "จุดหมาย",
+      "languages": "ภาษา"
+    },
+    "journey": {
+      "badge": "การเดินทางของคุณ คำแนะนำของเรา",
+      "title": "การเดินทางที่ยอดเยี่ยมทุกครั้งเริ่มจากคู่มือ",
+      "subtitle": "จากการฝันถึงการแชร์ เราอยู่เคียงข้างคุณทุกขั้นตอน"
+    },
+    "ideaLab": {
+      "badge": "ห้องปฏิบัติการไอเดีย",
+      "title": "แรงบันดาลใจที่คัดสรร",
+      "readGuide": "อ่านคู่มือ"
+    },
+    "archetype": {
+      "badge": "ปรับแต่งสำหรับคุณ",
+      "title": "คุณเป็นนักเดินทางประเภทไหน?",
+      "subtitle": "เลือกสไตล์การเดินทางและค้นพบคู่มือที่คัดสรรมาเพื่อคุณ",
+      "viewGuides": "ดูคู่มือ {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "นักผจญภัย",
+        "description": "ประสบการณ์ที่ตื่นเต้นและอะดรีนาลิน"
+      },
+      "culture": {
+        "name": "นักสำรวจวัฒนธรรม",
+        "description": "ศิลปะ ประวัติศาสตร์ และประเพณีท้องถิ่น"
+      },
+      "relaxation": {
+        "name": "ปรมาจารย์การพักผ่อน",
+        "description": "รีทรีทสุขภาพและการหลีกหนีอย่างสงบ"
+      },
+      "foodie": {
+        "name": "นักท่องเที่ยวสายกิน",
+        "description": "รสชาติท้องถิ่นและการผจญภัยทางอาหาร"
+      },
+      "wellness": {
+        "name": "นักแสวงหาสุขภาพ",
+        "description": "การพักผ่อน สปา และรีทรีทอย่างมีสติ"
+      },
+      "budget": {
+        "name": "นักเดินทางฉลาด",
+        "description": "ประสบการณ์สูงสุด งบประมาณต่ำสุด"
+      },
+      "solo": {
+        "name": "นักสำรวจคนเดียว",
+        "description": "การเดินทางอิสระและการค้นพบตัวเอง"
+      },
+      "luxury": {
+        "name": "ผู้รักความหรูหรา",
+        "description": "ประสบการณ์ระดับพรีเมียมและชีวิตชั้นสูง"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "ฝัน",
+        "subtitle": "ค้นพบแรงบันดาลใจ",
+        "guides": ["คู่มือจุดหมาย", "โฟโต้เอสเซย์"]
+      },
+      "plan": {
+        "title": "วางแผน",
+        "subtitle": "สร้างแผนการเดินทาง",
+        "guides": ["การวางแผนการเดินทาง", "ข้อกำหนดวีซ่า"]
+      },
+      "prepare": {
+        "title": "เตรียมตัว",
+        "subtitle": "พร้อมออกเดินทาง",
+        "guides": ["รายการสิ่งของที่ต้องนำ", "ข้อมูลความปลอดภัย"]
+      },
+      "experience": {
+        "title": "สัมผัส",
+        "subtitle": "เพลิดเพลินกับการผจญภัย",
+        "guides": ["ข้อมูลท้องถิ่น", "สถานที่ลับ"]
+      },
+      "share": {
+        "title": "แชร์",
+        "subtitle": "เล่าเรื่องราวของคุณ",
+        "guides": ["บันทึกการเดินทาง", "การถ่ายภาพ"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "เที่ยววันหยุด",
+      "offBeatenPath": "สถานที่ลับ",
+      "smartTravel": "เดินทางฉลาด",
+      "bucketList": "บักเก็ตลิสต์",
+      "culinary": "อาหาร",
+      "natureWonder": "ธรรมชาติและความมหัศจรรย์"
+    },
+    "seo": {
+      "title": "คู่มือท่องเที่ยว | ข้อมูลเชิงลึกจุดหมายจากผู้เชี่ยวชาญ",
+      "description": "คู่มือท่องเที่ยวจากผู้เชี่ยวชาญ ข้อมูลเชิงลึกจุดหมาย และคำแนะนำจากนักเขียนท่องเที่ยวทั่วโลก วางแผนการเดินทางที่สมบูรณ์แบบวันนี้"
+    },
+    "editorial": {
+      "badge": "จากบรรณาธิการ",
+      "title": "บทความพิเศษ",
+      "readFull": "อ่านฉบับเต็ม"
+    },
+    "gallery": {
+      "badge": "เรื่องราวภาพ",
+      "title": "จุดหมายที่สร้างแรงบันดาลใจ",
+      "categories": {
+        "city": "เมือง",
+        "mountains": "ภูเขา",
+        "beach": "ชายหาด",
+        "safari": "ซาฟารี",
+        "nature": "ธรรมชาติ"
+      }
+    },
+    "writers": {
+      "badge": "เสียงจากผู้เชี่ยวชาญ",
+      "title": "พบกับนักเขียน",
+      "subtitle": "ผู้เชี่ยวชาญที่อยู่เบื้องหลังคู่มือท่องเที่ยวที่น่าเชื่อถือที่สุด",
+      "articleCount": "{{count}} บทความ",
+      "viewProfile": "ดูโปรไฟล์"
+    },
+    "map": {
+      "badge": "สำรวจตามภูมิภาค",
+      "title": "คู่มือทั่วโลก",
+      "subtitle": "คลิกจุดหมายใดก็ได้เพื่อค้นพบคู่มือจากผู้เชี่ยวชาญ",
+      "guidesAvailable": "{{count}} คู่มือ",
+      "legendDestination": "จุดหมาย",
+      "legendHighlighted": "ไฮไลท์"
+    },
+    "newsletter": {
+      "badge": "เข้าร่วมการเดินทาง",
+      "title": "เรื่องราวท่องเที่ยวรายสัปดาห์",
+      "description": "แรงบันดาลใจท่องเที่ยวที่คัดสรร เคล็ดลับจากผู้เชี่ยวชาญ และข้อมูลภายในทุกสัปดาห์",
+      "placeholder": "กรอกอีเมล",
+      "subscribe": "สมัครรับ",
+      "subscribing": "กำลังสมัคร...",
+      "joinCount": "เข้าร่วมกับนักเดินทางกว่า 50,000 คน",
+      "invalidEmail": "กรุณากรอกอีเมลที่ถูกต้อง",
+      "successTitle": "ยินดีต้อนรับสู่การเดินทาง!",
+      "successDesc": "คุณสมัครรับจดหมายข่าวสำเร็จแล้ว"
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "ล่าสุด",
+      "justNow": "เมื่อสักครู่",
+      "minutesAgo": "{{count}} นาทีที่แล้ว",
+      "hoursAgo": "{{count}} ชั่วโมงที่แล้ว",
+      "daysAgo": "{{count}} วันที่แล้ว",
+      "minRead": "อ่าน {{count}} นาที"
+    },
+    "header": {
+      "title": "ข่าว TRAVI",
+      "edition": "ฉบับนานาชาติ",
+      "subscribe": "สมัครรับ"
+    },
+    "breaking": {
+      "label": "ข่าวด่วน"
+    },
+    "search": {
+      "placeholder": "ค้นหาข่าวทั่วโลก...",
+      "button": "ค้นหา",
+      "title": "ค้นหา",
+      "searching": "กำลังค้นหา \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "ข่าวทั้งหมด",
+      "world": "โลก",
+      "business": "ธุรกิจ",
+      "culture": "วัฒนธรรม",
+      "travel": "ท่องเที่ยว",
+      "tech": "เทคโนโลยี",
+      "opinion": "ความคิดเห็น"
+    },
+    "empty": {
+      "title": "ยังไม่มีบทความข่าว",
+      "description": "เรากำลังเตรียมข่าวท่องเที่ยวและข้อมูลเชิงลึกล่าสุด รอรับอัพเดทจากทั่วโลก",
+      "exploreDestinations": "สำรวจจุดหมาย",
+      "viewGuides": "ดูคู่มือท่องเที่ยว"
+    },
+    "hero": {
+      "topStory": "ข่าวเด่น",
+      "editorialTeam": "ทีมบรรณาธิการ"
+    },
+    "views": "{{count}} ครั้ง",
+    "viewAll": "ดูทั้งหมด",
+    "seo": {
+      "title": "ข่าวท่องเที่ยว | เรื่องราวและอัพเดทล่าสุด",
+      "description": "ข่าวท่องเที่ยวล่าสุด อัพเดทจุดหมาย และข้อมูลเชิงลึกอุตสาหกรรมจากทั่วโลก"
+    },
+    "sidebar": {
+      "alsoToday": "ข่าวอื่นวันนี้",
+      "storiesCount": "{{count}} เรื่อง",
+      "liveUpdates": "อัพเดทสด",
+      "trendingTopics": "หัวข้อยอดนิยม",
+      "noTrending": "ยังไม่มีหัวข้อยอดนิยม กลับมาตรวจสอบอีกครั้งเร็วๆ นี้!"
+    },
+    "sections": {
+      "topStories": "ข่าวเด่น",
+      "opinion": "ความคิดเห็นและวิเคราะห์",
+      "moreOpinion": "ความคิดเห็นเพิ่มเติม",
+      "worldwide": "ข่าวทั่วโลก"
+    },
+    "worldwide": {
+      "title": "หน้าต่างสู่โลก",
+      "subtitle": "ข่าวจากทุกมุมโลก",
+      "storiesCount": "{{count}} เรื่อง",
+      "comingSoon": "เร็วๆ นี้"
+    },
+    "newsletter": {
+      "title": "รับข้อมูลล่าสุด",
+      "description": "รับข่าวเด่นประจำวันทุกเช้า ร่วมกับผู้อ่านกว่า 50,000 คน",
+      "placeholder": "กรอกอีเมล",
+      "subscribe": "สมัครฟรี",
+      "noSpam": "ไม่มีสแปม ยกเลิกได้ทุกเมื่อ",
+      "successTitle": "สมัครสำเร็จ!",
+      "successDesc": "กรุณาตรวจสอบอีเมลเพื่อยืนยัน",
+      "errorTitle": "สมัครไม่สำเร็จ",
+      "errorDesc": "กรุณาลองอีกครั้งภายหลัง",
+      "invalidTitle": "อีเมลไม่ถูกต้อง",
+      "invalidDesc": "กรุณากรอกอีเมลที่ถูกต้อง"
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "เกี่ยวกับเรา | TRAVI World",
+      "metaDescription": "เรียนรู้เกี่ยวกับ TRAVI World แพลตฟอร์มข้อมูลท่องเที่ยวอิสระที่ให้ข้อมูลสถานที่ท่องเที่ยว โรงแรม ร้านอาหาร สำหรับจุดหมายทั่วโลก",
+      "badge": "เพื่อนร่วมทางของคุณ",
+      "title": "เกี่ยวกับ",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "แหล่งข้อมูลท่องเที่ยวที่ไว้วางใจ ช่วยนักเดินทางหลายล้านคนสำรวจโลกอย่างมั่นใจ",
+      "ctaExplore": "สำรวจจุดหมาย",
+      "ctaContact": "ติดต่อเรา",
+      "stats": {
+        "destinations": "จุดหมาย",
+        "articles": "บทความ",
+        "support": "สนับสนุนการเดินทาง",
+        "coverage": "ครอบคลุม",
+        "cities": "16+ เมือง"
+      },
+      "whoWeAre": {
+        "title": "เราคือใคร"
+      },
+      "mission": {
+        "title": "ภารกิจของเรา"
+      },
+      "services": {
+        "badge": "บริการ",
+        "title": "สิ่งที่เรานำเสนอ"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "คู่มือจุดหมาย",
+          "description": "ข้อมูลครบวงจรเกี่ยวกับเมืองและภูมิภาคทั่วโลก"
+        },
+        "attractions": {
+          "title": "ข้อมูลสถานที่ท่องเที่ยว",
+          "description": "รายละเอียดสถานที่ที่ต้องไปและประสบการณ์พิเศษ"
+        },
+        "hotels": {
+          "title": "คู่มือโรงแรม",
+          "description": "ข้อมูลที่พักสำหรับทุกงบประมาณ"
+        },
+        "restaurants": {
+          "title": "ร้านอาหารแนะนำ",
+          "description": "ตัวเลือกอาหารสำหรับทุกรสนิยม"
+        },
+        "articles": {
+          "title": "บทความท่องเที่ยว",
+          "description": "เคล็ดลับ ข้อมูลเชิงลึก และแรงบันดาลใจท่องเที่ยว"
+        },
+        "news": {
+          "title": "ข่าวท่องเที่ยวล่าสุด",
+          "description": "อัพเดทท่องเที่ยวที่คัดสรร"
+        }
+      },
+      "editorial": {
+        "title": "ความเป็นอิสระของบรรณาธิการ",
+        "affiliateTitle": "การเปิดเผยพันธมิตร"
+      },
+      "values": {
+        "badge": "รากฐาน",
+        "title": "คุณค่าของเรา",
+        "accuracy": {
+          "title": "ความแม่นยำ",
+          "description": "มุ่งมั่นให้ข้อมูลที่ถูกต้องและน่าเชื่อถือ อัพเดทเนื้อหาเป็นประจำ"
+        },
+        "transparency": {
+          "title": "ความโปร่งใส",
+          "description": "เปิดเผยเกี่ยวกับความสัมพันธ์พันธมิตรและวิธีการดำเนินงาน"
+        },
+        "userFocused": {
+          "title": "เน้นผู้ใช้",
+          "description": "ออกแบบเนื้อหาเพื่อช่วยนักเดินทางตัดสินใจอย่างมีข้อมูล"
+        }
+      },
+      "connect": {
+        "badge": "เชื่อมต่อกัน",
+        "title": "ติดต่อเรา"
+      },
+      "company": {
+        "title": "ข้อมูลบริษัท",
+        "contactTitle": "ข้อมูลติดต่อ",
+        "contactForm": "แบบฟอร์มติดต่อ"
+      }
+    },
+    "contact": {
+      "metaTitle": "ติดต่อเรา | TRAVI World",
+      "metaDescription": "ติดต่อ TRAVI World เรายินดีรับฟังความคิดเห็น คำถาม และข้อสงสัยเกี่ยวกับบริการข้อมูลท่องเที่ยว",
+      "badge": "ยินดีรับฟังคุณ",
+      "titlePart1": "ติดต่อ",
+      "titlePart2": "เรา",
+      "subtitle": "มีคำถามเกี่ยวกับการผจญภัยครั้งต่อไป? เราพร้อมช่วยคุณสำรวจโลกอย่างมั่นใจ",
+      "cta": "ส่งข้อความ",
+      "getInTouch": "ติดต่อเรา",
+      "getInTouchSubtitle": "เลือกวิธีติดต่อที่เหมาะกับคุณ เรามุ่งมั่นตอบกลับอย่างรวดเร็ว",
+      "howCanWeHelp": "เราช่วยอะไรได้บ้าง?",
+      "howCanWeHelpSubtitle": "เราพร้อมช่วยเหลือคำถามหรือข้อเสนอแนะเกี่ยวกับเนื้อหาและบริการท่องเที่ยว",
+      "importantNote": "หมายเหตุสำคัญ",
+      "importantNoteSubtitle": "กรุณาอ่านก่อนติดต่อเรา",
+      "ourOffice": "สำนักงาน",
+      "ourOfficeSubtitle": "สำหรับเอกสารราชการและการติดต่อทางไปรษณีย์",
+      "travelCompanion": "เพื่อนร่วมทางของคุณ",
+      "urgentNote": "สำหรับเรื่องเร่งด่วน กรุณาใส่ {{urgentLabel}} ในหัวเรื่องอีเมล เราจัดลำดับความสำคัญตามลักษณะการสอบถาม",
+      "urgentLabel": "เร่งด่วน",
+      "options": {
+        "generalInquiries": {
+          "title": "สอบถามทั่วไป",
+          "description": "คำถามเกี่ยวกับคู่มือท่องเที่ยวและเนื้อหา"
+        },
+        "privacyInquiries": {
+          "title": "สอบถามความเป็นส่วนตัว",
+          "description": "การเข้าถึงข้อมูล การลบ และคำขอความเป็นส่วนตัว"
+        },
+        "visitWebsite": {
+          "title": "เยี่ยมชมเว็บไซต์",
+          "description": "สำรวจจุดหมายและแรงบันดาลใจท่องเที่ยว"
+        },
+        "responseTime": {
+          "title": "เวลาตอบกลับ",
+          "description": "เรามุ่งมั่นตอบกลับอย่างรวดเร็ว",
+          "action": "2-3 วันทำการ"
+        }
+      },
+      "helpTopics": {
+        "general": "สอบถามทั่วไปเกี่ยวกับคู่มือท่องเที่ยวและเนื้อหา",
+        "feedback": "ข้อเสนอแนะและข้อคิดเห็นเพื่อการปรับปรุง",
+        "reporting": "รายงานข้อผิดพลาดหรือข้อมูลที่ล้าสมัย",
+        "business": "สอบถามธุรกิจและความร่วมมือ",
+        "media": "สอบถามสื่อและข่าว",
+        "privacy": "คำขอเกี่ยวกับความเป็นส่วนตัว (การเข้าถึงข้อมูล การลบ ฯลฯ)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "นโยบายความเป็นส่วนตัว | TRAVI World",
+      "metaDescription": "เรียนรู้วิธีที่ TRAVI World เก็บรวบรวม ใช้ และปกป้องข้อมูลส่วนบุคคลของคุณ อ่านนโยบายความเป็นส่วนตัวฉบับสมบูรณ์",
+      "badge": "ความเป็นส่วนตัวของคุณสำคัญ",
+      "title": "นโยบายความเป็นส่วนตัว",
+      "subtitle": "เรามุ่งมั่นปกป้องความเป็นส่วนตัวของคุณและโปร่งใสเกี่ยวกับการจัดการข้อมูล เรียนรู้วิธีที่ TRAVI World เก็บรวบรวม ใช้ และปกป้องข้อมูล",
+      "effectiveDate": "วันที่มีผลบังคับใช้: 1 มกราคม 2026",
+      "features": {
+        "dataProtection": {
+          "title": "การปกป้องข้อมูล",
+          "description": "ข้อมูลของคุณได้รับการปกป้อง"
+        },
+        "minimalCollection": {
+          "title": "เก็บข้อมูลน้อยที่สุด",
+          "description": "เราเก็บเฉพาะสิ่งที่จำเป็น"
+        },
+        "transparency": {
+          "title": "ความโปร่งใสสมบูรณ์",
+          "description": "ชัดเจนเกี่ยวกับการปฏิบัติของเรา"
+        },
+        "yourControl": {
+          "title": "การควบคุมของคุณ",
+          "description": "จัดการการตั้งค่าของคุณ"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. เราคือใคร",
+        "informationCollect": "2. ข้อมูลที่เราเก็บรวบรวม",
+        "howWeUse": "3. วิธีที่เราใช้ข้อมูลของคุณ",
+        "legalBasis": "4. พื้นฐานทางกฎหมายสำหรับการประมวลผล (GDPR)",
+        "cookies": "5. คุกกี้และเทคโนโลยีการติดตาม",
+        "thirdParty": "6. บริการของบุคคลที่สาม",
+        "aiContent": "7. เนื้อหาที่สร้างโดย AI",
+        "internationalTransfers": "8. การถ่ายโอนข้อมูลระหว่างประเทศ",
+        "dataRetention": "9. การเก็บรักษาข้อมูล",
+        "privacyRights": "10. สิทธิ์ความเป็นส่วนตัวของคุณ",
+        "californiaRights": "11. สิทธิ์ความเป็นส่วนตัวแคลิฟอร์เนีย (CCPA/CPRA)",
+        "childrenPrivacy": "12. ความเป็นส่วนตัวของเด็ก",
+        "dataSecurity": "13. ความปลอดภัยของข้อมูล",
+        "changes": "14. การเปลี่ยนแปลงนโยบายนี้",
+        "contactUs": "15. ติดต่อเรา"
+      }
+    },
+    "terms": {
+      "metaTitle": "ข้อกำหนดการใช้งาน | TRAVI World",
+      "metaDescription": "อ่านข้อกำหนดการใช้งานบริการข้อมูลท่องเที่ยว TRAVI World ข้อตกลงทางกฎหมายระหว่างคุณและ KBR Global Creative Consulting Ltd",
+      "badge": "ข้อตกลงทางกฎหมาย",
+      "title": "ข้อกำหนดการใช้งาน",
+      "subtitle": "กรุณาอ่านข้อกำหนดเหล่านี้อย่างละเอียดก่อนใช้ TRAVI World การเข้าถึงและใช้งานแพลตฟอร์มของเราอยู่ภายใต้เงื่อนไขเหล่านี้",
+      "lastUpdated": "อัพเดทล่าสุด: 1 มกราคม 2026",
+      "importantNotice": "ประกาศทางกฎหมายที่สำคัญ",
+      "keyPoints": {
+        "editorial": {
+          "title": "แพลตฟอร์มบรรณาธิการ",
+          "description": "คู่มือท่องเที่ยวและเนื้อหาจุดหมาย"
+        },
+        "affiliate": {
+          "title": "ลิงก์พันธมิตร",
+          "description": "คำแนะนำตามค่าคอมมิชชัน"
+        },
+        "aiGenerated": {
+          "title": "สร้างโดย AI",
+          "description": "เนื้อหาที่สร้างด้วยความช่วยเหลือของ AI"
+        },
+        "privacy": {
+          "title": "ความเป็นส่วนตัว",
+          "description": "รับประกันการปกป้องข้อมูล"
+        }
+      },
+      "sections": {
+        "operator": "ผู้ดำเนินการ / นิติบุคคล",
+        "purpose": "1. วัตถุประสงค์และขอบเขตการใช้งาน",
+        "affiliateDisclosure": "2. การเปิดเผยพันธมิตรและธุรกรรมบุคคลที่สาม",
+        "aiDisclaimer": "3. ข้อสงวนสิทธิ์เนื้อหาที่สร้างโดย AI",
+        "newsletter": "4. จดหมายข่าวและการสื่อสาร",
+        "userConduct": "5. พฤติกรรมผู้ใช้และการกระทำที่ห้าม",
+        "intellectualProperty": "6. ทรัพย์สินทางปัญญาและใบอนุญาตจำกัด",
+        "dmca": "7. การแจ้งเตือนและการลบ (DMCA และที่คล้ายกัน)",
+        "disclaimers": "8. ความถูกต้อง ความพร้อมใช้งาน และข้อสงวนสิทธิ์",
+        "liability": "9. การจำกัดความรับผิดชอบและเหตุสุดวิสัย",
+        "indemnification": "10. การชดใช้ค่าเสียหาย",
+        "privacyCookies": "11. ความเป็นส่วนตัว คุกกี้ และการปกป้องข้อมูล",
+        "accessibility": "12. คำแถลงการเข้าถึง",
+        "governingLaw": "13. กฎหมายที่ใช้บังคับ การระงับข้อพิพาท และเขตอำนาจศาล",
+        "modifications": "14. การแก้ไข ความสามารถในการแยก และบทบัญญัติทั่วไป"
+      }
     }
   }
 }

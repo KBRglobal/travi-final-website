@@ -1,222 +1,345 @@
 {
   "nav": {
-    "home": "Home",
-    "attractions": "Attractions",
-    "hotels": "Hotels",
-    "dining": "Dining",
-    "districts": "Districts",
-    "articles": "News & Guides",
-    "realEstate": "Real Estate",
-    "events": "Events",
-    "search": "Search",
-    "language": "Language"
+    "home": "Tahanan",
+    "destinations": "Mga Destinasyon",
+    "attractions": "Mga Atraksyon",
+    "hotels": "Mga Hotel",
+    "guides": "Mga Gabay",
+    "dining": "Kainan",
+    "districts": "Mga Distrito",
+    "articles": "Balita",
+    "news": "Balita",
+    "shopping": "Pamimili",
+    "realEstate": "Ari-arian",
+    "events": "Mga Kaganapan",
+    "search": "Maghanap",
+    "language": "Wika",
+    "mainNavigation": "Pangunahing nabigasyon",
+    "openMenu": "Buksan ang menu",
+    "closeMenu": "Isara ang menu",
+    "logoAlt": "TRAVI - Gabay sa Paglalakbay",
+    "followInstagram": "Sundan ang TRAVI sa Instagram",
+    "followTikTok": "Sundan ang TRAVI sa TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Nabigasyon ng breadcrumb",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "Read More",
-    "viewAll": "View All",
-    "learnMore": "Learn More",
-    "bookNow": "Book Now",
-    "contactUs": "Contact Us",
-    "subscribe": "Subscribe",
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "delete": "Delete",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "noResults": "No results found",
-    "seeMore": "See More",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous",
-    "close": "Close",
-    "share": "Share",
-    "copyLink": "Copy Link",
-    "copied": "Copied!"
+    "readMore": "Magbasa Pa",
+    "viewAll": "Tingnan Lahat",
+    "learnMore": "Alamin Pa",
+    "bookNow": "Mag-book Ngayon",
+    "contactUs": "Makipag-ugnayan",
+    "subscribe": "Mag-subscribe",
+    "submit": "Isumite",
+    "cancel": "Kanselahin",
+    "save": "I-save",
+    "edit": "I-edit",
+    "delete": "Burahin",
+    "loading": "Naglo-load...",
+    "error": "May nangyaring mali",
+    "noResults": "Walang nahanap na resulta",
+    "seeMore": "Tingnan Pa",
+    "back": "Bumalik",
+    "next": "Susunod",
+    "previous": "Nakaraan",
+    "close": "Isara",
+    "share": "Ibahagi",
+    "copyLink": "Kopyahin ang Link",
+    "copied": "Nakopya na!"
   },
   "home": {
     "hero": {
-      "title": "Discover Dubai",
-      "subtitle": "Your Ultimate Guide to the City of Gold",
-      "searchPlaceholder": "Search attractions, hotels, restaurants..."
+      "title": "Galugarin ang Mundo kasama ang TRAVI",
+      "subtitle": "Ang iyong komprehensibong gabay sa paglalakbay para sa 17 destinasyon sa buong mundo",
+      "searchPlaceholder": "Maghanap ng atraksyon, hotel, restawran...",
+      "cta": "Simulan ang Paggalugad",
+      "badge": "Ang Iyong Daan Tungo sa mga Pakikipagsapalaran sa Mundo",
+      "headlinePart1": "Ang Iyong Mapagkakatiwalaang",
+      "headlinePart2": "Gabay sa Paglalakbay",
+      "description": "Komprehensibong impormasyon sa paglalakbay para sa {{destinations}} destinasyon sa buong mundo. Tuklasin ang detalyadong gabay para sa {{attractions}}+ atraksyon.",
+      "descriptionPart1": "Komprehensibong impormasyon sa paglalakbay para sa",
+      "descriptionPart2": "destinasyon sa buong mundo. Tuklasin ang detalyadong gabay para sa",
+      "descriptionPart3": "atraksyon.",
+      "carouselLabel": "Nabigasyon ng carousel ng destinasyon",
+      "viewDestination": "Tingnan ang {{name}} - {{tagline}}",
+      "worldwide": "Sa Buong Mundo",
+      "exploreWorld": "Galugarin ang Mundo",
+      "welcomeAriaLabel": "Maligayang pagdating sa TRAVI World",
+      "pageTitle": "TRAVI World - Mga Gabay sa Paglalakbay para sa Mga Hotel, Atraksyon at Mga Dapat Gawin",
+      "pageDescription": "Ang iyong kumpletong gabay sa paglalakbay para sa 17 destinasyon sa buong mundo. Ekspertong impormasyon tungkol sa mga hotel, atraksyon, restawran, at aktibidad para sa 3,000+ lugar.",
+      "orgDescription": "Ang iyong mapagkakatiwalaang mapagkukunan ng impormasyon sa paglalakbay para sa 17 destinasyon sa buong mundo."
     },
-    "featured": "Featured",
-    "trending": "Trending Now",
-    "topAttractions": "Top Attractions",
-    "bestHotels": "Best Hotels",
-    "latestNews": "Latest News & Guides"
+    "srLabel": {
+      "attractions": "Mahigit {{count}} atraksyon ang sakop",
+      "destinations": "{{count}} destinasyon sa buong mundo",
+      "languages": "Maraming wika ang platform na may mga karagdagang wika na paparating"
+    },
+    "featured": "Tampok",
+    "trending": "Uso Ngayon",
+    "topAttractions": "Mga Nangungunang Atraksyon",
+    "bestHotels": "Mga Pinakamahusay na Hotel",
+    "latestNews": "Pinakabagong Balita at Gabay",
+    "sections": {
+      "destinations": "Galugarin ang mga Destinasyon",
+      "destinationsDesc": "Tuklasin ang aming piniling koleksyon ng mga destinasyon sa paglalakbay sa buong mundo",
+      "categories": "Mag-browse Ayon sa Kategorya",
+      "categoriesDesc": "Hanapin ang eksaktong hinahanap mo",
+      "experiences": "Maglakbay Ayon sa Karanasan",
+      "experiencesDesc": "Piliin ang iyong istilo ng paglalakbay",
+      "faq": "Mga Madalas Itanong",
+      "faqDesc": "Lahat ng kailangan mong malaman tungkol sa TRAVI",
+      "regions": "Galugarin Ayon sa Rehiyon",
+      "newsletter": "Manatiling May Alam",
+      "allDestinationsTitle": "Mga Gabay sa Paglalakbay para sa Lahat ng {{count}} Destinasyon",
+      "completeGuide": "{{name}}, {{country}} - Kumpletong Gabay sa Paglalakbay"
+    },
+    "cta": {
+      "exploreDestinations": "Galugarin ang mga Destinasyon",
+      "viewGuides": "Tingnan ang mga Gabay",
+      "viewAll": "Tingnan Lahat",
+      "startExploring": "Simulan ang Paggalugad",
+      "planTrip": "Planuhin ang Iyong Biyahe",
+      "viewExperience": "Tingnan ang {{name}}"
+    },
+    "stats": {
+      "destinations": "DESTINASYON",
+      "attractions": "ATRAKSYON",
+      "languages": "MGA WIKA",
+      "attractionsNum": "3,000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} destinasyon",
+      "attractionsCountWithLabel": "{{count}}+ atraksyon"
+    },
+    "categories": {
+      "attractions": "Mga Atraksyon",
+      "attractionsDesc": "Mga dapat puntahan",
+      "news": "Balita sa Paglalakbay",
+      "newsDesc": "Pinakabagong balita",
+      "guides": "Mga Gabay",
+      "guidesDesc": "Mga gabay sa destinasyon",
+      "hotels": "Mga Hotel",
+      "hotelsDesc": "Hanapin ang perpektong tuluyan"
+    },
+    "experiences": {
+      "luxury": "Marangyang Paglalakbay",
+      "luxuryDesc": "Premium na karanasan sa paglalakbay at eksklusibong destinasyon",
+      "adventure": "Pakikipagsapalaran at Labas",
+      "adventureDesc": "Kapana-panabik na mga karanasan sa labas at pakikipagsapalaran",
+      "family": "Paglalakbay ng Pamilya",
+      "familyDesc": "Mga destinasyon at aktibidad na angkop sa pamilya",
+      "budget": "Matipid na Paglalakbay",
+      "budgetDesc": "Abot-kayang pagpipilian at destinasyon sa paglalakbay",
+      "romance": "Honeymoon at Romantiko",
+      "romanceDesc": "Mga romantikong getaway at destinasyon para sa honeymoon",
+      "solo": "Mag-isang Paglalakbay",
+      "soloDesc": "Mga perpektong destinasyon para sa nag-iisang manlalakbay"
+    },
+    "faq": {
+      "title": "Mga Madalas Itanong",
+      "subtitle": "Lahat ng kailangan mong malaman tungkol sa TRAVI World",
+      "whatIsTravi": "Ano ang TRAVI World?",
+      "whatIsTraviAnswer": "Ang TRAVI World ay isang komprehensibong platform ng impormasyon sa paglalakbay na sumasaklaw sa 17 destinasyon sa buong mundo na may detalyadong gabay para sa 3,000+ atraksyon, hotel, restawran, at aktibidad.",
+      "howManyDestinations": "Ilang destinasyon ang sinasaklaw ng TRAVI?",
+      "howManyDestinationsAnswer": "Sinasaklaw ng TRAVI World ang 17 pangunahing destinasyon sa paglalakbay kabilang ang Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, at Rome.",
+      "isFree": "Libre bang gamitin ang TRAVI World?",
+      "isFreeAnswer": "Oo, ganap na libre ang paggamit ng TRAVI World. Mag-browse ng libu-libong gabay sa paglalakbay, pagsusuri ng atraksyon, rekomendasyon ng hotel, at mungkahi ng restawran nang walang bayad.",
+      "updateFrequency": "Gaano kadalas ina-update ang nilalaman?",
+      "updateFrequencyAnswer": "Ina-update ang nilalaman ng TRAVI World araw-araw kasama ang pinakabagong balita sa paglalakbay, bagong pagsusuri ng atraksyon, at na-update na impormasyon tungkol sa mga hotel at restawran sa lahat ng 17 destinasyon."
+    },
+    "mascotAlt": "TRAVI mascot na may mga tanyag na gusali sa mundo - galugarin ang mga gabay sa paglalakbay para sa Dubai, Paris, London, Rome at higit pa",
+    "mascotTitle": "TRAVI World - Mga Gabay sa Paglalakbay para sa mga Pandaigdigang Destinasyon"
   },
   "attractions": {
-    "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "title": "Mga Atraksyon sa Dubai",
+    "subtitle": "Galugarin ang mga tanyag na landmark at mga nakatagong yaman",
+    "hero": {
+      "badge": "{{count}} atraksyon sa {{cities}} lungsod",
+      "badgeThousands": "Libu-libong atraksyon sa buong mundo",
+      "headlinePart1": "Mga Dapat Gawin",
+      "headlinePart2": "Sa Buong Mundo",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line na tiket</span> para sa Eiffel Tower, Colosseum, Burj Khalifa at mga nangungunang atraksyon sa Paris, Rome, Dubai at higit pa.",
+      "searchPlaceholder": "Maghanap ng Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Carousel ng mga tampok na atraksyon",
+      "sectionLabel": "Mag-book ng tiket sa mga nangungunang atraksyon sa buong mundo",
+      "searchAriaLabel": "Maghanap ng atraksyon ayon sa pangalan o lungsod",
+      "searchButton": "Maghanap",
+      "searchButtonAriaLabel": "Maghanap ng mga atraksyon"
+    },
+    "stats": {
+      "attractions": "ATRAKSYON",
+      "cities": "LUNGSOD",
+      "rating": "RATING"
+    },
+    "srLabel": {
+      "attractions": "Mahigit {{count}} atraksyon",
+      "cities": "{{count}} lungsod",
+      "rating": "{{rating}} bituin na rating"
+    },
+    "types": {
+      "all": "Lahat ng Uri",
+      "museums": "Mga Museo",
+      "landmarks": "Mga Landmark",
+      "tours": "Mga Tour",
+      "themeParks": "Mga Theme Park",
+      "shows": "Mga Palabas"
+    },
+    "thingsToDoIn": "Mga dapat gawin sa {{name}}",
+    "countAttractions": "{{country}} - {{count}} atraksyon",
     "filters": {
-      "all": "All",
-      "popular": "Most Popular",
-      "free": "Free Entry",
-      "familyFriendly": "Family Friendly",
-      "outdoor": "Outdoor",
-      "indoor": "Indoor"
+      "all": "Lahat",
+      "popular": "Pinakasikat",
+      "free": "Libreng Pagpasok",
+      "familyFriendly": "Angkop sa Pamilya",
+      "outdoor": "Panlabas",
+      "indoor": "Panloob"
     },
     "details": {
-      "location": "Location",
-      "hours": "Opening Hours",
-      "price": "Price",
-      "duration": "Duration",
-      "tips": "Insider Tips"
+      "location": "Lokasyon",
+      "hours": "Oras ng Bukas",
+      "price": "Presyo",
+      "duration": "Tagal",
+      "tips": "Mga Insider na Tip"
+    },
+    "sections": {
+      "destinations": "Galugarin ang mga Atraksyon Ayon sa Destinasyon",
+      "destinationsDesc": "Pumili ng lungsod upang matuklasan ang mga kahanga-hangang dapat gawin",
+      "faq": "Mga Madalas Itanong",
+      "faqDesc": "Kumuha ng mga sagot tungkol sa pag-book ng mga atraksyon sa buong mundo",
+      "whyBookBadge": "Bakit Mag-book sa Amin",
+      "whyBookTitle": "Laktawan ang Pila, Makatipid ng Oras",
+      "whyBookDesc": "Mag-book ng tiket nang maaga at mag-enjoy ng walang abala na pagpasok sa mga nangungunang atraksyon",
+      "allDestinations": "Lahat ng Destinasyon"
+    },
+    "features": {
+      "skipTheLine": "Skip-the-Line na Tiket",
+      "skipTheLineDesc": "Lumakad lampas sa mga pila sa Eiffel Tower, Colosseum, Vatican at higit pa",
+      "mobileTickets": "Mobile na Tiket",
+      "mobileTicketsDesc": "Agarang paghahatid sa iyong telepono - ipakita ang iyong tiket at pumasok",
+      "freeCancellation": "Libreng Pagkansela",
+      "freeCancellationDesc": "Nagbago ang plano? Magkansela hanggang 24 oras bago para sa buong refund"
+    },
+    "browse": {
+      "title": "Mga Dapat Gawin Ayon sa Destinasyon",
+      "desc": "Hanapin ang mga atraksyon at karanasan sa mga nangungunang lungsod sa mundo",
+      "thingsToDo": "{{count}} dapat gawin",
+      "noDestinations": "Walang destinasyon na available sa ngayon."
+    },
+    "exploreLinks": {
+      "title": "Galugarin ang Higit Pang Gabay sa Paglalakbay",
+      "hotelsWorldwide": "Mga Hotel sa Buong Mundo",
+      "bestRestaurants": "Mga Pinakamahusay na Restawran",
+      "travelNews": "Balita sa Paglalakbay"
+    },
+    "cta": {
+      "title": "Handa nang Mag-explore?",
+      "desc": "Mag-book ng skip-the-line na tiket sa Eiffel Tower, Colosseum, Burj Khalifa at mga nangungunang atraksyon sa buong mundo.",
+      "parisAttractions": "Mga Atraksyon sa Paris",
+      "romeAttractions": "Mga Atraksyon sa Rome"
+    },
+    "search": {
+      "popular": "Sikat:",
+      "thingsToDoIn": "Mga Dapat Gawin sa {{city}}",
+      "ariaCarouselNav": "Nabigasyon ng carousel ng atraksyon",
+      "ariaViewInCity": "Tingnan ang {{name}} sa {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Tampok na atraksyon",
+      "ariaThumbnails": "Mga thumbnail ng carousel ng atraksyon",
+      "ariaTicketsIn": "Tiket ng {{name}} sa {{city}}",
+      "priceFrom": "Mula sa",
+      "bookTickets": "Mag-book ng Tiket",
+      "skipTheLine": "Laktawan ang Pila",
+      "duration": "2-3 oras",
+      "freeCancellation": "Libreng Pagkansela",
+      "freeCancellationDesc": "24 oras bago ang pagbisita",
+      "mobileTickets": "Mobile na Tiket",
+      "instantDelivery": "Agarang paghahatid"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} dapat gawin"
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
-    "subtitle": "Find your perfect stay",
+    "title": "Mga Hotel sa Dubai",
+    "subtitle": "Hanapin ang iyong perpektong tuluyan",
     "filters": {
-      "all": "All Hotels",
-      "luxury": "Luxury",
-      "budget": "Budget Friendly",
-      "beachfront": "Beachfront",
-      "cityCenter": "City Center",
-      "familyFriendly": "Family Friendly"
+      "all": "Lahat ng Hotel",
+      "luxury": "Marangya",
+      "budget": "Matipid",
+      "beachfront": "Tapat ng Dagat",
+      "cityCenter": "Sentro ng Lungsod",
+      "familyFriendly": "Angkop sa Pamilya"
     },
     "details": {
-      "priceFrom": "From",
-      "perNight": "per night",
-      "amenities": "Amenities",
-      "checkIn": "Check-in",
-      "checkOut": "Check-out",
-      "rooms": "Rooms",
+      "priceFrom": "Mula sa",
+      "perNight": "bawat gabi",
+      "amenities": "Mga Amenidad",
+      "checkIn": "Pag-check-in",
+      "checkOut": "Pag-check-out",
+      "rooms": "Mga Kuwarto",
       "rating": "Rating"
     },
-    "bookNow": "Book Now"
+    "bookNow": "Mag-book Ngayon"
   },
   "dining": {
-    "title": "Dubai Dining",
-    "subtitle": "Culinary experiences for every taste",
+    "title": "Kainan sa Dubai",
+    "subtitle": "Mga karanasan sa pagkain para sa bawat panlasa",
     "filters": {
-      "all": "All Restaurants",
+      "all": "Lahat ng Restawran",
       "fineDining": "Fine Dining",
-      "casual": "Casual Dining",
-      "cafes": "Cafes",
+      "casual": "Kaswal na Kainan",
+      "cafes": "Mga Cafe",
       "streetFood": "Street Food",
       "halal": "Halal",
       "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "Cuisine",
-      "priceRange": "Price Range",
-      "hours": "Opening Hours",
+      "cuisine": "Lutuin",
+      "priceRange": "Saklaw ng Presyo",
+      "hours": "Oras ng Bukas",
       "dress": "Dress Code",
-      "reservations": "Reservations"
-    }
-  },
-  "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
-    "explore": "Explore District"
-  },
-  "realEstate": {
-    "title": "Dubai Real Estate",
-    "subtitle": "Invest in the future",
-    "offPlan": {
-      "title": "Off-Plan Properties",
-      "subtitle": "Invest Early, Pay Less, Gain More",
-      "findProperty": "Find My Perfect Property",
-      "from": "From",
-      "paymentPlan": "Payment Plan",
-      "handover": "Handover",
-      "developer": "Developer"
-    },
-    "filters": {
-      "all": "All Properties",
-      "apartments": "Apartments",
-      "villas": "Villas",
-      "townhouses": "Townhouses",
-      "penthouses": "Penthouses"
-    },
-    "features": {
-      "cryptoAccepted": "Crypto Accepted",
-      "paymentPlans": "Flexible Payment Plans",
-      "goldenVisa": "Golden Visa Eligible",
-      "roiGuarantee": "ROI Guarantee"
-    }
-  },
-  "search": {
-    "placeholder": "Search attractions, guides, destinations...",
-    "results": "Search Results",
-    "noResults": "No results found for",
-    "tryAgain": "Try different keywords"
-  },
-  "footer": {
-    "about": "About Travi",
-    "aboutText": "Your ultimate guide to experiencing Dubai - from iconic attractions to hidden gems.",
-    "quickLinks": "Quick Links",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "contact": "Contact Us",
-    "followUs": "Follow Us",
-    "newsletter": {
-      "title": "Stay Updated",
-      "subtitle": "Get the latest Dubai travel tips and exclusive deals",
-      "placeholder": "Enter your email",
-      "button": "Subscribe",
-      "success": "Thanks for subscribing!",
-      "error": "Something went wrong. Please try again."
-    },
-    "copyright": "All rights reserved"
-  },
-  "errors": {
-    "404": {
-      "title": "Page Not Found",
-      "message": "The page you're looking for doesn't exist.",
-      "button": "Go Home"
-    },
-    "500": {
-      "title": "Server Error",
-      "message": "Something went wrong on our end.",
-      "button": "Try Again"
-    },
-    "network": {
-      "title": "Connection Error",
-      "message": "Please check your internet connection.",
-      "button": "Retry"
-    }
-  },
-  "meta": {
-    "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
-    },
-    "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
-    },
-    "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
-    },
-    "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "reservations": "Mga Reserbasyon"
     }
   },
   "destinations": {
+    "cities": {
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Tanawin ng Dubai na may Burj Khalifa tower sa paglubog ng araw" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben at Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower na may liwanag sa paglubog ng araw" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "Tanawin ng Manhattan sa New York na may Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Shibuya crossing ng Tokyo na may neon lights sa gabi" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Marina Bay Sands ng Singapore at Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Sagrada Familia ng Barcelona sa golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Templong Grand Palace ng Bangkok sa pagsikat ng araw" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Sheikh Zayed Grand Mosque ng Abu Dhabi" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Canal ng Amsterdam na may makasaysayang gusali" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Tanawin ng Hong Kong sa gabi" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Blue Mosque ng Istanbul sa paglubog ng araw" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip sa gabi" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Hollywood sign ng Los Angeles" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Art Deco district ng Miami Beach" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Colosseum ng Rome sa golden hour" }
+    },
     "hero": {
       "badge": "{{count}} Destinasyon sa Buong Mundo",
-      "trustedBy": "Pinagkakatiwalaan ng {{count}} destinasyon",
+      "trustedBy": "Pinagkakatiwalaan ng {{count}} destinasyon sa buong mundo",
       "discover": "Tuklasin",
-      "worldClass": "World-Class",
+      "worldClass": "Pang-Mundo",
       "destinations": "Mga Destinasyon",
-      "description": "Mga travel guide na may lokal na expertise para sa pinakakaakit-akit na mga lungsod sa mundo.",
-      "exploreAll": "Tuklasin Lahat ng Destinasyon",
-      "travelGuides": "Mga Travel Guide",
-      "explorePlaceholder": "Tuklasin ang Mga Destinasyon",
-      "browseCollection": "I-browse ang aming koleksyon ng mga piniling destinasyon",
-      "explore": "Tuklasin",
+      "description": "Mga napiling gabay sa paglalakbay na may lokal na kaalaman para sa mga pinakakaakit-akit na lungsod sa mundo. Mula sa mga tanyag na landmark hanggang sa mga nakatagong yaman.",
+      "exploreAll": "Galugarin Lahat ng Destinasyon",
+      "travelGuides": "Mga Gabay sa Paglalakbay",
+      "explorePlaceholder": "Galugarin ang mga Destinasyon",
+      "browseCollection": "I-browse ang aming koleksyon ng mga piniling destinasyon sa paglalakbay sa ibaba",
+      "explore": "Galugarin",
       "discoverButton": "Tuklasin",
       "ariaLabel": "Pangkalahatang-ideya ng mga destinasyon",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Galugarin ang {{name}}",
+      "galleryAriaLabel": "Gallery ng tampok na destinasyon",
+      "placeholderAriaLabel": "Placeholder ng tampok na destinasyon"
     },
     "stats": {
       "destinations": "DESTINASYON",
@@ -226,7 +349,7 @@
     },
     "sections": {
       "featured": "Mga Tampok na Destinasyon",
-      "featuredDesc": "Mga piniling destinasyon na may pambihirang karanasan.",
+      "featuredDesc": "Mga napiling destinasyon na may pambihirang karanasan, lokal na kaalaman, at lahat ng kailangan mo para planuhin ang iyong perpektong biyahe.",
       "all": "Lahat ng Destinasyon",
       "count": "{{count}} destinasyon ang nahanap"
     },
@@ -242,39 +365,627 @@
       "next": "Susunod na destinasyon",
       "goTo": "Pumunta sa {{name}}",
       "slideOf": "Slide {{current}} ng {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Mga thumbnail ng carousel ng destinasyon"
     },
     "card": {
-      "explore": "Tuklasin",
+      "explore": "Galugarin",
       "defaultLevel": "Lungsod",
-      "exploreFallback": "Tuklasin ang {{name}}",
+      "exploreFallback": "Galugarin ang {{name}}",
       "destination": "Destinasyon",
-      "travelGuideAlt": "{{name}} travel guide"
+      "travelGuideAlt": "Gabay sa paglalakbay sa {{name}}"
     },
     "faq": {
       "title": "Mga Madalas Itanong",
-      "subtitle": "Lahat tungkol sa mga destination guide ng TRAVI",
-      "q1": "Ilang destinasyon ang sakop ng TRAVI?",
-      "a1": "Sinasaklaw ng TRAVI ang mga pangunahing destinasyon sa Middle East, Europe, Asia, at Americas.",
-      "q2": "Anong impormasyon ang kasama?",
-      "a2": "Kasama sa bawat guide ang mga atraksyon, tirahan, lokal na pagkain, at mga tip sa paglalakbay.",
+      "subtitle": "Lahat ng kailangan mong malaman tungkol sa mga gabay sa destinasyon ng TRAVI",
+      "q1": "Ilang destinasyon ang sinasaklaw ng TRAVI?",
+      "a1": "Sinasaklaw ng TRAVI ang mga pangunahing destinasyon sa paglalakbay sa Middle East, Europe, Asia, at Americas na may komprehensibong gabay para sa bawat lokasyon.",
+      "q2": "Anong impormasyon ang kasama sa mga gabay sa destinasyon ng TRAVI?",
+      "a2": "Kasama sa bawat gabay sa destinasyon ang detalyadong paglalarawan tungkol sa mga atraksyon, opsyon sa tirahan, lokal na pagkain, mga tip sa transportasyon, at praktikal na impormasyon sa paglalakbay.",
       "q3": "Maaari ba akong maghanap ng mga destinasyon?",
-      "a3": "Oo, maaari kang maghanap ayon sa pangalan o bansa.",
+      "a3": "Oo, pinapayagan ng TRAVI ang paghahanap ng mga destinasyon ayon sa pangalan o bansa gamit ang search bar sa pahina ng mga destinasyon.",
       "q4": "Ano ang mga tampok na destinasyon sa TRAVI?",
-      "a4": "Ang mga tampok na destinasyon ay nag-aalok ng pambihirang karanasan."
+      "a4": "Ang mga tampok na destinasyon ng TRAVI ay mga napiling lokasyon na nag-aalok ng pambihirang karanasan para sa mga manlalakbay na may iba't ibang interes mula sa marangya hanggang matipid na paglalakbay."
     },
     "loading": {
-      "title": "Naglo-load ng Mga Destinasyon",
-      "message": "Kinukuha ang pinakabagong data..."
+      "title": "Naglo-load ng mga Destinasyon",
+      "message": "Kinukuha ang pinakabagong data ng destinasyon..."
     },
     "error": {
-      "title": "Hindi Ma-load",
-      "message": "Subukan ulit mamaya.",
+      "title": "Hindi Ma-load ang mga Destinasyon",
+      "message": "May problema kami sa pag-load ng data ng destinasyon. Subukan ulit mamaya.",
       "refresh": "I-refresh ang Pahina"
     },
     "empty": {
-      "title": "Walang Destinasyon",
-      "message": "Kasalukuyang walang available na destinasyon."
+      "title": "Walang Available na Destinasyon",
+      "message": "Walang destinasyon na available sa kasalukuyan. Bumalik mamaya."
+    }
+  },
+  "districts": {
+    "title": "Mga Distrito ng Dubai",
+    "subtitle": "Galugarin ang iba't ibang kapitbahayan ng Dubai",
+    "explore": "Galugarin ang Distrito"
+  },
+  "realEstate": {
+    "title": "Ari-arian sa Dubai",
+    "subtitle": "Mamuhunan sa kinabukasan",
+    "offPlan": {
+      "title": "Off-Plan na Ari-arian",
+      "subtitle": "Mamuhunan nang Maaga, Magbayad ng Mas Mababa, Kumita ng Mas Malaki",
+      "findProperty": "Hanapin ang Aking Perpektong Ari-arian",
+      "from": "Mula sa",
+      "paymentPlan": "Plano ng Pagbabayad",
+      "handover": "Handover",
+      "developer": "Developer"
+    },
+    "filters": {
+      "all": "Lahat ng Ari-arian",
+      "apartments": "Mga Apartment",
+      "villas": "Mga Villa",
+      "townhouses": "Mga Townhouse",
+      "penthouses": "Mga Penthouse"
+    },
+    "features": {
+      "cryptoAccepted": "Tinatanggap ang Crypto",
+      "paymentPlans": "Flexible na Plano ng Pagbabayad",
+      "goldenVisa": "Kwalipikado para sa Golden Visa",
+      "roiGuarantee": "Garantisadong ROI"
+    }
+  },
+  "search": {
+    "placeholder": "Maghanap ng atraksyon, gabay, destinasyon...",
+    "results": "Mga Resulta ng Paghahanap",
+    "noResults": "Walang nahanap na resulta para sa",
+    "tryAgain": "Subukan ang ibang mga keyword"
+  },
+  "footer": {
+    "about": "Tungkol sa Travi",
+    "aboutTravi": "Tungkol sa Travi",
+    "aboutText": "Komprehensibong impormasyon sa paglalakbay para sa 17 destinasyon sa buong mundo.",
+    "aboutUs": "Tungkol sa Amin",
+    "quickLinks": "Mabilisang Link",
+    "legal": "Legal",
+    "privacy": "Patakaran sa Pagkapribado",
+    "privacyPolicy": "Patakaran sa Pagkapribado",
+    "terms": "Mga Tuntunin at Kundisyon",
+    "termsOfService": "Mga Tuntunin ng Serbisyo",
+    "contact": "Makipag-ugnayan",
+    "contactUs": "Makipag-ugnayan sa Amin",
+    "followUs": "Sundan Kami",
+    "explore": "Galugarin",
+    "travel": "Paglalakbay",
+    "company": "Kumpanya",
+    "allGuides": "Lahat ng Gabay",
+    "cookies": "Cookies",
+    "security": "Seguridad",
+    "cookieSettings": "Mga Setting ng Cookie",
+    "tagline": "Ang Iyong Mapagkakatiwalaang Mapagkukunan sa Paglalakbay",
+    "ariaLabel": "Footer ng site",
+    "featuredGuides": "Mga Tampok na Gabay",
+    "tools": "Mga Kagamitan",
+    "currencyConverter": "Tagapagpalit ng Pera",
+    "roiCalculator": "Kalkulador ng ROI",
+    "mortgageCalculator": "Kalkulador ng Mortgage",
+    "glossary": "Talahuluganan",
+    "freeThingsToDo": "70+ Libreng Dapat Gawin",
+    "open24Hours": "Bukas ng 24 Oras",
+    "tributeToSheikh": "Parangal kay HH Sheikh Mohammed",
+    "lawsForTourists": "Mga Batas para sa mga Turista",
+    "newsletter": "Mag-subscribe sa aming newsletter",
+    "newsletterDescription": "Makuha ang pinakabagong mga tip sa paglalakbay at balita sa Dubai.",
+    "emailPlaceholder": "Ilagay ang iyong email",
+    "allRightsReserved": "Nakalaan ang lahat ng karapatan.",
+    "copyright": "© {{year}} {{brand}}. Nakalaan ang lahat ng karapatan.",
+    "emailAriaLabel": "Magpadala ng email sa TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Hindi Nahanap ang Pahina",
+      "message": "Ang pahina na hinahanap mo ay hindi umiiral.",
+      "button": "Pumunta sa Tahanan"
+    },
+    "500": {
+      "title": "Error sa Server",
+      "message": "May nangyaring mali sa aming panig.",
+      "button": "Subukan Ulit"
+    },
+    "network": {
+      "title": "Error sa Koneksyon",
+      "message": "Hindi makakonekta. Pakisuri ang iyong koneksyon sa internet.",
+      "button": "Subukan Ulit"
+    }
+  },
+  "newsletter": {
+    "badge": "Sumali sa Pakikipagsapalaran",
+    "title": "Makuha ang Mahika ng Paglalakbay sa Iyong Inbox",
+    "description": "Lingguhang mga tip, nakatagong yaman, at eksklusibong deal - walang spam, puro wanderlust lang.",
+    "emailPlaceholder": "iyong@email.com",
+    "subscribe": "Mag-subscribe",
+    "success": "Naka-subscribe ka na! Suriin ang iyong inbox."
+  },
+  "cookies": {
+    "title": "Pinahahalagahan namin ang iyong pagkapribado",
+    "description": "Gumagamit kami ng cookies upang mapahusay ang iyong karanasan sa pag-browse, suriin ang trapiko ng site, at i-personalize ang mga nilalaman. Sa pamamagitan ng pag-click sa \"Tanggapin Lahat\", pumapayag ka sa aming paggamit ng cookies.",
+    "manage": "Pamahalaan",
+    "rejectAll": "Tanggihan Lahat",
+    "acceptAll": "Tanggapin Lahat",
+    "preferencesTitle": "Mga Kagustuhan sa Cookie",
+    "savePreferences": "I-save ang mga Kagustuhan",
+    "essential": {
+      "title": "Mga Kinakailangang Cookie",
+      "description": "Kinakailangan para gumana nang maayos ang website"
+    },
+    "analytics": {
+      "title": "Mga Analytics Cookie",
+      "description": "Tumutulong sa amin na maunawaan kung paano nakikipag-ugnayan ang mga bisita sa aming website"
+    },
+    "marketing": {
+      "title": "Mga Marketing Cookie",
+      "description": "Ginagamit upang maghatid ng personalized na mga advertisement"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "Travi - Tuklasin ang Dubai | Ang Iyong Pinakahuling Gabay sa Paglalakbay sa Dubai",
+      "description": "Galugarin ang mga pinakamahusay na atraksyon, hotel, restawran, at kapitbahayan ng Dubai. Planuhin ang iyong perpektong biyahe sa Dubai na may mga insider na tip at lokal na rekomendasyon."
+    },
+    "attractions": {
+      "title": "Mga Atraksyon sa Dubai | Mga Nangungunang Dapat Gawin sa Dubai",
+      "description": "Tuklasin ang mga pinakamahusay na atraksyon sa Dubai - mula sa Burj Khalifa hanggang sa mga nakatagong yaman. Planuhin ang iyong pakikipagsapalaran sa Dubai."
+    },
+    "hotels": {
+      "title": "Mga Hotel sa Dubai | Mga Pinakamahusay na Lugar na Tuluyan sa Dubai",
+      "description": "Hanapin ang perpektong hotel sa Dubai para sa anumang badyet. Mula sa mga marangyang resort hanggang sa mga matipid na opsyon."
+    },
+    "dining": {
+      "title": "Mga Restawran sa Dubai | Pinakamahusay na Kainan sa Dubai",
+      "description": "Galugarin ang culinary scene ng Dubai - fine dining, street food, at lahat ng nasa pagitan."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Katalinuhan sa Paglalakbay",
+      "headlinePart1": "Mga Kwentong",
+      "headlinePart2": "Nagpapakilos sa Iyo",
+      "description": "Mga gabay na nilikha ng eksperto, mga pananaw ng insider, at mga salaysay na nagbabago ng paraan ng karanasan mo sa mundo.",
+      "startJourney": "Simulan ang Iyong Paglalakbay",
+      "browseCollection": "I-browse ang Koleksyon",
+      "issueBadge": "Isyu 47 — Taglamig 2026"
+    },
+    "stats": {
+      "guides": "Mga Gabay sa Paglalakbay",
+      "destinations": "Mga Destinasyon",
+      "languages": "Mga Wika"
+    },
+    "journey": {
+      "badge": "Ang Iyong Paglalakbay, Ang Aming Patnubay",
+      "title": "Bawat Magandang Biyahe ay Nagsisimula sa Gabay",
+      "subtitle": "Mula sa pangarap hanggang sa pagbabahagi, kasama mo kami sa bawat hakbang"
+    },
+    "ideaLab": {
+      "badge": "Laboratoryo ng Ideya",
+      "title": "Piniling Inspirasyon",
+      "readGuide": "Basahin ang Gabay"
+    },
+    "archetype": {
+      "badge": "Personalized para sa Iyo",
+      "title": "Anong Uri ng Manlalakbay Ka?",
+      "subtitle": "Piliin ang iyong istilo ng paglalakbay at tuklasin ang mga gabay na nilikha para sa iyo",
+      "viewGuides": "Tingnan ang mga Gabay para sa {{type}}"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Naghahanap ng Pakikipagsapalaran",
+        "description": "Mga kapana-panabik na karanasan at adrenaline rush"
+      },
+      "culture": {
+        "name": "Tagagalugad ng Kultura",
+        "description": "Sining, kasaysayan, at mga lokal na tradisyon"
+      },
+      "relaxation": {
+        "name": "Guru ng Pagpapahinga",
+        "description": "Mga wellness retreat at mapayapang pagtakas"
+      },
+      "foodie": {
+        "name": "Culinary Nomad",
+        "description": "Mga lokal na lasa at gastronomic na pakikipagsapalaran"
+      },
+      "wellness": {
+        "name": "Naghahanap ng Wellness",
+        "description": "Pagpapahinga, spa, at mindful na retreat"
+      },
+      "budget": {
+        "name": "Matalinong Manlalakbay",
+        "description": "Pinakamataas na karanasan, pinakamababang badyet"
+      },
+      "solo": {
+        "name": "Mag-isang Tagagalugad",
+        "description": "Mga independyenteng paglalakbay at pagtuklas sa sarili"
+      },
+      "luxury": {
+        "name": "Tagahanga ng Karangyaan",
+        "description": "Premium na karanasan at marangyang pamumuhay"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Mangarap",
+        "subtitle": "Tumuklas ng inspirasyon",
+        "guides": ["Mga Gabay sa Destinasyon", "Mga Photo Essay"]
+      },
+      "plan": {
+        "title": "Magplano",
+        "subtitle": "Imapa ang iyong paglalakbay",
+        "guides": ["Pagpaplano ng Biyahe", "Mga Kinakailangang Visa"]
+      },
+      "prepare": {
+        "title": "Maghanda",
+        "subtitle": "Maging handa na umalis",
+        "guides": ["Mga Listahan ng Dapat Dalhin", "Mga Tip sa Kaligtasan"]
+      },
+      "experience": {
+        "title": "Maranasan",
+        "subtitle": "Isabuhay ang pakikipagsapalaran",
+        "guides": ["Mga Lokal na Kaalaman", "Mga Nakatagong Yaman"]
+      },
+      "share": {
+        "title": "Ibahagi",
+        "subtitle": "Ikuwento ang iyong kwento",
+        "guides": ["Pagsusulat ng Paglalakbay", "Potograpiya"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Mga Weekend Escape",
+      "offBeatenPath": "Labas sa Karaniwang Daan",
+      "smartTravel": "Matalinong Paglalakbay",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Kalikasan at Kahanga-hanga"
+    },
+    "seo": {
+      "title": "Mga Gabay sa Paglalakbay | Mga Pananaw ng Eksperto sa Destinasyon",
+      "description": "Tuklasin ang mga ekspertong gabay sa paglalakbay, mga pananaw sa destinasyon, at mga insider na tip mula sa aming pandaigdigang network ng mga manunulat ng paglalakbay. Planuhin ang iyong perpektong biyahe ngayon."
+    },
+    "editorial": {
+      "badge": "Mula sa Aming mga Editor",
+      "title": "Mga Editorial na Tampok",
+      "readFull": "Basahin ang Buong Sanaysay"
+    },
+    "gallery": {
+      "badge": "Mga Biswal na Kwento",
+      "title": "Mga Destinasyong Nagbibigay-inspirasyon",
+      "categories": {
+        "city": "Lungsod",
+        "mountains": "Mga Bundok",
+        "beach": "Dalampasigan",
+        "safari": "Safari",
+        "nature": "Kalikasan"
+      }
+    },
+    "writers": {
+      "badge": "Mga Boses ng Eksperto",
+      "title": "Kilalanin ang Aming mga Manunulat",
+      "subtitle": "Ang mga boses ng eksperto sa likod ng aming pinakamapagkakatiwalaang gabay sa paglalakbay",
+      "articleCount": "{{count}} Artikulo",
+      "viewProfile": "Tingnan ang Profile"
+    },
+    "map": {
+      "badge": "Galugarin Ayon sa Rehiyon",
+      "title": "Mga Gabay sa Buong Mundo",
+      "subtitle": "I-click ang anumang destinasyon upang tuklasin ang aming ekspertong saklaw",
+      "guidesAvailable": "{{count}} gabay ang available",
+      "legendDestination": "Destinasyon",
+      "legendHighlighted": "Naka-highlight"
+    },
+    "newsletter": {
+      "badge": "Sumali sa Paglalakbay",
+      "title": "Mga Kwento ng Paglalakbay, Lingguhan",
+      "description": "Piniling inspirasyon sa paglalakbay, ekspertong tip, at mga pananaw ng insider na ihahatid sa iyong inbox bawat linggo.",
+      "placeholder": "Ilagay ang iyong email",
+      "subscribe": "Mag-subscribe",
+      "subscribing": "Nagsa-subscribe...",
+      "joinCount": "Sumali sa 50,000+ manlalakbay na nagbabasa ng aming lingguhang digest",
+      "invalidEmail": "Pakiusap maglagay ng wastong email",
+      "successTitle": "Maligayang pagdating sa paglalakbay!",
+      "successDesc": "Naka-subscribe ka na ngayon sa aming editorial digest."
+    }
+  },
+  "news": {
+    "time": {
+      "recent": "Kamakailan",
+      "justNow": "Ngayon lang",
+      "minutesAgo": "{{count}}m nakaraan",
+      "hoursAgo": "{{count}}o nakaraan",
+      "daysAgo": "{{count}}a nakaraan",
+      "minRead": "{{count}} min na pagbasa"
+    },
+    "header": {
+      "title": "BALITA NG TRAVI",
+      "edition": "Pandaigdigang Edisyon",
+      "subscribe": "Mag-subscribe"
+    },
+    "breaking": {
+      "label": "Breaking"
+    },
+    "search": {
+      "placeholder": "Maghanap ng balita sa buong mundo...",
+      "button": "Maghanap",
+      "title": "Maghanap",
+      "searching": "Naghahanap ng \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Lahat ng Balita",
+      "world": "Mundo",
+      "business": "Negosyo",
+      "culture": "Kultura",
+      "travel": "Paglalakbay",
+      "tech": "Teknolohiya",
+      "opinion": "Opinyon"
+    },
+    "empty": {
+      "title": "Wala Pang Artikulo ng Balita",
+      "description": "Nagsusumikap kaming dalhin sa iyo ang pinakabagong balita at kaalaman sa paglalakbay. Bumalik kaagad para sa mga update mula sa buong mundo.",
+      "exploreDestinations": "Galugarin ang mga Destinasyon",
+      "viewGuides": "Tingnan ang mga Gabay sa Paglalakbay"
+    },
+    "hero": {
+      "topStory": "Nangungunang Kwento",
+      "editorialTeam": "Koponang Editorial"
+    },
+    "views": "{{count}} tingin",
+    "viewAll": "Tingnan Lahat",
+    "seo": {
+      "title": "Balita sa Paglalakbay | Pinakabagong mga Kwento at Update",
+      "description": "Manatiling may alam sa pinakabagong balita sa paglalakbay, mga update sa destinasyon, at mga kaalaman sa industriya mula sa buong mundo."
+    },
+    "sidebar": {
+      "alsoToday": "Gayundin Ngayon",
+      "storiesCount": "{{count}} kwento",
+      "liveUpdates": "Live na Update",
+      "trendingTopics": "Mga Trending na Paksa",
+      "noTrending": "Wala pang trending na paksa. Bumalik kaagad!"
+    },
+    "sections": {
+      "topStories": "Mga Nangungunang Kwento",
+      "opinion": "Opinyon at Pagsusuri",
+      "moreOpinion": "Higit Pang Opinyon",
+      "worldwide": "Pandaigdigang Saklaw"
+    },
+    "worldwide": {
+      "title": "Ang Iyong Bintana sa Mundo",
+      "subtitle": "Balita mula sa bawat sulok ng mundo",
+      "storiesCount": "{{count}} kwento",
+      "comingSoon": "Paparating na"
+    },
+    "newsletter": {
+      "title": "Manatiling May Alam",
+      "description": "Makuha ang mga nangungunang kwento ng araw na ihahatid sa iyong inbox tuwing umaga. Sumali sa 50,000+ mambabasa.",
+      "placeholder": "Ilagay ang iyong email",
+      "subscribe": "Mag-subscribe nang Libre",
+      "noSpam": "Walang spam. Mag-unsubscribe anumang oras.",
+      "successTitle": "Naka-subscribe na!",
+      "successDesc": "Pakisuri ang iyong email upang kumpirmahin ang iyong subscription.",
+      "errorTitle": "Nabigo ang subscription",
+      "errorDesc": "Subukan ulit mamaya.",
+      "invalidTitle": "Hindi wastong email",
+      "invalidDesc": "Pakiusap maglagay ng wastong email address."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "Tungkol sa Amin | TRAVI World",
+      "metaDescription": "Alamin ang tungkol sa TRAVI World, isang independyenteng mapagkukunan ng impormasyon sa paglalakbay na nagbibigay ng komprehensibong gabay sa paglalakbay, mga atraksyon, hotel at impormasyon ng restawran para sa mga destinasyon sa buong mundo.",
+      "badge": "Ang Iyong Kasama sa Paglalakbay",
+      "title": "Tungkol sa",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Ang iyong mapagkakatiwalaang mapagkukunan ng komprehensibong impormasyon sa paglalakbay at gabay sa destinasyon, na tumutulong sa milyun-milyon na galugarin ang mundo nang may kumpiyansa.",
+      "ctaExplore": "Galugarin ang mga Destinasyon",
+      "ctaContact": "Makipag-ugnayan",
+      "stats": {
+        "destinations": "Mga Destinasyon",
+        "articles": "Mga Artikulo",
+        "support": "Suporta sa Paglalakbay",
+        "coverage": "Saklaw",
+        "cities": "16+ Lungsod"
+      },
+      "whoWeAre": {
+        "title": "Sino Kami"
+      },
+      "mission": {
+        "title": "Ang Aming Misyon"
+      },
+      "services": {
+        "badge": "Ang Aming mga Serbisyo",
+        "title": "Ano ang Aming Inaalok"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Mga Gabay sa Destinasyon",
+          "description": "Komprehensibong impormasyon tungkol sa mga lungsod at rehiyon sa buong mundo"
+        },
+        "attractions": {
+          "title": "Impormasyon ng Atraksyon",
+          "description": "Mga detalye tungkol sa mga dapat puntahang lugar at natatanging karanasan"
+        },
+        "hotels": {
+          "title": "Mga Gabay sa Hotel",
+          "description": "Impormasyon tungkol sa mga opsyon sa tirahan para sa bawat badyet"
+        },
+        "restaurants": {
+          "title": "Mga Rekomendasyon ng Restawran",
+          "description": "Mga opsyon sa kainan para sa bawat panlasa at kagustuhan"
+        },
+        "articles": {
+          "title": "Mga Artikulo ng Paglalakbay",
+          "description": "Mga tip, kaalaman, at inspirasyon sa paglalakbay"
+        },
+        "news": {
+          "title": "Pinakabagong Balita sa Paglalakbay",
+          "description": "Manatiling may alam sa mga piniling update sa paglalakbay"
+        }
+      },
+      "editorial": {
+        "title": "Kalayaang Editorial",
+        "affiliateTitle": "Pagbubunyag ng Kaanib"
+      },
+      "values": {
+        "badge": "Ang Aming Pundasyon",
+        "title": "Ang Aming mga Halaga",
+        "accuracy": {
+          "title": "Katumpakan",
+          "description": "Nagsisikap kaming magbigay ng tumpak at mapagkakatiwalaang impormasyon, regular na ina-update ang aming nilalaman"
+        },
+        "transparency": {
+          "title": "Transparensya",
+          "description": "Malinaw kami tungkol sa aming mga relasyon sa kaanib at kung paano kami nag-ooperate"
+        },
+        "userFocused": {
+          "title": "Nakatuon sa Gumagamit",
+          "description": "Ang aming nilalaman ay idinisenyo upang tulungan ang mga manlalakbay na gumawa ng may-alam na mga desisyon"
+        }
+      },
+      "connect": {
+        "badge": "Mag-ugnayan Tayo",
+        "title": "Makipag-ugnayan"
+      },
+      "company": {
+        "title": "Impormasyon ng Kumpanya",
+        "contactTitle": "Impormasyon sa Pakikipag-ugnayan",
+        "contactForm": "Form ng Pakikipag-ugnayan"
+      }
+    },
+    "contact": {
+      "metaTitle": "Makipag-ugnayan sa Amin | TRAVI World",
+      "metaDescription": "Makipag-ugnayan sa TRAVI World. Tinatanggap namin ang iyong feedback, mga tanong, at mga katanungan tungkol sa aming mga serbisyo ng impormasyon sa paglalakbay.",
+      "badge": "Gusto naming makarinig mula sa iyo",
+      "titlePart1": "Mag-ugnayan",
+      "titlePart2": "Tayo",
+      "subtitle": "May mga tanong tungkol sa iyong susunod na pakikipagsapalaran? Nandito kami upang tulungan kang galugarin ang mundo nang may kumpiyansa.",
+      "cta": "Magpadala sa amin ng mensahe",
+      "getInTouch": "Makipag-ugnayan",
+      "getInTouchSubtitle": "Piliin ang pinakamahusay na paraan upang abutin kami. Nakatuon kami sa mabilis na pagtugon.",
+      "howCanWeHelp": "Paano Namin Matutulungan?",
+      "howCanWeHelpSubtitle": "Nandito kami upang tumulong sa anumang mga tanong o feedback na maaaring mayroon ka tungkol sa aming mga nilalaman at serbisyo sa paglalakbay.",
+      "importantNote": "Mahalagang Paalala",
+      "importantNoteSubtitle": "Pakiusap basahin bago makipag-ugnayan sa amin",
+      "ourOffice": "Ang Aming Opisina",
+      "ourOfficeSubtitle": "Para sa opisyal na pakikipag-ugnayan at mga katanungan sa koreo",
+      "travelCompanion": "Ang iyong kasama sa paglalakbay",
+      "urgentNote": "Para sa mga madaliang bagay, mangyaring isama ang {{urgentLabel}} sa subject line ng iyong email. Inuuna namin ang mga tugon batay sa uri ng katanungan.",
+      "urgentLabel": "Madalian",
+      "options": {
+        "generalInquiries": {
+          "title": "Pangkalahatang Katanungan",
+          "description": "Mga tanong tungkol sa aming mga gabay at nilalaman sa paglalakbay"
+        },
+        "privacyInquiries": {
+          "title": "Mga Katanungan sa Pagkapribado",
+          "description": "Pag-access sa data, pagtanggal, at mga kahilingan sa pagkapribado"
+        },
+        "visitWebsite": {
+          "title": "Bisitahin ang Aming Website",
+          "description": "Galugarin ang mga destinasyon at inspirasyon sa paglalakbay"
+        },
+        "responseTime": {
+          "title": "Oras ng Pagtugon",
+          "description": "Layunin naming tumugon kaagad",
+          "action": "2-3 araw ng trabaho"
+        }
+      },
+      "helpTopics": {
+        "general": "Pangkalahatang katanungan tungkol sa aming mga gabay at nilalaman sa paglalakbay",
+        "feedback": "Feedback at mga mungkahi para sa pagpapabuti",
+        "reporting": "Pag-ulat ng mga error sa nilalaman o lumang impormasyon",
+        "business": "Mga katanungan sa negosyo at pakikipagtulungan",
+        "media": "Mga katanungan sa media at press",
+        "privacy": "Mga kahilingang may kaugnayan sa pagkapribado (pag-access sa data, pagtanggal, atbp.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Patakaran sa Pagkapribado | TRAVI World",
+      "metaDescription": "Alamin kung paano kinolekta, ginagamit, at pinoprotektahan ng TRAVI World ang iyong personal na impormasyon. Basahin ang aming komprehensibong patakaran sa pagkapribado.",
+      "badge": "Mahalaga ang Iyong Pagkapribado",
+      "title": "Patakaran sa Pagkapribado",
+      "subtitle": "Nakatuon kami sa pagprotekta ng iyong pagkapribado at pagiging transparent tungkol sa aming mga kasanayan sa data. Alamin kung paano kinolekta, ginagamit, at pinoprotektahan ng TRAVI World ang iyong impormasyon.",
+      "effectiveDate": "Petsa ng Pagkakabisa: 1 Enero 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Proteksyon ng Data",
+          "description": "Ang iyong data ay protektado"
+        },
+        "minimalCollection": {
+          "title": "Minimal na Koleksyon",
+          "description": "Kinolekta lang namin ang kinakailangan"
+        },
+        "transparency": {
+          "title": "Buong Transparensya",
+          "description": "Malinaw tungkol sa aming mga kasanayan"
+        },
+        "yourControl": {
+          "title": "Ang Iyong Kontrol",
+          "description": "Pamahalaan ang iyong mga kagustuhan"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Sino Kami",
+        "informationCollect": "2. Impormasyon na Kinolekta Namin",
+        "howWeUse": "3. Paano Namin Ginagamit ang Iyong Impormasyon",
+        "legalBasis": "4. Legal na Batayan para sa Pagproseso (GDPR)",
+        "cookies": "5. Cookies at Mga Teknolohiya ng Pagsubaybay",
+        "thirdParty": "6. Mga Serbisyo ng Third-Party",
+        "aiContent": "7. Nilalamang Nilikha ng AI",
+        "internationalTransfers": "8. Mga Pandaigdigang Paglilipat ng Data",
+        "dataRetention": "9. Pagpapanatili ng Data",
+        "privacyRights": "10. Ang Iyong mga Karapatan sa Pagkapribado",
+        "californiaRights": "11. Mga Karapatan sa Pagkapribado sa California (CCPA/CPRA)",
+        "childrenPrivacy": "12. Pagkapribado ng mga Bata",
+        "dataSecurity": "13. Seguridad ng Data",
+        "changes": "14. Mga Pagbabago sa Patakarang Ito",
+        "contactUs": "15. Makipag-ugnayan sa Amin"
+      }
+    },
+    "terms": {
+      "metaTitle": "Mga Tuntunin at Kundisyon | TRAVI World",
+      "metaDescription": "Basahin ang mga tuntunin at kundisyon para sa paggamit ng mga serbisyo ng impormasyon sa paglalakbay ng TRAVI World. Legal na kasunduan sa pagitan mo at ng KBR Global Creative Consulting Ltd.",
+      "badge": "Legal na Kasunduan",
+      "title": "Mga Tuntunin at Kundisyon",
+      "subtitle": "Pakiusap basahing mabuti ang mga tuntuning ito bago gamitin ang TRAVI World. Ang iyong pag-access at paggamit ng aming platform ay napapailalim sa mga kundisyong ito.",
+      "lastUpdated": "Huling na-update: 1 Enero 2026",
+      "importantNotice": "Mahalagang Legal na Abiso",
+      "keyPoints": {
+        "editorial": {
+          "title": "Editorial na Platform",
+          "description": "Mga gabay sa paglalakbay at nilalaman ng destinasyon"
+        },
+        "affiliate": {
+          "title": "Mga Link ng Kaanib",
+          "description": "Mga rekomendasyon na batay sa komisyon"
+        },
+        "aiGenerated": {
+          "title": "Nilikha ng AI",
+          "description": "Nilalaman na nilikha sa tulong ng AI"
+        },
+        "privacy": {
+          "title": "Ang Iyong Pagkapribado",
+          "description": "Garantisadong proteksyon ng data"
+        }
+      },
+      "sections": {
+        "operator": "Operator / Legal na Entidad",
+        "purpose": "1. Layunin at Saklaw ng Paggamit",
+        "affiliateDisclosure": "2. Pagbubunyag ng Kaanib at Mga Transaksyon ng Third-Party",
+        "aiDisclaimer": "3. Disclaimer ng Nilalamang Nilikha ng AI",
+        "newsletter": "4. Newsletter at Komunikasyon",
+        "userConduct": "5. Asal ng Gumagamit at Mga Ipinagbabawal na Aksyon",
+        "intellectualProperty": "6. Intelektuwal na Ari-arian at Limitadong Lisensya",
+        "dmca": "7. Abiso-at-Tanggalin (DMCA at Katulad)",
+        "disclaimers": "8. Katumpakan, Availability at mga Disclaimer",
+        "liability": "9. Limitasyon ng Pananagutan at Force Majeure",
+        "indemnification": "10. Indemnipikasyon",
+        "privacyCookies": "11. Pagkapribado, Cookies at Proteksyon ng Data",
+        "accessibility": "12. Pahayag ng Accessibility",
+        "governingLaw": "13. Namamahalang Batas, Resolusyon ng Pagtatalo at Hurisdiksyon",
+        "modifications": "14. Mga Pagbabago, Severability at Pangkalahatang Probisyon"
+      }
     }
   }
 }

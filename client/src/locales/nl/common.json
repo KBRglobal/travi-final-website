@@ -1,23 +1,409 @@
 {
-  "soon": "Coming Soon",
+  "nav": {
+    "home": "Home",
+    "destinations": "Bestemmingen",
+    "attractions": "Attracties",
+    "hotels": "Hotels",
+    "guides": "Reisgidsen",
+    "dining": "Restaurants",
+    "districts": "Wijken",
+    "articles": "Nieuws",
+    "news": "Nieuws",
+    "shopping": "Winkelen",
+    "realEstate": "Vastgoed",
+    "events": "Evenementen",
+    "search": "Zoeken",
+    "language": "Taal",
+    "mainNavigation": "Hoofdnavigatie",
+    "openMenu": "Menu openen",
+    "closeMenu": "Menu sluiten",
+    "logoAlt": "TRAVI - Reisgids",
+    "followInstagram": "Volg TRAVI op Instagram",
+    "followTikTok": "Volg TRAVI op TikTok"
+  },
+  "breadcrumbs": {
+    "ariaLabel": "Broodkruimelnavigatie",
+    "dubai": "Dubai"
+  },
+  "common": {
+    "readMore": "Lees Meer",
+    "viewAll": "Bekijk Alles",
+    "learnMore": "Meer Informatie",
+    "bookNow": "Nu Boeken",
+    "contactUs": "Contact",
+    "subscribe": "Abonneren",
+    "submit": "Verzenden",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "edit": "Bewerken",
+    "delete": "Verwijderen",
+    "loading": "Laden...",
+    "error": "Er is iets misgegaan",
+    "noResults": "Geen resultaten gevonden",
+    "seeMore": "Meer Bekijken",
+    "back": "Terug",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "close": "Sluiten",
+    "share": "Delen",
+    "copyLink": "Link Kopiëren",
+    "copied": "Gekopieerd!"
+  },
+  "home": {
+    "hero": {
+      "title": "Ontdek de Wereld met TRAVI",
+      "subtitle": "Uw complete reisgids voor 17 bestemmingen wereldwijd",
+      "searchPlaceholder": "Zoek attracties, hotels, restaurants...",
+      "cta": "Start met Ontdekken",
+      "badge": "Uw Toegangspoort tot Wereldavonturen",
+      "headlinePart1": "Uw Betrouwbare",
+      "headlinePart2": "Reisbron",
+      "description": "Uitgebreide reisinformatie voor {{destinations}} bestemmingen wereldwijd. Ontdek gedetailleerde gidsen voor {{attractions}}+ attracties.",
+      "descriptionPart1": "Uitgebreide reisinformatie voor",
+      "descriptionPart2": "bestemmingen wereldwijd. Ontdek gedetailleerde gidsen voor",
+      "descriptionPart3": "attracties.",
+      "carouselLabel": "Bestemmingscarrousel navigatie",
+      "viewDestination": "Bekijk {{name}} - {{tagline}}",
+      "worldwide": "Wereldwijd",
+      "exploreWorld": "Ontdek de Wereld",
+      "welcomeAriaLabel": "Welkom bij TRAVI World",
+      "pageTitle": "TRAVI World - Reisgidsen voor Hotels, Attracties en Activiteiten",
+      "pageDescription": "Uw complete reisgids voor 17 bestemmingen wereldwijd. Deskundige informatie over hotels, attracties, restaurants en activiteiten voor 3.000+ locaties.",
+      "orgDescription": "Uw betrouwbare reisbron voor 17 bestemmingen wereldwijd."
+    },
+    "srLabel": {
+      "attractions": "Meer dan {{count}} attracties gedekt",
+      "destinations": "{{count}} bestemmingen wereldwijd",
+      "languages": "Meertalig platform met extra talen in ontwikkeling"
+    },
+    "featured": "Uitgelicht",
+    "trending": "Nu Populair",
+    "topAttractions": "Top Attracties",
+    "bestHotels": "Beste Hotels",
+    "latestNews": "Laatste Nieuws en Gidsen",
+    "sections": {
+      "destinations": "Ontdek Bestemmingen",
+      "destinationsDesc": "Ontdek onze zorgvuldig geselecteerde collectie wereldwijde reisbestemmingen",
+      "categories": "Blader per Categorie",
+      "categoriesDesc": "Vind precies wat u zoekt",
+      "experiences": "Reis per Ervaring",
+      "experiencesDesc": "Kies uw reisstijl",
+      "faq": "Veelgestelde Vragen",
+      "faqDesc": "Alles wat u moet weten over TRAVI",
+      "regions": "Verken per Regio",
+      "newsletter": "Blijf op de Hoogte",
+      "allDestinationsTitle": "Reisgidsen voor Alle {{count}} Bestemmingen",
+      "completeGuide": "{{name}}, {{country}} - Complete Reisgids"
+    },
+    "cta": {
+      "exploreDestinations": "Ontdek Bestemmingen",
+      "viewGuides": "Bekijk Gidsen",
+      "viewAll": "Bekijk Alles",
+      "startExploring": "Start met Ontdekken",
+      "planTrip": "Plan Uw Reis",
+      "viewExperience": "Bekijk {{name}}"
+    },
+    "stats": {
+      "destinations": "BESTEMMINGEN",
+      "attractions": "ATTRACTIES",
+      "languages": "TALEN",
+      "attractionsNum": "3.000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} bestemmingen",
+      "attractionsCountWithLabel": "{{count}}+ attracties"
+    },
+    "categories": {
+      "attractions": "Attracties",
+      "attractionsDesc": "Bezienswaardigheden",
+      "news": "Reisnieuws",
+      "newsDesc": "Laatste updates",
+      "guides": "Reisgidsen",
+      "guidesDesc": "Bestemmingsgidsen",
+      "hotels": "Hotels",
+      "hotelsDesc": "Vind uw perfecte verblijf"
+    },
+    "experiences": {
+      "luxury": "Luxe Reizen",
+      "luxuryDesc": "Premium reiservaringen en exclusieve bestemmingen",
+      "adventure": "Avontuur en Natuur",
+      "adventureDesc": "Spannende buitenactiviteiten en avonturen",
+      "family": "Gezinsreizen",
+      "familyDesc": "Gezinsvriendelijke bestemmingen en activiteiten",
+      "budget": "Budgetreizen",
+      "budgetDesc": "Voordelige reismogelijkheden en bestemmingen",
+      "romance": "Huwelijksreis en Romantiek",
+      "romanceDesc": "Romantische uitjes en huwelijksreisbestemmingen",
+      "solo": "Solo Reizen",
+      "soloDesc": "Perfecte bestemmingen voor soloreizigers"
+    },
+    "faq": {
+      "title": "Veelgestelde Vragen",
+      "subtitle": "Alles wat u moet weten over TRAVI World",
+      "whatIsTravi": "Wat is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is een uitgebreid reisinformatieplatform dat 17 bestemmingen wereldwijd dekt met gedetailleerde gidsen voor 3.000+ attracties, hotels, restaurants en activiteiten.",
+      "howManyDestinations": "Hoeveel bestemmingen dekt TRAVI?",
+      "howManyDestinationsAnswer": "TRAVI World dekt 17 grote reisbestemmingen waaronder Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami en Rome.",
+      "isFree": "Is TRAVI World gratis te gebruiken?",
+      "isFreeAnswer": "Ja, TRAVI World is volledig gratis te gebruiken. Blader door duizenden reisgidsen, attractiebeoordelingen, hotelaanbevelingen en restaurantsuggesties zonder kosten.",
+      "updateFrequency": "Hoe vaak wordt de inhoud bijgewerkt?",
+      "updateFrequencyAnswer": "TRAVI World inhoud wordt dagelijks bijgewerkt met het laatste reisnieuws, nieuwe attractiebeoordelingen en bijgewerkte informatie over hotels en restaurants in alle 17 bestemmingen."
+    },
+    "mascotAlt": "TRAVI mascotte met wereldberoemde bezienswaardigheden - ontdek reisgidsen voor Dubai, Paris, London, Rome en meer",
+    "mascotTitle": "TRAVI World - Reisgidsen voor Wereldwijde Bestemmingen"
+  },
+  "attractions": {
+    "title": "Attracties",
+    "subtitle": "Ontdek iconische bezienswaardigheden en verborgen pareltjes",
+    "hero": {
+      "badge": "{{count}} attracties in {{cities}} steden",
+      "badgeThousands": "Duizenden attracties wereldwijd",
+      "headlinePart1": "Activiteiten",
+      "headlinePart2": "Wereldwijd",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Wachtrijvrije tickets</span> voor de Eiffeltoren, Colosseum, Burj Khalifa en topattracties in Paris, Rome, Dubai en meer.",
+      "searchPlaceholder": "Zoek Eiffeltoren, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Uitgelichte attracties carrousel",
+      "sectionLabel": "Boek tickets voor topattracties wereldwijd",
+      "searchAriaLabel": "Zoek attracties op naam of stad",
+      "searchButton": "Zoeken",
+      "searchButtonAriaLabel": "Attracties zoeken"
+    },
+    "stats": {
+      "attractions": "ATTRACTIES",
+      "cities": "STEDEN",
+      "rating": "BEOORDELING"
+    },
+    "srLabel": {
+      "attractions": "Meer dan {{count}} attracties",
+      "cities": "{{count}} steden",
+      "rating": "{{rating}} sterren beoordeling"
+    },
+    "types": {
+      "all": "Alle Types",
+      "museums": "Musea",
+      "landmarks": "Bezienswaardigheden",
+      "tours": "Rondleidingen",
+      "themeParks": "Pretparken",
+      "shows": "Shows"
+    },
+    "thingsToDoIn": "Activiteiten in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attracties",
+    "filters": {
+      "all": "Alles",
+      "popular": "Meest Populair",
+      "free": "Gratis Toegang",
+      "familyFriendly": "Gezinsvriendelijk",
+      "outdoor": "Buiten",
+      "indoor": "Binnen"
+    },
+    "details": {
+      "location": "Locatie",
+      "hours": "Openingstijden",
+      "price": "Prijs",
+      "duration": "Duur",
+      "tips": "Insidertips"
+    },
+    "sections": {
+      "destinations": "Ontdek Attracties per Bestemming",
+      "destinationsDesc": "Kies een stad om geweldige activiteiten te ontdekken",
+      "faq": "Veelgestelde Vragen",
+      "faqDesc": "Antwoorden over het boeken van attracties wereldwijd",
+      "whyBookBadge": "Waarom Bij Ons Boeken",
+      "whyBookTitle": "Sla de Rij Over, Bespaar Tijd",
+      "whyBookDesc": "Boek tickets vooraf en geniet van probleemloze toegang tot topattracties",
+      "allDestinations": "Alle Bestemmingen"
+    },
+    "features": {
+      "skipTheLine": "Wachtrijvrije Tickets",
+      "skipTheLineDesc": "Loop langs de rijen bij de Eiffeltoren, Colosseum, Vaticaan en meer",
+      "mobileTickets": "Mobiele Tickets",
+      "mobileTicketsDesc": "Direct op uw telefoon - toon uw ticket en ga naar binnen",
+      "freeCancellation": "Gratis Annuleren",
+      "freeCancellationDesc": "Plannen veranderd? Annuleer tot 24 uur van tevoren voor volledige terugbetaling"
+    },
+    "browse": {
+      "title": "Activiteiten per Bestemming",
+      "desc": "Vind attracties en ervaringen in de topsteden wereldwijd",
+      "thingsToDo": "{{count}} activiteiten",
+      "noDestinations": "Momenteel geen bestemmingen beschikbaar."
+    },
+    "exploreLinks": {
+      "title": "Ontdek Meer Reisgidsen",
+      "hotelsWorldwide": "Hotels Wereldwijd",
+      "bestRestaurants": "Beste Restaurants",
+      "travelNews": "Reisnieuws"
+    },
+    "cta": {
+      "title": "Klaar om te Ontdekken?",
+      "desc": "Boek wachtrijvrije tickets voor de Eiffeltoren, Colosseum, Burj Khalifa en topattracties wereldwijd.",
+      "parisAttractions": "Paris Attracties",
+      "romeAttractions": "Rome Attracties"
+    },
+    "search": {
+      "popular": "Populair:",
+      "thingsToDoIn": "Activiteiten in {{city}}",
+      "ariaCarouselNav": "Attractie carrousel navigatie",
+      "ariaViewInCity": "Bekijk {{name}} in {{city}}"
+    },
+    "gallery": {
+      "ariaFeaturedAttraction": "Uitgelichte attractie",
+      "ariaThumbnails": "Attractie carrousel miniaturen",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "Vanaf",
+      "bookTickets": "Tickets Boeken",
+      "skipTheLine": "Sla de Rij Over",
+      "duration": "2-3 uur",
+      "freeCancellation": "Gratis Annuleren",
+      "freeCancellationDesc": "24 uur voor bezoek",
+      "mobileTickets": "Mobiele Tickets",
+      "instantDelivery": "Direct geleverd"
+    },
+    "chip": {
+      "thingsToDo": "{{count}} activiteiten"
+    }
+  },
+  "hotels": {
+    "title": "Hotels",
+    "subtitle": "Vind uw perfecte verblijf",
+    "filters": {
+      "all": "Alle Hotels",
+      "luxury": "Luxe",
+      "budget": "Budgetvriendelijk",
+      "beachfront": "Aan het Strand",
+      "cityCenter": "Stadscentrum",
+      "familyFriendly": "Gezinsvriendelijk"
+    },
+    "details": {
+      "priceFrom": "Vanaf",
+      "perNight": "per nacht",
+      "amenities": "Voorzieningen",
+      "checkIn": "Inchecken",
+      "checkOut": "Uitchecken",
+      "rooms": "Kamers",
+      "rating": "Beoordeling"
+    },
+    "bookNow": "Nu Boeken"
+  },
+  "dining": {
+    "title": "Restaurants",
+    "subtitle": "Culinaire ervaringen voor elke smaak",
+    "filters": {
+      "all": "Alle Restaurants",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafés",
+      "streetFood": "Straatvoedsel",
+      "halal": "Halal",
+      "vegetarian": "Vegetarisch"
+    },
+    "details": {
+      "cuisine": "Keuken",
+      "priceRange": "Prijsklasse",
+      "hours": "Openingstijden",
+      "dress": "Dresscode",
+      "reservations": "Reserveringen"
+    }
+  },
   "destinations": {
+    "cities": {
+      "dubai": {
+        "name": "Dubai",
+        "country": "VAE",
+        "cardAlt": "Dubai skyline met Burj Khalifa toren bij zonsondergang"
+      },
+      "london": {
+        "name": "London",
+        "country": "VK",
+        "cardAlt": "London Big Ben en Houses of Parliament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Frankrijk",
+        "cardAlt": "Paris Eiffeltoren verlicht bij zonsondergang"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "VS",
+        "cardAlt": "New York Manhattan skyline met Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Tokyo Shibuya kruising neonlichten"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Singapore Marina Bay Sands en Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanje",
+        "cardAlt": "Barcelona Sagrada Familia bij gouden uur"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Bangkok Grand Palace tempel bij zonsopgang"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "VAE",
+        "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Nederland",
+        "cardAlt": "Amsterdam gracht met historische gebouwen"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Hong Kong skyline bij nacht"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turkije",
+        "cardAlt": "Istanbul Blauwe Moskee bij zonsondergang"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "VS",
+        "cardAlt": "Las Vegas Strip bij nacht"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "VS",
+        "cardAlt": "Los Angeles Hollywood bord"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "VS",
+        "cardAlt": "Miami Beach Art Deco wijk"
+      },
+      "rome": {
+        "name": "Rome",
+        "country": "Italië",
+        "cardAlt": "Rome Colosseum bij gouden uur"
+      }
+    },
     "hero": {
       "badge": "{{count}} Bestemmingen Wereldwijd",
-      "trustedBy": "Vertrouwd door {{count}} bestemmingen",
+      "trustedBy": "Vertrouwd door {{count}} bestemmingen wereldwijd",
       "discover": "Ontdek",
       "worldClass": "Wereldklasse",
       "destinations": "Bestemmingen",
-      "description": "Zorgvuldig samengestelde reisgidsen met lokale expertise voor 's werelds meest boeiende steden.",
+      "description": "Zorgvuldig samengestelde reisgidsen met lokale expertise voor de meest boeiende steden ter wereld. Van iconische bezienswaardigheden tot verborgen pareltjes.",
       "exploreAll": "Alle Bestemmingen Verkennen",
       "travelGuides": "Reisgidsen",
       "explorePlaceholder": "Bestemmingen Verkennen",
-      "browseCollection": "Bekijk onze collectie geselecteerde bestemmingen",
+      "browseCollection": "Bekijk onze collectie handgeselecteerde reisbestemmingen hieronder",
       "explore": "Verkennen",
       "discoverButton": "Ontdekken",
       "ariaLabel": "Overzicht van bestemmingen",
-      "exploreTitle": "Explore {{name}}",
-      "galleryAriaLabel": "Featured destination gallery",
-      "placeholderAriaLabel": "Featured destination placeholder"
+      "exploreTitle": "Verken {{name}}",
+      "galleryAriaLabel": "Uitgelichte bestemmingsgalerij",
+      "placeholderAriaLabel": "Uitgelichte bestemmingsplaatshouder"
     },
     "stats": {
       "destinations": "BESTEMMINGEN",
@@ -27,7 +413,7 @@
     },
     "sections": {
       "featured": "Uitgelichte Bestemmingen",
-      "featuredDesc": "Geselecteerde bestemmingen met uitzonderlijke ervaringen.",
+      "featuredDesc": "Handgeselecteerde bestemmingen met uitzonderlijke ervaringen, lokale inzichten en alles wat u nodig heeft om uw perfecte reis te plannen.",
       "all": "Alle Bestemmingen",
       "count": "{{count}} bestemmingen gevonden"
     },
@@ -35,7 +421,7 @@
       "placeholder": "Bestemmingen zoeken...",
       "noResults": "Geen bestemmingen gevonden",
       "tryAdjusting": "Probeer uw zoekcriteria aan te passen",
-      "clearSearch": "Zoekopdracht wissen"
+      "clearSearch": "Zoekopdracht Wissen"
     },
     "carousel": {
       "label": "Uitgelichte bestemmingen carrousel",
@@ -43,7 +429,7 @@
       "next": "Volgende bestemming",
       "goTo": "Ga naar {{name}}",
       "slideOf": "Dia {{current}} van {{total}}: {{name}}",
-      "thumbnails": "Destination carousel thumbnails"
+      "thumbnails": "Bestemmingscarrousel miniaturen"
     },
     "card": {
       "explore": "Verkennen",
@@ -56,26 +442,688 @@
       "title": "Veelgestelde Vragen",
       "subtitle": "Alles over TRAVI bestemmingsgidsen",
       "q1": "Hoeveel bestemmingen dekt TRAVI?",
-      "a1": "TRAVI dekt belangrijke bestemmingen in het Midden-Oosten, Europa, Azië en Amerika.",
-      "q2": "Welke informatie is inbegrepen?",
-      "a2": "Elke gids bevat attracties, accommodatie, lokale keuken en reistips.",
+      "a1": "TRAVI dekt belangrijke reisbestemmingen in het Midden-Oosten, Europa, Azië en Amerika met uitgebreide gidsen voor elke locatie.",
+      "q2": "Welke informatie is inbegrepen in TRAVI bestemmingsgidsen?",
+      "a2": "Elke bestemmingsgids bevat gedetailleerde beschrijvingen van attracties, accommodatiemogelijkheden, lokale keuken, vervoerstips en praktische reisinformatie.",
       "q3": "Kan ik bestemmingen zoeken?",
-      "a3": "Ja, u kunt zoeken op naam of land.",
+      "a3": "Ja, met TRAVI kunt u bestemmingen zoeken op naam of land via de zoekbalk op de bestemmingspagina.",
       "q4": "Wat zijn de uitgelichte bestemmingen op TRAVI?",
-      "a4": "Uitgelichte bestemmingen bieden uitzonderlijke ervaringen."
+      "a4": "TRAVI's uitgelichte bestemmingen zijn handgeselecteerde locaties die uitzonderlijke ervaringen bieden voor reizigers met diverse interesses, van luxe tot budgetreizen."
     },
     "loading": {
       "title": "Bestemmingen Laden",
-      "message": "Nieuwste gegevens ophalen..."
+      "message": "Nieuwste bestemmingsgegevens ophalen..."
     },
     "error": {
-      "title": "Kan Niet Laden",
-      "message": "Probeer het later opnieuw.",
+      "title": "Kan Bestemmingen Niet Laden",
+      "message": "We hebben problemen met het laden van bestemmingsgegevens. Probeer het later opnieuw.",
       "refresh": "Pagina Vernieuwen"
     },
     "empty": {
       "title": "Geen Bestemmingen Beschikbaar",
-      "message": "Er zijn momenteel geen bestemmingen beschikbaar."
+      "message": "Momenteel zijn er geen bestemmingen beschikbaar. Kom later terug."
+    }
+  },
+  "districts": {
+    "title": "Wijken",
+    "subtitle": "Ontdek diverse buurten",
+    "explore": "Wijk Verkennen"
+  },
+  "realEstate": {
+    "title": "Vastgoed",
+    "subtitle": "Investeer in de toekomst",
+    "offPlan": {
+      "title": "Nieuwbouwprojecten",
+      "subtitle": "Investeer Vroeg, Betaal Minder, Verdien Meer",
+      "findProperty": "Vind Mijn Perfecte Woning",
+      "from": "Vanaf",
+      "paymentPlan": "Betalingsplan",
+      "handover": "Oplevering",
+      "developer": "Ontwikkelaar"
+    },
+    "filters": {
+      "all": "Alle Woningen",
+      "apartments": "Appartementen",
+      "villas": "Villa's",
+      "townhouses": "Herenhuizen",
+      "penthouses": "Penthouses"
+    },
+    "features": {
+      "cryptoAccepted": "Crypto Geaccepteerd",
+      "paymentPlans": "Flexibele Betalingsplannen",
+      "goldenVisa": "Golden Visa In Aanmerking",
+      "roiGuarantee": "ROI Garantie"
+    }
+  },
+  "search": {
+    "placeholder": "Zoek attracties, gidsen, bestemmingen...",
+    "results": "Zoekresultaten",
+    "noResults": "Geen resultaten gevonden voor",
+    "tryAgain": "Probeer andere zoekwoorden"
+  },
+  "footer": {
+    "about": "Over TRAVI",
+    "aboutTravi": "Over TRAVI",
+    "aboutText": "Uitgebreide reisinformatie voor 17 bestemmingen wereldwijd.",
+    "aboutUs": "Over Ons",
+    "quickLinks": "Snelle Links",
+    "legal": "Juridisch",
+    "privacy": "Privacybeleid",
+    "privacyPolicy": "Privacybeleid",
+    "terms": "Algemene Voorwaarden",
+    "termsOfService": "Servicevoorwaarden",
+    "contact": "Contact",
+    "contactUs": "Neem Contact Op",
+    "followUs": "Volg Ons",
+    "explore": "Verkennen",
+    "travel": "Reizen",
+    "company": "Bedrijf",
+    "allGuides": "Alle Gidsen",
+    "cookies": "Cookies",
+    "security": "Beveiliging",
+    "cookieSettings": "Cookie-instellingen",
+    "tagline": "Uw Betrouwbare Reisbron",
+    "ariaLabel": "Sitefooter",
+    "featuredGuides": "Uitgelichte Gidsen",
+    "tools": "Hulpmiddelen",
+    "currencyConverter": "Valutaomrekener",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Hypotheekcalculator",
+    "glossary": "Woordenlijst",
+    "freeThingsToDo": "70+ Gratis Activiteiten",
+    "open24Hours": "24 Uur Open",
+    "tributeToSheikh": "Eerbetoon aan ZKH Sheikh Mohammed",
+    "lawsForTourists": "Wetten voor Toeristen",
+    "newsletter": "Abonneer op onze nieuwsbrief",
+    "newsletterDescription": "Ontvang de nieuwste reistips en updates.",
+    "emailPlaceholder": "Voer uw e-mail in",
+    "allRightsReserved": "Alle rechten voorbehouden.",
+    "copyright": "© {{year}} {{brand}}. Alle rechten voorbehouden.",
+    "emailAriaLabel": "Stuur e-mail naar TRAVI"
+  },
+  "errors": {
+    "404": {
+      "title": "Pagina Niet Gevonden",
+      "message": "De pagina die u zoekt bestaat niet.",
+      "button": "Naar Home"
+    },
+    "500": {
+      "title": "Serverfout",
+      "message": "Er is iets misgegaan aan onze kant.",
+      "button": "Opnieuw Proberen"
+    },
+    "network": {
+      "title": "Verbindingsfout",
+      "message": "Kan geen verbinding maken. Controleer uw internetverbinding.",
+      "button": "Opnieuw"
+    }
+  },
+  "newsletter": {
+    "badge": "Doe Mee aan het Avontuur",
+    "title": "Ontvang Reismagie in Uw Inbox",
+    "description": "Wekelijkse tips, verborgen pareltjes en exclusieve aanbiedingen - geen spam, alleen reislust.",
+    "emailPlaceholder": "uw@email.nl",
+    "subscribe": "Abonneren",
+    "success": "U bent geabonneerd! Controleer uw inbox."
+  },
+  "cookies": {
+    "title": "Wij waarderen uw privacy",
+    "description": "Wij gebruiken cookies om uw browse-ervaring te verbeteren, siteverkeer te analyseren en inhoud te personaliseren. Door op \"Alles Accepteren\" te klikken, stemt u in met ons gebruik van cookies.",
+    "manage": "Beheren",
+    "rejectAll": "Alles Weigeren",
+    "acceptAll": "Alles Accepteren",
+    "preferencesTitle": "Cookie-voorkeuren",
+    "savePreferences": "Voorkeuren Opslaan",
+    "essential": {
+      "title": "Essentiële Cookies",
+      "description": "Vereist voor het correct functioneren van de website"
+    },
+    "analytics": {
+      "title": "Analytische Cookies",
+      "description": "Helpen ons te begrijpen hoe bezoekers met onze website omgaan"
+    },
+    "marketing": {
+      "title": "Marketing Cookies",
+      "description": "Worden gebruikt om gepersonaliseerde advertenties te leveren"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "TRAVI - Ontdek de Wereld | Uw Ultieme Reisgids",
+      "description": "Ontdek de beste attracties, hotels, restaurants en buurten. Plan uw perfecte reis met insidertips en lokale aanbevelingen."
+    },
+    "attractions": {
+      "title": "Attracties | Top Bezienswaardigheden Wereldwijd",
+      "description": "Ontdek de beste attracties - van de Eiffeltoren tot verborgen pareltjes. Plan uw bezoek."
+    },
+    "hotels": {
+      "title": "Hotels | Beste Verblijfplaatsen",
+      "description": "Vind het perfecte hotel voor elk budget. Van luxe resorts tot budgetvriendelijke opties."
+    },
+    "dining": {
+      "title": "Restaurants | Beste Eetgelegenheden",
+      "description": "Ontdek culinaire hoogtepunten - fine dining, straatvoedsel en alles ertussenin."
+    }
+  },
+  "guides": {
+    "hero": {
+      "categoryLabel": "Reisintelligentie",
+      "headlinePart1": "Verhalen Die",
+      "headlinePart2": "U Raken",
+      "description": "Deskundig samengestelde gidsen, insider-perspectieven en redactionele verhalen die de manier waarop u de wereld ervaart transformeren.",
+      "startJourney": "Begin Uw Reis",
+      "browseCollection": "Blader door Collectie",
+      "issueBadge": "Uitgave 47 — Winter 2026"
+    },
+    "stats": {
+      "guides": "Reisgidsen",
+      "destinations": "Bestemmingen",
+      "languages": "Talen"
+    },
+    "journey": {
+      "badge": "Uw Reis, Onze Begeleiding",
+      "title": "Elke Geweldige Reis Begint met een Gids",
+      "subtitle": "Van dromen tot delen, we zijn bij u bij elke stap"
+    },
+    "ideaLab": {
+      "badge": "Ideeënlab",
+      "title": "Inspiratie voor Uw Volgende Avontuur",
+      "subtitle": "Ontdek bestemmingen die bij uw reisstijl passen",
+      "readGuide": "Lees Gids"
+    },
+    "curatedGuides": {
+      "badge": "Samengestelde Gidsen",
+      "title": "Handgeselecteerde Reiscollecties",
+      "subtitle": "Thematische gidsen voor elke reiziger"
+    },
+    "localVoices": {
+      "badge": "Lokale Stemmen",
+      "title": "Inzichten van Lokale Experts",
+      "subtitle": "Authentieke perspectieven van mensen die deze steden kennen"
+    },
+    "travelTools": {
+      "badge": "Reishulpmiddelen",
+      "title": "Hulpmiddelen voor Uw Reis",
+      "subtitle": "Alles wat u nodig heeft om te plannen en te boeken"
+    },
+    "archetype": {
+      "badge": "Gepersonaliseerd voor U",
+      "title": "Wat voor Reiziger Bent U?",
+      "subtitle": "Selecteer uw reisstijl en ontdek gidsen die speciaal voor u zijn samengesteld",
+      "viewGuides": "Bekijk {{type}} Gidsen"
+    },
+    "archetypes": {
+      "adventure": {
+        "name": "Avonturier",
+        "description": "Spannende ervaringen en adrenalinerush"
+      },
+      "culture": {
+        "name": "Cultuurontdekker",
+        "description": "Kunst, geschiedenis en lokale tradities"
+      },
+      "relaxation": {
+        "name": "Ontspanningsgoeroe",
+        "description": "Wellness resorts en rustige uitjes"
+      },
+      "foodie": {
+        "name": "Culinaire Nomade",
+        "description": "Lokale smaken en gastronomische avonturen"
+      },
+      "wellness": {
+        "name": "Welzijnszoeker",
+        "description": "Ontspanning, spa's en mindful retraites"
+      },
+      "budget": {
+        "name": "Slimme Reiziger",
+        "description": "Maximale ervaring, minimaal budget"
+      },
+      "solo": {
+        "name": "Solo Ontdekker",
+        "description": "Onafhankelijke reizen en zelfontdekking"
+      },
+      "luxury": {
+        "name": "Luxekenner",
+        "description": "Premium ervaringen en verfijnd leven"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Dromen",
+        "subtitle": "Ontdek inspiratie",
+        "guides": [
+          "Bestemmingsgidsen",
+          "Foto-essays"
+        ]
+      },
+      "plan": {
+        "title": "Plannen",
+        "subtitle": "Breng uw reis in kaart",
+        "guides": [
+          "Reisplanning",
+          "Visumvereisten"
+        ]
+      },
+      "prepare": {
+        "title": "Voorbereiden",
+        "subtitle": "Maak u klaar",
+        "guides": [
+          "Paklijsten",
+          "Veiligheidstips"
+        ]
+      },
+      "experience": {
+        "title": "Ervaren",
+        "subtitle": "Beleef het avontuur",
+        "guides": [
+          "Lokale Inzichten",
+          "Verborgen Pareltjes"
+        ]
+      },
+      "share": {
+        "title": "Delen",
+        "subtitle": "Vertel uw verhaal",
+        "guides": [
+          "Reisverhalen",
+          "Fotografie"
+        ]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Weekend Uitjes",
+      "offBeatenPath": "Onontdekte Plekken",
+      "smartTravel": "Slim Reizen",
+      "bucketList": "Bucketlist",
+      "culinary": "Culinair",
+      "natureWonder": "Natuur en Wonderen"
+    },
+    "seo": {
+      "title": "Reisgidsen | Deskundige Bestemmingsinzichten",
+      "description": "Ontdek deskundige reisgidsen, bestemmingsinzichten en insidertips van ons wereldwijde netwerk van reisschrijvers. Plan vandaag nog uw perfecte reis."
+    },
+    "editorial": {
+      "badge": "Van Onze Redactie",
+      "title": "Redactionele Artikelen",
+      "readFull": "Lees Volledig Essay"
+    },
+    "gallery": {
+      "badge": "Visuele Verhalen",
+      "title": "Bestemmingen Die Inspireren",
+      "categories": {
+        "city": "Stad",
+        "mountains": "Bergen",
+        "beach": "Strand",
+        "safari": "Safari",
+        "nature": "Natuur"
+      }
+    },
+    "writers": {
+      "badge": "Deskundige Stemmen",
+      "title": "Maak Kennis met Onze Schrijvers",
+      "subtitle": "De deskundige stemmen achter onze meest vertrouwde reisgidsen",
+      "articleCount": "{{count}} Artikelen",
+      "viewProfile": "Bekijk Profiel"
+    },
+    "map": {
+      "badge": "Verken per Regio",
+      "title": "Gidsen Over de Hele Wereld",
+      "subtitle": "Klik op een bestemming om onze expertise te ontdekken",
+      "guidesAvailable": "{{count}} gidsen beschikbaar",
+      "legendDestination": "Bestemming",
+      "legendHighlighted": "Uitgelicht"
+    },
+    "newsletter": {
+      "badge": "Doe Mee aan de Reis",
+      "title": "Reisverhalen, Wekelijks",
+      "description": "Zorgvuldig samengestelde reisinspiratie, deskundige tips en insiderperspectieven wekelijks in uw inbox.",
+      "placeholder": "Voer uw e-mail in",
+      "subscribe": "Abonneren",
+      "subscribing": "Bezig met abonneren...",
+      "joinCount": "Sluit u aan bij 50.000+ reizigers die onze wekelijkse nieuwsbrief lezen",
+      "invalidEmail": "Voer een geldig e-mailadres in",
+      "successTitle": "Welkom bij de reis!",
+      "successDesc": "U bent nu geabonneerd op onze redactionele nieuwsbrief."
+    }
+  },
+  "destination": {
+    "overview": "Overzicht",
+    "attractions": "Attracties",
+    "hotels": "Hotels",
+    "dining": "Restaurants",
+    "districts": "Wijken",
+    "events": "Evenementen",
+    "travelTips": "Reistips",
+    "weather": "Weer",
+    "currency": "Valuta",
+    "language": "Taal",
+    "timezone": "Tijdzone",
+    "bestTimeToVisit": "Beste Tijd om te Bezoeken",
+    "gettingAround": "Vervoer",
+    "safetyTips": "Veiligheidstips",
+    "localCustoms": "Lokale Gebruiken",
+    "usefulPhrases": "Nuttige Zinnen",
+    "emergencyNumbers": "Noodnummers",
+    "visaInfo": "Visuminformatie",
+    "healthInfo": "Gezondheidsinformatie"
+  },
+  "soon": "Binnenkort Beschikbaar",
+  "accessibility": {
+    "skipToContent": "Ga naar inhoud",
+    "mainContent": "Hoofdinhoud",
+    "navigation": "Navigatie",
+    "openInNewTab": "Opent in nieuw tabblad",
+    "externalLink": "Externe link"
+  },
+  "time": {
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "daysAgo": "{{count}} dagen geleden",
+    "hoursAgo": "{{count}} uur geleden",
+    "minutesAgo": "{{count}} minuten geleden",
+    "justNow": "Zojuist"
+  },
+  "validation": {
+    "required": "Dit veld is verplicht",
+    "email": "Voer een geldig e-mailadres in",
+    "minLength": "Minimaal {{count}} tekens vereist",
+    "maxLength": "Maximaal {{count}} tekens toegestaan"
+  },
+  "news": {
+    "time": {
+      "recent": "Recent",
+      "justNow": "Zojuist",
+      "minutesAgo": "{{count}} min geleden",
+      "hoursAgo": "{{count}} uur geleden",
+      "daysAgo": "{{count}} dagen geleden",
+      "minRead": "{{count}} min leestijd"
+    },
+    "header": {
+      "title": "TRAVI NIEUWS",
+      "edition": "Internationale Editie",
+      "subscribe": "Abonneren"
+    },
+    "breaking": {
+      "label": "Laatste Nieuws"
+    },
+    "search": {
+      "placeholder": "Zoek wereldwijd nieuws...",
+      "button": "Zoeken",
+      "title": "Zoeken",
+      "searching": "Zoeken naar \"{{query}}\"..."
+    },
+    "categories": {
+      "all": "Al het Nieuws",
+      "world": "Wereld",
+      "business": "Zakelijk",
+      "culture": "Cultuur",
+      "travel": "Reizen",
+      "tech": "Technologie",
+      "opinion": "Opinie"
+    },
+    "empty": {
+      "title": "Nog Geen Nieuwsartikelen",
+      "description": "We werken aan het nieuwste reisnieuws en inzichten. Kom binnenkort terug voor updates van over de hele wereld.",
+      "exploreDestinations": "Ontdek Bestemmingen",
+      "viewGuides": "Bekijk Reisgidsen"
+    },
+    "hero": {
+      "topStory": "Topverhaal",
+      "editorialTeam": "Redactieteam"
+    },
+    "views": "{{count}} weergaven",
+    "viewAll": "Bekijk Alles",
+    "seo": {
+      "title": "Reisnieuws | Laatste Verhalen en Updates",
+      "description": "Blijf op de hoogte van het laatste reisnieuws, bestemmingsupdates en branche-inzichten van over de hele wereld."
+    },
+    "sidebar": {
+      "alsoToday": "Ook Vandaag",
+      "storiesCount": "{{count}} verhalen",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Onderwerpen",
+      "noTrending": "Nog geen trending onderwerpen. Kom binnenkort terug!"
+    },
+    "sections": {
+      "topStories": "Topverhalen",
+      "opinion": "Opinie en Analyse",
+      "moreOpinion": "Meer Opinie",
+      "worldwide": "Wereldwijde Dekking"
+    },
+    "worldwide": {
+      "title": "Uw Venster op de Wereld",
+      "subtitle": "Nieuws van elke uithoek van de wereld",
+      "storiesCount": "{{count}} verhalen",
+      "comingSoon": "Binnenkort beschikbaar"
+    },
+    "newsletter": {
+      "title": "Blijf Op de Hoogte",
+      "description": "Ontvang de belangrijkste verhalen van de dag elke ochtend in uw inbox. Sluit u aan bij 50.000+ lezers.",
+      "placeholder": "Voer uw e-mail in",
+      "subscribe": "Gratis Abonneren",
+      "noSpam": "Geen spam. Op elk moment opzegbaar.",
+      "successTitle": "Geabonneerd!",
+      "successDesc": "Controleer uw e-mail om uw abonnement te bevestigen.",
+      "errorTitle": "Abonnement mislukt",
+      "errorDesc": "Probeer het later opnieuw.",
+      "invalidTitle": "Ongeldig e-mailadres",
+      "invalidDesc": "Voer een geldig e-mailadres in."
+    }
+  },
+  "pages": {
+    "about": {
+      "metaTitle": "Over TRAVI World | Uw Betrouwbare Reisbron",
+      "metaDescription": "Leer meer over TRAVI World - een onafhankelijk reisinformatieplatform dat uitgebreide gidsen biedt voor bestemmingen wereldwijd.",
+      "badge": "Over TRAVI World",
+      "title": "Ontdek",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Uw vertrouwde reisbron voor het verkennen van bestemmingen wereldwijd met uitgebreide gidsen en lokale inzichten.",
+      "ctaExplore": "Ontdek Bestemmingen",
+      "ctaContact": "Neem Contact Op",
+      "stats": {
+        "destinations": "Bestemmingen",
+        "articles": "Artikelen",
+        "support": "Reisondersteuning",
+        "coverage": "Dekking",
+        "cities": "16+ Steden"
+      },
+      "whoWeAre": {
+        "title": "Wie Wij Zijn"
+      },
+      "mission": {
+        "title": "Onze Missie"
+      },
+      "services": {
+        "badge": "Onze Diensten",
+        "title": "Wat Wij Bieden"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Bestemmingsgidsen",
+          "description": "Uitgebreide informatie over steden en regio's wereldwijd"
+        },
+        "attractions": {
+          "title": "Attractie-informatie",
+          "description": "Details over must-see bezienswaardigheden en unieke ervaringen"
+        },
+        "hotels": {
+          "title": "Hotelgidsen",
+          "description": "Informatie over accommodatiemogelijkheden voor elk budget"
+        },
+        "restaurants": {
+          "title": "Restaurantaanbevelingen",
+          "description": "Eetgelegenheden voor elke smaak en voorkeur"
+        },
+        "articles": {
+          "title": "Reisartikelen",
+          "description": "Tips, inzichten en reisinspiratie"
+        },
+        "news": {
+          "title": "Laatste Reisnieuws",
+          "description": "Blijf op de hoogte met geselecteerde reisupdates"
+        }
+      },
+      "editorial": {
+        "title": "Redactionele Onafhankelijkheid",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Onze Basis",
+        "title": "Onze Waarden",
+        "accuracy": {
+          "title": "Nauwkeurigheid",
+          "description": "Wij streven naar nauwkeurige en betrouwbare informatie, regelmatig bijgewerkt"
+        },
+        "transparency": {
+          "title": "Transparantie",
+          "description": "Wij zijn duidelijk over onze affiliate-relaties en werkwijze"
+        },
+        "userFocused": {
+          "title": "Gebruikersgericht",
+          "description": "Onze inhoud is ontworpen om reizigers te helpen weloverwogen beslissingen te nemen"
+        }
+      },
+      "connect": {
+        "badge": "Laten We Verbinden",
+        "title": "Neem Contact Op"
+      },
+      "company": {
+        "title": "Bedrijfsinformatie",
+        "contactTitle": "Contactgegevens",
+        "contactForm": "Contactformulier"
+      }
+    },
+    "contact": {
+      "metaTitle": "Contact | TRAVI World",
+      "metaDescription": "Neem contact op met TRAVI World. Wij verwelkomen uw feedback, vragen en verzoeken over onze reisinformatiediensten.",
+      "badge": "We horen graag van u",
+      "titlePart1": "Laten We",
+      "titlePart2": "Verbinden",
+      "subtitle": "Heeft u vragen over uw volgende avontuur? Wij helpen u de wereld met vertrouwen te verkennen.",
+      "cta": "Stuur ons een bericht",
+      "getInTouch": "Neem Contact Op",
+      "getInTouchSubtitle": "Kies de beste manier om ons te bereiken. Wij reageren zo snel mogelijk.",
+      "howCanWeHelp": "Hoe Kunnen We Helpen?",
+      "howCanWeHelpSubtitle": "Wij staan klaar om u te helpen met vragen of feedback over onze reisinhoud en diensten.",
+      "importantNote": "Belangrijke Opmerking",
+      "importantNoteSubtitle": "Lees dit voordat u contact opneemt",
+      "ourOffice": "Ons Kantoor",
+      "ourOfficeSubtitle": "Voor officiële correspondentie en postvragen",
+      "travelCompanion": "Uw reispartner",
+      "urgentNote": "Voor dringende zaken, vermeld {{urgentLabel}} in het onderwerp van uw e-mail. Wij prioriteren reacties op basis van de aard van het verzoek.",
+      "urgentLabel": "Dringend",
+      "options": {
+        "generalInquiries": {
+          "title": "Algemene Vragen",
+          "description": "Vragen over onze reisgidsen en inhoud"
+        },
+        "privacyInquiries": {
+          "title": "Privacyvragen",
+          "description": "Toegang tot gegevens, verwijdering en privacyverzoeken"
+        },
+        "visitWebsite": {
+          "title": "Bezoek Onze Website",
+          "description": "Ontdek bestemmingen en reisinspiratie"
+        },
+        "responseTime": {
+          "title": "Reactietijd",
+          "description": "Wij streven naar snelle reacties",
+          "action": "2-3 werkdagen"
+        }
+      },
+      "helpTopics": {
+        "general": "Algemene vragen over onze reisgidsen en inhoud",
+        "feedback": "Feedback en suggesties voor verbetering",
+        "reporting": "Melden van fouten of verouderde informatie",
+        "business": "Zakelijke en partnerschapsvragen",
+        "media": "Media- en persvragen",
+        "privacy": "Privacygerelateerde verzoeken (gegevenstoegang, verwijdering, etc.)"
+      }
+    },
+    "privacy": {
+      "metaTitle": "Privacybeleid | TRAVI World",
+      "metaDescription": "Leer hoe TRAVI World uw persoonlijke gegevens verzamelt, gebruikt en beschermt. Lees ons uitgebreide privacybeleid.",
+      "badge": "Uw Privacy Telt",
+      "title": "Privacybeleid",
+      "subtitle": "Wij zijn toegewijd aan het beschermen van uw privacy en transparant over onze gegevenspraktijken. Leer hoe TRAVI World uw informatie verzamelt, gebruikt en beschermt.",
+      "effectiveDate": "Ingangsdatum: 1 januari 2026",
+      "features": {
+        "dataProtection": {
+          "title": "Gegevensbescherming",
+          "description": "Uw gegevens zijn beschermd"
+        },
+        "minimalCollection": {
+          "title": "Minimale Verzameling",
+          "description": "We verzamelen alleen wat nodig is"
+        },
+        "transparency": {
+          "title": "Volledige Transparantie",
+          "description": "Duidelijk over onze praktijken"
+        },
+        "yourControl": {
+          "title": "Uw Controle",
+          "description": "Beheer uw voorkeuren"
+        }
+      },
+      "sections": {
+        "whoWeAre": "1. Wie Wij Zijn",
+        "informationCollect": "2. Informatie Die We Verzamelen",
+        "howWeUse": "3. Hoe We Uw Informatie Gebruiken",
+        "legalBasis": "4. Juridische Basis voor Verwerking (AVG)",
+        "cookies": "5. Cookies en Trackingtechnologieën",
+        "thirdParty": "6. Diensten van Derden",
+        "aiContent": "7. AI-Gegenereerde Inhoud",
+        "internationalTransfers": "8. Internationale Gegevensoverdrachten",
+        "dataRetention": "9. Gegevensbewaring",
+        "privacyRights": "10. Uw Privacyrechten",
+        "californiaRights": "11. Californische Privacyrechten (CCPA/CPRA)",
+        "childrenPrivacy": "12. Privacy van Kinderen",
+        "dataSecurity": "13. Gegevensbeveiliging",
+        "changes": "14. Wijzigingen in Dit Beleid",
+        "contactUs": "15. Contact"
+      }
+    },
+    "terms": {
+      "metaTitle": "Algemene Voorwaarden | TRAVI World",
+      "metaDescription": "Lees de algemene voorwaarden voor het gebruik van TRAVI World reisinformatiediensten. Juridische overeenkomst tussen u en KBR Global Creative Consulting Ltd.",
+      "badge": "Juridische Overeenkomst",
+      "title": "Algemene Voorwaarden",
+      "subtitle": "Lees deze voorwaarden zorgvuldig voordat u TRAVI World gebruikt. Uw toegang tot en gebruik van ons platform is onderworpen aan deze voorwaarden.",
+      "lastUpdated": "Laatst bijgewerkt: 1 januari 2026",
+      "importantNotice": "Belangrijke Juridische Kennisgeving",
+      "keyPoints": {
+        "editorial": {
+          "title": "Redactioneel Platform",
+          "description": "Reisgidsen en bestemmingsinhoud"
+        },
+        "affiliate": {
+          "title": "Affiliate Links",
+          "description": "Op commissie gebaseerde aanbevelingen"
+        },
+        "aiGenerated": {
+          "title": "AI-Gegenereerd",
+          "description": "Inhoud gemaakt met AI-assistentie"
+        },
+        "privacy": {
+          "title": "Uw Privacy",
+          "description": "Gegevensbescherming gegarandeerd"
+        }
+      },
+      "sections": {
+        "operator": "Exploitant / Juridische Entiteit",
+        "purpose": "1. Doel en Gebruiksomvang",
+        "affiliateDisclosure": "2. Affiliate Disclosure en Transacties met Derden",
+        "aiDisclaimer": "3. AI-Gegenereerde Inhoud Disclaimer",
+        "newsletter": "4. Nieuwsbrief en Communicatie",
+        "userConduct": "5. Gebruikersgedrag en Verboden Acties",
+        "intellectualProperty": "6. Intellectueel Eigendom en Beperkte Licentie",
+        "dmca": "7. Notice-and-Takedown (DMCA en Vergelijkbaar)",
+        "disclaimers": "8. Nauwkeurigheid, Beschikbaarheid en Disclaimers",
+        "liability": "9. Beperking van Aansprakelijkheid en Overmacht",
+        "indemnification": "10. Vrijwaring",
+        "privacyCookies": "11. Privacy, Cookies en Gegevensbescherming",
+        "accessibility": "12. Toegankelijkheidsverklaring",
+        "governingLaw": "13. Toepasselijk Recht, Geschillenbeslechting en Jurisdictie",
+        "modifications": "14. Wijzigingen, Deelbaarheid en Algemene Bepalingen"
+      }
     }
   }
 }
