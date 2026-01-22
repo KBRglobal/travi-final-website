@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { SEOHead } from "@/components/seo-head";
 import { Home, MapPin } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 const mascotLight = "/logos/Mascot_for_Dark_Background.png";
 
 export default function NotFound() {
+  const { localePath } = useLocale();
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const gameInitializedRef = useRef(false);
 
@@ -360,7 +362,7 @@ export default function NotFound() {
 
       <div className="min-h-screen w-full flex flex-col bg-white dark:bg-slate-900">
         <header className="w-full py-6 px-6">
-          <Logo variant="light-bg" height={32} linkTo="/" />
+          <Logo variant="light-bg" height={32} linkTo={localePath("/")} />
         </header>
 
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
@@ -390,7 +392,7 @@ export default function NotFound() {
           />
 
           <div className="flex gap-3 flex-wrap justify-center">
-            <Link href="/" data-testid="button-404-home">
+            <Link href={localePath("/")} data-testid="button-404-home">
               <Button 
                 size="lg"
                 className="rounded-full bg-[#6443F4] hover:bg-[#5339D9] text-white px-6"
@@ -399,7 +401,7 @@ export default function NotFound() {
                 Go to homepage
               </Button>
             </Link>
-            <Link href="/destinations/dubai/attractions" data-testid="button-404-attractions">
+            <Link href={localePath("/destinations/dubai/attractions")} data-testid="button-404-attractions">
               <Button 
                 size="lg"
                 variant="outline"
