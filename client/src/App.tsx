@@ -202,6 +202,9 @@ const publicRoutes = [
   { path: "/survey/:slug", component: PublicSurvey },
   { path: "/partners/join", component: PartnersJoin },
   { path: "/partners/dashboard", component: PartnersDashboard },
+  { path: "/destinations", component: DestinationsLanding },
+  { path: "/destinations/ras-al-khaimah", component: RasAlKhaimahPage },
+  { path: "/destinations/:slug", component: DestinationPage },
   ...createAliasRoutes(),
   ...dubaiRoutes,
 ];
@@ -277,9 +280,6 @@ function PublicRouter() {
       {publicRoutes.map((route) => (
         <Route key={route.path} path={route.path} component={route.component} />
       ))}
-      <Route path="/destinations" component={DestinationsLanding} />
-      <Route path="/destinations/ras-al-khaimah" component={RasAlKhaimahPage} />
-      <Route path="/destinations/:slug" component={DestinationPage} />
       <Route path="/bangkok">{() => <Redirect to="/destinations/bangkok" />}</Route>
       <Route path="/paris">{() => <Redirect to="/destinations/paris" />}</Route>
       <Route path="/istanbul">{() => <Redirect to="/destinations/istanbul" />}</Route>

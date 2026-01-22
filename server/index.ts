@@ -123,26 +123,6 @@ console.log('[Locale] Locale resolution middleware registered');
 app.use(redirectMiddleware);
 console.log('[Redirects] 301 redirect middleware registered');
 
-// SEO Fix: Redirect unsupported locale paths to prevent duplicate content
-// /sv/* is not a supported route prefix (only in i18n translations, not routing)
-app.use((req, res, next) => {
-  // Check for unsupported locale prefixes that are causing duplicate content issues
-  const unsupportedLocalePrefixes = ['/sv/', '/sv'];
-  const path = req.path;
-  
-  for (const prefix of unsupportedLocalePrefixes) {
-    if (path === prefix.replace(/\/$/, '') || path.startsWith(prefix)) {
-      // Strip the locale prefix and redirect to the canonical URL
-      const newPath = path.replace(/^\/sv/, '') || '/';
-      const queryString = Object.keys(req.query).length 
-        ? '?' + new URLSearchParams(req.query as Record<string, string>).toString() 
-        : '';
-      return res.redirect(301, newPath + queryString);
-    }
-  }
-  next();
-});
-
 // SEO Fix: 301 Redirects for legacy Dubai paths to new /destinations/dubai/ hierarchy
 // This ensures search engines and users are directed to the canonical URLs
 app.use((req, res, next) => {
