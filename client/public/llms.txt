@@ -1,0 +1,83 @@
+# TRAVI.World - AI Discovery File
+# Version: 1.0
+# Updated: January 2026
+# Contact: hello@travi.world
+
+## About TRAVI
+TRAVI is a comprehensive travel content platform helping travelers discover destinations worldwide. We provide expert travel guides, attraction information, hotel recommendations, dining guides, and real-time travel intelligence across 30 languages.
+
+## Primary Content Categories
+
+### Travel Guides
+Complete destination guides with local insights, itineraries, and practical tips.
+- Dubai Travel Guide: /en/guides/dubai
+- Paris Travel Guide: /en/guides/paris
+- Tokyo Travel Guide: /en/guides/tokyo
+- New York Travel Guide: /en/guides/new-york
+- London Travel Guide: /en/guides/london
+- Rome Travel Guide: /en/guides/rome
+- Barcelona Travel Guide: /en/guides/barcelona
+- Amsterdam Travel Guide: /en/guides/amsterdam
+- Singapore Travel Guide: /en/guides/singapore
+- Bangkok Travel Guide: /en/guides/bangkok
+
+### Attractions
+Comprehensive information about tourist attractions, landmarks, and experiences.
+- All Attractions: /en/attractions
+- Dubai Attractions: /en/destinations/dubai/attractions
+
+### Hotels
+Curated hotel recommendations and booking information.
+- Hotel Listings: /en/hotels
+
+### Dining
+Restaurant guides and culinary experiences.
+- Dining Guide: /en/dining
+
+### Destinations
+City and country destination pages with travel essentials.
+- All Destinations: /en/destinations
+- Dubai: /en/destinations/dubai
+- Paris: /en/destinations/paris
+- Tokyo: /en/destinations/tokyo
+- New York: /en/destinations/new-york
+
+## Supported Languages (30 locales)
+English (en), Arabic (ar), Hindi (hi), Chinese (zh), Russian (ru), Urdu (ur), French (fr), German (de), Persian (fa), Bengali (bn), Filipino (fil), Spanish (es), Turkish (tr), Italian (it), Japanese (ja), Korean (ko), Hebrew (he), Portuguese (pt), Dutch (nl), Polish (pl), Swedish (sv), Thai (th), Vietnamese (vi), Indonesian (id), Malay (ms), Czech (cs), Greek (el), Danish (da), Norwegian (no), Romanian (ro), Hungarian (hu), Ukrainian (uk)
+
+## URL Structure
+All content is available in 30 languages using the pattern:
+/{locale}/{content-type}/{slug}
+
+Examples:
+- English: /en/guides/dubai
+- Arabic: /ar/guides/dubai
+- French: /fr/guides/dubai
+- Japanese: /ja/guides/dubai
+
+## Key Features
+- Native multilingual content (not machine translated)
+- RTL support for Arabic, Hebrew, Persian, Urdu
+- Comprehensive travel intelligence
+- Real-time attraction information
+- Expert local recommendations
+
+## Structured Data
+All pages include JSON-LD structured data:
+- WebPage schema with inLanguage
+- BreadcrumbList for navigation
+- FAQPage for Q&A content
+- TouristAttraction for attraction pages
+- Article for news and guides
+
+## API Access
+Public API documentation: /api/docs (Swagger UI)
+Note: API endpoints require authentication for write operations.
+
+## Contact
+Website: https://travi.world
+Email: hello@travi.world
+
+## Legal
+Terms of Service: /en/terms
+Privacy Policy: /en/privacy

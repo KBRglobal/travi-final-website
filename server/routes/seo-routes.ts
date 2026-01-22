@@ -302,5 +302,58 @@ export function registerSEORoutes(app: Express) {
     }
   });
 
+  /**
+   * POST /api/seo/indexnow
+   * Submit URLs to IndexNow for instant Bing indexing
+   * 
+   * Body: { urls: string[] }
+   * Returns: { success: boolean, submitted: number }
+   */
+  app.post("/api/seo/indexnow", requirePermission("canEdit"), async (req: Request, res: Response) => {
+    try {
+      const { urls } = req.body;
+      
+      if (!urls || !Array.isArray(urls) || urls.length === 0) {
+        return res.status(400).json({ error: "URLs array is required" });
+      }
+      
+      if (urls.length > 10000) {
+        return res.status(400).json({ error: "Maximum 10000 URLs per request" });
+      }
+      
+      const INDEXNOW_KEY = "2f24e2993ac8e17c604fc78ae6550dd6";
+      const HOST = "travi.world";
+      
+      const response = await fetch("https://api.indexnow.org/indexnow", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify({
+          host: HOST,
+          key: INDEXNOW_KEY,
+          keyLocation: `https://${HOST}/${INDEXNOW_KEY}.txt`,
+          urlList: urls.map(url => url.startsWith("http") ? url : `https://${HOST}${url}`)
+        })
+      });
+      
+      if (response.ok || response.status === 200 || response.status === 202) {
+        logger.seo.info(`IndexNow: Submitted ${urls.length} URLs successfully`);
+        res.json({ success: true, submitted: urls.length });
+      } else {
+        const errorText = await response.text();
+        logger.seo.error(`IndexNow submission failed: ${response.status}`, { error: errorText });
+        res.status(response.status).json({ 
+          success: false, 
+          error: `IndexNow API returned ${response.status}: ${errorText}` 
+        });
+      }
+    } catch (error) {
+      logger.seo.error("IndexNow submission error", { error: String(error) });
+      res.status(500).json({ error: "Failed to submit to IndexNow" });
+    }
+  });
+
   console.log("[SEORoutes] Registered SEO validation endpoints at /api/seo/*");
+  console.log("[SEORoutes] IndexNow endpoint available at POST /api/seo/indexnow");
 }
