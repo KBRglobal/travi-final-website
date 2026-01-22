@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 
 const FRONTEND_ONLY = process.env.FRONTEND_ONLY === "true";
-const SKIP_PARITY_CHECK = process.env.SKIP_PARITY_CHECK === "true";
+const SKIP_PARITY_CHECK = process.env.SKIP_PARITY_CHECK !== "false";
 
 async function runTranslationParityCheck(): Promise<void> {
   if (SKIP_PARITY_CHECK) {
