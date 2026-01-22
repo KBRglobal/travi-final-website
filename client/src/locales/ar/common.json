@@ -59,17 +59,17 @@
       "headlinePart1": "مصدرك الموثوق",
       "headlinePart2": "للسفر",
       "description": "معلومات سفر شاملة لـ {{destinations}} وجهة حول العالم. اكتشف أدلة مفصلة لأكثر من {{attractions}} معلم سياحي.",
-      "descriptionPart1": "[NEEDS_TRANSLATION] Comprehensive travel information for",
-      "descriptionPart2": "[NEEDS_TRANSLATION] destinations worldwide. Discover detailed guides for",
-      "descriptionPart3": "[NEEDS_TRANSLATION] attractions.",
+      "descriptionPart1": "معلومات سفر شاملة لـ",
+      "descriptionPart2": "وجهة حول العالم. اكتشف أدلة مفصلة لـ",
+      "descriptionPart3": "معلم سياحي.",
       "carouselLabel": "التنقل في شريط الوجهات",
       "viewDestination": "عرض {{name}} - {{tagline}}",
-      "worldwide": "[NEEDS_TRANSLATION] Worldwide",
-      "exploreWorld": "[NEEDS_TRANSLATION] Explore the World",
-      "welcomeAriaLabel": "[NEEDS_TRANSLATION] Welcome to TRAVI World",
-      "pageTitle": "[NEEDS_TRANSLATION] TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
-      "pageDescription": "[NEEDS_TRANSLATION] Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
-      "orgDescription": "[NEEDS_TRANSLATION] Your trusted travel resource for 17 destinations worldwide."
+      "worldwide": "عالمياً",
+      "exploreWorld": "استكشف العالم",
+      "welcomeAriaLabel": "مرحباً بك في ترافي العالمية",
+      "pageTitle": "ترافي العالمية - أدلة السفر للفنادق والمعالم والأنشطة",
+      "pageDescription": "دليل السفر الشامل لـ 17 وجهة حول العالم. معلومات متخصصة عن الفنادق والمعالم والمطاعم والأنشطة لأكثر من 3,000 مكان.",
+      "orgDescription": "مصدرك الموثوق للسفر إلى 17 وجهة حول العالم."
     },
     "srLabel": {
       "attractions": "أكثر من {{count}} معلم سياحي مغطى",
@@ -92,65 +92,65 @@
       "faqDesc": "كل ما تحتاج معرفته عن TRAVI",
       "regions": "استكشف حسب المنطقة",
       "newsletter": "ابقَ على اطلاع",
-      "allDestinationsTitle": "[NEEDS_TRANSLATION] Travel Guides for All {{count}} Destinations",
-      "completeGuide": "[NEEDS_TRANSLATION] {{name}}, {{country}} - Complete Travel Guide"
+      "allDestinationsTitle": "أدلة السفر لجميع الـ {{count}} وجهة",
+      "completeGuide": "{{name}}، {{country}} - دليل السفر الشامل"
     },
     "cta": {
       "exploreDestinations": "استكشف جميع الوجهات",
-      "viewGuides": "[NEEDS_TRANSLATION] View Guides",
+      "viewGuides": "عرض الأدلة",
       "viewAll": "عرض الكل",
       "startExploring": "ابدأ الاستكشاف",
       "planTrip": "خطط لرحلتك",
-      "viewExperience": "[NEEDS_TRANSLATION] View {{name}}"
+      "viewExperience": "عرض {{name}}"
     },
     "stats": {
       "destinations": "وجهة",
       "attractions": "معلم سياحي",
       "languages": "لغة",
-      "attractionsNum": "[NEEDS_TRANSLATION] 3,000+",
-      "destinationsNum": "[NEEDS_TRANSLATION] 16",
-      "languagesNum": "[NEEDS_TRANSLATION] 17+",
-      "destinationsCountWithLabel": "[NEEDS_TRANSLATION] {{count}} destinations",
-      "attractionsCountWithLabel": "[NEEDS_TRANSLATION] {{count}}+ attractions"
+      "attractionsNum": "+3,000",
+      "destinationsNum": "16",
+      "languagesNum": "+17",
+      "destinationsCountWithLabel": "{{count}} وجهة",
+      "attractionsCountWithLabel": "+{{count}} معلم سياحي"
     },
     "categories": {
-      "attractions": "[NEEDS_TRANSLATION] Attractions",
-      "attractionsDesc": "[NEEDS_TRANSLATION] Must-see places",
-      "news": "[NEEDS_TRANSLATION] Travel News",
-      "newsDesc": "[NEEDS_TRANSLATION] Latest updates",
-      "guides": "[NEEDS_TRANSLATION] Guides",
-      "guidesDesc": "[NEEDS_TRANSLATION] Destination guides",
-      "hotels": "[NEEDS_TRANSLATION] Hotels",
-      "hotelsDesc": "[NEEDS_TRANSLATION] Find your perfect stay"
+      "attractions": "معالم سياحية",
+      "attractionsDesc": "أماكن يجب زيارتها",
+      "news": "أخبار السفر",
+      "newsDesc": "آخر التحديثات",
+      "guides": "الأدلة",
+      "guidesDesc": "أدلة الوجهات",
+      "hotels": "فنادق",
+      "hotelsDesc": "اعثر على إقامتك المثالية"
     },
     "experiences": {
-      "luxury": "[NEEDS_TRANSLATION] Luxury Travel",
-      "luxuryDesc": "[NEEDS_TRANSLATION] Premium travel experiences and exclusive destinations",
-      "adventure": "[NEEDS_TRANSLATION] Adventure & Outdoors",
-      "adventureDesc": "[NEEDS_TRANSLATION] Thrilling outdoor experiences and adventures",
-      "family": "[NEEDS_TRANSLATION] Family Travel",
-      "familyDesc": "[NEEDS_TRANSLATION] Family-friendly destinations and activities",
-      "budget": "[NEEDS_TRANSLATION] Budget Travel",
-      "budgetDesc": "[NEEDS_TRANSLATION] Affordable travel options and destinations",
-      "romance": "[NEEDS_TRANSLATION] Honeymoon & Romance",
-      "romanceDesc": "[NEEDS_TRANSLATION] Romantic getaways and honeymoon destinations",
-      "solo": "[NEEDS_TRANSLATION] Solo Travel",
-      "soloDesc": "[NEEDS_TRANSLATION] Perfect destinations for solo travelers"
+      "luxury": "السفر الفاخر",
+      "luxuryDesc": "تجارب سفر متميزة ووجهات حصرية",
+      "adventure": "المغامرة والطبيعة",
+      "adventureDesc": "تجارب مثيرة في الهواء الطلق ومغامرات شيقة",
+      "family": "السفر العائلي",
+      "familyDesc": "وجهات وأنشطة مناسبة للعائلات",
+      "budget": "السفر الاقتصادي",
+      "budgetDesc": "خيارات سفر ميسورة التكلفة ووجهات اقتصادية",
+      "romance": "شهر العسل والرومانسية",
+      "romanceDesc": "إجازات رومانسية ووجهات شهر العسل",
+      "solo": "السفر الفردي",
+      "soloDesc": "وجهات مثالية للمسافرين المنفردين"
     },
     "faq": {
-      "title": "[NEEDS_TRANSLATION] Frequently Asked Questions",
-      "subtitle": "[NEEDS_TRANSLATION] Everything you need to know about TRAVI World",
-      "whatIsTravi": "[NEEDS_TRANSLATION] What is TRAVI World?",
-      "whatIsTraviAnswer": "[NEEDS_TRANSLATION] TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
-      "howManyDestinations": "[NEEDS_TRANSLATION] How many destinations does TRAVI cover?",
-      "howManyDestinationsAnswer": "[NEEDS_TRANSLATION] TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
-      "isFree": "[NEEDS_TRANSLATION] Is TRAVI World free to use?",
-      "isFreeAnswer": "[NEEDS_TRANSLATION] Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-      "updateFrequency": "[NEEDS_TRANSLATION] How often is content updated?",
-      "updateFrequencyAnswer": "[NEEDS_TRANSLATION] TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
+      "title": "الأسئلة الشائعة",
+      "subtitle": "كل ما تحتاج معرفته عن ترافي العالمية",
+      "whatIsTravi": "ما هي ترافي العالمية؟",
+      "whatIsTraviAnswer": "ترافي العالمية هي منصة معلومات سفر شاملة تغطي 17 وجهة حول العالم مع أدلة مفصلة لأكثر من 3,000 معلم سياحي وفندق ومطعم ونشاط.",
+      "howManyDestinations": "كم عدد الوجهات التي يغطيها ترافي؟",
+      "howManyDestinationsAnswer": "يغطي ترافي العالمية 17 وجهة سفر رئيسية تشمل دبي وباريس وطوكيو ونيويورك وبرشلونة وسنغافورة ولندن وبانكوك وأبوظبي وأمستردام وهونغ كونغ وإسطنبول ولاس فيغاس ولوس أنجلوس وميامي وروما.",
+      "isFree": "هل استخدام ترافي العالمية مجاني؟",
+      "isFreeAnswer": "نعم، استخدام ترافي العالمية مجاني تماماً. تصفح آلاف أدلة السفر ومراجعات المعالم وتوصيات الفنادق واقتراحات المطاعم بدون أي تكلفة.",
+      "updateFrequency": "ما هي وتيرة تحديث المحتوى؟",
+      "updateFrequencyAnswer": "يتم تحديث محتوى ترافي العالمية يومياً مع آخر أخبار السفر ومراجعات المعالم الجديدة والمعلومات المحدثة عن الفنادق والمطاعم في جميع الوجهات الـ 17."
     },
-    "mascotAlt": "[NEEDS_TRANSLATION] TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
-    "mascotTitle": "[NEEDS_TRANSLATION] TRAVI World - Travel Guides for Global Destinations"
+    "mascotAlt": "شعار ترافي مع معالم عالمية - استكشف أدلة السفر لدبي وباريس ولندن وروما والمزيد",
+    "mascotTitle": "ترافي العالمية - أدلة السفر للوجهات العالمية"
   },
   "attractions": {
     "title": "معالم دبي السياحية",
@@ -307,84 +307,84 @@
   "destinations": {
     "cities": {
       "dubai": {
-        "name": "[NEEDS_TRANSLATION] Dubai",
-        "country": "[NEEDS_TRANSLATION] UAE",
-        "cardAlt": "[NEEDS_TRANSLATION] Dubai skyline with Burj Khalifa tower at sunset"
+        "name": "دبي",
+        "country": "الإمارات",
+        "cardAlt": "أفق دبي مع برج خليفة عند غروب الشمس"
       },
       "london": {
-        "name": "[NEEDS_TRANSLATION] London",
-        "country": "[NEEDS_TRANSLATION] UK",
-        "cardAlt": "[NEEDS_TRANSLATION] London Big Ben and Houses of Parliament"
+        "name": "لندن",
+        "country": "المملكة المتحدة",
+        "cardAlt": "ساعة بيغ بن ومبنى البرلمان في لندن"
       },
       "paris": {
-        "name": "[NEEDS_TRANSLATION] Paris",
-        "country": "[NEEDS_TRANSLATION] France",
-        "cardAlt": "[NEEDS_TRANSLATION] Paris Eiffel Tower illuminated at sunset"
+        "name": "باريس",
+        "country": "فرنسا",
+        "cardAlt": "برج إيفل في باريس مضاء عند غروب الشمس"
       },
       "newYork": {
-        "name": "[NEEDS_TRANSLATION] New York",
-        "country": "[NEEDS_TRANSLATION] USA",
-        "cardAlt": "[NEEDS_TRANSLATION] New York Manhattan skyline with Empire State Building"
+        "name": "نيويورك",
+        "country": "الولايات المتحدة",
+        "cardAlt": "أفق مانهاتن في نيويورك مع مبنى إمباير ستيت"
       },
       "tokyo": {
-        "name": "[NEEDS_TRANSLATION] Tokyo",
-        "country": "[NEEDS_TRANSLATION] Japan",
-        "cardAlt": "[NEEDS_TRANSLATION] Tokyo Shibuya crossing neon lights at night"
+        "name": "طوكيو",
+        "country": "اليابان",
+        "cardAlt": "تقاطع شيبويا في طوكيو مع أضواء النيون ليلاً"
       },
       "singapore": {
-        "name": "[NEEDS_TRANSLATION] Singapore",
-        "country": "[NEEDS_TRANSLATION] Singapore",
-        "cardAlt": "[NEEDS_TRANSLATION] Singapore Marina Bay Sands and Gardens by the Bay"
+        "name": "سنغافورة",
+        "country": "سنغافورة",
+        "cardAlt": "مارينا باي ساندز وحدائق الخليج في سنغافورة"
       },
       "barcelona": {
-        "name": "[NEEDS_TRANSLATION] Barcelona",
-        "country": "[NEEDS_TRANSLATION] Spain",
-        "cardAlt": "[NEEDS_TRANSLATION] Barcelona Sagrada Familia at golden hour"
+        "name": "برشلونة",
+        "country": "إسبانيا",
+        "cardAlt": "كنيسة ساغرادا فاميليا في برشلونة عند الساعة الذهبية"
       },
       "bangkok": {
-        "name": "[NEEDS_TRANSLATION] Bangkok",
-        "country": "[NEEDS_TRANSLATION] Thailand",
-        "cardAlt": "[NEEDS_TRANSLATION] Bangkok Grand Palace temple at sunrise"
+        "name": "بانكوك",
+        "country": "تايلاند",
+        "cardAlt": "معبد القصر الكبير في بانكوك عند شروق الشمس"
       },
       "abuDhabi": {
-        "name": "[NEEDS_TRANSLATION] Abu Dhabi",
-        "country": "[NEEDS_TRANSLATION] UAE",
-        "cardAlt": "[NEEDS_TRANSLATION] Abu Dhabi Sheikh Zayed Grand Mosque"
+        "name": "أبوظبي",
+        "country": "الإمارات",
+        "cardAlt": "جامع الشيخ زايد الكبير في أبوظبي"
       },
       "amsterdam": {
-        "name": "[NEEDS_TRANSLATION] Amsterdam",
-        "country": "[NEEDS_TRANSLATION] Netherlands",
-        "cardAlt": "[NEEDS_TRANSLATION] Amsterdam canal with historic buildings"
+        "name": "أمستردام",
+        "country": "هولندا",
+        "cardAlt": "قنوات أمستردام مع المباني التاريخية"
       },
       "hongKong": {
-        "name": "[NEEDS_TRANSLATION] Hong Kong",
-        "country": "[NEEDS_TRANSLATION] China",
-        "cardAlt": "[NEEDS_TRANSLATION] Hong Kong skyline at night"
+        "name": "هونغ كونغ",
+        "country": "الصين",
+        "cardAlt": "أفق هونغ كونغ ليلاً"
       },
       "istanbul": {
-        "name": "[NEEDS_TRANSLATION] Istanbul",
-        "country": "[NEEDS_TRANSLATION] Turkey",
-        "cardAlt": "[NEEDS_TRANSLATION] Istanbul Blue Mosque at sunset"
+        "name": "إسطنبول",
+        "country": "تركيا",
+        "cardAlt": "المسجد الأزرق في إسطنبول عند غروب الشمس"
       },
       "lasVegas": {
-        "name": "[NEEDS_TRANSLATION] Las Vegas",
-        "country": "[NEEDS_TRANSLATION] USA",
-        "cardAlt": "[NEEDS_TRANSLATION] Las Vegas Strip at night"
+        "name": "لاس فيغاس",
+        "country": "الولايات المتحدة",
+        "cardAlt": "شارع لاس فيغاس ستريب ليلاً"
       },
       "losAngeles": {
-        "name": "[NEEDS_TRANSLATION] Los Angeles",
-        "country": "[NEEDS_TRANSLATION] USA",
-        "cardAlt": "[NEEDS_TRANSLATION] Los Angeles Hollywood sign"
+        "name": "لوس أنجلوس",
+        "country": "الولايات المتحدة",
+        "cardAlt": "لافتة هوليوود في لوس أنجلوس"
       },
       "miami": {
-        "name": "[NEEDS_TRANSLATION] Miami",
-        "country": "[NEEDS_TRANSLATION] USA",
-        "cardAlt": "[NEEDS_TRANSLATION] Miami Beach Art Deco district"
+        "name": "ميامي",
+        "country": "الولايات المتحدة",
+        "cardAlt": "حي آرت ديكو في شاطئ ميامي"
       },
       "rome": {
-        "name": "[NEEDS_TRANSLATION] Rome",
-        "country": "[NEEDS_TRANSLATION] Italy",
-        "cardAlt": "[NEEDS_TRANSLATION] Rome Colosseum at golden hour"
+        "name": "روما",
+        "country": "إيطاليا",
+        "cardAlt": "الكولوسيوم في روما عند الساعة الذهبية"
       }
     },
     "hero": {
@@ -559,32 +559,32 @@
     }
   },
   "newsletter": {
-    "badge": "[NEEDS_TRANSLATION] Join the Adventure",
-    "title": "[NEEDS_TRANSLATION] Get Travel Magic in Your Inbox",
-    "description": "[NEEDS_TRANSLATION] Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
-    "emailPlaceholder": "[NEEDS_TRANSLATION] your@email.com",
-    "subscribe": "[NEEDS_TRANSLATION] Subscribe",
-    "success": "[NEEDS_TRANSLATION] You're subscribed! Check your inbox."
+    "badge": "انضم للمغامرة",
+    "title": "احصل على سحر السفر في بريدك",
+    "description": "نصائح أسبوعية وجواهر مخفية وعروض حصرية - بدون إزعاج، فقط شغف السفر.",
+    "emailPlaceholder": "بريدك@الإلكتروني.com",
+    "subscribe": "اشترك",
+    "success": "تم الاشتراك! تحقق من بريدك الوارد."
   },
   "cookies": {
-    "title": "[NEEDS_TRANSLATION] We value your privacy",
-    "description": "[NEEDS_TRANSLATION] We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
-    "manage": "[NEEDS_TRANSLATION] Manage",
-    "rejectAll": "[NEEDS_TRANSLATION] Reject All",
-    "acceptAll": "[NEEDS_TRANSLATION] Accept All",
-    "preferencesTitle": "[NEEDS_TRANSLATION] Cookie Preferences",
-    "savePreferences": "[NEEDS_TRANSLATION] Save Preferences",
+    "title": "نحن نقدر خصوصيتك",
+    "description": "نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح وتحليل حركة الموقع وتخصيص المحتوى. بالنقر على \"قبول الكل\"، فإنك توافق على استخدامنا لملفات تعريف الارتباط.",
+    "manage": "إدارة",
+    "rejectAll": "رفض الكل",
+    "acceptAll": "قبول الكل",
+    "preferencesTitle": "تفضيلات ملفات تعريف الارتباط",
+    "savePreferences": "حفظ التفضيلات",
     "essential": {
-      "title": "[NEEDS_TRANSLATION] Essential Cookies",
-      "description": "[NEEDS_TRANSLATION] Required for the website to function properly"
+      "title": "ملفات تعريف الارتباط الأساسية",
+      "description": "مطلوبة لكي يعمل الموقع بشكل صحيح"
     },
     "analytics": {
-      "title": "[NEEDS_TRANSLATION] Analytics Cookies",
-      "description": "[NEEDS_TRANSLATION] Help us understand how visitors interact with our website"
+      "title": "ملفات تعريف الارتباط التحليلية",
+      "description": "تساعدنا على فهم كيفية تفاعل الزوار مع موقعنا"
     },
     "marketing": {
-      "title": "[NEEDS_TRANSLATION] Marketing Cookies",
-      "description": "[NEEDS_TRANSLATION] Used to deliver personalized advertisements"
+      "title": "ملفات تعريف الارتباط التسويقية",
+      "description": "تُستخدم لتقديم إعلانات مخصصة"
     }
   },
   "meta": {
@@ -607,231 +607,231 @@
   },
   "guides": {
     "hero": {
-      "categoryLabel": "[NEEDS_TRANSLATION] Travel Intelligence",
-      "headlinePart1": "[NEEDS_TRANSLATION] Stories That",
-      "headlinePart2": "[NEEDS_TRANSLATION] Move You",
-      "description": "[NEEDS_TRANSLATION] Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
-      "startJourney": "[NEEDS_TRANSLATION] Start Your Journey",
-      "browseCollection": "[NEEDS_TRANSLATION] Browse Collection",
-      "issueBadge": "[NEEDS_TRANSLATION] Issue 47 — Winter 2026"
+      "categoryLabel": "ذكاء السفر",
+      "headlinePart1": "قصص",
+      "headlinePart2": "تحركك",
+      "description": "أدلة مُعدة بخبرة ورؤى محلية وسرديات تحريرية تُغير طريقة تجربتك للعالم.",
+      "startJourney": "ابدأ رحلتك",
+      "browseCollection": "تصفح المجموعة",
+      "issueBadge": "العدد 47 — شتاء 2026"
     },
     "stats": {
-      "guides": "[NEEDS_TRANSLATION] Travel Guides",
-      "destinations": "[NEEDS_TRANSLATION] Destinations",
-      "languages": "[NEEDS_TRANSLATION] Languages"
+      "guides": "أدلة السفر",
+      "destinations": "الوجهات",
+      "languages": "اللغات"
     },
     "journey": {
-      "badge": "[NEEDS_TRANSLATION] Your Journey, Our Guidance",
-      "title": "[NEEDS_TRANSLATION] Every Great Trip Begins with a Guide",
-      "subtitle": "[NEEDS_TRANSLATION] From dreaming to sharing, we're with you at every step"
+      "badge": "رحلتك، إرشادنا",
+      "title": "كل رحلة رائعة تبدأ بدليل",
+      "subtitle": "من الحلم إلى المشاركة، نحن معك في كل خطوة"
     },
     "ideaLab": {
-      "badge": "[NEEDS_TRANSLATION] Idea Lab",
-      "title": "[NEEDS_TRANSLATION] Curated Inspiration",
-      "readGuide": "[NEEDS_TRANSLATION] Read Guide"
+      "badge": "مختبر الأفكار",
+      "title": "إلهام مُنتقى",
+      "readGuide": "اقرأ الدليل"
     },
     "archetype": {
-      "badge": "[NEEDS_TRANSLATION] Personalized for You",
-      "title": "[NEEDS_TRANSLATION] What Kind of Traveler Are You?",
-      "subtitle": "[NEEDS_TRANSLATION] Select your travel style and discover guides curated just for you",
-      "viewGuides": "[NEEDS_TRANSLATION] View {{type}} Guides"
+      "badge": "مخصص لك",
+      "title": "ما نوع المسافر أنت؟",
+      "subtitle": "اختر أسلوب سفرك واكتشف أدلة مُنتقاة خصيصاً لك",
+      "viewGuides": "عرض أدلة {{type}}"
     },
     "archetypes": {
       "adventure": {
-        "name": "[NEEDS_TRANSLATION] Adventure Seeker",
-        "description": "[NEEDS_TRANSLATION] Thrilling experiences and adrenaline rushes"
+        "name": "باحث عن المغامرة",
+        "description": "تجارب مثيرة واندفاع الأدرينالين"
       },
       "culture": {
-        "name": "[NEEDS_TRANSLATION] Culture Explorer",
-        "description": "[NEEDS_TRANSLATION] Art, history, and local traditions"
+        "name": "مستكشف الثقافة",
+        "description": "الفن والتاريخ والتقاليد المحلية"
       },
       "relaxation": {
-        "name": "[NEEDS_TRANSLATION] Relaxation Guru",
-        "description": "[NEEDS_TRANSLATION] Wellness retreats and peaceful escapes"
+        "name": "خبير الاسترخاء",
+        "description": "منتجعات العافية والملاذات الهادئة"
       },
       "foodie": {
-        "name": "[NEEDS_TRANSLATION] Culinary Nomad",
-        "description": "[NEEDS_TRANSLATION] Local flavors and gastronomic adventures"
+        "name": "رحالة الطعام",
+        "description": "النكهات المحلية ومغامرات الذواقة"
       },
       "wellness": {
-        "name": "[NEEDS_TRANSLATION] Wellness Seeker",
-        "description": "[NEEDS_TRANSLATION] Relaxation, spas, and mindful retreats"
+        "name": "باحث عن العافية",
+        "description": "الاسترخاء والسبا والملاذات الواعية"
       },
       "budget": {
-        "name": "[NEEDS_TRANSLATION] Smart Traveler",
-        "description": "[NEEDS_TRANSLATION] Maximum experience, minimal budget"
+        "name": "المسافر الذكي",
+        "description": "أقصى تجربة، أقل ميزانية"
       },
       "solo": {
-        "name": "[NEEDS_TRANSLATION] Solo Explorer",
-        "description": "[NEEDS_TRANSLATION] Independent journeys and self-discovery"
+        "name": "المستكشف المنفرد",
+        "description": "رحلات مستقلة واكتشاف الذات"
       },
       "luxury": {
-        "name": "[NEEDS_TRANSLATION] Luxury Connoisseur",
-        "description": "[NEEDS_TRANSLATION] Premium experiences and fine living"
+        "name": "خبير الفخامة",
+        "description": "تجارب متميزة وحياة راقية"
       }
     },
     "milestones": {
       "dream": {
-        "title": "[NEEDS_TRANSLATION] Dream",
-        "subtitle": "[NEEDS_TRANSLATION] Discover inspiration",
-        "guides": ["[NEEDS_TRANSLATION] Destination Guides", "[NEEDS_TRANSLATION] Photo Essays"]
+        "title": "احلم",
+        "subtitle": "اكتشف الإلهام",
+        "guides": ["أدلة الوجهات", "مقالات مصورة"]
       },
       "plan": {
-        "title": "[NEEDS_TRANSLATION] Plan",
-        "subtitle": "[NEEDS_TRANSLATION] Map your journey",
-        "guides": ["[NEEDS_TRANSLATION] Trip Planning", "[NEEDS_TRANSLATION] Visa Requirements"]
+        "title": "خطط",
+        "subtitle": "ارسم رحلتك",
+        "guides": ["تخطيط الرحلة", "متطلبات التأشيرة"]
       },
       "prepare": {
-        "title": "[NEEDS_TRANSLATION] Prepare",
-        "subtitle": "[NEEDS_TRANSLATION] Get ready to go",
-        "guides": ["[NEEDS_TRANSLATION] Packing Lists", "[NEEDS_TRANSLATION] Safety Tips"]
+        "title": "استعد",
+        "subtitle": "جهز نفسك للانطلاق",
+        "guides": ["قوائم التعبئة", "نصائح الأمان"]
       },
       "experience": {
-        "title": "[NEEDS_TRANSLATION] Experience",
-        "subtitle": "[NEEDS_TRANSLATION] Live the adventure",
-        "guides": ["[NEEDS_TRANSLATION] Local Insights", "[NEEDS_TRANSLATION] Hidden Gems"]
+        "title": "جرب",
+        "subtitle": "عش المغامرة",
+        "guides": ["رؤى محلية", "جواهر مخفية"]
       },
       "share": {
-        "title": "[NEEDS_TRANSLATION] Share",
-        "subtitle": "[NEEDS_TRANSLATION] Tell your story",
-        "guides": ["[NEEDS_TRANSLATION] Travel Writing", "[NEEDS_TRANSLATION] Photography"]
+        "title": "شارك",
+        "subtitle": "احكِ قصتك",
+        "guides": ["كتابة السفر", "التصوير"]
       }
     },
     "categories": {
-      "weekendEscapes": "[NEEDS_TRANSLATION] Weekend Escapes",
-      "offBeatenPath": "[NEEDS_TRANSLATION] Off the Beaten Path",
-      "smartTravel": "[NEEDS_TRANSLATION] Smart Travel",
-      "bucketList": "[NEEDS_TRANSLATION] Bucket List",
-      "culinary": "[NEEDS_TRANSLATION] Culinary",
-      "natureWonder": "[NEEDS_TRANSLATION] Nature & Wonder"
+      "weekendEscapes": "إجازات نهاية الأسبوع",
+      "offBeatenPath": "بعيداً عن المألوف",
+      "smartTravel": "السفر الذكي",
+      "bucketList": "قائمة الأحلام",
+      "culinary": "الطهي",
+      "natureWonder": "الطبيعة والعجائب"
     },
     "seo": {
-      "title": "[NEEDS_TRANSLATION] Travel Guides | Expert Destination Insights",
-      "description": "[NEEDS_TRANSLATION] Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
+      "title": "أدلة السفر | رؤى متخصصة عن الوجهات",
+      "description": "اكتشف أدلة سفر متخصصة ورؤى عن الوجهات ونصائح من شبكتنا العالمية من كتّاب السفر. خطط لرحلتك المثالية اليوم."
     },
     "editorial": {
-      "badge": "[NEEDS_TRANSLATION] From Our Editors",
-      "title": "[NEEDS_TRANSLATION] Editorial Features",
-      "readFull": "[NEEDS_TRANSLATION] Read Full Essay"
+      "badge": "من محررينا",
+      "title": "مقالات تحريرية مميزة",
+      "readFull": "اقرأ المقال كاملاً"
     },
     "gallery": {
-      "badge": "[NEEDS_TRANSLATION] Visual Stories",
-      "title": "[NEEDS_TRANSLATION] Destinations That Inspire",
+      "badge": "قصص مرئية",
+      "title": "وجهات تُلهم",
       "categories": {
-        "city": "[NEEDS_TRANSLATION] City",
-        "mountains": "[NEEDS_TRANSLATION] Mountains",
-        "beach": "[NEEDS_TRANSLATION] Beach",
-        "safari": "[NEEDS_TRANSLATION] Safari",
-        "nature": "[NEEDS_TRANSLATION] Nature"
+        "city": "المدينة",
+        "mountains": "الجبال",
+        "beach": "الشاطئ",
+        "safari": "السفاري",
+        "nature": "الطبيعة"
       }
     },
     "writers": {
-      "badge": "[NEEDS_TRANSLATION] Expert Voices",
-      "title": "[NEEDS_TRANSLATION] Meet Our Writers",
-      "subtitle": "[NEEDS_TRANSLATION] The expert voices behind our most trusted travel guides",
-      "articleCount": "[NEEDS_TRANSLATION] {{count}} Articles",
-      "viewProfile": "[NEEDS_TRANSLATION] View Profile"
+      "badge": "أصوات الخبراء",
+      "title": "تعرف على كتّابنا",
+      "subtitle": "الأصوات الخبيرة وراء أدلة السفر الأكثر موثوقية لدينا",
+      "articleCount": "{{count}} مقال",
+      "viewProfile": "عرض الملف الشخصي"
     },
     "map": {
-      "badge": "[NEEDS_TRANSLATION] Explore by Region",
-      "title": "[NEEDS_TRANSLATION] Guides Around the World",
-      "subtitle": "[NEEDS_TRANSLATION] Click any destination to discover our expert coverage",
-      "guidesAvailable": "[NEEDS_TRANSLATION] {{count}} guides available",
-      "legendDestination": "[NEEDS_TRANSLATION] Destination",
-      "legendHighlighted": "[NEEDS_TRANSLATION] Highlighted"
+      "badge": "استكشف حسب المنطقة",
+      "title": "أدلة حول العالم",
+      "subtitle": "انقر على أي وجهة لاكتشاف تغطيتنا المتخصصة",
+      "guidesAvailable": "{{count}} دليل متاح",
+      "legendDestination": "الوجهة",
+      "legendHighlighted": "مُميز"
     },
     "newsletter": {
-      "badge": "[NEEDS_TRANSLATION] Join the Journey",
-      "title": "[NEEDS_TRANSLATION] Travel Stories, Weekly",
-      "description": "[NEEDS_TRANSLATION] Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
-      "placeholder": "[NEEDS_TRANSLATION] Enter your email",
-      "subscribe": "[NEEDS_TRANSLATION] Subscribe",
-      "subscribing": "[NEEDS_TRANSLATION] Subscribing...",
-      "joinCount": "[NEEDS_TRANSLATION] Join 50,000+ travelers who read our weekly digest",
-      "invalidEmail": "[NEEDS_TRANSLATION] Please enter a valid email",
-      "successTitle": "[NEEDS_TRANSLATION] Welcome to the journey!",
-      "successDesc": "[NEEDS_TRANSLATION] You're now subscribed to our editorial digest."
+      "badge": "انضم للرحلة",
+      "title": "قصص سفر أسبوعية",
+      "description": "إلهام سفر مُنتقى ونصائح متخصصة ورؤى محلية تصل إلى بريدك كل أسبوع.",
+      "placeholder": "أدخل بريدك الإلكتروني",
+      "subscribe": "اشترك",
+      "subscribing": "جاري الاشتراك...",
+      "joinCount": "انضم لأكثر من 50,000 مسافر يقرؤون ملخصنا الأسبوعي",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صالح",
+      "successTitle": "مرحباً بك في الرحلة!",
+      "successDesc": "أنت الآن مشترك في ملخصنا التحريري."
     }
   },
   "news": {
     "time": {
-      "recent": "[NEEDS_TRANSLATION] Recent",
-      "justNow": "[NEEDS_TRANSLATION] Just now",
-      "minutesAgo": "[NEEDS_TRANSLATION] {{count}}m ago",
-      "hoursAgo": "[NEEDS_TRANSLATION] {{count}}h ago",
-      "daysAgo": "[NEEDS_TRANSLATION] {{count}}d ago",
-      "minRead": "[NEEDS_TRANSLATION] {{count}} min read"
+      "recent": "حديث",
+      "justNow": "الآن",
+      "minutesAgo": "منذ {{count}} دقيقة",
+      "hoursAgo": "منذ {{count}} ساعة",
+      "daysAgo": "منذ {{count}} يوم",
+      "minRead": "{{count}} دقيقة قراءة"
     },
     "header": {
-      "title": "[NEEDS_TRANSLATION] TRAVI NEWS",
-      "edition": "[NEEDS_TRANSLATION] International Edition",
-      "subscribe": "[NEEDS_TRANSLATION] Subscribe"
+      "title": "أخبار ترافي",
+      "edition": "الطبعة الدولية",
+      "subscribe": "اشترك"
     },
     "breaking": {
-      "label": "[NEEDS_TRANSLATION] Breaking"
+      "label": "عاجل"
     },
     "search": {
-      "placeholder": "[NEEDS_TRANSLATION] Search worldwide news...",
-      "button": "[NEEDS_TRANSLATION] Search",
-      "title": "[NEEDS_TRANSLATION] Search",
-      "searching": "[NEEDS_TRANSLATION] Searching for \"{{query}}\"..."
+      "placeholder": "ابحث في الأخبار العالمية...",
+      "button": "بحث",
+      "title": "بحث",
+      "searching": "جاري البحث عن \"{{query}}\"..."
     },
     "categories": {
-      "all": "[NEEDS_TRANSLATION] All News",
-      "world": "[NEEDS_TRANSLATION] World",
-      "business": "[NEEDS_TRANSLATION] Business",
-      "culture": "[NEEDS_TRANSLATION] Culture",
-      "travel": "[NEEDS_TRANSLATION] Travel",
-      "tech": "[NEEDS_TRANSLATION] Tech",
-      "opinion": "[NEEDS_TRANSLATION] Opinion"
+      "all": "جميع الأخبار",
+      "world": "العالم",
+      "business": "الأعمال",
+      "culture": "الثقافة",
+      "travel": "السفر",
+      "tech": "التقنية",
+      "opinion": "رأي"
     },
     "empty": {
-      "title": "[NEEDS_TRANSLATION] No News Articles Yet",
-      "description": "[NEEDS_TRANSLATION] We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
-      "exploreDestinations": "[NEEDS_TRANSLATION] Explore Destinations",
-      "viewGuides": "[NEEDS_TRANSLATION] View Travel Guides"
+      "title": "لا توجد مقالات إخبارية بعد",
+      "description": "نعمل على تقديم أحدث أخبار السفر والرؤى لك. تحقق قريباً للحصول على تحديثات من جميع أنحاء العالم.",
+      "exploreDestinations": "استكشف الوجهات",
+      "viewGuides": "عرض أدلة السفر"
     },
     "hero": {
-      "topStory": "[NEEDS_TRANSLATION] Top Story",
-      "editorialTeam": "[NEEDS_TRANSLATION] Editorial Team"
+      "topStory": "القصة الرئيسية",
+      "editorialTeam": "فريق التحرير"
     },
-    "views": "[NEEDS_TRANSLATION] {{count}} views",
-    "viewAll": "[NEEDS_TRANSLATION] View All",
+    "views": "{{count}} مشاهدة",
+    "viewAll": "عرض الكل",
     "seo": {
-      "title": "[NEEDS_TRANSLATION] Travel News | Latest Stories & Updates",
-      "description": "[NEEDS_TRANSLATION] Stay informed with the latest travel news, destination updates, and industry insights from around the world."
+      "title": "أخبار السفر | أحدث القصص والتحديثات",
+      "description": "ابقَ على اطلاع مع أحدث أخبار السفر وتحديثات الوجهات ورؤى الصناعة من جميع أنحاء العالم."
     },
     "sidebar": {
-      "alsoToday": "[NEEDS_TRANSLATION] Also Today",
-      "storiesCount": "[NEEDS_TRANSLATION] {{count}} stories",
-      "liveUpdates": "[NEEDS_TRANSLATION] Live Updates",
-      "trendingTopics": "[NEEDS_TRANSLATION] Trending Topics",
-      "noTrending": "[NEEDS_TRANSLATION] No trending topics yet. Check back soon!"
+      "alsoToday": "أيضاً اليوم",
+      "storiesCount": "{{count}} قصة",
+      "liveUpdates": "تحديثات مباشرة",
+      "trendingTopics": "المواضيع الرائجة",
+      "noTrending": "لا توجد مواضيع رائجة بعد. تحقق لاحقاً!"
     },
     "sections": {
-      "topStories": "[NEEDS_TRANSLATION] Top Stories",
-      "opinion": "[NEEDS_TRANSLATION] Opinion & Analysis",
-      "moreOpinion": "[NEEDS_TRANSLATION] More Opinion",
-      "worldwide": "[NEEDS_TRANSLATION] Worldwide Coverage"
+      "topStories": "أهم القصص",
+      "opinion": "الرأي والتحليل",
+      "moreOpinion": "المزيد من الرأي",
+      "worldwide": "تغطية عالمية"
     },
     "worldwide": {
-      "title": "[NEEDS_TRANSLATION] Your Window to the World",
-      "subtitle": "[NEEDS_TRANSLATION] News from every corner of the globe",
-      "storiesCount": "[NEEDS_TRANSLATION] {{count}} stories",
-      "comingSoon": "[NEEDS_TRANSLATION] Coming soon"
+      "title": "نافذتك على العالم",
+      "subtitle": "أخبار من كل ركن من أركان العالم",
+      "storiesCount": "{{count}} قصة",
+      "comingSoon": "قريباً"
     },
     "newsletter": {
-      "title": "[NEEDS_TRANSLATION] Stay Informed",
-      "description": "[NEEDS_TRANSLATION] Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
-      "placeholder": "[NEEDS_TRANSLATION] Enter your email",
-      "subscribe": "[NEEDS_TRANSLATION] Subscribe Free",
-      "noSpam": "[NEEDS_TRANSLATION] No spam. Unsubscribe anytime.",
-      "successTitle": "[NEEDS_TRANSLATION] Subscribed!",
-      "successDesc": "[NEEDS_TRANSLATION] Please check your email to confirm your subscription.",
-      "errorTitle": "[NEEDS_TRANSLATION] Subscription failed",
-      "errorDesc": "[NEEDS_TRANSLATION] Please try again later.",
-      "invalidTitle": "[NEEDS_TRANSLATION] Invalid email",
-      "invalidDesc": "[NEEDS_TRANSLATION] Please enter a valid email address."
+      "title": "ابقَ على اطلاع",
+      "description": "احصل على أهم قصص اليوم في بريدك كل صباح. انضم لأكثر من 50,000 قارئ.",
+      "placeholder": "أدخل بريدك الإلكتروني",
+      "subscribe": "اشترك مجاناً",
+      "noSpam": "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت.",
+      "successTitle": "تم الاشتراك!",
+      "successDesc": "يرجى التحقق من بريدك الإلكتروني لتأكيد اشتراكك.",
+      "errorTitle": "فشل الاشتراك",
+      "errorDesc": "يرجى المحاولة مرة أخرى لاحقاً.",
+      "invalidTitle": "بريد إلكتروني غير صالح",
+      "invalidDesc": "يرجى إدخال عنوان بريد إلكتروني صالح."
     }
   },
   "pages": {
@@ -845,76 +845,76 @@
       "ctaExplore": "استكشف الوجهات",
       "ctaContact": "تواصل معنا",
       "stats": {
-        "destinations": "[NEEDS_TRANSLATION] Destinations",
-        "articles": "[NEEDS_TRANSLATION] Articles",
-        "support": "[NEEDS_TRANSLATION] Travel Support",
-        "coverage": "[NEEDS_TRANSLATION] Coverage",
-        "cities": "[NEEDS_TRANSLATION] 16+ Cities"
+        "destinations": "الوجهات",
+        "articles": "المقالات",
+        "support": "دعم السفر",
+        "coverage": "التغطية",
+        "cities": "+16 مدينة"
       },
       "whoWeAre": {
-        "title": "[NEEDS_TRANSLATION] Who We Are"
+        "title": "من نحن"
       },
       "mission": {
-        "title": "[NEEDS_TRANSLATION] Our Mission"
+        "title": "مهمتنا"
       },
       "services": {
-        "badge": "[NEEDS_TRANSLATION] Our Services",
-        "title": "[NEEDS_TRANSLATION] What We Offer"
+        "badge": "خدماتنا",
+        "title": "ما نقدمه"
       },
       "offerings": {
         "destinations": {
-          "title": "[NEEDS_TRANSLATION] Destination Guides",
-          "description": "[NEEDS_TRANSLATION] Comprehensive information about cities and regions around the world"
+          "title": "أدلة الوجهات",
+          "description": "معلومات شاملة عن المدن والمناطق حول العالم"
         },
         "attractions": {
-          "title": "[NEEDS_TRANSLATION] Attraction Information",
-          "description": "[NEEDS_TRANSLATION] Details about must-see sights and unique experiences"
+          "title": "معلومات المعالم",
+          "description": "تفاصيل عن المعالم التي يجب زيارتها والتجارب الفريدة"
         },
         "hotels": {
-          "title": "[NEEDS_TRANSLATION] Hotel Guides",
-          "description": "[NEEDS_TRANSLATION] Information about accommodation options for every budget"
+          "title": "أدلة الفنادق",
+          "description": "معلومات عن خيارات الإقامة لجميع الميزانيات"
         },
         "restaurants": {
-          "title": "[NEEDS_TRANSLATION] Restaurant Recommendations",
-          "description": "[NEEDS_TRANSLATION] Dining options for every taste and preference"
+          "title": "توصيات المطاعم",
+          "description": "خيارات طعام لكل ذوق وتفضيل"
         },
         "articles": {
-          "title": "[NEEDS_TRANSLATION] Travel Articles",
-          "description": "[NEEDS_TRANSLATION] Tips, insights, and travel inspiration"
+          "title": "مقالات السفر",
+          "description": "نصائح ورؤى وإلهام للسفر"
         },
         "news": {
-          "title": "[NEEDS_TRANSLATION] Latest Travel News",
-          "description": "[NEEDS_TRANSLATION] Stay informed with curated travel updates"
+          "title": "آخر أخبار السفر",
+          "description": "ابقَ على اطلاع مع تحديثات السفر المُنتقاة"
         }
       },
       "editorial": {
-        "title": "[NEEDS_TRANSLATION] Editorial Independence",
-        "affiliateTitle": "[NEEDS_TRANSLATION] Affiliate Disclosure"
+        "title": "الاستقلال التحريري",
+        "affiliateTitle": "إفصاح الشراكات"
       },
       "values": {
-        "badge": "[NEEDS_TRANSLATION] Our Foundation",
-        "title": "[NEEDS_TRANSLATION] Our Values",
+        "badge": "أساسنا",
+        "title": "قيمنا",
         "accuracy": {
-          "title": "[NEEDS_TRANSLATION] Accuracy",
-          "description": "[NEEDS_TRANSLATION] We strive to provide accurate and reliable information, regularly updating our contents"
+          "title": "الدقة",
+          "description": "نسعى لتقديم معلومات دقيقة وموثوقة، مع تحديث محتوانا بانتظام"
         },
         "transparency": {
-          "title": "[NEEDS_TRANSLATION] Transparency",
-          "description": "[NEEDS_TRANSLATION] We are clear about our affiliate relationships and how we operate"
+          "title": "الشفافية",
+          "description": "نحن واضحون بشأن علاقات الشراكة وكيفية عملنا"
         },
         "userFocused": {
-          "title": "[NEEDS_TRANSLATION] User-Focused",
-          "description": "[NEEDS_TRANSLATION] Our contents is designed to help travelers make informed decisions"
+          "title": "التركيز على المستخدم",
+          "description": "محتوانا مصمم لمساعدة المسافرين على اتخاذ قرارات مستنيرة"
         }
       },
       "connect": {
-        "badge": "[NEEDS_TRANSLATION] Let's Connect",
-        "title": "[NEEDS_TRANSLATION] Get in Touch"
+        "badge": "دعنا نتواصل",
+        "title": "تواصل معنا"
       },
       "company": {
-        "title": "[NEEDS_TRANSLATION] Company Information",
-        "contactTitle": "[NEEDS_TRANSLATION] Contact Information",
-        "contactForm": "[NEEDS_TRANSLATION] Contact Form"
+        "title": "معلومات الشركة",
+        "contactTitle": "معلومات الاتصال",
+        "contactForm": "نموذج الاتصال"
       }
     },
     "contact": {
@@ -933,78 +933,92 @@
       "importantNoteSubtitle": "يرجى القراءة قبل التواصل معنا",
       "ourOffice": "مكتبنا",
       "ourOfficeSubtitle": "للمراسلات الرسمية والاستفسارات البريدية",
-      "travelCompanion": "[NEEDS_TRANSLATION] Your travel companion",
-      "urgentNote": "[NEEDS_TRANSLATION] For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
-      "urgentLabel": "[NEEDS_TRANSLATION] Urgent",
+      "travelCompanion": "رفيقك في السفر",
+      "urgentNote": "للأمور العاجلة، يرجى تضمين {{urgentLabel}} في عنوان بريدك الإلكتروني. نعطي الأولوية للردود بناءً على طبيعة الاستفسار.",
+      "urgentLabel": "عاجل",
       "options": {
         "generalInquiries": {
-          "title": "[NEEDS_TRANSLATION] General Inquiries",
-          "description": "[NEEDS_TRANSLATION] Questions about our travel guides and contents"
+          "title": "استفسارات عامة",
+          "description": "أسئلة حول أدلة السفر والمحتوى"
         },
         "privacyInquiries": {
-          "title": "[NEEDS_TRANSLATION] Privacy Inquiries",
-          "description": "[NEEDS_TRANSLATION] Data access, deletion, and privacy requests"
+          "title": "استفسارات الخصوصية",
+          "description": "طلبات الوصول للبيانات والحذف والخصوصية"
         },
         "visitWebsite": {
-          "title": "[NEEDS_TRANSLATION] Visit Our Website",
-          "description": "[NEEDS_TRANSLATION] Explore destinations and travel inspiration"
+          "title": "زيارة الموقع",
+          "description": "تصفح خدماتنا عبر الإنترنت"
         },
-        "responseTime": {
-          "title": "[NEEDS_TRANSLATION] Response Time",
-          "description": "[NEEDS_TRANSLATION] We aim to respond promptly",
-          "action": "[NEEDS_TRANSLATION] 2-3 business days"
+        "partnerOpportunities": {
+          "title": "فرص الشراكة",
+          "description": "تعاون تجاري وفرص الإعلان"
         }
       },
-      "helpTopics": {
-        "general": "[NEEDS_TRANSLATION] General inquiries about our travel guides and contents",
-        "feedback": "[NEEDS_TRANSLATION] Feedback and suggestions for improvement",
-        "reporting": "[NEEDS_TRANSLATION] Reporting contents errors or outdated information",
-        "business": "[NEEDS_TRANSLATION] Business and partnership inquiries",
-        "media": "[NEEDS_TRANSLATION] Media and press inquiries",
-        "privacy": "[NEEDS_TRANSLATION] Privacy-related requests (data access, deletion, etc.)"
+      "notice": {
+        "title": "قبل التواصل معنا",
+        "item1": "نحن منصة محتوى سفر - لا يمكننا إجراء حجوزات أو إدارة معاملات طرف ثالث",
+        "item2": "للأسئلة العاجلة المتعلقة بالحجز، يرجى التواصل مع مزود الخدمة مباشرة",
+        "item3": "نهدف للرد على جميع الاستفسارات خلال 2-3 أيام عمل"
+      },
+      "form": {
+        "name": "الاسم الكامل",
+        "namePlaceholder": "اسمك",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "بريدك@الإلكتروني.com",
+        "subject": "الموضوع",
+        "subjectPlaceholder": "كيف يمكننا مساعدتك؟",
+        "message": "الرسالة",
+        "messagePlaceholder": "أخبرنا بالتفصيل كيف يمكننا مساعدتك...",
+        "submit": "إرسال الرسالة",
+        "sending": "جاري الإرسال...",
+        "successTitle": "تم إرسال الرسالة!",
+        "successDesc": "شكراً للتواصل معنا. سنرد عليك قريباً.",
+        "errorTitle": "فشل الإرسال",
+        "errorDesc": "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى."
       }
     },
     "privacy": {
       "metaTitle": "سياسة الخصوصية | ترافي العالمية",
-      "metaDescription": "تعرف على كيفية جمع ترافي العالمية واستخدام وحماية معلوماتك الشخصية. اقرأ سياسة الخصوصية الشاملة.",
-      "badge": "خصوصيتك تهمنا",
+      "metaDescription": "تعرف على كيفية جمع واستخدام وحماية ترافي العالمية لمعلوماتك الشخصية. خدماتنا متوافقة مع GDPR وCCPA.",
+      "badge": "خصوصيتك مهمة",
       "title": "سياسة الخصوصية",
-      "subtitle": "نحن ملتزمون بحماية خصوصيتك والشفافية في ممارسات البيانات. تعرف على كيفية جمع ترافي العالمية واستخدام وحماية معلوماتك.",
-      "effectiveDate": "تاريخ السريان: 1 يناير 2026",
-      "features": {
-        "dataProtection": {
-          "title": "[NEEDS_TRANSLATION] Data Protection",
-          "description": "[NEEDS_TRANSLATION] Your data is protected"
+      "subtitle": "نحن ملتزمون بحماية خصوصيتك. توضح هذه السياسة كيفية جمعنا لمعلوماتك واستخدامها وحمايتها.",
+      "lastUpdated": "آخر تحديث: 1 يناير 2026",
+      "keyPoints": {
+        "dataMinimization": {
+          "title": "تقليل البيانات",
+          "description": "نجمع فقط ما نحتاجه"
         },
-        "minimalCollection": {
-          "title": "[NEEDS_TRANSLATION] Minimal Collection",
-          "description": "[NEEDS_TRANSLATION] We collect only what's needed"
+        "noSelling": {
+          "title": "لا نبيع البيانات",
+          "description": "معلوماتك ليست للبيع"
         },
-        "transparency": {
-          "title": "[NEEDS_TRANSLATION] Full Transparency",
-          "description": "[NEEDS_TRANSLATION] Clear about our practices"
+        "yourRights": {
+          "title": "حقوقك",
+          "description": "وصول وحذف ونقل كاملين"
         },
-        "yourControl": {
-          "title": "[NEEDS_TRANSLATION] Your Control",
-          "description": "[NEEDS_TRANSLATION] Manage your preferences"
+        "security": {
+          "title": "آمن ومشفر",
+          "description": "حماية على مستوى المؤسسات"
         }
       },
       "sections": {
-        "whoWeAre": "[NEEDS_TRANSLATION] 1. Who We Are",
-        "informationCollect": "[NEEDS_TRANSLATION] 2. Information We Collect",
-        "howWeUse": "[NEEDS_TRANSLATION] 3. How We Use Your Information",
-        "legalBasis": "[NEEDS_TRANSLATION] 4. Legal Basis for Processing (GDPR)",
-        "cookies": "[NEEDS_TRANSLATION] 5. Cookies and Tracking Technologies",
-        "thirdParty": "[NEEDS_TRANSLATION] 6. Third-Party Services",
-        "aiContent": "[NEEDS_TRANSLATION] 7. AI-Generated Content",
-        "internationalTransfers": "[NEEDS_TRANSLATION] 8. International Data Transfers",
-        "dataRetention": "[NEEDS_TRANSLATION] 9. Data Retention",
-        "privacyRights": "[NEEDS_TRANSLATION] 10. Your Privacy Rights",
-        "californiaRights": "[NEEDS_TRANSLATION] 11. California Privacy Rights (CCPA/CPRA)",
-        "childrenPrivacy": "[NEEDS_TRANSLATION] 12. Children's Privacy",
-        "dataSecurity": "[NEEDS_TRANSLATION] 13. Data Security",
-        "changes": "[NEEDS_TRANSLATION] 14. Changes to This Policy",
-        "contactUs": "[NEEDS_TRANSLATION] 15. Contact Us"
+        "overview": "نظرة عامة",
+        "dataController": "1. مراقب البيانات",
+        "infoWeCollect": "2. المعلومات التي نجمعها",
+        "howWeCollect": "3. كيف نجمع المعلومات",
+        "legalBasis": "4. الأساس القانوني للمعالجة",
+        "howWeUse": "5. كيف نستخدم معلوماتك",
+        "cookies": "6. ملفات تعريف الارتباط والتتبع",
+        "thirdParty": "7. مشاركة الطرف الثالث",
+        "internationalTransfers": "8. نقل البيانات الدولي",
+        "dataRetention": "9. الاحتفاظ بالبيانات",
+        "privacyRights": "10. حقوق الخصوصية الخاصة بك",
+        "californiaRights": "11. حقوق الخصوصية في كاليفورنيا (CCPA/CPRA)",
+        "childrenPrivacy": "12. خصوصية الأطفال",
+        "dataSecurity": "13. أمان البيانات",
+        "changes": "14. التغييرات على هذه السياسة",
+        "contactUs": "15. تواصل معنا"
       }
     },
     "terms": {
@@ -1014,41 +1028,41 @@
       "title": "الشروط والأحكام",
       "subtitle": "يرجى قراءة هذه الشروط بعناية قبل استخدام ترافي العالمية. يخضع وصولك واستخدامك لمنصتنا لهذه الشروط.",
       "lastUpdated": "آخر تحديث: 1 يناير 2026",
-      "importantNotice": "[NEEDS_TRANSLATION] Important Legal Notice",
+      "importantNotice": "إشعار قانوني مهم",
       "keyPoints": {
         "editorial": {
-          "title": "[NEEDS_TRANSLATION] Editorial Platform",
-          "description": "[NEEDS_TRANSLATION] Travel guides & destination contents"
+          "title": "منصة تحريرية",
+          "description": "أدلة السفر ومحتوى الوجهات"
         },
         "affiliate": {
-          "title": "[NEEDS_TRANSLATION] Affiliate Links",
-          "description": "[NEEDS_TRANSLATION] Commission-based recommendations"
+          "title": "روابط الشراكة",
+          "description": "توصيات قائمة على العمولة"
         },
         "aiGenerated": {
-          "title": "[NEEDS_TRANSLATION] AI-Generated",
-          "description": "[NEEDS_TRANSLATION] Content created with AI assistance"
+          "title": "محتوى بالذكاء الاصطناعي",
+          "description": "محتوى مُنشأ بمساعدة الذكاء الاصطناعي"
         },
         "privacy": {
-          "title": "[NEEDS_TRANSLATION] Your Privacy",
-          "description": "[NEEDS_TRANSLATION] Data protection guaranteed"
+          "title": "خصوصيتك",
+          "description": "حماية البيانات مضمونة"
         }
       },
       "sections": {
-        "operator": "[NEEDS_TRANSLATION] Operator / Legal Entity",
-        "purpose": "[NEEDS_TRANSLATION] 1. Purpose & Scope of Use",
-        "affiliateDisclosure": "[NEEDS_TRANSLATION] 2. Affiliate Disclosure & Third-Party Transactions",
-        "aiDisclaimer": "[NEEDS_TRANSLATION] 3. AI-Generated Content Disclaimer",
-        "newsletter": "[NEEDS_TRANSLATION] 4. Newsletter & Communications",
-        "userConduct": "[NEEDS_TRANSLATION] 5. User Conduct & Prohibited Actions",
-        "intellectualProperty": "[NEEDS_TRANSLATION] 6. Intellectual Property & Limited License",
-        "dmca": "[NEEDS_TRANSLATION] 7. Notice-and-Takedown (DMCA & Similar)",
-        "disclaimers": "[NEEDS_TRANSLATION] 8. Accuracy, Availability & Disclaimers",
-        "liability": "[NEEDS_TRANSLATION] 9. Limitation of Liability & Force Majeure",
-        "indemnification": "[NEEDS_TRANSLATION] 10. Indemnification",
-        "privacyCookies": "[NEEDS_TRANSLATION] 11. Privacy, Cookies & Data Protection",
-        "accessibility": "[NEEDS_TRANSLATION] 12. Accessibility Statement",
-        "governingLaw": "[NEEDS_TRANSLATION] 13. Governing Law, Dispute Resolution & Jurisdiction",
-        "modifications": "[NEEDS_TRANSLATION] 14. Modifications, Severability & General Provisions"
+        "operator": "المشغل / الكيان القانوني",
+        "purpose": "1. الغرض ونطاق الاستخدام",
+        "affiliateDisclosure": "2. إفصاح الشراكات ومعاملات الطرف الثالث",
+        "aiDisclaimer": "3. إخلاء مسؤولية المحتوى المُنشأ بالذكاء الاصطناعي",
+        "newsletter": "4. النشرة الإخبارية والاتصالات",
+        "userConduct": "5. سلوك المستخدم والإجراءات المحظورة",
+        "intellectualProperty": "6. الملكية الفكرية والترخيص المحدود",
+        "dmca": "7. الإشعار والإزالة (DMCA وما شابه)",
+        "disclaimers": "8. الدقة والتوفر وإخلاء المسؤولية",
+        "liability": "9. حدود المسؤولية والقوة القاهرة",
+        "indemnification": "10. التعويض",
+        "privacyCookies": "11. الخصوصية وملفات تعريف الارتباط وحماية البيانات",
+        "accessibility": "12. بيان إمكانية الوصول",
+        "governingLaw": "13. القانون الحاكم وحل النزاعات والاختصاص القضائي",
+        "modifications": "14. التعديلات وقابلية الفصل والأحكام العامة"
       }
     }
   }
