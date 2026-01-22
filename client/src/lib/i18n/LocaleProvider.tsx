@@ -51,6 +51,11 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
 
   const [currentIsRTL, setCurrentIsRTL] = useState(() => isRTL(locale));
 
+  // CRITICAL: Sync i18n with initial locale on mount
+  useEffect(() => {
+    changeLanguage(locale);
+  }, []);
+
   // Update locale from URL on location change
   useEffect(() => {
     const pathParts = location.split("/").filter(Boolean);
