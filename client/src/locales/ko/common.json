@@ -1,1073 +1,1004 @@
 {
   "nav": {
-    "home": "홈",
-    "destinations": "여행지",
-    "attractions": "관광명소",
-    "hotels": "호텔",
-    "guides": "가이드",
-    "dining": "맛집",
-    "districts": "지역",
-    "articles": "뉴스",
-    "news": "뉴스",
-    "shopping": "쇼핑",
-    "realEstate": "부동산",
-    "events": "이벤트",
-    "search": "검색",
-    "language": "언어",
-    "mainNavigation": "메인 내비게이션",
-    "openMenu": "메뉴 열기",
-    "closeMenu": "메뉴 닫기",
-    "logoAlt": "TRAVI - 여행 가이드",
-    "followInstagram": "TRAVI Instagram 팔로우",
-    "followTikTok": "TRAVI TikTok 팔로우",
-    "changeLanguage": "언어 변경",
-    "selectLanguage": "언어 선택",
-    "popularLanguages": "인기 언어",
-    "allLanguages": "모든 언어"
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "경로 탐색",
+    "ariaLabel": "Breadcrumb navigation",
     "dubai": "Dubai"
   },
   "common": {
-    "readMore": "더 보기",
-    "viewAll": "전체 보기",
-    "learnMore": "자세히 보기",
-    "bookNow": "지금 예약",
-    "contactUs": "문의하기",
-    "subscribe": "구독하기",
-    "submit": "제출",
-    "cancel": "취소",
-    "save": "저장",
-    "edit": "편집",
-    "delete": "삭제",
-    "loading": "로딩 중...",
-    "error": "오류가 발생했습니다",
-    "noResults": "결과를 찾을 수 없습니다",
-    "seeMore": "더 보기",
-    "back": "뒤로",
-    "next": "다음",
-    "previous": "이전",
-    "close": "닫기",
-    "share": "공유",
-    "copyLink": "링크 복사",
-    "copied": "복사되었습니다!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "TRAVI와 함께 세계를 탐험하세요",
-      "subtitle": "전 세계 17개 도시의 종합 여행 가이드",
-      "searchPlaceholder": "관광명소, 호텔, 레스토랑 검색...",
-      "cta": "탐험 시작",
-      "badge": "세계 모험으로 가는 관문",
-      "headlinePart1": "신뢰할 수 있는 여행",
-      "headlinePart2": "정보 플랫폼",
-      "description": "전 세계 {{destinations}}개 도시의 여행 정보. {{attractions}}개 이상의 관광명소 가이드.",
-      "descriptionPart1": "전 세계",
-      "descriptionPart2": "개 도시의 여행 정보.",
-      "descriptionPart3": "개 이상의 관광명소.",
-      "carouselLabel": "여행지 캐러셀 내비게이션",
-      "viewDestination": "{{name}} 보기 - {{tagline}}",
-      "worldwide": "전 세계",
-      "exploreWorld": "세계 탐험",
-      "welcomeAriaLabel": "TRAVI World에 오신 것을 환영합니다",
-      "pageTitle": "TRAVI World - 호텔, 관광명소, 액티비티 여행 가이드",
-      "pageDescription": "전 세계 17개 도시의 완벽한 여행 가이드. 3,000개 이상의 호텔, 관광명소, 레스토랑, 액티비티 정보.",
-      "orgDescription": "전 세계 17개 도시의 신뢰할 수 있는 여행 정보 플랫폼."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "{{count}}개 이상의 관광명소",
-      "destinations": "전 세계 {{count}}개 도시",
-      "languages": "다국어 지원 플랫폼"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "추천",
-    "trending": "인기 상승 중",
-    "topAttractions": "인기 관광명소",
-    "bestHotels": "추천 호텔",
-    "latestNews": "최신 뉴스 & 가이드",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "여행지 탐색",
-      "destinationsDesc": "엄선된 전 세계 여행지 컬렉션",
-      "categories": "카테고리로 찾기",
-      "categoriesDesc": "원하는 정보를 정확히 찾기",
-      "experiences": "체험으로 선택하는 여행",
-      "experiencesDesc": "나만의 여행 스타일 선택",
-      "faq": "자주 묻는 질문",
-      "faqDesc": "TRAVI에 대해 알아야 할 모든 것",
-      "regions": "지역으로 탐색",
-      "newsletter": "최신 정보 받기",
-      "allDestinationsTitle": "전체 {{count}}개 도시 여행 가이드",
-      "completeGuide": "{{name}}, {{country}} - 완벽 여행 가이드"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "여행지 탐색",
-      "viewGuides": "가이드 보기",
-      "viewAll": "전체 보기",
-      "startExploring": "탐험 시작",
-      "planTrip": "여행 계획하기",
-      "viewExperience": "{{name}} 보기"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "도시",
-      "attractions": "관광명소",
-      "languages": "지원 언어",
-      "attractionsNum": "3,000개 이상",
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
+      "attractionsNum": "3,000+",
       "destinationsNum": "16",
-      "languagesNum": "17개 이상",
-      "destinationsCountWithLabel": "{{count}}개 도시",
-      "attractionsCountWithLabel": "{{count}}개 이상의 관광명소"
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "관광명소",
-      "attractionsDesc": "필수 방문 장소",
-      "news": "여행 뉴스",
-      "newsDesc": "최신 정보",
-      "guides": "가이드",
-      "guidesDesc": "여행지 가이드",
-      "hotels": "호텔",
-      "hotelsDesc": "완벽한 숙소 찾기"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "럭셔리 여행",
-      "luxuryDesc": "프리미엄 여행 체험과 특별한 여행지",
-      "adventure": "어드벤처 & 아웃도어",
-      "adventureDesc": "스릴 넘치는 아웃도어 체험",
-      "family": "가족 여행",
-      "familyDesc": "가족 친화적인 여행지와 액티비티",
-      "budget": "저예산 여행",
-      "budgetDesc": "합리적인 가격의 여행 옵션",
-      "romance": "허니문 & 로맨스",
-      "romanceDesc": "로맨틱한 여행과 허니문 여행지",
-      "solo": "혼자 여행",
-      "soloDesc": "솔로 여행자를 위한 완벽한 여행지"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "자주 묻는 질문",
-      "subtitle": "TRAVI World에 대해 알아야 할 모든 것",
-      "whatIsTravi": "TRAVI World란?",
-      "whatIsTraviAnswer": "TRAVI World는 전 세계 17개 도시를 다루며, 3,000개 이상의 관광명소, 호텔, 레스토랑, 액티비티에 대한 상세한 가이드를 제공하는 종합 여행 정보 플랫폼입니다.",
-      "howManyDestinations": "TRAVI는 몇 개의 도시를 다루나요?",
-      "howManyDestinationsAnswer": "TRAVI World는 Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, Rome을 포함한 17개의 주요 여행지를 다룹니다.",
-      "isFree": "TRAVI World는 무료인가요?",
-      "isFreeAnswer": "네, TRAVI World는 완전히 무료로 이용할 수 있습니다. 수천 개의 여행 가이드, 관광명소 리뷰, 호텔 추천, 레스토랑 정보를 무료로 이용하세요.",
-      "updateFrequency": "콘텐츠는 얼마나 자주 업데이트되나요?",
-      "updateFrequencyAnswer": "TRAVI World 콘텐츠는 매일 업데이트되며, 최신 여행 뉴스, 새로운 관광명소 리뷰, 전 세계 17개 도시의 호텔 및 레스토랑 정보가 추가됩니다."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "TRAVI 마스코트와 세계 랜드마크 - Dubai, Paris, London, Rome 등의 여행 가이드",
-    "mascotTitle": "TRAVI World - 전 세계 여행지 가이드"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "관광명소",
-    "subtitle": "인기 명소부터 숨겨진 보석까지 탐험",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{cities}}개 도시에서 {{count}}개 관광명소",
-      "badgeThousands": "전 세계 관광명소",
-      "headlinePart1": "전 세계",
-      "headlinePart2": "관광명소",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">우선 입장권</span>으로 Eiffel Tower, Colosseum, Burj Khalifah 등 Paris, Rome, Dubai의 인기 관광명소 방문.",
-      "searchPlaceholder": "Eiffel Tower, Colosseum, Burj Khalifah 검색...",
-      "carouselLabel": "추천 관광명소 캐러셀",
-      "sectionLabel": "전 세계 인기 관광명소 티켓 예약",
-      "searchAriaLabel": "이름이나 도시로 관광명소 검색",
-      "searchButton": "검색",
-      "searchButtonAriaLabel": "관광명소 검색"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "관광명소",
-      "cities": "도시",
-      "rating": "평점"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "{{count}}개 이상의 관광명소",
-      "cities": "{{count}}개 도시",
-      "rating": "{{rating}}점 평점"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "모든 유형",
-      "museums": "박물관",
-      "landmarks": "랜드마크",
-      "tours": "투어",
-      "themeParks": "테마파크",
-      "shows": "공연"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "{{name}}의 관광명소",
-    "countAttractions": "{{country}} - {{count}}개 관광명소",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "전체",
-      "popular": "인기순",
-      "free": "무료",
-      "familyFriendly": "가족 친화",
-      "outdoor": "야외",
-      "indoor": "실내"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "위치",
-      "hours": "영업 시간",
-      "price": "가격",
-      "duration": "소요 시간",
-      "tips": "추천 팁"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "도시별 관광명소 탐색",
-      "destinationsDesc": "도시를 선택하여 놀라운 체험 찾기",
-      "faq": "자주 묻는 질문",
-      "faqDesc": "관광명소 예약에 대한 답변",
-      "whyBookBadge": "예약의 장점",
-      "whyBookTitle": "우선 입장으로 시간 절약",
-      "whyBookDesc": "사전 예약으로 인기 관광명소에 빠르게 입장",
-      "allDestinations": "모든 도시"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "우선 입장권",
-      "skipTheLineDesc": "Eiffel Tower, Colosseum, Vatican 등에서 줄 서지 않고 입장",
-      "mobileTickets": "모바일 티켓",
-      "mobileTicketsDesc": "스마트폰으로 즉시 전달 - 티켓을 보여주고 입장",
-      "freeCancellation": "무료 취소",
-      "freeCancellationDesc": "일정 변경? 24시간 전까지 무료 취소"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "도시별 관광명소",
-      "desc": "세계 인기 도시에서 관광명소와 체험 찾기",
-      "thingsToDo": "{{count}}개의 관광명소",
-      "noDestinations": "현재 이용 가능한 도시가 없습니다."
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "더 많은 여행 가이드",
-      "hotelsWorldwide": "전 세계 호텔",
-      "bestRestaurants": "추천 레스토랑",
-      "travelNews": "여행 뉴스"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "탐험할 준비가 되셨나요?",
-      "desc": "Eiffel Tower, Colosseum, Burj Khalifah 등 전 세계 인기 관광명소의 우선 입장권 예약.",
-      "parisAttractions": "Paris 관광명소",
-      "romeAttractions": "Rome 관광명소"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
-      "popular": "인기:",
-      "thingsToDoIn": "{{city}}의 관광명소",
-      "ariaCarouselNav": "관광명소 캐러셀 내비게이션",
-      "ariaViewInCity": "{{city}}의 {{name}} 보기"
+      "popular": "Popular:",
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "추천 관광명소",
-      "ariaThumbnails": "관광명소 캐러셀 썸네일",
-      "ariaTicketsIn": "{{city}}의 {{name}} 티켓",
-      "priceFrom": "가격",
-      "bookTickets": "티켓 예약",
-      "skipTheLine": "우선 입장",
-      "duration": "2-3시간",
-      "freeCancellation": "무료 취소",
-      "freeCancellationDesc": "방문 24시간 전까지",
-      "mobileTickets": "모바일 티켓",
-      "instantDelivery": "즉시 전달"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}}개의 관광명소"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "호텔",
-    "subtitle": "완벽한 숙소 찾기",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "모든 호텔",
-      "luxury": "럭셔리",
-      "budget": "저렴한",
-      "beachfront": "해변가",
-      "cityCenter": "시내 중심",
-      "familyFriendly": "가족 친화"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "가격",
-      "perNight": "1박",
-      "amenities": "편의시설",
-      "checkIn": "체크인",
-      "checkOut": "체크아웃",
-      "rooms": "객실",
-      "rating": "평점"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "지금 예약"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "맛집",
-    "subtitle": "모든 입맛을 위한 요리 체험",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "모든 레스토랑",
-      "fineDining": "파인 다이닝",
-      "casual": "캐주얼 다이닝",
-      "cafes": "카페",
-      "streetFood": "길거리 음식",
-      "halal": "할랄",
-      "vegetarian": "채식"
+      "all": "All Restaurants",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafes",
+      "streetFood": "Street Food",
+      "halal": "Halal",
+      "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "요리 종류",
-      "priceRange": "가격대",
-      "hours": "영업 시간",
-      "dress": "복장 규정",
-      "reservations": "예약"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "Dubai",
-        "country": "UAE",
-        "cardAlt": "Burj Khalifah 타워와 일몰의 Dubai 스카이라인"
-      },
-      "london": {
-        "name": "London",
-        "country": "영국",
-        "cardAlt": "Big Ben과 국회의사당의 London"
-      },
-      "paris": {
-        "name": "Paris",
-        "country": "프랑스",
-        "cardAlt": "일몰에 빛나는 Eiffel Tower의 Paris"
-      },
-      "newYork": {
-        "name": "New York",
-        "country": "미국",
-        "cardAlt": "Empire State Building과 Manhattan 스카이라인의 New York"
-      },
-      "tokyo": {
-        "name": "Tokyo",
-        "country": "일본",
-        "cardAlt": "시부야 교차로 네온의 Tokyo"
-      },
-      "singapore": {
-        "name": "Singapore",
-        "country": "Singapore",
-        "cardAlt": "Marina Bay Sands와 Gardens by the Bay의 Singapore"
-      },
-      "barcelona": {
-        "name": "Barcelona",
-        "country": "스페인",
-        "cardAlt": "골든 아워의 Sagrada Familia의 Barcelona"
-      },
-      "bangkok": {
-        "name": "Bangkok",
-        "country": "태국",
-        "cardAlt": "일출의 왕궁의 Bangkok"
-      },
-      "abuDhabi": {
-        "name": "Abu Dhabi",
-        "country": "UAE",
-        "cardAlt": "Sheikh Zayed Grand Mosque의 Abu Dhabi"
-      },
-      "amsterdam": {
-        "name": "Amsterdam",
-        "country": "네덜란드",
-        "cardAlt": "역사적 건물과 운하의 Amsterdam"
-      },
-      "hongKong": {
-        "name": "Hong Kong",
-        "country": "중국",
-        "cardAlt": "야경 스카이라인의 Hong Kong"
-      },
-      "istanbul": {
-        "name": "Istanbul",
-        "country": "터키",
-        "cardAlt": "일몰의 Blue Mosque의 Istanbul"
-      },
-      "lasVegas": {
-        "name": "Las Vegas",
-        "country": "미국",
-        "cardAlt": "밤의 스트립의 Las Vegas"
-      },
-      "losAngeles": {
-        "name": "Los Angeles",
-        "country": "미국",
-        "cardAlt": "Hollywood 사인의 Los Angeles"
-      },
-      "miami": {
-        "name": "Miami",
-        "country": "미국",
-        "cardAlt": "아르데코 지구의 Miami Beach"
-      },
-      "rome": {
-        "name": "Rome",
-        "country": "이탈리아",
-        "cardAlt": "골든 아워의 Colosseum의 Rome"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "전 세계 {{count}}개 도시",
-      "trustedBy": "전 세계 {{count}}개 도시 여행 가이드",
-      "discover": "발견하기",
-      "worldClass": "세계적인",
-      "destinations": "여행지",
-      "description": "현지 전문 지식으로 작성된 여행 가이드. 인기 명소부터 숨겨진 보석까지.",
-      "exploreAll": "모든 여행지 탐색",
-      "travelGuides": "여행 가이드",
-      "explorePlaceholder": "여행지 탐색",
-      "browseCollection": "엄선된 여행지 컬렉션을 둘러보세요",
-      "explore": "탐색",
-      "discoverButton": "발견",
-      "ariaLabel": "여행지 개요",
-      "exploreTitle": "{{name}} 탐색",
-      "galleryAriaLabel": "추천 여행지 갤러리",
-      "placeholderAriaLabel": "추천 여행지 플레이스홀더"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "도시",
-      "countries": "국가",
-      "regions": "지역",
-      "languages": "언어"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "추천 여행지",
-      "featuredDesc": "특별한 체험을 제공하는 엄선된 여행지. 현지 정보와 여행 계획에 필요한 모든 것.",
-      "all": "모든 여행지",
-      "count": "{{count}}개의 여행지"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "여행지 검색...",
-      "noResults": "여행지를 찾을 수 없습니다",
-      "tryAdjusting": "검색 조건을 변경해 보세요",
-      "clearSearch": "검색 지우기"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "추천 여행지 캐러셀",
-      "previous": "이전 여행지",
-      "next": "다음 여행지",
-      "goTo": "{{name}}(으)로 이동",
-      "slideOf": "슬라이드 {{current}}/{{total}}: {{name}}",
-      "thumbnails": "여행지 캐러셀 썸네일"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "탐색",
-      "defaultLevel": "도시",
-      "exploreFallback": "{{name}} 탐색",
-      "destination": "여행지",
-      "travelGuideAlt": "{{name}} 여행 가이드"
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "자주 묻는 질문",
-      "subtitle": "TRAVI 여행지 가이드에 대한 모든 것",
-      "q1": "TRAVI는 몇 개의 도시를 다루나요?",
-      "a1": "TRAVI는 중동, 유럽, 아시아, 아메리카의 주요 여행지를 상세한 가이드로 다룹니다.",
-      "q2": "TRAVI 가이드에는 어떤 정보가 포함되어 있나요?",
-      "a2": "각 여행지 가이드에는 관광명소, 숙박 시설, 현지 음식, 교통편, 실용적인 여행 정보가 포함됩니다.",
-      "q3": "여행지를 검색할 수 있나요?",
-      "a3": "네, 여행지 페이지의 검색창에서 이름이나 국가로 검색할 수 있습니다.",
-      "q4": "TRAVI의 추천 여행지란?",
-      "a4": "TRAVI의 추천 여행지는 럭셔리부터 저예산 여행까지 다양한 여행자에게 특별한 체험을 제공하는 엄선된 장소입니다."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "여행지 로딩 중",
-      "message": "최신 여행지 데이터를 가져오는 중..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "여행지를 불러올 수 없습니다",
-      "message": "여행지 데이터를 불러오는 데 문제가 발생했습니다. 나중에 다시 시도해 주세요.",
-      "refresh": "페이지 새로고침"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "여행지 없음",
-      "message": "현재 이용 가능한 여행지가 없습니다. 나중에 다시 확인해 주세요."
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "지역",
-    "subtitle": "다양한 동네 탐험",
-    "explore": "지역 탐색"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "부동산",
-    "subtitle": "미래에 투자",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "오프플랜 부동산",
-      "subtitle": "조기 투자로 절약하고 더 많은 수익을",
-      "findProperty": "완벽한 부동산 찾기",
-      "from": "가격",
-      "paymentPlan": "결제 계획",
-      "handover": "인도",
-      "developer": "개발사"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "모든 부동산",
-      "apartments": "아파트",
-      "villas": "빌라",
-      "townhouses": "타운하우스",
-      "penthouses": "펜트하우스"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "암호화폐 결제 가능",
-      "paymentPlans": "유연한 결제 계획",
-      "goldenVisa": "Golden Visa 자격",
-      "roiGuarantee": "ROI 보장"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "관광명소, 가이드, 여행지 검색...",
-    "results": "검색 결과",
-    "noResults": "검색 결과 없음:",
-    "tryAgain": "다른 키워드로 검색해 보세요"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "TRAVI 소개",
-    "aboutTravi": "TRAVI 소개",
-    "aboutText": "전 세계 17개 도시의 종합 여행 정보.",
-    "aboutUs": "회사 소개",
-    "quickLinks": "빠른 링크",
-    "legal": "법적 정보",
-    "privacy": "개인정보 보호정책",
-    "privacyPolicy": "개인정보 보호정책",
-    "terms": "이용약관",
-    "termsOfService": "이용약관",
-    "contact": "문의하기",
-    "contactUs": "문의하기",
-    "followUs": "팔로우하기",
-    "explore": "탐색",
-    "travel": "여행",
-    "company": "회사 정보",
-    "allGuides": "모든 가이드",
-    "cookies": "쿠키",
-    "security": "보안",
-    "cookieSettings": "쿠키 설정",
-    "tagline": "신뢰할 수 있는 여행 정보 플랫폼",
-    "ariaLabel": "사이트 푸터",
-    "featuredGuides": "추천 가이드",
-    "tools": "도구",
-    "currencyConverter": "환율 계산기",
-    "roiCalculator": "ROI 계산기",
-    "mortgageCalculator": "모기지 계산기",
-    "glossary": "용어집",
-    "freeThingsToDo": "70개 이상의 무료 액티비티",
-    "open24Hours": "24시간 운영",
-    "tributeToSheikh": "HH Sheikh Mohammed에게 경의",
-    "lawsForTourists": "관광객 법률 가이드",
-    "newsletter": "뉴스레터 구독",
-    "newsletterDescription": "최신 여행 정보와 업데이트를 받아보세요.",
-    "emailPlaceholder": "이메일 주소 입력",
-    "allRightsReserved": "모든 권리 보유.",
-    "copyright": "© {{year}} {{brand}}. 모든 권리 보유.",
-    "emailAriaLabel": "TRAVI에 이메일 보내기"
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
+    "cookies": "Cookies",
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "페이지를 찾을 수 없습니다",
-      "message": "찾으시는 페이지가 존재하지 않습니다.",
-      "button": "홈으로 돌아가기"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "서버 오류",
-      "message": "서버 측에서 문제가 발생했습니다.",
-      "button": "다시 시도"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "연결 오류",
-      "message": "연결할 수 없습니다. 인터넷 연결을 확인해 주세요.",
-      "button": "다시 시도"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "모험에 참여하세요",
-    "title": "이메일로 여행의 마법을 받아보세요",
-    "description": "매주 여행 정보, 숨겨진 보석, 특별 혜택 - 스팸 없이 여행에 대한 설렘만.",
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
     "emailPlaceholder": "your@email.com",
-    "subscribe": "구독하기",
-    "success": "구독 완료! 받은편지함을 확인하세요."
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "개인정보를 소중히 여깁니다",
-    "description": "당사는 브라우징 경험 향상, 사이트 트래픽 분석, 콘텐츠 개인화를 위해 쿠키를 사용합니다. \"모두 허용\"을 클릭하면 쿠키 사용에 동의하는 것입니다.",
-    "manage": "관리",
-    "rejectAll": "모두 거부",
-    "acceptAll": "모두 허용",
-    "preferencesTitle": "쿠키 설정",
-    "savePreferences": "설정 저장",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "필수 쿠키",
-      "description": "웹사이트의 정상 작동에 필요"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "분석 쿠키",
-      "description": "방문자가 사이트를 어떻게 이용하는지 이해하는 데 도움"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "마케팅 쿠키",
-      "description": "개인화된 광고 제공에 사용"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "TRAVI - 세계 여행 가이드｜관광명소, 호텔, 맛집 정보",
-      "description": "전 세계 17개 도시의 관광명소, 호텔, 레스토랑, 지역 정보. 현지 추천으로 완벽한 여행 계획."
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "관광명소｜세계 인기 관광지 가이드",
-      "description": "세계의 관광명소 정보. Burj Khalifah부터 숨겨진 보석까지. 관광 계획에 도움이 되는 가이드."
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "호텔｜세계 추천 숙박시설",
-      "description": "모든 예산에 맞는 호텔 정보. 럭셔리 리조트부터 저렴한 옵션까지."
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "맛집｜세계 추천 레스토랑",
-      "description": "세계의 요리 씬을 탐험. 파인 다이닝부터 길거리 음식까지."
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "여행 인텔리전스",
-      "headlinePart1": "마음을 움직이는",
-      "headlinePart2": "이야기",
-      "description": "전문가가 작성한 가이드, 인사이더 관점, 세계를 경험하는 방식을 바꾸는 에디토리얼 내러티브.",
-      "startJourney": "여행 시작하기",
-      "browseCollection": "컬렉션 보기",
-      "issueBadge": "Issue 47 — 2026년 겨울호"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "여행 가이드",
-      "destinations": "여행지",
-      "languages": "언어"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "당신의 여행, 우리의 안내",
-      "title": "모든 멋진 여행은 가이드에서 시작됩니다",
-      "subtitle": "꿈꾸는 단계부터 공유까지, 모든 단계에서 함께합니다"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "아이디어 랩",
-      "title": "엄선된 영감",
-      "readGuide": "가이드 읽기"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "나에게 맞춤",
-      "title": "당신은 어떤 여행자인가요?",
-      "subtitle": "여행 스타일을 선택하고 나만을 위한 가이드를 찾아보세요",
-      "viewGuides": "{{type}} 가이드 보기"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "모험가",
-        "description": "스릴 넘치는 체험과 아드레날린"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "문화 탐험가",
-        "description": "예술, 역사, 현지 전통"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "휴식 달인",
-        "description": "웰니스 리트릿과 평화로운 탈출"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "미식 여행자",
-        "description": "현지 맛과 미식 모험"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "웰니스 탐구자",
-        "description": "휴식, 스파, 마음챙김 리트릿"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "현명한 여행자",
-        "description": "최대 체험, 최소 예산"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "혼자 여행의 달인",
-        "description": "독립적인 여행과 자기 발견"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "럭셔리 애호가",
-        "description": "프리미엄 체험과 고급스러운 삶"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "꿈꾸기",
-        "subtitle": "영감 발견",
-        "guides": [
-          "여행지 가이드",
-          "포토 에세이"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "계획하기",
-        "subtitle": "일정 만들기",
-        "guides": [
-          "여행 계획",
-          "비자 요건"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "준비하기",
-        "subtitle": "출발 준비",
-        "guides": [
-          "짐 싸기 리스트",
-          "안전 정보"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "체험하기",
-        "subtitle": "모험 즐기기",
-        "guides": [
-          "현지 정보",
-          "숨겨진 보석"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "공유하기",
-        "subtitle": "이야기 나누기",
-        "guides": [
-          "여행기",
-          "사진 촬영"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "주말 여행",
-      "offBeatenPath": "숨겨진 보석",
-      "smartTravel": "현명한 여행",
-      "bucketList": "버킷리스트",
-      "culinary": "미식",
-      "natureWonder": "자연과 경이"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "여행 가이드｜전문가의 여행지 인사이트",
-      "description": "전문가의 여행 가이드, 여행지 인사이트, 전 세계 트래블 라이터의 추천. 지금 완벽한 여행을 계획하세요."
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "에디터 추천",
-      "title": "에디토리얼 특집",
-      "readFull": "전문 읽기"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "비주얼 스토리",
-      "title": "영감을 주는 여행지",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "도시",
-        "mountains": "산",
-        "beach": "해변",
-        "safari": "사파리",
-        "nature": "자연"
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
+        "safari": "Safari",
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "전문가의 목소리",
-      "title": "작가 소개",
-      "subtitle": "가장 신뢰받는 여행 가이드를 집필하는 전문가들",
-      "articleCount": "{{count}}개의 기사",
-      "viewProfile": "프로필 보기"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "지역으로 탐색",
-      "title": "세계의 가이드",
-      "subtitle": "여행지를 클릭하여 전문가 가이드를 찾아보세요",
-      "guidesAvailable": "{{count}}개의 가이드",
-      "legendDestination": "여행지",
-      "legendHighlighted": "하이라이트"
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "여행에 참여",
-      "title": "매주 여행 이야기",
-      "description": "엄선된 여행 영감, 전문가 팁, 인사이더 정보를 매주 전달.",
-      "placeholder": "이메일 주소 입력",
-      "subscribe": "구독하기",
-      "subscribing": "구독 중...",
-      "joinCount": "5만 명 이상의 여행자가 구독 중",
-      "invalidEmail": "유효한 이메일 주소를 입력하세요",
-      "successTitle": "여행에 오신 것을 환영합니다!",
-      "successDesc": "에디토리얼 다이제스트 구독이 완료되었습니다."
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {
     "time": {
-      "recent": "최근",
-      "justNow": "방금",
-      "minutesAgo": "{{count}}분 전",
-      "hoursAgo": "{{count}}시간 전",
-      "daysAgo": "{{count}}일 전",
-      "minRead": "{{count}}분 소요"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "TRAVI 뉴스",
-      "edition": "국제판",
-      "subscribe": "구독"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "속보"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "세계 뉴스 검색...",
-      "button": "검색",
-      "title": "검색",
-      "searching": "\"{{query}}\" 검색 중..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "모든 뉴스",
-      "world": "세계",
-      "business": "비즈니스",
-      "culture": "문화",
-      "travel": "여행",
-      "tech": "기술",
-      "opinion": "오피니언"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "뉴스 기사가 아직 없습니다",
-      "description": "최신 여행 뉴스와 인사이트를 준비 중입니다. 전 세계 업데이트를 기대해 주세요.",
-      "exploreDestinations": "여행지 탐색",
-      "viewGuides": "여행 가이드 보기"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "톱 스토리",
-      "editorialTeam": "에디토리얼 팀"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}}회 조회",
-    "viewAll": "전체 보기",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "여행 뉴스｜최신 스토리와 업데이트",
-      "description": "최신 여행 뉴스, 여행지 업데이트, 전 세계 업계 인사이트."
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "오늘의 다른 기사",
-      "storiesCount": "{{count}}개의 기사",
-      "liveUpdates": "실시간 업데이트",
-      "trendingTopics": "트렌딩 토픽",
-      "noTrending": "트렌딩 토픽이 아직 없습니다. 나중에 다시 확인하세요!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "톱 스토리",
-      "opinion": "오피니언과 분석",
-      "moreOpinion": "더 많은 오피니언",
-      "worldwide": "세계 뉴스"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "세계로 향하는 창",
-      "subtitle": "세계 각지의 뉴스",
-      "storiesCount": "{{count}}개의 기사",
-      "comingSoon": "곧 공개"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "최신 정보 받기",
-      "description": "매일 아침 그날의 톱 스토리를 전달. 5만 명 이상의 독자가 구독 중.",
-      "placeholder": "이메일 주소 입력",
-      "subscribe": "무료 구독",
-      "noSpam": "스팸 없음. 언제든지 해지 가능.",
-      "successTitle": "구독 완료!",
-      "successDesc": "확인 이메일을 확인하세요.",
-      "errorTitle": "구독에 실패했습니다",
-      "errorDesc": "나중에 다시 시도하세요.",
-      "invalidTitle": "잘못된 이메일 주소",
-      "invalidDesc": "유효한 이메일 주소를 입력하세요."
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "TRAVI World 소개｜신뢰할 수 있는 여행 정보",
-      "metaDescription": "TRAVI World 소개 - 전 세계 여행지의 종합 가이드를 제공하는 독립 여행 정보 플랫폼을 알아보세요.",
-      "badge": "TRAVI World 소개",
-      "title": "발견하기",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "전 세계 여행지를 종합 가이드와 현지 인사이트로 탐험할 수 있는 신뢰할 수 있는 여행 정보.",
-      "ctaExplore": "여행지 탐색",
-      "ctaContact": "문의하기",
-      "stats": {
-        "destinations": "여행지",
-        "articles": "기사",
-        "support": "여행 지원",
-        "coverage": "커버리지",
-        "cities": "16개 이상 도시"
-      },
-      "whoWeAre": {
-        "title": "회사 소개"
-      },
-      "mission": {
-        "title": "우리의 미션"
-      },
-      "services": {
-        "badge": "서비스",
-        "title": "제공하는 것"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "여행지 가이드",
-          "description": "전 세계 도시와 지역의 종합 정보"
-        },
-        "attractions": {
-          "title": "관광명소 정보",
-          "description": "필수 방문 장소와 독특한 체험의 상세 정보"
-        },
-        "hotels": {
-          "title": "호텔 가이드",
-          "description": "모든 예산의 숙박 옵션 정보"
-        },
-        "restaurants": {
-          "title": "레스토랑 추천",
-          "description": "모든 입맛과 취향에 맞는 다이닝 옵션"
-        },
-        "articles": {
-          "title": "여행 기사",
-          "description": "팁, 인사이트, 여행 영감"
-        },
-        "news": {
-          "title": "최신 여행 뉴스",
-          "description": "엄선된 여행 업데이트"
-        }
-      },
-      "editorial": {
-        "title": "에디토리얼 독립성",
-        "affiliateTitle": "제휴 공개"
-      },
-      "values": {
-        "badge": "기반",
-        "title": "우리의 가치",
-        "accuracy": {
-          "title": "정확성",
-          "description": "정확하고 신뢰할 수 있는 정보를 제공하며 정기적으로 콘텐츠 업데이트"
-        },
-        "transparency": {
-          "title": "투명성",
-          "description": "제휴 관계와 운영 방식을 명확히 공개"
-        },
-        "userFocused": {
-          "title": "사용자 중심",
-          "description": "여행자가 정보에 기반한 결정을 내릴 수 있도록 콘텐츠 설계"
-        }
-      },
-      "connect": {
-        "badge": "연결하기",
-        "title": "문의하기"
-      },
-      "company": {
-        "title": "회사 정보",
-        "contactTitle": "연락처 정보",
-        "contactForm": "문의 양식"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "문의하기｜TRAVI World",
-      "metaDescription": "TRAVI World에 문의하세요. 여행 정보 서비스에 관한 의견, 질문, 문의를 기다립니다.",
-      "badge": "문의해 주세요",
-      "titlePart1": "연결",
-      "titlePart2": "합시다",
-      "subtitle": "다음 모험에 대해 질문이 있으신가요? 자신감을 가지고 세계를 탐험할 수 있도록 도와드립니다.",
-      "cta": "메시지 보내기",
-      "getInTouch": "문의하기",
-      "getInTouchSubtitle": "최적의 연락 방법을 선택하세요. 신속하게 대응하겠습니다.",
-      "howCanWeHelp": "어떻게 도와드릴까요?",
-      "howCanWeHelpSubtitle": "여행 콘텐츠와 서비스에 관한 질문이나 의견을 기다립니다.",
-      "importantNote": "중요 공지",
-      "importantNoteSubtitle": "문의 전에 읽어주세요",
-      "ourOffice": "오피스",
-      "ourOfficeSubtitle": "공식 서류와 우편 문의",
-      "travelCompanion": "당신의 여행 파트너",
-      "urgentNote": "긴급한 경우 이메일 제목에 {{urgentLabel}}을 포함하세요. 문의 성격에 따라 우선적으로 대응합니다.",
-      "urgentLabel": "긴급",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "일반 문의",
-          "description": "여행 가이드와 콘텐츠에 관한 질문"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "개인정보 문의",
-          "description": "데이터 접근, 삭제, 개인정보 요청"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "웹사이트 방문",
-          "description": "여행지와 여행 영감 탐색"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "응답 시간",
-          "description": "신속하게 대응합니다",
-          "action": "2-3 영업일"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "여행 가이드와 콘텐츠에 관한 일반 문의",
-        "feedback": "개선을 위한 의견과 제안",
-        "reporting": "콘텐츠 오류나 오래된 정보 신고",
-        "business": "비즈니스와 파트너십 문의",
-        "media": "미디어와 보도 문의",
-        "privacy": "개인정보 관련 요청 (데이터 접근, 삭제 등)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "개인정보 보호정책｜TRAVI World",
-      "metaDescription": "TRAVI World가 개인정보를 어떻게 수집, 사용, 보호하는지 확인하세요. 포괄적인 개인정보 보호정책을 읽어보세요.",
-      "badge": "개인정보를 소중히",
-      "title": "개인정보 보호정책",
-      "subtitle": "당사는 귀하의 개인정보를 보호하고 데이터 취급에 대해 투명성을 유지할 것을 약속합니다. TRAVI World가 정보를 어떻게 수집, 사용, 보호하는지 확인하세요.",
-      "effectiveDate": "시행일: 2026년 1월 1일",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "데이터 보호",
-          "description": "귀하의 데이터는 보호됩니다"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "최소한의 수집",
-          "description": "필요한 것만 수집"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "완전한 투명성",
-          "description": "취급에 대해 명확히"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "귀하의 통제",
-          "description": "설정 관리"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "1. 회사 소개",
-        "informationCollect": "2. 수집하는 정보",
-        "howWeUse": "3. 정보 사용 방법",
-        "legalBasis": "4. 처리의 법적 근거 (GDPR)",
-        "cookies": "5. 쿠키와 추적 기술",
-        "thirdParty": "6. 제3자 서비스",
-        "aiContent": "7. AI 생성 콘텐츠",
-        "internationalTransfers": "8. 국제 데이터 전송",
-        "dataRetention": "9. 데이터 보유",
-        "privacyRights": "10. 개인정보 권리",
-        "californiaRights": "11. 캘리포니아 개인정보 권리 (CCPA/CPRA)",
-        "childrenPrivacy": "12. 아동 개인정보",
-        "dataSecurity": "13. 데이터 보안",
-        "changes": "14. 정책 변경",
-        "contactUs": "15. 문의하기"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "이용약관｜TRAVI World",
-      "metaDescription": "TRAVI World 여행 정보 서비스 이용약관을 읽어보세요. 귀하와 KBR Global Creative Consulting Ltd 간의 법적 계약.",
-      "badge": "법적 계약",
-      "title": "이용약관",
-      "subtitle": "TRAVI World를 이용하기 전에 이 약관을 주의 깊게 읽어주세요. 플랫폼에 대한 접근과 사용은 이 조건에 따릅니다.",
-      "lastUpdated": "최종 업데이트: 2026년 1월 1일",
-      "importantNotice": "중요 법적 공지",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "에디토리얼 플랫폼",
-          "description": "여행 가이드와 여행지 콘텐츠"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "제휴 링크",
-          "description": "수수료 기반 추천"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "AI 생성",
-          "description": "AI 지원으로 생성된 콘텐츠"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "개인정보",
-          "description": "데이터 보호 보장"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "운영자/법인",
-        "purpose": "1. 목적과 사용 범위",
-        "affiliateDisclosure": "2. 제휴 공개와 제3자 거래",
-        "aiDisclaimer": "3. AI 생성 콘텐츠 면책 조항",
-        "newsletter": "4. 뉴스레터와 커뮤니케이션",
-        "userConduct": "5. 사용자 행동과 금지 사항",
-        "intellectualProperty": "6. 지적 재산권과 제한적 라이선스",
-        "dmca": "7. 통지와 삭제 (DMCA 및 유사)",
-        "disclaimers": "8. 정확성, 가용성, 면책 조항",
-        "liability": "9. 책임 제한과 불가항력",
-        "indemnification": "10. 배상",
-        "privacyCookies": "11. 개인정보, 쿠키, 데이터 보호",
-        "accessibility": "12. 접근성 선언",
-        "governingLaw": "13. 준거법, 분쟁 해결, 관할",
-        "modifications": "14. 변경, 분리 가능성, 일반 조항"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }

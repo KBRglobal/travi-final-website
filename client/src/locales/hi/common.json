@@ -1,1073 +1,1004 @@
 {
   "nav": {
-    "home": "होम",
-    "destinations": "गंतव्य",
-    "attractions": "आकर्षण",
-    "hotels": "होटल",
-    "guides": "गाइड",
-    "dining": "भोजन",
-    "districts": "जिले",
-    "articles": "समाचार",
-    "news": "समाचार",
-    "shopping": "खरीदारी",
-    "realEstate": "रियल एस्टेट",
-    "events": "कार्यक्रम",
-    "search": "खोजें",
-    "language": "भाषा",
-    "mainNavigation": "मुख्य नेविगेशन",
-    "openMenu": "मेनू खोलें",
-    "closeMenu": "मेनू बंद करें",
-    "logoAlt": "TRAVI - यात्रा गाइड",
-    "followInstagram": "TRAVI को Instagram पर फॉलो करें",
-    "followTikTok": "TRAVI को TikTok पर फॉलो करें",
-    "changeLanguage": "भाषा बदलें",
-    "selectLanguage": "भाषा चुनें",
-    "popularLanguages": "लोकप्रिय भाषाएं",
-    "allLanguages": "सभी भाषाएं"
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "ब्रेडक्रंब नेविगेशन",
-    "dubai": "दुबई"
+    "ariaLabel": "Breadcrumb navigation",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "और पढ़ें",
-    "viewAll": "सभी देखें",
-    "learnMore": "और जानें",
-    "bookNow": "अभी बुक करें",
-    "contactUs": "संपर्क करें",
-    "subscribe": "सदस्यता लें",
-    "submit": "जमा करें",
-    "cancel": "रद्द करें",
-    "save": "सहेजें",
-    "edit": "संपादित करें",
-    "delete": "हटाएं",
-    "loading": "लोड हो रहा है...",
-    "error": "कुछ गलत हो गया",
-    "noResults": "कोई परिणाम नहीं मिला",
-    "seeMore": "और देखें",
-    "back": "पीछे",
-    "next": "अगला",
-    "previous": "पिछला",
-    "close": "बंद करें",
-    "share": "शेयर करें",
-    "copyLink": "लिंक कॉपी करें",
-    "copied": "कॉपी हो गया!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "TRAVI के साथ दुनिया देखें",
-      "subtitle": "दुनियाभर के 17 गंतव्यों के लिए आपकी व्यापक यात्रा गाइड",
-      "searchPlaceholder": "आकर्षण, होटल, रेस्तरां खोजें...",
-      "cta": "अन्वेषण शुरू करें",
-      "badge": "विश्व साहसिक यात्रा का आपका प्रवेश द्वार",
-      "headlinePart1": "आपका विश्वसनीय यात्रा",
-      "headlinePart2": "संसाधन",
-      "description": "दुनियाभर के {{destinations}} गंतव्यों के लिए व्यापक यात्रा जानकारी। {{attractions}}+ आकर्षणों के लिए विस्तृत गाइड खोजें।",
-      "descriptionPart1": "के लिए व्यापक यात्रा जानकारी",
-      "descriptionPart2": "दुनियाभर में गंतव्य। विस्तृत गाइड खोजें",
-      "descriptionPart3": "आकर्षण।",
-      "carouselLabel": "गंतव्य कैरोसेल नेविगेशन",
-      "viewDestination": "देखें {{name}} - {{tagline}}",
-      "worldwide": "विश्वव्यापी",
-      "exploreWorld": "दुनिया का अन्वेषण करें",
-      "welcomeAriaLabel": "TRAVI World में आपका स्वागत है",
-      "pageTitle": "TRAVI World - होटल, आकर्षण और करने योग्य चीजों के लिए यात्रा गाइड",
-      "pageDescription": "दुनियाभर के 17 गंतव्यों के लिए आपकी पूर्ण यात्रा गाइड। 3,000+ स्थानों के लिए होटल, आकर्षण, रेस्तरां और गतिविधियों की विशेषज्ञ जानकारी।",
-      "orgDescription": "दुनियाभर के 17 गंतव्यों के लिए आपका विश्वसनीय यात्रा संसाधन।"
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "{{count}} से अधिक आकर्षण कवर किए गए",
-      "destinations": "{{count}} गंतव्य विश्वव्यापी",
-      "languages": "अतिरिक्त भाषाओं के साथ बहुभाषी प्लेटफॉर्म"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "विशेष",
-    "trending": "अभी ट्रेंडिंग",
-    "topAttractions": "शीर्ष आकर्षण",
-    "bestHotels": "सर्वश्रेष्ठ होटल",
-    "latestNews": "नवीनतम समाचार और गाइड",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "गंतव्य देखें",
-      "destinationsDesc": "हमारे क्यूरेटेड वैश्विक यात्रा गंतव्यों का संग्रह खोजें",
-      "categories": "श्रेणी के अनुसार ब्राउज़ करें",
-      "categoriesDesc": "जो आप ढूंढ रहे हैं वो ठीक यहां पाएं",
-      "experiences": "अनुभव के अनुसार यात्रा",
-      "experiencesDesc": "अपनी यात्रा शैली चुनें",
-      "faq": "अक्सर पूछे जाने वाले प्रश्न",
-      "faqDesc": "TRAVI के बारे में जानने योग्य सब कुछ",
-      "regions": "क्षेत्र के अनुसार खोजें",
-      "newsletter": "अपडेट रहें",
-      "allDestinationsTitle": "सभी {{count}} गंतव्यों के लिए यात्रा गाइड",
-      "completeGuide": "{{name}}, {{country}} - पूर्ण यात्रा गाइड"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "गंतव्य देखें",
-      "viewGuides": "गाइड देखें",
-      "viewAll": "सभी देखें",
-      "startExploring": "अन्वेषण शुरू करें",
-      "planTrip": "अपनी यात्रा की योजना बनाएं",
-      "viewExperience": "{{name}} देखें"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "गंतव्य",
-      "attractions": "आकर्षण",
-      "languages": "भाषाएं",
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
       "attractionsNum": "3,000+",
       "destinationsNum": "16",
       "languagesNum": "17+",
-      "destinationsCountWithLabel": "{{count}} गंतव्य",
-      "attractionsCountWithLabel": "{{count}}+ आकर्षण"
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "आकर्षण",
-      "attractionsDesc": "अवश्य देखने योग्य स्थान",
-      "news": "यात्रा समाचार",
-      "newsDesc": "नवीनतम अपडेट",
-      "guides": "गाइड",
-      "guidesDesc": "गंतव्य गाइड",
-      "hotels": "होटल",
-      "hotelsDesc": "अपना सही ठहराव खोजें"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "लक्जरी यात्रा",
-      "luxuryDesc": "प्रीमियम यात्रा अनुभव और विशेष गंतव्य",
-      "adventure": "साहसिक और बाहरी",
-      "adventureDesc": "रोमांचक बाहरी अनुभव और साहसिक कार्य",
-      "family": "पारिवारिक यात्रा",
-      "familyDesc": "परिवार-अनुकूल गंतव्य और गतिविधियां",
-      "budget": "बजट यात्रा",
-      "budgetDesc": "किफायती यात्रा विकल्प और गंतव्य",
-      "romance": "हनीमून और रोमांस",
-      "romanceDesc": "रोमांटिक पलायन और हनीमून गंतव्य",
-      "solo": "अकेले यात्रा",
-      "soloDesc": "अकेले यात्रियों के लिए सही गंतव्य"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "अक्सर पूछे जाने वाले प्रश्न",
-      "subtitle": "TRAVI World के बारे में जानने योग्य सब कुछ",
-      "whatIsTravi": "TRAVI World क्या है?",
-      "whatIsTraviAnswer": "TRAVI World एक व्यापक यात्रा सूचना प्लेटफॉर्म है जो दुनियाभर के 17 गंतव्यों को कवर करता है, 3,000+ आकर्षणों, होटलों, रेस्तरां और गतिविधियों के लिए विस्तृत गाइड के साथ।",
-      "howManyDestinations": "TRAVI कितने गंतव्यों को कवर करता है?",
-      "howManyDestinationsAnswer": "TRAVI World 17 प्रमुख यात्रा गंतव्यों को कवर करता है जिसमें दुबई, पेरिस, टोक्यो, न्यूयॉर्क, बार्सिलोना, सिंगापुर, लंदन, बैंकॉक, अबू धाबी, एम्स्टर्डम, हांगकांग, इस्तांबुल, लास वेगास, लॉस एंजिल्स, मियामी और रोम शामिल हैं।",
-      "isFree": "क्या TRAVI World मुफ्त है?",
-      "isFreeAnswer": "हां, TRAVI World पूरी तरह से मुफ्त है। हजारों यात्रा गाइड, आकर्षण समीक्षाएं, होटल सिफारिशें और रेस्तरां सुझाव बिना किसी लागत के ब्राउज़ करें।",
-      "updateFrequency": "सामग्री कितनी बार अपडेट होती है?",
-      "updateFrequencyAnswer": "TRAVI World की सामग्री दैनिक रूप से नवीनतम यात्रा समाचार, नई आकर्षण समीक्षाओं और सभी 17 गंतव्यों के होटलों और रेस्तरां के बारे में अपडेट जानकारी के साथ अपडेट होती है।"
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "TRAVI मैस्कॉट विश्व स्थलों के साथ - दुबई, पेरिस, लंदन, रोम और अन्य के लिए यात्रा गाइड देखें",
-    "mascotTitle": "TRAVI World - वैश्विक गंतव्यों के लिए यात्रा गाइड"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "आकर्षण",
-    "subtitle": "प्रतिष्ठित स्थलों और छिपे हुए रत्नों का अन्वेषण करें",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{cities}} शहरों में {{count}} आकर्षण",
-      "badgeThousands": "दुनियाभर में हजारों आकर्षण",
-      "headlinePart1": "करने योग्य चीजें",
-      "headlinePart2": "विश्वव्यापी",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">स्किप-द-लाइन टिकट</span> पेरिस, रोम, दुबई और अन्य में एफिल टावर, कोलोसियम, बुर्ज खलीफा और शीर्ष आकर्षणों के लिए।",
-      "searchPlaceholder": "एफिल टावर, कोलोसियम, बुर्ज खलीफा खोजें...",
-      "carouselLabel": "विशेष आकर्षण कैरोसेल",
-      "sectionLabel": "दुनियाभर के शीर्ष आकर्षणों के टिकट बुक करें",
-      "searchAriaLabel": "नाम या शहर से आकर्षण खोजें",
-      "searchButton": "खोजें",
-      "searchButtonAriaLabel": "आकर्षण खोजें"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "आकर्षण",
-      "cities": "शहर",
-      "rating": "रेटिंग"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "{{count}} से अधिक आकर्षण",
-      "cities": "{{count}} शहर",
-      "rating": "{{rating}} स्टार रेटिंग"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "सभी प्रकार",
-      "museums": "संग्रहालय",
-      "landmarks": "स्थलचिह्न",
-      "tours": "टूर",
-      "themeParks": "थीम पार्क",
-      "shows": "शो"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "{{name}} में करने योग्य चीजें",
-    "countAttractions": "{{country}} - {{count}} आकर्षण",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "सभी",
-      "popular": "सबसे लोकप्रिय",
-      "free": "मुफ्त प्रवेश",
-      "familyFriendly": "परिवार के अनुकूल",
-      "outdoor": "बाहरी",
-      "indoor": "इनडोर"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "स्थान",
-      "hours": "खुलने का समय",
-      "price": "कीमत",
-      "duration": "अवधि",
-      "tips": "अंदरूनी सुझाव"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "गंतव्य के अनुसार आकर्षण देखें",
-      "destinationsDesc": "अद्भुत चीजें खोजने के लिए एक शहर चुनें",
-      "faq": "अक्सर पूछे जाने वाले प्रश्न",
-      "faqDesc": "दुनियाभर में आकर्षण बुकिंग के बारे में उत्तर पाएं",
-      "whyBookBadge": "हमारे साथ क्यों बुक करें",
-      "whyBookTitle": "लाइन छोड़ें, समय बचाएं",
-      "whyBookDesc": "अग्रिम में टिकट बुक करें और शीर्ष आकर्षणों में परेशानी-मुक्त प्रवेश का आनंद लें",
-      "allDestinations": "सभी गंतव्य"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "स्किप-द-लाइन टिकट",
-      "skipTheLineDesc": "एफिल टावर, कोलोसियम, वेटिकन और अन्य में कतारों को पार करें",
-      "mobileTickets": "मोबाइल टिकट",
-      "mobileTicketsDesc": "आपके फोन पर तुरंत डिलीवरी - अपना टिकट दिखाएं और प्रवेश करें",
-      "freeCancellation": "मुफ्त रद्दीकरण",
-      "freeCancellationDesc": "योजनाएं बदलीं? पूर्ण धनवापसी के लिए 24 घंटे पहले तक रद्द करें"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "गंतव्य के अनुसार करने योग्य चीजें",
-      "desc": "दुनिया के शीर्ष शहरों में आकर्षण और अनुभव खोजें",
-      "thingsToDo": "{{count}} करने योग्य चीजें",
-      "noDestinations": "इस समय कोई गंतव्य उपलब्ध नहीं है।"
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "और यात्रा गाइड देखें",
-      "hotelsWorldwide": "विश्वव्यापी होटल",
-      "bestRestaurants": "सर्वश्रेष्ठ रेस्तरां",
-      "travelNews": "यात्रा समाचार"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "अन्वेषण के लिए तैयार?",
-      "desc": "दुनियाभर में एफिल टावर, कोलोसियम, बुर्ज खलीफा और शीर्ष आकर्षणों के स्किप-द-लाइन टिकट बुक करें।",
-      "parisAttractions": "पेरिस आकर्षण",
-      "romeAttractions": "रोम आकर्षण"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
-      "popular": "लोकप्रिय:",
-      "thingsToDoIn": "{{city}} में करने योग्य चीजें",
-      "ariaCarouselNav": "आकर्षण कैरोसेल नेविगेशन",
-      "ariaViewInCity": "{{city}} में {{name}} देखें"
+      "popular": "Popular:",
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "विशेष आकर्षण",
-      "ariaThumbnails": "आकर्षण कैरोसेल थंबनेल",
-      "ariaTicketsIn": "{{city}} में {{name}} टिकट",
-      "priceFrom": "से",
-      "bookTickets": "टिकट बुक करें",
-      "skipTheLine": "लाइन छोड़ें",
-      "duration": "2-3 घंटे",
-      "freeCancellation": "मुफ्त रद्दीकरण",
-      "freeCancellationDesc": "यात्रा से 24 घंटे पहले",
-      "mobileTickets": "मोबाइल टिकट",
-      "instantDelivery": "तुरंत डिलीवरी"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}} करने योग्य चीजें"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "होटल",
-    "subtitle": "अपना सही ठहराव खोजें",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "सभी होटल",
-      "luxury": "लक्जरी",
-      "budget": "बजट अनुकूल",
-      "beachfront": "समुद्र तट पर",
-      "cityCenter": "शहर का केंद्र",
-      "familyFriendly": "परिवार के अनुकूल"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "से",
-      "perNight": "प्रति रात",
-      "amenities": "सुविधाएं",
-      "checkIn": "चेक-इन",
-      "checkOut": "चेक-आउट",
-      "rooms": "कमरे",
-      "rating": "रेटिंग"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "अभी बुक करें"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "भोजन",
-    "subtitle": "हर स्वाद के लिए पाक अनुभव",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "सभी रेस्तरां",
-      "fineDining": "फाइन डाइनिंग",
-      "casual": "कैजुअल डाइनिंग",
-      "cafes": "कैफे",
-      "streetFood": "स्ट्रीट फूड",
-      "halal": "हलाल",
-      "vegetarian": "शाकाहारी"
+      "all": "All Restaurants",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafes",
+      "streetFood": "Street Food",
+      "halal": "Halal",
+      "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "व्यंजन",
-      "priceRange": "मूल्य सीमा",
-      "hours": "खुलने का समय",
-      "dress": "ड्रेस कोड",
-      "reservations": "आरक्षण"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "दुबई",
-        "country": "यूएई",
-        "cardAlt": "सूर्यास्त के समय बुर्ज खलीफा टावर के साथ दुबई स्काईलाइन"
-      },
-      "london": {
-        "name": "लंदन",
-        "country": "यूके",
-        "cardAlt": "लंदन बिग बेन और संसद भवन"
-      },
-      "paris": {
-        "name": "पेरिस",
-        "country": "फ्रांस",
-        "cardAlt": "सूर्यास्त में प्रकाशित पेरिस एफिल टावर"
-      },
-      "newYork": {
-        "name": "न्यूयॉर्क",
-        "country": "अमेरिका",
-        "cardAlt": "एम्पायर स्टेट बिल्डिंग के साथ न्यूयॉर्क मैनहट्टन स्काईलाइन"
-      },
-      "tokyo": {
-        "name": "टोक्यो",
-        "country": "जापान",
-        "cardAlt": "रात में टोक्यो शिबुया क्रॉसिंग नियॉन लाइट्स"
-      },
-      "singapore": {
-        "name": "सिंगापुर",
-        "country": "सिंगापुर",
-        "cardAlt": "सिंगापुर मरीना बे सैंड्स और गार्डन्स बाय द बे"
-      },
-      "barcelona": {
-        "name": "बार्सिलोना",
-        "country": "स्पेन",
-        "cardAlt": "गोल्डन ऑवर में बार्सिलोना सग्राडा फैमिलिया"
-      },
-      "bangkok": {
-        "name": "बैंकॉक",
-        "country": "थाईलैंड",
-        "cardAlt": "सूर्योदय के समय बैंकॉक ग्रैंड पैलेस मंदिर"
-      },
-      "abuDhabi": {
-        "name": "अबू धाबी",
-        "country": "यूएई",
-        "cardAlt": "अबू धाबी शेख जायद ग्रैंड मस्जिद"
-      },
-      "amsterdam": {
-        "name": "एम्स्टर्डम",
-        "country": "नीदरलैंड्स",
-        "cardAlt": "ऐतिहासिक इमारतों के साथ एम्स्टर्डम नहर"
-      },
-      "hongKong": {
-        "name": "हांगकांग",
-        "country": "चीन",
-        "cardAlt": "रात में हांगकांग स्काईलाइन"
-      },
-      "istanbul": {
-        "name": "इस्तांबुल",
-        "country": "तुर्की",
-        "cardAlt": "सूर्यास्त में इस्तांबुल ब्लू मस्जिद"
-      },
-      "lasVegas": {
-        "name": "लास वेगास",
-        "country": "अमेरिका",
-        "cardAlt": "रात में लास वेगास स्ट्रिप"
-      },
-      "losAngeles": {
-        "name": "लॉस एंजिल्स",
-        "country": "अमेरिका",
-        "cardAlt": "लॉस एंजिल्स हॉलीवुड साइन"
-      },
-      "miami": {
-        "name": "मियामी",
-        "country": "अमेरिका",
-        "cardAlt": "मियामी बीच आर्ट डेको जिला"
-      },
-      "rome": {
-        "name": "रोम",
-        "country": "इटली",
-        "cardAlt": "गोल्डन ऑवर में रोम कोलोसियम"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "{{count}} विश्वव्यापी गंतव्य",
-      "trustedBy": "{{count}} गंतव्यों द्वारा विश्वसनीय",
-      "discover": "खोजें",
-      "worldClass": "विश्व-स्तरीय",
-      "destinations": "गंतव्य",
-      "description": "दुनिया के सबसे मनोरम शहरों के लिए स्थानीय विशेषज्ञता के साथ क्यूरेटेड यात्रा गाइड। प्रतिष्ठित स्थलों से लेकर छिपे हुए रत्नों तक।",
-      "exploreAll": "सभी गंतव्य देखें",
-      "travelGuides": "यात्रा गाइड",
-      "explorePlaceholder": "गंतव्य खोजें",
-      "browseCollection": "नीचे हमारे चुनिंदा यात्रा गंतव्यों का संग्रह देखें",
-      "explore": "खोजें",
-      "discoverButton": "खोजें",
-      "ariaLabel": "गंतव्यों का अवलोकन",
-      "exploreTitle": "{{name}} का अन्वेषण करें",
-      "galleryAriaLabel": "विशेष गंतव्य गैलरी",
-      "placeholderAriaLabel": "विशेष गंतव्य प्लेसहोल्डर"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "गंतव्य",
-      "countries": "देश",
-      "regions": "क्षेत्र",
-      "languages": "भाषाएं"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "विशेष गंतव्य",
-      "featuredDesc": "असाधारण अनुभवों, स्थानीय अंतर्दृष्टि और आपकी सही यात्रा की योजना बनाने के लिए आवश्यक सब कुछ के साथ चुनिंदा गंतव्य।",
-      "all": "सभी गंतव्य",
-      "count": "{{count}} गंतव्य मिले"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "गंतव्य खोजें...",
-      "noResults": "कोई गंतव्य नहीं मिला",
-      "tryAdjusting": "अपनी खोज मानदंड समायोजित करें",
-      "clearSearch": "खोज साफ़ करें"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "विशेष गंतव्य कैरोसेल",
-      "previous": "पिछला गंतव्य",
-      "next": "अगला गंतव्य",
-      "goTo": "{{name}} पर जाएं",
-      "slideOf": "स्लाइड {{current}} का {{total}}: {{name}}",
-      "thumbnails": "गंतव्य कैरोसेल थंबनेल"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "खोजें",
-      "defaultLevel": "शहर",
-      "exploreFallback": "{{name}} खोजें",
-      "destination": "गंतव्य",
-      "travelGuideAlt": "{{name}} यात्रा गाइड"
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "अक्सर पूछे जाने वाले प्रश्न",
-      "subtitle": "TRAVI गंतव्य गाइड के बारे में जानने योग्य सब कुछ",
-      "q1": "TRAVI कितने गंतव्यों को कवर करता है?",
-      "a1": "TRAVI मध्य पूर्व, यूरोप, एशिया और अमेरिका में प्रमुख यात्रा गंतव्यों को प्रत्येक स्थान के लिए व्यापक गाइड के साथ कवर करता है।",
-      "q2": "TRAVI गंतव्य गाइड में क्या जानकारी शामिल है?",
-      "a2": "प्रत्येक गंतव्य गाइड में आकर्षण, आवास विकल्प, स्थानीय व्यंजन, परिवहन सुझाव और व्यावहारिक यात्रा जानकारी को कवर करने वाला विस्तृत विवरण शामिल है।",
-      "q3": "क्या मैं गंतव्य खोज सकता हूं?",
-      "a3": "हां, TRAVI गंतव्य पृष्ठ पर खोज बार का उपयोग करके नाम या देश से गंतव्य खोजने की अनुमति देता है।",
-      "q4": "TRAVI पर विशेष गंतव्य क्या हैं?",
-      "a4": "TRAVI के विशेष गंतव्य चुनिंदा स्थान हैं जो लक्जरी से बजट यात्रा तक विविध रुचियों वाले यात्रियों के लिए असाधारण अनुभव प्रदान करते हैं।"
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "गंतव्य लोड हो रहे हैं",
-      "message": "नवीनतम गंतव्य डेटा प्राप्त हो रहा है..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "गंतव्य लोड करने में असमर्थ",
-      "message": "हमें गंतव्य डेटा लोड करने में समस्या हो रही है। कृपया बाद में पुनः प्रयास करें।",
-      "refresh": "पृष्ठ रीफ्रेश करें"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "कोई गंतव्य उपलब्ध नहीं",
-      "message": "वर्तमान में कोई गंतव्य उपलब्ध नहीं है। कृपया बाद में पुनः देखें।"
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "जिले",
-    "subtitle": "विविध पड़ोस का अन्वेषण करें",
-    "explore": "जिला देखें"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "रियल एस्टेट",
-    "subtitle": "भविष्य में निवेश करें",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "ऑफ-प्लान प्रॉपर्टीज",
-      "subtitle": "जल्दी निवेश करें, कम भुगतान करें, अधिक लाभ पाएं",
-      "findProperty": "अपनी सही प्रॉपर्टी खोजें",
-      "from": "से",
-      "paymentPlan": "भुगतान योजना",
-      "handover": "हैंडओवर",
-      "developer": "डेवलपर"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "सभी प्रॉपर्टीज",
-      "apartments": "अपार्टमेंट",
-      "villas": "विला",
-      "townhouses": "टाउनहाउस",
-      "penthouses": "पेंटहाउस"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "क्रिप्टो स्वीकृत",
-      "paymentPlans": "लचीली भुगतान योजनाएं",
-      "goldenVisa": "गोल्डन वीजा योग्य",
-      "roiGuarantee": "ROI गारंटी"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "आकर्षण, गाइड, गंतव्य खोजें...",
-    "results": "खोज परिणाम",
-    "noResults": "इसके लिए कोई परिणाम नहीं मिला",
-    "tryAgain": "अलग कीवर्ड आज़माएं"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "TRAVI के बारे में",
-    "aboutTravi": "TRAVI के बारे में",
-    "aboutText": "दुनियाभर के 17 गंतव्यों के लिए व्यापक यात्रा जानकारी।",
-    "aboutUs": "हमारे बारे में",
-    "quickLinks": "त्वरित लिंक",
-    "legal": "कानूनी",
-    "privacy": "गोपनीयता नीति",
-    "privacyPolicy": "गोपनीयता नीति",
-    "terms": "नियम और शर्तें",
-    "termsOfService": "सेवा की शर्तें",
-    "contact": "संपर्क करें",
-    "contactUs": "हमसे संपर्क करें",
-    "followUs": "हमें फॉलो करें",
-    "explore": "खोजें",
-    "travel": "यात्रा",
-    "company": "कंपनी",
-    "allGuides": "सभी गाइड",
-    "cookies": "कुकीज़",
-    "security": "सुरक्षा",
-    "cookieSettings": "कुकी सेटिंग्स",
-    "tagline": "आपका विश्वसनीय यात्रा संसाधन",
-    "ariaLabel": "साइट फुटर",
-    "featuredGuides": "विशेष गाइड",
-    "tools": "उपकरण",
-    "currencyConverter": "मुद्रा कनवर्टर",
-    "roiCalculator": "ROI कैलकुलेटर",
-    "mortgageCalculator": "मॉर्टगेज कैलकुलेटर",
-    "glossary": "शब्दावली",
-    "freeThingsToDo": "70+ मुफ्त करने योग्य चीजें",
-    "open24Hours": "24 घंटे खुला",
-    "tributeToSheikh": "HH शेख मोहम्मद को श्रद्धांजलि",
-    "lawsForTourists": "पर्यटकों के लिए कानून",
-    "newsletter": "हमारे न्यूज़लेटर की सदस्यता लें",
-    "newsletterDescription": "नवीनतम यात्रा टिप्स और अपडेट प्राप्त करें।",
-    "emailPlaceholder": "अपना ईमेल दर्ज करें",
-    "allRightsReserved": "सर्वाधिकार सुरक्षित।",
-    "copyright": "© {{year}} {{brand}}. सर्वाधिकार सुरक्षित।",
-    "emailAriaLabel": "TRAVI को ईमेल भेजें"
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
+    "cookies": "Cookies",
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "पृष्ठ नहीं मिला",
-      "message": "जिस पृष्ठ को आप ढूंढ रहे हैं वह मौजूद नहीं है।",
-      "button": "होम जाएं"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "सर्वर त्रुटि",
-      "message": "हमारी ओर से कुछ गलत हो गया।",
-      "button": "पुनः प्रयास करें"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "कनेक्शन त्रुटि",
-      "message": "कनेक्ट करने में असमर्थ। कृपया अपना इंटरनेट कनेक्शन जांचें।",
-      "button": "पुनः प्रयास करें"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "साहसिक यात्रा में शामिल हों",
-    "title": "अपने इनबॉक्स में यात्रा का जादू पाएं",
-    "description": "साप्ताहिक टिप्स, छिपे हुए रत्न और विशेष ऑफर - कोई स्पैम नहीं, बस यात्रा का जुनून।",
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
     "emailPlaceholder": "your@email.com",
-    "subscribe": "सदस्यता लें",
-    "success": "आप सदस्य बन गए! अपना इनबॉक्स जांचें।"
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "हम आपकी गोपनीयता का सम्मान करते हैं",
-    "description": "हम आपके ब्राउज़िंग अनुभव को बेहतर बनाने, साइट ट्रैफ़िक का विश्लेषण करने और सामग्री को व्यक्तिगत बनाने के लिए कुकीज़ का उपयोग करते हैं। \"सभी स्वीकार करें\" पर क्लिक करके, आप हमारे कुकीज़ के उपयोग की सहमति देते हैं।",
-    "manage": "प्रबंधित करें",
-    "rejectAll": "सभी अस्वीकार करें",
-    "acceptAll": "सभी स्वीकार करें",
-    "preferencesTitle": "कुकी प्राथमिकताएं",
-    "savePreferences": "प्राथमिकताएं सहेजें",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "आवश्यक कुकीज़",
-      "description": "वेबसाइट के ठीक से काम करने के लिए आवश्यक"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "एनालिटिक्स कुकीज़",
-      "description": "हमें समझने में मदद करती हैं कि आगंतुक हमारी वेबसाइट के साथ कैसे इंटरैक्ट करते हैं"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "मार्केटिंग कुकीज़",
-      "description": "व्यक्तिगत विज्ञापन देने के लिए उपयोग की जाती हैं"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "TRAVI - दुनिया का अन्वेषण करें | आपकी अंतिम यात्रा गाइड",
-      "description": "दुनियाभर के सर्वश्रेष्ठ आकर्षण, होटल, रेस्तरां और पड़ोस का अन्वेषण करें। अंदरूनी सुझाव और स्थानीय सिफारिशों के साथ अपनी सही यात्रा की योजना बनाएं।"
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "आकर्षण | शीर्ष करने योग्य चीजें",
-      "description": "बुर्ज खलीफा से लेकर छिपे हुए रत्नों तक सर्वश्रेष्ठ आकर्षणों की खोज करें। अपने दर्शनीय साहसिक यात्रा की योजना बनाएं।"
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "होटल | ठहरने के सर्वश्रेष्ठ स्थान",
-      "description": "किसी भी बजट के लिए सही होटल खोजें। लक्जरी रिसॉर्ट से लेकर बजट-अनुकूल विकल्पों तक।"
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "रेस्तरां | सर्वश्रेष्ठ भोजन",
-      "description": "पाक संस्कृति का अन्वेषण करें - फाइन डाइनिंग, स्ट्रीट फूड और बीच में सब कुछ।"
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "यात्रा बुद्धिमत्ता",
-      "headlinePart1": "कहानियां जो",
-      "headlinePart2": "प्रेरित करती हैं",
-      "description": "विशेषज्ञ-निर्मित गाइड, अंदरूनी दृष्टिकोण और संपादकीय कथाएं जो दुनिया को अनुभव करने का आपका तरीका बदल देती हैं।",
-      "startJourney": "अपनी यात्रा शुरू करें",
-      "browseCollection": "संग्रह ब्राउज़ करें",
-      "issueBadge": "अंक 47 — शीतकालीन 2026"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "यात्रा गाइड",
-      "destinations": "गंतव्य",
-      "languages": "भाषाएं"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "आपकी यात्रा, हमारा मार्गदर्शन",
-      "title": "हर महान यात्रा एक गाइड से शुरू होती है",
-      "subtitle": "सपने देखने से लेकर साझा करने तक, हम हर कदम पर आपके साथ हैं"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "आइडिया लैब",
-      "title": "क्यूरेटेड प्रेरणा",
-      "readGuide": "गाइड पढ़ें"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "आपके लिए व्यक्तिगत",
-      "title": "आप किस तरह के यात्री हैं?",
-      "subtitle": "अपनी यात्रा शैली चुनें और आपके लिए क्यूरेटेड गाइड खोजें",
-      "viewGuides": "{{type}} गाइड देखें"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "साहसिक खोजी",
-        "description": "रोमांचक अनुभव और एड्रेनालाइन रश"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "संस्कृति अन्वेषक",
-        "description": "कला, इतिहास और स्थानीय परंपराएं"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "विश्राम गुरु",
-        "description": "वेलनेस रिट्रीट और शांतिपूर्ण पलायन"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "पाक खानाबदोश",
-        "description": "स्थानीय स्वाद और गैस्ट्रोनॉमिक साहसिक कार्य"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "वेलनेस साधक",
-        "description": "विश्राम, स्पा और सचेत रिट्रीट"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "स्मार्ट यात्री",
-        "description": "अधिकतम अनुभव, न्यूनतम बजट"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "अकेले अन्वेषक",
-        "description": "स्वतंत्र यात्राएं और आत्म-खोज"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "लक्जरी पारखी",
-        "description": "प्रीमियम अनुभव और शानदार जीवन"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "सपना",
-        "subtitle": "प्रेरणा खोजें",
-        "guides": [
-          "गंतव्य गाइड",
-          "फोटो निबंध"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "योजना",
-        "subtitle": "अपनी यात्रा का मानचित्र बनाएं",
-        "guides": [
-          "यात्रा योजना",
-          "वीजा आवश्यकताएं"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "तैयारी",
-        "subtitle": "जाने के लिए तैयार हों",
-        "guides": [
-          "पैकिंग सूचियां",
-          "सुरक्षा सुझाव"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "अनुभव",
-        "subtitle": "साहसिक कार्य जिएं",
-        "guides": [
-          "स्थानीय अंतर्दृष्टि",
-          "छिपे हुए रत्न"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "साझा करें",
-        "subtitle": "अपनी कहानी बताएं",
-        "guides": [
-          "यात्रा लेखन",
-          "फोटोग्राफी"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "वीकेंड एस्केप्स",
-      "offBeatenPath": "अनदेखे रास्ते",
-      "smartTravel": "स्मार्ट यात्रा",
-      "bucketList": "बकेट लिस्ट",
-      "culinary": "पाक",
-      "natureWonder": "प्रकृति और आश्चर्य"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "यात्रा गाइड | विशेषज्ञ गंतव्य अंतर्दृष्टि",
-      "description": "हमारे वैश्विक यात्रा लेखकों के नेटवर्क से विशेषज्ञ यात्रा गाइड, गंतव्य अंतर्दृष्टि और अंदरूनी सुझाव खोजें। आज अपनी सही यात्रा की योजना बनाएं।"
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "हमारे संपादकों से",
-      "title": "संपादकीय फीचर्स",
-      "readFull": "पूरा निबंध पढ़ें"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "दृश्य कहानियां",
-      "title": "प्रेरित करने वाले गंतव्य",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "शहर",
-        "mountains": "पहाड़",
-        "beach": "समुद्र तट",
-        "safari": "सफारी",
-        "nature": "प्रकृति"
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
+        "safari": "Safari",
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "विशेषज्ञ आवाजें",
-      "title": "हमारे लेखकों से मिलें",
-      "subtitle": "हमारे सबसे विश्वसनीय यात्रा गाइड के पीछे विशेषज्ञ आवाजें",
-      "articleCount": "{{count}} लेख",
-      "viewProfile": "प्रोफाइल देखें"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "क्षेत्र के अनुसार खोजें",
-      "title": "दुनियाभर में गाइड",
-      "subtitle": "हमारी विशेषज्ञ कवरेज खोजने के लिए किसी भी गंतव्य पर क्लिक करें",
-      "guidesAvailable": "{{count}} गाइड उपलब्ध",
-      "legendDestination": "गंतव्य",
-      "legendHighlighted": "हाइलाइटेड"
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "यात्रा में शामिल हों",
-      "title": "यात्रा कहानियां, साप्ताहिक",
-      "description": "क्यूरेटेड यात्रा प्रेरणा, विशेषज्ञ सुझाव और अंदरूनी दृष्टिकोण हर सप्ताह आपके इनबॉक्स में।",
-      "placeholder": "अपना ईमेल दर्ज करें",
-      "subscribe": "सदस्यता लें",
-      "subscribing": "सदस्यता ली जा रही है...",
-      "joinCount": "50,000+ यात्रियों से जुड़ें जो हमारा साप्ताहिक डाइजेस्ट पढ़ते हैं",
-      "invalidEmail": "कृपया एक वैध ईमेल दर्ज करें",
-      "successTitle": "यात्रा में आपका स्वागत है!",
-      "successDesc": "अब आप हमारे संपादकीय डाइजेस्ट के सदस्य हैं।"
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {
     "time": {
-      "recent": "हाल का",
-      "justNow": "अभी",
-      "minutesAgo": "{{count}} मिनट पहले",
-      "hoursAgo": "{{count}} घंटे पहले",
-      "daysAgo": "{{count}} दिन पहले",
-      "minRead": "{{count}} मिनट पढ़ें"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "TRAVI समाचार",
-      "edition": "अंतरराष्ट्रीय संस्करण",
-      "subscribe": "सदस्यता लें"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "ब्रेकिंग"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "विश्वव्यापी समाचार खोजें...",
-      "button": "खोजें",
-      "title": "खोज",
-      "searching": "\"{{query}}\" के लिए खोज रहे हैं..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "सभी समाचार",
-      "world": "विश्व",
-      "business": "व्यापार",
-      "culture": "संस्कृति",
-      "travel": "यात्रा",
-      "tech": "टेक",
-      "opinion": "राय"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "अभी तक कोई समाचार लेख नहीं",
-      "description": "हम आपके लिए नवीनतम यात्रा समाचार और अंतर्दृष्टि लाने पर काम कर रहे हैं। दुनियाभर के अपडेट के लिए जल्द ही देखें।",
-      "exploreDestinations": "गंतव्य देखें",
-      "viewGuides": "यात्रा गाइड देखें"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "शीर्ष कहानी",
-      "editorialTeam": "संपादकीय टीम"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}} व्यूज",
-    "viewAll": "सभी देखें",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "यात्रा समाचार | नवीनतम कहानियां और अपडेट",
-      "description": "दुनियाभर से नवीनतम यात्रा समाचार, गंतव्य अपडेट और उद्योग अंतर्दृष्टि के साथ सूचित रहें।"
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "आज भी",
-      "storiesCount": "{{count}} कहानियां",
-      "liveUpdates": "लाइव अपडेट",
-      "trendingTopics": "ट्रेंडिंग टॉपिक्स",
-      "noTrending": "अभी तक कोई ट्रेंडिंग टॉपिक नहीं। जल्द ही देखें!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "शीर्ष कहानियां",
-      "opinion": "राय और विश्लेषण",
-      "moreOpinion": "और राय",
-      "worldwide": "विश्वव्यापी कवरेज"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "दुनिया की आपकी खिड़की",
-      "subtitle": "ग्लोब के हर कोने से समाचार",
-      "storiesCount": "{{count}} कहानियां",
-      "comingSoon": "जल्द आ रहा है"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "सूचित रहें",
-      "description": "हर सुबह अपने इनबॉक्स में दिन की शीर्ष कहानियां प्राप्त करें। 50,000+ पाठकों से जुड़ें।",
-      "placeholder": "अपना ईमेल दर्ज करें",
-      "subscribe": "मुफ्त सदस्यता लें",
-      "noSpam": "कोई स्पैम नहीं। कभी भी अनसब्सक्राइब करें।",
-      "successTitle": "सदस्यता सफल!",
-      "successDesc": "अपनी सदस्यता की पुष्टि के लिए कृपया अपना ईमेल जांचें।",
-      "errorTitle": "सदस्यता विफल",
-      "errorDesc": "कृपया बाद में पुनः प्रयास करें।",
-      "invalidTitle": "अमान्य ईमेल",
-      "invalidDesc": "कृपया एक वैध ईमेल पता दर्ज करें।"
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "TRAVI World के बारे में | आपका विश्वसनीय यात्रा संसाधन",
-      "metaDescription": "TRAVI World के बारे में जानें - दुनियाभर के गंतव्यों के लिए व्यापक गाइड प्रदान करने वाला एक स्वतंत्र यात्रा सूचना प्लेटफॉर्म।",
-      "badge": "TRAVI World के बारे में",
-      "title": "खोजें",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "व्यापक गाइड और स्थानीय अंतर्दृष्टि के साथ दुनियाभर के गंतव्यों का अन्वेषण करने के लिए आपका विश्वसनीय यात्रा संसाधन।",
-      "ctaExplore": "गंतव्य देखें",
-      "ctaContact": "संपर्क करें",
-      "stats": {
-        "destinations": "गंतव्य",
-        "articles": "लेख",
-        "support": "यात्रा सहायता",
-        "coverage": "कवरेज",
-        "cities": "16+ शहर"
-      },
-      "whoWeAre": {
-        "title": "हम कौन हैं"
-      },
-      "mission": {
-        "title": "हमारा मिशन"
-      },
-      "services": {
-        "badge": "हमारी सेवाएं",
-        "title": "हम क्या प्रदान करते हैं"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "गंतव्य गाइड",
-          "description": "दुनियाभर के शहरों और क्षेत्रों के बारे में व्यापक जानकारी"
-        },
-        "attractions": {
-          "title": "आकर्षण जानकारी",
-          "description": "अवश्य देखने योग्य स्थलों और अनूठे अनुभवों के विवरण"
-        },
-        "hotels": {
-          "title": "होटल गाइड",
-          "description": "हर बजट के लिए आवास विकल्पों की जानकारी"
-        },
-        "restaurants": {
-          "title": "रेस्तरां सिफारिशें",
-          "description": "हर स्वाद और पसंद के लिए भोजन विकल्प"
-        },
-        "articles": {
-          "title": "यात्रा लेख",
-          "description": "सुझाव, अंतर्दृष्टि और यात्रा प्रेरणा"
-        },
-        "news": {
-          "title": "नवीनतम यात्रा समाचार",
-          "description": "क्यूरेटेड यात्रा अपडेट के साथ सूचित रहें"
-        }
-      },
-      "editorial": {
-        "title": "संपादकीय स्वतंत्रता",
-        "affiliateTitle": "एफिलिएट प्रकटीकरण"
-      },
-      "values": {
-        "badge": "हमारी नींव",
-        "title": "हमारे मूल्य",
-        "accuracy": {
-          "title": "सटीकता",
-          "description": "हम सटीक और विश्वसनीय जानकारी प्रदान करने का प्रयास करते हैं, नियमित रूप से अपनी सामग्री अपडेट करते हैं"
-        },
-        "transparency": {
-          "title": "पारदर्शिता",
-          "description": "हम अपने एफिलिएट संबंधों और संचालन के बारे में स्पष्ट हैं"
-        },
-        "userFocused": {
-          "title": "उपयोगकर्ता-केंद्रित",
-          "description": "हमारी सामग्री यात्रियों को सूचित निर्णय लेने में मदद करने के लिए डिज़ाइन की गई है"
-        }
-      },
-      "connect": {
-        "badge": "जुड़ें",
-        "title": "संपर्क करें"
-      },
-      "company": {
-        "title": "कंपनी की जानकारी",
-        "contactTitle": "संपर्क जानकारी",
-        "contactForm": "संपर्क फॉर्म"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "संपर्क करें | TRAVI World",
-      "metaDescription": "TRAVI World से संपर्क करें। हम आपकी प्रतिक्रिया, प्रश्नों और हमारी यात्रा सूचना सेवाओं के बारे में पूछताछ का स्वागत करते हैं।",
-      "badge": "हम आपसे सुनना चाहेंगे",
-      "titlePart1": "आइए",
-      "titlePart2": "जुड़ें",
-      "subtitle": "अपने अगले साहसिक कार्य के बारे में सवाल हैं? हम आत्मविश्वास के साथ दुनिया का अन्वेषण करने में आपकी मदद करने के लिए यहां हैं।",
-      "cta": "हमें संदेश भेजें",
-      "getInTouch": "संपर्क करें",
-      "getInTouchSubtitle": "हमसे संपर्क करने का सबसे अच्छा तरीका चुनें। हम तुरंत जवाब देने के लिए प्रतिबद्ध हैं।",
-      "howCanWeHelp": "हम कैसे मदद कर सकते हैं?",
-      "howCanWeHelpSubtitle": "हमारी यात्रा सामग्री और सेवाओं के बारे में किसी भी प्रश्न या प्रतिक्रिया में सहायता के लिए हम यहां हैं।",
-      "importantNote": "महत्वपूर्ण नोट",
-      "importantNoteSubtitle": "संपर्क करने से पहले कृपया पढ़ें",
-      "ourOffice": "हमारा कार्यालय",
-      "ourOfficeSubtitle": "आधिकारिक पत्राचार और डाक पूछताछ के लिए",
-      "travelCompanion": "आपका यात्रा साथी",
-      "urgentNote": "तत्काल मामलों के लिए, कृपया अपने ईमेल विषय पंक्ति में {{urgentLabel}} शामिल करें। हम पूछताछ की प्रकृति के आधार पर प्रतिक्रियाओं को प्राथमिकता देते हैं।",
-      "urgentLabel": "तत्काल",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "सामान्य पूछताछ",
-          "description": "हमारे यात्रा गाइड और सामग्री के बारे में प्रश्न"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "गोपनीयता पूछताछ",
-          "description": "डेटा एक्सेस, डिलीशन और गोपनीयता अनुरोध"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "हमारी वेबसाइट देखें",
-          "description": "गंतव्य और यात्रा प्रेरणा का अन्वेषण करें"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "प्रतिक्रिया समय",
-          "description": "हम तुरंत जवाब देने का प्रयास करते हैं",
-          "action": "2-3 कार्य दिवस"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "हमारे यात्रा गाइड और सामग्री के बारे में सामान्य पूछताछ",
-        "feedback": "सुधार के लिए प्रतिक्रिया और सुझाव",
-        "reporting": "सामग्री त्रुटियों या पुरानी जानकारी की रिपोर्टिंग",
-        "business": "व्यापार और साझेदारी पूछताछ",
-        "media": "मीडिया और प्रेस पूछताछ",
-        "privacy": "गोपनीयता संबंधित अनुरोध (डेटा एक्सेस, डिलीशन, आदि)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "गोपनीयता नीति | TRAVI World",
-      "metaDescription": "जानें कि TRAVI World आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित करता है। हमारी व्यापक गोपनीयता नीति पढ़ें।",
-      "badge": "आपकी गोपनीयता महत्वपूर्ण है",
-      "title": "गोपनीयता नीति",
-      "subtitle": "हम आपकी गोपनीयता की रक्षा करने और अपने डेटा प्रथाओं के बारे में पारदर्शी होने के लिए प्रतिबद्ध हैं। जानें कि TRAVI World आपकी जानकारी कैसे एकत्र, उपयोग और सुरक्षित करता है।",
-      "effectiveDate": "प्रभावी तिथि: 1 जनवरी 2026",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "डेटा सुरक्षा",
-          "description": "आपका डेटा सुरक्षित है"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "न्यूनतम संग्रह",
-          "description": "हम केवल जो आवश्यक है वही एकत्र करते हैं"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "पूर्ण पारदर्शिता",
-          "description": "हमारी प्रथाओं के बारे में स्पष्ट"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "आपका नियंत्रण",
-          "description": "अपनी प्राथमिकताएं प्रबंधित करें"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "1. हम कौन हैं",
-        "informationCollect": "2. हम जो जानकारी एकत्र करते हैं",
-        "howWeUse": "3. हम आपकी जानकारी का उपयोग कैसे करते हैं",
-        "legalBasis": "4. प्रसंस्करण का कानूनी आधार (GDPR)",
-        "cookies": "5. कुकीज़ और ट्रैकिंग तकनीकें",
-        "thirdParty": "6. तृतीय-पक्ष सेवाएं",
-        "aiContent": "7. AI-जनित सामग्री",
-        "internationalTransfers": "8. अंतरराष्ट्रीय डेटा स्थानांतरण",
-        "dataRetention": "9. डेटा प्रतिधारण",
-        "privacyRights": "10. आपके गोपनीयता अधिकार",
-        "californiaRights": "11. कैलिफोर्निया गोपनीयता अधिकार (CCPA/CPRA)",
-        "childrenPrivacy": "12. बच्चों की गोपनीयता",
-        "dataSecurity": "13. डेटा सुरक्षा",
-        "changes": "14. इस नीति में परिवर्तन",
-        "contactUs": "15. हमसे संपर्क करें"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "नियम और शर्तें | TRAVI World",
-      "metaDescription": "TRAVI World यात्रा सूचना सेवाओं का उपयोग करने के लिए नियम और शर्तें पढ़ें। आपके और KBR Global Creative Consulting Ltd के बीच कानूनी समझौता।",
-      "badge": "कानूनी समझौता",
-      "title": "नियम और शर्तें",
-      "subtitle": "TRAVI World का उपयोग करने से पहले कृपया इन शर्तों को ध्यान से पढ़ें। हमारे प्लेटफॉर्म तक आपकी पहुंच और उपयोग इन शर्तों के अधीन है।",
-      "lastUpdated": "अंतिम अपडेट: 1 जनवरी 2026",
-      "importantNotice": "महत्वपूर्ण कानूनी सूचना",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "संपादकीय प्लेटफॉर्म",
-          "description": "यात्रा गाइड और गंतव्य सामग्री"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "एफिलिएट लिंक",
-          "description": "कमीशन-आधारित सिफारिशें"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "AI-जनित",
-          "description": "AI सहायता से बनाई गई सामग्री"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "आपकी गोपनीयता",
-          "description": "डेटा सुरक्षा गारंटी"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "ऑपरेटर / कानूनी इकाई",
-        "purpose": "1. उद्देश्य और उपयोग का दायरा",
-        "affiliateDisclosure": "2. एफिलिएट प्रकटीकरण और तृतीय-पक्ष लेनदेन",
-        "aiDisclaimer": "3. AI-जनित सामग्री अस्वीकरण",
-        "newsletter": "4. न्यूज़लेटर और संचार",
-        "userConduct": "5. उपयोगकर्ता आचरण और निषिद्ध कार्य",
-        "intellectualProperty": "6. बौद्धिक संपदा और सीमित लाइसेंस",
-        "dmca": "7. नोटिस-एंड-टेकडाउन (DMCA और समान)",
-        "disclaimers": "8. सटीकता, उपलब्धता और अस्वीकरण",
-        "liability": "9. दायित्व की सीमा और अप्रत्याशित घटना",
-        "indemnification": "10. क्षतिपूर्ति",
-        "privacyCookies": "11. गोपनीयता, कुकीज़ और डेटा सुरक्षा",
-        "accessibility": "12. पहुंच योग्यता विवरण",
-        "governingLaw": "13. शासी कानून, विवाद समाधान और अधिकार क्षेत्र",
-        "modifications": "14. संशोधन, पृथक्करणीयता और सामान्य प्रावधान"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }

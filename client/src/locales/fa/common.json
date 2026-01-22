@@ -1,1073 +1,1004 @@
 {
   "nav": {
-    "home": "خانه",
-    "destinations": "مقاصد",
-    "attractions": "جاذبه‌ها",
-    "hotels": "هتل‌ها",
-    "guides": "راهنماها",
-    "dining": "رستوران‌ها",
-    "districts": "محله‌ها",
-    "articles": "اخبار",
-    "news": "اخبار",
-    "shopping": "خرید",
-    "realEstate": "املاک",
-    "events": "رویدادها",
-    "search": "جستجو",
-    "language": "زبان",
-    "mainNavigation": "ناوبری اصلی",
-    "openMenu": "باز کردن منو",
-    "closeMenu": "بستن منو",
-    "logoAlt": "TRAVI - راهنمای سفر",
-    "followInstagram": "TRAVI را در اینستاگرام دنبال کنید",
-    "followTikTok": "TRAVI را در تیک‌تاک دنبال کنید",
-    "changeLanguage": "تغییر زبان",
-    "selectLanguage": "انتخاب زبان",
-    "popularLanguages": "زبان های محبوب",
-    "allLanguages": "تمام زبان ها"
+    "home": "Home",
+    "destinations": "Destinations",
+    "attractions": "Attractions",
+    "hotels": "Hotels",
+    "guides": "Guides",
+    "dining": "Dining",
+    "districts": "Districts",
+    "articles": "News",
+    "news": "News",
+    "shopping": "Shopping",
+    "realEstate": "Real Estate",
+    "events": "Events",
+    "search": "Search",
+    "language": "Language",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logoAlt": "TRAVI - Travel Guide",
+    "followInstagram": "Follow TRAVI on Instagram",
+    "followTikTok": "Follow TRAVI on TikTok",
+    "changeLanguage": "Change language",
+    "selectLanguage": "Select Language",
+    "popularLanguages": "Popular Languages",
+    "allLanguages": "All Languages"
   },
   "breadcrumbs": {
-    "ariaLabel": "ناوبری مسیر",
-    "dubai": "دبی"
+    "ariaLabel": "Breadcrumb navigation",
+    "dubai": "Dubai"
   },
   "common": {
-    "readMore": "بیشتر بخوانید",
-    "viewAll": "مشاهده همه",
-    "learnMore": "اطلاعات بیشتر",
-    "bookNow": "رزرو کنید",
-    "contactUs": "تماس با ما",
-    "subscribe": "اشتراک",
-    "submit": "ارسال",
-    "cancel": "انصراف",
-    "save": "ذخیره",
-    "edit": "ویرایش",
-    "delete": "حذف",
-    "loading": "در حال بارگذاری...",
-    "error": "خطایی رخ داد",
-    "noResults": "نتیجه‌ای یافت نشد",
-    "seeMore": "بیشتر ببینید",
-    "back": "بازگشت",
-    "next": "بعدی",
-    "previous": "قبلی",
-    "close": "بستن",
-    "share": "اشتراک‌گذاری",
-    "copyLink": "کپی لینک",
-    "copied": "کپی شد!"
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "contactUs": "Contact Us",
+    "subscribe": "Subscribe",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "seeMore": "See More",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "home": {
     "hero": {
-      "title": "جهان را با TRAVI کشف کنید",
-      "subtitle": "راهنمای جامع سفر شما به ۱۷ مقصد در سراسر جهان",
-      "searchPlaceholder": "جستجوی جاذبه‌ها، هتل‌ها، رستوران‌ها...",
-      "cta": "شروع کاوش",
-      "badge": "دروازه شما به ماجراجویی‌های جهانی",
-      "headlinePart1": "منبع سفر",
-      "headlinePart2": "مورد اعتماد شما",
-      "description": "اطلاعات جامع سفر برای {{destinations}} مقصد در سراسر جهان. راهنماهای کامل برای {{attractions}}+ جاذبه.",
-      "descriptionPart1": "اطلاعات جامع سفر برای",
-      "descriptionPart2": "مقصد در سراسر جهان. راهنماهای کامل برای",
-      "descriptionPart3": "جاذبه.",
-      "carouselLabel": "ناوبری کاروسل مقاصد",
-      "viewDestination": "مشاهده {{name}} - {{tagline}}",
-      "worldwide": "سراسر جهان",
-      "exploreWorld": "جهان را کاوش کنید",
-      "welcomeAriaLabel": "به TRAVI World خوش آمدید",
-      "pageTitle": "TRAVI World - راهنمای سفر برای هتل‌ها، جاذبه‌ها و فعالیت‌ها",
-      "pageDescription": "راهنمای کامل سفر برای ۱۷ مقصد در سراسر جهان. اطلاعات تخصصی درباره هتل‌ها، جاذبه‌ها، رستوران‌ها و فعالیت‌ها برای ۳۰۰۰+ مکان.",
-      "orgDescription": "منبع سفر مورد اعتماد شما برای ۱۷ مقصد در سراسر جهان."
+      "title": "Explore the World with TRAVI",
+      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
+      "searchPlaceholder": "Search attractions, hotels, restaurants...",
+      "cta": "Start Exploring",
+      "badge": "Your Gateway to World Adventures",
+      "headlinePart1": "Your Trusted Travel",
+      "headlinePart2": "Resource",
+      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
+      "descriptionPart1": "Comprehensive travel information for",
+      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "descriptionPart3": "attractions.",
+      "carouselLabel": "Destination carousel navigation",
+      "viewDestination": "View {{name}} - {{tagline}}",
+      "worldwide": "Worldwide",
+      "exploreWorld": "Explore the World",
+      "welcomeAriaLabel": "Welcome to TRAVI World",
+      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
+      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
+      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
     },
     "srLabel": {
-      "attractions": "بیش از {{count}} جاذبه پوشش داده شده",
-      "destinations": "{{count}} مقصد در سراسر جهان",
-      "languages": "پلتفرم چندزبانه با زبان‌های بیشتر در راه"
+      "attractions": "Over {{count}} attractions covered",
+      "destinations": "{{count}} destinations worldwide",
+      "languages": "Multilingual platform with additional languages rolling out"
     },
-    "featured": "ویژه",
-    "trending": "پرطرفدار",
-    "topAttractions": "جاذبه‌های برتر",
-    "bestHotels": "بهترین هتل‌ها",
-    "latestNews": "آخرین اخبار و راهنماها",
+    "featured": "Featured",
+    "trending": "Trending Now",
+    "topAttractions": "Top Attractions",
+    "bestHotels": "Best Hotels",
+    "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "کاوش مقاصد",
-      "destinationsDesc": "مجموعه منتخب مقاصد سفر جهانی ما را کشف کنید",
-      "categories": "مرور بر اساس دسته‌بندی",
-      "categoriesDesc": "دقیقاً آنچه را که می‌خواهید پیدا کنید",
-      "experiences": "سفر بر اساس تجربه",
-      "experiencesDesc": "سبک سفر خود را انتخاب کنید",
-      "faq": "سوالات متداول",
-      "faqDesc": "همه چیز درباره TRAVI",
-      "regions": "کاوش بر اساس منطقه",
-      "newsletter": "به‌روز بمانید",
-      "allDestinationsTitle": "راهنمای سفر برای همه {{count}} مقصد",
-      "completeGuide": "{{name}}، {{country}} - راهنمای کامل سفر"
+      "destinations": "Explore Destinations",
+      "destinationsDesc": "Discover our curated collection of global travel destinations",
+      "categories": "Browse by Category",
+      "categoriesDesc": "Find exactly what you're looking for",
+      "experiences": "Travel by Experience",
+      "experiencesDesc": "Choose your travel style",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Everything you need to know about TRAVI",
+      "regions": "Explore by Region",
+      "newsletter": "Stay Updated",
+      "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
+      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
     },
     "cta": {
-      "exploreDestinations": "کاوش مقاصد",
-      "viewGuides": "مشاهده راهنماها",
-      "viewAll": "مشاهده همه",
-      "startExploring": "شروع کاوش",
-      "planTrip": "برنامه‌ریزی سفر",
-      "viewExperience": "مشاهده {{name}}"
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Guides",
+      "viewAll": "View All",
+      "startExploring": "Start Exploring",
+      "planTrip": "Plan Your Trip",
+      "viewExperience": "View {{name}}"
     },
     "stats": {
-      "destinations": "مقاصد",
-      "attractions": "جاذبه‌ها",
-      "languages": "زبان‌ها",
-      "attractionsNum": "۳۰۰۰+",
-      "destinationsNum": "۱۶",
-      "languagesNum": "۱۷+",
-      "destinationsCountWithLabel": "{{count}} مقصد",
-      "attractionsCountWithLabel": "{{count}}+ جاذبه"
+      "destinations": "DESTINATIONS",
+      "attractions": "ATTRACTIONS",
+      "languages": "LANGUAGES",
+      "attractionsNum": "3,000+",
+      "destinationsNum": "16",
+      "languagesNum": "17+",
+      "destinationsCountWithLabel": "{{count}} destinations",
+      "attractionsCountWithLabel": "{{count}}+ attractions"
     },
     "categories": {
-      "attractions": "جاذبه‌ها",
-      "attractionsDesc": "مکان‌های دیدنی",
-      "news": "اخبار سفر",
-      "newsDesc": "آخرین به‌روزرسانی‌ها",
-      "guides": "راهنماها",
-      "guidesDesc": "راهنمای مقاصد",
-      "hotels": "هتل‌ها",
-      "hotelsDesc": "اقامتگاه مناسب خود را پیدا کنید"
+      "attractions": "Attractions",
+      "attractionsDesc": "Must-see places",
+      "news": "Travel News",
+      "newsDesc": "Latest updates",
+      "guides": "Guides",
+      "guidesDesc": "Destination guides",
+      "hotels": "Hotels",
+      "hotelsDesc": "Find your perfect stay"
     },
     "experiences": {
-      "luxury": "سفر لوکس",
-      "luxuryDesc": "تجربیات سفر ممتاز و مقاصد انحصاری",
-      "adventure": "ماجراجویی و طبیعت",
-      "adventureDesc": "تجربیات هیجان‌انگیز و ماجراجویی در فضای باز",
-      "family": "سفر خانوادگی",
-      "familyDesc": "مقاصد و فعالیت‌های مناسب خانواده",
-      "budget": "سفر اقتصادی",
-      "budgetDesc": "گزینه‌های سفر مقرون‌به‌صرفه",
-      "romance": "ماه عسل و عاشقانه",
-      "romanceDesc": "مقاصد رمانتیک و ماه عسل",
-      "solo": "سفر انفرادی",
-      "soloDesc": "مقاصد عالی برای مسافران تنها"
+      "luxury": "Luxury Travel",
+      "luxuryDesc": "Premium travel experiences and exclusive destinations",
+      "adventure": "Adventure & Outdoors",
+      "adventureDesc": "Thrilling outdoor experiences and adventures",
+      "family": "Family Travel",
+      "familyDesc": "Family-friendly destinations and activities",
+      "budget": "Budget Travel",
+      "budgetDesc": "Affordable travel options and destinations",
+      "romance": "Honeymoon & Romance",
+      "romanceDesc": "Romantic getaways and honeymoon destinations",
+      "solo": "Solo Travel",
+      "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "سوالات متداول",
-      "subtitle": "همه چیز درباره TRAVI World",
-      "whatIsTravi": "TRAVI World چیست؟",
-      "whatIsTraviAnswer": "TRAVI World یک پلتفرم اطلاعات سفر جامع است که ۱۷ مقصد در سراسر جهان را با راهنماهای کامل برای ۳۰۰۰+ جاذبه، هتل، رستوران و فعالیت پوشش می‌دهد.",
-      "howManyDestinations": "TRAVI چند مقصد را پوشش می‌دهد؟",
-      "howManyDestinationsAnswer": "TRAVI World ۱۷ مقصد اصلی شامل دبی، پاریس، توکیو، نیویورک، بارسلونا، سنگاپور، لندن، بانکوک، ابوظبی، آمستردام، هنگ‌کنگ، استانبول، لاس‌وگاس، لس‌آنجلس، میامی و رم را پوشش می‌دهد.",
-      "isFree": "آیا TRAVI World رایگان است؟",
-      "isFreeAnswer": "بله، TRAVI World کاملاً رایگان است. هزاران راهنمای سفر، نظرات جاذبه‌ها، توصیه‌های هتل و پیشنهادات رستوران را بدون هزینه مرور کنید.",
-      "updateFrequency": "محتوا هر چند وقت به‌روز می‌شود؟",
-      "updateFrequencyAnswer": "محتوای TRAVI World روزانه با آخرین اخبار سفر، نظرات جدید جاذبه‌ها و اطلاعات به‌روز هتل‌ها و رستوران‌ها در تمام ۱۷ مقصد به‌روز می‌شود."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI World",
+      "whatIsTravi": "What is TRAVI World?",
+      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
+      "howManyDestinations": "How many destinations does TRAVI cover?",
+      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+      "isFree": "Is TRAVI World free to use?",
+      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
+      "updateFrequency": "How often is content updated?",
+      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
-    "mascotAlt": "ماسکوت TRAVI با نشانه‌های جهانی - راهنمای سفر دبی، پاریس، لندن، رم و بیشتر",
-    "mascotTitle": "TRAVI World - راهنمای سفر برای مقاصد جهانی"
+    "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "جاذبه‌های دبی",
-    "subtitle": "نشانه‌های نمادین و جواهرات پنهان را کشف کنید",
+    "title": "Dubai Attractions",
+    "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
-      "badge": "{{count}} جاذبه در {{cities}} شهر",
-      "badgeThousands": "هزاران جاذبه در سراسر جهان",
-      "headlinePart1": "فعالیت‌ها",
-      "headlinePart2": "در سراسر جهان",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">بلیت‌های بدون صف</span> برای برج ایفل، کولوسئوم، برج خلیفه و جاذبه‌های برتر پاریس، رم، دبی و بیشتر.",
-      "searchPlaceholder": "جستجوی برج ایفل، کولوسئوم، برج خلیفه...",
-      "carouselLabel": "کاروسل جاذبه‌های ویژه",
-      "sectionLabel": "رزرو بلیت جاذبه‌های برتر جهان",
-      "searchAriaLabel": "جستجوی جاذبه‌ها بر اساس نام یا شهر",
-      "searchButton": "جستجو",
-      "searchButtonAriaLabel": "جستجوی جاذبه‌ها"
+      "badge": "{{count}} attractions in {{cities}} cities",
+      "badgeThousands": "Thousands of attractions worldwide",
+      "headlinePart1": "Things to Do",
+      "headlinePart2": "Worldwide",
+      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
+      "carouselLabel": "Featured attractions carousel",
+      "sectionLabel": "Book tickets to top attractions worldwide",
+      "searchAriaLabel": "Search attractions by name or city",
+      "searchButton": "Search",
+      "searchButtonAriaLabel": "Search attractions"
     },
     "stats": {
-      "attractions": "جاذبه‌ها",
-      "cities": "شهرها",
-      "rating": "امتیاز"
+      "attractions": "ATTRACTIONS",
+      "cities": "CITIES",
+      "rating": "RATING"
     },
     "srLabel": {
-      "attractions": "بیش از {{count}} جاذبه",
-      "cities": "{{count}} شهر",
-      "rating": "امتیاز {{rating}} ستاره"
+      "attractions": "Over {{count}} attractions",
+      "cities": "{{count}} cities",
+      "rating": "{{rating}} star rating"
     },
     "types": {
-      "all": "همه انواع",
-      "museums": "موزه‌ها",
-      "landmarks": "نشانه‌ها",
-      "tours": "تورها",
-      "themeParks": "پارک‌های تفریحی",
-      "shows": "نمایش‌ها"
+      "all": "All Types",
+      "museums": "Museums",
+      "landmarks": "Landmarks",
+      "tours": "Tours",
+      "themeParks": "Theme Parks",
+      "shows": "Shows"
     },
-    "thingsToDoIn": "فعالیت‌ها در {{name}}",
-    "countAttractions": "{{country}} - {{count}} جاذبه",
+    "thingsToDoIn": "Things to do in {{name}}",
+    "countAttractions": "{{country}} - {{count}} attractions",
     "filters": {
-      "all": "همه",
-      "popular": "محبوب‌ترین",
-      "free": "ورود رایگان",
-      "familyFriendly": "مناسب خانواده",
-      "outdoor": "فضای باز",
-      "indoor": "فضای بسته"
+      "all": "All",
+      "popular": "Most Popular",
+      "free": "Free Entry",
+      "familyFriendly": "Family Friendly",
+      "outdoor": "Outdoor",
+      "indoor": "Indoor"
     },
     "details": {
-      "location": "موقعیت",
-      "hours": "ساعات کاری",
-      "price": "قیمت",
-      "duration": "مدت زمان",
-      "tips": "نکات کلیدی"
+      "location": "Location",
+      "hours": "Opening Hours",
+      "price": "Price",
+      "duration": "Duration",
+      "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "کاوش جاذبه‌ها بر اساس مقصد",
-      "destinationsDesc": "شهری را انتخاب کنید تا فعالیت‌های شگفت‌انگیز را کشف کنید",
-      "faq": "سوالات متداول",
-      "faqDesc": "پاسخ سوالات درباره رزرو جاذبه‌ها",
-      "whyBookBadge": "چرا با ما رزرو کنید",
-      "whyBookTitle": "از صف‌ها رد شوید، وقت صرفه‌جویی کنید",
-      "whyBookDesc": "بلیت‌ها را از قبل رزرو کنید و از ورود بدون دردسر لذت ببرید",
-      "allDestinations": "همه مقاصد"
+      "destinations": "Explore Attractions by Destination",
+      "destinationsDesc": "Choose a city to discover amazing things to do",
+      "faq": "Frequently Asked Questions",
+      "faqDesc": "Get answers about booking attractions worldwide",
+      "whyBookBadge": "Why Book With Us",
+      "whyBookTitle": "Skip the Lines, Save Time",
+      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "بلیت‌های بدون صف",
-      "skipTheLineDesc": "از صف‌های برج ایفل، کولوسئوم، واتیکان و بیشتر رد شوید",
-      "mobileTickets": "بلیت موبایل",
-      "mobileTicketsDesc": "تحویل فوری به گوشی شما - بلیت را نشان دهید و وارد شوید",
-      "freeCancellation": "لغو رایگان",
-      "freeCancellationDesc": "برنامه‌ها تغییر می‌کنند؟ تا ۲۴ ساعت قبل لغو کنید"
+      "skipTheLine": "Skip-the-Line Tickets",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "mobileTickets": "Mobile Tickets",
+      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
     },
     "browse": {
-      "title": "فعالیت‌ها بر اساس مقصد",
-      "desc": "جاذبه‌ها و تجربیات در برترین شهرهای جهان را پیدا کنید",
-      "thingsToDo": "{{count}} فعالیت",
-      "noDestinations": "در حال حاضر مقصدی در دسترس نیست."
+      "title": "Things to Do by Destination",
+      "desc": "Find attractions and experiences in the world's top cities",
+      "thingsToDo": "{{count}} things to do",
+      "noDestinations": "No destinations available at this time."
     },
     "exploreLinks": {
-      "title": "راهنماهای سفر بیشتر",
-      "hotelsWorldwide": "هتل‌های جهان",
-      "bestRestaurants": "بهترین رستوران‌ها",
-      "travelNews": "اخبار سفر"
+      "title": "Explore More Travel Guides",
+      "hotelsWorldwide": "Hotels Worldwide",
+      "bestRestaurants": "Best Restaurants",
+      "travelNews": "Travel News"
     },
     "cta": {
-      "title": "آماده کاوش هستید؟",
-      "desc": "بلیت‌های بدون صف برج ایفل، کولوسئوم، برج خلیفه و جاذبه‌های برتر جهان را رزرو کنید.",
-      "parisAttractions": "جاذبه‌های پاریس",
-      "romeAttractions": "جاذبه‌های رم"
+      "title": "Ready to Explore?",
+      "desc": "Book skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and top attractions worldwide.",
+      "parisAttractions": "Paris Attractions",
+      "romeAttractions": "Rome Attractions"
     },
     "search": {
-      "popular": "محبوب:",
-      "thingsToDoIn": "فعالیت‌ها در {{city}}",
-      "ariaCarouselNav": "ناوبری کاروسل جاذبه‌ها",
-      "ariaViewInCity": "مشاهده {{name}} در {{city}}"
+      "popular": "Popular:",
+      "thingsToDoIn": "Things to Do in {{city}}",
+      "ariaCarouselNav": "Attraction carousel navigation",
+      "ariaViewInCity": "View {{name}} in {{city}}"
     },
     "gallery": {
-      "ariaFeaturedAttraction": "جاذبه ویژه",
-      "ariaThumbnails": "تصاویر کوچک کاروسل جاذبه‌ها",
-      "ariaTicketsIn": "بلیت {{name}} در {{city}}",
-      "priceFrom": "از",
-      "bookTickets": "رزرو بلیت",
-      "skipTheLine": "بدون صف",
-      "duration": "۲-۳ ساعت",
-      "freeCancellation": "لغو رایگان",
-      "freeCancellationDesc": "۲۴ ساعت قبل از بازدید",
-      "mobileTickets": "بلیت موبایل",
-      "instantDelivery": "تحویل فوری"
+      "ariaFeaturedAttraction": "Featured attraction",
+      "ariaThumbnails": "Attraction carousel thumbnails",
+      "ariaTicketsIn": "{{name}} tickets in {{city}}",
+      "priceFrom": "From",
+      "bookTickets": "Book Tickets",
+      "skipTheLine": "Skip the Line",
+      "duration": "2-3 hours",
+      "freeCancellation": "Free Cancellation",
+      "freeCancellationDesc": "24h before visit",
+      "mobileTickets": "Mobile Tickets",
+      "instantDelivery": "Instant delivery"
     },
     "chip": {
-      "thingsToDo": "{{count}} فعالیت"
+      "thingsToDo": "{{count}} things to do"
     }
   },
   "hotels": {
-    "title": "هتل‌های دبی",
-    "subtitle": "اقامتگاه مناسب خود را پیدا کنید",
+    "title": "Dubai Hotels",
+    "subtitle": "Find your perfect stay",
     "filters": {
-      "all": "همه هتل‌ها",
-      "luxury": "لوکس",
-      "budget": "اقتصادی",
-      "beachfront": "ساحلی",
-      "cityCenter": "مرکز شهر",
-      "familyFriendly": "مناسب خانواده"
+      "all": "All Hotels",
+      "luxury": "Luxury",
+      "budget": "Budget Friendly",
+      "beachfront": "Beachfront",
+      "cityCenter": "City Center",
+      "familyFriendly": "Family Friendly"
     },
     "details": {
-      "priceFrom": "از",
-      "perNight": "هر شب",
-      "amenities": "امکانات",
-      "checkIn": "ورود",
-      "checkOut": "خروج",
-      "rooms": "اتاق‌ها",
-      "rating": "امتیاز"
+      "priceFrom": "From",
+      "perNight": "per night",
+      "amenities": "Amenities",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "rooms": "Rooms",
+      "rating": "Rating"
     },
-    "bookNow": "رزرو کنید"
+    "bookNow": "Book Now"
   },
   "dining": {
-    "title": "رستوران‌های دبی",
-    "subtitle": "تجربیات غذایی برای هر سلیقه",
+    "title": "Dubai Dining",
+    "subtitle": "Culinary experiences for every taste",
     "filters": {
-      "all": "همه رستوران‌ها",
-      "fineDining": "رستوران لوکس",
-      "casual": "رستوران معمولی",
-      "cafes": "کافه‌ها",
-      "streetFood": "غذای خیابانی",
-      "halal": "حلال",
-      "vegetarian": "گیاهی"
+      "all": "All Restaurants",
+      "fineDining": "Fine Dining",
+      "casual": "Casual Dining",
+      "cafes": "Cafes",
+      "streetFood": "Street Food",
+      "halal": "Halal",
+      "vegetarian": "Vegetarian"
     },
     "details": {
-      "cuisine": "نوع غذا",
-      "priceRange": "محدوده قیمت",
-      "hours": "ساعات کاری",
-      "dress": "کد لباس",
-      "reservations": "رزرو"
+      "cuisine": "Cuisine",
+      "priceRange": "Price Range",
+      "hours": "Opening Hours",
+      "dress": "Dress Code",
+      "reservations": "Reservations"
     }
   },
   "destinations": {
     "cities": {
-      "dubai": {
-        "name": "دبی",
-        "country": "امارات",
-        "cardAlt": "آسمان‌خراش دبی با برج خلیفه در غروب"
-      },
-      "london": {
-        "name": "لندن",
-        "country": "بریتانیا",
-        "cardAlt": "بیگ بن و مجلس عوام لندن"
-      },
-      "paris": {
-        "name": "پاریس",
-        "country": "فرانسه",
-        "cardAlt": "برج ایفل پاریس در غروب"
-      },
-      "newYork": {
-        "name": "نیویورک",
-        "country": "آمریکا",
-        "cardAlt": "آسمان‌خراش منهتن نیویورک با ساختمان امپایر استیت"
-      },
-      "tokyo": {
-        "name": "توکیو",
-        "country": "ژاپن",
-        "cardAlt": "چهارراه شیبویا توکیو با چراغ‌های نئون در شب"
-      },
-      "singapore": {
-        "name": "سنگاپور",
-        "country": "سنگاپور",
-        "cardAlt": "مارینا بی سندز و باغ‌های خلیج سنگاپور"
-      },
-      "barcelona": {
-        "name": "بارسلونا",
-        "country": "اسپانیا",
-        "cardAlt": "ساگرادا فامیلیا بارسلونا در ساعت طلایی"
-      },
-      "bangkok": {
-        "name": "بانکوک",
-        "country": "تایلند",
-        "cardAlt": "کاخ بزرگ بانکوک در طلوع"
-      },
-      "abuDhabi": {
-        "name": "ابوظبی",
-        "country": "امارات",
-        "cardAlt": "مسجد شیخ زاید ابوظبی"
-      },
-      "amsterdam": {
-        "name": "آمستردام",
-        "country": "هلند",
-        "cardAlt": "کانال آمستردام با ساختمان‌های تاریخی"
-      },
-      "hongKong": {
-        "name": "هنگ‌کنگ",
-        "country": "چین",
-        "cardAlt": "آسمان‌خراش هنگ‌کنگ در شب"
-      },
-      "istanbul": {
-        "name": "استانبول",
-        "country": "ترکیه",
-        "cardAlt": "مسجد آبی استانبول در غروب"
-      },
-      "lasVegas": {
-        "name": "لاس‌وگاس",
-        "country": "آمریکا",
-        "cardAlt": "خیابان استریپ لاس‌وگاس در شب"
-      },
-      "losAngeles": {
-        "name": "لس‌آنجلس",
-        "country": "آمریکا",
-        "cardAlt": "تابلوی هالیوود لس‌آنجلس"
-      },
-      "miami": {
-        "name": "میامی",
-        "country": "آمریکا",
-        "cardAlt": "منطقه آرت دکو ساحل میامی"
-      },
-      "rome": {
-        "name": "رم",
-        "country": "ایتالیا",
-        "cardAlt": "کولوسئوم رم در ساعت طلایی"
-      }
+      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
+      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
+      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
+      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
+      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
+      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
+      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
+      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
+      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
+      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
+      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
+      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
+      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
     "hero": {
-      "badge": "{{count}} مقصد در سراسر جهان",
-      "trustedBy": "مورد اعتماد {{count}} مقصد در سراسر جهان",
-      "discover": "کشف کنید",
-      "worldClass": "در سطح جهانی",
-      "destinations": "مقاصد",
-      "description": "راهنمای سفر با تخصص محلی برای جذاب‌ترین شهرهای جهان. از نشانه‌های نمادین تا جواهرات پنهان.",
-      "exploreAll": "همه مقاصد را کاوش کنید",
-      "travelGuides": "راهنمای سفر",
-      "explorePlaceholder": "کاوش مقاصد",
-      "browseCollection": "مجموعه مقاصد منتخب ما را مرور کنید",
-      "explore": "کاوش",
-      "discoverButton": "کشف",
-      "ariaLabel": "نمای کلی مقاصد",
-      "exploreTitle": "کاوش {{name}}",
-      "galleryAriaLabel": "گالری مقاصد ویژه",
-      "placeholderAriaLabel": "مکان‌نگهدار مقصد ویژه"
+      "badge": "{{count}} Destinations Worldwide",
+      "trustedBy": "Trusted by {{count}} destinations worldwide",
+      "discover": "Discover",
+      "worldClass": "World-Class",
+      "destinations": "Destinations",
+      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
+      "exploreAll": "Explore All Destinations",
+      "travelGuides": "Travel Guides",
+      "explorePlaceholder": "Explore Destinations",
+      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "explore": "Explore",
+      "discoverButton": "Discover",
+      "ariaLabel": "Destinations overview",
+      "exploreTitle": "Explore {{name}}",
+      "galleryAriaLabel": "Featured destination gallery",
+      "placeholderAriaLabel": "Featured destination placeholder"
     },
     "stats": {
-      "destinations": "مقاصد",
-      "countries": "کشورها",
-      "regions": "مناطق",
-      "languages": "زبان‌ها"
+      "destinations": "DESTINATIONS",
+      "countries": "COUNTRIES",
+      "regions": "Regions",
+      "languages": "Languages"
     },
     "sections": {
-      "featured": "مقاصد ویژه",
-      "featuredDesc": "مقاصد منتخب با تجربیات استثنایی، بینش‌های محلی و همه چیز برای برنامه‌ریزی سفر کامل شما.",
-      "all": "همه مقاصد",
-      "count": "{{count}} مقصد یافت شد"
+      "featured": "Featured Destinations",
+      "featuredDesc": "Handpicked destinations with exceptional experiences, local insights, and everything you need to plan your perfect trip.",
+      "all": "All Destinations",
+      "count": "{{count}} destinations found"
     },
     "search": {
-      "placeholder": "جستجوی مقاصد...",
-      "noResults": "مقصدی یافت نشد",
-      "tryAdjusting": "معیارهای جستجو را تنظیم کنید",
-      "clearSearch": "پاک کردن جستجو"
+      "placeholder": "Search destinations...",
+      "noResults": "No destinations found",
+      "tryAdjusting": "Try adjusting your search criteria",
+      "clearSearch": "Clear Search"
     },
     "carousel": {
-      "label": "کاروسل مقاصد ویژه",
-      "previous": "مقصد قبلی",
-      "next": "مقصد بعدی",
-      "goTo": "رفتن به {{name}}",
-      "slideOf": "اسلاید {{current}} از {{total}}: {{name}}",
-      "thumbnails": "تصاویر کوچک کاروسل مقاصد"
+      "label": "Featured destinations carousel",
+      "previous": "Previous destination",
+      "next": "Next destination",
+      "goTo": "Go to {{name}}",
+      "slideOf": "Slide {{current}} of {{total}}: {{name}}",
+      "thumbnails": "Destination carousel thumbnails"
     },
     "card": {
-      "explore": "کاوش",
-      "defaultLevel": "شهر",
-      "exploreFallback": "کاوش {{name}}",
-      "destination": "مقصد",
-      "travelGuideAlt": "راهنمای سفر {{name}}"
+      "explore": "Explore",
+      "defaultLevel": "City",
+      "exploreFallback": "Explore {{name}}",
+      "destination": "Destination",
+      "travelGuideAlt": "{{name}} travel guide"
     },
     "faq": {
-      "title": "سوالات متداول",
-      "subtitle": "همه چیز درباره راهنماهای مقصد TRAVI",
-      "q1": "TRAVI چند مقصد را پوشش می‌دهد؟",
-      "a1": "TRAVI مقاصد اصلی در خاورمیانه، اروپا، آسیا و آمریکا را با راهنماهای جامع برای هر موقعیت پوشش می‌دهد.",
-      "q2": "چه اطلاعاتی در راهنماهای مقصد TRAVI شامل می‌شود؟",
-      "a2": "هر راهنما شامل توضیحات کامل درباره جاذبه‌ها، گزینه‌های اقامت، غذای محلی، نکات حمل‌ونقل و اطلاعات عملی سفر است.",
-      "q3": "آیا می‌توانم مقاصد را جستجو کنم؟",
-      "a3": "بله، TRAVI امکان جستجوی مقاصد بر اساس نام یا کشور را از طریق نوار جستجو در صفحه مقاصد فراهم می‌کند.",
-      "q4": "مقاصد ویژه در TRAVI چیست؟",
-      "a4": "مقاصد ویژه TRAVI مکان‌های منتخبی هستند که تجربیات استثنایی برای مسافران با علایق متنوع از سفر لوکس تا اقتصادی ارائه می‌دهند."
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about TRAVI destination guides",
+      "q1": "How many destinations does TRAVI cover?",
+      "a1": "TRAVI covers major travel destinations across the Middle East, Europe, Asia, and Americas with comprehensive guides for each location.",
+      "q2": "What information is included in TRAVI destination guides?",
+      "a2": "Each destination guide includes detailed descriptions covering attractions, accommodation options, local cuisine, transportation tips, and practical travel information.",
+      "q3": "Can I search for destinations?",
+      "a3": "Yes, TRAVI allows searching destinations by name or country using the search bar on the destinations page.",
+      "q4": "What are the featured destinations on TRAVI?",
+      "a4": "TRAVI's featured destinations are handpicked locations offering exceptional experiences for travelers with diverse interests from luxury to budget travel."
     },
     "loading": {
-      "title": "در حال بارگذاری مقاصد",
-      "message": "در حال دریافت آخرین داده‌های مقصد..."
+      "title": "Loading Destinations",
+      "message": "Fetching the latest destination data..."
     },
     "error": {
-      "title": "بارگذاری مقاصد ناموفق",
-      "message": "در بارگذاری داده‌های مقصد مشکلی پیش آمد. لطفاً بعداً دوباره امتحان کنید.",
-      "refresh": "بازخوانی صفحه"
+      "title": "Unable to Load Destinations",
+      "message": "We're having trouble loading destination data. Please try again later.",
+      "refresh": "Refresh Page"
     },
     "empty": {
-      "title": "مقصدی موجود نیست",
-      "message": "در حال حاضر هیچ مقصدی در دسترس نیست. لطفاً بعداً مراجعه کنید."
+      "title": "No Destinations Available",
+      "message": "No destinations are currently available. Please check back later."
     }
   },
   "districts": {
-    "title": "محله‌های دبی",
-    "subtitle": "محله‌های متنوع دبی را کشف کنید",
-    "explore": "کاوش محله"
+    "title": "Dubai Districts",
+    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "explore": "Explore District"
   },
   "realEstate": {
-    "title": "املاک دبی",
-    "subtitle": "سرمایه‌گذاری در آینده",
+    "title": "Dubai Real Estate",
+    "subtitle": "Invest in the future",
     "offPlan": {
-      "title": "پروژه‌های پیش‌فروش",
-      "subtitle": "زود سرمایه‌گذاری کنید، کمتر بپردازید، بیشتر بدست آورید",
-      "findProperty": "پیدا کردن ملک مناسب من",
-      "from": "از",
-      "paymentPlan": "برنامه پرداخت",
-      "handover": "تحویل",
-      "developer": "سازنده"
+      "title": "Off-Plan Properties",
+      "subtitle": "Invest Early, Pay Less, Gain More",
+      "findProperty": "Find My Perfect Property",
+      "from": "From",
+      "paymentPlan": "Payment Plan",
+      "handover": "Handover",
+      "developer": "Developer"
     },
     "filters": {
-      "all": "همه املاک",
-      "apartments": "آپارتمان‌ها",
-      "villas": "ویلاها",
-      "townhouses": "تاون‌هاوس‌ها",
-      "penthouses": "پنت‌هاوس‌ها"
+      "all": "All Properties",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "townhouses": "Townhouses",
+      "penthouses": "Penthouses"
     },
     "features": {
-      "cryptoAccepted": "پرداخت با رمزارز",
-      "paymentPlans": "برنامه‌های پرداخت انعطاف‌پذیر",
-      "goldenVisa": "واجد شرایط ویزای طلایی",
-      "roiGuarantee": "تضمین بازگشت سرمایه"
+      "cryptoAccepted": "Crypto Accepted",
+      "paymentPlans": "Flexible Payment Plans",
+      "goldenVisa": "Golden Visa Eligible",
+      "roiGuarantee": "ROI Guarantee"
     }
   },
   "search": {
-    "placeholder": "جستجوی جاذبه‌ها، راهنماها، مقاصد...",
-    "results": "نتایج جستجو",
-    "noResults": "نتیجه‌ای یافت نشد برای",
-    "tryAgain": "کلمات کلیدی دیگری را امتحان کنید"
+    "placeholder": "Search attractions, guides, destinations...",
+    "results": "Search Results",
+    "noResults": "No results found for",
+    "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "درباره Travi",
-    "aboutTravi": "درباره Travi",
-    "aboutText": "اطلاعات جامع سفر برای ۱۷ مقصد در سراسر جهان.",
-    "aboutUs": "درباره ما",
-    "quickLinks": "لینک‌های سریع",
-    "legal": "قانونی",
-    "privacy": "سیاست حریم خصوصی",
-    "privacyPolicy": "سیاست حریم خصوصی",
-    "terms": "شرایط و ضوابط",
-    "termsOfService": "شرایط خدمات",
-    "contact": "تماس با ما",
-    "contactUs": "تماس با ما",
-    "followUs": "ما را دنبال کنید",
-    "explore": "کاوش",
-    "travel": "سفر",
-    "company": "شرکت",
-    "allGuides": "همه راهنماها",
-    "cookies": "کوکی‌ها",
-    "security": "امنیت",
-    "cookieSettings": "تنظیمات کوکی",
-    "tagline": "منبع سفر مورد اعتماد شما",
-    "ariaLabel": "پاورقی سایت",
-    "featuredGuides": "راهنماهای ویژه",
-    "tools": "ابزارها",
-    "currencyConverter": "مبدل ارز",
-    "roiCalculator": "ماشین‌حساب بازگشت سرمایه",
-    "mortgageCalculator": "ماشین‌حساب وام مسکن",
-    "glossary": "واژه‌نامه",
-    "freeThingsToDo": "۷۰+ فعالیت رایگان",
-    "open24Hours": "۲۴ ساعته باز",
-    "tributeToSheikh": "تجلیل از حضرت شیخ محمد",
-    "lawsForTourists": "قوانین برای گردشگران",
-    "newsletter": "عضویت در خبرنامه",
-    "newsletterDescription": "آخرین نکات و به‌روزرسانی‌های سفر دبی را دریافت کنید.",
-    "emailPlaceholder": "ایمیل خود را وارد کنید",
-    "allRightsReserved": "تمامی حقوق محفوظ است.",
-    "copyright": "© {{year}} {{brand}}. تمامی حقوق محفوظ است.",
-    "emailAriaLabel": "ارسال ایمیل به TRAVI"
+    "about": "About Travi",
+    "aboutTravi": "About Travi",
+    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "aboutUs": "About Us",
+    "quickLinks": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact Us",
+    "contactUs": "Contact Us",
+    "followUs": "Follow Us",
+    "explore": "Explore",
+    "travel": "Travel",
+    "company": "Company",
+    "allGuides": "All Guides",
+    "cookies": "Cookies",
+    "security": "Security",
+    "cookieSettings": "Cookie Settings",
+    "tagline": "Your Trusted Travel Resource",
+    "ariaLabel": "Site footer",
+    "featuredGuides": "Featured Guides",
+    "tools": "Tools",
+    "currencyConverter": "Currency Converter",
+    "roiCalculator": "ROI Calculator",
+    "mortgageCalculator": "Mortgage Calculator",
+    "glossary": "Glossary",
+    "freeThingsToDo": "70+ Free Things to Do",
+    "open24Hours": "Open 24 Hours",
+    "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
+    "lawsForTourists": "Laws for Tourists",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "emailPlaceholder": "Enter your email",
+    "allRightsReserved": "All rights reserved.",
+    "copyright": "© {{year}} {{brand}}. All rights reserved.",
+    "emailAriaLabel": "Send email to TRAVI"
   },
   "errors": {
     "404": {
-      "title": "صفحه یافت نشد",
-      "message": "صفحه‌ای که به دنبال آن هستید وجود ندارد.",
-      "button": "بازگشت به خانه"
+      "title": "Page Not Found",
+      "message": "The page you're looking for doesn't exist.",
+      "button": "Go Home"
     },
     "500": {
-      "title": "خطای سرور",
-      "message": "مشکلی در سمت ما پیش آمد.",
-      "button": "دوباره امتحان کنید"
+      "title": "Server Error",
+      "message": "Something went wrong on our end.",
+      "button": "Try Again"
     },
     "network": {
-      "title": "خطای اتصال",
-      "message": "اتصال برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.",
-      "button": "تلاش مجدد"
+      "title": "Connection Error",
+      "message": "Unable to connect. Please check your internet connection.",
+      "button": "Retry"
     }
   },
   "newsletter": {
-    "badge": "به ماجراجویی بپیوندید",
-    "title": "جادوی سفر را در صندوق ورودی خود دریافت کنید",
-    "description": "نکات هفتگی، جواهرات پنهان و پیشنهادات ویژه - بدون اسپم، فقط عشق به سفر.",
-    "emailPlaceholder": "ایمیل@شما.com",
-    "subscribe": "اشتراک",
-    "success": "عضو شدید! صندوق ورودی خود را بررسی کنید."
+    "badge": "Join the Adventure",
+    "title": "Get Travel Magic in Your Inbox",
+    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "success": "You're subscribed! Check your inbox."
   },
   "cookies": {
-    "title": "ما برای حریم خصوصی شما ارزش قائلیم",
-    "description": "ما از کوکی‌ها برای بهبود تجربه مرور شما، تحلیل ترافیک سایت و شخصی‌سازی محتوا استفاده می‌کنیم. با کلیک بر «پذیرش همه»، به استفاده ما از کوکی‌ها رضایت می‌دهید.",
-    "manage": "مدیریت",
-    "rejectAll": "رد همه",
-    "acceptAll": "پذیرش همه",
-    "preferencesTitle": "تنظیمات کوکی",
-    "savePreferences": "ذخیره تنظیمات",
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize contents. By clicking \"Accept All\", you consent to our use of cookies.",
+    "manage": "Manage",
+    "rejectAll": "Reject All",
+    "acceptAll": "Accept All",
+    "preferencesTitle": "Cookie Preferences",
+    "savePreferences": "Save Preferences",
     "essential": {
-      "title": "کوکی‌های ضروری",
-      "description": "برای عملکرد صحیح وب‌سایت الزامی است"
+      "title": "Essential Cookies",
+      "description": "Required for the website to function properly"
     },
     "analytics": {
-      "title": "کوکی‌های تحلیلی",
-      "description": "به ما کمک می‌کند بفهمیم بازدیدکنندگان چگونه با وب‌سایت ما تعامل می‌کنند"
+      "title": "Analytics Cookies",
+      "description": "Help us understand how visitors interact with our website"
     },
     "marketing": {
-      "title": "کوکی‌های بازاریابی",
-      "description": "برای نمایش تبلیغات شخصی‌سازی شده استفاده می‌شود"
+      "title": "Marketing Cookies",
+      "description": "Used to deliver personalized advertisements"
     }
   },
   "meta": {
     "home": {
-      "title": "Travi - دبی را کشف کنید | راهنمای کامل سفر دبی",
-      "description": "بهترین جاذبه‌ها، هتل‌ها، رستوران‌ها و محله‌های دبی را کاوش کنید. سفر عالی دبی خود را با نکات داخلی و توصیه‌های محلی برنامه‌ریزی کنید."
+      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
+      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "جاذبه‌های دبی | بهترین فعالیت‌ها در دبی",
-      "description": "بهترین جاذبه‌های دبی را کشف کنید - از برج خلیفه تا جواهرات پنهان. ماجراجویی گردشگری دبی خود را برنامه‌ریزی کنید."
+      "title": "Dubai Attractions | Top Things to Do in Dubai",
+      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
     },
     "hotels": {
-      "title": "هتل‌های دبی | بهترین اقامتگاه‌ها در دبی",
-      "description": "هتل عالی در دبی را برای هر بودجه‌ای پیدا کنید. از استراحتگاه‌های لوکس تا گزینه‌های اقتصادی."
+      "title": "Dubai Hotels | Best Places to Stay in Dubai",
+      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
     },
     "dining": {
-      "title": "رستوران‌های دبی | بهترین غذاخوری در دبی",
-      "description": "صحنه غذایی دبی را کاوش کنید - رستوران‌های لوکس، غذای خیابانی و همه چیز بین آنها."
+      "title": "Dubai Restaurants | Best Dining in Dubai",
+      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
     }
   },
   "guides": {
     "hero": {
-      "categoryLabel": "هوش سفر",
-      "headlinePart1": "داستان‌هایی که",
-      "headlinePart2": "شما را به حرکت درمی‌آورد",
-      "description": "راهنماهای تخصصی، دیدگاه‌های داخلی و روایت‌های تحریریه‌ای که نحوه تجربه جهان را متحول می‌کنند.",
-      "startJourney": "سفر خود را شروع کنید",
-      "browseCollection": "مرور مجموعه",
-      "issueBadge": "شماره ۴۷ — زمستان ۲۰۲۶"
+      "categoryLabel": "Travel Intelligence",
+      "headlinePart1": "Stories That",
+      "headlinePart2": "Move You",
+      "description": "Expert-crafted guides, insider perspectives, and editorial narratives that transform the way you experience the world.",
+      "startJourney": "Start Your Journey",
+      "browseCollection": "Browse Collection",
+      "issueBadge": "Issue 47 — Winter 2026"
     },
     "stats": {
-      "guides": "راهنماهای سفر",
-      "destinations": "مقاصد",
-      "languages": "زبان‌ها"
+      "guides": "Travel Guides",
+      "destinations": "Destinations",
+      "languages": "Languages"
     },
     "journey": {
-      "badge": "سفر شما، راهنمایی ما",
-      "title": "هر سفر بزرگ با یک راهنما شروع می‌شود",
-      "subtitle": "از رویاپردازی تا اشتراک‌گذاری، ما در هر قدم همراه شما هستیم"
+      "badge": "Your Journey, Our Guidance",
+      "title": "Every Great Trip Begins with a Guide",
+      "subtitle": "From dreaming to sharing, we're with you at every step"
     },
     "ideaLab": {
-      "badge": "آزمایشگاه ایده",
-      "title": "الهام منتخب",
-      "readGuide": "خواندن راهنما"
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
     "archetype": {
-      "badge": "شخصی‌سازی شده برای شما",
-      "title": "شما چه نوع مسافری هستید؟",
-      "subtitle": "سبک سفر خود را انتخاب کنید و راهنماهای منتخب را کشف کنید",
-      "viewGuides": "مشاهده راهنماهای {{type}}"
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
     "archetypes": {
       "adventure": {
-        "name": "ماجراجو",
-        "description": "تجربیات هیجان‌انگیز و آدرنالین"
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
       },
       "culture": {
-        "name": "کاوشگر فرهنگ",
-        "description": "هنر، تاریخ و سنت‌های محلی"
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
       },
       "relaxation": {
-        "name": "استاد آرامش",
-        "description": "اقامتگاه‌های سلامتی و فرار آرام"
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
       },
       "foodie": {
-        "name": "کوچ‌نشین آشپزخانه",
-        "description": "طعم‌های محلی و ماجراجویی‌های غذایی"
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
       },
       "wellness": {
-        "name": "جویای سلامتی",
-        "description": "آرامش، اسپا و اقامت‌های ذهن‌آگاهانه"
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
       },
       "budget": {
-        "name": "مسافر هوشمند",
-        "description": "حداکثر تجربه، حداقل هزینه"
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
       },
       "solo": {
-        "name": "کاوشگر تنها",
-        "description": "سفرهای مستقل و خودشناسی"
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
       },
       "luxury": {
-        "name": "خبره لوکس",
-        "description": "تجربیات ممتاز و زندگی لوکس"
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
       }
     },
     "milestones": {
       "dream": {
-        "title": "رویا",
-        "subtitle": "الهام را کشف کنید",
-        "guides": [
-          "راهنماهای مقصد",
-          "مقالات عکاسی"
-        ]
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
       },
       "plan": {
-        "title": "برنامه‌ریزی",
-        "subtitle": "سفر خود را ترسیم کنید",
-        "guides": [
-          "برنامه‌ریزی سفر",
-          "الزامات ویزا"
-        ]
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
       },
       "prepare": {
-        "title": "آماده‌سازی",
-        "subtitle": "برای رفتن آماده شوید",
-        "guides": [
-          "لیست بسته‌بندی",
-          "نکات ایمنی"
-        ]
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
       },
       "experience": {
-        "title": "تجربه",
-        "subtitle": "ماجراجویی را زندگی کنید",
-        "guides": [
-          "بینش‌های محلی",
-          "جواهرات پنهان"
-        ]
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
       },
       "share": {
-        "title": "اشتراک‌گذاری",
-        "subtitle": "داستان خود را بگویید",
-        "guides": [
-          "نوشتن سفر",
-          "عکاسی"
-        ]
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
       }
     },
     "categories": {
-      "weekendEscapes": "فرارهای آخر هفته",
-      "offBeatenPath": "دور از مسیر پرتردد",
-      "smartTravel": "سفر هوشمند",
-      "bucketList": "لیست آرزوها",
-      "culinary": "غذایی",
-      "natureWonder": "طبیعت و شگفتی"
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
     },
     "seo": {
-      "title": "راهنماهای سفر | بینش‌های تخصصی مقصد",
-      "description": "راهنماهای سفر تخصصی، بینش‌های مقصد و نکات داخلی از شبکه جهانی نویسندگان سفر ما را کشف کنید. سفر عالی خود را امروز برنامه‌ریزی کنید."
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
     },
     "editorial": {
-      "badge": "از سردبیران ما",
-      "title": "ویژگی‌های تحریریه",
-      "readFull": "خواندن مقاله کامل"
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
     },
     "gallery": {
-      "badge": "داستان‌های تصویری",
-      "title": "مقاصدی که الهام‌بخش هستند",
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
       "categories": {
-        "city": "شهر",
-        "mountains": "کوه‌ها",
-        "beach": "ساحل",
-        "safari": "سافاری",
-        "nature": "طبیعت"
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
+        "safari": "Safari",
+        "nature": "Nature"
       }
     },
     "writers": {
-      "badge": "صداهای تخصصی",
-      "title": "با نویسندگان ما آشنا شوید",
-      "subtitle": "صداهای تخصصی پشت معتبرترین راهنماهای سفر ما",
-      "articleCount": "{{count}} مقاله",
-      "viewProfile": "مشاهده پروفایل"
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
     },
     "map": {
-      "badge": "کاوش بر اساس منطقه",
-      "title": "راهنماها در سراسر جهان",
-      "subtitle": "برای کشف پوشش تخصصی ما، روی هر مقصد کلیک کنید",
-      "guidesAvailable": "{{count}} راهنما موجود",
-      "legendDestination": "مقصد",
-      "legendHighlighted": "برجسته شده"
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
     },
     "newsletter": {
-      "badge": "به سفر بپیوندید",
-      "title": "داستان‌های سفر، هفتگی",
-      "description": "الهام سفر منتخب، نکات تخصصی و دیدگاه‌های داخلی هر هفته به صندوق ورودی شما تحویل داده می‌شود.",
-      "placeholder": "ایمیل خود را وارد کنید",
-      "subscribe": "اشتراک",
-      "subscribing": "در حال اشتراک...",
-      "joinCount": "به ۵۰،۰۰۰+ مسافری که خلاصه هفتگی ما را می‌خوانند بپیوندید",
-      "invalidEmail": "لطفاً یک ایمیل معتبر وارد کنید",
-      "successTitle": "به سفر خوش آمدید!",
-      "successDesc": "شما اکنون عضو خلاصه تحریریه ما هستید."
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {
     "time": {
-      "recent": "اخیر",
-      "justNow": "همین الان",
-      "minutesAgo": "{{count}} دقیقه پیش",
-      "hoursAgo": "{{count}} ساعت پیش",
-      "daysAgo": "{{count}} روز پیش",
-      "minRead": "{{count}} دقیقه خواندن"
+      "recent": "Recent",
+      "justNow": "Just now",
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "minRead": "{{count}} min read"
     },
     "header": {
-      "title": "اخبار TRAVI",
-      "edition": "نسخه بین‌المللی",
-      "subscribe": "اشتراک"
+      "title": "TRAVI NEWS",
+      "edition": "International Edition",
+      "subscribe": "Subscribe"
     },
     "breaking": {
-      "label": "فوری"
+      "label": "Breaking"
     },
     "search": {
-      "placeholder": "جستجوی اخبار سراسر جهان...",
-      "button": "جستجو",
-      "title": "جستجو",
-      "searching": "جستجوی «{{query}}»..."
+      "placeholder": "Search worldwide news...",
+      "button": "Search",
+      "title": "Search",
+      "searching": "Searching for \"{{query}}\"..."
     },
     "categories": {
-      "all": "همه اخبار",
-      "world": "جهان",
-      "business": "کسب‌وکار",
-      "culture": "فرهنگ",
-      "travel": "سفر",
-      "tech": "فناوری",
-      "opinion": "نظر"
+      "all": "All News",
+      "world": "World",
+      "business": "Business",
+      "culture": "Culture",
+      "travel": "Travel",
+      "tech": "Tech",
+      "opinion": "Opinion"
     },
     "empty": {
-      "title": "هنوز مقاله خبری وجود ندارد",
-      "description": "ما در حال کار برای ارائه آخرین اخبار و بینش‌های سفر هستیم. به‌زودی برای به‌روزرسانی‌ها از سراسر جهان بازگردید.",
-      "exploreDestinations": "کاوش مقاصد",
-      "viewGuides": "مشاهده راهنماهای سفر"
+      "title": "No News Articles Yet",
+      "description": "We're working on bringing you the latest travel news and insights. Check back soon for updates from around the world.",
+      "exploreDestinations": "Explore Destinations",
+      "viewGuides": "View Travel Guides"
     },
     "hero": {
-      "topStory": "داستان برتر",
-      "editorialTeam": "تیم تحریریه"
+      "topStory": "Top Story",
+      "editorialTeam": "Editorial Team"
     },
-    "views": "{{count}} بازدید",
-    "viewAll": "مشاهده همه",
+    "views": "{{count}} views",
+    "viewAll": "View All",
     "seo": {
-      "title": "اخبار سفر | آخرین داستان‌ها و به‌روزرسانی‌ها",
-      "description": "با آخرین اخبار سفر، به‌روزرسانی‌های مقصد و بینش‌های صنعت از سراسر جهان به‌روز بمانید."
+      "title": "Travel News | Latest Stories & Updates",
+      "description": "Stay informed with the latest travel news, destination updates, and industry insights from around the world."
     },
     "sidebar": {
-      "alsoToday": "همچنین امروز",
-      "storiesCount": "{{count}} داستان",
-      "liveUpdates": "به‌روزرسانی‌های زنده",
-      "trendingTopics": "موضوعات داغ",
-      "noTrending": "هنوز موضوع داغی وجود ندارد. به‌زودی بررسی کنید!"
+      "alsoToday": "Also Today",
+      "storiesCount": "{{count}} stories",
+      "liveUpdates": "Live Updates",
+      "trendingTopics": "Trending Topics",
+      "noTrending": "No trending topics yet. Check back soon!"
     },
     "sections": {
-      "topStories": "داستان‌های برتر",
-      "opinion": "نظر و تحلیل",
-      "moreOpinion": "نظرات بیشتر",
-      "worldwide": "پوشش جهانی"
+      "topStories": "Top Stories",
+      "opinion": "Opinion & Analysis",
+      "moreOpinion": "More Opinion",
+      "worldwide": "Worldwide Coverage"
     },
     "worldwide": {
-      "title": "پنجره شما به جهان",
-      "subtitle": "اخبار از هر گوشه کره زمین",
-      "storiesCount": "{{count}} داستان",
-      "comingSoon": "به‌زودی"
+      "title": "Your Window to the World",
+      "subtitle": "News from every corner of the globe",
+      "storiesCount": "{{count}} stories",
+      "comingSoon": "Coming soon"
     },
     "newsletter": {
-      "title": "به‌روز بمانید",
-      "description": "داستان‌های برتر روز را هر صبح در صندوق ورودی خود دریافت کنید. به ۵۰،۰۰۰+ خواننده بپیوندید.",
-      "placeholder": "ایمیل خود را وارد کنید",
-      "subscribe": "اشتراک رایگان",
-      "noSpam": "بدون اسپم. هر زمان لغو اشتراک.",
-      "successTitle": "عضو شدید!",
-      "successDesc": "لطفاً ایمیل خود را برای تأیید اشتراک بررسی کنید.",
-      "errorTitle": "اشتراک ناموفق",
-      "errorDesc": "لطفاً بعداً دوباره امتحان کنید.",
-      "invalidTitle": "ایمیل نامعتبر",
-      "invalidDesc": "لطفاً یک آدرس ایمیل معتبر وارد کنید."
+      "title": "Stay Informed",
+      "description": "Get the day's top stories delivered to your inbox every morning. Join 50,000+ readers.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Free",
+      "noSpam": "No spam. Unsubscribe anytime.",
+      "successTitle": "Subscribed!",
+      "successDesc": "Please check your email to confirm your subscription.",
+      "errorTitle": "Subscription failed",
+      "errorDesc": "Please try again later.",
+      "invalidTitle": "Invalid email",
+      "invalidDesc": "Please enter a valid email address."
     }
   },
   "pages": {
     "about": {
-      "metaTitle": "درباره ما | TRAVI World",
-      "metaDescription": "درباره TRAVI World بیاموزید - یک پلتفرم اطلاعات سفر مستقل که راهنماهای جامع برای مقاصد سراسر جهان ارائه می‌دهد.",
-      "badge": "همراه سفر شما",
-      "title": "درباره",
+      "metaTitle": "About Us | TRAVI World",
+      "metaDescription": "Learn about TRAVI World, an independent travel information resource providing comprehensive travel guides, attractions, hotels and restaurant information for destinations worldwide.",
+      "badge": "Your Travel Companion",
+      "title": "About",
       "titleHighlight": "TRAVI World",
-      "subtitle": "منبع مورد اعتماد شما برای اطلاعات جامع سفر و راهنماهای مقصد، که به میلیون‌ها نفر کمک می‌کند جهان را با اطمینان کاوش کنند.",
-      "ctaExplore": "کاوش مقاصد",
-      "ctaContact": "تماس بگیرید",
-      "stats": {
-        "destinations": "مقاصد",
-        "articles": "مقالات",
-        "support": "پشتیبانی سفر",
-        "coverage": "پوشش",
-        "cities": "۱۶+ شهر"
-      },
-      "whoWeAre": {
-        "title": "ما که هستیم"
-      },
-      "mission": {
-        "title": "مأموریت ما"
-      },
-      "services": {
-        "badge": "خدمات ما",
-        "title": "آنچه ارائه می‌دهیم"
-      },
-      "offerings": {
-        "destinations": {
-          "title": "راهنماهای مقصد",
-          "description": "اطلاعات جامع درباره شهرها و مناطق سراسر جهان"
-        },
-        "attractions": {
-          "title": "اطلاعات جاذبه‌ها",
-          "description": "جزئیات درباره دیدنی‌های ضروری و تجربیات منحصربه‌فرد"
-        },
-        "hotels": {
-          "title": "راهنماهای هتل",
-          "description": "اطلاعات درباره گزینه‌های اقامت برای هر بودجه"
-        },
-        "restaurants": {
-          "title": "توصیه‌های رستوران",
-          "description": "گزینه‌های غذاخوری برای هر سلیقه و ترجیح"
-        },
-        "articles": {
-          "title": "مقالات سفر",
-          "description": "نکات، بینش‌ها و الهام سفر"
-        },
-        "news": {
-          "title": "آخرین اخبار سفر",
-          "description": "با به‌روزرسانی‌های منتخب سفر مطلع بمانید"
-        }
-      },
-      "editorial": {
-        "title": "استقلال تحریریه",
-        "affiliateTitle": "افشای همکاری"
-      },
-      "values": {
-        "badge": "بنیاد ما",
-        "title": "ارزش‌های ما",
-        "accuracy": {
-          "title": "دقت",
-          "description": "ما تلاش می‌کنیم اطلاعات دقیق و قابل اعتماد ارائه دهیم و محتوای خود را به‌طور منظم به‌روز کنیم"
-        },
-        "transparency": {
-          "title": "شفافیت",
-          "description": "ما درباره روابط همکاری و نحوه عملکرد خود شفاف هستیم"
-        },
-        "userFocused": {
-          "title": "کاربرمحور",
-          "description": "محتوای ما طراحی شده تا به مسافران در تصمیم‌گیری آگاهانه کمک کند"
-        }
-      },
-      "connect": {
-        "badge": "ارتباط برقرار کنیم",
-        "title": "تماس بگیرید"
-      },
-      "company": {
-        "title": "اطلاعات شرکت",
-        "contactTitle": "اطلاعات تماس",
-        "contactForm": "فرم تماس"
-      }
+      "subtitle": "Your trusted source for comprehensive travel information and destination guides, helping millions explore the world with confidence.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Get in Touch"
     },
     "contact": {
-      "metaTitle": "تماس با ما | TRAVI World",
-      "metaDescription": "با TRAVI World تماس بگیرید. ما از بازخورد، سوالات و پرسش‌های شما درباره خدمات اطلاعات سفر ما استقبال می‌کنیم.",
-      "badge": "خوشحال می‌شویم صدای شما را بشنویم",
-      "titlePart1": "بیایید",
-      "titlePart2": "ارتباط برقرار کنیم",
-      "subtitle": "سوالی درباره ماجراجویی بعدی خود دارید؟ ما اینجا هستیم تا به شما کمک کنیم جهان را با اطمینان کاوش کنید.",
-      "cta": "برای ما پیام بفرستید",
-      "getInTouch": "تماس بگیرید",
-      "getInTouchSubtitle": "بهترین راه برای تماس با ما را انتخاب کنید. ما متعهد به پاسخگویی سریع هستیم.",
-      "howCanWeHelp": "چگونه می‌توانیم کمک کنیم؟",
-      "howCanWeHelpSubtitle": "ما اینجا هستیم تا به هر سوال یا بازخوردی که ممکن است درباره محتوا و خدمات سفر ما داشته باشید کمک کنیم.",
-      "importantNote": "نکته مهم",
-      "importantNoteSubtitle": "لطفاً قبل از تماس بخوانید",
-      "ourOffice": "دفتر ما",
-      "ourOfficeSubtitle": "برای مکاتبات رسمی و پرسش‌های پستی",
-      "travelCompanion": "همراه سفر شما",
-      "urgentNote": "برای موارد فوری، لطفاً {{urgentLabel}} را در موضوع ایمیل خود قرار دهید. ما پاسخ‌ها را بر اساس ماهیت پرسش اولویت‌بندی می‌کنیم.",
-      "urgentLabel": "فوری",
+      "metaTitle": "Contact Us | TRAVI World",
+      "metaDescription": "Get in touch with TRAVI World. We welcome your feedback, questions, and inquiries about our travel information services.",
+      "badge": "We'd love to hear from you",
+      "titlePart1": "Let's",
+      "titlePart2": "Connect",
+      "subtitle": "Have questions about your next adventure? We're here to help you explore the world with confidence.",
+      "cta": "Send us a message",
+      "getInTouch": "Get in Touch",
+      "getInTouchSubtitle": "Choose the best way to reach us. We're committed to responding promptly.",
+      "howCanWeHelp": "How Can We Help?",
+      "howCanWeHelpSubtitle": "We're here to assist with any questions or feedback you might have about our travel contents and services.",
+      "importantNote": "Important Note",
+      "importantNoteSubtitle": "Please read before contacting us",
+      "ourOffice": "Our Office",
+      "ourOfficeSubtitle": "For official correspondence and postal inquiries",
+      "travelCompanion": "Your travel companion",
+      "urgentNote": "For urgent matters, please include {{urgentLabel}} in your email subject line. We prioritize responses based on the nature of the inquiry.",
+      "urgentLabel": "Urgent",
       "options": {
         "generalInquiries": {
-          "title": "پرسش‌های عمومی",
-          "description": "سوالات درباره راهنماها و محتوای سفر ما"
+          "title": "General Inquiries",
+          "description": "Questions about our travel guides and contents"
         },
         "privacyInquiries": {
-          "title": "پرسش‌های حریم خصوصی",
-          "description": "دسترسی به داده‌ها، حذف و درخواست‌های حریم خصوصی"
+          "title": "Privacy Inquiries",
+          "description": "Data access, deletion, and privacy requests"
         },
         "visitWebsite": {
-          "title": "از وب‌سایت ما بازدید کنید",
-          "description": "مقاصد و الهام سفر را کاوش کنید"
+          "title": "Visit Our Website",
+          "description": "Explore destinations and travel inspiration"
         },
         "responseTime": {
-          "title": "زمان پاسخگویی",
-          "description": "ما هدف داریم به سرعت پاسخ دهیم",
-          "action": "۲-۳ روز کاری"
+          "title": "Response Time",
+          "description": "We aim to respond promptly",
+          "action": "2-3 business days"
         }
       },
       "helpTopics": {
-        "general": "پرسش‌های عمومی درباره راهنماها و محتوای سفر ما",
-        "feedback": "بازخورد و پیشنهادات برای بهبود",
-        "reporting": "گزارش خطاهای محتوا یا اطلاعات قدیمی",
-        "business": "پرسش‌های تجاری و همکاری",
-        "media": "پرسش‌های رسانه و مطبوعات",
-        "privacy": "درخواست‌های مربوط به حریم خصوصی (دسترسی به داده‌ها، حذف و غیره)"
+        "general": "General inquiries about our travel guides and contents",
+        "feedback": "Feedback and suggestions for improvement",
+        "reporting": "Reporting contents errors or outdated information",
+        "business": "Business and partnership inquiries",
+        "media": "Media and press inquiries",
+        "privacy": "Privacy-related requests (data access, deletion, etc.)"
       }
     },
     "privacy": {
-      "metaTitle": "سیاست حریم خصوصی | TRAVI World",
-      "metaDescription": "بیاموزید TRAVI World چگونه اطلاعات شخصی شما را جمع‌آوری، استفاده و محافظت می‌کند. سیاست حریم خصوصی جامع ما را بخوانید.",
-      "badge": "حریم خصوصی شما اهمیت دارد",
-      "title": "سیاست حریم خصوصی",
-      "subtitle": "ما متعهد به حفاظت از حریم خصوصی شما و شفافیت درباره رویه‌های داده‌ای خود هستیم. بیاموزید TRAVI World چگونه اطلاعات شما را جمع‌آوری، استفاده و محافظت می‌کند.",
-      "effectiveDate": "تاریخ اجرا: ۱ ژانویه ۲۰۲۶",
+      "metaTitle": "Privacy Policy | TRAVI World",
+      "metaDescription": "Learn how TRAVI World collects, uses, and protects your personal information. Read our comprehensive privacy policy.",
+      "badge": "Your Privacy Matters",
+      "title": "Privacy Policy",
+      "subtitle": "We are committed to protecting your privacy and being transparent about our data practices. Learn how TRAVI World collects, uses, and protects your information.",
+      "effectiveDate": "Effective Date: 1 January 2026",
       "features": {
         "dataProtection": {
-          "title": "حفاظت از داده‌ها",
-          "description": "داده‌های شما محافظت می‌شود"
+          "title": "Data Protection",
+          "description": "Your data is protected"
         },
         "minimalCollection": {
-          "title": "جمع‌آوری حداقل",
-          "description": "فقط آنچه لازم است جمع‌آوری می‌کنیم"
+          "title": "Minimal Collection",
+          "description": "We collect only what's needed"
         },
         "transparency": {
-          "title": "شفافیت کامل",
-          "description": "درباره رویه‌های خود شفاف هستیم"
+          "title": "Full Transparency",
+          "description": "Clear about our practices"
         },
         "yourControl": {
-          "title": "کنترل شما",
-          "description": "تنظیمات خود را مدیریت کنید"
+          "title": "Your Control",
+          "description": "Manage your preferences"
         }
       },
       "sections": {
-        "whoWeAre": "۱. ما که هستیم",
-        "informationCollect": "۲. اطلاعاتی که جمع‌آوری می‌کنیم",
-        "howWeUse": "۳. نحوه استفاده از اطلاعات شما",
-        "legalBasis": "۴. مبنای قانونی پردازش (GDPR)",
-        "cookies": "۵. کوکی‌ها و فناوری‌های ردیابی",
-        "thirdParty": "۶. خدمات شخص ثالث",
-        "aiContent": "۷. محتوای تولید شده با هوش مصنوعی",
-        "internationalTransfers": "۸. انتقال بین‌المللی داده‌ها",
-        "dataRetention": "۹. نگهداری داده‌ها",
-        "privacyRights": "۱۰. حقوق حریم خصوصی شما",
-        "californiaRights": "۱۱. حقوق حریم خصوصی کالیفرنیا (CCPA/CPRA)",
-        "childrenPrivacy": "۱۲. حریم خصوصی کودکان",
-        "dataSecurity": "۱۳. امنیت داده‌ها",
-        "changes": "۱۴. تغییرات در این سیاست",
-        "contactUs": "۱۵. تماس با ما"
+        "whoWeAre": "1. Who We Are",
+        "informationCollect": "2. Information We Collect",
+        "howWeUse": "3. How We Use Your Information",
+        "legalBasis": "4. Legal Basis for Processing (GDPR)",
+        "cookies": "5. Cookies and Tracking Technologies",
+        "thirdParty": "6. Third-Party Services",
+        "aiContent": "7. AI-Generated Content",
+        "internationalTransfers": "8. International Data Transfers",
+        "dataRetention": "9. Data Retention",
+        "privacyRights": "10. Your Privacy Rights",
+        "californiaRights": "11. California Privacy Rights (CCPA/CPRA)",
+        "childrenPrivacy": "12. Children's Privacy",
+        "dataSecurity": "13. Data Security",
+        "changes": "14. Changes to This Policy",
+        "contactUs": "15. Contact Us"
       }
     },
     "terms": {
-      "metaTitle": "شرایط و ضوابط | TRAVI World",
-      "metaDescription": "شرایط و ضوابط استفاده از خدمات اطلاعات سفر TRAVI World را بخوانید. توافق‌نامه قانونی بین شما و KBR Global Creative Consulting Ltd.",
-      "badge": "توافق‌نامه قانونی",
-      "title": "شرایط و ضوابط",
-      "subtitle": "لطفاً این شرایط را قبل از استفاده از TRAVI World با دقت بخوانید. دسترسی و استفاده شما از پلتفرم ما تابع این شرایط است.",
-      "lastUpdated": "آخرین به‌روزرسانی: ۱ ژانویه ۲۰۲۶",
-      "importantNotice": "اطلاعیه قانونی مهم",
+      "metaTitle": "Terms & Conditions | TRAVI World",
+      "metaDescription": "Read the terms and conditions for using TRAVI World travel information services. Legal agreement between you and KBR Global Creative Consulting Ltd.",
+      "badge": "Legal Agreement",
+      "title": "Terms & Conditions",
+      "subtitle": "Please read these terms carefully before using TRAVI World. Your access to and use of our platform is subject to these conditions.",
+      "lastUpdated": "Last updated: 1 January 2026",
+      "importantNotice": "Important Legal Notice",
       "keyPoints": {
         "editorial": {
-          "title": "پلتفرم تحریریه",
-          "description": "راهنماهای سفر و محتوای مقصد"
+          "title": "Editorial Platform",
+          "description": "Travel guides & destination contents"
         },
         "affiliate": {
-          "title": "لینک‌های همکاری",
-          "description": "توصیه‌های مبتنی بر کمیسیون"
+          "title": "Affiliate Links",
+          "description": "Commission-based recommendations"
         },
         "aiGenerated": {
-          "title": "تولید با هوش مصنوعی",
-          "description": "محتوا با کمک هوش مصنوعی ایجاد شده"
+          "title": "AI-Generated",
+          "description": "Content created with AI assistance"
         },
         "privacy": {
-          "title": "حریم خصوصی شما",
-          "description": "حفاظت از داده‌ها تضمین شده"
+          "title": "Your Privacy",
+          "description": "Data protection guaranteed"
         }
       },
       "sections": {
-        "operator": "اپراتور / نهاد قانونی",
-        "purpose": "۱. هدف و دامنه استفاده",
-        "affiliateDisclosure": "۲. افشای همکاری و معاملات شخص ثالث",
-        "aiDisclaimer": "۳. سلب مسئولیت محتوای تولید شده با هوش مصنوعی",
-        "newsletter": "۴. خبرنامه و ارتباطات",
-        "userConduct": "۵. رفتار کاربر و اقدامات ممنوع",
-        "intellectualProperty": "۶. مالکیت معنوی و مجوز محدود",
-        "dmca": "۷. اعلان و حذف (DMCA و مشابه)",
-        "disclaimers": "۸. دقت، دسترسی و سلب مسئولیت‌ها",
-        "liability": "۹. محدودیت مسئولیت و قوه قاهره",
-        "indemnification": "۱۰. غرامت",
-        "privacyCookies": "۱۱. حریم خصوصی، کوکی‌ها و حفاظت از داده‌ها",
-        "accessibility": "۱۲. بیانیه دسترسی",
-        "governingLaw": "۱۳. قانون حاکم، حل اختلاف و صلاحیت",
-        "modifications": "۱۴. اصلاحات، تفکیک‌پذیری و مقررات عمومی"
+        "operator": "Operator / Legal Entity",
+        "purpose": "1. Purpose & Scope of Use",
+        "affiliateDisclosure": "2. Affiliate Disclosure & Third-Party Transactions",
+        "aiDisclaimer": "3. AI-Generated Content Disclaimer",
+        "newsletter": "4. Newsletter & Communications",
+        "userConduct": "5. User Conduct & Prohibited Actions",
+        "intellectualProperty": "6. Intellectual Property & Limited License",
+        "dmca": "7. Notice-and-Takedown (DMCA & Similar)",
+        "disclaimers": "8. Accuracy, Availability & Disclaimers",
+        "liability": "9. Limitation of Liability & Force Majeure",
+        "indemnification": "10. Indemnification",
+        "privacyCookies": "11. Privacy, Cookies & Data Protection",
+        "accessibility": "12. Accessibility Statement",
+        "governingLaw": "13. Governing Law, Dispute Resolution & Jurisdiction",
+        "modifications": "14. Modifications, Severability & General Provisions"
+      }
+    },
+    "about": {
+      "metaTitle": "About TRAVI World | Your Trusted Travel Resource",
+      "metaDescription": "Learn about TRAVI World - an independent travel information platform providing comprehensive guides for destinations worldwide.",
+      "badge": "About TRAVI World",
+      "title": "Discover",
+      "titleHighlight": "TRAVI World",
+      "subtitle": "Your trusted travel resource for exploring destinations worldwide with comprehensive guides and local insights.",
+      "ctaExplore": "Explore Destinations",
+      "ctaContact": "Contact Us",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
       }
     }
   }
