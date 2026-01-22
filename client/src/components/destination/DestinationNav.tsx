@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MapPin, Hotel, Newspaper, Calendar, Car, HelpCircle, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface DestinationNavProps {
   destinationName: string;
@@ -27,6 +28,7 @@ const NAV_SECTIONS = [
 ];
 
 export function DestinationNav({ destinationName, destinationSlug }: DestinationNavProps) {
+  const { localePath } = useLocale();
   const [activeSection, setActiveSection] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -80,7 +82,7 @@ export function DestinationNav({ destinationName, destinationSlug }: Destination
           <div className="flex items-center justify-between gap-4">
             {/* Back Button + Destination Name */}
             <div className="flex items-center gap-3">
-              <Link href="/destinations">
+              <Link href={localePath("/destinations")}>
                 <Button 
                   variant="ghost" 
                   size="icon"

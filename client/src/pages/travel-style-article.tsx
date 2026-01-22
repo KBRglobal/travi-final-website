@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useParams } from "wouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { 
   Calendar, 
   Clock, 
@@ -1238,18 +1239,18 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 // ============================================
 // BREADCRUMB COMPONENT
 // ============================================
-function Breadcrumbs({ style }: { style: TravelStyleData }) {
+function Breadcrumbs({ style, localePath }: { style: TravelStyleData; localePath: (path: string) => string }) {
   return (
     <nav 
       aria-label="Breadcrumb" 
       className="flex items-center gap-2 text-sm text-white/80 mb-4"
     >
-      <Link href="/" className="hover:text-white transition-colors flex items-center gap-1">
+      <Link href={localePath("/")} className="hover:text-white transition-colors flex items-center gap-1">
         <Home className="w-3.5 h-3.5" />
         <span>Home</span>
       </Link>
       <ChevronRight className="w-3.5 h-3.5" />
-      <Link href="/travel-styles" className="hover:text-white transition-colors">
+      <Link href={localePath("/travel-styles")} className="hover:text-white transition-colors">
         Travel Styles
       </Link>
       <ChevronRight className="w-3.5 h-3.5" />
@@ -1262,6 +1263,7 @@ function Breadcrumbs({ style }: { style: TravelStyleData }) {
 // MAIN COMPONENT
 // ============================================
 export default function TravelStyleArticle() {
+  const { localePath } = useLocale();
   const params = useParams<{ slug: string }>();
   const slug = params.slug ?? "";
   const [activeSection, setActiveSection] = useState<string>("");
@@ -1294,7 +1296,7 @@ export default function TravelStyleArticle() {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-slate-900 mb-4">Travel Style Not Found</h1>
             <p className="text-slate-600 mb-6">The travel style guide you're looking for doesn't exist.</p>
-            <Link href="/">
+            <Link href={localePath("/")}>
               <Button data-testid="button-go-home">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
@@ -1395,7 +1397,7 @@ export default function TravelStyleArticle() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
           <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12 max-w-5xl mx-auto">
             {/* Breadcrumbs */}
-            <Breadcrumbs style={travelStyle} />
+            <Breadcrumbs style={travelStyle} localePath={localePath} />
 
             <div className="flex items-center gap-3 mb-4">
               <Badge className="bg-[#6443F4] text-white border-0" data-testid="badge-travel-style">

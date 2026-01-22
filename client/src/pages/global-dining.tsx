@@ -4,6 +4,7 @@
 
 import { useState, useRef, type FormEvent } from "react";
 import { Link } from "wouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { motion, useInView } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -436,7 +437,7 @@ function DiningDestinationCard({ destination, index }: { destination: typeof DIN
       className="group h-full"
       data-testid={`dining-card-${destination.slug}`}
     >
-      <Link href={`/dining/${destination.slug}`}>
+      <Link href={localePath(`/dining/${destination.slug}`)}>
         <Card className="h-full overflow-hidden border-0 bg-white dark:bg-slate-800/60 shadow-md hover:shadow-xl dark:shadow-slate-900/40 transition-all duration-400 group-hover:-translate-y-1">
           <div className="relative aspect-[4/3] overflow-hidden">
             <img
@@ -610,6 +611,7 @@ function DiningFAQ() {
 }
 
 export default function GlobalDining() {
+  const { localePath } = useLocale();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [cuisineFilter, setCuisineFilter] = useState("all");
@@ -1287,7 +1289,7 @@ export default function GlobalDining() {
                   Discover extraordinary culinary experiences in your next destination.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <Link href="/dining">
+                  <Link href={localePath("/dining")}>
                     <Button 
                       size="lg" 
                       className="rounded-full bg-white text-orange-600 hover:bg-white/95 px-7 font-semibold shadow-lg shadow-black/15 h-11"
@@ -1297,7 +1299,7 @@ export default function GlobalDining() {
                       <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                     </Button>
                   </Link>
-                  <Link href="/destinations">
+                  <Link href={localePath("/destinations")}>
                     <Button 
                       size="lg" 
                       variant="outline"
@@ -1326,7 +1328,7 @@ export default function GlobalDining() {
                 .filter(d => d.region === region.name)
                 .map(dest => (
                   <li key={dest.slug}>
-                    <a href={`/dining/${dest.slug}`}>
+                    <a href={localePath(`/dining/${dest.slug}`)}>
                       {dest.name} Restaurants - {dest.restaurantCount} dining options | 
                       Top cuisine: {dest.topCuisine} in {dest.country}
                     </a>

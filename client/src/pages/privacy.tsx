@@ -1,7 +1,7 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "@/hooks/use-locale";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -14,7 +14,7 @@ const privacyMascot = "/logos/Mascot_for_Dark_Background.png";
 
 export default function PrivacyPage() {
   const { t } = useTranslation();
-  const { isRTL } = useLocale();
+  const { isRTL, localePath } = useLocale();
 
   useDocumentMeta({
     title: t("pages.privacy.metaTitle"),
@@ -634,13 +634,13 @@ export default function PrivacyPage() {
                 Contact Privacy Team
               </Button>
             </a>
-            <Link href="/security" data-testid="link-security-policy">
+            <Link href={localePath("/security")} data-testid="link-security-policy">
               <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
                 <Shield className="w-4 h-4 mr-2" />
                 Security Policy
               </Button>
             </Link>
-            <Link href="/cookie-policy" data-testid="link-cookie-policy">
+            <Link href={localePath("/cookie-policy")} data-testid="link-cookie-policy">
               <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
                 <Cookie className="w-4 h-4 mr-2" />
                 Cookie Policy

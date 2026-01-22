@@ -6,6 +6,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 // Stats bar with key off-plan metrics
 export function OffPlanStatsBar() {
@@ -43,12 +44,13 @@ interface BreadcrumbItem {
 }
 
 export function OffPlanBreadcrumb({ items }: { items: BreadcrumbItem[] }) {
+  const { localePath } = useLocale();
   return (
     <nav className="py-3 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ol className="flex flex-wrap items-center gap-1.5 text-sm">
           <li>
-            <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href={localePath("/")} className="text-muted-foreground hover:text-foreground transition-colors">
               Home
             </Link>
           </li>

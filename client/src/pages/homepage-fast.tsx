@@ -47,7 +47,7 @@ const ALL_DESTINATIONS_SEO = [
 function HeroSection() {
   const isDesktop = useIsDesktop();
   const { t } = useTranslation();
-  const { locale } = useLocale();
+  const { locale, localePath } = useLocale();
   
   const langCode = locale === 'en' ? 'en-US' : locale;
   
@@ -166,7 +166,7 @@ function HeroSection() {
           </dl>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-            <Link href="/destinations">
+            <Link href={localePath("/destinations")}>
               <Button 
                 className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg"
                 data-testid="button-explore-destinations"
@@ -175,7 +175,7 @@ function HeroSection() {
                 <ArrowRight className="ms-2 w-5 h-5 rtl:rotate-180" />
               </Button>
             </Link>
-            <Link href="/guides">
+            <Link href={localePath("/guides")}>
               <Button 
                 variant="outline" 
                 className="rounded-full bg-white hover:bg-slate-50 text-slate-700 px-8 py-6 text-base font-medium border-2 border-slate-200"
@@ -226,7 +226,7 @@ function HeroSection() {
         <ul>
           {ALL_DESTINATIONS_SEO.map((d) => (
             <li key={d.slug}>
-              <a href={`/destinations/${d.slug}`}>{t("home.sections.completeGuide", { name: t(`destinations.cities.${d.id}.name`), country: t(`destinations.cities.${d.id}.country`) })}</a>
+              <a href={localePath(`/destinations/${d.slug}`)}>{t("home.sections.completeGuide", { name: t(`destinations.cities.${d.id}.name`), country: t(`destinations.cities.${d.id}.country`) })}</a>
             </li>
           ))}
         </ul>
@@ -237,6 +237,7 @@ function HeroSection() {
 
 function DestinationsSection() {
   const { t } = useTranslation();
+  const { localePath } = useLocale();
   
   const destinations = [
     { id: "dubai", slug: "/destinations/dubai", cardImage: "/cards/dubai.webp" },
@@ -267,7 +268,7 @@ function DestinationsSection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {destinations.map((dest) => (
-            <Link key={dest.id} href={dest.slug}>
+            <Link key={dest.id} href={localePath(dest.slug)}>
               <article className="group relative aspect-[3/4] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300" data-testid={`card-destination-${dest.id}`}>
                 <img 
                   src={dest.cardImage} 
@@ -289,7 +290,7 @@ function DestinationsSection() {
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/destinations">
+          <Link href={localePath("/destinations")}>
             <Button variant="outline" className="rounded-full px-8 py-5" data-testid="button-view-all-destinations">
               {t("destinations.hero.exploreAll")}
               <ArrowRight className="ms-2 w-4 h-4 rtl:rotate-180" />
@@ -303,6 +304,7 @@ function DestinationsSection() {
 
 function CategoriesSection() {
   const { t } = useTranslation();
+  const { localePath } = useLocale();
   
   const categoryCards = [
     { id: 2, icon: Camera, titleKey: "home.categories.attractions", descKey: "home.categories.attractionsDesc", linkUrl: "/attractions", bgColor: "bg-amber-50 dark:bg-amber-950/30", iconBg: "bg-amber-500" },
@@ -331,7 +333,7 @@ function CategoriesSection() {
             const IconComponent = card.icon;
             const title = t(card.titleKey);
             return (
-              <Link key={card.id} href={card.linkUrl}>
+              <Link key={card.id} href={localePath(card.linkUrl)}>
                 <article 
                   className={cn(
                     "group relative p-6 rounded-2xl transition-all duration-300 cursor-pointer h-full hover:shadow-xl hover:-translate-y-1",
@@ -362,6 +364,7 @@ function CategoriesSection() {
 
 function TravelStylesSection() {
   const { t } = useTranslation();
+  const { localePath } = useLocale();
   
   const experienceCategories = [
     { id: 1, nameKey: "home.experiences.luxury", descKey: "home.experiences.luxuryDesc", slug: "luxury", image: "/experiences/experiences-luxury-resort-infinity-pool.webp", imageAlt: "Luxury resort with infinity pool overlooking ocean", icon: Sparkles, href: "/travel-styles/luxury-travel-complete-guide" },
@@ -390,7 +393,7 @@ function TravelStylesSection() {
             const name = t(category.nameKey);
             return (
               <article key={category.id}>
-                <Link href={category.href} title={`${name} - Complete Travel Guide ${CURRENT_YEAR}`}>
+                <Link href={localePath(category.href)} title={`${name} - Complete Travel Guide ${CURRENT_YEAR}`}>
                   <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white dark:bg-slate-800 h-full">
                     <div className="relative h-40 sm:h-48 overflow-hidden">
                       {category.image ? (

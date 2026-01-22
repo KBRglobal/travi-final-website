@@ -2,8 +2,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function ComingSoon() {
+  const { localePath } = useLocale();
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="max-w-md w-full">
@@ -22,7 +25,7 @@ export default function ComingSoon() {
           </div>
           
           <Button asChild variant="outline" data-testid="button-back-home">
-            <Link href="/">
+            <Link href={localePath("/")}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Link>

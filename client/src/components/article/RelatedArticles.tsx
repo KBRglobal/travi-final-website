@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ArrowRight, BookOpen } from "lucide-react";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface RelatedArticle {
   id: string;
@@ -40,6 +41,7 @@ export function RelatedArticles({
   currentArticleId,
   className = "",
 }: RelatedArticlesProps) {
+  const { localePath } = useLocale();
   const filteredArticles = articles
     .filter((article) => article.id !== currentArticleId)
     .slice(0, 4);
@@ -74,7 +76,7 @@ export function RelatedArticles({
           </div>
 
           <Link
-            href="/articles"
+            href={localePath("/articles")}
             className="hidden sm:flex items-center gap-2 text-[#6443F4] font-medium hover:underline underline-offset-4"
             data-testid="link-view-all-articles"
           >
@@ -141,7 +143,7 @@ export function RelatedArticles({
 
         <div className="sm:hidden mt-8 text-center">
           <Link
-            href="/articles"
+            href={localePath("/articles")}
             className="inline-flex items-center gap-2 text-[#6443F4] font-medium hover:underline underline-offset-4"
             data-testid="link-view-all-articles-mobile"
           >

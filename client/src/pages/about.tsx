@@ -1,7 +1,7 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "@/hooks/use-locale";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
@@ -12,7 +12,7 @@ import {
 
 export default function AboutPage() {
   const { t } = useTranslation();
-  const { isRTL } = useLocale();
+  const { isRTL, localePath } = useLocale();
 
   useDocumentMeta({
     title: t("pages.about.metaTitle"),
@@ -93,13 +93,13 @@ export default function AboutPage() {
               </p>
               
               <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-                <Link href="/destinations">
+                <Link href={localePath("/destinations")}>
                   <Button className="rounded-xl px-6 bg-[#6443F4] hover:bg-[#5339D9] text-white">
                     {t("pages.about.ctaExplore")}
                     <ArrowRight className="w-4 h-4 ms-2" />
                   </Button>
                 </Link>
-                <Link href="/contact">
+                <Link href={localePath("/contact")}>
                   <Button variant="outline" className="rounded-xl px-6">
                     {t("pages.about.ctaContact")}
                   </Button>
@@ -303,7 +303,7 @@ export default function AboutPage() {
                 <p className="text-amber-700 dark:text-amber-300 text-sm">
                   Some contents on our website contains affiliate links. When you click these links and make a purchase, 
                   we may earn a commission at no additional cost to you. Please see our{' '}
-                  <Link href="/affiliate-disclosure" className="underline hover:no-underline font-medium">
+                  <Link href={localePath("/affiliate-disclosure")} className="underline hover:no-underline font-medium">
                     Affiliate Disclosure
                   </Link>
                   {' '}for complete details.
@@ -405,7 +405,7 @@ export default function AboutPage() {
           </p>
           
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/contact">
+            <Link href={localePath("/contact")}>
               <Button className="rounded-xl px-8 bg-white text-[#6443F4] hover:bg-white/90">
                 <Mail className="w-4 h-4 mr-2" />
                 {t("common.contactUs")}
@@ -458,7 +458,7 @@ export default function AboutPage() {
                     info@travi.world
                   </a>
                   <Link 
-                    href="/contact"
+                    href={localePath("/contact")}
                     className="flex items-center gap-3 text-muted-foreground hover:text-[#6443F4] transition-colors"
                   >
                     <Globe className="w-5 h-5" />

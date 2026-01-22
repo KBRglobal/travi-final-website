@@ -1,7 +1,7 @@
 import { PublicLayout } from "@/components/public-layout";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "@/hooks/use-locale";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -15,7 +15,7 @@ const termsMascot = "/logos/Mascot_for_Dark_Background.png";
 
 export default function TermsPage() {
   const { t } = useTranslation();
-  const { isRTL } = useLocale();
+  const { isRTL, localePath } = useLocale();
 
   useDocumentMeta({
     title: t("pages.terms.metaTitle"),
@@ -191,7 +191,9 @@ export default function TermsPage() {
                 </p>
               </div>
               <p>
-                All transactions with third-party providers are governed solely by those providers' respective terms and conditions. Use of the Website is permitted for personal, non-commercial purposes only and is subject to these Terms, our Privacy Policy, and our Cookie Policy, all of which are incorporated herein by reference.
+                All transactions with third-party providers are governed solely by those providers' respective terms and conditions. Use of the Website is permitted for personal, non-commercial purposes only and is subject to these Terms, our{' '}
+                <Link href={localePath("/privacy")} className="text-[#6443F4] hover:underline font-medium">Privacy Policy</Link>, and our{' '}
+                <Link href={localePath("/cookies")} className="text-[#6443F4] hover:underline font-medium">Cookie Policy</Link>, all of which are incorporated herein by reference.
               </p>
             </CardContent>
           </Card>
@@ -465,8 +467,8 @@ export default function TermsPage() {
               {/* OUT_OF_SCOPE: Legal body text */}
               <p>
                 Our data collection and processing practices are described in detail in our{" "}
-                <Link href="/privacy" className="text-[#6443F4] hover:underline font-medium" data-testid="link-privacy-policy">Privacy Policy</Link> and{" "}
-                <Link href="/cookies" className="text-[#6443F4] hover:underline font-medium" data-testid="link-cookie-policy">Cookie Policy</Link>. The following is a summary of key points:
+                <Link href={localePath("/privacy")} className="text-[#6443F4] hover:underline font-medium" data-testid="link-privacy-policy">Privacy Policy</Link> and{" "}
+                <Link href={localePath("/cookies")} className="text-[#6443F4] hover:underline font-medium" data-testid="link-cookie-policy">Cookie Policy</Link>. The following is a summary of key points:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
@@ -621,25 +623,25 @@ export default function TermsPage() {
           <div className="border-t border-white/20 pt-8">
             <p className="text-white/60 text-sm mb-4">Related Legal Documents</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/privacy" data-testid="link-footer-privacy">
+              <Link href={localePath("/privacy")} data-testid="link-footer-privacy">
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white">
                   <Lock className="w-4 h-4 mr-2" />
                   Privacy Policy
                 </Button>
               </Link>
-              <Link href="/cookies" data-testid="link-footer-cookies">
+              <Link href={localePath("/cookies")} data-testid="link-footer-cookies">
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white">
                   <Eye className="w-4 h-4 mr-2" />
                   Cookie Policy
                 </Button>
               </Link>
-              <Link href="/security" data-testid="link-footer-security">
+              <Link href={localePath("/security")} data-testid="link-footer-security">
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white">
                   <Shield className="w-4 h-4 mr-2" />
                   Security Policy
                 </Button>
               </Link>
-              <Link href="/affiliate-disclosure" data-testid="link-footer-affiliate">
+              <Link href={localePath("/affiliate-disclosure")} data-testid="link-footer-affiliate">
                 <Button variant="outline" className="bg-white/10 border-white/20 text-white">
                   <Handshake className="w-4 h-4 mr-2" />
                   Affiliate Disclosure

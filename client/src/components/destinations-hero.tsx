@@ -8,6 +8,7 @@ import {
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface HeroSlide {
   id: string;
@@ -93,6 +94,7 @@ interface DestinationsHeroProps {
 
 export function DestinationsHero({ destinationCount, regionCount }: DestinationsHeroProps) {
   const { t } = useTranslation();
+  const { localePath } = useLocale();
   const shouldAnimate = usePreferredMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -261,7 +263,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                   </Button>
                 </Link>
               )}
-              <Link href="/travel-guides">
+              <Link href={localePath("/travel-guides")}>
                 <Button variant="outline" className="rounded-full px-6 py-6 text-base font-semibold border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                   <BookOpen className="w-5 h-5 me-2" />
                   {t("destinations.hero.travelGuides")}

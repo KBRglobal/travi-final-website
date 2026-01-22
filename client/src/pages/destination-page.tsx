@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { MapPin, ArrowLeft, Loader2 } from "lucide-react";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { DestinationPageData } from "@/types/destination";
 
 interface APIDestinationData {
@@ -52,6 +53,7 @@ interface APIDestinationData {
 }
 
 export default function DestinationPage() {
+  const { localePath } = useLocale();
   const params = useParams<{ slug: string }>();
   const slug = params?.slug;
   
@@ -96,13 +98,13 @@ export default function DestinationPage() {
               Please check the URL or explore our other destinations.
             </p>
             <div className="space-y-3">
-              <Link href="/destinations">
+              <Link href={localePath("/destinations")}>
                 <Button className="w-full" data-testid="button-browse-destinations">
                   <MapPin className="w-4 h-4 mr-2" />
                   Browse All Destinations
                 </Button>
               </Link>
-              <Link href="/">
+              <Link href={localePath("/")}>
                 <Button variant="outline" className="w-full" data-testid="button-back-home">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Home

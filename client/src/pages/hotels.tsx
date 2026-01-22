@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Helmet } from "react-helmet-async";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { 
   Star, MapPin, Globe, Crown, Sparkles, Building2, Award, 
   Wifi, Car, Utensils, Dumbbell, Waves, Bed, ArrowRight,
@@ -406,6 +407,7 @@ const HOTELS_FAQ = [
 function HotelDestinationCard({ destination, index }: { destination: typeof HOTEL_DESTINATIONS[0]; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const { localePath } = useLocale();
 
   return (
     <motion.article
@@ -416,7 +418,7 @@ function HotelDestinationCard({ destination, index }: { destination: typeof HOTE
       className="group h-full"
       data-testid={`hotel-card-${destination.slug}`}
     >
-      <Link href={`/hotels/${destination.slug}`}>
+      <Link href={localePath(`/hotels/${destination.slug}`)}>
         <Card className="h-full overflow-hidden border-0 bg-white dark:bg-slate-800/60 shadow-md hover:shadow-xl dark:shadow-slate-900/40 transition-all duration-400 group-hover:-translate-y-1">
           <div className="relative aspect-[4/3] overflow-hidden">
             <img
@@ -589,6 +591,7 @@ function HotelsFAQ() {
 
 export default function GlobalHotels() {
   const [, navigate] = useLocation();
+  const { localePath } = useLocale();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const heroRef = useRef(null);
@@ -896,7 +899,7 @@ export default function GlobalHotels() {
                         { name: 'London', slug: 'london', color: 'bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300' },
                         { name: 'New York', slug: 'new-york', color: 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300' },
                       ].map((tag) => (
-                        <Link key={tag.name} href={`/hotels/${tag.slug}`}>
+                        <Link key={tag.name} href={localePath(`/hotels/${tag.slug}`)}>
                           <button 
                             className={`px-4 py-1.5 text-sm rounded-full font-medium transition-colors ${tag.color}`}
                             data-testid={`trending-tag-${tag.slug}`}
@@ -935,7 +938,7 @@ export default function GlobalHotels() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.65 }}
                     >
-                      <Link href="/hotels/dubai">
+                      <Link href={localePath("/hotels/dubai")}>
                         <Button 
                           className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                           data-testid="button-explore-dubai"
@@ -1049,7 +1052,7 @@ export default function GlobalHotels() {
                                 <span className="text-3xl font-bold text-white ml-2">{dest.priceRange.split('-')[0]}</span>
                                 <span className="text-white/60 text-sm">/night</span>
                               </div>
-                              <Link href={`/hotels/${dest.slug}`}>
+                              <Link href={localePath(`/hotels/${dest.slug}`)}>
                                 <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                                   View Hotels
                                   <ArrowRight className="w-5 h-5" />
@@ -1336,22 +1339,22 @@ export default function GlobalHotels() {
                 Explore More Travel Guides
               </h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Link href="/attractions" className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <Link href={localePath("/attractions")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                   <Sparkles className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Tourist Attractions</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
-                <Link href="/restaurants" className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <Link href={localePath("/restaurants")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                   <Utensils className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Best Restaurants</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
-                <Link href="/destinations" className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <Link href={localePath("/destinations")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                   <Globe className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">All Destinations</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
                 </Link>
-                <Link href="/articles" className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <Link href={localePath("/articles")} className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                   <TrendingUp className="w-5 h-5 text-[#6443F4]" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Travel News</span>
                   <ArrowRight className="w-4 h-4 text-slate-400 ml-auto" />
@@ -1379,7 +1382,7 @@ export default function GlobalHotels() {
                   Compare prices and find the best deals on hotels in Dubai, Paris, London and more top destinations.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <Link href="/hotels/dubai">
+                  <Link href={localePath("/hotels/dubai")}>
                     <Button 
                       size="lg" 
                       className="rounded-full bg-white text-[#6443F4] hover:bg-white/95 px-7 font-semibold shadow-lg shadow-black/15 h-11"
@@ -1388,7 +1391,7 @@ export default function GlobalHotels() {
                       <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                     </Button>
                   </Link>
-                  <Link href="/hotels/paris">
+                  <Link href={localePath("/hotels/paris")}>
                     <Button 
                       size="lg" 
                       variant="outline"
@@ -1417,7 +1420,7 @@ export default function GlobalHotels() {
                 .filter(d => d.region === region.name)
                 .map(dest => (
                   <li key={dest.slug}>
-                    <a href={`/hotels/${dest.slug}`}>
+                    <a href={localePath(`/hotels/${dest.slug}`)}>
                       Hotels in {dest.name} - {dest.seoDescription} | 
                       {dest.hotelCount} properties from {dest.priceRange}/night
                     </a>
@@ -1429,10 +1432,10 @@ export default function GlobalHotels() {
 
         <h3>Related Travel Guides</h3>
         <ul>
-          <li><a href="/attractions">Tourist Attractions Worldwide</a></li>
-          <li><a href="/restaurants">Best Restaurants in Top Destinations</a></li>
-          <li><a href="/destinations">Complete Travel Guides by City</a></li>
-          <li><a href="/articles">Latest Travel News and Tips</a></li>
+          <li><a href={localePath("/attractions")}>Tourist Attractions Worldwide</a></li>
+          <li><a href={localePath("/restaurants")}>Best Restaurants in Top Destinations</a></li>
+          <li><a href={localePath("/destinations")}>Complete Travel Guides by City</a></li>
+          <li><a href={localePath("/articles")}>Latest Travel News and Tips</a></li>
         </ul>
       </nav>
     </>
