@@ -309,7 +309,7 @@ export async function runMigration(): Promise<MigrationResult[]> {
 }
 
 // Run migration if executed directly
-const isMainModule = import.meta.url.endsWith(process.argv[1]?.replace(/^file:\/\//, "") || "");
+const isMainModule = typeof require !== 'undefined' && require.main === module;
 if (isMainModule) {
   runMigration()
     .then((results) => {

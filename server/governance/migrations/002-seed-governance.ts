@@ -325,7 +325,7 @@ export async function runSeed(): Promise<SeedResult[]> {
 }
 
 // Run seed if executed directly
-const isMainModule = import.meta.url.endsWith(process.argv[1]?.replace(/^file:\/\//, "") || "");
+const isMainModule = typeof require !== 'undefined' && require.main === module;
 if (isMainModule) {
   runSeed()
     .then((results) => {
