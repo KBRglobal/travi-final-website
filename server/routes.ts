@@ -227,6 +227,8 @@ import { aeoRoutes, aeoTrackingMiddleware } from "./aeo";
 import { getVersionInfo } from "./middleware/api-versioning";
 // Localization Engine (Translation Queue + AEO)
 import localizationRoutes from "./localization/routes";
+// Localization Governance (Multi-locale content management)
+import { localizationGovernanceRoutes, isLocalizationGovernanceEnabled } from "./localization-governance";
 // Simulation Mode (TASK 9 - Read-only "what if" analysis)
 import { registerSimulationRoutes } from "./simulation";
 // Content Scheduling (Calendar + Auto-publish)
@@ -18485,6 +18487,15 @@ Return as valid JSON.`,
   // Translation queue management, AEO generation, and publish hooks
   // ============================================================================
   app.use('/api/localization', localizationRoutes);
+
+  // ============================================================================
+  // LOCALIZATION GOVERNANCE
+  // Multi-locale content management and translation status tracking
+  // ============================================================================
+  if (isLocalizationGovernanceEnabled()) {
+    app.use('/api/localization/governance', localizationGovernanceRoutes);
+    log('[Routes] Localization governance routes ENABLED', 'server');
+  }
 
   // ============================================================================
   // SIMULATION MODE (TASK 9)

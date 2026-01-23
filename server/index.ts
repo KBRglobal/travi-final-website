@@ -16,6 +16,7 @@ import { validateRequiredEnvVars } from "./config/env-validator";
 import { startTiqetsBackgroundGenerator, stopTiqetsBackgroundGenerator } from "./services/tiqets-background-generator";
 import { runProductionSeed } from "./lib/production-seed";
 import { registerOctypoJobHandler } from "./octypo/job-handler";
+import { startBackgroundServices, stopBackgroundServices } from "./services/background-services";
 import { db } from "./db";
 import { destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
@@ -494,7 +495,12 @@ async function initializeServer() {
     
     registerOctypoJobHandler();
     log("[OctypoV2] Content generation job handler registered", "server");
-    
+
+    // Start all background services (translation, RSS scheduler, governance)
+    startBackgroundServices().catch((err) => {
+      log(`[BackgroundServices] Failed to start: ${err}`, "error");
+    });
+
     import("./scripts/publish-articles").then(({ publishAllArticles }) => {
       publishAllArticles().then((result) => {
         if (result.articles > 0 || result.hotels > 0) {
@@ -516,7 +522,10 @@ async function initializeServer() {
 // Graceful shutdown handling
 const shutdown = async (signal: string) => {
   log(`${signal} received. Starting graceful shutdown...`, "server");
-  
+
+  // Stop all background services first
+  await stopBackgroundServices();
+
   stopTiqetsBackgroundGenerator();
   log("[TiqetsBackground] Background generator stopped", "server");
 
