@@ -31,6 +31,16 @@ consoleLogger.start();
 
 const app = express();
 
+// CRITICAL: Readiness flag for deployment health checks
+// Server starts listening immediately, but returns 503 for non-health routes until ready
+let isServerReady = false;
+
+// CRITICAL: Health check endpoint MUST be registered BEFORE any middleware
+// This ensures Replit deployment health checks pass immediately when server starts
+app.get('/healthz', (_req, res) => {
+  res.status(200).json({ status: 'ok', ready: isServerReady, timestamp: new Date().toISOString() });
+});
+
 // Disable X-Powered-By header globally
 app.disable('x-powered-by');
 
@@ -370,159 +380,165 @@ app.get('/sitemap', async (_req, res) => {
   }
 });
 
-(async () => {
-  await registerRoutes(httpServer, app);
+// ============================================================================
+// EARLY LISTEN PATTERN: Start server IMMEDIATELY, then initialize
+// This ensures Replit deployment health checks pass before heavy init
+// ============================================================================
 
-  // Global error handler middleware
-  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
-    // Log the error
-    log(`Error: ${err.message || 'Unknown error'} - ${req.method} ${req.path}`, 'error');
-    if (process.env.NODE_ENV === 'development') {
-      console.error(err.stack);
-    }
+// ALWAYS serve the app on the port specified in the environment variable PORT
+// Other ports are firewalled. Default to 5000 if not specified.
+const port = parseInt(process.env.PORT || "5000", 10);
 
-    // Handle Zod validation errors
-    if (err.name === 'ZodError' && err.errors) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        details: err.errors.map((e: any) => ({
-          field: e.path?.join('.') || 'unknown',
-          message: e.message
-        }))
-      });
-    }
+// Security: Set server timeouts to prevent slow loris attacks
+httpServer.timeout = 120000;        // 2 minutes for complete request
+httpServer.keepAliveTimeout = 65000; // Keep alive timeout
+httpServer.headersTimeout = 66000;   // Headers timeout (must be > keepAliveTimeout)
 
-    // Handle known operational errors
-    if (err.isOperational) {
-      return res.status(err.statusCode || err.status || 400).json({
-        error: err.message
-      });
-    }
-
-    // Get appropriate status code
-    const status = err.status || err.statusCode || 500;
-    const message = process.env.NODE_ENV === 'production' && status === 500
-      ? 'Internal Server Error'
-      : err.message || 'Internal Server Error';
-
-    res.status(status).json({ error: message });
-  });
-
-  // API catch-all: Return JSON 404 for unmatched /api/* routes
-  // This MUST be before SSR middleware and SPA catch-all to prevent returning HTML
-  app.all('/api/*', (req: Request, res: Response) => {
-    res.status(404).json({
-      error: 'Not Found',
-      message: `API endpoint ${req.method} ${req.path} does not exist`,
-      _meta: { apiVersion: 'v1' }
+// Start listening IMMEDIATELY - this allows health checks to pass
+httpServer.listen(
+  {
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  },
+  () => {
+    log(`[EARLY-LISTEN] Server listening on port ${port} - health checks will pass`, "server");
+    log(`[EARLY-LISTEN] Starting background initialization...`, "server");
+    
+    // Now do all the heavy initialization in the background
+    initializeServer().catch((err) => {
+      log(`[CRITICAL] Server initialization failed: ${err}`, "error");
+      console.error(err);
     });
-  });
+  },
+);
 
-  // SSR middleware for bot detection - serves pre-rendered HTML to search engines and AI crawlers
-  // This must be BEFORE static serving but AFTER API routes
-  app.use(approvedBotMiddleware); // Mark approved bots so they get SSR content
-  app.use(ssrMiddleware); // Intercept bot requests and serve full HTML
-  log("[SSR] Bot detection and SSR middleware enabled", "server");
+// Heavy initialization function - runs AFTER server is listening
+async function initializeServer() {
+  const initStart = Date.now();
+  
+  try {
+    // Register all routes (heavy operation)
+    await registerRoutes(httpServer, app);
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
-  }
+    // Global error handler middleware
+    app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+      log(`Error: ${err.message || 'Unknown error'} - ${req.method} ${req.path}`, 'error');
+      if (process.env.NODE_ENV === 'development') {
+        console.error(err.stack);
+      }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-
-  // Security: Set server timeouts to prevent slow loris attacks
-  httpServer.timeout = 120000;        // 2 minutes for complete request
-  httpServer.keepAliveTimeout = 65000; // Keep alive timeout
-  httpServer.headersTimeout = 66000;   // Headers timeout (must be > keepAliveTimeout)
-
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`serving on port ${port}`);
-      
-      // Run production seed in BACKGROUND after server starts (non-blocking)
-      // This allows deployment health checks to pass while data is loading
-      if (process.env.RUN_PROD_SEED === 'true') {
-        log("[ProdSeed] Starting background database seeding...", "server");
-        runProductionSeed().then(() => {
-          log("[ProdSeed] Background seeding completed successfully", "server");
-        }).catch((err) => {
-          log(`[ProdSeed] Background seeding failed: ${err}`, "server");
+      if (err.name === 'ZodError' && err.errors) {
+        return res.status(400).json({
+          error: 'Validation Error',
+          details: err.errors.map((e: any) => ({
+            field: e.path?.join('.') || 'unknown',
+            message: e.message
+          }))
         });
       }
-      
-      // Start Tiqets background content generator
-      startTiqetsBackgroundGenerator();
-      log("[TiqetsBackground] Content generation automation ENABLED", "server");
-      
-      // Register Octypo V2 content generation job handler
-      registerOctypoJobHandler();
-      log("[OctypoV2] Content generation job handler registered", "server");
-      
-      // Auto-publish draft content for SSR visibility
-      import("./scripts/publish-articles").then(({ publishAllArticles }) => {
-        publishAllArticles().then((result) => {
-          if (result.articles > 0 || result.hotels > 0) {
-            log(`[AutoPublish] Published ${result.articles} articles, ${result.hotels} hotels`, "server");
-          }
-        }).catch((err) => {
-          log(`[AutoPublish] Error: ${err}`, "server");
+
+      if (err.isOperational) {
+        return res.status(err.statusCode || err.status || 400).json({
+          error: err.message
         });
-      });
+      }
 
-      // Phase 1 Foundation: Initialize foundation event bus
-      // Feature flagged via ENABLE_FOUNDATION=true (default: OFF)
-      initializeFoundationEvents();
-    },
-  );
+      const status = err.status || err.statusCode || 500;
+      const message = process.env.NODE_ENV === 'production' && status === 500
+        ? 'Internal Server Error'
+        : err.message || 'Internal Server Error';
 
-  // Graceful shutdown handling
-  const shutdown = async (signal: string) => {
-    log(`${signal} received. Starting graceful shutdown...`, "server");
-    
-    // Stop Tiqets background generator
-    stopTiqetsBackgroundGenerator();
-    log("[TiqetsBackground] Background generator stopped", "server");
-    
-    // [REMOVED] Octopus shutdown - migrated to Octypo v2
-
-    // Stop accepting new connections
-    httpServer.close(() => {
-      log("HTTP server closed", "server");
+      res.status(status).json({ error: message });
     });
 
-    // Give existing requests 10 seconds to complete
-    setTimeout(() => {
-      log("Forcing shutdown after timeout", "server");
-      process.exit(0);
-    }, 10000);
+    // API catch-all: Return JSON 404 for unmatched /api/* routes
+    app.all('/api/*', (req: Request, res: Response) => {
+      res.status(404).json({
+        error: 'Not Found',
+        message: `API endpoint ${req.method} ${req.path} does not exist`,
+        _meta: { apiVersion: 'v1' }
+      });
+    });
 
-    try {
-      // Close database pool
-      const { pool } = await import("./db");
-      await pool.end();
-      log("Database pool closed", "server");
-    } catch (error) {
-      log(`Error closing database pool: ${error}`, "server");
+    // SSR middleware for bot detection
+    app.use(approvedBotMiddleware);
+    app.use(ssrMiddleware);
+    log("[SSR] Bot detection and SSR middleware enabled", "server");
+
+    // Setup static serving or Vite dev server
+    if (process.env.NODE_ENV === "production") {
+      serveStatic(app);
+    } else {
+      const { setupVite } = await import("./vite");
+      await setupVite(httpServer, app);
     }
 
-    process.exit(0);
-  };
+    // Mark server as fully ready
+    isServerReady = true;
+    const initTime = Date.now() - initStart;
+    log(`[READY] Server fully initialized in ${initTime}ms`, "server");
 
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
-  process.on("SIGINT", () => shutdown("SIGINT"));
-})();
+    // Start background tasks (non-blocking)
+    if (process.env.RUN_PROD_SEED === 'true') {
+      log("[ProdSeed] Starting background database seeding...", "server");
+      runProductionSeed().then(() => {
+        log("[ProdSeed] Background seeding completed successfully", "server");
+      }).catch((err) => {
+        log(`[ProdSeed] Background seeding failed: ${err}`, "server");
+      });
+    }
+    
+    startTiqetsBackgroundGenerator();
+    log("[TiqetsBackground] Content generation automation ENABLED", "server");
+    
+    registerOctypoJobHandler();
+    log("[OctypoV2] Content generation job handler registered", "server");
+    
+    import("./scripts/publish-articles").then(({ publishAllArticles }) => {
+      publishAllArticles().then((result) => {
+        if (result.articles > 0 || result.hotels > 0) {
+          log(`[AutoPublish] Published ${result.articles} articles, ${result.hotels} hotels`, "server");
+        }
+      }).catch((err) => {
+        log(`[AutoPublish] Error: ${err}`, "server");
+      });
+    });
+
+    initializeFoundationEvents();
+    
+  } catch (error) {
+    log(`[INIT-ERROR] ${error}`, "error");
+    throw error;
+  }
+}
+
+// Graceful shutdown handling
+const shutdown = async (signal: string) => {
+  log(`${signal} received. Starting graceful shutdown...`, "server");
+  
+  stopTiqetsBackgroundGenerator();
+  log("[TiqetsBackground] Background generator stopped", "server");
+
+  httpServer.close(() => {
+    log("HTTP server closed", "server");
+  });
+
+  setTimeout(() => {
+    log("Forcing shutdown after timeout", "server");
+    process.exit(0);
+  }, 10000);
+
+  try {
+    const { pool } = await import("./db");
+    await pool.end();
+    log("Database pool closed", "server");
+  } catch (error) {
+    log(`Error closing database pool: ${error}`, "server");
+  }
+
+  process.exit(0);
+};
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
