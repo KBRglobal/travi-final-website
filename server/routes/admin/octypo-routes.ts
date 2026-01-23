@@ -21,13 +21,14 @@ import { EngineRegistry } from '../../services/engine-registry';
 import { getQueueStats } from '../../ai/request-queue';
 import { jobQueue } from '../../job-queue';
 import { manuallyProcessJob } from '../../octypo/job-handler';
-import { 
-  startRSSScheduler, 
-  stopRSSScheduler, 
-  updateRSSSchedulerConfig, 
+import {
+  startRSSScheduler,
+  stopRSSScheduler,
+  updateRSSSchedulerConfig,
   getRSSSchedulerStatus,
   manualTrigger as triggerRSSScheduler
 } from '../../octypo/rss-scheduler';
+import { rssReader } from '../../octypo/rss-reader';
 
 const router = Router();
 
@@ -1670,6 +1671,211 @@ router.post('/rss-scheduler/trigger', async (_req: Request, res: Response) => {
   } catch (error) {
     log.error('[Octypo] Failed to trigger RSS scheduler', error);
     res.status(500).json({ error: 'Failed to trigger scheduler' });
+  }
+});
+
+// ============================================================================
+// RSS READER ENDPOINTS (NEW - WITH PROPER PARSING)
+// ============================================================================
+
+/**
+ * GET /api/octypo/rss/stats
+ * Get RSS reader statistics
+ */
+router.get('/rss/stats', async (_req: Request, res: Response) => {
+  try {
+    const stats = await rssReader.getStats();
+    res.json({
+      ...stats,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get RSS stats', error);
+    res.status(500).json({ error: 'Failed to get RSS stats' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss/fetch/:feedId
+ * Fetch and store items from a specific RSS feed
+ */
+router.post('/rss/fetch/:feedId', async (req: Request, res: Response) => {
+  try {
+    const { feedId } = req.params;
+
+    if (!feedId) {
+      return res.status(400).json({ error: 'Feed ID is required' });
+    }
+
+    log.info(`[Octypo] Fetching RSS feed: ${feedId}`);
+    const result = await rssReader.fetchFeed(feedId);
+
+    res.json({
+      ...result,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to fetch RSS feed', error);
+    res.status(500).json({ error: 'Failed to fetch RSS feed' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss/fetch-all
+ * Fetch and store items from all active RSS feeds
+ */
+router.post('/rss/fetch-all', async (_req: Request, res: Response) => {
+  try {
+    log.info('[Octypo] Fetching all RSS feeds');
+    const results = await rssReader.fetchAllFeeds();
+
+    const summary = {
+      feedsProcessed: results.length,
+      totalItemsFetched: results.reduce((sum, r) => sum + r.itemsFetched, 0),
+      newItems: results.reduce((sum, r) => sum + r.newItems, 0),
+      duplicatesSkipped: results.reduce((sum, r) => sum + r.duplicatesSkipped, 0),
+      feedsWithErrors: results.filter(r => r.errors.length > 0).length,
+    };
+
+    res.json({
+      summary,
+      results,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to fetch all RSS feeds', error);
+    res.status(500).json({ error: 'Failed to fetch all feeds' });
+  }
+});
+
+/**
+ * GET /api/octypo/rss/items/unprocessed
+ * Get unprocessed RSS feed items ready for content generation
+ */
+router.get('/rss/items/unprocessed', async (req: Request, res: Response) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+    const feedId = req.query.feedId as string | undefined;
+
+    const items = await rssReader.getUnprocessedItems(limit, feedId);
+
+    res.json({
+      items,
+      count: items.length,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get unprocessed items', error);
+    res.status(500).json({ error: 'Failed to get unprocessed items' });
+  }
+});
+
+/**
+ * GET /api/octypo/rss/items/recent
+ * Get recent RSS feed items
+ */
+router.get('/rss/items/recent', async (req: Request, res: Response) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+    const sinceHours = parseInt(req.query.sinceHours as string) || undefined;
+
+    let sinceDate: Date | undefined;
+    if (sinceHours) {
+      sinceDate = new Date(Date.now() - sinceHours * 60 * 60 * 1000);
+    }
+
+    const items = await rssReader.getRecentItems(limit, sinceDate);
+
+    res.json({
+      items,
+      count: items.length,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to get recent items', error);
+    res.status(500).json({ error: 'Failed to get recent items' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss/items/:itemId/mark-processed
+ * Mark an RSS item as processed
+ */
+router.post('/rss/items/:itemId/mark-processed', async (req: Request, res: Response) => {
+  try {
+    const { itemId } = req.params;
+    const { contentId } = req.body;
+
+    if (!itemId) {
+      return res.status(400).json({ error: 'Item ID is required' });
+    }
+
+    await rssReader.markProcessed(itemId, contentId);
+
+    res.json({
+      success: true,
+      message: 'Item marked as processed',
+      itemId,
+      contentId,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to mark item as processed', error);
+    res.status(500).json({ error: 'Failed to mark item as processed' });
+  }
+});
+
+/**
+ * POST /api/octypo/rss/generate-from-items
+ * Generate content from unprocessed RSS items with locale support
+ */
+router.post('/rss/generate-from-items', async (req: Request, res: Response) => {
+  try {
+    const { limit = 5, feedId, locale = 'en', destinationId } = req.body;
+    const itemLimit = Math.min(limit, 20);
+
+    log.info(`[Octypo] Generating content from RSS items`, { limit: itemLimit, feedId, locale });
+
+    // Get unprocessed items
+    const items = await rssReader.getUnprocessedItems(itemLimit, feedId);
+
+    if (items.length === 0) {
+      return res.json({
+        success: true,
+        message: 'No unprocessed items found',
+        generated: 0,
+        _meta: { apiVersion: 'v1' },
+      });
+    }
+
+    // Create jobs for each item
+    const createdJobs: string[] = [];
+
+    for (const item of items) {
+      const jobId = await jobQueue.addJob('ai_generate' as any, {
+        jobType: 'rss-content-generation',
+        feedId: item.feedId,
+        feedUrl: '',
+        feedName: item.source,
+        destination: destinationId || undefined,
+        category: item.category,
+        locale: locale as 'en' | 'ar',
+      }, { priority: 5 });
+
+      createdJobs.push(jobId);
+    }
+
+    res.json({
+      success: true,
+      message: `Created ${createdJobs.length} content generation jobs`,
+      itemsFound: items.length,
+      jobsCreated: createdJobs.length,
+      jobs: createdJobs,
+      _meta: { apiVersion: 'v1' },
+    });
+  } catch (error) {
+    log.error('[Octypo] Failed to generate from RSS items', error);
+    res.status(500).json({ error: 'Failed to generate from RSS items' });
   }
 });
 

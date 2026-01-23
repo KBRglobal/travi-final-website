@@ -69,11 +69,11 @@ function calculateBackoff(retryCount: number): Date {
 }
 
 // ============================================================================
-// TRANSLATION QUEUE - DISABLED (January 2026)
+// TRANSLATION QUEUE - ENABLED (January 2026)
 // ============================================================================
-// Automatic translation queueing is permanently disabled.
-// All translations must be done manually via admin UI.
-const TRANSLATION_QUEUE_ENABLED = false;
+// Automatic translation queueing re-enabled for RSS integration.
+// Can be disabled via environment variable if needed.
+const TRANSLATION_QUEUE_ENABLED = process.env.ENABLE_TRANSLATION_QUEUE !== 'false';
 
 /**
  * Enqueue translation jobs for all locales when content is approved/published

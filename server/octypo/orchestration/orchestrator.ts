@@ -451,10 +451,11 @@ export class OctypoOrchestrator {
    * PILOT: Generate attraction content with explicit locale parameter
    * This method generates NATIVE content in the target locale (not translation)
    * Used by the Octypo × Localization pilot
+   * Extended to support French (fr) in addition to English and Arabic
    */
   async generateAttractionContentWithLocale(
     attraction: AttractionData,
-    locale: "en" | "ar"
+    locale: "en" | "ar" | "fr"
   ): Promise<GenerationResult> {
     await this.initialize();
     
