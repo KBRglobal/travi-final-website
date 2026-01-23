@@ -10,6 +10,9 @@ import { db } from '../db';
 import { rssFeeds, contents, attractions, articles, destinations, backgroundJobs } from '@shared/schema';
 import { eq, sql } from 'drizzle-orm';
 import { AttractionData, GeneratedAttractionContent } from './types';
+import { rssReader, isSensitiveTopic, detectDestinationFromContent, FeedItem } from './rss-reader';
+import { OctypoOrchestrator } from './orchestration/orchestrator';
+import { generatePilotContent, type PilotGenerationRequest } from './pilot/localization-pilot';
 
 interface RSSJobData {
   jobType: 'rss-content-generation';
@@ -18,6 +21,7 @@ interface RSSJobData {
   feedName: string;
   destination?: string;
   category?: string;
+  locale?: 'en' | 'ar' | 'fr'; // Optional target locale for content generation
 }
 
 interface TopicJobData {
@@ -171,187 +175,198 @@ async function updateJobStatus(jobId: string, status: 'completed' | 'failed', re
   }
 }
 
-async function fetchRSSItems(feedUrl: string): Promise<{ title: string; description: string; link: string; pubDate?: string }[]> {
-  try {
-    const response = await fetch(feedUrl);
-    const text = await response.text();
-    
-    const items: { title: string; description: string; link: string; pubDate?: string }[] = [];
-    const itemMatches = text.matchAll(/<item[^>]*>([\s\S]*?)<\/item>/gi);
-    
-    for (const match of itemMatches) {
-      const itemXml = match[1];
-      const title = itemXml.match(/<title[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/i)?.[1] || '';
-      const description = itemXml.match(/<description[^>]*>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/description>/i)?.[1] || '';
-      const link = itemXml.match(/<link[^>]*>(.*?)<\/link>/i)?.[1] || '';
-      const pubDate = itemXml.match(/<pubDate[^>]*>(.*?)<\/pubDate>/i)?.[1];
-      
-      if (title) {
-        items.push({
-          title: title.replace(/<[^>]+>/g, '').trim(),
-          description: description.replace(/<[^>]+>/g, '').trim(),
-          link: link.trim(),
-          pubDate,
-        });
-      }
-    }
-    
-    return items.slice(0, 10);
-  } catch (error) {
-    console.error(`[OctypoJobHandler] Failed to fetch RSS:`, error);
-    return [];
-  }
-}
-
-const SENSITIVE_TOPIC_KEYWORDS = [
-  'kill', 'dead', 'death', 'die', 'dies', 'died', 'dying',
-  'murder', 'murdered', 'homicide', 'manslaughter',
-  'crash', 'collision', 'accident', 'fatal',
-  'terror', 'terrorist', 'attack', 'bomb', 'bombing', 'explosion',
-  'war', 'conflict', 'invasion', 'military strike',
-  'disaster', 'tragedy', 'catastrophe',
-  'shooting', 'shot', 'gunfire', 'gunman',
-  'victim', 'victims', 'casualties',
-  'hostage', 'kidnap', 'abduct',
-  'suicide', 'suicide bombing',
-  'epidemic', 'pandemic', 'outbreak', 'virus spread',
-];
-
-function isSensitiveTopic(title: string, description: string): { sensitive: boolean; reason?: string } {
-  const combined = `${title} ${description}`.toLowerCase();
-  
-  for (const keyword of SENSITIVE_TOPIC_KEYWORDS) {
-    if (combined.includes(keyword.toLowerCase())) {
-      return { sensitive: true, reason: `Contains sensitive keyword: "${keyword}"` };
-    }
-  }
-  
-  return { sensitive: false };
-}
-
-const DESTINATION_KEYWORDS: Array<{ keywords: string[]; destinationId: string }> = [
-  { keywords: ['japan', 'tokyo', 'osaka', 'kyoto', 'japanese', 'shinkansen'], destinationId: 'tokyo' },
-  { keywords: ['thailand', 'bangkok', 'thai', 'phuket'], destinationId: 'bangkok' },
-  { keywords: ['singapore', 'singaporean'], destinationId: 'singapore' },
-  { keywords: ['dubai', 'uae', 'emirati', 'emirates', 'burj'], destinationId: 'dubai' },
-  { keywords: ['abu dhabi', 'abu-dhabi'], destinationId: 'abu-dhabi' },
-  { keywords: ['ras al khaimah', 'ras-al-khaimah'], destinationId: 'ras-al-khaimah' },
-  { keywords: ['paris', 'france', 'french', 'eiffel'], destinationId: 'paris' },
-  { keywords: ['london', 'britain', 'british', 'uk', 'england'], destinationId: 'london' },
-  { keywords: ['istanbul', 'turkey', 'turkish'], destinationId: 'istanbul' },
-  { keywords: ['new york', 'nyc', 'manhattan', 'brooklyn'], destinationId: 'new-york' },
-  { keywords: ['los angeles', 'hollywood', 'california', 'la'], destinationId: 'los-angeles' },
-  { keywords: ['miami', 'florida'], destinationId: 'miami' },
-];
-
-function detectDestinationFromContent(title: string, description: string): string | null {
-  const combined = `${title} ${description}`.toLowerCase();
-  
-  for (const entry of DESTINATION_KEYWORDS) {
-    if (entry.keywords.some(kw => combined.includes(kw.toLowerCase()))) {
-      return entry.destinationId;
-    }
-  }
-  
-  return null;
-}
+// NOTE: fetchRSSItems, isSensitiveTopic, and detectDestinationFromContent
+// are now imported from ./rss-reader.ts
 
 async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ success: boolean; generated: number; skipped: number; errors: string[]; contentIds: string[] }> {
   console.log(`[OctypoJobHandler] Processing RSS job for feed: ${data.feedName}`);
-  
+
   const [feed] = await db.select()
     .from(rssFeeds)
     .where(eq(rssFeeds.id, data.feedId))
     .limit(1);
-  
+
   if (!feed) {
     return { success: false, generated: 0, skipped: 0, errors: ['RSS feed not found in database'], contentIds: [] };
   }
-  
-  const items = await fetchRSSItems(feed.url);
-  if (items.length === 0) {
-    return { success: false, generated: 0, skipped: 0, errors: ['No items found in RSS feed'], contentIds: [] };
+
+  // Step 1: Fetch and store new items using the proper RSS parser
+  const fetchResult = await rssReader.fetchFeed(feed.id);
+  if (fetchResult.errors.length > 0) {
+    console.log(`[OctypoJobHandler] Feed fetch had errors:`, fetchResult.errors);
   }
-  
-  console.log(`[OctypoJobHandler] Found ${items.length} items in feed`);
-  
+
+  console.log(`[OctypoJobHandler] Fetched ${fetchResult.itemsFetched} items, ${fetchResult.newItems} new`);
+
+  // Step 2: Get unprocessed items from the database
+  const items = await rssReader.getUnprocessedItems(10, feed.id);
+  if (items.length === 0) {
+    console.log(`[OctypoJobHandler] No unprocessed items found`);
+    return { success: true, generated: 0, skipped: 0, errors: [], contentIds: [] };
+  }
+
+  console.log(`[OctypoJobHandler] Processing ${items.length} unprocessed items`);
+
   const defaultDestinationId = data.destination || feed.destinationId || null;
-  
+  const targetLocale = data.locale || 'en'; // Default to English
+
   let generated = 0;
   let skipped = 0;
   const errors: string[] = [];
   const contentIds: string[] = [];
-  
+
   for (const item of items) {
     try {
-      const sensitivityCheck = isSensitiveTopic(item.title, item.description);
+      // Check for sensitive topics
+      const sensitivityCheck = isSensitiveTopic(item.title, item.summary);
       if (sensitivityCheck.sensitive) {
         console.log(`[OctypoJobHandler] Skipping sensitive topic: "${item.title}" - ${sensitivityCheck.reason}`);
+        await rssReader.markProcessed(item.id); // Mark as processed to skip in future
         skipped++;
         continue;
       }
-      
-      const detectedDestination = detectDestinationFromContent(item.title, item.description);
+
+      // Detect destination from content
+      const detectedDestination = detectDestinationFromContent(item.title, item.summary);
       const destinationId = detectedDestination || defaultDestinationId || 'global';
       console.log(`[OctypoJobHandler] Detected destination: ${destinationId} for "${item.title.substring(0, 50)}..."`);
-      
-      const coords = await getDestinationCoordinates(destinationId);
-      
+
+      // Generate slug and check for duplicates
       const slug = item.title.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '')
         .substring(0, 100);
-      
+
       const existingSlug = await db.select({ id: contents.id })
         .from(contents)
         .where(eq(contents.slug, slug))
         .limit(1);
-      
+
       if (existingSlug.length > 0) {
         console.log(`[OctypoJobHandler] Skipping duplicate slug: ${slug}`);
+        await rssReader.markProcessed(item.id);
+        skipped++;
         continue;
       }
-      
+
+      const coords = await getDestinationCoordinates(destinationId);
+
       const attractionData: AttractionData = {
-        id: parseInt(feed.id, 10) || Date.now(),
+        id: Date.now(),
         title: item.title,
         cityName: destinationId,
+        tiqetsDescription: item.summary,
         primaryCategory: data.category || feed.category || 'news',
         secondaryCategories: [],
         address: '',
         coordinates: coords || undefined,
       };
-      
-      const result = await generateAttractionWithOctypo(attractionData);
-      
-      if (result.success && result.content) {
-        const saved = await saveGeneratedArticle(
-          item.title,
-          slug,
-          destinationId,
-          data.category || feed.category || 'news',
-          result.content,
-          feed.id,
-          item.link,
-          jobId
-        );
-        
-        contentIds.push(saved.contentId);
-        console.log(`[OctypoJobHandler] Generated and saved article for: ${item.title}`);
-        generated++;
+
+      let contentId: string | undefined;
+
+      // Try locale-aware generation for supported locales (en, ar, fr)
+      if (targetLocale === 'en' || targetLocale === 'ar' || targetLocale === 'fr') {
+        try {
+          const pilotRequest: PilotGenerationRequest = {
+            entityType: 'attraction',
+            entityId: item.id,
+            destination: destinationId,
+            locale: targetLocale,
+          };
+
+          const pilotResult = await generatePilotContent(pilotRequest, attractionData);
+
+          if (pilotResult.success && pilotResult.contentId) {
+            // Save as article in contents table
+            const saved = await saveGeneratedArticle(
+              item.title,
+              slug,
+              destinationId,
+              data.category || feed.category || 'news',
+              {
+                introduction: '', // Will be filled from pilot content
+                whatToExpect: '',
+                visitorTips: '',
+                howToGetThere: '',
+                faqs: [],
+                answerCapsule: '',
+                metaTitle: item.title,
+                metaDescription: item.summary.substring(0, 160),
+              },
+              feed.id,
+              item.url,
+              jobId
+            );
+
+            contentId = saved.contentId;
+            contentIds.push(contentId);
+            console.log(`[OctypoJobHandler] Generated locale-aware content (${targetLocale}) for: ${item.title}`);
+            generated++;
+          } else {
+            // Fall back to standard generation
+            console.log(`[OctypoJobHandler] Pilot generation failed, falling back to standard: ${pilotResult.failureReason}`);
+            throw new Error('Fallback to standard generation');
+          }
+        } catch (pilotError) {
+          // Fall back to standard generation
+          console.log(`[OctypoJobHandler] Using standard generation for: ${item.title}`);
+
+          const result = await generateAttractionWithOctypo(attractionData);
+
+          if (result.success && result.content) {
+            const saved = await saveGeneratedArticle(
+              item.title,
+              slug,
+              destinationId,
+              data.category || feed.category || 'news',
+              result.content,
+              feed.id,
+              item.url,
+              jobId
+            );
+
+            contentId = saved.contentId;
+            contentIds.push(contentId);
+            console.log(`[OctypoJobHandler] Generated standard content for: ${item.title}`);
+            generated++;
+          } else {
+            errors.push(`Failed to generate for: ${item.title} - ${result.error || 'Unknown error'}`);
+          }
+        }
       } else {
-        errors.push(`Failed to generate for: ${item.title} - ${result.error || 'Unknown error'}`);
+        // Standard generation for non-pilot locales
+        const result = await generateAttractionWithOctypo(attractionData);
+
+        if (result.success && result.content) {
+          const saved = await saveGeneratedArticle(
+            item.title,
+            slug,
+            destinationId,
+            data.category || feed.category || 'news',
+            result.content,
+            feed.id,
+            item.url,
+            jobId
+          );
+
+          contentId = saved.contentId;
+          contentIds.push(contentId);
+          console.log(`[OctypoJobHandler] Generated content for: ${item.title}`);
+          generated++;
+        } else {
+          errors.push(`Failed to generate for: ${item.title} - ${result.error || 'Unknown error'}`);
+        }
       }
+
+      // Mark item as processed
+      await rssReader.markProcessed(item.id, contentId);
+
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       errors.push(`Error processing: ${item.title} - ${errorMsg}`);
     }
   }
-  
-  await db.update(rssFeeds)
-    .set({ lastFetchedAt: new Date() } as any)
-    .where(eq(rssFeeds.id, feed.id));
-  
+
   console.log(`[OctypoJobHandler] RSS job complete - Generated: ${generated}, Skipped: ${skipped}, Errors: ${errors.length}`);
   return { success: generated > 0 || skipped > 0, generated, skipped, errors, contentIds };
 }

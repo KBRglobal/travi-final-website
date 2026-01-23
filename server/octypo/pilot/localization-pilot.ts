@@ -137,7 +137,7 @@ export interface PilotGenerationRequest {
   entityType: "attraction";
   entityId: string;
   destination: string; // REQUIRED - no fallback
-  locale: "en" | "ar";
+  locale: "en" | "ar" | "fr"; // Extended to support French
   strict?: boolean; // Strict mode - fail immediately on any error
 }
 
@@ -235,8 +235,8 @@ export function calculateLocalePurity(
 }
 
 export function validateLocalePurity(
-  content: GeneratedAttractionContent, 
-  locale: "en" | "ar",
+  content: GeneratedAttractionContent,
+  locale: "en" | "ar" | "fr",
   exemptions: string[] = []
 ): { passed: boolean; score: number; threshold: number } {
   const allText = [
@@ -499,8 +499,8 @@ export async function generatePilotContent(
   if (!request.destination || request.destination.trim() === "") {
     throw new Error("PILOT_FAIL: destination is REQUIRED - no fallback allowed");
   }
-  if (!request.locale || !["en", "ar"].includes(request.locale)) {
-    throw new Error("PILOT_FAIL: locale must be 'en' or 'ar' only");
+  if (!request.locale || !["en", "ar", "fr"].includes(request.locale)) {
+    throw new Error("PILOT_FAIL: locale must be 'en', 'ar', or 'fr' only");
   }
   if (request.entityType !== "attraction") {
     throw new Error("PILOT_FAIL: entityType must be 'attraction' only for pilot");

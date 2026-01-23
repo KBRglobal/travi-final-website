@@ -1,10 +1,9 @@
 /**
  * Phase 6: Translation Worker
- * 
- * DISABLED (January 2026): Automatic translation is permanently disabled.
- * All translations must be done manually via admin UI.
- * 
- * Original features (now disabled):
+ *
+ * ENABLED (January 2026): Automatic translation re-enabled for RSS integration.
+ *
+ * Features:
  * - 8 AI providers with language-family optimization (NO DeepL)
  * - Exponential backoff on rate limits
  * - Parallel field translation
@@ -13,9 +12,9 @@
  */
 
 // ============================================================================
-// TRANSLATION WORKER - DISABLED
+// TRANSLATION WORKER - ENABLED
 // ============================================================================
-const TRANSLATION_WORKER_ENABLED = false;
+const TRANSLATION_WORKER_ENABLED = process.env.ENABLE_TRANSLATION_WORKER !== 'false';
 
 import { db } from '../db';
 import { 
@@ -392,14 +391,16 @@ async function translateContentHighlights(
 
 /**
  * Run the translation worker loop
- * DISABLED (January 2026): Automatic translation is permanently disabled.
+ * Re-enabled (January 2026) for RSS integration.
  */
 export async function runWorkerLoop(): Promise<void> {
-  // GUARD: Translation worker is disabled
+  // Check if translation worker is enabled
   if (!TRANSLATION_WORKER_ENABLED) {
-    logger.info('Translation worker DISABLED - not processing any jobs');
+    logger.info('Translation worker DISABLED via environment - set ENABLE_TRANSLATION_WORKER=true to enable');
     return; // Exit immediately, do not loop
   }
+
+  logger.info('Translation worker STARTING - processing jobs');
 
   while (true) {
     try {
