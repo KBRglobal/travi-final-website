@@ -205,6 +205,20 @@ app.use((req, res, next) => {
     return res.redirect(301, newPath + queryString);
   }
   
+  // SEO Fix: Redirect /article/* (singular) to /articles/* (plural)
+  // Also handles localized paths like /fil/article/* → /fil/articles/*
+  // Supports 2-3 letter locale codes (ar, he, fil, etc.)
+  const articleSingularMatch = path.match(/^(\/[a-z]{2,3})?\/article\/(.+)$/);
+  if (articleSingularMatch) {
+    const localePrefix = articleSingularMatch[1] || '';
+    const articleSlug = articleSingularMatch[2];
+    const newPath = `${localePrefix}/articles/${articleSlug}`;
+    const queryString = Object.keys(req.query).length 
+      ? '?' + new URLSearchParams(req.query as Record<string, string>).toString() 
+      : '';
+    return res.redirect(301, newPath + queryString);
+  }
+  
   next();
 });
 
