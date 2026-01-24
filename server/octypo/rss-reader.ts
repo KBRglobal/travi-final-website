@@ -87,7 +87,7 @@ class RSSReader {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS rss_feed_items (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          feed_id UUID NOT NULL REFERENCES rss_feeds(id) ON DELETE CASCADE,
+          feed_id VARCHAR(50) NOT NULL REFERENCES rss_feeds(id) ON DELETE CASCADE,
           title VARCHAR(500) NOT NULL,
           url VARCHAR(2000) NOT NULL UNIQUE,
           summary TEXT,
@@ -95,7 +95,7 @@ class RSSReader {
           source VARCHAR(200),
           category VARCHAR(100),
           processed BOOLEAN DEFAULT FALSE,
-          content_id UUID REFERENCES contents(id),
+          content_id VARCHAR(50) REFERENCES contents(id),
           created_at TIMESTAMPTZ DEFAULT NOW(),
           processed_at TIMESTAMPTZ
         )
@@ -208,7 +208,7 @@ class RSSReader {
           await db.execute(sql`
             INSERT INTO rss_feed_items (feed_id, title, url, summary, published_date, source, category)
             VALUES (
-              ${feed.id}::uuid,
+              ${feed.id},
               ${(item.title || '').substring(0, 500)},
               ${item.link.substring(0, 2000)},
               ${summary.substring(0, 5000)},
@@ -221,8 +221,14 @@ class RSSReader {
 
           result.newItems++;
         } catch (error) {
-          // Duplicate URL, skip
-          result.duplicatesSkipped++;
+          // Check if it's a duplicate URL error or something else
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          if (errorMsg.includes('duplicate') || errorMsg.includes('unique')) {
+            result.duplicatesSkipped++;
+          } else {
+            console.error(`[RSSReader] INSERT error for item ${item.link}:`, errorMsg);
+            result.duplicatesSkipped++;
+          }
         }
       }
 
