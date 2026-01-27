@@ -112,7 +112,6 @@ app.use((req, res, next) => {
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://www.google-analytics.com https://api.tiqets.com wss: ws:",
       "frame-ancestors 'self'",
-      "require-trusted-types-for 'script'",
     ].join("; ")
   );
 
