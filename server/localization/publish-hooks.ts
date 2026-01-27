@@ -30,6 +30,9 @@ const logger = {
 // Content status that triggers hooks
 const TRIGGER_STATUSES = ['approved', 'published'];
 
+// Auto-translation queueing - enabled by default, can be disabled via env
+const AUTO_TRANSLATION_ENABLED = process.env.DISABLE_AUTO_TRANSLATION !== 'true';
+
 /**
  * Main hook called when content status changes
  */
@@ -64,10 +67,13 @@ export async function onContentStatusChange(
     // 1. Generate AEO for EN (source) first
     await generateAeoForContent(contentId);
 
-    // 2. Enqueue translation jobs for all locales - DISABLED (January 2026)
-    // Translation is now manual-only via admin UI
-    // await enqueueTranslationsForContent(content);
-    logger.info('Translation auto-enqueue DISABLED - use admin UI for manual translations');
+    // 2. Enqueue translation jobs for all locales (if enabled)
+    if (AUTO_TRANSLATION_ENABLED) {
+      await enqueueTranslationsForContent(content);
+      logger.info('Translation jobs queued', { contentId });
+    } else {
+      logger.info('Auto-translation DISABLED via DISABLE_AUTO_TRANSLATION=true', { contentId });
+    }
 
     // 3. Update search index for EN
     await updateSearchIndex(content, 'en');
@@ -262,8 +268,7 @@ export async function onTranslationComplete(
 
 /**
  * Trigger hooks manually for a content item (admin action)
- * NOTE: Translation queueing is DISABLED (January 2026)
- * All translations must be done manually via admin UI.
+ * Translation queueing respects AUTO_TRANSLATION_ENABLED flag
  */
 export async function triggerHooksManually(contentId: string): Promise<{
   success: boolean;
@@ -282,7 +287,7 @@ export async function triggerHooksManually(contentId: string): Promise<{
   }
 
   let aeoGenerated = false;
-  const translationsQueued = 0; // DISABLED: Auto-translation is permanently disabled
+  let translationsQueued = 0;
   let searchIndexUpdated = false;
 
   try {
@@ -292,9 +297,18 @@ export async function triggerHooksManually(contentId: string): Promise<{
     logger.error('Manual AEO generation failed', { contentId });
   }
 
-  // DISABLED (January 2026): Translation queueing is permanently disabled
-  // All translations must be done manually via admin UI
-  logger.info('Translation queueing DISABLED - use admin UI for manual translations', { contentId });
+  // Queue translations if enabled
+  if (AUTO_TRANSLATION_ENABLED) {
+    try {
+      const jobs = await enqueueTranslationJobs(content.id, 'en', 10);
+      translationsQueued = jobs.length;
+      logger.info('Manual translation jobs queued', { contentId, count: translationsQueued });
+    } catch (e) {
+      logger.error('Manual translation queueing failed', { contentId });
+    }
+  } else {
+    logger.info('Auto-translation DISABLED - use admin UI or set DISABLE_AUTO_TRANSLATION=false', { contentId });
+  }
 
   try {
     await updateSearchIndex(content, 'en');
@@ -313,13 +327,37 @@ export async function triggerHooksManually(contentId: string): Promise<{
 
 /**
  * Batch process all published content
- * DISABLED (January 2026): Translation queueing is permanently disabled
+ * Respects AUTO_TRANSLATION_ENABLED flag
  */
 export async function batchProcessPublishedContent(
   limit: number = 100
 ): Promise<number> {
-  // DISABLED: Automatic translation queueing is permanently disabled
-  // All translations must be done manually via admin UI
-  logger.info('Batch translation processing DISABLED - use admin UI for manual translations');
-  return 0;
+  if (!AUTO_TRANSLATION_ENABLED) {
+    logger.info('Batch translation processing DISABLED - set DISABLE_AUTO_TRANSLATION=false to enable');
+    return 0;
+  }
+
+  const publishedContent = await db
+    .select()
+    .from(contents)
+    .where(eq(contents.status, 'published'))
+    .limit(limit);
+
+  let processed = 0;
+  for (const content of publishedContent) {
+    try {
+      const jobs = await enqueueTranslationJobs(content.id, 'en', 5);
+      if (jobs.length > 0) {
+        processed++;
+      }
+    } catch (error) {
+      logger.error('Batch translation queueing failed', {
+        contentId: content.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  logger.info('Batch translation processing completed', { processed, total: publishedContent.length });
+  return processed;
 }
