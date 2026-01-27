@@ -15,6 +15,7 @@ if (!databaseUrl) {
 
 // Log which database is being used (without exposing credentials)
 const dbSource = process.env.RAILWAY_DATABASE_URL ? "Railway" : "Replit";
+console.log(`[DB] Using ${dbSource} PostgreSQL database`);
 
 // Connection pool configuration - optimized for production workloads
 // Railway PostgreSQL supports up to 97 connections (100 - 3 reserved)
@@ -29,8 +30,11 @@ export const pool = new Pool({
   ssl: process.env.RAILWAY_DATABASE_URL ? { rejectUnauthorized: false } : undefined,
 });
 
-// Handle pool errors gracefully
-pool.on("error", err => {});
+// Handle pool errors gracefully - log but don't crash
+pool.on("error", (err: Error) => {
+  console.error("[DB Pool Error]", err.message || err);
+  // Don't exit - pool can recover from transient errors
+});
 
 // Graceful shutdown - release all connections when process exits
 const shutdown = async () => {
