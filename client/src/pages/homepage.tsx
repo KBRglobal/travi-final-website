@@ -786,6 +786,50 @@ function SplitHero({
     },
   });
 
+  // HowTo schema for featured snippets on travel research queries
+  const howToSchema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to Research Your Travel Destination on TRAVI",
+    description:
+      "A step-by-step guide to finding comprehensive travel information on TRAVI World for your next trip.",
+    totalTime: "PT5M",
+    step: [
+      {
+        "@type": "HowToStep",
+        position: 1,
+        name: "Choose Your Destination",
+        text: "Browse our 17 destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, and more. Each destination has detailed information about attractions, hotels, and local experiences.",
+        url: `${SITE_URL}/destinations`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 2,
+        name: "Explore Attractions",
+        text: "Discover top attractions with detailed information including opening hours, ticket prices, visitor tips, and honest reviews. We cover 3,000+ attractions across all destinations.",
+        url: `${SITE_URL}/attractions`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 3,
+        name: "Find Accommodation",
+        text: "Browse hotels and accommodation options filtered by location, amenities, and traveler ratings. Get insider tips on the best areas to stay.",
+      },
+      {
+        "@type": "HowToStep",
+        position: 4,
+        name: "Discover Local Experiences",
+        text: "Explore restaurants, tours, activities, and local experiences curated by destination. Find hidden gems and popular spots alike.",
+      },
+      {
+        "@type": "HowToStep",
+        position: 5,
+        name: "Check Travel Essentials",
+        text: "Review practical information including best times to visit, local transportation, visa requirements, and cultural tips for your destination.",
+      },
+    ],
+  });
+
   return (
     <section
       className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
@@ -801,6 +845,7 @@ function SplitHero({
         <script type="application/ld+json">{breadcrumbSchema}</script>
         <script type="application/ld+json">{destinationsListSchema}</script>
         <script type="application/ld+json">{collectionPageSchema}</script>
+        <script type="application/ld+json">{howToSchema}</script>
       </Helmet>
 
       {/* Decorative blobs - CSS animated for performance */}

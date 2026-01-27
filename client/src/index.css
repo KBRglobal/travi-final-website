@@ -1,8 +1,8 @@
 /* TRAVI Brand Fonts - Self-hosted */
 /* Chillax Variable - Headlines only */
 @font-face {
-  font-family: 'Chillax';
-  src: url('/fonts/Chillax-Variable_1767041885348.ttf') format('truetype');
+  font-family: "Chillax";
+  src: url("/fonts/Chillax-Variable_1767041885348.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -10,24 +10,24 @@
 
 /* Satoshi - Body text, UI, navigation */
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Regular_1767041885349.ttf') format('truetype');
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Regular_1767041885349.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Medium_1767041885349.ttf') format('truetype');
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Medium_1767041885349.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Bold_1767041885349.ttf') format('truetype');
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Bold_1767041885349.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -55,7 +55,8 @@
 
 /* TRAVI Global Typography & Background */
 @layer base {
-  html, body {
+  html,
+  body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -63,51 +64,55 @@
   }
 
   html {
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     background-color: #d4e6f0;
   }
-  
+
   body {
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     background-color: transparent;
     margin: 0;
     padding: 0;
   }
-  
+
   #root {
     min-height: 100vh;
     width: 100%;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Chillax';
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Chillax";
   }
 }
 
-
 /* TRAVI Design System - Light Mode */
 :root {
-  --button-outline: rgba(36, 16, 62, 0.30);
-  --badge-outline: rgba(36, 16, 62, 0.10);
+  --button-outline: rgba(36, 16, 62, 0.3);
+  --badge-outline: rgba(36, 16, 62, 0.1);
   --opaque-button-border-intensity: -8;
   --elevate-1: rgba(36, 16, 62, 0.06);
   --elevate-2: rgba(36, 16, 62, 0.12);
 
   /* Official Brand Color Tokens (definition only - controlled usage via CMS) */
-  --color-background-base: 0 0% 100%;  /* White for cards */
+  --color-background-base: 0 0% 100%; /* White for cards */
   --color-primary: 251 89% 61%;
   --color-secondary: 48 98% 52%;
   --color-accent: 251 89% 61%;
 
   /* TRAVI Brand Colors - from brand palette */
-  --travi-purple: 251 89% 61%;      /* #6443F4 - Primary brand purple */
+  --travi-purple: 251 89% 61%; /* #6443F4 - Primary brand purple */
   /* --travi-pink: DEPRECATED - Use --travi-purple instead */
-  --travi-yellow: 44 88% 61%;       /* #F4C542 - Warm golden yellow */
-  --travi-green: 153 98% 33%;       /* Keep existing green */
-  
+  --travi-yellow: 44 88% 61%; /* #F4C542 - Warm golden yellow */
+  --travi-green: 153 98% 33%; /* Keep existing green */
+
   /* Legacy - mapped to new palette */
-  --travi-orange: 44 88% 61%;       /* Now uses yellow */
-  
+  --travi-orange: 44 88% 61%; /* Now uses yellow */
+
   /* TRAVI Neutrals */
   --travi-neutral-black: 270 30% 10%;
   --travi-neutral-gray-100: 269 61% 15%;
@@ -116,15 +121,15 @@
   --travi-neutral-gray-25: 272 11% 83%;
 
   /* Core Semantic Colors */
-  --background: 0 0% 100%;  /* White - sits on top of background image */
+  --background: 0 0% 100%; /* White - sits on top of background image */
   --foreground: 269 61% 15%;
   --border: 272 11% 83%;
-  
+
   /* Card */
-  --card: 0 0% 100%;  /* White */
+  --card: 0 0% 100%; /* White */
   --card-foreground: 269 61% 15%;
   --card-border: 272 11% 88%;
-  
+
   /* Sidebar */
   --sidebar: 0 0% 98%;
   --sidebar-foreground: 269 61% 15%;
@@ -134,80 +139,80 @@
   --sidebar-accent: 251 60% 96%;
   --sidebar-accent-foreground: 269 61% 15%;
   --sidebar-ring: 251 89% 61%;
-  
+
   /* Popover */
   --popover: 0 0% 100%;
   --popover-foreground: 269 61% 15%;
   --popover-border: 272 11% 85%;
-  
+
   /* Primary - TRAVI Purple (Main CTA color #6443F4) */
   --primary: 251 89% 61%;
   --primary-foreground: 0 0% 100%;
-  
+
   /* Brand Purple - for links and secondary elements */
   --brand-purple: 251 89% 61%;
   --brand-purple-foreground: 0 0% 100%;
-  
+
   /* Brand Yellow - for warm accents */
   --brand-yellow: 44 88% 61%;
   --brand-yellow-foreground: 269 61% 15%;
-  
+
   /* Legacy orange - mapped to yellow */
   --brand-orange: 44 88% 61%;
   --brand-orange-foreground: 269 61% 15%;
-  
+
   /* Secondary */
   --secondary: 270 10% 94%;
   --secondary-foreground: 269 61% 15%;
-  
+
   /* Muted */
   --muted: 270 8% 92%;
   --muted-foreground: 264 23% 40%;
-  
+
   /* Accent - Purple tint */
   --accent: 251 60% 96%;
   --accent-foreground: 269 61% 15%;
-  
+
   /* Destructive - Red for errors */
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  
+
   /* Input */
   --input: 272 11% 75%;
   --ring: hsl(var(--color-accent));
-  
+
   /* Chart colors using TRAVI palette */
   --chart-1: 272 38% 47%;
   --chart-2: 153 98% 40%;
   --chart-3: 44 88% 55%;
   --chart-4: 251 89% 61%;
   --chart-5: 44 88% 65%;
-  
+
   /* Typography - TRAVI Brand Fonts */
-  --font-sans: 'Satoshi';
-  --font-heading: 'Chillax';
+  --font-sans: "Satoshi";
+  --font-heading: "Chillax";
   --font-mono: JetBrains Mono, monospace;
-  
+
   /* TRAVI Spacing */
   --radius: 0.75rem;
   --radius-sm: 0.5rem;
   --radius-lg: 1rem;
   --radius-full: 999px;
-  
+
   /* TRAVI Shadows */
   --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.14);
-  
+
   --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.08);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.10);
-  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.14);
   --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.18);
   --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.22);
-  
+
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -220,23 +225,49 @@
   --accent-border: hsl(var(--accent));
   --destructive-border: hsl(var(--destructive));
 
-  /* Admin Design System Tokens - Opaque surfaces, 4px grid, 6px radius */
-  --admin-bg: 0 0% 97%;
+  /* Admin Design System Tokens - Linear/Notion inspired minimal design */
+  /* Surfaces - clean, bright */
+  --admin-bg: 0 0% 98%;
   --admin-surface: 0 0% 100%;
+  --admin-surface-hover: 0 0% 97%;
   --admin-surface-elevated: 0 0% 100%;
-  --admin-border: 0 0% 88%;
-  --admin-border-subtle: 0 0% 92%;
-  --admin-text: 0 0% 10%;
-  --admin-text-muted: 0 0% 45%;
-  --admin-text-subtle: 0 0% 60%;
-  --admin-radius: 6px;
+  --admin-surface-active: 0 0% 95%;
+
+  /* Borders - subtle */
+  --admin-border: 0 0% 92%;
+  --admin-border-subtle: 0 0% 96%;
+  --admin-border-hover: 0 0% 88%;
+
+  /* Text - high contrast hierarchy */
+  --admin-text: 0 0% 9%;
+  --admin-text-secondary: 0 0% 46%;
+  --admin-text-muted: 0 0% 64%;
+  --admin-text-subtle: 0 0% 72%;
+
+  /* Typography - minimal sizes */
+  --admin-font-size-xs: 11px;
+  --admin-font-size-sm: 13px;
+  --admin-font-size-base: 14px;
+  --admin-font-size-lg: 16px;
+  --admin-font-size-xl: 18px;
+
+  /* Radius - minimal */
+  --admin-radius-sm: 4px;
+  --admin-radius-md: 6px;
+  --admin-radius-lg: 8px;
+
+  /* Spacing - 4px grid */
   --admin-spacing-xs: 4px;
   --admin-spacing-sm: 8px;
-  --admin-spacing-md: 16px;
-  --admin-spacing-lg: 24px;
-  --admin-spacing-xl: 32px;
-  --admin-header-height: 64px;
-  --admin-sidebar-width: 240px;
+  --admin-spacing-md: 12px;
+  --admin-spacing-lg: 16px;
+  --admin-spacing-xl: 24px;
+  --admin-spacing-2xl: 32px;
+
+  /* Layout */
+  --admin-header-height: 52px;
+  --admin-sidebar-width: 220px;
+  --admin-sidebar-collapsed-width: 52px;
 }
 
 /* TRAVI Design System - Dark Mode */
@@ -246,15 +277,15 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255, 255, 255, 0.06);
   --elevate-2: rgba(255, 255, 255, 0.12);
-  
+
   --background: 269 61% 8%;
   --foreground: 0 0% 98%;
   --border: 269 30% 18%;
-  
+
   --card: 269 50% 10%;
   --card-foreground: 0 0% 98%;
   --card-border: 269 30% 14%;
-  
+
   --sidebar: 269 60% 6%;
   --sidebar-foreground: 0 0% 98%;
   --sidebar-border: 269 30% 12%;
@@ -263,56 +294,56 @@
   --sidebar-accent: 251 40% 18%;
   --sidebar-accent-foreground: 0 0% 98%;
   --sidebar-ring: 251 89% 66%;
-  
+
   --popover: 269 50% 12%;
   --popover-foreground: 0 0% 98%;
   --popover-border: 269 30% 16%;
-  
+
   --primary: 251 89% 66%;
   --primary-foreground: 0 0% 100%;
-  
+
   --brand-purple: 251 89% 66%;
   --brand-purple-foreground: 0 0% 100%;
-  
+
   --brand-yellow: 44 88% 65%;
   --brand-yellow-foreground: 269 61% 15%;
-  
+
   --brand-orange: 44 88% 65%;
   --brand-orange-foreground: 0 0% 100%;
-  
+
   --secondary: 269 30% 18%;
   --secondary-foreground: 0 0% 98%;
-  
+
   --muted: 269 25% 14%;
   --muted-foreground: 270 10% 66%;
-  
+
   --accent: 251 40% 20%;
   --accent-foreground: 0 0% 98%;
-  
+
   --destructive: 0 84% 65%;
   --destructive-foreground: 0 0% 100%;
-  
+
   --input: 269 30% 28%;
   --ring: hsl(var(--color-accent));
-  
+
   --chart-1: 272 38% 55%;
   --chart-2: 153 80% 55%;
   --chart-3: 44 88% 60%;
   --chart-4: 251 89% 66%;
   --chart-5: 44 88% 70%;
-  
-  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.20);
-  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.30);
-  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.40);
-  
+
+  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.4);
+
   --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.20);
+  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.2);
   --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.25);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.30);
-  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.30);
-  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.40);
-  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.50);
-  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.60);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.5);
+  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.6);
 
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-accent-border: hsl(var(--sidebar-accent));
@@ -322,15 +353,21 @@
   --accent-border: hsl(var(--accent));
   --destructive-border: hsl(var(--destructive));
 
-  /* Admin Design System Tokens (Dark Mode) */
-  --admin-bg: 269 40% 6%;
-  --admin-surface: 269 35% 10%;
-  --admin-surface-elevated: 269 30% 14%;
-  --admin-border: 269 25% 18%;
-  --admin-border-subtle: 269 20% 14%;
+  /* Admin Design System Tokens (Dark Mode) - Linear/Notion inspired */
+  --admin-bg: 0 0% 8%;
+  --admin-surface: 0 0% 12%;
+  --admin-surface-hover: 0 0% 14%;
+  --admin-surface-elevated: 0 0% 14%;
+  --admin-surface-active: 0 0% 16%;
+
+  --admin-border: 0 0% 18%;
+  --admin-border-subtle: 0 0% 14%;
+  --admin-border-hover: 0 0% 22%;
+
   --admin-text: 0 0% 95%;
-  --admin-text-muted: 0 0% 60%;
-  --admin-text-subtle: 0 0% 45%;
+  --admin-text-secondary: 0 0% 65%;
+  --admin-text-muted: 0 0% 50%;
+  --admin-text-subtle: 0 0% 40%;
 }
 
 @layer base {
@@ -342,8 +379,13 @@
     @apply font-sans antialiased text-foreground;
     background-color: transparent;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
   }
 }
@@ -371,7 +413,7 @@
 }
 
 .nav-item-active-icon {
-  color: #6443F4;
+  color: #6443f4;
 }
 
 /* TRAVI Brand Gradients - DISABLED (NO GRADIENTS except SubtleSkyBackground)
@@ -397,7 +439,7 @@
 
 /* Brand Gold Text */
 .text-brand-gold {
-  color: #FACC15;
+  color: #facc15;
 }
 
 /* Subtle noise texture overlay */
@@ -425,8 +467,10 @@
     pointer-events: none;
   }
 
-  .no-default-hover-elevate {}
-  .no-default-active-elevate {}
+  .no-default-hover-elevate {
+  }
+  .no-default-active-elevate {
+  }
 
   .toggle-elevate::before,
   .toggle-elevate-2::before {
@@ -490,30 +534,30 @@
 
 /* Script/Cursive font for accent text */
 .font-script {
-  font-family: 'Dancing Script', cursive;
+  font-family: "Dancing Script", cursive;
 }
 
 /* Sky Background Gradient */
 .sky-gradient {
-  background: linear-gradient(180deg, #87CEEB 0%, #B8E0F7 40%, #E8F4FD 100%);
+  background: linear-gradient(180deg, #87ceeb 0%, #b8e0f7 40%, #e8f4fd 100%);
 }
 
 .sky-gradient-light {
-  background: linear-gradient(180deg, #E8F4FD 0%, #F0F8FF 50%, #FFFFFF 100%);
+  background: linear-gradient(180deg, #e8f4fd 0%, #f0f8ff 50%, #ffffff 100%);
 }
 
 /* Cloud Styles */
 .cloud {
   background: white;
   border-radius: 50%;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(255, 255, 255, 0.8),
     inset 0 -8px 20px rgba(200, 220, 240, 0.3);
 }
 
 .cloud::before,
 .cloud::after {
-  content: '';
+  content: "";
   position: absolute;
   background: white;
   border-radius: 50%;
@@ -521,7 +565,9 @@
 
 /* Tilted Card Styles */
 .tilted-card {
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
 }
 
 .tilted-card:hover {
@@ -547,56 +593,116 @@
 
 /* Floating Animation Keyframes */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 @keyframes float-slow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes float-gentle {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
 }
 
 @keyframes drift-right {
-  0% { transform: translateX(-100px) translateY(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(calc(100vw + 100px)) translateY(-20px); opacity: 0; }
+  0% {
+    transform: translateX(-100px) translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(100vw + 100px)) translateY(-20px);
+    opacity: 0;
+  }
 }
 
 @keyframes drift-left {
-  0% { transform: translateX(100vw) translateY(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(-200px) translateY(-30px); opacity: 0; }
+  0% {
+    transform: translateX(100vw) translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-200px) translateY(-30px);
+    opacity: 0;
+  }
 }
 
 @keyframes cloud-drift {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(30px); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(30px);
+  }
 }
 
 @keyframes bird-fly {
-  0% { transform: translateX(-50px) translateY(0); }
-  25% { transform: translateX(25vw) translateY(-20px); }
-  50% { transform: translateX(50vw) translateY(5px); }
-  75% { transform: translateX(75vw) translateY(-15px); }
-  100% { transform: translateX(100vw) translateY(0); }
+  0% {
+    transform: translateX(-50px) translateY(0);
+  }
+  25% {
+    transform: translateX(25vw) translateY(-20px);
+  }
+  50% {
+    transform: translateX(50vw) translateY(5px);
+  }
+  75% {
+    transform: translateX(75vw) translateY(-15px);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0);
+  }
 }
 
 @keyframes balloon-rise {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
 }
 
 @keyframes plane-fly {
-  0% { transform: translateX(-100px) translateY(20px) rotate(-5deg); }
-  50% { transform: translateX(50vw) translateY(-10px) rotate(0deg); }
-  100% { transform: translateX(calc(100vw + 100px)) translateY(0) rotate(5deg); }
+  0% {
+    transform: translateX(-100px) translateY(20px) rotate(-5deg);
+  }
+  50% {
+    transform: translateX(50vw) translateY(-10px) rotate(0deg);
+  }
+  100% {
+    transform: translateX(calc(100vw + 100px)) translateY(0) rotate(5deg);
+  }
 }
 
 /* Floating Element Classes */
@@ -686,8 +792,12 @@
 
 /* Animated flowing logo texture */
 @keyframes logo-flow {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-logo-flow {
@@ -696,12 +806,14 @@
 
 /* Orange/Gold Button Style */
 .btn-gold {
-  background: linear-gradient(135deg, #F59E0B 0%, #FACC15 100%);
-  color: #1E1B4B;
+  background: linear-gradient(135deg, #f59e0b 0%, #facc15 100%);
+  color: #1e1b4b;
   font-weight: 600;
   border: none;
   box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .btn-gold:hover {
@@ -720,23 +832,39 @@
 }
 
 /* Delay utilities for staggered animations */
-.animation-delay-100 { animation-delay: 100ms; }
-.animation-delay-200 { animation-delay: 200ms; }
-.animation-delay-300 { animation-delay: 300ms; }
-.animation-delay-500 { animation-delay: 500ms; }
-.animation-delay-700 { animation-delay: 700ms; }
-.animation-delay-1000 { animation-delay: 1000ms; }
-.animation-delay-2000 { animation-delay: 2000ms; }
-.animation-delay-3000 { animation-delay: 3000ms; }
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+.animation-delay-2000 {
+  animation-delay: 2000ms;
+}
+.animation-delay-3000 {
+  animation-delay: 3000ms;
+}
 
 /* Hot Air Balloon SVG styling */
 .balloon-icon {
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 /* Plane icon styling */
 .plane-icon {
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
 /* =============================================================================
@@ -780,8 +908,14 @@ textarea:focus-visible,
 }
 
 /* Flip margins and paddings for common layout patterns */
-[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
-[dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
 
 /* Flip flex direction for horizontal layouts */
 [dir="rtl"] .rtl-flip {
@@ -983,4 +1117,125 @@ textarea:focus-visible,
 
 .dark .maplibregl-ctrl-group {
   background: hsl(var(--background)) !important;
+}
+
+/* =============================================================================
+   Admin Design System - Linear/Notion Inspired Utilities
+   ============================================================================= */
+
+/* Admin Layout Container */
+.admin-layout {
+  background: hsl(var(--admin-bg));
+  min-height: 100vh;
+}
+
+/* Admin Sidebar Styles */
+.admin-sidebar {
+  width: var(--admin-sidebar-width);
+  background: hsl(var(--admin-surface));
+  border-right: 1px solid hsl(var(--admin-border));
+}
+
+.admin-sidebar-group-label {
+  font-size: var(--admin-font-size-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--admin-text-muted));
+  padding: var(--admin-spacing-sm) var(--admin-spacing-md);
+}
+
+.admin-sidebar-item {
+  font-size: var(--admin-font-size-sm);
+  color: hsl(var(--admin-text-secondary));
+  padding: var(--admin-spacing-sm) var(--admin-spacing-md);
+  border-radius: var(--admin-radius-sm);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.admin-sidebar-item:hover {
+  background: hsl(var(--admin-surface-hover));
+  color: hsl(var(--admin-text));
+}
+
+.admin-sidebar-item.active {
+  background: hsl(var(--admin-surface-active));
+  color: hsl(var(--admin-text));
+  font-weight: 500;
+}
+
+/* Admin Card Styles */
+.admin-card {
+  background: hsl(var(--admin-surface));
+  border: 1px solid hsl(var(--admin-border-subtle));
+  border-radius: var(--admin-radius-md);
+}
+
+.admin-card:hover {
+  border-color: hsl(var(--admin-border-hover));
+}
+
+/* Admin Header */
+.admin-header {
+  height: var(--admin-header-height);
+  background: hsl(var(--admin-surface));
+  border-bottom: 1px solid hsl(var(--admin-border));
+}
+
+/* Admin Typography */
+.admin-text-title {
+  font-size: var(--admin-font-size-lg);
+  font-weight: 600;
+  color: hsl(var(--admin-text));
+}
+
+.admin-text-subtitle {
+  font-size: var(--admin-font-size-base);
+  font-weight: 500;
+  color: hsl(var(--admin-text));
+}
+
+.admin-text-body {
+  font-size: var(--admin-font-size-sm);
+  color: hsl(var(--admin-text-secondary));
+}
+
+.admin-text-caption {
+  font-size: var(--admin-font-size-xs);
+  color: hsl(var(--admin-text-muted));
+}
+
+/* Admin Button Minimal */
+.admin-btn {
+  font-size: var(--admin-font-size-sm);
+  padding: var(--admin-spacing-sm) var(--admin-spacing-md);
+  border-radius: var(--admin-radius-sm);
+  transition: all 0.15s ease;
+}
+
+.admin-btn-ghost {
+  background: transparent;
+  color: hsl(var(--admin-text-secondary));
+}
+
+.admin-btn-ghost:hover {
+  background: hsl(var(--admin-surface-hover));
+  color: hsl(var(--admin-text));
+}
+
+/* Admin Divider */
+.admin-divider {
+  height: 1px;
+  background: hsl(var(--admin-border-subtle));
+  margin: var(--admin-spacing-lg) 0;
+}
+
+/* Admin Focus Ring - Subtle */
+.admin-focus-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px hsl(var(--admin-surface)),
+    0 0 0 4px hsl(var(--primary) / 0.2);
 }
