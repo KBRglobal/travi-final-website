@@ -1,0 +1,164 @@
+2026-01-27T21:23:19Z info: Deployment: 44513a87-f593-4731-93b4-59d1b42d3a11
+2026-01-27T21:23:19Z info: Build: 674c2756-0e50-4cef-9048-316fcd0eb4d8
+2026-01-27T21:23:19Z info: Running Security Scan
+2026-01-27T21:24:15Z info: Security Scan Complete
+2026-01-27T21:24:15Z info: Connecting to builder
+2026-01-27T21:24:16Z info: Builder connected
+2026-01-27T21:24:17Z info: Installing packages
+--> npm install
+
+npm warn config production Use `--omit=dev` instead.
+
+npm warn ERESOLVE overriding peer dependency
+
+npm warn While resolving: vite@7.3.1
+npm warn Found: @types/node@20.16.11
+npm warn node_modules/@types/node
+npm warn   dev @types/node@"20.16.11" from the root project
+npm warn   16 more (@types/bcrypt, @types/body-parser, @types/compression, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional @types/node@"^20.19.0 || >=22.12.0" from vite@7.3.1
+npm warn node_modules/vitest/node_modules/vite
+npm warn   vite@"^6.0.0 || ^7.0.0" from vitest@4.0.17
+npm warn   node_modules/vitest
+npm warn   1 more (@vitest/mocker)
+npm warn
+npm warn Conflicting peer dependency: @types/node@25.0.10
+npm warn node_modules/@types/node
+npm warn   peerOptional @types/node@"^20.19.0 || >=22.12.0" from vite@7.3.1
+npm warn   node_modules/vitest/node_modules/vite
+npm warn     vite@"^6.0.0 || ^7.0.0" from vitest@4.0.17
+npm warn     node_modules/vitest
+npm warn     1 more (@vitest/mocker)
+
+
+> workspace@1.0.0 prepare
+> husky
+
+
+
+added 31 packages, removed 254 packages, changed 3 packages, and audited 1182 packages in 8s
+
+273 packages are looking for funding
+  run `npm fund` for details
+
+
+5 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.8.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.8.0
+npm notice To update run: npm install -g npm@11.8.0
+npm notice
+
+2026-01-27T21:24:27Z info: Starting Build
+npm warn config production Use `--omit=dev` instead.
+
+
+> workspace@1.0.0 build
+> tsx scripts/build.ts
+
+
+[Build] Skipping translation parity check (SKIP_PARITY_CHECK=true)
+
+building client...
+
+vite v5.4.21 building for production...
+
+transforming...
+
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+
+✓ 4768 modules transformed.
+
+Circular chunk: react-vendor -> admin-content -> react-vendor. Please adjust the manual chunk logic for these chunks.
+
+Circular chunk: react-vendor -> admin-content -> query-vendor -> react-vendor. Please adjust the manual chunk logic for these chunks.
+
+Circular chunk: react-vendor -> i18n-vendor -> react-vendor. Please adjust the manual chunk logic for these chunks.
+
+rendering chunks...
+
+computing gzip size...
+
+../dist/public/assets/index-CX6zb6BZ.css                        288.92 kB │ gzip:  39.82 kB
+
+../dist/public/assets/use-mobile-D89x78f9.js                      0.59 kB │ gzip:   0.30 kB
+
+../dist/public/assets/login-BPT-9H3j.js                           2.61 kB │ gzip:   1.09 kB
+
+../dist/public/assets/cookie-consent-banner-C3YP_MMb.js           4.39 kB │ gzip:   1.37 kB
+
+../dist/public/assets/article-FTw2bbFr.js                         4.52 kB │ gzip:   1.62 kB
+
+../dist/public/assets/public-survey-CLdCT3dq.js                   7.56 kB │ gzip:   2.66 kB
+
+../dist/public/assets/analytics-CzeTn7ek.js                       7.69 kB │ gzip:   2.25 kB
+../dist/public/assets/admin-logs-DpxpO6TL.js                      7.70 kB │ gzip:   2.88 kB
+../dist/public/assets/notifications-center-CPZcQUVl.js            8.19 kB │ gzip:   2.64 kB
+../dist/public/assets/command-palette-Bx9qsdBY.js                 8.25 kB │ gzip:   2.56 kB
+../dist/public/assets/destination-browser-5W9SmMsJ.js             8.28 kB │ gzip:   2.19 kB
+../dist/public/assets/media-library-_omhJmqI.js                   8.29 kB │ gzip:   2.81 kB
+../dist/public/assets/pilot-attraction-CLLZ3h97.js                8.39 kB │ gzip:   2.58 kB
+../dist/public/assets/content-expiry-alerts-BPz_iN1h.js           8.53 kB │ gzip:   2.52 kB
+
+../dist/public/assets/survey-responses-Bfwj5A6l.js                9.01 kB │ gzip:   2.76 kB
+
+../dist/public/assets/partners-join-CU8kq8kk.js                   9.04 kB │ gzip:   2.47 kB
+../dist/public/assets/partners-dashboard-J2PbifSZ.js              9.66 kB │ gzip:   2.53 kB
+../dist/public/assets/seo-audit-C4-ydKxu.js                       9.74 kB │ gzip:   2.62 kB
+
+../dist/public/assets/dubai-to-rak-transport-h6SkPHWY.js         10.08 kB │ gzip:   3.74 kB
+
+../dist/public/assets/pilot-guide-DsZMOdnq.js                    10.27 kB │ gzip:   3.17 kB
+../dist/public/assets/topic-bank-C-rkK1tI.js                     10.28 kB │ gzip:   3.10 kB
+
+../dist/public/assets/public-docs-CE81kd0e.js                    12.61 kB │ gzip:   4.11 kB
+
+../dist/public/assets/affiliate-links-DNXZK8DW.js                12.91 kB │ gzip:   3.57 kB
+
+../dist/public/assets/state-vendor-DLFcNgFL.js                   14.95 kB │ gzip:   5.92 kB
+
+../dist/public/assets/rak-real-estate-investment-D8Y7ogOH.js     15.45 kB │ gzip:   5.33 kB
+
+../dist/public/assets/terms-D35kQpyR.js                          32.50 kB │ gzip:   8.42 kB
+
+../dist/public/assets/icons-vendor-DaxBzzYv.js                   70.44 kB │ gzip:  22.42 kB
+
+../dist/public/assets/form-vendor-yz1GE11B.js                    93.01 kB │ gzip:  25.18 kB
+../dist/public/assets/admin-qa-xK4b9LZy.js                      107.60 kB │ gzip:  19.50 kB
+../dist/public/assets/animation-vendor-DcK5jz7D.js              123.01 kB │ gzip:  39.67 kB
+
+../dist/public/assets/charts-vendor--E1mXCUN.js                 401.28 kB │ gzip: 102.56 kB
+
+../dist/public/assets/index-DNd4NABL.js                         557.19 kB │ gzip: 139.17 kB
+
+building server...
+
+
+  dist/index.cjs  4.7mb ⚠️
+
+⚡ Done in 708ms
+
+2026-01-27T21:25:04Z info: Pushing pid1 binary layer...
+2026-01-27T21:25:10Z info: Pushing Repl layer...
+2026-01-27T21:25:10Z info: Pushing hosting layer...
+2026-01-27T21:25:12Z info: Nix layers for this Repl are uncached.
+2026-01-27T21:25:12Z info: Pushing nix-0 layer...
+2026-01-27T21:25:16Z info: Created hosting layer
+2026-01-27T21:25:35Z info: Created pid1 binary layer
+2026-01-27T21:26:00Z info: Created nix-0 layer
+2026-01-27T21:26:00Z info: uploading image for cached layer
+2026-01-27T21:26:02Z info: pushed cache image manifest
+2026-01-27T21:26:05Z info: pushed cache soci index manifest
+2026-01-27T21:26:05Z info: uploading cached layer
+2026-01-27T21:26:06Z info: successfully uploaded cached layer
+2026-01-27T21:32:13Z info: Created Repl layer
+Deployment timed out. Check the Logs tab for more details. - 2026-01-27T21:32:19.464Z
