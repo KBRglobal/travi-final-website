@@ -6,13 +6,9 @@ interface SkipLinkProps {
   isRTL?: boolean;
 }
 
-export function SkipLink({ 
-  href = "#main-content", 
-  className,
-  isRTL = false 
-}: SkipLinkProps) {
-  const text = isRTL ? "דלג לתוכן הראשי" : "Skip to main content";
-  
+export function SkipLink({ href = "#main-content", className, isRTL = false }: SkipLinkProps) {
+  const text = "Skip to main content";
+
   return (
     <a
       href={href}

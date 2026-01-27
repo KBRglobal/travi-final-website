@@ -122,10 +122,7 @@ class DriftScanner {
   /**
    * Capture a new security baseline
    */
-  async captureBaseline(
-    name: string,
-    capturedBy: string
-  ): Promise<SecurityBaseline> {
+  async captureBaseline(name: string, capturedBy: string): Promise<SecurityBaseline> {
     const components: BaselineComponent[] = [];
 
     // Capture permissions
@@ -180,13 +177,10 @@ class DriftScanner {
     this.baselines.set(baseline.id, baseline);
     this.currentBaseline = baseline;
 
-    logAdminEvent(
-      capturedBy,
-      "BASELINE_CAPTURED",
-      "security_baseline",
-      baseline.id,
-      { name, componentCount: components.length }
-    );
+    logAdminEvent(capturedBy, "BASELINE_CAPTURED", "security_baseline", baseline.id, {
+      name,
+      componentCount: components.length,
+    });
 
     return baseline;
   }
@@ -196,9 +190,7 @@ class DriftScanner {
    */
   async scan(baselineId?: string): Promise<DriftScanResult> {
     const startedAt = new Date();
-    const baseline = baselineId
-      ? this.baselines.get(baselineId)
-      : this.currentBaseline;
+    const baseline = baselineId ? this.baselines.get(baselineId) : this.currentBaseline;
 
     if (!baseline) {
       throw new Error("No baseline found. Capture a baseline first.");
@@ -233,11 +225,11 @@ class DriftScanner {
       drifts,
       summary: {
         totalComponents: baseline.components.length,
-        driftedComponents: new Set(drifts.map((d) => d.component)).size,
-        criticalDrifts: drifts.filter((d) => d.severity === "critical").length,
-        highDrifts: drifts.filter((d) => d.severity === "high").length,
-        mediumDrifts: drifts.filter((d) => d.severity === "medium").length,
-        lowDrifts: drifts.filter((d) => d.severity === "low").length,
+        driftedComponents: new Set(drifts.map(d => d.component)).size,
+        criticalDrifts: drifts.filter(d => d.severity === "critical").length,
+        highDrifts: drifts.filter(d => d.severity === "high").length,
+        mediumDrifts: drifts.filter(d => d.severity === "medium").length,
+        lowDrifts: drifts.filter(d => d.severity === "low").length,
       },
       overallStatus: this.determineOverallStatus(drifts),
     };
@@ -249,41 +241,24 @@ class DriftScanner {
    * Continuous drift monitoring
    */
   startContinuousMonitoring(intervalMs: number = 60000): NodeJS.Timer {
-    console.log(`[DriftScanner] Starting continuous monitoring (interval: ${intervalMs}ms)`);
-
     return setInterval(async () => {
       try {
         if (!this.currentBaseline) {
-          console.log("[DriftScanner] No baseline set, skipping scan");
           return;
         }
 
         const result = await this.scan();
 
         if (result.drifts.length > 0) {
-          console.warn(
-            `[DriftScanner] Drift detected: ${result.drifts.length} issues`
-          );
-
           // Log critical drifts
-          for (const drift of result.drifts.filter(
-            (d) => d.severity === "critical"
-          )) {
-            logAdminEvent(
-              "system",
-              "CRITICAL_DRIFT_DETECTED",
-              drift.component,
-              drift.id,
-              {
-                category: drift.category,
-                description: drift.description,
-              }
-            );
+          for (const drift of result.drifts.filter(d => d.severity === "critical")) {
+            logAdminEvent("system", "CRITICAL_DRIFT_DETECTED", drift.component, drift.id, {
+              category: drift.category,
+              description: drift.description,
+            });
           }
         }
-      } catch (error) {
-        console.error("[DriftScanner] Scan failed:", error);
-      }
+      } catch (error) {}
     }, intervalMs);
   }
 
@@ -294,7 +269,7 @@ class DriftScanner {
     success: boolean;
     message: string;
   }> {
-    const drift = this.driftHistory.find((d) => d.id === driftId);
+    const drift = this.driftHistory.find(d => d.id === driftId);
 
     if (!drift) {
       return { success: false, message: "Drift not found" };
@@ -312,7 +287,7 @@ class DriftScanner {
 
       case "config_drift":
         // Would restore config to baseline
-        console.log(`[DriftScanner] Auto-remediating config drift: ${drift.id}`);
+
         return { success: true, message: "Configuration restored to baseline" };
 
       default:
@@ -374,7 +349,7 @@ class DriftScanner {
     ];
 
     for (const [key, value] of Object.entries(process.env)) {
-      if (securityVarPrefixes.some((prefix) => key.startsWith(prefix))) {
+      if (securityVarPrefixes.some(prefix => key.startsWith(prefix))) {
         // Hash sensitive values
         securityVars[key] = this.hashData(value || "");
       }
@@ -415,13 +390,22 @@ class DriftScanner {
 
     switch (type) {
       case "permissions":
-        reports.push(...this.analyzePermissionDrift(baseline as PermissionSnapshot, current as PermissionSnapshot));
+        reports.push(
+          ...this.analyzePermissionDrift(
+            baseline as PermissionSnapshot,
+            current as PermissionSnapshot
+          )
+        );
         break;
       case "policies":
-        reports.push(...this.analyzePolicyDrift(baseline as PolicySnapshot, current as PolicySnapshot));
+        reports.push(
+          ...this.analyzePolicyDrift(baseline as PolicySnapshot, current as PolicySnapshot)
+        );
         break;
       case "config":
-        reports.push(...this.analyzeConfigDrift(baseline as ConfigSnapshot, current as ConfigSnapshot));
+        reports.push(
+          ...this.analyzeConfigDrift(baseline as ConfigSnapshot, current as ConfigSnapshot)
+        );
         break;
       case "environment":
         reports.push(...this.analyzeEnvDrift(baseline as EnvSnapshot, current as EnvSnapshot));
@@ -461,21 +445,18 @@ class DriftScanner {
       for (const [resource, baselineActions] of Object.entries(baselinePerms)) {
         const currentActions = currentPerms[resource as Resource] || [];
 
-        const addedActions = currentActions.filter(
-          (a: Action) => !baselineActions.includes(a)
-        );
-        const removedActions = baselineActions.filter(
-          (a: Action) => !currentActions.includes(a)
-        );
+        const addedActions = currentActions.filter((a: Action) => !baselineActions.includes(a));
+        const removedActions = baselineActions.filter((a: Action) => !currentActions.includes(a));
 
         if (addedActions.length > 0) {
           reports.push({
             id: `DRIFT-${Date.now()}-${role}-${resource}-added`,
             timestamp: new Date(),
             category: "permission_drift",
-            severity: addedActions.includes("delete") || addedActions.includes("manage_users")
-              ? "critical"
-              : "high",
+            severity:
+              addedActions.includes("delete") || addedActions.includes("manage_users")
+                ? "critical"
+                : "high",
             component: "permissions",
             description: `Role "${role}" gained new permissions on "${resource}": ${addedActions.join(", ")}`,
             baseline: baselineActions,
@@ -507,13 +488,10 @@ class DriftScanner {
     return reports;
   }
 
-  private analyzePolicyDrift(
-    baseline: PolicySnapshot,
-    current: PolicySnapshot
-  ): DriftReport[] {
+  private analyzePolicyDrift(baseline: PolicySnapshot, current: PolicySnapshot): DriftReport[] {
     const reports: DriftReport[] = [];
-    const baselinePolicies = new Map(baseline.policies.map((p) => [p.id, p]));
-    const currentPolicies = new Map(current.policies.map((p) => [p.id, p]));
+    const baselinePolicies = new Map(baseline.policies.map(p => [p.id, p]));
+    const currentPolicies = new Map(current.policies.map(p => [p.id, p]));
 
     // Check for removed policies
     for (const [id, policy] of baselinePolicies) {
@@ -572,10 +550,7 @@ class DriftScanner {
     return reports;
   }
 
-  private analyzeConfigDrift(
-    baseline: ConfigSnapshot,
-    current: ConfigSnapshot
-  ): DriftReport[] {
+  private analyzeConfigDrift(baseline: ConfigSnapshot, current: ConfigSnapshot): DriftReport[] {
     const reports: DriftReport[] = [];
 
     const criticalSettings = ["rbacEnabled", "auditEnabled", "mfaRequired", "encryptionEnabled"];
@@ -605,10 +580,7 @@ class DriftScanner {
     return reports;
   }
 
-  private analyzeEnvDrift(
-    baseline: EnvSnapshot,
-    current: EnvSnapshot
-  ): DriftReport[] {
+  private analyzeEnvDrift(baseline: EnvSnapshot, current: EnvSnapshot): DriftReport[] {
     const reports: DriftReport[] = [];
 
     if (baseline.hashOfAll !== current.hashOfAll) {
@@ -675,17 +647,15 @@ class DriftScanner {
   // ============================================================================
 
   private hashData(data: unknown): string {
-    const json = JSON.stringify(data, Object.keys(data as object || {}).sort());
+    const json = JSON.stringify(data, Object.keys((data as object) || {}).sort());
     return crypto.createHash("sha256").update(json).digest("hex").substring(0, 16);
   }
 
-  private determineOverallStatus(
-    drifts: DriftReport[]
-  ): DriftScanResult["overallStatus"] {
-    if (drifts.some((d) => d.severity === "critical")) {
+  private determineOverallStatus(drifts: DriftReport[]): DriftScanResult["overallStatus"] {
+    if (drifts.some(d => d.severity === "critical")) {
       return "critical_drift";
     }
-    if (drifts.filter((d) => d.severity === "high").length >= 3) {
+    if (drifts.filter(d => d.severity === "high").length >= 3) {
       return "significant_drift";
     }
     if (drifts.length > 0) {
@@ -706,7 +676,7 @@ class DriftScanner {
    */
   getDriftHistory(hours: number = 24): DriftReport[] {
     const since = new Date(Date.now() - hours * 60 * 60 * 1000);
-    return this.driftHistory.filter((d) => d.timestamp >= since);
+    return this.driftHistory.filter(d => d.timestamp >= since);
   }
 
   /**
@@ -722,7 +692,7 @@ class DriftScanner {
     return {
       totalScans: 0, // Would track actual scans
       totalDrifts: this.driftHistory.length,
-      criticalDrifts: this.driftHistory.filter((d) => d.severity === "critical").length,
+      criticalDrifts: this.driftHistory.filter(d => d.severity === "critical").length,
       lastScanTime: undefined,
       baselineAge: this.currentBaseline
         ? Date.now() - this.currentBaseline.capturedAt.getTime()
@@ -740,10 +710,7 @@ export const driftScanner = new DriftScanner();
 /**
  * Capture a security baseline
  */
-export async function captureBaseline(
-  name: string,
-  capturedBy: string
-): Promise<SecurityBaseline> {
+export async function captureBaseline(name: string, capturedBy: string): Promise<SecurityBaseline> {
   return driftScanner.captureBaseline(name, capturedBy);
 }
 
@@ -767,5 +734,3 @@ export function startDriftMonitoring(intervalMs?: number): NodeJS.Timer {
 export function getDriftHistory(hours?: number): DriftReport[] {
   return driftScanner.getDriftHistory(hours);
 }
-
-console.log("[DriftScanner] Module loaded");

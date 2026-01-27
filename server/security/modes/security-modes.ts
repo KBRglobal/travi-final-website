@@ -171,8 +171,7 @@ class SecurityModeManager {
 
   constructor() {
     // Default to enforce in production, monitor elsewhere
-    const defaultMode: SecurityMode =
-      process.env.NODE_ENV === "production" ? "enforce" : "monitor";
+    const defaultMode: SecurityMode = process.env.NODE_ENV === "production" ? "enforce" : "monitor";
 
     this.currentConfig = {
       mode: defaultMode,
@@ -181,8 +180,6 @@ class SecurityModeManager {
       setAt: new Date(),
       restrictions: MODE_CONFIGS[defaultMode],
     };
-
-    console.log(`[SecurityModes] Initialized in ${defaultMode.toUpperCase()} mode`);
   }
 
   /**
@@ -257,7 +254,6 @@ class SecurityModeManager {
     // Validate transition
     if (mode === "lockdown" && previousMode === "monitor") {
       // Going from monitor to lockdown requires confirmation
-      console.warn("[SecurityModes] Jumping from MONITOR to LOCKDOWN");
     }
 
     this.currentConfig = {
@@ -284,8 +280,6 @@ class SecurityModeManager {
       to: mode,
       reason,
     });
-
-    console.log(`[SecurityModes] Mode changed: ${previousMode} -> ${mode} (${reason})`);
 
     return this.getConfiguration();
   }
@@ -322,7 +316,7 @@ class SecurityModeManager {
 
     // Factor: Critical anomalies
     const criticalAnomalies = intel.topAnomalyTypes
-      .filter((t) => ["brute_force", "privilege_escalation", "credential_stuffing"].includes(t.type))
+      .filter(t => ["brute_force", "privilege_escalation", "credential_stuffing"].includes(t.type))
       .reduce((sum, t) => sum + t.count, 0);
 
     const criticalFactor = this.assessFactor(
@@ -337,7 +331,8 @@ class SecurityModeManager {
     // Factor: Drift
     try {
       const driftResult = await scanForDrift();
-      const driftScore = driftResult.summary.criticalDrifts * 30 +
+      const driftScore =
+        driftResult.summary.criticalDrifts * 30 +
         driftResult.summary.highDrifts * 20 +
         driftResult.summary.mediumDrifts * 10;
 
@@ -440,10 +435,6 @@ class SecurityModeManager {
         score: assessment.score,
       });
 
-      console.warn(
-        `[SecurityModes] AUTO-ESCALATED: ${previousMode} -> ${newMode} (Threat: ${assessment.level})`
-      );
-
       return transition;
     }
 
@@ -454,17 +445,12 @@ class SecurityModeManager {
    * Start auto-mode monitoring
    */
   startAutoMode(intervalMs: number = 60000): NodeJS.Timer {
-    console.log(`[SecurityModes] Auto-mode monitoring started (interval: ${intervalMs}ms)`);
-
     return setInterval(async () => {
       try {
         const transition = await this.autoAdjustMode();
         if (transition) {
-          console.log(`[SecurityModes] Mode auto-adjusted: ${transition.from} -> ${transition.to}`);
         }
-      } catch (error) {
-        console.error("[SecurityModes] Auto-adjust failed:", error);
-      }
+      } catch (error) {}
     }, intervalMs);
   }
 
@@ -473,17 +459,13 @@ class SecurityModeManager {
    */
   setAutoModeEnabled(enabled: boolean): void {
     this.autoModeEnabled = enabled;
-    console.log(`[SecurityModes] Auto-mode ${enabled ? "enabled" : "disabled"}`);
   }
 
   /**
    * Check mode expiration
    */
   checkExpiration(): boolean {
-    if (
-      this.currentConfig.expiresAt &&
-      Date.now() > this.currentConfig.expiresAt.getTime()
-    ) {
+    if (this.currentConfig.expiresAt && Date.now() > this.currentConfig.expiresAt.getTime()) {
       // Revert to enforce mode
       const previousMode = this.currentConfig.mode;
 
@@ -504,7 +486,6 @@ class SecurityModeManager {
         timestamp: new Date(),
       });
 
-      console.log(`[SecurityModes] Mode expired: ${previousMode} -> enforce`);
       return true;
     }
 
@@ -642,5 +623,3 @@ export function modeCheckMiddleware(operation: string) {
     next();
   };
 }
-
-console.log("[SecurityModes] Module loaded");

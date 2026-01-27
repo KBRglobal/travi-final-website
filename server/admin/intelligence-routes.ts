@@ -37,7 +37,6 @@ export function registerAdminIntelligenceRoutes(app: Express) {
       const snapshot = await generateIntelligenceSnapshot();
       res.json(snapshot);
     } catch (error) {
-      console.error("[AdminIntelligence] Error generating snapshot:", error);
       res.status(500).json({
         error: "Failed to generate intelligence snapshot",
         generatedAt: new Date().toISOString(),
@@ -67,7 +66,6 @@ export function registerAdminIntelligenceRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[AdminIntelligence] Error getting scores:", error);
       res.status(500).json({ error: "Failed to get health scores" });
     }
   });
@@ -86,7 +84,6 @@ export function registerAdminIntelligenceRoutes(app: Express) {
         count: issues.length,
       });
     } catch (error) {
-      console.error("[AdminIntelligence] Error getting issues:", error);
       res.status(500).json({ error: "Failed to get blocking issues" });
     }
   });
@@ -96,97 +93,104 @@ export function registerAdminIntelligenceRoutes(app: Express) {
    *
    * Returns coverage summary for all content.
    */
-  app.get("/api/admin/intelligence/coverage/summary", requireAuth, async (req: Request, res: Response) => {
-    if (!isIntelligenceEnabled()) {
-      return res.json({
-        enabled: false,
-        message: "Intelligence coverage feature is disabled. Set ENABLE_INTELLIGENCE_COVERAGE=true",
-      });
-    }
-
-    try {
-      const batchSize = 100;
-      let cursor: string | undefined;
-      let totalProcessed = 0;
-      let totalScore = 0;
-      let withEntities = 0;
-      let indexed = 0;
-      let withAeo = 0;
-      let withLinks = 0;
-
-      // Process in batches to avoid memory issues
-      while (true) {
-        const { results, nextCursor } = await evaluateAllContentCoverage(batchSize, cursor);
-
-        for (const coverage of results) {
-          totalProcessed++;
-          totalScore += coverage.coverageScore;
-          if (coverage.hasEntities) withEntities++;
-          if (coverage.isSearchIndexed) indexed++;
-          if (coverage.hasAeoCapsule) withAeo++;
-          if (coverage.hasInternalLinks) withLinks++;
-        }
-
-        if (!nextCursor) break;
-        cursor = nextCursor;
-
-        // Safety limit
-        if (totalProcessed > 10000) break;
+  app.get(
+    "/api/admin/intelligence/coverage/summary",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      if (!isIntelligenceEnabled()) {
+        return res.json({
+          enabled: false,
+          message:
+            "Intelligence coverage feature is disabled. Set ENABLE_INTELLIGENCE_COVERAGE=true",
+        });
       }
 
-      const avgScore = totalProcessed > 0 ? Math.round(totalScore / totalProcessed) : 0;
+      try {
+        const batchSize = 100;
+        let cursor: string | undefined;
+        let totalProcessed = 0;
+        let totalScore = 0;
+        let withEntities = 0;
+        let indexed = 0;
+        let withAeo = 0;
+        let withLinks = 0;
 
-      res.json({
-        generatedAt: new Date().toISOString(),
-        enabled: true,
-        summary: {
-          totalEvaluated: totalProcessed,
-          averageCoverageScore: avgScore,
-          withEntities,
-          indexed,
-          withAeoCapsule: withAeo,
-          withInternalLinks: withLinks,
-          percentIndexed: totalProcessed > 0 ? Math.round((indexed / totalProcessed) * 100) : 0,
-          percentWithAeo: totalProcessed > 0 ? Math.round((withAeo / totalProcessed) * 100) : 0,
-        },
-      });
-    } catch (error) {
-      console.error("[AdminIntelligence] Error getting coverage summary:", error);
-      res.status(500).json({ error: "Failed to get coverage summary" });
+        // Process in batches to avoid memory issues
+        while (true) {
+          const { results, nextCursor } = await evaluateAllContentCoverage(batchSize, cursor);
+
+          for (const coverage of results) {
+            totalProcessed++;
+            totalScore += coverage.coverageScore;
+            if (coverage.hasEntities) withEntities++;
+            if (coverage.isSearchIndexed) indexed++;
+            if (coverage.hasAeoCapsule) withAeo++;
+            if (coverage.hasInternalLinks) withLinks++;
+          }
+
+          if (!nextCursor) break;
+          cursor = nextCursor;
+
+          // Safety limit
+          if (totalProcessed > 10000) break;
+        }
+
+        const avgScore = totalProcessed > 0 ? Math.round(totalScore / totalProcessed) : 0;
+
+        res.json({
+          generatedAt: new Date().toISOString(),
+          enabled: true,
+          summary: {
+            totalEvaluated: totalProcessed,
+            averageCoverageScore: avgScore,
+            withEntities,
+            indexed,
+            withAeoCapsule: withAeo,
+            withInternalLinks: withLinks,
+            percentIndexed: totalProcessed > 0 ? Math.round((indexed / totalProcessed) * 100) : 0,
+            percentWithAeo: totalProcessed > 0 ? Math.round((withAeo / totalProcessed) * 100) : 0,
+          },
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get coverage summary" });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/intelligence/coverage/content/:id
    *
    * Returns coverage metrics for a specific content item.
    */
-  app.get("/api/admin/intelligence/coverage/content/:id", requireAuth, async (req: Request, res: Response) => {
-    const { id } = req.params;
+  app.get(
+    "/api/admin/intelligence/coverage/content/:id",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { id } = req.params;
 
-    if (!isIntelligenceEnabled()) {
-      return res.json({
-        enabled: false,
-        message: "Intelligence coverage feature is disabled",
-      });
-    }
-
-    try {
-      const coverage = await evaluateContentCoverage(id);
-
-      if (!coverage) {
-        return res.status(404).json({ error: "Content not found" });
+      if (!isIntelligenceEnabled()) {
+        return res.json({
+          enabled: false,
+          message: "Intelligence coverage feature is disabled",
+        });
       }
 
-      res.json({
-        enabled: true,
-        coverage,
-      });
-    } catch (error) {
-      console.error("[AdminIntelligence] Error getting content coverage:", error);
-      res.status(500).json({ error: "Failed to get content coverage" });
+      try {
+        const coverage = await evaluateContentCoverage(id);
+
+        if (!coverage) {
+          return res.status(404).json({ error: "Content not found" });
+        }
+
+        res.json({
+          enabled: true,
+          coverage,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get content coverage" });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/intelligence/dashboard
@@ -195,13 +199,7 @@ export function registerAdminIntelligenceRoutes(app: Express) {
    */
   app.get("/api/admin/intelligence/dashboard", requireAuth, async (req: Request, res: Response) => {
     try {
-      const [
-        snapshot,
-        contentHealth,
-        searchHealth,
-        aiHealth,
-        issues,
-      ] = await Promise.all([
+      const [snapshot, contentHealth, searchHealth, aiHealth, issues] = await Promise.all([
         generateIntelligenceSnapshot(),
         getContentHealthScore(),
         getSearchHealthScore(),
@@ -221,10 +219,7 @@ export function registerAdminIntelligenceRoutes(app: Express) {
         issues,
       });
     } catch (error) {
-      console.error("[AdminIntelligence] Error getting dashboard:", error);
       res.status(500).json({ error: "Failed to get dashboard data" });
     }
   });
-
-  console.log("[AdminIntelligence] Routes registered");
 }

@@ -1,8 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
-import {
-  requireAuth,
-} from "../security";
+import { requireAuth } from "../security";
 
 export async function registerAnalyticsRoutes(app: Express): Promise<void> {
   // Get overall stats
@@ -11,7 +9,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const stats = await storage.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching stats:", error);
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
@@ -56,7 +53,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         breakdown,
       });
     } catch (error) {
-      console.error("Error fetching content metrics:", error);
       res.status(500).json({ error: "Failed to fetch content metrics" });
     }
   });
@@ -80,7 +76,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         count: topPerformers.length,
       });
     } catch (error) {
-      console.error("Error fetching top performers:", error);
       res.status(500).json({ error: "Failed to fetch top performers" });
     }
   });
@@ -91,7 +86,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const metrics = recordImpression(contentId);
       res.json({ success: true, metrics });
     } catch (error) {
-      console.error("Error recording impression:", error);
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -102,7 +96,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const metrics = recordClick(contentId);
       res.json({ success: true, metrics });
     } catch (error) {
-      console.error("Error recording click:", error);
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -119,7 +112,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const metrics = recordScrollDepth(contentId, depth);
       res.json({ success: true, metrics });
     } catch (error) {
-      console.error("Error recording scroll depth:", error);
       res.status(500).json({ error: "Failed to record scroll depth" });
     }
   });
@@ -130,7 +122,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const decision = getRegenerationDecision(contentId);
       res.json(decision);
     } catch (error) {
-      console.error("Error checking regeneration:", error);
       res.status(500).json({ error: "Failed to check regeneration status" });
     }
   });
@@ -143,10 +134,7 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
     getAllPerformance,
   } = await import("../content/metrics/performance-model");
 
-  const {
-    getRewriteDecision,
-    shouldRewrite,
-  } = await import("../content/metrics/rewrite-guard");
+  const { getRewriteDecision, shouldRewrite } = await import("../content/metrics/rewrite-guard");
 
   const {
     recordImpression: recordContentPerfImpression,
@@ -183,7 +171,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         createdAt: performance.createdAt.toISOString(),
       });
     } catch (error) {
-      console.error("Error fetching performance metrics:", error);
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -205,7 +192,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         count: all.length,
       });
     } catch (error) {
-      console.error("Error fetching all performance metrics:", error);
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -223,7 +209,9 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       }
 
       if (!eventType || !["impression", "click", "scroll"].includes(eventType)) {
-        return res.status(400).json({ error: "eventType must be 'impression', 'click', or 'scroll'" });
+        return res
+          .status(400)
+          .json({ error: "eventType must be 'impression', 'click', or 'scroll'" });
       }
 
       let performance;
@@ -236,7 +224,9 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
           break;
         case "scroll":
           if (typeof scrollDepth !== "number" || scrollDepth < 0 || scrollDepth > 100) {
-            return res.status(400).json({ error: "scrollDepth must be a number between 0 and 100" });
+            return res
+              .status(400)
+              .json({ error: "scrollDepth must be a number between 0 and 100" });
           }
           performance = recordContentPerfScrollDepth(entityId, entityType, scrollDepth);
           break;
@@ -256,36 +246,40 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         },
       });
     } catch (error) {
-      console.error("Error recording content performance event:", error);
       res.status(500).json({ error: "Failed to record performance event" });
     }
   });
 
-  app.get("/api/content/performance/:entityId/regeneration-check", requireAuth, async (req, res) => {
-    try {
-      const { entityId } = req.params;
-      const forceOverride = req.query.force === "true";
-      const decision = shouldAllowContentRegen(entityId, forceOverride);
-      const performance = getContentPerfData(entityId);
+  app.get(
+    "/api/content/performance/:entityId/regeneration-check",
+    requireAuth,
+    async (req, res) => {
+      try {
+        const { entityId } = req.params;
+        const forceOverride = req.query.force === "true";
+        const decision = shouldAllowContentRegen(entityId, forceOverride);
+        const performance = getContentPerfData(entityId);
 
-      res.json({
-        entityId,
-        allowed: decision.allowed,
-        reason: decision.reason,
-        score: performance?.score ?? 0,
-        performance: performance ? {
-          impressions: performance.impressions,
-          clicks: performance.clicks,
-          scrollDepth: performance.scrollDepth,
-          score: performance.score,
-          lastModified: performance.lastModified.toISOString(),
-        } : null,
-      });
-    } catch (error) {
-      console.error("Error checking regeneration eligibility:", error);
-      res.status(500).json({ error: "Failed to check regeneration eligibility" });
+        res.json({
+          entityId,
+          allowed: decision.allowed,
+          reason: decision.reason,
+          score: performance?.score ?? 0,
+          performance: performance
+            ? {
+                impressions: performance.impressions,
+                clicks: performance.clicks,
+                scrollDepth: performance.scrollDepth,
+                score: performance.score,
+                lastModified: performance.lastModified.toISOString(),
+              }
+            : null,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to check regeneration eligibility" });
+      }
     }
-  });
+  );
 
   app.post("/api/content/performance/:entityId/impression", async (req, res) => {
     try {
@@ -299,7 +293,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const performance = recordPerformanceImpression(entityId, entityType);
       res.json({ success: true, performance });
     } catch (error) {
-      console.error("Error recording performance impression:", error);
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -316,7 +309,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
       const performance = recordPerformanceClick(entityId, entityType);
       res.json({ success: true, performance });
     } catch (error) {
-      console.error("Error recording performance click:", error);
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -329,15 +321,16 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         entityId,
         allowed: decision.allowed,
         reason: decision.reason,
-        performance: decision.performance ? {
-          score: decision.performance.score,
-          ctr: decision.performance.ctr,
-          impressions: decision.performance.impressions,
-          clicks: decision.performance.clicks,
-        } : null,
+        performance: decision.performance
+          ? {
+              score: decision.performance.score,
+              ctr: decision.performance.ctr,
+              impressions: decision.performance.impressions,
+              clicks: decision.performance.clicks,
+            }
+          : null,
       });
     } catch (error) {
-      console.error("Error checking rewrite eligibility:", error);
       res.status(500).json({ error: "Failed to check rewrite eligibility" });
     }
   });
@@ -376,7 +369,6 @@ export async function registerAnalyticsRoutes(app: Express): Promise<void> {
         createdAt: performance.createdAt.toISOString(),
       });
     } catch (error) {
-      console.error("Error fetching entity metrics:", error);
       res.status(500).json({ error: "Failed to fetch entity metrics" });
     }
   });

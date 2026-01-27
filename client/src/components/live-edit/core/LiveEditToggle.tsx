@@ -40,14 +40,13 @@ export function LiveEditToggle({ pageSlug, className }: LiveEditToggleProps) {
     try {
       await enterEditMode(pageSlug);
       toast({
-        title: "מצב עריכה",
-        description: "כעת אפשר לערוך את העמוד",
+        title: "Edit Mode",
+        description: "You can now edit the page",
       });
     } catch (error) {
-      console.error("Failed to enter edit mode:", error);
       toast({
-        title: "שגיאה",
-        description: "לא ניתן להיכנס למצב עריכה",
+        title: "Error",
+        description: "Cannot enter edit mode",
         variant: "destructive",
       });
     }
@@ -57,14 +56,13 @@ export function LiveEditToggle({ pageSlug, className }: LiveEditToggleProps) {
     try {
       await saveDraft();
       toast({
-        title: "נשמר",
-        description: "הטיוטה נשמרה בהצלחה",
+        title: "Saved",
+        description: "Draft saved successfully",
       });
     } catch (error) {
-      console.error("Failed to save:", error);
       toast({
-        title: "שגיאה בשמירה",
-        description: "לא ניתן לשמור את השינויים",
+        title: "Save Error",
+        description: "Cannot save changes",
         variant: "destructive",
       });
     }

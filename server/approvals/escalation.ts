@@ -53,9 +53,7 @@ function getEscalationConfig(): EscalationConfig {
   if (rulesJson) {
     try {
       rules = JSON.parse(rulesJson);
-    } catch {
-      console.error("[Escalation] Failed to parse APPROVAL_ESCALATION_RULES");
-    }
+    } catch {}
   }
 
   // Default rules if none configured
@@ -133,7 +131,7 @@ async function getPendingRequests(): Promise<PendingRequest[]> {
       )
     );
 
-  return results.map((r) => ({
+  return results.map(r => ({
     id: r.id,
     requestType: r.requestType,
     resourceType: r.resourceType,
@@ -149,11 +147,8 @@ async function getPendingRequests(): Promise<PendingRequest[]> {
   }));
 }
 
-function findMatchingRule(
-  request: PendingRequest,
-  rules: EscalationRule[]
-): EscalationRule | null {
-  return rules.find((rule) => rule.requestTypes.includes(request.requestType)) || null;
+function findMatchingRule(request: PendingRequest, rules: EscalationRule[]): EscalationRule | null {
+  return rules.find(rule => rule.requestTypes.includes(request.requestType)) || null;
 }
 
 function calculateEscalationLevel(request: PendingRequest): number {
@@ -185,7 +180,7 @@ async function getApproversByRole(roleName: string): Promise<string[]> {
     .where(and(eq(users.role, "admin"), eq(users.isActive, true)))
     .limit(5);
 
-  return admins.map((u) => u.id);
+  return admins.map(u => u.id);
 }
 
 async function escalateRequest(
@@ -285,8 +280,6 @@ async function escalateRequest(
     approverIds
   );
 
-  console.log(`[Escalation] Request ${request.id} escalated to level ${newLevel} (${approverRole})`);
-
   return {
     requestId: request.id,
     action: "escalated",
@@ -304,15 +297,11 @@ export async function processEscalations(): Promise<EscalationResult[]> {
   const results: EscalationResult[] = [];
 
   if (!config.enabled) {
-    console.log("[Escalation] Escalation processing disabled (ENABLE_APPROVAL_ESCALATION not set)");
     return results;
   }
 
-  console.log("[Escalation] Processing pending approval requests...");
-
   try {
     const pendingRequests = await getPendingRequests();
-    console.log(`[Escalation] Found ${pendingRequests.length} pending requests`);
 
     for (const request of pendingRequests) {
       const rule = findMatchingRule(request, config.rules);
@@ -324,16 +313,20 @@ export async function processEscalations(): Promise<EscalationResult[]> {
           // Escalate with default behavior
           const level = calculateEscalationLevel(request);
           if (level < config.maxEscalationLevel) {
-            const result = await escalateRequest(request, {
-              id: "default",
-              name: "Default Escalation",
-              requestTypes: [request.requestType],
-              slaHours: defaultSla,
-              escalateTo: "admin",
-              maxEscalations: config.maxEscalationLevel,
-              autoApproveOnMaxEscalation: false,
-              autoRejectOnMaxEscalation: false,
-            }, level);
+            const result = await escalateRequest(
+              request,
+              {
+                id: "default",
+                name: "Default Escalation",
+                requestTypes: [request.requestType],
+                slaHours: defaultSla,
+                escalateTo: "admin",
+                maxEscalations: config.maxEscalationLevel,
+                autoApproveOnMaxEscalation: false,
+                autoRejectOnMaxEscalation: false,
+              },
+              level
+            );
             results.push(result);
           }
         }
@@ -351,14 +344,10 @@ export async function processEscalations(): Promise<EscalationResult[]> {
       }
     }
 
-    const escalated = results.filter((r) => r.action === "escalated").length;
-    const expired = results.filter((r) => r.action === "expired").length;
-    const autoActions = results.filter((r) => r.action.startsWith("auto_")).length;
-
-    console.log(`[Escalation] Processed: ${escalated} escalated, ${expired} expired, ${autoActions} auto-actioned`);
-
+    const escalated = results.filter(r => r.action === "escalated").length;
+    const expired = results.filter(r => r.action === "expired").length;
+    const autoActions = results.filter(r => r.action.startsWith("auto_")).length;
   } catch (error) {
-    console.error("[Escalation] Error processing escalations:", error);
     throw error;
   }
 
@@ -375,25 +364,21 @@ export function startEscalationProcessor(): void {
   const config = getEscalationConfig();
 
   if (!config.enabled) {
-    console.log("[Escalation] Processor not started (disabled)");
     return;
   }
 
   if (escalationInterval) {
-    console.log("[Escalation] Processor already running");
     return;
   }
 
   const intervalMs = config.checkIntervalMinutes * 60 * 1000;
 
-  console.log(`[Escalation] Starting processor (checking every ${config.checkIntervalMinutes} minutes)`);
-
   // Run immediately on start
-  processEscalations().catch(console.error);
+  processEscalations().catch(() => {});
 
   // Then run on interval
   escalationInterval = setInterval(() => {
-    processEscalations().catch(console.error);
+    processEscalations().catch(() => {});
   }, intervalMs);
 }
 
@@ -401,7 +386,6 @@ export function stopEscalationProcessor(): void {
   if (escalationInterval) {
     clearInterval(escalationInterval);
     escalationInterval = null;
-    console.log("[Escalation] Processor stopped");
   }
 }
 
@@ -428,7 +412,8 @@ export async function manuallyEscalateRequest(
     return { requestId, action: "skipped", error: `Cannot escalate ${request.status} request` };
   }
 
-  const currentLevel = ((request.metadata as Record<string, unknown>)?.escalationLevel as number) || 0;
+  const currentLevel =
+    ((request.metadata as Record<string, unknown>)?.escalationLevel as number) || 0;
   const approverIds = await getApproversByRole(escalateToRole);
 
   await db
@@ -464,5 +449,3 @@ export async function manuallyEscalateRequest(
     escalatedTo: approverIds,
   };
 }
-
-console.log("[Escalation] Module loaded");

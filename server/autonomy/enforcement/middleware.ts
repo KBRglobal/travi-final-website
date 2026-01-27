@@ -3,16 +3,16 @@
  * Middleware helpers for HTTP route protection
  */
 
-import type { Request, Response, NextFunction } from 'express';
-import { enforceAutonomy, enforceOrThrow } from './decision';
+import type { Request, Response, NextFunction } from "express";
+import { enforceAutonomy, enforceOrThrow } from "./decision";
 import {
   EnforcementContext,
   AutonomyBlockedError,
   DEFAULT_ENFORCEMENT_CONFIG,
   GuardedFeature,
   DegradedResponse,
-} from './types';
-import { ActionType } from '../policy/types';
+} from "./types";
+import { ActionType } from "../policy/types";
 
 // Extended request with enforcement context
 export interface EnforcedRequest extends Request {
@@ -62,8 +62,8 @@ export function createEnforcementMiddleware(
 
       if (!result.allowed) {
         return res.status(429).json({
-          error: 'Operation blocked by autonomy policy',
-          code: 'AUTONOMY_BLOCKED',
+          error: "Operation blocked by autonomy policy",
+          code: "AUTONOMY_BLOCKED",
           decision: result.decision,
           reasons: result.reasons.map(r => ({ code: r.code, message: r.message })),
           retryAfter: getRetryAfterHeader(result.reasons),
@@ -72,7 +72,7 @@ export function createEnforcementMiddleware(
 
       // Add warnings header if any
       if (result.warnings.length > 0) {
-        res.setHeader('X-Autonomy-Warnings', result.warnings.join('; '));
+        res.setHeader("X-Autonomy-Warnings", result.warnings.join("; "));
       }
 
       next();
@@ -80,11 +80,11 @@ export function createEnforcementMiddleware(
       if (error instanceof AutonomyBlockedError) {
         return res.status(429).json(error.toJSON());
       }
-      console.error('[EnforcementMiddleware] Error:', error);
+
       // On enforcement errors, block by default (fail closed)
       return res.status(503).json({
-        error: 'Autonomy enforcement unavailable',
-        code: 'ENFORCEMENT_ERROR',
+        error: "Autonomy enforcement unavailable",
+        code: "ENFORCEMENT_ERROR",
       });
     }
   };
@@ -126,8 +126,9 @@ export function createDegradedModeMiddleware<T>(
         if (DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled) {
           const degraded: DegradedResponse<T> = {
             isDegraded: true,
-            reason: result.reasons.find(r => r.severity === 'error')?.message ||
-                    DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
+            reason:
+              result.reasons.find(r => r.severity === "error")?.message ||
+              DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
             fallbackData,
             retryAfter: getRetryAfterHeader(result.reasons),
           };
@@ -135,34 +136,32 @@ export function createDegradedModeMiddleware<T>(
         }
 
         return res.status(429).json({
-          error: 'Operation blocked by autonomy policy',
-          code: 'AUTONOMY_BLOCKED',
+          error: "Operation blocked by autonomy policy",
+          code: "AUTONOMY_BLOCKED",
           decision: result.decision,
           reasons: result.reasons.map(r => ({ code: r.code, message: r.message })),
         });
       }
 
       if (result.warnings.length > 0) {
-        res.setHeader('X-Autonomy-Warnings', result.warnings.join('; '));
+        res.setHeader("X-Autonomy-Warnings", result.warnings.join("; "));
       }
 
       next();
     } catch (error) {
-      console.error('[DegradedMiddleware] Error:', error);
-
       // On errors with degraded mode, return fallback
       if (DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled) {
         const degraded: DegradedResponse<T> = {
           isDegraded: true,
-          reason: 'Autonomy enforcement temporarily unavailable',
+          reason: "Autonomy enforcement temporarily unavailable",
           fallbackData,
         };
         return res.status(200).json(degraded);
       }
 
       return res.status(503).json({
-        error: 'Autonomy enforcement unavailable',
-        code: 'ENFORCEMENT_ERROR',
+        error: "Autonomy enforcement unavailable",
+        code: "ENFORCEMENT_ERROR",
       });
     }
   };
@@ -180,7 +179,7 @@ export function autonomyErrorHandler(
   if (error instanceof AutonomyBlockedError) {
     const retryAfter = error.retryAfter;
     if (retryAfter) {
-      res.setHeader('Retry-After', retryAfter);
+      res.setHeader("Retry-After", retryAfter);
     }
 
     return res.status(429).json({
@@ -205,7 +204,7 @@ export function enforcementLoggingMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  res.on('finish', () => {
+  res.on("finish", () => {
     if (req.autonomy) {
       const logData = {
         method: req.method,
@@ -215,10 +214,8 @@ export function enforcementLoggingMiddleware(
         statusCode: res.statusCode,
       };
 
-      if (req.autonomy.decision === 'BLOCK') {
-        console.warn('[Enforcement] Request blocked:', logData);
+      if (req.autonomy.decision === "BLOCK") {
       } else if (req.autonomy.warnings.length > 0) {
-        console.info('[Enforcement] Request with warnings:', logData);
       }
     }
   });
@@ -231,18 +228,23 @@ function extractDefaultContext(req: Request): Partial<EnforcementContext> {
   return {
     entityId: req.params?.id || req.body?.contentId || req.body?.entityId,
     contentId: req.body?.contentId || req.params?.contentId,
-    locale: req.query?.locale as string || req.body?.locale || req.headers['accept-language']?.split(',')[0],
+    locale:
+      (req.query?.locale as string) ||
+      req.body?.locale ||
+      req.headers["accept-language"]?.split(",")[0],
   };
 }
 
-function getRetryAfterHeader(reasons: Array<{ code: string; message: string; severity: string }>): number | undefined {
-  if (reasons.some(r => r.code === 'BUDGET_EXHAUSTED')) {
+function getRetryAfterHeader(
+  reasons: Array<{ code: string; message: string; severity: string }>
+): number | undefined {
+  if (reasons.some(r => r.code === "BUDGET_EXHAUSTED")) {
     return 3600;
   }
-  if (reasons.some(r => r.code === 'OUTSIDE_ALLOWED_HOURS')) {
+  if (reasons.some(r => r.code === "OUTSIDE_ALLOWED_HOURS")) {
     return 1800;
   }
-  if (reasons.some(r => r.code === 'RATE_LIMITED')) {
+  if (reasons.some(r => r.code === "RATE_LIMITED")) {
     return 60;
   }
   return undefined;

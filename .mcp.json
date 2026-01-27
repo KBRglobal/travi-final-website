@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "superpowers": {
+      "command": "npx",
+      "args": ["-y", "@keyboardio/superpowers"]
+    },
+    "frontend-design": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-frontend-design"]
+    },
+    "task-orchestrator": {
+      "command": "npx",
+      "args": ["-y", "@jpicklyk/task-orchestrator"]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-chrome-devtools"]
+    },
+    "repomix": {
+      "command": "npx",
+      "args": ["-y", "repomix"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git"]
+    },
+    "task-master": {
+      "command": "npx",
+      "args": ["-y", "task-master-ai"]
+    }
+  }
+}

@@ -23,9 +23,7 @@ async function ensureTable(): Promise<void> {
       )
     `);
     tableExists = true;
-  } catch (error) {
-    console.error("[AlertRepository] Failed to ensure table:", error);
-  }
+  } catch (error) {}
 }
 
 export async function createAlert(
@@ -57,7 +55,6 @@ export async function createAlert(
       isActive: row.is_active,
     };
   } catch (error) {
-    console.error("[AlertRepository] Failed to create alert:", error);
     return null;
   }
 }
@@ -88,7 +85,6 @@ export async function findActiveAlertByType(type: AlertType): Promise<Alert | nu
       isActive: row.is_active,
     };
   } catch (error) {
-    console.error("[AlertRepository] Failed to find active alert:", error);
     return null;
   }
 }
@@ -105,7 +101,6 @@ export async function resolveAlert(id: string): Promise<boolean> {
     `);
     return result.rows.length > 0;
   } catch (error) {
-    console.error("[AlertRepository] Failed to resolve alert:", error);
     return false;
   }
 }
@@ -122,7 +117,6 @@ export async function resolveAlertsByType(type: AlertType): Promise<number> {
     `);
     return result.rows.length;
   } catch (error) {
-    console.error("[AlertRepository] Failed to resolve alerts by type:", error);
     return 0;
   }
 }
@@ -156,7 +150,6 @@ export async function getActiveAlerts(): Promise<Alert[]> {
       isActive: row.is_active,
     }));
   } catch (error) {
-    console.error("[AlertRepository] Failed to get active alerts:", error);
     return [];
   }
 }
@@ -183,7 +176,6 @@ export async function getAllAlerts(limit = 100): Promise<Alert[]> {
       isActive: row.is_active,
     }));
   } catch (error) {
-    console.error("[AlertRepository] Failed to get all alerts:", error);
     return [];
   }
 }
@@ -212,7 +204,6 @@ export async function getAlertById(id: string): Promise<Alert | null> {
       isActive: row.is_active,
     };
   } catch (error) {
-    console.error("[AlertRepository] Failed to get alert by id:", error);
     return null;
   }
 }
@@ -223,7 +214,9 @@ export async function getAlertStats(): Promise<AlertStats> {
   try {
     const [totalResult, activeResult, bySeverityResult, oldestResult] = await Promise.all([
       db.execute(sql`SELECT COUNT(*)::int as count FROM ${sql.identifier(ALERTS_TABLE)}`),
-      db.execute(sql`SELECT COUNT(*)::int as count FROM ${sql.identifier(ALERTS_TABLE)} WHERE is_active = true`),
+      db.execute(
+        sql`SELECT COUNT(*)::int as count FROM ${sql.identifier(ALERTS_TABLE)} WHERE is_active = true`
+      ),
       db.execute(sql`
         SELECT severity, COUNT(*)::int as count 
         FROM ${sql.identifier(ALERTS_TABLE)} 
@@ -254,7 +247,6 @@ export async function getAlertStats(): Promise<AlertStats> {
       lastDetectionRun: null,
     };
   } catch (error) {
-    console.error("[AlertRepository] Failed to get alert stats:", error);
     return {
       total: 0,
       active: 0,

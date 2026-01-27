@@ -44,8 +44,8 @@ export const readabilityAnalyzer = {
     if (word.length <= 3) return 1;
 
     // Remove trailing e
-    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-    word = word.replace(/^y/, '');
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, "");
+    word = word.replace(/^y/, "");
 
     const syllables = word.match(/[aeiouy]{1,2}/g);
     return syllables ? syllables.length : 1;
@@ -57,7 +57,7 @@ export const readabilityAnalyzer = {
   isHebrew(text: string): boolean {
     const hebrewPattern = /[\u0590-\u05FF]/;
     const hebrewMatches = (text.match(/[\u0590-\u05FF]/g) || []).length;
-    const totalChars = text.replace(/\s/g, '').length;
+    const totalChars = text.replace(/\s/g, "").length;
     return hebrewMatches / totalChars > 0.3;
   },
 
@@ -97,8 +97,8 @@ export const readabilityAnalyzer = {
 
     // Clean text
     const cleanText = text
-      .replace(/<[^>]*>/g, ' ')  // Remove HTML
-      .replace(/\s+/g, ' ')
+      .replace(/<[^>]*>/g, " ") // Remove HTML
+      .replace(/\s+/g, " ")
       .trim();
 
     // Check for Hebrew
@@ -127,16 +127,18 @@ export const readabilityAnalyzer = {
       hebrewAnalysis = this.analyzeHebrew(cleanText);
 
       // Approximate Flesch for Hebrew based on word/sentence length
-      fleschScore = 100 - (hebrewAnalysis!.averageWordLength * 5) -
-                   (averageSentenceLength * 1.5) -
-                   (hebrewAnalysis!.longWordPercentage * 0.5);
+      fleschScore =
+        100 -
+        hebrewAnalysis!.averageWordLength * 5 -
+        averageSentenceLength * 1.5 -
+        hebrewAnalysis!.longWordPercentage * 0.5;
       fleschScore = Math.max(0, Math.min(100, fleschScore));
 
       if (hebrewAnalysis!.sentenceComplexity >= 3) {
-        recommendations.push("קצר את המשפטים לקריאות טובה יותר");
+        recommendations.push("Shorten sentences for better readability");
       }
       if (hebrewAnalysis!.longWordPercentage > 30) {
-        recommendations.push("השתמש במילים פשוטות יותר");
+        recommendations.push("Use simpler words");
       }
     } else {
       // English Flesch-Kincaid
@@ -144,7 +146,7 @@ export const readabilityAnalyzer = {
       const averageSyllablesPerWord = totalSyllables / wordCount;
 
       // Flesch Reading Ease formula
-      fleschScore = 206.835 - (1.015 * averageSentenceLength) - (84.6 * averageSyllablesPerWord);
+      fleschScore = 206.835 - 1.015 * averageSentenceLength - 84.6 * averageSyllablesPerWord;
       fleschScore = Math.max(0, Math.min(100, fleschScore));
 
       if (averageSentenceLength > 20) {
@@ -191,7 +193,9 @@ export const readabilityAnalyzer = {
       fleschGrade,
       readingLevel,
       averageSentenceLength: Math.round(averageSentenceLength * 10) / 10,
-      averageSyllablesPerWord: Math.round((words.reduce((sum, w) => sum + this.countSyllables(w), 0) / wordCount) * 10) / 10,
+      averageSyllablesPerWord:
+        Math.round((words.reduce((sum, w) => sum + this.countSyllables(w), 0) / wordCount) * 10) /
+        10,
       wordCount,
       sentenceCount,
       paragraphCount,
@@ -241,33 +245,170 @@ export const ctaOptimizer = {
    */
   ctasByContentType: {
     hotel: [
-      { type: "booking", text: "Book Now & Save", textHe: "הזמן עכשיו וחסוך", placement: "hero", priority: 100, style: "button", color: "#e53935" },
-      { type: "booking", text: "Check Availability", textHe: "בדוק זמינות", placement: "sidebar", priority: 90, style: "button" },
-      { type: "related", text: "Compare Similar Hotels", textHe: "השווה מלונות דומים", placement: "end", priority: 70, style: "card" },
-      { type: "newsletter", text: "Get Exclusive Hotel Deals", textHe: "קבל מבצעי מלונות בלעדיים", placement: "end", priority: 60, style: "banner" },
+      {
+        type: "booking",
+        text: "Book Now & Save",
+        textHe: "",
+        placement: "hero",
+        priority: 100,
+        style: "button",
+        color: "#e53935",
+      },
+      {
+        type: "booking",
+        text: "Check Availability",
+        textHe: "",
+        placement: "sidebar",
+        priority: 90,
+        style: "button",
+      },
+      {
+        type: "related",
+        text: "Compare Similar Hotels",
+        textHe: "",
+        placement: "end",
+        priority: 70,
+        style: "card",
+      },
+      {
+        type: "newsletter",
+        text: "Get Exclusive Hotel Deals",
+        textHe: "",
+        placement: "end",
+        priority: 60,
+        style: "banner",
+      },
     ],
     attraction: [
-      { type: "booking", text: "Get Tickets", textHe: "קנה כרטיסים", placement: "hero", priority: 100, style: "button", color: "#43a047" },
-      { type: "booking", text: "Skip the Line Tickets", textHe: "כרטיסים ללא תור", placement: "mid-content", priority: 85, style: "banner" },
-      { type: "related", text: "Explore Nearby Attractions", textHe: "גלה אטרקציות בסביבה", placement: "end", priority: 70, style: "card" },
-      { type: "social", text: "Share This Experience", textHe: "שתף את החוויה", placement: "end", priority: 50, style: "inline" },
+      {
+        type: "booking",
+        text: "Get Tickets",
+        textHe: "",
+        placement: "hero",
+        priority: 100,
+        style: "button",
+        color: "#43a047",
+      },
+      {
+        type: "booking",
+        text: "Skip the Line Tickets",
+        textHe: "",
+        placement: "mid-content",
+        priority: 85,
+        style: "banner",
+      },
+      {
+        type: "related",
+        text: "Explore Nearby Attractions",
+        textHe: "",
+        placement: "end",
+        priority: 70,
+        style: "card",
+      },
+      {
+        type: "social",
+        text: "Share This Experience",
+        textHe: "",
+        placement: "end",
+        priority: 50,
+        style: "inline",
+      },
     ],
     dining: [
-      { type: "booking", text: "Reserve a Table", textHe: "הזמן שולחן", placement: "hero", priority: 100, style: "button", color: "#ff9800" },
-      { type: "related", text: "More Restaurants Nearby", textHe: "עוד מסעדות בסביבה", placement: "end", priority: 75, style: "card" },
-      { type: "download", text: "Download Menu", textHe: "הורד תפריט", placement: "sidebar", priority: 60, style: "button" },
+      {
+        type: "booking",
+        text: "Reserve a Table",
+        textHe: "",
+        placement: "hero",
+        priority: 100,
+        style: "button",
+        color: "#ff9800",
+      },
+      {
+        type: "related",
+        text: "More Restaurants Nearby",
+        textHe: "",
+        placement: "end",
+        priority: 75,
+        style: "card",
+      },
+      {
+        type: "download",
+        text: "Download Menu",
+        textHe: "",
+        placement: "sidebar",
+        priority: 60,
+        style: "button",
+      },
     ],
     article: [
-      { type: "newsletter", text: "Subscribe for More Tips", textHe: "הירשם לטיפים נוספים", placement: "end", priority: 90, style: "banner" },
-      { type: "related", text: "Read More Articles", textHe: "קרא עוד מאמרים", placement: "end", priority: 85, style: "card" },
-      { type: "social", text: "Share This Article", textHe: "שתף מאמר זה", placement: "end", priority: 70, style: "inline" },
-      { type: "download", text: "Download Travel Guide", textHe: "הורד מדריך טיולים", placement: "mid-content", priority: 60, style: "banner" },
+      {
+        type: "newsletter",
+        text: "Subscribe for More Tips",
+        textHe: "",
+        placement: "end",
+        priority: 90,
+        style: "banner",
+      },
+      {
+        type: "related",
+        text: "Read More Articles",
+        textHe: "",
+        placement: "end",
+        priority: 85,
+        style: "card",
+      },
+      {
+        type: "social",
+        text: "Share This Article",
+        textHe: "",
+        placement: "end",
+        priority: 70,
+        style: "inline",
+      },
+      {
+        type: "download",
+        text: "Download Travel Guide",
+        textHe: "",
+        placement: "mid-content",
+        priority: 60,
+        style: "banner",
+      },
     ],
     itinerary: [
-      { type: "download", text: "Download Full Itinerary", textHe: "הורד מסלול מלא", placement: "hero", priority: 100, style: "button", color: "#1976d2" },
-      { type: "booking", text: "Book This Tour", textHe: "הזמן סיור זה", placement: "hero", priority: 95, style: "button" },
-      { type: "related", text: "See More Itineraries", textHe: "ראה עוד מסלולים", placement: "end", priority: 70, style: "card" },
-      { type: "contact", text: "Get Custom Itinerary", textHe: "קבל מסלול מותאם", placement: "end", priority: 65, style: "banner" },
+      {
+        type: "download",
+        text: "Download Full Itinerary",
+        textHe: "",
+        placement: "hero",
+        priority: 100,
+        style: "button",
+        color: "#1976d2",
+      },
+      {
+        type: "booking",
+        text: "Book This Tour",
+        textHe: "",
+        placement: "hero",
+        priority: 95,
+        style: "button",
+      },
+      {
+        type: "related",
+        text: "See More Itineraries",
+        textHe: "",
+        placement: "end",
+        priority: 70,
+        style: "card",
+      },
+      {
+        type: "contact",
+        text: "Get Custom Itinerary",
+        textHe: "",
+        placement: "end",
+        priority: 65,
+        style: "banner",
+      },
     ],
   } as Record<string, CtaSuggestion[]>,
 
@@ -292,11 +433,15 @@ export const ctaOptimizer = {
     const contentText = JSON.stringify(content.blocks || []).toLowerCase();
 
     // Luxury content gets premium CTAs
-    if (contentText.includes("luxury") || contentText.includes("premium") || contentText.includes("5-star")) {
+    if (
+      contentText.includes("luxury") ||
+      contentText.includes("premium") ||
+      contentText.includes("5-star")
+    ) {
       ctas.push({
         type: "contact",
         text: "Request VIP Concierge",
-        textHe: "בקש שירות קונסיירז' VIP",
+        textHe: "",
         placement: "sidebar",
         priority: 80,
         style: "button",
@@ -305,11 +450,15 @@ export const ctaOptimizer = {
     }
 
     // Family content
-    if (contentText.includes("family") || contentText.includes("kids") || contentText.includes("children")) {
+    if (
+      contentText.includes("family") ||
+      contentText.includes("kids") ||
+      contentText.includes("children")
+    ) {
       ctas.push({
         type: "download",
         text: "Family Travel Checklist",
-        textHe: "רשימת בדיקה למשפחות",
+        textHe: "",
         placement: "end",
         priority: 65,
         style: "banner",
@@ -349,14 +498,15 @@ export const duplicateDetector = {
    * Generate n-grams from text
    */
   generateNgrams(text: string, n: number = 3): Set<string> {
-    const words = text.toLowerCase()
-      .replace(/[^\w\s\u0590-\u05FF]/g, '')
+    const words = text
+      .toLowerCase()
+      .replace(/[^\w\s\u0590-\u05FF]/g, "")
       .split(/\s+/)
       .filter(w => w.length > 2);
 
     const ngrams = new Set<string>();
     for (let i = 0; i <= words.length - n; i++) {
-      ngrams.add(words.slice(i, i + n).join(' '));
+      ngrams.add(words.slice(i, i + n).join(" "));
     }
     return ngrams;
   },
@@ -373,10 +523,7 @@ export const duplicateDetector = {
   /**
    * Find duplicate or similar content
    */
-  async findDuplicates(
-    contentId: string,
-    threshold: number = 30
-  ): Promise<DuplicateResult[]> {
+  async findDuplicates(contentId: string, threshold: number = 30): Promise<DuplicateResult[]> {
     const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
     if (!content) return [];
 
@@ -390,16 +537,14 @@ export const duplicateDetector = {
     const contentNgrams = this.generateNgrams(contentText);
 
     // Get all other published content
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      blocks: contents.blocks,
-    })
-    .from(contents)
-    .where(and(
-      eq(contents.status, "published"),
-      ne(contents.id, contentId)
-    ));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        blocks: contents.blocks,
+      })
+      .from(contents)
+      .where(and(eq(contents.status, "published"), ne(contents.id, contentId)));
 
     const duplicates: DuplicateResult[] = [];
 
@@ -446,13 +591,14 @@ export const duplicateDetector = {
       similarity: number;
     }>;
   }> {
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      blocks: contents.blocks,
-    })
-    .from(contents)
-    .where(eq(contents.status, "published"));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        blocks: contents.blocks,
+      })
+      .from(contents)
+      .where(eq(contents.status, "published"));
 
     const duplicateGroups: Map<string, Set<string>> = new Map();
     const processedPairs = new Set<string>();
@@ -462,7 +608,7 @@ export const duplicateDetector = {
       const duplicates = await this.findDuplicates(content.id, 60);
 
       for (const dup of duplicates) {
-        const pairKey = [content.id, dup.contentId].sort().join('-');
+        const pairKey = [content.id, dup.contentId].sort().join("-");
         if (!processedPairs.has(pairKey)) {
           processedPairs.add(pairKey);
 
@@ -523,10 +669,7 @@ export const relatedContent = {
   /**
    * Find related content for an article
    */
-  async findRelated(
-    contentId: string,
-    limit: number = 5
-  ): Promise<RelatedArticle[]> {
+  async findRelated(contentId: string, limit: number = 5): Promise<RelatedArticle[]> {
     const cacheKey = `related:${contentId}`;
 
     // Check cache
@@ -537,35 +680,47 @@ export const relatedContent = {
     if (!content) return [];
 
     // Get content tags
-    const contentTagIds = await db.select({ tagId: contentTags.tagId })
+    const contentTagIds = await db
+      .select({ tagId: contentTags.tagId })
       .from(contentTags)
       .where(eq(contentTags.contentId, contentId));
 
     const tagIds = contentTagIds.map(t => t.tagId);
 
     // Find other content with same tags
-    let relatedByTags: Array<{ id: string; title: string; slug: string; type: string; heroImage: string | null; metaDescription: string | null; tagCount: number }> = [];
+    let relatedByTags: Array<{
+      id: string;
+      title: string;
+      slug: string;
+      type: string;
+      heroImage: string | null;
+      metaDescription: string | null;
+      tagCount: number;
+    }> = [];
 
     if (tagIds.length > 0) {
-      const taggedContent = await db.select({
-        id: contents.id,
-        title: contents.title,
-        slug: contents.slug,
-        type: contents.type,
-        heroImage: contents.heroImage,
-        metaDescription: contents.metaDescription,
-        tagId: contentTags.tagId,
-      })
-      .from(contents)
-      .innerJoin(contentTags, eq(contents.id, contentTags.contentId))
-      .where(and(
-        eq(contents.status, "published"),
-        ne(contents.id, contentId),
-        inArray(contentTags.tagId, tagIds)
-      ));
+      const taggedContent = await db
+        .select({
+          id: contents.id,
+          title: contents.title,
+          slug: contents.slug,
+          type: contents.type,
+          heroImage: contents.heroImage,
+          metaDescription: contents.metaDescription,
+          tagId: contentTags.tagId,
+        })
+        .from(contents)
+        .innerJoin(contentTags, eq(contents.id, contentTags.contentId))
+        .where(
+          and(
+            eq(contents.status, "published"),
+            ne(contents.id, contentId),
+            inArray(contentTags.tagId, tagIds)
+          )
+        );
 
       // Group by content and count matching tags
-      const tagCounts = new Map<string, typeof taggedContent[0] & { tagCount: number }>();
+      const tagCounts = new Map<string, (typeof taggedContent)[0] & { tagCount: number }>();
       for (const tc of taggedContent) {
         const existing = tagCounts.get(tc.id);
         if (existing) {
@@ -584,23 +739,26 @@ export const relatedContent = {
       .join(" ")}`.toLowerCase();
 
     // Get recently published content of same type
-    const sameTypeContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      slug: contents.slug,
-      type: contents.type,
-      heroImage: contents.heroImage,
-      metaDescription: contents.metaDescription,
-      blocks: contents.blocks,
-    })
-    .from(contents)
-    .where(and(
-      eq(contents.status, "published"),
-      ne(contents.id, contentId),
-      eq(contents.type, content.type)
-    ))
-    .orderBy(desc(contents.publishedAt))
-    .limit(20);
+    const sameTypeContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        slug: contents.slug,
+        type: contents.type,
+        heroImage: contents.heroImage,
+        metaDescription: contents.metaDescription,
+        blocks: contents.blocks,
+      })
+      .from(contents)
+      .where(
+        and(
+          eq(contents.status, "published"),
+          ne(contents.id, contentId),
+          eq(contents.type, content.type)
+        )
+      )
+      .orderBy(desc(contents.publishedAt))
+      .limit(20);
 
     // Score all candidates
     const candidates = new Map<string, RelatedArticle>();
@@ -674,7 +832,7 @@ export const relatedContent = {
     const related = await this.findRelated(contentId, 4);
 
     return {
-      title: locale === "he" ? "קוראים אהבו גם" : "Readers Also Liked",
+      title: "Readers Also Liked",
       articles: related,
     };
   },
@@ -705,9 +863,7 @@ export const contentFlow = {
     // Get related content excluding already viewed
     const related = await relatedContent.findRelated(contentId, 10);
 
-    return related
-      .filter(r => !viewedContentIds.includes(r.id))
-      .slice(0, 3);
+    return related.filter(r => !viewedContentIds.includes(r.id)).slice(0, 3);
   },
 
   /**

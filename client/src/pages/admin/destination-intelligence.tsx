@@ -6,7 +6,14 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,12 +48,12 @@ import {
 import type { FeaturedAttraction, FeaturedArea, FeaturedHighlight } from "@shared/schema";
 
 function generateId(): string {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -99,13 +106,90 @@ interface HeroData {
 }
 
 const DESTINATIONS_DATA: DestinationStatus[] = [
-  { id: "dubai", name: "Dubai", country: "UAE", status: "complete", hasPage: true, seoScore: 92, wordCount: 4500, h2Count: 6, internalLinks: 8, qualityTier: "auto_approve" },
-  { id: "paris", name: "Paris", country: "France", status: "complete", hasPage: true, seoScore: 88, wordCount: 3800, h2Count: 5, internalLinks: 7, qualityTier: "publish" },
-  { id: "bangkok", name: "Bangkok", country: "Thailand", status: "complete", hasPage: true, seoScore: 85, wordCount: 3200, h2Count: 5, internalLinks: 6, qualityTier: "publish" },
-  { id: "istanbul", name: "Istanbul", country: "Turkey", status: "complete", hasPage: true, seoScore: 87, wordCount: 3500, h2Count: 5, internalLinks: 6, qualityTier: "publish" },
-  { id: "london", name: "London", country: "UK", status: "complete", hasPage: true, seoScore: 90, wordCount: 4200, h2Count: 6, internalLinks: 8, qualityTier: "auto_approve" },
-  { id: "new-york", name: "New York", country: "USA", status: "complete", hasPage: true, seoScore: 89, wordCount: 4100, h2Count: 6, internalLinks: 7, qualityTier: "publish" },
-  { id: "singapore", name: "Singapore", country: "Singapore", status: "complete", hasPage: true, seoScore: 86, wordCount: 3600, h2Count: 5, internalLinks: 6, qualityTier: "publish" },
+  {
+    id: "dubai",
+    name: "Dubai",
+    country: "UAE",
+    status: "complete",
+    hasPage: true,
+    seoScore: 92,
+    wordCount: 4500,
+    h2Count: 6,
+    internalLinks: 8,
+    qualityTier: "auto_approve",
+  },
+  {
+    id: "paris",
+    name: "Paris",
+    country: "France",
+    status: "complete",
+    hasPage: true,
+    seoScore: 88,
+    wordCount: 3800,
+    h2Count: 5,
+    internalLinks: 7,
+    qualityTier: "publish",
+  },
+  {
+    id: "bangkok",
+    name: "Bangkok",
+    country: "Thailand",
+    status: "complete",
+    hasPage: true,
+    seoScore: 85,
+    wordCount: 3200,
+    h2Count: 5,
+    internalLinks: 6,
+    qualityTier: "publish",
+  },
+  {
+    id: "istanbul",
+    name: "Istanbul",
+    country: "Turkey",
+    status: "complete",
+    hasPage: true,
+    seoScore: 87,
+    wordCount: 3500,
+    h2Count: 5,
+    internalLinks: 6,
+    qualityTier: "publish",
+  },
+  {
+    id: "london",
+    name: "London",
+    country: "UK",
+    status: "complete",
+    hasPage: true,
+    seoScore: 90,
+    wordCount: 4200,
+    h2Count: 6,
+    internalLinks: 8,
+    qualityTier: "auto_approve",
+  },
+  {
+    id: "new-york",
+    name: "New York",
+    country: "USA",
+    status: "complete",
+    hasPage: true,
+    seoScore: 89,
+    wordCount: 4100,
+    h2Count: 6,
+    internalLinks: 7,
+    qualityTier: "publish",
+  },
+  {
+    id: "singapore",
+    name: "Singapore",
+    country: "Singapore",
+    status: "complete",
+    hasPage: true,
+    seoScore: 86,
+    wordCount: 3600,
+    h2Count: 5,
+    internalLinks: 6,
+    qualityTier: "publish",
+  },
   { id: "tokyo", name: "Tokyo", country: "Japan", status: "empty", hasPage: false },
   { id: "barcelona", name: "Barcelona", country: "Spain", status: "empty", hasPage: false },
   { id: "rome", name: "Rome", country: "Italy", status: "empty", hasPage: false },
@@ -121,15 +205,17 @@ export default function DestinationIntelligencePage() {
   const [generatingIds, setGeneratingIds] = useState<Set<string>>(new Set());
   const [bulkGenerating, setBulkGenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState(0);
-  
+
   // Hero editing state
   const [editingDestinationId, setEditingDestinationId] = useState<string | null>(null);
   const [heroFormData, setHeroFormData] = useState<Partial<HeroData>>({});
   const [folderImages, setFolderImages] = useState<HeroImage[]>([]);
   const [loadingHero, setLoadingHero] = useState(false);
-  
+
   // Featured sections editing state
-  const [featuredSectionsDestinationId, setFeaturedSectionsDestinationId] = useState<string | null>(null);
+  const [featuredSectionsDestinationId, setFeaturedSectionsDestinationId] = useState<string | null>(
+    null
+  );
   const [featuredSectionsData, setFeaturedSectionsData] = useState<{
     name: string;
     featuredAttractions: FeaturedAttraction[];
@@ -145,20 +231,20 @@ export default function DestinationIntelligencePage() {
     setLoadingHero(true);
     setHeroFormData({});
     setFolderImages([]);
-    
+
     try {
       // Fetch hero data and folder images in parallel
       const [heroRes, imagesRes] = await Promise.all([
         fetch(`/api/destination-intelligence/${destinationId}/hero`),
         fetch(`/api/destination-intelligence/hero-images/${destinationId}`),
       ]);
-      
+
       if (!heroRes.ok) {
         throw new Error(`Failed to fetch hero data: ${heroRes.status}`);
       }
-      
+
       const heroData = await heroRes.json();
-      
+
       // Set form data from API response
       setHeroFormData({
         id: heroData.id,
@@ -178,14 +264,13 @@ export default function DestinationIntelligencePage() {
         moodGradientFrom: heroData.moodGradientFrom || "",
         moodGradientTo: heroData.moodGradientTo || "",
       });
-      
+
       // Images endpoint may return 404 if folder doesn't exist - that's OK
       if (imagesRes.ok) {
         const imagesData = await imagesRes.json();
         setFolderImages(imagesData.images || []);
       }
     } catch (error) {
-      console.error("Error loading hero data:", error);
       toast({ title: "Failed to load hero data", variant: "destructive" });
       setEditingDestinationId(null);
     } finally {
@@ -215,13 +300,13 @@ export default function DestinationIntelligencePage() {
   const selectImageFromFolder = (image: HeroImage) => {
     const currentImages = heroFormData.heroImages || [];
     const existingIndex = currentImages.findIndex(img => img.url === image.url);
-    
+
     if (existingIndex !== -1) {
       // Remove if already selected, then reorder remaining
       const updatedImages = currentImages
         .filter(img => img.url !== image.url)
         .map((img, idx) => ({ ...img, order: idx }));
-      
+
       setHeroFormData(prev => ({
         ...prev,
         heroImages: updatedImages,
@@ -235,7 +320,7 @@ export default function DestinationIntelligencePage() {
         order: currentImages.length,
         isActive: true,
       };
-      
+
       setHeroFormData(prev => ({
         ...prev,
         heroImages: [...currentImages, newImage],
@@ -247,10 +332,17 @@ export default function DestinationIntelligencePage() {
   const openFeaturedSectionsEditor = async (destinationId: string, destinationName: string) => {
     setFeaturedSectionsDestinationId(destinationId);
     setLoadingFeaturedSections(true);
-    setFeaturedSectionsData({ name: destinationName, featuredAttractions: [], featuredAreas: [], featuredHighlights: [] });
-    
+    setFeaturedSectionsData({
+      name: destinationName,
+      featuredAttractions: [],
+      featuredAreas: [],
+      featuredHighlights: [],
+    });
+
     try {
-      const response = await fetch(`/api/destination-intelligence/${destinationId}/featured-sections`);
+      const response = await fetch(
+        `/api/destination-intelligence/${destinationId}/featured-sections`
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch featured sections: ${response.status}`);
       }
@@ -262,7 +354,6 @@ export default function DestinationIntelligencePage() {
         featuredHighlights: data.featuredHighlights || [],
       });
     } catch (error) {
-      console.error("Error loading featured sections:", error);
       toast({ title: "Failed to load featured sections", variant: "destructive" });
     } finally {
       setLoadingFeaturedSections(false);
@@ -270,11 +361,22 @@ export default function DestinationIntelligencePage() {
   };
 
   const updateFeaturedSectionsMutation = useMutation({
-    mutationFn: async (data: { featuredAttractions: FeaturedAttraction[]; featuredAreas: FeaturedArea[]; featuredHighlights: FeaturedHighlight[] }) => {
-      await apiRequest("PATCH", `/api/destination-intelligence/${featuredSectionsDestinationId}/featured-sections`, data);
+    mutationFn: async (data: {
+      featuredAttractions: FeaturedAttraction[];
+      featuredAreas: FeaturedArea[];
+      featuredHighlights: FeaturedHighlight[];
+    }) => {
+      await apiRequest(
+        "PATCH",
+        `/api/destination-intelligence/${featuredSectionsDestinationId}/featured-sections`,
+        data
+      );
     },
     onSuccess: () => {
-      toast({ title: "Featured sections updated", description: "Section contents has been saved." });
+      toast({
+        title: "Featured sections updated",
+        description: "Section contents has been saved.",
+      });
       setFeaturedSectionsDestinationId(null);
     },
     onError: () => {
@@ -284,38 +386,42 @@ export default function DestinationIntelligencePage() {
 
   const handleSaveFeaturedSections = () => {
     if (!featuredSectionsDestinationId) return;
-    
+
     // Validate required fields for each section type
     const validationErrors: string[] = [];
-    
+
     featuredSectionsData.featuredAttractions.forEach((a, idx) => {
       if (!a.title.trim()) validationErrors.push(`Attraction #${idx + 1}: Title is required`);
       if (!a.image.trim()) validationErrors.push(`Attraction #${idx + 1}: Image URL is required`);
-      if (!a.imageAlt.trim()) validationErrors.push(`Attraction #${idx + 1}: Image alt text is required`);
+      if (!a.imageAlt.trim())
+        validationErrors.push(`Attraction #${idx + 1}: Image alt text is required`);
     });
-    
+
     featuredSectionsData.featuredAreas.forEach((a, idx) => {
       if (!a.name.trim()) validationErrors.push(`Area #${idx + 1}: Name is required`);
       if (!a.image.trim()) validationErrors.push(`Area #${idx + 1}: Image URL is required`);
       if (!a.imageAlt.trim()) validationErrors.push(`Area #${idx + 1}: Image alt text is required`);
       if (!a.vibe.trim()) validationErrors.push(`Area #${idx + 1}: Vibe is required`);
     });
-    
+
     featuredSectionsData.featuredHighlights.forEach((h, idx) => {
       if (!h.title.trim()) validationErrors.push(`Highlight #${idx + 1}: Title is required`);
       if (!h.image.trim()) validationErrors.push(`Highlight #${idx + 1}: Image URL is required`);
-      if (!h.imageAlt.trim()) validationErrors.push(`Highlight #${idx + 1}: Image alt text is required`);
+      if (!h.imageAlt.trim())
+        validationErrors.push(`Highlight #${idx + 1}: Image alt text is required`);
     });
-    
+
     if (validationErrors.length > 0) {
-      toast({ 
-        title: "Validation failed", 
-        description: validationErrors.slice(0, 3).join("; ") + (validationErrors.length > 3 ? `... and ${validationErrors.length - 3} more` : ""),
-        variant: "destructive" 
+      toast({
+        title: "Validation failed",
+        description:
+          validationErrors.slice(0, 3).join("; ") +
+          (validationErrors.length > 3 ? `... and ${validationErrors.length - 3} more` : ""),
+        variant: "destructive",
       });
       return;
     }
-    
+
     // Auto-deactivate items without images (enforce "no image = no section" rule)
     const processedAttractions = featuredSectionsData.featuredAttractions.map(a => ({
       ...a,
@@ -329,7 +435,7 @@ export default function DestinationIntelligencePage() {
       ...h,
       isActive: h.isActive && !!h.image.trim(),
     }));
-    
+
     updateFeaturedSectionsMutation.mutate({
       featuredAttractions: processedAttractions,
       featuredAreas: processedAreas,
@@ -388,10 +494,10 @@ export default function DestinationIntelligencePage() {
     placeholderData: () => {
       const activeCount = DESTINATIONS_DATA.filter(d => d.hasPage).length;
       const missingCount = DESTINATIONS_DATA.filter(d => !d.hasPage).length;
-      const avgSeoScore = DESTINATIONS_DATA
-        .filter(d => d.seoScore)
-        .reduce((sum, d) => sum + (d.seoScore || 0), 0) / activeCount;
-      
+      const avgSeoScore =
+        DESTINATIONS_DATA.filter(d => d.seoScore).reduce((sum, d) => sum + (d.seoScore || 0), 0) /
+        activeCount;
+
       return {
         totalDestinations: 15,
         activeDestinations: activeCount,
@@ -408,7 +514,10 @@ export default function DestinationIntelligencePage() {
       await apiRequest("POST", "/api/destination-intelligence/generate", { destinationId });
     },
     onSuccess: (_, destinationId) => {
-      toast({ title: "Content generation started", description: `Generating contents for ${destinationId}...` });
+      toast({
+        title: "Content generation started",
+        description: `Generating contents for ${destinationId}...`,
+      });
       setGeneratingIds(prev => {
         const next = new Set(prev);
         next.delete(destinationId);
@@ -435,8 +544,11 @@ export default function DestinationIntelligencePage() {
       const result = await response.json();
       return result as { success: boolean; generated: number; failed: number };
     },
-    onSuccess: (result) => {
-      toast({ title: "Bulk generation complete", description: `Generated contents for ${result.generated} destinations.` });
+    onSuccess: result => {
+      toast({
+        title: "Bulk generation complete",
+        description: `Generated contents for ${result.generated} destinations.`,
+      });
       setBulkGenerating(false);
       setBulkProgress(0);
       queryClient.invalidateQueries({ queryKey: ["/api/destination-intelligence/status"] });
@@ -451,7 +563,10 @@ export default function DestinationIntelligencePage() {
   const scanHealthMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/destination-intelligence/scan"),
     onSuccess: () => {
-      toast({ title: "Health scan started", description: "Scanning all destinations for contents health..." });
+      toast({
+        title: "Health scan started",
+        description: "Scanning all destinations for contents health...",
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/destination-intelligence/status"] });
     },
     onError: () => toast({ title: "Health scan failed", variant: "destructive" }),
@@ -460,9 +575,17 @@ export default function DestinationIntelligencePage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "complete":
-        return <Badge className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">Complete</Badge>;
+        return (
+          <Badge className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+            Complete
+          </Badge>
+        );
       case "partial":
-        return <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800">Partial</Badge>;
+        return (
+          <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800">
+            Partial
+          </Badge>
+        );
       default:
         return <Badge variant="destructive">Missing Content</Badge>;
     }
@@ -470,15 +593,19 @@ export default function DestinationIntelligencePage() {
 
   const getQualityTierBadge = (tier?: string, score?: number) => {
     if (!tier && score === undefined) return null;
-    
+
     // Trust backend tier if provided, otherwise calculate from score
-    const effectiveTier = tier ? tier : (
-      score !== undefined ? (
-        score >= 90 ? "auto_approve" :
-        score >= 80 ? "publish" :
-        score >= 70 ? "review" : "draft"
-      ) : "draft"
-    );
+    const effectiveTier = tier
+      ? tier
+      : score !== undefined
+        ? score >= 90
+          ? "auto_approve"
+          : score >= 80
+            ? "publish"
+            : score >= 70
+              ? "review"
+              : "draft"
+        : "draft";
 
     switch (effectiveTier) {
       case "auto_approve":
@@ -550,11 +677,11 @@ export default function DestinationIntelligencePage() {
             <Lightbulb className="h-4 w-4 text-primary" />
             How It Works
           </h3>
-          <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-            מערכת הבינה מנטרת את כל 15 היעדים שלנו ומזהה פערי תוכן. לחץ על "יצירת תוכן" ליעד ספציפי או על "יצירת כל החסרים" למילוי אוטומטי של כל היעדים החסרים באמצעות AI.
-          </p>
           <p className="text-sm text-muted-foreground">
-            This intelligence system monitors all 15 destinations and identifies contents gaps. Click "Generate Content" for a specific destination, or "Generate All Missing" to automatically fill all empty destinations with AI-generated contents. The system also tracks SEO scores, word counts, and internal linking for quality assurance.
+            This intelligence system monitors all 15 destinations and identifies content gaps. Click
+            "Generate Content" for a specific destination, or "Generate All Missing" to
+            automatically fill all empty destinations with AI-generated content. The system also
+            tracks SEO scores, word counts, and internal linking for quality assurance.
           </p>
         </div>
       </div>
@@ -667,19 +794,25 @@ export default function DestinationIntelligencePage() {
                 <span className="text-muted-foreground">Bulk generation in progress...</span>
                 <span className="font-medium">{bulkProgress}%</span>
               </div>
-              <Progress value={bulkProgress} className="h-2" data-testid="progress-bulk-generation" />
+              <Progress
+                value={bulkProgress}
+                className="h-2"
+                data-testid="progress-bulk-generation"
+              />
             </div>
           )}
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[500px]">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {destinations.map((destination) => {
+              {destinations.map(destination => {
                 const isGenerating = generatingIds.has(destination.id);
                 return (
                   <Card
                     key={destination.id}
-                    className={destination.hasPage ? "border-green-500/20" : "border-destructive/20"}
+                    className={
+                      destination.hasPage ? "border-green-500/20" : "border-destructive/20"
+                    }
                     data-testid={`card-destination-${destination.id}`}
                   >
                     <CardContent className="pt-4">
@@ -701,7 +834,9 @@ export default function DestinationIntelligencePage() {
                               <Search className="h-3 w-3" />
                               SEO Score
                             </span>
-                            <span className={`font-medium ${getSeoScoreColor(destination.seoScore)}`}>
+                            <span
+                              className={`font-medium ${getSeoScoreColor(destination.seoScore)}`}
+                            >
                               {destination.seoScore}%
                             </span>
                           </div>
@@ -710,7 +845,9 @@ export default function DestinationIntelligencePage() {
                               <FileText className="h-3 w-3" />
                               Word Count
                             </span>
-                            <span className={`font-medium ${(destination.wordCount || 0) >= 1800 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}>
+                            <span
+                              className={`font-medium ${(destination.wordCount || 0) >= 1800 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
+                            >
                               {destination.wordCount?.toLocaleString()}
                             </span>
                           </div>
@@ -719,7 +856,9 @@ export default function DestinationIntelligencePage() {
                               <Heading2 className="h-3 w-3" />
                               H2 Headers
                             </span>
-                            <span className={`font-medium ${(destination.h2Count || 0) >= 4 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}>
+                            <span
+                              className={`font-medium ${(destination.h2Count || 0) >= 4 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
+                            >
                               {destination.h2Count || 0}
                             </span>
                           </div>
@@ -728,7 +867,9 @@ export default function DestinationIntelligencePage() {
                               <Link2 className="h-3 w-3" />
                               Internal Links
                             </span>
-                            <span className={`font-medium ${(destination.internalLinks || 0) >= 5 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}>
+                            <span
+                              className={`font-medium ${(destination.internalLinks || 0) >= 5 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
+                            >
                               {destination.internalLinks || 0}
                             </span>
                           </div>
@@ -748,7 +889,9 @@ export default function DestinationIntelligencePage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openFeaturedSectionsEditor(destination.id, destination.name)}
+                          onClick={() =>
+                            openFeaturedSectionsEditor(destination.id, destination.name)
+                          }
                           data-testid={`button-featured-sections-${destination.id}`}
                         >
                           <LayoutGrid className="h-4 w-4 mr-2" />
@@ -789,7 +932,10 @@ export default function DestinationIntelligencePage() {
       </Card>
 
       {/* Hero Editor Dialog */}
-      <Dialog open={!!editingDestinationId} onOpenChange={(open) => !open && setEditingDestinationId(null)}>
+      <Dialog
+        open={!!editingDestinationId}
+        onOpenChange={open => !open && setEditingDestinationId(null)}
+      >
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -820,7 +966,9 @@ export default function DestinationIntelligencePage() {
                     id="heroTitle"
                     placeholder="e.g., Discover Tokyo"
                     value={heroFormData.heroTitle || ""}
-                    onChange={(e) => setHeroFormData(prev => ({ ...prev, heroTitle: e.target.value }))}
+                    onChange={e =>
+                      setHeroFormData(prev => ({ ...prev, heroTitle: e.target.value }))
+                    }
                     data-testid="input-hero-title"
                   />
                 </div>
@@ -830,7 +978,9 @@ export default function DestinationIntelligencePage() {
                     id="heroSubtitle"
                     placeholder="A compelling subtitle that captures the essence of the destination..."
                     value={heroFormData.heroSubtitle || ""}
-                    onChange={(e) => setHeroFormData(prev => ({ ...prev, heroSubtitle: e.target.value }))}
+                    onChange={e =>
+                      setHeroFormData(prev => ({ ...prev, heroSubtitle: e.target.value }))
+                    }
                     data-testid="input-hero-subtitle"
                   />
                 </div>
@@ -841,7 +991,9 @@ export default function DestinationIntelligencePage() {
                       id="heroCTAText"
                       placeholder="Start Exploring"
                       value={heroFormData.heroCTAText || ""}
-                      onChange={(e) => setHeroFormData(prev => ({ ...prev, heroCTAText: e.target.value }))}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, heroCTAText: e.target.value }))
+                      }
                       data-testid="input-hero-cta-text"
                     />
                   </div>
@@ -851,7 +1003,9 @@ export default function DestinationIntelligencePage() {
                       id="heroCTALink"
                       placeholder="#experiences"
                       value={heroFormData.heroCTALink || ""}
-                      onChange={(e) => setHeroFormData(prev => ({ ...prev, heroCTALink: e.target.value }))}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, heroCTALink: e.target.value }))
+                      }
                       data-testid="input-hero-cta-link"
                     />
                   </div>
@@ -860,10 +1014,10 @@ export default function DestinationIntelligencePage() {
 
               <TabsContent value="images" className="space-y-4 mt-4">
                 <div className="text-sm text-muted-foreground mb-4">
-                  Select images from the destination folder to include in the hero carousel. 
+                  Select images from the destination folder to include in the hero carousel.
                   Selected images will rotate automatically.
                 </div>
-                
+
                 {folderImages.length === 0 ? (
                   <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
                     <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
@@ -873,13 +1027,15 @@ export default function DestinationIntelligencePage() {
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {folderImages.map((image, index) => {
-                      const isSelected = (heroFormData.heroImages || []).some(img => img.url === image.url);
+                      const isSelected = (heroFormData.heroImages || []).some(
+                        img => img.url === image.url
+                      );
                       return (
                         <div
                           key={index}
                           className={`relative border-2 rounded-lg overflow-hidden cursor-pointer transition-all ${
-                            isSelected 
-                              ? "border-primary ring-2 ring-primary/20" 
+                            isSelected
+                              ? "border-primary ring-2 ring-primary/20"
                               : "border-transparent"
                           }`}
                           onClick={() => selectImageFromFolder(image)}
@@ -903,7 +1059,7 @@ export default function DestinationIntelligencePage() {
                     })}
                   </div>
                 )}
-                
+
                 <div className="text-sm text-muted-foreground">
                   Selected: {(heroFormData.heroImages || []).length} image(s)
                 </div>
@@ -913,18 +1069,20 @@ export default function DestinationIntelligencePage() {
                 <div className="text-sm text-muted-foreground mb-4">
                   Define the visual personality and color theme for this destination.
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="moodTagline">Tagline</Label>
                   <Input
                     id="moodTagline"
                     placeholder="e.g., Where Tradition Meets Tomorrow"
                     value={heroFormData.moodTagline || ""}
-                    onChange={(e) => setHeroFormData(prev => ({ ...prev, moodTagline: e.target.value }))}
+                    onChange={e =>
+                      setHeroFormData(prev => ({ ...prev, moodTagline: e.target.value }))
+                    }
                     data-testid="input-mood-tagline"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="moodVibe">Vibe</Label>
@@ -932,7 +1090,9 @@ export default function DestinationIntelligencePage() {
                       id="moodVibe"
                       placeholder="e.g., luxury, adventure, cultural"
                       value={heroFormData.moodVibe || ""}
-                      onChange={(e) => setHeroFormData(prev => ({ ...prev, moodVibe: e.target.value }))}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, moodVibe: e.target.value }))
+                      }
                       data-testid="input-mood-vibe"
                     />
                   </div>
@@ -942,12 +1102,14 @@ export default function DestinationIntelligencePage() {
                       id="moodPrimaryColor"
                       placeholder="e.g., hsl(200, 80%, 50%)"
                       value={heroFormData.moodPrimaryColor || ""}
-                      onChange={(e) => setHeroFormData(prev => ({ ...prev, moodPrimaryColor: e.target.value }))}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, moodPrimaryColor: e.target.value }))
+                      }
                       data-testid="input-mood-primary-color"
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="moodGradientFrom">Gradient From (HSLA)</Label>
@@ -955,7 +1117,9 @@ export default function DestinationIntelligencePage() {
                       id="moodGradientFrom"
                       placeholder="e.g., hsla(200, 80%, 20%, 0.8)"
                       value={heroFormData.moodGradientFrom || ""}
-                      onChange={(e) => setHeroFormData(prev => ({ ...prev, moodGradientFrom: e.target.value }))}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, moodGradientFrom: e.target.value }))
+                      }
                       data-testid="input-mood-gradient-from"
                     />
                   </div>
@@ -965,23 +1129,25 @@ export default function DestinationIntelligencePage() {
                       id="moodGradientTo"
                       placeholder="e.g., hsla(200, 80%, 10%, 0.9)"
                       value={heroFormData.moodGradientTo || ""}
-                      onChange={(e) => setHeroFormData(prev => ({ ...prev, moodGradientTo: e.target.value }))}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, moodGradientTo: e.target.value }))
+                      }
                       data-testid="input-mood-gradient-to"
                     />
                   </div>
                 </div>
-                
+
                 {/* Color Preview */}
                 {heroFormData.moodPrimaryColor && (
                   <div className="mt-4 p-4 rounded-lg border">
                     <p className="text-sm font-medium mb-2">Color Preview</p>
-                    <div 
+                    <div
                       className="h-16 rounded-md"
-                      style={{ 
-                        background: `linear-gradient(180deg, ${heroFormData.moodGradientFrom || 'transparent'} 0%, ${heroFormData.moodGradientTo || 'transparent'} 100%)`
+                      style={{
+                        background: `linear-gradient(180deg, ${heroFormData.moodGradientFrom || "transparent"} 0%, ${heroFormData.moodGradientTo || "transparent"} 100%)`,
                       }}
                     >
-                      <div 
+                      <div
                         className="w-8 h-8 rounded-full m-4"
                         style={{ background: heroFormData.moodPrimaryColor }}
                       />
@@ -1014,7 +1180,10 @@ export default function DestinationIntelligencePage() {
       </Dialog>
 
       {/* Featured Sections Editor Dialog */}
-      <Dialog open={!!featuredSectionsDestinationId} onOpenChange={(open) => !open && setFeaturedSectionsDestinationId(null)}>
+      <Dialog
+        open={!!featuredSectionsDestinationId}
+        onOpenChange={open => !open && setFeaturedSectionsDestinationId(null)}
+      >
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -1022,7 +1191,8 @@ export default function DestinationIntelligencePage() {
               Featured Sections - {featuredSectionsData.name}
             </DialogTitle>
             <DialogDescription>
-              Manage image-led contents sections. Sections without images will be hidden on the frontend.
+              Manage image-led contents sections. Sections without images will be hidden on the
+              frontend.
             </DialogDescription>
           </DialogHeader>
 
@@ -1033,14 +1203,22 @@ export default function DestinationIntelligencePage() {
           ) : (
             <Tabs defaultValue="attractions" className="mt-4">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="attractions">Attractions ({featuredSectionsData.featuredAttractions.length})</TabsTrigger>
-                <TabsTrigger value="areas">Where to Stay ({featuredSectionsData.featuredAreas.length})</TabsTrigger>
-                <TabsTrigger value="highlights">Highlights ({featuredSectionsData.featuredHighlights.length})</TabsTrigger>
+                <TabsTrigger value="attractions">
+                  Attractions ({featuredSectionsData.featuredAttractions.length})
+                </TabsTrigger>
+                <TabsTrigger value="areas">
+                  Where to Stay ({featuredSectionsData.featuredAreas.length})
+                </TabsTrigger>
+                <TabsTrigger value="highlights">
+                  Highlights ({featuredSectionsData.featuredHighlights.length})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="attractions" className="space-y-4 mt-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">Top attractions with stunning imagery</p>
+                  <p className="text-sm text-muted-foreground">
+                    Top attractions with stunning imagery
+                  </p>
                   <Button size="sm" variant="outline" onClick={addFeaturedAttraction}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Attraction
@@ -1050,7 +1228,9 @@ export default function DestinationIntelligencePage() {
                   <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
                     <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                     <p>No featured attractions yet</p>
-                    <p className="text-xs mt-1">Add attractions with images to display this section</p>
+                    <p className="text-xs mt-1">
+                      Add attractions with images to display this section
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1062,10 +1242,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="Burj Khalifa"
                               value={attraction.title}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAttractions];
                                 updated[idx] = { ...attraction, title: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAttractions: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAttractions: updated,
+                                }));
                               }}
                               data-testid={`input-attraction-title-${idx}`}
                             />
@@ -1075,10 +1258,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="/attractions/burj-khalifa.webp"
                               value={attraction.image}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAttractions];
                                 updated[idx] = { ...attraction, image: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAttractions: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAttractions: updated,
+                                }));
                               }}
                               data-testid={`input-attraction-image-${idx}`}
                             />
@@ -1088,10 +1274,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="Burj Khalifa tower at sunset"
                               value={attraction.imageAlt}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAttractions];
                                 updated[idx] = { ...attraction, imageAlt: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAttractions: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAttractions: updated,
+                                }));
                               }}
                               data-testid={`input-attraction-alt-${idx}`}
                             />
@@ -1101,8 +1290,13 @@ export default function DestinationIntelligencePage() {
                               size="icon"
                               variant="ghost"
                               onClick={() => {
-                                const updated = featuredSectionsData.featuredAttractions.filter(a => a.id !== attraction.id);
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAttractions: updated }));
+                                const updated = featuredSectionsData.featuredAttractions.filter(
+                                  a => a.id !== attraction.id
+                                );
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAttractions: updated,
+                                }));
                               }}
                               data-testid={`button-delete-attraction-${idx}`}
                             >
@@ -1140,10 +1334,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="Downtown Dubai"
                               value={area.name}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAreas];
                                 updated[idx] = { ...area, name: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAreas: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAreas: updated,
+                                }));
                               }}
                               data-testid={`input-area-name-${idx}`}
                             />
@@ -1153,10 +1350,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="/areas/downtown.webp"
                               value={area.image}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAreas];
                                 updated[idx] = { ...area, image: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAreas: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAreas: updated,
+                                }));
                               }}
                               data-testid={`input-area-image-${idx}`}
                             />
@@ -1166,10 +1366,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="luxury"
                               value={area.vibe}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAreas];
                                 updated[idx] = { ...area, vibe: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAreas: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAreas: updated,
+                                }));
                               }}
                               data-testid={`input-area-vibe-${idx}`}
                             />
@@ -1179,10 +1382,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="$$$"
                               value={area.priceLevel || ""}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredAreas];
                                 updated[idx] = { ...area, priceLevel: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAreas: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAreas: updated,
+                                }));
                               }}
                               data-testid={`input-area-price-${idx}`}
                             />
@@ -1192,8 +1398,13 @@ export default function DestinationIntelligencePage() {
                               size="icon"
                               variant="ghost"
                               onClick={() => {
-                                const updated = featuredSectionsData.featuredAreas.filter(a => a.id !== area.id);
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredAreas: updated }));
+                                const updated = featuredSectionsData.featuredAreas.filter(
+                                  a => a.id !== area.id
+                                );
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredAreas: updated,
+                                }));
                               }}
                               data-testid={`button-delete-area-${idx}`}
                             >
@@ -1219,7 +1430,9 @@ export default function DestinationIntelligencePage() {
                   <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
                     <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                     <p>No featured highlights yet</p>
-                    <p className="text-xs mt-1">Add highlights with images to display this section</p>
+                    <p className="text-xs mt-1">
+                      Add highlights with images to display this section
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1231,10 +1444,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="Sunset at Marina"
                               value={highlight.title}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredHighlights];
                                 updated[idx] = { ...highlight, title: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredHighlights: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredHighlights: updated,
+                                }));
                               }}
                               data-testid={`input-highlight-title-${idx}`}
                             />
@@ -1244,10 +1460,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="/highlights/marina-sunset.webp"
                               value={highlight.image}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredHighlights];
                                 updated[idx] = { ...highlight, image: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredHighlights: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredHighlights: updated,
+                                }));
                               }}
                               data-testid={`input-highlight-image-${idx}`}
                             />
@@ -1257,10 +1476,13 @@ export default function DestinationIntelligencePage() {
                             <Input
                               placeholder="Golden hour over the marina"
                               value={highlight.caption || ""}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const updated = [...featuredSectionsData.featuredHighlights];
                                 updated[idx] = { ...highlight, caption: e.target.value };
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredHighlights: updated }));
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredHighlights: updated,
+                                }));
                               }}
                               data-testid={`input-highlight-caption-${idx}`}
                             />
@@ -1270,8 +1492,13 @@ export default function DestinationIntelligencePage() {
                               size="icon"
                               variant="ghost"
                               onClick={() => {
-                                const updated = featuredSectionsData.featuredHighlights.filter(h => h.id !== highlight.id);
-                                setFeaturedSectionsData(prev => ({ ...prev, featuredHighlights: updated }));
+                                const updated = featuredSectionsData.featuredHighlights.filter(
+                                  h => h.id !== highlight.id
+                                );
+                                setFeaturedSectionsData(prev => ({
+                                  ...prev,
+                                  featuredHighlights: updated,
+                                }));
                               }}
                               data-testid={`button-delete-highlight-${idx}`}
                             >
@@ -1291,7 +1518,10 @@ export default function DestinationIntelligencePage() {
             <Button variant="outline" onClick={() => setFeaturedSectionsDestinationId(null)}>
               Cancel
             </Button>
-            <Button onClick={handleSaveFeaturedSections} disabled={updateFeaturedSectionsMutation.isPending}>
+            <Button
+              onClick={handleSaveFeaturedSections}
+              disabled={updateFeaturedSectionsMutation.isPending}
+            >
               {updateFeaturedSectionsMutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -1314,9 +1544,7 @@ export default function DestinationIntelligencePage() {
             <ShieldCheck className="h-5 w-5" />
             Quality Gates
           </CardTitle>
-          <CardDescription>
-            Content quality validation checks for all destinations
-          </CardDescription>
+          <CardDescription>Content quality validation checks for all destinations</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -1353,9 +1581,7 @@ export default function DestinationIntelligencePage() {
                 <Heading2 className="h-4 w-4 text-primary" />
                 <span className="font-medium">H2 Headers</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">
-                4-6 H2 headers per destination
-              </p>
+              <p className="text-sm text-muted-foreground mb-2">4-6 H2 headers per destination</p>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 <span className="text-sm">{activeCount} destinations passing</span>
@@ -1381,9 +1607,7 @@ export default function DestinationIntelligencePage() {
                 <XCircle className="h-4 w-4 text-primary" />
                 <span className="font-medium">Banned Phrases</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">
-                No clickbait or cliche terms
-              </p>
+              <p className="text-sm text-muted-foreground mb-2">No clickbait or cliche terms</p>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 <span className="text-sm">All contents clean</span>

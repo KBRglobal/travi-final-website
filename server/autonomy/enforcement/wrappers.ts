@@ -3,8 +3,8 @@
  * Guard wrappers for AI calls, jobs, and publishing operations
  */
 
-import { enforceAutonomy, enforceOrThrow } from './decision';
-import { consumeBudget, recordConsumption } from './budget-consumer';
+import { enforceAutonomy, enforceOrThrow } from "./decision";
+import { consumeBudget, recordConsumption } from "./budget-consumer";
 import {
   EnforcementContext,
   AutonomyBlockedError,
@@ -12,25 +12,25 @@ import {
   DegradedResponse,
   JobBlockResult,
   DEFAULT_ENFORCEMENT_CONFIG,
-} from './types';
-import { ActionType } from '../policy/types';
+} from "./types";
+import { ActionType } from "../policy/types";
 
 const DEFAULT_AI_TIMEOUT_MS = 30000;
 const DEFAULT_JOB_TIMEOUT_MS = 60000;
 
 // Degraded mode fallback messages
 const DEGRADED_FALLBACKS: Record<GuardedFeature, string> = {
-  chat: 'I apologize, but I am temporarily unable to process your request. Please try again later.',
-  octopus: 'Content generation is temporarily limited. Please try again later.',
-  search: 'Search enrichment is temporarily unavailable.',
-  aeo: 'AEO optimization is temporarily limited.',
-  translation: 'Translation service is temporarily unavailable.',
-  images: 'Image generation is temporarily limited.',
-  content_enrichment: 'Content enrichment is temporarily unavailable.',
-  seo_optimization: 'SEO optimization is temporarily limited.',
-  internal_linking: 'Internal linking is temporarily unavailable.',
-  background_job: 'Background processing is temporarily limited.',
-  publishing: 'Publishing is temporarily restricted.',
+  chat: "I apologize, but I am temporarily unable to process your request. Please try again later.",
+  octopus: "Content generation is temporarily limited. Please try again later.",
+  search: "Search enrichment is temporarily unavailable.",
+  aeo: "AEO optimization is temporarily limited.",
+  translation: "Translation service is temporarily unavailable.",
+  images: "Image generation is temporarily limited.",
+  content_enrichment: "Content enrichment is temporarily unavailable.",
+  seo_optimization: "SEO optimization is temporarily limited.",
+  internal_linking: "Internal linking is temporarily unavailable.",
+  background_job: "Background processing is temporarily limited.",
+  publishing: "Publishing is temporarily restricted.",
 };
 
 /**
@@ -39,7 +39,7 @@ const DEGRADED_FALLBACKS: Record<GuardedFeature, string> = {
  */
 export async function guardAiCall<T>(
   feature: GuardedFeature,
-  context: Omit<EnforcementContext, 'feature' | 'action'>,
+  context: Omit<EnforcementContext, "feature" | "action">,
   fn: () => Promise<T>,
   options?: {
     timeoutMs?: number;
@@ -48,7 +48,7 @@ export async function guardAiCall<T>(
   }
 ): Promise<T | DegradedResponse<T>> {
   const startTime = Date.now();
-  const action = options?.action || 'ai_generate';
+  const action = options?.action || "ai_generate";
 
   const enforcementContext: EnforcementContext = {
     ...context,
@@ -62,20 +62,21 @@ export async function guardAiCall<T>(
   if (!result.allowed) {
     // Check if degraded mode is enabled
     if (DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled && options?.fallback !== undefined) {
-      const fallbackData = typeof options.fallback === 'function'
-        ? (options.fallback as () => T)()
-        : options.fallback;
+      const fallbackData =
+        typeof options.fallback === "function" ? (options.fallback as () => T)() : options.fallback;
 
       return {
         isDegraded: true,
-        reason: result.reasons.find(r => r.severity === 'error')?.message || DEGRADED_FALLBACKS[feature],
+        reason:
+          result.reasons.find(r => r.severity === "error")?.message || DEGRADED_FALLBACKS[feature],
         fallbackData,
         retryAfter: 3600,
       } as DegradedResponse<T>;
     }
 
     throw new AutonomyBlockedError(
-      result.reasons.find(r => r.severity === 'error')?.message || DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
+      result.reasons.find(r => r.severity === "error")?.message ||
+        DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
       {
         reasons: result.reasons,
         feature,
@@ -128,13 +129,12 @@ export async function guardAiCall<T>(
       options?.fallback !== undefined &&
       !(error instanceof AutonomyBlockedError)
     ) {
-      const fallbackData = typeof options.fallback === 'function'
-        ? (options.fallback as () => T)()
-        : options.fallback;
+      const fallbackData =
+        typeof options.fallback === "function" ? (options.fallback as () => T)() : options.fallback;
 
       return {
         isDegraded: true,
-        reason: error instanceof Error ? error.message : 'AI call failed',
+        reason: error instanceof Error ? error.message : "AI call failed",
         fallbackData,
       } as DegradedResponse<T>;
     }
@@ -160,8 +160,8 @@ export async function guardJobExecution(
     return { blocked: false, shouldRetry: true };
   }
 
-  const feature: GuardedFeature = 'background_job';
-  const action: ActionType = 'ai_generate'; // Most jobs involve AI
+  const feature: GuardedFeature = "background_job";
+  const action: ActionType = "ai_generate"; // Most jobs involve AI
 
   try {
     const result = await enforceAutonomy({
@@ -178,23 +178,25 @@ export async function guardJobExecution(
 
     if (!result.allowed) {
       // Determine if should retry based on reason
-      const shouldRetry = result.reasons.some(r =>
-        r.code === 'BUDGET_EXHAUSTED' ||
-        r.code === 'OUTSIDE_ALLOWED_HOURS' ||
-        r.code === 'RATE_LIMITED'
+      const shouldRetry = result.reasons.some(
+        r =>
+          r.code === "BUDGET_EXHAUSTED" ||
+          r.code === "OUTSIDE_ALLOWED_HOURS" ||
+          r.code === "RATE_LIMITED"
       );
 
       // Calculate reschedule time
       let rescheduleAfterMs = 60000; // Default 1 minute
-      if (result.reasons.some(r => r.code === 'BUDGET_EXHAUSTED')) {
+      if (result.reasons.some(r => r.code === "BUDGET_EXHAUSTED")) {
         rescheduleAfterMs = 3600000; // 1 hour for budget
-      } else if (result.reasons.some(r => r.code === 'OUTSIDE_ALLOWED_HOURS')) {
+      } else if (result.reasons.some(r => r.code === "OUTSIDE_ALLOWED_HOURS")) {
         rescheduleAfterMs = 1800000; // 30 minutes for time window
       }
 
       return {
         blocked: true,
-        reason: result.reasons.find(r => r.severity === 'error')?.message || 'Job blocked by policy',
+        reason:
+          result.reasons.find(r => r.severity === "error")?.message || "Job blocked by policy",
         rescheduleAfterMs,
         shouldRetry,
       };
@@ -202,12 +204,10 @@ export async function guardJobExecution(
 
     return { blocked: false, shouldRetry: true };
   } catch (error) {
-    console.error('[GuardJob] Enforcement check failed:', error);
-
     // On errors, block but allow retry
     return {
       blocked: true,
-      reason: error instanceof Error ? error.message : 'Enforcement check failed',
+      reason: error instanceof Error ? error.message : "Enforcement check failed",
       rescheduleAfterMs: 60000,
       shouldRetry: true,
     };
@@ -235,8 +235,8 @@ export async function guardPublish(context: {
 
   try {
     const result = await enforceAutonomy({
-      feature: 'publishing',
-      action: 'content_publish',
+      feature: "publishing",
+      action: "content_publish",
       contentId: context.contentId,
       entityId: context.contentId,
       locale: context.locale,
@@ -249,13 +249,13 @@ export async function guardPublish(context: {
     if (!result.allowed) {
       return {
         allowed: false,
-        reason: result.reasons.find(r => r.severity === 'error')?.message,
+        reason: result.reasons.find(r => r.severity === "error")?.message,
         warnings: result.warnings,
       };
     }
 
     // Check if requires approval
-    const requiresApproval = result.reasons.some(r => r.code === 'REQUIRES_APPROVAL');
+    const requiresApproval = result.reasons.some(r => r.code === "REQUIRES_APPROVAL");
 
     return {
       allowed: true,
@@ -263,11 +263,9 @@ export async function guardPublish(context: {
       requiresApproval,
     };
   } catch (error) {
-    console.error('[GuardPublish] Enforcement check failed:', error);
-
     return {
       allowed: false,
-      reason: error instanceof Error ? error.message : 'Publishing check failed',
+      reason: error instanceof Error ? error.message : "Publishing check failed",
       warnings: [],
     };
   }
@@ -296,7 +294,7 @@ export async function withEnforcement<T>(
  */
 export async function isFeatureAllowed(
   feature: GuardedFeature,
-  action: ActionType = 'ai_generate'
+  action: ActionType = "ai_generate"
 ): Promise<{ allowed: boolean; reason?: string }> {
   if (!DEFAULT_ENFORCEMENT_CONFIG.enabled) {
     return { allowed: true };
@@ -305,9 +303,7 @@ export async function isFeatureAllowed(
   const result = await enforceAutonomy({ feature, action });
   return {
     allowed: result.allowed,
-    reason: result.allowed
-      ? undefined
-      : result.reasons.find(r => r.severity === 'error')?.message,
+    reason: result.allowed ? undefined : result.reasons.find(r => r.severity === "error")?.message,
   };
 }
 

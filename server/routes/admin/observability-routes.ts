@@ -40,7 +40,8 @@ export function registerObservabilityRoutes(app: Express) {
   // Does not expose sensitive data, only system health status
   // ============================================================================
 
-  app.get("/api/health", async (req: Request, res: Response) => {
+  // Detailed health check with event bus and queue status (renamed to avoid conflict)
+  app.get("/api/health/detailed", async (req: Request, res: Response) => {
     try {
       // Import and check event bus status
       const { getSubscriberStatus, contentEvents } = await import("../../events");
@@ -70,7 +71,6 @@ export function registerObservabilityRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Health] Error checking system health:", error);
       res.status(500).json({
         status: "unhealthy",
         error: error instanceof Error ? error.message : "Unknown error",
@@ -82,75 +82,76 @@ export function registerObservabilityRoutes(app: Express) {
   // TASK 1: Content Intelligence Status (per-content view)
   // ============================================================================
 
-  app.get("/api/admin/content/intelligence-status", requireAuth, async (req: Request, res: Response) => {
-    try {
-      const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
-      const offset = parseInt(req.query.offset as string) || 0;
+  app.get(
+    "/api/admin/content/intelligence-status",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      try {
+        const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+        const offset = parseInt(req.query.offset as string) || 0;
 
-      // Get published content with intelligence indicators
-      const contentList = await db
-        .select({
-          id: contents.id,
-          title: contents.title,
-          type: contents.type,
-          status: contents.status,
-          slug: contents.slug,
-          answerCapsule: contents.answerCapsule,
-          parentId: contents.parentId,
-          publishedAt: contents.publishedAt,
-        })
-        .from(contents)
-        .where(eq(contents.status, "published"))
-        .orderBy(desc(contents.publishedAt))
-        .limit(limit)
-        .offset(offset);
+        // Get published content with intelligence indicators
+        const contentList = await db
+          .select({
+            id: contents.id,
+            title: contents.title,
+            type: contents.type,
+            status: contents.status,
+            slug: contents.slug,
+            answerCapsule: contents.answerCapsule,
+            parentId: contents.parentId,
+            publishedAt: contents.publishedAt,
+          })
+          .from(contents)
+          .where(eq(contents.status, "published"))
+          .orderBy(desc(contents.publishedAt))
+          .limit(limit)
+          .offset(offset);
 
-      // Get search index entries
-      const indexedIds = await db
-        .select({ contentId: searchIndex.contentId })
-        .from(searchIndex);
-      const indexedSet = new Set(indexedIds.map(i => i.contentId));
+        // Get search index entries
+        const indexedIds = await db.select({ contentId: searchIndex.contentId }).from(searchIndex);
+        const indexedSet = new Set(indexedIds.map(i => i.contentId));
 
-      // Get internal link counts per content
-      const linkCounts = await db
-        .select({
-          sourceContentId: internalLinks.sourceContentId,
-          count: sql<number>`count(*)::int`,
-        })
-        .from(internalLinks)
-        .groupBy(internalLinks.sourceContentId);
-      const linkCountMap = new Map(linkCounts.map(l => [l.sourceContentId, l.count]));
+        // Get internal link counts per content
+        const linkCounts = await db
+          .select({
+            sourceContentId: internalLinks.sourceContentId,
+            count: sql<number>`count(*)::int`,
+          })
+          .from(internalLinks)
+          .groupBy(internalLinks.sourceContentId);
+        const linkCountMap = new Map(linkCounts.map(l => [l.sourceContentId, l.count]));
 
-      // Build response with intelligence status per content
-      const items = contentList.map(c => ({
-        id: c.id,
-        title: c.title,
-        type: c.type,
-        slug: c.slug,
-        publishedAt: c.publishedAt?.toISOString() || null,
-        isIndexed: indexedSet.has(c.id),
-        hasAEO: !!(c.answerCapsule && c.answerCapsule.length > 0),
-        entityLinked: !!c.parentId,
-        internalLinksCount: linkCountMap.get(c.id) || 0,
-      }));
+        // Build response with intelligence status per content
+        const items = contentList.map(c => ({
+          id: c.id,
+          title: c.title,
+          type: c.type,
+          slug: c.slug,
+          publishedAt: c.publishedAt?.toISOString() || null,
+          isIndexed: indexedSet.has(c.id),
+          hasAEO: !!(c.answerCapsule && c.answerCapsule.length > 0),
+          entityLinked: !!c.parentId,
+          internalLinksCount: linkCountMap.get(c.id) || 0,
+        }));
 
-      // Get total count
-      const [totalResult] = await db
-        .select({ count: count() })
-        .from(contents)
-        .where(eq(contents.status, "published"));
+        // Get total count
+        const [totalResult] = await db
+          .select({ count: count() })
+          .from(contents)
+          .where(eq(contents.status, "published"));
 
-      res.json({
-        items,
-        total: Number(totalResult?.count || 0),
-        limit,
-        offset,
-      });
-    } catch (error) {
-      console.error("[Observability] Error getting content intelligence status:", error);
-      res.status(500).json({ error: "Failed to get content intelligence status" });
+        res.json({
+          items,
+          total: Number(totalResult?.count || 0),
+          limit,
+          offset,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get content intelligence status" });
+      }
     }
-  });
+  );
 
   // ============================================================================
   // TASK 2: Job & Failure Visibility
@@ -210,7 +211,6 @@ export function registerObservabilityRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Observability] Error getting recent jobs:", error);
       res.status(500).json({ error: "Failed to get recent jobs" });
     }
   });
@@ -271,7 +271,6 @@ export function registerObservabilityRoutes(app: Express) {
         publishedAt: content.publishedAt?.toISOString() || null,
       });
     } catch (error) {
-      console.error("[Observability] Error getting content health:", error);
       res.status(500).json({ error: "Failed to get content health" });
     }
   });
@@ -331,7 +330,6 @@ export function registerObservabilityRoutes(app: Express) {
         recentItems24h: Number(itemsResult?.count || 0),
       });
     } catch (error) {
-      console.error("[Observability] Error getting RSS status:", error);
       res.status(500).json({ error: "Failed to get RSS status" });
     }
   });
@@ -376,16 +374,17 @@ export function registerObservabilityRoutes(app: Express) {
         slug: content.slug,
         status: content.status,
         isDiscoverable: content.status === "published" && !!indexEntry,
-        searchIndex: indexEntry ? {
-          indexed: true,
-          lastIndexed: indexEntry.updatedAt?.toISOString() || null,
-        } : {
-          indexed: false,
-          lastIndexed: null,
-        },
+        searchIndex: indexEntry
+          ? {
+              indexed: true,
+              lastIndexed: indexEntry.updatedAt?.toISOString() || null,
+            }
+          : {
+              indexed: false,
+              lastIndexed: null,
+            },
       });
     } catch (error) {
-      console.error("[Observability] Error getting search status:", error);
       res.status(500).json({ error: "Failed to get search status" });
     }
   });

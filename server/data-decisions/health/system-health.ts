@@ -9,10 +9,10 @@ import type {
   SystemAlert,
   CircuitBreaker,
   CircuitBreakerState,
-} from '../types';
-import { decisionEngine } from '../engine';
-import { autonomousLoop } from '../loop';
-import { confidenceEngine } from '../confidence';
+} from "../types";
+import { decisionEngine } from "../engine";
+import { autonomousLoop } from "../loop";
+import { confidenceEngine } from "../confidence";
 
 // =============================================================================
 // CONFIGURATION
@@ -62,7 +62,7 @@ export class SystemHealthMonitor {
 
   private createInitialCircuitBreaker(): CircuitBreaker {
     return {
-      state: 'closed',
+      state: "closed",
       failureCount: 0,
       successCount: 0,
       autoRecovery: true,
@@ -71,16 +71,16 @@ export class SystemHealthMonitor {
 
   private initializeComponents(): void {
     const components = [
-      'metricsCollection',
-      'decisionEngine',
-      'actionExecution',
-      'dataFreshness',
-      'circuitBreaker',
+      "metricsCollection",
+      "decisionEngine",
+      "actionExecution",
+      "dataFreshness",
+      "circuitBreaker",
     ];
 
     for (const component of components) {
       this.componentStatus.set(component, {
-        status: 'unknown',
+        status: "unknown",
         lastCheck: new Date(),
       });
     }
@@ -92,10 +92,8 @@ export class SystemHealthMonitor {
 
   start(): void {
     this.intervalId = setInterval(() => {
-      this.performHealthCheck().catch(console.error);
+      this.performHealthCheck().catch(() => {});
     }, this.config.checkIntervalMs);
-
-    console.log('[Health] System health monitor started');
   }
 
   stop(): void {
@@ -103,7 +101,6 @@ export class SystemHealthMonitor {
       clearInterval(this.intervalId);
       this.intervalId = undefined;
     }
-    console.log('[Health] System health monitor stopped');
   }
 
   // =========================================================================
@@ -133,11 +130,11 @@ export class SystemHealthMonitor {
       overall,
       timestamp,
       components: {
-        metricsCollection: this.componentStatus.get('metricsCollection')!,
-        decisionEngine: this.componentStatus.get('decisionEngine')!,
-        actionExecution: this.componentStatus.get('actionExecution')!,
-        dataFreshness: this.componentStatus.get('dataFreshness')!,
-        circuitBreaker: this.componentStatus.get('circuitBreaker')!,
+        metricsCollection: this.componentStatus.get("metricsCollection")!,
+        decisionEngine: this.componentStatus.get("decisionEngine")!,
+        actionExecution: this.componentStatus.get("actionExecution")!,
+        dataFreshness: this.componentStatus.get("dataFreshness")!,
+        circuitBreaker: this.componentStatus.get("circuitBreaker")!,
       },
       alerts: this.alerts.filter(a => !a.acknowledged).slice(-20),
       uptime: Date.now() - this.startTime.getTime(),
@@ -155,15 +152,15 @@ export class SystemHealthMonitor {
       const metricsCollected = loopState.metrics.collected;
 
       const status: ComponentHealth = {
-        status: metricsCollected > 0 ? 'healthy' : 'degraded',
+        status: metricsCollected > 0 ? "healthy" : "degraded",
         lastCheck: new Date(),
         latency: Date.now() - startTime,
         details: `${metricsCollected} metrics collected in last cycle`,
       };
 
-      this.componentStatus.set('metricsCollection', status);
+      this.componentStatus.set("metricsCollection", status);
     } catch (error) {
-      this.recordComponentFailure('metricsCollection', error);
+      this.recordComponentFailure("metricsCollection", error);
     }
   }
 
@@ -174,23 +171,23 @@ export class SystemHealthMonitor {
       const stats = decisionEngine.getStatistics();
 
       const status: ComponentHealth = {
-        status: stats.circuitBreakerOpen ? 'critical' : 'healthy',
+        status: stats.circuitBreakerOpen ? "critical" : "healthy",
         lastCheck: new Date(),
         latency: Date.now() - startTime,
         details: `${stats.pending} pending, ${stats.executed} executed, mode: ${stats.autopilotMode}`,
       };
 
-      this.componentStatus.set('decisionEngine', status);
+      this.componentStatus.set("decisionEngine", status);
 
       if (stats.circuitBreakerOpen) {
         this.addAlert({
-          severity: 'critical',
-          component: 'decisionEngine',
-          message: 'Decision engine circuit breaker is open',
+          severity: "critical",
+          component: "decisionEngine",
+          message: "Decision engine circuit breaker is open",
         });
       }
     } catch (error) {
-      this.recordComponentFailure('decisionEngine', error);
+      this.recordComponentFailure("decisionEngine", error);
     }
   }
 
@@ -203,11 +200,11 @@ export class SystemHealthMonitor {
 
       const errorRate = executed > 0 ? (failed / executed) * 100 : 0;
 
-      let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
+      let status: "healthy" | "degraded" | "critical" = "healthy";
       if (errorRate > this.config.errorRateThreshold * 2) {
-        status = 'critical';
+        status = "critical";
       } else if (errorRate > this.config.errorRateThreshold) {
-        status = 'degraded';
+        status = "degraded";
       }
 
       const componentHealth: ComponentHealth = {
@@ -218,17 +215,17 @@ export class SystemHealthMonitor {
         details: `${successful} successful, ${failed} failed (${errorRate.toFixed(1)}% error rate)`,
       };
 
-      this.componentStatus.set('actionExecution', componentHealth);
+      this.componentStatus.set("actionExecution", componentHealth);
 
-      if (status === 'critical') {
+      if (status === "critical") {
         this.addAlert({
-          severity: 'critical',
-          component: 'actionExecution',
+          severity: "critical",
+          component: "actionExecution",
           message: `High action failure rate: ${errorRate.toFixed(1)}%`,
         });
       }
     } catch (error) {
-      this.recordComponentFailure('actionExecution', error);
+      this.recordComponentFailure("actionExecution", error);
     }
   }
 
@@ -240,15 +237,15 @@ export class SystemHealthMonitor {
       const stats = confidenceEngine.getStatistics();
 
       const status: ComponentHealth = {
-        status: 'healthy', // Would check actual data freshness in real implementation
+        status: "healthy", // Would check actual data freshness in real implementation
         lastCheck: new Date(),
         latency: Date.now() - startTime,
         details: `${stats.bindingsWithHistory} bindings with historical data`,
       };
 
-      this.componentStatus.set('dataFreshness', status);
+      this.componentStatus.set("dataFreshness", status);
     } catch (error) {
-      this.recordComponentFailure('dataFreshness', error);
+      this.recordComponentFailure("dataFreshness", error);
     }
   }
 
@@ -256,12 +253,12 @@ export class SystemHealthMonitor {
     const startTime = Date.now();
 
     try {
-      let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
+      let status: "healthy" | "degraded" | "critical" = "healthy";
 
-      if (this.circuitBreaker.state === 'open') {
-        status = 'critical';
-      } else if (this.circuitBreaker.state === 'half_open') {
-        status = 'degraded';
+      if (this.circuitBreaker.state === "open") {
+        status = "critical";
+      } else if (this.circuitBreaker.state === "half_open") {
+        status = "degraded";
       }
 
       const componentHealth: ComponentHealth = {
@@ -271,9 +268,9 @@ export class SystemHealthMonitor {
         details: `State: ${this.circuitBreaker.state}, failures: ${this.circuitBreaker.failureCount}`,
       };
 
-      this.componentStatus.set('circuitBreaker', componentHealth);
+      this.componentStatus.set("circuitBreaker", componentHealth);
     } catch (error) {
-      this.recordComponentFailure('circuitBreaker', error);
+      this.recordComponentFailure("circuitBreaker", error);
     }
   }
 
@@ -281,22 +278,22 @@ export class SystemHealthMonitor {
   // OVERALL HEALTH CALCULATION
   // =========================================================================
 
-  private calculateOverallHealth(): 'healthy' | 'degraded' | 'critical' {
+  private calculateOverallHealth(): "healthy" | "degraded" | "critical" {
     const statuses = Array.from(this.componentStatus.values()).map(c => c.status);
 
-    if (statuses.some(s => s === 'critical')) {
-      return 'critical';
+    if (statuses.some(s => s === "critical")) {
+      return "critical";
     }
 
-    if (statuses.some(s => s === 'degraded')) {
-      return 'degraded';
+    if (statuses.some(s => s === "degraded")) {
+      return "degraded";
     }
 
-    if (statuses.every(s => s === 'healthy')) {
-      return 'healthy';
+    if (statuses.every(s => s === "healthy")) {
+      return "healthy";
     }
 
-    return 'degraded'; // Default if any unknown
+    return "degraded"; // Default if any unknown
   }
 
   // =========================================================================
@@ -304,15 +301,18 @@ export class SystemHealthMonitor {
   // =========================================================================
 
   private recordComponentFailure(component: string, error: unknown): void {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
     // Track error counts
     const errors = this.errorCounts.get(component) || [];
     errors.push(Date.now());
-    this.errorCounts.set(component, errors.filter(t => t > Date.now() - 3600000)); // Last hour
+    this.errorCounts.set(
+      component,
+      errors.filter(t => t > Date.now() - 3600000)
+    ); // Last hour
 
     const componentHealth: ComponentHealth = {
-      status: 'critical',
+      status: "critical",
       lastCheck: new Date(),
       details: errorMessage,
     };
@@ -320,7 +320,7 @@ export class SystemHealthMonitor {
     this.componentStatus.set(component, componentHealth);
 
     this.addAlert({
-      severity: 'critical',
+      severity: "critical",
       component,
       message: `Component failure: ${errorMessage}`,
     });
@@ -334,7 +334,7 @@ export class SystemHealthMonitor {
     this.circuitBreaker.lastSuccessAt = new Date();
 
     // If in half-open state and we have successes, close the circuit
-    if (this.circuitBreaker.state === 'half_open' && this.circuitBreaker.successCount >= 3) {
+    if (this.circuitBreaker.state === "half_open" && this.circuitBreaker.successCount >= 3) {
       this.closeCircuitBreaker();
     }
   }
@@ -358,14 +358,14 @@ export class SystemHealthMonitor {
     }
 
     if (totalRecentFailures >= this.config.circuitBreakerThreshold) {
-      this.openCircuitBreaker('Too many failures across components');
+      this.openCircuitBreaker("Too many failures across components");
     }
   }
 
   openCircuitBreaker(reason: string): void {
-    if (this.circuitBreaker.state === 'open') return;
+    if (this.circuitBreaker.state === "open") return;
 
-    this.circuitBreaker.state = 'open';
+    this.circuitBreaker.state = "open";
     this.circuitBreaker.openedAt = new Date();
     this.circuitBreaker.reason = reason;
     this.circuitBreaker.cooldownEndsAt = new Date(
@@ -376,12 +376,10 @@ export class SystemHealthMonitor {
     decisionEngine.openCircuitBreaker(reason);
 
     this.addAlert({
-      severity: 'critical',
-      component: 'circuitBreaker',
+      severity: "critical",
+      component: "circuitBreaker",
       message: `Circuit breaker opened: ${reason}`,
     });
-
-    console.error(`[Health] Circuit breaker opened: ${reason}`);
 
     // Schedule auto-recovery check
     if (this.circuitBreaker.autoRecovery) {
@@ -392,16 +390,14 @@ export class SystemHealthMonitor {
   }
 
   private tryHalfOpen(): void {
-    if (this.circuitBreaker.state !== 'open') return;
+    if (this.circuitBreaker.state !== "open") return;
 
-    this.circuitBreaker.state = 'half_open';
+    this.circuitBreaker.state = "half_open";
     this.circuitBreaker.successCount = 0;
-
-    console.log('[Health] Circuit breaker transitioning to half-open');
   }
 
   closeCircuitBreaker(): void {
-    this.circuitBreaker.state = 'closed';
+    this.circuitBreaker.state = "closed";
     this.circuitBreaker.failureCount = 0;
     this.circuitBreaker.successCount = 0;
     this.circuitBreaker.openedAt = undefined;
@@ -409,8 +405,6 @@ export class SystemHealthMonitor {
     this.circuitBreaker.cooldownEndsAt = undefined;
 
     decisionEngine.closeCircuitBreaker();
-
-    console.log('[Health] Circuit breaker closed');
   }
 
   getCircuitBreakerState(): CircuitBreaker {
@@ -421,7 +415,7 @@ export class SystemHealthMonitor {
   // ALERTS
   // =========================================================================
 
-  private addAlert(alert: Omit<SystemAlert, 'id' | 'timestamp' | 'acknowledged'>): void {
+  private addAlert(alert: Omit<SystemAlert, "id" | "timestamp" | "acknowledged">): void {
     const newAlert: SystemAlert = {
       id: `alert-${Date.now()}-${Math.random().toString(36).substring(7)}`,
       ...alert,
@@ -467,11 +461,11 @@ export class SystemHealthMonitor {
       overall: this.calculateOverallHealth(),
       timestamp: this.lastCheck,
       components: {
-        metricsCollection: this.componentStatus.get('metricsCollection')!,
-        decisionEngine: this.componentStatus.get('decisionEngine')!,
-        actionExecution: this.componentStatus.get('actionExecution')!,
-        dataFreshness: this.componentStatus.get('dataFreshness')!,
-        circuitBreaker: this.componentStatus.get('circuitBreaker')!,
+        metricsCollection: this.componentStatus.get("metricsCollection")!,
+        decisionEngine: this.componentStatus.get("decisionEngine")!,
+        actionExecution: this.componentStatus.get("actionExecution")!,
+        dataFreshness: this.componentStatus.get("dataFreshness")!,
+        circuitBreaker: this.componentStatus.get("circuitBreaker")!,
       },
       alerts: this.getAlerts(true).slice(-20),
       uptime: Date.now() - this.startTime.getTime(),

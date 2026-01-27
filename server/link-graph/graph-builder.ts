@@ -3,16 +3,10 @@
  * Builds and maintains the internal link graph
  */
 
-import { db } from '../db';
-import { contents } from '@shared/schema';
-import { eq, and, sql } from 'drizzle-orm';
-import {
-  LinkGraph,
-  LinkNode,
-  LinkEdge,
-  LinkContext,
-  DEFAULT_LINK_GRAPH_CONFIG,
-} from './types';
+import { db } from "../db";
+import { contents } from "@shared/schema";
+import { eq, and, sql } from "drizzle-orm";
+import { LinkGraph, LinkNode, LinkEdge, LinkContext, DEFAULT_LINK_GRAPH_CONFIG } from "./types";
 
 // In-memory graph (could be Redis in production)
 let currentGraph: LinkGraph = {
@@ -37,7 +31,7 @@ function extractLinksFromBlocks(blocks: any[]): Array<{
 
   const links: Array<{ href: string; anchorText: string; context: LinkContext }> = [];
 
-  const processBlock = (block: any, ctx: LinkContext = 'body'): void => {
+  const processBlock = (block: any, ctx: LinkContext = "body"): void => {
     if (!block) return;
 
     const blockStr = JSON.stringify(block);
@@ -50,7 +44,7 @@ function extractLinksFromBlocks(blocks: any[]): Array<{
       const anchorText = match[2].trim();
 
       // Only internal links
-      if (href.startsWith('/') && !href.startsWith('//')) {
+      if (href.startsWith("/") && !href.startsWith("//")) {
         links.push({ href, anchorText, context: ctx });
       }
     }
@@ -77,13 +71,12 @@ function extractLinksFromBlocks(blocks: any[]): Array<{
 
 function slugToContentId(slug: string, slugMap: Map<string, string>): string | null {
   // Normalize slug
-  const normalized = slug.replace(/^\//, '').replace(/\/$/, '');
+  const normalized = slug.replace(/^\//, "").replace(/\/$/, "");
   return slugMap.get(normalized) || null;
 }
 
 export async function buildGraph(): Promise<LinkGraph> {
   const startTime = Date.now();
-  console.log('[LinkGraph] Building graph...');
 
   const nodes = new Map<string, LinkNode>();
   const edges = new Map<string, LinkEdge>();
@@ -100,7 +93,7 @@ export async function buildGraph(): Promise<LinkGraph> {
       updatedAt: contents.updatedAt,
     })
     .from(contents)
-    .where(eq(contents.status, 'published'));
+    .where(eq(contents.status, "published"));
 
   // Build slug -> id map
   for (const content of allContent) {
@@ -142,7 +135,7 @@ export async function buildGraph(): Promise<LinkGraph> {
         id: edgeId,
         sourceId: content.id,
         targetId,
-        anchorText: link.anchorText || '',
+        anchorText: link.anchorText || "",
         context: link.context,
         strength: 1,
         createdAt: new Date(),
@@ -178,7 +171,6 @@ export async function buildGraph(): Promise<LinkGraph> {
   currentGraph = newGraph;
 
   const elapsed = Date.now() - startTime;
-  console.log(`[LinkGraph] Graph built in ${elapsed}ms: ${nodes.size} nodes, ${edges.size} edges`);
 
   return newGraph;
 }

@@ -3,17 +3,17 @@
  * Aggregated metrics and status for the control plane UI
  */
 
-import { db } from '../../db';
-import { autonomyBudgets, autonomyDecisionLogs, autonomyPolicies } from '@shared/schema';
-import { eq, and, gt, desc, sql, count } from 'drizzle-orm';
-import { getBudgetSummary, checkBudgetStatus } from '../policy/budgets';
-import { getPolicies } from '../policy/repository';
-import { getOverrideStats, listOverrides } from './overrides';
-import { GuardedFeature, DEFAULT_ENFORCEMENT_CONFIG } from '../enforcement/types';
-import { BudgetPeriod } from '../policy/types';
+import { db } from "../../db";
+import { autonomyBudgets, autonomyDecisionLogs, autonomyPolicies } from "@shared/schema";
+import { eq, and, gt, desc, sql, count } from "drizzle-orm";
+import { getBudgetSummary, checkBudgetStatus } from "../policy/budgets";
+import { getPolicies } from "../policy/repository";
+import { getOverrideStats, listOverrides } from "./overrides";
+import { GuardedFeature, DEFAULT_ENFORCEMENT_CONFIG } from "../enforcement/types";
+import { BudgetPeriod } from "../policy/types";
 
 // Dashboard status levels
-export type StatusLevel = 'healthy' | 'warning' | 'critical';
+export type StatusLevel = "healthy" | "warning" | "critical";
 
 export interface DashboardStatus {
   level: StatusLevel;
@@ -23,7 +23,7 @@ export interface DashboardStatus {
 }
 
 export interface DecisionSummary {
-  period: 'hour' | 'day' | 'week';
+  period: "hour" | "day" | "week";
   total: number;
   allowed: number;
   warned: number;
@@ -59,7 +59,7 @@ export interface ControlPlaneDashboard {
   activeOverrides: number;
   policyCount: number;
   recentActivity: Array<{
-    type: 'decision' | 'override' | 'policy_change';
+    type: "decision" | "override" | "policy_change";
     description: string;
     timestamp: Date;
   }>;
@@ -69,21 +69,15 @@ export interface ControlPlaneDashboard {
  * Get full dashboard data
  */
 export async function getDashboardData(): Promise<ControlPlaneDashboard> {
-  const [
-    decisionsLastHour,
-    decisionsLastDay,
-    budgetData,
-    topOffenders,
-    overrideStats,
-    policies,
-  ] = await Promise.all([
-    getDecisionSummary('hour'),
-    getDecisionSummary('day'),
-    getAllBudgetSummaries(),
-    getTopOffenders(10),
-    getOverrideStats(),
-    getPolicies(),
-  ]);
+  const [decisionsLastHour, decisionsLastDay, budgetData, topOffenders, overrideStats, policies] =
+    await Promise.all([
+      getDecisionSummary("hour"),
+      getDecisionSummary("day"),
+      getAllBudgetSummaries(),
+      getTopOffenders(10),
+      getOverrideStats(),
+      getPolicies(),
+    ]);
 
   const status = calculateStatus(decisionsLastHour, budgetData);
 
@@ -104,18 +98,18 @@ export async function getDashboardData(): Promise<ControlPlaneDashboard> {
 /**
  * Get decision summary for a time period
  */
-async function getDecisionSummary(period: 'hour' | 'day' | 'week'): Promise<DecisionSummary> {
+async function getDecisionSummary(period: "hour" | "day" | "week"): Promise<DecisionSummary> {
   const now = new Date();
   let since: Date;
 
   switch (period) {
-    case 'hour':
+    case "hour":
       since = new Date(now.getTime() - 60 * 60 * 1000);
       break;
-    case 'day':
+    case "day":
       since = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       break;
-    case 'week':
+    case "week":
       since = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       break;
   }
@@ -136,13 +130,13 @@ async function getDecisionSummary(period: 'hour' | 'day' | 'week'): Promise<Deci
 
     for (const d of decisions) {
       switch (d.decision) {
-        case 'ALLOW':
+        case "ALLOW":
           allowed = Number(d.count);
           break;
-        case 'WARN':
+        case "WARN":
           warned = Number(d.count);
           break;
-        case 'BLOCK':
+        case "BLOCK":
           blocked = Number(d.count);
           break;
       }
@@ -153,7 +147,6 @@ async function getDecisionSummary(period: 'hour' | 'day' | 'week'): Promise<Deci
 
     return { period, total, allowed, warned, blocked, blockRate };
   } catch (error) {
-    console.error('[RiskDashboard] Failed to get decision summary:', error);
     return { period, total: 0, allowed: 0, warned: 0, blocked: 0, blockRate: 0 };
   }
 }
@@ -165,8 +158,14 @@ async function getAllBudgetSummaries(): Promise<BudgetSummary[]> {
   try {
     const summary = await getBudgetSummary();
     const features: GuardedFeature[] = [
-      'chat', 'octopus', 'search', 'aeo', 'translation',
-      'images', 'content_enrichment', 'publishing',
+      "chat",
+      "octopus",
+      "search",
+      "aeo",
+      "translation",
+      "images",
+      "content_enrichment",
+      "publishing",
     ];
 
     const results: BudgetSummary[] = [];
@@ -174,8 +173,20 @@ async function getAllBudgetSummaries(): Promise<BudgetSummary[]> {
     for (const feature of features) {
       const targetKey = `feature:${feature}`;
       const defaultLimits = [
-        { period: 'hourly' as BudgetPeriod, maxActions: 100, maxAiSpend: 1000, maxDbWrites: 50, maxContentMutations: 20 },
-        { period: 'daily' as BudgetPeriod, maxActions: 1000, maxAiSpend: 5000, maxDbWrites: 500, maxContentMutations: 100 },
+        {
+          period: "hourly" as BudgetPeriod,
+          maxActions: 100,
+          maxAiSpend: 1000,
+          maxDbWrites: 50,
+          maxContentMutations: 20,
+        },
+        {
+          period: "daily" as BudgetPeriod,
+          maxActions: 1000,
+          maxAiSpend: 5000,
+          maxDbWrites: 500,
+          maxContentMutations: 100,
+        },
       ];
 
       const statuses = await checkBudgetStatus(targetKey, defaultLimits);
@@ -196,7 +207,6 @@ async function getAllBudgetSummaries(): Promise<BudgetSummary[]> {
 
     return results;
   } catch (error) {
-    console.error('[RiskDashboard] Failed to get budget summaries:', error);
     return [];
   }
 }
@@ -218,10 +228,7 @@ async function getTopOffenders(limit: number): Promise<TopOffender[]> {
       })
       .from(autonomyDecisionLogs)
       .where(
-        and(
-          eq(autonomyDecisionLogs.decision, 'BLOCK'),
-          gt(autonomyDecisionLogs.createdAt, oneDay)
-        )
+        and(eq(autonomyDecisionLogs.decision, "BLOCK"), gt(autonomyDecisionLogs.createdAt, oneDay))
       )
       .groupBy(autonomyDecisionLogs.targetKey, autonomyDecisionLogs.actionType)
       .orderBy(desc(count()))
@@ -229,12 +236,11 @@ async function getTopOffenders(limit: number): Promise<TopOffender[]> {
 
     return offenders.map(o => ({
       targetKey: o.targetKey,
-      feature: o.actionType || 'unknown',
+      feature: o.actionType || "unknown",
       blockedCount: Number(o.blockedCount),
       lastBlocked: o.lastBlocked,
     }));
   } catch (error) {
-    console.error('[RiskDashboard] Failed to get top offenders:', error);
     return [];
   }
 }
@@ -242,13 +248,15 @@ async function getTopOffenders(limit: number): Promise<TopOffender[]> {
 /**
  * Get recent activity log
  */
-async function getRecentActivity(limit: number): Promise<Array<{
-  type: 'decision' | 'override' | 'policy_change';
-  description: string;
-  timestamp: Date;
-}>> {
+async function getRecentActivity(limit: number): Promise<
+  Array<{
+    type: "decision" | "override" | "policy_change";
+    description: string;
+    timestamp: Date;
+  }>
+> {
   const activity: Array<{
-    type: 'decision' | 'override' | 'policy_change';
+    type: "decision" | "override" | "policy_change";
     description: string;
     timestamp: Date;
   }> = [];
@@ -262,14 +270,14 @@ async function getRecentActivity(limit: number): Promise<Array<{
         createdAt: autonomyDecisionLogs.createdAt,
       })
       .from(autonomyDecisionLogs)
-      .where(eq(autonomyDecisionLogs.decision, 'BLOCK'))
+      .where(eq(autonomyDecisionLogs.decision, "BLOCK"))
       .orderBy(desc(autonomyDecisionLogs.createdAt))
       .limit(limit);
 
     for (const block of recentBlocks) {
       activity.push({
-        type: 'decision',
-        description: `Blocked ${block.actionType || 'operation'} on ${block.targetKey}`,
+        type: "decision",
+        description: `Blocked ${block.actionType || "operation"} on ${block.targetKey}`,
         timestamp: block.createdAt,
       });
     }
@@ -278,43 +286,36 @@ async function getRecentActivity(limit: number): Promise<Array<{
     const recentOverrides = await listOverrides({ limit: 5 });
     for (const override of recentOverrides) {
       activity.push({
-        type: 'override',
+        type: "override",
         description: `Override created for ${override.feature}: ${override.reason.slice(0, 50)}...`,
         timestamp: override.createdAt,
       });
     }
-  } catch (error) {
-    console.error('[RiskDashboard] Failed to get recent activity:', error);
-  }
+  } catch (error) {}
 
   // Sort by timestamp and limit
-  return activity
-    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-    .slice(0, limit);
+  return activity.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit);
 }
 
 /**
  * Calculate overall status
  */
-function calculateStatus(
-  decisions: DecisionSummary,
-  budgets: BudgetSummary[]
-): DashboardStatus {
-  let level: StatusLevel = 'healthy';
+function calculateStatus(decisions: DecisionSummary, budgets: BudgetSummary[]): DashboardStatus {
+  let level: StatusLevel = "healthy";
 
   // Check block rate
   if (decisions.blockRate > 50) {
-    level = 'critical';
+    level = "critical";
   } else if (decisions.blockRate > 20) {
-    level = 'warning';
+    level = "warning";
   }
 
   // Check budget exhaustion
   const exhaustedBudgets = budgets.filter(b => b.isExhausted);
   if (exhaustedBudgets.length > 0) {
-    level = 'critical';
+    level = "critical";
   } else if (budgets.some(b => b.percentUsed > 80)) {
-    if (level !== 'critical') level = 'warning';
+    if (level !== "critical") level = "warning";
   }
 
   return {
@@ -342,7 +343,7 @@ export async function simulateEvaluation(context: {
     afterAction: number;
   };
 }> {
-  const { enforceAutonomy } = await import('../enforcement');
+  const { enforceAutonomy } = await import("../enforcement");
 
   const result = await enforceAutonomy({
     feature: context.feature,
@@ -355,25 +356,27 @@ export async function simulateEvaluation(context: {
     decision: result.decision,
     reasons: result.reasons.map(r => ({ code: r.code, message: r.message })),
     matchedPolicy: result.matchedPolicy,
-    budgetImpact: result.budgetRemaining ? {
-      currentUsed: 0, // Would need actual data
-      limit: result.budgetRemaining.actions,
-      afterAction: result.budgetRemaining.actions - 1,
-    } : undefined,
+    budgetImpact: result.budgetRemaining
+      ? {
+          currentUsed: 0, // Would need actual data
+          limit: result.budgetRemaining.actions,
+          afterAction: result.budgetRemaining.actions - 1,
+        }
+      : undefined,
   };
 }
 
 /**
  * Get trending metrics for charts
  */
-export async function getTrendingMetrics(
-  period: 'hour' | 'day' | 'week'
-): Promise<Array<{
-  timestamp: Date;
-  allowed: number;
-  blocked: number;
-  warned: number;
-}>> {
+export async function getTrendingMetrics(period: "hour" | "day" | "week"): Promise<
+  Array<{
+    timestamp: Date;
+    allowed: number;
+    blocked: number;
+    warned: number;
+  }>
+> {
   // This would aggregate decision logs into time buckets
   // Simplified implementation returns empty for now
   return [];

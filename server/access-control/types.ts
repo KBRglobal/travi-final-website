@@ -3,13 +3,7 @@
  * Feature flag: ENABLE_RBAC
  */
 
-export type GovernanceRoleName =
-  | "super_admin"
-  | "admin"
-  | "editor"
-  | "analyst"
-  | "ops"
-  | "viewer";
+export type GovernanceRoleName = "super_admin" | "admin" | "editor" | "analyst" | "ops" | "viewer";
 
 export type Action =
   | "view"
@@ -89,5 +83,3 @@ export const ROLE_HIERARCHY: Record<GovernanceRoleName, number> = {
   analyst: 30,
   viewer: 10,
 };
-
-console.log("[AccessControl] Types loaded");

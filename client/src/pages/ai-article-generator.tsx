@@ -91,7 +91,7 @@ interface GeneratedArticle {
   heroImage?: {
     url: string;
     alt: string;
-    source: 'library' | 'freepik';
+    source: "library" | "freepik";
     imageId: string;
   } | null;
 }
@@ -117,7 +117,7 @@ interface Writer {
 export default function AIArticleGenerator() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  
+
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
@@ -127,7 +127,7 @@ export default function AIArticleGenerator() {
   const [generatedData, setGeneratedData] = useState<GeneratedArticle | null>(null);
   const [editedData, setEditedData] = useState<GeneratedArticle | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  
+
   // Fetch available writers
   const { data: writersData, isLoading: writersLoading } = useQuery<{ writers: Writer[] }>({
     queryKey: ["/api/writers"],
@@ -137,9 +137,11 @@ export default function AIArticleGenerator() {
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/ai/generate-article", {
         title,
-        summary: inputType === "title_summary" || inputType === "manual_override" ? summary : undefined,
+        summary:
+          inputType === "title_summary" || inputType === "manual_override" ? summary : undefined,
         sourceUrl: inputType === "title_url" ? sourceUrl : undefined,
-        sourceText: inputType === "manual_override" || inputType === "title_rss" ? sourceText : undefined,
+        sourceText:
+          inputType === "manual_override" || inputType === "title_rss" ? sourceText : undefined,
         inputType,
       });
       return response.json();
@@ -164,12 +166,14 @@ export default function AIArticleGenerator() {
   const createDraftMutation = useMutation({
     mutationFn: async () => {
       if (!editedData) throw new Error("No data to save");
-      
-      const slug = editedData.meta.slug || editedData.article.h1
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "") + `-${Date.now()}`;
-      
+
+      const slug =
+        editedData.meta.slug ||
+        editedData.article.h1
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "") + `-${Date.now()}`;
+
       // Convert data to editor-compatible format
       // Highlights/Tips use 'contents' as newline-separated string, FAQ uses individual blocks
       const blocks = [
@@ -181,39 +185,55 @@ export default function AIArticleGenerator() {
             image: editedData.heroImage?.url || null,
           },
         },
-        ...editedData.article.sections.map((section) => ({
+        ...editedData.article.sections.map(section => ({
           type: "text",
           data: {
             heading: section.heading,
             contents: section.body,
           },
         })),
-        ...(editedData.article.quickFacts?.length ? [{
-          type: "highlights",
-          data: {
-            contents: editedData.article.quickFacts.map(f => `${f.label}: ${f.value}`).join('\n'),
-          },
-        }] : []),
-        ...(editedData.article.proTips?.length ? [{
-          type: "tips",
-          data: {
-            contents: editedData.article.proTips.join('\n'),
-          },
-        }] : []),
-        ...(editedData.article.goodToKnow?.length ? [{
-          type: "tips",
-          data: {
-            contents: editedData.article.goodToKnow.join('\n'),
-          },
-        }] : []),
+        ...(editedData.article.quickFacts?.length
+          ? [
+              {
+                type: "highlights",
+                data: {
+                  contents: editedData.article.quickFacts
+                    .map(f => `${f.label}: ${f.value}`)
+                    .join("\n"),
+                },
+              },
+            ]
+          : []),
+        ...(editedData.article.proTips?.length
+          ? [
+              {
+                type: "tips",
+                data: {
+                  contents: editedData.article.proTips.join("\n"),
+                },
+              },
+            ]
+          : []),
+        ...(editedData.article.goodToKnow?.length
+          ? [
+              {
+                type: "tips",
+                data: {
+                  contents: editedData.article.goodToKnow.join("\n"),
+                },
+              },
+            ]
+          : []),
         // Create individual FAQ blocks for each question/answer pair
-        ...(editedData.article.faq?.length ? editedData.article.faq.map(f => ({
-          type: "faq",
-          data: {
-            question: f.q,
-            answer: f.a,
-          },
-        })) : []),
+        ...(editedData.article.faq?.length
+          ? editedData.article.faq.map(f => ({
+              type: "faq",
+              data: {
+                question: f.q,
+                answer: f.a,
+              },
+            }))
+          : []),
         {
           type: "cta",
           data: {
@@ -224,16 +244,16 @@ export default function AIArticleGenerator() {
           },
         },
       ];
-      
+
       const categoryMap: Record<string, string> = {
-        "A": "attractions",
-        "B": "hotels",
-        "C": "food",
-        "D": "transport",
-        "E": "events",
-        "F": "tips",
-        "G": "news",
-        "H": "shopping",
+        A: "attractions",
+        B: "hotels",
+        C: "food",
+        D: "transport",
+        E: "events",
+        F: "tips",
+        G: "news",
+        H: "shopping",
       };
       const categoryCode = editedData.analysis.category?.charAt(0) || "F";
       const mappedCategory = categoryMap[categoryCode] || "tips";
@@ -254,11 +274,11 @@ export default function AIArticleGenerator() {
           resolvedWriterId = optimalData.writer?.id || null;
         } catch (err) {
           // Fall back to first available writer if optimal endpoint fails
-          console.warn("Failed to get optimal writer, using fallback:", err);
+
           resolvedWriterId = writersData?.writers?.[0]?.id || null;
         }
       }
-      
+
       const response = await apiRequest("POST", "/api/contents", {
         title: editedData.article.h1,
         slug,
@@ -269,7 +289,10 @@ export default function AIArticleGenerator() {
         ogTitle: editedData.meta.ogTitle,
         ogDescription: editedData.meta.ogDescription,
         keywords: editedData.meta.keywords,
-        primaryKeyword: editedData.analysis.primaryKeyword || editedData.meta.keywords?.[0] || editedData.article.h1,
+        primaryKeyword:
+          editedData.analysis.primaryKeyword ||
+          editedData.meta.keywords?.[0] ||
+          editedData.article.h1,
         secondaryKeywords: editedData.analysis.secondaryKeywords || [],
         heroImage: editedData.heroImage?.url || null,
         heroImageAlt: editedData.heroImage?.alt || editedData.article.h1,
@@ -290,7 +313,7 @@ export default function AIArticleGenerator() {
       });
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ["/api/contents?type=article"] });
       toast({
         title: "Draft created",
@@ -315,7 +338,7 @@ export default function AIArticleGenerator() {
 
   const applyAlternative = (type: "headline" | "intro" | "cta", value: string) => {
     if (!editedData) return;
-    
+
     const updated = { ...editedData };
     if (type === "headline") {
       updated.article.h1 = value;
@@ -362,9 +385,7 @@ export default function AIArticleGenerator() {
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="text-lg">Input</CardTitle>
-            <CardDescription>
-              Provide the source information for your article
-            </CardDescription>
+            <CardDescription>Provide the source information for your article</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -373,7 +394,7 @@ export default function AIArticleGenerator() {
                 <Input
                   id="title"
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={e => setTitle(e.target.value)}
                   placeholder="e.g., New Dubai Metro Extension Opens"
                   data-testid="input-title"
                 />
@@ -386,7 +407,7 @@ export default function AIArticleGenerator() {
                     <SelectValue placeholder="Select input type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {inputTypeOptions.map((option) => (
+                    {inputTypeOptions.map(option => (
                       <SelectItem key={option.value} value={option.value}>
                         <div className="flex flex-col">
                           <span>{option.label}</span>
@@ -406,7 +427,11 @@ export default function AIArticleGenerator() {
                   <Textarea
                     id="summary"
                     value={inputType === "manual_override" ? sourceText : summary}
-                    onChange={(e) => inputType === "manual_override" ? setSourceText(e.target.value) : setSummary(e.target.value)}
+                    onChange={e =>
+                      inputType === "manual_override"
+                        ? setSourceText(e.target.value)
+                        : setSummary(e.target.value)
+                    }
                     placeholder="Enter a summary or full source text..."
                     rows={4}
                     data-testid="input-summary"
@@ -421,7 +446,7 @@ export default function AIArticleGenerator() {
                     id="sourceUrl"
                     type="url"
                     value={sourceUrl}
-                    onChange={(e) => setSourceUrl(e.target.value)}
+                    onChange={e => setSourceUrl(e.target.value)}
                     placeholder="https://example.com/article"
                     data-testid="input-source-url"
                   />
@@ -434,7 +459,7 @@ export default function AIArticleGenerator() {
                   <Textarea
                     id="rssContent"
                     value={sourceText}
-                    onChange={(e) => setSourceText(e.target.value)}
+                    onChange={e => setSourceText(e.target.value)}
                     placeholder="Paste RSS item contents here..."
                     rows={4}
                     data-testid="input-rss-contents"
@@ -447,13 +472,15 @@ export default function AIArticleGenerator() {
                   <UserCircle className="h-4 w-4" />
                   Assign Writer
                 </Label>
-                <Select 
-                  value={selectedWriterId} 
+                <Select
+                  value={selectedWriterId}
                   onValueChange={setSelectedWriterId}
                   disabled={writersLoading}
                 >
                   <SelectTrigger data-testid="select-writer">
-                    <SelectValue placeholder={writersLoading ? "Loading writers..." : "Select a writer"} />
+                    <SelectValue
+                      placeholder={writersLoading ? "Loading writers..." : "Select a writer"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="auto">
@@ -462,7 +489,7 @@ export default function AIArticleGenerator() {
                         <span>Auto-select based on category</span>
                       </div>
                     </SelectItem>
-                    {writersData?.writers?.map((writer) => (
+                    {writersData?.writers?.map(writer => (
                       <SelectItem key={writer.id} value={writer.id}>
                         <div className="flex items-center gap-2">
                           <Avatar className="h-5 w-5">
@@ -471,7 +498,9 @@ export default function AIArticleGenerator() {
                           </Avatar>
                           <span>{writer.name}</span>
                           {writer.category && (
-                            <span className="text-xs text-muted-foreground">({writer.category})</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({writer.category})
+                            </span>
                           )}
                         </div>
                       </SelectItem>
@@ -479,15 +508,15 @@ export default function AIArticleGenerator() {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">
-                  {selectedWriterId === "auto" 
-                    ? "Writer matched to article category (hotels, food, culture, etc.)" 
+                  {selectedWriterId === "auto"
+                    ? "Writer matched to article category (hotels, food, culture, etc.)"
                     : `Selected: ${writersData?.writers?.find(w => w.id === selectedWriterId)?.name || selectedWriterId}`}
                 </p>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full" 
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={generateMutation.isPending}
                 data-testid="button-generate"
               >
@@ -517,7 +546,8 @@ export default function AIArticleGenerator() {
                     <span className="font-medium">Generating your article...</span>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    The AI is analyzing your input and creating SEO-optimized contents. This may take 15-30 seconds.
+                    The AI is analyzing your input and creating SEO-optimized contents. This may
+                    take 15-30 seconds.
                   </p>
                   <div className="space-y-3">
                     <Skeleton className="h-4 w-3/4" />
@@ -535,11 +565,9 @@ export default function AIArticleGenerator() {
               <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-primary/5 border border-primary/20 mb-4">
                 <div>
                   <h3 className="font-medium text-sm">Ready to save?</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Create a draft article in the CMS
-                  </p>
+                  <p className="text-xs text-muted-foreground">Create a draft article in the CMS</p>
                 </div>
-                <Button 
+                <Button
                   onClick={() => createDraftMutation.mutate()}
                   disabled={createDraftMutation.isPending}
                   data-testid="button-create-draft"
@@ -591,14 +619,23 @@ export default function AIArticleGenerator() {
                               onClick={() => copyToClipboard(editedData.article.h1, "h1")}
                               data-testid="button-copy-h1"
                             >
-                              {copiedField === "h1" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                              {copiedField === "h1" ? (
+                                <Check className="h-4 w-4" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
                             </Button>
                           </div>
                         </CardHeader>
                         <CardContent>
                           <Textarea
                             value={editedData.article.h1}
-                            onChange={(e) => setEditedData({ ...editedData, article: { ...editedData.article, h1: e.target.value } })}
+                            onChange={e =>
+                              setEditedData({
+                                ...editedData,
+                                article: { ...editedData.article, h1: e.target.value },
+                              })
+                            }
                             rows={2}
                             className="font-semibold text-lg"
                             data-testid="textarea-h1"
@@ -616,14 +653,23 @@ export default function AIArticleGenerator() {
                               onClick={() => copyToClipboard(editedData.article.intro, "intro")}
                               data-testid="button-copy-intro"
                             >
-                              {copiedField === "intro" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                              {copiedField === "intro" ? (
+                                <Check className="h-4 w-4" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
                             </Button>
                           </div>
                         </CardHeader>
                         <CardContent>
                           <Textarea
                             value={editedData.article.intro}
-                            onChange={(e) => setEditedData({ ...editedData, article: { ...editedData.article, intro: e.target.value } })}
+                            onChange={e =>
+                              setEditedData({
+                                ...editedData,
+                                article: { ...editedData.article, intro: e.target.value },
+                              })
+                            }
                             rows={4}
                             data-testid="textarea-intro"
                           />
@@ -641,8 +687,13 @@ export default function AIArticleGenerator() {
                           <CardContent>
                             <div className="grid grid-cols-2 gap-3">
                               {editedData.article.quickFacts.map((fact, idx) => (
-                                <div key={idx} className="flex flex-col gap-1 p-2 rounded-md bg-muted/50">
-                                  <span className="text-xs font-medium text-muted-foreground">{fact.label}</span>
+                                <div
+                                  key={idx}
+                                  className="flex flex-col gap-1 p-2 rounded-md bg-muted/50"
+                                >
+                                  <span className="text-xs font-medium text-muted-foreground">
+                                    {fact.label}
+                                  </span>
                                   <span className="text-sm">{fact.value}</span>
                                 </div>
                               ))}
@@ -665,10 +716,16 @@ export default function AIArticleGenerator() {
                                 <AccordionContent>
                                   <Textarea
                                     value={section.body}
-                                    onChange={(e) => {
+                                    onChange={e => {
                                       const newSections = [...editedData.article.sections];
-                                      newSections[idx] = { ...newSections[idx], body: e.target.value };
-                                      setEditedData({ ...editedData, article: { ...editedData.article, sections: newSections } });
+                                      newSections[idx] = {
+                                        ...newSections[idx],
+                                        body: e.target.value,
+                                      };
+                                      setEditedData({
+                                        ...editedData,
+                                        article: { ...editedData.article, sections: newSections },
+                                      });
                                     }}
                                     rows={6}
                                     className="mt-2"
@@ -755,7 +812,12 @@ export default function AIArticleGenerator() {
                         <CardContent>
                           <Textarea
                             value={editedData.article.closing}
-                            onChange={(e) => setEditedData({ ...editedData, article: { ...editedData.article, closing: e.target.value } })}
+                            onChange={e =>
+                              setEditedData({
+                                ...editedData,
+                                article: { ...editedData.article, closing: e.target.value },
+                              })
+                            }
                             rows={3}
                             data-testid="textarea-closing"
                           />
@@ -777,7 +839,12 @@ export default function AIArticleGenerator() {
                         </div>
                         <Input
                           value={editedData.meta.title}
-                          onChange={(e) => setEditedData({ ...editedData, meta: { ...editedData.meta, title: e.target.value } })}
+                          onChange={e =>
+                            setEditedData({
+                              ...editedData,
+                              meta: { ...editedData.meta, title: e.target.value },
+                            })
+                          }
                           data-testid="input-meta-title"
                         />
                       </div>
@@ -791,7 +858,12 @@ export default function AIArticleGenerator() {
                         </div>
                         <Textarea
                           value={editedData.meta.description}
-                          onChange={(e) => setEditedData({ ...editedData, meta: { ...editedData.meta, description: e.target.value } })}
+                          onChange={e =>
+                            setEditedData({
+                              ...editedData,
+                              meta: { ...editedData.meta, description: e.target.value },
+                            })
+                          }
                           rows={3}
                           data-testid="input-meta-description"
                         />
@@ -801,7 +873,12 @@ export default function AIArticleGenerator() {
                         <Label>Slug</Label>
                         <Input
                           value={editedData.meta.slug}
-                          onChange={(e) => setEditedData({ ...editedData, meta: { ...editedData.meta, slug: e.target.value } })}
+                          onChange={e =>
+                            setEditedData({
+                              ...editedData,
+                              meta: { ...editedData.meta, slug: e.target.value },
+                            })
+                          }
                           data-testid="input-slug"
                         />
                       </div>
@@ -815,7 +892,12 @@ export default function AIArticleGenerator() {
                         </Label>
                         <Input
                           value={editedData.meta.ogTitle}
-                          onChange={(e) => setEditedData({ ...editedData, meta: { ...editedData.meta, ogTitle: e.target.value } })}
+                          onChange={e =>
+                            setEditedData({
+                              ...editedData,
+                              meta: { ...editedData.meta, ogTitle: e.target.value },
+                            })
+                          }
                           data-testid="input-og-title"
                         />
                       </div>
@@ -827,7 +909,12 @@ export default function AIArticleGenerator() {
                         </Label>
                         <Textarea
                           value={editedData.meta.ogDescription}
-                          onChange={(e) => setEditedData({ ...editedData, meta: { ...editedData.meta, ogDescription: e.target.value } })}
+                          onChange={e =>
+                            setEditedData({
+                              ...editedData,
+                              meta: { ...editedData.meta, ogDescription: e.target.value },
+                            })
+                          }
                           rows={2}
                           data-testid="input-og-description"
                         />
@@ -839,7 +926,9 @@ export default function AIArticleGenerator() {
                         <Label>Keywords</Label>
                         <div className="flex flex-wrap gap-2">
                           {editedData.meta.keywords?.map((keyword, idx) => (
-                            <Badge key={idx} variant="outline">{keyword}</Badge>
+                            <Badge key={idx} variant="outline">
+                              {keyword}
+                            </Badge>
                           ))}
                         </div>
                       </div>
@@ -865,7 +954,9 @@ export default function AIArticleGenerator() {
                         </div>
                         <div className="space-y-1">
                           <Label className="text-xs text-muted-foreground">Structure</Label>
-                          <p className="font-medium capitalize">{editedData.analysis.structure?.replace("_", " ")}</p>
+                          <p className="font-medium capitalize">
+                            {editedData.analysis.structure?.replace("_", " ")}
+                          </p>
                         </div>
                       </div>
 
@@ -884,7 +975,11 @@ export default function AIArticleGenerator() {
                             <Clock className="h-3 w-3" />
                             Urgency
                           </Label>
-                          <Badge variant={editedData.analysis.urgency === "urgent" ? "destructive" : "secondary"}>
+                          <Badge
+                            variant={
+                              editedData.analysis.urgency === "urgent" ? "destructive" : "secondary"
+                            }
+                          >
                             {editedData.analysis.urgency}
                           </Badge>
                         </div>
@@ -895,7 +990,9 @@ export default function AIArticleGenerator() {
                           </Label>
                           <div className="flex flex-wrap gap-1">
                             {editedData.analysis.audience?.map((a, idx) => (
-                              <Badge key={idx} variant="outline" className="text-xs">{a}</Badge>
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {a}
+                              </Badge>
                             ))}
                           </div>
                         </div>
@@ -912,7 +1009,9 @@ export default function AIArticleGenerator() {
                         <Label className="text-xs text-muted-foreground">Secondary Keywords</Label>
                         <div className="flex flex-wrap gap-1">
                           {editedData.analysis.secondaryKeywords?.map((k, idx) => (
-                            <Badge key={idx} variant="secondary" className="text-xs">{k}</Badge>
+                            <Badge key={idx} variant="secondary" className="text-xs">
+                              {k}
+                            </Badge>
                           ))}
                         </div>
                       </div>
@@ -921,16 +1020,27 @@ export default function AIArticleGenerator() {
                         <Label className="text-xs text-muted-foreground">LSI Keywords</Label>
                         <div className="flex flex-wrap gap-1">
                           {editedData.analysis.lsiKeywords?.map((k, idx) => (
-                            <Badge key={idx} variant="outline" className="text-xs">{k}</Badge>
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {k}
+                            </Badge>
                           ))}
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Marketing Words Used ({editedData.analysis.marketingWords?.length || 0}/5 max)</Label>
+                        <Label className="text-xs text-muted-foreground">
+                          Marketing Words Used ({editedData.analysis.marketingWords?.length || 0}/5
+                          max)
+                        </Label>
                         <div className="flex flex-wrap gap-1">
                           {editedData.analysis.marketingWords?.map((w, idx) => (
-                            <Badge key={idx} variant="outline" className="text-xs bg-amber-50 dark:bg-amber-950">{w}</Badge>
+                            <Badge
+                              key={idx}
+                              variant="outline"
+                              className="text-xs bg-amber-50 dark:bg-amber-950"
+                            >
+                              {w}
+                            </Badge>
                           ))}
                         </div>
                       </div>
@@ -992,10 +1102,14 @@ export default function AIArticleGenerator() {
                           <Button
                             variant="outline"
                             className="w-full justify-between text-left h-auto py-3"
-                            onClick={() => applyAlternative("cta", editedData.suggestions.alternativeCta)}
+                            onClick={() =>
+                              applyAlternative("cta", editedData.suggestions.alternativeCta)
+                            }
                             data-testid="button-alt-cta"
                           >
-                            <span className="flex-1 text-wrap text-sm">{editedData.suggestions.alternativeCta}</span>
+                            <span className="flex-1 text-wrap text-sm">
+                              {editedData.suggestions.alternativeCta}
+                            </span>
                             <ArrowRight className="h-4 w-4 flex-shrink-0 ml-2" />
                           </Button>
                         </CardContent>
@@ -1014,7 +1128,9 @@ export default function AIArticleGenerator() {
                           <ul className="space-y-2">
                             {editedData.article.internalLinks.map((link, idx) => (
                               <li key={idx} className="text-sm flex items-start gap-2">
-                                <Badge variant="outline" className="flex-shrink-0">{link.anchor}</Badge>
+                                <Badge variant="outline" className="flex-shrink-0">
+                                  {link.anchor}
+                                </Badge>
                                 <span className="text-muted-foreground">{link.suggestedTopic}</span>
                               </li>
                             ))}
@@ -1034,7 +1150,9 @@ export default function AIArticleGenerator() {
                         <CardContent>
                           <ul className="space-y-2">
                             {editedData.article.altTexts.map((alt, idx) => (
-                              <li key={idx} className="text-sm p-2 rounded bg-muted/50">{alt}</li>
+                              <li key={idx} className="text-sm p-2 rounded bg-muted/50">
+                                {alt}
+                              </li>
                             ))}
                           </ul>
                         </CardContent>
@@ -1052,7 +1170,8 @@ export default function AIArticleGenerator() {
                 <Sparkles className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="font-medium text-lg mb-2">Generate Your First Article</h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Enter a title and click generate to create an SEO-optimized Dubai travel article using AI.
+                  Enter a title and click generate to create an SEO-optimized Dubai travel article
+                  using AI.
                 </p>
               </CardContent>
             </Card>

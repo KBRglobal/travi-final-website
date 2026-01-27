@@ -24,14 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  FileCheck,
-  ArrowLeft,
-  Search,
-  AlertCircle,
-  Play,
-  Eye,
-} from "lucide-react";
+import { FileCheck, ArrowLeft, Search, AlertCircle, Play, Eye } from "lucide-react";
 
 interface PolicyCondition {
   field: string;
@@ -111,14 +104,13 @@ export default function GovernancePolicies() {
       const data = await res.json();
       setEvalResult(data);
     } catch (err) {
-      console.error("Policy evaluation failed:", err);
     } finally {
       setEvaluating(false);
     }
   }
 
   const filteredPolicies = policies.filter(
-    (policy) =>
+    policy =>
       policy.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       policy.displayName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -182,7 +174,7 @@ export default function GovernancePolicies() {
               <Input
                 placeholder="Search policies..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9 w-64"
               />
             </div>
@@ -202,21 +194,19 @@ export default function GovernancePolicies() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPolicies.map((policy) => (
+              {filteredPolicies.map(policy => (
                 <TableRow key={policy.id}>
                   <TableCell>
                     <div className="font-medium">{policy.displayName}</div>
                     <div className="text-sm text-gray-500">{policy.name}</div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={effectColors[policy.effect] || ""}>
-                      {policy.effect}
-                    </Badge>
+                    <Badge className={effectColors[policy.effect] || ""}>{policy.effect}</Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {policy.actions.length > 0 ? (
-                        policy.actions.slice(0, 3).map((action) => (
+                        policy.actions.slice(0, 3).map(action => (
                           <Badge key={action} variant="outline" className="text-xs">
                             {action}
                           </Badge>
@@ -234,7 +224,7 @@ export default function GovernancePolicies() {
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {policy.resources.length > 0 ? (
-                        policy.resources.slice(0, 2).map((resource) => (
+                        policy.resources.slice(0, 2).map(resource => (
                           <Badge key={resource} variant="outline" className="text-xs">
                             {resource}
                           </Badge>
@@ -299,10 +289,7 @@ export default function GovernancePolicies() {
                               {policy.conditions.length > 0 ? (
                                 <div className="mt-1 space-y-1">
                                   {policy.conditions.map((cond, i) => (
-                                    <div
-                                      key={i}
-                                      className="text-sm bg-gray-100 p-2 rounded"
-                                    >
+                                    <div key={i} className="text-sm bg-gray-100 p-2 rounded">
                                       {cond.field} {cond.operator} {String(cond.value)}
                                     </div>
                                   ))}
@@ -353,9 +340,7 @@ export default function GovernancePolicies() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Effect:</span>
-                <Badge className={effectColors[evalResult.effect]}>
-                  {evalResult.effect}
-                </Badge>
+                <Badge className={effectColors[evalResult.effect]}>{evalResult.effect}</Badge>
               </div>
               {evalResult.messages.length > 0 && (
                 <div>

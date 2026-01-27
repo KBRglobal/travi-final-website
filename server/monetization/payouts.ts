@@ -1,6 +1,6 @@
 /**
  * Payout Manager
- * 
+ *
  * Manages affiliate payouts and payment processing
  * - Payout scheduling
  * - Payment method handling
@@ -77,7 +77,6 @@ export const payoutManager = {
 
       return payout[0].id;
     } catch (error) {
-      console.error("[Payout] Error scheduling payout:", error);
       return null;
     }
   },
@@ -88,11 +87,7 @@ export const payoutManager = {
   async processPayout(payoutId: string): Promise<boolean> {
     try {
       // Get payout details
-      const payout = await db
-        .select()
-        .from(payouts)
-        .where(eq(payouts.id, payoutId))
-        .limit(1);
+      const payout = await db.select().from(payouts).where(eq(payouts.id, payoutId)).limit(1);
 
       if (payout.length === 0) {
         throw new Error("Payout not found");
@@ -133,8 +128,6 @@ export const payoutManager = {
 
       return true;
     } catch (error) {
-      console.error("[Payout] Error processing payout:", error);
-
       // Mark as failed
       await db
         .update(payouts)
@@ -148,18 +141,10 @@ export const payoutManager = {
   /**
    * Process payment through payment provider
    */
-  async processPayment(
-    method: string,
-    amount: number,
-    partnerId: string
-  ): Promise<string | null> {
+  async processPayment(method: string, amount: number, partnerId: string): Promise<string | null> {
     try {
       // Get partner payment details
-      const partner = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.id, partnerId))
-        .limit(1);
+      const partner = await db.select().from(partners).where(eq(partners.id, partnerId)).limit(1);
 
       if (partner.length === 0) {
         throw new Error("Partner not found");
@@ -185,21 +170,23 @@ export const payoutManager = {
       switch (method) {
         case "paypal":
           return this.processPayPalPayment(amount, paymentDetails?.paypalEmail as string);
-        
+
         case "stripe":
           return this.processStripePayment(amount, paymentDetails?.stripeAccountId as string);
-        
+
         case "bank_transfer":
-          return this.processBankTransfer(amount, paymentDetails?.bankAccount as Record<string, unknown>);
-        
+          return this.processBankTransfer(
+            amount,
+            paymentDetails?.bankAccount as Record<string, unknown>
+          );
+
         case "check":
           return this.processCheck(amount, paymentDetails?.mailingAddress as string);
-        
+
         default:
           throw new Error("Unknown payment method");
       }
     } catch (error) {
-      console.error("[Payout] Error processing payment:", error);
       return null;
     }
   },
@@ -209,7 +196,7 @@ export const payoutManager = {
    */
   async processPayPalPayment(amount: number, email: string): Promise<string | null> {
     // TODO: Integrate with PayPal API
-    console.log(`[Payout] Processing PayPal payment of $${amount / 100} to ${email}`);
+
     return `PAYPAL-${Date.now()}`;
   },
 
@@ -218,16 +205,19 @@ export const payoutManager = {
    */
   async processStripePayment(amount: number, accountId: string): Promise<string | null> {
     // TODO: Integrate with Stripe API
-    console.log(`[Payout] Processing Stripe payment of $${amount / 100} to ${accountId}`);
+
     return `STRIPE-${Date.now()}`;
   },
 
   /**
    * Mock bank transfer processing
    */
-  async processBankTransfer(amount: number, bankAccount: Record<string, unknown>): Promise<string | null> {
+  async processBankTransfer(
+    amount: number,
+    bankAccount: Record<string, unknown>
+  ): Promise<string | null> {
     // TODO: Integrate with banking API
-    console.log(`[Payout] Processing bank transfer of $${amount / 100}`);
+
     return `BANK-${Date.now()}`;
   },
 
@@ -236,7 +226,7 @@ export const payoutManager = {
    */
   async processCheck(amount: number, address: string): Promise<string | null> {
     // TODO: Generate check and queue for mailing
-    console.log(`[Payout] Processing check of $${amount / 100} to ${address}`);
+
     return `CHECK-${Date.now()}`;
   },
 
@@ -248,7 +238,7 @@ export const payoutManager = {
     periodStart: Date,
     periodEnd: Date
   ): Promise<BatchPayoutResult> {
-    const results: BatchPayoutResult['results'] = [];
+    const results: BatchPayoutResult["results"] = [];
     let successful = 0;
     let failed = 0;
 
@@ -274,11 +264,7 @@ export const payoutManager = {
         }
 
         // Create payout
-        const payoutId = await commissionCalculator.createPayout(
-          partnerId,
-          periodStart,
-          periodEnd
-        );
+        const payoutId = await commissionCalculator.createPayout(partnerId, periodStart, periodEnd);
 
         if (!payoutId) {
           results.push({
@@ -330,11 +316,7 @@ export const payoutManager = {
    */
   async cancelPayout(payoutId: string): Promise<boolean> {
     try {
-      const payout = await db
-        .select()
-        .from(payouts)
-        .where(eq(payouts.id, payoutId))
-        .limit(1);
+      const payout = await db.select().from(payouts).where(eq(payouts.id, payoutId)).limit(1);
 
       if (payout.length === 0) {
         throw new Error("Payout not found");
@@ -351,7 +333,6 @@ export const payoutManager = {
 
       return true;
     } catch (error) {
-      console.error("[Payout] Error canceling payout:", error);
       return false;
     }
   },
@@ -361,14 +342,10 @@ export const payoutManager = {
    */
   async getPendingPayoutsCount(): Promise<number> {
     try {
-      const result = await db
-        .select()
-        .from(payouts)
-        .where(eq(payouts.status, "pending"));
+      const result = await db.select().from(payouts).where(eq(payouts.status, "pending"));
 
       return result.length;
     } catch (error) {
-      console.error("[Payout] Error getting pending payouts count:", error);
       return 0;
     }
   },

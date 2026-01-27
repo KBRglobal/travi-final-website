@@ -46,8 +46,7 @@ export function registerContentHealthRoutes(app: Express): void {
         generatedAt: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[ContentHealth] Error getting issues:', error);
-      res.status(500).json({ error: 'Failed to get health issues' });
+      res.status(500).json({ error: "Failed to get health issues" });
     }
   });
 
@@ -72,8 +71,7 @@ export function registerContentHealthRoutes(app: Express): void {
         generatedAt: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[ContentHealth] Error getting stats:', error);
-      res.status(500).json({ error: 'Failed to get health stats' });
+      res.status(500).json({ error: "Failed to get health stats" });
     }
   });
 
@@ -81,51 +79,57 @@ export function registerContentHealthRoutes(app: Express): void {
    * GET /api/admin/content/health/:contentId
    * Get health status for a specific content item
    */
-  app.get("/api/admin/content/health/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const { contentId } = req.params;
+  app.get(
+    "/api/admin/content/health/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { contentId } = req.params;
 
-    try {
-      const scan = await scanContent(contentId);
-      const issues = getIssuesForContent(contentId);
+      try {
+        const scan = await scanContent(contentId);
+        const issues = getIssuesForContent(contentId);
 
-      if (!scan) {
-        return res.status(404).json({ error: 'Content not found or deleted' });
+        if (!scan) {
+          return res.status(404).json({ error: "Content not found or deleted" });
+        }
+
+        res.json({
+          contentId,
+          health: scan,
+          issues: issues.filter(i => i.status === "open"),
+          generatedAt: new Date().toISOString(),
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get content health" });
       }
-
-      res.json({
-        contentId,
-        health: scan,
-        issues: issues.filter(i => i.status === 'open'),
-        generatedAt: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error('[ContentHealth] Error getting content health:', error);
-      res.status(500).json({ error: 'Failed to get content health' });
     }
-  });
+  );
 
   /**
    * GET /api/admin/content/health/issues/by-type/:type
    * Get issues filtered by type
    */
-  app.get("/api/admin/content/health/issues/by-type/:type", requireAuth, async (req: Request, res: Response) => {
-    const issueType = req.params.type as HealthIssueType;
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+  app.get(
+    "/api/admin/content/health/issues/by-type/:type",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const issueType = req.params.type as HealthIssueType;
+      const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
 
-    try {
-      const issues = getIssuesByType(issueType).slice(0, limit);
+      try {
+        const issues = getIssuesByType(issueType).slice(0, limit);
 
-      res.json({
-        issueType,
-        items: issues,
-        count: issues.length,
-        generatedAt: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error('[ContentHealth] Error getting issues by type:', error);
-      res.status(500).json({ error: 'Failed to get issues' });
+        res.json({
+          issueType,
+          items: issues,
+          count: issues.length,
+          generatedAt: new Date().toISOString(),
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get issues" });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/content/health/scan
@@ -144,8 +148,7 @@ export function registerContentHealthRoutes(app: Express): void {
         generatedAt: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[ContentHealth] Error scanning content:', error);
-      res.status(500).json({ error: 'Failed to scan content' });
+      res.status(500).json({ error: "Failed to scan content" });
     }
   });
 
@@ -153,49 +156,53 @@ export function registerContentHealthRoutes(app: Express): void {
    * POST /api/admin/content/health/issues/:issueId/ignore
    * Ignore a health issue
    */
-  app.post("/api/admin/content/health/issues/:issueId/ignore", requireAuth, async (req: Request, res: Response) => {
-    const { issueId } = req.params;
+  app.post(
+    "/api/admin/content/health/issues/:issueId/ignore",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { issueId } = req.params;
 
-    try {
-      const success = ignoreHealthIssue(issueId);
+      try {
+        const success = ignoreHealthIssue(issueId);
 
-      if (!success) {
-        return res.status(404).json({ error: 'Issue not found' });
+        if (!success) {
+          return res.status(404).json({ error: "Issue not found" });
+        }
+
+        res.json({
+          success: true,
+          issueId,
+          status: "ignored",
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to ignore issue" });
       }
-
-      res.json({
-        success: true,
-        issueId,
-        status: 'ignored',
-      });
-    } catch (error) {
-      console.error('[ContentHealth] Error ignoring issue:', error);
-      res.status(500).json({ error: 'Failed to ignore issue' });
     }
-  });
+  );
 
   /**
    * POST /api/admin/content/health/scan/trigger
    * Manually trigger a scan batch
    */
-  app.post("/api/admin/content/health/scan/trigger", requireAuth, async (req: Request, res: Response) => {
-    if (!isContentHealthJobsEnabled()) {
-      return res.status(403).json({ error: 'Content health jobs are disabled' });
+  app.post(
+    "/api/admin/content/health/scan/trigger",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      if (!isContentHealthJobsEnabled()) {
+        return res.status(403).json({ error: "Content health jobs are disabled" });
+      }
+
+      try {
+        const result = await triggerScan();
+
+        res.json({
+          success: true,
+          result,
+          generatedAt: new Date().toISOString(),
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to trigger scan" });
+      }
     }
-
-    try {
-      const result = await triggerScan();
-
-      res.json({
-        success: true,
-        result,
-        generatedAt: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error('[ContentHealth] Error triggering scan:', error);
-      res.status(500).json({ error: 'Failed to trigger scan' });
-    }
-  });
-
-  console.log('[ContentHealth] Routes registered');
+  );
 }

@@ -4,7 +4,14 @@
  */
 
 import { db } from "./db";
-import { contents, translations, tags, contentTags, siteSettings, abTests as abTestsTable } from "@shared/schema";
+import {
+  contents,
+  translations,
+  tags,
+  contentTags,
+  siteSettings,
+  abTests as abTestsTable,
+} from "@shared/schema";
 import { eq, desc, and, sql, like, or, ne, gt, lt, inArray } from "drizzle-orm";
 import { DUBAI_AREAS } from "./services/image-seo-service";
 
@@ -45,36 +52,36 @@ export const topicClusterBuilder = {
 
     for (const [areaKey, areaData] of Object.entries(DUBAI_AREAS)) {
       // Find all content mentioning this area
-      const areaContent = await db.select({
-        id: contents.id,
-        title: contents.title,
-        slug: contents.slug,
-        type: contents.type,
-        blocks: contents.blocks,
-      })
-      .from(contents)
-      .where(and(
-        eq(contents.status, "published"),
-        or(
-          like(contents.title, `%${areaData.name}%`),
-          sql`${contents.blocks}::text ILIKE ${'%' + areaData.name + '%'}`
-        )
-      ));
+      const areaContent = await db
+        .select({
+          id: contents.id,
+          title: contents.title,
+          slug: contents.slug,
+          type: contents.type,
+          blocks: contents.blocks,
+        })
+        .from(contents)
+        .where(
+          and(
+            eq(contents.status, "published"),
+            or(
+              like(contents.title, `%${areaData.name}%`),
+              sql`${contents.blocks}::text ILIKE ${"%" + areaData.name + "%"}`
+            )
+          )
+        );
 
       if (areaContent.length === 0) continue;
 
       // Find or suggest pillar page
-      const pillarPage = areaContent.find(c =>
-        c.type === "article" &&
-        (c.title.toLowerCase().includes("guide") || c.title.toLowerCase().includes("מדריך"))
+      const pillarPage = areaContent.find(
+        c => c.type === "article" && c.title.toLowerCase().includes("guide")
       );
 
       // Calculate link strength (how well connected pages are)
       const childPages = areaContent.map(c => {
         const blocks = (c.blocks as any[]) || [];
-        const hasInternalLinks = blocks.some((b: any) =>
-          JSON.stringify(b).includes('href="/')
-        );
+        const hasInternalLinks = blocks.some((b: any) => JSON.stringify(b).includes('href="/'));
         return {
           id: c.id,
           title: c.title,
@@ -91,21 +98,27 @@ export const topicClusterBuilder = {
         name: areaData.name,
         nameHe: areaData.nameHe,
         type: "area",
-        pillarPage: pillarPage ? {
-          id: pillarPage.id,
-          title: pillarPage.title,
-          slug: pillarPage.slug,
-        } : undefined,
+        pillarPage: pillarPage
+          ? {
+              id: pillarPage.id,
+              title: pillarPage.title,
+              slug: pillarPage.slug,
+            }
+          : undefined,
         childPages,
         stats: {
           totalPages: areaContent.length,
           missingLinks,
-          avgScore: Math.round(childPages.reduce((sum, p) => sum + p.linkStrength, 0) / childPages.length),
+          avgScore: Math.round(
+            childPages.reduce((sum, p) => sum + p.linkStrength, 0) / childPages.length
+          ),
         },
       });
     }
 
-    return clusters.filter(c => c.childPages.length > 0).sort((a, b) => b.childPages.length - a.childPages.length);
+    return clusters
+      .filter(c => c.childPages.length > 0)
+      .sort((a, b) => b.childPages.length - a.childPages.length);
   },
 
   /**
@@ -116,31 +129,22 @@ export const topicClusterBuilder = {
     const clusters: TopicCluster[] = [];
 
     for (const type of types) {
-      const typeContent = await db.select({
-        id: contents.id,
-        title: contents.title,
-        slug: contents.slug,
-        type: contents.type,
-      })
-      .from(contents)
-      .where(and(
-        eq(contents.status, "published"),
-        eq(contents.type, type as any)
-      ));
+      const typeContent = await db
+        .select({
+          id: contents.id,
+          title: contents.title,
+          slug: contents.slug,
+          type: contents.type,
+        })
+        .from(contents)
+        .where(and(eq(contents.status, "published"), eq(contents.type, type as any)));
 
       if (typeContent.length === 0) continue;
 
       clusters.push({
         id: `category-${type}`,
         name: type.charAt(0).toUpperCase() + type.slice(1) + "s",
-        nameHe: {
-          hotel: "מלונות",
-          restaurant: "מסעדות",
-          attraction: "אטרקציות",
-          article: "מאמרים",
-          event: "אירועים",
-          itinerary: "מסלולים",
-        }[type] || type,
+        nameHe: "",
         type: "category",
         childPages: typeContent.map(c => ({
           id: c.id,
@@ -171,11 +175,14 @@ export const topicClusterBuilder = {
     const sections: Array<{ heading: string; linkedPages: string[] }> = [];
 
     // Group by content type
-    const byType = cluster.childPages.reduce((acc, page) => {
-      if (!acc[page.type]) acc[page.type] = [];
-      acc[page.type].push(page.title);
-      return acc;
-    }, {} as Record<string, string[]>);
+    const byType = cluster.childPages.reduce(
+      (acc, page) => {
+        if (!acc[page.type]) acc[page.type] = [];
+        acc[page.type].push(page.title);
+        return acc;
+      },
+      {} as Record<string, string[]>
+    );
 
     if (byType.hotel) {
       sections.push({ heading: "Where to Stay", linkedPages: byType.hotel.slice(0, 5) });
@@ -334,7 +341,8 @@ export const serpGapFinder = {
    * Find gaps for all content
    */
   async findAllGaps(): Promise<ContentGap[]> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -386,18 +394,16 @@ export const articleRecommendations = {
     }
 
     // Get all other published content
-    const otherContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      slug: contents.slug,
-      type: contents.type,
-      blocks: contents.blocks,
-    })
-    .from(contents)
-    .where(and(
-      eq(contents.status, "published"),
-      ne(contents.id, contentId)
-    ));
+    const otherContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        slug: contents.slug,
+        type: contents.type,
+        blocks: contents.blocks,
+      })
+      .from(contents)
+      .where(and(eq(contents.status, "published"), ne(contents.id, contentId)));
 
     // Score each piece of content
     const scored = otherContent.map(other => {
@@ -408,7 +414,10 @@ export const articleRecommendations = {
       // Same area bonus
       if (detectedArea) {
         const areaData = DUBAI_AREAS[detectedArea as keyof typeof DUBAI_AREAS];
-        if (areaData && areaData.landmarks.some((id: string) => otherText.includes(id.toLowerCase()))) {
+        if (
+          areaData &&
+          areaData.landmarks.some((id: string) => otherText.includes(id.toLowerCase()))
+        ) {
           score += 40;
           reasons.push(`Same area: ${areaData.name}`);
         }
@@ -467,7 +476,8 @@ export const articleRecommendations = {
    * Generate recommendation blocks for all content
    */
   async generateAllRecommendations(): Promise<Map<string, ArticleRecommendation>> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -503,10 +513,10 @@ interface WatchlistItem {
 export const priceWatchlist = {
   // Fields that change frequently and need monitoring
   volatileFields: {
-    hotel: ["price", "rate", "cost", "fee", "من", "עלות"],
-    restaurant: ["price", "menu", "hours", "open", "close", "מחיר", "שעות"],
-    attraction: ["price", "ticket", "hours", "open", "close", "fee", "כרטיס", "מחיר"],
-    event: ["date", "time", "location", "price", "תאריך", "מחיר"],
+    hotel: ["price", "rate", "cost", "fee"],
+    restaurant: ["price", "menu", "hours", "open", "close"],
+    attraction: ["price", "ticket", "hours", "open", "close", "fee"],
+    event: ["date", "time", "location", "price"],
   } as Record<string, string[]>,
 
   /**
@@ -515,15 +525,16 @@ export const priceWatchlist = {
   async scanForVolatileContent(): Promise<WatchlistItem[]> {
     const watchlist: WatchlistItem[] = [];
 
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      type: contents.type,
-      blocks: contents.blocks,
-      updatedAt: contents.updatedAt,
-    })
-    .from(contents)
-    .where(eq(contents.status, "published"));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        type: contents.type,
+        blocks: contents.blocks,
+        updatedAt: contents.updatedAt,
+      })
+      .from(contents)
+      .where(eq(contents.status, "published"));
 
     for (const content of allContent) {
       const volatileFieldsForType = this.volatileFields[content.type] || [];
@@ -535,7 +546,9 @@ export const priceWatchlist = {
       for (const field of volatileFieldsForType) {
         if (contentText.includes(field)) {
           const updatedAt = content.updatedAt ? new Date(content.updatedAt) : new Date();
-          const daysSinceUpdate = Math.floor((Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
+          const daysSinceUpdate = Math.floor(
+            (Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24)
+          );
 
           foundFields.push({
             field,
@@ -591,17 +604,15 @@ export const eventCalendarSync = {
    * Check all events for relevance
    */
   async checkEventRelevance(): Promise<EventStatus[]> {
-    const events = await db.select({
-      id: contents.id,
-      title: contents.title,
-      blocks: contents.blocks,
-      updatedAt: contents.updatedAt,
-    })
-    .from(contents)
-    .where(and(
-      eq(contents.type, "event"),
-      eq(contents.status, "published")
-    ));
+    const events = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        blocks: contents.blocks,
+        updatedAt: contents.updatedAt,
+      })
+      .from(contents)
+      .where(and(eq(contents.type, "event"), eq(contents.status, "published")));
 
     const now = new Date();
     const results: EventStatus[] = [];
@@ -638,7 +649,9 @@ export const eventCalendarSync = {
       }
 
       const updatedAt = event.updatedAt ? new Date(event.updatedAt) : new Date();
-      const daysSinceUpdate = Math.floor((now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
+      const daysSinceUpdate = Math.floor(
+        (now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24)
+      );
 
       results.push({
         contentId: event.id,
@@ -776,7 +789,8 @@ export const imageConsistency = {
    * Check all content for image consistency
    */
   async checkAllContent(): Promise<ImageConsistencyReport[]> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -810,11 +824,11 @@ interface ThumbnailCrops {
 export const autoThumbnails = {
   // Standard crop sizes
   cropSizes: {
-    og: { width: 1200, height: 630, ratio: 1.91 },           // Open Graph
-    twitter: { width: 1200, height: 628, ratio: 1.91 },      // Twitter Card
-    instagram: { width: 1080, height: 1080, ratio: 1 },      // Instagram Square
-    mobile: { width: 375, height: 200, ratio: 1.875 },       // Mobile Hero
-    listView: { width: 300, height: 200, ratio: 1.5 },       // List Thumbnail
+    og: { width: 1200, height: 630, ratio: 1.91 }, // Open Graph
+    twitter: { width: 1200, height: 628, ratio: 1.91 }, // Twitter Card
+    instagram: { width: 1080, height: 1080, ratio: 1 }, // Instagram Square
+    mobile: { width: 375, height: 200, ratio: 1.875 }, // Mobile Hero
+    listView: { width: 300, height: 200, ratio: 1.5 }, // List Thumbnail
   },
 
   /**
@@ -885,16 +899,30 @@ interface ToneAnalysis {
 export const editorialToneGuard = {
   // Words that indicate promotional tone
   promotionalWords: [
-    "best", "amazing", "incredible", "must-visit", "can't miss",
-    "perfect", "ultimate", "exclusive", "luxurious", "stunning",
-    "מדהים", "מושלם", "הכי טוב", "חובה", "יוצא דופן",
+    "best",
+    "amazing",
+    "incredible",
+    "must-visit",
+    "can't miss",
+    "perfect",
+    "ultimate",
+    "exclusive",
+    "luxurious",
+    "stunning",
   ],
 
   // Words that indicate neutral/informative tone
   neutralWords: [
-    "features", "offers", "provides", "includes", "located",
-    "available", "options", "typically", "generally", "may",
-    "כולל", "מציע", "ממוקם", "אפשרי", "בדרך כלל",
+    "features",
+    "offers",
+    "provides",
+    "includes",
+    "located",
+    "available",
+    "options",
+    "typically",
+    "generally",
+    "may",
   ],
 
   /**
@@ -947,9 +975,15 @@ export const editorialToneGuard = {
       ratio > 1.5 ? "promotional" : ratio > 0.5 ? "informative" : "neutral";
 
     // Calculate score
-    const score = expectedTone === detectedTone ? 100 :
-                  Math.abs(["neutral", "informative", "promotional"].indexOf(expectedTone) -
-                           ["neutral", "informative", "promotional"].indexOf(detectedTone)) === 1 ? 70 : 40;
+    const score =
+      expectedTone === detectedTone
+        ? 100
+        : Math.abs(
+              ["neutral", "informative", "promotional"].indexOf(expectedTone) -
+                ["neutral", "informative", "promotional"].indexOf(detectedTone)
+            ) === 1
+          ? 70
+          : 40;
 
     return {
       contentId,
@@ -966,7 +1000,8 @@ export const editorialToneGuard = {
    * Check all content for tone issues
    */
   async checkAllContent(): Promise<ToneAnalysis[]> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -1025,13 +1060,16 @@ export const abTesting = {
     }));
 
     // Insert into database
-    const [dbTest] = await db.insert(abTestsTable).values({
-      contentId,
-      testType,
-      variants: variantData,
-      status: "running",
-      startedAt: new Date(),
-    } as any).returning();
+    const [dbTest] = await db
+      .insert(abTestsTable)
+      .values({
+        contentId,
+        testType,
+        variants: variantData,
+        status: "running",
+        startedAt: new Date(),
+      } as any)
+      .returning();
 
     const test: ABTestLocal = {
       id: dbTest.id,
@@ -1079,7 +1117,10 @@ export const abTesting = {
   /**
    * Get variant for a visitor (random assignment)
    */
-  async getVariant(testId: string, visitorId?: string): Promise<{ variantId: string; value: string } | null> {
+  async getVariant(
+    testId: string,
+    visitorId?: string
+  ): Promise<{ variantId: string; value: string } | null> {
     const test = await this.getTest(testId);
     if (!test || test.status !== "running") return null;
 
@@ -1103,7 +1144,8 @@ export const abTesting = {
       variant.ctr = variant.impressions > 0 ? variant.clicks / variant.impressions : 0;
 
       // Update database
-      await db.update(abTestsTable)
+      await db
+        .update(abTestsTable)
         .set({ variants: test.variants, updatedAt: new Date() } as any)
         .where(eq(abTestsTable.id, testId));
 
@@ -1125,7 +1167,8 @@ export const abTesting = {
       variant.ctr = variant.impressions > 0 ? variant.clicks / variant.impressions : 0;
 
       // Update database
-      await db.update(abTestsTable)
+      await db
+        .update(abTestsTable)
         .set({ variants: test.variants, updatedAt: new Date() } as any)
         .where(eq(abTestsTable.id, testId));
 
@@ -1170,7 +1213,8 @@ export const abTesting = {
       test.status = "completed";
 
       // Update database
-      await db.update(abTestsTable)
+      await db
+        .update(abTestsTable)
         .set({ winner: winner.id, status: "completed", updatedAt: new Date() } as any)
         .where(eq(abTestsTable.id, testId));
 
@@ -1204,7 +1248,10 @@ export const abTesting = {
    * Get all tests for a content from database
    */
   async getTestsForContent(contentId: string): Promise<ABTestLocal[]> {
-    const dbTests = await db.select().from(abTestsTable).where(eq(abTestsTable.contentId, contentId));
+    const dbTests = await db
+      .select()
+      .from(abTestsTable)
+      .where(eq(abTestsTable.contentId, contentId));
     return dbTests.map(t => ({
       id: t.id,
       contentId: t.contentId,
@@ -1274,7 +1321,7 @@ export const contentROI = {
     const revenuePerConversion = 10; // USD placeholder
     const totalRevenue = metrics.conversions * revenuePerConversion;
     const hourlyRate = 30; // USD
-    const totalCost = (costs.creationTime * hourlyRate) + costs.translationCost + costs.imageCost;
+    const totalCost = costs.creationTime * hourlyRate + costs.translationCost + costs.imageCost;
     const roi = ((totalRevenue - totalCost) / totalCost) * 100;
 
     // Generate recommendations
@@ -1307,7 +1354,8 @@ export const contentROI = {
    * Get ROI for all content
    */
   async getAllROI(): Promise<ContentROI[]> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 

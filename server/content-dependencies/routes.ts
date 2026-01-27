@@ -4,7 +4,13 @@
 
 import type { Express } from "express";
 import { requirePermission } from "../security";
-import { getDependencies, getDependents, analyzeImpact, addDependency, removeDependency } from "./index";
+import {
+  getDependencies,
+  getDependents,
+  analyzeImpact,
+  addDependency,
+  removeDependency,
+} from "./index";
 
 function isEnabled(): boolean {
   return process.env.ENABLE_CONTENT_DEPENDENCIES === "true";
@@ -17,7 +23,9 @@ export function registerContentDependencyRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
       }
 
       try {
@@ -30,7 +38,6 @@ export function registerContentDependencyRoutes(app: Express): void {
           dependedOnBy: dependents,
         });
       } catch (error) {
-        console.error("[ContentDependencies] Error:", error);
         res.status(500).json({ error: "Failed to fetch dependencies" });
       }
     }
@@ -42,7 +49,9 @@ export function registerContentDependencyRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
       }
 
       try {
@@ -51,7 +60,6 @@ export function registerContentDependencyRoutes(app: Express): void {
 
         res.json(impact);
       } catch (error) {
-        console.error("[ContentDependencies] Error:", error);
         res.status(500).json({ error: "Failed to analyze impact" });
       }
     }
@@ -63,7 +71,9 @@ export function registerContentDependencyRoutes(app: Express): void {
     requirePermission("canEdit"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
       }
 
       try {
@@ -75,7 +85,6 @@ export function registerContentDependencyRoutes(app: Express): void {
         await addDependency(req.params.id, targetId, dependencyType, weight);
         res.json({ success: true });
       } catch (error) {
-        console.error("[ContentDependencies] Error:", error);
         res.status(500).json({ error: "Failed to add dependency" });
       }
     }
@@ -87,18 +96,17 @@ export function registerContentDependencyRoutes(app: Express): void {
     requirePermission("canEdit"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DEPENDENCIES" });
       }
 
       try {
         await removeDependency(req.params.id, req.params.targetId);
         res.json({ success: true });
       } catch (error) {
-        console.error("[ContentDependencies] Error:", error);
         res.status(500).json({ error: "Failed to remove dependency" });
       }
     }
   );
-
-  console.log("[ContentDependencies] Routes registered");
 }

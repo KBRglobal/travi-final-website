@@ -15,7 +15,7 @@
  * Feature flag: ENABLE_SECURITY_AUTHORITY
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   SecurityEvidence,
   EvidenceType,
@@ -26,11 +26,11 @@ import {
   ActorIdentity,
   GatedAction,
   ResourceType,
-} from './types';
-import { SecurityGate } from './security-gate';
-import { OverrideRegistry } from './override-registry';
-import { SecurityModeManager } from './security-modes';
-import { SecuritySeverity } from '../audit-logger';
+} from "./types";
+import { SecurityGate } from "./security-gate";
+import { OverrideRegistry } from "./override-registry";
+import { SecurityModeManager } from "./security-modes";
+import { SecuritySeverity } from "../audit-logger";
 
 // ============================================================================
 // EVIDENCE STORAGE
@@ -142,7 +142,7 @@ export const EvidenceGenerator = {
   async generateSOC2Bundle(periodStart: Date, periodEnd: Date): Promise<ComplianceBundle> {
     const evidence = this.queryEvidence({ startDate: periodStart, endDate: periodEnd });
 
-    const summary = this.generateSummary(evidence, 'SOC2');
+    const summary = this.generateSummary(evidence, "SOC2");
 
     // SOC2-specific findings
     const soc2Findings = this.generateSOC2Findings(evidence);
@@ -150,13 +150,13 @@ export const EvidenceGenerator = {
 
     return {
       bundleId: uuidv4(),
-      framework: 'SOC2',
+      framework: "SOC2",
       generatedAt: new Date(),
       periodStart,
       periodEnd,
       evidence,
       summary,
-      exportFormat: 'json',
+      exportFormat: "json",
     };
   },
 
@@ -166,7 +166,7 @@ export const EvidenceGenerator = {
   async generateGDPRBundle(periodStart: Date, periodEnd: Date): Promise<ComplianceBundle> {
     const evidence = this.queryEvidence({ startDate: periodStart, endDate: periodEnd });
 
-    const summary = this.generateSummary(evidence, 'GDPR');
+    const summary = this.generateSummary(evidence, "GDPR");
 
     // GDPR-specific findings
     const gdprFindings = this.generateGDPRFindings(evidence);
@@ -174,20 +174,23 @@ export const EvidenceGenerator = {
 
     return {
       bundleId: uuidv4(),
-      framework: 'GDPR',
+      framework: "GDPR",
       generatedAt: new Date(),
       periodStart,
       periodEnd,
       evidence,
       summary,
-      exportFormat: 'json',
+      exportFormat: "json",
     };
   },
 
   /**
    * Generate Executive Summary (for PDF export)
    */
-  async generateExecutiveSummary(periodStart: Date, periodEnd: Date): Promise<{
+  async generateExecutiveSummary(
+    periodStart: Date,
+    periodEnd: Date
+  ): Promise<{
     title: string;
     period: { start: Date; end: Date };
     metrics: {
@@ -208,30 +211,33 @@ export const EvidenceGenerator = {
 
     // Calculate metrics
     const deniedActions = evidence.filter(e => !e.decision.allowed).length;
-    const overridesUsed = evidence.filter(e => e.type === 'override_used').length;
-    const threatEvents = evidence.filter(e => e.type === 'threat_detected').length;
-    const modeChanges = evidence.filter(e => e.type === 'mode_changed').length;
+    const overridesUsed = evidence.filter(e => e.type === "override_used").length;
+    const threatEvents = evidence.filter(e => e.type === "threat_detected").length;
+    const modeChanges = evidence.filter(e => e.type === "mode_changed").length;
 
     // Calculate compliance score
     const complianceScore = this.calculateComplianceScore(evidence);
 
     // Get mode history
     const modeStats = SecurityModeManager.getModeStats();
-    const totalTime = modeStats.timeInEachMode.lockdown + modeStats.timeInEachMode.enforce + modeStats.timeInEachMode.monitor;
+    const totalTime =
+      modeStats.timeInEachMode.lockdown +
+      modeStats.timeInEachMode.enforce +
+      modeStats.timeInEachMode.monitor;
 
     const modeHistory = [
       {
-        mode: 'lockdown',
+        mode: "lockdown",
         duration: modeStats.timeInEachMode.lockdown,
         percentage: totalTime > 0 ? (modeStats.timeInEachMode.lockdown / totalTime) * 100 : 0,
       },
       {
-        mode: 'enforce',
+        mode: "enforce",
         duration: modeStats.timeInEachMode.enforce,
         percentage: totalTime > 0 ? (modeStats.timeInEachMode.enforce / totalTime) * 100 : 0,
       },
       {
-        mode: 'monitor',
+        mode: "monitor",
         duration: modeStats.timeInEachMode.monitor,
         percentage: totalTime > 0 ? (modeStats.timeInEachMode.monitor / totalTime) * 100 : 0,
       },
@@ -251,10 +257,13 @@ export const EvidenceGenerator = {
       .map(([action, count]) => ({ action, count }));
 
     // Generate highlights, concerns, and recommendations
-    const { highlights, concerns, recommendations } = this.generateInsights(evidence, complianceScore);
+    const { highlights, concerns, recommendations } = this.generateInsights(
+      evidence,
+      complianceScore
+    );
 
     return {
-      title: 'Security Authority Executive Summary',
+      title: "Security Authority Executive Summary",
       period: { start: periodStart, end: periodEnd },
       metrics: {
         totalSecurityDecisions: evidence.length,
@@ -284,28 +293,30 @@ export const EvidenceGenerator = {
    */
   exportAsCSV(bundle: ComplianceBundle): string {
     const headers = [
-      'ID',
-      'Type',
-      'Timestamp',
-      'Actor',
-      'Action',
-      'Resource',
-      'Decision',
-      'Reasons',
-    ].join(',');
+      "ID",
+      "Type",
+      "Timestamp",
+      "Actor",
+      "Action",
+      "Resource",
+      "Decision",
+      "Reasons",
+    ].join(",");
 
-    const rows = bundle.evidence.map(e => [
-      e.id,
-      e.type,
-      e.timestamp.toISOString(),
-      e.actor.userId || e.actor.ipAddress || 'system',
-      e.action,
-      e.resource,
-      e.decision.decision,
-      e.decision.reasons.map(r => r.message).join('; '),
-    ].join(','));
+    const rows = bundle.evidence.map(e =>
+      [
+        e.id,
+        e.type,
+        e.timestamp.toISOString(),
+        e.actor.userId || e.actor.ipAddress || "system",
+        e.action,
+        e.resource,
+        e.decision.decision,
+        e.decision.reasons.map(r => r.message).join("; "),
+      ].join(",")
+    );
 
-    return [headers, ...rows].join('\n');
+    return [headers, ...rows].join("\n");
   },
 
   /**
@@ -314,12 +325,12 @@ export const EvidenceGenerator = {
   generateSummary(evidence: SecurityEvidence[], framework: string): ComplianceSummary {
     const allowedCount = evidence.filter(e => e.decision.allowed).length;
     const deniedCount = evidence.filter(e => !e.decision.allowed).length;
-    const overrideCount = evidence.filter(e => e.type === 'override_used').length;
-    const threatCount = evidence.filter(e => e.type === 'threat_detected').length;
+    const overrideCount = evidence.filter(e => e.type === "override_used").length;
+    const threatCount = evidence.filter(e => e.type === "threat_detected").length;
 
     const highRiskActions = evidence.filter(e =>
-      e.decision.reasons.some(r =>
-        r.severity === SecuritySeverity.HIGH || r.severity === SecuritySeverity.CRITICAL
+      e.decision.reasons.some(
+        r => r.severity === SecuritySeverity.HIGH || r.severity === SecuritySeverity.CRITICAL
       )
     ).length;
 
@@ -346,15 +357,15 @@ export const EvidenceGenerator = {
     let score = 100;
 
     // Deduct for threats
-    const threats = evidence.filter(e => e.type === 'threat_detected').length;
+    const threats = evidence.filter(e => e.type === "threat_detected").length;
     score -= threats * 2;
 
     // Deduct for overrides
-    const overrides = evidence.filter(e => e.type === 'override_used').length;
+    const overrides = evidence.filter(e => e.type === "override_used").length;
     score -= overrides * 1;
 
     // Deduct for policy violations
-    const violations = evidence.filter(e => e.type === 'policy_violated').length;
+    const violations = evidence.filter(e => e.type === "policy_violated").length;
     score -= violations * 3;
 
     // Deduct for high-severity denials
@@ -374,38 +385,38 @@ export const EvidenceGenerator = {
 
     // Check for access control issues
     const unauthorizedAccess = evidence.filter(e =>
-      e.decision.reasons.some(r => r.code === 'DENIED' && r.source === 'policy')
+      e.decision.reasons.some(r => r.code === "DENIED" && r.source === "policy")
     );
     if (unauthorizedAccess.length > 10) {
       findings.push({
         severity: SecuritySeverity.MEDIUM,
-        category: 'Access Control',
+        category: "Access Control",
         description: `${unauthorizedAccess.length} unauthorized access attempts detected`,
-        recommendation: 'Review user permissions and access policies',
+        recommendation: "Review user permissions and access policies",
         occurrences: unauthorizedAccess.length,
       });
     }
 
     // Check for override usage
-    const overrides = evidence.filter(e => e.type === 'override_used');
+    const overrides = evidence.filter(e => e.type === "override_used");
     if (overrides.length > 5) {
       findings.push({
         severity: SecuritySeverity.LOW,
-        category: 'Override Usage',
+        category: "Override Usage",
         description: `${overrides.length} security overrides were used`,
-        recommendation: 'Review override justifications and reduce reliance on overrides',
+        recommendation: "Review override justifications and reduce reliance on overrides",
         occurrences: overrides.length,
       });
     }
 
     // Check for threat detections
-    const threats = evidence.filter(e => e.type === 'threat_detected');
+    const threats = evidence.filter(e => e.type === "threat_detected");
     if (threats.length > 0) {
       findings.push({
         severity: SecuritySeverity.HIGH,
-        category: 'Security Threats',
+        category: "Security Threats",
         description: `${threats.length} security threats were detected`,
-        recommendation: 'Investigate threat sources and strengthen security controls',
+        recommendation: "Investigate threat sources and strengthen security controls",
         occurrences: threats.length,
       });
     }
@@ -420,17 +431,17 @@ export const EvidenceGenerator = {
     const findings: ComplianceFinding[] = [];
 
     // Check for data access patterns
-    const dataReads = evidence.filter(e => e.action === 'data_read').length;
-    const dataWrites = evidence.filter(e => e.action === 'data_write').length;
-    const dataDeletes = evidence.filter(e => e.action === 'data_delete').length;
-    const dataExports = evidence.filter(e => e.action === 'data_export').length;
+    const dataReads = evidence.filter(e => e.action === "data_read").length;
+    const dataWrites = evidence.filter(e => e.action === "data_write").length;
+    const dataDeletes = evidence.filter(e => e.action === "data_delete").length;
+    const dataExports = evidence.filter(e => e.action === "data_export").length;
 
     if (dataExports > 10) {
       findings.push({
         severity: SecuritySeverity.MEDIUM,
-        category: 'Data Export',
+        category: "Data Export",
         description: `${dataExports} data export operations performed`,
-        recommendation: 'Verify all data exports comply with GDPR data transfer requirements',
+        recommendation: "Verify all data exports comply with GDPR data transfer requirements",
         occurrences: dataExports,
       });
     }
@@ -438,23 +449,23 @@ export const EvidenceGenerator = {
     if (dataDeletes > 0) {
       findings.push({
         severity: SecuritySeverity.LOW,
-        category: 'Data Deletion',
+        category: "Data Deletion",
         description: `${dataDeletes} data deletion operations performed`,
-        recommendation: 'Ensure deletion requests are properly documented for compliance',
+        recommendation: "Ensure deletion requests are properly documented for compliance",
         occurrences: dataDeletes,
       });
     }
 
     // Check for unauthorized data access
-    const deniedDataAccess = evidence.filter(e =>
-      (e.action === 'data_read' || e.action === 'data_write') && !e.decision.allowed
+    const deniedDataAccess = evidence.filter(
+      e => (e.action === "data_read" || e.action === "data_write") && !e.decision.allowed
     );
     if (deniedDataAccess.length > 5) {
       findings.push({
         severity: SecuritySeverity.MEDIUM,
-        category: 'Unauthorized Data Access',
+        category: "Unauthorized Data Access",
         description: `${deniedDataAccess.length} unauthorized data access attempts`,
-        recommendation: 'Investigate access patterns and review data protection policies',
+        recommendation: "Investigate access patterns and review data protection policies",
         occurrences: deniedDataAccess.length,
       });
     }
@@ -465,7 +476,10 @@ export const EvidenceGenerator = {
   /**
    * Generate insights from evidence
    */
-  generateInsights(evidence: SecurityEvidence[], complianceScore: number): {
+  generateInsights(
+    evidence: SecurityEvidence[],
+    complianceScore: number
+  ): {
     highlights: string[];
     concerns: string[];
     recommendations: string[];
@@ -476,37 +490,37 @@ export const EvidenceGenerator = {
 
     // Compliance score insights
     if (complianceScore >= 90) {
-      highlights.push('Excellent compliance score maintained');
+      highlights.push("Excellent compliance score maintained");
     } else if (complianceScore >= 70) {
-      highlights.push('Good compliance posture with minor areas for improvement');
+      highlights.push("Good compliance posture with minor areas for improvement");
     } else {
       concerns.push(`Low compliance score (${complianceScore}%) requires attention`);
-      recommendations.push('Conduct security review and address identified issues');
+      recommendations.push("Conduct security review and address identified issues");
     }
 
     // Override insights
-    const overrideCount = evidence.filter(e => e.type === 'override_used').length;
+    const overrideCount = evidence.filter(e => e.type === "override_used").length;
     if (overrideCount === 0) {
-      highlights.push('No security overrides were used');
+      highlights.push("No security overrides were used");
     } else if (overrideCount > 10) {
       concerns.push(`High number of overrides used (${overrideCount})`);
-      recommendations.push('Review override policies and reduce bypass usage');
+      recommendations.push("Review override policies and reduce bypass usage");
     }
 
     // Threat insights
-    const threatCount = evidence.filter(e => e.type === 'threat_detected').length;
+    const threatCount = evidence.filter(e => e.type === "threat_detected").length;
     if (threatCount === 0) {
-      highlights.push('No security threats detected');
+      highlights.push("No security threats detected");
     } else {
       concerns.push(`${threatCount} security threats were detected`);
-      recommendations.push('Investigate threat sources and enhance detection capabilities');
+      recommendations.push("Investigate threat sources and enhance detection capabilities");
     }
 
     // Mode insights
-    const modeChanges = evidence.filter(e => e.type === 'mode_changed').length;
+    const modeChanges = evidence.filter(e => e.type === "mode_changed").length;
     if (modeChanges > 10) {
       concerns.push(`Frequent security mode changes (${modeChanges})`);
-      recommendations.push('Stabilize security posture and reduce reactive mode changes');
+      recommendations.push("Stabilize security posture and reduce reactive mode changes");
     }
 
     return { highlights, concerns, recommendations };
@@ -537,7 +551,8 @@ export const EvidenceGenerator = {
       byType,
       recentCount,
       oldestTimestamp: evidenceStore.length > 0 ? evidenceStore[0].timestamp : undefined,
-      newestTimestamp: evidenceStore.length > 0 ? evidenceStore[evidenceStore.length - 1].timestamp : undefined,
+      newestTimestamp:
+        evidenceStore.length > 0 ? evidenceStore[evidenceStore.length - 1].timestamp : undefined,
     };
   },
 
@@ -561,14 +576,14 @@ export const EvidenceGenerator = {
 const originalGetAuditBuffer = SecurityGate.getAuditBuffer.bind(SecurityGate);
 
 // Periodically sync audit buffer to evidence - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
   setInterval(() => {
     const buffer = originalGetAuditBuffer();
     if (buffer.length > 0) {
       buffer.forEach(entry => {
         EvidenceGenerator.recordEvidence({
-          type: 'gate_decision',
-          source: 'security-gate',
+          type: "gate_decision",
+          source: "security-gate",
           actor: entry.request.actor,
           action: entry.request.action,
           resource: entry.request.resource,
@@ -583,5 +598,3 @@ if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEP
     }
   }, 30 * 1000); // Every 30 seconds
 }
-
-console.log('[EvidenceGenerator] Compliance bundle creator loaded');

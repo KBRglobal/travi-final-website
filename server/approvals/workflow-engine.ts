@@ -113,9 +113,7 @@ export async function createApprovalRequest(
   for (const stepConfig of rule.steps) {
     let autoApproveAt: Date | undefined;
     if (stepConfig.autoApproveHours) {
-      autoApproveAt = new Date(
-        Date.now() + stepConfig.autoApproveHours * 60 * 60 * 1000
-      );
+      autoApproveAt = new Date(Date.now() + stepConfig.autoApproveHours * 60 * 60 * 1000);
     }
 
     await db.insert(approvalSteps).values({
@@ -192,10 +190,7 @@ export async function processDecision(
     .select()
     .from(approvalSteps)
     .where(
-      and(
-        eq(approvalSteps.requestId, requestId),
-        eq(approvalSteps.stepNumber, request.currentStep)
-      )
+      and(eq(approvalSteps.requestId, requestId), eq(approvalSteps.stepNumber, request.currentStep))
     )
     .limit(1);
 
@@ -415,5 +410,3 @@ export async function getRequestDetails(requestId: string): Promise<{
     steps: steps as unknown as ApprovalStep[],
   };
 }
-
-console.log("[Approvals] WorkflowEngine loaded");

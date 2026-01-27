@@ -122,9 +122,7 @@ class ApprovalHistoryTracker {
 
   getRecentApprovals(approverId: string, hours: number): ApprovalHistoryEntry[] {
     const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
-    return this.history.filter(
-      (e) => e.approverId === approverId && e.timestamp > cutoff
-    );
+    return this.history.filter(e => e.approverId === approverId && e.timestamp > cutoff);
   }
 
   getApproverPairs(hours: number): Map<string, Map<string, number>> {
@@ -138,25 +136,17 @@ class ApprovalHistoryTracker {
         pairs.set(entry.requesterId, new Map());
       }
       const approverMap = pairs.get(entry.requesterId)!;
-      approverMap.set(
-        entry.approverId,
-        (approverMap.get(entry.approverId) || 0) + 1
-      );
+      approverMap.set(entry.approverId, (approverMap.get(entry.approverId) || 0) + 1);
     }
 
     return pairs;
   }
 
   getAverageApprovalTime(approverId: string): number {
-    const approverHistory = this.history.filter(
-      (e) => e.approverId === approverId
-    );
+    const approverHistory = this.history.filter(e => e.approverId === approverId);
     if (approverHistory.length === 0) return 0;
 
-    const totalTime = approverHistory.reduce(
-      (sum, e) => sum + e.approvalTimeMs,
-      0
-    );
+    const totalTime = approverHistory.reduce((sum, e) => sum + e.approvalTimeMs, 0);
     return totalTime / approverHistory.length;
   }
 
@@ -183,10 +173,7 @@ const approvalHistory = new ApprovalHistoryTracker();
 /**
  * Check for self-approval attempt
  */
-function checkSelfApproval(
-  requesterId: string,
-  approverId: string
-): ApprovalViolation | null {
+function checkSelfApproval(requesterId: string, approverId: string): ApprovalViolation | null {
   if (requesterId === approverId) {
     return {
       type: "self_approval",
@@ -208,7 +195,7 @@ function checkCircularChain(
 ): ApprovalViolation | null {
   // Look for A approves B, B approves A pattern
   const reverseApprovals = recentApprovals.filter(
-    (e) => e.requesterId === approverId && e.approverId === requesterId
+    e => e.requesterId === approverId && e.approverId === requesterId
   );
 
   if (reverseApprovals.length > 0) {
@@ -229,10 +216,7 @@ function checkCircularChain(
 /**
  * Check for rubber-stamping (too fast approvals)
  */
-function checkRubberStamping(
-  approverId: string,
-  approvalTimeMs: number
-): ApprovalViolation | null {
+function checkRubberStamping(approverId: string, approvalTimeMs: number): ApprovalViolation | null {
   const minDelayMs = APPROVAL_SAFETY_CONFIG.minApprovalDelay * 1000;
 
   if (approvalTimeMs < minDelayMs) {
@@ -286,9 +270,7 @@ function checkApprovalFlooding(approverId: string): ApprovalViolation | null {
   }
 
   // Check approval rate (per minute)
-  const recentMinute = recentApprovals.filter(
-    (e) => e.timestamp > new Date(Date.now() - 60 * 1000)
-  );
+  const recentMinute = recentApprovals.filter(e => e.timestamp > new Date(Date.now() - 60 * 1000));
 
   if (recentMinute.length >= APPROVAL_SAFETY_CONFIG.suspiciousApprovalRate) {
     return {
@@ -309,22 +291,14 @@ function checkApprovalFlooding(approverId: string): ApprovalViolation | null {
 /**
  * Check for collusion patterns
  */
-function checkCollusion(
-  requesterId: string,
-  approverId: string
-): ApprovalViolation | null {
-  const pairs = approvalHistory.getApproverPairs(
-    APPROVAL_SAFETY_CONFIG.diversityWindowHours
-  );
+function checkCollusion(requesterId: string, approverId: string): ApprovalViolation | null {
+  const pairs = approvalHistory.getApproverPairs(APPROVAL_SAFETY_CONFIG.diversityWindowHours);
 
   const requesterPairs = pairs.get(requesterId);
   if (!requesterPairs) return null;
 
   const approvalCount = requesterPairs.get(approverId) || 0;
-  const totalApprovals = Array.from(requesterPairs.values()).reduce(
-    (a, b) => a + b,
-    0
-  );
+  const totalApprovals = Array.from(requesterPairs.values()).reduce((a, b) => a + b, 0);
 
   // If same approver handles > 80% of requests, suspicious
   if (totalApprovals >= 5 && approvalCount / totalApprovals > 0.8) {
@@ -361,15 +335,9 @@ function checkApproverDiversity(requesterId: string): ApprovalViolation | null {
 
   if (!recentRequests) return null;
 
-  const totalRequests = Array.from(recentRequests.values()).reduce(
-    (a, b) => a + b,
-    0
-  );
+  const totalRequests = Array.from(recentRequests.values()).reduce((a, b) => a + b, 0);
 
-  if (
-    totalRequests >= 10 &&
-    uniqueApprovers.length < APPROVAL_SAFETY_CONFIG.minApproverDiversity
-  ) {
+  if (totalRequests >= 10 && uniqueApprovers.length < APPROVAL_SAFETY_CONFIG.minApproverDiversity) {
     return {
       type: "insufficient_separation",
       severity: "medium",
@@ -432,9 +400,7 @@ function checkRoleSeparation(
 /**
  * Check for privilege escalation attempt
  */
-function checkPrivilegeEscalation(
-  request: ApprovalRequest
-): ApprovalViolation | null {
+function checkPrivilegeEscalation(request: ApprovalRequest): ApprovalViolation | null {
   const privilegeActions = ["manage_roles", "manage_policies", "assign_role"];
 
   if (!privilegeActions.includes(request.action)) return null;
@@ -485,11 +451,7 @@ export function checkApprovalSafety(
     APPROVAL_SAFETY_CONFIG.diversityWindowHours
   );
 
-  const circular = checkCircularChain(
-    request.requesterId,
-    approverId,
-    recentApprovals
-  );
+  const circular = checkCircularChain(request.requesterId, approverId, recentApprovals);
   if (circular) violations.push(circular);
 
   const rubberStamp = checkRubberStamping(approverId, approvalTimeMs);
@@ -531,24 +493,24 @@ export function checkApprovalSafety(
   riskScore = Math.min(100, riskScore);
 
   // Generate recommendations
-  if (violations.some((v) => v.type === "self_approval")) {
+  if (violations.some(v => v.type === "self_approval")) {
     recommendations.push("Request approval from a different team member");
   }
-  if (violations.some((v) => v.type === "circular_chain")) {
+  if (violations.some(v => v.type === "circular_chain")) {
     recommendations.push("Use a third-party approver to break circular pattern");
   }
-  if (violations.some((v) => v.type === "rubber_stamping")) {
+  if (violations.some(v => v.type === "rubber_stamping")) {
     recommendations.push("Review request details before approving");
   }
-  if (violations.some((v) => v.type === "collusion_suspected")) {
+  if (violations.some(v => v.type === "collusion_suspected")) {
     recommendations.push("Rotate approvers to maintain separation of duties");
   }
-  if (violations.some((v) => v.type === "insufficient_separation")) {
+  if (violations.some(v => v.type === "insufficient_separation")) {
     recommendations.push("Request approval from senior team member");
   }
 
   // Determine if approval should be allowed
-  const criticalViolations = violations.filter((v) => v.severity === "critical");
+  const criticalViolations = violations.filter(v => v.severity === "critical");
   const allowed = criticalViolations.length === 0;
 
   // Log the safety check
@@ -579,10 +541,7 @@ export function checkApprovalSafety(
 /**
  * Record an approval for history tracking
  */
-export function recordApproval(
-  request: ApprovalRequest,
-  approverId: string
-): void {
+export function recordApproval(request: ApprovalRequest, approverId: string): void {
   const approvalTimeMs = request.approvedAt
     ? request.approvedAt.getTime() - request.createdAt.getTime()
     : 0;
@@ -643,14 +602,11 @@ export function getApprovalSafetyMetrics(): {
   // This is simplified - in real implementation, track violations separately
   return {
     totalApprovals24h: allApprovals.length,
-    uniqueApprovers24h: new Set(allApprovals.map((a) => a.approverId)).size,
+    uniqueApprovers24h: new Set(allApprovals.map(a => a.approverId)).size,
     averageApprovalTimeMs:
       allApprovals.length > 0
-        ? allApprovals.reduce((sum, a) => sum + a.approvalTimeMs, 0) /
-          allApprovals.length
+        ? allApprovals.reduce((sum, a) => sum + a.approvalTimeMs, 0) / allApprovals.length
         : 0,
     violationsDetected24h: 0, // Would be tracked separately
   };
 }
-
-console.log("[ApprovalSafety] Module loaded");

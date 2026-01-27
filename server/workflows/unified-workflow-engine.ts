@@ -29,7 +29,7 @@ import {
   workflowExecutions,
   approvalRequests,
   approvalSteps,
-  contents
+  contents,
 } from "@shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { webhookManager } from "../webhooks/webhook-manager";
@@ -45,7 +45,13 @@ export interface WorkflowTrigger {
 }
 
 export interface WorkflowAction {
-  type: "send_webhook" | "send_email" | "update_content" | "create_task" | "notify" | "create_approval";
+  type:
+    | "send_webhook"
+    | "send_email"
+    | "update_content"
+    | "create_task"
+    | "notify"
+    | "create_approval";
   config: Record<string, unknown>;
 }
 
@@ -416,17 +422,17 @@ export const genericWorkflowEngine = {
       try {
         // Check trigger conditions
         const trigger = config.trigger as unknown as WorkflowTrigger;
-        const conditionsMet = await this.evaluateConditions(
-          trigger.conditions,
-          triggerData
-        );
+        const conditionsMet = await this.evaluateConditions(trigger.conditions, triggerData);
 
         if (!conditionsMet) {
           await db
             .update(workflowExecutions)
             .set({
               status: "completed",
-              result: { skipped: true, reason: "Conditions not met" } as unknown as Record<string, unknown>,
+              result: { skipped: true, reason: "Conditions not met" } as unknown as Record<
+                string,
+                unknown
+              >,
               completedAt: new Date(),
             })
             .where(eq(workflowExecutions.id, executionId));
@@ -440,7 +446,7 @@ export const genericWorkflowEngine = {
 
         // Execute actions
         const actions = (config.actions as unknown as WorkflowAction[]) || [];
-        const results: ExecutionResult['results'] = [];
+        const results: ExecutionResult["results"] = [];
 
         for (const action of actions) {
           try {
@@ -488,7 +494,6 @@ export const genericWorkflowEngine = {
         throw error;
       }
     } catch (error) {
-      console.error("[UnifiedWorkflow] Error executing workflow:", error);
       throw error;
     }
   },
@@ -515,13 +520,13 @@ export const genericWorkflowEngine = {
           if (operators.$ne !== undefined && dataValue === operators.$ne) {
             return false;
           }
-          if (operators.$gt !== undefined && !(dataValue as number > (operators.$gt as number))) {
+          if (operators.$gt !== undefined && !((dataValue as number) > (operators.$gt as number))) {
             return false;
           }
-          if (operators.$lt !== undefined && !(dataValue as number < (operators.$lt as number))) {
+          if (operators.$lt !== undefined && !((dataValue as number) < (operators.$lt as number))) {
             return false;
           }
-          if (operators.$in !== undefined && !((operators.$in as unknown[]).includes(dataValue))) {
+          if (operators.$in !== undefined && !(operators.$in as unknown[]).includes(dataValue)) {
             return false;
           }
         } else {
@@ -534,7 +539,6 @@ export const genericWorkflowEngine = {
 
       return true;
     } catch (error) {
-      console.error("[UnifiedWorkflow] Error evaluating conditions:", error);
       return false;
     }
   },
@@ -542,10 +546,7 @@ export const genericWorkflowEngine = {
   /**
    * Execute a workflow action
    */
-  async executeAction(
-    action: WorkflowAction,
-    data: Record<string, unknown>
-  ): Promise<unknown> {
+  async executeAction(action: WorkflowAction, data: Record<string, unknown>): Promise<unknown> {
     switch (action.type) {
       case "send_webhook":
         return this.executeWebhookAction(action.config, data);
@@ -588,7 +589,7 @@ export const genericWorkflowEngine = {
     data: Record<string, unknown>
   ): Promise<unknown> {
     // TODO: Implement email sending
-    console.log("[UnifiedWorkflow] Email action:", config, data);
+
     return { sent: true };
   },
 
@@ -606,10 +607,7 @@ export const genericWorkflowEngine = {
       throw new Error("contentId and updates required");
     }
 
-    await db
-      .update(contents)
-      .set(updates)
-      .where(eq(contents.id, contentId));
+    await db.update(contents).set(updates).where(eq(contents.id, contentId));
 
     return { updated: true, contentId };
   },
@@ -622,7 +620,7 @@ export const genericWorkflowEngine = {
     data: Record<string, unknown>
   ): Promise<unknown> {
     // TODO: Implement notification system
-    console.log("[UnifiedWorkflow] Notify action:", config, data);
+
     return { notified: true };
   },
 
@@ -658,10 +656,7 @@ export const genericWorkflowEngine = {
   /**
    * Trigger workflows based on event
    */
-  async triggerEvent(
-    eventType: string,
-    data: Record<string, unknown>
-  ): Promise<void> {
+  async triggerEvent(eventType: string, data: Record<string, unknown>): Promise<void> {
     try {
       // Find workflows with matching trigger
       const matchingWorkflows = await db
@@ -677,9 +672,7 @@ export const genericWorkflowEngine = {
         .map(workflow => this.executeWorkflow(workflow.id, data));
 
       await Promise.allSettled(executions);
-    } catch (error) {
-      console.error("[UnifiedWorkflow] Error triggering event:", error);
-    }
+    } catch (error) {}
   },
 };
 
@@ -766,9 +759,7 @@ export const approvalWorkflowEngine = {
     for (const stepConfig of rule.steps) {
       let autoApproveAt: Date | undefined;
       if (stepConfig.autoApproveHours) {
-        autoApproveAt = new Date(
-          Date.now() + stepConfig.autoApproveHours * 60 * 60 * 1000
-        );
+        autoApproveAt = new Date(Date.now() + stepConfig.autoApproveHours * 60 * 60 * 1000);
       }
 
       await db.insert(approvalSteps).values({
@@ -795,10 +786,7 @@ export const approvalWorkflowEngine = {
   /**
    * Process an approval decision
    */
-  async processDecision(
-    requestId: string,
-    decision: ApprovalDecision
-  ): Promise<ApprovalResult> {
+  async processDecision(requestId: string, decision: ApprovalDecision): Promise<ApprovalResult> {
     if (!isApprovalWorkflowEnabled()) {
       return {
         success: false,
@@ -1075,7 +1063,7 @@ export const approvalWorkflowEngine = {
     score?: number;
     metadata?: Record<string, unknown>;
   }): WorkflowRule | null {
-    const matchingRules = BUILT_IN_RULES.filter((rule) => {
+    const matchingRules = BUILT_IN_RULES.filter(rule => {
       if (!rule.isActive) return false;
       return this.matchesCondition(rule.condition, context);
     });
@@ -1204,7 +1192,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        ...( { metadata: { workflowState: state } } as any ),
+        ...({ metadata: { workflowState: state } } as any),
       })
       .where(eq(contents.id, contentId));
 
@@ -1217,11 +1205,7 @@ export const contentReviewEngine = {
   async getWorkflowState(contentId: string): Promise<ContentWorkflowState | null> {
     if (!isContentReviewEnabled()) return null;
 
-    const [content] = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.id, contentId))
-      .limit(1);
+    const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
     if (!content) return null;
 
@@ -1295,7 +1279,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        ...( { metadata: { workflowState: state } } as any ),
+        ...({ metadata: { workflowState: state } } as any),
       })
       .where(eq(contents.id, contentId));
 
@@ -1344,7 +1328,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        ...( { metadata: { workflowState: state } } as any ),
+        ...({ metadata: { workflowState: state } } as any),
       })
       .where(eq(contents.id, contentId));
 
@@ -1415,10 +1399,7 @@ export const contentReviewEngine = {
   /**
    * Resolve change request
    */
-  async resolveChangeRequest(
-    contentId: string,
-    changeRequestId: string
-  ): Promise<boolean> {
+  async resolveChangeRequest(contentId: string, changeRequestId: string): Promise<boolean> {
     if (!isContentReviewEnabled()) return false;
 
     const state = await this.getWorkflowState(contentId);
@@ -1435,7 +1416,7 @@ export const contentReviewEngine = {
     await db
       .update(contents)
       .set({
-        ...( { metadata: { workflowState: state } } as any ),
+        ...({ metadata: { workflowState: state } } as any),
       })
       .where(eq(contents.id, contentId));
 
@@ -1455,9 +1436,11 @@ export const contentReviewEngine = {
       const metadata = (content as any).metadata as Record<string, unknown>;
       const workflowState = metadata?.workflowState as ContentWorkflowState;
 
-      if (workflowState &&
-          (workflowState.currentStage === "pending_review" ||
-           workflowState.currentStage === "in_review")) {
+      if (
+        workflowState &&
+        (workflowState.currentStage === "pending_review" ||
+          workflowState.currentStage === "in_review")
+      ) {
         pendingReviews.push(workflowState);
       }
     }
@@ -1540,8 +1523,3 @@ export const unifiedWorkflowEngine = {
     return contentReviewEngine.transitionWorkflow(contentId, action, performedBy, comment);
   },
 };
-
-console.log("[UnifiedWorkflow] Unified workflow engine loaded");
-console.log("[UnifiedWorkflow] - Generic workflows: enabled");
-console.log(`[UnifiedWorkflow] - Approval workflows: ${isApprovalWorkflowEnabled() ? "enabled" : "disabled"}`);
-console.log(`[UnifiedWorkflow] - Content review: ${isContentReviewEnabled() ? "enabled" : "disabled"}`);

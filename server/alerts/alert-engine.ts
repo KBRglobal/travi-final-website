@@ -44,33 +44,26 @@ export async function runDetection(): Promise<void> {
           }
         }
       }
-    } catch (error) {
-      console.error(`[AlertEngine] Error running detector for ${rule.type}:`, error);
-    }
+    } catch (error) {}
   }
 }
 
 export function startAlertEngine(): void {
   if (!isAlertingEnabled()) {
-    console.log("[AlertEngine] Alerting system disabled (ENABLE_ALERTING_SYSTEM != true)");
     return;
   }
 
   if (isRunning) {
-    console.log("[AlertEngine] Already running");
     return;
   }
 
-  console.log("[AlertEngine] Starting alert detection engine...");
   isRunning = true;
 
-  runDetection().catch(console.error);
+  runDetection().catch(() => {});
 
   detectionInterval = setInterval(() => {
-    runDetection().catch(console.error);
+    runDetection().catch(() => {});
   }, DETECTION_INTERVAL_MS);
-
-  console.log(`[AlertEngine] Detection running every ${DETECTION_INTERVAL_MS / 1000}s`);
 }
 
 export function stopAlertEngine(): void {
@@ -79,7 +72,6 @@ export function stopAlertEngine(): void {
     detectionInterval = null;
   }
   isRunning = false;
-  console.log("[AlertEngine] Stopped");
 }
 
 export function getEngineStatus(): {

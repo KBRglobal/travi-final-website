@@ -15,10 +15,22 @@
 
 import { db } from "./db";
 import {
-  contents, translations, affiliateLinks, tags, contentTags,
-  homepagePromotions, rssFeeds, siteSettings, contentClusters,
-  clusterMembers, users, notifications, destinations, destinationContent,
-  aiGenerationLogs, type Destination
+  contents,
+  translations,
+  affiliateLinks,
+  tags,
+  contentTags,
+  homepagePromotions,
+  rssFeeds,
+  siteSettings,
+  contentClusters,
+  clusterMembers,
+  users,
+  notifications,
+  destinations,
+  destinationContent,
+  aiGenerationLogs,
+  type Destination,
 } from "@shared/schema";
 import { eq, desc, and, sql, lt, gt, or, ne, isNull, inArray } from "drizzle-orm";
 import {
@@ -44,10 +56,10 @@ import {
 import { validateThroughGateway, type ContentForValidation } from "./lib/content-quality-gateway";
 import { createLogger } from "./lib/logger";
 import { translateDestinationContent } from "./services/auto-translation";
-import { 
-  contentFreshness, 
+import {
+  contentFreshness,
   runFreshnessCheck as runDestinationFreshnessCheck,
-  type RunFreshnessCheckResult 
+  type RunFreshnessCheckResult,
 } from "./services/content-freshness";
 import { emitContentPublished } from "./events";
 import Parser from "rss-parser";
@@ -58,8 +70,8 @@ import { updateRssProcessingStats } from "./routes/admin/observability-routes";
 const rssParser = new Parser({
   timeout: 30000,
   headers: {
-    'User-Agent': 'Travi-CMS/1.0 (+https://travi.world)',
-    'Accept': 'application/rss+xml, application/xml, text/xml',
+    "User-Agent": "Travi-CMS/1.0 (+https://travi.world)",
+    Accept: "application/rss+xml, application/xml, text/xml",
   },
 });
 
@@ -123,7 +135,7 @@ export const autoPilotConfig = {
     maxImagesPerDay: 10,
     maxDestinationsPerDay: 3,
     requiredSectionImages: 4,
-    preferredProvider: 'auto' as const,
+    preferredProvider: "auto" as const,
   } as AutoImageConfig,
 
   // Destination freshness settings
@@ -150,12 +162,10 @@ export const autoPublisher = {
     const now = new Date();
 
     // Find content scheduled to publish before now
-    const scheduledContent = await db.select()
+    const scheduledContent = await db
+      .select()
       .from(contents)
-      .where(and(
-        eq(contents.status, "scheduled" as any),
-        lt(contents.scheduledAt as any, now)
-      ));
+      .where(and(eq(contents.status, "scheduled" as any), lt(contents.scheduledAt as any, now)));
 
     const published: string[] = [];
     const failed: Array<{ id: string; error: string }> = [];
@@ -167,7 +177,8 @@ export const autoPublisher = {
 
         if (qualityCheck.canPublish) {
           // Publish
-          await db.update(contents)
+          await db
+            .update(contents)
             .set({
               status: "published",
               publishedAt: now,
@@ -182,7 +193,7 @@ export const autoPublisher = {
             content.title,
             content.slug,
             content.status,
-            'scheduled'
+            "scheduled"
           );
 
           // Trigger post-publish automations (translation, affiliates, tagging, etc.)
@@ -291,8 +302,6 @@ export const autoPublisher = {
 
     // 7. Clear relevant caches
     await cache.invalidate(`content:${contentId}*`);
-
-    console.log(`[AutoPilot] Post-publish completed for content ${contentId}`);
   },
 };
 
@@ -317,12 +326,10 @@ export const autoTranslator = {
       if (locale === "en") continue; // Skip source language
 
       // Check if translation already exists
-      const [existing] = await db.select()
+      const [existing] = await db
+        .select()
         .from(translations)
-        .where(and(
-          eq(translations.contentId, contentId),
-          eq(translations.locale, locale as any)
-        ));
+        .where(and(eq(translations.contentId, contentId), eq(translations.locale, locale as any)));
 
       if (!existing || existing.status !== "completed") {
         // Queue translation job
@@ -347,7 +354,8 @@ export const autoTranslator = {
     pending: number;
     locales: Record<string, string>;
   }> {
-    const allTranslations = await db.select()
+    const allTranslations = await db
+      .select()
       .from(translations)
       .where(eq(translations.contentId, contentId));
 
@@ -382,11 +390,15 @@ export const autoAffiliate = {
     const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
     if (!content) return { placed: 0 };
 
-    const provider = autoPilotConfig.affiliateProviders[content.type as keyof typeof autoPilotConfig.affiliateProviders];
+    const provider =
+      autoPilotConfig.affiliateProviders[
+        content.type as keyof typeof autoPilotConfig.affiliateProviders
+      ];
     if (!provider) return { placed: 0 };
 
     // Check if affiliate link already exists
-    const existing = await db.select()
+    const existing = await db
+      .select()
       .from(affiliateLinks)
       .where(eq(affiliateLinks.contentId, contentId));
 
@@ -434,7 +446,8 @@ export const autoAffiliate = {
    * Bulk place affiliate links for all content missing them
    */
   async placeBulkLinks(): Promise<{ total: number; placed: number }> {
-    const contentWithoutLinks = await db.select({ id: contents.id, type: contents.type })
+    const contentWithoutLinks = await db
+      .select({ id: contents.id, type: contents.type })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -478,7 +491,11 @@ export const autoTagger = {
     if (contentText.includes("luxury") || contentText.includes("premium")) {
       tagsToAdd.push("Luxury");
     }
-    if (contentText.includes("budget") || contentText.includes("cheap") || contentText.includes("affordable")) {
+    if (
+      contentText.includes("budget") ||
+      contentText.includes("cheap") ||
+      contentText.includes("affordable")
+    ) {
       tagsToAdd.push("Budget");
     }
     if (contentText.includes("romantic") || contentText.includes("couples")) {
@@ -488,10 +505,14 @@ export const autoTagger = {
     // Detect activities
     if (contentText.includes("beach")) tagsToAdd.push("Beach");
     if (contentText.includes("desert") || contentText.includes("safari")) tagsToAdd.push("Desert");
-    if (contentText.includes("shopping") || contentText.includes("mall")) tagsToAdd.push("Shopping");
-    if (contentText.includes("food") || contentText.includes("dining")) tagsToAdd.push("Food & Dining");
-    if (contentText.includes("adventure") || contentText.includes("thrill")) tagsToAdd.push("Adventure");
-    if (contentText.includes("culture") || contentText.includes("heritage")) tagsToAdd.push("Culture");
+    if (contentText.includes("shopping") || contentText.includes("mall"))
+      tagsToAdd.push("Shopping");
+    if (contentText.includes("food") || contentText.includes("dining"))
+      tagsToAdd.push("Food & Dining");
+    if (contentText.includes("adventure") || contentText.includes("thrill"))
+      tagsToAdd.push("Adventure");
+    if (contentText.includes("culture") || contentText.includes("heritage"))
+      tagsToAdd.push("Culture");
 
     // Create or find tags and link to content
     const addedTags: string[] = [];
@@ -501,19 +522,20 @@ export const autoTagger = {
         let [tag] = await db.select().from(tags).where(eq(tags.name, tagName));
 
         if (!tag) {
-          [tag] = await db.insert(tags).values({
-            name: tagName,
-            slug: tagName.toLowerCase().replace(/\s+/g, "-"),
-          }).returning();
+          [tag] = await db
+            .insert(tags)
+            .values({
+              name: tagName,
+              slug: tagName.toLowerCase().replace(/\s+/g, "-"),
+            })
+            .returning();
         }
 
         // Check if already linked
-        const [existing] = await db.select()
+        const [existing] = await db
+          .select()
           .from(contentTags)
-          .where(and(
-            eq(contentTags.contentId, contentId),
-            eq(contentTags.tagId, tag.id)
-          ));
+          .where(and(eq(contentTags.contentId, contentId), eq(contentTags.tagId, tag.id)));
 
         if (!existing) {
           await db.insert(contentTags).values({
@@ -534,7 +556,8 @@ export const autoTagger = {
    * Bulk auto-tag all content
    */
   async tagAllContent(): Promise<{ processed: number; tagsAdded: number }> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -574,26 +597,30 @@ export const autoCluster = {
     if (!detectedArea) return { clusterId: null };
 
     // Find or create cluster for this area
-    let [cluster] = await db.select()
+    let [cluster] = await db
+      .select()
       .from(contentClusters)
       .where(eq(contentClusters.slug, `${detectedArea}-guide`));
 
     if (!cluster) {
       const areaData = DUBAI_AREAS[detectedArea as keyof typeof DUBAI_AREAS];
-      [cluster] = await db.insert(contentClusters).values({
-        name: `${areaData.name} Complete Guide`,
-        slug: `${detectedArea}-guide`,
-        description: `Everything about ${areaData.name} - hotels, restaurants, attractions`,
-      } as any).returning();
+      [cluster] = await db
+        .insert(contentClusters)
+        .values({
+          name: `${areaData.name} Complete Guide`,
+          slug: `${detectedArea}-guide`,
+          description: `Everything about ${areaData.name} - hotels, restaurants, attractions`,
+        } as any)
+        .returning();
     }
 
     // Check if already a member
-    const [existing] = await db.select()
+    const [existing] = await db
+      .select()
       .from(clusterMembers)
-      .where(and(
-        eq(clusterMembers.clusterId, cluster.id),
-        eq(clusterMembers.contentId, contentId)
-      ));
+      .where(
+        and(eq(clusterMembers.clusterId, cluster.id), eq(clusterMembers.contentId, contentId))
+      );
 
     if (!existing) {
       await db.insert(clusterMembers).values({
@@ -614,7 +641,9 @@ export const autoHomepage = {
   /**
    * Check if content should be promoted on homepage
    */
-  async checkForPromotion(contentId: string): Promise<{ promoted: boolean; section: string | null }> {
+  async checkForPromotion(
+    contentId: string
+  ): Promise<{ promoted: boolean; section: string | null }> {
     const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
     if (!content) return { promoted: false, section: null };
 
@@ -635,16 +664,15 @@ export const autoHomepage = {
     }
 
     // Check current count in section
-    const currentPromotions = await db.select()
+    const currentPromotions = await db
+      .select()
       .from(homepagePromotions)
-      .where(and(
-        eq(homepagePromotions.section, section as any),
-        eq(homepagePromotions.isActive, true)
-      ));
+      .where(
+        and(eq(homepagePromotions.section, section as any), eq(homepagePromotions.isActive, true))
+      );
 
-    const maxItems = section === "featured" ?
-      autoPilotConfig.maxFeaturedItems :
-      autoPilotConfig.maxTrendingItems;
+    const maxItems =
+      section === "featured" ? autoPilotConfig.maxFeaturedItems : autoPilotConfig.maxTrendingItems;
 
     if (currentPromotions.length < maxItems) {
       // Add to homepage
@@ -666,34 +694,49 @@ export const autoHomepage = {
    */
   async rotatePromotions(): Promise<{ rotated: number }> {
     const now = new Date();
-    const rotationThreshold = new Date(now.getTime() - autoPilotConfig.rotateFeaturedEvery * 24 * 60 * 60 * 1000);
+    const rotationThreshold = new Date(
+      now.getTime() - autoPilotConfig.rotateFeaturedEvery * 24 * 60 * 60 * 1000
+    );
 
     // Get old promotions
-    const oldPromotions = await db.select()
+    const oldPromotions = await db
+      .select()
       .from(homepagePromotions)
-      .where(and(
-        eq(homepagePromotions.isActive, true),
-        lt(homepagePromotions.createdAt, rotationThreshold)
-      ));
+      .where(
+        and(
+          eq(homepagePromotions.isActive, true),
+          lt(homepagePromotions.createdAt, rotationThreshold)
+        )
+      );
 
     let rotated = 0;
 
     for (const promo of oldPromotions) {
       // Find replacement content
-      const [replacement] = await db.select()
+      const [replacement] = await db
+        .select()
         .from(contents)
-        .where(and(
-          eq(contents.status, "published"),
-          eq(contents.type, promo.section === "hotels" ? "hotel" :
-                           promo.section === "attractions" ? "attraction" : "article"),
-          gt(contents.publishedAt as any, rotationThreshold)
-        ))
+        .where(
+          and(
+            eq(contents.status, "published"),
+            eq(
+              contents.type,
+              promo.section === "hotels"
+                ? "hotel"
+                : promo.section === "attractions"
+                  ? "attraction"
+                  : "article"
+            ),
+            gt(contents.publishedAt as any, rotationThreshold)
+          )
+        )
         .orderBy(desc(contents.publishedAt))
         .limit(1);
 
       if (replacement) {
         // Deactivate old
-        await db.update(homepagePromotions)
+        await db
+          .update(homepagePromotions)
           .set({ isActive: false } as any)
           .where(eq(homepagePromotions.id, promo.id));
 
@@ -731,9 +774,7 @@ export const autoRss = {
       return { feedsProcessed: 0, itemsImported: 0, errors: [] };
     }
 
-    const activeFeeds = await db.select()
-      .from(rssFeeds)
-      .where(eq(rssFeeds.isActive, true));
+    const activeFeeds = await db.select().from(rssFeeds).where(eq(rssFeeds.isActive, true));
 
     let itemsImported = 0;
     const errors: Array<{ feedId: string; error: string }> = [];
@@ -758,34 +799,30 @@ export const autoRss = {
    * Process single RSS feed - fetches and stores items
    */
   async processFeed(feedId: string): Promise<{ fetched: number; imported: number }> {
-    console.log(`[AutoPilot/RSS] Processing feed ${feedId}`);
-    
     // Get feed details
     const [feed] = await db.select().from(rssFeeds).where(eq(rssFeeds.id, feedId));
     if (!feed) {
-      console.error(`[AutoPilot/RSS] Feed not found: ${feedId}`);
       return { fetched: 0, imported: 0 };
     }
 
     try {
       // Fetch and parse RSS feed
-      console.log(`[AutoPilot/RSS] Fetching: ${feed.url}`);
+
       const parsedFeed = await rssParser.parseURL(feed.url);
       const items = parsedFeed.items || [];
-      console.log(`[AutoPilot/RSS] Fetched ${items.length} items from ${feed.name}`);
 
       let imported = 0;
 
       for (const item of items.slice(0, autoPilotConfig.maxAutoImportPerFeed)) {
         try {
           // Check if item already exists (by source URL)
-          const existingItems = await db.select({ id: topicClusterItems.id })
+          const existingItems = await db
+            .select({ id: topicClusterItems.id })
             .from(topicClusterItems)
-            .where(eq(topicClusterItems.sourceUrl, item.link || ''))
+            .where(eq(topicClusterItems.sourceUrl, item.link || ""))
             .limit(1);
 
           if (existingItems.length > 0) {
-            console.log(`[AutoPilot/RSS] Item already exists: ${item.title?.substring(0, 50)}...`);
             continue;
           }
 
@@ -796,44 +833,35 @@ export const autoRss = {
           await db.insert(topicClusterItems).values({
             clusterId: cluster.id,
             rssFeedId: feedId,
-            sourceUrl: item.link || '',
-            sourceTitle: item.title || 'Untitled',
-            sourceDescription: item.contentSnippet || item.content || item.description || '',
+            sourceUrl: item.link || "",
+            sourceTitle: item.title || "Untitled",
+            sourceDescription: item.contentSnippet || item.content || item.description || "",
             pubDate: item.pubDate ? new Date(item.pubDate) : null,
             isUsedInMerge: false,
           } as any);
 
           imported++;
-          console.log(`[AutoPilot/RSS] Imported: ${item.title?.substring(0, 50)}...`);
 
           // Update processing stats
           updateRssProcessingStats({
             itemsProcessed: imported,
             lastRunTime: new Date(),
           });
-
-        } catch (itemError: any) {
-          console.error(`[AutoPilot/RSS] Failed to import item: ${itemError.message}`);
-        }
+        } catch (itemError: any) {}
       }
 
       // Update lastFetchedAt on the feed
       try {
         const now = new Date();
-        const result = await db.update(rssFeeds)
+        const result = await db
+          .update(rssFeeds)
           .set({ lastFetchedAt: now } as any)
           .where(eq(rssFeeds.id, feedId))
           .returning({ id: rssFeeds.id, lastFetchedAt: rssFeeds.lastFetchedAt });
-        console.log(`[AutoPilot/RSS] Updated lastFetchedAt for feed ${feed.name}:`, result);
-      } catch (updateError: any) {
-        console.error(`[AutoPilot/RSS] Failed to update lastFetchedAt: ${updateError.message}`, updateError.stack);
-      }
+      } catch (updateError: any) {}
 
-      console.log(`[AutoPilot/RSS] Feed ${feed.name}: fetched=${items.length}, imported=${imported}`);
       return { fetched: items.length, imported };
-
     } catch (error: any) {
-      console.error(`[AutoPilot/RSS] Failed to fetch feed ${feed.name}: ${error.message}`);
       return { fetched: 0, imported: 0 };
     }
   },
@@ -841,11 +869,14 @@ export const autoRss = {
   /**
    * Find or create a topic cluster for RSS feed items
    */
-  async findOrCreateClusterForFeed(feed: typeof rssFeeds.$inferSelect): Promise<typeof topicClusters.$inferSelect> {
+  async findOrCreateClusterForFeed(
+    feed: typeof rssFeeds.$inferSelect
+  ): Promise<typeof topicClusters.$inferSelect> {
     const clusterTopic = `RSS: ${feed.name}`;
-    
+
     // Try to find existing cluster for this feed
-    const existingClusters = await db.select()
+    const existingClusters = await db
+      .select()
       .from(topicClusters)
       .where(eq(topicClusters.topic, clusterTopic))
       .limit(1);
@@ -855,13 +886,15 @@ export const autoRss = {
     }
 
     // Create new cluster
-    const [newCluster] = await db.insert(topicClusters).values({
-      topic: clusterTopic,
-      status: 'pending',
-      articleCount: 0,
-    } as any).returning();
+    const [newCluster] = await db
+      .insert(topicClusters)
+      .values({
+        topic: clusterTopic,
+        status: "pending",
+        articleCount: 0,
+      } as any)
+      .returning();
 
-    console.log(`[AutoPilot/RSS] Created cluster for feed: ${feed.name}`);
     return newCluster;
   },
 };
@@ -887,19 +920,23 @@ export const autoRefresh = {
     for (const [type, days] of Object.entries(autoPilotConfig.staleThresholdDays)) {
       const threshold = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
-      const staleContent = await db.select()
+      const staleContent = await db
+        .select()
         .from(contents)
-        .where(and(
-          eq(contents.status, "published"),
-          eq(contents.type, type as any),
-          lt(contents.updatedAt, threshold)
-        ));
+        .where(
+          and(
+            eq(contents.status, "published"),
+            eq(contents.type, type as any),
+            lt(contents.updatedAt, threshold)
+          )
+        );
 
       identified += staleContent.length;
 
       for (const content of staleContent) {
         // Flag for review (would trigger AI refresh in full implementation)
-        await db.update(contents)
+        await db
+          .update(contents)
           .set({ status: "review" } as any)
           .where(eq(contents.id, content.id));
         flagged++;
@@ -923,14 +960,10 @@ export const autoDestinationGenerator = {
    */
   async findDestinationsNeedingContent(): Promise<Destination[]> {
     // Find destinations with status="empty" or status="partial"
-    const needingContent = await db.select()
+    const needingContent = await db
+      .select()
       .from(destinations)
-      .where(
-        or(
-          eq(destinations.status, "empty"),
-          eq(destinations.status, "partial")
-        )
-      )
+      .where(or(eq(destinations.status, "empty"), eq(destinations.status, "partial")))
       .orderBy(
         // Prioritize active destinations (hasPage=true) first
         sql`CASE WHEN ${destinations.hasPage} = true THEN 0 ELSE 1 END`,
@@ -959,7 +992,8 @@ export const autoDestinationGenerator = {
 
     try {
       // Get destination from database
-      const [destination] = await db.select()
+      const [destination] = await db
+        .select()
         .from(destinations)
         .where(eq(destinations.id, destinationId));
 
@@ -970,12 +1004,18 @@ export const autoDestinationGenerator = {
       destinationLogger.info(`Starting auto-generation for ${destination.name}`);
 
       // Generate content using AI
-      const { content: generatedContent, provider, model, duration } = 
-        await generateDestinationContent(destination);
+      const {
+        content: generatedContent,
+        provider,
+        model,
+        duration,
+      } = await generateDestinationContent(destination);
 
       // Apply internal links
-      const { content: linkedContent, linksAdded } = 
-        applyInternalLinks(generatedContent, destination);
+      const { content: linkedContent, linksAdded } = applyInternalLinks(
+        generatedContent,
+        destination
+      );
 
       // Calculate SEO metrics
       const metrics = calculateSeoMetrics(linkedContent);
@@ -1215,12 +1255,10 @@ export const autoReports = {
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     // Get published content in last 24h
-    const publishedContent = await db.select()
+    const publishedContent = await db
+      .select()
       .from(contents)
-      .where(and(
-        eq(contents.status, "published"),
-        gt(contents.publishedAt as any, yesterday)
-      ));
+      .where(and(eq(contents.status, "published"), gt(contents.publishedAt as any, yesterday)));
 
     // Get freshness report
     const freshness = await automation.freshness.getReport();
@@ -1255,7 +1293,9 @@ export const autoReports = {
     const recommendations: string[] = [];
 
     if (freshness.stats.critical > 0) {
-      recommendations.push(`${freshness.stats.critical} critical content items need immediate update`);
+      recommendations.push(
+        `${freshness.stats.critical} critical content items need immediate update`
+      );
     }
     if (brokenLinks.length > 10) {
       recommendations.push(`Run full broken links scan - ${brokenLinks.length} issues found`);
@@ -1290,16 +1330,16 @@ export const autoReports = {
     const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     // Get all content from last week
-    const weeklyContent = await db.select()
+    const weeklyContent = await db
+      .select()
       .from(contents)
-      .where(and(
-        eq(contents.status, "published"),
-        gt(contents.publishedAt as any, lastWeek)
-      ));
+      .where(and(eq(contents.status, "published"), gt(contents.publishedAt as any, lastWeek)));
 
     // Get performance scores
     const scores = await automation.performance.scoreAllContent();
-    const underperformers = scores.filter((s: { scores: { overall: number }}) => s.scores.overall < 60);
+    const underperformers = scores.filter(
+      (s: { scores: { overall: number } }) => s.scores.overall < 60
+    );
 
     // Build issues
     const issues: AutoPilotReport["issues"] = [];
@@ -1317,14 +1357,22 @@ export const autoReports = {
     const recommendations: string[] = [];
 
     if (underperformers.length > 5) {
-      recommendations.push(`${underperformers.length} content items have low performance - consider refresh`);
+      recommendations.push(
+        `${underperformers.length} content items have low performance - consider refresh`
+      );
     }
 
-    const avgScore = scores.length > 0
-      ? scores.reduce((sum: number, s: { scores: { overall: number }}) => sum + s.scores.overall, 0) / scores.length
-      : 0;
+    const avgScore =
+      scores.length > 0
+        ? scores.reduce(
+            (sum: number, s: { scores: { overall: number } }) => sum + s.scores.overall,
+            0
+          ) / scores.length
+        : 0;
     if (avgScore < 70) {
-      recommendations.push(`Average content score is ${Math.round(avgScore)}% - focus on quality improvements`);
+      recommendations.push(
+        `Average content score is ${Math.round(avgScore)}% - focus on quality improvements`
+      );
     }
 
     return {
@@ -1350,9 +1398,7 @@ export const autoReports = {
    */
   async sendReport(report: AutoPilotReport): Promise<void> {
     // Get admin users
-    const admins = await db.select()
-      .from(users)
-      .where(eq(users.role, "admin"));
+    const admins = await db.select().from(users).where(eq(users.role, "admin"));
 
     // Create notifications for each admin
     for (const admin of admins) {
@@ -1379,18 +1425,13 @@ export const autoPilot = {
     scheduled: { published: number };
     locksCleanedUp: number;
   }> {
-    console.log("[AutoPilot] Running hourly tasks...");
-
     // 1. Process scheduled content
     const scheduled = await autoPublisher.processScheduledContent();
 
     // 2. Clean up expired content locks
     const locksCleanedUp = await enterprise.locks.cleanupExpired();
     if (locksCleanedUp > 0) {
-      console.log(`[AutoPilot] Cleaned up ${locksCleanedUp} expired content locks`);
     }
-
-    console.log("[AutoPilot] Hourly tasks completed");
 
     return { scheduled, locksCleanedUp };
   },
@@ -1409,8 +1450,6 @@ export const autoPilot = {
     images: { generated: number; cost: number };
     report: AutoPilotReport;
   }> {
-    console.log("[AutoPilot] Running daily tasks...");
-
     // 1. Run base automation tasks
     const automationResult = await automation.runner.runDailyTasks();
 
@@ -1431,11 +1470,10 @@ export const autoPilot = {
 
     // 7. Auto-generate destination content
     const destinationsResult = await autoDestinationGenerator.runDailyGeneration();
-    console.log(`[AutoPilot] Destination generation: ${destinationsResult.succeeded} succeeded, ${destinationsResult.failed} failed`);
 
     // 8. Auto-generate destination images
     let imagesResult: DailyImageGenerationResult = {
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split("T")[0],
       destinationsProcessed: 0,
       totalImagesGenerated: 0,
       totalCost: 0,
@@ -1443,8 +1481,9 @@ export const autoPilot = {
       errors: [],
     };
     if (autoPilotConfig.autoGenerateImages) {
-      imagesResult = await autoImageGenerator.runDailyImageGeneration(autoPilotConfig.imageGeneration);
-      console.log(`[AutoPilot] Image generation: ${imagesResult.totalImagesGenerated} images, $${imagesResult.totalCost.toFixed(2)} cost`);
+      imagesResult = await autoImageGenerator.runDailyImageGeneration(
+        autoPilotConfig.imageGeneration
+      );
     }
 
     // 9. Generate and send daily report
@@ -1452,8 +1491,6 @@ export const autoPilot = {
     if (autoPilotConfig.sendDailyDigest) {
       await autoReports.sendReport(report);
     }
-
-    console.log("[AutoPilot] Daily tasks completed");
 
     return {
       automation: automationResult,
@@ -1483,15 +1520,12 @@ export const autoPilot = {
     report: AutoPilotReport;
     freshness: RunFreshnessCheckResult | null;
   }> {
-    console.log("[AutoPilot] Running weekly tasks...");
-
     // 1. Run base weekly automation
     const automationResult = await automation.runner.runWeeklyTasks();
 
     // 2. Run destination content freshness check
     let freshnessResult: RunFreshnessCheckResult | null = null;
     if (autoPilotConfig.destinationFreshness.autoRefreshStale) {
-      console.log("[AutoPilot] Running destination content freshness check...");
       try {
         contentFreshness.updateFreshnessConfig({
           autoRefreshStale: autoPilotConfig.destinationFreshness.autoRefreshStale,
@@ -1500,10 +1534,7 @@ export const autoPilot = {
           lowSeoScoreThreshold: autoPilotConfig.destinationFreshness.lowSeoScoreThreshold,
         });
         freshnessResult = await runDestinationFreshnessCheck();
-        console.log(`[AutoPilot] Freshness check: ${freshnessResult.staleCount} stale, ${freshnessResult.refreshed.length} refreshed`);
-      } catch (error) {
-        console.error("[AutoPilot] Freshness check failed:", error);
-      }
+      } catch (error) {}
     }
 
     // 3. Generate and send weekly report
@@ -1511,8 +1542,6 @@ export const autoPilot = {
     if (autoPilotConfig.sendWeeklyReport) {
       await autoReports.sendReport(report);
     }
-
-    console.log("[AutoPilot] Weekly tasks completed");
 
     return {
       automation: automationResult,
@@ -1540,12 +1569,9 @@ export const autoPilot = {
     };
   }> {
     // Get counts
-    const [
-      scheduledCount,
-      freshness,
-      brokenLinks,
-    ] = await Promise.all([
-      db.select({ count: sql<number>`count(*)` })
+    const [scheduledCount, freshness, brokenLinks] = await Promise.all([
+      db
+        .select({ count: sql<number>`count(*)` })
         .from(contents)
         .where(eq(contents.status, "scheduled" as any)),
       automation.freshness.getReport(),
@@ -1606,7 +1632,6 @@ class AutoPilotScheduler {
    */
   start(): void {
     if (this.isRunning) {
-      console.log("[AutoPilot Scheduler] Already running");
       return;
     }
 
@@ -1624,14 +1649,9 @@ class AutoPilotScheduler {
         const { backfillTranslationsFromLogs } = await import("./services/auto-translation");
         const result = await backfillTranslationsFromLogs();
         if (result.migrated > 0) {
-          console.log(`[AutoPilot Scheduler] Backfilled ${result.migrated} destination translations from logs`);
         }
-      } catch (error) {
-        console.error("[AutoPilot Scheduler] Translation backfill failed:", error);
-      }
+      } catch (error) {}
     }, 10000);
-
-    console.log("[AutoPilot Scheduler] Started - will run hourly/daily/weekly tasks automatically");
   }
 
   /**
@@ -1643,7 +1663,6 @@ class AutoPilotScheduler {
       this.checkIntervalId = null;
     }
     this.isRunning = false;
-    console.log("[AutoPilot Scheduler] Stopped");
   }
 
   /**
@@ -1655,30 +1674,22 @@ class AutoPilotScheduler {
     try {
       // Hourly tasks - run every hour
       if (this.shouldRunHourly(now)) {
-        console.log("[AutoPilot Scheduler] Running hourly tasks...");
         await autoPilot.runHourlyTasks();
         this.lastRuns.hourly = now;
-        console.log("[AutoPilot Scheduler] Hourly tasks completed");
       }
 
       // Daily tasks - run once per day at 2:00 AM
       if (this.shouldRunDaily(now)) {
-        console.log("[AutoPilot Scheduler] Running daily tasks...");
         await autoPilot.runDailyTasks();
         this.lastRuns.daily = now;
-        console.log("[AutoPilot Scheduler] Daily tasks completed");
       }
 
       // Weekly tasks - run once per week on Sunday at 3:00 AM
       if (this.shouldRunWeekly(now)) {
-        console.log("[AutoPilot Scheduler] Running weekly tasks...");
         await autoPilot.runWeeklyTasks();
         this.lastRuns.weekly = now;
-        console.log("[AutoPilot Scheduler] Weekly tasks completed");
       }
-    } catch (error) {
-      console.error("[AutoPilot Scheduler] Error running scheduled tasks:", error);
-    }
+    } catch (error) {}
   }
 
   private shouldRunHourly(now: Date): boolean {
@@ -1704,7 +1715,8 @@ class AutoPilotScheduler {
     if (now.getMinutes() > 5) return false; // Within first 5 minutes of 3 AM
 
     if (!this.lastRuns.weekly) return true;
-    const daysSinceLastRun = (now.getTime() - this.lastRuns.weekly.getTime()) / (1000 * 60 * 60 * 24);
+    const daysSinceLastRun =
+      (now.getTime() - this.lastRuns.weekly.getTime()) / (1000 * 60 * 60 * 24);
     return daysSinceLastRun >= 6; // At least 6 days since last run
   }
 

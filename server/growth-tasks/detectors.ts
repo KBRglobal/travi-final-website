@@ -3,15 +3,10 @@
  * Detects growth opportunities across the content system
  */
 
-import { db } from '../db';
-import { contents, aeoAnswerCapsules } from '@shared/schema';
-import { eq, and, lt, sql } from 'drizzle-orm';
-import {
-  Detection,
-  DetectorType,
-  GrowthTaskType,
-  DEFAULT_GROWTH_CONFIG,
-} from './types';
+import { db } from "../db";
+import { contents, aeoAnswerCapsules } from "@shared/schema";
+import { eq, and, lt, sql } from "drizzle-orm";
+import { Detection, DetectorType, GrowthTaskType, DEFAULT_GROWTH_CONFIG } from "./types";
 
 const DETECTOR_TIMEOUT_MS = 30000;
 
@@ -46,7 +41,7 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
           type: contents.type,
         })
         .from(contents)
-        .where(eq(contents.status, 'published'))
+        .where(eq(contents.status, "published"))
         .limit(100),
       DETECTOR_TIMEOUT_MS,
       []
@@ -61,14 +56,14 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
 
       if (!capsule) {
         detections.push({
-          type: 'entity_without_aeo',
+          type: "entity_without_aeo",
           confidence: 0.85,
           data: {
             contentId: content.id,
             contentTitle: content.title,
             contentType: content.type,
           },
-          suggestedTask: 'improve_aeo',
+          suggestedTask: "improve_aeo",
           detectedAt: new Date(),
         });
       }
@@ -89,7 +84,7 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
           blocks: contents.blocks,
         })
         .from(contents)
-        .where(eq(contents.status, 'published'))
+        .where(eq(contents.status, "published"))
         .limit(50),
       DETECTOR_TIMEOUT_MS,
       []
@@ -102,14 +97,14 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
 
       if (internalLinks < 2) {
         detections.push({
-          type: 'high_value_no_links',
+          type: "high_value_no_links",
           confidence: 0.75,
           data: {
             contentId: content.id,
             contentTitle: content.title,
             currentLinks: internalLinks,
           },
-          suggestedTask: 'add_internal_links',
+          suggestedTask: "add_internal_links",
           detectedAt: new Date(),
         });
       }
@@ -140,7 +135,7 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
           slug: contents.slug,
         })
         .from(contents)
-        .where(eq(contents.status, 'published'))
+        .where(eq(contents.status, "published"))
         .limit(200),
       DETECTOR_TIMEOUT_MS,
       []
@@ -155,7 +150,7 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
       const linkMatches = jsonStr.match(/href=["']\/([^"']+)["']/gi) || [];
 
       for (const match of linkMatches) {
-        const slug = match.replace(/href=["']\//i, '').replace(/["']$/, '');
+        const slug = match.replace(/href=["']\//i, "").replace(/["']$/, "");
         const targetContent = allContent.find(c => c.slug === slug);
         if (targetContent) {
           inboundMap.set(targetContent.id, (inboundMap.get(targetContent.id) || 0) + 1);
@@ -168,14 +163,14 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
       const inbound = inboundMap.get(content.id) || 0;
       if (inbound === 0) {
         detections.push({
-          type: 'orphan_content',
+          type: "orphan_content",
           confidence: 0.9,
           data: {
             contentId: content.id,
             contentTitle: content.title,
             inboundLinks: 0,
           },
-          suggestedTask: 'rescue_orphan',
+          suggestedTask: "rescue_orphan",
           detectedAt: new Date(),
         });
       }
@@ -198,12 +193,7 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
           updatedAt: contents.updatedAt,
         })
         .from(contents)
-        .where(
-          and(
-            eq(contents.status, 'published'),
-            lt(contents.updatedAt, staleDate)
-          )
-        )
+        .where(and(eq(contents.status, "published"), lt(contents.updatedAt, staleDate)))
         .limit(30),
       DETECTOR_TIMEOUT_MS,
       []
@@ -215,14 +205,14 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
       );
 
       detections.push({
-        type: 'stale_content',
+        type: "stale_content",
         confidence: 0.7,
         data: {
           contentId: content.id,
           contentTitle: content.title,
           daysSinceUpdate,
         },
-        suggestedTask: 'update_stale_content',
+        suggestedTask: "update_stale_content",
         detectedAt: new Date(),
       });
     }
@@ -251,13 +241,9 @@ export const detectors: Record<DetectorType, () => Promise<Detection[]>> = {
   },
 };
 
-export async function runDetectors(
-  enabledDetectors?: DetectorType[]
-): Promise<Detection[]> {
+export async function runDetectors(enabledDetectors?: DetectorType[]): Promise<Detection[]> {
   const toRun = enabledDetectors || DEFAULT_GROWTH_CONFIG.enabledDetectors;
   const allDetections: Detection[] = [];
-
-  console.log(`[GrowthTasks] Running ${toRun.length} detectors...`);
 
   for (const detectorType of toRun) {
     const detector = detectors[detectorType];
@@ -266,13 +252,9 @@ export async function runDetectors(
     try {
       const detections = await detector();
       allDetections.push(...detections);
-      console.log(`[GrowthTasks] ${detectorType}: found ${detections.length} opportunities`);
-    } catch (error) {
-      console.error(`[GrowthTasks] Detector ${detectorType} failed:`, error);
-    }
+    } catch (error) {}
   }
 
-  console.log(`[GrowthTasks] Total detections: ${allDetections.length}`);
   return allDetections;
 }
 
@@ -283,7 +265,6 @@ export async function runSingleDetector(type: DetectorType): Promise<Detection[]
   try {
     return await detector();
   } catch (error) {
-    console.error(`[GrowthTasks] Detector ${type} failed:`, error);
     return [];
   }
 }

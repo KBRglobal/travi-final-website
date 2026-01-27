@@ -46,69 +46,69 @@ export function getUserId(req: Request): string | undefined {
 // ============================================================================
 export const APPROVED_BOTS = [
   // Search Engines
-  'googlebot',
-  'bingbot',
-  'slurp',           // Yahoo
-  'duckduckbot',
-  'baiduspider',
-  'yandexbot',
-  
+  "googlebot",
+  "bingbot",
+  "slurp", // Yahoo
+  "duckduckbot",
+  "baiduspider",
+  "yandexbot",
+
   // AI Assistants - Critical for AI search visibility
-  'anthropic',
-  'claude',
-  'chatgpt',
-  'gptbot',
-  'google-extended',
-  'perplexitybot',
-  'applebot',
-  'cohere',
-  'claudebot',
-  'ai2bot',
-  'ccbot',           // Common Crawl
-  'omgilibot',
-  'diffbot',
-  
+  "anthropic",
+  "claude",
+  "chatgpt",
+  "gptbot",
+  "google-extended",
+  "perplexitybot",
+  "applebot",
+  "cohere",
+  "claudebot",
+  "ai2bot",
+  "ccbot", // Common Crawl
+  "omgilibot",
+  "diffbot",
+
   // Social Media Preview Bots
-  'facebookexternalhit',
-  'facebot',
-  'twitterbot',
-  'linkedinbot',
-  'pinterest',
-  'whatsapp',
-  'telegrambot',
-  'slackbot',
-  'discordbot',
-  
+  "facebookexternalhit",
+  "facebot",
+  "twitterbot",
+  "linkedinbot",
+  "pinterest",
+  "whatsapp",
+  "telegrambot",
+  "slackbot",
+  "discordbot",
+
   // SEO Tools
-  'ahrefsbot',
-  'semrushbot',
-  'mj12bot',
-  'screaming frog',
-  'dotbot',
-  'rogerbot',
-  
+  "ahrefsbot",
+  "semrushbot",
+  "mj12bot",
+  "screaming frog",
+  "dotbot",
+  "rogerbot",
+
   // Verification & Review Bots
-  'trustpilot',
-  'feefo',
-  'bazaarvoice',
-  'reevoo',
-  'yotpo',
-  
+  "trustpilot",
+  "feefo",
+  "bazaarvoice",
+  "reevoo",
+  "yotpo",
+
   // Site Monitoring & Uptime
-  'pingdom',
-  'uptimerobot',
-  'statuscake',
-  'gtmetrix',
-  'pagespeed',
-  
+  "pingdom",
+  "uptimerobot",
+  "statuscake",
+  "gtmetrix",
+  "pagespeed",
+
   // Other Legitimate Bots
-  'feedly',
-  'flipboard',
-  'pocket',
-  'embedly',
-  'quora link preview',
-  'outbrain',
-  'disqus',
+  "feedly",
+  "flipboard",
+  "pocket",
+  "embedly",
+  "quora link preview",
+  "outbrain",
+  "disqus",
 ];
 
 /**
@@ -132,24 +132,26 @@ const BOT_BLOCKING_CACHE_TTL = 30000; // 30 seconds cache
  */
 export async function isBotBlockingDisabled(): Promise<boolean> {
   const now = Date.now();
-  
+
   // Return cached value if still valid
-  if (botBlockingDisabledCache !== null && (now - botBlockingCacheTime) < BOT_BLOCKING_CACHE_TTL) {
+  if (botBlockingDisabledCache !== null && now - botBlockingCacheTime < BOT_BLOCKING_CACHE_TTL) {
     return botBlockingDisabledCache;
   }
-  
+
   try {
     // Dynamic import to avoid circular dependencies
     const { db } = await import("./db");
     const { siteSettings } = await import("@shared/schema");
     const { eq } = await import("drizzle-orm");
-    
-    const result = await db.select().from(siteSettings).where(eq(siteSettings.key, "botBlockingDisabled"));
+
+    const result = await db
+      .select()
+      .from(siteSettings)
+      .where(eq(siteSettings.key, "botBlockingDisabled"));
     botBlockingDisabledCache = result.length > 0 && result[0].value === true;
     botBlockingCacheTime = now;
     return botBlockingDisabledCache;
   } catch (error) {
-    console.error("[Security] Failed to check bot blocking setting:", error);
     return false; // Default to blocking enabled if error
   }
 }
@@ -167,24 +169,26 @@ export function clearBotBlockingCache() {
  * Apply this BEFORE other security middleware
  */
 export function approvedBotMiddleware(req: Request, res: Response, next: NextFunction) {
-  const userAgent = req.headers['user-agent'];
-  
+  const userAgent = req.headers["user-agent"];
+
   // Check if it's an approved bot
   if (isApprovedBot(userAgent)) {
     (req as any).isApprovedBot = true;
     return next();
   }
-  
+
   // Check if bot blocking is disabled (async check)
-  isBotBlockingDisabled().then(disabled => {
-    if (disabled) {
-      // All bots allowed when blocking is disabled
-      (req as any).isApprovedBot = true;
-    }
-    next();
-  }).catch(() => {
-    next(); // Continue even on error
-  });
+  isBotBlockingDisabled()
+    .then(disabled => {
+      if (disabled) {
+        // All bots allowed when blocking is disabled
+        (req as any).isApprovedBot = true;
+      }
+      next();
+    })
+    .catch(() => {
+      next(); // Continue even on error
+    });
 }
 
 // ============================================================================
@@ -218,15 +222,18 @@ interface RateLimitEntry {
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
 // Clean up expired entries every 5 minutes - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
-  setInterval(() => {
-    const now = Date.now();
-    rateLimitStore.forEach((entry, key) => {
-      if (entry.resetTime < now) {
-        rateLimitStore.delete(key);
-      }
-    });
-  }, 5 * 60 * 1000);
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
+  setInterval(
+    () => {
+      const now = Date.now();
+      rateLimitStore.forEach((entry, key) => {
+        if (entry.resetTime < now) {
+          rateLimitStore.delete(key);
+        }
+      });
+    },
+    5 * 60 * 1000
+  );
 }
 
 interface RateLimitConfig {
@@ -240,10 +247,10 @@ export function createRateLimiter(config: RateLimitConfig) {
 
   return (req: Request, res: Response, next: NextFunction) => {
     // Skip rate limiting for approved bots (AI crawlers, search engines)
-    if ((req as any).isApprovedBot || isApprovedBot(req.headers['user-agent'])) {
+    if ((req as any).isApprovedBot || isApprovedBot(req.headers["user-agent"])) {
       return next();
     }
-    
+
     const ip = req.ip || req.socket.remoteAddress || "unknown";
     const userId = getUserId(req) || "anonymous";
     const key = `${keyPrefix}:${ip}:${userId}`;
@@ -343,7 +350,6 @@ export async function checkAiUsageLimit(req: Request, res: Response, next: NextF
         entry = { count: 0, resetTime: now + dayMs };
       }
     } catch (err) {
-      console.error('[RateLimit] DB lookup failed, using cache:', err);
       entry = entry || { count: 0, resetTime: now + dayMs };
     }
   }
@@ -361,9 +367,7 @@ export async function checkAiUsageLimit(req: Request, res: Response, next: NextF
   aiUsageCache.set(key, entry);
 
   // Persist to database asynchronously (don't block request)
-  storage.incrementRateLimit(key, new Date(entry.resetTime)).catch(err => {
-    console.error('[RateLimit] DB persist failed:', err);
-  });
+  storage.incrementRateLimit(key, new Date(entry.resetTime)).catch(err => {});
 
   next();
 }
@@ -378,15 +382,15 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   // DEV ONLY: Auto-authenticate as admin when DEV_AUTO_AUTH=true
   if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
     // Use cached user or fallback to known admin
-    const devAdminId = devAutoAuthUser?.id || '1c932a80-c8c1-4ca5-b4f3-de09914947ba';
+    const devAdminId = devAutoAuthUser?.id || "1c932a80-c8c1-4ca5-b4f3-de09914947ba";
     (req as any).user = { claims: { sub: devAdminId }, id: devAdminId };
-    (req as any).dbUser = devAutoAuthUser || { id: devAdminId, role: 'admin' };
-    (req as any).userRole = devAutoAuthUser?.role || 'admin';
+    (req as any).dbUser = devAutoAuthUser || { id: devAdminId, role: "admin" };
+    (req as any).userRole = devAutoAuthUser?.role || "admin";
     (req as any).isAuthenticated = () => true;
     return next();
   }
-  
-  const isAuthenticated = typeof req.isAuthenticated === 'function' ? req.isAuthenticated() : false;
+
+  const isAuthenticated = typeof req.isAuthenticated === "function" ? req.isAuthenticated() : false;
   if (!isAuthenticated || !getUserId(req)) {
     return res.status(401).json({ error: "Not authenticated" });
   }
@@ -398,10 +402,7 @@ export async function initDevAutoAuth(getAdminUser: () => Promise<any>) {
   if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
     try {
       devAutoAuthUser = await getAdminUser();
-      console.log("[DEV] Auto-auth user cached:", devAutoAuthUser?.username || "unknown");
-    } catch (e) {
-      console.error("[DEV] Failed to cache auto-auth user:", e);
-    }
+    } catch (e) {}
   }
 }
 
@@ -432,16 +433,17 @@ export function requirePermission(permission: PermissionKey) {
   return async (req: Request, res: Response, next: NextFunction) => {
     // DEV ONLY: Auto-authenticate as admin when DEV_AUTO_AUTH=true
     if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
-      const devAdminId = devAutoAuthUser?.id || '1c932a80-c8c1-4ca5-b4f3-de09914947ba';
+      const devAdminId = devAutoAuthUser?.id || "1c932a80-c8c1-4ca5-b4f3-de09914947ba";
       (req as any).user = { claims: { sub: devAdminId }, id: devAdminId };
-      (req as any).dbUser = devAutoAuthUser || { id: devAdminId, role: 'admin' };
-      (req as any).userRole = devAutoAuthUser?.role || 'admin';
+      (req as any).dbUser = devAutoAuthUser || { id: devAdminId, role: "admin" };
+      (req as any).userRole = devAutoAuthUser?.role || "admin";
       (req as any).isAuthenticated = () => true;
       return next();
     }
-    
+
     const userId = getUserId(req);
-    const isAuthenticated = typeof req.isAuthenticated === 'function' ? req.isAuthenticated() : false;
+    const isAuthenticated =
+      typeof req.isAuthenticated === "function" ? req.isAuthenticated() : false;
     if (!isAuthenticated || !userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
@@ -469,7 +471,8 @@ export function requirePermission(permission: PermissionKey) {
 export function requireOwnContentOrPermission(permission: PermissionKey) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user as any;
-    const isAuthenticated = typeof req.isAuthenticated === 'function' ? req.isAuthenticated() : false;
+    const isAuthenticated =
+      typeof req.isAuthenticated === "function" ? req.isAuthenticated() : false;
     if (!isAuthenticated || !user?.claims?.sub) {
       return res.status(401).json({ error: "Not authenticated" });
     }
@@ -532,9 +535,11 @@ export function csrfProtection(req: Request, res: Response, next: NextFunction) 
   }
 
   // Skip for webhooks and public newsletter endpoints
-  if (req.path.startsWith("/api/webhooks/") || 
-      req.path === "/api/newsletter/subscribe" ||
-      req.path === "/api/analytics/record-view") {
+  if (
+    req.path.startsWith("/api/webhooks/") ||
+    req.path === "/api/newsletter/subscribe" ||
+    req.path === "/api/analytics/record-view"
+  ) {
     return next();
   }
 
@@ -555,9 +560,8 @@ export function csrfProtection(req: Request, res: Response, next: NextFunction) 
   }
 
   // Check if origin is allowed
-  const isAllowed = ALLOWED_ORIGINS.some((allowed) => origin.startsWith(allowed));
+  const isAllowed = ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed));
   if (!isAllowed) {
-    console.warn(`CSRF blocked request from origin: ${origin}`);
     return res.status(403).json({ error: "CSRF validation failed - invalid origin" });
   }
 
@@ -582,7 +586,7 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 export function validateMediaUpload(req: Request, res: Response, next: NextFunction) {
   const file = (req as any).file;
-  
+
   if (!file) {
     return next(); // Let the route handler deal with missing file
   }
@@ -643,14 +647,13 @@ export async function validateAnalyticsRequest(req: Request, res: Response, next
 // ERROR HANDLING (no stack traces to client)
 // ============================================================================
 export function secureErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-  // Log full error for debugging (but never log secrets)
-  const sanitizedError = {
+  // Log full error for debugging (but never log secrets or PII)
+  console.error("[API-ERROR]", {
     message: err.message,
     path: req.path,
     method: req.method,
     timestamp: new Date().toISOString(),
-  };
-  console.error("[Error]", JSON.stringify(sanitizedError));
+  });
 
   // Never expose stack traces or internal details to clients
   if (res.headersSent) {
@@ -700,7 +703,15 @@ export function auditLogReadOnly(req: Request, res: Response, next: NextFunction
 // ============================================================================
 export interface AuditLogEntry {
   timestamp: string;
-  action: 'create' | 'update' | 'delete' | 'publish' | 'login' | 'logout' | 'translate' | 'ai_generate';
+  action:
+    | "create"
+    | "update"
+    | "delete"
+    | "publish"
+    | "login"
+    | "logout"
+    | "translate"
+    | "ai_generate";
   resourceType: string;
   resourceId?: string;
   userId?: string;
@@ -716,22 +727,26 @@ const auditLogFallback: AuditLogEntry[] = [];
 const MAX_FALLBACK_LOGS = 100;
 
 // Map audit actions to valid database enum values
-function mapActionToDbEnum(action: AuditLogEntry['action']): 'create' | 'update' | 'delete' | 'publish' | 'login' | 'logout' {
+function mapActionToDbEnum(
+  action: AuditLogEntry["action"]
+): "create" | "update" | "delete" | "publish" | "login" | "logout" {
   switch (action) {
-    case 'translate': return 'update';  // Translation is a form of update
-    case 'ai_generate': return 'create'; // AI generation creates new content
-    default: return action;
+    case "translate":
+      return "update"; // Translation is a form of update
+    case "ai_generate":
+      return "create"; // AI generation creates new content
+    default:
+      return action;
   }
 }
 
-export async function logAuditEvent(entry: Omit<AuditLogEntry, 'timestamp'>) {
+export async function logAuditEvent(entry: Omit<AuditLogEntry, "timestamp">) {
   const logEntry: AuditLogEntry = {
     ...entry,
     timestamp: new Date().toISOString(),
   };
 
   // Console log for immediate visibility (with original action for debugging)
-  console.log('[AUDIT]', JSON.stringify(logEntry));
 
   try {
     // Persist to database (map action to valid DB enum)
@@ -741,14 +756,14 @@ export async function logAuditEvent(entry: Omit<AuditLogEntry, 'timestamp'>) {
       actionType: mapActionToDbEnum(entry.action),
       entityType: entry.resourceType as any,
       entityId: entry.resourceId,
-      description: `${entry.action} on ${entry.resourceType}${entry.resourceId ? ` (${entry.resourceId})` : ''}`,
+      description: `${entry.action} on ${entry.resourceType}${entry.resourceId ? ` (${entry.resourceId})` : ""}`,
       ipAddress: entry.ip,
       userAgent: entry.userAgent,
       afterState: entry.details as Record<string, unknown>,
     });
   } catch (err) {
     // Fallback to in-memory if DB fails
-    console.error('[AUDIT] Failed to persist to DB:', err);
+
     auditLogFallback.push(logEntry);
     if (auditLogFallback.length > MAX_FALLBACK_LOGS) {
       auditLogFallback.splice(0, auditLogFallback.length - MAX_FALLBACK_LOGS);
@@ -774,17 +789,16 @@ export async function getAuditLogs(options?: {
     // Convert to AuditLogEntry format
     return dbLogs.map(log => ({
       timestamp: log.timestamp.toISOString(),
-      action: log.actionType as AuditLogEntry['action'],
+      action: log.actionType as AuditLogEntry["action"],
       resourceType: log.entityType,
       resourceId: log.entityId || undefined,
       userId: log.userId || undefined,
       userEmail: log.userName || undefined,
-      ip: log.ipAddress || 'unknown',
+      ip: log.ipAddress || "unknown",
       userAgent: log.userAgent || undefined,
       details: log.afterState || undefined,
     }));
   } catch (err) {
-    console.error('[AUDIT] Failed to read from DB:', err);
     // Return fallback logs if DB fails
     let logs = [...auditLogFallback];
     if (options?.action) logs = logs.filter(l => l.action === options.action);
@@ -796,14 +810,14 @@ export async function getAuditLogs(options?: {
 }
 
 // Middleware to auto-log requests
-export function auditLogMiddleware(action: AuditLogEntry['action'], resourceType: string) {
+export function auditLogMiddleware(action: AuditLogEntry["action"], resourceType: string) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = req.user as any;
-    const ip = req.ip || req.socket.remoteAddress || 'unknown';
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
 
     // Store original json method to intercept response
     const originalJson = res.json.bind(res);
-    res.json = function(data: any) {
+    res.json = function (data: any) {
       // Only log successful operations
       if (res.statusCode >= 200 && res.statusCode < 300) {
         logAuditEvent({
@@ -813,7 +827,7 @@ export function auditLogMiddleware(action: AuditLogEntry['action'], resourceType
           userId: user?.claims?.sub,
           userEmail: user?.claims?.email,
           ip,
-          userAgent: req.get('User-Agent'),
+          userAgent: req.get("User-Agent"),
           details: {
             method: req.method,
             path: req.path,
@@ -837,34 +851,37 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
   // Currently required for:
   // - 'unsafe-inline': Inline styles from Tailwind, Radix UI components
   // - 'unsafe-eval': Development hot reload, some third-party analytics
-  res.setHeader('Content-Security-Policy', [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com",
-    "font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:",
-    "img-src 'self' data: blob: https: http:",
-    "connect-src 'self' https://*.replit.dev https://*.replit.app https://api.deepl.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai https://images.unsplash.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd wss:",
-    "frame-ancestors 'self'",
-    "form-action 'self'",
-    "base-uri 'self'",
-  ].join('; '));
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com",
+      "font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:",
+      "img-src 'self' data: blob: https: http:",
+      "connect-src 'self' https://*.replit.dev https://*.replit.app https://api.deepl.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai https://images.unsplash.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd wss:",
+      "frame-ancestors 'self'",
+      "form-action 'self'",
+      "base-uri 'self'",
+    ].join("; ")
+  );
 
   // Additional security headers
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
   // Additional security headers for improved protection
   // NOTE: HSTS is handled by Replit infrastructure - do not set here to avoid duplicates
   // res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  res.setHeader('X-Download-Options', 'noopen');
-  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  res.setHeader("X-Download-Options", "noopen");
+  res.setHeader("X-Permitted-Cross-Domain-Policies", "none");
 
   // Remove server fingerprinting headers
-  res.removeHeader('X-Powered-By');
-  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  res.removeHeader("X-Powered-By");
+  res.setHeader("X-DNS-Prefetch-Control", "off");
 
   next();
 }
@@ -890,9 +907,9 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 // ============================================================================
 // In development, allow all Replit preview URLs
 const isReplitOrigin = (origin: string) => {
-  return origin.includes('.replit.dev') ||
-         origin.includes('.replit.app') ||
-         origin.includes('.repl.co');
+  return (
+    origin.includes(".replit.dev") || origin.includes(".replit.app") || origin.includes(".repl.co")
+  );
 };
 
 /**
@@ -907,20 +924,21 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 
   // Check if origin is allowed
-  const isAllowed = ALLOWED_ORIGINS.includes(origin) ||
-                    (process.env.NODE_ENV !== 'production' && isReplitOrigin(origin));
+  const isAllowed =
+    ALLOWED_ORIGINS.includes(origin) ||
+    (process.env.NODE_ENV !== "production" && isReplitOrigin(origin));
 
   if (isAllowed) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count, X-Page, X-Limit');
-    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+    res.setHeader("Access-Control-Expose-Headers", "X-Total-Count, X-Page, X-Limit");
+    res.setHeader("Access-Control-Max-Age", "86400"); // 24 hours
   }
 
   // Handle preflight requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
@@ -933,12 +951,12 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
 // HTML entity encoding for untrusted input
 function escapeHtml(str: string): string {
   const htmlEscapes: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;',
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
   };
   return str.replace(/[&<>"'/]/g, char => htmlEscapes[char]);
 }
@@ -946,16 +964,16 @@ function escapeHtml(str: string): string {
 // Remove null bytes and other dangerous characters
 function sanitizeString(value: string): string {
   // Remove null bytes
-  let sanitized = value.replace(/\0/g, '');
+  let sanitized = value.replace(/\0/g, "");
 
   // Remove other control characters (except newline and tab)
-  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 
   return sanitized.trim();
 }
 
 // Dangerous keys that could cause prototype pollution
-const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+const DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
 // Recursively sanitize an object
 function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
@@ -966,28 +984,29 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
     if (DANGEROUS_KEYS.has(key)) {
       continue;
     }
-    
+
     // Skip sensitive fields that shouldn't be modified
-    if (['password', 'secret', 'token', 'apiKey', 'api_key'].includes(key.toLowerCase())) {
+    if (["password", "secret", "token", "apiKey", "api_key"].includes(key.toLowerCase())) {
       sanitized[key] = value;
       continue;
     }
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // For short strings (likely form fields), sanitize more strictly
       if (value.length < 500) {
         sanitized[key] = sanitizeString(value);
       } else {
         // For longer content (like body/content), just remove dangerous control chars
-        sanitized[key] = value.replace(/\0/g, '').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+        sanitized[key] = value.replace(/\0/g, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
       }
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {
-        if (typeof item === 'string') return sanitizeString(item);
-        if (typeof item === 'object' && item !== null) return sanitizeObject(item as Record<string, unknown>);
+        if (typeof item === "string") return sanitizeString(item);
+        if (typeof item === "object" && item !== null)
+          return sanitizeObject(item as Record<string, unknown>);
         return item;
       });
-    } else if (typeof value === 'object' && value !== null) {
+    } else if (typeof value === "object" && value !== null) {
       sanitized[key] = sanitizeObject(value as Record<string, unknown>);
     } else {
       sanitized[key] = value;
@@ -1003,12 +1022,12 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
  */
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   // Sanitize body
-  if (req.body && typeof req.body === 'object') {
+  if (req.body && typeof req.body === "object") {
     req.body = sanitizeObject(req.body);
   }
 
   // Sanitize query parameters
-  if (req.query && typeof req.query === 'object') {
+  if (req.query && typeof req.query === "object") {
     req.query = sanitizeObject(req.query as Record<string, unknown>) as typeof req.query;
   }
 
@@ -1030,17 +1049,20 @@ const BLOCK_DURATION = 30 * 60 * 1000; // 30 minutes
 const ATTEMPT_WINDOW = 15 * 60 * 1000; // 15 minutes
 
 // Clean up old entries every 10 minutes - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
-  setInterval(() => {
-    const now = Date.now();
-    suspiciousIps.forEach((entry, ip) => {
-      if (entry.blockedUntil && entry.blockedUntil < now) {
-        suspiciousIps.delete(ip);
-      } else if (now - entry.lastAttempt > ATTEMPT_WINDOW * 2) {
-        suspiciousIps.delete(ip);
-      }
-    });
-  }, 10 * 60 * 1000);
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
+  setInterval(
+    () => {
+      const now = Date.now();
+      suspiciousIps.forEach((entry, ip) => {
+        if (entry.blockedUntil && entry.blockedUntil < now) {
+          suspiciousIps.delete(ip);
+        } else if (now - entry.lastAttempt > ATTEMPT_WINDOW * 2) {
+          suspiciousIps.delete(ip);
+        }
+      });
+    },
+    10 * 60 * 1000
+  );
 }
 
 export function recordFailedAttempt(ip: string) {
@@ -1058,14 +1080,13 @@ export function recordFailedAttempt(ip: string) {
   // Block if threshold exceeded
   if (entry.failedAttempts >= BLOCK_THRESHOLD) {
     entry.blockedUntil = now + BLOCK_DURATION;
-    console.warn(`[SECURITY] IP blocked: ${ip} after ${entry.failedAttempts} failed attempts`);
 
     logAuditEvent({
-      action: 'login',
-      resourceType: 'security',
+      action: "login",
+      resourceType: "security",
       ip,
       details: {
-        event: 'ip_blocked',
+        event: "ip_blocked",
         failedAttempts: entry.failedAttempts,
         blockedUntil: new Date(entry.blockedUntil).toISOString(),
       },
@@ -1089,19 +1110,21 @@ export function isIpBlocked(ip: string): boolean {
 
 export function ipBlockMiddleware(req: Request, res: Response, next: NextFunction) {
   // Skip IP blocking for approved bots (AI crawlers, search engines)
-  if ((req as any).isApprovedBot || isApprovedBot(req.headers['user-agent'])) {
+  if ((req as any).isApprovedBot || isApprovedBot(req.headers["user-agent"])) {
     return next();
   }
-  
-  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
 
   if (isIpBlocked(ip)) {
     const entry = suspiciousIps.get(ip);
-    const retryAfter = entry?.blockedUntil ? Math.ceil((entry.blockedUntil - Date.now()) / 1000) : 1800;
+    const retryAfter = entry?.blockedUntil
+      ? Math.ceil((entry.blockedUntil - Date.now()) / 1000)
+      : 1800;
 
-    res.setHeader('Retry-After', retryAfter);
+    res.setHeader("Retry-After", retryAfter);
     return res.status(403).json({
-      error: 'IP temporarily blocked due to suspicious activity',
+      error: "IP temporarily blocked due to suspicious activity",
       retryAfter,
     });
   }
@@ -1121,42 +1144,42 @@ interface SSRFValidationResult {
 
 // Private IP ranges that should be blocked
 const PRIVATE_IP_PATTERNS = [
-  /^127\./,                          // Loopback
-  /^10\./,                           // Private Class A
-  /^172\.(1[6-9]|2[0-9]|3[0-1])\./,  // Private Class B
-  /^192\.168\./,                     // Private Class C
-  /^169\.254\./,                     // Link-local (AWS metadata, etc.)
-  /^0\./,                            // Current network
-  /^100\.(6[4-9]|[7-9][0-9]|1[0-2][0-9])\./,  // Shared address space
-  /^198\.18\./,                      // Benchmark testing
-  /^::1$/,                           // IPv6 loopback
-  /^fe80:/i,                         // IPv6 link-local
-  /^fc00:/i,                         // IPv6 unique local
-  /^fd00:/i,                         // IPv6 unique local
+  /^127\./, // Loopback
+  /^10\./, // Private Class A
+  /^172\.(1[6-9]|2[0-9]|3[0-1])\./, // Private Class B
+  /^192\.168\./, // Private Class C
+  /^169\.254\./, // Link-local (AWS metadata, etc.)
+  /^0\./, // Current network
+  /^100\.(6[4-9]|[7-9][0-9]|1[0-2][0-9])\./, // Shared address space
+  /^198\.18\./, // Benchmark testing
+  /^::1$/, // IPv6 loopback
+  /^fe80:/i, // IPv6 link-local
+  /^fc00:/i, // IPv6 unique local
+  /^fd00:/i, // IPv6 unique local
 ];
 
 // Blocked hostnames
 const BLOCKED_HOSTNAMES = [
-  'localhost',
-  'localhost.localdomain',
-  '0.0.0.0',
-  '[::1]',
-  'metadata.google.internal',
-  'metadata.google.com',
-  'instance-data',
-  'instance-metadata',
+  "localhost",
+  "localhost.localdomain",
+  "0.0.0.0",
+  "[::1]",
+  "metadata.google.internal",
+  "metadata.google.com",
+  "instance-data",
+  "instance-metadata",
 ];
 
 // Only allow these protocols
-const ALLOWED_PROTOCOLS = ['http:', 'https:'];
+const ALLOWED_PROTOCOLS = ["http:", "https:"];
 
 /**
  * Validate a URL to prevent SSRF attacks
  * Call this before making any server-side HTTP request to user-provided URLs
  */
 export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
-  if (!urlString || typeof urlString !== 'string') {
-    return { valid: false, error: 'URL is required' };
+  if (!urlString || typeof urlString !== "string") {
+    return { valid: false, error: "URL is required" };
   }
 
   try {
@@ -1166,14 +1189,16 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
     if (!ALLOWED_PROTOCOLS.includes(url.protocol)) {
       return {
         valid: false,
-        error: `Protocol not allowed: ${url.protocol}. Only HTTP and HTTPS are permitted.`
+        error: `Protocol not allowed: ${url.protocol}. Only HTTP and HTTPS are permitted.`,
       };
     }
 
     // Check for blocked hostnames
     const hostname = url.hostname.toLowerCase();
-    if (BLOCKED_HOSTNAMES.some(blocked => hostname === blocked || hostname.endsWith('.' + blocked))) {
-      return { valid: false, error: 'Hostname not allowed' };
+    if (
+      BLOCKED_HOSTNAMES.some(blocked => hostname === blocked || hostname.endsWith("." + blocked))
+    ) {
+      return { valid: false, error: "Hostname not allowed" };
     }
 
     // Check if hostname is an IP address and validate it
@@ -1181,12 +1206,12 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
     if (ipMatch) {
       const ip = ipMatch[1] || ipMatch[2];
       if (isPrivateIP(ip)) {
-        return { valid: false, error: 'Private IP addresses are not allowed' };
+        return { valid: false, error: "Private IP addresses are not allowed" };
       }
     }
 
     // Check for suspicious port usage (common internal service ports)
-    const port = url.port ? parseInt(url.port, 10) : (url.protocol === 'https:' ? 443 : 80);
+    const port = url.port ? parseInt(url.port, 10) : url.protocol === "https:" ? 443 : 80;
     const suspiciousPorts = [22, 23, 25, 3306, 5432, 6379, 11211, 27017, 9200, 9300];
     if (suspiciousPorts.includes(port)) {
       return { valid: false, error: `Port ${port} is not allowed for security reasons` };
@@ -1194,20 +1219,20 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
 
     // Check for URL with credentials (user:pass@host)
     if (url.username || url.password) {
-      return { valid: false, error: 'URLs with credentials are not allowed' };
+      return { valid: false, error: "URLs with credentials are not allowed" };
     }
 
     // Prevent DNS rebinding by checking for numeric-looking hostnames
     if (/^[0-9.]+$/.test(hostname) && !ipMatch) {
-      return { valid: false, error: 'Invalid hostname format' };
+      return { valid: false, error: "Invalid hostname format" };
     }
 
     return {
       valid: true,
-      sanitizedUrl: url.toString()
+      sanitizedUrl: url.toString(),
     };
   } catch (err) {
-    return { valid: false, error: 'Invalid URL format' };
+    return { valid: false, error: "Invalid URL format" };
   }
 }
 
@@ -1229,7 +1254,7 @@ export function ssrfProtectionMiddleware(urlParamName: string) {
       const result = validateUrlForSSRF(url);
       if (!result.valid) {
         return res.status(400).json({
-          error: 'Invalid URL',
+          error: "Invalid URL",
           details: result.error,
         });
       }
@@ -1246,7 +1271,11 @@ export function ssrfProtectionMiddleware(urlParamName: string) {
 // ============================================================================
 // PUBLIC API - List of blocked IPs (for admin)
 // ============================================================================
-export function getBlockedIps(): Array<{ ip: string; blockedUntil: string; failedAttempts: number }> {
+export function getBlockedIps(): Array<{
+  ip: string;
+  blockedUntil: string;
+  failedAttempts: number;
+}> {
   const result: Array<{ ip: string; blockedUntil: string; failedAttempts: number }> = [];
   const now = Date.now();
 

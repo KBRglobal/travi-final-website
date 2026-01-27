@@ -14,14 +14,8 @@ import { useState } from "react";
 
 export function PublishDialog() {
   const { isRTL } = useLocale();
-  const {
-    activeDialog,
-    closeDialog,
-    publishChanges,
-    isPublishing,
-    componentOrder,
-    pageSlug,
-  } = useLiveEditStore();
+  const { activeDialog, closeDialog, publishChanges, isPublishing, componentOrder, pageSlug } =
+    useLiveEditStore();
 
   const [publishError, setPublishError] = useState<string | null>(null);
   const [publishSuccess, setPublishSuccess] = useState(false);
@@ -40,9 +34,7 @@ export function PublishDialog() {
         setPublishSuccess(false);
       }, 1500);
     } catch (error) {
-      setPublishError(
-        error instanceof Error ? error.message : "Failed to publish changes"
-      );
+      setPublishError(error instanceof Error ? error.message : "Failed to publish changes");
     }
   };
 
@@ -60,24 +52,16 @@ export function PublishDialog() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Upload className="w-5 h-5 text-green-600" />
-            {isRTL ? "פרסום שינויים" : "Publish Changes"}
+            Publish Changes
           </DialogTitle>
-          <DialogDescription>
-            {isRTL
-              ? "שינויים אלה יהיו גלויים לכל המבקרים באתר."
-              : "These changes will be visible to all site visitors."}
-          </DialogDescription>
+          <DialogDescription>These changes will be visible to all site visitors.</DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
           {publishSuccess ? (
             <div className="flex items-center gap-3 p-4 bg-green-50 text-green-700 rounded-lg">
               <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-              <p className="text-sm">
-                {isRTL
-                  ? "השינויים פורסמו בהצלחה!"
-                  : "Changes published successfully!"}
-              </p>
+              <p className="text-sm">Changes published successfully!</p>
             </div>
           ) : publishError ? (
             <div className="flex items-center gap-3 p-4 bg-red-50 text-red-700 rounded-lg">
@@ -87,17 +71,13 @@ export function PublishDialog() {
           ) : (
             <div className="space-y-3">
               <div className="p-3 bg-muted rounded-lg">
-                <p className="text-sm font-medium">
-                  {isRTL ? "עמוד:" : "Page:"} {pageSlug}
-                </p>
+                <p className="text-sm font-medium">Page: {pageSlug}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {isRTL ? `${componentOrder.length} רכיבים` : `${componentOrder.length} components`}
+                  {componentOrder.length} components
                 </p>
               </div>
               <p className="text-sm text-muted-foreground">
-                {isRTL
-                  ? "האם אתה בטוח שברצונך לפרסם שינויים אלה?"
-                  : "Are you sure you want to publish these changes?"}
+                Are you sure you want to publish these changes?
               </p>
             </div>
           )}
@@ -106,7 +86,7 @@ export function PublishDialog() {
         {!publishSuccess && (
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={handleClose} disabled={isPublishing}>
-              {isRTL ? "ביטול" : "Cancel"}
+              Cancel
             </Button>
             <Button
               onClick={handlePublish}
@@ -114,11 +94,11 @@ export function PublishDialog() {
               className="bg-green-600 hover:bg-green-700"
             >
               {isPublishing ? (
-                <>{isRTL ? "מפרסם..." : "Publishing..."}</>
+                <>Publishing...</>
               ) : (
                 <>
                   <Upload className="w-4 h-4 me-1" />
-                  {isRTL ? "פרסם" : "Publish"}
+                  Publish
                 </>
               )}
             </Button>

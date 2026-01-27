@@ -60,18 +60,13 @@ export async function initializeSystemRoles(): Promise<void> {
       }
     }
   }
-
-  console.log("[AccessControl] System roles initialized");
 }
 
 /**
  * Get all roles
  */
 export async function getAllRoles(): Promise<GovernanceRole[]> {
-  return db
-    .select()
-    .from(governanceRoles)
-    .orderBy(desc(governanceRoles.priority));
+  return db.select().from(governanceRoles).orderBy(desc(governanceRoles.priority));
 }
 
 /**
@@ -91,10 +86,7 @@ export async function getRoleByName(name: GovernanceRoleName): Promise<Governanc
  * Get permissions for a role
  */
 export async function getRolePermissionsFromDb(roleId: string): Promise<GovernancePermission[]> {
-  return db
-    .select()
-    .from(governancePermissions)
-    .where(eq(governancePermissions.roleId, roleId));
+  return db.select().from(governancePermissions).where(eq(governancePermissions.roleId, roleId));
 }
 
 /**
@@ -125,9 +117,7 @@ export async function addPermission(
  * Remove permission from a role
  */
 export async function removePermission(permissionId: string): Promise<void> {
-  await db
-    .delete(governancePermissions)
-    .where(eq(governancePermissions.id, permissionId));
+  await db.delete(governancePermissions).where(eq(governancePermissions.id, permissionId));
 
   clearUserContextCache();
 }
@@ -207,12 +197,7 @@ export async function getUserRoleAssignments(userId: string): Promise<UserRoleAs
   return db
     .select()
     .from(userRoleAssignments)
-    .where(
-      and(
-        eq(userRoleAssignments.userId, userId),
-        eq(userRoleAssignments.isActive, true)
-      )
-    );
+    .where(and(eq(userRoleAssignments.userId, userId), eq(userRoleAssignments.isActive, true)));
 }
 
 /**
@@ -222,14 +207,7 @@ export async function getUsersWithRole(roleId: string): Promise<string[]> {
   const assignments = await db
     .select({ userId: userRoleAssignments.userId })
     .from(userRoleAssignments)
-    .where(
-      and(
-        eq(userRoleAssignments.roleId, roleId),
-        eq(userRoleAssignments.isActive, true)
-      )
-    );
+    .where(and(eq(userRoleAssignments.roleId, roleId), eq(userRoleAssignments.isActive, true)));
 
-  return assignments.map((a) => a.userId);
+  return assignments.map(a => a.userId);
 }
-
-console.log("[AccessControl] Repository loaded");

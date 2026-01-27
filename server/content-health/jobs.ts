@@ -3,24 +3,22 @@
  * Background jobs for health checking and remediation
  */
 
-import { db } from '../db';
-import { contents } from '@shared/schema';
-import { eq, and, lt, sql } from 'drizzle-orm';
-import { scoreContent, batchScoreContent, invalidateScoreCache } from './scorer';
+import { db } from "../db";
+import { contents } from "@shared/schema";
+import { eq, and, lt, sql } from "drizzle-orm";
+import { scoreContent, batchScoreContent, invalidateScoreCache } from "./scorer";
 import {
   createRemediationActions,
   queueRemediation,
   processRemediationQueue,
   getRemediationStats,
-} from './remediation-engine';
-import {
-  ContentHealthStats as ContentHealthMetrics,
-  DEFAULT_SCANNER_CONFIG,
-} from './types';
+} from "./remediation-engine";
+import { ContentHealthStats as ContentHealthMetrics, DEFAULT_SCANNER_CONFIG } from "./types";
 
 const DEFAULT_HEALTH_CONFIG = {
   autoRemediationEnabled: (DEFAULT_SCANNER_CONFIG as any).autoEnqueueJobs ?? false,
-  checkIntervalHours: ((DEFAULT_SCANNER_CONFIG as any).scanIntervalMs ?? 300000) / (60 * 60 * 1000) || 1,
+  checkIntervalHours:
+    ((DEFAULT_SCANNER_CONFIG as any).scanIntervalMs ?? 300000) / (60 * 60 * 1000) || 1,
 } as any;
 
 let isRunning = false;
@@ -31,12 +29,11 @@ const healthScoreHistory: Map<string, number[]> = new Map();
 const MAX_HISTORY_SIZE = 100;
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_CONTENT_HEALTH === 'true';
+  return process.env.ENABLE_CONTENT_HEALTH === "true";
 }
 
 export async function runHealthCheck(contentIds?: string[]): Promise<any> {
   const startTime = Date.now();
-  console.log('[ContentHealth] Starting health check...');
 
   let targetIds = contentIds;
 
@@ -45,7 +42,7 @@ export async function runHealthCheck(contentIds?: string[]): Promise<any> {
     const published = await db
       .select({ id: contents.id })
       .from(contents)
-      .where(eq(contents.status, 'published'))
+      .where(eq(contents.status, "published"))
       .limit(1000); // Limit batch size
 
     targetIds = published.map(c => c.id);
@@ -70,7 +67,7 @@ export async function runHealthCheck(contentIds?: string[]): Promise<any> {
 
     if (score.overallScore >= 85) {
       healthyCount++;
-    } else if (score.remediationPriority === 'critical') {
+    } else if (score.remediationPriority === "critical") {
       criticalCount++;
       needsAttentionCount++;
     } else if (score.needsRemediation) {
@@ -88,7 +85,6 @@ export async function runHealthCheck(contentIds?: string[]): Promise<any> {
   }
 
   const elapsed = Date.now() - startTime;
-  console.log(`[ContentHealth] Health check completed in ${elapsed}ms: ${scores.size} content items checked`);
 
   const remediationStats = getRemediationStats();
 
@@ -101,7 +97,8 @@ export async function runHealthCheck(contentIds?: string[]): Promise<any> {
     successRate:
       remediationStats.completed + remediationStats.failed > 0
         ? Math.round(
-            (remediationStats.completed / (remediationStats.completed + remediationStats.failed)) * 100
+            (remediationStats.completed / (remediationStats.completed + remediationStats.failed)) *
+              100
           )
         : 100,
     averageHealthScore: scores.size > 0 ? Math.round(totalScore / scores.size) : 100,
@@ -129,7 +126,6 @@ async function processHealthCheckCycle(): Promise<void> {
   try {
     await runHealthCheck();
   } catch (error) {
-    console.error('[ContentHealth] Health check cycle error:', error);
   } finally {
     isRunning = false;
   }
@@ -141,20 +137,14 @@ async function processRemediationCycle(): Promise<void> {
   try {
     const processed = await processRemediationQueue();
     if (processed > 0) {
-      console.log(`[ContentHealth] Processed ${processed} remediation actions`);
     }
-  } catch (error) {
-    console.error('[ContentHealth] Remediation cycle error:', error);
-  }
+  } catch (error) {}
 }
 
 export function startHealthJobs(): void {
   if (!isEnabled()) {
-    console.log('[ContentHealth] Jobs disabled (ENABLE_CONTENT_HEALTH not set)');
     return;
   }
-
-  console.log('[ContentHealth] Starting background jobs...');
 
   // Health check every N hours
   const checkIntervalMs = DEFAULT_HEALTH_CONFIG.checkIntervalHours * 60 * 60 * 1000;
@@ -165,8 +155,6 @@ export function startHealthJobs(): void {
 
   // Initial run after 30 seconds
   setTimeout(processHealthCheckCycle, 30 * 1000);
-
-  console.log(`[ContentHealth] Jobs started (check interval: ${DEFAULT_HEALTH_CONFIG.checkIntervalHours}h)`);
 }
 
 export function stopHealthJobs(): void {
@@ -178,7 +166,6 @@ export function stopHealthJobs(): void {
     clearInterval(remediationIntervalId);
     remediationIntervalId = null;
   }
-  console.log('[ContentHealth] Jobs stopped');
 }
 
 export function onContentUpdated(contentId: string): void {
@@ -201,27 +188,28 @@ export function onContentPublished(contentId: string): void {
 
 export function getHealthTrend(contentId: string): {
   current: number;
-  trend: 'improving' | 'declining' | 'stable';
+  trend: "improving" | "declining" | "stable";
   history: number[];
 } {
   const history = healthScoreHistory.get(contentId) || [];
   const current = history[history.length - 1] || 0;
 
   if (history.length < 2) {
-    return { current, trend: 'stable', history };
+    return { current, trend: "stable", history };
   }
 
   const recent = history.slice(-5);
   const earlier = history.slice(-10, -5);
 
   const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
-  const earlierAvg = earlier.length > 0 ? earlier.reduce((a, b) => a + b, 0) / earlier.length : recentAvg;
+  const earlierAvg =
+    earlier.length > 0 ? earlier.reduce((a, b) => a + b, 0) / earlier.length : recentAvg;
 
   const diff = recentAvg - earlierAvg;
 
-  let trend: 'improving' | 'declining' | 'stable' = 'stable';
-  if (diff > 5) trend = 'improving';
-  else if (diff < -5) trend = 'declining';
+  let trend: "improving" | "declining" | "stable" = "stable";
+  if (diff > 5) trend = "improving";
+  else if (diff < -5) trend = "declining";
 
   return { current, trend, history };
 }

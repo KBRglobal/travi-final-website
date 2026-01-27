@@ -8,7 +8,6 @@ import { requirePermission, requireAuth } from "./security";
 import { contentIntelligence } from "./content-intelligence";
 
 export function registerContentIntelligenceRoutes(app: Express) {
-
   // ============================================================================
   // TOPIC CLUSTER BUILDER
   // ============================================================================
@@ -19,7 +18,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const clusters = await contentIntelligence.clusters.detectAreaClusters();
       res.json({ clusters, count: clusters.length });
     } catch (error) {
-      console.error("[Intelligence] Error detecting area clusters:", error);
       res.status(500).json({ error: "Failed to detect area clusters" });
     }
   });
@@ -30,29 +28,31 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const clusters = await contentIntelligence.clusters.detectCategoryClusters();
       res.json({ clusters, count: clusters.length });
     } catch (error) {
-      console.error("[Intelligence] Error detecting category clusters:", error);
       res.status(500).json({ error: "Failed to detect category clusters" });
     }
   });
 
   // Generate pillar page structure
-  app.get("/api/intelligence/clusters/:clusterId/pillar-structure", requireAuth, async (req, res) => {
-    try {
-      const { clusterId } = req.params;
-      const clusters = await contentIntelligence.clusters.detectAreaClusters();
-      const cluster = clusters.find(c => c.id === clusterId);
+  app.get(
+    "/api/intelligence/clusters/:clusterId/pillar-structure",
+    requireAuth,
+    async (req, res) => {
+      try {
+        const { clusterId } = req.params;
+        const clusters = await contentIntelligence.clusters.detectAreaClusters();
+        const cluster = clusters.find(c => c.id === clusterId);
 
-      if (!cluster) {
-        return res.status(404).json({ error: "Cluster not found" });
+        if (!cluster) {
+          return res.status(404).json({ error: "Cluster not found" });
+        }
+
+        const structure = contentIntelligence.clusters.generatePillarPageStructure(cluster);
+        res.json({ clusterId, cluster, structure });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to generate pillar structure" });
       }
-
-      const structure = contentIntelligence.clusters.generatePillarPageStructure(cluster);
-      res.json({ clusterId, cluster, structure });
-    } catch (error) {
-      console.error("[Intelligence] Error generating pillar structure:", error);
-      res.status(500).json({ error: "Failed to generate pillar structure" });
     }
-  });
+  );
 
   // ============================================================================
   // SERP GAP FINDER
@@ -70,7 +70,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(gaps);
     } catch (error) {
-      console.error("[Intelligence] Error finding gaps:", error);
       res.status(500).json({ error: "Failed to find content gaps" });
     }
   });
@@ -85,13 +84,13 @@ export function registerContentIntelligenceRoutes(app: Express) {
         stats: {
           contentWithGaps: gaps.length,
           totalGaps,
-          highPriorityGaps: gaps.reduce((sum, g) =>
-            sum + g.gaps.filter(gap => gap.priority === "high").length, 0
+          highPriorityGaps: gaps.reduce(
+            (sum, g) => sum + g.gaps.filter(gap => gap.priority === "high").length,
+            0
           ),
         },
       });
     } catch (error) {
-      console.error("[Intelligence] Error finding all gaps:", error);
       res.status(500).json({ error: "Failed to find content gaps" });
     }
   });
@@ -105,7 +104,10 @@ export function registerContentIntelligenceRoutes(app: Express) {
     try {
       const { contentId } = req.params;
       const limit = parseInt(req.query.limit as string) || 3;
-      const recommendations = await contentIntelligence.recommendations.getRecommendations(contentId, limit);
+      const recommendations = await contentIntelligence.recommendations.getRecommendations(
+        contentId,
+        limit
+      );
 
       if (!recommendations) {
         return res.status(404).json({ error: "Content not found" });
@@ -113,7 +115,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(recommendations);
     } catch (error) {
-      console.error("[Intelligence] Error getting recommendations:", error);
       res.status(500).json({ error: "Failed to get recommendations" });
     }
   });
@@ -135,7 +136,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Intelligence] Error getting watchlist:", error);
       res.status(500).json({ error: "Failed to get watchlist" });
     }
   });
@@ -146,7 +146,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const urgent = await contentIntelligence.priceWatch.getUrgentItems();
       res.json({ items: urgent, count: urgent.length });
     } catch (error) {
-      console.error("[Intelligence] Error getting urgent items:", error);
       res.status(500).json({ error: "Failed to get urgent items" });
     }
   });
@@ -170,7 +169,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Intelligence] Error checking events:", error);
       res.status(500).json({ error: "Failed to check events" });
     }
   });
@@ -181,7 +179,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const pastEvents = await contentIntelligence.events.getPastEvents();
       res.json({ events: pastEvents, count: pastEvents.length });
     } catch (error) {
-      console.error("[Intelligence] Error getting past events:", error);
       res.status(500).json({ error: "Failed to get past events" });
     }
   });
@@ -202,7 +199,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(report);
     } catch (error) {
-      console.error("[Intelligence] Error checking image consistency:", error);
       res.status(500).json({ error: "Failed to check image consistency" });
     }
   });
@@ -221,7 +217,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Intelligence] Error checking all image consistency:", error);
       res.status(500).json({ error: "Failed to check image consistency" });
     }
   });
@@ -242,7 +237,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(thumbnails);
     } catch (error) {
-      console.error("[Intelligence] Error getting thumbnails:", error);
       res.status(500).json({ error: "Failed to get thumbnails" });
     }
   });
@@ -263,7 +257,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(analysis);
     } catch (error) {
-      console.error("[Intelligence] Error analyzing tone:", error);
       res.status(500).json({ error: "Failed to analyze tone" });
     }
   });
@@ -277,7 +270,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
         count: issues.length,
       });
     } catch (error) {
-      console.error("[Intelligence] Error checking all tones:", error);
       res.status(500).json({ error: "Failed to check tones" });
     }
   });
@@ -293,14 +285,14 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       if (!contentId || !testType || !variants || variants.length < 2) {
         return res.status(400).json({
-          error: "Required: contentId, testType (title|heroImage|metaDescription), variants (array of at least 2)",
+          error:
+            "Required: contentId, testType (title|heroImage|metaDescription), variants (array of at least 2)",
         });
       }
 
       const test = await contentIntelligence.abTesting.createTest(contentId, testType, variants);
       res.json(test);
     } catch (error) {
-      console.error("[Intelligence] Error creating A/B test:", error);
       res.status(500).json({ error: "Failed to create A/B test" });
     }
   });
@@ -318,7 +310,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(variant);
     } catch (error) {
-      console.error("[Intelligence] Error getting variant:", error);
       res.status(500).json({ error: "Failed to get variant" });
     }
   });
@@ -331,7 +322,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       contentIntelligence.abTesting.recordImpression(testId, variantId);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Intelligence] Error recording impression:", error);
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -344,7 +334,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       contentIntelligence.abTesting.recordClick(testId, variantId);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Intelligence] Error recording click:", error);
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -362,7 +351,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const winner = contentIntelligence.abTesting.determineWinner(testId);
       res.json({ ...results, winnerResult: winner });
     } catch (error) {
-      console.error("[Intelligence] Error getting test results:", error);
       res.status(500).json({ error: "Failed to get test results" });
     }
   });
@@ -373,7 +361,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const tests = await contentIntelligence.abTesting.getRunningTests();
       res.json({ tests, count: tests.length });
     } catch (error) {
-      console.error("[Intelligence] Error getting running tests:", error);
       res.status(500).json({ error: "Failed to get running tests" });
     }
   });
@@ -385,7 +372,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const tests = await contentIntelligence.abTesting.getTestsForContent(contentId);
       res.json({ tests, count: tests.length });
     } catch (error) {
-      console.error("[Intelligence] Error getting content tests:", error);
       res.status(500).json({ error: "Failed to get content tests" });
     }
   });
@@ -406,7 +392,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
 
       res.json(roi);
     } catch (error) {
-      console.error("[Intelligence] Error calculating ROI:", error);
       res.status(500).json({ error: "Failed to calculate ROI" });
     }
   });
@@ -426,7 +411,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Intelligence] Error getting all ROI:", error);
       res.status(500).json({ error: "Failed to get ROI data" });
     }
   });
@@ -437,7 +421,6 @@ export function registerContentIntelligenceRoutes(app: Express) {
       const underperformers = await contentIntelligence.roi.getUnderperformers();
       res.json({ content: underperformers, count: underperformers.length });
     } catch (error) {
-      console.error("[Intelligence] Error getting underperformers:", error);
       res.status(500).json({ error: "Failed to get underperformers" });
     }
   });
@@ -466,8 +449,9 @@ export function registerContentIntelligenceRoutes(app: Express) {
         gaps: {
           contentWithGaps: gaps.length,
           totalGaps: gaps.reduce((sum, g) => sum + g.gaps.length, 0),
-          highPriority: gaps.reduce((sum, g) =>
-            sum + g.gaps.filter(gap => gap.priority === "high").length, 0
+          highPriority: gaps.reduce(
+            (sum, g) => sum + g.gaps.filter(gap => gap.priority === "high").length,
+            0
           ),
         },
         watchlist: {
@@ -487,10 +471,7 @@ export function registerContentIntelligenceRoutes(app: Express) {
         },
       });
     } catch (error) {
-      console.error("[Intelligence] Error getting dashboard:", error);
       res.status(500).json({ error: "Failed to get intelligence dashboard" });
     }
   });
-
-  console.log("[ContentIntelligence] Routes registered");
 }

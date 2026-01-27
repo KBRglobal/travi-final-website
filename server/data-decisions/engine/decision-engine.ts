@@ -3,7 +3,7 @@
  * Core engine that evaluates signals, applies rules, and generates decisions
  */
 
-import { randomUUID } from 'crypto';
+import { randomUUID } from "crypto";
 import type {
   Decision,
   DecisionType,
@@ -14,8 +14,8 @@ import type {
   AutopilotMode,
   ConfidenceScore,
   DecisionAuditLog,
-} from '../types';
-import { bindingsRegistry } from './bindings-registry';
+} from "../types";
+import { bindingsRegistry } from "./bindings-registry";
 
 // =============================================================================
 // CONFIGURATION
@@ -30,7 +30,7 @@ interface DecisionEngineConfig {
 }
 
 const DEFAULT_CONFIG: DecisionEngineConfig = {
-  autopilotMode: 'supervised',
+  autopilotMode: "supervised",
   minimumConfidence: 70,
   maximumDataStaleness: 24,
   enableCircuitBreaker: true,
@@ -42,9 +42,9 @@ const DEFAULT_CONFIG: DecisionEngineConfig = {
 // =============================================================================
 
 interface MetricThreshold {
-  operator: '>' | '<' | '>=' | '<=' | '=' | '!=' | 'change';
+  operator: ">" | "<" | ">=" | "<=" | "=" | "!=" | "change";
   value: number;
-  changeType?: 'absolute' | 'percentage';
+  changeType?: "absolute" | "percentage";
   changePeriod?: string;
 }
 
@@ -53,7 +53,7 @@ function parseCondition(condition: string): MetricThreshold | null {
   const percentMatch = condition.match(/^([<>]=?|=)\s*(-?\d+(?:\.\d+)?)\s*%$/);
   if (percentMatch) {
     return {
-      operator: percentMatch[1] as MetricThreshold['operator'],
+      operator: percentMatch[1] as MetricThreshold["operator"],
       value: parseFloat(percentMatch[2]) / 100,
     };
   }
@@ -62,10 +62,10 @@ function parseCondition(condition: string): MetricThreshold | null {
   const wowMatch = condition.match(/^(-?\d+(?:\.\d+)?)\s*%\s*week-over-week$/);
   if (wowMatch) {
     return {
-      operator: 'change',
+      operator: "change",
       value: parseFloat(wowMatch[1]) / 100,
-      changeType: 'percentage',
-      changePeriod: 'week',
+      changeType: "percentage",
+      changePeriod: "week",
     };
   }
 
@@ -73,7 +73,7 @@ function parseCondition(condition: string): MetricThreshold | null {
   const numericMatch = condition.match(/^([<>]=?|=)\s*(-?\d+(?:\.\d+)?)$/);
   if (numericMatch) {
     return {
-      operator: numericMatch[1] as MetricThreshold['operator'],
+      operator: numericMatch[1] as MetricThreshold["operator"],
       value: parseFloat(numericMatch[2]),
     };
   }
@@ -82,7 +82,7 @@ function parseCondition(condition: string): MetricThreshold | null {
   const dollarMatch = condition.match(/^([<>]=?|=)\s*\$(-?\d+(?:\.\d+)?)$/);
   if (dollarMatch) {
     return {
-      operator: dollarMatch[1] as MetricThreshold['operator'],
+      operator: dollarMatch[1] as MetricThreshold["operator"],
       value: parseFloat(dollarMatch[2]),
     };
   }
@@ -91,9 +91,9 @@ function parseCondition(condition: string): MetricThreshold | null {
   const positionMatch = condition.match(/increased by\s*>\s*(\d+)\s*positions/);
   if (positionMatch) {
     return {
-      operator: '>',
+      operator: ">",
       value: parseInt(positionMatch[1]),
-      changeType: 'absolute',
+      changeType: "absolute",
     };
   }
 
@@ -105,23 +105,23 @@ function evaluateCondition(
   currentValue: number,
   previousValue?: number
 ): boolean {
-  if (threshold.operator === 'change' && previousValue !== undefined) {
+  if (threshold.operator === "change" && previousValue !== undefined) {
     const change = (currentValue - previousValue) / previousValue;
     return change <= threshold.value; // For negative thresholds (e.g., -30%)
   }
 
   switch (threshold.operator) {
-    case '>':
+    case ">":
       return currentValue > threshold.value;
-    case '<':
+    case "<":
       return currentValue < threshold.value;
-    case '>=':
+    case ">=":
       return currentValue >= threshold.value;
-    case '<=':
+    case "<=":
       return currentValue <= threshold.value;
-    case '=':
+    case "=":
       return Math.abs(currentValue - threshold.value) < 0.001;
-    case '!=':
+    case "!=":
       return Math.abs(currentValue - threshold.value) >= 0.001;
     default:
       return false;
@@ -142,28 +142,28 @@ function determineCategory(
   ];
 
   if (forbiddenActions.includes(binding.action)) {
-    return 'forbidden';
+    return "forbidden";
   }
 
   // Category C: ESCALATION-ONLY
-  if (binding.authority === 'escalating' || binding.autopilot === 'off') {
-    return 'escalation_only';
+  if (binding.authority === "escalating" || binding.autopilot === "off") {
+    return "escalation_only";
   }
 
   // Category B: SUPERVISED
   if (
-    binding.autopilot === 'supervised' ||
-    (autopilotMode === 'supervised' && binding.authority === 'triggering')
+    binding.autopilot === "supervised" ||
+    (autopilotMode === "supervised" && binding.authority === "triggering")
   ) {
-    return 'supervised';
+    return "supervised";
   }
 
   // Category A: AUTO-EXECUTE
-  if (binding.autopilot === 'full' && autopilotMode !== 'off') {
-    return 'auto_execute';
+  if (binding.autopilot === "full" && autopilotMode !== "off") {
+    return "auto_execute";
   }
 
-  return 'supervised';
+  return "supervised";
 }
 
 // =============================================================================
@@ -250,7 +250,10 @@ export class DecisionEngine {
 
       // Check additional condition if present
       if (signal.additionalCondition && triggered) {
-        const additionalBinding = { ...binding, signal: { ...signal, condition: signal.additionalCondition } };
+        const additionalBinding = {
+          ...binding,
+          signal: { ...signal, condition: signal.additionalCondition },
+        };
         const additionalResult = this.evaluateSignal(additionalBinding, metrics);
         if (!additionalResult?.triggered) {
           return {
@@ -299,7 +302,7 @@ export class DecisionEngine {
     entityId?: string
   ): DecisionResult | null {
     // Check circuit breaker
-    if (this.circuitBreakerOpen && binding.authority !== 'blocking') {
+    if (this.circuitBreakerOpen && binding.authority !== "blocking") {
       return null;
     }
 
@@ -341,11 +344,11 @@ export class DecisionEngine {
       confidence: signal.confidence,
       dataSufficiency: Math.min(100, (signal.dataPoints / 100) * 100),
       freshness: signal.freshness,
-      status: 'pending',
+      status: "pending",
       autopilotMode: this.config.autopilotMode,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + this.config.decisionExpiryHours * 60 * 60 * 1000),
-      impactedEntities: entityId ? [{ type: 'content', id: entityId }] : [],
+      impactedEntities: entityId ? [{ type: "content", id: entityId }] : [],
       taskConfig: binding.task,
       escalation: binding.escalation,
     };
@@ -364,23 +367,23 @@ export class DecisionEngine {
   }
 
   private shouldAutoExecute(decision: Decision): boolean {
-    if (this.config.autopilotMode === 'off') {
+    if (this.config.autopilotMode === "off") {
       return false;
     }
 
-    if (decision.category === 'forbidden') {
+    if (decision.category === "forbidden") {
       return false;
     }
 
-    if (decision.category === 'escalation_only') {
+    if (decision.category === "escalation_only") {
       return false;
     }
 
-    if (decision.category === 'auto_execute') {
+    if (decision.category === "auto_execute") {
       return true;
     }
 
-    if (decision.category === 'supervised' && this.config.autopilotMode === 'full') {
+    if (decision.category === "supervised" && this.config.autopilotMode === "full") {
       return true;
     }
 
@@ -388,15 +391,15 @@ export class DecisionEngine {
   }
 
   private requiresApproval(decision: Decision): boolean {
-    if (decision.category === 'forbidden') {
+    if (decision.category === "forbidden") {
       return true; // Always requires approval (and will be denied)
     }
 
-    if (decision.category === 'escalation_only') {
+    if (decision.category === "escalation_only") {
       return true;
     }
 
-    if (decision.category === 'supervised' && this.config.autopilotMode !== 'full') {
+    if (decision.category === "supervised" && this.config.autopilotMode !== "full") {
       return true;
     }
 
@@ -407,7 +410,7 @@ export class DecisionEngine {
     return {
       decisionId: decision.id,
       timestamp: new Date(),
-      triggerType: 'metric',
+      triggerType: "metric",
       triggerId: signal.metricId,
       triggerValue: signal.currentValue,
       threshold: signal.threshold,
@@ -418,7 +421,7 @@ export class DecisionEngine {
       category: decision.category,
       autopilotMode: decision.autopilotMode,
       executed: false,
-      executedBy: 'system',
+      executedBy: "system",
       approvalRequired: this.requiresApproval(decision),
       impactedEntities: decision.impactedEntities,
     };
@@ -431,9 +434,9 @@ export class DecisionEngine {
   executeDecision(decision: Decision): Decision {
     const binding = bindingsRegistry.get(decision.bindingId);
 
-    decision.status = 'executed';
+    decision.status = "executed";
     decision.executedAt = new Date();
-    decision.executedBy = 'system';
+    decision.executedBy = "system";
 
     if (binding) {
       bindingsRegistry.recordExecution(binding.id);
@@ -449,7 +452,7 @@ export class DecisionEngine {
     const decision = this.pendingDecisions.get(decisionId);
     if (!decision) return null;
 
-    decision.status = 'approved';
+    decision.status = "approved";
     decision.approvedBy = approvedBy;
     decision.approvedAt = new Date();
     decision.approvalNotes = notes;
@@ -461,7 +464,7 @@ export class DecisionEngine {
     const decision = this.pendingDecisions.get(decisionId);
     if (!decision) return null;
 
-    decision.status = 'rejected';
+    decision.status = "rejected";
     decision.approvedBy = rejectedBy;
     decision.approvalNotes = reason;
 
@@ -534,12 +537,10 @@ export class DecisionEngine {
 
   openCircuitBreaker(reason: string): void {
     this.circuitBreakerOpen = true;
-    console.error(`[DecisionEngine] Circuit breaker opened: ${reason}`);
   }
 
   closeCircuitBreaker(): void {
     this.circuitBreakerOpen = false;
-    console.log('[DecisionEngine] Circuit breaker closed');
   }
 
   isCircuitBreakerOpen(): boolean {
@@ -556,7 +557,7 @@ export class DecisionEngine {
 
     for (const [id, decision] of this.pendingDecisions) {
       if (decision.expiresAt && decision.expiresAt < now) {
-        decision.status = 'expired';
+        decision.status = "expired";
         this.pendingDecisions.delete(id);
         expired++;
       }

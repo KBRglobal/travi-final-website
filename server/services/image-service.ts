@@ -171,11 +171,10 @@ export class ImageService {
         seo: seoMetadata,
       };
 
-      console.log(`[ImageService] Uploaded ${source} image: ${url} (${storage})${seoContext ? " [SEO optimized]" : ""}`);
       return { success: true, image: storedImage };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown upload error";
-      console.error(`[ImageService] Upload failed:`, error);
+
       return { success: false, error: message, code: "UPLOAD_FAILED" };
     }
   }
@@ -200,8 +199,6 @@ export class ImageService {
     }
 
     try {
-      console.log(`[ImageService] Downloading from URL: ${ssrfCheck.sanitizedUrl}`);
-
       const response = await fetch(ssrfCheck.sanitizedUrl!);
       if (!response.ok) {
         return {
@@ -223,7 +220,7 @@ export class ImageService {
       return this.uploadImage(buffer, filename, mimeType, options);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown fetch error";
-      console.error(`[ImageService] URL upload failed:`, error);
+
       return { success: false, error: message, code: "FETCH_ERROR" };
     }
   }
@@ -254,9 +251,6 @@ export class ImageService {
       }
     }
 
-    console.log(
-      `[ImageService] Batch upload: ${results.successful.length}/${results.total} successful`
-    );
     return results;
   }
 
@@ -269,12 +263,11 @@ export class ImageService {
       const storagePath = this.urlToStoragePath(url);
       if (storagePath) {
         await this.storageManager.delete(storagePath);
-        console.log(`[ImageService] Deleted: ${url}`);
       }
       return { success: true };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown delete error";
-      console.error(`[ImageService] Delete failed:`, error);
+
       return { success: false, error: message };
     }
   }

@@ -139,10 +139,7 @@ export async function getUserActivity(
 /**
  * Get audit summary statistics
  */
-export async function getAuditSummary(
-  startDate?: Date,
-  endDate?: Date
-): Promise<AuditSummary> {
+export async function getAuditSummary(startDate?: Date, endDate?: Date): Promise<AuditSummary> {
   if (!isEnabled()) {
     return {
       totalEvents: 0,
@@ -222,14 +219,12 @@ export async function getAuditSummary(
 
   return {
     totalEvents: totalResult?.count || 0,
-    byAction: Object.fromEntries(actionStats.map((s) => [s.action, s.count])),
-    byResource: Object.fromEntries(resourceStats.map((s) => [s.resource, s.count])),
-    bySource: Object.fromEntries(sourceStats.map((s) => [s.source, s.count])),
+    byAction: Object.fromEntries(actionStats.map(s => [s.action, s.count])),
+    byResource: Object.fromEntries(resourceStats.map(s => [s.resource, s.count])),
+    bySource: Object.fromEntries(sourceStats.map(s => [s.source, s.count])),
     topUsers: topUsersResult
-      .filter((u) => u.userId)
-      .map((u) => ({ userId: u.userId!, count: u.count })),
+      .filter(u => u.userId)
+      .map(u => ({ userId: u.userId!, count: u.count })),
     recentActivity: recentActivity as unknown as AuditLogEntry[],
   };
 }
-
-console.log("[Audit] QueryEngine loaded");

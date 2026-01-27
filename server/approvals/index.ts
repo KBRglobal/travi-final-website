@@ -28,12 +28,8 @@ export function registerApprovalsRoutes(app: Express): void {
   const isApprovalsEnabled = process.env.ENABLE_APPROVAL_WORKFLOWS === "true";
 
   if (!isGovernanceEnabled && !isApprovalsEnabled) {
-    console.log("[Approvals] Module disabled");
     return;
   }
 
   app.use("/api/admin/approvals", approvalsRoutes);
-  console.log("[Approvals] Routes registered at /api/admin/approvals");
 }
-
-console.log("[Approvals] Module loaded");

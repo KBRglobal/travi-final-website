@@ -39,9 +39,9 @@ async function klaviyoRequest(
   const response = await fetchWithTimeout(url, {
     method,
     headers: {
-      "Authorization": `Klaviyo-API-Key ${config.apiKey}`,
+      Authorization: `Klaviyo-API-Key ${config.apiKey}`,
       "Content-Type": "application/json",
-      "revision": "2024-10-15", // API version
+      revision: "2024-10-15", // API version
     },
     body: body ? JSON.stringify(body) : undefined,
     timeoutMs: KLAVIYO_TIMEOUT_MS,
@@ -71,45 +71,38 @@ export async function syncSubscriberToKlaviyo(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "klaviyo") {
     throw new Error("Invalid Klaviyo connection");
   }
-  
+
   const config = connection.config as KlaviyoConfig;
-  
+
   // Get subscriber
   const [subscriber] = await db
     .select()
     .from(newsletterSubscribers)
     .where(eq(newsletterSubscribers.id, subscriberId))
     .limit(1);
-  
+
   if (!subscriber) throw new Error("Subscriber not found");
-  
+
   // Sync to Klaviyo
-  await klaviyoRequest(
-    config,
-    "/profiles",
-    "POST",
-    {
-      data: {
-        type: "profile",
-        attributes: {
-          email: subscriber.email,
-          first_name: subscriber.firstName || "",
-          last_name: subscriber.lastName || "",
-          properties: {
-            status: subscriber.status,
-            source: subscriber.source,
-            tags: subscriber.tags || [],
-          },
+  await klaviyoRequest(config, "/profiles", "POST", {
+    data: {
+      type: "profile",
+      attributes: {
+        email: subscriber.email,
+        first_name: subscriber.firstName || "",
+        last_name: subscriber.lastName || "",
+        properties: {
+          status: subscriber.status,
+          source: subscriber.source,
+          tags: subscriber.tags || [],
         },
       },
-    }
-  );
-  
-  console.log(`Synced subscriber ${subscriber.email} to Klaviyo`);
+    },
+  });
 }
 
 /**
@@ -122,23 +115,22 @@ export async function syncAllSubscribersToKlaviyo(
     .select()
     .from(newsletterSubscribers)
     .where(eq(newsletterSubscribers.status, "subscribed"));
-  
+
   let synced = 0;
   let errors = 0;
-  
+
   for (const subscriber of subscribers) {
     try {
       await syncSubscriberToKlaviyo(connectionId, subscriber.id);
       synced++;
     } catch (error) {
-      console.error(`Error syncing subscriber ${subscriber.email}:`, error);
       errors++;
     }
-    
+
     // Rate limiting
     await new Promise(resolve => setTimeout(resolve, 100));
   }
-  
+
   return { synced, errors };
 }
 
@@ -153,34 +145,30 @@ export async function importSubscribersFromKlaviyo(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "klaviyo") {
     throw new Error("Invalid Klaviyo connection");
   }
-  
+
   const config = connection.config as KlaviyoConfig;
-  
+
   // Get profiles from Klaviyo
-  const response = await klaviyoRequest(
-    config,
-    "/profiles?page[size]=100",
-    "GET"
-  );
-  
+  const response = await klaviyoRequest(config, "/profiles?page[size]=100", "GET");
+
   let imported = 0;
   let errors = 0;
-  
+
   for (const profile of response.data || []) {
     try {
       const attributes = profile.attributes;
-      
+
       // Check if subscriber already exists
       const [existing] = await db
         .select()
         .from(newsletterSubscribers)
         .where(eq(newsletterSubscribers.email, attributes.email))
         .limit(1);
-      
+
       if (!existing) {
         await db.insert(newsletterSubscribers).values({
           email: attributes.email,
@@ -193,11 +181,10 @@ export async function importSubscribersFromKlaviyo(
         imported++;
       }
     } catch (error) {
-      console.error(`Error importing subscriber:`, error);
       errors++;
     }
   }
-  
+
   return { imported, errors };
 }
 
@@ -208,47 +195,37 @@ export async function importSubscribersFromKlaviyo(
 /**
  * Sync segment to Klaviyo
  */
-export async function syncSegmentToKlaviyo(
-  connectionId: string,
-  segmentId: string
-): Promise<void> {
+export async function syncSegmentToKlaviyo(connectionId: string, segmentId: string): Promise<void> {
   const [connection] = await db
     .select()
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "klaviyo") {
     throw new Error("Invalid Klaviyo connection");
   }
-  
+
   const config = connection.config as KlaviyoConfig;
-  
+
   // Get segment
   const [segment] = await db
     .select()
     .from(subscriberSegments)
     .where(eq(subscriberSegments.id, segmentId))
     .limit(1);
-  
+
   if (!segment) throw new Error("Segment not found");
-  
+
   // Create list in Klaviyo
-  await klaviyoRequest(
-    config,
-    "/lists",
-    "POST",
-    {
-      data: {
-        type: "list",
-        attributes: {
-          name: segment.name,
-        },
+  await klaviyoRequest(config, "/lists", "POST", {
+    data: {
+      type: "list",
+      attributes: {
+        name: segment.name,
       },
-    }
-  );
-  
-  console.log(`Synced segment ${segment.name} to Klaviyo`);
+    },
+  });
 }
 
 // ============================================================================
@@ -266,34 +243,30 @@ export async function importCampaignStatsFromKlaviyo(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "klaviyo") {
     throw new Error("Invalid Klaviyo connection");
   }
-  
+
   const config = connection.config as KlaviyoConfig;
-  
+
   // Get campaigns from Klaviyo
-  const response = await klaviyoRequest(
-    config,
-    "/campaigns?page[size]=50",
-    "GET"
-  );
-  
+  const response = await klaviyoRequest(config, "/campaigns?page[size]=50", "GET");
+
   let synced = 0;
   let errors = 0;
-  
+
   for (const campaign of response.data || []) {
     try {
       const attributes = campaign.attributes;
-      
+
       // Find matching local campaign
       const [localCampaign] = await db
         .select()
         .from(newsletterCampaigns)
         .where(eq(newsletterCampaigns.name, attributes.name))
         .limit(1);
-      
+
       if (localCampaign) {
         // Get campaign metrics
         const metricsResponse = await klaviyoRequest(
@@ -301,32 +274,36 @@ export async function importCampaignStatsFromKlaviyo(
           `/campaigns/${campaign.id}/campaign-messages`,
           "GET"
         );
-        
+
         const metrics = metricsResponse.data?.[0]?.attributes?.statistics || {};
-        
-        await db.update(newsletterCampaigns).set({
-          totalSent: metrics.sends || 0,
-          totalOpened: metrics.unique_opens || 0,
-          totalClicked: metrics.unique_clicks || 0,
-          totalBounced: metrics.bounces || 0,
-          totalUnsubscribed: metrics.unsubscribes || 0,
-        } as any).where(eq(newsletterCampaigns.id, localCampaign.id));
-        
+
+        await db
+          .update(newsletterCampaigns)
+          .set({
+            totalSent: metrics.sends || 0,
+            totalOpened: metrics.unique_opens || 0,
+            totalClicked: metrics.unique_clicks || 0,
+            totalBounced: metrics.bounces || 0,
+            totalUnsubscribed: metrics.unsubscribes || 0,
+          } as any)
+          .where(eq(newsletterCampaigns.id, localCampaign.id));
+
         synced++;
       }
     } catch (error) {
-      console.error(`Error syncing campaign ${campaign.id}:`, error);
       errors++;
     }
   }
-  
+
   return { synced, errors };
 }
 
 /**
  * Test Klaviyo connection
  */
-export async function testKlaviyoConnection(config: KlaviyoConfig): Promise<{ success: boolean; message: string }> {
+export async function testKlaviyoConnection(
+  config: KlaviyoConfig
+): Promise<{ success: boolean; message: string }> {
   try {
     const response = await klaviyoRequest(config, "/accounts", "GET");
     const account = response.data?.[0];
@@ -358,32 +335,27 @@ export async function trackEventToKlaviyo(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "klaviyo") {
     throw new Error("Invalid Klaviyo connection");
   }
-  
+
   const config = connection.config as KlaviyoConfig;
-  
+
   // Track event
-  await klaviyoRequest(
-    config,
-    "/events",
-    "POST",
-    {
-      data: {
-        type: "event",
-        attributes: {
-          profile: {
-            email: event.email,
-          },
-          metric: {
-            name: event.eventName,
-          },
-          properties: event.properties || {},
-          time: new Date().toISOString(),
+  await klaviyoRequest(config, "/events", "POST", {
+    data: {
+      type: "event",
+      attributes: {
+        profile: {
+          email: event.email,
         },
+        metric: {
+          name: event.eventName,
+        },
+        properties: event.properties || {},
+        time: new Date().toISOString(),
       },
-    }
-  );
+    },
+  });
 }

@@ -10,12 +10,7 @@
 
 import crypto from "crypto";
 import { db } from "../../db";
-import {
-  webhookOutbox,
-  webhookDeliveries,
-  webhooks,
-  type WebhookOutbox,
-} from "@shared/schema";
+import { webhookOutbox, webhookDeliveries, webhooks, type WebhookOutbox } from "@shared/schema";
 import { eq, and, lte, isNull, or, sql } from "drizzle-orm";
 
 // Worker configuration
@@ -103,9 +98,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
       data: item.payloadJson,
     };
     const payloadString = JSON.stringify(payloadObj);
-    const signature = endpoint.secret
-      ? generateSignature(payloadString, endpoint.secret)
-      : "";
+    const signature = endpoint.secret ? generateSignature(payloadString, endpoint.secret) : "";
 
     // Send request
     const response = await fetchWithTimeout(
@@ -139,10 +132,6 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           updatedAt: new Date(),
         } as any)
         .where(eq(webhookOutbox.id, item.id));
-
-      console.log(
-        `[ReliableWebhook] Delivered ${item.id} to ${endpoint.url} (attempt ${item.attempts + 1})`
-      );
     } else {
       error = `HTTP ${statusCode}: ${responseBody?.substring(0, 200) || "No response body"}`;
       throw new Error(error);
@@ -164,10 +153,6 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           updatedAt: new Date(),
         } as any)
         .where(eq(webhookOutbox.id, item.id));
-
-      console.warn(
-        `[ReliableWebhook] Failed permanently ${item.id} after ${newAttempts} attempts: ${error}`
-      );
     } else {
       // Schedule retry
       const nextAttempt = calculateNextAttempt(newAttempts);
@@ -183,10 +168,6 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
           updatedAt: new Date(),
         } as any)
         .where(eq(webhookOutbox.id, item.id));
-
-      console.log(
-        `[ReliableWebhook] Retry scheduled for ${item.id}, attempt ${newAttempts}/${item.maxAttempts || MAX_ATTEMPTS}, next at ${nextAttempt.toISOString()}`
-      );
     }
   }
 
@@ -202,9 +183,7 @@ async function processOutboxItem(item: WebhookOutbox): Promise<void> {
       error,
       responseBody: responseBody?.substring(0, 1000), // Truncate response
     } as any);
-  } catch (logError) {
-    console.error("[ReliableWebhook] Failed to log delivery:", logError);
-  }
+  } catch (logError) {}
 }
 
 /**
@@ -225,10 +204,7 @@ async function processBatch(): Promise<number> {
       and(
         eq(webhookOutbox.status, "pending"),
         lte(webhookOutbox.nextAttemptAt, now),
-        or(
-          isNull(webhookOutbox.lockedUntil),
-          lte(webhookOutbox.lockedUntil, now)
-        )
+        or(isNull(webhookOutbox.lockedUntil), lte(webhookOutbox.lockedUntil, now))
       )
     )
     .limit(BATCH_SIZE);
@@ -238,7 +214,7 @@ async function processBatch(): Promise<number> {
   }
 
   // Lock items
-  const itemIds = pendingItems.map((item) => item.id);
+  const itemIds = pendingItems.map(item => item.id);
   await db
     .update(webhookOutbox)
     .set({
@@ -259,9 +235,7 @@ async function processBatch(): Promise<number> {
     try {
       await processOutboxItem({ ...item, status: "sending" });
       processed++;
-    } catch (error) {
-      console.error(`[ReliableWebhook] Error processing ${item.id}:`, error);
-    }
+    } catch (error) {}
   }
 
   return processed;
@@ -295,28 +269,22 @@ export const webhookWorker = {
  */
 export function startWebhookWorker(): void {
   if (isRunning) {
-    console.log("[ReliableWebhook] Worker already running");
     return;
   }
 
   if (process.env.ENABLE_RELIABLE_WEBHOOKS !== "true") {
-    console.log("[ReliableWebhook] Worker not started (feature disabled)");
     return;
   }
 
   isRunning = true;
-  console.log("[ReliableWebhook] Worker started");
 
   // Start polling
   pollInterval = setInterval(async () => {
     try {
       const processed = await processBatch();
       if (processed > 0) {
-        console.log(`[ReliableWebhook] Processed ${processed} items`);
       }
-    } catch (error) {
-      console.error("[ReliableWebhook] Worker error:", error);
-    }
+    } catch (error) {}
   }, POLL_INTERVAL_MS);
 
   // Recover stuck items on startup
@@ -337,7 +305,6 @@ export function stopWebhookWorker(): void {
   }
 
   isRunning = false;
-  console.log("[ReliableWebhook] Worker stopped");
 }
 
 /**
@@ -352,18 +319,10 @@ async function recoverStuckItems(): Promise<void> {
         lockedUntil: null,
         updatedAt: new Date(),
       } as any)
-      .where(
-        and(
-          eq(webhookOutbox.status, "sending"),
-          lte(webhookOutbox.lockedUntil, new Date())
-        )
-      )
+      .where(and(eq(webhookOutbox.status, "sending"), lte(webhookOutbox.lockedUntil, new Date())))
       .returning({ id: webhookOutbox.id });
 
     if (result.length > 0) {
-      console.log(`[ReliableWebhook] Recovered ${result.length} stuck items`);
     }
-  } catch (error) {
-    console.error("[ReliableWebhook] Failed to recover stuck items:", error);
-  }
+  } catch (error) {}
 }

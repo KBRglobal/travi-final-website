@@ -17,7 +17,7 @@
  */
 
 // Types
-export * from './types';
+export * from "./types";
 
 // Decision Engine
 export {
@@ -27,7 +27,7 @@ export {
   bindingsRegistry,
   type MetricData,
   type DecisionResult,
-} from './engine';
+} from "./engine";
 
 // Confidence & Trust
 export {
@@ -37,10 +37,10 @@ export {
   dataTrustScorer,
   type MetricHistory,
   type MetricDataPoint,
-} from './confidence';
+} from "./confidence";
 
 // Autonomous Loop
-export { AutonomousLoop, autonomousLoop } from './loop';
+export { AutonomousLoop, autonomousLoop } from "./loop";
 
 // System Health
 export {
@@ -48,13 +48,13 @@ export {
   systemHealthMonitor,
   DataDriftDetector,
   dataDriftDetector,
-} from './health';
+} from "./health";
 
 // Local imports for internal use
-import { decisionEngine as _decisionEngine, type MetricData as _MetricData } from './engine';
-import { type MetricHistory as _MetricHistory } from './confidence';
-import { autonomousLoop as _autonomousLoop } from './loop';
-import { systemHealthMonitor as _systemHealthMonitor } from './health';
+import { decisionEngine as _decisionEngine, type MetricData as _MetricData } from "./engine";
+import { type MetricHistory as _MetricHistory } from "./confidence";
+import { autonomousLoop as _autonomousLoop } from "./loop";
+import { systemHealthMonitor as _systemHealthMonitor } from "./health";
 
 // Governance
 export {
@@ -67,7 +67,7 @@ export {
   type GlobalAutopilotState,
   type DomainAutopilotState,
   type AutopilotGateResult,
-} from './governance';
+} from "./governance";
 
 // Adapters
 export {
@@ -82,7 +82,7 @@ export {
   notificationAdapter,
   AdapterRegistry,
   adapterRegistry,
-} from './adapters';
+} from "./adapters";
 
 // Conflicts
 export {
@@ -91,24 +91,24 @@ export {
   type DecisionCollision,
   type CollisionType,
   type CollisionResolution,
-} from './conflicts';
+} from "./conflicts";
 
 // Explainability
 export {
   ExecutiveExplainer,
   executiveExplainer,
   type ExecutiveExplanation,
-} from './explainability';
+} from "./explainability";
 
 // API Routes
-export { default as dataDecisionRoutes } from './routes';
+export { default as dataDecisionRoutes } from "./routes";
 
 // =============================================================================
 // INITIALIZATION HELPER
 // =============================================================================
 
 interface DataDecisionSystemConfig {
-  autopilotMode?: 'off' | 'supervised' | 'full';
+  autopilotMode?: "off" | "supervised" | "full";
   startLoop?: boolean;
   startHealthMonitor?: boolean;
   metricsProvider?: () => Promise<_MetricData[]>;
@@ -122,7 +122,7 @@ interface DataDecisionSystemConfig {
  */
 export function initializeDataDecisionSystem(config: DataDecisionSystemConfig = {}): void {
   const {
-    autopilotMode = 'off', // DEFAULT IS OFF - explicit enable required
+    autopilotMode = "off", // DEFAULT IS OFF - explicit enable required
     startLoop = false, // DEFAULT IS FALSE - explicit enable required
     startHealthMonitor = true,
     metricsProvider,
@@ -150,8 +150,6 @@ export function initializeDataDecisionSystem(config: DataDecisionSystemConfig = 
   if (startLoop) {
     (_autonomousLoop as any).start();
   }
-
-  console.log(`[DataDecisions] System initialized - Mode: ${autopilotMode}`);
 }
 
 /**
@@ -160,5 +158,4 @@ export function initializeDataDecisionSystem(config: DataDecisionSystemConfig = 
 export function shutdownDataDecisionSystem(): void {
   (_autonomousLoop as any).stop();
   (_systemHealthMonitor as any).stop();
-  console.log('[DataDecisions] System shutdown complete');
 }

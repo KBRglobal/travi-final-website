@@ -7,7 +7,7 @@
  * - Coordinates with kill switches
  */
 
-import { SystemAdapter, AdapterStatus, SecurityModeConfig, ThreatState } from '../authority/types';
+import { SystemAdapter, AdapterStatus, SecurityModeConfig, ThreatState } from "../authority/types";
 
 // Track state
 let bulkOpsFrozen = false;
@@ -34,14 +34,12 @@ let killSwitches: KillSwitchState = {
 };
 
 export const OpsAdapter: SystemAdapter = {
-  name: 'ops-system',
+  name: "ops-system",
   enabled: true,
 
   async onThreatEscalation(threat: ThreatState): Promise<void> {
-    console.log(`[OpsAdapter] Threat escalation: ${threat.level}`);
-
     switch (threat.level) {
-      case 'critical':
+      case "critical":
         // Full lockdown of all operations
         bulkOpsFrozen = true;
         deploymentsBlocked = true;
@@ -56,10 +54,9 @@ export const OpsAdapter: SystemAdapter = {
           chat: true,
         };
 
-        console.log('[OpsAdapter] CRITICAL: All operations FROZEN, kill switches ACTIVATED');
         break;
 
-      case 'high':
+      case "high":
         // Block deployments and bulk ops
         bulkOpsFrozen = true;
         deploymentsBlocked = true;
@@ -69,18 +66,16 @@ export const OpsAdapter: SystemAdapter = {
         killSwitches.octopus = true;
         killSwitches.monetization = true;
 
-        console.log('[OpsAdapter] HIGH: Deployments blocked, high-risk systems killed');
         break;
 
-      case 'elevated':
+      case "elevated":
         // Block deployments only
         deploymentsBlocked = true;
         cutoversBlocked = true;
 
-        console.log('[OpsAdapter] ELEVATED: Deployments blocked');
         break;
 
-      case 'normal':
+      case "normal":
         bulkOpsFrozen = false;
         deploymentsBlocked = false;
         cutoversBlocked = false;
@@ -94,7 +89,6 @@ export const OpsAdapter: SystemAdapter = {
           chat: false,
         };
 
-        console.log('[OpsAdapter] NORMAL: Operations resumed');
         break;
     }
 
@@ -102,13 +96,10 @@ export const OpsAdapter: SystemAdapter = {
   },
 
   async onModeChange(config: SecurityModeConfig): Promise<void> {
-    console.log(`[OpsAdapter] Mode change: ${config.mode}`);
-
     const { restrictions } = config;
 
     if (!restrictions.bulkOperationsAllowed) {
       bulkOpsFrozen = true;
-      console.log('[OpsAdapter] Bulk operations FROZEN');
     } else {
       bulkOpsFrozen = false;
     }
@@ -116,14 +107,13 @@ export const OpsAdapter: SystemAdapter = {
     if (!restrictions.deploymentAllowed) {
       deploymentsBlocked = true;
       cutoversBlocked = true;
-      console.log('[OpsAdapter] Deployments and cutovers BLOCKED');
     } else {
       deploymentsBlocked = false;
       cutoversBlocked = false;
     }
 
     // In lockdown, activate all kill switches
-    if (config.mode === 'lockdown') {
+    if (config.mode === "lockdown") {
       killSwitches = {
         search: true,
         aeo: true,
@@ -131,15 +121,12 @@ export const OpsAdapter: SystemAdapter = {
         monetization: true,
         chat: true,
       };
-      console.log('[OpsAdapter] LOCKDOWN: All kill switches ACTIVATED');
     }
 
     lastHeartbeat = new Date();
   },
 
   async onEmergencyStop(): Promise<void> {
-    console.log('[OpsAdapter] EMERGENCY STOP');
-
     bulkOpsFrozen = true;
     deploymentsBlocked = true;
     cutoversBlocked = true;
@@ -154,14 +141,13 @@ export const OpsAdapter: SystemAdapter = {
     };
 
     // Would cancel running jobs, rollback in-progress deployments, etc.
-    console.log('[OpsAdapter] All operations HALTED, kill switches ACTIVATED');
 
     lastHeartbeat = new Date();
   },
 
   async getStatus(): Promise<AdapterStatus> {
     return {
-      name: 'ops-system',
+      name: "ops-system",
       connected: true,
       lastHeartbeat,
       pendingActions: pendingOps,
@@ -212,5 +198,3 @@ export function queueOperation(): void {
     pendingOps++;
   }
 }
-
-console.log('[OpsAdapter] Loaded');

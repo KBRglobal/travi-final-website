@@ -10,16 +10,19 @@ import {
   AutonomyBlockedError,
   DEFAULT_ENFORCEMENT_CONFIG,
   GuardedFeature,
-} from './types';
-import { PolicyTarget, PolicyDecision, ActionType } from '../policy/types';
-import { evaluatePolicy, recordActionExecution } from '../policy/policy-engine';
-import { generateTargetKey } from '../policy/config';
-import { db } from '../../db';
-import { autonomyDecisionLogs } from '@shared/schema';
-import { eq, and, gt, desc } from 'drizzle-orm';
+} from "./types";
+import { PolicyTarget, PolicyDecision, ActionType } from "../policy/types";
+import { evaluatePolicy, recordActionExecution } from "../policy/policy-engine";
+import { generateTargetKey } from "../policy/config";
+import { db } from "../../db";
+import { autonomyDecisionLogs } from "@shared/schema";
+import { eq, and, gt, desc } from "drizzle-orm";
 
 // In-memory LRU cache for overrides
-const overrideCache = new Map<string, { override: EnforcementOverride | null; expiresAt: number }>();
+const overrideCache = new Map<
+  string,
+  { override: EnforcementOverride | null; expiresAt: number }
+>();
 const MAX_OVERRIDE_CACHE = 500;
 const OVERRIDE_CACHE_TTL = 60000; // 1 minute
 
@@ -54,7 +57,6 @@ async function flushDecisionBuffer() {
   try {
     await db.insert(autonomyDecisionLogs).values(toFlush as any);
   } catch (error) {
-    console.error('[Enforcement] Failed to flush decision buffer:', error);
     // Re-add failed entries (up to max buffer size)
     const remaining = MAX_BUFFER_SIZE - decisionBuffer.length;
     if (remaining > 0) {
@@ -63,35 +65,42 @@ async function flushDecisionBuffer() {
   }
 }
 
-function featureToTarget(feature: GuardedFeature, entityId?: string, locale?: string): PolicyTarget {
+function featureToTarget(
+  feature: GuardedFeature,
+  entityId?: string,
+  locale?: string
+): PolicyTarget {
   if (entityId) {
-    return { type: 'entity', entity: entityId as any };
+    return { type: "entity", entity: entityId as any };
   }
   if (locale) {
-    return { type: 'locale', locale };
+    return { type: "locale", locale };
   }
   // Map feature to policy feature type
   const featureMap: Record<GuardedFeature, string> = {
-    chat: 'chat',
-    octopus: 'octopus',
-    search: 'search',
-    aeo: 'aeo',
-    translation: 'content',
-    images: 'content',
-    content_enrichment: 'content',
-    seo_optimization: 'content',
-    internal_linking: 'content',
-    background_job: 'automation',
-    publishing: 'content',
+    chat: "chat",
+    octopus: "octopus",
+    search: "search",
+    aeo: "aeo",
+    translation: "content",
+    images: "content",
+    content_enrichment: "content",
+    seo_optimization: "content",
+    internal_linking: "content",
+    background_job: "automation",
+    publishing: "content",
   };
-  return { type: 'feature', feature: featureMap[feature] as any };
+  return { type: "feature", feature: featureMap[feature] as any };
 }
 
 function getOverrideCacheKey(targetKey: string, feature: GuardedFeature): string {
   return `${targetKey}:${feature}`;
 }
 
-async function checkOverride(targetKey: string, feature: GuardedFeature): Promise<EnforcementOverride | null> {
+async function checkOverride(
+  targetKey: string,
+  feature: GuardedFeature
+): Promise<EnforcementOverride | null> {
   const cacheKey = getOverrideCacheKey(targetKey, feature);
   const cached = overrideCache.get(cacheKey);
 
@@ -128,7 +137,6 @@ async function checkOverride(targetKey: string, feature: GuardedFeature): Promis
 
     return result;
   } catch (error) {
-    console.error('[Enforcement] Override check failed:', error);
     return null;
   }
 }
@@ -144,8 +152,14 @@ export async function enforceAutonomy(context: EnforcementContext): Promise<Enfo
   if (!config.enabled) {
     return {
       allowed: true,
-      decision: 'ALLOW',
-      reasons: [{ code: 'ENFORCEMENT_DISABLED', message: 'Autonomy enforcement is disabled', severity: 'info' }],
+      decision: "ALLOW",
+      reasons: [
+        {
+          code: "ENFORCEMENT_DISABLED",
+          message: "Autonomy enforcement is disabled",
+          severity: "info",
+        },
+      ],
       warnings: [],
       evaluatedAt,
     };
@@ -161,15 +175,23 @@ export async function enforceAutonomy(context: EnforcementContext): Promise<Enfo
   if (override && override.active && override.expiresAt > new Date()) {
     const result: EnforcementResult = {
       allowed: true,
-      decision: 'ALLOW',
-      reasons: [{ code: 'OVERRIDE_ACTIVE', message: `Override active: ${override.reason}`, severity: 'info' }],
-      warnings: [`Using override by ${override.createdBy}, expires ${override.expiresAt.toISOString()}`],
+      decision: "ALLOW",
+      reasons: [
+        {
+          code: "OVERRIDE_ACTIVE",
+          message: `Override active: ${override.reason}`,
+          severity: "info",
+        },
+      ],
+      warnings: [
+        `Using override by ${override.createdBy}, expires ${override.expiresAt.toISOString()}`,
+      ],
       overrideActive: true,
       evaluatedAt,
     };
 
     // Log decision
-    bufferDecision(targetKey, context, 'ALLOW', result.reasons, null, true);
+    bufferDecision(targetKey, context, "ALLOW", result.reasons, null, true);
     return result;
   }
 
@@ -183,16 +205,14 @@ export async function enforceAutonomy(context: EnforcementContext): Promise<Enfo
         metadata: context.metadata,
       }),
       new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Policy evaluation timeout')), config.evaluationTimeoutMs)
+        setTimeout(() => reject(new Error("Policy evaluation timeout")), config.evaluationTimeoutMs)
       ),
     ]);
 
-    const warnings = policyResult.reasons
-      .filter(r => r.severity === 'warning')
-      .map(r => r.message);
+    const warnings = policyResult.reasons.filter(r => r.severity === "warning").map(r => r.message);
 
     const result: EnforcementResult = {
-      allowed: policyResult.decision !== 'BLOCK',
+      allowed: policyResult.decision !== "BLOCK",
       decision: policyResult.decision,
       reasons: policyResult.reasons,
       warnings,
@@ -219,22 +239,22 @@ export async function enforceAutonomy(context: EnforcementContext): Promise<Enfo
 
     return result;
   } catch (error) {
-    console.error('[Enforcement] Policy evaluation failed:', error);
-
     // Fail closed on errors
     const result: EnforcementResult = {
       allowed: false,
-      decision: 'BLOCK',
-      reasons: [{
-        code: 'EVALUATION_ERROR',
-        message: error instanceof Error ? error.message : 'Policy evaluation failed',
-        severity: 'error',
-      }],
+      decision: "BLOCK",
+      reasons: [
+        {
+          code: "EVALUATION_ERROR",
+          message: error instanceof Error ? error.message : "Policy evaluation failed",
+          severity: "error",
+        },
+      ],
       warnings: [],
       evaluatedAt,
     };
 
-    bufferDecision(targetKey, context, 'BLOCK', result.reasons, null, false);
+    bufferDecision(targetKey, context, "BLOCK", result.reasons, null, false);
     return result;
   }
 }
@@ -247,7 +267,8 @@ export async function enforceOrThrow(context: EnforcementContext): Promise<Enfor
 
   if (!result.allowed) {
     throw new AutonomyBlockedError(
-      result.reasons.find(r => r.severity === 'error')?.message || DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
+      result.reasons.find(r => r.severity === "error")?.message ||
+        DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
       {
         reasons: result.reasons,
         feature: context.feature,
@@ -296,16 +317,16 @@ function bufferDecision(
   });
 
   if (decisionBuffer.length >= MAX_BUFFER_SIZE) {
-    flushDecisionBuffer().catch(console.error);
+    flushDecisionBuffer().catch(() => {});
   }
 }
 
 function getRetryAfterSeconds(result: EnforcementResult): number | undefined {
   // If budget exhausted, suggest retry after period reset
-  if (result.reasons.some(r => r.code === 'BUDGET_EXHAUSTED')) {
+  if (result.reasons.some(r => r.code === "BUDGET_EXHAUSTED")) {
     return 3600; // 1 hour
   }
-  if (result.reasons.some(r => r.code === 'OUTSIDE_ALLOWED_HOURS')) {
+  if (result.reasons.some(r => r.code === "OUTSIDE_ALLOWED_HOURS")) {
     return 1800; // 30 minutes
   }
   return undefined;
@@ -317,6 +338,6 @@ export function shutdownDecisionEngine() {
     clearInterval(flushTimer);
     flushTimer = null;
   }
-  flushDecisionBuffer().catch(console.error);
+  flushDecisionBuffer().catch(() => {});
   overrideCache.clear();
 }

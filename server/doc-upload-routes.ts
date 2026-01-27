@@ -26,11 +26,11 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     // Accept DOCX, DOC, and TXT files
     const allowedMimes = [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/msword',
-      'text/plain',
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/msword",
+      "text/plain",
     ];
-    const allowedExtensions = ['.docx', '.doc', '.txt'];
+    const allowedExtensions = [".docx", ".doc", ".txt"];
 
     const hasValidMime = allowedMimes.includes(file.mimetype);
     const hasValidExt = allowedExtensions.some(ext =>
@@ -40,7 +40,7 @@ const upload = multer({
     if (hasValidMime || hasValidExt) {
       cb(null, true);
     } else {
-      cb(new Error('Only .docx, .doc, and .txt files are allowed'));
+      cb(new Error("Only .docx, .doc, and .txt files are allowed"));
     }
   },
 });
@@ -50,86 +50,78 @@ export function registerDocUploadRoutes(app: Express) {
   // POST /api/doc-upload/parse
   // Parse a DOCX file and return structured content (preview before import)
   // -------------------------------------------------------------------------
-  app.post(
-    "/api/doc-upload/parse",
-    upload.single('file'),
-    async (req: Request, res: Response) => {
-      try {
-        if (!req.file) {
-          return res.status(400).json({ error: "No file uploaded" });
-        }
-
-        const contentType = (req.body.contentType || 'article') as 'hotel' | 'article' | 'attraction' | 'dining' | 'district';
-
-        console.log(`[DocUpload] Parsing file: ${sanitizeForLog(req.file.originalname)} as ${contentType}`);
-
-        const result = await docUploadService.processDocUpload(
-          req.file.buffer,
-          contentType,
-          {
-            overrideTitle: req.body.title,
-            category: req.body.category,
-            locale: req.body.locale || 'en',
-          }
-        );
-
-        if (!result.success) {
-          return res.status(400).json({ error: result.error });
-        }
-
-        res.json({
-          success: true,
-          preview: result.content,
-          warnings: result.warnings,
-          message: "Document parsed successfully. Review and confirm to import.",
-        });
-      } catch (error) {
-        console.error("[DocUpload] Parse error:", error);
-        res.status(500).json({
-          error: error instanceof Error ? error.message : "Failed to parse document",
-        });
+  app.post("/api/doc-upload/parse", upload.single("file"), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
       }
+
+      const contentType = (req.body.contentType || "article") as
+        | "hotel"
+        | "article"
+        | "attraction"
+        | "dining"
+        | "district";
+
+      const result = await docUploadService.processDocUpload(req.file.buffer, contentType, {
+        overrideTitle: req.body.title,
+        category: req.body.category,
+        locale: req.body.locale || "en",
+      });
+
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      res.json({
+        success: true,
+        preview: result.content,
+        warnings: result.warnings,
+        message: "Document parsed successfully. Review and confirm to import.",
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Failed to parse document",
+      });
     }
-  );
+  });
 
   // -------------------------------------------------------------------------
   // POST /api/doc-upload/import
   // Import a DOCX file directly to the database
   // -------------------------------------------------------------------------
-  app.post(
-    "/api/doc-upload/import",
-    upload.single('file'),
-    async (req: Request, res: Response) => {
-      try {
-        if (!req.file) {
-          return res.status(400).json({ error: "No file uploaded" });
-        }
+  app.post("/api/doc-upload/import", upload.single("file"), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
-        const contentType = (req.body.contentType || 'article') as 'hotel' | 'article' | 'attraction' | 'dining' | 'district';
-        const locale = req.body.locale || 'en';
-        const category = req.body.category;
+      const contentType = (req.body.contentType || "article") as
+        | "hotel"
+        | "article"
+        | "attraction"
+        | "dining"
+        | "district";
+      const locale = req.body.locale || "en";
+      const category = req.body.category;
 
-        console.log(`[DocUpload] Importing file: ${sanitizeForLog(req.file.originalname)} as ${contentType}`);
+      const result = await docUploadService.processDocUpload(req.file.buffer, contentType, {
+        overrideTitle: req.body.title,
+        category,
+        locale,
+      });
 
-        const result = await docUploadService.processDocUpload(
-          req.file.buffer,
-          contentType,
-          {
-            overrideTitle: req.body.title,
-            category,
-            locale,
-          }
-        );
+      if (!result.success || !result.content) {
+        return res.status(400).json({ error: result.error || "Failed to process document" });
+      }
 
-        if (!result.success || !result.content) {
-          return res.status(400).json({ error: result.error || "Failed to process document" });
-        }
+      // Import to database based on content type
+      let insertedId: number = 0;
 
-        // Import to database based on content type
-        let insertedId: number = 0;
-
-        if (contentType === 'hotel') {
-          const [hotelResult] = await db.insert(hotels).values({
+      if (contentType === "hotel") {
+        const [hotelResult] = await db
+          .insert(hotels)
+          .values({
             title: result.content.title,
             slug: result.content.slug,
             locale,
@@ -142,12 +134,19 @@ export function registerDocUploadRoutes(app: Express) {
             proTips: result.content.proTips,
             faqs: result.content.faqs,
             starRating: 5, // Default, can be edited
-            priceRange: '$$$$', // Default, can be edited
-            location: 'Dubai, UAE', // Default, can be edited
-          } as any).returning({ id: hotels.id });
-          insertedId = Number(hotelResult.id);
-        } else if (contentType === 'article' || contentType === 'dining' || contentType === 'district') {
-          const [articleResult] = await db.insert(articles).values({
+            priceRange: "$$$$", // Default, can be edited
+            location: "Dubai, UAE", // Default, can be edited
+          } as any)
+          .returning({ id: hotels.id });
+        insertedId = Number(hotelResult.id);
+      } else if (
+        contentType === "article" ||
+        contentType === "dining" ||
+        contentType === "district"
+      ) {
+        const [articleResult] = await db
+          .insert(articles)
+          .values({
             title: result.content.title,
             slug: result.content.slug,
             locale,
@@ -156,14 +155,23 @@ export function registerDocUploadRoutes(app: Express) {
             metaDescription: result.content.metaDescription,
             summary: result.content.summary,
             content: result.content.content,
-            category: category || (contentType === 'dining' ? 'Dining' : contentType === 'district' ? 'Districts' : 'General'),
+            category:
+              category ||
+              (contentType === "dining"
+                ? "Dining"
+                : contentType === "district"
+                  ? "Districts"
+                  : "General"),
             quickFacts: result.content.quickFacts,
             proTips: result.content.proTips,
             faqs: result.content.faqs,
-          } as any).returning({ id: articles.id });
-          insertedId = Number(articleResult.id);
-        } else if (contentType === 'attraction') {
-          const [attractionResult] = await db.insert(attractions).values({
+          } as any)
+          .returning({ id: articles.id });
+        insertedId = Number(articleResult.id);
+      } else if (contentType === "attraction") {
+        const [attractionResult] = await db
+          .insert(attractions)
+          .values({
             title: result.content.title,
             slug: result.content.slug,
             locale,
@@ -172,35 +180,32 @@ export function registerDocUploadRoutes(app: Express) {
             metaDescription: result.content.metaDescription,
             summary: result.content.summary,
             content: result.content.content,
-            category: category || 'Landmarks',
-            location: 'Dubai, UAE', // Default, can be edited
+            category: category || "Landmarks",
+            location: "Dubai, UAE", // Default, can be edited
             quickFacts: result.content.quickFacts,
             proTips: result.content.proTips,
             faqs: result.content.faqs,
-          } as any).returning({ id: attractions.id });
-          insertedId = Number(attractionResult.id);
-        }
-
-        console.log(`[DocUpload] Imported as ${contentType} with ID: ${insertedId}`);
-
-        res.json({
-          success: true,
-          id: insertedId,
-          contentType,
-          title: result.content.title,
-          slug: result.content.slug,
-          wordCount: result.content.content.wordCount,
-          warnings: result.warnings,
-          message: `Successfully imported as ${contentType}`,
-        });
-      } catch (error) {
-        console.error("[DocUpload] Import error:", error);
-        res.status(500).json({
-          error: error instanceof Error ? error.message : "Failed to import document",
-        });
+          } as any)
+          .returning({ id: attractions.id });
+        insertedId = Number(attractionResult.id);
       }
+
+      res.json({
+        success: true,
+        id: insertedId,
+        contentType,
+        title: result.content.title,
+        slug: result.content.slug,
+        wordCount: result.content.content.wordCount,
+        warnings: result.warnings,
+        message: `Successfully imported as ${contentType}`,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Failed to import document",
+      });
     }
-  );
+  });
 
   // -------------------------------------------------------------------------
   // POST /api/doc-upload/batch
@@ -208,7 +213,7 @@ export function registerDocUploadRoutes(app: Express) {
   // -------------------------------------------------------------------------
   app.post(
     "/api/doc-upload/batch",
-    upload.array('files', 50), // Max 50 files
+    upload.array("files", 50), // Max 50 files
     async (req: Request, res: Response) => {
       try {
         const files = req.files as Express.Multer.File[];
@@ -217,10 +222,13 @@ export function registerDocUploadRoutes(app: Express) {
           return res.status(400).json({ error: "No files uploaded" });
         }
 
-        const contentType = (req.body.contentType || 'hotel') as 'hotel' | 'article' | 'attraction' | 'dining' | 'district';
-        const locale = req.body.locale || 'en';
-
-        console.log(`[DocUpload] Batch importing ${files.length} files as ${contentType}`);
+        const contentType = (req.body.contentType || "hotel") as
+          | "hotel"
+          | "article"
+          | "attraction"
+          | "dining"
+          | "district";
+        const locale = req.body.locale || "en";
 
         const results = await docUploadService.processBatchDocUpload(
           files.map(f => ({ buffer: f.buffer, filename: f.originalname })),
@@ -236,47 +244,65 @@ export function registerDocUploadRoutes(app: Express) {
             try {
               let insertedId: number = 0;
 
-              if (contentType === 'hotel') {
-                const [hotelResult] = await db.insert(hotels).values({
-                  title: result.content.title,
-                  slug: result.content.slug,
-                  locale,
-                  status: 'draft',
-                  metaTitle: result.content.metaTitle,
-                  metaDescription: result.content.metaDescription,
-                  summary: result.content.summary,
-                  content: result.content.content,
-                  starRating: 5,
-                  priceRange: '$$$$',
-                  location: 'Dubai, UAE',
-                } as any).returning({ id: hotels.id });
+              if (contentType === "hotel") {
+                const [hotelResult] = await db
+                  .insert(hotels)
+                  .values({
+                    title: result.content.title,
+                    slug: result.content.slug,
+                    locale,
+                    status: "draft",
+                    metaTitle: result.content.metaTitle,
+                    metaDescription: result.content.metaDescription,
+                    summary: result.content.summary,
+                    content: result.content.content,
+                    starRating: 5,
+                    priceRange: "$$$$",
+                    location: "Dubai, UAE",
+                  } as any)
+                  .returning({ id: hotels.id });
                 insertedId = Number(hotelResult.id);
-              } else if (contentType === 'article' || contentType === 'dining' || contentType === 'district') {
-                const [articleResult] = await db.insert(articles).values({
-                  title: result.content.title,
-                  slug: result.content.slug,
-                  locale,
-                  status: 'draft',
-                  metaTitle: result.content.metaTitle,
-                  metaDescription: result.content.metaDescription,
-                  summary: result.content.summary,
-                  content: result.content.content,
-                  category: contentType === 'dining' ? 'Dining' : contentType === 'district' ? 'Districts' : 'General',
-                } as any).returning({ id: articles.id });
+              } else if (
+                contentType === "article" ||
+                contentType === "dining" ||
+                contentType === "district"
+              ) {
+                const [articleResult] = await db
+                  .insert(articles)
+                  .values({
+                    title: result.content.title,
+                    slug: result.content.slug,
+                    locale,
+                    status: "draft",
+                    metaTitle: result.content.metaTitle,
+                    metaDescription: result.content.metaDescription,
+                    summary: result.content.summary,
+                    content: result.content.content,
+                    category:
+                      contentType === "dining"
+                        ? "Dining"
+                        : contentType === "district"
+                          ? "Districts"
+                          : "General",
+                  } as any)
+                  .returning({ id: articles.id });
                 insertedId = Number(articleResult.id);
-              } else if (contentType === 'attraction') {
-                const [attractionResult] = await db.insert(attractions).values({
-                  title: result.content.title,
-                  slug: result.content.slug,
-                  locale,
-                  status: 'draft',
-                  metaTitle: result.content.metaTitle,
-                  metaDescription: result.content.metaDescription,
-                  summary: result.content.summary,
-                  content: result.content.content,
-                  category: 'Landmarks',
-                  location: 'Dubai, UAE',
-                } as any).returning({ id: attractions.id });
+              } else if (contentType === "attraction") {
+                const [attractionResult] = await db
+                  .insert(attractions)
+                  .values({
+                    title: result.content.title,
+                    slug: result.content.slug,
+                    locale,
+                    status: "draft",
+                    metaTitle: result.content.metaTitle,
+                    metaDescription: result.content.metaDescription,
+                    summary: result.content.summary,
+                    content: result.content.content,
+                    category: "Landmarks",
+                    location: "Dubai, UAE",
+                  } as any)
+                  .returning({ id: attractions.id });
                 insertedId = Number(attractionResult.id);
               }
 
@@ -299,8 +325,6 @@ export function registerDocUploadRoutes(app: Express) {
           }
         }
 
-        console.log(`[DocUpload] Batch complete: ${imported.length} imported, ${failed.length} failed`);
-
         res.json({
           success: true,
           total: files.length,
@@ -313,15 +337,12 @@ export function registerDocUploadRoutes(app: Express) {
           message: `Imported ${imported.length} of ${files.length} files`,
         });
       } catch (error) {
-        console.error("[DocUpload] Batch import error:", error);
         res.status(500).json({
           error: error instanceof Error ? error.message : "Failed to process batch",
         });
       }
     }
   );
-
-  console.log("[DocUpload] Routes registered: /api/doc-upload/parse, /api/doc-upload/import, /api/doc-upload/batch");
 }
 
 export default registerDocUploadRoutes;

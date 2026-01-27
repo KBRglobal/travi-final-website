@@ -30,25 +30,308 @@ const WIKIVOYAGE_DOMAINS: Record<string, string> = {
 };
 
 const DESTINATION_WIKIVOYAGE_NAMES: Record<string, Record<string, string>> = {
-  "abu-dhabi": { en: "Abu_Dhabi", ar: "أبوظبي", de: "Abu_Dhabi", es: "Abu_Dabi", fr: "Abou_Dabi", he: "אבו_דאבי", it: "Abu_Dhabi", ja: "アブダビ", ko: "아부다비", pt: "Abu_Dhabi", ru: "Абу-Даби", tr: "Abu_Dabi", zh: "阿布達比" },
-  "amsterdam": { en: "Amsterdam", ar: "أمستردام", de: "Amsterdam", es: "Ámsterdam", fr: "Amsterdam", he: "אמסטרדם", hi: "एम्स्टर्डम", it: "Amsterdam", ja: "アムステルダム", ko: "암스테르담", pt: "Amesterdão", ru: "Амстердам", tr: "Amsterdam", zh: "阿姆斯特丹" },
-  "bali": { en: "Bali", ar: "بالي", de: "Bali", es: "Bali", fr: "Bali", he: "באלי", hi: "बाली", it: "Bali", ja: "バリ島", ko: "발리", pt: "Bali", ru: "Бали", tr: "Bali", zh: "峇里島" },
-  "bangkok": { en: "Bangkok", ar: "بانكوك", de: "Bangkok", es: "Bangkok", fr: "Bangkok", he: "בנגקוק", hi: "बैंकॉक", it: "Bangkok", ja: "バンコク", ko: "방콕", pt: "Banguecoque", ru: "Бангкок", tr: "Bangkok", zh: "曼谷" },
-  "barcelona": { en: "Barcelona", ar: "برشلونة", de: "Barcelona", es: "Barcelona", fr: "Barcelone", he: "ברצלונה", hi: "बार्सिलोना", it: "Barcellona", ja: "バルセロナ", ko: "바르셀로나", pt: "Barcelona", ru: "Барселона", tr: "Barselona", zh: "巴塞罗那" },
-  "dubai": { en: "Dubai", ar: "دبي", de: "Dubai", es: "Dubái", fr: "Dubaï", he: "דובאי", hi: "दुबई", it: "Dubai", ja: "ドバイ", ko: "두바이", pt: "Dubai", ru: "Дубай", tr: "Dubai", zh: "杜拜" },
-  "hong-kong": { en: "Hong_Kong", ar: "هونغ_كونغ", de: "Hongkong", es: "Hong_Kong", fr: "Hong_Kong", he: "הונג_קונג", hi: "हांगकांग", it: "Hong_Kong", ja: "香港", ko: "홍콩", pt: "Hong_Kong", ru: "Гонконг", tr: "Hong_Kong", zh: "香港" },
-  "istanbul": { en: "Istanbul", ar: "إسطنبول", de: "Istanbul", es: "Estambul", fr: "Istanbul", he: "איסטנבול", hi: "इस्तांबुल", it: "Istanbul", ja: "イスタンブール", ko: "이스탄불", pt: "Istambul", ru: "Стамбул", tr: "İstanbul", zh: "伊斯坦堡" },
-  "las-vegas": { en: "Las_Vegas", ar: "لاس_فيغاس", de: "Las_Vegas", es: "Las_Vegas", fr: "Las_Vegas", he: "לאס_וגאס", hi: "लास_वेगास", it: "Las_Vegas", ja: "ラスベガス", ko: "라스베이거스", pt: "Las_Vegas", ru: "Лас-Вегас", tr: "Las_Vegas", zh: "拉斯維加斯" },
-  "london": { en: "London", ar: "لندن", de: "London", es: "Londres", fr: "Londres", he: "לונדון", hi: "लंदन", it: "Londra", ja: "ロンドン", ko: "런던", pt: "Londres", ru: "Лондон", tr: "Londra", zh: "伦敦" },
-  "los-angeles": { en: "Los_Angeles", ar: "لوس_أنجلوس", de: "Los_Angeles", es: "Los_Ángeles", fr: "Los_Angeles", he: "לוס_אנג'לס", hi: "लॉस_एंजिल्स", it: "Los_Angeles", ja: "ロサンゼルス", ko: "로스앤젤레스", pt: "Los_Angeles", ru: "Лос-Анджелес", tr: "Los_Angeles", zh: "洛杉磯" },
-  "miami": { en: "Miami", ar: "ميامي", de: "Miami", es: "Miami", fr: "Miami", he: "מיאמי", hi: "मियामी", it: "Miami", ja: "マイアミ", ko: "마이애미", pt: "Miami", ru: "Майами", tr: "Miami", zh: "邁阿密" },
-  "new-york": { en: "New_York_City", ar: "مدينة_نيويورك", de: "New_York_City", es: "Nueva_York", fr: "New_York", he: "ניו_יורק", hi: "न्यूयॉर्क", it: "New_York", ja: "ニューヨーク", ko: "뉴욕", pt: "Nova_Iorque", ru: "Нью-Йорк", tr: "New_York", zh: "紐約" },
-  "paris": { en: "Paris", ar: "باريس", de: "Paris", es: "París", fr: "Paris", he: "פריז", hi: "पेरिस", it: "Parigi", ja: "パリ", ko: "파리", pt: "Paris", ru: "Париж", tr: "Paris", zh: "巴黎" },
-  "ras-al-khaimah": { en: "Ras_al-Khaimah", ar: "رأس_الخيمة", de: "Ras_al-Chaima", es: "Ras_el-Jaima", fr: "Ras_el-Khaimah", he: "ראס_אל_חיימה", it: "Ras_al-Khaimah", ja: "ラアス・アル=ハイマ", ko: "라스알카이마", pt: "Ras_al-Khaimah", ru: "Рас-эль-Хайма", tr: "Resülhayme", zh: "哈伊馬角" },
-  "rome": { en: "Rome", ar: "روما", de: "Rom", es: "Roma", fr: "Rome", he: "רומא", hi: "रोम", it: "Roma", ja: "ローマ", ko: "로마", pt: "Roma", ru: "Рим", tr: "Roma", zh: "羅馬" },
-  "singapore": { en: "Singapore", ar: "سنغافورة", de: "Singapur", es: "Singapur", fr: "Singapour", he: "סינגפור", hi: "सिंगापुर", it: "Singapore", ja: "シンガポール", ko: "싱가포르", pt: "Singapura", ru: "Сингапур", tr: "Singapur", zh: "新加坡" },
-  "sydney": { en: "Sydney", ar: "سيدني", de: "Sydney", es: "Sídney", fr: "Sydney", he: "סידני", hi: "सिडनी", it: "Sydney", ja: "シドニー", ko: "시드니", pt: "Sydney", ru: "Сидней", tr: "Sidney", zh: "悉尼" },
-  "tokyo": { en: "Tokyo", ar: "طوكيو", de: "Tokio", es: "Tokio", fr: "Tokyo", he: "טוקיו", hi: "टोक्यो", it: "Tokyo", ja: "東京", ko: "도쿄", pt: "Tóquio", ru: "Токио", tr: "Tokyo", zh: "東京" },
+  "abu-dhabi": {
+    en: "Abu_Dhabi",
+    ar: "أبوظبي",
+    de: "Abu_Dhabi",
+    es: "Abu_Dabi",
+    fr: "Abou_Dabi",
+    he: "",
+    it: "Abu_Dhabi",
+    ja: "アブダビ",
+    ko: "아부다비",
+    pt: "Abu_Dhabi",
+    ru: "Абу-Даби",
+    tr: "Abu_Dabi",
+    zh: "阿布達比",
+  },
+  amsterdam: {
+    en: "Amsterdam",
+    ar: "أمستردام",
+    de: "Amsterdam",
+    es: "Ámsterdam",
+    fr: "Amsterdam",
+    he: "",
+    hi: "एम्स्टर्डम",
+    it: "Amsterdam",
+    ja: "アムステルダム",
+    ko: "암스테르담",
+    pt: "Amesterdão",
+    ru: "Амстердам",
+    tr: "Amsterdam",
+    zh: "阿姆斯特丹",
+  },
+  bali: {
+    en: "Bali",
+    ar: "بالي",
+    de: "Bali",
+    es: "Bali",
+    fr: "Bali",
+    he: "",
+    hi: "बाली",
+    it: "Bali",
+    ja: "バリ島",
+    ko: "발리",
+    pt: "Bali",
+    ru: "Бали",
+    tr: "Bali",
+    zh: "峇里島",
+  },
+  bangkok: {
+    en: "Bangkok",
+    ar: "بانكوك",
+    de: "Bangkok",
+    es: "Bangkok",
+    fr: "Bangkok",
+    he: "",
+    hi: "बैंकॉक",
+    it: "Bangkok",
+    ja: "バンコク",
+    ko: "방콕",
+    pt: "Banguecoque",
+    ru: "Бангкок",
+    tr: "Bangkok",
+    zh: "曼谷",
+  },
+  barcelona: {
+    en: "Barcelona",
+    ar: "برشلونة",
+    de: "Barcelona",
+    es: "Barcelona",
+    fr: "Barcelone",
+    he: "",
+    hi: "बार्सिलोना",
+    it: "Barcellona",
+    ja: "バルセロナ",
+    ko: "바르셀로나",
+    pt: "Barcelona",
+    ru: "Барселона",
+    tr: "Barselona",
+    zh: "巴塞罗那",
+  },
+  dubai: {
+    en: "Dubai",
+    ar: "دبي",
+    de: "Dubai",
+    es: "Dubái",
+    fr: "Dubaï",
+    he: "",
+    hi: "दुबई",
+    it: "Dubai",
+    ja: "ドバイ",
+    ko: "두바이",
+    pt: "Dubai",
+    ru: "Дубай",
+    tr: "Dubai",
+    zh: "杜拜",
+  },
+  "hong-kong": {
+    en: "Hong_Kong",
+    ar: "هونغ_كونغ",
+    de: "Hongkong",
+    es: "Hong_Kong",
+    fr: "Hong_Kong",
+    he: "",
+    hi: "हांगकांग",
+    it: "Hong_Kong",
+    ja: "香港",
+    ko: "홍콩",
+    pt: "Hong_Kong",
+    ru: "Гонконг",
+    tr: "Hong_Kong",
+    zh: "香港",
+  },
+  istanbul: {
+    en: "Istanbul",
+    ar: "إسطنبول",
+    de: "Istanbul",
+    es: "Estambul",
+    fr: "Istanbul",
+    he: "",
+    hi: "इस्तांबुल",
+    it: "Istanbul",
+    ja: "イスタンブール",
+    ko: "이스탄불",
+    pt: "Istambul",
+    ru: "Стамбул",
+    tr: "İstanbul",
+    zh: "伊斯坦堡",
+  },
+  "las-vegas": {
+    en: "Las_Vegas",
+    ar: "لاس_فيغاس",
+    de: "Las_Vegas",
+    es: "Las_Vegas",
+    fr: "Las_Vegas",
+    he: "",
+    hi: "लास_वेगास",
+    it: "Las_Vegas",
+    ja: "ラスベガス",
+    ko: "라스베이거스",
+    pt: "Las_Vegas",
+    ru: "Лас-Вегас",
+    tr: "Las_Vegas",
+    zh: "拉斯維加斯",
+  },
+  london: {
+    en: "London",
+    ar: "لندن",
+    de: "London",
+    es: "Londres",
+    fr: "Londres",
+    he: "",
+    hi: "लंदन",
+    it: "Londra",
+    ja: "ロンドン",
+    ko: "런던",
+    pt: "Londres",
+    ru: "Лондон",
+    tr: "Londra",
+    zh: "伦敦",
+  },
+  "los-angeles": {
+    en: "Los_Angeles",
+    ar: "لوس_أنجلوس",
+    de: "Los_Angeles",
+    es: "Los_Ángeles",
+    fr: "Los_Angeles",
+    he: "",
+    hi: "लॉस_एंजिल्स",
+    it: "Los_Angeles",
+    ja: "ロサンゼルス",
+    ko: "로스앤젤레스",
+    pt: "Los_Angeles",
+    ru: "Лос-Анджелес",
+    tr: "Los_Angeles",
+    zh: "洛杉磯",
+  },
+  miami: {
+    en: "Miami",
+    ar: "ميامي",
+    de: "Miami",
+    es: "Miami",
+    fr: "Miami",
+    he: "",
+    hi: "मियामी",
+    it: "Miami",
+    ja: "マイアミ",
+    ko: "마이애미",
+    pt: "Miami",
+    ru: "Майами",
+    tr: "Miami",
+    zh: "邁阿密",
+  },
+  "new-york": {
+    en: "New_York_City",
+    ar: "مدينة_نيويورك",
+    de: "New_York_City",
+    es: "Nueva_York",
+    fr: "New_York",
+    he: "",
+    hi: "न्यूयॉर्क",
+    it: "New_York",
+    ja: "ニューヨーク",
+    ko: "뉴욕",
+    pt: "Nova_Iorque",
+    ru: "Нью-Йорк",
+    tr: "New_York",
+    zh: "紐約",
+  },
+  paris: {
+    en: "Paris",
+    ar: "باريس",
+    de: "Paris",
+    es: "París",
+    fr: "Paris",
+    he: "",
+    hi: "पेरिस",
+    it: "Parigi",
+    ja: "パリ",
+    ko: "파리",
+    pt: "Paris",
+    ru: "Париж",
+    tr: "Paris",
+    zh: "巴黎",
+  },
+  "ras-al-khaimah": {
+    en: "Ras_al-Khaimah",
+    ar: "رأس_الخيمة",
+    de: "Ras_al-Chaima",
+    es: "Ras_el-Jaima",
+    fr: "Ras_el-Khaimah",
+    he: "",
+    it: "Ras_al-Khaimah",
+    ja: "ラアス・アル=ハイマ",
+    ko: "라스알카이마",
+    pt: "Ras_al-Khaimah",
+    ru: "Рас-эль-Хайма",
+    tr: "Resülhayme",
+    zh: "哈伊馬角",
+  },
+  rome: {
+    en: "Rome",
+    ar: "روما",
+    de: "Rom",
+    es: "Roma",
+    fr: "Rome",
+    he: "",
+    hi: "रोम",
+    it: "Roma",
+    ja: "ローマ",
+    ko: "로마",
+    pt: "Roma",
+    ru: "Рим",
+    tr: "Roma",
+    zh: "羅馬",
+  },
+  singapore: {
+    en: "Singapore",
+    ar: "سنغافورة",
+    de: "Singapur",
+    es: "Singapur",
+    fr: "Singapour",
+    he: "",
+    hi: "सिंगापुर",
+    it: "Singapore",
+    ja: "シンガポール",
+    ko: "싱가포르",
+    pt: "Singapura",
+    ru: "Сингапур",
+    tr: "Singapur",
+    zh: "新加坡",
+  },
+  sydney: {
+    en: "Sydney",
+    ar: "سيدني",
+    de: "Sydney",
+    es: "Sídney",
+    fr: "Sydney",
+    he: "",
+    hi: "सिडनी",
+    it: "Sydney",
+    ja: "シドニー",
+    ko: "시드니",
+    pt: "Sydney",
+    ru: "Сидней",
+    tr: "Sidney",
+    zh: "悉尼",
+  },
+  tokyo: {
+    en: "Tokyo",
+    ar: "طوكيو",
+    de: "Tokio",
+    es: "Tokio",
+    fr: "Tokyo",
+    he: "",
+    hi: "टोक्यो",
+    it: "Tokyo",
+    ja: "東京",
+    ko: "도쿄",
+    pt: "Tóquio",
+    ru: "Токио",
+    tr: "Tokyo",
+    zh: "東京",
+  },
 };
 
 interface WikivoyageSection {
@@ -75,7 +358,10 @@ async function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function fetchWikivoyagePage(destinationId: string, locale: string): Promise<{ title: string; content: string; sections: WikivoyageSection[] } | null> {
+async function fetchWikivoyagePage(
+  destinationId: string,
+  locale: string
+): Promise<{ title: string; content: string; sections: WikivoyageSection[] } | null> {
   const domain = WIKIVOYAGE_DOMAINS[locale];
   if (!domain) return null;
 
@@ -95,19 +381,16 @@ async function fetchWikivoyagePage(destinationId: string, locale: string): Promi
     });
 
     if (!response.ok) {
-      console.log(`[Wikivoyage] Failed to fetch ${destinationId} in ${locale}: ${response.status}`);
       return null;
     }
 
     const contentType = response.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
-      console.log(`[Wikivoyage] Non-JSON response for ${destinationId} in ${locale}: ${contentType}`);
       return null;
     }
 
     const responseText = await response.text();
     if (responseText.startsWith("<!DOCTYPE") || responseText.startsWith("<html")) {
-      console.log(`[Wikivoyage] HTML response instead of JSON for ${destinationId} in ${locale}`);
       return null;
     }
 
@@ -115,12 +398,10 @@ async function fetchWikivoyagePage(destinationId: string, locale: string): Promi
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
-      console.log(`[Wikivoyage] Failed to parse JSON for ${destinationId} in ${locale}`);
       return null;
     }
 
     if (data.error) {
-      console.log(`[Wikivoyage] API error for ${destinationId} in ${locale}: ${data.error.info}`);
       return null;
     }
 
@@ -147,7 +428,6 @@ async function fetchWikivoyagePage(destinationId: string, locale: string): Promi
       sections,
     };
   } catch (error) {
-    console.error(`[Wikivoyage] Error fetching ${destinationId} in ${locale}:`, error);
     return null;
   }
 }
@@ -229,20 +509,19 @@ export async function importWikivoyageGuide(
   let primaryTitle = destinationName;
 
   for (const locale of locales) {
-    console.log(`[Wikivoyage] Fetching ${destinationId} in ${locale}...`);
-    
     const pageData = await fetchWikivoyagePage(destinationId, locale);
-    
+
     if (!pageData) {
-      console.log(`[Wikivoyage] No content for ${destinationId} in ${locale}`);
       continue;
     }
 
     const sections = parseWikivoyageSections(pageData.content);
     const summary = extractSummary(pageData.content);
     const domain = WIKIVOYAGE_DOMAINS[locale] || "en.wikivoyage.org";
-    const pageName = DESTINATION_WIKIVOYAGE_NAMES[destinationId]?.[locale] || 
-                     DESTINATION_WIKIVOYAGE_NAMES[destinationId]?.en || destinationId;
+    const pageName =
+      DESTINATION_WIKIVOYAGE_NAMES[destinationId]?.[locale] ||
+      DESTINATION_WIKIVOYAGE_NAMES[destinationId]?.en ||
+      destinationId;
 
     translations[locale] = {
       locale,
@@ -294,7 +573,6 @@ export async function importWikivoyageGuide(
           rawData: { source: "wikivoyage", locales: Object.keys(translations) } as any,
         } as any)
         .where(eq(update9987Guides.slug, slug));
-      console.log(`[Wikivoyage] Updated guide for ${destinationId}`);
     } else {
       await db.insert(update9987Guides).values({
         title: primaryTitle,
@@ -306,11 +584,10 @@ export async function importWikivoyageGuide(
         publishedAt: new Date(),
         rawData: { source: "wikivoyage", locales: Object.keys(translations) } as any,
       } as any);
-      console.log(`[Wikivoyage] Created guide for ${destinationId}`);
     }
   } catch (error) {
     const msg = `Database error for ${destinationId}: ${error}`;
-    console.error(`[Wikivoyage] ${msg}`);
+
     errors.push(msg);
     return { success: false, imported, errors };
   }
@@ -326,16 +603,14 @@ export async function runFullWikivoyageIngestion(): Promise<{
 }> {
   const destinations = Object.keys(DESTINATION_WIKIVOYAGE_NAMES);
   const locales = Object.keys(WIKIVOYAGE_DOMAINS);
-  
+
   const results: Record<string, { imported: number; errors: string[] }> = {};
   let success = 0;
   let failed = 0;
 
-  console.log(`[Wikivoyage] Starting full ingestion for ${destinations.length} destinations in ${locales.length} languages...`);
-
   for (const destId of destinations) {
     const destName = destId.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    
+
     const result = await importWikivoyageGuide(destId, destName, locales);
     results[destId] = { imported: result.imported, errors: result.errors };
 
@@ -347,8 +622,6 @@ export async function runFullWikivoyageIngestion(): Promise<{
 
     await delay(1000);
   }
-
-  console.log(`[Wikivoyage] Ingestion complete: ${success} success, ${failed} failed`);
 
   return {
     total: destinations.length,

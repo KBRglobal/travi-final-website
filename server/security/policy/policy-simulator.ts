@@ -200,9 +200,7 @@ function evaluateScenario(
     const actionMatches = policy.actions.includes(scenario.action);
     const resourceMatches = policy.resources.includes(scenario.resource);
     const roleMatches =
-      !policy.roles ||
-      policy.roles.length === 0 ||
-      policy.roles.includes(scenario.role);
+      !policy.roles || policy.roles.length === 0 || policy.roles.includes(scenario.role);
 
     if (actionMatches && resourceMatches && roleMatches) {
       matchingPolicies.push(policy);
@@ -226,7 +224,7 @@ function evaluateScenario(
   return {
     allowed: topPolicy.effect === "allow",
     effect: topPolicy.effect,
-    matchingPolicies: matchingPolicies.map((p) => p.id),
+    matchingPolicies: matchingPolicies.map(p => p.id),
   };
 }
 
@@ -293,12 +291,12 @@ export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult
     if (change.type === "add" && change.after) {
       proposedPolicies.push(change.after);
     } else if (change.type === "update" && change.after) {
-      const index = proposedPolicies.findIndex((p) => p.id === change.policyId);
+      const index = proposedPolicies.findIndex(p => p.id === change.policyId);
       if (index >= 0) {
         proposedPolicies[index] = change.after;
       }
     } else if (change.type === "delete") {
-      const index = proposedPolicies.findIndex((p) => p.id === change.policyId);
+      const index = proposedPolicies.findIndex(p => p.id === change.policyId);
       if (index >= 0) {
         proposedPolicies.splice(index, 1);
       }
@@ -345,17 +343,17 @@ export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult
   }
 
   // Calculate risk assessment
-  const accessGained = accessChanges.filter((c) => c.changeType === "gained_access").length;
-  const accessLost = accessChanges.filter((c) => c.changeType === "lost_access").length;
-  const criticalChanges = accessChanges.filter((c) => c.riskLevel === "critical").length;
-  const highRiskChanges = accessChanges.filter((c) => c.riskLevel === "high").length;
+  const accessGained = accessChanges.filter(c => c.changeType === "gained_access").length;
+  const accessLost = accessChanges.filter(c => c.changeType === "lost_access").length;
+  const criticalChanges = accessChanges.filter(c => c.riskLevel === "critical").length;
+  const highRiskChanges = accessChanges.filter(c => c.riskLevel === "high").length;
 
   // Compare lint issues
-  const beforeIssueIds = new Set(lintBefore.issues.map((i) => i.id));
-  const afterIssueIds = new Set(lintAfter.issues.map((i) => i.id));
+  const beforeIssueIds = new Set(lintBefore.issues.map(i => i.id));
+  const afterIssueIds = new Set(lintAfter.issues.map(i => i.id));
 
-  const newIssues = lintAfter.issues.filter((i) => !beforeIssueIds.has(i.id)).length;
-  const resolvedIssues = lintBefore.issues.filter((i) => !afterIssueIds.has(i.id)).length;
+  const newIssues = lintAfter.issues.filter(i => !beforeIssueIds.has(i.id)).length;
+  const resolvedIssues = lintBefore.issues.filter(i => !afterIssueIds.has(i.id)).length;
 
   // Generate warnings
   if (criticalChanges > 0) {
@@ -373,14 +371,12 @@ export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult
   }
 
   if (accessLost > 10) {
-    warnings.push(
-      `${accessLost} access permissions removed - verify this doesn't break workflows`
-    );
+    warnings.push(`${accessLost} access permissions removed - verify this doesn't break workflows`);
   }
 
   // Super admin access change is always critical
   const superAdminChanges = accessChanges.filter(
-    (c) =>
+    c =>
       c.scenario.role === "super_admin" &&
       (c.changeType === "lost_access" || c.changeType === "gained_access")
   );
@@ -395,11 +391,7 @@ export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult
 
   if (criticalChanges > 0 || lintAfter.summary.errors > lintBefore.summary.errors) {
     recommendation = "do_not_deploy";
-  } else if (
-    highRiskChanges > 3 ||
-    newIssues > 0 ||
-    accessGained > 20
-  ) {
+  } else if (highRiskChanges > 3 || newIssues > 0 || accessGained > 20) {
     recommendation = "review_required";
   }
 
@@ -489,18 +481,16 @@ export function checkImpactForRole(
 } {
   const result = simulatePolicyChanges(changes);
 
-  const roleChanges = result.accessChanges.filter(
-    (c) => c.scenario.role === role
-  );
+  const roleChanges = result.accessChanges.filter(c => c.scenario.role === role);
 
   return {
     role,
     gainsAccess: roleChanges
-      .filter((c) => c.changeType === "gained_access")
-      .map((c) => ({ action: c.scenario.action, resource: c.scenario.resource })),
+      .filter(c => c.changeType === "gained_access")
+      .map(c => ({ action: c.scenario.action, resource: c.scenario.resource })),
     losesAccess: roleChanges
-      .filter((c) => c.changeType === "lost_access")
-      .map((c) => ({ action: c.scenario.action, resource: c.scenario.resource })),
+      .filter(c => c.changeType === "lost_access")
+      .map(c => ({ action: c.scenario.action, resource: c.scenario.resource })),
   };
 }
 
@@ -534,22 +524,15 @@ export function validatePolicyForDeployment(policy: PolicyRule): {
   }
 
   // Check for overly broad permissions
-  const sensitiveActions: Action[] = [
-    "delete",
-    "manage_users",
-    "manage_roles",
-    "manage_policies",
-  ];
+  const sensitiveActions: Action[] = ["delete", "manage_users", "manage_roles", "manage_policies"];
 
   if (
     policy.effect === "allow" &&
-    policy.actions.some((a) => sensitiveActions.includes(a)) &&
+    policy.actions.some(a => sensitiveActions.includes(a)) &&
     (!policy.roles || policy.roles.length === 0) &&
     policy.conditions.length === 0
   ) {
-    warnings.push(
-      "Policy grants sensitive permissions without role restrictions or conditions"
-    );
+    warnings.push("Policy grants sensitive permissions without role restrictions or conditions");
   }
 
   // Run simulation
@@ -569,5 +552,3 @@ export function validatePolicyForDeployment(policy: PolicyRule): {
     simulation,
   };
 }
-
-console.log("[PolicySimulator] Module loaded");

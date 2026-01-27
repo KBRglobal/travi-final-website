@@ -41,9 +41,7 @@ export function LiveEditSidebar() {
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="font-semibold">
-              {isRTL ? "עריכה" : "Edit Panel"}
-            </h2>
+            <h2 className="font-semibold">Edit Panel</h2>
             <Button
               variant="ghost"
               size="icon"
@@ -57,31 +55,21 @@ export function LiveEditSidebar() {
           {/* Tabs */}
           <Tabs
             value={sidebarTab}
-            onValueChange={(v) => setSidebarTab(v as any)}
+            onValueChange={v => setSidebarTab(v as any)}
             className="flex-1 flex flex-col"
           >
             <TabsList className="grid grid-cols-3 mx-4 mt-4">
               <TabsTrigger value="components" className="gap-1">
                 <Layers className="w-3.5 h-3.5" />
-                <span className="text-xs">
-                  {isRTL ? "רכיבים" : "Components"}
-                </span>
+                <span className="text-xs">Components</span>
               </TabsTrigger>
-              <TabsTrigger
-                value="settings"
-                className="gap-1"
-                disabled={!selectedComponentId}
-              >
+              <TabsTrigger value="settings" className="gap-1" disabled={!selectedComponentId}>
                 <Settings className="w-3.5 h-3.5" />
-                <span className="text-xs">
-                  {isRTL ? "הגדרות" : "Settings"}
-                </span>
+                <span className="text-xs">Settings</span>
               </TabsTrigger>
               <TabsTrigger value="contents" className="gap-1">
                 <FileText className="w-3.5 h-3.5" />
-                <span className="text-xs">
-                  {isRTL ? "תוכן" : "Content"}
-                </span>
+                <span className="text-xs">Content</span>
               </TabsTrigger>
             </TabsList>
 
@@ -95,11 +83,7 @@ export function LiveEditSidebar() {
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <Settings className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">
-                    {isRTL
-                      ? "בחר רכיב לעריכה"
-                      : "Select a component to edit"}
-                  </p>
+                  <p className="text-sm">Select a component to edit</p>
                 </div>
               )}
             </TabsContent>
@@ -107,11 +91,7 @@ export function LiveEditSidebar() {
             <TabsContent value="contents" className="flex-1 p-4 overflow-auto">
               <div className="text-center text-muted-foreground py-8">
                 <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">
-                  {isRTL
-                    ? "בחר תוכן מהמערכת"
-                    : "Pick contents from CMS"}
-                </p>
+                <p className="text-sm">Pick contents from CMS</p>
               </div>
             </TabsContent>
           </Tabs>

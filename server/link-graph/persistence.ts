@@ -3,39 +3,25 @@
  * Handles graph storage and retrieval
  */
 
-import { db } from '../db';
-import { contents } from '@shared/schema';
-import { sql } from 'drizzle-orm';
-import {
-  LinkGraph,
-  LinkNode,
-  LinkEdge,
-  GraphMetrics,
-  DEFAULT_LINK_GRAPH_CONFIG,
-} from './types';
-import {
-  buildGraph,
-  getGraph,
-  isGraphStale,
-  getOrphanNodes,
-} from './graph-builder';
-import { updateAuthorityScores, getGraphMetrics } from './centrality';
-import { generateSuggestionsForContent, getAllPendingSuggestions } from './suggestions';
+import { db } from "../db";
+import { contents } from "@shared/schema";
+import { sql } from "drizzle-orm";
+import { LinkGraph, LinkNode, LinkEdge, GraphMetrics, DEFAULT_LINK_GRAPH_CONFIG } from "./types";
+import { buildGraph, getGraph, isGraphStale, getOrphanNodes } from "./graph-builder";
+import { updateAuthorityScores, getGraphMetrics } from "./centrality";
+import { generateSuggestionsForContent, getAllPendingSuggestions } from "./suggestions";
 
 let buildIntervalId: NodeJS.Timeout | null = null;
 let isBuilding = false;
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_LINK_GRAPH === 'true';
+  return process.env.ENABLE_LINK_GRAPH === "true";
 }
 
 export async function initializeLinkGraph(): Promise<void> {
   if (!isEnabled()) {
-    console.log('[LinkGraph] Module disabled (ENABLE_LINK_GRAPH not set)');
     return;
   }
-
-  console.log('[LinkGraph] Initializing...');
 
   // Initial build
   await rebuildGraph();
@@ -47,13 +33,10 @@ export async function initializeLinkGraph(): Promise<void> {
       await rebuildGraph();
     }
   }, intervalMs);
-
-  console.log('[LinkGraph] Initialized');
 }
 
 export async function rebuildGraph(): Promise<GraphMetrics> {
   if (isBuilding) {
-    console.log('[LinkGraph] Build already in progress, skipping');
     return getGraphMetrics();
   }
 
@@ -64,7 +47,6 @@ export async function rebuildGraph(): Promise<GraphMetrics> {
     updateAuthorityScores();
 
     const metrics = getGraphMetrics();
-    console.log(`[LinkGraph] Rebuilt: ${metrics.totalNodes} nodes, ${metrics.totalEdges} edges, ${metrics.orphanCount} orphans`);
 
     return metrics;
   } finally {
@@ -77,7 +59,6 @@ export function shutdownLinkGraph(): void {
     clearInterval(buildIntervalId);
     buildIntervalId = null;
   }
-  console.log('[LinkGraph] Shutdown');
 }
 
 export function exportGraphData(): {
@@ -118,9 +99,7 @@ export async function getOrphanReport(): Promise<{
       authorityScore: o.authorityScore,
     })),
     totalOrphans: orphans.length,
-    percentageOfTotal: metrics.totalNodes > 0
-      ? (orphans.length / metrics.totalNodes) * 100
-      : 0,
+    percentageOfTotal: metrics.totalNodes > 0 ? (orphans.length / metrics.totalNodes) * 100 : 0,
   };
 }
 
@@ -142,7 +121,7 @@ export async function getContentLinkStats(contentId: string): Promise<{
     outboundLinks: node.outboundLinks,
     authorityScore: node.authorityScore,
     isOrphan: node.isOrphan,
-    pendingSuggestions: suggestions.filter(s => s.status === 'pending').length,
+    pendingSuggestions: suggestions.filter(s => s.status === "pending").length,
   };
 }
 
@@ -175,7 +154,6 @@ export async function onContentChanged(contentId: string): Promise<void> {
 
   // Mark graph as needing refresh but don't rebuild immediately
   // The periodic rebuild will pick it up
-  console.log(`[LinkGraph] Content ${contentId} changed, graph will refresh on next cycle`);
 }
 
 export async function forceRefreshContent(contentId: string): Promise<void> {

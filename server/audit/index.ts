@@ -26,12 +26,8 @@ export function registerAuditRoutes(app: Express): void {
   const isAuditEnabled = process.env.ENABLE_AUDIT_LOGS === "true";
 
   if (!isGovernanceEnabled && !isAuditEnabled) {
-    console.log("[Audit] Module disabled");
     return;
   }
 
   app.use("/api/admin/audit", auditRoutes);
-  console.log("[Audit] Routes registered at /api/admin/audit");
 }
-
-console.log("[Audit] Module loaded");

@@ -3,7 +3,17 @@ import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 import Groq from "groq-sdk";
 
-export type ProviderType = "anthropic" | "openai" | "gemini" | "groq" | "mistral" | "deepseek" | "openrouter" | "together" | "perplexity" | "kimi";
+export type ProviderType =
+  | "anthropic"
+  | "openai"
+  | "gemini"
+  | "groq"
+  | "mistral"
+  | "deepseek"
+  | "openrouter"
+  | "together"
+  | "perplexity"
+  | "kimi";
 
 export interface EngineConfig {
   id: string;
@@ -39,12 +49,22 @@ class EngineRegistryClass {
   // Provider-level suspension tracking (when quota exhausted, suspend entire provider)
   private suspendedProviders: Map<ProviderType, number> = new Map();
   // Provider priority order - prefer providers with available quota
-  private providerPriority: ProviderType[] = ['anthropic', 'openrouter', 'gemini', 'groq', 'mistral', 'deepseek', 'perplexity', 'together', 'kimi', 'openai'];
+  private providerPriority: ProviderType[] = [
+    "anthropic",
+    "openrouter",
+    "gemini",
+    "groq",
+    "mistral",
+    "deepseek",
+    "perplexity",
+    "together",
+    "kimi",
+    "openai",
+  ];
 
   initialize(): void {
     if (this.initialized) return;
-    
-    console.log("[EngineRegistry] Initializing multi-provider engine pool...");
+
     this.engines = [];
 
     this.loadAnthropicEngines();
@@ -60,22 +80,19 @@ class EngineRegistryClass {
     this.loadKimiEngines();
 
     this.initialized = true;
-    
-    console.log(`[EngineRegistry] Initialized ${this.engines.length} engines:`);
+
     const byProvider: Record<string, number> = {};
     this.engines.forEach(e => {
       byProvider[e.provider] = (byProvider[e.provider] || 0) + 1;
     });
-    Object.entries(byProvider).forEach(([provider, count]) => {
-      console.log(`  - ${provider}: ${count} engines`);
-    });
-    this.engines.forEach((e, i) => console.log(`  [${i}] ${e.name} (${e.provider}/${e.model})`));
+    Object.entries(byProvider).forEach(([provider, count]) => {});
+    this.engines.forEach((e, i) => {});
   }
 
   private loadAnthropicEngines(): void {
     const replitKey = process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY;
     const replitBase = process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL;
-    
+
     if (replitKey && replitBase) {
       this.engines.push({
         id: "anthropic-replit",
@@ -133,7 +150,7 @@ class EngineRegistryClass {
     for (let i = 1; i <= 20; i++) {
       const anthropicKey = process.env[`ANTHROPIC_API_KEY_${i}`];
       const heliconeKey = process.env[`HELICONE_API_KEY_${i}`];
-      
+
       if (anthropicKey && heliconeKey) {
         this.engines.push({
           id: `anthropic-helicone-${i}`,
@@ -203,7 +220,7 @@ class EngineRegistryClass {
   private loadOpenAIEngines(): void {
     const replitKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
     const replitBase = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
-    
+
     if (replitKey && replitBase) {
       this.engines.push({
         id: "openai-replit",
@@ -333,7 +350,7 @@ class EngineRegistryClass {
 
   private loadGeminiEngines(): void {
     const replitKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
-    
+
     if (replitKey) {
       this.engines.push({
         id: "gemini-replit",
@@ -498,7 +515,8 @@ class EngineRegistryClass {
     // Kimi/Moonshot disabled - API key invalid (401 auth error)
     // To re-enable: obtain valid API key from https://platform.moonshot.cn
     const key = process.env.KIMI_API_KEY;
-    if (key && false) { // Disabled until valid API key is provided
+    if (key && false) {
+      // Disabled until valid API key is provided
       this.engines.push({
         id: "kimi",
         name: "Kimi (Moonshot)",
@@ -517,10 +535,9 @@ class EngineRegistryClass {
 
   getNextEngine(): EngineConfig | null {
     this.initialize();
-    
+
     const healthyEngines = this.engines.filter(e => e.isHealthy);
     if (healthyEngines.length === 0) {
-      console.warn("[EngineRegistry] No healthy engines available, resetting all");
       this.engines.forEach(e => {
         e.isHealthy = true;
         e.errorCount = 0;
@@ -548,76 +565,82 @@ class EngineRegistryClass {
     if (engine) {
       engine.errorCount++;
       engine.lastError = error;
-      
-      const isQuotaError = 
-        error.includes('402') || 
-        error.includes('insufficient') ||
-        error.includes('Insufficient credits') ||
-        error.includes('quota') ||
-        error.includes('exceeded your current quota');
-      
-      const isFatalError = 
+
+      const isQuotaError =
+        error.includes("402") ||
+        error.includes("insufficient") ||
+        error.includes("Insufficient credits") ||
+        error.includes("quota") ||
+        error.includes("exceeded your current quota");
+
+      const isFatalError =
         isQuotaError ||
-        error.includes('401') || 
-        error.includes('429') || // Rate limit
-        error.includes('500') || // Server error
-        error.includes('502') || // Bad gateway
-        error.includes('503') || // Service unavailable
-        error.includes('API key not valid') ||
-        error.includes('INVALID_ARGUMENT') ||
-        error.includes('invalid authentication') ||
-        error.includes('timeout') ||
-        error.includes('TIMEOUT');
-      
+        error.includes("401") ||
+        error.includes("429") || // Rate limit
+        error.includes("500") || // Server error
+        error.includes("502") || // Bad gateway
+        error.includes("503") || // Service unavailable
+        error.includes("API key not valid") ||
+        error.includes("INVALID_ARGUMENT") ||
+        error.includes("invalid authentication") ||
+        error.includes("timeout") ||
+        error.includes("TIMEOUT");
+
       // STRICT: Any error = immediate suspension
       if (isFatalError || engine.errorCount >= 1) {
         engine.isHealthy = false;
-        console.error(`[EngineRegistry] Engine ${engine.name} SUSPENDED: ${error.substring(0, 100)}`);
       }
-      
+
       // PROVIDER-LEVEL suspension for quota errors - suspend ALL engines of this provider for 10 minutes
       if (isQuotaError) {
         const suspendUntil = Date.now() + 10 * 60 * 1000; // 10 minutes
         this.suspendedProviders.set(engine.provider, suspendUntil);
-        console.error(`[EngineRegistry] PROVIDER ${engine.provider} SUSPENDED for 10 minutes (quota exhausted)`);
+
         // Suspend all engines of this provider
-        this.engines.filter(e => e.provider === engine.provider).forEach(e => {
-          e.isHealthy = false;
-        });
+        this.engines
+          .filter(e => e.provider === engine.provider)
+          .forEach(e => {
+            e.isHealthy = false;
+          });
       }
-      
+
       // Timeout-based provider suspension - if 3+ engines from same provider timeout, suspend provider
       // Case-insensitive timeout detection
       const errorLower = error.toLowerCase();
-      const isTimeout = errorLower.includes('timeout');
+      const isTimeout = errorLower.includes("timeout");
       if (isTimeout) {
         const timedOutEngines = this.engines.filter(
-          e => e.provider === engine.provider && !e.isHealthy && e.lastError?.toLowerCase().includes('timeout')
+          e =>
+            e.provider === engine.provider &&
+            !e.isHealthy &&
+            e.lastError?.toLowerCase().includes("timeout")
         );
         if (timedOutEngines.length >= 3) {
           const suspendUntil = Date.now() + 2 * 60 * 1000; // 2 minutes for timeout (shorter than quota)
           this.suspendedProviders.set(engine.provider, suspendUntil);
-          console.error(`[EngineRegistry] PROVIDER ${engine.provider} SUSPENDED for 2 minutes (multiple timeouts)`);
-          this.engines.filter(e => e.provider === engine.provider).forEach(e => {
-            e.isHealthy = false;
-          });
+
+          this.engines
+            .filter(e => e.provider === engine.provider)
+            .forEach(e => {
+              e.isHealthy = false;
+            });
         }
       }
     }
   }
-  
+
   // Check if a provider is currently suspended
   isProviderSuspended(provider: ProviderType): boolean {
     const suspendUntil = this.suspendedProviders.get(provider);
     if (!suspendUntil) return false;
     if (Date.now() > suspendUntil) {
       this.suspendedProviders.delete(provider);
-      console.log(`[EngineRegistry] Provider ${provider} suspension expired, re-enabling`);
+
       return false;
     }
     return true;
   }
-  
+
   // Reset suspended engines periodically (call this every few minutes)
   resetSuspendedEngines(): number {
     let resetCount = 0;
@@ -630,13 +653,12 @@ class EngineRegistryClass {
           engine.isHealthy = true;
           engine.errorCount = 0;
           resetCount++;
-          console.log(`[EngineRegistry] Engine ${engine.name} RESET after suspension`);
         }
       }
     }
     return resetCount;
   }
-  
+
   // Get all healthy engines for parallel execution
   getHealthyEngines(): EngineConfig[] {
     this.initialize();
@@ -668,7 +690,7 @@ class EngineRegistryClass {
       kimi: 0,
     };
     this.engines.forEach(e => byProvider[e.provider]++);
-    
+
     return {
       total: this.engines.length,
       healthy: this.engines.filter(e => e.isHealthy).length,
@@ -688,17 +710,17 @@ class EngineRegistryClass {
    */
   getNextFromQueue(excludeIds: Set<string> = new Set()): EngineConfig | null {
     this.initialize();
-    
+
     // First, try to get an engine from a non-suspended provider in priority order
     for (const provider of this.providerPriority) {
       if (this.isProviderSuspended(provider)) {
         continue; // Skip suspended providers entirely
       }
-      
-      const providerEngines = this.engines.filter(e => 
-        e.provider === provider && e.isHealthy && !excludeIds.has(e.id)
+
+      const providerEngines = this.engines.filter(
+        e => e.provider === provider && e.isHealthy && !excludeIds.has(e.id)
       );
-      
+
       if (providerEngines.length > 0) {
         // Get per-provider counter
         let counter = this.providerCounters.get(provider) || 0;
@@ -708,11 +730,10 @@ class EngineRegistryClass {
         return engine;
       }
     }
-    
+
     // Fallback: try any healthy engine
     const healthyEngines = this.engines.filter(e => e.isHealthy && !excludeIds.has(e.id));
     if (healthyEngines.length === 0) {
-      console.warn('[EngineRegistry] No healthy engines available!');
       return null;
     }
 
@@ -727,7 +748,7 @@ class EngineRegistryClass {
         return engine;
       }
     }
-    
+
     return null;
   }
 
@@ -735,52 +756,77 @@ class EngineRegistryClass {
    * Get next healthy engine matching a provider preference using per-provider round-robin
    * This ensures load is distributed across all keys of the same provider type
    */
-  getNextByProviderPreference(preferredProviders: string[], excludeIds: Set<string> = new Set()): EngineConfig | null {
+  getNextByProviderPreference(
+    preferredProviders: string[],
+    excludeIds: Set<string> = new Set()
+  ): EngineConfig | null {
     this.initialize();
-    
+
     // Valid provider types for type-safe suspension lookup
-    const validProviders: ProviderType[] = ["anthropic", "openai", "gemini", "groq", "mistral", "deepseek", "openrouter", "together", "perplexity", "kimi"];
-    
+    const validProviders: ProviderType[] = [
+      "anthropic",
+      "openai",
+      "gemini",
+      "groq",
+      "mistral",
+      "deepseek",
+      "openrouter",
+      "together",
+      "perplexity",
+      "kimi",
+    ];
+
     // Collect all matching healthy engines across all preferred providers
     // CRITICAL: Skip providers that are suspended (quota exhausted or timing out)
     const matchingEngines: EngineConfig[] = [];
     for (const pref of preferredProviders) {
       // Extract actual provider name from preference - handle formats like "anthropic", "anthropic/helicone", etc.
-      const prefLower = pref.toLowerCase().split('/')[0].split('-')[0];
+      const prefLower = pref.toLowerCase().split("/")[0].split("-")[0];
       const providerName = validProviders.find(p => prefLower.includes(p) || p.includes(prefLower));
-      
+
       // Skip entirely if this provider is suspended (type-safe check)
       if (providerName && this.isProviderSuspended(providerName)) {
         continue;
       }
-      
-      const engines = this.engines.filter(e => 
-        e.id.includes(pref) && e.isHealthy && !excludeIds.has(e.id)
+
+      const engines = this.engines.filter(
+        e => e.id.includes(pref) && e.isHealthy && !excludeIds.has(e.id)
       );
       matchingEngines.push(...engines);
     }
-    
+
     if (matchingEngines.length === 0) {
       // Fall back to global queue if no preferred engines available
       return this.getNextFromQueue(excludeIds);
     }
 
     // Create a combined key for the preference set for per-preference round-robin
-    const prefKey = preferredProviders.join(',');
+    const prefKey = preferredProviders.join(",");
     let counter = this.providerCounters.get(prefKey) || 0;
-    
+
     // Round-robin across all matching engines
     const engine = matchingEngines[counter % matchingEngines.length];
     this.providerCounters.set(prefKey, counter + 1);
     engine.lastUsed = new Date();
-    
+
     return engine;
   }
 
   /**
    * Get detailed stats for monitoring - shows usage per engine
    */
-  getDetailedStats(): { engines: Array<{ id: string; name: string; provider: string; healthy: boolean; successCount: number; errorCount: number; lastError?: string }>, queueIndex: number } {
+  getDetailedStats(): {
+    engines: Array<{
+      id: string;
+      name: string;
+      provider: string;
+      healthy: boolean;
+      successCount: number;
+      errorCount: number;
+      lastError?: string;
+    }>;
+    queueIndex: number;
+  } {
     this.initialize();
     return {
       engines: this.engines.map(e => ({
@@ -790,9 +836,9 @@ class EngineRegistryClass {
         healthy: e.isHealthy,
         successCount: e.successCount,
         errorCount: e.errorCount,
-        lastError: e.lastError
+        lastError: e.lastError,
       })),
-      queueIndex: this.globalQueueIndex
+      queueIndex: this.globalQueueIndex,
     };
   }
 }
@@ -842,7 +888,7 @@ async function generateWithAnthropic(
     messages: [{ role: "user", content: userPrompt }],
   });
 
-  const textBlock = response.content.find((block) => block.type === "text");
+  const textBlock = response.content.find(block => block.type === "text");
   if (!textBlock || textBlock.type !== "text") {
     throw new Error("No text response from Anthropic");
   }
@@ -862,7 +908,7 @@ async function generateWithOpenAI(
   // Add response_format for providers that support it (OpenAI, DeepSeek, Mistral)
   // Helps enforce JSON output format
   const supportsJsonFormat = ["openai", "deepseek", "mistral"].includes(engine.provider);
-  
+
   const response = await client.chat.completions.create({
     model: engine.model,
     max_tokens: engine.maxTokens,
@@ -882,7 +928,7 @@ async function generateWithGemini(
   userPrompt: string
 ): Promise<string> {
   const ai = new GoogleGenAI({ apiKey: engine.apiKey });
-  
+
   const response = await ai.models.generateContent({
     model: engine.model,
     contents: `${systemPrompt}\n\n${userPrompt}`,

@@ -22,22 +22,9 @@ import {
   getStats,
   deletePlan,
 } from "./plans";
-import {
-  generatePlanPreview,
-  generateHumanReadableSummary,
-  generateJsonDiff,
-} from "./diff";
-import {
-  evaluateGuards,
-  canApprove,
-  canApply,
-} from "./guards";
-import {
-  dryRun,
-  executePlan,
-  isExecuting,
-  getExecutionStatus,
-} from "./executor";
+import { generatePlanPreview, generateHumanReadableSummary, generateJsonDiff } from "./diff";
+import { evaluateGuards, canApprove, canApply } from "./guards";
+import { dryRun, executePlan, isExecuting, getExecutionStatus } from "./executor";
 import {
   rollbackPlan,
   rollbackChanges,
@@ -123,10 +110,10 @@ export function registerChangeManagementRoutes(app: Express): void {
     }
 
     const status = req.query.status
-      ? (req.query.status as string).split(",") as PlanStatus[]
+      ? ((req.query.status as string).split(",") as PlanStatus[])
       : undefined;
     const scope = req.query.scope
-      ? (req.query.scope as string).split(",") as PlanScope[]
+      ? ((req.query.scope as string).split(",") as PlanScope[])
       : undefined;
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -173,7 +160,7 @@ export function registerChangeManagementRoutes(app: Express): void {
       return res.status(404).json({ error: "Plan not found" });
     }
 
-    const format = req.query.format as string || "json";
+    const format = (req.query.format as string) || "json";
 
     try {
       if (format === "human") {
@@ -429,14 +416,18 @@ export function registerChangeManagementRoutes(app: Express): void {
   /**
    * Preview rollback
    */
-  app.get("/api/admin/changes/:id/rollback/preview", requireAuth, async (req: Request, res: Response) => {
-    if (!isChangeManagementEnabled()) {
-      return res.status(503).json({ error: "Change management is disabled" });
-    }
+  app.get(
+    "/api/admin/changes/:id/rollback/preview",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      if (!isChangeManagementEnabled()) {
+        return res.status(503).json({ error: "Change management is disabled" });
+      }
 
-    const preview = previewRollback(req.params.id);
-    res.json(preview);
-  });
+      const preview = previewRollback(req.params.id);
+      res.json(preview);
+    }
+  );
 
   /**
    * Rollback an applied plan
@@ -503,11 +494,13 @@ export function registerChangeManagementRoutes(app: Express): void {
     // Get recent plans and their history
     const { plans } = listPlans({ limit: 20 });
 
-    const recentHistory = plans.flatMap(p => {
-      const history = getPlanHistory(p.id);
-      return history.map(h => ({ ...h, planName: p.name }));
-    }).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-    .slice(0, 50);
+    const recentHistory = plans
+      .flatMap(p => {
+        const history = getPlanHistory(p.id);
+        return history.map(h => ({ ...h, planName: p.name }));
+      })
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 50);
 
     res.json({ history: recentHistory });
   });
@@ -530,6 +523,4 @@ export function registerChangeManagementRoutes(app: Express): void {
       ...stats,
     });
   });
-
-  console.log("[ChangeManagement] Routes registered");
 }

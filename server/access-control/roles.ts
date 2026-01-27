@@ -119,7 +119,7 @@ export const SYSTEM_ROLES: RoleDefinition[] = [
 ];
 
 export function getRoleDefinition(name: GovernanceRoleName): RoleDefinition | undefined {
-  return SYSTEM_ROLES.find((r) => r.name === name);
+  return SYSTEM_ROLES.find(r => r.name === name);
 }
 
 export function getRolePermissions(name: GovernanceRoleName): Permission[] {
@@ -133,5 +133,3 @@ export function isHigherRole(role1: GovernanceRoleName, role2: GovernanceRoleNam
   if (!def1 || !def2) return false;
   return def1.priority > def2.priority;
 }
-
-console.log("[AccessControl] Roles loaded");

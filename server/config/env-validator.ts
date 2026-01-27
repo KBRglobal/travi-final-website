@@ -21,7 +21,7 @@ export function validateRequiredEnvVars(): void {
   const result: ValidationResult = {
     isValid: true,
     errors: [],
-    warnings: []
+    warnings: [],
   };
 
   // ========================================
@@ -30,7 +30,9 @@ export function validateRequiredEnvVars(): void {
 
   // Database Configuration (Required)
   if (!process.env.DATABASE_URL) {
-    result.errors.push('DATABASE_URL is required. Format: postgresql://user:password@host:port/database');
+    result.errors.push(
+      "DATABASE_URL is required. Format: postgresql://user:password@host:port/database"
+    );
     result.isValid = false;
   }
 
@@ -39,7 +41,7 @@ export function validateRequiredEnvVars(): void {
   const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
   if (!hasOpenAI && !hasAnthropic) {
-    result.errors.push('At least one AI API key is required: OPENAI_API_KEY or ANTHROPIC_API_KEY');
+    result.errors.push("At least one AI API key is required: OPENAI_API_KEY or ANTHROPIC_API_KEY");
     result.isValid = false;
   }
 
@@ -48,8 +50,8 @@ export function validateRequiredEnvVars(): void {
   // ========================================
 
   // Server Configuration
-  const port = process.env.PORT || '5000';
-  const nodeEnv = process.env.NODE_ENV || 'development';
+  const port = process.env.PORT || "5000";
+  const nodeEnv = process.env.NODE_ENV || "development";
 
   if (!process.env.PORT) {
     result.warnings.push(`PORT not set, using default: ${port}`);
@@ -67,9 +69,9 @@ export function validateRequiredEnvVars(): void {
   }
 
   // Validate NODE_ENV is a recognized value
-  const validNodeEnvs = ['development', 'production', 'test'];
+  const validNodeEnvs = ["development", "production", "test"];
   if (!validNodeEnvs.includes(nodeEnv)) {
-    result.warnings.push(`NODE_ENV should be one of: ${validNodeEnvs.join(', ')}. Got: ${nodeEnv}`);
+    result.warnings.push(`NODE_ENV should be one of: ${validNodeEnvs.join(", ")}. Got: ${nodeEnv}`);
   }
 
   // ========================================
@@ -78,63 +80,64 @@ export function validateRequiredEnvVars(): void {
 
   // Admin Credentials
   if (!process.env.ADMIN_USERNAME) {
-    result.warnings.push('ADMIN_USERNAME not set - admin features may not work properly');
+    result.warnings.push("ADMIN_USERNAME not set - admin features may not work properly");
   }
 
   if (!process.env.ADMIN_PASSWORD_HASH) {
-    result.warnings.push('ADMIN_PASSWORD_HASH not set - admin authentication disabled');
+    result.warnings.push("ADMIN_PASSWORD_HASH not set - admin authentication disabled");
   }
 
   // Email Service (Resend)
   if (!process.env.RESEND_API_KEY) {
-    result.warnings.push('RESEND_API_KEY not set - email notifications disabled');
+    result.warnings.push("RESEND_API_KEY not set - email notifications disabled");
   }
 
   if (!process.env.LEAD_NOTIFICATION_EMAIL) {
-    result.warnings.push('LEAD_NOTIFICATION_EMAIL not set - lead notifications will not be sent');
+    result.warnings.push("LEAD_NOTIFICATION_EMAIL not set - lead notifications will not be sent");
   }
 
   // Redis Cache (Falls back to in-memory)
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-    result.warnings.push('Redis configuration incomplete - using in-memory cache (not recommended for production)');
+    result.warnings.push(
+      "Redis configuration incomplete - using in-memory cache (not recommended for production)"
+    );
   }
 
   // Object Storage (S3)
-  const hasS3Config = process.env.S3_BUCKET_NAME &&
-                      process.env.S3_ACCESS_KEY_ID &&
-                      process.env.S3_SECRET_ACCESS_KEY;
+  const hasS3Config =
+    process.env.S3_BUCKET_NAME && process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY;
 
   if (!hasS3Config) {
-    result.warnings.push('S3 storage configuration incomplete - file uploads may not work');
+    result.warnings.push("S3 storage configuration incomplete - file uploads may not work");
   }
 
   // Application URL
   if (!process.env.APP_URL) {
-    result.warnings.push('APP_URL not set - sitemaps and canonical URLs may not work correctly');
+    result.warnings.push("APP_URL not set - sitemaps and canonical URLs may not work correctly");
   }
 
   // Image Generation Services
   if (!process.env.REPLICATE_API_KEY) {
-    result.warnings.push('REPLICATE_API_KEY not set - AI image generation disabled');
+    result.warnings.push("REPLICATE_API_KEY not set - AI image generation disabled");
   }
 
   if (!process.env.FREEPIK_API_KEY) {
-    result.warnings.push('FREEPIK_API_KEY not set - stock image search disabled');
+    result.warnings.push("FREEPIK_API_KEY not set - stock image search disabled");
   }
 
   // Translation Services
   if (!process.env.DEEPL_API_KEY) {
-    result.warnings.push('DEEPL_API_KEY not set - translation features disabled');
+    result.warnings.push("DEEPL_API_KEY not set - translation features disabled");
   }
 
   // Analytics
   if (!process.env.POSTHOG_API_KEY) {
-    result.warnings.push('POSTHOG_API_KEY not set - analytics disabled');
+    result.warnings.push("POSTHOG_API_KEY not set - analytics disabled");
   }
 
   // Google Maps
   if (!process.env.VITE_GOOGLE_MAPS_API_KEY) {
-    result.warnings.push('VITE_GOOGLE_MAPS_API_KEY not set - map embed features disabled');
+    result.warnings.push("VITE_GOOGLE_MAPS_API_KEY not set - map embed features disabled");
   }
 
   // ========================================
@@ -143,46 +146,27 @@ export function validateRequiredEnvVars(): void {
 
   // Log AI service configuration
   const aiServices = [];
-  if (hasOpenAI) aiServices.push('OpenAI');
-  if (hasAnthropic) aiServices.push('Anthropic');
-
-  console.log('\n========================================');
-  console.log('Environment Configuration Validation');
-  console.log('========================================');
-  console.log(`Environment: ${nodeEnv}`);
-  console.log(`Port: ${port}`);
-  console.log(`AI Services: ${aiServices.join(', ')}`);
-  console.log('----------------------------------------');
+  if (hasOpenAI) aiServices.push("OpenAI");
+  if (hasAnthropic) aiServices.push("Anthropic");
 
   // Log warnings
   if (result.warnings.length > 0) {
-    console.log('\n⚠️  WARNINGS:');
-    result.warnings.forEach(warning => {
-      console.log(`   - ${warning}`);
-    });
+    result.warnings.forEach(warning => {});
   }
 
   // Log errors and throw if invalid
   if (!result.isValid) {
-    console.log('\n❌ ERRORS:');
-    result.errors.forEach(error => {
-      console.log(`   - ${error}`);
-    });
-    console.log('\n========================================\n');
+    result.errors.forEach(error => {});
 
     throw new Error(
-      'Environment validation failed. Please check the errors above and ensure all required environment variables are set. ' +
-      'See .env.example for reference.'
+      "Environment validation failed. Please check the errors above and ensure all required environment variables are set. " +
+        "See .env.example for reference."
     );
   }
 
   if (result.warnings.length === 0) {
-    console.log('\n✅ All environment variables validated successfully');
   } else {
-    console.log('\n✅ Required environment variables validated (with warnings)');
   }
-
-  console.log('========================================\n');
 }
 
 /**
@@ -228,5 +212,5 @@ export function getEnvBoolean(key: string, defaultValue?: boolean): boolean {
     }
     throw new Error(`Environment variable ${key} is not set`);
   }
-  return value.toLowerCase() === 'true' || value === '1';
+  return value.toLowerCase() === "true" || value === "1";
 }

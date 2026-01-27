@@ -11,15 +11,18 @@
  * - Multi-language support (English, Hebrew, Arabic)
  */
 
-import { db } from '../db';
-import { destinations, contents, attractions, hotels, districts } from '@shared/schema';
-import { eq, sql, or, isNotNull } from 'drizzle-orm';
-import { log } from '../lib/logger';
+import { db } from "../db";
+import { destinations, contents, attractions, hotels, districts } from "@shared/schema";
+import { eq, sql, or, isNotNull } from "drizzle-orm";
+import { log } from "../lib/logger";
 
 const providerLogger = {
-  info: (msg: string, data?: Record<string, unknown>) => log.info(`[LocationProvider] ${msg}`, data),
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[LocationProvider] ${msg}`, undefined, data),
-  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[LocationProvider] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) =>
+    log.info(`[LocationProvider] ${msg}`, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[LocationProvider] ${msg}`, undefined, data),
+  warn: (msg: string, data?: Record<string, unknown>) =>
+    log.warn(`[LocationProvider] ${msg}`, data),
 };
 
 // ============================================================================
@@ -43,15 +46,34 @@ let locationCache: LocationCache | null = null;
 
 const FALLBACK_LOCATIONS = [
   // English
-  "dubai marina", "palm jumeirah", "downtown dubai", "burj khalifa",
-  "jbr", "jumeirah beach", "deira", "bur dubai", "business bay", "difc",
-  "jumeirah", "al barsha", "dubai mall", "dubai creek", "festival city",
-  "silicon oasis", "motor city", "sports city", "arabian ranches",
-  "dubai hills", "city walk", "la mer", "bluewaters", "ain dubai",
-  // Hebrew
-  "דובאי מרינה", "פאלם ג'ומיירה", "בורג' חליפה",
+  "dubai marina",
+  "palm jumeirah",
+  "downtown dubai",
+  "burj khalifa",
+  "jbr",
+  "jumeirah beach",
+  "deira",
+  "bur dubai",
+  "business bay",
+  "difc",
+  "jumeirah",
+  "al barsha",
+  "dubai mall",
+  "dubai creek",
+  "festival city",
+  "silicon oasis",
+  "motor city",
+  "sports city",
+  "arabian ranches",
+  "dubai hills",
+  "city walk",
+  "la mer",
+  "bluewaters",
+  "ain dubai",
   // Arabic
-  "دبي مارينا", "نخلة جميرا", "برج خليفة",
+  "دبي مارينا",
+  "نخلة جميرا",
+  "برج خليفة",
 ];
 
 // ============================================================================
@@ -63,14 +85,15 @@ const FALLBACK_LOCATIONS = [
  */
 async function fetchDestinationLocations(): Promise<string[]> {
   try {
-    const results = await db.select({
-      name: destinations.name,
-      nameHe: (destinations as any).nameHe,
-      nameAr: (destinations as any).nameAr,
-    })
-    .from(destinations)
-    .where(eq(destinations.isActive, true))
-    .limit(MAX_LOCATIONS);
+    const results = await db
+      .select({
+        name: destinations.name,
+        nameHe: (destinations as any).nameHe,
+        nameAr: (destinations as any).nameAr,
+      })
+      .from(destinations)
+      .where(eq(destinations.isActive, true))
+      .limit(MAX_LOCATIONS);
 
     const names: string[] = [];
     for (const row of results) {
@@ -80,8 +103,8 @@ async function fetchDestinationLocations(): Promise<string[]> {
     }
     return names;
   } catch (error) {
-    providerLogger.error('Failed to fetch destinations', {
-      error: error instanceof Error ? error.message : 'Unknown',
+    providerLogger.error("Failed to fetch destinations", {
+      error: error instanceof Error ? error.message : "Unknown",
     });
     return [];
   }
@@ -92,14 +115,15 @@ async function fetchDestinationLocations(): Promise<string[]> {
  */
 async function fetchDistrictLocations(): Promise<string[]> {
   try {
-    const results = await db.select({
-      title: contents.title,
-      name: (districts as any).name,
-    })
-    .from(districts)
-    .innerJoin(contents, eq(districts.contentId, contents.id))
-    .where(eq(contents.status, 'published'))
-    .limit(MAX_LOCATIONS);
+    const results = await db
+      .select({
+        title: contents.title,
+        name: (districts as any).name,
+      })
+      .from(districts)
+      .innerJoin(contents, eq(districts.contentId, contents.id))
+      .where(eq(contents.status, "published"))
+      .limit(MAX_LOCATIONS);
 
     const names: string[] = [];
     for (const row of results) {
@@ -108,8 +132,8 @@ async function fetchDistrictLocations(): Promise<string[]> {
     }
     return names;
   } catch (error) {
-    providerLogger.error('Failed to fetch districts', {
-      error: error instanceof Error ? error.message : 'Unknown',
+    providerLogger.error("Failed to fetch districts", {
+      error: error instanceof Error ? error.message : "Unknown",
     });
     return [];
   }
@@ -120,13 +144,14 @@ async function fetchDistrictLocations(): Promise<string[]> {
  */
 async function fetchAttractionLocations(): Promise<string[]> {
   try {
-    const results = await db.select({
-      location: attractions.location,
-    })
-    .from(attractions)
-    .innerJoin(contents, eq(attractions.contentId, contents.id))
-    .where(eq(contents.status, 'published'))
-    .limit(MAX_LOCATIONS);
+    const results = await db
+      .select({
+        location: attractions.location,
+      })
+      .from(attractions)
+      .innerJoin(contents, eq(attractions.contentId, contents.id))
+      .where(eq(contents.status, "published"))
+      .limit(MAX_LOCATIONS);
 
     const names: string[] = [];
     for (const row of results) {
@@ -134,8 +159,8 @@ async function fetchAttractionLocations(): Promise<string[]> {
     }
     return names;
   } catch (error) {
-    providerLogger.error('Failed to fetch attraction locations', {
-      error: error instanceof Error ? error.message : 'Unknown',
+    providerLogger.error("Failed to fetch attraction locations", {
+      error: error instanceof Error ? error.message : "Unknown",
     });
     return [];
   }
@@ -146,13 +171,14 @@ async function fetchAttractionLocations(): Promise<string[]> {
  */
 async function fetchHotelLocations(): Promise<string[]> {
   try {
-    const results = await db.select({
-      location: hotels.location,
-    })
-    .from(hotels)
-    .innerJoin(contents, eq(hotels.contentId, contents.id))
-    .where(eq(contents.status, 'published'))
-    .limit(MAX_LOCATIONS);
+    const results = await db
+      .select({
+        location: hotels.location,
+      })
+      .from(hotels)
+      .innerJoin(contents, eq(hotels.contentId, contents.id))
+      .where(eq(contents.status, "published"))
+      .limit(MAX_LOCATIONS);
 
     const names: string[] = [];
     for (const row of results) {
@@ -160,8 +186,8 @@ async function fetchHotelLocations(): Promise<string[]> {
     }
     return names;
   } catch (error) {
-    providerLogger.error('Failed to fetch hotel locations', {
-      error: error instanceof Error ? error.message : 'Unknown',
+    providerLogger.error("Failed to fetch hotel locations", {
+      error: error instanceof Error ? error.message : "Unknown",
     });
     return [];
   }
@@ -175,7 +201,7 @@ async function fetchHotelLocations(): Promise<string[]> {
  * Refresh location cache from database.
  */
 async function refreshLocationCache(): Promise<void> {
-  providerLogger.info('Refreshing location cache from database');
+  providerLogger.info("Refreshing location cache from database");
 
   try {
     // Fetch from all sources in parallel
@@ -205,17 +231,16 @@ async function refreshLocationCache(): Promise<void> {
       fromDb: true,
     };
 
-    providerLogger.info('Location cache refreshed', {
+    providerLogger.info("Location cache refreshed", {
       totalLocations: locations.length,
       fromDestinations: destinationLocs.length,
       fromDistricts: districtLocs.length,
       fromAttractions: attractionLocs.length,
       fromHotels: hotelLocs.length,
     });
-
   } catch (error) {
-    providerLogger.error('Failed to refresh location cache, using fallback', {
-      error: error instanceof Error ? error.message : 'Unknown',
+    providerLogger.error("Failed to refresh location cache, using fallback", {
+      error: error instanceof Error ? error.message : "Unknown",
     });
 
     // Fall back to hardcoded locations
@@ -274,7 +299,7 @@ export function getSearchLocationsSync(): string[] {
  */
 export function invalidateLocationCache(): void {
   locationCache = null;
-  providerLogger.info('Location cache invalidated');
+  providerLogger.info("Location cache invalidated");
 }
 
 /**
@@ -316,8 +341,8 @@ export function getLocationCacheStatus(): {
  */
 export function initializeLocationProvider(): void {
   refreshLocationCache().catch(error => {
-    providerLogger.error('Initial cache refresh failed', {
-      error: error instanceof Error ? error.message : 'Unknown',
+    providerLogger.error("Initial cache refresh failed", {
+      error: error instanceof Error ? error.message : "Unknown",
     });
   });
 }

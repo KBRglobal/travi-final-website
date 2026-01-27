@@ -40,13 +40,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  Plus, 
-  Edit2, 
-  Eye, 
-  Trash2, 
-  MoreVertical, 
-  FileText, 
+import {
+  Plus,
+  Edit2,
+  Eye,
+  Trash2,
+  MoreVertical,
+  FileText,
   Calendar,
   Globe,
   Layout,
@@ -132,7 +132,7 @@ export default function SitesDashboard() {
   });
 
   const handleTitleChange = (title: string) => {
-    setNewPage((prev) => ({
+    setNewPage(prev => ({
       ...prev,
       title,
       slug: prev.slug || generateSlug(title),
@@ -189,7 +189,7 @@ export default function SitesDashboard() {
         </Button>
       </div>
 
-      {(!pages || pages.length === 0) ? (
+      {!pages || pages.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
             <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
@@ -197,7 +197,10 @@ export default function SitesDashboard() {
             <p className="text-muted-foreground mb-4">
               Create your first page to get started with the visual editor
             </p>
-            <Button onClick={() => setShowCreateDialog(true)} data-testid="button-create-first-page">
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              data-testid="button-create-first-page"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create Your First Page
             </Button>
@@ -205,8 +208,12 @@ export default function SitesDashboard() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {pages.map((page) => (
-            <Card key={page.id} className="overflow-visible hover-elevate" data-testid={`card-page-${page.id}`}>
+          {pages.map(page => (
+            <Card
+              key={page.id}
+              className="overflow-visible hover-elevate"
+              data-testid={`card-page-${page.id}`}
+            >
               <CardHeader className="flex flex-row items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <CardTitle className="text-lg truncate" data-testid={`text-title-${page.id}`}>
@@ -223,16 +230,22 @@ export default function SitesDashboard() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleEditPage(page)} data-testid={`menu-edit-${page.id}`}>
+                    <DropdownMenuItem
+                      onClick={() => handleEditPage(page)}
+                      data-testid={`menu-edit-${page.id}`}
+                    >
                       <Edit2 className="h-4 w-4 mr-2" />
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handlePreviewPage(page)} data-testid={`menu-preview-${page.id}`}>
+                    <DropdownMenuItem
+                      onClick={() => handlePreviewPage(page)}
+                      data-testid={`menu-preview-${page.id}`}
+                    >
                       <Eye className="h-4 w-4 mr-2" />
                       Preview
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setDeletingPage(page)} 
+                    <DropdownMenuItem
+                      onClick={() => setDeletingPage(page)}
                       className="text-destructive"
                       data-testid={`menu-delete-${page.id}`}
                     >
@@ -244,7 +257,10 @@ export default function SitesDashboard() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge variant={page.isPublished ? "default" : "secondary"} data-testid={`badge-status-${page.id}`}>
+                  <Badge
+                    variant={page.isPublished ? "default" : "secondary"}
+                    data-testid={`badge-status-${page.id}`}
+                  >
                     {page.isPublished ? (
                       <>
                         <Globe className="h-3 w-3 mr-1" />
@@ -263,27 +279,27 @@ export default function SitesDashboard() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 pt-2">
-                  <Button 
-                    variant="default" 
-                    size="sm" 
-                    className="flex-1" 
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="flex-1"
                     onClick={() => handleEditPage(page)}
                     data-testid={`button-edit-${page.id}`}
                   >
                     <Edit2 className="h-4 w-4 mr-2" />
                     Edit
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => handlePreviewPage(page)}
                     data-testid={`button-preview-${page.id}`}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => setDeletingPage(page)}
                     data-testid={`button-delete-${page.id}`}
                   >
@@ -310,7 +326,7 @@ export default function SitesDashboard() {
               <Input
                 id="title"
                 value={newPage.title}
-                onChange={(e) => handleTitleChange(e.target.value)}
+                onChange={e => handleTitleChange(e.target.value)}
                 placeholder="e.g., About Us"
                 data-testid="input-page-title"
               />
@@ -320,8 +336,8 @@ export default function SitesDashboard() {
               <Input
                 id="titleHe"
                 value={newPage.titleHe}
-                onChange={(e) => setNewPage((prev) => ({ ...prev, titleHe: e.target.value }))}
-                placeholder="e.g., אודותינו"
+                onChange={e => setNewPage(prev => ({ ...prev, titleHe: e.target.value }))}
+                placeholder="e.g., About Us"
                 dir="rtl"
                 data-testid="input-page-title-he"
               />
@@ -331,7 +347,9 @@ export default function SitesDashboard() {
               <Input
                 id="slug"
                 value={newPage.slug}
-                onChange={(e) => setNewPage((prev) => ({ ...prev, slug: generateSlug(e.target.value) }))}
+                onChange={e =>
+                  setNewPage(prev => ({ ...prev, slug: generateSlug(e.target.value) }))
+                }
                 placeholder="about-us"
                 data-testid="input-page-slug"
               />
@@ -341,15 +359,15 @@ export default function SitesDashboard() {
             </div>
             <div className="space-y-2">
               <Label>Page Type</Label>
-              <Select 
-                value={newPage.pageType} 
-                onValueChange={(value) => setNewPage((prev) => ({ ...prev, pageType: value }))}
+              <Select
+                value={newPage.pageType}
+                onValueChange={value => setNewPage(prev => ({ ...prev, pageType: value }))}
               >
                 <SelectTrigger data-testid="select-page-type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {PAGE_TYPES.map((type) => (
+                  {PAGE_TYPES.map(type => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
                     </SelectItem>
@@ -359,15 +377,15 @@ export default function SitesDashboard() {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setShowCreateDialog(false)}
               data-testid="button-cancel-create"
             >
               Cancel
             </Button>
-            <Button 
-              onClick={handleCreatePage} 
+            <Button
+              onClick={handleCreatePage}
               disabled={createPageMutation.isPending}
               data-testid="button-confirm-create"
             >

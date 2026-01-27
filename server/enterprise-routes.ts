@@ -20,7 +20,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const teams = await enterprise.teams.getAll();
       res.json(teams);
     } catch (error) {
-      console.error("Error fetching teams:", error);
       res.status(500).json({ error: "Failed to fetch teams" });
     }
   });
@@ -35,7 +34,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const members = await enterprise.teams.getMembers(req.params.id);
       res.json({ ...team, members });
     } catch (error) {
-      console.error("Error fetching team:", error);
       res.status(500).json({ error: "Failed to fetch team" });
     }
   });
@@ -46,7 +44,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const team = await enterprise.teams.create(req.body);
       res.status(201).json(team);
     } catch (error) {
-      console.error("Error creating team:", error);
       res.status(500).json({ error: "Failed to create team" });
     }
   });
@@ -60,7 +57,6 @@ export function registerEnterpriseRoutes(app: Express) {
       }
       res.json(team);
     } catch (error) {
-      console.error("Error updating team:", error);
       res.status(500).json({ error: "Failed to update team" });
     }
   });
@@ -71,7 +67,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.teams.delete(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting team:", error);
       res.status(500).json({ error: "Failed to delete team" });
     }
   });
@@ -86,21 +81,23 @@ export function registerEnterpriseRoutes(app: Express) {
       });
       res.status(201).json(member);
     } catch (error) {
-      console.error("Error adding team member:", error);
       res.status(500).json({ error: "Failed to add team member" });
     }
   });
 
   // Remove team member
-  app.delete("/api/teams/:teamId/members/:userId", requirePermission("canManageUsers"), async (req, res) => {
-    try {
-      await enterprise.teams.removeMember(req.params.teamId, req.params.userId);
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error removing team member:", error);
-      res.status(500).json({ error: "Failed to remove team member" });
+  app.delete(
+    "/api/teams/:teamId/members/:userId",
+    requirePermission("canManageUsers"),
+    async (req, res) => {
+      try {
+        await enterprise.teams.removeMember(req.params.teamId, req.params.userId);
+        res.status(204).send();
+      } catch (error) {
+        res.status(500).json({ error: "Failed to remove team member" });
+      }
     }
-  });
+  );
 
   // Get user's teams
   app.get("/api/users/:userId/teams", requireAuth, async (req, res) => {
@@ -108,7 +105,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const teams = await enterprise.teams.getUserTeams(req.params.userId);
       res.json(teams);
     } catch (error) {
-      console.error("Error fetching user teams:", error);
       res.status(500).json({ error: "Failed to fetch user teams" });
     }
   });
@@ -123,7 +119,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const templates = await enterprise.workflows.getTemplates();
       res.json(templates);
     } catch (error) {
-      console.error("Error fetching workflow templates:", error);
       res.status(500).json({ error: "Failed to fetch workflow templates" });
     }
   });
@@ -138,7 +133,6 @@ export function registerEnterpriseRoutes(app: Express) {
       });
       res.status(201).json(template);
     } catch (error) {
-      console.error("Error creating workflow template:", error);
       res.status(500).json({ error: "Failed to create workflow template" });
     }
   });
@@ -164,7 +158,6 @@ export function registerEnterpriseRoutes(app: Express) {
 
       res.status(201).json(instance);
     } catch (error) {
-      console.error("Error submitting for review:", error);
       res.status(500).json({ error: "Failed to submit for review" });
     }
   });
@@ -175,7 +168,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const instance = await enterprise.workflows.getInstanceByContent(req.params.id);
       res.json(instance || { status: "none" });
     } catch (error) {
-      console.error("Error fetching workflow status:", error);
       res.status(500).json({ error: "Failed to fetch workflow status" });
     }
   });
@@ -187,62 +179,67 @@ export function registerEnterpriseRoutes(app: Express) {
       const approvals = await enterprise.workflows.getPendingApprovals(user?.claims?.sub);
       res.json(approvals);
     } catch (error) {
-      console.error("Error fetching pending approvals:", error);
       res.status(500).json({ error: "Failed to fetch pending approvals" });
     }
   });
 
   // Approve workflow
-  app.post("/api/workflows/:instanceId/approve", requirePermission("canPublish"), async (req, res) => {
-    try {
-      const user = req.user as any;
-      const instance = await enterprise.workflows.approve(
-        req.params.instanceId,
-        user?.claims?.sub,
-        req.body.comment
-      );
+  app.post(
+    "/api/workflows/:instanceId/approve",
+    requirePermission("canPublish"),
+    async (req, res) => {
+      try {
+        const user = req.user as any;
+        const instance = await enterprise.workflows.approve(
+          req.params.instanceId,
+          user?.claims?.sub,
+          req.body.comment
+        );
 
-      if (instance) {
-        await enterprise.activity.log({
-          type: "workflow_approved",
-          actorId: user?.claims?.sub,
-          targetType: "workflow",
-          targetId: req.params.instanceId,
-        });
+        if (instance) {
+          await enterprise.activity.log({
+            type: "workflow_approved",
+            actorId: user?.claims?.sub,
+            targetType: "workflow",
+            targetId: req.params.instanceId,
+          });
+        }
+
+        res.json(instance);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to approve workflow" });
       }
-
-      res.json(instance);
-    } catch (error) {
-      console.error("Error approving workflow:", error);
-      res.status(500).json({ error: "Failed to approve workflow" });
     }
-  });
+  );
 
   // Reject workflow
-  app.post("/api/workflows/:instanceId/reject", requirePermission("canPublish"), async (req, res) => {
-    try {
-      const user = req.user as any;
-      const instance = await enterprise.workflows.reject(
-        req.params.instanceId,
-        user?.claims?.sub,
-        req.body.comment
-      );
+  app.post(
+    "/api/workflows/:instanceId/reject",
+    requirePermission("canPublish"),
+    async (req, res) => {
+      try {
+        const user = req.user as any;
+        const instance = await enterprise.workflows.reject(
+          req.params.instanceId,
+          user?.claims?.sub,
+          req.body.comment
+        );
 
-      if (instance) {
-        await enterprise.activity.log({
-          type: "workflow_rejected",
-          actorId: user?.claims?.sub,
-          targetType: "workflow",
-          targetId: req.params.instanceId,
-        });
+        if (instance) {
+          await enterprise.activity.log({
+            type: "workflow_rejected",
+            actorId: user?.claims?.sub,
+            targetType: "workflow",
+            targetId: req.params.instanceId,
+          });
+        }
+
+        res.json(instance);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to reject workflow" });
       }
-
-      res.json(instance);
-    } catch (error) {
-      console.error("Error rejecting workflow:", error);
-      res.status(500).json({ error: "Failed to reject workflow" });
     }
-  });
+  );
 
   // ============================================================================
   // ACTIVITY ROUTES
@@ -258,7 +255,6 @@ export function registerEnterpriseRoutes(app: Express) {
       });
       res.json(activities);
     } catch (error) {
-      console.error("Error fetching activity:", error);
       res.status(500).json({ error: "Failed to fetch activity" });
     }
   });
@@ -269,7 +265,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const activities = await enterprise.activity.getForContent(req.params.id);
       res.json(activities);
     } catch (error) {
-      console.error("Error fetching content activity:", error);
       res.status(500).json({ error: "Failed to fetch content activity" });
     }
   });
@@ -290,7 +285,6 @@ export function registerEnterpriseRoutes(app: Express) {
 
       res.json(result);
     } catch (error) {
-      console.error("Error acquiring lock:", error);
       res.status(500).json({ error: "Failed to acquire lock" });
     }
   });
@@ -302,7 +296,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.locks.releaseLock(req.params.id, user?.claims?.sub);
       res.status(204).send();
     } catch (error) {
-      console.error("Error releasing lock:", error);
       res.status(500).json({ error: "Failed to release lock" });
     }
   });
@@ -313,7 +306,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const lock = await enterprise.locks.getLock(req.params.id);
       res.json(lock || { locked: false });
     } catch (error) {
-      console.error("Error fetching lock:", error);
       res.status(500).json({ error: "Failed to fetch lock status" });
     }
   });
@@ -324,21 +316,23 @@ export function registerEnterpriseRoutes(app: Express) {
       const locks = await enterprise.locks.getAllActiveLocks();
       res.json({ locks, total: locks.length });
     } catch (error) {
-      console.error("Error fetching all locks:", error);
       res.status(500).json({ error: "Failed to fetch active locks" });
     }
   });
 
   // Force unlock (admin only)
-  app.delete("/api/admin/locks/:contentId/force", requirePermission("canManageUsers"), async (req, res) => {
-    try {
-      await enterprise.locks.forceUnlock(req.params.contentId);
-      res.json({ success: true, message: "Lock released successfully" });
-    } catch (error) {
-      console.error("Error force unlocking:", error);
-      res.status(500).json({ error: "Failed to force unlock" });
+  app.delete(
+    "/api/admin/locks/:contentId/force",
+    requirePermission("canManageUsers"),
+    async (req, res) => {
+      try {
+        await enterprise.locks.forceUnlock(req.params.contentId);
+        res.json({ success: true, message: "Lock released successfully" });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to force unlock" });
+      }
     }
-  });
+  );
 
   // Cleanup expired locks (admin only)
   app.post("/api/admin/locks/cleanup", requirePermission("canManageUsers"), async (req, res) => {
@@ -346,7 +340,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const count = await enterprise.locks.cleanupExpired();
       res.json({ success: true, cleaned: count });
     } catch (error) {
-      console.error("Error cleaning up locks:", error);
       res.status(500).json({ error: "Failed to cleanup expired locks" });
     }
   });
@@ -367,7 +360,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const unreadCount = await enterprise.notifications.getUnreadCount(user?.claims?.sub);
       res.json({ notifications, unreadCount });
     } catch (error) {
-      console.error("Error fetching notifications:", error);
       res.status(500).json({ error: "Failed to fetch notifications" });
     }
   });
@@ -379,7 +371,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.notifications.markAsRead(req.params.id, user?.claims?.sub);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error marking notification as read:", error);
       res.status(500).json({ error: "Failed to mark notification as read" });
     }
   });
@@ -391,7 +382,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.notifications.markAllAsRead(user?.claims?.sub);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error marking all notifications as read:", error);
       res.status(500).json({ error: "Failed to mark all notifications as read" });
     }
   });
@@ -403,7 +393,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.notifications.delete(req.params.id, user?.claims?.sub);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting notification:", error);
       res.status(500).json({ error: "Failed to delete notification" });
     }
   });
@@ -418,7 +407,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const webhooks = await enterprise.webhooks.getAll();
       res.json(webhooks);
     } catch (error) {
-      console.error("Error fetching webhooks:", error);
       res.status(500).json({ error: "Failed to fetch webhooks" });
     }
   });
@@ -433,7 +421,6 @@ export function registerEnterpriseRoutes(app: Express) {
       });
       res.status(201).json(webhook);
     } catch (error) {
-      console.error("Error creating webhook:", error);
       res.status(500).json({ error: "Failed to create webhook" });
     }
   });
@@ -447,7 +434,6 @@ export function registerEnterpriseRoutes(app: Express) {
       }
       res.json(webhook);
     } catch (error) {
-      console.error("Error updating webhook:", error);
       res.status(500).json({ error: "Failed to update webhook" });
     }
   });
@@ -458,7 +444,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.webhooks.delete(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting webhook:", error);
       res.status(500).json({ error: "Failed to delete webhook" });
     }
   });
@@ -469,7 +454,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const logs = await enterprise.webhooks.getLogs(req.params.id);
       res.json(logs);
     } catch (error) {
-      console.error("Error fetching webhook logs:", error);
       res.status(500).json({ error: "Failed to fetch webhook logs" });
     }
   });
@@ -489,7 +473,6 @@ export function registerEnterpriseRoutes(app: Express) {
 
       res.json({ success: true, message: "Test webhook sent" });
     } catch (error) {
-      console.error("Error testing webhook:", error);
       res.status(500).json({ error: "Failed to test webhook" });
     }
   });
@@ -504,7 +487,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const comments = await enterprise.comments.getForContent(req.params.id);
       res.json(comments);
     } catch (error) {
-      console.error("Error fetching comments:", error);
       res.status(500).json({ error: "Failed to fetch comments" });
     }
   });
@@ -545,7 +527,6 @@ export function registerEnterpriseRoutes(app: Express) {
 
       res.status(201).json(comment);
     } catch (error) {
-      console.error("Error creating comment:", error);
       res.status(500).json({ error: "Failed to create comment" });
     }
   });
@@ -559,7 +540,6 @@ export function registerEnterpriseRoutes(app: Express) {
       }
       res.json(comment);
     } catch (error) {
-      console.error("Error updating comment:", error);
       res.status(500).json({ error: "Failed to update comment" });
     }
   });
@@ -570,7 +550,6 @@ export function registerEnterpriseRoutes(app: Express) {
       await enterprise.comments.delete(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting comment:", error);
       res.status(500).json({ error: "Failed to delete comment" });
     }
   });
@@ -585,7 +564,6 @@ export function registerEnterpriseRoutes(app: Express) {
       }
       res.json(comment);
     } catch (error) {
-      console.error("Error resolving comment:", error);
       res.status(500).json({ error: "Failed to resolve comment" });
     }
   });
@@ -599,7 +577,6 @@ export function registerEnterpriseRoutes(app: Express) {
       }
       res.json(comment);
     } catch (error) {
-      console.error("Error unresolving comment:", error);
       res.status(500).json({ error: "Failed to unresolve comment" });
     }
   });
@@ -613,7 +590,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const stats = await cache.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching cache status:", error);
       res.status(500).json({ error: "Failed to fetch cache status" });
     }
   });
@@ -625,7 +601,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const cleared = await cache.invalidate(pattern);
       res.json({ success: true, cleared });
     } catch (error) {
-      console.error("Error clearing cache:", error);
       res.status(500).json({ error: "Failed to clear cache" });
     }
   });
@@ -640,7 +615,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const stats = await backupService.getBackupStats();
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching backup stats:", error);
       res.status(500).json({ error: "Failed to fetch backup statistics" });
     }
   });
@@ -652,52 +626,63 @@ export function registerEnterpriseRoutes(app: Express) {
       const data = await exportService.exportData(options);
 
       res.setHeader("Content-Type", "application/json");
-      res.setHeader("Content-Disposition", `attachment; filename="travi-export-${new Date().toISOString().split('T')[0]}.json"`);
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="travi-export-${new Date().toISOString().split("T")[0]}.json"`
+      );
       res.json(data);
     } catch (error) {
-      console.error("Error exporting data:", error);
       res.status(500).json({ error: "Failed to export data" });
     }
   });
 
   // Preview export (returns stats without downloading)
-  app.post("/api/admin/export/preview", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const options: ExportOptions = req.body || {};
-      const data = await exportService.exportData(options);
-      res.json({
-        version: data.version,
-        stats: data.stats,
-        options: data.options,
-      });
-    } catch (error) {
-      console.error("Error previewing export:", error);
-      res.status(500).json({ error: "Failed to preview export" });
+  app.post(
+    "/api/admin/export/preview",
+    requirePermission("canManageSettings"),
+    async (req, res) => {
+      try {
+        const options: ExportOptions = req.body || {};
+        const data = await exportService.exportData(options);
+        res.json({
+          version: data.version,
+          stats: data.stats,
+          options: data.options,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to preview export" });
+      }
     }
-  });
+  );
 
   // Validate import data
-  app.post("/api/admin/import/validate", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const validation = await importService.validateImportData(req.body);
-      res.json(validation);
-    } catch (error) {
-      console.error("Error validating import:", error);
-      res.status(500).json({ error: "Failed to validate import data" });
+  app.post(
+    "/api/admin/import/validate",
+    requirePermission("canManageSettings"),
+    async (req, res) => {
+      try {
+        const validation = await importService.validateImportData(req.body);
+        res.json(validation);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to validate import data" });
+      }
     }
-  });
+  );
 
   // Import data (dry run)
-  app.post("/api/admin/import/preview", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const { data, options = {} } = req.body;
-      const result = await importService.importData(data, { ...options, dryRun: true });
-      res.json(result);
-    } catch (error) {
-      console.error("Error previewing import:", error);
-      res.status(500).json({ error: "Failed to preview import" });
+  app.post(
+    "/api/admin/import/preview",
+    requirePermission("canManageSettings"),
+    async (req, res) => {
+      try {
+        const { data, options = {} } = req.body;
+        const result = await importService.importData(data, { ...options, dryRun: true });
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to preview import" });
+      }
     }
-  });
+  );
 
   // Import data (actual)
   app.post("/api/admin/import", requirePermission("canManageSettings"), async (req, res) => {
@@ -713,7 +698,6 @@ export function registerEnterpriseRoutes(app: Express) {
       const result = await importService.importData(data, { ...options, dryRun: false });
       res.json(result);
     } catch (error) {
-      console.error("Error importing data:", error);
       res.status(500).json({ error: "Failed to import data" });
     }
   });
@@ -724,13 +708,13 @@ export function registerEnterpriseRoutes(app: Express) {
       const data = await backupService.createBackup();
 
       res.setHeader("Content-Type", "application/json");
-      res.setHeader("Content-Disposition", `attachment; filename="travi-backup-${new Date().toISOString().split('T')[0]}.json"`);
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="travi-backup-${new Date().toISOString().split("T")[0]}.json"`
+      );
       res.json(data);
     } catch (error) {
-      console.error("Error creating backup:", error);
       res.status(500).json({ error: "Failed to create backup" });
     }
   });
-
-  console.log("[Enterprise] Routes registered");
 }

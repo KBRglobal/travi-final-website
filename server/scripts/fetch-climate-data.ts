@@ -2,7 +2,7 @@
  * Climate Data Fetcher - Open-Meteo API
  * Fetches real historical weather data for all destinations
  * and stores seasonal averages in the database.
- * 
+ *
  * API: https://archive-api.open-meteo.com/v1/archive
  * No API key required.
  */
@@ -31,7 +31,7 @@ const DESTINATION_COORDS: DestinationCoordinates[] = [
   { id: "london", name: "London", lat: 51.5074, lon: -0.1278, hemisphere: "north" },
   { id: "los-angeles", name: "Los Angeles", lat: 34.0522, lon: -118.2437, hemisphere: "north" },
   { id: "miami", name: "Miami", lat: 25.7617, lon: -80.1918, hemisphere: "north" },
-  { id: "new-york", name: "New York", lat: 40.7128, lon: -74.0060, hemisphere: "north" },
+  { id: "new-york", name: "New York", lat: 40.7128, lon: -74.006, hemisphere: "north" },
   { id: "paris", name: "Paris", lat: 48.8566, lon: 2.3522, hemisphere: "north" },
   { id: "rome", name: "Rome", lat: 41.9028, lon: 12.4964, hemisphere: "north" },
   { id: "singapore", name: "Singapore", lat: 1.3521, lon: 103.8198, hemisphere: "north" },
@@ -75,8 +75,18 @@ interface SeasonData {
 }
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function getSeasonMonths(hemisphere: "north" | "south"): Record<string, number[]> {
@@ -103,7 +113,11 @@ function getMonthRange(months: number[]): string {
   return `${first}-${last}`;
 }
 
-function determineCrowdLevel(seasonName: string, avgTemp: number, avgPrecip: number): "Low" | "Medium" | "High" {
+function determineCrowdLevel(
+  seasonName: string,
+  avgTemp: number,
+  avgPrecip: number
+): "Low" | "Medium" | "High" {
   if (seasonName === "Summer") {
     if (avgTemp > 35) return "Medium";
     return "High";
@@ -128,10 +142,31 @@ function generateWeatherDescription(
   avgPrecip: number,
   avgSunshineHours: number
 ): string {
-  const tempDesc = avgTemp > 30 ? "hot" : avgTemp > 20 ? "warm" : avgTemp > 10 ? "mild" : avgTemp > 0 ? "cool" : "cold";
-  const precipDesc = avgPrecip > 150 ? "significant rainfall" : avgPrecip > 80 ? "moderate rainfall" : avgPrecip > 30 ? "occasional showers" : "mostly dry conditions";
-  const sunDesc = avgSunshineHours > 8 ? "abundant sunshine" : avgSunshineHours > 5 ? "good sunshine" : "limited sunshine";
-  
+  const tempDesc =
+    avgTemp > 30
+      ? "hot"
+      : avgTemp > 20
+        ? "warm"
+        : avgTemp > 10
+          ? "mild"
+          : avgTemp > 0
+            ? "cool"
+            : "cold";
+  const precipDesc =
+    avgPrecip > 150
+      ? "significant rainfall"
+      : avgPrecip > 80
+        ? "moderate rainfall"
+        : avgPrecip > 30
+          ? "occasional showers"
+          : "mostly dry conditions";
+  const sunDesc =
+    avgSunshineHours > 8
+      ? "abundant sunshine"
+      : avgSunshineHours > 5
+        ? "good sunshine"
+        : "limited sunshine";
+
   return `Expect ${tempDesc} weather with temperatures averaging ${avgTemp.toFixed(0)}°C (highs around ${maxTemp.toFixed(0)}°C, lows near ${minTemp.toFixed(0)}°C). ${precipDesc.charAt(0).toUpperCase() + precipDesc.slice(1)} with ${sunDesc} (${avgSunshineHours.toFixed(1)} hours daily).`;
 }
 
@@ -142,10 +177,13 @@ function generateRecommendation(
   avgPrecip: number,
   crowdLevel: "Low" | "Medium" | "High"
 ): string {
-  const crowdText = crowdLevel === "High" ? "peak tourist season, book accommodations early" : 
-                    crowdLevel === "Medium" ? "moderate tourist activity with good availability" :
-                    "fewer tourists, excellent for budget travelers";
-  
+  const crowdText =
+    crowdLevel === "High"
+      ? "peak tourist season, book accommodations early"
+      : crowdLevel === "Medium"
+        ? "moderate tourist activity with good availability"
+        : "fewer tourists, excellent for budget travelers";
+
   if (avgTemp > 35) {
     return `Very hot conditions - best for pool and indoor activities. ${crowdText.charAt(0).toUpperCase() + crowdText.slice(1)}.`;
   }
@@ -164,75 +202,86 @@ function generateRecommendation(
   return `${crowdText.charAt(0).toUpperCase() + crowdText.slice(1)}.`;
 }
 
-async function fetchClimateData(dest: DestinationCoordinates, retryCount = 0): Promise<OpenMeteoResponse | null> {
+async function fetchClimateData(
+  dest: DestinationCoordinates,
+  retryCount = 0
+): Promise<OpenMeteoResponse | null> {
   const endDate = new Date();
   endDate.setFullYear(endDate.getFullYear() - 1);
   const startDate = new Date(endDate);
   startDate.setFullYear(startDate.getFullYear() - 10);
-  
+
   const startStr = startDate.toISOString().split("T")[0];
   const endStr = endDate.toISOString().split("T")[0];
-  
-  const url = `https://archive-api.open-meteo.com/v1/archive?` +
+
+  const url =
+    `https://archive-api.open-meteo.com/v1/archive?` +
     `latitude=${dest.lat}&longitude=${dest.lon}&` +
     `start_date=${startStr}&end_date=${endStr}&` +
     `daily=temperature_2m_mean,temperature_2m_max,temperature_2m_min,precipitation_sum,sunshine_duration&` +
     `timezone=auto`;
-  
-  console.log(`[ClimateData] Fetching data for ${dest.name}${retryCount > 0 ? ` (retry ${retryCount})` : ""}...`);
-  
+
   try {
     const response = await fetch(url);
     if (response.status === 429) {
       const maxRetries = 5;
       if (retryCount < maxRetries) {
         const backoffMs = Math.min(30000, 3000 * Math.pow(2, retryCount));
-        console.log(`[ClimateData] Rate limited for ${dest.name}. Waiting ${backoffMs/1000}s before retry...`);
+
         await new Promise(resolve => setTimeout(resolve, backoffMs));
         return fetchClimateData(dest, retryCount + 1);
       }
-      console.error(`[ClimateData] Max retries reached for ${dest.name}`);
+
       return null;
     }
     if (!response.ok) {
-      console.error(`[ClimateData] Failed to fetch ${dest.name}: ${response.status}`);
       return null;
     }
     return await response.json();
   } catch (error) {
-    console.error(`[ClimateData] Error fetching ${dest.name}:`, error);
     return null;
   }
 }
 
 function calculateMonthlyStats(data: OpenMeteoResponse): MonthlyStats[] {
-  const monthlyData: Record<number, {
-    temps: number[];
-    maxTemps: number[];
-    minTemps: number[];
-    precip: number[];
-    sunshine: number[];
-  }> = {};
-  
+  const monthlyData: Record<
+    number,
+    {
+      temps: number[];
+      maxTemps: number[];
+      minTemps: number[];
+      precip: number[];
+      sunshine: number[];
+    }
+  > = {};
+
   for (let i = 1; i <= 12; i++) {
     monthlyData[i] = { temps: [], maxTemps: [], minTemps: [], precip: [], sunshine: [] };
   }
-  
-  const { time, temperature_2m_mean, temperature_2m_max, temperature_2m_min, precipitation_sum, sunshine_duration } = data.daily;
-  
+
+  const {
+    time,
+    temperature_2m_mean,
+    temperature_2m_max,
+    temperature_2m_min,
+    precipitation_sum,
+    sunshine_duration,
+  } = data.daily;
+
   time.forEach((dateStr, i) => {
     const month = new Date(dateStr).getMonth() + 1;
     if (temperature_2m_mean[i] !== null) monthlyData[month].temps.push(temperature_2m_mean[i]);
     if (temperature_2m_max[i] !== null) monthlyData[month].maxTemps.push(temperature_2m_max[i]);
     if (temperature_2m_min[i] !== null) monthlyData[month].minTemps.push(temperature_2m_min[i]);
     if (precipitation_sum[i] !== null) monthlyData[month].precip.push(precipitation_sum[i]);
-    if (sunshine_duration[i] !== null) monthlyData[month].sunshine.push(sunshine_duration[i] / 3600);
+    if (sunshine_duration[i] !== null)
+      monthlyData[month].sunshine.push(sunshine_duration[i] / 3600);
   });
-  
+
   return Object.entries(monthlyData).map(([month, stats]) => {
-    const avg = (arr: number[]) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    const avg = (arr: number[]) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0);
     const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
-    
+
     return {
       month: parseInt(month),
       avgTemp: avg(stats.temps),
@@ -251,22 +300,30 @@ function aggregateToSeasons(
 ): SeasonData[] {
   const seasonMonths = getSeasonMonths(dest.hemisphere);
   const seasons: SeasonData[] = [];
-  
+
   for (const [seasonName, months] of Object.entries(seasonMonths)) {
     const seasonStats = months.map(m => monthlyStats.find(s => s.month === m)!);
-    
+
     const avgTemp = seasonStats.reduce((a, s) => a + s.avgTemp, 0) / seasonStats.length;
     const maxTemp = seasonStats.reduce((a, s) => a + s.maxTemp, 0) / seasonStats.length;
     const minTemp = seasonStats.reduce((a, s) => a + s.minTemp, 0) / seasonStats.length;
     const avgPrecip = seasonStats.reduce((a, s) => a + s.avgPrecip, 0) / seasonStats.length;
-    const avgSunshineHours = seasonStats.reduce((a, s) => a + s.avgSunshineHours, 0) / seasonStats.length;
-    
+    const avgSunshineHours =
+      seasonStats.reduce((a, s) => a + s.avgSunshineHours, 0) / seasonStats.length;
+
     const crowdLevel = determineCrowdLevel(seasonName, avgTemp, avgPrecip);
-    
+
     seasons.push({
       name: seasonName,
       months: getMonthRange(months),
-      weatherDescription: generateWeatherDescription(seasonName, avgTemp, maxTemp, minTemp, avgPrecip, avgSunshineHours),
+      weatherDescription: generateWeatherDescription(
+        seasonName,
+        avgTemp,
+        maxTemp,
+        minTemp,
+        avgPrecip,
+        avgSunshineHours
+      ),
       crowdLevel,
       recommendation: generateRecommendation(seasonName, dest.name, avgTemp, avgPrecip, crowdLevel),
       avgTemp: Math.round(avgTemp * 10) / 10,
@@ -274,7 +331,7 @@ function aggregateToSeasons(
       avgSunshineHours: Math.round(avgSunshineHours * 10) / 10,
     });
   }
-  
+
   return seasons.sort((a, b) => {
     const order = ["Winter", "Spring", "Summer", "Fall"];
     return order.indexOf(a.name) - order.indexOf(b.name);
@@ -283,18 +340,22 @@ function aggregateToSeasons(
 
 async function storeSeasonData(destinationId: string, seasons: SeasonData[]): Promise<boolean> {
   try {
-    const existing = await db.select()
+    const existing = await db
+      .select()
       .from(destinationContent)
-      .where(and(
-        eq(destinationContent.destinationId, destinationId),
-        eq(destinationContent.contentType, "seasons")
-      ))
+      .where(
+        and(
+          eq(destinationContent.destinationId, destinationId),
+          eq(destinationContent.contentType, "seasons")
+        )
+      )
       .limit(1);
-    
+
     const content = { seasons };
-    
+
     if (existing.length > 0) {
-      await db.update(destinationContent)
+      await db
+        .update(destinationContent)
         .set({
           content,
           updatedAt: new Date(),
@@ -303,7 +364,6 @@ async function storeSeasonData(destinationId: string, seasons: SeasonData[]): Pr
           generatedModel: "historical-archive",
         } as any)
         .where(eq(destinationContent.id, existing[0].id));
-      console.log(`[ClimateData] Updated seasons for ${destinationId}`);
     } else {
       await db.insert(destinationContent).values({
         destinationId,
@@ -316,62 +376,52 @@ async function storeSeasonData(destinationId: string, seasons: SeasonData[]): Pr
         version: 1,
         isActive: true,
       } as any);
-      console.log(`[ClimateData] Inserted seasons for ${destinationId}`);
     }
-    
+
     return true;
   } catch (error) {
-    console.error(`[ClimateData] Failed to store data for ${destinationId}:`, error);
     return false;
   }
 }
 
 export async function fetchAndStoreAllClimateData(): Promise<void> {
-  console.log("[ClimateData] Starting climate data fetch for all destinations...");
-  
   let successCount = 0;
   let failCount = 0;
-  
+
   for (const dest of DESTINATION_COORDS) {
-    const destExists = await db.select({ id: destinations.id })
+    const destExists = await db
+      .select({ id: destinations.id })
       .from(destinations)
       .where(eq(destinations.id, dest.id))
       .limit(1);
-    
+
     if (destExists.length === 0) {
-      console.log(`[ClimateData] Destination ${dest.id} not in database, skipping...`);
       continue;
     }
-    
+
     const data = await fetchClimateData(dest);
     if (!data) {
       failCount++;
       continue;
     }
-    
+
     const monthlyStats = calculateMonthlyStats(data);
     const seasons = aggregateToSeasons(monthlyStats, dest);
-    
-    console.log(`[ClimateData] ${dest.name} seasons:`);
-    seasons.forEach(s => {
-      console.log(`  ${s.name} (${s.months}): ${s.avgTemp}°C, ${s.avgPrecip}mm, ${s.crowdLevel} crowds`);
-    });
-    
+
+    seasons.forEach(s => {});
+
     const success = await storeSeasonData(dest.id, seasons);
     if (success) successCount++;
     else failCount++;
-    
+
     await new Promise(resolve => setTimeout(resolve, 2000));
   }
-  
-  console.log(`[ClimateData] Complete! Success: ${successCount}, Failed: ${failCount}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   fetchAndStoreAllClimateData()
     .then(() => process.exit(0))
-    .catch((err) => {
-      console.error(err);
+    .catch(err => {
       process.exit(1);
     });
 }

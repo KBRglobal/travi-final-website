@@ -22,7 +22,6 @@ import { monetization } from "./monetization";
 import { pwa } from "./pwa-offline";
 
 export function registerEnhancementRoutes(app: Express) {
-
   // ============================================================================
   // CONTENT ENHANCEMENT
   // ============================================================================
@@ -34,7 +33,6 @@ export function registerEnhancementRoutes(app: Express) {
       if (!analysis) return res.status(404).json({ error: "Content not found" });
       res.json(analysis);
     } catch (error) {
-      console.error("[Enhancement] Readability error:", error);
       res.status(500).json({ error: "Failed to analyze readability" });
     }
   });
@@ -45,7 +43,6 @@ export function registerEnhancementRoutes(app: Express) {
       const ctas = await contentEnhancement.cta.generateCtas(req.params.contentId);
       res.json({ ctas });
     } catch (error) {
-      console.error("[Enhancement] CTA error:", error);
       res.status(500).json({ error: "Failed to generate CTAs" });
     }
   });
@@ -60,7 +57,6 @@ export function registerEnhancementRoutes(app: Express) {
       );
       res.json({ duplicates, count: duplicates.length });
     } catch (error) {
-      console.error("[Enhancement] Duplicates error:", error);
       res.status(500).json({ error: "Failed to find duplicates" });
     }
   });
@@ -71,7 +67,6 @@ export function registerEnhancementRoutes(app: Express) {
       const result = await contentEnhancement.duplicates.scanAllForDuplicates();
       res.json(result);
     } catch (error) {
-      console.error("[Enhancement] Scan duplicates error:", error);
       res.status(500).json({ error: "Failed to scan duplicates" });
     }
   });
@@ -83,7 +78,6 @@ export function registerEnhancementRoutes(app: Express) {
       const related = await contentEnhancement.related.findRelated(req.params.contentId, limit);
       res.json({ related });
     } catch (error) {
-      console.error("[Enhancement] Related error:", error);
       res.status(500).json({ error: "Failed to find related content" });
     }
   });
@@ -94,7 +88,6 @@ export function registerEnhancementRoutes(app: Express) {
       const result = await contentEnhancement.flow.getContinueReading(req.params.contentId);
       res.json(result);
     } catch (error) {
-      console.error("[Enhancement] Continue reading error:", error);
       res.status(500).json({ error: "Failed to get continue reading" });
     }
   });
@@ -110,7 +103,6 @@ export function registerEnhancementRoutes(app: Express) {
       const searchId = await searchAnalytics.logSearch(query, resultsCount, locale, sessionId);
       res.json({ searchId });
     } catch (error) {
-      console.error("[Search] Log error:", error);
       res.status(500).json({ error: "Failed to log search" });
     }
   });
@@ -122,7 +114,6 @@ export function registerEnhancementRoutes(app: Express) {
       await searchAnalytics.logClick(searchId, resultId);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Search] Click error:", error);
       res.status(500).json({ error: "Failed to log click" });
     }
   });
@@ -133,7 +124,6 @@ export function registerEnhancementRoutes(app: Express) {
       const dashboard = await searchAnalytics.getDashboard();
       res.json(dashboard);
     } catch (error) {
-      console.error("[Search] Analytics error:", error);
       res.status(500).json({ error: "Failed to get analytics" });
     }
   });
@@ -144,7 +134,6 @@ export function registerEnhancementRoutes(app: Express) {
       const suggestions = await searchAnalytics.getContentSuggestions();
       res.json({ suggestions });
     } catch (error) {
-      console.error("[Search] Suggestions error:", error);
       res.status(500).json({ error: "Failed to get suggestions" });
     }
   });
@@ -156,11 +145,10 @@ export function registerEnhancementRoutes(app: Express) {
   // Get popup config for content
   app.get("/api/popups/:contentId", async (req, res) => {
     try {
-      const locale = req.query.locale as string || "en";
+      const locale = (req.query.locale as string) || "en";
       const config = await exitIntent.getClientConfig(req.params.contentId, locale);
       res.json(config);
     } catch (error) {
-      console.error("[Popups] Config error:", error);
       res.status(500).json({ error: "Failed to get popup config" });
     }
   });
@@ -171,7 +159,6 @@ export function registerEnhancementRoutes(app: Express) {
       await exitIntent.trackImpression(req.params.popupId);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Popups] Impression error:", error);
       res.status(500).json({ error: "Failed to track impression" });
     }
   });
@@ -182,7 +169,6 @@ export function registerEnhancementRoutes(app: Express) {
       await exitIntent.trackConversion(req.params.popupId, req.body);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Popups] Conversion error:", error);
       res.status(500).json({ error: "Failed to track conversion" });
     }
   });
@@ -193,7 +179,6 @@ export function registerEnhancementRoutes(app: Express) {
       const analytics = await exitIntent.getAnalytics();
       res.json({ analytics });
     } catch (error) {
-      console.error("[Popups] Analytics error:", error);
       res.status(500).json({ error: "Failed to get analytics" });
     }
   });
@@ -224,7 +209,6 @@ export function registerEnhancementRoutes(app: Express) {
         needsConfirmation: result.subscriber.status === "pending",
       });
     } catch (error) {
-      console.error("[Newsletter] Subscribe error:", error);
       res.status(500).json({ error: "Failed to subscribe" });
     }
   });
@@ -236,7 +220,6 @@ export function registerEnhancementRoutes(app: Express) {
       const success = await newsletter.subscribers.unsubscribe(email);
       res.json({ success });
     } catch (error) {
-      console.error("[Newsletter] Unsubscribe error:", error);
       res.status(500).json({ error: "Failed to unsubscribe" });
     }
   });
@@ -247,21 +230,23 @@ export function registerEnhancementRoutes(app: Express) {
       const stats = await newsletter.subscribers.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("[Newsletter] Stats error:", error);
       res.status(500).json({ error: "Failed to get stats" });
     }
   });
 
   // Create campaign
-  app.post("/api/newsletter/campaigns", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const campaign = await newsletter.campaigns.create(req.body);
-      res.json(campaign);
-    } catch (error) {
-      console.error("[Newsletter] Campaign error:", error);
-      res.status(500).json({ error: "Failed to create campaign" });
+  app.post(
+    "/api/newsletter/campaigns",
+    requirePermission("canManageSettings"),
+    async (req, res) => {
+      try {
+        const campaign = await newsletter.campaigns.create(req.body);
+        res.json(campaign);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to create campaign" });
+      }
     }
-  });
+  );
 
   // Generate newsletter from content
   app.post("/api/newsletter/generate", requireAuth, async (req, res) => {
@@ -274,7 +259,6 @@ export function registerEnhancementRoutes(app: Express) {
       });
       res.json(generated);
     } catch (error) {
-      console.error("[Newsletter] Generate error:", error);
       res.status(500).json({ error: "Failed to generate newsletter" });
     }
   });
@@ -289,7 +273,6 @@ export function registerEnhancementRoutes(app: Express) {
       const preview = await monetization.premium.getPreview(req.params.contentId);
       res.json(preview);
     } catch (error) {
-      console.error("[Premium] Status error:", error);
       res.status(500).json({ error: "Failed to check premium status" });
     }
   });
@@ -300,7 +283,6 @@ export function registerEnhancementRoutes(app: Express) {
       const hasAccess = await monetization.premium.hasAccess(req.user.id, req.params.contentId);
       res.json({ hasAccess });
     } catch (error) {
-      console.error("[Premium] Access error:", error);
       res.status(500).json({ error: "Failed to check access" });
     }
   });
@@ -315,7 +297,6 @@ export function registerEnhancementRoutes(app: Express) {
       );
       res.json(purchase);
     } catch (error) {
-      console.error("[Premium] Purchase error:", error);
       res.status(500).json({ error: "Failed to purchase" });
     }
   });
@@ -326,7 +307,6 @@ export function registerEnhancementRoutes(app: Express) {
       const stats = await monetization.premium.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("[Premium] Stats error:", error);
       res.status(500).json({ error: "Failed to get stats" });
     }
   });
@@ -346,7 +326,6 @@ export function registerEnhancementRoutes(app: Express) {
       const listing = await monetization.listings.create(req.body);
       res.json(listing);
     } catch (error) {
-      console.error("[Listings] Create error:", error);
       res.status(500).json({ error: "Failed to create listing" });
     }
   });
@@ -358,7 +337,6 @@ export function registerEnhancementRoutes(app: Express) {
       if (!analytics) return res.status(404).json({ error: "Listing not found" });
       res.json(analytics);
     } catch (error) {
-      console.error("[Listings] Analytics error:", error);
       res.status(500).json({ error: "Failed to get analytics" });
     }
   });
@@ -369,7 +347,6 @@ export function registerEnhancementRoutes(app: Express) {
       await monetization.listings.trackImpression(req.params.id);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Listings] Impression error:", error);
       res.status(500).json({ error: "Failed to track impression" });
     }
   });
@@ -380,7 +357,6 @@ export function registerEnhancementRoutes(app: Express) {
       await monetization.listings.trackClick(req.params.id);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Listings] Click error:", error);
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -395,7 +371,6 @@ export function registerEnhancementRoutes(app: Express) {
       const lead = await monetization.leads.submit(req.body);
       res.json({ success: true, leadId: lead.id });
     } catch (error) {
-      console.error("[Leads] Submit error:", error);
       res.status(500).json({ error: "Failed to submit lead" });
     }
   });
@@ -406,7 +381,6 @@ export function registerEnhancementRoutes(app: Express) {
       const dashboard = await monetization.leads.getDashboard(req.params.businessId);
       res.json(dashboard);
     } catch (error) {
-      console.error("[Leads] Dashboard error:", error);
       res.status(500).json({ error: "Failed to get dashboard" });
     }
   });
@@ -419,7 +393,6 @@ export function registerEnhancementRoutes(app: Express) {
       if (!lead) return res.status(404).json({ error: "Lead not found" });
       res.json(lead);
     } catch (error) {
-      console.error("[Leads] Update error:", error);
       res.status(500).json({ error: "Failed to update lead" });
     }
   });
@@ -432,7 +405,6 @@ export function registerEnhancementRoutes(app: Express) {
       res.setHeader("Content-Disposition", "attachment; filename=leads.csv");
       res.send(csv);
     } catch (error) {
-      console.error("[Leads] Export error:", error);
       res.status(500).json({ error: "Failed to export leads" });
     }
   });
@@ -443,7 +415,6 @@ export function registerEnhancementRoutes(app: Express) {
       const stats = await monetization.revenue.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("[Revenue] Stats error:", error);
       res.status(500).json({ error: "Failed to get revenue stats" });
     }
   });
@@ -455,11 +426,10 @@ export function registerEnhancementRoutes(app: Express) {
   // Manifest
   app.get("/manifest.json", async (req, res) => {
     try {
-      const locale = req.query.locale as string || "en";
+      const locale = (req.query.locale as string) || "en";
       const manifest = await pwa.manager.generateManifest(locale);
       res.json(manifest);
     } catch (error) {
-      console.error("[PWA] Manifest error:", error);
       res.status(500).json({ error: "Failed to generate manifest" });
     }
   });
@@ -472,7 +442,6 @@ export function registerEnhancementRoutes(app: Express) {
       res.setHeader("Service-Worker-Allowed", "/");
       res.send(sw);
     } catch (error) {
-      console.error("[PWA] SW error:", error);
       res.status(500).send("// Service worker unavailable");
     }
   });
@@ -490,7 +459,6 @@ export function registerEnhancementRoutes(app: Express) {
       await pwa.push.subscribe(req.body, req.user?.id);
       res.json({ success: true });
     } catch (error) {
-      console.error("[PWA] Push subscribe error:", error);
       res.status(500).json({ error: "Failed to subscribe" });
     }
   });
@@ -501,7 +469,6 @@ export function registerEnhancementRoutes(app: Express) {
       await pwa.push.unsubscribe(req.body.endpoint);
       res.json({ success: true });
     } catch (error) {
-      console.error("[PWA] Push unsubscribe error:", error);
       res.status(500).json({ error: "Failed to unsubscribe" });
     }
   });
@@ -513,7 +480,6 @@ export function registerEnhancementRoutes(app: Express) {
       const result = await pwa.push.send(title, body, options);
       res.json(result);
     } catch (error) {
-      console.error("[PWA] Push send error:", error);
       res.status(500).json({ error: "Failed to send notification" });
     }
   });
@@ -524,7 +490,6 @@ export function registerEnhancementRoutes(app: Express) {
       const stats = await pwa.push.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("[PWA] Push stats error:", error);
       res.status(500).json({ error: "Failed to get stats" });
     }
   });
@@ -546,7 +511,6 @@ export function registerEnhancementRoutes(app: Express) {
       });
       res.json(logs);
     } catch (error) {
-      console.error("[Security] Audit error:", error);
       res.status(500).json({ error: "Failed to get audit logs" });
     }
   });
@@ -558,7 +522,6 @@ export function registerEnhancementRoutes(app: Express) {
       const summary = await advancedSecurity.auditLogger.getSecuritySummary(hours);
       res.json(summary);
     } catch (error) {
-      console.error("[Security] Summary error:", error);
       res.status(500).json({ error: "Failed to get security summary" });
     }
   });
@@ -569,7 +532,6 @@ export function registerEnhancementRoutes(app: Express) {
       const result = await advancedSecurity.twoFactorAuth.generateSecret(req.user.id);
       res.json(result);
     } catch (error) {
-      console.error("[Security] 2FA setup error:", error);
       res.status(500).json({ error: "Failed to setup 2FA" });
     }
   });
@@ -581,7 +543,6 @@ export function registerEnhancementRoutes(app: Express) {
       const success = await advancedSecurity.twoFactorAuth.verifyAndEnable(req.user.id, code);
       res.json({ success });
     } catch (error) {
-      console.error("[Security] 2FA verify error:", error);
       res.status(500).json({ error: "Failed to verify 2FA" });
     }
   });
@@ -592,10 +553,7 @@ export function registerEnhancementRoutes(app: Express) {
       const success = await advancedSecurity.twoFactorAuth.disable(req.user.id);
       res.json({ success });
     } catch (error) {
-      console.error("[Security] 2FA disable error:", error);
       res.status(500).json({ error: "Failed to disable 2FA" });
     }
   });
-
-  console.log("[Enhancement] Routes registered");
 }

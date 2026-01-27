@@ -36,11 +36,7 @@ export interface ConfidenceResult {
 export async function calculateConfidence(contentId: string): Promise<ConfidenceResult | null> {
   if (!isEnabled()) return null;
 
-  const [content] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, contentId))
-    .limit(1);
+  const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
   if (!content) return null;
 
@@ -71,9 +67,7 @@ export async function calculateConfidence(contentId: string): Promise<Confidence
   let sourceFreshnessScore = 100;
   const lastUpdate = content.updatedAt || content.createdAt;
   if (lastUpdate) {
-    const daysSinceUpdate = Math.floor(
-      (Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    const daysSinceUpdate = Math.floor((Date.now() - lastUpdate.getTime()) / (1000 * 60 * 60 * 24));
     sourceFreshnessScore = Math.max(20, 100 - daysSinceUpdate * 2);
   }
 
@@ -92,9 +86,9 @@ export async function calculateConfidence(contentId: string): Promise<Confidence
   // Calculate composite score
   const score = Math.round(
     entityVerificationScore * 0.25 +
-    factConsistencyScore * 0.25 +
-    sourceFreshnessScore * 0.25 +
-    hallucinationRiskScore * 0.25
+      factConsistencyScore * 0.25 +
+      sourceFreshnessScore * 0.25 +
+      hallucinationRiskScore * 0.25
   );
 
   // Determine label
@@ -212,7 +206,7 @@ export async function getLowConfidenceContent(limit: number = 50): Promise<Confi
     .orderBy(contentConfidenceScores.score)
     .limit(limit);
 
-  return results.map((r) => ({
+  return results.map(r => ({
     contentId: r.contentId,
     title: r.title || undefined,
     type: r.type || undefined,
@@ -227,5 +221,3 @@ export async function getLowConfidenceContent(limit: number = 50): Promise<Confi
     calculatedAt: r.calculatedAt?.toISOString() || new Date().toISOString(),
   }));
 }
-
-console.log("[ContentConfidence] Module loaded");

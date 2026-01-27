@@ -74,7 +74,7 @@ function getEditorPath(contentId: string, contentType: string): string {
 
 export default function ContentIntelligencePage() {
   const [, navigate] = useLocation();
-  
+
   const { data: gapsData, isLoading: gapsLoading } = useQuery<{
     contents: ContentGap[];
     stats: { contentWithGaps: number; totalGaps: number; highPriorityGaps: number };
@@ -139,14 +139,14 @@ export default function ContentIntelligencePage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
+          <Button
             onClick={() => navigate("/admin/ai-article-generator")}
             data-testid="button-generate-article"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Generate AI Article
           </Button>
-          <Button 
+          <Button
             variant="outline"
             onClick={() => navigate("/admin/contents/new")}
             data-testid="button-create-contents"
@@ -156,21 +156,19 @@ export default function ContentIntelligencePage() {
           </Button>
         </div>
       </div>
-      
+
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
           How It Works
         </h3>
-        <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-          המערכת מנתחת את התוכן שפורסם ומזהה הזדמנויות לשיפור: <strong>פערי תוכן</strong> (נושאים חסרים), 
-          <strong>נתונים משתנים</strong> (מחירים, שעות), <strong>אירועים</strong> לעדכון, ו<strong>אשכולות נושאים</strong> לשיפור SEO.
-        </p>
         <p className="text-sm text-muted-foreground">
-          This system analyzes your published contents and identifies opportunities for improvement. 
-          It detects <strong>contents gaps</strong> (missing topics), tracks <strong>volatile data</strong> (prices, hours that may need updates), 
-          monitors <strong>events</strong> to keep contents fresh, and suggests <strong>topic clusters</strong> for better SEO structure.
-          The more contents you publish, the smarter the analysis becomes.
+          This system analyzes your published content and identifies opportunities for improvement.
+          It detects <strong>content gaps</strong> (missing topics), tracks{" "}
+          <strong>volatile data</strong> (prices, hours that may need updates), monitors{" "}
+          <strong>events</strong> to keep content fresh, and suggests{" "}
+          <strong>topic clusters</strong> for better SEO structure. The more content you publish,
+          the smarter the analysis becomes.
         </p>
       </div>
 
@@ -281,15 +279,17 @@ export default function ContentIntelligencePage() {
               <ScrollArea className="h-[400px]">
                 {gapsData?.contents && gapsData.contents.length > 0 ? (
                   <div className="space-y-4">
-                    {gapsData.contents.map((item) => (
+                    {gapsData.contents.map(item => (
                       <div key={item.contentId} className="border rounded-lg p-4">
                         <div className="flex items-start justify-between gap-4 mb-3">
                           <h4 className="font-medium">{item.title}</h4>
                           <div className="flex items-center gap-2">
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
-                              onClick={() => navigate(getEditorPath(item.contentId, item.contentType))}
+                              onClick={() =>
+                                navigate(getEditorPath(item.contentId, item.contentType))
+                              }
                               data-testid={`button-edit-${item.contentId}`}
                             >
                               <Pencil className="h-3 w-3 mr-1" />
@@ -321,8 +321,9 @@ export default function ContentIntelligencePage() {
                     <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p className="font-medium">No contents gaps detected</p>
                     <p className="text-sm mt-2 max-w-md mx-auto">
-                      Gap analysis works best with published contents. As you publish more articles, 
-                      attractions, and hotels, the system will identify missing topics and SEO opportunities.
+                      Gap analysis works best with published contents. As you publish more articles,
+                      attractions, and hotels, the system will identify missing topics and SEO
+                      opportunities.
                     </p>
                   </div>
                 )}
@@ -351,29 +352,68 @@ export default function ContentIntelligencePage() {
                       sourceTitle: "Top 10 Dubai Attractions",
                       sourceSlug: "/attractions/top-10-dubai",
                       suggestions: [
-                        { targetTitle: "Burj Khalifa Guide", targetSlug: "/attractions/burj-khalifa", anchor: "Burj Khalifa", reason: "Mentioned but not linked" },
-                        { targetTitle: "Dubai Mall Complete Guide", targetSlug: "/attractions/dubai-mall", anchor: "Dubai Mall", reason: "Related topic" },
-                        { targetTitle: "Dubai Fountain Show Times", targetSlug: "/attractions/dubai-fountain", anchor: "Dubai Fountain", reason: "Geographic proximity" },
-                      ]
+                        {
+                          targetTitle: "Burj Khalifa Guide",
+                          targetSlug: "/attractions/burj-khalifa",
+                          anchor: "Burj Khalifa",
+                          reason: "Mentioned but not linked",
+                        },
+                        {
+                          targetTitle: "Dubai Mall Complete Guide",
+                          targetSlug: "/attractions/dubai-mall",
+                          anchor: "Dubai Mall",
+                          reason: "Related topic",
+                        },
+                        {
+                          targetTitle: "Dubai Fountain Show Times",
+                          targetSlug: "/attractions/dubai-fountain",
+                          anchor: "Dubai Fountain",
+                          reason: "Geographic proximity",
+                        },
+                      ],
                     },
                     {
                       sourceTitle: "Dubai Marina Hotels",
                       sourceSlug: "/hotels/dubai-marina",
                       suggestions: [
-                        { targetTitle: "Dubai Marina Guide", targetSlug: "/districts/dubai-marina", anchor: "Dubai Marina", reason: "District context" },
-                        { targetTitle: "JBR Beach Guide", targetSlug: "/attractions/jbr-beach", anchor: "JBR Beach", reason: "Nearby attraction" },
-                      ]
+                        {
+                          targetTitle: "Dubai Marina Guide",
+                          targetSlug: "/districts/dubai-marina",
+                          anchor: "Dubai Marina",
+                          reason: "District context",
+                        },
+                        {
+                          targetTitle: "JBR Beach Guide",
+                          targetSlug: "/attractions/jbr-beach",
+                          anchor: "JBR Beach",
+                          reason: "Nearby attraction",
+                        },
+                      ],
                     },
                     {
                       sourceTitle: "Desert Safari Experience",
                       sourceSlug: "/attractions/desert-safari",
                       suggestions: [
-                        { targetTitle: "Best Time to Visit Dubai", targetSlug: "/articles/best-time-dubai", anchor: "best time to visit", reason: "Seasonal relevance" },
-                        { targetTitle: "Dubai Day Trips", targetSlug: "/articles/dubai-day-trips", anchor: "day trips", reason: "Content cluster" },
-                      ]
+                        {
+                          targetTitle: "Best Time to Visit Dubai",
+                          targetSlug: "/articles/best-time-dubai",
+                          anchor: "best time to visit",
+                          reason: "Seasonal relevance",
+                        },
+                        {
+                          targetTitle: "Dubai Day Trips",
+                          targetSlug: "/articles/dubai-day-trips",
+                          anchor: "day trips",
+                          reason: "Content cluster",
+                        },
+                      ],
                     },
                   ].map((item, idx) => (
-                    <Card key={idx} className="border-l-4 border-l-blue-500" data-testid={`card-link-suggestion-${idx}`}>
+                    <Card
+                      key={idx}
+                      className="border-l-4 border-l-blue-500"
+                      data-testid={`card-link-suggestion-${idx}`}
+                    >
                       <CardContent className="pt-4">
                         <div className="flex items-center justify-between mb-3">
                           <div>
@@ -394,16 +434,25 @@ export default function ContentIntelligencePage() {
                                 <div className="min-w-0">
                                   <p className="text-sm font-medium truncate">{sug.targetTitle}</p>
                                   <p className="text-xs text-muted-foreground">
-                                    Anchor: "<span className="text-blue-600">{sug.anchor}</span>" - {sug.reason}
+                                    Anchor: "<span className="text-blue-600">{sug.anchor}</span>" -{" "}
+                                    {sug.reason}
                                   </p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 shrink-0">
-                                <Button variant="outline" size="sm" data-testid={`button-add-link-${idx}-${sugIdx}`}>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  data-testid={`button-add-link-${idx}-${sugIdx}`}
+                                >
                                   <Link2 className="h-3 w-3 mr-1" />
                                   Add Link
                                 </Button>
-                                <Button variant="ghost" size="icon" data-testid={`button-preview-${idx}-${sugIdx}`}>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  data-testid={`button-preview-${idx}-${sugIdx}`}
+                                >
                                   <ExternalLink className="h-4 w-4" />
                                 </Button>
                               </div>
@@ -434,7 +483,7 @@ export default function ContentIntelligencePage() {
               <ScrollArea className="h-[400px]">
                 {watchlistData?.items && watchlistData.items.length > 0 ? (
                   <div className="space-y-3">
-                    {watchlistData.items.map((item) => (
+                    {watchlistData.items.map(item => (
                       <div
                         key={item.contentId}
                         className="flex items-center justify-between gap-4 p-3 rounded-lg border"
@@ -449,7 +498,9 @@ export default function ContentIntelligencePage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(getEditorPath(item.contentId, item.contentType))}
+                            onClick={() =>
+                              navigate(getEditorPath(item.contentId, item.contentType))
+                            }
                             data-testid={`button-edit-watchlist-${item.contentId}`}
                           >
                             <Pencil className="h-3 w-3 mr-1" />
@@ -464,8 +515,9 @@ export default function ContentIntelligencePage() {
                     <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p className="font-medium">No items on watchlist</p>
                     <p className="text-sm mt-2 max-w-md mx-auto">
-                      The watchlist tracks contents with prices, opening hours, or other data that changes frequently.
-                      When you add attractions or hotels with pricing info, they'll appear here for monitoring.
+                      The watchlist tracks contents with prices, opening hours, or other data that
+                      changes frequently. When you add attractions or hotels with pricing info,
+                      they'll appear here for monitoring.
                     </p>
                   </div>
                 )}
@@ -481,15 +533,13 @@ export default function ContentIntelligencePage() {
                 <Calendar className="h-5 w-5" />
                 Event Calendar Sync
               </CardTitle>
-              <CardDescription>
-                Track events and ensure contents stays up-to-date
-              </CardDescription>
+              <CardDescription>Track events and ensure contents stays up-to-date</CardDescription>
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[400px]">
                 {eventsData?.events && eventsData.events.length > 0 ? (
                   <div className="space-y-3">
-                    {eventsData.events.map((event) => (
+                    {eventsData.events.map(event => (
                       <div
                         key={event.id}
                         className="flex items-center justify-between gap-4 p-3 rounded-lg border"
@@ -498,12 +548,8 @@ export default function ContentIntelligencePage() {
                         <div className="min-w-0 flex-1">
                           <p className="font-medium truncate">{event.title}</p>
                           <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="outline">
-                              {event.status}
-                            </Badge>
-                            {event.needsUpdate && (
-                              <Badge variant="destructive">Needs Update</Badge>
-                            )}
+                            <Badge variant="outline">{event.status}</Badge>
+                            {event.needsUpdate && <Badge variant="destructive">Needs Update</Badge>}
                           </div>
                         </div>
                         <Button
@@ -523,8 +569,9 @@ export default function ContentIntelligencePage() {
                     <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p className="font-medium">No events tracked</p>
                     <p className="text-sm mt-2 max-w-md mx-auto">
-                      Events are automatically detected from your contents. Articles about festivals, exhibitions, 
-                      or time-limited attractions will appear here so you can update them when dates change.
+                      Events are automatically detected from your contents. Articles about
+                      festivals, exhibitions, or time-limited attractions will appear here so you
+                      can update them when dates change.
                     </p>
                   </div>
                 )}
@@ -549,8 +596,9 @@ export default function ContentIntelligencePage() {
                 <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p className="font-medium">AI-Powered Content Suggestions</p>
                 <p className="text-sm mt-2 max-w-md mx-auto">
-                  Based on your existing contents and topic clusters, this feature suggests what articles 
-                  to write next for maximum SEO impact. Recommendations improve as you add more contents.
+                  Based on your existing contents and topic clusters, this feature suggests what
+                  articles to write next for maximum SEO impact. Recommendations improve as you add
+                  more contents.
                 </p>
               </div>
             </CardContent>

@@ -44,7 +44,7 @@ const SEO_REQUIREMENTS = {
 // Clichés and clickbait phrases to remove/avoid (synchronized with seo-analyzer and seo-validation-agent)
 const CLICHE_PHRASES = [
   "must-visit",
-  "must visit", 
+  "must visit",
   "world-class",
   "world class",
   "hidden gem",
@@ -103,11 +103,19 @@ interface SeoComplianceResult {
  * Returns scores, pass/fail status, and remediation hints
  */
 function evaluateSeoCompliance(
-  parsedContent: { title: string; metaDescription: string; intro: string; body: string; conclusion: string },
+  parsedContent: {
+    title: string;
+    metaDescription: string;
+    intro: string;
+    body: string;
+    conclusion: string;
+  },
   internalLinksAvailable: number
 ): SeoComplianceResult {
-  const fullContent = [parsedContent.intro, parsedContent.body, parsedContent.conclusion].filter(Boolean).join(' ');
-  
+  const fullContent = [parsedContent.intro, parsedContent.body, parsedContent.conclusion]
+    .filter(Boolean)
+    .join(" ");
+
   // Calculate metrics
   const h2Count = (parsedContent.body.match(/<h2/gi) || []).length;
   const wordCount = fullContent.split(/\s+/).filter(w => w.length > 0).length;
@@ -116,15 +124,20 @@ function evaluateSeoCompliance(
   const metaDescLength = parsedContent.metaDescription.length;
   const titleLength = parsedContent.title.length;
   const keywordMentions = (fullContent.match(/dubai|uae/gi) || []).length;
-  
+
   // Essential score (target 90%+)
   let essential = 0;
-  if (h2Count >= SEO_REQUIREMENTS.minH2Count && h2Count <= SEO_REQUIREMENTS.maxH2Count) essential += 40;
+  if (h2Count >= SEO_REQUIREMENTS.minH2Count && h2Count <= SEO_REQUIREMENTS.maxH2Count)
+    essential += 40;
   else if (h2Count >= 3) essential += 25;
-  if (metaDescLength >= SEO_REQUIREMENTS.metaDescMinLength && metaDescLength <= SEO_REQUIREMENTS.metaDescMaxLength) essential += 30;
+  if (
+    metaDescLength >= SEO_REQUIREMENTS.metaDescMinLength &&
+    metaDescLength <= SEO_REQUIREMENTS.metaDescMaxLength
+  )
+    essential += 30;
   if (keywordMentions >= 5) essential += 15;
   if (titleLength >= 50 && titleLength <= 60) essential += 15;
-  
+
   // Technical score (target 85%+)
   let technical = 0;
   if (externalLinks >= SEO_REQUIREMENTS.minExternalLinks) technical += 30;
@@ -134,51 +147,82 @@ function evaluateSeoCompliance(
   if (wordCount >= SEO_REQUIREMENTS.minWordCount) technical += 25;
   else if (wordCount >= 1200) technical += 15;
   technical += 10; // Schema markup (always included)
-  
+
   // Quality score (target 75%+)
   let quality = 60;
   if (h2Count >= 4) quality += 15;
   if (wordCount >= 1500) quality += 15;
   if (keywordMentions >= 10) quality += 10;
-  
-  const combined = Math.round((essential * 0.35) + (technical * 0.35) + (quality * 0.30));
-  
+
+  const combined = Math.round(essential * 0.35 + technical * 0.35 + quality * 0.3);
+
   // Build deficits list
   const deficits: string[] = [];
   if (h2Count < SEO_REQUIREMENTS.minH2Count) {
-    deficits.push(`Add ${SEO_REQUIREMENTS.minH2Count - h2Count} more H2 sections (currently ${h2Count}, need ${SEO_REQUIREMENTS.minH2Count}-${SEO_REQUIREMENTS.maxH2Count})`);
+    deficits.push(
+      `Add ${SEO_REQUIREMENTS.minH2Count - h2Count} more H2 sections (currently ${h2Count}, need ${SEO_REQUIREMENTS.minH2Count}-${SEO_REQUIREMENTS.maxH2Count})`
+    );
   }
   if (wordCount < SEO_REQUIREMENTS.minWordCount) {
-    deficits.push(`Add ${SEO_REQUIREMENTS.minWordCount - wordCount} more words (currently ${wordCount}, need ${SEO_REQUIREMENTS.minWordCount}+)`);
+    deficits.push(
+      `Add ${SEO_REQUIREMENTS.minWordCount - wordCount} more words (currently ${wordCount}, need ${SEO_REQUIREMENTS.minWordCount}+)`
+    );
   }
   if (externalLinks < SEO_REQUIREMENTS.minExternalLinks) {
-    deficits.push(`Add ${SEO_REQUIREMENTS.minExternalLinks - externalLinks} more external links to authoritative sources (currently ${externalLinks})`);
+    deficits.push(
+      `Add ${SEO_REQUIREMENTS.minExternalLinks - externalLinks} more external links to authoritative sources (currently ${externalLinks})`
+    );
   }
   if (internalLinks < SEO_REQUIREMENTS.minInternalLinks && internalLinksAvailable > 0) {
-    deficits.push(`Add ${SEO_REQUIREMENTS.minInternalLinks - internalLinks} more internal links (currently ${internalLinks})`);
+    deficits.push(
+      `Add ${SEO_REQUIREMENTS.minInternalLinks - internalLinks} more internal links (currently ${internalLinks})`
+    );
   }
-  if (metaDescLength < SEO_REQUIREMENTS.metaDescMinLength || metaDescLength > SEO_REQUIREMENTS.metaDescMaxLength) {
-    deficits.push(`Adjust meta description to ${SEO_REQUIREMENTS.metaDescMinLength}-${SEO_REQUIREMENTS.metaDescMaxLength} characters (currently ${metaDescLength})`);
+  if (
+    metaDescLength < SEO_REQUIREMENTS.metaDescMinLength ||
+    metaDescLength > SEO_REQUIREMENTS.metaDescMaxLength
+  ) {
+    deficits.push(
+      `Adjust meta description to ${SEO_REQUIREMENTS.metaDescMinLength}-${SEO_REQUIREMENTS.metaDescMaxLength} characters (currently ${metaDescLength})`
+    );
   }
-  if (titleLength < SEO_REQUIREMENTS.titleMinLength || titleLength > SEO_REQUIREMENTS.titleMaxLength) {
-    deficits.push(`Adjust title to ${SEO_REQUIREMENTS.titleMinLength}-${SEO_REQUIREMENTS.titleMaxLength} characters (currently ${titleLength})`);
+  if (
+    titleLength < SEO_REQUIREMENTS.titleMinLength ||
+    titleLength > SEO_REQUIREMENTS.titleMaxLength
+  ) {
+    deficits.push(
+      `Adjust title to ${SEO_REQUIREMENTS.titleMinLength}-${SEO_REQUIREMENTS.titleMaxLength} characters (currently ${titleLength})`
+    );
   }
   if (keywordMentions < 10) {
-    deficits.push(`Include more mentions of "Dubai" or "UAE" (currently ${keywordMentions}, need 10+)`);
+    deficits.push(
+      `Include more mentions of "Dubai" or "UAE" (currently ${keywordMentions}, need 10+)`
+    );
   }
   if (h2Count > SEO_REQUIREMENTS.maxH2Count) {
-    deficits.push(`Reduce H2 sections from ${h2Count} to ${SEO_REQUIREMENTS.minH2Count}-${SEO_REQUIREMENTS.maxH2Count}`);
+    deficits.push(
+      `Reduce H2 sections from ${h2Count} to ${SEO_REQUIREMENTS.minH2Count}-${SEO_REQUIREMENTS.maxH2Count}`
+    );
   }
-  
-  const isCompliant = essential >= SEO_THRESHOLDS.essential && 
-                      technical >= SEO_THRESHOLDS.technical && 
-                      quality >= SEO_THRESHOLDS.quality;
-  
+
+  const isCompliant =
+    essential >= SEO_THRESHOLDS.essential &&
+    technical >= SEO_THRESHOLDS.technical &&
+    quality >= SEO_THRESHOLDS.quality;
+
   return {
     scores: { essential, technical, quality, combined },
     isCompliant,
     deficits,
-    metrics: { h2Count, wordCount, externalLinks, internalLinks, metaDescLength, titleLength, keywordMentions },
+    metrics: {
+      h2Count,
+      wordCount,
+      externalLinks,
+      internalLinks,
+      metaDescLength,
+      titleLength,
+      keywordMentions,
+    },
   };
 }
 
@@ -207,7 +251,9 @@ export interface WriteContentResponse {
 function getClient() {
   const aiClient = getAIClient();
   if (!aiClient) {
-    throw new Error("No AI provider configured. Please add OPENAI_API_KEY, GEMINI, or OPENROUTER_API_KEY.");
+    throw new Error(
+      "No AI provider configured. Please add OPENAI_API_KEY, GEMINI, or OPENROUTER_API_KEY."
+    );
   }
   return aiClient.client;
 }
@@ -216,51 +262,53 @@ function getClient() {
  * Generate content with specific writer's voice
  * Enhanced with SEO requirements, internal link support, and regeneration loop
  */
-export async function generateContent(
-  request: WriteContentRequest
-): Promise<WriteContentResponse> {
+export async function generateContent(request: WriteContentRequest): Promise<WriteContentResponse> {
   const writer = getWriterById(request.writerId);
   if (!writer) {
     throw new Error(`Writer not found: ${request.writerId}`);
   }
 
   const client = getClient();
-  
+
   // Fetch internal links for SEO
   let internalLinks: Array<{ title: string; url: string }> = [];
   try {
     const links = await getInternalLinkUrls(undefined, 15);
     internalLinks = links?.map(l => ({ title: l.title, url: l.url })) || [];
-  } catch (error) {
-    console.warn("Could not fetch internal links:", error);
-  }
-  
+  } catch (error) {}
+
   // Add internal links to the request
   const enrichedRequest = {
     ...request,
     internalLinks,
   };
-  
+
   const systemPrompt = getWriterSystemPrompt(writer);
   const userPrompt = getContentGenerationPrompt(writer, enrichedRequest);
 
   try {
-    let parsedContent: { title: string; metaDescription: string; intro: string; body: string; conclusion: string } | null = null;
+    let parsedContent: {
+      title: string;
+      metaDescription: string;
+      intro: string;
+      body: string;
+      conclusion: string;
+    } | null = null;
     let compliance: SeoComplianceResult | null = null;
     let attempt = 0;
-    
+
     // REGENERATION LOOP: Generate and validate until compliant or attempts exhausted
     // Loop runs attempt 1, 2, ... MAX_REGENERATION_ATTEMPTS + 1 (initial + retries)
     while (attempt < MAX_REGENERATION_ATTEMPTS + 1) {
       attempt++;
       const isRetry = attempt > 1;
-      
+
       // Build prompt - on retries, include previous content and deficits
       let messages: Array<{ role: "system" | "user"; content: string }> = [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ];
-      
+
       if (isRetry && parsedContent && compliance) {
         // Build regeneration prompt with specific deficits
         const regenerationPrompt = buildRegenerationPrompt(parsedContent, compliance.deficits);
@@ -268,9 +316,8 @@ export async function generateContent(
           { role: "system", content: systemPrompt },
           { role: "user", content: regenerationPrompt },
         ];
-        console.log(`[SEO] Regeneration attempt ${attempt}/${MAX_REGENERATION_ATTEMPTS + 1} - Deficits: ${compliance.deficits.join(', ')}`);
       }
-      
+
       const response = await client.chat.completions.create({
         model: "gpt-4o",
         messages,
@@ -280,74 +327,80 @@ export async function generateContent(
 
       const generatedContent = response.choices[0]?.message?.content || "";
       parsedContent = parseGeneratedContent(generatedContent);
-      
+
       // STRICT SEO ENFORCEMENT: Fix title, meta description, and remove clichés
       parsedContent = fixTitle(parsedContent);
       parsedContent = fixMetaDescription(parsedContent);
       parsedContent = removeClichesFromContent(parsedContent);
-      
+
       // Evaluate SEO compliance
       compliance = evaluateSeoCompliance(parsedContent, internalLinks.length);
-      
-      console.log(`[SEO] Attempt ${attempt} - Essential: ${compliance.scores.essential}%, Technical: ${compliance.scores.technical}%, Quality: ${compliance.scores.quality}%`);
-      
+
       if (compliance.isCompliant) {
-        console.log(`[SEO] Content passed all thresholds on attempt ${attempt}`);
         break;
       }
-      
     }
-    
+
     if (!parsedContent || !compliance) {
       throw new Error("Failed to generate content after multiple attempts");
     }
-    
+
     // If not compliant after regeneration, log warning
     if (!compliance.isCompliant) {
-      console.log(`[SEO] WARNING: Content did not pass thresholds after ${attempt} attempts. Deficits: ${compliance.deficits.join(', ')}`);
     }
-    
+
     // POST-GENERATION SEO ENFORCEMENT: Inject links if still missing
     let enhancedBody = parsedContent.body;
-    
+
     // Inject external links if missing
     if (compliance.metrics.externalLinks < SEO_REQUIREMENTS.minExternalLinks) {
-      console.log("[SEO] Injecting external authoritative links...");
-      enhancedBody = injectExternalLinks(enhancedBody, SEO_REQUIREMENTS.minExternalLinks - compliance.metrics.externalLinks);
+      enhancedBody = injectExternalLinks(
+        enhancedBody,
+        SEO_REQUIREMENTS.minExternalLinks - compliance.metrics.externalLinks
+      );
     }
-    
+
     // Inject internal links if missing
-    if (compliance.metrics.internalLinks < SEO_REQUIREMENTS.minInternalLinks && internalLinks.length > 0) {
-      console.log("[SEO] Injecting internal links...");
-      enhancedBody = injectInternalLinks(enhancedBody, internalLinks, SEO_REQUIREMENTS.minInternalLinks - compliance.metrics.internalLinks);
+    if (
+      compliance.metrics.internalLinks < SEO_REQUIREMENTS.minInternalLinks &&
+      internalLinks.length > 0
+    ) {
+      enhancedBody = injectInternalLinks(
+        enhancedBody,
+        internalLinks,
+        SEO_REQUIREMENTS.minInternalLinks - compliance.metrics.internalLinks
+      );
     }
-    
+
     // Update body with injected links
     const finalParsedContent = {
       ...parsedContent,
       body: enhancedBody,
     };
-    
+
     // Recalculate final compliance after injections
     const finalCompliance = evaluateSeoCompliance(finalParsedContent, internalLinks.length);
-    
+
     // Calculate metadata
-    const fullContent = [finalParsedContent.intro, finalParsedContent.body, finalParsedContent.conclusion].filter(Boolean).join(' ');
+    const fullContent = [
+      finalParsedContent.intro,
+      finalParsedContent.body,
+      finalParsedContent.conclusion,
+    ]
+      .filter(Boolean)
+      .join(" ");
     const wordCount = fullContent.split(/\s+/).filter(w => w.length > 0).length;
     const readingTime = Math.ceil(wordCount / 200);
-    
+
     // Validate voice
     const voiceScore = await voiceValidator.getScore(request.writerId, fullContent);
-    
-    console.log(`[SEO] Final Scores - Essential: ${finalCompliance.scores.essential}%, Technical: ${finalCompliance.scores.technical}%, Quality: ${finalCompliance.scores.quality}%, Combined: ${finalCompliance.scores.combined}%`);
-    
+
     // Determine if manual review is needed (still non-compliant after all fixes)
     const needsManualReview = !finalCompliance.isCompliant;
-    
+
     if (needsManualReview) {
-      const deficitMsg = finalCompliance.deficits.join(', ');
-      console.log(`[SEO] Article flagged for manual review. Remaining deficits: ${deficitMsg}`);
-      
+      const deficitMsg = finalCompliance.deficits.join(", ");
+
       // For strict enforcement mode (RSS auto-processing), throw an error
       // This ensures non-compliant content is rejected at the generation level
       if (request.strictSeoEnforcement) {
@@ -368,7 +421,6 @@ export async function generateContent(
       },
     };
   } catch (error) {
-    console.error("Error generating content:", error);
     throw new Error(`Failed to generate content with writer ${writer.name}`);
   }
 }
@@ -377,76 +429,88 @@ export async function generateContent(
  * Fix title length - enforce strict 50-60 character limit
  * Strategy: Replace clichés with professional alternatives, then truncate if needed
  */
-function fixTitle(parsedContent: { title: string; metaDescription: string; intro: string; body: string; conclusion: string }) {
+function fixTitle(parsedContent: {
+  title: string;
+  metaDescription: string;
+  intro: string;
+  body: string;
+  conclusion: string;
+}) {
   let title = parsedContent.title;
   const originalTitle = title;
-  
+
   // Replace clichés with professional alternatives (don't just remove them)
   const titleReplacements: Record<string, string> = {
-    'secret tips revealed': 'Practical Guide',
-    'must-visit': 'Top',
-    'must visit': 'Top',
-    'hidden gem': 'Local',
-    'hidden gems': 'Local',
-    'ultimate guide': 'Complete Guide',
-    'everything you need to know': 'Guide',
-    'you won\'t believe': '',
-    'best kept secret': 'Local',
-    'world-class': 'Premier',
-    'breathtaking': 'Stunning',
+    "secret tips revealed": "Practical Guide",
+    "must-visit": "Top",
+    "must visit": "Top",
+    "hidden gem": "Local",
+    "hidden gems": "Local",
+    "ultimate guide": "Complete Guide",
+    "everything you need to know": "Guide",
+    "you won't believe": "",
+    "best kept secret": "Local",
+    "world-class": "Premier",
+    breathtaking: "Stunning",
   };
-  
+
   for (const [cliche, replacement] of Object.entries(titleReplacements)) {
-    const regex = new RegExp(cliche, 'gi');
+    const regex = new RegExp(cliche, "gi");
     if (regex.test(title)) {
-      title = title.replace(regex, replacement).replace(/\s+/g, ' ').trim();
+      title = title.replace(regex, replacement).replace(/\s+/g, " ").trim();
     }
   }
-  
+
   // Clean up leftover punctuation artifacts
-  title = title.replace(/:\s*$/g, '').replace(/\|\s*$/g, '').replace(/\s+/g, ' ').trim();
-  
+  title = title
+    .replace(/:\s*$/g, "")
+    .replace(/\|\s*$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
   // If title is too long, truncate intelligently
   if (title.length > SEO_REQUIREMENTS.titleMaxLength) {
     // Strategy 1: Cut at separator if result is valid length
-    const separators = [' | ', ' - ', ': '];
+    const separators = [" | ", " - ", ": "];
     for (const sep of separators) {
       if (title.includes(sep)) {
         const firstPart = title.split(sep)[0].trim();
-        if (firstPart.length >= SEO_REQUIREMENTS.titleMinLength && firstPart.length <= SEO_REQUIREMENTS.titleMaxLength) {
+        if (
+          firstPart.length >= SEO_REQUIREMENTS.titleMinLength &&
+          firstPart.length <= SEO_REQUIREMENTS.titleMaxLength
+        ) {
           title = firstPart;
           break;
         }
       }
     }
-    
+
     // Strategy 2: Still too long? Smart truncate at word boundary
     if (title.length > SEO_REQUIREMENTS.titleMaxLength) {
       // Find a good cut point between 50-57 chars (leaving room for "...")
       const maxCut = SEO_REQUIREMENTS.titleMaxLength - 3;
       let cutPoint = maxCut;
-      
+
       // Try to cut at a word boundary
-      while (cutPoint > SEO_REQUIREMENTS.titleMinLength && title[cutPoint] !== ' ') {
+      while (cutPoint > SEO_REQUIREMENTS.titleMinLength && title[cutPoint] !== " ") {
         cutPoint--;
       }
-      
+
       if (cutPoint >= SEO_REQUIREMENTS.titleMinLength) {
         title = title.substring(0, cutPoint).trim();
       } else {
         // Fallback: just truncate and add ellipsis
-        title = title.substring(0, maxCut).trim() + '...';
+        title = title.substring(0, maxCut).trim() + "...";
       }
     }
   }
-  
+
   // If title became too short after fixes, use original with smart truncation
   if (title.length < SEO_REQUIREMENTS.titleMinLength) {
-    console.log(`[SEO] Title too short after fixes (${title.length} chars). Using smartly truncated original.`);
     if (originalTitle.length > SEO_REQUIREMENTS.titleMaxLength) {
       const maxCut = SEO_REQUIREMENTS.titleMaxLength;
       let cutPoint = maxCut;
-      while (cutPoint > 45 && originalTitle[cutPoint] !== ' ') {
+      while (cutPoint > 45 && originalTitle[cutPoint] !== " ") {
         cutPoint--;
       }
       title = originalTitle.substring(0, cutPoint).trim();
@@ -454,75 +518,89 @@ function fixTitle(parsedContent: { title: string; metaDescription: string; intro
       title = originalTitle;
     }
   }
-  
-  console.log(`[SEO] Title: "${title}" (${title.length} chars)`);
+
   return { ...parsedContent, title };
 }
 
 /**
  * Remove clichés and banned phrases from content body
  */
-function removeClichesFromContent(parsedContent: { title: string; metaDescription: string; intro: string; body: string; conclusion: string }) {
+function removeClichesFromContent(parsedContent: {
+  title: string;
+  metaDescription: string;
+  intro: string;
+  body: string;
+  conclusion: string;
+}) {
   let intro = parsedContent.intro;
   let body = parsedContent.body;
   let conclusion = parsedContent.conclusion;
   let metaDesc = parsedContent.metaDescription;
-  
+
   // Replacement map for clichés
   const replacements: Record<string, string> = {
-    'must-visit': 'popular',
-    'must visit': 'popular',
-    'world-class': 'internationally recognized',
-    'world class': 'internationally recognized',
-    'hidden gem': 'lesser-known spot',
-    'hidden gems': 'lesser-known spots',
-    'breathtaking': 'impressive',
-    'awe-inspiring': 'remarkable',
-    'jaw-dropping': 'remarkable',
-    'unforgettable': 'memorable',
-    'once-in-a-lifetime': 'rare',
-    'once in a lifetime': 'rare',
-    'bucket list': 'popular destination',
-    'paradise on earth': 'beautiful location',
-    'jewel in the crown': 'highlight',
-    'like no other': 'distinctive',
-    'best kept secret': 'lesser-known',
-    'off the beaten path': 'less crowded',
-    'sun-kissed': 'sunny',
-    'picture-perfect': 'scenic',
-    'secret tips revealed': 'practical tips',
-    'you won\'t believe': 'notably',
-    'mind-blowing': 'impressive',
-    'epic adventure': 'adventure',
-    'ultimate guide': 'comprehensive guide',
-    'everything you need to know': 'essential information',
+    "must-visit": "popular",
+    "must visit": "popular",
+    "world-class": "internationally recognized",
+    "world class": "internationally recognized",
+    "hidden gem": "lesser-known spot",
+    "hidden gems": "lesser-known spots",
+    breathtaking: "impressive",
+    "awe-inspiring": "remarkable",
+    "jaw-dropping": "remarkable",
+    unforgettable: "memorable",
+    "once-in-a-lifetime": "rare",
+    "once in a lifetime": "rare",
+    "bucket list": "popular destination",
+    "paradise on earth": "beautiful location",
+    "jewel in the crown": "highlight",
+    "like no other": "distinctive",
+    "best kept secret": "lesser-known",
+    "off the beaten path": "less crowded",
+    "sun-kissed": "sunny",
+    "picture-perfect": "scenic",
+    "secret tips revealed": "practical tips",
+    "you won't believe": "notably",
+    "mind-blowing": "impressive",
+    "epic adventure": "adventure",
+    "ultimate guide": "comprehensive guide",
+    "everything you need to know": "essential information",
   };
-  
+
   for (const [cliche, replacement] of Object.entries(replacements)) {
-    const regex = new RegExp(cliche, 'gi');
+    const regex = new RegExp(cliche, "gi");
     intro = intro.replace(regex, replacement);
     body = body.replace(regex, replacement);
     conclusion = conclusion.replace(regex, replacement);
     metaDesc = metaDesc.replace(regex, replacement);
   }
-  
+
   return { ...parsedContent, intro, body, conclusion, metaDescription: metaDesc };
 }
 
 /**
  * Fix meta description length
  */
-function fixMetaDescription(parsedContent: { title: string; metaDescription: string; intro: string; body: string; conclusion: string }) {
+function fixMetaDescription(parsedContent: {
+  title: string;
+  metaDescription: string;
+  intro: string;
+  body: string;
+  conclusion: string;
+}) {
   let metaDesc = parsedContent.metaDescription;
-  
+
   if (metaDesc.length < SEO_REQUIREMENTS.metaDescMinLength) {
     // Pad with relevant content from intro
-    const padding = parsedContent.intro?.replace(/<[^>]*>/g, '').substring(0, SEO_REQUIREMENTS.metaDescMaxLength - metaDesc.length) || "";
+    const padding =
+      parsedContent.intro
+        ?.replace(/<[^>]*>/g, "")
+        .substring(0, SEO_REQUIREMENTS.metaDescMaxLength - metaDesc.length) || "";
     metaDesc = (metaDesc + " " + padding).substring(0, SEO_REQUIREMENTS.metaDescMaxLength).trim();
   } else if (metaDesc.length > SEO_REQUIREMENTS.metaDescMaxLength) {
     metaDesc = metaDesc.substring(0, SEO_REQUIREMENTS.metaDescMaxLength - 3) + "...";
   }
-  
+
   return { ...parsedContent, metaDescription: metaDesc };
 }
 
@@ -530,13 +608,19 @@ function fixMetaDescription(parsedContent: { title: string; metaDescription: str
  * Build regeneration prompt with previous content and deficits
  */
 function buildRegenerationPrompt(
-  previousContent: { title: string; metaDescription: string; intro: string; body: string; conclusion: string },
+  previousContent: {
+    title: string;
+    metaDescription: string;
+    intro: string;
+    body: string;
+    conclusion: string;
+  },
   deficits: string[]
 ): string {
   return `The previous article did not meet SEO requirements. Please revise it to address these specific issues:
 
 REQUIRED IMPROVEMENTS:
-${deficits.map((d, i) => `${i + 1}. ${d}`).join('\n')}
+${deficits.map((d, i) => `${i + 1}. ${d}`).join("\n")}
 
 PREVIOUS ARTICLE (revise and improve):
 Title: ${previousContent.title}
@@ -566,14 +650,17 @@ Respond ONLY with the JSON object.`;
  */
 function injectExternalLinks(body: string, count: number): string {
   if (count <= 0) return body;
-  
-  const linksToInject = AUTHORITATIVE_EXTERNAL_LINKS.slice(0, Math.min(count, SEO_REQUIREMENTS.maxExternalLinks));
-  
+
+  const linksToInject = AUTHORITATIVE_EXTERNAL_LINKS.slice(
+    0,
+    Math.min(count, SEO_REQUIREMENTS.maxExternalLinks)
+  );
+
   // Check if content is HTML (has </p> tags) or Markdown
-  const isHtml = body.includes('</p>');
-  
+  const isHtml = body.includes("</p>");
+
   if (isHtml) {
-    const paragraphs = body.split('</p>');
+    const paragraphs = body.split("</p>");
     if (paragraphs.length < 2) {
       // Fallback: append at end
       let result = body;
@@ -582,26 +669,28 @@ function injectExternalLinks(body: string, count: number): string {
       });
       return result;
     }
-    
+
     let injectedCount = 0;
     const injectPositions = [1, 3, 5].slice(0, count);
-    
+
     for (let i = 0; i < paragraphs.length && injectedCount < linksToInject.length; i++) {
       if (injectPositions.includes(i) && paragraphs[i].trim()) {
         const link = linksToInject[injectedCount];
-        paragraphs[i] += ` <p class="external-reference">For official information, visit <a href="${link.url}" target="_blank" rel="noopener">${link.title}</a>.</p>`;
+        paragraphs[i] +=
+          ` <p class="external-reference">For official information, visit <a href="${link.url}" target="_blank" rel="noopener">${link.title}</a>.</p>`;
         injectedCount++;
       }
     }
-    
+
     // If we couldn't inject all links, append remaining at end
     while (injectedCount < linksToInject.length) {
       const link = linksToInject[injectedCount];
-      paragraphs[paragraphs.length - 1] += `<p class="external-reference">For official information, visit <a href="${link.url}" target="_blank" rel="noopener">${link.title}</a>.</p>`;
+      paragraphs[paragraphs.length - 1] +=
+        `<p class="external-reference">For official information, visit <a href="${link.url}" target="_blank" rel="noopener">${link.title}</a>.</p>`;
       injectedCount++;
     }
-    
-    return paragraphs.join('</p>');
+
+    return paragraphs.join("</p>");
   } else {
     // Markdown format - convert links to HTML paragraphs and append
     let result = body;
@@ -617,17 +706,17 @@ function injectExternalLinks(body: string, count: number): string {
  * Handles both HTML and Markdown formats
  */
 function injectInternalLinks(
-  body: string, 
+  body: string,
   availableLinks: Array<{ title: string; url: string }>,
   count: number
 ): string {
   if (count <= 0 || availableLinks.length === 0) return body;
-  
+
   const linksToInject = availableLinks.slice(0, Math.min(count, SEO_REQUIREMENTS.maxInternalLinks));
-  const isHtml = body.includes('</p>');
-  
+  const isHtml = body.includes("</p>");
+
   if (isHtml) {
-    const paragraphs = body.split('</p>');
+    const paragraphs = body.split("</p>");
     if (paragraphs.length < 2) {
       // Fallback: append at end
       let result = body;
@@ -636,26 +725,28 @@ function injectInternalLinks(
       });
       return result;
     }
-    
+
     let injectedCount = 0;
     const injectPositions = [2, 4, 6, 8, 10].slice(0, count);
-    
+
     for (let i = 0; i < paragraphs.length && injectedCount < linksToInject.length; i++) {
       if (injectPositions.includes(i) && paragraphs[i].trim()) {
         const link = linksToInject[injectedCount];
-        paragraphs[i] += ` <span class="related-link">See also: <a href="${link.url}">${link.title}</a>.</span>`;
+        paragraphs[i] +=
+          ` <span class="related-link">See also: <a href="${link.url}">${link.title}</a>.</span>`;
         injectedCount++;
       }
     }
-    
+
     // If we couldn't inject all links, append remaining at end
     while (injectedCount < linksToInject.length) {
       const link = linksToInject[injectedCount];
-      paragraphs[paragraphs.length - 1] += `<p class="related-content">Explore more: <a href="${link.url}">${link.title}</a></p>`;
+      paragraphs[paragraphs.length - 1] +=
+        `<p class="related-content">Explore more: <a href="${link.url}">${link.title}</a></p>`;
       injectedCount++;
     }
-    
-    return paragraphs.join('</p>');
+
+    return paragraphs.join("</p>");
   } else {
     // Markdown format - append links
     let result = body;
@@ -669,10 +760,7 @@ function injectInternalLinks(
 /**
  * Generate multiple title options
  */
-export async function generateTitles(
-  writerId: string,
-  topic: string
-): Promise<string[]> {
+export async function generateTitles(writerId: string, topic: string): Promise<string[]> {
   const writer = getWriterById(writerId);
   if (!writer) {
     throw new Error(`Writer not found: ${writerId}`);
@@ -694,17 +782,16 @@ export async function generateTitles(
     });
 
     const titlesText = response.choices[0]?.message?.content || "";
-    
+
     // Parse titles from numbered list
     const titles = titlesText
-      .split('\n')
+      .split("\n")
       .filter(line => line.trim().match(/^\d+\./))
-      .map(line => line.replace(/^\d+\.\s*/, '').trim())
+      .map(line => line.replace(/^\d+\.\s*/, "").trim())
       .filter(title => title.length > 0);
 
     return titles;
   } catch (error) {
-    console.error("Error generating titles:", error);
     throw new Error(`Failed to generate titles with writer ${writer.name}`);
   }
 }
@@ -739,7 +826,6 @@ export async function generateIntro(
 
     return response.choices[0]?.message?.content || "";
   } catch (error) {
-    console.error("Error generating intro:", error);
     throw new Error(`Failed to generate intro with writer ${writer.name}`);
   }
 }
@@ -747,10 +833,7 @@ export async function generateIntro(
 /**
  * Rewrite content in writer's voice
  */
-export async function rewriteInVoice(
-  writerId: string,
-  content: string
-): Promise<string> {
+export async function rewriteInVoice(writerId: string, content: string): Promise<string> {
   const writer = getWriterById(writerId);
   if (!writer) {
     throw new Error(`Writer not found: ${writerId}`);
@@ -773,7 +856,6 @@ export async function rewriteInVoice(
 
     return response.choices[0]?.message?.content || "";
   } catch (error) {
-    console.error("Error rewriting content:", error);
     throw new Error(`Failed to rewrite content with writer ${writer.name}`);
   }
 }
@@ -808,7 +890,6 @@ export async function optimizeForSeo(
 
     return response.choices[0]?.message?.content || content;
   } catch (error) {
-    console.error("Error optimizing for SEO:", error);
     return content; // Return original on error
   }
 }
@@ -826,16 +907,16 @@ function parseGeneratedContent(content: string): {
 } {
   // Clean up the content - remove markdown code fences if present
   let cleanContent = content.trim();
-  if (cleanContent.startsWith('```json')) {
+  if (cleanContent.startsWith("```json")) {
     cleanContent = cleanContent.slice(7);
-  } else if (cleanContent.startsWith('```')) {
+  } else if (cleanContent.startsWith("```")) {
     cleanContent = cleanContent.slice(3);
   }
-  if (cleanContent.endsWith('```')) {
+  if (cleanContent.endsWith("```")) {
     cleanContent = cleanContent.slice(0, -3);
   }
   cleanContent = cleanContent.trim();
-  
+
   // Try to parse as JSON first
   try {
     const parsed = JSON.parse(cleanContent);
@@ -863,27 +944,24 @@ function parseGeneratedContent(content: string): {
         // Continue to text parsing fallback
       }
     }
-    
+
     // Fallback text parsing for non-JSON responses
-    console.warn("AI did not return JSON, falling back to text parsing");
-    const lines = content.split('\n').filter(line => line.trim());
-    
-    const titleLine = lines.find(line => 
-      line.startsWith('#') || line.length < 100
-    ) || lines[0] || "Untitled";
-    const title = titleLine.replace(/^#+\s*/, '').trim();
-    
-    const firstParagraph = lines.find(line => 
-      line.length > 50 && !line.startsWith('#')
-    ) || "";
-    const metaDescription = firstParagraph.substring(0, 155) + 
-      (firstParagraph.length > 155 ? '...' : '');
-    
-    const paragraphs = content.split('\n\n').filter(p => p.trim());
-    const intro = paragraphs.slice(0, 2).join('\n\n');
-    const body = paragraphs.slice(2, -1).join('\n\n');
+
+    const lines = content.split("\n").filter(line => line.trim());
+
+    const titleLine =
+      lines.find(line => line.startsWith("#") || line.length < 100) || lines[0] || "Untitled";
+    const title = titleLine.replace(/^#+\s*/, "").trim();
+
+    const firstParagraph = lines.find(line => line.length > 50 && !line.startsWith("#")) || "";
+    const metaDescription =
+      firstParagraph.substring(0, 155) + (firstParagraph.length > 155 ? "..." : "");
+
+    const paragraphs = content.split("\n\n").filter(p => p.trim());
+    const intro = paragraphs.slice(0, 2).join("\n\n");
+    const body = paragraphs.slice(2, -1).join("\n\n");
     const conclusion = paragraphs[paragraphs.length - 1] || "";
-    
+
     return {
       title,
       metaDescription,

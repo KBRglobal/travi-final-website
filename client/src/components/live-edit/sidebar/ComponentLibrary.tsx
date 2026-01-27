@@ -5,7 +5,6 @@ import {
   getAllComponents,
   getComponentCategories,
   getCategoryLabel,
-  getCategoryLabelHebrew,
   EditableComponentConfig,
 } from "@/lib/live-edit/componentRegistry";
 import { useLiveEditStore } from "@/stores/liveEditStore";
@@ -51,9 +50,7 @@ function DraggableComponent({ config }: DraggableComponentProps) {
     >
       <span className="text-xl">{config.icon}</span>
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-sm truncate">
-          {isRTL && config.displayNameHe ? config.displayNameHe : config.displayName}
-        </h4>
+        <h4 className="font-medium text-sm truncate">{config.displayName}</h4>
       </div>
     </Card>
   );
@@ -66,28 +63,22 @@ export function ComponentLibrary() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">
-        {isRTL
-          ? "גרור או לחץ להוספת רכיב"
-          : "Drag or click to add component"}
-      </p>
+      <p className="text-sm text-muted-foreground">Drag or click to add component</p>
 
-      {categories.map((category) => {
-        const components = allComponents.filter((c) => c.category === category);
+      {categories.map(category => {
+        const components = allComponents.filter(c => c.category === category);
         if (components.length === 0) return null;
 
         return (
           <div key={category}>
             <div className="flex items-center gap-2 mb-3">
               <Badge variant="outline" className="text-xs">
-                {isRTL ? getCategoryLabelHebrew(category) : getCategoryLabel(category)}
+                {getCategoryLabel(category)}
               </Badge>
-              <span className="text-xs text-muted-foreground">
-                ({components.length})
-              </span>
+              <span className="text-xs text-muted-foreground">({components.length})</span>
             </div>
             <div className="space-y-2">
-              {components.map((config) => (
+              {components.map(config => (
                 <DraggableComponent key={config.type} config={config} />
               ))}
             </div>

@@ -418,7 +418,6 @@ export function detectRBACBypass(): void {
 
       // In production, these variables are IGNORED
       if (isProduction) {
-        console.error(`[RBACEnforcer] IGNORING bypass variable ${varName} in production`);
       }
     }
   }
@@ -446,9 +445,7 @@ export function getEnforcerStats(): EnforcerStats & {
   denialRate: number;
   securityMode: string;
 } {
-  const denialRate = STATS.totalChecks > 0
-    ? (STATS.denied / STATS.totalChecks) * 100
-    : 0;
+  const denialRate = STATS.totalChecks > 0 ? (STATS.denied / STATS.totalChecks) * 100 : 0;
 
   return {
     ...STATS,
@@ -476,9 +473,22 @@ export function validatePermissionMatrix(): {
   // Ensure super_admin has all permissions
   const allResources = Object.keys(ROLE_PERMISSIONS.super_admin) as Resource[];
   const allPermissions: Permission[] = [
-    "view", "create", "edit", "delete", "publish", "unpublish",
-    "approve", "reject", "manage_users", "manage_roles", "manage_policies",
-    "export", "import", "configure", "audit", "ops",
+    "view",
+    "create",
+    "edit",
+    "delete",
+    "publish",
+    "unpublish",
+    "approve",
+    "reject",
+    "manage_users",
+    "manage_roles",
+    "manage_policies",
+    "export",
+    "import",
+    "configure",
+    "audit",
+    "ops",
   ];
 
   for (const resource of allResources) {
@@ -505,5 +515,3 @@ export function validatePermissionMatrix(): {
 
 // Run bypass detection on module load
 detectRBACBypass();
-
-console.log("[RBACEnforcer] Module loaded");

@@ -17,7 +17,9 @@ export function registerContentConfidenceRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_CONFIDENCE" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_CONFIDENCE" });
       }
 
       try {
@@ -27,7 +29,6 @@ export function registerContentConfidenceRoutes(app: Express): void {
         }
         res.json(result);
       } catch (error) {
-        console.error("[ContentConfidence] Error:", error);
         res.status(500).json({ error: "Failed to fetch confidence score" });
       }
     }
@@ -39,7 +40,9 @@ export function registerContentConfidenceRoutes(app: Express): void {
     requirePermission("canEdit"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_CONFIDENCE" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_CONFIDENCE" });
       }
 
       try {
@@ -49,7 +52,6 @@ export function registerContentConfidenceRoutes(app: Express): void {
         }
         res.json(result);
       } catch (error) {
-        console.error("[ContentConfidence] Error:", error);
         res.status(500).json({ error: "Failed to calculate confidence" });
       }
     }
@@ -61,7 +63,9 @@ export function registerContentConfidenceRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_CONFIDENCE" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_CONTENT_CONFIDENCE" });
       }
 
       try {
@@ -69,11 +73,8 @@ export function registerContentConfidenceRoutes(app: Express): void {
         const results = await getLowConfidenceContent(parseInt(limit as string) || 50);
         res.json({ items: results, total: results.length });
       } catch (error) {
-        console.error("[ContentConfidence] Error:", error);
         res.status(500).json({ error: "Failed to fetch low confidence content" });
       }
     }
   );
-
-  console.log("[ContentConfidence] Routes registered");
 }

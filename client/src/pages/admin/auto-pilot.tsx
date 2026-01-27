@@ -97,7 +97,10 @@ export default function AutoPilotPage() {
       return res.json();
     },
     onSuccess: (data: any) => {
-      toast({ title: "Bulk Approval Complete", description: `${data?.approved || 0} of ${data?.total || 0} items approved` });
+      toast({
+        title: "Bulk Approval Complete",
+        description: `${data?.approved || 0} of ${data?.total || 0} items approved`,
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/contents"] });
     },
     onError: () => toast({ title: "Bulk approval failed", variant: "destructive" }),
@@ -109,7 +112,10 @@ export default function AutoPilotPage() {
       return res.json();
     },
     onSuccess: (data: any) => {
-      toast({ title: "Bulk Translation Started", description: `Translating ${data?.queued || 0} items to 17 languages` });
+      toast({
+        title: "Bulk Translation Started",
+        description: `Translating ${data?.queued || 0} items to 17 languages`,
+      });
     },
     onError: () => toast({ title: "Bulk translation failed", variant: "destructive" }),
   });
@@ -122,9 +128,9 @@ export default function AutoPilotPage() {
     onSuccess: (data: any) => {
       const issues = data?.issueCount || 0;
       const checked = data?.checked || 0;
-      toast({ 
-        title: "Quality Check Complete", 
-        description: `Analyzed ${checked} items. ${issues > 0 ? `Found ${issues} items with issues.` : 'All contents passed.'}` 
+      toast({
+        title: "Quality Check Complete",
+        description: `Analyzed ${checked} items. ${issues > 0 ? `Found ${issues} items with issues.` : "All contents passed."}`,
       });
     },
     onError: () => toast({ title: "Quality check failed", variant: "destructive" }),
@@ -136,7 +142,10 @@ export default function AutoPilotPage() {
       return res.json();
     },
     onSuccess: (data: any) => {
-      toast({ title: "SEO Refresh Complete", description: `Found ${data?.needsRefresh || 0} items needing SEO improvements` });
+      toast({
+        title: "SEO Refresh Complete",
+        description: `Found ${data?.needsRefresh || 0} items needing SEO improvements`,
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/contents"] });
     },
     onError: () => toast({ title: "SEO refresh failed", variant: "destructive" }),
@@ -255,7 +264,9 @@ export default function AutoPilotPage() {
               variant="outline"
               data-testid="button-run-hourly"
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${runHourlyMutation.isPending ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`mr-2 h-4 w-4 ${runHourlyMutation.isPending ? "animate-spin" : ""}`}
+              />
               Run Hourly Tasks
             </Button>
             <Button
@@ -299,7 +310,11 @@ export default function AutoPilotPage() {
               variant="outline"
               data-testid="button-bulk-approve"
             >
-              {bulkApproveMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+              {bulkApproveMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="mr-2 h-4 w-4" />
+              )}
               Bulk Approve (in_review items)
             </Button>
             <Button
@@ -309,7 +324,11 @@ export default function AutoPilotPage() {
               variant="outline"
               data-testid="button-bulk-translate"
             >
-              {bulkTranslateMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Globe className="mr-2 h-4 w-4" />}
+              {bulkTranslateMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Globe className="mr-2 h-4 w-4" />
+              )}
               Bulk Translate to All Languages
             </Button>
             <Button
@@ -319,7 +338,11 @@ export default function AutoPilotPage() {
               variant="outline"
               data-testid="button-bulk-quality"
             >
-              {bulkQualityCheckMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
+              {bulkQualityCheckMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Search className="mr-2 h-4 w-4" />
+              )}
               Run Quality Check on All Content
             </Button>
             <Button
@@ -329,7 +352,11 @@ export default function AutoPilotPage() {
               variant="outline"
               data-testid="button-bulk-seo"
             >
-              {bulkSeoRefreshMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+              {bulkSeoRefreshMutation.isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Sparkles className="mr-2 h-4 w-4" />
+              )}
               AI Regenerate SEO Fields
             </Button>
           </CardContent>
@@ -343,15 +370,13 @@ export default function AutoPilotPage() {
               <Calendar className="h-5 w-5" />
               Scheduled Content
             </CardTitle>
-            <CardDescription>
-              Content items queued for automatic publishing
-            </CardDescription>
+            <CardDescription>Content items queued for automatic publishing</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[200px]">
               {scheduledData?.items && scheduledData.items.length > 0 ? (
                 <div className="space-y-2">
-                  {scheduledData.items.map((item) => (
+                  {scheduledData.items.map(item => (
                     <div
                       key={item.id}
                       className="flex items-center justify-between p-3 rounded-lg border"
@@ -385,35 +410,65 @@ export default function AutoPilotPage() {
             <Star className="h-5 w-5" />
             AI Content Quality Scores
           </CardTitle>
-          <CardDescription>
-            Quality analysis for recently AI-generated contents
-          </CardDescription>
+          <CardDescription>Quality analysis for recently AI-generated contents</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-4 p-4 bg-muted rounded-lg border">
             <h3 className="font-medium flex items-center gap-2 mb-2">
               <Lightbulb className="h-4 w-4 text-primary" />
-              איך זה עובד / How It Works
+              How It Works
             </h3>
             <p className="text-sm text-muted-foreground">
-              Each AI-generated article receives a quality score based on SEO compliance, readability, 
-              link density, and contents guidelines. Articles scoring below 70% are flagged for review.
-              <br />
-              <span className="text-xs">
-                כל מאמר שנוצר על ידי הבינה המלאכותית מקבל ציון איכות המבוסס על עמידה בדרישות SEO, 
-                קריאות, צפיפות קישורים והנחיות תוכן.
-              </span>
+              Each AI-generated article receives a quality score based on SEO compliance,
+              readability, link density, and content guidelines. Articles scoring below 70% are
+              flagged for review.
             </p>
           </div>
           <ScrollArea className="h-[300px]">
             <div className="space-y-4">
               {/* Mock quality score data */}
               {[
-                { title: "Ultimate Guide to Burj Khalifa 2024", score: 92, seo: 95, readability: 89, links: 88, writer: "Travel Expert AI" },
-                { title: "Dubai Mall Shopping Experience", score: 87, seo: 90, readability: 85, links: 82, writer: "Local Guide AI" },
-                { title: "Desert Safari Adventures", score: 78, seo: 82, readability: 75, links: 70, writer: "Adventure Writer AI" },
-                { title: "Palm Jumeirah Hotels Review", score: 65, seo: 60, readability: 70, links: 65, writer: "Hospitality AI", flagged: true },
-                { title: "Dubai Marina Nightlife Guide", score: 84, seo: 88, readability: 80, links: 82, writer: "Lifestyle AI" },
+                {
+                  title: "Ultimate Guide to Burj Khalifa 2024",
+                  score: 92,
+                  seo: 95,
+                  readability: 89,
+                  links: 88,
+                  writer: "Travel Expert AI",
+                },
+                {
+                  title: "Dubai Mall Shopping Experience",
+                  score: 87,
+                  seo: 90,
+                  readability: 85,
+                  links: 82,
+                  writer: "Local Guide AI",
+                },
+                {
+                  title: "Desert Safari Adventures",
+                  score: 78,
+                  seo: 82,
+                  readability: 75,
+                  links: 70,
+                  writer: "Adventure Writer AI",
+                },
+                {
+                  title: "Palm Jumeirah Hotels Review",
+                  score: 65,
+                  seo: 60,
+                  readability: 70,
+                  links: 65,
+                  writer: "Hospitality AI",
+                  flagged: true,
+                },
+                {
+                  title: "Dubai Marina Nightlife Guide",
+                  score: 84,
+                  seo: 88,
+                  readability: 80,
+                  links: 82,
+                  writer: "Lifestyle AI",
+                },
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -433,8 +488,12 @@ export default function AutoPilotPage() {
                         </Badge>
                       )}
                       <div className="flex items-center gap-1">
-                        <Star className={`h-4 w-4 ${item.score >= 80 ? "text-green-500" : item.score >= 70 ? "text-yellow-500" : "text-red-500"}`} />
-                        <span className={`text-lg font-bold ${item.score >= 80 ? "text-green-600" : item.score >= 70 ? "text-yellow-600" : "text-red-600"}`}>
+                        <Star
+                          className={`h-4 w-4 ${item.score >= 80 ? "text-green-500" : item.score >= 70 ? "text-yellow-500" : "text-red-500"}`}
+                        />
+                        <span
+                          className={`text-lg font-bold ${item.score >= 80 ? "text-green-600" : item.score >= 70 ? "text-yellow-600" : "text-red-600"}`}
+                        >
                           {item.score}%
                         </span>
                       </div>
@@ -490,9 +549,7 @@ export default function AutoPilotPage() {
             <TrendingUp className="h-5 w-5" />
             Daily Report Summary
           </CardTitle>
-          <CardDescription>
-            Automated daily insights and activity summary
-          </CardDescription>
+          <CardDescription>Automated daily insights and activity summary</CardDescription>
         </CardHeader>
         <CardContent>
           {dailyReport ? (

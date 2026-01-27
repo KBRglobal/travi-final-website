@@ -4,16 +4,15 @@ import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { ROLE_PERMISSIONS, type UserRole, emailOtpCodes as emailOtpCodesTable } from "@shared/schema";
+import {
+  ROLE_PERMISSIONS,
+  type UserRole,
+  emailOtpCodes as emailOtpCodesTable,
+} from "@shared/schema";
 import { db } from "../db";
 import { eq, and, gt, sql } from "drizzle-orm";
-import {
-  isAuthenticated,
-} from "../replitAuth";
-import {
-  rateLimiters,
-  logAuditEvent as logSecurityEvent,
-} from "../security";
+import { isAuthenticated } from "../replitAuth";
+import { rateLimiters, logAuditEvent as logSecurityEvent } from "../security";
 import {
   checkDualLockout,
   recordDualLockoutFailure,
@@ -24,13 +23,8 @@ import {
   verifyPreAuthToken,
   consumePreAuthToken,
 } from "../security/pre-auth-token";
-import {
-  loginRateLimiter,
-} from "../security/rate-limiter";
-import {
-  logSecurityEventFromRequest,
-  SecurityEventType,
-} from "../security/audit-logger";
+import { loginRateLimiter } from "../security/rate-limiter";
+import { logSecurityEventFromRequest, SecurityEventType } from "../security/audit-logger";
 import {
   adminAuthGuards,
   magicLinkDisableMiddleware,
@@ -43,9 +37,7 @@ import {
   sessionSecurity,
   threatIntelligence,
 } from "../enterprise-security";
-import {
-  recordFailedAttempt,
-} from "../security";
+import { recordFailedAttempt } from "../security";
 
 // Configure TOTP with time window tolerance for clock drift (2 steps = 60 seconds before/after)
 authenticator.options = { window: 2 };
@@ -73,7 +65,10 @@ function getUserId(req: AuthRequest): string {
 // Helper to check role
 function requireRole(role: UserRole | UserRole[]) {
   return async (req: Request, res: Response, next: Function): Promise<void> => {
-    const authReq = req as Request & { isAuthenticated(): boolean; user?: { claims?: { sub?: string } } };
+    const authReq = req as Request & {
+      isAuthenticated(): boolean;
+      user?: { claims?: { sub?: string } };
+    };
     if (!authReq.isAuthenticated() || !authReq.user?.claims?.sub) {
       res.status(401).json({ error: "Not authenticated" });
       return;
@@ -86,7 +81,9 @@ function requireRole(role: UserRole | UserRole[]) {
     }
     const allowedRoles = Array.isArray(role) ? role : [role];
     if (!allowedRoles.includes(user.role as UserRole)) {
-      res.status(403).json({ error: "Insufficient permissions", requiredRole: role, currentRole: user.role });
+      res
+        .status(403)
+        .json({ error: "Insufficient permissions", requiredRole: role, currentRole: user.role });
       return;
     }
     next();
@@ -105,147 +102,114 @@ const RECOVERY_LOCKOUT_MS = 30 * 60 * 1000; // 30 minutes
 
 export function registerAuthRoutes(app: Express): void {
   // Login endpoint
-  app.post('/api/auth/login', ...adminAuthGuards, rateLimiters.auth, exponentialBackoff.middleware('auth:login'), async (req: Request, res: Response) => {
-    try {
-      const { username, password } = req.body;
+  app.post(
+    "/api/auth/login",
+    ...adminAuthGuards,
+    rateLimiters.auth,
+    exponentialBackoff.middleware("auth:login"),
+    async (req: Request, res: Response) => {
+      try {
+        const { username, password } = req.body;
 
-      if (!username || !password) {
-        return res.status(400).json({ error: "Username and password are required" });
-      }
-
-      const ip = req.ip || req.socket.remoteAddress || 'unknown';
-
-      // SECURITY: Check dual lockout (IP + username) BEFORE any password verification
-      const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
-      if (lockoutStatus.locked) {
-        const lockTypeMsg = lockoutStatus.lockType === 'both' ? 'IP and account' :
-          lockoutStatus.lockType === 'ip' ? 'IP address' : 'account';
-        logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-          success: false,
-          resource: 'auth',
-          action: 'login_lockout',
-          errorMessage: `${lockTypeMsg} locked for ${lockoutStatus.remainingTime} minutes`,
-          details: { attemptedUsername: username.substring(0, 3) + '***', lockType: lockoutStatus.lockType }
-        });
-        return res.status(429).json({
-          error: `Access temporarily locked. Try again in ${lockoutStatus.remainingTime} minutes.`,
-          code: 'ACCOUNT_LOCKED',
-          lockType: lockoutStatus.lockType,
-          remainingMinutes: lockoutStatus.remainingTime
-        });
-      }
-
-      // Enterprise Security: Threat Intelligence Check
-      const threatAnalysis = threatIntelligence.analyzeRequest(req);
-      if (threatAnalysis.isThreat && threatAnalysis.riskScore >= 70) {
-        return res.status(403).json({ error: "Request blocked for security reasons" });
-      }
-
-      // Enterprise Security: Extract device fingerprint
-      const fingerprint = deviceFingerprint.extractFromRequest(req);
-
-      // Helper function to complete login with enterprise security
-      const completeLogin = async (user: any) => {
-        // Enterprise Security: Evaluate contextual authentication
-        const geo = await contextualAuth.getGeoLocation(ip);
-        const contextResult = await contextualAuth.evaluateContext(user.id, ip, fingerprint, geo || undefined);
-
-        if (!contextResult.allowed) {
-          return res.status(403).json({
-            error: "Access denied based on security policy",
-            riskFactors: contextResult.riskFactors,
-            riskScore: contextResult.riskScore,
-          });
+        if (!username || !password) {
+          return res.status(400).json({ error: "Username and password are required" });
         }
 
-        // Enterprise Security: Register device
-        const deviceInfo = await deviceFingerprint.registerDevice(user.id, fingerprint, ip);
-        const isNewDevice = deviceInfo.loginCount === 1;
+        const ip = req.ip || req.socket.remoteAddress || "unknown";
 
-        // Check if MFA is required
-        const requiresMfa = Boolean(user.totpEnabled && user.totpSecret);
-
-        // If MFA required, issue pre-auth token instead of creating session
-        if (requiresMfa) {
-          const preAuthResult = await createPreAuthToken(user.id, user.username || user.email, {
-            ipAddress: ip,
-            userAgent: req.get('User-Agent') || '',
-            riskScore: contextResult.riskScore,
-            deviceFingerprint: JSON.stringify(fingerprint),
-          });
-
-          logSecurityEvent({
-            action: 'login',
-            resourceType: 'auth',
-            userId: user.id,
-            userEmail: user.username || undefined,
-            ip,
-            userAgent: req.get('User-Agent'),
+        // SECURITY: Check dual lockout (IP + username) BEFORE any password verification
+        const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
+        if (lockoutStatus.locked) {
+          const lockTypeMsg =
+            lockoutStatus.lockType === "both"
+              ? "IP and account"
+              : lockoutStatus.lockType === "ip"
+                ? "IP address"
+                : "account";
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+            success: false,
+            resource: "auth",
+            action: "login_lockout",
+            errorMessage: `${lockTypeMsg} locked for ${lockoutStatus.remainingTime} minutes`,
             details: {
-              method: 'password',
-              role: user.role,
-              isNewDevice,
-              riskScore: contextResult.riskScore,
-              mfaPending: true,
-              preAuthTokenIssued: true,
+              attemptedUsername: username.substring(0, 3) + "***",
+              lockType: lockoutStatus.lockType,
             },
           });
-
-          return res.json({
-            success: true,
-            requiresMfa: true,
-            preAuthToken: preAuthResult.token,
-            preAuthExpiresAt: preAuthResult.expiresAt,
-            isNewDevice,
-            riskScore: contextResult.riskScore,
-            securityContext: {
-              deviceTrusted: deviceInfo.isTrusted,
-              country: geo?.country,
-            },
+          return res.status(429).json({
+            error: `Access temporarily locked. Try again in ${lockoutStatus.remainingTime} minutes.`,
+            code: "ACCOUNT_LOCKED",
+            lockType: lockoutStatus.lockType,
+            remainingMinutes: lockoutStatus.remainingTime,
           });
         }
 
-        // No MFA required - create session immediately
-        const sessionUser = {
-          claims: { sub: user.id },
-          id: user.id,
-        };
+        // Enterprise Security: Threat Intelligence Check
+        const threatAnalysis = threatIntelligence.analyzeRequest(req);
+        if (threatAnalysis.isThreat && threatAnalysis.riskScore >= 70) {
+          return res.status(403).json({ error: "Request blocked for security reasons" });
+        }
 
-        req.login(sessionUser, (err: any) => {
-          if (err) {
-            console.error("Login session error:", err);
-            return res.status(500).json({ error: "Failed to create session" });
+        // Enterprise Security: Extract device fingerprint
+        const fingerprint = deviceFingerprint.extractFromRequest(req);
+
+        // Helper function to complete login with enterprise security
+        const completeLogin = async (user: any) => {
+          // Enterprise Security: Evaluate contextual authentication
+          const geo = await contextualAuth.getGeoLocation(ip);
+          const contextResult = await contextualAuth.evaluateContext(
+            user.id,
+            ip,
+            fingerprint,
+            geo || undefined
+          );
+
+          if (!contextResult.allowed) {
+            return res.status(403).json({
+              error: "Access denied based on security policy",
+              riskFactors: contextResult.riskFactors,
+              riskScore: contextResult.riskScore,
+            });
           }
-          req.session.save((saveErr: any) => {
-            if (saveErr) {
-              console.error("Session save error:", saveErr);
-              return res.status(500).json({ error: "Failed to save session" });
-            }
 
-            // Enterprise Security: Reset backoff on successful login
-            (res as any).resetBackoff?.();
+          // Enterprise Security: Register device
+          const deviceInfo = await deviceFingerprint.registerDevice(user.id, fingerprint, ip);
+          const isNewDevice = deviceInfo.loginCount === 1;
+
+          // Check if MFA is required
+          const requiresMfa = Boolean(user.totpEnabled && user.totpSecret);
+
+          // If MFA required, issue pre-auth token instead of creating session
+          if (requiresMfa) {
+            const preAuthResult = await createPreAuthToken(user.id, user.username || user.email, {
+              ipAddress: ip,
+              userAgent: req.get("User-Agent") || "",
+              riskScore: contextResult.riskScore,
+              deviceFingerprint: JSON.stringify(fingerprint),
+            });
 
             logSecurityEvent({
-              action: 'login',
-              resourceType: 'auth',
+              action: "login",
+              resourceType: "auth",
               userId: user.id,
               userEmail: user.username || undefined,
               ip,
-              userAgent: req.get('User-Agent'),
+              userAgent: req.get("User-Agent"),
               details: {
-                method: 'password',
+                method: "password",
                 role: user.role,
                 isNewDevice,
                 riskScore: contextResult.riskScore,
-                deviceTrusted: deviceInfo.isTrusted,
-                geo: geo ? { country: geo.country, city: geo.city } : null,
+                mfaPending: true,
+                preAuthTokenIssued: true,
               },
             });
 
-            res.json({
+            return res.json({
               success: true,
-              user,
-              requiresMfa: false,
+              requiresMfa: true,
+              preAuthToken: preAuthResult.token,
+              preAuthExpiresAt: preAuthResult.expiresAt,
               isNewDevice,
               riskScore: contextResult.riskScore,
               securityContext: {
@@ -253,135 +217,181 @@ export function registerAuthRoutes(app: Express): void {
                 country: geo?.country,
               },
             });
-          });
-        });
-      };
-
-      // Check for admin from environment first
-      if (ADMIN_PASSWORD_HASH && username === ADMIN_USERNAME) {
-        const isAdminPassword = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
-        if (isAdminPassword) {
-          let adminUser = await storage.getUserByUsername(username);
-          if (!adminUser) {
-            adminUser = await storage.createUserWithPassword({
-              username: ADMIN_USERNAME,
-              passwordHash: ADMIN_PASSWORD_HASH,
-              firstName: "Admin",
-              lastName: "User",
-              role: "admin",
-              isActive: true,
-            });
           }
 
-          await completeLogin(adminUser);
-          return;
+          // No MFA required - create session immediately
+          const sessionUser = {
+            claims: { sub: user.id },
+            id: user.id,
+          };
+
+          req.login(sessionUser, (err: any) => {
+            if (err) {
+              return res.status(500).json({ error: "Failed to create session" });
+            }
+            req.session.save((saveErr: any) => {
+              if (saveErr) {
+                return res.status(500).json({ error: "Failed to save session" });
+              }
+
+              // Enterprise Security: Reset backoff on successful login
+              (res as any).resetBackoff?.();
+
+              logSecurityEvent({
+                action: "login",
+                resourceType: "auth",
+                userId: user.id,
+                userEmail: user.username || undefined,
+                ip,
+                userAgent: req.get("User-Agent"),
+                details: {
+                  method: "password",
+                  role: user.role,
+                  isNewDevice,
+                  riskScore: contextResult.riskScore,
+                  deviceTrusted: deviceInfo.isTrusted,
+                  geo: geo ? { country: geo.country, city: geo.city } : null,
+                },
+              });
+
+              res.json({
+                success: true,
+                user,
+                requiresMfa: false,
+                isNewDevice,
+                riskScore: contextResult.riskScore,
+                securityContext: {
+                  deviceTrusted: deviceInfo.isTrusted,
+                  country: geo?.country,
+                },
+              });
+            });
+          });
+        };
+
+        // Check for admin from environment first
+        if (ADMIN_PASSWORD_HASH && username === ADMIN_USERNAME) {
+          const isAdminPassword = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+          if (isAdminPassword) {
+            let adminUser = await storage.getUserByUsername(username);
+            if (!adminUser) {
+              adminUser = await storage.createUserWithPassword({
+                username: ADMIN_USERNAME,
+                passwordHash: ADMIN_PASSWORD_HASH,
+                firstName: "Admin",
+                lastName: "User",
+                role: "admin",
+                isActive: true,
+              });
+            }
+
+            await completeLogin(adminUser);
+            return;
+          }
         }
-      }
 
-      // Check database for user
-      const user = await storage.getUserByUsername(username);
-      if (!user || !user.passwordHash) {
-        recordFailedAttempt(ip);
-        recordDualLockoutFailure(username.toLowerCase(), ip);
-        (res as any).recordFailure?.();
-        logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-          success: false,
-          resource: 'auth',
-          action: 'login',
-          errorMessage: 'User not found or no password',
-          details: { attemptedUsername: username ? username.substring(0, 3) + '***' : '[empty]' }
-        });
-        return res.status(401).json({ error: "Invalid username or password" });
-      }
+        // Check database for user
+        const user = await storage.getUserByUsername(username);
+        if (!user || !user.passwordHash) {
+          recordFailedAttempt(ip);
+          recordDualLockoutFailure(username.toLowerCase(), ip);
+          (res as any).recordFailure?.();
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+            success: false,
+            resource: "auth",
+            action: "login",
+            errorMessage: "User not found or no password",
+            details: { attemptedUsername: username ? username.substring(0, 3) + "***" : "[empty]" },
+          });
+          return res.status(401).json({ error: "Invalid username or password" });
+        }
 
-      if (!user.isActive) {
-        recordFailedAttempt(ip);
-        recordDualLockoutFailure(username.toLowerCase(), ip);
-        logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-          success: false,
-          resource: 'auth',
-          action: 'login',
-          errorMessage: 'Account deactivated',
-          details: { userId: user.id }
-        });
-        return res.status(401).json({ error: "Account is deactivated" });
-      }
+        if (!user.isActive) {
+          recordFailedAttempt(ip);
+          recordDualLockoutFailure(username.toLowerCase(), ip);
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+            success: false,
+            resource: "auth",
+            action: "login",
+            errorMessage: "Account deactivated",
+            details: { userId: user.id },
+          });
+          return res.status(401).json({ error: "Account is deactivated" });
+        }
 
-      const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-      if (!passwordMatch) {
-        recordFailedAttempt(ip);
-        recordDualLockoutFailure(username.toLowerCase(), ip);
-        (res as any).recordFailure?.();
-        logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-          success: false,
-          resource: 'auth',
-          action: 'login',
-          errorMessage: 'Invalid password',
-          details: { userId: user.id }
-        });
-        return res.status(401).json({ error: "Invalid username or password" });
-      }
+        const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+        if (!passwordMatch) {
+          recordFailedAttempt(ip);
+          recordDualLockoutFailure(username.toLowerCase(), ip);
+          (res as any).recordFailure?.();
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+            success: false,
+            resource: "auth",
+            action: "login",
+            errorMessage: "Invalid password",
+            details: { userId: user.id },
+          });
+          return res.status(401).json({ error: "Invalid username or password" });
+        }
 
-      // SECURITY: Mandatory 2FA enforcement for admin accounts
-      const twoFaCheck = enforceMandatory2FA(user);
-      if (!twoFaCheck.allowed) {
-        logSecurityEventFromRequest(req, SecurityEventType.UNAUTHORIZED_ACCESS, {
-          success: false,
-          resource: 'admin_auth',
-          action: '2fa_not_configured',
-          errorMessage: twoFaCheck.reason || 'TOTP not configured',
-          details: { userId: user.id }
-        });
-        return res.status(403).json({
-          error: twoFaCheck.reason,
-          code: 'TOTP_SETUP_REQUIRED',
-          requiresTotpSetup: true
-        });
-      }
+        // SECURITY: Mandatory 2FA enforcement for admin accounts
+        const twoFaCheck = enforceMandatory2FA(user);
+        if (!twoFaCheck.allowed) {
+          logSecurityEventFromRequest(req, SecurityEventType.UNAUTHORIZED_ACCESS, {
+            success: false,
+            resource: "admin_auth",
+            action: "2fa_not_configured",
+            errorMessage: twoFaCheck.reason || "TOTP not configured",
+            details: { userId: user.id },
+          });
+          return res.status(403).json({
+            error: twoFaCheck.reason,
+            code: "TOTP_SETUP_REQUIRED",
+            requiresTotpSetup: true,
+          });
+        }
 
-      clearDualLockout(username.toLowerCase(), ip);
-      await completeLogin(user);
-    } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ error: "Login failed" });
+        clearDualLockout(username.toLowerCase(), ip);
+        await completeLogin(user);
+      } catch (error) {
+        res.status(500).json({ error: "Login failed" });
+      }
     }
-  });
+  );
 
   // Logout endpoint
-  app.post('/api/auth/logout', (req: Request, res: Response) => {
+  app.post("/api/auth/logout", (req: Request, res: Response) => {
     const userId = (req as any).user?.claims?.sub;
-    const ip = req.ip || req.socket.remoteAddress || 'unknown';
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
 
-    req.logout((err) => {
+    req.logout(err => {
       if (err) {
-        console.error("Logout error:", err);
         return res.status(500).json({ error: "Logout failed" });
       }
 
-      req.session?.destroy((sessionErr) => {
+      req.session?.destroy(sessionErr => {
         if (sessionErr) {
-          console.error("Session destroy error:", sessionErr);
         }
 
         if (userId) {
           logSecurityEvent({
-            action: 'logout',
-            resourceType: 'auth',
+            action: "logout",
+            resourceType: "auth",
             userId,
             ip,
-            userAgent: req.get('User-Agent'),
-            details: { method: 'password' },
+            userAgent: req.get("User-Agent"),
+            details: { method: "password" },
           });
         }
 
-        res.clearCookie('connect.sid');
+        res.clearCookie("connect.sid");
         res.json({ success: true, message: "Logged out successfully" });
       });
     });
   });
 
   // Get current authenticated user
-  app.get('/api/auth/user', isAuthenticated, async (req: AuthRequest, res: Response) => {
+  app.get("/api/auth/user", isAuthenticated, async (req: AuthRequest, res: Response) => {
     try {
       const userId = getUserId(req);
       const user = await storage.getUser(userId);
@@ -392,7 +402,6 @@ export function registerAuthRoutes(app: Express): void {
       const { passwordHash, totpSecret, totpRecoveryCodes, ...safeUser } = user;
       res.json(safeUser);
     } catch (error) {
-      console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
@@ -406,7 +415,6 @@ export function registerAuthRoutes(app: Express): void {
       const permissions = ROLE_PERMISSIONS[userRole] || ROLE_PERMISSIONS.viewer;
       res.json({ role: userRole, permissions });
     } catch (error) {
-      console.error("Error fetching permissions:", error);
       res.status(500).json({ error: "Failed to fetch permissions" });
     }
   });
@@ -418,43 +426,48 @@ export function registerAuthRoutes(app: Express): void {
       const devices = deviceFingerprint.getUserDevices(userId);
       res.json({ devices });
     } catch (error) {
-      console.error("Error fetching devices:", error);
       res.status(500).json({ error: "Failed to fetch devices" });
     }
   });
 
   // Trust a device
-  app.post("/api/security/devices/:fingerprintHash/trust", isAuthenticated, async (req: AuthRequest, res: Response) => {
-    try {
-      const userId = getUserId(req);
-      const { fingerprintHash } = req.params;
-      const fingerprint = deviceFingerprint.extractFromRequest(req);
+  app.post(
+    "/api/security/devices/:fingerprintHash/trust",
+    isAuthenticated,
+    async (req: AuthRequest, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        const { fingerprintHash } = req.params;
+        const fingerprint = deviceFingerprint.extractFromRequest(req);
 
-      await deviceFingerprint.trustDevice(userId, fingerprint);
-      res.json({ success: true, message: "Device trusted" });
-    } catch (error) {
-      console.error("Error trusting device:", error);
-      res.status(500).json({ error: "Failed to trust device" });
+        await deviceFingerprint.trustDevice(userId, fingerprint);
+        res.json({ success: true, message: "Device trusted" });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to trust device" });
+      }
     }
-  });
+  );
 
   // Revoke a device
-  app.delete("/api/security/devices/:fingerprintHash", isAuthenticated, async (req: AuthRequest, res: Response) => {
-    try {
-      const userId = getUserId(req);
-      const { fingerprintHash } = req.params;
+  app.delete(
+    "/api/security/devices/:fingerprintHash",
+    isAuthenticated,
+    async (req: AuthRequest, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        const { fingerprintHash } = req.params;
 
-      const revoked = await deviceFingerprint.revokeDevice(userId, fingerprintHash);
-      if (revoked) {
-        res.json({ success: true, message: "Device revoked" });
-      } else {
-        res.status(404).json({ error: "Device not found" });
+        const revoked = await deviceFingerprint.revokeDevice(userId, fingerprintHash);
+        if (revoked) {
+          res.json({ success: true, message: "Device revoked" });
+        } else {
+          res.status(404).json({ error: "Device not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ error: "Failed to revoke device" });
       }
-    } catch (error) {
-      console.error("Error revoking device:", error);
-      res.status(500).json({ error: "Failed to revoke device" });
     }
-  });
+  );
 
   // Get user's active sessions
   app.get("/api/security/sessions", isAuthenticated, async (req: AuthRequest, res: Response) => {
@@ -474,81 +487,96 @@ export function registerAuthRoutes(app: Express): void {
 
       res.json({ sessions: safeSessions });
     } catch (error) {
-      console.error("Error fetching sessions:", error);
       res.status(500).json({ error: "Failed to fetch sessions" });
     }
   });
 
   // Revoke all other sessions
-  app.post("/api/security/sessions/revoke-all", isAuthenticated, async (req: AuthRequest, res: Response) => {
-    try {
-      const userId = getUserId(req);
-      const currentSessionId = (req.session as any)?.id;
+  app.post(
+    "/api/security/sessions/revoke-all",
+    isAuthenticated,
+    async (req: AuthRequest, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        const currentSessionId = (req.session as any)?.id;
 
-      const count = await sessionSecurity.revokeAllUserSessions(userId, currentSessionId);
-      res.json({ success: true, message: `${count} sessions revoked` });
-    } catch (error) {
-      console.error("Error revoking sessions:", error);
-      res.status(500).json({ error: "Failed to revoke sessions" });
+        const count = await sessionSecurity.revokeAllUserSessions(userId, currentSessionId);
+        res.json({ success: true, message: `${count} sessions revoked` });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to revoke sessions" });
+      }
     }
-  });
+  );
 
   // Get current security context
   app.get("/api/security/context", isAuthenticated, async (req: AuthRequest, res: Response) => {
     try {
       const userId = getUserId(req);
-      const ip = req.ip || req.socket.remoteAddress || 'unknown';
+      const ip = req.ip || req.socket.remoteAddress || "unknown";
       const fingerprint = deviceFingerprint.extractFromRequest(req);
 
       const geo = await contextualAuth.getGeoLocation(ip);
-      const contextResult = await contextualAuth.evaluateContext(userId, ip, fingerprint, geo || undefined);
+      const contextResult = await contextualAuth.evaluateContext(
+        userId,
+        ip,
+        fingerprint,
+        geo || undefined
+      );
       const isKnown = deviceFingerprint.isKnownDevice(userId, fingerprint);
       const isTrusted = deviceFingerprint.isDeviceTrusted(userId, fingerprint);
       const threatAnalysis = threatIntelligence.analyzeRequest(req);
 
       res.json({
-        ip: ip.substring(0, ip.lastIndexOf('.')) + '.xxx',
-        geo: geo ? {
-          country: geo.country,
-          countryCode: geo.countryCode,
-          region: geo.region,
-          city: geo.city,
-          timezone: geo.timezone,
-        } : null,
+        ip: ip.substring(0, ip.lastIndexOf(".")) + ".xxx",
+        geo: geo
+          ? {
+              country: geo.country,
+              countryCode: geo.countryCode,
+              region: geo.region,
+              city: geo.city,
+              timezone: geo.timezone,
+            }
+          : null,
         device: {
           isKnown,
           isTrusted,
-          fingerprintHash: deviceFingerprint.generateHash(fingerprint).substring(0, 8) + '...',
+          fingerprintHash: deviceFingerprint.generateHash(fingerprint).substring(0, 8) + "...",
         },
         riskAssessment: {
           score: contextResult.riskScore,
           factors: contextResult.riskFactors,
           requiresMfa: contextResult.requiresMfa,
         },
-        threatIndicators: threatAnalysis.indicators.length > 0 ? threatAnalysis.indicators.map(i => i.description) : [],
+        threatIndicators:
+          threatAnalysis.indicators.length > 0
+            ? threatAnalysis.indicators.map(i => i.description)
+            : [],
       });
     } catch (error) {
-      console.error("Error getting security context:", error);
       res.status(500).json({ error: "Failed to get security context" });
     }
   });
 
   // Admin: Get security dashboard summary
-  app.get("/api/security/dashboard", isAuthenticated, requireRole("admin"), async (req: AuthRequest, res: Response) => {
-    try {
-      const { getBlockedIps, getAuditLogs } = await import("../security");
-      const blockedIps = getBlockedIps();
+  app.get(
+    "/api/security/dashboard",
+    isAuthenticated,
+    requireRole("admin"),
+    async (req: AuthRequest, res: Response) => {
+      try {
+        const { getBlockedIps, getAuditLogs } = await import("../security");
+        const blockedIps = getBlockedIps();
 
-      res.json({
-        blockedIps: blockedIps.length,
-        blockedIpList: blockedIps.slice(0, 10),
-        recentSecurityEvents: await getAuditLogs({ resourceType: 'auth', limit: 20 }),
-      });
-    } catch (error) {
-      console.error("Error getting security dashboard:", error);
-      res.status(500).json({ error: "Failed to get security dashboard" });
+        res.json({
+          blockedIps: blockedIps.length,
+          blockedIpList: blockedIps.slice(0, 10),
+          recentSecurityEvents: await getAuditLogs({ resourceType: "auth", limit: 20 }),
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get security dashboard" });
+      }
     }
-  });
+  );
 
   // TOTP 2FA Routes
 
@@ -562,10 +590,9 @@ export function registerAuthRoutes(app: Express): void {
       }
       res.json({
         totpEnabled: user.totpEnabled || false,
-        hasSecret: !!user.totpSecret
+        hasSecret: !!user.totpSecret,
       });
     } catch (error) {
-      console.error("Error fetching TOTP status:", error);
       res.status(500).json({ error: "Failed to fetch TOTP status" });
     }
   });
@@ -585,7 +612,7 @@ export function registerAuthRoutes(app: Express): void {
         if (!currentCode) {
           return res.status(400).json({
             error: "2FA is already enabled. Provide current code to reset.",
-            requiresCurrentCode: true
+            requiresCurrentCode: true,
           });
         }
         const isValid = authenticator.verify({ token: currentCode, secret: user.totpSecret });
@@ -603,59 +630,63 @@ export function registerAuthRoutes(app: Express): void {
 
       res.json({
         qrCode: qrCodeDataUrl,
-        otpauth
+        otpauth,
       });
     } catch (error) {
-      console.error("Error setting up TOTP:", error);
       res.status(500).json({ error: "Failed to setup TOTP" });
     }
   });
 
   // Verify TOTP and enable 2FA
-  app.post("/api/totp/verify", loginRateLimiter, isAuthenticated, async (req: AuthRequest, res: Response) => {
-    try {
-      const userId = getUserId(req);
-      const { code } = req.body;
+  app.post(
+    "/api/totp/verify",
+    loginRateLimiter,
+    isAuthenticated,
+    async (req: AuthRequest, res: Response) => {
+      try {
+        const userId = getUserId(req);
+        const { code } = req.body;
 
-      if (!code || typeof code !== "string") {
-        return res.status(400).json({ error: "Verification code is required" });
+        if (!code || typeof code !== "string") {
+          return res.status(400).json({ error: "Verification code is required" });
+        }
+
+        const user = await storage.getUser(userId);
+        if (!user) {
+          return res.status(404).json({ error: "User not found" });
+        }
+
+        if (!user.totpSecret) {
+          return res.status(400).json({ error: "TOTP not set up. Please run setup first." });
+        }
+
+        const isValid = authenticator.verify({ token: code, secret: user.totpSecret });
+
+        if (!isValid) {
+          return res.status(400).json({ error: "Invalid verification code" });
+        }
+
+        // Generate recovery codes
+        const recoveryCodes: string[] = [];
+        for (let i = 0; i < 10; i++) {
+          const code =
+            Math.random().toString(36).substring(2, 8).toUpperCase() +
+            Math.random().toString(36).substring(2, 8).toUpperCase();
+          recoveryCodes.push(code);
+        }
+
+        await storage.updateUser(userId, { totpEnabled: true, totpRecoveryCodes: recoveryCodes });
+
+        res.json({
+          success: true,
+          message: "Two-factor authentication enabled",
+          recoveryCodes,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to verify TOTP" });
       }
-
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      if (!user.totpSecret) {
-        return res.status(400).json({ error: "TOTP not set up. Please run setup first." });
-      }
-
-      const isValid = authenticator.verify({ token: code, secret: user.totpSecret });
-
-      if (!isValid) {
-        return res.status(400).json({ error: "Invalid verification code" });
-      }
-
-      // Generate recovery codes
-      const recoveryCodes: string[] = [];
-      for (let i = 0; i < 10; i++) {
-        const code = Math.random().toString(36).substring(2, 8).toUpperCase() +
-          Math.random().toString(36).substring(2, 8).toUpperCase();
-        recoveryCodes.push(code);
-      }
-
-      await storage.updateUser(userId, { totpEnabled: true, totpRecoveryCodes: recoveryCodes });
-
-      res.json({
-        success: true,
-        message: "Two-factor authentication enabled",
-        recoveryCodes
-      });
-    } catch (error) {
-      console.error("Error verifying TOTP:", error);
-      res.status(500).json({ error: "Failed to verify TOTP" });
     }
-  });
+  );
 
   // Disable TOTP
   app.post("/api/totp/disable", isAuthenticated, async (req: AuthRequest, res: Response) => {
@@ -686,202 +717,201 @@ export function registerAuthRoutes(app: Express): void {
 
       res.json({ success: true, message: "Two-factor authentication disabled" });
     } catch (error) {
-      console.error("Error disabling TOTP:", error);
       res.status(500).json({ error: "Failed to disable TOTP" });
     }
   });
 
   // TOTP validation with pre-auth token flow
-  app.post("/api/totp/validate", ...adminAuthGuards, loginRateLimiter, async (req: Request, res: Response) => {
-    try {
-      const { code, preAuthToken } = req.body;
-      const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  app.post(
+    "/api/totp/validate",
+    ...adminAuthGuards,
+    loginRateLimiter,
+    async (req: Request, res: Response) => {
+      try {
+        const { code, preAuthToken } = req.body;
+        const ip = req.ip || req.socket.remoteAddress || "unknown";
 
-      if (!code) {
-        return res.status(400).json({ error: "Verification code is required" });
-      }
+        if (!code) {
+          return res.status(400).json({ error: "Verification code is required" });
+        }
 
-      if (!preAuthToken) {
-        return res.status(400).json({ error: "Pre-auth token is required" });
-      }
+        if (!preAuthToken) {
+          return res.status(400).json({ error: "Pre-auth token is required" });
+        }
 
-      const preAuthContext = await verifyPreAuthToken(preAuthToken);
-      if (!preAuthContext) {
-        logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-          success: false,
-          resource: 'auth',
-          action: 'totp_validate_invalid_preauth',
-          errorMessage: 'Invalid or expired pre-auth token',
-          details: {}
-        });
-        return res.status(401).json({
-          error: "Invalid or expired pre-auth token. Please log in again.",
-          code: 'PREAUTH_INVALID'
-        });
-      }
-
-      const userId = preAuthContext.userId;
-      const username = preAuthContext.username;
-      const cleanCode = String(code).replace(/[\s-]/g, "").trim();
-
-      // Rate limiting check
-      const now = Date.now();
-      const attempts = totpAttempts.get(userId);
-      if (attempts) {
-        if (now - attempts.lastAttempt < TOTP_LOCKOUT_MS && attempts.count >= MAX_TOTP_ATTEMPTS) {
-          const remainingMs = TOTP_LOCKOUT_MS - (now - attempts.lastAttempt);
-          const remainingMin = Math.ceil(remainingMs / 60000);
-          return res.status(429).json({
-            error: `Too many failed attempts. Try again in ${remainingMin} minutes.`,
-            retryAfterMs: remainingMs
+        const preAuthContext = await verifyPreAuthToken(preAuthToken);
+        if (!preAuthContext) {
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+            success: false,
+            resource: "auth",
+            action: "totp_validate_invalid_preauth",
+            errorMessage: "Invalid or expired pre-auth token",
+            details: {},
+          });
+          return res.status(401).json({
+            error: "Invalid or expired pre-auth token. Please log in again.",
+            code: "PREAUTH_INVALID",
           });
         }
-        if (now - attempts.lastAttempt >= TOTP_LOCKOUT_MS) {
-          totpAttempts.delete(userId);
+
+        const userId = preAuthContext.userId;
+        const username = preAuthContext.username;
+        const cleanCode = String(code).replace(/[\s-]/g, "").trim();
+
+        // Rate limiting check
+        const now = Date.now();
+        const attempts = totpAttempts.get(userId);
+        if (attempts) {
+          if (now - attempts.lastAttempt < TOTP_LOCKOUT_MS && attempts.count >= MAX_TOTP_ATTEMPTS) {
+            const remainingMs = TOTP_LOCKOUT_MS - (now - attempts.lastAttempt);
+            const remainingMin = Math.ceil(remainingMs / 60000);
+            return res.status(429).json({
+              error: `Too many failed attempts. Try again in ${remainingMin} minutes.`,
+              retryAfterMs: remainingMs,
+            });
+          }
+          if (now - attempts.lastAttempt >= TOTP_LOCKOUT_MS) {
+            totpAttempts.delete(userId);
+          }
         }
-      }
 
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      if (!user.totpSecret || !user.totpEnabled) {
-        return res.status(400).json({ error: "TOTP is not enabled for this user" });
-      }
-
-      const isValid = authenticator.verify({ token: cleanCode, secret: user.totpSecret });
-
-      if (!isValid) {
-        const current = totpAttempts.get(userId) || { count: 0, lastAttempt: now };
-        totpAttempts.set(userId, { count: current.count + 1, lastAttempt: now });
-        const remaining = MAX_TOTP_ATTEMPTS - current.count - 1;
-
-        logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-          success: false,
-          resource: 'auth',
-          action: 'totp_validate_failed',
-          errorMessage: 'Invalid TOTP code',
-          details: { userId, attemptsRemaining: remaining }
-        });
-
-        return res.status(400).json({
-          error: "Invalid verification code",
-          attemptsRemaining: Math.max(0, remaining)
-        });
-      }
-
-      await consumePreAuthToken(preAuthToken);
-      totpAttempts.delete(userId);
-      clearDualLockout(username.toLowerCase(), ip);
-
-      const sessionUser = {
-        claims: { sub: user.id },
-        id: user.id,
-      };
-
-      // Check if passport login function is available
-      if (typeof req.login !== 'function') {
-        // Fallback: set session manually without passport
-        // Ensure session exists before trying to write to it
-        if (!req.session) {
-          console.error("TOTP session error: No session available");
-          return res.status(500).json({ error: "Session not available" });
+        const user = await storage.getUser(userId);
+        if (!user) {
+          return res.status(404).json({ error: "User not found" });
         }
-        
-        // Initialize passport object on session if it doesn't exist
-        if (!(req.session as any).passport) {
-          (req.session as any).passport = {};
-        }
-        (req.session as any).passport.user = sessionUser;
-        (req.session as any).totpVerified = true;
-        (req.session as any).userId = user.id;
 
-        req.session.save((saveErr: any) => {
-          if (saveErr) {
-            console.error("TOTP session save error:", saveErr);
-            return res.status(500).json({ error: "Failed to save session after TOTP" });
+        if (!user.totpSecret || !user.totpEnabled) {
+          return res.status(400).json({ error: "TOTP is not enabled for this user" });
+        }
+
+        const isValid = authenticator.verify({ token: cleanCode, secret: user.totpSecret });
+
+        if (!isValid) {
+          const current = totpAttempts.get(userId) || { count: 0, lastAttempt: now };
+          totpAttempts.set(userId, { count: current.count + 1, lastAttempt: now });
+          const remaining = MAX_TOTP_ATTEMPTS - current.count - 1;
+
+          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+            success: false,
+            resource: "auth",
+            action: "totp_validate_failed",
+            errorMessage: "Invalid TOTP code",
+            details: { userId, attemptsRemaining: remaining },
+          });
+
+          return res.status(400).json({
+            error: "Invalid verification code",
+            attemptsRemaining: Math.max(0, remaining),
+          });
+        }
+
+        await consumePreAuthToken(preAuthToken);
+        totpAttempts.delete(userId);
+        clearDualLockout(username.toLowerCase(), ip);
+
+        const sessionUser = {
+          claims: { sub: user.id },
+          id: user.id,
+        };
+
+        // Check if passport login function is available
+        if (typeof req.login !== "function") {
+          // Fallback: set session manually without passport
+          // Ensure session exists before trying to write to it
+          if (!req.session) {
+            return res.status(500).json({ error: "Session not available" });
           }
 
-          logSecurityEvent({
-            action: 'login',
-            resourceType: 'auth',
-            userId: user.id,
-            userEmail: user.username || undefined,
-            ip,
-            userAgent: req.get('User-Agent'),
-            details: {
-              method: 'password+totp',
-              role: user.role,
-              mfaCompleted: true,
-              preAuthRiskScore: preAuthContext.riskScore,
-            },
-          });
+          // Initialize passport object on session if it doesn't exist
+          if (!(req.session as any).passport) {
+            (req.session as any).passport = {};
+          }
+          (req.session as any).passport.user = sessionUser;
+          (req.session as any).totpVerified = true;
+          (req.session as any).userId = user.id;
 
-          res.json({
-            success: true,
-            valid: true,
-            user: {
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-              firstName: user.firstName,
-              lastName: user.lastName,
+          req.session.save((saveErr: any) => {
+            if (saveErr) {
+              return res.status(500).json({ error: "Failed to save session after TOTP" });
             }
-          });
-        });
-        return;
-      }
 
-      req.login(sessionUser, (err: any) => {
-        if (err) {
-          console.error("TOTP login session error:", err);
-          return res.status(500).json({ error: "Failed to create session after TOTP" });
+            logSecurityEvent({
+              action: "login",
+              resourceType: "auth",
+              userId: user.id,
+              userEmail: user.username || undefined,
+              ip,
+              userAgent: req.get("User-Agent"),
+              details: {
+                method: "password+totp",
+                role: user.role,
+                mfaCompleted: true,
+                preAuthRiskScore: preAuthContext.riskScore,
+              },
+            });
+
+            res.json({
+              success: true,
+              valid: true,
+              user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+              },
+            });
+          });
+          return;
         }
 
-        (req.session as any).totpVerified = true;
-
-        req.session.save((saveErr: any) => {
-          if (saveErr) {
-            console.error("TOTP session save error:", saveErr);
-            return res.status(500).json({ error: "Failed to save session after TOTP" });
+        req.login(sessionUser, (err: any) => {
+          if (err) {
+            return res.status(500).json({ error: "Failed to create session after TOTP" });
           }
 
-          logSecurityEvent({
-            action: 'login',
-            resourceType: 'auth',
-            userId: user.id,
-            userEmail: user.username || undefined,
-            ip,
-            userAgent: req.get('User-Agent'),
-            details: {
-              method: 'password+totp',
-              role: user.role,
-              mfaCompleted: true,
-              preAuthRiskScore: preAuthContext.riskScore,
-            },
-          });
+          (req.session as any).totpVerified = true;
 
-          res.json({
-            success: true,
-            valid: true,
-            user: {
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-              firstName: user.firstName,
-              lastName: user.lastName,
+          req.session.save((saveErr: any) => {
+            if (saveErr) {
+              return res.status(500).json({ error: "Failed to save session after TOTP" });
             }
+
+            logSecurityEvent({
+              action: "login",
+              resourceType: "auth",
+              userId: user.id,
+              userEmail: user.username || undefined,
+              ip,
+              userAgent: req.get("User-Agent"),
+              details: {
+                method: "password+totp",
+                role: user.role,
+                mfaCompleted: true,
+                preAuthRiskScore: preAuthContext.riskScore,
+              },
+            });
+
+            res.json({
+              success: true,
+              valid: true,
+              user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+              },
+            });
           });
         });
-      });
-    } catch (error) {
-      console.error("Error validating TOTP:", error);
-      res.status(500).json({ error: "Failed to validate TOTP" });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to validate TOTP" });
+      }
     }
-  });
+  );
 
   // Validate recovery code
   app.post("/api/totp/validate-recovery", async (req: Request, res: Response) => {
@@ -900,7 +930,7 @@ export function registerAuthRoutes(app: Express): void {
       if (!preAuthContext) {
         return res.status(401).json({
           error: "Invalid or expired pre-auth token. Please log in again.",
-          code: 'PREAUTH_INVALID'
+          code: "PREAUTH_INVALID",
         });
       }
 
@@ -908,12 +938,15 @@ export function registerAuthRoutes(app: Express): void {
       const now = Date.now();
       const attempts = recoveryAttempts.get(userId);
       if (attempts) {
-        if (now - attempts.lastAttempt < RECOVERY_LOCKOUT_MS && attempts.count >= MAX_RECOVERY_ATTEMPTS) {
+        if (
+          now - attempts.lastAttempt < RECOVERY_LOCKOUT_MS &&
+          attempts.count >= MAX_RECOVERY_ATTEMPTS
+        ) {
           const remainingMs = RECOVERY_LOCKOUT_MS - (now - attempts.lastAttempt);
           const remainingMin = Math.ceil(remainingMs / 60000);
           return res.status(429).json({
             error: `Too many failed attempts. Try again in ${remainingMin} minutes.`,
-            retryAfterMs: remainingMs
+            retryAfterMs: remainingMs,
           });
         }
         if (now - attempts.lastAttempt >= RECOVERY_LOCKOUT_MS) {
@@ -940,7 +973,7 @@ export function registerAuthRoutes(app: Express): void {
         const remaining = MAX_RECOVERY_ATTEMPTS - current.count - 1;
         return res.status(400).json({
           error: "Invalid recovery code",
-          attemptsRemaining: Math.max(0, remaining)
+          attemptsRemaining: Math.max(0, remaining),
         });
       }
 
@@ -951,7 +984,6 @@ export function registerAuthRoutes(app: Express): void {
 
       (req as any).session.regenerate((err: any) => {
         if (err) {
-          console.error("Session regeneration error:", err);
           return res.status(500).json({ error: "Session error" });
         }
 
@@ -960,7 +992,6 @@ export function registerAuthRoutes(app: Express): void {
 
         (req as any).session.save((saveErr: any) => {
           if (saveErr) {
-            console.error("Session save error:", saveErr);
             return res.status(500).json({ error: "Session save error" });
           }
 
@@ -975,45 +1006,54 @@ export function registerAuthRoutes(app: Express): void {
               role: user.role,
               firstName: user.firstName,
               lastName: user.lastName,
-            }
+            },
           });
         });
       });
     } catch (error) {
-      console.error("Error validating recovery code:", error);
       res.status(500).json({ error: "Failed to validate recovery code" });
     }
   });
 
   // Magic link routes
-  app.post("/api/auth/magic-link", ...adminAuthGuards, magicLinkDisableMiddleware, loginRateLimiter, async (req, res) => {
-    try {
-      const { magicLinkAuth } = await import("../auth/magic-link");
-      const { email } = req.body;
-      const baseUrl = `${req.protocol}://${req.get("host")}`;
-      const result = await magicLinkAuth.sendMagicLink(email, baseUrl);
-      res.json(result);
-    } catch (error) {
-      console.error("Error sending magic link:", error);
-      res.status(500).json({ success: false, message: "Failed to send magic link" });
-    }
-  });
-
-  app.get("/api/auth/magic-link/verify", ...adminAuthGuards, magicLinkDisableMiddleware, loginRateLimiter, async (req, res) => {
-    try {
-      const { magicLinkAuth } = await import("../auth/magic-link");
-      const { token } = req.query;
-      const result = await magicLinkAuth.verifyMagicLink(token as string);
-      if (result.success) {
+  app.post(
+    "/api/auth/magic-link",
+    ...adminAuthGuards,
+    magicLinkDisableMiddleware,
+    loginRateLimiter,
+    async (req, res) => {
+      try {
+        const { magicLinkAuth } = await import("../auth/magic-link");
+        const { email } = req.body;
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+        const result = await magicLinkAuth.sendMagicLink(email, baseUrl);
         res.json(result);
-      } else {
-        res.status(400).json(result);
+      } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to send magic link" });
       }
-    } catch (error) {
-      console.error("Error verifying magic link:", error);
-      res.status(500).json({ success: false, error: "Failed to verify magic link" });
     }
-  });
+  );
+
+  app.get(
+    "/api/auth/magic-link/verify",
+    ...adminAuthGuards,
+    magicLinkDisableMiddleware,
+    loginRateLimiter,
+    async (req, res) => {
+      try {
+        const { magicLinkAuth } = await import("../auth/magic-link");
+        const { token } = req.query;
+        const result = await magicLinkAuth.verifyMagicLink(token as string);
+        if (result.success) {
+          res.json(result);
+        } else {
+          res.status(400).json(result);
+        }
+      } catch (error) {
+        res.status(500).json({ success: false, error: "Failed to verify magic link" });
+      }
+    }
+  );
 
   // Get all available roles (admin only)
   app.get("/api/roles", isAuthenticated, requireRole("admin"), async (req, res) => {
@@ -1030,7 +1070,7 @@ export function registerAuthRoutes(app: Express): void {
   // EMAIL OTP LOGIN (Simple email-based login)
   // Database-backed for persistence across restarts
   // ============================================
-  
+
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
   const OTP_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
   const MAX_OTP_ATTEMPTS = 5;
@@ -1051,37 +1091,35 @@ export function registerAuthRoutes(app: Express): void {
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_email_otp_codes_email ON email_otp_codes(email)
       `);
-    } catch (err) {
-      console.log("[EmailOTP] Table check/create:", err);
-    }
+    } catch (err) {}
   }
-  
+
   // Initialize table on startup
-  ensureEmailOtpTable().then(() => console.log("[EmailOTP] Table verified/created"));
+  ensureEmailOtpTable().then(() => {});
 
   // Hash function for OTP codes
   function hashCode(code: string): string {
-    return crypto.createHash('sha256').update(code).digest('hex');
+    return crypto.createHash("sha256").update(code).digest("hex");
   }
 
   // Request OTP - only for admin email
   app.post("/api/auth/email-otp/request", loginRateLimiter, async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
-      
+
       if (!email) {
         return res.status(400).json({ error: "Email is required" });
       }
 
       const normalizedEmail = email.toLowerCase().trim();
-      
+
       // Only allow the admin email
       if (!ADMIN_EMAIL || normalizedEmail !== ADMIN_EMAIL.toLowerCase()) {
         // Security: Don't reveal if email exists - generic message
-        console.log(`[EmailOTP] Unauthorized email attempt: ${normalizedEmail.substring(0, 5)}***`);
-        return res.status(200).json({ 
-          success: true, 
-          message: "If this email is registered, you will receive a code shortly" 
+
+        return res.status(200).json({
+          success: true,
+          message: "If this email is registered, you will receive a code shortly",
         });
       }
 
@@ -1092,7 +1130,7 @@ export function registerAuthRoutes(app: Express): void {
 
       // Delete any existing OTP for this email
       await db.execute(sql`DELETE FROM email_otp_codes WHERE email = ${normalizedEmail}`);
-      
+
       // Store OTP in database
       await db.execute(sql`
         INSERT INTO email_otp_codes (email, code_hash, attempts, expires_at)
@@ -1103,7 +1141,7 @@ export function registerAuthRoutes(app: Express): void {
       try {
         const { Resend } = await import("resend");
         const resendApiKey = process.env.RESEND_API_KEY;
-        
+
         if (resendApiKey) {
           const resend = new Resend(resendApiKey);
           await resend.emails.send({
@@ -1123,27 +1161,22 @@ export function registerAuthRoutes(app: Express): void {
               </div>
             `,
           });
-          console.log(`[EmailOTP] Code sent to ${normalizedEmail.substring(0, 5)}***`);
         } else {
           // Fallback for development - log code
-          console.log(`[EmailOTP] DEV MODE - Code for ${normalizedEmail}: ${code}`);
         }
       } catch (emailError) {
-        console.error("[EmailOTP] Failed to send email:", emailError);
         // Still return success to not leak info
       }
 
       // In development, include the code in response for testing
-      const isDev = process.env.NODE_ENV === 'development';
-      res.json({ 
-        success: true, 
+      const isDev = process.env.NODE_ENV === "development";
+      res.json({
+        success: true,
         message: "If this email is registered, you will receive a code shortly",
         expiresIn: OTP_EXPIRY_MS / 1000,
-        ...(isDev && { _devCode: code }) // Only included in development!
+        ...(isDev && { _devCode: code }), // Only included in development!
       });
-
     } catch (error) {
-      console.error("[EmailOTP] Error:", error);
       res.status(500).json({ error: "Failed to process request" });
     }
   });
@@ -1152,13 +1185,13 @@ export function registerAuthRoutes(app: Express): void {
   app.post("/api/auth/email-otp/verify", loginRateLimiter, async (req: Request, res: Response) => {
     try {
       const { email, code } = req.body;
-      
+
       if (!email || !code) {
         return res.status(400).json({ error: "Email and code are required" });
       }
 
       const normalizedEmail = email.toLowerCase().trim();
-      
+
       // Get OTP from database
       const otpRecords = await db.execute(sql`
         SELECT id, code_hash, attempts, expires_at 
@@ -1166,8 +1199,10 @@ export function registerAuthRoutes(app: Express): void {
         WHERE email = ${normalizedEmail}
         LIMIT 1
       `);
-      
-      const otpData = otpRecords.rows[0] as { id: string; code_hash: string; attempts: number; expires_at: Date } | undefined;
+
+      const otpData = otpRecords.rows[0] as
+        | { id: string; code_hash: string; attempts: number; expires_at: Date }
+        | undefined;
 
       // Check if OTP exists
       if (!otpData) {
@@ -1194,9 +1229,9 @@ export function registerAuthRoutes(app: Express): void {
           SET attempts = attempts + 1 
           WHERE email = ${normalizedEmail}
         `);
-        return res.status(400).json({ 
-          error: "Invalid code", 
-          attemptsRemaining: MAX_OTP_ATTEMPTS - otpData.attempts - 1 
+        return res.status(400).json({
+          error: "Invalid code",
+          attemptsRemaining: MAX_OTP_ATTEMPTS - otpData.attempts - 1,
         });
       }
 
@@ -1209,7 +1244,7 @@ export function registerAuthRoutes(app: Express): void {
       // If no user with this email, get the first admin user from the list
       if (!adminUser) {
         const allUsers = await storage.getUsers();
-        adminUser = allUsers.find(u => u.role === 'admin');
+        adminUser = allUsers.find(u => u.role === "admin");
       }
 
       if (!adminUser) {
@@ -1219,7 +1254,6 @@ export function registerAuthRoutes(app: Express): void {
       // Create session
       const authReq = req as AuthRequest;
       if (!authReq.session) {
-        console.error("[EmailOTP] Session not available");
         return res.status(500).json({ error: "Session not available" });
       }
 
@@ -1236,23 +1270,23 @@ export function registerAuthRoutes(app: Express): void {
 
       authReq.login(userForPassport, (err: unknown) => {
         if (err) {
-          console.error("[EmailOTP] Login error:", err);
           return res.status(500).json({ error: "Failed to create session" });
         }
 
         authReq.session.save((saveErr: unknown) => {
           if (saveErr) {
-            console.error("[EmailOTP] Session save error:", saveErr);
           }
 
-          console.log(`[EmailOTP] Login successful for ${normalizedEmail.substring(0, 5)}***`);
-          
           // Log audit event
           logSecurityEventFromRequest(req, SecurityEventType.LOGIN_SUCCESS, {
             success: true,
-            resource: 'auth',
-            action: 'email_otp_login',
-            details: { method: 'email_otp', email: normalizedEmail.substring(0, 5) + '***', userId: adminUser!.id }
+            resource: "auth",
+            action: "email_otp_login",
+            details: {
+              method: "email_otp",
+              email: normalizedEmail.substring(0, 5) + "***",
+              userId: adminUser!.id,
+            },
           });
 
           res.json({
@@ -1263,13 +1297,11 @@ export function registerAuthRoutes(app: Express): void {
               email: adminUser!.email,
               name: adminUser!.name,
               role: adminUser!.role,
-            }
+            },
           });
         });
       });
-
     } catch (error) {
-      console.error("[EmailOTP] Verify error:", error);
       res.status(500).json({ error: "Failed to verify code" });
     }
   });

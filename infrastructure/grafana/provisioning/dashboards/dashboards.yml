@@ -1,0 +1,17 @@
+# ============================================
+# TRAVI Grafana Dashboard Provisioning
+# ============================================
+
+apiVersion: 1
+
+providers:
+  - name: 'TRAVI Dashboards'
+    orgId: 1
+    folder: 'TRAVI'
+    folderUid: 'travi'
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

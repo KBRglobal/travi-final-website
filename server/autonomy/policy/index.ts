@@ -6,7 +6,7 @@
  */
 
 // Types
-export * from './types';
+export * from "./types";
 
 // Configuration
 export {
@@ -18,7 +18,7 @@ export {
   generateTargetKey,
   isWithinTimeWindow,
   getPeriodBoundaries,
-} from './config';
+} from "./config";
 
 // Budget management
 export {
@@ -29,7 +29,7 @@ export {
   resetBudget,
   getBudgetSummary,
   clearBudgetCache,
-} from './budgets';
+} from "./budgets";
 
 // Policy engine
 export {
@@ -37,7 +37,7 @@ export {
   evaluatePolicy,
   recordActionExecution,
   quickCheck,
-} from './policy-engine';
+} from "./policy-engine";
 
 // Repository
 export {
@@ -53,19 +53,18 @@ export {
   startDecisionLogFlusher,
   stopDecisionLogFlusher,
   invalidatePolicyCache,
-} from './repository';
+} from "./repository";
 
 // Admin routes
-export { default as autonomyPolicyRoutes } from './admin-routes';
+export { default as autonomyPolicyRoutes } from "./admin-routes";
 
-import { startDecisionLogFlusher, stopDecisionLogFlusher, seedDefaultPolicies } from './repository';
+import { startDecisionLogFlusher, stopDecisionLogFlusher, seedDefaultPolicies } from "./repository";
 
 /**
  * Initialize autonomy policy engine
  */
 export async function initAutonomyPolicy(): Promise<void> {
-  const enabled = process.env.ENABLE_AUTONOMY_POLICY === 'true';
-  console.log(`[AutonomyPolicy] Module initialized (enabled: ${enabled})`);
+  const enabled = process.env.ENABLE_AUTONOMY_POLICY === "true";
 
   if (enabled) {
     // Start background log flusher
@@ -75,11 +74,8 @@ export async function initAutonomyPolicy(): Promise<void> {
     try {
       const seeded = await seedDefaultPolicies();
       if (seeded > 0) {
-        console.log(`[AutonomyPolicy] Seeded ${seeded} default policies`);
       }
-    } catch (error) {
-      console.error('[AutonomyPolicy] Failed to seed default policies:', error);
-    }
+    } catch (error) {}
   }
 }
 
@@ -88,5 +84,4 @@ export async function initAutonomyPolicy(): Promise<void> {
  */
 export function shutdownAutonomyPolicy(): void {
   stopDecisionLogFlusher();
-  console.log('[AutonomyPolicy] Module shutdown');
 }

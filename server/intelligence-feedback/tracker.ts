@@ -9,7 +9,7 @@ import {
   MetricSnapshot,
   TaskOutcome,
   DEFAULT_FEEDBACK_CONFIG,
-} from './types';
+} from "./types";
 
 // Event storage
 const feedbackEvents: Map<string, FeedbackEvent> = new Map();
@@ -20,19 +20,17 @@ function generateEventId(): string {
 }
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_INTELLIGENCE_FEEDBACK === 'true';
+  return process.env.ENABLE_INTELLIGENCE_FEEDBACK === "true";
 }
 
-export async function captureBeforeMetrics(
-  targetId: string
-): Promise<MetricSnapshot> {
+export async function captureBeforeMetrics(targetId: string): Promise<MetricSnapshot> {
   const snapshot: MetricSnapshot = {
     timestamp: new Date(),
   };
 
   try {
     // Capture health score
-    const contentHealth = await import('../content-health') as any;
+    const contentHealth = (await import("../content-health")) as any;
     const healthScore = await contentHealth.scoreContent(targetId);
     if (healthScore) {
       snapshot.healthScore = healthScore.overallScore;
@@ -43,7 +41,7 @@ export async function captureBeforeMetrics(
 
   try {
     // Capture revenue score
-    const { calculateContentValue } = await import('../revenue-intel');
+    const { calculateContentValue } = await import("../revenue-intel");
     const revenueScore = await calculateContentValue(targetId);
     if (revenueScore) {
       snapshot.revenueScore = revenueScore.roiScore;
@@ -54,7 +52,7 @@ export async function captureBeforeMetrics(
 
   try {
     // Capture link score
-    const { getContentLinkStats } = await import('../link-graph');
+    const { getContentLinkStats } = await import("../link-graph");
     const linkStats = await getContentLinkStats(targetId);
     if (linkStats) {
       snapshot.linkScore = linkStats.authorityScore;
@@ -65,7 +63,7 @@ export async function captureBeforeMetrics(
 
   try {
     // Capture priority score
-    const { getPriority } = await import('../strategy');
+    const { getPriority } = await import("../strategy");
     const priority = await getPriority(targetId);
     if (priority) {
       snapshot.priorityScore = priority.priorityScore;
@@ -77,17 +75,12 @@ export async function captureBeforeMetrics(
   return snapshot;
 }
 
-export async function captureAfterMetrics(
-  targetId: string
-): Promise<MetricSnapshot> {
+export async function captureAfterMetrics(targetId: string): Promise<MetricSnapshot> {
   // Same as before metrics but captured after task completion
   return captureBeforeMetrics(targetId);
 }
 
-export function calculateImprovement(
-  before: MetricSnapshot,
-  after: MetricSnapshot
-): number {
+export function calculateImprovement(before: MetricSnapshot, after: MetricSnapshot): number {
   const improvements: number[] = [];
 
   if (before.healthScore !== undefined && after.healthScore !== undefined) {
@@ -113,9 +106,9 @@ export function calculateImprovement(
 }
 
 export function determineOutcome(improvement: number): TaskOutcome {
-  if (improvement > 5) return 'success';
-  if (improvement < -5) return 'failure';
-  return 'neutral';
+  if (improvement > 5) return "success";
+  if (improvement < -5) return "failure";
+  return "neutral";
 }
 
 export async function recordTaskStart(
@@ -129,13 +122,13 @@ export async function recordTaskStart(
 
   const event: FeedbackEvent = {
     id: generateEventId(),
-    type: 'task_completed',
+    type: "task_completed",
     taskId,
     taskType,
     targetId,
     beforeMetrics,
     afterMetrics: null,
-    outcome: 'pending',
+    outcome: "pending",
     improvement: 0,
     createdAt: new Date(),
     measuredAt: null,
@@ -156,32 +149,31 @@ export async function recordTaskStart(
   return event.id;
 }
 
-export async function recordTaskCompletion(
-  eventId: string,
-  success: boolean
-): Promise<boolean> {
+export async function recordTaskCompletion(eventId: string, success: boolean): Promise<boolean> {
   if (!isEnabled()) return false;
 
   const event = feedbackEvents.get(eventId);
   if (!event) return false;
 
-  event.type = success ? 'task_completed' : 'task_failed';
+  event.type = success ? "task_completed" : "task_failed";
 
   // Schedule measurement after delay
   const delayMs = DEFAULT_FEEDBACK_CONFIG.measurementDelayMinutes * 60 * 1000;
 
-  setTimeout(async () => {
-    try {
-      event.afterMetrics = await captureAfterMetrics(event.targetId);
-      event.improvement = calculateImprovement(event.beforeMetrics, event.afterMetrics);
-      event.outcome = success ? determineOutcome(event.improvement) : 'failure';
-      event.measuredAt = new Date();
-    } catch (error) {
-      console.error('[Feedback] Measurement error:', error);
-      event.outcome = 'neutral';
-      event.measuredAt = new Date();
-    }
-  }, Math.min(delayMs, 60000)); // Cap at 1 minute for immediate feedback
+  setTimeout(
+    async () => {
+      try {
+        event.afterMetrics = await captureAfterMetrics(event.targetId);
+        event.improvement = calculateImprovement(event.beforeMetrics, event.afterMetrics);
+        event.outcome = success ? determineOutcome(event.improvement) : "failure";
+        event.measuredAt = new Date();
+      } catch (error) {
+        event.outcome = "neutral";
+        event.measuredAt = new Date();
+      }
+    },
+    Math.min(delayMs, 60000)
+  ); // Cap at 1 minute for immediate feedback
 
   return true;
 }
@@ -193,13 +185,13 @@ export function recordManualAdjustment(
 ): string {
   const event: FeedbackEvent = {
     id: generateEventId(),
-    type: 'manual_adjustment',
-    taskId: 'manual',
-    taskType: 'manual',
+    type: "manual_adjustment",
+    taskId: "manual",
+    taskType: "manual",
     targetId,
     beforeMetrics: { timestamp: new Date(), ...metrics },
     afterMetrics: null,
-    outcome: 'neutral',
+    outcome: "neutral",
     improvement: 0,
     createdAt: new Date(),
     measuredAt: null,
@@ -214,8 +206,9 @@ export function getEvent(eventId: string): FeedbackEvent | null {
 }
 
 export function getEventsByTaskType(taskType: string): FeedbackEvent[] {
-  return Array.from(feedbackEvents.values())
-    .filter(e => e.taskType === taskType && e.measuredAt !== null);
+  return Array.from(feedbackEvents.values()).filter(
+    e => e.taskType === taskType && e.measuredAt !== null
+  );
 }
 
 export function getEventsByTarget(targetId: string): FeedbackEvent[] {
@@ -225,8 +218,7 @@ export function getEventsByTarget(targetId: string): FeedbackEvent[] {
 }
 
 export function getAllMeasuredEvents(): FeedbackEvent[] {
-  return Array.from(feedbackEvents.values())
-    .filter(e => e.measuredAt !== null);
+  return Array.from(feedbackEvents.values()).filter(e => e.measuredAt !== null);
 }
 
 export function getRecentEvents(limit = 50): FeedbackEvent[] {
@@ -236,9 +228,7 @@ export function getRecentEvents(limit = 50): FeedbackEvent[] {
 }
 
 export function cleanupOldEvents(): number {
-  const cutoff = new Date(
-    Date.now() - DEFAULT_FEEDBACK_CONFIG.retentionDays * 24 * 60 * 60 * 1000
-  );
+  const cutoff = new Date(Date.now() - DEFAULT_FEEDBACK_CONFIG.retentionDays * 24 * 60 * 60 * 1000);
 
   let removed = 0;
   for (const [id, event] of feedbackEvents) {

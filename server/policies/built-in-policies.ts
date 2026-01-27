@@ -14,9 +14,7 @@ export const BUILT_IN_POLICIES: Policy[] = [
     policyType: "publish_gate",
     effect: "block",
     priority: 100,
-    conditions: [
-      { field: "contentStatus", operator: "ne", value: "approved" },
-    ],
+    conditions: [{ field: "contentStatus", operator: "ne", value: "approved" }],
     actions: ["publish"],
     resources: ["content"],
     roles: ["editor", "analyst", "viewer"],
@@ -32,9 +30,7 @@ export const BUILT_IN_POLICIES: Policy[] = [
     policyType: "edit_restriction",
     effect: "block",
     priority: 90,
-    conditions: [
-      { field: "contentStatus", operator: "eq", value: "published" },
-    ],
+    conditions: [{ field: "contentStatus", operator: "eq", value: "published" }],
     actions: ["edit", "update"],
     resources: ["content"],
     roles: ["editor", "analyst", "viewer"],
@@ -82,9 +78,7 @@ export const BUILT_IN_POLICIES: Policy[] = [
     policyType: "delete_protection",
     effect: "block",
     priority: 100,
-    conditions: [
-      { field: "contentStatus", operator: "eq", value: "published" },
-    ],
+    conditions: [{ field: "contentStatus", operator: "eq", value: "published" }],
     actions: ["delete"],
     resources: ["content"],
     roles: ["admin", "editor", "analyst", "ops", "viewer"],
@@ -100,9 +94,7 @@ export const BUILT_IN_POLICIES: Policy[] = [
     policyType: "publish_gate",
     effect: "warn",
     priority: 50,
-    conditions: [
-      { field: "score", operator: "lt", value: 50 },
-    ],
+    conditions: [{ field: "score", operator: "lt", value: 50 }],
     actions: ["publish"],
     resources: ["content"],
     roles: [],
@@ -118,9 +110,7 @@ export const BUILT_IN_POLICIES: Policy[] = [
     policyType: "locale_access",
     effect: "block",
     priority: 80,
-    conditions: [
-      { field: "localeMatch", operator: "eq", value: false },
-    ],
+    conditions: [{ field: "localeMatch", operator: "eq", value: false }],
     actions: ["edit", "update", "delete"],
     resources: ["content"],
     roles: ["editor"],
@@ -136,9 +126,7 @@ export const BUILT_IN_POLICIES: Policy[] = [
     policyType: "access_control",
     effect: "block",
     priority: 100,
-    conditions: [
-      { field: "isBulkOperation", operator: "eq", value: true },
-    ],
+    conditions: [{ field: "isBulkOperation", operator: "eq", value: true }],
     actions: ["update", "delete", "publish"],
     resources: ["content"],
     roles: ["editor", "analyst", "ops", "viewer"],
@@ -148,11 +136,9 @@ export const BUILT_IN_POLICIES: Policy[] = [
 ];
 
 export function getBuiltInPolicy(id: string): Policy | undefined {
-  return BUILT_IN_POLICIES.find((p) => p.id === id);
+  return BUILT_IN_POLICIES.find(p => p.id === id);
 }
 
 export function getBuiltInPoliciesByType(type: Policy["policyType"]): Policy[] {
-  return BUILT_IN_POLICIES.filter((p) => p.policyType === type && p.isActive);
+  return BUILT_IN_POLICIES.filter(p => p.policyType === type && p.isActive);
 }
-
-console.log("[Policies] Built-in policies loaded");

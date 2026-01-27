@@ -139,7 +139,7 @@ export interface RuleMatchContext {
  * Find matching workflow rule for a context
  */
 export function findMatchingRule(context: RuleMatchContext): WorkflowRule | null {
-  const matchingRules = BUILT_IN_RULES.filter((rule) => {
+  const matchingRules = BUILT_IN_RULES.filter(rule => {
     if (!rule.isActive) return false;
     return matchesCondition(rule.condition, context);
   });
@@ -154,10 +154,7 @@ export function findMatchingRule(context: RuleMatchContext): WorkflowRule | null
 /**
  * Check if context matches condition
  */
-export function matchesCondition(
-  condition: WorkflowCondition,
-  context: RuleMatchContext
-): boolean {
+export function matchesCondition(condition: WorkflowCondition, context: RuleMatchContext): boolean {
   // Request type match
   if (condition.requestType && condition.requestType !== context.requestType) {
     return false;
@@ -194,7 +191,7 @@ export function matchesCondition(
  * Get steps for a rule
  */
 export function getRuleSteps(ruleId: string): WorkflowStepConfig[] {
-  const rule = BUILT_IN_RULES.find((r) => r.id === ruleId);
+  const rule = BUILT_IN_RULES.find(r => r.id === ruleId);
   return rule?.steps || [];
 }
 
@@ -203,10 +200,7 @@ export function getRuleSteps(ruleId: string): WorkflowStepConfig[] {
  */
 export function requiresApproval(requestType: RequestType): boolean {
   return BUILT_IN_RULES.some(
-    (rule) =>
-      rule.isActive &&
-      (!rule.condition.requestType || rule.condition.requestType === requestType)
+    rule =>
+      rule.isActive && (!rule.condition.requestType || rule.condition.requestType === requestType)
   );
 }
-
-console.log("[Approvals] Rules loaded");

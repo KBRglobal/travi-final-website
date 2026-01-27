@@ -12,27 +12,22 @@ function isEnabled(): boolean {
 
 export function registerContentDecayRoutes(app: Express): void {
   // Get all decaying content
-  app.get(
-    "/api/admin/content/decay",
-    requirePermission("canViewAnalytics"),
-    async (req, res) => {
-      if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DECAY" });
-      }
-
-      try {
-        const { status, limit } = req.query;
-        const results = await getDecayingContent(
-          status as "stable" | "decaying" | "critical" | undefined,
-          parseInt(limit as string) || 50
-        );
-        res.json({ items: results, total: results.length });
-      } catch (error) {
-        console.error("[ContentDecay] Error:", error);
-        res.status(500).json({ error: "Failed to fetch decaying content" });
-      }
+  app.get("/api/admin/content/decay", requirePermission("canViewAnalytics"), async (req, res) => {
+    if (!isEnabled()) {
+      return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_DECAY" });
     }
-  );
+
+    try {
+      const { status, limit } = req.query;
+      const results = await getDecayingContent(
+        status as "stable" | "decaying" | "critical" | undefined,
+        parseInt(limit as string) || 50
+      );
+      res.json({ items: results, total: results.length });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch decaying content" });
+    }
+  });
 
   // Get decay for specific content
   app.get(
@@ -50,7 +45,6 @@ export function registerContentDecayRoutes(app: Express): void {
         }
         res.json(result);
       } catch (error) {
-        console.error("[ContentDecay] Error:", error);
         res.status(500).json({ error: "Failed to fetch decay info" });
       }
     }
@@ -72,11 +66,8 @@ export function registerContentDecayRoutes(app: Express): void {
         }
         res.json(result);
       } catch (error) {
-        console.error("[ContentDecay] Error:", error);
         res.status(500).json({ error: "Failed to recalculate decay" });
       }
     }
   );
-
-  console.log("[ContentDecay] Routes registered");
 }

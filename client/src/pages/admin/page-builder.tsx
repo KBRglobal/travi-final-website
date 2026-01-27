@@ -11,8 +11,19 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Lightbulb, Plus, Trash2, Edit2, Save, Eye, Globe, ArrowLeft, GripVertical,
-  FileText, Layout, LayoutGrid, Layers
+  Lightbulb,
+  Plus,
+  Trash2,
+  Edit2,
+  Save,
+  Eye,
+  Globe,
+  ArrowLeft,
+  GripVertical,
+  FileText,
+  Layout,
+  LayoutGrid,
+  Layers,
 } from "lucide-react";
 import {
   Dialog,
@@ -122,21 +133,21 @@ const PAGE_TYPES = [
 ];
 
 const SECTION_TYPES = [
-  { value: "hero", label: "Hero", labelHe: "באנר ראשי" },
-  { value: "intro_text", label: "Introduction", labelHe: "טקסט פתיחה" },
-  { value: "highlight_grid", label: "Highlight Grid", labelHe: "גריד הדגשות" },
-  { value: "filter_bar", label: "Filter Bar", labelHe: "סרגל סינון" },
-  { value: "content_grid", label: "Content Grid", labelHe: "גריד תוכן" },
-  { value: "cta", label: "Call to Action", labelHe: "קריאה לפעולה" },
-  { value: "faq", label: "FAQ", labelHe: "שאלות ותשובות" },
-  { value: "testimonial", label: "Testimonials", labelHe: "המלצות" },
-  { value: "gallery", label: "Gallery", labelHe: "גלריה" },
-  { value: "stats", label: "Statistics", labelHe: "סטטיסטיקות" },
-  { value: "features", label: "Features", labelHe: "תכונות" },
-  { value: "text_image", label: "Text & Image", labelHe: "טקסט ותמונה" },
-  { value: "video", label: "Video", labelHe: "וידאו" },
-  { value: "newsletter", label: "Newsletter", labelHe: "ניוזלטר" },
-  { value: "custom", label: "Custom", labelHe: "מותאם אישית" },
+  { value: "hero", label: "Hero" },
+  { value: "intro_text", label: "Introduction" },
+  { value: "highlight_grid", label: "Highlight Grid" },
+  { value: "filter_bar", label: "Filter Bar" },
+  { value: "content_grid", label: "Content Grid" },
+  { value: "cta", label: "Call to Action" },
+  { value: "faq", label: "FAQ" },
+  { value: "testimonial", label: "Testimonials" },
+  { value: "gallery", label: "Gallery" },
+  { value: "stats", label: "Statistics" },
+  { value: "features", label: "Features" },
+  { value: "text_image", label: "Text & Image" },
+  { value: "video", label: "Video" },
+  { value: "newsletter", label: "Newsletter" },
+  { value: "custom", label: "Custom" },
 ];
 
 function generateSlug(title: string): string {
@@ -159,14 +170,9 @@ function SortableSectionItem({
   onDelete: (section: PageSection) => void;
   onToggleVisibility: (section: PageSection) => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: section.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: section.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -174,7 +180,7 @@ function SortableSectionItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const sectionTypeInfo = SECTION_TYPES.find((t) => t.value === section.sectionType);
+  const sectionTypeInfo = SECTION_TYPES.find(t => t.value === section.sectionType);
 
   return (
     <div
@@ -348,7 +354,7 @@ export default function PageBuilderPage() {
 
   useEffect(() => {
     if (newPage.title && !newPage.slug) {
-      setNewPage((prev) => ({ ...prev, slug: generateSlug(prev.title) }));
+      setNewPage(prev => ({ ...prev, slug: generateSlug(prev.title) }));
     }
   }, [newPage.title]);
 
@@ -356,8 +362,8 @@ export default function PageBuilderPage() {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = sections.findIndex((s) => s.id === active.id);
-    const newIndex = sections.findIndex((s) => s.id === over.id);
+    const oldIndex = sections.findIndex(s => s.id === active.id);
+    const newIndex = sections.findIndex(s => s.id === over.id);
 
     const reordered = arrayMove(sections, oldIndex, newIndex);
     const updates = reordered.map((s, i) => ({ id: s.id, sortOrder: i }));
@@ -409,9 +415,7 @@ export default function PageBuilderPage() {
             <Layers className="h-8 w-8 text-primary" />
             {selectedPage.title}
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage sections for /{selectedPage.slug}
-          </p>
+          <p className="text-muted-foreground mt-1">Manage sections for /{selectedPage.slug}</p>
         </div>
 
         <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -438,9 +442,7 @@ export default function PageBuilderPage() {
             <CardContent className="py-12 text-center">
               <LayoutGrid className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
               <h3 className="text-lg font-medium mb-2">No Sections Yet</h3>
-              <p className="text-muted-foreground mb-4">
-                Add sections to build your page layout
-              </p>
+              <p className="text-muted-foreground mb-4">Add sections to build your page layout</p>
               <Button onClick={() => setShowCreateSectionDialog(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add First Section
@@ -453,9 +455,9 @@ export default function PageBuilderPage() {
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
-                {sections.map((section) => (
+                {sections.map(section => (
                   <SortableSectionItem
                     key={section.id}
                     section={section}
@@ -482,9 +484,9 @@ export default function PageBuilderPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {SECTION_TYPES.map((type) => (
+                    {SECTION_TYPES.map(type => (
                       <SelectItem key={type.value} value={type.value}>
-                        {type.label} / {type.labelHe}
+                        {type.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -495,7 +497,11 @@ export default function PageBuilderPage() {
               <Button variant="outline" onClick={() => setShowCreateSectionDialog(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateSection} disabled={createSectionMutation.isPending} data-testid="button-create-section">
+              <Button
+                onClick={handleCreateSection}
+                disabled={createSectionMutation.isPending}
+                data-testid="button-create-section"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Section
               </Button>
@@ -525,7 +531,7 @@ export default function PageBuilderPage() {
                       <Label>Title</Label>
                       <Input
                         value={editingSection.title || ""}
-                        onChange={(e) =>
+                        onChange={e =>
                           setEditingSection({ ...editingSection, title: e.target.value })
                         }
                         data-testid="input-section-title-en"
@@ -535,7 +541,7 @@ export default function PageBuilderPage() {
                       <Label>Subtitle</Label>
                       <Input
                         value={editingSection.subtitle || ""}
-                        onChange={(e) =>
+                        onChange={e =>
                           setEditingSection({ ...editingSection, subtitle: e.target.value })
                         }
                         data-testid="input-section-subtitle-en"
@@ -545,7 +551,7 @@ export default function PageBuilderPage() {
                       <Label>Description</Label>
                       <Textarea
                         value={editingSection.description || ""}
-                        onChange={(e) =>
+                        onChange={e =>
                           setEditingSection({ ...editingSection, description: e.target.value })
                         }
                         rows={3}
@@ -558,7 +564,7 @@ export default function PageBuilderPage() {
                       <Label>Title (Hebrew)</Label>
                       <Input
                         value={editingSection.titleHe || ""}
-                        onChange={(e) =>
+                        onChange={e =>
                           setEditingSection({ ...editingSection, titleHe: e.target.value })
                         }
                         dir="rtl"
@@ -569,7 +575,7 @@ export default function PageBuilderPage() {
                       <Label>Subtitle (Hebrew)</Label>
                       <Input
                         value={editingSection.subtitleHe || ""}
-                        onChange={(e) =>
+                        onChange={e =>
                           setEditingSection({ ...editingSection, subtitleHe: e.target.value })
                         }
                         dir="rtl"
@@ -580,7 +586,7 @@ export default function PageBuilderPage() {
                       <Label>Description (Hebrew)</Label>
                       <Textarea
                         value={editingSection.descriptionHe || ""}
-                        onChange={(e) =>
+                        onChange={e =>
                           setEditingSection({ ...editingSection, descriptionHe: e.target.value })
                         }
                         rows={3}
@@ -595,7 +601,7 @@ export default function PageBuilderPage() {
                   <Label>Background Image URL</Label>
                   <Input
                     value={editingSection.backgroundImage || ""}
-                    onChange={(e) =>
+                    onChange={e =>
                       setEditingSection({ ...editingSection, backgroundImage: e.target.value })
                     }
                     placeholder="https://..."
@@ -608,7 +614,7 @@ export default function PageBuilderPage() {
                     <Label>Button Text</Label>
                     <Input
                       value={editingSection.buttonText || ""}
-                      onChange={(e) =>
+                      onChange={e =>
                         setEditingSection({ ...editingSection, buttonText: e.target.value })
                       }
                       data-testid="input-section-button-text"
@@ -618,7 +624,7 @@ export default function PageBuilderPage() {
                     <Label>Button Link</Label>
                     <Input
                       value={editingSection.buttonLink || ""}
-                      onChange={(e) =>
+                      onChange={e =>
                         setEditingSection({ ...editingSection, buttonLink: e.target.value })
                       }
                       data-testid="input-section-button-link"
@@ -630,7 +636,7 @@ export default function PageBuilderPage() {
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={editingSection.isVisible}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setEditingSection({ ...editingSection, isVisible: checked })
                       }
                     />
@@ -639,7 +645,7 @@ export default function PageBuilderPage() {
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={editingSection.showOnMobile}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setEditingSection({ ...editingSection, showOnMobile: checked })
                       }
                     />
@@ -648,7 +654,7 @@ export default function PageBuilderPage() {
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={editingSection.showOnDesktop}
-                      onCheckedChange={(checked) =>
+                      onCheckedChange={checked =>
                         setEditingSection({ ...editingSection, showOnDesktop: checked })
                       }
                     />
@@ -713,17 +719,12 @@ export default function PageBuilderPage() {
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            איך זה עובד / How It Works
+            How It Works
           </h3>
-          <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-            בונה הדפים מאפשר לך ליצור ולערוך דפים דינמיים עם סקציות מותאמות אישית.
-            לחץ על דף כדי לנהל את הסקציות שלו - ניתן לגרור ולשחרר לשינוי סדר, להוסיף סקציות חדשות,
-            ולערוך תוכן בעברית ובאנגלית.
-          </p>
           <p className="text-sm text-muted-foreground">
             The Page Builder lets you create and edit dynamic pages with customizable sections.
-            Click on a page to manage its sections - drag and drop to reorder, add new sections,
-            and edit contents in both Hebrew and English.
+            Click on a page to manage its sections - drag and drop to reorder, add new sections, and
+            edit content.
           </p>
         </div>
       </div>
@@ -763,7 +764,7 @@ export default function PageBuilderPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pages.map((page) => (
+              {pages.map(page => (
                 <TableRow key={page.id} data-testid={`row-page-${page.slug}`}>
                   <TableCell className="font-medium">
                     <div>
@@ -836,16 +837,16 @@ export default function PageBuilderPage() {
               <Input
                 placeholder="My New Page"
                 value={newPage.title}
-                onChange={(e) => setNewPage({ ...newPage, title: e.target.value })}
+                onChange={e => setNewPage({ ...newPage, title: e.target.value })}
                 data-testid="input-page-title"
               />
             </div>
             <div className="space-y-2">
               <Label>Title (Hebrew)</Label>
               <Input
-                placeholder="הדף החדש שלי"
+                placeholder="My New Page"
                 value={newPage.titleHe}
-                onChange={(e) => setNewPage({ ...newPage, titleHe: e.target.value })}
+                onChange={e => setNewPage({ ...newPage, titleHe: e.target.value })}
                 dir="rtl"
                 data-testid="input-page-title-he"
               />
@@ -855,8 +856,11 @@ export default function PageBuilderPage() {
               <Input
                 placeholder="my-new-page"
                 value={newPage.slug}
-                onChange={(e) =>
-                  setNewPage({ ...newPage, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") })
+                onChange={e =>
+                  setNewPage({
+                    ...newPage,
+                    slug: e.target.value.toLowerCase().replace(/\s+/g, "-"),
+                  })
                 }
                 data-testid="input-page-slug"
               />
@@ -868,13 +872,13 @@ export default function PageBuilderPage() {
               <Label>Page Type</Label>
               <Select
                 value={newPage.pageType}
-                onValueChange={(value) => setNewPage({ ...newPage, pageType: value })}
+                onValueChange={value => setNewPage({ ...newPage, pageType: value })}
               >
                 <SelectTrigger data-testid="select-page-type">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {PAGE_TYPES.map((type) => (
+                  {PAGE_TYPES.map(type => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
                     </SelectItem>
@@ -904,8 +908,8 @@ export default function PageBuilderPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Page?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete "{deletingPage?.title}" and all its sections.
-              This action cannot be undone.
+              This will permanently delete "{deletingPage?.title}" and all its sections. This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

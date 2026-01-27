@@ -3,7 +3,7 @@
  * All data source ingesters should extend this class
  */
 
-import type { DataSource, IngestionResult } from './types';
+import type { DataSource, IngestionResult } from "./types";
 
 export abstract class BaseIngester {
   abstract source: DataSource;
@@ -26,10 +26,12 @@ export abstract class BaseIngester {
   /**
    * Save transformed records to the database
    */
-  protected async saveToDatabase(records: unknown[]): Promise<{ created: number; updated: number }> {
+  protected async saveToDatabase(
+    records: unknown[]
+  ): Promise<{ created: number; updated: number }> {
     // Base implementation - subclasses should override with actual DB logic
     this.log(`Saving ${records.length} records to database`, { count: records.length });
-    
+
     // Placeholder - actual implementation would use storage/db
     return {
       created: records.length,
@@ -43,11 +45,9 @@ export abstract class BaseIngester {
   protected log(message: string, data?: unknown): void {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [Ingestion:${this.source.id}]`;
-    
+
     if (data) {
-      console.log(`${prefix} ${message}`, JSON.stringify(data));
     } else {
-      console.log(`${prefix} ${message}`);
     }
   }
 
@@ -57,17 +57,12 @@ export abstract class BaseIngester {
   protected logError(message: string, error?: unknown): void {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [Ingestion:${this.source.id}] ERROR:`;
-    
-    console.error(`${prefix} ${message}`, error);
   }
 
   /**
    * Retry logic wrapper for API calls
    */
-  protected async withRetry<T>(
-    operation: () => Promise<T>,
-    operationName: string
-  ): Promise<T> {
+  protected async withRetry<T>(operation: () => Promise<T>, operationName: string): Promise<T> {
     const maxAttempts = this.source.config.retryAttempts;
     let lastError: Error | undefined;
 
@@ -77,7 +72,7 @@ export abstract class BaseIngester {
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         this.log(`${operationName} attempt ${attempt}/${maxAttempts} failed: ${lastError.message}`);
-        
+
         if (attempt < maxAttempts) {
           // Exponential backoff: 1s, 2s, 4s, etc.
           const delay = Math.pow(2, attempt - 1) * 1000;

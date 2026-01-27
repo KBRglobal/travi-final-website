@@ -32,26 +32,23 @@ export function TextBlockRenderer({ id, props, onUpdate }: TextBlockRendererProp
 
   return (
     <EditableWrapper id={id}>
-      <div
-        className={cn(
-          "py-4 px-6",
-          sizeClasses[size],
-          alignmentClasses[alignment]
-        )}
-      >
+      <div className={cn("py-4 px-6", sizeClasses[size], alignmentClasses[alignment])}>
         {isEditMode ? (
           <InlineTextEditor
             componentId={id}
             fieldName="contents"
             value={contents}
-            onChange={(value) => onUpdate({ ...props, contents: value })}
+            onChange={value => onUpdate({ ...props, contents: value })}
             multiline
             className="prose prose-lg max-w-none"
-            placeholder="הכנס טקסט כאן..."
+            placeholder="Enter text here..."
             as="div"
           />
         ) : (
-          <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHTML(contents || "") }} />
+          <div
+            className="prose prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: sanitizeHTML(contents || "") }}
+          />
         )}
       </div>
     </EditableWrapper>

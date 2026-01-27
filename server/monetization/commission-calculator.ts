@@ -1,6 +1,6 @@
 /**
  * Commission Calculator
- * 
+ *
  * Calculates commissions for affiliate partners
  * - Commission rates by tier
  * - Performance bonuses
@@ -48,11 +48,7 @@ export const commissionCalculator = {
   ): Promise<CommissionCalculation> {
     try {
       // Fetch partner data
-      const partner = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.id, partnerId))
-        .limit(1);
+      const partner = await db.select().from(partners).where(eq(partners.id, partnerId)).limit(1);
 
       if (partner.length === 0) {
         throw new Error("Partner not found");
@@ -76,7 +72,7 @@ export const commissionCalculator = {
 
       // Performance bonus (based on conversion rate and volume)
       let performanceBonus = 0;
-      
+
       // Bonus for high conversion rate (>5%)
       if (conversionRate > 5) {
         performanceBonus += baseCommission * 0.1; // 10% bonus
@@ -108,7 +104,6 @@ export const commissionCalculator = {
         },
       };
     } catch (error) {
-      console.error("[Commission] Error calculating commission:", error);
       throw error;
     }
   },
@@ -121,20 +116,14 @@ export const commissionCalculator = {
     periodEnd: Date
   ): Promise<CommissionCalculation[]> {
     try {
-      const activePartners = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.status, "active"));
+      const activePartners = await db.select().from(partners).where(eq(partners.status, "active"));
 
       const calculations = await Promise.all(
-        activePartners.map(partner =>
-          this.calculateCommission(partner.id, periodStart, periodEnd)
-        )
+        activePartners.map(partner => this.calculateCommission(partner.id, periodStart, periodEnd))
       );
 
       return calculations;
     } catch (error) {
-      console.error("[Commission] Error calculating all commissions:", error);
       return [];
     }
   },
@@ -177,7 +166,6 @@ export const commissionCalculator = {
 
       return payout[0].id;
     } catch (error) {
-      console.error("[Commission] Error creating payout:", error);
       return null;
     }
   },
@@ -190,12 +178,7 @@ export const commissionCalculator = {
       const pendingPayouts = await db
         .select()
         .from(payouts)
-        .where(
-          and(
-            eq(payouts.partnerId, partnerId),
-            eq(payouts.status, "pending")
-          )
-        );
+        .where(and(eq(payouts.partnerId, partnerId), eq(payouts.status, "pending")));
 
       return pendingPayouts.map(payout => ({
         partnerId: payout.partnerId,
@@ -205,7 +188,6 @@ export const commissionCalculator = {
         status: payout.status as "pending" | "scheduled" | "processing" | "completed",
       }));
     } catch (error) {
-      console.error("[Commission] Error getting pending payouts:", error);
       return [];
     }
   },
@@ -226,7 +208,6 @@ export const commissionCalculator = {
 
       return true;
     } catch (error) {
-      console.error("[Commission] Error processing payout:", error);
       return false;
     }
   },
@@ -245,28 +226,18 @@ export const commissionCalculator = {
     nextPayout: Date | null;
   }> {
     try {
-      const partner = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.id, partnerId))
-        .limit(1);
+      const partner = await db.select().from(partners).where(eq(partners.id, partnerId)).limit(1);
 
       if (partner.length === 0) {
         throw new Error("Partner not found");
       }
 
       // Get all payouts
-      let payoutQuery = db
-        .select()
-        .from(payouts)
-        .where(eq(payouts.partnerId, partnerId));
+      let payoutQuery = db.select().from(payouts).where(eq(payouts.partnerId, partnerId));
 
       if (startDate && endDate) {
         payoutQuery = (payoutQuery as any).where(
-          and(
-            gte(payouts.createdAt, startDate),
-            lte(payouts.createdAt, endDate)
-          )
+          and(gte(payouts.createdAt, startDate), lte(payouts.createdAt, endDate))
         );
       }
 
@@ -291,7 +262,6 @@ export const commissionCalculator = {
         nextPayout,
       };
     } catch (error) {
-      console.error("[Commission] Error getting earnings summary:", error);
       return {
         totalEarnings: 0,
         paidOut: 0,

@@ -4,9 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  Route, Users, Eye, MousePointer, Timer, ArrowRight, 
-  TrendingUp, Target, Lightbulb, Map 
+import {
+  Route,
+  Users,
+  Eye,
+  MousePointer,
+  Timer,
+  ArrowRight,
+  TrendingUp,
+  Target,
+  Lightbulb,
+  Map,
 } from "lucide-react";
 
 interface JourneyStats {
@@ -66,21 +74,16 @@ export default function CustomerJourneyPage() {
           <Route className="h-8 w-8 text-primary" />
           Customer Journey
         </h1>
-        <p className="text-muted-foreground mt-1">
-          Understand how visitors navigate your contents
-        </p>
+        <p className="text-muted-foreground mt-1">Understand how visitors navigate your contents</p>
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            How It Works / איך זה עובד
+            How It Works
           </h3>
           <p className="text-sm text-muted-foreground">
-            Track the <strong>path visitors take</strong> through your contents. See which articles lead to bookings,
-            identify drop-off points, and optimize your contents funnel for maximum conversions.
-            <br />
-            <span className="text-xs opacity-70">
-              (עקוב אחרי הנתיב שמבקרים עוברים בתוכן שלך. ראה אילו מאמרים מובילים להזמנות.)
-            </span>
+            Track the <strong>path visitors take</strong> through your content. See which articles
+            lead to bookings, identify drop-off points, and optimize your content funnel for maximum
+            conversions.
           </p>
         </div>
       </div>
@@ -125,7 +128,8 @@ export default function CustomerJourneyPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" data-testid="text-duration">
-              {Math.floor((stats?.avgSessionDuration || 0) / 60)}m {(stats?.avgSessionDuration || 0) % 60}s
+              {Math.floor((stats?.avgSessionDuration || 0) / 60)}m{" "}
+              {(stats?.avgSessionDuration || 0) % 60}s
             </div>
             <p className="text-xs text-muted-foreground">Average</p>
           </CardContent>
@@ -169,9 +173,7 @@ export default function CustomerJourneyPage() {
               <Map className="h-5 w-5" />
               Top Conversion Paths
             </CardTitle>
-            <CardDescription>
-              Most successful visitor journeys
-            </CardDescription>
+            <CardDescription>Most successful visitor journeys</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[350px]">
@@ -222,15 +224,13 @@ export default function CustomerJourneyPage() {
               <TrendingUp className="h-5 w-5" />
               Content Performance
             </CardTitle>
-            <CardDescription>
-              How individual pages contribute to the journey
-            </CardDescription>
+            <CardDescription>How individual pages contribute to the journey</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[350px]">
               {contents?.length ? (
                 <div className="space-y-3">
-                  {contents.map((item) => (
+                  {contents.map(item => (
                     <div
                       key={item.contentId}
                       className="p-3 border rounded-lg"
@@ -247,7 +247,9 @@ export default function CustomerJourneyPage() {
                         </div>
                         <div>
                           <span className="text-muted-foreground">Avg time:</span>
-                          <span className="ml-1 font-medium">{Math.floor(item.avgTimeOnPage / 60)}m</span>
+                          <span className="ml-1 font-medium">
+                            {Math.floor(item.avgTimeOnPage / 60)}m
+                          </span>
                         </div>
                         <div>
                           <span className="text-muted-foreground">Exit:</span>
@@ -256,7 +258,11 @@ export default function CustomerJourneyPage() {
                       </div>
                       {item.nextPages?.length > 0 && (
                         <div className="mt-2 text-xs text-muted-foreground">
-                          Next: {item.nextPages.slice(0, 2).map(p => p.title).join(", ")}
+                          Next:{" "}
+                          {item.nextPages
+                            .slice(0, 2)
+                            .map(p => p.title)
+                            .join(", ")}
                         </div>
                       )}
                     </div>

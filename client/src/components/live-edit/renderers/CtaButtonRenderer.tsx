@@ -48,8 +48,8 @@ export function CtaButtonRenderer({ id, props, onUpdate }: CtaButtonRendererProp
               componentId={id}
               fieldName="text"
               value={text}
-              onChange={(value) => onUpdate({ ...props, text: value })}
-              placeholder="טקסט כפתור"
+              onChange={value => onUpdate({ ...props, text: value })}
+              placeholder="Button Text"
               as="span"
             />
           ) : link ? (

@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useParams } from "wouter";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { 
-  Calendar, 
-  Clock, 
-  User, 
+import {
+  Calendar,
+  Clock,
+  User,
   ChevronRight,
   CheckCircle,
   ArrowLeft,
@@ -15,7 +15,7 @@ import {
   Heart,
   Backpack,
   Home,
-  type LucideIcon
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
 import { PublicLayout } from "@/components/public-layout";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 // ============================================
 // SEO CONSTANTS
@@ -80,56 +81,56 @@ function generateArticleSchema(style: TravelStyleData) {
     "@context": "https://schema.org",
     "@type": "Article",
     "@id": `${SITE_URL}/travel-styles/${style.slug}#article`,
-    "mainEntityOfPage": {
+    mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/travel-styles/${style.slug}`
+      "@id": `${SITE_URL}/travel-styles/${style.slug}`,
     },
-    "headline": style.title,
-    "description": style.metaDescription,
-    "image": {
+    headline: style.title,
+    description: style.metaDescription,
+    image: {
       "@type": "ImageObject",
-      "url": `${SITE_URL}${style.heroImage}`,
-      "width": 1200,
-      "height": 630
+      url: `${SITE_URL}${style.heroImage}`,
+      width: 1200,
+      height: 630,
     },
-    "author": {
+    author: {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      "name": SITE_NAME,
-      "url": SITE_URL,
-      "logo": {
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
         "@type": "ImageObject",
-        "url": LOGO_URL,
-        "width": 512,
-        "height": 512
-      }
+        url: LOGO_URL,
+        width: 512,
+        height: 512,
+      },
     },
-    "publisher": {
+    publisher: {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      "name": SITE_NAME,
-      "url": SITE_URL,
-      "logo": {
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
         "@type": "ImageObject",
-        "url": LOGO_URL,
-        "width": 512,
-        "height": 512
-      }
+        url: LOGO_URL,
+        width: 512,
+        height: 512,
+      },
     },
-    "datePublished": style.datePublished,
-    "dateModified": style.dateModified,
-    "wordCount": style.wordCount,
-    "timeRequired": `PT${readingTimeMinutes}M`,
-    "articleSection": "Travel Guides",
-    "keywords": style.keywords,
-    "inLanguage": "en-US",
-    "isAccessibleForFree": true,
-    "isPartOf": {
+    datePublished: style.datePublished,
+    dateModified: style.dateModified,
+    wordCount: style.wordCount,
+    timeRequired: `PT${readingTimeMinutes}M`,
+    articleSection: "Travel Guides",
+    keywords: style.keywords,
+    inLanguage: "en-US",
+    isAccessibleForFree: true,
+    isPartOf: {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
-      "name": SITE_NAME,
-      "url": SITE_URL
-    }
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
   };
 }
 
@@ -137,26 +138,26 @@ function generateBreadcrumbSchema(style: TravelStyleData) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
+    itemListElement: [
       {
         "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": SITE_URL
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
       },
       {
         "@type": "ListItem",
-        "position": 2,
-        "name": "Travel Styles",
-        "item": `${SITE_URL}/travel-styles`
+        position: 2,
+        name: "Travel Styles",
+        item: `${SITE_URL}/travel-styles`,
       },
       {
         "@type": "ListItem",
-        "position": 3,
-        "name": style.shortTitle,
-        "item": `${SITE_URL}/travel-styles/${style.slug}`
-      }
-    ]
+        position: 3,
+        name: style.shortTitle,
+        item: `${SITE_URL}/travel-styles/${style.slug}`,
+      },
+    ],
   };
 }
 
@@ -165,12 +166,12 @@ function generateFaqSchema(faqs: TravelStyleFaq[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map((faq) => ({
+    mainEntity: faqs.map(faq => ({
       "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
+      name: faq.question,
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": faq.answer,
+        text: faq.answer,
       },
     })),
   };
@@ -184,21 +185,21 @@ function generateHowToSchema(style: TravelStyleData) {
   return {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    "name": `How to Plan ${style.shortTitle}`,
-    "description": `Step-by-step guide to planning your ${style.shortTitle.toLowerCase()} trip`,
-    "image": `${SITE_URL}${style.heroImage}`,
-    "totalTime": "PT2H",
-    "estimatedCost": {
+    name: `How to Plan ${style.shortTitle}`,
+    description: `Step-by-step guide to planning your ${style.shortTitle.toLowerCase()} trip`,
+    image: `${SITE_URL}${style.heroImage}`,
+    totalTime: "PT2H",
+    estimatedCost: {
       "@type": "MonetaryAmount",
-      "currency": "USD",
-      "value": "Varies"
+      currency: "USD",
+      value: "Varies",
     },
-    "step": style.sections.slice(0, 4).map((section, index) => ({
+    step: style.sections.slice(0, 4).map((section, index) => ({
       "@type": "HowToStep",
-      "position": index + 1,
-      "name": section.title,
-      "text": section.content.replace(/<[^>]*>/g, '').slice(0, 200) + "..."
-    }))
+      position: index + 1,
+      name: section.title,
+      text: section.content.replace(/<[^>]*>/g, "").slice(0, 200) + "...",
+    })),
   };
 }
 
@@ -212,15 +213,19 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
     title: "Luxury Travel Complete Guide 2026",
     shortTitle: "Luxury Travel",
     metaTitle: "Luxury Travel Guide 2026 - Planning, Tips & 5-Star Experiences | TRAVI",
-    metaDescription: "Complete luxury travel guide 2026: from 5-star hotels to Michelin dining. Expert planning tips, budget strategies, and insider secrets for premium travel experiences.",
-    keywords: "luxury travel, luxury vacation, premium travel, 5-star hotels, luxury resorts, michelin dining, first class travel, luxury honeymoon",
+    metaDescription:
+      "Complete luxury travel guide 2026: from 5-star hotels to Michelin dining. Expert planning tips, budget strategies, and insider secrets for premium travel experiences.",
+    keywords:
+      "luxury travel, luxury vacation, premium travel, 5-star hotels, luxury resorts, michelin dining, first class travel, luxury honeymoon",
     heroImage: "/experiences/experiences-luxury-resort-infinity-pool.webp",
-    heroImageAlt: "Luxury resort with infinity pool and modern pink architecture at sunset - TRAVI luxury travel guide",
+    heroImageAlt:
+      "Luxury resort with infinity pool and modern pink architecture at sunset - TRAVI luxury travel guide",
     icon: Sparkles,
     datePublished: "2026-01-04",
     dateModified: "2026-01-15",
     wordCount: 4200,
-    whatIs: "Luxury travel is defined by exceptional quality, personalized service, and exclusive experiences rather than simply high prices. It encompasses five-star accommodations, Michelin-starred dining, private transportation, and access to unique experiences unavailable to typical tourists. Modern luxury travel emphasizes authentic, transformative experiences combined with impeccable comfort and service.",
+    whatIs:
+      "Luxury travel is defined by exceptional quality, personalized service, and exclusive experiences rather than simply high prices. It encompasses five-star accommodations, Michelin-starred dining, private transportation, and access to unique experiences unavailable to typical tourists. Modern luxury travel emphasizes authentic, transformative experiences combined with impeccable comfort and service.",
     whoItsFor: [
       "High-net-worth individuals",
       "Professionals celebrating special occasions",
@@ -228,7 +233,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       "Anyone valuing time over money",
       "Business travelers seeking premium comfort",
       "Multi-generational families wanting comfort",
-      "Wellness seekers prioritizing health and rejuvenation"
+      "Wellness seekers prioritizing health and rejuvenation",
     ],
     sections: [
       {
@@ -267,7 +272,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Want Virtuoso/Preferred benefits ($500-1,000+ value)</li>
 <li>Planning complex trips</li>
 <li>No cost to you—hotels pay commissions</li>
-</ul>`
+</ul>`,
       },
       {
         id: "packing",
@@ -290,7 +295,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Portable charger</li>
 <li>E-reader</li>
 </ul>
-<p><strong>What to Leave Home:</strong> Excessive clothing, bulky guidebooks, beach towels (provided), basic toiletries (luxury properties provide)</p>`
+<p><strong>What to Leave Home:</strong> Excessive clothing, bulky guidebooks, beach towels (provided), basic toiletries (luxury properties provide)</p>`,
       },
       {
         id: "accommodation",
@@ -323,7 +328,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 </tbody>
 </table>
 
-<p><strong>Loyalty Programs Worth Joining:</strong> Marriott Bonvoy, World of Hyatt, Accor Live Limitless, Four Seasons Preferred Partner</p>`
+<p><strong>Loyalty Programs Worth Joining:</strong> Marriott Bonvoy, World of Hyatt, Accor Live Limitless, Four Seasons Preferred Partner</p>`,
       },
       {
         id: "budgeting",
@@ -356,7 +361,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Shoulder season travel</li>
 <li>Daytime transportation</li>
 <li>Breakfast at cafes vs hotel</li>
-</ul>`
+</ul>`,
       },
       {
         id: "tips",
@@ -377,41 +382,77 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Too much luggage</li>
 <li>Not communicating preferences</li>
 <li>Overlooking shoulder season</li>
-</ul>`
-      }
+</ul>`,
+      },
     ],
     faqs: [
-      { question: "How much does luxury travel cost?", answer: "Accessible luxury: $500-1,000/person daily. True luxury: $1,000-2,500 daily. Ultra-luxury: $3,000-10,000+ daily. Southeast Asia offers 40-60% less than Europe. A week typically costs $7,000-25,000 per person." },
-      { question: "Is luxury travel worth it for first-timers?", answer: "Yes, if budget allows. Start with accessible luxury ($500-800/day). The stress-free nature often justifies premium for complex destinations or limited vacation time." },
-      { question: "Can you use points and miles?", answer: "Yes! Premium cards earn transferable points. Redeem for business/first class and luxury hotels. Expect 18-24 months to earn enough for significant trip." },
-      { question: "What's the difference between 5-star chains and boutique?", answer: "Chains offer consistent standards, loyalty programs, larger properties. Boutiques feature unique design, local character, intimate service. Neither is 'better' - depends on priorities." },
-      { question: "Do I need a travel advisor?", answer: "Not required, but beneficial for first-timers, complex trips, or special occasions. Virtuoso advisors provide $500-1,000+ value per stay at no cost to you." },
-      { question: "How far in advance to book?", answer: "Peak season: 6-12 months. Shoulder: 3-4 months. Off-season: 4-6 weeks. Last-minute (48-72 hours) can yield 40-60% savings if flexible." },
-      { question: "Are luxury hotels worth the price?", answer: "If you value exceptional service (2:1 staff ratio), larger rooms (450+ sq ft), premium everything, prime locations, and stress-free experiences - yes." },
-      { question: "How to get room upgrades?", answer: "Join loyalty programs, achieve elite status, book direct, use Virtuoso advisors, mention special occasions, arrive midweek, use premium credit cards." }
-    ]
+      {
+        question: "How much does luxury travel cost?",
+        answer:
+          "Accessible luxury: $500-1,000/person daily. True luxury: $1,000-2,500 daily. Ultra-luxury: $3,000-10,000+ daily. Southeast Asia offers 40-60% less than Europe. A week typically costs $7,000-25,000 per person.",
+      },
+      {
+        question: "Is luxury travel worth it for first-timers?",
+        answer:
+          "Yes, if budget allows. Start with accessible luxury ($500-800/day). The stress-free nature often justifies premium for complex destinations or limited vacation time.",
+      },
+      {
+        question: "Can you use points and miles?",
+        answer:
+          "Yes! Premium cards earn transferable points. Redeem for business/first class and luxury hotels. Expect 18-24 months to earn enough for significant trip.",
+      },
+      {
+        question: "What's the difference between 5-star chains and boutique?",
+        answer:
+          "Chains offer consistent standards, loyalty programs, larger properties. Boutiques feature unique design, local character, intimate service. Neither is 'better' - depends on priorities.",
+      },
+      {
+        question: "Do I need a travel advisor?",
+        answer:
+          "Not required, but beneficial for first-timers, complex trips, or special occasions. Virtuoso advisors provide $500-1,000+ value per stay at no cost to you.",
+      },
+      {
+        question: "How far in advance to book?",
+        answer:
+          "Peak season: 6-12 months. Shoulder: 3-4 months. Off-season: 4-6 weeks. Last-minute (48-72 hours) can yield 40-60% savings if flexible.",
+      },
+      {
+        question: "Are luxury hotels worth the price?",
+        answer:
+          "If you value exceptional service (2:1 staff ratio), larger rooms (450+ sq ft), premium everything, prime locations, and stress-free experiences - yes.",
+      },
+      {
+        question: "How to get room upgrades?",
+        answer:
+          "Join loyalty programs, achieve elite status, book direct, use Virtuoso advisors, mention special occasions, arrive midweek, use premium credit cards.",
+      },
+    ],
   },
   "adventure-outdoors-complete-guide": {
     slug: "adventure-outdoors-complete-guide",
     title: "Adventure & Outdoors Travel Complete Guide 2026",
     shortTitle: "Adventure Travel",
     metaTitle: "Adventure Travel Guide 2026 - Hiking, Diving & Outdoor Tips | TRAVI",
-    metaDescription: "Complete adventure travel guide 2026: hiking, diving, climbing tips. Expert planning strategies, safety advice, gear lists, and fitness preparation for outdoor adventures.",
-    keywords: "adventure travel, outdoor adventure, hiking, trekking, diving, climbing, safari, expedition travel, adventure sports",
+    metaDescription:
+      "Complete adventure travel guide 2026: hiking, diving, climbing tips. Expert planning strategies, safety advice, gear lists, and fitness preparation for outdoor adventures.",
+    keywords:
+      "adventure travel, outdoor adventure, hiking, trekking, diving, climbing, safari, expedition travel, adventure sports",
     heroImage: "/experiences/experiences-adventure-hiker-mountain-trail-snowy-peaks.webp",
-    heroImageAlt: "Hiker with backpack on mountain trail with snowy peaks and pine forest - TRAVI adventure travel guide",
+    heroImageAlt:
+      "Hiker with backpack on mountain trail with snowy peaks and pine forest - TRAVI adventure travel guide",
     icon: Tent,
     datePublished: "2026-01-04",
     dateModified: "2026-01-15",
     wordCount: 4300,
-    whatIs: "Adventure travel combines physical activity, cultural immersion, and engagement with nature. It includes hiking, trekking, climbing, diving, kayaking, cycling, wildlife safaris, and expeditions. Ranges from soft adventure (moderate activity, comfort accommodations) to hard adventure (demanding activities, basic accommodations, remote locations). According to ATTA's 2026 report, 73% of adventure travelers prioritize sustainability over cost, with 61% willing to pay 15-25% premium for eco-certified operators.",
+    whatIs:
+      "Adventure travel combines physical activity, cultural immersion, and engagement with nature. It includes hiking, trekking, climbing, diving, kayaking, cycling, wildlife safaris, and expeditions. Ranges from soft adventure (moderate activity, comfort accommodations) to hard adventure (demanding activities, basic accommodations, remote locations). According to ATTA's 2026 report, 73% of adventure travelers prioritize sustainability over cost, with 61% willing to pay 15-25% premium for eco-certified operators.",
     whoItsFor: [
       "Active individuals seeking challenges",
       "Nature lovers wanting wilderness",
       "Thrill seekers pursuing adrenaline",
       "Fitness-focused travelers",
       "Solo adventurers testing limits",
-      "Families teaching resilience"
+      "Families teaching resilience",
     ],
     sections: [
       {
@@ -438,7 +479,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Diving/safari peak: 4-6 months</li>
 <li>Standard tours: 2-4 months</li>
 <li>Last-minute: 2-4 weeks if flexible</li>
-</ul>`
+</ul>`,
       },
       {
         id: "packing",
@@ -468,7 +509,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Whistle</li>
 <li>Satellite communicator (remote areas)</li>
 <li>Water purification</li>
-</ul>`
+</ul>`,
       },
       {
         id: "budgeting",
@@ -490,7 +531,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Permits (Kilimanjaro $800+, Inca $500+)</li>
 <li>Tips (10-15% of trek cost)</li>
 <li>Emergency evacuation insurance ($200-400 ESSENTIAL)</li>
-</ul>`
+</ul>`,
       },
       {
         id: "safety",
@@ -521,7 +562,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>24/7 assistance</li>
 </ul>
 <p><strong>Providers:</strong> World Nomads, Global Rescue, IMG Global, DAN (diving)</p>
-<p><strong>Cost:</strong> $200-800 for 2 weeks</p>`
+<p><strong>Cost:</strong> $200-800 for 2 weeks</p>`,
       },
       {
         id: "tips",
@@ -548,32 +589,60 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Overpacking</li>
 <li>Inadequate hydration</li>
 <li>Ignoring acclimatization</li>
-</ul>`
-      }
+</ul>`,
+      },
     ],
     faqs: [
-      { question: "What fitness level do I need?", answer: "Soft: Basic mobility, 2-4 hours walking. Moderate: 4-6 hours activity, 15-20 lb pack, achievable with 8-12 weeks training. Hard: High fitness, 30-40 lb pack, 12-16+ weeks training." },
-      { question: "Is adventure travel safe?", answer: "When properly planned with reputable operators, very safe. ATTA reports serious incidents in less than 1 in 15,000 participants. Key: ATTA-certified operators, evacuation insurance, follow instructions, honest about fitness." },
-      { question: "Do I need to buy all gear?", answer: "Not necessarily. Operators provide technical climbing gear, camping equipment, water sports gear. Personal items needed: boots (broken in), clothing, backpack, water bottles. Rent for one-time activities ($10-40/day)." },
-      { question: "How far ahead to book?", answer: "Permit-limited: 6-12 months. Standard guided peak season: 3-6 months. Shoulder season: 1-3 months. Last-minute (2-4 weeks) sometimes yields deals." },
-      { question: "Can beginners do adventure travel?", answer: "Absolutely! Spans beginner-friendly soft to expert expeditions. Beginner options: wildlife safaris, easy coastal hikes, intro climbing/diving courses, flat cycling, guided nature walks." },
-      { question: "What insurance do I need?", answer: "Specialized adventure insurance covering: adventure sports, evacuation $250,000+, medical $100,000-250,000, trip cancellation, gear coverage, 24/7 assistance. Cost $200-800 for 2 weeks. NON-NEGOTIABLE." }
-    ]
+      {
+        question: "What fitness level do I need?",
+        answer:
+          "Soft: Basic mobility, 2-4 hours walking. Moderate: 4-6 hours activity, 15-20 lb pack, achievable with 8-12 weeks training. Hard: High fitness, 30-40 lb pack, 12-16+ weeks training.",
+      },
+      {
+        question: "Is adventure travel safe?",
+        answer:
+          "When properly planned with reputable operators, very safe. ATTA reports serious incidents in less than 1 in 15,000 participants. Key: ATTA-certified operators, evacuation insurance, follow instructions, honest about fitness.",
+      },
+      {
+        question: "Do I need to buy all gear?",
+        answer:
+          "Not necessarily. Operators provide technical climbing gear, camping equipment, water sports gear. Personal items needed: boots (broken in), clothing, backpack, water bottles. Rent for one-time activities ($10-40/day).",
+      },
+      {
+        question: "How far ahead to book?",
+        answer:
+          "Permit-limited: 6-12 months. Standard guided peak season: 3-6 months. Shoulder season: 1-3 months. Last-minute (2-4 weeks) sometimes yields deals.",
+      },
+      {
+        question: "Can beginners do adventure travel?",
+        answer:
+          "Absolutely! Spans beginner-friendly soft to expert expeditions. Beginner options: wildlife safaris, easy coastal hikes, intro climbing/diving courses, flat cycling, guided nature walks.",
+      },
+      {
+        question: "What insurance do I need?",
+        answer:
+          "Specialized adventure insurance covering: adventure sports, evacuation $250,000+, medical $100,000-250,000, trip cancellation, gear coverage, 24/7 assistance. Cost $200-800 for 2 weeks. NON-NEGOTIABLE.",
+      },
+    ],
   },
   "family-travel-complete-guide": {
     slug: "family-travel-complete-guide",
     title: "Family Travel Complete Guide 2026",
     shortTitle: "Family Travel",
     metaTitle: "Family Travel Guide 2026 - Tips for Traveling with Kids | TRAVI",
-    metaDescription: "Complete family travel guide 2026: traveling with kids of all ages. Expert planning tips, packing lists, budget strategies, and destination recommendations.",
-    keywords: "family travel, traveling with kids, family vacation, kid-friendly destinations, family holiday, traveling with toddlers, family trips",
+    metaDescription:
+      "Complete family travel guide 2026: traveling with kids of all ages. Expert planning tips, packing lists, budget strategies, and destination recommendations.",
+    keywords:
+      "family travel, traveling with kids, family vacation, kid-friendly destinations, family holiday, traveling with toddlers, family trips",
     heroImage: "/experiences/picnic-modern-architecture-outdoor-activity.webp",
-    heroImageAlt: "Family of four enjoying picnic on lawn with colorful modern architecture - TRAVI family vacation guide",
+    heroImageAlt:
+      "Family of four enjoying picnic on lawn with colorful modern architecture - TRAVI family vacation guide",
     icon: Baby,
     datePublished: "2026-01-04",
     dateModified: "2026-01-15",
     wordCount: 4400,
-    whatIs: "Family travel encompasses trips with children of any age, prioritizing experiences that engage all family members while considering safety, age-appropriate activities, flexibility, and comfort. Modern family travel includes cultural immersion, adventure, education, and multi-generational journeys. According to Family Travel Association 2026, 78% of families prioritize travel for bonding over material possessions, with spending up 42% since 2020.",
+    whatIs:
+      "Family travel encompasses trips with children of any age, prioritizing experiences that engage all family members while considering safety, age-appropriate activities, flexibility, and comfort. Modern family travel includes cultural immersion, adventure, education, and multi-generational journeys. According to Family Travel Association 2026, 78% of families prioritize travel for bonding over material possessions, with spending up 42% since 2020.",
     whoItsFor: [
       "Parents with babies (0-2)",
       "Families with toddlers (3-5)",
@@ -581,7 +650,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       "Families with teenagers (13-18)",
       "Multi-generational groups",
       "Single parents",
-      "Blended families"
+      "Blended families",
     ],
     sections: [
       {
@@ -621,7 +690,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Babies/toddlers (0-4): Max 4-6 hours direct</li>
 <li>School-age (5-12): 6-10 hours manageable</li>
 <li>Teenagers (13+): Any duration</li>
-</ul>`
+</ul>`,
       },
       {
         id: "packing",
@@ -673,7 +742,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Insect repellent (DEET 10-30% for kids)</li>
 <li>Hand sanitizer</li>
 <li>Prescriptions (double supply)</li>
-</ul>`
+</ul>`,
       },
       {
         id: "budgeting",
@@ -716,7 +785,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Shoulder season (30-50% savings)</li>
 <li>Apartment rental (kitchen saves $50-100/day)</li>
 <li>Public transport (kids love it, save 50-70%)</li>
-</ul>`
+</ul>`,
       },
       {
         id: "tips",
@@ -742,38 +811,62 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Expecting adult dining times</li>
 <li>Ignoring jet lag adjustment</li>
 <li>Forgetting comfort items</li>
-</ul>`
-      }
+</ul>`,
+      },
     ],
     faqs: [
-      { question: "What's the best age to start traveling with kids?", answer: "Any age! Babies under 2 fly free (lap infant). Many parents find 5-7 optimal (independent enough, still excited). Key: match destination complexity to age capability." },
-      { question: "How to handle flights with kids?", answer: "Book direct when possible. Pack double entertainment. Bring new toys/activities. Snacks constantly. Consider red-eye for sleep. Download movies/games. Aisle seat for bathroom access." },
-      { question: "Is travel insurance worth it for families?", answer: "Absolutely essential. Kids get sick more often. Cancellation protection for non-refundable costs. Medical coverage abroad. Cost: $150-300 for family typically covers $5,000-15,000 in trip costs." },
-      { question: "How to budget for a family vacation?", answer: "Family of 4 daily: Budget $200-400, Mid-range $400-800, Upscale $800-1,500+. Kitchen accommodations save 40-60% on food. Off-season saves 30-50% on everything." },
-      { question: "Best family-friendly destinations?", answer: "Theme parks (Orlando, Anaheim), beaches (Caribbean, Mediterranean), Europe cities (London, Paris with planning), Asia (Bali, Thailand), National Parks (US, Canada). Match to kids' ages and interests." }
-    ]
+      {
+        question: "What's the best age to start traveling with kids?",
+        answer:
+          "Any age! Babies under 2 fly free (lap infant). Many parents find 5-7 optimal (independent enough, still excited). Key: match destination complexity to age capability.",
+      },
+      {
+        question: "How to handle flights with kids?",
+        answer:
+          "Book direct when possible. Pack double entertainment. Bring new toys/activities. Snacks constantly. Consider red-eye for sleep. Download movies/games. Aisle seat for bathroom access.",
+      },
+      {
+        question: "Is travel insurance worth it for families?",
+        answer:
+          "Absolutely essential. Kids get sick more often. Cancellation protection for non-refundable costs. Medical coverage abroad. Cost: $150-300 for family typically covers $5,000-15,000 in trip costs.",
+      },
+      {
+        question: "How to budget for a family vacation?",
+        answer:
+          "Family of 4 daily: Budget $200-400, Mid-range $400-800, Upscale $800-1,500+. Kitchen accommodations save 40-60% on food. Off-season saves 30-50% on everything.",
+      },
+      {
+        question: "Best family-friendly destinations?",
+        answer:
+          "Theme parks (Orlando, Anaheim), beaches (Caribbean, Mediterranean), Europe cities (London, Paris with planning), Asia (Bali, Thailand), National Parks (US, Canada). Match to kids' ages and interests.",
+      },
+    ],
   },
   "budget-travel-complete-guide": {
     slug: "budget-travel-complete-guide",
     title: "Budget Travel Complete Guide 2026",
     shortTitle: "Budget Travel",
     metaTitle: "Budget Travel Guide 2026 - Money-Saving Tips & Cheap Destinations | TRAVI",
-    metaDescription: "Complete budget travel guide 2026: travel the world on a shoestring. Expert money-saving strategies, accommodation tips, and best budget destinations worldwide.",
-    keywords: "budget travel, cheap travel, backpacking, travel on a budget, budget destinations, hostel travel, shoestring travel, affordable vacations",
+    metaDescription:
+      "Complete budget travel guide 2026: travel the world on a shoestring. Expert money-saving strategies, accommodation tips, and best budget destinations worldwide.",
+    keywords:
+      "budget travel, cheap travel, backpacking, travel on a budget, budget destinations, hostel travel, shoestring travel, affordable vacations",
     heroImage: "/experiences/solo-travel-backpack-map-camera-desert-architecture.webp",
-    heroImageAlt: "Travel backpack with camera and map on desert architecture backdrop - TRAVI budget travel essentials",
+    heroImageAlt:
+      "Travel backpack with camera and map on desert architecture backdrop - TRAVI budget travel essentials",
     icon: Wallet,
     datePublished: "2026-01-04",
     dateModified: "2026-01-15",
     wordCount: 4100,
-    whatIs: "Budget travel prioritizes value over luxury, enabling longer trips and more destinations by minimizing costs while maximizing experiences. It involves strategic choices in accommodation, transportation, and activities - focusing on local experiences rather than tourist traps. Budget travelers often have the most authentic cultural experiences.",
+    whatIs:
+      "Budget travel prioritizes value over luxury, enabling longer trips and more destinations by minimizing costs while maximizing experiences. It involves strategic choices in accommodation, transportation, and activities - focusing on local experiences rather than tourist traps. Budget travelers often have the most authentic cultural experiences.",
     whoItsFor: [
       "Students and young professionals",
       "Long-term travelers and digital nomads",
       "Gap year adventurers",
       "Anyone prioritizing experiences over comfort",
       "Solo travelers seeking authentic experiences",
-      "Backpackers exploring multiple destinations"
+      "Backpackers exploring multiple destinations",
     ],
     sections: [
       {
@@ -799,7 +892,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <p><strong>Couchsurfing:</strong> FREE - Stay with locals for cultural exchange</p>
 <p><strong>House-Sitting:</strong> FREE (membership $100-150/year)</p>
 <p><strong>Work Exchange (Workaway/HelpX):</strong> 4-5 hours work for free accommodation + meals</p>
-<p><strong>Camping:</strong> $5-20/night campgrounds, FREE wild camping where legal</p>`
+<p><strong>Camping:</strong> $5-20/night campgrounds, FREE wild camping where legal</p>`,
       },
       {
         id: "transportation",
@@ -821,7 +914,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Walking: Free and best for exploring</li>
 <li>Bike rentals: $5-15/day in many cities</li>
 <li>Public transport: Always cheaper than taxis</li>
-</ul>`
+</ul>`,
       },
       {
         id: "budgeting",
@@ -851,7 +944,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Hungary: $30-50/day</li>
 <li>Romania: $25-45/day</li>
 <li>Bulgaria: $25-40/day</li>
-</ul>`
+</ul>`,
       },
       {
         id: "tips",
@@ -875,31 +968,55 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Tourist trap eating - Restaurants near attractions 50-150% markup</li>
 <li>Too much luggage - Checked bags cost $30-100 each way</li>
 <li>ATM fee ignorance - $3-7 per withdrawal adds up; use fee-free cards</li>
-</ul>`
-      }
+</ul>`,
+      },
     ],
     faqs: [
-      { question: "How much do I need per day?", answer: "Ultra-budget destinations (SE Asia, India, Central America): $15-30/day. Budget destinations (Eastern Europe, Latin America): $30-55/day. Western Europe, Scandinavia, USA: $80-150+/day requires serious strategy." },
-      { question: "Can I travel long-term on $1,000/month?", answer: "Yes in ultra-budget destinations. SE Asia, India, Nepal, Bolivia easily doable $25-35/day. Requires: hostel dorms, cooking most meals, free activities, slow travel." },
-      { question: "How to save the most money?", answer: "Cook own meals (save 60-80%), sleep in dorms or Couchsurf (save 50-70%), walk everywhere (save 100%), free activities, travel slow (save 40% on transport), off-season (save 40-60%)." },
-      { question: "Is budget travel safe?", answer: "Yes, as safe as any travel with precautions. Budget travelers often have MORE authentic local interactions. Tips: Research neighborhoods, lock valuables, trust instincts, buy travel insurance (NON-NEGOTIABLE)." },
-      { question: "How long can I travel on $10,000?", answer: "SE Asia: 12-18 months ($20-30/day). Eastern Europe: 8-12 months. Latin America: 8-14 months. Mixed regions: 10-15 months with strategic planning." }
-    ]
+      {
+        question: "How much do I need per day?",
+        answer:
+          "Ultra-budget destinations (SE Asia, India, Central America): $15-30/day. Budget destinations (Eastern Europe, Latin America): $30-55/day. Western Europe, Scandinavia, USA: $80-150+/day requires serious strategy.",
+      },
+      {
+        question: "Can I travel long-term on $1,000/month?",
+        answer:
+          "Yes in ultra-budget destinations. SE Asia, India, Nepal, Bolivia easily doable $25-35/day. Requires: hostel dorms, cooking most meals, free activities, slow travel.",
+      },
+      {
+        question: "How to save the most money?",
+        answer:
+          "Cook own meals (save 60-80%), sleep in dorms or Couchsurf (save 50-70%), walk everywhere (save 100%), free activities, travel slow (save 40% on transport), off-season (save 40-60%).",
+      },
+      {
+        question: "Is budget travel safe?",
+        answer:
+          "Yes, as safe as any travel with precautions. Budget travelers often have MORE authentic local interactions. Tips: Research neighborhoods, lock valuables, trust instincts, buy travel insurance (NON-NEGOTIABLE).",
+      },
+      {
+        question: "How long can I travel on $10,000?",
+        answer:
+          "SE Asia: 12-18 months ($20-30/day). Eastern Europe: 8-12 months. Latin America: 8-14 months. Mixed regions: 10-15 months with strategic planning.",
+      },
+    ],
   },
   "honeymoon-romance-complete-guide": {
     slug: "honeymoon-romance-complete-guide",
     title: "Honeymoon & Romance Travel Complete Guide 2026",
     shortTitle: "Honeymoon & Romance",
     metaTitle: "Honeymoon & Romance Travel Guide 2026 - Planning Tips | TRAVI",
-    metaDescription: "Complete honeymoon travel guide 2026: planning romantic getaways and unforgettable honeymoons. Expert tips for couples creating magical memories together.",
-    keywords: "honeymoon travel, romantic getaway, honeymoon planning, couples travel, romantic vacation, honeymoon destinations, romantic trips",
+    metaDescription:
+      "Complete honeymoon travel guide 2026: planning romantic getaways and unforgettable honeymoons. Expert tips for couples creating magical memories together.",
+    keywords:
+      "honeymoon travel, romantic getaway, honeymoon planning, couples travel, romantic vacation, honeymoon destinations, romantic trips",
     heroImage: "/experiences/romantic-couple-beach-sunset-modern-architecture.webp",
-    heroImageAlt: "Couple silhouette on beach at sunset with modern architecture - TRAVI romantic getaway guide",
+    heroImageAlt:
+      "Couple silhouette on beach at sunset with modern architecture - TRAVI romantic getaway guide",
     icon: Heart,
     datePublished: "2026-01-04",
     dateModified: "2026-01-15",
     wordCount: 4000,
-    whatIs: "Honeymoon and romance travel celebrates love through intimate experiences, stunning settings, and quality time together. Whether traditional post-wedding honeymoon, minimoon (short honeymoon), babymoon (pre-baby getaway), anniversary trip, or romantic escape - these journeys prioritize connection, relaxation, and creating shared memories. According to The Knot's 2026 Honeymoon Report, average honeymoon costs $5,800 per couple for 8 days, with 67% of couples prioritizing unique experiences over traditional beach resorts.",
+    whatIs:
+      "Honeymoon and romance travel celebrates love through intimate experiences, stunning settings, and quality time together. Whether traditional post-wedding honeymoon, minimoon (short honeymoon), babymoon (pre-baby getaway), anniversary trip, or romantic escape - these journeys prioritize connection, relaxation, and creating shared memories. According to The Knot's 2026 Honeymoon Report, average honeymoon costs $5,800 per couple for 8 days, with 67% of couples prioritizing unique experiences over traditional beach resorts.",
     whoItsFor: [
       "Newlyweds planning honeymoons",
       "Couples celebrating anniversaries",
@@ -907,7 +1024,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
       "Babymoon travelers (pregnant couples)",
       "Vow renewal celebrants",
       "Engagement trip takers",
-      "Long-term couples prioritizing romance"
+      "Long-term couples prioritizing romance",
     ],
     sections: [
       {
@@ -933,7 +1050,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <p><strong>Beach Bliss:</strong> Overwater villas, pristine beaches, water activities - Maldives, Bora Bora, Seychelles</p>
 <p><strong>Adventure Romance:</strong> Safaris, hiking, active experiences + luxury - African safari, Patagonia, New Zealand</p>
 <p><strong>Cultural Immersion:</strong> History, art, cuisine - Italy, Japan, Morocco</p>
-<p><strong>Multi-Destination:</strong> 2-4 locations, diverse experiences</p>`
+<p><strong>Multi-Destination:</strong> 2-4 locations, diverse experiences</p>`,
       },
       {
         id: "destinations",
@@ -960,7 +1077,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li><strong>Croatia:</strong> Adriatic coast, Dubrovnik, islands ($4,000-9,000)</li>
 <li><strong>Portugal:</strong> Lisbon, Porto, Douro Valley ($4,000-9,000)</li>
 <li><strong>Slovenia:</strong> Lake Bled, Ljubljana, underrated ($3,500-8,000)</li>
-</ul>`
+</ul>`,
       },
       {
         id: "budgeting",
@@ -983,7 +1100,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Dining: 15-20%</li>
 <li>Activities/Experiences: 10-15%</li>
 <li>Miscellaneous: 10-15%</li>
-</ul>`
+</ul>`,
       },
       {
         id: "experiences",
@@ -1019,7 +1136,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Professional couple photo shoots ($200-800)</li>
 <li>Stargazing experiences ($80-250)</li>
 <li>Private boat charters ($500-2,000+)</li>
-</ul>`
+</ul>`,
       },
       {
         id: "tips",
@@ -1043,38 +1160,62 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Going immediately post-wedding - Exhaustion undermines experience</li>
 <li>Neglecting budget - Overspending creates post-honeymoon stress</li>
 <li>Solo planning - Honeymoon for BOTH; plan together</li>
-</ul>`
-      }
+</ul>`,
+      },
     ],
     faqs: [
-      { question: "How much should we budget for honeymoon?", answer: "Average honeymoon costs $5,800 per couple for 8 days. Budget: $2,000-4,000. Mid-range: $4,000-8,000. Luxury: $8,000-15,000. Ultra-luxury: $15,000-30,000+. Factor destination choice (SE Asia vs Maldives = 50-70% cost difference)." },
-      { question: "When's the best time to go?", answer: "Most couples go within 1-3 months post-wedding. Immediate: capitalize on excitement but risk exhaustion. Delayed (1-3 months): OPTIMAL - recover from wedding stress. Many experts recommend 4-8 weeks post-wedding as sweet spot." },
-      { question: "Traditional beach vs adventure honeymoon?", answer: "Depends on couple's preferences. Beach: relaxation, classic romance. Adventure: bonding through shared experiences. Hybrid approach popular: Combine both (safari + beach; cultural cities + coastal relaxation)." },
-      { question: "Do we need travel advisor for honeymoon?", answer: "Highly recommended. Benefits: Honeymoon perks ($500-1,500+ value), expert destination knowledge, handle logistics while you focus on wedding, 24/7 support. Cost: Most advisors no fee (hotels pay commission)." },
-      { question: "Should we do all-inclusive?", answer: "All-inclusive pros: Predictable costs, everything handled, often good value for honeymooners. Cons: Less flexibility, can feel repetitive, limited local experiences. Consider hybrid: Start all-inclusive (recover from wedding), then explore independently." }
-    ]
+      {
+        question: "How much should we budget for honeymoon?",
+        answer:
+          "Average honeymoon costs $5,800 per couple for 8 days. Budget: $2,000-4,000. Mid-range: $4,000-8,000. Luxury: $8,000-15,000. Ultra-luxury: $15,000-30,000+. Factor destination choice (SE Asia vs Maldives = 50-70% cost difference).",
+      },
+      {
+        question: "When's the best time to go?",
+        answer:
+          "Most couples go within 1-3 months post-wedding. Immediate: capitalize on excitement but risk exhaustion. Delayed (1-3 months): OPTIMAL - recover from wedding stress. Many experts recommend 4-8 weeks post-wedding as sweet spot.",
+      },
+      {
+        question: "Traditional beach vs adventure honeymoon?",
+        answer:
+          "Depends on couple's preferences. Beach: relaxation, classic romance. Adventure: bonding through shared experiences. Hybrid approach popular: Combine both (safari + beach; cultural cities + coastal relaxation).",
+      },
+      {
+        question: "Do we need travel advisor for honeymoon?",
+        answer:
+          "Highly recommended. Benefits: Honeymoon perks ($500-1,500+ value), expert destination knowledge, handle logistics while you focus on wedding, 24/7 support. Cost: Most advisors no fee (hotels pay commission).",
+      },
+      {
+        question: "Should we do all-inclusive?",
+        answer:
+          "All-inclusive pros: Predictable costs, everything handled, often good value for honeymooners. Cons: Less flexibility, can feel repetitive, limited local experiences. Consider hybrid: Start all-inclusive (recover from wedding), then explore independently.",
+      },
+    ],
   },
   "solo-travel-complete-guide": {
     slug: "solo-travel-complete-guide",
     title: "Solo Travel Complete Guide 2026",
     shortTitle: "Solo Travel",
     metaTitle: "Solo Travel Guide 2026 - Safety Tips & Best Destinations | TRAVI",
-    metaDescription: "Complete solo travel guide 2026: traveling alone with confidence. Expert safety tips, destination recommendations, and strategies for independent adventures.",
-    keywords: "solo travel, traveling alone, solo female travel, independent travel, solo adventure, backpacking alone, solo trip planning",
+    metaDescription:
+      "Complete solo travel guide 2026: traveling alone with confidence. Expert safety tips, destination recommendations, and strategies for independent adventures.",
+    keywords:
+      "solo travel, traveling alone, solo female travel, independent travel, solo adventure, backpacking alone, solo trip planning",
     heroImage: "/experiences/solo-traveler-canoe-mountain-lake-archway-reflection.webp",
-    heroImageAlt: "Solo traveler in canoe framed by pink archway overlooking mountain lake - TRAVI solo travel guide",
+    heroImageAlt:
+      "Solo traveler in canoe framed by pink archway overlooking mountain lake - TRAVI solo travel guide",
     icon: Backpack,
     datePublished: "2026-01-04",
     dateModified: "2026-01-15",
     wordCount: 4200,
-    whatIs: "Solo travel means exploring the world independently, making your own decisions about where to go, what to see, and how to spend your time. It offers unmatched freedom, self-discovery, and the ability to move at your own pace. Solo travelers often report the most transformative personal growth experiences.",
+    whatIs:
+      "Solo travel means exploring the world independently, making your own decisions about where to go, what to see, and how to spend your time. It offers unmatched freedom, self-discovery, and the ability to move at your own pace. Solo travelers often report the most transformative personal growth experiences.",
     whoItsFor: [
       "Independent travelers seeking freedom",
       "Those wanting personal growth experiences",
       "Flexible adventurers with changing interests",
       "People between life stages (gap year, career break)",
       "Introverts who recharge alone",
-      "Anyone wanting to travel on their own terms"
+      "Anyone wanting to travel on their own terms",
     ],
     sections: [
       {
@@ -1105,7 +1246,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Budget control (your money, your choices)</li>
 <li>Eat what you want, when you want</li>
 <li>No coordination headaches</li>
-</ul>`
+</ul>`,
       },
       {
         id: "safety",
@@ -1138,7 +1279,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Choose well-reviewed hostels with security (lockers, key cards)</li>
 <li>Request rooms not on ground floor in hotels</li>
 <li>Use door wedge/portable lock for extra security</li>
-</ul>`
+</ul>`,
       },
       {
         id: "destinations",
@@ -1167,7 +1308,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Ireland and Scotland</li>
 <li>Japan and Singapore</li>
 <li>Portugal and Spain</li>
-</ul>`
+</ul>`,
       },
       {
         id: "meeting-people",
@@ -1196,7 +1337,7 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Join hostel activities (pub crawls, dinners, tours)</li>
 <li>Be open to spontaneous invitations</li>
 <li>Ask others about their travels - people love sharing</li>
-</ul>`
+</ul>`,
       },
       {
         id: "tips",
@@ -1222,30 +1363,60 @@ const TRAVEL_STYLES: Record<string, TravelStyleData> = {
 <li>Comparing to others' trips - Your journey is yours</li>
 <li>Being too cautious - Solo travel is safe with awareness</li>
 <li>Not taking rest days - Solo travel can be intense</li>
-</ul>`
-      }
+</ul>`,
+      },
     ],
     faqs: [
-      { question: "Is solo travel safe?", answer: "Yes, solo travel is very safe when done with awareness. Millions travel solo annually without incident. Key: research destinations, trust instincts, stay connected, buy travel insurance. Solo travelers often report feeling safer than expected." },
-      { question: "Will I be lonely traveling alone?", answer: "Loneliness is possible but rarely a major issue. Solo travelers often have MORE social interactions - you're approachable alone. Stay in social hostels, join tours, use traveler apps. Many report making lifelong friends while solo." },
-      { question: "Is solo travel more expensive?", answer: "Single supplements can add 30-50% to accommodation. However, solo travelers save on: no compromise activities (skip what doesn't interest you), flexible last-minute deals, eating cheaply. Budget control is actually easier alone." },
-      { question: "Best countries for first solo trip?", answer: "Iceland, New Zealand, Portugal, Japan, Canada - safe, English-friendly, excellent tourist infrastructure. SE Asia (Thailand, Vietnam) for budget-conscious. Start with destinations matching your comfort level." },
-      { question: "How do I meet people traveling alone?", answer: "Stay in hostels (even one night), join free walking tours, take group activities, use apps (Couchsurfing, Meetup), eat at communal tables, attend hostel events. Being solo makes you more approachable - others will come to you." },
-      { question: "Can older adults travel solo?", answer: "Absolutely! Solo travel has no age limit. Advantages: lifetime experience, often more budget flexibility, wisdom in decisions. Consider pace, health needs, and accommodation preferences. Resources: Road Scholar (50+), Overseas Adventure Travel." }
-    ]
-  }
+      {
+        question: "Is solo travel safe?",
+        answer:
+          "Yes, solo travel is very safe when done with awareness. Millions travel solo annually without incident. Key: research destinations, trust instincts, stay connected, buy travel insurance. Solo travelers often report feeling safer than expected.",
+      },
+      {
+        question: "Will I be lonely traveling alone?",
+        answer:
+          "Loneliness is possible but rarely a major issue. Solo travelers often have MORE social interactions - you're approachable alone. Stay in social hostels, join tours, use traveler apps. Many report making lifelong friends while solo.",
+      },
+      {
+        question: "Is solo travel more expensive?",
+        answer:
+          "Single supplements can add 30-50% to accommodation. However, solo travelers save on: no compromise activities (skip what doesn't interest you), flexible last-minute deals, eating cheaply. Budget control is actually easier alone.",
+      },
+      {
+        question: "Best countries for first solo trip?",
+        answer:
+          "Iceland, New Zealand, Portugal, Japan, Canada - safe, English-friendly, excellent tourist infrastructure. SE Asia (Thailand, Vietnam) for budget-conscious. Start with destinations matching your comfort level.",
+      },
+      {
+        question: "How do I meet people traveling alone?",
+        answer:
+          "Stay in hostels (even one night), join free walking tours, take group activities, use apps (Couchsurfing, Meetup), eat at communal tables, attend hostel events. Being solo makes you more approachable - others will come to you.",
+      },
+      {
+        question: "Can older adults travel solo?",
+        answer:
+          "Absolutely! Solo travel has no age limit. Advantages: lifetime experience, often more budget flexibility, wisdom in decisions. Consider pace, health needs, and accommodation preferences. Resources: Road Scholar (50+), Overseas Adventure Travel.",
+      },
+    ],
+  },
 };
 
 // ============================================
 // BREADCRUMB COMPONENT
 // ============================================
-function Breadcrumbs({ style, localePath }: { style: TravelStyleData; localePath: (path: string) => string }) {
+function Breadcrumbs({
+  style,
+  localePath,
+}: {
+  style: TravelStyleData;
+  localePath: (path: string) => string;
+}) {
   return (
-    <nav 
-      aria-label="Breadcrumb" 
-      className="flex items-center gap-2 text-sm text-white/80 mb-4"
-    >
-      <Link href={localePath("/")} className="hover:text-white transition-colors flex items-center gap-1">
+    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-white/80 mb-4">
+      <Link
+        href={localePath("/")}
+        className="hover:text-white transition-colors flex items-center gap-1"
+      >
         <Home className="w-3.5 h-3.5" />
         <span>Home</span>
       </Link>
@@ -1295,7 +1466,9 @@ export default function TravelStyleArticle() {
         <div className="min-h-screen flex items-center justify-center bg-white">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-slate-900 mb-4">Travel Style Not Found</h1>
-            <p className="text-slate-600 mb-6">The travel style guide you're looking for doesn't exist.</p>
+            <p className="text-slate-600 mb-6">
+              The travel style guide you're looking for doesn't exist.
+            </p>
             <Link href={localePath("/")}>
               <Button data-testid="button-go-home">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -1326,7 +1499,10 @@ export default function TravelStyleArticle() {
         <meta name="description" content={travelStyle.metaDescription} />
         <meta name="keywords" content={travelStyle.keywords} />
         <meta name="author" content={SITE_NAME} />
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        />
 
         {/* Canonical */}
         <link rel="canonical" href={`${SITE_URL}/travel-styles/${travelStyle.slug}`} />
@@ -1358,28 +1534,16 @@ export default function TravelStyleArticle() {
         <meta name="twitter:creator" content="@travi_world" />
 
         {/* Schema.org Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(articleSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
-        </script>
-        {faqSchema && (
-          <script type="application/ld+json">
-            {JSON.stringify(faqSchema)}
-          </script>
-        )}
-        {howToSchema && (
-          <script type="application/ld+json">
-            {JSON.stringify(howToSchema)}
-          </script>
-        )}
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
+        {howToSchema && <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>}
       </Helmet>
 
-      <article 
-        className="min-h-screen bg-white" 
+      <article
+        className="min-h-screen bg-white"
         data-testid="travel-style-article"
-        itemScope 
+        itemScope
         itemType="https://schema.org/Article"
       >
         {/* Hero Section */}
@@ -1390,7 +1554,7 @@ export default function TravelStyleArticle() {
             className="absolute inset-0 w-full h-full object-cover"
             itemProp="image"
             loading="eager"
-            {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
+            {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
             width={1200}
             height={630}
           />
@@ -1405,8 +1569,8 @@ export default function TravelStyleArticle() {
                 Travel Style Guide
               </Badge>
             </div>
-            <h1 
-              className="text-3xl md:text-5xl font-bold text-white mb-4" 
+            <h1
+              className="text-3xl md:text-5xl font-bold text-white mb-4"
               style={{ fontFamily: "'Chillax', sans-serif" }}
               itemProp="headline"
             >
@@ -1416,10 +1580,10 @@ export default function TravelStyleArticle() {
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 <time itemProp="datePublished" dateTime={travelStyle.datePublished}>
-                  {new Date(travelStyle.datePublished).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {new Date(travelStyle.datePublished).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                   })}
                 </time>
               </div>
@@ -1427,7 +1591,12 @@ export default function TravelStyleArticle() {
                 <Clock className="w-4 h-4" />
                 <span>{readingTimeMinutes} min read</span>
               </div>
-              <div className="flex items-center gap-1" itemProp="author" itemScope itemType="https://schema.org/Organization">
+              <div
+                className="flex items-center gap-1"
+                itemProp="author"
+                itemScope
+                itemType="https://schema.org/Organization"
+              >
                 <User className="w-4 h-4" />
                 <span itemProp="name">TRAVI Editorial</span>
               </div>
@@ -1461,7 +1630,7 @@ export default function TravelStyleArticle() {
                       Introduction
                     </a>
                   </li>
-                  {travelStyle.sections.map((section) => (
+                  {travelStyle.sections.map(section => (
                     <li key={section.id}>
                       <a
                         href={`#${section.id}`}
@@ -1528,36 +1697,36 @@ export default function TravelStyleArticle() {
               {travelStyle.sections.map((section, index) => (
                 <section key={section.id} id={section.id} className="mb-12 scroll-mt-24">
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">{section.title}</h2>
-                  <div 
+                  <div
                     className="prose prose-slate max-w-none prose-headings:font-semibold prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-ul:my-4 prose-li:my-1"
-                    dangerouslySetInnerHTML={{ __html: section.content }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(section.content) }}
                   />
-                  {index < travelStyle.sections.length - 1 && (
-                    <Separator className="mt-8" />
-                  )}
+                  {index < travelStyle.sections.length - 1 && <Separator className="mt-8" />}
                 </section>
               ))}
 
               {/* FAQ Section */}
               <section id="faq" className="mt-12 scroll-mt-24">
-                <h2 className="text-2xl font-bold text-slate-900 mb-6">Frequently Asked Questions</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Frequently Asked Questions
+                </h2>
                 <Accordion type="single" collapsible className="w-full">
                   {travelStyle.faqs.map((faq, index) => (
-                    <AccordionItem 
-                      key={index} 
-                      value={`faq-${index}`} 
+                    <AccordionItem
+                      key={index}
+                      value={`faq-${index}`}
                       className="border rounded-lg mb-3 px-4"
                       itemScope
                       itemProp="mainEntity"
                       itemType="https://schema.org/Question"
                     >
-                      <AccordionTrigger 
+                      <AccordionTrigger
                         className="text-left font-medium text-slate-900 hover:text-[#6443F4] hover:no-underline py-4"
                         itemProp="name"
                       >
                         {faq.question}
                       </AccordionTrigger>
-                      <AccordionContent 
+                      <AccordionContent
                         className="text-slate-600 pb-4"
                         itemScope
                         itemProp="acceptedAnswer"
@@ -1572,7 +1741,9 @@ export default function TravelStyleArticle() {
 
               {/* Related Travel Styles */}
               <section className="mt-16 pt-8 border-t">
-                <h2 className="text-2xl font-bold text-slate-900 mb-6">Explore Other Travel Styles</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Explore Other Travel Styles
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {Object.values(TRAVEL_STYLES)
                     .filter(style => style.slug !== travelStyle.slug)

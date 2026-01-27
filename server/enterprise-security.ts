@@ -52,7 +52,13 @@ export interface DeviceInfo {
 // In-memory store for device fingerprints (use Redis in production)
 const deviceStore: Map<string, Map<string, DeviceInfo>> = new Map(); // userId -> (fingerprintHash -> DeviceInfo)
 
-function parseUserAgent(ua: string): { browser: string; browserVersion: string; os: string; osVersion: string; deviceType: "desktop" | "mobile" | "tablet" | "unknown" } {
+function parseUserAgent(ua: string): {
+  browser: string;
+  browserVersion: string;
+  os: string;
+  osVersion: string;
+  deviceType: "desktop" | "mobile" | "tablet" | "unknown";
+} {
   let browser = "Unknown";
   let browserVersion = "";
   let os = "Unknown";
@@ -92,7 +98,7 @@ function parseUserAgent(ua: string): { browser: string; browserVersion: string; 
   }
 
   // Detect device type
-  if (ua.includes("Mobile") || ua.includes("Android") && !ua.includes("Tablet")) {
+  if (ua.includes("Mobile") || (ua.includes("Android") && !ua.includes("Tablet"))) {
     deviceType = "mobile";
   } else if (ua.includes("Tablet") || ua.includes("iPad")) {
     deviceType = "tablet";
@@ -142,9 +148,15 @@ export const deviceFingerprint = {
   /**
    * Register or update device for user
    */
-  async registerDevice(userId: string, fingerprint: DeviceFingerprint, ip: string): Promise<DeviceInfo> {
+  async registerDevice(
+    userId: string,
+    fingerprint: DeviceFingerprint,
+    ip: string
+  ): Promise<DeviceInfo> {
     const hash = this.generateHash(fingerprint);
-    const { browser, browserVersion, os, osVersion, deviceType } = parseUserAgent(fingerprint.userAgent);
+    const { browser, browserVersion, os, osVersion, deviceType } = parseUserAgent(
+      fingerprint.userAgent
+    );
 
     let userDevices = deviceStore.get(userId);
     if (!userDevices) {
@@ -183,7 +195,7 @@ export const deviceFingerprint = {
           deviceType,
           browser,
           os,
-          fingerprintHash: hash.substring(0, 8) + "..."
+          fingerprintHash: hash.substring(0, 8) + "...",
         },
         severity: "warning",
       });
@@ -309,14 +321,21 @@ export const contextualAuth = {
    */
   async getGeoLocation(ip: string): Promise<GeoLocation | null> {
     // Skip for localhost/private IPs
-    if (ip === "::1" || ip.startsWith("127.") || ip.startsWith("192.168.") ||
-        ip.startsWith("10.") || ip.startsWith("172.")) {
+    if (
+      ip === "::1" ||
+      ip.startsWith("127.") ||
+      ip.startsWith("192.168.") ||
+      ip.startsWith("10.") ||
+      ip.startsWith("172.")
+    ) {
       return { country: "Local", countryCode: "XX", timezone: "UTC" };
     }
 
     try {
       // Use free geo IP service (consider paid service for production)
-      const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,region,city,lat,lon,timezone`);
+      const response = await fetch(
+        `http://ip-api.com/json/${ip}?fields=status,country,countryCode,region,city,lat,lon,timezone`
+      );
       const data = await response.json();
 
       if (data.status === "success") {
@@ -330,9 +349,7 @@ export const contextualAuth = {
           timezone: data.timezone,
         };
       }
-    } catch (error) {
-      console.error("[ContextualAuth] Geo lookup failed:", error);
-    }
+    } catch (error) {}
 
     return null;
   },
@@ -520,9 +537,7 @@ const abacPolicies: AbacPolicy[] = [
     name: "Admin Full Access",
     priority: 1,
     effect: "allow",
-    conditions: [
-      { attribute: "subject.role", operator: "eq", value: "admin" },
-    ],
+    conditions: [{ attribute: "subject.role", operator: "eq", value: "admin" }],
   },
   // Block high-risk sessions from critical operations
   {
@@ -664,7 +679,8 @@ export const abac = {
 
     for (const policy of sortedPolicies) {
       // Check if all conditions match
-      const allMatch = policy.conditions.length === 0 ||
+      const allMatch =
+        policy.conditions.length === 0 ||
         policy.conditions.every(cond => evaluateCondition(cond, context));
 
       if (allMatch) {
@@ -733,23 +749,27 @@ interface BackoffState {
 const backoffStore: Map<string, BackoffState> = new Map();
 
 // Cleanup expired entries every 10 minutes - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
-  setInterval(() => {
-    const now = Date.now();
-    backoffStore.forEach((state, key) => {
-      if (state.lockedUntil && state.lockedUntil < now) {
-        backoffStore.delete(key);
-      } else if (state.nextAllowedAt < now - 3600000) { // 1 hour old
-        backoffStore.delete(key);
-      }
-    });
-  }, 10 * 60 * 1000);
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
+  setInterval(
+    () => {
+      const now = Date.now();
+      backoffStore.forEach((state, key) => {
+        if (state.lockedUntil && state.lockedUntil < now) {
+          backoffStore.delete(key);
+        } else if (state.nextAllowedAt < now - 3600000) {
+          // 1 hour old
+          backoffStore.delete(key);
+        }
+      });
+    },
+    10 * 60 * 1000
+  );
 }
 
 export const exponentialBackoff = {
   config: {
-    baseDelayMs: 1000,      // 1 second
-    maxDelayMs: 3600000,    // 1 hour
+    baseDelayMs: 1000, // 1 second
+    maxDelayMs: 3600000, // 1 hour
     maxAttempts: 10,
     jitterFactor: 0.3,
   } as BackoffConfig,
@@ -992,7 +1012,10 @@ export const passwordSecurity = {
     }
 
     // Shuffle
-    return password.split("").sort(() => Math.random() - 0.5).join("");
+    return password
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
   },
 };
 
@@ -1182,13 +1205,15 @@ export const sessionSecurity = {
 };
 
 // Run session cleanup every hour - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
-  setInterval(() => {
-    const cleaned = sessionSecurity.cleanup();
-    if (cleaned > 0) {
-      console.log(`[SessionSecurity] Cleaned ${cleaned} expired sessions`);
-    }
-  }, 60 * 60 * 1000);
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
+  setInterval(
+    () => {
+      const cleaned = sessionSecurity.cleanup();
+      if (cleaned > 0) {
+      }
+    },
+    60 * 60 * 1000
+  );
 }
 
 // ============================================================================
@@ -1252,9 +1277,14 @@ export const threatIntelligence = {
     const ipThreat = this.checkIp(ip);
     if (ipThreat) {
       indicators.push(ipThreat);
-      riskScore += ipThreat.severity === "critical" ? 50 :
-                   ipThreat.severity === "high" ? 35 :
-                   ipThreat.severity === "medium" ? 20 : 10;
+      riskScore +=
+        ipThreat.severity === "critical"
+          ? 50
+          : ipThreat.severity === "high"
+            ? 35
+            : ipThreat.severity === "medium"
+              ? 20
+              : 10;
     }
 
     // Check for suspicious user agents
@@ -1281,7 +1311,8 @@ export const threatIntelligence = {
       { pattern: /\.env/i, severity: "high" as const, desc: "Env file access attempt" },
     ];
 
-    const fullUrl = path + (req.query ? "?" + new URLSearchParams(req.query as any).toString() : "");
+    const fullUrl =
+      path + (req.query ? "?" + new URLSearchParams(req.query as any).toString() : "");
 
     for (const { pattern, severity, desc } of attackPatterns) {
       if (pattern.test(fullUrl)) {
@@ -1309,12 +1340,12 @@ export const threatIntelligence = {
   middleware() {
     return async (req: any, res: any, next: any) => {
       // Skip threat detection for approved bots (AI crawlers, search engines)
-      const userAgent = req.headers['user-agent'];
+      const userAgent = req.headers["user-agent"];
       if (req.isApprovedBot || isApprovedBot(userAgent)) {
         req.threatAnalysis = { isThreat: false, indicators: [], riskScore: 0 };
         return next();
       }
-      
+
       const analysis = this.analyzeRequest(req);
 
       if (analysis.isThreat) {

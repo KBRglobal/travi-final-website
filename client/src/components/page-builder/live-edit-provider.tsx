@@ -50,11 +50,13 @@ export function PageBuilderLiveEditProvider({
 }: PageBuilderLiveEditProviderProps) {
   const { user } = useAuth();
   const { toast } = useToast();
-  
+
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedSection, setSelectedSection] = useState<PageSection | null>(null);
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
-  const [pendingChanges, setPendingChanges] = useState<Map<string, Partial<PageSection>>>(new Map());
+  const [pendingChanges, setPendingChanges] = useState<Map<string, Partial<PageSection>>>(
+    new Map()
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   const canEdit = Boolean(user && ["admin", "editor"].includes(user.role));
@@ -68,8 +70,8 @@ export function PageBuilderLiveEditProvider({
       });
       return;
     }
-    
-    setIsEditMode((prev) => {
+
+    setIsEditMode(prev => {
       if (prev) {
         setSelectedSection(null);
         setHoveredSectionId(null);
@@ -91,33 +93,34 @@ export function PageBuilderLiveEditProvider({
     setHoveredSectionId(sectionId);
   }, []);
 
-  const updateSection = useCallback(async (sectionId: string, updates: Partial<PageSection>) => {
-    setPendingChanges((prev) => {
-      const newMap = new Map(prev);
-      const existing = newMap.get(sectionId) || {};
-      newMap.set(sectionId, { ...existing, ...updates });
-      return newMap;
-    });
+  const updateSection = useCallback(
+    async (sectionId: string, updates: Partial<PageSection>) => {
+      setPendingChanges(prev => {
+        const newMap = new Map(prev);
+        const existing = newMap.get(sectionId) || {};
+        newMap.set(sectionId, { ...existing, ...updates });
+        return newMap;
+      });
 
-    if (onSectionsChange) {
-      const updatedSections = sections.map((s) =>
-        s.id === sectionId ? { ...s, ...updates } : s
-      );
-      onSectionsChange(updatedSections);
-    }
+      if (onSectionsChange) {
+        const updatedSections = sections.map(s => (s.id === sectionId ? { ...s, ...updates } : s));
+        onSectionsChange(updatedSections);
+      }
 
-    if (selectedSection?.id === sectionId) {
-      setSelectedSection((prev) => prev ? { ...prev, ...updates } : null);
-    }
-  }, [sections, selectedSection?.id, onSectionsChange]);
+      if (selectedSection?.id === sectionId) {
+        setSelectedSection(prev => (prev ? { ...prev, ...updates } : null));
+      }
+    },
+    [sections, selectedSection?.id, onSectionsChange]
+  );
 
   const saveChanges = useCallback(async () => {
     if (pendingChanges.size === 0) return;
-    
+
     setIsSaving(true);
     try {
       const updates = Array.from(pendingChanges.entries());
-      
+
       await Promise.all(
         updates.map(([sectionId, changes]) =>
           apiRequest("PATCH", `/api/page-builder/sections/${sectionId}`, changes)
@@ -125,15 +128,14 @@ export function PageBuilderLiveEditProvider({
       );
 
       await queryClient.invalidateQueries({ queryKey: ["/api/page-builder/pages", pageId] });
-      
+
       setPendingChanges(new Map());
-      
+
       toast({
         title: "Changes Saved",
         description: `${updates.length} section(s) updated successfully.`,
       });
     } catch (error) {
-      console.error("Failed to save changes:", error);
       toast({
         title: "Save Failed",
         description: "Could not save your changes. Please try again.",
@@ -147,9 +149,9 @@ export function PageBuilderLiveEditProvider({
   const discardChanges = useCallback(() => {
     setPendingChanges(new Map());
     setSelectedSection(null);
-    
+
     queryClient.invalidateQueries({ queryKey: ["/api/page-builder/pages", pageId] });
-    
+
     toast({
       title: "Changes Discarded",
       description: "All unsaved changes have been discarded.",

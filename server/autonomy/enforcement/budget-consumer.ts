@@ -3,10 +3,10 @@
  * Atomic budget consumption and tracking
  */
 
-import { incrementBudgetCounter, checkBudgetStatus, getBudgetSummary } from '../policy/budgets';
-import { generateTargetKey, getPeriodBoundaries } from '../policy/config';
-import { PolicyTarget, BudgetPeriod, BudgetLimit } from '../policy/types';
-import { ConsumptionRecord, GuardedFeature, DEFAULT_ENFORCEMENT_CONFIG } from './types';
+import { incrementBudgetCounter, checkBudgetStatus, getBudgetSummary } from "../policy/budgets";
+import { generateTargetKey, getPeriodBoundaries } from "../policy/config";
+import { PolicyTarget, BudgetPeriod, BudgetLimit } from "../policy/types";
+import { ConsumptionRecord, GuardedFeature, DEFAULT_ENFORCEMENT_CONFIG } from "./types";
 
 // In-memory consumption buffer for batch updates
 interface BufferedConsumption {
@@ -50,7 +50,6 @@ async function flushConsumptionBuffer() {
         failuresCount: consumption.failuresCount,
       });
     } catch (error) {
-      console.error('[BudgetConsumer] Failed to flush consumption:', error);
       // Re-add to buffer if flush fails (bounded)
       if (consumptionBuffer.size < MAX_BUFFER_SIZE) {
         consumptionBuffer.set(key, consumption);
@@ -74,7 +73,7 @@ export async function consumeBudget(
     aiSpendCents?: number;
     isFailure?: boolean;
   },
-  periods: BudgetPeriod[] = ['hourly', 'daily']
+  periods: BudgetPeriod[] = ["hourly", "daily"]
 ): Promise<void> {
   if (!DEFAULT_ENFORCEMENT_CONFIG.enabled) return;
 
@@ -114,7 +113,7 @@ export async function consumeBudget(
 
     // Flush if batch threshold reached
     if (existing.actionsExecuted >= BATCH_THRESHOLD) {
-      flushConsumptionBuffer().catch(console.error);
+      flushConsumptionBuffer().catch(() => {});
     }
   }
 }
@@ -164,8 +163,8 @@ export async function getFeatureBudgetStatus(
     }
   }
 
-  const isExhausted = mostRestrictive.actionsRemaining <= 0 ||
-                      mostRestrictive.aiSpendRemaining <= 0;
+  const isExhausted =
+    mostRestrictive.actionsRemaining <= 0 || mostRestrictive.aiSpendRemaining <= 0;
 
   return {
     actionsUsed: mostRestrictive.actionsExecuted,
@@ -192,19 +191,20 @@ export async function reserveBudget(
   const status = await getFeatureBudgetStatus(feature, limits);
 
   if (status.isExhausted) {
-    return { reserved: false, reason: 'Budget exhausted' };
+    return { reserved: false, reason: "Budget exhausted" };
   }
 
   // Check if reservation would exceed limits
   const projectedTokensPercent = ((status.actionsUsed + 1) / status.actionsLimit) * 100;
-  const projectedSpendPercent = ((status.aiSpendUsed + estimatedCostCents) / status.aiSpendLimit) * 100;
+  const projectedSpendPercent =
+    ((status.aiSpendUsed + estimatedCostCents) / status.aiSpendLimit) * 100;
 
   if (projectedTokensPercent > 100) {
-    return { reserved: false, reason: 'Action limit would be exceeded' };
+    return { reserved: false, reason: "Action limit would be exceeded" };
   }
 
   if (projectedSpendPercent > 100) {
-    return { reserved: false, reason: 'AI spend limit would be exceeded' };
+    return { reserved: false, reason: "AI spend limit would be exceeded" };
   }
 
   // Reserve by consuming proposed units
@@ -250,7 +250,7 @@ export async function getAllBudgetsSummary(): Promise<{
 
   // Transform top consumers
   const topConsumers = summary.topConsumers.map(c => ({
-    feature: c.targetKey.replace('feature:', ''),
+    feature: c.targetKey.replace("feature:", ""),
     actions: c.actionsExecuted,
     spend: 0, // Would need to query for actual spend
   }));
@@ -294,7 +294,7 @@ export function isRateSustainable(
   if (!sustainable) {
     // Calculate when budget will exhaust at current rate
     const exhaustionFraction = limit / projectedTotal;
-    const exhaustionMs = start.getTime() + (periodMs * exhaustionFraction);
+    const exhaustionMs = start.getTime() + periodMs * exhaustionFraction;
     return { sustainable: false, projectedExhaustion: new Date(exhaustionMs) };
   }
 
@@ -307,5 +307,5 @@ export function shutdownBudgetConsumer() {
     clearInterval(flushTimer);
     flushTimer = null;
   }
-  flushConsumptionBuffer().catch(console.error);
+  flushConsumptionBuffer().catch(() => {});
 }

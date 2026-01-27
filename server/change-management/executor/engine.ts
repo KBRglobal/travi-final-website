@@ -42,9 +42,9 @@ export async function dryRun(planId: string, userId: string): Promise<DryRunResu
   }
 
   // Check if dry run is enabled
-  const dryRunEnabled = process.env.ENABLE_CHANGE_DRY_RUN !== 'false';
+  const dryRunEnabled = process.env.ENABLE_CHANGE_DRY_RUN !== "false";
   if (!dryRunEnabled) {
-    throw new Error('Dry run is disabled');
+    throw new Error("Dry run is disabled");
   }
 
   // Run guards
@@ -64,7 +64,7 @@ export async function dryRun(planId: string, userId: string): Promise<DryRunResu
   for (const p of preview) {
     if (p.wouldApply) {
       changesWouldApply++;
-    } else if (p.reason?.includes('Error')) {
+    } else if (p.reason?.includes("Error")) {
       changesWouldFail++;
       warnings.push(`Change ${p.changeId}: ${p.reason}`);
     } else {
@@ -74,7 +74,7 @@ export async function dryRun(planId: string, userId: string): Promise<DryRunResu
 
   // Add guard warnings/blockers
   for (const guard of guardsFailed) {
-    if (guard.severity === 'blocker') {
+    if (guard.severity === "blocker") {
       blockers.push(guard.message);
     } else {
       warnings.push(guard.message);
@@ -112,7 +112,7 @@ export async function dryRun(planId: string, userId: string): Promise<DryRunResu
  */
 export async function executePlan(
   planId: string,
-  context: Omit<ExecutionContext, 'planId'>
+  context: Omit<ExecutionContext, "planId">
 ): Promise<ExecutionResult> {
   const plan = getPlan(planId);
   if (!plan) {
@@ -125,25 +125,23 @@ export async function executePlan(
   }
 
   // Validate plan status
-  if (plan.status !== 'approved') {
+  if (plan.status !== "approved") {
     throw new Error(`Plan must be approved before execution (current: ${plan.status})`);
   }
 
   // Check feature flag
   if (!context.dryRun) {
-    const applyEnabled = process.env.ENABLE_CHANGE_APPLY === 'true';
+    const applyEnabled = process.env.ENABLE_CHANGE_APPLY === "true";
     if (!applyEnabled) {
-      throw new Error('Change apply is disabled (ENABLE_CHANGE_APPLY=false)');
+      throw new Error("Change apply is disabled (ENABLE_CHANGE_APPLY=false)");
     }
   }
 
   // Run guards one final time
   const { failed } = await evaluateGuards(plan, context.executedBy);
   if (hasBlockingFailures(failed)) {
-    const blockerMessages = failed
-      .filter(f => f.severity === 'blocker')
-      .map(f => f.message);
-    throw new Error(`Blocked by guards: ${blockerMessages.join(', ')}`);
+    const blockerMessages = failed.filter(f => f.severity === "blocker").map(f => f.message);
+    throw new Error(`Blocked by guards: ${blockerMessages.join(", ")}`);
   }
 
   // Acquire lock
@@ -156,10 +154,10 @@ export async function executePlan(
 
   try {
     // Update plan status
-    updatePlanStatus(planId, 'applying', context.executedBy);
+    updatePlanStatus(planId, "applying", context.executedBy);
 
     // Execute in batches
-    const pendingChanges = plan.changes.filter(c => c.status === 'pending');
+    const pendingChanges = plan.changes.filter(c => c.status === "pending");
 
     for (let i = 0; i < pendingChanges.length; i += batchSize) {
       const batch = pendingChanges.slice(i, i + batchSize);
@@ -172,7 +170,7 @@ export async function executePlan(
       for (const result of batchResults) {
         results.push(result);
 
-        if (result.status === 'failed' && result.error) {
+        if (result.status === "failed" && result.error) {
           errors.push({
             changeId: result.changeId,
             error: result.error,
@@ -193,16 +191,18 @@ export async function executePlan(
     }
 
     const completedAt = new Date();
-    const applied = results.filter(r => r.status === 'applied').length;
-    const failed = results.filter(r => r.status === 'failed').length;
-    const skipped = results.filter(r => r.status === 'skipped').length;
+    const applied = results.filter(r => r.status === "applied").length;
+    const failed = results.filter(r => r.status === "failed").length;
+    const skipped = results.filter(r => r.status === "skipped").length;
 
     const success = failed === 0;
 
     // Update plan status
     const finalStatus = context.dryRun
       ? plan.status // Don't change status on dry run
-      : (success ? 'applied' : 'failed');
+      : success
+        ? "applied"
+        : "failed";
 
     if (!context.dryRun) {
       updatePlanStatus(planId, finalStatus, context.executedBy, {
@@ -252,7 +252,7 @@ async function executeChange(
     if (dryRun) {
       return {
         changeId: change.id,
-        status: 'applied',
+        status: "applied",
         appliedAt: new Date(),
       };
     }
@@ -261,47 +261,47 @@ async function executeChange(
     let rollbackData: unknown;
 
     switch (change.type) {
-      case 'content_update':
+      case "content_update":
         rollbackData = await executeContentUpdate(change);
         break;
 
-      case 'content_publish':
+      case "content_publish":
         rollbackData = await executeContentPublish(change);
         break;
 
-      case 'content_unpublish':
+      case "content_unpublish":
         rollbackData = await executeContentUnpublish(change);
         break;
 
-      case 'seo_update':
+      case "seo_update":
         rollbackData = await executeSeoUpdate(change);
         break;
 
-      case 'canonical_set':
-      case 'canonical_remove':
+      case "canonical_set":
+      case "canonical_remove":
         rollbackData = await executeCanonicalChange(change);
         break;
 
-      case 'link_add':
-      case 'link_remove':
+      case "link_add":
+      case "link_remove":
         rollbackData = await executeLinkChange(change);
         break;
 
-      case 'entity_update':
-      case 'entity_merge':
+      case "entity_update":
+      case "entity_merge":
         rollbackData = await executeEntityChange(change);
         break;
 
-      case 'aeo_regenerate':
+      case "aeo_regenerate":
         rollbackData = await executeAeoRegenerate(change);
         break;
 
-      case 'experiment_start':
-      case 'experiment_stop':
+      case "experiment_start":
+      case "experiment_stop":
         rollbackData = await executeExperimentChange(change);
         break;
 
-      case 'monetization_update':
+      case "monetization_update":
         rollbackData = await executeMonetizationUpdate(change);
         break;
 
@@ -311,29 +311,29 @@ async function executeChange(
 
     // Update change status
     updateChange(planId, change.id, {
-      status: 'applied',
+      status: "applied",
       appliedAt: new Date(),
       rollbackData,
     });
 
     return {
       changeId: change.id,
-      status: 'applied',
+      status: "applied",
       appliedAt: new Date(),
       rollbackData,
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
     // Update change status
     updateChange(planId, change.id, {
-      status: 'failed',
+      status: "failed",
       error: errorMessage,
     });
 
     return {
       changeId: change.id,
-      status: 'failed',
+      status: "failed",
       error: errorMessage,
     };
   }
@@ -347,17 +347,24 @@ async function executeContentUpdate(change: ChangeItem): Promise<unknown> {
   const contentId = change.targetId;
 
   // Get current state for rollback
-  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
+  const [current] = await db
+    .select()
+    .from(content)
+    .where(eq(content.id, contentId as any))
+    .limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = { ...current };
 
   // Apply update
   const updates = change.afterValue as Record<string, unknown>;
-  await db.update(content).set({
-    ...updates,
-    updatedAt: new Date(),
-  } as any).where(eq(content.id, contentId as any));
+  await db
+    .update(content)
+    .set({
+      ...updates,
+      updatedAt: new Date(),
+    } as any)
+    .where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
@@ -365,16 +372,23 @@ async function executeContentUpdate(change: ChangeItem): Promise<unknown> {
 async function executeContentPublish(change: ChangeItem): Promise<unknown> {
   const contentId = change.targetId;
 
-  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
+  const [current] = await db
+    .select()
+    .from(content)
+    .where(eq(content.id, contentId as any))
+    .limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = { status: current.status, publishedAt: current.publishedAt };
 
-  await db.update(content).set({
-    status: 'published',
-    publishedAt: new Date(),
-    updatedAt: new Date(),
-  } as any).where(eq(content.id, contentId as any));
+  await db
+    .update(content)
+    .set({
+      status: "published",
+      publishedAt: new Date(),
+      updatedAt: new Date(),
+    } as any)
+    .where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
@@ -382,15 +396,22 @@ async function executeContentPublish(change: ChangeItem): Promise<unknown> {
 async function executeContentUnpublish(change: ChangeItem): Promise<unknown> {
   const contentId = change.targetId;
 
-  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
+  const [current] = await db
+    .select()
+    .from(content)
+    .where(eq(content.id, contentId as any))
+    .limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = { status: current.status, publishedAt: current.publishedAt };
 
-  await db.update(content).set({
-    status: 'draft',
-    updatedAt: new Date(),
-  } as any).where(eq(content.id, contentId as any));
+  await db
+    .update(content)
+    .set({
+      status: "draft",
+      updatedAt: new Date(),
+    } as any)
+    .where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
@@ -398,7 +419,11 @@ async function executeContentUnpublish(change: ChangeItem): Promise<unknown> {
 async function executeSeoUpdate(change: ChangeItem): Promise<unknown> {
   const contentId = change.targetId;
 
-  const [current] = await db.select().from(content).where(eq(content.id, contentId as any)).limit(1);
+  const [current] = await db
+    .select()
+    .from(content)
+    .where(eq(content.id, contentId as any))
+    .limit(1);
   if (!current) throw new Error(`Content ${contentId} not found`);
 
   const rollbackData = {
@@ -408,12 +433,15 @@ async function executeSeoUpdate(change: ChangeItem): Promise<unknown> {
   };
 
   const updates = change.afterValue as Record<string, unknown>;
-  await db.update(content).set({
-    metaTitle: updates.metaTitle as string,
-    metaDescription: updates.metaDescription as string,
-    metaKeywords: updates.metaKeywords as string,
-    updatedAt: new Date(),
-  } as any).where(eq(content.id, contentId as any));
+  await db
+    .update(content)
+    .set({
+      metaTitle: updates.metaTitle as string,
+      metaDescription: updates.metaDescription as string,
+      metaKeywords: updates.metaKeywords as string,
+      updatedAt: new Date(),
+    } as any)
+    .where(eq(content.id, contentId as any));
 
   return rollbackData;
 }
@@ -478,12 +506,8 @@ async function executeMonetizationUpdate(change: ChangeItem): Promise<unknown> {
 // LIFECYCLE EVENTS
 // ============================================================================
 
-async function emitLifecycleEvents(
-  plan: ChangePlan,
-  results: ChangeResult[]
-): Promise<void> {
+async function emitLifecycleEvents(plan: ChangePlan, results: ChangeResult[]): Promise<void> {
   // In production, would emit events to content-lifecycle module
-  console.log(`[ChangeManagement] Plan ${plan.id} executed: ${results.filter(r => r.status === 'applied').length} applied`);
 }
 
 // ============================================================================

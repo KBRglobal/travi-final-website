@@ -32,7 +32,6 @@ router.get("/pois/cities", async (req: Request, res: Response) => {
 
     res.json({ success: true, data: cities });
   } catch (error) {
-    console.error("Error fetching POI cities:", error);
     res.status(500).json({ success: false, error: "Failed to fetch cities" });
   }
 });
@@ -51,7 +50,6 @@ router.get("/pois/categories", async (req: Request, res: Response) => {
 
     res.json({ success: true, data: categories });
   } catch (error) {
-    console.error("Error fetching POI categories:", error);
     res.status(500).json({ success: false, error: "Failed to fetch categories" });
   }
 });
@@ -62,15 +60,15 @@ router.get("/pois", async (req: Request, res: Response) => {
     const { city, category, search, limit = "50", offset = "0" } = req.query;
 
     const conditions = [];
-    
+
     if (city && city !== "all") {
       conditions.push(eq(update9987TourpediaPois.city, city as string));
     }
-    
+
     if (category && category !== "all") {
       conditions.push(eq(update9987TourpediaPois.category, category as string));
     }
-    
+
     if (search) {
       conditions.push(ilike(update9987TourpediaPois.name, `%${search}%`));
     }
@@ -99,7 +97,6 @@ router.get("/pois", async (req: Request, res: Response) => {
       offset: parseInt(offset as string),
     });
   } catch (error) {
-    console.error("Error fetching POIs:", error);
     res.status(500).json({ success: false, error: "Failed to fetch POIs" });
   }
 });
@@ -120,7 +117,6 @@ router.get("/pois/:id", async (req: Request, res: Response) => {
 
     res.json({ success: true, data: poi[0] });
   } catch (error) {
-    console.error("Error fetching POI:", error);
     res.status(500).json({ success: false, error: "Failed to fetch POI" });
   }
 });
@@ -149,16 +145,15 @@ router.get("/holidays/countries", async (req: Request, res: Response) => {
       })
       .from(update9987Countries);
 
-    const countryMap = new Map(countryDetails.map((c) => [c.iso2, c.name]));
+    const countryMap = new Map(countryDetails.map(c => [c.iso2, c.name]));
 
-    const enrichedCountries = countries.map((c) => ({
+    const enrichedCountries = countries.map(c => ({
       ...c,
       name: countryMap.get(c.countryCode) || c.countryCode,
     }));
 
     res.json({ success: true, data: enrichedCountries });
   } catch (error) {
-    console.error("Error fetching holiday countries:", error);
     res.status(500).json({ success: false, error: "Failed to fetch countries" });
   }
 });
@@ -169,11 +164,11 @@ router.get("/holidays", async (req: Request, res: Response) => {
     const { country, year = new Date().getFullYear().toString() } = req.query;
 
     const conditions = [];
-    
+
     if (country && country !== "all") {
       conditions.push(eq(update9987PublicHolidays.countryCode, country as string));
     }
-    
+
     // Filter by year using date range
     const startDate = `${year}-01-01`;
     const endDate = `${year}-12-31`;
@@ -190,7 +185,6 @@ router.get("/holidays", async (req: Request, res: Response) => {
 
     res.json({ success: true, data: holidays });
   } catch (error) {
-    console.error("Error fetching holidays:", error);
     res.status(500).json({ success: false, error: "Failed to fetch holidays" });
   }
 });
@@ -205,11 +199,11 @@ router.get("/destinations/countries", async (req: Request, res: Response) => {
     const { search, region, limit = "50", offset = "0" } = req.query;
 
     const conditions = [];
-    
+
     if (search) {
       conditions.push(ilike(update9987Countries.name, `%${search}%`));
     }
-    
+
     if (region) {
       conditions.push(eq(update9987Countries.region, region as string));
     }
@@ -236,7 +230,6 @@ router.get("/destinations/countries", async (req: Request, res: Response) => {
       total: countResult[0]?.count || 0,
     });
   } catch (error) {
-    console.error("Error fetching countries:", error);
     res.status(500).json({ success: false, error: "Failed to fetch countries" });
   }
 });
@@ -256,7 +249,6 @@ router.get("/destinations/regions", async (req: Request, res: Response) => {
 
     res.json({ success: true, data: regions });
   } catch (error) {
-    console.error("Error fetching regions:", error);
     res.status(500).json({ success: false, error: "Failed to fetch regions" });
   }
 });
@@ -265,7 +257,7 @@ router.get("/destinations/regions", async (req: Request, res: Response) => {
 router.get("/destinations/countries/:code", async (req: Request, res: Response) => {
   try {
     const { code } = req.params;
-    
+
     const country = await db
       .select()
       .from(update9987Countries)
@@ -290,7 +282,6 @@ router.get("/destinations/countries/:code", async (req: Request, res: Response) 
       },
     });
   } catch (error) {
-    console.error("Error fetching country:", error);
     res.status(500).json({ success: false, error: "Failed to fetch country" });
   }
 });
@@ -301,11 +292,11 @@ router.get("/destinations/states", async (req: Request, res: Response) => {
     const { country, search, limit = "100", offset = "0" } = req.query;
 
     const conditions = [];
-    
+
     if (country) {
       conditions.push(eq(update9987States.countryCode, (country as string).toUpperCase()));
     }
-    
+
     if (search) {
       conditions.push(ilike(update9987States.name, `%${search}%`));
     }
@@ -322,7 +313,6 @@ router.get("/destinations/states", async (req: Request, res: Response) => {
 
     res.json({ success: true, data: states });
   } catch (error) {
-    console.error("Error fetching states:", error);
     res.status(500).json({ success: false, error: "Failed to fetch states" });
   }
 });
@@ -350,7 +340,6 @@ router.get("/stats", async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching stats:", error);
     res.status(500).json({ success: false, error: "Failed to fetch stats" });
   }
 });

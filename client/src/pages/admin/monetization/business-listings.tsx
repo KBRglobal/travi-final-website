@@ -39,7 +39,10 @@ export default function BusinessListingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3" data-testid="heading-business-listings">
+          <h1
+            className="text-3xl font-bold flex items-center gap-3"
+            data-testid="heading-business-listings"
+          >
             <Store className="h-8 w-8 text-primary" />
             Business Listings
           </h1>
@@ -56,15 +59,11 @@ export default function BusinessListingsPage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Businesses pay for <strong>featured placement</strong> in your contents. 
-          Track impressions, clicks, and leads generated. Offer tiers: Basic, Premium, Enterprise.
-          <br />
-          <span className="text-xs opacity-70">
-            (עסקים משלמים על מיקום מודגש בתוכן שלך. עקוב אחרי חשיפות, קליקים ולידים שנוצרו.)
-          </span>
+          Businesses pay for <strong>featured placement</strong> in your content. Track impressions,
+          clicks, and leads generated. Offer tiers: Basic, Premium, Enterprise.
         </p>
       </div>
 
@@ -150,11 +149,20 @@ export default function BusinessListingsPage() {
                     <div className="flex-1">
                       <h4 className="font-medium">{listing.businessName}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {listing.businessType} | {listing.impressions.toLocaleString()} views | {listing.clicks} clicks
+                        {listing.businessType} | {listing.impressions.toLocaleString()} views |{" "}
+                        {listing.clicks} clicks
                       </p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Badge variant={listing.tier === "enterprise" ? "default" : listing.tier === "premium" ? "secondary" : "outline"}>
+                      <Badge
+                        variant={
+                          listing.tier === "enterprise"
+                            ? "default"
+                            : listing.tier === "premium"
+                              ? "secondary"
+                              : "outline"
+                        }
+                      >
                         {listing.tier}
                       </Badge>
                       <Badge variant={listing.status === "active" ? "default" : "secondary"}>

@@ -46,25 +46,21 @@ import {
   ActionType,
   PolicyTarget,
   BudgetStatus,
-} from './types';
+} from "./types";
 import {
   generateTargetKey,
   isWithinTimeWindow,
   DEFAULT_GLOBAL_POLICY,
   FEATURE_POLICIES,
   DEFAULT_AUTONOMY_CONFIG,
-} from './config';
-import {
-  checkBudgetStatus,
-  isBudgetExhausted,
-  incrementBudgetCounter,
-} from './budgets';
-import { getPolicies, logDecision } from './repository';
+} from "./config";
+import { checkBudgetStatus, isBudgetExhausted, incrementBudgetCounter } from "./budgets";
+import { getPolicies, logDecision } from "./repository";
 
 const EVALUATION_TIMEOUT_MS = 3000;
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_AUTONOMY_POLICY === 'true';
+  return process.env.ENABLE_AUTONOMY_POLICY === "true";
 }
 
 async function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
@@ -83,14 +79,14 @@ export async function findApplicablePolicies(target: PolicyTarget): Promise<Poli
     if (!policy.enabled) continue;
 
     // Check if policy applies to this target
-    if (policy.target.type === 'global') {
+    if (policy.target.type === "global") {
       applicable.push(policy);
     } else if (policy.target.type === target.type) {
-      if (target.type === 'feature' && policy.target.feature === target.feature) {
+      if (target.type === "feature" && policy.target.feature === target.feature) {
         applicable.push(policy);
-      } else if (target.type === 'entity' && policy.target.entity === target.entity) {
+      } else if (target.type === "entity" && policy.target.entity === target.entity) {
         applicable.push(policy);
-      } else if (target.type === 'locale' && policy.target.locale === target.locale) {
+      } else if (target.type === "locale" && policy.target.locale === target.locale) {
         applicable.push(policy);
       }
     }
@@ -101,7 +97,10 @@ export async function findApplicablePolicies(target: PolicyTarget): Promise<Poli
 }
 
 // Check if action is allowed by policy
-function isActionAllowed(policy: PolicyDefinition, action: ActionType): {
+function isActionAllowed(
+  policy: PolicyDefinition,
+  action: ActionType
+): {
   allowed: boolean;
   reason?: PolicyReason;
 } {
@@ -110,9 +109,9 @@ function isActionAllowed(policy: PolicyDefinition, action: ActionType): {
     return {
       allowed: false,
       reason: {
-        code: 'ACTION_BLOCKED',
+        code: "ACTION_BLOCKED",
         message: `Action '${action}' is explicitly blocked by policy '${policy.name}'`,
-        severity: 'error',
+        severity: "error",
       },
     };
   }
@@ -122,9 +121,9 @@ function isActionAllowed(policy: PolicyDefinition, action: ActionType): {
     return {
       allowed: false,
       reason: {
-        code: 'ACTION_NOT_ALLOWED',
+        code: "ACTION_NOT_ALLOWED",
         message: `Action '${action}' is not in allowed actions for policy '${policy.name}'`,
-        severity: 'error',
+        severity: "error",
       },
     };
   }
@@ -145,9 +144,9 @@ function checkTimeWindow(policy: PolicyDefinition): {
     return {
       allowed: false,
       reason: {
-        code: 'OUTSIDE_ALLOWED_HOURS',
+        code: "OUTSIDE_ALLOWED_HOURS",
         message: `Current time is outside allowed hours (${policy.allowedHours.startHour}:00-${policy.allowedHours.endHour}:00)`,
-        severity: 'error',
+        severity: "error",
       },
     };
   }
@@ -174,23 +173,23 @@ export async function evaluatePolicy(
   // If not enabled, allow everything with a warning
   if (!isEnabled()) {
     return {
-      decision: 'ALLOW',
-      reasons: [{
-        code: 'POLICY_DISABLED',
-        message: 'Autonomy policy engine is disabled',
-        severity: 'info',
-      }],
+      decision: "ALLOW",
+      reasons: [
+        {
+          code: "POLICY_DISABLED",
+          message: "Autonomy policy engine is disabled",
+          severity: "info",
+        },
+      ],
       evaluatedAt,
     };
   }
 
   try {
     // Find applicable policies
-    const policies = await withTimeout(
-      findApplicablePolicies(target),
-      EVALUATION_TIMEOUT_MS,
-      [DEFAULT_GLOBAL_POLICY]
-    );
+    const policies = await withTimeout(findApplicablePolicies(target), EVALUATION_TIMEOUT_MS, [
+      DEFAULT_GLOBAL_POLICY,
+    ]);
 
     if (policies.length === 0) {
       // No policies found, use default
@@ -210,7 +209,7 @@ export async function evaluatePolicy(
       await logDecision({
         targetKey,
         actionType: action,
-        decision: 'BLOCK',
+        decision: "BLOCK",
         reasons,
         matchedPolicyId: policy.id,
         requesterId: context?.requesterId,
@@ -218,7 +217,7 @@ export async function evaluatePolicy(
       });
 
       return {
-        decision: 'BLOCK',
+        decision: "BLOCK",
         reasons,
         matchedPolicy: policy.id,
         evaluatedAt,
@@ -233,7 +232,7 @@ export async function evaluatePolicy(
       await logDecision({
         targetKey,
         actionType: action,
-        decision: 'BLOCK',
+        decision: "BLOCK",
         reasons,
         matchedPolicyId: policy.id,
         requesterId: context?.requesterId,
@@ -241,7 +240,7 @@ export async function evaluatePolicy(
       });
 
       return {
-        decision: 'BLOCK',
+        decision: "BLOCK",
         reasons,
         matchedPolicy: policy.id,
         evaluatedAt,
@@ -252,15 +251,15 @@ export async function evaluatePolicy(
     const budgetExhausted = await isBudgetExhausted(targetKey, policy.budgetLimits);
     if (budgetExhausted.exhausted) {
       reasons.push({
-        code: 'BUDGET_EXHAUSTED',
-        message: budgetExhausted.reason || 'Budget limit reached',
-        severity: 'error',
+        code: "BUDGET_EXHAUSTED",
+        message: budgetExhausted.reason || "Budget limit reached",
+        severity: "error",
       });
 
       await logDecision({
         targetKey,
         actionType: action,
-        decision: 'BLOCK',
+        decision: "BLOCK",
         reasons,
         matchedPolicyId: policy.id,
         requesterId: context?.requesterId,
@@ -268,7 +267,7 @@ export async function evaluatePolicy(
       });
 
       return {
-        decision: 'BLOCK',
+        decision: "BLOCK",
         reasons,
         matchedPolicy: policy.id,
         evaluatedAt,
@@ -279,37 +278,37 @@ export async function evaluatePolicy(
     const budgetStatuses = await checkBudgetStatus(targetKey, policy.budgetLimits);
 
     // Check for warnings (approaching limits)
-    let decision: PolicyDecision = 'ALLOW';
+    let decision: PolicyDecision = "ALLOW";
     for (const status of budgetStatuses) {
       const actionsUsedPercent = (status.actionsExecuted / status.actionsLimit) * 100;
       const aiSpendUsedPercent = (status.aiSpendActual / status.aiSpendLimit) * 100;
 
       if (actionsUsedPercent >= 80) {
-        decision = 'WARN';
+        decision = "WARN";
         reasons.push({
-          code: 'BUDGET_WARNING',
+          code: "BUDGET_WARNING",
           message: `${status.period} action budget is ${actionsUsedPercent.toFixed(0)}% used`,
-          severity: 'warning',
+          severity: "warning",
         });
       }
 
       if (aiSpendUsedPercent >= 80) {
-        decision = 'WARN';
+        decision = "WARN";
         reasons.push({
-          code: 'AI_SPEND_WARNING',
+          code: "AI_SPEND_WARNING",
           message: `${status.period} AI spend is ${aiSpendUsedPercent.toFixed(0)}% used`,
-          severity: 'warning',
+          severity: "warning",
         });
       }
     }
 
     // Check approval requirements
-    if (policy.approvalLevel === 'review' || policy.approvalLevel === 'manual') {
-      decision = 'WARN';
+    if (policy.approvalLevel === "review" || policy.approvalLevel === "manual") {
+      decision = "WARN";
       reasons.push({
-        code: 'REQUIRES_APPROVAL',
+        code: "REQUIRES_APPROVAL",
         message: `Action requires ${policy.approvalLevel} approval`,
-        severity: 'warning',
+        severity: "warning",
       });
     }
 
@@ -326,26 +325,31 @@ export async function evaluatePolicy(
 
     return {
       decision,
-      reasons: reasons.length > 0 ? reasons : [{
-        code: 'ALLOWED',
-        message: 'Action permitted by policy',
-        severity: 'info',
-      }],
+      reasons:
+        reasons.length > 0
+          ? reasons
+          : [
+              {
+                code: "ALLOWED",
+                message: "Action permitted by policy",
+                severity: "info",
+              },
+            ],
       matchedPolicy: policy.id,
       budgetStatus: budgetStatuses[0], // Return first (most restrictive) status
       evaluatedAt,
     };
   } catch (error) {
-    console.error('[PolicyEngine] Evaluation error:', error);
-
     // Fail closed on errors
     return {
-      decision: 'BLOCK',
-      reasons: [{
-        code: 'EVALUATION_ERROR',
-        message: error instanceof Error ? error.message : 'Policy evaluation failed',
-        severity: 'error',
-      }],
+      decision: "BLOCK",
+      reasons: [
+        {
+          code: "EVALUATION_ERROR",
+          message: error instanceof Error ? error.message : "Policy evaluation failed",
+          severity: "error",
+        },
+      ],
       evaluatedAt,
     };
   }
@@ -384,12 +388,9 @@ export async function recordActionExecution(
 }
 
 // Quick check without full evaluation (for performance-sensitive paths)
-export async function quickCheck(
-  target: PolicyTarget,
-  action: ActionType
-): Promise<boolean> {
+export async function quickCheck(target: PolicyTarget, action: ActionType): Promise<boolean> {
   if (!isEnabled()) return true;
 
   const result = await evaluatePolicy(target, action);
-  return result.decision !== 'BLOCK';
+  return result.decision !== "BLOCK";
 }

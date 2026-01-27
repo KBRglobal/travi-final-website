@@ -56,9 +56,7 @@ export function HeroRenderer({ id, props, onUpdate }: HeroRendererProps) {
           backgroundPosition: "center",
         }}
       >
-        {backgroundImage && (
-          <div className="absolute inset-0 bg-black/40" />
-        )}
+        {backgroundImage && <div className="absolute inset-0 bg-black/40" />}
 
         <div className="relative z-10 max-w-4xl mx-auto space-y-4">
           {isEditMode ? (
@@ -66,32 +64,29 @@ export function HeroRenderer({ id, props, onUpdate }: HeroRendererProps) {
               componentId={id}
               fieldName="title"
               value={title}
-              onChange={(value) => onUpdate({ ...props, title: value })}
+              onChange={value => onUpdate({ ...props, title: value })}
               className="text-4xl md:text-5xl font-bold text-white"
-              placeholder="כותרת ראשית"
+              placeholder="Main Title"
               as="h1"
             />
           ) : (
-            <h1 className="text-4xl md:text-5xl font-bold text-white">
-              {title}
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white">{title}</h1>
           )}
 
-          {(subtitle || isEditMode) && (
-            isEditMode ? (
+          {(subtitle || isEditMode) &&
+            (isEditMode ? (
               <InlineTextEditor
                 componentId={id}
                 fieldName="subtitle"
                 value={subtitle || ""}
-                onChange={(value) => onUpdate({ ...props, subtitle: value })}
+                onChange={value => onUpdate({ ...props, subtitle: value })}
                 className="text-xl md:text-2xl text-white/90"
-                placeholder="כותרת משנית"
+                placeholder="Subtitle"
                 as="p"
               />
             ) : (
               <p className="text-xl md:text-2xl text-white/90">{subtitle}</p>
-            )
-          )}
+            ))}
 
           {(ctaText || isEditMode) && (
             <div className="pt-4">
@@ -105,9 +100,9 @@ export function HeroRenderer({ id, props, onUpdate }: HeroRendererProps) {
                     componentId={id}
                     fieldName="ctaText"
                     value={ctaText || ""}
-                    onChange={(value) => onUpdate({ ...props, ctaText: value })}
+                    onChange={value => onUpdate({ ...props, ctaText: value })}
                     className="text-white"
-                    placeholder="טקסט כפתור"
+                    placeholder="Button Text"
                     as="span"
                   />
                 ) : ctaLink ? (

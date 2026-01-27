@@ -86,18 +86,13 @@ export function log(
 
   // Also log to console with formatting
   const levelColors: Record<LogLevel, string> = {
-    error: "\x1b[31m",   // Red
+    error: "\x1b[31m", // Red
     warning: "\x1b[33m", // Yellow
-    info: "\x1b[36m",    // Cyan
-    debug: "\x1b[90m",   // Gray
+    info: "\x1b[36m", // Cyan
+    debug: "\x1b[90m", // Gray
   };
   const reset = "\x1b[0m";
   const color = levelColors[level];
-
-  console.log(
-    `${color}[${level.toUpperCase()}]${reset} [${category}] ${message}`,
-    details ? JSON.stringify(details, null, 2) : ""
-  );
 
   return entry;
 }
@@ -120,73 +115,113 @@ export const logger = {
 
   // Category-specific loggers
   ai: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "ai", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "ai", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "ai", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "ai", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "ai", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "ai", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "ai", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "ai", message, details),
   },
 
   images: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "images", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "images", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "images", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "images", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "images", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "images", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "images", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "images", message, details),
   },
 
   storage: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "storage", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "storage", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "storage", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "storage", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "storage", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "storage", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "storage", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "storage", message, details),
   },
 
   rss: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "rss", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "rss", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "rss", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "rss", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "rss", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "rss", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "rss", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "rss", message, details),
   },
 
   content: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "content", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "content", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "content", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "content", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "content", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "content", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "content", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "content", message, details),
   },
 
   auth: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "auth", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "auth", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "auth", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "auth", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "auth", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "auth", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "auth", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "auth", message, details),
   },
 
   api: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "api", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "api", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "api", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "api", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "api", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "api", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "api", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "api", message, details),
   },
 
   seo: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "seo", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "seo", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "seo", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "seo", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "seo", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "seo", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "seo", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "seo", message, details),
   },
 
   publishing: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "publishing", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "publishing", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "publishing", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "publishing", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "publishing", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "publishing", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "publishing", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "publishing", message, details),
   },
 
   system: {
-    error: (message: string, details?: Record<string, unknown>) => log("error", "system", message, details),
-    warn: (message: string, details?: Record<string, unknown>) => log("warning", "system", message, details),
-    info: (message: string, details?: Record<string, unknown>) => log("info", "system", message, details),
-    debug: (message: string, details?: Record<string, unknown>) => log("debug", "system", message, details),
+    error: (message: string, details?: Record<string, unknown>) =>
+      log("error", "system", message, details),
+    warn: (message: string, details?: Record<string, unknown>) =>
+      log("warning", "system", message, details),
+    info: (message: string, details?: Record<string, unknown>) =>
+      log("info", "system", message, details),
+    debug: (message: string, details?: Record<string, unknown>) =>
+      log("debug", "system", message, details),
   },
 };
 
@@ -211,9 +246,12 @@ export function getLogs(filter: LogFilter = {}): LogEntry[] {
   // Filter by search text
   if (filter.search) {
     const searchLower = filter.search.toLowerCase();
-    result = result.filter(log =>
-      log.message.toLowerCase().includes(searchLower) ||
-      JSON.stringify(log.details || {}).toLowerCase().includes(searchLower)
+    result = result.filter(
+      log =>
+        log.message.toLowerCase().includes(searchLower) ||
+        JSON.stringify(log.details || {})
+          .toLowerCase()
+          .includes(searchLower)
     );
   }
 

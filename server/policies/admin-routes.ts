@@ -30,7 +30,6 @@ router.get("/", async (req, res) => {
       builtIn,
     });
   } catch (error) {
-    console.error("[Policies] Error fetching policies:", error);
     res.status(500).json({ error: "Failed to fetch policies" });
   }
 });
@@ -45,7 +44,6 @@ router.get("/summary", async (req, res) => {
     const summary = await getEnforcementSummary();
     res.json(summary);
   } catch (error) {
-    console.error("[Policies] Error fetching summary:", error);
     res.status(500).json({ error: "Failed to fetch summary" });
   }
 });
@@ -57,14 +55,11 @@ router.get("/stats", async (req, res) => {
   }
 
   try {
-    const startDate = req.query.startDate
-      ? new Date(req.query.startDate as string)
-      : undefined;
+    const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
 
     const stats = await repo.getEvaluationStats(startDate);
     res.json(stats);
   } catch (error) {
-    console.error("[Policies] Error fetching stats:", error);
     res.status(500).json({ error: "Failed to fetch stats" });
   }
 });
@@ -77,7 +72,7 @@ router.get("/:id", async (req, res) => {
 
   try {
     // Check built-in first
-    const builtIn = BUILT_IN_POLICIES.find((p) => p.id === req.params.id);
+    const builtIn = BUILT_IN_POLICIES.find(p => p.id === req.params.id);
     if (builtIn) {
       return res.json({ policy: builtIn, isBuiltIn: true });
     }
@@ -89,7 +84,6 @@ router.get("/:id", async (req, res) => {
 
     res.json({ policy, isBuiltIn: false });
   } catch (error) {
-    console.error("[Policies] Error fetching policy:", error);
     res.status(500).json({ error: "Failed to fetch policy" });
   }
 });
@@ -105,7 +99,6 @@ router.post("/", async (req: any, res) => {
     const policy = await repo.createPolicy(req.body, createdBy);
     res.status(201).json({ policy });
   } catch (error) {
-    console.error("[Policies] Error creating policy:", error);
     res.status(500).json({ error: "Failed to create policy" });
   }
 });
@@ -118,7 +111,7 @@ router.put("/:id", async (req, res) => {
 
   try {
     // Don't allow updating built-in policies
-    const builtIn = BUILT_IN_POLICIES.find((p) => p.id === req.params.id);
+    const builtIn = BUILT_IN_POLICIES.find(p => p.id === req.params.id);
     if (builtIn) {
       return res.status(400).json({ error: "Cannot modify built-in policies" });
     }
@@ -130,7 +123,6 @@ router.put("/:id", async (req, res) => {
 
     res.json({ policy });
   } catch (error) {
-    console.error("[Policies] Error updating policy:", error);
     res.status(500).json({ error: "Failed to update policy" });
   }
 });
@@ -143,7 +135,7 @@ router.delete("/:id", async (req, res) => {
 
   try {
     // Don't allow deleting built-in policies
-    const builtIn = BUILT_IN_POLICIES.find((p) => p.id === req.params.id);
+    const builtIn = BUILT_IN_POLICIES.find(p => p.id === req.params.id);
     if (builtIn) {
       return res.status(400).json({ error: "Cannot delete built-in policies" });
     }
@@ -155,7 +147,6 @@ router.delete("/:id", async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
-    console.error("[Policies] Error deleting policy:", error);
     res.status(500).json({ error: "Failed to delete policy" });
   }
 });
@@ -174,7 +165,6 @@ router.post("/:id/toggle", async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
-    console.error("[Policies] Error toggling policy:", error);
     res.status(500).json({ error: "Failed to toggle policy" });
   }
 });
@@ -203,11 +193,8 @@ router.post("/evaluate", async (req: any, res) => {
     const result = await checkPolicy(context);
     res.json(result);
   } catch (error) {
-    console.error("[Policies] Error evaluating:", error);
     res.status(500).json({ error: "Failed to evaluate policies" });
   }
 });
 
 export { router as policiesRoutes };
-
-console.log("[Policies] Admin routes loaded");

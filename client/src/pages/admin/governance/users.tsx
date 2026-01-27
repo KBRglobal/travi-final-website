@@ -31,14 +31,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Users,
-  ArrowLeft,
-  Search,
-  AlertCircle,
-  Shield,
-  Plus,
-} from "lucide-react";
+import { Users, ArrowLeft, Search, AlertCircle, Shield, Plus } from "lucide-react";
 
 interface User {
   id: string;
@@ -93,9 +86,7 @@ export default function GovernanceUsers() {
       if (!res.ok) throw new Error("Failed to fetch roles");
       const data = await res.json();
       setRoles(data.roles || []);
-    } catch (err) {
-      console.error("Failed to fetch roles:", err);
-    }
+    } catch (err) {}
   }
 
   async function assignRole() {
@@ -122,7 +113,7 @@ export default function GovernanceUsers() {
   }
 
   const filteredUsers = users.filter(
-    (user) =>
+    user =>
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -181,7 +172,7 @@ export default function GovernanceUsers() {
               <Input
                 placeholder="Search users..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9 w-64"
               />
             </div>
@@ -200,7 +191,7 @@ export default function GovernanceUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {filteredUsers.map(user => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <div className="font-medium">{user.name || user.username}</div>
@@ -213,8 +204,8 @@ export default function GovernanceUsers() {
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {user.governanceRoles?.length ? (
-                        user.governanceRoles.map((roleId) => {
-                          const role = roles.find((r) => r.id === roleId);
+                        user.governanceRoles.map(roleId => {
+                          const role = roles.find(r => r.id === roleId);
                           return (
                             <Badge key={roleId} variant="secondary">
                               {role?.displayName || roleId}
@@ -234,31 +225,23 @@ export default function GovernanceUsers() {
                   <TableCell>
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setSelectedUser(user)}
-                        >
+                        <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>
                           <Shield className="h-4 w-4 mr-1" />
                           Roles
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>
-                            Assign Role to {user.name || user.username}
-                          </DialogTitle>
+                          <DialogTitle>Assign Role to {user.name || user.username}</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4">
                           <div>
                             <label className="text-sm font-medium">Current Roles</label>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {user.governanceRoles?.length ? (
-                                user.governanceRoles.map((roleId) => {
-                                  const role = roles.find((r) => r.id === roleId);
-                                  return (
-                                    <Badge key={roleId}>{role?.displayName || roleId}</Badge>
-                                  );
+                                user.governanceRoles.map(roleId => {
+                                  const role = roles.find(r => r.id === roleId);
+                                  return <Badge key={roleId}>{role?.displayName || roleId}</Badge>;
                                 })
                               ) : (
                                 <span className="text-gray-400">No roles assigned</span>
@@ -268,25 +251,19 @@ export default function GovernanceUsers() {
                           <div>
                             <label className="text-sm font-medium">Assign New Role</label>
                             <div className="flex gap-2 mt-1">
-                              <Select
-                                value={selectedRoleId}
-                                onValueChange={setSelectedRoleId}
-                              >
+                              <Select value={selectedRoleId} onValueChange={setSelectedRoleId}>
                                 <SelectTrigger className="flex-1">
                                   <SelectValue placeholder="Select role..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {roles.map((role) => (
+                                  {roles.map(role => (
                                     <SelectItem key={role.id} value={role.id}>
                                       {role.displayName}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <Button
-                                onClick={assignRole}
-                                disabled={!selectedRoleId || assigning}
-                              >
+                              <Button onClick={assignRole} disabled={!selectedRoleId || assigning}>
                                 <Plus className="h-4 w-4 mr-1" />
                                 Assign
                               </Button>

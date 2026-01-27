@@ -55,11 +55,7 @@ export async function simulateRepair(
     throw new Error("Feature disabled");
   }
 
-  const [content] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, contentId))
-    .limit(1);
+  const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
   if (!content) {
     throw new Error("Content not found");
@@ -103,11 +99,7 @@ export async function executeRepair(
     throw new Error("Feature disabled");
   }
 
-  const [content] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, contentId))
-    .limit(1);
+  const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
   if (!content) {
     throw new Error("Content not found");
@@ -198,7 +190,7 @@ export async function getRepairHistory(contentId: string): Promise<RepairResult[
     .orderBy(desc(contentRepairJobs.createdAt))
     .limit(50);
 
-  return jobs.map((job) => ({
+  return jobs.map(job => ({
     id: job.id,
     contentId: job.contentId,
     repairType: job.repairType as RepairType,
@@ -296,5 +288,3 @@ async function performRepair(
       return { action: "simulated", message: "Full implementation pending" };
   }
 }
-
-console.log("[ContentRepair] Module loaded");

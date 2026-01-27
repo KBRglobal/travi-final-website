@@ -89,17 +89,17 @@ export const workflowEngine = {
       try {
         // Check trigger conditions
         const trigger = config.trigger as unknown as WorkflowTrigger;
-        const conditionsMet = await this.evaluateConditions(
-          trigger.conditions,
-          triggerData
-        );
+        const conditionsMet = await this.evaluateConditions(trigger.conditions, triggerData);
 
         if (!conditionsMet) {
           await db
             .update(workflowExecutions)
             .set({
               status: "completed",
-              result: { skipped: true, reason: "Conditions not met" } as unknown as Record<string, unknown>,
+              result: { skipped: true, reason: "Conditions not met" } as unknown as Record<
+                string,
+                unknown
+              >,
               completedAt: new Date(),
             })
             .where(eq(workflowExecutions.id, executionId));
@@ -113,7 +113,7 @@ export const workflowEngine = {
 
         // Execute actions
         const actions = (config.actions as unknown as WorkflowAction[]) || [];
-        const results: ExecutionResult['results'] = [];
+        const results: ExecutionResult["results"] = [];
 
         for (const action of actions) {
           try {
@@ -161,7 +161,6 @@ export const workflowEngine = {
         throw error;
       }
     } catch (error) {
-      console.error("[Workflow] Error executing workflow:", error);
       throw error;
     }
   },
@@ -188,13 +187,13 @@ export const workflowEngine = {
           if (operators.$ne !== undefined && dataValue === operators.$ne) {
             return false;
           }
-          if (operators.$gt !== undefined && !(dataValue as number > (operators.$gt as number))) {
+          if (operators.$gt !== undefined && !((dataValue as number) > (operators.$gt as number))) {
             return false;
           }
-          if (operators.$lt !== undefined && !(dataValue as number < (operators.$lt as number))) {
+          if (operators.$lt !== undefined && !((dataValue as number) < (operators.$lt as number))) {
             return false;
           }
-          if (operators.$in !== undefined && !((operators.$in as unknown[]).includes(dataValue))) {
+          if (operators.$in !== undefined && !(operators.$in as unknown[]).includes(dataValue)) {
             return false;
           }
         } else {
@@ -207,7 +206,6 @@ export const workflowEngine = {
 
       return true;
     } catch (error) {
-      console.error("[Workflow] Error evaluating conditions:", error);
       return false;
     }
   },
@@ -215,10 +213,7 @@ export const workflowEngine = {
   /**
    * Execute a workflow action
    */
-  async executeAction(
-    action: WorkflowAction,
-    data: Record<string, unknown>
-  ): Promise<unknown> {
+  async executeAction(action: WorkflowAction, data: Record<string, unknown>): Promise<unknown> {
     switch (action.type) {
       case "send_webhook":
         return this.executeWebhookAction(action.config, data);
@@ -246,7 +241,7 @@ export const workflowEngine = {
   ): Promise<unknown> {
     const webhookId = config.webhookId as string;
     const event = (config.event as string) || "workflow.action";
-    
+
     return webhookManager.deliverWebhook(webhookId, event, data);
   },
 
@@ -258,7 +253,7 @@ export const workflowEngine = {
     data: Record<string, unknown>
   ): Promise<unknown> {
     // TODO: Implement email sending
-    console.log("[Workflow] Email action:", config, data);
+
     return { sent: true };
   },
 
@@ -276,10 +271,7 @@ export const workflowEngine = {
       throw new Error("contentId and updates required");
     }
 
-    await db
-      .update(contents)
-      .set(updates)
-      .where(eq(contents.id, contentId));
+    await db.update(contents).set(updates).where(eq(contents.id, contentId));
 
     return { updated: true, contentId };
   },
@@ -292,17 +284,14 @@ export const workflowEngine = {
     data: Record<string, unknown>
   ): Promise<unknown> {
     // TODO: Implement notification system
-    console.log("[Workflow] Notify action:", config, data);
+
     return { notified: true };
   },
 
   /**
    * Trigger workflows based on event
    */
-  async triggerEvent(
-    eventType: string,
-    data: Record<string, unknown>
-  ): Promise<void> {
+  async triggerEvent(eventType: string, data: Record<string, unknown>): Promise<void> {
     try {
       // Find workflows with matching trigger
       const matchingWorkflows = await db
@@ -318,8 +307,6 @@ export const workflowEngine = {
         .map(workflow => this.executeWorkflow(workflow.id, data));
 
       await Promise.allSettled(executions);
-    } catch (error) {
-      console.error("[Workflow] Error triggering event:", error);
-    }
+    } catch (error) {}
   },
 };

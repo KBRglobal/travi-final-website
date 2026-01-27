@@ -51,7 +51,7 @@ export async function evaluateEligibility(
       return {
         contentId,
         allowed: false,
-        blockingReasons: ['Content not found'],
+        blockingReasons: ["Content not found"],
         warnings: [],
         score: 0,
         evaluatedAt,
@@ -60,17 +60,17 @@ export async function evaluateEligibility(
 
     // Rule 2: Content must not be deleted
     if (content.deletedAt) {
-      blockingReasons.push('Content is deleted');
+      blockingReasons.push("Content is deleted");
       score -= 100;
     }
 
     // Rule 3: Content must have blocks/body
     const blocks = content.blocks as unknown[] | null;
     if (!blocks || blocks.length === 0) {
-      blockingReasons.push('Content has no body/blocks');
+      blockingReasons.push("Content has no body/blocks");
       score -= 30;
     } else if (blocks.length < 2) {
-      warnings.push('Content has minimal body (less than 2 blocks)');
+      warnings.push("Content has minimal body (less than 2 blocks)");
       score -= 10;
     }
 
@@ -78,7 +78,7 @@ export async function evaluateEligibility(
     if (isEntityRequired() && !options.skipEntityCheck) {
       // Use answerCapsule as proxy for entity extraction
       if (!content.answerCapsule) {
-        blockingReasons.push('Content has no extracted entities (missing answer capsule)');
+        blockingReasons.push("Content has no extracted entities (missing answer capsule)");
         score -= 25;
       }
     }
@@ -86,7 +86,7 @@ export async function evaluateEligibility(
     // Rule 5: AEO capsule requirement (if enabled)
     if (isAeoRequired() && !options.skipAeoCheck) {
       if (!content.answerCapsule) {
-        blockingReasons.push('Content missing AEO capsule');
+        blockingReasons.push("Content missing AEO capsule");
         score -= 25;
       } else if (content.aeoScore && content.aeoScore < 50) {
         warnings.push(`AEO score is low (${content.aeoScore}/100)`);
@@ -103,7 +103,7 @@ export async function evaluateEligibility(
         .where(eq(searchIndex.contentId, contentId));
 
       if (!indexed) {
-        warnings.push('Content not yet indexed for search');
+        warnings.push("Content not yet indexed for search");
         score -= 5;
       }
     }
@@ -135,11 +135,10 @@ export async function evaluateEligibility(
       evaluatedAt,
     };
   } catch (error) {
-    console.error('[Eligibility] Error evaluating content:', error);
     return {
       contentId,
       allowed: false,
-      blockingReasons: ['Evaluation error: ' + String(error)],
+      blockingReasons: ["Evaluation error: " + String(error)],
       warnings: [],
       score: 0,
       evaluatedAt,

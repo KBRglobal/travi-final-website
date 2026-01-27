@@ -24,32 +24,35 @@ export function registerPublishingRoutes(app: Express): void {
    * GET /api/admin/publishing/eligibility/:contentId
    * Get eligibility status for a specific content
    */
-  app.get("/api/admin/publishing/eligibility/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const { contentId } = req.params;
+  app.get(
+    "/api/admin/publishing/eligibility/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { contentId } = req.params;
 
-    try {
-      const eligibility = await evaluateEligibility(contentId);
-      const guard = await checkPublishGuard(contentId);
+      try {
+        const eligibility = await evaluateEligibility(contentId);
+        const guard = await checkPublishGuard(contentId);
 
-      res.json({
-        contentId,
-        eligibility,
-        guard: {
-          allowed: guard.allowed,
-          action: guard.action,
-        },
-        flags: {
-          publishGuardsEnabled: isPublishGuardsEnabled(),
-          aeoRequired: isAeoRequired(),
-          entityRequired: isEntityRequired(),
-          intelligenceCoverageRequired: isIntelligenceCoverageRequired(),
-        },
-      });
-    } catch (error) {
-      console.error('[Publishing] Error getting eligibility:', error);
-      res.status(500).json({ error: 'Failed to evaluate eligibility' });
+        res.json({
+          contentId,
+          eligibility,
+          guard: {
+            allowed: guard.allowed,
+            action: guard.action,
+          },
+          flags: {
+            publishGuardsEnabled: isPublishGuardsEnabled(),
+            aeoRequired: isAeoRequired(),
+            entityRequired: isEntityRequired(),
+            intelligenceCoverageRequired: isIntelligenceCoverageRequired(),
+          },
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to evaluate eligibility" });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/publishing/blocked
@@ -67,8 +70,7 @@ export function registerPublishingRoutes(app: Express): void {
         generatedAt: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[Publishing] Error getting blocked content:', error);
-      res.status(500).json({ error: 'Failed to get blocked content' });
+      res.status(500).json({ error: "Failed to get blocked content" });
     }
   });
 
@@ -88,8 +90,7 @@ export function registerPublishingRoutes(app: Express): void {
         generatedAt: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[Publishing] Error getting issues:', error);
-      res.status(500).json({ error: 'Failed to get content issues' });
+      res.status(500).json({ error: "Failed to get content issues" });
     }
   });
 
@@ -112,8 +113,7 @@ export function registerPublishingRoutes(app: Express): void {
         generatedAt: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('[Publishing] Error getting stats:', error);
-      res.status(500).json({ error: 'Failed to get stats' });
+      res.status(500).json({ error: "Failed to get stats" });
     }
   });
 
@@ -121,24 +121,25 @@ export function registerPublishingRoutes(app: Express): void {
    * POST /api/admin/publishing/check/:contentId
    * Explicitly check if content can be published
    */
-  app.post("/api/admin/publishing/check/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const { contentId } = req.params;
-    const { forcePublish } = req.body;
+  app.post(
+    "/api/admin/publishing/check/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { contentId } = req.params;
+      const { forcePublish } = req.body;
 
-    try {
-      const guard = await checkPublishGuard(contentId, { forcePublish });
+      try {
+        const guard = await checkPublishGuard(contentId, { forcePublish });
 
-      res.json({
-        contentId,
-        canPublish: guard.allowed,
-        action: guard.action,
-        eligibility: guard.eligibility,
-      });
-    } catch (error) {
-      console.error('[Publishing] Error checking publish:', error);
-      res.status(500).json({ error: 'Failed to check publish eligibility' });
+        res.json({
+          contentId,
+          canPublish: guard.allowed,
+          action: guard.action,
+          eligibility: guard.eligibility,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to check publish eligibility" });
+      }
     }
-  });
-
-  console.log('[Publishing] Eligibility routes registered');
+  );
 }

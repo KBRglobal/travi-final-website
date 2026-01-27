@@ -12,17 +12,18 @@ if (import.meta.env.VITE_POSTHOG_KEY) {
   });
 }
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        registration.addEventListener('updatefound', () => {
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then(registration => {
+        registration.addEventListener("updatefound", () => {
           const newWorker = registration.installing;
           if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                if (window.confirm('A new version of TRAVI is available. Reload to update?')) {
-                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+            newWorker.addEventListener("statechange", () => {
+              if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                if (window.confirm("A new version of TRAVI is available. Reload to update?")) {
+                  newWorker.postMessage({ type: "SKIP_WAITING" });
                   window.location.reload();
                 }
               }
@@ -30,9 +31,7 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
           }
         });
       })
-      .catch((error) => {
-        console.error('Service Worker registration failed:', error);
-      });
+      .catch(error => {});
   });
 }
 

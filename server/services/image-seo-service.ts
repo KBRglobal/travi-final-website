@@ -71,15 +71,15 @@ export interface DubaiLocation {
 
 export interface ImageSEOContext {
   contentType: ContentType;
-  entityName: string;           // e.g., "Atlantis The Palm"
-  entitySlug: string;           // e.g., "atlantis-the-palm"
+  entityName: string; // e.g., "Atlantis The Palm"
+  entitySlug: string; // e.g., "atlantis-the-palm"
   location: DubaiLocation;
   category: ImageCategory;
   purpose: ImagePurpose;
   keywords?: string[];
   year?: number;
   timeOfDay?: "day" | "night" | "sunset" | "sunrise";
-  uniqueFeature?: string;       // e.g., "underwater-suite", "infinity-pool"
+  uniqueFeature?: string; // e.g., "underwater-suite", "infinity-pool"
   language?: Language;
 }
 
@@ -150,189 +150,233 @@ export interface OpenGraphImage {
 // DUBAI AREAS DATABASE
 // ============================================================================
 
-export const DUBAI_AREAS: Record<string, {
-  name: string;
-  nameHe: string;
-  nameAr: string;
-  landmarks: string[];
-  coordinates: { latitude: number; longitude: number };
-}> = {
+export const DUBAI_AREAS: Record<
+  string,
+  {
+    name: string;
+    nameHe: string;
+    nameAr: string;
+    landmarks: string[];
+    coordinates: { latitude: number; longitude: number };
+  }
+> = {
   "downtown-dubai": {
     name: "Downtown Dubai",
-    nameHe: "דאונטאון דובאי",
+    nameHe: "",
     nameAr: "وسط دبي",
     landmarks: ["Burj Khalifa", "Dubai Mall", "Dubai Fountain"],
-    coordinates: { latitude: 25.1972, longitude: 55.2744 }
+    coordinates: { latitude: 25.1972, longitude: 55.2744 },
   },
   "palm-jumeirah": {
     name: "Palm Jumeirah",
-    nameHe: "פאלם ג'ומיירה",
+    nameHe: "",
     nameAr: "نخلة جميرا",
     landmarks: ["Atlantis The Palm", "The Pointe", "Nakheel Mall"],
-    coordinates: { latitude: 25.1124, longitude: 55.1390 }
+    coordinates: { latitude: 25.1124, longitude: 55.139 },
   },
   "dubai-marina": {
     name: "Dubai Marina",
-    nameHe: "דובאי מרינה",
+    nameHe: "",
     nameAr: "مرسى دبي",
     landmarks: ["Marina Walk", "JBR Beach", "Ain Dubai"],
-    coordinates: { latitude: 25.0805, longitude: 55.1403 }
+    coordinates: { latitude: 25.0805, longitude: 55.1403 },
   },
-  "jumeirah": {
+  jumeirah: {
     name: "Jumeirah",
-    nameHe: "ג'ומיירה",
+    nameHe: "",
     nameAr: "جميرا",
     landmarks: ["Burj Al Arab", "Madinat Jumeirah", "Jumeirah Beach"],
-    coordinates: { latitude: 25.1412, longitude: 55.1853 }
+    coordinates: { latitude: 25.1412, longitude: 55.1853 },
   },
-  "deira": {
+  deira: {
     name: "Deira",
-    nameHe: "דיירה",
+    nameHe: "",
     nameAr: "ديرة",
     landmarks: ["Gold Souk", "Spice Souk", "Deira City Centre"],
-    coordinates: { latitude: 25.2697, longitude: 55.3095 }
+    coordinates: { latitude: 25.2697, longitude: 55.3095 },
   },
   "bur-dubai": {
     name: "Bur Dubai",
-    nameHe: "בור דובאי",
+    nameHe: "",
     nameAr: "بر دبي",
     landmarks: ["Al Fahidi Historical District", "Dubai Museum", "Textile Souk"],
-    coordinates: { latitude: 25.2631, longitude: 55.2972 }
+    coordinates: { latitude: 25.2631, longitude: 55.2972 },
   },
   "business-bay": {
     name: "Business Bay",
-    nameHe: "ביזנס ביי",
+    nameHe: "",
     nameAr: "الخليج التجاري",
     landmarks: ["Dubai Canal", "Bay Avenue", "Executive Towers"],
-    coordinates: { latitude: 25.1850, longitude: 55.2624 }
+    coordinates: { latitude: 25.185, longitude: 55.2624 },
   },
-  "difc": {
+  difc: {
     name: "DIFC",
-    nameHe: "DIFC",
+    nameHe: "",
     nameAr: "مركز دبي المالي العالمي",
     landmarks: ["Gate Building", "ICD Brookfield Place", "DIFC Art Nights"],
-    coordinates: { latitude: 25.2120, longitude: 55.2805 }
+    coordinates: { latitude: 25.212, longitude: 55.2805 },
   },
-  "jbr": {
+  jbr: {
     name: "JBR - Jumeirah Beach Residence",
-    nameHe: "JBR - ג'ומיירה ביץ' רזידנס",
+    nameHe: "",
     nameAr: "جي بي آر - جميرا بيتش ريزيدنس",
     landmarks: ["The Walk", "JBR Beach", "Bluewaters Island"],
-    coordinates: { latitude: 25.0780, longitude: 55.1340 }
+    coordinates: { latitude: 25.078, longitude: 55.134 },
   },
   "al-barsha": {
     name: "Al Barsha",
-    nameHe: "אל ברשא",
+    nameHe: "",
     nameAr: "البرشاء",
     landmarks: ["Mall of the Emirates", "Ski Dubai"],
-    coordinates: { latitude: 25.1175, longitude: 55.2006 }
-  }
+    coordinates: { latitude: 25.1175, longitude: 55.2006 },
+  },
 };
 
 // ============================================================================
 // CONTENT TYPE CONFIGURATIONS
 // ============================================================================
 
-const CONTENT_TYPE_CONFIG: Record<ContentType, {
-  categories: ImageCategory[];
-  promptStyle: string;
-  altPrefix: { en: string; he: string; ar: string };
-}> = {
+const CONTENT_TYPE_CONFIG: Record<
+  ContentType,
+  {
+    categories: ImageCategory[];
+    promptStyle: string;
+    altPrefix: { en: string; he: string; ar: string };
+  }
+> = {
   hotel: {
-    categories: ["exterior", "lobby", "room", "suite", "pool", "spa", "dining", "view", "beach", "amenities"],
-    promptStyle: "luxury hospitality photography, professional hotel photography, warm inviting atmosphere",
-    altPrefix: { en: "", he: "", ar: "" }
+    categories: [
+      "exterior",
+      "lobby",
+      "room",
+      "suite",
+      "pool",
+      "spa",
+      "dining",
+      "view",
+      "beach",
+      "amenities",
+    ],
+    promptStyle:
+      "luxury hospitality photography, professional hotel photography, warm inviting atmosphere",
+    altPrefix: { en: "", he: "", ar: "" },
   },
   attraction: {
-    categories: ["exterior", "interior", "entrance", "exhibit", "view", "activity", "architecture", "night", "aerial"],
+    categories: [
+      "exterior",
+      "interior",
+      "entrance",
+      "exhibit",
+      "view",
+      "activity",
+      "architecture",
+      "night",
+      "aerial",
+    ],
     promptStyle: "tourism photography, iconic landmark, stunning architecture, vibrant atmosphere",
-    altPrefix: { en: "", he: "", ar: "" }
+    altPrefix: { en: "", he: "", ar: "" },
   },
   restaurant: {
     categories: ["exterior", "interior", "dish", "chef", "bar", "view", "dining"],
-    promptStyle: "food photography, culinary art, elegant dining atmosphere, appetizing presentation",
-    altPrefix: { en: "", he: "", ar: "" }
+    promptStyle:
+      "food photography, culinary art, elegant dining atmosphere, appetizing presentation",
+    altPrefix: { en: "", he: "", ar: "" },
   },
   beach: {
     categories: ["panorama", "sunset", "activity", "aerial", "amenities"],
     promptStyle: "beach photography, crystal clear water, golden sand, tropical paradise vibes",
-    altPrefix: { en: "", he: "", ar: "" }
+    altPrefix: { en: "", he: "", ar: "" },
   },
   district: {
     categories: ["panorama", "architecture", "night", "aerial", "activity", "sunset"],
     promptStyle: "cityscape photography, urban landscape, modern architecture, vibrant city life",
-    altPrefix: { en: "", he: "", ar: "" }
+    altPrefix: { en: "", he: "", ar: "" },
   },
   event: {
     categories: ["crowd", "performance", "fireworks", "night", "activity"],
     promptStyle: "event photography, festive atmosphere, cultural celebration, vibrant colors",
-    altPrefix: { en: "", he: "", ar: "" }
+    altPrefix: { en: "", he: "", ar: "" },
   },
   "real-estate": {
-    categories: ["exterior", "interior", "living-room", "bedroom", "bathroom", "kitchen", "balcony", "view", "amenities", "pool"],
-    promptStyle: "real estate photography, modern interior design, spacious rooms, premium finishes",
-    altPrefix: { en: "", he: "", ar: "" }
+    categories: [
+      "exterior",
+      "interior",
+      "living-room",
+      "bedroom",
+      "bathroom",
+      "kitchen",
+      "balcony",
+      "view",
+      "amenities",
+      "pool",
+    ],
+    promptStyle:
+      "real estate photography, modern interior design, spacious rooms, premium finishes",
+    altPrefix: { en: "", he: "", ar: "" },
   },
   article: {
     categories: ["hero", "featured", "content", "gallery"],
     promptStyle: "editorial photography, storytelling imagery, engaging visuals",
-    altPrefix: { en: "", he: "", ar: "" }
+    altPrefix: { en: "", he: "", ar: "" },
   },
   itinerary: {
     categories: ["hero", "featured", "activity", "view"],
     promptStyle: "travel photography, adventure vibes, memorable experiences",
-    altPrefix: { en: "", he: "", ar: "" }
+    altPrefix: { en: "", he: "", ar: "" },
   },
   transport: {
     categories: ["exterior", "interior", "activity"],
     promptStyle: "transportation photography, modern vehicles, comfortable journey",
-    altPrefix: { en: "", he: "", ar: "" }
-  }
+    altPrefix: { en: "", he: "", ar: "" },
+  },
 };
 
 // ============================================================================
 // CATEGORY DESCRIPTIONS (for ALT text generation)
 // ============================================================================
 
-const CATEGORY_DESCRIPTIONS: Record<ImageCategory, {
-  en: string;
-  he: string;
-  ar: string;
-}> = {
-  exterior: { en: "exterior view", he: "מבט חיצוני", ar: "منظر خارجي" },
-  interior: { en: "interior", he: "פנים", ar: "داخلي" },
-  lobby: { en: "lobby and reception area", he: "לובי ואזור קבלה", ar: "اللوبي ومنطقة الاستقبال" },
-  room: { en: "guest room", he: "חדר אורחים", ar: "غرفة ضيوف" },
-  suite: { en: "luxury suite", he: "סוויטת יוקרה", ar: "جناح فاخر" },
-  pool: { en: "swimming pool", he: "בריכת שחייה", ar: "حمام سباحة" },
-  spa: { en: "spa and wellness", he: "ספא ובריאות", ar: "سبا وعافية" },
-  dining: { en: "dining area", he: "אזור אוכל", ar: "منطقة تناول الطعام" },
-  view: { en: "scenic view", he: "נוף", ar: "منظر طبيعي" },
-  beach: { en: "beach area", he: "אזור החוף", ar: "منطقة الشاطئ" },
-  activity: { en: "activity", he: "פעילות", ar: "نشاط" },
-  architecture: { en: "architecture", he: "אדריכלות", ar: "هندسة معمارية" },
-  entrance: { en: "entrance", he: "כניסה", ar: "مدخل" },
-  exhibit: { en: "exhibit", he: "תצוגה", ar: "معرض" },
-  dish: { en: "signature dish", he: "מנה מיוחדת", ar: "طبق مميز" },
-  chef: { en: "chef", he: "שף", ar: "شيف" },
-  bar: { en: "bar area", he: "בר", ar: "بار" },
-  balcony: { en: "balcony", he: "מרפסת", ar: "شرفة" },
-  bedroom: { en: "bedroom", he: "חדר שינה", ar: "غرفة نوم" },
-  bathroom: { en: "bathroom", he: "אמבטיה", ar: "حمام" },
-  kitchen: { en: "kitchen", he: "מטבח", ar: "مطبخ" },
-  "living-room": { en: "living room", he: "סלון", ar: "غرفة معيشة" },
-  amenities: { en: "amenities", he: "מתקנים", ar: "مرافق" },
-  panorama: { en: "panoramic view", he: "נוף פנורמי", ar: "منظر بانورامي" },
-  sunset: { en: "at sunset", he: "בשקיעה", ar: "عند غروب الشمس" },
-  night: { en: "at night", he: "בלילה", ar: "في الليل" },
-  aerial: { en: "aerial view", he: "מבט אווירי", ar: "منظر جوي" },
-  crowd: { en: "crowd and atmosphere", he: "קהל ואווירה", ar: "جمهور وأجواء" },
-  performance: { en: "performance", he: "הופעה", ar: "عرض" },
-  fireworks: { en: "fireworks display", he: "מופע זיקוקים", ar: "عرض ألعاب نارية" },
-  hero: { en: "featured image", he: "תמונה ראשית", ar: "صورة مميزة" },
-  featured: { en: "featured", he: "מומלץ", ar: "مميز" },
-  gallery: { en: "gallery image", he: "תמונת גלריה", ar: "صورة معرض" },
-  content: { en: "content image", he: "תמונת תוכן", ar: "صورة محتوى" }
+const CATEGORY_DESCRIPTIONS: Record<
+  ImageCategory,
+  {
+    en: string;
+    he: string;
+    ar: string;
+  }
+> = {
+  exterior: { en: "exterior view", he: "", ar: "منظر خارجي" },
+  interior: { en: "interior", he: "", ar: "داخلي" },
+  lobby: { en: "lobby and reception area", he: "", ar: "اللوبي ومنطقة الاستقبال" },
+  room: { en: "guest room", he: "", ar: "غرفة ضيوف" },
+  suite: { en: "luxury suite", he: "", ar: "جناح فاخر" },
+  pool: { en: "swimming pool", he: "", ar: "حمام سباحة" },
+  spa: { en: "spa and wellness", he: "", ar: "سبا وعافية" },
+  dining: { en: "dining area", he: "", ar: "منطقة تناول الطعام" },
+  view: { en: "scenic view", he: "", ar: "منظر طبيعي" },
+  beach: { en: "beach area", he: "", ar: "منطقة الشاطئ" },
+  activity: { en: "activity", he: "", ar: "نشاط" },
+  architecture: { en: "architecture", he: "", ar: "هندسة معمارية" },
+  entrance: { en: "entrance", he: "", ar: "مدخل" },
+  exhibit: { en: "exhibit", he: "", ar: "معرض" },
+  dish: { en: "signature dish", he: "", ar: "طبق مميز" },
+  chef: { en: "chef", he: "", ar: "شيف" },
+  bar: { en: "bar area", he: "", ar: "بار" },
+  balcony: { en: "balcony", he: "", ar: "شرفة" },
+  bedroom: { en: "bedroom", he: "", ar: "غرفة نوم" },
+  bathroom: { en: "bathroom", he: "", ar: "حمام" },
+  kitchen: { en: "kitchen", he: "", ar: "مطبخ" },
+  "living-room": { en: "living room", he: "", ar: "غرفة معيشة" },
+  amenities: { en: "amenities", he: "", ar: "مرافق" },
+  panorama: { en: "panoramic view", he: "", ar: "منظر بانورامي" },
+  sunset: { en: "at sunset", he: "", ar: "عند غروب الشمس" },
+  night: { en: "at night", he: "", ar: "في الليل" },
+  aerial: { en: "aerial view", he: "", ar: "منظر جوي" },
+  crowd: { en: "crowd and atmosphere", he: "", ar: "جمهور وأجواء" },
+  performance: { en: "performance", he: "", ar: "عرض" },
+  fireworks: { en: "fireworks display", he: "", ar: "عرض ألعاب نارية" },
+  hero: { en: "featured image", he: "", ar: "صورة مميزة" },
+  featured: { en: "featured", he: "", ar: "مميز" },
+  gallery: { en: "gallery image", he: "", ar: "صورة معرض" },
+  content: { en: "content image", he: "", ar: "صورة محتوى" },
 };
 
 // ============================================================================
@@ -340,10 +384,14 @@ const CATEGORY_DESCRIPTIONS: Record<ImageCategory, {
 // ============================================================================
 
 const TIME_OF_DAY: Record<string, { en: string; he: string; ar: string }> = {
-  day: { en: "during the day", he: "ביום", ar: "خلال النهار" },
-  night: { en: "at night with city lights", he: "בלילה עם אורות העיר", ar: "في الليل مع أضواء المدينة" },
-  sunset: { en: "at sunset with golden hour lighting", he: "בשקיעה עם תאורת שעת הזהב", ar: "عند غروب الشمس مع إضاءة الساعة الذهبية" },
-  sunrise: { en: "at sunrise", he: "בזריחה", ar: "عند شروق الشمس" }
+  day: { en: "during the day", he: "", ar: "خلال النهار" },
+  night: { en: "at night with city lights", he: "", ar: "في الليل مع أضواء المدينة" },
+  sunset: {
+    en: "at sunset with golden hour lighting",
+    he: "",
+    ar: "عند غروب الشمس مع إضاءة الساعة الذهبية",
+  },
+  sunrise: { en: "at sunrise", he: "", ar: "عند شروق الشمس" },
 };
 
 // ============================================================================
@@ -357,7 +405,11 @@ export class ImageSEOService {
   /**
    * Generate complete SEO metadata for an image
    */
-  generateSEOMetadata(context: ImageSEOContext, imageUrl: string, dimensions?: { width: number; height: number }): SEOImageMetadata {
+  generateSEOMetadata(
+    context: ImageSEOContext,
+    imageUrl: string,
+    dimensions?: { width: number; height: number }
+  ): SEOImageMetadata {
     const filename = this.generateFilename(context);
     const alt = this.generateAltText(context);
     const title = this.generateTitle(context);
@@ -373,7 +425,7 @@ export class ImageSEOService {
       caption,
       schema,
       aiPrompt,
-      openGraph
+      openGraph,
     };
   }
 
@@ -436,16 +488,7 @@ export class ImageSEOService {
     }
 
     // Hebrew ALT
-    let heAlt = `${context.entityName} - ${categoryDesc.he}`;
-    if (context.uniqueFeature) {
-      heAlt += ` עם ${context.uniqueFeature.replace(/-/g, " ")}`;
-    }
-    if (timeDesc) {
-      heAlt += ` ${timeDesc.he}`;
-    }
-    if (areaInfo) {
-      heAlt += ` ב${areaInfo.nameHe}, דובאי`;
-    }
+    let heAlt = ``;
 
     // Arabic ALT
     let arAlt = `${context.entityName} - ${categoryDesc.ar}`;
@@ -471,7 +514,7 @@ export class ImageSEOService {
     return {
       en: `${context.entityName} - ${tip.en} | ${this.brandName}`,
       he: `${context.entityName} - ${tip.he} | ${this.brandName}`,
-      ar: `${context.entityName} - ${tip.ar} | ${this.brandName}`
+      ar: `${context.entityName} - ${tip.ar} | ${this.brandName}`,
     };
   }
 
@@ -482,54 +525,54 @@ export class ImageSEOService {
     const tips: Record<ContentType, { en: string; he: string; ar: string }> = {
       hotel: {
         en: "Luxury accommodation in Dubai",
-        he: "אירוח יוקרתי בדובאי",
-        ar: "إقامة فاخرة في دبي"
+        he: "",
+        ar: "إقامة فاخرة في دبي",
       },
       attraction: {
         en: "Must-visit Dubai attraction",
-        he: "אטרקציה חובה בדובאי",
-        ar: "معلم سياحي لا بد من زيارته في دبي"
+        he: "",
+        ar: "معلم سياحي لا بد من زيارته في دبي",
       },
       restaurant: {
         en: "Award-winning Dubai dining",
-        he: "מסעדה מעטרת פרסים בדובאי",
-        ar: "مطعم حائز على جوائز في دبي"
+        he: "",
+        ar: "مطعم حائز على جوائز في دبي",
       },
       beach: {
         en: "Beautiful Dubai beach destination",
-        he: "חוף יפהפה בדובאי",
-        ar: "وجهة شاطئية جميلة في دبي"
+        he: "",
+        ar: "وجهة شاطئية جميلة في دبي",
       },
       district: {
         en: "Vibrant Dubai neighborhood",
-        he: "שכונה תוססת בדובאי",
-        ar: "حي نابض بالحياة في دبي"
+        he: "",
+        ar: "حي نابض بالحياة في دبي",
       },
       event: {
         en: "Exciting Dubai event",
-        he: "אירוע מרגש בדובאי",
-        ar: "حدث مثير في دبي"
+        he: "",
+        ar: "حدث مثير في دبي",
       },
       "real-estate": {
         en: "Premium Dubai property",
-        he: "נכס פרימיום בדובאי",
-        ar: "عقار فاخر في دبي"
+        he: "",
+        ar: "عقار فاخر في دبي",
       },
       article: {
         en: "Dubai travel guide",
-        he: "מדריך טיולים לדובאי",
-        ar: "دليل السفر إلى دبي"
+        he: "",
+        ar: "دليل السفر إلى دبي",
       },
       itinerary: {
         en: "Perfect Dubai itinerary",
-        he: "מסלול מושלם לדובאי",
-        ar: "خط سير مثالي في دبي"
+        he: "",
+        ar: "خط سير مثالي في دبي",
       },
       transport: {
         en: "Dubai transportation option",
-        he: "אפשרות תחבורה בדובאי",
-        ar: "خيار النقل في دبي"
-      }
+        he: "",
+        ar: "خيار النقل في دبي",
+      },
     };
 
     return tips[context.contentType] || tips.article;
@@ -556,13 +599,7 @@ export class ImageSEOService {
     }
 
     // Hebrew caption
-    let heCaption = `${categoryDesc.he} של `;
-    heCaption += `<a href="${entityUrl}">${context.entityName}</a>`;
-    if (areaInfo) {
-      heCaption += ` ב<a href="/areas/${this.slugify(context.location?.area || "")}">${areaInfo.nameHe}</a>, דובאי.`;
-    } else {
-      heCaption += ` בדובאי.`;
-    }
+    let heCaption = ``;
 
     // Arabic caption
     let arCaption = `${categoryDesc.ar} لـ `;
@@ -597,7 +634,7 @@ export class ImageSEOService {
       datePublished: new Date().toISOString().split("T")[0],
       author: {
         "@type": "Organization",
-        name: this.brandName
+        name: this.brandName,
       },
       contentLocation: {
         "@type": "Place",
@@ -607,20 +644,26 @@ export class ImageSEOService {
           // FAIL-FAST: Do not use implicit Dubai fallback for location - use context or omit
           addressLocality: areaInfo?.name || context.location?.area || context.entityName,
           addressRegion: context.location?.area || areaInfo?.name || undefined,
-          addressCountry: "AE"
+          addressCountry: "AE",
         },
         // FAIL-FAST: Only include geo coordinates if explicitly provided - no implicit Dubai fallback
-        ...(context.location?.coordinates || areaInfo?.coordinates ? {
-          geo: {
-            "@type": "GeoCoordinates",
-            latitude: String(context.location?.coordinates?.latitude || areaInfo?.coordinates?.latitude),
-            longitude: String(context.location?.coordinates?.longitude || areaInfo?.coordinates?.longitude)
-          }
-        } : {})
+        ...(context.location?.coordinates || areaInfo?.coordinates
+          ? {
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: String(
+                  context.location?.coordinates?.latitude || areaInfo?.coordinates?.latitude
+                ),
+                longitude: String(
+                  context.location?.coordinates?.longitude || areaInfo?.coordinates?.longitude
+                ),
+              },
+            }
+          : {}),
       },
       width: String(dimensions?.width || 1200),
       height: String(dimensions?.height || 800),
-      encodingFormat: "image/webp"
+      encodingFormat: "image/webp",
     };
   }
 
@@ -659,7 +702,7 @@ export class ImageSEOService {
         day: "bright daylight with blue sky",
         night: "dramatic night lighting with city lights",
         sunset: "golden hour sunset lighting with warm orange and pink sky",
-        sunrise: "soft sunrise lighting with pastel colors"
+        sunrise: "soft sunrise lighting with pastel colors",
       };
       promptParts.push(timeDescriptions[context.timeOfDay] || "");
     }
@@ -695,14 +738,17 @@ export class ImageSEOService {
       width: dimensions?.width || 1200,
       height: dimensions?.height || 630,
       alt: alt.en,
-      type: "image/webp"
+      type: "image/webp",
     };
   }
 
   /**
    * Generate responsive image srcset
    */
-  generateSrcSet(baseUrl: string, filename: string): {
+  generateSrcSet(
+    baseUrl: string,
+    filename: string
+  ): {
     mobile: string;
     tablet: string;
     desktop: string;
@@ -715,7 +761,7 @@ export class ImageSEOService {
       mobile: `${baseUrl}/${baseName}-400w.${ext} 400w, ${baseUrl}/${baseName}-600w.${ext} 600w`,
       tablet: `${baseUrl}/${baseName}-800w.${ext} 800w, ${baseUrl}/${baseName}-1000w.${ext} 1000w`,
       desktop: `${baseUrl}/${baseName}-1200w.${ext} 1200w, ${baseUrl}/${baseName}-1600w.${ext} 1600w, ${baseUrl}/${baseName}-1920w.${ext} 1920w`,
-      sizes: "(max-width: 767px) 100vw, (max-width: 1023px) 100vw, 100vw"
+      sizes: "(max-width: 767px) 100vw, (max-width: 1023px) 100vw, 100vw",
     };
   }
 

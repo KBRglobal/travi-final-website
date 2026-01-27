@@ -4,13 +4,13 @@
  * Feature flag: ENABLE_SECURITY_AUTHORITY
  */
 
-import { SecuritySeverity } from '../audit-logger';
+import { SecuritySeverity } from "../audit-logger";
 
 // ============================================================================
 // SECURITY MODES - Global system security state
 // ============================================================================
 
-export type SecurityMode = 'lockdown' | 'enforce' | 'monitor';
+export type SecurityMode = "lockdown" | "enforce" | "monitor";
 
 export interface SecurityModeConfig {
   mode: SecurityMode;
@@ -65,7 +65,7 @@ export const MODE_RESTRICTIONS: Record<SecurityMode, SecurityRestrictions> = {
 // THREAT LEVELS
 // ============================================================================
 
-export type ThreatLevel = 'normal' | 'elevated' | 'high' | 'critical';
+export type ThreatLevel = "normal" | "elevated" | "high" | "critical";
 
 export interface ThreatState {
   level: ThreatLevel;
@@ -89,40 +89,40 @@ export interface ThreatSource {
 // ============================================================================
 
 export type GatedAction =
-  | 'data_read'
-  | 'data_write'
-  | 'data_delete'
-  | 'data_export'
-  | 'content_create'
-  | 'content_update'
-  | 'content_delete'
-  | 'content_publish'
-  | 'seo_autopilot'
-  | 'data_autopilot'
-  | 'ops_autopilot'
-  | 'bulk_operation'
-  | 'deployment'
-  | 'cutover'
-  | 'user_management'
-  | 'role_management'
-  | 'settings_change'
-  | 'external_api_call'
-  | 'ai_generation'
-  | 'translation'
-  | 'media_upload'
-  | 'admin_action';
+  | "data_read"
+  | "data_write"
+  | "data_delete"
+  | "data_export"
+  | "content_create"
+  | "content_update"
+  | "content_delete"
+  | "content_publish"
+  | "seo_autopilot"
+  | "data_autopilot"
+  | "ops_autopilot"
+  | "bulk_operation"
+  | "deployment"
+  | "cutover"
+  | "user_management"
+  | "role_management"
+  | "settings_change"
+  | "external_api_call"
+  | "ai_generation"
+  | "translation"
+  | "media_upload"
+  | "admin_action";
 
 export type ResourceType =
-  | 'content'
-  | 'entity'
-  | 'user'
-  | 'settings'
-  | 'deployment'
-  | 'system'
-  | 'audit'
-  | 'api'
-  | 'media'
-  | 'report';
+  | "content"
+  | "entity"
+  | "user"
+  | "settings"
+  | "deployment"
+  | "system"
+  | "audit"
+  | "api"
+  | "media"
+  | "report";
 
 export interface GateRequest {
   actor: ActorIdentity;
@@ -153,13 +153,13 @@ export interface GateContext {
   locale?: string;
   targetUsers?: string[];
   affectedRecordCount?: number;
-  estimatedImpact?: 'low' | 'medium' | 'high' | 'critical';
+  estimatedImpact?: "low" | "medium" | "high" | "critical";
   metadata?: Record<string, unknown>;
 }
 
 export interface GateDecision {
   allowed: boolean;
-  decision: 'ALLOW' | 'DENY' | 'REQUIRE_APPROVAL' | 'RATE_LIMITED';
+  decision: "ALLOW" | "DENY" | "REQUIRE_APPROVAL" | "RATE_LIMITED";
   reasons: GateReason[];
   requiredApprovals?: ApprovalRequirement[];
   retryAfterMs?: number;
@@ -172,7 +172,7 @@ export interface GateDecision {
 export interface GateReason {
   code: string;
   message: string;
-  source: 'mode' | 'threat' | 'policy' | 'override' | 'rate_limit' | 'budget';
+  source: "mode" | "threat" | "policy" | "override" | "rate_limit" | "budget";
   severity: SecuritySeverity;
 }
 
@@ -207,17 +207,17 @@ export interface SecurityOverride {
 }
 
 export type OverrideType =
-  | 'action_bypass'
-  | 'mode_bypass'
-  | 'threat_bypass'
-  | 'rate_limit_bypass'
-  | 'approval_bypass';
+  | "action_bypass"
+  | "mode_bypass"
+  | "threat_bypass"
+  | "rate_limit_bypass"
+  | "approval_bypass";
 
 export interface OverrideTarget {
   action?: GatedAction;
   resource?: ResourceType;
   resourceId?: string;
-  scope?: 'specific' | 'category' | 'all';
+  scope?: "specific" | "category" | "all";
 }
 
 export interface OverrideRequest {
@@ -269,23 +269,23 @@ export interface SecurityEvidence {
 }
 
 export type EvidenceType =
-  | 'gate_decision'
-  | 'override_used'
-  | 'threat_detected'
-  | 'mode_changed'
-  | 'policy_violated'
-  | 'approval_granted'
-  | 'approval_denied';
+  | "gate_decision"
+  | "override_used"
+  | "threat_detected"
+  | "mode_changed"
+  | "policy_violated"
+  | "approval_granted"
+  | "approval_denied";
 
 export interface ComplianceBundle {
   bundleId: string;
-  framework: 'SOC2' | 'GDPR' | 'HIPAA' | 'ISO27001';
+  framework: "SOC2" | "GDPR" | "HIPAA" | "ISO27001";
   generatedAt: Date;
   periodStart: Date;
   periodEnd: Date;
   evidence: SecurityEvidence[];
   summary: ComplianceSummary;
-  exportFormat: 'json' | 'pdf' | 'csv';
+  exportFormat: "json" | "pdf" | "csv";
 }
 
 export interface ComplianceSummary {
@@ -326,17 +326,15 @@ export interface SecurityAuthorityConfig {
 }
 
 export const DEFAULT_SECURITY_AUTHORITY_CONFIG: SecurityAuthorityConfig = {
-  enabled: process.env.ENABLE_SECURITY_AUTHORITY === 'true',
-  defaultMode: (process.env.SECURITY_DEFAULT_MODE as SecurityMode) || 'enforce',
-  failClosed: process.env.SECURITY_FAIL_CLOSED !== 'false', // Default true
-  auditAllDecisions: process.env.SECURITY_AUDIT_ALL !== 'false', // Default true
-  maxOverrideDurationHours: parseInt(process.env.SECURITY_MAX_OVERRIDE_HOURS || '24', 10),
+  enabled: process.env.ENABLE_SECURITY_AUTHORITY === "true",
+  defaultMode: (process.env.SECURITY_DEFAULT_MODE as SecurityMode) || "enforce",
+  failClosed: process.env.SECURITY_FAIL_CLOSED !== "false", // Default true
+  auditAllDecisions: process.env.SECURITY_AUDIT_ALL !== "false", // Default true
+  maxOverrideDurationHours: parseInt(process.env.SECURITY_MAX_OVERRIDE_HOURS || "24", 10),
   threatEscalationThresholds: {
     elevatedThreshold: 5,
     highThreshold: 15,
     criticalThreshold: 30,
   },
-  autoLockdownOnCriticalThreat: process.env.SECURITY_AUTO_LOCKDOWN !== 'false', // Default true
+  autoLockdownOnCriticalThreat: process.env.SECURITY_AUTO_LOCKDOWN !== "false", // Default true
 };
-
-console.log('[SecurityAuthority] Types loaded');

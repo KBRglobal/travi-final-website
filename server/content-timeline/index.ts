@@ -130,13 +130,13 @@ export async function getContentTimeline(
   let filteredEvents = events;
   if (eventTypes && eventTypes.length > 0) {
     const typeSet = new Set(eventTypes);
-    filteredEvents = events.filter((e) => typeSet.has(e.eventType as TimelineEventType));
+    filteredEvents = events.filter(e => typeSet.has(e.eventType as TimelineEventType));
   }
 
   return {
     contentId,
     contentTitle: content?.title,
-    events: filteredEvents.map((e) => ({
+    events: filteredEvents.map(e => ({
       id: e.id,
       contentId: e.contentId,
       eventType: e.eventType as TimelineEventType,
@@ -167,10 +167,10 @@ export async function getRecentEvents(
   let filteredEvents = events;
   if (eventTypes && eventTypes.length > 0) {
     const typeSet = new Set(eventTypes);
-    filteredEvents = events.filter((e) => typeSet.has(e.eventType as TimelineEventType));
+    filteredEvents = events.filter(e => typeSet.has(e.eventType as TimelineEventType));
   }
 
-  return filteredEvents.map((e) => ({
+  return filteredEvents.map(e => ({
     id: e.id,
     contentId: e.contentId,
     eventType: e.eventType as TimelineEventType,
@@ -186,7 +186,10 @@ export async function getRecentEvents(
  */
 export const timelineHelpers = {
   async contentCreated(contentId: string, actorId?: string): Promise<void> {
-    await recordTimelineEvent(contentId, "created", { actorId, actorType: actorId ? "user" : "system" });
+    await recordTimelineEvent(contentId, "created", {
+      actorId,
+      actorType: actorId ? "user" : "system",
+    });
   },
 
   async contentEdited(contentId: string, changes: string[], actorId?: string): Promise<void> {
@@ -198,7 +201,10 @@ export const timelineHelpers = {
   },
 
   async contentPublished(contentId: string, actorId?: string): Promise<void> {
-    await recordTimelineEvent(contentId, "published", { actorId, actorType: actorId ? "user" : "system" });
+    await recordTimelineEvent(contentId, "published", {
+      actorId,
+      actorType: actorId ? "user" : "system",
+    });
   },
 
   async aeoGenerated(contentId: string, score: number): Promise<void> {
@@ -222,5 +228,3 @@ export const timelineHelpers = {
     });
   },
 };
-
-console.log("[ContentTimeline] Module loaded");

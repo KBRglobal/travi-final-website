@@ -15,7 +15,7 @@ export interface LocaleInfo {
 }
 
 export function getLocaleInfo(locale: Locale): LocaleInfo | undefined {
-  const info = SUPPORTED_LOCALES.find((l) => l.code === locale);
+  const info = SUPPORTED_LOCALES.find(l => l.code === locale);
   if (!info) return undefined;
   return {
     ...info,
@@ -37,14 +37,14 @@ export function getFullLocalizedUrl(path: string, locale: Locale): string {
 }
 
 export function getAllLocales(): LocaleInfo[] {
-  return SUPPORTED_LOCALES.map((l) => ({
+  return SUPPORTED_LOCALES.map(l => ({
     ...l,
     isRTL: RTL_LOCALES.includes(l.code),
   }));
 }
 
 export function getLocalesByTier(tier: number): LocaleInfo[] {
-  return getAllLocales().filter((l) => l.tier === tier);
+  return getAllLocales().filter(l => l.tier === tier);
 }
 
 export async function getTranslationWithFallback<T extends Record<string, unknown>>(
@@ -76,7 +76,6 @@ export async function getTranslationWithFallback<T extends Record<string, unknow
 
     return null;
   } catch (error) {
-    console.error(`Error fetching translation for ${contentId} in ${locale}:`, error);
     return null;
   }
 }

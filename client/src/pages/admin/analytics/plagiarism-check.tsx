@@ -8,9 +8,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { 
-  Eye, FileText, CheckCircle2, AlertTriangle, XCircle, 
-  RefreshCw, Lightbulb, Search, ExternalLink, Shield 
+import {
+  Eye,
+  FileText,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  RefreshCw,
+  Lightbulb,
+  Search,
+  ExternalLink,
+  Shield,
 } from "lucide-react";
 
 interface PlagiarismStats {
@@ -90,7 +98,10 @@ export default function PlagiarismCheckPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3" data-testid="heading-plagiarism">
+          <h1
+            className="text-3xl font-bold flex items-center gap-3"
+            data-testid="heading-plagiarism"
+          >
             <Eye className="h-8 w-8 text-primary" />
             Plagiarism Check
           </h1>
@@ -98,7 +109,7 @@ export default function PlagiarismCheckPage() {
             Ensure contents originality and avoid duplicate contents issues
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => scanMutation.mutate()}
           disabled={scanMutation.isPending}
           data-testid="button-scan-all"
@@ -111,15 +122,12 @@ export default function PlagiarismCheckPage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Plagiarism check scans your contents against <strong>web sources and internal duplicates</strong>.
-          Ensures AI-generated articles are unique and flags contents that may hurt SEO rankings.
-          <br />
-          <span className="text-xs opacity-70">
-            (בדיקת פלגיאט סורקת את התוכן שלך מול מקורות אינטרנט וכפילויות פנימיות.)
-          </span>
+          Plagiarism check scans your content against{" "}
+          <strong>web sources and internal duplicates</strong>. Ensures AI-generated articles are
+          unique and flags content that may hurt SEO rankings.
         </p>
       </div>
 
@@ -188,15 +196,13 @@ export default function PlagiarismCheckPage() {
       <Card>
         <CardHeader>
           <CardTitle>Content Originality Reports</CardTitle>
-          <CardDescription>
-            Detailed plagiarism check results for each article
-          </CardDescription>
+          <CardDescription>Detailed plagiarism check results for each article</CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[450px]">
             {checks?.length ? (
               <div className="space-y-4">
-                {checks.map((check) => (
+                {checks.map(check => (
                   <div
                     key={check.contentId}
                     className="p-4 border rounded-lg space-y-3"
@@ -208,7 +214,10 @@ export default function PlagiarismCheckPage() {
                         <div>
                           <h4 className="font-medium">{check.title}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {check.type} | Last checked: {check.lastChecked ? new Date(check.lastChecked).toLocaleDateString() : "Never"}
+                            {check.type} | Last checked:{" "}
+                            {check.lastChecked
+                              ? new Date(check.lastChecked).toLocaleDateString()
+                              : "Never"}
                           </p>
                         </div>
                       </div>
@@ -218,7 +227,9 @@ export default function PlagiarismCheckPage() {
                     <div className="flex items-center gap-4">
                       <span className="text-sm text-muted-foreground">Originality:</span>
                       <Progress value={check.originalityScore} className="flex-1 h-2" />
-                      <span className="text-sm font-medium">{check.originalityScore.toFixed(0)}%</span>
+                      <span className="text-sm font-medium">
+                        {check.originalityScore.toFixed(0)}%
+                      </span>
                     </div>
 
                     {check.matches && check.matches.length > 0 && (
@@ -243,10 +254,18 @@ export default function PlagiarismCheckPage() {
                     )}
 
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" data-testid={`button-details-${check.contentId}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        data-testid={`button-details-${check.contentId}`}
+                      >
                         View Details
                       </Button>
-                      <Button variant="ghost" size="sm" data-testid={`button-rescan-${check.contentId}`}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        data-testid={`button-rescan-${check.contentId}`}
+                      >
                         <RefreshCw className="h-3 w-3 mr-1" />
                         Rescan
                       </Button>

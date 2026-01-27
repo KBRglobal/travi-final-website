@@ -1,12 +1,12 @@
 /**
  * TRAVI Content Generation - Checkpoint Manager
- * 
+ *
  * Handles saving progress, graceful shutdown, and resume logic
  * for long-running content generation jobs.
  */
 
-import { db } from '../db';
-import { sql } from 'drizzle-orm';
+import { db } from "../db";
+import { sql } from "drizzle-orm";
 
 // Checkpoint intervals
 const CHECKPOINT_LOCATION_INTERVAL = 10; // Save every 10 locations
@@ -28,7 +28,7 @@ export interface CheckpointData {
 export interface JobState {
   jobId: string;
   jobType: string;
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'budget_exceeded';
+  status: "pending" | "running" | "paused" | "completed" | "failed" | "budget_exceeded";
   totalItems: number;
   processedItems: number;
   successCount: number;
@@ -66,7 +66,6 @@ export async function createJob(
 
     return result.rows[0]?.id as string;
   } catch (error) {
-    console.error('[CheckpointManager] Failed to create job:', error);
     return null;
   }
 }
@@ -74,7 +73,7 @@ export async function createJob(
 // Update job status
 export async function updateJobStatus(
   jobId: string,
-  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'budget_exceeded',
+  status: "pending" | "running" | "paused" | "completed" | "failed" | "budget_exceeded",
   errorMessage?: string
 ): Promise<boolean> {
   try {
@@ -83,22 +82,18 @@ export async function updateJobStatus(
       SET 
         status = ${status}::travi_job_status,
         error_message = ${errorMessage || null},
-        completed_at = ${status === 'completed' || status === 'failed' || status === 'budget_exceeded' ? sql`now()` : sql`NULL`},
+        completed_at = ${status === "completed" || status === "failed" || status === "budget_exceeded" ? sql`now()` : sql`NULL`},
         updated_at = now()
       WHERE id = ${jobId}
     `);
     return true;
   } catch (error) {
-    console.error('[CheckpointManager] Failed to update job status:', error);
     return false;
   }
 }
 
 // Save checkpoint
-export async function saveCheckpoint(
-  jobId: string,
-  checkpoint: CheckpointData
-): Promise<boolean> {
+export async function saveCheckpoint(jobId: string, checkpoint: CheckpointData): Promise<boolean> {
   try {
     await db.execute(sql`
       UPDATE travi_processing_jobs
@@ -112,11 +107,9 @@ export async function saveCheckpoint(
         updated_at = now()
       WHERE id = ${jobId}
     `);
-    
-    console.log(`[CheckpointManager] Saved checkpoint for job ${jobId}: ${checkpoint.processedCount} processed`);
+
     return true;
   } catch (error) {
-    console.error('[CheckpointManager] Failed to save checkpoint:', error);
     return false;
   }
 }
@@ -129,13 +122,12 @@ export async function loadCheckpoint(jobId: string): Promise<CheckpointData | nu
     `);
 
     if (result.rows.length === 0) return null;
-    
+
     const checkpointData = result.rows[0]?.checkpoint_data;
     if (!checkpointData) return null;
-    
+
     return checkpointData as CheckpointData;
   } catch (error) {
-    console.error('[CheckpointManager] Failed to load checkpoint:', error);
     return null;
   }
 }
@@ -148,7 +140,7 @@ export async function getJobState(jobId: string): Promise<JobState | null> {
     `);
 
     if (result.rows.length === 0) return null;
-    
+
     const row = result.rows[0] as any;
     return {
       jobId: row.id,
@@ -163,7 +155,6 @@ export async function getJobState(jobId: string): Promise<JobState | null> {
       completedAt: row.completed_at,
     };
   } catch (error) {
-    console.error('[CheckpointManager] Failed to get job state:', error);
     return null;
   }
 }
@@ -190,7 +181,6 @@ export async function getRunningJobs(): Promise<JobState[]> {
       completedAt: row.completed_at,
     }));
   } catch (error) {
-    console.error('[CheckpointManager] Failed to get running jobs:', error);
     return [];
   }
 }
@@ -217,7 +207,6 @@ export async function getResumableJobs(): Promise<JobState[]> {
       completedAt: row.completed_at,
     }));
   } catch (error) {
-    console.error('[CheckpointManager] Failed to get resumable jobs:', error);
     return [];
   }
 }
@@ -245,7 +234,6 @@ export async function getRecentJobs(limit: number = 10, offset: number = 0): Pro
       completedAt: row.completed_at,
     }));
   } catch (error) {
-    console.error('[CheckpointManager] Failed to get recent jobs:', error);
     return [];
   }
 }
@@ -271,7 +259,7 @@ export class CheckpointTracker {
       lastCheckpointAt: new Date().toISOString(),
     };
     this.lastCheckpointTime = Date.now();
-    
+
     // Set up graceful shutdown handler
     this.setupShutdownHandler();
   }
@@ -280,15 +268,13 @@ export class CheckpointTracker {
     const handler = async () => {
       if (this.isShuttingDown) return;
       this.isShuttingDown = true;
-      
-      console.log('[CheckpointTracker] Graceful shutdown initiated, saving checkpoint...');
+
       await this.save();
-      await updateJobStatus(this.jobId, 'paused');
-      console.log('[CheckpointTracker] Checkpoint saved, job paused');
+      await updateJobStatus(this.jobId, "paused");
     };
 
-    process.on('SIGTERM', handler);
-    process.on('SIGINT', handler);
+    process.on("SIGTERM", handler);
+    process.on("SIGINT", handler);
   }
 
   // Check if shutdown was requested
@@ -297,15 +283,11 @@ export class CheckpointTracker {
   }
 
   // Record processed location
-  async recordProcessed(
-    locationId: string,
-    success: boolean,
-    error?: string
-  ): Promise<void> {
+  async recordProcessed(locationId: string, success: boolean, error?: string): Promise<void> {
     this.checkpoint.lastProcessedId = locationId;
     this.checkpoint.processedCount++;
     this.locationsSinceCheckpoint++;
-    
+
     if (success) {
       this.checkpoint.successCount++;
     } else {
@@ -378,12 +360,12 @@ export async function resumeFromCheckpoint(jobId: string): Promise<{
   startFromBatch: number;
 }> {
   const checkpoint = await loadCheckpoint(jobId);
-  
+
   // Update job status to running
-  await updateJobStatus(jobId, 'running');
-  
+  await updateJobStatus(jobId, "running");
+
   const tracker = new CheckpointTracker(jobId, checkpoint || undefined);
-  
+
   return {
     tracker,
     startFromId: checkpoint?.lastProcessedId || null,

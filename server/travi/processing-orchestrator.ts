@@ -1,6 +1,6 @@
 /**
  * TRAVI Content Generation - Processing Orchestrator
- * 
+ *
  * Coordinates the full content generation pipeline:
  * 1. Discover locations (Wikipedia + OSM)
  * 2. Enrich with Google Places
@@ -9,38 +9,38 @@
  * 5. Validate and save to database
  */
 
-import { db } from '../db';
-import { sql } from 'drizzle-orm';
+import { db } from "../db";
+import { sql } from "drizzle-orm";
 
-import { discoverLocations, type DiscoveredLocation, type LocationCategory } from './location-discovery';
-import { enrichWithGooglePlaces, isGooglePlacesAvailable } from './google-places-client';
-import { searchLocationImages, isFreepikAvailable, type FreepikImage } from './freepik-client';
-import { callAI, getAIStatus, type AIModelKey } from './ai-orchestrator';
-import { 
-  validateFullLocation, 
-  validateNoPrices, 
+import {
+  discoverLocations,
+  type DiscoveredLocation,
+  type LocationCategory,
+} from "./location-discovery";
+import { enrichWithGooglePlaces, isGooglePlacesAvailable } from "./google-places-client";
+import { searchLocationImages, isFreepikAvailable, type FreepikImage } from "./freepik-client";
+import { callAI, getAIStatus, type AIModelKey } from "./ai-orchestrator";
+import {
+  validateFullLocation,
+  validateNoPrices,
   validateAttribution,
   generateSlug,
-  type DestinationSlug 
-} from './validation';
-import { 
-  createJob, 
-  updateJobStatus, 
+  type DestinationSlug,
+} from "./validation";
+import {
+  createJob,
+  updateJobStatus,
   CheckpointTracker,
-  resumeFromCheckpoint 
-} from './checkpoint-manager';
-import { 
-  isProcessingPaused, 
-  getTodayUsageStats,
-  getBudgetStatus 
-} from './budget-manager';
-import { DESTINATION_METADATA, getDestinationBySlug } from './destination-seeder';
+  resumeFromCheckpoint,
+} from "./checkpoint-manager";
+import { isProcessingPaused, getTodayUsageStats, getBudgetStatus } from "./budget-manager";
+import { DESTINATION_METADATA, getDestinationBySlug } from "./destination-seeder";
 
 // In-memory log buffer for real-time monitoring (ring buffer, max 100 entries)
 const MAX_LOG_ENTRIES = 100;
 const logBuffer: Array<{ timestamp: string; level: string; message: string }> = [];
 
-function addLog(level: 'info' | 'warn' | 'error', message: string) {
+function addLog(level: "info" | "warn" | "error", message: string) {
   const entry = {
     timestamp: new Date().toISOString(),
     level,
@@ -50,7 +50,6 @@ function addLog(level: 'info' | 'warn' | 'error', message: string) {
   if (logBuffer.length > MAX_LOG_ENTRIES) {
     logBuffer.shift();
   }
-  console.log(`[Orchestrator] [${level.toUpperCase()}] ${message}`);
 }
 
 export function getRecentLogs(limit: number = 20): typeof logBuffer {
@@ -62,19 +61,19 @@ export function clearLogs(): void {
 }
 
 export interface ProcessingOptions {
-  dryRun?: boolean;           // Don't save to database
+  dryRun?: boolean; // Don't save to database
   skipGooglePlaces?: boolean; // Skip Google Places enrichment
-  skipFreepik?: boolean;      // Skip Freepik image search
-  skipAI?: boolean;           // Skip AI content generation
-  batchSize?: number;         // Locations per batch
-  maxLocations?: number;      // Max locations to process
+  skipFreepik?: boolean; // Skip Freepik image search
+  skipAI?: boolean; // Skip AI content generation
+  batchSize?: number; // Locations per batch
+  maxLocations?: number; // Max locations to process
 }
 
 export interface ProcessingProgress {
   jobId: string;
   destinationSlug: DestinationSlug;
   category: LocationCategory;
-  status: 'running' | 'paused' | 'completed' | 'failed' | 'budget_exceeded';
+  status: "running" | "paused" | "completed" | "failed" | "budget_exceeded";
   totalDiscovered: number;
   processed: number;
   succeeded: number;
@@ -86,7 +85,7 @@ export interface ProcessingProgress {
 
 export interface ProcessedLocation {
   location: DiscoveredLocation;
-  googlePlaces?: Awaited<ReturnType<typeof enrichWithGooglePlaces>>['enriched'];
+  googlePlaces?: Awaited<ReturnType<typeof enrichWithGooglePlaces>>["enriched"];
   images?: FreepikImage[];
   aiContent?: {
     metaTitle: string;
@@ -95,7 +94,7 @@ export interface ProcessedLocation {
     whyVisit: string;
     keyHighlights: string[];
     faq: Array<{ question: string; answer: string }>;
-    modelUsed: string;  // Full model ID for database enum
+    modelUsed: string; // Full model ID for database enum
     cost: number;
   };
   validationResult: ReturnType<typeof validateFullLocation>;
@@ -110,7 +109,7 @@ export async function processDestinationCategory(
 ): Promise<ProcessingProgress> {
   const startTime = Date.now();
   const rawDestination = getDestinationBySlug(destinationSlug);
-  
+
   if (!rawDestination) {
     throw new Error(`Unknown destination: ${destinationSlug}`);
   }
@@ -122,24 +121,24 @@ export async function processDestinationCategory(
     country: rawDestination.country,
   };
 
-  addLog('info', `Starting ${category} processing for ${destination.cityName}`);
+  addLog("info", `Starting ${category} processing for ${destination.cityName}`);
 
   // Create job using valid enum value ('enrich_locations' for full processing)
-  const jobId = await createJob('enrich_locations', destinationSlug, category);
+  const jobId = await createJob("enrich_locations", destinationSlug, category);
   if (!jobId) {
-    throw new Error('Failed to create processing job');
+    throw new Error("Failed to create processing job");
   }
 
-  await updateJobStatus(jobId, 'running');
+  await updateJobStatus(jobId, "running");
   const tracker = new CheckpointTracker(jobId);
 
   let totalCost = 0;
-  let status: ProcessingProgress['status'] = 'running';
+  let status: ProcessingProgress["status"] = "running";
   let discoveryResult: Awaited<ReturnType<typeof discoverLocations>> | null = null;
 
   try {
     // Step 1: Discover locations
-    addLog('info', `Discovering ${category}s...`);
+    addLog("info", `Discovering ${category}s...`);
     discoveryResult = await discoverLocations(destinationSlug, category, {
       limit: options.maxLocations || 100,
     });
@@ -149,29 +148,35 @@ export async function processDestinationCategory(
     const locations = discoveryResult.locations;
     const validCount = locations.filter(l => l.validationErrors.length === 0).length;
     const invalidCount = locations.length - validCount;
-    addLog('info', `Found ${locations.length} locations (${validCount} valid, ${invalidCount} with validation warnings)`);
+    addLog(
+      "info",
+      `Found ${locations.length} locations (${validCount} valid, ${invalidCount} with validation warnings)`
+    );
 
     tracker.updateIndices(0, 0);
 
     // Step 2: Process each location
     const batchSize = options.batchSize || 10;
-    
+
     for (let i = 0; i < locations.length; i += batchSize) {
       // Check for pause/stop conditions
       if (tracker.shouldStop()) {
-        status = 'paused';
+        status = "paused";
         break;
       }
 
       if (isProcessingPaused()) {
-        addLog('warn', 'Processing paused due to budget');
-        status = 'budget_exceeded';
-        await updateJobStatus(jobId, 'budget_exceeded');
+        addLog("warn", "Processing paused due to budget");
+        status = "budget_exceeded";
+        await updateJobStatus(jobId, "budget_exceeded");
         break;
       }
 
       const batch = locations.slice(i, i + batchSize);
-      addLog('info', `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(locations.length / batchSize)}`);
+      addLog(
+        "info",
+        `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(locations.length / batchSize)}`
+      );
 
       for (const location of batch) {
         try {
@@ -186,17 +191,20 @@ export async function processDestinationCategory(
 
           await tracker.recordProcessed(location.externalId, result.validationResult.isValid);
         } catch (error) {
-          addLog('error', `Error processing ${location.name}: ${String(error)}`);
-          
+          addLog("error", `Error processing ${location.name}: ${String(error)}`);
+
           // Even if processing failed, try to save with error status
           if (!options.dryRun) {
             try {
               await saveErrorLocation(location, destinationSlug, String(error));
             } catch (saveError) {
-              addLog('error', `Failed to save error status for ${location.name}: ${String(saveError)}`);
+              addLog(
+                "error",
+                `Failed to save error status for ${location.name}: ${String(saveError)}`
+              );
             }
           }
-          
+
           await tracker.recordProcessed(location.externalId, false, String(error));
         }
       }
@@ -204,15 +212,14 @@ export async function processDestinationCategory(
       tracker.updateBatchIndex(i / batchSize);
     }
 
-    if (status === 'running') {
-      status = 'completed';
-      await updateJobStatus(jobId, 'completed');
+    if (status === "running") {
+      status = "completed";
+      await updateJobStatus(jobId, "completed");
     }
-
   } catch (error) {
-    addLog('error', `Processing failed: ${String(error)}`);
-    status = 'failed';
-    await updateJobStatus(jobId, 'failed', String(error));
+    addLog("error", `Processing failed: ${String(error)}`);
+    status = "failed";
+    await updateJobStatus(jobId, "failed", String(error));
   }
 
   await tracker.save();
@@ -240,27 +247,21 @@ async function processLocation(
   options: ProcessingOptions
 ): Promise<ProcessedLocation> {
   let totalCost = 0;
-  let googlePlaces: ProcessedLocation['googlePlaces'];
-  let images: ProcessedLocation['images'];
-  let aiContent: ProcessedLocation['aiContent'];
+  let googlePlaces: ProcessedLocation["googlePlaces"];
+  let images: ProcessedLocation["images"];
+  let aiContent: ProcessedLocation["aiContent"];
   const errors: string[] = [];
-
-  console.log(`\n=== PROCESSING: ${location.name} ===`);
 
   // Enrich with Google Places
   if (!options.skipGooglePlaces && isGooglePlacesAvailable()) {
     try {
-      console.log(`[${location.name}] Calling Google Places...`);
-      const enrichResult = await enrichWithGooglePlaces(
-        location.name,
-        cityName,
-        { lat: location.latitude, lng: location.longitude }
-      );
+      const enrichResult = await enrichWithGooglePlaces(location.name, cityName, {
+        lat: location.latitude,
+        lng: location.longitude,
+      });
       googlePlaces = enrichResult.enriched;
       totalCost += enrichResult.totalCost;
-      console.log(`[${location.name}] ✅ Google Places: ${googlePlaces?.placeId || 'found'}`);
     } catch (error) {
-      console.error(`[${location.name}] ❌ Google Places failed:`, error);
       errors.push(`Google Places: ${String(error)}`);
     }
   }
@@ -268,18 +269,14 @@ async function processLocation(
   // Generate AI content - MANDATORY!
   if (!options.skipAI) {
     try {
-      console.log(`[${location.name}] Calling AI for content generation...`);
       const aiResult = await generateAIContent(location, cityName, category);
       if (aiResult) {
         aiContent = aiResult;
         totalCost += aiResult.cost;
-        console.log(`[${location.name}] ✅ AI content generated (${aiResult.modelUsed})`);
       } else {
-        console.error(`[${location.name}] ❌ AI returned null (no model available or all failed)`);
-        errors.push('AI content generation failed: no model available or all attempts failed');
+        errors.push("AI content generation failed: no model available or all attempts failed");
       }
     } catch (error) {
-      console.error(`[${location.name}] ❌ AI content generation error:`, error);
       errors.push(`AI content: ${String(error)}`);
     }
   }
@@ -287,16 +284,12 @@ async function processLocation(
   // Find images from Freepik
   if (!options.skipFreepik && isFreepikAvailable()) {
     try {
-      console.log(`[${location.name}] Calling Freepik for images...`);
       images = await searchLocationImages(location.name, cityName, category, 3);
       if (images && images.length > 0) {
-        console.log(`[${location.name}] ✅ Freepik: ${images.length} images found`);
       } else {
-        console.log(`[${location.name}] ⚠️ Freepik: no images found`);
-        errors.push('No Freepik images found');
+        errors.push("No Freepik images found");
       }
     } catch (error) {
-      console.error(`[${location.name}] ❌ Freepik failed:`, error);
       errors.push(`Freepik: ${String(error)}`);
     }
   }
@@ -314,38 +307,45 @@ async function processLocation(
       latitude: googlePlaces?.latitude || location.latitude,
       longitude: googlePlaces?.longitude || location.longitude,
     },
-    content: aiContent ? {
-      metaTitle: aiContent.metaTitle,
-      metaDescription: aiContent.metaDescription,
-      shortDescription: aiContent.shortDescription,
-      whyVisit: aiContent.whyVisit,
-      keyHighlights: aiContent.keyHighlights,
-      faq: aiContent.faq,
-    } : undefined,
+    content: aiContent
+      ? {
+          metaTitle: aiContent.metaTitle,
+          metaDescription: aiContent.metaDescription,
+          shortDescription: aiContent.shortDescription,
+          whyVisit: aiContent.whyVisit,
+          keyHighlights: aiContent.keyHighlights,
+          faq: aiContent.faq,
+        }
+      : undefined,
     destinationSlug: location.destinationSlug,
   });
 
   // AI content is MANDATORY - if missing, mark as invalid
   if (!aiContent && !options.skipAI) {
     validationResult.isValid = false;
-    (validationResult.errors as any).push('AI content is required but was not generated');
+    (validationResult.errors as any).push("AI content is required but was not generated");
   }
 
   // Check FAQ count - must have at least 7
   if (aiContent && (!aiContent.faq || aiContent.faq.length < 7)) {
     validationResult.isValid = false;
-    (validationResult.errors as any).push(`FAQ incomplete: ${aiContent.faq?.length || 0}/7 questions`);
+    (validationResult.errors as any).push(
+      `FAQ incomplete: ${aiContent.faq?.length || 0}/7 questions`
+    );
   }
 
   // Additional validation: check for prices in AI content
   if (aiContent) {
-    const priceCheck = validateNoPrices([
-      aiContent.metaDescription,
-      aiContent.shortDescription,
-      aiContent.whyVisit,
-      ...aiContent.keyHighlights,
-      ...aiContent.faq.map(f => f.answer),
-    ].join(' ') as any, undefined as any);
+    const priceCheck = validateNoPrices(
+      [
+        aiContent.metaDescription,
+        aiContent.shortDescription,
+        aiContent.whyVisit,
+        ...aiContent.keyHighlights,
+        ...aiContent.faq.map(f => f.answer),
+      ].join(" ") as any,
+      undefined as any
+    );
 
     if (!priceCheck.isValid) {
       validationResult.isValid = false;
@@ -356,9 +356,7 @@ async function processLocation(
   // Add processing errors to validation result
   (validationResult.errors as any).push(...errors);
 
-  console.log(`[${location.name}] Final status: ${validationResult.isValid ? '✅ READY' : '❌ ERROR'}`);
   if (validationResult.errors.length > 0) {
-    console.log(`[${location.name}] Errors:`, validationResult.errors);
   }
 
   return {
@@ -376,18 +374,18 @@ async function generateAIContent(
   location: DiscoveredLocation,
   cityName: string,
   category: LocationCategory
-): Promise<ProcessedLocation['aiContent'] | null> {
+): Promise<ProcessedLocation["aiContent"] | null> {
   const categoryContext = {
-    attraction: 'tourist attraction, landmark, or point of interest',
-    hotel: 'hotel or accommodation',
-    restaurant: 'restaurant or dining establishment',
+    attraction: "tourist attraction, landmark, or point of interest",
+    hotel: "hotel or accommodation",
+    restaurant: "restaurant or dining establishment",
   };
 
   const prompt = `Generate travel content for "${location.name}" in ${cityName}.
 This is a ${categoryContext[category]}.
 
 Background information (from Wikipedia/OpenStreetMap):
-${location.sources.wikipedia?.extract || 'No description available.'}
+${location.sources.wikipedia?.extract || "No description available."}
 
 REQUIREMENTS:
 1. Do NOT include any prices, costs, or monetary values
@@ -420,7 +418,6 @@ Respond in JSON format:
   });
 
   if (!result) {
-    console.error(`[Orchestrator] AI content generation failed for ${location.name}`);
     return null;
   }
 
@@ -428,27 +425,26 @@ Respond in JSON format:
     // Extract JSON from response
     const jsonMatch = result.content.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('No JSON found in AI response');
+      throw new Error("No JSON found in AI response");
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
 
     // Enforce length limits to prevent database errors
-    const metaTitle = (parsed.metaTitle || '').slice(0, 60);
-    const metaDescription = (parsed.metaDescription || '').slice(0, 160);
+    const metaTitle = (parsed.metaTitle || "").slice(0, 60);
+    const metaDescription = (parsed.metaDescription || "").slice(0, 160);
 
     return {
       metaTitle,
       metaDescription,
-      shortDescription: parsed.shortDescription || '',
-      whyVisit: parsed.whyVisit || '',
+      shortDescription: parsed.shortDescription || "",
+      whyVisit: parsed.whyVisit || "",
       keyHighlights: parsed.keyHighlights || [],
       faq: parsed.faq || [],
       modelUsed: result.modelUsed,
       cost: result.estimatedCost,
     };
   } catch (error) {
-    console.error(`[Orchestrator] Failed to parse AI response for ${location.name}:`, error);
     return null;
   }
 }
@@ -460,8 +456,14 @@ async function saveErrorLocation(
   errorMessage: string
 ): Promise<void> {
   const sourceWikipediaId = location.sources.wikipedia?.url || null;
-  const sourceOsmId = (location.sources.osm as any)?.nodeId?.toString() || (location.sources.osm as any)?.id?.toString() || null;
-  const sourceTripAdvisorId = (location.sources.tripadvisor as any)?.id || (location.sources.tripadvisor as any)?.locationId || null;
+  const sourceOsmId =
+    (location.sources.osm as any)?.nodeId?.toString() ||
+    (location.sources.osm as any)?.id?.toString() ||
+    null;
+  const sourceTripAdvisorId =
+    (location.sources.tripadvisor as any)?.id ||
+    (location.sources.tripadvisor as any)?.locationId ||
+    null;
 
   await db.execute(sql`
     INSERT INTO travi_locations (
@@ -494,7 +496,6 @@ async function saveErrorLocation(
       validation_errors = ${JSON.stringify([errorMessage])}::jsonb,
       updated_at = now()
   `);
-  console.log(`[Orchestrator] Saved with ERROR status: ${location.name}`);
 }
 
 // Save processed location to database
@@ -505,15 +506,21 @@ async function saveLocationToDatabase(
   const { location, googlePlaces, images, aiContent, validationResult } = result;
 
   // Determine status: 'ready' only if everything is valid, otherwise 'error'
-  const status = validationResult.isValid ? 'ready' : 'error';
-  const lastError = validationResult.isValid ? null : validationResult.errors.join('; ');
+  const status = validationResult.isValid ? "ready" : "error";
+  const lastError = validationResult.isValid ? null : validationResult.errors.join("; ");
   const validationErrorsJson = JSON.stringify(validationResult.errors);
 
   try {
     // Extract source IDs based on source type
     const sourceWikipediaId = location.sources.wikipedia?.url || null;
-    const sourceOsmId = (location.sources.osm as any)?.nodeId?.toString() || (location.sources.osm as any)?.id?.toString() || null;
-    const sourceTripAdvisorId = (location.sources.tripadvisor as any)?.id || (location.sources.tripadvisor as any)?.locationId || null;
+    const sourceOsmId =
+      (location.sources.osm as any)?.nodeId?.toString() ||
+      (location.sources.osm as any)?.id?.toString() ||
+      null;
+    const sourceTripAdvisorId =
+      (location.sources.tripadvisor as any)?.id ||
+      (location.sources.tripadvisor as any)?.locationId ||
+      null;
 
     // Insert location - using existing schema columns
     // Status is 'ready' if complete, 'error' if something failed
@@ -559,7 +566,7 @@ async function saveLocationToDatabase(
     const existingDetails = await db.execute(sql`
       SELECT id FROM travi_location_details WHERE location_id = ${locationId}
     `);
-    
+
     if (existingDetails.rows.length > 0) {
       await db.execute(sql`
         UPDATE travi_location_details SET
@@ -630,7 +637,7 @@ async function saveLocationToDatabase(
       await db.execute(sql`
         DELETE FROM travi_location_images WHERE location_id = ${locationId}
       `);
-      
+
       // Insert new images
       for (let i = 0; i < images.length; i++) {
         const img = images[i];
@@ -652,10 +659,7 @@ async function saveLocationToDatabase(
         `);
       }
     }
-
-    console.log(`[Orchestrator] Saved: ${location.name} (status: ${status})`);
   } catch (error) {
-    console.error(`[Orchestrator] Failed to save ${location.name}:`, error);
     throw error;
   }
 }
@@ -673,7 +677,7 @@ export async function getProcessingStatus(): Promise<{
   return {
     aiStatus: getAIStatus(),
     budgetStatus: getBudgetStatus(),
-    usageStats: await getTodayUsageStats() as any,
+    usageStats: (await getTodayUsageStats()) as any,
     isPaused: isProcessingPaused(),
     googlePlacesAvailable: isGooglePlacesAvailable(),
     freepikAvailable: isFreepikAvailable(),

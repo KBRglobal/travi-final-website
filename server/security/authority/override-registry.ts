@@ -14,7 +14,7 @@
  * Feature flag: ENABLE_SECURITY_AUTHORITY
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   SecurityOverride,
   OverrideRequest,
@@ -23,9 +23,9 @@ import {
   GatedAction,
   ResourceType,
   DEFAULT_SECURITY_AUTHORITY_CONFIG,
-} from './types';
-import { SecurityGate } from './security-gate';
-import { SecuritySeverity, logSecurityEvent, SecurityEventType } from '../audit-logger';
+} from "./types";
+import { SecurityGate } from "./security-gate";
+import { SecuritySeverity, logSecurityEvent, SecurityEventType } from "../audit-logger";
 
 // ============================================================================
 // OVERRIDE STORAGE
@@ -46,44 +46,44 @@ interface OverridePolicy {
 
 const OVERRIDE_POLICIES: OverridePolicy[] = [
   {
-    overrideType: 'action_bypass',
-    allowedRoles: ['super_admin', 'admin'],
+    overrideType: "action_bypass",
+    allowedRoles: ["super_admin", "admin"],
     maxDurationMinutes: 60 * 24, // 24 hours
     requiresEvidence: true,
     requiresSecondApprover: false,
-    notifyRoles: ['super_admin'],
+    notifyRoles: ["super_admin"],
   },
   {
-    overrideType: 'mode_bypass',
-    allowedRoles: ['super_admin'],
+    overrideType: "mode_bypass",
+    allowedRoles: ["super_admin"],
     maxDurationMinutes: 60 * 4, // 4 hours
     requiresEvidence: true,
     requiresSecondApprover: true,
-    notifyRoles: ['super_admin', 'admin'],
+    notifyRoles: ["super_admin", "admin"],
   },
   {
-    overrideType: 'threat_bypass',
-    allowedRoles: ['super_admin'],
+    overrideType: "threat_bypass",
+    allowedRoles: ["super_admin"],
     maxDurationMinutes: 60, // 1 hour
     requiresEvidence: true,
     requiresSecondApprover: true,
-    notifyRoles: ['super_admin', 'admin', 'ops'],
+    notifyRoles: ["super_admin", "admin", "ops"],
   },
   {
-    overrideType: 'rate_limit_bypass',
-    allowedRoles: ['super_admin', 'admin', 'ops'],
+    overrideType: "rate_limit_bypass",
+    allowedRoles: ["super_admin", "admin", "ops"],
     maxDurationMinutes: 60 * 2, // 2 hours
     requiresEvidence: false,
     requiresSecondApprover: false,
-    notifyRoles: ['admin'],
+    notifyRoles: ["admin"],
   },
   {
-    overrideType: 'approval_bypass',
-    allowedRoles: ['super_admin'],
+    overrideType: "approval_bypass",
+    allowedRoles: ["super_admin"],
     maxDurationMinutes: 60 * 8, // 8 hours
     requiresEvidence: true,
     requiresSecondApprover: false,
-    notifyRoles: ['super_admin', 'admin'],
+    notifyRoles: ["super_admin", "admin"],
   },
 ];
 
@@ -91,7 +91,7 @@ const OVERRIDE_POLICIES: OverridePolicy[] = [
 interface OverrideAlert {
   id: string;
   overrideId: string;
-  type: 'created' | 'used' | 'expired' | 'revoked';
+  type: "created" | "used" | "expired" | "revoked";
   message: string;
   notifyRoles: string[];
   createdAt: Date;
@@ -125,7 +125,7 @@ export const OverrideRegistry = {
     // Find applicable policy
     const policy = OVERRIDE_POLICIES.find(p => p.overrideType === request.type);
     if (!policy) {
-      return { success: false, error: 'Unknown override type' };
+      return { success: false, error: "Unknown override type" };
     }
 
     // Check if user has required role
@@ -135,39 +135,43 @@ export const OverrideRegistry = {
         type: SecurityEventType.PERMISSION_DENIED,
         severity: SecuritySeverity.HIGH,
         userId: requestedBy,
-        ipAddress: ipAddress || 'unknown',
-        resource: 'override',
-        action: 'request_override',
+        ipAddress: ipAddress || "unknown",
+        resource: "override",
+        action: "request_override",
         details: {
           overrideType: request.type,
           requiredRoles: policy.allowedRoles,
           userRoles: requestedByRoles,
         },
         success: false,
-        errorMessage: 'Insufficient permissions for override',
+        errorMessage: "Insufficient permissions for override",
       });
 
       return {
         success: false,
-        error: `Override type ${request.type} requires one of: ${policy.allowedRoles.join(', ')}`,
+        error: `Override type ${request.type} requires one of: ${policy.allowedRoles.join(", ")}`,
       };
     }
 
     // Check if evidence is required
     if (policy.requiresEvidence && (!request.evidence || request.evidence.length === 0)) {
-      return { success: false, error: 'Evidence is required for this override type' };
+      return { success: false, error: "Evidence is required for this override type" };
     }
 
     // Check duration limits
     const maxDurationHours = DEFAULT_SECURITY_AUTHORITY_CONFIG.maxOverrideDurationHours;
-    const maxMinutes = Math.min(request.durationMinutes, policy.maxDurationMinutes, maxDurationHours * 60);
+    const maxMinutes = Math.min(
+      request.durationMinutes,
+      policy.maxDurationMinutes,
+      maxDurationHours * 60
+    );
 
     // Check if second approver required
     if (policy.requiresSecondApprover) {
       return {
         success: false,
         requiresSecondApprover: true,
-        error: 'This override type requires a second approver',
+        error: "This override type requires a second approver",
       };
     }
 
@@ -181,7 +185,7 @@ export const OverrideRegistry = {
     // Create alert
     await this.createAlert({
       overrideId: override.id,
-      type: 'created',
+      type: "created",
       message: `Override created: ${request.type} by ${requestedBy} - ${request.reason}`,
       notifyRoles: policy.notifyRoles,
     });
@@ -230,9 +234,9 @@ export const OverrideRegistry = {
       type: SecurityEventType.SETTINGS_CHANGED,
       severity: SecuritySeverity.HIGH,
       userId: grantedBy,
-      ipAddress: 'system',
-      resource: 'override',
-      action: 'create_override',
+      ipAddress: "system",
+      resource: "override",
+      action: "create_override",
       details: {
         overrideId: id,
         type: request.type,
@@ -243,36 +247,38 @@ export const OverrideRegistry = {
       success: true,
     });
 
-    console.log(`[OverrideRegistry] Override created: ${id} (${request.type})`);
-
     return override;
   },
 
   /**
    * Use an override
    */
-  async useOverride(overrideId: string, usedBy: string, context?: Record<string, unknown>): Promise<{
+  async useOverride(
+    overrideId: string,
+    usedBy: string,
+    context?: Record<string, unknown>
+  ): Promise<{
     valid: boolean;
     error?: string;
   }> {
     const override = overrides.get(overrideId);
 
     if (!override) {
-      return { valid: false, error: 'Override not found' };
+      return { valid: false, error: "Override not found" };
     }
 
     if (!override.active) {
-      return { valid: false, error: 'Override is not active' };
+      return { valid: false, error: "Override is not active" };
     }
 
     if (override.expiresAt <= new Date()) {
       override.active = false;
-      return { valid: false, error: 'Override has expired' };
+      return { valid: false, error: "Override has expired" };
     }
 
     if (override.maxUses && override.usedCount >= override.maxUses) {
       override.active = false;
-      return { valid: false, error: 'Override has reached max uses' };
+      return { valid: false, error: "Override has reached max uses" };
     }
 
     // Increment usage
@@ -288,9 +294,9 @@ export const OverrideRegistry = {
       type: SecurityEventType.SETTINGS_CHANGED,
       severity: SecuritySeverity.MEDIUM,
       userId: usedBy,
-      ipAddress: 'system',
-      resource: 'override',
-      action: 'use_override',
+      ipAddress: "system",
+      resource: "override",
+      action: "use_override",
       details: {
         overrideId,
         usedCount: override.usedCount,
@@ -316,11 +322,11 @@ export const OverrideRegistry = {
 
     const override = overrides.get(overrideId);
     if (!override) {
-      return { success: false, error: 'Override not found' };
+      return { success: false, error: "Override not found" };
     }
 
     if (!override.active) {
-      return { success: false, error: 'Override is already inactive' };
+      return { success: false, error: "Override is already inactive" };
     }
 
     // Revoke
@@ -338,9 +344,9 @@ export const OverrideRegistry = {
       type: SecurityEventType.SETTINGS_CHANGED,
       severity: SecuritySeverity.HIGH,
       userId: revokedBy,
-      ipAddress: ipAddress || 'system',
-      resource: 'override',
-      action: 'revoke_override',
+      ipAddress: ipAddress || "system",
+      resource: "override",
+      action: "revoke_override",
       details: {
         overrideId,
         reason,
@@ -352,12 +358,10 @@ export const OverrideRegistry = {
     // Create alert
     await this.createAlert({
       overrideId,
-      type: 'revoked',
+      type: "revoked",
       message: `Override revoked: ${overrideId} by ${revokedBy} - ${reason}`,
-      notifyRoles: ['super_admin', 'admin'],
+      notifyRoles: ["super_admin", "admin"],
     });
-
-    console.log(`[OverrideRegistry] Override revoked: ${overrideId}`);
 
     return { success: true };
   },
@@ -374,9 +378,7 @@ export const OverrideRegistry = {
    */
   getActiveOverrides(): SecurityOverride[] {
     const now = new Date();
-    return Array.from(overrides.values()).filter(
-      o => o.active && o.expiresAt > now
-    );
+    return Array.from(overrides.values()).filter(o => o.active && o.expiresAt > now);
   },
 
   /**
@@ -445,9 +447,9 @@ export const OverrideRegistry = {
         // Create alert
         this.createAlert({
           overrideId: id,
-          type: 'expired',
+          type: "expired",
           message: `Override expired: ${id} (${override.type})`,
-          notifyRoles: ['admin'],
+          notifyRoles: ["admin"],
         });
 
         cleaned++;
@@ -455,7 +457,6 @@ export const OverrideRegistry = {
     });
 
     if (cleaned > 0) {
-      console.log(`[OverrideRegistry] Cleaned up ${cleaned} expired overrides`);
     }
 
     return cleaned;
@@ -466,9 +467,9 @@ export const OverrideRegistry = {
    */
   buildTargetKey(override: SecurityOverride): string {
     const { target } = override;
-    const action = target.action || '*';
-    const resource = target.resource || '*';
-    const resourceId = target.resourceId || '*';
+    const action = target.action || "*";
+    const resource = target.resource || "*";
+    const resourceId = target.resourceId || "*";
 
     return `${override.grantedTo}:${action}:${resource}:${resourceId}`;
   },
@@ -478,7 +479,7 @@ export const OverrideRegistry = {
    */
   async createAlert(params: {
     overrideId: string;
-    type: OverrideAlert['type'];
+    type: OverrideAlert["type"];
     message: string;
     notifyRoles: string[];
   }): Promise<void> {
@@ -504,9 +505,7 @@ export const OverrideRegistry = {
     let filtered = alerts.filter(a => !a.acknowledged);
 
     if (roleFilter) {
-      filtered = filtered.filter(a =>
-        a.notifyRoles.some(r => roleFilter.includes(r))
-      );
+      filtered = filtered.filter(a => a.notifyRoles.some(r => roleFilter.includes(r)));
     }
 
     return filtered;
@@ -537,12 +536,13 @@ export const OverrideRegistry = {
 // ============================================================================
 
 // Clean up expired overrides every 5 minutes - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
-  setInterval(() => {
-    if (DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
-      OverrideRegistry.cleanupExpired();
-    }
-  }, 5 * 60 * 1000);
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
+  setInterval(
+    () => {
+      if (DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
+        OverrideRegistry.cleanupExpired();
+      }
+    },
+    5 * 60 * 1000
+  );
 }
-
-console.log('[OverrideRegistry] Centralized override protocol loaded');

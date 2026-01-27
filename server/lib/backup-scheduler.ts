@@ -48,8 +48,6 @@ function getMillisUntilNextBackup(): number {
  * Run a backup and update state
  */
 async function runScheduledBackup(): Promise<void> {
-  console.log("[BackupScheduler] Starting scheduled backup...");
-
   try {
     const result = await createBackup();
     state.lastResult = result;
@@ -57,12 +55,9 @@ async function runScheduledBackup(): Promise<void> {
 
     if (result.success) {
       await rotateBackups();
-      console.log("[BackupScheduler] Backup completed successfully");
     } else {
-      console.error("[BackupScheduler] Backup failed:", result.error);
     }
   } catch (error) {
-    console.error("[BackupScheduler] Backup error:", error);
     state.lastResult = {
       success: false,
       error: error instanceof Error ? error.message : String(error),
@@ -87,10 +82,6 @@ function scheduleNextBackup(): void {
   state.intervalId = setTimeout(() => {
     runScheduledBackup();
   }, msUntilNext);
-
-  console.log(
-    `[BackupScheduler] Next backup scheduled for: ${state.nextScheduled.toISOString()}`
-  );
 }
 
 /**
@@ -98,28 +89,18 @@ function scheduleNextBackup(): void {
  */
 export function startBackupScheduler(): void {
   if (!BACKUP_ENABLED) {
-    console.log("[BackupScheduler] Backups are disabled (BACKUP_ENABLED=false)");
     return;
   }
 
   if (state.isRunning) {
-    console.log("[BackupScheduler] Scheduler already running");
     return;
   }
-
-  console.log("[BackupScheduler] Starting backup scheduler");
-  console.log(`[BackupScheduler] Backup interval: ${BACKUP_INTERVAL_HOURS} hours`);
-  console.log(`[BackupScheduler] Backup time: ${BACKUP_TIME}`);
 
   state.isRunning = true;
 
   // Calculate time until first backup
   const msUntilFirst = getMillisUntilNextBackup();
   state.nextScheduled = new Date(Date.now() + msUntilFirst);
-
-  console.log(
-    `[BackupScheduler] First backup scheduled for: ${state.nextScheduled.toISOString()}`
-  );
 
   state.intervalId = setTimeout(() => {
     runScheduledBackup();
@@ -141,7 +122,6 @@ export function stopBackupScheduler(): void {
 
   state.isRunning = false;
   state.nextScheduled = null;
-  console.log("[BackupScheduler] Scheduler stopped");
 }
 
 /**
@@ -169,7 +149,6 @@ export function getSchedulerStatus(): {
  * Trigger an immediate backup
  */
 export async function triggerBackup(): Promise<BackupResult> {
-  console.log("[BackupScheduler] Manual backup triggered");
   const result = await createBackup();
   state.lastResult = result;
   state.lastBackup = new Date();

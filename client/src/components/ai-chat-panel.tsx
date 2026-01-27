@@ -48,12 +48,8 @@ export function AIChatPanel({
       id: "welcome",
       role: "assistant",
       contents: researchId
-        ? `I'm analyzing "${researchTitle || "your research"}" using the Octopus System. Ask me anything about the contents, or request specific types of suggestions!
-        
-אני מנתח את "${researchTitle || "המחקר שלך"}" באמצעות מערכת התמנון. שאל אותי כל שאלה על התוכן, או בקש סוגים ספציפיים של הצעות!`
-        : `Welcome! Paste or upload research contents above, then chat with me to refine the analysis.
-        
-ברוך הבא! הדבק או העלה תוכן מחקר למעלה, ואז שוחח איתי כדי לשפר את הניתוח.`,
+        ? `I'm analyzing "${researchTitle || "your research"}" using the Octopus System. Ask me anything about the contents, or request specific types of suggestions!`
+        : `Welcome! Paste or upload research contents above, then chat with me to refine the analysis.`,
       timestamp: new Date(),
       type: "response",
     },
@@ -84,18 +80,18 @@ export function AIChatPanel({
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setIsStreaming(true);
 
     const thinkingMessage: ChatMessage = {
       id: `thinking-${Date.now()}`,
       role: "assistant",
-      contents: "Thinking... / חושב...",
+      contents: "Thinking...",
       timestamp: new Date(),
       type: "thinking",
     };
-    setMessages((prev) => [...prev, thinkingMessage]);
+    setMessages(prev => [...prev, thinkingMessage]);
 
     try {
       const response = await fetch("/api/research-chat", {
@@ -124,19 +120,19 @@ export function AIChatPanel({
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
-          
+
           const lines = buffer.split("\n");
           buffer = lines.pop() || "";
 
           for (const line of lines) {
             if (!line.startsWith("data: ")) continue;
-            
+
             try {
               const data = JSON.parse(line.slice(6));
               if (data.contents) {
                 fullContent += data.contents;
-                setMessages((prev) =>
-                  prev.map((msg) =>
+                setMessages(prev =>
+                  prev.map(msg =>
                     msg.id === thinkingMessage.id
                       ? { ...msg, contents: fullContent, type: "response" }
                       : msg
@@ -146,20 +142,18 @@ export function AIChatPanel({
               if (data.done) {
                 break;
               }
-            } catch (e) {
-              console.error("Parse error:", e);
-            }
+            } catch (e) {}
           }
         }
       }
 
       if (!fullContent) {
-        setMessages((prev) =>
-          prev.map((msg) =>
+        setMessages(prev =>
+          prev.map(msg =>
             msg.id === thinkingMessage.id
               ? {
                   ...msg,
-                  contents: "I couldn't generate a response. Please try again. / לא הצלחתי לייצר תגובה. נסה שוב.",
+                  contents: "I couldn't generate a response. Please try again.",
                   type: "response",
                 }
               : msg
@@ -167,13 +161,12 @@ export function AIChatPanel({
         );
       }
     } catch (error) {
-      console.error("Chat error:", error);
-      setMessages((prev) =>
-        prev.map((msg) =>
+      setMessages(prev =>
+        prev.map(msg =>
           msg.id === thinkingMessage.id
             ? {
                 ...msg,
-                contents: "An error occurred. Please try again. / אירעה שגיאה. נסה שוב.",
+                contents: "An error occurred. Please try again.",
                 type: "response",
               }
             : msg
@@ -196,7 +189,7 @@ export function AIChatPanel({
       {
         id: "welcome-new",
         role: "assistant",
-        contents: "Chat cleared. How can I help you? / הצ'אט נוקה. איך אני יכול לעזור?",
+        contents: "Chat cleared. How can I help you?",
         timestamp: new Date(),
         type: "response",
       },
@@ -204,10 +197,19 @@ export function AIChatPanel({
   };
 
   const suggestedPrompts = [
-    { label: "Extract hotels", labelHe: "חלץ מלונות", prompt: "Find all hotels mentioned and create contents suggestions for each" },
-    { label: "Find attractions", labelHe: "מצא אטרקציות", prompt: "List all tourist attractions and suggest articles for each" },
-    { label: "Create listicles", labelHe: "צור רשימות", prompt: "Suggest Top 10 and Best of listicle ideas from this research" },
-    { label: "SEO keywords", labelHe: "מילות מפתח", prompt: "What are the best SEO keywords from this contents?" },
+    {
+      label: "Extract hotels",
+      prompt: "Find all hotels mentioned and create contents suggestions for each",
+    },
+    {
+      label: "Find attractions",
+      prompt: "List all tourist attractions and suggest articles for each",
+    },
+    {
+      label: "Create listicles",
+      prompt: "Suggest Top 10 and Best of listicle ideas from this research",
+    },
+    { label: "SEO keywords", prompt: "What are the best SEO keywords from this contents?" },
   ];
 
   return (
@@ -220,9 +222,7 @@ export function AIChatPanel({
           <div className="p-1.5 rounded-md bg-gradient-to-r from-[#6443F4] to-[#6443F4]">
             <MessageSquare className="w-4 h-4 text-white" />
           </div>
-          <CardTitle className="text-lg">
-            AI Assistant / עוזר בינה מלאכותית
-          </CardTitle>
+          <CardTitle className="text-lg">AI Assistant</CardTitle>
           {isStreaming && (
             <Badge variant="secondary" className="gap-1 animate-pulse">
               <Loader2 className="w-3 h-3 animate-spin" />
@@ -234,7 +234,7 @@ export function AIChatPanel({
           <Button
             size="icon"
             variant="ghost"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               clearChat();
             }}
@@ -250,17 +250,12 @@ export function AIChatPanel({
 
       {isExpanded && (
         <CardContent className="flex-1 flex flex-col gap-3 pt-0">
-          <ScrollArea
-            className="flex-1 min-h-[300px] max-h-[400px] pr-3"
-            ref={scrollRef}
-          >
+          <ScrollArea className="flex-1 min-h-[300px] max-h-[400px] pr-3" ref={scrollRef}>
             <div className="space-y-3">
-              {messages.map((message) => (
+              {messages.map(message => (
                 <div
                   key={message.id}
-                  className={`flex gap-2 ${
-                    message.role === "user" ? "flex-row-reverse" : ""
-                  }`}
+                  className={`flex gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                   data-testid={`chat-message-${message.id}`}
                 >
                   <div
@@ -283,8 +278,8 @@ export function AIChatPanel({
                       message.role === "user"
                         ? "bg-primary text-primary-foreground"
                         : message.type === "thinking"
-                        ? "bg-muted/50 animate-pulse"
-                        : "bg-muted"
+                          ? "bg-muted/50 animate-pulse"
+                          : "bg-muted"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{message.contents}</p>
@@ -319,9 +314,9 @@ export function AIChatPanel({
             <Input
               ref={inputRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={e => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask about the research... / שאל על המחקר..."
+              placeholder="Ask about the research..."
               disabled={isStreaming}
               className="flex-1"
               data-testid="input-chat-message"

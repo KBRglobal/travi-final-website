@@ -82,17 +82,29 @@ import * as AccessControlEngine from "../access-control/policy-engine";
 import * as AutonomyEngine from "../autonomy/policy/policy-engine";
 
 // Import types
-import type { PolicyContext as GovernancePolicyContext, PolicyDecision as GovernancePolicyDecision } from "./types";
-import type { AccessContext, PermissionCheckResult, Action, Resource } from "../access-control/types";
-import type { PolicyTarget, ActionType as AutonomyActionType, PolicyEvaluationResult } from "../autonomy/policy/types";
+import type {
+  PolicyContext as GovernancePolicyContext,
+  PolicyDecision as GovernancePolicyDecision,
+} from "./types";
+import type {
+  AccessContext,
+  PermissionCheckResult,
+  Action,
+  Resource,
+} from "../access-control/types";
+import type {
+  PolicyTarget,
+  ActionType as AutonomyActionType,
+  PolicyEvaluationResult,
+} from "../autonomy/policy/types";
 
 // =====================================================
 // UNIFIED TYPES
 // =====================================================
 
-export type PolicyEngineType = 'governance' | 'access' | 'autonomy' | 'combined';
+export type PolicyEngineType = "governance" | "access" | "autonomy" | "combined";
 
-export type UnifiedPolicyEffect = 'allow' | 'warn' | 'block';
+export type UnifiedPolicyEffect = "allow" | "warn" | "block";
 
 export interface BaseRequest {
   /** Which policy engine(s) to use */
@@ -106,7 +118,7 @@ export interface BaseRequest {
 }
 
 export interface GovernancePolicyRequest extends BaseRequest {
-  type: 'governance';
+  type: "governance";
   action: string;
   resource: string;
   resourceId?: string;
@@ -116,7 +128,7 @@ export interface GovernancePolicyRequest extends BaseRequest {
 }
 
 export interface AccessPolicyRequest extends BaseRequest {
-  type: 'access';
+  type: "access";
   userId: string;
   action: Action;
   resource: Resource;
@@ -128,7 +140,7 @@ export interface AccessPolicyRequest extends BaseRequest {
 }
 
 export interface AutonomyPolicyRequest extends BaseRequest {
-  type: 'autonomy';
+  type: "autonomy";
   target: PolicyTarget;
   action: AutonomyActionType;
   estimatedTokens?: number;
@@ -139,7 +151,7 @@ export interface AutonomyPolicyRequest extends BaseRequest {
 }
 
 export interface CombinedPolicyRequest extends BaseRequest {
-  type: 'combined';
+  type: "combined";
 
   // Access control fields
   userId: string;
@@ -214,16 +226,16 @@ const MAX_CACHE_SIZE = 500;
 function getCacheKey(request: PolicyRequest): string {
   const keyParts = [
     request.type,
-    request.userId || 'anon',
-    'action' in request ? request.action : '',
-    'resource' in request ? request.resource : '',
-    'resourceId' in request ? request.resourceId : '',
+    request.userId || "anon",
+    "action" in request ? request.action : "",
+    "resource" in request ? request.resource : "",
+    "resourceId" in request ? request.resourceId : "",
   ];
-  return keyParts.join(':');
+  return keyParts.join(":");
 }
 
 function getCachedResult(request: PolicyRequest): UnifiedPolicyResult | null {
-  if (process.env.UNIFIED_POLICY_CACHE !== 'true') return null;
+  if (process.env.UNIFIED_POLICY_CACHE !== "true") return null;
 
   const key = getCacheKey(request);
   const cached = resultCache.get(key);
@@ -239,7 +251,7 @@ function getCachedResult(request: PolicyRequest): UnifiedPolicyResult | null {
 }
 
 function setCachedResult(request: PolicyRequest, result: UnifiedPolicyResult): void {
-  if (process.env.UNIFIED_POLICY_CACHE !== 'true') return;
+  if (process.env.UNIFIED_POLICY_CACHE !== "true") return;
   if (!result.meta.cacheable) return;
 
   const key = getCacheKey(request);
@@ -280,16 +292,16 @@ export async function evaluateUnifiedPolicy(request: PolicyRequest): Promise<Uni
   let result: UnifiedPolicyResult;
 
   switch (request.type) {
-    case 'governance':
+    case "governance":
       result = await evaluateGovernancePolicy(request);
       break;
-    case 'access':
+    case "access":
       result = await evaluateAccessPolicy(request);
       break;
-    case 'autonomy':
+    case "autonomy":
       result = await evaluateAutonomyPolicy(request);
       break;
-    case 'combined':
+    case "combined":
       result = await evaluateCombinedPolicy(request);
       break;
     default:
@@ -311,7 +323,9 @@ export async function evaluateUnifiedPolicy(request: PolicyRequest): Promise<Uni
 /**
  * Evaluate governance policy (action/resource/role-based with conditions)
  */
-async function evaluateGovernancePolicy(request: GovernancePolicyRequest): Promise<UnifiedPolicyResult> {
+async function evaluateGovernancePolicy(
+  request: GovernancePolicyRequest
+): Promise<UnifiedPolicyResult> {
   const context: GovernancePolicyContext = {
     userId: request.userId,
     userRole: request.userRole,
@@ -326,7 +340,7 @@ async function evaluateGovernancePolicy(request: GovernancePolicyRequest): Promi
 
   return {
     effect: decision.effect,
-    allowed: decision.effect !== 'block',
+    allowed: decision.effect !== "block",
     reason: decision.reason,
     details: {
       governance: decision,
@@ -335,7 +349,7 @@ async function evaluateGovernancePolicy(request: GovernancePolicyRequest): Promi
     blockedBy: decision.blockedBy || [],
     meta: {
       evaluatedAt: new Date(),
-      enginesUsed: ['governance'],
+      enginesUsed: ["governance"],
       cacheable: true,
       executionTimeMs: 0, // Set later
     },
@@ -361,17 +375,17 @@ async function evaluateAccessPolicy(request: AccessPolicyRequest): Promise<Unifi
   );
 
   return {
-    effect: result.allowed ? 'allow' : 'block',
+    effect: result.allowed ? "allow" : "block",
     allowed: result.allowed,
     reason: result.reason,
     details: {
       access: result,
     },
     warnings: [],
-    blockedBy: result.allowed ? [] : ['RBAC permission denied'],
+    blockedBy: result.allowed ? [] : ["RBAC permission denied"],
     meta: {
       evaluatedAt: new Date(),
-      enginesUsed: ['access'],
+      enginesUsed: ["access"],
       cacheable: true,
       executionTimeMs: 0,
     },
@@ -381,7 +395,9 @@ async function evaluateAccessPolicy(request: AccessPolicyRequest): Promise<Unifi
 /**
  * Evaluate autonomy policy (budget-based with time windows)
  */
-async function evaluateAutonomyPolicy(request: AutonomyPolicyRequest): Promise<UnifiedPolicyResult> {
+async function evaluateAutonomyPolicy(
+  request: AutonomyPolicyRequest
+): Promise<UnifiedPolicyResult> {
   const context = {
     requesterId: request.requesterId || request.userId,
     estimatedTokens: request.estimatedTokens,
@@ -391,27 +407,23 @@ async function evaluateAutonomyPolicy(request: AutonomyPolicyRequest): Promise<U
     metadata: request.metadata,
   };
 
-  const result = await AutonomyEngine.evaluatePolicy(
-    request.target,
-    request.action,
-    context
-  );
+  const result = await AutonomyEngine.evaluatePolicy(request.target, request.action, context);
 
   const warnings: string[] = [];
   const blockedBy: string[] = [];
 
   for (const reason of result.reasons) {
-    if (reason.severity === 'warning') {
+    if (reason.severity === "warning") {
       warnings.push(reason.message);
-    } else if (reason.severity === 'error') {
+    } else if (reason.severity === "error") {
       blockedBy.push(reason.message);
     }
   }
 
   return {
     effect: result.decision.toLowerCase() as UnifiedPolicyEffect,
-    allowed: result.decision !== 'BLOCK',
-    reason: result.reasons[0]?.message || 'Policy evaluated',
+    allowed: result.decision !== "BLOCK",
+    reason: result.reasons[0]?.message || "Policy evaluated",
     details: {
       autonomy: result,
     },
@@ -419,7 +431,7 @@ async function evaluateAutonomyPolicy(request: AutonomyPolicyRequest): Promise<U
     blockedBy,
     meta: {
       evaluatedAt: result.evaluatedAt,
-      enginesUsed: ['autonomy'],
+      enginesUsed: ["autonomy"],
       cacheable: false, // Autonomy has budget state
       executionTimeMs: 0,
     },
@@ -429,20 +441,22 @@ async function evaluateAutonomyPolicy(request: AutonomyPolicyRequest): Promise<U
 /**
  * Evaluate combined policy (all applicable engines)
  */
-async function evaluateCombinedPolicy(request: CombinedPolicyRequest): Promise<UnifiedPolicyResult> {
+async function evaluateCombinedPolicy(
+  request: CombinedPolicyRequest
+): Promise<UnifiedPolicyResult> {
   const enginesUsed: PolicyEngineType[] = [];
-  const details: UnifiedPolicyResult['details'] = {};
+  const details: UnifiedPolicyResult["details"] = {};
   const warnings: string[] = [];
   const blockedBy: string[] = [];
 
-  let finalEffect: UnifiedPolicyEffect = 'allow';
+  let finalEffect: UnifiedPolicyEffect = "allow";
   let finalAllowed = true;
   const reasons: string[] = [];
 
   // 1. Check access control (RBAC) first - most fundamental
   try {
     const accessRequest: AccessPolicyRequest = {
-      type: 'access',
+      type: "access",
       userId: request.userId,
       action: request.action as Action,
       resource: request.resource as Resource,
@@ -451,24 +465,23 @@ async function evaluateCombinedPolicy(request: CombinedPolicyRequest): Promise<U
     };
 
     const accessResult = await evaluateAccessPolicy(accessRequest);
-    enginesUsed.push('access');
+    enginesUsed.push("access");
     details.access = accessResult.details.access;
 
     if (!accessResult.allowed) {
-      finalEffect = 'block';
+      finalEffect = "block";
       finalAllowed = false;
-      blockedBy.push('Access Control: ' + accessResult.reason);
+      blockedBy.push("Access Control: " + accessResult.reason);
       reasons.push(accessResult.reason);
     }
   } catch (error) {
-    console.error('[UnifiedPolicy] Access control evaluation failed:', error);
-    warnings.push('Access control check failed - proceeding with caution');
+    warnings.push("Access control check failed - proceeding with caution");
   }
 
   // 2. Check governance policies
   try {
     const govRequest: GovernancePolicyRequest = {
-      type: 'governance',
+      type: "governance",
       userId: request.userId,
       action: request.action,
       resource: request.resource,
@@ -480,28 +493,27 @@ async function evaluateCombinedPolicy(request: CombinedPolicyRequest): Promise<U
     };
 
     const govResult = await evaluateGovernancePolicy(govRequest);
-    enginesUsed.push('governance');
+    enginesUsed.push("governance");
     details.governance = govResult.details.governance;
 
-    if (govResult.effect === 'block') {
-      finalEffect = 'block';
+    if (govResult.effect === "block") {
+      finalEffect = "block";
       finalAllowed = false;
       blockedBy.push(...govResult.blockedBy);
       reasons.push(govResult.reason);
-    } else if (govResult.effect === 'warn') {
-      if (finalEffect === 'allow') finalEffect = 'warn';
+    } else if (govResult.effect === "warn") {
+      if (finalEffect === "allow") finalEffect = "warn";
       warnings.push(...govResult.warnings);
     }
   } catch (error) {
-    console.error('[UnifiedPolicy] Governance evaluation failed:', error);
-    warnings.push('Governance check failed - proceeding with caution');
+    warnings.push("Governance check failed - proceeding with caution");
   }
 
   // 3. Check autonomy policies if target is specified
   if (request.target) {
     try {
       const autonomyRequest: AutonomyPolicyRequest = {
-        type: 'autonomy',
+        type: "autonomy",
         userId: request.userId,
         target: request.target,
         action: request.action as AutonomyActionType,
@@ -514,35 +526,34 @@ async function evaluateCombinedPolicy(request: CombinedPolicyRequest): Promise<U
       };
 
       const autonomyResult = await evaluateAutonomyPolicy(autonomyRequest);
-      enginesUsed.push('autonomy');
+      enginesUsed.push("autonomy");
       details.autonomy = autonomyResult.details.autonomy;
 
-      if (autonomyResult.effect === 'block') {
-        finalEffect = 'block';
+      if (autonomyResult.effect === "block") {
+        finalEffect = "block";
         finalAllowed = false;
         blockedBy.push(...autonomyResult.blockedBy);
         reasons.push(autonomyResult.reason);
-      } else if (autonomyResult.effect === 'warn') {
-        if (finalEffect === 'allow') finalEffect = 'warn';
+      } else if (autonomyResult.effect === "warn") {
+        if (finalEffect === "allow") finalEffect = "warn";
         warnings.push(...autonomyResult.warnings);
       }
     } catch (error) {
-      console.error('[UnifiedPolicy] Autonomy evaluation failed:', error);
-      warnings.push('Autonomy check failed - proceeding with caution');
+      warnings.push("Autonomy check failed - proceeding with caution");
     }
   }
 
   return {
     effect: finalEffect,
     allowed: finalAllowed,
-    reason: reasons.length > 0 ? reasons.join('; ') : 'All policies passed',
+    reason: reasons.length > 0 ? reasons.join("; ") : "All policies passed",
     details,
     warnings,
     blockedBy,
     meta: {
       evaluatedAt: new Date(),
       enginesUsed,
-      cacheable: !enginesUsed.includes('autonomy'), // Don't cache if autonomy was checked
+      cacheable: !enginesUsed.includes("autonomy"), // Don't cache if autonomy was checked
       executionTimeMs: 0,
     },
   };
@@ -586,7 +597,7 @@ export async function canUserAccess(
   context?: Partial<AccessContext>
 ): Promise<boolean> {
   const result = await evaluateUnifiedPolicy({
-    type: 'access',
+    type: "access",
     userId,
     action,
     resource,
@@ -604,7 +615,7 @@ export async function checkGovernanceCompliance(
   context: Record<string, unknown>
 ): Promise<UnifiedPolicyResult> {
   return evaluateUnifiedPolicy({
-    type: 'governance',
+    type: "governance",
     action,
     resource,
     context,
@@ -625,7 +636,7 @@ export async function checkAutonomyLimits(
   }
 ): Promise<UnifiedPolicyResult> {
   return evaluateUnifiedPolicy({
-    type: 'autonomy',
+    type: "autonomy",
     target,
     action,
     estimatedTokens: estimations.tokens,
@@ -643,24 +654,15 @@ async function logUnifiedEvaluation(
   request: PolicyRequest,
   result: UnifiedPolicyResult
 ): Promise<void> {
-  if (process.env.UNIFIED_POLICY_LOGGING !== 'true') return;
+  if (process.env.UNIFIED_POLICY_LOGGING !== "true") return;
 
   try {
     // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[UnifiedPolicy]', {
-        type: request.type,
-        effect: result.effect,
-        allowed: result.allowed,
-        engines: result.meta.enginesUsed,
-        executionMs: result.meta.executionTimeMs,
-      });
+    if (process.env.NODE_ENV === "development") {
     }
 
     // Could add database logging, metrics, etc. here
-  } catch (error) {
-    console.error('[UnifiedPolicy] Failed to log evaluation:', error);
-  }
+  } catch (error) {}
 }
 
 /**
@@ -691,7 +693,7 @@ export async function migrateFromGovernanceEngine(
   context: GovernancePolicyContext
 ): Promise<UnifiedPolicyResult> {
   return evaluateUnifiedPolicy({
-    type: 'governance',
+    type: "governance",
     userId: context.userId,
     action: context.action,
     resource: context.resource,
@@ -712,7 +714,7 @@ export async function migrateFromAccessEngine(
   context?: Partial<AccessContext>
 ): Promise<UnifiedPolicyResult> {
   return evaluateUnifiedPolicy({
-    type: 'access',
+    type: "access",
     userId,
     action,
     resource,
@@ -735,7 +737,7 @@ export async function migrateFromAutonomyEngine(
   }
 ): Promise<UnifiedPolicyResult> {
   return evaluateUnifiedPolicy({
-    type: 'autonomy',
+    type: "autonomy",
     target,
     action,
     requesterId: context?.requesterId,
@@ -751,22 +753,22 @@ export async function migrateFromAutonomyEngine(
 // =====================================================
 
 export function isUnifiedEngineEnabled(): boolean {
-  return process.env.ENABLE_UNIFIED_POLICY_ENGINE === 'true';
+  return process.env.ENABLE_UNIFIED_POLICY_ENGINE === "true";
 }
 
 export function getEnabledEngines(): PolicyEngineType[] {
   const enabled: PolicyEngineType[] = [];
 
-  if (process.env.ENABLE_POLICY_ENFORCEMENT === 'true') {
-    enabled.push('governance');
+  if (process.env.ENABLE_POLICY_ENFORCEMENT === "true") {
+    enabled.push("governance");
   }
 
-  if (process.env.ENABLE_RBAC === 'true') {
-    enabled.push('access');
+  if (process.env.ENABLE_RBAC === "true") {
+    enabled.push("access");
   }
 
-  if (process.env.ENABLE_AUTONOMY_POLICY === 'true') {
-    enabled.push('autonomy');
+  if (process.env.ENABLE_AUTONOMY_POLICY === "true") {
+    enabled.push("autonomy");
   }
 
   return enabled;
@@ -789,6 +791,3 @@ export type {
   AutonomyActionType,
   PolicyEvaluationResult,
 };
-
-console.log('[UnifiedPolicy] Engine loaded - delegating to specialized engines');
-console.log('[UnifiedPolicy] Enabled engines:', getEnabledEngines().join(', ') || 'none');

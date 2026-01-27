@@ -2,7 +2,7 @@
  * Strategic Priority Engine - Admin Routes
  */
 
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response } from "express";
 import {
   getPriority,
   getTopPriorities,
@@ -12,15 +12,15 @@ import {
   updateStrategyWeights,
   invalidatePriorityCache,
   getPriorityCacheStats,
-} from './engine';
-import { PriorityReason } from './types';
+} from "./engine";
+import { PriorityReason } from "./types";
 
 const router = Router();
 
 const requireAdmin = (req: Request, res: Response, next: Function) => {
   const user = (req as any).user;
-  if (!user || !['admin', 'editor'].includes(user.role)) {
-    return res.status(403).json({ error: 'Admin access required' });
+  if (!user || !["admin", "editor"].includes(user.role)) {
+    return res.status(403).json({ error: "Admin access required" });
   }
   next();
 };
@@ -29,7 +29,7 @@ const requireAdmin = (req: Request, res: Response, next: Function) => {
  * GET /api/admin/strategy/priorities
  * Get all computed priorities
  */
-router.get('/priorities', requireAdmin, async (req: Request, res: Response) => {
+router.get("/priorities", requireAdmin, async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 50;
     const reason = req.query.reason as PriorityReason | undefined;
@@ -50,8 +50,7 @@ router.get('/priorities', requireAdmin, async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[Strategy] Priorities error:', error);
-    res.status(500).json({ error: 'Failed to get priorities' });
+    res.status(500).json({ error: "Failed to get priorities" });
   }
 });
 
@@ -59,19 +58,18 @@ router.get('/priorities', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/strategy/content/:id
  * Get priority for specific content
  */
-router.get('/content/:id', requireAdmin, async (req: Request, res: Response) => {
+router.get("/content/:id", requireAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const priority = await getPriority(id);
 
     if (!priority) {
-      return res.status(404).json({ error: 'Content not found or engine disabled' });
+      return res.status(404).json({ error: "Content not found or engine disabled" });
     }
 
     res.json({ success: true, data: priority });
   } catch (error) {
-    console.error('[Strategy] Content priority error:', error);
-    res.status(500).json({ error: 'Failed to get content priority' });
+    res.status(500).json({ error: "Failed to get content priority" });
   }
 });
 
@@ -79,13 +77,12 @@ router.get('/content/:id', requireAdmin, async (req: Request, res: Response) => 
  * GET /api/admin/strategy/snapshot
  * Get strategy overview snapshot
  */
-router.get('/snapshot', requireAdmin, async (req: Request, res: Response) => {
+router.get("/snapshot", requireAdmin, async (req: Request, res: Response) => {
   try {
     const snapshot = await getStrategySnapshot();
     res.json({ success: true, data: snapshot });
   } catch (error) {
-    console.error('[Strategy] Snapshot error:', error);
-    res.status(500).json({ error: 'Failed to get snapshot' });
+    res.status(500).json({ error: "Failed to get snapshot" });
   }
 });
 
@@ -93,12 +90,12 @@ router.get('/snapshot', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/strategy/weights
  * Get current strategy weights
  */
-router.get('/weights', requireAdmin, async (req: Request, res: Response) => {
+router.get("/weights", requireAdmin, async (req: Request, res: Response) => {
   try {
     const weights = getStrategyWeights();
     res.json({ success: true, data: weights });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get weights' });
+    res.status(500).json({ error: "Failed to get weights" });
   }
 });
 
@@ -106,15 +103,14 @@ router.get('/weights', requireAdmin, async (req: Request, res: Response) => {
  * PATCH /api/admin/strategy/weights
  * Update strategy weights
  */
-router.patch('/weights', requireAdmin, async (req: Request, res: Response) => {
+router.patch("/weights", requireAdmin, async (req: Request, res: Response) => {
   try {
     const adjustments = req.body;
     const newWeights = updateStrategyWeights(adjustments);
     invalidatePriorityCache();
     res.json({ success: true, data: newWeights });
   } catch (error) {
-    console.error('[Strategy] Update weights error:', error);
-    res.status(500).json({ error: 'Failed to update weights' });
+    res.status(500).json({ error: "Failed to update weights" });
   }
 });
 
@@ -122,21 +118,20 @@ router.patch('/weights', requireAdmin, async (req: Request, res: Response) => {
  * POST /api/admin/strategy/refresh
  * Force refresh all priorities
  */
-router.post('/refresh', requireAdmin, async (req: Request, res: Response) => {
+router.post("/refresh", requireAdmin, async (req: Request, res: Response) => {
   try {
     invalidatePriorityCache();
     const snapshot = await getStrategySnapshot();
     res.json({
       success: true,
-      message: 'Priorities refreshed',
+      message: "Priorities refreshed",
       data: {
         totalPriorities: snapshot.totalPriorities,
         averageScore: snapshot.averageScore,
       },
     });
   } catch (error) {
-    console.error('[Strategy] Refresh error:', error);
-    res.status(500).json({ error: 'Failed to refresh priorities' });
+    res.status(500).json({ error: "Failed to refresh priorities" });
   }
 });
 
@@ -144,12 +139,12 @@ router.post('/refresh', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/strategy/cache
  * Get cache statistics
  */
-router.get('/cache', requireAdmin, async (req: Request, res: Response) => {
+router.get("/cache", requireAdmin, async (req: Request, res: Response) => {
   try {
     const stats = getPriorityCacheStats();
     res.json({ success: true, data: stats });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get cache stats' });
+    res.status(500).json({ error: "Failed to get cache stats" });
   }
 });
 

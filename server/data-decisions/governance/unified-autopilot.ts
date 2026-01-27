@@ -5,10 +5,10 @@
  * Default mode is OFF. No autonomous behavior runs without explicit enable.
  */
 
-import type { AutopilotMode } from '../types';
-import { autopilotController } from './autopilot';
-import { autonomousLoop } from '../loop';
-import { systemHealthMonitor } from '../health';
+import type { AutopilotMode } from "../types";
+import { autopilotController } from "./autopilot";
+import { autonomousLoop } from "../loop";
+import { systemHealthMonitor } from "../health";
 
 // =============================================================================
 // TYPES
@@ -45,7 +45,7 @@ export interface AutopilotGateResult {
 // DOMAINS
 // =============================================================================
 
-const CONTROLLED_DOMAINS = ['data', 'seo', 'content', 'growth', 'ops'] as const;
+const CONTROLLED_DOMAINS = ["data", "seo", "content", "growth", "ops"] as const;
 type ControlledDomain = (typeof CONTROLLED_DOMAINS)[number];
 
 // =============================================================================
@@ -71,18 +71,18 @@ export class UnifiedAutopilotGate {
     for (const domain of CONTROLLED_DOMAINS) {
       domains[domain] = {
         domain,
-        mode: 'off',
+        mode: "off",
         enabled: false,
         circuitBreakerOpen: false,
         lastModeChange: new Date(),
-        changedBy: 'system',
-        reason: 'Initial state - disabled by default',
+        changedBy: "system",
+        reason: "Initial state - disabled by default",
       };
     }
 
     return {
       globalEnabled: false, // OFF by default
-      globalMode: 'off',
+      globalMode: "off",
       emergencyStop: false,
       lastStateChange: new Date(),
       domains,
@@ -97,12 +97,10 @@ export class UnifiedAutopilotGate {
 
   enableGlobal(mode: AutopilotMode, changedBy: string, reason: string): boolean {
     if (this.globalState.emergencyStop) {
-      console.error('[Autopilot] Cannot enable - emergency stop is active');
       return false;
     }
 
     if (this.globalState.circuitBreakerOpen) {
-      console.error('[Autopilot] Cannot enable - circuit breaker is open');
       return false;
     }
 
@@ -119,44 +117,39 @@ export class UnifiedAutopilotGate {
     });
 
     // Start loop if enabling
-    if (mode !== 'off' && !autonomousLoop.isRunning()) {
-      console.log('[Autopilot] Starting autonomous loop');
+    if (mode !== "off" && !autonomousLoop.isRunning()) {
       autonomousLoop.start();
     }
 
     this.notifyStateChange();
 
-    console.log(`[Autopilot] Global autopilot enabled: mode=${mode} by ${changedBy}`);
     return true;
   }
 
   disableGlobal(changedBy: string, reason: string): void {
     this.globalState.globalEnabled = false;
-    this.globalState.globalMode = 'off';
+    this.globalState.globalMode = "off";
     this.globalState.lastStateChange = new Date();
 
     // Disable all domains
     for (const domain of CONTROLLED_DOMAINS) {
-      this.setDomainState(domain, 'off', false, changedBy, reason);
+      this.setDomainState(domain, "off", false, changedBy, reason);
     }
 
     // Stop loop
     if (autonomousLoop.isRunning()) {
-      console.log('[Autopilot] Stopping autonomous loop');
       autonomousLoop.stop();
     }
 
     // Sync with autopilot controller
     autopilotController.requestModeTransition({
       fromMode: autopilotController.getMode(),
-      toMode: 'off',
+      toMode: "off",
       requestedBy: changedBy,
       reason,
     });
 
     this.notifyStateChange();
-
-    console.log(`[Autopilot] Global autopilot disabled by ${changedBy}: ${reason}`);
   }
 
   // =========================================================================
@@ -164,11 +157,9 @@ export class UnifiedAutopilotGate {
   // =========================================================================
 
   emergencyStop(triggeredBy: string, reason: string): void {
-    console.error(`[EMERGENCY] Autopilot emergency stop triggered by ${triggeredBy}: ${reason}`);
-
     this.globalState.emergencyStop = true;
     this.globalState.globalEnabled = false;
-    this.globalState.globalMode = 'off';
+    this.globalState.globalMode = "off";
     this.globalState.lastStateChange = new Date();
     this.globalState.safetyLocks.push(`emergency:${triggeredBy}:${Date.now()}`);
 
@@ -182,11 +173,11 @@ export class UnifiedAutopilotGate {
     for (const domain of CONTROLLED_DOMAINS) {
       this.globalState.domains[domain] = {
         ...this.globalState.domains[domain],
-        mode: 'off',
+        mode: "off",
         enabled: false,
         circuitBreakerOpen: true,
         lastModeChange: new Date(),
-        changedBy: 'emergency_stop',
+        changedBy: "emergency_stop",
         reason,
       };
     }
@@ -200,9 +191,6 @@ export class UnifiedAutopilotGate {
   clearEmergencyStop(clearedBy: string, reason: string): boolean {
     // Requires all safety locks to be cleared
     if (this.globalState.safetyLocks.length > 0) {
-      console.warn(
-        `[Autopilot] Cannot clear emergency stop - ${this.globalState.safetyLocks.length} safety locks active`
-      );
       return false;
     }
 
@@ -211,8 +199,6 @@ export class UnifiedAutopilotGate {
 
     // Close circuit breaker
     this.closeCircuitBreaker();
-
-    console.log(`[Autopilot] Emergency stop cleared by ${clearedBy}: ${reason}`);
 
     this.notifyStateChange();
     return true;
@@ -231,7 +217,6 @@ export class UnifiedAutopilotGate {
       this.globalState.domains[domain].circuitBreakerOpen = true;
     }
 
-    console.error(`[Autopilot] Circuit breaker opened: ${reason}`);
     this.notifyStateChange();
   }
 
@@ -243,7 +228,6 @@ export class UnifiedAutopilotGate {
       this.globalState.domains[domain].circuitBreakerOpen = false;
     }
 
-    console.log('[Autopilot] Circuit breaker closed');
     this.notifyStateChange();
   }
 
@@ -259,21 +243,16 @@ export class UnifiedAutopilotGate {
     reason?: string
   ): boolean {
     if (!this.globalState.domains[domain]) {
-      console.warn(`[Autopilot] Unknown domain: ${domain}`);
       return false;
     }
 
     // Cannot enable if global is disabled
     if (enabled && !this.globalState.globalEnabled) {
-      console.warn('[Autopilot] Cannot enable domain - global autopilot is disabled');
       return false;
     }
 
     // Cannot exceed global mode
     if (this.modeLevel(mode) > this.modeLevel(this.globalState.globalMode)) {
-      console.warn(
-        `[Autopilot] Cannot set domain mode ${mode} - exceeds global mode ${this.globalState.globalMode}`
-      );
       mode = this.globalState.globalMode;
     }
 
@@ -303,9 +282,9 @@ export class UnifiedAutopilotGate {
     if (this.globalState.emergencyStop) {
       return {
         allowed: false,
-        effectiveMode: 'off',
-        blockedBy: 'emergency_stop',
-        reason: 'Emergency stop is active',
+        effectiveMode: "off",
+        blockedBy: "emergency_stop",
+        reason: "Emergency stop is active",
       };
     }
 
@@ -313,9 +292,9 @@ export class UnifiedAutopilotGate {
     if (this.globalState.circuitBreakerOpen) {
       return {
         allowed: false,
-        effectiveMode: 'off',
-        blockedBy: 'circuit_breaker',
-        reason: 'Circuit breaker is open',
+        effectiveMode: "off",
+        blockedBy: "circuit_breaker",
+        reason: "Circuit breaker is open",
       };
     }
 
@@ -323,9 +302,9 @@ export class UnifiedAutopilotGate {
     if (!this.globalState.globalEnabled) {
       return {
         allowed: false,
-        effectiveMode: 'off',
-        blockedBy: 'global_disabled',
-        reason: 'Global autopilot is disabled',
+        effectiveMode: "off",
+        blockedBy: "global_disabled",
+        reason: "Global autopilot is disabled",
       };
     }
 
@@ -334,8 +313,8 @@ export class UnifiedAutopilotGate {
     if (!domainState) {
       return {
         allowed: false,
-        effectiveMode: 'off',
-        blockedBy: 'unknown_domain',
+        effectiveMode: "off",
+        blockedBy: "unknown_domain",
         reason: `Unknown domain: ${domain}`,
       };
     }
@@ -343,8 +322,8 @@ export class UnifiedAutopilotGate {
     if (!domainState.enabled) {
       return {
         allowed: false,
-        effectiveMode: 'off',
-        blockedBy: 'domain_disabled',
+        effectiveMode: "off",
+        blockedBy: "domain_disabled",
         reason: `${domain} autopilot is disabled`,
       };
     }
@@ -352,20 +331,17 @@ export class UnifiedAutopilotGate {
     if (domainState.circuitBreakerOpen) {
       return {
         allowed: false,
-        effectiveMode: 'off',
-        blockedBy: 'domain_circuit_breaker',
+        effectiveMode: "off",
+        blockedBy: "domain_circuit_breaker",
         reason: `${domain} circuit breaker is open`,
       };
     }
 
     // Determine effective mode (minimum of global and domain)
-    const effectiveMode = this.minMode(
-      this.globalState.globalMode,
-      domainState.mode
-    );
+    const effectiveMode = this.minMode(this.globalState.globalMode, domainState.mode);
 
     return {
-      allowed: effectiveMode !== 'off',
+      allowed: effectiveMode !== "off",
       effectiveMode,
     };
   }
@@ -376,7 +352,7 @@ export class UnifiedAutopilotGate {
 
   addSafetyLock(lockId: string, reason: string): void {
     this.globalState.safetyLocks.push(lockId);
-    console.log(`[Autopilot] Safety lock added: ${lockId} - ${reason}`);
+
     this.notifyStateChange();
   }
 
@@ -384,7 +360,7 @@ export class UnifiedAutopilotGate {
     const index = this.globalState.safetyLocks.indexOf(lockId);
     if (index >= 0) {
       this.globalState.safetyLocks.splice(index, 1);
-      console.log(`[Autopilot] Safety lock removed: ${lockId}`);
+
       this.notifyStateChange();
       return true;
     }
@@ -427,9 +403,7 @@ export class UnifiedAutopilotGate {
     for (const callback of this.stateChangeCallbacks) {
       try {
         callback(this.getGlobalState());
-      } catch (error) {
-        console.error('[Autopilot] State change callback error:', error);
-      }
+      } catch (error) {}
     }
   }
 

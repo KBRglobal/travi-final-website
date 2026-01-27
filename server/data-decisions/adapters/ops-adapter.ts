@@ -3,31 +3,31 @@
  * Executes operations-related decisions (rollback, scaling, incidents)
  */
 
-import type { Decision, DecisionType } from '../types';
-import { BaseAdapter } from './base-adapter';
-import type { AdapterConfig, OpsActionPayload } from './types';
+import type { Decision, DecisionType } from "../types";
+import { BaseAdapter } from "./base-adapter";
+import type { AdapterConfig, OpsActionPayload } from "./types";
 
 // =============================================================================
 // OPS ADAPTER
 // =============================================================================
 
 export class OpsAdapter extends BaseAdapter {
-  readonly id = 'ops-adapter';
-  readonly name = 'Ops Adapter';
+  readonly id = "ops-adapter";
+  readonly name = "Ops Adapter";
   readonly supportedActions: DecisionType[] = [
-    'BLOCK_ALL_DEPLOYMENTS',
-    'FREEZE_AUTOMATION',
-    'THROTTLE_AI',
-    'ROLLBACK_CHANGES',
-    'DISABLE_FEATURE',
-    'DISABLE_SYSTEM',
-    'AUTO_SCALE_WORKERS',
-    'AUTO_OPTIMIZE_CACHE',
+    "BLOCK_ALL_DEPLOYMENTS",
+    "FREEZE_AUTOMATION",
+    "THROTTLE_AI",
+    "ROLLBACK_CHANGES",
+    "DISABLE_FEATURE",
+    "DISABLE_SYSTEM",
+    "AUTO_SCALE_WORKERS",
+    "AUTO_OPTIMIZE_CACHE",
   ];
 
   private baseUrl: string;
 
-  constructor(baseUrl: string = '/api/ops', config: Partial<AdapterConfig> = {}) {
+  constructor(baseUrl: string = "/api/ops", config: Partial<AdapterConfig> = {}) {
     super({
       ...config,
       dryRunByDefault: true, // Ops actions are dangerous, always dry run by default
@@ -60,8 +60,6 @@ export class OpsAdapter extends BaseAdapter {
     const payload = this.buildPayload(decision);
     const endpoint = this.getEndpoint(decision.type);
 
-    console.log(`[Ops Adapter] Executing ${decision.type}:`, payload);
-
     // CRITICAL: Ops actions have real consequences
     // In production, this would call actual infrastructure APIs
     return this.simulateExecution(decision, payload);
@@ -73,8 +71,6 @@ export class OpsAdapter extends BaseAdapter {
     changes?: Record<string, unknown>;
   }> {
     const payload = this.buildPayload(decision);
-
-    console.log(`[Ops Adapter] Dry run ${decision.type}:`, payload);
 
     return {
       success: true,
@@ -107,88 +103,88 @@ export class OpsAdapter extends BaseAdapter {
     };
 
     switch (decision.type) {
-      case 'BLOCK_ALL_DEPLOYMENTS':
+      case "BLOCK_ALL_DEPLOYMENTS":
         return {
           ...base,
-          target: 'deployment-pipeline',
+          target: "deployment-pipeline",
           metadata: {
             ...base.metadata,
-            blockReason: 'error_rate_exceeded',
-            affectedPipelines: ['production', 'staging'],
+            blockReason: "error_rate_exceeded",
+            affectedPipelines: ["production", "staging"],
           },
         };
 
-      case 'FREEZE_AUTOMATION':
+      case "FREEZE_AUTOMATION":
         return {
           ...base,
-          target: 'automation-engine',
+          target: "automation-engine",
           metadata: {
             ...base.metadata,
-            freezeScope: 'all',
-            resumeCondition: 'manual_approval',
+            freezeScope: "all",
+            resumeCondition: "manual_approval",
           },
         };
 
-      case 'THROTTLE_AI':
+      case "THROTTLE_AI":
         return {
           ...base,
-          target: 'ai-api',
+          target: "ai-api",
           metadata: {
             ...base.metadata,
             throttlePercent: 50,
-            reason: 'cost_exceeded',
+            reason: "cost_exceeded",
           },
         };
 
-      case 'ROLLBACK_CHANGES':
+      case "ROLLBACK_CHANGES":
         return {
           ...base,
           rollbackTarget: this.getRollbackTarget(decision),
           metadata: {
             ...base.metadata,
-            rollbackType: 'immediate',
+            rollbackType: "immediate",
           },
         };
 
-      case 'DISABLE_FEATURE':
+      case "DISABLE_FEATURE":
         return {
           ...base,
           target: this.getFeatureTarget(decision),
           metadata: {
             ...base.metadata,
-            disableReason: 'error_threshold',
+            disableReason: "error_threshold",
           },
         };
 
-      case 'DISABLE_SYSTEM':
+      case "DISABLE_SYSTEM":
         return {
           ...base,
-          severity: 'critical',
-          target: 'system-wide',
+          severity: "critical",
+          target: "system-wide",
           metadata: {
             ...base.metadata,
             emergencyStop: true,
           },
         };
 
-      case 'AUTO_SCALE_WORKERS':
+      case "AUTO_SCALE_WORKERS":
         return {
           ...base,
-          target: 'worker-pool',
+          target: "worker-pool",
           metadata: {
             ...base.metadata,
-            scaleDirection: decision.signal.value > decision.signal.threshold ? 'up' : 'down',
+            scaleDirection: decision.signal.value > decision.signal.threshold ? "up" : "down",
             targetWorkers: this.calculateTargetWorkers(decision),
           },
         };
 
-      case 'AUTO_OPTIMIZE_CACHE':
+      case "AUTO_OPTIMIZE_CACHE":
         return {
           ...base,
-          target: 'cache-layer',
+          target: "cache-layer",
           metadata: {
             ...base.metadata,
-            optimizationType: 'adaptive',
+            optimizationType: "adaptive",
             currentHitRate: decision.signal.value,
           },
         };
@@ -198,35 +194,35 @@ export class OpsAdapter extends BaseAdapter {
     }
   }
 
-  private mapSeverity(decision: Decision): 'info' | 'warning' | 'critical' {
-    if (decision.authority === 'blocking') return 'critical';
-    if (decision.authority === 'escalating') return 'warning';
-    return 'info';
+  private mapSeverity(decision: Decision): "info" | "warning" | "critical" {
+    if (decision.authority === "blocking") return "critical";
+    if (decision.authority === "escalating") return "warning";
+    return "info";
   }
 
   private getEndpoint(actionType: DecisionType): string {
     const endpoints: Partial<Record<DecisionType, string>> = {
-      BLOCK_ALL_DEPLOYMENTS: '/deployments/block',
-      FREEZE_AUTOMATION: '/automation/freeze',
-      THROTTLE_AI: '/ai/throttle',
-      ROLLBACK_CHANGES: '/deployments/rollback',
-      DISABLE_FEATURE: '/features/disable',
-      DISABLE_SYSTEM: '/emergency/stop',
-      AUTO_SCALE_WORKERS: '/workers/scale',
-      AUTO_OPTIMIZE_CACHE: '/cache/optimize',
+      BLOCK_ALL_DEPLOYMENTS: "/deployments/block",
+      FREEZE_AUTOMATION: "/automation/freeze",
+      THROTTLE_AI: "/ai/throttle",
+      ROLLBACK_CHANGES: "/deployments/rollback",
+      DISABLE_FEATURE: "/features/disable",
+      DISABLE_SYSTEM: "/emergency/stop",
+      AUTO_SCALE_WORKERS: "/workers/scale",
+      AUTO_OPTIMIZE_CACHE: "/cache/optimize",
     };
 
-    return endpoints[actionType] || '/actions/generic';
+    return endpoints[actionType] || "/actions/generic";
   }
 
   private getRollbackTarget(decision: Decision): string {
-    const target = decision.impactedEntities.find(e => e.type === 'deployment');
-    return target?.id || 'latest';
+    const target = decision.impactedEntities.find(e => e.type === "deployment");
+    return target?.id || "latest";
   }
 
   private getFeatureTarget(decision: Decision): string {
-    const target = decision.impactedEntities.find(e => e.type === 'feature');
-    return target?.id || 'unknown';
+    const target = decision.impactedEntities.find(e => e.type === "feature");
+    return target?.id || "unknown";
   }
 
   private calculateTargetWorkers(decision: Decision): number {
@@ -243,54 +239,59 @@ export class OpsAdapter extends BaseAdapter {
     affectedSystems: string[];
     estimatedDuration: string;
   } {
-    const impacts: Record<string, { level: string; affectedSystems: string[]; estimatedDuration: string }> = {
+    const impacts: Record<
+      string,
+      { level: string; affectedSystems: string[]; estimatedDuration: string }
+    > = {
       BLOCK_ALL_DEPLOYMENTS: {
-        level: 'high',
-        affectedSystems: ['CI/CD', 'Release Pipeline'],
-        estimatedDuration: 'Until manually cleared',
+        level: "high",
+        affectedSystems: ["CI/CD", "Release Pipeline"],
+        estimatedDuration: "Until manually cleared",
       },
       FREEZE_AUTOMATION: {
-        level: 'high',
-        affectedSystems: ['Content Pipeline', 'SEO Engine', 'Growth'],
-        estimatedDuration: 'Until manually cleared',
+        level: "high",
+        affectedSystems: ["Content Pipeline", "SEO Engine", "Growth"],
+        estimatedDuration: "Until manually cleared",
       },
       THROTTLE_AI: {
-        level: 'medium',
-        affectedSystems: ['AI Content Generation', 'Recommendations'],
-        estimatedDuration: '1 hour or until budget reset',
+        level: "medium",
+        affectedSystems: ["AI Content Generation", "Recommendations"],
+        estimatedDuration: "1 hour or until budget reset",
       },
       ROLLBACK_CHANGES: {
-        level: 'critical',
-        affectedSystems: ['Production', 'All Services'],
-        estimatedDuration: '5-15 minutes',
+        level: "critical",
+        affectedSystems: ["Production", "All Services"],
+        estimatedDuration: "5-15 minutes",
       },
       DISABLE_FEATURE: {
-        level: 'medium',
-        affectedSystems: ['Specific Feature'],
-        estimatedDuration: 'Until re-enabled',
+        level: "medium",
+        affectedSystems: ["Specific Feature"],
+        estimatedDuration: "Until re-enabled",
       },
       DISABLE_SYSTEM: {
-        level: 'critical',
-        affectedSystems: ['ALL'],
-        estimatedDuration: 'Until manual restart',
+        level: "critical",
+        affectedSystems: ["ALL"],
+        estimatedDuration: "Until manual restart",
       },
       AUTO_SCALE_WORKERS: {
-        level: 'low',
-        affectedSystems: ['Worker Pool'],
-        estimatedDuration: '2-5 minutes',
+        level: "low",
+        affectedSystems: ["Worker Pool"],
+        estimatedDuration: "2-5 minutes",
       },
       AUTO_OPTIMIZE_CACHE: {
-        level: 'low',
-        affectedSystems: ['Cache Layer'],
-        estimatedDuration: '1-2 minutes',
+        level: "low",
+        affectedSystems: ["Cache Layer"],
+        estimatedDuration: "1-2 minutes",
       },
     };
 
-    return impacts[actionType] || {
-      level: 'unknown',
-      affectedSystems: ['Unknown'],
-      estimatedDuration: 'Unknown',
-    };
+    return (
+      impacts[actionType] || {
+        level: "unknown",
+        affectedSystems: ["Unknown"],
+        estimatedDuration: "Unknown",
+      }
+    );
   }
 
   // =========================================================================
@@ -329,14 +330,14 @@ export class OpsAdapter extends BaseAdapter {
 
     // Add implicit resources based on action type
     switch (decision.type) {
-      case 'BLOCK_ALL_DEPLOYMENTS':
-        resources.push('system:deployment-pipeline');
+      case "BLOCK_ALL_DEPLOYMENTS":
+        resources.push("system:deployment-pipeline");
         break;
-      case 'FREEZE_AUTOMATION':
-        resources.push('system:automation-engine');
+      case "FREEZE_AUTOMATION":
+        resources.push("system:automation-engine");
         break;
-      case 'DISABLE_SYSTEM':
-        resources.push('system:all');
+      case "DISABLE_SYSTEM":
+        resources.push("system:all");
         break;
     }
 
@@ -348,26 +349,26 @@ export class OpsAdapter extends BaseAdapter {
     payload: OpsActionPayload
   ): Record<string, unknown> {
     switch (actionType) {
-      case 'BLOCK_ALL_DEPLOYMENTS':
+      case "BLOCK_ALL_DEPLOYMENTS":
         return {
           blocked: true,
           blockId: `deploy-block-${Date.now()}`,
           affectedPipelines: 2,
         };
-      case 'FREEZE_AUTOMATION':
+      case "FREEZE_AUTOMATION":
         return {
           frozen: true,
           frozenAt: new Date().toISOString(),
           affectedAutomations: 5,
         };
-      case 'ROLLBACK_CHANGES':
+      case "ROLLBACK_CHANGES":
         return {
           rolledBack: true,
-          previousVersion: 'v1.2.3',
-          currentVersion: 'v1.2.2',
-          duration: '3m 24s',
+          previousVersion: "v1.2.3",
+          currentVersion: "v1.2.2",
+          duration: "3m 24s",
         };
-      case 'AUTO_SCALE_WORKERS':
+      case "AUTO_SCALE_WORKERS":
         return {
           scaled: true,
           previousWorkers: 5,

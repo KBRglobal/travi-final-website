@@ -84,11 +84,13 @@ function calculateLinkScore(
  * Get shared keywords between two content pieces
  */
 function getSharedKeywords(source: any, target: any): string[] {
-  const sourceKeywords = new Set<string>([
-    source.primaryKeyword?.toLowerCase(),
-    ...(source.secondaryKeywords || []).map((k: string) => k.toLowerCase()),
-    ...(source.lsiKeywords || []).map((k: string) => k.toLowerCase()),
-  ].filter(Boolean));
+  const sourceKeywords = new Set<string>(
+    [
+      source.primaryKeyword?.toLowerCase(),
+      ...(source.secondaryKeywords || []).map((k: string) => k.toLowerCase()),
+      ...(source.lsiKeywords || []).map((k: string) => k.toLowerCase()),
+    ].filter(Boolean)
+  );
 
   const targetKeywords = [
     target.primaryKeyword?.toLowerCase(),
@@ -166,7 +168,7 @@ export async function getLinkOpportunities(
       )
     );
 
-  const existingTargetIds = new Set(existingLinks.map((l) => l.targetId));
+  const existingTargetIds = new Set(existingLinks.map(l => l.targetId));
 
   // Get potential targets (same type or related types)
   const relatedTypes = getRelatedTypes(sourceContent.type);
@@ -178,13 +180,16 @@ export async function getLinkOpportunities(
       and(
         ne(contents.id, contentId),
         eq(contents.status, "published"),
-        sql`${contents.type} IN (${sql.join(relatedTypes.map(t => sql`${t}`), sql`, `)})`
+        sql`${contents.type} IN (${sql.join(
+          relatedTypes.map(t => sql`${t}`),
+          sql`, `
+        )})`
       )
     )
     .limit(100);
 
   // Get inbound link counts for targets (to avoid over-linking)
-  const targetIds = potentialTargets.map((t) => t.id);
+  const targetIds = potentialTargets.map(t => t.id);
   const inboundCounts = await db
     .select({
       targetId: contentDependencies.targetId,
@@ -194,7 +199,7 @@ export async function getLinkOpportunities(
     .where(inArray(contentDependencies.targetId, targetIds))
     .groupBy(contentDependencies.targetId);
 
-  const inboundMap = new Map(inboundCounts.map((c) => [c.targetId, c.count]));
+  const inboundMap = new Map(inboundCounts.map(c => [c.targetId, c.count]));
 
   // Score and rank opportunities
   const opportunities: LinkOpportunity[] = [];
@@ -278,5 +283,3 @@ function generateReason(sharedKeywords: string[], sourceType: string, targetType
 
   return reasons.join(". ");
 }
-
-console.log("[LinkOpportunities] Module loaded");

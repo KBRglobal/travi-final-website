@@ -12,7 +12,11 @@
 
 import { ThreatLevel, getThreatLevel, onThreatLevelChange } from "../core/security-kernel";
 import { getSecurityMode, SecurityMode } from "../modes/security-modes";
-import { SecurityAnomaly, getHighRiskUsers, ThreatScore } from "../intelligence/security-intelligence";
+import {
+  SecurityAnomaly,
+  getHighRiskUsers,
+  ThreatScore,
+} from "../intelligence/security-intelligence";
 import { autonomyController, AutonomySystem } from "../autonomy/autonomy-controller";
 import { logAdminEvent } from "../../governance/security-logger";
 import { generateEvidence } from "../compliance/evidence-generator";
@@ -63,8 +67,22 @@ const THREAT_ACTIONS: Record<ThreatLevel, ThreatActionType[]> = {
   green: [],
   yellow: ["notify_admin"],
   orange: ["notify_admin", "pause_publishing", "block_exports"],
-  red: ["notify_admin", "disable_autopilot", "pause_publishing", "freeze_bulk_ops", "block_exports"],
-  black: ["notify_admin", "disable_autopilot", "pause_publishing", "freeze_bulk_ops", "block_exports", "lock_user", "enable_lockdown"],
+  red: [
+    "notify_admin",
+    "disable_autopilot",
+    "pause_publishing",
+    "freeze_bulk_ops",
+    "block_exports",
+  ],
+  black: [
+    "notify_admin",
+    "disable_autopilot",
+    "pause_publishing",
+    "freeze_bulk_ops",
+    "block_exports",
+    "lock_user",
+    "enable_lockdown",
+  ],
 };
 
 const HIGH_RISK_THRESHOLD = 70;
@@ -83,7 +101,6 @@ const dataDecisionsAdapter: SystemAdapter = {
 
   async onThreatLevelChange(level: ThreatLevel, response: ThreatResponse) {
     if (level === "red" || level === "black") {
-      console.log("[DataDecisions] Pausing all automated data decisions due to threat level");
       response.actions.push({
         type: "disable_autopilot",
         target: "data_autopilot",
@@ -96,13 +113,10 @@ const dataDecisionsAdapter: SystemAdapter = {
 
   async onAnomalyDetected(anomaly: SecurityAnomaly) {
     if (anomaly.type === "data_exfiltration") {
-      console.log("[DataDecisions] Blocking data operations due to exfiltration attempt");
     }
   },
 
-  async onHighRiskUser(user: ThreatScore) {
-    console.log(`[DataDecisions] Restricting data access for high-risk user: ${user.userId}`);
-  },
+  async onHighRiskUser(user: ThreatScore) {},
 
   getStatus() {
     return { connected: true, lastSync: new Date() };
@@ -117,7 +131,6 @@ const seoAutopilotAdapter: SystemAdapter = {
 
   async onThreatLevelChange(level: ThreatLevel, response: ThreatResponse) {
     if (level === "orange" || level === "red" || level === "black") {
-      console.log("[SEOAutopilot] Pausing all publishing operations due to threat level");
       response.actions.push({
         type: "pause_publishing",
         target: "seo_autopilot",
@@ -130,13 +143,10 @@ const seoAutopilotAdapter: SystemAdapter = {
 
   async onAnomalyDetected(anomaly: SecurityAnomaly) {
     if (anomaly.type === "mass_modification") {
-      console.log("[SEOAutopilot] Suspending publishing due to mass modification detected");
     }
   },
 
-  async onHighRiskUser(user: ThreatScore) {
-    console.log(`[SEOAutopilot] Blocking SEO operations for high-risk user: ${user.userId}`);
-  },
+  async onHighRiskUser(user: ThreatScore) {},
 
   getStatus() {
     return { connected: true, lastSync: new Date() };
@@ -151,7 +161,6 @@ const bulkOpsAdapter: SystemAdapter = {
 
   async onThreatLevelChange(level: ThreatLevel, response: ThreatResponse) {
     if (level === "red" || level === "black") {
-      console.log("[BulkOps] Freezing all bulk operations due to threat level");
       response.actions.push({
         type: "freeze_bulk_ops",
         target: "bulk_processor",
@@ -164,13 +173,10 @@ const bulkOpsAdapter: SystemAdapter = {
 
   async onAnomalyDetected(anomaly: SecurityAnomaly) {
     if (anomaly.type === "mass_modification" || anomaly.type === "insider_threat") {
-      console.log("[BulkOps] Suspending bulk operations due to detected anomaly");
     }
   },
 
-  async onHighRiskUser(user: ThreatScore) {
-    console.log(`[BulkOps] Revoking bulk operation permissions for: ${user.userId}`);
-  },
+  async onHighRiskUser(user: ThreatScore) {},
 
   getStatus() {
     return { connected: true, lastSync: new Date() };
@@ -196,18 +202,15 @@ const userManagementAdapter: SystemAdapter = {
         });
         response.affectedUsers.push(user.userId);
       }
-      console.log(`[UserManagement] Locked ${highRiskUsers.length} high-risk users`);
     }
   },
 
   async onAnomalyDetected(anomaly: SecurityAnomaly) {
     if (anomaly.type === "brute_force" || anomaly.type === "credential_stuffing") {
-      console.log("[UserManagement] Activating enhanced login protection");
     }
   },
 
   async onHighRiskUser(user: ThreatScore) {
-    console.log(`[UserManagement] Flagging user for review: ${user.userId} (score: ${user.score})`);
     // Would trigger user review workflow
   },
 
@@ -224,7 +227,6 @@ const contentSchedulerAdapter: SystemAdapter = {
 
   async onThreatLevelChange(level: ThreatLevel, response: ThreatResponse) {
     if (level === "orange" || level === "red" || level === "black") {
-      console.log("[ContentScheduler] Pausing scheduled content publishing");
       response.affectedSystems.push("content_scheduler");
     }
   },
@@ -233,9 +235,7 @@ const contentSchedulerAdapter: SystemAdapter = {
     // Content scheduler responds to content-related anomalies
   },
 
-  async onHighRiskUser(user: ThreatScore) {
-    console.log(`[ContentScheduler] Reviewing scheduled content by: ${user.userId}`);
-  },
+  async onHighRiskUser(user: ThreatScore) {},
 
   getStatus() {
     return { connected: true, lastSync: new Date() };
@@ -266,12 +266,10 @@ class ThreatPropagator {
 
     // Listen for threat level changes
     onThreatLevelChange(async (newLevel, oldLevel) => {
-      console.log(`[ThreatPropagator] Threat level changed: ${oldLevel} -> ${newLevel}`);
       await this.propagateThreatLevel(newLevel);
     });
 
     this.isInitialized = true;
-    console.log("[ThreatPropagator] Initialized with", adapters.size, "adapters");
   }
 
   /**
@@ -294,7 +292,6 @@ class ThreatPropagator {
       try {
         await adapter.onThreatLevelChange(level, response);
       } catch (error) {
-        console.error(`[ThreatPropagator] Adapter ${name} failed:`, error);
         response.actions.push({
           type: "notify_admin",
           target: name,
@@ -345,21 +342,16 @@ class ThreatPropagator {
    * Propagate anomaly to all systems
    */
   async propagateAnomaly(anomaly: SecurityAnomaly): Promise<void> {
-    console.log(`[ThreatPropagator] Propagating anomaly: ${anomaly.type}`);
-
     for (const [name, adapter] of adapters) {
       try {
         await adapter.onAnomalyDetected(anomaly);
-      } catch (error) {
-        console.error(`[ThreatPropagator] Adapter ${name} anomaly handling failed:`, error);
-      }
+      } catch (error) {}
     }
 
     // If anomaly is critical, check if we need to escalate
     if (anomaly.severity === "critical") {
       const currentLevel = getThreatLevel();
       if (currentLevel !== "red" && currentLevel !== "black") {
-        console.log("[ThreatPropagator] Critical anomaly may trigger threat escalation");
       }
     }
   }
@@ -368,14 +360,10 @@ class ThreatPropagator {
    * Propagate high-risk user detection
    */
   async propagateHighRiskUser(user: ThreatScore): Promise<void> {
-    console.log(`[ThreatPropagator] High-risk user detected: ${user.userId} (score: ${user.score})`);
-
     for (const [name, adapter] of adapters) {
       try {
         await adapter.onHighRiskUser(user);
-      } catch (error) {
-        console.error(`[ThreatPropagator] Adapter ${name} high-risk user handling failed:`, error);
-      }
+      } catch (error) {}
     }
 
     logAdminEvent("system", "HIGH_RISK_USER_DETECTED", "user", user.userId, {
@@ -390,7 +378,6 @@ class ThreatPropagator {
    */
   registerAdapter(adapter: SystemAdapter): void {
     adapters.set(adapter.name, adapter);
-    console.log(`[ThreatPropagator] Registered adapter: ${adapter.name}`);
   }
 
   /**
@@ -480,5 +467,3 @@ export function registerThreatAdapter(adapter: SystemAdapter): void {
 export function getThreatAdapterStatuses(): Record<string, { connected: boolean; lastSync: Date }> {
   return threatPropagator.getAdapterStatuses();
 }
-
-console.log("[ThreatPropagator] Module loaded");

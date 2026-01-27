@@ -4,7 +4,6 @@ import type { ComponentConfig, ComponentCategory, EditableField } from "@/types/
 export interface EditableComponentConfig {
   type: string;
   displayName: string;
-  displayNameHe?: string;
   icon: string;
   category: ComponentCategory;
   editableFields: EditableField[];
@@ -23,7 +22,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   hero: {
     type: "hero",
     displayName: "Hero Section",
-    displayNameHe: "אזור Hero",
     icon: "🎯",
     category: "layout",
     editableFields: [
@@ -31,38 +29,32 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "title",
         type: "text",
         label: "Title",
-        labelHe: "כותרת",
         required: true,
       },
       {
         name: "subtitle",
         type: "text",
         label: "Subtitle",
-        labelHe: "תת כותרת",
       },
       {
         name: "backgroundImage",
         type: "image",
         label: "Background Image",
-        labelHe: "תמונת רקע",
       },
       {
         name: "ctaText",
         type: "text",
         label: "Button Text",
-        labelHe: "טקסט כפתור",
       },
       {
         name: "ctaLink",
         type: "link",
         label: "Button Link",
-        labelHe: "קישור כפתור",
       },
       {
         name: "alignment",
         type: "select",
         label: "Text Alignment",
-        labelHe: "יישור טקסט",
         options: [
           { label: "Left", value: "left" },
           { label: "Center", value: "center" },
@@ -89,7 +81,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   spacer: {
     type: "spacer",
     displayName: "Spacer",
-    displayNameHe: "רווח",
     icon: "↕️",
     category: "layout",
     editableFields: [
@@ -97,7 +88,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "height",
         type: "select",
         label: "Height",
-        labelHe: "גובה",
         options: [
           { label: "Small (16px)", value: "16" },
           { label: "Medium (32px)", value: "32" },
@@ -121,7 +111,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   divider: {
     type: "divider",
     displayName: "Divider",
-    displayNameHe: "קו מפריד",
     icon: "➖",
     category: "layout",
     editableFields: [
@@ -129,7 +118,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "style",
         type: "select",
         label: "Style",
-        labelHe: "סגנון",
         options: [
           { label: "Solid", value: "solid" },
           { label: "Dashed", value: "dashed" },
@@ -153,7 +141,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   contentCard: {
     type: "contentCard",
     displayName: "Content Card",
-    displayNameHe: "כרטיס תוכן",
     icon: "📄",
     category: "content",
     editableFields: [
@@ -161,20 +148,17 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "contentRef",
         type: "text",
         label: "Content ID",
-        labelHe: "מזהה תוכן",
         required: true,
       },
       {
         name: "showImage",
         type: "boolean",
         label: "Show Image",
-        labelHe: "הצג תמונה",
       },
       {
         name: "showDescription",
         type: "boolean",
         label: "Show Description",
-        labelHe: "הצג תיאור",
       },
     ],
     capabilities: {
@@ -193,7 +177,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   contentGrid: {
     type: "contentGrid",
     displayName: "Content Grid",
-    displayNameHe: "רשת תוכן",
     icon: "📊",
     category: "content",
     editableFields: [
@@ -201,7 +184,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "columns",
         type: "select",
         label: "Columns",
-        labelHe: "עמודות",
         options: [
           { label: "2 Columns", value: "2" },
           { label: "3 Columns", value: "3" },
@@ -212,7 +194,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "contentType",
         type: "select",
         label: "Content Type Filter",
-        labelHe: "סינון סוג תוכן",
         options: [
           { label: "All", value: "all" },
           { label: "Attractions", value: "attraction" },
@@ -225,7 +206,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "limit",
         type: "number",
         label: "Max Items",
-        labelHe: "מקסימום פריטים",
         defaultValue: 6,
       },
     ],
@@ -246,7 +226,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   textBlock: {
     type: "textBlock",
     displayName: "Text Block",
-    displayNameHe: "בלוק טקסט",
     icon: "📝",
     category: "content",
     editableFields: [
@@ -254,7 +233,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "content",
         type: "richtext",
         label: "Content",
-        labelHe: "תוכן",
         required: true,
       },
     ],
@@ -273,7 +251,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   heading: {
     type: "heading",
     displayName: "Heading",
-    displayNameHe: "כותרת",
     icon: "🔤",
     category: "content",
     editableFields: [
@@ -281,14 +258,12 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "text",
         type: "text",
         label: "Heading Text",
-        labelHe: "טקסט כותרת",
         required: true,
       },
       {
         name: "level",
         type: "select",
         label: "Heading Level",
-        labelHe: "רמת כותרת",
         options: [
           { label: "H1", value: "h1" },
           { label: "H2", value: "h2" },
@@ -314,7 +289,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   imageBlock: {
     type: "imageBlock",
     displayName: "Image",
-    displayNameHe: "תמונה",
     icon: "🖼️",
     category: "media",
     editableFields: [
@@ -322,21 +296,18 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "src",
         type: "image",
         label: "Image",
-        labelHe: "תמונה",
         required: true,
       },
       {
         name: "alt",
         type: "text",
         label: "Alt Text",
-        labelHe: "טקסט חלופי",
         required: true,
       },
       {
         name: "caption",
         type: "text",
         label: "Caption",
-        labelHe: "כיתוב",
       },
     ],
     capabilities: {
@@ -355,7 +326,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   gallery: {
     type: "gallery",
     displayName: "Image Gallery",
-    displayNameHe: "גלריית תמונות",
     icon: "🎨",
     category: "media",
     editableFields: [
@@ -363,7 +333,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "layout",
         type: "select",
         label: "Layout",
-        labelHe: "פריסה",
         options: [
           { label: "Grid", value: "grid" },
           { label: "Masonry", value: "masonry" },
@@ -388,7 +357,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   ctaButton: {
     type: "ctaButton",
     displayName: "CTA Button",
-    displayNameHe: "כפתור CTA",
     icon: "🔘",
     category: "interactive",
     editableFields: [
@@ -396,21 +364,18 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "text",
         type: "text",
         label: "Button Text",
-        labelHe: "טקסט כפתור",
         required: true,
       },
       {
         name: "link",
         type: "link",
         label: "Link",
-        labelHe: "קישור",
         required: true,
       },
       {
         name: "variant",
         type: "select",
         label: "Style",
-        labelHe: "סגנון",
         options: [
           { label: "Primary", value: "primary" },
           { label: "Secondary", value: "secondary" },
@@ -421,7 +386,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "size",
         type: "select",
         label: "Size",
-        labelHe: "גודל",
         options: [
           { label: "Small", value: "sm" },
           { label: "Medium", value: "md" },
@@ -447,7 +411,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   faqAccordion: {
     type: "faqAccordion",
     displayName: "FAQ Accordion",
-    displayNameHe: "שאלות נפוצות",
     icon: "❓",
     category: "interactive",
     editableFields: [
@@ -455,7 +418,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "title",
         type: "text",
         label: "Section Title",
-        labelHe: "כותרת מקטע",
       },
     ],
     capabilities: {
@@ -475,7 +437,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   attractionsGrid: {
     type: "attractionsGrid",
     displayName: "Attractions Grid",
-    displayNameHe: "רשת אטרקציות",
     icon: "🎢",
     category: "content",
     editableFields: [
@@ -483,13 +444,11 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "title",
         type: "text",
         label: "Section Title",
-        labelHe: "כותרת מקטע",
       },
       {
         name: "category",
         type: "select",
         label: "Category Filter",
-        labelHe: "סינון קטגוריה",
         options: [
           { label: "All", value: "all" },
           { label: "Theme Parks", value: "theme-parks" },
@@ -502,7 +461,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "limit",
         type: "number",
         label: "Max Items",
-        labelHe: "מקסימום פריטים",
         defaultValue: 6,
       },
     ],
@@ -523,7 +481,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   hotelsGrid: {
     type: "hotelsGrid",
     displayName: "Hotels Grid",
-    displayNameHe: "רשת מלונות",
     icon: "🏨",
     category: "content",
     editableFields: [
@@ -531,13 +488,11 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "title",
         type: "text",
         label: "Section Title",
-        labelHe: "כותרת מקטע",
       },
       {
         name: "area",
         type: "select",
         label: "Area Filter",
-        labelHe: "סינון אזור",
         options: [
           { label: "All", value: "all" },
           { label: "Downtown", value: "downtown" },
@@ -549,7 +504,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "limit",
         type: "number",
         label: "Max Items",
-        labelHe: "מקסימום פריטים",
         defaultValue: 6,
       },
     ],
@@ -570,7 +524,6 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
   articlesGrid: {
     type: "articlesGrid",
     displayName: "Articles Grid",
-    displayNameHe: "רשת מאמרים",
     icon: "📰",
     category: "content",
     editableFields: [
@@ -578,13 +531,11 @@ export const componentRegistry: Record<string, EditableComponentConfig> = {
         name: "title",
         type: "text",
         label: "Section Title",
-        labelHe: "כותרת מקטע",
       },
       {
         name: "limit",
         type: "number",
         label: "Max Items",
-        labelHe: "מקסימום פריטים",
         defaultValue: 3,
       },
     ],
@@ -608,7 +559,7 @@ export function getComponentConfig(type: string): EditableComponentConfig | unde
 }
 
 export function getComponentsByCategory(category: ComponentCategory): EditableComponentConfig[] {
-  return Object.values(componentRegistry).filter((c) => c.category === category);
+  return Object.values(componentRegistry).filter(c => c.category === category);
 }
 
 export function getAllComponents(): EditableComponentConfig[] {
@@ -625,16 +576,6 @@ export function getCategoryLabel(category: ComponentCategory): string {
     content: "Content",
     media: "Media",
     interactive: "Interactive",
-  };
-  return labels[category];
-}
-
-export function getCategoryLabelHebrew(category: ComponentCategory): string {
-  const labels: Record<ComponentCategory, string> = {
-    layout: "פריסה",
-    content: "תוכן",
-    media: "מדיה",
-    interactive: "אינטראקטיבי",
   };
   return labels[category];
 }

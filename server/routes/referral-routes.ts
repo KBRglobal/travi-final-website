@@ -58,14 +58,17 @@ export function registerReferralRoutes(app: Express) {
       const authReq = req as AuthRequest;
       const userId = authReq.user?.claims?.sub;
 
-      const [newCode] = await db.insert(referralCodes).values({
-        code,
-        name,
-        description: email,
-        userId: userId || null,
-        commissionRate: 10,
-        isActive: true,
-      } as any).returning();
+      const [newCode] = await db
+        .insert(referralCodes)
+        .values({
+          code,
+          name,
+          description: email,
+          userId: userId || null,
+          commissionRate: 10,
+          isActive: true,
+        } as any)
+        .returning();
 
       res.status(201).json({
         success: true,
@@ -73,7 +76,6 @@ export function registerReferralRoutes(app: Express) {
         referralLink: `${req.protocol}://${req.get("host")}?ref=${newCode.code}`,
       });
     } catch (error) {
-      console.error("Error registering partner:", error);
       res.status(500).json({ error: "Failed to register as partner" });
     }
   });
@@ -133,18 +135,18 @@ export function registerReferralRoutes(app: Express) {
           totalConversions: partnerCode.totalConversions || 0,
           totalCommission: (partnerCode.totalCommission || 0) / 100, // Convert cents to dollars
         },
-        recentClicks: recentClicks.map((c) => ({
+        recentClicks: recentClicks.map(c => ({
           id: c.id,
           landingPage: c.landingPage,
           createdAt: c.createdAt,
         })),
-        conversions: conversions.map((c) => ({
+        conversions: conversions.map(c => ({
           id: c.id,
           email: c.email,
           status: c.status,
           createdAt: c.createdAt,
         })),
-        commissions: commissions.map((c) => ({
+        commissions: commissions.map(c => ({
           id: c.id,
           amount: c.amount / 100,
           status: c.status,
@@ -154,7 +156,6 @@ export function registerReferralRoutes(app: Express) {
         referralLink: `${req.protocol}://${req.get("host")}?ref=${partnerCode.code}`,
       });
     } catch (error) {
-      console.error("Error fetching dashboard:", error);
       res.status(500).json({ error: "Failed to fetch dashboard" });
     }
   });
@@ -198,149 +199,163 @@ export function registerReferralRoutes(app: Express) {
 
       res.json({ success: true, tracked: true });
     } catch (error) {
-      console.error("Error tracking click:", error);
       res.status(500).json({ error: "Failed to track click" });
     }
   });
 
   // Admin: Get all partners
-  app.get("/api/referrals/admin", requirePermission("canAccessAffiliates"), async (req: Request, res: Response) => {
-    try {
-      const allPartners = await db
-        .select()
-        .from(referralCodes)
-        .orderBy(desc(referralCodes.createdAt));
+  app.get(
+    "/api/referrals/admin",
+    requirePermission("canAccessAffiliates"),
+    async (req: Request, res: Response) => {
+      try {
+        const allPartners = await db
+          .select()
+          .from(referralCodes)
+          .orderBy(desc(referralCodes.createdAt));
 
-      res.json(
-        allPartners.map((p) => ({
-          id: p.id,
-          code: p.code,
-          name: p.name,
-          email: p.description,
-          commissionRate: p.commissionRate,
-          isActive: p.isActive,
-          totalClicks: p.totalClicks || 0,
-          totalSignups: p.totalSignups || 0,
-          totalConversions: p.totalConversions || 0,
-          totalCommission: (p.totalCommission || 0) / 100,
-          createdAt: p.createdAt,
-        }))
-      );
-    } catch (error) {
-      console.error("Error fetching admin partners:", error);
-      res.status(500).json({ error: "Failed to fetch partners" });
+        res.json(
+          allPartners.map(p => ({
+            id: p.id,
+            code: p.code,
+            name: p.name,
+            email: p.description,
+            commissionRate: p.commissionRate,
+            isActive: p.isActive,
+            totalClicks: p.totalClicks || 0,
+            totalSignups: p.totalSignups || 0,
+            totalConversions: p.totalConversions || 0,
+            totalCommission: (p.totalCommission || 0) / 100,
+            createdAt: p.createdAt,
+          }))
+        );
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch partners" });
+      }
     }
-  });
+  );
 
   // Admin: Get all clicks for a partner
-  app.get("/api/referrals/admin/:code/clicks", requirePermission("canAccessAffiliates"), async (req: Request, res: Response) => {
-    try {
-      const partnerCode = await db.query.referralCodes.findFirst({
-        where: eq(referralCodes.code, req.params.code),
-      });
+  app.get(
+    "/api/referrals/admin/:code/clicks",
+    requirePermission("canAccessAffiliates"),
+    async (req: Request, res: Response) => {
+      try {
+        const partnerCode = await db.query.referralCodes.findFirst({
+          where: eq(referralCodes.code, req.params.code),
+        });
 
-      if (!partnerCode) {
-        return res.status(404).json({ error: "Partner not found" });
+        if (!partnerCode) {
+          return res.status(404).json({ error: "Partner not found" });
+        }
+
+        const clicks = await db
+          .select()
+          .from(referralClicks)
+          .where(eq(referralClicks.referralCodeId, partnerCode.id))
+          .orderBy(desc(referralClicks.createdAt))
+          .limit(100);
+
+        res.json(clicks);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch clicks" });
       }
-
-      const clicks = await db
-        .select()
-        .from(referralClicks)
-        .where(eq(referralClicks.referralCodeId, partnerCode.id))
-        .orderBy(desc(referralClicks.createdAt))
-        .limit(100);
-
-      res.json(clicks);
-    } catch (error) {
-      console.error("Error fetching clicks:", error);
-      res.status(500).json({ error: "Failed to fetch clicks" });
     }
-  });
+  );
 
   // Admin: Get all conversions for a partner
-  app.get("/api/referrals/admin/:code/conversions", requirePermission("canAccessAffiliates"), async (req: Request, res: Response) => {
-    try {
-      const partnerCode = await db.query.referralCodes.findFirst({
-        where: eq(referralCodes.code, req.params.code),
-      });
+  app.get(
+    "/api/referrals/admin/:code/conversions",
+    requirePermission("canAccessAffiliates"),
+    async (req: Request, res: Response) => {
+      try {
+        const partnerCode = await db.query.referralCodes.findFirst({
+          where: eq(referralCodes.code, req.params.code),
+        });
 
-      if (!partnerCode) {
-        return res.status(404).json({ error: "Partner not found" });
+        if (!partnerCode) {
+          return res.status(404).json({ error: "Partner not found" });
+        }
+
+        const conversions = await db
+          .select()
+          .from(referrals)
+          .where(eq(referrals.referralCodeId, partnerCode.id))
+          .orderBy(desc(referrals.createdAt))
+          .limit(100);
+
+        res.json(conversions);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch conversions" });
       }
-
-      const conversions = await db
-        .select()
-        .from(referrals)
-        .where(eq(referrals.referralCodeId, partnerCode.id))
-        .orderBy(desc(referrals.createdAt))
-        .limit(100);
-
-      res.json(conversions);
-    } catch (error) {
-      console.error("Error fetching conversions:", error);
-      res.status(500).json({ error: "Failed to fetch conversions" });
     }
-  });
+  );
 
   // Admin: Update partner commission rate
-  app.patch("/api/referrals/admin/:code", requirePermission("canAccessAffiliates"), async (req: Request, res: Response) => {
-    try {
-      const { commissionRate, isActive } = req.body;
+  app.patch(
+    "/api/referrals/admin/:code",
+    requirePermission("canAccessAffiliates"),
+    async (req: Request, res: Response) => {
+      try {
+        const { commissionRate, isActive } = req.body;
 
-      const partnerCode = await db.query.referralCodes.findFirst({
-        where: eq(referralCodes.code, req.params.code),
-      });
+        const partnerCode = await db.query.referralCodes.findFirst({
+          where: eq(referralCodes.code, req.params.code),
+        });
 
-      if (!partnerCode) {
-        return res.status(404).json({ error: "Partner not found" });
+        if (!partnerCode) {
+          return res.status(404).json({ error: "Partner not found" });
+        }
+
+        const updates: any = { updatedAt: new Date() };
+
+        if (typeof commissionRate === "number") {
+          updates.commissionRate = Math.min(100, Math.max(0, commissionRate));
+        }
+
+        if (typeof isActive === "boolean") {
+          updates.isActive = isActive;
+        }
+
+        const [updated] = await db
+          .update(referralCodes)
+          .set(updates as any)
+          .where(eq(referralCodes.id, partnerCode.id))
+          .returning();
+
+        res.json({
+          id: updated.id,
+          code: updated.code,
+          name: updated.name,
+          commissionRate: updated.commissionRate,
+          isActive: updated.isActive,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update partner" });
       }
-
-      const updates: any = { updatedAt: new Date() };
-      
-      if (typeof commissionRate === "number") {
-        updates.commissionRate = Math.min(100, Math.max(0, commissionRate));
-      }
-      
-      if (typeof isActive === "boolean") {
-        updates.isActive = isActive;
-      }
-
-      const [updated] = await db
-        .update(referralCodes)
-        .set(updates as any)
-        .where(eq(referralCodes.id, partnerCode.id))
-        .returning();
-
-      res.json({
-        id: updated.id,
-        code: updated.code,
-        name: updated.name,
-        commissionRate: updated.commissionRate,
-        isActive: updated.isActive,
-      });
-    } catch (error) {
-      console.error("Error updating partner:", error);
-      res.status(500).json({ error: "Failed to update partner" });
     }
-  });
+  );
 
   // Admin: Delete partner
-  app.delete("/api/referrals/admin/:code", requirePermission("canDelete"), async (req: Request, res: Response) => {
-    try {
-      const partnerCode = await db.query.referralCodes.findFirst({
-        where: eq(referralCodes.code, req.params.code),
-      });
+  app.delete(
+    "/api/referrals/admin/:code",
+    requirePermission("canDelete"),
+    async (req: Request, res: Response) => {
+      try {
+        const partnerCode = await db.query.referralCodes.findFirst({
+          where: eq(referralCodes.code, req.params.code),
+        });
 
-      if (!partnerCode) {
-        return res.status(404).json({ error: "Partner not found" });
+        if (!partnerCode) {
+          return res.status(404).json({ error: "Partner not found" });
+        }
+
+        await db.delete(referralCodes).where(eq(referralCodes.id, partnerCode.id));
+
+        res.json({ success: true });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete partner" });
       }
-
-      await db.delete(referralCodes).where(eq(referralCodes.id, partnerCode.id));
-
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting partner:", error);
-      res.status(500).json({ error: "Failed to delete partner" });
     }
-  });
+  );
 }

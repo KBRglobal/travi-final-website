@@ -20,7 +20,7 @@ export {
   type SEOActionType,
   type ApprovalRequest,
   type ApprovalResult,
-} from './approval-gate';
+} from "./approval-gate";
 
 export {
   executeAction,
@@ -29,7 +29,7 @@ export {
   type ActionRequest,
   type ActionResult,
   type RollbackData,
-} from './action-executor';
+} from "./action-executor";
 
 /**
  * Audit trail entry
@@ -62,5 +62,3 @@ export function getRecentAuditEntries(limit = 100): AuditEntry[] {
 export function getAuditEntriesForContent(contentId: string): AuditEntry[] {
   return auditLog.filter(e => e.contentId === contentId).reverse();
 }
-
-console.log('[SEO Governance] Module loaded');

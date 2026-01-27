@@ -5,9 +5,9 @@
  * for use by SEO Engine classifiers and action engine.
  */
 
-import { db } from '../../db';
-import { contents } from '../../../shared/schema';
-import { eq, sql } from 'drizzle-orm';
+import { db } from "../../db";
+import { contents } from "../../../shared/schema";
+import { eq, sql } from "drizzle-orm";
 
 // ============================================================================
 // Types
@@ -93,7 +93,7 @@ function countFAQs(blocks: any[]): number {
 
   let count = 0;
   for (const block of blocks) {
-    if (block.type === 'faq' || block.type === 'faq_section') {
+    if (block.type === "faq" || block.type === "faq_section") {
       count += Array.isArray(block.items) ? block.items.length : 1;
     }
     // Check nested blocks
@@ -109,7 +109,7 @@ function countHeadings(blocks: any[]): number {
 
   let count = 0;
   for (const block of blocks) {
-    if (block.type === 'heading' && (block.level === 2 || block.level === 'h2')) {
+    if (block.type === "heading" && (block.level === 2 || block.level === "h2")) {
       count++;
     }
     if (Array.isArray(block.blocks)) {
@@ -124,8 +124,8 @@ function countImages(blocks: any[]): number {
 
   let count = 0;
   for (const block of blocks) {
-    if (block.type === 'image' || block.type === 'gallery') {
-      count += block.type === 'gallery' ? (block.images?.length || 1) : 1;
+    if (block.type === "image" || block.type === "gallery") {
+      count += block.type === "gallery" ? block.images?.length || 1 : 1;
     }
     if (Array.isArray(block.blocks)) {
       count += countImages(block.blocks);
@@ -141,15 +141,15 @@ function countLinks(blocks: any[], internal: boolean): number {
   const pattern = internal ? /href=["']\/[^"']+["']/ : /href=["']https?:\/\/[^"']+["']/;
 
   for (const block of blocks) {
-    if (block.type === 'text' || block.type === 'paragraph') {
-      const content = block.content || block.text || '';
-      const matches = content.match(new RegExp(pattern, 'g'));
+    if (block.type === "text" || block.type === "paragraph") {
+      const content = block.content || block.text || "";
+      const matches = content.match(new RegExp(pattern, "g"));
       count += matches ? matches.length : 0;
     }
-    if (block.type === 'link') {
-      const href = block.href || block.url || '';
-      if (internal && href.startsWith('/')) count++;
-      if (!internal && href.startsWith('http')) count++;
+    if (block.type === "link") {
+      const href = block.href || block.url || "";
+      if (internal && href.startsWith("/")) count++;
+      if (!internal && href.startsWith("http")) count++;
     }
     if (Array.isArray(block.blocks)) {
       count += countLinks(block.blocks, internal);
@@ -164,8 +164,8 @@ function calculateAvgParagraphLength(blocks: any[]): number {
   const paragraphs: number[] = [];
 
   for (const block of blocks) {
-    if (block.type === 'text' || block.type === 'paragraph') {
-      const content = block.content || block.text || '';
+    if (block.type === "text" || block.type === "paragraph") {
+      const content = block.content || block.text || "";
       if (content.length > 0) {
         paragraphs.push(content.length);
       }
@@ -187,7 +187,10 @@ function calculateAvgParagraphLength(blocks: any[]): number {
 /**
  * Get normalized content by ID
  */
-export async function getContent(contentId: string, bypassCache = false): Promise<NormalizedContent | null> {
+export async function getContent(
+  contentId: string,
+  bypassCache = false
+): Promise<NormalizedContent | null> {
   // Check cache
   if (!bypassCache && isCacheValid(contentId)) {
     return cache.data.get(contentId) || null;
@@ -216,7 +219,7 @@ export async function getContent(contentId: string, bypassCache = false): Promis
  */
 export async function getAllPublishedContent(bypassCache = false): Promise<NormalizedContent[]> {
   const allContent = await db.query.contents.findMany({
-    where: eq(contents.status, 'published'),
+    where: eq(contents.status, "published"),
   });
 
   return allContent.map(c => normalizeContent(c));
@@ -253,10 +256,10 @@ export function normalizeContent(content: any): NormalizedContent {
 
   return {
     id: content.id,
-    type: content.type || 'article',
-    status: content.status || 'draft',
-    title: content.title || '',
-    slug: content.slug || '',
+    type: content.type || "article",
+    status: content.status || "draft",
+    title: content.title || "",
+    slug: content.slug || "",
     metaTitle: content.metaTitle || null,
     metaDescription: content.metaDescription || null,
     primaryKeyword: content.primaryKeyword || null,
@@ -310,5 +313,3 @@ export function getCacheStats(): { size: number; maxSize: number; lastUpdated: D
     lastUpdated: cache.lastUpdated,
   };
 }
-
-console.log('[SEO Engine] Content adapter loaded');

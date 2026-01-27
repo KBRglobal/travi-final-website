@@ -43,9 +43,9 @@ export function FaqAccordionRenderer({ id, props, onUpdate }: FaqAccordionRender
                 componentId={id}
                 fieldName="title"
                 value={title || ""}
-                onChange={(value) => onUpdate({ ...props, title: value })}
+                onChange={value => onUpdate({ ...props, title: value })}
                 className="text-3xl font-bold"
-                placeholder="שאלות נפוצות"
+                placeholder="Frequently Asked Questions"
                 as="h2"
               />
             ) : (
@@ -63,8 +63,8 @@ export function FaqAccordionRenderer({ id, props, onUpdate }: FaqAccordionRender
                     componentId={id}
                     fieldName={`items.${index}.question`}
                     value={item.question}
-                    onChange={(value) => updateItem(index, { question: value })}
-                    placeholder="שאלה"
+                    onChange={value => updateItem(index, { question: value })}
+                    placeholder="Question"
                     as="span"
                   />
                 ) : (
@@ -77,9 +77,9 @@ export function FaqAccordionRenderer({ id, props, onUpdate }: FaqAccordionRender
                     componentId={id}
                     fieldName={`items.${index}.answer`}
                     value={item.answer}
-                    onChange={(value) => updateItem(index, { answer: value })}
+                    onChange={value => updateItem(index, { answer: value })}
                     multiline
-                    placeholder="תשובה"
+                    placeholder="Answer"
                     as="p"
                   />
                 ) : (

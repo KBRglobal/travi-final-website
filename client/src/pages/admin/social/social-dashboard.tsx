@@ -6,19 +6,32 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Share2, 
-  Calendar, 
-  BarChart3, 
-  PlusCircle, 
-  Linkedin, 
-  Twitter, 
-  Instagram, 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Share2,
+  Calendar,
+  BarChart3,
+  PlusCircle,
+  Linkedin,
+  Twitter,
+  Instagram,
   Facebook,
   Clock,
   CheckCircle2,
@@ -28,7 +41,7 @@ import {
   Users,
   Eye,
   MousePointer,
-  Lightbulb
+  Lightbulb,
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -156,15 +169,13 @@ export default function SocialDashboardPage() {
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            How It Works / איך זה עובד
+            How It Works
           </h3>
           <p className="text-sm text-muted-foreground">
-            Create <strong>campaigns</strong> to organize your social contents, then schedule <strong>posts</strong> 
-            to LinkedIn, Twitter, Facebook, and Instagram. Track engagement and performance analytics.
-            <br />
-            <span className="text-xs opacity-70" dir="rtl">
-              (צור קמפיינים לארגון תוכן הרשתות החברתיות, תזמן פוסטים ועקוב אחרי ביצועים.)
-            </span>
+            Create <strong>campaigns</strong> to organize your social content, then schedule{" "}
+            <strong>posts</strong>
+            to LinkedIn, Twitter, Facebook, and Instagram. Track engagement and performance
+            analytics.
           </p>
         </div>
       </div>
@@ -262,8 +273,8 @@ export default function SocialDashboardPage() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label>Platform</Label>
-                  <Select 
-                    value={newPost.platform} 
+                  <Select
+                    value={newPost.platform}
                     onValueChange={(v: any) => setNewPost({ ...newPost, platform: v })}
                   >
                     <SelectTrigger data-testid="select-platform">
@@ -279,20 +290,20 @@ export default function SocialDashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Content (English)</Label>
-                  <Textarea 
+                  <Textarea
                     placeholder="Write your post contents..."
                     value={newPost.text}
-                    onChange={(e) => setNewPost({ ...newPost, text: e.target.value })}
+                    onChange={e => setNewPost({ ...newPost, text: e.target.value })}
                     rows={4}
                     data-testid="input-post-text"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Content (Hebrew) - Optional</Label>
-                  <Textarea 
-                    placeholder="תוכן הפוסט בעברית..."
+                  <Textarea
+                    placeholder="Write your post content in Hebrew..."
                     value={newPost.textHe}
-                    onChange={(e) => setNewPost({ ...newPost, textHe: e.target.value })}
+                    onChange={e => setNewPost({ ...newPost, textHe: e.target.value })}
                     rows={3}
                     dir="rtl"
                     data-testid="input-post-text-he"
@@ -300,22 +311,20 @@ export default function SocialDashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Schedule (Optional)</Label>
-                  <Input 
+                  <Input
                     type="datetime-local"
                     value={newPost.scheduledAt}
-                    onChange={(e) => setNewPost({ ...newPost, scheduledAt: e.target.value })}
+                    onChange={e => setNewPost({ ...newPost, scheduledAt: e.target.value })}
                     data-testid="input-scheduled-at"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Leave empty to save as draft
-                  </p>
+                  <p className="text-xs text-muted-foreground">Leave empty to save as draft</p>
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsCreatePostOpen(false)}>
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={() => createPostMutation.mutate(newPost)}
                   disabled={!newPost.text || createPostMutation.isPending}
                   data-testid="button-submit-post"
@@ -343,11 +352,11 @@ export default function SocialDashboardPage() {
               ) : posts && posts.length > 0 ? (
                 <ScrollArea className="h-[400px]">
                   <div className="space-y-3">
-                    {posts.map((post) => {
+                    {posts.map(post => {
                       const PlatformIcon = platformIcons[post.platform];
                       return (
-                        <div 
-                          key={post.id} 
+                        <div
+                          key={post.id}
                           className="p-4 border rounded-lg flex items-start gap-4"
                           data-testid={`post-item-${post.id}`}
                         >
@@ -356,14 +365,11 @@ export default function SocialDashboardPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge className={statusColors[post.status]}>
-                                {post.status}
-                              </Badge>
+                              <Badge className={statusColors[post.status]}>{post.status}</Badge>
                               <span className="text-xs text-muted-foreground">
-                                {post.scheduledAt 
+                                {post.scheduledAt
                                   ? `Scheduled: ${new Date(post.scheduledAt).toLocaleDateString()}`
-                                  : `Created: ${new Date(post.createdAt).toLocaleDateString()}`
-                                }
+                                  : `Created: ${new Date(post.createdAt).toLocaleDateString()}`}
                               </span>
                             </div>
                             <p className="text-sm truncate">{post.text}</p>
@@ -396,9 +402,9 @@ export default function SocialDashboardPage() {
             <CardContent>
               {campaigns && campaigns.length > 0 ? (
                 <div className="space-y-3">
-                  {campaigns.map((campaign) => (
-                    <div 
-                      key={campaign.id} 
+                  {campaigns.map(campaign => (
+                    <div
+                      key={campaign.id}
                       className="p-4 border rounded-lg"
                       data-testid={`campaign-item-${campaign.id}`}
                     >
@@ -413,9 +419,11 @@ export default function SocialDashboardPage() {
                       </div>
                       {campaign.targetPlatforms && campaign.targetPlatforms.length > 0 && (
                         <div className="flex gap-2 mt-2">
-                          {campaign.targetPlatforms.map((p) => {
+                          {campaign.targetPlatforms.map(p => {
                             const Icon = platformIcons[p as keyof typeof platformIcons];
-                            return Icon ? <Icon key={p} className="h-4 w-4 text-muted-foreground" /> : null;
+                            return Icon ? (
+                              <Icon key={p} className="h-4 w-4 text-muted-foreground" />
+                            ) : null;
                           })}
                         </div>
                       )}

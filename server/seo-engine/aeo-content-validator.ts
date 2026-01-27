@@ -10,10 +10,10 @@
  * - Source attribution standards
  */
 
-import { db } from '../db';
-import { contents } from '../../shared/schema';
-import { eq } from 'drizzle-orm';
-import { PageClassifier, PageClassification } from './page-classifier';
+import { db } from "../db";
+import { contents } from "../../shared/schema";
+import { eq } from "drizzle-orm";
+import { PageClassifier, PageClassification } from "./page-classifier";
 
 export interface AEOValidationResult {
   contentId: string;
@@ -35,14 +35,17 @@ export interface AEOCheck {
 }
 
 // AEO requirements by page classification
-const AEO_REQUIREMENTS: Record<PageClassification, {
-  minAeoScore: number;
-  answerCapsuleRequired: boolean;
-  tldrRequired: boolean;
-  minFaqCount: number;
-  speakableRequired: boolean;
-  questionHeadingsMin: number;
-}> = {
+const AEO_REQUIREMENTS: Record<
+  PageClassification,
+  {
+    minAeoScore: number;
+    answerCapsuleRequired: boolean;
+    tldrRequired: boolean;
+    minFaqCount: number;
+    speakableRequired: boolean;
+    questionHeadingsMin: number;
+  }
+> = {
   MONEY_PAGE: {
     minAeoScore: 50,
     answerCapsuleRequired: true,
@@ -132,70 +135,74 @@ export class AEOContentValidator {
     const answerCapsuleCheck = this.checkAnswerCapsule(content, requirements.answerCapsuleRequired);
     checks.push(answerCapsuleCheck);
     if (!answerCapsuleCheck.passed && answerCapsuleCheck.required) {
-      blockingIssues.push('Missing or invalid answer capsule');
+      blockingIssues.push("Missing or invalid answer capsule");
     }
 
     // 2. TL;DR Block Check
     const tldrCheck = this.checkTLDR(content, requirements.tldrRequired);
     checks.push(tldrCheck);
     if (!tldrCheck.passed && tldrCheck.required) {
-      blockingIssues.push('Missing TL;DR block');
+      blockingIssues.push("Missing TL;DR block");
     }
 
     // 3. FAQ Schema Check
     const faqCheck = this.checkFAQSchema(content, requirements.minFaqCount);
     checks.push(faqCheck);
     if (!faqCheck.passed && requirements.minFaqCount > 0) {
-      blockingIssues.push(`Insufficient FAQs (need ${requirements.minFaqCount}, have ${(content as any).faqCount || 0})`);
+      blockingIssues.push(
+        `Insufficient FAQs (need ${requirements.minFaqCount}, have ${(content as any).faqCount || 0})`
+      );
     }
 
     // 4. Speakable Content Check
     const speakableCheck = this.checkSpeakableContent(content, requirements.speakableRequired);
     checks.push(speakableCheck);
     if (!speakableCheck.passed && speakableCheck.required) {
-      blockingIssues.push('Missing speakable content markup');
+      blockingIssues.push("Missing speakable content markup");
     }
 
     // 5. Question Headings Check
     const headingsCheck = this.checkQuestionHeadings(content, requirements.questionHeadingsMin);
     checks.push(headingsCheck);
     if (!headingsCheck.passed) {
-      recommendations.push(`Add more question-based H2 headings (need ${requirements.questionHeadingsMin})`);
+      recommendations.push(
+        `Add more question-based H2 headings (need ${requirements.questionHeadingsMin})`
+      );
     }
 
     // 6. Definition Opening Check
     const definitionCheck = this.checkDefinitionOpening(content);
     checks.push(definitionCheck);
-    if (!definitionCheck.passed && classification.classification === 'INFORMATIONAL') {
-      recommendations.push('First paragraph should define the topic');
+    if (!definitionCheck.passed && classification.classification === "INFORMATIONAL") {
+      recommendations.push("First paragraph should define the topic");
     }
 
     // 7. Confidence Score Check
     const confidenceCheck = this.checkConfidenceScore(content);
     checks.push(confidenceCheck);
     if (!confidenceCheck.passed) {
-      recommendations.push('Improve content confidence with verified sources');
+      recommendations.push("Improve content confidence with verified sources");
     }
 
     // 8. Citation Readiness Check
     const citationCheck = this.checkCitationReadiness(content);
     checks.push(citationCheck);
     if (!citationCheck.passed) {
-      recommendations.push('Add source attributions for statistics and claims');
+      recommendations.push("Add source attributions for statistics and claims");
     }
 
     // 9. Word Count Check
     const wordCountCheck = this.checkWordCount(content);
     checks.push(wordCountCheck);
     if (!wordCountCheck.passed) {
-      blockingIssues.push('Content too thin for AEO indexing (< 500 words)');
+      blockingIssues.push("Content too thin for AEO indexing (< 500 words)");
     }
 
     // 10. AI-Friendly Format Check
     const formatCheck = this.checkAIFriendlyFormat(content);
     checks.push(formatCheck);
     if (!formatCheck.passed) {
-      recommendations.push('Improve content structure with shorter paragraphs and bullet points');
+      recommendations.push("Improve content structure with shorter paragraphs and bullet points");
     }
 
     // Calculate total AEO score
@@ -205,7 +212,10 @@ export class AEOContentValidator {
 
     // Determine if valid and AI-indexable
     const isValid = blockingIssues.length === 0 && aeoScore >= requirements.minAeoScore;
-    const aiIndexEligible = isValid && classification.classification !== 'SEO_RISK' && classification.classification !== 'EXPERIMENTAL';
+    const aiIndexEligible =
+      isValid &&
+      classification.classification !== "SEO_RISK" &&
+      classification.classification !== "EXPERIMENTAL";
 
     return {
       contentId,
@@ -222,14 +232,14 @@ export class AEOContentValidator {
    * Check answer capsule presence and quality
    */
   private checkAnswerCapsule(content: any, required: boolean): AEOCheck {
-    const capsule = content.answerCapsule || '';
+    const capsule = content.answerCapsule || "";
     const wordCount = capsule.split(/\s+/).filter((w: string) => w.length > 0).length;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (!capsule) {
-      details = 'No answer capsule present';
+      details = "No answer capsule present";
     } else if (wordCount < 40) {
       score = 5;
       details = `Answer capsule too short (${wordCount} words, need 40-60)`;
@@ -242,7 +252,7 @@ export class AEOContentValidator {
     }
 
     return {
-      name: 'Answer Capsule',
+      name: "Answer Capsule",
       passed: score >= 7,
       required,
       score,
@@ -255,14 +265,16 @@ export class AEOContentValidator {
    * Check TL;DR block
    */
   private checkTLDR(content: any, required: boolean): AEOCheck {
-    const tldr = content.tldrBlock || content.tldr || '';
-    const items = (tldr.match(/<li>/gi) || []).length || (tldr.split('\n').filter((l: string) => l.trim().startsWith('-')).length);
+    const tldr = content.tldrBlock || content.tldr || "";
+    const items =
+      (tldr.match(/<li>/gi) || []).length ||
+      tldr.split("\n").filter((l: string) => l.trim().startsWith("-")).length;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (!tldr) {
-      details = 'No TL;DR block present';
+      details = "No TL;DR block present";
     } else if (items < 5) {
       score = 5;
       details = `TL;DR has only ${items} items (need 5)`;
@@ -272,7 +284,7 @@ export class AEOContentValidator {
     }
 
     return {
-      name: 'TL;DR Block',
+      name: "TL;DR Block",
       passed: score >= 7,
       required,
       score,
@@ -286,13 +298,13 @@ export class AEOContentValidator {
    */
   private checkFAQSchema(content: any, minFaqCount: number): AEOCheck {
     const faqCount = content.faqCount || 0;
-    const hasFAQSchema = content.hasFAQSchema || content.schemaTypes?.includes('FAQPage');
+    const hasFAQSchema = content.hasFAQSchema || content.schemaTypes?.includes("FAQPage");
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (faqCount === 0) {
-      details = 'No FAQs present';
+      details = "No FAQs present";
     } else if (faqCount < minFaqCount) {
       score = Math.round((faqCount / minFaqCount) * 10);
       details = `Has ${faqCount} FAQs (need ${minFaqCount})`;
@@ -305,7 +317,7 @@ export class AEOContentValidator {
     }
 
     return {
-      name: 'FAQ Schema',
+      name: "FAQ Schema",
       passed: score >= 7,
       required: minFaqCount > 0,
       score,
@@ -322,10 +334,10 @@ export class AEOContentValidator {
     const speakableLength = content.speakableContentLength || 0;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (!hasSpeakable) {
-      details = 'No speakable content markup';
+      details = "No speakable content markup";
     } else if (speakableLength > 300) {
       score = 7;
       details = `Speakable content too long (${speakableLength} chars, max 300)`;
@@ -338,7 +350,7 @@ export class AEOContentValidator {
     }
 
     return {
-      name: 'Speakable Content',
+      name: "Speakable Content",
       passed: score >= 7,
       required,
       score,
@@ -352,22 +364,23 @@ export class AEOContentValidator {
    */
   private checkQuestionHeadings(content: any, minCount: number): AEOCheck {
     const headings = content.h2Headings || [];
-    const questionHeadings = headings.filter((h: string) =>
-      h.endsWith('?') ||
-      h.toLowerCase().startsWith('what') ||
-      h.toLowerCase().startsWith('how') ||
-      h.toLowerCase().startsWith('when') ||
-      h.toLowerCase().startsWith('where') ||
-      h.toLowerCase().startsWith('why') ||
-      h.toLowerCase().startsWith('who')
+    const questionHeadings = headings.filter(
+      (h: string) =>
+        h.endsWith("?") ||
+        h.toLowerCase().startsWith("what") ||
+        h.toLowerCase().startsWith("how") ||
+        h.toLowerCase().startsWith("when") ||
+        h.toLowerCase().startsWith("where") ||
+        h.toLowerCase().startsWith("why") ||
+        h.toLowerCase().startsWith("who")
     );
 
     const count = questionHeadings.length;
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (count === 0) {
-      details = 'No question-based H2 headings';
+      details = "No question-based H2 headings";
     } else if (count < minCount) {
       score = Math.round((count / minCount) * 10);
       details = `Has ${count} question headings (need ${minCount})`;
@@ -377,7 +390,7 @@ export class AEOContentValidator {
     }
 
     return {
-      name: 'Question Headings',
+      name: "Question Headings",
       passed: score >= 7,
       required: minCount > 0,
       score,
@@ -390,27 +403,29 @@ export class AEOContentValidator {
    * Check if first paragraph defines the topic
    */
   private checkDefinitionOpening(content: any): AEOCheck {
-    const firstParagraph = content.firstParagraph || content.excerpt || '';
+    const firstParagraph = content.firstParagraph || content.excerpt || "";
     const hasDefinition = /\b(is|are|refers to|means|defined as)\b/i.test(firstParagraph);
-    const hasTopicMention = firstParagraph.toLowerCase().includes((content.primaryKeyword || '').toLowerCase());
+    const hasTopicMention = firstParagraph
+      .toLowerCase()
+      .includes((content.primaryKeyword || "").toLowerCase());
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (!firstParagraph) {
-      details = 'No opening paragraph found';
+      details = "No opening paragraph found";
     } else if (hasDefinition && hasTopicMention) {
       score = 10;
-      details = 'Good definition opening with topic mention';
+      details = "Good definition opening with topic mention";
     } else if (hasDefinition || hasTopicMention) {
       score = 6;
-      details = 'Partial definition opening';
+      details = "Partial definition opening";
     } else {
-      details = 'Opening paragraph does not define the topic';
+      details = "Opening paragraph does not define the topic";
     }
 
     return {
-      name: 'Definition Opening',
+      name: "Definition Opening",
       passed: score >= 6,
       required: false,
       score,
@@ -426,23 +441,23 @@ export class AEOContentValidator {
     const confidence = content.confidenceScore || 0;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (confidence >= 90) {
       score = 10;
-      details = 'VERIFIED - All facts from authoritative sources';
+      details = "VERIFIED - All facts from authoritative sources";
     } else if (confidence >= 70) {
       score = 8;
-      details = 'HIGH confidence - Generally accurate';
+      details = "HIGH confidence - Generally accurate";
     } else if (confidence >= 50) {
       score = 5;
-      details = 'MEDIUM confidence - Some unverified claims';
+      details = "MEDIUM confidence - Some unverified claims";
     } else {
       details = `LOW confidence (${confidence}) - Significant uncertainty`;
     }
 
     return {
-      name: 'Confidence Score',
+      name: "Confidence Score",
       passed: score >= 7,
       required: false,
       score,
@@ -459,23 +474,23 @@ export class AEOContentValidator {
     const citationCount = content.citationCount || 0;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (citationCount >= 3) {
       score = 10;
       details = `Good citation coverage (${citationCount} sources)`;
     } else if (citationCount >= 1) {
       score = 6;
-      details = `Limited citations (${citationCount} source${citationCount > 1 ? 's' : ''})`;
+      details = `Limited citations (${citationCount} source${citationCount > 1 ? "s" : ""})`;
     } else if (hasCitations) {
       score = 4;
-      details = 'Has attribution but no formal citations';
+      details = "Has attribution but no formal citations";
     } else {
-      details = 'No source attributions';
+      details = "No source attributions";
     }
 
     return {
-      name: 'Citation Readiness',
+      name: "Citation Readiness",
       passed: score >= 6,
       required: false,
       score,
@@ -491,7 +506,7 @@ export class AEOContentValidator {
     const wordCount = content.wordCount || 0;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     if (wordCount >= 1500) {
       score = 10;
@@ -507,7 +522,7 @@ export class AEOContentValidator {
     }
 
     return {
-      name: 'Word Count',
+      name: "Word Count",
       passed: wordCount >= 500,
       required: true,
       score,
@@ -526,7 +541,7 @@ export class AEOContentValidator {
     const hasTables = content.tableCount > 0;
 
     let score = 0;
-    let details = '';
+    let details = "";
 
     // Short paragraphs are AI-friendly
     if (avgParagraphLength <= 100) {
@@ -546,15 +561,15 @@ export class AEOContentValidator {
     }
 
     if (score >= 7) {
-      details = 'Good AI-friendly formatting';
+      details = "Good AI-friendly formatting";
     } else if (score >= 4) {
-      details = 'Partial AI-friendly formatting';
+      details = "Partial AI-friendly formatting";
     } else {
-      details = 'Content needs better structure for AI extraction';
+      details = "Content needs better structure for AI extraction";
     }
 
     return {
-      name: 'AI-Friendly Format',
+      name: "AI-Friendly Format",
       passed: score >= 5,
       required: false,
       score,
@@ -568,7 +583,7 @@ export class AEOContentValidator {
    */
   async validateAllContent(): Promise<AEOValidationResult[]> {
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     const results: AEOValidationResult[] = [];
@@ -577,9 +592,7 @@ export class AEOContentValidator {
       try {
         const result = await this.validateContent(content.id);
         results.push(result);
-      } catch (error) {
-        console.error(`Failed to validate content ${content.id}:`, error);
-      }
+      } catch (error) {}
     }
 
     return results;
@@ -588,15 +601,22 @@ export class AEOContentValidator {
   /**
    * Get content needing AEO enhancement
    */
-  async getContentNeedingEnhancement(): Promise<{ contentId: string; issues: string[]; priority: 'HIGH' | 'MEDIUM' | 'LOW' }[]> {
+  async getContentNeedingEnhancement(): Promise<
+    { contentId: string; issues: string[]; priority: "HIGH" | "MEDIUM" | "LOW" }[]
+  > {
     const results = await this.validateAllContent();
 
     return results
-      .filter((r) => !r.isValid || r.recommendations.length > 0)
-      .map((r) => ({
+      .filter(r => !r.isValid || r.recommendations.length > 0)
+      .map(r => ({
         contentId: r.contentId,
         issues: [...r.blockingIssues, ...r.recommendations],
-        priority: r.blockingIssues.length > 0 ? 'HIGH' as const : r.aeoScore < 50 ? 'MEDIUM' as const : 'LOW' as const,
+        priority:
+          r.blockingIssues.length > 0
+            ? ("HIGH" as const)
+            : r.aeoScore < 50
+              ? ("MEDIUM" as const)
+              : ("LOW" as const),
       }))
       .sort((a, b) => {
         const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };

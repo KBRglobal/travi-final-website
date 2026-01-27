@@ -20,7 +20,7 @@ import { eq, and, sql, gte, count, isNull } from "drizzle-orm";
 
 // Feature flag check
 export function isIntelligenceEnabled(): boolean {
-  return process.env.ENABLE_INTELLIGENCE_COVERAGE === 'true';
+  return process.env.ENABLE_INTELLIGENCE_COVERAGE === "true";
 }
 
 /**
@@ -31,8 +31,8 @@ export interface ContentStateSnapshot {
   published: number;
   draft: number;
   failed: number;
-  withoutEntities: number;  // contents without answer_capsule (proxy for entities)
-  notIndexed: number;       // published but not in search_index
+  withoutEntities: number; // contents without answer_capsule (proxy for entities)
+  notIndexed: number; // published but not in search_index
   withoutAeoCapsule: number;
 }
 
@@ -50,33 +50,35 @@ async function getContentState(): Promise<ContentStateSnapshot> {
 
     const statusMap = new Map(statusCounts.map(s => [s.status, Number(s.count)]));
     const total = Array.from(statusMap.values()).reduce((a, b) => a + b, 0);
-    const published = statusMap.get('published') || 0;
-    const draft = statusMap.get('draft') || 0;
+    const published = statusMap.get("published") || 0;
+    const draft = statusMap.get("draft") || 0;
 
     // Count contents without answer capsule (proxy for missing entities)
     const [withoutEntitiesResult] = await db
       .select({ count: count() })
       .from(contents)
-      .where(and(
-        isNull(contents.deletedAt),
-        eq(contents.status, 'published'),
-        isNull(contents.answerCapsule)
-      ));
+      .where(
+        and(
+          isNull(contents.deletedAt),
+          eq(contents.status, "published"),
+          isNull(contents.answerCapsule)
+        )
+      );
 
     // Count contents without AEO capsule
     const [withoutAeoResult] = await db
       .select({ count: count() })
       .from(contents)
-      .where(and(
-        isNull(contents.deletedAt),
-        eq(contents.status, 'published'),
-        isNull(contents.answerCapsule)
-      ));
+      .where(
+        and(
+          isNull(contents.deletedAt),
+          eq(contents.status, "published"),
+          isNull(contents.answerCapsule)
+        )
+      );
 
     // Count published content not in search index
-    const [indexedCount] = await db
-      .select({ count: count() })
-      .from(searchIndex);
+    const [indexedCount] = await db.select({ count: count() }).from(searchIndex);
 
     const notIndexed = Math.max(0, published - Number(indexedCount?.count || 0));
 
@@ -90,7 +92,6 @@ async function getContentState(): Promise<ContentStateSnapshot> {
       withoutAeoCapsule: Number(withoutAeoResult?.count || 0),
     };
   } catch (error) {
-    console.error('[Intelligence] Error getting content state:', error);
     return {
       total: 0,
       published: 0,
@@ -131,9 +132,9 @@ async function getAIActivity(): Promise<AIActivitySnapshot> {
     const jobsFailed: Record<string, number> = {};
 
     for (const job of jobCounts) {
-      if (job.status === 'completed') {
+      if (job.status === "completed") {
         jobsExecuted[job.type] = (jobsExecuted[job.type] || 0) + Number(job.count);
-      } else if (job.status === 'failed') {
+      } else if (job.status === "failed") {
         jobsFailed[job.type] = (jobsFailed[job.type] || 0) + Number(job.count);
       }
     }
@@ -144,23 +145,23 @@ async function getAIActivity(): Promise<AIActivitySnapshot> {
         type: backgroundJobs.type,
         avgDuration: sql<number>`
           AVG(EXTRACT(EPOCH FROM (${backgroundJobs.completedAt} - ${backgroundJobs.startedAt})))
-        `.as('avg_duration'),
+        `.as("avg_duration"),
       })
       .from(backgroundJobs)
-      .where(and(
-        gte(backgroundJobs.createdAt, oneDayAgo),
-        eq(backgroundJobs.status, 'completed'),
-        sql`${backgroundJobs.completedAt} IS NOT NULL`,
-        sql`${backgroundJobs.startedAt} IS NOT NULL`
-      ))
+      .where(
+        and(
+          gte(backgroundJobs.createdAt, oneDayAgo),
+          eq(backgroundJobs.status, "completed"),
+          sql`${backgroundJobs.completedAt} IS NOT NULL`,
+          sql`${backgroundJobs.startedAt} IS NOT NULL`
+        )
+      )
       .groupBy(backgroundJobs.type);
 
     const avgDurationByType: Record<string, string> = {};
     for (const result of durationResults) {
       const seconds = Number(result.avgDuration) || 0;
-      avgDurationByType[result.type] = seconds > 0
-        ? `${seconds.toFixed(1)}s`
-        : 'unknown';
+      avgDurationByType[result.type] = seconds > 0 ? `${seconds.toFixed(1)}s` : "unknown";
     }
 
     return {
@@ -169,7 +170,6 @@ async function getAIActivity(): Promise<AIActivitySnapshot> {
       avgDurationByType,
     };
   } catch (error) {
-    console.error('[Intelligence] Error getting AI activity:', error);
     return {
       jobsExecuted: {},
       jobsFailed: {},
@@ -192,18 +192,13 @@ async function getSearchHealth(): Promise<SearchHealthSnapshot> {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     // Count indexed items
-    const [indexedResult] = await db
-      .select({ count: count() })
-      .from(searchIndex);
+    const [indexedResult] = await db.select({ count: count() }).from(searchIndex);
 
     // Count zero-result searches in last 24h
     const [zeroResultsResult] = await db
       .select({ count: count() })
       .from(searchQueries)
-      .where(and(
-        gte(searchQueries.createdAt, oneDayAgo),
-        eq(searchQueries.resultsCount, 0)
-      ));
+      .where(and(gte(searchQueries.createdAt, oneDayAgo), eq(searchQueries.resultsCount, 0)));
 
     // Total searches in last 24h for fallback rate
     const [totalSearchesResult] = await db
@@ -213,9 +208,8 @@ async function getSearchHealth(): Promise<SearchHealthSnapshot> {
 
     const totalSearches = Number(totalSearchesResult?.count || 0);
     const zeroResults = Number(zeroResultsResult?.count || 0);
-    const fallbackRate = totalSearches > 0
-      ? ((zeroResults / totalSearches) * 100).toFixed(1)
-      : '0.0';
+    const fallbackRate =
+      totalSearches > 0 ? ((zeroResults / totalSearches) * 100).toFixed(1) : "0.0";
 
     return {
       indexedCount: Number(indexedResult?.count || 0),
@@ -223,11 +217,10 @@ async function getSearchHealth(): Promise<SearchHealthSnapshot> {
       fallbackRatePercent: `${fallbackRate}%`,
     };
   } catch (error) {
-    console.error('[Intelligence] Error getting search health:', error);
     return {
       indexedCount: 0,
       zeroResultSearches24h: 0,
-      fallbackRatePercent: 'unknown',
+      fallbackRatePercent: "unknown",
     };
   }
 }
@@ -246,9 +239,7 @@ export interface RSSHealthSnapshot {
 async function getRSSHealth(): Promise<RSSHealthSnapshot> {
   try {
     // Count RSS feeds
-    const [feedsResult] = await db
-      .select({ count: count() })
-      .from(rssFeeds);
+    const [feedsResult] = await db.select({ count: count() }).from(rssFeeds);
 
     // Count active feeds (those with lastFetched in last 24h)
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -260,18 +251,17 @@ async function getRSSHealth(): Promise<RSSHealthSnapshot> {
     return {
       feedsCount: Number(feedsResult?.count || 0),
       activeFeedsCount: Number(activeFeedsResult?.count || 0),
-      itemsIngested: 'unknown', // Would need RSS items table
-      itemsWithoutEntities: 'unknown',
-      failures: 'unknown',
+      itemsIngested: "unknown", // Would need RSS items table
+      itemsWithoutEntities: "unknown",
+      failures: "unknown",
     };
   } catch (error) {
-    console.error('[Intelligence] Error getting RSS health:', error);
     return {
       feedsCount: 0,
       activeFeedsCount: 0,
-      itemsIngested: 'unknown',
-      itemsWithoutEntities: 'unknown',
-      failures: 'unknown',
+      itemsIngested: "unknown",
+      itemsWithoutEntities: "unknown",
+      failures: "unknown",
     };
   }
 }
@@ -294,24 +284,23 @@ async function getSystemWarnings(): Promise<SystemWarningsSnapshot> {
     const [stalledResult] = await db
       .select({ count: count() })
       .from(backgroundJobs)
-      .where(and(
-        eq(backgroundJobs.status, 'processing'),
-        sql`${backgroundJobs.startedAt} < ${oneHourAgo}`
-      ));
+      .where(
+        and(
+          eq(backgroundJobs.status, "processing"),
+          sql`${backgroundJobs.startedAt} < ${oneHourAgo}`
+        )
+      );
 
     // Count jobs with retries
     const [retryingResult] = await db
       .select({ count: count() })
       .from(backgroundJobs)
-      .where(and(
-        eq(backgroundJobs.status, 'pending'),
-        sql`${backgroundJobs.retries} > 0`
-      ));
+      .where(and(eq(backgroundJobs.status, "pending"), sql`${backgroundJobs.retries} > 0`));
 
     // Check feature flags
     const disabledFlags: string[] = [];
-    if (process.env.ENABLE_INTELLIGENCE_COVERAGE !== 'true') {
-      disabledFlags.push('ENABLE_INTELLIGENCE_COVERAGE');
+    if (process.env.ENABLE_INTELLIGENCE_COVERAGE !== "true") {
+      disabledFlags.push("ENABLE_INTELLIGENCE_COVERAGE");
     }
 
     return {
@@ -321,7 +310,6 @@ async function getSystemWarnings(): Promise<SystemWarningsSnapshot> {
       disabledFeatureFlags: disabledFlags,
     };
   } catch (error) {
-    console.error('[Intelligence] Error getting system warnings:', error);
     return {
       stalledJobs: 0,
       retryingJobs: 0,
@@ -349,7 +337,9 @@ export interface ContentCoverageMetrics {
 /**
  * Evaluate coverage for a single content item
  */
-export async function evaluateContentCoverage(contentId: string): Promise<ContentCoverageMetrics | null> {
+export async function evaluateContentCoverage(
+  contentId: string
+): Promise<ContentCoverageMetrics | null> {
   if (!isIntelligenceEnabled()) {
     return null;
   }
@@ -407,7 +397,6 @@ export async function evaluateContentCoverage(contentId: string): Promise<Conten
       coverageScore: Math.min(100, score),
     };
   } catch (error) {
-    console.error('[Intelligence] Error evaluating coverage:', error);
     return null;
   }
 }
@@ -428,10 +417,7 @@ export async function evaluateAllContentCoverage(
     let query = db
       .select({ id: contents.id })
       .from(contents)
-      .where(and(
-        isNull(contents.deletedAt),
-        eq(contents.status, 'published')
-      ))
+      .where(and(isNull(contents.deletedAt), eq(contents.status, "published")))
       .orderBy(contents.id)
       .limit(batchSize + 1);
 
@@ -439,11 +425,13 @@ export async function evaluateAllContentCoverage(
       query = db
         .select({ id: contents.id })
         .from(contents)
-        .where(and(
-          isNull(contents.deletedAt),
-          eq(contents.status, 'published'),
-          sql`${contents.id} > ${cursor}`
-        ))
+        .where(
+          and(
+            isNull(contents.deletedAt),
+            eq(contents.status, "published"),
+            sql`${contents.id} > ${cursor}`
+          )
+        )
         .orderBy(contents.id)
         .limit(batchSize + 1);
     }
@@ -465,7 +453,6 @@ export async function evaluateAllContentCoverage(
       nextCursor: hasMore ? idsToProcess[idsToProcess.length - 1].id : undefined,
     };
   } catch (error) {
-    console.error('[Intelligence] Error in batch evaluation:', error);
     return { results: [] };
   }
 }
@@ -491,7 +478,7 @@ export async function generateIntelligenceSnapshot(): Promise<IntelligenceSnapsh
   const timeoutMs = 5000;
 
   const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => reject(new Error('Snapshot generation timeout')), timeoutMs);
+    setTimeout(() => reject(new Error("Snapshot generation timeout")), timeoutMs);
   });
 
   try {
@@ -503,8 +490,10 @@ export async function generateIntelligenceSnapshot(): Promise<IntelligenceSnapsh
       getSystemWarnings(),
     ]);
 
-    const [content, aiActivity, searchHealth, rssHealth, systemWarnings] =
-      await Promise.race([snapshotPromise, timeoutPromise]);
+    const [content, aiActivity, searchHealth, rssHealth, systemWarnings] = await Promise.race([
+      snapshotPromise,
+      timeoutPromise,
+    ]);
 
     return {
       generatedAt: new Date().toISOString(),
@@ -516,8 +505,6 @@ export async function generateIntelligenceSnapshot(): Promise<IntelligenceSnapsh
       systemWarnings,
     };
   } catch (error) {
-    console.error('[Intelligence] Error generating snapshot:', error);
-
     // Return safe fallback on error
     return {
       generatedAt: new Date().toISOString(),
@@ -539,14 +526,14 @@ export async function generateIntelligenceSnapshot(): Promise<IntelligenceSnapsh
       searchHealth: {
         indexedCount: 0,
         zeroResultSearches24h: 0,
-        fallbackRatePercent: 'unknown',
+        fallbackRatePercent: "unknown",
       },
       rssHealth: {
         feedsCount: 0,
         activeFeedsCount: 0,
-        itemsIngested: 'unknown',
-        itemsWithoutEntities: 'unknown',
-        failures: 'unknown',
+        itemsIngested: "unknown",
+        itemsWithoutEntities: "unknown",
+        failures: "unknown",
       },
       systemWarnings: {
         stalledJobs: 0,

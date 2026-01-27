@@ -16,22 +16,18 @@ export function registerLinkOpportunityRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_LINK_OPPORTUNITIES" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_LINK_OPPORTUNITIES" });
       }
 
       try {
         const { limit } = req.query;
-        const result = await getLinkOpportunities(
-          req.params.id,
-          parseInt(limit as string) || 20
-        );
+        const result = await getLinkOpportunities(req.params.id, parseInt(limit as string) || 20);
         res.json(result);
       } catch (error) {
-        console.error("[LinkOpportunities] Error:", error);
         res.status(500).json({ error: "Failed to fetch link opportunities" });
       }
     }
   );
-
-  console.log("[LinkOpportunities] Routes registered");
 }

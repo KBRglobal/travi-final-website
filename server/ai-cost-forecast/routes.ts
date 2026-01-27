@@ -23,11 +23,8 @@ export function registerAiCostForecastRoutes(app: Express): void {
         const forecast = await getCostForecast();
         res.json(forecast);
       } catch (error) {
-        console.error("[AICostForecast] Error:", error);
         res.status(500).json({ error: "Failed to generate forecast" });
       }
     }
   );
-
-  console.log("[AICostForecast] Routes registered");
 }

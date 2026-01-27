@@ -15,21 +15,21 @@
  * - LOW: Monitor only
  */
 
-import { db } from '../db';
-import { contents, seoAuditLogs } from '../../shared/schema';
-import { eq, and, lt, gt, desc, sql, count } from 'drizzle-orm';
+import { db } from "../db";
+import { contents, seoAuditLogs } from "../../shared/schema";
+import { eq, and, lt, gt, desc, sql, count } from "drizzle-orm";
 
-export type RiskLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+export type RiskLevel = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 
 export type RiskType =
-  | 'INDEX_DROP'
-  | 'RANKING_LOSS'
-  | 'PENALTY_SIGNAL'
-  | 'CRAWL_ANOMALY'
-  | 'MANUAL_ACTION'
-  | 'TRAFFIC_DECLINE'
-  | 'SPAM_DETECTION'
-  | 'QUALITY_DECLINE';
+  | "INDEX_DROP"
+  | "RANKING_LOSS"
+  | "PENALTY_SIGNAL"
+  | "CRAWL_ANOMALY"
+  | "MANUAL_ACTION"
+  | "TRAFFIC_DECLINE"
+  | "SPAM_DETECTION"
+  | "QUALITY_DECLINE";
 
 export interface RiskAlert {
   id: string;
@@ -55,7 +55,7 @@ export interface RiskAlert {
 
 export interface RiskResponse {
   pausePublishing: boolean;
-  alertChannels: ('slack' | 'email' | 'sms')[];
+  alertChannels: ("slack" | "email" | "sms")[];
   requiresAcknowledgment: boolean;
   autoRollback: boolean;
   actions: string[];
@@ -65,39 +65,39 @@ export interface RiskResponse {
 const RISK_RESPONSES: Record<RiskLevel, RiskResponse> = {
   CRITICAL: {
     pausePublishing: true,
-    alertChannels: ['slack', 'email', 'sms'],
+    alertChannels: ["slack", "email", "sms"],
     requiresAcknowledgment: true,
     autoRollback: true,
-    actions: ['Halt all changes', 'Alert leadership', 'Begin investigation'],
+    actions: ["Halt all changes", "Alert leadership", "Begin investigation"],
   },
   HIGH: {
     pausePublishing: true,
-    alertChannels: ['slack', 'email'],
+    alertChannels: ["slack", "email"],
     requiresAcknowledgment: true,
     autoRollback: false,
-    actions: ['Pause publishing', 'Audit recent changes', 'Monitor closely'],
+    actions: ["Pause publishing", "Audit recent changes", "Monitor closely"],
   },
   MEDIUM: {
     pausePublishing: false,
-    alertChannels: ['slack'],
+    alertChannels: ["slack"],
     requiresAcknowledgment: false,
     autoRollback: false,
-    actions: ['Investigate', 'Log findings'],
+    actions: ["Investigate", "Log findings"],
   },
   LOW: {
     pausePublishing: false,
     alertChannels: [],
     requiresAcknowledgment: false,
     autoRollback: false,
-    actions: ['Monitor'],
+    actions: ["Monitor"],
   },
 };
 
 // Thresholds for detection
 const THRESHOLDS = {
   indexDrop: {
-    critical: 0.20, // 20% drop
-    high: 0.10, // 10% drop
+    critical: 0.2, // 20% drop
+    high: 0.1, // 10% drop
     medium: 0.05, // 5% drop
   },
   rankingLoss: {
@@ -106,14 +106,14 @@ const THRESHOLDS = {
     medium: 5, // 5+ positions
   },
   trafficDecline: {
-    critical: 0.40, // 40% drop
+    critical: 0.4, // 40% drop
     high: 0.25, // 25% drop
     medium: 0.15, // 15% drop
   },
   qualityDecline: {
-    critical: 0.30, // 30% score drop
-    high: 0.20, // 20% score drop
-    medium: 0.10, // 10% score drop
+    critical: 0.3, // 30% score drop
+    high: 0.2, // 20% score drop
+    medium: 0.1, // 10% score drop
   },
 };
 
@@ -177,10 +177,7 @@ export class RiskMonitor {
 
     // Get indexed content count
     const indexedContent = await db.query.contents.findMany({
-      where: and(
-        eq(contents.status, 'published'),
-        sql`noindex IS NULL OR noindex = false`
-      ),
+      where: and(eq(contents.status, "published"), sql`noindex IS NULL OR noindex = false`),
     });
 
     const currentIndexed = indexedContent.length;
@@ -189,26 +186,30 @@ export class RiskMonitor {
     // For now, simulate detection
     const previousIndexed = (indexedContent[0] as any)?.previousIndexedCount || currentIndexed;
     const change = currentIndexed - previousIndexed;
-    const changePercent = previousIndexed > 0 ? (change / previousIndexed) : 0;
+    const changePercent = previousIndexed > 0 ? change / previousIndexed : 0;
 
     if (changePercent < -THRESHOLDS.indexDrop.critical) {
-      alerts.push(this.createAlert(
-        'INDEX_DROP',
-        'CRITICAL',
-        'Critical Index Drop Detected',
-        `Indexed pages dropped by ${Math.abs(Math.round(changePercent * 100))}% (${Math.abs(change)} pages)`,
-        indexedContent.slice(0, 10).map((c) => c.id),
-        { current: currentIndexed, previous: previousIndexed, change, changePercent }
-      ));
+      alerts.push(
+        this.createAlert(
+          "INDEX_DROP",
+          "CRITICAL",
+          "Critical Index Drop Detected",
+          `Indexed pages dropped by ${Math.abs(Math.round(changePercent * 100))}% (${Math.abs(change)} pages)`,
+          indexedContent.slice(0, 10).map(c => c.id),
+          { current: currentIndexed, previous: previousIndexed, change, changePercent }
+        )
+      );
     } else if (changePercent < -THRESHOLDS.indexDrop.high) {
-      alerts.push(this.createAlert(
-        'INDEX_DROP',
-        'HIGH',
-        'Significant Index Drop',
-        `Indexed pages dropped by ${Math.abs(Math.round(changePercent * 100))}%`,
-        indexedContent.slice(0, 10).map((c) => c.id),
-        { current: currentIndexed, previous: previousIndexed, change, changePercent }
-      ));
+      alerts.push(
+        this.createAlert(
+          "INDEX_DROP",
+          "HIGH",
+          "Significant Index Drop",
+          `Indexed pages dropped by ${Math.abs(Math.round(changePercent * 100))}%`,
+          indexedContent.slice(0, 10).map(c => c.id),
+          { current: currentIndexed, previous: previousIndexed, change, changePercent }
+        )
+      );
     }
 
     return alerts;
@@ -221,7 +222,7 @@ export class RiskMonitor {
     const alerts: RiskAlert[] = [];
 
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     // Aggregate traffic
@@ -243,26 +244,30 @@ export class RiskMonitor {
     }
 
     const change = currentTraffic - previousTraffic;
-    const changePercent = previousTraffic > 0 ? (change / previousTraffic) : 0;
+    const changePercent = previousTraffic > 0 ? change / previousTraffic : 0;
 
     if (changePercent < -THRESHOLDS.trafficDecline.critical) {
-      alerts.push(this.createAlert(
-        'TRAFFIC_DECLINE',
-        'CRITICAL',
-        'Critical Traffic Decline',
-        `Overall traffic dropped by ${Math.abs(Math.round(changePercent * 100))}%`,
-        decliningContent.slice(0, 20),
-        { current: currentTraffic, previous: previousTraffic, change, changePercent }
-      ));
+      alerts.push(
+        this.createAlert(
+          "TRAFFIC_DECLINE",
+          "CRITICAL",
+          "Critical Traffic Decline",
+          `Overall traffic dropped by ${Math.abs(Math.round(changePercent * 100))}%`,
+          decliningContent.slice(0, 20),
+          { current: currentTraffic, previous: previousTraffic, change, changePercent }
+        )
+      );
     } else if (changePercent < -THRESHOLDS.trafficDecline.high) {
-      alerts.push(this.createAlert(
-        'TRAFFIC_DECLINE',
-        'HIGH',
-        'Significant Traffic Decline',
-        `Overall traffic dropped by ${Math.abs(Math.round(changePercent * 100))}%`,
-        decliningContent.slice(0, 10),
-        { current: currentTraffic, previous: previousTraffic, change, changePercent }
-      ));
+      alerts.push(
+        this.createAlert(
+          "TRAFFIC_DECLINE",
+          "HIGH",
+          "Significant Traffic Decline",
+          `Overall traffic dropped by ${Math.abs(Math.round(changePercent * 100))}%`,
+          decliningContent.slice(0, 10),
+          { current: currentTraffic, previous: previousTraffic, change, changePercent }
+        )
+      );
     }
 
     return alerts;
@@ -275,44 +280,53 @@ export class RiskMonitor {
     const alerts: RiskAlert[] = [];
 
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     // Calculate average SEO score
-    const scores = allContent.map((c) => (c as any).seoScore || 0).filter((s) => s > 0);
+    const scores = allContent.map(c => (c as any).seoScore || 0).filter(s => s > 0);
     const currentAvg = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
 
     // In production, compare to historical average
     const previousAvg = (allContent[0] as any)?.previousAvgSeoScore || currentAvg;
     const change = currentAvg - previousAvg;
-    const changePercent = previousAvg > 0 ? (change / previousAvg) : 0;
+    const changePercent = previousAvg > 0 ? change / previousAvg : 0;
 
     if (changePercent < -THRESHOLDS.qualityDecline.critical) {
-      alerts.push(this.createAlert(
-        'QUALITY_DECLINE',
-        'HIGH',
-        'Significant Quality Score Decline',
-        `Average SEO score dropped from ${Math.round(previousAvg)} to ${Math.round(currentAvg)}`,
-        [],
-        { current: currentAvg, previous: previousAvg, change, changePercent }
-      ));
+      alerts.push(
+        this.createAlert(
+          "QUALITY_DECLINE",
+          "HIGH",
+          "Significant Quality Score Decline",
+          `Average SEO score dropped from ${Math.round(previousAvg)} to ${Math.round(currentAvg)}`,
+          [],
+          { current: currentAvg, previous: previousAvg, change, changePercent }
+        )
+      );
     }
 
     // Check for individual pages with very low scores
-    const lowScoreContent = allContent.filter((c) => {
+    const lowScoreContent = allContent.filter(c => {
       const score = (c as any).seoScore || 0;
       return score > 0 && score < 40;
     });
 
     if (lowScoreContent.length > allContent.length * 0.1) {
-      alerts.push(this.createAlert(
-        'QUALITY_DECLINE',
-        'MEDIUM',
-        'Many Pages Below Quality Threshold',
-        `${lowScoreContent.length} pages (${Math.round((lowScoreContent.length / allContent.length) * 100)}%) have SEO scores below 40`,
-        lowScoreContent.slice(0, 20).map((c) => c.id),
-        { current: lowScoreContent.length, previous: 0, change: lowScoreContent.length, changePercent: 0 }
-      ));
+      alerts.push(
+        this.createAlert(
+          "QUALITY_DECLINE",
+          "MEDIUM",
+          "Many Pages Below Quality Threshold",
+          `${lowScoreContent.length} pages (${Math.round((lowScoreContent.length / allContent.length) * 100)}%) have SEO scores below 40`,
+          lowScoreContent.slice(0, 20).map(c => c.id),
+          {
+            current: lowScoreContent.length,
+            previous: 0,
+            change: lowScoreContent.length,
+            changePercent: 0,
+          }
+        )
+      );
     }
 
     return alerts;
@@ -325,33 +339,38 @@ export class RiskMonitor {
     const alerts: RiskAlert[] = [];
 
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     // Check for high spam scores
-    const spamContent = allContent.filter((c) => ((c as any).spamScore || 0) > 0.5);
+    const spamContent = allContent.filter(c => ((c as any).spamScore || 0) > 0.5);
 
     if (spamContent.length > 0) {
-      const avgSpamScore = spamContent.reduce((sum, c) => sum + ((c as any).spamScore || 0), 0) / spamContent.length;
+      const avgSpamScore =
+        spamContent.reduce((sum, c) => sum + ((c as any).spamScore || 0), 0) / spamContent.length;
 
       if (avgSpamScore > 0.7) {
-        alerts.push(this.createAlert(
-          'SPAM_DETECTION',
-          'CRITICAL',
-          'Spam Content Detected',
-          `${spamContent.length} pages flagged with high spam scores (avg: ${Math.round(avgSpamScore * 100)}%)`,
-          spamContent.map((c) => c.id),
-          { current: avgSpamScore, previous: 0, change: avgSpamScore, changePercent: 0 }
-        ));
+        alerts.push(
+          this.createAlert(
+            "SPAM_DETECTION",
+            "CRITICAL",
+            "Spam Content Detected",
+            `${spamContent.length} pages flagged with high spam scores (avg: ${Math.round(avgSpamScore * 100)}%)`,
+            spamContent.map(c => c.id),
+            { current: avgSpamScore, previous: 0, change: avgSpamScore, changePercent: 0 }
+          )
+        );
       } else if (avgSpamScore > 0.5) {
-        alerts.push(this.createAlert(
-          'SPAM_DETECTION',
-          'HIGH',
-          'Potential Spam Detected',
-          `${spamContent.length} pages have elevated spam scores`,
-          spamContent.map((c) => c.id),
-          { current: avgSpamScore, previous: 0, change: avgSpamScore, changePercent: 0 }
-        ));
+        alerts.push(
+          this.createAlert(
+            "SPAM_DETECTION",
+            "HIGH",
+            "Potential Spam Detected",
+            `${spamContent.length} pages have elevated spam scores`,
+            spamContent.map(c => c.id),
+            { current: avgSpamScore, previous: 0, change: avgSpamScore, changePercent: 0 }
+          )
+        );
       }
     }
 
@@ -393,7 +412,6 @@ export class RiskMonitor {
     // Pause publishing if required
     if (response.pausePublishing) {
       this.publishingPaused = true;
-      console.log(`[RISK] Publishing PAUSED due to ${alert.level} alert: ${alert.title}`);
     }
 
     // Send alerts
@@ -408,12 +426,8 @@ export class RiskMonitor {
   /**
    * Send alert to channel
    */
-  private async sendAlert(
-    channel: 'slack' | 'email' | 'sms',
-    alert: RiskAlert
-  ): Promise<void> {
+  private async sendAlert(channel: "slack" | "email" | "sms", alert: RiskAlert): Promise<void> {
     // In production, this would integrate with notification services
-    console.log(`[RISK] Alert sent to ${channel}: ${alert.level} - ${alert.title}`);
   }
 
   /**
@@ -422,18 +436,16 @@ export class RiskMonitor {
   private async logRiskEvent(alert: RiskAlert): Promise<void> {
     try {
       await db.insert(seoAuditLogs).values({
-        contentId: alert.affectedContentIds[0] || 'system',
+        contentId: alert.affectedContentIds[0] || "system",
         action: `RISK_${alert.type}`,
         reason: alert.description,
-        triggeredBy: 'automatic',
-        status: 'detected',
+        triggeredBy: "automatic",
+        status: "detected",
         priority: alert.level,
         data: JSON.stringify(alert.metrics),
         createdAt: new Date(),
       } as any);
-    } catch (error) {
-      console.error('[RISK] Failed to log risk event:', error);
-    }
+    } catch (error) {}
   }
 
   /**
@@ -450,7 +462,6 @@ export class RiskMonitor {
     // Resume publishing if this was the only blocking alert
     if (this.shouldResumePublishing()) {
       this.publishingPaused = false;
-      console.log('[RISK] Publishing RESUMED after alert acknowledgment');
     }
 
     return true;
@@ -469,7 +480,6 @@ export class RiskMonitor {
     // Resume publishing if this was the only blocking alert
     if (this.shouldResumePublishing()) {
       this.publishingPaused = false;
-      console.log('[RISK] Publishing RESUMED after alert resolution');
     }
 
     return true;
@@ -505,16 +515,16 @@ export class RiskMonitor {
     for (const [, alert] of this.alerts) {
       if (!alert.resolved) {
         switch (alert.level) {
-          case 'CRITICAL':
+          case "CRITICAL":
             critical++;
             break;
-          case 'HIGH':
+          case "HIGH":
             high++;
             break;
-          case 'MEDIUM':
+          case "MEDIUM":
             medium++;
             break;
-          case 'LOW':
+          case "LOW":
             low++;
             break;
         }
@@ -546,7 +556,7 @@ export class RiskMonitor {
    */
   getActiveAlerts(): RiskAlert[] {
     return Array.from(this.alerts.values())
-      .filter((a) => !a.resolved)
+      .filter(a => !a.resolved)
       .sort((a, b) => {
         const levelOrder = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
         return levelOrder[a.level] - levelOrder[b.level];
@@ -565,6 +575,5 @@ export class RiskMonitor {
    */
   forceResumePublishing(overrideBy: string): void {
     this.publishingPaused = false;
-    console.log(`[RISK] Publishing FORCE RESUMED by ${overrideBy}`);
   }
 }

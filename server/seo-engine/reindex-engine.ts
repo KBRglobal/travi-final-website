@@ -9,15 +9,10 @@
  * - Tracks re-index status
  */
 
-import { db } from '../db';
-import { contents } from '../../shared/schema';
-import { eq, and, gte, lte, desc } from 'drizzle-orm';
-import {
-  SEOEngineConfig,
-  ReindexTrigger,
-  ReindexReason,
-  ReindexStats,
-} from './types';
+import { db } from "../db";
+import { contents } from "../../shared/schema";
+import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { SEOEngineConfig, ReindexTrigger, ReindexReason, ReindexStats } from "./types";
 
 // In-memory queue for re-index requests
 const reindexQueue: ReindexTrigger[] = [];
@@ -69,7 +64,7 @@ export class ReindexEngine {
     if (content.publishedAt) {
       const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
       if (content.publishedAt >= hourAgo) {
-        return 'new_content';
+        return "new_content";
       }
     }
 
@@ -79,9 +74,9 @@ export class ReindexEngine {
       if (content.updatedAt >= dayAgo) {
         // Check if it's a significant update (schema or canonical changed)
         if (content.seoSchema) {
-          return 'schema_update';
+          return "schema_update";
         }
-        return 'content_update';
+        return "content_update";
       }
     }
 
@@ -89,7 +84,7 @@ export class ReindexEngine {
     if (content.updatedAt) {
       const sixMonthsAgo = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000);
       if (content.updatedAt < sixMonthsAgo) {
-        return 'stale_content';
+        return "stale_content";
       }
     }
 
@@ -102,12 +97,10 @@ export class ReindexEngine {
   queueReindex(
     contentId: string,
     reason: ReindexReason,
-    priority: 'immediate' | 'high' | 'normal' | 'low' = 'normal'
+    priority: "immediate" | "high" | "normal" | "low" = "normal"
   ): boolean {
     // Check if already queued
-    const existing = reindexQueue.find(
-      (r) => r.contentId === contentId && r.status === 'pending'
-    );
+    const existing = reindexQueue.find(r => r.contentId === contentId && r.status === "pending");
     if (existing) {
       // Upgrade priority if needed
       const priorityOrder = { immediate: 0, high: 1, normal: 2, low: 3 };
@@ -123,7 +116,7 @@ export class ReindexEngine {
       reason,
       priority,
       triggeredAt: new Date(),
-      status: 'pending',
+      status: "pending",
     };
 
     reindexQueue.push(trigger);
@@ -144,7 +137,7 @@ export class ReindexEngine {
     // Sort by priority
     const priorityOrder = { immediate: 0, high: 1, normal: 2, low: 3 };
     const pending = reindexQueue
-      .filter((r) => r.status === 'pending')
+      .filter(r => r.status === "pending")
       .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 
     const toProcess = pending.slice(0, maxItems);
@@ -153,25 +146,24 @@ export class ReindexEngine {
 
     for (const trigger of toProcess) {
       if (quotaUsed >= dailyQuota) {
-        console.log('[ReindexEngine] Daily quota exhausted');
         break;
       }
 
       try {
         const success = await this.submitToIndexingAPI(trigger);
         if (success) {
-          trigger.status = 'submitted';
+          trigger.status = "submitted";
           trigger.submittedAt = new Date();
           submitted++;
           quotaUsed++;
         } else {
-          trigger.status = 'failed';
-          trigger.error = 'API submission failed';
+          trigger.status = "failed";
+          trigger.error = "API submission failed";
           failed++;
         }
       } catch (error) {
-        trigger.status = 'failed';
-        trigger.error = error instanceof Error ? error.message : 'Unknown error';
+        trigger.status = "failed";
+        trigger.error = error instanceof Error ? error.message : "Unknown error";
         failed++;
       }
     }
@@ -200,8 +192,6 @@ export class ReindexEngine {
 
     // In production, this would call the actual Google Indexing API
     // For now, we'll simulate the call
-    console.log(`[ReindexEngine] Submitting URL for indexing: ${url}`);
-    console.log(`[ReindexEngine] Reason: ${trigger.reason}`);
 
     // Simulate API call
     // In production:
@@ -238,14 +228,14 @@ export class ReindexEngine {
    * Get re-index statistics
    */
   getStats(): ReindexStats {
-    const pending = reindexQueue.filter((r) => r.status === 'pending').length;
-    const submitted = reindexQueue.filter((r) => r.status === 'submitted').length;
-    const completed = reindexQueue.filter((r) => r.status === 'completed').length;
-    const failed = reindexQueue.filter((r) => r.status === 'failed').length;
+    const pending = reindexQueue.filter(r => r.status === "pending").length;
+    const submitted = reindexQueue.filter(r => r.status === "submitted").length;
+    const completed = reindexQueue.filter(r => r.status === "completed").length;
+    const failed = reindexQueue.filter(r => r.status === "failed").length;
 
     const lastSubmission = reindexQueue
-      .filter((r) => r.submittedAt)
-      .sort((a, b) => (b.submittedAt!.getTime() - a.submittedAt!.getTime()))[0];
+      .filter(r => r.submittedAt)
+      .sort((a, b) => b.submittedAt!.getTime() - a.submittedAt!.getTime())[0];
 
     return {
       pending,
@@ -262,7 +252,7 @@ export class ReindexEngine {
    * Get pending triggers
    */
   getPendingTriggers(): ReindexTrigger[] {
-    return reindexQueue.filter((r) => r.status === 'pending');
+    return reindexQueue.filter(r => r.status === "pending");
   }
 
   /**
@@ -270,9 +260,7 @@ export class ReindexEngine {
    */
   clearCompleted(): number {
     const initialLength = reindexQueue.length;
-    const toKeep = reindexQueue.filter(
-      (r) => r.status === 'pending' || r.status === 'submitted'
-    );
+    const toKeep = reindexQueue.filter(r => r.status === "pending" || r.status === "submitted");
 
     // Replace queue contents
     reindexQueue.length = 0;
@@ -284,15 +272,13 @@ export class ReindexEngine {
   /**
    * Manually trigger re-index for content
    */
-  async manualReindex(
-    contentId: string
-  ): Promise<{ success: boolean; message: string }> {
-    const queued = this.queueReindex(contentId, 'manual_request', 'high');
+  async manualReindex(contentId: string): Promise<{ success: boolean; message: string }> {
+    const queued = this.queueReindex(contentId, "manual_request", "high");
 
     if (!queued) {
       return {
         success: false,
-        message: 'Content already queued for re-indexing',
+        message: "Content already queued for re-indexing",
       };
     }
 
@@ -302,20 +288,20 @@ export class ReindexEngine {
     if (result.submitted > 0) {
       return {
         success: true,
-        message: 'Re-index request submitted successfully',
+        message: "Re-index request submitted successfully",
       };
     }
 
     if (result.quotaRemaining === 0) {
       return {
         success: false,
-        message: 'Daily quota exhausted, will retry tomorrow',
+        message: "Daily quota exhausted, will retry tomorrow",
       };
     }
 
     return {
       success: false,
-      message: 'Failed to submit re-index request',
+      message: "Failed to submit re-index request",
     };
   }
 
@@ -330,7 +316,7 @@ export class ReindexEngine {
     let skipped = 0;
 
     for (const contentId of contentIds) {
-      const success = this.queueReindex(contentId, 'bulk_update', 'normal');
+      const success = this.queueReindex(contentId, "bulk_update", "normal");
       if (success) {
         queued++;
       } else {
@@ -346,9 +332,9 @@ export class ReindexEngine {
    */
   wasRecentlyIndexed(contentId: string, withinHours: number = 24): boolean {
     const recent = reindexQueue.find(
-      (r) =>
+      r =>
         r.contentId === contentId &&
-        r.status === 'submitted' &&
+        r.status === "submitted" &&
         r.submittedAt &&
         Date.now() - r.submittedAt.getTime() < withinHours * 60 * 60 * 1000
     );

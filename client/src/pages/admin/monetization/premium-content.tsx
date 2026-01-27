@@ -39,7 +39,10 @@ export default function PremiumContentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3" data-testid="heading-premium-contents">
+        <h1
+          className="text-3xl font-bold flex items-center gap-3"
+          data-testid="heading-premium-contents"
+        >
           <Crown className="h-8 w-8 text-primary" />
           Premium Content
         </h1>
@@ -49,16 +52,12 @@ export default function PremiumContentPage() {
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            How It Works / איך זה עובד
+            How It Works
           </h3>
           <p className="text-sm text-muted-foreground">
-            Mark contents as <strong>premium</strong> to require payment before access. 
-            Set a preview percentage to show readers a teaser, then prompt them to purchase.
-            Supports one-time purchases and subscription tiers.
-            <br />
-            <span className="text-xs opacity-70">
-              (סמן תוכן כפרימיום כדי לדרוש תשלום. הגדר אחוז תצוגה מקדימה כדי להציג טעימה לפני הרכישה.)
-            </span>
+            Mark content as <strong>premium</strong> to require payment before access. Set a preview
+            percentage to show readers a teaser, then prompt them to purchase. Supports one-time
+            purchases and subscription tiers.
           </p>
         </div>
       </div>

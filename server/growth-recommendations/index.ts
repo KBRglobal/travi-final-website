@@ -9,7 +9,12 @@
  */
 
 import { db } from "../db";
-import { growthRecommendations, contentDecayScores, contentConfidenceScores, searchZeroResults } from "@shared/schema";
+import {
+  growthRecommendations,
+  contentDecayScores,
+  contentConfidenceScores,
+  searchZeroResults,
+} from "@shared/schema";
 import { eq, desc, gte, and, sql } from "drizzle-orm";
 
 function isEnabled(): boolean {
@@ -98,9 +103,7 @@ export async function generateRecommendations(): Promise<GrowthRecommendation[]>
         contentId: decay.contentId,
       });
     }
-  } catch (e) {
-    console.warn("[GrowthRecommendations] Could not fetch decay data:", e);
-  }
+  } catch (e) {}
 
   // 2. Check for low confidence content
   try {
@@ -122,9 +125,7 @@ export async function generateRecommendations(): Promise<GrowthRecommendation[]>
         contentId: conf.contentId,
       });
     }
-  } catch (e) {
-    console.warn("[GrowthRecommendations] Could not fetch confidence data:", e);
-  }
+  } catch (e) {}
 
   // 3. Check for search gaps (zero results)
   try {
@@ -147,9 +148,7 @@ export async function generateRecommendations(): Promise<GrowthRecommendation[]>
         });
       }
     }
-  } catch (e) {
-    console.warn("[GrowthRecommendations] Could not fetch search gap data:", e);
-  }
+  } catch (e) {}
 
   // Store recommendations
   const stored: GrowthRecommendation[] = [];
@@ -185,9 +184,7 @@ export async function generateRecommendations(): Promise<GrowthRecommendation[]>
         weekOf: weekOf.toISOString(),
         createdAt: new Date().toISOString(),
       });
-    } catch (e) {
-      console.warn("[GrowthRecommendations] Failed to store recommendation:", e);
-    }
+    } catch (e) {}
   }
 
   return stored;
@@ -217,7 +214,7 @@ export async function getRecommendations(options?: {
     .orderBy(desc(growthRecommendations.priority))
     .limit(limit);
 
-  return results.map((r) => ({
+  return results.map(r => ({
     id: r.id,
     type: r.recommendationType as RecommendationType,
     title: r.title,
@@ -281,8 +278,8 @@ export async function getGrowthSummary(): Promise<GrowthSummary> {
 
   return {
     totalRecommendations: totalResult?.count || 0,
-    byType: byType.map((t) => ({ type: t.type, count: t.count })),
-    byStatus: byStatus.map((s) => ({ status: s.status, count: s.count })),
+    byType: byType.map(t => ({ type: t.type, count: t.count })),
+    byStatus: byStatus.map(s => ({ status: s.status, count: s.count })),
     avgPriority: Math.round(avgResult?.avg || 0),
     topPriority,
   };
@@ -305,5 +302,3 @@ export async function updateRecommendationStatus(
 
   return result.length > 0;
 }
-
-console.log("[GrowthRecommendations] Module loaded");

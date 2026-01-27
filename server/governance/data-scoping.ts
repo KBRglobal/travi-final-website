@@ -4,12 +4,7 @@
  */
 
 import { db } from "../db";
-import {
-  users,
-  contents,
-  userRoleAssignments,
-  governanceRoles,
-} from "@shared/schema";
+import { users, contents, userRoleAssignments, governanceRoles } from "@shared/schema";
 import { eq, and, or, inArray, SQL, sql } from "drizzle-orm";
 import {
   DataAccessScope,
@@ -62,9 +57,7 @@ const DEFAULT_SCOPE_RULES: Record<AdminRole, Record<Resource, DataScopeRule[]>> 
     content: [{ field: "*", operator: "all" }],
     entity: [{ field: "*", operator: "all" }],
     revenue: [{ field: "*", operator: "all" }],
-    users: [
-      { field: "role", operator: "in", values: ["editor", "viewer", "analyst"] },
-    ],
+    users: [{ field: "role", operator: "in", values: ["editor", "viewer", "analyst"] }],
     roles: [], // No role management
     policies: [], // No policy management
     workflows: [{ field: "*", operator: "all" }],
@@ -195,7 +188,7 @@ class DataScopingService {
       const roleRules = DEFAULT_SCOPE_RULES[role]?.[resource] || [];
 
       // If role has "all" access, return immediately
-      if (roleRules.some((r) => r.operator === "all")) {
+      if (roleRules.some(r => r.operator === "all")) {
         return {
           userId,
           resource,
@@ -206,7 +199,7 @@ class DataScopingService {
 
       // Add rules that don't conflict
       for (const rule of roleRules) {
-        if (!mergedRules.some((r) => r.field === rule.field)) {
+        if (!mergedRules.some(r => r.field === rule.field)) {
           mergedRules.push(rule);
         }
       }
@@ -229,11 +222,7 @@ class DataScopingService {
    * Build SQL where clause from scope rules
    * Security: Field names are validated against ALLOWED_FIELDS allowlist
    */
-  buildWhereClause(
-    scope: DataAccessScope,
-    userId: string,
-    tableAlias?: string
-  ): SQL | undefined {
+  buildWhereClause(scope: DataAccessScope, userId: string, tableAlias?: string): SQL | undefined {
     if (scope.scopeRules.length === 0) {
       // No access - return impossible condition
       return sql`1 = 0`;
@@ -250,14 +239,13 @@ class DataScopingService {
 
       // Security: Validate field name against allowlist
       if (!isValidFieldName(rule.field)) {
-        console.warn(`[DataScoping] Invalid field name rejected: ${rule.field}`);
         continue;
       }
 
       // Build column reference - field is validated against allowlist, alias is sanitized
-      // For qualified names (with table alias), we need to use sql.raw since sql.identifier 
+      // For qualified names (with table alias), we need to use sql.raw since sql.identifier
       // doesn't support dotted names, but both parts are validated/sanitized
-      const columnRef = tableAlias 
+      const columnRef = tableAlias
         ? sql.raw(`${sanitizedPrefix}${rule.field}`)
         : sql.identifier(rule.field);
 
@@ -266,7 +254,7 @@ class DataScopingService {
       } else if (rule.operator === "equals") {
         conditions.push(sql`${columnRef} = ${rule.value}`);
       } else if (rule.operator === "in" && rule.values && rule.values.length > 0) {
-        const placeholders = rule.values.map((v) => sql`${v}`);
+        const placeholders = rule.values.map(v => sql`${v}`);
         conditions.push(sql`${columnRef} IN (${sql.join(placeholders, sql`, `)})`);
       }
     }
@@ -333,11 +321,11 @@ class DataScopingService {
     }
 
     // Check for "all" access
-    if (scope.scopeRules.some((r) => r.operator === "all")) {
+    if (scope.scopeRules.some(r => r.operator === "all")) {
       return records;
     }
 
-    return records.filter((record) => {
+    return records.filter(record => {
       for (const rule of scope.scopeRules) {
         const fieldValue = record[rule.field];
 
@@ -408,14 +396,9 @@ class DataScopingService {
       })
       .from(userRoleAssignments)
       .innerJoin(governanceRoles, eq(governanceRoles.id, userRoleAssignments.roleId))
-      .where(
-        and(
-          eq(userRoleAssignments.userId, userId),
-          eq(userRoleAssignments.isActive, true)
-        )
-      );
+      .where(and(eq(userRoleAssignments.userId, userId), eq(userRoleAssignments.isActive, true)));
 
-    return assignments.map((a) => a.roleName as AdminRole);
+    return assignments.map(a => a.roleName as AdminRole);
   }
 
   /**
@@ -425,7 +408,7 @@ class DataScopingService {
     const roles = await this.getUserRoles(userId);
 
     // Super admin and system admin can access all
-    if (roles.some((r) => ["super_admin", "system_admin", "manager", "editor"].includes(r))) {
+    if (roles.some(r => ["super_admin", "system_admin", "manager", "editor"].includes(r))) {
       return ["all"];
     }
 
@@ -439,7 +422,7 @@ class DataScopingService {
   async getAccessibleStatuses(userId: string): Promise<string[]> {
     const roles = await this.getUserRoles(userId);
 
-    if (roles.some((r) => ["super_admin", "system_admin", "manager", "editor"].includes(r))) {
+    if (roles.some(r => ["super_admin", "system_admin", "manager", "editor"].includes(r))) {
       return ["draft", "in_review", "reviewed", "approved", "scheduled", "published", "archived"];
     }
 
@@ -457,14 +440,9 @@ class DataScopingService {
   /**
    * Add custom scope rule for user
    */
-  addCustomRule(
-    userId: string,
-    resource: Resource,
-    rule: DataScopeRule
-  ): void {
+  addCustomRule(userId: string, resource: Resource, rule: DataScopeRule): void {
     // Store in memory or database as needed
     // This would be used for temporary or per-user custom access
-    console.log(`[DataScoping] Custom rule added for ${userId}: ${resource}`, rule);
   }
 
   /**
@@ -474,12 +452,24 @@ class DataScopingService {
     resources: Record<Resource, { canRead: boolean; canWrite: boolean; canDelete: boolean }>;
   }> {
     const resources: Resource[] = [
-      "content", "entity", "revenue", "users", "roles", "policies",
-      "workflows", "settings", "analytics", "audit", "media",
-      "translations", "integrations", "system",
+      "content",
+      "entity",
+      "revenue",
+      "users",
+      "roles",
+      "policies",
+      "workflows",
+      "settings",
+      "analytics",
+      "audit",
+      "media",
+      "translations",
+      "integrations",
+      "system",
     ];
 
-    const summary: Record<Resource, { canRead: boolean; canWrite: boolean; canDelete: boolean }> = {} as any;
+    const summary: Record<Resource, { canRead: boolean; canWrite: boolean; canDelete: boolean }> =
+      {} as any;
 
     for (const resource of resources) {
       const readScope = await this.getEffectiveScope(userId, resource, "read");
@@ -499,5 +489,3 @@ class DataScopingService {
 
 // Singleton instance
 export const dataScopingService = new DataScopingService();
-
-console.log("[Governance] Data Scoping Service loaded");

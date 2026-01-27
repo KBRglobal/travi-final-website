@@ -13,10 +13,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
-import type {
-  ContentBlock,
-  FaqItem,
-} from "@shared/schema";
+import type { ContentBlock, FaqItem } from "@shared/schema";
 import { generateBlockId, generateSlug } from "./ai/utils";
 import { getOpenAIClient } from "./ai/providers";
 
@@ -27,7 +24,6 @@ import { getOpenAIClient } from "./ai/providers";
 function getAnthropicClient(): Anthropic | null {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    console.log("[PremiumGenerator] Anthropic API key not configured, falling back to OpenAI");
     return null;
   }
   return new Anthropic({ apiKey });
@@ -48,7 +44,7 @@ function getAnthropicClient(): Anthropic | null {
 // 2. GENERATION: GPT-4o for premium content (articles, hotels)
 // 3. QA/SUPERVISOR: GPT-4o as the "brain" checking quality standards
 
-type ModelTier = 'research' | 'generation_premium' | 'generation_standard' | 'qa_supervisor';
+type ModelTier = "research" | "generation_premium" | "generation_standard" | "qa_supervisor";
 
 interface TieredModelConfig {
   model: string;
@@ -60,32 +56,32 @@ interface TieredModelConfig {
 
 const TIERED_MODELS: Record<ModelTier, TieredModelConfig> = {
   research: {
-    model: "gpt-4o-mini",      // Cheap for fact gathering
+    model: "gpt-4o-mini", // Cheap for fact gathering
     maxTokens: 4000,
     temperature: 0.3,
     costPer1MInput: 0.15,
-    costPer1MOutput: 0.60,
+    costPer1MOutput: 0.6,
   },
   generation_premium: {
-    model: "gpt-4o",           // Premium quality for main content
+    model: "gpt-4o", // Premium quality for main content
     maxTokens: 16000,
     temperature: 0.7,
-    costPer1MInput: 2.50,
-    costPer1MOutput: 10.00,
+    costPer1MInput: 2.5,
+    costPer1MOutput: 10.0,
   },
   generation_standard: {
-    model: "gpt-4o-mini",      // 94% cheaper for template-based content
+    model: "gpt-4o-mini", // 94% cheaper for template-based content
     maxTokens: 8000,
     temperature: 0.7,
     costPer1MInput: 0.15,
-    costPer1MOutput: 0.60,
+    costPer1MOutput: 0.6,
   },
   qa_supervisor: {
-    model: "gpt-4o",           // The "brain" that ensures quality
+    model: "gpt-4o", // The "brain" that ensures quality
     maxTokens: 4000,
     temperature: 0.2,
-    costPer1MInput: 2.50,
-    costPer1MOutput: 10.00,
+    costPer1MInput: 2.5,
+    costPer1MOutput: 10.0,
   },
 };
 
@@ -103,7 +99,7 @@ interface ResearchResult {
     url: string;
     title: string;
     snippet: string;
-    credibility: 'official' | 'trusted' | 'general';
+    credibility: "official" | "trusted" | "general";
   }>;
   keyFacts: string[];
   dataPoints: Record<string, string>;
@@ -188,15 +184,12 @@ interface PremiumHotelResult {
 
 async function performWebResearch(
   topic: string,
-  contentType: 'hotel' | 'attraction' | 'article' | 'dining' | 'district'
+  contentType: "hotel" | "attraction" | "article" | "dining" | "district"
 ): Promise<ResearchResult> {
   const openai = getOpenAIClient();
 
   // Build search queries based on content type
   const queries = buildSearchQueries(topic, contentType);
-
-  console.log(`[PremiumGenerator] Researching: ${topic}`);
-  console.log(`[PremiumGenerator] Search queries: ${queries.join(', ')}`);
 
   // Use GPT-4o-mini for research (94% cost savings vs GPT-4o)
   // In production, can integrate with actual search APIs (Google, Bing, Perplexity)
@@ -211,13 +204,13 @@ async function performWebResearch(
     };
   }
 
-  const researchConfig = getModelForTier('research');
+  const researchConfig = getModelForTier("research");
 
   try {
     const researchPrompt = `You are a research assistant. Gather comprehensive information about: "${topic}" for a ${contentType} article about Dubai.
 
 Search queries to consider:
-${queries.map((q, i) => `${i + 1}. ${q}`).join('\n')}
+${queries.map((q, i) => `${i + 1}. ${q}`).join("\n")}
 
 Provide your research in this JSON format:
 {
@@ -240,37 +233,36 @@ Provide your research in this JSON format:
 }`;
 
     const response = await openai.chat.completions.create({
-      model: researchConfig.model,  // GPT-4o-mini for cost savings
+      model: researchConfig.model, // GPT-4o-mini for cost savings
       max_tokens: researchConfig.maxTokens,
       messages: [
         {
           role: "system",
-          content: "You are a research specialist for Dubai travel content. Provide accurate, current information as of 2024-2025. Focus on verified facts, official data, and local insights."
+          content:
+            "You are a research specialist for Dubai travel content. Provide accurate, current information as of 2024-2025. Focus on verified facts, official data, and local insights.",
         },
-        { role: "user", content: researchPrompt }
+        { role: "user", content: researchPrompt },
       ],
       temperature: researchConfig.temperature,
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
     });
-
-    console.log(`[PremiumGenerator] Research using ${researchConfig.model} (cost: $${researchConfig.costPer1MInput}/1M input)`);
 
     const research = JSON.parse(response.choices[0].message.content || "{}");
 
     return {
       topic,
       sources: (research.credibleSources || []).map((s: any) => ({
-        url: '',
+        url: "",
         title: s.name,
-        snippet: '',
-        credibility: s.type === 'official' ? 'official' : s.type === 'trusted' ? 'trusted' : 'general'
+        snippet: "",
+        credibility:
+          s.type === "official" ? "official" : s.type === "trusted" ? "trusted" : "general",
       })),
       keyFacts: research.keyFacts || [],
       dataPoints: research.dataPoints || {},
       lastUpdated: new Date().toISOString(),
     };
   } catch (error) {
-    console.error("[PremiumGenerator] Research error:", error);
     return {
       topic,
       sources: [],
@@ -282,13 +274,10 @@ Provide your research in this JSON format:
 }
 
 function buildSearchQueries(topic: string, contentType: string): string[] {
-  const baseQueries = [
-    `${topic} Dubai official`,
-    `${topic} Dubai 2024 2025`,
-  ];
+  const baseQueries = [`${topic} Dubai official`, `${topic} Dubai 2024 2025`];
 
   switch (contentType) {
-    case 'hotel':
+    case "hotel":
       return [
         ...baseQueries,
         `${topic} hotel Dubai reviews booking`,
@@ -296,7 +285,7 @@ function buildSearchQueries(topic: string, contentType: string): string[] {
         `${topic} Dubai amenities facilities`,
         `${topic} Dubai location area`,
       ];
-    case 'attraction':
+    case "attraction":
       return [
         ...baseQueries,
         `${topic} Dubai tickets prices`,
@@ -304,14 +293,14 @@ function buildSearchQueries(topic: string, contentType: string): string[] {
         `${topic} Dubai what to expect`,
         `${topic} Dubai tips visitors`,
       ];
-    case 'dining':
+    case "dining":
       return [
         ...baseQueries,
         `${topic} Dubai menu prices`,
         `${topic} Dubai reservations`,
         `${topic} Dubai reviews food`,
       ];
-    case 'district':
+    case "district":
       return [
         ...baseQueries,
         `${topic} Dubai things to do`,
@@ -319,11 +308,7 @@ function buildSearchQueries(topic: string, contentType: string): string[] {
         `${topic} Dubai getting there`,
       ];
     default:
-      return [
-        ...baseQueries,
-        `${topic} Dubai guide`,
-        `${topic} Dubai tips`,
-      ];
+      return [...baseQueries, `${topic} Dubai guide`, `${topic} Dubai tips`];
   }
 }
 
@@ -350,7 +335,7 @@ CRITICAL REQUIREMENTS:
 async function generateWithClaude(
   prompt: string,
   research: ResearchResult,
-  tier: 'premium' | 'standard' = 'premium'
+  tier: "premium" | "standard" = "premium"
 ): Promise<string> {
   const anthropic = getAnthropicClient();
 
@@ -362,14 +347,13 @@ async function generateWithClaude(
   try {
     const researchContext = `
 RESEARCH DATA:
-Key Facts: ${research.keyFacts.join('\n- ')}
+Key Facts: ${research.keyFacts.join("\n- ")}
 Data Points: ${JSON.stringify(research.dataPoints, null, 2)}
-Sources: ${research.sources.map(s => s.title).join(', ')}
+Sources: ${research.sources.map(s => s.title).join(", ")}
 `;
 
     // Use Claude Sonnet for premium content (when Anthropic API available)
     // Otherwise fallback to GPT-4o tiered system
-    console.log(`[PremiumGenerator] Generating with Claude Sonnet 4 (Anthropic - ${tier} tier)`);
 
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
@@ -383,15 +367,14 @@ ${researchContext}
 
 ${prompt}
 
-Output valid JSON only.`
-        }
-      ]
+Output valid JSON only.`,
+        },
+      ],
     });
 
-    const textContent = response.content.find(c => c.type === 'text');
-    return textContent ? textContent.text : '';
+    const textContent = response.content.find(c => c.type === "text");
+    return textContent ? textContent.text : "";
   } catch (error) {
-    console.error("[PremiumGenerator] Claude error, falling back to GPT-4o:", error);
     return generateWithGPT4o(prompt, research, tier);
   }
 }
@@ -399,7 +382,7 @@ Output valid JSON only.`
 async function generateWithGPT4o(
   prompt: string,
   research: ResearchResult,
-  tier: 'premium' | 'standard' = 'premium'
+  tier: "premium" | "standard" = "premium"
 ): Promise<string> {
   const openai = getOpenAIClient();
 
@@ -408,16 +391,14 @@ async function generateWithGPT4o(
   }
 
   // Select model based on tier
-  const config = getModelForTier(tier === 'premium' ? 'generation_premium' : 'generation_standard');
+  const config = getModelForTier(tier === "premium" ? "generation_premium" : "generation_standard");
 
   const researchContext = `
 RESEARCH DATA:
-Key Facts: ${research.keyFacts.join('\n- ')}
+Key Facts: ${research.keyFacts.join("\n- ")}
 Data Points: ${JSON.stringify(research.dataPoints, null, 2)}
-Sources: ${research.sources.map(s => s.title).join(', ')}
+Sources: ${research.sources.map(s => s.title).join(", ")}
 `;
-
-  console.log(`[PremiumGenerator] Generating with ${config.model} (${tier} tier, $${config.costPer1MInput}/$${config.costPer1MOutput} per 1M tokens)`);
 
   const response = await openai.chat.completions.create({
     model: config.model,
@@ -430,14 +411,14 @@ Sources: ${research.sources.map(s => s.title).join(', ')}
 
 ${prompt}
 
-Output valid JSON only.`
-      }
+Output valid JSON only.`,
+      },
     ],
     temperature: config.temperature,
-    response_format: { type: "json_object" }
+    response_format: { type: "json_object" },
   });
 
-  return response.choices[0].message.content || '';
+  return response.choices[0].message.content || "";
 }
 
 // ============================================================================
@@ -470,7 +451,7 @@ async function runQAPipeline(
 
   // Use GPT-4o as the QA SUPERVISOR - the "brain" that ensures quality
   // This is the most critical step - worth the cost for quality assurance
-  const qaConfig = getModelForTier('qa_supervisor');
+  const qaConfig = getModelForTier("qa_supervisor");
 
   try {
     const qaPrompt = `You are the QUALITY SUPERVISOR for premium travel content. Your job is critical - you ensure ALL content meets the highest publication standards.
@@ -509,20 +490,19 @@ Analyze and return JSON:
 }`;
 
     const response = await openai.chat.completions.create({
-      model: qaConfig.model,  // GPT-4o as QA Supervisor
+      model: qaConfig.model, // GPT-4o as QA Supervisor
       max_tokens: qaConfig.maxTokens,
       messages: [
         {
           role: "system",
-          content: "You are the chief quality supervisor. Be STRICT. Content that doesn't meet standards must be flagged for regeneration. Your assessment protects the brand's reputation."
+          content:
+            "You are the chief quality supervisor. Be STRICT. Content that doesn't meet standards must be flagged for regeneration. Your assessment protects the brand's reputation.",
         },
-        { role: "user", content: qaPrompt }
+        { role: "user", content: qaPrompt },
       ],
       temperature: qaConfig.temperature,
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
     });
-
-    console.log(`[PremiumGenerator] QA Supervisor using ${qaConfig.model} (quality check is worth the cost)`);
 
     const qa = JSON.parse(response.choices[0].message.content || "{}");
 
@@ -538,7 +518,6 @@ Analyze and return JSON:
       suggestedFixes: qa.suggestedFixes || [],
     };
   } catch (error) {
-    console.error("[PremiumGenerator] QA error:", error);
     return {
       overallScore: 70,
       factChecks: [],
@@ -569,14 +548,16 @@ export async function generatePremiumHotelContent(
     skipQA?: boolean;
   }
 ): Promise<PremiumHotelResult> {
-  console.log(`[PremiumGenerator] Starting premium hotel generation: ${hotelName}`);
-
   // Step 1: Research
   const research = options?.skipResearch
-    ? { topic: hotelName, sources: [], keyFacts: [], dataPoints: {}, lastUpdated: new Date().toISOString() }
-    : await performWebResearch(hotelName, 'hotel');
-
-  console.log(`[PremiumGenerator] Research complete: ${research.keyFacts.length} facts found`);
+    ? {
+        topic: hotelName,
+        sources: [],
+        keyFacts: [],
+        dataPoints: {},
+        lastUpdated: new Date().toISOString(),
+      }
+    : await performWebResearch(hotelName, "hotel");
 
   // Step 2: Generate content
   const prompt = `Generate comprehensive hotel content for: "${hotelName}" in Dubai.
@@ -627,7 +608,6 @@ DETAILS: Include specific prices in AED, real amenities, accurate information.`;
   try {
     result = JSON.parse(rawContent);
   } catch (e) {
-    console.error("[PremiumGenerator] Failed to parse hotel content:", e);
     throw new Error("Failed to generate valid hotel content");
   }
 
@@ -642,7 +622,7 @@ DETAILS: Include specific prices in AED, real amenities, accurate information.`;
     // Calculate word count
     let wordCount = 0;
     for (const block of result.content.blocks) {
-      if (block.type === 'text' && block.data?.content) {
+      if (block.type === "text" && block.data?.content) {
         wordCount += block.data.content.split(/\s+/).filter(Boolean).length;
       }
     }
@@ -653,14 +633,11 @@ DETAILS: Include specific prices in AED, real amenities, accurate information.`;
 
   // Step 3: QA Pipeline
   if (!options?.skipQA) {
-    const qaResult = await runQAPipeline(rawContent, research, 'hotel');
+    const qaResult = await runQAPipeline(rawContent, research, "hotel");
     result.qaReport = qaResult;
-    console.log(`[PremiumGenerator] QA Score: ${qaResult.overallScore}/100, Words: ${qaResult.qualityMetrics.wordCount}`);
   }
 
   result.sources = research.sources.map(s => s.title);
-
-  console.log(`[PremiumGenerator] Hotel content generated: ${result.content?.wordCount || 0} words`);
 
   return result as PremiumHotelResult;
 }
@@ -676,14 +653,10 @@ export async function generatePremiumArticleContent(
     skipQA?: boolean;
   }
 ): Promise<PremiumArticleResult> {
-  console.log(`[PremiumGenerator] Starting premium article generation: ${topic}`);
-
   // Step 1: Research
   const research = options?.skipResearch
     ? { topic, sources: [], keyFacts: [], dataPoints: {}, lastUpdated: new Date().toISOString() }
-    : await performWebResearch(topic, 'article');
-
-  console.log(`[PremiumGenerator] Research complete: ${research.keyFacts.length} facts found`);
+    : await performWebResearch(topic, "article");
 
   // Step 2: Generate content
   const categoryInstruction = category
@@ -735,7 +708,6 @@ FACTS: Every statistic and detail must be accurate based on research.`;
   try {
     result = JSON.parse(rawContent);
   } catch (e) {
-    console.error("[PremiumGenerator] Failed to parse article content:", e);
     throw new Error("Failed to generate valid article content");
   }
 
@@ -743,12 +715,12 @@ FACTS: Every statistic and detail must be accurate based on research.`;
   if (result.content?.blocks) {
     let wordCount = 0;
     result.content.blocks = result.content.blocks.map((block: any, index: number) => {
-      if (block.type === 'text' && block.data?.content) {
+      if (block.type === "text" && block.data?.content) {
         wordCount += block.data.content.split(/\s+/).filter(Boolean).length;
       }
-      if (block.type === 'faq' && block.data?.faqs) {
+      if (block.type === "faq" && block.data?.faqs) {
         for (const faq of block.data.faqs) {
-          wordCount += (faq.question + ' ' + faq.answer).split(/\s+/).filter(Boolean).length;
+          wordCount += (faq.question + " " + faq.answer).split(/\s+/).filter(Boolean).length;
         }
       }
       return {
@@ -764,14 +736,11 @@ FACTS: Every statistic and detail must be accurate based on research.`;
 
   // Step 3: QA Pipeline
   if (!options?.skipQA) {
-    const qaResult = await runQAPipeline(rawContent, research, 'article');
+    const qaResult = await runQAPipeline(rawContent, research, "article");
     result.qaReport = qaResult;
-    console.log(`[PremiumGenerator] QA Score: ${qaResult.overallScore}/100, Words: ${qaResult.qualityMetrics.wordCount}`);
   }
 
   result.sources = research.sources.map(s => s.title);
-
-  console.log(`[PremiumGenerator] Article content generated: ${result.content?.wordCount || 0} words`);
 
   return result as PremiumArticleResult;
 }
@@ -786,14 +755,16 @@ export async function generatePremiumAttractionContent(
     skipQA?: boolean;
   }
 ): Promise<any> {
-  console.log(`[PremiumGenerator] Starting premium attraction generation: ${attractionName}`);
-
   // Step 1: Research
   const research = options?.skipResearch
-    ? { topic: attractionName, sources: [], keyFacts: [], dataPoints: {}, lastUpdated: new Date().toISOString() }
-    : await performWebResearch(attractionName, 'attraction');
-
-  console.log(`[PremiumGenerator] Research complete: ${research.keyFacts.length} facts found`);
+    ? {
+        topic: attractionName,
+        sources: [],
+        keyFacts: [],
+        dataPoints: {},
+        lastUpdated: new Date().toISOString(),
+      }
+    : await performWebResearch(attractionName, "attraction");
 
   // Step 2: Generate content
   const prompt = `Generate comprehensive attraction content for: "${attractionName}" in Dubai.
@@ -843,7 +814,6 @@ PRICES: Include specific ticket prices in AED.`;
   try {
     result = JSON.parse(rawContent);
   } catch (e) {
-    console.error("[PremiumGenerator] Failed to parse attraction content:", e);
     throw new Error("Failed to generate valid attraction content");
   }
 
@@ -851,7 +821,7 @@ PRICES: Include specific ticket prices in AED.`;
   if (result.content?.blocks) {
     let wordCount = 0;
     result.content.blocks = result.content.blocks.map((block: any, index: number) => {
-      if (block.type === 'text' && block.data?.content) {
+      if (block.type === "text" && block.data?.content) {
         wordCount += block.data.content.split(/\s+/).filter(Boolean).length;
       }
       return {
@@ -867,14 +837,11 @@ PRICES: Include specific ticket prices in AED.`;
 
   // Step 3: QA Pipeline
   if (!options?.skipQA) {
-    const qaResult = await runQAPipeline(rawContent, research, 'attraction');
+    const qaResult = await runQAPipeline(rawContent, research, "attraction");
     result.qaReport = qaResult;
-    console.log(`[PremiumGenerator] QA Score: ${qaResult.overallScore}/100, Words: ${qaResult.qualityMetrics.wordCount}`);
   }
 
   result.sources = research.sources.map(s => s.title);
-
-  console.log(`[PremiumGenerator] Attraction content generated: ${result.content?.wordCount || 0} words`);
 
   return result;
 }

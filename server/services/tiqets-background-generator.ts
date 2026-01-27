@@ -1,7 +1,7 @@
 /**
  * Tiqets Background Content Generator v2
  * Production-ready, fault-tolerant background process
- * 
+ *
  * Features:
  * - Fast watchdog interval (30 seconds)
  * - Automatic stale lock cleanup (5 minute timeout)
@@ -60,20 +60,24 @@ export function getHealthMetrics(): HealthMetrics & { isRunning: boolean; uptime
 async function releaseStaleLocksWithCount(): Promise<number> {
   try {
     const lockExpiry = new Date(Date.now() - LOCK_TIMEOUT_MS);
-    
+
     // First count how many we'll release
-    const countResult = await pool.query(`
+    const countResult = await pool.query(
+      `
       SELECT COUNT(*) as count 
       FROM tiqets_attractions 
       WHERE content_generation_status IN ('in_progress', 'generating')
       AND content_generation_locked_at < $1
-    `, [lockExpiry]);
-    
+    `,
+      [lockExpiry]
+    );
+
     const staleCount = parseInt(countResult.rows[0].count) || 0;
-    
+
     if (staleCount > 0) {
       // Release the stale locks
-      await pool.query(`
+      await pool.query(
+        `
         UPDATE tiqets_attractions 
         SET 
           content_generation_status = 'pending',
@@ -81,15 +85,15 @@ async function releaseStaleLocksWithCount(): Promise<number> {
           content_generation_locked_at = NULL
         WHERE content_generation_status IN ('in_progress', 'generating')
         AND content_generation_locked_at < $1
-      `, [lockExpiry]);
-      
-      console.log(`[TiqetsWatchdog] Released ${staleCount} stale locks (older than 5 minutes)`);
+      `,
+        [lockExpiry]
+      );
+
       health.staleLocksReleased += staleCount;
     }
-    
+
     return staleCount;
   } catch (error) {
-    console.error("[TiqetsWatchdog] Error releasing stale locks:", error);
     return 0;
   }
 }
@@ -106,7 +110,6 @@ async function approveReadyContent(): Promise<number> {
     `);
     return result.rowCount || 0;
   } catch (error) {
-    console.error("[TiqetsBackground] Error approving ready content:", error);
     return 0;
   }
 }
@@ -116,7 +119,8 @@ async function approveReadyContent(): Promise<number> {
  */
 async function resetFailedContent(limit: number = 50): Promise<number> {
   try {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       UPDATE tiqets_attractions 
       SET 
         content_generation_status = 'pending',
@@ -128,15 +132,16 @@ async function resetFailedContent(limit: number = 50): Promise<number> {
         WHERE content_generation_status = 'failed'
         LIMIT $1
       )
-    `, [limit]);
-    
+    `,
+      [limit]
+    );
+
     const count = result.rowCount || 0;
     if (count > 0) {
       health.failedItemsReset += count;
     }
     return count;
   } catch (error) {
-    console.error("[TiqetsBackground] Error resetting failed content:", error);
     return 0;
   }
 }
@@ -157,7 +162,6 @@ async function getStatusCounts(): Promise<Record<string, number>> {
     }
     return counts;
   } catch (error) {
-    console.error("[TiqetsBackground] Error getting status counts:", error);
     return {};
   }
 }
@@ -166,29 +170,39 @@ async function getStatusCounts(): Promise<Record<string, number>> {
  * Check if generation queue is currently active with FRESH locks only
  * Jobs with stale locks (> 5 min) don't count as active
  */
-async function isQueueActiveWithFreshLocks(): Promise<{ active: boolean; freshCount: number; staleCount: number }> {
+async function isQueueActiveWithFreshLocks(): Promise<{
+  active: boolean;
+  freshCount: number;
+  staleCount: number;
+}> {
   try {
     const lockExpiry = new Date(Date.now() - LOCK_TIMEOUT_MS);
-    
+
     // Count fresh locks (within timeout)
-    const freshResult = await pool.query(`
+    const freshResult = await pool.query(
+      `
       SELECT COUNT(*) as count 
       FROM tiqets_attractions 
       WHERE content_generation_status IN ('generating', 'in_progress')
       AND content_generation_locked_at >= $1
-    `, [lockExpiry]);
-    
+    `,
+      [lockExpiry]
+    );
+
     // Count stale locks (expired)
-    const staleResult = await pool.query(`
+    const staleResult = await pool.query(
+      `
       SELECT COUNT(*) as count 
       FROM tiqets_attractions 
       WHERE content_generation_status IN ('generating', 'in_progress')
       AND content_generation_locked_at < $1
-    `, [lockExpiry]);
-    
+    `,
+      [lockExpiry]
+    );
+
     const freshCount = parseInt(freshResult.rows[0].count) || 0;
     const staleCount = parseInt(staleResult.rows[0].count) || 0;
-    
+
     return {
       active: freshCount > 0,
       freshCount,
@@ -214,7 +228,6 @@ async function triggerParallelGeneration(): Promise<boolean> {
     }
     return response.ok;
   } catch (error) {
-    console.error("[TiqetsBackground] Error triggering parallel generation:", error);
     return false;
   }
 }
@@ -236,7 +249,7 @@ async function getOctypoPendingCount(): Promise<number> {
 }
 
 // Import shared state for batch coordination
-import { octypoState } from '../octypo/state';
+import { octypoState } from "../octypo/state";
 
 let lastOctypoTrigger = 0;
 const OCTYPO_COOLDOWN_MS = 30 * 1000; // 30 second cooldown between triggers
@@ -249,29 +262,31 @@ async function triggerOctypoGeneration(): Promise<boolean> {
   if (octypoState.isRunning() || Date.now() - lastOctypoTrigger < OCTYPO_COOLDOWN_MS) {
     return false;
   }
-  
+
   try {
     octypoState.setRunning(true);
     lastOctypoTrigger = Date.now();
-    
+
     const port = process.env.PORT || "5000";
     // Maximum parallelism - use all healthy engines simultaneously (36 writers with 72 engines)
-    const response = await fetch(`http://localhost:${port}/api/admin/tiqets/generate-octypo?concurrency=36&batch=150`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    
+    const response = await fetch(
+      `http://localhost:${port}/api/admin/tiqets/generate-octypo?concurrency=36&batch=150`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
     if (response.ok) {
-      console.log("[TiqetsBackground] Octypo V2 generation triggered successfully");
     } else {
       // If trigger fails, immediately mark as not running
       octypoState.setRunning(false);
     }
-    
+
     return response.ok;
   } catch (error) {
     octypoState.setRunning(false);
-    console.error("[TiqetsBackground] Error triggering octypo generation:", error);
+
     return false;
   }
 }
@@ -282,17 +297,13 @@ async function triggerOctypoGeneration(): Promise<boolean> {
 async function runWatchdog(): Promise<void> {
   try {
     health.lastWatchdog = new Date();
-    
+
     // Release any stale locks (jobs stuck > 5 minutes)
     const released = await releaseStaleLocksWithCount();
-    
+
     if (released > 0) {
-      console.log(`[TiqetsWatchdog] Self-healed: released ${released} stale locks`);
     }
-    
-  } catch (error) {
-    console.error("[TiqetsWatchdog] Error in watchdog:", error);
-  }
+  } catch (error) {}
 }
 
 /**
@@ -300,7 +311,6 @@ async function runWatchdog(): Promise<void> {
  */
 async function runBackgroundTask(): Promise<void> {
   if (isRunning) {
-    console.log("[TiqetsBackground] Task already running, skipping");
     return;
   }
 
@@ -320,39 +330,31 @@ async function runBackgroundTask(): Promise<void> {
     const total = pending + completed + ready + failed + inProgress;
     const percentComplete = total > 0 ? ((completed / total) * 100).toFixed(1) : "0";
 
-    console.log(`[TiqetsBackground] Status: ${percentComplete}% complete | pending=${pending}, completed=${completed}, ready=${ready}, failed=${failed}, in_progress=${inProgress}`);
-
     // Approve any ready content
     if (ready > 0) {
       const approved = await approveReadyContent();
       if (approved > 0) {
-        console.log(`[TiqetsBackground] Approved ${approved} ready attractions to completed`);
       }
     }
 
     // Check queue status with fresh lock detection
     const queueStatus = await isQueueActiveWithFreshLocks();
-    
+
     // Log stale locks if any
     if (queueStatus.staleCount > 0) {
-      console.log(`[TiqetsBackground] WARNING: ${queueStatus.staleCount} items have stale locks (will be cleaned by watchdog)`);
     }
 
     // If there are pending items and queue is NOT actively processing fresh jobs
     if (pending > 0 && !queueStatus.active) {
-      console.log(`[TiqetsBackground] Queue inactive with ${pending} pending items, triggering generation...`);
       const triggered = await triggerParallelGeneration();
       if (triggered) {
-        console.log("[TiqetsBackground] Parallel generation triggered successfully");
         health.consecutiveErrors = 0;
       } else {
         health.consecutiveErrors++;
         health.lastError = "Failed to trigger parallel generation";
       }
     } else if (pending > 0 && queueStatus.active) {
-      console.log(`[TiqetsBackground] Queue active with ${queueStatus.freshCount} workers, waiting...`);
     } else if (pending === 0 && failed === 0 && inProgress === 0) {
-      console.log("[TiqetsBackground] All content generation complete!");
     }
 
     // Reset failed items periodically (every 5th run or when many failed)
@@ -360,38 +362,31 @@ async function runBackgroundTask(): Promise<void> {
       const toReset = Math.min(failed, 30);
       const reset = await resetFailedContent(toReset);
       if (reset > 0) {
-        console.log(`[TiqetsBackground] Reset ${reset} failed attractions for retry`);
       }
     }
 
     // V2 (Octypo) High-Quality Content Generation - runs alongside V1
     // Triggers if there are attractions needing 85+ quality score content
     const octypoPending = await getOctypoPendingCount();
-    
+
     // Check and reset stale running state (>10 min no activity)
     const wasStale = octypoState.checkAndResetStale();
     if (wasStale) {
-      console.log('[TiqetsBackground] Reset stale Octypo state - will trigger new batch');
     }
-    
+
     if (octypoPending > 0 && !octypoState.isRunning()) {
-      console.log(`[TiqetsBackground] ${octypoPending} attractions need V2 (Octypo) content, triggering...`);
       await triggerOctypoGeneration();
     } else if (octypoPending > 0 && octypoState.isRunning()) {
-      console.log(`[TiqetsBackground] Octypo generation in progress, ${octypoPending} remaining`);
     }
 
     health.consecutiveErrors = 0;
-
   } catch (error) {
     health.consecutiveErrors++;
     health.lastError = error instanceof Error ? error.message : String(error);
-    console.error("[TiqetsBackground] Error in background task:", error);
   } finally {
     isRunning = false;
     const duration = Date.now() - startTime;
     if (duration > 5000) {
-      console.log(`[TiqetsBackground] Task completed in ${duration}ms (slow)`);
     }
   }
 }
@@ -401,28 +396,20 @@ async function runBackgroundTask(): Promise<void> {
  */
 export function startTiqetsBackgroundGenerator(): void {
   if (intervalId) {
-    console.log("[TiqetsBackground] Already running");
     return;
   }
 
-  console.log(`[TiqetsBackground] Starting production-ready generator:`);
-  console.log(`  - Scheduler interval: ${SCHEDULER_INTERVAL_MS / 1000}s`);
-  console.log(`  - Watchdog interval: ${WATCHDOG_INTERVAL_MS / 1000}s`);
-  console.log(`  - Lock timeout: ${LOCK_TIMEOUT_MS / 1000}s`);
-  
   // Run initial tasks after a short delay
   setTimeout(() => {
     runWatchdog(); // Clean up any stale state first
     runBackgroundTask();
   }, 5000);
-  
+
   // Main scheduler - every 30 seconds
   intervalId = setInterval(runBackgroundTask, SCHEDULER_INTERVAL_MS);
-  
+
   // Watchdog - every 60 seconds
   watchdogId = setInterval(runWatchdog, WATCHDOG_INTERVAL_MS);
-  
-  console.log("[TiqetsBackground] Background generator started with watchdog protection");
 }
 
 /**
@@ -437,7 +424,6 @@ export function stopTiqetsBackgroundGenerator(): void {
     clearInterval(watchdogId);
     watchdogId = null;
   }
-  console.log("[TiqetsBackground] Stopped background generator and watchdog");
 }
 
 /**
@@ -454,10 +440,9 @@ export async function forceReleaseAllLocks(): Promise<number> {
       WHERE content_generation_status IN ('in_progress', 'generating')
     `);
     const count = result.rowCount || 0;
-    console.log(`[TiqetsBackground] Force released ${count} locks`);
+
     return count;
   } catch (error) {
-    console.error("[TiqetsBackground] Error force releasing locks:", error);
     return 0;
   }
 }

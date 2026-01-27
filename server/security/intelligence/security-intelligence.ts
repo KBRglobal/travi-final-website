@@ -122,9 +122,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     id: "credential_stuffing",
     name: "Credential Stuffing Attack",
     description: "Multiple failed logins from same IP for different users",
-    pattern: [
-      { eventType: "login_failure", count: 10, operator: "gte", sameIP: true },
-    ],
+    pattern: [{ eventType: "login_failure", count: 10, operator: "gte", sameIP: true }],
     timeWindowMs: 10 * 60 * 1000,
     threshold: 1,
     severity: "critical",
@@ -147,9 +145,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     id: "permission_probing",
     name: "Permission Probing",
     description: "Multiple permission denied events",
-    pattern: [
-      { eventType: "permission_denied", count: 10, operator: "gte", sameUser: true },
-    ],
+    pattern: [{ eventType: "permission_denied", count: 10, operator: "gte", sameUser: true }],
     timeWindowMs: 10 * 60 * 1000,
     threshold: 1,
     severity: "medium",
@@ -159,9 +155,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     id: "mass_deletion",
     name: "Mass Deletion",
     description: "Large number of delete operations",
-    pattern: [
-      { eventType: "content_deleted" as any, count: 10, operator: "gte", sameUser: true },
-    ],
+    pattern: [{ eventType: "content_deleted" as any, count: 10, operator: "gte", sameUser: true }],
     timeWindowMs: 5 * 60 * 1000,
     threshold: 1,
     severity: "high",
@@ -171,9 +165,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     id: "bulk_export",
     name: "Bulk Data Export",
     description: "Large data export operation",
-    pattern: [
-      { eventType: "data_export" as any, count: 5, operator: "gte", sameUser: true },
-    ],
+    pattern: [{ eventType: "data_export" as any, count: 5, operator: "gte", sameUser: true }],
     timeWindowMs: 60 * 60 * 1000,
     threshold: 1,
     severity: "high",
@@ -183,9 +175,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
     id: "session_hijack",
     name: "Session Hijacking Suspected",
     description: "Same session from multiple IPs",
-    pattern: [
-      { eventType: "resource_accessed" as any, count: 2, operator: "gte", sameUser: true },
-    ],
+    pattern: [{ eventType: "resource_accessed" as any, count: 2, operator: "gte", sameUser: true }],
     timeWindowMs: 5 * 60 * 1000,
     threshold: 1,
     severity: "critical",
@@ -228,16 +218,16 @@ class EventBuffer {
     let filtered = this.events;
 
     if (filter.since) {
-      filtered = filtered.filter((e) => e.timestamp >= filter.since!);
+      filtered = filtered.filter(e => e.timestamp >= filter.since!);
     }
     if (filter.userId) {
-      filtered = filtered.filter((e) => e.userId === filter.userId);
+      filtered = filtered.filter(e => e.userId === filter.userId);
     }
     if (filter.type) {
-      filtered = filtered.filter((e) => e.type === filter.type);
+      filtered = filtered.filter(e => e.type === filter.type);
     }
     if (filter.ipAddress) {
-      filtered = filtered.filter((e) => e.ipAddress === filter.ipAddress);
+      filtered = filtered.filter(e => e.ipAddress === filter.ipAddress);
     }
 
     return filtered;
@@ -245,26 +235,22 @@ class EventBuffer {
 
   getEventsByIP(ip: string, windowMs: number): BufferedEvent[] {
     const since = new Date(Date.now() - windowMs);
-    return this.events.filter(
-      (e) => e.ipAddress === ip && e.timestamp >= since
-    );
+    return this.events.filter(e => e.ipAddress === ip && e.timestamp >= since);
   }
 
   getEventsByUser(userId: string, windowMs: number): BufferedEvent[] {
     const since = new Date(Date.now() - windowMs);
-    return this.events.filter(
-      (e) => e.userId === userId && e.timestamp >= since
-    );
+    return this.events.filter(e => e.userId === userId && e.timestamp >= since);
   }
 
   getUniqueIPsForUser(userId: string, windowMs: number): string[] {
     const events = this.getEventsByUser(userId, windowMs);
-    return [...new Set(events.map((e) => e.ipAddress).filter(Boolean) as string[])];
+    return [...new Set(events.map(e => e.ipAddress).filter(Boolean) as string[])];
   }
 
   private cleanup(): void {
     const cutoff = new Date(Date.now() - this.retentionMs);
-    this.events = this.events.filter((e) => e.timestamp >= cutoff);
+    this.events = this.events.filter(e => e.timestamp >= cutoff);
 
     if (this.events.length > this.maxSize) {
       this.events = this.events.slice(-this.maxSize);
@@ -284,20 +270,16 @@ class BaselineManager {
   updateBaseline(userId: string, events: BufferedEvent[]): void {
     if (events.length < 10) return; // Need minimum events
 
-    const loginEvents = events.filter((e) =>
-      ["login_success"].includes(e.type)
-    );
-    const actionEvents = events.filter((e) =>
-      !["login_success", "login_failure", "logout"].includes(e.type)
+    const loginEvents = events.filter(e => ["login_success"].includes(e.type));
+    const actionEvents = events.filter(
+      e => !["login_success", "login_failure", "logout"].includes(e.type)
     );
 
     // Calculate login hour average
-    const loginHours = loginEvents.map((e) => e.timestamp.getHours());
-    const avgLoginHour =
-      loginHours.reduce((a, b) => a + b, 0) / loginHours.length || 12;
+    const loginHours = loginEvents.map(e => e.timestamp.getHours());
+    const avgLoginHour = loginHours.reduce((a, b) => a + b, 0) / loginHours.length || 12;
     const loginHourVariance =
-      loginHours.reduce((sum, h) => sum + Math.pow(h - avgLoginHour, 2), 0) /
-      loginHours.length;
+      loginHours.reduce((sum, h) => sum + Math.pow(h - avgLoginHour, 2), 0) / loginHours.length;
     const loginHourStdDev = Math.sqrt(loginHourVariance);
 
     // Common resources
@@ -353,10 +335,7 @@ class BaselineManager {
     return this.baselines.get(userId);
   }
 
-  checkDeviation(
-    userId: string,
-    event: BufferedEvent
-  ): AnomalyIndicator[] {
+  checkDeviation(userId: string, event: BufferedEvent): AnomalyIndicator[] {
     const baseline = this.baselines.get(userId);
     if (!baseline) return [];
 
@@ -435,8 +414,7 @@ class ThreatScorer {
     };
 
     // Apply decay
-    const hoursSinceUpdate =
-      (Date.now() - current.lastUpdated.getTime()) / (60 * 60 * 1000);
+    const hoursSinceUpdate = (Date.now() - current.lastUpdated.getTime()) / (60 * 60 * 1000);
     const decayedScore = current.score * Math.pow(this.decayRate, hoursSinceUpdate);
 
     // Add new score based on anomaly
@@ -495,7 +473,7 @@ class ThreatScorer {
 
   getHighRiskUsers(threshold: number = 50): ThreatScore[] {
     return [...this.scores.values()]
-      .filter((s) => s.score >= threshold)
+      .filter(s => s.score >= threshold)
       .sort((a, b) => b.score - a.score);
   }
 }
@@ -582,7 +560,7 @@ class CorrelationEngine {
         events = eventBuffer.getEvents({ since });
       }
 
-      const typeMatches = events.filter((e) => e.type === pattern.eventType);
+      const typeMatches = events.filter(e => e.type === pattern.eventType);
 
       if (pattern.count && pattern.operator) {
         const countMatch =
@@ -612,7 +590,7 @@ class CorrelationEngine {
       timestamp: new Date(),
       userId: triggerEvent.userId,
       description: rule.description,
-      relatedEvents: matchedEvents.map((e) => e.id),
+      relatedEvents: matchedEvents.map(e => e.id),
       indicators: [
         {
           name: "matched_events",
@@ -632,7 +610,7 @@ class CorrelationEngine {
 
     // If more than 2 unique IPs in 30 minutes (excluding local ranges)
     const publicIPs = recentIPs.filter(
-      (ip) => !ip.startsWith("192.168.") && !ip.startsWith("10.") && !ip.startsWith("127.")
+      ip => !ip.startsWith("192.168.") && !ip.startsWith("10.") && !ip.startsWith("127.")
     );
 
     if (publicIPs.length >= 2) {
@@ -666,41 +644,21 @@ class CorrelationEngine {
 
   private getSuggestedActions(anomalyType: AnomalyType): string[] {
     const actions: Record<AnomalyType, string[]> = {
-      brute_force: [
-        "Implement account lockout",
-        "Add CAPTCHA",
-        "Review authentication logs",
-      ],
+      brute_force: ["Implement account lockout", "Add CAPTCHA", "Review authentication logs"],
       privilege_escalation: [
         "Revoke elevated permissions",
         "Audit role changes",
         "Notify security team",
       ],
-      data_exfiltration: [
-        "Block export operations",
-        "Review exported data",
-        "Enable DLP controls",
-      ],
-      impossible_travel: [
-        "Force re-authentication",
-        "Terminate suspicious sessions",
-        "Enable MFA",
-      ],
-      off_hours_activity: [
-        "Flag for review",
-        "Limit off-hours permissions",
-        "Enable monitoring",
-      ],
+      data_exfiltration: ["Block export operations", "Review exported data", "Enable DLP controls"],
+      impossible_travel: ["Force re-authentication", "Terminate suspicious sessions", "Enable MFA"],
+      off_hours_activity: ["Flag for review", "Limit off-hours permissions", "Enable monitoring"],
       unusual_resource_access: [
         "Review access patterns",
         "Verify business need",
         "Update access policies",
       ],
-      mass_modification: [
-        "Pause batch operations",
-        "Review changes",
-        "Enable approval workflow",
-      ],
+      mass_modification: ["Pause batch operations", "Review changes", "Enable approval workflow"],
       permission_probing: [
         "Rate limit failed operations",
         "Review user permissions",
@@ -711,11 +669,7 @@ class CorrelationEngine {
         "Review access paths",
         "Enable network segmentation",
       ],
-      credential_stuffing: [
-        "Enable IP blocking",
-        "Enforce password changes",
-        "Enable MFA",
-      ],
+      credential_stuffing: ["Enable IP blocking", "Enforce password changes", "Enable MFA"],
       session_hijacking: [
         "Terminate all sessions",
         "Force password reset",
@@ -733,15 +687,15 @@ class CorrelationEngine {
 
   getRecentAnomalies(hours: number = 24): SecurityAnomaly[] {
     const since = new Date(Date.now() - hours * 60 * 60 * 1000);
-    return this.detectedAnomalies.filter((a) => a.timestamp >= since);
+    return this.detectedAnomalies.filter(a => a.timestamp >= since);
   }
 
   getAnomaliesByType(type: AnomalyType): SecurityAnomaly[] {
-    return this.detectedAnomalies.filter((a) => a.type === type);
+    return this.detectedAnomalies.filter(a => a.type === type);
   }
 
   getAnomaliesForUser(userId: string): SecurityAnomaly[] {
-    return this.detectedAnomalies.filter((a) => a.userId === userId);
+    return this.detectedAnomalies.filter(a => a.userId === userId);
   }
 }
 
@@ -800,7 +754,7 @@ export function updateUserBaseline(userId: string): void {
   const events = eventBuffer.getEvents({ userId });
   baselineManager.updateBaseline(
     userId,
-    events.map((e) => ({
+    events.map(e => ({
       ...e,
       timestamp: e.timestamp,
     }))
@@ -835,5 +789,3 @@ export function getIntelligenceSummary(): {
     topAnomalyTypes,
   };
 }
-
-console.log("[SecurityIntelligence] Module loaded");

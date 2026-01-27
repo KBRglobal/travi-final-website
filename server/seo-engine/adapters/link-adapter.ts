@@ -5,9 +5,9 @@
  * Provides data for link graph engine.
  */
 
-import { db } from '../../db';
-import { contents } from '../../../shared/schema';
-import { eq, sql } from 'drizzle-orm';
+import { db } from "../../db";
+import { contents } from "../../../shared/schema";
+import { eq, sql } from "drizzle-orm";
 
 // ============================================================================
 // Types
@@ -20,7 +20,7 @@ export interface ExtractedLink {
   targetId: string | null; // Resolved content ID if internal
   anchorText: string;
   isInternal: boolean;
-  context: 'body' | 'sidebar' | 'footer' | 'navigation';
+  context: "body" | "sidebar" | "footer" | "navigation";
   position: number; // Order in content
 }
 
@@ -52,19 +52,24 @@ const INTERNAL_LINK_PATTERN = /href=["']\/([^"'#]+)(?:#[^"']*)?["']/g;
 const EXTERNAL_LINK_PATTERN = /href=["'](https?:\/\/[^"']+)["']/g;
 const ANCHOR_TEXT_PATTERN = /<a[^>]*href=["'][^"']+["'][^>]*>([^<]+)<\/a>/gi;
 
-function extractLinksFromBlock(block: any, sourceId: string, sourceSlug: string, position: number): ExtractedLink[] {
+function extractLinksFromBlock(
+  block: any,
+  sourceId: string,
+  sourceSlug: string,
+  position: number
+): ExtractedLink[] {
   const links: ExtractedLink[] = [];
 
   if (!block) return links;
 
   // Get text content
-  const textContent = block.content || block.text || block.html || '';
+  const textContent = block.content || block.text || block.html || "";
 
   // Extract internal links
   let match;
   const internalPattern = new RegExp(INTERNAL_LINK_PATTERN);
   while ((match = internalPattern.exec(textContent)) !== null) {
-    const targetUrl = '/' + match[1];
+    const targetUrl = "/" + match[1];
     links.push({
       sourceId,
       sourceSlug,
@@ -72,7 +77,7 @@ function extractLinksFromBlock(block: any, sourceId: string, sourceSlug: string,
       targetId: null, // Will be resolved later
       anchorText: extractAnchorText(textContent, targetUrl) || targetUrl,
       isInternal: true,
-      context: 'body',
+      context: "body",
       position,
     });
   }
@@ -88,16 +93,16 @@ function extractLinksFromBlock(block: any, sourceId: string, sourceSlug: string,
       targetId: null,
       anchorText: extractAnchorText(textContent, targetUrl) || targetUrl,
       isInternal: false,
-      context: 'body',
+      context: "body",
       position,
     });
   }
 
   // Check for explicit link blocks
-  if (block.type === 'link' || block.type === 'button') {
-    const href = block.href || block.url || '';
+  if (block.type === "link" || block.type === "button") {
+    const href = block.href || block.url || "";
     if (href) {
-      const isInternal = href.startsWith('/') || href.startsWith(process.env.SITE_URL || '');
+      const isInternal = href.startsWith("/") || href.startsWith(process.env.SITE_URL || "");
       links.push({
         sourceId,
         sourceSlug,
@@ -105,7 +110,7 @@ function extractLinksFromBlock(block: any, sourceId: string, sourceSlug: string,
         targetId: null,
         anchorText: block.text || block.label || href,
         isInternal,
-        context: 'body',
+        context: "body",
         position,
       });
     }
@@ -123,8 +128,8 @@ function extractLinksFromBlock(block: any, sourceId: string, sourceSlug: string,
 
 function extractAnchorText(html: string, targetUrl: string): string | null {
   // Simple extraction - find anchor text for specific URL
-  const escapedUrl = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp(`<a[^>]*href=["']${escapedUrl}["'][^>]*>([^<]+)<\\/a>`, 'i');
+  const escapedUrl = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`<a[^>]*href=["']${escapedUrl}["'][^>]*>([^<]+)<\\/a>`, "i");
   const match = pattern.exec(html);
   return match ? match[1].trim() : null;
 }
@@ -167,7 +172,7 @@ export async function extractLinksFromContent(contentId: string): Promise<LinkSu
 
   // Resolve target IDs for internal links
   for (const link of internalLinks) {
-    const slug = link.targetUrl.replace(/^\//, '').split('/').pop();
+    const slug = link.targetUrl.replace(/^\//, "").split("/").pop();
     if (slug) {
       const target = await db.query.contents.findFirst({
         where: eq(contents.slug, slug),
@@ -179,9 +184,7 @@ export async function extractLinksFromContent(contentId: string): Promise<LinkSu
   }
 
   // Find broken links (internal links that don't resolve)
-  const brokenLinks = internalLinks
-    .filter(l => !l.targetId)
-    .map(l => l.targetUrl);
+  const brokenLinks = internalLinks.filter(l => !l.targetId).map(l => l.targetUrl);
 
   // Generate link suggestions based on content type and keywords
   const suggestedLinks = await generateLinkSuggestions(content);
@@ -200,8 +203,10 @@ export async function extractLinksFromContent(contentId: string): Promise<LinkSu
 /**
  * Generate link suggestions based on content similarity
  */
-async function generateLinkSuggestions(content: any): Promise<{ targetId: string; relevance: number }[]> {
-  const primaryKeyword = content.primaryKeyword || '';
+async function generateLinkSuggestions(
+  content: any
+): Promise<{ targetId: string; relevance: number }[]> {
+  const primaryKeyword = content.primaryKeyword || "";
   const type = content.type;
 
   // Find related content
@@ -211,7 +216,7 @@ async function generateLinkSuggestions(content: any): Promise<{ targetId: string
       AND ${contents.id} != ${content.id}
       AND (
         ${contents.type} = ${type}
-        OR ${contents.primaryKeyword} ILIKE ${'%' + primaryKeyword + '%'}
+        OR ${contents.primaryKeyword} ILIKE ${"%" + primaryKeyword + "%"}
       )
     `,
     limit: 10,
@@ -228,14 +233,15 @@ async function generateLinkSuggestions(content: any): Promise<{ targetId: string
  */
 export async function getSiteLinksOverview(): Promise<SiteLinksOverview> {
   const published = await db.query.contents.findMany({
-    where: eq(contents.status, 'published'),
+    where: eq(contents.status, "published"),
   });
 
   // Extract links for all content
   const linkCounts: { id: string; internal: number; external: number }[] = [];
   const inboundCounts = new Map<string, number>();
 
-  for (const content of published.slice(0, 100)) { // Limit for performance
+  for (const content of published.slice(0, 100)) {
+    // Limit for performance
     const summary = await extractLinksFromContent(content.id);
     linkCounts.push({
       id: content.id,
@@ -255,31 +261,36 @@ export async function getSiteLinksOverview(): Promise<SiteLinksOverview> {
   const totalExternal = linkCounts.reduce((sum, c) => sum + c.external, 0);
 
   // Sort by inbound count
-  const sortedByInbound = Array.from(inboundCounts.entries())
-    .sort((a, b) => b[1] - a[1]);
+  const sortedByInbound = Array.from(inboundCounts.entries()).sort((a, b) => b[1] - a[1]);
 
   return {
     totalInternalLinks: totalInternal,
     totalExternalLinks: totalExternal,
-    avgInternalLinksPerPage: linkCounts.length > 0 ? Math.round(totalInternal / linkCounts.length) : 0,
+    avgInternalLinksPerPage:
+      linkCounts.length > 0 ? Math.round(totalInternal / linkCounts.length) : 0,
     pagesWithNoInternalLinks: linkCounts.filter(c => c.internal === 0).length,
     pagesWithNoOutboundLinks: linkCounts.filter(c => c.internal === 0 && c.external === 0).length,
     mostLinkedPages: sortedByInbound.slice(0, 10).map(([id, count]) => ({
       contentId: id,
       inboundCount: count,
     })),
-    leastLinkedPages: sortedByInbound.slice(-10).reverse().map(([id, count]) => ({
-      contentId: id,
-      inboundCount: count,
-    })),
+    leastLinkedPages: sortedByInbound
+      .slice(-10)
+      .reverse()
+      .map(([id, count]) => ({
+        contentId: id,
+        inboundCount: count,
+      })),
   };
 }
 
 /**
  * Check if a URL is a valid internal link
  */
-export async function validateInternalLink(url: string): Promise<{ valid: boolean; contentId?: string }> {
-  const slug = url.replace(/^\//, '').split('/').pop();
+export async function validateInternalLink(
+  url: string
+): Promise<{ valid: boolean; contentId?: string }> {
+  const slug = url.replace(/^\//, "").split("/").pop();
   if (!slug) return { valid: false };
 
   const content = await db.query.contents.findFirst({
@@ -288,5 +299,3 @@ export async function validateInternalLink(url: string): Promise<{ valid: boolea
 
   return content ? { valid: true, contentId: content.id } : { valid: false };
 }
-
-console.log('[SEO Engine] Link adapter loaded');

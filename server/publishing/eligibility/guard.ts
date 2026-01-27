@@ -6,11 +6,7 @@
  */
 
 import { evaluateEligibility } from "./engine";
-import {
-  type EligibilityOptions,
-  type PublishGuardResult,
-  isPublishGuardsEnabled,
-} from "./types";
+import { type EligibilityOptions, type PublishGuardResult, isPublishGuardsEnabled } from "./types";
 
 /**
  * Check if publishing is allowed and return structured result
@@ -27,44 +23,36 @@ export async function checkPublishGuard(
         contentId,
         allowed: true,
         blockingReasons: [],
-        warnings: ['Publish guards disabled'],
+        warnings: ["Publish guards disabled"],
         score: 100,
         evaluatedAt: new Date(),
       },
-      action: 'proceed',
+      action: "proceed",
     };
   }
 
   const eligibility = await evaluateEligibility(contentId, options);
 
   if (!eligibility.allowed) {
-    console.log(`[PublishGuard] Blocked: ${contentId}`, {
-      reasons: eligibility.blockingReasons,
-    });
-
     return {
       allowed: false,
       eligibility,
-      action: 'blocked',
+      action: "blocked",
     };
   }
 
   if (eligibility.warnings.length > 0) {
-    console.log(`[PublishGuard] Allowed with warnings: ${contentId}`, {
-      warnings: eligibility.warnings,
-    });
-
     return {
       allowed: true,
       eligibility,
-      action: 'warning',
+      action: "warning",
     };
   }
 
   return {
     allowed: true,
     eligibility,
-    action: 'proceed',
+    action: "proceed",
   };
 }
 
@@ -75,13 +63,13 @@ export async function checkPublishGuard(
 export async function guardManualPublish(
   contentId: string,
   options: EligibilityOptions = {}
-): Promise<{ success: boolean; error?: string; eligibility?: PublishGuardResult['eligibility'] }> {
+): Promise<{ success: boolean; error?: string; eligibility?: PublishGuardResult["eligibility"] }> {
   const result = await checkPublishGuard(contentId, options);
 
   if (!result.allowed) {
     return {
       success: false,
-      error: `Publishing blocked: ${result.eligibility.blockingReasons.join('; ')}`,
+      error: `Publishing blocked: ${result.eligibility.blockingReasons.join("; ")}`,
       eligibility: result.eligibility,
     };
   }

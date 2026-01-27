@@ -7,7 +7,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Webhook, Plus, CheckCircle2, XCircle, Clock, Send, Lightbulb, ExternalLink, RefreshCw } from "lucide-react";
+import {
+  Webhook,
+  Plus,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Send,
+  Lightbulb,
+  ExternalLink,
+  RefreshCw,
+} from "lucide-react";
 
 interface WebhookConfig {
   id: string;
@@ -88,15 +98,12 @@ export default function WebhooksPage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Webhooks send <strong>real-time notifications</strong> to external services when events occur.
-          For example: notify Slack when contents is published, sync to a headless CMS, or trigger CI/CD pipelines.
-          <br />
-          <span className="text-xs opacity-70">
-            (Webhooks שולחים התראות בזמן אמת לשירותים חיצוניים כשאירועים מתרחשים.)
-          </span>
+          Webhooks send <strong>real-time notifications</strong> to external services when events
+          occur. For example: notify Slack when content is published, sync to a headless CMS, or
+          trigger CI/CD pipelines.
         </p>
       </div>
 
@@ -166,15 +173,13 @@ export default function WebhooksPage() {
         <Card>
           <CardHeader>
             <CardTitle>Configured Webhooks</CardTitle>
-            <CardDescription>
-              Endpoints receiving event notifications
-            </CardDescription>
+            <CardDescription>Endpoints receiving event notifications</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[350px]">
               {webhooks?.length ? (
                 <div className="space-y-4">
-                  {webhooks.map((webhook) => (
+                  {webhooks.map(webhook => (
                     <div
                       key={webhook.id}
                       className="p-4 border rounded-lg space-y-3"
@@ -182,14 +187,17 @@ export default function WebhooksPage() {
                     >
                       <div className="flex items-center justify-between">
                         <h4 className="font-medium">{webhook.name}</h4>
-                        <Switch checked={webhook.isActive} data-testid={`switch-webhook-${webhook.id}`} />
+                        <Switch
+                          checked={webhook.isActive}
+                          data-testid={`switch-webhook-${webhook.id}`}
+                        />
                       </div>
                       <p className="text-sm text-muted-foreground truncate flex items-center gap-1">
                         <ExternalLink className="h-3 w-3" />
                         {webhook.url}
                       </p>
                       <div className="flex items-center gap-2 flex-wrap">
-                        {webhook.events?.map((event) => (
+                        {webhook.events?.map(event => (
                           <Badge key={event} variant="outline" className="text-xs">
                             {event}
                           </Badge>
@@ -227,15 +235,13 @@ export default function WebhooksPage() {
         <Card>
           <CardHeader>
             <CardTitle>Recent Deliveries</CardTitle>
-            <CardDescription>
-              Latest webhook delivery attempts
-            </CardDescription>
+            <CardDescription>Latest webhook delivery attempts</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[350px]">
               {logs?.length ? (
                 <div className="space-y-2">
-                  {logs.slice(0, 20).map((log) => (
+                  {logs.slice(0, 20).map(log => (
                     <div
                       key={log.id}
                       className="flex items-center justify-between p-3 border rounded-lg"

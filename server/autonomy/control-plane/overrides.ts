@@ -3,10 +3,10 @@
  * Temporary policy overrides with TTL and audit trail
  */
 
-import { db } from '../../db';
-import { sql } from 'drizzle-orm';
-import { z } from 'zod';
-import { GuardedFeature, EnforcementOverride } from '../enforcement/types';
+import { db } from "../../db";
+import { sql } from "drizzle-orm";
+import { z } from "zod";
+import { GuardedFeature, EnforcementOverride } from "../enforcement/types";
 
 // In-memory cache for active overrides
 const overrideCache = new Map<string, { override: EnforcementOverride; expiresAt: number }>();
@@ -17,9 +17,17 @@ const CACHE_TTL_MS = 30000;
 export const createOverrideSchema = z.object({
   targetKey: z.string().min(1).max(200),
   feature: z.enum([
-    'chat', 'octopus', 'search', 'aeo', 'translation', 'images',
-    'content_enrichment', 'seo_optimization', 'internal_linking',
-    'background_job', 'publishing'
+    "chat",
+    "octopus",
+    "search",
+    "aeo",
+    "translation",
+    "images",
+    "content_enrichment",
+    "seo_optimization",
+    "internal_linking",
+    "background_job",
+    "publishing",
   ]),
   reason: z.string().min(10).max(500),
   ttlMinutes: z.number().int().min(5).max(1440), // 5 min to 24 hours
@@ -91,14 +99,6 @@ export async function createOverride(
   const cacheKey = getCacheKey(input.targetKey, input.feature as GuardedFeature);
   overrideCache.set(cacheKey, { override, expiresAt: Date.now() + CACHE_TTL_MS });
 
-  console.log('[Overrides] Created override:', {
-    id,
-    targetKey: input.targetKey,
-    feature: input.feature,
-    expiresAt: expiresAt.toISOString(),
-    createdBy,
-  });
-
   return override;
 }
 
@@ -165,11 +165,11 @@ export async function revokeOverride(
   const stored = overrideStore.get(id);
 
   if (!stored) {
-    return { success: false, error: 'Override not found' };
+    return { success: false, error: "Override not found" };
   }
 
   if (stored.revokedAt) {
-    return { success: false, error: 'Override already revoked' };
+    return { success: false, error: "Override already revoked" };
   }
 
   stored.revokedAt = new Date();
@@ -178,12 +178,6 @@ export async function revokeOverride(
   // Invalidate cache
   const cacheKey = getCacheKey(stored.targetKey, stored.feature as GuardedFeature);
   overrideCache.delete(cacheKey);
-
-  console.log('[Overrides] Revoked override:', {
-    id,
-    revokedBy,
-    originalCreator: stored.createdBy,
-  });
 
   return { success: true };
 }
@@ -268,7 +262,6 @@ export async function cleanupExpiredOverrides(): Promise<number> {
   }
 
   if (cleaned > 0) {
-    console.log('[Overrides] Cleaned up expired overrides:', cleaned);
   }
 
   return cleaned;

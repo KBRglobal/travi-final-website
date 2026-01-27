@@ -3,9 +3,14 @@
  * Cron-based scheduling for data source ingestion with concurrent run prevention
  */
 
-import cron, { type ScheduledTask } from 'node-cron';
-import type { DataSource, IngestionResult, IngestionRunRecord, IngestionSourceStatus } from './types';
-import type { BaseIngester } from './base-ingester';
+import cron, { type ScheduledTask } from "node-cron";
+import type {
+  DataSource,
+  IngestionResult,
+  IngestionRunRecord,
+  IngestionSourceStatus,
+} from "./types";
+import type { BaseIngester } from "./base-ingester";
 
 interface ScheduledIngester {
   ingester: BaseIngester;
@@ -23,7 +28,7 @@ class IngestionScheduler {
    */
   register(ingester: BaseIngester): void {
     const sourceId = ingester.source.id;
-    
+
     if (this.scheduledIngesters.has(sourceId)) {
       this.log(`Ingester ${sourceId} already registered, skipping`);
       return;
@@ -111,12 +116,12 @@ class IngestionScheduler {
       id: runId,
       sourceId,
       startedAt,
-      status: 'running',
+      status: "running",
     };
 
     // Add to history (at the beginning)
     scheduled.runHistory.unshift(runRecord);
-    
+
     // Trim history if too large
     if (scheduled.runHistory.length > this.maxHistorySize) {
       scheduled.runHistory = scheduled.runHistory.slice(0, this.maxHistorySize);
@@ -126,10 +131,10 @@ class IngestionScheduler {
 
     try {
       const result = await scheduled.ingester.ingest();
-      
+
       // Update run record
       runRecord.completedAt = new Date();
-      runRecord.status = 'completed';
+      runRecord.status = "completed";
       runRecord.result = result;
 
       this.log(`Ingestion run ${runId} completed for ${sourceId}`, {
@@ -144,7 +149,7 @@ class IngestionScheduler {
     } catch (error) {
       // Update run record with error
       runRecord.completedAt = new Date();
-      runRecord.status = 'failed';
+      runRecord.status = "failed";
       runRecord.error = error instanceof Error ? error.message : String(error);
 
       this.logError(`Ingestion run ${runId} failed for ${sourceId}`, error);
@@ -256,9 +261,7 @@ class IngestionScheduler {
   private log(message: string, data?: unknown): void {
     const timestamp = new Date().toISOString();
     if (data) {
-      console.log(`[${timestamp}] [IngestionScheduler] ${message}`, JSON.stringify(data));
     } else {
-      console.log(`[${timestamp}] [IngestionScheduler] ${message}`);
     }
   }
 
@@ -267,7 +270,6 @@ class IngestionScheduler {
    */
   private logError(message: string, error?: unknown): void {
     const timestamp = new Date().toISOString();
-    console.error(`[${timestamp}] [IngestionScheduler] ERROR: ${message}`, error);
   }
 }
 

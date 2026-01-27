@@ -8,45 +8,32 @@
  * - ENABLE_FUNNEL_SIMULATION=false
  */
 
-export * from './types';
-export {
-  FunnelDetector,
-  getFunnelDetector,
-  resetFunnelDetector,
-} from './detector';
-export {
-  FunnelSimulator,
-  getFunnelSimulator,
-  resetFunnelSimulator,
-} from './simulator';
+export * from "./types";
+export { FunnelDetector, getFunnelDetector, resetFunnelDetector } from "./detector";
+export { FunnelSimulator, getFunnelSimulator, resetFunnelSimulator } from "./simulator";
 export {
   FunnelProposalEngine,
   getFunnelProposalEngine,
   resetFunnelProposalEngine,
-} from './proposal-engine';
-export { createFunnelDesignerRouter } from './routes';
+} from "./proposal-engine";
+export { createFunnelDesignerRouter } from "./routes";
 
-const ENABLE_FUNNEL_DESIGNER = process.env.ENABLE_FUNNEL_DESIGNER === 'true';
+const ENABLE_FUNNEL_DESIGNER = process.env.ENABLE_FUNNEL_DESIGNER === "true";
 
 /**
  * Initialize the Funnel Designer system
  */
 export function initFunnelDesigner(): void {
   if (!ENABLE_FUNNEL_DESIGNER) {
-    console.log('[FunnelDesigner] Disabled (ENABLE_FUNNEL_DESIGNER=false)');
     return;
   }
 
-  console.log('[FunnelDesigner] Initializing...');
-
   // Pre-initialize singletons
-  const { getFunnelDetector } = require('./detector');
-  const { getFunnelSimulator } = require('./simulator');
-  const { getFunnelProposalEngine } = require('./proposal-engine');
+  const { getFunnelDetector } = require("./detector");
+  const { getFunnelSimulator } = require("./simulator");
+  const { getFunnelProposalEngine } = require("./proposal-engine");
 
   getFunnelDetector();
   getFunnelSimulator();
   getFunnelProposalEngine();
-
-  console.log('[FunnelDesigner] Initialized');
 }

@@ -74,14 +74,21 @@ function validateContent(content: GeneratedAttractionContent): string[] {
 
   // Meta title length
   if (content.metaTitle.length > SEO_REQUIREMENTS.metaTitle.maxLength) {
-    warnings.push(`Meta title ${content.metaTitle.length} chars (max ${SEO_REQUIREMENTS.metaTitle.maxLength})`);
+    warnings.push(
+      `Meta title ${content.metaTitle.length} chars (max ${SEO_REQUIREMENTS.metaTitle.maxLength})`
+    );
     content.metaTitle = truncateToLimit(content.metaTitle, SEO_REQUIREMENTS.metaTitle.maxLength);
   }
 
   // Meta description length
   if (content.metaDescription.length > SEO_REQUIREMENTS.metaDescription.maxLength) {
-    warnings.push(`Meta description ${content.metaDescription.length} chars (max ${SEO_REQUIREMENTS.metaDescription.maxLength})`);
-    content.metaDescription = truncateToLimit(content.metaDescription, SEO_REQUIREMENTS.metaDescription.maxLength);
+    warnings.push(
+      `Meta description ${content.metaDescription.length} chars (max ${SEO_REQUIREMENTS.metaDescription.maxLength})`
+    );
+    content.metaDescription = truncateToLimit(
+      content.metaDescription,
+      SEO_REQUIREMENTS.metaDescription.maxLength
+    );
   }
 
   // Banned phrases in meta
@@ -104,10 +111,14 @@ function validateContent(content: GeneratedAttractionContent): string[] {
 
   // Ensure arrays have content
   if (content.aiContent.whatToExpect.length < 3) {
-    warnings.push(`Only ${content.aiContent.whatToExpect.length} "What to Expect" items (recommended 4+)`);
+    warnings.push(
+      `Only ${content.aiContent.whatToExpect.length} "What to Expect" items (recommended 4+)`
+    );
   }
   if (content.aiContent.visitorTips.length < 3) {
-    warnings.push(`Only ${content.aiContent.visitorTips.length} "Visitor Tips" items (recommended 4+)`);
+    warnings.push(
+      `Only ${content.aiContent.visitorTips.length} "Visitor Tips" items (recommended 4+)`
+    );
   }
   if (content.faqs.length < 4) {
     warnings.push(`Only ${content.faqs.length} FAQs (recommended 5+)`);
@@ -130,7 +141,7 @@ function getRatingLabel(rating: number | null | undefined): string | null {
 function buildPrompt(attraction: TiqetsAttraction): string {
   const city = attraction.cityName || "the city";
   const name = attraction.title;
-  
+
   // Get rating label (or null if below 3.8)
   const ratingLabel = getRatingLabel(attraction.tiqetsRating as unknown as number | null);
   const ratingLine = ratingLabel ? `- Visitor Rating: ${ratingLabel}` : "";
@@ -231,7 +242,7 @@ CRITICAL: Return ONLY the JSON object. No markdown fences, no explanations befor
  */
 function repairJSON(jsonString: string): string {
   let fixed = jsonString.trim();
-  
+
   // Remove markdown code fences if present
   if (fixed.startsWith("```json")) {
     fixed = fixed.slice(7);
@@ -242,44 +253,44 @@ function repairJSON(jsonString: string): string {
     fixed = fixed.slice(0, -3);
   }
   fixed = fixed.trim();
-  
+
   // Count opening and closing braces/brackets
   let braceCount = 0;
   let bracketCount = 0;
   let inString = false;
   let escapeNext = false;
-  
+
   for (let i = 0; i < fixed.length; i++) {
     const char = fixed[i];
-    
+
     if (escapeNext) {
       escapeNext = false;
       continue;
     }
-    
-    if (char === '\\') {
+
+    if (char === "\\") {
       escapeNext = true;
       continue;
     }
-    
+
     if (char === '"') {
       inString = !inString;
       continue;
     }
-    
+
     if (!inString) {
-      if (char === '{') braceCount++;
-      else if (char === '}') braceCount--;
-      else if (char === '[') bracketCount++;
-      else if (char === ']') bracketCount--;
+      if (char === "{") braceCount++;
+      else if (char === "}") braceCount--;
+      else if (char === "[") bracketCount++;
+      else if (char === "]") bracketCount--;
     }
   }
-  
+
   // Fix truncated strings - if we're inside a string, close it
   if (inString) {
     fixed += '"';
   }
-  
+
   // If JSON ends abruptly mid-object/array, try to salvage
   // Remove trailing incomplete key-value pairs
   const lastCompleteIndex = findLastCompleteElement(fixed);
@@ -290,31 +301,40 @@ function repairJSON(jsonString: string): string {
     bracketCount = 0;
     inString = false;
     escapeNext = false;
-    
+
     for (let i = 0; i < fixed.length; i++) {
       const char = fixed[i];
-      if (escapeNext) { escapeNext = false; continue; }
-      if (char === '\\') { escapeNext = true; continue; }
-      if (char === '"') { inString = !inString; continue; }
+      if (escapeNext) {
+        escapeNext = false;
+        continue;
+      }
+      if (char === "\\") {
+        escapeNext = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
       if (!inString) {
-        if (char === '{') braceCount++;
-        else if (char === '}') braceCount--;
-        else if (char === '[') bracketCount++;
-        else if (char === ']') bracketCount--;
+        if (char === "{") braceCount++;
+        else if (char === "}") braceCount--;
+        else if (char === "[") bracketCount++;
+        else if (char === "]") bracketCount--;
       }
     }
   }
-  
+
   // Close any open brackets first, then braces
   while (bracketCount > 0) {
-    fixed += ']';
+    fixed += "]";
     bracketCount--;
   }
   while (braceCount > 0) {
-    fixed += '}';
+    fixed += "}";
     braceCount--;
   }
-  
+
   return fixed;
 }
 
@@ -326,7 +346,7 @@ function findLastCompleteElement(json: string): number {
   for (let i = json.length - 1; i >= 0; i--) {
     const char = json[i];
     // These characters indicate the end of a complete value
-    if (char === '}' || char === ']' || char === '"') {
+    if (char === "}" || char === "]" || char === '"') {
       return i;
     }
     // Numbers, booleans, null
@@ -336,13 +356,13 @@ function findLastCompleteElement(json: string): number {
       while (j > 0 && /[0-9.eE+-]/.test(json[j - 1])) j--;
       return i;
     }
-    if (json.slice(Math.max(0, i - 3), i + 1) === 'true') return i;
-    if (json.slice(Math.max(0, i - 4), i + 1) === 'false') return i;
-    if (json.slice(Math.max(0, i - 3), i + 1) === 'null') return i;
+    if (json.slice(Math.max(0, i - 3), i + 1) === "true") return i;
+    if (json.slice(Math.max(0, i - 4), i + 1) === "false") return i;
+    if (json.slice(Math.max(0, i - 3), i + 1) === "null") return i;
     // Skip whitespace
     if (/\s/.test(char)) continue;
     // If we hit a comma or colon, we're mid-element - keep looking
-    if (char === ',' || char === ':') continue;
+    if (char === "," || char === ":") continue;
     // Anything else, stop
     break;
   }
@@ -369,7 +389,7 @@ function parseAIResponse(rawContent: string): GeneratedAttractionContent {
   jsonString = jsonString.trim();
 
   let parsed: any;
-  
+
   try {
     parsed = JSON.parse(jsonString);
   } catch (firstError) {
@@ -378,7 +398,6 @@ function parseAIResponse(rawContent: string): GeneratedAttractionContent {
       const repaired = repairJSON(rawContent);
       parsed = JSON.parse(repaired);
       // Log that we auto-repaired
-      console.log("[ContentGenerator] Auto-repaired truncated JSON response");
     } catch {
       // If repair also fails, throw original error for better debugging
       throw firstError;
@@ -391,26 +410,32 @@ function parseAIResponse(rawContent: string): GeneratedAttractionContent {
     whyVisit: parsed.ai_content?.why_visit || "",
     proTip: parsed.ai_content?.pro_tip || "",
     whatToExpect: Array.isArray(parsed.ai_content?.what_to_expect)
-      ? parsed.ai_content.what_to_expect.map((item: { title?: string; description?: string; icon?: string }) => ({
-          title: item.title || "",
-          description: item.description || "",
-          icon: item.icon || "Info",
-        }))
+      ? parsed.ai_content.what_to_expect.map(
+          (item: { title?: string; description?: string; icon?: string }) => ({
+            title: item.title || "",
+            description: item.description || "",
+            icon: item.icon || "Info",
+          })
+        )
       : [],
     visitorTips: Array.isArray(parsed.ai_content?.visitor_tips)
-      ? parsed.ai_content.visitor_tips.map((item: { title?: string; description?: string; icon?: string }) => ({
-          title: item.title || "",
-          description: item.description || "",
-          icon: item.icon || "Info",
-        }))
+      ? parsed.ai_content.visitor_tips.map(
+          (item: { title?: string; description?: string; icon?: string }) => ({
+            title: item.title || "",
+            description: item.description || "",
+            icon: item.icon || "Info",
+          })
+        )
       : [],
     howToGetThere: {
       description: parsed.ai_content?.how_to_get_there?.description || "",
       transport: Array.isArray(parsed.ai_content?.how_to_get_there?.transport)
-        ? parsed.ai_content.how_to_get_there.transport.map((t: { mode?: string; details?: string }) => ({
-            mode: t.mode || "",
-            details: t.details || "",
-          }))
+        ? parsed.ai_content.how_to_get_there.transport.map(
+            (t: { mode?: string; details?: string }) => ({
+              mode: t.mode || "",
+              details: t.details || "",
+            })
+          )
         : [],
     },
     answerCapsule: parsed.ai_content?.answer_capsule || "",
@@ -444,7 +469,14 @@ export async function generateAttractionContent(
   attraction: TiqetsAttraction,
   options: GenerationOptions = {}
 ): Promise<ContentGenerationResult> {
-  logger.info({ attractionId: attraction.id, title: attraction.title, provider: options.specificProvider || "auto" }, "Starting content generation");
+  logger.info(
+    {
+      attractionId: attraction.id,
+      title: attraction.title,
+      provider: options.specificProvider || "auto",
+    },
+    "Starting content generation"
+  );
 
   const prompt = buildPrompt(attraction);
   const provider = getMultiModelProvider();
@@ -470,7 +502,9 @@ Your content is practical, specific, and helps travelers make informed decisions
     }
   } catch (error) {
     logger.error({ error: String(error), attractionId: attraction.id }, "AI provider failed");
-    throw new Error(`Content generation failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Content generation failed: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 
   let content: GeneratedAttractionContent;
@@ -478,10 +512,16 @@ Your content is practical, specific, and helps travelers make informed decisions
     content = parseAIResponse(result.content);
   } catch (error) {
     logger.error(
-      { error: String(error), attractionId: attraction.id, rawResponse: result.content.slice(0, 500) },
+      {
+        error: String(error),
+        attractionId: attraction.id,
+        rawResponse: result.content.slice(0, 500),
+      },
       "Failed to parse AI response"
     );
-    throw new Error(`Failed to parse AI response: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to parse AI response: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 
   const warnings = validateContent(content);
@@ -542,7 +582,7 @@ export async function generateBatchContent(
     const batch = attractions.slice(i, i + concurrency);
 
     const results = await Promise.allSettled(
-      batch.map(async (attraction) => {
+      batch.map(async attraction => {
         const result = await generateAttractionContent(attraction);
         return { attractionId: attraction.id, ...result };
       })

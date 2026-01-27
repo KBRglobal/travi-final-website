@@ -34,7 +34,6 @@ export function requirePermission(action: Action, resource: Resource) {
     // Only use ENABLE_RBAC flag to control PERMISSION checks, not AUTH checks
     if (!isEnabled()) {
       if (!process.env.ENABLE_RBAC) {
-        console.warn("[AccessControl] ENABLE_RBAC is not set - permission checks are disabled but authentication is still enforced");
       }
       return next();
     }
@@ -43,9 +42,7 @@ export function requirePermission(action: Action, resource: Resource) {
     const resourceId = req.params.id || req.params.contentId || req.params.entityId;
 
     // Resolve context for more granular checks
-    const context = resourceId
-      ? await resolveContext(resource, resourceId)
-      : undefined;
+    const context = resourceId ? await resolveContext(resource, resourceId) : undefined;
 
     const result = await can(userId, action, resource, context);
 
@@ -76,7 +73,6 @@ export function requireRole(...roles: GovernanceRoleName[]) {
     // Only use ENABLE_RBAC flag to control ROLE checks, not AUTH checks
     if (!isEnabled()) {
       if (!process.env.ENABLE_RBAC) {
-        console.warn("[AccessControl] ENABLE_RBAC is not set - role checks are disabled but authentication is still enforced");
       }
       return next();
     }
@@ -108,16 +104,13 @@ export function checkPermission(action: Action, resource: Resource) {
     // Only use ENABLE_RBAC flag to control PERMISSION checks, not AUTH checks
     if (!isEnabled()) {
       if (!process.env.ENABLE_RBAC) {
-        console.warn("[AccessControl] ENABLE_RBAC is not set - permission checks are disabled but authentication is still enforced");
       }
       (req as any).permissionResult = { allowed: true, reason: "RBAC disabled" };
       return next();
     }
 
     const resourceId = req.params.id || req.params.contentId;
-    const context = resourceId
-      ? await resolveContext(resource, resourceId)
-      : undefined;
+    const context = resourceId ? await resolveContext(resource, resourceId) : undefined;
 
     const result = await can(userId, action, resource, context);
     (req as any).permissionResult = result;
@@ -146,5 +139,3 @@ export function requireOps() {
 export function requireViewer() {
   return requirePermission("view", "content");
 }
-
-console.log("[AccessControl] Middleware loaded");

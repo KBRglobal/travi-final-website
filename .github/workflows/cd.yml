@@ -1,0 +1,221 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Pre-deployment checks
+  pre-deploy:
+    name: 🔍 Pre-Deployment Checks
+    runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{ steps.check.outputs.should-deploy }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for deployable changes
+        id: check
+        run: |
+          # Check if there are meaningful changes to deploy
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+
+          # Skip deployment for docs-only changes
+          if echo "$CHANGED_FILES" | grep -qvE '^\s*$|\.md$|^docs/'; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "✅ Deployable changes detected"
+          else
+            echo "should-deploy=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Skipping deployment - only documentation changes"
+          fi
+
+  # Run CI checks before deployment
+  ci-check:
+    name: ✅ CI Verification
+    needs: pre-deploy
+    if: needs.pre-deploy.outputs.should-deploy == 'true'
+    uses: ./.github/workflows/ci.yml
+
+  # Build and prepare deployment
+  build:
+    name: 🏗️ Build for Deployment
+    needs: ci-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: |
+            dist/
+            package.json
+            package-lock.json
+          retention-days: 7
+
+  # Deploy to Replit (trigger via webhook or manual)
+  deploy:
+    name: 🚀 Deploy to Replit
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ vars.DEPLOYMENT_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: production-build
+
+      - name: Notify deployment start
+        run: |
+          echo "🚀 Starting deployment to ${{ github.event.inputs.environment || 'production' }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Actor: ${{ github.actor }}"
+
+      # Replit auto-deploys on push to connected branch
+      # This step is for documentation and webhook triggers
+      - name: Trigger Replit deployment
+        if: vars.REPLIT_DEPLOY_WEBHOOK != ''
+        run: |
+          curl -X POST "${{ vars.REPLIT_DEPLOY_WEBHOOK }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "actor": "${{ github.actor }}",
+              "timestamp": "${{ github.event.head_commit.timestamp }}"
+            }' || echo "Webhook not configured - using auto-deploy"
+        continue-on-error: true
+
+      - name: Wait for deployment
+        run: |
+          echo "⏳ Waiting for Replit to deploy..."
+          sleep 30
+
+  # Post-deployment verification
+  verify:
+    name: 🔍 Post-Deployment Verification
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        run: |
+          HEALTH_URL="${{ vars.DEPLOYMENT_URL }}/api/health"
+          echo "Checking health at: $HEALTH_URL"
+
+          for i in {1..5}; do
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" 2>/dev/null || echo "000")
+
+            if [ "$RESPONSE" = "200" ]; then
+              echo "✅ Health check passed!"
+              exit 0
+            fi
+
+            echo "Attempt $i: HTTP $RESPONSE - waiting..."
+            sleep 10
+          done
+
+          echo "❌ Health check failed after 5 attempts"
+          exit 1
+        env:
+          DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || 'https://travi-final-website.replit.app' }}
+
+      - name: Liveness check
+        run: |
+          LIVE_URL="${{ vars.DEPLOYMENT_URL }}/api/health/live"
+          RESPONSE=$(curl -s "$LIVE_URL" 2>/dev/null || echo "{}")
+          echo "Liveness response: $RESPONSE"
+
+          if echo "$RESPONSE" | grep -q '"status":"alive"'; then
+            echo "✅ Liveness check passed!"
+          else
+            echo "❌ Liveness check failed"
+            exit 1
+          fi
+        env:
+          DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || 'https://travi-final-website.replit.app' }}
+
+      - name: Readiness check
+        run: |
+          READY_URL="${{ vars.DEPLOYMENT_URL }}/api/health/ready"
+          RESPONSE=$(curl -s "$READY_URL" 2>/dev/null || echo "{}")
+          echo "Readiness response: $RESPONSE"
+
+          if echo "$RESPONSE" | grep -q '"status":"ready"'; then
+            echo "✅ Readiness check passed!"
+          else
+            echo "⚠️ Readiness check response: $RESPONSE"
+          fi
+        env:
+          DEPLOYMENT_URL: ${{ vars.DEPLOYMENT_URL || 'https://travi-final-website.replit.app' }}
+        continue-on-error: true
+
+  # Deployment summary
+  summary:
+    name: 📋 Deployment Summary
+    needs: [deploy, verify]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ github.event.inputs.environment || 'production' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Actor | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy Status | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Verify Status | ${{ needs.verify.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.verify.result }}" = "success" ]; then
+            echo "✅ **Deployment completed successfully!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Deployment may need attention**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify on failure
+        if: needs.verify.result == 'failure'
+        run: |
+          echo "::error::Deployment verification failed! Consider rolling back."

@@ -5,28 +5,28 @@
  * Integrates with existing approval workflow system if available.
  */
 
-import { db } from '../../db';
-import { actionRequiresApproval, getAutopilotConfig } from '../config';
+import { db } from "../../db";
+import { actionRequiresApproval, getAutopilotConfig } from "../config";
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export type SEOActionType =
-  | 'SET_NOINDEX'
-  | 'REMOVE_NOINDEX'
-  | 'SET_CANONICAL'
-  | 'REMOVE_CANONICAL'
-  | 'BLOCK_PUBLISH'
-  | 'UNBLOCK_PUBLISH'
-  | 'MOVE_TO_DRAFT'
-  | 'QUEUE_DELETE'
-  | 'QUEUE_MERGE'
-  | 'BULK_NOINDEX'
-  | 'BULK_REINDEX'
-  | 'INJECT_LINKS'
-  | 'REMOVE_LINKS'
-  | 'CHANGE_CLASSIFICATION';
+  | "SET_NOINDEX"
+  | "REMOVE_NOINDEX"
+  | "SET_CANONICAL"
+  | "REMOVE_CANONICAL"
+  | "BLOCK_PUBLISH"
+  | "UNBLOCK_PUBLISH"
+  | "MOVE_TO_DRAFT"
+  | "QUEUE_DELETE"
+  | "QUEUE_MERGE"
+  | "BULK_NOINDEX"
+  | "BULK_REINDEX"
+  | "INJECT_LINKS"
+  | "REMOVE_LINKS"
+  | "CHANGE_CLASSIFICATION";
 
 export interface ApprovalRequest {
   id: string;
@@ -37,7 +37,7 @@ export interface ApprovalRequest {
   requestedAt: Date;
   reason: string;
   metadata: Record<string, unknown>;
-  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  status: "pending" | "approved" | "rejected" | "expired";
   reviewedBy?: string;
   reviewedAt?: Date;
   reviewNote?: string;
@@ -52,20 +52,16 @@ export interface ApprovalResult {
 }
 
 // Destructive actions that ALWAYS require approval
-const ALWAYS_REQUIRE_APPROVAL: SEOActionType[] = [
-  'QUEUE_DELETE',
-  'BULK_NOINDEX',
-  'BULK_REINDEX',
-];
+const ALWAYS_REQUIRE_APPROVAL: SEOActionType[] = ["QUEUE_DELETE", "BULK_NOINDEX", "BULK_REINDEX"];
 
 // Actions that require approval in supervised mode
 const SUPERVISED_REQUIRE_APPROVAL: SEOActionType[] = [
-  'SET_NOINDEX',
-  'BLOCK_PUBLISH',
-  'MOVE_TO_DRAFT',
-  'QUEUE_MERGE',
-  'INJECT_LINKS',
-  'CHANGE_CLASSIFICATION',
+  "SET_NOINDEX",
+  "BLOCK_PUBLISH",
+  "MOVE_TO_DRAFT",
+  "QUEUE_MERGE",
+  "INJECT_LINKS",
+  "CHANGE_CLASSIFICATION",
 ];
 
 // ============================================================================
@@ -97,12 +93,12 @@ export function checkApprovalRequired(actionType: SEOActionType): boolean {
   const config = getAutopilotConfig();
 
   // In 'off' mode, everything requires approval
-  if (config.mode === 'off') {
+  if (config.mode === "off") {
     return true;
   }
 
   // In 'supervised' mode, check the action type
-  if (config.mode === 'supervised') {
+  if (config.mode === "supervised") {
     return SUPERVISED_REQUIRE_APPROVAL.includes(actionType);
   }
 
@@ -134,13 +130,11 @@ export async function requestApproval(
     requestedAt: now,
     reason,
     metadata,
-    status: 'pending',
+    status: "pending",
     expiresAt,
   };
 
   pendingApprovals.set(id, request);
-
-  console.log(`[SEO Governance] Approval requested: ${id} for ${actionType} on ${contentId}`);
 
   // In a real implementation, this would:
   // 1. Insert into approvals table
@@ -161,26 +155,24 @@ export async function approveRequest(
   const request = pendingApprovals.get(approvalId);
 
   if (!request) {
-    return { success: false, message: 'Approval request not found' };
+    return { success: false, message: "Approval request not found" };
   }
 
-  if (request.status !== 'pending') {
+  if (request.status !== "pending") {
     return { success: false, message: `Request already ${request.status}` };
   }
 
   if (new Date() > request.expiresAt) {
-    request.status = 'expired';
-    return { success: false, message: 'Request has expired' };
+    request.status = "expired";
+    return { success: false, message: "Request has expired" };
   }
 
-  request.status = 'approved';
+  request.status = "approved";
   request.reviewedBy = reviewedBy;
   request.reviewedAt = new Date();
   request.reviewNote = note;
 
-  console.log(`[SEO Governance] Approval ${approvalId} approved by ${reviewedBy}`);
-
-  return { success: true, message: 'Request approved' };
+  return { success: true, message: "Request approved" };
 }
 
 /**
@@ -194,21 +186,19 @@ export async function rejectRequest(
   const request = pendingApprovals.get(approvalId);
 
   if (!request) {
-    return { success: false, message: 'Approval request not found' };
+    return { success: false, message: "Approval request not found" };
   }
 
-  if (request.status !== 'pending') {
+  if (request.status !== "pending") {
     return { success: false, message: `Request already ${request.status}` };
   }
 
-  request.status = 'rejected';
+  request.status = "rejected";
   request.reviewedBy = reviewedBy;
   request.reviewedAt = new Date();
   request.reviewNote = reason;
 
-  console.log(`[SEO Governance] Approval ${approvalId} rejected by ${reviewedBy}: ${reason}`);
-
-  return { success: true, message: 'Request rejected' };
+  return { success: true, message: "Request rejected" };
 }
 
 /**
@@ -219,10 +209,10 @@ export function getPendingApprovals(): ApprovalRequest[] {
   const pending: ApprovalRequest[] = [];
 
   for (const request of pendingApprovals.values()) {
-    if (request.status === 'pending') {
+    if (request.status === "pending") {
       // Check expiration
       if (now > request.expiresAt) {
-        request.status = 'expired';
+        request.status = "expired";
       } else {
         pending.push(request);
       }
@@ -253,7 +243,7 @@ export async function canProceed(
     return {
       approved: true,
       requiresApproval: false,
-      reason: 'Action does not require approval',
+      reason: "Action does not require approval",
     };
   }
 
@@ -262,14 +252,14 @@ export async function canProceed(
     if (
       request.actionType === actionType &&
       request.contentId === contentId &&
-      request.status === 'approved' &&
+      request.status === "approved" &&
       new Date() < request.expiresAt
     ) {
       return {
         approved: true,
         requiresApproval: true,
         approvalId: request.id,
-        reason: 'Action has been approved',
+        reason: "Action has been approved",
       };
     }
   }
@@ -277,7 +267,7 @@ export async function canProceed(
   return {
     approved: false,
     requiresApproval: true,
-    reason: 'Action requires approval',
+    reason: "Action requires approval",
   };
 }
 
@@ -289,13 +279,11 @@ export function cleanupExpiredApprovals(): number {
   let cleaned = 0;
 
   for (const [id, request] of pendingApprovals.entries()) {
-    if (now > request.expiresAt && request.status === 'pending') {
-      request.status = 'expired';
+    if (now > request.expiresAt && request.status === "pending") {
+      request.status = "expired";
       cleaned++;
     }
   }
 
   return cleaned;
 }
-
-console.log('[SEO Governance] Approval gate loaded');

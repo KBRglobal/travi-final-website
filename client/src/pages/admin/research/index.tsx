@@ -5,13 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -63,14 +57,12 @@ interface ResearchUploadWithCount extends ResearchUpload {
 const STATUS_CONFIG = {
   pending: {
     label: "Waiting for analysis",
-    labelHe: "ממתין לניתוח",
     variant: "outline" as const,
     className: "border-amber-400 text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900",
     icon: Clock,
   },
   analyzing: {
-    label: "Extracting contents ideas...",
-    labelHe: "מנתח ומחלץ רעיונות...",
+    label: "Extracting content ideas...",
     variant: "outline" as const,
     className: "border-blue-400 text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900",
     icon: Loader2,
@@ -78,29 +70,28 @@ const STATUS_CONFIG = {
   },
   analyzed: {
     label: "Ready for review",
-    labelHe: "מוכן לסקירה",
     variant: "outline" as const,
-    className: "border-emerald-400 text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900",
+    className:
+      "border-emerald-400 text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900",
     icon: CheckCircle2,
   },
   generating: {
-    label: "Creating contents...",
-    labelHe: "מייצר תוכן...",
+    label: "Creating content...",
     variant: "outline" as const,
-    className: "border-[#6443F4] text-[#6443F4] dark:text-[#6443F4] bg-[#6443F4]/10 dark:bg-[#6443F4]/20",
+    className:
+      "border-[#6443F4] text-[#6443F4] dark:text-[#6443F4] bg-[#6443F4]/10 dark:bg-[#6443F4]/20",
     icon: Sparkles,
     spinning: true,
   },
   completed: {
-    label: "All contents generated",
-    labelHe: "הושלם",
+    label: "All content generated",
     variant: "outline" as const,
-    className: "border-emerald-500 text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-900",
+    className:
+      "border-emerald-500 text-emerald-800 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-900",
     icon: CheckCircle2,
   },
   failed: {
     label: "Analysis failed",
-    labelHe: "ניתוח נכשל",
     variant: "outline" as const,
     className: "border-rose-400 text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900",
     icon: XCircle,
@@ -119,8 +110,7 @@ function StatusBadge({ status }: { status: keyof typeof STATUS_CONFIG }) {
       data-testid={`badge-status-${status}`}
     >
       <Icon className={`w-3 h-3 ${isSpinning ? "animate-spin" : ""}`} />
-      <span className="hidden sm:inline">{config.label}</span>
-      <span className="sm:hidden">{config.labelHe}</span>
+      <span>{config.label}</span>
     </Badge>
   );
 }
@@ -143,18 +133,24 @@ interface SuperAgentProgressData {
   suggestionsByStatus: Record<string, number>;
 }
 
-const PHASE_CONFIG: Record<string, { label: string; labelHe: string; progress: number }> = {
-  analyzing: { label: "Extracting entities...", labelHe: "מחלץ ישויות...", progress: 20 },
-  approving: { label: "Auto-approving suggestions...", labelHe: "מאשר הצעות אוטומטית...", progress: 40 },
-  generating: { label: "Creating contents...", labelHe: "יוצר תוכן...", progress: 60 },
-  linking: { label: "Adding internal links...", labelHe: "מוסיף קישורים פנימיים...", progress: 90 },
-  completed: { label: "All done!", labelHe: "הושלם!", progress: 100 },
-  failed: { label: "Pipeline failed", labelHe: "הצינור נכשל", progress: 0 },
+const PHASE_CONFIG: Record<string, { label: string; progress: number }> = {
+  analyzing: { label: "Extracting entities...", progress: 20 },
+  approving: { label: "Auto-approving suggestions...", progress: 40 },
+  generating: { label: "Creating content...", progress: 60 },
+  linking: { label: "Adding internal links...", progress: 90 },
+  completed: { label: "All done!", progress: 100 },
+  failed: { label: "Pipeline failed", progress: 0 },
 };
 
-function SuperAgentProgressIndicator({ researchId, status }: { researchId: string; status: string }) {
+function SuperAgentProgressIndicator({
+  researchId,
+  status,
+}: {
+  researchId: string;
+  status: string;
+}) {
   const isActivePhase = status === "analyzing" || status === "generating";
-  
+
   const { data, isLoading } = useQuery<SuperAgentProgressData>({
     queryKey: ["/api/research-uploads", researchId, "super-agent/progress"],
     refetchInterval: isActivePhase ? 3000 : false, // Stop polling once completed
@@ -183,11 +179,11 @@ function SuperAgentProgressIndicator({ researchId, status }: { researchId: strin
 
   const phase = data.progress.phase;
   const phaseConfig = PHASE_CONFIG[phase] || PHASE_CONFIG.analyzing;
-  
+
   const suggestionsGenerated = data.progress.suggestionsGenerated || 0;
   const contentGenerated = data.progress.contentGenerated || 0;
   const contentFailed = data.progress.contentFailed || 0;
-  
+
   let progressValue = phaseConfig.progress;
   if (phase === "generating" && suggestionsGenerated > 0) {
     const generationProgress = ((contentGenerated + contentFailed) / suggestionsGenerated) * 50;
@@ -200,7 +196,9 @@ function SuperAgentProgressIndicator({ researchId, status }: { researchId: strin
   return (
     <div className="space-y-2 mt-3" data-testid={`progress-super-agent-${researchId}`}>
       <div className="flex items-center justify-between text-xs">
-        <span className={`flex items-center gap-1.5 ${isComplete ? "text-emerald-600" : isFailed ? "text-red-500" : "text-muted-foreground"}`}>
+        <span
+          className={`flex items-center gap-1.5 ${isComplete ? "text-emerald-600" : isFailed ? "text-red-500" : "text-muted-foreground"}`}
+        >
           {isComplete ? (
             <CheckCircle2 className="w-3 h-3" />
           ) : isFailed ? (
@@ -208,15 +206,15 @@ function SuperAgentProgressIndicator({ researchId, status }: { researchId: strin
           ) : (
             <Zap className="w-3 h-3 text-[#7B4BA4]" />
           )}
-          <span className="hidden sm:inline">{phaseConfig.label}</span>
-          <span className="sm:hidden">{phaseConfig.labelHe}</span>
+          <span>{phaseConfig.label}</span>
         </span>
         <span className="text-muted-foreground">
-          {contentGenerated}/{suggestionsGenerated} {contentFailed > 0 && `(${contentFailed} failed)`}
+          {contentGenerated}/{suggestionsGenerated}{" "}
+          {contentFailed > 0 && `(${contentFailed} failed)`}
         </span>
       </div>
-      <Progress 
-        value={Math.min(progressValue, 100)} 
+      <Progress
+        value={Math.min(progressValue, 100)}
         className={`h-1.5 ${isComplete ? "[&>div]:bg-emerald-500" : ""}`}
       />
       {data.progress.message && !isComplete && (
@@ -271,7 +269,7 @@ export default function ResearchUploadPage() {
       if (result.success && result.preview) {
         const parsedContent = result.preview;
         const extractedTitle = parsedContent.title || file.name.replace(/\.[^/.]+$/, "");
-        
+
         // Handle different contents structures - could be string, object with blocks, or summary
         let extractedContent = "";
         if (typeof parsedContent.contents === "string") {
@@ -279,15 +277,16 @@ export default function ResearchUploadPage() {
         } else if (parsedContent.contents?.blocks && Array.isArray(parsedContent.contents.blocks)) {
           // Extract text from contents blocks
           extractedContent = parsedContent.contents.blocks
-            .map((b: { type?: string; data?: { contents?: string; text?: string } }) => 
-              b.data?.contents || b.data?.text || ""
+            .map(
+              (b: { type?: string; data?: { contents?: string; text?: string } }) =>
+                b.data?.contents || b.data?.text || ""
             )
             .filter((s: string) => s.length > 0)
             .join("\n\n");
         } else if (parsedContent.summary) {
           extractedContent = parsedContent.summary;
         }
-        
+
         // Fallback to stringifying if still empty
         if (!extractedContent) {
           extractedContent = parsedContent.rawText || JSON.stringify(parsedContent, null, 2);
@@ -295,11 +294,12 @@ export default function ResearchUploadPage() {
 
         form.setValue("title", extractedTitle);
         form.setValue("contents", extractedContent);
-        
-        const wordCount = typeof extractedContent === "string" 
-          ? extractedContent.split(/\s+/).filter(Boolean).length 
-          : 0;
-        
+
+        const wordCount =
+          typeof extractedContent === "string"
+            ? extractedContent.split(/\s+/).filter(Boolean).length
+            : 0;
+
         toast({
           title: "Document parsed successfully",
           description: `Extracted ${wordCount} words from ${file.name}`,
@@ -378,28 +378,17 @@ export default function ResearchUploadPage() {
         <header className="text-center space-y-3">
           <div className="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-[#6443F4]/10 border border-[#6443F4]/20">
             <Sparkles className="w-4 h-4 text-[#6443F4]" />
-            <span className="text-sm font-medium text-[#6443F4]">AI Content Factory / מפעל תוכן בינה מלאכותית</span>
+            <span className="text-sm font-medium text-[#6443F4]">AI Content Factory</span>
           </div>
           <h1
             className="text-4xl sm:text-5xl font-bold tracking-tight"
             data-testid="heading-research-upload"
           >
-            The{" "}
-            <span className="text-[#6443F4]">
-              Octopus
-            </span>
-            {" "}System
-            {" / "}
-            מערכת{" "}
-            <span className="text-[#6443F4]">
-              התמנון
-            </span>
+            The <span className="text-[#6443F4]">Octopus</span> System
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto" dir="rtl">
-            מחקר אחד, זרועות רבות: הפוך מסמך מחקר לעשרות פריטי תוכן במקביל
-          </p>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            One research, many arms: Transform a single document into dozens of contents pieces simultaneously
+            One research, many arms: Transform a single document into dozens of content pieces
+            simultaneously
           </p>
         </header>
 
@@ -407,13 +396,10 @@ export default function ResearchUploadPage() {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-xl">
               <Upload className="w-5 h-5 text-[#6443F4]" />
-              Upload New Research / העלאת מחקר חדש
+              Upload New Research
             </CardTitle>
-            <CardDescription dir="rtl">
-              הדבק את תוכן המחקר שלך או העלה מסמך לניתוח בינה מלאכותית
-            </CardDescription>
             <CardDescription>
-              Paste your research contents or upload a document for AI analysis
+              Paste your research content or upload a document for AI analysis
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -424,7 +410,7 @@ export default function ResearchUploadPage() {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Research Title / כותרת המחקר</FormLabel>
+                      <FormLabel>Research Title</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="e.g., Dubai Travel Trends Q4 2025"
@@ -438,7 +424,7 @@ export default function ResearchUploadPage() {
                 />
 
                 <div className="space-y-3">
-                  <FormLabel>Source Type / סוג מקור</FormLabel>
+                  <FormLabel>Source Type</FormLabel>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -451,7 +437,7 @@ export default function ResearchUploadPage() {
                       data-testid="button-source-paste"
                     >
                       <ClipboardPaste className="w-4 h-4" />
-                      Paste Content / הדבקת תוכן
+                      Paste Content
                     </Button>
                     <Button
                       type="button"
@@ -464,14 +450,14 @@ export default function ResearchUploadPage() {
                       data-testid="button-source-file"
                     >
                       <FileText className="w-4 h-4" />
-                      Upload File / העלאת קובץ
+                      Upload File
                     </Button>
                   </div>
                 </div>
 
                 {sourceType === "file" && (
                   <div className="space-y-3">
-                    <FormLabel>Upload Document / העלאת מסמך</FormLabel>
+                    <FormLabel>Upload Document</FormLabel>
                     <div className="flex items-center gap-4">
                       <input
                         type="file"
@@ -492,23 +478,21 @@ export default function ResearchUploadPage() {
                         {isParsingFile ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            Parsing... / מנתח...
+                            Parsing...
                           </>
                         ) : (
                           <>
                             <File className="w-4 h-4" />
-                            Select File / בחר קובץ
+                            Select File
                           </>
                         )}
                       </Button>
                       {selectedFile && (
-                        <span className="text-sm text-muted-foreground">
-                          {selectedFile.name}
-                        </span>
+                        <span className="text-sm text-muted-foreground">{selectedFile.name}</span>
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Supported: .docx, .doc, .txt files up to 10MB / נתמכים: קבצי .docx, .doc, .txt עד 10MB
+                      Supported: .docx, .doc, .txt files up to 10MB
                     </p>
                   </div>
                 )}
@@ -519,14 +503,14 @@ export default function ResearchUploadPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {sourceType === "paste" ? "Research Content / תוכן המחקר" : "Parsed Content / תוכן שנותח"}
+                        {sourceType === "paste" ? "Research Content" : "Parsed Content"}
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder={
                             sourceType === "paste"
-                              ? "Paste your research contents here... / הדבק את תוכן המחקר כאן..."
-                              : "Upload a document above to extract contents, or paste directly... / העלה מסמך למעלה כדי לחלץ תוכן, או הדבק ישירות..."
+                              ? "Paste your research content here..."
+                              : "Upload a document above to extract content, or paste directly..."
                           }
                           className="min-h-[240px] resize-y"
                           data-testid="textarea-research-contents"
@@ -548,12 +532,12 @@ export default function ResearchUploadPage() {
                     {createMutation.isPending ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Uploading... / מעלה...
+                        Uploading...
                       </>
                     ) : (
                       <>
                         <Upload className="w-4 h-4" />
-                        Upload & Analyze / העלה ונתח מחקר
+                        Upload & Analyze
                       </>
                     )}
                   </Button>
@@ -571,13 +555,16 @@ export default function ResearchUploadPage() {
 
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold tracking-tight" data-testid="heading-research-list">
-              Your Research / המחקרים שלך
+            <h2
+              className="text-2xl font-semibold tracking-tight"
+              data-testid="heading-research-list"
+            >
+              Your Research
             </h2>
             {uploads && uploads.length > 0 && (
               <Badge variant="secondary" className="gap-1">
                 <FileText className="w-3 h-3" />
-                {uploads.length} document{uploads.length !== 1 ? "s" : ""} / {uploads.length} מסמכים
+                {uploads.length} document{uploads.length !== 1 ? "s" : ""}
               </Badge>
             )}
           </div>
@@ -599,7 +586,7 @@ export default function ResearchUploadPage() {
             </div>
           ) : uploads && uploads.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {uploads.map((upload) => (
+              {uploads.map(upload => (
                 <Card
                   key={upload.id}
                   className="group overflow-visible hover-elevate"
@@ -607,7 +594,10 @@ export default function ResearchUploadPage() {
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-lg line-clamp-2" data-testid={`text-title-${upload.id}`}>
+                      <CardTitle
+                        className="text-lg line-clamp-2"
+                        data-testid={`text-title-${upload.id}`}
+                      >
                         {upload.title}
                       </CardTitle>
                       <Button
@@ -635,14 +625,20 @@ export default function ResearchUploadPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <StatusBadge status={upload.status as keyof typeof STATUS_CONFIG} />
                       {upload.suggestionsCount !== undefined && upload.suggestionsCount > 0 && (
-                        <Badge variant="secondary" className="gap-1" data-testid={`badge-suggestions-${upload.id}`}>
+                        <Badge
+                          variant="secondary"
+                          className="gap-1"
+                          data-testid={`badge-suggestions-${upload.id}`}
+                        >
                           <Lightbulb className="w-3 h-3" />
-                          {upload.suggestionsCount} idea{upload.suggestionsCount !== 1 ? "s" : ""} / {upload.suggestionsCount} רעיונות
+                          {upload.suggestionsCount} idea{upload.suggestionsCount !== 1 ? "s" : ""}
                         </Badge>
                       )}
                     </div>
 
-                    {(upload.status === "analyzing" || upload.status === "generating" || upload.status === "completed") && (
+                    {(upload.status === "analyzing" ||
+                      upload.status === "generating" ||
+                      upload.status === "completed") && (
                       <SuperAgentProgressIndicator researchId={upload.id} status={upload.status} />
                     )}
 
@@ -661,7 +657,7 @@ export default function ResearchUploadPage() {
                           ) : (
                             <RefreshCw className="w-3.5 h-3.5" />
                           )}
-                          Retry Analysis / נסה שוב
+                          Retry Analysis
                         </Button>
                       ) : upload.status === "analyzed" ||
                         upload.status === "generating" ||
@@ -675,15 +671,13 @@ export default function ResearchUploadPage() {
                         >
                           <Link href={`/admin/research/${upload.id}/suggestions`}>
                             <Lightbulb className="w-3.5 h-3.5" />
-                            View Suggestions / צפה בהצעות
+                            View Suggestions
                             <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
                         </Button>
                       ) : (
                         <div className="flex-1 text-sm text-muted-foreground text-center py-1">
-                          {upload.status === "pending"
-                            ? "Queued for analysis... / ממתין לניתוח..."
-                            : "Processing... / מעבד..."}
+                          {upload.status === "pending" ? "Queued for analysis..." : "Processing..."}
                         </div>
                       )}
                     </div>
@@ -698,12 +692,11 @@ export default function ResearchUploadPage() {
                   <FileText className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <div className="space-y-1.5">
-                  <h3 className="font-medium" data-testid="text-empty-state">No research documents yet / לא נמצאו מסמכי מחקר</h3>
-                  <p className="text-sm text-muted-foreground max-w-sm mx-auto" dir="rtl">
-                    העלה את מסמך המחקר הראשון שלך כדי להתחיל להפיק רעיונות לתוכן עם בינה מלאכותית
-                  </p>
+                  <h3 className="font-medium" data-testid="text-empty-state">
+                    No research documents yet
+                  </h3>
                   <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                    Upload your first research document to start generating contents ideas with AI
+                    Upload your first research document to start generating content ideas with AI
                   </p>
                 </div>
               </CardContent>
@@ -718,14 +711,11 @@ export default function ResearchUploadPage() {
                 <AlertCircle className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1 space-y-1">
-                <h3 className="font-medium">How it works / איך זה עובד</h3>
-                <p className="text-sm text-muted-foreground mb-1" dir="rtl">
-                  העלה מסמכי מחקר וה-AI שלנו ינתח אותם כדי להפיק רעיונות לתוכן, כותרות מוצעות, מילות מפתח ונושאים. סקור ואשר הצעות כדי לייצר תוכן מלא באופן אוטומטי.
-                </p>
+                <h3 className="font-medium">How it works</h3>
                 <p className="text-sm text-muted-foreground">
-                  Upload research documents and our AI will analyze them to extract contents ideas,
+                  Upload research documents and our AI will analyze them to extract content ideas,
                   suggested titles, keywords, and topics. Review and approve suggestions to generate
-                  full contents automatically.
+                  full content automatically.
                 </p>
               </div>
             </div>

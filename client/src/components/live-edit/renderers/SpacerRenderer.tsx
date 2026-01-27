@@ -26,12 +26,11 @@ export function SpacerRenderer({ id, props }: SpacerRendererProps) {
       <div
         className={cn(
           heightClasses[height],
-          isEditMode && "bg-muted border border-dashed border-muted-foreground flex items-center justify-center"
+          isEditMode &&
+            "bg-muted border border-dashed border-muted-foreground flex items-center justify-center"
         )}
       >
-        {isEditMode && (
-          <span className="text-xs text-muted-foreground">רווח</span>
-        )}
+        {isEditMode && <span className="text-xs text-muted-foreground">Spacer</span>}
       </div>
     </EditableWrapper>
   );

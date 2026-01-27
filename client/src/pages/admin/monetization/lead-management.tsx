@@ -5,7 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Target, Users, Mail, Phone, Calendar, CheckCircle2, Clock, XCircle, Lightbulb } from "lucide-react";
+import {
+  Target,
+  Users,
+  Mail,
+  Phone,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Lightbulb,
+} from "lucide-react";
 
 interface LeadStats {
   totalLeads: number;
@@ -66,15 +76,12 @@ export default function LeadManagementPage() {
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            How It Works / איך זה עובד
+            How It Works
           </h3>
           <p className="text-sm text-muted-foreground">
-            Leads are captured when visitors submit <strong>inquiry forms</strong> on hotel, tour, or business pages.
-            Track their journey from inquiry to conversion. Share leads with partner businesses.
-            <br />
-            <span className="text-xs opacity-70">
-              (לידים נאספים כשמבקרים שולחים טפסי פנייה. עקוב אחרי המסע מפנייה להמרה.)
-            </span>
+            Leads are captured when visitors submit <strong>inquiry forms</strong> on hotel, tour,
+            or business pages. Track their journey from inquiry to conversion. Share leads with
+            partner businesses.
           </p>
         </div>
       </div>
@@ -144,9 +151,7 @@ export default function LeadManagementPage() {
       <Card>
         <CardHeader>
           <CardTitle>Lead Pipeline</CardTitle>
-          <CardDescription>
-            Manage leads through your sales funnel
-          </CardDescription>
+          <CardDescription>Manage leads through your sales funnel</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="all">

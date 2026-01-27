@@ -3,9 +3,9 @@
  * Persistence layer for policies and decision logs
  */
 
-import { db } from '../../db';
-import { autonomyPolicies, autonomyDecisionLogs } from '@shared/schema';
-import { eq, desc, and, sql } from 'drizzle-orm';
+import { db } from "../../db";
+import { autonomyPolicies, autonomyDecisionLogs } from "@shared/schema";
+import { eq, desc, and, sql } from "drizzle-orm";
 import {
   PolicyDefinition,
   PolicyTarget,
@@ -13,12 +13,8 @@ import {
   PolicyDecision,
   PolicyReason,
   policyDefinitionSchema,
-} from './types';
-import {
-  DEFAULT_GLOBAL_POLICY,
-  FEATURE_POLICIES,
-  DEFAULT_AUTONOMY_CONFIG,
-} from './config';
+} from "./types";
+import { DEFAULT_GLOBAL_POLICY, FEATURE_POLICIES, DEFAULT_AUTONOMY_CONFIG } from "./config";
 
 const OPERATION_TIMEOUT_MS = 5000;
 
@@ -34,14 +30,14 @@ const FLUSH_INTERVAL_MS = 5000;
 let flushIntervalId: NodeJS.Timeout | null = null;
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_AUTONOMY_POLICY === 'true';
+  return process.env.ENABLE_AUTONOMY_POLICY === "true";
 }
 
 async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
     promise,
     new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error('Repository operation timeout')), ms)
+      setTimeout(() => reject(new Error("Repository operation timeout")), ms)
     ),
   ]);
 }
@@ -55,9 +51,9 @@ function dbToPolicy(row: typeof autonomyPolicies.$inferSelect): PolicyDefinition
     name: row.name,
     description: row.description || undefined,
     target: {
-      type: row.targetType as PolicyTarget['type'],
-      feature: row.targetFeature as PolicyTarget['feature'],
-      entity: row.targetEntity as PolicyTarget['entity'],
+      type: row.targetType as PolicyTarget["type"],
+      feature: row.targetFeature as PolicyTarget["feature"],
+      entity: row.targetEntity as PolicyTarget["entity"],
       locale: row.targetLocale || undefined,
     },
     enabled: row.enabled,
@@ -66,7 +62,7 @@ function dbToPolicy(row: typeof autonomyPolicies.$inferSelect): PolicyDefinition
     blockedActions: (config.blockedActions as any) || [],
     budgetLimits: (config.budgetLimits as any[]) || [],
     allowedHours: config.allowedHours as any,
-    approvalLevel: (config.approvalLevel as any) || 'auto',
+    approvalLevel: (config.approvalLevel as any) || "auto",
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     createdBy: row.createdBy || undefined,
@@ -118,7 +114,6 @@ export async function getPolicies(): Promise<PolicyDefinition[]> {
     policyCacheExpiry = Date.now() + POLICY_CACHE_TTL_MS;
     return policyCache;
   } catch (error) {
-    console.error('[PolicyRepository] Failed to load policies:', error);
     // Return defaults on error
     return [DEFAULT_GLOBAL_POLICY, ...FEATURE_POLICIES];
   }
@@ -134,11 +129,16 @@ export async function createPolicy(policy: PolicyDefinition): Promise<PolicyDefi
   const validated = policyDefinitionSchema.parse(policy);
 
   const [created] = await withTimeout(
-    db.insert(autonomyPolicies).values(policyToDb({
-      ...validated,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as any)).returning(),
+    db
+      .insert(autonomyPolicies)
+      .values(
+        policyToDb({
+          ...validated,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as any)
+      )
+      .returning(),
     OPERATION_TIMEOUT_MS
   );
 
@@ -166,7 +166,8 @@ export async function updatePolicy(
   policyDefinitionSchema.parse(merged);
 
   const [updated] = await withTimeout(
-    db.update(autonomyPolicies)
+    db
+      .update(autonomyPolicies)
       .set({
         name: merged.name,
         description: merged.description,
@@ -222,9 +223,7 @@ export async function seedDefaultPolicies(): Promise<number> {
     try {
       await db.insert(autonomyPolicies).values(policyToDb(policy));
       seeded++;
-    } catch (error) {
-      console.error(`[PolicyRepository] Failed to seed policy ${policy.id}:`, error);
-    }
+    } catch (error) {}
   }
 
   // Invalidate cache
@@ -234,7 +233,9 @@ export async function seedDefaultPolicies(): Promise<number> {
 }
 
 // Decision logging
-export async function logDecision(entry: Omit<DecisionLogEntry, 'id' | 'timestamp'>): Promise<void> {
+export async function logDecision(
+  entry: Omit<DecisionLogEntry, "id" | "timestamp">
+): Promise<void> {
   if (!isEnabled()) return;
 
   const fullEntry: DecisionLogEntry = {
@@ -270,7 +271,6 @@ async function flushDecisionLogs(): Promise<void> {
       }))
     );
   } catch (error) {
-    console.error('[PolicyRepository] Failed to flush decision logs:', error);
     // Don't re-add to buffer to avoid infinite growth
   }
 }
@@ -335,9 +335,7 @@ export function startDecisionLogFlusher(): void {
   if (flushIntervalId) return;
 
   flushIntervalId = setInterval(() => {
-    flushDecisionLogs().catch(err => {
-      console.error('[PolicyRepository] Background flush error:', err);
-    });
+    flushDecisionLogs().catch(err => {});
   }, FLUSH_INTERVAL_MS);
 }
 

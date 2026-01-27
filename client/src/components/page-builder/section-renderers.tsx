@@ -4,7 +4,12 @@ import type { PageSection } from "@shared/schema";
 import { sanitizeHTML } from "@/lib/sanitize";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -54,7 +59,8 @@ export function HeroSection({ section, className }: SectionRendererProps) {
   const { locale, isRTL } = useLocale();
   const title = locale === "he" ? section.titleHe || section.title : section.title;
   const subtitle = locale === "he" ? section.subtitleHe || section.subtitle : section.subtitle;
-  const buttonText = locale === "he" ? section.buttonTextHe || section.buttonText : section.buttonText;
+  const buttonText =
+    locale === "he" ? section.buttonTextHe || section.buttonText : section.buttonText;
 
   return (
     <motion.section
@@ -81,11 +87,10 @@ export function HeroSection({ section, className }: SectionRendererProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent/10" />
       )}
 
-      <div className={cn("relative z-10 container mx-auto px-4 py-16 md:py-24", isRTL && "text-right")}>
-        <motion.div
-          variants={staggerContainer}
-          className="max-w-3xl mx-auto text-center space-y-6"
-        >
+      <div
+        className={cn("relative z-10 container mx-auto px-4 py-16 md:py-24", isRTL && "text-right")}
+      >
+        <motion.div variants={staggerContainer} className="max-w-3xl mx-auto text-center space-y-6">
           {title && (
             <motion.h1
               variants={fadeInUp}
@@ -113,7 +118,11 @@ export function HeroSection({ section, className }: SectionRendererProps) {
               <Button size="lg" asChild>
                 <a href={section.buttonLink}>
                   {buttonText}
-                  {isRTL ? <ArrowLeft className="w-4 h-4 ms-2" /> : <ArrowRight className="w-4 h-4 ms-2" />}
+                  {isRTL ? (
+                    <ArrowLeft className="w-4 h-4 ms-2" />
+                  ) : (
+                    <ArrowRight className="w-4 h-4 ms-2" />
+                  )}
                 </a>
               </Button>
             </motion.div>
@@ -127,7 +136,8 @@ export function HeroSection({ section, className }: SectionRendererProps) {
 export function IntroTextSection({ section, className }: SectionRendererProps) {
   const { locale, isRTL } = useLocale();
   const title = locale === "he" ? section.titleHe || section.title : section.title;
-  const description = locale === "he" ? section.descriptionHe || section.description : section.description;
+  const description =
+    locale === "he" ? section.descriptionHe || section.description : section.description;
   const images = section.images || [];
 
   return (
@@ -141,11 +151,16 @@ export function IntroTextSection({ section, className }: SectionRendererProps) {
       data-testid={`section-intro-${section.id}`}
     >
       <div className="container mx-auto px-4">
-        <div className={cn(
-          "grid gap-8 md:gap-12 items-center",
-          images.length > 0 ? "md:grid-cols-2" : "max-w-3xl mx-auto text-center"
-        )}>
-          <motion.div variants={staggerContainer} className={cn("space-y-4", isRTL && "text-right")}>
+        <div
+          className={cn(
+            "grid gap-8 md:gap-12 items-center",
+            images.length > 0 ? "md:grid-cols-2" : "max-w-3xl mx-auto text-center"
+          )}
+        >
+          <motion.div
+            variants={staggerContainer}
+            className={cn("space-y-4", isRTL && "text-right")}
+          >
             {title && (
               <motion.h2
                 variants={fadeInUp}
@@ -211,7 +226,10 @@ export function HighlightGridSection({ section, className }: SectionRendererProp
         {title && (
           <motion.h2
             variants={fadeInUp}
-            className={cn("text-3xl md:text-4xl font-bold text-center mb-12", isRTL && "text-right")}
+            className={cn(
+              "text-3xl md:text-4xl font-bold text-center mb-12",
+              isRTL && "text-right"
+            )}
           >
             {title}
           </motion.h2>
@@ -226,9 +244,7 @@ export function HighlightGridSection({ section, className }: SectionRendererProp
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                       <IconComponent className="w-6 h-6 text-primary" />
                     </div>
-                    {item.title && (
-                      <h3 className="font-semibold text-lg">{item.title}</h3>
-                    )}
+                    {item.title && <h3 className="font-semibold text-lg">{item.title}</h3>}
                     {item.description && (
                       <p className="text-muted-foreground text-sm">{item.description}</p>
                     )}
@@ -264,7 +280,10 @@ export function ContentGridSection({ section, className }: SectionRendererProps)
         {title && (
           <motion.h2
             variants={fadeInUp}
-            className={cn("text-3xl md:text-4xl font-bold text-center mb-12", isRTL && "text-right")}
+            className={cn(
+              "text-3xl md:text-4xl font-bold text-center mb-12",
+              isRTL && "text-right"
+            )}
           >
             {title}
           </motion.h2>
@@ -283,17 +302,19 @@ export function ContentGridSection({ section, className }: SectionRendererProps)
                   </div>
                 )}
                 <CardContent className={cn("pt-4 space-y-2", isRTL && "text-right")}>
-                  {item.title && (
-                    <h3 className="font-semibold text-lg">{item.title}</h3>
-                  )}
+                  {item.title && <h3 className="font-semibold text-lg">{item.title}</h3>}
                   {item.description && (
                     <p className="text-muted-foreground text-sm line-clamp-2">{item.description}</p>
                   )}
                   {item.link && (
                     <Button variant="ghost" size="sm" asChild className="mt-2">
                       <a href={item.link}>
-                        {isRTL ? "קרא עוד" : "Read more"}
-                        {isRTL ? <ArrowLeft className="w-3 h-3 ms-1" /> : <ArrowRight className="w-3 h-3 ms-1" />}
+                        Read more
+                        {isRTL ? (
+                          <ArrowLeft className="w-3 h-3 ms-1" />
+                        ) : (
+                          <ArrowRight className="w-3 h-3 ms-1" />
+                        )}
                       </a>
                     </Button>
                   )}
@@ -311,7 +332,8 @@ export function CTASection({ section, className }: SectionRendererProps) {
   const { locale, isRTL } = useLocale();
   const title = locale === "he" ? section.titleHe || section.title : section.title;
   const subtitle = locale === "he" ? section.subtitleHe || section.subtitle : section.subtitle;
-  const buttonText = locale === "he" ? section.buttonTextHe || section.buttonText : section.buttonText;
+  const buttonText =
+    locale === "he" ? section.buttonTextHe || section.buttonText : section.buttonText;
 
   return (
     <motion.section
@@ -319,10 +341,7 @@ export function CTASection({ section, className }: SectionRendererProps) {
       whileInView="visible"
       viewport={{ once: true }}
       variants={fadeInUp}
-      className={cn(
-        "py-16 md:py-24 relative overflow-hidden",
-        className
-      )}
+      className={cn("py-16 md:py-24 relative overflow-hidden", className)}
       style={{ backgroundColor: section.backgroundColor || undefined }}
       data-testid={`section-cta-${section.id}`}
     >
@@ -356,7 +375,11 @@ export function CTASection({ section, className }: SectionRendererProps) {
               <Button size="lg" variant="secondary" asChild>
                 <a href={section.buttonLink}>
                   {buttonText}
-                  {isRTL ? <ArrowLeft className="w-4 h-4 ms-2" /> : <ArrowRight className="w-4 h-4 ms-2" />}
+                  {isRTL ? (
+                    <ArrowLeft className="w-4 h-4 ms-2" />
+                  ) : (
+                    <ArrowRight className="w-4 h-4 ms-2" />
+                  )}
                 </a>
               </Button>
             </motion.div>
@@ -388,7 +411,10 @@ export function FAQSection({ section, className }: SectionRendererProps) {
         {title && (
           <motion.h2
             variants={fadeInUp}
-            className={cn("text-3xl md:text-4xl font-bold text-center mb-12", isRTL && "text-right")}
+            className={cn(
+              "text-3xl md:text-4xl font-bold text-center mb-12",
+              isRTL && "text-right"
+            )}
           >
             {title}
           </motion.h2>
@@ -435,7 +461,10 @@ export function StatsSection({ section, className }: SectionRendererProps) {
         {title && (
           <motion.h2
             variants={fadeInUp}
-            className={cn("text-3xl md:text-4xl font-bold text-center mb-12", isRTL && "text-right")}
+            className={cn(
+              "text-3xl md:text-4xl font-bold text-center mb-12",
+              isRTL && "text-right"
+            )}
           >
             {title}
           </motion.h2>
@@ -516,9 +545,7 @@ export function FeaturesSection({ section, className }: SectionRendererProps) {
                   <IconComponent className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  {item.title && (
-                    <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                  )}
+                  {item.title && <h3 className="font-semibold text-lg mb-1">{item.title}</h3>}
                   {item.description && (
                     <p className="text-muted-foreground text-sm">{item.description}</p>
                   )}
@@ -545,16 +572,19 @@ export function GallerySection({ section, className }: SectionRendererProps) {
     alt: `Gallery image ${index + 1}`,
   }));
 
-  const preloadImage = useCallback((index: number) => {
-    if (index < 0 || index >= images.length || preloadedImages.has(index)) {
-      return;
-    }
-    const img = new Image();
-    img.src = images[index];
-    img.onload = () => {
-      setPreloadedImages(prev => new Set([...prev, index]));
-    };
-  }, [images, preloadedImages]);
+  const preloadImage = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= images.length || preloadedImages.has(index)) {
+        return;
+      }
+      const img = new Image();
+      img.src = images[index];
+      img.onload = () => {
+        setPreloadedImages(prev => new Set([...prev, index]));
+      };
+    },
+    [images, preloadedImages]
+  );
 
   useEffect(() => {
     preloadImage(currentIndex);
@@ -563,11 +593,11 @@ export function GallerySection({ section, className }: SectionRendererProps) {
   }, [currentIndex, preloadImage]);
 
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setCurrentIndex(prev => (prev + 1) % images.length);
   }, [images.length]);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
   }, [images.length]);
 
   const goToFirst = useCallback(() => {
@@ -629,7 +659,10 @@ export function GallerySection({ section, className }: SectionRendererProps) {
         {title && (
           <motion.h2
             variants={fadeInUp}
-            className={cn("text-3xl md:text-4xl font-bold text-center mb-12", isRTL && "text-right")}
+            className={cn(
+              "text-3xl md:text-4xl font-bold text-center mb-12",
+              isRTL && "text-right"
+            )}
           >
             {title}
           </motion.h2>
@@ -662,7 +695,10 @@ export function GallerySection({ section, className }: SectionRendererProps) {
                 variant="outline"
                 size="icon"
                 className="absolute top-1/2 -translate-y-1/2 left-4 bg-background"
-                onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+                onClick={e => {
+                  e.stopPropagation();
+                  prevSlide();
+                }}
                 aria-label="Previous image"
                 data-testid="gallery-prev"
               >
@@ -672,14 +708,17 @@ export function GallerySection({ section, className }: SectionRendererProps) {
                 variant="outline"
                 size="icon"
                 className="absolute top-1/2 -translate-y-1/2 right-4 bg-background"
-                onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+                onClick={e => {
+                  e.stopPropagation();
+                  nextSlide();
+                }}
                 aria-label="Next image"
                 data-testid="gallery-next"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
 
-              <div 
+              <div
                 className="flex justify-center gap-2 mt-4"
                 role="tablist"
                 aria-label="Gallery navigation dots"
@@ -704,7 +743,7 @@ export function GallerySection({ section, className }: SectionRendererProps) {
         </div>
 
         {images.length > 4 && (
-          <div 
+          <div
             className="grid grid-cols-4 md:grid-cols-6 gap-2 mt-4 max-w-4xl mx-auto"
             role="tablist"
             aria-label="Gallery thumbnails"
@@ -722,12 +761,7 @@ export function GallerySection({ section, className }: SectionRendererProps) {
                 aria-label={`View image ${index + 1}`}
                 data-testid={`gallery-thumbnail-${index}`}
               >
-                <img 
-                  src={img} 
-                  alt="" 
-                  className="w-full h-full object-cover"
-                  loading="lazy" 
-                />
+                <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
               </button>
             ))}
           </div>
@@ -750,11 +784,12 @@ export function NewsletterSection({ section, className }: SectionRendererProps) 
   const [email, setEmail] = useState("");
   const title = locale === "he" ? section.titleHe || section.title : section.title;
   const subtitle = locale === "he" ? section.subtitleHe || section.subtitle : section.subtitle;
-  const buttonText = locale === "he" ? section.buttonTextHe || section.buttonText : section.buttonText;
+  const buttonText =
+    locale === "he" ? section.buttonTextHe || section.buttonText : section.buttonText;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Newsletter signup:", email);
+
     setEmail("");
   };
 
@@ -789,15 +824,15 @@ export function NewsletterSection({ section, className }: SectionRendererProps) 
           >
             <Input
               type="email"
-              placeholder={isRTL ? "כתובת אימייל" : "Enter your email"}
+              placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               required
               className="flex-1"
               data-testid="newsletter-email"
             />
             <Button type="submit" data-testid="newsletter-submit">
-              {buttonText || (isRTL ? "הרשמה" : "Subscribe")}
+              {buttonText || "Subscribe"}
             </Button>
           </motion.form>
         </div>
@@ -811,16 +846,22 @@ export function TestimonialSection({ section, className }: SectionRendererProps)
   const [currentIndex, setCurrentIndex] = useState(0);
   const title = locale === "he" ? section.titleHe || section.title : section.title;
   const data = (locale === "he" ? section.dataHe || section.data : section.data) as {
-    items?: Array<{ quote?: string; author?: string; role?: string; avatar?: string; rating?: number }>;
+    items?: Array<{
+      quote?: string;
+      author?: string;
+      role?: string;
+      avatar?: string;
+      rating?: number;
+    }>;
   };
   const items = data?.items || [];
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % items.length);
+    setCurrentIndex(prev => (prev + 1) % items.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+    setCurrentIndex(prev => (prev - 1 + items.length) % items.length);
   };
 
   if (items.length === 0) return null;
@@ -840,7 +881,10 @@ export function TestimonialSection({ section, className }: SectionRendererProps)
         {title && (
           <motion.h2
             variants={fadeInUp}
-            className={cn("text-3xl md:text-4xl font-bold text-center mb-12", isRTL && "text-right")}
+            className={cn(
+              "text-3xl md:text-4xl font-bold text-center mb-12",
+              isRTL && "text-right"
+            )}
           >
             {title}
           </motion.h2>
@@ -941,7 +985,6 @@ export function SectionRenderer({ section, className }: SectionRendererProps) {
 
   const Renderer = renderers[section.sectionType];
   if (!Renderer) {
-    console.warn(`Unknown section type: ${section.sectionType}`);
     return null;
   }
 

@@ -58,10 +58,10 @@ const CLICHE_REPLACEMENTS: Record<string, string> = {
   "world class": "internationally recognized",
   "hidden gem": "lesser-known spot",
   "hidden gems": "lesser-known spots",
-  "breathtaking": "impressive",
+  breathtaking: "impressive",
   "awe-inspiring": "remarkable",
   "jaw-dropping": "remarkable",
-  "unforgettable": "memorable",
+  unforgettable: "memorable",
   "once-in-a-lifetime": "rare",
   "once in a lifetime": "rare",
   "bucket list": "popular destination",
@@ -93,14 +93,14 @@ const TITLE_CLICHE_REPLACEMENTS: Record<string, string> = {
   "best kept secret": "Local",
   "best-kept secret": "Local",
   "world-class": "Premier",
-  "breathtaking": "Stunning",
+  breathtaking: "Stunning",
 };
 
 // Authoritative external links for Dubai content
 export const AUTHORITATIVE_EXTERNAL_LINKS = [
-  { anchor: "Visit Dubai Official", url: "https://www.visitdubai.com", rel: 'noopener noreferrer' },
-  { anchor: "Dubai Government Portal", url: "https://www.dubai.ae", rel: 'noopener noreferrer' },
-  { anchor: "Dubai Tourism", url: "https://www.dubaitourism.gov.ae", rel: 'noopener noreferrer' },
+  { anchor: "Visit Dubai Official", url: "https://www.visitdubai.com", rel: "noopener noreferrer" },
+  { anchor: "Dubai Government Portal", url: "https://www.dubai.ae", rel: "noopener noreferrer" },
+  { anchor: "Dubai Tourism", url: "https://www.dubaitourism.gov.ae", rel: "noopener noreferrer" },
 ];
 
 // Internal links for Dubai content
@@ -118,9 +118,9 @@ export const FALLBACK_INTERNAL_LINKS = [
  */
 export function fixTitle(title: string): string {
   if (!title) return title;
-  
+
   let fixed = title;
-  
+
   // Replace clichés with professional alternatives
   for (const [cliche, replacement] of Object.entries(TITLE_CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(cliche, "gi");
@@ -128,23 +128,30 @@ export function fixTitle(title: string): string {
       fixed = fixed.replace(regex, replacement).replace(/\s+/g, " ").trim();
     }
   }
-  
+
   // Clean up leftover punctuation artifacts
-  fixed = fixed.replace(/:\s*$/g, "").replace(/\|\s*$/g, "").replace(/\s+/g, " ").trim();
-  
+  fixed = fixed
+    .replace(/:\s*$/g, "")
+    .replace(/\|\s*$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
   // If title is too long, truncate intelligently
   if (fixed.length > SEO_REQUIREMENTS.titleMaxLength) {
     const separators = [" | ", " - ", ": "];
     for (const sep of separators) {
       if (fixed.includes(sep)) {
         const firstPart = fixed.split(sep)[0].trim();
-        if (firstPart.length >= SEO_REQUIREMENTS.titleMinLength && firstPart.length <= SEO_REQUIREMENTS.titleMaxLength) {
+        if (
+          firstPart.length >= SEO_REQUIREMENTS.titleMinLength &&
+          firstPart.length <= SEO_REQUIREMENTS.titleMaxLength
+        ) {
           fixed = firstPart;
           break;
         }
       }
     }
-    
+
     // Still too long? Smart truncate at word boundary
     if (fixed.length > SEO_REQUIREMENTS.titleMaxLength) {
       const maxCut = SEO_REQUIREMENTS.titleMaxLength - 3;
@@ -159,9 +166,12 @@ export function fixTitle(title: string): string {
       }
     }
   }
-  
+
   // If title became too short, use original with smart truncation
-  if (fixed.length < SEO_REQUIREMENTS.titleMinLength && title.length > SEO_REQUIREMENTS.titleMaxLength) {
+  if (
+    fixed.length < SEO_REQUIREMENTS.titleMinLength &&
+    title.length > SEO_REQUIREMENTS.titleMaxLength
+  ) {
     const maxCut = SEO_REQUIREMENTS.titleMaxLength;
     let cutPoint = maxCut;
     while (cutPoint > 45 && title[cutPoint] !== " ") {
@@ -169,8 +179,7 @@ export function fixTitle(title: string): string {
     }
     fixed = title.substring(0, cutPoint).trim();
   }
-  
-  console.log(`[SEO] Title: "${fixed}" (${fixed.length} chars)`);
+
   return fixed;
 }
 
@@ -179,30 +188,33 @@ export function fixTitle(title: string): string {
  */
 export function fixMetaDescription(metaDesc: string, fallbackText?: string): string {
   if (!metaDesc) metaDesc = fallbackText || "";
-  
+
   // Remove clichés first
   for (const [cliche, replacement] of Object.entries(CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(cliche, "gi");
     metaDesc = metaDesc.replace(regex, replacement);
   }
-  
+
   // Clean up
   metaDesc = metaDesc.replace(/\s+/g, " ").trim();
-  
+
   // If too short, pad with fallback text
   if (metaDesc.length < SEO_REQUIREMENTS.metaDescMinLength && fallbackText) {
-    const cleanFallback = fallbackText.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    const cleanFallback = fallbackText
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
     const neededChars = SEO_REQUIREMENTS.metaDescMinLength - metaDesc.length - 2;
     if (neededChars > 0 && cleanFallback.length > 0) {
       const padding = cleanFallback.substring(0, neededChars);
       metaDesc = metaDesc + " " + padding;
     }
   }
-  
+
   // If too long, truncate at word/sentence boundary
   if (metaDesc.length > SEO_REQUIREMENTS.metaDescMaxLength) {
     let cutPoint = SEO_REQUIREMENTS.metaDescMaxLength;
-    
+
     // Try to cut at a sentence boundary
     const periodIndex = metaDesc.lastIndexOf(".", SEO_REQUIREMENTS.metaDescMaxLength - 5);
     if (periodIndex > SEO_REQUIREMENTS.metaDescMinLength) {
@@ -213,11 +225,10 @@ export function fixMetaDescription(metaDesc: string, fallbackText?: string): str
         cutPoint--;
       }
     }
-    
+
     metaDesc = metaDesc.substring(0, cutPoint).trim();
   }
-  
-  console.log(`[SEO] Meta description: ${metaDesc.length} chars`);
+
   return metaDesc;
 }
 
@@ -227,23 +238,23 @@ export function fixMetaDescription(metaDesc: string, fallbackText?: string): str
  */
 export function removeClichesFromText(text: string): string {
   if (!text) return text;
-  
+
   // If it looks like a URL, don't modify it
   if (text.startsWith("http://") || text.startsWith("https://") || text.startsWith("/")) {
     return text;
   }
-  
+
   // For HTML content, only replace in text nodes (outside of < > tags and attributes)
   if (text.includes("<")) {
     return removeClichesFromHtml(text);
   }
-  
+
   // For plain text, apply replacements directly
   for (const [cliche, replacement] of Object.entries(CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(`\\b${escapeRegex(cliche)}\\b`, "gi");
     text = text.replace(regex, replacement);
   }
-  
+
   return text;
 }
 
@@ -261,11 +272,11 @@ function removeClichesFromHtml(html: string): string {
   // Split HTML into text and tag segments
   const segments: string[] = [];
   let currentIndex = 0;
-  
+
   // Match all HTML tags (including attributes) and href/src values
   const tagRegex = /<[^>]+>|href=["'][^"']*["']|src=["'][^"']*["']/gi;
   let match;
-  
+
   while ((match = tagRegex.exec(html)) !== null) {
     // Add text before this tag (prose that we CAN modify)
     if (match.index > currentIndex) {
@@ -276,12 +287,12 @@ function removeClichesFromHtml(html: string): string {
     segments.push(match[0]);
     currentIndex = match.index + match[0].length;
   }
-  
+
   // Add any remaining text after the last tag
   if (currentIndex < html.length) {
     segments.push(replaceClichesInProse(html.substring(currentIndex)));
   }
-  
+
   return segments.join("");
 }
 
@@ -317,72 +328,74 @@ function countExternalLinks(html: string): number {
 /**
  * Inject internal links into content if missing
  */
-export function injectInternalLinks(html: string, minLinks: number = SEO_REQUIREMENTS.minInternalLinks): string {
+export function injectInternalLinks(
+  html: string,
+  minLinks: number = SEO_REQUIREMENTS.minInternalLinks
+): string {
   if (!html) return html;
-  
+
   const currentCount = countInternalLinks(html);
   if (currentCount >= minLinks) {
-    console.log(`[SEO] Internal links OK: ${currentCount}`);
     return html;
   }
-  
+
   const linksNeeded = minLinks - currentCount;
   const linksToAdd = FALLBACK_INTERNAL_LINKS.slice(0, linksNeeded);
-  
+
   // Find paragraphs to inject links into
   const paragraphs = html.match(/<p[^>]*>[\s\S]*?<\/p>/gi) || [];
   let modified = html;
-  
+
   for (let i = 0; i < Math.min(linksToAdd.length, paragraphs.length); i++) {
     const link = linksToAdd[i];
     const para = paragraphs[i];
-    
+
     // Only inject if paragraph doesn't already have this link
     if (!para.includes(link.url)) {
       const linkHtml = `<a href="${link.url}">${link.anchor}</a>`;
-      
+
       // Insert before closing </p>
       const newPara = para.replace(/<\/p>/i, ` For more information, see our ${linkHtml}.</p>`);
       modified = modified.replace(para, newPara);
     }
   }
-  
-  console.log(`[SEO] Injected ${linksNeeded} internal links`);
+
   return modified;
 }
 
 /**
  * Inject external links into content if missing
  */
-export function injectExternalLinks(html: string, minLinks: number = SEO_REQUIREMENTS.minExternalLinks): string {
+export function injectExternalLinks(
+  html: string,
+  minLinks: number = SEO_REQUIREMENTS.minExternalLinks
+): string {
   if (!html) return html;
-  
+
   const currentCount = countExternalLinks(html);
   if (currentCount >= minLinks) {
-    console.log(`[SEO] External links OK: ${currentCount}`);
     return html;
   }
-  
+
   const linksNeeded = minLinks - currentCount;
   const linksToAdd = AUTHORITATIVE_EXTERNAL_LINKS.slice(0, linksNeeded);
-  
+
   // Find paragraphs to inject links into
   const paragraphs = html.match(/<p[^>]*>[\s\S]*?<\/p>/gi) || [];
   let modified = html;
-  
+
   for (let i = 0; i < Math.min(linksToAdd.length, paragraphs.length); i++) {
     const link = linksToAdd[i];
     const para = paragraphs[paragraphs.length - 1 - i]; // Start from end
-    
+
     if (!para.includes(link.url)) {
       const linkHtml = `<a href="${link.url}" target="_blank" rel="${link.rel}">${link.anchor}</a>`;
-      
+
       const newPara = para.replace(/<\/p>/i, ` Learn more at ${linkHtml}.</p>`);
       modified = modified.replace(para, newPara);
     }
   }
-  
-  console.log(`[SEO] Injected ${linksNeeded} external links`);
+
   return modified;
 }
 
@@ -393,32 +406,30 @@ export function injectExternalLinks(html: string, minLinks: number = SEO_REQUIRE
  */
 export function enforceArticleSEO(article: any): any {
   if (!article) return article;
-  
+
   // Deep clone to avoid mutating original
   const result = JSON.parse(JSON.stringify(article));
-  
-  console.log("[SEO] Enforcing SEO requirements on generated article...");
-  
+
   // Fix meta title
   if (result.meta?.title) {
     result.meta.title = fixTitle(result.meta.title);
   }
-  
+
   // Fix meta description
   if (result.meta?.description) {
     result.meta.description = fixMetaDescription(result.meta.description, result.article?.intro);
   }
-  
+
   // Fix H1 headline
   if (result.article?.h1) {
     result.article.h1 = removeClichesFromText(result.article.h1);
   }
-  
+
   // Fix intro
   if (result.article?.intro) {
     result.article.intro = removeClichesFromText(result.article.intro);
   }
-  
+
   // Fix sections (clichés only - links handled separately)
   if (result.article?.sections && Array.isArray(result.article.sections)) {
     for (const section of result.article.sections) {
@@ -430,17 +441,19 @@ export function enforceArticleSEO(article: any): any {
       }
     }
   }
-  
+
   // Fix closing
   if (result.article?.closing) {
     result.article.closing = removeClichesFromText(result.article.closing);
   }
-  
+
   // Fix pro tips
   if (result.article?.proTips && Array.isArray(result.article.proTips)) {
-    result.article.proTips = result.article.proTips.map((tip: string) => removeClichesFromText(tip));
+    result.article.proTips = result.article.proTips.map((tip: string) =>
+      removeClichesFromText(tip)
+    );
   }
-  
+
   // Fix FAQs
   if (result.article?.faq && Array.isArray(result.article.faq)) {
     for (const faq of result.article.faq) {
@@ -448,22 +461,23 @@ export function enforceArticleSEO(article: any): any {
       if (faq.a) faq.a = removeClichesFromText(faq.a);
     }
   }
-  
+
   // === SINGLE-PASS LINK INJECTION ===
   // Count existing links across entire article, then inject if needed
   const allContent = collectArticleContent(result);
   const existingInternal = countInternalLinks(allContent);
   const existingExternal = countExternalLinks(allContent);
-  
+
   // Inject internal links if below minimum (once, into early sections)
-  if (existingInternal < SEO_REQUIREMENTS.minInternalLinks && result.article?.sections?.length > 0) {
+  if (
+    existingInternal < SEO_REQUIREMENTS.minInternalLinks &&
+    result.article?.sections?.length > 0
+  ) {
     const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
     injectLinksIntoSections(result.article.sections, FALLBACK_INTERNAL_LINKS, deficit, "internal");
-    console.log(`[SEO] Injected ${deficit} internal links`);
   } else {
-    console.log(`[SEO] Internal links OK: ${existingInternal}`);
   }
-  
+
   // Inject external links if below minimum (once, into closing or last section)
   if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
     const deficit = SEO_REQUIREMENTS.minExternalLinks - existingExternal;
@@ -475,17 +489,14 @@ export function enforceArticleSEO(article: any): any {
         lastSection.body = injectExternalLinksOnce(lastSection.body, deficit);
       }
     }
-    console.log(`[SEO] Injected ${deficit} external links`);
   } else {
-    console.log(`[SEO] External links OK: ${existingExternal}`);
   }
-  
+
   // Ensure secondary keywords exist
   if (!result.analysis?.secondaryKeywords || result.analysis.secondaryKeywords.length === 0) {
     const primaryKeyword = result.analysis?.primaryKeyword || result.meta?.keywords?.[0];
     // FAIL-FAST: Do not use implicit Dubai fallback for keywords
     if (!primaryKeyword) {
-      console.warn("[SEO] No primary keyword available - skipping secondary keyword generation (no implicit defaults)");
     } else {
       result.analysis = result.analysis || {};
       result.analysis.secondaryKeywords = [
@@ -493,16 +504,14 @@ export function enforceArticleSEO(article: any): any {
         `${primaryKeyword} tips`,
         `best ${primaryKeyword}`,
       ];
-      console.log("[SEO] Generated secondary keywords");
     }
   }
-  
+
   // Ensure alt texts exist
   if (!result.article?.altTexts || result.article.altTexts.length === 0) {
     const topic = result.meta?.title || result.article?.h1;
     // FAIL-FAST: Do not use implicit Dubai fallback for alt texts
     if (!topic) {
-      console.warn("[SEO] No topic available for alt text generation - skipping (no implicit defaults)");
     } else {
       result.article = result.article || {};
       result.article.altTexts = [
@@ -510,11 +519,9 @@ export function enforceArticleSEO(article: any): any {
         `Interior view of ${topic} with visitors`,
         `${topic} atmosphere`,
       ];
-      console.log("[SEO] Generated alt texts");
     }
   }
-  
-  console.log("[SEO] Enforcement complete");
+
   return result;
 }
 
@@ -536,22 +543,28 @@ function collectArticleContent(article: any): string {
 /**
  * Inject links into sections (spread across first N sections)
  */
-function injectLinksIntoSections(sections: any[], links: any[], count: number, type: "internal" | "external"): void {
+function injectLinksIntoSections(
+  sections: any[],
+  links: any[],
+  count: number,
+  type: "internal" | "external"
+): void {
   const linksToAdd = links.slice(0, count);
-  
+
   for (let i = 0; i < linksToAdd.length && i < sections.length; i++) {
     const section = sections[i];
     if (!section.body) continue;
-    
+
     // Only inject into paragraph content
     const paragraphs = section.body.match(/<p[^>]*>[\s\S]*?<\/p>/gi);
     if (!paragraphs || paragraphs.length === 0) continue;
-    
+
     const link = linksToAdd[i];
-    const linkHtml = type === "internal" 
-      ? `<a href="${link.url}">${link.anchor}</a>`
-      : `<a href="${link.url}" target="_blank" rel="${link.rel}">${link.anchor}</a>`;
-    
+    const linkHtml =
+      type === "internal"
+        ? `<a href="${link.url}">${link.anchor}</a>`
+        : `<a href="${link.url}" target="_blank" rel="${link.rel}">${link.anchor}</a>`;
+
     // Insert before the last </p> of the first paragraph
     const firstPara = paragraphs[0];
     const phrase = type === "internal" ? "For more information, see our" : "Learn more at";
@@ -565,24 +578,24 @@ function injectLinksIntoSections(sections: any[], links: any[], count: number, t
  */
 function injectExternalLinksOnce(html: string, count: number): string {
   const linksToAdd = AUTHORITATIVE_EXTERNAL_LINKS.slice(0, count);
-  
+
   // Find paragraphs to inject into
   const paragraphs = html.match(/<p[^>]*>[\s\S]*?<\/p>/gi);
   if (!paragraphs || paragraphs.length === 0) return html;
-  
+
   let modified = html;
   for (let i = 0; i < linksToAdd.length; i++) {
     const link = linksToAdd[i];
     const paraIndex = Math.min(i, paragraphs.length - 1);
     const para = paragraphs[paraIndex];
-    
+
     if (!modified.includes(link.url)) {
       const linkHtml = `<a href="${link.url}" target="_blank" rel="${link.rel}">${link.anchor}</a>`;
       const newPara = para.replace(/<\/p>/i, ` Learn more at ${linkHtml}.</p>`);
       modified = modified.replace(para, newPara);
     }
   }
-  
+
   return modified;
 }
 
@@ -592,52 +605,51 @@ function injectExternalLinksOnce(html: string, count: number): string {
  */
 export function enforceWriterEngineSEO(result: any): any {
   if (!result) return result;
-  
-  console.log("[SEO] Enforcing SEO requirements on writer-engine content...");
-  
+
   // Deep clone to avoid mutating original
   const enforced = JSON.parse(JSON.stringify(result));
-  
+
   // Fix title (if present)
   if (enforced.title) {
     enforced.title = fixTitle(enforced.title);
   }
-  
+
   // Fix metaDescription (if present)
   if (enforced.metaDescription !== undefined) {
-    enforced.metaDescription = fixMetaDescription(enforced.metaDescription || "", enforced.intro || "");
+    enforced.metaDescription = fixMetaDescription(
+      enforced.metaDescription || "",
+      enforced.intro || ""
+    );
   }
-  
+
   // Remove clichés from intro
   if (enforced.intro) {
     enforced.intro = removeClichesFromText(enforced.intro);
   }
-  
+
   // Remove clichés and inject links into body
   if (enforced.body) {
     let body = removeClichesFromText(enforced.body);
-    
+
     // Count existing links
     const existingInternal = countInternalLinks(body);
     const existingExternal = countExternalLinks(body);
-    
+
     // Inject internal links if needed
     if (existingInternal < SEO_REQUIREMENTS.minInternalLinks) {
       const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
       body = injectInternalLinksToBody(body, deficit);
-      console.log(`[SEO] Injected ${deficit} internal links into body`);
     }
-    
-    // Inject external links if needed  
+
+    // Inject external links if needed
     if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
       const deficit = SEO_REQUIREMENTS.minExternalLinks - existingExternal;
       body = injectExternalLinksToBody(body, deficit);
-      console.log(`[SEO] Injected ${deficit} external links into body`);
     }
-    
+
     enforced.body = body;
   }
-  
+
   // Fix content.metaDescription if it exists (from writerEngine format)
   if (enforced.content?.metaDescription !== undefined) {
     enforced.content.metaDescription = fixMetaDescription(
@@ -645,43 +657,42 @@ export function enforceWriterEngineSEO(result: any): any {
       enforced.content.intro || ""
     );
   }
-  
+
   // Fix content.title if it exists
   if (enforced.content?.title) {
     enforced.content.title = fixTitle(enforced.content.title);
   }
-  
+
   // Remove clichés from content.intro
   if (enforced.content?.intro) {
     enforced.content.intro = removeClichesFromText(enforced.content.intro);
   }
-  
+
   // Process content.body
   if (enforced.content?.body) {
     let body = removeClichesFromText(enforced.content.body);
-    
+
     const existingInternal = countInternalLinks(body);
     const existingExternal = countExternalLinks(body);
-    
+
     if (existingInternal < SEO_REQUIREMENTS.minInternalLinks) {
       const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
       body = injectInternalLinksToBody(body, deficit);
     }
-    
+
     if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
       const deficit = SEO_REQUIREMENTS.minExternalLinks - existingExternal;
       body = injectExternalLinksToBody(body, deficit);
     }
-    
+
     enforced.content.body = body;
   }
-  
+
   // Process content.conclusion
   if (enforced.content?.conclusion) {
     enforced.content.conclusion = removeClichesFromText(enforced.content.conclusion);
   }
-  
-  console.log("[SEO] Writer-engine enforcement complete");
+
   return enforced;
 }
 
@@ -691,21 +702,21 @@ export function enforceWriterEngineSEO(result: any): any {
 function injectInternalLinksToBody(body: string, count: number): string {
   const paragraphs = body.match(/<p[^>]*>[\s\S]*?<\/p>/gi);
   if (!paragraphs || paragraphs.length === 0) return body;
-  
+
   const linksToAdd = FALLBACK_INTERNAL_LINKS.slice(0, count);
   let modified = body;
-  
+
   for (let i = 0; i < linksToAdd.length && i < paragraphs.length; i++) {
     const link = linksToAdd[i];
     const para = paragraphs[i];
-    
+
     if (!modified.includes(link.url)) {
       const linkHtml = `<a href="${link.url}">${link.anchor}</a>`;
       const newPara = para.replace(/<\/p>/i, ` For more information, see our ${linkHtml}.</p>`);
       modified = modified.replace(para, newPara);
     }
   }
-  
+
   return modified;
 }
 
@@ -715,24 +726,24 @@ function injectInternalLinksToBody(body: string, count: number): string {
 function injectExternalLinksToBody(body: string, count: number): string {
   const paragraphs = body.match(/<p[^>]*>[\s\S]*?<\/p>/gi);
   if (!paragraphs || paragraphs.length === 0) return body;
-  
+
   const linksToAdd = AUTHORITATIVE_EXTERNAL_LINKS.slice(0, count);
   let modified = body;
-  
+
   // Find paragraphs in the second half of content for external links
   const startIdx = Math.floor(paragraphs.length / 2);
-  
+
   for (let i = 0; i < linksToAdd.length; i++) {
     const link = linksToAdd[i];
     const paraIdx = Math.min(startIdx + i, paragraphs.length - 1);
     const para = paragraphs[paraIdx];
-    
+
     if (!modified.includes(link.url)) {
       const linkHtml = `<a href="${link.url}" target="_blank" rel="${link.rel}">${link.anchor}</a>`;
       const newPara = para.replace(/<\/p>/i, ` Learn more at ${linkHtml}.</p>`);
       modified = modified.replace(para, newPara);
     }
   }
-  
+
   return modified;
 }

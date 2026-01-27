@@ -14,10 +14,10 @@ import type {
   ExecutionMode,
   ProposalType,
   ApprovedProposal,
-} from './types';
+} from "./types";
 
 // Re-export for backwards compatibility
-export type { ApprovedProposal } from './types';
+export type { ApprovedProposal } from "./types";
 
 // ============================================================================
 // DEFAULT CONFIGURATION
@@ -34,7 +34,7 @@ const DEFAULT_CONFIG: ExecutionConfig = {
   maxAffectedContent: 100,
   rollbackOnErrorRate: 0.3,
   rollbackOnMetricDrop: 0.2,
-  requireApprovalAboveRisk: 'high',
+  requireApprovalAboveRisk: "high",
   notifyOnStart: true,
   notifyOnComplete: true,
 };
@@ -56,13 +56,13 @@ export class ExecutionPlanner {
   createPlan(
     name: string,
     proposals: ApprovedProposal[],
-    mode: ExecutionMode = 'staged',
+    mode: ExecutionMode = "staged",
     config?: Partial<ExecutionConfig>
   ): ExecutionPlan {
     const planConfig = { ...DEFAULT_CONFIG, ...config };
 
     // Convert proposals to execution items
-    const items = proposals.map((p) => this.proposalToItem(p));
+    const items = proposals.map(p => this.proposalToItem(p));
 
     // Build dependency graph
     const dependencies = this.buildDependencies(proposals);
@@ -79,7 +79,7 @@ export class ExecutionPlanner {
       dependencies,
       order,
       mode,
-      status: 'pending',
+      status: "pending",
       config: planConfig,
     };
 
@@ -98,8 +98,8 @@ export class ExecutionPlanner {
       proposalType: proposal.type,
       priority: proposal.priority,
       sequence: 0, // Will be set during ordering
-      status: 'pending',
-      changes: proposal.changes.map((c) => ({
+      status: "pending",
+      changes: proposal.changes.map(c => ({
         type: c.type,
         target: c.target,
         field: c.field,
@@ -122,8 +122,8 @@ export class ExecutionPlanner {
       if (proposal.dependsOn && proposal.dependsOn.length > 0) {
         dependencies.push({
           itemId: `item-${proposal.id}`,
-          dependsOn: proposal.dependsOn.map((d) => `item-${d}`),
-          condition: 'all_success',
+          dependsOn: proposal.dependsOn.map(d => `item-${d}`),
+          condition: "all_success",
         });
       }
     }
@@ -142,7 +142,7 @@ export class ExecutionPlanner {
     for (const [, itemIds] of targetMap) {
       if (itemIds.length > 1) {
         for (let i = 1; i < itemIds.length; i++) {
-          const existing = dependencies.find((d) => d.itemId === itemIds[i]);
+          const existing = dependencies.find(d => d.itemId === itemIds[i]);
           if (existing) {
             if (!existing.dependsOn.includes(itemIds[i - 1])) {
               existing.dependsOn.push(itemIds[i - 1]);
@@ -151,7 +151,7 @@ export class ExecutionPlanner {
             dependencies.push({
               itemId: itemIds[i],
               dependsOn: [itemIds[i - 1]],
-              condition: 'all_success',
+              condition: "all_success",
             });
           }
         }
@@ -212,7 +212,7 @@ export class ExecutionPlanner {
         inDegree.set(neighbor, newDegree);
 
         if (newDegree === 0) {
-          const item = items.find((i) => i.id === neighbor);
+          const item = items.find(i => i.id === neighbor);
           queue.push({ id: neighbor, priority: (item?.priority || 0) as any });
           queue.sort((a, b) => b.priority - a.priority);
         }
@@ -222,7 +222,6 @@ export class ExecutionPlanner {
     // Add any items not in the order (cycle detection)
     for (const item of items) {
       if (!order.includes(item.id)) {
-        console.warn(`[ExecutionPlanner] Circular dependency detected for ${item.id}`);
         order.push(item.id);
       }
     }
@@ -236,7 +235,7 @@ export class ExecutionPlanner {
   validatePlan(planId: string): { isValid: boolean; errors: string[]; warnings: string[] } {
     const plan = this.plans.get(planId);
     if (!plan) {
-      return { isValid: false, errors: ['Plan not found'], warnings: [] };
+      return { isValid: false, errors: ["Plan not found"], warnings: [] };
     }
 
     const errors: string[] = [];
@@ -244,21 +243,21 @@ export class ExecutionPlanner {
 
     // Check for empty plan
     if (plan.proposals.length === 0) {
-      errors.push('Plan has no proposals');
+      errors.push("Plan has no proposals");
     }
 
     // Check for circular dependencies
     const hasCycle = this.detectCycle(plan);
     if (hasCycle) {
-      errors.push('Circular dependency detected in plan');
+      errors.push("Circular dependency detected in plan");
     }
 
     // Check risk thresholds
     for (const item of plan.proposals) {
       if (item.forecast) {
-        if (item.forecast.riskLevel === 'critical') {
+        if (item.forecast.riskLevel === "critical") {
           errors.push(`Item ${item.id} has critical risk level`);
-        } else if (item.forecast.riskLevel === 'high') {
+        } else if (item.forecast.riskLevel === "high") {
           warnings.push(`Item ${item.id} has high risk level`);
         }
       }
@@ -266,12 +265,14 @@ export class ExecutionPlanner {
 
     // Check budget constraints
     if (plan.proposals.length > plan.config.itemsPerDay) {
-      warnings.push(`Plan exceeds daily item limit (${plan.proposals.length} > ${plan.config.itemsPerDay})`);
+      warnings.push(
+        `Plan exceeds daily item limit (${plan.proposals.length} > ${plan.config.itemsPerDay})`
+      );
     }
 
     // Check for non-reversible changes
     const nonReversibleCount = plan.proposals.reduce(
-      (count, p) => count + p.changes.filter((c) => !c.isReversible).length,
+      (count, p) => count + p.changes.filter(c => !c.isReversible).length,
       0
     );
     if (nonReversibleCount > 0) {
@@ -299,7 +300,7 @@ export class ExecutionPlanner {
       visited.add(itemId);
       recStack.add(itemId);
 
-      const dep = plan.dependencies.find((d) => d.itemId === itemId);
+      const dep = plan.dependencies.find(d => d.itemId === itemId);
       if (dep) {
         for (const depId of dep.dependsOn) {
           if (dfs(depId)) return true;
@@ -334,18 +335,18 @@ export class ExecutionPlanner {
   /**
    * Update plan status
    */
-  updatePlanStatus(planId: string, status: ExecutionPlan['status']): ExecutionPlan | undefined {
+  updatePlanStatus(planId: string, status: ExecutionPlan["status"]): ExecutionPlan | undefined {
     const plan = this.plans.get(planId);
     if (!plan) return undefined;
 
     plan.status = status;
     plan.updatedAt = new Date();
 
-    if (status === 'in_progress' && !plan.startedAt) {
+    if (status === "in_progress" && !plan.startedAt) {
       plan.startedAt = new Date();
     }
 
-    if (['completed', 'failed', 'cancelled'].includes(status) && !plan.completedAt) {
+    if (["completed", "failed", "cancelled"].includes(status) && !plan.completedAt) {
       plan.completedAt = new Date();
     }
 
@@ -356,7 +357,7 @@ export class ExecutionPlanner {
    * Cancel a plan
    */
   cancelPlan(planId: string): ExecutionPlan | undefined {
-    return this.updatePlanStatus(planId, 'cancelled');
+    return this.updatePlanStatus(planId, "cancelled");
   }
 
   /**

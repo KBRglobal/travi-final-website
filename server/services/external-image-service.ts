@@ -64,13 +64,13 @@ let openaiClient: OpenAI | null = null;
 function getValidOpenAIKey(): string | null {
   // Check OPENAI_API_KEY first (user's direct key)
   const directKey = process.env.OPENAI_API_KEY;
-  if (directKey && !directKey.includes('DUMMY')) {
+  if (directKey && !directKey.includes("DUMMY")) {
     return directKey;
   }
 
   // Fallback to AI integrations key
   const integrationsKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
-  if (integrationsKey && !integrationsKey.includes('DUMMY')) {
+  if (integrationsKey && !integrationsKey.includes("DUMMY")) {
     return integrationsKey;
   }
 
@@ -81,7 +81,6 @@ function getOpenAIClient(): OpenAI | null {
   const apiKey = getValidOpenAIKey();
 
   if (!apiKey) {
-    console.warn("[ExternalImageService] No valid OpenAI API key configured (OPENAI_API_KEY)");
     return null;
   }
 
@@ -92,7 +91,6 @@ function getOpenAIClient(): OpenAI | null {
       apiKey,
       // Intentionally not using baseURL - DALL-E requires direct OpenAI API
     });
-    console.log("[ExternalImageService] OpenAI client initialized for DALL-E (direct API)");
   }
 
   return openaiClient;
@@ -116,7 +114,6 @@ async function generateWithDalle(
 
   // Try DALL-E 3 first
   try {
-    console.log("[ExternalImageService] Trying DALL-E 3...");
     const response = await openai.images.generate({
       model: "dall-e-3",
       prompt: prompt,
@@ -131,7 +128,6 @@ async function generateWithDalle(
       throw new Error("No image URL in response");
     }
 
-    console.log("[ExternalImageService] DALL-E 3 succeeded");
     return {
       success: true,
       url: imageUrl,
@@ -139,8 +135,6 @@ async function generateWithDalle(
       revisedPrompt: response.data?.[0]?.revised_prompt,
     };
   } catch (error: any) {
-    console.warn("[ExternalImageService] DALL-E 3 failed:", error?.message);
-
     // Fallback to DALL-E 2
     return generateWithDalle2(prompt);
   }
@@ -156,8 +150,6 @@ async function generateWithDalle2(prompt: string): Promise<AIGenerationResponse>
   }
 
   try {
-    console.log("[ExternalImageService] Trying DALL-E 2...");
-
     // DALL-E 2 constraints
     const truncatedPrompt = prompt.length > 1000 ? prompt.substring(0, 997) + "..." : prompt;
 
@@ -173,14 +165,12 @@ async function generateWithDalle2(prompt: string): Promise<AIGenerationResponse>
       throw new Error("No image URL in response");
     }
 
-    console.log("[ExternalImageService] DALL-E 2 succeeded");
     return {
       success: true,
       url: imageUrl,
       provider: "dalle2",
     };
   } catch (error: any) {
-    console.error("[ExternalImageService] DALL-E 2 failed:", error?.message);
     return {
       success: false,
       error: error?.message || "DALL-E generation failed",
@@ -205,8 +195,6 @@ async function generateWithFlux(
   }
 
   try {
-    console.log("[ExternalImageService] Trying Flux...");
-
     const response = await fetchWithTimeout("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
@@ -233,13 +221,16 @@ async function generateWithFlux(
     // Poll for completion
     let result = prediction;
     while (result.status !== "succeeded" && result.status !== "failed") {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const pollResponse = await fetchWithTimeout(`https://api.replicate.com/v1/predictions/${result.id}`, {
-        headers: {
-          Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-        },
-        timeoutMs: REPLICATE_TIMEOUT_MS,
-      });
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const pollResponse = await fetchWithTimeout(
+        `https://api.replicate.com/v1/predictions/${result.id}`,
+        {
+          headers: {
+            Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+          },
+          timeoutMs: REPLICATE_TIMEOUT_MS,
+        }
+      );
       result = await pollResponse.json();
     }
 
@@ -252,14 +243,12 @@ async function generateWithFlux(
       throw new Error("No image URL in response");
     }
 
-    console.log("[ExternalImageService] Flux succeeded");
     return {
       success: true,
       url: imageUrl,
       provider: "flux",
     };
   } catch (error: any) {
-    console.warn("[ExternalImageService] Flux failed:", error?.message);
     return {
       success: false,
       error: error?.message || "Flux generation failed",
@@ -320,7 +309,6 @@ export async function searchFreepik(
 
     return { success: true, results };
   } catch (error: any) {
-    console.error("[ExternalImageService] Freepik search failed:", error?.message);
     return { success: false, error: error?.message || "Freepik search failed" };
   }
 }
@@ -358,18 +346,13 @@ export class ExternalImageService {
     // Try Flux first for hero images (cheaper and good quality)
     if (provider === "flux" || provider === "auto") {
       const aspectRatio =
-        options.size === "1792x1024"
-          ? "16:9"
-          : options.size === "1024x1792"
-          ? "9:16"
-          : "1:1";
+        options.size === "1792x1024" ? "16:9" : options.size === "1024x1792" ? "9:16" : "1:1";
 
       const fluxResult = await generateWithFlux(prompt, aspectRatio);
       if (fluxResult.success) return fluxResult;
 
       // If auto, fallback to DALL-E
       if (provider === "auto") {
-        console.log("[ExternalImageService] Flux failed, falling back to DALL-E");
         return generateWithDalle(prompt, options);
       }
 
@@ -424,7 +407,9 @@ export class ExternalImageService {
   async searchFreepik(
     query: string,
     options?: FreepikSearchOptions
-  ): Promise<{ success: true; results: FreepikSearchResult[] } | { success: false; error: string }> {
+  ): Promise<
+    { success: true; results: FreepikSearchResult[] } | { success: false; error: string }
+  > {
     return searchFreepik(query, options);
   }
 

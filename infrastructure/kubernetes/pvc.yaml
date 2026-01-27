@@ -1,0 +1,17 @@
+# ============================================
+# TRAVI Kubernetes Persistent Volume Claims
+# ============================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: travi-uploads-pvc
+  namespace: travi
+  labels:
+    app.kubernetes.io/name: travi
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 10Gi

@@ -4,7 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Workflow, Plus, CheckCircle2, Clock, Users, ArrowRight, Lightbulb, GitBranch } from "lucide-react";
+import {
+  Workflow,
+  Plus,
+  CheckCircle2,
+  Clock,
+  Users,
+  ArrowRight,
+  Lightbulb,
+  GitBranch,
+} from "lucide-react";
 
 interface WorkflowTemplate {
   id: string;
@@ -58,7 +67,10 @@ export default function WorkflowsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3" data-testid="heading-workflows">
+          <h1
+            className="text-3xl font-bold flex items-center gap-3"
+            data-testid="heading-workflows"
+          >
             <Workflow className="h-8 w-8 text-primary" />
             Workflows
           </h1>
@@ -75,16 +87,12 @@ export default function WorkflowsPage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Workflows define the <strong>approval process</strong> for contents. 
-          Set up multi-step reviews: Writer → Editor → SEO Review → Publish.
-          Each step can require approval from specific users or team members.
-          <br />
-          <span className="text-xs opacity-70">
-            (תהליכי עבודה מגדירים את תהליך האישור לתוכן. הגדר סקירות מרובות שלבים.)
-          </span>
+          Workflows define the <strong>approval process</strong> for content. Set up multi-step
+          reviews: Writer to Editor to SEO Review to Publish. Each step can require approval from
+          specific users or team members.
         </p>
       </div>
 
@@ -127,7 +135,10 @@ export default function WorkflowsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600" data-testid="text-completed-workflows">
+            <div
+              className="text-2xl font-bold text-green-600"
+              data-testid="text-completed-workflows"
+            >
               {completedCount}
             </div>
             <p className="text-xs text-muted-foreground">This month</p>
@@ -147,7 +158,7 @@ export default function WorkflowsPage() {
             <ScrollArea className="h-[300px]">
               {templates?.length ? (
                 <div className="space-y-4">
-                  {templates.map((template) => (
+                  {templates.map(template => (
                     <div
                       key={template.id}
                       className="p-4 border rounded-lg space-y-3"
@@ -175,7 +186,7 @@ export default function WorkflowsPage() {
                         ))}
                       </div>
                       <div className="flex gap-1 flex-wrap">
-                        {template.contentTypes?.map((type) => (
+                        {template.contentTypes?.map(type => (
                           <Badge key={type} variant="secondary" className="text-xs">
                             {type}
                           </Badge>
@@ -198,9 +209,7 @@ export default function WorkflowsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Active Workflow Instances</CardTitle>
-            <CardDescription>
-              Content currently in approval process
-            </CardDescription>
+            <CardDescription>Content currently in approval process</CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[300px]">
@@ -208,7 +217,7 @@ export default function WorkflowsPage() {
                 <div className="space-y-3">
                   {instances
                     .filter(i => i.status !== "completed")
-                    .map((instance) => (
+                    .map(instance => (
                       <div
                         key={instance.id}
                         className="flex items-center justify-between p-3 border rounded-lg"
@@ -217,7 +226,8 @@ export default function WorkflowsPage() {
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{instance.contentTitle}</p>
                           <p className="text-xs text-muted-foreground">
-                            Step {instance.currentStep + 1} | Started {new Date(instance.createdAt).toLocaleDateString()}
+                            Step {instance.currentStep + 1} | Started{" "}
+                            {new Date(instance.createdAt).toLocaleDateString()}
                           </p>
                         </div>
                         <Badge variant={instance.status === "pending" ? "secondary" : "default"}>

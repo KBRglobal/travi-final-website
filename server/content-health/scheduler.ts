@@ -63,25 +63,22 @@ function processScans(scans: ContentHealthScan[]): number {
   for (const scan of scans) {
     // Check each issue type
     const issueTypes: HealthIssueType[] = [
-      'no_blocks',
-      'no_entities',
-      'no_aeo_capsule',
-      'not_indexed',
-      'low_intelligence_coverage',
-      'low_seo_score',
-      'low_aeo_score',
-      'stale_content',
+      "no_blocks",
+      "no_entities",
+      "no_aeo_capsule",
+      "not_indexed",
+      "low_intelligence_coverage",
+      "low_seo_score",
+      "low_aeo_score",
+      "stale_content",
     ];
 
     for (const issueType of issueTypes) {
       if (scan.issues.includes(issueType)) {
-        upsertHealthIssue(
-          scan.contentId,
-          scan.contentTitle,
-          scan.contentType,
-          issueType,
-          { score: scan.score, overallHealth: scan.overallHealth }
-        );
+        upsertHealthIssue(scan.contentId, scan.contentTitle, scan.contentType, issueType, {
+          score: scan.score,
+          overallHealth: scan.overallHealth,
+        });
         issuesFound++;
       } else {
         // Issue no longer exists - resolve it
@@ -108,20 +105,20 @@ function enqueueRefreshJobs(): number {
     if (issue.jobEnqueued) continue;
 
     // Map issue type to job type
-    let jobType: 'seo-improvement' | 'content-enrichment' | 'internal-linking' | null = null;
+    let jobType: "seo-improvement" | "content-enrichment" | "internal-linking" | null = null;
 
     switch (issue.issueType) {
-      case 'no_aeo_capsule':
-      case 'no_entities':
-      case 'low_aeo_score':
-        jobType = 'content-enrichment';
+      case "no_aeo_capsule":
+      case "no_entities":
+      case "low_aeo_score":
+        jobType = "content-enrichment";
         break;
-      case 'low_seo_score':
-        jobType = 'seo-improvement';
+      case "low_seo_score":
+        jobType = "seo-improvement";
         break;
-      case 'not_indexed':
-      case 'low_intelligence_coverage':
-        jobType = 'content-enrichment';
+      case "not_indexed":
+      case "low_intelligence_coverage":
+        jobType = "content-enrichment";
         break;
       default:
         // No automatic job for other issue types
@@ -129,7 +126,7 @@ function enqueueRefreshJobs(): number {
     }
 
     if (jobType) {
-      scheduleBackgroundJob(jobType, issue.contentId, 'low');
+      scheduleBackgroundJob(jobType, issue.contentId, "low");
       markJobEnqueued(issue.id);
       enqueued++;
     }
@@ -189,7 +186,6 @@ async function runHealthScanner(): Promise<void> {
   }
 
   if (isProcessing) {
-    console.log('[ContentHealth] Scanner already processing, skipping run');
     return;
   }
 
@@ -199,15 +195,12 @@ async function runHealthScanner(): Promise<void> {
     const result = await runScanBatch();
 
     if (result.scannedCount > 0) {
-      console.log(`[ContentHealth] Scanned ${result.scannedCount} items, found ${result.issuesFound} issues`);
     }
 
     if (cycleComplete) {
-      console.log(`[ContentHealth] Scan cycle complete. Total issues: ${metrics.totalIssuesFound}`);
       cycleComplete = false;
     }
   } catch (error) {
-    console.error('[ContentHealth] Error in health scanner:', error);
   } finally {
     isProcessing = false;
   }
@@ -218,24 +211,21 @@ async function runHealthScanner(): Promise<void> {
  */
 export function startHealthScanner(): void {
   if (!isContentHealthJobsEnabled()) {
-    console.log('[ContentHealth] Content health jobs disabled');
     return;
   }
 
   if (schedulerInterval) {
-    console.log('[ContentHealth] Scanner already running');
     return;
   }
 
-  console.log('[ContentHealth] Starting content health scanner');
   metrics.isRunning = true;
 
   // Run immediately on start
-  runHealthScanner().catch(console.error);
+  runHealthScanner().catch(() => {});
 
   // Then run periodically
   schedulerInterval = setInterval(() => {
-    runHealthScanner().catch(console.error);
+    runHealthScanner().catch(() => {});
   }, DEFAULT_SCANNER_CONFIG.scanIntervalMs);
 }
 
@@ -247,7 +237,6 @@ export function stopHealthScanner(): void {
     clearInterval(schedulerInterval);
     schedulerInterval = null;
     metrics.isRunning = false;
-    console.log('[ContentHealth] Stopped content health scanner');
   }
 }
 
@@ -263,7 +252,7 @@ export function getSchedulerMetrics(): SchedulerMetrics {
  */
 export async function triggerScan(): Promise<BatchScanResult> {
   if (!isContentHealthJobsEnabled()) {
-    throw new Error('Content health jobs disabled');
+    throw new Error("Content health jobs disabled");
   }
   return runScanBatch();
 }

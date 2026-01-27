@@ -9,7 +9,7 @@
  * All services are configurable via environment variables.
  */
 
-import { log } from '../lib/logger';
+import { log } from "../lib/logger";
 
 // Service state tracking
 let servicesStarted = false;
@@ -24,8 +24,22 @@ interface BackgroundServicesConfig {
   enableTranslationWorker: boolean;
   enableRSSScheduler: boolean;
   enableLocalizationGovernance: boolean;
+  enableSEOAutopilot: boolean;
+  enableDataDecisions: boolean;
+  enableContentHealth: boolean;
   rssSchedulerConfig: {
     dailyLimit: number;
+    intervalMinutes: number;
+  };
+  seoAutopilotConfig: {
+    mode: "off" | "supervised" | "full";
+    intervalMinutes: number;
+  };
+  dataDecisionsConfig: {
+    mode: "off" | "supervised" | "full";
+    intervalMinutes: number;
+  };
+  contentHealthConfig: {
     intervalMinutes: number;
   };
 }
@@ -33,19 +47,47 @@ interface BackgroundServicesConfig {
 function getConfig(): BackgroundServicesConfig {
   return {
     // Translation services - enabled by default
-    enableTranslationQueue: process.env.ENABLE_TRANSLATION_QUEUE !== 'false',
-    enableTranslationWorker: process.env.ENABLE_TRANSLATION_WORKER !== 'false',
+    enableTranslationQueue: process.env.ENABLE_TRANSLATION_QUEUE !== "false",
+    enableTranslationWorker: process.env.ENABLE_TRANSLATION_WORKER !== "false",
 
     // RSS scheduler - enabled by default
-    enableRSSScheduler: process.env.ENABLE_RSS_SCHEDULER !== 'false',
+    enableRSSScheduler: process.env.ENABLE_RSS_SCHEDULER !== "false",
 
     // Localization governance - enabled by default
-    enableLocalizationGovernance: process.env.ENABLE_LOCALIZATION_GOVERNANCE !== 'false',
+    enableLocalizationGovernance: process.env.ENABLE_LOCALIZATION_GOVERNANCE !== "false",
+
+    // SEO Autopilot - enabled by default (set to 'false' to disable)
+    enableSEOAutopilot: process.env.ENABLE_SEO_AUTOPILOT !== "false",
+
+    // Data Decisions Autonomous Loop - enabled by default (set to 'false' to disable)
+    enableDataDecisions: process.env.ENABLE_DATA_DECISIONS !== "false",
+
+    // Content Health Scheduler - enabled by default (set to 'false' to disable)
+    enableContentHealth: process.env.ENABLE_CONTENT_HEALTH !== "false",
 
     // RSS scheduler settings
     rssSchedulerConfig: {
-      dailyLimit: parseInt(process.env.RSS_DAILY_LIMIT || '20', 10),
-      intervalMinutes: parseInt(process.env.RSS_INTERVAL_MINUTES || '60', 10),
+      dailyLimit: parseInt(process.env.RSS_DAILY_LIMIT || "20", 10),
+      intervalMinutes: parseInt(process.env.RSS_INTERVAL_MINUTES || "60", 10),
+    },
+
+    // SEO Autopilot settings
+    seoAutopilotConfig: {
+      mode: (process.env.SEO_AUTOPILOT_MODE as "off" | "supervised" | "full") || "supervised",
+      intervalMinutes: parseInt(process.env.SEO_AUTOPILOT_INTERVAL || "15", 10),
+    },
+
+    // Data Decisions settings
+    dataDecisionsConfig: {
+      mode:
+        (process.env.DATA_DECISIONS_AUTOPILOT_MODE as "off" | "supervised" | "full") ||
+        "supervised",
+      intervalMinutes: parseInt(process.env.DATA_DECISIONS_INTERVAL || "5", 10),
+    },
+
+    // Content Health settings
+    contentHealthConfig: {
+      intervalMinutes: parseInt(process.env.CONTENT_HEALTH_INTERVAL || "30", 10),
     },
   };
 }
@@ -56,29 +98,29 @@ function getConfig(): BackgroundServicesConfig {
 
 async function startTranslationServices(config: BackgroundServicesConfig): Promise<void> {
   if (!config.enableTranslationQueue && !config.enableTranslationWorker) {
-    log.info('[BackgroundServices] Translation services DISABLED via environment');
+    log.info("[BackgroundServices] Translation services DISABLED via environment");
     return;
   }
 
   try {
     // Start translation queue
     if (config.enableTranslationQueue) {
-      const { startQueue, stopQueue } = await import('../localization/translation-queue');
+      const { startQueue, stopQueue } = await import("../localization/translation-queue");
       startQueue();
       shutdownHandlers.push(stopQueue);
-      log.info('[BackgroundServices] Translation queue STARTED');
+      log.info("[BackgroundServices] Translation queue STARTED");
     }
 
     // Start translation worker in background
     if (config.enableTranslationWorker) {
-      const { runWorkerLoop } = await import('../localization/translation-worker');
+      const { runWorkerLoop } = await import("../localization/translation-worker");
 
       // Run worker loop in background (don't await)
-      runWorkerLoop().catch((err) => {
+      runWorkerLoop().catch(err => {
         log.error(`[BackgroundServices] Translation worker error: ${err}`);
       });
 
-      log.info('[BackgroundServices] Translation worker STARTED');
+      log.info("[BackgroundServices] Translation worker STARTED");
     }
   } catch (error) {
     log.error(`[BackgroundServices] Failed to start translation services: ${error}`);
@@ -91,12 +133,12 @@ async function startTranslationServices(config: BackgroundServicesConfig): Promi
 
 async function startRSSSchedulerService(config: BackgroundServicesConfig): Promise<void> {
   if (!config.enableRSSScheduler) {
-    log.info('[BackgroundServices] RSS scheduler DISABLED via environment');
+    log.info("[BackgroundServices] RSS scheduler DISABLED via environment");
     return;
   }
 
   try {
-    const { startRSSScheduler, stopRSSScheduler } = await import('../octypo/rss-scheduler');
+    const { startRSSScheduler, stopRSSScheduler } = await import("../octypo/rss-scheduler");
 
     startRSSScheduler({
       enabled: true,
@@ -105,7 +147,9 @@ async function startRSSSchedulerService(config: BackgroundServicesConfig): Promi
     });
 
     shutdownHandlers.push(stopRSSScheduler);
-    log.info(`[BackgroundServices] RSS scheduler STARTED (limit: ${config.rssSchedulerConfig.dailyLimit}/day, interval: ${config.rssSchedulerConfig.intervalMinutes}min)`);
+    log.info(
+      `[BackgroundServices] RSS scheduler STARTED (limit: ${config.rssSchedulerConfig.dailyLimit}/day, interval: ${config.rssSchedulerConfig.intervalMinutes}min)`
+    );
   } catch (error) {
     log.error(`[BackgroundServices] Failed to start RSS scheduler: ${error}`);
   }
@@ -117,24 +161,168 @@ async function startRSSSchedulerService(config: BackgroundServicesConfig): Promi
 
 async function startLocalizationGovernance(config: BackgroundServicesConfig): Promise<void> {
   if (!config.enableLocalizationGovernance) {
-    log.info('[BackgroundServices] Localization governance DISABLED via environment');
+    log.info("[BackgroundServices] Localization governance DISABLED via environment");
     return;
   }
 
   try {
     // Import and initialize the governance module
-    const governance = await import('../localization-governance');
+    const governance = await import("../localization-governance");
 
     // Check if the module exports an initialization function
-    if (typeof governance.initializeGovernance === 'function') {
+    if (typeof governance.initializeGovernance === "function") {
       await governance.initializeGovernance();
-      log.info('[BackgroundServices] Localization governance INITIALIZED');
+      log.info("[BackgroundServices] Localization governance INITIALIZED");
     } else {
-      log.info('[BackgroundServices] Localization governance module loaded (no init function)');
+      log.info("[BackgroundServices] Localization governance module loaded (no init function)");
     }
   } catch (error) {
     // Module may not exist or have errors - that's okay
     log.info(`[BackgroundServices] Localization governance not available: ${error}`);
+  }
+}
+
+// ============================================================================
+// SEO AUTOPILOT
+// ============================================================================
+
+let seoAutopilotInterval: ReturnType<typeof setInterval> | null = null;
+
+async function startSEOAutopilotService(config: BackgroundServicesConfig): Promise<void> {
+  if (!config.enableSEOAutopilot || config.seoAutopilotConfig.mode === "off") {
+    log.info("[BackgroundServices] SEO Autopilot DISABLED via environment");
+    return;
+  }
+
+  try {
+    const { getAutopilot } = await import("../seo-engine/autopilot");
+
+    // Get autopilot with the configured mode
+    const autopilot = getAutopilot(config.seoAutopilotConfig.mode);
+
+    // Run initial cycle
+    log.info(
+      `[BackgroundServices] SEO Autopilot starting in ${config.seoAutopilotConfig.mode} mode...`
+    );
+    await autopilot.runCycle().catch((err: Error) => {
+      log.warn(`[BackgroundServices] Initial SEO Autopilot cycle error: ${err.message}`);
+    });
+
+    // Set up scheduled runner
+    const intervalMs = config.seoAutopilotConfig.intervalMinutes * 60 * 1000;
+    seoAutopilotInterval = setInterval(async () => {
+      try {
+        await autopilot.runCycle();
+      } catch (err: any) {
+        log.error(`[BackgroundServices] SEO Autopilot cycle error: ${err.message}`);
+      }
+    }, intervalMs);
+
+    shutdownHandlers.push(() => {
+      if (seoAutopilotInterval) {
+        clearInterval(seoAutopilotInterval);
+        seoAutopilotInterval = null;
+      }
+    });
+
+    log.info(
+      `[BackgroundServices] SEO Autopilot STARTED (mode: ${config.seoAutopilotConfig.mode}, interval: ${config.seoAutopilotConfig.intervalMinutes}min)`
+    );
+  } catch (error) {
+    log.error(`[BackgroundServices] Failed to start SEO Autopilot: ${error}`);
+  }
+}
+
+// ============================================================================
+// DATA DECISIONS AUTONOMOUS LOOP
+// ============================================================================
+
+let dataDecisionsInterval: ReturnType<typeof setInterval> | null = null;
+
+async function startDataDecisionsService(config: BackgroundServicesConfig): Promise<void> {
+  if (!config.enableDataDecisions || config.dataDecisionsConfig.mode === "off") {
+    log.info("[BackgroundServices] Data Decisions Loop DISABLED via environment");
+    return;
+  }
+
+  try {
+    const { initializeDataDecisionSystem, shutdownDataDecisionSystem, autonomousLoop } =
+      await import("../data-decisions");
+
+    // Initialize the system with autonomous loop enabled
+    initializeDataDecisionSystem({
+      autopilotMode: config.dataDecisionsConfig.mode,
+      startLoop: true,
+      startHealthMonitor: true,
+    });
+
+    // Set up interval tracking for status
+    dataDecisionsInterval = setInterval(
+      () => {
+        // Keep-alive marker - actual work done by autonomous loop
+      },
+      config.dataDecisionsConfig.intervalMinutes * 60 * 1000
+    );
+
+    shutdownHandlers.push(async () => {
+      try {
+        if (dataDecisionsInterval) {
+          clearInterval(dataDecisionsInterval);
+          dataDecisionsInterval = null;
+        }
+        shutdownDataDecisionSystem();
+      } catch {
+        // Ignore shutdown errors
+      }
+    });
+
+    log.info(
+      `[BackgroundServices] Data Decisions Loop STARTED (mode: ${config.dataDecisionsConfig.mode})`
+    );
+  } catch (error) {
+    log.error(`[BackgroundServices] Failed to start Data Decisions Loop: ${error}`);
+  }
+}
+
+// ============================================================================
+// CONTENT HEALTH SCHEDULER
+// ============================================================================
+
+let contentHealthInterval: ReturnType<typeof setInterval> | null = null;
+
+async function startContentHealthService(config: BackgroundServicesConfig): Promise<void> {
+  if (!config.enableContentHealth) {
+    log.info("[BackgroundServices] Content Health Scheduler DISABLED via environment");
+    return;
+  }
+
+  try {
+    const { startHealthScanner, stopHealthScanner, isHealthScannerRunning } =
+      await import("../content-health/scheduler");
+
+    // Start the health scanner (it has its own internal interval)
+    log.info("[BackgroundServices] Content Health Scheduler starting...");
+    startHealthScanner();
+
+    // Track for status reporting
+    contentHealthInterval = setInterval(
+      () => {
+        // Keep-alive marker - actual work done by health scanner
+      },
+      config.contentHealthConfig.intervalMinutes * 60 * 1000
+    );
+
+    shutdownHandlers.push(() => {
+      if (contentHealthInterval) {
+        clearInterval(contentHealthInterval);
+        contentHealthInterval = null;
+      }
+      stopHealthScanner();
+    });
+
+    log.info(`[BackgroundServices] Content Health Scheduler STARTED`);
+  } catch (error) {
+    log.error(`[BackgroundServices] Failed to start Content Health Scheduler: ${error}`);
   }
 }
 
@@ -148,22 +336,25 @@ async function startLocalizationGovernance(config: BackgroundServicesConfig): Pr
  */
 export async function startBackgroundServices(): Promise<void> {
   if (servicesStarted) {
-    log.info('[BackgroundServices] Services already started, skipping');
+    log.info("[BackgroundServices] Services already started, skipping");
     return;
   }
 
   const config = getConfig();
-  log.info('[BackgroundServices] Starting background services...');
+  log.info("[BackgroundServices] Starting background services...");
 
   // Start all services in parallel
   await Promise.all([
     startTranslationServices(config),
     startRSSSchedulerService(config),
     startLocalizationGovernance(config),
+    startSEOAutopilotService(config),
+    startDataDecisionsService(config),
+    startContentHealthService(config),
   ]);
 
   servicesStarted = true;
-  log.info('[BackgroundServices] All background services initialized');
+  log.info("[BackgroundServices] All background services initialized");
 }
 
 /**
@@ -175,7 +366,7 @@ export async function stopBackgroundServices(): Promise<void> {
     return;
   }
 
-  log.info('[BackgroundServices] Stopping background services...');
+  log.info("[BackgroundServices] Stopping background services...");
 
   for (const handler of shutdownHandlers) {
     try {
@@ -187,7 +378,7 @@ export async function stopBackgroundServices(): Promise<void> {
 
   shutdownHandlers = [];
   servicesStarted = false;
-  log.info('[BackgroundServices] All background services stopped');
+  log.info("[BackgroundServices] All background services stopped");
 }
 
 /**
@@ -201,25 +392,40 @@ export async function getBackgroundServicesStatus(): Promise<{
     translationWorker: { enabled: boolean; status: string };
     rssScheduler: { enabled: boolean; status: any };
     localizationGovernance: { enabled: boolean; status: string };
+    seoAutopilot: { enabled: boolean; mode: string; status: string };
+    dataDecisions: { enabled: boolean; mode: string; status: string };
+    contentHealth: { enabled: boolean; status: string };
   };
 }> {
   const config = getConfig();
 
   let rssSchedulerStatus: any = { running: false };
   try {
-    const { getRSSSchedulerStatus } = await import('../octypo/rss-scheduler');
+    const { getRSSSchedulerStatus } = await import("../octypo/rss-scheduler");
     rssSchedulerStatus = getRSSSchedulerStatus();
   } catch {
     // Scheduler not available
   }
 
-  let translationQueueStatus = 'not_started';
+  let translationQueueStatus = "not_started";
   try {
-    const { getQueueStatus } = await import('../localization/translation-queue');
+    const { getQueueStatus } = await import("../localization/translation-queue");
     const qStatus = await getQueueStatus();
-    translationQueueStatus = qStatus.isRunning ? 'running' : (qStatus.isPaused ? 'paused' : 'idle');
+    translationQueueStatus = qStatus.isRunning ? "running" : qStatus.isPaused ? "paused" : "idle";
   } catch {
     // Queue not available
+  }
+
+  let seoAutopilotStatus = "stopped";
+  try {
+    if (config.enableSEOAutopilot && seoAutopilotInterval) {
+      const { getAutopilot } = await import("../seo-engine/autopilot");
+      const autopilot = getAutopilot();
+      const status = autopilot.getStatus();
+      seoAutopilotStatus = status.mode !== "off" ? "running" : "paused";
+    }
+  } catch {
+    // Autopilot not available
   }
 
   return {
@@ -232,7 +438,7 @@ export async function getBackgroundServicesStatus(): Promise<{
       },
       translationWorker: {
         enabled: config.enableTranslationWorker,
-        status: config.enableTranslationWorker && servicesStarted ? 'running' : 'stopped',
+        status: config.enableTranslationWorker && servicesStarted ? "running" : "stopped",
       },
       rssScheduler: {
         enabled: config.enableRSSScheduler,
@@ -240,7 +446,21 @@ export async function getBackgroundServicesStatus(): Promise<{
       },
       localizationGovernance: {
         enabled: config.enableLocalizationGovernance,
-        status: config.enableLocalizationGovernance && servicesStarted ? 'active' : 'inactive',
+        status: config.enableLocalizationGovernance && servicesStarted ? "active" : "inactive",
+      },
+      seoAutopilot: {
+        enabled: config.enableSEOAutopilot,
+        mode: config.seoAutopilotConfig.mode,
+        status: seoAutopilotStatus,
+      },
+      dataDecisions: {
+        enabled: config.enableDataDecisions,
+        mode: config.dataDecisionsConfig.mode,
+        status: config.enableDataDecisions && dataDecisionsInterval ? "running" : "stopped",
+      },
+      contentHealth: {
+        enabled: config.enableContentHealth,
+        status: config.enableContentHealth && contentHealthInterval ? "running" : "stopped",
       },
     },
   };

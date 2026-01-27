@@ -42,19 +42,19 @@ export async function scheduleContent(
     const content = await getContentById(contentId);
 
     if (!content) {
-      return { success: false, error: 'Content not found' };
+      return { success: false, error: "Content not found" };
     }
 
     if (content.deletedAt) {
-      return { success: false, error: 'Content is deleted' };
+      return { success: false, error: "Content is deleted" };
     }
 
-    if (content.status === 'published') {
-      return { success: false, error: 'Content is already published' };
+    if (content.status === "published") {
+      return { success: false, error: "Content is already published" };
     }
 
     if (scheduledAt <= new Date()) {
-      return { success: false, error: 'Scheduled time must be in the future' };
+      return { success: false, error: "Scheduled time must be in the future" };
     }
 
     await db
@@ -67,8 +67,7 @@ export async function scheduleContent(
 
     return { success: true };
   } catch (error) {
-    console.error('[Scheduling] Error scheduling content:', error);
-    return { success: false, error: 'Database error' };
+    return { success: false, error: "Database error" };
   }
 }
 
@@ -82,15 +81,15 @@ export async function cancelSchedule(
     const content = await getContentById(contentId);
 
     if (!content) {
-      return { success: false, error: 'Content not found' };
+      return { success: false, error: "Content not found" };
     }
 
-    if (content.status === 'published') {
-      return { success: false, error: 'Content is already published' };
+    if (content.status === "published") {
+      return { success: false, error: "Content is already published" };
     }
 
     if (!content.scheduledAt) {
-      return { success: false, error: 'Content is not scheduled' };
+      return { success: false, error: "Content is not scheduled" };
     }
 
     await db
@@ -103,8 +102,7 @@ export async function cancelSchedule(
 
     return { success: true };
   } catch (error) {
-    console.error('[Scheduling] Error cancelling schedule:', error);
-    return { success: false, error: 'Database error' };
+    return { success: false, error: "Database error" };
   }
 }
 
@@ -124,12 +122,14 @@ export async function getContentDueForPublishing(limit: number = 50) {
       scheduledAt: contents.scheduledAt,
     })
     .from(contents)
-    .where(and(
-      eq(contents.status, 'draft'),
-      isNotNull(contents.scheduledAt),
-      lte(contents.scheduledAt, now),
-      isNull(contents.deletedAt)
-    ))
+    .where(
+      and(
+        eq(contents.status, "draft"),
+        isNotNull(contents.scheduledAt),
+        lte(contents.scheduledAt, now),
+        isNull(contents.deletedAt)
+      )
+    )
     .limit(limit);
 
   return items;
@@ -147,15 +147,15 @@ export async function publishContent(
     const content = await getContentById(contentId);
 
     if (!content) {
-      return { success: false, error: 'Content not found' };
+      return { success: false, error: "Content not found" };
     }
 
-    if (content.status === 'published') {
+    if (content.status === "published") {
       return { success: false, alreadyPublished: true };
     }
 
     if (content.deletedAt) {
-      return { success: false, error: 'Content is deleted' };
+      return { success: false, error: "Content is deleted" };
     }
 
     const now = new Date();
@@ -164,18 +164,19 @@ export async function publishContent(
     const result = await db
       .update(contents)
       .set({
-        status: 'published',
+        status: "published",
         publishedAt: now,
         updatedAt: now,
       } as any)
-      .where(and(
-        eq(contents.id, contentId),
-        eq(contents.status, 'draft') // Only update if still draft
-      ));
+      .where(
+        and(
+          eq(contents.id, contentId),
+          eq(contents.status, "draft") // Only update if still draft
+        )
+      );
 
     return { success: true };
   } catch (error) {
-    console.error('[Scheduling] Error publishing content:', error);
     return { success: false, error: String(error) };
   }
 }
@@ -197,11 +198,13 @@ export async function getUpcomingScheduled(limit: number = 20): Promise<Upcoming
       publishedAt: contents.publishedAt,
     })
     .from(contents)
-    .where(and(
-      isNotNull(contents.scheduledAt),
-      gte(contents.scheduledAt, now),
-      isNull(contents.deletedAt)
-    ))
+    .where(
+      and(
+        isNotNull(contents.scheduledAt),
+        gte(contents.scheduledAt, now),
+        isNull(contents.deletedAt)
+      )
+    )
     .orderBy(contents.scheduledAt)
     .limit(limit);
 
@@ -211,7 +214,7 @@ export async function getUpcomingScheduled(limit: number = 20): Promise<Upcoming
     type: item.type,
     slug: item.slug,
     scheduledAt: item.scheduledAt!.toISOString(),
-    status: item.status === 'published' ? 'published' : 'pending',
+    status: item.status === "published" ? "published" : "pending",
     publishedAt: item.publishedAt?.toISOString(),
   }));
 
@@ -224,10 +227,7 @@ export async function getUpcomingScheduled(limit: number = 20): Promise<Upcoming
 /**
  * Get calendar items for a specific month
  */
-export async function getCalendarItems(
-  year: number,
-  month: number
-): Promise<CalendarItem[]> {
+export async function getCalendarItems(year: number, month: number): Promise<CalendarItem[]> {
   const startDate = new Date(year, month - 1, 1);
   const endDate = new Date(year, month, 0, 23, 59, 59);
 
@@ -242,12 +242,14 @@ export async function getCalendarItems(
       publishedAt: contents.publishedAt,
     })
     .from(contents)
-    .where(and(
-      isNotNull(contents.scheduledAt),
-      gte(contents.scheduledAt, startDate),
-      lte(contents.scheduledAt, endDate),
-      isNull(contents.deletedAt)
-    ))
+    .where(
+      and(
+        isNotNull(contents.scheduledAt),
+        gte(contents.scheduledAt, startDate),
+        lte(contents.scheduledAt, endDate),
+        isNull(contents.deletedAt)
+      )
+    )
     .orderBy(contents.scheduledAt);
 
   return items.map(item => ({
@@ -256,7 +258,7 @@ export async function getCalendarItems(
     type: item.type,
     slug: item.slug,
     scheduledAt: item.scheduledAt!.toISOString(),
-    status: item.status === 'published' ? 'published' : 'pending',
+    status: item.status === "published" ? "published" : "pending",
     publishedAt: item.publishedAt?.toISOString(),
   }));
 }
@@ -277,12 +279,14 @@ export async function getFailedSchedules(limit: number = 50): Promise<CalendarIt
       scheduledAt: contents.scheduledAt,
     })
     .from(contents)
-    .where(and(
-      eq(contents.status, 'draft'),
-      isNotNull(contents.scheduledAt),
-      lte(contents.scheduledAt, oneDayAgo),
-      isNull(contents.deletedAt)
-    ))
+    .where(
+      and(
+        eq(contents.status, "draft"),
+        isNotNull(contents.scheduledAt),
+        lte(contents.scheduledAt, oneDayAgo),
+        isNull(contents.deletedAt)
+      )
+    )
     .orderBy(contents.scheduledAt)
     .limit(limit);
 
@@ -292,6 +296,6 @@ export async function getFailedSchedules(limit: number = 50): Promise<CalendarIt
     type: item.type,
     slug: item.slug,
     scheduledAt: item.scheduledAt!.toISOString(),
-    status: 'failed' as const,
+    status: "failed" as const,
   }));
 }

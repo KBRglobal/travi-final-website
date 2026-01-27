@@ -1,6 +1,6 @@
 /**
  * Search Indexer
- * 
+ *
  * Indexes content for full-text and semantic search
  */
 
@@ -16,19 +16,19 @@ export const searchIndexer = {
   getContentUrl(type: string, slug: string): string {
     // Map content types to their URL paths
     const urlMap: Record<string, string> = {
-      'attraction': '/attractions/',
-      'hotel': '/hotels/',
-      'article': '/articles/',
-      'dining': '/dining/',
-      'district': '/districts/',
-      'transport': '/transport/',
-      'event': '/events/',
-      'itinerary': '/itineraries/',
-      'landing_page': '/landing-pages/',
-      'case_study': '/case-studies/',
-      'off_plan': '/off-plan/',
+      attraction: "/attractions/",
+      hotel: "/hotels/",
+      article: "/articles/",
+      dining: "/dining/",
+      district: "/districts/",
+      transport: "/transport/",
+      event: "/events/",
+      itinerary: "/itineraries/",
+      landing_page: "/landing-pages/",
+      case_study: "/case-studies/",
+      off_plan: "/off-plan/",
     };
-    
+
     return (urlMap[type] || `/${type}s/`) + slug;
   },
 
@@ -37,14 +37,9 @@ export const searchIndexer = {
    */
   async indexContent(contentId: string): Promise<void> {
     // Fetch content
-    const [content] = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.id, contentId))
-      .limit(1);
+    const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
     if (!content || content.status !== "published") {
-      console.log(`[SearchIndexer] Skipping ${contentId} - not published`);
       return;
     }
 
@@ -63,10 +58,7 @@ export const searchIndexer = {
 
       const result = await embeddings.generate(embeddingText);
       embeddingVector = `[${result.vector.join(",")}]`;
-
-      console.log(`[SearchIndexer] Generated embedding for ${contentId} (${result.tokens} tokens)`);
     } catch (error) {
-      console.error(`[SearchIndexer] Embedding failed for ${contentId}:`, error);
       // Continue without embedding - semantic search won't work but full-text will
     }
 
@@ -84,7 +76,7 @@ export const searchIndexer = {
         ${searchableText},
         ${this.getContentUrl(content.type, content.slug)},
         ${content.heroImage || null},
-        ${'en'},
+        ${"en"},
         ${null},
         ${embeddingVector},
         NOW()
@@ -102,8 +94,6 @@ export const searchIndexer = {
         embedding = EXCLUDED.embedding,
         updated_at = NOW()
     `);
-
-    console.log(`[SearchIndexer] Indexed ${contentId}`);
   },
 
   /**
@@ -113,17 +103,13 @@ export const searchIndexer = {
     await db.execute(sql`
       DELETE FROM search_index WHERE content_id = ${contentId}
     `);
-    console.log(`[SearchIndexer] Removed ${contentId} from index`);
   },
 
   /**
    * Reindex all published content
    */
   async reindexAll(): Promise<{ indexed: number; errors: number }> {
-    const allContent = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.status, "published"));
+    const allContent = await db.select().from(contents).where(eq(contents.status, "published"));
 
     let indexed = 0;
     let errors = 0;
@@ -133,7 +119,6 @@ export const searchIndexer = {
         await this.indexContent(content.id);
         indexed++;
       } catch (error) {
-        console.error(`[SearchIndexer] Error indexing ${content.id}:`, error);
         errors++;
       }
     }
@@ -145,10 +130,7 @@ export const searchIndexer = {
    * Build searchable text from content blocks
    */
   buildSearchableText(content: any): string {
-    const parts: string[] = [
-      content.title,
-      content.metaDescription || "",
-    ];
+    const parts: string[] = [content.title, content.metaDescription || ""];
 
     if (Array.isArray(content.blocks)) {
       const blockText = this.extractBlockText(content.blocks);
@@ -159,12 +141,7 @@ export const searchIndexer = {
       parts.push(content.tags.join(" "));
     }
 
-    return parts
-      .filter(Boolean)
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 5000); // Limit to reasonable size
+    return parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim().slice(0, 5000); // Limit to reasonable size
   },
 
   /**

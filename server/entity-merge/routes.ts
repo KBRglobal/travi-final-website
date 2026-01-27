@@ -8,23 +8,9 @@
 
 import type { Express, Request, Response } from "express";
 import { requireAuth } from "../security";
-import {
-  detectDuplicates,
-  findDuplicatesFor,
-  getDuplicateStats,
-} from "./detector";
-import {
-  mergeEntities,
-  undoMerge,
-  getAllRedirects,
-  getRedirect,
-  getMergeHistory,
-} from "./merger";
-import {
-  type MergeableEntityType,
-  type MergeStrategy,
-  isEntityMergeEnabled,
-} from "./types";
+import { detectDuplicates, findDuplicatesFor, getDuplicateStats } from "./detector";
+import { mergeEntities, undoMerge, getAllRedirects, getRedirect, getMergeHistory } from "./merger";
+import { type MergeableEntityType, type MergeStrategy, isEntityMergeEnabled } from "./types";
 
 /**
  * Register entity merge admin routes
@@ -56,7 +42,6 @@ export function registerEntityMergeRoutes(app: Express) {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("[EntityMerge] Error detecting duplicates:", error);
       res.status(500).json({
         error: "Failed to detect duplicates",
         timestamp: new Date().toISOString(),
@@ -69,47 +54,53 @@ export function registerEntityMergeRoutes(app: Express) {
    *
    * Get duplicate detection statistics.
    */
-  app.get("/api/admin/entities/duplicates/stats", requireAuth, async (req: Request, res: Response) => {
-    try {
-      const stats = await getDuplicateStats();
-      res.json({
-        featureEnabled: isEntityMergeEnabled(),
-        ...stats,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error("[EntityMerge] Error getting stats:", error);
-      res.status(500).json({ error: "Failed to get duplicate stats" });
+  app.get(
+    "/api/admin/entities/duplicates/stats",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      try {
+        const stats = await getDuplicateStats();
+        res.json({
+          featureEnabled: isEntityMergeEnabled(),
+          ...stats,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get duplicate stats" });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/entities/:id/duplicates
    *
    * Find potential duplicates for a specific entity.
    */
-  app.get("/api/admin/entities/:id/duplicates", requireAuth, async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const entityType = req.query.type as MergeableEntityType | undefined;
+  app.get(
+    "/api/admin/entities/:id/duplicates",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { id } = req.params;
+      const entityType = req.query.type as MergeableEntityType | undefined;
 
-    if (!entityType) {
-      return res.status(400).json({ error: "Missing required query param 'type'" });
-    }
+      if (!entityType) {
+        return res.status(400).json({ error: "Missing required query param 'type'" });
+      }
 
-    try {
-      const duplicates = await findDuplicatesFor(id, entityType);
-      res.json({
-        entityId: id,
-        entityType,
-        duplicates,
-        count: duplicates.length,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error("[EntityMerge] Error finding duplicates:", error);
-      res.status(500).json({ error: "Failed to find duplicates" });
+      try {
+        const duplicates = await findDuplicatesFor(id, entityType);
+        res.json({
+          entityId: id,
+          entityType,
+          duplicates,
+          count: duplicates.length,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to find duplicates" });
+      }
     }
-  });
+  );
 
   /**
    * POST /api/admin/entities/:id/merge
@@ -134,7 +125,7 @@ export function registerEntityMergeRoutes(app: Express) {
       return res.status(400).json({ error: "Missing required field 'intoId'" });
     }
 
-    if (!strategy || !['keep_target', 'keep_source', 'merge_content'].includes(strategy)) {
+    if (!strategy || !["keep_target", "keep_source", "merge_content"].includes(strategy)) {
       return res.status(400).json({
         error: "Invalid strategy. Must be 'keep_target', 'keep_source', or 'merge_content'",
       });
@@ -145,7 +136,7 @@ export function registerEntityMergeRoutes(app: Express) {
     }
 
     // Get user ID from auth (simplified - assumes req.user exists after requireAuth)
-    const mergedBy = (req as any).user?.id || 'system';
+    const mergedBy = (req as any).user?.id || "system";
 
     try {
       const result = await mergeEntities({
@@ -168,7 +159,6 @@ export function registerEntityMergeRoutes(app: Express) {
         });
       }
     } catch (error) {
-      console.error("[EntityMerge] Error merging entities:", error);
       res.status(500).json({ error: "Failed to merge entities" });
     }
   });
@@ -187,7 +177,6 @@ export function registerEntityMergeRoutes(app: Express) {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("[EntityMerge] Error getting redirects:", error);
       res.status(500).json({ error: "Failed to get redirects" });
     }
   });
@@ -214,7 +203,6 @@ export function registerEntityMergeRoutes(app: Express) {
         });
       }
     } catch (error) {
-      console.error("[EntityMerge] Error checking redirect:", error);
       res.status(500).json({ error: "Failed to check redirect" });
     }
   });
@@ -224,33 +212,36 @@ export function registerEntityMergeRoutes(app: Express) {
    *
    * Undo a previous merge operation.
    */
-  app.post("/api/admin/entities/merge/undo/:redirectId", requireAuth, async (req: Request, res: Response) => {
-    if (!isEntityMergeEnabled()) {
-      return res.status(403).json({
-        error: "Entity merge feature is disabled",
-      });
-    }
-
-    const { redirectId } = req.params;
-
-    try {
-      const result = await undoMerge(redirectId);
-
-      if (result.success) {
-        res.json({
-          message: "Merge undone successfully",
-          timestamp: new Date().toISOString(),
-        });
-      } else {
-        res.status(400).json({
-          error: result.error || "Failed to undo merge",
+  app.post(
+    "/api/admin/entities/merge/undo/:redirectId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      if (!isEntityMergeEnabled()) {
+        return res.status(403).json({
+          error: "Entity merge feature is disabled",
         });
       }
-    } catch (error) {
-      console.error("[EntityMerge] Error undoing merge:", error);
-      res.status(500).json({ error: "Failed to undo merge" });
+
+      const { redirectId } = req.params;
+
+      try {
+        const result = await undoMerge(redirectId);
+
+        if (result.success) {
+          res.json({
+            message: "Merge undone successfully",
+            timestamp: new Date().toISOString(),
+          });
+        } else {
+          res.status(400).json({
+            error: result.error || "Failed to undo merge",
+          });
+        }
+      } catch (error) {
+        res.status(500).json({ error: "Failed to undo merge" });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/entities/merge/history
@@ -266,10 +257,7 @@ export function registerEntityMergeRoutes(app: Express) {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("[EntityMerge] Error getting history:", error);
       res.status(500).json({ error: "Failed to get merge history" });
     }
   });
-
-  console.log("[EntityMerge] Admin routes registered");
 }

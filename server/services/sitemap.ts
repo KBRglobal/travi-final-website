@@ -1,4 +1,10 @@
-import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions, helpCategories, helpArticles } from "@shared/schema";
+import {
+  SUPPORTED_LOCALES,
+  type Locale,
+  tiqetsAttractions,
+  helpCategories,
+  helpArticles,
+} from "@shared/schema";
 import { storage } from "../storage";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
@@ -12,42 +18,42 @@ const BASE_URL = "https://travi.world";
 // ===========================================
 const ACTIVE_LOCALES: Locale[] = [
   // Tier 1 - Core Markets
-  "en",  // English - primary
-  "ar",  // Arabic
-  "hi",  // Hindi
+  "en", // English - primary
+  "ar", // Arabic
+  "hi", // Hindi
   // Tier 2 - High ROI Markets
-  "zh",  // Chinese
-  "ru",  // Russian
-  "ur",  // Urdu
-  "fr",  // French
-  "id",  // Indonesian
+  "zh", // Chinese
+  "ru", // Russian
+  "ur", // Urdu
+  "fr", // French
+  "id", // Indonesian
   // Tier 3 - Growing Markets (Southeast Asia focus)
-  "de",  // German
-  "fa",  // Persian
-  "bn",  // Bengali
+  "de", // German
+  "fa", // Persian
+  "bn", // Bengali
   "fil", // Filipino
-  "th",  // Thai
-  "vi",  // Vietnamese
-  "ms",  // Malay
+  "th", // Thai
+  "vi", // Vietnamese
+  "ms", // Malay
   // Tier 4 - Niche Markets
-  "es",  // Spanish
-  "tr",  // Turkish
-  "it",  // Italian
-  "ja",  // Japanese
-  "ko",  // Korean
-  "he",  // Hebrew
-  "pt",  // Portuguese
+  "es", // Spanish
+  "tr", // Turkish
+  "it", // Italian
+  "ja", // Japanese
+  "ko", // Korean
+  "he", // Hebrew
+  "pt", // Portuguese
   // Tier 5 - European Expansion
-  "nl",  // Dutch
-  "pl",  // Polish
-  "sv",  // Swedish
-  "el",  // Greek
-  "cs",  // Czech
-  "ro",  // Romanian
-  "uk",  // Ukrainian
-  "hu",  // Hungarian
-  "da",  // Danish
-  "no",  // Norwegian
+  "nl", // Dutch
+  "pl", // Polish
+  "sv", // Swedish
+  "el", // Greek
+  "cs", // Czech
+  "ro", // Romanian
+  "uk", // Ukrainian
+  "hu", // Hungarian
+  "da", // Danish
+  "no", // Norwegian
 ];
 
 // Helper to check if a locale is active
@@ -57,7 +63,7 @@ function isLocaleActive(locale: Locale): boolean {
 
 // Get only active locales from SUPPORTED_LOCALES
 function getActiveLocales() {
-  return SUPPORTED_LOCALES.filter((l) => isLocaleActive(l.code as Locale));
+  return SUPPORTED_LOCALES.filter(l => isLocaleActive(l.code as Locale));
 }
 
 interface SitemapUrl {
@@ -88,13 +94,13 @@ function generateUrlXml(url: SitemapUrl): string {
   // Add hreflang alternates using xhtml:link
   // Only include ACTIVE locales
   if (url.alternates && url.alternates.length > 0) {
-    const activeAlternates = url.alternates.filter((a) => isLocaleActive(a.locale));
+    const activeAlternates = url.alternates.filter(a => isLocaleActive(a.locale));
 
     for (const alt of activeAlternates) {
       xml += `    <xhtml:link rel="alternate" hreflang="${alt.locale}" href="${escapeXml(alt.url)}" />\n`;
     }
     // Add x-default pointing to English
-    const enAlt = activeAlternates.find((a) => a.locale === "en");
+    const enAlt = activeAlternates.find(a => a.locale === "en");
     if (enAlt) {
       xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(enAlt.url)}" />\n`;
     }
@@ -129,9 +135,7 @@ function generateSitemapXml(urls: SitemapUrl[]): string {
 }
 
 // Generate sitemap index XML
-function generateSitemapIndexXml(
-  sitemaps: { loc: string; lastmod?: string }[]
-): string {
+function generateSitemapIndexXml(sitemaps: { loc: string; lastmod?: string }[]): string {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -192,8 +196,16 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     // Dubai-specific content (allowed under /destinations/dubai/ hierarchy)
     { path: "/destinations/dubai/real-estate", priority: 0.9, changefreq: "daily" as const },
     { path: "/destinations/dubai/off-plan", priority: 0.9, changefreq: "daily" as const },
-    { path: "/destinations/dubai/guides/rak-transport", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/destinations/dubai/guides/rak-comparison", priority: 0.7, changefreq: "monthly" as const },
+    {
+      path: "/destinations/dubai/guides/rak-transport",
+      priority: 0.7,
+      changefreq: "monthly" as const,
+    },
+    {
+      path: "/destinations/dubai/guides/rak-comparison",
+      priority: 0.7,
+      changefreq: "monthly" as const,
+    },
 
     // Guide Pages (global)
     { path: "/guides/wynn-al-marjan-island", priority: 0.7, changefreq: "monthly" as const },
@@ -219,17 +231,13 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
   for (const page of staticPages) {
     // Only include alternates for ACTIVE locales
     const activeLocales = getActiveLocales();
-    const alternates = activeLocales.map((l) => ({
+    const alternates = activeLocales.map(l => ({
       locale: l.code as Locale,
-      url: l.code === "en" 
-        ? `${BASE_URL}${page.path || "/"}` 
-        : `${BASE_URL}/${l.code}${page.path}`,
+      url: l.code === "en" ? `${BASE_URL}${page.path || "/"}` : `${BASE_URL}/${l.code}${page.path}`,
     }));
 
     urls.push({
-      loc: locale === "en" 
-        ? `${BASE_URL}${page.path || "/"}` 
-        : `${BASE_URL}/${locale}${page.path}`,
+      loc: locale === "en" ? `${BASE_URL}${page.path || "/"}` : `${BASE_URL}/${locale}${page.path}`,
       lastmod: now,
       changefreq: page.changefreq,
       priority: page.priority,
@@ -247,10 +255,10 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         .from(tiqetsAttractions)
         .where(eq(tiqetsAttractions.status, "published"))
         .groupBy(tiqetsAttractions.cityName);
-      
+
       for (const dest of destinationCounts) {
         if (!dest.cityName) continue;
-        const slug = dest.cityName.toLowerCase().replace(/ /g, '-');
+        const slug = dest.cityName.toLowerCase().replace(/ /g, "-");
         urls.push({
           loc: `${BASE_URL}/attractions/list/${slug}`,
           lastmod: now,
@@ -258,15 +266,13 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
           priority: 0.85,
         });
       }
-    } catch (error) {
-      console.error("Error fetching destination attractions for sitemap:", error);
-    }
+    } catch (error) {}
   }
 
   // Dynamic content pages
   try {
     const contents = await storage.getContents();
-    const publishedContents = contents.filter((c) => c.status === "published");
+    const publishedContents = contents.filter(c => c.status === "published");
 
     for (const content of publishedContents) {
       const contentPath = `/${content.type}/${content.slug}`;
@@ -278,22 +284,23 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
       const translations = await storage.getTranslationsByContentId(content.id);
 
       // Filter to only ACTIVE locales that have translations
-      const availableActiveLocales = ["en", ...translations.map((t) => t.locale)]
-        .filter((l) => isLocaleActive(l as Locale)) as Locale[];
+      const availableActiveLocales = ["en", ...translations.map(t => t.locale)].filter(l =>
+        isLocaleActive(l as Locale)
+      ) as Locale[];
 
-      const alternates = availableActiveLocales.map((l) => ({
+      const alternates = availableActiveLocales.map(l => ({
         locale: l,
-        url: l === "en" 
-          ? `${BASE_URL}${contentPath}` 
-          : `${BASE_URL}/${l}${contentPath}`,
+        url: l === "en" ? `${BASE_URL}${contentPath}` : `${BASE_URL}/${l}${contentPath}`,
       }));
 
       // Only add URL if this locale is active AND has a translation (or is English)
-      if (isLocaleActive(locale) && (locale === "en" || translations.some((t) => t.locale === locale))) {
+      if (
+        isLocaleActive(locale) &&
+        (locale === "en" || translations.some(t => t.locale === locale))
+      ) {
         urls.push({
-          loc: locale === "en" 
-            ? `${BASE_URL}${contentPath}` 
-            : `${BASE_URL}/${locale}${contentPath}`,
+          loc:
+            locale === "en" ? `${BASE_URL}${contentPath}` : `${BASE_URL}/${locale}${contentPath}`,
           lastmod,
           changefreq: "weekly",
           priority: 0.7,
@@ -301,17 +308,17 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         });
       }
     }
-  } catch (error) {
-    console.error("Error fetching contents for sitemap:", error);
-  }
+  } catch (error) {}
 
   // Tiqets attractions pages (English only for now)
   if (locale === "en") {
     try {
-      const attractions = await db.select({
-        seoSlug: tiqetsAttractions.seoSlug,
-        updatedAt: tiqetsAttractions.updatedAt,
-      }).from(tiqetsAttractions);
+      const attractions = await db
+        .select({
+          seoSlug: tiqetsAttractions.seoSlug,
+          updatedAt: tiqetsAttractions.updatedAt,
+        })
+        .from(tiqetsAttractions);
 
       let addedCount = 0;
       for (const attraction of attractions) {
@@ -330,10 +337,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
           addedCount++;
         }
       }
-      console.log(`Sitemap: Added ${addedCount} Tiqets attractions`);
-    } catch (error) {
-      console.error("Error fetching Tiqets attractions for sitemap:", error);
-    }
+    } catch (error) {}
   }
 
   // Help Center pages - DISABLED: Help center is currently broken
@@ -395,10 +399,10 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         }
       }
       if (helpCount > 0) {
-        console.log(`Sitemap: Added ${helpCount} help center pages`);
+        
       }
     } catch (error) {
-      console.error("Error fetching help center pages for sitemap:", error);
+      
     }
   }
   */
@@ -423,7 +427,7 @@ export async function generateSitemapIndex(): Promise<string> {
   const now = new Date().toISOString().split("T")[0];
 
   // Only generate sitemap entries for ACTIVE locales
-  const sitemaps = getActiveLocales().map((locale) => ({
+  const sitemaps = getActiveLocales().map(locale => ({
     loc: `${BASE_URL}/sitemap-${locale.code}.xml`,
     lastmod: now,
   }));
@@ -453,13 +457,12 @@ export async function generateAllSitemaps(): Promise<Map<string, string>> {
 export function generateRobotsTxt(): string {
   // Only include sitemaps for ACTIVE locales
   const activeSitemapLines = getActiveLocales()
-    .map((l) => `Sitemap: ${BASE_URL}/sitemap-${l.code}.xml`)
+    .map(l => `Sitemap: ${BASE_URL}/sitemap-${l.code}.xml`)
     .join("\n");
 
   // Get list of INACTIVE locales to block
-  const inactiveLocalePaths = SUPPORTED_LOCALES
-    .filter((l) => !isLocaleActive(l.code as Locale))
-    .map((l) => `Disallow: /${l.code}/`)
+  const inactiveLocalePaths = SUPPORTED_LOCALES.filter(l => !isLocaleActive(l.code as Locale))
+    .map(l => `Disallow: /${l.code}/`)
     .join("\n");
 
   return `# ===========================================

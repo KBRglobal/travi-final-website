@@ -1,6 +1,6 @@
 /**
  * CTA A/B Testing
- * 
+ *
  * A/B testing framework for call-to-action elements
  * - Test creation and management
  * - Variant tracking
@@ -100,7 +100,6 @@ export const ctaAbTesting = {
 
       return testId;
     } catch (error) {
-      console.error("[A/B Testing] Error creating test:", error);
       return null;
     }
   },
@@ -120,7 +119,6 @@ export const ctaAbTesting = {
 
       return true;
     } catch (error) {
-      console.error("[A/B Testing] Error starting test:", error);
       return false;
     }
   },
@@ -140,7 +138,6 @@ export const ctaAbTesting = {
 
       return true;
     } catch (error) {
-      console.error("[A/B Testing] Error stopping test:", error);
       return false;
     }
   },
@@ -155,11 +152,7 @@ export const ctaAbTesting = {
   ): Promise<{ variantId: string; config: Record<string, unknown> } | null> {
     try {
       // Check if test is running
-      const test = await db
-        .select()
-        .from(abTests)
-        .where(eq(abTests.id, testId))
-        .limit(1);
+      const test = await db.select().from(abTests).where(eq(abTests.id, testId)).limit(1);
 
       if (test.length === 0 || test[0].status !== "running") {
         return null;
@@ -199,7 +192,6 @@ export const ctaAbTesting = {
         config: selectedVariant.config as Record<string, unknown>,
       };
     } catch (error) {
-      console.error("[A/B Testing] Error getting variant:", error);
       return null;
     }
   },
@@ -231,8 +223,8 @@ export const ctaAbTesting = {
         eventType === "impression"
           ? "impressions"
           : eventType === "click"
-          ? "clicks"
-          : "conversions";
+            ? "clicks"
+            : "conversions";
 
       // Use SQL increment for atomic operation
       const variant = await db
@@ -250,9 +242,7 @@ export const ctaAbTesting = {
           })
           .where(eq(abTestVariants.id, variantId));
       }
-    } catch (error) {
-      console.error("[A/B Testing] Error tracking event:", error);
-    }
+    } catch (error) {}
   },
 
   /**
@@ -261,11 +251,7 @@ export const ctaAbTesting = {
   async getTestResults(testId: string): Promise<ABTestResult | null> {
     try {
       // Get test
-      const test = await db
-        .select()
-        .from(abTests)
-        .where(eq(abTests.id, testId))
-        .limit(1);
+      const test = await db.select().from(abTests).where(eq(abTests.id, testId)).limit(1);
 
       if (test.length === 0) {
         return null;
@@ -306,14 +292,12 @@ export const ctaAbTesting = {
       const control = results.find(r => r.variantId === controlVariant?.id);
 
       // Determine winner (if any)
-      let winner: ABTestResult['winner'] = null;
+      let winner: ABTestResult["winner"] = null;
 
       if (control && results.length > 1) {
         // Find best performing variant (excluding control)
         const candidates = results.filter(r => r.variantId !== control.variantId);
-        const best = candidates.reduce((prev, curr) =>
-          curr.cvr > prev.cvr ? curr : prev
-        );
+        const best = candidates.reduce((prev, curr) => (curr.cvr > prev.cvr ? curr : prev));
 
         // Check if improvement is significant (>10% and confidence >80%)
         const improvement = ((best.cvr - control.cvr) / control.cvr) * 100;
@@ -333,7 +317,6 @@ export const ctaAbTesting = {
         winner,
       };
     } catch (error) {
-      console.error("[A/B Testing] Error getting test results:", error);
       return null;
     }
   },
@@ -367,14 +350,16 @@ export const ctaAbTesting = {
   /**
    * List all tests
    */
-  async listTests(status?: "draft" | "running" | "paused" | "completed"): Promise<Array<{
-    id: string;
-    name: string;
-    type: string;
-    status: string;
-    startDate: Date | null;
-    endDate: Date | null;
-  }>> {
+  async listTests(status?: "draft" | "running" | "paused" | "completed"): Promise<
+    Array<{
+      id: string;
+      name: string;
+      type: string;
+      status: string;
+      startDate: Date | null;
+      endDate: Date | null;
+    }>
+  > {
     try {
       let query = db.select().from(abTests) as any;
 
@@ -393,7 +378,6 @@ export const ctaAbTesting = {
         endDate: test.endDate,
       }));
     } catch (error) {
-      console.error("[A/B Testing] Error listing tests:", error);
       return [];
     }
   },

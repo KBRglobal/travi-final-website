@@ -44,7 +44,7 @@ interface ImportedContent {
   quickFacts: string[];
   proTips: string[];
   faqs: Array<{ question: string; answer: string }>;
-  status: 'draft' | 'ready_for_review';
+  status: "draft" | "ready_for_review";
 }
 
 interface DocUploadResult {
@@ -63,12 +63,15 @@ interface DocUploadResult {
  * Uses conservative heading detection to preserve paragraph structure
  */
 export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
-  const rawText = buffer.toString('utf-8');
+  const rawText = buffer.toString("utf-8");
   const wordCount = rawText.split(/\s+/).filter(Boolean).length;
 
   // Split into paragraphs (double newlines), preserving original spacing
-  const paragraphs = rawText.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0);
-  
+  const paragraphs = rawText
+    .split(/\n\n+/)
+    .map(p => p.trim())
+    .filter(p => p.length > 0);
+
   const sections: Array<{ heading: string; content: string; level: number }> = [];
   let title = "Untitled Document";
 
@@ -77,40 +80,40 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
   // - Starts with number followed by period/colon (e.g., "1. Introduction")
   // - Very short line ending with colon
   function isHeading(text: string): boolean {
-    const lines = text.split('\n');
+    const lines = text.split("\n");
     const firstLine = lines[0].trim();
-    
+
     // Skip if too long or contains multiple sentences
-    if (firstLine.length > 80 || firstLine.split('.').length > 2) return false;
-    
+    if (firstLine.length > 80 || firstLine.split(".").length > 2) return false;
+
     // ALL CAPS detection (must have at least 3 letter characters)
-    const letters = firstLine.replace(/[^A-Za-z]/g, '');
+    const letters = firstLine.replace(/[^A-Za-z]/g, "");
     if (letters.length >= 3 && firstLine === firstLine.toUpperCase() && /[A-Z]/.test(firstLine)) {
       return true;
     }
-    
+
     // Numbered heading: "1. Title" or "1: Title"
     if (/^\d+[\.:]\s*[A-Z]/.test(firstLine) && firstLine.length < 60) {
       return true;
     }
-    
+
     // Short line ending with colon (title-like)
-    if (firstLine.length < 50 && firstLine.endsWith(':') && !firstLine.includes('.')) {
+    if (firstLine.length < 50 && firstLine.endsWith(":") && !firstLine.includes(".")) {
       return true;
     }
-    
+
     return false;
   }
 
   for (const paragraph of paragraphs) {
     if (isHeading(paragraph)) {
-      const heading = paragraph.split('\n')[0].replace(/:$/, '').trim();
-      const remainingContent = paragraph.split('\n').slice(1).join('\n').trim();
-      
+      const heading = paragraph.split("\n")[0].replace(/:$/, "").trim();
+      const remainingContent = paragraph.split("\n").slice(1).join("\n").trim();
+
       if (sections.length === 0) {
         title = heading;
       }
-      
+
       sections.push({
         heading,
         content: remainingContent,
@@ -119,12 +122,12 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
     } else if (sections.length > 0) {
       // Append to last section
       const lastSection = sections[sections.length - 1];
-      lastSection.content = lastSection.content 
-        ? lastSection.content + '\n\n' + paragraph 
+      lastSection.content = lastSection.content
+        ? lastSection.content + "\n\n" + paragraph
         : paragraph;
     } else {
       // Content before first heading - use first line as title
-      const firstLine = paragraph.split('\n')[0];
+      const firstLine = paragraph.split("\n")[0];
       title = firstLine.length < 80 ? firstLine : "Imported Document";
       sections.push({
         heading: title,
@@ -145,15 +148,17 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
   }
 
   // Convert to simple HTML - escape content properly
-  const html = sections.map(s => {
-    const escapedHeading = s.heading.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const escapedContent = s.content
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/\n\n+/g, '</p><p>')
-      .replace(/\n/g, ' '); // Single newlines become spaces, not <br>
-    return `<h${s.level}>${escapedHeading}</h${s.level}><p>${escapedContent}</p>`;
-  }).join('');
+  const html = sections
+    .map(s => {
+      const escapedHeading = s.heading.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const escapedContent = s.content
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\n\n+/g, "</p><p>")
+        .replace(/\n/g, " "); // Single newlines become spaces, not <br>
+      return `<h${s.level}>${escapedHeading}</h${s.level}><p>${escapedContent}</p>`;
+    })
+    .join("");
 
   return {
     title,
@@ -176,7 +181,6 @@ export async function parseDocxFile(buffer: Buffer): Promise<ParsedDocContent> {
 
   // Log any warnings from conversion
   if (messages.length > 0) {
-    console.log("[DocUpload] Conversion warnings:", messages);
   }
 
   // Also get raw text for word count
@@ -206,8 +210,8 @@ export async function parseDocxFile(buffer: Buffer): Promise<ParsedDocContent> {
  */
 export async function parseDocument(buffer: Buffer): Promise<ParsedDocContent> {
   // Check if it looks like a DOCX (ZIP format starts with PK)
-  const isDocx = buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4B;
-  
+  const isDocx = buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b;
+
   if (isDocx) {
     return parseDocxFile(buffer);
   } else {
@@ -238,7 +242,7 @@ function extractSections(html: string): Array<{ heading: string; content: string
 
     // Extract paragraph content
     const paragraphs = extractParagraphs(contentHtml);
-    const content = paragraphs.join('\n\n');
+    const content = paragraphs.join("\n\n");
 
     sections.push({ heading, content, level });
   }
@@ -249,7 +253,7 @@ function extractSections(html: string): Array<{ heading: string; content: string
     if (paragraphs.length > 0) {
       sections.push({
         heading: "Content",
-        content: paragraphs.join('\n\n'),
+        content: paragraphs.join("\n\n"),
         level: 1,
       });
     }
@@ -328,11 +332,11 @@ function extractLists(
  */
 function stripHtml(html: string): string {
   return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .trim();
@@ -349,7 +353,7 @@ function stripHtml(html: string): string {
  */
 export function convertToContentBlocks(
   parsed: ParsedDocContent,
-  contentType: 'hotel' | 'article' | 'attraction' | 'dining' | 'district'
+  contentType: "hotel" | "article" | "attraction" | "dining" | "district"
 ): ImportedContent {
   const blocks: ContentBlock[] = [];
   let blockOrder = 0;
@@ -357,11 +361,11 @@ export function convertToContentBlocks(
   // 1. Hero block from title
   blocks.push({
     id: generateBlockId(),
-    type: 'hero',
+    type: "hero",
     order: blockOrder++,
     data: {
       title: parsed.title,
-      subtitle: parsed.sections.length > 1 ? parsed.sections[1].heading : '',
+      subtitle: parsed.sections.length > 1 ? parsed.sections[1].heading : "",
       overlayText: `Explore ${parsed.title}`,
     },
   });
@@ -370,10 +374,11 @@ export function convertToContentBlocks(
   const mainSections = parsed.sections.slice(1); // Skip first (title) section
 
   for (const section of mainSections) {
-    if (section.content.length > 50) { // Only include sections with substantial content
+    if (section.content.length > 50) {
+      // Only include sections with substantial content
       blocks.push({
         id: generateBlockId(),
-        type: 'text',
+        type: "text",
         order: blockOrder++,
         data: {
           title: section.heading,
@@ -398,16 +403,16 @@ export function convertToContentBlocks(
         tips.push(item);
       }
       // Detect facts (short informational items)
-      else if (item.length < 100 && !item.includes('?')) {
+      else if (item.length < 100 && !item.includes("?")) {
         facts.push(item);
       }
       // Detect Q&A format
-      else if (item.includes('?')) {
-        const parts = item.split('?');
+      else if (item.includes("?")) {
+        const parts = item.split("?");
         if (parts.length >= 2) {
           faqs.push({
-            question: parts[0].trim() + '?',
-            answer: parts.slice(1).join('?').trim(),
+            question: parts[0].trim() + "?",
+            answer: parts.slice(1).join("?").trim(),
           });
         }
       }
@@ -418,7 +423,7 @@ export function convertToContentBlocks(
   if (tips.length > 0) {
     blocks.push({
       id: generateBlockId(),
-      type: 'tips',
+      type: "tips",
       order: blockOrder++,
       data: {
         tips: tips.slice(0, 10), // Max 10 tips
@@ -430,7 +435,7 @@ export function convertToContentBlocks(
   if (faqs.length > 0) {
     blocks.push({
       id: generateBlockId(),
-      type: 'faq',
+      type: "faq",
       order: blockOrder++,
       data: {
         faqs: faqs.slice(0, 10), // Max 10 FAQs
@@ -442,7 +447,7 @@ export function convertToContentBlocks(
   if (facts.length >= 3) {
     blocks.push({
       id: generateBlockId(),
-      type: 'highlights',
+      type: "highlights",
       order: blockOrder++,
       data: {
         items: facts.slice(0, 8), // Max 8 highlights
@@ -453,19 +458,20 @@ export function convertToContentBlocks(
   // 7. Add CTA block
   blocks.push({
     id: generateBlockId(),
-    type: 'cta',
+    type: "cta",
     order: blockOrder++,
     data: {
-      title: contentType === 'hotel' ? 'Book Your Stay' : 'Plan Your Visit',
+      title: contentType === "hotel" ? "Book Your Stay" : "Plan Your Visit",
       text: `Discover everything ${parsed.title} has to offer`,
-      buttonText: contentType === 'hotel' ? 'Check Availability' : 'Learn More',
+      buttonText: contentType === "hotel" ? "Check Availability" : "Learn More",
     },
   });
 
   // Generate meta content
-  const firstParagraph = parsed.sections[0]?.content || '';
-  const summary = firstParagraph.substring(0, 300) + (firstParagraph.length > 300 ? '...' : '');
-  const metaDescription = firstParagraph.substring(0, 155) + (firstParagraph.length > 155 ? '...' : '');
+  const firstParagraph = parsed.sections[0]?.content || "";
+  const summary = firstParagraph.substring(0, 300) + (firstParagraph.length > 300 ? "..." : "");
+  const metaDescription =
+    firstParagraph.substring(0, 155) + (firstParagraph.length > 155 ? "..." : "");
 
   return {
     title: parsed.title,
@@ -480,7 +486,7 @@ export function convertToContentBlocks(
     quickFacts: facts.slice(0, 5),
     proTips: tips.slice(0, 7),
     faqs: faqs.slice(0, 8),
-    status: parsed.wordCount >= 500 ? 'ready_for_review' : 'draft',
+    status: parsed.wordCount >= 500 ? "ready_for_review" : "draft",
   };
 }
 
@@ -493,7 +499,7 @@ export function convertToContentBlocks(
  */
 export async function processDocUpload(
   buffer: Buffer,
-  contentType: 'hotel' | 'article' | 'attraction' | 'dining' | 'district',
+  contentType: "hotel" | "article" | "attraction" | "dining" | "district",
   options?: {
     overrideTitle?: string;
     category?: string;
@@ -506,8 +512,6 @@ export async function processDocUpload(
     // Parse the document (auto-detects DOCX vs TXT)
     const parsed = await parseDocument(buffer);
 
-    console.log(`[DocUpload] Parsed document: "${parsed.title}" (${parsed.wordCount} words, ${parsed.sections.length} sections)`);
-
     // Warn if word count is low
     if (parsed.wordCount < 500) {
       warnings.push(`Low word count: ${parsed.wordCount} words. Consider adding more content.`);
@@ -515,7 +519,9 @@ export async function processDocUpload(
 
     // Warn if few sections
     if (parsed.sections.length < 3) {
-      warnings.push(`Only ${parsed.sections.length} sections found. Consider adding more headings for better structure.`);
+      warnings.push(
+        `Only ${parsed.sections.length} sections found. Consider adding more headings for better structure.`
+      );
     }
 
     // Convert to content blocks
@@ -528,15 +534,12 @@ export async function processDocUpload(
       content.metaTitle = `${options.overrideTitle} | Dubai Travel Guide`;
     }
 
-    console.log(`[DocUpload] Converted to ${content.content.blocks.length} content blocks`);
-
     return {
       success: true,
       content,
       warnings: warnings.length > 0 ? warnings : undefined,
     };
   } catch (error) {
-    console.error("[DocUpload] Error processing document:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error processing document",
@@ -549,18 +552,16 @@ export async function processDocUpload(
  */
 export async function processBatchDocUpload(
   files: Array<{ buffer: Buffer; filename: string }>,
-  contentType: 'hotel' | 'article' | 'attraction' | 'dining' | 'district'
+  contentType: "hotel" | "article" | "attraction" | "dining" | "district"
 ): Promise<Array<DocUploadResult & { filename: string }>> {
   const results: Array<DocUploadResult & { filename: string }> = [];
 
   for (const file of files) {
-    console.log(`[DocUpload] Processing batch file: ${file.filename}`);
     const result = await processDocUpload(file.buffer, contentType);
     results.push({ ...result, filename: file.filename });
   }
 
   const successful = results.filter(r => r.success).length;
-  console.log(`[DocUpload] Batch complete: ${successful}/${files.length} files processed successfully`);
 
   return results;
 }

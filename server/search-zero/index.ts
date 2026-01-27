@@ -190,18 +190,21 @@ export async function getCluster(clusterId: string): Promise<ZeroResultCluster |
 
   const totalCount = results.reduce((sum, r) => sum + r.count, 0);
   const lastSeen = results
-    .map((r) => r.lastSeenAt)
+    .map(r => r.lastSeenAt)
     .filter(Boolean)
     .sort((a, b) => new Date(b!).getTime() - new Date(a!).getTime())[0];
 
   return {
     clusterId,
-    queries: results.map((r) => r.query),
+    queries: results.map(r => r.query),
     normalizedQuery: results[0].normalizedQuery,
     count: totalCount,
     intent: results[0].intent || undefined,
     lastSeenAt: lastSeen?.toISOString() || new Date().toISOString(),
-    suggestedContentType: suggestContentType(results[0].query, results[0].intent || "informational"),
+    suggestedContentType: suggestContentType(
+      results[0].query,
+      results[0].intent || "informational"
+    ),
   };
 }
 
@@ -281,12 +284,10 @@ export async function getZeroResultStats(): Promise<ZeroResultStats> {
     totalQueries: totalResult?.total || 0,
     totalClusters: clusterCount?.count || 0,
     topClusters,
-    recentQueries: recent.map((r) => ({
+    recentQueries: recent.map(r => ({
       query: r.query,
       count: r.count,
       lastSeen: r.lastSeen?.toISOString() || new Date().toISOString(),
     })),
   };
 }
-
-console.log("[SearchZero] Module loaded");

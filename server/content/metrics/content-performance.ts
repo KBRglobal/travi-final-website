@@ -39,15 +39,15 @@ function calculateScore(perf: ContentPerformance): number {
   const clickWeight = 3;
   const impressionWeight = 0.5;
   const scrollWeight = 0.3;
-  
+
   const ctr = perf.impressions > 0 ? (perf.clicks / perf.impressions) * 100 : 0;
   const ctrWeight = 10;
-  
+
   const clickScore = Math.min(perf.clicks * clickWeight, 35);
   const impressionScore = Math.min(perf.impressions * impressionWeight, 25);
   const scrollScore = Math.min((perf.scrollDepth || 0) * scrollWeight, 20);
   const ctrScore = Math.min(ctr * ctrWeight, 20);
-  
+
   return Math.min(100, Math.round(clickScore + impressionScore + scrollScore + ctrScore));
 }
 
@@ -56,7 +56,7 @@ function loadFromDisk(): void {
     if (fs.existsSync(PERSISTENCE_FILE)) {
       const data = fs.readFileSync(PERSISTENCE_FILE, "utf-8");
       const parsed: StoredPerformanceData[] = JSON.parse(data);
-      
+
       for (const item of parsed) {
         performanceStore.set(item.entityId, {
           entityId: item.entityId,
@@ -71,18 +71,14 @@ function loadFromDisk(): void {
         const perf = performanceStore.get(item.entityId)!;
         perf.score = calculateScore(perf);
       }
-      
-      console.log(`[ContentPerformance] Loaded ${parsed.length} entries from disk`);
     }
-  } catch (error) {
-    console.warn("[ContentPerformance] Failed to load from disk:", error);
-  }
+  } catch (error) {}
 }
 
 function saveToDisk(): void {
   try {
     const data: StoredPerformanceData[] = [];
-    
+
     for (const [, perf] of performanceStore.entries()) {
       data.push({
         entityId: perf.entityId,
@@ -94,12 +90,9 @@ function saveToDisk(): void {
         createdAt: perf.createdAt.toISOString(),
       });
     }
-    
+
     fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(data, null, 2), "utf-8");
-    console.log(`[ContentPerformance] Saved ${data.length} entries to disk`);
-  } catch (error) {
-    console.error("[ContentPerformance] Failed to save to disk:", error);
-  }
+  } catch (error) {}
 }
 
 loadFromDisk();
@@ -108,12 +101,10 @@ let persistenceTimer: ReturnType<typeof setInterval> | null = null;
 
 function startPersistenceTimer(): void {
   if (persistenceTimer) return;
-  
+
   persistenceTimer = setInterval(() => {
     saveToDisk();
   }, PERSISTENCE_INTERVAL_MS);
-  
-  console.log(`[ContentPerformance] Started periodic persistence (every ${PERSISTENCE_INTERVAL_MS / 1000}s)`);
 }
 
 function stopPersistenceTimer(): void {
@@ -133,7 +124,7 @@ process.on("beforeExit", () => {
 export function recordImpression(entityId: string, entityType: string): ContentPerformance {
   const existing = performanceStore.get(entityId);
   const now = new Date();
-  
+
   const updated: ContentPerformance = {
     entityId,
     entityType,
@@ -144,17 +135,17 @@ export function recordImpression(entityId: string, entityType: string): ContentP
     lastModified: now,
     createdAt: existing?.createdAt ?? now,
   };
-  
+
   updated.score = calculateScore(updated);
   performanceStore.set(entityId, updated);
-  
+
   return updated;
 }
 
 export function recordClick(entityId: string, entityType: string): ContentPerformance {
   const existing = performanceStore.get(entityId);
   const now = new Date();
-  
+
   const updated: ContentPerformance = {
     entityId,
     entityType,
@@ -165,18 +156,22 @@ export function recordClick(entityId: string, entityType: string): ContentPerfor
     lastModified: now,
     createdAt: existing?.createdAt ?? now,
   };
-  
+
   updated.score = calculateScore(updated);
   performanceStore.set(entityId, updated);
-  
+
   return updated;
 }
 
-export function recordScrollDepth(entityId: string, entityType: string, depth: number): ContentPerformance {
+export function recordScrollDepth(
+  entityId: string,
+  entityType: string,
+  depth: number
+): ContentPerformance {
   const existing = performanceStore.get(entityId);
   const now = new Date();
   const currentDepth = existing?.scrollDepth ?? 0;
-  
+
   const updated: ContentPerformance = {
     entityId,
     entityType,
@@ -187,10 +182,10 @@ export function recordScrollDepth(entityId: string, entityType: string, depth: n
     lastModified: now,
     createdAt: existing?.createdAt ?? now,
   };
-  
+
   updated.score = calculateScore(updated);
   performanceStore.set(entityId, updated);
-  
+
   return updated;
 }
 
@@ -208,36 +203,40 @@ export function getAllPerformance(): ContentPerformance[] {
   return Array.from(performanceStore.values()).sort((a, b) => b.score - a.score);
 }
 
-export function shouldAllowRegeneration(entityId: string, forceOverride: boolean = false): RegenerationResult {
+export function shouldAllowRegeneration(
+  entityId: string,
+  forceOverride: boolean = false
+): RegenerationResult {
   if (forceOverride) {
-    console.log(`[ContentPerformance] Force override enabled for ${entityId}`);
     return { allowed: true, reason: "Force override enabled" };
   }
-  
+
   const perf = performanceStore.get(entityId);
-  
+
   if (!perf) {
     return { allowed: true, reason: "No performance data recorded" };
   }
-  
+
   if (perf.score > HIGH_PERFORMING_SCORE_THRESHOLD) {
     return {
       allowed: false,
       reason: `High-performing content (score: ${perf.score}, threshold: ${HIGH_PERFORMING_SCORE_THRESHOLD})`,
     };
   }
-  
+
   const now = new Date();
   const timeSinceModification = now.getTime() - perf.lastModified.getTime();
-  
+
   if (timeSinceModification < MODIFICATION_COOLDOWN_MS) {
-    const hoursRemaining = Math.ceil((MODIFICATION_COOLDOWN_MS - timeSinceModification) / (60 * 60 * 1000));
+    const hoursRemaining = Math.ceil(
+      (MODIFICATION_COOLDOWN_MS - timeSinceModification) / (60 * 60 * 1000)
+    );
     return {
       allowed: false,
       reason: `Content modified within last 24 hours (${hoursRemaining}h remaining in cooldown)`,
     };
   }
-  
+
   return { allowed: true };
 }
 

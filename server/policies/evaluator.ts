@@ -8,10 +8,7 @@ import { PolicyCondition, PolicyContext } from "./types";
 /**
  * Evaluate a single condition against context
  */
-export function evaluateCondition(
-  condition: PolicyCondition,
-  context: PolicyContext
-): boolean {
+export function evaluateCondition(condition: PolicyCondition, context: PolicyContext): boolean {
   const value = getFieldValue(condition.field, context);
 
   switch (condition.operator) {
@@ -55,7 +52,9 @@ export function evaluateCondition(
       return false;
 
     case "exists":
-      return condition.value ? value !== undefined && value !== null : value === undefined || value === null;
+      return condition.value
+        ? value !== undefined && value !== null
+        : value === undefined || value === null;
 
     default:
       return false;
@@ -136,7 +135,9 @@ export function evaluateAllConditions(
   for (const condition of conditions) {
     const result = evaluateCondition(condition, context);
     if (result) {
-      matchedConditions.push(`${condition.field} ${condition.operator} ${JSON.stringify(condition.value)}`);
+      matchedConditions.push(
+        `${condition.field} ${condition.operator} ${JSON.stringify(condition.value)}`
+      );
     } else {
       return { match: false, matchedConditions: [] };
     }
@@ -148,10 +149,7 @@ export function evaluateAllConditions(
 /**
  * Check if role matches policy
  */
-export function roleMatchesPolicy(
-  userRoles: string[] | undefined,
-  policyRoles: string[]
-): boolean {
+export function roleMatchesPolicy(userRoles: string[] | undefined, policyRoles: string[]): boolean {
   // Empty policy roles = applies to all roles
   if (policyRoles.length === 0) return true;
 
@@ -159,7 +157,7 @@ export function roleMatchesPolicy(
   if (!userRoles || userRoles.length === 0) return false;
 
   // Check if any user role is in policy roles
-  return userRoles.some((role) => policyRoles.includes(role));
+  return userRoles.some(role => policyRoles.includes(role));
 }
 
 /**
@@ -177,5 +175,3 @@ export function resourceMatchesPolicy(resource: string, policyResources: string[
   if (policyResources.length === 0) return true;
   return policyResources.includes(resource);
 }
-
-console.log("[Policies] Evaluator loaded");

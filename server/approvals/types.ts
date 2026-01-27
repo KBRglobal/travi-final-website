@@ -103,5 +103,3 @@ export interface ApprovalResult {
   message: string;
   nextApprovers?: string[];
 }
-
-console.log("[Approvals] Types loaded");

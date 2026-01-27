@@ -1,11 +1,11 @@
 /**
  * IDOR (Insecure Direct Object Reference) Protection Middleware
- * 
+ *
  * Prevents unauthorized access to resources by verifying:
  * 1. User ownership of resources
  * 2. Role-based permissions from ROLE_PERMISSIONS
  * 3. Self-access for user profile operations
- * 
+ *
  * All authorization failures are logged for security auditing.
  */
 
@@ -18,7 +18,7 @@ type PermissionKey = keyof typeof ROLE_PERMISSIONS.admin;
 
 interface AuthorizationFailure {
   timestamp: string;
-  type: 'ownership' | 'permission' | 'self_access';
+  type: "ownership" | "permission" | "self_access";
   userId: string | undefined;
   userRole: UserRole | undefined;
   resourceType: string;
@@ -33,13 +33,7 @@ interface AuthorizationFailure {
 /**
  * Log authorization failure for security audit
  */
-function logAuthorizationFailure(failure: AuthorizationFailure): void {
-  console.warn('[IDOR_PROTECTION]', JSON.stringify({
-    ...failure,
-    severity: 'WARNING',
-    category: 'authorization_failure',
-  }));
-}
+function logAuthorizationFailure(failure: AuthorizationFailure): void {}
 
 /**
  * Check if a role has a specific permission
@@ -58,15 +52,15 @@ async function getAuthenticatedDbUser(req: Request): Promise<{
   userRole: UserRole;
 } | null> {
   const userId = getUserId(req);
-  const isAuthenticated = typeof req.isAuthenticated === 'function' ? req.isAuthenticated() : false;
-  
+  const isAuthenticated = typeof req.isAuthenticated === "function" ? req.isAuthenticated() : false;
+
   if (!isAuthenticated || !userId) {
     return null;
   }
 
   const dbUser = await storage.getUser(userId);
   const userRole: UserRole = dbUser?.role || "viewer";
-  
+
   return { userId, dbUser, userRole };
 }
 
@@ -74,11 +68,11 @@ async function getAuthenticatedDbUser(req: Request): Promise<{
  * Require ownership of a content resource
  * User must be the author of the content to proceed
  */
-export function requireOwnership(resourceType: 'content') {
+export function requireOwnership(resourceType: "content") {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authUser = await getAuthenticatedDbUser(req);
-      
+
       if (!authUser) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -90,9 +84,9 @@ export function requireOwnership(resourceType: 'content') {
         return res.status(400).json({ error: "Resource ID required" });
       }
 
-      if (resourceType === 'content') {
+      if (resourceType === "content") {
         const content = await storage.getContent(resourceId);
-        
+
         if (!content) {
           return res.status(404).json({ error: "Content not found" });
         }
@@ -100,13 +94,13 @@ export function requireOwnership(resourceType: 'content') {
         if (content.authorId !== userId) {
           logAuthorizationFailure({
             timestamp: new Date().toISOString(),
-            type: 'ownership',
+            type: "ownership",
             userId,
             userRole,
             resourceType,
             resourceId,
-            ip: req.ip || req.socket.remoteAddress || 'unknown',
-            userAgent: req.get('user-agent'),
+            ip: req.ip || req.socket.remoteAddress || "unknown",
+            userAgent: req.get("user-agent"),
             path: req.path,
             method: req.method,
           });
@@ -122,7 +116,6 @@ export function requireOwnership(resourceType: 'content') {
       (req as any).userRole = userRole;
       next();
     } catch (error) {
-      console.error('[IDOR_PROTECTION] Error in requireOwnership:', error);
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -133,11 +126,14 @@ export function requireOwnership(resourceType: 'content') {
  * Admins and users with the permission can access any resource
  * Other users can only access resources they own
  */
-export function requireOwnershipOrPermission(permission: PermissionKey, resourceType: 'content' = 'content') {
+export function requireOwnershipOrPermission(
+  permission: PermissionKey,
+  resourceType: "content" = "content"
+) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authUser = await getAuthenticatedDbUser(req);
-      
+
       if (!authUser) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -157,9 +153,9 @@ export function requireOwnershipOrPermission(permission: PermissionKey, resource
       }
 
       // Check ownership for content resources
-      if (resourceType === 'content') {
+      if (resourceType === "content") {
         const content = await storage.getContent(resourceId);
-        
+
         if (!content) {
           return res.status(404).json({ error: "Content not found" });
         }
@@ -174,14 +170,14 @@ export function requireOwnershipOrPermission(permission: PermissionKey, resource
       // Authorization failed - log and deny
       logAuthorizationFailure({
         timestamp: new Date().toISOString(),
-        type: 'permission',
+        type: "permission",
         userId,
         userRole,
         resourceType,
         resourceId,
         requiredPermission: permission,
-        ip: req.ip || req.socket.remoteAddress || 'unknown',
-        userAgent: req.get('user-agent'),
+        ip: req.ip || req.socket.remoteAddress || "unknown",
+        userAgent: req.get("user-agent"),
         path: req.path,
         method: req.method,
       });
@@ -193,7 +189,6 @@ export function requireOwnershipOrPermission(permission: PermissionKey, resource
         currentRole: userRole,
       });
     } catch (error) {
-      console.error('[IDOR_PROTECTION] Error in requireOwnershipOrPermission:', error);
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -207,7 +202,7 @@ export function requireSelfOrAdmin() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authUser = await getAuthenticatedDbUser(req);
-      
+
       if (!authUser) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -220,7 +215,7 @@ export function requireSelfOrAdmin() {
       }
 
       // Admin can access any user
-      if (userRole === 'admin') {
+      if (userRole === "admin") {
         (req as any).dbUser = dbUser;
         (req as any).userRole = userRole;
         return next();
@@ -236,13 +231,13 @@ export function requireSelfOrAdmin() {
       // Authorization failed - log and deny
       logAuthorizationFailure({
         timestamp: new Date().toISOString(),
-        type: 'self_access',
+        type: "self_access",
         userId,
         userRole,
-        resourceType: 'user',
+        resourceType: "user",
         resourceId: targetUserId,
-        ip: req.ip || req.socket.remoteAddress || 'unknown',
-        userAgent: req.get('user-agent'),
+        ip: req.ip || req.socket.remoteAddress || "unknown",
+        userAgent: req.get("user-agent"),
         path: req.path,
         method: req.method,
       });
@@ -252,7 +247,6 @@ export function requireSelfOrAdmin() {
         message: "You can only access your own profile",
       });
     } catch (error) {
-      console.error('[IDOR_PROTECTION] Error in requireSelfOrAdmin:', error);
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -261,7 +255,7 @@ export function requireSelfOrAdmin() {
 /**
  * Require admin role only
  * Only admins can perform this action
- * 
+ *
  * NOTE: In development mode with DEV_AUTO_AUTH=true, all requests are auto-authenticated
  * as admin. To test auth failures, disable DEV_AUTO_AUTH or test in production mode.
  */
@@ -269,24 +263,24 @@ export function requireAdmin() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authUser = await getAuthenticatedDbUser(req);
-      
+
       if (!authUser) {
         return res.status(401).json({ error: "Not authenticated" });
       }
 
       const { userId, dbUser, userRole } = authUser;
 
-      if (userRole !== 'admin') {
+      if (userRole !== "admin") {
         logAuthorizationFailure({
           timestamp: new Date().toISOString(),
-          type: 'permission',
+          type: "permission",
           userId,
           userRole,
-          resourceType: 'admin_action',
-          resourceId: req.params.id || 'N/A',
-          requiredPermission: 'canManageUsers',
-          ip: req.ip || req.socket.remoteAddress || 'unknown',
-          userAgent: req.get('user-agent'),
+          resourceType: "admin_action",
+          resourceId: req.params.id || "N/A",
+          requiredPermission: "canManageUsers",
+          ip: req.ip || req.socket.remoteAddress || "unknown",
+          userAgent: req.get("user-agent"),
           path: req.path,
           method: req.method,
         });
@@ -302,7 +296,6 @@ export function requireAdmin() {
       (req as any).userRole = userRole;
       next();
     } catch (error) {
-      console.error('[IDOR_PROTECTION] Error in requireAdmin:', error);
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -316,7 +309,7 @@ export function requirePermissionWithAudit(permission: PermissionKey) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authUser = await getAuthenticatedDbUser(req);
-      
+
       if (!authUser) {
         return res.status(401).json({ error: "Not authenticated" });
       }
@@ -326,14 +319,14 @@ export function requirePermissionWithAudit(permission: PermissionKey) {
       if (!hasPermission(userRole, permission)) {
         logAuthorizationFailure({
           timestamp: new Date().toISOString(),
-          type: 'permission',
+          type: "permission",
           userId,
           userRole,
-          resourceType: 'action',
-          resourceId: req.params.id || 'N/A',
+          resourceType: "action",
+          resourceId: req.params.id || "N/A",
           requiredPermission: permission,
-          ip: req.ip || req.socket.remoteAddress || 'unknown',
-          userAgent: req.get('user-agent'),
+          ip: req.ip || req.socket.remoteAddress || "unknown",
+          userAgent: req.get("user-agent"),
           path: req.path,
           method: req.method,
         });
@@ -349,7 +342,6 @@ export function requirePermissionWithAudit(permission: PermissionKey) {
       (req as any).userRole = userRole;
       next();
     } catch (error) {
-      console.error('[IDOR_PROTECTION] Error in requirePermissionWithAudit:', error);
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };

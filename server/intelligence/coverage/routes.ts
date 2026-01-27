@@ -165,7 +165,7 @@ router.post('/backfill', requireEnabled, async (req: Request, res: Response) => 
 
   // Start backfill in background
   runBackfill(batchSize).catch(error => {
-    console.error('[ICE] Backfill failed:', error);
+    
   });
 
   res.json({

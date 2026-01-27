@@ -3,39 +3,39 @@
  * Public endpoint for querying health alerts by destination
  */
 
-import { Router } from 'express';
-import { db } from '../db';
-import { healthAlerts, destinations } from '@shared/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { Router } from "express";
+import { db } from "../db";
+import { healthAlerts, destinations } from "@shared/schema";
+import { eq, and, desc } from "drizzle-orm";
 
 export const healthAlertRoutes = Router();
 
 const COUNTRY_CODE_MAPPING: Record<string, string> = {
-  "dubai": "AE",
-  "uae": "AE",
+  dubai: "AE",
+  uae: "AE",
   "united-arab-emirates": "AE",
   "abu-dhabi": "AE",
-  "london": "GB",
-  "uk": "GB",
-  "paris": "FR",
-  "france": "FR",
-  "tokyo": "JP",
-  "japan": "JP",
-  "singapore": "SG",
-  "bangkok": "TH",
-  "thailand": "TH",
+  london: "GB",
+  uk: "GB",
+  paris: "FR",
+  france: "FR",
+  tokyo: "JP",
+  japan: "JP",
+  singapore: "SG",
+  bangkok: "TH",
+  thailand: "TH",
   "hong-kong": "HK",
-  "amsterdam": "NL",
-  "barcelona": "ES",
-  "spain": "ES",
-  "rome": "IT",
-  "italy": "IT",
-  "istanbul": "TR",
-  "turkey": "TR",
+  amsterdam: "NL",
+  barcelona: "ES",
+  spain: "ES",
+  rome: "IT",
+  italy: "IT",
+  istanbul: "TR",
+  turkey: "TR",
   "new-york": "US",
-  "usa": "US",
+  usa: "US",
   "los-angeles": "US",
-  "miami": "US",
+  miami: "US",
 };
 
 function normalizeDestinationCode(code: string): string | null {
@@ -48,29 +48,29 @@ function normalizeDestinationCode(code: string): string | null {
   return COUNTRY_CODE_MAPPING[lowerCode] || null;
 }
 
-healthAlertRoutes.get('/health-alerts', async (req, res) => {
+healthAlertRoutes.get("/health-alerts", async (req, res) => {
   try {
     const destinationCode = req.query.destination as string;
-    const status = (req.query.status as string) || 'active';
+    const status = (req.query.status as string) || "active";
     const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
 
     if (!destinationCode) {
       return res.status(400).json({
         success: false,
-        error: 'destination query parameter is required',
+        error: "destination query parameter is required",
       });
     }
 
     const normalizedCode = normalizeDestinationCode(destinationCode);
     const lowerSlug = destinationCode.toLowerCase();
     const slugWithPath = `/destinations/${lowerSlug}`;
-    
+
     let dest = await db
       .select({ id: destinations.id })
       .from(destinations)
       .where(eq(destinations.slug, slugWithPath))
       .limit(1);
-    
+
     if (dest.length === 0) {
       dest = await db
         .select({ id: destinations.id })
@@ -83,12 +83,12 @@ healthAlertRoutes.get('/health-alerts', async (req, res) => {
       return res.json({
         success: true,
         data: [],
-        message: 'No destination found for this country code',
+        message: "No destination found for this country code",
       });
     }
 
     const conditions = [eq(healthAlerts.destinationId, dest[0].id)];
-    if (status !== 'all') {
+    if (status !== "all") {
       conditions.push(eq(healthAlerts.status, status as "active" | "resolved" | "monitoring"));
     }
 
@@ -105,28 +105,23 @@ healthAlertRoutes.get('/health-alerts', async (req, res) => {
       total: alerts.length,
     });
   } catch (error) {
-    console.error('[Health Alert Routes] Error fetching health alerts:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch health alerts',
+      error: "Failed to fetch health alerts",
     });
   }
 });
 
-healthAlertRoutes.get('/health-alerts/:id', async (req, res) => {
+healthAlertRoutes.get("/health-alerts/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    const alert = await db
-      .select()
-      .from(healthAlerts)
-      .where(eq(healthAlerts.id, id))
-      .limit(1);
+    const alert = await db.select().from(healthAlerts).where(eq(healthAlerts.id, id)).limit(1);
 
     if (alert.length === 0) {
       return res.status(404).json({
         success: false,
-        error: 'Health alert not found',
+        error: "Health alert not found",
       });
     }
 
@@ -135,27 +130,26 @@ healthAlertRoutes.get('/health-alerts/:id', async (req, res) => {
       data: formatHealthAlert(alert[0]),
     });
   } catch (error) {
-    console.error('[Health Alert Routes] Error fetching health alert:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch health alert',
+      error: "Failed to fetch health alert",
     });
   }
 });
 
 function formatHealthAlert(alert: typeof healthAlerts.$inferSelect) {
   const severityLabels: Record<string, string> = {
-    'low': 'Low Risk',
-    'medium': 'Moderate Risk',
-    'high': 'High Risk',
-    'critical': 'Critical',
+    low: "Low Risk",
+    medium: "Moderate Risk",
+    high: "High Risk",
+    critical: "Critical",
   };
 
   const alertTypeLabels: Record<string, string> = {
-    'disease_outbreak': 'Disease Outbreak',
-    'vaccination_required': 'Vaccination Required',
-    'travel_restriction': 'Travel Restriction',
-    'general_health': 'Health Advisory',
+    disease_outbreak: "Disease Outbreak",
+    vaccination_required: "Vaccination Required",
+    travel_restriction: "Travel Restriction",
+    general_health: "Health Advisory",
   };
 
   return {

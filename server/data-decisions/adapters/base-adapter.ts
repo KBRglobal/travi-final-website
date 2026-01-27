@@ -3,15 +3,15 @@
  * Abstract base class for all execution adapters
  */
 
-import { randomUUID } from 'crypto';
-import type { Decision, DecisionType } from '../types';
+import { randomUUID } from "crypto";
+import type { Decision, DecisionType } from "../types";
 import type {
   ExecutionAdapter,
   AdapterConfig,
   AdapterHealth,
   ExecutionResult,
   ExecutionBlocked,
-} from './types';
+} from "./types";
 
 // =============================================================================
 // DEFAULT CONFIG
@@ -42,7 +42,7 @@ export abstract class BaseAdapter implements ExecutionAdapter {
   constructor(config: Partial<AdapterConfig> = {}) {
     this.config = { ...DEFAULT_ADAPTER_CONFIG, ...config };
     this.health = {
-      status: 'unknown',
+      status: "unknown",
       lastCheck: new Date(),
       consecutiveFailures: 0,
     };
@@ -65,7 +65,7 @@ export abstract class BaseAdapter implements ExecutionAdapter {
 
       if (isHealthy) {
         this.health = {
-          status: 'healthy',
+          status: "healthy",
           lastCheck: new Date(),
           lastSuccess: new Date(),
           consecutiveFailures: 0,
@@ -73,18 +73,16 @@ export abstract class BaseAdapter implements ExecutionAdapter {
         };
       } else {
         this.health.consecutiveFailures++;
-        this.health.status =
-          this.health.consecutiveFailures >= 3 ? 'critical' : 'degraded';
+        this.health.status = this.health.consecutiveFailures >= 3 ? "critical" : "degraded";
         this.health.lastCheck = new Date();
         this.health.latency = latency;
       }
     } catch (error) {
       this.health.consecutiveFailures++;
-      this.health.status =
-        this.health.consecutiveFailures >= 3 ? 'critical' : 'degraded';
+      this.health.status = this.health.consecutiveFailures >= 3 ? "critical" : "degraded";
       this.health.lastCheck = new Date();
       this.health.lastFailure = new Date();
-      this.health.details = error instanceof Error ? error.message : 'Unknown error';
+      this.health.details = error instanceof Error ? error.message : "Unknown error";
     }
 
     return this.getHealth();
@@ -101,40 +99,33 @@ export abstract class BaseAdapter implements ExecutionAdapter {
       return false;
     }
 
-    if (this.health.status === 'critical') {
+    if (this.health.status === "critical") {
       return false;
     }
 
     return this.supportedActions.includes(decision.type);
   }
 
-  async execute(
-    decision: Decision,
-    dryRun?: boolean
-  ): Promise<ExecutionResult | ExecutionBlocked> {
+  async execute(decision: Decision, dryRun?: boolean): Promise<ExecutionResult | ExecutionBlocked> {
     const effectiveDryRun = dryRun ?? this.config.dryRunByDefault;
     const startTime = Date.now();
     const auditId = `audit-${randomUUID().substring(0, 8)}`;
 
     // Pre-execution checks
     if (!this.config.enabled) {
-      return this.createBlockedResult(decision, 'Adapter is disabled', 'config');
+      return this.createBlockedResult(decision, "Adapter is disabled", "config");
     }
 
     if (!this.canExecute(decision)) {
       return this.createBlockedResult(
         decision,
         `Action ${decision.type} not supported by ${this.name}`,
-        'capability'
+        "capability"
       );
     }
 
-    if (this.health.status === 'critical') {
-      return this.createBlockedResult(
-        decision,
-        'Adapter health is critical',
-        'health'
-      );
+    if (this.health.status === "critical") {
+      return this.createBlockedResult(decision, "Adapter health is critical", "health");
     }
 
     // Execute with retries
@@ -144,9 +135,7 @@ export abstract class BaseAdapter implements ExecutionAdapter {
     while (attempt <= this.config.retries) {
       try {
         const result = await this.withTimeout(
-          effectiveDryRun
-            ? this.executeDryRun(decision)
-            : this.executeAction(decision),
+          effectiveDryRun ? this.executeDryRun(decision) : this.executeAction(decision),
           this.config.timeout
         );
 
@@ -155,7 +144,7 @@ export abstract class BaseAdapter implements ExecutionAdapter {
         this.health.consecutiveFailures = 0;
 
         return {
-          status: effectiveDryRun ? 'dry_run' : result.success ? 'success' : 'partial',
+          status: effectiveDryRun ? "dry_run" : result.success ? "success" : "partial",
           decision,
           adapter: this.id,
           executedAt: new Date(),
@@ -182,13 +171,13 @@ export abstract class BaseAdapter implements ExecutionAdapter {
     this.health.lastFailure = new Date();
 
     return {
-      status: 'failed',
+      status: "failed",
       decision,
       adapter: this.id,
       executedAt: new Date(),
       duration: Date.now() - startTime,
       dryRun: effectiveDryRun,
-      error: lastError?.message || 'Unknown error',
+      error: lastError?.message || "Unknown error",
       auditId,
     };
   }
@@ -213,12 +202,7 @@ export abstract class BaseAdapter implements ExecutionAdapter {
     await this.checkHealth();
 
     // Start periodic health checks
-    this.healthCheckTimer = setInterval(
-      () => this.checkHealth(),
-      this.config.healthCheckInterval
-    );
-
-    console.log(`[${this.name}] Adapter initialized`);
+    this.healthCheckTimer = setInterval(() => this.checkHealth(), this.config.healthCheckInterval);
   }
 
   async shutdown(): Promise<void> {
@@ -227,7 +211,6 @@ export abstract class BaseAdapter implements ExecutionAdapter {
     }
 
     await this.performShutdown();
-    console.log(`[${this.name}] Adapter shutdown`);
   }
 
   protected async performShutdown(): Promise<void> {
@@ -248,22 +231,16 @@ export abstract class BaseAdapter implements ExecutionAdapter {
       reason,
       blockedBy,
       decision,
-      canRetry: blockedBy !== 'capability',
-      retryAfter:
-        blockedBy === 'health'
-          ? new Date(Date.now() + 60000)
-          : undefined,
+      canRetry: blockedBy !== "capability",
+      retryAfter: blockedBy === "health" ? new Date(Date.now() + 60000) : undefined,
     };
   }
 
-  protected async withTimeout<T>(
-    promise: Promise<T>,
-    timeout: number
-  ): Promise<T> {
+  protected async withTimeout<T>(promise: Promise<T>, timeout: number): Promise<T> {
     return Promise.race([
       promise,
       new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Execution timeout')), timeout)
+        setTimeout(() => reject(new Error("Execution timeout")), timeout)
       ),
     ]);
   }

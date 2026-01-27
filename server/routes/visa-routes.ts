@@ -3,16 +3,16 @@
  * Public endpoint for querying visa requirements by passport and destination
  */
 
-import { Router } from 'express';
-import { db } from '../db';
-import { visaRequirements } from '@shared/schema';
-import { eq, and } from 'drizzle-orm';
+import { Router } from "express";
+import { db } from "../db";
+import { visaRequirements } from "@shared/schema";
+import { eq, and } from "drizzle-orm";
 
 export const visaRoutes = Router();
 
-const COMMON_PASSPORT_ORIGINS = ['US', 'GB', 'DE', 'FR', 'CA', 'AU', 'JP', 'IN', 'CN', 'BR'];
+const COMMON_PASSPORT_ORIGINS = ["US", "GB", "DE", "FR", "CA", "AU", "JP", "IN", "CN", "BR"];
 
-visaRoutes.get('/visa-requirements', async (req, res) => {
+visaRoutes.get("/visa-requirements", async (req, res) => {
   try {
     const destination = (req.query.destination as string)?.toUpperCase();
     const passport = (req.query.passport as string)?.toUpperCase();
@@ -20,7 +20,7 @@ visaRoutes.get('/visa-requirements', async (req, res) => {
     if (!destination || destination.length !== 2) {
       return res.status(400).json({
         success: false,
-        error: 'destination query parameter is required and must be a 2-letter ISO country code',
+        error: "destination query parameter is required and must be a 2-letter ISO country code",
       });
     }
 
@@ -40,7 +40,7 @@ visaRoutes.get('/visa-requirements', async (req, res) => {
         return res.json({
           success: true,
           data: null,
-          message: 'No visa requirement data found for this passport-destination combination',
+          message: "No visa requirement data found for this passport-destination combination",
         });
       }
 
@@ -55,9 +55,7 @@ visaRoutes.get('/visa-requirements', async (req, res) => {
       .from(visaRequirements)
       .where(eq(visaRequirements.destinationCountryCode, destination));
 
-    const filtered = results.filter(r => 
-      COMMON_PASSPORT_ORIGINS.includes(r.passportCountryCode)
-    );
+    const filtered = results.filter(r => COMMON_PASSPORT_ORIGINS.includes(r.passportCountryCode));
 
     return res.json({
       success: true,
@@ -65,21 +63,20 @@ visaRoutes.get('/visa-requirements', async (req, res) => {
       total: results.length,
     });
   } catch (error) {
-    console.error('[Visa Routes] Error fetching visa requirements:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch visa requirements',
+      error: "Failed to fetch visa requirements",
     });
   }
 });
 
 function formatVisaRequirement(row: typeof visaRequirements.$inferSelect) {
   const categoryLabels: Record<string, string> = {
-    'VF': 'Visa Free',
-    'VOA': 'Visa on Arrival',
-    'VR': 'Visa Required',
-    'eVisa': 'eVisa',
-    'ETA': 'Electronic Travel Authorization',
+    VF: "Visa Free",
+    VOA: "Visa on Arrival",
+    VR: "Visa Required",
+    eVisa: "eVisa",
+    ETA: "Electronic Travel Authorization",
   };
 
   return {

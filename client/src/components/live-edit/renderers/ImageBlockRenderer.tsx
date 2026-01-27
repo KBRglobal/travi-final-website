@@ -34,10 +34,7 @@ export function ImageBlockRenderer({ id, props, onUpdate }: ImageBlockRendererPr
           <img
             src={src}
             alt={alt}
-            className={cn(
-              "w-full h-auto object-cover",
-              rounded && "rounded-lg"
-            )}
+            className={cn("w-full h-auto object-cover", rounded && "rounded-lg")}
           />
         ) : (
           <div
@@ -57,8 +54,8 @@ export function ImageBlockRenderer({ id, props, onUpdate }: ImageBlockRendererPr
                 componentId={id}
                 fieldName="caption"
                 value={caption || ""}
-                onChange={(value) => onUpdate({ ...props, caption: value })}
-                placeholder="הוסף כיתוב..."
+                onChange={value => onUpdate({ ...props, caption: value })}
+                placeholder="Add caption..."
                 as="span"
               />
             ) : (

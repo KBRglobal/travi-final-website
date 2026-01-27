@@ -12,29 +12,24 @@ function isEnabled(): boolean {
 
 export function registerSearchZeroRoutes(app: Express): void {
   // Get zero-result clusters
-  app.get(
-    "/api/admin/search/zero",
-    requirePermission("canViewAnalytics"),
-    async (req, res) => {
-      if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_ZERO_SEARCH_INTEL" });
-      }
-
-      try {
-        const { limit } = req.query;
-        const stats = await getZeroResultStats();
-        const clusters = await getZeroClusters(parseInt(limit as string) || 50);
-
-        res.json({
-          ...stats,
-          clusters,
-        });
-      } catch (error) {
-        console.error("[SearchZero] Error:", error);
-        res.status(500).json({ error: "Failed to fetch zero-result data" });
-      }
+  app.get("/api/admin/search/zero", requirePermission("canViewAnalytics"), async (req, res) => {
+    if (!isEnabled()) {
+      return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_ZERO_SEARCH_INTEL" });
     }
-  );
+
+    try {
+      const { limit } = req.query;
+      const stats = await getZeroResultStats();
+      const clusters = await getZeroClusters(parseInt(limit as string) || 50);
+
+      res.json({
+        ...stats,
+        clusters,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch zero-result data" });
+    }
+  });
 
   // Get specific cluster
   app.get(
@@ -42,7 +37,9 @@ export function registerSearchZeroRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_ZERO_SEARCH_INTEL" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_ZERO_SEARCH_INTEL" });
       }
 
       try {
@@ -52,7 +49,6 @@ export function registerSearchZeroRoutes(app: Express): void {
         }
         res.json(cluster);
       } catch (error) {
-        console.error("[SearchZero] Error:", error);
         res.status(500).json({ error: "Failed to fetch cluster" });
       }
     }
@@ -64,18 +60,17 @@ export function registerSearchZeroRoutes(app: Express): void {
     requirePermission("canCreate"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_ZERO_SEARCH_INTEL" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_ZERO_SEARCH_INTEL" });
       }
 
       try {
         const result = await createTaskFromCluster(req.params.clusterId);
         res.json(result);
       } catch (error) {
-        console.error("[SearchZero] Error:", error);
         res.status(500).json({ error: "Failed to create task" });
       }
     }
   );
-
-  console.log("[SearchZero] Routes registered");
 }

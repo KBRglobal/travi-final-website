@@ -26,11 +26,7 @@ export function ContentCardRenderer({ id, props, onUpdate }: ContentCardRenderer
       <Card className="overflow-hidden">
         {image && (
           <div className="aspect-video overflow-hidden">
-            <img
-              src={image}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
+            <img src={image} alt={title} className="w-full h-full object-cover" />
           </div>
         )}
         <CardHeader>
@@ -40,8 +36,8 @@ export function ContentCardRenderer({ id, props, onUpdate }: ContentCardRenderer
                 componentId={id}
                 fieldName="title"
                 value={title}
-                onChange={(value) => onUpdate({ ...props, title: value })}
-                placeholder="כותרת"
+                onChange={value => onUpdate({ ...props, title: value })}
+                placeholder="Title"
                 as="span"
               />
             ) : (
@@ -55,9 +51,9 @@ export function ContentCardRenderer({ id, props, onUpdate }: ContentCardRenderer
                   componentId={id}
                   fieldName="description"
                   value={description || ""}
-                  onChange={(value) => onUpdate({ ...props, description: value })}
+                  onChange={value => onUpdate({ ...props, description: value })}
                   multiline
-                  placeholder="תיאור"
+                  placeholder="Description"
                   as="p"
                 />
               ) : (
@@ -73,13 +69,13 @@ export function ContentCardRenderer({ id, props, onUpdate }: ContentCardRenderer
                 <InlineTextEditor
                   componentId={id}
                   fieldName="linkText"
-                  value={linkText || "קרא עוד"}
-                  onChange={(value) => onUpdate({ ...props, linkText: value })}
-                  placeholder="טקסט קישור"
+                  value={linkText || "Read More"}
+                  onChange={value => onUpdate({ ...props, linkText: value })}
+                  placeholder="Link Text"
                   as="span"
                 />
               ) : (
-                <a href={link}>{linkText || "קרא עוד"}</a>
+                <a href={link}>{linkText || "Read More"}</a>
               )}
             </Button>
           </CardContent>

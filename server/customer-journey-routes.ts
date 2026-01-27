@@ -29,7 +29,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
       await customerJourney.trackEvent(event);
       res.json({ success: true });
     } catch (error) {
-      console.error("[Analytics] Track error:", error);
       res.status(500).json({ error: "Failed to track event" });
     }
   });
@@ -78,7 +77,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       res.json({ success: true });
     } catch (error) {
-      console.error("[Analytics] Page view error:", error);
       res.status(500).json({ error: "Failed to track page view" });
     }
   });
@@ -125,7 +123,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       res.json({ success: true });
     } catch (error) {
-      console.error("[Analytics] Click error:", error);
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -166,7 +163,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       res.json({ success: true });
     } catch (error) {
-      console.error("[Analytics] CTA error:", error);
       res.status(500).json({ error: "Failed to track CTA" });
     }
   });
@@ -177,14 +173,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
   // -------------------------------------------------------------------------
   app.post("/api/analytics/scroll", analyticsRateLimiter, async (req: Request, res: Response) => {
     try {
-      const {
-        sessionId,
-        visitorId,
-        pageUrl,
-        pagePath,
-        scrollDepth,
-        timeOnPage,
-      } = req.body;
+      const { sessionId, visitorId, pageUrl, pagePath, scrollDepth, timeOnPage } = req.body;
 
       if (!sessionId || !visitorId || !pageUrl) {
         return res.status(400).json({
@@ -203,7 +192,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       res.json({ success: true });
     } catch (error) {
-      console.error("[Analytics] Scroll error:", error);
       res.status(500).json({ error: "Failed to track scroll" });
     }
   });
@@ -212,42 +200,45 @@ export function registerCustomerJourneyRoutes(app: Express) {
   // POST /api/analytics/conversion
   // Track conversion event
   // -------------------------------------------------------------------------
-  app.post("/api/analytics/conversion", analyticsRateLimiter, async (req: Request, res: Response) => {
-    try {
-      const {
-        sessionId,
-        visitorId,
-        pageUrl,
-        pagePath,
-        conversionType,
-        conversionValue,
-        contentId,
-        metadata,
-      } = req.body;
+  app.post(
+    "/api/analytics/conversion",
+    analyticsRateLimiter,
+    async (req: Request, res: Response) => {
+      try {
+        const {
+          sessionId,
+          visitorId,
+          pageUrl,
+          pagePath,
+          conversionType,
+          conversionValue,
+          contentId,
+          metadata,
+        } = req.body;
 
-      if (!sessionId || !visitorId || !pageUrl || !conversionType) {
-        return res.status(400).json({
-          error: "Missing required fields",
+        if (!sessionId || !visitorId || !pageUrl || !conversionType) {
+          return res.status(400).json({
+            error: "Missing required fields",
+          });
+        }
+
+        await customerJourney.trackConversion({
+          sessionId,
+          visitorId,
+          pageUrl,
+          pagePath: pagePath || new URL(pageUrl).pathname,
+          conversionType,
+          conversionValue,
+          contentId,
+          metadata,
         });
+
+        res.json({ success: true });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to track conversion" });
       }
-
-      await customerJourney.trackConversion({
-        sessionId,
-        visitorId,
-        pageUrl,
-        pagePath: pagePath || new URL(pageUrl).pathname,
-        conversionType,
-        conversionValue,
-        contentId,
-        metadata,
-      });
-
-      res.json({ success: true });
-    } catch (error) {
-      console.error("[Analytics] Conversion error:", error);
-      res.status(500).json({ error: "Failed to track conversion" });
     }
-  });
+  );
 
   // -------------------------------------------------------------------------
   // GET /api/analytics/dashboard
@@ -259,7 +250,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const summary = await customerJourney.getDashboardSummary(hours);
       res.json(summary);
     } catch (error) {
-      console.error("[Analytics] Dashboard error:", error);
       res.status(500).json({ error: "Failed to get dashboard" });
     }
   });
@@ -274,7 +264,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const activeUsers = customerJourney.getActiveUsers(minutes);
       res.json({ activeUsers, minutes });
     } catch (error) {
-      console.error("[Analytics] Realtime error:", error);
       res.status(500).json({ error: "Failed to get realtime data" });
     }
   });
@@ -295,7 +284,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       res.json(analytics);
     } catch (error) {
-      console.error("[Analytics] Pages error:", error);
       res.status(500).json({ error: "Failed to get page analytics" });
     }
   });
@@ -304,23 +292,26 @@ export function registerCustomerJourneyRoutes(app: Express) {
   // GET /api/analytics/journey/:visitorId
   // Get user journey for a specific visitor
   // -------------------------------------------------------------------------
-  app.get("/api/analytics/journey/:visitorId", analyticsRateLimiter, async (req: Request, res: Response) => {
-    try {
-      const { visitorId } = req.params;
-      const sessionId = req.query.sessionId as string;
+  app.get(
+    "/api/analytics/journey/:visitorId",
+    analyticsRateLimiter,
+    async (req: Request, res: Response) => {
+      try {
+        const { visitorId } = req.params;
+        const sessionId = req.query.sessionId as string;
 
-      const journey = await customerJourney.getUserJourney(visitorId, sessionId);
+        const journey = await customerJourney.getUserJourney(visitorId, sessionId);
 
-      if (!journey) {
-        return res.status(404).json({ error: "Journey not found" });
+        if (!journey) {
+          return res.status(404).json({ error: "Journey not found" });
+        }
+
+        res.json(journey);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to get journey" });
       }
-
-      res.json(journey);
-    } catch (error) {
-      console.error("[Analytics] Journey error:", error);
-      res.status(500).json({ error: "Failed to get journey" });
     }
-  });
+  );
 
   // -------------------------------------------------------------------------
   // POST /api/analytics/funnel
@@ -339,7 +330,6 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const funnel = await customerJourney.getConversionFunnel(steps);
       res.json(funnel);
     } catch (error) {
-      console.error("[Analytics] Funnel error:", error);
       res.status(500).json({ error: "Failed to get funnel" });
     }
   });
@@ -354,12 +344,9 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const heatmap = await customerJourney.getClickHeatmap(pagePath);
       res.json(heatmap);
     } catch (error) {
-      console.error("[Analytics] Heatmap error:", error);
       res.status(500).json({ error: "Failed to get heatmap" });
     }
   });
-
-  console.log("[CustomerJourney] Analytics routes registered");
 }
 
 export default registerCustomerJourneyRoutes;

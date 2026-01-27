@@ -2,7 +2,12 @@ import { Router, Request, Response } from "express";
 import { db } from "../db";
 import { update9987Guides, destinations } from "@shared/schema";
 import { eq, desc, ilike, and, isNotNull, sql } from "drizzle-orm";
-import { importWikivoyageGuide, runFullWikivoyageIngestion, getAvailableDestinations, getAvailableLocales } from "../services/wikivoyage-ingestion";
+import {
+  importWikivoyageGuide,
+  runFullWikivoyageIngestion,
+  getAvailableDestinations,
+  getAvailableLocales,
+} from "../services/wikivoyage-ingestion";
 
 const router = Router();
 
@@ -64,7 +69,6 @@ router.get("/api/public/guides", async (req: Request, res: Response) => {
       offset,
     });
   } catch (error) {
-    console.error("[Guides API] Error fetching guides:", error);
     res.status(500).json({ error: "Failed to fetch guides" });
   }
 });
@@ -101,17 +105,18 @@ router.get("/api/public/guides/:slug", async (req: Request, res: Response) => {
     const faqs = (guideData.faqs as Array<{ question: string; answer: string }> | null) || [];
 
     // Get images from rewrite service (if available)
-    const images = (guideData.images as Array<{
-      id: string;
-      url: string;
-      altText: string;
-      credit: string;
-      section: string;
-    }> | null) || [];
+    const images =
+      (guideData.images as Array<{
+        id: string;
+        url: string;
+        altText: string;
+        credit: string;
+        section: string;
+      }> | null) || [];
 
     // Get schema markup from rewrite service or generate default
     const schemaMarkup = (guideData.schemaMarkup as Record<string, unknown> | null) || null;
-    
+
     // Get OG tags from rewrite service
     const ogTags = (guideData.ogTags as Record<string, string> | null) || null;
 
@@ -138,10 +143,11 @@ router.get("/api/public/guides/:slug", async (req: Request, res: Response) => {
     // Parse rawData for quick facts and best time to visit
     const rawData = guideData.rawData as Record<string, unknown> | null;
     const quickFacts = (rawData?.quickFacts as Record<string, string> | null) || null;
-    const bestTimeToVisit = (rawData?.bestTimeToVisit as {
-      summary: string;
-      months?: Array<{ month: string; rating: string; notes: string }>;
-    } | null) || null;
+    const bestTimeToVisit =
+      (rawData?.bestTimeToVisit as {
+        summary: string;
+        months?: Array<{ month: string; rating: string; notes: string }>;
+      } | null) || null;
 
     const formattedGuide = {
       id: guideData.id,
@@ -171,7 +177,6 @@ router.get("/api/public/guides/:slug", async (req: Request, res: Response) => {
 
     res.json(formattedGuide);
   } catch (error) {
-    console.error("[Guides API] Error fetching guide:", error);
     res.status(500).json({ error: "Failed to fetch guide" });
   }
 });
@@ -207,7 +212,6 @@ router.get("/api/public/guides/destination/:destinationId", async (req: Request,
       sourceUrl: translation?.sourceUrl,
     });
   } catch (error) {
-    console.error("[Guides API] Error fetching destination guide:", error);
     res.status(500).json({ error: "Failed to fetch destination guide" });
   }
 });
@@ -220,7 +224,9 @@ router.post("/api/admin/guides/import-wikivoyage", async (req: Request, res: Res
       return res.status(400).json({ error: "destinationId is required" });
     }
 
-    const destName = destinationId.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+    const destName = destinationId
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (c: string) => c.toUpperCase());
     const targetLocales = locales || getAvailableLocales();
 
     const result = await importWikivoyageGuide(destinationId, destName, targetLocales);
@@ -229,31 +235,27 @@ router.post("/api/admin/guides/import-wikivoyage", async (req: Request, res: Res
       success: result.success,
       imported: result.imported,
       errors: result.errors,
-      message: result.success 
+      message: result.success
         ? `Successfully imported ${result.imported} language versions for ${destName}`
         : `Failed to import guide for ${destName}`,
     });
   } catch (error) {
-    console.error("[Guides Admin API] Import error:", error);
     res.status(500).json({ error: "Failed to import guide from Wikivoyage" });
   }
 });
 
 router.post("/api/admin/guides/import-all-wikivoyage", async (req: Request, res: Response) => {
   try {
-    res.json({ 
+    res.json({
       message: "Full Wikivoyage ingestion started in background",
       destinations: getAvailableDestinations(),
       locales: getAvailableLocales(),
     });
 
-    runFullWikivoyageIngestion().then(result => {
-      console.log("[Wikivoyage] Full ingestion completed:", result);
-    }).catch(error => {
-      console.error("[Wikivoyage] Full ingestion failed:", error);
-    });
+    runFullWikivoyageIngestion()
+      .then(result => {})
+      .catch(error => {});
   } catch (error) {
-    console.error("[Guides Admin API] Full import error:", error);
     res.status(500).json({ error: "Failed to start full Wikivoyage import" });
   }
 });
@@ -276,7 +278,7 @@ router.get("/api/admin/guides/wikivoyage-status", async (req: Request, res: Resp
     const summary = guides.map(g => {
       const sections = g.sections as GuideSections | null;
       const rawData = g.rawData as { source?: string; locales?: string[] } | null;
-      
+
       return {
         id: g.id,
         title: g.title,
@@ -296,7 +298,6 @@ router.get("/api/admin/guides/wikivoyage-status", async (req: Request, res: Resp
       availableLocales: getAvailableLocales(),
     });
   } catch (error) {
-    console.error("[Guides Admin API] Status error:", error);
     res.status(500).json({ error: "Failed to get Wikivoyage status" });
   }
 });

@@ -211,5 +211,3 @@ export async function getCostForecast(): Promise<CostForecast> {
     calculatedAt: new Date().toISOString(),
   };
 }
-
-console.log("[AICostForecast] Module loaded");

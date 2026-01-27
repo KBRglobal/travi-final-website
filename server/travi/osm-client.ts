@@ -1,26 +1,26 @@
 /**
  * TRAVI Content Generation - OpenStreetMap API Client
- * 
+ *
  * Fetches location data from OpenStreetMap via Overpass API.
  * All data is subject to ODbL (Open Database License) attribution.
  */
 
-import { withRetry } from './retry-handler';
+import { withRetry } from "./retry-handler";
 
 // Overpass API endpoints (use public servers with rate limiting consideration)
-const OVERPASS_API = 'https://overpass-api.de/api/interpreter';
+const OVERPASS_API = "https://overpass-api.de/api/interpreter";
 
 // Attribution required for all OSM content
 export const OSM_ATTRIBUTION = {
-  source: 'openstreetmap' as const,
-  license: 'ODbL',
-  licenseUrl: 'https://opendatacommons.org/licenses/odbl/',
-  requiredText: 'Data from OpenStreetMap contributors',
+  source: "openstreetmap" as const,
+  license: "ODbL",
+  licenseUrl: "https://opendatacommons.org/licenses/odbl/",
+  requiredText: "Data from OpenStreetMap contributors",
 };
 
 export interface OSMLocation {
   id: number;
-  type: 'node' | 'way' | 'relation';
+  type: "node" | "way" | "relation";
   name: string;
   lat: number;
   lon: number;
@@ -36,53 +36,55 @@ export interface OSMSearchResult {
 // Category to OSM tag mapping
 const CATEGORY_TAGS: Record<string, string[]> = {
   attraction: [
-    'tourism=attraction',
-    'tourism=museum',
-    'tourism=viewpoint',
-    'historic=monument',
-    'historic=memorial',
-    'historic=castle',
-    'historic=ruins',
-    'leisure=park',
-    'leisure=garden',
-    'amenity=place_of_worship',
-    'tourism=theme_park',
-    'tourism=zoo',
-    'tourism=aquarium',
-    'tourism=gallery',
-    'natural=beach',
+    "tourism=attraction",
+    "tourism=museum",
+    "tourism=viewpoint",
+    "historic=monument",
+    "historic=memorial",
+    "historic=castle",
+    "historic=ruins",
+    "leisure=park",
+    "leisure=garden",
+    "amenity=place_of_worship",
+    "tourism=theme_park",
+    "tourism=zoo",
+    "tourism=aquarium",
+    "tourism=gallery",
+    "natural=beach",
   ],
   hotel: [
-    'tourism=hotel',
-    'tourism=resort',
-    'tourism=motel',
-    'tourism=hostel',
-    'tourism=guest_house',
+    "tourism=hotel",
+    "tourism=resort",
+    "tourism=motel",
+    "tourism=hostel",
+    "tourism=guest_house",
   ],
   restaurant: [
-    'amenity=restaurant',
-    'amenity=cafe',
-    'amenity=fast_food',
-    'amenity=bar',
-    'amenity=pub',
+    "amenity=restaurant",
+    "amenity=cafe",
+    "amenity=fast_food",
+    "amenity=bar",
+    "amenity=pub",
   ],
 };
 
 // Build Overpass query for locations in bounding box
 function buildOverpassQuery(
   bbox: { south: number; west: number; north: number; east: number },
-  category: 'attraction' | 'hotel' | 'restaurant',
+  category: "attraction" | "hotel" | "restaurant",
   limit: number = 200
 ): string {
   const tags = CATEGORY_TAGS[category] || CATEGORY_TAGS.attraction;
-  
-  const tagQueries = tags.map(tag => {
-    const [key, value] = tag.split('=');
-    return `
+
+  const tagQueries = tags
+    .map(tag => {
+      const [key, value] = tag.split("=");
+      return `
       node["${key}"="${value}"]["name"](${bbox.south},${bbox.west},${bbox.north},${bbox.east});
       way["${key}"="${value}"]["name"](${bbox.south},${bbox.west},${bbox.north},${bbox.east});
     `;
-  }).join('');
+    })
+    .join("");
 
   return `
     [out:json][timeout:60];
@@ -96,7 +98,7 @@ function buildOverpassQuery(
 // Search locations in bounding box
 export async function searchInBoundingBox(
   bbox: { south: number; west: number; north: number; east: number },
-  category: 'attraction' | 'hotel' | 'restaurant',
+  category: "attraction" | "hotel" | "restaurant",
   limit: number = 200
 ): Promise<OSMSearchResult> {
   const query = buildOverpassQuery(bbox, category, limit);
@@ -104,32 +106,29 @@ export async function searchInBoundingBox(
   const result = await withRetry(
     async () => {
       const response = await fetch(OVERPASS_API, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `data=${encodeURIComponent(query)}`,
       });
 
       if (!response.ok) {
         if (response.status === 429) {
-          throw new Error('OSM rate limit exceeded');
+          throw new Error("OSM rate limit exceeded");
         }
         throw new Error(`Overpass API error: ${response.status}`);
       }
 
       return response.json();
     },
-    { 
+    {
       maxRetries: 3,
-      onRetry: (attempt) => {
-        console.log(`[OSM] Retry ${attempt} - waiting for rate limit...`);
-      }
+      onRetry: attempt => {},
     }
   );
 
   if (!result.success || !result.data) {
-    console.error('[OSM] Search failed:', result.error);
     return { locations: [], attribution: OSM_ATTRIBUTION };
   }
 
@@ -147,8 +146,6 @@ export async function searchInBoundingBox(
     }))
     .filter((loc: OSMLocation) => loc.lat && loc.lon);
 
-  console.log(`[OSM] Found ${locations.length} ${category}s in bounding box`);
-
   return {
     locations,
     attribution: OSM_ATTRIBUTION,
@@ -160,18 +157,20 @@ export async function searchNearPoint(
   lat: number,
   lon: number,
   radiusMeters: number,
-  category: 'attraction' | 'hotel' | 'restaurant',
+  category: "attraction" | "hotel" | "restaurant",
   limit: number = 100
 ): Promise<OSMSearchResult> {
   const tags = CATEGORY_TAGS[category] || CATEGORY_TAGS.attraction;
-  
-  const tagQueries = tags.map(tag => {
-    const [key, value] = tag.split('=');
-    return `
+
+  const tagQueries = tags
+    .map(tag => {
+      const [key, value] = tag.split("=");
+      return `
       node["${key}"="${value}"]["name"](around:${radiusMeters},${lat},${lon});
       way["${key}"="${value}"]["name"](around:${radiusMeters},${lat},${lon});
     `;
-  }).join('');
+    })
+    .join("");
 
   const query = `
     [out:json][timeout:60];
@@ -184,16 +183,16 @@ export async function searchNearPoint(
   const result = await withRetry(
     async () => {
       const response = await fetch(OVERPASS_API, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `data=${encodeURIComponent(query)}`,
       });
 
       if (!response.ok) {
         if (response.status === 429) {
-          throw new Error('OSM rate limit exceeded');
+          throw new Error("OSM rate limit exceeded");
         }
         throw new Error(`Overpass API error: ${response.status}`);
       }
@@ -204,7 +203,6 @@ export async function searchNearPoint(
   );
 
   if (!result.success || !result.data) {
-    console.error('[OSM] Near search failed:', result.error);
     return { locations: [], attribution: OSM_ATTRIBUTION };
   }
 
@@ -230,7 +228,7 @@ export async function searchNearPoint(
 
 // Get details for a specific OSM element
 export async function getElementDetails(
-  type: 'node' | 'way' | 'relation',
+  type: "node" | "way" | "relation",
   id: number
 ): Promise<OSMLocation | null> {
   const query = `
@@ -242,9 +240,9 @@ export async function getElementDetails(
   const result = await withRetry(
     async () => {
       const response = await fetch(OVERPASS_API, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `data=${encodeURIComponent(query)}`,
       });
@@ -290,22 +288,22 @@ export function extractMetadata(tags: Record<string, string>): {
 
   // Address components
   const addressParts = [];
-  if (tags['addr:street']) {
-    addressParts.push(tags['addr:housenumber'] || '');
-    addressParts.push(tags['addr:street']);
+  if (tags["addr:street"]) {
+    addressParts.push(tags["addr:housenumber"] || "");
+    addressParts.push(tags["addr:street"]);
   }
-  if (tags['addr:city']) addressParts.push(tags['addr:city']);
-  if (tags['addr:postcode']) addressParts.push(tags['addr:postcode']);
+  if (tags["addr:city"]) addressParts.push(tags["addr:city"]);
+  if (tags["addr:postcode"]) addressParts.push(tags["addr:postcode"]);
   if (addressParts.length > 0) {
-    metadata.address = addressParts.filter(Boolean).join(', ');
+    metadata.address = addressParts.filter(Boolean).join(", ");
   }
 
   // Other useful tags
-  if (tags.website || tags['contact:website']) {
-    metadata.website = tags.website || tags['contact:website'];
+  if (tags.website || tags["contact:website"]) {
+    metadata.website = tags.website || tags["contact:website"];
   }
-  if (tags.phone || tags['contact:phone']) {
-    metadata.phone = tags.phone || tags['contact:phone'];
+  if (tags.phone || tags["contact:phone"]) {
+    metadata.phone = tags.phone || tags["contact:phone"];
   }
   if (tags.opening_hours) {
     metadata.openingHours = tags.opening_hours;
@@ -331,7 +329,7 @@ export function getBoundingBox(
 ): { south: number; west: number; north: number; east: number } {
   // Approximate degrees per km
   const latDegPerKm = 1 / 111;
-  const lonDegPerKm = 1 / (111 * Math.cos(lat * Math.PI / 180));
+  const lonDegPerKm = 1 / (111 * Math.cos((lat * Math.PI) / 180));
 
   return {
     south: lat - radiusKm * latDegPerKm,
@@ -351,12 +349,14 @@ export function mergeWithWikipedia(
     // Try to find matching Wikipedia article
     const match = wikiLocations.find(wiki => {
       if (!wiki.coordinates) return false;
-      
+
       const distance = haversineDistance(
-        osm.lat, osm.lon,
-        wiki.coordinates.lat, wiki.coordinates.lon
+        osm.lat,
+        osm.lon,
+        wiki.coordinates.lat,
+        wiki.coordinates.lon
       );
-      
+
       return distance <= maxDistanceMeters;
     });
 
@@ -368,17 +368,16 @@ export function mergeWithWikipedia(
 }
 
 // Haversine distance calculation
-function haversineDistance(
-  lat1: number, lon1: number,
-  lat2: number, lon2: number
-): number {
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371000; // Earth radius in meters
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }

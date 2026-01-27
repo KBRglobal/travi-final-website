@@ -1,70 +1,68 @@
 /**
  * Growth Loop Metrics Tracking
- * 
+ *
  * Tracks metrics for self-reinforcing growth loops:
  * - Search Loop: search → content discovery → internal links → rankings → traffic
  * - Chat Loop: chat → exploration → deep dive → retention → return visits
  * - Content Loop: content creation → SEO indexing → traffic → metrics → improvement
- * 
+ *
  * ARCHITECTURE:
  * - In-memory aggregation with periodic logging
  * - Lightweight, non-blocking event recording
  * - Server-side only, no UI dependencies
- * 
+ *
  * USAGE:
  * ```typescript
  * import { recordLoopEvent, getLoopMetrics } from './analytics';
- * 
+ *
  * recordLoopEvent('search', 'content_discovery', 'dubai');
  * recordLoopEvent('chat', 'chat_exploration', 'article-123');
- * 
+ *
  * const metrics = getLoopMetrics();
  * ```
  */
 
-import { log } from '../lib/logger';
+import { log } from "../lib/logger";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[GrowthMetrics] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[GrowthMetrics] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[GrowthMetrics] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[GrowthMetrics] ${msg}`, data),
 };
 
 /**
  * Growth loop types
  */
-export type LoopType = 'search' | 'chat' | 'content';
+export type LoopType = "search" | "chat" | "content";
 
 /**
  * Search loop stages
  */
-export type SearchLoopStage = 
-  | 'search_entry'
-  | 'content_discovery'
-  | 'internal_link_click'
-  | 'session_depth'
-  | 'search_ranking_signal';
+export type SearchLoopStage =
+  | "search_entry"
+  | "content_discovery"
+  | "internal_link_click"
+  | "session_depth"
+  | "search_ranking_signal";
 
 /**
  * Chat loop stages
  */
-export type ChatLoopStage = 
-  | 'chat_start'
-  | 'chat_exploration'
-  | 'chat_deep_dive'
-  | 'chat_retention'
-  | 'chat_return';
+export type ChatLoopStage =
+  | "chat_start"
+  | "chat_exploration"
+  | "chat_deep_dive"
+  | "chat_retention"
+  | "chat_return";
 
 /**
  * Content loop stages
  */
-export type ContentLoopStage = 
-  | 'content_created'
-  | 'content_indexed'
-  | 'content_traffic'
-  | 'content_performance'
-  | 'content_improved';
+export type ContentLoopStage =
+  | "content_created"
+  | "content_indexed"
+  | "content_traffic"
+  | "content_performance"
+  | "content_improved";
 
 /**
  * Union of all stage types
@@ -144,7 +142,10 @@ class GrowthMetricsStore {
   private logIntervalId: NodeJS.Timeout | null = null;
 
   // Entry point tracking for funnel analysis
-  private entryPoints: Record<LoopType, { totalEntries: number; byEntryPoint: Record<string, number> }> = {
+  private entryPoints: Record<
+    LoopType,
+    { totalEntries: number; byEntryPoint: Record<string, number> }
+  > = {
     search: { totalEntries: 0, byEntryPoint: {} },
     chat: { totalEntries: 0, byEntryPoint: {} },
     content: { totalEntries: 0, byEntryPoint: {} },
@@ -160,7 +161,7 @@ class GrowthMetricsStore {
   recordEntry(loopType: LoopType, entryPoint: string): void {
     if (this.entryPoints[loopType]) {
       this.entryPoints[loopType].totalEntries++;
-      this.entryPoints[loopType].byEntryPoint[entryPoint] = 
+      this.entryPoints[loopType].byEntryPoint[entryPoint] =
         (this.entryPoints[loopType].byEntryPoint[entryPoint] || 0) + 1;
     }
   }
@@ -195,11 +196,13 @@ class GrowthMetricsStore {
    */
   private logMetricsSummary(): void {
     const metrics = this.getMetrics();
-    
-    if (metrics.search.totalEvents > 0 || 
-        metrics.chat.totalEvents > 0 || 
-        metrics.content.totalEvents > 0) {
-      logger.info('Growth metrics summary', {
+
+    if (
+      metrics.search.totalEvents > 0 ||
+      metrics.chat.totalEvents > 0 ||
+      metrics.content.totalEvents > 0
+    ) {
+      logger.info("Growth metrics summary", {
         search: {
           events: metrics.search.totalEvents,
           search_to_content_rate: metrics.search.search_to_content_rate,
@@ -214,9 +217,7 @@ class GrowthMetricsStore {
           events: metrics.content.totalEvents,
           content_to_retention_rate: metrics.content.content_to_retention_rate,
         },
-        windowDurationMinutes: Math.round(
-          (Date.now() - this.windowStartAt.getTime()) / 60000
-        ),
+        windowDurationMinutes: Math.round((Date.now() - this.windowStartAt.getTime()) / 60000),
       });
     }
   }
@@ -229,17 +230,17 @@ class GrowthMetricsStore {
     let metrics: LoopMetricsData;
 
     switch (loopType) {
-      case 'search':
+      case "search":
         metrics = this.searchMetrics;
         break;
-      case 'chat':
+      case "chat":
         metrics = this.chatMetrics;
         break;
-      case 'content':
+      case "content":
         metrics = this.contentMetrics;
         break;
       default:
-        logger.warn('Unknown loop type', { loopType });
+        logger.warn("Unknown loop type", { loopType });
         return;
     }
 
@@ -254,11 +255,11 @@ class GrowthMetricsStore {
     }
 
     // Debug logging for individual events (only in development)
-    if (process.env.NODE_ENV === 'development') {
-      logger.info('Loop event recorded', {
+    if (process.env.NODE_ENV === "development") {
+      logger.info("Loop event recorded", {
         loopType,
         stage,
-        entityId: entityId || 'unknown',
+        entityId: entityId || "unknown",
       });
     }
   }
@@ -268,12 +269,12 @@ class GrowthMetricsStore {
    */
   private isConversionStage(loopType: LoopType, stage: LoopStage): boolean {
     switch (loopType) {
-      case 'search':
-        return stage === 'session_depth' || stage === 'search_ranking_signal';
-      case 'chat':
-        return stage === 'chat_retention' || stage === 'chat_return';
-      case 'content':
-        return stage === 'content_improved';
+      case "search":
+        return stage === "session_depth" || stage === "search_ranking_signal";
+      case "chat":
+        return stage === "chat_retention" || stage === "chat_return";
+      case "content":
+        return stage === "content_improved";
       default:
         return false;
     }
@@ -291,18 +292,18 @@ class GrowthMetricsStore {
    * Get aggregated metrics for all loops
    */
   getMetrics(): GrowthMetrics {
-    const searchEntry = this.searchMetrics.stages['search_entry'] || 0;
-    const contentDiscovery = this.searchMetrics.stages['content_discovery'] || 0;
-    const internalLinkClick = this.searchMetrics.stages['internal_link_click'] || 0;
+    const searchEntry = this.searchMetrics.stages["search_entry"] || 0;
+    const contentDiscovery = this.searchMetrics.stages["content_discovery"] || 0;
+    const internalLinkClick = this.searchMetrics.stages["internal_link_click"] || 0;
 
-    const chatStart = this.chatMetrics.stages['chat_start'] || 0;
-    const chatExploration = this.chatMetrics.stages['chat_exploration'] || 0;
-    const chatDeepDive = this.chatMetrics.stages['chat_deep_dive'] || 0;
+    const chatStart = this.chatMetrics.stages["chat_start"] || 0;
+    const chatExploration = this.chatMetrics.stages["chat_exploration"] || 0;
+    const chatDeepDive = this.chatMetrics.stages["chat_deep_dive"] || 0;
 
-    const contentTraffic = this.contentMetrics.stages['content_traffic'] || 0;
-    const contentPerformance = this.contentMetrics.stages['content_performance'] || 0;
-    const contentCreated = this.contentMetrics.stages['content_created'] || 0;
-    const contentImproved = this.contentMetrics.stages['content_improved'] || 0;
+    const contentTraffic = this.contentMetrics.stages["content_traffic"] || 0;
+    const contentPerformance = this.contentMetrics.stages["content_performance"] || 0;
+    const contentCreated = this.contentMetrics.stages["content_created"] || 0;
+    const contentImproved = this.contentMetrics.stages["content_improved"] || 0;
 
     return {
       search: {
@@ -335,7 +336,7 @@ class GrowthMetricsStore {
   private calculateFreshnessScore(created: number, improved: number): number {
     const total = created + improved;
     if (total === 0) return 0;
-    
+
     // Score is weighted: improvements count more than new content
     // (indicates active content optimization)
     const score = (created * 1.0 + improved * 1.5) / 10;
@@ -370,8 +371,8 @@ class GrowthMetricsStore {
       content: { totalEntries: 0, byEntryPoint: {} },
     };
     this.windowStartAt = new Date();
-    
-    logger.info('Metrics reset', { windowStartAt: this.windowStartAt });
+
+    logger.info("Metrics reset", { windowStartAt: this.windowStartAt });
   }
 
   /**
@@ -390,42 +391,38 @@ const metricsStore = new GrowthMetricsStore();
 
 /**
  * Record a growth loop event
- * 
+ *
  * @param loopType - The type of growth loop (search, chat, content)
  * @param stage - The stage within the loop
  * @param entityId - Optional entity identifier (destination slug, article ID, etc.)
- * 
+ *
  * @example
  * recordLoopEvent('search', 'content_discovery', 'dubai');
  * recordLoopEvent('chat', 'chat_exploration', 'paris-guide');
  * recordLoopEvent('content', 'content_created', 'article-456');
  */
-export function recordLoopEvent(
-  loopType: LoopType,
-  stage: LoopStage,
-  entityId?: string
-): void {
+export function recordLoopEvent(loopType: LoopType, stage: LoopStage, entityId?: string): void {
   try {
     metricsStore.recordEvent(loopType, stage, entityId);
   } catch (error) {
     // Non-blocking - don't throw on analytics failures
-    logger.warn('Failed to record loop event', {
+    logger.warn("Failed to record loop event", {
       loopType,
       stage,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 }
 
 /**
  * Get current growth loop metrics
- * 
+ *
  * @returns Aggregated metrics for all growth loops
- * 
+ *
  * @example
  * const metrics = getLoopMetrics();
- * console.log(metrics.search.search_to_content_rate);
- * console.log(metrics.chat.chat_to_exploration_rate);
+ *
+ *
  */
 export function getLoopMetrics(): GrowthMetrics {
   return metricsStore.getMetrics();
@@ -441,27 +438,21 @@ export function resetLoopMetrics(): void {
 /**
  * Record a loop entry (convenience wrapper for recordLoopEvent)
  * Entry points are the first stage in each loop funnel
- * 
+ *
  * @param loopType - The type of growth loop (search, chat, content)
  * @param entryPoint - The entry point identifier (e.g., 'organic', 'direct', 'referral')
- * 
+ *
  * @example
  * recordLoopEntry('search', 'organic_search');
  * recordLoopEntry('chat', 'homepage_widget');
  */
-export function recordLoopEntry(
-  loopType: LoopType,
-  entryPoint: string
-): void {
+export function recordLoopEntry(loopType: LoopType, entryPoint: string): void {
   // Map entry points to first stage of each loop
-  const entryStage: LoopStage = loopType === 'search' 
-    ? 'search_entry' 
-    : loopType === 'chat' 
-      ? 'chat_start' 
-      : 'content_created';
-  
+  const entryStage: LoopStage =
+    loopType === "search" ? "search_entry" : loopType === "chat" ? "chat_start" : "content_created";
+
   recordLoopEvent(loopType, entryStage, entryPoint);
-  
+
   // Track entry count in separate metric for funnel analysis
   metricsStore.recordEntry(loopType, entryPoint);
 }
@@ -469,31 +460,28 @@ export function recordLoopEntry(
 /**
  * Record a loop step (convenience wrapper for recordLoopEvent)
  * Steps are intermediate stages in the funnel
- * 
+ *
  * @param loopType - The type of growth loop (search, chat, content)
  * @param step - The step/stage identifier
- * 
+ *
  * @example
  * recordLoopStep('search', 'content_discovery');
  * recordLoopStep('chat', 'chat_exploration');
  */
-export function recordLoopStep(
-  loopType: LoopType,
-  step: LoopStage
-): void {
+export function recordLoopStep(loopType: LoopType, step: LoopStage): void {
   recordLoopEvent(loopType, step);
 }
 
 /**
  * Get metrics for a specific loop type
- * 
+ *
  * @param loopType - The type of growth loop to get metrics for
  * @returns Metrics for the specified loop including entry count, completion rate, and revenue attribution
- * 
+ *
  * @example
  * const searchMetrics = getLoopMetricsByType('search');
- * console.log(searchMetrics.entryCount);
- * console.log(searchMetrics.completionRate);
+ *
+ *
  */
 export function getLoopMetricsByType(loopType: LoopType): {
   entryCount: number;
@@ -505,20 +493,20 @@ export function getLoopMetricsByType(loopType: LoopType): {
 } {
   const allMetrics = metricsStore.getMetrics();
   const entryData = metricsStore.getEntryData(loopType);
-  
+
   let loopData: { stages: StageCounts; totalEvents: number };
   let completionRate: number;
-  
+
   switch (loopType) {
-    case 'search':
+    case "search":
       loopData = { stages: allMetrics.search.stages, totalEvents: allMetrics.search.totalEvents };
       completionRate = allMetrics.search.internal_link_ctr; // Completion = internal link click
       break;
-    case 'chat':
+    case "chat":
       loopData = { stages: allMetrics.chat.stages, totalEvents: allMetrics.chat.totalEvents };
       completionRate = allMetrics.chat.chat_conversion_rate; // Completion = suggestion clicked
       break;
-    case 'content':
+    case "content":
       loopData = { stages: allMetrics.content.stages, totalEvents: allMetrics.content.totalEvents };
       completionRate = allMetrics.content.content_to_retention_rate; // Completion = performance tracked
       break;
@@ -526,7 +514,7 @@ export function getLoopMetricsByType(loopType: LoopType): {
       loopData = { stages: {}, totalEvents: 0 };
       completionRate = 0;
   }
-  
+
   return {
     entryCount: entryData.totalEntries,
     completionRate,

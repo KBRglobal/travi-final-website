@@ -122,7 +122,13 @@ const OVERRIDE_GRANTERS: Record<OverrideType, AdminRole[]> = {
 
 // What can be overridden in each mode
 const OVERRIDABLE_IN_MODE: Record<string, OverrideType[]> = {
-  monitor: ["security_gate", "mode_restriction", "rbac_permission", "exfiltration_limit", "approval_bypass"],
+  monitor: [
+    "security_gate",
+    "mode_restriction",
+    "rbac_permission",
+    "exfiltration_limit",
+    "approval_bypass",
+  ],
   enforce: ["mode_restriction", "approval_bypass", "exfiltration_limit"],
   lockdown: ["lockdown_access"], // Very limited
 };
@@ -190,7 +196,10 @@ class OverrideRegistry {
           code: "MODE_RESTRICTED",
           message: `Override type not allowed in ${mode.toUpperCase()} mode`,
           details: `The '${request.type}' override cannot be granted while the system is in ${mode.toUpperCase()} mode. Allowed types in this mode: ${allowedTypes.join(", ") || "none"}.`,
-          suggestion: mode === "lockdown" ? "Wait for security incident to be resolved." : "Request a different override type or wait for mode change.",
+          suggestion:
+            mode === "lockdown"
+              ? "Wait for security incident to be resolved."
+              : "Request a different override type or wait for mode change.",
         },
       };
     }
@@ -204,7 +213,8 @@ class OverrideRegistry {
           code: "THREAT_LEVEL_BLOCKED",
           message: "Overrides blocked during critical threat level",
           details: `The system is currently at BLACK threat level. All override requests are blocked until the threat is mitigated.`,
-          suggestion: "Address the security threat first. Check /api/security/dashboard for details.",
+          suggestion:
+            "Address the security threat first. Check /api/security/dashboard for details.",
         },
       };
     }
@@ -244,7 +254,8 @@ class OverrideRegistry {
           code: "MISSING_TICKET",
           message: "Ticket reference is required for all overrides",
           details: `All security overrides must be linked to an approved change ticket (JIRA, ServiceNow, etc.).`,
-          suggestion: "Create a change ticket and provide the reference (e.g., JIRA-1234, CHG0012345).",
+          suggestion:
+            "Create a change ticket and provide the reference (e.g., JIRA-1234, CHG0012345).",
         },
       };
     }
@@ -480,7 +491,7 @@ class OverrideRegistry {
    */
   getActiveOverrides(): Override[] {
     this.cleanupExpired();
-    return Array.from(this.overrides.values()).filter((o) => o.status === "active");
+    return Array.from(this.overrides.values()).filter(o => o.status === "active");
   }
 
   /**
@@ -488,7 +499,7 @@ class OverrideRegistry {
    */
   getOverridesForUser(userId: string): Override[] {
     return Array.from(this.overrides.values()).filter(
-      (o) => o.grantedTo.userId === userId && o.status === "active"
+      o => o.grantedTo.userId === userId && o.status === "active"
     );
   }
 
@@ -497,9 +508,7 @@ class OverrideRegistry {
    */
   getAllOverrides(includeExpired: boolean = false): Override[] {
     if (!includeExpired) {
-      return Array.from(this.overrides.values()).filter(
-        (o) => o.status === "active"
-      );
+      return Array.from(this.overrides.values()).filter(o => o.status === "active");
     }
     return Array.from(this.overrides.values());
   }
@@ -534,10 +543,10 @@ class OverrideRegistry {
 
     return {
       total: overrides.length,
-      active: overrides.filter((o) => o.status === "active").length,
-      used: overrides.filter((o) => o.status === "used").length,
-      expired: overrides.filter((o) => o.status === "expired").length,
-      revoked: overrides.filter((o) => o.status === "revoked").length,
+      active: overrides.filter(o => o.status === "active").length,
+      used: overrides.filter(o => o.status === "used").length,
+      expired: overrides.filter(o => o.status === "expired").length,
+      revoked: overrides.filter(o => o.status === "revoked").length,
       byType,
     };
   }
@@ -567,13 +576,10 @@ class OverrideRegistry {
     for (const callback of this.alertCallbacks) {
       try {
         callback(override, event);
-      } catch (error) {
-        console.error("[OverrideRegistry] Alert callback error:", error);
-      }
+      } catch (error) {}
     }
 
     // Always log to console
-    console.log(`[OverrideRegistry] ALERT: Override ${override.id} - ${event}`);
   }
 
   private generateId(): string {
@@ -612,20 +618,22 @@ overrideRouter.post("/request", async (req, res) => {
 
   const request: OverrideRequest = req.body;
 
-  const result = await overrideRegistry.requestOverride(
-    request,
-    user.id,
-    user.role
-  );
+  const result = await overrideRegistry.requestOverride(request, user.id, user.role);
 
   if (!result.success) {
     // Return human-readable error with appropriate status
-    const statusCode = result.error?.code === "SELF_APPROVAL" ? 400
-      : result.error?.code === "INSUFFICIENT_ROLE" ? 403
-      : result.error?.code === "ROLE_ESCALATION" ? 403
-      : result.error?.code === "MODE_RESTRICTED" ? 503
-      : result.error?.code === "THREAT_LEVEL_BLOCKED" ? 503
-      : 400;
+    const statusCode =
+      result.error?.code === "SELF_APPROVAL"
+        ? 400
+        : result.error?.code === "INSUFFICIENT_ROLE"
+          ? 403
+          : result.error?.code === "ROLE_ESCALATION"
+            ? 403
+            : result.error?.code === "MODE_RESTRICTED"
+              ? 503
+              : result.error?.code === "THREAT_LEVEL_BLOCKED"
+                ? 503
+                : 400;
 
     return res.status(statusCode).json({
       success: false,
@@ -646,12 +654,7 @@ overrideRouter.post("/request", async (req, res) => {
 overrideRouter.post("/validate", (req, res) => {
   const { overrideId, userId, action, resource } = req.body;
 
-  const result = overrideRegistry.validateOverride(
-    overrideId,
-    userId,
-    action,
-    resource
-  );
+  const result = overrideRegistry.validateOverride(overrideId, userId, action, resource);
 
   res.json(result);
 });
@@ -667,12 +670,7 @@ overrideRouter.post("/use", (req, res) => {
     return res.status(401).json({ error: "Authentication required" });
   }
 
-  const result = overrideRegistry.useOverride(
-    overrideId,
-    user.id,
-    action,
-    resource
-  );
+  const result = overrideRegistry.useOverride(overrideId, user.id, action, resource);
 
   if (!result.success) {
     return res.status(403).json({ error: result.error });
@@ -746,5 +744,3 @@ overrideRouter.get("/audit", (req, res) => {
   const overrides = overrideRegistry.getAllOverrides(includeExpired);
   res.json(overrides);
 });
-
-console.log("[OverrideRegistry] Module loaded");

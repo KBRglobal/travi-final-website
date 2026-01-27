@@ -7,8 +7,14 @@
  * - Enforces session controls
  */
 
-import { SystemAdapter, AdapterStatus, SecurityModeConfig, ThreatState, ThreatSource } from '../authority/types';
-import { SecuritySeverity, logSecurityEvent, SecurityEventType } from '../audit-logger';
+import {
+  SystemAdapter,
+  AdapterStatus,
+  SecurityModeConfig,
+  ThreatState,
+  ThreatSource,
+} from "../authority/types";
+import { SecuritySeverity, logSecurityEvent, SecurityEventType } from "../audit-logger";
 
 // Track state
 let registrationBlocked = false;
@@ -35,14 +41,12 @@ let sessionRestrictions: SessionRestrictions = {
 };
 
 export const UserSecurityAdapter: SystemAdapter = {
-  name: 'user-security',
+  name: "user-security",
   enabled: true,
 
   async onThreatEscalation(threat: ThreatState): Promise<void> {
-    console.log(`[UserSecurityAdapter] Threat escalation: ${threat.level}`);
-
     switch (threat.level) {
-      case 'critical':
+      case "critical":
         // Block new registrations and sessions
         registrationBlocked = true;
         newSessionsBlocked = true;
@@ -57,10 +61,9 @@ export const UserSecurityAdapter: SystemAdapter = {
         // Lock users associated with threat sources
         await lockThreatActors(threat.sources);
 
-        console.log('[UserSecurityAdapter] CRITICAL: Registration blocked, sessions restricted');
         break;
 
-      case 'high':
+      case "high":
         // Block new registrations
         registrationBlocked = true;
 
@@ -74,10 +77,9 @@ export const UserSecurityAdapter: SystemAdapter = {
         // Lock users associated with threat sources
         await lockThreatActors(threat.sources);
 
-        console.log('[UserSecurityAdapter] HIGH: Registration blocked, sessions limited');
         break;
 
-      case 'elevated':
+      case "elevated":
         // Flag suspicious users
         await flagSuspiciousActors(threat.sources);
 
@@ -88,10 +90,9 @@ export const UserSecurityAdapter: SystemAdapter = {
           requireReauth: false,
         };
 
-        console.log('[UserSecurityAdapter] ELEVATED: Monitoring suspicious users');
         break;
 
-      case 'normal':
+      case "normal":
         registrationBlocked = false;
         newSessionsBlocked = false;
 
@@ -105,7 +106,6 @@ export const UserSecurityAdapter: SystemAdapter = {
         // Clear suspicious flags (but not locks)
         suspiciousUsers.clear();
 
-        console.log('[UserSecurityAdapter] NORMAL: User operations resumed');
         break;
     }
 
@@ -113,22 +113,18 @@ export const UserSecurityAdapter: SystemAdapter = {
   },
 
   async onModeChange(config: SecurityModeConfig): Promise<void> {
-    console.log(`[UserSecurityAdapter] Mode change: ${config.mode}`);
-
     const { restrictions } = config;
 
     if (!restrictions.userRegistrationAllowed) {
       registrationBlocked = true;
-      console.log('[UserSecurityAdapter] Registration BLOCKED');
     } else {
       registrationBlocked = false;
     }
 
     // In lockdown, require reauth and block new sessions
-    if (config.mode === 'lockdown') {
+    if (config.mode === "lockdown") {
       newSessionsBlocked = true;
       sessionRestrictions.requireReauth = true;
-      console.log('[UserSecurityAdapter] LOCKDOWN: New sessions blocked, reauth required');
     } else {
       newSessionsBlocked = false;
       sessionRestrictions.requireReauth = false;
@@ -138,8 +134,6 @@ export const UserSecurityAdapter: SystemAdapter = {
   },
 
   async onEmergencyStop(): Promise<void> {
-    console.log('[UserSecurityAdapter] EMERGENCY STOP');
-
     registrationBlocked = true;
     newSessionsBlocked = true;
     sessionRestrictions = {
@@ -149,14 +143,13 @@ export const UserSecurityAdapter: SystemAdapter = {
     };
 
     // Would invalidate all sessions except admin sessions
-    console.log('[UserSecurityAdapter] Emergency user restrictions ACTIVATED');
 
     lastHeartbeat = new Date();
   },
 
   async getStatus(): Promise<AdapterStatus> {
     return {
-      name: 'user-security',
+      name: "user-security",
       connected: true,
       lastHeartbeat,
       pendingActions: lockedUsers.size + suspiciousUsers.size,
@@ -171,15 +164,15 @@ export const UserSecurityAdapter: SystemAdapter = {
 
 async function lockThreatActors(sources: ThreatSource[]): Promise<void> {
   for (const source of sources) {
-    if (source.type === 'user' && source.identifier) {
-      await lockUser(source.identifier, `Threat actor: ${source.description}`, 'security-system');
+    if (source.type === "user" && source.identifier) {
+      await lockUser(source.identifier, `Threat actor: ${source.description}`, "security-system");
     }
   }
 }
 
 async function flagSuspiciousActors(sources: ThreatSource[]): Promise<void> {
   for (const source of sources) {
-    if (source.type === 'user' && source.identifier) {
+    if (source.type === "user" && source.identifier) {
       flagUser(source.identifier, `Suspicious activity: ${source.description}`);
     }
   }
@@ -200,14 +193,12 @@ export async function lockUser(userId: string, reason: string, lockedBy: string)
     type: SecurityEventType.ACCOUNT_LOCKED,
     severity: SecuritySeverity.HIGH,
     userId,
-    ipAddress: 'system',
-    resource: 'user',
-    action: 'lock_user',
+    ipAddress: "system",
+    resource: "user",
+    action: "lock_user",
     details: { reason, lockedBy },
     success: true,
   });
-
-  console.log(`[UserSecurityAdapter] User locked: ${userId}`);
 }
 
 export async function unlockUser(userId: string, unlockedBy: string): Promise<boolean> {
@@ -218,14 +209,12 @@ export async function unlockUser(userId: string, unlockedBy: string): Promise<bo
       type: SecurityEventType.ACCOUNT_UNLOCKED,
       severity: SecuritySeverity.MEDIUM,
       userId,
-      ipAddress: 'system',
-      resource: 'user',
-      action: 'unlock_user',
+      ipAddress: "system",
+      resource: "user",
+      action: "unlock_user",
       details: { unlockedBy },
       success: true,
     });
-
-    console.log(`[UserSecurityAdapter] User unlocked: ${userId}`);
   }
 
   return wasLocked;
@@ -294,5 +283,3 @@ export function getUserSecurityStatus(): {
     suspiciousUserCount: suspiciousUsers.size,
   };
 }
-
-console.log('[UserSecurityAdapter] Loaded');

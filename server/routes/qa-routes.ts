@@ -38,36 +38,43 @@ export function registerQaRoutes(app: Express) {
       });
       res.json(categories);
     } catch (error) {
-      console.error("Error fetching QA categories:", error);
       res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
 
   // Create category
-  app.post("/api/qa/categories", requireAuth, requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const [category] = await db.insert(qaCategories).values(req.body).returning();
-      res.status(201).json(category);
-    } catch (error) {
-      console.error("Error creating category:", error);
-      res.status(500).json({ error: "Failed to create category" });
+  app.post(
+    "/api/qa/categories",
+    requireAuth,
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const [category] = await db.insert(qaCategories).values(req.body).returning();
+        res.status(201).json(category);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to create category" });
+      }
     }
-  });
+  );
 
   // Update category
-  app.patch("/api/qa/categories/:id", requireAuth, requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const [category] = await db
-        .update(qaCategories)
-        .set({ ...req.body, updatedAt: new Date() })
-        .where(eq(qaCategories.id, req.params.id))
-        .returning();
-      res.json(category);
-    } catch (error) {
-      console.error("Error updating category:", error);
-      res.status(500).json({ error: "Failed to update category" });
+  app.patch(
+    "/api/qa/categories/:id",
+    requireAuth,
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const [category] = await db
+          .update(qaCategories)
+          .set({ ...req.body, updatedAt: new Date() })
+          .where(eq(qaCategories.id, req.params.id))
+          .returning();
+        res.json(category);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update category" });
+      }
     }
-  });
+  );
 
   // ============================================================================
   // CHECKLIST ITEMS
@@ -78,7 +85,10 @@ export function registerQaRoutes(app: Express) {
     try {
       const { categoryId } = req.query;
       const whereClause = categoryId
-        ? and(eq(qaChecklistItems.isActive, true), eq(qaChecklistItems.categoryId, categoryId as string))
+        ? and(
+            eq(qaChecklistItems.isActive, true),
+            eq(qaChecklistItems.categoryId, categoryId as string)
+          )
         : eq(qaChecklistItems.isActive, true);
 
       const items = await db.query.qaChecklistItems.findMany({
@@ -90,36 +100,43 @@ export function registerQaRoutes(app: Express) {
       });
       res.json(items);
     } catch (error) {
-      console.error("Error fetching QA items:", error);
       res.status(500).json({ error: "Failed to fetch items" });
     }
   });
 
   // Create item
-  app.post("/api/qa/items", requireAuth, requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const [item] = await db.insert(qaChecklistItems).values(req.body).returning();
-      res.status(201).json(item);
-    } catch (error) {
-      console.error("Error creating item:", error);
-      res.status(500).json({ error: "Failed to create item" });
+  app.post(
+    "/api/qa/items",
+    requireAuth,
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const [item] = await db.insert(qaChecklistItems).values(req.body).returning();
+        res.status(201).json(item);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to create item" });
+      }
     }
-  });
+  );
 
   // Update item
-  app.patch("/api/qa/items/:id", requireAuth, requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const [item] = await db
-        .update(qaChecklistItems)
-        .set({ ...req.body, updatedAt: new Date() })
-        .where(eq(qaChecklistItems.id, req.params.id))
-        .returning();
-      res.json(item);
-    } catch (error) {
-      console.error("Error updating item:", error);
-      res.status(500).json({ error: "Failed to update item" });
+  app.patch(
+    "/api/qa/items/:id",
+    requireAuth,
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const [item] = await db
+          .update(qaChecklistItems)
+          .set({ ...req.body, updatedAt: new Date() })
+          .where(eq(qaChecklistItems.id, req.params.id))
+          .returning();
+        res.json(item);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update item" });
+      }
     }
-  });
+  );
 
   // ============================================================================
   // QA RUNS
@@ -139,7 +156,6 @@ export function registerQaRoutes(app: Express) {
       });
       res.json(runs);
     } catch (error) {
-      console.error("Error fetching QA runs:", error);
       res.status(500).json({ error: "Failed to fetch runs" });
     }
   });
@@ -175,7 +191,6 @@ export function registerQaRoutes(app: Express) {
 
       res.json(run);
     } catch (error) {
-      console.error("Error fetching QA run:", error);
       res.status(500).json({ error: "Failed to fetch run" });
     }
   });
@@ -227,15 +242,18 @@ export function registerQaRoutes(app: Express) {
       }
 
       // Create the run
-      const [run] = await db.insert(qaRuns).values({
-        name: name || `QA Run - ${new Date().toLocaleDateString()}`,
-        description,
-        environment: environment || "development",
-        version,
-        branch,
-        userId,
-        totalItems: itemIds.length,
-      } as any).returning();
+      const [run] = await db
+        .insert(qaRuns)
+        .values({
+          name: name || `QA Run - ${new Date().toLocaleDateString()}`,
+          description,
+          environment: environment || "development",
+          version,
+          branch,
+          userId,
+          totalItems: itemIds.length,
+        } as any)
+        .returning();
 
       // Create check results for each item
       if (itemIds.length > 0) {
@@ -249,13 +267,10 @@ export function registerQaRoutes(app: Express) {
       }
 
       // Trigger automated checks in the background
-      QaRunner.run(run.id).catch(err => {
-        console.error(`Background QA runner failed for run ${run.id}:`, err);
-      });
+      QaRunner.run(run.id).catch(err => {});
 
       res.status(201).json(run);
     } catch (error) {
-      console.error("Error creating QA run:", error);
       res.status(500).json({ error: "Failed to create run" });
     }
   });
@@ -270,7 +285,6 @@ export function registerQaRoutes(app: Express) {
         .returning();
       res.json(run);
     } catch (error) {
-      console.error("Error updating run:", error);
       res.status(500).json({ error: "Failed to update run" });
     }
   });
@@ -305,7 +319,6 @@ export function registerQaRoutes(app: Express) {
 
       res.json(run);
     } catch (error) {
-      console.error("Error completing run:", error);
       res.status(500).json({ error: "Failed to complete run" });
     }
   });
@@ -352,7 +365,6 @@ export function registerQaRoutes(app: Express) {
 
       res.json(result);
     } catch (error) {
-      console.error("Error updating result:", error);
       res.status(500).json({ error: "Failed to update result" });
     }
   });
@@ -379,7 +391,6 @@ export function registerQaRoutes(app: Express) {
 
       res.json({ success: true, updated: updates.length });
     } catch (error) {
-      console.error("Error bulk updating results:", error);
       res.status(500).json({ error: "Failed to update results" });
     }
   });
@@ -405,7 +416,6 @@ export function registerQaRoutes(app: Express) {
       });
       res.json(issues);
     } catch (error) {
-      console.error("Error fetching issues:", error);
       res.status(500).json({ error: "Failed to fetch issues" });
     }
   });
@@ -420,14 +430,16 @@ export function registerQaRoutes(app: Express) {
         return res.status(401).json({ error: "User not authenticated" });
       }
 
-      const [issue] = await db.insert(qaIssues).values({
-        ...req.body,
-        createdBy: userId,
-      }).returning();
+      const [issue] = await db
+        .insert(qaIssues)
+        .values({
+          ...req.body,
+          createdBy: userId,
+        })
+        .returning();
 
       res.status(201).json(issue);
     } catch (error) {
-      console.error("Error creating issue:", error);
       res.status(500).json({ error: "Failed to create issue" });
     }
   });
@@ -457,7 +469,6 @@ export function registerQaRoutes(app: Express) {
 
       res.json(issue);
     } catch (error) {
-      console.error("Error updating issue:", error);
       res.status(500).json({ error: "Failed to update issue" });
     }
   });
@@ -474,52 +485,62 @@ export function registerQaRoutes(app: Express) {
       });
       res.json(templates);
     } catch (error) {
-      console.error("Error fetching templates:", error);
       res.status(500).json({ error: "Failed to fetch templates" });
     }
   });
 
   // Create template
-  app.post("/api/qa/templates", requireAuth, requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const authReq = req as AuthRequest;
-      const userId = authReq.user?.claims?.sub;
+  app.post(
+    "/api/qa/templates",
+    requireAuth,
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const authReq = req as AuthRequest;
+        const userId = authReq.user?.claims?.sub;
 
-      const [template] = await db.insert(qaTemplates).values({
-        ...req.body,
-        createdBy: userId,
-      }).returning();
+        const [template] = await db
+          .insert(qaTemplates)
+          .values({
+            ...req.body,
+            createdBy: userId,
+          })
+          .returning();
 
-      res.status(201).json(template);
-    } catch (error) {
-      console.error("Error creating template:", error);
-      res.status(500).json({ error: "Failed to create template" });
+        res.status(201).json(template);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to create template" });
+      }
     }
-  });
+  );
 
   // ============================================================================
   // SEED DATA
   // ============================================================================
 
   // Seed initial QA checklist data
-  app.post("/api/qa/seed", requireAuth, requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      // Check if already seeded
-      const existingCategories = await db.query.qaCategories.findMany();
-      if (existingCategories.length > 0) {
-        return res.status(400).json({ error: "QA data already seeded" });
+  app.post(
+    "/api/qa/seed",
+    requireAuth,
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        // Check if already seeded
+        const existingCategories = await db.query.qaCategories.findMany();
+        if (existingCategories.length > 0) {
+          return res.status(400).json({ error: "QA data already seeded" });
+        }
+
+        // Import and run seed
+        const { seedQaChecklist } = await import("../data/qa-checklist-seed");
+        await seedQaChecklist();
+
+        res.json({ success: true, message: "QA checklist data seeded successfully" });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to seed QA data" });
       }
-
-      // Import and run seed
-      const { seedQaChecklist } = await import("../data/qa-checklist-seed");
-      await seedQaChecklist();
-
-      res.json({ success: true, message: "QA checklist data seeded successfully" });
-    } catch (error) {
-      console.error("Error seeding QA data:", error);
-      res.status(500).json({ error: "Failed to seed QA data" });
     }
-  });
+  );
 
   // ============================================================================
   // AUTOMATED CHECKS (QUICK RUN)
@@ -529,10 +550,8 @@ export function registerQaRoutes(app: Express) {
   // This is for the dashboard display of quick health checks
   app.post("/api/qa/run-automated", requireAuth, async (req: Request, res: Response) => {
     try {
-      console.log("[QA Routes] Running automated health checks...");
-      
       const results = await QaRunner.runQuickChecks();
-      
+
       res.json({
         success: true,
         timestamp: new Date().toISOString(),
@@ -541,10 +560,9 @@ export function registerQaRoutes(app: Express) {
           total: results.length,
           passed: results.filter(r => r.passed).length,
           failed: results.filter(r => !r.passed).length,
-        }
+        },
       });
     } catch (error) {
-      console.error("Error running automated checks:", error);
       res.status(500).json({ error: "Failed to run automated checks" });
     }
   });
@@ -562,11 +580,11 @@ export function registerQaRoutes(app: Express) {
               item: {
                 with: {
                   category: true,
-                }
-              }
-            }
-          }
-        }
+                },
+              },
+            },
+          },
+        },
       });
 
       if (!lastRun) {
@@ -578,7 +596,7 @@ export function registerQaRoutes(app: Express) {
 
       // Group results by category
       const byCategory: Record<string, { passed: number; failed: number; total: number }> = {};
-      
+
       for (const result of lastRun.results || []) {
         const catKey = result.item?.category?.key || "unknown";
         if (!byCategory[catKey]) {
@@ -600,7 +618,6 @@ export function registerQaRoutes(app: Express) {
         byCategory,
       });
     } catch (error) {
-      console.error("Error fetching automated status:", error);
       res.status(500).json({ error: "Failed to fetch automated status" });
     }
   });
@@ -612,9 +629,7 @@ export function registerQaRoutes(app: Express) {
   // Get QA overview stats
   app.get("/api/qa/stats", requireAuth, async (req: Request, res: Response) => {
     try {
-      const [totalRuns] = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(qaRuns);
+      const [totalRuns] = await db.select({ count: sql<number>`count(*)` }).from(qaRuns);
 
       const [completedRuns] = await db
         .select({ count: sql<number>`count(*)` })
@@ -632,9 +647,10 @@ export function registerQaRoutes(app: Express) {
         limit: 10,
       });
 
-      const avgScore = recentRuns.length > 0
-        ? Math.round(recentRuns.reduce((sum, r) => sum + (r.score || 0), 0) / recentRuns.length)
-        : 0;
+      const avgScore =
+        recentRuns.length > 0
+          ? Math.round(recentRuns.reduce((sum, r) => sum + (r.score || 0), 0) / recentRuns.length)
+          : 0;
 
       res.json({
         totalRuns: Number(totalRuns.count),
@@ -644,7 +660,6 @@ export function registerQaRoutes(app: Express) {
         recentRuns,
       });
     } catch (error) {
-      console.error("Error fetching QA stats:", error);
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });

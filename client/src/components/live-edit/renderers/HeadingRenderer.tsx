@@ -40,9 +40,9 @@ export function HeadingRenderer({ id, props, onUpdate }: HeadingRendererProps) {
             componentId={id}
             fieldName="text"
             value={text}
-            onChange={(value) => onUpdate({ ...props, text: value })}
+            onChange={value => onUpdate({ ...props, text: value })}
             className={levelClasses[level]}
-            placeholder="כותרת"
+            placeholder="Heading"
             as={level}
           />
         ) : (

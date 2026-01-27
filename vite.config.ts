@@ -7,15 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
+    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
       ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) =>
-            m.devBanner(),
-          ),
+          await import("@replit/vite-plugin-cartographer").then(m => m.cartographer()),
+          await import("@replit/vite-plugin-dev-banner").then(m => m.devBanner()),
         ]
       : []),
   ],
@@ -31,7 +26,7 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
     // Enable minification for better performance
-    minify: 'terser',
+    minify: "terser",
     terserOptions: {
       compress: {
         drop_console: true, // Remove console.log in production
@@ -43,47 +38,118 @@ export default defineConfig({
     cssCodeSplit: true,
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks(id) {
           // React core and routing
-          'react-vendor': ['react', 'react-dom', 'wouter'],
-          // UI libraries - Radix UI components
-          'ui-vendor': [
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-alert-dialog',
-            '@radix-ui/react-avatar',
-            '@radix-ui/react-checkbox',
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-label',
-            '@radix-ui/react-popover',
-            '@radix-ui/react-select',
-            '@radix-ui/react-separator',
-            '@radix-ui/react-slider',
-            '@radix-ui/react-slot',
-            '@radix-ui/react-switch',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-toast',
-            '@radix-ui/react-tooltip',
-            '@radix-ui/react-scroll-area',
-            '@radix-ui/react-progress',
-            '@radix-ui/react-radio-group',
-            '@radix-ui/react-menubar',
-            '@radix-ui/react-navigation-menu',
-            '@radix-ui/react-hover-card',
-            '@radix-ui/react-context-menu',
-            '@radix-ui/react-collapsible',
-            '@radix-ui/react-toggle',
-            '@radix-ui/react-toggle-group',
-            '@radix-ui/react-aspect-ratio',
-          ],
+          if (
+            id.includes("node_modules/react/") ||
+            id.includes("node_modules/react-dom/") ||
+            id.includes("node_modules/wouter/")
+          ) {
+            return "react-vendor";
+          }
+          // Radix UI components
+          if (id.includes("node_modules/@radix-ui/")) {
+            return "ui-vendor";
+          }
           // Form libraries
-          'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          if (
+            id.includes("node_modules/react-hook-form/") ||
+            id.includes("node_modules/@hookform/") ||
+            id.includes("node_modules/zod/")
+          ) {
+            return "form-vendor";
+          }
           // Query and state management
-          'query-vendor': ['@tanstack/react-query'],
+          if (id.includes("node_modules/@tanstack/react-query")) {
+            return "query-vendor";
+          }
+          // State management
+          if (id.includes("node_modules/zustand/")) {
+            return "state-vendor";
+          }
           // Icons
-          'icons-vendor': ['lucide-react'],
-          // DnD kit - large library, separate chunk
-          'dnd-vendor': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
+          if (id.includes("node_modules/lucide-react/")) {
+            return "icons-vendor";
+          }
+          // DnD kit
+          if (id.includes("node_modules/@dnd-kit/")) {
+            return "dnd-vendor";
+          }
+          // Animation library
+          if (id.includes("node_modules/framer-motion/")) {
+            return "animation-vendor";
+          }
+          // Charts - only needed in admin/analytics
+          if (id.includes("node_modules/recharts/") || id.includes("node_modules/d3-")) {
+            return "charts-vendor";
+          }
+          // Date utilities
+          if (id.includes("node_modules/date-fns/")) {
+            return "date-vendor";
+          }
+          // i18n - internationalization
+          if (id.includes("node_modules/i18next") || id.includes("node_modules/react-i18next")) {
+            return "i18n-vendor";
+          }
+          // Editor libraries - heavy, separate chunk
+          if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
+            return "editor-vendor";
+          }
+          // Analytics
+          if (id.includes("node_modules/posthog-js/")) {
+            return "analytics-vendor";
+          }
+          // Admin pages - split into smaller chunks by feature
+          if (id.includes("/pages/admin/")) {
+            // Governance pages
+            if (id.includes("/admin/governance/")) {
+              return "admin-governance";
+            }
+            // Analytics/Dashboard pages
+            if (
+              id.includes("/admin/growth-dashboard") ||
+              id.includes("/admin/destination-intelligence")
+            ) {
+              return "admin-analytics";
+            }
+            // Content management pages
+            if (id.includes("/admin/homepage-editor") || id.includes("/admin/static-page-editor")) {
+              return "admin-content";
+            }
+            // QA and monitoring pages
+            if (id.includes("/admin/qa-dashboard") || id.includes("/admin/octypo")) {
+              return "admin-qa";
+            }
+            // Remaining admin pages
+            return "admin-pages";
+          }
+          // Content editor - large page
+          if (id.includes("/pages/content-editor")) {
+            return "content-editor";
+          }
+          // Static page editor - large page
+          if (id.includes("/pages/admin/static-page-editor")) {
+            return "static-page-editor";
+          }
+          // Destination page - complex public page
+          if (id.includes("/pages/destination-page")) {
+            return "destination-page";
+          }
+          // Guide and attraction pages
+          if (id.includes("/pages/guide-detail") || id.includes("/pages/attraction-detail")) {
+            return "travel-details";
+          }
+          // Travel style articles
+          if (id.includes("/pages/travel-style-article")) {
+            return "travel-articles";
+          }
+          // Public off-plan and content viewer
+          if (
+            id.includes("/pages/public-off-plan") ||
+            id.includes("/pages/public-content-viewer")
+          ) {
+            return "public-content";
+          }
         },
       },
     },

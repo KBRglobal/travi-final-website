@@ -1,6 +1,6 @@
 /**
  * Search Telemetry
- * 
+ *
  * Lightweight in-memory tracking for search analytics:
  * - Tracks query text, result count, fallback triggered, timestamp
  * - 24-hour rolling window with automatic cleanup
@@ -37,7 +37,7 @@ class SearchTelemetry {
   private cleanup(): void {
     const cutoff = Date.now() - WINDOW_MS;
     this.events = this.events.filter(e => e.timestamp > cutoff);
-    
+
     if (this.events.length > MAX_EVENTS) {
       this.events = this.events.slice(-MAX_EVENTS);
     }
@@ -66,18 +66,13 @@ class SearchTelemetry {
   private checkZeroResultRate(): void {
     const cutoff = Date.now() - WINDOW_MS;
     const recentEvents = this.events.filter(e => e.timestamp > cutoff);
-    
+
     if (recentEvents.length < 50) return; // Need minimum sample size
-    
+
     const zeroResultCount = recentEvents.filter(e => e.resultCount === 0).length;
     const zeroResultRate = zeroResultCount / recentEvents.length;
-    
-    if (zeroResultRate > 0.20) {
-      console.warn(
-        `[Search Quality Warning] Zero result rate is ${(zeroResultRate * 100).toFixed(1)}% ` +
-        `(${zeroResultCount}/${recentEvents.length} searches). ` +
-        `Threshold: 20%. Consider reviewing search index and fallback behavior.`
-      );
+
+    if (zeroResultRate > 0.2) {
     }
   }
 
@@ -113,7 +108,7 @@ class SearchTelemetry {
 
     for (const event of recentEvents) {
       const normalizedQuery = event.query.toLowerCase().trim();
-      
+
       if (normalizedQuery) {
         queryFrequency.set(normalizedQuery, (queryFrequency.get(normalizedQuery) || 0) + 1);
       }
@@ -149,10 +144,10 @@ class SearchTelemetry {
     let healthStatus: "healthy" | "warning" | "critical";
     let healthMessage: string;
 
-    if (zeroResultRate > 0.30) {
+    if (zeroResultRate > 0.3) {
       healthStatus = "critical";
       healthMessage = `Critical: ${(zeroResultRate * 100).toFixed(1)}% of searches return zero results. Review search index and fallback chain.`;
-    } else if (zeroResultRate > 0.20) {
+    } else if (zeroResultRate > 0.2) {
       healthStatus = "warning";
       healthMessage = `Warning: ${(zeroResultRate * 100).toFixed(1)}% of searches return zero results (threshold: 20%). Consider expanding dictionary.`;
     } else {

@@ -9,7 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useLiveEdit } from "./live-edit-provider";
 import { useLocale } from "@/lib/i18n/LocaleRouter";
 import { cn } from "@/lib/utils";
@@ -64,7 +70,7 @@ export function PageBuilderSectionEditor({
   }, [selectedSection?.id]);
 
   const handleFieldChange = (field: keyof PageSection, value: any) => {
-    setLocalChanges((prev) => ({ ...prev, [field]: value }));
+    setLocalChanges(prev => ({ ...prev, [field]: value }));
     if (selectedSection) {
       updateSection(selectedSection.id, { [field]: value });
     }
@@ -108,7 +114,9 @@ export function PageBuilderSectionEditor({
             <div className="flex items-center justify-between gap-2 p-4 border-b">
               <div>
                 <h2 className="font-semibold text-lg">
-                  {selectedSection.sectionType.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                  {selectedSection.sectionType
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, l => l.toUpperCase())}
                 </h2>
                 <p className="text-xs text-muted-foreground">Edit section properties</p>
               </div>
@@ -124,10 +132,14 @@ export function PageBuilderSectionEditor({
 
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-6">
-                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "en" | "he")}>
+                <Tabs value={activeTab} onValueChange={v => setActiveTab(v as "en" | "he")}>
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="en" data-testid="tab-english">English</TabsTrigger>
-                    <TabsTrigger value="he" data-testid="tab-hebrew">עברית</TabsTrigger>
+                    <TabsTrigger value="en" data-testid="tab-english">
+                      English
+                    </TabsTrigger>
+                    <TabsTrigger value="he" data-testid="tab-hebrew">
+                      Hebrew
+                    </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="en" className="space-y-4 mt-4">
@@ -136,7 +148,7 @@ export function PageBuilderSectionEditor({
                       <Input
                         id="title"
                         value={currentValue("title") || ""}
-                        onChange={(e) => handleFieldChange("title", e.target.value)}
+                        onChange={e => handleFieldChange("title", e.target.value)}
                         placeholder="Section title"
                         data-testid="input-title"
                       />
@@ -147,7 +159,7 @@ export function PageBuilderSectionEditor({
                       <Input
                         id="subtitle"
                         value={currentValue("subtitle") || ""}
-                        onChange={(e) => handleFieldChange("subtitle", e.target.value)}
+                        onChange={e => handleFieldChange("subtitle", e.target.value)}
                         placeholder="Section subtitle"
                         data-testid="input-subtitle"
                       />
@@ -158,7 +170,7 @@ export function PageBuilderSectionEditor({
                       <Textarea
                         id="description"
                         value={currentValue("description") || ""}
-                        onChange={(e) => handleFieldChange("description", e.target.value)}
+                        onChange={e => handleFieldChange("description", e.target.value)}
                         placeholder="Section description"
                         rows={4}
                         data-testid="input-description"
@@ -170,7 +182,7 @@ export function PageBuilderSectionEditor({
                       <Input
                         id="buttonText"
                         value={currentValue("buttonText") || ""}
-                        onChange={(e) => handleFieldChange("buttonText", e.target.value)}
+                        onChange={e => handleFieldChange("buttonText", e.target.value)}
                         placeholder="Call to action text"
                         data-testid="input-button-text"
                       />
@@ -179,46 +191,46 @@ export function PageBuilderSectionEditor({
 
                   <TabsContent value="he" className="space-y-4 mt-4" dir="rtl">
                     <div className="space-y-2">
-                      <Label htmlFor="titleHe">כותרת</Label>
+                      <Label htmlFor="titleHe">Title (Hebrew)</Label>
                       <Input
                         id="titleHe"
                         value={currentValue("titleHe") || ""}
-                        onChange={(e) => handleFieldChange("titleHe", e.target.value)}
-                        placeholder="כותרת הסקשן"
+                        onChange={e => handleFieldChange("titleHe", e.target.value)}
+                        placeholder="Section title in Hebrew"
                         data-testid="input-title-he"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subtitleHe">כותרת משנה</Label>
+                      <Label htmlFor="subtitleHe">Subtitle (Hebrew)</Label>
                       <Input
                         id="subtitleHe"
                         value={currentValue("subtitleHe") || ""}
-                        onChange={(e) => handleFieldChange("subtitleHe", e.target.value)}
-                        placeholder="כותרת משנה"
+                        onChange={e => handleFieldChange("subtitleHe", e.target.value)}
+                        placeholder="Section subtitle in Hebrew"
                         data-testid="input-subtitle-he"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="descriptionHe">תיאור</Label>
+                      <Label htmlFor="descriptionHe">Description (Hebrew)</Label>
                       <Textarea
                         id="descriptionHe"
                         value={currentValue("descriptionHe") || ""}
-                        onChange={(e) => handleFieldChange("descriptionHe", e.target.value)}
-                        placeholder="תיאור הסקשן"
+                        onChange={e => handleFieldChange("descriptionHe", e.target.value)}
+                        placeholder="Section description in Hebrew"
                         rows={4}
                         data-testid="input-description-he"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="buttonTextHe">טקסט כפתור</Label>
+                      <Label htmlFor="buttonTextHe">Button Text (Hebrew)</Label>
                       <Input
                         id="buttonTextHe"
                         value={currentValue("buttonTextHe") || ""}
-                        onChange={(e) => handleFieldChange("buttonTextHe", e.target.value)}
-                        placeholder="טקסט קריאה לפעולה"
+                        onChange={e => handleFieldChange("buttonTextHe", e.target.value)}
+                        placeholder="Call to action text in Hebrew"
                         data-testid="input-button-text-he"
                       />
                     </div>
@@ -238,7 +250,7 @@ export function PageBuilderSectionEditor({
                     <Input
                       id="backgroundImage"
                       value={currentValue("backgroundImage") || ""}
-                      onChange={(e) => handleFieldChange("backgroundImage", e.target.value)}
+                      onChange={e => handleFieldChange("backgroundImage", e.target.value)}
                       placeholder="https://..."
                       data-testid="input-background-image"
                     />
@@ -249,7 +261,7 @@ export function PageBuilderSectionEditor({
                     <Input
                       id="buttonLink"
                       value={currentValue("buttonLink") || ""}
-                      onChange={(e) => handleFieldChange("buttonLink", e.target.value)}
+                      onChange={e => handleFieldChange("buttonLink", e.target.value)}
                       placeholder="/page or https://..."
                       data-testid="input-button-link"
                     />
@@ -268,13 +280,13 @@ export function PageBuilderSectionEditor({
                     <Label htmlFor="backgroundColor">Background Color</Label>
                     <Select
                       value={currentValue("backgroundColor") || ""}
-                      onValueChange={(value) => handleFieldChange("backgroundColor", value)}
+                      onValueChange={value => handleFieldChange("backgroundColor", value)}
                     >
                       <SelectTrigger data-testid="select-background-color">
                         <SelectValue placeholder="Select color" />
                       </SelectTrigger>
                       <SelectContent>
-                        {BACKGROUND_COLORS.map((color) => (
+                        {BACKGROUND_COLORS.map(color => (
                           <SelectItem key={color.value} value={color.value || "default"}>
                             {color.label}
                           </SelectItem>
@@ -287,13 +299,13 @@ export function PageBuilderSectionEditor({
                     <Label htmlFor="animation">Animation</Label>
                     <Select
                       value={currentValue("animation") || ""}
-                      onValueChange={(value) => handleFieldChange("animation", value)}
+                      onValueChange={value => handleFieldChange("animation", value)}
                     >
                       <SelectTrigger data-testid="select-animation">
                         <SelectValue placeholder="Select animation" />
                       </SelectTrigger>
                       <SelectContent>
-                        {ANIMATIONS.map((anim) => (
+                        {ANIMATIONS.map(anim => (
                           <SelectItem key={anim.value} value={anim.value || "none"}>
                             {anim.label}
                           </SelectItem>
@@ -316,7 +328,7 @@ export function PageBuilderSectionEditor({
                     <Switch
                       id="isVisible"
                       checked={currentValue("isVisible") ?? true}
-                      onCheckedChange={(checked) => handleFieldChange("isVisible", checked)}
+                      onCheckedChange={checked => handleFieldChange("isVisible", checked)}
                       data-testid="switch-is-visible"
                     />
                   </div>
@@ -326,7 +338,7 @@ export function PageBuilderSectionEditor({
                     <Switch
                       id="showOnMobile"
                       checked={currentValue("showOnMobile") ?? true}
-                      onCheckedChange={(checked) => handleFieldChange("showOnMobile", checked)}
+                      onCheckedChange={checked => handleFieldChange("showOnMobile", checked)}
                       data-testid="switch-show-mobile"
                     />
                   </div>
@@ -336,7 +348,7 @@ export function PageBuilderSectionEditor({
                     <Switch
                       id="showOnDesktop"
                       checked={currentValue("showOnDesktop") ?? true}
-                      onCheckedChange={(checked) => handleFieldChange("showOnDesktop", checked)}
+                      onCheckedChange={checked => handleFieldChange("showOnDesktop", checked)}
                       data-testid="switch-show-desktop"
                     />
                   </div>
@@ -350,7 +362,7 @@ export function PageBuilderSectionEditor({
                     id="sortOrder"
                     type="number"
                     value={currentValue("sortOrder") ?? 0}
-                    onChange={(e) => handleFieldChange("sortOrder", parseInt(e.target.value) || 0)}
+                    onChange={e => handleFieldChange("sortOrder", parseInt(e.target.value) || 0)}
                     min={0}
                     data-testid="input-sort-order"
                   />

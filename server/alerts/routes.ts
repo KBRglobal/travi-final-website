@@ -14,7 +14,6 @@ router.get("/", async (req: Request, res: Response) => {
     const alerts = await repository.getAllAlerts(limit);
     res.json({ enabled: true, alerts });
   } catch (error) {
-    console.error("[Alerts] Error fetching alerts:", error);
     res.status(500).json({ error: "Failed to fetch alerts" });
   }
 });
@@ -28,7 +27,6 @@ router.get("/active", async (req: Request, res: Response) => {
     const alerts = await repository.getActiveAlerts();
     res.json({ enabled: true, alerts });
   } catch (error) {
-    console.error("[Alerts] Error fetching active alerts:", error);
     res.status(500).json({ error: "Failed to fetch active alerts" });
   }
 });
@@ -43,7 +41,6 @@ router.get("/stats", async (req: Request, res: Response) => {
     const engine = getEngineStatus();
     res.json({ enabled: true, stats, engine });
   } catch (error) {
-    console.error("[Alerts] Error fetching alert stats:", error);
     res.status(500).json({ error: "Failed to fetch alert stats" });
   }
 });
@@ -60,7 +57,6 @@ router.get("/:id", async (req: Request, res: Response) => {
     }
     res.json(alert);
   } catch (error) {
-    console.error("[Alerts] Error fetching alert:", error);
     res.status(500).json({ error: "Failed to fetch alert" });
   }
 });
@@ -77,7 +73,6 @@ router.post("/:id/resolve", async (req: Request, res: Response) => {
     }
     res.json({ success: true, message: "Alert resolved" });
   } catch (error) {
-    console.error("[Alerts] Error resolving alert:", error);
     res.status(500).json({ error: "Failed to resolve alert" });
   }
 });

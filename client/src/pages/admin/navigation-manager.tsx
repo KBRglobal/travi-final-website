@@ -9,9 +9,19 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Menu, Plus, Trash2, GripVertical, Edit2, Save, X, Lightbulb, 
-  ExternalLink, Sparkles, ChevronDown, ChevronRight
+import {
+  Menu,
+  Plus,
+  Trash2,
+  GripVertical,
+  Edit2,
+  Save,
+  X,
+  Lightbulb,
+  ExternalLink,
+  Sparkles,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import {
   Dialog,
@@ -81,7 +91,14 @@ export default function NavigationManagerPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/site-config/navigation"] });
       toast({ title: "Menu item added" });
       setShowAddDialog(false);
-      setNewItem({ label: "", labelHe: "", href: "", icon: "", openInNewTab: false, isHighlighted: false });
+      setNewItem({
+        label: "",
+        labelHe: "",
+        href: "",
+        icon: "",
+        openInNewTab: false,
+        isHighlighted: false,
+      });
     },
   });
 
@@ -136,19 +153,15 @@ export default function NavigationManagerPage() {
         <p className="text-muted-foreground mt-1">
           Configure your website's navigation menus and links
         </p>
-        
+
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            איך זה עובד / How It Works
+            How It Works
           </h3>
-          <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-            כאן תוכל לערוך את תפריט הניווט של האתר. הוסף, מחק או שנה את הלינקים שמופיעים בראש האתר.
-            ניתן להגדיר גם תרגום לעברית וסגנון מודגש לפריטים מיוחדים.
-          </p>
           <p className="text-sm text-muted-foreground">
-            Manage your site's navigation menu here. Add, remove, or modify links that appear in the header.
-            You can set Hebrew translations and highlight styles for special items.
+            Manage your site's navigation menu here. Add, remove, or modify links that appear in the
+            header. You can set translations and highlight styles for special items.
           </p>
         </div>
       </div>
@@ -168,7 +181,7 @@ export default function NavigationManagerPage() {
           </CardContent>
         </Card>
       ) : (
-        menus.map((menu) => (
+        menus.map(menu => (
           <Card key={menu.id}>
             <CardHeader className="flex flex-row items-center justify-between gap-2">
               <div className="flex items-center gap-3">
@@ -202,59 +215,64 @@ export default function NavigationManagerPage() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {menu.items.sort((a, b) => a.sortOrder - b.sortOrder).map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-4 p-3 border rounded-lg hover-elevate"
-                    >
-                      <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{item.label}</span>
-                          {item.labelHe && (
-                            <span className="text-sm text-muted-foreground" dir="rtl">
-                              ({item.labelHe})
-                            </span>
-                          )}
-                          {item.isHighlighted && (
-                            <Badge className="bg-primary/10 text-primary">
-                              <Sparkles className="h-3 w-3 mr-1" />
-                              Highlighted
-                            </Badge>
-                          )}
-                          {item.openInNewTab && (
-                            <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                          )}
+                  {menu.items
+                    .sort((a, b) => a.sortOrder - b.sortOrder)
+                    .map(item => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-4 p-3 border rounded-lg hover-elevate"
+                      >
+                        <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{item.label}</span>
+                            {item.labelHe && (
+                              <span className="text-sm text-muted-foreground" dir="rtl">
+                                ({item.labelHe})
+                              </span>
+                            )}
+                            {item.isHighlighted && (
+                              <Badge className="bg-primary/10 text-primary">
+                                <Sparkles className="h-3 w-3 mr-1" />
+                                Highlighted
+                              </Badge>
+                            )}
+                            {item.openInNewTab && (
+                              <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                            )}
+                          </div>
+                          <span className="text-sm text-muted-foreground">{item.href}</span>
                         </div>
-                        <span className="text-sm text-muted-foreground">{item.href}</span>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={item.isActive}
+                            onCheckedChange={checked =>
+                              updateItemMutation.mutate({
+                                id: item.id,
+                                data: { isActive: checked },
+                              })
+                            }
+                            data-testid={`switch-item-active-${item.id}`}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingItem(item)}
+                            data-testid={`button-edit-item-${item.id}`}
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteItemMutation.mutate(item.id)}
+                            data-testid={`button-delete-item-${item.id}`}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={item.isActive}
-                          onCheckedChange={(checked) =>
-                            updateItemMutation.mutate({ id: item.id, data: { isActive: checked } })
-                          }
-                          data-testid={`switch-item-active-${item.id}`}
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditingItem(item)}
-                          data-testid={`button-edit-item-${item.id}`}
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteItemMutation.mutate(item.id)}
-                          data-testid={`button-delete-item-${item.id}`}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             </CardContent>
@@ -274,16 +292,16 @@ export default function NavigationManagerPage() {
                 <Input
                   placeholder="Attractions"
                   value={newItem.label}
-                  onChange={(e) => setNewItem({ ...newItem, label: e.target.value })}
+                  onChange={e => setNewItem({ ...newItem, label: e.target.value })}
                   data-testid="input-new-item-label"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Label (Hebrew)</Label>
                 <Input
-                  placeholder="אטרקציות"
+                  placeholder="Attractions"
                   value={newItem.labelHe}
-                  onChange={(e) => setNewItem({ ...newItem, labelHe: e.target.value })}
+                  onChange={e => setNewItem({ ...newItem, labelHe: e.target.value })}
                   dir="rtl"
                   data-testid="input-new-item-label-he"
                 />
@@ -294,7 +312,7 @@ export default function NavigationManagerPage() {
               <Input
                 placeholder="/attractions"
                 value={newItem.href}
-                onChange={(e) => setNewItem({ ...newItem, href: e.target.value })}
+                onChange={e => setNewItem({ ...newItem, href: e.target.value })}
                 data-testid="input-new-item-href"
               />
             </div>
@@ -304,7 +322,7 @@ export default function NavigationManagerPage() {
                 <Input
                   placeholder="Camera"
                   value={newItem.icon}
-                  onChange={(e) => setNewItem({ ...newItem, icon: e.target.value })}
+                  onChange={e => setNewItem({ ...newItem, icon: e.target.value })}
                   data-testid="input-new-item-icon"
                 />
               </div>
@@ -312,14 +330,14 @@ export default function NavigationManagerPage() {
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={newItem.openInNewTab}
-                    onCheckedChange={(checked) => setNewItem({ ...newItem, openInNewTab: checked })}
+                    onCheckedChange={checked => setNewItem({ ...newItem, openInNewTab: checked })}
                   />
                   <Label>Open in new tab</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={newItem.isHighlighted}
-                    onCheckedChange={(checked) => setNewItem({ ...newItem, isHighlighted: checked })}
+                    onCheckedChange={checked => setNewItem({ ...newItem, isHighlighted: checked })}
                   />
                   <Label>Highlight</Label>
                 </div>
@@ -330,7 +348,11 @@ export default function NavigationManagerPage() {
             <Button variant="outline" onClick={() => setShowAddDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handleAddItem} disabled={addItemMutation.isPending} data-testid="button-save-new-item">
+            <Button
+              onClick={handleAddItem}
+              disabled={addItemMutation.isPending}
+              data-testid="button-save-new-item"
+            >
               <Save className="h-4 w-4 mr-2" />
               Add Item
             </Button>
@@ -350,7 +372,7 @@ export default function NavigationManagerPage() {
                   <Label>Label (English)</Label>
                   <Input
                     value={editingItem.label}
-                    onChange={(e) => setEditingItem({ ...editingItem, label: e.target.value })}
+                    onChange={e => setEditingItem({ ...editingItem, label: e.target.value })}
                     data-testid="input-edit-item-label"
                   />
                 </div>
@@ -358,7 +380,7 @@ export default function NavigationManagerPage() {
                   <Label>Label (Hebrew)</Label>
                   <Input
                     value={editingItem.labelHe || ""}
-                    onChange={(e) => setEditingItem({ ...editingItem, labelHe: e.target.value })}
+                    onChange={e => setEditingItem({ ...editingItem, labelHe: e.target.value })}
                     dir="rtl"
                     data-testid="input-edit-item-label-he"
                   />
@@ -368,7 +390,7 @@ export default function NavigationManagerPage() {
                 <Label>URL</Label>
                 <Input
                   value={editingItem.href}
-                  onChange={(e) => setEditingItem({ ...editingItem, href: e.target.value })}
+                  onChange={e => setEditingItem({ ...editingItem, href: e.target.value })}
                   data-testid="input-edit-item-href"
                 />
               </div>
@@ -377,21 +399,25 @@ export default function NavigationManagerPage() {
                   <Label>Icon</Label>
                   <Input
                     value={editingItem.icon || ""}
-                    onChange={(e) => setEditingItem({ ...editingItem, icon: e.target.value })}
+                    onChange={e => setEditingItem({ ...editingItem, icon: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={editingItem.openInNewTab}
-                      onCheckedChange={(checked) => setEditingItem({ ...editingItem, openInNewTab: checked })}
+                      onCheckedChange={checked =>
+                        setEditingItem({ ...editingItem, openInNewTab: checked })
+                      }
                     />
                     <Label>Open in new tab</Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={editingItem.isHighlighted}
-                      onCheckedChange={(checked) => setEditingItem({ ...editingItem, isHighlighted: checked })}
+                      onCheckedChange={checked =>
+                        setEditingItem({ ...editingItem, isHighlighted: checked })
+                      }
                     />
                     <Label>Highlight</Label>
                   </div>
@@ -404,7 +430,9 @@ export default function NavigationManagerPage() {
               Cancel
             </Button>
             <Button
-              onClick={() => editingItem && updateItemMutation.mutate({ id: editingItem.id, data: editingItem })}
+              onClick={() =>
+                editingItem && updateItemMutation.mutate({ id: editingItem.id, data: editingItem })
+              }
               disabled={updateItemMutation.isPending}
               data-testid="button-save-edit-item"
             >

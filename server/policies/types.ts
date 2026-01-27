@@ -77,5 +77,3 @@ export const POLICY_TYPES: PolicyType[] = [
   "revenue_protection",
   "rate_limit",
 ];
-
-console.log("[Policies] Types loaded");

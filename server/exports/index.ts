@@ -22,12 +22,8 @@ export function registerExportCenterRoutes(app: Express): void {
   const isGovernanceEnabled = process.env.ENABLE_ENTERPRISE_GOVERNANCE === "true";
 
   if (!isEnabled && !isGovernanceEnabled) {
-    console.log("[ExportCenter] Module disabled (ENABLE_EXPORT_CENTER_V2 not set)");
     return;
   }
 
   app.use("/api/exports", exportCenterRoutes);
-  console.log("[ExportCenter] Routes registered at /api/exports");
 }
-
-console.log("[ExportCenter] Module loaded");

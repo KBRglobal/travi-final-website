@@ -24,7 +24,7 @@ export function registerContentTimelineRoutes(app: Express): void {
         const { limit, offset, types, from, to } = req.query;
 
         const eventTypes = types
-          ? (types as string).split(",") as TimelineEventType[]
+          ? ((types as string).split(",") as TimelineEventType[])
           : undefined;
 
         const timeline = await getContentTimeline(req.params.id, {
@@ -37,40 +37,27 @@ export function registerContentTimelineRoutes(app: Express): void {
 
         res.json(timeline);
       } catch (error) {
-        console.error("[ContentTimeline] Error:", error);
         res.status(500).json({ error: "Failed to fetch timeline" });
       }
     }
   );
 
   // Get recent events across all content
-  app.get(
-    "/api/admin/timeline/recent",
-    requirePermission("canViewAnalytics"),
-    async (req, res) => {
-      if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_TIMELINE" });
-      }
-
-      try {
-        const { limit, types } = req.query;
-
-        const eventTypes = types
-          ? (types as string).split(",") as TimelineEventType[]
-          : undefined;
-
-        const events = await getRecentEvents(
-          parseInt(limit as string) || 50,
-          eventTypes
-        );
-
-        res.json({ events });
-      } catch (error) {
-        console.error("[ContentTimeline] Error:", error);
-        res.status(500).json({ error: "Failed to fetch recent events" });
-      }
+  app.get("/api/admin/timeline/recent", requirePermission("canViewAnalytics"), async (req, res) => {
+    if (!isEnabled()) {
+      return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_CONTENT_TIMELINE" });
     }
-  );
 
-  console.log("[ContentTimeline] Routes registered");
+    try {
+      const { limit, types } = req.query;
+
+      const eventTypes = types ? ((types as string).split(",") as TimelineEventType[]) : undefined;
+
+      const events = await getRecentEvents(parseInt(limit as string) || 50, eventTypes);
+
+      res.json({ events });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch recent events" });
+    }
+  });
 }

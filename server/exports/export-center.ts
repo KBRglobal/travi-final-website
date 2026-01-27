@@ -15,7 +15,13 @@ import { eq, and, inArray, sql, desc, count } from "drizzle-orm";
 // =====================================================
 
 export type ExportFormat = "csv" | "json" | "xlsx" | "xml";
-export type ExportStatus = "pending" | "approved" | "processing" | "completed" | "failed" | "expired";
+export type ExportStatus =
+  | "pending"
+  | "approved"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "expired";
 
 export interface ExportRequest {
   id: string;
@@ -68,8 +74,12 @@ function getExportConfig(): ExportConfig {
     enabled: process.env.ENABLE_EXPORT_CENTER_V2 === "true",
     requireApprovalThreshold: parseInt(process.env.EXPORT_APPROVAL_THRESHOLD || "1000"),
     maxRecordsPerExport: parseInt(process.env.EXPORT_MAX_RECORDS || "50000"),
-    sensitiveResources: (process.env.EXPORT_SENSITIVE_RESOURCES || "users,audit_logs,payments").split(","),
-    allowedFormats: (process.env.EXPORT_ALLOWED_FORMATS || "csv,json,xlsx").split(",") as ExportFormat[],
+    sensitiveResources: (
+      process.env.EXPORT_SENSITIVE_RESOURCES || "users,audit_logs,payments"
+    ).split(","),
+    allowedFormats: (process.env.EXPORT_ALLOWED_FORMATS || "csv,json,xlsx").split(
+      ","
+    ) as ExportFormat[],
     expirationHours: parseInt(process.env.EXPORT_EXPIRATION_HOURS || "24"),
     storagePath: process.env.EXPORT_STORAGE_PATH || "/tmp/exports",
     rateLimitPerHour: parseInt(process.env.EXPORT_RATE_LIMIT_PER_HOUR || "10"),
@@ -109,7 +119,10 @@ async function getExportById(id: string): Promise<ExportRequest | null> {
   return exportStore.get(id) || null;
 }
 
-async function updateExport(id: string, updates: Partial<ExportRequest>): Promise<ExportRequest | null> {
+async function updateExport(
+  id: string,
+  updates: Partial<ExportRequest>
+): Promise<ExportRequest | null> {
   const existing = exportStore.get(id);
   if (!existing) return null;
 
@@ -120,7 +133,7 @@ async function updateExport(id: string, updates: Partial<ExportRequest>): Promis
 
 async function getUserExports(userId: string): Promise<ExportRequest[]> {
   const exports: ExportRequest[] = [];
-  exportStore.forEach((exp) => {
+  exportStore.forEach(exp => {
     if (exp.userId === userId) {
       exports.push(exp);
     }
@@ -134,7 +147,10 @@ async function getUserExports(userId: string): Promise<ExportRequest[]> {
 
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
-function checkRateLimit(userId: string, config: ExportConfig): { allowed: boolean; remaining: number } {
+function checkRateLimit(
+  userId: string,
+  config: ExportConfig
+): { allowed: boolean; remaining: number } {
   const now = Date.now();
   const hourMs = 60 * 60 * 1000;
 
@@ -211,7 +227,10 @@ async function createApprovalRequest(
 // DATA EXPORT LOGIC
 // =====================================================
 
-async function countRecords(resourceType: string, filters?: Record<string, unknown>): Promise<number> {
+async function countRecords(
+  resourceType: string,
+  filters?: Record<string, unknown>
+): Promise<number> {
   // Simplified count - in production, would use actual queries
   switch (resourceType) {
     case "content":
@@ -238,10 +257,10 @@ async function fetchExportData(
         .select()
         .from(content)
         .limit(limit || 1000);
-      return contentData.map((row) => {
+      return contentData.map(row => {
         if (fields && fields.length > 0) {
           const filtered: Record<string, unknown> = {};
-          fields.forEach((field) => {
+          fields.forEach(field => {
             if (field in row) {
               filtered[field] = (row as Record<string, unknown>)[field];
             }
@@ -278,20 +297,22 @@ function convertToFormat(data: Record<string, unknown>[], format: ExportFormat):
     case "csv":
       if (data.length === 0) return "";
       const headers = Object.keys(data[0]);
-      const rows = data.map((row) =>
-        headers.map((h) => {
-          const value = row[h];
-          if (value === null || value === undefined) return "";
-          if (typeof value === "string" && (value.includes(",") || value.includes('"'))) {
-            return `"${value.replace(/"/g, '""')}"`;
-          }
-          return String(value);
-        }).join(",")
+      const rows = data.map(row =>
+        headers
+          .map(h => {
+            const value = row[h];
+            if (value === null || value === undefined) return "";
+            if (typeof value === "string" && (value.includes(",") || value.includes('"'))) {
+              return `"${value.replace(/"/g, '""')}"`;
+            }
+            return String(value);
+          })
+          .join(",")
       );
       return [headers.join(","), ...rows].join("\n");
 
     case "xml":
-      const xmlRows = data.map((row) => {
+      const xmlRows = data.map(row => {
         const fields = Object.entries(row)
           .map(([k, v]) => `    <${k}>${escapeXml(String(v ?? ""))}</${k}>`)
           .join("\n");
@@ -338,9 +359,7 @@ async function auditExport(
         recordCount,
       },
     } as any);
-  } catch (error) {
-    console.error("[ExportCenter] Failed to audit:", error);
-  }
+  } catch (error) {}
 }
 
 // =====================================================
@@ -407,7 +426,14 @@ export async function initiateExport(
   incrementRateLimit(userId);
 
   // Audit the request
-  await auditExport(userId, "requested", exportRecord.id, resourceType, recordCount, options.ipAddress);
+  await auditExport(
+    userId,
+    "requested",
+    exportRecord.id,
+    resourceType,
+    recordCount,
+    options.ipAddress
+  );
 
   if (needsApproval) {
     // Create approval request
@@ -444,7 +470,14 @@ export async function initiateExport(
       downloadUrl: `/api/exports/${exportRecord.id}/download`,
     });
 
-    await auditExport(userId, "completed", exportRecord.id, resourceType, recordCount, options.ipAddress);
+    await auditExport(
+      userId,
+      "completed",
+      exportRecord.id,
+      resourceType,
+      recordCount,
+      options.ipAddress
+    );
 
     return {
       success: true,
@@ -458,7 +491,14 @@ export async function initiateExport(
       error: error instanceof Error ? error.message : "Export failed",
     });
 
-    await auditExport(userId, "failed", exportRecord.id, resourceType, recordCount, options.ipAddress);
+    await auditExport(
+      userId,
+      "failed",
+      exportRecord.id,
+      resourceType,
+      recordCount,
+      options.ipAddress
+    );
 
     return {
       success: false,
@@ -646,11 +686,19 @@ exportCenterRoutes.get("/:id/download", async (req: Request, res: Response) => {
   };
 
   res.setHeader("Content-Type", contentTypes[exportRecord.format] || "application/octet-stream");
-  res.setHeader("Content-Disposition", `attachment; filename="export-${exportRecord.id}.${exportRecord.format}"`);
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="export-${exportRecord.id}.${exportRecord.format}"`
+  );
   res.send(output);
 
   // Audit download
-  await auditExport(userId, "downloaded", exportRecord.id, exportRecord.resourceType, exportRecord.recordCount, req.ip);
+  await auditExport(
+    userId,
+    "downloaded",
+    exportRecord.id,
+    exportRecord.resourceType,
+    exportRecord.recordCount,
+    req.ip
+  );
 });
-
-console.log("[ExportCenter] Module loaded");

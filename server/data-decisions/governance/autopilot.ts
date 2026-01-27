@@ -3,8 +3,8 @@
  * Manages the global autopilot mode for the data decision system
  */
 
-import type { AutopilotMode, OverrideLog } from '../types';
-import { decisionEngine } from '../engine';
+import type { AutopilotMode, OverrideLog } from "../types";
+import { decisionEngine } from "../engine";
 
 // =============================================================================
 // CONFIGURATION
@@ -31,19 +31,19 @@ interface AutopilotConfig {
 }
 
 const DEFAULT_AUTOPILOT_CONFIG: AutopilotConfig = {
-  defaultMode: 'supervised',
+  defaultMode: "supervised",
   modeTransitionRules: {
     off: {
-      supervised: { requiresApproval: 'ops_lead' },
-      full: { requiresApproval: 'cto', stabilityDays: 7 },
+      supervised: { requiresApproval: "ops_lead" },
+      full: { requiresApproval: "cto", stabilityDays: 7 },
     },
     supervised: {
-      off: { requiresApproval: 'any' },
-      full: { requiresApproval: 'cto', stabilityDays: 7 },
+      off: { requiresApproval: "any" },
+      full: { requiresApproval: "cto", stabilityDays: 7 },
     },
     full: {
-      supervised: { requiresApproval: 'automatic' }, // Auto on safety trigger
-      off: { requiresApproval: 'automatic' }, // Auto on circuit breaker
+      supervised: { requiresApproval: "automatic" }, // Auto on safety trigger
+      off: { requiresApproval: "automatic" }, // Auto on circuit breaker
     },
   },
   modeLimits: {
@@ -105,7 +105,7 @@ export class AutopilotController {
   constructor(config: Partial<AutopilotConfig> = {}) {
     this.config = { ...DEFAULT_AUTOPILOT_CONFIG, ...config };
     this.currentMode = this.config.defaultMode;
-    this.recordModeChange('system', 'Initial mode');
+    this.recordModeChange("system", "Initial mode");
   }
 
   // =========================================================================
@@ -116,7 +116,7 @@ export class AutopilotController {
     return this.currentMode;
   }
 
-  getModeLimits(): typeof DEFAULT_AUTOPILOT_CONFIG.modeLimits[string] {
+  getModeLimits(): (typeof DEFAULT_AUTOPILOT_CONFIG.modeLimits)[string] {
     return this.config.modeLimits[this.currentMode];
   }
 
@@ -146,11 +146,8 @@ export class AutopilotController {
     }
 
     // Check if transition requires approval
-    if (transitionRules.requiresApproval !== 'automatic') {
+    if (transitionRules.requiresApproval !== "automatic") {
       // In a real system, this would check user roles
-      console.log(
-        `[Autopilot] Mode transition ${fromMode} → ${toMode} requires ${transitionRules.requiresApproval} approval`
-      );
     }
 
     // Check stability requirement
@@ -191,8 +188,6 @@ export class AutopilotController {
     for (const callback of this.modeChangeCallbacks) {
       callback(mode);
     }
-
-    console.log(`[Autopilot] Mode changed: ${previousMode} → ${mode} by ${changedBy}`);
   }
 
   private recordModeChange(changedBy: string, reason: string): void {
@@ -222,11 +217,11 @@ export class AutopilotController {
   triggerSafetyDowngrade(reason: string): ModeTransitionResult {
     this.safetyTriggers.push(reason);
 
-    if (this.currentMode === 'full') {
+    if (this.currentMode === "full") {
       return this.requestModeTransition({
-        fromMode: 'full',
-        toMode: 'supervised',
-        requestedBy: 'system',
+        fromMode: "full",
+        toMode: "supervised",
+        requestedBy: "system",
         reason: `Safety trigger: ${reason}`,
       });
     }
@@ -235,19 +230,19 @@ export class AutopilotController {
       success: false,
       previousMode: this.currentMode,
       newMode: this.currentMode,
-      message: 'Already in supervised or off mode',
+      message: "Already in supervised or off mode",
     };
   }
 
   triggerCircuitBreakerDowngrade(reason: string): ModeTransitionResult {
-    if (this.currentMode !== 'off') {
+    if (this.currentMode !== "off") {
       const previousMode = this.currentMode;
-      this.setMode('off', 'circuit_breaker', reason);
+      this.setMode("off", "circuit_breaker", reason);
 
       return {
         success: true,
         previousMode,
-        newMode: 'off',
+        newMode: "off",
         message: `Circuit breaker activated: ${reason}`,
       };
     }
@@ -256,7 +251,7 @@ export class AutopilotController {
       success: false,
       previousMode: this.currentMode,
       newMode: this.currentMode,
-      message: 'Already in off mode',
+      message: "Already in off mode",
     };
   }
 
@@ -265,7 +260,7 @@ export class AutopilotController {
   // =========================================================================
 
   createOverride(
-    scope: 'decision' | 'category' | 'all',
+    scope: "decision" | "category" | "all",
     targetId: string | undefined,
     reason: string,
     createdBy: string,
@@ -273,7 +268,8 @@ export class AutopilotController {
   ): OverrideLog {
     const override: OverrideLog = {
       id: `override-${Date.now()}`,
-      overrideType: durationHours <= 24 ? 'temporary' : durationHours <= 168 ? 'extended' : 'permanent',
+      overrideType:
+        durationHours <= 24 ? "temporary" : durationHours <= 168 ? "extended" : "permanent",
       scope,
       targetId,
       reason,
@@ -284,8 +280,6 @@ export class AutopilotController {
     };
 
     this.overrides.push(override);
-
-    console.log(`[Autopilot] Override created: ${scope} for ${durationHours}h by ${createdBy}`);
 
     return override;
   }
@@ -340,7 +334,7 @@ export class AutopilotController {
 
   getStatus(): {
     currentMode: AutopilotMode;
-    limits: typeof DEFAULT_AUTOPILOT_CONFIG.modeLimits[string];
+    limits: (typeof DEFAULT_AUTOPILOT_CONFIG.modeLimits)[string];
     daysSinceLastChange: number;
     activeOverrides: number;
     safetyTriggersCount: number;

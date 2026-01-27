@@ -19,8 +19,8 @@ import { AdminRole, Action, Resource } from "../../governance/types";
 // ============================================================================
 
 const SECURITY_GATE_ENABLED = process.env.SECURITY_GATE_ENABLED !== "false";
-const SECURITY_GATE_ENFORCE = process.env.SECURITY_GATE_ENFORCE === "true" ||
-  process.env.NODE_ENV === "production";
+const SECURITY_GATE_ENFORCE =
+  process.env.SECURITY_GATE_ENFORCE === "true" || process.env.NODE_ENV === "production";
 const BULK_APPROVAL_THRESHOLD = parseInt(process.env.SECURITY_GATE_BULK_THRESHOLD || "10");
 
 // ============================================================================
@@ -104,7 +104,6 @@ function handleGateResult(
 
   if (result.blocked) {
     if (SECURITY_GATE_ENFORCE) {
-      console.log(`[SecurityGuard] BLOCKED: ${context} - ${result.reason}`);
       res.status(403).json({
         error: result.reason,
         code: result.code,
@@ -116,7 +115,6 @@ function handleGateResult(
       return;
     } else {
       // Advisory mode - log but allow
-      console.warn(`[SecurityGuard] ADVISORY: Would block ${context} - ${result.reason}`);
     }
   }
 
@@ -150,7 +148,6 @@ export function contentGuard(action: "publish" | "unpublish" | "delete" | "edit"
 
       handleGateResult(req, res, next, result, `content.${action}`);
     } catch (error) {
-      console.error("[SecurityGuard] Content guard error:", error);
       // Fail-closed
       if (SECURITY_GATE_ENFORCE) {
         return res.status(500).json({
@@ -200,7 +197,6 @@ export function bulkGuard(operation: "update" | "delete" | "export" | "import") 
 
       handleGateResult(req, res, next, result, `bulk.${operation}[${recordCount}]`);
     } catch (error) {
-      console.error("[SecurityGuard] Bulk guard error:", error);
       if (SECURITY_GATE_ENFORCE) {
         return res.status(500).json({
           error: "Security check failed",
@@ -302,7 +298,6 @@ export async function governanceGuard(
 
     handleGateResult(req, res, next, result, `governance.${action}:${resource}`);
   } catch (error) {
-    console.error("[SecurityGuard] Governance guard error:", error);
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -359,7 +354,6 @@ export async function exportGuard(
 
     handleGateResult(req, res, next, result, `export.${resource}`);
   } catch (error) {
-    console.error("[SecurityGuard] Export guard error:", error);
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -417,7 +411,6 @@ export async function autonomyGuard(
 
     handleGateResult(req, res, next, result, `autonomy.change:${system}`);
   } catch (error) {
-    console.error("[SecurityGuard] Autonomy guard error:", error);
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -464,7 +457,6 @@ export async function publishGuard(
 
     handleGateResult(req, res, next, result, "publish.broadcast");
   } catch (error) {
-    console.error("[SecurityGuard] Publish guard error:", error);
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -502,7 +494,6 @@ export function createGuard(action: Action, resource: Resource) {
 
       handleGateResult(req, res, next, result, `${action}:${resource}`);
     } catch (error) {
-      console.error("[SecurityGuard] Guard error:", error);
       if (SECURITY_GATE_ENFORCE) {
         return res.status(500).json({
           error: "Security check failed",
@@ -517,8 +508,3 @@ export function createGuard(action: Action, resource: Resource) {
 // ============================================================================
 // STATUS
 // ============================================================================
-
-console.log("[SecurityGuards] Module loaded");
-console.log(`[SecurityGuards] ENABLED: ${SECURITY_GATE_ENABLED}`);
-console.log(`[SecurityGuards] ENFORCE: ${SECURITY_GATE_ENFORCE}`);
-console.log(`[SecurityGuards] BULK_THRESHOLD: ${BULK_APPROVAL_THRESHOLD}`);
