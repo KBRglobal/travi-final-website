@@ -13,6 +13,7 @@ import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useTranslation } from "react-i18next";
 import { LiveEditToggle } from "@/components/live-edit";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1080,7 +1081,8 @@ function LeadWizard({
 }
 
 export default function PublicOffPlan() {
-  const { t, isRTL, localePath } = useLocale();
+  const { isRTL, localePath } = useLocale();
+  const { t } = useTranslation();
   const [wizardOpen, setWizardOpen] = useState(false);
   const [showFullIntro, setShowFullIntro] = useState(false);
 

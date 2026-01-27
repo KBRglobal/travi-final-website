@@ -3,7 +3,7 @@
  * Feature flag: ENABLE_RBAC
  */
 
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, RequestHandler } from "express";
 import * as repo from "./repository";
 import { GovernanceRoleName } from "./types";
 import { governanceGuard } from "../security/middleware/security-guards";
@@ -11,7 +11,7 @@ import { governanceGuard } from "../security/middleware/security-guards";
 const router = Router();
 
 // Apply Security Gate to all mutation routes
-router.use(governanceGuard);
+router.use(governanceGuard as unknown as RequestHandler);
 
 function isEnabled(): boolean {
   return process.env.ENABLE_RBAC === "true";
@@ -27,7 +27,7 @@ router.get("/roles", async (req: Request, res: Response) => {
     const roles = await repo.getAllRoles();
     res.json({ roles });
   } catch (error) {
-    console.error("[AccessControl] Error fetching roles:", error);
+    
     res.status(500).json({ error: "Failed to fetch roles" });
   }
 });
@@ -47,7 +47,7 @@ router.get("/roles/:name", async (req: Request, res: Response) => {
     const permissions = await repo.getRolePermissionsFromDb(role.id);
     res.json({ role, permissions });
   } catch (error) {
-    console.error("[AccessControl] Error fetching role:", error);
+    
     res.status(500).json({ error: "Failed to fetch role" });
   }
 });
@@ -62,7 +62,7 @@ router.post("/roles/:roleId/permissions", async (req: Request, res: Response) =>
     const permission = await repo.addPermission(req.params.roleId, req.body);
     res.status(201).json({ permission });
   } catch (error) {
-    console.error("[AccessControl] Error adding permission:", error);
+    
     res.status(500).json({ error: "Failed to add permission" });
   }
 });
@@ -77,7 +77,7 @@ router.delete("/permissions/:id", async (req: Request, res: Response) => {
     await repo.removePermission(req.params.id);
     res.json({ success: true });
   } catch (error) {
-    console.error("[AccessControl] Error removing permission:", error);
+    
     res.status(500).json({ error: "Failed to remove permission" });
   }
 });
@@ -103,7 +103,7 @@ router.post("/users/:userId/roles", async (req: Request, res: Response) => {
 
     res.status(201).json({ assignment });
   } catch (error) {
-    console.error("[AccessControl] Error assigning role:", error);
+    
     res.status(500).json({ error: "Failed to assign role" });
   }
 });
@@ -124,7 +124,7 @@ router.delete("/users/:userId/roles/:roleId", async (req: Request, res: Response
     );
     res.json({ success: true });
   } catch (error) {
-    console.error("[AccessControl] Error revoking role:", error);
+    
     res.status(500).json({ error: "Failed to revoke role" });
   }
 });
@@ -139,7 +139,7 @@ router.get("/users/:userId/roles", async (req: Request, res: Response) => {
     const assignments = await repo.getUserRoleAssignments(req.params.userId);
     res.json({ assignments });
   } catch (error) {
-    console.error("[AccessControl] Error fetching user roles:", error);
+    
     res.status(500).json({ error: "Failed to fetch user roles" });
   }
 });
@@ -154,11 +154,11 @@ router.post("/init", async (req: Request, res: Response) => {
     await repo.initializeSystemRoles();
     res.json({ success: true, message: "System roles initialized" });
   } catch (error) {
-    console.error("[AccessControl] Error initializing roles:", error);
+    
     res.status(500).json({ error: "Failed to initialize roles" });
   }
 });
 
 export { router as accessControlRoutes };
 
-console.log("[AccessControl] Admin routes loaded");
+

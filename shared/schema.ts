@@ -536,7 +536,13 @@ export const aiGeneratedImages = pgTable("ai_generated_images", {
   metadata: jsonb("metadata").$type<Record<string, any>>().default({}),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => [
+  index("IDX_ai_images_topic").on(table.topic),
+  index("IDX_ai_images_category").on(table.category),
+  index("IDX_ai_images_approved").on(table.isApproved),
+  index("IDX_ai_images_usage").on(table.usageCount),
+  index("IDX_ai_images_source").on(table.source),
+]);
 
 export const insertAiGeneratedImageSchema = createInsertSchema(aiGeneratedImages);
 
@@ -1037,7 +1043,7 @@ export const pilotLocalizedContent = pgTable("pilot_localized_content", {
 ]);
 
 // Zod schemas for pilot
-export const pilotLocales = ["en", "ar"] as const;
+export const pilotLocales = ["en", "ar", "fr"] as const;
 export const pilotEntityTypes = ["attraction"] as const;
 
 export const insertPilotLocalizedContentSchema = z.object({
@@ -2157,7 +2163,7 @@ export type Locale =
   | "zh" | "ru" | "ur" | "fr" | "id"                // Tier 2 - High ROI
   | "de" | "fa" | "bn" | "fil" | "th" | "vi" | "ms" // Tier 3 - Growing (Southeast Asia focus)
   | "es" | "tr" | "it" | "ja" | "ko" | "he" | "pt"  // Tier 4 - Niche
-  | "nl" | "pl" | "sv" | "el" | "cs" | "ro" | "uk" | "hu"; // Tier 5 - European expansion
+  | "nl" | "pl" | "sv" | "el" | "cs" | "ro" | "uk" | "hu" | "da" | "no"; // Tier 5 - European expansion
 
 export type TranslationStatus = "pending" | "in_progress" | "completed" | "needs_review";
 

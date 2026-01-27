@@ -2,7 +2,7 @@
  * User Permissions - Admin Routes
  */
 
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, RequestHandler } from 'express';
 import { isPermissionsEngineEnabled } from './types';
 import { getAllBuiltInRoles } from './roles';
 import {
@@ -22,7 +22,7 @@ import { governanceGuard } from '../security/middleware/security-guards';
 const router = Router();
 
 // Apply Security Gate to all mutation routes
-router.use(governanceGuard);
+router.use(governanceGuard as unknown as RequestHandler);
 
 function requireEnabled(_req: Request, res: Response, next: () => void): void {
   if (!isPermissionsEngineEnabled()) {

@@ -137,6 +137,7 @@ import { loginRateLimiter } from "./security/rate-limiter";
 // Security audit logger for critical auth events (failed logins, password changes, role changes)
 // PII masking is enabled by default - does NOT affect request flow
 import { logSecurityEventFromRequest, SecurityEventType } from "./security/audit-logger";
+import { log } from "./lib/logger";
 // Performance monitoring (N+1 detection, latency tracking)
 import { getPerformanceMetrics } from "./monitoring";
 // Admin security hardening: Emergency kill switch, IP allowlist, mandatory 2FA
@@ -364,7 +365,7 @@ function safeParseJson(content: string, fallback: Record<string, unknown> = {}):
     const cleaned = cleanJsonFromMarkdown(content);
     return JSON.parse(cleaned);
   } catch (e) {
-    console.warn("[JSON Parse] Failed to parse JSON, returning fallback:", e);
+    
     return fallback;
   }
 }
@@ -444,7 +445,7 @@ async function convertToWebP(buffer: Buffer, originalFilename: string, mimeType:
     const baseName = originalFilename.replace(/\.[^.]+$/, '');
     const webpFilename = `${baseName}.webp`;
 
-    console.log(`[WebP] Converted ${originalFilename} (${(buffer.length / 1024).toFixed(1)}KB) -> ${webpFilename} (${(webpBuffer.length / 1024).toFixed(1)}KB)`);
+    
 
     return {
       buffer: webpBuffer,
@@ -454,7 +455,7 @@ async function convertToWebP(buffer: Buffer, originalFilename: string, mimeType:
       height: metadata.height,
     };
   } catch (error) {
-    console.error('[WebP] Conversion failed, using original:', error);
+    
     return { buffer, filename: originalFilename, mimeType };
   }
 }
@@ -522,7 +523,7 @@ async function parseRssFeed(url: string): Promise<{ title: string; link: string;
     
     return items;
   } catch (error) {
-    console.error("Error parsing RSS feed:", error);
+    
     throw error;
   }
 }
@@ -532,7 +533,7 @@ async function persistImageToStorage(imageUrl: string, filename: string): Promis
   try {
     const response = await fetch(imageUrl);
     if (!response.ok) {
-      console.error(`Failed to fetch image: ${response.status}`);
+      
       return null;
     }
 
@@ -545,7 +546,7 @@ async function persistImageToStorage(imageUrl: string, filename: string): Promis
 
     return result.url;
   } catch (error) {
-    console.error("Error persisting image to storage:", error);
+    
     return null;
   }
 }
@@ -554,7 +555,7 @@ async function persistImageToStorage(imageUrl: string, filename: string): Promis
 function getResendClient(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("RESEND_API_KEY not configured");
+    
     return null;
   }
   return new Resend(apiKey);
@@ -563,7 +564,7 @@ function getResendClient(): Resend | null {
 async function sendConfirmationEmail(email: string, token: string, firstName?: string): Promise<boolean> {
   const resend = getResendClient();
   if (!resend) {
-    console.log("[Newsletter] Resend not configured, skipping confirmation email for:", email);
+    
     return false;
   }
   
@@ -614,10 +615,10 @@ async function sendConfirmationEmail(email: string, token: string, firstName?: s
         </html>
       `,
     });
-    console.log("[Newsletter] Confirmation email sent to:", email);
+    
     return true;
   } catch (error) {
-    console.error("[Newsletter] Failed to send confirmation email:", error);
+    
     return false;
   }
 }
@@ -625,7 +626,7 @@ async function sendConfirmationEmail(email: string, token: string, firstName?: s
 async function sendWelcomeEmail(email: string, firstName?: string, unsubscribeToken?: string): Promise<boolean> {
   const resend = getResendClient();
   if (!resend) {
-    console.log("[Newsletter] Resend not configured, skipping welcome email for:", email);
+    
     return false;
   }
   
@@ -686,10 +687,10 @@ async function sendWelcomeEmail(email: string, firstName?: string, unsubscribeTo
         </html>
       `,
     });
-    console.log("[Newsletter] Welcome email sent to:", email);
+    
     return true;
   } catch (error) {
-    console.error("[Newsletter] Failed to send welcome email:", error);
+    
     return false;
   }
 }
@@ -1111,7 +1112,7 @@ async function findOrCreateArticleImage(
   keywords: string[],
   category: string
 ): Promise<ArticleImageResult | null> {
-  console.log(`[Image Finder] Searching for image: topic="${topic}", category="${category}", keywords=${JSON.stringify(keywords)}`);
+  
   
   try {
     const { aiGeneratedImages } = await import("@shared/schema");
@@ -1139,7 +1140,7 @@ async function findOrCreateArticleImage(
       
       if (approvedImages.length > 0) {
         foundImage = approvedImages[0];
-        console.log(`[Image Finder] Found approved library image: ${foundImage.id}`);
+        
       } else {
         const anyImages = await db.select()
           .from(aiGeneratedImages)
@@ -1149,7 +1150,7 @@ async function findOrCreateArticleImage(
         
         if (anyImages.length > 0) {
           foundImage = anyImages[0];
-          console.log(`[Image Finder] Found library image (not approved): ${foundImage.id}`);
+          
         }
       }
     }
@@ -1163,7 +1164,7 @@ async function findOrCreateArticleImage(
       
       if (categoryImages.length > 0) {
         foundImage = categoryImages[0];
-        console.log(`[Image Finder] Found category fallback image: ${foundImage.id}`);
+        
       }
     }
     
@@ -1180,11 +1181,11 @@ async function findOrCreateArticleImage(
       };
     }
     
-    console.log(`[Image Finder] No library images found, trying Freepik...`);
+    
     
     const freepikApiKey = process.env.FREEPIK_API_KEY;
     if (!freepikApiKey) {
-      console.log(`[Image Finder] Freepik API key not configured, skipping`);
+      
       return null;
     }
     
@@ -1204,7 +1205,7 @@ async function findOrCreateArticleImage(
     });
     
     if (!freepikResponse.ok) {
-      console.error(`[Image Finder] Freepik search failed: ${freepikResponse.status}`);
+      
       return null;
     }
     
@@ -1212,7 +1213,7 @@ async function findOrCreateArticleImage(
     const results = freepikData.data || [];
     
     if (results.length === 0) {
-      console.log(`[Image Finder] No Freepik results found for: ${searchQuery}, trying AI generation...`);
+      
       
       // Fallback to AI image generation
       try {
@@ -1227,7 +1228,7 @@ async function findOrCreateArticleImage(
         
         if (aiImages && aiImages.length > 0) {
           const aiImage = aiImages[0];
-          console.log(`[Image Finder] AI generated image: ${aiImage.url}`);
+          
           
           // Store the AI generated image
           const [savedImage] = await db.insert(aiGeneratedImages).values({
@@ -1253,7 +1254,7 @@ async function findOrCreateArticleImage(
           };
         }
       } catch (aiError) {
-        console.error(`[Image Finder] AI image generation failed:`, aiError);
+        
       }
       
       return null;
@@ -1263,15 +1264,15 @@ async function findOrCreateArticleImage(
     const imageUrl = bestResult.image?.source?.url || bestResult.preview?.url || bestResult.thumbnail?.url;
     
     if (!imageUrl) {
-      console.log(`[Image Finder] No usable image URL from Freepik result`);
+      
       return null;
     }
     
-    console.log(`[Image Finder] Importing Freepik image: ${bestResult.id}`);
+    
     
     const imageResponse = await fetch(imageUrl);
     if (!imageResponse.ok) {
-      console.error(`[Image Finder] Failed to fetch Freepik image: ${imageResponse.status}`);
+      
       return null;
     }
     
@@ -1301,7 +1302,7 @@ async function findOrCreateArticleImage(
       usageCount: 1,
     } as any).returning();
     
-    console.log(`[Image Finder] Successfully imported Freepik image: ${savedImage.id}`);
+    
     
     return {
       url: persistedUrl,
@@ -1311,14 +1312,14 @@ async function findOrCreateArticleImage(
     };
     
   } catch (error) {
-    console.error(`[Image Finder] Error finding/creating article image:`, error);
+    
     return null;
   }
 }
 
 // Process image blocks in generated content - fetch images from Freepik/AI based on searchQuery
 async function processImageBlocks(blocks: ContentBlock[], category: string = "general"): Promise<ContentBlock[]> {
-  console.log(`[Image Processor] Processing ${blocks.length} blocks for images...`);
+  
   
   const processedBlocks: ContentBlock[] = [];
   
@@ -1326,7 +1327,7 @@ async function processImageBlocks(blocks: ContentBlock[], category: string = "ge
     if (block.type === 'image' && block.data) {
       const rawSearchQuery = block.data.searchQuery || block.data.query || block.data.alt || 'dubai travel';
       const searchQuery = typeof rawSearchQuery === 'string' ? rawSearchQuery : 'dubai travel';
-      console.log(`[Image Processor] Fetching image for: "${searchQuery}"`);
+      
 
       try {
         // Use existing image finder function
@@ -1343,7 +1344,7 @@ async function processImageBlocks(blocks: ContentBlock[], category: string = "ge
               imageId: imageResult.imageId,
             }
           });
-          console.log(`[Image Processor] Image fetched: ${imageResult.url}`);
+          
         } else {
           // Fallback to Unsplash placeholder
           const unsplashQuery = encodeURIComponent(searchQuery.replace(/dubai/gi, '').trim() || 'travel');
@@ -1356,10 +1357,10 @@ async function processImageBlocks(blocks: ContentBlock[], category: string = "ge
               alt: block.data.alt || `${searchQuery} - Dubai`,
             }
           });
-          console.log(`[Image Processor] Using fallback Unsplash image`);
+          
         }
       } catch (error) {
-        console.error(`[Image Processor] Error fetching image:`, error);
+        
         // Keep block as-is with placeholder
         processedBlocks.push({
           ...block,
@@ -1375,7 +1376,7 @@ async function processImageBlocks(blocks: ContentBlock[], category: string = "ge
     }
   }
   
-  console.log(`[Image Processor] Finished processing, ${processedBlocks.length} blocks returned`);
+  
   return processedBlocks;
 }
 
@@ -1401,7 +1402,7 @@ async function translateArticleToAllLanguages(contentId: string, content: {
   blocks?: any[];
 }): Promise<{ success: number; failed: number; errors: string[] }> {
   // HARD DISABLE: Automatic translation is permanently disabled
-  console.log(`[Auto-Translation] DISABLED - Manual translation only via admin UI for content ${contentId}`);
+  
   return { success: 0, failed: 0, errors: ['Automatic translation is disabled'] };
   
   // ORIGINAL CODE PRESERVED BELOW FOR REFERENCE (NEVER EXECUTED)
@@ -1411,7 +1412,7 @@ async function translateArticleToAllLanguages(contentId: string, content: {
     // Use translation-service (Claude Haiku) instead of deepl-service
     const { translateContent, generateContentHash } = await import("./services/translation-service");
 
-    console.log(`[Auto-Translation] Starting translation for content ${contentId} to ${TARGET_LOCALES.length} languages using Claude Haiku...`);
+    
     
     const BATCH_SIZE = 3;
     for (let i = 0; i < TARGET_LOCALES.length; i += BATCH_SIZE) {
@@ -1420,7 +1421,7 @@ async function translateArticleToAllLanguages(contentId: string, content: {
       const batchResults = await Promise.allSettled(
         batch.map(async (locale) => {
           try {
-            console.log(`[Auto-Translation] Translating to ${locale}...`);
+            
             
             // Note: translation-service uses (content, sourceLocale, targetLocale) order
             const translatedContent = await translateContent(
@@ -1457,11 +1458,11 @@ async function translateArticleToAllLanguages(contentId: string, content: {
               await storage.createTranslation(translationData);
             }
             
-            console.log(`[Auto-Translation] Successfully translated to ${locale}${isRtl ? ' (RTL)' : ''}`);
+            
             return { locale, success: true };
           } catch (error) {
             const errorMsg = `Failed to translate to ${locale}: ${error instanceof Error ? error.message : 'Unknown error'}`;
-            console.error(`[Auto-Translation] ${errorMsg}`);
+            
             return { locale, success: false, error: errorMsg };
           }
         })
@@ -1490,10 +1491,10 @@ async function translateArticleToAllLanguages(contentId: string, content: {
       }
     }
     
-    console.log(`[Auto-Translation] Complete for content ${contentId}: ${result.success} successful, ${result.failed} failed`);
+    
   } catch (error) {
     const errorMsg = `Translation process error: ${error instanceof Error ? error.message : 'Unknown error'}`;
-    console.error(`[Auto-Translation] ${errorMsg}`);
+    
     result.errors.push(errorMsg);
   }
   
@@ -1522,11 +1523,11 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
     const activeFeeds = feeds.filter(f => f.isActive);
     
     if (activeFeeds.length === 0) {
-      console.log("[RSS Auto-Process] No active RSS feeds found");
+      
       return result;
     }
 
-    console.log(`[RSS Auto-Process] Processing ${activeFeeds.length} active feeds...`);
+    
 
     for (const feed of activeFeeds) {
       try {
@@ -1534,7 +1535,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
         result.feedsProcessed++;
         result.itemsFound += items.length;
 
-        console.log(`[RSS Auto-Process] Feed "${feed.name}" returned ${items.length} items`);
+        
 
         for (const item of items) {
           const fingerprint = generateFingerprint(item.title, item.link);
@@ -1583,7 +1584,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
         }
       } catch (feedError) {
         const errorMsg = `Failed to process feed "${feed.name}": ${feedError}`;
-        console.error(`[RSS Auto-Process] ${errorMsg}`);
+        
         result.errors.push(errorMsg);
       }
     }
@@ -1592,7 +1593,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
     const unifiedProviders = getAllUnifiedProviders();
 
     if (unifiedProviders.length === 0) {
-      console.log("[RSS Auto-Process] No AI provider configured, skipping article generation");
+      
       return result;
     }
     
@@ -1606,15 +1607,15 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
       return 0;
     });
     
-    console.log(`[RSS Auto-Process] Available AI providers: ${sortedProviders.map(p => p.name).join(", ")}`);
-    console.log(`[RSS Auto-Process] Found ${pendingClusters.length} pending clusters to process`);
+    
+    
 
     // Daily limit to prevent API exhaustion - process max 5 articles per run
     const MAX_ARTICLES_PER_RUN = 5;
     const clustersToProcess = pendingClusters.slice(0, MAX_ARTICLES_PER_RUN);
     
     if (pendingClusters.length > MAX_ARTICLES_PER_RUN) {
-      console.log(`[RSS Auto-Process] Limiting to ${MAX_ARTICLES_PER_RUN} clusters per run (${pendingClusters.length - MAX_ARTICLES_PER_RUN} remaining for later)`);
+      
     }
 
     for (const cluster of clustersToProcess) {
@@ -1647,7 +1648,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
 
         while (!validatedData && attempts < maxAttempts) {
           attempts++;
-          console.log(`[RSS Auto-Process] Article generation attempt ${attempts}/${maxAttempts} for cluster: ${cluster.topic}`);
+          
 
           const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
             { role: "system", content: systemPrompt },
@@ -1667,7 +1668,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           let completionSuccess = false;
           for (const provider of sortedProviders) {
             try {
-              console.log(`[RSS Auto-Process] Trying provider: ${provider.name} with model: ${provider.model}`);
+              
               
               const result = await provider.generateCompletion({
                 messages,
@@ -1680,7 +1681,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
               lastResponse = safeParseJson(result.content || "{}", {});
               completionSuccess = true;
               markProviderSuccess(provider.name); // Clear any failure states
-              console.log(`[RSS Auto-Process] Successfully got response from ${provider.name}`);
+              
               break; // Exit provider loop on success
               
             } catch (providerError: any) {
@@ -1693,21 +1694,21 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
                                      providerError?.message?.includes('Insufficient Balance') ||
                                      providerError?.message?.includes('insufficient_funds');
               
-              console.log(`[RSS Auto-Process] Provider ${provider.name} failed: ${providerError?.status || ''} ${providerError?.message || 'Unknown error'}`);
+              
               
               if (isCreditsError) {
                 markProviderFailed(provider.name, "no_credits");
-                console.log(`[RSS Auto-Process] Marked ${provider.name} as out of credits, trying next...`);
+                
               } else if (isRateLimitError) {
                 markProviderFailed(provider.name, "rate_limited");
-                console.log(`[RSS Auto-Process] Marked ${provider.name} as temporarily unavailable, trying next...`);
+                
               }
               // Continue to next provider
             }
           }
 
           if (!completionSuccess) {
-            console.log(`[RSS Auto-Process] All providers failed for attempt ${attempts}`);
+            
             break; // Exit attempts loop if no providers worked
           }
 
@@ -1715,18 +1716,18 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
 
           if (validation.isValid && validation.data) {
             validatedData = validation.data;
-            console.log(`[RSS Auto-Process] Validation passed on attempt ${attempts} - ${validation.wordCount} words`);
+            
           } else {
             lastErrors = validation.errors;
             lastWordCount = validation.wordCount;
-            console.log(`[RSS Auto-Process] Validation failed (attempt ${attempts}): ${validation.errors.join(", ")}`);
+            
           }
         }
 
         // If validation never passed, skip this cluster
         if (!validatedData) {
           const errorMsg = `Failed to generate valid article after ${maxAttempts} attempts for "${cluster.topic}". Last errors: ${lastErrors.join(", ")}`;
-          console.error(`[RSS Auto-Process] ${errorMsg}`);
+          
           result.errors.push(errorMsg);
           continue;
         }
@@ -1747,7 +1748,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
         const articleKeywords = mergedData.secondaryKeywords || [];
         const articleTopic = mergedData.title || cluster.topic;
         
-        console.log(`[RSS Auto-Process] Finding image for article: "${articleTopic}" with terms: ${imageSearchTerms.length > 0 ? imageSearchTerms.join(", ") : "(none)"}`);
+        
         
         let heroImageUrl: string | null = null;
         let heroImageAlt: string | null = null;
@@ -1765,7 +1766,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           if (searchTerms.length === 0) continue;
           
           const searchQuery = searchTerms.join(" ");
-          console.log(`[RSS Auto-Process] Image search attempt: "${searchQuery}"`);
+          
           
           const articleImage = await findOrCreateArticleImage(
             searchQuery,
@@ -1776,12 +1777,12 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           if (articleImage) {
             heroImageUrl = articleImage.url;
             heroImageAlt = articleImage.altText;
-            console.log(`[RSS Auto-Process] Attached image from ${articleImage.source}: ${articleImage.url}`);
+            
           }
         }
         
         if (!heroImageUrl) {
-          console.log(`[RSS Auto-Process] No image found after all attempts, creating article without hero image`);
+          
         }
 
         // STEP 2: Create all content blocks with validated data
@@ -1933,7 +1934,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
         });
 
         // Process image blocks to fetch real images from Freepik/AI
-        console.log(`[RSS Auto-Process] Fetching images for ${blocks.filter(b => b.type === 'image').length} image blocks...`);
+        
         blocks = await processImageBlocks(blocks, category);
 
         const content = await storage.createContent({
@@ -2008,28 +2009,28 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
         });
 
         result.articlesGenerated++;
-        console.log(`[RSS Auto-Process] Generated article: "${mergedData.title}" (${wordCount} words)`);
+        
 
         // [REMOVED] Entity extraction moved to Octypo v2
 
         // Auto-translate to all 16 target languages - DISABLED (January 2026)
         // Translation is now manual-only via admin UI
-        console.log(`[RSS Auto-Process] Auto-translation DISABLED - use admin UI for manual translations for article: ${content.id}`);
+        
 
       } catch (clusterError) {
         const errorMsg = `Failed to generate article for cluster "${cluster.topic}": ${clusterError}`;
-        console.error(`[RSS Auto-Process] ${errorMsg}`);
+        
         result.errors.push(errorMsg);
       }
     }
 
   } catch (error) {
     const errorMsg = `Auto-process failed: ${error}`;
-    console.error(`[RSS Auto-Process] ${errorMsg}`);
+    
     result.errors.push(errorMsg);
   }
 
-  console.log(`[RSS Auto-Process] Complete - Feeds: ${result.feedsProcessed}, Items: ${result.itemsFound}, New Clusters: ${result.clustersCreated}, Articles: ${result.articlesGenerated}`);
+  
   return result;
 }
 
@@ -2185,7 +2186,7 @@ export async function registerRoutes(
       
       res.json(transformedGuides);
     } catch (error) {
-      console.error("Error fetching guides:", error);
+      
       res.status(500).json({ error: "Failed to fetch guides" });
     }
   });
@@ -2217,7 +2218,7 @@ export async function registerRoutes(
         date: featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' }) : "Dec 28, 2025"
       });
     } catch (error) {
-      console.error("Error fetching featured guide:", error);
+      
       res.status(500).json({ error: "Failed to fetch featured guide" });
     }
   });
@@ -2260,7 +2261,7 @@ export async function registerRoutes(
       return String(numericId);
     }
     // Return the original value if not found (will likely fail but that's expected)
-    console.warn(`[Hotels API] Unknown city slug: ${cityIdOrSlug}, no mapping found`);
+    
     return cityIdOrSlug;
   }
 
@@ -2336,7 +2337,7 @@ export async function registerRoutes(
 
       const tpoToken = process.env.TPO_API_TOKEN;
       if (!tpoToken) {
-        console.warn("[Hotels API] TPO token not configured, returning empty results");
+        
         return res.json({ locations: [], hotels: [] });
       }
 
@@ -2347,14 +2348,14 @@ export async function registerRoutes(
       });
 
       if (!response.ok) {
-        console.error(`[Hotels API] Lookup failed: ${response.status}`);
+        
         return res.json({ locations: [], hotels: [] });
       }
 
       const data = await response.json();
       res.json(data);
     } catch (error) {
-      console.error("[Hotels API] Lookup error:", error);
+      
       res.json({ locations: [], hotels: [] });
     }
   });
@@ -2392,7 +2393,7 @@ export async function registerRoutes(
 
       const tpoToken = process.env.TPO_API_TOKEN;
       if (!tpoToken) {
-        console.warn("[Hotels API] TPO token not configured, returning sample data");
+        
         const paginatedSample = sampleHotels.slice((pageNum - 1) * pageSizeNum, pageNum * pageSizeNum);
         return res.json({ 
           hotels: paginatedSample,
@@ -2439,10 +2440,10 @@ export async function registerRoutes(
       // FAIL-FAST: Do not use implicit Dubai fallback for hotel city
       const cityInfo = xoteloLocationKeys[citySlug];
       if (!cityInfo) {
-        console.error(`[Hotels API] FAIL: Unknown city "${citySlug}" - no implicit defaults allowed`);
+        
         return res.status(400).json({ error: `City "${citySlug}" not supported - must be one of: ${Object.keys(xoteloLocationKeys).join(', ')}` });
       }
-      console.log(`[Hotels API] Using Xotelo API for: ${citySlug} -> location_key: ${cityInfo.key}`);
+      
       
       // Use Xotelo free hotel list API
       const url = `https://data.xotelo.com/api/list?location_key=${cityInfo.key}&limit=100&offset=0&sort=best_value`;
@@ -2451,9 +2452,9 @@ export async function registerRoutes(
 
       if (!response.ok) {
         const errorBody = await response.text().catch(() => "Unable to read error body");
-        console.error(`[Hotels API] Xotelo search failed: ${response.status} - ${response.statusText}`);
-        console.error(`[Hotels API] URL: ${url}`);
-        console.error(`[Hotels API] Error body: ${errorBody.substring(0, 500)}`);
+        
+        
+        
         return res.json({ 
           hotels: sampleHotels.slice(0, pageSizeNum), 
           source: "sample",
@@ -2470,7 +2471,7 @@ export async function registerRoutes(
       // Xotelo API returns: { result: { list: [...], total_count: N } }
       const allHotels = data.result?.list || [];
       const totalFromApi = data.result?.total_count || allHotels.length;
-      console.log(`[Hotels API] Received ${allHotels.length} hotels from Xotelo API (total available: ${totalFromApi})`);
+      
       
       // Filter to only show hotels (not hostels etc) and 4-5 star equivalent
       // Xotelo uses rating 1-5 from TripAdvisor reviews
@@ -2542,7 +2543,7 @@ export async function registerRoutes(
         totalFromApi
       });
     } catch (error) {
-      console.error("[Hotels API] Search error:", error);
+      
       res.json({ 
         hotels: sampleHotels.slice(0, 20), 
         source: "sample",
@@ -2621,7 +2622,7 @@ export async function registerRoutes(
       });
 
       if (!response.ok) {
-        console.error(`[Hotels API] Hotel details failed: ${response.status}`);
+        
         const sampleHotel = sampleHotels[0];
         if (!sampleHotel) {
           return res.status(404).json({ error: "Hotel not found" });
@@ -2737,7 +2738,7 @@ export async function registerRoutes(
 
       res.json({ hotel, source: "api", aiGenerated });
     } catch (error) {
-      console.error("[Hotels API] Hotel details error:", error);
+      
       const sampleHotel = sampleHotels[0];
       res.json({ 
         hotel: {
@@ -2766,7 +2767,7 @@ export async function registerRoutes(
 
       const tpoToken = process.env.TPO_API_TOKEN;
       if (!tpoToken) {
-        console.warn("[Hotels API] TPO token not configured, returning sample data");
+        
         return res.json({ 
           selections: [],
           hotels: sampleHotels,
@@ -2781,7 +2782,7 @@ export async function registerRoutes(
       });
 
       if (!response.ok) {
-        console.error(`[Hotels API] Popular selections failed: ${response.status}`);
+        
         return res.json({ 
           selections: [],
           hotels: sampleHotels,
@@ -2795,7 +2796,7 @@ export async function registerRoutes(
         source: "api"
       });
     } catch (error) {
-      console.error("[Hotels API] Popular error:", error);
+      
       res.json({ 
         selections: [],
         hotels: sampleHotels,
@@ -3134,7 +3135,7 @@ export async function registerRoutes(
         totalPages
       });
     } catch (error) {
-      console.error("[Attractions API] Search error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -3202,7 +3203,7 @@ export async function registerRoutes(
         ...(shouldRedirect ? { redirect: `/${citySlug}/attractions/${canonicalSlug}` } : {}),
       });
     } catch (error) {
-      console.error("[Attractions API] By-slug lookup error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attraction" });
     }
   });
@@ -3264,7 +3265,7 @@ export async function registerRoutes(
           fullAttraction.metaDescription = aiResult.metaDescription;
           aiGenerated = true;
         } catch (aiError) {
-          console.error("[Attractions API] AI content generation failed:", aiError);
+          
           // Fallback content
           fullAttraction.introduction = `${attraction.name} is one of ${destInfo.name}'s most popular attractions, offering visitors an unforgettable experience.`;
           fullAttraction.whatToExpect = [
@@ -3312,7 +3313,7 @@ export async function registerRoutes(
         aiGenerated
       });
     } catch (error) {
-      console.error("[Attractions API] Detail error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -3331,7 +3332,7 @@ export async function registerRoutes(
         affiliateLink: TIQETS_AFFILIATE_LINK
       });
     } catch (error) {
-      console.error("[Attractions API] Destinations error:", error);
+      
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -3364,7 +3365,7 @@ export async function registerRoutes(
       
       res.json({ success: true });
     } catch (error) {
-      console.error("[Affiliate Click] Error tracking click:", error);
+      
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -3513,7 +3514,7 @@ export async function registerRoutes(
         aiGenerated: !!attr.aiContent
       });
     } catch (error) {
-      console.error("[Public Attractions API] Detail error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -3543,7 +3544,7 @@ export async function registerRoutes(
         affiliateLink: TIQETS_AFFILIATE_LINK
       });
     } catch (error) {
-      console.error("[Public Attractions API] Detail error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -3590,7 +3591,7 @@ export async function registerRoutes(
         totalPages
       });
     } catch (error) {
-      console.error("[Public Attractions API] List error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -3714,7 +3715,7 @@ export async function registerRoutes(
         totalPages
       });
     } catch (error) {
-      console.error("[Public Attractions API] All attractions error:", error);
+      
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -3844,7 +3845,7 @@ export async function registerRoutes(
         total: transformedLogs.length,
       });
     } catch (error) {
-      console.error("Error fetching logs:", error);
+      
       res.status(500).json({ error: "Failed to fetch logs" });
     }
   });
@@ -3906,7 +3907,7 @@ export async function registerRoutes(
 
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching log stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch log stats" });
     }
   });
@@ -3918,7 +3919,7 @@ export async function registerRoutes(
       consoleLogger.addManualLog("info", "system", "Logs cleared by admin");
       res.json({ success: true, message: "Logs cleared" });
     } catch (error) {
-      console.error("Error clearing logs:", error);
+      
       res.status(500).json({ error: "Failed to clear logs" });
     }
   });
@@ -3940,7 +3941,7 @@ export async function registerRoutes(
       res.setHeader("Content-Disposition", `attachment; filename="logs-${new Date().toISOString().split('T')[0]}.json"`);
       res.json(logs);
     } catch (error) {
-      console.error("Error exporting logs:", error);
+      
       res.status(500).json({ error: "Failed to export logs" });
     }
   });
@@ -3990,7 +3991,7 @@ export async function registerRoutes(
       res.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
       res.send(buffer);
     } catch (error) {
-      console.error(`Error serving AI image ${filename}:`, error);
+      
       res.status(404).send('Image not found');
     }
   });
@@ -4045,7 +4046,7 @@ export async function registerRoutes(
       res.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
       res.send(buffer);
     } catch (error) {
-      console.error(`Error serving object storage file ${key}:`, error);
+      
       res.status(404).send('File not found');
     }
   });
@@ -4113,7 +4114,7 @@ export async function registerRoutes(
       next();
     });
     
-    console.log("[DEV] Global auto-authentication ENABLED for all /api routes (DEV_AUTO_AUTH=true)");
+    
   }
   
   // DEV ONLY: Auto-login endpoint for testing (bypasses password and 2FA)
@@ -4122,18 +4123,18 @@ export async function registerRoutes(
   if (process.env.NODE_ENV !== "production" && process.env.REPL_SLUG) {
     app.post("/api/dev/auto-login", async (req: Request, res: Response) => {
       try {
-        console.log("[DEV Auto-Login] Attempting auto-login for testing...");
+        
         
         // Find admin user or first user with admin role
         const allUsers = await storage.getUsers();
         const adminUser = allUsers.find(u => u.role === "admin") || allUsers[0];
         
         if (!adminUser) {
-          console.log("[DEV Auto-Login] No users found in database");
+          
           return res.status(404).json({ error: "No users found. Please create a user first." });
         }
 
-        console.log("[DEV Auto-Login] Found user:", adminUser.username, "role:", adminUser.role);
+        
 
         // Create session user object in the same format as regular login
         const sessionUser = {
@@ -4144,7 +4145,7 @@ export async function registerRoutes(
         // Use req.login (Passport's method) to properly establish session
         req.login(sessionUser, (loginErr: any) => {
           if (loginErr) {
-            console.error("[DEV Auto-Login] Login error:", loginErr);
+            
             return res.status(500).json({ error: "Failed to create session" });
           }
 
@@ -4153,11 +4154,11 @@ export async function registerRoutes(
 
           req.session.save((saveErr: any) => {
             if (saveErr) {
-              console.error("[DEV Auto-Login] Session save error:", saveErr);
+              
               return res.status(500).json({ error: "Failed to save session" });
             }
 
-            console.log("[DEV Auto-Login] Successfully logged in as:", adminUser.username);
+            
             
             res.json({
               success: true,
@@ -4174,12 +4175,12 @@ export async function registerRoutes(
           });
         });
       } catch (error) {
-        console.error("[DEV Auto-Login] Error:", error);
+        
         res.status(500).json({ error: "Auto-login failed" });
       }
     });
 
-    console.log("[DEV] Auto-login endpoint enabled at /api/dev/auto-login (after setupAuth)");
+    
   }
   
   // Admin credentials from environment variables (hashed password stored in env)
@@ -4309,12 +4310,12 @@ export async function registerRoutes(
 
         req.login(sessionUser, (err: any) => {
           if (err) {
-            console.error("Login session error:", err);
+            
             return res.status(500).json({ error: "Failed to create session" });
           }
           req.session.save((saveErr: any) => {
             if (saveErr) {
-              console.error("Session save error:", saveErr);
+              
               return res.status(500).json({ error: "Failed to save session" });
             }
 
@@ -4446,7 +4447,7 @@ export async function registerRoutes(
 
       await completeLogin(user);
     } catch (error) {
-      console.error("Login error:", error);
+      
       res.status(500).json({ error: "Login failed" });
     }
   });
@@ -4458,14 +4459,14 @@ export async function registerRoutes(
 
     req.logout((err) => {
       if (err) {
-        console.error("Logout error:", err);
+        
         return res.status(500).json({ error: "Logout failed" });
       }
 
       // Destroy the session
       req.session?.destroy((sessionErr) => {
         if (sessionErr) {
-          console.error("Session destroy error:", sessionErr);
+          
         }
 
         // Log the logout event
@@ -4499,7 +4500,7 @@ export async function registerRoutes(
       const { passwordHash, totpSecret, totpRecoveryCodes, ...safeUser } = user;
       res.json(safeUser);
     } catch (error) {
-      console.error("Error fetching user:", error);
+      
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
@@ -4513,7 +4514,7 @@ export async function registerRoutes(
       const permissions = ROLE_PERMISSIONS[userRole] || ROLE_PERMISSIONS.viewer;
       res.json({ role: userRole, permissions });
     } catch (error) {
-      console.error("Error fetching permissions:", error);
+      
       res.status(500).json({ error: "Failed to fetch permissions" });
     }
   });
@@ -4529,7 +4530,7 @@ export async function registerRoutes(
       const devices = deviceFingerprint.getUserDevices(userId);
       res.json({ devices });
     } catch (error) {
-      console.error("Error fetching devices:", error);
+      
       res.status(500).json({ error: "Failed to fetch devices" });
     }
   });
@@ -4545,7 +4546,7 @@ export async function registerRoutes(
       await deviceFingerprint.trustDevice(userId, fingerprint);
       res.json({ success: true, message: "Device trusted" });
     } catch (error) {
-      console.error("Error trusting device:", error);
+      
       res.status(500).json({ error: "Failed to trust device" });
     }
   });
@@ -4563,7 +4564,7 @@ export async function registerRoutes(
         res.status(404).json({ error: "Device not found" });
       }
     } catch (error) {
-      console.error("Error revoking device:", error);
+      
       res.status(500).json({ error: "Failed to revoke device" });
     }
   });
@@ -4587,7 +4588,7 @@ export async function registerRoutes(
 
       res.json({ sessions: safeSessions });
     } catch (error) {
-      console.error("Error fetching sessions:", error);
+      
       res.status(500).json({ error: "Failed to fetch sessions" });
     }
   });
@@ -4601,7 +4602,7 @@ export async function registerRoutes(
       const count = await sessionSecurity.revokeAllUserSessions(userId, currentSessionId);
       res.json({ success: true, message: `${count} sessions revoked` });
     } catch (error) {
-      console.error("Error revoking sessions:", error);
+      
       res.status(500).json({ error: "Failed to revoke sessions" });
     }
   });
@@ -4648,7 +4649,7 @@ export async function registerRoutes(
         threatIndicators: threatAnalysis.indicators.length > 0 ? threatAnalysis.indicators.map(i => i.description) : [],
       });
     } catch (error) {
-      console.error("Error getting security context:", error);
+      
       res.status(500).json({ error: "Failed to get security context" });
     }
   });
@@ -4664,7 +4665,7 @@ export async function registerRoutes(
         recentSecurityEvents: await getAuditLogs({ resourceType: 'auth', limit: 20 }),
       });
     } catch (error) {
-      console.error("Error getting security dashboard:", error);
+      
       res.status(500).json({ error: "Failed to get security dashboard" });
     }
   });
@@ -4684,7 +4685,7 @@ export async function registerRoutes(
         hasSecret: !!user.totpSecret 
       });
     } catch (error) {
-      console.error("Error fetching TOTP status:", error);
+      
       res.status(500).json({ error: "Failed to fetch TOTP status" });
     }
   });
@@ -4732,7 +4733,7 @@ export async function registerRoutes(
         otpauth
       });
     } catch (error) {
-      console.error("Error setting up TOTP:", error);
+      
       res.status(500).json({ error: "Failed to setup TOTP" });
     }
   });
@@ -4781,7 +4782,7 @@ export async function registerRoutes(
         recoveryCodes
       });
     } catch (error) {
-      console.error("Error verifying TOTP:", error);
+      
       res.status(500).json({ error: "Failed to verify TOTP" });
     }
   });
@@ -4817,7 +4818,7 @@ export async function registerRoutes(
       
       res.json({ success: true, message: "Two-factor authentication disabled" });
     } catch (error) {
-      console.error("Error disabling TOTP:", error);
+      
       res.status(500).json({ error: "Failed to disable TOTP" });
     }
   });
@@ -4931,7 +4932,7 @@ export async function registerRoutes(
 
       req.login(sessionUser, (err: any) => {
         if (err) {
-          console.error("TOTP login session error:", err);
+          
           return res.status(500).json({ error: "Failed to create session after TOTP" });
         }
         
@@ -4940,7 +4941,7 @@ export async function registerRoutes(
         
         req.session.save((saveErr: any) => {
           if (saveErr) {
-            console.error("TOTP session save error:", saveErr);
+            
             return res.status(500).json({ error: "Failed to save session after TOTP" });
           }
 
@@ -4975,7 +4976,7 @@ export async function registerRoutes(
         });
       });
     } catch (error) {
-      console.error("Error validating TOTP:", error);
+      
       res.status(500).json({ error: "Failed to validate TOTP" });
     }
   });
@@ -5063,7 +5064,7 @@ export async function registerRoutes(
       // Create session for the user
       (req as any).session.regenerate((err: any) => {
         if (err) {
-          console.error("Session regeneration error:", err);
+          
           return res.status(500).json({ error: "Session error" });
         }
 
@@ -5072,7 +5073,7 @@ export async function registerRoutes(
 
         (req as any).session.save((saveErr: any) => {
           if (saveErr) {
-            console.error("Session save error:", saveErr);
+            
             return res.status(500).json({ error: "Session save error" });
           }
 
@@ -5092,7 +5093,7 @@ export async function registerRoutes(
         });
       });
     } catch (error) {
-      console.error("Error validating recovery code:", error);
+      
       res.status(500).json({ error: "Failed to validate recovery code" });
     }
   });
@@ -5133,7 +5134,7 @@ export async function registerRoutes(
         userAgent: req.headers['user-agent'] || null,
       });
     } catch (error) {
-      console.error("Failed to create audit log:", error);
+      
     }
   }
 
@@ -5150,7 +5151,7 @@ export async function registerRoutes(
       const stats = await storage.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
@@ -5209,7 +5210,7 @@ export async function registerRoutes(
         breakdown,
       });
     } catch (error) {
-      console.error("Error fetching content metrics:", error);
+      
       res.status(500).json({ error: "Failed to fetch content metrics" });
     }
   });
@@ -5233,7 +5234,7 @@ export async function registerRoutes(
         count: topPerformers.length,
       });
     } catch (error) {
-      console.error("Error fetching top performers:", error);
+      
       res.status(500).json({ error: "Failed to fetch top performers" });
     }
   });
@@ -5244,7 +5245,7 @@ export async function registerRoutes(
       const metrics = recordImpression(contentId);
       res.json({ success: true, metrics });
     } catch (error) {
-      console.error("Error recording impression:", error);
+      
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -5255,7 +5256,7 @@ export async function registerRoutes(
       const metrics = recordClick(contentId);
       res.json({ success: true, metrics });
     } catch (error) {
-      console.error("Error recording click:", error);
+      
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -5272,7 +5273,7 @@ export async function registerRoutes(
       const metrics = recordScrollDepth(contentId, depth);
       res.json({ success: true, metrics });
     } catch (error) {
-      console.error("Error recording scroll depth:", error);
+      
       res.status(500).json({ error: "Failed to record scroll depth" });
     }
   });
@@ -5283,7 +5284,7 @@ export async function registerRoutes(
       const decision = getRegenerationDecision(contentId);
       res.json(decision);
     } catch (error) {
-      console.error("Error checking regeneration:", error);
+      
       res.status(500).json({ error: "Failed to check regeneration status" });
     }
   });
@@ -5336,7 +5337,7 @@ export async function registerRoutes(
         createdAt: performance.createdAt.toISOString(),
       });
     } catch (error) {
-      console.error("Error fetching performance metrics:", error);
+      
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -5358,7 +5359,7 @@ export async function registerRoutes(
         count: all.length,
       });
     } catch (error) {
-      console.error("Error fetching all performance metrics:", error);
+      
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -5409,7 +5410,7 @@ export async function registerRoutes(
         },
       });
     } catch (error) {
-      console.error("Error recording content performance event:", error);
+      
       res.status(500).json({ error: "Failed to record performance event" });
     }
   });
@@ -5435,7 +5436,7 @@ export async function registerRoutes(
         } : null,
       });
     } catch (error) {
-      console.error("Error checking regeneration eligibility:", error);
+      
       res.status(500).json({ error: "Failed to check regeneration eligibility" });
     }
   });
@@ -5452,7 +5453,7 @@ export async function registerRoutes(
       const performance = recordPerformanceImpression(entityId, entityType);
       res.json({ success: true, performance });
     } catch (error) {
-      console.error("Error recording performance impression:", error);
+      
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -5469,7 +5470,7 @@ export async function registerRoutes(
       const performance = recordPerformanceClick(entityId, entityType);
       res.json({ success: true, performance });
     } catch (error) {
-      console.error("Error recording performance click:", error);
+      
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -5490,7 +5491,7 @@ export async function registerRoutes(
         } : null,
       });
     } catch (error) {
-      console.error("Error checking rewrite eligibility:", error);
+      
       res.status(500).json({ error: "Failed to check rewrite eligibility" });
     }
   });
@@ -5529,7 +5530,7 @@ export async function registerRoutes(
         createdAt: performance.createdAt.toISOString(),
       });
     } catch (error) {
-      console.error("Error fetching entity metrics:", error);
+      
       res.status(500).json({ error: "Failed to fetch entity metrics" });
     }
   });
@@ -5548,7 +5549,7 @@ export async function registerRoutes(
       const contents = await storage.getContentsWithRelations(filters);
       res.json(contents);
     } catch (error) {
-      console.error("Error fetching contents:", error);
+      
       res.status(500).json({ error: "Failed to fetch contents" });
     }
   });
@@ -5582,7 +5583,7 @@ export async function registerRoutes(
 
       res.json({ lowSeo, noViews, scheduledToday });
     } catch (error) {
-      console.error("Error fetching attention items:", error);
+      
       res.status(500).json({ error: "Failed to fetch attention items" });
     }
   });
@@ -5597,7 +5598,7 @@ export async function registerRoutes(
 
       res.json(content);
     } catch (error) {
-      console.error("Error fetching content:", error);
+      
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -5623,7 +5624,7 @@ export async function registerRoutes(
 
       res.json(content);
     } catch (error) {
-      console.error("Error fetching content by slug:", error);
+      
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -5677,7 +5678,7 @@ export async function registerRoutes(
         htmlEmbed: `<script type="application/ld+json">\n${jsonLd}\n</script>`
       });
     } catch (error) {
-      console.error("Error generating schema:", error);
+      
       res.status(500).json({ error: "Failed to generate schema" });
     }
   });
@@ -5698,7 +5699,7 @@ export async function registerRoutes(
       const sanitizedContents = contents.slice(0, maxLimit).map(sanitizeContentForPublic);
       res.json(sanitizedContents);
     } catch (error) {
-      console.error("Error fetching public contents:", error);
+      
       res.status(500).json({ error: "Failed to fetch contents" });
     }
   });
@@ -5735,7 +5736,7 @@ export async function registerRoutes(
       
       res.json(allDestinations);
     } catch (error) {
-      console.error("Error fetching public destinations:", error);
+      
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -5751,7 +5752,7 @@ export async function registerRoutes(
       
       res.json(sections);
     } catch (error) {
-      console.error("Error fetching homepage sections:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage sections" });
     }
   });
@@ -5767,7 +5768,7 @@ export async function registerRoutes(
       
       res.json(cards);
     } catch (error) {
-      console.error("Error fetching homepage cards:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage cards" });
     }
   });
@@ -5783,7 +5784,7 @@ export async function registerRoutes(
       
       res.json(categories);
     } catch (error) {
-      console.error("Error fetching experience categories:", error);
+      
       res.status(500).json({ error: "Failed to fetch experience categories" });
     }
   });
@@ -5799,7 +5800,7 @@ export async function registerRoutes(
       
       res.json(regions);
     } catch (error) {
-      console.error("Error fetching region links:", error);
+      
       res.status(500).json({ error: "Failed to fetch region links" });
     }
   });
@@ -5901,7 +5902,7 @@ export async function registerRoutes(
         total,
       });
     } catch (error: any) {
-      console.error("Error fetching attraction destinations:", error);
+      
       res.status(500).json({ error: "Failed to fetch attraction destinations" });
     }
   });
@@ -5967,7 +5968,7 @@ export async function registerRoutes(
         cities: citiesResult.map(c => c.city),
       });
     } catch (error: any) {
-      console.error("Error fetching tiqets attractions:", error);
+      
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -5999,7 +6000,7 @@ export async function registerRoutes(
       
       // Reject any ID not in whitelist (prevents ../../ traversal attacks)
       if (!ALLOWED_DESTINATION_IDS.has(id)) {
-        console.warn(`[Security] Rejected non-whitelisted destination ID: ${id}`);
+        
         return res.status(404).json({ error: "Destination not found" });
       }
       
@@ -6093,7 +6094,7 @@ export async function registerRoutes(
         },
       });
     } catch (error) {
-      console.error("Error fetching destination:", error);
+      
       res.status(500).json({ error: "Failed to fetch destination" });
     }
   });
@@ -6121,31 +6122,36 @@ export async function registerRoutes(
         // Homepage sections (structure, order, visibility)
         db.select()
           .from(homepageSections)
-          .orderBy(homepageSections.sortOrder),
-        
+          .orderBy(homepageSections.sortOrder)
+          .limit(50),
+
         // Hero slides
         db.select()
           .from(heroSlides)
           .where(eq(heroSlides.isActive, true))
-          .orderBy(heroSlides.sortOrder),
-        
+          .orderBy(heroSlides.sortOrder)
+          .limit(20),
+
         // Quick category cards
         db.select()
           .from(homepageCards)
           .where(eq(homepageCards.isActive, true))
-          .orderBy(homepageCards.sortOrder),
-        
+          .orderBy(homepageCards.sortOrder)
+          .limit(50),
+
         // Experience categories
         db.select()
           .from(experienceCategories)
           .where(eq(experienceCategories.isActive, true))
-          .orderBy(experienceCategories.sortOrder),
-        
+          .orderBy(experienceCategories.sortOrder)
+          .limit(30),
+
         // Region links for SEO footer
         db.select()
           .from(regionLinks)
           .where(eq(regionLinks.isActive, true))
-          .orderBy(regionLinks.sortOrder),
+          .orderBy(regionLinks.sortOrder)
+          .limit(50),
         
         // Homepage CTA configuration
         db.select().from(homepageCta).limit(1),
@@ -6153,7 +6159,7 @@ export async function registerRoutes(
         // Homepage SEO meta
         db.select().from(homepageSeoMeta).limit(1),
         
-        // Featured destinations (active, sorted A-Z by name)
+        // Featured destinations (active, sorted A-Z by name, limited)
         db.select({
           id: destinations.id,
           name: destinations.name,
@@ -6165,7 +6171,8 @@ export async function registerRoutes(
         })
           .from(destinations)
           .where(eq(destinations.isActive, true))
-          .orderBy(destinations.name),
+          .orderBy(destinations.name)
+          .limit(100),
         
         // Featured articles (published, latest 6)
         db.select({
@@ -6306,7 +6313,7 @@ export async function registerRoutes(
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
       res.json(renderSafeConfig);
     } catch (error) {
-      console.error("Error fetching homepage config:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage configuration" });
     }
   });
@@ -6394,7 +6401,7 @@ export async function registerRoutes(
         slug: parsed.slug,
         status: parsed.status || "draft",
         createdAt: new Date().toISOString(),
-      }).catch(err => console.error("[Webhook] content.created trigger failed:", err));
+      }).catch(err => {});
 
       // Phase 15A: Emit content published event if created as published
       // Event bus triggers: search indexing, AEO capsule generation
@@ -6411,7 +6418,7 @@ export async function registerRoutes(
 
       res.status(201).json(fullContent);
     } catch (error) {
-      console.error("Error creating content:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -6462,7 +6469,7 @@ export async function registerRoutes(
               message: "Cannot publish content with missing required fields. Fix issues or disable STRICT_PUBLISH_VALIDATION.",
             });
           } else {
-            console.warn(`[Publish Validation] Content ${req.params.id} has issues:`, validationErrors);
+            
           }
         }
       }
@@ -6573,7 +6580,7 @@ export async function registerRoutes(
         status: fullContent?.status,
         previousStatus: existingContent.status,
         updatedAt: new Date().toISOString(),
-      }).catch(err => console.error(`[Webhook] ${webhookEvent} trigger failed:`, err));
+      }).catch(err => {});
 
       // Phase 15A: Emit content lifecycle events (replaces direct indexer call)
       // Event bus triggers: search indexing, AEO capsule generation, and future subscribers
@@ -6598,7 +6605,7 @@ export async function registerRoutes(
 
       res.json(fullContent);
     } catch (error) {
-      console.error("Error updating content:", error);
+      
       res.status(500).json({ error: "Failed to update content" });
     }
   });
@@ -6613,7 +6620,7 @@ export async function registerRoutes(
       const versions = await storage.getContentVersions(req.params.id);
       res.json(versions);
     } catch (error) {
-      console.error("Error fetching content versions:", error);
+      
       res.status(500).json({ error: "Failed to fetch content versions" });
     }
   });
@@ -6626,7 +6633,7 @@ export async function registerRoutes(
       }
       res.json(version);
     } catch (error) {
-      console.error("Error fetching content version:", error);
+      
       res.status(500).json({ error: "Failed to fetch content version" });
     }
   });
@@ -6672,7 +6679,7 @@ export async function registerRoutes(
       
       res.json(updated);
     } catch (error) {
-      console.error("Error restoring version:", error);
+      
       res.status(500).json({ error: "Failed to restore version" });
     }
   });
@@ -6691,7 +6698,7 @@ export async function registerRoutes(
       const translations = await storage.getTranslationsByContentId(req.params.id);
       res.json(translations);
     } catch (error) {
-      console.error("Error fetching translations:", error);
+      
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -6708,7 +6715,7 @@ export async function registerRoutes(
       }
       res.json(translation);
     } catch (error) {
-      console.error("Error fetching translation:", error);
+      
       res.status(500).json({ error: "Failed to fetch translation" });
     }
   });
@@ -6723,7 +6730,7 @@ export async function registerRoutes(
       const translation = await storage.createTranslation(parsed);
       res.status(201).json(translation);
     } catch (error) {
-      console.error("Error creating translation:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -6753,7 +6760,7 @@ export async function registerRoutes(
       }
       res.json(translation);
     } catch (error) {
-      console.error("Error updating translation:", error);
+      
       res.status(500).json({ error: "Failed to update translation" });
     }
   });
@@ -6763,7 +6770,7 @@ export async function registerRoutes(
       await storage.deleteTranslation(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting translation:", error);
+      
       res.status(500).json({ error: "Failed to delete translation" });
     }
   });
@@ -6835,12 +6842,12 @@ export async function registerRoutes(
               });
             }
           } catch (err) {
-            console.error(`Error saving translation for ${locale}:`, err);
+            
           }
         }
-        console.log(`Translation job ${jobId} completed for content ${content.id}`);
+        
       }).catch(err => {
-        console.error(`Translation job ${jobId} failed:`, err);
+        
       });
 
       res.json({
@@ -6850,7 +6857,7 @@ export async function registerRoutes(
         targetLanguages: tiers ? SUPPORTED_LOCALES.filter(l => tiers.includes(l.tier)).length : SUPPORTED_LOCALES.length - 1
       });
     } catch (error) {
-      console.error("Error starting translation:", error);
+      
       res.status(500).json({ error: "Failed to start translation" });
     }
   });
@@ -6885,7 +6892,7 @@ export async function registerRoutes(
         }))
       });
     } catch (error) {
-      console.error("Error fetching translation status:", error);
+      
       res.status(500).json({ error: "Failed to fetch translation status" });
     }
   });
@@ -6914,7 +6921,7 @@ export async function registerRoutes(
         contentId: req.params.id
       });
     } catch (error) {
-      console.error("Error cancelling translation:", error);
+      
       res.status(500).json({ error: "Failed to cancel translation" });
     }
   });
@@ -6937,12 +6944,12 @@ export async function registerRoutes(
           title: existingContent.title,
           slug: existingContent.slug,
           deletedAt: new Date().toISOString(),
-        }).catch(err => console.error("[Webhook] content.deleted trigger failed:", err));
+        }).catch(err => {});
       }
 
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting content:", error);
+      
       res.status(500).json({ error: "Failed to delete content" });
     }
   });
@@ -6955,7 +6962,7 @@ export async function registerRoutes(
       const settings = await storage.getSettings();
       res.json(settings);
     } catch (error) {
-      console.error("Error fetching settings:", error);
+      
       res.status(500).json({ error: "Failed to fetch settings" });
     }
   });
@@ -6973,7 +6980,7 @@ export async function registerRoutes(
       }
       res.json(grouped);
     } catch (error) {
-      console.error("Error fetching grouped settings:", error);
+      
       res.status(500).json({ error: "Failed to fetch settings" });
     }
   });
@@ -7028,7 +7035,7 @@ export async function registerRoutes(
       await logAuditEvent(req, "settings_change", "settings", "bulk", `Updated ${updated.length} settings`);
       res.json({ success: true, updated: updated.length });
     } catch (error) {
-      console.error("Error updating settings:", error);
+      
       res.status(500).json({ error: "Failed to update settings" });
     }
   });
@@ -7058,7 +7065,7 @@ export async function registerRoutes(
       
       res.json({ total: links.length, broken: brokenLinks.length, brokenLinks });
     } catch (error) {
-      console.error("Error checking broken links:", error);
+      
       res.status(500).json({ error: "Failed to check broken links" });
     }
   });
@@ -7101,7 +7108,7 @@ export async function registerRoutes(
         canProceed: true
       });
     } catch (error) {
-      console.error("Error checking bulk delete:", error);
+      
       res.status(500).json({ error: "Failed to check bulk delete" });
     }
   });
@@ -7191,7 +7198,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error("Error analyzing content gaps:", error);
+      
       res.status(500).json({ error: "Failed to analyze content gaps" });
     }
   });
@@ -7264,7 +7271,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error("Error building watchlist:", error);
+      
       res.status(500).json({ error: "Failed to build watchlist" });
     }
   });
@@ -7313,7 +7320,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error("Error tracking events:", error);
+      
       res.status(500).json({ error: "Failed to track events" });
     }
   });
@@ -7357,7 +7364,7 @@ export async function registerRoutes(
         total: allContent.length
       });
     } catch (error) {
-      console.error("Error building clusters:", error);
+      
       res.status(500).json({ error: "Failed to build clusters" });
     }
   });
@@ -7405,7 +7412,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error("Error analyzing internal links:", error);
+      
       res.status(500).json({ error: "Failed to analyze internal links" });
     }
   });
@@ -7415,7 +7422,7 @@ export async function registerRoutes(
       const feeds = await storage.getRssFeeds();
       res.json(feeds);
     } catch (error) {
-      console.error("Error fetching RSS feeds:", error);
+      
       res.status(500).json({ error: "Failed to fetch RSS feeds" });
     }
   });
@@ -7429,7 +7436,7 @@ export async function registerRoutes(
       const rssArticles = allContent.filter(c => c.type === "article" && c.title?.includes("[RSS]"));
       res.json({ pendingCount: rssArticles.length, totalFeeds: feeds.length });
     } catch (error) {
-      console.error("Error fetching RSS stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch RSS stats" });
     }
   });
@@ -7442,7 +7449,7 @@ export async function registerRoutes(
       }
       res.json(feed);
     } catch (error) {
-      console.error("Error fetching RSS feed:", error);
+      
       res.status(500).json({ error: "Failed to fetch RSS feed" });
     }
   });
@@ -7454,7 +7461,7 @@ export async function registerRoutes(
       await logAuditEvent(req, "create", "rss_feed", feed.id, `Created RSS feed: ${feed.name}`, undefined, { name: feed.name, url: feed.url });
       res.status(201).json(feed);
     } catch (error) {
-      console.error("Error creating RSS feed:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -7472,7 +7479,7 @@ export async function registerRoutes(
       await logAuditEvent(req, "update", "rss_feed", feed.id, `Updated RSS feed: ${feed.name}`, existingFeed ? { name: existingFeed.name, url: existingFeed.url } : undefined, { name: feed.name, url: feed.url });
       res.json(feed);
     } catch (error) {
-      console.error("Error updating RSS feed:", error);
+      
       res.status(500).json({ error: "Failed to update RSS feed" });
     }
   });
@@ -7486,7 +7493,7 @@ export async function registerRoutes(
       }
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting RSS feed:", error);
+      
       res.status(500).json({ error: "Failed to delete RSS feed" });
     }
   });
@@ -7507,7 +7514,7 @@ export async function registerRoutes(
 
       res.json({ items, count: items.length });
     } catch (error) {
-      console.error("Error fetching RSS feed items:", error);
+      
       res.status(500).json({ error: "Failed to fetch RSS feed items" });
     }
   });
@@ -7635,7 +7642,7 @@ export async function registerRoutes(
           : `Successfully imported ${createdContents.length} items.`
       });
     } catch (error) {
-      console.error("Error importing RSS feed items:", error);
+      
       res.status(500).json({ error: "Failed to import RSS feed items" });
     }
   });
@@ -7658,7 +7665,7 @@ export async function registerRoutes(
       
       res.json(clustersWithItems);
     } catch (error) {
-      console.error("Error fetching topic clusters:", error);
+      
       res.status(500).json({ error: "Failed to fetch topic clusters" });
     }
   });
@@ -7759,7 +7766,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error("Error aggregating RSS items:", error);
+      
       res.status(500).json({ error: "Failed to aggregate RSS items" });
     }
   });
@@ -7983,7 +7990,7 @@ export async function registerRoutes(
 
       // Auto-translate to all 16 target languages - DISABLED (January 2026)
       // Translation is now manual-only via admin UI
-      console.log(`[Merge] Auto-translation DISABLED - use admin UI for manual translations for article: ${content.id}`);
+      
 
       res.status(201).json({
         message: `Successfully merged ${items.length} articles using ${personalityData?.name || "Professional"} personality`,
@@ -7997,7 +8004,7 @@ export async function registerRoutes(
         translationsQueued: 0, // No auto-translation
       });
     } catch (error) {
-      console.error("Error merging cluster:", error);
+      
       res.status(500).json({ error: "Failed to merge articles" });
     }
   });
@@ -8011,7 +8018,7 @@ export async function registerRoutes(
       }
       res.json({ message: "Cluster dismissed", cluster });
     } catch (error) {
-      console.error("Error dismissing cluster:", error);
+      
       res.status(500).json({ error: "Failed to dismiss cluster" });
     }
   });
@@ -8022,7 +8029,7 @@ export async function registerRoutes(
       await storage.deleteTopicCluster(req.params.id);
       res.json({ message: "Cluster deleted" });
     } catch (error) {
-      console.error("Error deleting cluster:", error);
+      
       res.status(500).json({ error: "Failed to delete cluster" });
     }
   });
@@ -8032,14 +8039,14 @@ export async function registerRoutes(
   // POST /api/rss/auto-process - Manual trigger for automatic RSS processing
   app.post("/api/rss/auto-process", requirePermission("canCreate"), checkReadOnlyMode, async (req, res) => {
     try {
-      console.log("[RSS Auto-Process] Manual trigger started...");
+      
       const result = await autoProcessRssFeeds();
       res.status(200).json({
         message: "RSS auto-processing completed",
         ...result,
       });
     } catch (error) {
-      console.error("[RSS Auto-Process] Manual trigger failed:", error);
+      
       res.status(500).json({ error: "Failed to auto-process RSS feeds" });
     }
   });
@@ -8058,7 +8065,7 @@ export async function registerRoutes(
         autoProcessIntervalMinutes: 30,
       });
     } catch (error) {
-      console.error("[RSS Auto-Process] Status check failed:", error);
+      
       res.status(500).json({ error: "Failed to get auto-process status" });
     }
   });
@@ -8069,7 +8076,7 @@ export async function registerRoutes(
       const links = await storage.getAffiliateLinks(contentId as string | undefined);
       res.json(links);
     } catch (error) {
-      console.error("Error fetching affiliate links:", error);
+      
       res.status(500).json({ error: "Failed to fetch affiliate links" });
     }
   });
@@ -8082,7 +8089,7 @@ export async function registerRoutes(
       }
       res.json(link);
     } catch (error) {
-      console.error("Error fetching affiliate link:", error);
+      
       res.status(500).json({ error: "Failed to fetch affiliate link" });
     }
   });
@@ -8094,7 +8101,7 @@ export async function registerRoutes(
       await logAuditEvent(req, "create", "affiliate_link", link.id, `Created affiliate link: ${link.anchor}`, undefined, { anchor: link.anchor, url: link.url });
       res.status(201).json(link);
     } catch (error) {
-      console.error("Error creating affiliate link:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -8112,7 +8119,7 @@ export async function registerRoutes(
       await logAuditEvent(req, "update", "affiliate_link", link.id, `Updated affiliate link: ${link.anchor}`, existingLink ? { anchor: existingLink.anchor, url: existingLink.url } : undefined, { anchor: link.anchor, url: link.url });
       res.json(link);
     } catch (error) {
-      console.error("Error updating affiliate link:", error);
+      
       res.status(500).json({ error: "Failed to update affiliate link" });
     }
   });
@@ -8126,7 +8133,7 @@ export async function registerRoutes(
       }
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting affiliate link:", error);
+      
       res.status(500).json({ error: "Failed to delete affiliate link" });
     }
   });
@@ -8136,7 +8143,7 @@ export async function registerRoutes(
       const files = await storage.getMediaFiles();
       res.json(files);
     } catch (error) {
-      console.error("Error fetching media files:", error);
+      
       res.status(500).json({ error: "Failed to fetch media files" });
     }
   });
@@ -8149,7 +8156,7 @@ export async function registerRoutes(
       }
       res.json(file);
     } catch (error) {
-      console.error("Error fetching media file:", error);
+      
       res.status(500).json({ error: "Failed to fetch media file" });
     }
   });
@@ -8167,7 +8174,7 @@ export async function registerRoutes(
       const usage = await storage.checkMediaUsage(mediaFile.url);
       res.json(usage);
     } catch (error) {
-      console.error("Error checking media usage:", error);
+      
       res.status(500).json({ error: "Failed to check media usage" });
     }
   });
@@ -8175,14 +8182,14 @@ export async function registerRoutes(
   // SECURITY: Admin media upload with file upload hardening
   // Validates: magic bytes, MIME type, file size, malicious content, filename sanitization
   app.post("/api/media/upload", requirePermission("canAccessMediaLibrary"), checkReadOnlyMode, upload.single("file"), validateMediaUpload, async (req, res) => {
-    console.log("[Media Upload] Request received");
+    
 
     try {
       if (!req.file) {
-        console.log("[Media Upload] ERROR: No file in request");
+        
         return res.status(400).json({ error: "No file uploaded" });
       }
-      console.log(`[Media Upload] Processing file: ${sanitizeForLog(req.file.originalname)}, size: ${req.file.size}`);
+      
 
       // SECURITY: Enhanced file upload validation with magic bytes
       // Validates: actual file type via magic bytes, blocks executables, detects malicious content
@@ -8206,7 +8213,7 @@ export async function registerRoutes(
             errors: fileValidation.errors.slice(0, 3) // Limit logged errors
           }
         });
-        console.error("[Media Upload] SECURITY BLOCK:", fileValidation.errors);
+        
         return res.status(400).json({ 
           error: "File failed security validation",
           code: 'FILE_VALIDATION_FAILED',
@@ -8214,7 +8221,7 @@ export async function registerRoutes(
         });
       }
       
-      console.log(`[Media Upload] Security validation passed. Detected type: ${fileValidation.detectedType?.mime}`);
+      
 
       // Use the new unified ImageService for upload
       const result = await uploadImage(
@@ -8228,7 +8235,7 @@ export async function registerRoutes(
       );
 
       if (!result.success) {
-        console.error("[Media Upload] ERROR:", (result as any).error);
+        
         return res.status(400).json({ error: (result as any).error });
       }
 
@@ -8247,10 +8254,10 @@ export async function registerRoutes(
       });
 
       await logAuditEvent(req, "media_upload", "media", mediaFile.id, `Uploaded media: ${mediaFile.originalFilename}`, undefined, { filename: mediaFile.originalFilename, mimeType: mediaFile.mimeType, size: mediaFile.size, originalSize: req.file.size });
-      console.log(`[Media Upload] SUCCESS: ${mediaFile.filename} -> ${mediaFile.url}`);
+      
       res.status(201).json(mediaFile);
     } catch (error) {
-      console.error("[Media Upload] ERROR:", error);
+      
       res.status(500).json({ error: "Failed to upload media file" });
     }
   });
@@ -8263,7 +8270,7 @@ export async function registerRoutes(
       }
       res.json(file);
     } catch (error) {
-      console.error("Error updating media file:", error);
+      
       res.status(500).json({ error: "Failed to update media file" });
     }
   });
@@ -8283,7 +8290,7 @@ export async function registerRoutes(
       }
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting media file:", error);
+      
       res.status(500).json({ error: "Failed to delete media file" });
     }
   });
@@ -8294,7 +8301,7 @@ export async function registerRoutes(
       const links = await storage.getInternalLinks(contentId as string | undefined);
       res.json(links);
     } catch (error) {
-      console.error("Error fetching internal links:", error);
+      
       res.status(500).json({ error: "Failed to fetch internal links" });
     }
   });
@@ -8304,7 +8311,7 @@ export async function registerRoutes(
       const link = await storage.createInternalLink(req.body);
       res.status(201).json(link);
     } catch (error) {
-      console.error("Error creating internal link:", error);
+      
       res.status(500).json({ error: "Failed to create internal link" });
     }
   });
@@ -8314,7 +8321,7 @@ export async function registerRoutes(
       await storage.deleteInternalLink(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting internal link:", error);
+      
       res.status(500).json({ error: "Failed to delete internal link" });
     }
   });
@@ -8345,7 +8352,7 @@ export async function registerRoutes(
         }
       });
     } catch (error) {
-      console.error("Error checking AI status:", error);
+      
       res.status(500).json({ error: "Failed to check AI status" });
     }
   });
@@ -8378,7 +8385,7 @@ export async function registerRoutes(
         _system: 'ai-writers',
       });
     } catch (error) {
-      console.error("Error generating AI content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate content";
       res.status(500).json({ error: message });
     }
@@ -8425,7 +8432,7 @@ export async function registerRoutes(
       const suggestions = safeParseJson(response.choices[0].message.content || '{"suggestions":[]}', { suggestions: [] });
       res.json(suggestions);
     } catch (error) {
-      console.error("Error suggesting internal links:", error);
+      
       res.status(500).json({ error: "Failed to suggest internal links" });
     }
   });
@@ -8745,7 +8752,7 @@ Return JSON only:
           wordCount = getArticleWordCount(generatedArticle);
           addSystemLog("info", "ai", `After expansion ${attempts}: ${wordCount} words`);
         } catch (expansionError) {
-          console.error("Expansion attempt failed:", expansionError);
+          
           break;
         }
       }
@@ -8783,7 +8790,7 @@ Return JSON only:
         };
         const mappedCategory = categoryMap[category] || "general";
         
-        console.log(`[AI Article] Fetching image for: "${articleTitle}", category: ${mappedCategory}`);
+        
         
         const imageResult = await findOrCreateArticleImage(articleTitle, keywords, mappedCategory);
         if (imageResult) {
@@ -8793,12 +8800,12 @@ Return JSON only:
             source: imageResult.source,
             imageId: imageResult.imageId
           };
-          console.log(`[AI Article] Found image from ${imageResult.source}: ${imageResult.url}`);
+          
         } else {
-          console.log(`[AI Article] No image found for article`);
+          
         }
       } catch (imageError) {
-        console.error("[AI Article] Error fetching image:", imageError);
+        
       }
       
       // ENFORCE SEO REQUIREMENTS before sending response
@@ -8810,7 +8817,7 @@ Return JSON only:
         heroImage
       });
     } catch (error) {
-      console.error("Error generating AI article:", error);
+      
       res.status(500).json({ error: "Failed to generate article" });
     }
   });
@@ -8856,7 +8863,7 @@ Return valid JSON-LD that can be embedded in a webpage.`,
       const schema = safeParseJson(response.choices[0].message.content || "{}", {});
       res.json(schema);
     } catch (error) {
-      console.error("Error generating SEO schema:", error);
+      
       res.status(500).json({ error: "Failed to generate SEO schema" });
     }
   });
@@ -8884,7 +8891,7 @@ Return valid JSON-LD that can be embedded in a webpage.`,
       const enforced = enforceWriterEngineSEO(result);
       res.json({ ...enforced, _system: 'ai-writers' });
     } catch (error) {
-      console.error("Error generating hotel content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate hotel content";
       res.status(500).json({ error: message });
     }
@@ -8912,7 +8919,7 @@ Return valid JSON-LD that can be embedded in a webpage.`,
       const enforced = enforceWriterEngineSEO(result);
       res.json({ ...enforced, _system: 'ai-writers' });
     } catch (error) {
-      console.error("Error generating attraction content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate attraction content";
       res.status(500).json({ error: message });
     }
@@ -9006,10 +9013,10 @@ Output format:
       });
 
       const result = safeParseJson(response.choices[0].message.content || "{}", {});
-      console.log(`[AI Section] Generated ${sectionType} for "${title}" using ${provider}`);
+      
       res.json(result);
     } catch (error) {
-      console.error("Error generating section content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate section content";
       res.status(500).json({ error: message });
     }
@@ -9037,7 +9044,7 @@ Output format:
       const enforced = enforceWriterEngineSEO(result);
       res.json({ ...enforced, _system: 'ai-writers' });
     } catch (error) {
-      console.error("Error generating dining content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate dining content";
       res.status(500).json({ error: message });
     }
@@ -9065,7 +9072,7 @@ Output format:
       const enforced = enforceWriterEngineSEO(result);
       res.json({ ...enforced, _system: 'ai-writers' });
     } catch (error) {
-      console.error("Error generating district content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate district content";
       res.status(500).json({ error: message });
     }
@@ -9168,7 +9175,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       
       for (const provider of sortedProviders) {
         try {
-          console.log(`[AI Field] Trying provider: ${provider.name}`);
+          
           const result = await provider.generateCompletion({
             messages: [
               {
@@ -9185,10 +9192,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           });
           content = result.content;
           markProviderSuccess(provider.name); // Clear any failure states
-          console.log(`[AI Field] Success with provider: ${provider.name}`);
+          
           break;
         } catch (providerError: any) {
-          console.error(`[AI Field] Provider ${provider.name} failed:`, providerError);
+          
           lastError = providerError instanceof Error ? providerError : new Error(String(providerError));
           const isCreditsError = providerError?.status === 402 ||
                                  providerError?.message?.includes('credits') ||
@@ -9220,7 +9227,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
 
       res.json({ suggestions });
     } catch (error) {
-      console.error("Error generating field suggestions:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate field suggestions";
       res.status(500).json({ error: message });
     }
@@ -9244,7 +9251,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
   //
   //     res.json(result);
   //   } catch (error) {
-  //     console.error("Error generating transport content:", error);
+  //     
   //     const message = error instanceof Error ? error.message : "Failed to generate transport content";
   //     res.status(500).json({ error: message });
   //   }
@@ -9268,7 +9275,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
   //
   //     res.json(result);
   //   } catch (error) {
-  //     console.error("Error generating event content:", error);
+  //     
   //     const message = error instanceof Error ? error.message : "Failed to generate event content";
   //     res.status(500).json({ error: message });
   //   }
@@ -9292,7 +9299,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
   //
   //     res.json(result);
   //   } catch (error) {
-  //     console.error("Error generating itinerary content:", error);
+  //     
   //     const message = error instanceof Error ? error.message : "Failed to generate itinerary content";
   //     res.status(500).json({ error: message });
   //   }
@@ -9321,7 +9328,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       const enforced = enforceWriterEngineSEO(result);
       res.json({ ...enforced, _system: 'ai-writers' });
     } catch (error) {
-      console.error("Error generating article content:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate article content";
       res.status(500).json({ error: message });
     }
@@ -9392,7 +9399,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
         contentImageCount: Math.min(contentImageCount || 0, 5), // Limit to 5 content images
       };
 
-      console.log(`[AI Images] Starting generation for ${contentType}: "${title}" (OpenAI: ${hasOpenAI}, Replicate: ${hasReplicate})`);
+      
       let images: GeneratedImage[] = [];
 
       try {
@@ -9425,10 +9432,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       // Store images using unified ImageService
       const storedImages: GeneratedImage[] = [];
 
-      console.log(`[AI Images] Processing ${images.length} generated images...`);
+      
       for (const image of images) {
         try {
-          console.log(`[AI Images] Downloading and storing: ${image.filename}`);
+          
 
           // Use unified ImageService for download and storage
           const result = await uploadImageFromUrl(image.url, image.filename, {
@@ -9442,19 +9449,19 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
               ...image,
               url: result.image.url,
             });
-            console.log(`[AI Images] Stored: ${result.image.url}`);
+            
           } else {
-            console.error(`[AI Images] Failed to store ${image.filename}:`, (result as any).error);
+            
           }
         } catch (imgError) {
-          console.error(`[AI Images] Error storing image ${image.filename}:`, imgError);
+          
         }
       }
 
-      console.log(`Generated and stored ${storedImages.length} images for ${title}`);
+      
       res.json({ images: storedImages, count: storedImages.length });
     } catch (error) {
-      console.error("Error generating images:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate images";
       res.status(500).json({ error: message });
     }
@@ -9475,7 +9482,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       const validSizes = ['1024x1024', '1792x1024', '1024x1792'];
       const imageSize = validSizes.includes(size) ? size : '1792x1024';
 
-      console.log(`Generating single image with custom prompt`);
+      
       const imageUrl = await generateImage(prompt, {
         size: imageSize as '1024x1024' | '1792x1024' | '1024x1792',
         quality: quality === 'standard' ? 'standard' : 'hd',
@@ -9499,7 +9506,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
 
       res.json({ url: result.image.url, filename: result.image.filename });
     } catch (error) {
-      console.error("Error generating single image:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to generate image";
       res.status(500).json({ error: message });
     }
@@ -9568,7 +9575,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       const result = response.choices[0].message.content || "";
       res.json({ result, action });
     } catch (error) {
-      console.error("Error in AI block action:", error);
+      
       res.status(500).json({ error: "Failed to process AI action" });
     }
   });
@@ -9616,7 +9623,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       const result = response.choices[0].message.content || "";
       res.json({ response: result });
     } catch (error) {
-      console.error("Error in AI assistant:", error);
+      
       res.status(500).json({ error: "Failed to process assistant request" });
     }
   });
@@ -9631,7 +9638,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       });
       res.json(items);
     } catch (error) {
-      console.error("Error fetching topic bank items:", error);
+      
       res.status(500).json({ error: "Failed to fetch topic bank items" });
     }
   });
@@ -9644,7 +9651,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       const unusedCount = items.filter(item => !item.timesUsed || item.timesUsed === 0).length;
       res.json({ unusedCount, totalTopics: items.length });
     } catch (error) {
-      console.error("Error fetching topic bank stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch topic bank stats" });
     }
   });
@@ -9657,7 +9664,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       }
       res.json(item);
     } catch (error) {
-      console.error("Error fetching topic bank item:", error);
+      
       res.status(500).json({ error: "Failed to fetch topic bank item" });
     }
   });
@@ -9668,7 +9675,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       const item = await storage.createTopicBankItem(parsed);
       res.status(201).json(item);
     } catch (error) {
-      console.error("Error creating topic bank item:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -9684,7 +9691,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       }
       res.json(item);
     } catch (error) {
-      console.error("Error updating topic bank item:", error);
+      
       res.status(500).json({ error: "Failed to update topic bank item" });
     }
   });
@@ -9694,7 +9701,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       await storage.deleteTopicBankItem(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting topic bank item:", error);
+      
       res.status(500).json({ error: "Failed to delete topic bank item" });
     }
   });
@@ -9804,7 +9811,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
         deletedItems: deletedCount
       });
     } catch (error) {
-      console.error("Error merging duplicate topics:", error);
+      
       res.status(500).json({ error: "Failed to merge duplicate topics" });
     }
   });
@@ -9817,7 +9824,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       }
       res.json(item);
     } catch (error) {
-      console.error("Error incrementing topic usage:", error);
+      
       res.status(500).json({ error: "Failed to increment topic usage" });
     }
   });
@@ -9963,7 +9970,7 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
 
       // Validate and normalize blocks to ensure all required sections exist
       const blocks = validateAndNormalizeBlocks(generated.blocks || [], generated.title || topic.title);
-      console.log(`Validated ${blocks.length} content blocks with types: ${blocks.map(b => b.type).join(', ')}`);
+      
 
       // Create the content in the database
       const slug = generated.slug || topic.title
@@ -9975,7 +9982,7 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
       let heroImageUrl = null;
       let generatedImages: GeneratedImage[] = [];
       try {
-        console.log(`Generating images for article: ${generated.title || topic.title}`);
+        
         generatedImages = await generateContentImages({
           contentType: 'article',
           title: generated.title || topic.title,
@@ -9990,11 +9997,11 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
             // Persist to object storage (DALL-E URLs expire in ~1 hour)
             const persistedUrl = await persistImageToStorage(heroImage.url, heroImage.filename);
             heroImageUrl = persistedUrl || heroImage.url; // Fallback to temp URL if persist fails
-            console.log(`Hero image persisted: ${heroImageUrl}`);
+            
           }
         }
       } catch (imageError) {
-        console.error("Error generating images for article:", imageError);
+        
         // Continue without images - don't fail the whole article generation
       }
 
@@ -10021,7 +10028,7 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
         message: "Article generated successfully from topic"
       });
     } catch (error) {
-      console.error("Error generating article from topic:", error);
+      
       res.status(500).json({ error: "Failed to generate article from topic" });
     }
   });
@@ -10163,7 +10170,7 @@ RULES:
           }
         }
       } catch (imageError) {
-        console.error("Error generating images for news article:", imageError);
+        
       }
 
       // Create news article
@@ -10193,7 +10200,7 @@ RULES:
         message: "News article generated and topic removed from bank"
       });
     } catch (error) {
-      console.error("Error generating news from topic:", error);
+      
       res.status(500).json({ error: "Failed to generate news from topic" });
     }
   });
@@ -10273,7 +10280,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
           // Generate hero image for the article and persist to storage
           let heroImageUrl = null;
           try {
-            console.log(`Generating images for batch article: ${generated.title || topic.title}`);
+            
             const batchImages = await generateContentImages({
               contentType: 'article',
               title: generated.title || topic.title,
@@ -10291,7 +10298,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
               }
             }
           } catch (imageError) {
-            console.error(`Error generating images for batch article ${topic.title}:`, imageError);
+            
           }
 
           const content = await storage.createContent({
@@ -10310,7 +10317,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
           results.push({ topicId: topic.id, topicTitle: topic.title, contentId: content.id, hasImage: !!heroImageUrl, success: true });
         } catch (err) {
-          console.error(`Error generating from topic ${topic.id}:`, err);
+          
           results.push({ topicId: topic.id, topicTitle: topic.title, success: false, error: (err as Error).message });
         }
       }
@@ -10321,7 +10328,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         message: `Generated ${results.filter(r => r.success).length} of ${sortedTopics.length} articles`
       });
     } catch (error) {
-      console.error("Error in batch topic generation:", error);
+      
       res.status(500).json({ error: "Failed to batch generate from topics" });
     }
   });
@@ -10337,7 +10344,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
       res.json(items);
     } catch (error) {
-      console.error("Error fetching keywords:", error);
+      
       res.status(500).json({ error: "Failed to fetch keywords" });
     }
   });
@@ -10350,7 +10357,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(item);
     } catch (error) {
-      console.error("Error fetching keyword:", error);
+      
       res.status(500).json({ error: "Failed to fetch keyword" });
     }
   });
@@ -10361,7 +10368,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const item = await storage.createKeyword(parsed);
       res.status(201).json(item);
     } catch (error) {
-      console.error("Error creating keyword:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -10377,7 +10384,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(item);
     } catch (error) {
-      console.error("Error updating keyword:", error);
+      
       res.status(500).json({ error: "Failed to update keyword" });
     }
   });
@@ -10387,7 +10394,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.deleteKeyword(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting keyword:", error);
+      
       res.status(500).json({ error: "Failed to delete keyword" });
     }
   });
@@ -10400,7 +10407,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(item);
     } catch (error) {
-      console.error("Error incrementing keyword usage:", error);
+      
       res.status(500).json({ error: "Failed to increment keyword usage" });
     }
   });
@@ -10456,7 +10463,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         totalErrors: results.errors.length,
       });
     } catch (error) {
-      console.error("Error bulk importing keywords:", error);
+      
       res.status(500).json({ error: "Failed to bulk import keywords" });
     }
   });
@@ -10467,7 +10474,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const scheduledContent = await storage.getScheduledContentToPublish();
       res.json(scheduledContent);
     } catch (error) {
-      console.error("Error fetching scheduled content:", error);
+      
       res.status(500).json({ error: "Failed to fetch scheduled content" });
     }
   });
@@ -10512,19 +10519,19 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
           userAgent: "scheduled-publishing-job",
         });
 
-        console.log(`Auto-published scheduled content: ${content.title} (ID: ${content.id})`);
+        
       }
       if (contentToPublish.length > 0) {
-        console.log(`Scheduled publishing: Published ${contentToPublish.length} item(s)`);
+        
       }
     } catch (error) {
-      console.error("Error in scheduled publishing job:", error);
+      
     }
   };
 
   // DISABLED: Scheduled publishing automation disabled for UI-only mode
   // To re-enable: runScheduledPublishing(); setInterval(runScheduledPublishing, 60 * 1000);
-  console.log("[Scheduler] Content scheduling is disabled");
+  
 
   // =====================
   // User Management Routes (Admin only)
@@ -10535,7 +10542,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const users = await storage.getUsers();
       res.json(users.map(u => ({ id: u.id, username: u.username, firstName: u.firstName, lastName: u.lastName, email: u.email, role: u.role, isActive: u.isActive, createdAt: u.createdAt, profileImageUrl: u.profileImageUrl })));
     } catch (error) {
-      console.error("Error fetching users:", error);
+      
       res.status(500).json({ error: "Failed to fetch users" });
     }
   });
@@ -10560,7 +10567,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         profileImageUrl: user.profileImageUrl 
       });
     } catch (error) {
-      console.error("Error fetching user:", error);
+      
       res.status(500).json({ error: "Failed to fetch user" });
     }
   });
@@ -10637,7 +10644,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         createdAt: user.createdAt 
       });
     } catch (error) {
-      console.error("Error creating user:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -10730,7 +10737,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ id: user.id, username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role, isActive: user.isActive, createdAt: user.createdAt });
     } catch (error) {
-      console.error("Error updating user:", error);
+      
       res.status(500).json({ error: "Failed to update user" });
     }
   });
@@ -10749,7 +10756,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting user:", error);
+      
       res.status(500).json({ error: "Failed to delete user" });
     }
   });
@@ -10782,13 +10789,13 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             deletedCount++;
           }
         } catch (err) {
-          console.error(`Failed to delete user ${id}:`, err);
+          
         }
       }
 
       res.json({ success: true, deletedCount });
     } catch (error) {
-      console.error("Error bulk deleting users:", error);
+      
       res.status(500).json({ error: "Failed to bulk delete users" });
     }
   });
@@ -10803,7 +10810,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const writers = await storage.getAllWriters();
       res.json({ writers, total: writers.length });
     } catch (error) {
-      console.error("Error fetching writers:", error);
+      
       res.status(500).json({ error: "Failed to fetch writers" });
     }
   });
@@ -10814,7 +10821,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const stats = await storage.getWriterStats();
       res.json({ stats });
     } catch (error) {
-      console.error("Error fetching writer stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch writer stats" });
     }
   });
@@ -10828,7 +10835,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(writer);
     } catch (error) {
-      console.error("Error fetching writer:", error);
+      
       res.status(500).json({ error: "Failed to fetch writer" });
     }
   });
@@ -10839,7 +10846,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const count = await storage.seedWritersFromConfig();
       res.json({ success: true, message: `Seeded ${count} writers` });
     } catch (error) {
-      console.error("Error seeding writers:", error);
+      
       res.status(500).json({ error: "Failed to seed writers" });
     }
   });
@@ -10875,7 +10882,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(updated);
     } catch (error) {
-      console.error("Error updating writer:", error);
+      
       res.status(500).json({ error: "Failed to update writer" });
     }
   });
@@ -10903,7 +10910,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(promotionsWithContent);
     } catch (error) {
-      console.error("Error fetching homepage promotions:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage promotions" });
     }
   });
@@ -10914,7 +10921,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const promotion = await storage.createHomepagePromotion(parsed);
       res.status(201).json(promotion);
     } catch (error) {
-      console.error("Error creating homepage promotion:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -10939,7 +10946,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(promotion);
     } catch (error) {
-      console.error("Error updating homepage promotion:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -10952,7 +10959,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.deleteHomepagePromotion(req.params.id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting homepage promotion:", error);
+      
       res.status(500).json({ error: "Failed to delete homepage promotion" });
     }
   });
@@ -10968,7 +10975,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.reorderHomepagePromotions(section, orderedIds);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error reordering homepage promotions:", error);
+      
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation error", details: error.errors });
       }
@@ -10984,7 +10991,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.get("/api/admin/homepage/sections", requirePermission("canEdit"), async (req, res) => {
     try {
       const locale = (req.query.locale as string) || "en";
-      const sections = await db.select().from(homepageSections).orderBy(homepageSections.sortOrder);
+      const sections = await db.select().from(homepageSections).orderBy(homepageSections.sortOrder).limit(100);
       
       // Apply translations
       const translationsMap = await getBulkTranslations("homepage_section", sections.map(s => s.id), locale);
@@ -10999,7 +11006,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(translatedSections);
     } catch (error) {
-      console.error("Error fetching homepage sections:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage sections" });
     }
   });
@@ -11028,7 +11035,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         subtitle: trans.subtitle ?? section?.subtitle,
       });
     } catch (error) {
-      console.error("Error updating homepage section:", error);
+      
       res.status(500).json({ error: "Failed to update homepage section" });
     }
   });
@@ -11062,7 +11069,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         res.json([]);
       }
     } catch (error) {
-      console.error("Error listing images:", error);
+      
       res.status(500).json({ error: "Failed to list images" });
     }
   });
@@ -11088,7 +11095,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         res.json([]);
       }
     } catch (error) {
-      console.error("Error listing hero images:", error);
+      
       res.status(500).json({ error: "Failed to list hero images" });
     }
   });
@@ -11163,7 +11170,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       const url = `/${targetFolder}/${finalFilename}`;
 
-      console.log(`[Homepage Image Upload] Saved: ${finalFilename} to ${targetFolder}`);
+      
 
       res.json({
         success: true,
@@ -11175,7 +11182,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         folder: targetFolder
       });
     } catch (error) {
-      console.error("[Homepage Image Upload] Error:", error);
+      
       res.status(500).json({ error: "Failed to upload image" });
     }
   });
@@ -11184,7 +11191,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.get("/api/admin/homepage/hero-slides", requirePermission("canEdit"), async (req, res) => {
     try {
       const locale = (req.query.locale as string) || "en";
-      const slides = await db.select().from(heroSlides).orderBy(heroSlides.sortOrder);
+      const slides = await db.select().from(heroSlides).orderBy(heroSlides.sortOrder).limit(50);
       
       const translationsMap = await getBulkTranslations("hero_slide", slides.map(s => s.id), locale);
       const translatedSlides = slides.map(slide => {
@@ -11199,7 +11206,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(translatedSlides);
     } catch (error) {
-      console.error("Error fetching hero slides:", error);
+      
       res.status(500).json({ error: "Failed to fetch hero slides" });
     }
   });
@@ -11216,7 +11223,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ ...slide, headline, subheadline, ctaText });
     } catch (error) {
-      console.error("Error creating hero slide:", error);
+      
       res.status(500).json({ error: "Failed to create hero slide" });
     }
   });
@@ -11243,7 +11250,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         ctaText: trans.ctaText ?? slide?.ctaText,
       });
     } catch (error) {
-      console.error("Error updating hero slide:", error);
+      
       res.status(500).json({ error: "Failed to update hero slide" });
     }
   });
@@ -11255,7 +11262,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await db.delete(heroSlides).where(eq(heroSlides.id, id));
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting hero slide:", error);
+      
       res.status(500).json({ error: "Failed to delete hero slide" });
     }
   });
@@ -11264,7 +11271,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.get("/api/admin/homepage/cards", requirePermission("canEdit"), async (req, res) => {
     try {
       const locale = (req.query.locale as string) || "en";
-      const cards = await db.select().from(homepageCards).orderBy(homepageCards.sortOrder);
+      const cards = await db.select().from(homepageCards).orderBy(homepageCards.sortOrder).limit(100);
       
       const translationsMap = await getBulkTranslations("homepage_card", cards.map(c => c.id), locale);
       const translatedCards = cards.map(card => {
@@ -11278,7 +11285,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(translatedCards);
     } catch (error) {
-      console.error("Error fetching homepage cards:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage cards" });
     }
   });
@@ -11293,7 +11300,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ ...card, title, subtitle });
     } catch (error) {
-      console.error("Error creating homepage card:", error);
+      
       res.status(500).json({ error: "Failed to create homepage card" });
     }
   });
@@ -11319,7 +11326,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         subtitle: trans.subtitle ?? card?.subtitle,
       });
     } catch (error) {
-      console.error("Error updating homepage card:", error);
+      
       res.status(500).json({ error: "Failed to update homepage card" });
     }
   });
@@ -11331,7 +11338,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await db.delete(homepageCards).where(eq(homepageCards.id, id));
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting homepage card:", error);
+      
       res.status(500).json({ error: "Failed to delete homepage card" });
     }
   });
@@ -11340,7 +11347,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.get("/api/admin/homepage/experience-categories", requirePermission("canEdit"), async (req, res) => {
     try {
       const locale = (req.query.locale as string) || "en";
-      const categories = await db.select().from(experienceCategories).orderBy(experienceCategories.sortOrder);
+      const categories = await db.select().from(experienceCategories).orderBy(experienceCategories.sortOrder).limit(50);
       
       const translationsMap = await getBulkTranslations("experience_category", categories.map(c => c.id), locale);
       const translatedCategories = categories.map(cat => {
@@ -11354,7 +11361,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(translatedCategories);
     } catch (error) {
-      console.error("Error fetching experience categories:", error);
+      
       res.status(500).json({ error: "Failed to fetch experience categories" });
     }
   });
@@ -11369,7 +11376,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ ...category, name, description });
     } catch (error) {
-      console.error("Error creating experience category:", error);
+      
       res.status(500).json({ error: "Failed to create experience category" });
     }
   });
@@ -11395,7 +11402,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         description: trans.description ?? cat?.description,
       });
     } catch (error) {
-      console.error("Error updating experience category:", error);
+      
       res.status(500).json({ error: "Failed to update experience category" });
     }
   });
@@ -11407,7 +11414,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await db.delete(experienceCategories).where(eq(experienceCategories.id, id));
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting experience category:", error);
+      
       res.status(500).json({ error: "Failed to delete experience category" });
     }
   });
@@ -11437,7 +11444,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(translatedDestinations);
     } catch (error) {
-      console.error("Error fetching destinations:", error);
+      
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -11473,7 +11480,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ ...destination, name, summary });
     } catch (error) {
-      console.error("Error creating destination:", error);
+      
       res.status(500).json({ error: "Failed to create destination" });
     }
   });
@@ -11504,7 +11511,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         summary: trans.summary ?? dest?.summary,
       });
     } catch (error) {
-      console.error("Error updating destination:", error);
+      
       res.status(500).json({ error: "Failed to update destination" });
     }
   });
@@ -11516,7 +11523,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await db.delete(destinations).where(eq(destinations.id, id));
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting destination:", error);
+      
       res.status(500).json({ error: "Failed to delete destination" });
     }
   });
@@ -11558,7 +11565,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         },
       });
     } catch (error) {
-      console.error("Error analyzing image:", error);
+      
       const message = error instanceof Error ? error.message : "Failed to analyze image";
       res.status(500).json({ error: message });
     }
@@ -11567,13 +11574,13 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   // Auto Meta Generator - Comprehensive metadata from image and filename
   // Returns structured errors for specific failure reasons
   app.post("/api/admin/auto-meta", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
-    console.log("[Auto Meta API] Request received");
+    
     
     const { imageUrl, filename } = req.body;
     
     // Request validation
     if (!imageUrl) {
-      console.error("[Auto Meta API] Missing imageUrl in request body");
+      
       return res.status(400).json({ 
         success: false,
         error: {
@@ -11583,21 +11590,21 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
     }
     
-    console.log("[Auto Meta API] imageUrl:", imageUrl.substring(0, 80));
-    console.log("[Auto Meta API] filename:", filename || "(not provided)");
+    
+    
     
     try {
       const { visualSearch } = await import("./ai/visual-search");
       const result = await (visualSearch as any).generateAutoMeta?.(imageUrl, filename) || { success: false, error: { code: 'NOT_IMPLEMENTED', message: 'generateAutoMeta not available' } };
       
       if (result.success) {
-        console.log("[Auto Meta API] Success - returning metadata");
+        
         return res.json({
           success: true,
           meta: result.meta,
         });
       } else {
-        console.error("[Auto Meta API] Failed:", result.error.code, result.error.message);
+        
         // Return the specific error to the frontend
         return res.status(500).json({
           success: false,
@@ -11605,7 +11612,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         });
       }
     } catch (error) {
-      console.error("[Auto Meta API] Unexpected exception:", error);
+      
       const message = error instanceof Error ? error.message : "Unexpected error";
       return res.status(500).json({ 
         success: false,
@@ -11622,7 +11629,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.get("/api/admin/homepage/region-links", requirePermission("canEdit"), async (req, res) => {
     try {
       const locale = (req.query.locale as string) || "en";
-      const links = await db.select().from(regionLinks).orderBy(regionLinks.sortOrder);
+      const links = await db.select().from(regionLinks).orderBy(regionLinks.sortOrder).limit(100);
       
       const translationsMap = await getBulkTranslations("region_link", links.map(l => l.id), locale);
       const translatedLinks = links.map(link => {
@@ -11635,7 +11642,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(translatedLinks);
     } catch (error) {
-      console.error("Error fetching region links:", error);
+      
       res.status(500).json({ error: "Failed to fetch region links" });
     }
   });
@@ -11650,7 +11657,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ ...link, name });
     } catch (error) {
-      console.error("Error creating region link:", error);
+      
       res.status(500).json({ error: "Failed to create region link" });
     }
   });
@@ -11675,7 +11682,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         name: trans.name ?? link?.name,
       });
     } catch (error) {
-      console.error("Error updating region link:", error);
+      
       res.status(500).json({ error: "Failed to update region link" });
     }
   });
@@ -11687,7 +11694,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await db.delete(regionLinks).where(eq(regionLinks.id, id));
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting region link:", error);
+      
       res.status(500).json({ error: "Failed to delete region link" });
     }
   });
@@ -11709,7 +11716,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         helperText: trans.helperText ?? cta.helperText,
       });
     } catch (error) {
-      console.error("Error fetching homepage CTA:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage CTA" });
     }
   });
@@ -11738,7 +11745,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         helperText: trans.helperText ?? cta?.helperText,
       });
     } catch (error) {
-      console.error("Error updating homepage CTA:", error);
+      
       res.status(500).json({ error: "Failed to update homepage CTA" });
     }
   });
@@ -11759,7 +11766,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         ogDescription: trans.ogDescription ?? meta.ogDescription,
       });
     } catch (error) {
-      console.error("Error fetching homepage SEO meta:", error);
+      
       res.status(500).json({ error: "Failed to fetch homepage SEO meta" });
     }
   });
@@ -11787,7 +11794,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         ogDescription: trans.ogDescription ?? meta?.ogDescription,
       });
     } catch (error) {
-      console.error("Error updating homepage SEO meta:", error);
+      
       res.status(500).json({ error: "Failed to update homepage SEO meta" });
     }
   });
@@ -11877,13 +11884,13 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             translatedCount++;
           } catch (error) {
             const errMsg = `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`;
-            console.error(errMsg, error);
+            
             errors.push(errMsg);
           }
         }
       }
       
-      console.log(`[Generate Translations] Completed: ${translatedCount} translations, ${skippedCount} skipped across ${targetLocales.length} locales`);
+      
       
       res.json({
         success: true,
@@ -11894,7 +11901,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         message: skippedCount > 0 ? `${skippedCount} existing translations preserved (use overwrite=true to replace)` : undefined,
       });
     } catch (error) {
-      console.error("Error generating translations:", error);
+      
       res.status(500).json({ error: "Failed to generate translations" });
     }
   });
@@ -11905,7 +11912,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const overview = await storage.getAnalyticsOverview();
       res.json(overview);
     } catch (error) {
-      console.error("Error fetching analytics overview:", error);
+      
       res.status(500).json({ error: "Failed to fetch analytics overview" });
     }
   });
@@ -11916,7 +11923,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const views = await storage.getViewsOverTime(Math.min(days, 90));
       res.json(views);
     } catch (error) {
-      console.error("Error fetching views over time:", error);
+      
       res.status(500).json({ error: "Failed to fetch views over time" });
     }
   });
@@ -11927,7 +11934,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const topContent = await storage.getTopContent(Math.min(limit, 50));
       res.json(topContent);
     } catch (error) {
-      console.error("Error fetching top content:", error);
+      
       res.status(500).json({ error: "Failed to fetch top content" });
     }
   });
@@ -11937,7 +11944,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const byType = await storage.getViewsByContentType();
       res.json(byType);
     } catch (error) {
-      console.error("Error fetching views by content type:", error);
+      
       res.status(500).json({ error: "Failed to fetch views by content type" });
     }
   });
@@ -11952,7 +11959,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
       res.json({ success: true });
     } catch (error) {
-      console.error("Error recording content view:", error);
+      
       res.json({ success: true });
     }
   });
@@ -11994,7 +12001,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         consentGiven: true,
       });
       
-      console.log("[Property Lead] New lead saved:", lead.id, email);
+      
       
       // Send email notification to admin
       const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL;
@@ -12113,16 +12120,16 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 </html>
               `,
             });
-            console.log("[Property Lead] Email notification sent to:", notificationEmail);
+            
           } catch (emailError) {
-            console.error("[Property Lead] Failed to send email notification:", emailError);
+            
           }
         }
       }
       
       res.json({ success: true, message: "Thank you! Our team will contact you within 24 hours.", leadId: lead.id });
     } catch (error) {
-      console.error("Error saving property lead:", error);
+      
       res.status(500).json({ error: "Failed to submit. Please try again." });
     }
   });
@@ -12202,10 +12209,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       // Send confirmation email
       await sendConfirmationEmail(email, confirmToken, firstName || undefined);
       
-      console.log("[Newsletter] New subscriber saved (pending confirmation):", email);
+      
       res.json({ success: true, message: "Please check your email to confirm your subscription" });
     } catch (error) {
-      console.error("Error subscribing to newsletter:", error);
+      
       res.status(500).json({ error: "Failed to subscribe" });
     }
   });
@@ -12256,15 +12263,15 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         } as any)
         .where(eq(newsletterSubscribers.id, subscriber.id));
       
-      console.log("[Newsletter] Subscription confirmed:", subscriber.email);
+      
       
       // Send welcome email (fire and forget - don't block response)
       sendWelcomeEmail(subscriber.email, subscriber.firstName || undefined, subscriber.id)
-        .catch(err => console.error("[Newsletter] Welcome email error:", err));
+        .catch(err => {});
       
       res.send(renderConfirmationPage(true, "Thank you! Your subscription has been confirmed."));
     } catch (error) {
-      console.error("Error confirming subscription:", error);
+      
       res.status(500).send(renderConfirmationPage(false, "Something went wrong. Please try again."));
     }
   });
@@ -12312,10 +12319,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         .set({ unsubscribedAt: new Date() } as any)
         .where(eq(newsletterSubscribers.id, subscriber.id));
       
-      console.log("[Newsletter] Unsubscribed:", subscriber.email);
+      
       res.send(renderUnsubscribePage(true, "You have been successfully unsubscribed from our newsletter."));
     } catch (error) {
-      console.error("Error unsubscribing:", error);
+      
       res.status(500).send(renderUnsubscribePage(false, "Something went wrong. Please try again."));
     }
   });
@@ -12328,7 +12335,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const subscribers = await storage.getNewsletterSubscribers(filters);
       res.json(subscribers);
     } catch (error) {
-      console.error("Error fetching newsletter subscribers:", error);
+      
       res.status(500).json({ error: "Failed to fetch subscribers" });
     }
   });
@@ -12346,13 +12353,13 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const deleted = await storage.deleteNewsletterSubscriber(id);
       if (deleted) {
         await logAuditEvent(req, "delete", "newsletter_subscriber", id, `Deleted newsletter subscriber: ${subscriber.email}`, { email: subscriber.email });
-        console.log("[Newsletter] Subscriber deleted (right to be forgotten):", subscriber.email);
+        
         res.json({ success: true, message: "Subscriber deleted successfully" });
       } else {
         res.status(500).json({ error: "Failed to delete subscriber" });
       }
     } catch (error) {
-      console.error("Error deleting subscriber:", error);
+      
       res.status(500).json({ error: "Failed to delete subscriber" });
     }
   });
@@ -12378,7 +12385,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "newsletter_subscriber", id, `Updated subscriber preferences: ${subscriber.email}`);
       res.json(updated);
     } catch (error) {
-      console.error("Error updating subscriber:", error);
+      
       res.status(500).json({ error: "Failed to update subscriber" });
     }
   });
@@ -12394,7 +12401,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const templates = await storage.getEmailTemplates(filters);
       res.json(templates);
     } catch (error) {
-      console.error("Error fetching email templates:", error);
+      
       res.status(500).json({ error: "Failed to fetch templates" });
     }
   });
@@ -12407,7 +12414,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(template);
     } catch (error) {
-      console.error("Error fetching template:", error);
+      
       res.status(500).json({ error: "Failed to fetch template" });
     }
   });
@@ -12423,7 +12430,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "create", "campaign", template.id, `Created email template: ${template.name}`);
       res.status(201).json(template);
     } catch (error) {
-      console.error("Error creating template:", error);
+      
       res.status(500).json({ error: "Failed to create template" });
     }
   });
@@ -12439,7 +12446,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "campaign", id, `Updated email template: ${template?.name}`);
       res.json(template);
     } catch (error) {
-      console.error("Error updating template:", error);
+      
       res.status(500).json({ error: "Failed to update template" });
     }
   });
@@ -12455,7 +12462,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "delete", "campaign", id, `Deleted email template: ${existing.name}`);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting template:", error);
+      
       res.status(500).json({ error: "Failed to delete template" });
     }
   });
@@ -12471,7 +12478,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const tests = await storage.getNewsletterAbTests(filters);
       res.json(tests);
     } catch (error) {
-      console.error("Error fetching A/B tests:", error);
+      
       res.status(500).json({ error: "Failed to fetch A/B tests" });
     }
   });
@@ -12484,7 +12491,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(test);
     } catch (error) {
-      console.error("Error fetching A/B test:", error);
+      
       res.status(500).json({ error: "Failed to fetch A/B test" });
     }
   });
@@ -12501,7 +12508,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "create", "campaign", test.id, `Created A/B test: ${test.name}`);
       res.status(201).json(test);
     } catch (error) {
-      console.error("Error creating A/B test:", error);
+      
       res.status(500).json({ error: "Failed to create A/B test" });
     }
   });
@@ -12517,7 +12524,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "campaign", id, `Updated A/B test: ${test?.name}`);
       res.json(test);
     } catch (error) {
-      console.error("Error updating A/B test:", error);
+      
       res.status(500).json({ error: "Failed to update A/B test" });
     }
   });
@@ -12541,7 +12548,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "campaign", id, `Started A/B test: ${test.name}`);
       res.json(updated);
     } catch (error) {
-      console.error("Error starting A/B test:", error);
+      
       res.status(500).json({ error: "Failed to start A/B test" });
     }
   });
@@ -12569,7 +12576,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "campaign", id, `Selected winner for A/B test: ${test.name} - Winner: Variant ${winnerId.toUpperCase()}`);
       res.json(updated);
     } catch (error) {
-      console.error("Error selecting winner:", error);
+      
       res.status(500).json({ error: "Failed to select winner" });
     }
   });
@@ -12585,7 +12592,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "delete", "campaign", id, `Deleted A/B test: ${existing.name}`);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting A/B test:", error);
+      
       res.status(500).json({ error: "Failed to delete A/B test" });
     }
   });
@@ -12599,7 +12606,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const segments = await storage.getSubscriberSegments();
       res.json(segments);
     } catch (error) {
-      console.error("Error fetching segments:", error);
+      
       res.status(500).json({ error: "Failed to fetch segments" });
     }
   });
@@ -12613,7 +12620,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const conditions = await storage.getSegmentConditions(req.params.id);
       res.json({ ...segment, conditions });
     } catch (error) {
-      console.error("Error fetching segment:", error);
+      
       res.status(500).json({ error: "Failed to fetch segment" });
     }
   });
@@ -12640,7 +12647,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "create", "campaign", segment.id, `Created subscriber segment: ${segment.name}`);
       res.status(201).json(segment);
     } catch (error) {
-      console.error("Error creating segment:", error);
+      
       res.status(500).json({ error: "Failed to create segment" });
     }
   });
@@ -12656,7 +12663,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "campaign", id, `Updated subscriber segment: ${segment?.name}`);
       res.json(segment);
     } catch (error) {
-      console.error("Error updating segment:", error);
+      
       res.status(500).json({ error: "Failed to update segment" });
     }
   });
@@ -12672,7 +12679,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "delete", "campaign", id, `Deleted subscriber segment: ${existing.name}`);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting segment:", error);
+      
       res.status(500).json({ error: "Failed to delete segment" });
     }
   });
@@ -12696,7 +12703,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         bouncedSubscribers: bouncedSubscribers.slice(0, 50),
       });
     } catch (error) {
-      console.error("Error fetching bounce stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch bounce statistics" });
     }
   });
@@ -12755,7 +12762,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         ),
       });
     } catch (error) {
-      console.error("Error fetching newsletter segments:", error);
+      
       res.status(500).json({ error: "Failed to fetch segments" });
     }
   });
@@ -12897,7 +12904,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         } : null,
       });
     } catch (error) {
-      console.error("Error sending newsletter:", error);
+      
       res.status(500).json({ error: "Failed to send newsletter" });
     }
   });
@@ -12908,7 +12915,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
     // If no secret configured, log warning but allow in development
     if (!webhookSecret) {
-      console.warn("[Resend Webhook] RESEND_WEBHOOK_SECRET not configured - signature verification skipped");
+      
       return process.env.NODE_ENV !== "production";
     }
 
@@ -12917,7 +12924,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     const svixSignature = req.headers["svix-signature"] as string;
 
     if (!svixId || !svixTimestamp || !svixSignature) {
-      console.warn("[Resend Webhook] Missing Svix headers");
+      
       return false;
     }
 
@@ -12925,7 +12932,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     const timestampSeconds = parseInt(svixTimestamp, 10);
     const now = Math.floor(Date.now() / 1000);
     if (Math.abs(now - timestampSeconds) > 300) {
-      console.warn("[Resend Webhook] Timestamp too old or in future");
+      
       return false;
     }
 
@@ -12953,7 +12960,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
     }
 
-    console.warn("[Resend Webhook] Signature verification failed");
+    
     return false;
   };
 
@@ -12963,7 +12970,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     try {
       // Verify webhook signature before processing
       if (!verifyResendWebhookSignature(req)) {
-        console.error("[Resend Webhook] Invalid signature - rejecting request");
+        
         return res.status(401).json({ error: "Invalid webhook signature" });
       }
 
@@ -12976,17 +12983,17 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const eventData = event.data;
 
       if (!eventType || !eventData) {
-        console.log("[Resend Webhook] Invalid event received:", event);
+        
         return res.status(400).json({ error: "Invalid event format" });
       }
       
-      console.log(`[Resend Webhook] Received event: ${eventType}`);
+      
       
       // Extract email from event data
       const recipientEmail = eventData.to?.[0] || eventData.email;
       
       if (!recipientEmail) {
-        console.log("[Resend Webhook] No recipient email in event");
+        
         return res.status(200).json({ received: true });
       }
       
@@ -13007,7 +13014,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             consentLog,
             isActive: false,
           });
-          console.log(`[Resend Webhook] Subscriber marked as bounced: ${recipientEmail}`);
+          
         }
       }
 
@@ -13028,14 +13035,14 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             consentLog,
             isActive: false,
           });
-          console.log(`[Resend Webhook] Subscriber marked as complained (spam): ${recipientEmail}`);
+          
         }
       }
       
       // Acknowledge receipt of webhook
       res.status(200).json({ received: true });
     } catch (error) {
-      console.error("[Resend Webhook] Error processing webhook:", error);
+      
       // Return 200 anyway to prevent Resend from retrying
       res.status(200).json({ received: true, error: "Processing error" });
     }
@@ -13047,7 +13054,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const campaigns = await storage.getCampaigns();
       res.json(campaigns);
     } catch (error) {
-      console.error("Error fetching campaigns:", error);
+      
       res.status(500).json({ error: "Failed to fetch campaigns" });
     }
   });
@@ -13061,7 +13068,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(campaign);
     } catch (error) {
-      console.error("Error fetching campaign:", error);
+      
       res.status(500).json({ error: "Failed to fetch campaign" });
     }
   });
@@ -13075,10 +13082,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       };
       const campaign = await storage.createCampaign(campaignData);
       await logAuditEvent(req, "create", "campaign", campaign.id, `Created campaign: ${campaign.name}`, undefined, { name: campaign.name, subject: campaign.subject });
-      console.log("[Campaigns] Created campaign:", campaign.name);
+      
       res.status(201).json(campaign);
     } catch (error) {
-      console.error("Error creating campaign:", error);
+      
       res.status(500).json({ error: "Failed to create campaign" });
     }
   });
@@ -13098,10 +13105,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       if (campaign) {
         await logAuditEvent(req, "update", "campaign", campaign.id, `Updated campaign: ${campaign.name}`, { name: existing.name, subject: existing.subject }, { name: campaign.name, subject: campaign.subject });
       }
-      console.log("[Campaigns] Updated campaign:", campaign?.name);
+      
       res.json(campaign);
     } catch (error) {
-      console.error("Error updating campaign:", error);
+      
       res.status(500).json({ error: "Failed to update campaign" });
     }
   });
@@ -13119,10 +13126,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       await storage.deleteCampaign(id);
       await logAuditEvent(req, "delete", "campaign", id, `Deleted campaign: ${existing.name}`, { name: existing.name, subject: existing.subject });
-      console.log("[Campaigns] Deleted campaign:", existing.name);
+      
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting campaign:", error);
+      
       res.status(500).json({ error: "Failed to delete campaign" });
     }
   });
@@ -13134,7 +13141,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const events = await storage.getCampaignEvents(id);
       res.json(events);
     } catch (error) {
-      console.error("Error fetching campaign events:", error);
+      
       res.status(500).json({ error: "Failed to fetch campaign events" });
     }
   });
@@ -13172,7 +13179,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         totalRecipients: subscribers.length,
       });
       
-      console.log(`[Campaigns] Starting send for campaign ${campaign.name} to ${subscribers.length} subscribers`);
+      
       
       const baseUrl = process.env.REPLIT_DEV_DOMAIN 
         ? `https://${process.env.REPLIT_DEV_DOMAIN}`
@@ -13250,7 +13257,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
           
           sentCount++;
         } catch (emailError) {
-          console.error(`[Campaigns] Failed to send to ${subscriber.email}:`, emailError);
+          
           failedCount++;
           
           // Record failed event
@@ -13272,7 +13279,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         totalSent: sentCount,
       });
       
-      console.log(`[Campaigns] Campaign ${campaign.name} completed: ${sentCount} sent, ${failedCount} failed`);
+      
       
       res.json({
         success: true,
@@ -13281,7 +13288,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         total: subscribers.length,
       });
     } catch (error) {
-      console.error("Error sending campaign:", error);
+      
       
       // Try to update status to failed
       try {
@@ -13318,7 +13325,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       //   });
       // }
       
-      console.log(`[Tracking] Open recorded: campaign=${campaignId}, subscriber=${subscriberId}`);
+      
       
       // Return a 1x1 transparent GIF
       const transparentGif = Buffer.from(
@@ -13329,7 +13336,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
       res.send(transparentGif);
     } catch (error) {
-      console.error("[Tracking] Error recording open:", error);
+      
       // Still return the pixel even on error
       const transparentGif = Buffer.from(
         "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
@@ -13372,7 +13379,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
 
       if (!isValidRedirect) {
-        console.warn(`[Tracking] Blocked redirect to untrusted URL: ${url}`);
+        
         return res.status(400).send("Invalid redirect URL");
       }
 
@@ -13388,12 +13395,12 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         },
       });
 
-      console.log(`[Tracking] Click recorded: campaign=${campaignId}, subscriber=${subscriberId}, url=${url}`);
+      
 
       // Redirect to the validated URL
       res.redirect(url);
     } catch (error) {
-      console.error("[Tracking] Error recording click:", error);
+      
       res.status(500).send("Tracking error");
     }
   });
@@ -13414,7 +13421,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
       res.json({ logs, total: logs.length });
     } catch (error) {
-      console.error("Error fetching audit logs:", error);
+      
       res.status(500).json({ error: "Failed to fetch audit logs" });
     }
   });
@@ -13425,7 +13432,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const blockedIps = getBlockedIps();
       res.json({ blockedIps, total: blockedIps.length });
     } catch (error) {
-      console.error("Error fetching blocked IPs:", error);
+      
       res.status(500).json({ error: "Failed to fetch blocked IPs" });
     }
   });
@@ -13440,7 +13447,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const metrics = getPerformanceMetrics();
       res.json(metrics);
     } catch (error) {
-      console.error("Error fetching performance metrics:", error);
+      
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -13455,7 +13462,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const stats = await jobQueue.getStats();
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching job stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch job statistics" });
     }
   });
@@ -13471,7 +13478,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const jobs = await jobQueue.getJobsByStatus(status as any);
       res.json({ jobs, total: jobs.length });
     } catch (error) {
-      console.error("Error fetching jobs:", error);
+      
       res.status(500).json({ error: "Failed to fetch jobs" });
     }
   });
@@ -13485,7 +13492,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(job);
     } catch (error) {
-      console.error("Error fetching job:", error);
+      
       res.status(500).json({ error: "Failed to fetch job" });
     }
   });
@@ -13499,7 +13506,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json({ success: true, message: "Job cancelled" });
     } catch (error) {
-      console.error("Error cancelling job:", error);
+      
       res.status(500).json({ error: "Failed to cancel job" });
     }
   });
@@ -13513,7 +13520,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json({ success: true, message: "Job queued for retry" });
     } catch (error) {
-      console.error("Error retrying job:", error);
+      
       res.status(500).json({ error: "Failed to retry job" });
     }
   });
@@ -13671,7 +13678,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ success: true, migratedCount, message: `Migrated ${migratedCount} content items to blocks format` });
     } catch (error) {
-      console.error("Migration error:", error);
+      
       res.status(500).json({ error: "Migration failed", details: String(error) });
     }
   });
@@ -13704,7 +13711,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       ]);
       res.json({ logs, total, limit: filters.limit, offset: filters.offset });
     } catch (error) {
-      console.error("Error fetching audit logs:", error);
+      
       res.status(500).json({ error: "Failed to fetch audit logs" });
     }
   });
@@ -13726,7 +13733,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       );
       res.json(enrichedClusters);
     } catch (error) {
-      console.error("Error fetching clusters:", error);
+      
       res.status(500).json({ error: "Failed to fetch clusters" });
     }
   });
@@ -13740,7 +13747,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const members = await storage.getClusterMembers(cluster.id);
       res.json({ ...cluster, members });
     } catch (error) {
-      console.error("Error fetching cluster:", error);
+      
       res.status(500).json({ error: "Failed to fetch cluster" });
     }
   });
@@ -13766,7 +13773,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "create", "cluster", cluster.id, `Created cluster: ${cluster.name}`, undefined, { name: cluster.name, slug: cluster.slug });
       res.status(201).json(cluster);
     } catch (error) {
-      console.error("Error creating cluster:", error);
+      
       res.status(500).json({ error: "Failed to create cluster" });
     }
   });
@@ -13789,7 +13796,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "cluster", cluster.id, `Updated cluster: ${cluster.name}`, existingCluster ? { name: existingCluster.name, slug: existingCluster.slug } : undefined, { name: cluster.name, slug: cluster.slug });
       res.json(cluster);
     } catch (error) {
-      console.error("Error updating cluster:", error);
+      
       res.status(500).json({ error: "Failed to update cluster" });
     }
   });
@@ -13803,7 +13810,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting cluster:", error);
+      
       res.status(500).json({ error: "Failed to delete cluster" });
     }
   });
@@ -13822,7 +13829,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
       res.status(201).json(member);
     } catch (error) {
-      console.error("Error adding cluster member:", error);
+      
       res.status(500).json({ error: "Failed to add cluster member" });
     }
   });
@@ -13832,7 +13839,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.removeClusterMember(req.params.memberId);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error removing cluster member:", error);
+      
       res.status(500).json({ error: "Failed to remove cluster member" });
     }
   });
@@ -13846,7 +13853,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(member);
     } catch (error) {
-      console.error("Error updating cluster member:", error);
+      
       res.status(500).json({ error: "Failed to update cluster member" });
     }
   });
@@ -13857,7 +13864,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const memberships = await storage.getContentClusterMembership(req.params.contentId);
       res.json(memberships);
     } catch (error) {
-      console.error("Error fetching content clusters:", error);
+      
       res.status(500).json({ error: "Failed to fetch content clusters" });
     }
   });
@@ -13875,7 +13882,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       );
       res.json(enrichedTags);
     } catch (error) {
-      console.error("Error fetching tags:", error);
+      
       res.status(500).json({ error: "Failed to fetch tags" });
     }
   });
@@ -13889,7 +13896,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const tagContents = await storage.getTagContents(tag.id);
       res.json({ ...tag, contents: tagContents });
     } catch (error) {
-      console.error("Error fetching tag:", error);
+      
       res.status(500).json({ error: "Failed to fetch tag" });
     }
   });
@@ -13909,7 +13916,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "create", "tag", tag.id, `Created tag: ${tag.name}`, undefined, { name: tag.name, slug: tag.slug });
       res.status(201).json(tag);
     } catch (error) {
-      console.error("Error creating tag:", error);
+      
       res.status(500).json({ error: "Failed to create tag" });
     }
   });
@@ -13929,7 +13936,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await logAuditEvent(req, "update", "tag", tag.id, `Updated tag: ${tag.name}`, existingTag ? { name: existingTag.name, slug: existingTag.slug } : undefined, { name: tag.name, slug: tag.slug });
       res.json(tag);
     } catch (error) {
-      console.error("Error updating tag:", error);
+      
       res.status(500).json({ error: "Failed to update tag" });
     }
   });
@@ -13943,7 +13950,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting tag:", error);
+      
       res.status(500).json({ error: "Failed to delete tag" });
     }
   });
@@ -14016,7 +14023,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             created.push(data.name);
           } catch (e: any) {
             if (!e.message?.includes("duplicate")) {
-              console.error(`Error creating tag ${slug}:`, e.message);
+              
             }
           }
         }
@@ -14032,7 +14039,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         message: `Created ${created.length} new tags from ${allContent.length} content items`
       });
     } catch (error) {
-      console.error("Error syncing tags:", error);
+      
       res.status(500).json({ error: "Failed to sync tags" });
     }
   });
@@ -14043,7 +14050,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const contentTagsList = await storage.getContentTags(req.params.contentId);
       res.json(contentTagsList);
     } catch (error) {
-      console.error("Error fetching content tags:", error);
+      
       res.status(500).json({ error: "Failed to fetch content tags" });
     }
   });
@@ -14060,7 +14067,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
       res.status(201).json(contentTag);
     } catch (error) {
-      console.error("Error adding content tag:", error);
+      
       res.status(500).json({ error: "Failed to add content tag" });
     }
   });
@@ -14070,7 +14077,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.removeContentTag(req.params.contentId, req.params.tagId);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error removing content tag:", error);
+      
       res.status(500).json({ error: "Failed to remove content tag" });
     }
   });
@@ -14088,7 +14095,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const count = await storage.bulkUpdateContentStatus(ids, status);
       res.json({ success: true, count });
     } catch (error) {
-      console.error("Error bulk updating status:", error);
+      
       res.status(500).json({ error: "Failed to bulk update status" });
     }
   });
@@ -14096,17 +14103,17 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.post("/api/contents/bulk-delete", requirePermission("canDelete"), async (req, res) => {
     try {
       const { ids } = req.body;
-      console.log("[BulkDelete] Request body:", JSON.stringify(req.body));
-      console.log("[BulkDelete] IDs received:", ids);
-      console.log("[BulkDelete] Number of IDs:", Array.isArray(ids) ? ids.length : 0);
+      
+      
+      
       if (!Array.isArray(ids) || ids.length === 0) {
         return res.status(400).json({ error: "ids array is required" });
       }
       const count = await storage.bulkDeleteContents(ids);
-      console.log("[BulkDelete] Deleted count:", count);
+      
       res.json({ success: true, count });
     } catch (error) {
-      console.error("Error bulk deleting:", error);
+      
       res.status(500).json({ error: "Failed to bulk delete" });
     }
   });
@@ -14123,7 +14130,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const count = await storage.bulkAddTagToContents(ids, tagId);
       res.json({ success: true, count });
     } catch (error) {
-      console.error("Error bulk adding tag:", error);
+      
       res.status(500).json({ error: "Failed to bulk add tag" });
     }
   });
@@ -14140,7 +14147,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const count = await storage.bulkRemoveTagFromContents(ids, tagId);
       res.json({ success: true, count });
     } catch (error) {
-      console.error("Error bulk removing tag:", error);
+      
       res.status(500).json({ error: "Failed to bulk remove tag" });
     }
   });
@@ -14179,7 +14186,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(contents);
     } catch (error) {
-      console.error("Error exporting contents:", error);
+      
       res.status(500).json({ error: "Failed to export contents" });
     }
   });
@@ -14190,7 +14197,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const templates = await storage.getContentTemplates();
       res.json(templates);
     } catch (error) {
-      console.error("Error fetching templates:", error);
+      
       res.status(500).json({ error: "Failed to fetch templates" });
     }
   });
@@ -14203,7 +14210,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(template);
     } catch (error) {
-      console.error("Error fetching template:", error);
+      
       res.status(500).json({ error: "Failed to fetch template" });
     }
   });
@@ -14223,7 +14230,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       });
       res.status(201).json(template);
     } catch (error) {
-      console.error("Error creating template:", error);
+      
       res.status(500).json({ error: "Failed to create template" });
     }
   });
@@ -14243,7 +14250,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(template);
     } catch (error) {
-      console.error("Error updating template:", error);
+      
       res.status(500).json({ error: "Failed to update template" });
     }
   });
@@ -14253,7 +14260,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.deleteContentTemplate(req.params.id);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting template:", error);
+      
       res.status(500).json({ error: "Failed to delete template" });
     }
   });
@@ -14280,7 +14287,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await storage.incrementTemplateUsage(req.params.id);
       res.status(201).json(content);
     } catch (error) {
-      console.error("Error applying template:", error);
+      
       res.status(500).json({ error: "Failed to apply template" });
     }
   });
@@ -14311,7 +14318,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(coverage);
     } catch (error) {
-      console.error("Error fetching translation coverage:", error);
+      
       res.status(500).json({ error: "Failed to fetch translation coverage" });
     }
   });
@@ -14342,7 +14349,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         languageStats,
       });
     } catch (error) {
-      console.error("Error fetching translation stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch translation stats" });
     }
   });
@@ -14369,7 +14376,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(contentTranslations);
     } catch (error) {
-      console.error("Error fetching translations:", error);
+      
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -14380,7 +14387,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const translations = await storage.getTranslationsByContentId(req.params.contentId);
       res.json(translations);
     } catch (error) {
-      console.error("Error fetching translations:", error);
+      
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -14395,7 +14402,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       }
       res.json(translation);
     } catch (error) {
-      console.error("Error fetching translation:", error);
+      
       res.status(500).json({ error: "Failed to fetch translation" });
     }
   });
@@ -14462,7 +14469,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(translation);
     } catch (error) {
-      console.error("Error translating content:", error);
+      
       res.status(500).json({ error: "Failed to translate content" });
     }
   });
@@ -14531,7 +14538,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         translations: savedTranslations,
       });
     } catch (error) {
-      console.error("Error batch translating content:", error);
+      
       res.status(500).json({ error: "Failed to batch translate content" });
     }
   });
@@ -14566,7 +14573,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(translation);
     } catch (error) {
-      console.error("Error saving manual translation:", error);
+      
       res.status(500).json({ error: "Failed to save translation" });
     }
   });
@@ -14584,7 +14591,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         totalLocales: SUPPORTED_LOCALES.length,
       });
     } catch (error) {
-      console.error("Error fetching DeepL usage:", error);
+      
       res.status(500).json({ error: "Failed to fetch usage stats" });
     }
   });
@@ -14618,7 +14625,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         isTranslated: true,
       });
     } catch (error) {
-      console.error("Error fetching translated content:", error);
+      
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -14659,7 +14666,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         })),
       });
     } catch (error) {
-      console.error("Error fetching translation status:", error);
+      
       res.status(500).json({ error: "Failed to fetch translation status" });
     }
   });
@@ -14685,7 +14692,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(layout[0]);
     } catch (error) {
-      console.error("Error fetching layout:", error);
+      
       res.status(500).json({ error: "Failed to fetch layout" });
     }
   });
@@ -14736,7 +14743,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(updated);
     } catch (error) {
-      console.error("Error saving draft:", error);
+      
       res.status(500).json({ error: "Failed to save draft" });
     }
   });
@@ -14784,7 +14791,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(published);
     } catch (error) {
-      console.error("Error publishing layout:", error);
+      
       res.status(500).json({ error: "Failed to publish layout" });
     }
   });
@@ -14814,7 +14821,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
       res.json(layout[0]);
     } catch (error) {
-      console.error("Error fetching public layout:", error);
+      
       res.status(500).json({ error: "Failed to fetch layout" });
     }
   });
@@ -14832,7 +14839,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       res.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
       res.send(sitemapIndex);
     } catch (error) {
-      console.error("Error generating sitemap index:", error);
+      
       res.status(500).set("Content-Type", "text/plain").send("Error generating sitemap");
     }
   });
@@ -14853,7 +14860,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       res.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
       res.send(sitemap);
     } catch (error) {
-      console.error("Error generating locale sitemap:", error);
+      
       res.status(500).set("Content-Type", "text/plain").send("Error generating sitemap");
     }
   });
@@ -14867,7 +14874,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       res.set("Cache-Control", "public, max-age=86400"); // Cache for 24 hours
       res.send(robotsTxt);
     } catch (error) {
-      console.error("Error generating robots.txt:", error);
+      
       res.status(500).set("Content-Type", "text/plain").send("Error generating robots.txt");
     }
   });
@@ -14957,9 +14964,9 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   app.use("/api/admin/alerts", requireAuth, requirePermission("canViewAnalytics"), alertRoutes);
   if (isAlertingEnabled()) {
     startAlertEngine();
-    console.log("[Routes] Alerting system enabled and started");
+    
   } else {
-    console.log("[Routes] Alerting system disabled (ENABLE_ALERTING_SYSTEM != true)");
+    
   }
 
   // ============================================================================
@@ -15002,7 +15009,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         })),
       });
     } catch (error) {
-      console.error("[TRAVI] Stats error:", error);
+      
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
@@ -15027,7 +15034,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         })),
       });
     } catch (error) {
-      console.error("[TRAVI] Jobs error:", error);
+      
       res.status(500).json({ error: "Failed to fetch jobs" });
     }
   });
@@ -15065,7 +15072,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         message: `Started processing ${category}s for ${destination}`,
       });
     } catch (error) {
-      console.error("[TRAVI] Process error:", error);
+      
       res.status(500).json({ error: "Failed to start processing" });
     }
   });
@@ -15076,7 +15083,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       pauseProcessing("Manual pause from admin dashboard");
       res.json({ success: true, message: "Processing paused" });
     } catch (error) {
-      console.error("[TRAVI] Pause error:", error);
+      
       res.status(500).json({ error: "Failed to pause processing" });
     }
   });
@@ -15087,7 +15094,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       resumeProcessing();
       res.json({ success: true, message: "Processing resumed" });
     } catch (error) {
-      console.error("[TRAVI] Resume error:", error);
+      
       res.status(500).json({ error: "Failed to resume processing" });
     }
   });
@@ -15099,7 +15106,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const logs = getRecentLogs(limit);
       res.json({ logs });
     } catch (error) {
-      console.error("[TRAVI] Logs error:", error);
+      
       res.status(500).json({ error: "Failed to get logs" });
     }
   });
@@ -15133,7 +15140,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         res.json(result);
       }
     } catch (error) {
-      console.error("[TRAVI] Export error:", error);
+      
       res.status(500).json({ error: "Failed to export locations" });
     }
   });
@@ -15144,7 +15151,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const summary = await exportSummary();
       res.json(summary);
     } catch (error) {
-      console.error("[TRAVI] Export summary error:", error);
+      
       res.status(500).json({ error: "Failed to get export summary" });
     }
   });
@@ -15276,7 +15283,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         affiliateLink: "https://tiqets.tpo.lu/k16k6RXU",
       });
     } catch (error) {
-      console.error("[TRAVI] Config get error:", error);
+      
       res.status(500).json({ error: "Failed to get config" });
     }
   });
@@ -15302,7 +15309,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         res.status(400).json({ error: `${provider} API key is not configured` });
       }
     } catch (error) {
-      console.error("[TRAVI] API test error:", error);
+      
       res.status(500).json({ error: "Failed to test API" });
     }
   });
@@ -15340,7 +15347,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         warningThreshold
       });
     } catch (error) {
-      console.error("[TRAVI] Budget update error:", error);
+      
       res.status(500).json({ error: "Failed to update budget" });
     }
   });
@@ -15379,7 +15386,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         enabled
       });
     } catch (error) {
-      console.error("[TRAVI] Destination toggle error:", error);
+      
       res.status(500).json({ error: "Failed to update destination" });
     }
   });
@@ -15396,7 +15403,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const districts = await query;
       res.json(districts);
     } catch (error) {
-      console.error("[TRAVI] Districts list error:", error);
+      
       res.status(500).json({ error: "Failed to fetch districts" });
     }
   });
@@ -15436,7 +15443,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const cities = await db.select().from(tiqetsCities).orderBy(tiqetsCities.name);
       res.json({ cities });
     } catch (error) {
-      console.error("Error fetching cities:", error);
+      
       res.status(500).json({ error: "Failed to fetch cities" });
     }
   });
@@ -15456,7 +15463,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       await db.update(tiqetsCities).set(updateData).where(eq(tiqetsCities.id, id));
       res.json({ success: true });
     } catch (error) {
-      console.error("Error updating city:", error);
+      
       res.status(500).json({ error: "Failed to update city" });
     }
   });
@@ -15485,7 +15492,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       const data = await response.json();
       res.json({ results: data.cities || [] });
     } catch (error) {
-      console.error("Error searching Tiqets:", error);
+      
       res.status(500).json({ error: "Failed to search Tiqets API", results: [] });
     }
   });
@@ -15508,7 +15515,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ attractions, total: countResult?.count || 0 });
     } catch (error) {
-      console.error("Error fetching attractions:", error);
+      
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -15529,7 +15536,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(attraction);
     } catch (error) {
-      console.error("Error fetching attraction:", error);
+      
       res.status(500).json({ error: "Failed to fetch attraction" });
     }
   });
@@ -15569,7 +15576,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(updated);
     } catch (error) {
-      console.error("Error updating attraction:", error);
+      
       res.status(500).json({ error: "Failed to update attraction" });
     }
   });
@@ -15597,7 +15604,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json({ attractions, total: countResult?.count || 0 });
     } catch (error) {
-      console.error("Error fetching attractions by city:", error);
+      
       res.status(500).json({ error: "Failed to fetch attractions", attractions: [], total: 0 });
     }
   });
@@ -15669,7 +15676,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         }
       });
     } catch (error) {
-      console.error("Error fetching dashboard stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
@@ -15693,7 +15700,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         logs,
       });
     } catch (error: any) {
-      console.error("Error finding city IDs:", error);
+      
       res.status(500).json({ 
         success: false, 
         error: error.message 
@@ -15727,7 +15734,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         logs,
       });
     } catch (error: any) {
-      console.error("Error importing city:", error);
+      
       res.status(500).json({ 
         success: false, 
         error: error.message 
@@ -15752,7 +15759,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         logs,
       });
     } catch (error: any) {
-      console.error("Error importing all cities:", error);
+      
       res.status(500).json({ 
         success: false, 
         error: error.message 
@@ -15770,7 +15777,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       
       res.json(result);
     } catch (error: any) {
-      console.error("Error testing connection:", error);
+      
       res.status(500).json({ 
         success: false, 
         message: error.message 
@@ -15838,7 +15845,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         throw genError;
       }
     } catch (error: any) {
-      console.error("Error generating content:", error);
+      
       res.status(500).json({ success: false, error: error.message });
     }
   });
@@ -15938,7 +15945,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             latencyMs: result.latencyMs,
           });
         } catch (err: any) {
-          console.error(`Failed to generate for ${attraction.title}:`, err.message);
+          
           
           // Mark as failed
           await db.update(tiqetsAttractions)
@@ -15961,7 +15968,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       sendEvent({ type: "complete", processed, errors, providerStats });
       res.end();
     } catch (error: any) {
-      console.error("Error in batch generation:", error);
+      
       sendEvent({ type: "error", message: error.message });
       res.end();
     }
@@ -16078,7 +16085,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       sendEvent({ type: "complete", totalProcessed: globalProcessed, totalErrors: globalErrors, providerStats });
       res.end();
     } catch (error: any) {
-      console.error("Error in all-cities generation:", error);
+      
       sendEvent({ type: "fatal_error", message: error.message });
       res.end();
     }
@@ -16243,7 +16250,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       sendEvent({ type: "complete", totalProcessed: globalProcessed, totalErrors: globalErrors, providerStats });
       res.end();
     } catch (error: any) {
-      console.error("Error in parallel generation:", error);
+      
       sendEvent({ type: "fatal_error", message: error.message });
       res.end();
     }
@@ -16256,7 +16263,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     const concurrency = Math.min(parseInt(req.query.concurrency as string || '20'), 50);
     const batchSize = Math.min(parseInt(req.query.batch as string || '100'), 200);
     
-    console.log(`[OctypoAPI] Starting generation: concurrency=${concurrency}, batch=${batchSize}`);
+    
     
     res.json({ 
       status: 'started', 
@@ -16295,10 +16302,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
           LIMIT $2
         `, [QUALITY_THRESHOLD, batchSize]);
         
-        console.log(`[OctypoAPI] Found ${attractions.length} attractions to process`);
+        
         
         if (attractions.length === 0) {
-          console.log('[OctypoAPI] No attractions need processing!');
+          
           // CRITICAL: Reset running state when no work to do
           octypoState.setRunning(false);
           return;
@@ -16386,19 +16393,19 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
 
               processed++;
               if (score.overallScore >= QUALITY_THRESHOLD) highQuality++;
-              console.log(`[OctypoAPI] ✓ ${attr.title?.slice(0, 40)} - Score: ${score.overallScore}`);
+              
               // Report success for adaptive concurrency
               octypoState.reportSuccess();
               octypoState.removeFromFailedQueue(attr.id);
             } else {
               errors++;
               octypoState.addToFailedQueue(attr.id, attr.title || 'Unknown', 'Generation failed');
-              console.log(`[OctypoAPI] ✗ ${attr.title?.slice(0, 40)} - Failed`);
+              
             }
           } catch (err: any) {
             errors++;
             octypoState.addToFailedQueue(attr.id, attr.title || 'Unknown', err.message || 'Unknown error');
-            console.error(`[OctypoAPI] Error processing ${attr.title?.slice(0, 30)}:`, err.message);
+            
           }
         };
 
@@ -16434,17 +16441,16 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             : '?';
           
           const stateStats = octypoState.getStats();
-          console.log(`[OctypoAPI] Batch ${chunkIndex} completed: ${highQuality}/${processed} high quality, ${errors} errors, ${chunk.length} processed in ${chunkDuration}s (concurrency: ${stateStats.concurrency})`);
-          console.log(`[OctypoAPI] Rate: ${articlesPerMin} articles/min | Remaining: ${remaining} | ETA: ${etaHours} hours`);
+          
+          
         }
 
-        console.log(`[OctypoAPI] Complete! Processed: ${processed}, High Quality: ${highQuality}, Errors: ${errors}, Total time: ${((Date.now() - batchStartTime) / 1000).toFixed(1)}s`);
         
         // Signal batch completion to background service
         octypoState.setRunning(false);
-        console.log('[OctypoAPI] Batch complete - signaled state reset for next batch');
+        
       } catch (err: any) {
-        console.error('[OctypoAPI] Fatal error:', err.message);
+        
         // Signal completion even on error
         octypoState.setRunning(false);
       }
@@ -16636,7 +16642,7 @@ Return as valid JSON.`,
       await startSmartQueue(res, generateContent);
 
     } catch (error: any) {
-      console.error("Error in smart queue:", error);
+      
       res.write(`data: ${JSON.stringify({ type: "fatal_error", message: error.message })}\n\n`);
       res.end();
     }
@@ -16944,7 +16950,7 @@ Return as valid JSON.`,
       regenerateAllAttractions({
         batchSize: batchSize || 30,
         cityFilter,
-      }).catch(err => console.error("[Regeneration] Error:", err));
+      }).catch(err => {});
       
       res.json({
         success: true,
@@ -17321,7 +17327,7 @@ Return as valid JSON.`,
       
       res.json(conversation);
     } catch (error) {
-      console.error("Error creating conversation:", error);
+      
       res.status(500).json({ error: "Failed to create conversation" });
     }
   });
@@ -17335,7 +17341,7 @@ Return as valid JSON.`,
       const messages = await storage.getLiveChatMessages(id, since);
       res.json(messages);
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      
       res.status(500).json({ error: "Failed to fetch messages" });
     }
   });
@@ -17359,7 +17365,7 @@ Return as valid JSON.`,
       
       res.json(message);
     } catch (error) {
-      console.error("Error sending message:", error);
+      
       res.status(500).json({ error: "Failed to send message" });
     }
   });
@@ -17371,7 +17377,7 @@ Return as valid JSON.`,
       const conversations = await storage.getLiveChatConversations(status);
       res.json(conversations);
     } catch (error) {
-      console.error("Error fetching conversations:", error);
+      
       res.status(500).json({ error: "Failed to fetch conversations" });
     }
   });
@@ -17388,7 +17394,7 @@ Return as valid JSON.`,
       
       res.json(conversation);
     } catch (error) {
-      console.error("Error fetching conversation:", error);
+      
       res.status(500).json({ error: "Failed to fetch conversation" });
     }
   });
@@ -17414,7 +17420,7 @@ Return as valid JSON.`,
       
       res.json(message);
     } catch (error) {
-      console.error("Error sending message:", error);
+      
       res.status(500).json({ error: "Failed to send message" });
     }
   });
@@ -17436,7 +17442,7 @@ Return as valid JSON.`,
       
       res.json(conversation);
     } catch (error) {
-      console.error("Error updating conversation:", error);
+      
       res.status(500).json({ error: "Failed to update conversation" });
     }
   });
@@ -17448,7 +17454,7 @@ Return as valid JSON.`,
       await storage.markMessagesAsRead(id, "admin");
       res.json({ success: true });
     } catch (error) {
-      console.error("Error marking messages as read:", error);
+      
       res.status(500).json({ error: "Failed to mark messages as read" });
     }
   });
@@ -17488,7 +17494,7 @@ Return as valid JSON.`,
       }
       res.json(rules[0]);
     } catch (error) {
-      console.error("Error fetching content rules:", error);
+      
       res.status(500).json({ error: "Failed to fetch content rules" });
     }
   });
@@ -17520,7 +17526,7 @@ Return as valid JSON.`,
         res.json({ success: true, created: true });
       }
     } catch (error) {
-      console.error("Error saving content rules:", error);
+      
       res.status(500).json({ error: "Failed to save content rules" });
     }
   });
@@ -17531,7 +17537,7 @@ Return as valid JSON.`,
       const rules = await db.select().from(contentRules).orderBy(desc(contentRules.createdAt));
       res.json(rules);
     } catch (error) {
-      console.error("Error fetching all content rules:", error);
+      
       res.status(500).json({ error: "Failed to fetch content rules" });
     }
   });
@@ -17564,7 +17570,7 @@ Return as valid JSON.`,
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       res.json({ backups: files, directory: backupDir });
     } catch (error) {
-      console.error("Error listing backups:", error);
+      
       res.status(500).json({ error: "Failed to list backups" });
     }
   });
@@ -17579,7 +17585,7 @@ Return as valid JSON.`,
         res.status(500).json({ error: result.error || "Backup failed" });
       }
     } catch (error) {
-      console.error("Error creating backup:", error);
+      
       res.status(500).json({ error: "Failed to create backup" });
     }
   });
@@ -17589,7 +17595,7 @@ Return as valid JSON.`,
       const { getSchedulerStatus } = await import("./lib/backup-scheduler");
       res.json(getSchedulerStatus());
     } catch (error) {
-      console.error("Error getting backup status:", error);
+      
       res.status(500).json({ error: "Failed to get backup status" });
     }
   });
@@ -17607,7 +17613,7 @@ Return as valid JSON.`,
       const result = await magicLinkAuth.sendMagicLink(email, baseUrl);
       res.json(result);
     } catch (error) {
-      console.error("Error sending magic link:", error);
+      
       res.status(500).json({ success: false, message: "Failed to send magic link" });
     }
   });
@@ -17625,7 +17631,7 @@ Return as valid JSON.`,
         res.status(400).json(result);
       }
     } catch (error) {
-      console.error("Error verifying magic link:", error);
+      
       res.status(500).json({ success: false, error: "Failed to verify magic link" });
     }
   });
@@ -17644,7 +17650,7 @@ Return as valid JSON.`,
         res.status(500).json({ error: "Failed to score content" });
       }
     } catch (error) {
-      console.error("Error scoring content:", error);
+      
       res.status(500).json({ error: "Failed to score content" });
     }
   });
@@ -17660,7 +17666,7 @@ Return as valid JSON.`,
         res.status(404).json({ error: "No score found" });
       }
     } catch (error) {
-      console.error("Error getting content score:", error);
+      
       res.status(500).json({ error: "Failed to get content score" });
     }
   });
@@ -17676,7 +17682,7 @@ Return as valid JSON.`,
       const result = await plagiarismDetector.checkPlagiarism(contentId, threshold);
       res.json(result);
     } catch (error) {
-      console.error("Error checking plagiarism:", error);
+      
       res.status(500).json({ error: "Failed to check plagiarism" });
     }
   });
@@ -17688,7 +17694,7 @@ Return as valid JSON.`,
       const similarity = await plagiarismDetector.compareTexts(text1, text2);
       res.json({ similarity });
     } catch (error) {
-      console.error("Error comparing texts:", error);
+      
       res.status(500).json({ error: "Failed to compare texts" });
     }
   });
@@ -17703,7 +17709,7 @@ Return as valid JSON.`,
       const results = await visualSearch.searchByImage(imageUrl, limit);
       res.json({ results });
     } catch (error) {
-      console.error("Error in visual search:", error);
+      
       res.status(500).json({ error: "Failed to perform visual search" });
     }
   });
@@ -17719,7 +17725,7 @@ Return as valid JSON.`,
         res.status(500).json({ error: "Failed to analyze image" });
       }
     } catch (error) {
-      console.error("Error analyzing image:", error);
+      
       res.status(500).json({ error: "Failed to analyze image" });
     }
   });
@@ -17735,7 +17741,7 @@ Return as valid JSON.`,
       }).returning();
       res.json(webhook[0]);
     } catch (error) {
-      console.error("Error creating webhook:", error);
+      
       res.status(500).json({ error: "Failed to create webhook" });
     }
   });
@@ -17745,7 +17751,7 @@ Return as valid JSON.`,
       const allWebhooks = await db.select().from(webhooks);
       res.json(allWebhooks);
     } catch (error) {
-      console.error("Error fetching webhooks:", error);
+      
       res.status(500).json({ error: "Failed to fetch webhooks" });
     }
   });
@@ -17757,7 +17763,7 @@ Return as valid JSON.`,
       const result = await webhookManager.testWebhook(id);
       res.json(result);
     } catch (error) {
-      console.error("Error testing webhook:", error);
+      
       res.status(500).json({ error: "Failed to test webhook" });
     }
   });
@@ -17768,7 +17774,7 @@ Return as valid JSON.`,
       const logs = await db.select().from(webhookLogs).where(eq(webhookLogs.webhookId, id)).orderBy(desc(webhookLogs.createdAt)).limit(50);
       res.json(logs);
     } catch (error) {
-      console.error("Error fetching webhook logs:", error);
+      
       res.status(500).json({ error: "Failed to fetch webhook logs" });
     }
   });
@@ -17784,7 +17790,7 @@ Return as valid JSON.`,
       }).returning();
       res.json(workflow[0]);
     } catch (error) {
-      console.error("Error creating workflow:", error);
+      
       res.status(500).json({ error: "Failed to create workflow" });
     }
   });
@@ -17794,7 +17800,7 @@ Return as valid JSON.`,
       const allWorkflows = await db.select().from(workflows);
       res.json(allWorkflows);
     } catch (error) {
-      console.error("Error fetching workflows:", error);
+      
       res.status(500).json({ error: "Failed to fetch workflows" });
     }
   });
@@ -17806,7 +17812,7 @@ Return as valid JSON.`,
       const result = await workflowEngine.executeWorkflow(id, req.body);
       res.json(result);
     } catch (error) {
-      console.error("Error executing workflow:", error);
+      
       res.status(500).json({ error: "Failed to execute workflow" });
     }
   });
@@ -17817,7 +17823,7 @@ Return as valid JSON.`,
       const executions = await db.select().from(workflowExecutions).where(eq(workflowExecutions.workflowId, id)).orderBy(desc(workflowExecutions.startedAt)).limit(50);
       res.json(executions);
     } catch (error) {
-      console.error("Error fetching workflow executions:", error);
+      
       res.status(500).json({ error: "Failed to fetch workflow executions" });
     }
   });
@@ -17830,7 +17836,7 @@ Return as valid JSON.`,
       const partner = await db.insert(partners).values(req.body).returning();
       res.json(partner[0]);
     } catch (error) {
-      console.error("Error creating partner:", error);
+      
       res.status(500).json({ error: "Failed to create partner" });
     }
   });
@@ -17840,7 +17846,7 @@ Return as valid JSON.`,
       const allPartners = await db.select().from(partners);
       res.json(allPartners);
     } catch (error) {
-      console.error("Error fetching partners:", error);
+      
       res.status(500).json({ error: "Failed to fetch partners" });
     }
   });
@@ -17852,7 +17858,7 @@ Return as valid JSON.`,
       const metrics = await partnerDashboard.getPartnerMetrics(id);
       res.json(metrics);
     } catch (error) {
-      console.error("Error fetching partner dashboard:", error);
+      
       res.status(500).json({ error: "Failed to fetch partner dashboard" });
     }
   });
@@ -17864,7 +17870,7 @@ Return as valid JSON.`,
       const result = await affiliateInjector.injectAffiliateLinks(contentId, dryRun);
       res.json(result);
     } catch (error) {
-      console.error("Error injecting affiliate links:", error);
+      
       res.status(500).json({ error: "Failed to inject affiliate links" });
     }
   });
@@ -17876,7 +17882,7 @@ Return as valid JSON.`,
       await affiliateInjector.trackClick(trackingCode);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error tracking click:", error);
+      
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -17895,7 +17901,7 @@ Return as valid JSON.`,
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Error fetching affiliate status:", error);
+      
       res.status(500).json({ error: "Failed to fetch affiliate status" });
     }
   });
@@ -18005,7 +18011,7 @@ Return as valid JSON.`,
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Error validating affiliate configuration:", error);
+      
       res.status(500).json({ error: "Failed to validate affiliate configuration" });
     }
   });
@@ -18028,7 +18034,7 @@ Return as valid JSON.`,
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Error fetching affiliate metrics:", error);
+      
       res.status(500).json({ error: "Failed to fetch affiliate metrics" });
     }
   });
@@ -18106,7 +18112,7 @@ Return as valid JSON.`,
         disclosureRequired: injectionResult.disclosureRequired,
       });
     } catch (error) {
-      console.error("Error generating affiliate link:", error);
+      
       res.status(500).json({ 
         allowed: false, 
         reason: "Failed to generate affiliate link" 
@@ -18127,7 +18133,7 @@ Return as valid JSON.`,
         res.status(500).json({ error: "Failed to schedule payout" });
       }
     } catch (error) {
-      console.error("Error scheduling payout:", error);
+      
       res.status(500).json({ error: "Failed to schedule payout" });
     }
   });
@@ -18139,7 +18145,7 @@ Return as valid JSON.`,
       const result = await payoutManager.processPayout(id);
       res.json({ success: result });
     } catch (error) {
-      console.error("Error processing payout:", error);
+      
       res.status(500).json({ error: "Failed to process payout" });
     }
   });
@@ -18150,7 +18156,7 @@ Return as valid JSON.`,
       const payoutHistory = await db.select().from(payouts).where(eq(payouts.partnerId, partnerId)).orderBy(desc(payouts.createdAt)).limit(20);
       res.json(payoutHistory);
     } catch (error) {
-      console.error("Error fetching payout history:", error);
+      
       res.status(500).json({ error: "Failed to fetch payout history" });
     }
   });
@@ -18169,7 +18175,7 @@ Return as valid JSON.`,
         res.status(500).json({ error: "Failed to create test" });
       }
     } catch (error) {
-      console.error("Error creating A/B test:", error);
+      
       res.status(500).json({ error: "Failed to create A/B test" });
     }
   });
@@ -18180,7 +18186,7 @@ Return as valid JSON.`,
       const tests = await ctaAbTesting.listTests();
       res.json(tests);
     } catch (error) {
-      console.error("Error fetching A/B tests:", error);
+      
       res.status(500).json({ error: "Failed to fetch A/B tests" });
     }
   });
@@ -18192,7 +18198,7 @@ Return as valid JSON.`,
       const result = await ctaAbTesting.startTest(id);
       res.json({ success: result });
     } catch (error) {
-      console.error("Error starting A/B test:", error);
+      
       res.status(500).json({ error: "Failed to start A/B test" });
     }
   });
@@ -18204,7 +18210,7 @@ Return as valid JSON.`,
       const result = await ctaAbTesting.stopTest(id);
       res.json({ success: result });
     } catch (error) {
-      console.error("Error stopping A/B test:", error);
+      
       res.status(500).json({ error: "Failed to stop A/B test" });
     }
   });
@@ -18216,7 +18222,7 @@ Return as valid JSON.`,
       const results = await ctaAbTesting.getTestResults(id);
       res.json(results);
     } catch (error) {
-      console.error("Error fetching A/B test results:", error);
+      
       res.status(500).json({ error: "Failed to fetch A/B test results" });
     }
   });
@@ -18231,7 +18237,7 @@ Return as valid JSON.`,
       const variant = await ctaAbTesting.getVariant(id, userId, sessionId);
       res.json(variant);
     } catch (error) {
-      console.error("Error getting variant:", error);
+      
       res.status(500).json({ error: "Failed to get variant" });
     }
   });
@@ -18247,7 +18253,7 @@ Return as valid JSON.`,
       await ctaAbTesting.trackEvent(id, variantId, eventType, userId, sessionId, metadata);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error tracking event:", error);
+      
       res.status(500).json({ error: "Failed to track event" });
     }
   });
@@ -18269,7 +18275,7 @@ Return as valid JSON.`,
       const pages = await query.orderBy(realEstatePages.title);
       res.json({ pages });
     } catch (error) {
-      console.error("Error fetching real estate pages:", error);
+      
       res.status(500).json({ error: "Failed to fetch real estate pages" });
     }
   });
@@ -18288,7 +18294,7 @@ Return as valid JSON.`,
       
       res.json(page);
     } catch (error) {
-      console.error("Error fetching real estate page:", error);
+      
       res.status(500).json({ error: "Failed to fetch real estate page" });
     }
   });
@@ -18332,7 +18338,7 @@ Return as valid JSON.`,
         res.status(201).json(created);
       }
     } catch (error) {
-      console.error("Error saving real estate page:", error);
+      
       res.status(500).json({ error: "Failed to save real estate page" });
     }
   });
@@ -18366,7 +18372,7 @@ Return as valid JSON.`,
 
       res.json(updated);
     } catch (error) {
-      console.error("Error updating real estate page:", error);
+      
       res.status(500).json({ error: "Failed to update real estate page" });
     }
   });
@@ -18386,7 +18392,7 @@ Return as valid JSON.`,
 
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting real estate page:", error);
+      
       res.status(500).json({ error: "Failed to delete real estate page" });
     }
   });
@@ -18466,7 +18472,7 @@ Return as valid JSON.`,
 
       res.json({ success: true, created, skipped, total: STATIC_PAGES.length });
     } catch (error) {
-      console.error("Error seeding real estate pages:", error);
+      
       res.status(500).json({ error: "Failed to seed real estate pages" });
     }
   });
@@ -18494,7 +18500,7 @@ Return as valid JSON.`,
   // ============================================================================
   if (isLocalizationGovernanceEnabled()) {
     app.use('/api/localization/governance', localizationGovernanceRoutes);
-    log('[Routes] Localization governance routes ENABLED', 'server');
+    log.info('[Routes] Localization governance routes ENABLED');
   }
 
   // ============================================================================
@@ -18521,7 +18527,7 @@ Return as valid JSON.`,
       const surveys = await storage.getSurveys(status ? { status: status as string } : undefined);
       res.json(surveys);
     } catch (error) {
-      console.error("Error fetching surveys:", error);
+      
       res.status(500).json({ error: "Failed to fetch surveys" });
     }
   });
@@ -18535,7 +18541,7 @@ Return as valid JSON.`,
       }
       res.json(survey);
     } catch (error) {
-      console.error("Error fetching survey:", error);
+      
       res.status(500).json({ error: "Failed to fetch survey" });
     }
   });
@@ -18571,7 +18577,7 @@ Return as valid JSON.`,
       
       res.status(201).json(survey);
     } catch (error) {
-      console.error("Error creating survey:", error);
+      
       res.status(500).json({ error: "Failed to create survey" });
     }
   });
@@ -18605,7 +18611,7 @@ Return as valid JSON.`,
       
       res.json(survey);
     } catch (error) {
-      console.error("Error updating survey:", error);
+      
       res.status(500).json({ error: "Failed to update survey" });
     }
   });
@@ -18616,7 +18622,7 @@ Return as valid JSON.`,
       await storage.deleteSurvey(req.params.id);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting survey:", error);
+      
       res.status(500).json({ error: "Failed to delete survey" });
     }
   });
@@ -18627,7 +18633,7 @@ Return as valid JSON.`,
       const responses = await storage.getSurveyResponses(req.params.id);
       res.json(responses);
     } catch (error) {
-      console.error("Error fetching survey responses:", error);
+      
       res.status(500).json({ error: "Failed to fetch responses" });
     }
   });
@@ -18639,7 +18645,7 @@ Return as valid JSON.`,
       const survey = await storage.getSurvey(req.params.id);
       res.json({ ...analytics, survey });
     } catch (error) {
-      console.error("Error fetching survey analytics:", error);
+      
       res.status(500).json({ error: "Failed to fetch analytics" });
     }
   });
@@ -18650,7 +18656,7 @@ Return as valid JSON.`,
       await storage.deleteSurveyResponse(req.params.id);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error deleting survey response:", error);
+      
       res.status(500).json({ error: "Failed to delete response" });
     }
   });
@@ -18687,7 +18693,7 @@ Return as valid JSON.`,
         definition: survey.definition,
       });
     } catch (error) {
-      console.error("Error fetching public survey:", error);
+      
       res.status(500).json({ error: "Failed to fetch survey" });
     }
   });
@@ -18736,7 +18742,7 @@ Return as valid JSON.`,
       
       res.status(201).json({ success: true, responseId: response.id });
     } catch (error) {
-      console.error("Error submitting survey response:", error);
+      
       res.status(500).json({ error: "Failed to submit response" });
     }
   });
@@ -18788,7 +18794,7 @@ Return as valid JSON.`,
       res.setHeader("Content-Disposition", `attachment; filename="gdpr-export-${userId}.json"`);
       res.json(exportData);
     } catch (error) {
-      console.error("GDPR export error:", error);
+      
       res.status(500).json({ error: "Failed to export data" });
     }
   });
@@ -18825,7 +18831,7 @@ Return as valid JSON.`,
       await storage.deleteUser(userId);
       
       // Log the deletion for audit
-      console.log(`[GDPR] User deleted: ${userId}, reason: ${reason || "Not specified"}, content anonymized: ${contentAnonymized}`);
+      
       
       res.json({
         success: true,
@@ -18836,7 +18842,7 @@ Return as valid JSON.`,
         },
       });
     } catch (error) {
-      console.error("GDPR deletion error:", error);
+      
       res.status(500).json({ error: "Failed to delete user data" });
     }
   });
@@ -18851,7 +18857,7 @@ Return as valid JSON.`,
     }
     
     // In production, this would store in a consent table
-    console.log(`[GDPR] Consent recorded for user ${currentUser.id}: analytics=${analytics}, marketing=${marketing}`);
+    
     
     res.json({
       success: true,
@@ -18875,7 +18881,7 @@ Return as valid JSON.`,
       const status = await getDigestStatus();
       res.json(status);
     } catch (error) {
-      console.error("Error fetching digest status:", error);
+      
       res.status(500).json({ error: "Failed to fetch digest status" });
     }
   });
@@ -18909,7 +18915,7 @@ Return as valid JSON.`,
         });
       }
     } catch (error) {
-      console.error("Error sending weekly digest:", error);
+      
       res.status(500).json({ error: "Failed to send weekly digest" });
     }
   });
@@ -18949,7 +18955,7 @@ Return as valid JSON.`,
         });
       }
     } catch (error) {
-      console.error("Error sending test digest:", error);
+      
       res.status(500).json({ error: "Failed to send test digest" });
     }
   });
@@ -18969,7 +18975,7 @@ Return as valid JSON.`,
         subjectHe: result.subjectHe,
       });
     } catch (error) {
-      console.error("Error running dry-run digest:", error);
+      
       res.status(500).json({ error: "Failed to generate dry-run digest" });
     }
   });
@@ -18981,7 +18987,7 @@ Return as valid JSON.`,
       const stats = await getDigestKPIStats();
       res.json(stats);
     } catch (error) {
-      console.error("Error fetching digest stats:", error);
+      
       res.status(500).json({ error: "Failed to fetch digest stats" });
     }
   });
@@ -18995,53 +19001,53 @@ Return as valid JSON.`,
     initEnforcement();
     initControlPlane();
   } catch (error) {
-    console.error("[AutonomyPolicy] Failed to initialize:", error);
+    
   }
 
   // ============================================================================
   // WEEKLY DIGEST SCHEDULER (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[Digest] Feature disabled, scheduler not started");
+  
 
   // ============================================================================
   // SITEMAP (Using sitemap.ts)
   // ============================================================================
-  console.log("[Sitemap] Using sitemap.ts for sitemap generation");
+  
 
   // ============================================================================
   // TRAFFIC INTELLIGENCE (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[TrafficIntel] Feature disabled (ENABLE_TRAFFIC_INTELLIGENCE=false)");
+  
 
   // ============================================================================
   // TRAFFIC OPTIMIZATION (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[TrafficOptimization] Feature disabled (ENABLE_TRAFFIC_OPTIMIZATION=false)");
+  
 
   // ============================================================================
   // USER INTENT & DECISION GRAPH (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[IntentGraph] Disabled (ENABLE_INTENT_GRAPH=false)");
+  
 
   // ============================================================================
   // AUTONOMOUS FUNNEL DESIGNER (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[FunnelDesigner] Disabled (ENABLE_FUNNEL_DESIGNER=false)");
+  
 
   // ============================================================================
   // IMPACT FORECASTING ENGINE (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[ImpactForecast] Disabled (ENABLE_IMPACT_FORECAST=false)");
+  
 
   // ============================================================================
   // AUTONOMOUS EXECUTION ORCHESTRATOR (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[AutonomousExecution] Disabled (ENABLE_AUTONOMOUS_EXECUTION=false)");
+  
 
   // ============================================================================
   // GROWTH COMMAND CENTER (DISABLED - UI-only mode)
   // ============================================================================
-  console.log("[GrowthCommandCenter] Disabled (ENABLE_GROWTH_COMMAND_CENTER=false)");
+  
 
   // ============================================================================
   // DEPLOYMENT SAFETY & MONITORING (Routes only - monitoring disabled)
@@ -19070,7 +19076,7 @@ Return as valid JSON.`,
     };
 
     try {
-      console.log("[GoogleDrive] Starting asset sync...");
+      
 
       const websiteFolders = await findFolderByName("Website");
       if (!websiteFolders || websiteFolders.length === 0) {
@@ -19080,7 +19086,7 @@ Return as valid JSON.`,
       }
 
       const websiteFolderId = websiteFolders[0].id!;
-      console.log(`[GoogleDrive] Found Website folder: ${websiteFolderId}`);
+      
 
       const websiteContents = await listFilesInFolder(websiteFolderId);
       const categoriesFolder = websiteContents.find(f => f.name?.toLowerCase() === "categories");
@@ -19090,7 +19096,7 @@ Return as valid JSON.`,
         return res.status(404).json(report);
       }
 
-      console.log(`[GoogleDrive] Found Categories folder: ${categoriesFolder.id}`);
+      
 
       const destinationFolders = await listFilesInFolder(categoriesFolder.id);
       const imageMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -19114,7 +19120,7 @@ Return as valid JSON.`,
           await fs.promises.mkdir(cityPath, { recursive: true });
         }
 
-        console.log(`[GoogleDrive] Processing city folder: ${destFolder.name}`);
+        
 
         try {
           const cityFiles = await listFilesInFolder(destFolder.id);
@@ -19141,7 +19147,7 @@ Return as valid JSON.`,
               const buffer = await downloadFile(file.id);
               await fs.promises.writeFile(filePath, buffer);
               report.downloaded.push({ city: cityName, file: file.name, path: `/images/destinations/${cityName}/${file.name}` });
-              console.log(`[GoogleDrive] Downloaded: ${cityName}/${file.name}`);
+              
             } catch (downloadErr: any) {
               report.errors.push({ city: cityName, file: file.name, error: downloadErr.message || "Download failed" });
             }
@@ -19156,11 +19162,11 @@ Return as valid JSON.`,
       report.summary.totalSkipped = report.skipped.length;
       report.summary.totalErrors = report.errors.length;
 
-      console.log(`[GoogleDrive] Sync complete - Downloaded: ${report.summary.totalDownloaded}, Skipped: ${report.summary.totalSkipped}, Errors: ${report.summary.totalErrors}`);
+      
 
       res.json(report);
     } catch (err: any) {
-      console.error("[GoogleDrive] Sync failed:", err);
+      
       report.errors.push({ city: "", error: err.message || "Sync failed" });
       report.summary.totalErrors = report.errors.length;
       res.status(500).json(report);

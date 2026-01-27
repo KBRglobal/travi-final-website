@@ -56,7 +56,7 @@ function getConfig(): BackgroundServicesConfig {
 
 async function startTranslationServices(config: BackgroundServicesConfig): Promise<void> {
   if (!config.enableTranslationQueue && !config.enableTranslationWorker) {
-    log('[BackgroundServices] Translation services DISABLED via environment', 'server');
+    log.info('[BackgroundServices] Translation services DISABLED via environment');
     return;
   }
 
@@ -66,7 +66,7 @@ async function startTranslationServices(config: BackgroundServicesConfig): Promi
       const { startQueue, stopQueue } = await import('../localization/translation-queue');
       startQueue();
       shutdownHandlers.push(stopQueue);
-      log('[BackgroundServices] Translation queue STARTED', 'server');
+      log.info('[BackgroundServices] Translation queue STARTED');
     }
 
     // Start translation worker in background
@@ -75,13 +75,13 @@ async function startTranslationServices(config: BackgroundServicesConfig): Promi
 
       // Run worker loop in background (don't await)
       runWorkerLoop().catch((err) => {
-        log(`[BackgroundServices] Translation worker error: ${err}`, 'error');
+        log.error(`[BackgroundServices] Translation worker error: ${err}`);
       });
 
-      log('[BackgroundServices] Translation worker STARTED', 'server');
+      log.info('[BackgroundServices] Translation worker STARTED');
     }
   } catch (error) {
-    log(`[BackgroundServices] Failed to start translation services: ${error}`, 'error');
+    log.error(`[BackgroundServices] Failed to start translation services: ${error}`);
   }
 }
 
@@ -91,7 +91,7 @@ async function startTranslationServices(config: BackgroundServicesConfig): Promi
 
 async function startRSSSchedulerService(config: BackgroundServicesConfig): Promise<void> {
   if (!config.enableRSSScheduler) {
-    log('[BackgroundServices] RSS scheduler DISABLED via environment', 'server');
+    log.info('[BackgroundServices] RSS scheduler DISABLED via environment');
     return;
   }
 
@@ -105,9 +105,9 @@ async function startRSSSchedulerService(config: BackgroundServicesConfig): Promi
     });
 
     shutdownHandlers.push(stopRSSScheduler);
-    log(`[BackgroundServices] RSS scheduler STARTED (limit: ${config.rssSchedulerConfig.dailyLimit}/day, interval: ${config.rssSchedulerConfig.intervalMinutes}min)`, 'server');
+    log.info(`[BackgroundServices] RSS scheduler STARTED (limit: ${config.rssSchedulerConfig.dailyLimit}/day, interval: ${config.rssSchedulerConfig.intervalMinutes}min)`);
   } catch (error) {
-    log(`[BackgroundServices] Failed to start RSS scheduler: ${error}`, 'error');
+    log.error(`[BackgroundServices] Failed to start RSS scheduler: ${error}`);
   }
 }
 
@@ -117,7 +117,7 @@ async function startRSSSchedulerService(config: BackgroundServicesConfig): Promi
 
 async function startLocalizationGovernance(config: BackgroundServicesConfig): Promise<void> {
   if (!config.enableLocalizationGovernance) {
-    log('[BackgroundServices] Localization governance DISABLED via environment', 'server');
+    log.info('[BackgroundServices] Localization governance DISABLED via environment');
     return;
   }
 
@@ -128,13 +128,13 @@ async function startLocalizationGovernance(config: BackgroundServicesConfig): Pr
     // Check if the module exports an initialization function
     if (typeof governance.initializeGovernance === 'function') {
       await governance.initializeGovernance();
-      log('[BackgroundServices] Localization governance INITIALIZED', 'server');
+      log.info('[BackgroundServices] Localization governance INITIALIZED');
     } else {
-      log('[BackgroundServices] Localization governance module loaded (no init function)', 'server');
+      log.info('[BackgroundServices] Localization governance module loaded (no init function)');
     }
   } catch (error) {
     // Module may not exist or have errors - that's okay
-    log(`[BackgroundServices] Localization governance not available: ${error}`, 'server');
+    log.info(`[BackgroundServices] Localization governance not available: ${error}`);
   }
 }
 
@@ -148,12 +148,12 @@ async function startLocalizationGovernance(config: BackgroundServicesConfig): Pr
  */
 export async function startBackgroundServices(): Promise<void> {
   if (servicesStarted) {
-    log('[BackgroundServices] Services already started, skipping', 'server');
+    log.info('[BackgroundServices] Services already started, skipping');
     return;
   }
 
   const config = getConfig();
-  log('[BackgroundServices] Starting background services...', 'server');
+  log.info('[BackgroundServices] Starting background services...');
 
   // Start all services in parallel
   await Promise.all([
@@ -163,7 +163,7 @@ export async function startBackgroundServices(): Promise<void> {
   ]);
 
   servicesStarted = true;
-  log('[BackgroundServices] All background services initialized', 'server');
+  log.info('[BackgroundServices] All background services initialized');
 }
 
 /**
@@ -175,19 +175,19 @@ export async function stopBackgroundServices(): Promise<void> {
     return;
   }
 
-  log('[BackgroundServices] Stopping background services...', 'server');
+  log.info('[BackgroundServices] Stopping background services...');
 
   for (const handler of shutdownHandlers) {
     try {
       await handler();
     } catch (error) {
-      log(`[BackgroundServices] Shutdown handler error: ${error}`, 'error');
+      log.error(`[BackgroundServices] Shutdown handler error: ${error}`);
     }
   }
 
   shutdownHandlers = [];
   servicesStarted = false;
-  log('[BackgroundServices] All background services stopped', 'server');
+  log.info('[BackgroundServices] All background services stopped');
 }
 
 /**

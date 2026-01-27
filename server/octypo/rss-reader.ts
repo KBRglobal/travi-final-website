@@ -114,9 +114,9 @@ class RSSReader {
       `);
 
       this.initialized = true;
-      console.log('[RSSReader] Database tables initialized');
+      
     } catch (error) {
-      console.error('[RSSReader] Failed to initialize tables:', error);
+      
       throw error;
     }
   }
@@ -170,13 +170,13 @@ class RSSReader {
     };
 
     try {
-      console.log(`[RSSReader] Fetching feed: ${feed.name} (${feed.url})`);
+      
 
       // Parse the RSS feed
       const parsedFeed = await this.parser.parseURL(feed.url);
       const feedTitle = parsedFeed.title || feed.name;
 
-      console.log(`[RSSReader] Parsed ${parsedFeed.items.length} items from ${feedTitle}`);
+      
 
       // Process each item
       for (const item of parsedFeed.items) {
@@ -231,11 +231,11 @@ class RSSReader {
         .set({ lastFetchedAt: new Date() } as any)
         .where(eq(rssFeeds.id, feed.id));
 
-      console.log(`[RSSReader] Feed ${feed.name}: ${result.newItems} new, ${result.duplicatesSkipped} duplicates`);
+      
 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error(`[RSSReader] Failed to fetch feed ${feed.name}:`, errorMsg);
+      
       result.errors.push(errorMsg);
     }
 
@@ -286,7 +286,7 @@ class RSSReader {
       .from(rssFeeds)
       .where(eq(rssFeeds.isActive, true));
 
-    console.log(`[RSSReader] Fetching ${feeds.length} active feeds`);
+    
 
     const results: FetchResult[] = [];
 
@@ -335,7 +335,7 @@ class RSSReader {
     query = sql`${query} ORDER BY published_date DESC NULLS LAST, created_at DESC LIMIT ${limit}`;
 
     const result = await db.execute(query);
-    return result.rows as FeedItem[];
+    return result.rows as unknown as FeedItem[];
   }
 
   /**
@@ -398,7 +398,7 @@ class RSSReader {
       LIMIT 1
     `);
 
-    return result.rows[0] as FeedItem | null;
+    return (result.rows[0] as unknown as FeedItem) || null;
   }
 
   /**
@@ -418,7 +418,7 @@ class RSSReader {
       active: sql<number>`count(*) FILTER (WHERE is_active = TRUE)::int`,
     }).from(rssFeeds);
 
-    const [itemStats] = await db.execute(sql`
+    const itemStatsResult = await db.execute(sql`
       SELECT
         count(*)::int as total,
         count(*) FILTER (WHERE processed = TRUE)::int as processed,
@@ -426,7 +426,7 @@ class RSSReader {
       FROM rss_feed_items
     `);
 
-    const itemRow = itemStats.rows[0] as any;
+    const itemRow = itemStatsResult.rows[0] as any;
 
     return {
       totalFeeds: feedStats?.total || 0,
@@ -465,7 +465,7 @@ class RSSReader {
     query = sql`${query} ORDER BY created_at DESC LIMIT ${limit}`;
 
     const result = await db.execute(query);
-    return result.rows as FeedItem[];
+    return result.rows as unknown as FeedItem[];
   }
 }
 

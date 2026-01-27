@@ -425,6 +425,7 @@ const DINING_FAQ = [
 // ============================================
 
 function DiningDestinationCard({ destination, index }: { destination: typeof DINING_DESTINATIONS[0]; index: number }) {
+  const { localePath } = useLocale();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
