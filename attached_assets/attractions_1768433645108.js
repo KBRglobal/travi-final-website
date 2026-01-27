@@ -32,27 +32,27 @@ const attractions = [
     {
         image: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=800&h=1000&fit=crop',
         name: 'Marina Bay Sands',
-        country: 'סינגפור, Singapore'
+        country: 'Singapore'
     },
     {
         image: 'https://images.unsplash.com/photo-1506968430157-2c66581f8c91?w=800&h=1000&fit=crop',
         name: 'Gardens by the Bay',
-        country: 'סינגפור, Singapore'
+        country: 'Singapore'
     },
     {
         image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=1000&fit=crop',
         name: 'Universal Studios',
-        country: 'סינגפור, Singapore'
+        country: 'Singapore'
     },
     {
         image: 'https://images.unsplash.com/photo-1520656693924-c0db89291f42?w=800&h=1000&fit=crop',
         name: 'Phi Phi Islands',
-        country: 'תאילנד, Thailand'
+        country: 'Thailand'
     },
     {
         image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=1000&fit=crop',
         name: 'Burj Khalifa',
-        country: 'דובאי, UAE'
+        country: 'UAE'
     }
 ];
 
@@ -133,7 +133,7 @@ saveBadges.forEach(badge => {
                 this.style.animation = '';
             }, 300);
             
-            showNotification('נוסף למועדפים! ❤️');
+            showNotification('Added to favorites! ❤️');
         } else {
             // Remove from favorites
             icon.classList.remove('fas');
@@ -141,7 +141,7 @@ saveBadges.forEach(badge => {
             this.style.background = 'rgba(255, 255, 255, 0.9)';
             this.style.color = '#EF4444';
             
-            showNotification('הוסר מהמועדפים');
+            showNotification('Removed from favorites');
         }
     });
 });
@@ -157,7 +157,7 @@ bookButtons.forEach(button => {
         const attractionName = card.querySelector('h3').textContent;
         
         // Show notification
-        showNotification(`פותח הזמנה עבור: ${attractionName} 🎫`);
+        showNotification(`Opening booking for: ${attractionName} 🎫`);
         
         // Add ripple effect
         const ripple = document.createElement('span');
@@ -189,7 +189,7 @@ const categoryCards = document.querySelectorAll('.category-card');
 categoryCards.forEach(card => {
     card.addEventListener('click', function() {
         const categoryName = this.querySelector('h3').textContent;
-        showNotification(`מציג: ${categoryName} 🎯`);
+        showNotification(`Showing: ${categoryName} 🎯`);
     });
 });
 
@@ -336,7 +336,7 @@ if (btnPrimary) {
 
 if (btnSecondary) {
     btnSecondary.addEventListener('click', function() {
-        showNotification('מדריכים בקרוב! 📚');
+        showNotification('Guides coming soon! 📚');
     });
 }
 

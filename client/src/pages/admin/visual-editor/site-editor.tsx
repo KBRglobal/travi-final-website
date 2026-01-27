@@ -8,11 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -118,14 +114,9 @@ function SortableBlock({
   onTextEdit: (field: string, value: string) => void;
   onDelete: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: section.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: section.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -140,10 +131,7 @@ function SortableBlock({
     <div
       ref={setNodeRef}
       style={style}
-      className={cn(
-        "relative group",
-        isDragging && "opacity-50 z-50"
-      )}
+      className={cn("relative group", isDragging && "opacity-50 z-50")}
     >
       <div className="absolute left-0 top-0 z-20 flex items-center gap-1 p-2 opacity-0 group-hover:opacity-100 transition-opacity bg-background rounded-br-lg shadow-lg">
         <div
@@ -155,7 +143,7 @@ function SortableBlock({
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </div>
         <Badge variant="secondary" className="text-xs">
-          {BLOCK_TYPES.find((b) => b.type === section.sectionType)?.label || section.sectionType}
+          {BLOCK_TYPES.find(b => b.type === section.sectionType)?.label || section.sectionType}
         </Badge>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -163,7 +151,7 @@ function SortableBlock({
               variant="ghost"
               size="icon"
               className="h-6 w-6"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 onDelete();
               }}
@@ -214,7 +202,7 @@ export default function SiteEditor() {
   });
 
   const sections = pageData?.sections || [];
-  const selectedBlock = sections.find((s) => s.id === selectedBlockId) || null;
+  const selectedBlock = sections.find(s => s.id === selectedBlockId) || null;
 
   const createSectionMutation = useMutation({
     mutationFn: async (data: Partial<PageSection>) => {
@@ -299,42 +287,48 @@ export default function SiteEditor() {
     });
   };
 
-  const handleUpdateBlock = useCallback((updates: Partial<PageSection>) => {
-    if (!selectedBlockId) return;
-    setHasUnsavedChanges(true);
+  const handleUpdateBlock = useCallback(
+    (updates: Partial<PageSection>) => {
+      if (!selectedBlockId) return;
+      setHasUnsavedChanges(true);
 
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
-    }
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
 
-    autoSaveTimeoutRef.current = setTimeout(() => {
-      setIsSaving(true);
-      updateSectionMutation.mutate(
-        { id: selectedBlockId, data: updates },
-        {
-          onSettled: () => setIsSaving(false),
-        }
-      );
-    }, 1000);
-  }, [selectedBlockId, updateSectionMutation]);
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        setIsSaving(true);
+        updateSectionMutation.mutate(
+          { id: selectedBlockId, data: updates },
+          {
+            onSettled: () => setIsSaving(false),
+          }
+        );
+      }, 1000);
+    },
+    [selectedBlockId, updateSectionMutation]
+  );
 
-  const handleTextEdit = useCallback((sectionId: string, field: string, value: string) => {
-    setHasUnsavedChanges(true);
+  const handleTextEdit = useCallback(
+    (sectionId: string, field: string, value: string) => {
+      setHasUnsavedChanges(true);
 
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
-    }
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
 
-    autoSaveTimeoutRef.current = setTimeout(() => {
-      setIsSaving(true);
-      updateSectionMutation.mutate(
-        { id: sectionId, data: { [field]: value } },
-        {
-          onSettled: () => setIsSaving(false),
-        }
-      );
-    }, 1000);
-  }, [updateSectionMutation]);
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        setIsSaving(true);
+        updateSectionMutation.mutate(
+          { id: sectionId, data: { [field]: value } },
+          {
+            onSettled: () => setIsSaving(false),
+          }
+        );
+      }, 1000);
+    },
+    [updateSectionMutation]
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -346,8 +340,8 @@ export default function SiteEditor() {
 
     if (!over || active.id === over.id) return;
 
-    const oldIndex = sections.findIndex((s) => s.id === active.id);
-    const newIndex = sections.findIndex((s) => s.id === over.id);
+    const oldIndex = sections.findIndex(s => s.id === active.id);
+    const newIndex = sections.findIndex(s => s.id === over.id);
 
     const reordered = arrayMove(sections, oldIndex, newIndex);
     const updates = reordered.map((s, i) => ({ id: s.id, sortOrder: i }));
@@ -396,7 +390,10 @@ export default function SiteEditor() {
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold">Page Not Found</h2>
           <p className="text-muted-foreground">The page you're looking for doesn't exist.</p>
-          <Button onClick={() => setLocation("/admin/visual-editor")} data-testid="button-back-to-dashboard">
+          <Button
+            onClick={() => setLocation("/admin/visual-editor")}
+            data-testid="button-back-to-dashboard"
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Button>
@@ -405,7 +402,7 @@ export default function SiteEditor() {
     );
   }
 
-  const activeSection = sections.find((s) => s.id === activeId);
+  const activeSection = sections.find(s => s.id === activeId);
 
   return (
     <div className="h-screen flex flex-col bg-muted">
@@ -489,7 +486,7 @@ export default function SiteEditor() {
             </div>
             <ScrollArea className="flex-1">
               <div className="p-3 space-y-1">
-                {BLOCK_TYPES.map((block) => {
+                {BLOCK_TYPES.map(block => {
                   const Icon = BLOCK_ICONS[block.type] || Layout;
                   return (
                     <Button
@@ -503,9 +500,6 @@ export default function SiteEditor() {
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       <div className="text-left">
                         <div className="text-sm">{block.label}</div>
-                        <div className="text-xs text-muted-foreground" dir="rtl">
-                          {block.labelHe}
-                        </div>
                       </div>
                     </Button>
                   );
@@ -522,10 +516,7 @@ export default function SiteEditor() {
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
-            <SortableContext
-              items={sections.map((s) => s.id)}
-              strategy={verticalListSortingStrategy}
-            >
+            <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
               <div className={cn(isPreview ? "" : "p-4 space-y-4")}>
                 {sections.length === 0 ? (
                   <div className="flex items-center justify-center min-h-[400px]">
@@ -536,7 +527,10 @@ export default function SiteEditor() {
                         Add blocks from the sidebar to create your page. Drag and drop to reorder.
                       </p>
                       {!isPreview && (
-                        <Button onClick={() => handleAddBlock("hero")} data-testid="button-add-first-block">
+                        <Button
+                          onClick={() => handleAddBlock("hero")}
+                          data-testid="button-add-first-block"
+                        >
                           <Plus className="h-4 w-4 mr-2" />
                           Add Hero Block
                         </Button>
@@ -545,9 +539,9 @@ export default function SiteEditor() {
                   </div>
                 ) : (
                   sections
-                    .filter((s) => s.isVisible)
+                    .filter(s => s.isVisible)
                     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
-                    .map((section) => (
+                    .map(section => (
                       <div
                         key={section.id}
                         className={cn(
