@@ -21,10 +21,7 @@ async function ensureSessionTable(): Promise<void> {
       CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON sessions(expire);
     `;
     await pool.query(createTableSQL);
-    console.log('[Session] Table verified/created successfully');
-  } catch (error) {
-    console.error('[Session] Failed to ensure table exists:', error);
-  }
+  } catch (error) {}
 }
 
 // Initialize session table on module load
@@ -38,7 +35,6 @@ const getOidcConfig = memoize(
         process.env.REPL_ID!
       );
     } catch (error) {
-      console.error("[Auth] OIDC discovery failed, auth will be disabled:", error instanceof Error ? error.message : error);
       return null;
     }
   },
@@ -54,11 +50,11 @@ export function getSession() {
     ttl: sessionTtl,
     tableName: "sessions",
   });
-  
+
   // In development, use sameSite: "none" to allow cross-origin cookie sharing for Playwright tests
   // In production, use sameSite: "lax" for security
   const isDev = process.env.NODE_ENV !== "production";
-  
+
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
@@ -85,9 +81,7 @@ function updateUserSession(
   user.expires_at = user.claims?.exp;
 }
 
-async function upsertUser(
-  claims: any,
-) {
+async function upsertUser(claims: any) {
   // Check if user exists to preserve their role, otherwise default to admin for new OIDC users
   const existingUser = await storage.getUser(claims["sub"]);
   await storage.upsertUser({
@@ -107,25 +101,23 @@ export async function setupAuth(app: Express) {
   app.use(passport.session());
 
   const config = await getOidcConfig();
-  
+
   if (!config) {
-    console.warn("[Auth] OIDC config unavailable - auth routes will return 503");
-    
     app.get("/api/login", (req, res) => {
       res.status(503).json({ error: "Authentication service temporarily unavailable" });
     });
-    
+
     app.get("/api/callback", (req, res) => {
       res.status(503).json({ error: "Authentication service temporarily unavailable" });
     });
-    
+
     app.get("/api/logout", (req, res) => {
       res.redirect("/");
     });
-    
+
     passport.serializeUser((user, done) => done(null, user));
     passport.deserializeUser((user: Express.User, done) => done(null, user));
-    
+
     return;
   }
 
@@ -135,59 +127,47 @@ export async function setupAuth(app: Express) {
   ) => {
     const claims = tokens.claims();
     if (!claims) {
-      console.log(`[Auth] Login rejected: no claims provided`);
       return verified(new Error("Authentication claims are required."), undefined);
     }
-    
+
     // Log ALL claims for debugging (helps identify what OIDC returns)
-    console.log(`[Auth] OIDC Claims received:`, JSON.stringify({
-      sub: claims["sub"],
-      email: claims["email"],
-      name: claims["name"],
-      preferred_username: claims["preferred_username"],
-      nickname: claims["nickname"],
-      first_name: claims["first_name"],
-      last_name: claims["last_name"],
-    }));
-    
+
     // STRICT ACCESS RESTRICTION: Only allow specific admin emails or GitHub usernames
     const ALLOWED_EMAILS = ["traviquackson@gmail.com", "mzgdubai@gmail.com"];
     const ALLOWED_USERNAMES = ["kbrglobal"];
-    
+
     const email = (claims["email"] as string | undefined)?.toLowerCase() || "";
-    
+
     // Get username from multiple possible claim fields
-    const username = (
-      claims["preferred_username"] || 
-      claims["nickname"] || 
-      claims["name"] || 
-      claims["sub"] || 
-      ""
-    ) as string;
-    
+    const username = (claims["preferred_username"] ||
+      claims["nickname"] ||
+      claims["name"] ||
+      claims["sub"] ||
+      "") as string;
+
     const emailAllowed = email && ALLOWED_EMAILS.some(e => e.toLowerCase() === email);
-    const usernameAllowed = username && ALLOWED_USERNAMES.some(u => u.toLowerCase() === username.toLowerCase());
-    
-    console.log(`[Auth] Login attempt - email: "${email}", username: "${username}", emailAllowed: ${emailAllowed}, usernameAllowed: ${usernameAllowed}`);
-    
+    const usernameAllowed =
+      username && ALLOWED_USERNAMES.some(u => u.toLowerCase() === username.toLowerCase());
+
     // Allow login if EITHER email OR username is authorized
     if (!emailAllowed && !usernameAllowed) {
-      console.log(`[Auth] Login REJECTED: unauthorized - email "${email}", username "${username}"`);
-      return verified(new Error(`Access denied. You are not authorized to access this application.`), undefined);
+      return verified(
+        new Error(`Access denied. You are not authorized to access this application.`),
+        undefined
+      );
     }
-    
-    console.log(`[Auth] Login APPROVED for: ${email || username}`);
-    
-    
+
     // Check if user exists and is active (only if email is provided)
     if (email) {
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser && !existingUser.isActive) {
-        console.log(`[Auth] Login rejected for deactivated user: ${email}`);
-        return verified(new Error("Your account has been deactivated. Please contact an administrator."), undefined);
+        return verified(
+          new Error("Your account has been deactivated. Please contact an administrator."),
+          undefined
+        );
       }
     }
-    
+
     const user = {};
     updateUserSession(user, tokens);
     await upsertUser(claims);
@@ -206,7 +186,7 @@ export async function setupAuth(app: Express) {
           scope: "openid email profile offline_access",
           callbackURL: `https://${domain}/api/callback`,
         },
-        verify,
+        verify
       );
       passport.use(strategy);
       registeredStrategies.add(strategyName);
@@ -231,7 +211,7 @@ export async function setupAuth(app: Express) {
         // Redirect to access denied page with error message
         return res.redirect("/access-denied");
       }
-      req.logIn(user, (loginErr) => {
+      req.logIn(user, loginErr => {
         if (loginErr) {
           return res.redirect("/access-denied");
         }
@@ -242,9 +222,9 @@ export async function setupAuth(app: Express) {
 
   // Access denied page
   app.get("/api/access-denied-info", (req, res) => {
-    res.json({ 
-      error: "Access denied", 
-      message: "This application is restricted to authorized administrators only."
+    res.json({
+      error: "Access denied",
+      message: "This application is restricted to authorized administrators only.",
     });
   });
 
@@ -262,12 +242,12 @@ export async function setupAuth(app: Express) {
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   // DEV_AUTO_AUTH bypass for development - use real admin user from database
-  if (process.env.DEV_AUTO_AUTH === 'true' && process.env.NODE_ENV !== 'production') {
-    const devAdminId = '1c932a80-c8c1-4ca5-b4f3-de09914947ba'; // admin@local.admin
+  if (process.env.DEV_AUTO_AUTH === "true" && process.env.NODE_ENV !== "production") {
+    const devAdminId = "1c932a80-c8c1-4ca5-b4f3-de09914947ba"; // admin@local.admin
     (req as any).user = {
       id: devAdminId,
       claims: { sub: devAdminId },
-      role: 'admin'
+      role: "admin",
     };
     (req as any).isAuthenticated = () => true;
     return next();
@@ -276,7 +256,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
   // Check if passport is initialized and user is authenticated
-  if (typeof req.isAuthenticated !== 'function' || !req.isAuthenticated() || !user) {
+  if (typeof req.isAuthenticated !== "function" || !req.isAuthenticated() || !user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

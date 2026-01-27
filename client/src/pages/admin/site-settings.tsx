@@ -11,9 +11,26 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Settings, Globe, Share2, Mail, Code, Shield, Lightbulb, Save, Plus, Trash2, 
-  Image, Link, Facebook, Instagram, Twitter, Youtube, Linkedin, Bot, ShieldCheck
+import {
+  Settings,
+  Globe,
+  Share2,
+  Mail,
+  Code,
+  Shield,
+  Lightbulb,
+  Save,
+  Plus,
+  Trash2,
+  Image,
+  Link,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  Linkedin,
+  Bot,
+  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -134,7 +151,9 @@ export default function SiteSettingsPage() {
       <div className="space-y-6 p-6">
         <Skeleton className="h-10 w-64" />
         <div className="grid gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32" />)}
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
         </div>
       </div>
     );
@@ -142,14 +161,11 @@ export default function SiteSettingsPage() {
 
   const navigation = (
     <div className="space-y-1">
-      {navItems.map((item) => (
+      {navItems.map(item => (
         <Button
           key={item.id}
           variant={activeSection === item.id ? "secondary" : "ghost"}
-          className={cn(
-            "w-full justify-start gap-2",
-            activeSection === item.id && "bg-muted"
-          )}
+          className={cn("w-full justify-start gap-2", activeSection === item.id && "bg-muted")}
           onClick={() => setActiveSection(item.id)}
           data-testid={`nav-${item.id}`}
         >
@@ -170,12 +186,8 @@ export default function SiteSettingsPage() {
         <div className="p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            איך זה עובד / How It Works
+            How It Works
           </h3>
-          <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-            הגדרות האתר מאפשרות לך לשלוט בכל ההיבטים של המותג שלך: שם האתר, תיאור, לוגו, 
-            לינקים לרשתות חברתיות, הגדרות SEO ברירת מחדל, וסקריפטים מותאמים אישית.
-          </p>
           <p className="text-sm text-muted-foreground">
             Site settings let you control all aspects of your brand: site name, description, logo,
             social media links, default SEO settings, and custom scripts. Changes apply site-wide.
@@ -183,7 +195,10 @@ export default function SiteSettingsPage() {
         </div>
 
         {activeSection === "branding" && (
-          <AdminSection title="Brand Identity" description="Configure your site's name, tagline, and description">
+          <AdminSection
+            title="Brand Identity"
+            description="Configure your site's name, tagline, and description"
+          >
             <Card>
               <CardContent className="pt-6 space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
@@ -193,7 +208,7 @@ export default function SiteSettingsPage() {
                       id="siteName"
                       placeholder="Travi"
                       defaultValue={settings?.siteName || ""}
-                      onBlur={(e) => handleSave("siteName", e.target.value)}
+                      onBlur={e => handleSave("siteName", e.target.value)}
                       data-testid="input-site-name"
                     />
                   </div>
@@ -203,7 +218,7 @@ export default function SiteSettingsPage() {
                       id="siteTagline"
                       placeholder="Your Dubai Travel Guide"
                       defaultValue={settings?.siteTagline || ""}
-                      onBlur={(e) => handleSave("siteTagline", e.target.value)}
+                      onBlur={e => handleSave("siteTagline", e.target.value)}
                       data-testid="input-site-tagline"
                     />
                   </div>
@@ -214,7 +229,7 @@ export default function SiteSettingsPage() {
                     id="brandDescription"
                     placeholder="Your friendly guide to Dubai's wonders..."
                     defaultValue={settings?.brandDescription || ""}
-                    onBlur={(e) => handleSave("brandDescription", e.target.value)}
+                    onBlur={e => handleSave("brandDescription", e.target.value)}
                     rows={3}
                     data-testid="input-brand-description"
                   />
@@ -228,7 +243,10 @@ export default function SiteSettingsPage() {
         )}
 
         {activeSection === "seo" && (
-          <AdminSection title="Default SEO Settings" description="Configure default meta tags for your site">
+          <AdminSection
+            title="Default SEO Settings"
+            description="Configure default meta tags for your site"
+          >
             <Card>
               <CardContent className="pt-6 space-y-4">
                 <div className="space-y-2">
@@ -237,7 +255,7 @@ export default function SiteSettingsPage() {
                     id="defaultMetaTitle"
                     placeholder="Travi - Discover Dubai Like a Local"
                     defaultValue={settings?.defaultMetaTitle || ""}
-                    onBlur={(e) => handleSave("defaultMetaTitle", e.target.value)}
+                    onBlur={e => handleSave("defaultMetaTitle", e.target.value)}
                     data-testid="input-default-meta-title"
                   />
                   <p className="text-xs text-muted-foreground">
@@ -250,7 +268,7 @@ export default function SiteSettingsPage() {
                     id="defaultMetaDescription"
                     placeholder="Discover Dubai's best attractions, hotels, restaurants, and hidden gems..."
                     defaultValue={settings?.defaultMetaDescription || ""}
-                    onBlur={(e) => handleSave("defaultMetaDescription", e.target.value)}
+                    onBlur={e => handleSave("defaultMetaDescription", e.target.value)}
                     rows={2}
                     data-testid="input-default-meta-description"
                   />
@@ -264,7 +282,7 @@ export default function SiteSettingsPage() {
                     id="googleAnalyticsId"
                     placeholder="G-XXXXXXXXXX"
                     defaultValue={settings?.googleAnalyticsId || ""}
-                    onBlur={(e) => handleSave("googleAnalyticsId", e.target.value)}
+                    onBlur={e => handleSave("googleAnalyticsId", e.target.value)}
                     data-testid="input-ga-id"
                   />
                 </div>
@@ -274,8 +292,8 @@ export default function SiteSettingsPage() {
         )}
 
         {activeSection === "social" && (
-          <AdminSection 
-            title="Social Media Links" 
+          <AdminSection
+            title="Social Media Links"
             description="Manage your social media profiles"
             actions={
               <Button onClick={addSocialLink} size="sm" data-testid="button-add-social">
@@ -301,7 +319,7 @@ export default function SiteSettingsPage() {
                           <Input
                             placeholder="Instagram"
                             value={link.platform}
-                            onChange={(e) => updateSocialLink(index, "platform", e.target.value)}
+                            onChange={e => updateSocialLink(index, "platform", e.target.value)}
                             data-testid={`input-social-platform-${index}`}
                           />
                         </div>
@@ -310,7 +328,7 @@ export default function SiteSettingsPage() {
                           <Input
                             placeholder="https://instagram.com/yourhandle"
                             value={link.url}
-                            onChange={(e) => updateSocialLink(index, "url", e.target.value)}
+                            onChange={e => updateSocialLink(index, "url", e.target.value)}
                             data-testid={`input-social-url-${index}`}
                           />
                         </div>
@@ -318,7 +336,9 @@ export default function SiteSettingsPage() {
                           <div className="flex items-center gap-2">
                             <Switch
                               checked={link.isActive}
-                              onCheckedChange={(checked) => updateSocialLink(index, "isActive", checked)}
+                              onCheckedChange={checked =>
+                                updateSocialLink(index, "isActive", checked)
+                              }
                               data-testid={`switch-social-active-${index}`}
                             />
                             <Label>Active</Label>
@@ -337,7 +357,7 @@ export default function SiteSettingsPage() {
                   ))
                 )}
                 {formData.socialLinks.length > 0 && (
-                  <Button 
+                  <Button
                     onClick={() => handleSave("socialLinks", formData.socialLinks)}
                     className="w-full"
                     data-testid="button-save-social"
@@ -363,7 +383,7 @@ export default function SiteSettingsPage() {
                       type="email"
                       placeholder="hello@travi.com"
                       defaultValue={settings?.contactEmail || ""}
-                      onBlur={(e) => handleSave("contactEmail", e.target.value)}
+                      onBlur={e => handleSave("contactEmail", e.target.value)}
                       data-testid="input-contact-email"
                     />
                   </div>
@@ -373,7 +393,7 @@ export default function SiteSettingsPage() {
                       id="contactPhone"
                       placeholder="+971 4 XXX XXXX"
                       defaultValue={settings?.contactPhone || ""}
-                      onBlur={(e) => handleSave("contactPhone", e.target.value)}
+                      onBlur={e => handleSave("contactPhone", e.target.value)}
                       data-testid="input-contact-phone"
                     />
                   </div>
@@ -384,7 +404,7 @@ export default function SiteSettingsPage() {
                     id="contactAddress"
                     placeholder="Dubai, United Arab Emirates"
                     defaultValue={settings?.contactAddress || ""}
-                    onBlur={(e) => handleSave("contactAddress", e.target.value)}
+                    onBlur={e => handleSave("contactAddress", e.target.value)}
                     rows={2}
                     data-testid="input-contact-address"
                   />
@@ -405,7 +425,7 @@ export default function SiteSettingsPage() {
                       id="customHeadScripts"
                       placeholder="<!-- Custom scripts to inject in <head> -->"
                       defaultValue={settings?.customHeadScripts || ""}
-                      onBlur={(e) => handleSave("customHeadScripts", e.target.value)}
+                      onBlur={e => handleSave("customHeadScripts", e.target.value)}
                       rows={4}
                       className="font-mono text-sm"
                       data-testid="input-head-scripts"
@@ -420,7 +440,7 @@ export default function SiteSettingsPage() {
                       id="customFooterScripts"
                       placeholder="<!-- Custom scripts to inject before </body> -->"
                       defaultValue={settings?.customFooterScripts || ""}
-                      onBlur={(e) => handleSave("customFooterScripts", e.target.value)}
+                      onBlur={e => handleSave("customFooterScripts", e.target.value)}
                       rows={4}
                       className="font-mono text-sm"
                       data-testid="input-footer-scripts"
@@ -442,7 +462,7 @@ export default function SiteSettingsPage() {
                     </div>
                     <Switch
                       checked={settings?.maintenanceMode || false}
-                      onCheckedChange={(checked) => handleSave("maintenanceMode", checked)}
+                      onCheckedChange={checked => handleSave("maintenanceMode", checked)}
                       data-testid="switch-maintenance-mode"
                     />
                   </div>
@@ -452,7 +472,7 @@ export default function SiteSettingsPage() {
                       id="maintenanceMessage"
                       placeholder="We're currently performing scheduled maintenance. Please check back soon!"
                       defaultValue={settings?.maintenanceMessage || ""}
-                      onBlur={(e) => handleSave("maintenanceMessage", e.target.value)}
+                      onBlur={e => handleSave("maintenanceMessage", e.target.value)}
                       rows={2}
                       data-testid="input-maintenance-message"
                     />
@@ -461,7 +481,10 @@ export default function SiteSettingsPage() {
               </Card>
             </AdminSection>
 
-            <AdminSection title="Bot & Crawler Access" description="Control bot access to your site">
+            <AdminSection
+              title="Bot & Crawler Access"
+              description="Control bot access to your site"
+            >
               <Card>
                 <CardContent className="pt-6 space-y-4">
                   <div className="flex items-center justify-between gap-4">
@@ -471,27 +494,26 @@ export default function SiteSettingsPage() {
                         Disable Bot Blocking
                       </Label>
                       <p className="text-xs text-muted-foreground">
-                        When ON, all bots (including verification bots like Trustpilot) can access the site freely.
-                        Use this when performing domain verification or testing.
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1" dir="rtl">
-                        כאשר מופעל, כל הבוטים (כולל בוטי אימות כמו Trustpilot) יכולים לגשת לאתר בחופשיות.
-                        השתמש בזה בזמן אימות דומיין או בדיקות.
+                        When ON, all bots (including verification bots like Trustpilot) can access
+                        the site freely. Use this when performing domain verification or testing.
                       </p>
                     </div>
                     <Switch
                       checked={settings?.botBlockingDisabled || false}
-                      onCheckedChange={(checked) => handleSave("botBlockingDisabled", checked)}
+                      onCheckedChange={checked => handleSave("botBlockingDisabled", checked)}
                       data-testid="switch-bot-blocking-disabled"
                     />
                   </div>
                   <div className="p-3 rounded-lg bg-muted border">
                     <p className="text-sm font-medium mb-2">Current Status:</p>
                     <Badge variant={settings?.botBlockingDisabled ? "default" : "secondary"}>
-                      {settings?.botBlockingDisabled ? "All Bots Allowed" : "Only Approved Bots Allowed"}
+                      {settings?.botBlockingDisabled
+                        ? "All Bots Allowed"
+                        : "Only Approved Bots Allowed"}
                     </Badge>
                     <p className="text-xs text-muted-foreground mt-2">
-                      Approved bots include: Google, Bing, ChatGPT, Perplexity, Claude, Facebook, Twitter, LinkedIn, Trustpilot, and more.
+                      Approved bots include: Google, Bing, ChatGPT, Perplexity, Claude, Facebook,
+                      Twitter, LinkedIn, Trustpilot, and more.
                     </p>
                   </div>
                 </CardContent>

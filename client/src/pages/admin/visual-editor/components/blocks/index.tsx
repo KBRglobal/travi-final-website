@@ -2,7 +2,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
@@ -140,26 +145,30 @@ export function HeroBlock({ section, isPreview, isSelected, onSelect, onTextEdit
 
       <div className="relative z-10 container mx-auto px-4 py-16 text-center">
         <div className="max-w-3xl mx-auto space-y-6">
-          <h1 className={cn(
-            "text-4xl md:text-5xl font-bold leading-tight",
-            section.backgroundImage ? "text-white" : "text-foreground"
-          )}>
+          <h1
+            className={cn(
+              "text-4xl md:text-5xl font-bold leading-tight",
+              section.backgroundImage ? "text-white" : "text-foreground"
+            )}
+          >
             <EditableText
               value={section.title}
               placeholder="Add a compelling headline"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
           </h1>
-          <p className={cn(
-            "text-lg md:text-xl",
-            section.backgroundImage ? "text-white/90" : "text-muted-foreground"
-          )}>
+          <p
+            className={cn(
+              "text-lg md:text-xl",
+              section.backgroundImage ? "text-white/90" : "text-muted-foreground"
+            )}
+          >
             <EditableText
               value={section.subtitle}
               placeholder="Add a supporting subtitle"
-              onEdit={(value) => onTextEdit?.("subtitle", value)}
+              onEdit={value => onTextEdit?.("subtitle", value)}
               isPreview={isPreview}
             />
           </p>
@@ -169,7 +178,7 @@ export function HeroBlock({ section, isPreview, isSelected, onSelect, onTextEdit
                 <EditableText
                   value={section.buttonText}
                   placeholder="Button text"
-                  onEdit={(value) => onTextEdit?.("buttonText", value)}
+                  onEdit={value => onTextEdit?.("buttonText", value)}
                   isPreview={isPreview}
                 />
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -197,16 +206,18 @@ export function TextBlock({ section, isPreview, isSelected, onSelect, onTextEdit
       data-testid={`block-text-${section.id}`}
     >
       <div className="container mx-auto px-4">
-        <div className={cn(
-          "grid gap-8 items-center",
-          images.length > 0 ? "md:grid-cols-2" : "max-w-3xl mx-auto"
-        )}>
+        <div
+          className={cn(
+            "grid gap-8 items-center",
+            images.length > 0 ? "md:grid-cols-2" : "max-w-3xl mx-auto"
+          )}
+        >
           <div className="space-y-4">
             <h2 className="text-3xl md:text-4xl font-bold">
               <EditableText
                 value={section.title}
                 placeholder="Section title"
-                onEdit={(value) => onTextEdit?.("title", value)}
+                onEdit={value => onTextEdit?.("title", value)}
                 isPreview={isPreview}
                 isHeading
               />
@@ -215,7 +226,7 @@ export function TextBlock({ section, isPreview, isSelected, onSelect, onTextEdit
               <EditableText
                 value={section.description}
                 placeholder="Add your contents here. You can describe your services, share your story, or provide valuable information to your visitors."
-                onEdit={(value) => onTextEdit?.("description", value)}
+                onEdit={value => onTextEdit?.("description", value)}
                 isPreview={isPreview}
               />
             </div>
@@ -254,7 +265,7 @@ export function GalleryBlock({ section, isPreview, isSelected, onSelect, onTextE
             <EditableText
               value={section.title}
               placeholder="Gallery Title"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -275,7 +286,9 @@ export function GalleryBlock({ section, isPreview, isSelected, onSelect, onTextE
         ) : (
           !isPreview && (
             <div className="text-center py-12 border-2 border-dashed rounded-lg">
-              <p className="text-muted-foreground">No images yet. Add images in the settings panel.</p>
+              <p className="text-muted-foreground">
+                No images yet. Add images in the settings panel.
+              </p>
             </div>
           )
         )}
@@ -314,7 +327,7 @@ export function CtaBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
             <EditableText
               value={section.title}
               placeholder="Ready to get started?"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -323,7 +336,7 @@ export function CtaBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
             <EditableText
               value={section.subtitle}
               placeholder="Join thousands of satisfied customers today."
-              onEdit={(value) => onTextEdit?.("subtitle", value)}
+              onEdit={value => onTextEdit?.("subtitle", value)}
               isPreview={isPreview}
             />
           </p>
@@ -332,7 +345,7 @@ export function CtaBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
               <EditableText
                 value={section.buttonText}
                 placeholder="Get Started"
-                onEdit={(value) => onTextEdit?.("buttonText", value)}
+                onEdit={value => onTextEdit?.("buttonText", value)}
                 isPreview={isPreview}
               />
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -364,7 +377,7 @@ export function FaqBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
             <EditableText
               value={section.title}
               placeholder="Frequently Asked Questions"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -374,8 +387,12 @@ export function FaqBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
           {items.length > 0 ? (
             <Accordion type="single" collapsible className="space-y-3">
               {items.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4">
-                  <AccordionTrigger 
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="border rounded-lg px-4"
+                >
+                  <AccordionTrigger
                     className="text-start"
                     data-testid={`accordion-trigger-faq-${index}`}
                   >
@@ -390,7 +407,9 @@ export function FaqBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
           ) : (
             !isPreview && (
               <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                <p className="text-muted-foreground">No FAQs yet. Add questions in the settings panel.</p>
+                <p className="text-muted-foreground">
+                  No FAQs yet. Add questions in the settings panel.
+                </p>
               </div>
             )
           )}
@@ -400,8 +419,16 @@ export function FaqBlock({ section, isPreview, isSelected, onSelect, onTextEdit 
   );
 }
 
-export function TestimonialBlock({ section, isPreview, isSelected, onSelect, onTextEdit }: BlockProps) {
-  const data = section.data as { items?: Array<{ name?: string; role?: string; contents?: string; image?: string }> };
+export function TestimonialBlock({
+  section,
+  isPreview,
+  isSelected,
+  onSelect,
+  onTextEdit,
+}: BlockProps) {
+  const data = section.data as {
+    items?: Array<{ name?: string; role?: string; contents?: string; image?: string }>;
+  };
   const items = data?.items || [];
 
   return (
@@ -420,7 +447,7 @@ export function TestimonialBlock({ section, isPreview, isSelected, onSelect, onT
             <EditableText
               value={section.title}
               placeholder="What Our Customers Say"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -432,10 +459,16 @@ export function TestimonialBlock({ section, isPreview, isSelected, onSelect, onT
               <Card key={index} className="h-full">
                 <CardContent className="pt-6 space-y-4">
                   <Quote className="h-8 w-8 text-primary/30" />
-                  <p className="text-muted-foreground italic">{item.contents || "Testimonial contents"}</p>
+                  <p className="text-muted-foreground italic">
+                    {item.contents || "Testimonial contents"}
+                  </p>
                   <div className="flex items-center gap-3">
                     {item.image && (
-                      <img src={item.image} alt={item.name} className="w-10 h-10 rounded-full object-cover" />
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
                     )}
                     <div>
                       <p className="font-medium">{item.name || "Customer Name"}</p>
@@ -449,7 +482,9 @@ export function TestimonialBlock({ section, isPreview, isSelected, onSelect, onT
         ) : (
           !isPreview && (
             <div className="text-center py-12 border-2 border-dashed rounded-lg">
-              <p className="text-muted-foreground">No testimonials yet. Add them in the settings panel.</p>
+              <p className="text-muted-foreground">
+                No testimonials yet. Add them in the settings panel.
+              </p>
             </div>
           )
         )}
@@ -459,7 +494,9 @@ export function TestimonialBlock({ section, isPreview, isSelected, onSelect, onT
 }
 
 export function StatsBlock({ section, isPreview, isSelected, onSelect, onTextEdit }: BlockProps) {
-  const data = section.data as { items?: Array<{ value?: string; label?: string; suffix?: string }> };
+  const data = section.data as {
+    items?: Array<{ value?: string; label?: string; suffix?: string }>;
+  };
   const items = data?.items || [];
 
   return (
@@ -478,7 +515,7 @@ export function StatsBlock({ section, isPreview, isSelected, onSelect, onTextEdi
             <EditableText
               value={section.title}
               placeholder="Our Impact"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -508,8 +545,16 @@ export function StatsBlock({ section, isPreview, isSelected, onSelect, onTextEdi
   );
 }
 
-export function FeaturesBlock({ section, isPreview, isSelected, onSelect, onTextEdit }: BlockProps) {
-  const data = section.data as { items?: Array<{ icon?: string; title?: string; description?: string }> };
+export function FeaturesBlock({
+  section,
+  isPreview,
+  isSelected,
+  onSelect,
+  onTextEdit,
+}: BlockProps) {
+  const data = section.data as {
+    items?: Array<{ icon?: string; title?: string; description?: string }>;
+  };
   const items = data?.items || [];
 
   return (
@@ -528,7 +573,7 @@ export function FeaturesBlock({ section, isPreview, isSelected, onSelect, onText
             <EditableText
               value={section.title}
               placeholder="Our Features"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -537,7 +582,7 @@ export function FeaturesBlock({ section, isPreview, isSelected, onSelect, onText
             <EditableText
               value={section.subtitle}
               placeholder="Discover what makes us different"
-              onEdit={(value) => onTextEdit?.("subtitle", value)}
+              onEdit={value => onTextEdit?.("subtitle", value)}
               isPreview={isPreview}
             />
           </p>
@@ -553,7 +598,9 @@ export function FeaturesBlock({ section, isPreview, isSelected, onSelect, onText
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg mb-1">{item.title || "Feature Title"}</h3>
-                    <p className="text-muted-foreground text-sm">{item.description || "Feature description"}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {item.description || "Feature description"}
+                    </p>
                   </div>
                 </div>
               );
@@ -562,7 +609,9 @@ export function FeaturesBlock({ section, isPreview, isSelected, onSelect, onText
         ) : (
           !isPreview && (
             <div className="text-center py-12 border-2 border-dashed rounded-lg">
-              <p className="text-muted-foreground">No features yet. Add them in the settings panel.</p>
+              <p className="text-muted-foreground">
+                No features yet. Add them in the settings panel.
+              </p>
             </div>
           )
         )}
@@ -588,7 +637,7 @@ export function VideoBlock({ section, isPreview, isSelected, onSelect, onTextEdi
             <EditableText
               value={section.title}
               placeholder="Watch Our Video"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -619,7 +668,13 @@ export function VideoBlock({ section, isPreview, isSelected, onSelect, onTextEdi
   );
 }
 
-export function NewsletterBlock({ section, isPreview, isSelected, onSelect, onTextEdit }: BlockProps) {
+export function NewsletterBlock({
+  section,
+  isPreview,
+  isSelected,
+  onSelect,
+  onTextEdit,
+}: BlockProps) {
   return (
     <div
       onClick={onSelect}
@@ -637,7 +692,7 @@ export function NewsletterBlock({ section, isPreview, isSelected, onSelect, onTe
             <EditableText
               value={section.title}
               placeholder="Subscribe to Our Newsletter"
-              onEdit={(value) => onTextEdit?.("title", value)}
+              onEdit={value => onTextEdit?.("title", value)}
               isPreview={isPreview}
               isHeading
             />
@@ -646,21 +701,21 @@ export function NewsletterBlock({ section, isPreview, isSelected, onSelect, onTe
             <EditableText
               value={section.subtitle}
               placeholder="Get the latest updates delivered to your inbox"
-              onEdit={(value) => onTextEdit?.("subtitle", value)}
+              onEdit={value => onTextEdit?.("subtitle", value)}
               isPreview={isPreview}
             />
           </p>
           <div className="flex gap-2 max-w-md mx-auto">
-            <Input 
-              placeholder="Enter your email" 
-              className="flex-1" 
+            <Input
+              placeholder="Enter your email"
+              className="flex-1"
               data-testid="input-newsletter-email"
             />
             <Button data-testid="button-newsletter-subscribe">
               <EditableText
                 value={section.buttonText}
                 placeholder="Subscribe"
-                onEdit={(value) => onTextEdit?.("buttonText", value)}
+                onEdit={value => onTextEdit?.("buttonText", value)}
                 isPreview={isPreview}
               />
             </Button>
@@ -672,16 +727,16 @@ export function NewsletterBlock({ section, isPreview, isSelected, onSelect, onTe
 }
 
 export const BLOCK_TYPES = [
-  { type: "hero", label: "Hero", labelHe: "באנר ראשי", icon: "layout" },
-  { type: "intro_text", label: "Text", labelHe: "טקסט", icon: "text" },
-  { type: "gallery", label: "Gallery", labelHe: "גלריה", icon: "image" },
-  { type: "cta", label: "Call to Action", labelHe: "קריאה לפעולה", icon: "megaphone" },
-  { type: "faq", label: "FAQ", labelHe: "שאלות ותשובות", icon: "help" },
-  { type: "testimonial", label: "Testimonials", labelHe: "המלצות", icon: "quote" },
-  { type: "stats", label: "Statistics", labelHe: "סטטיסטיקות", icon: "chart" },
-  { type: "features", label: "Features", labelHe: "תכונות", icon: "star" },
-  { type: "video", label: "Video", labelHe: "וידאו", icon: "play" },
-  { type: "newsletter", label: "Newsletter", labelHe: "ניוזלטר", icon: "mail" },
+  { type: "hero", label: "Hero", icon: "layout" },
+  { type: "intro_text", label: "Text", icon: "text" },
+  { type: "gallery", label: "Gallery", icon: "image" },
+  { type: "cta", label: "Call to Action", icon: "megaphone" },
+  { type: "faq", label: "FAQ", icon: "help" },
+  { type: "testimonial", label: "Testimonials", icon: "quote" },
+  { type: "stats", label: "Statistics", icon: "chart" },
+  { type: "features", label: "Features", icon: "star" },
+  { type: "video", label: "Video", icon: "play" },
+  { type: "newsletter", label: "Newsletter", icon: "mail" },
 ];
 
 export function renderBlock(

@@ -7,15 +7,15 @@ import { apiRequest } from "@/lib/queryClient";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-export type FieldType = 
-  | "metaTitle" 
-  | "metaDescription" 
-  | "keyword" 
-  | "intro" 
-  | "expandedIntro" 
-  | "tips" 
-  | "highlights" 
-  | "quickInfo" 
+export type FieldType =
+  | "metaTitle"
+  | "metaDescription"
+  | "keyword"
+  | "intro"
+  | "expandedIntro"
+  | "tips"
+  | "highlights"
+  | "quickInfo"
   | "altText"
   | "secondaryKeywords"
   | "internalLinks"
@@ -53,23 +53,19 @@ export function AIFieldAssistant({
   const handleGenerate = async () => {
     setLoading(true);
     setAppliedIndex(null);
-    
+
     try {
-      const response = await apiRequest(
-        "POST",
-        "/api/ai/generate-field",
-        {
-          fieldType,
-          currentValue,
-          title: contentContext.title,
-          contentType: contentContext.contentType,
-          primaryKeyword: contentContext.primaryKeyword,
-          maxLength,
-        }
-      );
-      
-      const data = await response.json() as { suggestions: string[] };
-      
+      const response = await apiRequest("POST", "/api/ai/generate-field", {
+        fieldType,
+        currentValue,
+        title: contentContext.title,
+        contentType: contentContext.contentType,
+        primaryKeyword: contentContext.primaryKeyword,
+        maxLength,
+      });
+
+      const data = (await response.json()) as { suggestions: string[] };
+
       if (data.suggestions && data.suggestions.length > 0) {
         setSuggestions(data.suggestions);
       } else {
@@ -89,8 +85,7 @@ export function AIFieldAssistant({
       } else if (error && typeof error === "object" && "message" in error) {
         errorMessage = String((error as { message: unknown }).message);
       }
-      
-      console.error("Error generating field suggestions:", errorMessage, error);
+
       toast({
         title: "Generation failed",
         description: errorMessage,
@@ -108,7 +103,7 @@ export function AIFieldAssistant({
       title: "Applied",
       description: `${fieldName} updated successfully`,
     });
-    
+
     // Close popover after a brief moment
     setTimeout(() => {
       setOpen(false);
@@ -138,13 +133,7 @@ export function AIFieldAssistant({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={disabled}
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" size="sm" disabled={disabled} className="gap-2">
           <Sparkles className="h-4 w-4" />
           AI Assist
         </Button>
@@ -152,9 +141,7 @@ export function AIFieldAssistant({
       <PopoverContent className="w-[500px] p-4" align="start">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-sm">
-              AI Suggestions for {getFieldLabel()}
-            </h4>
+            <h4 className="font-semibold text-sm">AI Suggestions for {getFieldLabel()}</h4>
             {maxLength && (
               <Badge variant="outline" className="text-xs">
                 Max {maxLength} chars
@@ -178,9 +165,7 @@ export function AIFieldAssistant({
           {loading && (
             <div className="text-center py-6">
               <Loader2 className="h-8 w-8 mx-auto mb-2 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">
-                Generating suggestions...
-              </p>
+              <p className="text-sm text-muted-foreground">Generating suggestions...</p>
             </div>
           )}
 
@@ -226,12 +211,7 @@ export function AIFieldAssistant({
 
           {suggestions.length > 0 && (
             <div className="flex justify-between pt-2 border-t">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleGenerate}
-                disabled={loading}
-              >
+              <Button variant="ghost" size="sm" onClick={handleGenerate} disabled={loading}>
                 <Sparkles className="h-4 w-4 mr-2" />
                 Regenerate
               </Button>

@@ -23,7 +23,9 @@ export function registerGrowthRecommendationRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
       }
 
       try {
@@ -35,30 +37,26 @@ export function registerGrowthRecommendationRoutes(app: Express): void {
         });
         res.json({ items: recommendations, total: recommendations.length });
       } catch (error) {
-        console.error("[GrowthRecommendations] Error:", error);
         res.status(500).json({ error: "Failed to fetch recommendations" });
       }
     }
   );
 
   // Get growth summary
-  app.get(
-    "/api/admin/growth/summary",
-    requirePermission("canViewAnalytics"),
-    async (req, res) => {
-      if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
-      }
-
-      try {
-        const summary = await getGrowthSummary();
-        res.json(summary);
-      } catch (error) {
-        console.error("[GrowthRecommendations] Error:", error);
-        res.status(500).json({ error: "Failed to fetch summary" });
-      }
+  app.get("/api/admin/growth/summary", requirePermission("canViewAnalytics"), async (req, res) => {
+    if (!isEnabled()) {
+      return res
+        .status(503)
+        .json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
     }
-  );
+
+    try {
+      const summary = await getGrowthSummary();
+      res.json(summary);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch summary" });
+    }
+  });
 
   // Generate new recommendations
   app.post(
@@ -66,14 +64,15 @@ export function registerGrowthRecommendationRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
       }
 
       try {
         const recommendations = await generateRecommendations();
         res.json({ generated: recommendations.length, items: recommendations });
       } catch (error) {
-        console.error("[GrowthRecommendations] Error:", error);
         res.status(500).json({ error: "Failed to generate recommendations" });
       }
     }
@@ -85,7 +84,9 @@ export function registerGrowthRecommendationRoutes(app: Express): void {
     requirePermission("canEdit"),
     async (req, res) => {
       if (!isEnabled()) {
-        return res.status(503).json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
+        return res
+          .status(503)
+          .json({ error: "Feature disabled", flag: "ENABLE_GROWTH_RECOMMENDATIONS" });
       }
 
       try {
@@ -100,11 +101,8 @@ export function registerGrowthRecommendationRoutes(app: Express): void {
         }
         res.json({ success: true });
       } catch (error) {
-        console.error("[GrowthRecommendations] Error:", error);
         res.status(500).json({ error: "Failed to update recommendation" });
       }
     }
   );
-
-  console.log("[GrowthRecommendations] Routes registered");
 }

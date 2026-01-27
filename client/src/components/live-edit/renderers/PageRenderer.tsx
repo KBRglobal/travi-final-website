@@ -17,14 +17,10 @@ interface PageRendererProps {
 
 function SortableComponent({ id, children }: { id: string; children: React.ReactNode }) {
   const isEditMode = useIsEditMode();
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id, disabled: !isEditMode });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    disabled: !isEditMode,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -46,12 +42,7 @@ function SortableComponent({ id, children }: { id: string; children: React.React
 
 export function PageRenderer({ pageSlug, fallbackContent, className }: PageRendererProps) {
   const isEditMode = useIsEditMode();
-  const {
-    componentOrder,
-    currentLayout,
-    isLoading,
-    loadLayout,
-  } = useLiveEditStore();
+  const { componentOrder, currentLayout, isLoading, loadLayout } = useLiveEditStore();
 
   // Load layout on mount
   useEffect(() => {
@@ -74,7 +65,7 @@ export function PageRenderer({ pageSlug, fallbackContent, className }: PageRende
 
   const contents = (
     <div className={cn("relative", className)}>
-      {componentOrder.map((compId) => {
+      {componentOrder.map(compId => {
         const component = currentLayout[compId];
         if (!component) return null;
 
@@ -92,9 +83,7 @@ export function PageRenderer({ pageSlug, fallbackContent, className }: PageRende
       {/* Empty state in edit mode */}
       {isEditMode && componentOrder.length === 0 && (
         <div className="py-16 text-center border-2 border-dashed border-muted-foreground/30 rounded-lg">
-          <p className="text-muted-foreground">
-            גרור רכיבים לכאן או בחר מהסרגל הצדדי
-          </p>
+          <p className="text-muted-foreground">Drag components here or select from sidebar</p>
         </div>
       )}
     </div>
@@ -106,13 +95,7 @@ export function PageRenderer({ pageSlug, fallbackContent, className }: PageRende
       <LiveEditToggle pageSlug={pageSlug} />
 
       {/* Wrap in DragDropProvider when editing */}
-      {isEditMode ? (
-        <DragDropProvider>
-          {contents}
-        </DragDropProvider>
-      ) : (
-        contents
-      )}
+      {isEditMode ? <DragDropProvider>{contents}</DragDropProvider> : contents}
 
       {/* Sidebar and dialogs */}
       {isEditMode && (

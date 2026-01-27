@@ -21,28 +21,58 @@ export function registerAiAuditRoutes(app: Express): void {
     if (!isAiAuditEnabled()) {
       return res.status(403).json({ error: "AI audit disabled" });
     }
-    const { contentId, operationType, model, prompt, output, promptTokens, outputTokens, cost, duration, metadata } = req.body;
-    const createdBy = (req as any).user?.id || 'system';
-    const entry = recordAiOperation(contentId, operationType, model, prompt, output, createdBy, { promptTokens, outputTokens, cost, duration, metadata });
+    const {
+      contentId,
+      operationType,
+      model,
+      prompt,
+      output,
+      promptTokens,
+      outputTokens,
+      cost,
+      duration,
+      metadata,
+    } = req.body;
+    const createdBy = (req as any).user?.id || "system";
+    const entry = recordAiOperation(contentId, operationType, model, prompt, output, createdBy, {
+      promptTokens,
+      outputTokens,
+      cost,
+      duration,
+      metadata,
+    });
     res.json({ success: true, entry });
   });
 
-  app.post("/api/admin/ai-audit/:entryId/review", requireAuth, async (req: Request, res: Response) => {
-    const { status, notes } = req.body;
-    const reviewedBy = (req as any).user?.id || 'system';
-    const success = reviewAuditEntry(req.params.entryId, status as AuditStatus, reviewedBy, notes);
-    res.json({ success });
-  });
+  app.post(
+    "/api/admin/ai-audit/:entryId/review",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { status, notes } = req.body;
+      const reviewedBy = (req as any).user?.id || "system";
+      const success = reviewAuditEntry(
+        req.params.entryId,
+        status as AuditStatus,
+        reviewedBy,
+        notes
+      );
+      res.json({ success });
+    }
+  );
 
   app.get("/api/admin/ai-audit/:entryId", requireAuth, async (req: Request, res: Response) => {
     const entry = getAuditEntry(req.params.entryId);
     res.json(entry || { error: "Entry not found" });
   });
 
-  app.get("/api/admin/ai-audit/content/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const history = getContentAuditHistory(req.params.contentId);
-    res.json({ history, count: history.length });
-  });
+  app.get(
+    "/api/admin/ai-audit/content/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const history = getContentAuditHistory(req.params.contentId);
+      res.json({ history, count: history.length });
+    }
+  );
 
   app.get("/api/admin/ai-audit/query", requireAuth, async (req: Request, res: Response) => {
     const filter = {
@@ -68,10 +98,8 @@ export function registerAiAuditRoutes(app: Express): void {
 
   app.get("/api/admin/ai-audit/export", requireAuth, async (req: Request, res: Response) => {
     const json = exportAuditLog();
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Content-Disposition', 'attachment; filename=ai-audit-log.json');
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Disposition", "attachment; filename=ai-audit-log.json");
     res.send(json);
   });
-
-  console.log("[AiAudit] Routes registered");
 }

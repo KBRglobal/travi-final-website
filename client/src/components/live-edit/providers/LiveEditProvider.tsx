@@ -14,15 +14,8 @@ export function LiveEditProvider({
   autoSaveInterval = 30000,
 }: LiveEditProviderProps) {
   const { user } = useAuth();
-  const {
-    isEditMode,
-    hasUnsavedChanges,
-    saveDraft,
-    exitEditMode,
-    undo,
-    redo,
-    setCurrentUser,
-  } = useLiveEditStore();
+  const { isEditMode, hasUnsavedChanges, saveDraft, exitEditMode, undo, redo, setCurrentUser } =
+    useLiveEditStore();
 
   // Set current user from auth context
   useEffect(() => {
@@ -44,7 +37,7 @@ export function LiveEditProvider({
     if (!isEditMode || !hasUnsavedChanges || !enabled) return;
 
     const interval = setInterval(() => {
-      saveDraft().catch(console.error);
+      saveDraft().catch(() => {});
     }, autoSaveInterval);
 
     return () => clearInterval(interval);
@@ -87,7 +80,7 @@ export function LiveEditProvider({
       // Ctrl/Cmd + S - Save
       if (modKey && e.key === "s") {
         e.preventDefault();
-        saveDraft().catch(console.error);
+        saveDraft().catch(() => {});
       }
 
       // Escape - Exit edit mode (with confirmation if unsaved)
@@ -114,10 +107,7 @@ export function LiveEditProvider({
   }, [isEditMode]);
 
   // Check if user can edit
-  const canEdit =
-    enabled &&
-    user &&
-    ["admin", "editor", "author"].includes(user.role);
+  const canEdit = enabled && user && ["admin", "editor", "author"].includes(user.role);
 
   if (!canEdit) {
     return <>{children}</>;

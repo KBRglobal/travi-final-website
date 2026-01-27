@@ -32,7 +32,7 @@ function sanitizeContentForPublic(content: any) {
   if (author) {
     publicContent.author = {
       firstName: author.firstName,
-      lastName: author.lastName
+      lastName: author.lastName,
     };
   }
   return publicContent;
@@ -57,7 +57,6 @@ export function registerPublicApiRoutes(app: Express): void {
       const sanitizedContents = contents.slice(0, maxLimit).map(sanitizeContentForPublic);
       res.json(sanitizedContents);
     } catch (error) {
-      console.error("Error fetching public contents:", error);
       res.status(500).json({ error: "Failed to fetch contents" });
     }
   });
@@ -67,7 +66,7 @@ export function registerPublicApiRoutes(app: Express): void {
   router.get("/destinations-index/hero", async (req, res) => {
     try {
       const [config] = await db.select().from(destinationsIndexConfig).limit(1);
-      
+
       // No config at all - return empty values per CMS contract (no fallbacks)
       if (!config) {
         return res.json({
@@ -79,13 +78,13 @@ export function registerPublicApiRoutes(app: Express): void {
           heroCTALink: null,
         });
       }
-      
+
       // Get active slides sorted by order (may be empty, that's OK)
       const heroSlidesArray = Array.isArray(config.heroSlides) ? config.heroSlides : [];
       const activeSlides = heroSlidesArray
         .filter((slide: any) => slide.isActive)
         .sort((a: any, b: any) => a.order - b.order);
-      
+
       // Enrich slides with destination data
       const enrichedSlides = [];
       for (const slide of activeSlides) {
@@ -99,7 +98,7 @@ export function registerPublicApiRoutes(app: Express): void {
           .from(destinations)
           .where(eq(destinations.id, slide.destinationId))
           .limit(1);
-        
+
         if (destination) {
           enrichedSlides.push({
             ...slide,
@@ -107,7 +106,7 @@ export function registerPublicApiRoutes(app: Express): void {
           });
         }
       }
-      
+
       // Return database values - no fallbacks per CMS contract
       res.json({
         heroSlides: enrichedSlides,
@@ -118,7 +117,6 @@ export function registerPublicApiRoutes(app: Express): void {
         heroCTALink: config.heroCTALink ?? null,
       });
     } catch (error) {
-      console.error("Error fetching destinations index hero:", error);
       res.status(500).json({ error: "Failed to fetch destinations index hero" });
     }
   });
@@ -130,7 +128,6 @@ export function registerPublicApiRoutes(app: Express): void {
       const { limit, level } = req.query;
       const maxLimit = Math.min(parseInt(limit as string) || 50, 50);
 
-      console.log("[PublicAPI] Fetching destinations with notIlike filter for test");
       const allDestinations = await db
         .select({
           id: destinations.id,
@@ -148,15 +145,11 @@ export function registerPublicApiRoutes(app: Express): void {
           moodPrimaryColor: destinations.moodPrimaryColor,
         })
         .from(destinations)
-        .where(and(
-          eq(destinations.isActive, true),
-          notIlike(destinations.name, '%test%')
-        ))
+        .where(and(eq(destinations.isActive, true), notIlike(destinations.name, "%test%")))
         .orderBy(destinations.name);
 
       res.json(allDestinations);
     } catch (error) {
-      console.error("Error fetching public destinations:", error);
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -194,15 +187,22 @@ export function registerPublicApiRoutes(app: Express): void {
         try {
           if (fs.existsSync(heroPath)) {
             const files = fs.readdirSync(heroPath);
-            const imageFiles = files.filter(f =>
-              f.endsWith(".webp") || f.endsWith(".jpg") || f.endsWith(".jpeg") || f.endsWith(".png")
+            const imageFiles = files.filter(
+              f =>
+                f.endsWith(".webp") ||
+                f.endsWith(".jpg") ||
+                f.endsWith(".jpeg") ||
+                f.endsWith(".png")
             );
 
             if (imageFiles.length > 0) {
               heroImages = imageFiles.map((filename, index) => ({
                 filename,
                 url: `/destinations-hero/${folder}/${filename}`,
-                alt: filename.replace(/\.[^/.]+$/, "").replace(/-/g, " ").replace(/_/g, " "),
+                alt: filename
+                  .replace(/\.[^/.]+$/, "")
+                  .replace(/-/g, " ")
+                  .replace(/_/g, " "),
                 order: index,
               }));
               break;
@@ -254,7 +254,6 @@ export function registerPublicApiRoutes(app: Express): void {
         },
       });
     } catch (error) {
-      console.error("Error fetching destination:", error);
       res.status(500).json({ error: "Failed to fetch destination" });
     }
   });
@@ -271,7 +270,6 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.json(sections);
     } catch (error) {
-      console.error("Error fetching homepage sections:", error);
       res.status(500).json({ error: "Failed to fetch homepage sections" });
     }
   });
@@ -288,7 +286,6 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.json(cards);
     } catch (error) {
-      console.error("Error fetching homepage cards:", error);
       res.status(500).json({ error: "Failed to fetch homepage cards" });
     }
   });
@@ -305,7 +302,6 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.json(categories);
     } catch (error) {
-      console.error("Error fetching experience categories:", error);
       res.status(500).json({ error: "Failed to fetch experience categories" });
     }
   });
@@ -322,7 +318,6 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.json(regions);
     } catch (error) {
-      console.error("Error fetching region links:", error);
       res.status(500).json({ error: "Failed to fetch region links" });
     }
   });
@@ -333,7 +328,7 @@ export function registerPublicApiRoutes(app: Express): void {
     res.json({
       message: "Deprecated - use Tiqets API",
       locations: [],
-      migration: "This endpoint has been migrated to the Tiqets integration system"
+      migration: "This endpoint has been migrated to the Tiqets integration system",
     });
   });
 
@@ -342,7 +337,7 @@ export function registerPublicApiRoutes(app: Express): void {
   router.get("/travi/locations/:city/:slug", async (req, res) => {
     res.json({
       message: "Deprecated - use Tiqets API",
-      migration: "This endpoint has been migrated to the Tiqets integration system"
+      migration: "This endpoint has been migrated to the Tiqets integration system",
     });
   });
 
@@ -369,39 +364,36 @@ export function registerPublicApiRoutes(app: Express): void {
           summary: destinations.summary,
         })
         .from(destinations)
-        .where(and(
-          eq(destinations.isActive, true),
-          notIlike(destinations.name, '%test%')
-        ));
+        .where(and(eq(destinations.isActive, true), notIlike(destinations.name, "%test%")));
 
-      const metaMap = new Map<string, typeof destinationMeta[0]>();
+      const metaMap = new Map<string, (typeof destinationMeta)[0]>();
       for (const d of destinationMeta) {
         metaMap.set(d.id, d);
       }
 
       const cityCountryFallback: Record<string, string> = {
-        "London": "United Kingdom",
-        "Paris": "France",
-        "Barcelona": "Spain",
-        "Rome": "Italy",
-        "Amsterdam": "Netherlands",
+        London: "United Kingdom",
+        Paris: "France",
+        Barcelona: "Spain",
+        Rome: "Italy",
+        Amsterdam: "Netherlands",
         "New York": "USA",
-        "Dubai": "UAE",
+        Dubai: "UAE",
         "Las Vegas": "USA",
-        "Istanbul": "Turkey",
-        "Miami": "United States",
+        Istanbul: "Turkey",
+        Miami: "United States",
         "Los Angeles": "United States",
-        "Singapore": "Singapore",
-        "Bangkok": "Thailand",
+        Singapore: "Singapore",
+        Bangkok: "Thailand",
         "Abu Dhabi": "United Arab Emirates",
-        "Tokyo": "Japan",
+        Tokyo: "Japan",
         "Hong Kong": "China",
       };
 
       const destinationsResult = cityCounts
         .filter(c => c.cityName)
         .map(c => {
-          const slug = c.cityName!.toLowerCase().replace(/ /g, '-');
+          const slug = c.cityName!.toLowerCase().replace(/ /g, "-");
           const meta = metaMap.get(slug);
           return {
             slug,
@@ -420,7 +412,6 @@ export function registerPublicApiRoutes(app: Express): void {
         total,
       });
     } catch (error: any) {
-      console.error("Error fetching attraction destinations:", error);
       res.status(500).json({ error: "Failed to fetch attraction destinations" });
     }
   });
@@ -435,37 +426,39 @@ export function registerPublicApiRoutes(app: Express): void {
 
       const conditions: any[] = [eq(tiqetsAttractions.status, "published")];
 
-      if (city && typeof city === 'string') {
+      if (city && typeof city === "string") {
         conditions.push(ilike(tiqetsAttractions.cityName, city));
       }
 
-      if (search && typeof search === 'string') {
+      if (search && typeof search === "string") {
         conditions.push(ilike(tiqetsAttractions.title, `%${search}%`));
       }
 
-      const attractions = await db.select({
-        id: tiqetsAttractions.id,
-        tiqetsId: tiqetsAttractions.tiqetsId,
-        title: tiqetsAttractions.title,
-        slug: tiqetsAttractions.slug,
-        seoSlug: tiqetsAttractions.seoSlug,
-        cityName: tiqetsAttractions.cityName,
-        venueName: tiqetsAttractions.venueName,
-        duration: tiqetsAttractions.duration,
-        productUrl: tiqetsAttractions.productUrl,
-        status: tiqetsAttractions.status,
-        tiqetsRating: tiqetsAttractions.tiqetsRating,
-        tiqetsReviewCount: tiqetsAttractions.tiqetsReviewCount,
-        primaryCategory: tiqetsAttractions.primaryCategory,
-        tiqetsImages: tiqetsAttractions.tiqetsImages,
-      })
-      .from(tiqetsAttractions)
-      .where(and(...conditions))
-      .orderBy(tiqetsAttractions.title)
-      .limit(limitNum)
-      .offset(offsetNum);
+      const attractions = await db
+        .select({
+          id: tiqetsAttractions.id,
+          tiqetsId: tiqetsAttractions.tiqetsId,
+          title: tiqetsAttractions.title,
+          slug: tiqetsAttractions.slug,
+          seoSlug: tiqetsAttractions.seoSlug,
+          cityName: tiqetsAttractions.cityName,
+          venueName: tiqetsAttractions.venueName,
+          duration: tiqetsAttractions.duration,
+          productUrl: tiqetsAttractions.productUrl,
+          status: tiqetsAttractions.status,
+          tiqetsRating: tiqetsAttractions.tiqetsRating,
+          tiqetsReviewCount: tiqetsAttractions.tiqetsReviewCount,
+          primaryCategory: tiqetsAttractions.primaryCategory,
+          tiqetsImages: tiqetsAttractions.tiqetsImages,
+        })
+        .from(tiqetsAttractions)
+        .where(and(...conditions))
+        .orderBy(tiqetsAttractions.title)
+        .limit(limitNum)
+        .offset(offsetNum);
 
-      const countResult = await db.select({ count: sql<number>`count(*)` })
+      const countResult = await db
+        .select({ count: sql<number>`count(*)` })
         .from(tiqetsAttractions)
         .where(and(...conditions));
       const totalCount = Number(countResult[0]?.count || 0);
@@ -482,7 +475,6 @@ export function registerPublicApiRoutes(app: Express): void {
         cities: citiesResult.map(c => c.city),
       });
     } catch (error: any) {
-      console.error("Error fetching tiqets attractions:", error);
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -502,28 +494,30 @@ export function registerPublicApiRoutes(app: Express): void {
         ctaData,
         seoMetaData,
         featuredDestinations,
-        featuredArticles
+        featuredArticles,
       ] = await Promise.all([
-        db.select()
-          .from(homepageSections)
-          .orderBy(homepageSections.sortOrder),
+        db.select().from(homepageSections).orderBy(homepageSections.sortOrder),
 
-        db.select()
+        db
+          .select()
           .from(heroSlides)
           .where(eq(heroSlides.isActive, true))
           .orderBy(heroSlides.sortOrder),
 
-        db.select()
+        db
+          .select()
           .from(homepageCards)
           .where(eq(homepageCards.isActive, true))
           .orderBy(homepageCards.sortOrder),
 
-        db.select()
+        db
+          .select()
           .from(experienceCategories)
           .where(eq(experienceCategories.isActive, true))
           .orderBy(experienceCategories.sortOrder),
 
-        db.select()
+        db
+          .select()
           .from(regionLinks)
           .where(eq(regionLinks.isActive, true))
           .orderBy(regionLinks.sortOrder),
@@ -532,35 +526,32 @@ export function registerPublicApiRoutes(app: Express): void {
 
         db.select().from(homepageSeoMeta).limit(1),
 
-        db.select({
-          id: destinations.id,
-          name: destinations.name,
-          country: destinations.country,
-          slug: destinations.slug,
-          cardImage: destinations.cardImage,
-          cardImageAlt: destinations.cardImageAlt,
-          summary: destinations.summary,
-        })
+        db
+          .select({
+            id: destinations.id,
+            name: destinations.name,
+            country: destinations.country,
+            slug: destinations.slug,
+            cardImage: destinations.cardImage,
+            cardImageAlt: destinations.cardImageAlt,
+            summary: destinations.summary,
+          })
           .from(destinations)
           .where(eq(destinations.isActive, true))
           .orderBy(destinations.name),
 
-        db.select({
-          id: contents.id,
-          title: contents.title,
-          slug: contents.slug,
-          cardImage: contents.cardImage,
-          cardImageAlt: contents.cardImageAlt,
-          summary: contents.summary,
-          publishedAt: contents.publishedAt,
-        })
+        db
+          .select({
+            id: contents.id,
+            title: contents.title,
+            slug: contents.slug,
+            cardImage: contents.cardImage,
+            cardImageAlt: contents.cardImageAlt,
+            summary: contents.summary,
+            publishedAt: contents.publishedAt,
+          })
           .from(contents)
-          .where(
-            and(
-              eq(contents.type, "article"),
-              eq(contents.status, "published")
-            )
-          )
+          .where(and(eq(contents.type, "article"), eq(contents.status, "published")))
           .orderBy(desc(contents.publishedAt))
           .limit(6),
       ]);
@@ -572,15 +563,37 @@ export function registerPublicApiRoutes(app: Express): void {
         experienceTranslations,
         regionTranslations,
         ctaTranslations,
-        seoMetaTranslations
+        seoMetaTranslations,
       ] = await Promise.all([
-        getBulkTranslations("homepage_section", sectionsData.map(s => s.id), locale),
-        getBulkTranslations("hero_slide", heroSlidesData.map(s => s.id), locale),
-        getBulkTranslations("homepage_card", cardsData.map(c => c.id), locale),
-        getBulkTranslations("experience_category", experienceCategoriesData.map(e => e.id), locale),
-        getBulkTranslations("region_link", regionLinksData.map(r => r.id), locale),
+        getBulkTranslations(
+          "homepage_section",
+          sectionsData.map(s => s.id),
+          locale
+        ),
+        getBulkTranslations(
+          "hero_slide",
+          heroSlidesData.map(s => s.id),
+          locale
+        ),
+        getBulkTranslations(
+          "homepage_card",
+          cardsData.map(c => c.id),
+          locale
+        ),
+        getBulkTranslations(
+          "experience_category",
+          experienceCategoriesData.map(e => e.id),
+          locale
+        ),
+        getBulkTranslations(
+          "region_link",
+          regionLinksData.map(r => r.id),
+          locale
+        ),
         ctaData[0] ? getTranslations("homepage_cta", ctaData[0].id, locale) : Promise.resolve({}),
-        seoMetaData[0] ? getTranslations("homepage_seo_meta", seoMetaData[0].id, locale) : Promise.resolve({}),
+        seoMetaData[0]
+          ? getTranslations("homepage_seo_meta", seoMetaData[0].id, locale)
+          : Promise.resolve({}),
       ]);
 
       const translatedSections = sectionsData.map(section => {
@@ -629,28 +642,35 @@ export function registerPublicApiRoutes(app: Express): void {
       });
 
       const ctaTrans = ctaTranslations as Record<string, string | null>;
-      const translatedCta = ctaData[0] ? {
-        ...ctaData[0],
-        headline: ctaTrans.headline ?? ctaData[0].headline,
-        subheadline: ctaTrans.subheadline ?? ctaData[0].subheadline,
-        buttonText: ctaTrans.buttonText ?? ctaData[0].buttonText,
-        helperText: ctaTrans.helperText ?? ctaData[0].helperText,
-        inputPlaceholder: ctaTrans.inputPlaceholder ?? ctaData[0].inputPlaceholder,
-      } : null;
+      const translatedCta = ctaData[0]
+        ? {
+            ...ctaData[0],
+            headline: ctaTrans.headline ?? ctaData[0].headline,
+            subheadline: ctaTrans.subheadline ?? ctaData[0].subheadline,
+            buttonText: ctaTrans.buttonText ?? ctaData[0].buttonText,
+            helperText: ctaTrans.helperText ?? ctaData[0].helperText,
+            inputPlaceholder: ctaTrans.inputPlaceholder ?? ctaData[0].inputPlaceholder,
+          }
+        : null;
 
       const seoTrans = seoMetaTranslations as Record<string, string | null>;
-      const translatedSeoMeta = seoMetaData[0] ? {
-        ...seoMetaData[0],
-        metaTitle: seoTrans.metaTitle ?? seoMetaData[0].metaTitle,
-        metaDescription: seoTrans.metaDescription ?? seoMetaData[0].metaDescription,
-        ogTitle: seoTrans.ogTitle ?? seoMetaData[0].ogTitle,
-        ogDescription: seoTrans.ogDescription ?? seoMetaData[0].ogDescription,
-      } : null;
+      const translatedSeoMeta = seoMetaData[0]
+        ? {
+            ...seoMetaData[0],
+            metaTitle: seoTrans.metaTitle ?? seoMetaData[0].metaTitle,
+            metaDescription: seoTrans.metaDescription ?? seoMetaData[0].metaDescription,
+            ogTitle: seoTrans.ogTitle ?? seoMetaData[0].ogTitle,
+            ogDescription: seoTrans.ogDescription ?? seoMetaData[0].ogDescription,
+          }
+        : null;
 
-      const sectionsMap = translatedSections.reduce((acc, section) => {
-        acc[section.sectionKey] = section;
-        return acc;
-      }, {} as Record<string, typeof translatedSections[0]>);
+      const sectionsMap = translatedSections.reduce(
+        (acc, section) => {
+          acc[section.sectionKey] = section;
+          return acc;
+        },
+        {} as Record<string, (typeof translatedSections)[0]>
+      );
 
       const rawConfig = {
         locale,
@@ -671,7 +691,6 @@ export function registerPublicApiRoutes(app: Express): void {
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
       res.json(renderSafeConfig);
     } catch (error) {
-      console.error("Error fetching homepage config:", error);
       res.status(500).json({ error: "Failed to fetch homepage configuration" });
     }
   });
@@ -706,7 +725,6 @@ export function registerPublicApiRoutes(app: Express): void {
         isTranslated: true,
       });
     } catch (error) {
-      console.error("Error fetching translated content:", error);
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -725,10 +743,7 @@ export function registerPublicApiRoutes(app: Express): void {
           publishedAt: pageLayouts.publishedAt,
         })
         .from(pageLayouts)
-        .where(and(
-          eq(pageLayouts.slug, slug),
-          eq(pageLayouts.status, "published")
-        ))
+        .where(and(eq(pageLayouts.slug, slug), eq(pageLayouts.status, "published")))
         .limit(1);
 
       if (layout.length === 0) {
@@ -737,7 +752,6 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.json(layout[0]);
     } catch (error) {
-      console.error("Error fetching public layout:", error);
       res.status(500).json({ error: "Failed to fetch layout" });
     }
   });
@@ -772,7 +786,6 @@ export function registerPublicApiRoutes(app: Express): void {
         definition: survey.definition,
       });
     } catch (error) {
-      console.error("Error fetching public survey:", error);
       res.status(500).json({ error: "Failed to fetch survey" });
     }
   });
@@ -821,7 +834,6 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.status(201).json({ success: true, responseId: response.id });
     } catch (error) {
-      console.error("Error submitting survey response:", error);
       res.status(500).json({ error: "Failed to submit response" });
     }
   });
@@ -832,40 +844,49 @@ export function registerPublicApiRoutes(app: Express): void {
     try {
       const { destination, slug } = req.params;
 
-      let attraction = await db.select()
+      let attraction = await db
+        .select()
         .from(tiqetsAttractions)
-        .where(and(
-          ilike(tiqetsAttractions.cityName, destination),
-          eq(tiqetsAttractions.seoSlug, slug),
-          eq(tiqetsAttractions.status, "published")
-        ))
+        .where(
+          and(
+            ilike(tiqetsAttractions.cityName, destination),
+            eq(tiqetsAttractions.seoSlug, slug),
+            eq(tiqetsAttractions.status, "published")
+          )
+        )
         .limit(1);
 
       if (!attraction.length) {
-        attraction = await db.select()
+        attraction = await db
+          .select()
           .from(tiqetsAttractions)
-          .where(and(
-            ilike(tiqetsAttractions.cityName, destination),
-            eq(tiqetsAttractions.slug, slug),
-            eq(tiqetsAttractions.status, "published")
-          ))
+          .where(
+            and(
+              ilike(tiqetsAttractions.cityName, destination),
+              eq(tiqetsAttractions.slug, slug),
+              eq(tiqetsAttractions.status, "published")
+            )
+          )
           .limit(1);
 
         if (attraction.length && attraction[0].seoSlug) {
-          const relatedAttractions = await db.select()
+          const relatedAttractions = await db
+            .select()
             .from(tiqetsAttractions)
-            .where(and(
-              ilike(tiqetsAttractions.cityName, destination),
-              eq(tiqetsAttractions.status, "published"),
-              sql`${tiqetsAttractions.id} != ${attraction[0].id}`
-            ))
+            .where(
+              and(
+                ilike(tiqetsAttractions.cityName, destination),
+                eq(tiqetsAttractions.status, "published"),
+                sql`${tiqetsAttractions.id} != ${attraction[0].id}`
+              )
+            )
             .limit(6);
 
           return res.json({
             attraction: attraction[0],
             relatedAttractions,
             affiliateLink: TIQETS_AFFILIATE_LINK,
-            redirect: `/${destination}/attractions/${attraction[0].seoSlug}`
+            redirect: `/${destination}/attractions/${attraction[0].seoSlug}`,
           });
         }
       }
@@ -874,17 +895,20 @@ export function registerPublicApiRoutes(app: Express): void {
         return res.status(404).json({ error: "Attraction not found" });
       }
 
-      const relatedAttractions = await db.select()
+      const relatedAttractions = await db
+        .select()
         .from(tiqetsAttractions)
-        .where(and(
-          ilike(tiqetsAttractions.cityName, destination),
-          eq(tiqetsAttractions.status, "published"),
-          sql`${tiqetsAttractions.id} != ${attraction[0].id}`
-        ))
+        .where(
+          and(
+            ilike(tiqetsAttractions.cityName, destination),
+            eq(tiqetsAttractions.status, "published"),
+            sql`${tiqetsAttractions.id} != ${attraction[0].id}`
+          )
+        )
         .limit(6);
 
       const attr = attraction[0];
-      const aiContent = attr.aiContent as Record<string, any> || {};
+      const aiContent = (attr.aiContent as Record<string, any>) || {};
 
       const getField = (obj: Record<string, any>, ...keys: string[]) => {
         for (const key of keys) {
@@ -898,70 +922,87 @@ export function registerPublicApiRoutes(app: Express): void {
         ...attrWithoutPrices,
         name: attr.title,
         destination: attr.cityName,
-        country: destination === 'dubai' ? 'UAE' : destination,
+        country: destination === "dubai" ? "UAE" : destination,
         image: (attr as any).imageUrl,
         rating: Number((attr as any).rating) || 4.5,
         reviews: Number((attr as any).reviewCount) || 100,
-        duration: attr.duration || '2-3 hours',
-        category: attr.primaryCategory || 'Attraction',
+        duration: attr.duration || "2-3 hours",
+        category: attr.primaryCategory || "Attraction",
         location: {
           city: attr.cityName,
-          country: destination === 'dubai' ? 'UAE' : destination,
+          country: destination === "dubai" ? "UAE" : destination,
           address: attr.venueAddress || `${attr.title}, ${attr.cityName}`,
           latitude: attr.latitude || null,
           longitude: attr.longitude || null,
         },
-        introduction: getField(aiContent, 'whyVisit', 'why_visit', 'Why Visit', 'introduction', 'Introduction') || '',
+        introduction:
+          getField(
+            aiContent,
+            "whyVisit",
+            "why_visit",
+            "Why Visit",
+            "introduction",
+            "Introduction"
+          ) || "",
         whatToExpect: (() => {
-          const wte = getField(aiContent, 'whatToExpect', 'what_to_expect', 'What to Expect');
+          const wte = getField(aiContent, "whatToExpect", "what_to_expect", "What to Expect");
           return Array.isArray(wte) ? wte : [];
         })(),
         highlights: (() => {
-          const hl = getField(aiContent, 'highlights', 'Highlights');
+          const hl = getField(aiContent, "highlights", "Highlights");
           return Array.isArray(hl) ? hl : [];
         })(),
         visitorTips: (() => {
-          const tips = getField(aiContent, 'visitorTips', 'visitor_tips', 'Visitor Tips');
+          const tips = getField(aiContent, "visitorTips", "visitor_tips", "Visitor Tips");
           if (Array.isArray(tips)) {
-            return tips.map((t: any) => typeof t === 'string' ? t : t.description || t.text || t.tip || '').filter(Boolean);
+            return tips
+              .map((t: any) => (typeof t === "string" ? t : t.description || t.text || t.tip || ""))
+              .filter(Boolean);
           }
           return [];
         })(),
-        howToGetThere: getField(aiContent, 'howToGet', 'how_to_get_there', 'How to Get There', 'howToGetThere') || '',
+        howToGetThere:
+          getField(
+            aiContent,
+            "howToGet",
+            "how_to_get_there",
+            "How to Get There",
+            "howToGetThere"
+          ) || "",
         faqItems: (() => {
-          const faqs = getField(aiContent, 'faqs', 'FAQs');
+          const faqs = getField(aiContent, "faqs", "FAQs");
           if (Array.isArray(faqs)) {
             return faqs.map((f: any) => ({
-              question: f.question || f.q || '',
-              answer: f.answer || f.a || ''
+              question: f.question || f.q || "",
+              answer: f.answer || f.a || "",
             }));
           }
           return [];
         })(),
         metaTitle: `${attr.title} - Complete Guide 2026 | TRAVI`,
-        metaDescription: getField(aiContent, 'answerCapsule', 'answer_capsule', 'Answer Capsule') || '',
+        metaDescription:
+          getField(aiContent, "answerCapsule", "answer_capsule", "Answer Capsule") || "",
         relatedAttractions: relatedAttractions.map(r => ({
           id: r.id,
           name: r.title,
           image: (r as any).imageUrl,
-          category: r.primaryCategory || 'Attraction',
+          category: r.primaryCategory || "Attraction",
           href: `/${destination}/attractions/${r.seoSlug || r.slug}`,
           seoSlug: r.seoSlug,
           slug: r.slug,
           tiqetsRating: r.tiqetsRating,
           duration: r.duration,
           tiqetsImages: r.tiqetsImages,
-          affiliateLink: TIQETS_AFFILIATE_LINK
-        }))
+          affiliateLink: TIQETS_AFFILIATE_LINK,
+        })),
       };
 
       res.json({
         attraction: enrichedAttraction,
         affiliateLink: TIQETS_AFFILIATE_LINK,
-        aiGenerated: !!attr.aiContent
+        aiGenerated: !!attr.aiContent,
       });
     } catch (error) {
-      console.error("[Public Attractions API] Detail error:", error);
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -972,13 +1013,16 @@ export function registerPublicApiRoutes(app: Express): void {
     try {
       const { city, slug } = req.params;
 
-      const attraction = await db.select()
+      const attraction = await db
+        .select()
         .from(tiqetsAttractions)
-        .where(and(
-          ilike(tiqetsAttractions.cityName, city),
-          eq(tiqetsAttractions.slug, slug),
-          eq(tiqetsAttractions.status, "published")
-        ))
+        .where(
+          and(
+            ilike(tiqetsAttractions.cityName, city),
+            eq(tiqetsAttractions.slug, slug),
+            eq(tiqetsAttractions.status, "published")
+          )
+        )
         .limit(1);
 
       if (!attraction.length) {
@@ -987,10 +1031,9 @@ export function registerPublicApiRoutes(app: Express): void {
 
       res.json({
         attraction: attraction[0],
-        affiliateLink: TIQETS_AFFILIATE_LINK
+        affiliateLink: TIQETS_AFFILIATE_LINK,
       });
     } catch (error) {
-      console.error("[Public Attractions API] Detail error:", error);
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -1006,22 +1049,22 @@ export function registerPublicApiRoutes(app: Express): void {
       const pageSizeNum = Math.min(50, Math.max(1, parseInt(String(pageSize), 10) || 20));
       const offset = (pageNum - 1) * pageSizeNum;
 
-      const countResult = await db.select({ count: sql<number>`count(*)::int` })
+      const countResult = await db
+        .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions)
-        .where(and(
-          eq(tiqetsAttractions.status, "published"),
-          ilike(tiqetsAttractions.cityName, city)
-        ));
+        .where(
+          and(eq(tiqetsAttractions.status, "published"), ilike(tiqetsAttractions.cityName, city))
+        );
 
       const total = countResult[0]?.count || 0;
       const totalPages = Math.ceil(total / pageSizeNum);
 
-      const attractions = await db.select()
+      const attractions = await db
+        .select()
         .from(tiqetsAttractions)
-        .where(and(
-          eq(tiqetsAttractions.status, "published"),
-          ilike(tiqetsAttractions.cityName, city)
-        ))
+        .where(
+          and(eq(tiqetsAttractions.status, "published"), ilike(tiqetsAttractions.cityName, city))
+        )
         .limit(pageSizeNum)
         .offset(offset);
 
@@ -1032,10 +1075,9 @@ export function registerPublicApiRoutes(app: Express): void {
         total,
         page: pageNum,
         pageSize: pageSizeNum,
-        totalPages
+        totalPages,
       });
     } catch (error) {
-      console.error("[Public Attractions API] List error:", error);
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -1052,12 +1094,15 @@ export function registerPublicApiRoutes(app: Express): void {
 
       const conditions = [eq(tiqetsAttractions.status, "published")];
 
-      if (city && typeof city === 'string' && city !== 'all') {
-        const normalizedCity = city.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+      if (city && typeof city === "string" && city !== "all") {
+        const normalizedCity = city
+          .split("-")
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+          .join(" ");
         conditions.push(ilike(tiqetsAttractions.cityName, normalizedCity));
       }
 
-      if (q && typeof q === 'string' && q.trim()) {
+      if (q && typeof q === "string" && q.trim()) {
         const searchTerm = `%${q.trim()}%`;
         conditions.push(
           or(
@@ -1067,28 +1112,30 @@ export function registerPublicApiRoutes(app: Express): void {
         );
       }
 
-      const countResult = await db.select({ count: sql<number>`count(*)::int` })
+      const countResult = await db
+        .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions)
         .where(and(...conditions));
 
       const total = countResult[0]?.count || 0;
       const totalPages = Math.ceil(total / pageSizeNum);
 
-      const attractions = await db.select({
-        id: tiqetsAttractions.id,
-        title: tiqetsAttractions.title,
-        slug: tiqetsAttractions.slug,
-        cityName: tiqetsAttractions.cityName,
-        cityId: tiqetsAttractions.cityId,
-        metaDescription: tiqetsAttractions.metaDescription,
-        images: tiqetsAttractions.images,
-        tiqetsImages: tiqetsAttractions.tiqetsImages,
-        rating: tiqetsAttractions.tiqetsRating,
-        reviewCount: tiqetsAttractions.tiqetsReviewCount,
-        priceUsd: tiqetsAttractions.priceUsd,
-        primaryCategory: tiqetsAttractions.primaryCategory,
-        qualityScore: tiqetsAttractions.qualityScore,
-      })
+      const attractions = await db
+        .select({
+          id: tiqetsAttractions.id,
+          title: tiqetsAttractions.title,
+          slug: tiqetsAttractions.slug,
+          cityName: tiqetsAttractions.cityName,
+          cityId: tiqetsAttractions.cityId,
+          metaDescription: tiqetsAttractions.metaDescription,
+          images: tiqetsAttractions.images,
+          tiqetsImages: tiqetsAttractions.tiqetsImages,
+          rating: tiqetsAttractions.tiqetsRating,
+          reviewCount: tiqetsAttractions.tiqetsReviewCount,
+          priceUsd: tiqetsAttractions.priceUsd,
+          primaryCategory: tiqetsAttractions.primaryCategory,
+          qualityScore: tiqetsAttractions.qualityScore,
+        })
         .from(tiqetsAttractions)
         .where(and(...conditions))
         .orderBy(desc(tiqetsAttractions.qualityScore))
@@ -1102,18 +1149,20 @@ export function registerPublicApiRoutes(app: Express): void {
 
         if (tiqetsImages && Array.isArray(tiqetsImages) && tiqetsImages.length > 0) {
           const firstImage = tiqetsImages[0];
-          if (typeof firstImage === 'object' && firstImage !== null) {
-            imageUrl = firstImage.large || firstImage.extra_large || firstImage.medium || firstImage.small;
-          } else if (typeof firstImage === 'string') {
+          if (typeof firstImage === "object" && firstImage !== null) {
+            imageUrl =
+              firstImage.large || firstImage.extra_large || firstImage.medium || firstImage.small;
+          } else if (typeof firstImage === "string") {
             imageUrl = firstImage;
           }
         }
 
         if (!imageUrl && images && Array.isArray(images) && images.length > 0) {
           const firstImage = images[0];
-          if (typeof firstImage === 'object' && firstImage !== null) {
-            imageUrl = firstImage.large || firstImage.extra_large || firstImage.medium || firstImage.url;
-          } else if (typeof firstImage === 'string') {
+          if (typeof firstImage === "object" && firstImage !== null) {
+            imageUrl =
+              firstImage.large || firstImage.extra_large || firstImage.medium || firstImage.url;
+          } else if (typeof firstImage === "string") {
             imageUrl = firstImage;
           }
         }
@@ -1143,10 +1192,9 @@ export function registerPublicApiRoutes(app: Express): void {
         total,
         page: pageNum,
         pageSize: pageSizeNum,
-        totalPages
+        totalPages,
       });
     } catch (error) {
-      console.error("[Public Attractions API] All attractions error:", error);
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -1158,7 +1206,7 @@ export function registerPublicApiRoutes(app: Express): void {
     try {
       const pagePath = "/" + req.params.pagePath;
       const [seoData] = await db.select().from(pageSeo).where(eq(pageSeo.pagePath, pagePath));
-      
+
       if (!seoData) {
         // Return empty SEO - NO FALLBACKS as per requirements
         return res.json({
@@ -1173,7 +1221,7 @@ export function registerPublicApiRoutes(app: Express): void {
           jsonLdSchema: null,
         });
       }
-      
+
       // Return only public SEO fields
       res.json({
         pagePath: seoData.pagePath,
@@ -1187,7 +1235,6 @@ export function registerPublicApiRoutes(app: Express): void {
         jsonLdSchema: seoData.jsonLdSchema,
       });
     } catch (error) {
-      console.error("Error fetching public page SEO:", error);
       res.status(500).json({ error: "Failed to fetch page SEO" });
     }
   });
@@ -1200,27 +1247,23 @@ export function registerPublicApiRoutes(app: Express): void {
       const [destinationCount] = await db
         .select({ count: sql<number>`count(*)::int` })
         .from(destinations)
-        .where(and(
-          eq(destinations.isActive, true),
-          notIlike(destinations.name, '%test%')
-        ));
-      
+        .where(and(eq(destinations.isActive, true), notIlike(destinations.name, "%test%")));
+
       const [attractionCount] = await db
         .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions);
-      
+
       const [publishedContentCount] = await db
         .select({ count: sql<number>`count(*)::int` })
         .from(contents)
         .where(eq(contents.status, "published"));
-      
+
       res.json({
         destinations: destinationCount?.count || 0,
         attractions: attractionCount?.count || 0,
         publishedContent: publishedContentCount?.count || 0,
       });
     } catch (error) {
-      console.error("Error fetching public stats:", error);
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });

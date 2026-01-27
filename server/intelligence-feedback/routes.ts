@@ -2,12 +2,8 @@
  * System Intelligence Feedback Loop - Admin Routes
  */
 
-import { Router, Request, Response } from 'express';
-import {
-  getRecentEvents,
-  getEventsByTarget,
-  cleanupOldEvents,
-} from './tracker';
+import { Router, Request, Response } from "express";
+import { getRecentEvents, getEventsByTarget, cleanupOldEvents } from "./tracker";
 import {
   generateSummary,
   trainModel,
@@ -15,14 +11,14 @@ import {
   resetModel,
   getWeightAdjustmentHistory,
   calculateAllConfidenceScores,
-} from './learner';
+} from "./learner";
 
 const router = Router();
 
 const requireAdmin = (req: Request, res: Response, next: Function) => {
   const user = (req as any).user;
-  if (!user || !['admin', 'editor'].includes(user.role)) {
-    return res.status(403).json({ error: 'Admin access required' });
+  if (!user || !["admin", "editor"].includes(user.role)) {
+    return res.status(403).json({ error: "Admin access required" });
   }
   next();
 };
@@ -31,13 +27,12 @@ const requireAdmin = (req: Request, res: Response, next: Function) => {
  * GET /api/admin/intelligence-feedback/summary
  * Get complete feedback summary
  */
-router.get('/summary', requireAdmin, async (req: Request, res: Response) => {
+router.get("/summary", requireAdmin, async (req: Request, res: Response) => {
   try {
     const summary = generateSummary();
     res.json({ success: true, data: summary });
   } catch (error) {
-    console.error('[Feedback] Summary error:', error);
-    res.status(500).json({ error: 'Failed to get summary' });
+    res.status(500).json({ error: "Failed to get summary" });
   }
 });
 
@@ -45,7 +40,7 @@ router.get('/summary', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/intelligence-feedback/events
  * Get recent feedback events
  */
-router.get('/events', requireAdmin, async (req: Request, res: Response) => {
+router.get("/events", requireAdmin, async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 50;
     const events = getRecentEvents(limit);
@@ -56,8 +51,7 @@ router.get('/events', requireAdmin, async (req: Request, res: Response) => {
       count: events.length,
     });
   } catch (error) {
-    console.error('[Feedback] Events error:', error);
-    res.status(500).json({ error: 'Failed to get events' });
+    res.status(500).json({ error: "Failed to get events" });
   }
 });
 
@@ -65,7 +59,7 @@ router.get('/events', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/intelligence-feedback/events/:targetId
  * Get events for specific target
  */
-router.get('/events/:targetId', requireAdmin, async (req: Request, res: Response) => {
+router.get("/events/:targetId", requireAdmin, async (req: Request, res: Response) => {
   try {
     const { targetId } = req.params;
     const events = getEventsByTarget(targetId);
@@ -76,8 +70,7 @@ router.get('/events/:targetId', requireAdmin, async (req: Request, res: Response
       count: events.length,
     });
   } catch (error) {
-    console.error('[Feedback] Target events error:', error);
-    res.status(500).json({ error: 'Failed to get events' });
+    res.status(500).json({ error: "Failed to get events" });
   }
 });
 
@@ -85,13 +78,12 @@ router.get('/events/:targetId', requireAdmin, async (req: Request, res: Response
  * GET /api/admin/intelligence-feedback/model
  * Get current learning model
  */
-router.get('/model', requireAdmin, async (req: Request, res: Response) => {
+router.get("/model", requireAdmin, async (req: Request, res: Response) => {
   try {
     const model = getModel();
     res.json({ success: true, data: model });
   } catch (error) {
-    console.error('[Feedback] Model error:', error);
-    res.status(500).json({ error: 'Failed to get model' });
+    res.status(500).json({ error: "Failed to get model" });
   }
 });
 
@@ -99,7 +91,7 @@ router.get('/model', requireAdmin, async (req: Request, res: Response) => {
  * POST /api/admin/intelligence-feedback/train
  * Trigger model training
  */
-router.post('/train', requireAdmin, async (req: Request, res: Response) => {
+router.post("/train", requireAdmin, async (req: Request, res: Response) => {
   try {
     const result = trainModel();
 
@@ -109,15 +101,11 @@ router.post('/train', requireAdmin, async (req: Request, res: Response) => {
         modelVersion: result.modelVersion,
         taskAdjustments: result.taskAdjustments.length,
         signalAdjustments: result.signalAdjustments.length,
-        adjustments: [
-          ...result.taskAdjustments,
-          ...result.signalAdjustments,
-        ],
+        adjustments: [...result.taskAdjustments, ...result.signalAdjustments],
       },
     });
   } catch (error) {
-    console.error('[Feedback] Train error:', error);
-    res.status(500).json({ error: 'Failed to train model' });
+    res.status(500).json({ error: "Failed to train model" });
   }
 });
 
@@ -125,17 +113,16 @@ router.post('/train', requireAdmin, async (req: Request, res: Response) => {
  * POST /api/admin/intelligence-feedback/reset
  * Reset learning model to defaults
  */
-router.post('/reset', requireAdmin, async (req: Request, res: Response) => {
+router.post("/reset", requireAdmin, async (req: Request, res: Response) => {
   try {
     resetModel();
     res.json({
       success: true,
-      message: 'Model reset to defaults',
+      message: "Model reset to defaults",
       data: getModel(),
     });
   } catch (error) {
-    console.error('[Feedback] Reset error:', error);
-    res.status(500).json({ error: 'Failed to reset model' });
+    res.status(500).json({ error: "Failed to reset model" });
   }
 });
 
@@ -143,13 +130,12 @@ router.post('/reset', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/intelligence-feedback/confidence
  * Get confidence scores for all task types
  */
-router.get('/confidence', requireAdmin, async (req: Request, res: Response) => {
+router.get("/confidence", requireAdmin, async (req: Request, res: Response) => {
   try {
     const scores = calculateAllConfidenceScores();
     res.json({ success: true, data: scores });
   } catch (error) {
-    console.error('[Feedback] Confidence error:', error);
-    res.status(500).json({ error: 'Failed to get confidence scores' });
+    res.status(500).json({ error: "Failed to get confidence scores" });
   }
 });
 
@@ -157,7 +143,7 @@ router.get('/confidence', requireAdmin, async (req: Request, res: Response) => {
  * GET /api/admin/intelligence-feedback/adjustments
  * Get weight adjustment history
  */
-router.get('/adjustments', requireAdmin, async (req: Request, res: Response) => {
+router.get("/adjustments", requireAdmin, async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 20;
     const adjustments = getWeightAdjustmentHistory(limit);
@@ -168,8 +154,7 @@ router.get('/adjustments', requireAdmin, async (req: Request, res: Response) => 
       count: adjustments.length,
     });
   } catch (error) {
-    console.error('[Feedback] Adjustments error:', error);
-    res.status(500).json({ error: 'Failed to get adjustments' });
+    res.status(500).json({ error: "Failed to get adjustments" });
   }
 });
 
@@ -177,7 +162,7 @@ router.get('/adjustments', requireAdmin, async (req: Request, res: Response) => 
  * POST /api/admin/intelligence-feedback/cleanup
  * Clean up old events
  */
-router.post('/cleanup', requireAdmin, async (req: Request, res: Response) => {
+router.post("/cleanup", requireAdmin, async (req: Request, res: Response) => {
   try {
     const removed = cleanupOldEvents();
     res.json({
@@ -185,8 +170,7 @@ router.post('/cleanup', requireAdmin, async (req: Request, res: Response) => {
       message: `Removed ${removed} old events`,
     });
   } catch (error) {
-    console.error('[Feedback] Cleanup error:', error);
-    res.status(500).json({ error: 'Failed to cleanup events' });
+    res.status(500).json({ error: "Failed to cleanup events" });
   }
 });
 

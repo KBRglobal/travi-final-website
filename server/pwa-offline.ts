@@ -68,9 +68,19 @@ const defaultManifest: PWAManifest = {
     { src: "/icons/icon-128x128.png", sizes: "128x128", type: "image/png" },
     { src: "/icons/icon-144x144.png", sizes: "144x144", type: "image/png" },
     { src: "/icons/icon-152x152.png", sizes: "152x152", type: "image/png" },
-    { src: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+    {
+      src: "/icons/icon-192x192.png",
+      sizes: "192x192",
+      type: "image/png",
+      purpose: "any maskable",
+    },
     { src: "/icons/icon-384x384.png", sizes: "384x384", type: "image/png" },
-    { src: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" },
+    {
+      src: "/icons/icon-512x512.png",
+      sizes: "512x512",
+      type: "image/png",
+      purpose: "any maskable",
+    },
   ],
   categories: ["travel", "lifestyle", "entertainment"],
   lang: "en",
@@ -218,30 +228,30 @@ export const pwaManager = {
     const manifest = { ...defaultManifest };
 
     if (locale === "he") {
-      manifest.name = "טראווי - מדריך לדובאי";
-      manifest.short_name = "טראווי";
-      manifest.description = "המדריך המלא שלך לדובאי - מלונות, אטרקציות, מסעדות ועוד";
+      manifest.name = "";
+      manifest.short_name = "";
+      manifest.description = "";
       manifest.lang = "he";
       manifest.dir = "rtl";
       manifest.shortcuts = [
         {
-          name: "מלונות",
-          short_name: "מלונות",
-          description: "חפש מלונות בדובאי",
+          name: "",
+          short_name: "",
+          description: "",
           url: "/he/hotels",
           icons: [{ src: "/icons/hotel.png", sizes: "96x96" }],
         },
         {
-          name: "אטרקציות",
-          short_name: "אטרקציות",
-          description: "גלה אטרקציות בדובאי",
+          name: "",
+          short_name: "",
+          description: "",
           url: "/he/attractions",
           icons: [{ src: "/icons/attraction.png", sizes: "96x96" }],
         },
         {
-          name: "מסעדות",
-          short_name: "אוכל",
-          description: "מצא מסעדות",
+          name: "",
+          short_name: "",
+          description: "",
           url: "/he/dining",
           icons: [{ src: "/icons/restaurant.png", sizes: "96x96" }],
         },
@@ -270,7 +280,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[SW] Precaching static assets');
+        
         return cache.addAll(PRECACHE_URLS);
       })
       .then(() => self.skipWaiting())
@@ -286,7 +296,7 @@ self.addEventListener('activate', (event) => {
           cacheNames
             .filter((name) => name.startsWith('${config.cacheName}') && name !== CACHE_NAME)
             .map((name) => {
-              console.log('[SW] Deleting old cache:', name);
+              
               return caches.delete(name);
             })
         );
@@ -478,12 +488,12 @@ async function syncFavorites() {
       });
       await db.delete('pending-favorites', favorite.id);
     } catch (error) {
-      console.error('[SW] Failed to sync favorite:', error);
+      
     }
   }
 }
 
-console.log('[SW] Service Worker loaded');
+
 `;
   },
 
@@ -495,14 +505,15 @@ console.log('[SW] Service Worker loaded');
     totalSize: number;
   }> {
     // Get most popular/recent content for offline caching
-    const popularContent = await db.select({
-      slug: contents.slug,
-      type: contents.type,
-    })
-    .from(contents)
-    .where(eq(contents.status, "published"))
-    .orderBy(desc(contents.publishedAt))
-    .limit(limit);
+    const popularContent = await db
+      .select({
+        slug: contents.slug,
+        type: contents.type,
+      })
+      .from(contents)
+      .where(eq(contents.status, "published"))
+      .orderBy(desc(contents.publishedAt))
+      .limit(limit);
 
     const urls = popularContent.map(c => `/${c.type}/${c.slug}`);
 
@@ -662,14 +673,16 @@ export const pushNotifications = {
     userId?: string
   ): Promise<void> {
     // Check if subscription already exists
-    const [existing] = await db.select()
+    const [existing] = await db
+      .select()
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.endpoint, subscription.endpoint))
       .limit(1);
 
     if (existing) {
       // Update existing subscription
-      await db.update(pushSubscriptions)
+      await db
+        .update(pushSubscriptions)
         .set({
           p256dhKey: subscription.keys.p256dh,
           authKey: subscription.keys.auth,
@@ -696,8 +709,7 @@ export const pushNotifications = {
    * Remove push subscription
    */
   async unsubscribe(endpoint: string): Promise<void> {
-    await db.delete(pushSubscriptions)
-      .where(eq(pushSubscriptions.endpoint, endpoint));
+    await db.delete(pushSubscriptions).where(eq(pushSubscriptions.endpoint, endpoint));
   },
 
   /**
@@ -742,7 +754,8 @@ export const pushNotifications = {
         failed++;
         // Remove invalid subscriptions (gone)
         if ((error as any).statusCode === 410) {
-          await db.delete(pushSubscriptions)
+          await db
+            .delete(pushSubscriptions)
             .where(eq(pushSubscriptions.endpoint, subscription.endpoint));
         }
       }

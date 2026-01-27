@@ -10,32 +10,32 @@
  * - FULL: Autonomous execution
  */
 
-import { db } from '../db';
-import { contents, seoAuditLogs } from '../../shared/schema';
-import { eq, and, lt, gt, sql, isNull } from 'drizzle-orm';
-import { PageClassifier, PageClassification } from '../seo-engine/page-classifier';
+import { db } from "../db";
+import { contents, seoAuditLogs } from "../../shared/schema";
+import { eq, and, lt, gt, sql, isNull } from "drizzle-orm";
+import { PageClassifier, PageClassification } from "../seo-engine/page-classifier";
 
-export type AutopilotMode = 'off' | 'supervised' | 'full';
+export type AutopilotMode = "off" | "supervised" | "full";
 
 export type ActionType =
-  | 'BLOCK_PUBLISH'
-  | 'ALLOW_PUBLISH'
-  | 'SET_NOINDEX'
-  | 'SET_INDEX'
-  | 'AUTO_FIX'
-  | 'QUEUE_REINDEX'
-  | 'GENERATE_SCHEMA'
-  | 'SET_CANONICAL'
-  | 'INJECT_LINKS'
-  | 'GENERATE_ANSWER_CAPSULE'
-  | 'GENERATE_FAQ'
-  | 'FLAG_FOR_REVIEW'
-  | 'MOVE_TO_DRAFT'
-  | 'QUEUE_MERGE'
-  | 'QUEUE_DELETE'
-  | 'ALERT';
+  | "BLOCK_PUBLISH"
+  | "ALLOW_PUBLISH"
+  | "SET_NOINDEX"
+  | "SET_INDEX"
+  | "AUTO_FIX"
+  | "QUEUE_REINDEX"
+  | "GENERATE_SCHEMA"
+  | "SET_CANONICAL"
+  | "INJECT_LINKS"
+  | "GENERATE_ANSWER_CAPSULE"
+  | "GENERATE_FAQ"
+  | "FLAG_FOR_REVIEW"
+  | "MOVE_TO_DRAFT"
+  | "QUEUE_MERGE"
+  | "QUEUE_DELETE"
+  | "ALERT";
 
-export type ActionPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+export type ActionPriority = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 
 export interface SEOAction {
   id: string;
@@ -43,9 +43,9 @@ export interface SEOAction {
   actionType: ActionType;
   priority: ActionPriority;
   reason: string;
-  triggeredBy: 'automatic' | 'manual';
+  triggeredBy: "automatic" | "manual";
   requiresConfirmation: boolean;
-  status: 'pending' | 'executing' | 'completed' | 'failed' | 'cancelled';
+  status: "pending" | "executing" | "completed" | "failed" | "cancelled";
   data?: Record<string, any>;
   createdAt: Date;
   executedAt?: Date;
@@ -61,36 +61,36 @@ export interface ActionDecision {
 
 // Absolute blocks - NO override allowed
 const ABSOLUTE_BLOCKS = [
-  { condition: (c: any) => (c.seoScore || 0) < 40, reason: 'Critical SEO failure (score < 40)' },
-  { condition: (c: any) => !c.metaTitle, reason: 'Missing meta title' },
-  { condition: (c: any) => !c.metaDescription, reason: 'Missing meta description' },
-  { condition: (c: any) => (c.wordCount || 0) < 200, reason: 'Content too thin (< 200 words)' },
-  { condition: (c: any) => (c.duplicateSimilarity || 0) > 0.9, reason: 'Near-duplicate content' },
-  { condition: (c: any) => (c.spamScore || 0) > 0.7, reason: 'Spam detected' },
-  { condition: (c: any) => c.aiHallucinationDetected, reason: 'AI hallucination flagged' },
+  { condition: (c: any) => (c.seoScore || 0) < 40, reason: "Critical SEO failure (score < 40)" },
+  { condition: (c: any) => !c.metaTitle, reason: "Missing meta title" },
+  { condition: (c: any) => !c.metaDescription, reason: "Missing meta description" },
+  { condition: (c: any) => (c.wordCount || 0) < 200, reason: "Content too thin (< 200 words)" },
+  { condition: (c: any) => (c.duplicateSimilarity || 0) > 0.9, reason: "Near-duplicate content" },
+  { condition: (c: any) => (c.spamScore || 0) > 0.7, reason: "Spam detected" },
+  { condition: (c: any) => c.aiHallucinationDetected, reason: "AI hallucination flagged" },
 ];
 
 // Conditional blocks - Admin can override
 const CONDITIONAL_BLOCKS = [
   {
-    condition: (c: any) => (c.seoScore || 0) < 60 && c.pageClassification === 'MONEY_PAGE',
-    reason: 'Money page below SEO threshold (score < 60)',
+    condition: (c: any) => (c.seoScore || 0) < 60 && c.pageClassification === "MONEY_PAGE",
+    reason: "Money page below SEO threshold (score < 60)",
   },
   {
-    condition: (c: any) => (c.aeoScore || 0) < 50 && c.pageClassification === 'INFORMATIONAL',
-    reason: 'Informational page not AEO-ready (score < 50)',
+    condition: (c: any) => (c.aeoScore || 0) < 50 && c.pageClassification === "INFORMATIONAL",
+    reason: "Informational page not AEO-ready (score < 50)",
   },
   {
     condition: (c: any) => (c.cannibalizationRisk || 0) > 0.7,
-    reason: 'High cannibalization risk',
+    reason: "High cannibalization risk",
   },
   {
     condition: (c: any) => (c.internalLinksCount || 0) < 2,
-    reason: 'Insufficient internal linking',
+    reason: "Insufficient internal linking",
   },
   {
     condition: (c: any) => !c.schemaMarkup,
-    reason: 'Missing structured data',
+    reason: "Missing structured data",
   },
 ];
 
@@ -101,19 +101,19 @@ const WARNINGS = [
       const density = c.keywordDensity || 0;
       return density < 0.5 || density > 3.0;
     },
-    reason: 'Keyword density outside optimal range (0.5-3%)',
+    reason: "Keyword density outside optimal range (0.5-3%)",
   },
-  { condition: (c: any) => (c.readabilityScore || 0) < 50, reason: 'Low readability score' },
-  { condition: (c: any) => (c.avgParagraphLength || 0) > 200, reason: 'Paragraphs too long' },
-  { condition: (c: any) => (c.externalLinksCount || 0) === 0, reason: 'No external links' },
-  { condition: (c: any) => (c.imageCount || 0) < 2, reason: 'Insufficient images' },
+  { condition: (c: any) => (c.readabilityScore || 0) < 50, reason: "Low readability score" },
+  { condition: (c: any) => (c.avgParagraphLength || 0) > 200, reason: "Paragraphs too long" },
+  { condition: (c: any) => (c.externalLinksCount || 0) === 0, reason: "No external links" },
+  { condition: (c: any) => (c.imageCount || 0) < 2, reason: "Insufficient images" },
 ];
 
 export class SEOActionEngine {
-  private autopilotMode: AutopilotMode = 'supervised';
+  private autopilotMode: AutopilotMode = "supervised";
   private classifier: PageClassifier;
 
-  constructor(mode: AutopilotMode = 'supervised') {
+  constructor(mode: AutopilotMode = "supervised") {
     this.autopilotMode = mode;
     this.classifier = new PageClassifier();
   }
@@ -155,7 +155,7 @@ export class SEOActionEngine {
     for (const block of ABSOLUTE_BLOCKS) {
       if (block.condition(content)) {
         blocks.push(block.reason);
-        actions.push(this.createAction(contentId, 'BLOCK_PUBLISH', 'CRITICAL', block.reason));
+        actions.push(this.createAction(contentId, "BLOCK_PUBLISH", "CRITICAL", block.reason));
       }
     }
 
@@ -163,14 +163,16 @@ export class SEOActionEngine {
     if (blocks.length === 0) {
       for (const block of CONDITIONAL_BLOCKS) {
         if (block.condition({ ...content, pageClassification: classification.classification })) {
-          if (this.autopilotMode === 'full') {
+          if (this.autopilotMode === "full") {
             // In full autopilot, treat as blocking
             blocks.push(block.reason);
-            actions.push(this.createAction(contentId, 'BLOCK_PUBLISH', 'HIGH', block.reason));
+            actions.push(this.createAction(contentId, "BLOCK_PUBLISH", "HIGH", block.reason));
           } else {
             // In supervised mode, flag for review
             warnings.push(block.reason);
-            actions.push(this.createAction(contentId, 'FLAG_FOR_REVIEW', 'HIGH', block.reason, true));
+            actions.push(
+              this.createAction(contentId, "FLAG_FOR_REVIEW", "HIGH", block.reason, true)
+            );
           }
         }
       }
@@ -187,24 +189,30 @@ export class SEOActionEngine {
     if (blocks.length === 0) {
       // Auto-generate schema if missing
       if (!(content as any).schemaMarkup) {
-        actions.push(this.createAction(contentId, 'GENERATE_SCHEMA', 'MEDIUM', 'Missing structured data'));
+        actions.push(
+          this.createAction(contentId, "GENERATE_SCHEMA", "MEDIUM", "Missing structured data")
+        );
       }
 
       // Auto-set canonical if missing
       if (!(content as any).canonicalUrl) {
-        actions.push(this.createAction(contentId, 'SET_CANONICAL', 'MEDIUM', 'Missing canonical URL'));
+        actions.push(
+          this.createAction(contentId, "SET_CANONICAL", "MEDIUM", "Missing canonical URL")
+        );
       }
 
       // Queue for reindex
-      actions.push(this.createAction(contentId, 'QUEUE_REINDEX', 'LOW', 'Content updated'));
+      actions.push(this.createAction(contentId, "QUEUE_REINDEX", "LOW", "Content updated"));
 
       // Generate answer capsule if AEO-eligible
-      if (
-        classification.requirements.answerCapsuleRequired &&
-        !(content as any).answerCapsule
-      ) {
+      if (classification.requirements.answerCapsuleRequired && !(content as any).answerCapsule) {
         actions.push(
-          this.createAction(contentId, 'GENERATE_ANSWER_CAPSULE', 'HIGH', 'AEO requirement: missing answer capsule')
+          this.createAction(
+            contentId,
+            "GENERATE_ANSWER_CAPSULE",
+            "HIGH",
+            "AEO requirement: missing answer capsule"
+          )
         );
       }
 
@@ -214,8 +222,8 @@ export class SEOActionEngine {
         actions.push(
           this.createAction(
             contentId,
-            'GENERATE_FAQ',
-            'MEDIUM',
+            "GENERATE_FAQ",
+            "MEDIUM",
             `AEO requirement: needs ${classification.requirements.minFAQs - faqCount} more FAQs`
           )
         );
@@ -225,15 +233,22 @@ export class SEOActionEngine {
       const internalLinksCount = (content as any).internalLinksCount || 0;
       if (internalLinksCount < 3) {
         actions.push(
-          this.createAction(contentId, 'INJECT_LINKS', 'MEDIUM', 'Insufficient internal linking')
+          this.createAction(contentId, "INJECT_LINKS", "MEDIUM", "Insufficient internal linking")
         );
       }
     }
 
     // Handle SEO_RISK classification
-    if (classification.classification === 'SEO_RISK') {
-      actions.push(this.createAction(contentId, 'SET_NOINDEX', 'HIGH', classification.reason));
-      actions.push(this.createAction(contentId, 'QUEUE_MERGE', 'MEDIUM', 'SEO_RISK content queued for merge/delete'));
+    if (classification.classification === "SEO_RISK") {
+      actions.push(this.createAction(contentId, "SET_NOINDEX", "HIGH", classification.reason));
+      actions.push(
+        this.createAction(
+          contentId,
+          "QUEUE_MERGE",
+          "MEDIUM",
+          "SEO_RISK content queued for merge/delete"
+        )
+      );
     }
 
     return {
@@ -247,8 +262,10 @@ export class SEOActionEngine {
   /**
    * Execute pending actions for content
    */
-  async executeActions(contentId: string): Promise<{ executed: SEOAction[]; skipped: SEOAction[] }> {
-    if (this.autopilotMode === 'off') {
+  async executeActions(
+    contentId: string
+  ): Promise<{ executed: SEOAction[]; skipped: SEOAction[] }> {
+    if (this.autopilotMode === "off") {
       return { executed: [], skipped: [] };
     }
 
@@ -257,17 +274,16 @@ export class SEOActionEngine {
     const skipped: SEOAction[] = [];
 
     for (const action of decision.actions) {
-      if (action.requiresConfirmation && this.autopilotMode !== 'full') {
+      if (action.requiresConfirmation && this.autopilotMode !== "full") {
         skipped.push(action);
         continue;
       }
 
       try {
         await this.executeAction(action);
-        executed.push({ ...action, status: 'completed', executedAt: new Date() });
+        executed.push({ ...action, status: "completed", executedAt: new Date() });
       } catch (error) {
-        console.error(`Failed to execute action ${action.actionType}:`, error);
-        skipped.push({ ...action, status: 'failed' });
+        skipped.push({ ...action, status: "failed" });
       }
     }
 
@@ -284,50 +300,50 @@ export class SEOActionEngine {
    */
   private async executeAction(action: SEOAction): Promise<void> {
     switch (action.actionType) {
-      case 'BLOCK_PUBLISH':
+      case "BLOCK_PUBLISH":
         await this.blockPublish(action.contentId, action.reason);
         break;
 
-      case 'SET_NOINDEX':
+      case "SET_NOINDEX":
         await this.setNoindex(action.contentId);
         break;
 
-      case 'SET_INDEX':
+      case "SET_INDEX":
         await this.setIndex(action.contentId);
         break;
 
-      case 'QUEUE_REINDEX':
+      case "QUEUE_REINDEX":
         await this.queueReindex(action.contentId);
         break;
 
-      case 'GENERATE_SCHEMA':
+      case "GENERATE_SCHEMA":
         await this.generateSchema(action.contentId);
         break;
 
-      case 'SET_CANONICAL':
+      case "SET_CANONICAL":
         await this.setCanonical(action.contentId);
         break;
 
-      case 'MOVE_TO_DRAFT':
+      case "MOVE_TO_DRAFT":
         await this.moveToDraft(action.contentId, action.reason);
         break;
 
-      case 'GENERATE_ANSWER_CAPSULE':
+      case "GENERATE_ANSWER_CAPSULE":
         // This would integrate with content AI system
-        console.log(`[ACTION] Generate answer capsule for ${action.contentId}`);
+
         break;
 
-      case 'GENERATE_FAQ':
+      case "GENERATE_FAQ":
         // This would integrate with content AI system
-        console.log(`[ACTION] Generate FAQs for ${action.contentId}`);
+
         break;
 
-      case 'INJECT_LINKS':
+      case "INJECT_LINKS":
         // This would use InternalLinkingEngine
-        console.log(`[ACTION] Inject internal links for ${action.contentId}`);
+
         break;
 
-      case 'QUEUE_MERGE':
+      case "QUEUE_MERGE":
         // Mark for merge review
         await db
           .update(contents)
@@ -335,7 +351,7 @@ export class SEOActionEngine {
           .where(eq(contents.id, action.contentId));
         break;
 
-      case 'QUEUE_DELETE':
+      case "QUEUE_DELETE":
         // Mark for deletion review
         await db
           .update(contents)
@@ -343,13 +359,12 @@ export class SEOActionEngine {
           .where(eq(contents.id, action.contentId));
         break;
 
-      case 'ALERT':
+      case "ALERT":
         // Send alert (would integrate with notification system)
-        console.log(`[ALERT] ${action.reason} for content ${action.contentId}`);
+
         break;
 
       default:
-        console.log(`[ACTION] Unknown action type: ${action.actionType}`);
     }
   }
 
@@ -360,7 +375,7 @@ export class SEOActionEngine {
     await db
       .update(contents)
       .set({
-        status: 'draft',
+        status: "draft",
         publishBlocked: true,
         publishBlockReason: reason,
         publishBlockedAt: new Date(),
@@ -403,7 +418,6 @@ export class SEOActionEngine {
    */
   private async generateSchema(contentId: string): Promise<void> {
     // This would use SchemaEngine from seo-engine
-    console.log(`[ACTION] Generate schema for ${contentId}`);
     // Schema generation logic would go here
   }
 
@@ -431,7 +445,7 @@ export class SEOActionEngine {
     await db
       .update(contents)
       .set({
-        status: 'draft',
+        status: "draft",
         movedToDraftReason: reason,
         movedToDraftAt: new Date(),
       } as any)
@@ -455,9 +469,9 @@ export class SEOActionEngine {
       actionType,
       priority,
       reason,
-      triggeredBy: 'automatic',
+      triggeredBy: "automatic",
       requiresConfirmation,
-      status: 'pending',
+      status: "pending",
       data,
       createdAt: new Date(),
     };
@@ -479,9 +493,7 @@ export class SEOActionEngine {
         createdAt: action.createdAt,
         executedAt: action.executedAt,
       } as any);
-    } catch (error) {
-      console.error('Failed to log action:', error);
-    }
+    } catch (error) {}
   }
 
   /**
@@ -489,7 +501,7 @@ export class SEOActionEngine {
    */
   async getPendingActions(): Promise<Map<string, SEOAction[]>> {
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     const pendingActions = new Map<string, SEOAction[]>();
@@ -497,7 +509,7 @@ export class SEOActionEngine {
     for (const content of allContent) {
       const decision = await this.evaluateContent(content.id);
       const pending = decision.actions.filter(
-        (a) => a.requiresConfirmation || a.status === 'pending'
+        a => a.requiresConfirmation || a.status === "pending"
       );
       if (pending.length > 0) {
         pendingActions.set(content.id, pending);
@@ -516,12 +528,12 @@ export class SEOActionEngine {
     skipped: number;
     errors: number;
   }> {
-    if (this.autopilotMode === 'off') {
+    if (this.autopilotMode === "off") {
       return { total: 0, executed: 0, skipped: 0, errors: 0 };
     }
 
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     let total = 0;
@@ -537,7 +549,6 @@ export class SEOActionEngine {
         skipped += result.skipped.length;
       } catch (error) {
         errors++;
-        console.error(`Error executing actions for ${content.id}:`, error);
       }
     }
 
@@ -559,7 +570,9 @@ export class SEOActionEngine {
       canPublish: decision.shouldExecute,
       blocks: decision.blocks,
       warnings: decision.warnings,
-      requiredActions: decision.actions.filter((a) => a.priority === 'CRITICAL' || a.priority === 'HIGH'),
+      requiredActions: decision.actions.filter(
+        a => a.priority === "CRITICAL" || a.priority === "HIGH"
+      ),
     };
   }
 }

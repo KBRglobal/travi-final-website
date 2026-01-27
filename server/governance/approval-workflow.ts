@@ -142,9 +142,7 @@ const DEFAULT_WORKFLOWS: ApprovalWorkflow[] = [
 ];
 
 // In-memory workflow storage (would be in DB in production)
-const workflows = new Map<string, ApprovalWorkflow>(
-  DEFAULT_WORKFLOWS.map((w) => [w.id, w])
-);
+const workflows = new Map<string, ApprovalWorkflow>(DEFAULT_WORKFLOWS.map(w => [w.id, w]));
 
 // ============================================================================
 // WORKFLOW SERVICE
@@ -163,7 +161,8 @@ class ApprovalWorkflowService {
       if (!workflow.isActive) continue;
       if (!workflow.resourceTypes.includes(resource)) continue;
       if (!workflow.actions.includes(action)) continue;
-      if (workflow.contentTypes && contentType && !workflow.contentTypes.includes(contentType)) continue;
+      if (workflow.contentTypes && contentType && !workflow.contentTypes.includes(contentType))
+        continue;
       return workflow;
     }
     return null;
@@ -373,7 +372,7 @@ class ApprovalWorkflowService {
     }
 
     // Create next step
-    const nextWorkflowStep = workflow.steps.find((s) => s.stepNumber === nextStepNumber);
+    const nextWorkflowStep = workflow.steps.find(s => s.stepNumber === nextStepNumber);
     if (!nextWorkflowStep) {
       throw new Error(`Step ${nextStepNumber} not found in workflow`);
     }
@@ -453,14 +452,9 @@ class ApprovalWorkflowService {
         roleId: userRoleAssignments.roleId,
       })
       .from(userRoleAssignments)
-      .where(
-        and(
-          eq(userRoleAssignments.userId, userId),
-          eq(userRoleAssignments.isActive, true)
-        )
-      );
+      .where(and(eq(userRoleAssignments.userId, userId), eq(userRoleAssignments.isActive, true)));
 
-    const roleIds = roleAssignments.map((r) => r.roleId);
+    const roleIds = roleAssignments.map(r => r.roleId);
 
     // Get role names
     const roles = await db
@@ -468,7 +462,7 @@ class ApprovalWorkflowService {
       .from(governanceRoles)
       .where(inArray(governanceRoles.id, roleIds));
 
-    const roleNames = roles.map((r) => r.name);
+    const roleNames = roles.map(r => r.name);
 
     // Find pending requests where user can approve
     const pendingSteps = await db
@@ -479,12 +473,12 @@ class ApprovalWorkflowService {
           eq(approvalSteps.status, "pending"),
           or(
             eq(approvalSteps.approverId, userId),
-            ...roleNames.map((role) => eq(approvalSteps.approverRole, role))
+            ...roleNames.map(role => eq(approvalSteps.approverRole, role))
           )
         )
       );
 
-    const requestIds = pendingSteps.map((s) => s.requestId);
+    const requestIds = pendingSteps.map(s => s.requestId);
 
     if (requestIds.length === 0) {
       return [];
@@ -496,10 +490,7 @@ class ApprovalWorkflowService {
       .where(
         and(
           inArray(approvalRequests.id, requestIds),
-          or(
-            eq(approvalRequests.status, "pending"),
-            eq(approvalRequests.status, "in_progress")
-          )
+          or(eq(approvalRequests.status, "pending"), eq(approvalRequests.status, "in_progress"))
         )
       );
 
@@ -542,10 +533,7 @@ class ApprovalWorkflowService {
       .from(approvalRequests)
       .where(
         and(
-          or(
-            eq(approvalRequests.status, "pending"),
-            eq(approvalRequests.status, "in_progress")
-          ),
+          or(eq(approvalRequests.status, "pending"), eq(approvalRequests.status, "in_progress")),
           sql`${approvalRequests.expiresAt} < ${now}`
         )
       );
@@ -557,7 +545,7 @@ class ApprovalWorkflowService {
 
       if (!workflow) continue;
 
-      const currentStep = workflow.steps.find((s) => s.stepNumber === request.currentStep);
+      const currentStep = workflow.steps.find(s => s.stepNumber === request.currentStep);
 
       if (currentStep?.escalateTo) {
         // Escalate
@@ -617,9 +605,10 @@ class ApprovalWorkflowService {
       approverRole: step.approverRoles?.[0],
       approverId: step.approverUserIds?.[0],
       status: "pending",
-      autoApproveAt: step.autoApprove && step.timeoutHours
-        ? new Date(Date.now() + step.timeoutHours * 60 * 60 * 1000)
-        : undefined,
+      autoApproveAt:
+        step.autoApprove && step.timeoutHours
+          ? new Date(Date.now() + step.timeoutHours * 60 * 60 * 1000)
+          : undefined,
     } as any);
 
     return {
@@ -642,12 +631,12 @@ class ApprovalWorkflowService {
     const metadata = record.metadata as Record<string, unknown> | null;
     return {
       id: record.id,
-      workflowId: metadata?.workflowId as string || "",
+      workflowId: (metadata?.workflowId as string) || "",
       requestType: record.requestType,
       resourceType: record.resourceType as Resource,
       resourceId: record.resourceId,
       resourceTitle: metadata?.resourceTitle as string,
-      action: metadata?.action as Action || "view",
+      action: (metadata?.action as Action) || "view",
       requesterId: record.requesterId,
       requesterName: metadata?.requesterName as string,
       currentStep: record.currentStep,
@@ -716,14 +705,9 @@ class ApprovalWorkflowService {
         })
         .from(userRoleAssignments)
         .innerJoin(governanceRoles, eq(governanceRoles.id, userRoleAssignments.roleId))
-        .where(
-          and(
-            eq(userRoleAssignments.userId, userId),
-            eq(userRoleAssignments.isActive, true)
-          )
-        );
+        .where(and(eq(userRoleAssignments.userId, userId), eq(userRoleAssignments.isActive, true)));
 
-      return roleAssignments.some((r) => r.roleName === step.approverRole);
+      return roleAssignments.some(r => r.roleName === step.approverRole);
     }
 
     return false;
@@ -732,5 +716,3 @@ class ApprovalWorkflowService {
 
 // Singleton instance
 export const approvalWorkflowService = new ApprovalWorkflowService();
-
-console.log("[Governance] Approval Workflow Service loaded");

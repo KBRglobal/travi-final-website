@@ -1,11 +1,11 @@
 /**
  * Plagiarism Detector
- * 
+ *
  * Uses OpenAI embeddings to detect content similarity
  * - Generate embeddings for content
  * - Compare similarity scores
  * - Detect potential plagiarism
- * 
+ *
  * Security: Uses ReDoS-safe regex pattern for sentence splitting
  * Changed from /[^.!?]+[.!?]+/g to /[^.!?\r\n]{1,1000}[.!?]+/g
  */
@@ -15,7 +15,9 @@ import { db } from "../db";
 import { contents } from "@shared/schema";
 import { eq, ne } from "drizzle-orm";
 
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 export interface SimilarityResult {
   contentId: string;
@@ -64,7 +66,6 @@ export const plagiarismDetector = {
 
       return response.data[0].embedding;
     } catch (error) {
-      console.error("[Plagiarism] Error generating embedding:", error);
       return null;
     }
   },
@@ -118,9 +119,13 @@ export const plagiarismDetector = {
       // Extract text from content
       let contentText = content.title + "\n";
       if (content.blocks && Array.isArray(content.blocks)) {
-        for (const block of content.blocks as Array<{ type: string; content?: string; text?: string }>) {
-          if (block.type === 'paragraph' || block.type === 'text') {
-            contentText += (block.content || block.text || '') + "\n";
+        for (const block of content.blocks as Array<{
+          type: string;
+          content?: string;
+          text?: string;
+        }>) {
+          if (block.type === "paragraph" || block.type === "text") {
+            contentText += (block.content || block.text || "") + "\n";
           }
         }
       }
@@ -155,9 +160,13 @@ export const plagiarismDetector = {
       for (const other of otherContent) {
         let otherText = other.title + "\n";
         if (other.blocks && Array.isArray(other.blocks)) {
-          for (const block of other.blocks as Array<{ type: string; content?: string; text?: string }>) {
-            if (block.type === 'paragraph' || block.type === 'text') {
-              otherText += (block.content || block.text || '') + "\n";
+          for (const block of other.blocks as Array<{
+            type: string;
+            content?: string;
+            text?: string;
+          }>) {
+            if (block.type === "paragraph" || block.type === "text") {
+              otherText += (block.content || block.text || "") + "\n";
             }
           }
         }
@@ -167,7 +176,7 @@ export const plagiarismDetector = {
           otherSentences.slice(0, 10).map(s => this.generateEmbedding(s))
         );
 
-        const matchedSentences: SimilarityResult['matchedSentences'] = [];
+        const matchedSentences: SimilarityResult["matchedSentences"] = [];
         let totalSimilarity = 0;
         let comparisons = 0;
 
@@ -209,9 +218,7 @@ export const plagiarismDetector = {
       // Sort by similarity
       similarContent.sort((a, b) => b.similarity - a.similarity);
 
-      const overallSimilarity = similarContent.length > 0
-        ? similarContent[0].similarity
-        : 0;
+      const overallSimilarity = similarContent.length > 0 ? similarContent[0].similarity : 0;
 
       return {
         isPlagiarized: overallSimilarity >= threshold,
@@ -220,7 +227,6 @@ export const plagiarismDetector = {
         checkedAgainst: otherContent.length,
       };
     } catch (error) {
-      console.error("[Plagiarism] Error checking plagiarism:", error);
       return {
         isPlagiarized: false,
         overallSimilarity: 0,
@@ -244,7 +250,6 @@ export const plagiarismDetector = {
 
       return this.cosineSimilarity(embedding1, embedding2);
     } catch (error) {
-      console.error("[Plagiarism] Error comparing texts:", error);
       return 0;
     }
   },

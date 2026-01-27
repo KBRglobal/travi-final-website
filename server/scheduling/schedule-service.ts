@@ -26,19 +26,17 @@ export async function scheduleContent(
     return {
       success: false,
       contentId,
-      error: 'Content scheduling is disabled',
+      error: "Content scheduling is disabled",
     };
   }
 
-  const scheduleDate = typeof scheduledAt === 'string'
-    ? new Date(scheduledAt)
-    : scheduledAt;
+  const scheduleDate = typeof scheduledAt === "string" ? new Date(scheduledAt) : scheduledAt;
 
   if (isNaN(scheduleDate.getTime())) {
     return {
       success: false,
       contentId,
-      error: 'Invalid scheduled date',
+      error: "Invalid scheduled date",
     };
   }
 
@@ -51,8 +49,6 @@ export async function scheduleContent(
       error: result.error,
     };
   }
-
-  console.log(`[ScheduleService] Content ${contentId} scheduled for ${scheduleDate.toISOString()}`);
 
   return {
     success: true,
@@ -69,7 +65,7 @@ export async function cancelSchedule(contentId: string): Promise<ScheduleResult>
     return {
       success: false,
       contentId,
-      error: 'Content scheduling is disabled',
+      error: "Content scheduling is disabled",
     };
   }
 
@@ -82,8 +78,6 @@ export async function cancelSchedule(contentId: string): Promise<ScheduleResult>
       error: result.error,
     };
   }
-
-  console.log(`[ScheduleService] Schedule cancelled for content ${contentId}`);
 
   return {
     success: true,
@@ -141,9 +135,11 @@ export async function getScheduleStatus(contentId: string) {
     status: content.status,
     scheduledAt: content.scheduledAt?.toISOString() || null,
     publishedAt: content.publishedAt?.toISOString() || null,
-    isScheduled: !!content.scheduledAt && content.status !== 'published',
-    isPending: !!content.scheduledAt && content.status === 'draft' && content.scheduledAt > new Date(),
-    isPastDue: !!content.scheduledAt && content.status === 'draft' && content.scheduledAt <= new Date(),
+    isScheduled: !!content.scheduledAt && content.status !== "published",
+    isPending:
+      !!content.scheduledAt && content.status === "draft" && content.scheduledAt > new Date(),
+    isPastDue:
+      !!content.scheduledAt && content.status === "draft" && content.scheduledAt <= new Date(),
   };
 }
 

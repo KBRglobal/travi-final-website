@@ -14,13 +14,10 @@ export class QaRunner {
   private static readonly BASE_URL = "http://localhost:5000";
 
   static async run(runId: string): Promise<void> {
-    console.log(`[QA Runner] Starting automated checks for run ${runId}`);
-    
     try {
       // 1. Always run baseline checks first
-      console.log(`[QA Runner] Running baseline system checks...`);
+
       const baselineResults = await this.runBaselineChecks();
-      console.log(`[QA Runner] Baseline checks complete:`, baselineResults);
 
       // 2. Get all results for this run
       const results = await db.query.qaCheckResults.findMany({
@@ -30,8 +27,6 @@ export class QaRunner {
         },
       });
 
-      console.log(`[QA Runner] Found ${results.length} check items for run ${runId}`);
-
       let passedCount = 0;
       let failedCount = 0;
       let checkedCount = 0;
@@ -40,17 +35,15 @@ export class QaRunner {
       for (const result of results) {
         const item = result.item;
         const itemKey = item.key;
-        
+
         // Check if this item has automated check enabled
         if (item.automatedCheck) {
-          console.log(`[QA Runner] Executing automated check: ${itemKey}`);
-          
           const checkResult = await this.executeCheck(itemKey, item.automatedCheckEndpoint);
-          
+
           const newStatus = checkResult.passed ? "passed" : "failed";
-          console.log(`[QA Runner] Check ${itemKey}: ${newStatus} - ${checkResult.message}`);
-          
-          await db.update(qaCheckResults)
+
+          await db
+            .update(qaCheckResults)
             .set({
               status: newStatus,
               checkedAt: new Date(),
@@ -62,13 +55,12 @@ export class QaRunner {
               updatedAt: new Date(),
             } as any)
             .where(eq(qaCheckResults.id, result.id));
-          
+
           if (checkResult.passed) passedCount++;
           else failedCount++;
           checkedCount++;
         } else {
           // Non-automated checks remain not_checked for manual review
-          console.log(`[QA Runner] Skipping manual check: ${itemKey}`);
         }
       }
 
@@ -85,7 +77,8 @@ export class QaRunner {
       const checkedTotal = total - notChecked - skipped;
       const score = checkedTotal > 0 ? Math.round((passed / checkedTotal) * 100) : 0;
 
-      await db.update(qaRuns)
+      await db
+        .update(qaRuns)
         .set({
           status: "completed",
           completedAt: new Date(),
@@ -97,14 +90,11 @@ export class QaRunner {
           updatedAt: new Date(),
         } as any)
         .where(eq(qaRuns.id, runId));
-
-      console.log(`[QA Runner] Run ${runId} completed. Score: ${score}%, Passed: ${passed}, Failed: ${failed}`);
-
     } catch (error) {
-      console.error(`[QA Runner] FATAL ERROR for run ${runId}:`, error);
-      await db.update(qaRuns)
-        .set({ 
-          status: "failed", 
+      await db
+        .update(qaRuns)
+        .set({
+          status: "failed",
           notes: `Runner error: ${String(error)}`,
           updatedAt: new Date(),
         } as any)
@@ -114,14 +104,14 @@ export class QaRunner {
 
   private static async runBaselineChecks(): Promise<{ server: boolean; database: boolean }> {
     const results = { server: false, database: false };
-    
+
     // Check server is running
     try {
-      const response = await fetch(`${this.BASE_URL}/api/health`, { 
+      const response = await fetch(`${this.BASE_URL}/api/health`, {
         method: "GET",
         signal: AbortSignal.timeout(5000),
       }).catch(() => null);
-      
+
       results.server = response?.ok || response?.status === 404; // 404 means server running but no health endpoint
     } catch {
       results.server = false;
@@ -138,35 +128,38 @@ export class QaRunner {
     return results;
   }
 
-  private static async executeCheck(itemKey: string, endpoint?: string | null): Promise<CheckResult> {
+  private static async executeCheck(
+    itemKey: string,
+    endpoint?: string | null
+  ): Promise<CheckResult> {
     const startTime = Date.now();
-    
+
     try {
       // Map item keys to actual checks
       const checkHandlers: Record<string, () => Promise<CheckResult>> = {
         // HTTP Health Checks
-        "homepage_loads": () => this.checkHttpEndpoint("/", "Homepage"),
-        "destinations_loads": () => this.checkHttpEndpoint("/destinations", "Destinations page"),
-        "attractions_loads": () => this.checkHttpEndpoint("/attractions", "Attractions page"),
-        "search_works": () => this.checkHttpEndpoint("/search?q=dubai", "Search functionality"),
-        "api_health": () => this.checkHttpEndpoint("/api/health", "API Health endpoint"),
-        
+        homepage_loads: () => this.checkHttpEndpoint("/", "Homepage"),
+        destinations_loads: () => this.checkHttpEndpoint("/destinations", "Destinations page"),
+        attractions_loads: () => this.checkHttpEndpoint("/attractions", "Attractions page"),
+        search_works: () => this.checkHttpEndpoint("/search?q=dubai", "Search functionality"),
+        api_health: () => this.checkHttpEndpoint("/api/health", "API Health endpoint"),
+
         // Database Checks
-        "db_connectivity": () => this.checkDatabaseConnectivity(),
-        "db_query_performance": () => this.checkDatabasePerformance(),
-        
+        db_connectivity: () => this.checkDatabaseConnectivity(),
+        db_query_performance: () => this.checkDatabasePerformance(),
+
         // API Checks
-        "api_destinations": () => this.checkApiEndpoint("/api/destinations", "Destinations API"),
-        "api_attractions": () => this.checkApiEndpoint("/api/attractions", "Attractions API"),
-        "api_contents": () => this.checkApiEndpoint("/api/contents", "Contents API"),
-        
+        api_destinations: () => this.checkApiEndpoint("/api/destinations", "Destinations API"),
+        api_attractions: () => this.checkApiEndpoint("/api/attractions", "Attractions API"),
+        api_contents: () => this.checkApiEndpoint("/api/contents", "Contents API"),
+
         // Server Checks
-        "server_response_time": () => this.checkServerResponseTime(),
-        "error_handling": () => this.checkErrorHandling(),
-        
+        server_response_time: () => this.checkServerResponseTime(),
+        error_handling: () => this.checkErrorHandling(),
+
         // Environment Checks
-        "env_database_url": () => this.checkEnvVar("DATABASE_URL", "Database connection string"),
-        "env_session_secret": () => this.checkEnvVar("SESSION_SECRET", "Session secret"),
+        env_database_url: () => this.checkEnvVar("DATABASE_URL", "Database connection string"),
+        env_session_secret: () => this.checkEnvVar("SESSION_SECRET", "Session secret"),
       };
 
       // If we have a custom endpoint, use it
@@ -187,7 +180,6 @@ export class QaRunner {
         details: { itemKey, hasEndpoint: !!endpoint },
         duration: Date.now() - startTime,
       };
-
     } catch (error) {
       return {
         passed: false,
@@ -205,11 +197,11 @@ export class QaRunner {
       const response = await fetch(url, {
         method: "GET",
         signal: AbortSignal.timeout(10000),
-        headers: { "Accept": "text/html,application/json" },
+        headers: { Accept: "text/html,application/json" },
       });
-      
+
       const duration = Date.now() - startTime;
-      
+
       if (response.ok) {
         return {
           passed: true,
@@ -242,11 +234,11 @@ export class QaRunner {
       const response = await fetch(url, {
         method: "GET",
         signal: AbortSignal.timeout(10000),
-        headers: { "Accept": "application/json" },
+        headers: { Accept: "application/json" },
       });
-      
+
       const duration = Date.now() - startTime;
-      
+
       if (response.ok) {
         const data = await response.json().catch(() => null);
         return {
@@ -299,7 +291,7 @@ export class QaRunner {
     try {
       await db.query.contents.findMany({ limit: 10 });
       const duration = Date.now() - startTime;
-      
+
       if (duration < 1000) {
         return {
           passed: true,
@@ -333,7 +325,7 @@ export class QaRunner {
         signal: AbortSignal.timeout(5000),
       });
       const duration = Date.now() - startTime;
-      
+
       if (duration < 2000) {
         return {
           passed: true,
@@ -366,9 +358,9 @@ export class QaRunner {
         method: "GET",
         signal: AbortSignal.timeout(5000),
       });
-      
+
       const duration = Date.now() - startTime;
-      
+
       // Should return 404, not 500
       if (response.status === 404) {
         return {
@@ -423,23 +415,45 @@ export class QaRunner {
    * Run quick automated checks without creating a full QA run
    * This is used for the dashboard display of health status
    */
-  static async runQuickChecks(): Promise<Array<{ key: string; name: string; passed: boolean; message: string; duration?: number; category?: string }>> {
-    console.log("[QA Runner] Running quick automated checks...");
-    
+  static async runQuickChecks(): Promise<
+    Array<{
+      key: string;
+      name: string;
+      passed: boolean;
+      message: string;
+      duration?: number;
+      category?: string;
+    }>
+  > {
     const checks = [
       { key: "homepage_loads", name: "Homepage Loads", category: "infrastructure" },
       { key: "destinations_loads", name: "Destinations Page Loads", category: "infrastructure" },
       { key: "attractions_loads", name: "Attractions Page Loads", category: "infrastructure" },
       { key: "api_health", name: "API Health Check", category: "infrastructure" },
       { key: "db_connectivity", name: "Database Connectivity", category: "infrastructure" },
-      { key: "db_query_performance", name: "Database Query Performance", category: "infrastructure" },
-      { key: "server_response_time", name: "Server Response Time", category: "reliability_resilience" },
+      {
+        key: "db_query_performance",
+        name: "Database Query Performance",
+        category: "infrastructure",
+      },
+      {
+        key: "server_response_time",
+        name: "Server Response Time",
+        category: "reliability_resilience",
+      },
       { key: "error_handling", name: "Error Handling", category: "reliability_resilience" },
       { key: "env_database_url", name: "Database URL Configured", category: "infrastructure" },
       { key: "env_session_secret", name: "Session Secret Configured", category: "infrastructure" },
     ];
 
-    const results: Array<{ key: string; name: string; passed: boolean; message: string; duration?: number; category?: string }> = [];
+    const results: Array<{
+      key: string;
+      name: string;
+      passed: boolean;
+      message: string;
+      duration?: number;
+      category?: string;
+    }> = [];
 
     for (const check of checks) {
       try {
@@ -465,7 +479,6 @@ export class QaRunner {
 
     const passed = results.filter(r => r.passed).length;
     const failed = results.filter(r => !r.passed).length;
-    console.log(`[QA Runner] Quick checks complete: ${passed} passed, ${failed} failed`);
 
     return results;
   }

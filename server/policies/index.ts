@@ -20,22 +20,31 @@ export * from "./types";
 export * from "./built-in-policies";
 export * from "./evaluator";
 // Re-export policy-engine (canonical source for evaluatePolicies/clearPolicyCache)
-export { evaluatePolicies, clearPolicyCache, isAllowed, checkPolicy, getEnforcementSummary } from "./policy-engine";
+export {
+  evaluatePolicies,
+  clearPolicyCache,
+  isAllowed,
+  checkPolicy,
+  getEnforcementSummary,
+} from "./policy-engine";
 export * from "./repository";
 // Re-export middleware (exclude duplicates already exported from types and policy-engine)
-export { enforcePolicy, enforceContentPolicy, enforceUserPolicy, enforceExportPolicy, enforceAdminPolicy, auditPolicyViolation } from "./middleware";
+export {
+  enforcePolicy,
+  enforceContentPolicy,
+  enforceUserPolicy,
+  enforceExportPolicy,
+  enforceAdminPolicy,
+  auditPolicyViolation,
+} from "./middleware";
 
 export function registerPoliciesRoutes(app: Express): void {
   const isGovernanceEnabled = process.env.ENABLE_ENTERPRISE_GOVERNANCE === "true";
   const isPoliciesEnabled = process.env.ENABLE_POLICY_ENFORCEMENT === "true";
 
   if (!isGovernanceEnabled && !isPoliciesEnabled) {
-    console.log("[Policies] Module disabled");
     return;
   }
 
   app.use("/api/admin/policies", policiesRoutes);
-  console.log("[Policies] Routes registered at /api/admin/policies");
 }
-
-console.log("[Policies] Module loaded");

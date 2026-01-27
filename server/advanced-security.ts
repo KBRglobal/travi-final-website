@@ -19,8 +19,8 @@ import { authenticator } from "otplib";
 // ============================================================================
 
 interface RateLimitConfig {
-  windowMs: number;     // Time window in milliseconds
-  maxRequests: number;  // Maximum requests in window
+  windowMs: number; // Time window in milliseconds
+  maxRequests: number; // Maximum requests in window
   blockDurationMs: number; // How long to block after limit exceeded
 }
 
@@ -52,7 +52,10 @@ const rateLimitConfigs: Record<string, RateLimitConfig> = {
 };
 
 // In-memory rate limit store (use Redis in production)
-const rateLimitStore: Map<string, { count: number; resetAt: number; blocked?: boolean; blockedUntil?: number }> = new Map();
+const rateLimitStore: Map<
+  string,
+  { count: number; resetAt: number; blocked?: boolean; blockedUntil?: number }
+> = new Map();
 
 export const rateLimiter = {
   /**
@@ -174,7 +177,8 @@ export const rateLimiter = {
 // ============================================================================
 
 // In-memory cache for fast lookups (synced with DB)
-const twoFactorCache: Map<string, { secret: string; backupCodes: string[]; verified: boolean }> = new Map();
+const twoFactorCache: Map<string, { secret: string; backupCodes: string[]; verified: boolean }> =
+  new Map();
 
 export const twoFactorAuth = {
   /**
@@ -256,7 +260,9 @@ export const twoFactorAuth = {
   /**
    * Get stored 2FA secret (from cache or DB)
    */
-  async getStoredSecret(userId: string): Promise<{ secret: string; backupCodes: string[]; verified: boolean } | null> {
+  async getStoredSecret(
+    userId: string
+  ): Promise<{ secret: string; backupCodes: string[]; verified: boolean } | null> {
     // Check cache first
     const cached = twoFactorCache.get(userId);
     if (cached) return cached;
@@ -270,7 +276,11 @@ export const twoFactorAuth = {
     if (!stored) return null;
 
     // Update cache
-    const data = { secret: stored.secret, backupCodes: stored.backupCodes || [], verified: stored.verified };
+    const data = {
+      secret: stored.secret,
+      backupCodes: stored.backupCodes || [],
+      verified: stored.verified,
+    };
     twoFactorCache.set(userId, data);
     return data;
   },
@@ -306,7 +316,10 @@ export const twoFactorAuth = {
   /**
    * Verify login with 2FA
    */
-  async verifyLogin(userId: string, code: string): Promise<{
+  async verifyLogin(
+    userId: string,
+    code: string
+  ): Promise<{
     success: boolean;
     usedBackupCode?: boolean;
   }> {
@@ -357,9 +370,7 @@ export const twoFactorAuth = {
     const existed = !!stored;
 
     // Delete from database
-    await db
-      .delete(twoFactorSecrets)
-      .where(eq(twoFactorSecrets.userId, userId));
+    await db.delete(twoFactorSecrets).where(eq(twoFactorSecrets.userId, userId));
 
     // Remove from cache
     twoFactorCache.delete(userId);
@@ -423,36 +434,73 @@ interface AuditLogEntry {
 
 // Helper functions to map audit entry fields to database enum values
 // Valid actionTypes: create, update, delete, publish, unpublish, submit_for_review, approve, reject, login, logout, user_create, user_update, user_delete, role_change, settings_change, media_upload, media_delete, restore
-function mapActionToAuditType(action: string): "create" | "update" | "delete" | "publish" | "unpublish" | "login" | "logout" | "settings_change" | "role_change" | "media_upload" | "media_delete" | "restore" {
+function mapActionToAuditType(
+  action: string
+):
+  | "create"
+  | "update"
+  | "delete"
+  | "publish"
+  | "unpublish"
+  | "login"
+  | "logout"
+  | "settings_change"
+  | "role_change"
+  | "media_upload"
+  | "media_delete"
+  | "restore" {
   const actionLower = action.toLowerCase();
-  if (actionLower.includes('create') || actionLower.includes('add')) return 'create';
-  if (actionLower.includes('update') || actionLower.includes('edit') || actionLower.includes('modify')) return 'update';
-  if (actionLower.includes('delete') || actionLower.includes('remove')) return 'delete';
-  if (actionLower.includes('publish')) return 'publish';
-  if (actionLower.includes('unpublish')) return 'unpublish';
-  if (actionLower.includes('login')) return 'login';
-  if (actionLower.includes('logout')) return 'logout';
-  if (actionLower.includes('settings') || actionLower.includes('config')) return 'settings_change';
-  if (actionLower.includes('permission') || actionLower.includes('role')) return 'role_change';
-  if (actionLower.includes('upload') || actionLower.includes('media_upload')) return 'media_upload';
-  if (actionLower.includes('media_delete')) return 'media_delete';
-  if (actionLower.includes('restore')) return 'restore';
-  return 'update';  // Default to update instead of non-existent 'other'
+  if (actionLower.includes("create") || actionLower.includes("add")) return "create";
+  if (
+    actionLower.includes("update") ||
+    actionLower.includes("edit") ||
+    actionLower.includes("modify")
+  )
+    return "update";
+  if (actionLower.includes("delete") || actionLower.includes("remove")) return "delete";
+  if (actionLower.includes("publish")) return "publish";
+  if (actionLower.includes("unpublish")) return "unpublish";
+  if (actionLower.includes("login")) return "login";
+  if (actionLower.includes("logout")) return "logout";
+  if (actionLower.includes("settings") || actionLower.includes("config")) return "settings_change";
+  if (actionLower.includes("permission") || actionLower.includes("role")) return "role_change";
+  if (actionLower.includes("upload") || actionLower.includes("media_upload")) return "media_upload";
+  if (actionLower.includes("media_delete")) return "media_delete";
+  if (actionLower.includes("restore")) return "restore";
+  return "update"; // Default to update instead of non-existent 'other'
 }
 
 // Valid entityTypes: content, user, media, settings, rss_feed, affiliate_link, translation, session, tag, cluster, campaign, newsletter_subscriber
-function mapEntityToType(resource?: string): "content" | "user" | "media" | "settings" | "translation" | "campaign" | "session" | "tag" | "cluster" {
-  if (!resource) return 'session';  // Default to session for system events
+function mapEntityToType(
+  resource?: string
+):
+  | "content"
+  | "user"
+  | "media"
+  | "settings"
+  | "translation"
+  | "campaign"
+  | "session"
+  | "tag"
+  | "cluster" {
+  if (!resource) return "session"; // Default to session for system events
   const resourceLower = resource.toLowerCase();
-  if (resourceLower.includes('content') || resourceLower.includes('article') || resourceLower.includes('hotel') || resourceLower.includes('attraction')) return 'content';
-  if (resourceLower.includes('user')) return 'user';
-  if (resourceLower.includes('media') || resourceLower.includes('image')) return 'media';
-  if (resourceLower.includes('settings') || resourceLower.includes('config')) return 'settings';
-  if (resourceLower.includes('translation') || resourceLower.includes('locale')) return 'translation';
-  if (resourceLower.includes('campaign') || resourceLower.includes('newsletter')) return 'campaign';
-  if (resourceLower.includes('tag')) return 'tag';
-  if (resourceLower.includes('cluster')) return 'cluster';
-  return 'content';  // Default to content
+  if (
+    resourceLower.includes("content") ||
+    resourceLower.includes("article") ||
+    resourceLower.includes("hotel") ||
+    resourceLower.includes("attraction")
+  )
+    return "content";
+  if (resourceLower.includes("user")) return "user";
+  if (resourceLower.includes("media") || resourceLower.includes("image")) return "media";
+  if (resourceLower.includes("settings") || resourceLower.includes("config")) return "settings";
+  if (resourceLower.includes("translation") || resourceLower.includes("locale"))
+    return "translation";
+  if (resourceLower.includes("campaign") || resourceLower.includes("newsletter")) return "campaign";
+  if (resourceLower.includes("tag")) return "tag";
+  if (resourceLower.includes("cluster")) return "cluster";
+  return "content"; // Default to content
 }
 
 // Hybrid audit log: in-memory for fast queries + database for persistence
@@ -481,23 +529,21 @@ export const auditLogger = {
 
     // Write to database for persistence
     try {
-      const resourceStr = entry.targetId || entry.targetType || '';
+      const resourceStr = entry.targetId || entry.targetType || "";
       await db.insert(auditLogs).values({
         userId: entry.userId || null,
-        userName: entry.userId ? `User ${entry.userId}` : 'System',
-        userRole: 'admin',
+        userName: entry.userId ? `User ${entry.userId}` : "System",
+        userRole: "admin",
         actionType: mapActionToAuditType(entry.action),
         entityType: mapEntityToType(resourceStr),
         entityId: resourceStr || null,
-        description: `${entry.action}${entry.details ? ': ' + JSON.stringify(entry.details) : ''}`,
+        description: `${entry.action}${entry.details ? ": " + JSON.stringify(entry.details) : ""}`,
         beforeState: null,
         afterState: entry.details || null,
         ipAddress: entry.ipAddress || null,
         userAgent: entry.userAgent || null,
       } as any);
-    } catch (dbError) {
-      console.error('[AuditLog] Failed to write to database:', dbError);
-    }
+    } catch (dbError) {}
 
     // For critical events, send alert
     if (entry.severity === "critical") {
@@ -576,7 +622,6 @@ export const auditLogger = {
 
       return { logs, total };
     } catch (error) {
-      console.error("Error fetching audit logs from database:", error);
       // Fallback to in-memory if database fails
       let filtered = [...auditLogStore];
       if (filters.userId) filtered = filtered.filter(l => l.userId === filters.userId);
@@ -593,7 +638,10 @@ export const auditLogger = {
   /**
    * Get user activity summary from database
    */
-  async getUserActivity(userId: string, days: number = 30): Promise<{
+  async getUserActivity(
+    userId: string,
+    days: number = 30
+  ): Promise<{
     totalActions: number;
     byAction: Record<string, number>;
     bySeverity: Record<string, number>;
@@ -605,10 +653,7 @@ export const auditLogger = {
       const userLogs = await db
         .select()
         .from(auditLogs)
-        .where(and(
-          eq(auditLogs.userId, userId),
-          gte(auditLogs.timestamp, cutoff)
-        ))
+        .where(and(eq(auditLogs.userId, userId), gte(auditLogs.timestamp, cutoff)))
         .orderBy(desc(auditLogs.timestamp));
 
       const byAction: Record<string, number> = {};
@@ -630,7 +675,6 @@ export const auditLogger = {
         })),
       };
     } catch (error) {
-      console.error("Error fetching user activity from database:", error);
       return { totalActions: 0, byAction: {}, bySeverity: {}, recentActivity: [] };
     }
   },
@@ -649,14 +693,13 @@ export const auditLogger = {
     const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
 
     try {
-      const recentLogs = await db
-        .select()
-        .from(auditLogs)
-        .where(gte(auditLogs.timestamp, cutoff));
+      const recentLogs = await db.select().from(auditLogs).where(gte(auditLogs.timestamp, cutoff));
 
       const actionCounts: Record<string, number> = {};
       const ipCounts: Record<string, number> = {};
-      let warnings = 0, errors = 0, critical = 0;
+      let warnings = 0,
+        errors = 0,
+        critical = 0;
 
       for (const log of recentLogs) {
         const actionType = log.actionType || "unknown";
@@ -692,8 +735,14 @@ export const auditLogger = {
         suspiciousIps,
       };
     } catch (error) {
-      console.error("Error fetching security summary from database:", error);
-      return { totalEvents: 0, warnings: 0, errors: 0, critical: 0, topActions: [], suspiciousIps: [] };
+      return {
+        totalEvents: 0,
+        warnings: 0,
+        errors: 0,
+        critical: 0,
+        topActions: [],
+        suspiciousIps: [],
+      };
     }
   },
 
@@ -702,7 +751,6 @@ export const auditLogger = {
    */
   async alertCriticalEvent(entry: AuditLogEntry & { id: string; timestamp: Date }): Promise<void> {
     // In production, send email/SMS/Slack alert
-    console.error(`[CRITICAL SECURITY EVENT] ${entry.action}:`, entry);
   },
 };
 
@@ -728,7 +776,10 @@ export const captcha = {
   /**
    * Verify reCAPTCHA token
    */
-  async verifyRecaptcha(token: string, ip?: string): Promise<{
+  async verifyRecaptcha(
+    token: string,
+    ip?: string
+  ): Promise<{
     success: boolean;
     score?: number;
     action?: string;
@@ -768,7 +819,6 @@ export const captcha = {
         errorCodes: data["error-codes"],
       };
     } catch (error) {
-      console.error("[CAPTCHA] Verification error:", error);
       return { success: false, errorCodes: ["verification-failed"] };
     }
   },
@@ -776,7 +826,10 @@ export const captcha = {
   /**
    * Verify hCaptcha token
    */
-  async verifyHcaptcha(token: string, ip?: string): Promise<{
+  async verifyHcaptcha(
+    token: string,
+    ip?: string
+  ): Promise<{
     success: boolean;
     errorCodes?: string[];
   }> {
@@ -802,7 +855,6 @@ export const captcha = {
         errorCodes: data["error-codes"],
       };
     } catch (error) {
-      console.error("[CAPTCHA] hCaptcha verification error:", error);
       return { success: false, errorCodes: ["verification-failed"] };
     }
   },
@@ -810,7 +862,10 @@ export const captcha = {
   /**
    * Verify Cloudflare Turnstile token
    */
-  async verifyTurnstile(token: string, ip?: string): Promise<{
+  async verifyTurnstile(
+    token: string,
+    ip?: string
+  ): Promise<{
     success: boolean;
     errorCodes?: string[];
   }> {
@@ -836,7 +891,6 @@ export const captcha = {
         errorCodes: data["error-codes"],
       };
     } catch (error) {
-      console.error("[CAPTCHA] Turnstile verification error:", error);
       return { success: false, errorCodes: ["verification-failed"] };
     }
   },
@@ -844,7 +898,10 @@ export const captcha = {
   /**
    * Verify token using configured provider
    */
-  async verify(token: string, ip?: string): Promise<{
+  async verify(
+    token: string,
+    ip?: string
+  ): Promise<{
     success: boolean;
     score?: number;
     errorCodes?: string[];

@@ -3,30 +3,30 @@
  * Executes SEO-related decisions by calling SEO Engine endpoints
  */
 
-import type { Decision, DecisionType } from '../types';
-import { BaseAdapter } from './base-adapter';
-import type { AdapterConfig, SEOActionPayload } from './types';
+import type { Decision, DecisionType } from "../types";
+import { BaseAdapter } from "./base-adapter";
+import type { AdapterConfig, SEOActionPayload } from "./types";
 
 // =============================================================================
 // SEO ADAPTER
 // =============================================================================
 
 export class SEOAdapter extends BaseAdapter {
-  readonly id = 'seo-adapter';
-  readonly name = 'SEO Adapter';
+  readonly id = "seo-adapter";
+  readonly name = "SEO Adapter";
   readonly supportedActions: DecisionType[] = [
-    'BLOCK_PUBLISH',
-    'TRIGGER_META_OPTIMIZATION',
-    'TRIGGER_SEO_REWRITE',
-    'TRIGGER_INTERLINKING_TASK',
-    'TRIGGER_CTR_OPTIMIZATION',
-    'INCREASE_CRAWL_PRIORITY',
-    'REDUCE_TRAFFIC',
+    "BLOCK_PUBLISH",
+    "TRIGGER_META_OPTIMIZATION",
+    "TRIGGER_SEO_REWRITE",
+    "TRIGGER_INTERLINKING_TASK",
+    "TRIGGER_CTR_OPTIMIZATION",
+    "INCREASE_CRAWL_PRIORITY",
+    "REDUCE_TRAFFIC",
   ];
 
   private baseUrl: string;
 
-  constructor(baseUrl: string = '/api/seo', config: Partial<AdapterConfig> = {}) {
+  constructor(baseUrl: string = "/api/seo", config: Partial<AdapterConfig> = {}) {
     super(config);
     this.baseUrl = baseUrl;
   }
@@ -60,8 +60,6 @@ export class SEOAdapter extends BaseAdapter {
     const payload = this.buildPayload(decision);
     const endpoint = this.getEndpoint(decision.type);
 
-    console.log(`[SEO Adapter] Executing ${decision.type}:`, payload);
-
     // In production, this would make actual API calls
     // const response = await fetch(`${this.baseUrl}${endpoint}`, {
     //   method: 'POST',
@@ -80,8 +78,6 @@ export class SEOAdapter extends BaseAdapter {
   }> {
     const payload = this.buildPayload(decision);
 
-    console.log(`[SEO Adapter] Dry run ${decision.type}:`, payload);
-
     // Simulate what would happen
     return {
       success: true,
@@ -99,7 +95,7 @@ export class SEOAdapter extends BaseAdapter {
   // =========================================================================
 
   private buildPayload(decision: Decision): SEOActionPayload {
-    const contentId = decision.impactedEntities.find(e => e.type === 'content')?.id;
+    const contentId = decision.impactedEntities.find(e => e.type === "content")?.id;
 
     const base: SEOActionPayload = {
       contentId,
@@ -115,38 +111,38 @@ export class SEOAdapter extends BaseAdapter {
 
     // Action-specific payload additions
     switch (decision.type) {
-      case 'BLOCK_PUBLISH':
+      case "BLOCK_PUBLISH":
         return {
           ...base,
           metadata: {
             ...base.metadata,
             reason: `Metric ${decision.signal.metricId} = ${decision.signal.value} (threshold: ${decision.signal.threshold})`,
-            blockType: 'data-decision',
+            blockType: "data-decision",
           },
         };
 
-      case 'TRIGGER_META_OPTIMIZATION':
+      case "TRIGGER_META_OPTIMIZATION":
         return {
           ...base,
           metadata: {
             ...base.metadata,
-            targetMetric: 'ctr',
+            targetMetric: "ctr",
             currentValue: decision.signal.value,
           },
         };
 
-      case 'TRIGGER_SEO_REWRITE':
+      case "TRIGGER_SEO_REWRITE":
         return {
           ...base,
-          priority: 'high',
+          priority: "high",
           metadata: {
             ...base.metadata,
-            rewriteReason: 'position_drop',
+            rewriteReason: "position_drop",
             positionChange: decision.signal.value,
           },
         };
 
-      case 'INCREASE_CRAWL_PRIORITY':
+      case "INCREASE_CRAWL_PRIORITY":
         return {
           ...base,
           metadata: {
@@ -155,7 +151,7 @@ export class SEOAdapter extends BaseAdapter {
           },
         };
 
-      case 'REDUCE_TRAFFIC':
+      case "REDUCE_TRAFFIC":
         return {
           ...base,
           metadata: {
@@ -172,30 +168,28 @@ export class SEOAdapter extends BaseAdapter {
 
   private getEndpoint(actionType: DecisionType): string {
     const endpoints: Partial<Record<DecisionType, string>> = {
-      BLOCK_PUBLISH: '/actions/block-publish',
-      TRIGGER_META_OPTIMIZATION: '/actions/optimize-meta',
-      TRIGGER_SEO_REWRITE: '/actions/queue-rewrite',
-      TRIGGER_INTERLINKING_TASK: '/actions/queue-interlinking',
-      TRIGGER_CTR_OPTIMIZATION: '/actions/optimize-ctr',
-      INCREASE_CRAWL_PRIORITY: '/actions/update-crawl-priority',
-      REDUCE_TRAFFIC: '/actions/reduce-traffic',
+      BLOCK_PUBLISH: "/actions/block-publish",
+      TRIGGER_META_OPTIMIZATION: "/actions/optimize-meta",
+      TRIGGER_SEO_REWRITE: "/actions/queue-rewrite",
+      TRIGGER_INTERLINKING_TASK: "/actions/queue-interlinking",
+      TRIGGER_CTR_OPTIMIZATION: "/actions/optimize-ctr",
+      INCREASE_CRAWL_PRIORITY: "/actions/update-crawl-priority",
+      REDUCE_TRAFFIC: "/actions/reduce-traffic",
     };
 
-    return endpoints[actionType] || '/actions/generic';
+    return endpoints[actionType] || "/actions/generic";
   }
 
-  private mapPriority(
-    authority: Decision['authority']
-  ): 'low' | 'medium' | 'high' | 'critical' {
+  private mapPriority(authority: Decision["authority"]): "low" | "medium" | "high" | "critical" {
     switch (authority) {
-      case 'blocking':
-        return 'critical';
-      case 'escalating':
-        return 'high';
-      case 'triggering':
-        return 'medium';
+      case "blocking":
+        return "critical";
+      case "escalating":
+        return "high";
+      case "triggering":
+        return "medium";
       default:
-        return 'low';
+        return "low";
     }
   }
 
@@ -247,13 +241,13 @@ export class SEOAdapter extends BaseAdapter {
 
   private getSimulatedResult(actionType: DecisionType): Record<string, unknown> {
     switch (actionType) {
-      case 'BLOCK_PUBLISH':
+      case "BLOCK_PUBLISH":
         return { blocked: true, blockId: `block-${Date.now()}` };
-      case 'TRIGGER_META_OPTIMIZATION':
-        return { taskQueued: true, estimatedCompletion: '5m' };
-      case 'TRIGGER_SEO_REWRITE':
-        return { taskQueued: true, priority: 'high' };
-      case 'INCREASE_CRAWL_PRIORITY':
+      case "TRIGGER_META_OPTIMIZATION":
+        return { taskQueued: true, estimatedCompletion: "5m" };
+      case "TRIGGER_SEO_REWRITE":
+        return { taskQueued: true, priority: "high" };
+      case "INCREASE_CRAWL_PRIORITY":
         return { priorityUpdated: true, newPriority: 0.9 };
       default:
         return { executed: true };

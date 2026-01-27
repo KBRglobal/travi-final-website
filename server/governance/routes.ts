@@ -12,7 +12,7 @@
  * Feature flag: ENABLE_ENTERPRISE_GOVERNANCE
  */
 
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../db";
 import { users, governanceRoles, governancePolicies, approvalRequests, governanceAuditLogs, userRoleAssignments } from "@shared/schema";
@@ -102,7 +102,7 @@ router.get("/summary", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("[Governance] Error fetching summary:", error);
+    
     res.status(500).json({ error: "Failed to fetch governance summary" });
   }
 });
@@ -135,7 +135,7 @@ router.get("/roles", async (req, res) => {
 
     res.json({ roles: rolesWithCounts });
   } catch (error) {
-    console.error("[Governance] Error fetching roles:", error);
+    
     res.status(500).json({ error: "Failed to fetch roles" });
   }
 });
@@ -192,7 +192,7 @@ router.get("/users", async (req, res) => {
 
     res.json({ users: usersList });
   } catch (error) {
-    console.error("[Governance] Error fetching users:", error);
+    
     res.status(500).json({ error: "Failed to fetch users" });
   }
 });
@@ -216,7 +216,7 @@ router.get("/permissions", async (req, res) => {
 
     res.json({ permissionMatrix });
   } catch (error) {
-    console.error("[Governance] Error fetching permissions:", error);
+    
     res.status(500).json({ error: "Failed to fetch permissions" });
   }
 });
@@ -243,7 +243,7 @@ router.get("/policies", async (req, res) => {
       summary,
     });
   } catch (error) {
-    console.error("[Governance] Error fetching policies:", error);
+    
     res.status(500).json({ error: "Failed to fetch policies" });
   }
 });
@@ -265,7 +265,7 @@ router.get("/approvals", async (req, res) => {
       recent,
     });
   } catch (error) {
-    console.error("[Governance] Error fetching approvals:", error);
+    
     res.status(500).json({ error: "Failed to fetch approvals" });
   }
 });
@@ -282,7 +282,7 @@ router.get("/audit", async (req, res) => {
 
     res.json(summary);
   } catch (error) {
-    console.error("[Governance] Error fetching audit:", error);
+    
     res.status(500).json({ error: "Failed to fetch audit summary" });
   }
 });
@@ -309,7 +309,7 @@ router.get("/blocked", async (req, res) => {
 
     res.json({ blocked });
   } catch (error) {
-    console.error("[Governance] Error fetching blocked:", error);
+    
     res.status(500).json({ error: "Failed to fetch blocked actions" });
   }
 });
@@ -345,7 +345,7 @@ router.get("/health", async (req, res) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("[Governance] Health check failed:", error);
+    
     res.status(500).json({ healthy: false, error: "Health check failed" });
   }
 });
@@ -355,7 +355,7 @@ router.get("/health", async (req, res) => {
 // ============================================================================
 
 // GET /api/admin/governance/policy-engine/policies
-router.get("/policy-engine/policies", async (req: AuthenticatedRequest, res) => {
+router.get("/policy-engine/policies", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false, policies: [] });
   }
@@ -364,13 +364,13 @@ router.get("/policy-engine/policies", async (req: AuthenticatedRequest, res) => 
     const policies = policyEngine.getAllPolicies();
     res.json({ policies });
   } catch (error) {
-    console.error("[Governance] Error fetching policies:", error);
+
     res.status(500).json({ error: "Failed to fetch policies" });
   }
-});
+}) as unknown as RequestHandler);
 
 // GET /api/admin/governance/policy-engine/evaluate
-router.post("/policy-engine/evaluate", async (req: AuthenticatedRequest, res) => {
+router.post("/policy-engine/evaluate", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false });
   }
@@ -394,13 +394,13 @@ router.post("/policy-engine/evaluate", async (req: AuthenticatedRequest, res) =>
 
     res.json(result);
   } catch (error) {
-    console.error("[Governance] Error evaluating policy:", error);
+
     res.status(500).json({ error: "Failed to evaluate policy" });
   }
-});
+}) as unknown as RequestHandler);
 
 // GET /api/admin/governance/policy-engine/analytics
-router.get("/policy-engine/analytics", async (req: AuthenticatedRequest, res) => {
+router.get("/policy-engine/analytics", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false });
   }
@@ -412,17 +412,17 @@ router.get("/policy-engine/analytics", async (req: AuthenticatedRequest, res) =>
     });
     res.json(analytics);
   } catch (error) {
-    console.error("[Governance] Error fetching policy analytics:", error);
+
     res.status(500).json({ error: "Failed to fetch analytics" });
   }
-});
+}) as unknown as RequestHandler);
 
 // ============================================================================
 // APPROVAL WORKFLOW ROUTES
 // ============================================================================
 
 // GET /api/admin/governance/workflows
-router.get("/workflows", async (req: AuthenticatedRequest, res) => {
+router.get("/workflows", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false, workflows: [] });
   }
@@ -431,13 +431,13 @@ router.get("/workflows", async (req: AuthenticatedRequest, res) => {
     const workflows = approvalWorkflowService.getAllWorkflows();
     res.json({ workflows });
   } catch (error) {
-    console.error("[Governance] Error fetching workflows:", error);
+
     res.status(500).json({ error: "Failed to fetch workflows" });
   }
-});
+}) as unknown as RequestHandler);
 
 // GET /api/admin/governance/approvals/pending
-router.get("/approvals/pending", async (req: AuthenticatedRequest, res) => {
+router.get("/approvals/pending", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false, requests: [] });
   }
@@ -451,13 +451,13 @@ router.get("/approvals/pending", async (req: AuthenticatedRequest, res) => {
     const requests = await approvalWorkflowService.getPendingForUser(userId);
     res.json({ requests });
   } catch (error) {
-    console.error("[Governance] Error fetching pending approvals:", error);
+
     res.status(500).json({ error: "Failed to fetch pending approvals" });
   }
-});
+}) as unknown as RequestHandler);
 
 // GET /api/admin/governance/approvals/request/:id
-router.get("/approvals/request/:id", async (req: AuthenticatedRequest, res) => {
+router.get("/approvals/request/:id", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false });
   }
@@ -471,13 +471,13 @@ router.get("/approvals/request/:id", async (req: AuthenticatedRequest, res) => {
     const steps = await approvalWorkflowService.getSteps(req.params.id);
     res.json({ request, steps });
   } catch (error) {
-    console.error("[Governance] Error fetching approval:", error);
+
     res.status(500).json({ error: "Failed to fetch approval" });
   }
-});
+}) as unknown as RequestHandler);
 
 // POST /api/admin/governance/approvals/create
-router.post("/approvals/create", async (req: AuthenticatedRequest, res) => {
+router.post("/approvals/create", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -507,13 +507,13 @@ router.post("/approvals/create", async (req: AuthenticatedRequest, res) => {
 
     res.status(201).json({ request });
   } catch (error) {
-    console.error("[Governance] Error creating approval:", error);
+
     res.status(500).json({ error: "Failed to create approval request" });
   }
-});
+}) as unknown as RequestHandler);
 
 // POST /api/admin/governance/approvals/:id/decide
-router.post("/approvals/:id/decide", async (req: AuthenticatedRequest, res) => {
+router.post("/approvals/:id/decide", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -541,17 +541,17 @@ router.post("/approvals/:id/decide", async (req: AuthenticatedRequest, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error("[Governance] Error processing decision:", error);
+
     res.status(500).json({ error: "Failed to process decision" });
   }
-});
+}) as unknown as RequestHandler);
 
 // ============================================================================
 // DATA SCOPING ROUTES
 // ============================================================================
 
 // GET /api/admin/governance/scoping/summary
-router.get("/scoping/summary", async (req: AuthenticatedRequest, res) => {
+router.get("/scoping/summary", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false });
   }
@@ -565,13 +565,13 @@ router.get("/scoping/summary", async (req: AuthenticatedRequest, res) => {
     const summary = await dataScopingService.getScopeSummary(userId);
     res.json(summary);
   } catch (error) {
-    console.error("[Governance] Error fetching scope summary:", error);
+
     res.status(500).json({ error: "Failed to fetch scope summary" });
   }
-});
+}) as unknown as RequestHandler);
 
 // GET /api/admin/governance/scoping/user/:userId
-router.get("/scoping/user/:userId", async (req: AuthenticatedRequest, res) => {
+router.get("/scoping/user/:userId", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.json({ enabled: false });
   }
@@ -586,17 +586,17 @@ router.get("/scoping/user/:userId", async (req: AuthenticatedRequest, res) => {
     const summary = await dataScopingService.getScopeSummary(req.params.userId);
     res.json(summary);
   } catch (error) {
-    console.error("[Governance] Error fetching user scope:", error);
+
     res.status(500).json({ error: "Failed to fetch user scope" });
   }
-});
+}) as unknown as RequestHandler);
 
 // ============================================================================
 // COMPLIANCE EXPORT ROUTES
 // ============================================================================
 
 // POST /api/admin/governance/compliance/gdpr-export
-router.post("/compliance/gdpr-export", async (req: AuthenticatedRequest, res) => {
+router.post("/compliance/gdpr-export", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -627,13 +627,13 @@ router.post("/compliance/gdpr-export", async (req: AuthenticatedRequest, res) =>
 
     res.json({ export: exportRequest });
   } catch (error) {
-    console.error("[Governance] Error creating GDPR export:", error);
+
     res.status(500).json({ error: "Failed to create GDPR export" });
   }
-});
+}) as unknown as RequestHandler);
 
 // POST /api/admin/governance/compliance/audit-report
-router.post("/compliance/audit-report", async (req: AuthenticatedRequest, res) => {
+router.post("/compliance/audit-report", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -665,13 +665,13 @@ router.post("/compliance/audit-report", async (req: AuthenticatedRequest, res) =
 
     res.json({ export: exportRequest });
   } catch (error) {
-    console.error("[Governance] Error creating audit report:", error);
+
     res.status(500).json({ error: "Failed to create audit report" });
   }
-});
+}) as unknown as RequestHandler);
 
 // POST /api/admin/governance/compliance/permissions-report
-router.post("/compliance/permissions-report", async (req: AuthenticatedRequest, res) => {
+router.post("/compliance/permissions-report", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -695,13 +695,13 @@ router.post("/compliance/permissions-report", async (req: AuthenticatedRequest, 
 
     res.json({ export: exportRequest });
   } catch (error) {
-    console.error("[Governance] Error creating permissions report:", error);
+
     res.status(500).json({ error: "Failed to create permissions report" });
   }
-});
+}) as unknown as RequestHandler);
 
 // GET /api/admin/governance/compliance/download/:exportId
-router.get("/compliance/download/:exportId", async (req: AuthenticatedRequest, res) => {
+router.get("/compliance/download/:exportId", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -721,17 +721,17 @@ router.get("/compliance/download/:exportId", async (req: AuthenticatedRequest, r
 
     res.download(filePath, `${req.params.exportId}.json`);
   } catch (error) {
-    console.error("[Governance] Error downloading export:", error);
+
     res.status(500).json({ error: "Failed to download export" });
   }
-});
+}) as unknown as RequestHandler);
 
 // ============================================================================
 // SECURITY AUDIT ROUTES
 // ============================================================================
 
 // POST /api/admin/governance/audit/verify-integrity
-router.post("/audit/verify-integrity", async (req: AuthenticatedRequest, res) => {
+router.post("/audit/verify-integrity", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -748,13 +748,13 @@ router.post("/audit/verify-integrity", async (req: AuthenticatedRequest, res) =>
     const result = await securityLogger.verifyChainIntegrity(fromDate, toDate);
     res.json(result);
   } catch (error) {
-    console.error("[Governance] Error verifying integrity:", error);
+
     res.status(500).json({ error: "Failed to verify integrity" });
   }
-});
+}) as unknown as RequestHandler);
 
 // POST /api/admin/governance/audit/flush
-router.post("/audit/flush", async (req: AuthenticatedRequest, res) => {
+router.post("/audit/flush", (async (req: AuthenticatedRequest, res) => {
   if (!isEnabled()) {
     return res.status(400).json({ error: "Governance not enabled" });
   }
@@ -769,11 +769,11 @@ router.post("/audit/flush", async (req: AuthenticatedRequest, res) => {
     await securityLogger.flush();
     res.json({ success: true, message: "Audit events flushed to database" });
   } catch (error) {
-    console.error("[Governance] Error flushing audit events:", error);
+
     res.status(500).json({ error: "Failed to flush audit events" });
   }
-});
+}) as unknown as RequestHandler);
 
 export { router as governanceRoutes };
 
-console.log("[Governance] Dashboard routes loaded");
+

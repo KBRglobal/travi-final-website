@@ -14,7 +14,6 @@ export function registerChatRoutes(app: Express): void {
       const conversations = await chatStorage.getAllConversations();
       res.json(conversations);
     } catch (error) {
-      console.error("Error fetching conversations:", error);
       res.status(500).json({ error: "Failed to fetch conversations" });
     }
   });
@@ -30,7 +29,6 @@ export function registerChatRoutes(app: Express): void {
       const messages = await chatStorage.getMessagesByConversation(id);
       res.json({ ...conversation, messages });
     } catch (error) {
-      console.error("Error fetching conversation:", error);
       res.status(500).json({ error: "Failed to fetch conversation" });
     }
   });
@@ -42,7 +40,6 @@ export function registerChatRoutes(app: Express): void {
       const conversation = await chatStorage.createConversation(title || "New Chat");
       res.status(201).json(conversation);
     } catch (error) {
-      console.error("Error creating conversation:", error);
       res.status(500).json({ error: "Failed to create conversation" });
     }
   });
@@ -54,7 +51,6 @@ export function registerChatRoutes(app: Express): void {
       await chatStorage.deleteConversation(id);
       res.status(204).send();
     } catch (error) {
-      console.error("Error deleting conversation:", error);
       res.status(500).json({ error: "Failed to delete conversation" });
     }
   });
@@ -70,7 +66,7 @@ export function registerChatRoutes(app: Express): void {
 
       // Get conversation history for context
       const messages = await chatStorage.getMessagesByConversation(conversationId);
-      const chatMessages = messages.map((m) => ({
+      const chatMessages = messages.map(m => ({
         role: m.role as "user" | "assistant",
         content: m.content,
       }));
@@ -105,7 +101,6 @@ export function registerChatRoutes(app: Express): void {
       res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
       res.end();
     } catch (error) {
-      console.error("Error sending message:", error);
       // Check if headers already sent (SSE streaming started)
       if (res.headersSent) {
         res.write(`data: ${JSON.stringify({ error: "Failed to send message" })}\n\n`);
@@ -116,4 +111,3 @@ export function registerChatRoutes(app: Express): void {
     }
   });
 }
-

@@ -87,7 +87,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
   };
 
   const renderItemsEditor = () => {
-    const data = localSection.data as { items?: unknown[] } || {};
+    const data = (localSection.data as { items?: unknown[] }) || {};
     const items = (data.items || []) as Record<string, unknown>[];
 
     switch (section.sectionType) {
@@ -115,7 +115,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                         <Label className="text-xs">Question</Label>
                         <Input
                           value={(item.question as string) || ""}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newItems = [...items];
                             newItems[index] = { ...item, question: e.target.value };
                             handleDataChange(newItems);
@@ -128,7 +128,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                         <Label className="text-xs">Answer</Label>
                         <Textarea
                           value={(item.answer as string) || ""}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newItems = [...items];
                             newItems[index] = { ...item, answer: e.target.value };
                             handleDataChange(newItems);
@@ -162,7 +162,9 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleDataChange([...items, { name: "", role: "", contents: "", image: "" }])}
+                onClick={() =>
+                  handleDataChange([...items, { name: "", role: "", contents: "", image: "" }])
+                }
                 data-testid="button-add-testimonial"
               >
                 <Plus className="h-4 w-4 mr-1" />
@@ -176,7 +178,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                     <div className="flex-1 space-y-3">
                       <Input
                         value={(item.name as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, name: e.target.value };
                           handleDataChange(newItems);
@@ -186,7 +188,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       />
                       <Input
                         value={(item.role as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, role: e.target.value };
                           handleDataChange(newItems);
@@ -196,7 +198,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       />
                       <Textarea
                         value={(item.contents as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, contents: e.target.value };
                           handleDataChange(newItems);
@@ -207,7 +209,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       />
                       <Input
                         value={(item.image as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, image: e.target.value };
                           handleDataChange(newItems);
@@ -254,7 +256,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       <div className="grid grid-cols-2 gap-2">
                         <Input
                           value={(item.value as string) || ""}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newItems = [...items];
                             newItems[index] = { ...item, value: e.target.value };
                             handleDataChange(newItems);
@@ -264,7 +266,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                         />
                         <Input
                           value={(item.suffix as string) || ""}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newItems = [...items];
                             newItems[index] = { ...item, suffix: e.target.value };
                             handleDataChange(newItems);
@@ -275,7 +277,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       </div>
                       <Input
                         value={(item.label as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, label: e.target.value };
                           handleDataChange(newItems);
@@ -308,7 +310,9 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleDataChange([...items, { icon: "check", title: "", description: "" }])}
+                onClick={() =>
+                  handleDataChange([...items, { icon: "check", title: "", description: "" }])
+                }
                 data-testid="button-add-feature"
               >
                 <Plus className="h-4 w-4 mr-1" />
@@ -322,7 +326,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                     <div className="flex-1 space-y-3">
                       <Select
                         value={(item.icon as string) || "check"}
-                        onValueChange={(value) => {
+                        onValueChange={value => {
                           const newItems = [...items];
                           newItems[index] = { ...item, icon: value };
                           handleDataChange(newItems);
@@ -332,7 +336,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {ICON_OPTIONS.map((opt) => (
+                          {ICON_OPTIONS.map(opt => (
                             <SelectItem key={opt.value} value={opt.value}>
                               {opt.label}
                             </SelectItem>
@@ -341,7 +345,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       </Select>
                       <Input
                         value={(item.title as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, title: e.target.value };
                           handleDataChange(newItems);
@@ -351,7 +355,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                       />
                       <Textarea
                         value={(item.description as string) || ""}
-                        onChange={(e) => {
+                        onChange={e => {
                           const newItems = [...items];
                           newItems[index] = { ...item, description: e.target.value };
                           handleDataChange(newItems);
@@ -399,8 +403,12 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
         <div className="p-4 space-y-6">
           <Tabs defaultValue="contents">
             <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="contents" data-testid="tab-trigger-contents">Content</TabsTrigger>
-              <TabsTrigger value="hebrew" data-testid="tab-trigger-hebrew">Hebrew</TabsTrigger>
+              <TabsTrigger value="contents" data-testid="tab-trigger-contents">
+                Content
+              </TabsTrigger>
+              <TabsTrigger value="hebrew" data-testid="tab-trigger-hebrew">
+                Hebrew
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="contents" className="space-y-4 pt-4">
@@ -409,7 +417,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="title"
                   value={localSection.title || ""}
-                  onChange={(e) => handleChange("title", e.target.value)}
+                  onChange={e => handleChange("title", e.target.value)}
                   placeholder="Enter title"
                   data-testid="input-block-title"
                 />
@@ -420,7 +428,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="subtitle"
                   value={localSection.subtitle || ""}
-                  onChange={(e) => handleChange("subtitle", e.target.value)}
+                  onChange={e => handleChange("subtitle", e.target.value)}
                   placeholder="Enter subtitle"
                   data-testid="input-block-subtitle"
                 />
@@ -431,7 +439,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Textarea
                   id="description"
                   value={localSection.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
+                  onChange={e => handleChange("description", e.target.value)}
                   placeholder="Enter description"
                   rows={3}
                   data-testid="input-block-description"
@@ -445,7 +453,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="buttonText"
                   value={localSection.buttonText || ""}
-                  onChange={(e) => handleChange("buttonText", e.target.value)}
+                  onChange={e => handleChange("buttonText", e.target.value)}
                   placeholder="e.g., Learn More"
                   data-testid="input-block-button-text"
                 />
@@ -456,7 +464,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="buttonLink"
                   value={localSection.buttonLink || ""}
-                  onChange={(e) => handleChange("buttonLink", e.target.value)}
+                  onChange={e => handleChange("buttonLink", e.target.value)}
                   placeholder="e.g., /contact"
                   data-testid="input-block-button-link"
                 />
@@ -469,8 +477,8 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="titleHe"
                   value={localSection.titleHe || ""}
-                  onChange={(e) => handleChange("titleHe", e.target.value)}
-                  placeholder="הכנס כותרת"
+                  onChange={e => handleChange("titleHe", e.target.value)}
+                  placeholder="Enter title"
                   dir="rtl"
                   data-testid="input-block-title-he"
                 />
@@ -481,8 +489,8 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="subtitleHe"
                   value={localSection.subtitleHe || ""}
-                  onChange={(e) => handleChange("subtitleHe", e.target.value)}
-                  placeholder="הכנס כותרת משנה"
+                  onChange={e => handleChange("subtitleHe", e.target.value)}
+                  placeholder="Enter subtitle"
                   dir="rtl"
                   data-testid="input-block-subtitle-he"
                 />
@@ -493,8 +501,8 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Textarea
                   id="descriptionHe"
                   value={localSection.descriptionHe || ""}
-                  onChange={(e) => handleChange("descriptionHe", e.target.value)}
-                  placeholder="הכנס תיאור"
+                  onChange={e => handleChange("descriptionHe", e.target.value)}
+                  placeholder="Enter description"
                   rows={3}
                   dir="rtl"
                   data-testid="input-block-description-he"
@@ -508,8 +516,8 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="buttonTextHe"
                   value={localSection.buttonTextHe || ""}
-                  onChange={(e) => handleChange("buttonTextHe", e.target.value)}
-                  placeholder="טקסט הכפתור"
+                  onChange={e => handleChange("buttonTextHe", e.target.value)}
+                  placeholder="Button text"
                   dir="rtl"
                   data-testid="input-block-button-text-he"
                 />
@@ -523,7 +531,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
             <Label>Background Image</Label>
             <Input
               value={localSection.backgroundImage || ""}
-              onChange={(e) => handleChange("backgroundImage", e.target.value)}
+              onChange={e => handleChange("backgroundImage", e.target.value)}
               placeholder="https://example.com/image.jpg"
               data-testid="input-block-bg-image"
             />
@@ -538,7 +546,9 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
             )}
           </div>
 
-          {(section.sectionType === "gallery" || section.sectionType === "intro_text" || section.sectionType === "text_image") && (
+          {(section.sectionType === "gallery" ||
+            section.sectionType === "intro_text" ||
+            section.sectionType === "text_image") && (
             <>
               <Separator />
               <div className="space-y-4">
@@ -549,7 +559,10 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 {localSection.images?.length > 0 ? (
                   <div className="grid grid-cols-2 gap-2">
                     {localSection.images.map((img, index) => (
-                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
+                      <div
+                        key={index}
+                        className="relative aspect-square rounded-lg overflow-hidden bg-muted group"
+                      >
                         <img
                           src={img}
                           alt={`Gallery ${index + 1}`}
@@ -585,7 +598,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
                 <Input
                   id="videoUrl"
                   value={localSection.backgroundVideo || ""}
-                  onChange={(e) => handleChange("backgroundVideo", e.target.value)}
+                  onChange={e => handleChange("backgroundVideo", e.target.value)}
                   placeholder="https://example.com/video.mp4"
                   data-testid="input-block-video-url"
                 />
@@ -604,7 +617,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
               <Switch
                 id="isVisible"
                 checked={localSection.isVisible}
-                onCheckedChange={(checked) => handleChange("isVisible", checked)}
+                onCheckedChange={checked => handleChange("isVisible", checked)}
                 data-testid="switch-block-visible"
               />
             </div>
@@ -613,7 +626,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
               <Switch
                 id="showOnMobile"
                 checked={localSection.showOnMobile}
-                onCheckedChange={(checked) => handleChange("showOnMobile", checked)}
+                onCheckedChange={checked => handleChange("showOnMobile", checked)}
                 data-testid="switch-block-mobile"
               />
             </div>
@@ -622,7 +635,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
               <Switch
                 id="showOnDesktop"
                 checked={localSection.showOnDesktop}
-                onCheckedChange={(checked) => handleChange("showOnDesktop", checked)}
+                onCheckedChange={checked => handleChange("showOnDesktop", checked)}
                 data-testid="switch-block-desktop"
               />
             </div>
@@ -634,13 +647,13 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
             <Label>Animation</Label>
             <Select
               value={localSection.animation || "none"}
-              onValueChange={(value) => handleChange("animation", value)}
+              onValueChange={value => handleChange("animation", value)}
             >
               <SelectTrigger data-testid="select-block-animation">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {ANIMATION_OPTIONS.map((opt) => (
+                {ANIMATION_OPTIONS.map(opt => (
                   <SelectItem key={opt.value} value={opt.value}>
                     {opt.label}
                   </SelectItem>
@@ -654,7 +667,7 @@ export function BlockSettings({ section, onUpdate, onClose }: BlockSettingsProps
             <Input
               id="backgroundColor"
               value={localSection.backgroundColor || ""}
-              onChange={(e) => handleChange("backgroundColor", e.target.value)}
+              onChange={e => handleChange("backgroundColor", e.target.value)}
               placeholder="e.g., #f5f5f5"
               data-testid="input-block-bg-color"
             />
@@ -679,10 +692,10 @@ function ImageInputDialog({ onAdd }: { onAdd: (url: string) => void }) {
     <div className="flex items-center gap-2">
       <Input
         value={url}
-        onChange={(e) => setUrl(e.target.value)}
+        onChange={e => setUrl(e.target.value)}
         placeholder="Image URL"
         className="w-40"
-        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+        onKeyDown={e => e.key === "Enter" && handleAdd()}
         data-testid="input-add-image-url"
       />
       <Button variant="outline" size="sm" onClick={handleAdd} data-testid="button-add-image">

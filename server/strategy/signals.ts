@@ -8,16 +8,12 @@ import {
   SignalSource,
   ContentPriorityContext,
   DEFAULT_STRATEGY_WEIGHTS,
-} from './types';
+} from "./types";
 
 // Signal collection timeout
 const SIGNAL_TIMEOUT_MS = 5000;
 
-async function withTimeout<T>(
-  promise: Promise<T>,
-  ms: number,
-  fallback: T
-): Promise<T> {
+async function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
   return Promise.race([
     promise,
     new Promise<T>(resolve => setTimeout(() => resolve(fallback), ms)),
@@ -30,25 +26,21 @@ export interface SignalCollector {
 }
 
 export const contentHealthCollector: SignalCollector = {
-  source: 'content_health',
+  source: "content_health",
 
   async collect(contentId: string): Promise<PrioritySignal[]> {
     const signals: PrioritySignal[] = [];
 
     try {
       // Dynamic import to avoid circular dependencies
-      const { scoreContent } = await import('../content-health') as any;
-      const healthScore = await withTimeout(
-        scoreContent(contentId),
-        SIGNAL_TIMEOUT_MS,
-        null
-      );
+      const { scoreContent } = (await import("../content-health")) as any;
+      const healthScore = await withTimeout(scoreContent(contentId), SIGNAL_TIMEOUT_MS, null);
 
       if (healthScore) {
         // Overall health signal
         signals.push({
-          source: 'content_health',
-          signalType: 'overall_health',
+          source: "content_health",
+          signalType: "overall_health",
           value: healthScore.overallScore,
           weight: DEFAULT_STRATEGY_WEIGHTS.contentHealth,
           contributionScore: 0,
@@ -58,7 +50,7 @@ export const contentHealthCollector: SignalCollector = {
         // Individual health signals
         for (const signal of healthScore.signals) {
           signals.push({
-            source: 'content_health',
+            source: "content_health",
             signalType: signal.type,
             value: signal.score,
             weight: signal.weight / 100,
@@ -67,22 +59,20 @@ export const contentHealthCollector: SignalCollector = {
           });
         }
       }
-    } catch (error) {
-      console.error('[Strategy] Content health signal error:', error);
-    }
+    } catch (error) {}
 
     return signals;
   },
 };
 
 export const revenueIntelCollector: SignalCollector = {
-  source: 'revenue_intel',
+  source: "revenue_intel",
 
   async collect(contentId: string): Promise<PrioritySignal[]> {
     const signals: PrioritySignal[] = [];
 
     try {
-      const { calculateContentValue } = await import('../revenue-intel');
+      const { calculateContentValue } = await import("../revenue-intel");
       const valueScore = await withTimeout(
         calculateContentValue(contentId),
         SIGNAL_TIMEOUT_MS,
@@ -91,8 +81,8 @@ export const revenueIntelCollector: SignalCollector = {
 
       if (valueScore) {
         signals.push({
-          source: 'revenue_intel',
-          signalType: 'total_revenue',
+          source: "revenue_intel",
+          signalType: "total_revenue",
           value: Math.min(100, valueScore.totalRevenue / 10),
           weight: DEFAULT_STRATEGY_WEIGHTS.revenueIntel * 0.4,
           contributionScore: 0,
@@ -100,8 +90,8 @@ export const revenueIntelCollector: SignalCollector = {
         });
 
         signals.push({
-          source: 'revenue_intel',
-          signalType: 'roi_score',
+          source: "revenue_intel",
+          signalType: "roi_score",
           value: valueScore.roiScore,
           weight: DEFAULT_STRATEGY_WEIGHTS.revenueIntel * 0.3,
           contributionScore: 0,
@@ -109,47 +99,41 @@ export const revenueIntelCollector: SignalCollector = {
         });
 
         signals.push({
-          source: 'revenue_intel',
-          signalType: 'value_per_view',
+          source: "revenue_intel",
+          signalType: "value_per_view",
           value: Math.min(100, valueScore.valuePerView * 100),
           weight: DEFAULT_STRATEGY_WEIGHTS.revenueIntel * 0.3,
           contributionScore: 0,
         });
       }
-    } catch (error) {
-      console.error('[Strategy] Revenue intel signal error:', error);
-    }
+    } catch (error) {}
 
     return signals;
   },
 };
 
 export const linkGraphCollector: SignalCollector = {
-  source: 'link_graph',
+  source: "link_graph",
 
   async collect(contentId: string): Promise<PrioritySignal[]> {
     const signals: PrioritySignal[] = [];
 
     try {
-      const { getContentLinkStats } = await import('../link-graph');
-      const linkStats = await withTimeout(
-        getContentLinkStats(contentId),
-        SIGNAL_TIMEOUT_MS,
-        null
-      );
+      const { getContentLinkStats } = await import("../link-graph");
+      const linkStats = await withTimeout(getContentLinkStats(contentId), SIGNAL_TIMEOUT_MS, null);
 
       if (linkStats) {
         signals.push({
-          source: 'link_graph',
-          signalType: 'authority_score',
+          source: "link_graph",
+          signalType: "authority_score",
           value: linkStats.authorityScore,
           weight: DEFAULT_STRATEGY_WEIGHTS.linkGraph * 0.4,
           contributionScore: 0,
         });
 
         signals.push({
-          source: 'link_graph',
-          signalType: 'inbound_links',
+          source: "link_graph",
+          signalType: "inbound_links",
           value: Math.min(100, linkStats.inboundLinks * 10),
           weight: DEFAULT_STRATEGY_WEIGHTS.linkGraph * 0.3,
           contributionScore: 0,
@@ -157,24 +141,22 @@ export const linkGraphCollector: SignalCollector = {
         });
 
         signals.push({
-          source: 'link_graph',
-          signalType: 'orphan_status',
+          source: "link_graph",
+          signalType: "orphan_status",
           value: linkStats.isOrphan ? 0 : 100,
           weight: DEFAULT_STRATEGY_WEIGHTS.linkGraph * 0.3,
           contributionScore: 0,
           data: { isOrphan: linkStats.isOrphan },
         });
       }
-    } catch (error) {
-      console.error('[Strategy] Link graph signal error:', error);
-    }
+    } catch (error) {}
 
     return signals;
   },
 };
 
 export const searchIntelCollector: SignalCollector = {
-  source: 'search_intel',
+  source: "search_intel",
 
   async collect(contentId: string): Promise<PrioritySignal[]> {
     const signals: PrioritySignal[] = [];
@@ -182,15 +164,11 @@ export const searchIntelCollector: SignalCollector = {
     // Search intel would come from GSC integration or internal search
     // Simplified: use metadata-based signals
     try {
-      const { db } = await import('../db');
-      const { contents } = await import('@shared/schema');
-      const { eq } = await import('drizzle-orm');
+      const { db } = await import("../db");
+      const { contents } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
 
-      const [content] = await db
-        .select()
-        .from(contents)
-        .where(eq(contents.id, contentId))
-        .limit(1);
+      const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
       if (content) {
         const metadata = (content as any).metadata || {};
@@ -198,8 +176,8 @@ export const searchIntelCollector: SignalCollector = {
         const clicks = metadata.clicks || 0;
 
         signals.push({
-          source: 'search_intel',
-          signalType: 'impressions',
+          source: "search_intel",
+          signalType: "impressions",
           value: Math.min(100, impressions / 100),
           weight: DEFAULT_STRATEGY_WEIGHTS.searchIntel * 0.4,
           contributionScore: 0,
@@ -207,8 +185,8 @@ export const searchIntelCollector: SignalCollector = {
         });
 
         signals.push({
-          source: 'search_intel',
-          signalType: 'ctr',
+          source: "search_intel",
+          signalType: "ctr",
           value: impressions > 0 ? Math.min(100, (clicks / impressions) * 1000) : 50,
           weight: DEFAULT_STRATEGY_WEIGHTS.searchIntel * 0.3,
           contributionScore: 0,
@@ -220,17 +198,15 @@ export const searchIntelCollector: SignalCollector = {
           : 365;
 
         signals.push({
-          source: 'search_intel',
-          signalType: 'recency',
+          source: "search_intel",
+          signalType: "recency",
           value: Math.max(0, 100 - daysSinceUpdate / 3.65),
           weight: DEFAULT_STRATEGY_WEIGHTS.recency,
           contributionScore: 0,
           data: { daysSinceUpdate: Math.round(daysSinceUpdate) },
         });
       }
-    } catch (error) {
-      console.error('[Strategy] Search intel signal error:', error);
-    }
+    } catch (error) {}
 
     return signals;
   },
@@ -249,7 +225,6 @@ export async function collectAllSignals(contentId: string): Promise<PrioritySign
   const results = await Promise.all(
     allCollectors.map(collector =>
       collector.collect(contentId).catch(err => {
-        console.error(`[Strategy] Collector ${collector.source} failed:`, err);
         return [];
       })
     )

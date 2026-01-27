@@ -10,7 +10,7 @@
  * - Citability (10 points)
  */
 
-import { db } from '../db';
+import { db } from "../db";
 import {
   contents,
   aeoAnswerCapsules,
@@ -19,14 +19,9 @@ import {
   dining,
   districts,
   articles,
-} from '../../shared/schema';
-import { eq, and } from 'drizzle-orm';
-import {
-  SEOEngineConfig,
-  AEOScoreResult,
-  AEOScoreBreakdown,
-  AEORecommendation,
-} from './types';
+} from "../../shared/schema";
+import { eq, and } from "drizzle-orm";
+import { SEOEngineConfig, AEOScoreResult, AEOScoreBreakdown, AEORecommendation } from "./types";
 
 export class AEOScoreEngine {
   private config: SEOEngineConfig;
@@ -115,7 +110,7 @@ export class AEOScoreEngine {
     }
 
     let score = 0;
-    const text = capsule.capsuleText || '';
+    const text = capsule.capsuleText || "";
 
     // Base points for having a capsule (5)
     score += 5;
@@ -163,9 +158,9 @@ export class AEOScoreEngine {
     const blocks = content.blocks || [];
 
     // Has answer in first paragraph (5)
-    const firstParagraph = blocks.find((b: any) => b.type === 'paragraph');
+    const firstParagraph = blocks.find((b: any) => b.type === "paragraph");
     if (firstParagraph) {
-      const text = firstParagraph.content || firstParagraph.data?.text || '';
+      const text = firstParagraph.content || firstParagraph.data?.text || "";
       // Check if starts with direct answer pattern
       if (this.isDirectAnswer(text)) {
         score += 5;
@@ -176,14 +171,14 @@ export class AEOScoreEngine {
 
     // Has lists for featured snippets (5)
     const hasLists = blocks.some(
-      (b: any) => b.type === 'list' || b.type === 'bullet_list' || b.type === 'numbered_list'
+      (b: any) => b.type === "list" || b.type === "bullet_list" || b.type === "numbered_list"
     );
     if (hasLists) {
       score += 5;
     }
 
     // Has tables for data snippets (3)
-    const hasTables = blocks.some((b: any) => b.type === 'table');
+    const hasTables = blocks.some((b: any) => b.type === "table");
     if (hasTables) {
       score += 3;
     }
@@ -194,11 +189,11 @@ export class AEOScoreEngine {
     }
 
     // Clear paragraph structure (4)
-    const paragraphs = blocks.filter((b: any) => b.type === 'paragraph');
+    const paragraphs = blocks.filter((b: any) => b.type === "paragraph");
     const avgLength =
       paragraphs.length > 0
         ? paragraphs.reduce((sum: number, p: any) => {
-            const text = p.content || p.data?.text || '';
+            const text = p.content || p.data?.text || "";
             return sum + text.length;
           }, 0) / paragraphs.length
         : 0;
@@ -225,37 +220,37 @@ export class AEOScoreEngine {
     }
 
     // Has @context and @graph (4)
-    if (seoSchema['@context'] && seoSchema['@graph']) {
+    if (seoSchema["@context"] && seoSchema["@graph"]) {
       score += 4;
     }
 
-    const graph = seoSchema['@graph'] || [];
+    const graph = seoSchema["@graph"] || [];
 
     // Has WebPage schema (3)
-    if (graph.some((n: any) => n['@type'] === 'WebPage')) {
+    if (graph.some((n: any) => n["@type"] === "WebPage")) {
       score += 3;
     }
 
     // Has type-specific schema (4)
     const typeSchemas = [
-      'TouristAttraction',
-      'Hotel',
-      'Restaurant',
-      'Event',
-      'Article',
-      'TouristDestination',
+      "TouristAttraction",
+      "Hotel",
+      "Restaurant",
+      "Event",
+      "Article",
+      "TouristDestination",
     ];
-    if (graph.some((n: any) => typeSchemas.includes(n['@type']))) {
+    if (graph.some((n: any) => typeSchemas.includes(n["@type"]))) {
       score += 4;
     }
 
     // Has FAQPage schema (4)
-    if (graph.some((n: any) => n['@type'] === 'FAQPage')) {
+    if (graph.some((n: any) => n["@type"] === "FAQPage")) {
       score += 4;
     }
 
     // Has Breadcrumb schema (2)
-    if (graph.some((n: any) => n['@type'] === 'BreadcrumbList')) {
+    if (graph.some((n: any) => n["@type"] === "BreadcrumbList")) {
       score += 2;
     }
 
@@ -277,8 +272,7 @@ export class AEOScoreEngine {
     // Count H2 headings
     const h2s = blocks.filter(
       (b: any) =>
-        (b.type === 'heading' && (b.level === 2 || b.data?.level === 2)) ||
-        b.type === 'h2'
+        (b.type === "heading" && (b.level === 2 || b.data?.level === 2)) || b.type === "h2"
     );
 
     // Optimal is 4-8 H2s (5)
@@ -292,8 +286,8 @@ export class AEOScoreEngine {
 
     // Check if headings are questions (great for AI) (5)
     const questionHeadings = h2s.filter((h: any) => {
-      const text = h.content || h.data?.text || h.text || '';
-      return text.includes('?') || this.isImplicitQuestion(text);
+      const text = h.content || h.data?.text || h.text || "";
+      return text.includes("?") || this.isImplicitQuestion(text);
     });
 
     if (questionHeadings.length >= 3) {
@@ -304,7 +298,7 @@ export class AEOScoreEngine {
 
     // Check heading clarity (not too long, descriptive) (5)
     const clearHeadings = h2s.filter((h: any) => {
-      const text = h.content || h.data?.text || h.text || '';
+      const text = h.content || h.data?.text || h.text || "";
       return text.length >= 10 && text.length <= 60;
     });
 
@@ -374,7 +368,7 @@ export class AEOScoreEngine {
     }
 
     // Is published (not draft) (2)
-    if (content.status === 'published') {
+    if (content.status === "published") {
       score += 2;
     }
 
@@ -398,23 +392,23 @@ export class AEOScoreEngine {
    */
   private async getTypeSpecificData(content: any): Promise<any> {
     switch (content.type) {
-      case 'attraction':
+      case "attraction":
         return db.query.attractions.findFirst({
           where: eq(attractions.contentId, content.id),
         });
-      case 'hotel':
+      case "hotel":
         return db.query.hotels.findFirst({
           where: eq(hotels.contentId, content.id),
         });
-      case 'dining':
+      case "dining":
         return db.query.dining.findFirst({
           where: eq(dining.contentId, content.id),
         });
-      case 'district':
+      case "district":
         return db.query.districts.findFirst({
           where: eq(districts.contentId, content.id),
         });
-      case 'article':
+      case "article":
         return db.query.articles.findFirst({
           where: eq(articles.contentId, content.id),
         });
@@ -440,25 +434,22 @@ export class AEOScoreEngine {
   /**
    * Generate recommendations based on score breakdown
    */
-  private generateRecommendations(
-    breakdown: AEOScoreBreakdown,
-    content: any
-  ): AEORecommendation[] {
+  private generateRecommendations(breakdown: AEOScoreBreakdown, content: any): AEORecommendation[] {
     const recommendations: AEORecommendation[] = [];
 
     // Answer capsule recommendations
     if (breakdown.answerCapsule < 15) {
       recommendations.push({
-        priority: breakdown.answerCapsule === 0 ? 'critical' : 'high',
-        category: 'answerCapsule',
+        priority: breakdown.answerCapsule === 0 ? "critical" : "high",
+        category: "answerCapsule",
         message:
           breakdown.answerCapsule === 0
-            ? 'No answer capsule found'
-            : 'Answer capsule needs improvement',
+            ? "No answer capsule found"
+            : "Answer capsule needs improvement",
         action:
           breakdown.answerCapsule === 0
-            ? 'Generate an answer capsule (40-60 words) that directly answers the main query'
-            : 'Add key facts and differentiator to the answer capsule',
+            ? "Generate an answer capsule (40-60 words) that directly answers the main query"
+            : "Add key facts and differentiator to the answer capsule",
         potentialGain: 25 - breakdown.answerCapsule,
       });
     }
@@ -466,11 +457,11 @@ export class AEOScoreEngine {
     // Snippet readiness recommendations
     if (breakdown.snippetReadiness < 12) {
       recommendations.push({
-        priority: 'high',
-        category: 'snippetReadiness',
-        message: 'Content not optimized for featured snippets',
+        priority: "high",
+        category: "snippetReadiness",
+        message: "Content not optimized for featured snippets",
         action:
-          'Add lists, tables, and ensure the first paragraph directly answers the main question',
+          "Add lists, tables, and ensure the first paragraph directly answers the main question",
         potentialGain: 20 - breakdown.snippetReadiness,
       });
     }
@@ -478,10 +469,10 @@ export class AEOScoreEngine {
     // Schema recommendations
     if (breakdown.schemaCompleteness < 12) {
       recommendations.push({
-        priority: 'medium',
-        category: 'schemaCompleteness',
-        message: 'Schema.org markup is incomplete',
-        action: 'Add FAQPage and Speakable schemas to improve AI extraction',
+        priority: "medium",
+        category: "schemaCompleteness",
+        message: "Schema.org markup is incomplete",
+        action: "Add FAQPage and Speakable schemas to improve AI extraction",
         potentialGain: 20 - breakdown.schemaCompleteness,
       });
     }
@@ -489,9 +480,9 @@ export class AEOScoreEngine {
     // AI headings recommendations
     if (breakdown.aiHeadings < 10) {
       recommendations.push({
-        priority: 'medium',
-        category: 'aiHeadings',
-        message: 'Heading structure not optimized for AI',
+        priority: "medium",
+        category: "aiHeadings",
+        message: "Heading structure not optimized for AI",
         action:
           'Use question-format H2 headings (e.g., "What is...?", "How to...?") for better AI extraction',
         potentialGain: 15 - breakdown.aiHeadings,
@@ -501,11 +492,10 @@ export class AEOScoreEngine {
     // Key facts recommendations
     if (breakdown.keyFactsPresence < 6) {
       recommendations.push({
-        priority: 'medium',
-        category: 'keyFactsPresence',
-        message: 'Missing quick facts and key information',
-        action:
-          'Add a quick info bar with essential facts (price, hours, location, etc.)',
+        priority: "medium",
+        category: "keyFactsPresence",
+        message: "Missing quick facts and key information",
+        action: "Add a quick info bar with essential facts (price, hours, location, etc.)",
         potentialGain: 10 - breakdown.keyFactsPresence,
       });
     }
@@ -513,20 +503,17 @@ export class AEOScoreEngine {
     // Citability recommendations
     if (breakdown.citability < 6) {
       recommendations.push({
-        priority: 'low',
-        category: 'citability',
-        message: 'Content citability can be improved',
-        action:
-          'Ensure content is published, has a primary keyword, and is regularly updated',
+        priority: "low",
+        category: "citability",
+        message: "Content citability can be improved",
+        action: "Ensure content is published, has a primary keyword, and is regularly updated",
         potentialGain: 10 - breakdown.citability,
       });
     }
 
     // Sort by priority
     const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
-    recommendations.sort(
-      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-    );
+    recommendations.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 
     return recommendations;
   }
@@ -543,7 +530,7 @@ export class AEOScoreEngine {
       /^(?:Yes|No)[,.]?\s/i,
     ];
 
-    return directPatterns.some((pattern) => pattern.test(text.trim()));
+    return directPatterns.some(pattern => pattern.test(text.trim()));
   }
 
   /**
@@ -551,24 +538,24 @@ export class AEOScoreEngine {
    */
   private isImplicitQuestion(text: string): boolean {
     const questionWords = [
-      'what',
-      'how',
-      'why',
-      'when',
-      'where',
-      'who',
-      'which',
-      'best',
-      'top',
-      'guide',
-      'tips',
-      'ways',
-      'steps',
-      'everything',
+      "what",
+      "how",
+      "why",
+      "when",
+      "where",
+      "who",
+      "which",
+      "best",
+      "top",
+      "guide",
+      "tips",
+      "ways",
+      "steps",
+      "everything",
     ];
 
     const lowerText = text.toLowerCase();
-    return questionWords.some((word) => lowerText.includes(word));
+    return questionWords.some(word => lowerText.includes(word));
   }
 
   /**
@@ -581,9 +568,7 @@ export class AEOScoreEngine {
       try {
         const result = await this.calculate(contentId);
         results.set(contentId, result);
-      } catch (error) {
-        console.error(`Failed to calculate AEO score for ${contentId}:`, error);
-      }
+      } catch (error) {}
     }
 
     return results;

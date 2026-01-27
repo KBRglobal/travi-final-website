@@ -39,11 +39,7 @@ export interface DecayResult {
 export async function calculateDecay(contentId: string): Promise<DecayResult | null> {
   if (!isEnabled()) return null;
 
-  const [content] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, contentId))
-    .limit(1);
+  const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
   if (!content) return null;
 
@@ -162,7 +158,7 @@ export async function getDecayingContent(
 
   const results = await query;
 
-  return results.map((r) => ({
+  return results.map(r => ({
     contentId: r.contentId,
     title: r.title || undefined,
     type: r.type || undefined,
@@ -222,5 +218,3 @@ export async function getContentDecay(contentId: string): Promise<DecayResult | 
     calculatedAt: existing.calculatedAt?.toISOString() || new Date().toISOString(),
   };
 }
-
-console.log("[ContentDecay] Module loaded");

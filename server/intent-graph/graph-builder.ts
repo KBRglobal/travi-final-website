@@ -18,7 +18,7 @@ import type {
   Journey,
   TrafficSignal,
   GraphStats,
-} from './types';
+} from "./types";
 
 // ============================================================================
 // CONFIGURATION
@@ -71,7 +71,7 @@ export class IntentGraphBuilder {
    * Create or get an intent node
    */
   getOrCreateIntentNode(intentType: IntentType, source?: string, keywords?: string[]): IntentNode {
-    const id = `intent:${intentType}:${source || 'direct'}`;
+    const id = `intent:${intentType}:${source || "direct"}`;
 
     let node = this.nodes.get(id) as IntentNode | undefined;
     if (node) {
@@ -81,7 +81,7 @@ export class IntentGraphBuilder {
 
     node = {
       id,
-      type: 'intent',
+      type: "intent",
       intentType,
       source,
       keywords,
@@ -98,7 +98,12 @@ export class IntentGraphBuilder {
   /**
    * Create or get a content node
    */
-  getOrCreateContentNode(contentId: string, contentType: string, slug?: string, title?: string): ContentNode {
+  getOrCreateContentNode(
+    contentId: string,
+    contentType: string,
+    slug?: string,
+    title?: string
+  ): ContentNode {
     const id = `content:${contentId}`;
 
     let node = this.nodes.get(id) as ContentNode | undefined;
@@ -111,7 +116,7 @@ export class IntentGraphBuilder {
 
     node = {
       id,
-      type: 'content',
+      type: "content",
       contentId,
       contentType,
       slug,
@@ -139,7 +144,7 @@ export class IntentGraphBuilder {
 
     node = {
       id,
-      type: 'action',
+      type: "action",
       actionType,
       value,
       createdAt: new Date(),
@@ -154,7 +159,11 @@ export class IntentGraphBuilder {
   /**
    * Create or get an outcome node
    */
-  getOrCreateOutcomeNode(outcomeType: OutcomeType, isPositive: boolean, value?: number): OutcomeNode {
+  getOrCreateOutcomeNode(
+    outcomeType: OutcomeType,
+    isPositive: boolean,
+    value?: number
+  ): OutcomeNode {
     const id = `outcome:${outcomeType}`;
 
     let node = this.nodes.get(id) as OutcomeNode | undefined;
@@ -165,7 +174,7 @@ export class IntentGraphBuilder {
 
     node = {
       id,
-      type: 'outcome',
+      type: "outcome",
       outcomeType,
       isPositive,
       value,
@@ -198,8 +207,8 @@ export class IntentGraphBuilder {
   /**
    * Get all nodes of a specific type
    */
-  getNodesByType(type: GraphNode['type']): GraphNode[] {
-    return Array.from(this.nodes.values()).filter((n) => n.type === type);
+  getNodesByType(type: GraphNode["type"]): GraphNode[] {
+    return Array.from(this.nodes.values()).filter(n => n.type === type);
   }
 
   // ==========================================================================
@@ -209,7 +218,12 @@ export class IntentGraphBuilder {
   /**
    * Create or update an edge between nodes
    */
-  addOrUpdateEdge(sourceId: string, targetId: string, value: number = 1, success: boolean = true): GraphEdge {
+  addOrUpdateEdge(
+    sourceId: string,
+    targetId: string,
+    value: number = 1,
+    success: boolean = true
+  ): GraphEdge {
     const edgeId = `${sourceId}->${targetId}`;
 
     let edge = this.edges.get(edgeId);
@@ -254,14 +268,14 @@ export class IntentGraphBuilder {
    * Get all outgoing edges from a node
    */
   getOutgoingEdges(nodeId: string): GraphEdge[] {
-    return Array.from(this.edges.values()).filter((e) => e.sourceId === nodeId);
+    return Array.from(this.edges.values()).filter(e => e.sourceId === nodeId);
   }
 
   /**
    * Get all incoming edges to a node
    */
   getIncomingEdges(nodeId: string): GraphEdge[] {
-    return Array.from(this.edges.values()).filter((e) => e.targetId === nodeId);
+    return Array.from(this.edges.values()).filter(e => e.targetId === nodeId);
   }
 
   // ==========================================================================
@@ -355,7 +369,7 @@ export class IntentGraphBuilder {
 
       // Create content node if present
       if (signal.contentId) {
-        const contentNode = this.getOrCreateContentNode(signal.contentId, 'article');
+        const contentNode = this.getOrCreateContentNode(signal.contentId, "article");
         this.recordJourneyStep(signal.sessionId, contentNode.id, previousNodeId);
         if (previousNodeId) {
           this.addOrUpdateEdge(previousNodeId, contentNode.id, 1, true);
@@ -375,7 +389,9 @@ export class IntentGraphBuilder {
 
       // Create outcome node and complete journey if present
       if (signal.outcome) {
-        const isPositive = ['signup', 'affiliate_click', 'purchase', 'engagement'].includes(signal.outcome);
+        const isPositive = ["signup", "affiliate_click", "purchase", "engagement"].includes(
+          signal.outcome
+        );
         const outcomeNode = this.getOrCreateOutcomeNode(signal.outcome, isPositive, signal.value);
         this.recordJourneyStep(signal.sessionId, outcomeNode.id, previousNodeId);
         if (previousNodeId) {
@@ -386,11 +402,8 @@ export class IntentGraphBuilder {
 
       // Timeout check
       if (Date.now() - startTime > this.config.updateTimeoutMs) {
-        console.warn('[IntentGraph] Signal processing timeout');
       }
-    } catch (error) {
-      console.error('[IntentGraph] Error processing signal:', error);
-    }
+    } catch (error) {}
   }
 
   /**
@@ -402,7 +415,6 @@ export class IntentGraphBuilder {
 
     for (const signal of signals) {
       if (Date.now() - startTime > this.config.updateTimeoutMs) {
-        console.warn(`[IntentGraph] Batch timeout after ${processed} signals`);
         break;
       }
       this.processSignal(signal);
@@ -430,8 +442,9 @@ export class IntentGraphBuilder {
     }
 
     // Remove oldest 10%
-    const sortedNodes = Array.from(this.nodes.entries())
-      .sort((a, b) => a[1].updatedAt.getTime() - b[1].updatedAt.getTime());
+    const sortedNodes = Array.from(this.nodes.entries()).sort(
+      (a, b) => a[1].updatedAt.getTime() - b[1].updatedAt.getTime()
+    );
 
     const removeCount = Math.max(toRemove.length, Math.floor(this.nodes.size * 0.1));
     for (let i = 0; i < removeCount && i < sortedNodes.length; i++) {
@@ -452,8 +465,7 @@ export class IntentGraphBuilder {
     }
 
     // Also remove oldest 10%
-    const sortedEdges = Array.from(this.edges.entries())
-      .sort((a, b) => a[1].weight - b[1].weight);
+    const sortedEdges = Array.from(this.edges.entries()).sort((a, b) => a[1].weight - b[1].weight);
 
     const removeCount = Math.max(toRemove.length, Math.floor(this.edges.size * 0.1));
     for (let i = 0; i < removeCount && i < sortedEdges.length; i++) {
@@ -465,8 +477,9 @@ export class IntentGraphBuilder {
    * Prune old journeys
    */
   private pruneOldJourneys(): void {
-    const sortedJourneys = Array.from(this.journeys.entries())
-      .sort((a, b) => (a[1].endedAt?.getTime() || 0) - (b[1].endedAt?.getTime() || 0));
+    const sortedJourneys = Array.from(this.journeys.entries()).sort(
+      (a, b) => (a[1].endedAt?.getTime() || 0) - (b[1].endedAt?.getTime() || 0)
+    );
 
     const removeCount = Math.floor(this.journeys.size * 0.2);
     for (let i = 0; i < removeCount && i < sortedJourneys.length; i++) {
@@ -486,19 +499,19 @@ export class IntentGraphBuilder {
     const outcomeCounts = new Map<string, number>();
 
     for (const node of this.nodes.values()) {
-      if (node.type === 'intent') {
+      if (node.type === "intent") {
         const key = (node as IntentNode).intentType;
         intentCounts.set(key, (intentCounts.get(key) || 0) + 1);
-      } else if (node.type === 'outcome') {
+      } else if (node.type === "outcome") {
         const key = (node as OutcomeNode).outcomeType;
         outcomeCounts.set(key, (outcomeCounts.get(key) || 0) + 1);
       }
     }
 
-    const completedJourneys = Array.from(this.journeys.values()).filter((j) => j.isComplete);
+    const completedJourneys = Array.from(this.journeys.values()).filter(j => j.isComplete);
     const totalPathLength = completedJourneys.reduce((sum, j) => sum + j.nodes.length, 0);
-    const conversions = completedJourneys.filter((j) =>
-      j.outcome && ['signup', 'affiliate_click', 'purchase'].includes(j.outcome)
+    const conversions = completedJourneys.filter(
+      j => j.outcome && ["signup", "affiliate_click", "purchase"].includes(j.outcome)
     ).length;
 
     return {

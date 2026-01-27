@@ -26,12 +26,7 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req: Request, res: Response) => {
       try {
-        const {
-          status,
-          limit = "50",
-          offset = "0",
-          endpointId,
-        } = req.query;
+        const { status, limit = "50", offset = "0", endpointId } = req.query;
 
         const limitNum = Math.min(parseInt(limit as string, 10) || 50, 100);
         const offsetNum = parseInt(offset as string, 10) || 0;
@@ -88,7 +83,6 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
           offset: offsetNum,
         });
       } catch (error) {
-        console.error("[ReliableWebhook Admin] Error listing outbox:", error);
         res.status(500).json({ error: "Failed to list outbox items" });
       }
     }
@@ -145,7 +139,6 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
           deliveries,
         });
       } catch (error) {
-        console.error("[ReliableWebhook Admin] Error fetching outbox item:", error);
         res.status(500).json({ error: "Failed to fetch outbox item" });
       }
     }
@@ -191,14 +184,11 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
           .where(eq(webhookOutbox.id, id))
           .returning();
 
-        console.log(`[ReliableWebhook Admin] Manual retry scheduled for ${id}`);
-
         res.json({
           success: true,
           item: updated,
         });
       } catch (error) {
-        console.error("[ReliableWebhook Admin] Error retrying outbox item:", error);
         res.status(500).json({ error: "Failed to retry outbox item" });
       }
     }
@@ -216,7 +206,6 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
         const metrics = await getOutboxMetrics();
         res.json(metrics);
       } catch (error) {
-        console.error("[ReliableWebhook Admin] Error fetching metrics:", error);
         res.status(500).json({ error: "Failed to fetch metrics" });
       }
     }
@@ -235,12 +224,7 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
 
         const [deleted] = await db
           .delete(webhookOutbox)
-          .where(
-            and(
-              eq(webhookOutbox.id, id),
-              sql`${webhookOutbox.status} != 'sending'`
-            )
-          )
+          .where(and(eq(webhookOutbox.id, id), sql`${webhookOutbox.status} != 'sending'`))
           .returning({ id: webhookOutbox.id });
 
         if (!deleted) {
@@ -251,7 +235,6 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
 
         res.json({ success: true, deleted: id });
       } catch (error) {
-        console.error("[ReliableWebhook Admin] Error deleting outbox item:", error);
         res.status(500).json({ error: "Failed to delete outbox item" });
       }
     }
@@ -267,9 +250,7 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
     async (req: Request, res: Response) => {
       try {
         const { olderThanDays = 7 } = req.body;
-        const cutoffDate = new Date(
-          Date.now() - olderThanDays * 24 * 60 * 60 * 1000
-        );
+        const cutoffDate = new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1000);
 
         const result = await db
           .delete(webhookOutbox)
@@ -287,11 +268,8 @@ export function registerReliableWebhookAdminRoutes(app: Express): void {
           olderThanDays,
         });
       } catch (error) {
-        console.error("[ReliableWebhook Admin] Error cleaning up outbox:", error);
         res.status(500).json({ error: "Failed to cleanup outbox" });
       }
     }
   );
-
-  console.log("[ReliableWebhook] Admin routes registered");
 }

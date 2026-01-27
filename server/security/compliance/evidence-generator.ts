@@ -123,7 +123,8 @@ const SOC2_CONTROLS: ControlMapping[] = [
     framework: "SOC2",
     controlId: "CC6.1",
     controlName: "Logical and Physical Access Controls",
-    description: "The entity implements logical access security software, infrastructure, and architectures",
+    description:
+      "The entity implements logical access security software, infrastructure, and architectures",
     evidenceRequirements: [
       {
         type: "access_log",
@@ -392,7 +393,7 @@ class EvidenceGenerator {
     attesterRole: AdminRole,
     statement: string
   ): Attestation {
-    const evidence = this.evidenceStore.find((e) => e.id === evidenceId);
+    const evidence = this.evidenceStore.find(e => e.id === evidenceId);
     if (!evidence) {
       throw new Error(`Evidence ${evidenceId} not found`);
     }
@@ -434,7 +435,7 @@ class EvidenceGenerator {
       let status: ControlStatus["status"] = "met";
 
       for (const req of requirements) {
-        const typeEvidence = evidence.filter((e) => e.evidenceType === req.type);
+        const typeEvidence = evidence.filter(e => e.evidenceType === req.type);
 
         if (typeEvidence.length < req.minRecords) {
           issues.push(
@@ -473,14 +474,14 @@ class EvidenceGenerator {
           controlId: control.controlId,
           severity: status === "not_met" ? "high" : "medium",
           description: issues.join("; "),
-          remediation: `Collect additional ${control.evidenceRequirements.map((r) => r.type).join(", ")} evidence`,
+          remediation: `Collect additional ${control.evidenceRequirements.map(r => r.type).join(", ")} evidence`,
         });
       }
     }
 
     // Calculate overall status
-    const notMetCount = controlStatuses.filter((c) => c.status === "not_met").length;
-    const partialCount = controlStatuses.filter((c) => c.status === "partial").length;
+    const notMetCount = controlStatuses.filter(c => c.status === "not_met").length;
+    const partialCount = controlStatuses.filter(c => c.status === "partial").length;
 
     let overallStatus: ComplianceReport["overallStatus"] = "compliant";
     if (notMetCount > 0) {
@@ -624,7 +625,7 @@ class EvidenceGenerator {
     controlId: string
   ): ControlMapping | undefined {
     const controls = this.controlMappings.get(framework) || [];
-    return controls.find((c) => c.controlId === controlId);
+    return controls.find(c => c.controlId === controlId);
   }
 
   private getEvidenceForControl(
@@ -634,7 +635,7 @@ class EvidenceGenerator {
     periodEnd: Date
   ): ComplianceEvidence[] {
     return this.evidenceStore.filter(
-      (e) =>
+      e =>
         e.framework === framework &&
         e.controlId === controlId &&
         e.periodStart >= periodStart &&
@@ -648,10 +649,7 @@ class EvidenceGenerator {
     periodEnd: Date
   ): ComplianceEvidence[] {
     return this.evidenceStore.filter(
-      (e) =>
-        e.framework === framework &&
-        e.periodStart >= periodStart &&
-        e.periodEnd <= periodEnd
+      e => e.framework === framework && e.periodStart >= periodStart && e.periodEnd <= periodEnd
     );
   }
 
@@ -660,11 +658,7 @@ class EvidenceGenerator {
     return crypto.createHash("sha256").update(json).digest("hex");
   }
 
-  private generateSignature(
-    attesterId: string,
-    statement: string,
-    evidenceHash: string
-  ): string {
+  private generateSignature(attesterId: string, statement: string, evidenceHash: string): string {
     const data = `${attesterId}:${statement}:${evidenceHash}:${Date.now()}`;
     return crypto.createHash("sha256").update(data).digest("hex");
   }
@@ -742,28 +736,24 @@ class EvidenceGenerator {
   private generateRecommendations(gaps: ComplianceGap[]): string[] {
     const recommendations: string[] = [];
 
-    const criticalGaps = gaps.filter((g) => g.severity === "critical");
-    const highGaps = gaps.filter((g) => g.severity === "high");
+    const criticalGaps = gaps.filter(g => g.severity === "critical");
+    const highGaps = gaps.filter(g => g.severity === "high");
 
     if (criticalGaps.length > 0) {
-      recommendations.push(
-        `Address ${criticalGaps.length} critical compliance gaps immediately`
-      );
+      recommendations.push(`Address ${criticalGaps.length} critical compliance gaps immediately`);
     }
 
     if (highGaps.length > 0) {
-      recommendations.push(
-        `Prioritize ${highGaps.length} high-severity gaps within 30 days`
-      );
+      recommendations.push(`Prioritize ${highGaps.length} high-severity gaps within 30 days`);
     }
 
     // Add specific recommendations based on gap types
-    const accessGaps = gaps.filter((g) => g.controlId.includes("6") || g.controlId.includes("9"));
+    const accessGaps = gaps.filter(g => g.controlId.includes("6") || g.controlId.includes("9"));
     if (accessGaps.length > 0) {
       recommendations.push("Enhance access control logging and monitoring");
     }
 
-    const changeGaps = gaps.filter((g) => g.controlId.includes("8"));
+    const changeGaps = gaps.filter(g => g.controlId.includes("8"));
     if (changeGaps.length > 0) {
       recommendations.push("Implement formal change management process");
     }
@@ -838,5 +828,3 @@ export function exportEvidencePackage(
 export function verifyEvidenceChain(): { valid: boolean; brokenLinks: string[] } {
   return evidenceGenerator.verifyChainIntegrity();
 }
-
-console.log("[EvidenceGenerator] Module loaded");

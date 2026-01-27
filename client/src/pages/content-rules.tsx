@@ -25,7 +25,7 @@ import {
   Lightbulb,
   Link2,
   Search,
-  Shield
+  Shield,
 } from "lucide-react";
 
 interface ContentRules {
@@ -66,7 +66,7 @@ interface ContentRules {
   contentType: string | null;
 }
 
-const DEFAULT_RULES: Omit<ContentRules, 'id'> = DEFAULT_CONTENT_RULES;
+const DEFAULT_RULES: Omit<ContentRules, "id"> = DEFAULT_CONTENT_RULES;
 
 function RuleInput({
   label,
@@ -74,7 +74,7 @@ function RuleInput({
   onChange,
   min = 0,
   max = 10000,
-  description
+  description,
 }: {
   label: string;
   value: number;
@@ -89,14 +89,12 @@ function RuleInput({
       <Input
         type="number"
         value={value}
-        onChange={(e) => onChange(parseInt(e.target.value) || 0)}
+        onChange={e => onChange(parseInt(e.target.value) || 0)}
         min={min}
         max={max}
         className="w-full"
       />
-      {description && (
-        <p className="text-xs text-muted-foreground">{description}</p>
-      )}
+      {description && <p className="text-xs text-muted-foreground">{description}</p>}
     </div>
   );
 }
@@ -124,20 +122,20 @@ function RangeInput({
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label className="text-xs text-muted-foreground">מינימום</Label>
+          <Label className="text-xs text-muted-foreground">Minimum</Label>
           <Input
             type="number"
             value={minValue}
-            onChange={(e) => onMinChange(parseInt(e.target.value) || 0)}
+            onChange={e => onMinChange(parseInt(e.target.value) || 0)}
             className="mt-1"
           />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">מקסימום</Label>
+          <Label className="text-xs text-muted-foreground">Maximum</Label>
           <Input
             type="number"
             value={maxValue}
-            onChange={(e) => onMaxChange(parseInt(e.target.value) || 0)}
+            onChange={e => onMaxChange(parseInt(e.target.value) || 0)}
             className="mt-1"
           />
         </div>
@@ -149,7 +147,7 @@ function RangeInput({
 export default function ContentRulesPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [rules, setRules] = useState<Omit<ContentRules, 'id'>>(DEFAULT_RULES);
+  const [rules, setRules] = useState<Omit<ContentRules, "id">>(DEFAULT_RULES);
   const [hasChanges, setHasChanges] = useState(false);
 
   const { data: savedRules, isLoading } = useQuery<ContentRules>({
@@ -165,7 +163,7 @@ export default function ContentRulesPage() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (data: Omit<ContentRules, 'id'>) => {
+    mutationFn: async (data: Omit<ContentRules, "id">) => {
       const res = await fetch("/api/contents-rules", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -177,21 +175,24 @@ export default function ContentRulesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/contents-rules"] });
       toast({
-        title: "חוקים נשמרו בהצלחה",
-        description: "החוקים החדשים יחולו על כל יצירת תוכן חדשה",
+        title: "Rules saved successfully",
+        description: "The new rules will apply to all new content generation",
       });
       setHasChanges(false);
     },
     onError: () => {
       toast({
-        title: "שגיאה בשמירה",
-        description: "לא ניתן לשמור את החוקים",
+        title: "Save error",
+        description: "Unable to save the rules",
         variant: "destructive",
       });
     },
   });
 
-  const updateRule = <K extends keyof Omit<ContentRules, 'id'>>(key: K, value: Omit<ContentRules, 'id'>[K]) => {
+  const updateRule = <K extends keyof Omit<ContentRules, "id">>(
+    key: K,
+    value: Omit<ContentRules, "id">[K]
+  ) => {
     setRules(prev => ({ ...prev, [key]: value }));
     setHasChanges(true);
   };
@@ -203,8 +204,11 @@ export default function ContentRulesPage() {
 
   const calculateEstimatedWordCount = () => {
     const intro = (rules.introMinWords + rules.introMaxWords) / 2;
-    const quickFacts = rules.quickFactsMin * ((rules.quickFactsWordsMin + rules.quickFactsWordsMax) / 2) / rules.quickFactsMin;
-    const mainSections = rules.mainSectionsMin * ((rules.mainSectionWordsMin + rules.mainSectionWordsMax) / 2);
+    const quickFacts =
+      (rules.quickFactsMin * ((rules.quickFactsWordsMin + rules.quickFactsWordsMax) / 2)) /
+      rules.quickFactsMin;
+    const mainSections =
+      rules.mainSectionsMin * ((rules.mainSectionWordsMin + rules.mainSectionWordsMax) / 2);
     const faqs = rules.faqsMin * ((rules.faqAnswerWordsMin + rules.faqAnswerWordsMax) / 2);
     const tips = rules.proTipsMin * ((rules.proTipWordsMin + rules.proTipWordsMax) / 2);
     const conclusion = (rules.conclusionMinWords + rules.conclusionMaxWords) / 2;
@@ -213,33 +217,31 @@ export default function ContentRulesPage() {
   };
 
   if (isLoading) {
-    return <div className="p-8">טוען...</div>;
+    return <div className="p-8">Loading...</div>;
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6 max-w-6xl" dir="rtl">
+    <div className="container mx-auto py-6 space-y-6 max-w-6xl">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Shield className="h-8 w-8 text-primary" />
-            חוקי תוכן - מערכת קשיחה
+            Content Rules - Strict System
           </h1>
-          <p className="text-muted-foreground mt-1">
-            חוקים אלו אינם ניתנים לעקיפה על ידי מנועי AI
-          </p>
+          <p className="text-muted-foreground mt-1">These rules cannot be bypassed by AI engines</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={resetToDefaults}>
-            <RotateCcw className="h-4 w-4 ml-2" />
-            איפוס לברירת מחדל
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Reset to defaults
           </Button>
           <Button
             onClick={() => saveMutation.mutate(rules)}
             disabled={!hasChanges || saveMutation.isPending}
           >
-            <Save className="h-4 w-4 ml-2" />
-            {saveMutation.isPending ? "שומר..." : "שמור חוקים"}
+            <Save className="h-4 w-4 mr-2" />
+            {saveMutation.isPending ? "Saving..." : "Save rules"}
           </Button>
         </div>
       </div>
@@ -252,19 +254,17 @@ export default function ContentRulesPage() {
           ) : (
             <AlertTriangle className="h-4 w-4" />
           )}
-          <AlertTitle>
-            {rules.isActive ? "החוקים פעילים" : "החוקים מושבתים"}
-          </AlertTitle>
+          <AlertTitle>{rules.isActive ? "Rules are active" : "Rules are disabled"}</AlertTitle>
         </div>
         <AlertDescription className="mt-2 flex items-center justify-between">
           <span>
             {rules.isActive
-              ? "כל יצירת תוכן AI תאכוף את החוקים האלו"
-              : "יצירת תוכן לא תאכוף את החוקים - לא מומלץ!"}
+              ? "All AI content generation will enforce these rules"
+              : "Content generation will not enforce rules - not recommended!"}
           </span>
           <Switch
             checked={rules.isActive}
-            onCheckedChange={(checked) => updateRule("isActive", checked)}
+            onCheckedChange={checked => updateRule("isActive", checked)}
           />
         </AlertDescription>
       </Alert>
@@ -274,14 +274,16 @@ export default function ContentRulesPage() {
         <CardContent className="py-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium">אורך משוער למאמר</p>
-              <p className="text-3xl font-bold text-primary">{calculateEstimatedWordCount().toLocaleString()} מילים</p>
+              <p className="text-sm font-medium">Estimated article length</p>
+              <p className="text-3xl font-bold text-primary">
+                {calculateEstimatedWordCount().toLocaleString()} words
+              </p>
             </div>
-            <div className="text-left">
+            <div className="text-right">
               <Badge variant="outline" className="text-lg px-3 py-1">
-                {rules.minWords.toLocaleString()} - {rules.maxWords.toLocaleString()} מילים
+                {rules.minWords.toLocaleString()} - {rules.maxWords.toLocaleString()} words
               </Badge>
-              <p className="text-xs text-muted-foreground mt-1">טווח מותר</p>
+              <p className="text-xs text-muted-foreground mt-1">Allowed range</p>
             </div>
           </div>
         </CardContent>
@@ -292,15 +294,15 @@ export default function ContentRulesPage() {
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="wordcount" className="gap-2">
             <Ruler className="h-4 w-4" />
-            אורך תוכן
+            Content Length
           </TabsTrigger>
           <TabsTrigger value="structure" className="gap-2">
             <ListOrdered className="h-4 w-4" />
-            מבנה
+            Structure
           </TabsTrigger>
           <TabsTrigger value="faq" className="gap-2">
             <HelpCircle className="h-4 w-4" />
-            FAQ & טיפים
+            FAQ & Tips
           </TabsTrigger>
           <TabsTrigger value="seo" className="gap-2">
             <Search className="h-4 w-4" />
@@ -308,7 +310,7 @@ export default function ContentRulesPage() {
           </TabsTrigger>
           <TabsTrigger value="advanced" className="gap-2">
             <Settings className="h-4 w-4" />
-            מתקדם
+            Advanced
           </TabsTrigger>
         </TabsList>
 
@@ -316,27 +318,25 @@ export default function ContentRulesPage() {
         <TabsContent value="wordcount" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>חוקי אורך תוכן</CardTitle>
-              <CardDescription>
-                הגדרת מינימום ומקסימום מילים - חובה לעמוד בהם
-              </CardDescription>
+              <CardTitle>Content Length Rules</CardTitle>
+              <CardDescription>Set minimum and maximum words - must be met</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="אורך מאמר כולל (מילים)"
+                  label="Total article length (words)"
                   minValue={rules.minWords}
                   maxValue={rules.maxWords}
-                  onMinChange={(v) => updateRule("minWords", v)}
-                  onMaxChange={(v) => updateRule("maxWords", v)}
+                  onMinChange={v => updateRule("minWords", v)}
+                  onMaxChange={v => updateRule("maxWords", v)}
                   icon={FileText}
                 />
                 <RangeInput
-                  label="אורך אופטימלי (מילים)"
+                  label="Optimal length (words)"
                   minValue={rules.optimalMinWords}
                   maxValue={rules.optimalMaxWords}
-                  onMinChange={(v) => updateRule("optimalMinWords", v)}
-                  onMaxChange={(v) => updateRule("optimalMaxWords", v)}
+                  onMinChange={v => updateRule("optimalMinWords", v)}
+                  onMaxChange={v => updateRule("optimalMaxWords", v)}
                   icon={CheckCircle2}
                 />
               </div>
@@ -345,18 +345,18 @@ export default function ContentRulesPage() {
 
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="פתיחה / Introduction"
+                  label="Introduction"
                   minValue={rules.introMinWords}
                   maxValue={rules.introMaxWords}
-                  onMinChange={(v) => updateRule("introMinWords", v)}
-                  onMaxChange={(v) => updateRule("introMaxWords", v)}
+                  onMinChange={v => updateRule("introMinWords", v)}
+                  onMaxChange={v => updateRule("introMaxWords", v)}
                 />
                 <RangeInput
-                  label="סיכום / Conclusion"
+                  label="Conclusion"
                   minValue={rules.conclusionMinWords}
                   maxValue={rules.conclusionMaxWords}
-                  onMinChange={(v) => updateRule("conclusionMinWords", v)}
-                  onMaxChange={(v) => updateRule("conclusionMaxWords", v)}
+                  onMinChange={v => updateRule("conclusionMinWords", v)}
+                  onMaxChange={v => updateRule("conclusionMaxWords", v)}
                 />
               </div>
             </CardContent>
@@ -367,27 +367,25 @@ export default function ContentRulesPage() {
         <TabsContent value="structure" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>מבנה מאמר</CardTitle>
-              <CardDescription>
-                הגדרת מספר סעיפים, Quick Facts וסגנון
-              </CardDescription>
+              <CardTitle>Article Structure</CardTitle>
+              <CardDescription>Set number of sections, Quick Facts and style</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="סעיפים ראשיים (H2)"
+                  label="Main sections (H2)"
                   minValue={rules.mainSectionsMin}
                   maxValue={rules.mainSectionsMax}
-                  onMinChange={(v) => updateRule("mainSectionsMin", v)}
-                  onMaxChange={(v) => updateRule("mainSectionsMax", v)}
+                  onMinChange={v => updateRule("mainSectionsMin", v)}
+                  onMaxChange={v => updateRule("mainSectionsMax", v)}
                   icon={ListOrdered}
                 />
                 <RangeInput
-                  label="מילים לכל סעיף ראשי"
+                  label="Words per main section"
                   minValue={rules.mainSectionWordsMin}
                   maxValue={rules.mainSectionWordsMax}
-                  onMinChange={(v) => updateRule("mainSectionWordsMin", v)}
-                  onMaxChange={(v) => updateRule("mainSectionWordsMax", v)}
+                  onMinChange={v => updateRule("mainSectionWordsMin", v)}
+                  onMaxChange={v => updateRule("mainSectionWordsMax", v)}
                 />
               </div>
 
@@ -395,18 +393,18 @@ export default function ContentRulesPage() {
 
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="Quick Facts (כמות)"
+                  label="Quick Facts (count)"
                   minValue={rules.quickFactsMin}
                   maxValue={rules.quickFactsMax}
-                  onMinChange={(v) => updateRule("quickFactsMin", v)}
-                  onMaxChange={(v) => updateRule("quickFactsMax", v)}
+                  onMinChange={v => updateRule("quickFactsMin", v)}
+                  onMaxChange={v => updateRule("quickFactsMax", v)}
                 />
                 <RangeInput
-                  label="Quick Facts (מילים סה״כ)"
+                  label="Quick Facts (total words)"
                   minValue={rules.quickFactsWordsMin}
                   maxValue={rules.quickFactsWordsMax}
-                  onMinChange={(v) => updateRule("quickFactsWordsMin", v)}
-                  onMaxChange={(v) => updateRule("quickFactsWordsMax", v)}
+                  onMinChange={v => updateRule("quickFactsWordsMin", v)}
+                  onMaxChange={v => updateRule("quickFactsWordsMax", v)}
                 />
               </div>
             </CardContent>
@@ -417,27 +415,27 @@ export default function ContentRulesPage() {
         <TabsContent value="faq" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>FAQ ו-Pro Tips</CardTitle>
+              <CardTitle>FAQ and Pro Tips</CardTitle>
               <CardDescription>
-                הגדרות לשאלות נפוצות וטיפים מקצועיים
+                Settings for frequently asked questions and professional tips
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="כמות שאלות FAQ"
+                  label="Number of FAQ questions"
                   minValue={rules.faqsMin}
                   maxValue={rules.faqsMax}
-                  onMinChange={(v) => updateRule("faqsMin", v)}
-                  onMaxChange={(v) => updateRule("faqsMax", v)}
+                  onMinChange={v => updateRule("faqsMin", v)}
+                  onMaxChange={v => updateRule("faqsMax", v)}
                   icon={HelpCircle}
                 />
                 <RangeInput
-                  label="מילים לכל תשובה"
+                  label="Words per answer"
                   minValue={rules.faqAnswerWordsMin}
                   maxValue={rules.faqAnswerWordsMax}
-                  onMinChange={(v) => updateRule("faqAnswerWordsMin", v)}
-                  onMaxChange={(v) => updateRule("faqAnswerWordsMax", v)}
+                  onMinChange={v => updateRule("faqAnswerWordsMin", v)}
+                  onMaxChange={v => updateRule("faqAnswerWordsMax", v)}
                 />
               </div>
 
@@ -445,19 +443,19 @@ export default function ContentRulesPage() {
 
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="כמות Pro Tips"
+                  label="Number of Pro Tips"
                   minValue={rules.proTipsMin}
                   maxValue={rules.proTipsMax}
-                  onMinChange={(v) => updateRule("proTipsMin", v)}
-                  onMaxChange={(v) => updateRule("proTipsMax", v)}
+                  onMinChange={v => updateRule("proTipsMin", v)}
+                  onMaxChange={v => updateRule("proTipsMax", v)}
                   icon={Lightbulb}
                 />
                 <RangeInput
-                  label="מילים לכל טיפ"
+                  label="Words per tip"
                   minValue={rules.proTipWordsMin}
                   maxValue={rules.proTipWordsMax}
-                  onMinChange={(v) => updateRule("proTipWordsMin", v)}
-                  onMaxChange={(v) => updateRule("proTipWordsMax", v)}
+                  onMinChange={v => updateRule("proTipWordsMin", v)}
+                  onMaxChange={v => updateRule("proTipWordsMax", v)}
                 />
               </div>
             </CardContent>
@@ -468,43 +466,45 @@ export default function ContentRulesPage() {
         <TabsContent value="seo" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>הגדרות SEO</CardTitle>
-              <CardDescription>
-                חוקי אופטימיזציה למנועי חיפוש
-              </CardDescription>
+              <CardTitle>SEO Settings</CardTitle>
+              <CardDescription>Search engine optimization rules</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <RangeInput
-                  label="קישורים פנימיים"
+                  label="Internal links"
                   minValue={rules.internalLinksMin}
                   maxValue={rules.internalLinksMax}
-                  onMinChange={(v) => updateRule("internalLinksMin", v)}
-                  onMaxChange={(v) => updateRule("internalLinksMax", v)}
+                  onMinChange={v => updateRule("internalLinksMin", v)}
+                  onMaxChange={v => updateRule("internalLinksMax", v)}
                   icon={Link2}
                 />
                 <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
                   <div className="flex items-center gap-2">
                     <Search className="h-4 w-4 text-muted-foreground" />
-                    <Label className="font-medium">צפיפות מילות מפתח (%)</Label>
+                    <Label className="font-medium">Keyword density (%)</Label>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-xs text-muted-foreground">מינימום</Label>
+                      <Label className="text-xs text-muted-foreground">Minimum</Label>
                       <Input
                         type="number"
                         value={rules.keywordDensityMin / 10}
-                        onChange={(e) => updateRule("keywordDensityMin", parseFloat(e.target.value) * 10 || 0)}
+                        onChange={e =>
+                          updateRule("keywordDensityMin", parseFloat(e.target.value) * 10 || 0)
+                        }
                         step="0.1"
                         className="mt-1"
                       />
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">מקסימום</Label>
+                      <Label className="text-xs text-muted-foreground">Maximum</Label>
                       <Input
                         type="number"
                         value={rules.keywordDensityMax / 10}
-                        onChange={(e) => updateRule("keywordDensityMax", parseFloat(e.target.value) * 10 || 0)}
+                        onChange={e =>
+                          updateRule("keywordDensityMax", parseFloat(e.target.value) * 10 || 0)
+                        }
                         step="0.1"
                         className="mt-1"
                       />
@@ -514,12 +514,12 @@ export default function ContentRulesPage() {
               </div>
 
               <RuleInput
-                label="אזכורי 'Dubai' / 'דובאי' מינימום"
+                label="Minimum 'Dubai' mentions"
                 value={rules.dubaiMentionsMin}
-                onChange={(v) => updateRule("dubaiMentionsMin", v)}
+                onChange={v => updateRule("dubaiMentionsMin", v)}
                 min={1}
                 max={20}
-                description="כמה פעמים חייב להופיע דובאי/Dubai במאמר"
+                description="How many times Dubai must appear in the article"
               />
             </CardContent>
           </Card>
@@ -529,39 +529,37 @@ export default function ContentRulesPage() {
         <TabsContent value="advanced" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>הגדרות מתקדמות</CardTitle>
-              <CardDescription>
-                הגדרות נוספות למערכת
-              </CardDescription>
+              <CardTitle>Advanced Settings</CardTitle>
+              <CardDescription>Additional system settings</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>שם החוק</Label>
+                  <Label>Rule name</Label>
                   <Input
                     value={rules.name}
-                    onChange={(e) => updateRule("name", e.target.value)}
+                    onChange={e => updateRule("name", e.target.value)}
                     placeholder="dubai-seo-standard"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>תיאור</Label>
+                  <Label>Description</Label>
                   <Textarea
                     value={rules.description}
-                    onChange={(e) => updateRule("description", e.target.value)}
-                    placeholder="תיאור החוק..."
+                    onChange={e => updateRule("description", e.target.value)}
+                    placeholder="Rule description..."
                     rows={3}
                   />
                 </div>
 
                 <RuleInput
-                  label="מספר ניסיונות מקסימלי (Retries)"
+                  label="Maximum retries"
                   value={rules.maxRetries}
-                  onChange={(v) => updateRule("maxRetries", v)}
+                  onChange={v => updateRule("maxRetries", v)}
                   min={1}
                   max={10}
-                  description="כמה פעמים המערכת תנסה ליצור תוכן עד שתעמוד בחוקים"
+                  description="How many times the system will try to generate content until it meets the rules"
                 />
               </div>
             </CardContent>
@@ -572,54 +570,77 @@ export default function ContentRulesPage() {
       {/* Summary Card */}
       <Card>
         <CardHeader>
-          <CardTitle>סיכום מבנה מאמר</CardTitle>
+          <CardTitle>Article Structure Summary</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b">
-                  <th className="text-right py-2">סעיף</th>
-                  <th className="text-center py-2">מילים</th>
-                  <th className="text-center py-2">אחוז מהמאמר</th>
+                  <th className="text-left py-2">Section</th>
+                  <th className="text-center py-2">Words</th>
+                  <th className="text-center py-2">% of Article</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b">
-                  <td className="py-2">פתיחה</td>
-                  <td className="text-center">{rules.introMinWords}-{rules.introMaxWords}</td>
+                  <td className="py-2">Introduction</td>
+                  <td className="text-center">
+                    {rules.introMinWords}-{rules.introMaxWords}
+                  </td>
                   <td className="text-center">~8%</td>
                 </tr>
                 <tr className="border-b">
                   <td className="py-2">Quick Facts</td>
-                  <td className="text-center">{rules.quickFactsWordsMin}-{rules.quickFactsWordsMax}</td>
+                  <td className="text-center">
+                    {rules.quickFactsWordsMin}-{rules.quickFactsWordsMax}
+                  </td>
                   <td className="text-center">~5%</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-2">סעיפים ראשיים ({rules.mainSectionsMin}-{rules.mainSectionsMax})</td>
-                  <td className="text-center">{rules.mainSectionsMin * rules.mainSectionWordsMin}-{rules.mainSectionsMax * rules.mainSectionWordsMax}</td>
+                  <td className="py-2">
+                    Main sections ({rules.mainSectionsMin}-{rules.mainSectionsMax})
+                  </td>
+                  <td className="text-center">
+                    {rules.mainSectionsMin * rules.mainSectionWordsMin}-
+                    {rules.mainSectionsMax * rules.mainSectionWordsMax}
+                  </td>
                   <td className="text-center">~60%</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-2">FAQ ({rules.faqsMin}-{rules.faqsMax} שאלות)</td>
-                  <td className="text-center">{rules.faqsMin * rules.faqAnswerWordsMin}-{rules.faqsMax * rules.faqAnswerWordsMax}</td>
+                  <td className="py-2">
+                    FAQ ({rules.faqsMin}-{rules.faqsMax} questions)
+                  </td>
+                  <td className="text-center">
+                    {rules.faqsMin * rules.faqAnswerWordsMin}-
+                    {rules.faqsMax * rules.faqAnswerWordsMax}
+                  </td>
                   <td className="text-center">~20%</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-2">Pro Tips ({rules.proTipsMin}-{rules.proTipsMax})</td>
-                  <td className="text-center">{rules.proTipsMin * rules.proTipWordsMin}-{rules.proTipsMax * rules.proTipWordsMax}</td>
+                  <td className="py-2">
+                    Pro Tips ({rules.proTipsMin}-{rules.proTipsMax})
+                  </td>
+                  <td className="text-center">
+                    {rules.proTipsMin * rules.proTipWordsMin}-
+                    {rules.proTipsMax * rules.proTipWordsMax}
+                  </td>
                   <td className="text-center">~7%</td>
                 </tr>
                 <tr>
-                  <td className="py-2">סיכום</td>
-                  <td className="text-center">{rules.conclusionMinWords}-{rules.conclusionMaxWords}</td>
+                  <td className="py-2">Conclusion</td>
+                  <td className="text-center">
+                    {rules.conclusionMinWords}-{rules.conclusionMaxWords}
+                  </td>
                   <td className="text-center">~5%</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr className="border-t-2 font-bold">
-                  <td className="py-2">סה״כ</td>
-                  <td className="text-center text-primary">{rules.minWords}-{rules.maxWords}</td>
+                  <td className="py-2">Total</td>
+                  <td className="text-center text-primary">
+                    {rules.minWords}-{rules.maxWords}
+                  </td>
                   <td className="text-center">100%</td>
                 </tr>
               </tfoot>

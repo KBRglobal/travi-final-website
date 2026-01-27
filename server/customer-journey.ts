@@ -152,7 +152,6 @@ export const customerJourney = {
   async trackEvent(event: AnalyticsEvent): Promise<void> {
     // Validate required fields
     if (!event.sessionId || !event.visitorId || !event.eventType) {
-      console.warn("[Analytics] Invalid event - missing required fields");
       return;
     }
 
@@ -348,7 +347,7 @@ export const customerJourney = {
       const dbEvents: InsertAnalyticsEvent[] = eventsToFlush.map(event => ({
         sessionId: event.sessionId,
         visitorId: event.visitorId,
-        eventType: event.eventType as InsertAnalyticsEvent['eventType'],
+        eventType: event.eventType as InsertAnalyticsEvent["eventType"],
         eventName: event.eventName,
         timestamp: event.timestamp,
         pageUrl: event.pageUrl,
@@ -388,12 +387,11 @@ export const customerJourney = {
 
       // Batch insert events to database
       await db.insert(analyticsEvents).values(dbEvents);
-      console.log(`[Analytics] Flushed ${eventsToFlush.length} events to database`);
 
       return eventsToFlush.length;
     } catch (error) {
       // On error, put events back
-      console.error("[Analytics] Failed to flush events:", error);
+
       eventStore.events.unshift(...eventsToFlush);
       return 0;
     }
@@ -437,14 +435,18 @@ export const customerJourney = {
 
     // Also get unique visitors count for each page
     const summaries: PageViewSummary[] = await Promise.all(
-      results.map(async (row) => {
+      results.map(async row => {
         const uniqueResult = await db
-          .select({ uniqueVisitors: sql<number>`COUNT(DISTINCT ${analyticsEvents.visitorId})::int` })
+          .select({
+            uniqueVisitors: sql<number>`COUNT(DISTINCT ${analyticsEvents.visitorId})::int`,
+          })
           .from(analyticsEvents)
-          .where(and(
-            eq(analyticsEvents.eventType, "page_view"),
-            eq(analyticsEvents.pagePath, row.pagePath || "")
-          ));
+          .where(
+            and(
+              eq(analyticsEvents.eventType, "page_view"),
+              eq(analyticsEvents.pagePath, row.pagePath || "")
+            )
+          );
 
         return {
           pagePath: row.pagePath || "",
@@ -504,7 +506,7 @@ export const customerJourney = {
       isNewSession: e.isNewSession || undefined,
       isNewVisitor: e.isNewVisitor || undefined,
       userAgent: e.userAgent || undefined,
-      deviceType: e.deviceType as AnalyticsEvent['deviceType'],
+      deviceType: e.deviceType as AnalyticsEvent["deviceType"],
       browser: e.browser || undefined,
       os: e.os || undefined,
       language: e.language || undefined,
@@ -563,9 +565,13 @@ export const customerJourney = {
       name: stat.name,
       visitors: stat.visitors,
       dropoff: index > 0 ? stepStats[index - 1].visitors - stat.visitors : 0,
-      dropoffRate: index > 0 && stepStats[index - 1].visitors > 0
-        ? Math.round(((stepStats[index - 1].visitors - stat.visitors) / stepStats[index - 1].visitors) * 100)
-        : 0,
+      dropoffRate:
+        index > 0 && stepStats[index - 1].visitors > 0
+          ? Math.round(
+              ((stepStats[index - 1].visitors - stat.visitors) / stepStats[index - 1].visitors) *
+                100
+            )
+          : 0,
     }));
 
     const firstStep = stepStats[0]?.visitors || 0;
@@ -584,9 +590,7 @@ export const customerJourney = {
   getActiveUsers(minutes: number = 5): number {
     const cutoff = new Date(Date.now() - minutes * 60 * 1000);
     const activeVisitors = new Set(
-      eventStore.events
-        .filter(e => e.timestamp >= cutoff)
-        .map(e => e.visitorId)
+      eventStore.events.filter(e => e.timestamp >= cutoff).map(e => e.visitorId)
     );
     return activeVisitors.size;
   },
@@ -666,9 +670,7 @@ export const customerJourney = {
       const hourEnd = new Date(hourStart);
       hourEnd.setHours(hourEnd.getHours() + 1);
 
-      const views = pageViews.filter(
-        e => e.timestamp >= hourStart && e.timestamp < hourEnd
-      ).length;
+      const views = pageViews.filter(e => e.timestamp >= hourStart && e.timestamp < hourEnd).length;
 
       hourlyTraffic.push({ hour: h, views });
     }
@@ -702,7 +704,8 @@ export const customerJourney = {
   getDeviceType(userAgent?: string): "desktop" | "mobile" | "tablet" | undefined {
     if (!userAgent) return undefined;
     const ua = userAgent.toLowerCase();
-    if (ua.includes("mobile") || ua.includes("android") && !ua.includes("tablet")) return "mobile";
+    if (ua.includes("mobile") || (ua.includes("android") && !ua.includes("tablet")))
+      return "mobile";
     if (ua.includes("tablet") || ua.includes("ipad")) return "tablet";
     return "desktop";
   },
@@ -731,9 +734,9 @@ export const customerJourney = {
 };
 
 // Start periodic flush - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
   setInterval(() => {
-    customerJourney.flushEvents().catch(console.error);
+    customerJourney.flushEvents().catch(() => {});
   }, FLUSH_INTERVAL_MS);
 }
 

@@ -1,40 +1,40 @@
 /**
  * TRAVI Content Generation - Location Discovery Service
- * 
+ *
  * Combines Wikipedia, OpenStreetMap, and TripAdvisor to discover locations
  * for each destination with proper attribution tracking.
  */
 
-import { 
-  searchNearbyLocations, 
-  searchCityAttractions, 
+import {
+  searchNearbyLocations,
+  searchCityAttractions,
   filterTourismLocations,
   WIKIPEDIA_ATTRIBUTION,
-  type WikipediaLocation 
-} from './wikipedia-client';
-import { 
-  searchInBoundingBox, 
-  searchNearPoint, 
-  getBoundingBox, 
+  type WikipediaLocation,
+} from "./wikipedia-client";
+import {
+  searchInBoundingBox,
+  searchNearPoint,
+  getBoundingBox,
   extractMetadata,
   mergeWithWikipedia,
   OSM_ATTRIBUTION,
-  type OSMLocation 
-} from './osm-client';
+  type OSMLocation,
+} from "./osm-client";
 import {
   discoverAllInCity as discoverTripAdvisorLocations,
   isTripAdvisorAvailable,
   TRIPADVISOR_ATTRIBUTION,
-  type TripAdvisorLocation
-} from './tripadvisor-client';
-import { 
-  DESTINATION_METADATA, 
+  type TripAdvisorLocation,
+} from "./tripadvisor-client";
+import {
+  DESTINATION_METADATA,
   getDestinationBySlug,
-  type DestinationSlug 
-} from './destination-seeder';
-import { validateLocation, generateSlug } from './validation';
+  type DestinationSlug,
+} from "./destination-seeder";
+import { validateLocation, generateSlug } from "./validation";
 
-export type LocationCategory = 'attraction' | 'hotel' | 'restaurant';
+export type LocationCategory = "attraction" | "hotel" | "restaurant";
 
 export interface DiscoveredLocation {
   externalId: string;
@@ -56,7 +56,7 @@ export interface DiscoveredLocation {
     };
     osm?: {
       id: number;
-      type: 'node' | 'way' | 'relation';
+      type: "node" | "way" | "relation";
       url: string;
       tags: Record<string, string>;
       metadata: ReturnType<typeof extractMetadata>;
@@ -108,13 +108,16 @@ export async function discoverLocations(
 ): Promise<DiscoveryResult> {
   const rawDestination = getDestinationBySlug(destinationSlug);
   if (!rawDestination) {
-    console.error(`[Discovery] Unknown destination: ${destinationSlug}`);
     return {
       destinationSlug,
       category,
       locations: [],
       stats: { wikipediaCount: 0, osmCount: 0, tripAdvisorCount: 0, mergedCount: 0, validCount: 0 },
-      attribution: { wikipedia: WIKIPEDIA_ATTRIBUTION, osm: OSM_ATTRIBUTION, tripadvisor: TRIPADVISOR_ATTRIBUTION },
+      attribution: {
+        wikipedia: WIKIPEDIA_ATTRIBUTION,
+        osm: OSM_ATTRIBUTION,
+        tripadvisor: TRIPADVISOR_ATTRIBUTION,
+      },
     };
   }
 
@@ -130,8 +133,6 @@ export async function discoverLocations(
   const radiusKm = options.radiusKm || 15;
   const limit = options.limit || 200;
 
-  console.log(`[Discovery] Starting discovery for ${destination.cityName}, ${category}`);
-
   // Fetch from Wikipedia
   let wikiLocations: WikipediaLocation[] = [];
   if (!options.skipWikipedia) {
@@ -143,44 +144,26 @@ export async function discoverLocations(
         radiusKm * 1000,
         Math.min(limit, 50)
       );
-      
+
       // Also search by city name for category-specific results
-      const cityResult = await searchCityAttractions(
-        destination.cityName,
-        category,
-        limit
-      );
+      const cityResult = await searchCityAttractions(destination.cityName, category, limit);
 
       // Combine and filter
       const allWiki = [...nearbyResult.locations, ...cityResult.locations];
-      const uniqueWiki = Array.from(
-        new Map(allWiki.map(l => [l.pageid, l])).values()
-      );
+      const uniqueWiki = Array.from(new Map(allWiki.map(l => [l.pageid, l])).values());
       wikiLocations = filterTourismLocations(uniqueWiki, category);
-
-      console.log(`[Discovery] Wikipedia: ${wikiLocations.length} ${category}s found`);
-    } catch (error) {
-      console.error('[Discovery] Wikipedia search failed:', error);
-    }
+    } catch (error) {}
   }
 
   // Fetch from OpenStreetMap
   let osmLocations: OSMLocation[] = [];
   if (!options.skipOSM) {
     try {
-      const bbox = getBoundingBox(
-        destination.latitude,
-        destination.longitude,
-        radiusKm
-      );
-      
+      const bbox = getBoundingBox(destination.latitude, destination.longitude, radiusKm);
+
       const osmResult = await searchInBoundingBox(bbox, category, limit);
       osmLocations = osmResult.locations;
-
-      console.log(`[Discovery] OSM: ${osmLocations.length} ${category}s found`);
-    } catch (error) {
-      console.error('[Discovery] OSM search failed:', error);
-    }
+    } catch (error) {}
   }
 
   // Fetch from TripAdvisor
@@ -194,13 +177,8 @@ export async function discoverLocations(
         category,
         { radiusKm, maxLocations: limit }
       );
-
-      console.log(`[Discovery] TripAdvisor: ${tripAdvisorLocations.length} ${category}s found`);
-    } catch (error) {
-      console.error('[Discovery] TripAdvisor search failed:', error);
-    }
+    } catch (error) {}
   } else if (!options.skipTripAdvisor) {
-    console.log('[Discovery] TripAdvisor: Skipped (API not available)');
   }
 
   // Merge locations from all sources
@@ -232,8 +210,6 @@ export async function discoverLocations(
 
   const validCount = validatedLocations.filter(l => l.validationErrors.length === 0).length;
 
-  console.log(`[Discovery] Merged: ${mergedLocations.length}, Valid: ${validCount}`);
-
   return {
     destinationSlug,
     category,
@@ -258,7 +234,7 @@ function mergeLocations(
   wikiLocations: WikipediaLocation[],
   osmLocations: OSMLocation[],
   tripAdvisorLocations: TripAdvisorLocation[],
-  destination: typeof DESTINATION_METADATA[0],
+  destination: (typeof DESTINATION_METADATA)[0],
   category: LocationCategory
 ): DiscoveredLocation[] {
   const merged: Map<string, DiscoveredLocation> = new Map();
@@ -308,10 +284,7 @@ function mergeLocations(
     for (const [key, existing] of merged.entries()) {
       if (!existing.sources.wikipedia) continue;
 
-      const distance = haversineDistance(
-        osm.lat, osm.lon,
-        existing.latitude, existing.longitude
-      );
+      const distance = haversineDistance(osm.lat, osm.lon, existing.latitude, existing.longitude);
 
       if (distance <= MERGE_DISTANCE_METERS) {
         // Merge OSM data into existing Wikipedia entry
@@ -323,13 +296,13 @@ function mergeLocations(
           metadata,
         };
         existing.attribution.osm = OSM_ATTRIBUTION;
-        
+
         // Use OSM coordinates if more precise
         if (osm.lat && osm.lon) {
           existing.latitude = osm.lat;
           existing.longitude = osm.lon;
         }
-        
+
         foundMatch = true;
         break;
       }
@@ -338,7 +311,7 @@ function mergeLocations(
     // Add as new location if no match found
     if (!foundMatch) {
       const externalId = `osm-${osm.type}-${osm.id}`;
-      
+
       merged.set(externalId, {
         externalId,
         name: osm.name,
@@ -377,8 +350,10 @@ function mergeLocations(
     let foundMatch = false;
     for (const [key, existing] of merged.entries()) {
       const distance = haversineDistance(
-        ta.latitude, ta.longitude,
-        existing.latitude, existing.longitude
+        ta.latitude,
+        ta.longitude,
+        existing.latitude,
+        existing.longitude
       );
 
       if (distance <= MERGE_DISTANCE_METERS) {
@@ -389,7 +364,7 @@ function mergeLocations(
           subcategories: ta.subcategories,
         };
         existing.attribution.tripadvisor = TRIPADVISOR_ATTRIBUTION;
-        
+
         foundMatch = true;
         break;
       }
@@ -398,7 +373,7 @@ function mergeLocations(
     // Add as new location if no match found
     if (!foundMatch) {
       const externalId = `ta-${ta.locationId}`;
-      
+
       merged.set(externalId, {
         externalId,
         name: ta.name,
@@ -429,17 +404,16 @@ function mergeLocations(
 }
 
 // Haversine distance calculation
-function haversineDistance(
-  lat1: number, lon1: number,
-  lat2: number, lon2: number
-): number {
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371000; // Earth radius in meters
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -456,12 +430,12 @@ export async function discoverAllCategories(
   hotel: DiscoveryResult;
   restaurant: DiscoveryResult;
 }> {
-  const categories: LocationCategory[] = ['attraction', 'hotel', 'restaurant'];
+  const categories: LocationCategory[] = ["attraction", "hotel", "restaurant"];
   const results: Record<string, DiscoveryResult> = {};
 
   for (const category of categories) {
     results[category] = await discoverLocations(destinationSlug, category, options);
-    
+
     // Add delay between categories to respect rate limits
     await new Promise(resolve => setTimeout(resolve, 2000));
   }

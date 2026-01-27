@@ -39,38 +39,48 @@ function containsBannedPhrases(text: string): string[] {
 function truncateToLimit(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   const truncated = text.substring(0, maxLength - 3);
-  const lastSpace = truncated.lastIndexOf(' ');
-  return (lastSpace > maxLength * 0.7 ? truncated.substring(0, lastSpace) : truncated) + '...';
+  const lastSpace = truncated.lastIndexOf(" ");
+  return (lastSpace > maxLength * 0.7 ? truncated.substring(0, lastSpace) : truncated) + "...";
 }
 
-function validateAndSanitizeContent(content: GeneratedContent): { content: GeneratedContent; warnings: string[] } {
+function validateAndSanitizeContent(content: GeneratedContent): {
+  content: GeneratedContent;
+  warnings: string[];
+} {
   const warnings: string[] = [];
-  
+
   if (content.metaTitle.length > SEO_STANDARDS.metaTitleMax) {
-    warnings.push(`Meta title truncated from ${content.metaTitle.length} to ${SEO_STANDARDS.metaTitleMax} chars`);
+    warnings.push(
+      `Meta title truncated from ${content.metaTitle.length} to ${SEO_STANDARDS.metaTitleMax} chars`
+    );
     content.metaTitle = truncateToLimit(content.metaTitle, SEO_STANDARDS.metaTitleMax);
   }
-  
+
   if (content.metaDescription.length > SEO_STANDARDS.metaDescriptionMax) {
-    warnings.push(`Meta description truncated from ${content.metaDescription.length} to ${SEO_STANDARDS.metaDescriptionMax} chars`);
-    content.metaDescription = truncateToLimit(content.metaDescription, SEO_STANDARDS.metaDescriptionMax);
+    warnings.push(
+      `Meta description truncated from ${content.metaDescription.length} to ${SEO_STANDARDS.metaDescriptionMax} chars`
+    );
+    content.metaDescription = truncateToLimit(
+      content.metaDescription,
+      SEO_STANDARDS.metaDescriptionMax
+    );
   }
-  
+
   const descWords = content.description.split(/\s+/).length;
   if (descWords < SEO_STANDARDS.articleBodyMin) {
     warnings.push(`Description has ${descWords} words (minimum ${SEO_STANDARDS.articleBodyMin})`);
   }
-  
-  const bannedInMeta = containsBannedPhrases(content.metaTitle + ' ' + content.metaDescription);
+
+  const bannedInMeta = containsBannedPhrases(content.metaTitle + " " + content.metaDescription);
   if (bannedInMeta.length > 0) {
-    warnings.push(`Banned phrases found in meta: ${bannedInMeta.join(', ')}`);
+    warnings.push(`Banned phrases found in meta: ${bannedInMeta.join(", ")}`);
   }
-  
+
   const bannedInDesc = containsBannedPhrases(content.description);
   if (bannedInDesc.length > 0) {
-    warnings.push(`Banned phrases found in description: ${bannedInDesc.join(', ')}`);
+    warnings.push(`Banned phrases found in description: ${bannedInDesc.join(", ")}`);
   }
-  
+
   return { content, warnings };
 }
 
@@ -142,7 +152,7 @@ CRITICAL: Return ONLY the JSON object, no markdown fences, no explanations.`;
 
 function parseAIResponse(content: string): GeneratedContent {
   let jsonString = content.trim();
-  
+
   if (jsonString.startsWith("```json")) {
     jsonString = jsonString.slice(7);
   } else if (jsonString.startsWith("```")) {
@@ -154,7 +164,7 @@ function parseAIResponse(content: string): GeneratedContent {
   jsonString = jsonString.trim();
 
   const parsed = JSON.parse(jsonString);
-  
+
   return {
     h1Title: parsed.h1_title || "",
     metaTitle: parsed.meta_title || "",
@@ -184,8 +194,6 @@ export async function generateAttractionContent(
 
   const prompt = buildPrompt(attraction);
 
-  console.log(`[Content Generator] Starting generation for: ${attraction.title}`);
-
   const response = await client.messages.create({
     model: "claude-sonnet-4-5",
     max_tokens: 8192,
@@ -199,12 +207,9 @@ export async function generateAttractionContent(
 
   const rawContent = parseAIResponse(textContent.text);
   const { content, warnings } = validateAndSanitizeContent(rawContent);
-  
-  if (warnings.length > 0) {
-    console.log(`[Content Generator] Warnings for ${attraction.title}:`, warnings);
-  }
 
-  console.log(`[Content Generator] Completed generation for: ${attraction.title}`);
+  if (warnings.length > 0) {
+  }
 
   return { content, warnings };
 }

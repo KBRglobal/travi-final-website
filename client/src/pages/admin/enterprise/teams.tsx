@@ -69,7 +69,7 @@ export default function TeamsPage() {
             Organize users into teams for collaborative workflows
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => createTeamMutation.mutate()}
           disabled={createTeamMutation.isPending}
           data-testid="button-create-team"
@@ -82,15 +82,11 @@ export default function TeamsPage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Teams enable <strong>collaborative contents management</strong>. Assign users to teams, 
-          set team-specific permissions, and create approval workflows that route through team leads.
-          <br />
-          <span className="text-xs opacity-70">
-            (צוותים מאפשרים ניהול תוכן שיתופי. הקצה משתמשים לצוותים והגדר הרשאות.)
-          </span>
+          Teams enable <strong>collaborative content management</strong>. Assign users to teams, set
+          team-specific permissions, and create approval workflows that route through team leads.
         </p>
       </div>
 
@@ -140,7 +136,7 @@ export default function TeamsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {teams?.length ? (
-          teams.map((team) => (
+          teams.map(team => (
             <Card key={team.id} className="hover-elevate" data-testid={`team-card-${team.id}`}>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -148,7 +144,11 @@ export default function TeamsPage() {
                     <UsersRound className="h-5 w-5 text-primary" />
                     {team.name}
                   </CardTitle>
-                  <Button variant="ghost" size="icon" data-testid={`button-settings-team-${team.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    data-testid={`button-settings-team-${team.id}`}
+                  >
                     <Settings className="h-4 w-4" />
                   </Button>
                 </div>
@@ -170,9 +170,7 @@ export default function TeamsPage() {
                       </div>
                     )}
                   </div>
-                  <Badge variant="secondary">
-                    {team.memberCount || 0} members
-                  </Badge>
+                  <Badge variant="secondary">{team.memberCount || 0} members</Badge>
                 </div>
               </CardContent>
             </Card>

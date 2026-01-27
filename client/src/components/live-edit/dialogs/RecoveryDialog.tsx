@@ -14,12 +14,7 @@ import { useMemo } from "react";
 
 export function RecoveryDialog() {
   const { isRTL } = useLocale();
-  const {
-    activeDialog,
-    closeDialog,
-    recoverDraft,
-    pageSlug,
-  } = useLiveEditStore();
+  const { activeDialog, closeDialog, recoverDraft, pageSlug } = useLiveEditStore();
 
   const isOpen = activeDialog === "recovery";
 
@@ -63,44 +58,32 @@ export function RecoveryDialog() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && closeDialog()}>
+    <Dialog open={isOpen} onOpenChange={open => !open && closeDialog()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <RotateCcw className="w-5 h-5 text-blue-600" />
-            {isRTL ? "שחזור טיוטה" : "Recover Draft"}
+            Recover Draft
           </DialogTitle>
-          <DialogDescription>
-            {isRTL
-              ? "מצאנו טיוטה שלא נשמרה מפעילות קודמת."
-              : "We found an unsaved draft from a previous session."}
-          </DialogDescription>
+          <DialogDescription>We found an unsaved draft from a previous session.</DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
           <div className="p-4 bg-muted rounded-lg space-y-2">
             <div className="flex items-center gap-2 text-sm">
               <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-muted-foreground">
-                {isRTL ? "נשמר לאחרונה:" : "Last saved:"}
-              </span>
-              <span className="font-medium">
-                {formatTime(recoveryData?.timestamp)}
-              </span>
+              <span className="text-muted-foreground">Last saved:</span>
+              <span className="font-medium">{formatTime(recoveryData?.timestamp)}</span>
             </div>
             {recoveryData?.pageSlug && (
               <p className="text-sm">
-                <span className="text-muted-foreground">
-                  {isRTL ? "עמוד:" : "Page:"}
-                </span>{" "}
+                <span className="text-muted-foreground">Page:</span>{" "}
                 <span className="font-medium">{recoveryData.pageSlug}</span>
               </p>
             )}
             {recoveryData?.componentCount !== undefined && (
               <p className="text-sm text-muted-foreground">
-                {isRTL
-                  ? `${recoveryData.componentCount} רכיבים`
-                  : `${recoveryData.componentCount} components`}
+                {recoveryData.componentCount} components
               </p>
             )}
           </div>
@@ -109,11 +92,11 @@ export function RecoveryDialog() {
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={handleDiscard}>
             <Trash2 className="w-4 h-4 me-1" />
-            {isRTL ? "התעלם" : "Discard"}
+            Discard
           </Button>
           <Button onClick={handleRecover} className="bg-blue-600 hover:bg-blue-700">
             <RotateCcw className="w-4 h-4 me-1" />
-            {isRTL ? "שחזר" : "Recover"}
+            Recover
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -17,12 +17,8 @@ export function normalizeEvent(event: AuditEvent): AuditEvent {
     ...event,
     action: normalizeAction(event.action),
     resource: normalizeResource(event.resource),
-    beforeSnapshot: event.beforeSnapshot
-      ? normalizeSnapshot(event.beforeSnapshot)
-      : undefined,
-    afterSnapshot: event.afterSnapshot
-      ? normalizeSnapshot(event.afterSnapshot)
-      : undefined,
+    beforeSnapshot: event.beforeSnapshot ? normalizeSnapshot(event.beforeSnapshot) : undefined,
+    afterSnapshot: event.afterSnapshot ? normalizeSnapshot(event.afterSnapshot) : undefined,
     source: normalizeSource(event.source),
     metadata: event.metadata ? sanitizeMetadata(event.metadata) : undefined,
   };
@@ -34,10 +30,25 @@ export function normalizeEvent(event: AuditEvent): AuditEvent {
 export function normalizeAction(action: string): AuditAction {
   const normalized = action.toLowerCase().trim();
   const validActions: AuditAction[] = [
-    "create", "update", "delete", "publish", "unpublish", "archive",
-    "restore", "view", "export", "import", "login", "logout",
-    "permission_change", "role_change", "config_change",
-    "approval_request", "approval_decision", "ai_generation", "bulk_operation",
+    "create",
+    "update",
+    "delete",
+    "publish",
+    "unpublish",
+    "archive",
+    "restore",
+    "view",
+    "export",
+    "import",
+    "login",
+    "logout",
+    "permission_change",
+    "role_change",
+    "config_change",
+    "approval_request",
+    "approval_decision",
+    "ai_generation",
+    "bulk_operation",
   ];
 
   if (validActions.includes(normalized as AuditAction)) {
@@ -65,7 +76,10 @@ export function normalizeAction(action: string): AuditAction {
  * Normalize resource string
  */
 export function normalizeResource(resource: string): string {
-  return resource.toLowerCase().trim().replace(/[^a-z0-9_-]/g, "_");
+  return resource
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9_-]/g, "_");
 }
 
 /**
@@ -82,7 +96,12 @@ export function normalizeSource(source: string): AuditSource {
   // Map variations
   if (normalized.includes("user") || normalized.includes("browser")) return "ui";
   if (normalized.includes("auto") || normalized.includes("cron")) return "automation";
-  if (normalized.includes("ai") || normalized.includes("openai") || normalized.includes("anthropic")) return "ai";
+  if (
+    normalized.includes("ai") ||
+    normalized.includes("openai") ||
+    normalized.includes("anthropic")
+  )
+    return "ai";
 
   return "api";
 }
@@ -129,7 +148,7 @@ export function sanitizeObject(obj: unknown): unknown {
 
   const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
-    if (SENSITIVE_FIELDS.some((f) => key.toLowerCase().includes(f.toLowerCase()))) {
+    if (SENSITIVE_FIELDS.some(f => key.toLowerCase().includes(f.toLowerCase()))) {
       result[key] = "[REDACTED]";
     } else if (typeof value === "object" && value !== null) {
       result[key] = sanitizeObject(value);
@@ -178,10 +197,7 @@ export function computeDiff(
     const beforeObj = JSON.parse(before);
     const afterObj = JSON.parse(after);
 
-    const allKeys = new Set([
-      ...Object.keys(beforeObj),
-      ...Object.keys(afterObj),
-    ]);
+    const allKeys = new Set([...Object.keys(beforeObj), ...Object.keys(afterObj)]);
 
     for (const key of allKeys) {
       if (!(key in beforeObj)) {
@@ -201,5 +217,3 @@ export function computeDiff(
 
   return result;
 }
-
-console.log("[Audit] Normalizer loaded");

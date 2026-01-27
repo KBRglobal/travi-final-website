@@ -1,6 +1,6 @@
 /**
  * Enterprise Security Layer
- * 
+ *
  * Centralized security module providing:
  * - Rate limiting
  * - Helmet security headers
@@ -9,10 +9,10 @@
  * - Comprehensive security middleware setup
  */
 
-import helmet from 'helmet';
-import type { Express, Request, Response, NextFunction } from 'express';
-import { abuseDetectionMiddleware } from './abuse-detection';
-import { initializeSessionSecrets, logRotationStatus } from './key-rotation';
+import helmet from "helmet";
+import type { Express, Request, Response, NextFunction } from "express";
+import { abuseDetectionMiddleware } from "./abuse-detection";
+import { initializeSessionSecrets, logRotationStatus } from "./key-rotation";
 
 // ============================================================================
 // INPUT VALIDATION - Inlined from validators.ts
@@ -65,20 +65,18 @@ function detectXss(input: string): boolean {
 /**
  * Log security event (simplified - just console log)
  */
-function logSecurityEvent(type: string, details: any) {
-  console.log(`[SECURITY] ${type}:`, details);
-}
+function logSecurityEvent(type: string, details: any) {}
 
 /**
  * Attack detection middleware
  * Detects and blocks SQL injection and XSS attempts
  */
 export function attackDetectionMiddleware(req: Request, res: Response, next: NextFunction) {
-  const checkData = (data: any, path: string = ''): boolean => {
-    if (typeof data === 'string') {
+  const checkData = (data: any, path: string = ""): boolean => {
+    if (typeof data === "string") {
       // Check for SQL injection
       if (detectSqlInjection(data)) {
-        logSecurityEvent('SQL_INJECTION_ATTEMPT', {
+        logSecurityEvent("SQL_INJECTION_ATTEMPT", {
           path: req.path,
           method: req.method,
           field: path,
@@ -89,7 +87,7 @@ export function attackDetectionMiddleware(req: Request, res: Response, next: Nex
 
       // Check for XSS
       if (detectXss(data)) {
-        logSecurityEvent('XSS_ATTEMPT', {
+        logSecurityEvent("XSS_ATTEMPT", {
           path: req.path,
           method: req.method,
           field: path,
@@ -97,7 +95,7 @@ export function attackDetectionMiddleware(req: Request, res: Response, next: Nex
         });
         return false;
       }
-    } else if (typeof data === 'object' && data !== null) {
+    } else if (typeof data === "object" && data !== null) {
       for (const [key, value] of Object.entries(data)) {
         if (!checkData(value, path ? `${path}.${key}` : key)) {
           return false;
@@ -108,26 +106,26 @@ export function attackDetectionMiddleware(req: Request, res: Response, next: Nex
   };
 
   // Check body
-  if (req.body && !checkData(req.body, 'body')) {
+  if (req.body && !checkData(req.body, "body")) {
     return res.status(400).json({
-      error: 'Request contains potentially malicious content',
-      code: 'ATTACK_DETECTED',
+      error: "Request contains potentially malicious content",
+      code: "ATTACK_DETECTED",
     });
   }
 
   // Check query parameters
-  if (req.query && !checkData(req.query, 'query')) {
+  if (req.query && !checkData(req.query, "query")) {
     return res.status(400).json({
-      error: 'Request contains potentially malicious content',
-      code: 'ATTACK_DETECTED',
+      error: "Request contains potentially malicious content",
+      code: "ATTACK_DETECTED",
     });
   }
 
   // Check URL parameters
-  if (req.params && !checkData(req.params, 'params')) {
+  if (req.params && !checkData(req.params, "params")) {
     return res.status(400).json({
-      error: 'Request contains potentially malicious content',
-      code: 'ATTACK_DETECTED',
+      error: "Request contains potentially malicious content",
+      code: "ATTACK_DETECTED",
     });
   }
 
@@ -139,15 +137,12 @@ export function attackDetectionMiddleware(req: Request, res: Response, next: Nex
 // ============================================================================
 // STRICT_CSP=true: Removes unsafe-inline/unsafe-eval (breaks Vite HMR in dev)
 // Default: false (allows Vite/React development tooling)
-const STRICT_CSP = process.env.STRICT_CSP === 'true';
+const STRICT_CSP = process.env.STRICT_CSP === "true";
 
 /**
  * Setup security middleware on Express app
  */
 export function setupSecurityMiddleware(app: Express): void {
-  console.log('[Security] Initializing enterprise security layer...');
-  console.log(`[Security] CSP Mode: ${STRICT_CSP ? 'STRICT' : 'STANDARD'}`);
-
   // ============================================================================
   // CSP DIRECTIVE EXPLANATIONS
   // ============================================================================
@@ -197,8 +192,8 @@ export function setupSecurityMiddleware(app: Express): void {
       ]
     : [
         "'self'",
-        "'unsafe-inline'",  // Required: Vite HMR, React inline handlers, styled-components
-        "'unsafe-eval'",    // Required: Vite dev server hot module replacement
+        "'unsafe-inline'", // Required: Vite HMR, React inline handlers, styled-components
+        "'unsafe-eval'", // Required: Vite dev server hot module replacement
         "https://replit.com",
         "https://www.googletagmanager.com",
         "https://www.google-analytics.com",
@@ -210,68 +205,70 @@ export function setupSecurityMiddleware(app: Express): void {
   // Helmet - Security headers
   // NOTE: HSTS is DISABLED here because Cloudflare already sets it with max-age=63072000
   // Having both creates duplicate headers with different max-age values
-  app.use(helmet({
-    // Disable HSTS - Cloudflare handles this with max-age=63072000; includeSubDomains
-    strictTransportSecurity: false,
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: scriptSrcDirective,
-        styleSrc: [
-          "'self'",
-          "'unsafe-inline'",  // Required: styled-components, Radix UI, Tailwind dynamic styles
-          "https://fonts.googleapis.com",
-          "https://fonts.cdnfonts.com",
-        ],
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com",
-          "https://fonts.cdnfonts.com",
-          "data:",  // Base64 encoded fonts
-        ],
-        imgSrc: [
-          "'self'",
-          "data:",   // Base64 images, SVG data URIs
-          "blob:",   // Canvas/generated images
-          "https:",  // All HTTPS images (required for user-uploaded content)
-          "http:",   // Legacy image support (should migrate to HTTPS)
-        ],
-        connectSrc: [
-          "'self'",
-          "https://*.replit.dev",
-          "https://*.replit.app",
-          "https://api.deepl.com",
-          "https://api.openai.com",
-          "https://generativelanguage.googleapis.com",
-          "https://openrouter.ai",
-          "https://images.unsplash.com",
-          "https://www.google-analytics.com",
-          "https://emrld.ltd",  // Travelpayouts affiliate tracking
-          "https://us.i.posthog.com",  // PostHog analytics ingestion
-          "https://us-assets.i.posthog.com",  // PostHog assets
-          "wss:",  // WebSocket connections
-        ],
-        // Explicit frame-src - controls what can be loaded in iframes
-        frameSrc: [
-          "'self'",
-          "https://www.googletagmanager.com",  // GTM preview/debug mode
-        ],
-        frameAncestors: ["'self'"],  // Prevents clickjacking - only allow embedding from same origin
-        formAction: ["'self'"],      // Forms can only submit to same origin
-        baseUri: ["'self'"],         // Prevents base tag injection attacks
+  app.use(
+    helmet({
+      // Disable HSTS - Cloudflare handles this with max-age=63072000; includeSubDomains
+      strictTransportSecurity: false,
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: scriptSrcDirective,
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'", // Required: styled-components, Radix UI, Tailwind dynamic styles
+            "https://fonts.googleapis.com",
+            "https://fonts.cdnfonts.com",
+          ],
+          fontSrc: [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "https://fonts.cdnfonts.com",
+            "data:", // Base64 encoded fonts
+          ],
+          imgSrc: [
+            "'self'",
+            "data:", // Base64 images, SVG data URIs
+            "blob:", // Canvas/generated images
+            "https:", // All HTTPS images (required for user-uploaded content)
+            "http:", // Legacy image support (should migrate to HTTPS)
+          ],
+          connectSrc: [
+            "'self'",
+            "https://*.replit.dev",
+            "https://*.replit.app",
+            "https://api.deepl.com",
+            "https://api.openai.com",
+            "https://generativelanguage.googleapis.com",
+            "https://openrouter.ai",
+            "https://images.unsplash.com",
+            "https://www.google-analytics.com",
+            "https://emrld.ltd", // Travelpayouts affiliate tracking
+            "https://us.i.posthog.com", // PostHog analytics ingestion
+            "https://us-assets.i.posthog.com", // PostHog assets
+            "wss:", // WebSocket connections
+          ],
+          // Explicit frame-src - controls what can be loaded in iframes
+          frameSrc: [
+            "'self'",
+            "https://www.googletagmanager.com", // GTM preview/debug mode
+          ],
+          frameAncestors: ["'self'"], // Prevents clickjacking - only allow embedding from same origin
+          formAction: ["'self'"], // Forms can only submit to same origin
+          baseUri: ["'self'"], // Prevents base tag injection attacks
+        },
       },
-    },
-    crossOriginEmbedderPolicy: false, // Required for third-party services (fonts, images)
-    crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin resources
-  }));
+      crossOriginEmbedderPolicy: false, // Required for third-party services (fonts, images)
+      crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin resources
+    })
+  );
 
   // Additional security headers
   app.use((req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
     next();
   });
 
@@ -280,20 +277,12 @@ export function setupSecurityMiddleware(app: Express): void {
 
   // Abuse detection middleware - tracks suspicious patterns
   app.use(abuseDetectionMiddleware);
-  console.log('[Security] ✓ Abuse detection middleware enabled');
 
   // Initialize key rotation tracking
   try {
     initializeSessionSecrets();
     logRotationStatus();
-    console.log('[Security] ✓ Key rotation tracking initialized');
-  } catch (err) {
-    console.warn('[Security] Key rotation initialization warning:', err);
-  }
-
-  console.log('[Security] ✓ Helmet security headers configured');
-  console.log('[Security] ✓ Attack detection middleware enabled');
-  console.log('[Security] Enterprise security layer initialized successfully');
+  } catch (err) {}
 }
 
 // ============================================================================
@@ -302,35 +291,35 @@ export function setupSecurityMiddleware(app: Express): void {
 
 // --- Audit Logger ---
 // Comprehensive security event logging with severity levels and PII masking
-export * from './audit-logger';
+export * from "./audit-logger";
 
 // --- Password Policy ---
 // Password strength validation, zxcvbn scoring, dual lockout (IP + username)
-export * from './password-policy';
+export * from "./password-policy";
 
 // --- Rate Limiter ---
 // Configurable rate limiters for login, API, AI, and write operations
-export * from './rate-limiter';
+export * from "./rate-limiter";
 
 // --- File Upload Security ---
 // Magic bytes validation, MIME type verification, malicious content detection
-export * from './file-upload';
+export * from "./file-upload";
 
 // --- Admin Hardening ---
 // Kill switch, IP allowlist, mandatory 2FA, unified auth guards
-export * from './admin-hardening';
+export * from "./admin-hardening";
 
 // --- Pre-Auth Token ---
 // Short-lived HMAC-signed tokens for MFA flow (no session before TOTP)
-export * from './pre-auth-token';
+export * from "./pre-auth-token";
 
 // --- Key Rotation ---
 // Secure key rotation for session secrets, JWT tokens, API keys
-export * from './key-rotation';
+export * from "./key-rotation";
 
 // --- Abuse Detection ---
 // Comprehensive abuse pattern detection with IP reputation scoring
-export * from './abuse-detection';
+export * from "./abuse-detection";
 
 // ============================================================================
 // SECURITY AUTHORITY (Highest Authority Layer)
@@ -341,11 +330,11 @@ export * from './abuse-detection';
 
 // --- Security Authority ---
 // Global enforcement hook, security modes, override registry, evidence generator
-export * from './authority';
+export * from "./authority";
 
 // --- Security Adapters ---
 // Cross-system threat propagation (Data, SEO, Ops, Autonomy, Users)
-export * from './adapters';
+export * from "./adapters";
 // SECURITY OPERATING SYSTEM (SecurityOS)
 // ============================================================================
 // Enterprise-grade security layer with fail-closed architecture
@@ -365,29 +354,29 @@ export {
   getKernelStatus,
   verifyKernelIntegrity,
   detectBypassAttempt,
-  onThreatLevelChange
-} from './core/security-kernel';
+  onThreatLevelChange,
+} from "./core/security-kernel";
 
 // --- RBAC Enforcer ---
 // Complete role-permission matrix with fail-closed middleware
-export * from './rbac/enforcer';
+export * from "./rbac/enforcer";
 
 // --- Policy Linting & Simulation ---
 // Detect conflicts, shadows, and simulate policy changes
-export * from './policy/policy-linter';
-export * from './policy/policy-simulator';
+export * from "./policy/policy-linter";
+export * from "./policy/policy-simulator";
 
 // --- Approval Safety ---
 // Prevent self-approval, circular chains, and rubber-stamping
-export * from './approvals/approval-safety';
+export * from "./approvals/approval-safety";
 
 // --- Security Intelligence ---
 // Real-time correlation, anomaly detection, and threat scoring
-export * from './intelligence/security-intelligence';
+export * from "./intelligence/security-intelligence";
 
 // --- Exfiltration Prevention ---
 // Rate limits, access tracking, and data export guards
-export * from './exfiltration/exfiltration-guard';
+export * from "./exfiltration/exfiltration-guard";
 
 // --- Compliance Evidence ---
 // SOC2, ISO27001, GDPR evidence generation with chain integrity
@@ -397,12 +386,12 @@ export {
   generateComplianceReport,
   exportEvidencePackage,
   verifyEvidenceChain,
-  evidenceGenerator
-} from './compliance/evidence-generator';
+  evidenceGenerator,
+} from "./compliance/evidence-generator";
 
 // --- Drift Detection ---
 // Continuous security configuration monitoring
-export * from './drift/drift-scanner';
+export * from "./drift/drift-scanner";
 
 // --- Security Modes ---
 // Autonomous monitor/enforce/lockdown mode management
@@ -413,12 +402,12 @@ export {
   getModeConfiguration,
   isOperationAllowed,
   modeCheckMiddleware,
-  securityModeManager
-} from './modes/security-modes';
+  securityModeManager,
+} from "./modes/security-modes";
 
 // --- Executive Dashboard ---
 // Real-time security posture and threat status API
-export { securityDashboardRouter } from './api/security-dashboard';
+export { securityDashboardRouter } from "./api/security-dashboard";
 
 // ============================================================================
 // GLOBAL SECURITY AUTHORITY (Phase 2)
@@ -432,24 +421,18 @@ export {
   securityGateMiddleware,
   requiresSecurityGate,
   getGateStatistics,
-  resetGateStatistics
-} from './gate/security-gate';
+  resetGateStatistics,
+} from "./gate/security-gate";
 
 // --- Autonomy Controller ---
 // Security mode integration with all autopilot systems
 // Note: AutonomyImpact already exported from ./authority
-export {
-  autonomyController,
-  autonomyRouter
-} from './autonomy/autonomy-controller';
+export { autonomyController, autonomyRouter } from "./autonomy/autonomy-controller";
 
 // --- Override Registry ---
 // Centralized, auditable security override management
 // Note: OverrideRequest, OverrideType already exported from ./authority
-export {
-  overrideRegistry,
-  overrideRouter
-} from './overrides/override-registry';
+export { overrideRegistry, overrideRouter } from "./overrides/override-registry";
 
 // --- Threat Propagator ---
 // Cross-system threat response coordination
@@ -460,23 +443,23 @@ export {
   propagateAnomaly,
   propagateHighRiskUser,
   registerThreatAdapter,
-  getThreatAdapterStatuses
-} from './adapters/threat-propagator';
+  getThreatAdapterStatuses,
+} from "./adapters/threat-propagator";
 
 // --- Unified Evidence ---
 // Automatic compliance evidence from all systems
-export * from './compliance/unified-evidence';
+export * from "./compliance/unified-evidence";
 
 // ============================================================================
 // SECURITY OS INITIALIZATION
 // ============================================================================
 
-import { initSecurityKernel, isSecurityInitialized } from './core/security-kernel';
-import { detectRBACBypass } from './rbac/enforcer';
-import { startAutoModeMonitoring, getSecurityMode } from './modes/security-modes';
-import { startDriftMonitoring, captureBaseline } from './drift/drift-scanner';
-import { threatPropagator } from './adapters/threat-propagator';
-import { logAdminEvent } from '../governance/security-logger';
+import { initSecurityKernel, isSecurityInitialized } from "./core/security-kernel";
+import { detectRBACBypass } from "./rbac/enforcer";
+import { startAutoModeMonitoring, getSecurityMode } from "./modes/security-modes";
+import { startDriftMonitoring, captureBaseline } from "./drift/drift-scanner";
+import { threatPropagator } from "./adapters/threat-propagator";
+import { logAdminEvent } from "../governance/security-logger";
 
 // Note: autonomyRouter and overrideRouter already exported above
 
@@ -496,12 +479,10 @@ let securityOSInitialized = false;
  */
 export async function initSecurityOS(config: SecurityOSConfig = {}): Promise<void> {
   if (securityOSInitialized) {
-    console.warn('[SecurityOS] Already initialized');
     return;
   }
 
   const startTime = Date.now();
-  console.log('[SecurityOS] Initializing Security Operating System...');
 
   // Initialize security kernel (fail-closed)
   initSecurityKernel();
@@ -512,33 +493,26 @@ export async function initSecurityOS(config: SecurityOSConfig = {}): Promise<voi
   // Start auto-mode monitoring
   if (config.enableAutoMode !== false) {
     startAutoModeMonitoring(config.autoModeIntervalMs || 60000);
-    console.log('[SecurityOS] ✓ Auto-mode monitoring enabled');
   }
 
   // Start drift monitoring
   if (config.enableDriftMonitoring !== false) {
     if (config.captureInitialBaseline) {
       try {
-        await captureBaseline('Initial Baseline', 'system');
-        console.log('[SecurityOS] ✓ Initial baseline captured');
-      } catch (error) {
-        console.warn('[SecurityOS] Failed to capture initial baseline:', error);
-      }
+        await captureBaseline("Initial Baseline", "system");
+      } catch (error) {}
     }
 
     startDriftMonitoring(config.driftIntervalMs || 300000);
-    console.log('[SecurityOS] ✓ Drift monitoring enabled');
   }
 
   securityOSInitialized = true;
   const elapsed = Date.now() - startTime;
 
-  logAdminEvent('system', 'SECURITY_OS_INITIALIZED', 'security', 'system', {
+  logAdminEvent("system", "SECURITY_OS_INITIALIZED", "security", "system", {
     mode: getSecurityMode(),
     elapsed,
   });
-
-  console.log(`[SecurityOS] ✓ Initialized in ${elapsed}ms (Mode: ${getSecurityMode().toUpperCase()})`);
 }
 
 /**

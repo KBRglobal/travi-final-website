@@ -3,7 +3,7 @@
  * Central registry for all execution adapters
  */
 
-import type { Decision, DecisionType } from '../types';
+import type { Decision, DecisionType } from "../types";
 import type {
   ExecutionAdapter,
   ExecutionResult,
@@ -11,11 +11,11 @@ import type {
   RegisteredAdapter,
   SystemRegistration,
   AdapterHealth,
-} from './types';
-import { seoAdapter } from './seo-adapter';
-import { contentAdapter } from './content-adapter';
-import { opsAdapter } from './ops-adapter';
-import { notificationAdapter } from './notification-adapter';
+} from "./types";
+import { seoAdapter } from "./seo-adapter";
+import { contentAdapter } from "./content-adapter";
+import { opsAdapter } from "./ops-adapter";
+import { notificationAdapter } from "./notification-adapter";
 
 // =============================================================================
 // ADAPTER REGISTRY
@@ -59,8 +59,6 @@ export class AdapterRegistry {
       existing.push(adapter.id);
       this.actionToAdapter.set(action, existing);
     }
-
-    console.log(`[Registry] Registered adapter: ${adapter.name}`);
   }
 
   unregister(adapterId: string): boolean {
@@ -80,13 +78,11 @@ export class AdapterRegistry {
     return true;
   }
 
-  registerSystem(system: Omit<SystemRegistration, 'registeredAt'>): void {
+  registerSystem(system: Omit<SystemRegistration, "registeredAt">): void {
     this.systems.set(system.id, {
       ...system,
       registeredAt: new Date(),
     });
-
-    console.log(`[Registry] Registered system: ${system.name} (${system.category})`);
   }
 
   // =========================================================================
@@ -126,7 +122,6 @@ export class AdapterRegistry {
     const adapters = this.getForAction(decision.type);
 
     if (adapters.length === 0) {
-      console.warn(`[Registry] No adapter found for action: ${decision.type}`);
       return [];
     }
 
@@ -141,11 +136,11 @@ export class AdapterRegistry {
         if (registered) {
           registered.lastUsed = new Date();
           registered.executionCount++;
-          if ('blocked' in result) {
+          if ("blocked" in result) {
             // Blocked doesn't count as failure
-          } else if (result.status === 'success' || result.status === 'dry_run') {
+          } else if (result.status === "success" || result.status === "dry_run") {
             registered.successCount++;
-          } else if (result.status === 'failed') {
+          } else if (result.status === "failed") {
             registered.failureCount++;
           }
         }
@@ -185,13 +180,13 @@ export class AdapterRegistry {
     for (const registered of this.adapters.values()) {
       const health = registered.adapter.getHealth();
       switch (health.status) {
-        case 'healthy':
+        case "healthy":
           healthy++;
           break;
-        case 'degraded':
+        case "degraded":
           degraded++;
           break;
-        case 'critical':
+        case "critical":
           critical++;
           break;
         default:
@@ -213,31 +208,19 @@ export class AdapterRegistry {
   // =========================================================================
 
   async initializeAll(): Promise<void> {
-    console.log('[Registry] Initializing all adapters...');
-
     const promises = Array.from(this.adapters.values()).map(r =>
-      r.adapter.initialize().catch(err => {
-        console.error(`[Registry] Failed to initialize ${r.adapter.name}:`, err);
-      })
+      r.adapter.initialize().catch(err => {})
     );
 
     await Promise.all(promises);
-
-    console.log(`[Registry] Initialized ${this.adapters.size} adapters`);
   }
 
   async shutdownAll(): Promise<void> {
-    console.log('[Registry] Shutting down all adapters...');
-
     const promises = Array.from(this.adapters.values()).map(r =>
-      r.adapter.shutdown().catch(err => {
-        console.error(`[Registry] Failed to shutdown ${r.adapter.name}:`, err);
-      })
+      r.adapter.shutdown().catch(err => {})
     );
 
     await Promise.all(promises);
-
-    console.log('[Registry] All adapters shut down');
   }
 
   // =========================================================================
@@ -253,7 +236,8 @@ export class AdapterRegistry {
   } {
     let totalExecutions = 0;
     let totalSuccesses = 0;
-    const byAdapter: Record<string, { executions: number; successes: number; failures: number }> = {};
+    const byAdapter: Record<string, { executions: number; successes: number; failures: number }> =
+      {};
 
     for (const [id, registered] of this.adapters) {
       totalExecutions += registered.executionCount;
@@ -288,7 +272,7 @@ export class AdapterRegistry {
   }
 
   getBindingSystems(): SystemRegistration[] {
-    return this.getAllSystems().filter(s => s.category === 'binding');
+    return this.getAllSystems().filter(s => s.category === "binding");
   }
 }
 

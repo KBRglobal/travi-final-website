@@ -7,10 +7,7 @@
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { contents } from "@shared/schema";
-import {
-  getPlan,
-  updatePlanStatus,
-} from "../plans/repository";
+import { getPlan, updatePlanStatus } from "../plans/repository";
 import type { ChangeItem, ChangePlan } from "../types";
 
 // Type alias for compatibility
@@ -75,10 +72,7 @@ async function createExecution(input: {
   return execution;
 }
 
-async function updateExecution(
-  executionId: string,
-  updates: Partial<Execution>
-): Promise<void> {
+async function updateExecution(executionId: string, updates: Partial<Execution>): Promise<void> {
   const execution = executions.get(executionId);
   if (execution) {
     executions.set(executionId, { ...execution, ...updates });
@@ -259,9 +253,10 @@ export async function processChangeExecutionJob(input: ExecuteJobInput): Promise
 
           try {
             // Execute the change
-            const result = kind === "apply"
-              ? await applyItem(item, executionId)
-              : await rollbackItem(item, executionId);
+            const result =
+              kind === "apply"
+                ? await applyItem(item, executionId)
+                : await rollbackItem(item, executionId);
 
             if (result.success) {
               successCount++;
@@ -312,9 +307,7 @@ export async function processChangeExecutionJob(input: ExecuteJobInput): Promise
     });
 
     // Update plan status
-    const finalStatus = kind === "apply"
-      ? (success ? "applied" : "failed")
-      : "rolled_back";
+    const finalStatus = kind === "apply" ? (success ? "applied" : "failed") : "rolled_back";
     await updatePlanStatus(planId, finalStatus, userId);
 
     // Save result summary
@@ -452,24 +445,30 @@ const handlers: Record<string, ChangeHandler> = {
       };
 
       const updates = item.afterValue as Record<string, unknown>;
-      await db.update(contents).set({
-        metaTitle: updates.metaTitle as string | undefined,
-        metaDescription: updates.metaDescription as string | undefined,
-        slug: updates.slug as string | undefined,
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          metaTitle: updates.metaTitle as string | undefined,
+          metaDescription: updates.metaDescription as string | undefined,
+          slug: updates.slug as string | undefined,
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
       const contentId = item.targetId;
       const data = rollbackData as Record<string, unknown>;
-      await db.update(contents).set({
-        metaTitle: data.metaTitle as string | null,
-        metaDescription: data.metaDescription as string | null,
-        slug: data.slug as string | null,
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          metaTitle: data.metaTitle as string | null,
+          metaDescription: data.metaDescription as string | null,
+          slug: data.slug as string | null,
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
     },
   },
 
@@ -484,19 +483,25 @@ const handlers: Record<string, ChangeHandler> = {
       const rollbackData = { ...current };
       const updates = item.afterValue as Record<string, unknown>;
 
-      await db.update(contents).set({
-        ...updates,
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          ...updates,
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
       const contentId = item.targetId;
-      await db.update(contents).set({
-        ...(rollbackData as object),
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          ...(rollbackData as object),
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
     },
   },
 
@@ -510,22 +515,28 @@ const handlers: Record<string, ChangeHandler> = {
 
       const rollbackData = { status: current.status, publishedAt: current.publishedAt };
 
-      await db.update(contents).set({
-        status: "published",
-        publishedAt: new Date(),
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          status: "published",
+          publishedAt: new Date(),
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
       const contentId = item.targetId;
       const data = rollbackData as { status: string; publishedAt: Date | null };
-      await db.update(contents).set({
-        status: data.status as "draft" | "published",
-        publishedAt: data.publishedAt,
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          status: data.status as "draft" | "published",
+          publishedAt: data.publishedAt,
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
     },
   },
 
@@ -539,21 +550,27 @@ const handlers: Record<string, ChangeHandler> = {
 
       const rollbackData = { status: current.status, publishedAt: current.publishedAt };
 
-      await db.update(contents).set({
-        status: "draft",
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          status: "draft",
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
 
       return { rollbackData };
     },
     async rollback(item, rollbackData) {
       const contentId = item.targetId;
       const data = rollbackData as { status: string; publishedAt: Date | null };
-      await db.update(contents).set({
-        status: data.status as "draft" | "published",
-        publishedAt: data.publishedAt,
-        updatedAt: new Date(),
-      } as any).where(eq(contents.id, contentId));
+      await db
+        .update(contents)
+        .set({
+          status: data.status as "draft" | "published",
+          publishedAt: data.publishedAt,
+          updatedAt: new Date(),
+        } as any)
+        .where(eq(contents.id, contentId));
     },
   },
 
@@ -561,24 +578,21 @@ const handlers: Record<string, ChangeHandler> = {
   canonical_set: {
     async apply(item) {
       // In production, integrate with canonical-manager module
-      console.log(`[PCMS] canonical_set: ${item.targetId} → ${item.afterValue}`);
+
       return { rollbackData: { previousCanonical: item.beforeValue } };
     },
     async rollback(item, rollbackData) {
       const data = rollbackData as { previousCanonical: unknown };
-      console.log(`[PCMS] canonical_set rollback: ${item.targetId} → ${data.previousCanonical}`);
     },
   },
 
   // Canonical Remove Handler
   canonical_remove: {
     async apply(item) {
-      console.log(`[PCMS] canonical_remove: ${item.targetId}`);
       return { rollbackData: { previousCanonical: item.beforeValue } };
     },
     async rollback(item, rollbackData) {
       const data = rollbackData as { previousCanonical: unknown };
-      console.log(`[PCMS] canonical_remove rollback: ${item.targetId} → ${data.previousCanonical}`);
     },
   },
 
@@ -586,45 +600,35 @@ const handlers: Record<string, ChangeHandler> = {
   aeo_regenerate: {
     async apply(item) {
       // In production, enqueue AEO capsule generation job
-      console.log(`[PCMS] aeo_regenerate: ${item.targetId}`);
+
       return { rollbackData: { previousCapsule: item.beforeValue } };
     },
     async rollback(item, rollbackData) {
       // AEO regeneration typically cannot be rolled back easily
-      console.log(`[PCMS] aeo_regenerate rollback: ${item.targetId} (no-op)`);
     },
   },
 
   // Link Add/Remove Handler (stub)
   link_add: {
     async apply(item) {
-      console.log(`[PCMS] link_add: ${item.targetId}`);
       return { rollbackData: { added: item.afterValue } };
     },
-    async rollback(item, rollbackData) {
-      console.log(`[PCMS] link_add rollback: ${item.targetId}`);
-    },
+    async rollback(item, rollbackData) {},
   },
 
   link_remove: {
     async apply(item) {
-      console.log(`[PCMS] link_remove: ${item.targetId}`);
       return { rollbackData: { removed: item.beforeValue } };
     },
-    async rollback(item, rollbackData) {
-      console.log(`[PCMS] link_remove rollback: ${item.targetId}`);
-    },
+    async rollback(item, rollbackData) {},
   },
 
   // Entity handlers (stub)
   entity_update: {
     async apply(item) {
-      console.log(`[PCMS] entity_update: ${item.targetId}`);
       return { rollbackData: item.beforeValue };
     },
-    async rollback(item, rollbackData) {
-      console.log(`[PCMS] entity_update rollback: ${item.targetId}`);
-    },
+    async rollback(item, rollbackData) {},
   },
 
   entity_merge: {
@@ -640,33 +644,24 @@ const handlers: Record<string, ChangeHandler> = {
   // Experiment handlers (stub)
   experiment_start: {
     async apply(item) {
-      console.log(`[PCMS] experiment_start: ${item.targetId}`);
       return { rollbackData: { wasRunning: false } };
     },
-    async rollback(item, rollbackData) {
-      console.log(`[PCMS] experiment_start rollback: ${item.targetId}`);
-    },
+    async rollback(item, rollbackData) {},
   },
 
   experiment_stop: {
     async apply(item) {
-      console.log(`[PCMS] experiment_stop: ${item.targetId}`);
       return { rollbackData: { wasRunning: true } };
     },
-    async rollback(item, rollbackData) {
-      console.log(`[PCMS] experiment_stop rollback: ${item.targetId}`);
-    },
+    async rollback(item, rollbackData) {},
   },
 
   // Monetization handler (stub)
   monetization_update: {
     async apply(item) {
-      console.log(`[PCMS] monetization_update: ${item.targetId}`);
       return { rollbackData: item.beforeValue };
     },
-    async rollback(item, rollbackData) {
-      console.log(`[PCMS] monetization_update rollback: ${item.targetId}`);
-    },
+    async rollback(item, rollbackData) {},
   },
 };
 
@@ -699,9 +694,7 @@ export async function enqueueExecutionJob(
       executionId: execution.id,
       kind,
       userId,
-    }).catch(err => {
-      console.error(`[PCMS] Job failed:`, err);
-    });
+    }).catch(err => {});
   });
 
   return { executionId: execution.id };

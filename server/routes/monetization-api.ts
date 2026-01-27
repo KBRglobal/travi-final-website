@@ -2,12 +2,7 @@ import type { Express, Request, Response } from "express";
 import { Router } from "express";
 import { db } from "../db";
 import { eq, desc } from "drizzle-orm";
-import {
-  partners,
-  payouts,
-  affiliateClicks,
-  insertAffiliateLinkSchema,
-} from "@shared/schema";
+import { partners, payouts, affiliateClicks, insertAffiliateLinkSchema } from "@shared/schema";
 import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";
 import { storage } from "../storage";
 import { z } from "zod";
@@ -27,11 +22,9 @@ async function logAuditEvent(
   newValue?: unknown
 ) {
   try {
-    const { logAuditEvent: logAudit } = await import("../security/audit-logger") as any;
+    const { logAuditEvent: logAudit } = (await import("../security/audit-logger")) as any;
     await logAudit(req, action, entityType, entityId, description, oldValue, newValue);
-  } catch (error) {
-    console.error("[Monetization API] Audit log failed:", error);
-  }
+  } catch (error) {}
 }
 
 export function registerMonetizationApiRoutes(app: Express): void {
@@ -44,15 +37,15 @@ export function registerMonetizationApiRoutes(app: Express): void {
   router.post("/affiliate/click", async (req: Request, res: Response) => {
     try {
       const { attractionId, destination } = req.body;
-      
-      if (!attractionId || typeof attractionId !== 'string') {
+
+      if (!attractionId || typeof attractionId !== "string") {
         return res.status(400).json({ error: "attractionId is required and must be a string" });
       }
-      
+
       const userAgent = req.headers["user-agent"] || null;
       const referrer = req.headers.referer || null;
       const sessionId = (req as any).sessionID || req.headers["x-session-id"] || null;
-      
+
       await db.insert(affiliateClicks).values({
         attractionId,
         destination,
@@ -60,10 +53,9 @@ export function registerMonetizationApiRoutes(app: Express): void {
         referrer,
         sessionId,
       });
-      
+
       res.json({ success: true });
     } catch (error) {
-      console.error("[Affiliate Click] Error tracking click:", error);
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -74,12 +66,9 @@ export function registerMonetizationApiRoutes(app: Express): void {
 
   router.post("/affiliate/link", async (req: Request, res: Response) => {
     try {
-      const { 
-        isAffiliateHooksEnabled, 
-        useAffiliateLinkHook, 
-        useAffiliateInjectionHook 
-      } = await import("../monetization/affiliate-hooks");
-      
+      const { isAffiliateHooksEnabled, useAffiliateLinkHook, useAffiliateInjectionHook } =
+        await import("../monetization/affiliate-hooks");
+
       if (!isAffiliateHooksEnabled()) {
         return res.json({
           allowed: false,
@@ -139,10 +128,9 @@ export function registerMonetizationApiRoutes(app: Express): void {
         disclosureRequired: injectionResult.disclosureRequired,
       });
     } catch (error) {
-      console.error("Error generating affiliate link:", error);
-      res.status(500).json({ 
-        allowed: false, 
-        reason: "Failed to generate affiliate link" 
+      res.status(500).json({
+        allowed: false,
+        reason: "Failed to generate affiliate link",
       });
     }
   });
@@ -157,7 +145,6 @@ export function registerMonetizationApiRoutes(app: Express): void {
       const links = await storage.getAffiliateLinks(contentId as string | undefined);
       res.json(links);
     } catch (error) {
-      console.error("Error fetching affiliate links:", error);
       res.status(500).json({ error: "Failed to fetch affiliate links" });
     }
   });
@@ -170,78 +157,118 @@ export function registerMonetizationApiRoutes(app: Express): void {
       }
       res.json(link);
     } catch (error) {
-      console.error("Error fetching affiliate link:", error);
       res.status(500).json({ error: "Failed to fetch affiliate link" });
     }
   });
 
-  router.post("/affiliate-links", requirePermission("canAccessAffiliates"), checkReadOnlyMode, async (req: Request, res: Response) => {
-    try {
-      const parsed = insertAffiliateLinkSchema.parse(req.body);
-      const link = await storage.createAffiliateLink(parsed);
-      await logAuditEvent(req, "create", "affiliate_link", link.id, `Created affiliate link: ${link.anchor}`, undefined, { anchor: link.anchor, url: link.url });
-      res.status(201).json(link);
-    } catch (error) {
-      console.error("Error creating affiliate link:", error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Validation error", details: error.errors });
+  router.post(
+    "/affiliate-links",
+    requirePermission("canAccessAffiliates"),
+    checkReadOnlyMode,
+    async (req: Request, res: Response) => {
+      try {
+        const parsed = insertAffiliateLinkSchema.parse(req.body);
+        const link = await storage.createAffiliateLink(parsed);
+        await logAuditEvent(
+          req,
+          "create",
+          "affiliate_link",
+          link.id,
+          `Created affiliate link: ${link.anchor}`,
+          undefined,
+          { anchor: link.anchor, url: link.url }
+        );
+        res.status(201).json(link);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          return res.status(400).json({ error: "Validation error", details: error.errors });
+        }
+        res.status(500).json({ error: "Failed to create affiliate link" });
       }
-      res.status(500).json({ error: "Failed to create affiliate link" });
     }
-  });
+  );
 
-  router.patch("/affiliate-links/:id", requirePermission("canAccessAffiliates"), checkReadOnlyMode, async (req: Request, res: Response) => {
-    try {
-      const existingLink = await storage.getAffiliateLink(req.params.id);
-      const link = await storage.updateAffiliateLink(req.params.id, req.body);
-      if (!link) {
-        return res.status(404).json({ error: "Affiliate link not found" });
+  router.patch(
+    "/affiliate-links/:id",
+    requirePermission("canAccessAffiliates"),
+    checkReadOnlyMode,
+    async (req: Request, res: Response) => {
+      try {
+        const existingLink = await storage.getAffiliateLink(req.params.id);
+        const link = await storage.updateAffiliateLink(req.params.id, req.body);
+        if (!link) {
+          return res.status(404).json({ error: "Affiliate link not found" });
+        }
+        await logAuditEvent(
+          req,
+          "update",
+          "affiliate_link",
+          link.id,
+          `Updated affiliate link: ${link.anchor}`,
+          existingLink ? { anchor: existingLink.anchor, url: existingLink.url } : undefined,
+          { anchor: link.anchor, url: link.url }
+        );
+        res.json(link);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update affiliate link" });
       }
-      await logAuditEvent(req, "update", "affiliate_link", link.id, `Updated affiliate link: ${link.anchor}`, existingLink ? { anchor: existingLink.anchor, url: existingLink.url } : undefined, { anchor: link.anchor, url: link.url });
-      res.json(link);
-    } catch (error) {
-      console.error("Error updating affiliate link:", error);
-      res.status(500).json({ error: "Failed to update affiliate link" });
     }
-  });
+  );
 
-  router.delete("/affiliate-links/:id", requirePermission("canAccessAffiliates"), checkReadOnlyMode, async (req: Request, res: Response) => {
-    try {
-      const existingLink = await storage.getAffiliateLink(req.params.id);
-      await storage.deleteAffiliateLink(req.params.id);
-      if (existingLink) {
-        await logAuditEvent(req, "delete", "affiliate_link", req.params.id, `Deleted affiliate link: ${existingLink.anchor}`, { anchor: existingLink.anchor, url: existingLink.url });
+  router.delete(
+    "/affiliate-links/:id",
+    requirePermission("canAccessAffiliates"),
+    checkReadOnlyMode,
+    async (req: Request, res: Response) => {
+      try {
+        const existingLink = await storage.getAffiliateLink(req.params.id);
+        await storage.deleteAffiliateLink(req.params.id);
+        if (existingLink) {
+          await logAuditEvent(
+            req,
+            "delete",
+            "affiliate_link",
+            req.params.id,
+            `Deleted affiliate link: ${existingLink.anchor}`,
+            { anchor: existingLink.anchor, url: existingLink.url }
+          );
+        }
+        res.status(204).send();
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete affiliate link" });
       }
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting affiliate link:", error);
-      res.status(500).json({ error: "Failed to delete affiliate link" });
     }
-  });
+  );
 
   // ============================================================================
   // PARTNERS MANAGEMENT
   // ============================================================================
 
-  router.post("/partners", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const partner = await db.insert(partners).values(req.body).returning();
-      res.json(partner[0]);
-    } catch (error) {
-      console.error("Error creating partner:", error);
-      res.status(500).json({ error: "Failed to create partner" });
+  router.post(
+    "/partners",
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const partner = await db.insert(partners).values(req.body).returning();
+        res.json(partner[0]);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to create partner" });
+      }
     }
-  });
+  );
 
-  router.get("/partners", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const allPartners = await db.select().from(partners);
-      res.json(allPartners);
-    } catch (error) {
-      console.error("Error fetching partners:", error);
-      res.status(500).json({ error: "Failed to fetch partners" });
+  router.get(
+    "/partners",
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const allPartners = await db.select().from(partners);
+        res.json(allPartners);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch partners" });
+      }
     }
-  });
+  );
 
   router.get("/partners/:id/dashboard", requireAuth, async (req: Request, res: Response) => {
     try {
@@ -250,22 +277,24 @@ export function registerMonetizationApiRoutes(app: Express): void {
       const metrics = await partnerDashboard.getPartnerMetrics(id);
       res.json(metrics);
     } catch (error) {
-      console.error("Error fetching partner dashboard:", error);
       res.status(500).json({ error: "Failed to fetch partner dashboard" });
     }
   });
 
-  router.post("/partners/:id/inject-links", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const { affiliateInjector } = await import("../monetization/affiliate-injector");
-      const { contentId, dryRun } = req.body;
-      const result = await affiliateInjector.injectAffiliateLinks(contentId, dryRun);
-      res.json(result);
-    } catch (error) {
-      console.error("Error injecting affiliate links:", error);
-      res.status(500).json({ error: "Failed to inject affiliate links" });
+  router.post(
+    "/partners/:id/inject-links",
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const { affiliateInjector } = await import("../monetization/affiliate-injector");
+        const { contentId, dryRun } = req.body;
+        const result = await affiliateInjector.injectAffiliateLinks(contentId, dryRun);
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to inject affiliate links" });
+      }
     }
-  });
+  );
 
   router.post("/partners/:id/track-click", async (req: Request, res: Response) => {
     try {
@@ -274,7 +303,6 @@ export function registerMonetizationApiRoutes(app: Express): void {
       await affiliateInjector.trackClick(trackingCode);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error tracking click:", error);
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -283,40 +311,50 @@ export function registerMonetizationApiRoutes(app: Express): void {
   // PAYOUTS
   // ============================================================================
 
-  router.post("/payouts", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const { payoutManager } = await import("../monetization/payouts");
-      const result = await payoutManager.schedulePayout(req.body);
-      if (result) {
-        res.json({ success: true, payoutId: result });
-      } else {
+  router.post(
+    "/payouts",
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const { payoutManager } = await import("../monetization/payouts");
+        const result = await payoutManager.schedulePayout(req.body);
+        if (result) {
+          res.json({ success: true, payoutId: result });
+        } else {
+          res.status(500).json({ error: "Failed to schedule payout" });
+        }
+      } catch (error) {
         res.status(500).json({ error: "Failed to schedule payout" });
       }
-    } catch (error) {
-      console.error("Error scheduling payout:", error);
-      res.status(500).json({ error: "Failed to schedule payout" });
     }
-  });
+  );
 
-  router.post("/payouts/:id/process", requirePermission("canManageSettings"), async (req: Request, res: Response) => {
-    try {
-      const { payoutManager } = await import("../monetization/payouts");
-      const { id } = req.params;
-      const result = await payoutManager.processPayout(id);
-      res.json({ success: result });
-    } catch (error) {
-      console.error("Error processing payout:", error);
-      res.status(500).json({ error: "Failed to process payout" });
+  router.post(
+    "/payouts/:id/process",
+    requirePermission("canManageSettings"),
+    async (req: Request, res: Response) => {
+      try {
+        const { payoutManager } = await import("../monetization/payouts");
+        const { id } = req.params;
+        const result = await payoutManager.processPayout(id);
+        res.json({ success: result });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to process payout" });
+      }
     }
-  });
+  );
 
   router.get("/payouts/partner/:partnerId", requireAuth, async (req: Request, res: Response) => {
     try {
       const { partnerId } = req.params;
-      const payoutHistory = await db.select().from(payouts).where(eq(payouts.partnerId, partnerId)).orderBy(desc(payouts.createdAt)).limit(20);
+      const payoutHistory = await db
+        .select()
+        .from(payouts)
+        .where(eq(payouts.partnerId, partnerId))
+        .orderBy(desc(payouts.createdAt))
+        .limit(20);
       res.json(payoutHistory);
     } catch (error) {
-      console.error("Error fetching payout history:", error);
       res.status(500).json({ error: "Failed to fetch payout history" });
     }
   });

@@ -8,41 +8,54 @@
  * - Detects and resolves canonical conflicts
  */
 
-import { db } from '../db';
-import { contents, translations } from '../../shared/schema';
-import { eq, and, ne } from 'drizzle-orm';
-import {
-  SEOEngineConfig,
-  CanonicalResult,
-  AlternateLink,
-  ContentType,
-} from './types';
+import { db } from "../db";
+import { contents, translations } from "../../shared/schema";
+import { eq, and, ne } from "drizzle-orm";
+import { SEOEngineConfig, CanonicalResult, AlternateLink, ContentType } from "./types";
 
 export class CanonicalEngine {
   private config: SEOEngineConfig;
 
   // RTL locales
-  private static RTL_LOCALES = ['ar', 'he', 'fa', 'ur'];
+  private static RTL_LOCALES = ["ar", "he", "fa", "ur"];
 
-  // Locale to hreflang mapping
+  // Locale to hreflang mapping - All 30 supported locales
   private static LOCALE_MAP: Record<string, string> = {
-    en: 'en',
-    ar: 'ar',
-    zh: 'zh-Hans',
-    hi: 'hi',
-    ru: 'ru',
-    de: 'de',
-    fr: 'fr',
-    ja: 'ja',
-    ko: 'ko',
-    pt: 'pt',
-    es: 'es',
-    it: 'it',
-    nl: 'nl',
-    tr: 'tr',
-    fa: 'fa',
-    ur: 'ur',
-    he: 'he',
+    // Tier 1 - Core
+    en: "en",
+    ar: "ar",
+    hi: "hi",
+    // Tier 2 - High ROI
+    zh: "zh-Hans",
+    ru: "ru",
+    ur: "ur",
+    fr: "fr",
+    id: "id",
+    // Tier 3 - Growing (Southeast Asia focus)
+    de: "de",
+    fa: "fa",
+    bn: "bn",
+    fil: "fil",
+    th: "th",
+    vi: "vi",
+    ms: "ms",
+    // Tier 4 - Niche
+    es: "es",
+    tr: "tr",
+    it: "it",
+    ja: "ja",
+    ko: "ko",
+    he: "he",
+    pt: "pt",
+    // Tier 5 - European expansion
+    nl: "nl",
+    pl: "pl",
+    sv: "sv",
+    el: "el",
+    cs: "cs",
+    ro: "ro",
+    uk: "uk",
+    hu: "hu",
   };
 
   constructor(config: SEOEngineConfig) {
@@ -52,10 +65,7 @@ export class CanonicalEngine {
   /**
    * Get canonical URL for content
    */
-  async getCanonicalUrl(
-    contentId: string,
-    locale?: string
-  ): Promise<CanonicalResult> {
+  async getCanonicalUrl(contentId: string, locale?: string): Promise<CanonicalResult> {
     const content = await db.query.contents.findFirst({
       where: eq(contents.id, contentId),
     });
@@ -65,7 +75,8 @@ export class CanonicalEngine {
     }
 
     // Check if this content has a canonical source (is a duplicate)
-    const isCanonicalContent = !content.canonicalContentId || content.canonicalContentId === content.id;
+    const isCanonicalContent =
+      !content.canonicalContentId || content.canonicalContentId === content.id;
     let canonicalSource: string | undefined;
 
     if (!isCanonicalContent && content.canonicalContentId) {
@@ -99,7 +110,7 @@ export class CanonicalEngine {
     const path = `${basePath}/${slug}`;
 
     // English is default, no locale prefix
-    if (!locale || locale === 'en') {
+    if (!locale || locale === "en") {
       return `${this.config.baseUrl}${path}`;
     }
 
@@ -111,17 +122,17 @@ export class CanonicalEngine {
    */
   private getBasePath(type: ContentType): string {
     const paths: Record<ContentType, string> = {
-      attraction: '/attraction',
-      hotel: '/hotel',
-      article: '/article',
-      dining: '/dining',
-      district: '/district',
-      transport: '/transport',
-      event: '/event',
-      itinerary: '/itinerary',
-      landing_page: '/guide',
-      case_study: '/case-study',
-      off_plan: '/property',
+      attraction: "/attraction",
+      hotel: "/hotel",
+      article: "/article",
+      dining: "/dining",
+      district: "/district",
+      transport: "/transport",
+      event: "/event",
+      itinerary: "/itinerary",
+      landing_page: "/guide",
+      case_study: "/case-study",
+      off_plan: "/property",
     };
     return paths[type] || `/${type}`;
   }
@@ -139,22 +150,19 @@ export class CanonicalEngine {
 
     // Always add x-default pointing to English version
     alternates.push({
-      hreflang: 'x-default',
+      hreflang: "x-default",
       href: `${this.config.baseUrl}${path}`,
     });
 
     // Add English version
     alternates.push({
-      hreflang: 'en',
+      hreflang: "en",
       href: `${this.config.baseUrl}${path}`,
     });
 
     // Get available translations
     const contentTranslations = await db.query.translations.findMany({
-      where: and(
-        eq(translations.contentId, content.id),
-        eq(translations.status, 'completed')
-      ),
+      where: and(eq(translations.contentId, content.id), eq(translations.status, "completed")),
     });
 
     // Add alternate links for each completed translation
@@ -169,17 +177,15 @@ export class CanonicalEngine {
     // Also add supported locales that might not have translations yet
     // (for future-proofing and proper hreflang setup)
     for (const locale of this.config.supportedLocales) {
-      if (locale === 'en') continue;
+      if (locale === "en") continue;
 
       const exists = alternates.some(
-        (alt) => alt.hreflang === (CanonicalEngine.LOCALE_MAP[locale] || locale)
+        alt => alt.hreflang === (CanonicalEngine.LOCALE_MAP[locale] || locale)
       );
 
       if (!exists) {
         // Check if translation exists
-        const hasTranslation = contentTranslations.some(
-          (t) => t.locale === locale
-        );
+        const hasTranslation = contentTranslations.some(t => t.locale === locale);
 
         if (hasTranslation) {
           alternates.push({
@@ -206,10 +212,10 @@ export class CanonicalEngine {
   generateHreflangTags(alternates: AlternateLink[]): string {
     return alternates
       .map(
-        (alt) =>
+        alt =>
           `<link rel="alternate" hreflang="${alt.hreflang}" href="${this.escapeHtml(alt.href)}">`
       )
-      .join('\n');
+      .join("\n");
   }
 
   /**
@@ -232,7 +238,7 @@ export class CanonicalEngine {
       where: and(
         eq(contents.type, content.type),
         ne(contents.id, contentId),
-        eq(contents.status, 'published')
+        eq(contents.status, "published")
       ),
     });
 
@@ -264,10 +270,7 @@ export class CanonicalEngine {
   /**
    * Set canonical relationship between content
    */
-  async setCanonicalSource(
-    contentId: string,
-    canonicalContentId: string
-  ): Promise<boolean> {
+  async setCanonicalSource(contentId: string, canonicalContentId: string): Promise<boolean> {
     try {
       await db
         .update(contents)
@@ -279,7 +282,6 @@ export class CanonicalEngine {
 
       return true;
     } catch (error) {
-      console.error('Failed to set canonical source:', error);
       return false;
     }
   }
@@ -299,7 +301,6 @@ export class CanonicalEngine {
 
       return true;
     } catch (error) {
-      console.error('Failed to remove canonical source:', error);
       return false;
     }
   }
@@ -320,7 +321,7 @@ export class CanonicalEngine {
     });
 
     if (!content) {
-      return { isValid: false, issues: ['Content not found'], suggestions: [] };
+      return { isValid: false, issues: ["Content not found"], suggestions: [] };
     }
 
     // Check if canonical points to existing content
@@ -330,9 +331,9 @@ export class CanonicalEngine {
       });
 
       if (!canonicalContent) {
-        issues.push('Canonical points to non-existent content');
-      } else if (canonicalContent.status !== 'published') {
-        issues.push('Canonical points to unpublished content');
+        issues.push("Canonical points to non-existent content");
+      } else if (canonicalContent.status !== "published") {
+        issues.push("Canonical points to unpublished content");
       }
     }
 
@@ -340,7 +341,7 @@ export class CanonicalEngine {
     if (content.canonicalContentId) {
       const circular = await this.hasCircularCanonical(contentId);
       if (circular) {
-        issues.push('Circular canonical reference detected');
+        issues.push("Circular canonical reference detected");
       }
     }
 
@@ -390,7 +391,7 @@ export class CanonicalEngine {
     const words1 = new Set(str1.toLowerCase().split(/\s+/));
     const words2 = new Set(str2.toLowerCase().split(/\s+/));
 
-    const intersection = new Set([...words1].filter((x) => words2.has(x)));
+    const intersection = new Set([...words1].filter(x => words2.has(x)));
     const union = new Set([...words1, ...words2]);
 
     return intersection.size / union.size;
@@ -401,12 +402,12 @@ export class CanonicalEngine {
    */
   private escapeHtml(text: string): string {
     const htmlEntities: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
     };
-    return text.replace(/[&<>"']/g, (char) => htmlEntities[char] || char);
+    return text.replace(/[&<>"']/g, char => htmlEntities[char] || char);
   }
 }

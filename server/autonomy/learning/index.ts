@@ -5,16 +5,13 @@
  * Feature flag: ENABLE_AUTONOMY_LEARNING=true
  */
 
-export * from './types';
-export * from './engine';
+export * from "./types";
+export * from "./engine";
 
-import { DEFAULT_LEARNING_CONFIG } from './types';
+import { DEFAULT_LEARNING_CONFIG } from "./types";
 
 export function initLearningEngine(): void {
-  const enabled = process.env.ENABLE_AUTONOMY_LEARNING === 'true';
-  console.log('[LearningEngine] Initialized:', { enabled });
+  const enabled = process.env.ENABLE_AUTONOMY_LEARNING === "true";
 }
 
-export function shutdownLearningEngine(): void {
-  console.log('[LearningEngine] Shutdown');
-}
+export function shutdownLearningEngine(): void {}

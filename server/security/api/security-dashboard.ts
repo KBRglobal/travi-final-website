@@ -10,11 +10,25 @@
  */
 
 import { Router } from "express";
-import { getSecurityMode, getModeConfiguration, assessThreatLevel, setSecurityMode, ThreatAssessment } from "../modes/security-modes";
-import { getIntelligenceSummary, getRecentAnomalies, getHighRiskUsers } from "../intelligence/security-intelligence";
+import {
+  getSecurityMode,
+  getModeConfiguration,
+  assessThreatLevel,
+  setSecurityMode,
+  ThreatAssessment,
+} from "../modes/security-modes";
+import {
+  getIntelligenceSummary,
+  getRecentAnomalies,
+  getHighRiskUsers,
+} from "../intelligence/security-intelligence";
 import { lintPolicies, LintResult } from "../policy/policy-linter";
 import { scanForDrift, getDriftHistory, DriftScanResult } from "../drift/drift-scanner";
-import { generateComplianceReport, verifyEvidenceChain, ComplianceFramework } from "../compliance/evidence-generator";
+import {
+  generateComplianceReport,
+  verifyEvidenceChain,
+  ComplianceFramework,
+} from "../compliance/evidence-generator";
 import { exfiltrationGuard } from "../exfiltration/exfiltration-guard";
 import { getApprovalSafetyMetrics } from "../approvals/approval-safety";
 import { AdminRole } from "../../governance/types";
@@ -248,9 +262,9 @@ class SecurityDashboardService {
     const anomalies = getRecentAnomalies(24);
 
     return {
-      active: anomalies.filter((a) => a.severity === "critical" || a.severity === "high").length,
+      active: anomalies.filter(a => a.severity === "critical" || a.severity === "high").length,
       last24h: anomalies.length,
-      critical: anomalies.filter((a) => a.severity === "critical").length,
+      critical: anomalies.filter(a => a.severity === "critical").length,
     };
   }
 
@@ -313,13 +327,19 @@ class SecurityDashboardService {
       {
         name: "Anomalies Detected (24h)",
         value: intel.anomaliesLast24h,
-        status: intel.anomaliesLast24h > 20 ? "critical" : intel.anomaliesLast24h > 10 ? "warning" : "good",
+        status:
+          intel.anomaliesLast24h > 20
+            ? "critical"
+            : intel.anomaliesLast24h > 10
+              ? "warning"
+              : "good",
         trend: "stable",
       },
       {
         name: "High-Risk Users",
         value: highRiskUsers.length,
-        status: highRiskUsers.length > 5 ? "critical" : highRiskUsers.length > 2 ? "warning" : "good",
+        status:
+          highRiskUsers.length > 5 ? "critical" : highRiskUsers.length > 2 ? "warning" : "good",
       },
       {
         name: "Policy Health Score",
@@ -395,7 +415,7 @@ class SecurityDashboardService {
 
     // Check for critical drift
     const driftHistory = getDriftHistory(24);
-    const criticalDrifts = driftHistory.filter((d) => d.severity === "critical");
+    const criticalDrifts = driftHistory.filter(d => d.severity === "critical");
     if (criticalDrifts.length > 0) {
       alerts.push({
         id: `drift_${Date.now()}`,
@@ -586,5 +606,3 @@ securityDashboardRouter.get("/health", (req, res) => {
     timestamp: new Date(),
   });
 });
-
-console.log("[SecurityDashboard] Module loaded");

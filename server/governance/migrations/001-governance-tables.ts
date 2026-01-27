@@ -44,8 +44,6 @@ async function checkEnumExists(enumName: string): Promise<boolean> {
 export async function runMigration(): Promise<MigrationResult[]> {
   const results: MigrationResult[] = [];
 
-  console.log("\n🔄 Running Governance Tables Migration...\n");
-
   try {
     // 1. Create governance_role enum if not exists
     const enumExists = await checkEnumExists("governance_role");
@@ -56,10 +54,8 @@ export async function runMigration(): Promise<MigrationResult[]> {
         )
       `);
       results.push({ table: "governance_role (enum)", action: "created" });
-      console.log("✅ Created governance_role enum");
     } else {
       results.push({ table: "governance_role (enum)", action: "exists" });
-      console.log("⏭️  governance_role enum already exists");
     }
 
     // 2. Create governance_roles table
@@ -78,13 +74,15 @@ export async function runMigration(): Promise<MigrationResult[]> {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_roles_name" ON governance_roles (name)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_roles_priority" ON governance_roles (priority)`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_roles_name" ON governance_roles (name)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_roles_priority" ON governance_roles (priority)`
+      );
       results.push({ table: "governance_roles", action: "created" });
-      console.log("✅ Created governance_roles table");
     } else {
       results.push({ table: "governance_roles", action: "exists" });
-      console.log("⏭️  governance_roles table already exists");
     }
 
     // 3. Create governance_permissions table
@@ -103,14 +101,18 @@ export async function runMigration(): Promise<MigrationResult[]> {
           created_at TIMESTAMP DEFAULT NOW()
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_perms_role" ON governance_permissions (role_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_perms_action" ON governance_permissions (action, resource)`);
-      await db.execute(sql`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_gov_perms_unique" ON governance_permissions (role_id, action, resource, scope, COALESCE(scope_value, ''))`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_perms_role" ON governance_permissions (role_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_perms_action" ON governance_permissions (action, resource)`
+      );
+      await db.execute(
+        sql`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_gov_perms_unique" ON governance_permissions (role_id, action, resource, scope, COALESCE(scope_value, ''))`
+      );
       results.push({ table: "governance_permissions", action: "created" });
-      console.log("✅ Created governance_permissions table");
     } else {
       results.push({ table: "governance_permissions", action: "exists" });
-      console.log("⏭️  governance_permissions table already exists");
     }
 
     // 4. Create user_role_assignments table
@@ -129,14 +131,18 @@ export async function runMigration(): Promise<MigrationResult[]> {
           is_active BOOLEAN NOT NULL DEFAULT true
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_user_role_user" ON user_role_assignments (user_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_user_role_role" ON user_role_assignments (role_id)`);
-      await db.execute(sql`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_user_role_unique" ON user_role_assignments (user_id, role_id, scope, COALESCE(scope_value, ''))`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_user_role_user" ON user_role_assignments (user_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_user_role_role" ON user_role_assignments (role_id)`
+      );
+      await db.execute(
+        sql`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_user_role_unique" ON user_role_assignments (user_id, role_id, scope, COALESCE(scope_value, ''))`
+      );
       results.push({ table: "user_role_assignments", action: "created" });
-      console.log("✅ Created user_role_assignments table");
     } else {
       results.push({ table: "user_role_assignments", action: "exists" });
-      console.log("⏭️  user_role_assignments table already exists");
     }
 
     // 5. Create governance_policies table
@@ -161,14 +167,18 @@ export async function runMigration(): Promise<MigrationResult[]> {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_policies_type" ON governance_policies (policy_type)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_policies_active" ON governance_policies (is_active)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_policies_priority" ON governance_policies (priority)`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_policies_type" ON governance_policies (policy_type)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_policies_active" ON governance_policies (is_active)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_policies_priority" ON governance_policies (priority)`
+      );
       results.push({ table: "governance_policies", action: "created" });
-      console.log("✅ Created governance_policies table");
     } else {
       results.push({ table: "governance_policies", action: "exists" });
-      console.log("⏭️  governance_policies table already exists");
     }
 
     // 6. Create governance_audit_logs table
@@ -193,16 +203,24 @@ export async function runMigration(): Promise<MigrationResult[]> {
           created_at TIMESTAMP DEFAULT NOW() NOT NULL
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_user" ON governance_audit_logs (user_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_action" ON governance_audit_logs (action)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_resource" ON governance_audit_logs (resource, resource_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_created" ON governance_audit_logs (created_at)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_source" ON governance_audit_logs (source)`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_user" ON governance_audit_logs (user_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_action" ON governance_audit_logs (action)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_resource" ON governance_audit_logs (resource, resource_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_created" ON governance_audit_logs (created_at)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_gov_audit_source" ON governance_audit_logs (source)`
+      );
       results.push({ table: "governance_audit_logs", action: "created" });
-      console.log("✅ Created governance_audit_logs table");
     } else {
       results.push({ table: "governance_audit_logs", action: "exists" });
-      console.log("⏭️  governance_audit_logs table already exists");
     }
 
     // 7. Create approval_requests table
@@ -227,15 +245,21 @@ export async function runMigration(): Promise<MigrationResult[]> {
           updated_at TIMESTAMP DEFAULT NOW()
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_resource" ON approval_requests (resource_type, resource_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_requester" ON approval_requests (requester_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_status" ON approval_requests (status)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_created" ON approval_requests (created_at)`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_resource" ON approval_requests (resource_type, resource_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_requester" ON approval_requests (requester_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_status" ON approval_requests (status)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_req_created" ON approval_requests (created_at)`
+      );
       results.push({ table: "approval_requests", action: "created" });
-      console.log("✅ Created approval_requests table");
     } else {
       results.push({ table: "approval_requests", action: "exists" });
-      console.log("⏭️  approval_requests table already exists");
     }
 
     // 8. Create approval_steps table
@@ -258,14 +282,18 @@ export async function runMigration(): Promise<MigrationResult[]> {
           created_at TIMESTAMP DEFAULT NOW()
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_steps_request" ON approval_steps (request_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_steps_approver" ON approval_steps (approver_type, approver_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_approval_steps_status" ON approval_steps (status)`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_steps_request" ON approval_steps (request_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_steps_approver" ON approval_steps (approver_type, approver_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_approval_steps_status" ON approval_steps (status)`
+      );
       results.push({ table: "approval_steps", action: "created" });
-      console.log("✅ Created approval_steps table");
     } else {
       results.push({ table: "approval_steps", action: "exists" });
-      console.log("⏭️  approval_steps table already exists");
     }
 
     // 9. Create policy_evaluations table
@@ -285,23 +313,26 @@ export async function runMigration(): Promise<MigrationResult[]> {
           evaluated_at TIMESTAMP DEFAULT NOW()
         )
       `);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_policy" ON policy_evaluations (policy_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_user" ON policy_evaluations (user_id)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_result" ON policy_evaluations (result)`);
-      await db.execute(sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_time" ON policy_evaluations (evaluated_at)`);
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_policy" ON policy_evaluations (policy_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_user" ON policy_evaluations (user_id)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_result" ON policy_evaluations (result)`
+      );
+      await db.execute(
+        sql`CREATE INDEX IF NOT EXISTS "IDX_policy_eval_time" ON policy_evaluations (evaluated_at)`
+      );
       results.push({ table: "policy_evaluations", action: "created" });
-      console.log("✅ Created policy_evaluations table");
     } else {
       results.push({ table: "policy_evaluations", action: "exists" });
-      console.log("⏭️  policy_evaluations table already exists");
     }
-
-    console.log("\n✅ Migration completed successfully!");
-
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : "Unknown error";
     results.push({ table: "migration", action: "error", message: errMsg });
-    console.error("\n❌ Migration failed:", errMsg);
+
     throw error;
   }
 
@@ -309,15 +340,12 @@ export async function runMigration(): Promise<MigrationResult[]> {
 }
 
 // Run migration if executed directly
-const isMainModule = typeof require !== 'undefined' && require.main === module;
+const isMainModule = typeof require !== "undefined" && require.main === module;
 if (isMainModule) {
   runMigration()
-    .then((results) => {
-      console.log("\n📋 Migration Summary:");
-      console.log("─".repeat(50));
-      results.forEach((r) => {
+    .then(results => {
+      results.forEach(r => {
         const icon = r.action === "created" ? "✅" : r.action === "exists" ? "⏭️ " : "❌";
-        console.log(`${icon} ${r.table}: ${r.action}${r.message ? ` - ${r.message}` : ""}`);
       });
       process.exit(0);
     })

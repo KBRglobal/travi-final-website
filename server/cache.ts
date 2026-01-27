@@ -3,14 +3,14 @@
  * Supports Upstash Redis (recommended) or falls back to in-memory cache
  */
 
-import { Redis } from '@upstash/redis';
+import { Redis } from "@upstash/redis";
 
 // Cache configuration
 const CACHE_TTL = {
-  short: 60,           // 1 minute
-  medium: 300,         // 5 minutes
-  long: 3600,          // 1 hour
-  day: 86400,          // 24 hours
+  short: 60, // 1 minute
+  medium: 300, // 5 minutes
+  long: 3600, // 1 hour
+  day: 86400, // 24 hours
 } as const;
 
 type CacheTTL = keyof typeof CACHE_TTL;
@@ -64,7 +64,7 @@ class MemoryCache {
   }
 
   async keys(pattern: string): Promise<string[]> {
-    const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+    const regex = new RegExp("^" + pattern.replace(/\*/g, ".*") + "$");
     return Array.from(this.cache.keys()).filter(key => regex.test(key));
   }
 
@@ -75,7 +75,7 @@ class MemoryCache {
   }
 
   async incr(key: string): Promise<number> {
-    const current = await this.get<number>(key) || 0;
+    const current = (await this.get<number>(key)) || 0;
     const newValue = current + 1;
     await this.set(key, newValue, CACHE_TTL.day);
     return newValue;
@@ -117,12 +117,8 @@ class CacheService {
           token: redisToken,
         });
         this.isRedisAvailable = true;
-        console.log('[Cache] Upstash Redis connected');
-      } catch (error) {
-        console.warn('[Cache] Failed to connect to Redis, using memory cache:', error);
-      }
+      } catch (error) {}
     } else {
-      console.log('[Cache] No Redis credentials, using in-memory cache');
     }
   }
 
@@ -140,7 +136,6 @@ class CacheService {
       }
       return await this.memory.get<T>(key);
     } catch (error) {
-      console.error('[Cache] Get error:', error);
       return await this.memory.get<T>(key);
     }
   }
@@ -148,8 +143,8 @@ class CacheService {
   /**
    * Set a cached value
    */
-  async set(key: string, value: unknown, ttl: CacheTTL | number = 'medium'): Promise<void> {
-    const ttlSeconds = typeof ttl === 'string' ? CACHE_TTL[ttl] : ttl;
+  async set(key: string, value: unknown, ttl: CacheTTL | number = "medium"): Promise<void> {
+    const ttlSeconds = typeof ttl === "string" ? CACHE_TTL[ttl] : ttl;
     try {
       if (this.redis && this.isRedisAvailable) {
         await this.redis.set(key, value, { ex: ttlSeconds });
@@ -157,7 +152,6 @@ class CacheService {
       // Always set in memory as backup
       await this.memory.set(key, value, ttlSeconds);
     } catch (error) {
-      console.error('[Cache] Set error:', error);
       await this.memory.set(key, value, ttlSeconds);
     }
   }
@@ -172,7 +166,6 @@ class CacheService {
       }
       await this.memory.del(key);
     } catch (error) {
-      console.error('[Cache] Del error:', error);
       await this.memory.del(key);
     }
   }
@@ -192,7 +185,6 @@ class CacheService {
       }
       return await this.memory.flushByPattern(pattern);
     } catch (error) {
-      console.error('[Cache] Invalidate error:', error);
       return await this.memory.flushByPattern(pattern);
     }
   }
@@ -207,7 +199,6 @@ class CacheService {
       }
       return await this.memory.incr(key);
     } catch (error) {
-      console.error('[Cache] Incr error:', error);
       return await this.memory.incr(key);
     }
   }
@@ -218,7 +209,7 @@ class CacheService {
   async getOrSet<T>(
     key: string,
     compute: () => Promise<T>,
-    ttl: CacheTTL | number = 'medium'
+    ttl: CacheTTL | number = "medium"
   ): Promise<T> {
     const cached = await this.get<T>(key);
     if (cached !== null) {
@@ -234,13 +225,50 @@ class CacheService {
    * Get cache statistics
    */
   async getStats(): Promise<{
-    type: 'redis' | 'memory';
+    type: "redis" | "memory";
     connected: boolean;
   }> {
     return {
-      type: this.isRedisAvailable ? 'redis' : 'memory',
+      type: this.isRedisAvailable ? "redis" : "memory",
       connected: this.isRedisAvailable,
     };
+  }
+
+  /**
+   * Health check - verify Redis connectivity
+   */
+  async healthCheck(): Promise<{
+    status: "healthy" | "degraded" | "unhealthy";
+    type: "redis" | "memory";
+    latency?: number;
+    error?: string;
+  }> {
+    const start = Date.now();
+
+    if (!this.redis || !this.isRedisAvailable) {
+      return {
+        status: "degraded",
+        type: "memory",
+        latency: 0,
+      };
+    }
+
+    try {
+      // Test Redis connectivity with PING
+      await this.redis.ping();
+      return {
+        status: "healthy",
+        type: "redis",
+        latency: Date.now() - start,
+      };
+    } catch (error) {
+      return {
+        status: "unhealthy",
+        type: "redis",
+        latency: Date.now() - start,
+        error: error instanceof Error ? error.message : "Redis connection failed",
+      };
+    }
   }
 }
 
@@ -258,11 +286,11 @@ export const cacheKeys = {
 
   // Patterns for invalidation
   patterns: {
-    allContent: 'content:*',
-    allTranslations: 'translation:*',
-    allUsers: 'user:*',
-    allStats: 'stats:*',
-  }
+    allContent: "content:*",
+    allTranslations: "translation:*",
+    allUsers: "user:*",
+    allStats: "stats:*",
+  },
 };
 
 // Singleton instance

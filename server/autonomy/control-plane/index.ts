@@ -6,7 +6,7 @@
  */
 
 // Admin routes
-export { controlPlaneRoutes } from './admin-routes';
+export { controlPlaneRoutes } from "./admin-routes";
 
 // Override management
 export {
@@ -20,14 +20,10 @@ export {
   startOverrideCleanup,
   stopOverrideCleanup,
   clearOverrideCache,
-} from './overrides';
+} from "./overrides";
 
 // Risk dashboard
-export {
-  getDashboardData,
-  simulateEvaluation,
-  getTrendingMetrics,
-} from './risk-dashboard';
+export { getDashboardData, simulateEvaluation, getTrendingMetrics } from "./risk-dashboard";
 
 export type {
   DashboardStatus,
@@ -35,16 +31,15 @@ export type {
   BudgetSummary,
   TopOffender,
   ControlPlaneDashboard,
-} from './risk-dashboard';
+} from "./risk-dashboard";
 
-import { startOverrideCleanup, stopOverrideCleanup } from './overrides';
+import { startOverrideCleanup, stopOverrideCleanup } from "./overrides";
 
 /**
  * Initialize control plane
  */
 export function initControlPlane(): void {
   startOverrideCleanup();
-  console.log('[ControlPlane] Initialized');
 }
 
 /**
@@ -52,5 +47,4 @@ export function initControlPlane(): void {
  */
 export function shutdownControlPlane(): void {
   stopOverrideCleanup();
-  console.log('[ControlPlane] Shutdown');
 }

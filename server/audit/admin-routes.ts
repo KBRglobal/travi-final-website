@@ -4,7 +4,13 @@
  */
 
 import { Router } from "express";
-import { queryAuditLogs, getAuditLog, getResourceHistory, getUserActivity, getAuditSummary } from "./query-engine";
+import {
+  queryAuditLogs,
+  getAuditLog,
+  getResourceHistory,
+  getUserActivity,
+  getAuditSummary,
+} from "./query-engine";
 import * as repo from "./repository";
 import { AuditQuery } from "./types";
 
@@ -27,12 +33,8 @@ router.get("/", async (req, res) => {
       resource: req.query.resource as string,
       resourceId: req.query.resourceId as string,
       source: req.query.source as any,
-      startDate: req.query.startDate
-        ? new Date(req.query.startDate as string)
-        : undefined,
-      endDate: req.query.endDate
-        ? new Date(req.query.endDate as string)
-        : undefined,
+      startDate: req.query.startDate ? new Date(req.query.startDate as string) : undefined,
+      endDate: req.query.endDate ? new Date(req.query.endDate as string) : undefined,
       limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
       offset: req.query.offset ? parseInt(req.query.offset as string) : undefined,
     };
@@ -40,7 +42,6 @@ router.get("/", async (req, res) => {
     const result = await queryAuditLogs(query);
     res.json(result);
   } catch (error) {
-    console.error("[Audit] Error querying logs:", error);
     res.status(500).json({ error: "Failed to query audit logs" });
   }
 });
@@ -52,17 +53,12 @@ router.get("/summary", async (req, res) => {
   }
 
   try {
-    const startDate = req.query.startDate
-      ? new Date(req.query.startDate as string)
-      : undefined;
-    const endDate = req.query.endDate
-      ? new Date(req.query.endDate as string)
-      : undefined;
+    const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
+    const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
 
     const summary = await getAuditSummary(startDate, endDate);
     res.json(summary);
   } catch (error) {
-    console.error("[Audit] Error getting summary:", error);
     res.status(500).json({ error: "Failed to get audit summary" });
   }
 });
@@ -81,7 +77,6 @@ router.get("/stats", async (req, res) => {
 
     res.json({ storage, distinctValues });
   } catch (error) {
-    console.error("[Audit] Error getting stats:", error);
     res.status(500).json({ error: "Failed to get audit stats" });
   }
 });
@@ -99,7 +94,6 @@ router.get("/:id", async (req, res) => {
     }
     res.json(entry);
   } catch (error) {
-    console.error("[Audit] Error getting log:", error);
     res.status(500).json({ error: "Failed to get audit log" });
   }
 });
@@ -112,14 +106,9 @@ router.get("/resource/:type/:id", async (req, res) => {
 
   try {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
-    const entries = await getResourceHistory(
-      req.params.type,
-      req.params.id,
-      limit
-    );
+    const entries = await getResourceHistory(req.params.type, req.params.id, limit);
     res.json({ entries });
   } catch (error) {
-    console.error("[Audit] Error getting resource history:", error);
     res.status(500).json({ error: "Failed to get resource history" });
   }
 });
@@ -135,7 +124,6 @@ router.get("/user/:userId", async (req, res) => {
     const entries = await getUserActivity(req.params.userId, limit);
     res.json({ entries });
   } catch (error) {
-    console.error("[Audit] Error getting user activity:", error);
     res.status(500).json({ error: "Failed to get user activity" });
   }
 });
@@ -151,7 +139,6 @@ router.post("/verify", async (req, res) => {
     const result = await repo.verifyIntegrity(limit);
     res.json(result);
   } catch (error) {
-    console.error("[Audit] Error verifying integrity:", error);
     res.status(500).json({ error: "Failed to verify integrity" });
   }
 });
@@ -167,7 +154,6 @@ router.post("/cleanup", async (req, res) => {
     const deleted = await repo.cleanupOldLogs(retentionDays);
     res.json({ deleted, message: `Cleaned up ${deleted} old audit logs` });
   } catch (error) {
-    console.error("[Audit] Error cleaning up:", error);
     res.status(500).json({ error: "Failed to cleanup audit logs" });
   }
 });
@@ -179,27 +165,17 @@ router.get("/export", async (req, res) => {
   }
 
   try {
-    const startDate = req.query.startDate
-      ? new Date(req.query.startDate as string)
-      : undefined;
-    const endDate = req.query.endDate
-      ? new Date(req.query.endDate as string)
-      : undefined;
+    const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
+    const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
 
     const json = await repo.exportLogs(startDate, endDate);
 
     res.setHeader("Content-Type", "application/json");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=audit-logs-${Date.now()}.json`
-    );
+    res.setHeader("Content-Disposition", `attachment; filename=audit-logs-${Date.now()}.json`);
     res.send(json);
   } catch (error) {
-    console.error("[Audit] Error exporting:", error);
     res.status(500).json({ error: "Failed to export audit logs" });
   }
 });
 
 export { router as auditRoutes };
-
-console.log("[Audit] Admin routes loaded");

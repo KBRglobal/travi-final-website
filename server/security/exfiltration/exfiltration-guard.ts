@@ -154,17 +154,10 @@ class AccessTracker {
     this.cleanup();
   }
 
-  getAccessLogs(
-    userId: string,
-    resourceType: string,
-    hours: number
-  ): DataAccessLog[] {
+  getAccessLogs(userId: string, resourceType: string, hours: number): DataAccessLog[] {
     const since = new Date(Date.now() - hours * 60 * 60 * 1000);
     return this.logs.filter(
-      (l) =>
-        l.userId === userId &&
-        l.resourceType === resourceType &&
-        l.timestamp >= since
+      l => l.userId === userId && l.resourceType === resourceType && l.timestamp >= since
     );
   }
 
@@ -178,25 +171,16 @@ class AccessTracker {
     return logs.reduce((sum, l) => sum + l.byteCount, 0);
   }
 
-  getRequestCount(
-    userId: string,
-    resourceType: string,
-    minutes: number
-  ): number {
+  getRequestCount(userId: string, resourceType: string, minutes: number): number {
     const since = new Date(Date.now() - minutes * 60 * 1000);
     return this.logs.filter(
-      (l) =>
-        l.userId === userId &&
-        l.resourceType === resourceType &&
-        l.timestamp >= since
+      l => l.userId === userId && l.resourceType === resourceType && l.timestamp >= since
     ).length;
   }
 
   private cleanup(): void {
-    const cutoff = new Date(
-      Date.now() - this.retentionHours * 60 * 60 * 1000
-    );
-    this.logs = this.logs.filter((l) => l.timestamp >= cutoff);
+    const cutoff = new Date(Date.now() - this.retentionHours * 60 * 60 * 1000);
+    this.logs = this.logs.filter(l => l.timestamp >= cutoff);
 
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(-this.maxLogs);
@@ -270,9 +254,7 @@ class ExfiltrationGuard {
 
     if (recordLimitExceeded) {
       riskScore += 30;
-      recommendations.push(
-        `Reduce request size to ${rule.maxRecordsPerRequest} records or less`
-      );
+      recommendations.push(`Reduce request size to ${rule.maxRecordsPerRequest} records or less`);
     }
 
     const byteLimitExceeded = estimatedBytes > rule.maxBytesPerRequest;
@@ -290,8 +272,7 @@ class ExfiltrationGuard {
 
     // Check hourly limits
     const recordsThisHour = accessTracker.getRecordCount(userId, resourceType, 1);
-    const hourlyRecordExceeded =
-      recordsThisHour + requestedRecords > rule.maxRecordsPerHour;
+    const hourlyRecordExceeded = recordsThisHour + requestedRecords > rule.maxRecordsPerHour;
 
     if (hourlyRecordExceeded) {
       riskScore += 40;
@@ -302,8 +283,7 @@ class ExfiltrationGuard {
 
     // Check daily limits
     const recordsToday = accessTracker.getRecordCount(userId, resourceType, 24);
-    const dailyRecordExceeded =
-      recordsToday + requestedRecords > rule.maxRecordsPerDay;
+    const dailyRecordExceeded = recordsToday + requestedRecords > rule.maxRecordsPerDay;
 
     if (dailyRecordExceeded) {
       riskScore += 50;
@@ -311,11 +291,7 @@ class ExfiltrationGuard {
     }
 
     // Check rate limits
-    const requestsThisMinute = accessTracker.getRequestCount(
-      userId,
-      resourceType,
-      1
-    );
+    const requestsThisMinute = accessTracker.getRequestCount(userId, resourceType, 1);
     const rateLimitExceeded = requestsThisMinute >= rule.maxRequestsPerMinute;
 
     limits.push({
@@ -375,10 +351,7 @@ class ExfiltrationGuard {
 
       // Track blocked attempt
       const key = `${userId}:${resourceType}`;
-      this.blockedAttempts.set(
-        key,
-        (this.blockedAttempts.get(key) || 0) + 1
-      );
+      this.blockedAttempts.set(key, (this.blockedAttempts.get(key) || 0) + 1);
     }
 
     return {
@@ -416,20 +389,13 @@ class ExfiltrationGuard {
     const rule = this.rules.get(resourceType);
     if (
       rule &&
-      (rule.sensitivityLevel === "confidential" ||
-        rule.sensitivityLevel === "restricted")
+      (rule.sensitivityLevel === "confidential" || rule.sensitivityLevel === "restricted")
     ) {
-      logDataAccessEvent(
-        userId,
-        operation.toUpperCase(),
-        resourceType,
-        `${recordCount} records`,
-        {
-          byteCount,
-          sensitivityLevel: rule.sensitivityLevel,
-          destination,
-        }
-      );
+      logDataAccessEvent(userId, operation.toUpperCase(), resourceType, `${recordCount} records`, {
+        byteCount,
+        sensitivityLevel: rule.sensitivityLevel,
+        destination,
+      });
     }
   }
 
@@ -455,11 +421,7 @@ class ExfiltrationGuard {
     let totalBlocked = 0;
 
     for (const [resourceType, rule] of this.rules) {
-      const recordsToday = accessTracker.getRecordCount(
-        userId,
-        resourceType,
-        24
-      );
+      const recordsToday = accessTracker.getRecordCount(userId, resourceType, 24);
       const bytesToday = accessTracker.getByteCount(userId, resourceType, 24);
 
       stats[resourceType] = {
@@ -544,11 +506,7 @@ class ExfiltrationGuard {
 
     // Check access across all resources
     for (const [resourceType, rule] of this.rules) {
-      const recordsToday = accessTracker.getRecordCount(
-        userId,
-        resourceType,
-        24
-      );
+      const recordsToday = accessTracker.getRecordCount(userId, resourceType, 24);
       const bytesToday = accessTracker.getByteCount(userId, resourceType, 24);
 
       const recordPercent = (recordsToday / rule.maxRecordsPerDay) * 100;
@@ -626,13 +584,7 @@ export function recordDataAccess(
   byteCount: number,
   operation: "read" | "export" | "download" | "api"
 ): void {
-  exfiltrationGuard.recordAccess(
-    userId,
-    resourceType,
-    recordCount,
-    byteCount,
-    operation
-  );
+  exfiltrationGuard.recordAccess(userId, resourceType, recordCount, byteCount, operation);
 }
 
 /**
@@ -674,5 +626,3 @@ export function exfiltrationMiddleware(resourceType: string) {
     next();
   };
 }
-
-console.log("[ExfiltrationGuard] Module loaded");

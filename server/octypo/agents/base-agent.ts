@@ -3,14 +3,14 @@
  * Ported from octypo-main Python patterns
  */
 
-import { AgentPersona, AgentMessage } from '../types';
-import { EngineRegistry, EngineConfig, generateWithEngine } from '../../services/engine-registry';
+import { AgentPersona, AgentMessage } from "../types";
+import { EngineRegistry, EngineConfig, generateWithEngine } from "../../services/engine-registry";
 
 export abstract class BaseAgent {
   protected persona: AgentPersona;
   protected memory: Map<string, any> = new Map();
   protected messageHistory: AgentMessage[] = [];
-  
+
   constructor(persona: AgentPersona) {
     this.persona = persona;
   }
@@ -38,16 +38,20 @@ export abstract class BaseAgent {
       this.persona.preferredEngines,
       excludeIds
     );
-    
+
     if (engine) {
       return engine;
     }
-    
+
     // Fallback to global queue if no preferred engines available
     return EngineRegistry.getNextFromQueue(excludeIds);
   }
 
-  protected async callLLM(systemPrompt: string, userPrompt: string, timeoutMs: number = 45000): Promise<string> {
+  protected async callLLM(
+    systemPrompt: string,
+    userPrompt: string,
+    timeoutMs: number = 45000
+  ): Promise<string> {
     const MAX_ENGINE_RETRIES = 3;
     const triedEngines = new Set<string>();
     let lastError: Error | null = null;
@@ -56,7 +60,9 @@ export abstract class BaseAgent {
       const engine = this.getPreferredEngine(triedEngines);
       if (!engine) {
         const healthyCount = EngineRegistry.getAllEngines().filter(e => e.isHealthy).length;
-        throw new Error(`No available engine for agent ${this.name} (tried ${triedEngines.size}, healthy: ${healthyCount}). Last error: ${lastError?.message}`);
+        throw new Error(
+          `No available engine for agent ${this.name} (tried ${triedEngines.size}, healthy: ${healthyCount}). Last error: ${lastError?.message}`
+        );
       }
 
       triedEngines.add(engine.id);
@@ -70,25 +76,26 @@ export abstract class BaseAgent {
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(() => reject(new Error(`LLM call timeout after ${timeoutMs}ms`)), timeoutMs);
         });
-        
+
         const response = await Promise.race([
           generateWithEngine(engine, systemPrompt, userPrompt),
-          timeoutPromise
+          timeoutPromise,
         ]);
-        
+
         EngineRegistry.reportSuccess(engine.id);
         return response;
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg = error instanceof Error ? error.message : "Unknown error";
         lastError = error instanceof Error ? error : new Error(errorMsg);
         EngineRegistry.reportError(engine.id, errorMsg);
-        
-        const isRateLimit = errorMsg.includes('429') || errorMsg.includes('rate limit') || errorMsg.includes('RATELIMIT');
+
+        const isRateLimit =
+          errorMsg.includes("429") ||
+          errorMsg.includes("rate limit") ||
+          errorMsg.includes("RATELIMIT");
         if (isRateLimit) {
           continue;
         }
-        
-        console.log(`[${this.name}] Engine ${engine.name} failed: ${errorMsg}, trying next engine...`);
       }
     }
 
@@ -103,9 +110,7 @@ export abstract class BaseAgent {
     return this.memory.get(key);
   }
 
-  protected log(message: string): void {
-    console.log(`[${this.name}] ${message}`);
-  }
+  protected log(message: string): void {}
 
   abstract execute(task: any): Promise<any>;
 }
@@ -115,7 +120,6 @@ export class AgentRegistry {
 
   static register(agent: BaseAgent): void {
     this.agents.set(agent.id, agent);
-    console.log(`[AgentRegistry] Registered agent: ${agent.name} (${agent.specialty})`);
   }
 
   static get(agentId: string): BaseAgent | undefined {
@@ -132,15 +136,11 @@ export class AgentRegistry {
   }
 
   static getAllWriters(): BaseAgent[] {
-    return Array.from(this.agents.values()).filter(a => 
-      a.id.startsWith('writer-')
-    );
+    return Array.from(this.agents.values()).filter(a => a.id.startsWith("writer-"));
   }
 
   static getAllValidators(): BaseAgent[] {
-    return Array.from(this.agents.values()).filter(a => 
-      a.id.startsWith('validator-')
-    );
+    return Array.from(this.agents.values()).filter(a => a.id.startsWith("validator-"));
   }
 
   static getAll(): BaseAgent[] {
@@ -163,7 +163,7 @@ export class MessageBus {
     handlers.forEach(handler => handler(message));
   }
 
-  static broadcast(fromAgent: string, type: AgentMessage['type'], content: any): void {
+  static broadcast(fromAgent: string, type: AgentMessage["type"], content: any): void {
     const allAgents = AgentRegistry.getAll();
     for (const agent of allAgents) {
       if (agent.id !== fromAgent) {

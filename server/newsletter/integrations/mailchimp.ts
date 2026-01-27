@@ -49,7 +49,7 @@ async function mailchimpRequest(
   const response = await fetchWithTimeout(url, {
     method,
     headers: {
-      "Authorization": `Basic ${auth}`,
+      Authorization: `Basic ${auth}`,
       "Content-Type": "application/json",
     },
     body: body ? JSON.stringify(body) : undefined,
@@ -80,45 +80,35 @@ export async function syncSubscriberToMailchimp(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "mailchimp") {
     throw new Error("Invalid Mailchimp connection");
   }
-  
+
   const config = connection.config as MailchimpConfig;
-  
+
   // Get subscriber
   const [subscriber] = await db
     .select()
     .from(newsletterSubscribers)
     .where(eq(newsletterSubscribers.id, subscriberId))
     .limit(1);
-  
+
   if (!subscriber) throw new Error("Subscriber not found");
-  
+
   // Hash email for Mailchimp
-  const emailHash = crypto
-    .createHash("md5")
-    .update(subscriber.email.toLowerCase())
-    .digest("hex");
-  
+  const emailHash = crypto.createHash("md5").update(subscriber.email.toLowerCase()).digest("hex");
+
   // Sync to Mailchimp
-  await mailchimpRequest(
-    config,
-    `/lists/${config.listId}/members/${emailHash}`,
-    "PUT",
-    {
-      email_address: subscriber.email,
-      status: subscriber.status === "subscribed" ? "subscribed" : "unsubscribed",
-      merge_fields: {
-        FNAME: subscriber.firstName || "",
-        LNAME: subscriber.lastName || "",
-      },
-      tags: subscriber.tags || [],
-    }
-  );
-  
-  console.log(`Synced subscriber ${subscriber.email} to Mailchimp`);
+  await mailchimpRequest(config, `/lists/${config.listId}/members/${emailHash}`, "PUT", {
+    email_address: subscriber.email,
+    status: subscriber.status === "subscribed" ? "subscribed" : "unsubscribed",
+    merge_fields: {
+      FNAME: subscriber.firstName || "",
+      LNAME: subscriber.lastName || "",
+    },
+    tags: subscriber.tags || [],
+  });
 }
 
 /**
@@ -131,20 +121,19 @@ export async function syncAllSubscribersToMailchimp(
     .select()
     .from(newsletterSubscribers)
     .where(eq(newsletterSubscribers.status, "subscribed"));
-  
+
   let synced = 0;
   let errors = 0;
-  
+
   for (const subscriber of subscribers) {
     try {
       await syncSubscriberToMailchimp(connectionId, subscriber.id);
       synced++;
     } catch (error) {
-      console.error(`Error syncing subscriber ${subscriber.email}:`, error);
       errors++;
     }
   }
-  
+
   return { synced, errors };
 }
 
@@ -159,23 +148,23 @@ export async function importSubscribersFromMailchimp(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "mailchimp") {
     throw new Error("Invalid Mailchimp connection");
   }
-  
+
   const config = connection.config as MailchimpConfig;
-  
+
   // Get members from Mailchimp
   const response = await mailchimpRequest(
     config,
     `/lists/${config.listId}/members?count=1000`,
     "GET"
   );
-  
+
   let imported = 0;
   let errors = 0;
-  
+
   for (const member of response.members || []) {
     try {
       // Check if subscriber already exists
@@ -184,7 +173,7 @@ export async function importSubscribersFromMailchimp(
         .from(newsletterSubscribers)
         .where(eq(newsletterSubscribers.email, member.email_address))
         .limit(1);
-      
+
       if (!existing) {
         await db.insert(newsletterSubscribers).values({
           email: member.email_address,
@@ -197,11 +186,10 @@ export async function importSubscribersFromMailchimp(
         imported++;
       }
     } catch (error) {
-      console.error(`Error importing subscriber ${member.email_address}:`, error);
       errors++;
     }
   }
-  
+
   return { imported, errors };
 }
 
@@ -221,44 +209,37 @@ export async function syncSegmentToMailchimp(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "mailchimp") {
     throw new Error("Invalid Mailchimp connection");
   }
-  
+
   const config = connection.config as MailchimpConfig;
-  
+
   // Get segment
   const [segment] = await db
     .select()
     .from(subscriberSegments)
     .where(eq(subscriberSegments.id, segmentId))
     .limit(1);
-  
+
   if (!segment) throw new Error("Segment not found");
-  
+
   // Create tag in Mailchimp
   // (Mailchimp uses tags for segmentation)
   const tagName = `segment_${segment.name.toLowerCase().replace(/\s+/g, "_")}`;
-  
+
   // Get subscribers in segment (simplified - in production use segmentation.ts)
   const subscribers = await db
     .select()
     .from(newsletterSubscribers)
     .where(eq(newsletterSubscribers.status, "subscribed"));
-  
+
   // Batch add tag to subscribers
-  await mailchimpRequest(
-    config,
-    `/lists/${config.listId}/segments`,
-    "POST",
-    {
-      name: segment.name,
-      static_segment: subscribers.map(s => s.email),
-    }
-  );
-  
-  console.log(`Synced segment ${segment.name} to Mailchimp`);
+  await mailchimpRequest(config, `/lists/${config.listId}/segments`, "POST", {
+    name: segment.name,
+    static_segment: subscribers.map(s => s.email),
+  });
 }
 
 // ============================================================================
@@ -276,65 +257,63 @@ export async function importCampaignStatsFromMailchimp(
     .from(integrationConnections)
     .where(eq(integrationConnections.id, connectionId))
     .limit(1);
-  
+
   if (!connection || connection.provider !== "mailchimp") {
     throw new Error("Invalid Mailchimp connection");
   }
-  
+
   const config = connection.config as MailchimpConfig;
-  
+
   // Get campaigns from Mailchimp
-  const response = await mailchimpRequest(
-    config,
-    `/campaigns?count=50`,
-    "GET"
-  );
-  
+  const response = await mailchimpRequest(config, `/campaigns?count=50`, "GET");
+
   let synced = 0;
   let errors = 0;
-  
+
   for (const campaign of response.campaigns || []) {
     try {
       // Find matching local campaign (by name or external ID)
       const [localCampaign] = await db
         .select()
         .from(newsletterCampaigns)
-        .where(eq(newsletterCampaigns.name, campaign.settings?.subject_line || campaign.settings?.title))
+        .where(
+          eq(newsletterCampaigns.name, campaign.settings?.subject_line || campaign.settings?.title)
+        )
         .limit(1);
-      
+
       if (localCampaign) {
         // Update stats
-        const report = await mailchimpRequest(
-          config,
-          `/reports/${campaign.id}`,
-          "GET"
-        );
-        
+        const report = await mailchimpRequest(config, `/reports/${campaign.id}`, "GET");
+
         // Match campaigns by both name AND external ID for accuracy
         // Note: In production, consider storing Mailchimp campaign ID in local database
-        await db.update(newsletterCampaigns).set({
-          totalSent: report.emails_sent || 0,
-          totalOpened: report.opens?.unique_opens || 0,
-          totalClicked: report.clicks?.unique_clicks || 0,
-          totalBounced: report.bounces?.hard_bounces || 0,
-          totalUnsubscribed: report.unsubscribed || 0,
-        } as any).where(eq(newsletterCampaigns.id, localCampaign.id));
-        
+        await db
+          .update(newsletterCampaigns)
+          .set({
+            totalSent: report.emails_sent || 0,
+            totalOpened: report.opens?.unique_opens || 0,
+            totalClicked: report.clicks?.unique_clicks || 0,
+            totalBounced: report.bounces?.hard_bounces || 0,
+            totalUnsubscribed: report.unsubscribed || 0,
+          } as any)
+          .where(eq(newsletterCampaigns.id, localCampaign.id));
+
         synced++;
       }
     } catch (error) {
-      console.error(`Error syncing campaign ${campaign.id}:`, error);
       errors++;
     }
   }
-  
+
   return { synced, errors };
 }
 
 /**
  * Test Mailchimp connection
  */
-export async function testMailchimpConnection(config: MailchimpConfig): Promise<{ success: boolean; message: string }> {
+export async function testMailchimpConnection(
+  config: MailchimpConfig
+): Promise<{ success: boolean; message: string }> {
   try {
     const response = await mailchimpRequest(config, `/lists/${config.listId}`, "GET");
     return {

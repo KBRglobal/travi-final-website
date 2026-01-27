@@ -35,11 +35,7 @@
  */
 
 import { db } from "../db";
-import {
-  governanceRoles,
-  governancePermissions,
-  userRoleAssignments
-} from "@shared/schema";
+import { governanceRoles, governancePermissions, userRoleAssignments } from "@shared/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import {
   UserContext,
@@ -47,7 +43,7 @@ import {
   PermissionCheckResult,
   Permission,
   GovernanceRoleName,
-  ROLE_HIERARCHY
+  ROLE_HIERARCHY,
 } from "./types";
 import { getRolePermissions } from "./roles";
 import { hasPermission, findMatchingPermissions } from "./permissions";
@@ -88,12 +84,7 @@ export async function getUserContext(userId: string): Promise<UserContext | null
       scopeValue: userRoleAssignments.scopeValue,
     })
     .from(userRoleAssignments)
-    .where(
-      and(
-        eq(userRoleAssignments.userId, userId),
-        eq(userRoleAssignments.isActive, true)
-      )
-    );
+    .where(and(eq(userRoleAssignments.userId, userId), eq(userRoleAssignments.isActive, true)));
 
   if (assignments.length === 0) {
     // Default to viewer
@@ -107,15 +98,10 @@ export async function getUserContext(userId: string): Promise<UserContext | null
   }
 
   // Fetch role details
-  const roleIds = assignments.map((a) => a.roleId);
-  const roles = await db
-    .select()
-    .from(governanceRoles)
-    .where(inArray(governanceRoles.id, roleIds));
+  const roleIds = assignments.map(a => a.roleId);
+  const roles = await db.select().from(governanceRoles).where(inArray(governanceRoles.id, roleIds));
 
-  const roleNames = roles
-    .filter((r) => r.isActive)
-    .map((r) => r.name as GovernanceRoleName);
+  const roleNames = roles.filter(r => r.isActive).map(r => r.name as GovernanceRoleName);
 
   // Fetch explicit permissions for these roles
   const dbPermissions = await db
@@ -240,13 +226,10 @@ export async function can(
 /**
  * Check if user has any of the specified roles
  */
-export async function hasRole(
-  userId: string,
-  roles: GovernanceRoleName[]
-): Promise<boolean> {
+export async function hasRole(userId: string, roles: GovernanceRoleName[]): Promise<boolean> {
   const ctx = await getUserContext(userId);
   if (!ctx) return false;
-  return roles.some((r) => ctx.roles.includes(r));
+  return roles.some(r => ctx.roles.includes(r));
 }
 
 /**
@@ -260,7 +243,5 @@ export async function hasHigherRoleThan(
   if (!ctx) return false;
 
   const targetPriority = ROLE_HIERARCHY[role];
-  return ctx.roles.some((r) => ROLE_HIERARCHY[r] > targetPriority);
+  return ctx.roles.some(r => ROLE_HIERARCHY[r] > targetPriority);
 }
-
-console.log("[AccessControl] PolicyEngine loaded");

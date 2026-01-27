@@ -8,11 +8,16 @@
  * - Audit logging
  */
 
-import { db } from '../../db';
-import { contents } from '../../../shared/schema';
-import { eq } from 'drizzle-orm';
-import { checkApprovalRequired, canProceed, requestApproval, type SEOActionType } from './approval-gate';
-import { getAutopilotConfig } from '../config';
+import { db } from "../../db";
+import { contents } from "../../../shared/schema";
+import { eq } from "drizzle-orm";
+import {
+  checkApprovalRequired,
+  canProceed,
+  requestApproval,
+  type SEOActionType,
+} from "./approval-gate";
+import { getAutopilotConfig } from "../config";
 
 // ============================================================================
 // Types
@@ -54,7 +59,7 @@ export interface RollbackData {
 const rollbackTokens = new Map<string, RollbackData>();
 
 function generateRollbackToken(data: RollbackData): string {
-  const token = Buffer.from(JSON.stringify(data)).toString('base64');
+  const token = Buffer.from(JSON.stringify(data)).toString("base64");
   rollbackTokens.set(token, data);
 
   // Cleanup old tokens (keep for 24 hours)
@@ -83,8 +88,8 @@ export async function executeAction(request: ActionRequest): Promise<ActionResul
       success: false,
       executed: false,
       dryRun,
-      message: 'Content not found',
-      error: 'CONTENT_NOT_FOUND',
+      message: "Content not found",
+      error: "CONTENT_NOT_FOUND",
     };
   }
 
@@ -109,7 +114,7 @@ export async function executeAction(request: ActionRequest): Promise<ActionResul
         dryRun,
         approvalRequired: true,
         approvalId: approvalRequest.id,
-        message: 'Action requires approval',
+        message: "Action requires approval",
       };
     }
   }
@@ -123,8 +128,8 @@ export async function executeAction(request: ActionRequest): Promise<ActionResul
       success: false,
       executed: false,
       dryRun,
-      message: 'Action failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      message: "Action failed",
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -143,20 +148,23 @@ async function performAction(
   let rollbackToken: string | undefined;
 
   switch (actionType) {
-    case 'SET_NOINDEX': {
-      const reason = (data.reason as string) || 'SEO Engine action';
+    case "SET_NOINDEX": {
+      const reason = (data.reason as string) || "SEO Engine action";
       changes.noindex = { before: content.noindex || false, after: true };
       changes.noindexReason = { before: content.noindexReason, after: reason };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          noindex: true,
-          noindexReason: reason,
-          noindexedAt: new Date(),
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            noindex: true,
+            noindexReason: reason,
+            noindexedAt: new Date(),
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'SET_NOINDEX',
+          action: "SET_NOINDEX",
           contentId: content.id,
           previousState: {
             noindex: content.noindex || false,
@@ -169,19 +177,22 @@ async function performAction(
       break;
     }
 
-    case 'REMOVE_NOINDEX': {
+    case "REMOVE_NOINDEX": {
       changes.noindex = { before: content.noindex || false, after: false };
       changes.noindexReason = { before: content.noindexReason, after: null };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          noindex: false,
-          noindexReason: null,
-          noindexedAt: null,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            noindex: false,
+            noindexReason: null,
+            noindexedAt: null,
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'REMOVE_NOINDEX',
+          action: "REMOVE_NOINDEX",
           contentId: content.id,
           previousState: {
             noindex: content.noindex || true,
@@ -194,17 +205,20 @@ async function performAction(
       break;
     }
 
-    case 'SET_CANONICAL': {
+    case "SET_CANONICAL": {
       const canonicalUrl = data.canonicalUrl as string;
       changes.canonicalUrl = { before: content.canonicalUrl, after: canonicalUrl };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          canonicalUrl,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            canonicalUrl,
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'SET_CANONICAL',
+          action: "SET_CANONICAL",
           contentId: content.id,
           previousState: { canonicalUrl: content.canonicalUrl },
           executedAt: Date.now(),
@@ -214,20 +228,23 @@ async function performAction(
       break;
     }
 
-    case 'BLOCK_PUBLISH': {
-      const blockReason = (data.reason as string) || 'SEO requirements not met';
+    case "BLOCK_PUBLISH": {
+      const blockReason = (data.reason as string) || "SEO requirements not met";
       changes.publishBlocked = { before: content.publishBlocked || false, after: true };
       changes.publishBlockReason = { before: content.publishBlockReason, after: blockReason };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          publishBlocked: true,
-          publishBlockReason: blockReason,
-          publishBlockedAt: new Date(),
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            publishBlocked: true,
+            publishBlockReason: blockReason,
+            publishBlockedAt: new Date(),
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'BLOCK_PUBLISH',
+          action: "BLOCK_PUBLISH",
           contentId: content.id,
           previousState: {
             publishBlocked: content.publishBlocked || false,
@@ -240,18 +257,21 @@ async function performAction(
       break;
     }
 
-    case 'UNBLOCK_PUBLISH': {
+    case "UNBLOCK_PUBLISH": {
       changes.publishBlocked = { before: content.publishBlocked || false, after: false };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          publishBlocked: false,
-          publishBlockReason: null,
-          publishBlockedAt: null,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            publishBlocked: false,
+            publishBlockReason: null,
+            publishBlockedAt: null,
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'UNBLOCK_PUBLISH',
+          action: "UNBLOCK_PUBLISH",
           contentId: content.id,
           previousState: {
             publishBlocked: content.publishBlocked || true,
@@ -264,19 +284,22 @@ async function performAction(
       break;
     }
 
-    case 'MOVE_TO_DRAFT': {
-      changes.status = { before: content.status, after: 'draft' };
+    case "MOVE_TO_DRAFT": {
+      changes.status = { before: content.status, after: "draft" };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          status: 'draft',
-          movedToDraftAt: new Date(),
-          movedToDraftBy: executedBy,
-          movedToDraftReason: data.reason as string,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            status: "draft",
+            movedToDraftAt: new Date(),
+            movedToDraftBy: executedBy,
+            movedToDraftReason: data.reason as string,
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'MOVE_TO_DRAFT',
+          action: "MOVE_TO_DRAFT",
           contentId: content.id,
           previousState: { status: content.status },
           executedAt: Date.now(),
@@ -286,36 +309,42 @@ async function performAction(
       break;
     }
 
-    case 'QUEUE_DELETE': {
+    case "QUEUE_DELETE": {
       changes.deleteQueued = { before: false, after: true };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          deleteQueued: true,
-          deleteQueuedAt: new Date(),
-          deleteQueuedBy: executedBy,
-          deleteReason: data.reason as string,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            deleteQueued: true,
+            deleteQueuedAt: new Date(),
+            deleteQueuedBy: executedBy,
+            deleteReason: data.reason as string,
+          } as any)
+          .where(eq(contents.id, content.id));
         // No rollback for delete queue - requires manual intervention
       }
       break;
     }
 
-    case 'QUEUE_MERGE': {
+    case "QUEUE_MERGE": {
       const mergeWithId = data.mergeWithId as string;
       changes.mergeQueued = { before: false, after: true };
       changes.mergeWithId = { before: null, after: mergeWithId };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          mergeQueued: true,
-          mergeQueuedAt: new Date(),
-          mergeWithId,
-          mergeReason: data.reason as string,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            mergeQueued: true,
+            mergeQueuedAt: new Date(),
+            mergeWithId,
+            mergeReason: data.reason as string,
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'QUEUE_MERGE',
+          action: "QUEUE_MERGE",
           contentId: content.id,
           previousState: { mergeQueued: false, mergeWithId: null },
           executedAt: Date.now(),
@@ -325,19 +354,22 @@ async function performAction(
       break;
     }
 
-    case 'CHANGE_CLASSIFICATION': {
+    case "CHANGE_CLASSIFICATION": {
       const newClassification = data.classification as string;
       changes.pageClassification = { before: content.pageClassification, after: newClassification };
 
       if (!dryRun) {
-        await db.update(contents).set({
-          pageClassification: newClassification,
-          classificationChangedAt: new Date(),
-          classificationChangedBy: executedBy,
-        } as any).where(eq(contents.id, content.id));
+        await db
+          .update(contents)
+          .set({
+            pageClassification: newClassification,
+            classificationChangedAt: new Date(),
+            classificationChangedBy: executedBy,
+          } as any)
+          .where(eq(contents.id, content.id));
 
         rollbackToken = generateRollbackToken({
-          action: 'CHANGE_CLASSIFICATION',
+          action: "CHANGE_CLASSIFICATION",
           contentId: content.id,
           previousState: { pageClassification: content.pageClassification },
           executedAt: Date.now(),
@@ -353,7 +385,7 @@ async function performAction(
         executed: false,
         dryRun,
         message: `Unknown action type: ${actionType}`,
-        error: 'UNKNOWN_ACTION',
+        error: "UNKNOWN_ACTION",
       };
   }
 
@@ -386,23 +418,23 @@ export async function rollbackAction(
   if (!data) {
     // Try to decode from token itself
     try {
-      const decoded = JSON.parse(Buffer.from(rollbackToken, 'base64').toString()) as RollbackData;
+      const decoded = JSON.parse(Buffer.from(rollbackToken, "base64").toString()) as RollbackData;
 
       // Check age (max 24 hours)
       if (Date.now() - decoded.executedAt > 24 * 60 * 60 * 1000) {
-        return { success: false, message: 'Rollback token has expired' };
+        return { success: false, message: "Rollback token has expired" };
       }
 
       return await performRollback(decoded, executedBy);
     } catch {
-      return { success: false, message: 'Invalid rollback token' };
+      return { success: false, message: "Invalid rollback token" };
     }
   }
 
   // Check age
   if (Date.now() - data.executedAt > 24 * 60 * 60 * 1000) {
     rollbackTokens.delete(rollbackToken);
-    return { success: false, message: 'Rollback token has expired' };
+    return { success: false, message: "Rollback token has expired" };
   }
 
   const result = await performRollback(data, executedBy);
@@ -422,7 +454,8 @@ async function performRollback(
   executedBy: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    await db.update(contents)
+    await db
+      .update(contents)
       .set(data.previousState as any)
       .where(eq(contents.id, data.contentId));
 
@@ -437,7 +470,7 @@ async function performRollback(
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Rollback failed',
+      message: error instanceof Error ? error.message : "Rollback failed",
     };
   }
 }
@@ -452,7 +485,6 @@ async function logAction(
   executedBy: string
 ): Promise<void> {
   // In production, this would write to an audit log table
-  console.log(`[SEO Audit] ${action} on ${contentId} by ${executedBy}:`, JSON.stringify(changes));
 }
 
 /**
@@ -470,5 +502,3 @@ export function getActiveRollbackTokens(): { token: string; data: RollbackData }
 
   return active;
 }
-
-console.log('[SEO Governance] Action executor loaded');

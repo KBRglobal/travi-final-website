@@ -12,10 +12,10 @@ import type {
   ModelContext,
   DimensionForecast,
   ChangeDescription,
-} from './types';
-import { TrafficModel, createTrafficModel } from './models/traffic-model';
-import { RevenueModel, createRevenueModel } from './models/revenue-model';
-import { RiskModel, createRiskModel } from './models/risk-model';
+} from "./types";
+import { TrafficModel, createTrafficModel } from "./models/traffic-model";
+import { RevenueModel, createRevenueModel } from "./models/revenue-model";
+import { RiskModel, createRiskModel } from "./models/risk-model";
 
 // ============================================================================
 // CONFIGURATION
@@ -56,11 +56,11 @@ export class ImpactForecaster {
    * Create a forecast input
    */
   createInput(
-    source: ForecastInput['source'],
+    source: ForecastInput["source"],
     proposalId: string,
     proposalType: string,
     changes: ChangeDescription[],
-    context: ForecastInput['context']
+    context: ForecastInput["context"]
   ): ForecastInput {
     const input: ForecastInput = {
       id: `input-${Date.now().toString(36)}`,
@@ -158,7 +158,6 @@ export class ImpactForecaster {
       this.forecasts.set(forecast.id, forecast);
       return forecast;
     } catch (error) {
-      console.error('[ImpactForecaster] Forecast error:', error);
       return undefined;
     }
   }
@@ -178,19 +177,19 @@ export class ImpactForecaster {
 
     for (const change of input.changes) {
       switch (change.type) {
-        case 'cta_optimization':
+        case "cta_optimization":
           conversionImpact += 0.15;
           break;
-        case 'form_simplification':
+        case "form_simplification":
           conversionImpact += 0.1;
           break;
-        case 'trust_signals':
+        case "trust_signals":
           conversionImpact += 0.08;
           break;
-        case 'content_update':
+        case "content_update":
           conversionImpact += 0.03;
           break;
-        case 'structure_change':
+        case "structure_change":
           conversionImpact += 0.02;
           break;
         default:
@@ -204,7 +203,7 @@ export class ImpactForecaster {
     const predictedValue = currentConversion * (1 + conversionImpact);
 
     return {
-      dimension: 'conversion',
+      dimension: "conversion",
       currentValue: currentConversion,
       predictedValue: Math.round(predictedValue * 10000) / 10000,
       delta: Math.round((predictedValue - currentConversion) * 10000) / 10000,
@@ -216,9 +215,9 @@ export class ImpactForecaster {
       },
       factors: [
         {
-          name: 'Change impact',
+          name: "Change impact",
           impact: conversionImpact,
-          direction: conversionImpact >= 0 ? 'positive' : 'negative',
+          direction: conversionImpact >= 0 ? "positive" : "negative",
           weight: 1,
           explanation: `${input.changes.length} changes expected to impact conversion`,
         },
@@ -238,11 +237,9 @@ export class ImpactForecaster {
   ): number {
     // Weighted combination of positive impacts and risks
     const positiveScore =
-      (traffic.deltaPercent * 0.25) +
-      (conversion.deltaPercent * 0.3) +
-      (revenue.deltaPercent * 0.35);
+      traffic.deltaPercent * 0.25 + conversion.deltaPercent * 0.3 + revenue.deltaPercent * 0.35;
 
-    const riskPenalty = (seoRiskScore + aeoRiskScore) / 2 * 20;
+    const riskPenalty = ((seoRiskScore + aeoRiskScore) / 2) * 20;
 
     return Math.max(-100, Math.min(100, positiveScore - riskPenalty));
   }
@@ -255,7 +252,7 @@ export class ImpactForecaster {
     aeoRisk: RiskLevel,
     cannibalizationRisk: RiskLevel
   ): RiskLevel {
-    const riskOrder: RiskLevel[] = ['minimal', 'low', 'medium', 'high', 'critical'];
+    const riskOrder: RiskLevel[] = ["minimal", "low", "medium", "high", "critical"];
 
     const seoIndex = riskOrder.indexOf(seoRisk);
     const aeoIndex = riskOrder.indexOf(aeoRisk);
@@ -287,19 +284,18 @@ export class ImpactForecaster {
     aeoRisk: any
   ): ForecastExplanation {
     // Generate summary
-    const revenueDelta = revenue.delta >= 0 ? 'increase' : 'decrease';
-    const summary = `Expected ${Math.abs(revenue.deltaPercent)}% revenue ${revenueDelta} ` +
+    const revenueDelta = revenue.delta >= 0 ? "increase" : "decrease";
+    const summary =
+      `Expected ${Math.abs(revenue.deltaPercent)}% revenue ${revenueDelta} ` +
       `based on ${traffic.deltaPercent}% traffic change and ${conversion.deltaPercent}% conversion change. ` +
       `Overall risk level: ${seoRisk.level}.`;
 
     // Identify key drivers
-    const allFactors = [
-      ...traffic.factors,
-      ...conversion.factors,
-      ...revenue.factors,
-    ].sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact));
+    const allFactors = [...traffic.factors, ...conversion.factors, ...revenue.factors].sort(
+      (a, b) => Math.abs(b.impact) - Math.abs(a.impact)
+    );
 
-    const keyDrivers = allFactors.slice(0, 5).map((f) => ({
+    const keyDrivers = allFactors.slice(0, 5).map(f => ({
       driver: f.name,
       contribution: Math.round(f.impact * 100) / 100,
       explanation: f.explanation,
@@ -308,19 +304,19 @@ export class ImpactForecaster {
     // Sensitivity analysis
     const sensitivityAnalysis = [
       {
-        variable: 'Traffic',
+        variable: "Traffic",
         baseCase: traffic.deltaPercent,
         optimistic: traffic.deltaPercent * 1.3,
         pessimistic: traffic.deltaPercent * 0.7,
       },
       {
-        variable: 'Conversion',
+        variable: "Conversion",
         baseCase: conversion.deltaPercent,
         optimistic: conversion.deltaPercent * 1.4,
         pessimistic: conversion.deltaPercent * 0.6,
       },
       {
-        variable: 'Revenue',
+        variable: "Revenue",
         baseCase: revenue.deltaPercent,
         optimistic: revenue.deltaPercent * 1.5,
         pessimistic: revenue.deltaPercent * 0.5,
@@ -329,15 +325,15 @@ export class ImpactForecaster {
 
     // Comparisons
     const comparisons = [
-      { scenario: 'Base case', outcome: revenue.deltaPercent },
-      { scenario: 'Optimistic', outcome: revenue.deltaPercent * 1.5 },
-      { scenario: 'Pessimistic', outcome: revenue.deltaPercent * 0.5 },
-      { scenario: 'No change', outcome: 0 },
+      { scenario: "Base case", outcome: revenue.deltaPercent },
+      { scenario: "Optimistic", outcome: revenue.deltaPercent * 1.5 },
+      { scenario: "Pessimistic", outcome: revenue.deltaPercent * 0.5 },
+      { scenario: "No change", outcome: 0 },
     ];
 
     return {
       summary,
-      methodology: 'Deterministic model using weighted factor analysis with confidence intervals',
+      methodology: "Deterministic model using weighted factor analysis with confidence intervals",
       keyDrivers,
       sensitivityAnalysis,
       comparisons,
@@ -349,17 +345,17 @@ export class ImpactForecaster {
    */
   private generateAssumptions(input: ForecastInput, context: ModelContext): string[] {
     const assumptions: string[] = [
-      'Market conditions remain stable',
-      'No major algorithm updates occur',
-      'Changes are implemented correctly',
+      "Market conditions remain stable",
+      "No major algorithm updates occur",
+      "Changes are implemented correctly",
     ];
 
     if (!context.historicalData || context.historicalData.length < 30) {
-      assumptions.push('Limited historical data - using industry benchmarks');
+      assumptions.push("Limited historical data - using industry benchmarks");
     }
 
     if (input.changes.length > 3) {
-      assumptions.push('Multiple changes may have interactive effects not fully modeled');
+      assumptions.push("Multiple changes may have interactive effects not fully modeled");
     }
 
     return assumptions;
@@ -372,15 +368,15 @@ export class ImpactForecaster {
     const caveats: string[] = [];
 
     if (confidence < 0.5) {
-      caveats.push('Low confidence forecast - actual results may vary significantly');
+      caveats.push("Low confidence forecast - actual results may vary significantly");
     }
 
-    if (risk === 'high' || risk === 'critical') {
-      caveats.push('High risk changes - recommend staged rollout with monitoring');
+    if (risk === "high" || risk === "critical") {
+      caveats.push("High risk changes - recommend staged rollout with monitoring");
     }
 
-    caveats.push('Forecasts are estimates based on available data and models');
-    caveats.push('External factors may impact actual results');
+    caveats.push("Forecasts are estimates based on available data and models");
+    caveats.push("External factors may impact actual results");
 
     return caveats;
   }
@@ -393,11 +389,11 @@ export class ImpactForecaster {
    * Quick forecast without storing input
    */
   quickForecast(
-    source: ForecastInput['source'],
+    source: ForecastInput["source"],
     proposalId: string,
     proposalType: string,
     changes: ChangeDescription[],
-    context: ForecastInput['context']
+    context: ForecastInput["context"]
   ): Forecast | undefined {
     const input = this.createInput(source, proposalId, proposalType, changes, context);
     return this.forecast(input.id);
@@ -443,17 +439,20 @@ export class ImpactForecaster {
         const pros: string[] = [];
         const cons: string[] = [];
 
-        if (forecast.revenue.deltaPercent > 5) pros.push(`+${forecast.revenue.deltaPercent}% revenue`);
-        if (forecast.traffic.deltaPercent > 5) pros.push(`+${forecast.traffic.deltaPercent}% traffic`);
-        if (forecast.overallRisk === 'minimal' || forecast.overallRisk === 'low') {
-          pros.push('Low risk');
+        if (forecast.revenue.deltaPercent > 5)
+          pros.push(`+${forecast.revenue.deltaPercent}% revenue`);
+        if (forecast.traffic.deltaPercent > 5)
+          pros.push(`+${forecast.traffic.deltaPercent}% traffic`);
+        if (forecast.overallRisk === "minimal" || forecast.overallRisk === "low") {
+          pros.push("Low risk");
         }
 
-        if (forecast.revenue.deltaPercent < 0) cons.push(`${forecast.revenue.deltaPercent}% revenue impact`);
-        if (forecast.overallRisk === 'high' || forecast.overallRisk === 'critical') {
+        if (forecast.revenue.deltaPercent < 0)
+          cons.push(`${forecast.revenue.deltaPercent}% revenue impact`);
+        if (forecast.overallRisk === "high" || forecast.overallRisk === "critical") {
           cons.push(`${forecast.overallRisk} risk level`);
         }
-        if (forecast.cannibalization.hasRisk) cons.push('Cannibalization risk');
+        if (forecast.cannibalization.hasRisk) cons.push("Cannibalization risk");
 
         analysis.push({
           forecastId: id,
@@ -466,7 +465,7 @@ export class ImpactForecaster {
 
     // Find best option
     analysis.sort((a, b) => b.score - a.score);
-    const bestOption = analysis[0]?.forecastId || '';
+    const bestOption = analysis[0]?.forecastId || "";
 
     return { forecasts, bestOption, analysis };
   }

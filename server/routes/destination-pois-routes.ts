@@ -4,32 +4,29 @@
  */
 import { Router, Request, Response } from "express";
 import { db } from "../db";
-import {
-  update9987TourpediaPois,
-  update9987PublicHolidays,
-} from "@shared/schema";
+import { update9987TourpediaPois, update9987PublicHolidays } from "@shared/schema";
 import { eq, and, sql, asc, gte, lte } from "drizzle-orm";
 
 const router = Router();
 
 // Destination slug to city/country mapping
 const DESTINATION_MAPPING: Record<string, { city: string; countryCode: string }> = {
-  "barcelona": { city: "Barcelona", countryCode: "ES" },
-  "amsterdam": { city: "Amsterdam", countryCode: "NL" },
-  "berlin": { city: "Berlin", countryCode: "DE" },
-  "rome": { city: "Rome", countryCode: "IT" },
-  "paris": { city: "Paris", countryCode: "FR" },
-  "london": { city: "London", countryCode: "GB" },
-  "dubai": { city: "Dubai", countryCode: "AE" },
+  barcelona: { city: "Barcelona", countryCode: "ES" },
+  amsterdam: { city: "Amsterdam", countryCode: "NL" },
+  berlin: { city: "Berlin", countryCode: "DE" },
+  rome: { city: "Rome", countryCode: "IT" },
+  paris: { city: "Paris", countryCode: "FR" },
+  london: { city: "London", countryCode: "GB" },
+  dubai: { city: "Dubai", countryCode: "AE" },
   "new-york": { city: "New York", countryCode: "US" },
-  "tokyo": { city: "Tokyo", countryCode: "JP" },
-  "singapore": { city: "Singapore", countryCode: "SG" },
-  "bangkok": { city: "Bangkok", countryCode: "TH" },
+  tokyo: { city: "Tokyo", countryCode: "JP" },
+  singapore: { city: "Singapore", countryCode: "SG" },
+  bangkok: { city: "Bangkok", countryCode: "TH" },
   "hong-kong": { city: "Hong Kong", countryCode: "HK" },
-  "istanbul": { city: "Istanbul", countryCode: "TR" },
+  istanbul: { city: "Istanbul", countryCode: "TR" },
   "las-vegas": { city: "Las Vegas", countryCode: "US" },
   "los-angeles": { city: "Los Angeles", countryCode: "US" },
-  "miami": { city: "Miami", countryCode: "US" },
+  miami: { city: "Miami", countryCode: "US" },
   "abu-dhabi": { city: "Abu Dhabi", countryCode: "AE" },
 };
 
@@ -91,7 +88,7 @@ router.get("/:slug/pois", async (req: Request, res: Response) => {
     ]);
 
     // Transform POIs to include rating and review data from raw_data
-    const enrichedPois = pois.map((poi) => {
+    const enrichedPois = pois.map(poi => {
       const rawData = poi.rawData as Record<string, unknown> | null;
       return {
         id: poi.id,
@@ -120,7 +117,6 @@ router.get("/:slug/pois", async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching destination POIs:", error);
     res.status(500).json({ success: false, error: "Failed to fetch POIs" });
   }
 });
@@ -179,7 +175,6 @@ router.get("/:slug/holidays", async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching destination holidays:", error);
     res.status(500).json({ success: false, error: "Failed to fetch holidays" });
   }
 });
@@ -225,7 +220,6 @@ router.get("/:slug/poi-stats", async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching destination POI stats:", error);
     res.status(500).json({ success: false, error: "Failed to fetch POI stats" });
   }
 });

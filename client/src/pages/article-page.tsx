@@ -1,6 +1,7 @@
 import { Calendar, Clock, MapPin, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 export interface SubsectionItem {
   id?: string;
@@ -82,16 +83,14 @@ export default function ArticlePage({
           alt={heroImage.alt}
           className="w-full h-full object-cover"
           loading="eager"
-          {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
+          {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-6 left-6 right-6">
           <Badge variant="secondary" className="mb-3">
             {category}
           </Badge>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
-            {title}
-          </h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">{title}</h1>
         </div>
       </div>
 
@@ -116,9 +115,7 @@ export default function ArticlePage({
         </div>
       </div>
 
-      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-        {excerpt}
-      </p>
+      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">{excerpt}</p>
 
       {quickInfo && (
         <Card className="mb-8 bg-muted/50">
@@ -160,7 +157,7 @@ export default function ArticlePage({
       <nav className="mb-8 p-4 bg-muted/30 rounded-lg" aria-label="Table of contents">
         <h2 className="font-semibold mb-3">In This Guide</h2>
         <ul className="space-y-2">
-          {sections.map((section) => (
+          {sections.map(section => (
             <li key={section.id}>
               <a
                 href={`#${section.id}`}
@@ -174,12 +171,12 @@ export default function ArticlePage({
       </nav>
 
       <div className="prose prose-slate dark:prose-invert max-w-none">
-        {sections.map((section) => (
+        {sections.map(section => (
           <section key={section.id} id={section.id} className="mb-12 scroll-mt-24">
             <h2 className="text-2xl font-bold text-foreground mb-4">{section.title}</h2>
             <div
               className="text-muted-foreground [&_p]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_ul]:mb-4 [&_li]:mb-1"
-              dangerouslySetInnerHTML={{ __html: section.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHTML(section.content) }}
             />
           </section>
         ))}
@@ -207,7 +204,7 @@ export default function ArticlePage({
         <section className="mt-12">
           <h2 className="text-xl font-bold mb-6">Related Guides</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {relatedArticles.map((article) => (
+            {relatedArticles.map(article => (
               <Card key={article.id} className="hover-elevate transition-all">
                 <CardContent className="p-4">
                   <Badge variant="outline" className="mb-2 text-xs">

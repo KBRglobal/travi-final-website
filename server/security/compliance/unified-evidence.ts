@@ -127,9 +127,10 @@ async function collectSecurityGateEvidence(
       totalRequests: stats.totalRequests,
       allowed: stats.allowed,
       blocked: stats.blocked,
-      blockRate: stats.totalRequests > 0
-        ? `${((stats.blocked / stats.totalRequests) * 100).toFixed(2)}%`
-        : "0%",
+      blockRate:
+        stats.totalRequests > 0
+          ? `${((stats.blocked / stats.totalRequests) * 100).toFixed(2)}%`
+          : "0%",
     },
     highlights: [
       `Processed ${stats.totalRequests} security gate requests`,
@@ -171,18 +172,21 @@ async function collectAutonomyEvidence(
       securityMode: impact.securityMode,
       threatLevel: impact.threatLevel,
       systemStates: Object.fromEntries(
-        Object.entries(states).map(([k, v]) => [k, {
-          enabled: v.enabled,
-          forcedOff: v.forcedOff,
-          mode: v.mode,
-        }])
+        Object.entries(states).map(([k, v]) => [
+          k,
+          {
+            enabled: v.enabled,
+            forcedOff: v.forcedOff,
+            mode: v.mode,
+          },
+        ])
       ),
     },
     periodStart,
     periodEnd
   );
 
-  const enabledCount = Object.values(states).filter((s) => s.enabled).length;
+  const enabledCount = Object.values(states).filter(s => s.enabled).length;
   const totalCount = Object.keys(states).length;
 
   return {
@@ -245,7 +249,7 @@ async function collectOverrideEvidence(
       `${stats.total} total overrides in period`,
       `${stats.active} currently active`,
       `${stats.revoked} manually revoked (security response)`,
-      allOverrides.every((o) => o.justification.length >= 20)
+      allOverrides.every(o => o.justification.length >= 20)
         ? "All overrides have proper justification"
         : "Some overrides lack proper justification",
     ],
@@ -278,7 +282,7 @@ async function collectIntelligenceEvidence(
     periodEnd
   );
 
-  const criticalAnomalies = anomalies.filter((a) => a.severity === "critical");
+  const criticalAnomalies = anomalies.filter(a => a.severity === "critical");
 
   return {
     name: "Security Intelligence",
@@ -304,10 +308,7 @@ async function collectIntelligenceEvidence(
 /**
  * Collect Drift evidence
  */
-async function collectDriftEvidence(
-  periodStart: Date,
-  periodEnd: Date
-): Promise<EvidenceSection> {
+async function collectDriftEvidence(periodStart: Date, periodEnd: Date): Promise<EvidenceSection> {
   const driftHistory = getDriftHistory(24);
 
   const evidence = evidenceGenerator.generateEvidence(
@@ -319,17 +320,17 @@ async function collectDriftEvidence(
       period: { start: periodStart.toISOString(), end: periodEnd.toISOString() },
       totalDrifts: driftHistory.length,
       bySeverity: {
-        critical: driftHistory.filter((d) => d.severity === "critical").length,
-        high: driftHistory.filter((d) => d.severity === "high").length,
-        medium: driftHistory.filter((d) => d.severity === "medium").length,
-        low: driftHistory.filter((d) => d.severity === "low").length,
+        critical: driftHistory.filter(d => d.severity === "critical").length,
+        high: driftHistory.filter(d => d.severity === "high").length,
+        medium: driftHistory.filter(d => d.severity === "medium").length,
+        low: driftHistory.filter(d => d.severity === "low").length,
       },
     },
     periodStart,
     periodEnd
   );
 
-  const criticalDrifts = driftHistory.filter((d) => d.severity === "critical");
+  const criticalDrifts = driftHistory.filter(d => d.severity === "critical");
 
   return {
     name: "Security Drift Detection",
@@ -410,24 +411,16 @@ class UnifiedEvidenceCollector {
     frameworks: ComplianceFramework[],
     generatedBy: string
   ): Promise<UnifiedEvidenceBundle> {
-    console.log("[UnifiedEvidence] Generating evidence bundle...");
-
     // Collect all evidence sections
-    const [
-      securityGate,
-      autonomy,
-      overrides,
-      intelligence,
-      drift,
-      configuration,
-    ] = await Promise.all([
-      collectSecurityGateEvidence(periodStart, periodEnd),
-      collectAutonomyEvidence(periodStart, periodEnd),
-      collectOverrideEvidence(periodStart, periodEnd),
-      collectIntelligenceEvidence(periodStart, periodEnd),
-      collectDriftEvidence(periodStart, periodEnd),
-      collectConfigurationEvidence(periodStart, periodEnd),
-    ]);
+    const [securityGate, autonomy, overrides, intelligence, drift, configuration] =
+      await Promise.all([
+        collectSecurityGateEvidence(periodStart, periodEnd),
+        collectAutonomyEvidence(periodStart, periodEnd),
+        collectOverrideEvidence(periodStart, periodEnd),
+        collectIntelligenceEvidence(periodStart, periodEnd),
+        collectDriftEvidence(periodStart, periodEnd),
+        collectConfigurationEvidence(periodStart, periodEnd),
+      ]);
 
     // Generate reports for each framework
     const reports: Record<ComplianceFramework, ComplianceReport> = {} as any;
@@ -484,8 +477,6 @@ class UnifiedEvidenceCollector {
       period: { start: periodStart.toISOString(), end: periodEnd.toISOString() },
     });
 
-    console.log(`[UnifiedEvidence] Bundle generated: ${bundle.id} (${allEvidenceIds.length} evidence items)`);
-
     return bundle;
   }
 
@@ -519,12 +510,7 @@ class UnifiedEvidenceCollector {
     periodEnd: Date,
     generatedBy: string
   ): Promise<UnifiedEvidenceBundle> {
-    return this.generateBundle(
-      periodStart,
-      periodEnd,
-      ["SOC2", "ISO27001", "GDPR"],
-      generatedBy
-    );
+    return this.generateBundle(periodStart, periodEnd, ["SOC2", "ISO27001", "GDPR"], generatedBy);
   }
 
   /**
@@ -570,7 +556,7 @@ class UnifiedEvidenceCollector {
     let securityScore = 100;
     if (gateStats.blocked > gateStats.allowed * 0.5) securityScore -= 20;
     if (intelSummary.highRiskUsers > 5) securityScore -= 15;
-    if (driftHistory.filter((d) => d.severity === "critical").length > 0) securityScore -= 15;
+    if (driftHistory.filter(d => d.severity === "critical").length > 0) securityScore -= 15;
     if (overrideStats.active > 10) securityScore -= 10;
     securityScore = Math.max(0, securityScore);
 
@@ -727,5 +713,3 @@ export async function generateFullComplianceBundle(
 ): Promise<UnifiedEvidenceBundle> {
   return unifiedEvidenceCollector.generateFullBundle(periodStart, periodEnd, generatedBy);
 }
-
-console.log("[UnifiedEvidence] Module loaded");

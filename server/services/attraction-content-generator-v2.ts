@@ -2,7 +2,7 @@
  * Attraction Content Generator V2
  * Generates SEO/AEO optimized content with all required sections
  * Target: 1,200-1,800 words with human-like writing
- * 
+ *
  * Multi-provider support: Anthropic, OpenAI, Gemini, Groq, Mistral, DeepSeek
  * with round-robin distribution and health tracking
  */
@@ -36,7 +36,7 @@ export interface GeneratedContentV2 {
 function buildUserPrompt(attraction: TiqetsAttraction): string {
   const attractionName = attraction.title?.split(":")[0] || "this attraction";
   const currentYear = new Date().getFullYear();
-  
+
   return `ATTRACTION DATA:
 Name: ${attraction.title}
 City: ${attraction.cityName}
@@ -95,16 +95,16 @@ TOTAL: 1,200-1,800 words. Return ONLY valid JSON, no markdown.`;
 
 function repairJSON(jsonStr: string): string {
   let fixed = jsonStr;
-  
+
   // Only fix trailing commas - the safest repair
   fixed = fixed.replace(/,(\s*[}\]])/g, "$1");
-  
+
   return fixed;
 }
 
 function parseResponse(text: string): GeneratedContentV2 {
   let jsonString = text.trim();
-  
+
   // Remove markdown code fences if present
   if (jsonString.startsWith("```json")) {
     jsonString = jsonString.slice(7);
@@ -115,27 +115,21 @@ function parseResponse(text: string): GeneratedContentV2 {
     jsonString = jsonString.slice(0, -3);
   }
   jsonString = jsonString.trim();
-  
+
   // Try parsing directly first
   let parsed;
   try {
     parsed = JSON.parse(jsonString);
   } catch (e) {
-    console.warn("[Content Generator V2] Initial JSON parse failed:", e instanceof Error ? e.message : e);
-    
     // Try to repair and parse again
     const repaired = repairJSON(jsonString);
     try {
       parsed = JSON.parse(repaired);
-      console.log("[Content Generator V2] JSON repair successful");
     } catch (e2) {
-      console.error("[Content Generator V2] JSON repair also failed:", e2 instanceof Error ? e2.message : e2);
-      console.error("[Content Generator V2] Raw response length:", jsonString.length);
-      console.error("[Content Generator V2] First 500 chars:", jsonString.substring(0, 500));
       throw new Error(`JSON parsing failed: ${e instanceof Error ? e.message : "Unknown error"}`);
     }
   }
-  
+
   return {
     introduction: parsed.introduction || "",
     whatToExpect: parsed.whatToExpect || parsed.what_to_expect || "",
@@ -155,7 +149,7 @@ export async function generateAttractionContentV2(
   attraction: TiqetsAttraction
 ): Promise<{ content: GeneratedContentV2; qualityScore: QualityScore; engineId: string }> {
   const engine = EngineRegistry.getNextEngine();
-  
+
   if (!engine) {
     throw new Error("No engines available");
   }
@@ -163,13 +157,11 @@ export async function generateAttractionContentV2(
   const systemPrompt = buildSystemPrompt();
   const userPrompt = buildUserPrompt(attraction);
 
-  console.log(`[Content Generator V2] Starting: ${attraction.title} [${engine.name}]`);
-
   try {
     const responseText = await generateWithEngine(engine, systemPrompt, userPrompt);
-    
+
     const content = parseResponse(responseText);
-    
+
     const qualityScore = validateContent(content, {
       cityName: attraction.cityName,
       title: attraction.title,
@@ -178,9 +170,6 @@ export async function generateAttractionContentV2(
     });
 
     EngineRegistry.reportSuccess(engine.id);
-
-    console.log(`[Content Generator V2] ✓ ${attraction.title} [${engine.name}]`);
-    console.log(`  SEO=${qualityScore.seoScore}, AEO=${qualityScore.aeoScore}, Fact=${qualityScore.factCheckScore}`);
 
     return { content, qualityScore, engineId: engine.id };
   } catch (error) {
@@ -214,37 +203,28 @@ export async function generateWithRetry(
   attraction: TiqetsAttraction,
   maxRetries: number = 3
 ): Promise<{ content: GeneratedContentV2; qualityScore: QualityScore } | null> {
-  
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const result = await generateAttractionContentV2(attraction);
-      
+
       if (result.qualityScore.passed) {
-        console.log(`[Content Generator V2] ✅ Quality passed on attempt ${attempt}`);
         return result;
       }
-      
-      console.log(`[Content Generator V2] ⚠️ Quality failed on attempt ${attempt}:`, 
-        `SEO=${result.qualityScore.seoScore}, AEO=${result.qualityScore.aeoScore}, Fact=${result.qualityScore.factCheckScore}`);
-      
+
       if (attempt === maxRetries) {
-        console.log(`[Content Generator V2] ❌ Max retries reached, returning best attempt`);
         return result;
       }
-      
+
       // Wait before retry
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
     } catch (error) {
-      console.error(`[Content Generator V2] Error on attempt ${attempt}:`, error);
-      
       if (attempt === maxRetries) {
         return null;
       }
-      
+
       await new Promise(resolve => setTimeout(resolve, 3000));
     }
   }
-  
+
   return null;
 }

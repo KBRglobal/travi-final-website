@@ -8,8 +8,8 @@ import { db } from "./db";
 import { backgroundJobs } from "@shared/schema";
 import { eq, desc, and, lt, inArray, sql, count } from "drizzle-orm";
 
-export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed';
-export type JobType = 'translate' | 'ai_generate' | 'email' | 'image_process' | 'cleanup';
+export type JobStatus = "pending" | "processing" | "completed" | "failed";
+export type JobType = "translate" | "ai_generate" | "email" | "image_process" | "cleanup";
 
 export interface Job<T = unknown> {
   id: string;
@@ -65,7 +65,6 @@ class JobQueue {
    */
   registerHandler<T>(type: JobType, handler: JobHandler<T>) {
     this.handlers.set(type, handler as JobHandler);
-    console.log(`[JobQueue] Registered handler for job type: ${type}`);
   }
 
   /**
@@ -76,7 +75,8 @@ class JobQueue {
     data: T,
     options?: { priority?: number; maxRetries?: number }
   ): Promise<string> {
-    const [job] = await db.insert(backgroundJobs)
+    const [job] = await db
+      .insert(backgroundJobs)
       .values({
         type,
         status: "pending",
@@ -87,7 +87,6 @@ class JobQueue {
       } as any)
       .returning();
 
-    console.log(`[JobQueue] Added job ${job.id} of type ${type}`);
     return job.id;
   }
 
@@ -112,8 +111,8 @@ class JobQueue {
         maxRetries: options?.maxRetries ?? 3,
         priority: options?.priority ?? 0,
       } as any)
-      .then(() => console.log(`[JobQueue] Added job ${id} of type ${type}`))
-      .catch(err => console.error(`[JobQueue] Failed to add job ${id}:`, err));
+      .then(() => {})
+      .catch(() => {});
 
     return id;
   }
@@ -122,10 +121,7 @@ class JobQueue {
    * Get job status
    */
   async getJob(id: string): Promise<Job | undefined> {
-    const [row] = await db.select()
-      .from(backgroundJobs)
-      .where(eq(backgroundJobs.id, id))
-      .limit(1);
+    const [row] = await db.select().from(backgroundJobs).where(eq(backgroundJobs.id, id)).limit(1);
 
     return row ? dbToJob(row) : undefined;
   }
@@ -134,7 +130,8 @@ class JobQueue {
    * Get all jobs by status
    */
   async getJobsByStatus(status: JobStatus): Promise<Job[]> {
-    const rows = await db.select()
+    const rows = await db
+      .select()
       .from(backgroundJobs)
       .where(eq(backgroundJobs.status, status))
       .orderBy(desc(backgroundJobs.priority), backgroundJobs.createdAt);
@@ -145,25 +142,38 @@ class JobQueue {
   /**
    * Get queue statistics
    */
-  async getStats(): Promise<{ pending: number; processing: number; completed: number; failed: number; total: number }> {
-    const [pending] = await db.select({ count: count() })
+  async getStats(): Promise<{
+    pending: number;
+    processing: number;
+    completed: number;
+    failed: number;
+    total: number;
+  }> {
+    const [pending] = await db
+      .select({ count: count() })
       .from(backgroundJobs)
       .where(eq(backgroundJobs.status, "pending"));
 
-    const [processing] = await db.select({ count: count() })
+    const [processing] = await db
+      .select({ count: count() })
       .from(backgroundJobs)
       .where(eq(backgroundJobs.status, "processing"));
 
-    const [completed] = await db.select({ count: count() })
+    const [completed] = await db
+      .select({ count: count() })
       .from(backgroundJobs)
       .where(eq(backgroundJobs.status, "completed"));
 
-    const [failed] = await db.select({ count: count() })
+    const [failed] = await db
+      .select({ count: count() })
       .from(backgroundJobs)
       .where(eq(backgroundJobs.status, "failed"));
 
-    const total = (pending?.count || 0) + (processing?.count || 0) +
-                  (completed?.count || 0) + (failed?.count || 0);
+    const total =
+      (pending?.count || 0) +
+      (processing?.count || 0) +
+      (completed?.count || 0) +
+      (failed?.count || 0);
 
     return {
       pending: pending?.count || 0,
@@ -178,7 +188,8 @@ class JobQueue {
    * Get recent jobs (for admin dashboard)
    */
   async getRecentJobs(limit: number = 20): Promise<Job[]> {
-    const rows = await db.select()
+    const rows = await db
+      .select()
       .from(backgroundJobs)
       .orderBy(desc(backgroundJobs.createdAt))
       .limit(limit);
@@ -197,7 +208,6 @@ class JobQueue {
       this.lastTickAt = new Date();
       this.processNext();
     }, 1000);
-    console.log('[JobQueue] Started processing');
 
     // Recover any stuck "processing" jobs on startup
     this.recoverStuckJobs();
@@ -208,17 +218,15 @@ class JobQueue {
    */
   private async recoverStuckJobs() {
     try {
-      const result = await db.update(backgroundJobs)
+      const result = await db
+        .update(backgroundJobs)
         .set({ status: "pending" } as any)
         .where(eq(backgroundJobs.status, "processing"))
         .returning();
 
       if (result.length > 0) {
-        console.log(`[JobQueue] Recovered ${result.length} stuck jobs`);
       }
-    } catch (err) {
-      console.error('[JobQueue] Failed to recover stuck jobs:', err);
-    }
+    } catch (err) {}
   }
 
   /**
@@ -237,7 +245,6 @@ class JobQueue {
       this.intervalId = null;
     }
     this.isRunning = false;
-    console.log('[JobQueue] Stopped processing');
   }
 
   /**
@@ -248,7 +255,8 @@ class JobQueue {
 
     try {
       // Get next pending job (highest priority first)
-      const [jobRow] = await db.select()
+      const [jobRow] = await db
+        .select()
         .from(backgroundJobs)
         .where(eq(backgroundJobs.status, "pending"))
         .orderBy(desc(backgroundJobs.priority), backgroundJobs.createdAt)
@@ -258,65 +266,61 @@ class JobQueue {
 
       const handler = this.handlers.get(jobRow.type);
       if (!handler) {
-        console.warn(`[JobQueue] No handler registered for job type: ${jobRow.type}`);
         return;
       }
 
       // Mark job as processing
-      await db.update(backgroundJobs)
+      await db
+        .update(backgroundJobs)
         .set({ status: "processing", startedAt: new Date() } as any)
         .where(eq(backgroundJobs.id, jobRow.id));
 
       this.processing.add(jobRow.id);
-      console.log(`[JobQueue] Processing job ${jobRow.id} of type ${jobRow.type}`);
 
       try {
         const result = await handler(jobRow.data);
 
-        await db.update(backgroundJobs)
+        await db
+          .update(backgroundJobs)
           .set({
             status: "completed",
             result: result as Record<string, unknown>,
-            completedAt: new Date()
+            completedAt: new Date(),
           } as any)
           .where(eq(backgroundJobs.id, jobRow.id));
 
         this.lastProcessedAt = new Date();
-        console.log(`[JobQueue] Completed job ${jobRow.id}`);
       } catch (error) {
         const newRetries = jobRow.retries + 1;
 
         if (newRetries < jobRow.maxRetries) {
           // Retry
-          await db.update(backgroundJobs)
+          await db
+            .update(backgroundJobs)
             .set({ status: "pending", retries: newRetries } as any)
             .where(eq(backgroundJobs.id, jobRow.id));
-
-          console.warn(`[JobQueue] Job ${jobRow.id} failed, retrying (${newRetries}/${jobRow.maxRetries})`);
         } else {
           // Failed permanently
-          await db.update(backgroundJobs)
+          await db
+            .update(backgroundJobs)
             .set({
               status: "failed",
               retries: newRetries,
               error: error instanceof Error ? error.message : String(error),
-              completedAt: new Date()
+              completedAt: new Date(),
             } as any)
             .where(eq(backgroundJobs.id, jobRow.id));
-
-          console.error(`[JobQueue] Job ${jobRow.id} failed permanently:`, error);
         }
       } finally {
         this.processing.delete(jobRow.id);
       }
 
       // Clean up old completed/failed jobs periodically
-      if (Math.random() < 0.01) { // 1% chance each run
+      if (Math.random() < 0.01) {
+        // 1% chance each run
         await this.cleanup();
       }
-    } catch (err) {
-      console.error('[JobQueue] Error processing jobs:', err);
-    }
+    } catch (err) {}
   }
 
   /**
@@ -327,34 +331,31 @@ class JobQueue {
     const cutoffDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days old
 
     try {
-      const result = await db.delete(backgroundJobs)
-        .where(and(
-          inArray(backgroundJobs.status, ["completed", "failed"]),
-          lt(backgroundJobs.completedAt, cutoffDate)
-        ))
+      const result = await db
+        .delete(backgroundJobs)
+        .where(
+          and(
+            inArray(backgroundJobs.status, ["completed", "failed"]),
+            lt(backgroundJobs.completedAt, cutoffDate)
+          )
+        )
         .returning();
 
       if (result.length > 0) {
-        console.log(`[JobQueue] Cleaned up ${result.length} old jobs`);
       }
-    } catch (err) {
-      console.error('[JobQueue] Cleanup failed:', err);
-    }
+    } catch (err) {}
   }
 
   /**
    * Cancel a pending job
    */
   async cancelJob(id: string): Promise<boolean> {
-    const result = await db.delete(backgroundJobs)
-      .where(and(
-        eq(backgroundJobs.id, id),
-        eq(backgroundJobs.status, "pending")
-      ))
+    const result = await db
+      .delete(backgroundJobs)
+      .where(and(eq(backgroundJobs.id, id), eq(backgroundJobs.status, "pending")))
       .returning();
 
     if (result.length > 0) {
-      console.log(`[JobQueue] Cancelled job ${id}`);
       return true;
     }
     return false;
@@ -364,21 +365,18 @@ class JobQueue {
    * Retry a failed job
    */
   async retryJob(id: string): Promise<boolean> {
-    const result = await db.update(backgroundJobs)
+    const result = await db
+      .update(backgroundJobs)
       .set({
         status: "pending",
         retries: 0,
         error: null,
-        completedAt: null
+        completedAt: null,
       } as any)
-      .where(and(
-        eq(backgroundJobs.id, id),
-        eq(backgroundJobs.status, "failed")
-      ))
+      .where(and(eq(backgroundJobs.id, id), eq(backgroundJobs.status, "failed")))
       .returning();
 
     if (result.length > 0) {
-      console.log(`[JobQueue] Retrying job ${id}`);
       return true;
     }
     return false;
@@ -429,12 +427,12 @@ export interface EmailJobData {
 export interface ImageProcessJobData {
   mediaId: string;
   operations: Array<{
-    type: 'resize' | 'crop' | 'compress';
+    type: "resize" | "crop" | "compress";
     params: Record<string, unknown>;
   }>;
 }
 
 export interface CleanupJobData {
-  type: 'expired_sessions' | 'old_drafts' | 'unused_media';
+  type: "expired_sessions" | "old_drafts" | "unused_media";
   olderThan?: number; // days
 }

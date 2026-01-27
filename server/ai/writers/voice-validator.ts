@@ -1,6 +1,6 @@
 /**
  * Voice Validator - Scores voice consistency for AI Writers
- * 
+ *
  * Analyzes content to ensure it matches the writer's unique voice and style.
  * Returns a score (0-100) indicating how well the content aligns with the writer's voice.
  */
@@ -9,7 +9,9 @@ import OpenAI from "openai";
 import { getWriterById } from "./writer-registry";
 import type { AIWriter } from "@shared/schema";
 
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 // Configuration constants
 const VOICE_VALIDATION_MAX_CONTENT_LENGTH = 2000; // Maximum characters to analyze
@@ -30,7 +32,7 @@ export async function validateVoiceConsistency(
   content: string
 ): Promise<VoiceConsistencyResult> {
   const writer = getWriterById(writerId);
-  
+
   if (!writer) {
     throw new Error(`Writer not found: ${writerId}`);
   }
@@ -42,7 +44,7 @@ export async function validateVoiceConsistency(
       matches: [],
       mismatches: ["OpenAI API not configured"],
       suggestions: ["Configure OPENAI_API_KEY to enable voice validation"],
-      confidence: 0.5
+      confidence: 0.5,
     };
   }
 
@@ -54,15 +56,16 @@ export async function validateVoiceConsistency(
       messages: [
         {
           role: "system",
-          content: "You are an expert in analyzing writing style and voice consistency. Provide detailed, actionable feedback."
+          content:
+            "You are an expert in analyzing writing style and voice consistency. Provide detailed, actionable feedback.",
         },
         {
           role: "user",
-          content: prompt
-        }
+          content: prompt,
+        },
       ],
       temperature: 0.3, // Lower temperature for more consistent analysis
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
     });
 
     const result = JSON.parse(response.choices[0]?.message?.content || "{}");
@@ -72,17 +75,16 @@ export async function validateVoiceConsistency(
       matches: result.matches || [],
       mismatches: result.mismatches || [],
       suggestions: result.suggestions || [],
-      confidence: Math.min(1, Math.max(0, result.confidence || 0.8))
+      confidence: Math.min(1, Math.max(0, result.confidence || 0.8)),
     };
   } catch (error) {
-    console.error("Voice validation failed:", error);
     // Return a default result on error
     return {
       score: 50,
       matches: [],
       mismatches: ["Unable to analyze voice consistency"],
       suggestions: ["Try regenerating the content"],
-      confidence: 0.5
+      confidence: 0.5,
     };
   }
 }
@@ -90,10 +92,7 @@ export async function validateVoiceConsistency(
 /**
  * Get a simple voice score (0-100) without detailed analysis
  */
-export async function getVoiceScore(
-  writerId: string,
-  content: string
-): Promise<number> {
+export async function getVoiceScore(writerId: string, content: string): Promise<number> {
   const result = await validateVoiceConsistency(writerId, content);
   return result.score;
 }
@@ -112,10 +111,15 @@ Expertise: ${writer.expertise}
 Voice Prompt: ${(writer as any).voicePrompt}
 
 Sample Phrases (Writer's Typical Style):
-${writer.samplePhrases?.slice(0, 3).map(p => `- "${p}"`).join('\n') || 'N/A'}
+${
+  writer.samplePhrases
+    ?.slice(0, 3)
+    .map(p => `- "${p}"`)
+    .join("\n") || "N/A"
+}
 
 CONTENT TO ANALYZE:
-${content.slice(0, VOICE_VALIDATION_MAX_CONTENT_LENGTH)} ${content.length > VOICE_VALIDATION_MAX_CONTENT_LENGTH ? '...(truncated)' : ''}
+${content.slice(0, VOICE_VALIDATION_MAX_CONTENT_LENGTH)} ${content.length > VOICE_VALIDATION_MAX_CONTENT_LENGTH ? "...(truncated)" : ""}
 
 Analyze and return a JSON object with:
 {
@@ -143,9 +147,7 @@ Be specific and actionable in your feedback.`;
 export async function batchValidateVoice(
   items: Array<{ writerId: string; content: string }>
 ): Promise<VoiceConsistencyResult[]> {
-  return Promise.all(
-    items.map(item => validateVoiceConsistency(item.writerId, item.content))
-  );
+  return Promise.all(items.map(item => validateVoiceConsistency(item.writerId, item.content)));
 }
 
 /**
@@ -164,5 +166,5 @@ export const voiceValidator = {
   validate: validateVoiceConsistency,
   getScore: getVoiceScore,
   batchValidate: batchValidateVoice,
-  meetsThreshold: meetsVoiceThreshold
+  meetsThreshold: meetsVoiceThreshold,
 };

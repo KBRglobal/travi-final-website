@@ -9,7 +9,7 @@ import {
   TranslationJob,
   LocaleCoverage,
   TranslationMemoryEntry,
-} from './types';
+} from "./types";
 
 // In-memory stores
 const locales = new Map<string, Locale>();
@@ -20,156 +20,156 @@ const translationMemory: TranslationMemoryEntry[] = [];
 // Initialize all 17 supported locales for global SEO competition
 const defaultLocales: Locale[] = [
   {
-    code: 'en',
-    name: 'English',
-    nativeName: 'English',
-    direction: 'ltr',
+    code: "en",
+    name: "English",
+    nativeName: "English",
+    direction: "ltr",
     isDefault: true,
     isEnabled: true,
   },
   {
-    code: 'he',
-    name: 'Hebrew',
-    nativeName: 'עברית',
-    direction: 'rtl',
+    code: "he",
+    name: "Hebrew",
+    nativeName: "Hebrew",
+    direction: "rtl",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'ar',
-    name: 'Arabic',
-    nativeName: 'العربية',
-    direction: 'rtl',
+    code: "ar",
+    name: "Arabic",
+    nativeName: "العربية",
+    direction: "rtl",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'zh',
-    name: 'Chinese',
-    nativeName: '中文',
-    direction: 'ltr',
+    code: "zh",
+    name: "Chinese",
+    nativeName: "中文",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'ja',
-    name: 'Japanese',
-    nativeName: '日本語',
-    direction: 'ltr',
+    code: "ja",
+    name: "Japanese",
+    nativeName: "日本語",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'ko',
-    name: 'Korean',
-    nativeName: '한국어',
-    direction: 'ltr',
+    code: "ko",
+    name: "Korean",
+    nativeName: "한국어",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'ru',
-    name: 'Russian',
-    nativeName: 'Русский',
-    direction: 'ltr',
+    code: "ru",
+    name: "Russian",
+    nativeName: "Русский",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'hi',
-    name: 'Hindi',
-    nativeName: 'हिन्दी',
-    direction: 'ltr',
+    code: "hi",
+    name: "Hindi",
+    nativeName: "हिन्दी",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'fr',
-    name: 'French',
-    nativeName: 'Français',
-    direction: 'ltr',
+    code: "fr",
+    name: "French",
+    nativeName: "Français",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'de',
-    name: 'German',
-    nativeName: 'Deutsch',
-    direction: 'ltr',
+    code: "de",
+    name: "German",
+    nativeName: "Deutsch",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'es',
-    name: 'Spanish',
-    nativeName: 'Español',
-    direction: 'ltr',
+    code: "es",
+    name: "Spanish",
+    nativeName: "Español",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'it',
-    name: 'Italian',
-    nativeName: 'Italiano',
-    direction: 'ltr',
+    code: "it",
+    name: "Italian",
+    nativeName: "Italiano",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'pt',
-    name: 'Portuguese',
-    nativeName: 'Português',
-    direction: 'ltr',
+    code: "pt",
+    name: "Portuguese",
+    nativeName: "Português",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'nl',
-    name: 'Dutch',
-    nativeName: 'Nederlands',
-    direction: 'ltr',
+    code: "nl",
+    name: "Dutch",
+    nativeName: "Nederlands",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'tr',
-    name: 'Turkish',
-    nativeName: 'Türkçe',
-    direction: 'ltr',
+    code: "tr",
+    name: "Turkish",
+    nativeName: "Türkçe",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'pl',
-    name: 'Polish',
-    nativeName: 'Polski',
-    direction: 'ltr',
+    code: "pl",
+    name: "Polish",
+    nativeName: "Polski",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
   {
-    code: 'th',
-    name: 'Thai',
-    nativeName: 'ไทย',
-    direction: 'ltr',
+    code: "th",
+    name: "Thai",
+    nativeName: "ไทย",
+    direction: "ltr",
     isDefault: false,
     isEnabled: true,
-    fallbackLocale: 'en',
+    fallbackLocale: "en",
   },
 ];
 
@@ -240,7 +240,7 @@ export function createTranslation(
     contentId,
     sourceLocale,
     targetLocale,
-    status: 'not_started',
+    status: "not_started",
     translatedFields: {},
     sourceVersion: 1,
     createdAt: new Date(),
@@ -263,8 +263,7 @@ export function getTranslation(contentId: string, targetLocale: string): Content
  * Get all translations for content.
  */
 export function getContentTranslations(contentId: string): ContentTranslation[] {
-  return Array.from(translations.values())
-    .filter(t => t.contentId === contentId);
+  return Array.from(translations.values()).filter(t => t.contentId === contentId);
 }
 
 /**
@@ -273,7 +272,9 @@ export function getContentTranslations(contentId: string): ContentTranslation[] 
 export function updateTranslation(
   contentId: string,
   targetLocale: string,
-  updates: Partial<Pick<ContentTranslation, 'status' | 'translatedFields' | 'translatedBy' | 'reviewedBy'>>
+  updates: Partial<
+    Pick<ContentTranslation, "status" | "translatedFields" | "translatedBy" | "reviewedBy">
+  >
 ): ContentTranslation | null {
   const id = `trans-${contentId}-${targetLocale}`;
   const translation = translations.get(id);
@@ -282,13 +283,13 @@ export function updateTranslation(
 
   Object.assign(translation, updates, { updatedAt: new Date() });
 
-  if (updates.status === 'in_progress' && !translation.translatedAt) {
+  if (updates.status === "in_progress" && !translation.translatedAt) {
     translation.translatedAt = new Date();
   }
-  if (updates.status === 'approved' && !translation.reviewedAt) {
+  if (updates.status === "approved" && !translation.reviewedAt) {
     translation.reviewedAt = new Date();
   }
-  if (updates.status === 'published' && !translation.publishedAt) {
+  if (updates.status === "published" && !translation.publishedAt) {
     translation.publishedAt = new Date();
   }
 
@@ -302,8 +303,8 @@ export function updateTranslation(
 export function markTranslationsOutdated(contentId: string): number {
   let count = 0;
   for (const [id, translation] of translations) {
-    if (translation.contentId === contentId && translation.status === 'published') {
-      translation.status = 'outdated';
+    if (translation.contentId === contentId && translation.status === "published") {
+      translation.status = "outdated";
       translation.updatedAt = new Date();
       translations.set(id, translation);
       count++;
@@ -319,7 +320,7 @@ export function createTranslationJob(
   contentIds: string[],
   sourceLocale: string,
   targetLocales: string[],
-  priority: 'low' | 'medium' | 'high' | 'urgent' = 'medium',
+  priority: "low" | "medium" | "high" | "urgent" = "medium",
   dueDate?: Date
 ): TranslationJob {
   const job: TranslationJob = {
@@ -328,7 +329,7 @@ export function createTranslationJob(
     sourceLocale,
     targetLocales,
     priority,
-    status: 'pending',
+    status: "pending",
     progress: 0,
     dueDate,
     createdAt: new Date(),
@@ -359,7 +360,7 @@ export function getTranslationJob(jobId: string): TranslationJob | null {
  */
 export function getPendingJobs(): TranslationJob[] {
   return Array.from(translationJobs.values())
-    .filter(j => j.status === 'pending' || j.status === 'in_progress')
+    .filter(j => j.status === "pending" || j.status === "in_progress")
     .sort((a, b) => {
       const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
       return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -374,9 +375,9 @@ export function updateJobProgress(jobId: string, progress: number): TranslationJ
   if (!job) return null;
 
   job.progress = Math.min(100, Math.max(0, progress));
-  job.status = progress >= 100 ? 'completed' : 'in_progress';
+  job.status = progress >= 100 ? "completed" : "in_progress";
 
-  if (job.status === 'completed') {
+  if (job.status === "completed") {
     job.completedAt = new Date();
   }
 
@@ -393,14 +394,15 @@ export function getLocaleCoverage(totalContentCount: number): LocaleCoverage[] {
   for (const locale of getEnabledLocales()) {
     if (locale.isDefault) continue;
 
-    const localeTranslations = Array.from(translations.values())
-      .filter(t => t.targetLocale === locale.code);
+    const localeTranslations = Array.from(translations.values()).filter(
+      t => t.targetLocale === locale.code
+    );
 
-    const translated = localeTranslations.filter(t => t.status === 'published').length;
+    const translated = localeTranslations.filter(t => t.status === "published").length;
     const pending = localeTranslations.filter(t =>
-      ['not_started', 'in_progress', 'pending_review'].includes(t.status)
+      ["not_started", "in_progress", "pending_review"].includes(t.status)
     ).length;
-    const outdated = localeTranslations.filter(t => t.status === 'outdated').length;
+    const outdated = localeTranslations.filter(t => t.status === "outdated").length;
 
     coverage.push({
       locale: locale.code,
@@ -426,9 +428,10 @@ export function addToTranslationMemory(
   context?: string
 ): void {
   const existing = translationMemory.find(
-    e => e.sourceText === sourceText &&
-         e.sourceLocale === sourceLocale &&
-         e.targetLocale === targetLocale
+    e =>
+      e.sourceText === sourceText &&
+      e.sourceLocale === sourceLocale &&
+      e.targetLocale === targetLocale
   );
 
   if (existing) {
@@ -456,11 +459,14 @@ export function searchTranslationMemory(
   sourceLocale: string,
   targetLocale: string
 ): TranslationMemoryEntry | null {
-  return translationMemory.find(
-    e => e.sourceText === sourceText &&
-         e.sourceLocale === sourceLocale &&
-         e.targetLocale === targetLocale
-  ) || null;
+  return (
+    translationMemory.find(
+      e =>
+        e.sourceText === sourceText &&
+        e.sourceLocale === sourceLocale &&
+        e.targetLocale === targetLocale
+    ) || null
+  );
 }
 
 /**

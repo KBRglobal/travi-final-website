@@ -52,7 +52,7 @@ const initialFormData: LinkFormData = {
   url: "",
   productId: "",
   placement: "",
-  contentId: "global",
+  contentId: "",
 };
 
 export default function AffiliateLinks() {
@@ -119,7 +119,7 @@ export default function AffiliateLinks() {
       url: link.url,
       productId: link.productId || "",
       placement: link.placement || "",
-      contentId: link.contentId || "global",
+      contentId: link.contentId || "",
     });
     setDialogOpen(true);
   };
@@ -138,7 +138,7 @@ export default function AffiliateLinks() {
       url: formData.url,
       productId: formData.productId || undefined,
       placement: formData.placement || undefined,
-      contentId: formData.contentId === "global" ? undefined : formData.contentId || undefined,
+      contentId: formData.contentId || undefined,
     };
 
     if (editingLink) {
@@ -294,7 +294,7 @@ export default function AffiliateLinks() {
                     <SelectValue placeholder="Global (not linked to specific contents)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="global">Global</SelectItem>
+                    <SelectItem value="">Global</SelectItem>
                     {contentsData?.contents?.slice(0, 50).map((contents) => (
                       <SelectItem key={contents.id} value={contents.id}>
                         {contents.title}

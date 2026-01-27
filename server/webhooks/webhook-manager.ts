@@ -1,6 +1,6 @@
 /**
  * Webhook Manager
- * 
+ *
  * Manages webhook subscriptions and delivery
  * - HMAC-SHA256 signatures for security
  * - Automatic retry logic with exponential backoff
@@ -18,9 +18,28 @@ const WEBHOOK_TIMEOUT_MS = 10000; // 10s timeout for webhooks
 const MAX_RETRIES = 3;
 const RETRY_DELAYS = [1000, 5000, 15000]; // 1s, 5s, 15s
 
+// Replay attack protection: Max age for webhook requests (5 minutes)
+const MAX_WEBHOOK_AGE_MS = 5 * 60 * 1000;
+// Nonce cache to prevent replay attacks (in-memory, cleared periodically)
+const usedNonces = new Map<string, number>();
+
+// Cleanup old nonces every 10 minutes
+setInterval(
+  () => {
+    const cutoff = Date.now() - MAX_WEBHOOK_AGE_MS;
+    for (const [nonce, timestamp] of usedNonces.entries()) {
+      if (timestamp < cutoff) {
+        usedNonces.delete(nonce);
+      }
+    }
+  },
+  10 * 60 * 1000
+);
+
 export interface WebhookPayload {
   event: string;
   timestamp: string;
+  nonce: string; // Unique ID for replay protection
   data: Record<string, unknown>;
 }
 
@@ -37,10 +56,7 @@ export const webhookManager = {
    * Generate HMAC-SHA256 signature for payload
    */
   generateSignature(payload: string, secret: string): string {
-    return crypto
-      .createHmac("sha256", secret)
-      .update(payload)
-      .digest("hex");
+    return crypto.createHmac("sha256", secret).update(payload).digest("hex");
   },
 
   /**
@@ -48,10 +64,57 @@ export const webhookManager = {
    */
   verifySignature(payload: string, signature: string, secret: string): boolean {
     const expectedSignature = this.generateSignature(payload, secret);
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
+    try {
+      return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+    } catch {
+      return false; // Different lengths means invalid
+    }
+  },
+
+  /**
+   * Generate a unique nonce for replay protection
+   */
+  generateNonce(): string {
+    return `${Date.now()}-${crypto.randomBytes(16).toString("hex")}`;
+  },
+
+  /**
+   * Verify incoming webhook for replay attacks
+   * Call this when receiving webhooks from external sources
+   */
+  verifyIncomingWebhook(
+    payload: string,
+    signature: string,
+    timestamp: string,
+    nonce: string,
+    secret: string
+  ): { valid: boolean; error?: string } {
+    // 1. Verify signature first
+    if (!this.verifySignature(payload, signature, secret)) {
+      return { valid: false, error: "Invalid signature" };
+    }
+
+    // 2. Check timestamp is not too old (prevents replay of old requests)
+    const webhookTime = new Date(timestamp).getTime();
+    const now = Date.now();
+    if (isNaN(webhookTime) || now - webhookTime > MAX_WEBHOOK_AGE_MS) {
+      return { valid: false, error: "Webhook timestamp too old or invalid" };
+    }
+
+    // 3. Check timestamp is not in the future (clock skew tolerance: 1 minute)
+    if (webhookTime > now + 60000) {
+      return { valid: false, error: "Webhook timestamp in the future" };
+    }
+
+    // 4. Check nonce hasn't been used (prevents replay of recent requests)
+    if (usedNonces.has(nonce)) {
+      return { valid: false, error: "Nonce already used (replay attack detected)" };
+    }
+
+    // 5. Store nonce to prevent reuse
+    usedNonces.set(nonce, webhookTime);
+
+    return { valid: true };
   },
 
   /**
@@ -64,11 +127,7 @@ export const webhookManager = {
   ): Promise<WebhookDeliveryResult> {
     try {
       // Fetch webhook configuration
-      const webhook = await db
-        .select()
-        .from(webhooks)
-        .where(eq(webhooks.id, webhookId))
-        .limit(1);
+      const webhook = await db.select().from(webhooks).where(eq(webhooks.id, webhookId)).limit(1);
 
       if (webhook.length === 0 || (webhook[0] as any).status !== "active") {
         return {
@@ -90,10 +149,13 @@ export const webhookManager = {
         };
       }
 
-      // Build payload
+      // Build payload with nonce for replay protection
+      const nonce = this.generateNonce();
+      const timestamp = new Date().toISOString();
       const payload: WebhookPayload = {
         event,
-        timestamp: new Date().toISOString(),
+        timestamp,
+        nonce,
         data,
       };
 
@@ -114,6 +176,8 @@ export const webhookManager = {
               "X-Webhook-Signature": signature,
               "X-Webhook-Event": event,
               "X-Webhook-ID": webhookId,
+              "X-Webhook-Timestamp": timestamp,
+              "X-Webhook-Nonce": nonce,
             },
             body: payloadString,
             timeoutMs: WEBHOOK_TIMEOUT_MS,
@@ -180,7 +244,6 @@ export const webhookManager = {
         attempts: MAX_RETRIES,
       };
     } catch (error) {
-      console.error("[Webhook] Error delivering webhook:", error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -213,9 +276,7 @@ export const webhookManager = {
         attempts,
         error,
       } as any);
-    } catch (error) {
-      console.error("[Webhook] Error logging delivery:", error);
-    }
+    } catch (error) {}
   },
 
   /**
@@ -244,12 +305,8 @@ export const webhookManager = {
           .update(webhooks)
           .set({ status: "failed" } as any)
           .where(eq(webhooks.id, webhookId));
-
-        console.warn(`[Webhook] Webhook ${webhookId} marked as failed due to repeated failures`);
       }
-    } catch (error) {
-      console.error("[Webhook] Error checking webhook status:", error);
-    }
+    } catch (error) {}
   },
 
   /**
@@ -271,9 +328,7 @@ export const webhookManager = {
         .map(webhook => this.deliverWebhook(webhook.id, event, data));
 
       await Promise.allSettled(deliveryPromises);
-    } catch (error) {
-      console.error("[Webhook] Error broadcasting event:", error);
-    }
+    } catch (error) {}
   },
 
   /**

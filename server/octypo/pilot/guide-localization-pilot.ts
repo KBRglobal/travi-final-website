@@ -2,14 +2,14 @@
  * PILOT: Guide Localization System
  * =================================
  * Native locale content generation for travel guides.
- * 
+ *
  * CONSTRAINTS:
  * - en, ar, fr locales ONLY (batch pilot phase)
  * - Guide entity type ONLY
  * - LocalePurity ≥98% hard gate
  * - Atomic write (all validators pass or nothing written)
  * - NO English fallback for non-English locales
- * 
+ *
  * Batch Pilot: 5 guides × 3 locales = 15 content sets
  */
 
@@ -21,7 +21,7 @@ import { calculateLocalePurity, LOCALE_PURITY_THRESHOLD } from "./localization-p
 let tableEnsured = false;
 async function ensureGuideTableExists(): Promise<void> {
   if (tableEnsured) return;
-  
+
   const createEnumSQL = `
     DO $$ 
     BEGIN
@@ -31,7 +31,7 @@ async function ensureGuideTableExists(): Promise<void> {
       END IF;
     END $$;
   `;
-  
+
   const createTableSQL = `
     CREATE TABLE IF NOT EXISTS pilot_localized_guides (
       id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -60,12 +60,12 @@ async function ensureGuideTableExists(): Promise<void> {
       CONSTRAINT uq_pilot_localized_guides_slug_locale UNIQUE (guide_slug, locale)
     );
   `;
-  
+
   const createIndexesSQL = `
     CREATE INDEX IF NOT EXISTS idx_pilot_localized_guides_status ON pilot_localized_guides(status);
     CREATE INDEX IF NOT EXISTS idx_pilot_localized_guides_locale ON pilot_localized_guides(locale);
   `;
-  
+
   try {
     // Step 1: Ensure enum type exists
     await pool.query(createEnumSQL);
@@ -73,10 +73,9 @@ async function ensureGuideTableExists(): Promise<void> {
     await pool.query(createTableSQL);
     // Step 3: Create indexes
     await pool.query(createIndexesSQL);
-    console.log("[GuideLocalization] Ensured pilot_localized_guides table and enum exist");
+
     tableEnsured = true;
   } catch (err) {
-    console.error("[GuideLocalization] Failed to create table:", err);
     throw err;
   }
 }
@@ -176,7 +175,9 @@ export interface SpeakableSchema {
 
 export interface JsonLdArtifact {
   "@context": "https://schema.org";
-  "@graph": Array<ArticleSchema | FAQPageSchema | { "@type": "WebPage"; speakable: SpeakableSchema }>;
+  "@graph": Array<
+    ArticleSchema | FAQPageSchema | { "@type": "WebPage"; speakable: SpeakableSchema }
+  >;
 }
 
 export interface SeoArtifacts {
@@ -209,7 +210,7 @@ export function buildSeoArtifacts(
   const description = content.metaDescription || "";
   const ogLocale = LOCALE_TO_OG_LOCALE[locale];
   const langCode = LOCALE_TO_LANGUAGE_CODE[locale];
-  
+
   const openGraph: OpenGraphArtifact = {
     title,
     description,
@@ -218,13 +219,13 @@ export function buildSeoArtifacts(
     url,
     siteName: "Travi CMS",
   };
-  
+
   const twitterCard: TwitterCardArtifact = {
     card: "summary_large_image",
     title,
     description,
   };
-  
+
   const articleSchema: ArticleSchema = {
     "@type": "Article",
     headline: title,
@@ -240,7 +241,7 @@ export function buildSeoArtifacts(
     },
     dateModified: new Date().toISOString(),
   };
-  
+
   const faqPageSchema: FAQPageSchema = {
     "@type": "FAQPage",
     mainEntity: (content.faq || []).map(item => ({
@@ -252,15 +253,12 @@ export function buildSeoArtifacts(
       },
     })),
   };
-  
+
   const speakableSpec: SpeakableSchema = {
     "@type": "SpeakableSpecification",
-    cssSelector: [
-      '[data-testid="text-answer-capsule"]',
-      '[data-testid="text-introduction"]',
-    ],
+    cssSelector: ['[data-testid="text-answer-capsule"]', '[data-testid="text-introduction"]'],
   };
-  
+
   const jsonLd: JsonLdArtifact = {
     "@context": "https://schema.org",
     "@graph": [
@@ -276,7 +274,7 @@ export function buildSeoArtifacts(
       } as { "@type": "WebPage"; speakable: SpeakableSchema },
     ],
   };
-  
+
   return {
     openGraph,
     twitterCard,
@@ -304,7 +302,7 @@ export function validateGuideCompleteness(content: GeneratedGuideContent): {
   missingSections: string[];
 } {
   const missingSections: string[] = [];
-  
+
   for (const section of GUIDE_REQUIRED_SECTIONS) {
     if (section === "faq") {
       if (!content.faq || content.faq.length === 0) {
@@ -321,10 +319,9 @@ export function validateGuideCompleteness(content: GeneratedGuideContent): {
       }
     }
   }
-  
+
   const passed = missingSections.length === 0;
-  console.log(`[GuideCompletenessValidator] Passed: ${passed}, Missing: ${missingSections.join(", ") || "none"}`);
-  
+
   return { passed, missingSections };
 }
 
@@ -343,12 +340,10 @@ export function validateGuideLocalePurity(
     ...(content.highlights || []),
     ...(content.faq?.map(f => `${f.question} ${f.answer}`) || []),
   ].join(" ");
-  
+
   const score = calculateLocalePurity(allText, locale, exemptions);
   const passed = score >= LOCALE_PURITY_THRESHOLD;
-  
-  console.log(`[GuideLocalePurityValidator] Locale: ${locale}, Score: ${(score * 100).toFixed(1)}%, Threshold: ${LOCALE_PURITY_THRESHOLD * 100}%, Passed: ${passed}`);
-  
+
   return { passed, score, threshold: LOCALE_PURITY_THRESHOLD };
 }
 
@@ -364,7 +359,10 @@ const GUIDE_BLUEPRINT_REQUIREMENTS = {
 
 function countWords(text: string | undefined): number {
   if (!text) return 0;
-  return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter(w => w.length > 0).length;
 }
 
 export function validateGuideBlueprint(content: GeneratedGuideContent): {
@@ -372,45 +370,64 @@ export function validateGuideBlueprint(content: GeneratedGuideContent): {
   issues: string[];
 } {
   const issues: string[] = [];
-  
+
   const introWords = countWords(content.introduction);
   if (introWords < GUIDE_BLUEPRINT_REQUIREMENTS.introduction.min) {
-    issues.push(`Introduction too short: ${introWords} words (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.introduction.min})`);
+    issues.push(
+      `Introduction too short: ${introWords} words (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.introduction.min})`
+    );
   }
-  
+
   const whatWords = countWords(content.whatToExpect);
   if (whatWords < GUIDE_BLUEPRINT_REQUIREMENTS.whatToExpect.min) {
-    issues.push(`whatToExpect too short: ${whatWords} words (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.whatToExpect.min})`);
+    issues.push(
+      `whatToExpect too short: ${whatWords} words (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.whatToExpect.min})`
+    );
   }
-  
+
   const tipsWords = countWords(content.tips);
   if (tipsWords < GUIDE_BLUEPRINT_REQUIREMENTS.tips.min) {
-    issues.push(`Tips too short: ${tipsWords} words (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.tips.min})`);
+    issues.push(
+      `Tips too short: ${tipsWords} words (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.tips.min})`
+    );
   }
-  
+
   const highlightsCount = content.highlights?.length || 0;
   if (highlightsCount < GUIDE_BLUEPRINT_REQUIREMENTS.highlightsCount.min) {
-    issues.push(`Highlights count too low: ${highlightsCount} (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.highlightsCount.min})`);
+    issues.push(
+      `Highlights count too low: ${highlightsCount} (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.highlightsCount.min})`
+    );
   }
-  
+
   const faqCount = content.faq?.length || 0;
   if (faqCount < GUIDE_BLUEPRINT_REQUIREMENTS.faqCount.min) {
-    issues.push(`FAQ count too low: ${faqCount} (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.faqCount.min})`);
+    issues.push(
+      `FAQ count too low: ${faqCount} (min: ${GUIDE_BLUEPRINT_REQUIREMENTS.faqCount.min})`
+    );
   }
-  
+
   const titleLength = (content.metaTitle || "").length;
-  if (titleLength < GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.min || titleLength > GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.max) {
-    issues.push(`Meta title length: ${titleLength} chars (should be ${GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.min}-${GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.max})`);
+  if (
+    titleLength < GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.min ||
+    titleLength > GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.max
+  ) {
+    issues.push(
+      `Meta title length: ${titleLength} chars (should be ${GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.min}-${GUIDE_BLUEPRINT_REQUIREMENTS.metaTitle.max})`
+    );
   }
-  
+
   const descLength = (content.metaDescription || "").length;
-  if (descLength < GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.min || descLength > GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.max) {
-    issues.push(`Meta description length: ${descLength} chars (should be ${GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.min}-${GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.max})`);
+  if (
+    descLength < GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.min ||
+    descLength > GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.max
+  ) {
+    issues.push(
+      `Meta description length: ${descLength} chars (should be ${GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.min}-${GUIDE_BLUEPRINT_REQUIREMENTS.metaDescription.max})`
+    );
   }
-  
+
   const passed = issues.length === 0;
-  console.log(`[GuideBlueprintValidator] Passed: ${passed}, Issues: ${issues.length}`);
-  
+
   return { passed, issues };
 }
 
@@ -419,11 +436,11 @@ export function validateGuideSeoAeo(content: GeneratedGuideContent): {
   issues: string[];
 } {
   const issues: string[] = [];
-  
+
   if (!content.answerCapsule || content.answerCapsule.length < 50) {
     issues.push("Answer capsule missing or too short (min 50 chars)");
   }
-  
+
   if (content.faq) {
     for (let i = 0; i < content.faq.length; i++) {
       const faqItem = content.faq[i];
@@ -435,7 +452,7 @@ export function validateGuideSeoAeo(content: GeneratedGuideContent): {
       }
     }
   }
-  
+
   if (content.metaDescription && content.metaTitle) {
     const titleStart = content.metaTitle.slice(0, 20).toLowerCase();
     const descStart = content.metaDescription.slice(0, 20).toLowerCase();
@@ -443,14 +460,16 @@ export function validateGuideSeoAeo(content: GeneratedGuideContent): {
       issues.push("Meta description starts the same as title - needs variation");
     }
   }
-  
+
   const passed = issues.length === 0;
-  console.log(`[GuideSEO/AEOValidator] Passed: ${passed}, Issues: ${issues.length}`);
-  
+
   return { passed, issues };
 }
 
-export function validateGuideRTL(content: GeneratedGuideContent, locale: PilotLocale): {
+export function validateGuideRTL(
+  content: GeneratedGuideContent,
+  locale: PilotLocale
+): {
   passed: boolean;
   issues: string[];
 } {
@@ -458,10 +477,10 @@ export function validateGuideRTL(content: GeneratedGuideContent, locale: PilotLo
   if (!RTL_LOCALES.includes(locale)) {
     return { passed: true, issues: [] };
   }
-  
+
   const issues: string[] = [];
   const arabicRegex = /[\u0600-\u06FF]/;
-  
+
   if (content.introduction && !arabicRegex.test(content.introduction)) {
     issues.push("Introduction does not contain Arabic characters");
   }
@@ -471,10 +490,9 @@ export function validateGuideRTL(content: GeneratedGuideContent, locale: PilotLo
   if (content.metaDescription && !arabicRegex.test(content.metaDescription)) {
     issues.push("Meta description does not contain Arabic characters");
   }
-  
+
   const passed = issues.length === 0;
-  console.log(`[GuideRTLValidator] Passed: ${passed}, Issues: ${issues.length}`);
-  
+
   return { passed, issues };
 }
 
@@ -494,7 +512,7 @@ async function atomicWriteGuide(
   }
 ): Promise<string> {
   await ensureGuideTableExists();
-  
+
   const record = {
     guideSlug: request.guideSlug,
     locale: request.locale,
@@ -516,7 +534,7 @@ async function atomicWriteGuide(
     tokensUsed: metadata.tokensUsed,
     generationTimeMs: metadata.generationTimeMs,
   };
-  
+
   const existing = await db
     .select()
     .from(pilotLocalizedGuides)
@@ -527,7 +545,7 @@ async function atomicWriteGuide(
       )
     )
     .limit(1);
-  
+
   if (existing.length > 0) {
     await db
       .update(pilotLocalizedGuides)
@@ -598,22 +616,19 @@ export async function getLocalizedGuideContent(
   status?: string;
 }> {
   await ensureGuideTableExists();
-  
+
   const result = await db
     .select()
     .from(pilotLocalizedGuides)
     .where(
-      and(
-        eq(pilotLocalizedGuides.guideSlug, guideSlug),
-        eq(pilotLocalizedGuides.locale, locale)
-      )
+      and(eq(pilotLocalizedGuides.guideSlug, guideSlug), eq(pilotLocalizedGuides.locale, locale))
     )
     .limit(1);
-  
+
   if (result.length === 0) {
     return { found: false };
   }
-  
+
   const row = result[0];
   return {
     found: true,
@@ -645,26 +660,24 @@ export async function saveLocalizedGuideContent(
   }
 ): Promise<GuideLocalizationResult> {
   await ensureGuideTableExists();
-  
+
   const startTime = Date.now();
-  
-  console.log(`[GuideLocalization] Starting validation for ${request.guideSlug} (${request.locale})`);
-  
+
   if (!request.destination || request.destination.trim() === "") {
     throw new Error("GUIDE_FAIL: destination is REQUIRED - no fallback allowed");
   }
   if (!request.locale || !["en", "ar", "fr"].includes(request.locale)) {
     throw new Error("GUIDE_FAIL: locale must be 'en', 'ar', or 'fr' only");
   }
-  
+
   const exemptions = [request.guideSlug, request.destination].filter(Boolean);
-  
+
   const completenessResult = validateGuideCompleteness(content);
   const localePurityResult = validateGuideLocalePurity(content, request.locale, exemptions);
   const blueprintResult = validateGuideBlueprint(content);
   const seoAeoResult = validateGuideSeoAeo(content);
   const rtlResult = validateGuideRTL(content, request.locale);
-  
+
   const validationResults: GuideValidationResults = {
     completeness: completenessResult,
     localePurity: localePurityResult,
@@ -672,46 +685,53 @@ export async function saveLocalizedGuideContent(
     seoAeo: seoAeoResult,
     rtl: rtlResult,
   };
-  
+
   const allPassed =
     completenessResult.passed &&
     localePurityResult.passed &&
     blueprintResult.passed &&
     seoAeoResult.passed &&
     rtlResult.passed;
-  
+
   if (!allPassed) {
     const failureReasons: string[] = [];
-    if (!completenessResult.passed) failureReasons.push(`Completeness: missing ${completenessResult.missingSections.join(", ")}`);
-    if (!localePurityResult.passed) failureReasons.push(`LocalePurity: ${(localePurityResult.score * 100).toFixed(1)}% < ${localePurityResult.threshold * 100}%`);
-    if (!blueprintResult.passed) failureReasons.push(`Blueprint: ${blueprintResult.issues.join("; ")}`);
+    if (!completenessResult.passed)
+      failureReasons.push(`Completeness: missing ${completenessResult.missingSections.join(", ")}`);
+    if (!localePurityResult.passed)
+      failureReasons.push(
+        `LocalePurity: ${(localePurityResult.score * 100).toFixed(1)}% < ${localePurityResult.threshold * 100}%`
+      );
+    if (!blueprintResult.passed)
+      failureReasons.push(`Blueprint: ${blueprintResult.issues.join("; ")}`);
     if (!seoAeoResult.passed) failureReasons.push(`SEO/AEO: ${seoAeoResult.issues.join("; ")}`);
     if (!rtlResult.passed) failureReasons.push(`RTL: ${rtlResult.issues.join("; ")}`);
-    
+
     const failureReason = failureReasons.join(" | ");
-    console.log(`[GuideLocalization] VALIDATION FAILED: ${failureReason}`);
-    
-    await db.insert(pilotLocalizedGuides).values({
-      guideSlug: request.guideSlug,
-      locale: request.locale,
-      destination: request.destination,
-      sourceGuideId: request.sourceGuideId,
-      status: "failed",
-      failureReason,
-      localePurityScore: localePurityResult.score,
-      validationResults,
-      writerAgent: options?.writerAgent,
-      engineUsed: options?.engineUsed,
-      generationTimeMs: Date.now() - startTime,
-    } as any).onConflictDoUpdate({
-      target: [pilotLocalizedGuides.guideSlug, pilotLocalizedGuides.locale],
-      set: {
+
+    await db
+      .insert(pilotLocalizedGuides)
+      .values({
+        guideSlug: request.guideSlug,
+        locale: request.locale,
+        destination: request.destination,
+        sourceGuideId: request.sourceGuideId,
+        status: "failed",
         failureReason,
         localePurityScore: localePurityResult.score,
         validationResults,
-      } as any,
-    });
-    
+        writerAgent: options?.writerAgent,
+        engineUsed: options?.engineUsed,
+        generationTimeMs: Date.now() - startTime,
+      } as any)
+      .onConflictDoUpdate({
+        target: [pilotLocalizedGuides.guideSlug, pilotLocalizedGuides.locale],
+        set: {
+          failureReason,
+          localePurityScore: localePurityResult.score,
+          validationResults,
+        } as any,
+      });
+
     return {
       success: false,
       guideSlug: request.guideSlug,
@@ -724,22 +744,18 @@ export async function saveLocalizedGuideContent(
       generationTimeMs: Date.now() - startTime,
     };
   }
-  
-  console.log(`[GuideLocalization] All validators passed - writing content`);
-  
+
   const contentId = await atomicWriteGuide(request, content, validationResults, {
     writerAgent: options?.writerAgent,
     engineUsed: options?.engineUsed,
     generationTimeMs: Date.now() - startTime,
   });
-  
+
   await db
     .update(pilotLocalizedGuides)
     .set({ status: "published" } as any)
     .where(eq(pilotLocalizedGuides.id, contentId));
-  
-  console.log(`[GuideLocalization] SUCCESS: Guide content written with ID ${contentId}`);
-  
+
   return {
     success: true,
     guideSlug: request.guideSlug,
@@ -762,11 +778,11 @@ export async function getGuideLocalizationStatus(guideSlug: string): Promise<{
     .select({ locale: pilotLocalizedGuides.locale, status: pilotLocalizedGuides.status })
     .from(pilotLocalizedGuides)
     .where(eq(pilotLocalizedGuides.guideSlug, guideSlug));
-  
+
   const enResult = results.find(r => r.locale === "en");
   const arResult = results.find(r => r.locale === "ar");
   const frResult = results.find(r => r.locale === "fr");
-  
+
   return {
     en: { exists: !!enResult, status: enResult?.status },
     ar: { exists: !!arResult, status: arResult?.status },

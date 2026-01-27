@@ -8,13 +8,7 @@
 import { db } from "../../db";
 import { contents as content } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import type {
-  ChangePlan,
-  ChangeItem,
-  RollbackPlan,
-  RollbackItem,
-  RollbackResult,
-} from "../types";
+import type { ChangePlan, ChangeItem, RollbackPlan, RollbackItem, RollbackResult } from "../types";
 import { getPlan, updatePlanStatus, updateChange } from "../plans";
 
 // Rollback lock to prevent concurrent rollbacks
@@ -28,14 +22,14 @@ const rollbackLocks = new Set<string>();
  * Generate a rollback plan from an applied change plan
  */
 export function generateRollbackPlan(plan: ChangePlan): RollbackPlan {
-  if (plan.status !== 'applied' && plan.status !== 'failed') {
+  if (plan.status !== "applied" && plan.status !== "failed") {
     throw new Error(`Can only rollback applied or failed plans (current: ${plan.status})`);
   }
 
   const rollbackItems: RollbackItem[] = [];
 
   // Only include changes that were actually applied
-  const appliedChanges = plan.changes.filter(c => c.status === 'applied' && c.rollbackData);
+  const appliedChanges = plan.changes.filter(c => c.status === "applied" && c.rollbackData);
 
   for (const change of appliedChanges) {
     rollbackItems.push({
@@ -43,7 +37,7 @@ export function generateRollbackPlan(plan: ChangePlan): RollbackPlan {
       targetType: change.targetType,
       targetId: change.targetId,
       restoreData: change.rollbackData!,
-      status: 'pending',
+      status: "pending",
     });
   }
 
@@ -64,32 +58,32 @@ export function canRollback(plan: ChangePlan): { canRollback: boolean; reasons: 
   const reasons: string[] = [];
 
   // Check feature flag
-  const rollbackEnabled = process.env.ENABLE_CHANGE_ROLLBACK !== 'false';
+  const rollbackEnabled = process.env.ENABLE_CHANGE_ROLLBACK !== "false";
   if (!rollbackEnabled) {
-    reasons.push('Rollback is disabled (ENABLE_CHANGE_ROLLBACK=false)');
+    reasons.push("Rollback is disabled (ENABLE_CHANGE_ROLLBACK=false)");
   }
 
   // Check status
-  if (plan.status !== 'applied' && plan.status !== 'failed') {
+  if (plan.status !== "applied" && plan.status !== "failed") {
     reasons.push(`Plan status must be 'applied' or 'failed' (current: ${plan.status})`);
   }
 
   // Check if already rolled back
-  if (plan.status === 'rolled_back') {
-    reasons.push('Plan has already been rolled back');
+  if (plan.status === "rolled_back") {
+    reasons.push("Plan has already been rolled back");
   }
 
   // Check for rollback data
-  const appliedChanges = plan.changes.filter(c => c.status === 'applied');
+  const appliedChanges = plan.changes.filter(c => c.status === "applied");
   const changesWithRollbackData = appliedChanges.filter(c => c.rollbackData);
 
   if (appliedChanges.length > 0 && changesWithRollbackData.length === 0) {
-    reasons.push('No rollback data available for applied changes');
+    reasons.push("No rollback data available for applied changes");
   }
 
   // Check for lock
   if (rollbackLocks.has(plan.id)) {
-    reasons.push('Rollback is already in progress');
+    reasons.push("Rollback is already in progress");
   }
 
   return {
@@ -118,7 +112,7 @@ export async function rollbackPlan(
   // Validate rollback is possible
   const { canRollback: canDo, reasons } = canRollback(plan);
   if (!canDo) {
-    throw new Error(`Cannot rollback: ${reasons.join(', ')}`);
+    throw new Error(`Cannot rollback: ${reasons.join(", ")}`);
   }
 
   // Acquire lock
@@ -138,25 +132,24 @@ export async function rollbackPlan(
     for (const item of rollbackPlan.changes) {
       try {
         await rollbackChange(plan, item);
-        item.status = 'restored';
+        item.status = "restored";
         restored++;
 
         // Update the original change status
         updateChange(planId, item.changeId, {
-          status: 'rolled_back',
+          status: "rolled_back",
         });
       } catch (error) {
-        item.status = 'failed';
-        item.error = error instanceof Error ? error.message : 'Unknown error';
+        item.status = "failed";
+        item.error = error instanceof Error ? error.message : "Unknown error";
         failed++;
-        console.error(`[Rollback] Failed to rollback change ${item.changeId}:`, error);
       }
     }
 
     const success = failed === 0;
 
     // Update plan status
-    updatePlanStatus(planId, 'rolled_back', userId, {
+    updatePlanStatus(planId, "rolled_back", userId, {
       rolledBackAt: new Date(),
       rolledBackBy: userId,
       rollbackReason: reason,
@@ -186,43 +179,42 @@ async function rollbackChange(plan: ChangePlan, item: RollbackItem): Promise<voi
   }
 
   switch (change.type) {
-    case 'content_update':
-    case 'content_publish':
-    case 'content_unpublish':
-    case 'seo_update':
+    case "content_update":
+    case "content_publish":
+    case "content_unpublish":
+    case "seo_update":
       await rollbackContentChange(change, item);
       break;
 
-    case 'canonical_set':
-    case 'canonical_remove':
+    case "canonical_set":
+    case "canonical_remove":
       await rollbackCanonicalChange(change, item);
       break;
 
-    case 'link_add':
-    case 'link_remove':
+    case "link_add":
+    case "link_remove":
       await rollbackLinkChange(change, item);
       break;
 
-    case 'entity_update':
-    case 'entity_merge':
+    case "entity_update":
+    case "entity_merge":
       await rollbackEntityChange(change, item);
       break;
 
-    case 'aeo_regenerate':
+    case "aeo_regenerate":
       await rollbackAeoRegenerate(change, item);
       break;
 
-    case 'experiment_start':
-    case 'experiment_stop':
+    case "experiment_start":
+    case "experiment_stop":
       await rollbackExperimentChange(change, item);
       break;
 
-    case 'monetization_update':
+    case "monetization_update":
       await rollbackMonetizationUpdate(change, item);
       break;
 
     default:
-      console.warn(`[Rollback] Unknown change type: ${change.type}`);
   }
 }
 
@@ -235,40 +227,37 @@ async function rollbackContentChange(change: ChangeItem, item: RollbackItem): Pr
   const restoreData = item.restoreData as Record<string, unknown>;
 
   // Restore the content to its previous state
-  await db.update(content).set({
-    ...restoreData,
-    updatedAt: new Date(),
-  } as any).where(eq(content.id, contentId as any));
+  await db
+    .update(content)
+    .set({
+      ...restoreData,
+      updatedAt: new Date(),
+    } as any)
+    .where(eq(content.id, contentId as any));
 }
 
 async function rollbackCanonicalChange(change: ChangeItem, item: RollbackItem): Promise<void> {
   // In production, would restore canonical_manager records
-  console.log(`[Rollback] Restoring canonical for ${change.targetId}`);
 }
 
 async function rollbackLinkChange(change: ChangeItem, item: RollbackItem): Promise<void> {
   // In production, would restore internal linking records
-  console.log(`[Rollback] Restoring link for ${change.targetId}`);
 }
 
 async function rollbackEntityChange(change: ChangeItem, item: RollbackItem): Promise<void> {
   // In production, would restore entity records
-  console.log(`[Rollback] Restoring entity ${change.targetId}`);
 }
 
 async function rollbackAeoRegenerate(change: ChangeItem, item: RollbackItem): Promise<void> {
   // In production, would restore previous AEO capsule
-  console.log(`[Rollback] Restoring AEO capsule for ${change.targetId}`);
 }
 
 async function rollbackExperimentChange(change: ChangeItem, item: RollbackItem): Promise<void> {
   // In production, would restore experiment state
-  console.log(`[Rollback] Restoring experiment for ${change.targetId}`);
 }
 
 async function rollbackMonetizationUpdate(change: ChangeItem, item: RollbackItem): Promise<void> {
   // In production, would restore monetization settings
-  console.log(`[Rollback] Restoring monetization for ${change.targetId}`);
 }
 
 // ============================================================================
@@ -291,11 +280,11 @@ export async function rollbackChanges(
 
   // Validate changes exist and were applied
   const targetChanges = plan.changes.filter(
-    c => changeIds.includes(c.id) && c.status === 'applied' && c.rollbackData
+    c => changeIds.includes(c.id) && c.status === "applied" && c.rollbackData
   );
 
   if (targetChanges.length === 0) {
-    throw new Error('No valid changes to rollback');
+    throw new Error("No valid changes to rollback");
   }
 
   let restored = 0;
@@ -308,21 +297,21 @@ export async function rollbackChanges(
       targetType: change.targetType,
       targetId: change.targetId,
       restoreData: change.rollbackData!,
-      status: 'pending',
+      status: "pending",
     };
 
     try {
       await rollbackChange(plan, item);
-      item.status = 'restored';
+      item.status = "restored";
       restored++;
 
       // Update the original change status
       updateChange(planId, change.id, {
-        status: 'rolled_back',
+        status: "rolled_back",
       });
     } catch (error) {
-      item.status = 'failed';
-      item.error = error instanceof Error ? error.message : 'Unknown error';
+      item.status = "failed";
+      item.error = error instanceof Error ? error.message : "Unknown error";
       failed++;
     }
 
@@ -362,13 +351,13 @@ export function previewRollback(planId: string): {
 } {
   const plan = getPlan(planId);
   if (!plan) {
-    return { canRollback: false, reasons: ['Plan not found'], changes: [] };
+    return { canRollback: false, reasons: ["Plan not found"], changes: [] };
   }
 
   const { canRollback: canDo, reasons } = canRollback(plan);
 
   const changes = plan.changes
-    .filter(c => c.status === 'applied' && c.rollbackData)
+    .filter(c => c.status === "applied" && c.rollbackData)
     .map(c => ({
       changeId: c.id,
       targetType: c.targetType,

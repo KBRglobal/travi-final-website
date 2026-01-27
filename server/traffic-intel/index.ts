@@ -19,7 +19,7 @@ export type {
   AIVisibilityMetrics,
   TrafficSummary,
   ContentTrafficStats,
-} from './types';
+} from "./types";
 
 // Source Detection
 export {
@@ -32,10 +32,10 @@ export {
   AI_REFERRER_PATTERNS,
   AI_USER_AGENT_PATTERNS,
   SOCIAL_PATTERNS,
-} from './source-detection';
+} from "./source-detection";
 
 // Attribution
-import { getAttributionStore as _getAttributionStore } from './attribution';
+import { getAttributionStore as _getAttributionStore } from "./attribution";
 export {
   AttributionStore,
   getAttributionStore,
@@ -43,37 +43,33 @@ export {
   trafficTrackingMiddleware,
   getTrafficSource,
   getTrackedContentId,
-} from './attribution';
+} from "./attribution";
 
 // AI Visibility
 export {
   AIVisibilityTracker,
   getAIVisibilityTracker,
   resetAIVisibilityTracker,
-} from './ai-visibility';
+} from "./ai-visibility";
 
 // Routes
-export { createTrafficIntelRouter } from './routes';
+export { createTrafficIntelRouter } from "./routes";
 
 /**
  * Initialize traffic intelligence system
  */
 export function initTrafficIntelligence(): void {
-  const enabled = process.env.ENABLE_TRAFFIC_INTELLIGENCE === 'true';
+  const enabled = process.env.ENABLE_TRAFFIC_INTELLIGENCE === "true";
 
   if (!enabled) {
-    console.log('[TrafficIntel] Feature disabled (ENABLE_TRAFFIC_INTELLIGENCE != true)');
     return;
   }
 
   const store = (_getAttributionStore as any)();
   store.start();
 
-  console.log('[TrafficIntel] Traffic intelligence initialized');
-
-  const aiEnabled = process.env.ENABLE_AI_VISIBILITY_TRACKING === 'true';
+  const aiEnabled = process.env.ENABLE_AI_VISIBILITY_TRACKING === "true";
   if (aiEnabled) {
-    console.log('[TrafficIntel] AI visibility tracking enabled');
   }
 }
 
@@ -83,5 +79,4 @@ export function initTrafficIntelligence(): void {
 export function shutdownTrafficIntelligence(): void {
   const store = (_getAttributionStore as any)();
   store.stop();
-  console.log('[TrafficIntel] Traffic intelligence shutdown');
 }

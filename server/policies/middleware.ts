@@ -94,7 +94,11 @@ function getCacheKey(action: string, resource: string): string {
   return `${action}:${resource}`;
 }
 
-function getCachedPolicies(action: string, resource: string, config: EnforcementConfig): Policy[] | null {
+function getCachedPolicies(
+  action: string,
+  resource: string,
+  config: EnforcementConfig
+): Policy[] | null {
   if (!config.cacheEnabled) return null;
 
   const key = getCacheKey(action, resource);
@@ -118,7 +122,6 @@ function setCachedPolicies(action: string, resource: string, policies: Policy[])
 
 export function clearPolicyCache(): void {
   policyCache.clear();
-  console.log("[PolicyEnforcement] Cache cleared");
 }
 
 // =====================================================
@@ -138,29 +141,32 @@ async function loadApplicablePolicies(action: string, resource: string): Promise
     .where(eq(governancePolicies.isActive, true))
     .orderBy(governancePolicies.priority);
 
-  const applicable = policies.filter((p) => {
-    const actions = p.actions as string[] || [];
-    const resources = p.resources as string[] || [];
+  const applicable = policies
+    .filter(p => {
+      const actions = (p.actions as string[]) || [];
+      const resources = (p.resources as string[]) || [];
 
-    // Match if policy has no actions/resources filter OR matches the request
-    const actionMatch = actions.length === 0 || actions.includes(action) || actions.includes("*");
-    const resourceMatch = resources.length === 0 || resources.includes(resource) || resources.includes("*");
+      // Match if policy has no actions/resources filter OR matches the request
+      const actionMatch = actions.length === 0 || actions.includes(action) || actions.includes("*");
+      const resourceMatch =
+        resources.length === 0 || resources.includes(resource) || resources.includes("*");
 
-    return actionMatch && resourceMatch;
-  }).map((p) => ({
-    id: p.id,
-    name: p.name,
-    description: p.description || undefined,
-    policyType: p.policyType,
-    effect: p.effect as "allow" | "warn" | "block",
-    priority: p.priority,
-    conditions: p.conditions as Record<string, unknown>,
-    actions: p.actions as string[] || [],
-    resources: p.resources as string[] || [],
-    roles: p.roles as string[] || [],
-    message: p.message || undefined,
-    isActive: p.isActive,
-  }));
+      return actionMatch && resourceMatch;
+    })
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      description: p.description || undefined,
+      policyType: p.policyType,
+      effect: p.effect as "allow" | "warn" | "block",
+      priority: p.priority,
+      conditions: p.conditions as Record<string, unknown>,
+      actions: (p.actions as string[]) || [],
+      resources: (p.resources as string[]) || [],
+      roles: (p.roles as string[]) || [],
+      message: p.message || undefined,
+      isActive: p.isActive,
+    }));
 
   // Cache the result
   setCachedPolicies(action, resource, applicable);
@@ -194,10 +200,7 @@ function getContextValue(field: string, context: PolicyContext): unknown {
   return context.metadata?.[field];
 }
 
-function evaluateCondition(
-  condition: PolicyCondition,
-  context: PolicyContext
-): boolean {
+function evaluateCondition(condition: PolicyCondition, context: PolicyContext): boolean {
   const value = getContextValue(condition.field, context);
 
   switch (condition.operator) {
@@ -230,19 +233,26 @@ function evaluateCondition(
   }
 }
 
-function evaluateConditions(
-  conditions: Record<string, unknown>,
-  context: PolicyContext
-): boolean {
+function evaluateConditions(conditions: Record<string, unknown>, context: PolicyContext): boolean {
   // Handle array of conditions (all must match)
   if (Array.isArray(conditions)) {
-    return conditions.every((cond) => evaluateCondition(cond as PolicyCondition, context));
+    return conditions.every(cond => evaluateCondition(cond as PolicyCondition, context));
   }
 
   // Handle object conditions (all must match)
   for (const [key, value] of Object.entries(conditions)) {
     // Skip non-condition properties
-    if (["requireApproval", "logToAudit", "retentionDays", "maxPerHour", "maxRecords", "minAffectedRecords", "preventSelfApproval"].includes(key)) {
+    if (
+      [
+        "requireApproval",
+        "logToAudit",
+        "retentionDays",
+        "maxPerHour",
+        "maxRecords",
+        "minAffectedRecords",
+        "preventSelfApproval",
+      ].includes(key)
+    ) {
       continue;
     }
 
@@ -264,7 +274,7 @@ function evaluatePolicy(policy: Policy, context: PolicyContext): boolean {
   // Check role restrictions
   if (policy.roles.length > 0) {
     const userRoles = context.userRoles || (context.userRole ? [context.userRole] : []);
-    const hasRole = userRoles.some((r) => policy.roles.includes(r));
+    const hasRole = userRoles.some(r => policy.roles.includes(r));
     if (!hasRole) return false;
   }
 
@@ -288,7 +298,7 @@ export async function evaluatePolicies(context: PolicyContext): Promise<Evaluati
 
   // Check bypass roles
   const userRoles = context.userRoles || (context.userRole ? [context.userRole] : []);
-  const shouldBypass = userRoles.some((r) => config.bypassRoles.includes(r));
+  const shouldBypass = userRoles.some(r => config.bypassRoles.includes(r));
   if (shouldBypass) {
     return {
       allowed: true,
@@ -363,9 +373,7 @@ async function logPolicyEvaluation(
         reason: `Effect: ${effect}`,
       } as any);
     }
-  } catch (error) {
-    console.error("[PolicyEnforcement] Failed to log evaluation:", error);
-  }
+  } catch (error) {}
 }
 
 // =====================================================
@@ -431,7 +439,6 @@ export function enforcePolicy(options: PolicyEnforcementOptions): RequestHandler
 
       next();
     } catch (error) {
-      console.error("[PolicyEnforcement] Middleware error:", error);
       // Fail open by default (allow request on error)
       next();
     }
@@ -446,8 +453,8 @@ export function enforceContentPolicy(action: string): RequestHandler {
   return enforcePolicy({
     action,
     resource: "content",
-    getResourceId: (req) => req.params.id,
-    getMetadata: (req) => ({
+    getResourceId: req => req.params.id,
+    getMetadata: req => ({
       contentType: req.body?.type,
       contentStatus: req.body?.status,
     }),
@@ -458,8 +465,8 @@ export function enforceUserPolicy(action: string): RequestHandler {
   return enforcePolicy({
     action,
     resource: "user",
-    getResourceId: (req) => req.params.id,
-    getMetadata: (req) => ({
+    getResourceId: req => req.params.id,
+    getMetadata: req => ({
       targetRole: req.body?.role,
     }),
   });
@@ -469,7 +476,7 @@ export function enforceExportPolicy(): RequestHandler {
   return enforcePolicy({
     action: "export",
     resource: "data",
-    getMetadata: (req) => ({
+    getMetadata: req => ({
       format: req.query.format,
       recordCount: req.query.limit ? parseInt(req.query.limit as string) : undefined,
     }),
@@ -480,8 +487,8 @@ export function enforceAdminPolicy(action: string, resource: string): RequestHan
   return enforcePolicy({
     action,
     resource,
-    getResourceId: (req) => req.params.id,
-    getMetadata: (req) => req.body,
+    getResourceId: req => req.params.id,
+    getMetadata: req => req.body,
   });
 }
 
@@ -509,9 +516,5 @@ export async function auditPolicyViolation(
         warnings: result.warnings,
       },
     } as any);
-  } catch (error) {
-    console.error("[PolicyEnforcement] Failed to audit violation:", error);
-  }
+  } catch (error) {}
 }
-
-console.log("[PolicyEnforcement] Module loaded");

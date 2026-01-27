@@ -7,13 +7,7 @@
  */
 
 import { db } from "../db";
-import {
-  contents,
-  destinations,
-  attractions,
-  hotels,
-  articles,
-} from "@shared/schema";
+import { contents, destinations, attractions, hotels, articles } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import {
   type MergeableEntityType,
@@ -78,35 +72,54 @@ async function mergeDestinations(
 ): Promise<MergeResult> {
   try {
     // Get both destinations
-    const [source] = await db
-      .select()
-      .from(destinations)
-      .where(eq(destinations.id, sourceId));
+    const [source] = await db.select().from(destinations).where(eq(destinations.id, sourceId));
 
-    const [target] = await db
-      .select()
-      .from(destinations)
-      .where(eq(destinations.id, targetId));
+    const [target] = await db.select().from(destinations).where(eq(destinations.id, targetId));
 
     if (!source) {
-      return { success: false, entityType: 'destination', sourceId, targetId, redirectCreated: false, referencesUpdated: 0, error: 'Source destination not found' };
+      return {
+        success: false,
+        entityType: "destination",
+        sourceId,
+        targetId,
+        redirectCreated: false,
+        referencesUpdated: 0,
+        error: "Source destination not found",
+      };
     }
     if (!target) {
-      return { success: false, entityType: 'destination', sourceId, targetId, redirectCreated: false, referencesUpdated: 0, error: 'Target destination not found' };
+      return {
+        success: false,
+        entityType: "destination",
+        sourceId,
+        targetId,
+        redirectCreated: false,
+        referencesUpdated: 0,
+        error: "Target destination not found",
+      };
     }
 
     // Apply merge strategy
-    if (strategy === 'keep_source' || strategy === 'merge_content') {
+    if (strategy === "keep_source" || strategy === "merge_content") {
       // Update target with source data where appropriate
       await db
         .update(destinations)
         .set({
-          summary: strategy === 'keep_source' ? source.summary : (target.summary || source.summary),
-          heroImage: strategy === 'keep_source' ? source.heroImage : (target.heroImage || source.heroImage),
-          heroImageAlt: strategy === 'keep_source' ? source.heroImageAlt : (target.heroImageAlt || source.heroImageAlt),
-          cardImage: strategy === 'keep_source' ? source.cardImage : (target.cardImage || source.cardImage),
-          metaTitle: strategy === 'keep_source' ? source.metaTitle : (target.metaTitle || source.metaTitle),
-          metaDescription: strategy === 'keep_source' ? source.metaDescription : (target.metaDescription || source.metaDescription),
+          summary: strategy === "keep_source" ? source.summary : target.summary || source.summary,
+          heroImage:
+            strategy === "keep_source" ? source.heroImage : target.heroImage || source.heroImage,
+          heroImageAlt:
+            strategy === "keep_source"
+              ? source.heroImageAlt
+              : target.heroImageAlt || source.heroImageAlt,
+          cardImage:
+            strategy === "keep_source" ? source.cardImage : target.cardImage || source.cardImage,
+          metaTitle:
+            strategy === "keep_source" ? source.metaTitle : target.metaTitle || source.metaTitle,
+          metaDescription:
+            strategy === "keep_source"
+              ? source.metaDescription
+              : target.metaDescription || source.metaDescription,
           updatedAt: new Date(),
         } as any)
         .where(eq(destinations.id, targetId));
@@ -132,7 +145,7 @@ async function mergeDestinations(
       .update(destinations)
       .set({
         isActive: false,
-        status: 'merged',
+        status: "merged",
         updatedAt: new Date(),
       } as any)
       .where(eq(destinations.id, sourceId));
@@ -140,7 +153,7 @@ async function mergeDestinations(
     // Create redirect
     const redirect: EntityRedirect = {
       id: `redirect-${Date.now()}`,
-      entityType: 'destination',
+      entityType: "destination",
       fromId: sourceId,
       fromSlug: source.slug,
       toId: targetId,
@@ -152,22 +165,21 @@ async function mergeDestinations(
 
     return {
       success: true,
-      entityType: 'destination',
+      entityType: "destination",
       sourceId,
       targetId,
       redirectCreated: true,
       referencesUpdated,
     };
   } catch (error) {
-    console.error('[EntityMerger] Error merging destinations:', error);
     return {
       success: false,
-      entityType: 'destination',
+      entityType: "destination",
       sourceId,
       targetId,
       redirectCreated: false,
       referencesUpdated: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -178,49 +190,77 @@ async function mergeDestinations(
 async function mergeContent(
   sourceId: string,
   targetId: string,
-  contentType: 'attraction' | 'hotel' | 'article',
+  contentType: "attraction" | "hotel" | "article",
   strategy: MergeStrategy,
   mergedBy: string
 ): Promise<MergeResult> {
   try {
     // Get both content items
-    const [source] = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.id, sourceId));
+    const [source] = await db.select().from(contents).where(eq(contents.id, sourceId));
 
-    const [target] = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.id, targetId));
+    const [target] = await db.select().from(contents).where(eq(contents.id, targetId));
 
     if (!source) {
-      return { success: false, entityType: contentType, sourceId, targetId, redirectCreated: false, referencesUpdated: 0, error: 'Source content not found' };
+      return {
+        success: false,
+        entityType: contentType,
+        sourceId,
+        targetId,
+        redirectCreated: false,
+        referencesUpdated: 0,
+        error: "Source content not found",
+      };
     }
     if (!target) {
-      return { success: false, entityType: contentType, sourceId, targetId, redirectCreated: false, referencesUpdated: 0, error: 'Target content not found' };
+      return {
+        success: false,
+        entityType: contentType,
+        sourceId,
+        targetId,
+        redirectCreated: false,
+        referencesUpdated: 0,
+        error: "Target content not found",
+      };
     }
 
     // Verify both are same type
     if (source.type !== contentType || target.type !== contentType) {
-      return { success: false, entityType: contentType, sourceId, targetId, redirectCreated: false, referencesUpdated: 0, error: 'Content type mismatch' };
+      return {
+        success: false,
+        entityType: contentType,
+        sourceId,
+        targetId,
+        redirectCreated: false,
+        referencesUpdated: 0,
+        error: "Content type mismatch",
+      };
     }
 
     // Apply merge strategy
-    if (strategy === 'keep_source' || strategy === 'merge_content') {
-      const mergedBlocks = strategy === 'merge_content'
-        ? [...(target.blocks || []), ...(source.blocks || [])]
-        : source.blocks;
+    if (strategy === "keep_source" || strategy === "merge_content") {
+      const mergedBlocks =
+        strategy === "merge_content"
+          ? [...(target.blocks || []), ...(source.blocks || [])]
+          : source.blocks;
 
       await db
         .update(contents)
         .set({
-          summary: strategy === 'keep_source' ? source.summary : (target.summary || source.summary),
-          heroImage: strategy === 'keep_source' ? source.heroImage : (target.heroImage || source.heroImage),
-          heroImageAlt: strategy === 'keep_source' ? source.heroImageAlt : (target.heroImageAlt || source.heroImageAlt),
-          cardImage: strategy === 'keep_source' ? source.cardImage : (target.cardImage || source.cardImage),
-          metaTitle: strategy === 'keep_source' ? source.metaTitle : (target.metaTitle || source.metaTitle),
-          metaDescription: strategy === 'keep_source' ? source.metaDescription : (target.metaDescription || source.metaDescription),
+          summary: strategy === "keep_source" ? source.summary : target.summary || source.summary,
+          heroImage:
+            strategy === "keep_source" ? source.heroImage : target.heroImage || source.heroImage,
+          heroImageAlt:
+            strategy === "keep_source"
+              ? source.heroImageAlt
+              : target.heroImageAlt || source.heroImageAlt,
+          cardImage:
+            strategy === "keep_source" ? source.cardImage : target.cardImage || source.cardImage,
+          metaTitle:
+            strategy === "keep_source" ? source.metaTitle : target.metaTitle || source.metaTitle,
+          metaDescription:
+            strategy === "keep_source"
+              ? source.metaDescription
+              : target.metaDescription || source.metaDescription,
           blocks: mergedBlocks,
           updatedAt: new Date(),
         } as any)
@@ -231,7 +271,7 @@ async function mergeContent(
     await db
       .update(contents)
       .set({
-        status: 'archived',
+        status: "archived",
         updatedAt: new Date(),
       } as any)
       .where(eq(contents.id, sourceId));
@@ -258,7 +298,6 @@ async function mergeContent(
       referencesUpdated: 0,
     };
   } catch (error) {
-    console.error('[EntityMerger] Error merging content:', error);
     return {
       success: false,
       entityType: contentType,
@@ -266,7 +305,7 @@ async function mergeContent(
       targetId,
       redirectCreated: false,
       referencesUpdated: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -281,7 +320,7 @@ async function determineEntityType(id: string): Promise<MergeableEntityType | nu
     .from(destinations)
     .where(eq(destinations.id, id))
     .limit(1);
-  if (dest) return 'destination';
+  if (dest) return "destination";
 
   // Check contents for type
   const [content] = await db
@@ -304,12 +343,12 @@ export async function mergeEntities(request: MergeRequest): Promise<MergeResult>
   if (!isEntityMergeEnabled()) {
     return {
       success: false,
-      entityType: 'destination',
+      entityType: "destination",
       sourceId: request.sourceId,
       targetId: request.targetId,
       redirectCreated: false,
       referencesUpdated: 0,
-      error: 'Entity merge feature is disabled. Set ENABLE_ENTITY_MERGE=true',
+      error: "Entity merge feature is disabled. Set ENABLE_ENTITY_MERGE=true",
     };
   }
 
@@ -322,12 +361,12 @@ export async function mergeEntities(request: MergeRequest): Promise<MergeResult>
   if (!sourceType || !targetType) {
     return {
       success: false,
-      entityType: 'destination',
+      entityType: "destination",
       sourceId,
       targetId,
       redirectCreated: false,
       referencesUpdated: 0,
-      error: 'Source or target entity not found',
+      error: "Source or target entity not found",
     };
   }
 
@@ -344,7 +383,7 @@ export async function mergeEntities(request: MergeRequest): Promise<MergeResult>
   }
 
   // Perform merge based on type
-  if (sourceType === 'destination') {
+  if (sourceType === "destination") {
     return mergeDestinations(sourceId, targetId, strategy, mergedBy);
   } else {
     return mergeContent(sourceId, targetId, sourceType, strategy, mergedBy);
@@ -358,16 +397,16 @@ export async function undoMerge(redirectId: string): Promise<{ success: boolean;
   const redirect = Array.from(entityRedirects.values()).find(r => r.id === redirectId);
 
   if (!redirect) {
-    return { success: false, error: 'Redirect not found' };
+    return { success: false, error: "Redirect not found" };
   }
 
   try {
-    if (redirect.entityType === 'destination') {
+    if (redirect.entityType === "destination") {
       await db
         .update(destinations)
         .set({
           isActive: true,
-          status: 'partial',
+          status: "partial",
           updatedAt: new Date(),
         } as any)
         .where(eq(destinations.id, redirect.fromId));
@@ -375,7 +414,7 @@ export async function undoMerge(redirectId: string): Promise<{ success: boolean;
       await db
         .update(contents)
         .set({
-          status: 'draft',
+          status: "draft",
           updatedAt: new Date(),
         } as any)
         .where(eq(contents.id, redirect.fromId));
@@ -386,10 +425,9 @@ export async function undoMerge(redirectId: string): Promise<{ success: boolean;
 
     return { success: true };
   } catch (error) {
-    console.error('[EntityMerger] Error undoing merge:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

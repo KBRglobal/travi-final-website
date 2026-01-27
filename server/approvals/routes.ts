@@ -36,14 +36,11 @@ router.get("/", async (req, res) => {
         limit ? parseInt(limit as string) : 50
       );
     } else {
-      requests = await repo.getRecentActivity(
-        limit ? parseInt(limit as string) : 50
-      );
+      requests = await repo.getRecentActivity(limit ? parseInt(limit as string) : 50);
     }
 
     res.json({ requests });
   } catch (error) {
-    console.error("[Approvals] Error fetching requests:", error);
     res.status(500).json({ error: "Failed to fetch approval requests" });
   }
 });
@@ -58,7 +55,6 @@ router.get("/pending", async (req, res) => {
     const requests = await getPendingApprovals();
     res.json({ requests });
   } catch (error) {
-    console.error("[Approvals] Error fetching pending:", error);
     res.status(500).json({ error: "Failed to fetch pending approvals" });
   }
 });
@@ -73,7 +69,6 @@ router.get("/stats", async (req, res) => {
     const stats = await repo.getApprovalStats();
     res.json({ stats });
   } catch (error) {
-    console.error("[Approvals] Error fetching stats:", error);
     res.status(500).json({ error: "Failed to fetch approval stats" });
   }
 });
@@ -91,7 +86,6 @@ router.get("/:id", async (req, res) => {
     }
     res.json(details);
   } catch (error) {
-    console.error("[Approvals] Error fetching request:", error);
     res.status(500).json({ error: "Failed to fetch request details" });
   }
 });
@@ -130,7 +124,6 @@ router.post("/", async (req: any, res) => {
 
     res.status(201).json(result);
   } catch (error) {
-    console.error("[Approvals] Error creating request:", error);
     res.status(500).json({ error: "Failed to create approval request" });
   }
 });
@@ -153,7 +146,6 @@ router.post("/:id/approve", async (req: any, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error("[Approvals] Error approving:", error);
     res.status(500).json({ error: "Failed to approve" });
   }
 });
@@ -180,7 +172,6 @@ router.post("/:id/reject", async (req: any, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error("[Approvals] Error rejecting:", error);
     res.status(500).json({ error: "Failed to reject" });
   }
 });
@@ -198,7 +189,6 @@ router.post("/:id/cancel", async (req: any, res) => {
     const result = await cancelRequest(req.params.id, cancelledBy, reason);
     res.json(result);
   } catch (error) {
-    console.error("[Approvals] Error cancelling:", error);
     res.status(500).json({ error: "Failed to cancel" });
   }
 });
@@ -210,17 +200,11 @@ router.get("/resource/:type/:id", async (req, res) => {
   }
 
   try {
-    const requests = await repo.getRequestsForResource(
-      req.params.type,
-      req.params.id
-    );
+    const requests = await repo.getRequestsForResource(req.params.type, req.params.id);
     res.json({ requests });
   } catch (error) {
-    console.error("[Approvals] Error fetching resource requests:", error);
     res.status(500).json({ error: "Failed to fetch resource requests" });
   }
 });
 
 export { router as approvalsRoutes };
-
-console.log("[Approvals] Routes loaded");

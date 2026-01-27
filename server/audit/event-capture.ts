@@ -61,9 +61,7 @@ export async function captureEventImmediate(event: AuditEvent): Promise<AuditLog
       resourceId: normalized.resourceId,
       beforeSnapshot: normalized.beforeSnapshot,
       afterSnapshot: normalized.afterSnapshot,
-      snapshotHash: normalized.afterSnapshot
-        ? hashSnapshot(normalized.afterSnapshot)
-        : undefined,
+      snapshotHash: normalized.afterSnapshot ? hashSnapshot(normalized.afterSnapshot) : undefined,
       source: normalized.source,
       ipAddress: normalized.ipAddress,
       userAgent: normalized.userAgent,
@@ -89,7 +87,7 @@ async function flushBuffer(): Promise<void> {
   const events = eventBuffer.splice(0, eventBuffer.length);
 
   try {
-    const values = events.map((event) => ({
+    const values = events.map(event => ({
       userId: event.userId,
       userRole: event.userRole,
       action: event.action,
@@ -97,9 +95,7 @@ async function flushBuffer(): Promise<void> {
       resourceId: event.resourceId,
       beforeSnapshot: event.beforeSnapshot,
       afterSnapshot: event.afterSnapshot,
-      snapshotHash: event.afterSnapshot
-        ? hashSnapshot(event.afterSnapshot)
-        : undefined,
+      snapshotHash: event.afterSnapshot ? hashSnapshot(event.afterSnapshot) : undefined,
       source: event.source,
       ipAddress: event.ipAddress,
       userAgent: event.userAgent,
@@ -109,7 +105,6 @@ async function flushBuffer(): Promise<void> {
 
     await db.insert(governanceAuditLogs).values(values);
   } catch (error) {
-    console.error("[Audit] Error flushing buffer:", error);
     // Put events back in buffer for retry
     eventBuffer.unshift(...events);
   }
@@ -188,5 +183,3 @@ export async function capturePermissionChange(
     source: "api",
   });
 }
-
-console.log("[Audit] EventCapture loaded");

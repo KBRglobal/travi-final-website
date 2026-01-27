@@ -15,9 +15,9 @@ import {
   MODE_RESTRICTIONS,
   SecurityRestrictions,
   DEFAULT_SECURITY_AUTHORITY_CONFIG,
-} from './types';
-import { SecurityGate } from './security-gate';
-import { SecuritySeverity, logSecurityEvent, SecurityEventType } from '../audit-logger';
+} from "./types";
+import { SecurityGate } from "./security-gate";
+import { SecuritySeverity, logSecurityEvent, SecurityEventType } from "../audit-logger";
 
 // ============================================================================
 // MODE HISTORY TRACKING
@@ -97,7 +97,7 @@ export const SecurityModeManager = {
         success: false,
         previousMode: currentMode.mode,
         newMode: params.mode,
-        message: 'Already in requested mode',
+        message: "Already in requested mode",
       };
     }
 
@@ -134,9 +134,13 @@ export const SecurityModeManager = {
   /**
    * Activate lockdown mode
    */
-  async activateLockdown(reason: string, activatedBy: string, durationMinutes: number = 60): Promise<void> {
+  async activateLockdown(
+    reason: string,
+    activatedBy: string,
+    durationMinutes: number = 60
+  ): Promise<void> {
     await this.setMode({
-      mode: 'lockdown',
+      mode: "lockdown",
       reason,
       activatedBy,
       autoExpireMinutes: durationMinutes,
@@ -147,9 +151,9 @@ export const SecurityModeManager = {
       type: SecurityEventType.SETTINGS_CHANGED,
       severity: SecuritySeverity.CRITICAL,
       userId: activatedBy,
-      ipAddress: 'system',
-      resource: 'security_mode',
-      action: 'lockdown_activated',
+      ipAddress: "system",
+      resource: "security_mode",
+      action: "lockdown_activated",
       details: { reason, durationMinutes },
       success: true,
     });
@@ -158,16 +162,19 @@ export const SecurityModeManager = {
   /**
    * Deactivate lockdown mode
    */
-  async deactivateLockdown(deactivatedBy: string, targetMode: SecurityMode = 'enforce'): Promise<void> {
+  async deactivateLockdown(
+    deactivatedBy: string,
+    targetMode: SecurityMode = "enforce"
+  ): Promise<void> {
     const currentMode = this.getMode();
 
-    if (currentMode.mode !== 'lockdown') {
+    if (currentMode.mode !== "lockdown") {
       return; // Not in lockdown
     }
 
     await this.setMode({
       mode: targetMode,
-      reason: 'Lockdown deactivated',
+      reason: "Lockdown deactivated",
       activatedBy: deactivatedBy,
     });
 
@@ -176,10 +183,10 @@ export const SecurityModeManager = {
       type: SecurityEventType.SETTINGS_CHANGED,
       severity: SecuritySeverity.HIGH,
       userId: deactivatedBy,
-      ipAddress: 'system',
-      resource: 'security_mode',
-      action: 'lockdown_deactivated',
-      details: { previousMode: 'lockdown', newMode: targetMode },
+      ipAddress: "system",
+      resource: "security_mode",
+      action: "lockdown_deactivated",
+      details: { previousMode: "lockdown", newMode: targetMode },
       success: true,
     });
   },
@@ -290,13 +297,11 @@ export const SecurityModeManager = {
     const current = this.getMode();
 
     if (current.autoExpireAt && current.autoExpireAt <= new Date()) {
-      console.log('[SecurityModes] Auto-expiring mode:', current.mode);
-
       // Auto-expire to enforce mode
       this.setMode({
-        mode: 'enforce',
-        reason: 'Auto-expired from ' + current.mode,
-        activatedBy: 'system:auto-expire',
+        mode: "enforce",
+        reason: "Auto-expired from " + current.mode,
+        activatedBy: "system:auto-expire",
       });
     }
   },
@@ -310,13 +315,13 @@ export interface AutonomyImpact {
   mode: SecurityMode;
   restrictions: SecurityRestrictions;
   impacts: {
-    dataAutopilot: 'running' | 'paused' | 'blocked';
-    seoAutopilot: 'running' | 'paused' | 'blocked';
-    opsAutopilot: 'running' | 'paused' | 'blocked';
-    bulkOperations: 'allowed' | 'approval_required' | 'blocked';
-    deployments: 'allowed' | 'approval_required' | 'blocked';
-    contentPublishing: 'allowed' | 'approval_required' | 'blocked';
-    externalApis: 'allowed' | 'rate_limited' | 'blocked';
+    dataAutopilot: "running" | "paused" | "blocked";
+    seoAutopilot: "running" | "paused" | "blocked";
+    opsAutopilot: "running" | "paused" | "blocked";
+    bulkOperations: "allowed" | "approval_required" | "blocked";
+    deployments: "allowed" | "approval_required" | "blocked";
+    contentPublishing: "allowed" | "approval_required" | "blocked";
+    externalApis: "allowed" | "rate_limited" | "blocked";
   };
   recommendations: string[];
 }
@@ -325,40 +330,40 @@ export function getAutonomyImpact(): AutonomyImpact {
   const mode = SecurityModeManager.getMode();
   const restrictions = mode.restrictions;
 
-  const impacts: AutonomyImpact['impacts'] = {
-    dataAutopilot: restrictions.autopilotAllowed ? 'running' : 'blocked',
-    seoAutopilot: restrictions.autopilotAllowed ? 'running' : 'blocked',
-    opsAutopilot: restrictions.autopilotAllowed ? 'running' : 'blocked',
+  const impacts: AutonomyImpact["impacts"] = {
+    dataAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
+    seoAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
+    opsAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
     bulkOperations: restrictions.bulkOperationsAllowed
-      ? 'allowed'
+      ? "allowed"
       : restrictions.requireApprovalForAll
-        ? 'approval_required'
-        : 'blocked',
+        ? "approval_required"
+        : "blocked",
     deployments: restrictions.deploymentAllowed
-      ? 'allowed'
+      ? "allowed"
       : restrictions.requireApprovalForAll
-        ? 'approval_required'
-        : 'blocked',
+        ? "approval_required"
+        : "blocked",
     contentPublishing: restrictions.destructiveActionsAllowed
-      ? 'allowed'
+      ? "allowed"
       : restrictions.requireApprovalForAll
-        ? 'approval_required'
-        : 'allowed',
-    externalApis: restrictions.externalApiCallsAllowed ? 'allowed' : 'blocked',
+        ? "approval_required"
+        : "allowed",
+    externalApis: restrictions.externalApiCallsAllowed ? "allowed" : "blocked",
   };
 
   const recommendations: string[] = [];
 
-  if (mode.mode === 'lockdown') {
-    recommendations.push('Review threat status before deactivating lockdown');
-    recommendations.push('Ensure all critical issues are resolved');
-    recommendations.push('Consider scheduling return to enforce mode');
-  } else if (mode.mode === 'enforce') {
-    recommendations.push('Monitor audit logs for approval requests');
-    recommendations.push('Review override usage periodically');
+  if (mode.mode === "lockdown") {
+    recommendations.push("Review threat status before deactivating lockdown");
+    recommendations.push("Ensure all critical issues are resolved");
+    recommendations.push("Consider scheduling return to enforce mode");
+  } else if (mode.mode === "enforce") {
+    recommendations.push("Monitor audit logs for approval requests");
+    recommendations.push("Review override usage periodically");
   } else {
-    recommendations.push('Consider switching to enforce mode for production');
-    recommendations.push('Review security events for potential issues');
+    recommendations.push("Consider switching to enforce mode for production");
+    recommendations.push("Review security events for potential issues");
   }
 
   return {
@@ -374,12 +379,10 @@ export function getAutonomyImpact(): AutonomyImpact {
 // ============================================================================
 
 // Check auto-expiration every minute - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
   setInterval(() => {
     if (DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
       SecurityModeManager.checkAutoExpiration();
     }
   }, 60 * 1000);
 }
-
-console.log('[SecurityModes] Manager loaded');

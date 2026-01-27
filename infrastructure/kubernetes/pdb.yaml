@@ -1,0 +1,16 @@
+# ============================================
+# TRAVI Kubernetes Pod Disruption Budget
+# ============================================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: travi-pdb
+  namespace: travi
+  labels:
+    app.kubernetes.io/name: travi
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: travi
+      app.kubernetes.io/component: api

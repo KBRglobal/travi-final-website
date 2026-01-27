@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint-staged for staged files
+echo "Running lint-staged..."
+npx lint-staged
+
+# Quick TypeScript check
+echo "Running TypeScript check..."
+npx tsc --noEmit --skipLibCheck 2>/dev/null || {
+  echo "TypeScript check failed. Please fix errors before committing."
+  exit 1
+}
+
+echo "Pre-commit checks passed!"

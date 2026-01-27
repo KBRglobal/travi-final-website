@@ -38,7 +38,11 @@ class OctypoRunState {
       this.lastCompleted = new Date();
       // Notify all registered callbacks
       this.completionCallbacks.forEach(cb => {
-        try { cb(); } catch (e) { /* ignore */ }
+        try {
+          cb();
+        } catch (e) {
+          /* ignore */
+        }
       });
     }
   }
@@ -57,12 +61,11 @@ class OctypoRunState {
 
   checkAndResetStale(): boolean {
     if (!this.running) return false;
-    
+
     const now = Date.now();
     const lastActivityTime = this.lastActivity?.getTime() || 0;
-    
+
     if (now - lastActivityTime > OctypoRunState.STALE_TIMEOUT_MS) {
-      console.log(`[OctypoState] Resetting stale running state (no activity for 10+ minutes)`);
       this.setRunning(false);
       return true;
     }
@@ -81,7 +84,7 @@ class OctypoRunState {
   addToFailedQueue(id: number, title: string, error: string): void {
     const existing = this.failedQueue.get(id);
     const retryCount = existing ? existing.retryCount + 1 : 1;
-    
+
     if (retryCount <= OctypoRunState.MAX_RETRIES) {
       this.failedQueue.set(id, {
         id,
@@ -90,9 +93,7 @@ class OctypoRunState {
         retryCount,
         lastError: error.substring(0, 200),
       });
-      console.log(`[OctypoState] Added to failed queue: ${title} (retry ${retryCount}/${OctypoRunState.MAX_RETRIES})`);
     } else {
-      console.error(`[OctypoState] Max retries exceeded for: ${title}`);
     }
     this.recentFailures++;
   }
@@ -132,21 +133,19 @@ class OctypoRunState {
     if (total < 10) return this.currentConcurrency;
 
     const successRate = this.recentSuccesses / total;
-    
+
     if (successRate > 0.9 && this.currentConcurrency < 20) {
       this.currentConcurrency = Math.min(20, this.currentConcurrency + 2);
-      console.log(`[OctypoState] Increasing concurrency to ${this.currentConcurrency} (success rate: ${(successRate * 100).toFixed(1)}%)`);
     } else if (successRate < 0.5 && this.currentConcurrency > 5) {
       this.currentConcurrency = Math.max(5, this.currentConcurrency - 3);
-      console.log(`[OctypoState] Decreasing concurrency to ${this.currentConcurrency} (success rate: ${(successRate * 100).toFixed(1)}%)`);
     }
-    
+
     // Reset counters periodically
     if (total > 50) {
       this.recentSuccesses = Math.floor(this.recentSuccesses / 2);
       this.recentFailures = Math.floor(this.recentFailures / 2);
     }
-    
+
     return this.currentConcurrency;
   }
 

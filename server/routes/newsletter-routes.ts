@@ -2,32 +2,30 @@ import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
 import crypto from "crypto";
 import { Resend } from "resend";
-import {
-  rateLimiters,
-  requirePermission,
-  checkReadOnlyMode,
-} from "../security";
+import { rateLimiters, requirePermission, checkReadOnlyMode } from "../security";
 
 // Newsletter email helpers
 function getResendClient(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("RESEND_API_KEY not configured");
     return null;
   }
   return new Resend(apiKey);
 }
 
-async function sendConfirmationEmail(email: string, token: string, firstName?: string): Promise<boolean> {
+async function sendConfirmationEmail(
+  email: string,
+  token: string,
+  firstName?: string
+): Promise<boolean> {
   const resend = getResendClient();
   if (!resend) {
-    console.log("[Newsletter] Resend not configured, skipping confirmation email for:", email);
     return false;
   }
 
   const baseUrl = process.env.REPLIT_DEV_DOMAIN
     ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-    : 'http://localhost:5000';
+    : "http://localhost:5000";
 
   const confirmUrl = `${baseUrl}/api/newsletter/confirm/${token}`;
   const greeting = firstName ? `Hi ${firstName},` : "Hi there,";
@@ -72,24 +70,26 @@ async function sendConfirmationEmail(email: string, token: string, firstName?: s
         </html>
       `,
     });
-    console.log("[Newsletter] Confirmation email sent to:", email);
+
     return true;
   } catch (error) {
-    console.error("[Newsletter] Failed to send confirmation email:", error);
     return false;
   }
 }
 
-async function sendWelcomeEmail(email: string, firstName?: string, unsubscribeToken?: string): Promise<boolean> {
+async function sendWelcomeEmail(
+  email: string,
+  firstName?: string,
+  unsubscribeToken?: string
+): Promise<boolean> {
   const resend = getResendClient();
   if (!resend) {
-    console.log("[Newsletter] Resend not configured, skipping welcome email for:", email);
     return false;
   }
 
   const baseUrl = process.env.REPLIT_DEV_DOMAIN
     ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-    : 'http://localhost:5000';
+    : "http://localhost:5000";
 
   const greeting = firstName ? `Hi ${firstName},` : "Hi there,";
   const unsubscribeUrl = unsubscribeToken
@@ -144,10 +144,9 @@ async function sendWelcomeEmail(email: string, firstName?: string, unsubscribeTo
         </html>
       `,
     });
-    console.log("[Newsletter] Welcome email sent to:", email);
+
     return true;
   } catch (error) {
-    console.error("[Newsletter] Failed to send welcome email:", error);
     return false;
   }
 }
@@ -248,7 +247,8 @@ export function registerNewsletterRoutes(app: Express): void {
       }
 
       // Get IP address
-      const ipAddress = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+      const ipAddress =
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
 
       // Check if already subscribed
       const existing = await storage.getNewsletterSubscriberByEmail(email);
@@ -257,7 +257,10 @@ export function registerNewsletterRoutes(app: Express): void {
           return res.json({ success: true, message: "Already subscribed" });
         }
         if (existing.status === "pending_confirmation") {
-          return res.json({ success: true, message: "Confirmation email already sent. Please check your inbox." });
+          return res.json({
+            success: true,
+            message: "Confirmation email already sent. Please check your inbox.",
+          });
         }
         // Allow resubscription for unsubscribed users
         if (existing.status === "unsubscribed") {
@@ -281,9 +284,16 @@ export function registerNewsletterRoutes(app: Express): void {
           });
 
           // Send confirmation email
-          await sendConfirmationEmail(email, confirmToken, firstName || existing.firstName || undefined);
+          await sendConfirmationEmail(
+            email,
+            confirmToken,
+            firstName || existing.firstName || undefined
+          );
 
-          return res.json({ success: true, message: "Please check your email to confirm your subscription" });
+          return res.json({
+            success: true,
+            message: "Please check your email to confirm your subscription",
+          });
         }
       }
 
@@ -314,10 +324,8 @@ export function registerNewsletterRoutes(app: Express): void {
       // Send confirmation email
       await sendConfirmationEmail(email, confirmToken, firstName || undefined);
 
-      console.log("[Newsletter] New subscriber saved (pending confirmation):", email);
       res.json({ success: true, message: "Please check your email to confirm your subscription" });
     } catch (error) {
-      console.error("Error subscribing to newsletter:", error);
       res.status(500).json({ error: "Failed to subscribe" });
     }
   });
@@ -334,7 +342,9 @@ export function registerNewsletterRoutes(app: Express): void {
       const subscriber = await storage.getNewsletterSubscriberByToken(token);
 
       if (!subscriber) {
-        return res.status(404).send(renderConfirmationPage(false, "Confirmation link not found or expired"));
+        return res
+          .status(404)
+          .send(renderConfirmationPage(false, "Confirmation link not found or expired"));
       }
 
       if (subscriber.status === "subscribed") {
@@ -342,7 +352,8 @@ export function registerNewsletterRoutes(app: Express): void {
       }
 
       // Update status to subscribed
-      const ipAddress = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+      const ipAddress =
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
       const confirmationEntry = {
         action: "confirm" as const,
         timestamp: new Date().toISOString(),
@@ -359,13 +370,22 @@ export function registerNewsletterRoutes(app: Express): void {
       });
 
       // Send welcome email
-      await sendWelcomeEmail(subscriber.email, subscriber.firstName || undefined, (subscriber as any).unsubscribeToken || undefined);
+      await sendWelcomeEmail(
+        subscriber.email,
+        subscriber.firstName || undefined,
+        (subscriber as any).unsubscribeToken || undefined
+      );
 
-      console.log("[Newsletter] Subscription confirmed:", subscriber.email);
-      res.send(renderConfirmationPage(true, "Thank you for confirming! Check your email for a welcome message."));
+      res.send(
+        renderConfirmationPage(
+          true,
+          "Thank you for confirming! Check your email for a welcome message."
+        )
+      );
     } catch (error) {
-      console.error("Error confirming newsletter subscription:", error);
-      res.status(500).send(renderConfirmationPage(false, "Something went wrong. Please try again later."));
+      res
+        .status(500)
+        .send(renderConfirmationPage(false, "Something went wrong. Please try again later."));
     }
   });
 
@@ -394,7 +414,8 @@ export function registerNewsletterRoutes(app: Express): void {
       }
 
       // Update status to unsubscribed
-      const ipAddress = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+      const ipAddress =
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
       const unsubscribeEntry = {
         action: "unsubscribe" as const,
         timestamp: new Date().toISOString(),
@@ -409,64 +430,79 @@ export function registerNewsletterRoutes(app: Express): void {
         consentLog,
       });
 
-      console.log("[Newsletter] Unsubscribed:", subscriber.email);
-      res.send(renderUnsubscribePage(true, "You have been successfully unsubscribed. You can resubscribe anytime."));
+      res.send(
+        renderUnsubscribePage(
+          true,
+          "You have been successfully unsubscribed. You can resubscribe anytime."
+        )
+      );
     } catch (error) {
-      console.error("Error unsubscribing from newsletter:", error);
-      res.status(500).send(renderUnsubscribePage(false, "Something went wrong. Please try again later."));
+      res
+        .status(500)
+        .send(renderUnsubscribePage(false, "Something went wrong. Please try again later."));
     }
   });
 
   // Get all newsletter subscribers (admin only)
-  app.get("/api/newsletter/subscribers", requirePermission("canViewAnalytics"), async (req, res) => {
-    try {
-      const subscribers = await storage.getNewsletterSubscribers();
-      res.json(subscribers);
-    } catch (error) {
-      console.error("Error fetching newsletter subscribers:", error);
-      res.status(500).json({ error: "Failed to fetch subscribers" });
+  app.get(
+    "/api/newsletter/subscribers",
+    requirePermission("canViewAnalytics"),
+    async (req, res) => {
+      try {
+        const subscribers = await storage.getNewsletterSubscribers();
+        res.json(subscribers);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch subscribers" });
+      }
     }
-  });
+  );
 
   // Delete newsletter subscriber (admin only)
-  app.delete("/api/newsletter/subscribers/:id", requirePermission("canManageUsers"), async (req, res) => {
-    try {
-      const subscriber = await (storage as any).getNewsletterSubscriberById(req.params.id);
-      if (!subscriber) {
-        return res.status(404).json({ error: "Subscriber not found" });
-      }
+  app.delete(
+    "/api/newsletter/subscribers/:id",
+    requirePermission("canManageUsers"),
+    async (req, res) => {
+      try {
+        const subscriber = await (storage as any).getNewsletterSubscriberById(req.params.id);
+        if (!subscriber) {
+          return res.status(404).json({ error: "Subscriber not found" });
+        }
 
-      await storage.deleteNewsletterSubscriber(req.params.id);
-      console.log("[Newsletter] Deleted subscriber:", subscriber.email);
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting newsletter subscriber:", error);
-      res.status(500).json({ error: "Failed to delete subscriber" });
+        await storage.deleteNewsletterSubscriber(req.params.id);
+
+        res.status(204).send();
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete subscriber" });
+      }
     }
-  });
+  );
 
   // Update newsletter subscriber (admin only)
-  app.patch("/api/newsletter/subscribers/:id", requirePermission("canManageUsers"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const subscriber = await (storage as any).getNewsletterSubscriberById(req.params.id);
-      if (!subscriber) {
-        return res.status(404).json({ error: "Subscriber not found" });
+  app.patch(
+    "/api/newsletter/subscribers/:id",
+    requirePermission("canManageUsers"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const subscriber = await (storage as any).getNewsletterSubscriberById(req.params.id);
+        if (!subscriber) {
+          return res.status(404).json({ error: "Subscriber not found" });
+        }
+
+        const { status, firstName, lastName, tags } = req.body;
+        const updates: any = {};
+        if (status) updates.status = status;
+        if (firstName !== undefined) updates.firstName = firstName;
+        if (lastName !== undefined) updates.lastName = lastName;
+        if (tags !== undefined) updates.tags = tags;
+
+        const updated = await storage.updateNewsletterSubscriber(req.params.id, updates);
+        res.json(updated);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update subscriber" });
       }
-
-      const { status, firstName, lastName, tags } = req.body;
-      const updates: any = {};
-      if (status) updates.status = status;
-      if (firstName !== undefined) updates.firstName = firstName;
-      if (lastName !== undefined) updates.lastName = lastName;
-      if (tags !== undefined) updates.tags = tags;
-
-      const updated = await storage.updateNewsletterSubscriber(req.params.id, updates);
-      res.json(updated);
-    } catch (error) {
-      console.error("Error updating newsletter subscriber:", error);
-      res.status(500).json({ error: "Failed to update subscriber" });
     }
-  });
+  );
 
   // Newsletter A/B test routes
   app.get("/api/newsletter/ab-tests", requirePermission("canViewAnalytics"), async (req, res) => {
@@ -474,96 +510,121 @@ export function registerNewsletterRoutes(app: Express): void {
       const tests = await storage.getNewsletterAbTests();
       res.json(tests);
     } catch (error) {
-      console.error("Error fetching A/B tests:", error);
       res.status(500).json({ error: "Failed to fetch A/B tests" });
     }
   });
 
-  app.get("/api/newsletter/ab-tests/:id", requirePermission("canViewAnalytics"), async (req, res) => {
-    try {
-      const test = await storage.getNewsletterAbTest(req.params.id);
-      if (!test) {
-        return res.status(404).json({ error: "A/B test not found" });
+  app.get(
+    "/api/newsletter/ab-tests/:id",
+    requirePermission("canViewAnalytics"),
+    async (req, res) => {
+      try {
+        const test = await storage.getNewsletterAbTest(req.params.id);
+        if (!test) {
+          return res.status(404).json({ error: "A/B test not found" });
+        }
+        res.json(test);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch A/B test" });
       }
-      res.json(test);
-    } catch (error) {
-      console.error("Error fetching A/B test:", error);
-      res.status(500).json({ error: "Failed to fetch A/B test" });
     }
-  });
+  );
 
-  app.post("/api/newsletter/ab-tests", requirePermission("canCreate"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const test = await storage.createNewsletterAbTest(req.body);
-      res.status(201).json(test);
-    } catch (error) {
-      console.error("Error creating A/B test:", error);
-      res.status(500).json({ error: "Failed to create A/B test" });
-    }
-  });
-
-  app.patch("/api/newsletter/ab-tests/:id", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const test = await storage.updateNewsletterAbTest(req.params.id, req.body);
-      res.json(test);
-    } catch (error) {
-      console.error("Error updating A/B test:", error);
-      res.status(500).json({ error: "Failed to update A/B test" });
-    }
-  });
-
-  app.post("/api/newsletter/ab-tests/:id/start", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const test = await storage.updateNewsletterAbTest(req.params.id, {
-        status: "running",
-        startedAt: new Date(),
-      });
-      res.json(test);
-    } catch (error) {
-      console.error("Error starting A/B test:", error);
-      res.status(500).json({ error: "Failed to start A/B test" });
-    }
-  });
-
-  app.post("/api/newsletter/ab-tests/:id/select-winner", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const { winnerVariant } = req.body;
-      if (!winnerVariant) {
-        return res.status(400).json({ error: "Winner variant required" });
+  app.post(
+    "/api/newsletter/ab-tests",
+    requirePermission("canCreate"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const test = await storage.createNewsletterAbTest(req.body);
+        res.status(201).json(test);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to create A/B test" });
       }
-
-      const test = await storage.updateNewsletterAbTest(req.params.id, {
-        status: "completed",
-        winnerVariant,
-        completedAt: new Date(),
-      } as any);
-      res.json(test);
-    } catch (error) {
-      console.error("Error selecting winner:", error);
-      res.status(500).json({ error: "Failed to select winner" });
     }
-  });
+  );
 
-  app.delete("/api/newsletter/ab-tests/:id", requirePermission("canDelete"), checkReadOnlyMode, async (req, res) => {
-    try {
-      await storage.deleteNewsletterAbTest(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting A/B test:", error);
-      res.status(500).json({ error: "Failed to delete A/B test" });
+  app.patch(
+    "/api/newsletter/ab-tests/:id",
+    requirePermission("canEdit"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const test = await storage.updateNewsletterAbTest(req.params.id, req.body);
+        res.json(test);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update A/B test" });
+      }
     }
-  });
+  );
+
+  app.post(
+    "/api/newsletter/ab-tests/:id/start",
+    requirePermission("canEdit"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const test = await storage.updateNewsletterAbTest(req.params.id, {
+          status: "running",
+          startedAt: new Date(),
+        });
+        res.json(test);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to start A/B test" });
+      }
+    }
+  );
+
+  app.post(
+    "/api/newsletter/ab-tests/:id/select-winner",
+    requirePermission("canEdit"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const { winnerVariant } = req.body;
+        if (!winnerVariant) {
+          return res.status(400).json({ error: "Winner variant required" });
+        }
+
+        const test = await storage.updateNewsletterAbTest(req.params.id, {
+          status: "completed",
+          winnerVariant,
+          completedAt: new Date(),
+        } as any);
+        res.json(test);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to select winner" });
+      }
+    }
+  );
+
+  app.delete(
+    "/api/newsletter/ab-tests/:id",
+    requirePermission("canDelete"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        await storage.deleteNewsletterAbTest(req.params.id);
+        res.status(204).send();
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete A/B test" });
+      }
+    }
+  );
 
   // Newsletter bounce stats
-  app.get("/api/newsletter/bounce-stats", requirePermission("canViewAnalytics"), async (req, res) => {
-    try {
-      const stats = await (storage as any).getNewsletterBounceStats();
-      res.json(stats);
-    } catch (error) {
-      console.error("Error fetching bounce stats:", error);
-      res.status(500).json({ error: "Failed to fetch bounce stats" });
+  app.get(
+    "/api/newsletter/bounce-stats",
+    requirePermission("canViewAnalytics"),
+    async (req, res) => {
+      try {
+        const stats = await (storage as any).getNewsletterBounceStats();
+        res.json(stats);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch bounce stats" });
+      }
     }
-  });
+  );
 
   // Newsletter segments
   app.get("/api/newsletter/segments", requirePermission("canViewAnalytics"), async (req, res) => {
@@ -571,40 +632,42 @@ export function registerNewsletterRoutes(app: Express): void {
       const segments = await (storage as any).getNewsletterSegments();
       res.json(segments);
     } catch (error) {
-      console.error("Error fetching segments:", error);
       res.status(500).json({ error: "Failed to fetch segments" });
     }
   });
 
   // Send newsletter campaign
-  app.post("/api/newsletter/send", requirePermission("canPublish"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const { subject, content, segmentId, scheduledFor } = req.body;
+  app.post(
+    "/api/newsletter/send",
+    requirePermission("canPublish"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const { subject, content, segmentId, scheduledFor } = req.body;
 
-      if (!subject || !content) {
-        return res.status(400).json({ error: "Subject and content are required" });
+        if (!subject || !content) {
+          return res.status(400).json({ error: "Subject and content are required" });
+        }
+
+        // Create campaign
+        const campaign = await (storage as any).createNewsletterCampaign({
+          subject,
+          content,
+          segmentId: segmentId || null,
+          scheduledFor: scheduledFor ? new Date(scheduledFor) : null,
+          status: scheduledFor ? "scheduled" : "sent",
+          sentAt: scheduledFor ? null : new Date(),
+        });
+
+        // If immediate send, queue the send job
+        if (!scheduledFor) {
+          // Queue newsletter send job here
+        }
+
+        res.status(201).json(campaign);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to send newsletter" });
       }
-
-      // Create campaign
-      const campaign = await (storage as any).createNewsletterCampaign({
-        subject,
-        content,
-        segmentId: segmentId || null,
-        scheduledFor: scheduledFor ? new Date(scheduledFor) : null,
-        status: scheduledFor ? "scheduled" : "sent",
-        sentAt: scheduledFor ? null : new Date(),
-      });
-
-      // If immediate send, queue the send job
-      if (!scheduledFor) {
-        // Queue newsletter send job here
-        console.log("[Newsletter] Campaign created and queued:", campaign.id);
-      }
-
-      res.status(201).json(campaign);
-    } catch (error) {
-      console.error("Error sending newsletter:", error);
-      res.status(500).json({ error: "Failed to send newsletter" });
     }
-  });
+  );
 }

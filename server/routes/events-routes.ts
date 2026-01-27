@@ -3,19 +3,19 @@
  * Public endpoint for querying events by destination
  */
 
-import { Router } from 'express';
-import { db } from '../db';
-import { destinationEvents, destinations, type DestinationEvent } from '@shared/schema';
-import { eq, and, desc, gte, lte, or, sql } from 'drizzle-orm';
+import { Router } from "express";
+import { db } from "../db";
+import { destinationEvents, destinations, type DestinationEvent } from "@shared/schema";
+import { eq, and, desc, gte, lte, or, sql } from "drizzle-orm";
 
 export const eventsRoutes = Router();
 
-eventsRoutes.get('/destination-events', async (req, res) => {
+eventsRoutes.get("/destination-events", async (req, res) => {
   try {
     const destinationId = req.query.destinationId as string;
     const eventType = req.query.eventType as string;
-    const status = (req.query.status as string) || 'upcoming';
-    const featured = req.query.featured === 'true';
+    const status = (req.query.status as string) || "upcoming";
+    const featured = req.query.featured === "true";
     const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
     const offset = parseInt(req.query.offset as string) || 0;
 
@@ -25,10 +25,12 @@ eventsRoutes.get('/destination-events', async (req, res) => {
       const dest = await db
         .select({ id: destinations.id })
         .from(destinations)
-        .where(or(
-          eq(destinations.id, destinationId.toLowerCase()),
-          eq(destinations.slug, `/destinations/${destinationId.toLowerCase()}`)
-        ))
+        .where(
+          or(
+            eq(destinations.id, destinationId.toLowerCase()),
+            eq(destinations.slug, `/destinations/${destinationId.toLowerCase()}`)
+          )
+        )
         .limit(1);
 
       if (dest.length === 0) {
@@ -36,7 +38,7 @@ eventsRoutes.get('/destination-events', async (req, res) => {
           success: true,
           data: [],
           total: 0,
-          message: 'No destination found',
+          message: "No destination found",
         });
       }
       conditions.push(eq(destinationEvents.destinationId, dest[0].id));
@@ -46,7 +48,7 @@ eventsRoutes.get('/destination-events', async (req, res) => {
       conditions.push(eq(destinationEvents.eventType, eventType as any));
     }
 
-    if (status !== 'all') {
+    if (status !== "all") {
       conditions.push(eq(destinationEvents.status, status as any));
     }
 
@@ -77,15 +79,14 @@ eventsRoutes.get('/destination-events', async (req, res) => {
       offset,
     });
   } catch (error) {
-    console.error('[Events Routes] Error fetching events:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch events',
+      error: "Failed to fetch events",
     });
   }
 });
 
-eventsRoutes.get('/destination-events/upcoming', async (req, res) => {
+eventsRoutes.get("/destination-events/upcoming", async (req, res) => {
   try {
     const destinationId = req.query.destinationId as string;
     const limit = Math.min(parseInt(req.query.limit as string) || 5, 20);
@@ -102,10 +103,12 @@ eventsRoutes.get('/destination-events/upcoming', async (req, res) => {
       const dest = await db
         .select({ id: destinations.id })
         .from(destinations)
-        .where(or(
-          eq(destinations.id, destinationId.toLowerCase()),
-          eq(destinations.slug, `/destinations/${destinationId.toLowerCase()}`)
-        ))
+        .where(
+          or(
+            eq(destinations.id, destinationId.toLowerCase()),
+            eq(destinations.slug, `/destinations/${destinationId.toLowerCase()}`)
+          )
+        )
         .limit(1);
 
       if (dest.length > 0) {
@@ -126,15 +129,14 @@ eventsRoutes.get('/destination-events/upcoming', async (req, res) => {
       total: events.length,
     });
   } catch (error) {
-    console.error('[Events Routes] Error fetching upcoming events:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch upcoming events',
+      error: "Failed to fetch upcoming events",
     });
   }
 });
 
-eventsRoutes.get('/destination-events/:id', async (req, res) => {
+eventsRoutes.get("/destination-events/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -147,7 +149,7 @@ eventsRoutes.get('/destination-events/:id', async (req, res) => {
     if (event.length === 0) {
       return res.status(404).json({
         success: false,
-        error: 'Event not found',
+        error: "Event not found",
       });
     }
 
@@ -156,33 +158,32 @@ eventsRoutes.get('/destination-events/:id', async (req, res) => {
       data: formatEvent(event[0]),
     });
   } catch (error) {
-    console.error('[Events Routes] Error fetching event:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch event',
+      error: "Failed to fetch event",
     });
   }
 });
 
 function formatEvent(event: DestinationEvent) {
   const eventTypeLabels: Record<string, string> = {
-    'festival': 'Festival',
-    'sports': 'Sports',
-    'conference': 'Conference',
-    'concert': 'Concert',
-    'exhibition': 'Exhibition',
-    'cultural': 'Cultural',
-    'holiday': 'Holiday',
+    festival: "Festival",
+    sports: "Sports",
+    conference: "Conference",
+    concert: "Concert",
+    exhibition: "Exhibition",
+    cultural: "Cultural",
+    holiday: "Holiday",
   };
 
   const eventTypeIcons: Record<string, string> = {
-    'festival': 'PartyPopper',
-    'sports': 'Trophy',
-    'conference': 'Users',
-    'concert': 'Music',
-    'exhibition': 'Palette',
-    'cultural': 'Globe',
-    'holiday': 'Calendar',
+    festival: "PartyPopper",
+    sports: "Trophy",
+    conference: "Users",
+    concert: "Music",
+    exhibition: "Palette",
+    cultural: "Globe",
+    holiday: "Calendar",
   };
 
   return {
@@ -191,7 +192,7 @@ function formatEvent(event: DestinationEvent) {
     description: event.description,
     eventType: event.eventType,
     eventTypeLabel: eventTypeLabels[event.eventType] || event.eventType,
-    eventTypeIcon: eventTypeIcons[event.eventType] || 'Calendar',
+    eventTypeIcon: eventTypeIcons[event.eventType] || "Calendar",
     venue: event.venue,
     venueAddress: event.venueAddress,
     startDate: event.startDate?.toISOString() || null,

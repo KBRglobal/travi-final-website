@@ -15,28 +15,20 @@ let broadcastInterval: NodeJS.Timeout | null = null;
  */
 export function initializeWebSocket(server: HTTPServer): void {
   wss = new WebSocketServer({ server, path: "/ws/analytics" });
-  
+
   wss.on("connection", (ws: WebSocket) => {
-    console.log("[WebSocket] Client connected to realtime analytics");
-    
     // Send initial data
     sendRealtimeUpdate(ws);
-    
-    ws.on("close", () => {
-      console.log("[WebSocket] Client disconnected from realtime analytics");
-    });
-    
-    ws.on("error", (error) => {
-      console.error("[WebSocket] Error:", error);
-    });
+
+    ws.on("close", () => {});
+
+    ws.on("error", error => {});
   });
-  
+
   // Broadcast updates every 5 seconds
   broadcastInterval = setInterval(async () => {
     await broadcastRealtimeUpdates();
   }, 5000);
-  
-  console.log("[WebSocket] Analytics WebSocket server initialized");
 }
 
 /**
@@ -44,17 +36,17 @@ export function initializeWebSocket(server: HTTPServer): void {
  */
 async function sendRealtimeUpdate(ws: WebSocket): Promise<void> {
   if (ws.readyState !== WebSocket.OPEN) return;
-  
+
   try {
     const metrics = await getRealtimeMetrics();
-    ws.send(JSON.stringify({
-      type: "realtime_update",
-      data: metrics,
-      timestamp: new Date().toISOString(),
-    }));
-  } catch (error) {
-    console.error("[WebSocket] Error sending update:", error);
-  }
+    ws.send(
+      JSON.stringify({
+        type: "realtime_update",
+        data: metrics,
+        timestamp: new Date().toISOString(),
+      })
+    );
+  } catch (error) {}
 }
 
 /**
@@ -62,7 +54,7 @@ async function sendRealtimeUpdate(ws: WebSocket): Promise<void> {
  */
 async function broadcastRealtimeUpdates(): Promise<void> {
   if (!wss) return;
-  
+
   try {
     const metrics = await getRealtimeMetrics();
     const message = JSON.stringify({
@@ -70,15 +62,13 @@ async function broadcastRealtimeUpdates(): Promise<void> {
       data: metrics,
       timestamp: new Date().toISOString(),
     });
-    
-    wss.clients.forEach((client) => {
+
+    wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(message);
       }
     });
-  } catch (error) {
-    console.error("[WebSocket] Error broadcasting updates:", error);
-  }
+  } catch (error) {}
 }
 
 /**
@@ -91,14 +81,14 @@ export function broadcastEvent(event: {
   eventType?: string;
 }): void {
   if (!wss) return;
-  
+
   const message = JSON.stringify({
     type: "event_notification",
     data: event,
     timestamp: new Date().toISOString(),
   });
-  
-  wss.clients.forEach((client) => {
+
+  wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(message);
     }
@@ -113,11 +103,9 @@ export function closeWebSocket(): void {
     clearInterval(broadcastInterval);
     broadcastInterval = null;
   }
-  
+
   if (wss) {
-    wss.close(() => {
-      console.log("[WebSocket] Analytics WebSocket server closed");
-    });
+    wss.close(() => {});
     wss = null;
   }
 }

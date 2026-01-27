@@ -25,10 +25,7 @@ export async function getBlockedContent(limit: number = 50): Promise<BlockedCont
         updatedAt: contents.updatedAt,
       })
       .from(contents)
-      .where(and(
-        eq(contents.status, 'draft'),
-        isNull(contents.deletedAt)
-      ))
+      .where(and(eq(contents.status, "draft"), isNull(contents.deletedAt)))
       .limit(limit * 2); // Fetch more to account for passing content
 
     const blockedItems: BlockedContent[] = [];
@@ -52,7 +49,6 @@ export async function getBlockedContent(limit: number = 50): Promise<BlockedCont
 
     return blockedItems;
   } catch (error) {
-    console.error('[Eligibility] Error getting blocked content:', error);
     return [];
   }
 }
@@ -72,10 +68,7 @@ export async function getPublishedWithIssues(limit: number = 50): Promise<Blocke
         updatedAt: contents.updatedAt,
       })
       .from(contents)
-      .where(and(
-        eq(contents.status, 'published'),
-        isNull(contents.deletedAt)
-      ))
+      .where(and(eq(contents.status, "published"), isNull(contents.deletedAt)))
       .limit(limit * 2);
 
     const issueItems: BlockedContent[] = [];
@@ -100,7 +93,6 @@ export async function getPublishedWithIssues(limit: number = 50): Promise<Blocke
 
     return issueItems;
   } catch (error) {
-    console.error('[Eligibility] Error getting published with issues:', error);
     return [];
   }
 }
@@ -122,10 +114,7 @@ export async function getEligibilityStats(): Promise<{
     const [draftResult] = await db
       .select({ count: contents.id })
       .from(contents)
-      .where(and(
-        eq(contents.status, 'draft'),
-        isNull(contents.deletedAt)
-      ));
+      .where(and(eq(contents.status, "draft"), isNull(contents.deletedAt)));
 
     const totalDraft = draftResult ? 1 : 0; // Simplified count
 
@@ -136,7 +125,6 @@ export async function getEligibilityStats(): Promise<{
       publishedWithIssues: publishedIssues.length,
     };
   } catch (error) {
-    console.error('[Eligibility] Error getting stats:', error);
     return {
       totalDraft: 0,
       blocked: 0,

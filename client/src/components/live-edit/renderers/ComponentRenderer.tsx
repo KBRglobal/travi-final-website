@@ -40,7 +40,7 @@ export function ComponentRenderer({ component }: ComponentRendererProps) {
     // Unknown component type - show placeholder in edit mode
     return (
       <div className="p-4 border border-dashed border-muted-foreground/30 rounded-lg text-center text-muted-foreground">
-        <p>רכיב לא ידוע: {component.type}</p>
+        <p>Unknown component: {component.type}</p>
       </div>
     );
   }
@@ -49,11 +49,5 @@ export function ComponentRenderer({ component }: ComponentRendererProps) {
     updateComponentProps(component.id, newProps);
   };
 
-  return (
-    <Renderer
-      id={component.id}
-      props={component.props}
-      onUpdate={handleUpdate}
-    />
-  );
+  return <Renderer id={component.id} props={component.props} onUpdate={handleUpdate} />;
 }

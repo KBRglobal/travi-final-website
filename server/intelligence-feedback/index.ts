@@ -5,7 +5,7 @@
  * Enable with: ENABLE_INTELLIGENCE_FEEDBACK=true
  */
 
-export * from './types';
+export * from "./types";
 export {
   captureBeforeMetrics,
   captureAfterMetrics,
@@ -20,7 +20,7 @@ export {
   getAllMeasuredEvents,
   getRecentEvents,
   cleanupOldEvents,
-} from './tracker';
+} from "./tracker";
 export {
   calculateTaskTypeConfidence,
   calculateAllConfidenceScores,
@@ -33,13 +33,12 @@ export {
   resetModel,
   getWeightAdjustmentHistory,
   generateSummary,
-} from './learner';
-export { default as feedbackRoutes } from './routes';
+} from "./learner";
+export { default as feedbackRoutes } from "./routes";
 
 /**
  * Initialize intelligence feedback module
  */
 export function initIntelligenceFeedback(): void {
-  const enabled = process.env.ENABLE_INTELLIGENCE_FEEDBACK === 'true';
-  console.log(`[Feedback] Module initialized (enabled: ${enabled})`);
+  const enabled = process.env.ENABLE_INTELLIGENCE_FEEDBACK === "true";
 }

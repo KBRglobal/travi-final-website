@@ -28,13 +28,13 @@ const TRANSITIONS: StateTransition[] = [
     from: "pending",
     to: "approved",
     action: "approve",
-    guard: (ctx) => ctx.allStepsApproved && ctx.currentStep >= ctx.totalSteps,
+    guard: ctx => ctx.allStepsApproved && ctx.currentStep >= ctx.totalSteps,
   },
   {
     from: "pending",
     to: "pending",
     action: "approve_step",
-    guard: (ctx) => ctx.currentStep < ctx.totalSteps,
+    guard: ctx => ctx.currentStep < ctx.totalSteps,
   },
   {
     from: "pending",
@@ -55,7 +55,7 @@ const TRANSITIONS: StateTransition[] = [
     from: "pending",
     to: "expired",
     action: "expire",
-    guard: (ctx) => ctx.isExpired,
+    guard: ctx => ctx.isExpired,
   },
 
   // Escalated can go to approved, rejected, or cancelled
@@ -89,9 +89,7 @@ export function canTransition(
   action: string,
   context: TransitionContext
 ): boolean {
-  const transition = TRANSITIONS.find(
-    (t) => t.from === from && t.to === to && t.action === action
-  );
+  const transition = TRANSITIONS.find(t => t.from === from && t.to === to && t.action === action);
 
   if (!transition) return false;
   if (transition.guard && !transition.guard(context)) return false;
@@ -103,7 +101,7 @@ export function getValidTransitions(
   from: ApprovalStatus,
   context: TransitionContext
 ): StateTransition[] {
-  return TRANSITIONS.filter((t) => {
+  return TRANSITIONS.filter(t => {
     if (t.from !== from) return false;
     if (t.guard && !t.guard(context)) return false;
     return true;
@@ -116,9 +114,7 @@ export function validateTransition(
   action: string,
   context: TransitionContext
 ): { valid: boolean; reason?: string } {
-  const transition = TRANSITIONS.find(
-    (t) => t.from === from && t.to === to && t.action === action
-  );
+  const transition = TRANSITIONS.find(t => t.from === from && t.to === to && t.action === action);
 
   if (!transition) {
     return {
@@ -148,5 +144,3 @@ export function canBeApproved(status: ApprovalStatus): boolean {
 export function canBeRejected(status: ApprovalStatus): boolean {
   return ["pending", "escalated"].includes(status);
 }
-
-console.log("[Approvals] StateMachine loaded");

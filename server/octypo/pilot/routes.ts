@@ -2,7 +2,7 @@
  * PILOT: Octypo × Localization API Routes
  * ========================================
  * Isolated endpoints for the localization pilot.
- * 
+ *
  * ENDPOINTS:
  * - POST /api/octypo/pilot/generate - Generate content for an attraction in a specific locale
  * - GET /api/octypo/pilot/content/:entityId/:locale - Get generated content for rendering
@@ -15,11 +15,11 @@ import { z } from "zod";
 import { db } from "../../db";
 import { tiqetsAttractions, pilotLocalizedContent } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
-import { 
-  generatePilotContent, 
-  getPilotContent, 
+import {
+  generatePilotContent,
+  getPilotContent,
   getLocalizationSystemStatus,
-  type PilotGenerationRequest 
+  type PilotGenerationRequest,
 } from "./localization-pilot";
 import {
   getLocalizedGuideContent,
@@ -44,7 +44,7 @@ const generateRequestSchema = z.object({
 router.post("/generate", async (req: Request, res: Response) => {
   try {
     const parseResult = generateRequestSchema.safeParse(req.body);
-    
+
     if (!parseResult.success) {
       return res.status(400).json({
         success: false,
@@ -52,24 +52,22 @@ router.post("/generate", async (req: Request, res: Response) => {
         details: parseResult.error.errors.map(e => `${e.path.join(".")}: ${e.message}`),
       });
     }
-    
+
     const { entityType, entityId, destination, locale } = parseResult.data;
-    
-    console.log(`[PilotAPI] Generate request: ${entityType}/${entityId} locale=${locale} destination=${destination}`);
-    
+
     const attraction = await db
       .select()
       .from(tiqetsAttractions)
       .where(eq(tiqetsAttractions.id, entityId))
       .limit(1);
-    
+
     if (attraction.length === 0) {
       return res.status(404).json({
         success: false,
         error: `Attraction not found: ${entityId}`,
       });
     }
-    
+
     // FAIL-FAST: cityName is required, no fallback to destination
     if (!attraction[0].cityName) {
       return res.status(422).json({
@@ -77,7 +75,7 @@ router.post("/generate", async (req: Request, res: Response) => {
         error: `PILOT_FAIL: Attraction ${entityId} is missing cityName - no fallback allowed`,
       });
     }
-    
+
     const attractionData: AttractionData = {
       id: parseInt(attraction[0].id, 10),
       title: attraction[0].title,
@@ -88,19 +86,19 @@ router.post("/generate", async (req: Request, res: Response) => {
       rating: attraction[0].tiqetsRating ? parseFloat(attraction[0].tiqetsRating) : undefined,
       reviewCount: attraction[0].tiqetsReviewCount || 0,
       tiqetsDescription: attraction[0].tiqetsDescription || undefined,
-      tiqetsHighlights: attraction[0].tiqetsHighlights as string[] || [],
+      tiqetsHighlights: (attraction[0].tiqetsHighlights as string[]) || [],
       priceFrom: attraction[0].priceUsd ? parseFloat(attraction[0].priceUsd) : undefined,
     };
-    
+
     const request: PilotGenerationRequest = {
       entityType,
       entityId,
       destination,
       locale,
     };
-    
+
     const result = await generatePilotContent(request, attractionData);
-    
+
     if (result.success) {
       return res.json({
         success: true,
@@ -124,9 +122,7 @@ router.post("/generate", async (req: Request, res: Response) => {
         generationTimeMs: result.generationTimeMs,
       });
     }
-    
   } catch (error) {
-    console.error("[PilotAPI] Generation error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -137,23 +133,23 @@ router.post("/generate", async (req: Request, res: Response) => {
 router.get("/content/:entityId/:locale", async (req: Request, res: Response) => {
   try {
     const { entityId, locale } = req.params;
-    
+
     if (!["en", "ar"].includes(locale)) {
       return res.status(400).json({
         success: false,
         error: "PILOT_FAIL: locale must be 'en' or 'ar' only",
       });
     }
-    
+
     const content = await getPilotContent("attraction", entityId, locale as "en" | "ar");
-    
+
     if (!content) {
       return res.status(404).json({
         success: false,
         error: `No published content found for attraction ${entityId} in locale ${locale}`,
       });
     }
-    
+
     return res.json({
       success: true,
       content: {
@@ -176,9 +172,7 @@ router.get("/content/:entityId/:locale", async (req: Request, res: Response) => 
         status: content.status,
       },
     });
-    
   } catch (error) {
-    console.error("[PilotAPI] Content fetch error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -189,14 +183,14 @@ router.get("/content/:entityId/:locale", async (req: Request, res: Response) => 
 router.get("/status/:entityId/:locale", async (req: Request, res: Response) => {
   try {
     const { entityId, locale } = req.params;
-    
+
     if (!["en", "ar"].includes(locale)) {
       return res.status(400).json({
         success: false,
         error: "PILOT_FAIL: locale must be 'en' or 'ar' only",
       });
     }
-    
+
     const result = await db
       .select({
         id: pilotLocalizedContent.id,
@@ -216,7 +210,7 @@ router.get("/status/:entityId/:locale", async (req: Request, res: Response) => {
         )
       )
       .limit(1);
-    
+
     if (result.length === 0) {
       return res.json({
         success: true,
@@ -225,7 +219,7 @@ router.get("/status/:entityId/:locale", async (req: Request, res: Response) => {
         locale,
       });
     }
-    
+
     return res.json({
       success: true,
       exists: true,
@@ -238,9 +232,7 @@ router.get("/status/:entityId/:locale", async (req: Request, res: Response) => {
       createdAt: result[0].createdAt,
       updatedAt: result[0].updatedAt,
     });
-    
   } catch (error) {
-    console.error("[PilotAPI] Status check error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -260,15 +252,13 @@ router.get("/attractions/available", async (_req: Request, res: Response) => {
       .from(tiqetsAttractions)
       .where(eq(tiqetsAttractions.status, "published"))
       .limit(10);
-    
+
     return res.json({
       success: true,
       count: availableAttractions.length,
       attractions: availableAttractions,
     });
-    
   } catch (error) {
-    console.error("[PilotAPI] Attractions list error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -279,22 +269,21 @@ router.get("/attractions/available", async (_req: Request, res: Response) => {
 router.get("/system-status", async (_req: Request, res: Response) => {
   try {
     const status = await getLocalizationSystemStatus();
-    
+
     return res.json({
       success: true,
       systemStatus: status.status,
       infrastructure: status.infrastructure,
       aiProviders: status.aiProviders,
       execution: status.execution,
-      message: status.status === "blocked_ai" 
-        ? "Localization system infrastructure is COMPLETE. AI providers are currently unavailable."
-        : status.status === "running"
-        ? "Content generation is in progress."
-        : "Localization system is ready for content generation.",
+      message:
+        status.status === "blocked_ai"
+          ? "Localization system infrastructure is COMPLETE. AI providers are currently unavailable."
+          : status.status === "running"
+            ? "Content generation is in progress."
+            : "Localization system is ready for content generation.",
     });
-    
   } catch (error) {
-    console.error("[PilotAPI] System status error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -313,16 +302,16 @@ router.get("/execution-payload", async (_req: Request, res: Response) => {
       .from(tiqetsAttractions)
       .where(eq(tiqetsAttractions.status, "published"))
       .limit(1);
-    
+
     if (availableAttractions.length === 0) {
       return res.status(404).json({
         success: false,
         error: "No published attractions available for pilot",
       });
     }
-    
+
     const attraction = availableAttractions[0];
-    
+
     const payload = {
       entityType: "attraction" as const,
       entityId: attraction.id,
@@ -330,19 +319,18 @@ router.get("/execution-payload", async (_req: Request, res: Response) => {
       locale: "en" as const,
       strict: true,
     };
-    
+
     return res.json({
       success: true,
-      message: "Execution payload ready. Call POST /api/octypo/pilot/generate with this payload when AI providers are available.",
+      message:
+        "Execution payload ready. Call POST /api/octypo/pilot/generate with this payload when AI providers are available.",
       payload,
       samplePayloads: {
         english: { ...payload, locale: "en" },
         arabic: { ...payload, locale: "ar" },
       },
     });
-    
   } catch (error) {
-    console.error("[PilotAPI] Execution payload error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -364,10 +352,14 @@ const guideContentSchema = z.object({
     whatToExpect: z.string().optional(),
     highlights: z.array(z.string()).optional(),
     tips: z.string().optional(),
-    faq: z.array(z.object({
-      question: z.string(),
-      answer: z.string(),
-    })).optional(),
+    faq: z
+      .array(
+        z.object({
+          question: z.string(),
+          answer: z.string(),
+        })
+      )
+      .optional(),
     answerCapsule: z.string().optional(),
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
@@ -377,7 +369,7 @@ const guideContentSchema = z.object({
 router.post("/guides/save", async (req: Request, res: Response) => {
   try {
     const parseResult = guideContentSchema.safeParse(req.body);
-    
+
     if (!parseResult.success) {
       return res.status(400).json({
         success: false,
@@ -385,23 +377,21 @@ router.post("/guides/save", async (req: Request, res: Response) => {
         details: parseResult.error.errors.map(e => `${e.path.join(".")}: ${e.message}`),
       });
     }
-    
+
     const { guideSlug, locale, destination, sourceGuideId, content } = parseResult.data;
-    
-    console.log(`[GuidePilotAPI] Save request: ${guideSlug} locale=${locale} destination=${destination}`);
-    
+
     const request: GuideLocalizationRequest = {
       guideSlug,
       locale,
       destination,
       sourceGuideId,
     };
-    
+
     const result = await saveLocalizedGuideContent(request, content as GeneratedGuideContent, {
       writerAgent: "manual-entry",
       engineUsed: "human",
     });
-    
+
     if (result.success) {
       return res.json({
         success: true,
@@ -423,9 +413,7 @@ router.post("/guides/save", async (req: Request, res: Response) => {
         generationTimeMs: result.generationTimeMs,
       });
     }
-    
   } catch (error) {
-    console.error("[GuidePilotAPI] Save error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -436,28 +424,29 @@ router.post("/guides/save", async (req: Request, res: Response) => {
 router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Response) => {
   try {
     const { guideSlug, locale } = req.params;
-    
+
     if (!["en", "ar", "fr"].includes(locale)) {
       return res.status(400).json({
         success: false,
         error: "GUIDE_FAIL: locale must be 'en', 'ar', or 'fr' only",
       });
     }
-    
+
     const result = await getLocalizedGuideContent(guideSlug, locale as PilotLocale);
-    
+
     if (!result.found || !result.content) {
       return res.status(404).json({
         success: false,
         exists: false,
         guideSlug,
         locale,
-        message: locale !== "en" 
-          ? "Localized content pending generation - NO English fallback"
-          : "Content not found",
+        message:
+          locale !== "en"
+            ? "Localized content pending generation - NO English fallback"
+            : "Content not found",
       });
     }
-    
+
     const baseUrl = `${req.protocol}://${req.get("host")}`;
     const seoArtifacts = buildSeoArtifacts(
       result.content as GeneratedGuideContent,
@@ -466,7 +455,7 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
       result.content.destination || "travel",
       baseUrl
     );
-    
+
     return res.json({
       success: true,
       exists: true,
@@ -475,9 +464,7 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
       content: result.content,
       seoArtifacts,
     });
-    
   } catch (error) {
-    console.error("[GuidePilotAPI] Content fetch error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",
@@ -488,17 +475,15 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
 router.get("/guides/status/:guideSlug", async (req: Request, res: Response) => {
   try {
     const { guideSlug } = req.params;
-    
+
     const status = await getGuideLocalizationStatus(guideSlug);
-    
+
     return res.json({
       success: true,
       guideSlug,
       locales: status,
     });
-    
   } catch (error) {
-    console.error("[GuidePilotAPI] Status check error:", error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : "Internal server error",

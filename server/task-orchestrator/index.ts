@@ -5,12 +5,8 @@
  * Enable with: ENABLE_TASK_ORCHESTRATOR=true
  */
 
-export * from './types';
-export {
-  generatePlan,
-  optimizePlan,
-  validatePlan,
-} from './planner';
+export * from "./types";
+export { generatePlan, optimizePlan, validatePlan } from "./planner";
 export {
   createPlan,
   getPlan,
@@ -23,13 +19,12 @@ export {
   deletePlan,
   archiveCompletedPlans,
   getOrchestratorStats,
-} from './orchestrator';
-export { default as orchestratorRoutes } from './routes';
+} from "./orchestrator";
+export { default as orchestratorRoutes } from "./routes";
 
 /**
  * Initialize task orchestrator
  */
 export function initTaskOrchestrator(): void {
-  const enabled = process.env.ENABLE_TASK_ORCHESTRATOR === 'true';
-  console.log(`[Orchestrator] Module initialized (enabled: ${enabled})`);
+  const enabled = process.env.ENABLE_TASK_ORCHESTRATOR === "true";
 }

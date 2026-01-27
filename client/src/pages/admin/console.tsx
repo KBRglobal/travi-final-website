@@ -7,10 +7,20 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Terminal, RefreshCw, Trash2, Download, Lightbulb, 
-  AlertTriangle, Info, CheckCircle2, XCircle, Clock,
-  Play, Pause, Filter
+import {
+  Terminal,
+  RefreshCw,
+  Trash2,
+  Download,
+  Lightbulb,
+  AlertTriangle,
+  Info,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Play,
+  Pause,
+  Filter,
 } from "lucide-react";
 
 interface LogEntry {
@@ -41,7 +51,11 @@ export default function LiveConsolePage() {
   });
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { data: logs, isLoading, refetch } = useQuery<LogEntry[]>({
+  const {
+    data: logs,
+    isLoading,
+    refetch,
+  } = useQuery<LogEntry[]>({
     queryKey: ["/api/system/logs"],
     refetchInterval: isLive ? 3000 : false,
   });
@@ -125,9 +139,7 @@ export default function LiveConsolePage() {
             <Terminal className="h-8 w-8 text-primary" />
             Live Console
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Real-time system logs and monitoring
-          </p>
+          <p className="text-muted-foreground mt-1">Real-time system logs and monitoring</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -136,16 +148,17 @@ export default function LiveConsolePage() {
             ) : (
               <Play className="h-4 w-4 text-muted-foreground" />
             )}
-            <Switch
-              checked={isLive}
-              onCheckedChange={setIsLive}
-              data-testid="switch-live"
-            />
+            <Switch checked={isLive} onCheckedChange={setIsLive} data-testid="switch-live" />
             <Label className={isLive ? "text-green-600" : "text-muted-foreground"}>
               {isLive ? "Live" : "Paused"}
             </Label>
           </div>
-          <Button variant="outline" size="sm" onClick={() => refetch()} data-testid="button-refresh-logs">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            data-testid="button-refresh-logs"
+          >
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
@@ -155,15 +168,12 @@ export default function LiveConsolePage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Monitor <strong>real-time system activity</strong>: AI generation, RSS imports, scheduled tasks, errors, and more.
-          Use this to debug issues and ensure everything is running smoothly.
-          <br />
-          <span className="text-xs opacity-70">
-            (עקוב אחרי פעילות המערכת בזמן אמת: יצירת AI, ייבוא RSS, משימות מתוזמנות ושגיאות.)
-          </span>
+          Monitor <strong>real-time system activity</strong>: AI generation, RSS imports, scheduled
+          tasks, errors, and more. Use this to debug issues and ensure everything is running
+          smoothly.
         </p>
       </div>
 
@@ -210,7 +220,9 @@ export default function LiveConsolePage() {
           </CardHeader>
           <CardContent>
             <div className="text-lg font-bold" data-testid="text-uptime">
-              {status?.uptime ? `${Math.floor(status.uptime / 3600)}h ${Math.floor((status.uptime % 3600) / 60)}m` : "N/A"}
+              {status?.uptime
+                ? `${Math.floor(status.uptime / 3600)}h ${Math.floor((status.uptime % 3600) / 60)}m`
+                : "N/A"}
             </div>
           </CardContent>
         </Card>
@@ -224,9 +236,7 @@ export default function LiveConsolePage() {
                 <Terminal className="h-5 w-5" />
                 System Logs
               </CardTitle>
-              <CardDescription>
-                {filteredLogs.length} entries shown
-              </CardDescription>
+              <CardDescription>{filteredLogs.length} entries shown</CardDescription>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -273,7 +283,7 @@ export default function LiveConsolePage() {
           <ScrollArea className="h-[400px] font-mono text-sm" ref={scrollRef}>
             <div className="space-y-1 bg-slate-950 dark:bg-slate-900 p-4 rounded-lg text-slate-100">
               {filteredLogs.length ? (
-                filteredLogs.map((log) => (
+                filteredLogs.map(log => (
                   <div
                     key={log.id}
                     className={`flex items-start gap-2 py-1 border-b border-slate-800 ${getLevelColor(log.level)}`}

@@ -9,15 +9,10 @@
  * - Auto-insert contextual links
  */
 
-import { db } from '../db';
-import { contents, internalLinks } from '../../shared/schema';
-import { eq, and, or, ne, desc, sql, count } from 'drizzle-orm';
-import {
-  SEOEngineConfig,
-  InternalLinkAnalysis,
-  InternalLink,
-  SuggestedLink,
-} from './types';
+import { db } from "../db";
+import { contents, internalLinks } from "../../shared/schema";
+import { eq, and, or, ne, desc, sql, count } from "drizzle-orm";
+import { SEOEngineConfig, InternalLinkAnalysis, InternalLink, SuggestedLink } from "./types";
 
 export class InternalLinkingEngine {
   private config: SEOEngineConfig;
@@ -52,26 +47,23 @@ export class InternalLinkingEngine {
     const suggestedLinks = await this.generateSuggestions(content);
 
     // Calculate link score
-    const linkScore = this.calculateLinkScore(
-      outboundLinks.length,
-      inboundLinks.length
-    );
+    const linkScore = this.calculateLinkScore(outboundLinks.length, inboundLinks.length);
 
     // Check if orphan
     const isOrphan = inboundLinks.length === 0;
 
     return {
       contentId,
-      outboundLinks: outboundLinks.map((l) => ({
+      outboundLinks: outboundLinks.map(l => ({
         sourceId: l.sourceContentId!,
         targetId: l.targetContentId!,
-        anchorText: l.anchorText || '',
+        anchorText: l.anchorText || "",
         isAutoSuggested: l.isAutoSuggested || false,
       })),
-      inboundLinks: inboundLinks.map((l) => ({
+      inboundLinks: inboundLinks.map(l => ({
         sourceId: l.sourceContentId!,
         targetId: l.targetContentId!,
-        anchorText: l.anchorText || '',
+        anchorText: l.anchorText || "",
         isAutoSuggested: l.isAutoSuggested || false,
       })),
       suggestedLinks,
@@ -119,9 +111,7 @@ export class InternalLinkingEngine {
     }
 
     // Sort by relevance and limit
-    return suggestions
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
-      .slice(0, 10);
+    return suggestions.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, 10);
   }
 
   /**
@@ -129,23 +119,25 @@ export class InternalLinkingEngine {
    */
   private async findRelatedByType(
     content: any
-  ): Promise<Array<{ id: string; title: string; type: string; relevanceScore: number; reason: string }>> {
+  ): Promise<
+    Array<{ id: string; title: string; type: string; relevanceScore: number; reason: string }>
+  > {
     // Find content of the same type
     const sameType = await db.query.contents.findMany({
       where: and(
         eq(contents.type, content.type),
-        eq(contents.status, 'published'),
+        eq(contents.status, "published"),
         ne(contents.id, content.id)
       ),
       limit: 5,
     });
 
-    return sameType.map((c) => ({
+    return sameType.map(c => ({
       id: c.id,
       title: c.title,
       type: c.type,
       relevanceScore: 60,
-      reason: 'Same content type',
+      reason: "Same content type",
     }));
   }
 
@@ -154,7 +146,9 @@ export class InternalLinkingEngine {
    */
   private async findRelatedByKeyword(
     content: any
-  ): Promise<Array<{ id: string; title: string; type: string; relevanceScore: number; reason: string }>> {
+  ): Promise<
+    Array<{ id: string; title: string; type: string; relevanceScore: number; reason: string }>
+  > {
     if (!content.primaryKeyword) {
       return [];
     }
@@ -163,7 +157,7 @@ export class InternalLinkingEngine {
     const keywordLower = content.primaryKeyword.toLowerCase();
 
     const allContent = await db.query.contents.findMany({
-      where: and(eq(contents.status, 'published'), ne(contents.id, content.id)),
+      where: and(eq(contents.status, "published"), ne(contents.id, content.id)),
       limit: 100,
     });
 
@@ -177,32 +171,25 @@ export class InternalLinkingEngine {
 
     for (const c of allContent) {
       let score = 0;
-      let reason = '';
+      let reason = "";
 
       // Check primary keyword match
-      if (
-        c.primaryKeyword &&
-        c.primaryKeyword.toLowerCase().includes(keywordLower)
-      ) {
+      if (c.primaryKeyword && c.primaryKeyword.toLowerCase().includes(keywordLower)) {
         score += 80;
-        reason = 'Primary keyword match';
+        reason = "Primary keyword match";
       }
 
       // Check secondary keywords
       const secondaryKeywords = (c.secondaryKeywords || []) as string[];
-      if (
-        secondaryKeywords.some((k: string) =>
-          k.toLowerCase().includes(keywordLower)
-        )
-      ) {
+      if (secondaryKeywords.some((k: string) => k.toLowerCase().includes(keywordLower))) {
         score += 40;
-        reason = reason || 'Secondary keyword match';
+        reason = reason || "Secondary keyword match";
       }
 
       // Check title
       if (c.title.toLowerCase().includes(keywordLower)) {
         score += 30;
-        reason = reason || 'Title contains keyword';
+        reason = reason || "Title contains keyword";
       }
 
       if (score > 0) {
@@ -231,7 +218,7 @@ export class InternalLinkingEngine {
     // Shorten title if too long
     const title = content.title;
     if (title.length > 50) {
-      return title.substring(0, 47) + '...';
+      return title.substring(0, 47) + "...";
     }
 
     return title;
@@ -296,7 +283,6 @@ export class InternalLinkingEngine {
 
       return true;
     } catch (error) {
-      console.error('Failed to create internal link:', error);
       return false;
     }
   }
@@ -317,7 +303,6 @@ export class InternalLinkingEngine {
 
       return true;
     } catch (error) {
-      console.error('Failed to delete internal link:', error);
       return false;
     }
   }
@@ -329,7 +314,7 @@ export class InternalLinkingEngine {
     limit: number = 50
   ): Promise<Array<{ id: string; title: string; type: string }>> {
     const publishedContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     const orphans: Array<{ id: string; title: string; type: string }> = [];
@@ -361,7 +346,7 @@ export class InternalLinkingEngine {
     Array<{ id: string; title: string; type: string; inboundCount: number }>
   > {
     const publishedContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     const distribution: Array<{
@@ -391,13 +376,11 @@ export class InternalLinkingEngine {
   /**
    * Auto-suggest links for all content
    */
-  async batchGenerateSuggestions(
-    limit: number = 100
-  ): Promise<Map<string, SuggestedLink[]>> {
+  async batchGenerateSuggestions(limit: number = 100): Promise<Map<string, SuggestedLink[]>> {
     const results = new Map<string, SuggestedLink[]>();
 
     const publishedContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
       limit,
     });
 

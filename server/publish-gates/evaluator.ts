@@ -3,17 +3,17 @@
  * Evaluates content against publishing rules
  */
 
-import { db } from '../db';
-import { contents, aeoAnswerCapsules } from '@shared/schema';
-import { eq, and, sql } from 'drizzle-orm';
+import { db } from "../db";
+import { contents, aeoAnswerCapsules } from "@shared/schema";
+import { eq, and, sql } from "drizzle-orm";
 import {
   PublishGateRule,
   GateRuleType,
   GateEvaluationContext,
   GateEvaluationResult,
   GateRuleResult,
-} from './types';
-import { rulesRegistry } from './rules';
+} from "./types";
+import { rulesRegistry } from "./rules";
 
 const EVALUATION_TIMEOUT_MS = 10000;
 
@@ -34,15 +34,11 @@ interface ContentData {
 
 async function fetchContentData(contentId: string): Promise<ContentData | null> {
   const timeoutPromise = new Promise<null>((_, reject) =>
-    setTimeout(() => reject(new Error('Content fetch timeout')), EVALUATION_TIMEOUT_MS)
+    setTimeout(() => reject(new Error("Content fetch timeout")), EVALUATION_TIMEOUT_MS)
   );
 
   const fetchPromise = async (): Promise<ContentData | null> => {
-    const [content] = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.id, contentId))
-      .limit(1);
+    const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
     if (!content) return null;
 
@@ -82,23 +78,22 @@ async function fetchContentData(contentId: string): Promise<ContentData | null> 
   try {
     return await Promise.race([fetchPromise(), timeoutPromise]);
   } catch (error) {
-    console.error('[PublishGates] Content fetch error:', error);
     return null;
   }
 }
 
 function extractTextFromBlocks(blocks: any[]): string {
-  if (!Array.isArray(blocks)) return '';
+  if (!Array.isArray(blocks)) return "";
 
   return blocks
     .map(block => {
-      if (typeof block === 'string') return block;
+      if (typeof block === "string") return block;
       if (block.text) return block.text;
       if (block.content) return extractTextFromBlocks(block.content);
       if (block.children) return extractTextFromBlocks(block.children);
-      return '';
+      return "";
     })
-    .join(' ');
+    .join(" ");
 }
 
 function countInternalLinks(blocks: any[]): number {
@@ -122,7 +117,7 @@ async function evaluateRule(
   };
 
   switch (rule.type) {
-    case 'min_entity_count': {
+    case "min_entity_count": {
       const threshold = rule.config.threshold || 3;
       const passed = data.entityCount >= threshold;
       return {
@@ -137,31 +132,31 @@ async function evaluateRule(
       } as GateRuleResult;
     }
 
-    case 'search_indexed': {
+    case "search_indexed": {
       return {
         ...baseResult,
         passed: data.isSearchIndexed,
         score: data.isSearchIndexed ? 100 : 0,
         threshold: 100,
         message: data.isSearchIndexed
-          ? 'Content is indexed in search'
-          : 'Content is not indexed in search',
+          ? "Content is indexed in search"
+          : "Content is not indexed in search",
       } as GateRuleResult;
     }
 
-    case 'aeo_capsule_required': {
+    case "aeo_capsule_required": {
       return {
         ...baseResult,
         passed: data.hasAeoCapsule,
         score: data.hasAeoCapsule ? 100 : 0,
         threshold: 100,
         message: data.hasAeoCapsule
-          ? 'AEO capsule exists'
-          : 'AEO capsule missing - content needs answer optimization',
+          ? "AEO capsule exists"
+          : "AEO capsule missing - content needs answer optimization",
       } as GateRuleResult;
     }
 
-    case 'intelligence_score': {
+    case "intelligence_score": {
       const threshold = rule.config.threshold || 60;
       const passed = data.intelligenceScore >= threshold;
       return {
@@ -176,7 +171,7 @@ async function evaluateRule(
       } as GateRuleResult;
     }
 
-    case 'internal_links': {
+    case "internal_links": {
       const threshold = rule.config.threshold || 2;
       const passed = data.internalLinks >= threshold;
       return {
@@ -191,7 +186,7 @@ async function evaluateRule(
       } as GateRuleResult;
     }
 
-    case 'word_count': {
+    case "word_count": {
       const minValue = rule.config.minValue || 300;
       const passed = data.wordCount >= minValue;
       return {
@@ -206,15 +201,13 @@ async function evaluateRule(
       } as GateRuleResult;
     }
 
-    case 'schema_markup': {
+    case "schema_markup": {
       return {
         ...baseResult,
         passed: data.hasSchemaMarkup,
         score: data.hasSchemaMarkup ? 100 : 0,
         threshold: 100,
-        message: data.hasSchemaMarkup
-          ? 'Schema markup exists'
-          : 'Schema markup missing',
+        message: data.hasSchemaMarkup ? "Schema markup exists" : "Schema markup missing",
       } as GateRuleResult;
     }
 
@@ -224,7 +217,7 @@ async function evaluateRule(
         passed: true,
         score: 100,
         threshold: 0,
-        message: 'Unknown rule type - skipped',
+        message: "Unknown rule type - skipped",
       } as GateRuleResult;
   }
 }
@@ -246,7 +239,7 @@ export async function evaluatePublishGates(
       passedRules: 0,
       failedRules: 0,
       results: [],
-      blockedBy: ['content_not_found'],
+      blockedBy: ["content_not_found"],
       canOverride: false,
     };
   }
@@ -268,7 +261,7 @@ export async function evaluatePublishGates(
         passed: true,
         score: 100,
         threshold: 0,
-        message: 'Bypassed for user role',
+        message: "Bypassed for user role",
       });
       continue;
     }
@@ -285,8 +278,6 @@ export async function evaluatePublishGates(
   const failedRules = results.filter(r => !r.passed).length;
   const allPassed = failedRules === 0;
 
-  console.log(`[PublishGates] Evaluated ${context.contentId} in ${Date.now() - startTime}ms: ${passedRules}/${results.length} passed`);
-
   return {
     passed: allPassed || context.forcePublish === true,
     contentId: context.contentId,
@@ -296,7 +287,7 @@ export async function evaluatePublishGates(
     failedRules,
     results,
     blockedBy,
-    canOverride: context.userRole === 'admin' || context.userRole === 'editor',
+    canOverride: context.userRole === "admin" || context.userRole === "editor",
   };
 }
 
@@ -310,8 +301,8 @@ export async function quickCheck(contentId: string, ruleId: string): Promise<boo
   const result = await evaluateRule(rule, contentData, {
     contentId,
     contentType: contentData.type,
-    userId: 'system',
-    userRole: 'system',
+    userId: "system",
+    userRole: "system",
   });
 
   return result.passed;

@@ -1,6 +1,6 @@
 /**
  * Affiliate Link Injector
- * 
+ *
  * Automatically injects affiliate links into content
  * - Pattern matching for brands/products
  * - Tracking code injection
@@ -54,10 +54,7 @@ export const affiliateInjector = {
   /**
    * Inject affiliate links into content
    */
-  async injectAffiliateLinks(
-    contentId: string,
-    dryRun: boolean = false
-  ): Promise<InjectionResult> {
+  async injectAffiliateLinks(contentId: string, dryRun: boolean = false): Promise<InjectionResult> {
     try {
       // Fetch content
       const contentData = await db
@@ -73,39 +70,40 @@ export const affiliateInjector = {
       const content = contentData[0];
 
       // Get active partners
-      const activePartners = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.status, "active"));
+      const activePartners = await db.select().from(partners).where(eq(partners.status, "active"));
 
       // Build text from content blocks
       let originalText = content.title + "\n\n";
       if (content.blocks && Array.isArray(content.blocks)) {
-        for (const block of content.blocks as Array<{ type: string; content?: string; text?: string }>) {
-          if (block.type === 'paragraph' || block.type === 'text') {
-            originalText += (block.content || block.text || '') + "\n";
+        for (const block of content.blocks as Array<{
+          type: string;
+          content?: string;
+          text?: string;
+        }>) {
+          if (block.type === "paragraph" || block.type === "text") {
+            originalText += (block.content || block.text || "") + "\n";
           }
         }
       }
 
       let modifiedText = originalText;
-      const matches: InjectionResult['matches'] = [];
+      const matches: InjectionResult["matches"] = [];
 
       // Helper function to escape regex special characters
       const escapeRegex = (str: string): string => {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       };
 
       // Process each partner
       for (const partner of activePartners) {
         // Find matching patterns
-        const partnerConfig = AFFILIATE_PATTERNS[partner.trackingCode.split('-')[0]];
+        const partnerConfig = AFFILIATE_PATTERNS[partner.trackingCode.split("-")[0]];
         if (!partnerConfig) continue;
 
         for (const keyword of partnerConfig.keywords) {
           // Escape special characters in keyword
           const escapedKeyword = escapeRegex(keyword);
-          const regex = new RegExp(`\\b${escapedKeyword}\\b`, 'gi');
+          const regex = new RegExp(`\\b${escapedKeyword}\\b`, "gi");
           const match = modifiedText.match(regex);
 
           if (match) {
@@ -157,7 +155,6 @@ export const affiliateInjector = {
         matches,
       };
     } catch (error) {
-      console.error("[Affiliate] Error injecting affiliate links:", error);
       throw error;
     }
   },
@@ -172,7 +169,7 @@ export const affiliateInjector = {
 
     while ((match = urlRegex.exec(text)) !== null) {
       const url = match[2];
-      
+
       // Extract tracking code from URL
       const aidMatch = url.match(/[?&]aid=([^&]+)/);
       if (aidMatch) {
@@ -192,11 +189,13 @@ export const affiliateInjector = {
   validateAffiliateLink(url: string): boolean {
     try {
       const urlObj = new URL(url);
-      
+
       // Check if URL contains tracking parameter
-      return urlObj.searchParams.has('aid') || 
-             urlObj.searchParams.has('ref') ||
-             urlObj.searchParams.has('affiliate_id');
+      return (
+        urlObj.searchParams.has("aid") ||
+        urlObj.searchParams.has("ref") ||
+        urlObj.searchParams.has("affiliate_id")
+      );
     } catch {
       return false;
     }
@@ -221,9 +220,7 @@ export const affiliateInjector = {
           } as any)
           .where(eq(partners.id, partner[0].id));
       }
-    } catch (error) {
-      console.error("[Affiliate] Error tracking click:", error);
-    }
+    } catch (error) {}
   },
 
   /**
@@ -248,8 +245,6 @@ export const affiliateInjector = {
           } as any)
           .where(eq(partners.id, partner[0].id));
       }
-    } catch (error) {
-      console.error("[Affiliate] Error tracking conversion:", error);
-    }
+    } catch (error) {}
   },
 };

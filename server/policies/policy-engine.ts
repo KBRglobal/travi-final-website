@@ -32,13 +32,7 @@
 import { db } from "../db";
 import { governancePolicies, policyEvaluations } from "@shared/schema";
 import { eq, desc, and } from "drizzle-orm";
-import {
-  Policy,
-  PolicyContext,
-  PolicyDecision,
-  PolicyEvaluation,
-  PolicyEffect,
-} from "./types";
+import { Policy, PolicyContext, PolicyDecision, PolicyEvaluation, PolicyEffect } from "./types";
 import { BUILT_IN_POLICIES } from "./built-in-policies";
 import {
   evaluateAllConditions,
@@ -76,7 +70,7 @@ async function getActivePolicies(): Promise<Policy[]> {
     .orderBy(desc(governancePolicies.priority));
 
   // Convert to Policy type
-  const converted: Policy[] = dbPolicies.map((p) => ({
+  const converted: Policy[] = dbPolicies.map(p => ({
     id: p.id,
     name: p.name,
     description: p.description || undefined,
@@ -92,7 +86,7 @@ async function getActivePolicies(): Promise<Policy[]> {
   }));
 
   // Merge with built-in policies
-  const builtIn = BUILT_IN_POLICIES.filter((p) => p.isActive);
+  const builtIn = BUILT_IN_POLICIES.filter(p => p.isActive);
   const allPolicies = [...builtIn, ...converted];
 
   // Sort by priority (higher first)
@@ -149,10 +143,7 @@ export async function evaluatePolicies(context: PolicyContext): Promise<PolicyDe
     if (!roleMatchesPolicy(userRoles, policy.roles)) continue;
 
     // Evaluate conditions
-    const { match, matchedConditions } = evaluateAllConditions(
-      policy.conditions,
-      context
-    );
+    const { match, matchedConditions } = evaluateAllConditions(policy.conditions, context);
 
     if (match) {
       const evaluation: PolicyEvaluation = {
@@ -243,9 +234,7 @@ async function logEvaluation(
       result,
       reason: policy.message,
     } as any);
-  } catch (error) {
-    console.error("[Policies] Error logging evaluation:", error);
-  }
+  } catch (error) {}
 }
 
 /**
@@ -283,5 +272,3 @@ export async function getEnforcementSummary(): Promise<{
     byEffect,
   };
 }
-
-console.log("[Policies] PolicyEngine loaded");

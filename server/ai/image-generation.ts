@@ -110,9 +110,7 @@ Always recommend 3-5 images total, balanced between inspiration and practical va
 /**
  * Generate an AI image prompt based on content options
  */
-export async function generateImagePrompt(
-  options: ImageGenerationOptions
-): Promise<string | null> {
+export async function generateImagePrompt(options: ImageGenerationOptions): Promise<string | null> {
   const aiClient = getAIClient();
   if (!aiClient) return null;
   const { client: openai, provider } = aiClient;
@@ -123,17 +121,17 @@ export async function generateImagePrompt(
       messages: [
         {
           role: "system",
-          content: IMAGE_MASTER_PROMPT
+          content: IMAGE_MASTER_PROMPT,
         },
         {
           role: "user",
-          content: `Create a detailed DALL-E prompt for a ${options.generateHero ? 'hero banner' : 'content'} image for this Dubai travel content:
+          content: `Create a detailed DALL-E prompt for a ${options.generateHero ? "hero banner" : "content"} image for this Dubai travel content:
 
 CONTENT TYPE: ${options.contentType}
 TITLE: ${options.title}
-${options.description ? `DESCRIPTION: ${options.description}` : ''}
-${options.location ? `LOCATION: ${options.location}` : ''}
-STYLE: ${options.style || 'photorealistic'}
+${options.description ? `DESCRIPTION: ${options.description}` : ""}
+${options.location ? `LOCATION: ${options.location}` : ""}
+STYLE: ${options.style || "photorealistic"}
 
 Generate a single, detailed prompt (150-200 words) that will create a stunning, professional travel image. The prompt should:
 1. Describe the specific scene, composition, and main subject
@@ -142,15 +140,14 @@ Generate a single, detailed prompt (150-200 words) that will create a stunning, 
 4. Mention colors and textures
 5. Be specific to Dubai and the content type
 
-Return ONLY the prompt text, no additional explanation.`
-        }
+Return ONLY the prompt text, no additional explanation.`,
+        },
       ],
       temperature: 0.7,
     });
 
     return response.choices[0].message.content?.trim() || null;
   } catch (error) {
-    console.error("Error generating image prompt:", error);
     return null;
   }
 }
@@ -165,22 +162,21 @@ Return ONLY the prompt text, no additional explanation.`
  */
 async function generateWithFlux(
   prompt: string,
-  aspectRatio: '16:9' | '1:1' | '9:16' = '16:9'
+  aspectRatio: "16:9" | "1:1" | "9:16" = "16:9"
 ): Promise<string | null> {
   const replicateApiKey = process.env.REPLICATE_API_KEY;
   if (!replicateApiKey) {
-    console.log("Replicate API key not configured, falling back to DALL-E");
     return null;
   }
 
   try {
     // Using Replicate's HTTP API for Flux 1.1 Pro
-    const response = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
+    const response = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${replicateApiKey}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'wait'  // Wait for result synchronously
+        Authorization: `Bearer ${replicateApiKey}`,
+        "Content-Type": "application/json",
+        Prefer: "wait", // Wait for result synchronously
       },
       body: JSON.stringify({
         version: "black-forest-labs/flux-1.1-pro",
@@ -190,13 +186,12 @@ async function generateWithFlux(
           output_format: "jpg",
           output_quality: 90,
           safety_tolerance: 2,
-          prompt_upsampling: true
-        }
-      })
+          prompt_upsampling: true,
+        },
+      }),
     });
 
     if (!response.ok) {
-      console.error("Flux API error:", await response.text());
       return null;
     }
 
@@ -212,15 +207,14 @@ async function generateWithFlux(
       for (let i = 0; i < 30; i++) {
         await new Promise(r => setTimeout(r, 2000));
         const pollResponse = await fetch(result.urls.get, {
-          headers: { 'Authorization': `Bearer ${replicateApiKey}` }
+          headers: { Authorization: `Bearer ${replicateApiKey}` },
         });
         const pollResult = await pollResponse.json();
 
-        if (pollResult.status === 'succeeded' && pollResult.output) {
+        if (pollResult.status === "succeeded" && pollResult.output) {
           return Array.isArray(pollResult.output) ? pollResult.output[0] : pollResult.output;
         }
-        if (pollResult.status === 'failed') {
-          console.error("Flux generation failed:", pollResult.error);
+        if (pollResult.status === "failed") {
           return null;
         }
       }
@@ -228,7 +222,6 @@ async function generateWithFlux(
 
     return null;
   } catch (error) {
-    console.error("Error generating with Flux:", error);
     return null;
   }
 }
@@ -243,9 +236,9 @@ async function generateWithFlux(
 async function generateWithDalle(
   prompt: string,
   options: {
-    size?: '1024x1024' | '1792x1024' | '1024x1792';
-    quality?: 'standard' | 'hd';
-    style?: 'vivid' | 'natural';
+    size?: "1024x1024" | "1792x1024" | "1024x1792";
+    quality?: "standard" | "hd";
+    style?: "vivid" | "natural";
   } = {}
 ): Promise<string | null> {
   // Use dedicated image client (direct API, no proxy)
@@ -254,24 +247,21 @@ async function generateWithDalle(
 
   // Try DALL-E 3 first
   try {
-    console.log("[DALL-E] Trying DALL-E 3...");
     const response = await openai.images.generate({
       model: "dall-e-3",
       prompt: prompt,
       n: 1,
-      size: options.size || '1792x1024',
-      quality: options.quality || 'hd',
-      style: options.style || 'natural',
+      size: options.size || "1792x1024",
+      quality: options.quality || "hd",
+      style: options.style || "natural",
     });
 
-    console.log("[DALL-E] DALL-E 3 succeeded");
     return response.data?.[0]?.url || null;
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("[DALL-E] DALL-E 3 failed:", errorMessage);
 
     // If DALL-E 3 fails (unknown model, etc.), try DALL-E 2
-    console.log("[DALL-E] Falling back to DALL-E 2...");
+
     try {
       // DALL-E 2 only supports 256x256, 512x512, 1024x1024
       // Truncate prompt to 1000 chars (DALL-E 2 limit)
@@ -281,14 +271,13 @@ async function generateWithDalle(
         model: "dall-e-2",
         prompt: truncatedPrompt,
         n: 1,
-        size: '1024x1024', // DALL-E 2 max size
+        size: "1024x1024", // DALL-E 2 max size
       });
 
-      console.log("[DALL-E] DALL-E 2 succeeded");
       return response.data?.[0]?.url || null;
     } catch (error2: unknown) {
       const error2Message = error2 instanceof Error ? error2.message : String(error2);
-      console.error("[DALL-E] DALL-E 2 also failed:", error2Message);
+
       return null;
     }
   }
@@ -307,26 +296,26 @@ async function generateWithDalle(
 export async function generateImage(
   prompt: string,
   options: {
-    size?: '1024x1024' | '1792x1024' | '1024x1792';
-    quality?: 'standard' | 'hd';
-    style?: 'vivid' | 'natural';
+    size?: "1024x1024" | "1792x1024" | "1024x1792";
+    quality?: "standard" | "hd";
+    style?: "vivid" | "natural";
     provider?: ImageProvider;
-    imageType?: 'hero' | 'content';
+    imageType?: "hero" | "content";
   } = {}
 ): Promise<string | null> {
   // Auto-select provider based on image type for cost optimization
-  const provider = options.provider || (options.imageType === 'hero' ? 'flux' : 'dalle3');
+  const provider = options.provider || (options.imageType === "hero" ? "flux" : "dalle3");
 
-  if (provider === 'flux' || provider === 'auto') {
+  if (provider === "flux" || provider === "auto") {
     // Map size to aspect ratio for Flux
-    const aspectRatio = options.size === '1792x1024' ? '16:9' :
-                        options.size === '1024x1792' ? '9:16' : '1:1';
+    const aspectRatio =
+      options.size === "1792x1024" ? "16:9" : options.size === "1024x1792" ? "9:16" : "1:1";
 
     const fluxResult = await generateWithFlux(prompt, aspectRatio);
     if (fluxResult) return fluxResult;
 
     // Always fallback to DALL-E if Flux fails (regardless of provider setting)
-    console.log("Flux failed or not configured, falling back to DALL-E");
+
     return generateWithDalle(prompt, options);
   }
 
@@ -345,42 +334,36 @@ export async function generateContentImages(
 
   // Generate hero image
   if (options.generateHero !== false) {
-    console.log(`[AI Images] Generating hero image for: ${options.title}`);
     const heroPrompt = await generateImagePrompt({
       ...options,
       generateHero: true,
     });
 
     if (heroPrompt) {
-      console.log(`[AI Images] Got prompt, generating image...`);
       const heroUrl = await generateImage(heroPrompt, {
-        size: '1792x1024',
-        quality: 'hd',
-        style: 'natural',
-        imageType: 'hero',  // Uses Flux for 67% cost savings
+        size: "1792x1024",
+        quality: "hd",
+        style: "natural",
+        imageType: "hero", // Uses Flux for 67% cost savings
       });
 
       if (heroUrl) {
-        console.log(`[AI Images] Hero image generated successfully`);
         images.push({
           url: heroUrl,
           filename: `${slug}-hero-${timestamp}.jpg`,
           alt: `${options.title} - Dubai Travel`,
           caption: `Explore ${options.title} in Dubai`,
-          type: 'hero',
+          type: "hero",
         });
       } else {
-        console.error(`[AI Images] Failed to generate hero image - both Flux and DALL-E failed`);
       }
     } else {
-      console.error(`[AI Images] Failed to generate image prompt - check OpenAI API key`);
     }
   }
 
   // Generate additional content images
   if (options.generateContentImages && options.contentImageCount && options.contentImageCount > 0) {
     const contentPromises = Array.from({ length: options.contentImageCount }, async (_, index) => {
-      console.log(`Generating content image ${index + 1} for: ${options.title}`);
       const contentPrompt = await generateImagePrompt({
         ...options,
         generateHero: false,
@@ -389,10 +372,10 @@ export async function generateContentImages(
 
       if (contentPrompt) {
         const contentUrl = await generateImage(contentPrompt, {
-          size: '1024x1024',
-          quality: 'standard',
-          style: 'natural',
-          imageType: 'content',  // Uses DALL-E for detailed scenes
+          size: "1024x1024",
+          quality: "standard",
+          style: "natural",
+          imageType: "content", // Uses DALL-E for detailed scenes
         });
 
         if (contentUrl) {
@@ -401,7 +384,7 @@ export async function generateContentImages(
             filename: `${slug}-content-${index + 1}-${timestamp}.jpg`,
             alt: `${options.title} - View ${index + 1}`,
             caption: `Discover more about ${options.title}`,
-            type: 'content' as const,
+            type: "content" as const,
           };
         }
       }
@@ -409,7 +392,11 @@ export async function generateContentImages(
     });
 
     const contentResults = await Promise.all(contentPromises);
-    images.push(...contentResults.filter((img): img is NonNullable<typeof img> => img !== null) as GeneratedImage[]);
+    images.push(
+      ...(contentResults.filter(
+        (img): img is NonNullable<typeof img> => img !== null
+      ) as GeneratedImage[])
+    );
   }
 
   return images;

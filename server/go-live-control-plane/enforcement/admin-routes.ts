@@ -23,12 +23,21 @@
  * See: server/ROUTE_REGISTRATION_STATUS.md for go-live systems comparison
  */
 
-import { Router, Request, Response } from 'express';
-import { isGLCPEnabled, KNOWN_FEATURE_FLAGS } from '../capabilities/types';
-import { getAllCapabilities, groupByDomain, discoverCapabilities, registerCapabilities } from '../capabilities/registry';
-import { validateDependencies, detectInvalidStates, getSafeToEnable } from '../capabilities/dependency-resolver';
-import { evaluateReadiness, getGoLiveReadiness, getAvailableProbes } from '../readiness/evaluator';
-import { explainDecision, getEnforcementLog, getEnforcementStats, OperationContext } from './index';
+import { Router, Request, Response } from "express";
+import { isGLCPEnabled, KNOWN_FEATURE_FLAGS } from "../capabilities/types";
+import {
+  getAllCapabilities,
+  groupByDomain,
+  discoverCapabilities,
+  registerCapabilities,
+} from "../capabilities/registry";
+import {
+  validateDependencies,
+  detectInvalidStates,
+  getSafeToEnable,
+} from "../capabilities/dependency-resolver";
+import { evaluateReadiness, getGoLiveReadiness, getAvailableProbes } from "../readiness/evaluator";
+import { explainDecision, getEnforcementLog, getEnforcementStats, OperationContext } from "./index";
 
 export const glcpAdminRouter = Router();
 
@@ -41,7 +50,7 @@ export const glcpAdminRouter = Router();
  *
  * Executive summary of platform readiness
  */
-glcpAdminRouter.get('/status', async (req, res) => {
+glcpAdminRouter.get("/status", async (req, res) => {
   try {
     // Ensure capabilities are discovered
     if (getAllCapabilities().length === 0) {
@@ -71,8 +80,8 @@ glcpAdminRouter.get('/status', async (req, res) => {
     const summary = {
       glcp: {
         enabled: isGLCPEnabled(),
-        version: '1.0.0',
-        emergencyStop: process.env.EMERGENCY_STOP_ENABLED === 'true',
+        version: "1.0.0",
+        emergencyStop: process.env.EMERGENCY_STOP_ENABLED === "true",
       },
       readiness: {
         status: readiness.status,
@@ -84,8 +93,8 @@ glcpAdminRouter.get('/status', async (req, res) => {
       },
       capabilities: {
         total: capabilities.length,
-        enabled: capabilities.filter(c => c.status === 'enabled').length,
-        disabled: capabilities.filter(c => c.status === 'disabled').length,
+        enabled: capabilities.filter(c => c.status === "enabled").length,
+        disabled: capabilities.filter(c => c.status === "disabled").length,
         safeToEnable: safeToEnable.length,
         invalidStates: invalidStates.issues.length,
       },
@@ -105,8 +114,7 @@ glcpAdminRouter.get('/status', async (req, res) => {
 
     res.json(summary);
   } catch (err) {
-    console.error('[GLCP] Status error:', err);
-    res.status(500).json({ error: 'Failed to get status' });
+    res.status(500).json({ error: "Failed to get status" });
   }
 });
 
@@ -119,18 +127,27 @@ glcpAdminRouter.get('/status', async (req, res) => {
  *
  * Explains why an operation would be allowed/blocked
  */
-glcpAdminRouter.post('/explain', async (req, res) => {
+glcpAdminRouter.post("/explain", async (req, res) => {
   try {
     const { type, resourceId, metadata } = req.body;
 
     if (!type) {
-      return res.status(400).json({ error: 'Operation type is required' });
+      return res.status(400).json({ error: "Operation type is required" });
     }
 
-    const validTypes = ['publish', 'schedule', 'job', 'ai_call', 'regeneration', 'rollout', 'bulk_change', 'destructive'];
+    const validTypes = [
+      "publish",
+      "schedule",
+      "job",
+      "ai_call",
+      "regeneration",
+      "rollout",
+      "bulk_change",
+      "destructive",
+    ];
     if (!validTypes.includes(type)) {
       return res.status(400).json({
-        error: `Invalid operation type. Valid types: ${validTypes.join(', ')}`,
+        error: `Invalid operation type. Valid types: ${validTypes.join(", ")}`,
       });
     }
 
@@ -152,12 +169,13 @@ glcpAdminRouter.post('/explain', async (req, res) => {
       },
       systemStatus: explanation.systemStatus,
       blockers: explanation.blockerDetails,
-      affectedCapabilities: explanation.capabilityStatus.filter(c => c.status !== 'enabled').slice(0, 10),
+      affectedCapabilities: explanation.capabilityStatus
+        .filter(c => c.status !== "enabled")
+        .slice(0, 10),
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
-    console.error('[GLCP] Explain error:', err);
-    res.status(500).json({ error: 'Failed to explain decision' });
+    res.status(500).json({ error: "Failed to explain decision" });
   }
 });
 
@@ -170,15 +188,15 @@ glcpAdminRouter.post('/explain', async (req, res) => {
  *
  * Lists all current blockers
  */
-glcpAdminRouter.get('/blockers', async (req, res) => {
+glcpAdminRouter.get("/blockers", async (req, res) => {
   try {
     const readiness = await getGoLiveReadiness();
     const invalidStates = detectInvalidStates();
 
     const blockers = [
-      ...readiness.blockers.map(b => ({ type: 'readiness', message: b })),
+      ...readiness.blockers.map(b => ({ type: "readiness", message: b })),
       ...invalidStates.issues.map(i => ({
-        type: 'capability',
+        type: "capability",
         message: i.details,
         capability: i.capabilityId,
         severity: i.severity,
@@ -193,7 +211,7 @@ glcpAdminRouter.get('/blockers', async (req, res) => {
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to get blockers' });
+    res.status(500).json({ error: "Failed to get blockers" });
   }
 });
 
@@ -206,7 +224,7 @@ glcpAdminRouter.get('/blockers', async (req, res) => {
  *
  * Recent enforcement decisions
  */
-glcpAdminRouter.get('/enforcement-log', (req, res) => {
+glcpAdminRouter.get("/enforcement-log", (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
     const log = getEnforcementLog(limit);
@@ -223,7 +241,7 @@ glcpAdminRouter.get('/enforcement-log', (req, res) => {
       })),
     });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to get enforcement log' });
+    res.status(500).json({ error: "Failed to get enforcement log" });
   }
 });
 
@@ -236,7 +254,7 @@ glcpAdminRouter.get('/enforcement-log', (req, res) => {
  *
  * List all registered capabilities
  */
-glcpAdminRouter.get('/capabilities', (req, res) => {
+glcpAdminRouter.get("/capabilities", (req, res) => {
   try {
     // Ensure capabilities are discovered
     if (getAllCapabilities().length === 0) {
@@ -274,7 +292,7 @@ glcpAdminRouter.get('/capabilities', (req, res) => {
       })),
     });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to get capabilities' });
+    res.status(500).json({ error: "Failed to get capabilities" });
   }
 });
 
@@ -287,7 +305,7 @@ glcpAdminRouter.get('/capabilities', (req, res) => {
  *
  * Check if a specific flag can be enabled
  */
-glcpAdminRouter.get('/can-enable/:flag', async (req, res) => {
+glcpAdminRouter.get("/can-enable/:flag", async (req, res) => {
   try {
     const { flag } = req.params;
 
@@ -302,7 +320,7 @@ glcpAdminRouter.get('/can-enable/:flag', async (req, res) => {
 
     const invalidStates = detectInvalidStates();
     const issues = invalidStates.issues.filter(i =>
-      i.capabilityId.includes(flag.toLowerCase().replace(/_/g, '-'))
+      i.capabilityId.includes(flag.toLowerCase().replace(/_/g, "-"))
     );
 
     const readiness = await getGoLiveReadiness();
@@ -317,14 +335,15 @@ glcpAdminRouter.get('/can-enable/:flag', async (req, res) => {
         details: i.details,
         fix: i.suggestedFix,
       })),
-      recommendation: isSafe && readiness.canGoLive
-        ? 'PROCEED'
-        : !isSafe
-          ? 'RESOLVE_DEPENDENCIES'
-          : 'WAIT_FOR_SYSTEM',
+      recommendation:
+        isSafe && readiness.canGoLive
+          ? "PROCEED"
+          : !isSafe
+            ? "RESOLVE_DEPENDENCIES"
+            : "WAIT_FOR_SYSTEM",
     });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to check flag' });
+    res.status(500).json({ error: "Failed to check flag" });
   }
 });
 

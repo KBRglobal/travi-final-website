@@ -246,16 +246,17 @@ export default function GrowthDashboard() {
   });
 
   const { data: contentPipeline, isLoading: contentLoading } = useQuery<ContentPipelineData>({
-    queryKey: ["/api/admin/growth/contents-pipeline"],
+    queryKey: ["/api/admin/growth/content-pipeline"],
   });
 
   const { data: imagePipeline, isLoading: imageLoading } = useQuery<ImagePipelineData>({
     queryKey: ["/api/admin/growth/image-pipeline"],
   });
 
-  const { data: translationPipeline, isLoading: translationLoading } = useQuery<TranslationPipelineData>({
-    queryKey: ["/api/admin/growth/translation-pipeline"],
-  });
+  const { data: translationPipeline, isLoading: translationLoading } =
+    useQuery<TranslationPipelineData>({
+      queryKey: ["/api/admin/growth/translation-pipeline"],
+    });
 
   const { data: activityLog, isLoading: activityLoading } = useQuery<ActivityLogData>({
     queryKey: ["/api/admin/growth/activity-log"],
@@ -270,9 +271,10 @@ export default function GrowthDashboard() {
     refetchInterval: 30000,
   });
 
-  const { data: intelligenceStats, isLoading: intelligenceLoading } = useQuery<IntelligenceStatsData>({
-    queryKey: ["/api/admin/intelligence-stats"],
-  });
+  const { data: intelligenceStats, isLoading: intelligenceLoading } =
+    useQuery<IntelligenceStatsData>({
+      queryKey: ["/api/admin/intelligence-stats"],
+    });
 
   const { data: jobsData, isLoading: jobsLoading } = useQuery<JobsData>({
     queryKey: ["/api/admin/jobs/recent"],
@@ -367,24 +369,17 @@ export default function GrowthDashboard() {
                 <FileText className="h-5 w-5" />
                 Content Generation Pipeline
               </CardTitle>
-              <CardDescription>
-                Destinations awaiting contents generation
-              </CardDescription>
+              <CardDescription>Destinations awaiting contents generation</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 bg-muted rounded-lg border">
                 <h3 className="font-medium flex items-center gap-2 mb-2">
                   <Lightbulb className="h-4 w-4 text-primary" />
-                  How It Works / איך זה עובד
+                  How It Works
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Content is generated for destinations in priority order: active destinations first, 
-                  then by status (empty, partial, complete). Rate: 3 destinations per day.
-                  <br />
-                  <span className="text-xs">
-                    תוכן נוצר ליעדים לפי סדר עדיפות: יעדים פעילים קודם, 
-                    ואז לפי סטטוס (ריק, חלקי, מלא). קצב: 3 יעדים ביום.
-                  </span>
+                  Content is generated for destinations in priority order: active destinations
+                  first, then by status (empty, partial, complete). Rate: 3 destinations per day.
                 </p>
               </div>
 
@@ -400,19 +395,28 @@ export default function GrowthDashboard() {
 
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div className="p-3 rounded-lg bg-muted">
-                      <div className="text-lg font-bold text-red-600" data-testid="stat-contents-empty">
+                      <div
+                        className="text-lg font-bold text-red-600"
+                        data-testid="stat-contents-empty"
+                      >
                         {contentPipeline?.stats.empty || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">Empty</div>
                     </div>
                     <div className="p-3 rounded-lg bg-muted">
-                      <div className="text-lg font-bold text-yellow-600" data-testid="stat-contents-partial">
+                      <div
+                        className="text-lg font-bold text-yellow-600"
+                        data-testid="stat-contents-partial"
+                      >
                         {contentPipeline?.stats.partial || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">Partial</div>
                     </div>
                     <div className="p-3 rounded-lg bg-muted">
-                      <div className="text-lg font-bold text-green-600" data-testid="stat-contents-complete">
+                      <div
+                        className="text-lg font-bold text-green-600"
+                        data-testid="stat-contents-complete"
+                      >
                         {contentPipeline?.stats.complete || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">Complete</div>
@@ -424,12 +428,14 @@ export default function GrowthDashboard() {
                       <Clock className="h-4 w-4 text-muted-foreground" />
                       <span>Est. Completion</span>
                     </div>
-                    <span className="font-medium">{contentPipeline?.estimatedDaysToComplete || 0} days</span>
+                    <span className="font-medium">
+                      {contentPipeline?.estimatedDaysToComplete || 0} days
+                    </span>
                   </div>
 
                   <ScrollArea className="h-[150px]">
                     <div className="space-y-2">
-                      {contentPipeline?.queue.slice(0, 10).map((dest) => (
+                      {contentPipeline?.queue.slice(0, 10).map(dest => (
                         <div
                           key={dest.id}
                           className="flex items-center justify-between p-2 rounded-lg border"
@@ -440,8 +446,12 @@ export default function GrowthDashboard() {
                             <p className="text-xs text-muted-foreground">{dest.country}</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            {dest.isActive && <Badge variant="outline" className="text-xs">Active</Badge>}
-                            <Badge 
+                            {dest.isActive && (
+                              <Badge variant="outline" className="text-xs">
+                                Active
+                              </Badge>
+                            )}
+                            <Badge
                               variant={dest.status === "empty" ? "destructive" : "secondary"}
                               className="text-xs"
                             >
@@ -469,24 +479,17 @@ export default function GrowthDashboard() {
                 <Image className="h-5 w-5" />
                 Image Generation Pipeline
               </CardTitle>
-              <CardDescription>
-                Destinations needing images
-              </CardDescription>
+              <CardDescription>Destinations needing images</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 bg-muted rounded-lg border">
                 <h3 className="font-medium flex items-center gap-2 mb-2">
                   <Lightbulb className="h-4 w-4 text-primary" />
-                  How It Works / איך זה עובד
+                  How It Works
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Images are generated using Flux (faster, cheaper) or DALL-E (higher quality). 
-                  Each destination needs 1 hero + 4 section images.
-                  <br />
-                  <span className="text-xs">
-                    תמונות נוצרות באמצעות Flux (מהיר וזול יותר) או DALL-E (איכות גבוהה יותר).
-                    כל יעד צריך 1 תמונה ראשית + 4 תמונות סעיפים.
-                  </span>
+                  Images are generated using Flux (faster, cheaper) or DALL-E (higher quality). Each
+                  destination needs 1 hero + 4 section images.
                 </p>
               </div>
 
@@ -512,21 +515,27 @@ export default function GrowthDashboard() {
                   <div className="p-3 bg-muted rounded-lg space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span>Total Images Needed</span>
-                      <span className="font-bold">{imagePipeline?.stats.totalImagesNeeded || 0}</span>
+                      <span className="font-bold">
+                        {imagePipeline?.stats.totalImagesNeeded || 0}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span>Flux Cost (${imagePipeline?.costEstimate.fluxPerImage}/img)</span>
-                      <span className="font-medium">${imagePipeline?.costEstimate.flux.toFixed(2)}</span>
+                      <span className="font-medium">
+                        ${imagePipeline?.costEstimate.flux.toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span>DALL-E Cost (${imagePipeline?.costEstimate.dallePerImage}/img)</span>
-                      <span className="font-medium">${imagePipeline?.costEstimate.dalle.toFixed(2)}</span>
+                      <span className="font-medium">
+                        ${imagePipeline?.costEstimate.dalle.toFixed(2)}
+                      </span>
                     </div>
                   </div>
 
                   <ScrollArea className="h-[120px]">
                     <div className="space-y-2">
-                      {imagePipeline?.needingHeroImage.slice(0, 8).map((dest) => (
+                      {imagePipeline?.needingHeroImage.slice(0, 8).map(dest => (
                         <div
                           key={dest.id}
                           className="flex items-center justify-between p-2 rounded-lg border"
@@ -538,10 +547,13 @@ export default function GrowthDashboard() {
                               {dest.sectionImagesCount}/4 section images
                             </p>
                           </div>
-                          <Badge variant="destructive" className="text-xs">No Hero</Badge>
+                          <Badge variant="destructive" className="text-xs">
+                            No Hero
+                          </Badge>
                         </div>
                       ))}
-                      {(!imagePipeline?.needingHeroImage || imagePipeline.needingHeroImage.length === 0) && (
+                      {(!imagePipeline?.needingHeroImage ||
+                        imagePipeline.needingHeroImage.length === 0) && (
                         <div className="text-center py-4 text-muted-foreground">
                           <CheckCircle2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
                           <p className="text-sm">All destinations have hero images</p>
@@ -557,7 +569,9 @@ export default function GrowthDashboard() {
                     variant="outline"
                     data-testid="button-trigger-images"
                   >
-                    <Play className={`mr-2 h-4 w-4 ${triggerImagesMutation.isPending ? "animate-spin" : ""}`} />
+                    <Play
+                      className={`mr-2 h-4 w-4 ${triggerImagesMutation.isPending ? "animate-spin" : ""}`}
+                    />
                     Generate Images
                   </Button>
                 </>
@@ -572,23 +586,19 @@ export default function GrowthDashboard() {
                 Translation Pipeline
               </CardTitle>
               <CardDescription>
-                Content awaiting translation ({translationPipeline?.stats.totalLanguages || 17} languages)
+                Content awaiting translation ({translationPipeline?.stats.totalLanguages || 17}{" "}
+                languages)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 bg-muted rounded-lg border">
                 <h3 className="font-medium flex items-center gap-2 mb-2">
                   <Lightbulb className="h-4 w-4 text-primary" />
-                  How It Works / איך זה עובד
+                  How It Works
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Published contents is automatically translated to all supported languages. 
+                  Published content is automatically translated to all supported languages.
                   Priority: Tier 1 (core markets) first.
-                  <br />
-                  <span className="text-xs">
-                    תוכן שפורסם מתורגם אוטומטית לכל השפות הנתמכות.
-                    עדיפות: רמה 1 (שווקי ליבה) קודם.
-                  </span>
                 </p>
               </div>
 
@@ -598,13 +608,18 @@ export default function GrowthDashboard() {
                 <>
                   <div className="flex items-center justify-between gap-2 text-sm">
                     <span>Overall Coverage</span>
-                    <span className="font-medium">{translationPipeline?.stats.overallCoverage || 0}%</span>
+                    <span className="font-medium">
+                      {translationPipeline?.stats.overallCoverage || 0}%
+                    </span>
                   </div>
-                  <Progress value={translationPipeline?.stats.overallCoverage || 0} className="h-2" />
+                  <Progress
+                    value={translationPipeline?.stats.overallCoverage || 0}
+                    className="h-2"
+                  />
 
                   <ScrollArea className="h-[180px]">
                     <div className="space-y-2">
-                      {translationPipeline?.locales.slice(0, 12).map((locale) => (
+                      {translationPipeline?.locales.slice(0, 12).map(locale => (
                         <div
                           key={locale.code}
                           className="flex items-center justify-between p-2 rounded-lg border"
@@ -619,7 +634,9 @@ export default function GrowthDashboard() {
                           </div>
                           <div className="flex items-center gap-2">
                             {locale.tier === 1 && (
-                              <Badge variant="outline" className="text-xs">Tier 1</Badge>
+                              <Badge variant="outline" className="text-xs">
+                                Tier 1
+                              </Badge>
                             )}
                             <div className="w-16">
                               <Progress value={locale.coverage.percentage} className="h-1.5" />
@@ -640,7 +657,9 @@ export default function GrowthDashboard() {
                     variant="outline"
                     data-testid="button-trigger-translations"
                   >
-                    <Play className={`mr-2 h-4 w-4 ${triggerTranslationsMutation.isPending ? "animate-spin" : ""}`} />
+                    <Play
+                      className={`mr-2 h-4 w-4 ${triggerTranslationsMutation.isPending ? "animate-spin" : ""}`}
+                    />
                     Trigger Translation Batch
                   </Button>
                 </>
@@ -654,24 +673,17 @@ export default function GrowthDashboard() {
                 <Activity className="h-5 w-5" />
                 Activity Timeline
               </CardTitle>
-              <CardDescription>
-                Recent auto-pilot activities
-              </CardDescription>
+              <CardDescription>Recent auto-pilot activities</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="p-4 bg-muted rounded-lg border mb-4">
                 <h3 className="font-medium flex items-center gap-2 mb-2">
                   <Lightbulb className="h-4 w-4 text-primary" />
-                  How It Works / איך זה עובד
+                  How It Works
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  All automated actions are logged here with status and details. 
-                  Green = success, Yellow = warning, Red = error.
-                  <br />
-                  <span className="text-xs">
-                    כל הפעולות האוטומטיות נרשמות כאן עם סטטוס ופרטים.
-                    ירוק = הצלחה, צהוב = אזהרה, אדום = שגיאה.
-                  </span>
+                  All automated actions are logged here with status and details. Green = success,
+                  Yellow = warning, Red = error.
                 </p>
               </div>
 
@@ -680,7 +692,7 @@ export default function GrowthDashboard() {
               ) : (
                 <ScrollArea className="h-[280px]">
                   <div className="space-y-2">
-                    {activityLog?.activities.map((activity) => (
+                    {activityLog?.activities.map(activity => (
                       <div
                         key={activity.id}
                         className={`flex items-start gap-3 p-3 rounded-lg border ${
@@ -697,12 +709,14 @@ export default function GrowthDashboard() {
                         )}
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="outline" className="text-xs">{activity.type}</Badge>
-                            <span className="text-xs text-muted-foreground">{activity.provider}</span>
+                            <Badge variant="outline" className="text-xs">
+                              {activity.type}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">
+                              {activity.provider}
+                            </span>
                           </div>
-                          <p className="text-sm mt-1 truncate">
-                            Target: {activity.targetId}
-                          </p>
+                          <p className="text-sm mt-1 truncate">Target: {activity.targetId}</p>
                           {activity.error && (
                             <p className="text-xs text-red-600 mt-1 truncate">{activity.error}</p>
                           )}
@@ -744,32 +758,51 @@ export default function GrowthDashboard() {
               <Skeleton className="h-32" />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg bg-muted space-y-2" data-testid="stat-total-published">
+                <div
+                  className="p-4 rounded-lg bg-muted space-y-2"
+                  data-testid="stat-total-published"
+                >
                   <div className="text-sm text-muted-foreground">Total Published</div>
                   <div className="text-2xl font-bold">{intelligenceStats?.totalPublished || 0}</div>
                 </div>
-                <div className="p-4 rounded-lg bg-muted space-y-2" data-testid="stat-indexed-percent">
+                <div
+                  className="p-4 rounded-lg bg-muted space-y-2"
+                  data-testid="stat-indexed-percent"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Indexed</span>
-                    <Badge variant="outline" className="text-xs">{intelligenceStats?.indexed || 0}</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {intelligenceStats?.indexed || 0}
+                    </Badge>
                   </div>
-                  <div className="text-2xl font-bold">{intelligenceStats?.indexedPercent || 0}%</div>
+                  <div className="text-2xl font-bold">
+                    {intelligenceStats?.indexedPercent || 0}%
+                  </div>
                   <Progress value={intelligenceStats?.indexedPercent || 0} className="h-1.5" />
                 </div>
                 <div className="p-4 rounded-lg bg-muted space-y-2" data-testid="stat-aeo-percent">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">AEO Coverage</span>
-                    <Badge variant="outline" className="text-xs">{intelligenceStats?.withAEO || 0}</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {intelligenceStats?.withAEO || 0}
+                    </Badge>
                   </div>
                   <div className="text-2xl font-bold">{intelligenceStats?.aeoPercent || 0}%</div>
                   <Progress value={intelligenceStats?.aeoPercent || 0} className="h-1.5" />
                 </div>
-                <div className="p-4 rounded-lg bg-muted space-y-2" data-testid="stat-entity-linked-percent">
+                <div
+                  className="p-4 rounded-lg bg-muted space-y-2"
+                  data-testid="stat-entity-linked-percent"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Entity-Linked</span>
-                    <Badge variant="outline" className="text-xs">{intelligenceStats?.entityLinked || 0}</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {intelligenceStats?.entityLinked || 0}
+                    </Badge>
                   </div>
-                  <div className="text-2xl font-bold">{intelligenceStats?.entityLinkedPercent || 0}%</div>
+                  <div className="text-2xl font-bold">
+                    {intelligenceStats?.entityLinkedPercent || 0}%
+                  </div>
                   <Progress value={intelligenceStats?.entityLinkedPercent || 0} className="h-1.5" />
                 </div>
               </div>
@@ -785,24 +818,17 @@ export default function GrowthDashboard() {
               <BarChart3 className="h-5 w-5" />
               Growth Metrics Over Time
             </CardTitle>
-            <CardDescription>
-              Content, images, and translations performance
-            </CardDescription>
+            <CardDescription>Content, images, and translations performance</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="p-4 bg-muted rounded-lg border mb-4">
               <h3 className="font-medium flex items-center gap-2 mb-2">
                 <Lightbulb className="h-4 w-4 text-primary" />
-                How It Works / איך זה עובד
+                How It Works
               </h3>
               <p className="text-sm text-muted-foreground">
-                Track weekly and monthly progress across all automated contents generation. 
+                Track weekly and monthly progress across all automated content generation.
                 Projections are based on current weekly rate.
-                <br />
-                <span className="text-xs">
-                  עקוב אחר ההתקדמות השבועית והחודשית בכל יצירת התוכן האוטומטית.
-                  התחזיות מבוססות על הקצב השבועי הנוכחי.
-                </span>
               </p>
             </div>
 
@@ -906,9 +932,7 @@ export default function GrowthDashboard() {
               <Cpu className="h-5 w-5" />
               AI Provider Status
             </CardTitle>
-            <CardDescription>
-              Status of AI providers used for contents generation
-            </CardDescription>
+            <CardDescription>Status of AI providers used for contents generation</CardDescription>
           </CardHeader>
           <CardContent>
             {aiStatusLoading ? (
@@ -921,27 +945,27 @@ export default function GrowthDashboard() {
                     How It Works
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    The system tries providers in order: Anthropic, OpenRouter, DeepSeek, Replit AI (free fallback), then OpenAI.
-                    Rate-limited providers are skipped for 5 minutes.
+                    The system tries providers in order: Anthropic, OpenRouter, DeepSeek, Replit AI
+                    (free fallback), then OpenAI. Rate-limited providers are skipped for 5 minutes.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {aiStatus?.providerStatuses?.map((provider) => (
+                  {aiStatus?.providerStatuses?.map(provider => (
                     <div
                       key={provider.name}
                       className="flex items-start gap-3 p-3 rounded-lg border"
-                      data-testid={`provider-status-${provider.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+                      data-testid={`provider-status-${provider.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
                     >
                       <Circle
                         className={`h-4 w-4 mt-0.5 ${
                           provider.status === "available"
                             ? "text-green-500 fill-green-500"
                             : provider.status === "rate_limited"
-                            ? "text-yellow-500 fill-yellow-500"
-                            : provider.status === "no_credits"
-                            ? "text-red-500 fill-red-500"
-                            : "text-muted-foreground"
+                              ? "text-yellow-500 fill-yellow-500"
+                              : provider.status === "no_credits"
+                                ? "text-red-500 fill-red-500"
+                                : "text-muted-foreground"
                         }`}
                       />
                       <div className="min-w-0 flex-1">
@@ -951,17 +975,26 @@ export default function GrowthDashboard() {
                         </div>
                         <div className="text-xs mt-1">
                           {provider.status === "available" && (
-                            <Badge variant="outline" className="text-xs text-green-600 border-green-200">
+                            <Badge
+                              variant="outline"
+                              className="text-xs text-green-600 border-green-200"
+                            >
                               Available
                             </Badge>
                           )}
                           {provider.status === "rate_limited" && (
-                            <Badge variant="outline" className="text-xs text-yellow-600 border-yellow-200">
+                            <Badge
+                              variant="outline"
+                              className="text-xs text-yellow-600 border-yellow-200"
+                            >
                               Rate Limited{provider.retryAfter ? ` (${provider.retryAfter}s)` : ""}
                             </Badge>
                           )}
                           {provider.status === "no_credits" && (
-                            <Badge variant="outline" className="text-xs text-red-600 border-red-200">
+                            <Badge
+                              variant="outline"
+                              className="text-xs text-red-600 border-red-200"
+                            >
                               No Credits
                             </Badge>
                           )}
@@ -981,9 +1014,7 @@ export default function GrowthDashboard() {
                     <Activity className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">System Status</span>
                   </div>
-                  <Badge
-                    variant={aiStatus?.available ? "default" : "destructive"}
-                  >
+                  <Badge variant={aiStatus?.available ? "default" : "destructive"}>
                     {aiStatus?.available ? "AI Available" : "AI Unavailable"}
                   </Badge>
                 </div>
@@ -1001,14 +1032,12 @@ export default function GrowthDashboard() {
                 <Activity className="h-5 w-5" />
                 Recent Jobs (Last 24h)
               </CardTitle>
-              <CardDescription>
-                AI generation jobs and their status
-              </CardDescription>
+              <CardDescription>AI generation jobs and their status</CardDescription>
             </CardHeader>
             <CardContent>
               {jobsLoading ? (
                 <Skeleton className="h-40" />
-              ) : (jobsData?.jobs && jobsData.jobs.length > 0) ? (
+              ) : jobsData?.jobs && jobsData.jobs.length > 0 ? (
                 <div className="space-y-3">
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                     <div className="flex items-center gap-1" data-testid="stat-jobs-successful">
@@ -1022,7 +1051,7 @@ export default function GrowthDashboard() {
                   </div>
                   <ScrollArea className="h-64">
                     <div className="space-y-2">
-                      {jobsData.jobs.slice(0, 20).map((job) => (
+                      {jobsData.jobs.slice(0, 20).map(job => (
                         <div
                           key={job.id}
                           className="flex items-center justify-between p-2 rounded-lg border text-sm"
@@ -1048,10 +1077,15 @@ export default function GrowthDashboard() {
                   </ScrollArea>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-40 text-center" data-testid="empty-jobs">
+                <div
+                  className="flex flex-col items-center justify-center h-40 text-center"
+                  data-testid="empty-jobs"
+                >
                   <Activity className="h-10 w-10 text-muted-foreground mb-2" />
                   <p className="text-sm text-muted-foreground">No jobs in the last 24 hours</p>
-                  <p className="text-xs text-muted-foreground">AI generation jobs will appear here</p>
+                  <p className="text-xs text-muted-foreground">
+                    AI generation jobs will appear here
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -1063,9 +1097,7 @@ export default function GrowthDashboard() {
                 <Globe className="h-5 w-5" />
                 RSS & Topic Clusters
               </CardTitle>
-              <CardDescription>
-                RSS feed processing and topic clustering status
-              </CardDescription>
+              <CardDescription>RSS feed processing and topic clustering status</CardDescription>
             </CardHeader>
             <CardContent>
               {rssLoading ? (
@@ -1080,13 +1112,19 @@ export default function GrowthDashboard() {
                       <div className="text-xs text-muted-foreground">Total Clusters</div>
                     </div>
                     <div className="p-3 rounded-lg bg-muted">
-                      <div className="text-lg font-bold text-yellow-600" data-testid="stat-clusters-pending">
+                      <div
+                        className="text-lg font-bold text-yellow-600"
+                        data-testid="stat-clusters-pending"
+                      >
                         {rssStatus?.clusters.pending || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">Pending</div>
                     </div>
                     <div className="p-3 rounded-lg bg-muted">
-                      <div className="text-lg font-bold text-green-600" data-testid="stat-clusters-merged">
+                      <div
+                        className="text-lg font-bold text-green-600"
+                        data-testid="stat-clusters-merged"
+                      >
                         {rssStatus?.clusters.merged || 0}
                       </div>
                       <div className="text-xs text-muted-foreground">Merged</div>
@@ -1094,13 +1132,14 @@ export default function GrowthDashboard() {
                   </div>
 
                   <div className="text-sm text-muted-foreground">
-                    Items fetched (24h): <span className="font-medium">{rssStatus?.recentItems24h || 0}</span>
+                    Items fetched (24h):{" "}
+                    <span className="font-medium">{rssStatus?.recentItems24h || 0}</span>
                   </div>
 
                   {rssStatus?.feeds && rssStatus.feeds.length > 0 ? (
                     <ScrollArea className="h-32">
                       <div className="space-y-2">
-                        {rssStatus.feeds.map((feed) => (
+                        {rssStatus.feeds.map(feed => (
                           <div
                             key={feed.id}
                             className="flex items-center justify-between p-2 rounded-lg border text-sm"
@@ -1113,14 +1152,19 @@ export default function GrowthDashboard() {
                               <span className="truncate max-w-[150px]">{feed.name}</span>
                             </div>
                             <span className="text-xs text-muted-foreground">
-                              {feed.lastFetched ? new Date(feed.lastFetched).toLocaleDateString() : "Never"}
+                              {feed.lastFetched
+                                ? new Date(feed.lastFetched).toLocaleDateString()
+                                : "Never"}
                             </span>
                           </div>
                         ))}
                       </div>
                     </ScrollArea>
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-24 text-center" data-testid="empty-feeds">
+                    <div
+                      className="flex flex-col items-center justify-center h-24 text-center"
+                      data-testid="empty-feeds"
+                    >
                       <Globe className="h-8 w-8 text-muted-foreground mb-2" />
                       <p className="text-sm text-muted-foreground">No RSS feeds configured</p>
                     </div>

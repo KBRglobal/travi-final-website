@@ -43,11 +43,11 @@ export interface UnifiedAIProvider {
 
 export function getValidOpenAIKey(): string | null {
   const integrationsKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
-  if (integrationsKey && !integrationsKey.includes('DUMMY')) {
+  if (integrationsKey && !integrationsKey.includes("DUMMY")) {
     return integrationsKey;
   }
   const directKey = process.env.OPENAI_API_KEY;
-  if (directKey && !directKey.includes('DUMMY')) {
+  if (directKey && !directKey.includes("DUMMY")) {
     return directKey;
   }
   return null;
@@ -60,7 +60,7 @@ export function getValidOpenAIKey(): string | null {
 function createOpenAIProvider(): UnifiedAIProvider | null {
   const apiKey = getValidOpenAIKey();
   if (!apiKey) return null;
-  
+
   const client = new OpenAI({
     apiKey,
     baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || undefined,
@@ -69,13 +69,15 @@ function createOpenAIProvider(): UnifiedAIProvider | null {
   return {
     name: "openai",
     model: "gpt-4o-mini",
-    generateCompletion: async (options) => {
+    generateCompletion: async options => {
       const completion = await client.chat.completions.create({
         model: options.model || "gpt-4o-mini",
         messages: options.messages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? 12000,
-        ...(options.responseFormat?.type === "json_object" ? { response_format: { type: "json_object" } } : {}),
+        ...(options.responseFormat?.type === "json_object"
+          ? { response_format: { type: "json_object" } }
+          : {}),
       });
       return {
         content: completion.choices[0]?.message?.content || "",
@@ -93,9 +95,9 @@ function createOpenAIProvider(): UnifiedAIProvider | null {
 function createAnthropicProvider(): UnifiedAIProvider | null {
   const baseURL = process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL;
   const apiKey = process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY;
-  
+
   if (!baseURL || !apiKey) return null;
-  
+
   const client = new Anthropic({
     apiKey,
     baseURL,
@@ -104,10 +106,10 @@ function createAnthropicProvider(): UnifiedAIProvider | null {
   return {
     name: "anthropic",
     model: "claude-sonnet-4-5",
-    generateCompletion: async (options) => {
+    generateCompletion: async options => {
       const systemMessage = options.messages.find(m => m.role === "system");
       const userMessages = options.messages.filter(m => m.role !== "system");
-      
+
       const messages = userMessages.map(m => ({
         role: m.role as "user" | "assistant",
         content: m.content,
@@ -115,7 +117,8 @@ function createAnthropicProvider(): UnifiedAIProvider | null {
 
       let systemPrompt = systemMessage?.content || "";
       if (options.responseFormat?.type === "json_object") {
-        systemPrompt += "\n\nIMPORTANT: You MUST respond with valid JSON only. No other text before or after the JSON.";
+        systemPrompt +=
+          "\n\nIMPORTANT: You MUST respond with valid JSON only. No other text before or after the JSON.";
       }
 
       const response = await client.messages.create({
@@ -133,11 +136,11 @@ function createAnthropicProvider(): UnifiedAIProvider | null {
         }
       }
       const content = textParts.join("\n");
-      
+
       if (!content) {
         throw new Error("Empty response from Anthropic - no text content blocks found");
       }
-      
+
       return {
         content,
         provider: "anthropic",
@@ -152,9 +155,14 @@ function createAnthropicProvider(): UnifiedAIProvider | null {
 // ============================================================================
 
 function createOpenRouterProvider(): UnifiedAIProvider | null {
-  const apiKey = process.env.OPENROUTER_API_KEY || process.env.New_open_routers || process.env.openrouterapi || process.env.OPENROUTERAPI || process.env.travisite;
+  const apiKey =
+    process.env.OPENROUTER_API_KEY ||
+    process.env.New_open_routers ||
+    process.env.openrouterapi ||
+    process.env.OPENROUTERAPI ||
+    process.env.travisite;
   if (!apiKey) return null;
-  
+
   const client = new OpenAI({
     apiKey,
     baseURL: "https://openrouter.ai/api/v1",
@@ -167,7 +175,7 @@ function createOpenRouterProvider(): UnifiedAIProvider | null {
   return {
     name: "openrouter",
     model: "anthropic/claude-3.5-sonnet",
-    generateCompletion: async (options) => {
+    generateCompletion: async options => {
       const completion = await client.chat.completions.create({
         model: options.model || "anthropic/claude-3.5-sonnet",
         messages: options.messages,
@@ -190,7 +198,7 @@ function createOpenRouterProvider(): UnifiedAIProvider | null {
 function createDeepSeekProvider(): UnifiedAIProvider | null {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) return null;
-  
+
   const client = new OpenAI({
     apiKey,
     baseURL: "https://api.deepseek.com/v1",
@@ -199,7 +207,7 @@ function createDeepSeekProvider(): UnifiedAIProvider | null {
   return {
     name: "deepseek",
     model: "deepseek-chat",
-    generateCompletion: async (options) => {
+    generateCompletion: async options => {
       // DeepSeek API has max_tokens limit of 8192
       const maxTokens = Math.min(options.maxTokens ?? 8192, 8192);
       const completion = await client.chat.completions.create({
@@ -218,6 +226,72 @@ function createDeepSeekProvider(): UnifiedAIProvider | null {
 }
 
 // ============================================================================
+// Google Gemini Provider (OpenAI-compatible via Google AI)
+// ============================================================================
+
+function createGeminiProvider(): UnifiedAIProvider | null {
+  const apiKey = process.env.GOOGLE_GENAI_API_KEY;
+  if (!apiKey) return null;
+
+  const client = new OpenAI({
+    apiKey,
+    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+  });
+
+  return {
+    name: "gemini",
+    model: "gemini-1.5-flash",
+    generateCompletion: async options => {
+      const completion = await client.chat.completions.create({
+        model: options.model || "gemini-1.5-flash",
+        messages: options.messages,
+        temperature: options.temperature ?? 0.7,
+        max_tokens: options.maxTokens ?? 8192,
+      });
+      return {
+        content: completion.choices[0]?.message?.content || "",
+        provider: "gemini",
+        model: options.model || "gemini-1.5-flash",
+      };
+    },
+  };
+}
+
+// ============================================================================
+// Groq Provider (Fast inference via Groq Cloud)
+// ============================================================================
+
+function createGroqProvider(): UnifiedAIProvider | null {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+
+  const client = new OpenAI({
+    apiKey,
+    baseURL: "https://api.groq.com/openai/v1",
+  });
+
+  return {
+    name: "groq",
+    model: "llama-3.1-70b-versatile",
+    generateCompletion: async options => {
+      // Groq has specific token limits per model
+      const maxTokens = Math.min(options.maxTokens ?? 8000, 8000);
+      const completion = await client.chat.completions.create({
+        model: options.model || "llama-3.1-70b-versatile",
+        messages: options.messages,
+        temperature: options.temperature ?? 0.7,
+        max_tokens: maxTokens,
+      });
+      return {
+        content: completion.choices[0]?.message?.content || "",
+        provider: "groq",
+        model: options.model || "llama-3.1-70b-versatile",
+      };
+    },
+  };
+}
+
+// ============================================================================
 // Replit AI Provider (Free tier via Replit AI Integrations)
 // Uses the special modelfarm proxy - no external API key needed
 // ============================================================================
@@ -225,10 +299,10 @@ function createDeepSeekProvider(): UnifiedAIProvider | null {
 function createReplitAIProvider(): UnifiedAIProvider | null {
   const baseURL = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
   const apiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
-  
+
   // Replit AI Integrations uses a dummy key with special base URL
   if (!baseURL || !apiKey) return null;
-  
+
   const client = new OpenAI({
     apiKey,
     baseURL,
@@ -237,14 +311,16 @@ function createReplitAIProvider(): UnifiedAIProvider | null {
   return {
     name: "replit-ai",
     model: "gpt-4o-mini",
-    generateCompletion: async (options) => {
+    generateCompletion: async options => {
       // Replit AI uses max_completion_tokens instead of max_tokens for newer models
       const completion = await client.chat.completions.create({
         model: options.model || "gpt-4o-mini",
         messages: options.messages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? 8192,
-        ...(options.responseFormat?.type === "json_object" ? { response_format: { type: "json_object" } } : {}),
+        ...(options.responseFormat?.type === "json_object"
+          ? { response_format: { type: "json_object" } }
+          : {}),
       });
       return {
         content: completion.choices[0]?.message?.content || "",
@@ -311,7 +387,7 @@ export function markProviderSuccess(provider: string): void {
 function isProviderAvailable(provider: string): boolean {
   // Check credit exhaustion first
   if (hasNoCredits(provider)) return false;
-  
+
   // Then check rate limiting
   return !isRateLimited(provider);
 }
@@ -338,6 +414,16 @@ export function getAllUnifiedProviders(): UnifiedAIProvider[] {
   if (isProviderAvailable("deepseek")) {
     const deepseek = createDeepSeekProvider();
     if (deepseek) providers.push(deepseek);
+  }
+
+  if (isProviderAvailable("gemini")) {
+    const gemini = createGeminiProvider();
+    if (gemini) providers.push(gemini);
+  }
+
+  if (isProviderAvailable("groq")) {
+    const groq = createGroqProvider();
+    if (groq) providers.push(groq);
   }
 
   if (isProviderAvailable("openai")) {
@@ -381,7 +467,11 @@ export function getAllAIClients(): AIProvider[] {
   }
 
   if (isProviderAvailable("openrouter")) {
-    const apiKey = process.env.OPENROUTER_API_KEY || process.env.New_open_routers || process.env.openrouterapi || process.env.travisite;
+    const apiKey =
+      process.env.OPENROUTER_API_KEY ||
+      process.env.New_open_routers ||
+      process.env.openrouterapi ||
+      process.env.travisite;
     if (apiKey) {
       const client = new OpenAI({
         apiKey,
@@ -406,6 +496,28 @@ export function getAllAIClients(): AIProvider[] {
     }
   }
 
+  if (isProviderAvailable("gemini")) {
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
+    if (apiKey) {
+      const client = new OpenAI({
+        apiKey,
+        baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+      });
+      clients.push({ client, provider: "gemini", model: "gemini-1.5-flash" });
+    }
+  }
+
+  if (isProviderAvailable("groq")) {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (apiKey) {
+      const client = new OpenAI({
+        apiKey,
+        baseURL: "https://api.groq.com/openai/v1",
+      });
+      clients.push({ client, provider: "groq", model: "llama-3.1-70b-versatile" });
+    }
+  }
+
   // Replit AI as last fallback - always available via Replit AI Integrations
   if (isProviderAvailable("replit-ai")) {
     const baseURL = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
@@ -424,14 +536,13 @@ export function getAIClient(): { client: OpenAI; provider: string } | null {
   if (clients.length > 0) {
     return { client: clients[0].client, provider: clients[0].provider };
   }
-  console.warn("[AI Generator] No AI provider configured");
+
   return null;
 }
 
 export function getOpenAIClientForImages(): OpenAI | null {
   const apiKey = getValidOpenAIKey();
   if (!apiKey) {
-    console.warn("[AI Generator] No valid OpenAI API key for DALL-E");
     return null;
   }
   return new OpenAI({ apiKey });
@@ -441,7 +552,7 @@ export function getOpenAIClientForImages(): OpenAI | null {
 // Model Configuration
 // ============================================================================
 
-const MODEL_CONFIGS: Record<ContentTier, Omit<ModelConfig, 'model'>> = {
+const MODEL_CONFIGS: Record<ContentTier, Omit<ModelConfig, "model">> = {
   premium: {
     maxTokens: 16000,
     temperature: 0.7,
@@ -470,8 +581,8 @@ export function getModelForProvider(provider: string, tier: ContentTier = "stand
 }
 
 export function getContentTier(contentType: string): ContentTier {
-  const premiumTypes = ['hotel', 'attraction', 'itinerary'];
-  return premiumTypes.includes(contentType.toLowerCase()) ? 'premium' : 'standard';
+  const premiumTypes = ["hotel", "attraction", "itinerary"];
+  return premiumTypes.includes(contentType.toLowerCase()) ? "premium" : "standard";
 }
 
 export function getModelConfig(tier: ContentTier, provider: string = "openai"): ModelConfig {
@@ -511,9 +622,11 @@ function getProviderMessage(provider: string, isConfigured: boolean): string {
 
 export function getProviderStatus(): ProviderStatus[] {
   const statuses: ProviderStatus[] = [];
-  
+
   // Check Anthropic
-  const hasAnthropic = !!(process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL && process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY);
+  const hasAnthropic = !!(
+    process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL && process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY
+  );
   statuses.push({
     name: "Anthropic (Claude)",
     model: "claude-sonnet-4-5",
@@ -523,7 +636,12 @@ export function getProviderStatus(): ProviderStatus[] {
   });
 
   // Check OpenRouter
-  const hasOpenRouter = !!(process.env.OPENROUTER_API_KEY || process.env.New_open_routers || process.env.openrouterapi || process.env.travisite);
+  const hasOpenRouter = !!(
+    process.env.OPENROUTER_API_KEY ||
+    process.env.New_open_routers ||
+    process.env.openrouterapi ||
+    process.env.travisite
+  );
   statuses.push({
     name: "OpenRouter",
     model: "anthropic/claude-3.5-sonnet",
@@ -548,9 +666,10 @@ export function getProviderStatus(): ProviderStatus[] {
     name: "Replit AI (Modelfarm)",
     model: "gpt-4o-mini",
     status: getProviderStatusValue("replit-ai", hasReplitAI),
-    message: hasReplitAI && getProviderStatusValue("replit-ai", hasReplitAI) === "available" 
-      ? "Free fallback provider" 
-      : getProviderMessage("replit-ai", hasReplitAI),
+    message:
+      hasReplitAI && getProviderStatusValue("replit-ai", hasReplitAI) === "available"
+        ? "Free fallback provider"
+        : getProviderMessage("replit-ai", hasReplitAI),
     retryAfter: getRetryAfter("replit-ai"),
   });
 
@@ -574,7 +693,7 @@ function getRetryAfter(provider: string): number | undefined {
     const remaining = creditExpiry - Date.now();
     if (remaining > 0) return Math.ceil(remaining / 1000);
   }
-  
+
   // Then check rate limit expiry
   const expiry = failedProviderExpiry.get(provider);
   if (!expiry) return undefined;

@@ -1,0 +1,10 @@
+# ============================================
+# TRAVI Kubernetes Namespace
+# ============================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: travi
+  labels:
+    app.kubernetes.io/name: travi
+    app.kubernetes.io/part-of: travi-platform

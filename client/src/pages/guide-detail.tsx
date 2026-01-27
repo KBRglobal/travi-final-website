@@ -5,17 +5,46 @@ import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import DOMPurify from "dompurify";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
-import { 
-  BookOpen, Globe, MapPin, ChevronRight, Languages, Calendar, 
-  Plane, Train, Bus, Map, Utensils, Wine, Bed, ShoppingBag,
-  Camera, Shield, Wifi, Clock, ChevronUp, Home, ArrowLeft,
-  Hotel, Ticket, Star, FileText, Layers, RefreshCw
+import {
+  BookOpen,
+  Globe,
+  MapPin,
+  ChevronRight,
+  Languages,
+  Calendar,
+  Plane,
+  Train,
+  Bus,
+  Map,
+  Utensils,
+  Wine,
+  Bed,
+  ShoppingBag,
+  Camera,
+  Shield,
+  Wifi,
+  Clock,
+  ChevronUp,
+  Home,
+  ArrowLeft,
+  Hotel,
+  Ticket,
+  Star,
+  FileText,
+  Layers,
+  RefreshCw,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SEOHead } from "@/components/seo-head";
 import { PublicNav } from "@/components/public-nav";
@@ -29,7 +58,7 @@ const SUPPORTED_LANGUAGES = [
   { code: "de", label: "German", nativeName: "Deutsch" },
   { code: "es", label: "Spanish", nativeName: "Español" },
   { code: "fr", label: "French", nativeName: "Français" },
-  { code: "he", label: "Hebrew", nativeName: "עברית" },
+  { code: "he", label: "Hebrew", nativeName: "Hebrew" },
   { code: "hi", label: "Hindi", nativeName: "हिन्दी" },
   { code: "it", label: "Italian", nativeName: "Italiano" },
   { code: "ja", label: "Japanese", nativeName: "日本語" },
@@ -112,19 +141,19 @@ interface Holiday {
 }
 
 const SECTION_ICONS: Record<string, React.ReactNode> = {
-  "understand": <BookOpen className="h-5 w-5" />,
+  understand: <BookOpen className="h-5 w-5" />,
   "get in": <Plane className="h-5 w-5" />,
   "get around": <Bus className="h-5 w-5" />,
-  "see": <Camera className="h-5 w-5" />,
-  "do": <Star className="h-5 w-5" />,
-  "buy": <ShoppingBag className="h-5 w-5" />,
-  "eat": <Utensils className="h-5 w-5" />,
-  "drink": <Wine className="h-5 w-5" />,
-  "sleep": <Bed className="h-5 w-5" />,
+  see: <Camera className="h-5 w-5" />,
+  do: <Star className="h-5 w-5" />,
+  buy: <ShoppingBag className="h-5 w-5" />,
+  eat: <Utensils className="h-5 w-5" />,
+  drink: <Wine className="h-5 w-5" />,
+  sleep: <Bed className="h-5 w-5" />,
   "stay safe": <Shield className="h-5 w-5" />,
-  "connect": <Wifi className="h-5 w-5" />,
-  "respect": <Globe className="h-5 w-5" />,
-  "cope": <Shield className="h-5 w-5" />,
+  connect: <Wifi className="h-5 w-5" />,
+  respect: <Globe className="h-5 w-5" />,
+  cope: <Shield className="h-5 w-5" />,
   "go next": <Map className="h-5 w-5" />,
 };
 
@@ -139,7 +168,10 @@ function getSectionIcon(heading: string): React.ReactNode {
 }
 
 function slugify(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function ReadingProgressBar() {
@@ -149,7 +181,7 @@ function ReadingProgressBar() {
 
   if (prefersReducedMotion) {
     return (
-      <div 
+      <div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] z-[100]"
         data-testid="reading-progress-bar"
       />
@@ -157,7 +189,7 @@ function ReadingProgressBar() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] origin-left z-[100]"
       style={{ scaleX }}
       data-testid="reading-progress-bar"
@@ -194,24 +226,28 @@ function CinematicHero({
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
-  
+
   const heroY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, 150]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], prefersReducedMotion ? [1, 1] : [1, 0]);
+  const heroOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.8],
+    prefersReducedMotion ? [1, 1] : [1, 0]
+  );
   const heroScale = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [1, 1] : [1, 1.1]);
 
   const estimatedReadingTime = Math.max(5, sectionsCount * 3);
-  const formattedDate = lastUpdated 
+  const formattedDate = lastUpdated
     ? new Date(lastUpdated).toLocaleDateString("en", { month: "short", year: "numeric" })
     : null;
 
-  const effectiveHeroImage = (!heroImage || imageError) ? FALLBACK_HERO_IMAGE : heroImage;
+  const effectiveHeroImage = !heroImage || imageError ? FALLBACK_HERO_IMAGE : heroImage;
 
   useEffect(() => {
     setImageError(false);
     setImageLoaded(false);
-    
+
     if (!heroImage) {
       setImageError(true);
       return;
@@ -230,27 +266,27 @@ function CinematicHero({
   }, [heroImage]);
 
   return (
-    <section 
+    <section
       ref={heroRef}
       className="relative h-[50vh] md:h-[60vh] min-h-[400px] flex items-end overflow-hidden"
       data-testid="section-hero"
     >
-      <motion.div 
+      <motion.div
         className="absolute inset-0"
-        style={{ 
+        style={{
           y: heroY,
           scale: heroScale,
         }}
       >
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${effectiveHeroImage})` }}
         />
       </motion.div>
-      
+
       <div className="absolute inset-0 bg-gradient-to-t from-[#0B0A1F] via-[#0B0A1F]/60 to-transparent" />
-      
-      <motion.div 
+
+      <motion.div
         className="relative z-10 max-w-7xl mx-auto px-6 pb-8 md:pb-12 w-full"
         style={{ opacity: heroOpacity }}
       >
@@ -265,19 +301,30 @@ function CinematicHero({
             <nav aria-label="Breadcrumb" className="mb-4 md:mb-6">
               <ol className="flex items-center gap-2 text-sm text-white/70 flex-wrap">
                 <li>
-                  <Link href={localePath("/")} className="hover:text-white transition-colors flex items-center gap-1" data-testid="breadcrumb-home">
+                  <Link
+                    href={localePath("/")}
+                    className="hover:text-white transition-colors flex items-center gap-1"
+                    data-testid="breadcrumb-home"
+                  >
                     <Home className="h-3.5 w-3.5" />
                     Home
                   </Link>
                 </li>
                 <ChevronRight className="h-3.5 w-3.5" />
                 <li>
-                  <Link href={localePath("/guides")} className="hover:text-white transition-colors" data-testid="breadcrumb-guides">
+                  <Link
+                    href={localePath("/guides")}
+                    className="hover:text-white transition-colors"
+                    data-testid="breadcrumb-guides"
+                  >
                     Travel Guides
                   </Link>
                 </li>
                 <ChevronRight className="h-3.5 w-3.5" />
-                <li className="text-white font-medium truncate max-w-[200px]" data-testid="breadcrumb-current">
+                <li
+                  className="text-white font-medium truncate max-w-[200px]"
+                  data-testid="breadcrumb-current"
+                >
                   {destinationName}
                 </li>
               </ol>
@@ -289,16 +336,19 @@ function CinematicHero({
                 Travel Guide
               </Badge>
               {availableLocales && availableLocales.length > 1 && (
-                <Badge variant="secondary" className="bg-white/10 text-white border-0 backdrop-blur-md">
+                <Badge
+                  variant="secondary"
+                  className="bg-white/10 text-white border-0 backdrop-blur-md"
+                >
                   <Languages className="h-3 w-3 mr-1" />
                   {availableLocales.length} languages
                 </Badge>
               )}
             </div>
-            
-            <h1 
+
+            <h1
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
-              style={{ 
+              style={{
                 fontFamily: "'Chillax', var(--font-sans)",
                 background: "linear-gradient(135deg, #FFFFFF 0%, #E84C9A 50%, #6443F4 100%)",
                 WebkitBackgroundClip: "text",
@@ -309,7 +359,7 @@ function CinematicHero({
             >
               {title}
             </h1>
-            
+
             <p className="text-base md:text-lg text-white/80 max-w-2xl line-clamp-2 mb-6">
               {summary}
             </p>
@@ -348,21 +398,20 @@ function ContentSection({ section, index }: { section: GuideSection; index: numb
   const sectionId = slugify(section.heading);
 
   return (
-    <AnimatedSection 
-      delay={index * 0.05}
-      className="mb-12"
-      data-testid={`section-${sectionId}`}
-    >
+    <AnimatedSection delay={index * 0.05} className="mb-12" data-testid={`section-${sectionId}`}>
       <div id={sectionId} className="scroll-mt-32">
         <div className="flex items-center gap-3 mb-6">
           <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/20 to-[#E84C9A]/20 text-[#6443F4]">
             {getSectionIcon(section.heading)}
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+          <h2
+            className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white"
+            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+          >
             {section.heading}
           </h2>
         </div>
-        <div 
+        <div
           className="prose prose-slate prose-lg max-w-none dark:prose-invert
             prose-headings:font-semibold prose-headings:text-slate-800 dark:prose-headings:text-white
             prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
@@ -382,22 +431,23 @@ function ContentSection({ section, index }: { section: GuideSection; index: numb
   );
 }
 
-function TableOfContents({ 
-  sections, 
+function TableOfContents({
+  sections,
   activeSection,
   scrollProgress,
-}: { 
-  sections: GuideSection[]; 
+}: {
+  sections: GuideSection[];
   activeSection: string;
   scrollProgress: number;
 }) {
   const activeIndex = sections.findIndex(s => slugify(s.heading) === activeSection);
-  const progressPercent = sections.length > 0 
-    ? Math.max(0, Math.min(100, ((activeIndex + 1) / sections.length) * 100))
-    : 0;
+  const progressPercent =
+    sections.length > 0
+      ? Math.max(0, Math.min(100, ((activeIndex + 1) / sections.length) * 100))
+      : 0;
 
   return (
-    <div 
+    <div
       className="bg-white/70 dark:bg-[#0B0A1F]/70 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-xl sticky top-28 overflow-hidden"
       data-testid="table-of-contents"
     >
@@ -412,7 +462,7 @@ function TableOfContents({
           </span>
         </div>
         <div className="w-full h-1 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
-          <motion.div 
+          <motion.div
             className="h-full bg-gradient-to-r from-[#6443F4] to-[#E84C9A] rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
@@ -420,36 +470,38 @@ function TableOfContents({
           />
         </div>
       </div>
-      
+
       <ScrollArea className="h-[calc(100vh-320px)]">
         <nav className="p-3 space-y-1">
           {sections.map((section, index) => {
             const sectionId = slugify(section.heading);
             const isActive = activeSection === sectionId;
             const isPast = activeIndex > index;
-            
+
             return (
               <a
                 key={`${sectionId}-${index}`}
                 href={`#${sectionId}`}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-all duration-200 group",
-                  isActive 
-                    ? "bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] font-medium border border-[#6443F4]/20" 
+                  isActive
+                    ? "bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] font-medium border border-[#6443F4]/20"
                     : isPast
-                    ? "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
+                      ? "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
                 )}
                 data-testid={`toc-link-${sectionId}`}
               >
-                <span className={cn(
-                  "flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all",
-                  isActive 
-                    ? "bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
-                    : isPast
-                    ? "bg-[#6443F4]/20 text-[#6443F4]"
-                    : "bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#6443F4]/20 group-hover:text-[#6443F4]"
-                )}>
+                <span
+                  className={cn(
+                    "flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all",
+                    isActive
+                      ? "bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
+                      : isPast
+                        ? "bg-[#6443F4]/20 text-[#6443F4]"
+                        : "bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#6443F4]/20 group-hover:text-[#6443F4]"
+                  )}
+                >
                   {index + 1}
                 </span>
                 <span className="truncate">{section.heading}</span>
@@ -462,7 +514,13 @@ function TableOfContents({
   );
 }
 
-function HolidaysSection({ countryCode, destinationName }: { countryCode: string; destinationName: string }) {
+function HolidaysSection({
+  countryCode,
+  destinationName,
+}: {
+  countryCode: string;
+  destinationName: string;
+}) {
   const { data: holidays, isLoading } = useQuery<Holiday[]>({
     queryKey: ["/api/public/holidays", countryCode],
     queryFn: async () => {
@@ -491,8 +549,8 @@ function HolidaysSection({ countryCode, destinationName }: { countryCode: string
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {holidays.map((holiday, index) => (
-              <div 
-                key={`${holiday.id || holiday.date}-${index}`} 
+              <div
+                key={`${holiday.id || holiday.date}-${index}`}
                 className="flex items-center gap-3 p-3 bg-white/70 dark:bg-white/10 rounded-lg border border-amber-100 dark:border-amber-700/50"
               >
                 <div className="flex-shrink-0 w-12 h-12 bg-amber-100 dark:bg-amber-800/50 rounded-lg flex flex-col items-center justify-center">
@@ -504,9 +562,13 @@ function HolidaysSection({ countryCode, destinationName }: { countryCode: string
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-slate-900 dark:text-white truncate">{holiday.name}</h4>
+                  <h4 className="font-medium text-slate-900 dark:text-white truncate">
+                    {holiday.name}
+                  </h4>
                   {holiday.localName && holiday.localName !== holiday.name && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400 truncate">{holiday.localName}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                      {holiday.localName}
+                    </p>
                   )}
                 </div>
                 {holiday.type && (
@@ -538,14 +600,14 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
         <CardContent>
           <div className="space-y-4" itemScope itemType="https://schema.org/FAQPage">
             {faqs.map((faq, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-white dark:bg-white/5 rounded-lg p-4 border border-slate-100 dark:border-white/10 shadow-sm"
                 itemScope
                 itemProp="mainEntity"
                 itemType="https://schema.org/Question"
               >
-                <h3 
+                <h3
                   className="font-semibold text-slate-900 dark:text-white mb-2 flex items-start gap-2"
                   itemProp="name"
                 >
@@ -554,12 +616,8 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
                   </span>
                   {faq.question}
                 </h3>
-                <div 
-                  itemScope 
-                  itemProp="acceptedAnswer" 
-                  itemType="https://schema.org/Answer"
-                >
-                  <p 
+                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <p
                     className="text-slate-600 dark:text-slate-300 leading-relaxed pl-8"
                     itemProp="text"
                   >
@@ -575,7 +633,13 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
   );
 }
 
-function QuickFactsSection({ quickFacts, destinationName }: { quickFacts: Record<string, string>; destinationName: string }) {
+function QuickFactsSection({
+  quickFacts,
+  destinationName,
+}: {
+  quickFacts: Record<string, string>;
+  destinationName: string;
+}) {
   if (!quickFacts || Object.keys(quickFacts).length === 0) return null;
 
   const factIcons: Record<string, React.ReactNode> = {
@@ -601,7 +665,7 @@ function QuickFactsSection({ quickFacts, destinationName }: { quickFacts: Record
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {Object.entries(quickFacts).map(([key, value]) => (
-              <div 
+              <div
                 key={key}
                 className="bg-white/80 dark:bg-white/5 rounded-lg p-3 border border-[#6443F4]/10"
               >
@@ -621,21 +685,24 @@ function QuickFactsSection({ quickFacts, destinationName }: { quickFacts: Record
   );
 }
 
-function BestTimeToVisitSection({ 
-  bestTimeToVisit, 
-  destinationName 
-}: { 
-  bestTimeToVisit: BestTimeToVisit; 
+function BestTimeToVisitSection({
+  bestTimeToVisit,
+  destinationName,
+}: {
+  bestTimeToVisit: BestTimeToVisit;
   destinationName: string;
 }) {
   if (!bestTimeToVisit) return null;
 
   const getRatingColor = (rating: string) => {
     const r = rating.toLowerCase();
-    if (r === 'excellent' || r === 'best') return 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800';
-    if (r === 'good') return 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
-    if (r === 'fair' || r === 'average') return 'bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800';
-    return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700';
+    if (r === "excellent" || r === "best")
+      return "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800";
+    if (r === "good")
+      return "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800";
+    if (r === "fair" || r === "average")
+      return "bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800";
+    return "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700";
   };
 
   return (
@@ -655,12 +722,14 @@ function BestTimeToVisitSection({
           )}
           {bestTimeToVisit.months && bestTimeToVisit.months.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {bestTimeToVisit.months.map((month) => (
-                <div 
+              {bestTimeToVisit.months.map(month => (
+                <div
                   key={month.month}
                   className="bg-white/80 dark:bg-white/10 rounded-lg p-3 border border-amber-100 dark:border-amber-700/50"
                 >
-                  <div className="font-semibold text-slate-900 dark:text-white mb-1">{month.month}</div>
+                  <div className="font-semibold text-slate-900 dark:text-white mb-1">
+                    {month.month}
+                  </div>
                   <Badge className={cn("text-xs mb-2", getRatingColor(month.rating))}>
                     {month.rating}
                   </Badge>
@@ -677,7 +746,15 @@ function BestTimeToVisitSection({
   );
 }
 
-function AffiliateCTA({ destinationName, destinationSlug, localePath }: { destinationName: string; destinationSlug: string; localePath: (path: string) => string }) {
+function AffiliateCTA({
+  destinationName,
+  destinationSlug,
+  localePath,
+}: {
+  destinationName: string;
+  destinationSlug: string;
+  localePath: (path: string) => string;
+}) {
   return (
     <AnimatedSection className="mb-12" data-testid="section-cta">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -693,8 +770,8 @@ function AffiliateCTA({ destinationName, destinationSlug, localePath }: { destin
                   Compare prices from 100+ booking sites and find the best deals.
                 </p>
                 <Link href={localePath(`/destinations/${destinationSlug}/hotels`)}>
-                  <Button 
-                    variant="secondary" 
+                  <Button
+                    variant="secondary"
                     className="bg-white text-[#6443F4] hover:bg-white/90"
                     data-testid="cta-hotels"
                   >
@@ -718,8 +795,8 @@ function AffiliateCTA({ destinationName, destinationSlug, localePath }: { destin
                   Skip-the-line tickets and guided tours for top attractions.
                 </p>
                 <Link href={localePath(`/destinations/${destinationSlug}`)}>
-                  <Button 
-                    variant="secondary" 
+                  <Button
+                    variant="secondary"
                     className="bg-white text-[#E84C9A] hover:bg-white/90"
                     data-testid="cta-attractions"
                   >
@@ -735,16 +812,16 @@ function AffiliateCTA({ destinationName, destinationSlug, localePath }: { destin
   );
 }
 
-function LanguageSelector({ 
-  availableLocales, 
-  currentLocale, 
-  onLocaleChange 
-}: { 
-  availableLocales: string[]; 
-  currentLocale: string; 
+function LanguageSelector({
+  availableLocales,
+  currentLocale,
+  onLocaleChange,
+}: {
+  availableLocales: string[];
+  currentLocale: string;
   onLocaleChange: (locale: string) => void;
 }) {
-  const availableLanguages = SUPPORTED_LANGUAGES.filter(lang => 
+  const availableLanguages = SUPPORTED_LANGUAGES.filter(lang =>
     availableLocales.includes(lang.code)
   );
 
@@ -754,7 +831,10 @@ function LanguageSelector({
     <div className="flex items-center gap-2">
       <Languages className="h-4 w-4 text-slate-500 dark:text-slate-400" />
       <Select value={currentLocale} onValueChange={onLocaleChange}>
-        <SelectTrigger className="w-[160px] bg-white/90 dark:bg-white/10 backdrop-blur-sm border-slate-200 dark:border-white/20" data-testid="language-selector">
+        <SelectTrigger
+          className="w-[160px] bg-white/90 dark:bg-white/10 backdrop-blur-sm border-slate-200 dark:border-white/20"
+          data-testid="language-selector"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -809,7 +889,11 @@ export default function GuideDetailPage() {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-  const { data: guide, isLoading, error } = useQuery<GuideDetail>({
+  const {
+    data: guide,
+    isLoading,
+    error,
+  } = useQuery<GuideDetail>({
     queryKey: ["/api/public/guides", slug, locale],
     queryFn: async () => {
       const response = await fetch(`/api/public/guides/${slug}?locale=${locale}`);
@@ -823,7 +907,20 @@ export default function GuideDetailPage() {
     const contentToDisplay = guide?.rewrittenContent || guide?.originalContent;
     if (!contentToDisplay) return null;
     return DOMPurify.sanitize(contentToDisplay, {
-      ADD_TAGS: ["iframe", "figure", "figcaption", "table", "thead", "tbody", "tr", "th", "td", "dl", "dt", "dd"],
+      ADD_TAGS: [
+        "iframe",
+        "figure",
+        "figcaption",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "dl",
+        "dt",
+        "dd",
+      ],
       ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "class"],
     });
   }, [guide?.originalContent, guide?.rewrittenContent]);
@@ -854,8 +951,8 @@ export default function GuideDetailPage() {
     if (!contentRef.current) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
           }
@@ -865,7 +962,7 @@ export default function GuideDetailPage() {
     );
 
     const sections = contentRef.current.querySelectorAll("[id]");
-    sections.forEach((section) => observer.observe(section));
+    sections.forEach(section => observer.observe(section));
 
     return () => observer.disconnect();
   }, [guide?.sections]);
@@ -882,7 +979,10 @@ export default function GuideDetailPage() {
   }, []);
 
   const seoTitle = guide?.seo?.metaTitle || guide?.title || `${destinationName} Travel Guide`;
-  const seoDescription = guide?.seo?.metaDescription || guide?.summary || `Complete travel guide to ${destinationName}. Everything you need to know about visiting ${destinationName}.`;
+  const seoDescription =
+    guide?.seo?.metaDescription ||
+    guide?.summary ||
+    `Complete travel guide to ${destinationName}. Everything you need to know about visiting ${destinationName}.`;
 
   const schemaOrg = guide?.schemaOrg || {
     "@context": "https://schema.org",
@@ -902,18 +1002,21 @@ export default function GuideDetailPage() {
     },
   };
 
-  const faqSchema = guide?.faqs && guide.faqs.length > 0 ? {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: guide.faqs.map(faq => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  } : null;
+  const faqSchema =
+    guide?.faqs && guide.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: guide.faqs.map(faq => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
 
   const sectionsCount = guide?.sections?.length || 0;
 
@@ -923,7 +1026,9 @@ export default function GuideDetailPage() {
         <PublicNav />
         <main className="min-h-screen pt-32 pb-16 px-6 bg-white dark:bg-[#0B0A1F]">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Guide Not Found</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+              Guide Not Found
+            </h1>
             <p className="text-slate-600 dark:text-slate-400 mb-8">
               Sorry, we couldn't find a travel guide for this destination.
             </p>
@@ -943,7 +1048,7 @@ export default function GuideDetailPage() {
   return (
     <>
       <ReadingProgressBar />
-      
+
       <SEOHead
         title={seoTitle}
         description={seoDescription}
@@ -951,25 +1056,29 @@ export default function GuideDetailPage() {
         ogImage={heroImage}
       />
       <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(schemaOrg)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
               { "@type": "ListItem", position: 1, name: "Home", item: "https://travi.world" },
-              { "@type": "ListItem", position: 2, name: "Travel Guides", item: "https://travi.world/guides" },
-              { "@type": "ListItem", position: 3, name: seoTitle, item: `https://travi.world/guides/${slug}` },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Travel Guides",
+                item: "https://travi.world/guides",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: seoTitle,
+                item: `https://travi.world/guides/${slug}`,
+              },
             ],
           })}
         </script>
-        {faqSchema && (
-          <script type="application/ld+json">
-            {JSON.stringify(faqSchema)}
-          </script>
-        )}
+        {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
       </Helmet>
 
       <PublicNav />
@@ -978,7 +1087,9 @@ export default function GuideDetailPage() {
         <CinematicHero
           heroImage={heroImage}
           title={guide?.title || `${destinationName} Travel Guide`}
-          summary={guide?.summary || `Everything you need to know about visiting ${destinationName}`}
+          summary={
+            guide?.summary || `Everything you need to know about visiting ${destinationName}`
+          }
           sectionsCount={sectionsCount}
           lastUpdated={guide?.lastFetched}
           availableLocales={guide?.availableLocales}
@@ -1001,8 +1112,8 @@ export default function GuideDetailPage() {
           <div className="flex gap-8">
             <aside className="hidden lg:block w-72 flex-shrink-0">
               {guide?.sections && guide.sections.length > 0 && (
-                <TableOfContents 
-                  sections={guide.sections} 
+                <TableOfContents
+                  sections={guide.sections}
                   activeSection={activeSection}
                   scrollProgress={scrollProgress}
                 />
@@ -1024,22 +1135,32 @@ export default function GuideDetailPage() {
               ) : (
                 <>
                   {guide?.quickFacts && (
-                    <QuickFactsSection quickFacts={guide.quickFacts} destinationName={destinationName} />
+                    <QuickFactsSection
+                      quickFacts={guide.quickFacts}
+                      destinationName={destinationName}
+                    />
                   )}
 
                   {guide?.bestTimeToVisit && (
-                    <BestTimeToVisitSection bestTimeToVisit={guide.bestTimeToVisit} destinationName={destinationName} />
+                    <BestTimeToVisitSection
+                      bestTimeToVisit={guide.bestTimeToVisit}
+                      destinationName={destinationName}
+                    />
                   )}
 
                   {!guide?.bestTimeToVisit && countryCode && (
                     <HolidaysSection countryCode={countryCode} destinationName={destinationName} />
                   )}
 
-                  <AffiliateCTA destinationName={destinationName} destinationSlug={destinationId} localePath={localePath} />
+                  <AffiliateCTA
+                    destinationName={destinationName}
+                    destinationSlug={destinationId}
+                    localePath={localePath}
+                  />
 
                   {sanitizedOriginalContent ? (
                     <AnimatedSection className="mb-12" data-testid="section-original-content">
-                      <div 
+                      <div
                         className="prose prose-slate prose-lg max-w-none dark:prose-invert
                           prose-headings:font-semibold prose-headings:text-slate-800 dark:prose-headings:text-white
                           prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
@@ -1069,9 +1190,9 @@ export default function GuideDetailPage() {
                     <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
                       <p className="text-sm text-slate-500 dark:text-slate-400">
                         Guide content sourced from{" "}
-                        <a 
-                          href={guide.sourceUrl} 
-                          target="_blank" 
+                        <a
+                          href={guide.sourceUrl}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-[#6443F4] hover:underline"
                         >

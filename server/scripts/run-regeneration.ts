@@ -2,7 +2,7 @@
 /**
  * Standalone Content Regeneration Worker
  * Runs independently of the Vite dev server to avoid hot reload interruptions
- * 
+ *
  * Usage: npx tsx server/scripts/run-regeneration.ts
  */
 
@@ -32,12 +32,12 @@ async function saveContentToDatabase(
   qualityScore: QualityScore
 ): Promise<boolean> {
   if (qualityScore.overallScore < QUALITY_THRESHOLD) {
-    console.warn(`[Worker] BLOCKED: Cannot save content for ${attractionId} - score ${qualityScore.overallScore} below threshold ${QUALITY_THRESHOLD}`);
     return false;
   }
 
   try {
-    await db.update(tiqetsAttractions)
+    await db
+      .update(tiqetsAttractions)
       .set({
         aiContent: {
           introduction: content.introduction,
@@ -60,39 +60,24 @@ async function saveContentToDatabase(
         lastContentUpdate: new Date(),
       } as any)
       .where(eq(tiqetsAttractions.id, attractionId));
-    
+
     return true;
   } catch (error) {
-    console.error(`[Worker] Failed to save content for ${attractionId}:`, error);
     return false;
   }
 }
 
 async function main() {
-  console.log("=".repeat(60));
-  console.log("[Worker] Standalone Content Regeneration Worker");
-  console.log("=".repeat(60));
-  
   const stats = EngineRegistry.getStats();
-  console.log(`[Worker] Engines: ${stats.healthy}/${stats.total} healthy`);
-  console.log(`[Worker] By provider:`, stats.byProvider);
-  console.log("");
 
-  const attractions = await db.select()
+  const attractions = await db
+    .select()
     .from(tiqetsAttractions)
     .where(eq(tiqetsAttractions.status, "ready"));
-  
-  const filtered = attractions.filter(a => 
-    !a.qualityScore || a.qualityScore < QUALITY_THRESHOLD
-  );
-  
-  console.log(`[Worker] Total ready attractions: ${attractions.length}`);
-  console.log(`[Worker] Already passed (score >= ${QUALITY_THRESHOLD}): ${attractions.length - filtered.length}`);
-  console.log(`[Worker] Remaining to process: ${filtered.length}`);
-  console.log("");
+
+  const filtered = attractions.filter(a => !a.qualityScore || a.qualityScore < QUALITY_THRESHOLD);
 
   if (filtered.length === 0) {
-    console.log("[Worker] All attractions already processed!");
     process.exit(0);
   }
 
@@ -108,23 +93,21 @@ async function main() {
     const end = Math.min(start + BATCH_SIZE, filtered.length);
     const batch = filtered.slice(start, end);
 
-    console.log(`[Worker] Batch ${batchIndex + 1}/${totalBatches} (${batch.length} attractions)`);
-
     const results = await Promise.allSettled(
-      batch.map(async (attraction) => {
+      batch.map(async attraction => {
         try {
           const result = await generateWithRetry(attraction, 2);
-          
+
           if (result && result.qualityScore.passed) {
             const saved = await saveContentToDatabase(
               attraction.id,
               result.content,
               result.qualityScore
             );
-            
+
             if (saved) {
               passed++;
-              console.log(`[Worker] ✅ ${attraction.title} - Score: ${result.qualityScore.overallScore}`);
+
               return { success: true };
             } else {
               errors++;
@@ -132,16 +115,16 @@ async function main() {
             }
           } else if (result) {
             failed++;
-            console.log(`[Worker] ⚠️ ${attraction.title} - Score: ${result.qualityScore.overallScore} (below ${QUALITY_THRESHOLD})`);
+
             return { success: false, reason: "quality_failed" };
           } else {
             errors++;
-            console.log(`[Worker] ❌ ${attraction.title} - Generation failed`);
+
             return { success: false, reason: "generation_failed" };
           }
         } catch (error) {
           errors++;
-          console.error(`[Worker] Error: ${attraction.title}:`, error);
+
           return { success: false, reason: "exception" };
         }
       })
@@ -153,26 +136,12 @@ async function main() {
     const remaining = filtered.length - processed;
     const eta = remaining / rate;
 
-    console.log(`[Worker] Progress: ${Math.min(processed, filtered.length)}/${filtered.length} | ` +
-      `Passed: ${passed} | Failed: ${failed} | Errors: ${errors} | ` +
-      `ETA: ${Math.round(eta / 60)} min`);
-    console.log("");
-
     await new Promise(r => setTimeout(r, 1000));
   }
-
-  console.log("=".repeat(60));
-  console.log("[Worker] Job Complete!");
-  console.log(`[Worker] Passed: ${passed}`);
-  console.log(`[Worker] Failed: ${failed}`);
-  console.log(`[Worker] Errors: ${errors}`);
-  console.log(`[Worker] Duration: ${Math.round((Date.now() - startTime) / 1000 / 60)} minutes`);
-  console.log("=".repeat(60));
 
   process.exit(0);
 }
 
-main().catch((err) => {
-  console.error("[Worker] Fatal error:", err);
+main().catch(err => {
   process.exit(1);
 });

@@ -66,6 +66,23 @@ const EVENT_SEVERITY: Record<SecurityEventType, SeverityLevel> = {
   approval_denied: "medium",
   approval_escalated: "high",
   approval_expired: "medium",
+  // Security system events
+  THREAT_PROPAGATED: "critical",
+  HIGH_RISK_USER_DETECTED: "high",
+  MANUAL_THREAT_RESPONSE: "high",
+  APPROVAL_SAFETY_CHECK: "medium",
+  AUTONOMY_OVERRIDE: "high",
+  EVIDENCE_BUNDLE_GENERATED: "low",
+  BASELINE_CAPTURED: "low",
+  CRITICAL_DRIFT_DETECTED: "critical",
+  SECURITY_GATE_BLOCK: "high",
+  SECURITY_OS_INITIALIZED: "medium",
+  SECURITY_MODE_CHANGE: "high",
+  AUTO_MODE_ESCALATION: "high",
+  OVERRIDE_GRANTED: "high",
+  OVERRIDE_USED: "medium",
+  OVERRIDE_REVOKED: "medium",
+  EXFILTRATION_BLOCKED: "critical",
 };
 
 // ============================================================================
@@ -325,7 +342,7 @@ class SecurityEventLogger {
         await this.persistEvent(event);
       }
     } catch (error) {
-      console.error("[SecurityLogger] Error flushing events:", error);
+      
       // Re-add failed events to buffer for retry
       this.eventBuffer.unshift(...eventsToFlush);
     }
@@ -398,7 +415,7 @@ class SecurityEventLogger {
    */
   private startFlushTimer(): void {
     this.flushTimer = setInterval(() => {
-      this.flush().catch(console.error);
+      this.flush().catch(() => {});
     }, this.FLUSH_INTERVAL);
   }
 
@@ -470,8 +487,47 @@ export const securityLogger = new SecurityEventLogger();
 // Convenience functions
 export const logAuthEvent = securityLogger.logAuth.bind(securityLogger);
 export const logAuthzEvent = securityLogger.logAuthz.bind(securityLogger);
-export const logDataAccessEvent = securityLogger.logDataAccess.bind(securityLogger);
-export const logAdminEvent = securityLogger.logAdmin.bind(securityLogger);
+// Legacy signature support for logDataAccessEvent
+export function logDataAccessEvent(
+  userIdOrParams: string | Parameters<typeof securityLogger.logDataAccess>[0],
+  operation?: string,
+  resourceType?: string,
+  details?: string,
+  metadata?: Record<string, unknown>
+) {
+  if (typeof userIdOrParams === 'object') {
+    return securityLogger.logDataAccess(userIdOrParams);
+  }
+  // Legacy call - convert to new signature
+  return securityLogger.logDataAccess({
+    userId: userIdOrParams,
+    eventType: "data_accessed",
+    resource: (resourceType as Resource) || "content",
+    action: "view",
+    details: details || operation || '',
+    metadata: metadata,
+  });
+}
+// Legacy 5-argument signature support: logAdminEvent(userId, eventType, resource, details, metadata)
+export function logAdminEvent(
+  userIdOrParams: string | Parameters<typeof securityLogger.logAdmin>[0],
+  eventType?: SecurityEventType,
+  resource?: Resource,
+  details?: string,
+  metadata?: Record<string, unknown>
+) {
+  if (typeof userIdOrParams === 'object') {
+    return securityLogger.logAdmin(userIdOrParams);
+  }
+  // Legacy call - convert to new signature
+  return securityLogger.logAdmin({
+    userId: userIdOrParams,
+    eventType: eventType!,
+    resource: resource,
+    details: details || '',
+    metadata: metadata,
+  });
+}
 export const logApprovalEvent = securityLogger.logApproval.bind(securityLogger);
 
-console.log("[Governance] Security Logger loaded");
+

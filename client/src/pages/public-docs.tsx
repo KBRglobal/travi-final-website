@@ -24,7 +24,7 @@ import {
   Copy,
   Check,
   Home,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 import { SEOHead } from "@/components/seo-head";
 import { Button } from "@/components/ui/button";
@@ -44,7 +44,7 @@ const docsStructure = {
       { title: "Troubleshooting", path: "getting-started/troubleshooting" },
     ],
   },
-  "Architecture": {
+  Architecture: {
     icon: Code,
     items: [
       { title: "Overview", path: "architecture/overview" },
@@ -61,7 +61,7 @@ const docsStructure = {
       { title: "Errors", path: "api/errors" },
     ],
   },
-  "Database": {
+  Database: {
     icon: Database,
     items: [
       { title: "Schema", path: "database/schema" },
@@ -69,13 +69,11 @@ const docsStructure = {
       { title: "Backup & Restore", path: "database/backup-restore" },
     ],
   },
-  "Security": {
+  Security: {
     icon: Shield,
-    items: [
-      { title: "Overview", path: "SECURITY" },
-    ],
+    items: [{ title: "Overview", path: "SECURITY" }],
   },
-  "Features": {
+  Features: {
     icon: Puzzle,
     items: [
       { title: "Content Management", path: "features/contents-management" },
@@ -85,7 +83,7 @@ const docsStructure = {
       { title: "User Roles", path: "features/user-roles" },
     ],
   },
-  "Integrations": {
+  Integrations: {
     icon: Settings,
     items: [
       { title: "Integration Guide", path: "INTEGRATION" },
@@ -95,7 +93,7 @@ const docsStructure = {
       { title: "RSS Feeds", path: "integrations/rss-feeds" },
     ],
   },
-  "Development": {
+  Development: {
     icon: Code,
     items: [
       { title: "Setup", path: "development/setup" },
@@ -106,11 +104,9 @@ const docsStructure = {
   },
   "Brand & Design": {
     icon: Palette,
-    items: [
-      { title: "Brand Guidelines", path: "BRAND" },
-    ],
+    items: [{ title: "Brand Guidelines", path: "BRAND" }],
   },
-  "Contributing": {
+  Contributing: {
     icon: Users,
     items: [
       { title: "How to Contribute", path: "CONTRIBUTING" },
@@ -303,7 +299,7 @@ function Sidebar({
   expandedSections,
   toggleSection,
   isMobileOpen,
-  setMobileOpen
+  setMobileOpen,
 }: {
   currentPath: string;
   searchQuery: string;
@@ -314,23 +310,27 @@ function Sidebar({
   setMobileOpen: (open: boolean) => void;
 }) {
   const { localePath } = useLocale();
-  const filteredStructure = Object.entries(docsStructure).reduce((acc, [section, data]) => {
-    if (!searchQuery) {
-      acc[section] = data;
+  const filteredStructure = Object.entries(docsStructure).reduce(
+    (acc, [section, data]) => {
+      if (!searchQuery) {
+        acc[section] = data;
+        return acc;
+      }
+
+      const filteredItems = data.items.filter(
+        item =>
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.path.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      if (filteredItems.length > 0) {
+        acc[section] = { ...data, items: filteredItems };
+      }
+
       return acc;
-    }
-
-    const filteredItems = data.items.filter(item =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.path.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    if (filteredItems.length > 0) {
-      acc[section] = { ...data, items: filteredItems };
-    }
-
-    return acc;
-  }, {} as Record<string, NavSection>);
+    },
+    {} as Record<string, NavSection>
+  );
 
   return (
     <>
@@ -343,11 +343,13 @@ function Sidebar({
       )}
 
       {/* Sidebar */}
-      <aside className={cn(
-        "fixed top-0 left-0 h-full w-72 bg-white border-r border-gray-200 z-50 transition-transform duration-200",
-        "lg:translate-x-0 lg:z-30",
-        isMobileOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <aside
+        className={cn(
+          "fixed top-0 left-0 h-full w-72 bg-white border-r border-gray-200 z-50 transition-transform duration-200",
+          "lg:translate-x-0 lg:z-30",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
         {/* Header */}
         <div className="h-16 border-b border-gray-200 flex items-center justify-between px-4">
           <Link href={localePath("/")} className="flex items-center gap-2">
@@ -372,7 +374,7 @@ function Sidebar({
               placeholder="Search docs..."
               className="pl-9"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
@@ -403,7 +405,7 @@ function Sidebar({
 
                   {isExpanded && (
                     <div className="ml-6 mt-1 space-y-1">
-                      {data.items.map((item) => {
+                      {data.items.map(item => {
                         const isActive = currentPath === item.path;
                         return (
                           <Link
@@ -447,7 +449,7 @@ function DocContent({ path }: { path: string }) {
 
       try {
         // Try to fetch the markdown file
-        const docPath = path.endsWith('.md') ? path : `${path}.md`;
+        const docPath = path.endsWith(".md") ? path : `${path}.md`;
         const response = await fetch(`/docs/${docPath}`);
 
         if (!response.ok) {
@@ -459,7 +461,6 @@ function DocContent({ path }: { path: string }) {
         setContent(html as string);
       } catch (err) {
         setError("Could not load document");
-        console.error("Error loading doc:", err);
       } finally {
         setLoading(false);
       }
@@ -512,7 +513,9 @@ export default function PublicDocs() {
   const { ["path*"]: path = "" } = params ?? {};
   const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["Getting Started"]));
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(["Getting Started"])
+  );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const currentPath = path || "README";
@@ -548,11 +551,7 @@ export default function PublicDocs() {
 
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-30 flex items-center justify-between px-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setMobileMenuOpen(true)}
-        >
+        <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
           <Menu className="h-5 w-5" />
         </Button>
         <Link href={localePath("/")} className="flex items-center gap-2">
@@ -582,9 +581,13 @@ export default function PublicDocs() {
               <Home className="h-4 w-4" />
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <Link href={localePath("/docs")} className="hover:text-gray-700">Docs</Link>
+            <Link href={localePath("/docs")} className="hover:text-gray-700">
+              Docs
+            </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="text-gray-900">{currentPath.split('/').pop()?.replace('.md', '')}</span>
+            <span className="text-gray-900">
+              {currentPath.split("/").pop()?.replace(".md", "")}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -612,7 +615,9 @@ export default function PublicDocs() {
                   {prevDoc.title}
                 </Button>
               </Link>
-            ) : <div />}
+            ) : (
+              <div />
+            )}
 
             {nextDoc && (
               <Link href={localePath(`/docs/${nextDoc.path}`)}>

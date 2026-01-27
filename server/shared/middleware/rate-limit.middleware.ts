@@ -2,20 +2,21 @@
  * Foundation Rate Limiting Middleware
  * Phase 1: Safety guards for system endpoints
  *
- * All rate limiters are DISABLED by default.
- * Enable via environment variables:
- * - ENABLE_FOUNDATION_RATE_LIMIT=true (master switch)
+ * Rate limiters are ENABLED by default for security.
+ * Disable via environment variables:
+ * - ENABLE_FOUNDATION_RATE_LIMIT=false (master switch to disable)
  * - FOUNDATION_DIAGNOSTICS_RATE_LIMIT=10 (requests per minute)
  */
 
-import type { Request, Response, NextFunction, RequestHandler } from 'express';
+import type { Request, Response, NextFunction, RequestHandler } from "express";
 
 // ============================================================================
 // Configuration
 // ============================================================================
 
-const ENABLE_RATE_LIMIT = process.env.ENABLE_FOUNDATION_RATE_LIMIT === 'true';
-const DIAGNOSTICS_LIMIT = parseInt(process.env.FOUNDATION_DIAGNOSTICS_RATE_LIMIT || '10', 10);
+// SECURITY: Rate limiting enabled by default - set to 'false' to disable
+const ENABLE_RATE_LIMIT = process.env.ENABLE_FOUNDATION_RATE_LIMIT !== "false";
+const DIAGNOSTICS_LIMIT = parseInt(process.env.FOUNDATION_DIAGNOSTICS_RATE_LIMIT || "10", 10);
 const DIAGNOSTICS_WINDOW_MS = 60 * 1000; // 1 minute
 
 // ============================================================================
@@ -42,7 +43,7 @@ function cleanupExpired(): void {
 }
 
 // Cleanup every 5 minutes - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
   setInterval(cleanupExpired, 5 * 60 * 1000);
 }
 
@@ -51,10 +52,12 @@ if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEP
  */
 function getClientId(req: Request): string {
   // Use X-Forwarded-For if behind proxy, otherwise use IP
-  const forwarded = req.headers['x-forwarded-for'];
+  const forwarded = req.headers["x-forwarded-for"];
   const ip = forwarded
-    ? (Array.isArray(forwarded) ? forwarded[0] : forwarded.split(',')[0])
-    : req.ip || req.socket?.remoteAddress || 'unknown';
+    ? Array.isArray(forwarded)
+      ? forwarded[0]
+      : forwarded.split(",")[0]
+    : req.ip || req.socket?.remoteAddress || "unknown";
   return ip.trim();
 }
 
@@ -106,9 +109,9 @@ export function createRateLimiter(options: RateLimitOptions): RequestHandler {
       rateLimitStore.set(key, entry);
 
       // Set rate limit headers
-      res.setHeader('X-RateLimit-Limit', options.limit);
-      res.setHeader('X-RateLimit-Remaining', options.limit - 1);
-      res.setHeader('X-RateLimit-Reset', Math.ceil(entry.resetAt / 1000));
+      res.setHeader("X-RateLimit-Limit", options.limit);
+      res.setHeader("X-RateLimit-Remaining", options.limit - 1);
+      res.setHeader("X-RateLimit-Reset", Math.ceil(entry.resetAt / 1000));
 
       next();
       return;
@@ -118,15 +121,15 @@ export function createRateLimiter(options: RateLimitOptions): RequestHandler {
     entry.count++;
 
     // Set rate limit headers
-    res.setHeader('X-RateLimit-Limit', options.limit);
-    res.setHeader('X-RateLimit-Remaining', Math.max(0, options.limit - entry.count));
-    res.setHeader('X-RateLimit-Reset', Math.ceil(entry.resetAt / 1000));
+    res.setHeader("X-RateLimit-Limit", options.limit);
+    res.setHeader("X-RateLimit-Remaining", Math.max(0, options.limit - entry.count));
+    res.setHeader("X-RateLimit-Reset", Math.ceil(entry.resetAt / 1000));
 
     // Check if limit exceeded
     if (entry.count > options.limit) {
       res.status(429).json({
-        error: 'RATE_LIMIT_EXCEEDED',
-        message: 'Too many requests, please try again later',
+        error: "RATE_LIMIT_EXCEEDED",
+        message: "Too many requests, please try again later",
         retryAfter: Math.ceil((entry.resetAt - now) / 1000),
       });
       return;
@@ -148,7 +151,7 @@ export function createRateLimiter(options: RateLimitOptions): RequestHandler {
 export const diagnosticsRateLimiter = createRateLimiter({
   limit: DIAGNOSTICS_LIMIT,
   windowMs: DIAGNOSTICS_WINDOW_MS,
-  keyPrefix: 'foundation:diagnostics',
+  keyPrefix: "foundation:diagnostics",
 });
 
 /**
@@ -159,7 +162,7 @@ export const diagnosticsRateLimiter = createRateLimiter({
 export const healthRateLimiter = createRateLimiter({
   limit: 60,
   windowMs: 60 * 1000,
-  keyPrefix: 'foundation:health',
+  keyPrefix: "foundation:health",
 });
 
 /**
@@ -170,7 +173,58 @@ export const healthRateLimiter = createRateLimiter({
 export const configRateLimiter = createRateLimiter({
   limit: 30,
   windowMs: 60 * 1000,
-  keyPrefix: 'foundation:config',
+  keyPrefix: "foundation:config",
+});
+
+// ============================================================================
+// General API Rate Limiters
+// ============================================================================
+
+/**
+ * Rate limiter for general API endpoints
+ * Default: 100 requests per minute per IP
+ */
+export const apiRateLimiter = createRateLimiter({
+  limit: parseInt(process.env.API_RATE_LIMIT || "100", 10),
+  windowMs: 60 * 1000,
+  keyPrefix: "api:general",
+  skip: req => {
+    // Skip rate limiting for internal health checks
+    if (req.path.includes("/health")) return true;
+    // Skip for authenticated admin users (they have their own limits)
+    if (req.headers["x-admin-token"]) return true;
+    return false;
+  },
+});
+
+/**
+ * Strict rate limiter for authentication endpoints
+ * Default: 10 requests per minute per IP (prevent brute force)
+ */
+export const authRateLimiter = createRateLimiter({
+  limit: parseInt(process.env.AUTH_RATE_LIMIT || "10", 10),
+  windowMs: 60 * 1000,
+  keyPrefix: "api:auth",
+});
+
+/**
+ * Rate limiter for AI/expensive operations
+ * Default: 20 requests per minute per IP
+ */
+export const aiRateLimiter = createRateLimiter({
+  limit: parseInt(process.env.AI_RATE_LIMIT || "20", 10),
+  windowMs: 60 * 1000,
+  keyPrefix: "api:ai",
+});
+
+/**
+ * Rate limiter for webhook endpoints
+ * Default: 50 requests per minute per IP
+ */
+export const webhookRateLimiter = createRateLimiter({
+  limit: parseInt(process.env.WEBHOOK_RATE_LIMIT || "50", 10),
+  windowMs: 60 * 1000,
+  keyPrefix: "api:webhook",
 });
 
 // ============================================================================

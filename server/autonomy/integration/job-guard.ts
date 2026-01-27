@@ -3,7 +3,7 @@
  * Integration with background job processing for policy enforcement
  */
 
-import { guardJobExecution, JobBlockResult, DEFAULT_ENFORCEMENT_CONFIG } from '../enforcement';
+import { guardJobExecution, JobBlockResult, DEFAULT_ENFORCEMENT_CONFIG } from "../enforcement";
 
 // Blocked job tracking for retry
 interface BlockedJobRecord {
@@ -65,7 +65,10 @@ export function createGuardedJobExecutor<T>(
     getLocale?: (data: T) => string | undefined;
     onBlocked?: (data: T, result: JobBlockResult) => Promise<void>;
   }
-): (jobId: string, data: T) => Promise<{ executed: boolean; result?: unknown; blockReason?: string }> {
+): (
+  jobId: string,
+  data: T
+) => Promise<{ executed: boolean; result?: unknown; blockReason?: string }> {
   return async (jobId: string, data: T) => {
     const checkResult = await shouldExecuteJob(jobId, jobType, {
       entityId: options?.getEntityId?.(data),
@@ -78,13 +81,6 @@ export function createGuardedJobExecutor<T>(
         await options.onBlocked(data, checkResult);
       }
 
-      console.warn('[JobGuard] Job blocked:', {
-        jobId,
-        jobType,
-        reason: checkResult.reason,
-        rescheduleAfterMs: checkResult.rescheduleAfterMs,
-      });
-
       return {
         executed: false,
         blockReason: checkResult.reason,
@@ -95,7 +91,6 @@ export function createGuardedJobExecutor<T>(
       const result = await executor(data);
       return { executed: true, result };
     } catch (error) {
-      console.error('[JobGuard] Job execution error:', { jobId, jobType, error });
       throw error;
     }
   };
@@ -105,8 +100,9 @@ export function createGuardedJobExecutor<T>(
  * Get list of blocked jobs
  */
 export function getBlockedJobs(): BlockedJobRecord[] {
-  return Array.from(blockedJobs.values())
-    .sort((a, b) => b.blockedAt.getTime() - a.blockedAt.getTime());
+  return Array.from(blockedJobs.values()).sort(
+    (a, b) => b.blockedAt.getTime() - a.blockedAt.getTime()
+  );
 }
 
 /**
@@ -161,9 +157,8 @@ export function getBlockedJobStats(): {
     totalDuration += Date.now() - job.blockedAt.getTime();
   }
 
-  const oldestBlocked = jobs.length > 0
-    ? new Date(Math.min(...jobs.map(j => j.blockedAt.getTime())))
-    : undefined;
+  const oldestBlocked =
+    jobs.length > 0 ? new Date(Math.min(...jobs.map(j => j.blockedAt.getTime()))) : undefined;
 
   return {
     total: jobs.length,
@@ -185,8 +180,9 @@ function trackBlockedJob(jobId: string, jobType: string, result: JobBlockResult)
   } else {
     // Enforce max size
     if (blockedJobs.size >= MAX_BLOCKED_JOBS) {
-      const oldest = Array.from(blockedJobs.entries())
-        .sort(([, a], [, b]) => a.blockedAt.getTime() - b.blockedAt.getTime())[0];
+      const oldest = Array.from(blockedJobs.entries()).sort(
+        ([, a], [, b]) => a.blockedAt.getTime() - b.blockedAt.getTime()
+      )[0];
       if (oldest) blockedJobs.delete(oldest[0]);
     }
 
@@ -194,7 +190,7 @@ function trackBlockedJob(jobId: string, jobType: string, result: JobBlockResult)
       jobId,
       jobType,
       blockedAt: new Date(),
-      reason: result.reason || 'Policy blocked',
+      reason: result.reason || "Policy blocked",
       rescheduleAfterMs: result.rescheduleAfterMs || 60000,
       retryCount: 0,
     });

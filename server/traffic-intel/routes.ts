@@ -8,25 +8,25 @@
  * Feature-flagged: ENABLE_TRAFFIC_INTELLIGENCE
  */
 
-import { Router, Request, Response, NextFunction } from 'express';
-import { getAttributionStore } from './attribution';
-import { getAIVisibilityTracker } from './ai-visibility';
-import type { TrafficSummary, ContentTrafficStats, TrafficChannel } from './types';
+import { Router, Request, Response, NextFunction } from "express";
+import { getAttributionStore } from "./attribution";
+import { getAIVisibilityTracker } from "./ai-visibility";
+import type { TrafficSummary, ContentTrafficStats, TrafficChannel } from "./types";
 
 // Check if feature is enabled
 function isEnabled(): boolean {
-  return process.env.ENABLE_TRAFFIC_INTELLIGENCE === 'true';
+  return process.env.ENABLE_TRAFFIC_INTELLIGENCE === "true";
 }
 
 // Check if AI visibility tracking is enabled
 function isAIVisibilityEnabled(): boolean {
-  return process.env.ENABLE_AI_VISIBILITY_TRACKING === 'true';
+  return process.env.ENABLE_AI_VISIBILITY_TRACKING === "true";
 }
 
 // Feature flag middleware
 function requireEnabled(req: Request, res: Response, next: NextFunction): void {
   if (!isEnabled()) {
-    res.status(404).json({ error: 'Traffic intelligence feature is disabled' });
+    res.status(404).json({ error: "Traffic intelligence feature is disabled" });
     return;
   }
   next();
@@ -35,7 +35,7 @@ function requireEnabled(req: Request, res: Response, next: NextFunction): void {
 // Require AI visibility feature
 function requireAIVisibility(req: Request, res: Response, next: NextFunction): void {
   if (!isAIVisibilityEnabled()) {
-    res.status(404).json({ error: 'AI visibility tracking is disabled' });
+    res.status(404).json({ error: "AI visibility tracking is disabled" });
     return;
   }
   next();
@@ -51,17 +51,17 @@ export function createTrafficIntelRouter(): Router {
    * GET /api/admin/traffic/summary
    * Returns overall traffic summary
    */
-  router.get('/summary', requireEnabled, (req: Request, res: Response) => {
+  router.get("/summary", requireEnabled, (req: Request, res: Response) => {
     try {
       const store = getAttributionStore();
       const summary = store.getSummary();
       const allData = store.getAggregatedData();
 
       // Calculate date range from data
-      const dates = allData.map((d) => d.date).sort();
+      const dates = allData.map(d => d.date).sort();
       const period = {
-        start: dates[0] || new Date().toISOString().split('T')[0],
-        end: dates[dates.length - 1] || new Date().toISOString().split('T')[0],
+        start: dates[0] || new Date().toISOString().split("T")[0],
+        end: dates[dates.length - 1] || new Date().toISOString().split("T")[0],
       };
 
       // Calculate unique visitors (approximate)
@@ -91,9 +91,10 @@ export function createTrafficIntelRouter(): Router {
 
       // Calculate AI search percentage
       const aiSearchVisits = summary.channelBreakdown.ai_search || 0;
-      const aiSearchPercentage = summary.totalVisits > 0
-        ? Number(((aiSearchVisits / summary.totalVisits) * 100).toFixed(2))
-        : 0;
+      const aiSearchPercentage =
+        summary.totalVisits > 0
+          ? Number(((aiSearchVisits / summary.totalVisits) * 100).toFixed(2))
+          : 0;
 
       const result: TrafficSummary = {
         period,
@@ -107,8 +108,7 @@ export function createTrafficIntelRouter(): Router {
 
       res.json(result);
     } catch (error) {
-      console.error('[TrafficIntel] Error getting summary:', error);
-      res.status(500).json({ error: 'Failed to get traffic summary' });
+      res.status(500).json({ error: "Failed to get traffic summary" });
     }
   });
 
@@ -116,12 +116,12 @@ export function createTrafficIntelRouter(): Router {
    * GET /api/admin/traffic/content/:id
    * Returns traffic stats for specific content
    */
-  router.get('/content/:id', requireEnabled, (req: Request, res: Response) => {
+  router.get("/content/:id", requireEnabled, (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
       if (!id) {
-        res.status(400).json({ error: 'Content ID is required' });
+        res.status(400).json({ error: "Content ID is required" });
         return;
       }
 
@@ -129,7 +129,7 @@ export function createTrafficIntelRouter(): Router {
       const contentData = store.getContentStats(id);
 
       if (contentData.length === 0) {
-        res.status(404).json({ error: 'No traffic data found for content' });
+        res.status(404).json({ error: "No traffic data found for content" });
         return;
       }
 
@@ -197,7 +197,7 @@ export function createTrafficIntelRouter(): Router {
             google_aio: 0,
             other_ai: 0,
           },
-          trendDirection: 'stable',
+          trendDirection: "stable",
           lastUpdated: new Date(),
         },
         dailyTrend,
@@ -205,8 +205,7 @@ export function createTrafficIntelRouter(): Router {
 
       res.json(result);
     } catch (error) {
-      console.error('[TrafficIntel] Error getting content stats:', error);
-      res.status(500).json({ error: 'Failed to get content traffic stats' });
+      res.status(500).json({ error: "Failed to get content traffic stats" });
     }
   });
 
@@ -215,7 +214,7 @@ export function createTrafficIntelRouter(): Router {
    * Returns AI visibility metrics across all content
    */
   router.get(
-    '/ai-visibility',
+    "/ai-visibility",
     requireEnabled,
     requireAIVisibility,
     (req: Request, res: Response) => {
@@ -232,8 +231,7 @@ export function createTrafficIntelRouter(): Router {
           totalTracked: tracker.size(),
         });
       } catch (error) {
-        console.error('[TrafficIntel] Error getting AI visibility:', error);
-        res.status(500).json({ error: 'Failed to get AI visibility data' });
+        res.status(500).json({ error: "Failed to get AI visibility data" });
       }
     }
   );
@@ -242,7 +240,7 @@ export function createTrafficIntelRouter(): Router {
    * GET /api/admin/traffic/status
    * Returns feature status
    */
-  router.get('/status', (req: Request, res: Response) => {
+  router.get("/status", (req: Request, res: Response) => {
     const store = getAttributionStore();
     const tracker = getAIVisibilityTracker();
 

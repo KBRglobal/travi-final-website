@@ -5,8 +5,8 @@
  * Enable with: ENABLE_STRATEGY_ENGINE=true
  */
 
-export * from './types';
-export { collectAllSignals, allCollectors } from './signals';
+export * from "./types";
+export { collectAllSignals, allCollectors } from "./signals";
 export {
   computePriorityScore,
   computeContributionScores,
@@ -14,7 +14,7 @@ export {
   determineSecondaryReasons,
   computeContentPriority,
   applyWeightAdjustments,
-} from './scorer';
+} from "./scorer";
 export {
   getPriority,
   computeAllPriorities,
@@ -26,13 +26,12 @@ export {
   resetStrategyWeights,
   invalidatePriorityCache,
   getPriorityCacheStats,
-} from './engine';
-export { default as strategyRoutes } from './routes';
+} from "./engine";
+export { default as strategyRoutes } from "./routes";
 
 /**
  * Initialize strategy engine
  */
 export function initStrategyEngine(): void {
-  const enabled = process.env.ENABLE_STRATEGY_ENGINE === 'true';
-  console.log(`[Strategy] Engine initialized (enabled: ${enabled})`);
+  const enabled = process.env.ENABLE_STRATEGY_ENGINE === "true";
 }

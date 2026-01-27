@@ -24,28 +24,21 @@ export function DiscardDialog() {
   };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && closeDialog()}>
+    <AlertDialog open={isOpen} onOpenChange={open => !open && closeDialog()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-yellow-500" />
-            {isRTL ? "לבטל שינויים?" : "Discard Changes?"}
+            Discard Changes?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {isRTL
-              ? "יש לך שינויים שלא נשמרו. אם תמשיך, כל השינויים יאבדו."
-              : "You have unsaved changes. If you continue, all changes will be lost."}
+            You have unsaved changes. If you continue, all changes will be lost.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            {isRTL ? "המשך עריכה" : "Keep Editing"}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDiscard}
-            className="bg-red-500 hover:bg-red-600"
-          >
-            {isRTL ? "בטל שינויים" : "Discard"}
+          <AlertDialogCancel>Keep Editing</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDiscard} className="bg-red-500 hover:bg-red-600">
+            Discard
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

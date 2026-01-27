@@ -1,6 +1,17 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI();
+// Lazy initialization to allow server to start without API keys
+let openai: OpenAI | null = null;
+
+function getOpenAI(): OpenAI {
+  if (!openai) {
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.startsWith("sk-placeholder")) {
+      throw new Error("OPENAI_API_KEY not configured. Please add your API key to .env file.");
+    }
+    openai = new OpenAI();
+  }
+  return openai;
+}
 
 export interface AttractionGeneratedContent {
   introduction: string;
@@ -23,8 +34,8 @@ export async function generateAttractionContent(
 
 Generate content for: ${attractionName} in ${destination}
 Category: ${category}
-${priceRange ? `Price Range: ${priceRange}` : ''}
-${duration ? `Duration: ${duration}` : ''}
+${priceRange ? `Price Range: ${priceRange}` : ""}
+${duration ? `Duration: ${duration}` : ""}
 
 Create the following in JSON format:
 
@@ -54,38 +65,42 @@ Create the following in JSON format:
 Return ONLY valid JSON, no markdown.`;
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await getOpenAI().chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: "You are a travel content expert. Return only valid JSON." },
-        { role: "user", content: prompt }
+        { role: "user", content: prompt },
       ],
       temperature: 0.7,
-      max_tokens: 2000
+      max_tokens: 2000,
     });
 
     const content = response.choices[0]?.message?.content?.trim() || "";
-    
+
     // Parse JSON, handling potential markdown code blocks
     let jsonStr = content;
     if (content.startsWith("```")) {
-      jsonStr = content.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
+      jsonStr = content
+        .replace(/```json?\n?/g, "")
+        .replace(/```$/g, "")
+        .trim();
     }
 
     const parsed = JSON.parse(jsonStr);
 
     return {
-      introduction: parsed.introduction || `${attractionName} is a must-visit destination in ${destination}.`,
+      introduction:
+        parsed.introduction || `${attractionName} is a must-visit destination in ${destination}.`,
       whatToExpect: parsed.whatToExpect || [],
       highlights: parsed.highlights || [],
       visitorTips: parsed.visitorTips || [],
       faqItems: parsed.faqItems || [],
       metaTitle: parsed.metaTitle || `${attractionName} – Complete Guide 2026`,
-      metaDescription: parsed.metaDescription || `Discover ${attractionName} in ${destination}. Complete visitor guide with tickets, tips, and insider information.`
+      metaDescription:
+        parsed.metaDescription ||
+        `Discover ${attractionName} in ${destination}. Complete visitor guide with tickets, tips, and insider information.`,
     };
   } catch (error) {
-    console.error("[Attraction AI] Error generating content:", error);
-    
     // Return fallback content
     return {
       introduction: `${attractionName} is one of ${destination}'s most popular attractions. This iconic destination offers visitors an unforgettable experience with world-class facilities and stunning views. Whether you're a first-time visitor or returning to explore more, ${attractionName} promises an extraordinary journey through ${destination}'s cultural and architectural heritage.`,
@@ -94,12 +109,12 @@ Return ONLY valid JSON, no markdown.`;
         `Professional guides available to enhance your visit`,
         `Modern facilities designed for visitor comfort`,
         `Photography opportunities throughout the venue`,
-        `Gift shops and dining options available`
+        `Gift shops and dining options available`,
       ],
       highlights: [
         `One of ${destination}'s most photographed landmarks`,
         `Rich cultural and historical significance`,
-        `Stunning architectural design and views`
+        `Stunning architectural design and views`,
       ],
       visitorTips: [
         `Book tickets online in advance to skip the queue`,
@@ -107,20 +122,48 @@ Return ONLY valid JSON, no markdown.`;
         `Wear comfortable walking shoes`,
         `Check the weather forecast before your visit`,
         `Bring a camera for memorable photos`,
-        `Allow extra time to explore nearby attractions`
+        `Allow extra time to explore nearby attractions`,
       ],
       faqItems: [
-        { question: `How much are tickets for ${attractionName}?`, answer: "Please check the ticket options page for the latest prices and availability." },
-        { question: `What are the opening hours?`, answer: "Opening hours may vary by season. Please check the official ticket page for current times." },
-        { question: `How long should I plan for my visit?`, answer: `Most visitors spend 2-3 hours at ${attractionName}. Allow extra time if you want to explore everything.` },
-        { question: `Is ${attractionName} wheelchair accessible?`, answer: "Accessibility facilities are generally available. Check the ticket page for specific accessibility information." },
-        { question: `Can I take photos at ${attractionName}?`, answer: "Photography for personal use is typically permitted in most areas." },
-        { question: `What's the best time to visit?`, answer: "Weekday mornings tend to be less crowded. Consider visiting during shoulder season for smaller crowds." },
-        { question: `How do I get to ${attractionName}?`, answer: "Multiple transportation options are available including public transit, taxi, and rideshare services." },
-        { question: `Are there restaurants nearby?`, answer: "Various dining options are available at and around the attraction." }
+        {
+          question: `How much are tickets for ${attractionName}?`,
+          answer: "Please check the ticket options page for the latest prices and availability.",
+        },
+        {
+          question: `What are the opening hours?`,
+          answer:
+            "Opening hours may vary by season. Please check the official ticket page for current times.",
+        },
+        {
+          question: `How long should I plan for my visit?`,
+          answer: `Most visitors spend 2-3 hours at ${attractionName}. Allow extra time if you want to explore everything.`,
+        },
+        {
+          question: `Is ${attractionName} wheelchair accessible?`,
+          answer:
+            "Accessibility facilities are generally available. Check the ticket page for specific accessibility information.",
+        },
+        {
+          question: `Can I take photos at ${attractionName}?`,
+          answer: "Photography for personal use is typically permitted in most areas.",
+        },
+        {
+          question: `What's the best time to visit?`,
+          answer:
+            "Weekday mornings tend to be less crowded. Consider visiting during shoulder season for smaller crowds.",
+        },
+        {
+          question: `How do I get to ${attractionName}?`,
+          answer:
+            "Multiple transportation options are available including public transit, taxi, and rideshare services.",
+        },
+        {
+          question: `Are there restaurants nearby?`,
+          answer: "Various dining options are available at and around the attraction.",
+        },
       ],
       metaTitle: `${attractionName} – Complete Guide 2026`,
-      metaDescription: `Discover ${attractionName} in ${destination}. Complete visitor guide with tickets, tips, and insider information for 2026.`
+      metaDescription: `Discover ${attractionName} in ${destination}. Complete visitor guide with tickets, tips, and insider information for 2026.`,
     };
   }
 }

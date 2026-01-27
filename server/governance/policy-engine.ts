@@ -37,9 +37,7 @@ const DEFAULT_POLICIES: PolicyRule[] = [
     description: "Cannot delete content that is currently published",
     effect: "deny",
     priority: 100,
-    conditions: [
-      { field: "context.status", operator: "equals", value: "published" },
-    ],
+    conditions: [{ field: "context.status", operator: "equals", value: "published" }],
     actions: ["delete"],
     resources: ["content"],
     isActive: true,
@@ -98,9 +96,7 @@ const DEFAULT_POLICIES: PolicyRule[] = [
     description: "Limit data exports to prevent abuse",
     effect: "deny",
     priority: 60,
-    conditions: [
-      { field: "rateLimit.exceeded", operator: "equals", value: true },
-    ],
+    conditions: [{ field: "rateLimit.exceeded", operator: "equals", value: true }],
     actions: ["export"],
     resources: ["content", "users", "analytics"],
     rateLimit: {
@@ -113,9 +109,7 @@ const DEFAULT_POLICIES: PolicyRule[] = [
 ];
 
 // In-memory policy storage
-const policies = new Map<string, PolicyRule>(
-  DEFAULT_POLICIES.map((p) => [p.id, p])
-);
+const policies = new Map<string, PolicyRule>(DEFAULT_POLICIES.map(p => [p.id, p]));
 
 // Rate limit counters
 const rateLimitCounters = new Map<string, { count: number; resetAt: Date }>();
@@ -215,7 +209,7 @@ class ConditionEvaluator {
         const userRoles = this.getFieldValue("user.roles") as AdminRole[] | undefined;
         if (!Array.isArray(userRoles)) return false;
         if (Array.isArray(value)) {
-          return value.some((r) => userRoles.includes(r));
+          return value.some(r => userRoles.includes(r));
         }
         return userRoles.includes(value as AdminRole);
 
@@ -229,7 +223,6 @@ class ConditionEvaluator {
         return this.evaluateIpRange(fieldValue as string, value as string[]);
 
       default:
-        console.warn(`Unknown operator: ${operator}`);
         return false;
     }
   }
@@ -294,7 +287,15 @@ class ConditionEvaluator {
     // Check day of week
     const dayOptions: Intl.DateTimeFormatOptions = { timeZone: timezone, weekday: "short" };
     const dayStr = now.toLocaleDateString("en-US", dayOptions);
-    const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const dayMap: Record<string, number> = {
+      Sun: 0,
+      Mon: 1,
+      Tue: 2,
+      Wed: 3,
+      Thu: 4,
+      Fri: 5,
+      Sat: 6,
+    };
     const dayOfWeek = dayMap[dayStr];
 
     if (schedule.daysOfWeek && !schedule.daysOfWeek.includes(dayOfWeek)) {
@@ -407,7 +408,7 @@ class PolicyEngine {
 
     // Get all active policies sorted by priority (highest first)
     const activePolicies = Array.from(policies.values())
-      .filter((p) => p.isActive)
+      .filter(p => p.isActive)
       .sort((a, b) => b.priority - a.priority);
 
     for (const policy of activePolicies) {
@@ -417,12 +418,12 @@ class PolicyEngine {
 
       // Check if policy applies to user's roles
       if (policy.roles && policy.roles.length > 0) {
-        if (!policy.roles.some((r) => userRoles.includes(r))) continue;
+        if (!policy.roles.some(r => userRoles.includes(r))) continue;
       }
 
       // Check time schedule
       if (policy.schedules && policy.schedules.length > 0) {
-        const inSchedule = policy.schedules.some((s) =>
+        const inSchedule = policy.schedules.some(s =>
           evaluator.evaluate({ field: "time", operator: "within_time_window", value: s })
         );
         if (!inSchedule) continue;
@@ -453,11 +454,19 @@ class PolicyEngine {
 
       // First matching require_approval sets the effect
       if (conditionsMet && policy.effect === "require_approval") {
-        await this.logEvaluation(policy, userId, action, resource, context.resourceId, "require_approval");
+        await this.logEvaluation(
+          policy,
+          userId,
+          action,
+          resource,
+          context.resourceId,
+          "require_approval"
+        );
         return {
           effect: "require_approval",
           matchedPolicies,
-          message: (policy as any).message || `Policy "${policy.name}" requires approval for this action`,
+          message:
+            (policy as any).message || `Policy "${policy.name}" requires approval for this action`,
         };
       }
     }
@@ -472,20 +481,21 @@ class PolicyEngine {
   /**
    * Check rate limit
    */
-  private async checkRateLimit(userId: string, action: Action, resource: Resource): Promise<boolean> {
+  private async checkRateLimit(
+    userId: string,
+    action: Action,
+    resource: Resource
+  ): Promise<boolean> {
     // Find rate limit policy for this action/resource
     const rateLimitPolicy = Array.from(policies.values()).find(
-      (p) =>
-        p.isActive &&
-        p.rateLimit &&
-        p.actions.includes(action) &&
-        p.resources.includes(resource)
+      p => p.isActive && p.rateLimit && p.actions.includes(action) && p.resources.includes(resource)
     );
 
     if (!rateLimitPolicy?.rateLimit) return false;
 
     const { maxRequests, windowMinutes, scope } = rateLimitPolicy.rateLimit;
-    const key = scope === "user" ? `${userId}:${action}:${resource}` : `global:${action}:${resource}`;
+    const key =
+      scope === "user" ? `${userId}:${action}:${resource}` : `global:${action}:${resource}`;
 
     const now = new Date();
     const counter = rateLimitCounters.get(key);
@@ -531,9 +541,7 @@ class PolicyEngine {
         result,
         reason: (policy as any).message,
       } as any);
-    } catch (error) {
-      console.error("[PolicyEngine] Error logging evaluation:", error);
-    }
+    } catch (error) {}
   }
 
   /**
@@ -664,5 +672,3 @@ class PolicyEngine {
 
 // Singleton instance
 export const policyEngine = new PolicyEngine();
-
-console.log("[Governance] Policy Engine loaded");

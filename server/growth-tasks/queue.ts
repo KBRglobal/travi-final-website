@@ -3,16 +3,10 @@
  * Task queue and execution management
  */
 
-import {
-  GrowthTask,
-  TaskStatus,
-  TaskResult,
-  GrowthMetrics,
-  DEFAULT_GROWTH_CONFIG,
-} from './types';
-import { runDetectors } from './detectors';
-import { batchGenerateTasks } from './task-generator';
-import { prioritizeTasks, calculateGrowthMetrics } from './prioritizer';
+import { GrowthTask, TaskStatus, TaskResult, GrowthMetrics, DEFAULT_GROWTH_CONFIG } from "./types";
+import { runDetectors } from "./detectors";
+import { batchGenerateTasks } from "./task-generator";
+import { prioritizeTasks, calculateGrowthMetrics } from "./prioritizer";
 
 // Task queue (in-memory, would be DB in production)
 const taskQueue: Map<string, GrowthTask> = new Map();
@@ -22,26 +16,21 @@ let detectorIntervalId: NodeJS.Timeout | null = null;
 let isRunning = false;
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_GROWTH_TASKS === 'true';
+  return process.env.ENABLE_GROWTH_TASKS === "true";
 }
 
 export function addTask(task: GrowthTask): boolean {
   // Enforce queue size limit
-  const pendingCount = Array.from(taskQueue.values()).filter(
-    t => t.status === 'pending'
-  ).length;
+  const pendingCount = Array.from(taskQueue.values()).filter(t => t.status === "pending").length;
 
   if (pendingCount >= MAX_QUEUE_SIZE) {
-    console.log('[GrowthTasks] Queue full, task not added');
     return false;
   }
 
   // Check for duplicates
   const exists = Array.from(taskQueue.values()).some(
     t =>
-      t.type === task.type &&
-      t.targetContentId === task.targetContentId &&
-      t.status === 'pending'
+      t.type === task.type && t.targetContentId === task.targetContentId && t.status === "pending"
   );
 
   if (exists) {
@@ -69,26 +58,20 @@ export function getAllTasks(): GrowthTask[] {
 }
 
 export function getPendingTasks(): GrowthTask[] {
-  return prioritizeTasks(
-    Array.from(taskQueue.values()).filter(t => t.status === 'pending')
-  );
+  return prioritizeTasks(Array.from(taskQueue.values()).filter(t => t.status === "pending"));
 }
 
-export function updateTaskStatus(
-  taskId: string,
-  status: TaskStatus,
-  result?: TaskResult
-): boolean {
+export function updateTaskStatus(taskId: string, status: TaskStatus, result?: TaskResult): boolean {
   const task = taskQueue.get(taskId);
   if (!task) return false;
 
   task.status = status;
 
-  if (status === 'in_progress') {
+  if (status === "in_progress") {
     task.startedAt = new Date();
   }
 
-  if (status === 'completed' || status === 'failed') {
+  if (status === "completed" || status === "failed") {
     task.completedAt = new Date();
     task.result = result || null;
   }
@@ -98,20 +81,20 @@ export function updateTaskStatus(
 
 export function assignTask(taskId: string, userId: string): boolean {
   const task = taskQueue.get(taskId);
-  if (!task || task.status !== 'pending') return false;
+  if (!task || task.status !== "pending") return false;
 
   task.assignedTo = userId;
-  task.status = 'in_progress';
+  task.status = "in_progress";
   task.startedAt = new Date();
   return true;
 }
 
 export function completeTask(taskId: string, result: TaskResult): boolean {
-  return updateTaskStatus(taskId, result.success ? 'completed' : 'failed', result);
+  return updateTaskStatus(taskId, result.success ? "completed" : "failed", result);
 }
 
 export function skipTask(taskId: string, reason: string): boolean {
-  return updateTaskStatus(taskId, 'skipped', {
+  return updateTaskStatus(taskId, "skipped", {
     success: false,
     message: reason,
   });
@@ -124,7 +107,7 @@ export function removeTask(taskId: string): boolean {
 export function clearCompletedTasks(): number {
   let removed = 0;
   for (const [id, task] of taskQueue) {
-    if (task.status === 'completed' || task.status === 'skipped') {
+    if (task.status === "completed" || task.status === "skipped") {
       taskQueue.delete(id);
       removed++;
     }
@@ -138,15 +121,10 @@ async function runDetectionCycle(): Promise<void> {
   isRunning = true;
 
   try {
-    console.log('[GrowthTasks] Running detection cycle...');
-
     const detections = await runDetectors();
     const tasks = batchGenerateTasks(detections);
     const added = addTasks(tasks);
-
-    console.log(`[GrowthTasks] Added ${added} new tasks from ${detections.length} detections`);
   } catch (error) {
-    console.error('[GrowthTasks] Detection cycle error:', error);
   } finally {
     isRunning = false;
   }
@@ -154,11 +132,8 @@ async function runDetectionCycle(): Promise<void> {
 
 export function startQueue(): void {
   if (!isEnabled()) {
-    console.log('[GrowthTasks] Queue disabled (ENABLE_GROWTH_TASKS not set)');
     return;
   }
-
-  console.log('[GrowthTasks] Starting queue...');
 
   // Initial detection run after 30 seconds
   setTimeout(runDetectionCycle, 30000);
@@ -166,8 +141,6 @@ export function startQueue(): void {
   // Periodic detection
   const intervalMs = DEFAULT_GROWTH_CONFIG.detectorIntervalMinutes * 60 * 1000;
   detectorIntervalId = setInterval(runDetectionCycle, intervalMs);
-
-  console.log(`[GrowthTasks] Queue started (detection interval: ${DEFAULT_GROWTH_CONFIG.detectorIntervalMinutes}m)`);
 }
 
 export function stopQueue(): void {
@@ -175,7 +148,6 @@ export function stopQueue(): void {
     clearInterval(detectorIntervalId);
     detectorIntervalId = null;
   }
-  console.log('[GrowthTasks] Queue stopped');
 }
 
 export function getQueueStats(): {
@@ -200,11 +172,11 @@ export function getQueueStats(): {
 
   return {
     total: tasks.length,
-    pending: tasks.filter(t => t.status === 'pending').length,
-    inProgress: tasks.filter(t => t.status === 'in_progress').length,
-    completed: tasks.filter(t => t.status === 'completed').length,
-    failed: tasks.filter(t => t.status === 'failed').length,
-    skipped: tasks.filter(t => t.status === 'skipped').length,
+    pending: tasks.filter(t => t.status === "pending").length,
+    inProgress: tasks.filter(t => t.status === "in_progress").length,
+    completed: tasks.filter(t => t.status === "completed").length,
+    failed: tasks.filter(t => t.status === "failed").length,
+    skipped: tasks.filter(t => t.status === "skipped").length,
     byType,
     byPriority,
   };

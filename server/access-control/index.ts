@@ -28,12 +28,8 @@ export function registerAccessControlRoutes(app: Express): void {
   const isRbacEnabled = process.env.ENABLE_RBAC === "true";
 
   if (!isGovernanceEnabled && !isRbacEnabled) {
-    console.log("[AccessControl] Module disabled (ENABLE_ENTERPRISE_GOVERNANCE or ENABLE_RBAC not set)");
     return;
   }
 
   app.use("/api/admin/access-control", accessControlRoutes);
-  console.log("[AccessControl] Routes registered at /api/admin/access-control");
 }
-
-console.log("[AccessControl] Module loaded");

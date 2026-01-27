@@ -24,7 +24,7 @@ export async function getAllPolicies(): Promise<Policy[]> {
     .from(governancePolicies)
     .orderBy(desc(governancePolicies.priority));
 
-  return dbPolicies.map((p) => ({
+  return dbPolicies.map(p => ({
     id: p.id,
     name: p.name,
     description: p.description || undefined,
@@ -166,9 +166,7 @@ export async function togglePolicyActive(id: string): Promise<boolean> {
 /**
  * Get evaluation statistics
  */
-export async function getEvaluationStats(
-  startDate?: Date
-): Promise<{
+export async function getEvaluationStats(startDate?: Date): Promise<{
   total: number;
   byResult: Record<string, number>;
   byPolicy: { policyName: string; count: number }[];
@@ -180,10 +178,7 @@ export async function getEvaluationStats(
   const conditions = startDate ? [gte(policyEvaluations.evaluatedAt, startDate)] : [];
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-  const [total] = await db
-    .select({ count: count() })
-    .from(policyEvaluations)
-    .where(whereClause);
+  const [total] = await db.select({ count: count() }).from(policyEvaluations).where(whereClause);
 
   const resultStats = await db
     .select({
@@ -207,9 +202,7 @@ export async function getEvaluationStats(
 
   return {
     total: total?.count || 0,
-    byResult: Object.fromEntries(resultStats.map((s) => [s.result, s.count])),
-    byPolicy: policyStats.map((s) => ({ policyName: s.policyName, count: s.count })),
+    byResult: Object.fromEntries(resultStats.map(s => [s.result, s.count])),
+    byPolicy: policyStats.map(s => ({ policyName: s.policyName, count: s.count })),
   };
 }
-
-console.log("[Policies] Repository loaded");

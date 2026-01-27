@@ -70,6 +70,7 @@ export type Resource =
   | "entity"
   | "revenue"
   | "users"
+  | "user"
   | "roles"
   | "policies"
   | "workflows"
@@ -79,7 +80,19 @@ export type Resource =
   | "media"
   | "translations"
   | "integrations"
-  | "system";
+  | "system"
+  | "security"
+  | "compliance"
+  | "security_baseline"
+  | "security_mode"
+  | "security_gate"
+  | "data_autopilot"
+  | "seo_autopilot"
+  | "content_autopilot"
+  | "autonomy"
+  | "mode_restriction"
+  | "approval_flow"
+  | string;  // Allow dynamic resource types
 
 // ============================================================================
 // SCOPE DEFINITIONS
@@ -281,7 +294,24 @@ export type SecurityEventType =
   | "approval_granted"
   | "approval_denied"
   | "approval_escalated"
-  | "approval_expired";
+  | "approval_expired"
+  // Security system events
+  | "THREAT_PROPAGATED"
+  | "HIGH_RISK_USER_DETECTED"
+  | "MANUAL_THREAT_RESPONSE"
+  | "APPROVAL_SAFETY_CHECK"
+  | "AUTONOMY_OVERRIDE"
+  | "EVIDENCE_BUNDLE_GENERATED"
+  | "BASELINE_CAPTURED"
+  | "CRITICAL_DRIFT_DETECTED"
+  | "SECURITY_GATE_BLOCK"
+  | "SECURITY_OS_INITIALIZED"
+  | "SECURITY_MODE_CHANGE"
+  | "AUTO_MODE_ESCALATION"
+  | "OVERRIDE_GRANTED"
+  | "OVERRIDE_USED"
+  | "OVERRIDE_REVOKED"
+  | "EXFILTRATION_BLOCKED";
 
 export type SeverityLevel = "low" | "medium" | "high" | "critical";
 
@@ -523,4 +553,4 @@ export interface DataRetentionInfo {
   deletionDate?: Date;
 }
 
-console.log("[Governance] Types loaded");
+

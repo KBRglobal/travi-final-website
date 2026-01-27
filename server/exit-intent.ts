@@ -83,21 +83,21 @@ const defaultPopups: ExitPopup[] = [
     type: "newsletter",
     trigger: "exit",
     title: "Don't Miss Dubai's Best Tips!",
-    titleHe: "אל תפספס את הטיפים הטובים ביותר לדובאי!",
+    titleHe: "",
     subtitle: "Get exclusive deals and insider guides delivered to your inbox",
-    subtitleHe: "קבל מבצעים בלעדיים ומדריכים פנימיים ישירות למייל",
+    subtitleHe: "",
     ctaText: "Subscribe Now",
-    ctaTextHe: "הירשם עכשיו",
+    ctaTextHe: "",
     ctaAction: "submit",
     secondaryText: "No thanks, I'll miss out",
-    secondaryTextHe: "לא תודה",
+    secondaryTextHe: "",
     style: "modal",
     position: "center",
     backgroundColor: "#ffffff",
     accentColor: "#e53935",
     formFields: [
-      { name: "email", label: "Email", labelHe: "אימייל", type: "email", required: true },
-      { name: "name", label: "First Name", labelHe: "שם פרטי", type: "text", required: false },
+      { name: "email", label: "Email", labelHe: "", type: "email", required: true },
+      { name: "name", label: "First Name", labelHe: "", type: "text", required: false },
     ],
     showOnce: true,
     cooldownHours: 72,
@@ -111,16 +111,16 @@ const defaultPopups: ExitPopup[] = [
     type: "offer",
     trigger: "exit",
     title: "Wait! Get 15% Off Your Hotel",
-    titleHe: "רגע! קבל 15% הנחה על המלון",
+    titleHe: "",
     subtitle: "Use code DUBAI15 at checkout",
-    subtitleHe: "השתמש בקוד DUBAI15 בתשלום",
+    subtitleHe: "",
     image: "/images/popups/hotel-deal.jpg",
     ctaText: "Get My Discount",
-    ctaTextHe: "קבל את ההנחה שלי",
+    ctaTextHe: "",
     ctaUrl: "/hotels?promo=DUBAI15",
     ctaAction: "redirect",
     secondaryText: "Maybe later",
-    secondaryTextHe: "אולי אחר כך",
+    secondaryTextHe: "",
     style: "modal",
     position: "center",
     backgroundColor: "#1a237e",
@@ -138,11 +138,11 @@ const defaultPopups: ExitPopup[] = [
     type: "related",
     trigger: "exit",
     title: "Before You Go...",
-    titleHe: "לפני שאתה הולך...",
+    titleHe: "",
     subtitle: "Check out these popular articles",
-    subtitleHe: "בדוק את המאמרים הפופולריים האלה",
+    subtitleHe: "",
     ctaText: "Keep Reading",
-    ctaTextHe: "המשך לקרוא",
+    ctaTextHe: "",
     ctaAction: "close",
     style: "slide-in",
     position: "bottom-right",
@@ -159,11 +159,11 @@ const defaultPopups: ExitPopup[] = [
     type: "offer",
     trigger: "exit",
     title: "Skip the Lines!",
-    titleHe: "דלג על התורים!",
+    titleHe: "",
     subtitle: "Book tickets online and save time",
-    subtitleHe: "הזמן כרטיסים אונליין וחסוך זמן",
+    subtitleHe: "",
     ctaText: "Get Tickets",
-    ctaTextHe: "קנה כרטיסים",
+    ctaTextHe: "",
     ctaAction: "redirect",
     style: "corner",
     position: "bottom-right",
@@ -181,17 +181,15 @@ const defaultPopups: ExitPopup[] = [
     type: "download",
     trigger: "exit",
     title: "Free Dubai Travel Guide",
-    titleHe: "מדריך טיולים לדובאי - חינם",
+    titleHe: "",
     subtitle: "100+ insider tips in one PDF",
-    subtitleHe: "100+ טיפים פנימיים בקובץ PDF אחד",
+    subtitleHe: "",
     ctaText: "Download Free Guide",
-    ctaTextHe: "הורד מדריך חינם",
+    ctaTextHe: "",
     ctaAction: "submit",
     style: "modal",
     backgroundColor: "#00695c",
-    formFields: [
-      { name: "email", label: "Email", labelHe: "אימייל", type: "email", required: true },
-    ],
+    formFields: [{ name: "email", label: "Email", labelHe: "", type: "email", required: true }],
     targetContentTypes: ["article", "itinerary"],
     showOnce: true,
     cooldownHours: 168, // 1 week
@@ -206,16 +204,16 @@ const defaultPopups: ExitPopup[] = [
     trigger: "scroll",
     triggerValue: 70, // 70% scroll
     title: "Enjoying This Article?",
-    titleHe: "נהנה מהמאמר הזה?",
+    titleHe: "",
     subtitle: "Get more like this in your inbox",
-    subtitleHe: "קבל עוד כאלה למייל שלך",
+    subtitleHe: "",
     ctaText: "Subscribe",
-    ctaTextHe: "הירשם",
+    ctaTextHe: "",
     ctaAction: "submit",
     style: "banner",
     position: "bottom",
     formFields: [
-      { name: "email", label: "Your email", labelHe: "האימייל שלך", type: "email", required: true },
+      { name: "email", label: "Your email", labelHe: "", type: "email", required: true },
     ],
     targetContentTypes: ["article"],
     showOnce: true,
@@ -385,13 +383,15 @@ export const exitIntent = {
   /**
    * Get popup analytics
    */
-  async getAnalytics(): Promise<Array<{
-    id: string;
-    title: string;
-    impressions: number;
-    conversions: number;
-    conversionRate: number;
-  }>> {
+  async getAnalytics(): Promise<
+    Array<{
+      id: string;
+      title: string;
+      impressions: number;
+      conversions: number;
+      conversionRate: number;
+    }>
+  > {
     return defaultPopups
       .filter(p => p.impressions && p.impressions > 0)
       .map(p => ({
@@ -407,7 +407,9 @@ export const exitIntent = {
   /**
    * Create custom popup
    */
-  async createPopup(popup: Omit<ExitPopup, "id" | "impressions" | "conversions" | "conversionRate">): Promise<ExitPopup> {
+  async createPopup(
+    popup: Omit<ExitPopup, "id" | "impressions" | "conversions" | "conversionRate">
+  ): Promise<ExitPopup> {
     const newPopup: ExitPopup = {
       ...popup,
       id: `popup_${Date.now()}`,

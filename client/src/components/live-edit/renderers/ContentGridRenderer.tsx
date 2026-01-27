@@ -48,9 +48,9 @@ export function ContentGridRenderer({ id, props, onUpdate }: ContentGridRenderer
                 componentId={id}
                 fieldName="title"
                 value={title || ""}
-                onChange={(value) => onUpdate({ ...props, title: value })}
+                onChange={value => onUpdate({ ...props, title: value })}
                 className="text-3xl font-bold"
-                placeholder="כותרת הגריד"
+                placeholder="Grid Title"
                 as="h2"
               />
             ) : (
@@ -64,11 +64,7 @@ export function ContentGridRenderer({ id, props, onUpdate }: ContentGridRenderer
             <Card key={item.id} className="overflow-hidden">
               {item.image && (
                 <div className="aspect-video overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                 </div>
               )}
               <CardHeader>
@@ -78,8 +74,8 @@ export function ContentGridRenderer({ id, props, onUpdate }: ContentGridRenderer
                       componentId={id}
                       fieldName={`items.${index}.title`}
                       value={item.title}
-                      onChange={(value) => updateItem(index, { title: value })}
-                      placeholder="כותרת"
+                      onChange={value => updateItem(index, { title: value })}
+                      placeholder="Title"
                       as="span"
                     />
                   ) : (
@@ -94,10 +90,10 @@ export function ContentGridRenderer({ id, props, onUpdate }: ContentGridRenderer
                       componentId={id}
                       fieldName={`items.${index}.description`}
                       value={item.description || ""}
-                      onChange={(value) => updateItem(index, { description: value })}
+                      onChange={value => updateItem(index, { description: value })}
                       multiline
                       className="text-muted-foreground"
-                      placeholder="תיאור"
+                      placeholder="Description"
                       as="p"
                     />
                   ) : (

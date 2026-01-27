@@ -11,7 +11,12 @@ let internalLinksCacheTime = 0;
 const INTERNAL_LINKS_CACHE_TTL = 300000; // 5 minutes
 
 export const FALLBACK_INTERNAL_LINKS = [
-  { title: "Top Attractions in Dubai", slug: "top-attractions-dubai", type: "article", url: "/attractions" },
+  {
+    title: "Top Attractions in Dubai",
+    slug: "top-attractions-dubai",
+    type: "article",
+    url: "/attractions",
+  },
   { title: "Best Hotels in Dubai", slug: "best-hotels-dubai", type: "article", url: "/hotels" },
   { title: "Dubai Dining Guide", slug: "dubai-dining-guide", type: "article", url: "/dining" },
   { title: "Dubai Districts", slug: "dubai-districts", type: "article", url: "/districts" },
@@ -20,12 +25,32 @@ export const FALLBACK_INTERNAL_LINKS = [
 ];
 
 export const AUTHORITATIVE_EXTERNAL_LINKS = [
-  { title: "Visit Dubai Official", url: "https://www.visitdubai.com", description: "Official Dubai Tourism Board" },
-  { title: "Dubai Government Portal", url: "https://www.dubai.ae", description: "Official Government of Dubai" },
-  { title: "Dubai Tourism Official", url: "https://www.dubaitourism.gov.ae", description: "Dubai Department of Economy and Tourism" },
+  {
+    title: "Visit Dubai Official",
+    url: "https://www.visitdubai.com",
+    description: "Official Dubai Tourism Board",
+  },
+  {
+    title: "Dubai Government Portal",
+    url: "https://www.dubai.ae",
+    description: "Official Government of Dubai",
+  },
+  {
+    title: "Dubai Tourism Official",
+    url: "https://www.dubaitourism.gov.ae",
+    description: "Dubai Department of Economy and Tourism",
+  },
   { title: "Dubai RTA", url: "https://www.rta.ae", description: "Roads and Transport Authority" },
-  { title: "Dubai Municipality", url: "https://www.dm.gov.ae", description: "Dubai Municipality Official" },
-  { title: "Emirates Airlines", url: "https://www.emirates.com", description: "UAE National Carrier" },
+  {
+    title: "Dubai Municipality",
+    url: "https://www.dm.gov.ae",
+    description: "Dubai Municipality Official",
+  },
+  {
+    title: "Emirates Airlines",
+    url: "https://www.emirates.com",
+    description: "UAE National Carrier",
+  },
 ];
 
 /**
@@ -33,9 +58,12 @@ export const AUTHORITATIVE_EXTERNAL_LINKS = [
  * Returns URLs that the AI can use when generating content
  * Always returns at least fallback links if no published content exists
  */
-export async function getInternalLinkUrls(excludeSlug?: string, limit = 30): Promise<typeof cachedInternalLinks> {
+export async function getInternalLinkUrls(
+  excludeSlug?: string,
+  limit = 30
+): Promise<typeof cachedInternalLinks> {
   const now = Date.now();
-  
+
   if (!cachedInternalLinks || now - internalLinksCacheTime >= INTERNAL_LINKS_CACHE_TTL) {
     try {
       const publishedContent = await db
@@ -47,40 +75,56 @@ export async function getInternalLinkUrls(excludeSlug?: string, limit = 30): Pro
         .from(contents)
         .where(eq(contents.status, "published"))
         .limit(100);
-      
+
       const links = publishedContent.map(c => {
         let url = "";
         switch (c.type) {
-          case "attraction": url = `/attractions/${c.slug}`; break;
-          case "hotel": url = `/hotels/${c.slug}`; break;
-          case "article": url = `/articles/${c.slug}`; break;
-          case "dining": url = `/dining/${c.slug}`; break;
-          case "district": url = `/districts/${c.slug}`; break;
-          case "transport": url = `/transport/${c.slug}`; break;
-          case "event": url = `/events/${c.slug}`; break;
-          case "itinerary": url = `/itineraries/${c.slug}`; break;
-          default: url = `/${c.type}s/${c.slug}`;
+          case "attraction":
+            url = `/attractions/${c.slug}`;
+            break;
+          case "hotel":
+            url = `/hotels/${c.slug}`;
+            break;
+          case "article":
+            url = `/articles/${c.slug}`;
+            break;
+          case "dining":
+            url = `/dining/${c.slug}`;
+            break;
+          case "district":
+            url = `/districts/${c.slug}`;
+            break;
+          case "transport":
+            url = `/transport/${c.slug}`;
+            break;
+          case "event":
+            url = `/events/${c.slug}`;
+            break;
+          case "itinerary":
+            url = `/itineraries/${c.slug}`;
+            break;
+          default:
+            url = `/${c.type}s/${c.slug}`;
         }
         return {
           title: c.title,
           slug: c.slug,
           type: c.type,
-          url: url
+          url: url,
         };
       });
-      
+
       cachedInternalLinks = links.length > 0 ? links : FALLBACK_INTERNAL_LINKS;
       internalLinksCacheTime = now;
     } catch (error) {
-      console.error("Error fetching internal links:", error);
       cachedInternalLinks = FALLBACK_INTERNAL_LINKS;
     }
   }
-  
-  const filtered = excludeSlug 
+
+  const filtered = excludeSlug
     ? (cachedInternalLinks || FALLBACK_INTERNAL_LINKS).filter(l => l.slug !== excludeSlug)
-    : (cachedInternalLinks || FALLBACK_INTERNAL_LINKS);
-  
+    : cachedInternalLinks || FALLBACK_INTERNAL_LINKS;
+
   return filtered.slice(0, limit);
 }
 
@@ -117,7 +161,7 @@ export async function getActiveContentRules(): Promise<typeof DEFAULT_CONTENT_RU
       return cachedRules;
     }
   } catch (error) {
-    console.error("Error fetching content rules, using defaults:", error);
+    
   }
   return DEFAULT_CONTENT_RULES;
 }
@@ -159,7 +203,7 @@ export async function getActiveKeywords(category?: string, limit = 50): Promise<
     }
     return result as typeof cachedKeywords;
   } catch (error) {
-    console.error("Error fetching keywords:", error);
+    
     return [];
   }
 }
@@ -305,11 +349,32 @@ Return your response as JSON with these fields:
 // Determine content category from topic
 export function determineContentCategory(topic: string): string {
   const topicLower = topic.toLowerCase();
-  if (topicLower.includes("hotel") || topicLower.includes("resort") || topicLower.includes("stay")) return "hotels";
-  if (topicLower.includes("restaurant") || topicLower.includes("food") || topicLower.includes("dining")) return "dining";
-  if (topicLower.includes("attraction") || topicLower.includes("visit") || topicLower.includes("see")) return "attractions";
-  if (topicLower.includes("transport") || topicLower.includes("metro") || topicLower.includes("taxi")) return "transport";
+  if (topicLower.includes("hotel") || topicLower.includes("resort") || topicLower.includes("stay"))
+    return "hotels";
+  if (
+    topicLower.includes("restaurant") ||
+    topicLower.includes("food") ||
+    topicLower.includes("dining")
+  )
+    return "dining";
+  if (
+    topicLower.includes("attraction") ||
+    topicLower.includes("visit") ||
+    topicLower.includes("see")
+  )
+    return "attractions";
+  if (
+    topicLower.includes("transport") ||
+    topicLower.includes("metro") ||
+    topicLower.includes("taxi")
+  )
+    return "transport";
   if (topicLower.includes("event") || topicLower.includes("festival")) return "events";
-  if (topicLower.includes("district") || topicLower.includes("area") || topicLower.includes("neighborhood")) return "districts";
+  if (
+    topicLower.includes("district") ||
+    topicLower.includes("area") ||
+    topicLower.includes("neighborhood")
+  )
+    return "districts";
   return "general";
 }

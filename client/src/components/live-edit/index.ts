@@ -33,7 +33,6 @@ export {
   getAllComponents,
   getComponentCategories,
   getCategoryLabel,
-  getCategoryLabelHebrew,
 } from "@/lib/live-edit/componentRegistry";
 
 // Store and Hooks

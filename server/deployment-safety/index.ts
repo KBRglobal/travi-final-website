@@ -10,12 +10,11 @@
  * - Load shedding
  * - Cost anomaly detection
  *
- * אפס הפתעות. הכל נשלט.
  * Zero surprises. Everything controlled.
  */
 
 // Export types
-export * from './types';
+export * from "./types";
 
 // Release Gates
 export {
@@ -31,7 +30,7 @@ export {
   createGate,
   createDefaultGates,
   registerGateExecutor,
-} from './release-gates';
+} from "./release-gates";
 
 // Canary Deployment
 export {
@@ -50,7 +49,7 @@ export {
   getCanaryStats,
   collectMetricsFromMonitoring,
   defaultCanaryConfig,
-} from './canary-deployment';
+} from "./canary-deployment";
 
 // Rollback Manager
 export {
@@ -67,7 +66,7 @@ export {
   getRollbackStats,
   registerStepExecutor,
   subscribeToRollbackEvents,
-} from './rollback-manager';
+} from "./rollback-manager";
 
 // Health Probes
 export {
@@ -88,7 +87,7 @@ export {
   clearAllProbes,
   initializeDefaultProbes,
   getProbeStats,
-} from './health-probes';
+} from "./health-probes";
 
 // Environment Parity
 export {
@@ -103,7 +102,7 @@ export {
   getEnvironmentConfig,
   compareEnvironments,
   getParityStats,
-} from './environment-parity';
+} from "./environment-parity";
 
 // Incident Lifecycle
 export {
@@ -129,7 +128,7 @@ export {
   getIncidentStats,
   getMetricsTrends,
   createIncidentFromMonitor,
-} from './incident-lifecycle';
+} from "./incident-lifecycle";
 
 // Load Shedding
 export {
@@ -147,7 +146,7 @@ export {
   clearForcedLevel,
   startMetricCollection,
   stopMetricCollection,
-} from './load-shedding';
+} from "./load-shedding";
 
 // Cost Anomaly
 export {
@@ -165,7 +164,7 @@ export {
   startDetection as startAnomalyDetection,
   stopDetection as stopAnomalyDetection,
   getAnomalyStats,
-} from './cost-anomaly';
+} from "./cost-anomaly";
 
 // Security Gate Adapter
 export {
@@ -187,20 +186,19 @@ export {
   type ThreatLevel,
   type OpsAction,
   type SecurityCheckResult,
-} from './security-gate-adapter';
+} from "./security-gate-adapter";
 
 // Import for initialization
-import { initializeDefaultProbes, startMonitoring } from './health-probes';
-import { startEvaluationLoop } from './canary-deployment';
-import { startEscalationMonitoring } from './incident-lifecycle';
-import { startMetricCollection } from './load-shedding';
-import { startDetection } from './cost-anomaly';
-import { initSecurityGateListeners } from './security-gate-adapter';
-import { log } from '../lib/logger';
+import { initializeDefaultProbes, startMonitoring } from "./health-probes";
+import { startEvaluationLoop } from "./canary-deployment";
+import { startEscalationMonitoring } from "./incident-lifecycle";
+import { startMetricCollection } from "./load-shedding";
+import { startDetection } from "./cost-anomaly";
+import { initSecurityGateListeners } from "./security-gate-adapter";
+import { log } from "../lib/logger";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[DeploySafety] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[DeploySafety] ${msg}`, data),
 };
 
 /**
@@ -217,18 +215,18 @@ export function initializeDeploymentSafety(options?: {
   anomalyDetectionInterval?: number;
 }): void {
   const opts = {
-    enableHealthProbes: process.env.ENABLE_HEALTH_PROBES === 'true',
-    enableCanaryEvaluation: process.env.ENABLE_CANARY_DEPLOYMENT === 'true',
-    enableEscalationMonitoring: process.env.ENABLE_INCIDENT_LIFECYCLE === 'true',
-    enableLoadSheddingMetrics: process.env.ENABLE_LOAD_SHEDDING === 'true',
-    enableCostAnomalyDetection: process.env.ENABLE_COST_ANOMALY === 'true',
+    enableHealthProbes: process.env.ENABLE_HEALTH_PROBES === "true",
+    enableCanaryEvaluation: process.env.ENABLE_CANARY_DEPLOYMENT === "true",
+    enableEscalationMonitoring: process.env.ENABLE_INCIDENT_LIFECYCLE === "true",
+    enableLoadSheddingMetrics: process.env.ENABLE_LOAD_SHEDDING === "true",
+    enableCostAnomalyDetection: process.env.ENABLE_COST_ANOMALY === "true",
     healthProbeInterval: 30000,
     loadSheddingInterval: 5000,
     anomalyDetectionInterval: 60000,
     ...options,
   };
 
-  logger.info('Initializing deployment safety system', opts);
+  logger.info("Initializing deployment safety system", opts);
 
   if (opts.enableHealthProbes) {
     initializeDefaultProbes();
@@ -253,10 +251,10 @@ export function initializeDeploymentSafety(options?: {
 
   // Always initialize security gate listeners to respond to incidents
   initSecurityGateListeners().catch(err => {
-    logger.info('Security gate listeners init warning', { error: String(err) });
+    logger.info("Security gate listeners init warning", { error: String(err) });
   });
 
-  logger.info('Deployment safety system initialized');
+  logger.info("Deployment safety system initialized");
 }
 
 /**
@@ -272,19 +270,19 @@ export async function getDeploymentSafetyStatus(): Promise<{
     criticalIncidents: number;
     costAnomalies: number;
     loadSheddingActive: boolean;
-    environmentParity: 'in_sync' | 'drift' | 'critical_drift' | 'unknown';
+    environmentParity: "in_sync" | "drift" | "critical_drift" | "unknown";
     canaryActive: boolean;
     rollbackActive: boolean;
   };
 }> {
-  const { getProbeStats } = await import('./health-probes');
-  const { getIncidentStats } = await import('./incident-lifecycle');
-  const { getAnomalyStats } = await import('./cost-anomaly');
-  const { getState: getLoadSheddingState } = await import('./load-shedding');
-  const { getLatestParityReport } = await import('./environment-parity');
-  const { getActiveCanary } = await import('./canary-deployment');
-  const { getActiveRollback } = await import('./rollback-manager');
-  const { getCurrentEnvironment } = await import('./environment-parity');
+  const { getProbeStats } = await import("./health-probes");
+  const { getIncidentStats } = await import("./incident-lifecycle");
+  const { getAnomalyStats } = await import("./cost-anomaly");
+  const { getState: getLoadSheddingState } = await import("./load-shedding");
+  const { getLatestParityReport } = await import("./environment-parity");
+  const { getActiveCanary } = await import("./canary-deployment");
+  const { getActiveRollback } = await import("./rollback-manager");
+  const { getCurrentEnvironment } = await import("./environment-parity");
 
   const probeStats = getProbeStats();
   const incidentStats = getIncidentStats();
@@ -308,18 +306,18 @@ export async function getDeploymentSafetyStatus(): Promise<{
   }
 
   // Check environment parity
-  if (parityReport?.overallStatus === 'critical_drift') {
-    blockers.push('Critical environment drift detected');
+  if (parityReport?.overallStatus === "critical_drift") {
+    blockers.push("Critical environment drift detected");
   }
 
   // Check active rollback
   if (activeRollback) {
-    blockers.push('Rollback in progress');
+    blockers.push("Rollback in progress");
   }
 
   // Check load shedding
-  if (loadState.level === 'emergency') {
-    blockers.push('Emergency load shedding active');
+  if (loadState.level === "emergency") {
+    blockers.push("Emergency load shedding active");
   }
 
   const healthy = probeStats.unhealthy === 0 && incidentStats.bySeverity.critical === 0;
@@ -339,7 +337,7 @@ export async function getDeploymentSafetyStatus(): Promise<{
       criticalIncidents: incidentStats.bySeverity.critical || 0,
       costAnomalies: anomalyStats.unresolved,
       loadSheddingActive: loadState.active,
-      environmentParity: parityReport?.overallStatus || 'unknown',
+      environmentParity: parityReport?.overallStatus || "unknown",
       canaryActive: !!activeCanary,
       rollbackActive: !!activeRollback,
     },
@@ -347,4 +345,4 @@ export async function getDeploymentSafetyStatus(): Promise<{
 }
 
 // Export routes
-export { default as deploymentSafetyRoutes } from './routes';
+export { default as deploymentSafetyRoutes } from "./routes";

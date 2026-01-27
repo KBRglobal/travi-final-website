@@ -190,9 +190,8 @@ class AutonomyController {
     };
 
     // Determine if system is forced off
-    const forcedOff = securityMode === "lockdown" ||
-      threatLevel === "black" ||
-      threatLevel === "red";
+    const forcedOff =
+      securityMode === "lockdown" || threatLevel === "black" || threatLevel === "red";
 
     // Check for manual override
     const manualOverride = this.manualOverrides.get(system);
@@ -435,7 +434,7 @@ class AutonomyController {
       recommendations.push("Consider switching to ENFORCE mode in production");
     }
 
-    const disabledCount = Object.values(systems).filter((s) => !s.enabled).length;
+    const disabledCount = Object.values(systems).filter(s => !s.enabled).length;
     if (disabledCount > 3) {
       recommendations.push(`${disabledCount} systems disabled - review security posture`);
     }
@@ -461,9 +460,7 @@ class AutonomyController {
     for (const listener of this.listeners) {
       try {
         listener(system, state);
-      } catch (error) {
-        console.error("[AutonomyController] Listener error:", error);
-      }
+      } catch (error) {}
     }
   }
 
@@ -540,13 +537,7 @@ autonomyRouter.post("/check", async (req, res) => {
     return res.status(401).json({ error: "Authentication required" });
   }
 
-  const result = await autonomyController.checkAction(
-    system,
-    action,
-    user.id,
-    user.role,
-    context
-  );
+  const result = await autonomyController.checkAction(system, action, user.id, user.role, context);
 
   res.json(result);
 });
@@ -592,5 +583,3 @@ autonomyRouter.delete("/override/:system", (req, res) => {
   autonomyController.clearOverride(system);
   res.json({ success: true, message: "Override cleared" });
 });
-
-console.log("[AutonomyController] Module loaded");

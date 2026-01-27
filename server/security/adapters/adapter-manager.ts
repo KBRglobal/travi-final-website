@@ -8,8 +8,8 @@
  * - Emergency stop coordination
  */
 
-import { SystemAdapter, AdapterStatus, SecurityModeConfig, ThreatState } from '../authority/types';
-import { SecuritySeverity, logSecurityEvent, SecurityEventType } from '../audit-logger';
+import { SystemAdapter, AdapterStatus, SecurityModeConfig, ThreatState } from "../authority/types";
+import { SecuritySeverity, logSecurityEvent, SecurityEventType } from "../audit-logger";
 
 // ============================================================================
 // ADAPTER REGISTRY
@@ -21,7 +21,7 @@ const adapterHealth = new Map<string, { healthy: boolean; lastCheck: Date; error
 // Event queue for when adapters are temporarily unavailable
 const MAX_EVENT_QUEUE = 100;
 const pendingEvents: Array<{
-  type: 'threat' | 'mode' | 'emergency';
+  type: "threat" | "mode" | "emergency";
   payload: any;
   timestamp: Date;
   attempts: number;
@@ -37,7 +37,6 @@ export const AdapterManager = {
    */
   register(adapter: SystemAdapter): void {
     if (registeredAdapters.has(adapter.name)) {
-      console.warn(`[AdapterManager] Adapter ${adapter.name} already registered, replacing`);
     }
 
     registeredAdapters.set(adapter.name, adapter);
@@ -46,8 +45,6 @@ export const AdapterManager = {
       lastCheck: new Date(),
       errors: [],
     });
-
-    console.log(`[AdapterManager] Registered adapter: ${adapter.name}`);
   },
 
   /**
@@ -58,7 +55,6 @@ export const AdapterManager = {
     adapterHealth.delete(name);
 
     if (removed) {
-      console.log(`[AdapterManager] Unregistered adapter: ${name}`);
     }
 
     return removed;
@@ -85,14 +81,12 @@ export const AdapterManager = {
     success: boolean;
     results: Record<string, { success: boolean; error?: string }>;
   }> {
-    console.log(`[AdapterManager] Broadcasting threat escalation: ${threat.level}`);
-
     const results: Record<string, { success: boolean; error?: string }> = {};
     let allSuccess = true;
 
     for (const [name, adapter] of registeredAdapters) {
       if (!adapter.enabled) {
-        results[name] = { success: true, error: 'Adapter disabled' };
+        results[name] = { success: true, error: "Adapter disabled" };
         continue;
       }
 
@@ -101,22 +95,20 @@ export const AdapterManager = {
         results[name] = { success: true };
         this.updateHealth(name, true);
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg = error instanceof Error ? error.message : "Unknown error";
         results[name] = { success: false, error: errorMsg };
         this.updateHealth(name, false, errorMsg);
         allSuccess = false;
-
-        console.error(`[AdapterManager] Adapter ${name} failed on threat escalation:`, error);
       }
     }
 
     // Log the broadcast
     await logSecurityEvent({
       type: SecurityEventType.SETTINGS_CHANGED,
-      severity: threat.level === 'critical' ? SecuritySeverity.CRITICAL : SecuritySeverity.HIGH,
-      ipAddress: 'system',
-      resource: 'adapters',
-      action: 'threat_broadcast',
+      severity: threat.level === "critical" ? SecuritySeverity.CRITICAL : SecuritySeverity.HIGH,
+      ipAddress: "system",
+      resource: "adapters",
+      action: "threat_broadcast",
       details: { threatLevel: threat.level, results },
       success: allSuccess,
     });
@@ -131,14 +123,12 @@ export const AdapterManager = {
     success: boolean;
     results: Record<string, { success: boolean; error?: string }>;
   }> {
-    console.log(`[AdapterManager] Broadcasting mode change: ${config.mode}`);
-
     const results: Record<string, { success: boolean; error?: string }> = {};
     let allSuccess = true;
 
     for (const [name, adapter] of registeredAdapters) {
       if (!adapter.enabled) {
-        results[name] = { success: true, error: 'Adapter disabled' };
+        results[name] = { success: true, error: "Adapter disabled" };
         continue;
       }
 
@@ -147,12 +137,10 @@ export const AdapterManager = {
         results[name] = { success: true };
         this.updateHealth(name, true);
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg = error instanceof Error ? error.message : "Unknown error";
         results[name] = { success: false, error: errorMsg };
         this.updateHealth(name, false, errorMsg);
         allSuccess = false;
-
-        console.error(`[AdapterManager] Adapter ${name} failed on mode change:`, error);
       }
     }
 
@@ -166,22 +154,20 @@ export const AdapterManager = {
     success: boolean;
     results: Record<string, { success: boolean; error?: string }>;
   }> {
-    console.log('[AdapterManager] EXECUTING EMERGENCY STOP');
-
     const results: Record<string, { success: boolean; error?: string }> = {};
     let allSuccess = true;
 
     // Execute in parallel for speed
     const promises = Array.from(registeredAdapters.entries()).map(async ([name, adapter]) => {
       if (!adapter.enabled) {
-        return { name, success: true, error: 'Adapter disabled' };
+        return { name, success: true, error: "Adapter disabled" };
       }
 
       try {
         await adapter.onEmergencyStop();
         return { name, success: true };
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg = error instanceof Error ? error.message : "Unknown error";
         return { name, success: false, error: errorMsg };
       }
     });
@@ -198,9 +184,9 @@ export const AdapterManager = {
     await logSecurityEvent({
       type: SecurityEventType.SETTINGS_CHANGED,
       severity: SecuritySeverity.CRITICAL,
-      ipAddress: 'system',
-      resource: 'adapters',
-      action: 'emergency_stop',
+      ipAddress: "system",
+      resource: "adapters",
+      action: "emergency_stop",
       details: { results },
       success: allSuccess,
     });
@@ -281,7 +267,7 @@ export const AdapterManager = {
   /**
    * Queue event for retry
    */
-  queueEvent(type: 'threat' | 'mode' | 'emergency', payload: any): void {
+  queueEvent(type: "threat" | "mode" | "emergency", payload: any): void {
     if (pendingEvents.length >= MAX_EVENT_QUEUE) {
       pendingEvents.shift();
     }
@@ -305,7 +291,7 @@ export const AdapterManager = {
 
       if (event.attempts >= 3) {
         pendingEvents.shift();
-        console.error(`[AdapterManager] Event dropped after 3 attempts:`, event);
+
         continue;
       }
 
@@ -313,13 +299,13 @@ export const AdapterManager = {
 
       try {
         switch (event.type) {
-          case 'threat':
+          case "threat":
             await this.broadcastThreatEscalation(event.payload);
             break;
-          case 'mode':
+          case "mode":
             await this.broadcastModeChange(event.payload);
             break;
-          case 'emergency':
+          case "emergency":
             await this.executeEmergencyStop();
             break;
         }
@@ -327,7 +313,6 @@ export const AdapterManager = {
         pendingEvents.shift();
         processed++;
       } catch (error) {
-        console.error(`[AdapterManager] Failed to process event:`, error);
         break;
       }
     }
@@ -341,12 +326,10 @@ export const registerAdapter = AdapterManager.register.bind(AdapterManager);
 export const unregisterAdapter = AdapterManager.unregister.bind(AdapterManager);
 
 // Process pending events periodically - only when not in publishing mode
-if (process.env.DISABLE_BACKGROUND_SERVICES !== 'true' && process.env.REPLIT_DEPLOYMENT !== '1') {
+if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
   setInterval(() => {
     if (pendingEvents.length > 0) {
       AdapterManager.processPendingEvents();
     }
   }, 30 * 1000);
 }
-
-console.log('[AdapterManager] Loaded');

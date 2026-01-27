@@ -14,7 +14,12 @@ import { eq } from "drizzle-orm";
 // =====================================================
 
 export interface NotificationPayload {
-  type: "approval_requested" | "approval_approved" | "approval_rejected" | "approval_escalated" | "approval_expired";
+  type:
+    | "approval_requested"
+    | "approval_approved"
+    | "approval_rejected"
+    | "approval_escalated"
+    | "approval_expired";
   requestId: string;
   requestType: string;
   resourceType: string;
@@ -85,8 +90,8 @@ async function getApproverEmails(approverIds: string[]): Promise<EmailRecipient[
     .where(eq(users.isActive, true));
 
   return approvers
-    .filter((u) => approverIds.includes(u.email) || approverIds.some((id) => u.email))
-    .map((u) => ({ email: u.email, name: u.name || undefined }));
+    .filter(u => approverIds.includes(u.email) || approverIds.some(id => u.email))
+    .map(u => ({ email: u.email, name: u.name || undefined }));
 }
 
 function generateEmailSubject(payload: NotificationPayload): string {
@@ -164,9 +169,6 @@ async function sendEmailNotification(
     const body = generateEmailBody(payload);
 
     // Log email (actual sending would use a service like SendGrid, SES, etc.)
-    console.log(`[ApprovalNotifications] Would send email to ${recipients.length} recipients:`);
-    console.log(`  Subject: ${subject}`);
-    console.log(`  Recipients: ${recipients.map((r) => r.email).join(", ")}`);
 
     // In production, integrate with email service here
     // await emailService.send({ from: config.emailFrom, to: recipients, subject, body });
@@ -199,7 +201,7 @@ function createWebhookSignature(payload: string, secret: string): string {
   const data = encoder.encode(payload + secret);
   let hash = 0;
   for (let i = 0; i < data.length; i++) {
-    hash = ((hash << 5) - hash) + data[i];
+    hash = (hash << 5) - hash + data[i];
     hash = hash & hash;
   }
   return `sha256=${Math.abs(hash).toString(16).padStart(16, "0")}`;
@@ -239,7 +241,6 @@ async function sendWebhookNotification(
       });
 
       if (response.ok) {
-        console.log(`[ApprovalNotifications] Webhook sent successfully to ${config.webhookUrl}`);
         return { channel: "webhook", success: true, recipientCount: 1 };
       }
 
@@ -250,7 +251,7 @@ async function sendWebhookNotification(
 
     // Wait before retry
     if (attempt < config.retryAttempts - 1) {
-      await new Promise((resolve) => setTimeout(resolve, config.retryDelayMs * (attempt + 1)));
+      await new Promise(resolve => setTimeout(resolve, config.retryDelayMs * (attempt + 1)));
     }
   }
 
@@ -300,7 +301,10 @@ function generateSlackMessage(payload: NotificationPayload): object {
             fields: [
               { type: "mrkdwn", text: `*Request Type:*\n${payload.requestType}` },
               { type: "mrkdwn", text: `*Resource:*\n${payload.resourceType}` },
-              { type: "mrkdwn", text: `*Requester:*\n${payload.requesterName || payload.requesterId}` },
+              {
+                type: "mrkdwn",
+                text: `*Requester:*\n${payload.requesterName || payload.requesterId}`,
+              },
               { type: "mrkdwn", text: `*Request ID:*\n\`${payload.requestId.slice(0, 8)}...\`` },
             ],
           },
@@ -328,7 +332,6 @@ async function sendSlackNotification(
     });
 
     if (response.ok) {
-      console.log("[ApprovalNotifications] Slack notification sent successfully");
       return { channel: "slack", success: true, recipientCount: 1 };
     }
 
@@ -361,11 +364,8 @@ export async function sendApprovalNotification(
   // Check if notifications are enabled at all
   const notificationsEnabled = process.env.ENABLE_APPROVAL_NOTIFICATIONS === "true";
   if (!notificationsEnabled) {
-    console.log("[ApprovalNotifications] Notifications disabled (ENABLE_APPROVAL_NOTIFICATIONS not set)");
     return [{ channel: "internal", success: true, recipientCount: 0 }];
   }
-
-  console.log(`[ApprovalNotifications] Sending ${payload.type} notification for request ${payload.requestId}`);
 
   // Send via all configured channels in parallel
   const [emailResult, webhookResult, slackResult] = await Promise.all([
@@ -376,10 +376,8 @@ export async function sendApprovalNotification(
 
   results.push(emailResult, webhookResult, slackResult);
 
-  const successCount = results.filter((r) => r.success).length;
+  const successCount = results.filter(r => r.success).length;
   const totalRecipients = results.reduce((sum, r) => sum + r.recipientCount, 0);
-
-  console.log(`[ApprovalNotifications] Sent to ${totalRecipients} recipients via ${successCount}/${results.length} channels`);
 
   return results;
 }
@@ -470,5 +468,3 @@ export async function notifyApprovalExpired(
     createdAt: new Date().toISOString(),
   });
 }
-
-console.log("[ApprovalNotifications] Module loaded");

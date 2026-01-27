@@ -1,18 +1,18 @@
 /**
  * One-Time Migration Script: Static Destination Data → PostgreSQL
- * 
+ *
  * This script migrates destination data from static files to the PostgreSQL database.
  * Run once with: npx tsx server/scripts/backfill-destinations.ts
- * 
+ *
  * Data Sources:
  * - client/src/data/destinations.ts: Mood data, SEO fields, hero content templates
- * 
+ *
  * Fields Updated:
  * - heroTitle, heroSubtitle
  * - metaTitle, metaDescription
  * - moodVibe, moodTagline, moodPrimaryColor, moodGradientFrom, moodGradientTo
  * - cardImage, ogImage, canonicalUrl
- * 
+ *
  * This is IDEMPOTENT - safe to run multiple times (uses UPDATE with WHERE clause)
  */
 
@@ -44,9 +44,11 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     name: "Abu Dhabi",
     country: "United Arab Emirates",
     heroTitle: `Abu Dhabi Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Abu Dhabi - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Abu Dhabi - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Abu Dhabi Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Abu Dhabi trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Abu Dhabi, United Arab Emirates.",
+    metaDescription:
+      "Plan your Abu Dhabi trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Abu Dhabi, United Arab Emirates.",
     moodVibe: "luxury",
     moodTagline: "Where Tradition Meets Tomorrow",
     moodPrimaryColor: "hsl(35 100% 50%)",
@@ -56,13 +58,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/abu-dhabi",
     ogImage: "/cards/abu-dhabi.webp",
   },
-  "amsterdam": {
+  amsterdam: {
     name: "Amsterdam",
     country: "Netherlands",
     heroTitle: `Amsterdam Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Amsterdam - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Amsterdam - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Amsterdam Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Amsterdam trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Amsterdam, Netherlands.",
+    metaDescription:
+      "Plan your Amsterdam trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Amsterdam, Netherlands.",
     moodVibe: "cultural",
     moodTagline: "Canals, Culture & Character",
     moodPrimaryColor: "hsl(25 80% 50%)",
@@ -72,13 +76,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/amsterdam",
     ogImage: "/cards/amsterdam.webp",
   },
-  "bangkok": {
+  bangkok: {
     name: "Bangkok",
     country: "Thailand",
     heroTitle: `Bangkok Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Bangkok - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Bangkok - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Bangkok Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Bangkok trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Bangkok, Thailand.",
+    metaDescription:
+      "Plan your Bangkok trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Bangkok, Thailand.",
     moodVibe: "adventure",
     moodTagline: "The City That Never Sleeps",
     moodPrimaryColor: "hsl(45 100% 50%)",
@@ -88,13 +94,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/bangkok",
     ogImage: "/cards/bangkok.webp",
   },
-  "barcelona": {
+  barcelona: {
     name: "Barcelona",
     country: "Spain",
     heroTitle: `Barcelona Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Barcelona - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Barcelona - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Barcelona Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Barcelona trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Barcelona, Spain.",
+    metaDescription:
+      "Plan your Barcelona trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Barcelona, Spain.",
     moodVibe: "cultural",
     moodTagline: "Art, Architecture & Mediterranean Soul",
     moodPrimaryColor: "hsl(15 85% 55%)",
@@ -104,13 +112,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/barcelona",
     ogImage: "/cards/barcelona.webp",
   },
-  "dubai": {
+  dubai: {
     name: "Dubai",
     country: "United Arab Emirates",
     heroTitle: `Dubai Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Dubai - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Dubai - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Dubai Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Dubai trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Dubai, United Arab Emirates.",
+    metaDescription:
+      "Plan your Dubai trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Dubai, United Arab Emirates.",
     moodVibe: "luxury",
     moodTagline: "The Future is Here",
     moodPrimaryColor: "hsl(35 100% 50%)",
@@ -124,9 +134,11 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     name: "Hong Kong",
     country: "China SAR",
     heroTitle: `Hong Kong Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Hong Kong - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Hong Kong - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Hong Kong Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Hong Kong trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Hong Kong, China SAR.",
+    metaDescription:
+      "Plan your Hong Kong trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Hong Kong, China SAR.",
     moodVibe: "modern",
     moodTagline: "Where East Meets West",
     moodPrimaryColor: "hsl(350 80% 55%)",
@@ -136,13 +148,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/hong-kong",
     ogImage: "/cards/hong-kong.webp",
   },
-  "istanbul": {
+  istanbul: {
     name: "Istanbul",
     country: "Turkey",
     heroTitle: `Istanbul Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Istanbul - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Istanbul - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Istanbul Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Istanbul trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Istanbul, Turkey.",
+    metaDescription:
+      "Plan your Istanbul trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Istanbul, Turkey.",
     moodVibe: "cultural",
     moodTagline: "Bridging Continents & Centuries",
     moodPrimaryColor: "hsl(15 70% 50%)",
@@ -156,9 +170,11 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     name: "Las Vegas",
     country: "United States",
     heroTitle: `Las Vegas Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Las Vegas - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Las Vegas - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Las Vegas Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Las Vegas trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Las Vegas, United States.",
+    metaDescription:
+      "Plan your Las Vegas trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Las Vegas, United States.",
     moodVibe: "adventure",
     moodTagline: "Entertainment Capital of the World",
     moodPrimaryColor: "hsl(280 70% 55%)",
@@ -168,13 +184,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/las-vegas",
     ogImage: "/cards/las-vegas.webp",
   },
-  "london": {
+  london: {
     name: "London",
     country: "United Kingdom",
     heroTitle: `London Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of London - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of London - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `London Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your London trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in London, United Kingdom.",
+    metaDescription:
+      "Plan your London trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in London, United Kingdom.",
     moodVibe: "cultural",
     moodTagline: "History, Heritage & Innovation",
     moodPrimaryColor: "hsl(220 50% 50%)",
@@ -188,9 +206,11 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     name: "Los Angeles",
     country: "United States",
     heroTitle: `Los Angeles Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Los Angeles - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Los Angeles - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Los Angeles Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Los Angeles trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Los Angeles, United States.",
+    metaDescription:
+      "Plan your Los Angeles trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Los Angeles, United States.",
     moodVibe: "modern",
     moodTagline: "Dreams Start Here",
     moodPrimaryColor: "hsl(35 90% 55%)",
@@ -200,13 +220,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/los-angeles",
     ogImage: "/cards/los-angeles.webp",
   },
-  "miami": {
+  miami: {
     name: "Miami",
     country: "United States",
     heroTitle: `Miami Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Miami - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Miami - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Miami Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Miami trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Miami, United States.",
+    metaDescription:
+      "Plan your Miami trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Miami, United States.",
     moodVibe: "tropical",
     moodTagline: "Where the Sun Always Shines",
     moodPrimaryColor: "hsl(180 70% 50%)",
@@ -220,9 +242,11 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     name: "New York",
     country: "United States",
     heroTitle: `New York Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of New York - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of New York - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `New York Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your New York trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in New York, United States.",
+    metaDescription:
+      "Plan your New York trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in New York, United States.",
     moodVibe: "modern",
     moodTagline: "The City That Never Sleeps",
     moodPrimaryColor: "hsl(220 60% 50%)",
@@ -232,13 +256,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/new-york",
     ogImage: "/cards/new-york.webp",
   },
-  "paris": {
+  paris: {
     name: "Paris",
     country: "France",
     heroTitle: `Paris Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Paris - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Paris - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Paris Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Paris trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Paris, France.",
+    metaDescription:
+      "Plan your Paris trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Paris, France.",
     moodVibe: "romantic",
     moodTagline: "The City of Light & Love",
     moodPrimaryColor: "hsl(330 50% 55%)",
@@ -252,9 +278,11 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     name: "Ras Al Khaimah",
     country: "United Arab Emirates",
     heroTitle: `Ras Al Khaimah Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Ras Al Khaimah - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Ras Al Khaimah - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Ras Al Khaimah Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Ras Al Khaimah trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Ras Al Khaimah, United Arab Emirates.",
+    metaDescription:
+      "Plan your Ras Al Khaimah trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Ras Al Khaimah, United Arab Emirates.",
     moodVibe: "adventure",
     moodTagline: "Nature's Hidden Gem",
     moodPrimaryColor: "hsl(30 70% 50%)",
@@ -264,13 +292,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/ras-al-khaimah",
     ogImage: "/cards/ras-al-khaimah.webp",
   },
-  "rome": {
+  rome: {
     name: "Rome",
     country: "Italy",
     heroTitle: `Rome Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Rome - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Rome - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Rome Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Rome trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Rome, Italy.",
+    metaDescription:
+      "Plan your Rome trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Rome, Italy.",
     moodVibe: "cultural",
     moodTagline: "Eternal City, Timeless Beauty",
     moodPrimaryColor: "hsl(30 60% 45%)",
@@ -280,13 +310,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/rome",
     ogImage: "/cards/rome.webp",
   },
-  "singapore": {
+  singapore: {
     name: "Singapore",
     country: "Singapore",
     heroTitle: `Singapore Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Singapore - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Singapore - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Singapore Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Singapore trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Singapore.",
+    metaDescription:
+      "Plan your Singapore trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Singapore.",
     moodVibe: "modern",
     moodTagline: "The Garden City",
     moodPrimaryColor: "hsl(160 60% 45%)",
@@ -296,13 +328,15 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
     canonicalUrl: "https://travi.world/destinations/singapore",
     ogImage: "/cards/singapore.webp",
   },
-  "tokyo": {
+  tokyo: {
     name: "Tokyo",
     country: "Japan",
     heroTitle: `Tokyo Travel Guide ${currentYear}`,
-    heroSubtitle: "Discover the best of Tokyo - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
+    heroSubtitle:
+      "Discover the best of Tokyo - from iconic landmarks to hidden gems. Your complete guide to hotels, attractions, and local experiences.",
     metaTitle: `Tokyo Travel Guide ${currentYear} - Hotels, Attractions & Things to Do | TRAVI`,
-    metaDescription: "Plan your Tokyo trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Tokyo, Japan.",
+    metaDescription:
+      "Plan your Tokyo trip with TRAVI. Discover the best hotels, top attractions, local restaurants, and hidden gems in Tokyo, Japan.",
     moodVibe: "modern",
     moodTagline: "Tradition Meets Tomorrow",
     moodPrimaryColor: "hsl(350 80% 60%)",
@@ -315,11 +349,6 @@ const DESTINATION_DATA: Record<string, DestinationMigrationData> = {
 };
 
 async function backfillDestinations() {
-  console.log("=".repeat(60));
-  console.log("ONE-TIME MIGRATION: Static Destination Data → PostgreSQL");
-  console.log("=".repeat(60));
-  console.log("");
-
   let successCount = 0;
   let skipCount = 0;
   let errorCount = 0;
@@ -347,34 +376,20 @@ async function backfillDestinations() {
         .returning({ id: destinations.id });
 
       if (result.length > 0) {
-        console.log(`✓ Updated: ${id} (${data.name})`);
         successCount++;
       } else {
-        console.log(`⊘ Skipped: ${id} - not found in database`);
         skipCount++;
       }
     } catch (error) {
-      console.error(`✗ Error updating ${id}:`, error);
       errorCount++;
     }
   }
 
-  console.log("");
-  console.log("=".repeat(60));
-  console.log("MIGRATION COMPLETE");
-  console.log("=".repeat(60));
-  console.log(`  ✓ Updated: ${successCount}`);
-  console.log(`  ⊘ Skipped: ${skipCount}`);
-  console.log(`  ✗ Errors: ${errorCount}`);
-  console.log("");
-
   if (errorCount === 0 && successCount > 0) {
-    console.log("SUCCESS: All destinations have been backfilled with content data.");
   } else if (errorCount > 0) {
-    console.log("WARNING: Some destinations failed to update. Check logs above.");
   }
 
   process.exit(0);
 }
 
-backfillDestinations().catch(console.error);
+backfillDestinations().catch(() => {});

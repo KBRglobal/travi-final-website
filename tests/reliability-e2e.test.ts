@@ -1,15 +1,15 @@
 /**
  * Reliability E2E Tests - Phase 14 Task 9
- * 
+ *
  * Regression suite to lock in reliability guarantees:
  * - Jobs complete OR fail with error (no hang)
  * - Admin endpoints return expected shapes
  * - Worker health is accessible
  * - All protected endpoints require auth
- * 
+ *
  * These tests prevent "hang regressions" in CI.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 // Mock express request/response for endpoint testing
 interface MockResponse {
@@ -21,25 +21,31 @@ interface MockResponse {
 
 function createMockResponse(): MockResponse {
   const res: MockResponse = {
-    status: function(code: number) { res.statusCode = code; return res; },
-    json: function(data: unknown) { res.jsonData = data; return res; },
+    status: function (code: number) {
+      res.statusCode = code;
+      return res;
+    },
+    json: function (data: unknown) {
+      res.jsonData = data;
+      return res;
+    },
   };
   return res;
 }
 
 // Mock auth middleware for testing protected endpoints
 const mockAuthMiddleware = vi.fn((req, _res, next) => {
-  req.user = { id: 'test-user', username: 'admin', role: 'admin' };
+  req.user = { id: "test-user", username: "admin", role: "admin" };
   req.isAuthenticated = () => true;
   next();
 });
 
 // Mock unauthenticated request
 const mockUnauthMiddleware = vi.fn((_req, res, _next) => {
-  res.status(401).json({ error: 'Authentication required' });
+  res.status(401).json({ error: "Authentication required" });
 });
 
-describe('Reliability E2E Tests', () => {
+describe("Reliability E2E Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -51,22 +57,22 @@ describe('Reliability E2E Tests', () => {
   // ============================================================================
   // JOB COMPLETION TESTS
   // ============================================================================
-  describe('Job Completion Tests', () => {
-    const TERMINAL_STATUSES = ['completed', 'failed', 'cancelled'];
+  describe("Job Completion Tests", () => {
+    const TERMINAL_STATUSES = ["completed", "failed", "cancelled"];
     const MAX_JOB_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
-    it('should define terminal statuses for job completion', () => {
-      expect(TERMINAL_STATUSES).toContain('completed');
-      expect(TERMINAL_STATUSES).toContain('failed');
-      expect(TERMINAL_STATUSES).toContain('cancelled');
+    it("should define terminal statuses for job completion", () => {
+      expect(TERMINAL_STATUSES).toContain("completed");
+      expect(TERMINAL_STATUSES).toContain("failed");
+      expect(TERMINAL_STATUSES).toContain("cancelled");
     });
 
-    it('should enforce maximum job duration timeout', () => {
+    it("should enforce maximum job duration timeout", () => {
       expect(MAX_JOB_DURATION_MS).toBe(300000);
       expect(MAX_JOB_DURATION_MS).toBeLessThanOrEqual(10 * 60 * 1000);
     });
 
-    it('should validate job has terminal status within timeout', async () => {
+    it("should validate job has terminal status within timeout", async () => {
       const mockJob: {
         id: string;
         status: string;
@@ -75,8 +81,8 @@ describe('Reliability E2E Tests', () => {
         completedAt: Date | null;
         error: string | null;
       } = {
-        id: 'test-job-001',
-        status: 'pending',
+        id: "test-job-001",
+        status: "pending",
         createdAt: new Date(),
         startedAt: null,
         completedAt: null,
@@ -84,41 +90,41 @@ describe('Reliability E2E Tests', () => {
       };
 
       const simulateJobCompletion = async (job: typeof mockJob) => {
-        job.status = 'completed';
+        job.status = "completed";
         job.completedAt = new Date();
         return job;
       };
 
       const completedJob = await simulateJobCompletion(mockJob);
-      
+
       expect(TERMINAL_STATUSES).toContain(completedJob.status);
       expect(completedJob.completedAt).toBeDefined();
     });
 
-    it('should populate error message on failed jobs', async () => {
+    it("should populate error message on failed jobs", async () => {
       const mockFailedJob = {
-        id: 'test-job-002',
-        status: 'failed',
+        id: "test-job-002",
+        status: "failed",
         createdAt: new Date(),
         startedAt: new Date(),
         completedAt: new Date(),
-        error: 'Document parsing failed: invalid format',
+        error: "Document parsing failed: invalid format",
       };
 
-      expect(mockFailedJob.status).toBe('failed');
+      expect(mockFailedJob.status).toBe("failed");
       expect(mockFailedJob.error).toBeTruthy();
-      expect(mockFailedJob.error).toContain('failed');
+      expect(mockFailedJob.error).toContain("failed");
     });
 
-    it('should not allow jobs to hang indefinitely', async () => {
+    it("should not allow jobs to hang indefinitely", async () => {
       const jobCreatedAt = new Date();
       const now = new Date();
       const jobDuration = now.getTime() - jobCreatedAt.getTime();
-      
+
       expect(jobDuration).toBeLessThan(MAX_JOB_DURATION_MS);
     });
 
-    it('should track job metrics for monitoring', () => {
+    it("should track job metrics for monitoring", () => {
       const jobMetrics = {
         timestamp: new Date().toISOString(),
         queueDepth: 5,
@@ -130,15 +136,15 @@ describe('Reliability E2E Tests', () => {
       };
 
       expect(jobMetrics.timestamp).toBeDefined();
-      expect(typeof jobMetrics.queueDepth).toBe('number');
-      expect(typeof jobMetrics.failedLast24h).toBe('number');
-      expect(typeof jobMetrics.avgDurationMs).toBe('number');
-      expect(typeof jobMetrics.pendingCount).toBe('number');
-      expect(typeof jobMetrics.processingCount).toBe('number');
-      expect(typeof jobMetrics.completedCount).toBe('number');
+      expect(typeof jobMetrics.queueDepth).toBe("number");
+      expect(typeof jobMetrics.failedLast24h).toBe("number");
+      expect(typeof jobMetrics.avgDurationMs).toBe("number");
+      expect(typeof jobMetrics.pendingCount).toBe("number");
+      expect(typeof jobMetrics.processingCount).toBe("number");
+      expect(typeof jobMetrics.completedCount).toBe("number");
     });
 
-    it('should validate job response shape for /api/admin/jobs/recent', () => {
+    it("should validate job response shape for /api/admin/jobs/recent", () => {
       const expectedShape = {
         timestamp: expect.any(String),
         queueDepth: expect.any(Number),
@@ -151,7 +157,7 @@ describe('Reliability E2E Tests', () => {
       };
 
       const sampleResponse = {
-        timestamp: '2025-12-31T00:00:00.000Z',
+        timestamp: "2025-12-31T00:00:00.000Z",
         queueDepth: 0,
         failedLast24h: 0,
         avgDurationMs: 0,
@@ -168,63 +174,59 @@ describe('Reliability E2E Tests', () => {
   // ============================================================================
   // DIGEST ENDPOINT TESTS
   // ============================================================================
-  describe('Digest Endpoint Tests', () => {
-    describe('POST /api/admin/digest/dry-run', () => {
-      it('should return previewHtml in response', async () => {
+  describe("Digest Endpoint Tests", () => {
+    describe("POST /api/admin/digest/dry-run", () => {
+      it("should return previewHtml in response", async () => {
         const mockDryRunResult = {
-          previewHtml: '<html><body>Weekly Digest Preview</body></html>',
+          previewHtml: "<html><body>Weekly Digest Preview</body></html>",
           articleCount: 5,
           estimatedRecipients: 100,
           generatedAt: new Date().toISOString(),
-          subject: 'This Week at TRAVI',
-          subjectHe: 'השבוע בטראבי',
+          subject: "This Week at TRAVI",
         };
 
         expect(mockDryRunResult.previewHtml).toBeDefined();
-        expect(typeof mockDryRunResult.previewHtml).toBe('string');
+        expect(typeof mockDryRunResult.previewHtml).toBe("string");
         expect(mockDryRunResult.previewHtml.length).toBeGreaterThan(0);
       });
 
-      it('should include article count in dry-run response', () => {
+      it("should include article count in dry-run response", () => {
         const mockResponse = {
-          previewHtml: '<html></html>',
+          previewHtml: "<html></html>",
           articleCount: 3,
           estimatedRecipients: 50,
           generatedAt: new Date().toISOString(),
-          subject: 'Test Subject',
-          subjectHe: 'נושא בדיקה',
+          subject: "Test Subject",
         };
 
         expect(mockResponse.articleCount).toBeDefined();
-        expect(typeof mockResponse.articleCount).toBe('number');
+        expect(typeof mockResponse.articleCount).toBe("number");
         expect(mockResponse.articleCount).toBeGreaterThanOrEqual(0);
       });
 
-      it('should validate dry-run response shape', () => {
+      it("should validate dry-run response shape", () => {
         const expectedShape = {
           previewHtml: expect.any(String),
           articleCount: expect.any(Number),
           estimatedRecipients: expect.any(Number),
           generatedAt: expect.any(String),
           subject: expect.any(String),
-          subjectHe: expect.any(String),
         };
 
         const sampleResponse = {
-          previewHtml: '<html></html>',
+          previewHtml: "<html></html>",
           articleCount: 0,
           estimatedRecipients: 0,
           generatedAt: new Date().toISOString(),
-          subject: '',
-          subjectHe: '',
+          subject: "",
         };
 
         expect(sampleResponse).toMatchObject(expectedShape);
       });
     });
 
-    describe('GET /api/admin/digest/stats', () => {
-      it('should return valid metrics shape', () => {
+    describe("GET /api/admin/digest/stats", () => {
+      it("should return valid metrics shape", () => {
         const mockStats = {
           totalSent: 1500,
           totalOpened: 450,
@@ -238,11 +240,11 @@ describe('Reliability E2E Tests', () => {
         expect(mockStats.totalSent).toBeDefined();
         expect(mockStats.totalOpened).toBeDefined();
         expect(mockStats.totalClicked).toBeDefined();
-        expect(typeof mockStats.avgOpenRate).toBe('number');
-        expect(typeof mockStats.avgClickRate).toBe('number');
+        expect(typeof mockStats.avgOpenRate).toBe("number");
+        expect(typeof mockStats.avgClickRate).toBe("number");
       });
 
-      it('should validate stats response shape', () => {
+      it("should validate stats response shape", () => {
         const expectedShape = {
           totalSent: expect.any(Number),
           totalOpened: expect.any(Number),
@@ -263,19 +265,19 @@ describe('Reliability E2E Tests', () => {
       });
     });
 
-    describe('Authentication Requirements', () => {
-      it('should require auth for digest dry-run endpoint', () => {
+    describe("Authentication Requirements", () => {
+      it("should require auth for digest dry-run endpoint", () => {
         const res = createMockResponse();
         mockUnauthMiddleware({}, res, () => {});
 
-        expect(res.jsonData).toEqual({ error: 'Authentication required' });
+        expect(res.jsonData).toEqual({ error: "Authentication required" });
       });
 
-      it('should require auth for digest stats endpoint', () => {
+      it("should require auth for digest stats endpoint", () => {
         const res = createMockResponse();
         mockUnauthMiddleware({}, res, () => {});
 
-        expect(res.jsonData).toEqual({ error: 'Authentication required' });
+        expect(res.jsonData).toEqual({ error: "Authentication required" });
       });
     });
   });
@@ -283,9 +285,9 @@ describe('Reliability E2E Tests', () => {
   // ============================================================================
   // AFFILIATE VALIDATION TESTS
   // ============================================================================
-  describe('Affiliate Validation Tests', () => {
-    describe('POST /api/admin/affiliate/validate', () => {
-      it('should return valid boolean in response', () => {
+  describe("Affiliate Validation Tests", () => {
+    describe("POST /api/admin/affiliate/validate", () => {
+      it("should return valid boolean in response", () => {
         const mockValidationResult = {
           valid: true,
           hookStatus: { enabled: true, networksConfigured: 2 },
@@ -293,11 +295,11 @@ describe('Reliability E2E Tests', () => {
           recommendations: [],
         };
 
-        expect(typeof mockValidationResult.valid).toBe('boolean');
+        expect(typeof mockValidationResult.valid).toBe("boolean");
         expect(mockValidationResult.valid).toBe(true);
       });
 
-      it('should include hook status in validation response', () => {
+      it("should include hook status in validation response", () => {
         const mockResponse = {
           valid: true,
           hookStatus: {
@@ -310,15 +312,15 @@ describe('Reliability E2E Tests', () => {
 
         expect(mockResponse.hookStatus).toBeDefined();
         expect(mockResponse.hookStatus.enabled).toBeDefined();
-        expect(typeof mockResponse.hookStatus.networksConfigured).toBe('number');
+        expect(typeof mockResponse.hookStatus.networksConfigured).toBe("number");
       });
 
-      it('should validate response shape for invalid configuration', () => {
+      it("should validate response shape for invalid configuration", () => {
         const mockInvalidResponse = {
           valid: false,
           hookStatus: { enabled: false, networksConfigured: 0 },
-          zoneAudit: { valid: false, errors: ['No zones configured'] },
-          recommendations: ['Configure at least one affiliate network'],
+          zoneAudit: { valid: false, errors: ["No zones configured"] },
+          recommendations: ["Configure at least one affiliate network"],
         };
 
         expect(mockInvalidResponse.valid).toBe(false);
@@ -326,13 +328,13 @@ describe('Reliability E2E Tests', () => {
       });
     });
 
-    describe('GET /api/admin/affiliate/metrics', () => {
-      it('should return clicks and impressions shape', () => {
+    describe("GET /api/admin/affiliate/metrics", () => {
+      it("should return clicks and impressions shape", () => {
         const mockMetrics = {
           clicks: 250,
           impressions: 5000,
           conversions: 25,
-          revenue: 1250.50,
+          revenue: 1250.5,
           ctr: 5.0,
           lastClickAt: Date.now(),
           lastImpressionAt: Date.now(),
@@ -341,11 +343,11 @@ describe('Reliability E2E Tests', () => {
 
         expect(mockMetrics.clicks).toBeDefined();
         expect(mockMetrics.impressions).toBeDefined();
-        expect(typeof mockMetrics.clicks).toBe('number');
-        expect(typeof mockMetrics.impressions).toBe('number');
+        expect(typeof mockMetrics.clicks).toBe("number");
+        expect(typeof mockMetrics.impressions).toBe("number");
       });
 
-      it('should calculate CTR correctly', () => {
+      it("should calculate CTR correctly", () => {
         const clicks = 100;
         const impressions = 2000;
         const expectedCtr = (clicks / impressions) * 100;
@@ -353,7 +355,7 @@ describe('Reliability E2E Tests', () => {
         expect(expectedCtr).toBe(5.0);
       });
 
-      it('should validate metrics response shape', () => {
+      it("should validate metrics response shape", () => {
         const expectedShape = {
           clicks: expect.any(Number),
           impressions: expect.any(Number),
@@ -375,19 +377,19 @@ describe('Reliability E2E Tests', () => {
       });
     });
 
-    describe('Authentication Requirements', () => {
-      it('should require auth for affiliate validate endpoint', () => {
+    describe("Authentication Requirements", () => {
+      it("should require auth for affiliate validate endpoint", () => {
         const res = createMockResponse();
         mockUnauthMiddleware({}, res, () => {});
 
-        expect(res.jsonData).toEqual({ error: 'Authentication required' });
+        expect(res.jsonData).toEqual({ error: "Authentication required" });
       });
 
-      it('should require auth for affiliate metrics endpoint', () => {
+      it("should require auth for affiliate metrics endpoint", () => {
         const res = createMockResponse();
         mockUnauthMiddleware({}, res, () => {});
 
-        expect(res.jsonData).toEqual({ error: 'Authentication required' });
+        expect(res.jsonData).toEqual({ error: "Authentication required" });
       });
     });
   });
@@ -395,35 +397,35 @@ describe('Reliability E2E Tests', () => {
   // ============================================================================
   // WORKER HEALTH TESTS
   // ============================================================================
-  describe('Worker Health Tests', () => {
-    describe('GET /api/system/workers', () => {
-      it('should return healthy boolean', () => {
+  describe("Worker Health Tests", () => {
+    describe("GET /api/system/workers", () => {
+      it("should return healthy boolean", () => {
         const mockWorkerStatus = {
           healthy: true,
-          mode: 'processing',
+          mode: "processing",
           processingJobs: 2,
           queueDepth: 5,
           isPaused: false,
         };
 
         expect(mockWorkerStatus.healthy).toBeDefined();
-        expect(typeof mockWorkerStatus.healthy).toBe('boolean');
+        expect(typeof mockWorkerStatus.healthy).toBe("boolean");
       });
 
-      it('should return mode in response', () => {
+      it("should return mode in response", () => {
         const mockWorkerStatus = {
           healthy: true,
-          mode: 'idle',
+          mode: "idle",
           processingJobs: 0,
           queueDepth: 0,
           isPaused: false,
         };
 
         expect(mockWorkerStatus.mode).toBeDefined();
-        expect(['idle', 'processing', 'paused']).toContain(mockWorkerStatus.mode);
+        expect(["idle", "processing", "paused"]).toContain(mockWorkerStatus.mode);
       });
 
-      it('should validate worker status response shape', () => {
+      it("should validate worker status response shape", () => {
         const expectedShape = {
           healthy: expect.any(Boolean),
           mode: expect.any(String),
@@ -431,7 +433,7 @@ describe('Reliability E2E Tests', () => {
 
         const sampleResponse = {
           healthy: true,
-          mode: 'idle',
+          mode: "idle",
           processingJobs: 0,
           queueDepth: 0,
           isPaused: false,
@@ -440,40 +442,40 @@ describe('Reliability E2E Tests', () => {
         expect(sampleResponse).toMatchObject(expectedShape);
       });
 
-      it('should reflect paused state correctly', () => {
+      it("should reflect paused state correctly", () => {
         const pausedWorkerStatus = {
           healthy: true,
-          mode: 'paused',
+          mode: "paused",
           processingJobs: 0,
           queueDepth: 10,
           isPaused: true,
         };
 
         expect(pausedWorkerStatus.isPaused).toBe(true);
-        expect(pausedWorkerStatus.mode).toBe('paused');
+        expect(pausedWorkerStatus.mode).toBe("paused");
       });
 
-      it('should include queue depth information', () => {
+      it("should include queue depth information", () => {
         const workerStatus = {
           healthy: true,
-          mode: 'processing',
+          mode: "processing",
           processingJobs: 3,
           queueDepth: 15,
           isPaused: false,
         };
 
         expect(workerStatus.queueDepth).toBeDefined();
-        expect(typeof workerStatus.queueDepth).toBe('number');
+        expect(typeof workerStatus.queueDepth).toBe("number");
         expect(workerStatus.queueDepth).toBeGreaterThanOrEqual(0);
       });
     });
 
-    describe('Authentication Requirements', () => {
-      it('should require auth for worker status endpoint', () => {
+    describe("Authentication Requirements", () => {
+      it("should require auth for worker status endpoint", () => {
         const res = createMockResponse();
         mockUnauthMiddleware({}, res, () => {});
 
-        expect(res.jsonData).toEqual({ error: 'Authentication required' });
+        expect(res.jsonData).toEqual({ error: "Authentication required" });
       });
     });
   });
@@ -481,8 +483,8 @@ describe('Reliability E2E Tests', () => {
   // ============================================================================
   // HANG PREVENTION TESTS
   // ============================================================================
-  describe('Hang Prevention Tests', () => {
-    it('should define timeout configuration for all job types', () => {
+  describe("Hang Prevention Tests", () => {
+    it("should define timeout configuration for all job types", () => {
       const timeoutConfig = {
         parsing: 60000,
         extracting: 120000,
@@ -501,7 +503,7 @@ describe('Reliability E2E Tests', () => {
       });
     });
 
-    it('should enforce watchdog for stuck jobs', async () => {
+    it("should enforce watchdog for stuck jobs", async () => {
       const WATCHDOG_INTERVAL = 60000; // 1 minute
       const MAX_STUCK_TIME = 300000; // 5 minutes
 
@@ -509,7 +511,7 @@ describe('Reliability E2E Tests', () => {
       expect(MAX_STUCK_TIME).toBe(5 * 60 * 1000);
     });
 
-    it('should mark stale jobs as failed', async () => {
+    it("should mark stale jobs as failed", async () => {
       const staleJob: {
         id: string;
         status: string;
@@ -518,8 +520,8 @@ describe('Reliability E2E Tests', () => {
         completedAt: Date | null;
         error: string | null;
       } = {
-        id: 'stale-job-001',
-        status: 'processing',
+        id: "stale-job-001",
+        status: "processing",
         createdAt: new Date(Date.now() - 600000), // 10 minutes ago
         startedAt: new Date(Date.now() - 600000),
         completedAt: null,
@@ -527,38 +529,38 @@ describe('Reliability E2E Tests', () => {
       };
 
       const markAsTimedOut = (job: typeof staleJob) => {
-        job.status = 'failed';
+        job.status = "failed";
         job.completedAt = new Date();
-        job.error = 'Job timed out after maximum duration';
+        job.error = "Job timed out after maximum duration";
         return job;
       };
 
       const failedJob = markAsTimedOut(staleJob);
 
-      expect(failedJob.status).toBe('failed');
-      expect(failedJob.error).toContain('timed out');
+      expect(failedJob.status).toBe("failed");
+      expect(failedJob.error).toContain("timed out");
       expect(failedJob.completedAt).toBeDefined();
     });
 
-    it('should track job processing stages', () => {
+    it("should track job processing stages", () => {
       const jobStages = [
-        'pending',
-        'parsing',
-        'extracting',
-        'enriching',
-        'generating',
-        'quality_check',
-        'fact_check',
-        'entity_upsert',
-        'graph_resolution',
-        'publish_queue',
-        'completed',
-        'failed',
+        "pending",
+        "parsing",
+        "extracting",
+        "enriching",
+        "generating",
+        "quality_check",
+        "fact_check",
+        "entity_upsert",
+        "graph_resolution",
+        "publish_queue",
+        "completed",
+        "failed",
       ];
 
-      expect(jobStages).toContain('pending');
-      expect(jobStages).toContain('completed');
-      expect(jobStages).toContain('failed');
+      expect(jobStages).toContain("pending");
+      expect(jobStages).toContain("completed");
+      expect(jobStages).toContain("failed");
       expect(jobStages.length).toBeGreaterThan(3);
     });
   });
@@ -566,36 +568,36 @@ describe('Reliability E2E Tests', () => {
   // ============================================================================
   // ENDPOINT RESPONSE CONSISTENCY TESTS
   // ============================================================================
-  describe('Endpoint Response Consistency', () => {
-    it('should return consistent error format for 401', () => {
+  describe("Endpoint Response Consistency", () => {
+    it("should return consistent error format for 401", () => {
       const errorResponse = {
-        error: 'Authentication required',
+        error: "Authentication required",
       };
 
       expect(errorResponse.error).toBeDefined();
-      expect(typeof errorResponse.error).toBe('string');
+      expect(typeof errorResponse.error).toBe("string");
     });
 
-    it('should return consistent error format for 403', () => {
+    it("should return consistent error format for 403", () => {
       const errorResponse = {
-        error: 'Permission denied',
+        error: "Permission denied",
       };
 
       expect(errorResponse.error).toBeDefined();
-      expect(typeof errorResponse.error).toBe('string');
+      expect(typeof errorResponse.error).toBe("string");
     });
 
-    it('should return consistent error format for 500', () => {
+    it("should return consistent error format for 500", () => {
       const errorResponse = {
-        error: 'Internal server error',
-        requestId: 'req_12345',
+        error: "Internal server error",
+        requestId: "req_12345",
       };
 
       expect(errorResponse.error).toBeDefined();
-      expect(typeof errorResponse.error).toBe('string');
+      expect(typeof errorResponse.error).toBe("string");
     });
 
-    it('should include timestamps in all relevant responses', () => {
+    it("should include timestamps in all relevant responses", () => {
       const sampleResponses = [
         { timestamp: new Date().toISOString() },
         { generatedAt: new Date().toISOString() },
@@ -614,21 +616,21 @@ describe('Reliability E2E Tests', () => {
 // ============================================================================
 // INTEGRATION TEST HELPERS
 // ============================================================================
-describe('Integration Test Helpers', () => {
-  describe('Test Utilities', () => {
-    it('should provide mock response factory', () => {
+describe("Integration Test Helpers", () => {
+  describe("Test Utilities", () => {
+    it("should provide mock response factory", () => {
       const res = createMockResponse();
       expect(res.status).toBeDefined();
       expect(res.json).toBeDefined();
     });
 
-    it('should track json data in mock response', () => {
+    it("should track json data in mock response", () => {
       const res = createMockResponse();
-      res.json({ test: 'data' });
-      expect(res.jsonData).toEqual({ test: 'data' });
+      res.json({ test: "data" });
+      expect(res.jsonData).toEqual({ test: "data" });
     });
 
-    it('should allow chained status calls', () => {
+    it("should allow chained status calls", () => {
       const res = createMockResponse();
       const result = res.status(200).json({ success: true });
       expect(result).toBe(res);

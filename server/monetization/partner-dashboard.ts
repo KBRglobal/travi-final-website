@@ -1,6 +1,6 @@
 /**
  * Partner Dashboard
- * 
+ *
  * Provides analytics and management tools for affiliate partners
  * - Performance metrics
  * - Click/conversion tracking
@@ -54,11 +54,7 @@ export const partnerDashboard = {
   async getPartnerMetrics(partnerId: string): Promise<PartnerMetrics | null> {
     try {
       // Fetch partner data
-      const partner = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.id, partnerId))
-        .limit(1);
+      const partner = await db.select().from(partners).where(eq(partners.id, partnerId)).limit(1);
 
       if (partner.length === 0) {
         return null;
@@ -67,37 +63,35 @@ export const partnerDashboard = {
       const partnerData = partner[0];
 
       // Calculate conversion rate
-      const conversionRate = partnerData.totalClicks > 0
-        ? (partnerData.totalConversions / partnerData.totalClicks) * 100
-        : 0;
+      const conversionRate =
+        partnerData.totalClicks > 0
+          ? (partnerData.totalConversions / partnerData.totalClicks) * 100
+          : 0;
 
       // Calculate average commission
-      const averageCommission = partnerData.totalConversions > 0
-        ? partnerData.totalEarnings / partnerData.totalConversions
-        : 0;
+      const averageCommission =
+        partnerData.totalConversions > 0
+          ? partnerData.totalEarnings / partnerData.totalConversions
+          : 0;
 
       // Get last payout
       const lastPayouts = await db
         .select()
         .from(payouts)
-        .where(
-          and(
-            eq(payouts.partnerId, partnerId),
-            eq(payouts.status, "completed")
-          )
-        )
+        .where(and(eq(payouts.partnerId, partnerId), eq(payouts.status, "completed")))
         .orderBy(desc(payouts.processedAt))
         .limit(1);
 
-      const lastPayout = lastPayouts.length > 0
-        ? {
-            amount: lastPayouts[0].amount,
-            date: lastPayouts[0].processedAt,
-          }
-        : {
-            amount: 0,
-            date: null,
-          };
+      const lastPayout =
+        lastPayouts.length > 0
+          ? {
+              amount: lastPayouts[0].amount,
+              date: lastPayouts[0].processedAt,
+            }
+          : {
+              amount: 0,
+              date: null,
+            };
 
       // Current period stats (this month)
       const now = new Date();
@@ -125,7 +119,6 @@ export const partnerDashboard = {
         },
       };
     } catch (error) {
-      console.error("[Partner Dashboard] Error getting partner metrics:", error);
       return null;
     }
   },
@@ -133,10 +126,7 @@ export const partnerDashboard = {
   /**
    * Get performance trend over time
    */
-  async getPerformanceTrend(
-    partnerId: string,
-    days: number = 30
-  ): Promise<PerformanceTrend[]> {
+  async getPerformanceTrend(partnerId: string, days: number = 30): Promise<PerformanceTrend[]> {
     try {
       // This is a simplified version
       // In production, you'd want to store daily/hourly metrics in a separate table
@@ -148,7 +138,7 @@ export const partnerDashboard = {
         date.setDate(date.getDate() - i);
 
         trends.push({
-          date: date.toISOString().split('T')[0],
+          date: date.toISOString().split("T")[0],
           clicks: Math.floor(Math.random() * 100), // Mock data
           conversions: Math.floor(Math.random() * 20), // Mock data
           earnings: Math.floor(Math.random() * 1000), // Mock data
@@ -157,7 +147,6 @@ export const partnerDashboard = {
 
       return trends;
     } catch (error) {
-      console.error("[Partner Dashboard] Error getting performance trend:", error);
       return [];
     }
   },
@@ -165,7 +154,9 @@ export const partnerDashboard = {
   /**
    * Get all partners ranked by performance
    */
-  async getTopPerformers(metric: "clicks" | "conversions" | "earnings" = "earnings"): Promise<TopPerformer[]> {
+  async getTopPerformers(
+    metric: "clicks" | "conversions" | "earnings" = "earnings"
+  ): Promise<TopPerformer[]> {
     try {
       const allPartners = await db
         .select()
@@ -200,7 +191,6 @@ export const partnerDashboard = {
 
       return performers.slice(0, 10);
     } catch (error) {
-      console.error("[Partner Dashboard] Error getting top performers:", error);
       return [];
     }
   },
@@ -211,16 +201,18 @@ export const partnerDashboard = {
   async getPayoutHistory(
     partnerId: string,
     limit: number = 10
-  ): Promise<Array<{
-    id: string;
-    amount: number;
-    currency: string;
-    status: string;
-    method: string;
-    periodStart: Date;
-    periodEnd: Date;
-    processedAt: Date | null;
-  }>> {
+  ): Promise<
+    Array<{
+      id: string;
+      amount: number;
+      currency: string;
+      status: string;
+      method: string;
+      periodStart: Date;
+      periodEnd: Date;
+      processedAt: Date | null;
+    }>
+  > {
     try {
       const history = await db
         .select()
@@ -234,13 +226,12 @@ export const partnerDashboard = {
         amount: payout.amount,
         currency: payout.currency,
         status: payout.status,
-        method: payout.method || 'unknown',
+        method: payout.method || "unknown",
         periodStart: payout.periodStart,
         periodEnd: payout.periodEnd,
         processedAt: payout.processedAt,
       }));
     } catch (error) {
-      console.error("[Partner Dashboard] Error getting payout history:", error);
       return [];
     }
   },
@@ -248,11 +239,7 @@ export const partnerDashboard = {
   /**
    * Generate tracking link for partner
    */
-  generateTrackingLink(
-    partnerId: string,
-    trackingCode: string,
-    destinationUrl: string
-  ): string {
+  generateTrackingLink(partnerId: string, trackingCode: string, destinationUrl: string): string {
     const baseUrl = process.env.APP_URL || "https://traviapp.com";
     return `${baseUrl}/track/${trackingCode}?dest=${encodeURIComponent(destinationUrl)}`;
   },
@@ -279,11 +266,7 @@ export const partnerDashboard = {
     };
   }> {
     try {
-      const partner = await db
-        .select()
-        .from(partners)
-        .where(eq(partners.id, partnerId))
-        .limit(1);
+      const partner = await db.select().from(partners).where(eq(partners.id, partnerId)).limit(1);
 
       if (partner.length === 0) {
         throw new Error("Partner not found");
@@ -314,9 +297,10 @@ export const partnerDashboard = {
           totalRevenue: partnerData.totalEarnings || 0,
           totalClicks: partnerData.totalClicks || 0,
           totalConversions: partnerData.totalConversions || 0,
-          conversionRate: partnerData.totalClicks > 0
-            ? (partnerData.totalConversions / partnerData.totalClicks) * 100
-            : 0,
+          conversionRate:
+            partnerData.totalClicks > 0
+              ? (partnerData.totalConversions / partnerData.totalClicks) * 100
+              : 0,
         },
         thisMonth: {
           revenue: thisMonthCalc.totalCommission,
@@ -330,7 +314,6 @@ export const partnerDashboard = {
         },
       };
     } catch (error) {
-      console.error("[Partner Dashboard] Error getting partner stats:", error);
       throw error;
     }
   },

@@ -27,9 +27,15 @@ export function registerContentExperimentsRoutes(app: Express): void {
     if (!isExperimentsEnabled()) {
       return res.status(403).json({ error: "Experiments disabled" });
     }
-    const { name, contentId, description, trafficSplit, minimumSampleSize, confidenceLevel } = req.body;
-    const createdBy = (req as any).user?.id || 'system';
-    const experiment = createExperiment(name, contentId, createdBy, { description, trafficSplit, minimumSampleSize, confidenceLevel });
+    const { name, contentId, description, trafficSplit, minimumSampleSize, confidenceLevel } =
+      req.body;
+    const createdBy = (req as any).user?.id || "system";
+    const experiment = createExperiment(name, contentId, createdBy, {
+      description,
+      trafficSplit,
+      minimumSampleSize,
+      confidenceLevel,
+    });
     res.json({ success: true, experiment });
   });
 
@@ -48,48 +54,68 @@ export function registerContentExperimentsRoutes(app: Express): void {
     res.json({ success });
   });
 
-  app.post("/api/admin/experiments/:id/resume", requireAuth, async (req: Request, res: Response) => {
-    const success = resumeExperiment(req.params.id);
-    res.json({ success });
-  });
+  app.post(
+    "/api/admin/experiments/:id/resume",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const success = resumeExperiment(req.params.id);
+      res.json({ success });
+    }
+  );
 
   app.post("/api/admin/experiments/:id/end", requireAuth, async (req: Request, res: Response) => {
     const success = endExperiment(req.params.id);
     res.json({ success });
   });
 
-  app.post("/api/admin/experiments/:id/impression", requireAuth, async (req: Request, res: Response) => {
-    const { variantType } = req.body;
-    const success = recordImpression(req.params.id, variantType);
-    res.json({ success });
-  });
+  app.post(
+    "/api/admin/experiments/:id/impression",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { variantType } = req.body;
+      const success = recordImpression(req.params.id, variantType);
+      res.json({ success });
+    }
+  );
 
-  app.post("/api/admin/experiments/:id/conversion", requireAuth, async (req: Request, res: Response) => {
-    const { variantType } = req.body;
-    const success = recordConversion(req.params.id, variantType);
-    res.json({ success });
-  });
+  app.post(
+    "/api/admin/experiments/:id/conversion",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { variantType } = req.body;
+      const success = recordConversion(req.params.id, variantType);
+      res.json({ success });
+    }
+  );
 
   app.get("/api/admin/experiments/:id/assign", requireAuth, async (req: Request, res: Response) => {
-    const userId = req.query.userId as string || 'anonymous';
+    const userId = (req.query.userId as string) || "anonymous";
     const variant = assignVariant(req.params.id, userId);
     res.json({ variant });
   });
 
-  app.get("/api/admin/experiments/:id/results", requireAuth, async (req: Request, res: Response) => {
-    const results = calculateResults(req.params.id);
-    res.json(results || { error: "Could not calculate results" });
-  });
+  app.get(
+    "/api/admin/experiments/:id/results",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const results = calculateResults(req.params.id);
+      res.json(results || { error: "Could not calculate results" });
+    }
+  );
 
   app.get("/api/admin/experiments", requireAuth, async (req: Request, res: Response) => {
     const experiments = getAllExperiments();
     res.json({ experiments, count: experiments.length });
   });
 
-  app.get("/api/admin/experiments/content/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const experiments = getContentExperiments(req.params.contentId);
-    res.json({ experiments, count: experiments.length });
-  });
+  app.get(
+    "/api/admin/experiments/content/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const experiments = getContentExperiments(req.params.contentId);
+      res.json({ experiments, count: experiments.length });
+    }
+  );
 
   app.get("/api/admin/experiments/running", requireAuth, async (req: Request, res: Response) => {
     const experiments = getRunningExperiments();
@@ -100,6 +126,4 @@ export function registerContentExperimentsRoutes(app: Express): void {
     const stats = getExperimentStats();
     res.json({ enabled: isExperimentsEnabled(), ...stats });
   });
-
-  console.log("[ContentExperiments] Routes registered");
 }

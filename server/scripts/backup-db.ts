@@ -65,7 +65,6 @@ function generateBackupFilename(): string {
 async function ensureBackupDir(): Promise<void> {
   if (!fs.existsSync(BACKUP_DIR)) {
     await fs.promises.mkdir(BACKUP_DIR, { recursive: true });
-    console.log(`Created backup directory: ${BACKUP_DIR}`);
   }
 }
 
@@ -91,7 +90,6 @@ async function createBackup(): Promise<BackupResult> {
     const env = { ...process.env, PGPASSWORD: dbConfig.password };
 
     // Run pg_dump
-    console.log(`Starting backup of database: ${dbConfig.database}`);
 
     const pgDumpCmd = [
       "pg_dump",
@@ -108,7 +106,7 @@ async function createBackup(): Promise<BackupResult> {
     await execAsync(pgDumpCmd, { env });
 
     // Compress the backup
-    console.log("Compressing backup...");
+
     const source = fs.createReadStream(tempPath);
     const destination = fs.createWriteStream(backupPath);
     const gzip = createGzip({ level: 9 });
@@ -122,10 +120,6 @@ async function createBackup(): Promise<BackupResult> {
     const stats = await fs.promises.stat(backupPath);
     const duration = Date.now() - startTime;
 
-    console.log(`Backup created: ${filename}`);
-    console.log(`Size: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
-    console.log(`Duration: ${(duration / 1000).toFixed(2)}s`);
-
     return {
       success: true,
       filename,
@@ -135,7 +129,7 @@ async function createBackup(): Promise<BackupResult> {
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Backup failed:", errorMessage);
+
     return { success: false, error: errorMessage };
   }
 }
@@ -147,8 +141,8 @@ async function rotateBackups(): Promise<number> {
   try {
     const files = await fs.promises.readdir(BACKUP_DIR);
     const backupFiles = files
-      .filter((f) => f.startsWith("backup-") && f.endsWith(".sql.gz"))
-      .map((f) => ({
+      .filter(f => f.startsWith("backup-") && f.endsWith(".sql.gz"))
+      .map(f => ({
         name: f,
         path: path.join(BACKUP_DIR, f),
         time: fs.statSync(path.join(BACKUP_DIR, f)).mtime.getTime(),
@@ -160,14 +154,13 @@ async function rotateBackups(): Promise<number> {
       const toDelete = backupFiles.slice(MAX_BACKUPS);
       for (const file of toDelete) {
         await fs.promises.unlink(file.path);
-        console.log(`Deleted old backup: ${file.name}`);
+
         deleted++;
       }
     }
 
     return deleted;
   } catch (error) {
-    console.error("Rotation failed:", error);
     return 0;
   }
 }
@@ -180,8 +173,8 @@ async function listBackups(): Promise<void> {
     await ensureBackupDir();
     const files = await fs.promises.readdir(BACKUP_DIR);
     const backupFiles = files
-      .filter((f) => f.startsWith("backup-") && f.endsWith(".sql.gz"))
-      .map((f) => {
+      .filter(f => f.startsWith("backup-") && f.endsWith(".sql.gz"))
+      .map(f => {
         const stats = fs.statSync(path.join(BACKUP_DIR, f));
         return {
           name: f,
@@ -191,18 +184,11 @@ async function listBackups(): Promise<void> {
       })
       .sort((a, b) => b.date.localeCompare(a.date));
 
-    console.log("\n=== Available Backups ===");
     if (backupFiles.length === 0) {
-      console.log("No backups found.");
     } else {
-      backupFiles.forEach((f, i) => {
-        console.log(`${i + 1}. ${f.name} (${f.size}) - ${f.date}`);
-      });
+      backupFiles.forEach((f, i) => {});
     }
-    console.log("");
-  } catch (error) {
-    console.error("Failed to list backups:", error);
-  }
+  } catch (error) {}
 }
 
 // Main execution
@@ -214,24 +200,17 @@ async function main(): Promise<void> {
     return;
   }
 
-  console.log("\n=== Database Backup ===");
-  console.log(`Backup directory: ${BACKUP_DIR}`);
-  console.log(`Max backups to keep: ${MAX_BACKUPS}`);
-  console.log("");
-
   const result = await createBackup();
 
   if (result.success) {
     const deleted = await rotateBackups();
-    console.log(`\nRotation: ${deleted} old backup(s) removed`);
-    console.log("Backup completed successfully!");
+
     process.exit(0);
   } else {
-    console.error("\nBackup failed!");
     process.exit(1);
   }
 }
 
-main().catch(console.error);
+main().catch(() => {});
 
 export { createBackup, rotateBackups, listBackups, BackupResult };

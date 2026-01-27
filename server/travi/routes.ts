@@ -1,12 +1,12 @@
 /**
  * TRAVI Content Generation - API Routes
- * 
+ *
  * REST API endpoints for the TRAVI data collection system.
  * Mounted at /api/travi
  */
 
-import { Router, Request, Response } from 'express';
-import { z } from 'zod';
+import { Router, Request, Response } from "express";
+import { z } from "zod";
 
 import {
   WHITELISTED_DESTINATIONS,
@@ -31,17 +31,17 @@ import {
   type DestinationSlug,
   type LocationCategory,
   type ProcessingOptions,
-} from './index';
-import { discoverAllInCity as tripAdvisorDiscoverAll } from './tripadvisor-client';
-import { db } from '../db';
-import { sql } from 'drizzle-orm';
+} from "./index";
+import { discoverAllInCity as tripAdvisorDiscoverAll } from "./tripadvisor-client";
+import { db } from "../db";
+import { sql } from "drizzle-orm";
 
 const router = Router();
 
 // Validation schemas
 const discoverSchema = z.object({
   destinationSlug: z.string(),
-  category: z.enum(['attraction', 'hotel', 'restaurant']),
+  category: z.enum(["attraction", "hotel", "restaurant"]),
   dryRun: z.boolean().optional().default(false),
   skipWikipedia: z.boolean().optional().default(false),
   skipOSM: z.boolean().optional().default(false),
@@ -50,22 +50,24 @@ const discoverSchema = z.object({
 
 const processSchema = z.object({
   destinationSlug: z.string(),
-  category: z.enum(['attraction', 'hotel', 'restaurant']),
-  options: z.object({
-    dryRun: z.boolean().optional(),
-    skipGooglePlaces: z.boolean().optional(),
-    skipFreepik: z.boolean().optional(),
-    skipAI: z.boolean().optional(),
-    batchSize: z.number().optional(),
-    maxLocations: z.number().optional(),
-  }).optional(),
+  category: z.enum(["attraction", "hotel", "restaurant"]),
+  options: z
+    .object({
+      dryRun: z.boolean().optional(),
+      skipGooglePlaces: z.boolean().optional(),
+      skipFreepik: z.boolean().optional(),
+      skipAI: z.boolean().optional(),
+      batchSize: z.number().optional(),
+      maxLocations: z.number().optional(),
+    })
+    .optional(),
 });
 
 /**
  * GET /api/travi/status
  * Get current processing status including AI model availability, budget, and service status
  */
-router.get('/status', async (_req: Request, res: Response) => {
+router.get("/status", async (_req: Request, res: Response) => {
   try {
     const [aiStatus, budgetStatus, usageStats] = await Promise.all([
       getAIStatus(),
@@ -99,10 +101,9 @@ router.get('/status', async (_req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Status error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to get status',
+      error: "Failed to get status",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -112,7 +113,7 @@ router.get('/status', async (_req: Request, res: Response) => {
  * GET /api/travi/env-check
  * Debug endpoint to verify which API keys are configured (no values exposed)
  */
-router.get('/env-check', async (_req: Request, res: Response) => {
+router.get("/env-check", async (_req: Request, res: Response) => {
   const keys = {
     gemini: !!process.env.GEMINI_API_KEY,
     openai: !!process.env.OPENAI_API_KEY,
@@ -123,10 +124,10 @@ router.get('/env-check', async (_req: Request, res: Response) => {
     ai_openai: !!process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
     ai_anthropic: !!process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
   };
-  
+
   res.json({
     success: true,
-    message: 'Environment variable check - all values show configured status only',
+    message: "Environment variable check - all values show configured status only",
     data: keys,
   });
 });
@@ -135,7 +136,7 @@ router.get('/env-check', async (_req: Request, res: Response) => {
  * GET /api/travi/destinations
  * List all whitelisted destinations with metadata
  */
-router.get('/destinations', async (_req: Request, res: Response) => {
+router.get("/destinations", async (_req: Request, res: Response) => {
   try {
     const destinations = DESTINATION_METADATA.map(dest => ({
       slug: dest.slug,
@@ -164,10 +165,9 @@ router.get('/destinations', async (_req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Destinations error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to get destinations',
+      error: "Failed to get destinations",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -177,18 +177,19 @@ router.get('/destinations', async (_req: Request, res: Response) => {
  * POST /api/travi/discover
  * Start location discovery for a destination
  */
-router.post('/discover', async (req: Request, res: Response) => {
+router.post("/discover", async (req: Request, res: Response) => {
   try {
     const parseResult = discoverSchema.safeParse(req.body);
     if (!parseResult.success) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid request body',
+        error: "Invalid request body",
         details: parseResult.error.errors,
       });
     }
 
-    const { destinationSlug, category, dryRun, skipWikipedia, skipOSM, skipTripAdvisor } = parseResult.data;
+    const { destinationSlug, category, dryRun, skipWikipedia, skipOSM, skipTripAdvisor } =
+      parseResult.data;
 
     // Validate destination exists
     const destination = getDestinationBySlug(destinationSlug as DestinationSlug);
@@ -204,12 +205,9 @@ router.post('/discover', async (req: Request, res: Response) => {
     if (isProcessingPaused()) {
       return res.status(503).json({
         success: false,
-        error: 'Processing is currently paused due to budget constraints',
+        error: "Processing is currently paused due to budget constraints",
       });
     }
-
-    console.log(`[Discovery] Starting discovery for ${destinationSlug}/${category}`);
-    console.log(`[Discovery] Sources: Wikipedia=${!skipWikipedia}, OSM=${!skipOSM}, TripAdvisor=${!skipTripAdvisor}`);
 
     const result = await discoverLocations(
       destinationSlug as DestinationSlug,
@@ -234,10 +232,9 @@ router.post('/discover', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Discover error:', error);
     res.status(500).json({
       success: false,
-      error: 'Discovery failed',
+      error: "Discovery failed",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -250,16 +247,16 @@ router.post('/discover', async (req: Request, res: Response) => {
  */
 const tripadvisorOnlySchema = z.object({
   destinationSlug: z.string(),
-  category: z.enum(['attraction', 'hotel', 'restaurant']),
+  category: z.enum(["attraction", "hotel", "restaurant"]),
 });
 
-router.post('/tripadvisor-only', async (req: Request, res: Response) => {
+router.post("/tripadvisor-only", async (req: Request, res: Response) => {
   try {
     const parseResult = tripadvisorOnlySchema.safeParse(req.body);
     if (!parseResult.success) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid request body',
+        error: "Invalid request body",
         details: parseResult.error.errors,
       });
     }
@@ -277,35 +274,32 @@ router.post('/tripadvisor-only', async (req: Request, res: Response) => {
 
     const centerLat = (destination.lat.min + destination.lat.max) / 2;
     const centerLng = (destination.lng.min + destination.lng.max) / 2;
-    
-    console.log(`[TripAdvisor-Only] Fetching ${category}s for ${destination.city} using grid search...`);
 
     const locations = await tripAdvisorDiscoverAll(
       destination.city,
       centerLat,
       centerLng,
-      category as 'attraction' | 'hotel' | 'restaurant',
-      { 
+      category as "attraction" | "hotel" | "restaurant",
+      {
         maxLocations: 300,
         bounds: {
           latMin: destination.lat.min,
           latMax: destination.lat.max,
           lngMin: destination.lng.min,
           lngMax: destination.lng.max,
-        }
+        },
       }
     );
-
-    console.log(`[TripAdvisor-Only] Found ${locations.length} ${category}s`);
 
     const saved: { name: string; category: string; address: string | null }[] = [];
     const errors: string[] = [];
 
     for (const loc of locations) {
       try {
-        const slug = loc.name.toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '');
+        const slug = loc.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
 
         await db.execute(sql`
           INSERT INTO travi_locations (
@@ -333,12 +327,12 @@ router.post('/tripadvisor-only', async (req: Request, res: Response) => {
             SELECT id FROM travi_locations WHERE slug = ${slug}
           `);
           const locationId = locationResult.rows[0]?.id;
-          
+
           if (locationId) {
             const existingDetails = await db.execute(sql`
               SELECT id FROM travi_location_details WHERE location_id = ${locationId}
             `);
-            
+
             if (existingDetails.rows.length === 0) {
               await db.execute(sql`
                 INSERT INTO travi_location_details (id, location_id, street_address)
@@ -364,14 +358,12 @@ router.post('/tripadvisor-only', async (req: Request, res: Response) => {
       }
     }
 
-    console.log(`[TripAdvisor-Only] Saved ${saved.length} locations, ${errors.length} errors`);
-
     res.json({
       success: true,
       data: {
         destinationSlug,
         category,
-        source: 'TripAdvisor ONLY',
+        source: "TripAdvisor ONLY",
         totalFound: locations.length,
         saved: saved.length,
         errors: errors.length,
@@ -380,10 +372,9 @@ router.post('/tripadvisor-only', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] TripAdvisor-only error:', error);
     res.status(500).json({
       success: false,
-      error: 'TripAdvisor fetch failed',
+      error: "TripAdvisor fetch failed",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -393,13 +384,13 @@ router.post('/tripadvisor-only', async (req: Request, res: Response) => {
  * POST /api/travi/process
  * Start full processing pipeline for a destination
  */
-router.post('/process', async (req: Request, res: Response) => {
+router.post("/process", async (req: Request, res: Response) => {
   try {
     const parseResult = processSchema.safeParse(req.body);
     if (!parseResult.success) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid request body',
+        error: "Invalid request body",
         details: parseResult.error.errors,
       });
     }
@@ -420,7 +411,7 @@ router.post('/process', async (req: Request, res: Response) => {
     if (isProcessingPaused()) {
       return res.status(503).json({
         success: false,
-        error: 'Processing is currently paused due to budget constraints',
+        error: "Processing is currently paused due to budget constraints",
       });
     }
 
@@ -448,10 +439,9 @@ router.post('/process', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Process error:', error);
     res.status(500).json({
       success: false,
-      error: 'Processing failed',
+      error: "Processing failed",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -461,7 +451,7 @@ router.post('/process', async (req: Request, res: Response) => {
  * GET /api/travi/jobs
  * List recent processing jobs
  */
-router.get('/jobs', async (req: Request, res: Response) => {
+router.get("/jobs", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
     const offset = parseInt(req.query.offset as string) || 0;
@@ -480,10 +470,9 @@ router.get('/jobs', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Jobs error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to get jobs',
+      error: "Failed to get jobs",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -493,25 +482,24 @@ router.get('/jobs', async (req: Request, res: Response) => {
  * GET /api/travi/budget
  * Get detailed budget status
  */
-router.get('/budget', async (_req: Request, res: Response) => {
+router.get("/budget", async (_req: Request, res: Response) => {
   try {
-    const [budgetStatus, usageStats] = await Promise.all([
-      getBudgetStatus(),
-      getTodayUsageStats(),
-    ]);
+    const [budgetStatus, usageStats] = await Promise.all([getBudgetStatus(), getTodayUsageStats()]);
 
     const alerts: string[] = [];
-    if (budgetStatus.status === 'warning') {
-      alerts.push(`Warning: Approaching budget limit ($${budgetStatus.totalSpent.toFixed(2)} spent)`);
+    if (budgetStatus.status === "warning") {
+      alerts.push(
+        `Warning: Approaching budget limit ($${budgetStatus.totalSpent.toFixed(2)} spent)`
+      );
     }
-    if (budgetStatus.status === 'critical') {
+    if (budgetStatus.status === "critical") {
       alerts.push(`Critical: Near budget limit ($${budgetStatus.totalSpent.toFixed(2)} spent)`);
     }
-    if (budgetStatus.status === 'stopped') {
+    if (budgetStatus.status === "stopped") {
       alerts.push(`STOPPED: Budget limit exceeded ($${budgetStatus.totalSpent.toFixed(2)} spent)`);
     }
     if (isProcessingThrottled()) {
-      alerts.push('Processing is throttled (3x slower)');
+      alerts.push("Processing is throttled (3x slower)");
     }
 
     res.json({
@@ -527,10 +515,9 @@ router.get('/budget', async (_req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Budget error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to get budget status',
+      error: "Failed to get budget status",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -540,21 +527,20 @@ router.get('/budget', async (_req: Request, res: Response) => {
  * POST /api/travi/pause
  * Pause all processing
  */
-router.post('/pause', async (req: Request, res: Response) => {
+router.post("/pause", async (req: Request, res: Response) => {
   try {
-    const reason = req.body?.reason || 'Manual pause via API';
+    const reason = req.body?.reason || "Manual pause via API";
     pauseProcessing(reason);
 
     res.json({
       success: true,
-      message: 'Processing paused',
+      message: "Processing paused",
       reason,
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Pause error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to pause processing',
+      error: "Failed to pause processing",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -564,19 +550,18 @@ router.post('/pause', async (req: Request, res: Response) => {
  * POST /api/travi/resume
  * Resume processing
  */
-router.post('/resume', async (_req: Request, res: Response) => {
+router.post("/resume", async (_req: Request, res: Response) => {
   try {
     resumeProcessing();
 
     res.json({
       success: true,
-      message: 'Processing resumed',
+      message: "Processing resumed",
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Resume error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to resume processing',
+      error: "Failed to resume processing",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -586,7 +571,7 @@ router.post('/resume', async (_req: Request, res: Response) => {
  * GET /api/travi/logs
  * Get recent processing logs
  */
-router.get('/logs', async (req: Request, res: Response) => {
+router.get("/logs", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
     const logs = getRecentLogs(limit);
@@ -599,10 +584,9 @@ router.get('/logs', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.error('[TRAVI Routes] Logs error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to get logs',
+      error: "Failed to get logs",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -612,20 +596,19 @@ router.get('/logs', async (req: Request, res: Response) => {
  * GET /api/travi/test-apis
  * Test all external APIs to verify they work correctly
  */
-router.get('/test-apis', async (_req: Request, res: Response) => {
+router.get("/test-apis", async (_req: Request, res: Response) => {
   try {
-    const { testAllAPIs } = await import('./api-test');
+    const { testAllAPIs } = await import("./api-test");
     const results = await testAllAPIs();
-    
+
     res.json({
       success: true,
       data: results,
     });
   } catch (error) {
-    console.error('[TRAVI Routes] API test error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to test APIs',
+      error: "Failed to test APIs",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -642,14 +625,14 @@ router.get('/test-apis', async (_req: Request, res: Response) => {
  * GET /api/travi/api-keys
  * DEPRECATED: List all API keys with their status
  */
-router.get('/api-keys', async (_req: Request, res: Response) => {
+router.get("/api-keys", async (_req: Request, res: Response) => {
   res.json({
     success: true,
     data: {
       keys: [],
       encryptionConfigured: false,
       supportedServices: [],
-      message: "Deprecated - API keys are now managed via environment variables"
+      message: "Deprecated - API keys are now managed via environment variables",
     },
   });
 });
@@ -658,10 +641,10 @@ router.get('/api-keys', async (_req: Request, res: Response) => {
  * POST /api/travi/api-keys
  * DEPRECATED: Update or create an API key
  */
-router.post('/api-keys', async (_req: Request, res: Response) => {
+router.post("/api-keys", async (_req: Request, res: Response) => {
   res.json({
     success: false,
-    error: 'Deprecated - API keys are now managed via environment variables',
+    error: "Deprecated - API keys are now managed via environment variables",
   });
 });
 
@@ -669,10 +652,10 @@ router.post('/api-keys', async (_req: Request, res: Response) => {
  * POST /api/travi/api-keys/:service/test
  * DEPRECATED: Test a specific API key
  */
-router.post('/api-keys/:service/test', async (_req: Request, res: Response) => {
+router.post("/api-keys/:service/test", async (_req: Request, res: Response) => {
   res.json({
     success: false,
-    error: 'Deprecated - use the main configuration panel to test API connections',
+    error: "Deprecated - use the main configuration panel to test API connections",
   });
 });
 
@@ -680,13 +663,13 @@ router.post('/api-keys/:service/test', async (_req: Request, res: Response) => {
  * GET /api/travi/api-keys/audit
  * DEPRECATED: Get API key audit log
  */
-router.get('/api-keys/audit', async (_req: Request, res: Response) => {
+router.get("/api-keys/audit", async (_req: Request, res: Response) => {
   res.json({
     success: true,
     data: {
       auditLog: [],
       count: 0,
-      message: "Deprecated - API key audit logs are no longer available"
+      message: "Deprecated - API key audit logs are no longer available",
     },
   });
 });
@@ -695,10 +678,10 @@ router.get('/api-keys/audit', async (_req: Request, res: Response) => {
  * DELETE /api/travi/api-keys/:service
  * DEPRECATED: Delete an API key from the database
  */
-router.delete('/api-keys/:service', async (_req: Request, res: Response) => {
+router.delete("/api-keys/:service", async (_req: Request, res: Response) => {
   res.json({
     success: false,
-    error: 'Deprecated - API keys are now managed via environment variables',
+    error: "Deprecated - API keys are now managed via environment variables",
   });
 });
 

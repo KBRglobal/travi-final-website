@@ -121,5 +121,3 @@ export function isDraft(ctx: ResolvedContext): boolean {
 export function isPublished(ctx: ResolvedContext): boolean {
   return ctx.status === "published";
 }
-
-console.log("[AccessControl] ContextResolver loaded");

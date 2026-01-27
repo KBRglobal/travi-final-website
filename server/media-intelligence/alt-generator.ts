@@ -6,16 +6,16 @@
  * - ENABLE_MEDIA_AUTO_APPLY=true (auto-apply high confidence suggestions)
  */
 
-import { isAltAIEnabled } from './types-v2';
-import { getAsset, storeAltSuggestion } from './asset-manager';
+import { isAltAIEnabled } from "./types-v2";
+import { getAsset, storeAltSuggestion } from "./asset-manager";
 
 // Rate limiting
 const rateLimitWindow = 60000; // 1 minute
-const maxRequestsPerWindow = parseInt(process.env.MEDIA_ALT_AI_RATE_LIMIT || '30', 10);
+const maxRequestsPerWindow = parseInt(process.env.MEDIA_ALT_AI_RATE_LIMIT || "30", 10);
 const requestLog: number[] = [];
 
 // Timeout for AI calls
-const AI_TIMEOUT_MS = parseInt(process.env.MEDIA_ALT_AI_TIMEOUT || '10000', 10);
+const AI_TIMEOUT_MS = parseInt(process.env.MEDIA_ALT_AI_TIMEOUT || "10000", 10);
 
 /**
  * Check rate limit
@@ -42,9 +42,9 @@ function recordRequest(): void {
 function sanitizeAltText(text: string): string {
   return text
     .trim()
-    .replace(/[\r\n\t]+/g, ' ') // Remove newlines/tabs
-    .replace(/\s+/g, ' ') // Collapse whitespace
-    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/[\r\n\t]+/g, " ") // Remove newlines/tabs
+    .replace(/\s+/g, " ") // Collapse whitespace
+    .replace(/[<>]/g, "") // Remove angle brackets
     .slice(0, 300); // Max 300 chars
 }
 
@@ -53,23 +53,21 @@ function sanitizeAltText(text: string): string {
  */
 function generateFromFilename(filename: string): { text: string; confidence: number } {
   const name = filename
-    .replace(/\.[^/.]+$/, '') // Remove extension
-    .replace(/[-_]/g, ' ') // Replace separators
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // Split camelCase
-    .replace(/\d{10,}/g, '') // Remove long numbers (timestamps)
+    .replace(/\.[^/.]+$/, "") // Remove extension
+    .replace(/[-_]/g, " ") // Replace separators
+    .replace(/([a-z])([A-Z])/g, "$1 $2") // Split camelCase
+    .replace(/\d{10,}/g, "") // Remove long numbers (timestamps)
     .trim();
 
   if (!name || name.length < 3) {
-    return { text: '', confidence: 0 };
+    return { text: "", confidence: 0 };
   }
 
   // Clean up common prefixes
-  const cleaned = name
-    .replace(/^(img|image|photo|pic|dsc|screenshot|screen)/i, '')
-    .trim();
+  const cleaned = name.replace(/^(img|image|photo|pic|dsc|screenshot|screen)/i, "").trim();
 
   if (cleaned.length < 3) {
-    return { text: '', confidence: 0 };
+    return { text: "", confidence: 0 };
   }
 
   return {
@@ -83,19 +81,17 @@ function generateFromFilename(filename: string): { text: string; confidence: num
  */
 function generateFromTags(tags: string[]): { text: string; confidence: number } {
   if (!tags || tags.length === 0) {
-    return { text: '', confidence: 0 };
+    return { text: "", confidence: 0 };
   }
 
-  const relevantTags = tags
-    .filter(t => t.length > 2)
-    .slice(0, 5);
+  const relevantTags = tags.filter(t => t.length > 2).slice(0, 5);
 
   if (relevantTags.length === 0) {
-    return { text: '', confidence: 0 };
+    return { text: "", confidence: 0 };
   }
 
   return {
-    text: `Image featuring ${relevantTags.join(', ')}`,
+    text: `Image featuring ${relevantTags.join(", ")}`,
     confidence: 0.6,
   };
 }
@@ -112,44 +108,47 @@ async function callAIService(
 
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
-      reject(new Error('AI service timeout'));
+      reject(new Error("AI service timeout"));
     }, AI_TIMEOUT_MS);
 
     // Simulate AI processing
-    setTimeout(() => {
-      clearTimeout(timeout);
+    setTimeout(
+      () => {
+        clearTimeout(timeout);
 
-      // Mock AI response based on URL patterns
-      const urlLower = imageUrl.toLowerCase();
+        // Mock AI response based on URL patterns
+        const urlLower = imageUrl.toLowerCase();
 
-      if (urlLower.includes('beach') || urlLower.includes('ocean')) {
-        resolve({
-          text: 'A scenic beach view with blue ocean water and sandy shore',
-          confidence: 0.85,
-        });
-      } else if (urlLower.includes('hotel') || urlLower.includes('room')) {
-        resolve({
-          text: 'A modern hotel room with comfortable bedding and elegant decor',
-          confidence: 0.82,
-        });
-      } else if (urlLower.includes('food') || urlLower.includes('restaurant')) {
-        resolve({
-          text: 'A beautifully plated dish in an upscale restaurant setting',
-          confidence: 0.80,
-        });
-      } else if (urlLower.includes('city') || urlLower.includes('skyline')) {
-        resolve({
-          text: 'A panoramic city skyline with tall buildings against the sky',
-          confidence: 0.78,
-        });
-      } else {
-        // Generic fallback
-        resolve({
-          text: 'A travel-related photograph showing a destination or experience',
-          confidence: 0.55,
-        });
-      }
-    }, 500 + Math.random() * 500); // 500-1000ms simulated delay
+        if (urlLower.includes("beach") || urlLower.includes("ocean")) {
+          resolve({
+            text: "A scenic beach view with blue ocean water and sandy shore",
+            confidence: 0.85,
+          });
+        } else if (urlLower.includes("hotel") || urlLower.includes("room")) {
+          resolve({
+            text: "A modern hotel room with comfortable bedding and elegant decor",
+            confidence: 0.82,
+          });
+        } else if (urlLower.includes("food") || urlLower.includes("restaurant")) {
+          resolve({
+            text: "A beautifully plated dish in an upscale restaurant setting",
+            confidence: 0.8,
+          });
+        } else if (urlLower.includes("city") || urlLower.includes("skyline")) {
+          resolve({
+            text: "A panoramic city skyline with tall buildings against the sky",
+            confidence: 0.78,
+          });
+        } else {
+          // Generic fallback
+          resolve({
+            text: "A travel-related photograph showing a destination or experience",
+            confidence: 0.55,
+          });
+        }
+      },
+      500 + Math.random() * 500
+    ); // 500-1000ms simulated delay
   });
 }
 
@@ -164,15 +163,23 @@ export async function generateAltText(
     objects?: string[];
   } = {}
 ): Promise<{
-  suggestions: Array<{ text: string; confidence: number; source: 'ai' | 'filename' | 'tags' | 'objects' }>;
+  suggestions: Array<{
+    text: string;
+    confidence: number;
+    source: "ai" | "filename" | "tags" | "objects";
+  }>;
   rateLimited: boolean;
   error?: string;
 }> {
-  const suggestions: Array<{ text: string; confidence: number; source: 'ai' | 'filename' | 'tags' | 'objects' }> = [];
+  const suggestions: Array<{
+    text: string;
+    confidence: number;
+    source: "ai" | "filename" | "tags" | "objects";
+  }> = [];
 
   const asset = getAsset(assetId);
   if (!asset) {
-    return { suggestions: [], rateLimited: false, error: 'Asset not found' };
+    return { suggestions: [], rateLimited: false, error: "Asset not found" };
   }
 
   // Try filename-based suggestion
@@ -181,7 +188,7 @@ export async function generateAltText(
     suggestions.push({
       ...filenameSuggestion,
       text: sanitizeAltText(filenameSuggestion.text),
-      source: 'filename',
+      source: "filename",
     });
   }
 
@@ -192,7 +199,7 @@ export async function generateAltText(
       suggestions.push({
         ...tagsSuggestion,
         text: sanitizeAltText(tagsSuggestion.text),
-        source: 'tags',
+        source: "tags",
       });
     }
   }
@@ -204,7 +211,7 @@ export async function generateAltText(
       suggestions.push({
         ...objectsSuggestion,
         text: sanitizeAltText(objectsSuggestion.text),
-        source: 'objects',
+        source: "objects",
       });
     }
   }
@@ -226,12 +233,11 @@ export async function generateAltText(
         suggestions.push({
           ...aiResult,
           text: sanitizeAltText(aiResult.text),
-          source: 'ai',
+          source: "ai",
         });
       }
     } catch (err) {
       // AI failed, but we still have other suggestions
-      console.error('AI alt text generation failed:', err);
     }
   }
 
@@ -277,7 +283,7 @@ export async function batchGenerateAltText(
 
     for (const result of results) {
       processed++;
-      if (result.status === 'fulfilled') {
+      if (result.status === "fulfilled") {
         if (result.value.rateLimited) {
           rateLimited++;
         } else if (result.value.suggestions.length > 0) {

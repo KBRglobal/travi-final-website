@@ -44,31 +44,31 @@ export function PublicHero({
 
   // Build breadcrumb items with automatic destination insertion
   const getLabel = (crumb: BreadcrumbItem) => {
-    if (locale === 'he' && crumb.labelHe) return crumb.labelHe;
+    if (locale === "he" && crumb.labelHe) return crumb.labelHe;
     return crumb.label;
   };
 
   const buildBreadcrumbs = (): BreadcrumbItem[] => {
     const items: BreadcrumbItem[] = [];
-    
+
     // Always add Home first if provided breadcrumbs exist
     const hasHome = breadcrumbs.some(b => b.href === "/" || b.label.toLowerCase() === "home");
     if (!hasHome && breadcrumbs.length > 0) {
-      items.push({ label: "Home", labelHe: "בית", href: "/" });
+      items.push({ label: "Home", href: "/" });
     }
 
     // Add destination if we're in Dubai context and showDestinationBreadcrumb is true
     if (showDestinationBreadcrumb && isDubai && currentDestination) {
       // Check for both singular /destination/ and plural /destinations/ patterns
-      const hasDestination = breadcrumbs.some(b => 
-        b.href?.match(/\/destinations?\//) || 
-        b.label.toLowerCase() === currentDestination.toLowerCase()
+      const hasDestination = breadcrumbs.some(
+        b =>
+          b.href?.match(/\/destinations?\//) ||
+          b.label.toLowerCase() === currentDestination.toLowerCase()
       );
       if (!hasDestination) {
-        items.push({ 
-          label: currentDestination, 
-          labelHe: currentDestination === "Dubai" ? "דובאי" : currentDestination,
-          href: "/destinations/dubai" 
+        items.push({
+          label: currentDestination,
+          href: "/destinations/dubai",
         });
       }
     }
@@ -105,7 +105,7 @@ export function PublicHero({
       )}
 
       {/* Dark Gradient Overlay - ensures text readability */}
-      <div 
+      <div
         className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"
         data-testid="hero-overlay"
       />
@@ -124,12 +124,7 @@ export function PublicHero({
           >
             {finalBreadcrumbs.map((crumb, index) => (
               <div key={index} className="flex items-center gap-2">
-                {index > 0 && (
-                  <ChevronIcon
-                    className="w-4 h-4 text-white/60"
-                    aria-hidden="true"
-                  />
-                )}
+                {index > 0 && <ChevronIcon className="w-4 h-4 text-white/60" aria-hidden="true" />}
                 {crumb.href && index < finalBreadcrumbs.length - 1 ? (
                   <Link
                     href={localePath(crumb.href)}
@@ -172,10 +167,7 @@ export function PublicHero({
 
         {/* CTA Buttons Slot */}
         {children && (
-          <div
-            className="flex flex-wrap items-center gap-4"
-            data-testid="hero-cta-container"
-          >
+          <div className="flex flex-wrap items-center gap-4" data-testid="hero-cta-container">
             {children}
           </div>
         )}

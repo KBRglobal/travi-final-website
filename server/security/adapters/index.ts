@@ -12,26 +12,25 @@
  * Feature flag: ENABLE_SECURITY_AUTHORITY
  */
 
-export { AdapterManager, registerAdapter, unregisterAdapter } from './adapter-manager';
-export { DataDecisionsAdapter } from './data-decisions-adapter';
-export { SEOAdapter } from './seo-adapter';
-export { OpsAdapter } from './ops-adapter';
-export { AutonomyAdapter } from './autonomy-adapter';
-export { UserSecurityAdapter } from './user-security-adapter';
+export { AdapterManager, registerAdapter, unregisterAdapter } from "./adapter-manager";
+export { DataDecisionsAdapter } from "./data-decisions-adapter";
+export { SEOAdapter } from "./seo-adapter";
+export { OpsAdapter } from "./ops-adapter";
+export { AutonomyAdapter } from "./autonomy-adapter";
+export { UserSecurityAdapter } from "./user-security-adapter";
 
 // Auto-register all adapters on import
-import { AdapterManager } from './adapter-manager';
-import { DataDecisionsAdapter } from './data-decisions-adapter';
-import { SEOAdapter } from './seo-adapter';
-import { OpsAdapter } from './ops-adapter';
-import { AutonomyAdapter } from './autonomy-adapter';
-import { UserSecurityAdapter } from './user-security-adapter';
+import { AdapterManager } from "./adapter-manager";
+import { DataDecisionsAdapter } from "./data-decisions-adapter";
+import { SEOAdapter } from "./seo-adapter";
+import { OpsAdapter } from "./ops-adapter";
+import { AutonomyAdapter } from "./autonomy-adapter";
+import { UserSecurityAdapter } from "./user-security-adapter";
 
 export function initializeAdapters(): void {
-  const enabled = process.env.ENABLE_SECURITY_AUTHORITY === 'true';
+  const enabled = process.env.ENABLE_SECURITY_AUTHORITY === "true";
 
   if (!enabled) {
-    console.log('[SecurityAdapters] Disabled - ENABLE_SECURITY_AUTHORITY is not true');
     return;
   }
 
@@ -40,8 +39,4 @@ export function initializeAdapters(): void {
   AdapterManager.register(OpsAdapter);
   AdapterManager.register(AutonomyAdapter);
   AdapterManager.register(UserSecurityAdapter);
-
-  console.log('[SecurityAdapters] All adapters registered');
 }
-
-console.log('[SecurityAdapters] Module loaded');

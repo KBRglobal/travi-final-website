@@ -14,8 +14,8 @@ import { createHash, randomBytes } from "crypto";
 // ============================================================================
 
 export type SecurityMode =
-  | "monitor"   // Log violations but allow
-  | "enforce"   // Block violations
+  | "monitor" // Log violations but allow
+  | "enforce" // Block violations
   | "lockdown"; // Only super_admin access
 
 export type ThreatLevel = "green" | "yellow" | "orange" | "red" | "black";
@@ -59,7 +59,6 @@ const KERNEL_STATE: SecurityKernelState = {
  */
 export function initSecurityKernel(): void {
   if (KERNEL_STATE.initialized) {
-    console.warn("[SecurityKernel] Already initialized - rejecting re-initialization");
     return;
   }
 
@@ -73,12 +72,8 @@ export function initSecurityKernel(): void {
   KERNEL_STATE.initialized = true;
   KERNEL_STATE.bootTime = new Date();
 
-  console.log(`[SecurityKernel] Initialized in ${KERNEL_STATE.mode.toUpperCase()} mode`);
-  console.log(`[SecurityKernel] Kernel hash: ${KERNEL_STATE.kernelHash.substring(0, 16)}...`);
-
   // Register shutdown handler
   process.on("SIGTERM", () => {
-    console.log("[SecurityKernel] Shutdown signal received");
     KERNEL_STATE.initialized = false;
   });
 }
@@ -188,8 +183,6 @@ export function setSecurityMode(
     KERNEL_STATE.lockdownReason = reason;
   }
 
-  console.log(`[SecurityKernel] Mode changed: ${previousMode} -> ${mode} by ${actorId}. Reason: ${reason}`);
-
   return { success: true };
 }
 
@@ -201,8 +194,6 @@ export function setThreatLevel(level: ThreatLevel, reason: string): void {
 
   const previousLevel = KERNEL_STATE.threatLevel;
   KERNEL_STATE.threatLevel = level;
-
-  console.log(`[SecurityKernel] Threat level: ${previousLevel} -> ${level}. Reason: ${reason}`);
 
   // Auto-escalate to lockdown on red/black
   if ((level === "red" || level === "black") && KERNEL_STATE.mode !== "lockdown") {
@@ -220,8 +211,6 @@ export function triggerLockdown(reason: string, actorId: string): void {
   KERNEL_STATE.lockdownReason = reason;
   KERNEL_STATE.threatLevel = "red";
   KERNEL_STATE.lastModeChange = new Date();
-
-  console.error(`[SecurityKernel] LOCKDOWN TRIGGERED by ${actorId}: ${reason}`);
 }
 
 // ============================================================================
@@ -309,8 +298,6 @@ export function recordViolation(params: {
       setThreatLevel("red", "Critical violation threshold exceeded");
     }
   }
-
-  console.warn(`[SecurityKernel] VIOLATION [${params.severity}]: ${params.type} - ${params.details}`);
 }
 
 /**
@@ -323,7 +310,6 @@ export function recordBlock(params: {
   reason: string;
 }): void {
   KERNEL_STATE.blockedCount++;
-  console.log(`[SecurityKernel] BLOCKED: ${params.action} on ${params.resource} - ${params.reason}`);
 }
 
 // ============================================================================
@@ -372,7 +358,7 @@ export function verifyKernelIntegrity(): boolean {
 function ensureInitialized(): void {
   if (!KERNEL_STATE.initialized) {
     // Auto-initialize if not done
-    console.warn("[SecurityKernel] Auto-initializing - should be done at startup");
+
     initSecurityKernel();
   }
 }
@@ -397,8 +383,6 @@ export function detectBypassAttempt(params: {
     details: `${params.source}: ${params.method} - ${params.details}`,
     severity: "critical",
   });
-
-  console.error(`[SecurityKernel] BYPASS ATTEMPT DETECTED: ${JSON.stringify(params)}`);
 }
 
 // ============================================================================
@@ -418,5 +402,3 @@ export function onThreatLevelChange(handler: ThreatLevelChangeHandler): () => vo
     if (idx !== -1) threatLevelChangeHandlers.splice(idx, 1);
   };
 }
-
-console.log("[SecurityKernel] Module loaded");

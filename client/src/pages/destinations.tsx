@@ -5,16 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { 
-  MapPin, 
-  ChevronRight, 
-  ChevronLeft, 
-  Search, 
-  Globe, 
-  Sparkles, 
-  ArrowRight, 
+import {
+  MapPin,
+  ChevronRight,
+  ChevronLeft,
+  Search,
+  Globe,
+  Sparkles,
+  ArrowRight,
   RefreshCw,
-  Loader2
+  Loader2,
 } from "lucide-react";
 import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
@@ -76,23 +76,23 @@ interface APIDestination {
 }
 
 const SUPPORTED_LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'ar', label: 'العربية' },
-  { code: 'he', label: 'עברית' },
-  { code: 'es', label: 'Español' },
-  { code: 'fr', label: 'Français' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'pt', label: 'Português' },
-  { code: 'ru', label: 'Русский' },
-  { code: 'ja', label: '日本語' },
-  { code: 'ko', label: '한국어' },
-  { code: 'zh', label: '中文' },
-  { code: 'th', label: 'ไทย' },
-  { code: 'tr', label: 'Türkçe' },
-  { code: 'nl', label: 'Nederlands' },
-  { code: 'pl', label: 'Polski' },
-  { code: 'vi', label: 'Tiếng Việt' },
+  { code: "en", label: "English" },
+  { code: "ar", label: "العربية" },
+  { code: "he", label: "Hebrew" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  { code: "it", label: "Italiano" },
+  { code: "pt", label: "Português" },
+  { code: "ru", label: "Русский" },
+  { code: "ja", label: "日本語" },
+  { code: "ko", label: "한국어" },
+  { code: "zh", label: "中文" },
+  { code: "th", label: "ไทย" },
+  { code: "tr", label: "Türkçe" },
+  { code: "nl", label: "Nederlands" },
+  { code: "pl", label: "Polski" },
+  { code: "vi", label: "Tiếng Việt" },
 ];
 
 const FAQ_KEYS = ["1", "2", "3", "4"] as const;
@@ -102,9 +102,9 @@ function usePreferredMotion() {
   return !prefersReducedMotion;
 }
 
-function DestinationChip({ destination, index }: { destination: APIDestination, index: number }) {
+function DestinationChip({ destination, index }: { destination: APIDestination; index: number }) {
   const shouldAnimate = usePreferredMotion();
-  
+
   return (
     <motion.div
       initial={shouldAnimate ? { opacity: 0, scale: 0.8, y: 20 } : {}}
@@ -113,23 +113,27 @@ function DestinationChip({ destination, index }: { destination: APIDestination, 
       whileHover={shouldAnimate ? { scale: 1.05, y: -4 } : {}}
     >
       <Link href={`/destinations/${destination.id}`}>
-        <div 
+        <div
           className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.id}`}
         >
-          <img 
-            src={destination.cardImage || `/cards/${destination.id}.webp`} 
+          <img
+            src={destination.cardImage || `/cards/${destination.id}.webp`}
             alt={destination.name}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
             loading="lazy"
-            onError={(e) => {
+            onError={e => {
               const target = e.target as HTMLImageElement;
               target.src = `https://placehold.co/100x100/6443F4/white?text=${destination.name.charAt(0)}`;
             }}
           />
           <div className="flex flex-col">
-            <span className="text-slate-900 dark:text-white font-medium text-sm leading-tight">{destination.name}</span>
-            <span className="text-slate-500 dark:text-slate-400 text-[10px] leading-tight">{destination.country}</span>
+            <span className="text-slate-900 dark:text-white font-medium text-sm leading-tight">
+              {destination.name}
+            </span>
+            <span className="text-slate-500 dark:text-slate-400 text-[10px] leading-tight">
+              {destination.country}
+            </span>
           </div>
         </div>
       </Link>
@@ -144,36 +148,42 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
   const countryCount = new Set(destinations.map(d => d.country)).size;
 
   return (
-    <section 
+    <section
       className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
       data-testid="destinations-hero"
       aria-label={t("destinations.hero.ariaLabel")}
     >
       <style>{heroAnimationStyles}</style>
-      
+
       <SubtleSkyBackground className="absolute inset-0 pointer-events-none" />
-      
-      <motion.div 
+
+      <motion.div
         className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none"
         animate={shouldAnimate ? { scale: [1, 1.1, 1], opacity: [0.3, 0.4, 0.3] } : {}}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden="true"
       />
-      <motion.div 
+      <motion.div
         className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none"
         animate={shouldAnimate ? { scale: [1, 1.15, 1], opacity: [0.25, 0.35, 0.25] } : {}}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         aria-hidden="true"
       />
 
-      <div className="absolute top-1/2 right-0 translate-x-1/3 -translate-y-1/2 w-[800px] h-[800px] rotate-slow opacity-10 dark:opacity-15 pointer-events-none" aria-hidden="true">
-        <div className="w-full h-full rounded-full border-[30px] border-transparent" style={{ borderTopColor: '#6443F4', borderRightColor: '#F24294' }} />
+      <div
+        className="absolute top-1/2 right-0 translate-x-1/3 -translate-y-1/2 w-[800px] h-[800px] rotate-slow opacity-10 dark:opacity-15 pointer-events-none"
+        aria-hidden="true"
+      >
+        <div
+          className="w-full h-full rounded-full border-[30px] border-transparent"
+          style={{ borderTopColor: "#6443F4", borderRightColor: "#F24294" }}
+        />
       </div>
 
       <div className="w-full max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           <div className="flex-1 max-w-xl text-center lg:text-left">
-            <motion.div 
+            <motion.div
               className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-full mb-6 border border-purple-100/50 dark:border-purple-800/30"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
@@ -185,34 +195,34 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
               </span>
             </motion.div>
 
-            <motion.h1 
+            <motion.h1
               className="mb-6"
               initial={shouldAnimate ? { opacity: 0, y: 30 } : {}}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               data-testid="destinations-page-h1"
             >
-              <span 
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2" 
+              <span
+                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
                 {t("destinations.hero.discover")}
               </span>
-              <span 
+              <span
                 className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
                 {t("destinations.hero.worldClass")}
               </span>
-              <span 
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight" 
+              <span
+                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
                 {t("destinations.hero.destinations")}
               </span>
             </motion.h1>
 
-            <motion.p 
+            <motion.p
               className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
@@ -222,15 +232,23 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
               {t("destinations.hero.description")}
             </motion.p>
 
-            <motion.dl 
+            <motion.dl
               className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               {[
-                { num: destinationCount.toString(), label: t("destinations.stats.destinations"), icon: MapPin },
-                { num: countryCount.toString(), label: t("destinations.stats.countries"), icon: Globe },
+                {
+                  num: destinationCount.toString(),
+                  label: t("destinations.stats.destinations"),
+                  icon: MapPin,
+                },
+                {
+                  num: countryCount.toString(),
+                  label: t("destinations.stats.countries"),
+                  icon: Globe,
+                },
               ].map((stat, i) => (
                 <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                   <div className="text-center lg:text-left flex items-center gap-3">
@@ -238,25 +256,35 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
                       <stat.icon className="w-5 h-5 text-[#6443F4]" />
                     </div>
                     <div>
-                      <dd className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+                      <dd
+                        className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white"
+                        style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                      >
                         {stat.num}
                       </dd>
-                      <div className="text-[10px] sm:text-[11px] text-slate-400 tracking-wider">{stat.label}</div>
+                      <div className="text-[10px] sm:text-[11px] text-slate-400 tracking-wider">
+                        {stat.label}
+                      </div>
                     </div>
                   </div>
-                  {i < 1 && <div className="hidden sm:block w-px h-10 sm:h-12 bg-gradient-to-b from-transparent via-slate-200 dark:via-slate-700 to-transparent" aria-hidden="true" />}
+                  {i < 1 && (
+                    <div
+                      className="hidden sm:block w-px h-10 sm:h-12 bg-gradient-to-b from-transparent via-slate-200 dark:via-slate-700 to-transparent"
+                      aria-hidden="true"
+                    />
+                  )}
                 </div>
               ))}
             </motion.dl>
 
-            <motion.div 
+            <motion.div
               className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <Link href="#explore-destinations">
-                <Button 
+                <Button
                   className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-8 py-6 text-base font-medium shadow-lg shadow-purple-500/20 transition-colors duration-200"
                   data-testid="button-explore-destinations"
                 >
@@ -268,7 +296,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
           </div>
 
           <div className="flex-1 w-full max-w-2xl">
-            <motion.div 
+            <motion.div
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
               initial={shouldAnimate ? { opacity: 0 } : {}}
               animate={{ opacity: 1 }}
@@ -295,7 +323,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
   useState(() => {
     if (!isAutoPlaying || featuredDestinations.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % featuredDestinations.length);
+      setCurrentIndex(prev => (prev + 1) % featuredDestinations.length);
     }, 4000);
     return () => clearInterval(timer);
   });
@@ -308,13 +336,19 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
-  const goPrev = () => goTo((currentIndex - 1 + featuredDestinations.length) % featuredDestinations.length);
+  const goPrev = () =>
+    goTo((currentIndex - 1 + featuredDestinations.length) % featuredDestinations.length);
   const goNext = () => goTo((currentIndex + 1) % featuredDestinations.length);
 
   const current = featuredDestinations[currentIndex];
 
   return (
-    <div className="relative group" role="region" aria-label={t("destinations.carousel.label")} aria-roledescription="carousel">
+    <div
+      className="relative group"
+      role="region"
+      aria-label={t("destinations.carousel.label")}
+      aria-roledescription="carousel"
+    >
       <div className="overflow-hidden rounded-3xl shadow-2xl shadow-slate-300/50 dark:shadow-slate-900/60">
         <AnimatePresence mode="wait">
           <motion.div
@@ -326,16 +360,23 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
             className="relative aspect-[2.2/1] w-full"
             role="group"
             aria-roledescription="slide"
-            aria-label={t("destinations.carousel.slideOf", { current: currentIndex + 1, total: featuredDestinations.length, name: current.name })}
+            aria-label={t("destinations.carousel.slideOf", {
+              current: currentIndex + 1,
+              total: featuredDestinations.length,
+              name: current.name,
+            })}
           >
             <img
               src={current.heroImage || current.cardImage || `/cards/${current.id}.webp`}
-              alt={current.cardImageAlt || t("destinations.card.travelGuideAlt", { name: current.name })}
+              alt={
+                current.cardImageAlt ||
+                t("destinations.card.travelGuideAlt", { name: current.name })
+              }
               className="w-full h-full object-cover"
               width={1200}
               height={550}
               loading="eager"
-              {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
+              {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0B0A1F]/80 via-[#0B0A1F]/40 to-transparent" />
             <div className="absolute inset-0 flex items-center">
@@ -371,7 +412,9 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   </span>
                   {current.moodTagline && (
                     <>
-                      <span className="opacity-50" aria-hidden="true">|</span>
+                      <span className="opacity-50" aria-hidden="true">
+                        |
+                      </span>
                       <span className="text-white/70">{current.moodTagline}</span>
                     </>
                   )}
@@ -404,15 +447,19 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
         >
           <ChevronLeft className="w-4 h-4" aria-hidden="true" />
         </Button>
-        <div className="flex gap-1.5 px-2" role="tablist" aria-label={t("destinations.carousel.label")}>
+        <div
+          className="flex gap-1.5 px-2"
+          role="tablist"
+          aria-label={t("destinations.carousel.label")}
+        >
           {featuredDestinations.map((dest, idx) => (
             <button
               key={idx}
               onClick={() => goTo(idx)}
               className={cn(
                 "h-2 rounded-full transition-all duration-300",
-                idx === currentIndex 
-                  ? "w-7 bg-gradient-to-r from-[#6443F4] to-[#E84C9A]" 
+                idx === currentIndex
+                  ? "w-7 bg-gradient-to-r from-[#6443F4] to-[#E84C9A]"
                   : "w-2 bg-white/50 hover:bg-white/70"
               )}
               role="tab"
@@ -479,7 +526,7 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
                 <MapPin className="w-3.5 h-3.5 text-[#E84C9A]" aria-hidden="true" />
                 <span>{destination.country}</span>
               </div>
-              <h3 
+              <h3
                 className="text-xl sm:text-2xl font-bold text-white leading-tight"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
@@ -490,7 +537,9 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
 
           <CardContent className="p-4 bg-white dark:bg-slate-800/80">
             <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
-              {destination.summary || destination.moodTagline || t("destinations.card.exploreFallback", { name: destination.name })}
+              {destination.summary ||
+                destination.moodTagline ||
+                t("destinations.card.exploreFallback", { name: destination.name })}
             </p>
             <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
@@ -498,7 +547,10 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
               </span>
               <span className="flex items-center text-[#6443F4] font-medium text-sm transition-all duration-300 group-hover:gap-1.5">
                 {t("destinations.card.explore")}
-                <ArrowRight className="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-0.5 transition-transform duration-300" aria-hidden="true" />
+                <ArrowRight
+                  className="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-0.5 transition-transform duration-300"
+                  aria-hidden="true"
+                />
               </span>
             </div>
           </CardContent>
@@ -510,10 +562,10 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
 
 function DestinationsFAQ() {
   const { t } = useTranslation();
-  
+
   return (
-    <section 
-      className="py-20 px-4 sm:px-6 bg-slate-50 dark:bg-slate-900/70" 
+    <section
+      className="py-20 px-4 sm:px-6 bg-slate-50 dark:bg-slate-900/70"
       data-testid="faq-section"
       aria-labelledby="faq-heading"
     >
@@ -524,7 +576,7 @@ function DestinationsFAQ() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 
+          <h2
             id="faq-heading"
             className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3"
             style={{ fontFamily: "'Chillax', var(--font-sans)" }}
@@ -562,22 +614,20 @@ function DestinationsFAQ() {
 
 function LoadingState() {
   const { t } = useTranslation();
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6443F4] to-[#E84C9A] flex items-center justify-center mx-auto mb-4 animate-pulse">
           <Loader2 className="w-8 h-8 text-white animate-spin" aria-hidden="true" />
         </div>
-        <h2 
+        <h2
           className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
         >
           {t("destinations.loading.title")}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400">
-          {t("destinations.loading.message")}
-        </p>
+        <p className="text-slate-600 dark:text-slate-400">{t("destinations.loading.message")}</p>
       </div>
     </div>
   );
@@ -585,23 +635,21 @@ function LoadingState() {
 
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   const { t } = useTranslation();
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mx-auto mb-4">
           <Globe className="w-8 h-8 text-slate-400 dark:text-slate-500" aria-hidden="true" />
         </div>
-        <h2 
+        <h2
           className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
         >
           {t("destinations.error.title")}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          {t("destinations.error.message")}
-        </p>
-        <Button 
+        <p className="text-slate-600 dark:text-slate-400 mb-6">{t("destinations.error.message")}</p>
+        <Button
           onClick={onRetry}
           className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
         >
@@ -615,22 +663,20 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 
 function EmptyState() {
   const { t } = useTranslation();
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center mx-auto mb-4">
           <Globe className="w-8 h-8 text-slate-400" aria-hidden="true" />
         </div>
-        <h2 
+        <h2
           className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
           style={{ fontFamily: "'Chillax', var(--font-sans)" }}
         >
           {t("destinations.empty.title")}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400">
-          {t("destinations.empty.message")}
-        </p>
+        <p className="text-slate-600 dark:text-slate-400">{t("destinations.empty.message")}</p>
       </div>
     </div>
   );
@@ -652,7 +698,12 @@ export default function DestinationsPage() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: destinations, isLoading: destinationsLoading, isError, refetch } = useQuery<APIDestination[]>({
+  const {
+    data: destinations,
+    isLoading: destinationsLoading,
+    isError,
+    refetch,
+  } = useQuery<APIDestination[]>({
     queryKey: ["/api/public/destinations"],
   });
 
@@ -679,8 +730,9 @@ export default function DestinationsPage() {
   }
 
   const filteredDestinations = destinations.filter(dest => {
-    const matchesSearch = dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          dest.country.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dest.country.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
 
@@ -695,40 +747,46 @@ export default function DestinationsPage() {
         {pageSeo?.metaDescription && <meta name="description" content={pageSeo.metaDescription} />}
         {pageSeo?.canonicalUrl && <link rel="canonical" href={pageSeo.canonicalUrl} />}
         {pageSeo?.robotsMeta && <meta name="robots" content={pageSeo.robotsMeta} />}
-        
+
         {/* Open Graph from database */}
         {pageSeo?.ogTitle && <meta property="og:title" content={pageSeo.ogTitle} />}
-        {pageSeo?.ogDescription && <meta property="og:description" content={pageSeo.ogDescription} />}
+        {pageSeo?.ogDescription && (
+          <meta property="og:description" content={pageSeo.ogDescription} />
+        )}
         {pageSeo?.ogImage && <meta property="og:image" content={pageSeo.ogImage} />}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={pageSeo?.canonicalUrl || "https://travi.world/destinations"} />
-        
+        <meta
+          property="og:url"
+          content={pageSeo?.canonicalUrl || "https://travi.world/destinations"}
+        />
+
         {/* Twitter Card - derived from OG if available */}
         <meta name="twitter:card" content="summary_large_image" />
         {pageSeo?.ogTitle && <meta name="twitter:title" content={pageSeo.ogTitle} />}
-        {pageSeo?.ogDescription && <meta name="twitter:description" content={pageSeo.ogDescription} />}
+        {pageSeo?.ogDescription && (
+          <meta name="twitter:description" content={pageSeo.ogDescription} />
+        )}
         {pageSeo?.ogImage && <meta name="twitter:image" content={pageSeo.ogImage} />}
 
         {/* Hreflang tags */}
         <link rel="alternate" hrefLang="x-default" href="https://travi.world/destinations" />
         {SUPPORTED_LANGUAGES.map(lang => (
-          <link key={lang.code} rel="alternate" hrefLang={lang.code} href={`https://travi.world/${lang.code}/destinations`} />
+          <link
+            key={lang.code}
+            rel="alternate"
+            hrefLang={lang.code}
+            href={`https://travi.world/${lang.code}/destinations`}
+          />
         ))}
 
         {/* Preload first destination image if available */}
         {destinations[0]?.cardImage && (
-          <link 
-            rel="preload" 
-            as="image" 
-            href={destinations[0].cardImage}
-          />
+          <link rel="preload" as="image" href={destinations[0].cardImage} />
         )}
 
         {/* JSON-LD from database - admin-controlled structured data */}
         {pageSeo?.jsonLdSchema && (
-          <script type="application/ld+json">
-            {JSON.stringify(pageSeo.jsonLdSchema)}
-          </script>
+          <script type="application/ld+json">{JSON.stringify(pageSeo.jsonLdSchema)}</script>
         )}
       </Helmet>
 
@@ -738,7 +796,7 @@ export default function DestinationsPage() {
         <main>
           <DestinationsHero destinationCount={destinationCount} regionCount={countryCount} />
 
-          <section 
+          <section
             id="explore-destinations"
             className="py-20 px-4 sm:px-6 bg-white dark:bg-slate-950"
             data-testid="destinations-content"
@@ -752,7 +810,7 @@ export default function DestinationsPage() {
               >
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
                   <div>
-                    <h2 
+                    <h2
                       className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3"
                       style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                     >
@@ -762,7 +820,7 @@ export default function DestinationsPage() {
                       {t("destinations.sections.featuredDesc")}
                     </p>
                   </div>
-                  
+
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -770,7 +828,7 @@ export default function DestinationsPage() {
                         type="search"
                         placeholder={t("destinations.search.placeholder")}
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={e => setSearchQuery(e.target.value)}
                         className="pl-10 pr-4 h-11 w-full sm:w-64 rounded-xl border-slate-200 dark:border-slate-700 focus:border-[#6443F4] focus:ring-[#6443F4]/20"
                         data-testid="input-search-destinations"
                       />
@@ -788,7 +846,7 @@ export default function DestinationsPage() {
                   viewport={{ once: true }}
                   className="mb-10"
                 >
-                  <h2 
+                  <h2
                     className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2"
                     style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   >

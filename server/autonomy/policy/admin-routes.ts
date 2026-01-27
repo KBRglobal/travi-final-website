@@ -3,13 +3,9 @@
  * Authenticated admin-only API endpoints
  */
 
-import { Router, Request, Response } from 'express';
-import { z } from 'zod';
-import {
-  policyDefinitionSchema,
-  policyUpdateSchema,
-  PolicyDecision,
-} from './types';
+import { Router, Request, Response } from "express";
+import { z } from "zod";
+import { policyDefinitionSchema, policyUpdateSchema, PolicyDecision } from "./types";
 import {
   getPolicies,
   getPolicy,
@@ -19,23 +15,19 @@ import {
   getRecentDecisions,
   seedDefaultPolicies,
   invalidatePolicyCache,
-} from './repository';
-import {
-  getBudgetSummary,
-  resetBudget,
-  clearBudgetCache,
-} from './budgets';
-import { evaluatePolicy } from './policy-engine';
+} from "./repository";
+import { getBudgetSummary, resetBudget, clearBudgetCache } from "./budgets";
+import { evaluatePolicy } from "./policy-engine";
 
 const router = Router();
 
 // Admin-only middleware
 const requireAdmin = (req: Request, res: Response, next: Function) => {
   const user = (req as any).user;
-  if (!user || user.role !== 'admin') {
+  if (!user || user.role !== "admin") {
     return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Admin access required',
+      error: "Forbidden",
+      message: "Admin access required",
     });
   }
   next();
@@ -48,7 +40,7 @@ router.use(requireAdmin);
  * GET /api/admin/autonomy/policy/current
  * Get all current policies
  */
-router.get('/policy/current', async (req: Request, res: Response) => {
+router.get("/policy/current", async (req: Request, res: Response) => {
   try {
     const policies = await getPolicies();
     res.json({
@@ -57,10 +49,9 @@ router.get('/policy/current', async (req: Request, res: Response) => {
       count: policies.length,
     });
   } catch (error) {
-    console.error('[AutonomyAPI] Get policies error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to retrieve policies',
+      error: "Internal Server Error",
+      message: "Failed to retrieve policies",
     });
   }
 });
@@ -69,24 +60,23 @@ router.get('/policy/current', async (req: Request, res: Response) => {
  * GET /api/admin/autonomy/policy/:id
  * Get specific policy by ID
  */
-router.get('/policy/:id', async (req: Request, res: Response) => {
+router.get("/policy/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const policy = await getPolicy(id);
 
     if (!policy) {
       return res.status(404).json({
-        error: 'Not Found',
-        message: 'Policy not found',
+        error: "Not Found",
+        message: "Policy not found",
       });
     }
 
     res.json({ success: true, data: policy });
   } catch (error) {
-    console.error('[AutonomyAPI] Get policy error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to retrieve policy',
+      error: "Internal Server Error",
+      message: "Failed to retrieve policy",
     });
   }
 });
@@ -95,15 +85,15 @@ router.get('/policy/:id', async (req: Request, res: Response) => {
  * POST /api/admin/autonomy/policy/update
  * Create or update a policy (strict validation)
  */
-router.post('/policy/update', async (req: Request, res: Response) => {
+router.post("/policy/update", async (req: Request, res: Response) => {
   try {
     // Strict validation
     const validationResult = policyDefinitionSchema.safeParse(req.body);
 
     if (!validationResult.success) {
       return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Invalid policy configuration',
+        error: "Validation Error",
+        message: "Invalid policy configuration",
         details: validationResult.error.errors,
       });
     }
@@ -131,22 +121,20 @@ router.post('/policy/update', async (req: Request, res: Response) => {
     res.json({
       success: true,
       data: result,
-      action: existing ? 'updated' : 'created',
+      action: existing ? "updated" : "created",
     });
   } catch (error) {
-    console.error('[AutonomyAPI] Update policy error:', error);
-
     if (error instanceof z.ZodError) {
       return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Invalid policy configuration',
+        error: "Validation Error",
+        message: "Invalid policy configuration",
         details: error.errors,
       });
     }
 
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to update policy',
+      error: "Internal Server Error",
+      message: "Failed to update policy",
     });
   }
 });
@@ -155,15 +143,15 @@ router.post('/policy/update', async (req: Request, res: Response) => {
  * DELETE /api/admin/autonomy/policy/:id
  * Delete a policy
  */
-router.delete('/policy/:id', async (req: Request, res: Response) => {
+router.delete("/policy/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
     // Prevent deleting default global policy
-    if (id === 'default-global') {
+    if (id === "default-global") {
       return res.status(400).json({
-        error: 'Bad Request',
-        message: 'Cannot delete the default global policy',
+        error: "Bad Request",
+        message: "Cannot delete the default global policy",
       });
     }
 
@@ -171,17 +159,16 @@ router.delete('/policy/:id', async (req: Request, res: Response) => {
 
     if (!deleted) {
       return res.status(404).json({
-        error: 'Not Found',
-        message: 'Policy not found',
+        error: "Not Found",
+        message: "Policy not found",
       });
     }
 
-    res.json({ success: true, message: 'Policy deleted' });
+    res.json({ success: true, message: "Policy deleted" });
   } catch (error) {
-    console.error('[AutonomyAPI] Delete policy error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to delete policy',
+      error: "Internal Server Error",
+      message: "Failed to delete policy",
     });
   }
 });
@@ -190,19 +177,18 @@ router.delete('/policy/:id', async (req: Request, res: Response) => {
  * POST /api/admin/autonomy/policy/seed
  * Seed default policies (if none exist)
  */
-router.post('/policy/seed', async (req: Request, res: Response) => {
+router.post("/policy/seed", async (req: Request, res: Response) => {
   try {
     const seeded = await seedDefaultPolicies();
     res.json({
       success: true,
-      message: seeded > 0 ? `Seeded ${seeded} default policies` : 'Policies already exist',
+      message: seeded > 0 ? `Seeded ${seeded} default policies` : "Policies already exist",
       seeded,
     });
   } catch (error) {
-    console.error('[AutonomyAPI] Seed policies error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to seed policies',
+      error: "Internal Server Error",
+      message: "Failed to seed policies",
     });
   }
 });
@@ -211,15 +197,14 @@ router.post('/policy/seed', async (req: Request, res: Response) => {
  * GET /api/admin/autonomy/budgets/summary
  * Get budget usage summary
  */
-router.get('/budgets/summary', async (req: Request, res: Response) => {
+router.get("/budgets/summary", async (req: Request, res: Response) => {
   try {
     const summary = await getBudgetSummary();
     res.json({ success: true, data: summary });
   } catch (error) {
-    console.error('[AutonomyAPI] Get budget summary error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to retrieve budget summary',
+      error: "Internal Server Error",
+      message: "Failed to retrieve budget summary",
     });
   }
 });
@@ -228,19 +213,19 @@ router.get('/budgets/summary', async (req: Request, res: Response) => {
  * POST /api/admin/autonomy/budgets/reset
  * Reset budget counters (scoped by target and optionally period)
  */
-router.post('/budgets/reset', async (req: Request, res: Response) => {
+router.post("/budgets/reset", async (req: Request, res: Response) => {
   try {
     const resetSchema = z.object({
       targetKey: z.string().min(1).max(200),
-      period: z.enum(['hourly', 'daily', 'weekly', 'monthly']).optional(),
+      period: z.enum(["hourly", "daily", "weekly", "monthly"]).optional(),
     });
 
     const validationResult = resetSchema.safeParse(req.body);
 
     if (!validationResult.success) {
       return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Invalid reset parameters',
+        error: "Validation Error",
+        message: "Invalid reset parameters",
         details: validationResult.error.errors,
       });
     }
@@ -252,13 +237,12 @@ router.post('/budgets/reset', async (req: Request, res: Response) => {
       success: true,
       message: `Reset ${resetCount} budget counter(s)`,
       targetKey,
-      period: period || 'all',
+      period: period || "all",
     });
   } catch (error) {
-    console.error('[AutonomyAPI] Reset budget error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to reset budget',
+      error: "Internal Server Error",
+      message: "Failed to reset budget",
     });
   }
 });
@@ -267,7 +251,7 @@ router.post('/budgets/reset', async (req: Request, res: Response) => {
  * GET /api/admin/autonomy/decisions/recent
  * Get recent policy decisions
  */
-router.get('/decisions/recent', async (req: Request, res: Response) => {
+router.get("/decisions/recent", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 100, 1000);
     const targetKey = req.query.targetKey as string | undefined;
@@ -275,10 +259,10 @@ router.get('/decisions/recent', async (req: Request, res: Response) => {
     const decision = req.query.decision as PolicyDecision | undefined;
 
     // Validate decision if provided
-    if (decision && !['ALLOW', 'WARN', 'BLOCK'].includes(decision)) {
+    if (decision && !["ALLOW", "WARN", "BLOCK"].includes(decision)) {
       return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Invalid decision filter. Must be ALLOW, WARN, or BLOCK',
+        error: "Validation Error",
+        message: "Invalid decision filter. Must be ALLOW, WARN, or BLOCK",
       });
     }
 
@@ -294,10 +278,9 @@ router.get('/decisions/recent', async (req: Request, res: Response) => {
       count: decisions.length,
     });
   } catch (error) {
-    console.error('[AutonomyAPI] Get decisions error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to retrieve decisions',
+      error: "Internal Server Error",
+      message: "Failed to retrieve decisions",
     });
   }
 });
@@ -306,19 +289,27 @@ router.get('/decisions/recent', async (req: Request, res: Response) => {
  * POST /api/admin/autonomy/evaluate
  * Test policy evaluation (dry run)
  */
-router.post('/evaluate', async (req: Request, res: Response) => {
+router.post("/evaluate", async (req: Request, res: Response) => {
   try {
     const evaluateSchema = z.object({
       target: z.object({
-        type: z.enum(['global', 'feature', 'entity', 'locale']),
+        type: z.enum(["global", "feature", "entity", "locale"]),
         feature: z.string().optional(),
         entity: z.string().optional(),
         locale: z.string().optional(),
       }),
       action: z.enum([
-        'content_create', 'content_update', 'content_delete', 'content_publish',
-        'ai_generate', 'ai_enrich', 'db_write', 'db_delete', 'external_api',
-        'notification', 'bulk_operation'
+        "content_create",
+        "content_update",
+        "content_delete",
+        "content_publish",
+        "ai_generate",
+        "ai_enrich",
+        "db_write",
+        "db_delete",
+        "external_api",
+        "notification",
+        "bulk_operation",
       ]),
     });
 
@@ -326,8 +317,8 @@ router.post('/evaluate', async (req: Request, res: Response) => {
 
     if (!validationResult.success) {
       return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Invalid evaluation parameters',
+        error: "Validation Error",
+        message: "Invalid evaluation parameters",
         details: validationResult.error.errors,
       });
     }
@@ -340,10 +331,9 @@ router.post('/evaluate', async (req: Request, res: Response) => {
 
     res.json({ success: true, data: result });
   } catch (error) {
-    console.error('[AutonomyAPI] Evaluate error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to evaluate policy',
+      error: "Internal Server Error",
+      message: "Failed to evaluate policy",
     });
   }
 });
@@ -352,20 +342,19 @@ router.post('/evaluate', async (req: Request, res: Response) => {
  * POST /api/admin/autonomy/cache/clear
  * Clear all caches
  */
-router.post('/cache/clear', async (req: Request, res: Response) => {
+router.post("/cache/clear", async (req: Request, res: Response) => {
   try {
     invalidatePolicyCache();
     clearBudgetCache();
 
     res.json({
       success: true,
-      message: 'All caches cleared',
+      message: "All caches cleared",
     });
   } catch (error) {
-    console.error('[AutonomyAPI] Clear cache error:', error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      message: 'Failed to clear caches',
+      error: "Internal Server Error",
+      message: "Failed to clear caches",
     });
   }
 });

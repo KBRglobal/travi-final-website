@@ -67,10 +67,7 @@ export async function getStorageStats(): Promise<{
 /**
  * Export logs to JSON format
  */
-export async function exportLogs(
-  startDate?: Date,
-  endDate?: Date
-): Promise<string> {
+export async function exportLogs(startDate?: Date, endDate?: Date): Promise<string> {
   if (!isEnabled()) return "[]";
 
   const conditions = [];
@@ -118,9 +115,7 @@ export async function verifyIntegrity(limit: number = 1000): Promise<{
 
   for (const log of logs) {
     if (log.afterSnapshot && log.snapshotHash) {
-      const computedHash = createHash("sha256")
-        .update(log.afterSnapshot)
-        .digest("hex");
+      const computedHash = createHash("sha256").update(log.afterSnapshot).digest("hex");
 
       if (computedHash === log.snapshotHash) {
         verified++;
@@ -149,22 +144,14 @@ export async function getDistinctValues(): Promise<{
   }
 
   const [actions, resources, sources] = await Promise.all([
-    db
-      .selectDistinct({ action: governanceAuditLogs.action })
-      .from(governanceAuditLogs),
-    db
-      .selectDistinct({ resource: governanceAuditLogs.resource })
-      .from(governanceAuditLogs),
-    db
-      .selectDistinct({ source: governanceAuditLogs.source })
-      .from(governanceAuditLogs),
+    db.selectDistinct({ action: governanceAuditLogs.action }).from(governanceAuditLogs),
+    db.selectDistinct({ resource: governanceAuditLogs.resource }).from(governanceAuditLogs),
+    db.selectDistinct({ source: governanceAuditLogs.source }).from(governanceAuditLogs),
   ]);
 
   return {
-    actions: actions.map((a) => a.action),
-    resources: resources.map((r) => r.resource),
-    sources: sources.map((s) => s.source),
+    actions: actions.map(a => a.action),
+    resources: resources.map(r => r.resource),
+    sources: sources.map(s => s.source),
   };
 }
-
-console.log("[Audit] Repository loaded");

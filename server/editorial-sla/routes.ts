@@ -62,17 +62,19 @@ export function registerEditorialSlaRoutes(app: Express): void {
     res.json({ success: true, contentId, reason });
   });
 
-  app.delete("/api/admin/sla/exempt/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const { contentId } = req.params;
-    removeExemption(contentId);
-    res.json({ success: true, contentId });
-  });
+  app.delete(
+    "/api/admin/sla/exempt/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { contentId } = req.params;
+      removeExemption(contentId);
+      res.json({ success: true, contentId });
+    }
+  );
 
   app.get("/api/admin/sla/violations", requireAuth, async (req: Request, res: Response) => {
     const contentId = req.query.contentId as string | undefined;
     const violations = getViolations(contentId);
     res.json({ violations, count: violations.length });
   });
-
-  console.log("[EditorialSLA] Routes registered");
 }

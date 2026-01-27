@@ -12,7 +12,7 @@ import type {
   DetectedPath,
   FunnelStage,
   FunnelType,
-} from './types';
+} from "./types";
 
 // ============================================================================
 // CONFIGURATION
@@ -39,12 +39,12 @@ const DEFAULT_CONFIG: DetectorConfig = {
 // ============================================================================
 
 const STAGE_KEYWORDS: Record<FunnelStage, string[]> = {
-  awareness: ['home', 'blog', 'article', 'news', 'discover', 'learn'],
-  interest: ['category', 'list', 'browse', 'explore', 'search'],
-  consideration: ['product', 'compare', 'review', 'details', 'features'],
-  decision: ['pricing', 'plans', 'quote', 'demo', 'trial'],
-  action: ['cart', 'checkout', 'signup', 'register', 'subscribe', 'buy'],
-  retention: ['dashboard', 'account', 'settings', 'profile', 'orders'],
+  awareness: ["home", "blog", "article", "news", "discover", "learn"],
+  interest: ["category", "list", "browse", "explore", "search"],
+  consideration: ["product", "compare", "review", "details", "features"],
+  decision: ["pricing", "plans", "quote", "demo", "trial"],
+  action: ["cart", "checkout", "signup", "register", "subscribe", "buy"],
+  retention: ["dashboard", "account", "settings", "profile", "orders"],
 };
 
 function inferStage(nodeId: string, position: number, totalSteps: number): FunnelStage {
@@ -52,33 +52,33 @@ function inferStage(nodeId: string, position: number, totalSteps: number): Funne
 
   // Check keywords
   for (const [stage, keywords] of Object.entries(STAGE_KEYWORDS)) {
-    if (keywords.some((kw) => lowerNode.includes(kw))) {
+    if (keywords.some(kw => lowerNode.includes(kw))) {
       return stage as FunnelStage;
     }
   }
 
   // Fallback to position-based inference
   const positionRatio = position / totalSteps;
-  if (positionRatio < 0.2) return 'awareness';
-  if (positionRatio < 0.4) return 'interest';
-  if (positionRatio < 0.6) return 'consideration';
-  if (positionRatio < 0.8) return 'decision';
-  return 'action';
+  if (positionRatio < 0.2) return "awareness";
+  if (positionRatio < 0.4) return "interest";
+  if (positionRatio < 0.6) return "consideration";
+  if (positionRatio < 0.8) return "decision";
+  return "action";
 }
 
 function inferFunnelType(steps: FunnelStep[]): FunnelType {
-  const stages = steps.map((s) => s.stage);
+  const stages = steps.map(s => s.stage);
 
-  if (stages.includes('action') && stages.includes('awareness')) {
-    return 'acquisition';
+  if (stages.includes("action") && stages.includes("awareness")) {
+    return "acquisition";
   }
-  if (stages.includes('decision') || stages.includes('action')) {
-    return 'conversion';
+  if (stages.includes("decision") || stages.includes("action")) {
+    return "conversion";
   }
-  if (stages.includes('retention')) {
-    return 'retention';
+  if (stages.includes("retention")) {
+    return "retention";
   }
-  return 'engagement';
+  return "engagement";
 }
 
 // ============================================================================
@@ -105,7 +105,7 @@ export class FunnelDetector {
 
     // Filter paths that meet minimum criteria
     const validPaths = paths.filter(
-      (p) =>
+      p =>
         p.occurrences >= this.config.minPathOccurrences &&
         p.conversionRate >= this.config.minConversionRate &&
         p.nodes.length >= this.config.minFunnelSteps &&
@@ -117,12 +117,12 @@ export class FunnelDetector {
 
     for (const group of pathGroups) {
       if (Date.now() - startTime > this.config.timeoutMs) {
-        console.warn('[FunnelDetector] Detection timeout');
         break;
       }
 
       const candidate = this.createCandidate(group);
-      if (candidate.score >= 0.01) { // Lower threshold to allow more funnels
+      if (candidate.score >= 0.01) {
+        // Lower threshold to allow more funnels
         this.candidates.set(candidate.id, candidate);
 
         const funnel = this.candidateToFunnel(candidate);
@@ -169,7 +169,7 @@ export class FunnelDetector {
     const set1 = new Set(path1.nodes);
     const set2 = new Set(path2.nodes);
 
-    const intersection = new Set([...set1].filter((x) => set2.has(x)));
+    const intersection = new Set([...set1].filter(x => set2.has(x)));
     const union = new Set([...set1, ...set2]);
 
     return intersection.size / union.size;
@@ -202,8 +202,9 @@ export class FunnelDetector {
 
     // Identify entry, exit, and intermediate nodes
     const entryNode = pathGroup[0]?.nodes[0] || sortedNodes[0];
-    const exitNode = pathGroup[0]?.nodes[pathGroup[0].nodes.length - 1] || sortedNodes[sortedNodes.length - 1];
-    const intermediateNodes = sortedNodes.filter((n) => n !== entryNode && n !== exitNode);
+    const exitNode =
+      pathGroup[0]?.nodes[pathGroup[0].nodes.length - 1] || sortedNodes[sortedNodes.length - 1];
+    const intermediateNodes = sortedNodes.filter(n => n !== entryNode && n !== exitNode);
 
     // Calculate confidence based on consistency
     const avgOccurrences = totalOccurrences / pathGroup.length;
@@ -251,7 +252,7 @@ export class FunnelDetector {
       const stage = inferStage(nodeId, i, allNodes.length);
 
       // Estimate step metrics (simplified)
-      const stepEntryRate = 1 - (i * 0.1); // Approximate drop-off
+      const stepEntryRate = 1 - i * 0.1; // Approximate drop-off
       const stepEntries = Math.round(totalEntries * stepEntryRate);
       const stepExits = Math.round(stepEntries * 0.15);
 
@@ -263,7 +264,7 @@ export class FunnelDetector {
         entryCount: stepEntries,
         exitCount: stepExits,
         dropOffRate: stepExits / Math.max(stepEntries, 1),
-        avgTimeInStep: (totalDuration / totalEntries) / allNodes.length,
+        avgTimeInStep: totalDuration / totalEntries / allNodes.length,
         conversionRate: i === allNodes.length - 1 ? totalConversions / totalEntries : 0.85,
         value: i === allNodes.length - 1 ? totalValue / totalConversions : 0,
       });
@@ -279,7 +280,7 @@ export class FunnelDetector {
     // Calculate overall score
     const conversionRate = totalConversions / totalEntries;
     const valuePerEntry = totalValue / totalEntries;
-    const score = (conversionRate * 40 + Math.min(valuePerEntry / 10, 30) + healthScore * 0.3);
+    const score = conversionRate * 40 + Math.min(valuePerEntry / 10, 30) + healthScore * 0.3;
 
     return {
       id: `funnel-${Date.now().toString(36)}`,
@@ -309,11 +310,11 @@ export class FunnelDetector {
 
     for (const step of steps) {
       if (step.dropOffRate > avgDropOff * 1.5 || step.dropOffRate > 0.3) {
-        let severity: FunnelBottleneck['severity'];
-        if (step.dropOffRate > 0.5) severity = 'critical';
-        else if (step.dropOffRate > 0.35) severity = 'high';
-        else if (step.dropOffRate > 0.25) severity = 'medium';
-        else severity = 'low';
+        let severity: FunnelBottleneck["severity"];
+        if (step.dropOffRate > 0.5) severity = "critical";
+        else if (step.dropOffRate > 0.35) severity = "high";
+        else if (step.dropOffRate > 0.25) severity = "medium";
+        else severity = "low";
 
         const potentialLift = (step.dropOffRate - avgDropOff) * step.entryCount;
 
@@ -334,25 +335,25 @@ export class FunnelDetector {
   /**
    * Suggest actions for bottleneck
    */
-  private suggestActions(step: FunnelStep, severity: FunnelBottleneck['severity']): string[] {
+  private suggestActions(step: FunnelStep, severity: FunnelBottleneck["severity"]): string[] {
     const actions: string[] = [];
 
     if (step.avgTimeInStep < 10) {
-      actions.push('Increase content engagement - users are leaving too quickly');
+      actions.push("Increase content engagement - users are leaving too quickly");
     }
 
-    if (step.stage === 'decision' || step.stage === 'action') {
-      actions.push('Simplify the conversion process');
-      actions.push('Add trust signals (testimonials, security badges)');
+    if (step.stage === "decision" || step.stage === "action") {
+      actions.push("Simplify the conversion process");
+      actions.push("Add trust signals (testimonials, security badges)");
     }
 
-    if (severity === 'critical' || severity === 'high') {
-      actions.push('Conduct user testing to identify friction points');
-      actions.push('Consider A/B testing alternative layouts');
+    if (severity === "critical" || severity === "high") {
+      actions.push("Conduct user testing to identify friction points");
+      actions.push("Consider A/B testing alternative layouts");
     }
 
     if (step.contentIds.length > 3) {
-      actions.push('Consolidate content to reduce decision fatigue');
+      actions.push("Consolidate content to reduce decision fatigue");
     }
 
     return actions.slice(0, 4);
@@ -364,15 +365,15 @@ export class FunnelDetector {
   private formatNodeName(nodeId: string): string {
     // Remove common prefixes
     let name = nodeId
-      .replace(/^(content:|intent:|action:|outcome:)/i, '')
-      .replace(/-/g, ' ')
-      .replace(/_/g, ' ');
+      .replace(/^(content:|intent:|action:|outcome:)/i, "")
+      .replace(/-/g, " ")
+      .replace(/_/g, " ");
 
     // Title case
     name = name
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
     return name.slice(0, 30);
   }
@@ -409,7 +410,7 @@ export class FunnelDetector {
    */
   getUnderperformingFunnels(limit: number = 10): Funnel[] {
     return this.getAllFunnels()
-      .filter((f) => f.healthScore < 50 || f.bottlenecks.length > 0)
+      .filter(f => f.healthScore < 50 || f.bottlenecks.length > 0)
       .sort((a, b) => a.healthScore - b.healthScore)
       .slice(0, limit);
   }

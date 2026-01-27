@@ -9,7 +9,13 @@ import { Permission, Action, Resource, Scope } from "./types";
 const CACHE_MAX = 500;
 const permissionCache = new Map<string, boolean>();
 
-function getCacheKey(roleId: string, action: Action, resource: Resource, scope: Scope, scopeValue?: string): string {
+function getCacheKey(
+  roleId: string,
+  action: Action,
+  resource: Resource,
+  scope: Scope,
+  scopeValue?: string
+): string {
   return `${roleId}:${action}:${resource}:${scope}:${scopeValue || ""}`;
 }
 
@@ -26,7 +32,7 @@ export function cachePermission(
   // Prune cache if too large
   if (permissionCache.size >= CACHE_MAX) {
     const entries = Array.from(permissionCache.keys());
-    entries.slice(0, 100).forEach((k) => permissionCache.delete(k));
+    entries.slice(0, 100).forEach(k => permissionCache.delete(k));
   }
 
   permissionCache.set(key, allowed);
@@ -99,10 +105,9 @@ export function findMatchingPermissions(
   scope: Scope,
   scopeValue?: string
 ): Permission[] {
-  return permissions.filter((p) =>
-    matchesAction(p, action) &&
-    matchesResource(p, resource) &&
-    matchesScope(p, scope, scopeValue)
+  return permissions.filter(
+    p =>
+      matchesAction(p, action) && matchesResource(p, resource) && matchesScope(p, scope, scopeValue)
   );
 }
 
@@ -119,11 +124,9 @@ export function hasPermission(
   if (matching.length === 0) return false;
 
   // Any explicit deny = denied
-  const hasExplicitDeny = matching.some((p) => !p.isAllowed);
+  const hasExplicitDeny = matching.some(p => !p.isAllowed);
   if (hasExplicitDeny) return false;
 
   // Has at least one allow
-  return matching.some((p) => p.isAllowed);
+  return matching.some(p => p.isAllowed);
 }
-
-console.log("[AccessControl] Permissions loaded");

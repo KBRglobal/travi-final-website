@@ -216,14 +216,16 @@ async function seedRoles(): Promise<SeedResult> {
       `);
       if (result.rowCount && result.rowCount > 0) {
         seededCount++;
-        console.log(`  ✅ Created role: ${role.displayName}`);
       } else {
-        console.log(`  ⏭️  Role exists: ${role.displayName}`);
       }
     }
     return { entity: "roles", action: seededCount > 0 ? "seeded" : "exists", count: seededCount };
   } catch (error) {
-    return { entity: "roles", action: "error", message: error instanceof Error ? error.message : "Unknown error" };
+    return {
+      entity: "roles",
+      action: "error",
+      message: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
@@ -241,8 +243,12 @@ async function seedPermissions(): Promise<SeedResult> {
         seededCount++;
       }
     }
-    console.log(`  ✅ Seeded ${seededCount} permissions`);
-    return { entity: "permissions", action: seededCount > 0 ? "seeded" : "exists", count: seededCount };
+
+    return {
+      entity: "permissions",
+      action: seededCount > 0 ? "seeded" : "exists",
+      count: seededCount,
+    };
   } catch (error) {
     // Try without constraint name (for compatibility)
     try {
@@ -263,10 +269,18 @@ async function seedPermissions(): Promise<SeedResult> {
           seededCount++;
         }
       }
-      console.log(`  ✅ Seeded ${seededCount} permissions (fallback method)`);
-      return { entity: "permissions", action: seededCount > 0 ? "seeded" : "exists", count: seededCount };
+
+      return {
+        entity: "permissions",
+        action: seededCount > 0 ? "seeded" : "exists",
+        count: seededCount,
+      };
     } catch (fallbackError) {
-      return { entity: "permissions", action: "error", message: fallbackError instanceof Error ? fallbackError.message : "Unknown error" };
+      return {
+        entity: "permissions",
+        action: "error",
+        message: fallbackError instanceof Error ? fallbackError.message : "Unknown error",
+      };
     }
   }
 }
@@ -291,55 +305,53 @@ async function seedPolicies(): Promise<SeedResult> {
       `);
       if (result.rowCount && result.rowCount > 0) {
         seededCount++;
-        console.log(`  ✅ Created policy: ${policy.name}`);
       } else {
-        console.log(`  ⏭️  Policy exists: ${policy.name}`);
       }
     }
-    return { entity: "policies", action: seededCount > 0 ? "seeded" : "exists", count: seededCount };
+    return {
+      entity: "policies",
+      action: seededCount > 0 ? "seeded" : "exists",
+      count: seededCount,
+    };
   } catch (error) {
-    return { entity: "policies", action: "error", message: error instanceof Error ? error.message : "Unknown error" };
+    return {
+      entity: "policies",
+      action: "error",
+      message: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
 export async function runSeed(): Promise<SeedResult[]> {
   const results: SeedResult[] = [];
 
-  console.log("\n🌱 Running Governance Seed Pack...\n");
-
   // Seed roles
-  console.log("📁 Seeding roles...");
+
   results.push(await seedRoles());
 
   // Seed permissions
-  console.log("\n🔑 Seeding permissions...");
+
   results.push(await seedPermissions());
 
   // Seed policies
-  console.log("\n📋 Seeding policies...");
-  results.push(await seedPolicies());
 
-  console.log("\n✅ Seeding completed!");
+  results.push(await seedPolicies());
 
   return results;
 }
 
 // Run seed if executed directly
-const isMainModule = typeof require !== 'undefined' && require.main === module;
+const isMainModule = typeof require !== "undefined" && require.main === module;
 if (isMainModule) {
   runSeed()
-    .then((results) => {
-      console.log("\n📋 Seed Summary:");
-      console.log("─".repeat(50));
-      results.forEach((r) => {
+    .then(results => {
+      results.forEach(r => {
         const icon = r.action === "seeded" ? "✅" : r.action === "exists" ? "⏭️ " : "❌";
         const countStr = r.count !== undefined ? ` (${r.count} new)` : "";
-        console.log(`${icon} ${r.entity}: ${r.action}${countStr}${r.message ? ` - ${r.message}` : ""}`);
       });
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("\n❌ Seeding failed:", error);
+    .catch(error => {
       process.exit(1);
     });
 }

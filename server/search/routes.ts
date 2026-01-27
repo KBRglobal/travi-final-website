@@ -1,6 +1,6 @@
 /**
  * Search API Routes
- * 
+ *
  * Endpoints for search, semantic search, and similar content
  */
 
@@ -28,13 +28,13 @@ async function requireAdmin(req: Request, res: Response, next: NextFunction): Pr
     res.status(401).json({ error: "Authentication required" });
     return;
   }
-  
+
   const user = await storage.getUser(authReq.user.claims.sub);
   if (!user || user.role !== "admin") {
     res.status(403).json({ error: "Admin access required" });
     return;
   }
-  
+
   next();
 }
 
@@ -56,12 +56,12 @@ export function registerSearchRoutes(app: Express) {
 
       const limit = parseInt(req.query.limit as string) || 50;
       const page = parseInt(req.query.page as string) || 1;
-      const type = Array.isArray(req.query.type) 
-        ? req.query.type as string[]
-        : req.query.type 
-        ? [req.query.type as string]
-        : undefined;
-      const locale = req.query.locale as string || undefined;
+      const type = Array.isArray(req.query.type)
+        ? (req.query.type as string[])
+        : req.query.type
+          ? [req.query.type as string]
+          : undefined;
+      const locale = (req.query.locale as string) || undefined;
 
       const results = await searchEngine.search({
         q,
@@ -73,10 +73,9 @@ export function registerSearchRoutes(app: Express) {
 
       res.json(results);
     } catch (error) {
-      console.error("[Search] Search error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Search failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -100,10 +99,9 @@ export function registerSearchRoutes(app: Express) {
       const result = await spellChecker.check(q);
       res.json(result);
     } catch (error) {
-      console.error("[Search] Spell check error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Spell check failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -120,16 +118,15 @@ export function registerSearchRoutes(app: Express) {
         return res.status(400).json({ error: "Query parameter 'term' is required" });
       }
 
-      const locale = req.query.locale as string || 'en';
+      const locale = (req.query.locale as string) || "en";
       const terms = term.split(/\s+/);
       const result = synonymExpander.expand(terms, locale);
-      
+
       res.json(result);
     } catch (error) {
-      console.error("[Search] Synonym expansion error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Synonym expansion failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -146,15 +143,14 @@ export function registerSearchRoutes(app: Express) {
         return res.status(400).json({ error: "Query parameter 'q' is required" });
       }
 
-      const locale = req.query.locale as string || 'en';
+      const locale = (req.query.locale as string) || "en";
       const result = await queryRewriter.rewrite(q, locale);
-      
+
       res.json(result);
     } catch (error) {
-      console.error("[Search] Query rewrite error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Query rewrite failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -180,10 +176,9 @@ export function registerSearchRoutes(app: Express) {
         count: similar.length,
       });
     } catch (error) {
-      console.error("[Search] Similar content error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Failed to find similar content",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -212,10 +207,9 @@ export function registerSearchRoutes(app: Express) {
         intent,
       });
     } catch (error) {
-      console.error("[Search] Analyze error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Analysis failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -232,17 +226,16 @@ export function registerSearchRoutes(app: Express) {
     try {
       const { contentId } = req.params;
       await searchIndexer.indexContent(contentId);
-      
-      res.json({ 
+
+      res.json({
         success: true,
         contentId,
-        message: "Content indexed successfully"
+        message: "Content indexed successfully",
       });
     } catch (error) {
-      console.error("[Search] Index error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Indexing failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -254,17 +247,16 @@ export function registerSearchRoutes(app: Express) {
   app.post("/api/search/reindex", async (req, res) => {
     try {
       const result = await searchIndexer.reindexAll();
-      
-      res.json({ 
+
+      res.json({
         success: true,
         ...result,
-        message: `Reindexed ${result.indexed} items with ${result.errors} errors`
+        message: `Reindexed ${result.indexed} items with ${result.errors} errors`,
       });
     } catch (error) {
-      console.error("[Search] Reindex error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Reindexing failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -277,17 +269,16 @@ export function registerSearchRoutes(app: Express) {
     try {
       const { contentId } = req.params;
       await searchIndexer.removeContent(contentId);
-      
-      res.json({ 
+
+      res.json({
         success: true,
         contentId,
-        message: "Content removed from index"
+        message: "Content removed from index",
       });
     } catch (error) {
-      console.error("[Search] Remove from index error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Remove failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -306,10 +297,9 @@ export function registerSearchRoutes(app: Express) {
       const metrics = searchTelemetry.getMetrics();
       res.json(metrics);
     } catch (error) {
-      console.error("[Search] Metrics error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Failed to get metrics",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -324,10 +314,9 @@ export function registerSearchRoutes(app: Express) {
       const events = searchTelemetry.getRecentEvents(limit);
       res.json({ events, count: events.length });
     } catch (error) {
-      console.error("[Search] Events error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Failed to get events",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });
@@ -351,10 +340,9 @@ export function registerSearchRoutes(app: Express) {
       const expansion = queryExpander.expandQuery(q);
       res.json(expansion);
     } catch (error) {
-      console.error("[Search] Expansion error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: "Query expansion failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });

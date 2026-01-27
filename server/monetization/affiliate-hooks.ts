@@ -1,18 +1,24 @@
 /**
  * Affiliate Hooks - Placeholder Affiliate Integration Points
- * 
+ *
  * IMPORTANT: All affiliate hooks are DISABLED by default.
  * Require ENABLE_MONETIZATION=true AND ENABLE_AFFILIATE_HOOKS=true to activate.
- * 
+ *
  * This module provides placeholder integration points for affiliate
  * partners (hotels, experiences, tours) without any actual monetization logic.
- * 
+ *
  * Status: DOCUMENTATION/PREPARATION PHASE - NOT ACTIVE
  * Last Updated: 2024-12-31
  */
 
-import { validateZone, validateContentInZone, isSEOCriticalPath, FORBIDDEN_ZONES, isForbiddenZone } from './commercial-zones';
-import type { CommercialZoneType, ContentType, ForbiddenZone } from './commercial-zones';
+import {
+  validateZone,
+  validateContentInZone,
+  isSEOCriticalPath,
+  FORBIDDEN_ZONES,
+  isForbiddenZone,
+} from "./commercial-zones";
+import type { CommercialZoneType, ContentType, ForbiddenZone } from "./commercial-zones";
 
 /**
  * In-Memory Affiliate Metrics Tracking
@@ -44,7 +50,6 @@ export function incrementAffiliateClick(): void {
   affiliateMetrics.clicks++;
   affiliateMetrics.lastClickAt = Date.now();
   affiliateMetrics.lastUpdated = Date.now();
-  console.log(`[Affiliate] Click tracked. Total: ${affiliateMetrics.clicks}`);
 }
 
 /**
@@ -60,10 +65,11 @@ export function incrementAffiliateImpression(): void {
  * Get current affiliate metrics snapshot
  */
 export function getAffiliateMetrics(): AffiliateMetrics & { ctr: number } {
-  const ctr = affiliateMetrics.impressions > 0 
-    ? (affiliateMetrics.clicks / affiliateMetrics.impressions) * 100 
-    : 0;
-  
+  const ctr =
+    affiliateMetrics.impressions > 0
+      ? (affiliateMetrics.clicks / affiliateMetrics.impressions) * 100
+      : 0;
+
   return {
     ...affiliateMetrics,
     ctr: Math.round(ctr * 100) / 100,
@@ -89,7 +95,7 @@ export function resetAffiliateMetrics(): void {
 export class ForbiddenZoneViolationError extends Error {
   constructor(public zone: string) {
     super(`[Affiliate] FORBIDDEN ZONE VIOLATION BLOCKED: ${zone}`);
-    this.name = 'ForbiddenZoneViolationError';
+    this.name = "ForbiddenZoneViolationError";
   }
 }
 
@@ -102,7 +108,7 @@ export function assertNotForbiddenZone(zoneId: string): void {
   if (isForbiddenZone(zoneId)) {
     affiliateMetrics.forbiddenZoneViolationsBlocked++;
     affiliateMetrics.lastUpdated = Date.now();
-    console.error(`[Affiliate] FORBIDDEN ZONE VIOLATION BLOCKED: ${zoneId}`);
+
     throw new ForbiddenZoneViolationError(zoneId);
   }
 }
@@ -123,7 +129,7 @@ export function generateSafeAffiliateLink(
   if (config.zoneId && isForbiddenZone(config.zoneId)) {
     affiliateMetrics.forbiddenZoneViolationsBlocked++;
     affiliateMetrics.lastUpdated = Date.now();
-    console.error(`[Affiliate] FORBIDDEN ZONE VIOLATION BLOCKED: ${config.zoneId}`);
+
     return {
       success: false,
       error: `Zone "${config.zoneId}" is forbidden for affiliate content`,
@@ -134,7 +140,7 @@ export function generateSafeAffiliateLink(
   if (link.enabled) {
     incrementAffiliateClick();
   }
-  
+
   return {
     success: true,
     link,
@@ -146,32 +152,31 @@ export function generateSafeAffiliateLink(
  * Returns false by default - must be explicitly enabled via environment.
  */
 export function isAffiliateHooksEnabled(): boolean {
-  const masterEnabled = process.env.ENABLE_MONETIZATION === 'true';
-  const hooksEnabled = process.env.ENABLE_AFFILIATE_HOOKS === 'true';
-  
+  const masterEnabled = process.env.ENABLE_MONETIZATION === "true";
+  const hooksEnabled = process.env.ENABLE_AFFILIATE_HOOKS === "true";
+
   if (masterEnabled && hooksEnabled) {
-    console.log('[AffiliateHooks] Affiliate hooks are ENABLED');
     return true;
   }
-  
+
   return false;
 }
 
 /**
  * Affiliate Partner Types
  */
-export type AffiliatePartner = 
-  | 'booking-com'
-  | 'hotels-com'
-  | 'expedia'
-  | 'agoda'
-  | 'tripadvisor'
-  | 'getyourguide'
-  | 'viator'
-  | 'klook'
-  | 'airbnb';
+export type AffiliatePartner =
+  | "booking-com"
+  | "hotels-com"
+  | "expedia"
+  | "agoda"
+  | "tripadvisor"
+  | "getyourguide"
+  | "viator"
+  | "klook"
+  | "airbnb";
 
-export type AffiliateProductType = 'hotel' | 'experience' | 'tour' | 'activity';
+export type AffiliateProductType = "hotel" | "experience" | "tour" | "activity";
 
 /**
  * Affiliate Link Configuration (Placeholder)
@@ -200,7 +205,7 @@ export interface AffiliateLinkResult {
 
 /**
  * Hook: Generate affiliate link for a product.
- * 
+ *
  * DISABLED by default. Returns disabled state when hooks are off.
  * Logs activation for monitoring.
  */
@@ -210,8 +215,8 @@ export function useAffiliateLinkHook(config: AffiliateLinkConfig): AffiliateLink
     url: null,
     partnerId: null,
     trackingId: null,
-    disclosure: '',
-    rel: '',
+    disclosure: "",
+    rel: "",
     seoSafe: true,
   };
 
@@ -219,17 +224,15 @@ export function useAffiliateLinkHook(config: AffiliateLinkConfig): AffiliateLink
     return disabledResult;
   }
 
-  console.log(`[AffiliateHooks] Link requested for ${config.productType}: ${config.productId}`);
-
   const trackingId = config.customTrackingId || generateTrackingId();
-  
+
   return {
     enabled: true,
     url: `/go/${config.partnerId}/${config.productId}?tid=${trackingId}`,
     partnerId: config.partnerId,
     trackingId,
-    disclosure: 'Affiliate link - we may earn a commission on qualifying bookings.',
-    rel: 'nofollow sponsored',
+    disclosure: "Affiliate link - we may earn a commission on qualifying bookings.",
+    rel: "nofollow sponsored",
     seoSafe: true,
   };
 }
@@ -258,14 +261,16 @@ export interface AffiliateInjectionResult {
 
 /**
  * Hook: Check if affiliate content can be injected at a specific zone.
- * 
+ *
  * DISABLED by default. Returns blocked state when hooks are off.
  * Validates zone safety and SEO compliance.
  */
-export function useAffiliateInjectionHook(config: AffiliateInjectionConfig): AffiliateInjectionResult {
+export function useAffiliateInjectionHook(
+  config: AffiliateInjectionConfig
+): AffiliateInjectionResult {
   const blockedResult: AffiliateInjectionResult = {
     allowed: false,
-    reason: 'Affiliate hooks are disabled',
+    reason: "Affiliate hooks are disabled",
     zoneId: null,
     disclosureRequired: false,
   };
@@ -275,7 +280,6 @@ export function useAffiliateInjectionHook(config: AffiliateInjectionConfig): Aff
   }
 
   if (isSEOCriticalPath(config.pageUrl)) {
-    console.log(`[AffiliateHooks] Injection blocked on SEO-critical path: ${config.pageUrl}`);
     return {
       allowed: false,
       reason: `SEO-critical path: ${config.pageUrl}`,
@@ -286,20 +290,17 @@ export function useAffiliateInjectionHook(config: AffiliateInjectionConfig): Aff
 
   const zoneValidation = validateContentInZone(config.zoneId, config.contentType);
   if (!zoneValidation.valid) {
-    console.log(`[AffiliateHooks] Zone validation failed: ${zoneValidation.error}`);
     return {
       allowed: false,
-      reason: zoneValidation.error || 'Zone validation failed',
+      reason: zoneValidation.error || "Zone validation failed",
       zoneId: null,
       disclosureRequired: false,
     };
   }
 
-  console.log(`[AffiliateHooks] Injection approved for zone: ${config.zoneId}`);
-
   return {
     allowed: true,
-    reason: 'Zone approved for affiliate content',
+    reason: "Zone approved for affiliate content",
     zoneId: config.zoneId,
     disclosureRequired: zoneValidation.zone?.requiresDisclosure ?? true,
   };
@@ -308,7 +309,7 @@ export function useAffiliateInjectionHook(config: AffiliateInjectionConfig): Aff
 /**
  * Affiliate Event Tracking (Placeholder)
  */
-export type AffiliateEventType = 'impression' | 'click' | 'outbound' | 'conversion';
+export type AffiliateEventType = "impression" | "click" | "outbound" | "conversion";
 
 export interface AffiliateTrackingEvent {
   eventType: AffiliateEventType;
@@ -323,12 +324,12 @@ export interface AffiliateTrackingEvent {
 
 /**
  * Hook: Track affiliate interaction event.
- * 
+ *
  * DISABLED by default. No-op when hooks are off.
  * Logs all events for monitoring and debugging.
  */
 export function trackAffiliateEvent(
-  event: Omit<AffiliateTrackingEvent, 'timestamp' | 'trackingId'> & { trackingId?: string }
+  event: Omit<AffiliateTrackingEvent, "timestamp" | "trackingId"> & { trackingId?: string }
 ): void {
   if (!isAffiliateHooksEnabled()) {
     return;
@@ -339,12 +340,6 @@ export function trackAffiliateEvent(
     timestamp: Date.now(),
     trackingId: event.trackingId || generateTrackingId(),
   };
-
-  console.log(`[AffiliateHooks] Event tracked: ${fullEvent.eventType}`, {
-    partner: fullEvent.partnerId,
-    product: fullEvent.productId,
-    zone: fullEvent.zoneId,
-  });
 }
 
 /**
@@ -352,7 +347,7 @@ export function trackAffiliateEvent(
  */
 export interface AffiliateDisclosureConfig {
   pageHasAffiliateContent: boolean;
-  disclosureStyle: 'inline' | 'footer' | 'both';
+  disclosureStyle: "inline" | "footer" | "both";
 }
 
 /**
@@ -367,14 +362,16 @@ export interface AffiliateDisclosureResult {
 
 /**
  * Hook: Get required affiliate disclosure text.
- * 
+ *
  * DISABLED by default. Returns no disclosure when hooks are off.
  */
-export function useAffiliateDisclosureHook(config: AffiliateDisclosureConfig): AffiliateDisclosureResult {
+export function useAffiliateDisclosureHook(
+  config: AffiliateDisclosureConfig
+): AffiliateDisclosureResult {
   const noDisclosure: AffiliateDisclosureResult = {
     required: false,
-    inlineText: '',
-    footerText: '',
+    inlineText: "",
+    footerText: "",
     ftcCompliant: true,
   };
 
@@ -382,8 +379,9 @@ export function useAffiliateDisclosureHook(config: AffiliateDisclosureConfig): A
     return noDisclosure;
   }
 
-  const inlineText = 'Partner link';
-  const footerText = 'This page contains affiliate links. TRAVI may earn a commission on qualifying purchases at no additional cost to you. See our affiliate disclosure for details.';
+  const inlineText = "Partner link";
+  const footerText =
+    "This page contains affiliate links. TRAVI may earn a commission on qualifying purchases at no additional cost to you. See our affiliate disclosure for details.";
 
   return {
     required: true,
@@ -409,21 +407,21 @@ export interface AffiliateHookStatus {
  * Useful for admin dashboards and debugging.
  */
 export function getAffiliateHookStatus(): AffiliateHookStatus {
-  const masterSwitch = process.env.ENABLE_MONETIZATION === 'true';
-  const hooksSwitch = process.env.ENABLE_AFFILIATE_HOOKS === 'true';
+  const masterSwitch = process.env.ENABLE_MONETIZATION === "true";
+  const hooksSwitch = process.env.ENABLE_AFFILIATE_HOOKS === "true";
   const warnings: string[] = [];
 
   if (masterSwitch && !hooksSwitch) {
-    warnings.push('ENABLE_MONETIZATION is true but ENABLE_AFFILIATE_HOOKS is false');
+    warnings.push("ENABLE_MONETIZATION is true but ENABLE_AFFILIATE_HOOKS is false");
   }
 
   if (hooksSwitch && !masterSwitch) {
-    warnings.push('ENABLE_AFFILIATE_HOOKS is true but master switch ENABLE_MONETIZATION is false');
+    warnings.push("ENABLE_AFFILIATE_HOOKS is true but master switch ENABLE_MONETIZATION is false");
   }
 
   if (masterSwitch && hooksSwitch) {
     if (!process.env.AFFILIATE_PARTNER_ID) {
-      warnings.push('Affiliate hooks enabled but AFFILIATE_PARTNER_ID is not configured');
+      warnings.push("Affiliate hooks enabled but AFFILIATE_PARTNER_ID is not configured");
     }
   }
 

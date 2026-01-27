@@ -15,10 +15,12 @@ interface TiqetsProduct {
   title: string;
   product_slug: string;
   city_id: string;
-  venue?: {
-    name: string;
-    address?: string;
-  } | string;
+  venue?:
+    | {
+        name: string;
+        address?: string;
+      }
+    | string;
   description?: string;
   highlights?: string[];
   whats_included?: string[];
@@ -65,44 +67,42 @@ interface TiqetsProductsResponse {
 }
 
 export class TiqetsClient {
-  private baseUrl = 'https://api.tiqets.com/v2';
+  private baseUrl = "https://api.tiqets.com/v2";
   private token: string;
   private partnerId: string;
-  
+
   constructor() {
-    this.token = process.env.TIQETS_API_TOKEN || '';
-    this.partnerId = process.env.TIQETS_PARTNER_ID || '';
-    
+    this.token = process.env.TIQETS_API_TOKEN || "";
+    this.partnerId = process.env.TIQETS_PARTNER_ID || "";
+
     if (!this.token) {
-      console.warn('⚠️ TIQETS_API_TOKEN not configured');
     }
   }
-  
+
   private getHeaders(): Record<string, string> {
     return {
-      'Authorization': `Token ${this.token}`,
-      'Accept': 'application/json',
-      'User-Agent': 'TRAVI-World/1.0'
+      Authorization: `Token ${this.token}`,
+      Accept: "application/json",
+      "User-Agent": "TRAVI-World/1.0",
     };
   }
-  
+
   /**
    * Get cities from Tiqets (paginated)
    */
   async getCities(page = 1): Promise<TiqetsCitiesResponse> {
-    const response = await fetch(
-      `${this.baseUrl}/cities?page=${page}&page_size=100`,
-      { headers: this.getHeaders() }
-    );
-    
+    const response = await fetch(`${this.baseUrl}/cities?page=${page}&page_size=100`, {
+      headers: this.getHeaders(),
+    });
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Tiqets API error: ${response.status} - ${errorText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Get products for a city (paginated)
    */
@@ -111,51 +111,50 @@ export class TiqetsClient {
       `${this.baseUrl}/products?city_id=${cityId}&page=${page}&page_size=100&lang=en&currency=USD`,
       { headers: this.getHeaders() }
     );
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Tiqets API error: ${response.status} - ${errorText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Get a single product by ID
    */
   async getProduct(productId: string): Promise<TiqetsProduct> {
-    const response = await fetch(
-      `${this.baseUrl}/products/${productId}?lang=en&currency=USD`,
-      { headers: this.getHeaders() }
-    );
-    
+    const response = await fetch(`${this.baseUrl}/products/${productId}?lang=en&currency=USD`, {
+      headers: this.getHeaders(),
+    });
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Tiqets API error: ${response.status} - ${errorText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Test connection to Tiqets API
    */
   async testConnection(): Promise<{ success: boolean; message: string; cityCount?: number }> {
     try {
       if (!this.token) {
-        return { success: false, message: 'TIQETS_API_TOKEN not configured' };
+        return { success: false, message: "TIQETS_API_TOKEN not configured" };
       }
-      
+
       const response = await this.getCities(1);
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: `Connected successfully. Found ${response.pagination?.total || 0} cities.`,
-        cityCount: response.pagination?.total
+        cityCount: response.pagination?.total,
       };
     } catch (error: any) {
-      return { 
-        success: false, 
-        message: error.message || 'Unknown error' 
+      return {
+        success: false,
+        message: error.message || "Unknown error",
       };
     }
   }

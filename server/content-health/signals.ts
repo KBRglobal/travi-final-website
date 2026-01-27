@@ -3,11 +3,21 @@
  * Detects health issues in content
  */
 
-import { db } from '../db';
-import { contents, aeoAnswerCapsules } from '@shared/schema';
-import { eq, and, lt, sql } from 'drizzle-orm';
+import { db } from "../db";
+import { contents, aeoAnswerCapsules } from "@shared/schema";
+import { eq, and, lt, sql } from "drizzle-orm";
 // Type definitions inline to avoid import errors
-type HealthSignalType = 'entity_drift' | 'impressions_declining' | 'aeo_missing' | 'aeo_stale' | 'outdated_publish' | 'broken_links' | 'low_engagement' | 'orphan_content' | 'missing_schema' | 'thin_content';
+type HealthSignalType =
+  | "entity_drift"
+  | "impressions_declining"
+  | "aeo_missing"
+  | "aeo_stale"
+  | "outdated_publish"
+  | "broken_links"
+  | "low_engagement"
+  | "orphan_content"
+  | "missing_schema"
+  | "thin_content";
 
 interface ContentHealthSignal {
   type: HealthSignalType;
@@ -54,22 +64,22 @@ async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
     promise,
     new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error('Signal detection timeout')), ms)
+      setTimeout(() => reject(new Error("Signal detection timeout")), ms)
     ),
   ]);
 }
 
 function extractTextFromBlocks(blocks: any[]): string {
-  if (!Array.isArray(blocks)) return '';
+  if (!Array.isArray(blocks)) return "";
   return blocks
     .map(block => {
-      if (typeof block === 'string') return block;
+      if (typeof block === "string") return block;
       if (block.text) return block.text;
       if (block.content) return extractTextFromBlocks(block.content);
       if (block.children) return extractTextFromBlocks(block.children);
-      return '';
+      return "";
     })
-    .join(' ');
+    .join(" ");
 }
 
 function countInternalLinks(blocks: any[]): number {
@@ -90,10 +100,10 @@ export const signalDetectors: Record<
 
     if (entityCount === 0) {
       return {
-        type: 'entity_drift',
+        type: "entity_drift",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.entity_drift,
         score: 0,
-        message: 'No entities extracted from content',
+        message: "No entities extracted from content",
         detectedAt: new Date(),
         data: { entityCount, expectedEntities },
       };
@@ -101,7 +111,7 @@ export const signalDetectors: Record<
 
     if (entityCount < expectedEntities * 0.5) {
       return {
-        type: 'entity_drift',
+        type: "entity_drift",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.entity_drift,
         score: Math.round((entityCount / expectedEntities) * 100),
         message: `Entity count (${entityCount}) significantly below expected (${expectedEntities})`,
@@ -122,7 +132,7 @@ export const signalDetectors: Record<
     if (previous > 0 && current < previous * 0.5) {
       const decline = Math.round(((previous - current) / previous) * 100);
       return {
-        type: 'impressions_declining',
+        type: "impressions_declining",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.impressions_declining,
         score: Math.max(0, 100 - decline),
         message: `Search impressions declined by ${decline}%`,
@@ -137,26 +147,20 @@ export const signalDetectors: Record<
   async aeo_missing(ctx) {
     try {
       const [capsule] = await withTimeout(
-        db
-          .select()
-          .from(aeoAnswerCapsules)
-          .where(eq(aeoAnswerCapsules.contentId, ctx.id))
-          .limit(1),
+        db.select().from(aeoAnswerCapsules).where(eq(aeoAnswerCapsules.contentId, ctx.id)).limit(1),
         SIGNAL_TIMEOUT_MS
       );
 
       if (!capsule) {
         return {
-          type: 'aeo_missing',
+          type: "aeo_missing",
           weight: DEFAULT_HEALTH_CONFIG.signalWeights.aeo_missing,
           score: 0,
-          message: 'No AEO answer capsule exists for this content',
+          message: "No AEO answer capsule exists for this content",
           detectedAt: new Date(),
         };
       }
-    } catch (error) {
-      console.error('[ContentHealth] AEO check error:', error);
-    }
+    } catch (error) {}
 
     return null;
   },
@@ -167,11 +171,7 @@ export const signalDetectors: Record<
       const staleDate = new Date(Date.now() - staleDays * 24 * 60 * 60 * 1000);
 
       const [capsule] = await withTimeout(
-        db
-          .select()
-          .from(aeoAnswerCapsules)
-          .where(eq(aeoAnswerCapsules.contentId, ctx.id))
-          .limit(1),
+        db.select().from(aeoAnswerCapsules).where(eq(aeoAnswerCapsules.contentId, ctx.id)).limit(1),
         SIGNAL_TIMEOUT_MS
       );
 
@@ -180,7 +180,7 @@ export const signalDetectors: Record<
           (Date.now() - (capsule as any).createdAt.getTime()) / (24 * 60 * 60 * 1000)
         );
         return {
-          type: 'aeo_stale',
+          type: "aeo_stale",
           weight: DEFAULT_HEALTH_CONFIG.signalWeights.aeo_stale,
           score: Math.max(0, 100 - Math.round((daysSinceUpdate / staleDays) * 50)),
           message: `AEO capsule is ${daysSinceUpdate} days old`,
@@ -188,9 +188,7 @@ export const signalDetectors: Record<
           data: { daysSinceUpdate, staleDays },
         };
       }
-    } catch (error) {
-      console.error('[ContentHealth] AEO stale check error:', error);
-    }
+    } catch (error) {}
 
     return null;
   },
@@ -206,7 +204,7 @@ export const signalDetectors: Record<
         (Date.now() - (ctx.updatedAt || ctx.publishedAt).getTime()) / (24 * 60 * 60 * 1000)
       );
       return {
-        type: 'outdated_publish',
+        type: "outdated_publish",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.outdated_publish,
         score: Math.max(0, 100 - Math.round((daysSinceUpdate / staleDays) * 50)),
         message: `Content not updated in ${daysSinceUpdate} days`,
@@ -239,7 +237,7 @@ export const signalDetectors: Record<
 
     if (brokenCount > 0) {
       return {
-        type: 'broken_links',
+        type: "broken_links",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.broken_links,
         score: Math.max(0, 100 - brokenCount * 20),
         message: `Found ${brokenCount} potentially broken links`,
@@ -259,7 +257,7 @@ export const signalDetectors: Record<
 
     if (bounceRate > 80 || avgTimeOnPage < 10) {
       return {
-        type: 'low_engagement',
+        type: "low_engagement",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.low_engagement,
         score: Math.max(0, 100 - bounceRate),
         message: `Low engagement: ${bounceRate}% bounce rate, ${avgTimeOnPage}s avg time`,
@@ -281,10 +279,10 @@ export const signalDetectors: Record<
 
     if (internalLinks === 0 && inboundLinks === 0) {
       return {
-        type: 'orphan_content',
+        type: "orphan_content",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.orphan_content,
         score: 20,
-        message: 'Content has no internal links (orphan page)',
+        message: "Content has no internal links (orphan page)",
         detectedAt: new Date(),
         data: { outboundLinks: internalLinks, inboundLinks },
       };
@@ -297,10 +295,10 @@ export const signalDetectors: Record<
     const metadata = ctx.metadata || {};
     const hasSchema = (metadata as any).schemaMarkup;
 
-    const typesRequiringSchema = ['hotel', 'restaurant', 'attraction', 'event'];
+    const typesRequiringSchema = ["hotel", "restaurant", "attraction", "event"];
     if (typesRequiringSchema.includes(ctx.type) && !hasSchema) {
       return {
-        type: 'missing_schema',
+        type: "missing_schema",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.missing_schema,
         score: 0,
         message: `${ctx.type} content missing schema.org markup`,
@@ -316,11 +314,11 @@ export const signalDetectors: Record<
     const text = extractTextFromBlocks(blocks);
     const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
 
-    const minWordCount = ctx.type === 'article' ? 500 : 200;
+    const minWordCount = ctx.type === "article" ? 500 : 200;
 
     if (wordCount < minWordCount) {
       return {
-        type: 'thin_content',
+        type: "thin_content",
         weight: DEFAULT_HEALTH_CONFIG.signalWeights.thin_content,
         score: Math.round((wordCount / minWordCount) * 100),
         message: `Content is thin (${wordCount} words, minimum ${minWordCount})`,
@@ -342,9 +340,7 @@ export async function detectSignals(ctx: ContentContext): Promise<ContentHealthS
       if (signal) {
         signals.push(signal);
       }
-    } catch (error) {
-      console.error(`[ContentHealth] Signal ${signalType} detection error:`, error);
-    }
+    } catch (error) {}
   }
 
   return signals;

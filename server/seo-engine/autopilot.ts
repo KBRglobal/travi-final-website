@@ -9,15 +9,15 @@
  * The SEO system is designed to EXECUTE decisions, not make recommendations.
  */
 
-import { db } from '../db';
-import { contents } from '../../shared/schema';
-import { eq } from 'drizzle-orm';
-import { SEOActionEngine, AutopilotMode, SEOAction } from '../seo-actions/action-engine';
-import { PageClassifier } from './page-classifier';
-import { AEOContentValidator } from './aeo-content-validator';
-import { ContentPipeline } from './content-pipeline';
-import { LinkGraphEngine } from './link-graph-engine';
-import { RiskMonitor } from './risk-monitor';
+import { db } from "../db";
+import { contents } from "../../shared/schema";
+import { eq } from "drizzle-orm";
+import { SEOActionEngine, AutopilotMode, SEOAction } from "../seo-actions/action-engine";
+import { PageClassifier } from "./page-classifier";
+import { AEOContentValidator } from "./aeo-content-validator";
+import { ContentPipeline } from "./content-pipeline";
+import { LinkGraphEngine } from "./link-graph-engine";
+import { RiskMonitor } from "./risk-monitor";
 
 export interface AutopilotConfig {
   mode: AutopilotMode;
@@ -61,12 +61,12 @@ export interface OverrideConfig {
 const MODE_DEFAULTS: Record<AutopilotMode, Partial<AutopilotConfig>> = {
   off: {
     enabledActions: [
-      { action: 'GENERATE_SCHEMA', enabled: false, requiresApproval: true, autoExecute: false },
-      { action: 'SET_CANONICAL', enabled: false, requiresApproval: true, autoExecute: false },
-      { action: 'QUEUE_REINDEX', enabled: false, requiresApproval: true, autoExecute: false },
-      { action: 'INJECT_LINKS', enabled: false, requiresApproval: true, autoExecute: false },
-      { action: 'SET_NOINDEX', enabled: false, requiresApproval: true, autoExecute: false },
-      { action: 'BLOCK_PUBLISH', enabled: false, requiresApproval: true, autoExecute: false },
+      { action: "GENERATE_SCHEMA", enabled: false, requiresApproval: true, autoExecute: false },
+      { action: "SET_CANONICAL", enabled: false, requiresApproval: true, autoExecute: false },
+      { action: "QUEUE_REINDEX", enabled: false, requiresApproval: true, autoExecute: false },
+      { action: "INJECT_LINKS", enabled: false, requiresApproval: true, autoExecute: false },
+      { action: "SET_NOINDEX", enabled: false, requiresApproval: true, autoExecute: false },
+      { action: "BLOCK_PUBLISH", enabled: false, requiresApproval: true, autoExecute: false },
     ],
     schedule: {
       contentPipelineInterval: 0, // disabled
@@ -77,17 +77,22 @@ const MODE_DEFAULTS: Record<AutopilotMode, Partial<AutopilotConfig>> = {
   },
   supervised: {
     enabledActions: [
-      { action: 'GENERATE_SCHEMA', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'SET_CANONICAL', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'QUEUE_REINDEX', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'INJECT_LINKS', enabled: true, requiresApproval: true, autoExecute: false },
-      { action: 'GENERATE_ANSWER_CAPSULE', enabled: true, requiresApproval: true, autoExecute: false },
-      { action: 'GENERATE_FAQ', enabled: true, requiresApproval: true, autoExecute: false },
-      { action: 'SET_NOINDEX', enabled: true, requiresApproval: true, autoExecute: false },
-      { action: 'BLOCK_PUBLISH', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'FLAG_FOR_REVIEW', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'QUEUE_MERGE', enabled: true, requiresApproval: true, autoExecute: false },
-      { action: 'QUEUE_DELETE', enabled: true, requiresApproval: true, autoExecute: false },
+      { action: "GENERATE_SCHEMA", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "SET_CANONICAL", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "QUEUE_REINDEX", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "INJECT_LINKS", enabled: true, requiresApproval: true, autoExecute: false },
+      {
+        action: "GENERATE_ANSWER_CAPSULE",
+        enabled: true,
+        requiresApproval: true,
+        autoExecute: false,
+      },
+      { action: "GENERATE_FAQ", enabled: true, requiresApproval: true, autoExecute: false },
+      { action: "SET_NOINDEX", enabled: true, requiresApproval: true, autoExecute: false },
+      { action: "BLOCK_PUBLISH", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "FLAG_FOR_REVIEW", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "QUEUE_MERGE", enabled: true, requiresApproval: true, autoExecute: false },
+      { action: "QUEUE_DELETE", enabled: true, requiresApproval: true, autoExecute: false },
     ],
     schedule: {
       contentPipelineInterval: 24, // daily
@@ -98,18 +103,23 @@ const MODE_DEFAULTS: Record<AutopilotMode, Partial<AutopilotConfig>> = {
   },
   full: {
     enabledActions: [
-      { action: 'GENERATE_SCHEMA', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'SET_CANONICAL', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'QUEUE_REINDEX', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'INJECT_LINKS', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'GENERATE_ANSWER_CAPSULE', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'GENERATE_FAQ', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'SET_NOINDEX', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'BLOCK_PUBLISH', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'FLAG_FOR_REVIEW', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'MOVE_TO_DRAFT', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'QUEUE_MERGE', enabled: true, requiresApproval: false, autoExecute: true },
-      { action: 'QUEUE_DELETE', enabled: true, requiresApproval: true, autoExecute: false }, // Always require approval for delete
+      { action: "GENERATE_SCHEMA", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "SET_CANONICAL", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "QUEUE_REINDEX", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "INJECT_LINKS", enabled: true, requiresApproval: false, autoExecute: true },
+      {
+        action: "GENERATE_ANSWER_CAPSULE",
+        enabled: true,
+        requiresApproval: false,
+        autoExecute: true,
+      },
+      { action: "GENERATE_FAQ", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "SET_NOINDEX", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "BLOCK_PUBLISH", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "FLAG_FOR_REVIEW", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "MOVE_TO_DRAFT", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "QUEUE_MERGE", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "QUEUE_DELETE", enabled: true, requiresApproval: true, autoExecute: false }, // Always require approval for delete
     ],
     schedule: {
       contentPipelineInterval: 6, // every 6 hours
@@ -159,7 +169,7 @@ export class SEOAutopilot {
   private lastRiskCheck: Date | null = null;
   private lastClassificationUpdate: Date | null = null;
 
-  constructor(mode: AutopilotMode = 'supervised') {
+  constructor(mode: AutopilotMode = "supervised") {
     this.config = this.buildConfig(mode);
     this.actionEngine = new SEOActionEngine(mode);
     this.classifier = new PageClassifier();
@@ -186,13 +196,13 @@ export class SEOAutopilot {
       notifications: {
         emailRecipients: [],
         criticalAlertSMS: [],
-        sendDailyReport: mode !== 'off',
-        reportTime: '09:00',
+        sendDailyReport: mode !== "off",
+        reportTime: "09:00",
       },
       overrides: {
         allowManualNoindex: true,
-        allowManualDelete: mode === 'supervised' || mode === 'full',
-        allowSkipValidation: mode === 'off',
+        allowManualDelete: mode === "supervised" || mode === "full",
+        allowSkipValidation: mode === "off",
         overrideApprovers: [],
       },
     };
@@ -212,7 +222,6 @@ export class SEOAutopilot {
     this.config = this.buildConfig(mode);
     this.actionEngine.setAutopilotMode(mode);
     this.contentPipeline.setAutopilotMode(mode);
-    console.log(`[AUTOPILOT] Mode changed to: ${mode}`);
   }
 
   /**
@@ -226,7 +235,7 @@ export class SEOAutopilot {
    * Check if action is allowed
    */
   isActionAllowed(action: string): { allowed: boolean; requiresApproval: boolean } {
-    const actionConfig = this.config.enabledActions.find((a) => a.action === action);
+    const actionConfig = this.config.enabledActions.find(a => a.action === action);
 
     if (!actionConfig || !actionConfig.enabled) {
       return { allowed: false, requiresApproval: true };
@@ -271,7 +280,7 @@ export class SEOAutopilot {
     if (this.shouldRunClassification()) {
       try {
         const results = await this.classifier.classifyAllContent();
-        const reclassified = results.filter((r) => r.reclassificationTrigger).length;
+        const reclassified = results.filter(r => r.reclassificationTrigger).length;
         classificationResult = {
           updated: results.length,
           reclassified,
@@ -294,12 +303,12 @@ export class SEOAutopilot {
         this.lastGraphRebuild = new Date();
 
         // Auto-execute high-priority optimizations in full mode
-        if (this.config.mode === 'full') {
-          const highPriority = optimizations.filter((o) => o.expectedImpact === 'HIGH');
+        if (this.config.mode === "full") {
+          const highPriority = optimizations.filter(o => o.expectedImpact === "HIGH");
           for (const opt of highPriority.slice(0, 10)) {
             try {
               // Execute optimization
-              console.log(`[AUTOPILOT] Executing link optimization: ${opt.action} ${opt.sourceId} -> ${opt.targetId}`);
+
               totalActions++;
             } catch (optError) {
               errors.push(`Link optimization error: ${optError}`);
@@ -357,7 +366,8 @@ export class SEOAutopilot {
     if (this.config.schedule.classificationUpdateInterval === 0) return false;
     if (!this.lastClassificationUpdate) return true;
 
-    const hoursSinceLastRun = (Date.now() - this.lastClassificationUpdate.getTime()) / (1000 * 60 * 60);
+    const hoursSinceLastRun =
+      (Date.now() - this.lastClassificationUpdate.getTime()) / (1000 * 60 * 60);
     return hoursSinceLastRun >= this.config.schedule.classificationUpdateInterval;
   }
 
@@ -396,7 +406,7 @@ export class SEOAutopilot {
     if (!this.riskMonitor.isPublishingAllowed()) {
       return {
         canPublish: false,
-        blocks: ['Publishing is paused due to active risk alerts'],
+        blocks: ["Publishing is paused due to active risk alerts"],
         warnings: [],
         requiredActions: [],
       };
@@ -416,47 +426,49 @@ export class SEOAutopilot {
     // Auto-classify
     try {
       await this.classifier.classifyContent(contentId);
-      executed.push('classification');
+      executed.push("classification");
     } catch (error) {
-      skipped.push('classification');
+      skipped.push("classification");
     }
 
     // Auto-generate schema if enabled
-    if (this.isActionAllowed('GENERATE_SCHEMA').allowed) {
+    if (this.isActionAllowed("GENERATE_SCHEMA").allowed) {
       try {
         // Would call schema engine
-        executed.push('schema_generation');
+        executed.push("schema_generation");
       } catch (error) {
-        skipped.push('schema_generation');
+        skipped.push("schema_generation");
       }
     }
 
     // Auto-set canonical if enabled
-    if (this.isActionAllowed('SET_CANONICAL').allowed) {
+    if (this.isActionAllowed("SET_CANONICAL").allowed) {
       try {
         const content = await db.query.contents.findFirst({
           where: eq(contents.id, contentId),
         });
         if (content && !(content as any).canonicalUrl) {
-          await db.update(contents)
+          await db
+            .update(contents)
             .set({ canonicalUrl: `https://traviseo.com/${content.slug}` } as any)
             .where(eq(contents.id, contentId));
-          executed.push('canonical_set');
+          executed.push("canonical_set");
         }
       } catch (error) {
-        skipped.push('canonical_set');
+        skipped.push("canonical_set");
       }
     }
 
     // Queue for reindex
-    if (this.isActionAllowed('QUEUE_REINDEX').allowed) {
+    if (this.isActionAllowed("QUEUE_REINDEX").allowed) {
       try {
-        await db.update(contents)
+        await db
+          .update(contents)
           .set({ reindexQueued: true, reindexQueuedAt: new Date() } as any)
           .where(eq(contents.id, contentId));
-        executed.push('reindex_queued');
+        executed.push("reindex_queued");
       } catch (error) {
-        skipped.push('reindex_queued');
+        skipped.push("reindex_queued");
       }
     }
 
@@ -482,7 +494,7 @@ export class SEOAutopilot {
       lastRiskCheck: this.lastRiskCheck,
       lastClassificationUpdate: this.lastClassificationUpdate,
       publishingAllowed: this.riskMonitor.isPublishingAllowed(),
-      enabledActionsCount: this.config.enabledActions.filter((a) => a.enabled).length,
+      enabledActionsCount: this.config.enabledActions.filter(a => a.enabled).length,
     };
   }
 }
@@ -492,7 +504,7 @@ let autopilotInstance: SEOAutopilot | null = null;
 
 export function getAutopilot(mode?: AutopilotMode): SEOAutopilot {
   if (!autopilotInstance) {
-    autopilotInstance = new SEOAutopilot(mode || 'supervised');
+    autopilotInstance = new SEOAutopilot(mode || "supervised");
   } else if (mode && autopilotInstance.getMode() !== mode) {
     autopilotInstance.setMode(mode);
   }

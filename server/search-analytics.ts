@@ -42,7 +42,8 @@ export const searchAnalytics = {
     locale: string = "en",
     sessionId?: string
   ): Promise<string> {
-    const [row] = await db.insert(searchQueries)
+    const [row] = await db
+      .insert(searchQueries)
       .values({
         query: query.toLowerCase().trim(),
         resultsCount,
@@ -59,7 +60,7 @@ export const searchAnalytics = {
       const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
       db.delete(searchQueries)
         .where(sql`${searchQueries.createdAt} < ${cutoff}`)
-        .catch(err => console.error("[SearchAnalytics] Cleanup failed:", err));
+        .catch(err => {});
     }
 
     return row.id;
@@ -69,7 +70,8 @@ export const searchAnalytics = {
    * Log when user clicks a search result
    */
   async logClick(searchId: string, resultId: string): Promise<void> {
-    await db.update(searchQueries)
+    await db
+      .update(searchQueries)
       .set({ clickedResultId: resultId } as any)
       .where(eq(searchQueries.id, searchId));
   },
@@ -80,12 +82,14 @@ export const searchAnalytics = {
   async getPopularSearches(
     limit: number = 20,
     days: number = 30
-  ): Promise<Array<{
-    query: string;
-    count: number;
-    avgResults: number;
-    clickRate: number;
-  }>> {
+  ): Promise<
+    Array<{
+      query: string;
+      count: number;
+      avgResults: number;
+      clickRate: number;
+    }>
+  > {
     const cacheKey = `search-analytics:popular:${limit}:${days}`;
     const cached = await cache.get<any[]>(cacheKey);
     if (cached) return cached;
@@ -93,16 +97,17 @@ export const searchAnalytics = {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
     // Query from database with aggregation
-    const rows = await db.select()
-      .from(searchQueries)
-      .where(gte(searchQueries.createdAt, cutoff));
+    const rows = await db.select().from(searchQueries).where(gte(searchQueries.createdAt, cutoff));
 
     // Group searches by query
-    const queryStats = new Map<string, {
-      count: number;
-      totalResults: number;
-      clicks: number;
-    }>();
+    const queryStats = new Map<
+      string,
+      {
+        count: number;
+        totalResults: number;
+        clicks: number;
+      }
+    >();
 
     for (const search of rows) {
       const existing = queryStats.get(search.query);
@@ -140,11 +145,13 @@ export const searchAnalytics = {
   async getZeroResultSearches(
     limit: number = 50,
     days: number = 30
-  ): Promise<Array<{
-    query: string;
-    count: number;
-    lastSearched: Date;
-  }>> {
+  ): Promise<
+    Array<{
+      query: string;
+      count: number;
+      lastSearched: Date;
+    }>
+  > {
     const cacheKey = `search-analytics:zero-results:${limit}:${days}`;
     const cached = await cache.get<any[]>(cacheKey);
     if (cached) return cached;
@@ -152,7 +159,8 @@ export const searchAnalytics = {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
     // Query from database
-    const rows = await db.select()
+    const rows = await db
+      .select()
       .from(searchQueries)
       .where(sql`${searchQueries.createdAt} >= ${cutoff} AND ${searchQueries.resultsCount} = 0`);
 
@@ -193,12 +201,14 @@ export const searchAnalytics = {
   async getLowClickSearches(
     limit: number = 30,
     minSearches: number = 5
-  ): Promise<Array<{
-    query: string;
-    searchCount: number;
-    clickRate: number;
-    avgResults: number;
-  }>> {
+  ): Promise<
+    Array<{
+      query: string;
+      searchCount: number;
+      clickRate: number;
+      avgResults: number;
+    }>
+  > {
     const popular = await this.getPopularSearches(100, 30);
 
     return popular
@@ -215,31 +225,32 @@ export const searchAnalytics = {
   /**
    * Get search trends over time
    */
-  async getSearchTrends(
-    days: number = 14
-  ): Promise<Array<{
-    date: string;
-    totalSearches: number;
-    uniqueQueries: number;
-    avgResults: number;
-    avgClickRate: number;
-  }>> {
+  async getSearchTrends(days: number = 14): Promise<
+    Array<{
+      date: string;
+      totalSearches: number;
+      uniqueQueries: number;
+      avgResults: number;
+      avgClickRate: number;
+    }>
+  > {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
     // Query from database
-    const rows = await db.select()
-      .from(searchQueries)
-      .where(gte(searchQueries.createdAt, cutoff));
+    const rows = await db.select().from(searchQueries).where(gte(searchQueries.createdAt, cutoff));
 
-    const trends: Map<string, {
-      searches: number;
-      queries: Set<string>;
-      results: number;
-      clicks: number;
-    }> = new Map();
+    const trends: Map<
+      string,
+      {
+        searches: number;
+        queries: Set<string>;
+        results: number;
+        clicks: number;
+      }
+    > = new Map();
 
     for (const search of rows) {
-      const dateKey = search.createdAt.toISOString().split('T')[0];
+      const dateKey = search.createdAt.toISOString().split("T")[0];
       const existing = trends.get(dateKey);
 
       if (existing) {
@@ -271,12 +282,14 @@ export const searchAnalytics = {
   /**
    * Get content suggestions based on search data
    */
-  async getContentSuggestions(): Promise<Array<{
-    topic: string;
-    reason: string;
-    priority: "high" | "medium" | "low";
-    searchCount: number;
-  }>> {
+  async getContentSuggestions(): Promise<
+    Array<{
+      topic: string;
+      reason: string;
+      priority: "high" | "medium" | "low";
+      searchCount: number;
+    }>
+  > {
     const zeroResults = await this.getZeroResultSearches(30, 30);
     const lowClick = await this.getLowClickSearches(30, 5);
 
@@ -345,26 +358,29 @@ export const searchAnalytics = {
 
     // Query for unique queries and zero results from DB
     const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const [totalCount] = await db.select({ count: count() })
+    const [totalCount] = await db
+      .select({ count: count() })
       .from(searchQueries)
       .where(gte(searchQueries.createdAt, cutoff));
 
-    const uniqueQueriesResult = await db.selectDistinct({ query: searchQueries.query })
+    const uniqueQueriesResult = await db
+      .selectDistinct({ query: searchQueries.query })
       .from(searchQueries)
       .where(gte(searchQueries.createdAt, cutoff));
 
-    const [zeroResultCount] = await db.select({ count: count() })
+    const [zeroResultCount] = await db
+      .select({ count: count() })
       .from(searchQueries)
       .where(sql`${searchQueries.createdAt} >= ${cutoff} AND ${searchQueries.resultsCount} = 0`);
 
     const totalSearches = totalCount?.count || 0;
     const uniqueQueries = uniqueQueriesResult.length;
-    const avgClickRate = popular.length > 0
-      ? Math.round(popular.reduce((sum, p) => sum + p.clickRate, 0) / popular.length)
-      : 0;
-    const zeroResultRate = totalSearches > 0
-      ? Math.round(((zeroResultCount?.count || 0) / totalSearches) * 100)
-      : 0;
+    const avgClickRate =
+      popular.length > 0
+        ? Math.round(popular.reduce((sum, p) => sum + p.clickRate, 0) / popular.length)
+        : 0;
+    const zeroResultRate =
+      totalSearches > 0 ? Math.round(((zeroResultCount?.count || 0) / totalSearches) * 100) : 0;
 
     return {
       summary: {

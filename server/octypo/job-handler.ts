@@ -97,7 +97,7 @@ async function saveGeneratedContent(
     } as any)
     .returning();
 
-  console.log(`[OctypoJobHandler] Saved content: ${contentRecord.id}, attraction: ${attractionRecord.id}`);
+  
   
   return { contentId: contentRecord.id, attractionId: attractionRecord.id };
 }
@@ -155,7 +155,7 @@ async function saveGeneratedArticle(
     } as any)
     .returning();
 
-  console.log(`[OctypoJobHandler] Saved article: ${contentRecord.id}, article: ${articleRecord.id}`);
+  
   
   return { contentId: contentRecord.id, articleId: articleRecord.id };
 }
@@ -171,7 +171,7 @@ async function updateJobStatus(jobId: string, status: 'completed' | 'failed', re
       } as any)
       .where(eq(backgroundJobs.id, jobId));
   } catch (err) {
-    console.error(`[OctypoJobHandler] Failed to update job status:`, err);
+    
   }
 }
 
@@ -179,7 +179,7 @@ async function updateJobStatus(jobId: string, status: 'completed' | 'failed', re
 // are now imported from ./rss-reader.ts
 
 async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ success: boolean; generated: number; skipped: number; errors: string[]; contentIds: string[] }> {
-  console.log(`[OctypoJobHandler] Processing RSS job for feed: ${data.feedName}`);
+  
 
   const [feed] = await db.select()
     .from(rssFeeds)
@@ -193,19 +193,19 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
   // Step 1: Fetch and store new items using the proper RSS parser
   const fetchResult = await rssReader.fetchFeed(feed.id);
   if (fetchResult.errors.length > 0) {
-    console.log(`[OctypoJobHandler] Feed fetch had errors:`, fetchResult.errors);
+    
   }
 
-  console.log(`[OctypoJobHandler] Fetched ${fetchResult.itemsFetched} items, ${fetchResult.newItems} new`);
+  
 
   // Step 2: Get unprocessed items from the database
   const items = await rssReader.getUnprocessedItems(10, feed.id);
   if (items.length === 0) {
-    console.log(`[OctypoJobHandler] No unprocessed items found`);
+    
     return { success: true, generated: 0, skipped: 0, errors: [], contentIds: [] };
   }
 
-  console.log(`[OctypoJobHandler] Processing ${items.length} unprocessed items`);
+  
 
   const defaultDestinationId = data.destination || feed.destinationId || null;
   const targetLocale = data.locale || 'en'; // Default to English
@@ -220,7 +220,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
       // Check for sensitive topics
       const sensitivityCheck = isSensitiveTopic(item.title, item.summary);
       if (sensitivityCheck.sensitive) {
-        console.log(`[OctypoJobHandler] Skipping sensitive topic: "${item.title}" - ${sensitivityCheck.reason}`);
+        
         await rssReader.markProcessed(item.id); // Mark as processed to skip in future
         skipped++;
         continue;
@@ -229,7 +229,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
       // Detect destination from content
       const detectedDestination = detectDestinationFromContent(item.title, item.summary);
       const destinationId = detectedDestination || defaultDestinationId || 'global';
-      console.log(`[OctypoJobHandler] Detected destination: ${destinationId} for "${item.title.substring(0, 50)}..."`);
+      
 
       // Generate slug and check for duplicates
       const slug = item.title.toLowerCase()
@@ -243,7 +243,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
         .limit(1);
 
       if (existingSlug.length > 0) {
-        console.log(`[OctypoJobHandler] Skipping duplicate slug: ${slug}`);
+        
         await rssReader.markProcessed(item.id);
         skipped++;
         continue;
@@ -292,6 +292,9 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
                 answerCapsule: '',
                 metaTitle: item.title,
                 metaDescription: item.summary.substring(0, 160),
+                schemaPayload: {},
+                honestLimitations: [],
+                sensoryDescriptions: [],
               },
               feed.id,
               item.url,
@@ -300,16 +303,16 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
 
             contentId = saved.contentId;
             contentIds.push(contentId);
-            console.log(`[OctypoJobHandler] Generated locale-aware content (${targetLocale}) for: ${item.title}`);
+            
             generated++;
           } else {
             // Fall back to standard generation
-            console.log(`[OctypoJobHandler] Pilot generation failed, falling back to standard: ${pilotResult.failureReason}`);
+            
             throw new Error('Fallback to standard generation');
           }
         } catch (pilotError) {
           // Fall back to standard generation
-          console.log(`[OctypoJobHandler] Using standard generation for: ${item.title}`);
+          
 
           const result = await generateAttractionWithOctypo(attractionData);
 
@@ -327,7 +330,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
 
             contentId = saved.contentId;
             contentIds.push(contentId);
-            console.log(`[OctypoJobHandler] Generated standard content for: ${item.title}`);
+            
             generated++;
           } else {
             errors.push(`Failed to generate for: ${item.title} - ${result.error || 'Unknown error'}`);
@@ -351,7 +354,7 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
 
           contentId = saved.contentId;
           contentIds.push(contentId);
-          console.log(`[OctypoJobHandler] Generated content for: ${item.title}`);
+          
           generated++;
         } else {
           errors.push(`Failed to generate for: ${item.title} - ${result.error || 'Unknown error'}`);
@@ -367,17 +370,17 @@ async function processRSSJob(data: RSSJobData, jobId?: string): Promise<{ succes
     }
   }
 
-  console.log(`[OctypoJobHandler] RSS job complete - Generated: ${generated}, Skipped: ${skipped}, Errors: ${errors.length}`);
+  
   return { success: generated > 0 || skipped > 0, generated, skipped, errors, contentIds };
 }
 
 async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ success: boolean; generated: number; errors: string[]; contentIds: string[] }> {
-  console.log(`[OctypoJobHandler] Processing topic job for keywords: ${data.keywords.join(', ')}`);
+  
   
   // FAIL-FAST: Destination is required - no silent defaults
   if (!data.destination) {
     const error = '[OctypoJobHandler] FAIL: destination is required for topic job - no implicit defaults allowed';
-    console.error(error);
+    
     return { success: false, generated: 0, errors: [error], contentIds: [] };
   }
   
@@ -401,7 +404,7 @@ async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ su
         .limit(1);
       
       if (existingSlug.length > 0) {
-        console.log(`[OctypoJobHandler] Skipping duplicate slug: ${slug}`);
+        
         continue;
       }
       
@@ -428,7 +431,7 @@ async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ su
         );
         
         contentIds.push(saved.contentId);
-        console.log(`[OctypoJobHandler] Generated and saved content for topic: ${keyword}`);
+        
         generated++;
       } else {
         errors.push(`Failed to generate for topic: ${keyword} - ${result.error || 'Unknown error'}`);
@@ -443,12 +446,12 @@ async function processTopicJob(data: TopicJobData, jobId?: string): Promise<{ su
 }
 
 async function processManualJob(data: ManualJobData, jobId?: string): Promise<{ success: boolean; generated: number; errors: string[]; contentIds: string[] }> {
-  console.log(`[OctypoJobHandler] Processing manual job for: ${data.title}`);
+  
   
   // FAIL-FAST: Destination is required - no silent defaults
   if (!data.destination) {
     const error = '[OctypoJobHandler] FAIL: destination is required for manual job - no implicit defaults allowed';
-    console.error(error);
+    
     return { success: false, generated: 0, errors: [error], contentIds: [] };
   }
   
@@ -493,7 +496,7 @@ async function processManualJob(data: ManualJobData, jobId?: string): Promise<{ 
         jobId
       );
       
-      console.log(`[OctypoJobHandler] Generated and saved content for: ${data.title}`);
+      
       return { success: true, generated: 1, errors: [], contentIds: [saved.contentId] };
     } else {
       return { success: false, generated: 0, errors: [result.error || 'Unknown error'], contentIds: [] };
@@ -505,7 +508,7 @@ async function processManualJob(data: ManualJobData, jobId?: string): Promise<{ 
 }
 
 async function handleOctypoJob(data: OctypoJobData, jobId?: string): Promise<{ success: boolean; result: unknown }> {
-  console.log(`[OctypoJobHandler] Processing job type: ${data.jobType}`);
+  
   
   let result: { success: boolean; generated: number; errors: string[]; contentIds: string[] };
   
@@ -520,11 +523,11 @@ async function handleOctypoJob(data: OctypoJobData, jobId?: string): Promise<{ s
       result = await processManualJob(data, jobId);
       break;
     default:
-      console.error(`[OctypoJobHandler] Unknown job type: ${(data as any).jobType}`);
+      
       result = { success: false, generated: 0, errors: ['Unknown job type'], contentIds: [] };
   }
   
-  console.log(`[OctypoJobHandler] Job complete - Generated: ${result.generated}, Saved: ${result.contentIds.length}, Errors: ${result.errors.length}`);
+  
   
   if (jobId) {
     await updateJobStatus(
@@ -546,16 +549,16 @@ async function handleOctypoJob(data: OctypoJobData, jobId?: string): Promise<{ s
 }
 
 export function registerOctypoJobHandler(): void {
-  console.log('[OctypoJobHandler] Registering Octypo content generation handler');
+  
   
   jobQueue.registerHandler<OctypoJobData>('ai_generate', async (data) => {
     return handleOctypoJob(data as OctypoJobData);
   });
   
-  console.log('[OctypoJobHandler] Handler registered successfully');
+  
   
   jobQueue.start();
-  console.log('[OctypoJobHandler] Job queue processing started');
+  
 }
 
 export async function manuallyProcessJob(jobId: string): Promise<{ success: boolean; result?: unknown; error?: string }> {

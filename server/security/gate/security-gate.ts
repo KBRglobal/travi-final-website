@@ -114,8 +114,8 @@ const LOCKDOWN_BLOCKED = new Set([
 
 // Feature flag for gradual rollout
 const SECURITY_GATE_ENABLED = process.env.SECURITY_GATE_ENABLED !== "false";
-const SECURITY_GATE_ENFORCE = process.env.SECURITY_GATE_ENFORCE === "true" ||
-  process.env.NODE_ENV === "production";
+const SECURITY_GATE_ENFORCE =
+  process.env.SECURITY_GATE_ENFORCE === "true" || process.env.NODE_ENV === "production";
 
 // ============================================================================
 // GATE STATISTICS
@@ -158,9 +158,7 @@ const gateStats: GateStats = {
  * This function MUST be called before any critical action.
  * If it returns blocked: true, the action MUST NOT proceed.
  */
-export async function assertAllowed(
-  request: SecurityGateRequest
-): Promise<SecurityGateResult> {
+export async function assertAllowed(request: SecurityGateRequest): Promise<SecurityGateResult> {
   gateStats.totalRequests++;
 
   const startTime = Date.now();
@@ -178,14 +176,18 @@ export async function assertAllowed(
   } as any);
 
   if (!kernelCheck.allowed) {
-    return recordAndReturn({
-      allowed: false,
-      blocked: true,
-      reason: kernelCheck.reason,
-      code: "KERNEL_DENY",
-      requiresApproval: false,
-      overridable: false,
-    }, request, startTime);
+    return recordAndReturn(
+      {
+        allowed: false,
+        blocked: true,
+        reason: kernelCheck.reason,
+        code: "KERNEL_DENY",
+        requiresApproval: false,
+        overridable: false,
+      },
+      request,
+      startTime
+    );
   }
 
   // ============================================================================
@@ -196,27 +198,35 @@ export async function assertAllowed(
 
   // Lockdown mode blocks most operations
   if (mode === "lockdown" && LOCKDOWN_BLOCKED.has(action)) {
-    return recordAndReturn({
-      allowed: false,
-      blocked: true,
-      reason: `Action '${action}' blocked during LOCKDOWN mode`,
-      code: "SYSTEM_LOCKDOWN",
-      requiresApproval: false,
-      overridable: false,
-    }, request, startTime);
+    return recordAndReturn(
+      {
+        allowed: false,
+        blocked: true,
+        reason: `Action '${action}' blocked during LOCKDOWN mode`,
+        code: "SYSTEM_LOCKDOWN",
+        requiresApproval: false,
+        overridable: false,
+      },
+      request,
+      startTime
+    );
   }
 
   // Check mode-specific restrictions
   const modeCheck = isOperationAllowed(action);
   if (!modeCheck.allowed) {
-    return recordAndReturn({
-      allowed: false,
-      blocked: true,
-      reason: modeCheck.reason || `Action blocked by security mode: ${mode}`,
-      code: "MODE_DENY",
-      requiresApproval: false,
-      overridable: mode !== "lockdown",
-    }, request, startTime);
+    return recordAndReturn(
+      {
+        allowed: false,
+        blocked: true,
+        reason: modeCheck.reason || `Action blocked by security mode: ${mode}`,
+        code: "MODE_DENY",
+        requiresApproval: false,
+        overridable: mode !== "lockdown",
+      },
+      request,
+      startTime
+    );
   }
 
   // ============================================================================
@@ -227,41 +237,43 @@ export async function assertAllowed(
   if (threatLevel === "black" || threatLevel === "red") {
     // Only allow super_admin during critical threat
     if (actor.role !== "super_admin") {
-      return recordAndReturn({
-        allowed: false,
-        blocked: true,
-        reason: `Action blocked due to ${threatLevel.toUpperCase()} threat level`,
-        code: "THREAT_DENY",
-        requiresApproval: false,
-        overridable: false,
-      }, request, startTime);
+      return recordAndReturn(
+        {
+          allowed: false,
+          blocked: true,
+          reason: `Action blocked due to ${threatLevel.toUpperCase()} threat level`,
+          code: "THREAT_DENY",
+          requiresApproval: false,
+          overridable: false,
+        },
+        request,
+        startTime
+      );
     }
   }
 
   // ============================================================================
   // LAYER 4: RBAC CHECK
   // ============================================================================
-  const rbacCheck = checkUserPermission(
-    actor.userId,
-    actor.role,
-    action as any,
-    resource as any,
-    {
-      ipAddress: actor.ipAddress,
-      sessionId: actor.sessionId,
-      ...context?.metadata,
-    }
-  );
+  const rbacCheck = checkUserPermission(actor.userId, actor.role, action as any, resource as any, {
+    ipAddress: actor.ipAddress,
+    sessionId: actor.sessionId,
+    ...context?.metadata,
+  });
 
   if (!rbacCheck.allowed) {
-    return recordAndReturn({
-      allowed: false,
-      blocked: true,
-      reason: rbacCheck.reason,
-      code: "RBAC_DENY",
-      requiresApproval: false,
-      overridable: false,
-    }, request, startTime);
+    return recordAndReturn(
+      {
+        allowed: false,
+        blocked: true,
+        reason: rbacCheck.reason,
+        code: "RBAC_DENY",
+        requiresApproval: false,
+        overridable: false,
+      },
+      request,
+      startTime
+    );
   }
 
   // ============================================================================
@@ -278,15 +290,19 @@ export async function assertAllowed(
     );
 
     if (exfilCheck.blocked) {
-      return recordAndReturn({
-        allowed: false,
-        blocked: true,
-        reason: exfilCheck.reason || "Data access limit exceeded",
-        code: "EXFILTRATION_DENY",
-        requiresApproval: false,
-        overridable: false,
-        recommendations: exfilCheck.recommendations,
-      }, request, startTime);
+      return recordAndReturn(
+        {
+          allowed: false,
+          blocked: true,
+          reason: exfilCheck.reason || "Data access limit exceeded",
+          code: "EXFILTRATION_DENY",
+          requiresApproval: false,
+          overridable: false,
+          recommendations: exfilCheck.recommendations,
+        },
+        request,
+        startTime
+      );
     }
   }
 
@@ -296,29 +312,37 @@ export async function assertAllowed(
   if (modeConfig.restrictions.requireApproval && CRITICAL_ACTIONS.has(action)) {
     // Check if already has valid override
     if (!context?.overrideId || !isOverrideValid(context.overrideId)) {
-      return recordAndReturn({
-        allowed: false,
-        blocked: false, // Not blocked, just needs approval
-        reason: "Action requires approval",
-        code: "APPROVAL_REQUIRED",
-        requiresApproval: true,
-        approvalType: getApprovalType(action),
-        overridable: true,
-      }, request, startTime);
+      return recordAndReturn(
+        {
+          allowed: false,
+          blocked: false, // Not blocked, just needs approval
+          reason: "Action requires approval",
+          code: "APPROVAL_REQUIRED",
+          requiresApproval: true,
+          approvalType: getApprovalType(action),
+          overridable: true,
+        },
+        request,
+        startTime
+      );
     }
   }
 
   // ============================================================================
   // ALL CHECKS PASSED
   // ============================================================================
-  return recordAndReturn({
-    allowed: true,
-    blocked: false,
-    reason: "All security checks passed",
-    code: "ALLOWED",
-    requiresApproval: false,
-    overridable: false,
-  }, request, startTime);
+  return recordAndReturn(
+    {
+      allowed: true,
+      blocked: false,
+      reason: "All security checks passed",
+      code: "ALLOWED",
+      requiresApproval: false,
+      overridable: false,
+    },
+    request,
+    startTime
+  );
 }
 
 /**
@@ -437,10 +461,7 @@ function getApprovalType(action: string): string {
 /**
  * Express middleware for Security Gate enforcement
  */
-export function securityGateMiddleware(
-  action: Action | string,
-  resource: Resource | string
-) {
+export function securityGateMiddleware(action: Action | string, resource: Resource | string) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!SECURITY_GATE_ENABLED) {
       return next();
@@ -481,7 +502,6 @@ export function securityGateMiddleware(
         });
       } else {
         // Advisory mode - log but don't block
-        console.warn(`[SecurityGate] ADVISORY: Would block ${action} on ${resource}: ${result.reason}`);
       }
     }
 
@@ -494,15 +514,8 @@ export function securityGateMiddleware(
 /**
  * Decorator for async functions that require security gate
  */
-export function requiresSecurityGate(
-  action: Action | string,
-  resource: Resource | string
-) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
+export function requiresSecurityGate(action: Action | string, resource: Resource | string) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -650,6 +663,3 @@ export async function gateBulkOperation(
     },
   });
 }
-
-console.log("[SecurityGate] Module loaded - SECURITY_GATE_ENABLED:", SECURITY_GATE_ENABLED);
-console.log("[SecurityGate] Enforcement mode:", SECURITY_GATE_ENFORCE ? "ENFORCE" : "ADVISORY");

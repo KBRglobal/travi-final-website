@@ -1,6 +1,6 @@
 /**
  * Main Search Engine
- * 
+ *
  * Orchestrates full-text, semantic, and hybrid search
  * Includes direct tiqets_attractions search for global coverage
  */
@@ -68,16 +68,17 @@ export const searchEngine = {
       this.fullTextSearch(processedQuery.normalized, query),
       this.searchTiqetsAttractions(processedQuery.normalized),
       this.searchDestinations(processedQuery.normalized),
-      semanticSearch.search({
-        query: query.q,
-        limit: 100,
-        contentTypes: intent.suggestedFilters.contentTypes || query.type,
-        locale: query.locale,
-        threshold: 0.3,
-      }).catch(err => {
-        console.error('[Search] Semantic search failed:', err);
-        return [];
-      }),
+      semanticSearch
+        .search({
+          query: query.q,
+          limit: 100,
+          contentTypes: intent.suggestedFilters.contentTypes || query.type,
+          locale: query.locale,
+          threshold: 0.3,
+        })
+        .catch(err => {
+          return [];
+        }),
     ]);
 
     // 4. Merge all text-based results (prioritize destinations, then tiqets, then search_index)
@@ -88,12 +89,7 @@ export const searchEngine = {
     ];
 
     // 5. Fuse and rank results
-    const fusedResults = hybridRanker.fuseResults(
-      allTextResults,
-      semanticResults,
-      query.q,
-      intent
-    );
+    const fusedResults = hybridRanker.fuseResults(allTextResults, semanticResults, query.q, intent);
 
     // 5. Apply pagination AFTER merge (no limits before this point)
     const page = query.page || 1;
@@ -178,7 +174,7 @@ export const searchEngine = {
   async searchTiqetsAttractions(query: string): Promise<SearchResultItem[]> {
     try {
       const searchPattern = `%${query}%`;
-      
+
       const results = await db
         .select({
           id: tiqetsAttractions.id,
@@ -207,20 +203,22 @@ export const searchEngine = {
       return results.map((r, idx) => {
         const images = r.tiqetsImages as Array<{ medium?: string; large?: string }> | null;
         const thumbnail = images?.[0]?.medium || images?.[0]?.large || null;
-        const citySlug = r.cityName?.toLowerCase().replace(/\s+/g, '-') || 'attraction';
-        
+        const citySlug = r.cityName?.toLowerCase().replace(/\s+/g, "-") || "attraction";
+
         return {
           contentId: r.id,
-          title: r.title || 'Attraction',
-          type: 'attraction',
-          snippet: r.metaDescription || r.description?.substring(0, 160) || `Explore ${r.title} in ${r.cityName}`,
+          title: r.title || "Attraction",
+          type: "attraction",
+          snippet:
+            r.metaDescription ||
+            r.description?.substring(0, 160) ||
+            `Explore ${r.title} in ${r.cityName}`,
           url: `/attractions/${citySlug}/${r.seoSlug || r.id}`,
           image: thumbnail,
           score: 90 - idx,
         };
       });
     } catch (error) {
-      console.error('[Search] Tiqets search failed:', error);
       return [];
     }
   },
@@ -233,7 +231,7 @@ export const searchEngine = {
   async searchDestinations(query: string): Promise<SearchResultItem[]> {
     try {
       const searchPattern = `%${query}%`;
-      
+
       const results = await db
         .select({
           id: destinations.id,
@@ -254,11 +252,11 @@ export const searchEngine = {
         .orderBy(desc(destinations.seoScore));
 
       return results.map((r, idx) => {
-        const slug = r.slug?.startsWith('/') ? r.slug : `/destinations/${r.slug}`;
+        const slug = r.slug?.startsWith("/") ? r.slug : `/destinations/${r.slug}`;
         return {
           contentId: r.id.toString(),
-          title: r.name || 'Destination',
-          type: 'destination',
+          title: r.name || "Destination",
+          type: "destination",
           snippet: r.summary || `Explore ${r.name}, ${r.country}`,
           url: slug,
           image: r.cardImage,
@@ -266,7 +264,6 @@ export const searchEngine = {
         };
       });
     } catch (error) {
-      console.error('[Search] Destinations search failed:', error);
       return [];
     }
   },
@@ -276,13 +273,8 @@ export const searchEngine = {
    */
   async logSearch(query: SearchQuery, resultsCount: number, responseTime: number): Promise<void> {
     try {
-      await searchAnalytics.logSearch(
-        query.q,
-        resultsCount,
-        query.locale || "en"
-      );
+      await searchAnalytics.logSearch(query.q, resultsCount, query.locale || "en");
     } catch (error) {
-      console.error('[Search] Failed to log search:', error);
       // Don't fail the search if logging fails
     }
   },

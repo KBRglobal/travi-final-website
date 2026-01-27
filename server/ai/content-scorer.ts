@@ -1,6 +1,6 @@
 /**
  * AI Content Scorer
- * 
+ *
  * Uses OpenAI GPT-4o-mini to analyze and score content quality
  * - Overall content quality
  * - Readability and structure
@@ -14,7 +14,9 @@ import { db } from "../db";
 import { contentScores, contents } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 export interface ContentAnalysis {
   overallScore: number; // 0-100
@@ -61,14 +63,18 @@ export const contentScorer = {
       if (content.metaDescription) {
         contentText += content.metaDescription + "\n\n";
       }
-      
+
       // Extract text from content blocks
       if (content.blocks && Array.isArray(content.blocks)) {
-        for (const block of content.blocks as Array<{ type: string; content?: string; text?: string }>) {
-          if (block.type === 'paragraph' || block.type === 'text') {
-            contentText += (block.content || block.text || '') + "\n";
-          } else if (block.type === 'heading') {
-            contentText += "\n" + (block.content || block.text || '') + "\n";
+        for (const block of content.blocks as Array<{
+          type: string;
+          content?: string;
+          text?: string;
+        }>) {
+          if (block.type === "paragraph" || block.type === "text") {
+            contentText += (block.content || block.text || "") + "\n";
+          } else if (block.type === "heading") {
+            contentText += "\n" + (block.content || block.text || "") + "\n";
           }
         }
       }
@@ -98,7 +104,7 @@ Respond in JSON format.`,
           },
           {
             role: "user",
-            content: `Analyze this content:\n\nTitle: ${content.title}\nType: ${content.type}\nKeywords: ${content.primaryKeyword || 'none'}\n\nContent:\n${contentText.substring(0, 4000)}`,
+            content: `Analyze this content:\n\nTitle: ${content.title}\nType: ${content.type}\nKeywords: ${content.primaryKeyword || "none"}\n\nContent:\n${contentText.substring(0, 4000)}`,
           },
         ],
         temperature: 0.3,
@@ -140,7 +146,7 @@ Respond in JSON format.`,
           strengths: analysis.strengths || [],
           weaknesses: analysis.weaknesses || [],
           keywords: analysis.keywords || [],
-          toneAnalysis: analysis.toneAnalysis || '',
+          toneAnalysis: analysis.toneAnalysis || "",
         },
       });
 
@@ -157,11 +163,10 @@ Respond in JSON format.`,
           strengths: analysis.strengths || [],
           weaknesses: analysis.weaknesses || [],
           keywords: analysis.keywords || [],
-          toneAnalysis: analysis.toneAnalysis || '',
+          toneAnalysis: analysis.toneAnalysis || "",
         },
       };
     } catch (error) {
-      console.error("[Content Scorer] Error scoring content:", error);
       return null;
     }
   },
@@ -192,15 +197,14 @@ Respond in JSON format.`,
         structureScore: score.structureScore || 0,
         feedback: (score.feedback as string[]) || [],
         suggestions: (score.suggestions as string[]) || [],
-        analysis: (score.analysis as ContentAnalysis['analysis']) || {
+        analysis: (score.analysis as ContentAnalysis["analysis"]) || {
           strengths: [],
           weaknesses: [],
           keywords: [],
-          toneAnalysis: '',
+          toneAnalysis: "",
         },
       };
     } catch (error) {
-      console.error("[Content Scorer] Error getting content score:", error);
       return null;
     }
   },

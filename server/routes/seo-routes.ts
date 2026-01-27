@@ -16,77 +16,101 @@ export function registerSEORoutes(app: Express) {
    * Body: { content: ContentData, pageType?: PageType }
    * Returns: SEOValidationResult
    */
-  app.post("/api/seo/validate", requirePermission("canEdit"), async (req: Request, res: Response) => {
-    try {
-      const { content, pageType = "attraction" } = req.body;
+  app.post(
+    "/api/seo/validate",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        const { content, pageType = "attraction" } = req.body;
 
-      if (!content) {
-        return res.status(400).json({ error: "Content is required" });
-      }
+        if (!content) {
+          return res.status(400).json({ error: "Content is required" });
+        }
 
-      const validPageTypes: PageType[] = [
-        "attraction", "hotel", "article", "dining", "district",
-        "event", "itinerary", "landing_page", "case_study", "off_plan",
-        "listicle", "comparison", "guide"
-      ];
+        const validPageTypes: PageType[] = [
+          "attraction",
+          "hotel",
+          "article",
+          "dining",
+          "district",
+          "event",
+          "itinerary",
+          "landing_page",
+          "case_study",
+          "off_plan",
+          "listicle",
+          "comparison",
+          "guide",
+        ];
 
-      const normalizedPageType = validPageTypes.includes(pageType) ? pageType : "attraction";
+        const normalizedPageType = validPageTypes.includes(pageType) ? pageType : "attraction";
 
-      logger.seo.info(`Validating SEO for ${normalizedPageType}: ${content.title?.substring(0, 50)}...`);
+        logger.seo.info(
+          `Validating SEO for ${normalizedPageType}: ${content.title?.substring(0, 50)}...`
+        );
 
-      const result = validateSEO(content, normalizedPageType as PageType);
+        const result = validateSEO(content, normalizedPageType as PageType);
 
-      // Log the result
-      logger.seo.info(`SEO Validation complete: ${result.overallScore}%`, {
-        pageType: normalizedPageType,
-        canPublish: result.canPublish,
-        tier1Score: result.tier1Score,
-        tier2Score: result.tier2Score,
-        tier3Score: result.tier3Score,
-        tier4Score: result.tier4Score,
-        blockingIssues: result.blockingIssues.length,
-        autoFixable: result.autoFixableIssues.length
-      });
+        // Log the result
+        logger.seo.info(`SEO Validation complete: ${result.overallScore}%`, {
+          pageType: normalizedPageType,
+          canPublish: result.canPublish,
+          tier1Score: result.tier1Score,
+          tier2Score: result.tier2Score,
+          tier3Score: result.tier3Score,
+          tier4Score: result.tier4Score,
+          blockingIssues: result.blockingIssues.length,
+          autoFixable: result.autoFixableIssues.length,
+        });
 
-      // Transform result to frontend expected format
-      const transformTier = (tierName: string, score: number) => {
-        const tierChecks = result.checks.filter(c => c.tier === tierName);
-        const maxScore = tierChecks.length * 100;
-        const passedCount = tierChecks.filter(c => c.passed).length;
+        // Transform result to frontend expected format
+        const transformTier = (tierName: string, score: number) => {
+          const tierChecks = result.checks.filter(c => c.tier === tierName);
+          const maxScore = tierChecks.length * 100;
+          const passedCount = tierChecks.filter(c => c.passed).length;
 
-        return {
-          score: passedCount,
-          maxScore: tierChecks.length,
-          percentage: score,
-          issues: tierChecks
-            .filter(c => !c.passed)
-            .map(c => ({
-              field: c.name,
-              issue: c.message,
-              severity: tierName === "tier1_critical" ? "critical" : tierName === "tier2_essential" ? "warning" : "info",
-              fixable: c.autoFixable || false,
-              suggestion: c.fixSuggestion
-            }))
+          return {
+            score: passedCount,
+            maxScore: tierChecks.length,
+            percentage: score,
+            issues: tierChecks
+              .filter(c => !c.passed)
+              .map(c => ({
+                field: c.name,
+                issue: c.message,
+                severity:
+                  tierName === "tier1_critical"
+                    ? "critical"
+                    : tierName === "tier2_essential"
+                      ? "warning"
+                      : "info",
+                fixable: c.autoFixable || false,
+                suggestion: c.fixSuggestion,
+              })),
+          };
         };
-      };
 
-      const transformedResult = {
-        overallScore: result.overallScore,
-        tier1_critical: transformTier("tier1_critical", result.tier1Score),
-        tier2_essential: transformTier("tier2_essential", result.tier2Score),
-        tier3_technical: transformTier("tier3_technical", result.tier3Score),
-        tier4_quality: transformTier("tier4_quality", result.tier4Score),
-        canPublish: result.canPublish,
-        publishBlockReason: result.publishBlockReasons.length > 0 ? result.publishBlockReasons.join("; ") : undefined,
-        fixableIssuesCount: result.autoFixableIssues.length
-      };
+        const transformedResult = {
+          overallScore: result.overallScore,
+          tier1_critical: transformTier("tier1_critical", result.tier1Score),
+          tier2_essential: transformTier("tier2_essential", result.tier2Score),
+          tier3_technical: transformTier("tier3_technical", result.tier3Score),
+          tier4_quality: transformTier("tier4_quality", result.tier4Score),
+          canPublish: result.canPublish,
+          publishBlockReason:
+            result.publishBlockReasons.length > 0
+              ? result.publishBlockReasons.join("; ")
+              : undefined,
+          fixableIssuesCount: result.autoFixableIssues.length,
+        };
 
-      res.json(transformedResult);
-    } catch (error) {
-      logger.seo.error("SEO validation error", { error: String(error) });
-      res.status(500).json({ error: "Failed to validate SEO" });
+        res.json(transformedResult);
+      } catch (error) {
+        logger.seo.error("SEO validation error", { error: String(error) });
+        res.status(500).json({ error: "Failed to validate SEO" });
+      }
     }
-  });
+  );
 
   /**
    * POST /api/seo/auto-fix
@@ -95,31 +119,35 @@ export function registerSEORoutes(app: Express) {
    * Body: { content: ContentData }
    * Returns: AutoFixResult with fixed content
    */
-  app.post("/api/seo/auto-fix", requirePermission("canEdit"), async (req: Request, res: Response) => {
-    try {
-      // Accept both 'content' and 'article' parameter names for backward compatibility
-      const content = req.body.content || req.body.article;
+  app.post(
+    "/api/seo/auto-fix",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        // Accept both 'content' and 'article' parameter names for backward compatibility
+        const content = req.body.content || req.body.article;
 
-      if (!content) {
-        return res.status(400).json({ error: "Content is required" });
+        if (!content) {
+          return res.status(400).json({ error: "Content is required" });
+        }
+
+        logger.seo.info(`Auto-fixing SEO for: ${content.title?.substring(0, 50)}...`);
+
+        const result = autoFixSEO(content);
+
+        logger.seo.info(`SEO Auto-fix complete: ${result.fixesApplied} fixes applied`, {
+          fixesApplied: result.fixesApplied,
+          fixesFailed: result.fixesFailed,
+          fixTypes: result.fixDetails.map(f => f.field),
+        });
+
+        res.json(result);
+      } catch (error) {
+        logger.seo.error("SEO auto-fix error", { error: String(error) });
+        res.status(500).json({ error: "Failed to auto-fix SEO" });
       }
-
-      logger.seo.info(`Auto-fixing SEO for: ${content.title?.substring(0, 50)}...`);
-
-      const result = autoFixSEO(content);
-
-      logger.seo.info(`SEO Auto-fix complete: ${result.fixesApplied} fixes applied`, {
-        fixesApplied: result.fixesApplied,
-        fixesFailed: result.fixesFailed,
-        fixTypes: result.fixDetails.map(f => f.field)
-      });
-
-      res.json(result);
-    } catch (error) {
-      logger.seo.error("SEO auto-fix error", { error: String(error) });
-      res.status(500).json({ error: "Failed to auto-fix SEO" });
     }
-  });
+  );
 
   /**
    * POST /api/seo/validate-and-fix
@@ -128,50 +156,68 @@ export function registerSEORoutes(app: Express) {
    * Body: { content: ContentData, pageType?: PageType, autoFix?: boolean }
    * Returns: { validation: SEOValidationResult, fixResult?: AutoFixResult }
    */
-  app.post("/api/seo/validate-and-fix", requirePermission("canEdit"), async (req: Request, res: Response) => {
-    try {
-      const { content, pageType = "attraction", autoFix = false } = req.body;
+  app.post(
+    "/api/seo/validate-and-fix",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        const { content, pageType = "attraction", autoFix = false } = req.body;
 
-      if (!content) {
-        return res.status(400).json({ error: "Content is required" });
+        if (!content) {
+          return res.status(400).json({ error: "Content is required" });
+        }
+
+        const validPageTypes: PageType[] = [
+          "attraction",
+          "hotel",
+          "article",
+          "dining",
+          "district",
+          "event",
+          "itinerary",
+          "landing_page",
+          "case_study",
+          "off_plan",
+          "listicle",
+          "comparison",
+          "guide",
+        ];
+
+        const normalizedPageType = validPageTypes.includes(pageType) ? pageType : "attraction";
+
+        logger.seo.info(
+          `Validating SEO (autoFix: ${autoFix}) for: ${content.title?.substring(0, 50)}...`
+        );
+
+        // Initial validation
+        let validation = validateSEO(content, normalizedPageType as PageType);
+        let fixResult: AutoFixResult | undefined;
+        let finalContent = content;
+
+        // Auto-fix if requested and there are fixable issues
+        if (autoFix && validation.autoFixableIssues.length > 0) {
+          fixResult = autoFixSEO(content);
+          finalContent = fixResult.articleUpdated;
+
+          // Re-validate after fix
+          validation = validateSEO(finalContent as any, normalizedPageType as PageType);
+
+          logger.seo.info(
+            `SEO Auto-fix applied: ${fixResult.fixesApplied} fixes, new score: ${validation.overallScore}%`
+          );
+        }
+
+        res.json({
+          validation,
+          fixResult,
+          content: finalContent,
+        });
+      } catch (error) {
+        logger.seo.error("SEO validate-and-fix error", { error: String(error) });
+        res.status(500).json({ error: "Failed to validate and fix SEO" });
       }
-
-      const validPageTypes: PageType[] = [
-        "attraction", "hotel", "article", "dining", "district",
-        "event", "itinerary", "landing_page", "case_study", "off_plan",
-        "listicle", "comparison", "guide"
-      ];
-
-      const normalizedPageType = validPageTypes.includes(pageType) ? pageType : "attraction";
-
-      logger.seo.info(`Validating SEO (autoFix: ${autoFix}) for: ${content.title?.substring(0, 50)}...`);
-
-      // Initial validation
-      let validation = validateSEO(content, normalizedPageType as PageType);
-      let fixResult: AutoFixResult | undefined;
-      let finalContent = content;
-
-      // Auto-fix if requested and there are fixable issues
-      if (autoFix && validation.autoFixableIssues.length > 0) {
-        fixResult = autoFixSEO(content);
-        finalContent = fixResult.articleUpdated;
-
-        // Re-validate after fix
-        validation = validateSEO(finalContent as any, normalizedPageType as PageType);
-
-        logger.seo.info(`SEO Auto-fix applied: ${fixResult.fixesApplied} fixes, new score: ${validation.overallScore}%`);
-      }
-
-      res.json({
-        validation,
-        fixResult,
-        content: finalContent
-      });
-    } catch (error) {
-      logger.seo.error("SEO validate-and-fix error", { error: String(error) });
-      res.status(500).json({ error: "Failed to validate and fix SEO" });
     }
-  });
+  );
 
   /**
    * GET /api/seo/requirements
@@ -197,8 +243,8 @@ export function registerSEORoutes(app: Express) {
               { name: "minimum_word_count", requirement: "Varies by page type" },
               { name: "h2_structure", requirement: "3-8 H2 headers" },
               { name: "hero_image_alt", requirement: "Descriptive alt text (20+ chars)" },
-              { name: "all_images_alt_text", requirement: "All images need alt text" }
-            ]
+              { name: "all_images_alt_text", requirement: "All images need alt text" },
+            ],
           },
           tier2_essential: {
             name: "Essential",
@@ -209,8 +255,8 @@ export function registerSEORoutes(app: Express) {
               { name: "faq_section", requirement: "6-10 FAQ items" },
               { name: "pro_tips", requirement: "3+ practical tips" },
               { name: "secondary_keywords", requirement: "3-5 keywords" },
-              { name: "call_to_actions", requirement: "2+ CTAs" }
-            ]
+              { name: "call_to_actions", requirement: "2+ CTAs" },
+            ],
           },
           tier3_technical: {
             name: "Technical",
@@ -221,8 +267,8 @@ export function registerSEORoutes(app: Express) {
               { name: "schema_markup", requirement: "Appropriate for page type" },
               { name: "open_graph_tags", requirement: "Complete OG tags" },
               { name: "breadcrumb", requirement: "Navigation with schema" },
-              { name: "dates", requirement: "Published + Updated dates" }
-            ]
+              { name: "dates", requirement: "Published + Updated dates" },
+            ],
           },
           tier4_quality: {
             name: "Quality",
@@ -233,9 +279,9 @@ export function registerSEORoutes(app: Express) {
               { name: "honest_cons", requirement: "Balanced view with downsides" },
               { name: "current_year", requirement: "2024/2025 mentioned" },
               { name: "paragraph_length", requirement: "2-4 sentences average" },
-              { name: "visual_breaks", requirement: "Every 300-400 words" }
-            ]
-          }
+              { name: "visual_breaks", requirement: "Every 300-400 words" },
+            ],
+          },
         },
         minWordCounts: {
           attraction: 1500,
@@ -250,13 +296,13 @@ export function registerSEORoutes(app: Express) {
           off_plan: 1500,
           listicle: 2500,
           comparison: 2000,
-          guide: 1800
+          guide: 1800,
         },
         publishingGates: {
           minSeoScore: 70,
           tier1MustBe100Percent: true,
-          autoFixAvailable: true
-        }
+          autoFixAvailable: true,
+        },
       };
 
       res.json(requirements);
@@ -273,87 +319,92 @@ export function registerSEORoutes(app: Express) {
    * Body: { content: ContentData, pageType?: PageType }
    * Returns: { canPublish: boolean, reasons: string[], score: number }
    */
-  app.post("/api/seo/can-publish", requirePermission("canEdit"), async (req: Request, res: Response) => {
-    try {
-      const { content, pageType = "attraction" } = req.body;
+  app.post(
+    "/api/seo/can-publish",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        const { content, pageType = "attraction" } = req.body;
 
-      if (!content) {
-        return res.status(400).json({ error: "Content is required" });
+        if (!content) {
+          return res.status(400).json({ error: "Content is required" });
+        }
+
+        const result = validateSEO(content, pageType as PageType);
+
+        res.json({
+          canPublish: result.canPublish,
+          reasons: result.publishBlockReasons,
+          score: result.overallScore,
+          tierScores: {
+            tier1_critical: result.tier1Score,
+            tier2_essential: result.tier2Score,
+            tier3_technical: result.tier3Score,
+            tier4_quality: result.tier4Score,
+          },
+          autoFixAvailable: result.autoFixableIssues.length > 0,
+          autoFixableCount: result.autoFixableIssues.length,
+        });
+      } catch (error) {
+        logger.seo.error("Can-publish check error", { error: String(error) });
+        res.status(500).json({ error: "Failed to check publishing eligibility" });
       }
-
-      const result = validateSEO(content, pageType as PageType);
-
-      res.json({
-        canPublish: result.canPublish,
-        reasons: result.publishBlockReasons,
-        score: result.overallScore,
-        tierScores: {
-          tier1_critical: result.tier1Score,
-          tier2_essential: result.tier2Score,
-          tier3_technical: result.tier3Score,
-          tier4_quality: result.tier4Score
-        },
-        autoFixAvailable: result.autoFixableIssues.length > 0,
-        autoFixableCount: result.autoFixableIssues.length
-      });
-    } catch (error) {
-      logger.seo.error("Can-publish check error", { error: String(error) });
-      res.status(500).json({ error: "Failed to check publishing eligibility" });
     }
-  });
+  );
 
   /**
    * POST /api/seo/indexnow
    * Submit URLs to IndexNow for instant Bing indexing
-   * 
+   *
    * Body: { urls: string[] }
    * Returns: { success: boolean, submitted: number }
    */
-  app.post("/api/seo/indexnow", requirePermission("canEdit"), async (req: Request, res: Response) => {
-    try {
-      const { urls } = req.body;
-      
-      if (!urls || !Array.isArray(urls) || urls.length === 0) {
-        return res.status(400).json({ error: "URLs array is required" });
-      }
-      
-      if (urls.length > 10000) {
-        return res.status(400).json({ error: "Maximum 10000 URLs per request" });
-      }
-      
-      const INDEXNOW_KEY = "2f24e2993ac8e17c604fc78ae6550dd6";
-      const HOST = "travi.world";
-      
-      const response = await fetch("https://api.indexnow.org/indexnow", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        body: JSON.stringify({
-          host: HOST,
-          key: INDEXNOW_KEY,
-          keyLocation: `https://${HOST}/${INDEXNOW_KEY}.txt`,
-          urlList: urls.map(url => url.startsWith("http") ? url : `https://${HOST}${url}`)
-        })
-      });
-      
-      if (response.ok || response.status === 200 || response.status === 202) {
-        logger.seo.info(`IndexNow: Submitted ${urls.length} URLs successfully`);
-        res.json({ success: true, submitted: urls.length });
-      } else {
-        const errorText = await response.text();
-        logger.seo.error(`IndexNow submission failed: ${response.status}`, { error: errorText });
-        res.status(response.status).json({ 
-          success: false, 
-          error: `IndexNow API returned ${response.status}: ${errorText}` 
-        });
-      }
-    } catch (error) {
-      logger.seo.error("IndexNow submission error", { error: String(error) });
-      res.status(500).json({ error: "Failed to submit to IndexNow" });
-    }
-  });
+  app.post(
+    "/api/seo/indexnow",
+    requirePermission("canEdit"),
+    async (req: Request, res: Response) => {
+      try {
+        const { urls } = req.body;
 
-  console.log("[SEORoutes] Registered SEO validation endpoints at /api/seo/*");
-  console.log("[SEORoutes] IndexNow endpoint available at POST /api/seo/indexnow");
+        if (!urls || !Array.isArray(urls) || urls.length === 0) {
+          return res.status(400).json({ error: "URLs array is required" });
+        }
+
+        if (urls.length > 10000) {
+          return res.status(400).json({ error: "Maximum 10000 URLs per request" });
+        }
+
+        const INDEXNOW_KEY = "2f24e2993ac8e17c604fc78ae6550dd6";
+        const HOST = "travi.world";
+
+        const response = await fetch("https://api.indexnow.org/indexnow", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            host: HOST,
+            key: INDEXNOW_KEY,
+            keyLocation: `https://${HOST}/${INDEXNOW_KEY}.txt`,
+            urlList: urls.map(url => (url.startsWith("http") ? url : `https://${HOST}${url}`)),
+          }),
+        });
+
+        if (response.ok || response.status === 200 || response.status === 202) {
+          logger.seo.info(`IndexNow: Submitted ${urls.length} URLs successfully`);
+          res.json({ success: true, submitted: urls.length });
+        } else {
+          const errorText = await response.text();
+          logger.seo.error(`IndexNow submission failed: ${response.status}`, { error: errorText });
+          res.status(response.status).json({
+            success: false,
+            error: `IndexNow API returned ${response.status}: ${errorText}`,
+          });
+        }
+      } catch (error) {
+        logger.seo.error("IndexNow submission error", { error: String(error) });
+        res.status(500).json({ error: "Failed to submit to IndexNow" });
+      }
+    }
+  );
 }

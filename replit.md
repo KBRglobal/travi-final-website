@@ -107,23 +107,9 @@ Preferred communication style: Simple, everyday language.
 - **Multi-language Sitemaps**: Sitemap index with per-locale sitemaps including hreflang attributes
 - **Key Files**: client/public/robots.txt, client/public/llms.txt, server/lib/ssr-renderer.ts, server/lib/meta-tags.ts, server/routes/seo-routes.ts
 
-### RSS Content Pipeline (OPERATIONAL - January 2026)
-- **Status**: Fully operational with 117 feeds across global destinations
-- **Database**: Uses `RAILWAY_DATABASE_URL` (not Replit's `DATABASE_URL`)
-- **Tables**: `rss_feeds` (117 feeds), `rss_feed_items` (1000+ items)
-- **Schema**: Feed items have foreign keys to rss_feeds(id) with ON DELETE CASCADE
-- **API Endpoints**:
-  - GET `/api/rss-feeds` - List all feeds
-  - POST `/api/octypo/rss/fetch/:feedId` - Fetch single feed
-  - POST `/api/octypo/rss/fetch-all` - Fetch all active feeds
-  - POST `/api/octypo/rss/generate-from-items` - Generate content from unprocessed items
-- **Regions Covered**: UAE, Turkey, Singapore, Thailand, Japan, USA, France, Spain, Italy, UK/EU
-- **Feed Categories**: news, events, attractions, food, hotels, tips, transport
-- **Key File**: server/octypo/rss-reader.ts
-
 ## External Dependencies
 
-- **Database**: PostgreSQL (Railway - primary; Replit - fallback).
+- **Database**: PostgreSQL.
 - **Object Storage**: Replit Object Storage.
 - **AI Services**: Anthropic, OpenAI, DeepSeek, OpenRouter.
 - **Social Media APIs**: LinkedIn, Twitter/X, Facebook, Instagram.

@@ -21,7 +21,11 @@ import {
   featuredSectionsUpdateSchema,
 } from "@shared/schema";
 import { generateContent, type GenerationOptions } from "../ai/content-generator";
-import { validateThroughGateway, type ContentForValidation, type QualityGateResult } from "../lib/content-quality-gateway";
+import {
+  validateThroughGateway,
+  type ContentForValidation,
+  type QualityGateResult,
+} from "../lib/content-quality-gateway";
 import { insertInternalLinks, type LinkingResult } from "../ai/internal-linking-engine";
 import { getAllUnifiedProviders, markProviderFailed } from "../ai/providers";
 import {
@@ -122,7 +126,7 @@ interface GeneratedDestinationContent {
 
 /**
  * Seed the database with destinations if empty.
- * 
+ *
  * IMPORTANT: This function only seeds DEFAULT destinations on first startup.
  * Admin panel can create additional destinations at any time.
  * Railway PostgreSQL is the single source of truth - no purging of user-created destinations.
@@ -131,29 +135,37 @@ async function seedDestinations() {
   try {
     // Only seed if database is empty
     const existing = await db.select().from(destinations).limit(1);
-    
+
     if (existing.length === 0) {
       logger.info("Seeding destinations table with initial data");
-      
+
       for (const dest of DESTINATIONS) {
-        const normalizedName = dest.name.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
-        await db.insert(destinations).values({
-          id: dest.id,
-          name: dest.name,
-          normalizedName,
-          country: dest.country,
-          slug: `/destinations/${dest.id}`,
-          isActive: dest.isActive,
-          status: dest.isActive ? "partial" : "empty",
-          hasPage: dest.isActive,
-          seoScore: 0,
-          wordCount: 0,
-          internalLinks: 0,
-          externalLinks: 0,
-          h2Count: 0,
-        } as any).onConflictDoNothing();
+        const normalizedName = dest.name
+          .toLowerCase()
+          .trim()
+          .replace(/[^\w\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-");
+        await db
+          .insert(destinations)
+          .values({
+            id: dest.id,
+            name: dest.name,
+            normalizedName,
+            country: dest.country,
+            slug: `/destinations/${dest.id}`,
+            isActive: dest.isActive,
+            status: dest.isActive ? "partial" : "empty",
+            hasPage: dest.isActive,
+            seoScore: 0,
+            wordCount: 0,
+            internalLinks: 0,
+            externalLinks: 0,
+            h2Count: 0,
+          } as any)
+          .onConflictDoNothing();
       }
-      
+
       logger.info(`Seeded ${DESTINATIONS.length} destinations`);
     } else {
       logger.info("Destinations table already has data, skipping seed");
@@ -242,7 +254,12 @@ Respond ONLY with the JSON object, no additional text.`;
 // Generate content using AI providers with fallback and logging
 async function generateDestinationContent(
   destination: Destination
-): Promise<{ content: GeneratedDestinationContent; provider: string; model: string; duration: number }> {
+): Promise<{
+  content: GeneratedDestinationContent;
+  provider: string;
+  model: string;
+  duration: number;
+}> {
   const providers = getAllUnifiedProviders();
   const startTime = Date.now();
 
@@ -290,8 +307,10 @@ async function generateDestinationContent(
       }
 
       const duration = Date.now() - attemptStart;
-      logger.info(`Successfully generated content for ${destination.name} using ${provider.name} in ${duration}ms`);
-      
+      logger.info(
+        `Successfully generated content for ${destination.name} using ${provider.name} in ${duration}ms`
+      );
+
       return {
         content,
         provider: provider.name,
@@ -300,8 +319,11 @@ async function generateDestinationContent(
       };
     } catch (error) {
       const duration = Date.now() - attemptStart;
-      logger.warn({ error: String(error) }, `Provider ${provider.name} failed for ${destination.name}`);
-      
+      logger.warn(
+        { error: String(error) },
+        `Provider ${provider.name} failed for ${destination.name}`
+      );
+
       // Log the failed attempt
       await db.insert(aiGenerationLogs).values({
         targetType: "destination",
@@ -313,7 +335,7 @@ async function generateDestinationContent(
         error: String(error),
         duration,
       } as any);
-      
+
       markProviderFailed(provider.name);
       continue;
     }
@@ -332,10 +354,12 @@ function calculateSeoMetrics(content: GeneratedDestinationContent): {
   let h2Count = 0;
 
   // Count words in hero
-  wordCount += (content.hero.title + content.hero.tagline + content.hero.description).split(/\s+/).length;
-  
+  wordCount += (content.hero.title + content.hero.tagline + content.hero.description).split(
+    /\s+/
+  ).length;
+
   // Count sections and words
-  const sections = ['attractions', 'districts', 'hotels', 'restaurants', 'travelTips', 'events'];
+  const sections = ["attractions", "districts", "hotels", "restaurants", "travelTips", "events"];
   h2Count = sections.length;
 
   for (const section of sections) {
@@ -349,13 +373,13 @@ function calculateSeoMetrics(content: GeneratedDestinationContent): {
 
   // Calculate SEO score (simplified)
   let seoScore = 50; // Base score
-  
+
   if (wordCount >= 1000) seoScore += 15;
   else if (wordCount >= 500) seoScore += 10;
-  
+
   if (h2Count >= 4) seoScore += 15;
   else if (h2Count >= 2) seoScore += 10;
-  
+
   if (content.hero.title && content.hero.description) seoScore += 10;
   if (content.attractions.length >= 4) seoScore += 5;
   if (content.hotels.length >= 4) seoScore += 5;
@@ -429,14 +453,18 @@ function applyInternalLinks(
 }
 
 // Get all destination content merged together
-async function getDestinationGeneratedContent(destinationId: string): Promise<GeneratedDestinationContent | null> {
+async function getDestinationGeneratedContent(
+  destinationId: string
+): Promise<GeneratedDestinationContent | null> {
   const contentRecords = await db
     .select()
     .from(destinationContent)
-    .where(and(
-      eq(destinationContent.destinationId, destinationId),
-      eq(destinationContent.isActive, true)
-    ))
+    .where(
+      and(
+        eq(destinationContent.destinationId, destinationId),
+        eq(destinationContent.isActive, true)
+      )
+    )
     .orderBy(desc(destinationContent.createdAt));
 
   if (contentRecords.length === 0) {
@@ -445,7 +473,7 @@ async function getDestinationGeneratedContent(destinationId: string): Promise<Ge
 
   // Merge all content types into one object
   const merged: Partial<GeneratedDestinationContent> = {};
-  
+
   for (const record of contentRecords) {
     const contentType = record.contentType as keyof GeneratedDestinationContent;
     if (record.content && !merged[contentType]) {
@@ -483,18 +511,22 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         let partialCount = 0;
         let emptyCount = 0;
 
-        const destinationStatuses = allDestinations.map((dest) => {
+        const destinationStatuses = allDestinations.map(dest => {
           if (dest.status === "complete") completeCount++;
           else if (dest.status === "partial") partialCount++;
           else emptyCount++;
 
           // Calculate quality tier from SEO score
-          const qualityTier = dest.seoScore !== null && dest.seoScore !== undefined
-            ? dest.seoScore >= 90 ? "auto_approve"
-              : dest.seoScore >= 80 ? "publish"
-              : dest.seoScore >= 70 ? "review"
-              : "draft"
-            : undefined;
+          const qualityTier =
+            dest.seoScore !== null && dest.seoScore !== undefined
+              ? dest.seoScore >= 90
+                ? "auto_approve"
+                : dest.seoScore >= 80
+                  ? "publish"
+                  : dest.seoScore >= 70
+                    ? "review"
+                    : "draft"
+              : undefined;
 
           return {
             id: dest.id,
@@ -511,16 +543,15 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           };
         });
 
-        const activeDestinations = allDestinations.filter((d) => d.hasPage).length;
+        const activeDestinations = allDestinations.filter(d => d.hasPage).length;
         const missingContent = allDestinations.filter(
-          (d) => d.status === "empty" || d.status === "partial"
+          d => d.status === "empty" || d.status === "partial"
         ).length;
 
         // Calculate health score based on SEO scores and completeness
         const totalScore = allDestinations.reduce((sum, d) => sum + (d.seoScore || 0), 0);
-        const healthScore = allDestinations.length > 0 
-          ? Math.round(totalScore / allDestinations.length) 
-          : 0;
+        const healthScore =
+          allDestinations.length > 0 ? Math.round(totalScore / allDestinations.length) : 0;
 
         res.json({
           totalDestinations: allDestinations.length,
@@ -565,10 +596,18 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         const startTime = Date.now();
 
         // Generate content
-        const { content: generatedContent, provider, model, duration } = await generateDestinationContent(destination);
+        const {
+          content: generatedContent,
+          provider,
+          model,
+          duration,
+        } = await generateDestinationContent(destination);
 
         // Apply internal links to the generated content
-        const { content: linkedContent, linksAdded } = applyInternalLinks(generatedContent, destination);
+        const { content: linkedContent, linksAdded } = applyInternalLinks(
+          generatedContent,
+          destination
+        );
 
         // Calculate SEO metrics (on linked content)
         const metrics = calculateSeoMetrics(linkedContent);
@@ -581,7 +620,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           content: JSON.stringify(linkedContent),
           contentType: "landing_page",
         };
-        
+
         const validationResult = validateThroughGateway(contentForValidation);
 
         // Store content in database - save as separate content types
@@ -648,7 +687,9 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           duration,
         } as any);
 
-        logger.info(`Successfully generated and saved content for ${destination.name} with ${linksAdded} internal links`);
+        logger.info(
+          `Successfully generated and saved content for ${destination.name} with ${linksAdded} internal links`
+        );
 
         res.json({
           success: true,
@@ -709,10 +750,18 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
 
         for (const destination of destinationsToGenerate) {
           try {
-            const { content: generatedContent, provider, model, duration } = await generateDestinationContent(destination);
-            
+            const {
+              content: generatedContent,
+              provider,
+              model,
+              duration,
+            } = await generateDestinationContent(destination);
+
             // Apply internal links
-            const { content: linkedContent, linksAdded } = applyInternalLinks(generatedContent, destination);
+            const { content: linkedContent, linksAdded } = applyInternalLinks(
+              generatedContent,
+              destination
+            );
             const metrics = calculateSeoMetrics(linkedContent);
 
             // Validate through quality gateway
@@ -723,7 +772,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
               content: JSON.stringify(linkedContent),
               contentType: "landing_page",
             };
-            
+
             const validationResult = validateThroughGateway(contentForValidation);
 
             // Store content - deactivate old, insert new
@@ -805,11 +854,14 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             });
             failed++;
 
-            logger.warn({ error: String(error) }, `Failed to generate content for ${destination.name}`);
+            logger.warn(
+              { error: String(error) },
+              `Failed to generate content for ${destination.name}`
+            );
           }
 
           // Add delay to avoid rate limiting
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         logger.info(`Bulk generation complete: ${generated} succeeded, ${failed} failed`);
@@ -880,7 +932,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         // Validate through quality gateway
         const contentForValidation: ContentForValidation = {
           title: contentToValidate.hero?.title || "Untitled",
-          metaTitle: destination 
+          metaTitle: destination
             ? `${destination.name} Travel Guide 2025 | Travi`
             : "Travel Guide 2025 | Travi",
           metaDescription: contentToValidate.hero?.description?.substring(0, 160) || "",
@@ -928,7 +980,12 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             .where(eq(destinations.id, dest.id));
 
           if (!existing) {
-            const normalizedName = dest.name.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
+            const normalizedName = dest.name
+              .toLowerCase()
+              .trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/\s+/g, "-")
+              .replace(/-+/g, "-");
             await db.insert(destinations).values({
               id: dest.id,
               name: dest.name,
@@ -952,7 +1009,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
 
         for (const dest of allDestinations) {
           const content = await getDestinationGeneratedContent(dest.id);
-          
+
           if (content) {
             const metrics = calculateSeoMetrics(content);
             await db
@@ -1005,10 +1062,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
       try {
         const { id } = req.params;
 
-        const [destination] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, id));
+        const [destination] = await db.select().from(destinations).where(eq(destinations.id, id));
 
         if (!destination) {
           return res.status(404).json({ error: "Destination not found" });
@@ -1054,10 +1108,9 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         const logs = await db
           .select()
           .from(aiGenerationLogs)
-          .where(and(
-            eq(aiGenerationLogs.targetType, "destination"),
-            eq(aiGenerationLogs.targetId, id)
-          ))
+          .where(
+            and(eq(aiGenerationLogs.targetType, "destination"), eq(aiGenerationLogs.targetId, id))
+          )
           .orderBy(desc(aiGenerationLogs.createdAt))
           .limit(50);
 
@@ -1079,7 +1132,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response) => {
       try {
         logger.info("Fetching image generation status");
-        
+
         const stats = await getImageGenerationStats();
         const destinationsNeedingImages = await findDestinationsNeedingImages();
 
@@ -1198,10 +1251,10 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         const { slug } = req.params;
         const fs = await import("fs/promises");
         const path = await import("path");
-        
+
         // Normalize slug to match folder naming (remove hyphens)
         const normalizedSlug = slug.replace(/-/g, "").toLowerCase();
-        
+
         // Check multiple possible folder names
         const baseDir = path.join(process.cwd(), "client/public/destinations-hero");
         const possibleFolders = [
@@ -1209,10 +1262,10 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           normalizedSlug,
           slug.charAt(0).toUpperCase() + slug.slice(1),
         ];
-        
+
         let folderPath: string | null = null;
         let folderName: string | null = null;
-        
+
         // Find the matching folder
         try {
           const folders = await fs.readdir(baseDir);
@@ -1231,15 +1284,15 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         } catch (e) {
           logger.error({ error: String(e) }, "Failed to read destinations-hero directory");
         }
-        
+
         if (!folderPath) {
-          return res.json({ 
-            images: [], 
+          return res.json({
+            images: [],
             message: `No hero images folder found for ${slug}`,
-            availableSlugs: [] 
+            availableSlugs: [],
           });
         }
-        
+
         // Read all files in the folder
         const files = await fs.readdir(folderPath);
         const webpFiles = files
@@ -1248,7 +1301,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             // Auto-generate alt text from filename
             // Remove destination prefix, replace hyphens with spaces, capitalize
             const altText = generateAltFromFilename(filename, slug);
-            
+
             return {
               filename,
               url: `/destinations-hero/${folderName}/${filename}`,
@@ -1256,12 +1309,12 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
               order: index,
             };
           });
-        
-        res.json({ 
+
+        res.json({
           slug,
           folder: folderName,
           images: webpFiles,
-          count: webpFiles.length 
+          count: webpFiles.length,
         });
       } catch (error) {
         logger.error({ error: String(error) }, "Failed to list hero images");
@@ -1274,49 +1327,43 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
    * GET /api/destination-intelligence/:id/hero
    * Get hero data for a destination (CMS-driven)
    */
-  app.get(
-    "/api/destination-intelligence/:id/hero",
-    async (req: Request, res: Response) => {
-      try {
-        const { id } = req.params;
-        
-        const [destination] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, id));
-        
-        if (!destination) {
-          return res.status(404).json({ error: "Destination not found" });
-        }
-        
-        // Return hero-specific fields
-        res.json({
-          id: destination.id,
-          name: destination.name,
-          slug: destination.slug,
-          heroTitle: destination.heroTitle,
-          heroSubtitle: destination.heroSubtitle,
-          heroImages: destination.heroImages || [],
-          heroCTAText: destination.heroCTAText,
-          heroCTALink: destination.heroCTALink,
-          moodVibe: destination.moodVibe,
-          moodTagline: destination.moodTagline,
-          moodPrimaryColor: destination.moodPrimaryColor,
-          moodGradientFrom: destination.moodGradientFrom,
-          moodGradientTo: destination.moodGradientTo,
-          metaTitle: destination.metaTitle,
-          metaDescription: destination.metaDescription,
-          ogTitle: destination.ogTitle,
-          ogDescription: destination.ogDescription,
-          ogImage: destination.ogImage,
-          canonicalUrl: destination.canonicalUrl,
-        });
-      } catch (error) {
-        logger.error({ error: String(error) }, "Failed to get hero data");
-        res.status(500).json({ error: "Failed to get hero data" });
+  app.get("/api/destination-intelligence/:id/hero", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const [destination] = await db.select().from(destinations).where(eq(destinations.id, id));
+
+      if (!destination) {
+        return res.status(404).json({ error: "Destination not found" });
       }
+
+      // Return hero-specific fields
+      res.json({
+        id: destination.id,
+        name: destination.name,
+        slug: destination.slug,
+        heroTitle: destination.heroTitle,
+        heroSubtitle: destination.heroSubtitle,
+        heroImages: destination.heroImages || [],
+        heroCTAText: destination.heroCTAText,
+        heroCTALink: destination.heroCTALink,
+        moodVibe: destination.moodVibe,
+        moodTagline: destination.moodTagline,
+        moodPrimaryColor: destination.moodPrimaryColor,
+        moodGradientFrom: destination.moodGradientFrom,
+        moodGradientTo: destination.moodGradientTo,
+        metaTitle: destination.metaTitle,
+        metaDescription: destination.metaDescription,
+        ogTitle: destination.ogTitle,
+        ogDescription: destination.ogDescription,
+        ogImage: destination.ogImage,
+        canonicalUrl: destination.canonicalUrl,
+      });
+    } catch (error) {
+      logger.error({ error: String(error) }, "Failed to get hero data");
+      res.status(500).json({ error: "Failed to get hero data" });
     }
-  );
+  });
 
   /**
    * PATCH /api/destination-intelligence/:id/hero
@@ -1346,17 +1393,14 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           ogImage,
           canonicalUrl,
         } = req.body;
-        
+
         // Check destination exists
-        const [existing] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, id));
-        
+        const [existing] = await db.select().from(destinations).where(eq(destinations.id, id));
+
         if (!existing) {
           return res.status(404).json({ error: "Destination not found" });
         }
-        
+
         // Update destination with hero data
         const [updated] = await db
           .update(destinations)
@@ -1381,9 +1425,9 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           } as any)
           .where(eq(destinations.id, id))
           .returning();
-        
+
         logger.info(`Updated hero data for destination ${id}`);
-        
+
         res.json({
           success: true,
           message: `Hero data updated for ${existing.name}`,
@@ -1406,18 +1450,18 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response): Promise<void> => {
       try {
         const { id } = req.params;
-        
+
         const [destination] = await db
           .select()
           .from(destinations)
           .where(eq(destinations.id, id))
           .limit(1);
-        
+
         if (!destination) {
           res.status(404).json({ error: "Destination not found" });
           return;
         }
-        
+
         res.json({
           featuredAttractions: destination.featuredAttractions || [],
           featuredAreas: destination.featuredAreas || [],
@@ -1441,33 +1485,33 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response): Promise<void> => {
       try {
         const { id } = req.params;
-        
+
         // Validate request body using Zod schema
         const validation = featuredSectionsUpdateSchema.safeParse(req.body);
         if (!validation.success) {
-          res.status(400).json({ 
-            error: "Validation failed", 
-            details: validation.error.errors 
+          res.status(400).json({
+            error: "Validation failed",
+            details: validation.error.errors,
           });
           return;
         }
-        
+
         const { featuredAttractions, featuredAreas, featuredHighlights } = validation.data;
-        
+
         const [existing] = await db
           .select()
           .from(destinations)
           .where(eq(destinations.id, id))
           .limit(1);
-        
+
         if (!existing) {
           res.status(404).json({ error: "Destination not found" });
           return;
         }
-        
+
         // Build update object with only provided fields
         const updateData: Record<string, unknown> = { updatedAt: new Date() };
-        
+
         if (featuredAttractions !== undefined) {
           updateData.featuredAttractions = featuredAttractions;
         }
@@ -1477,15 +1521,15 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
         if (featuredHighlights !== undefined) {
           updateData.featuredHighlights = featuredHighlights;
         }
-        
+
         const [updated] = await db
           .update(destinations)
           .set(updateData)
           .where(eq(destinations.id, id))
           .returning();
-        
+
         logger.info(`Updated featured sections for destination ${id}`);
-        
+
         res.json({
           success: true,
           message: `Featured sections updated for ${existing.name}`,
@@ -1531,7 +1575,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
           })
           .from(destinations)
           .orderBy(destinations.name);
-        
+
         res.json(allDestinations);
       } catch (error) {
         logger.error({ error: String(error) }, "Failed to fetch admin destinations");
@@ -1550,16 +1594,13 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response) => {
       try {
         const { slug } = req.params;
-        
-        const [destination] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, slug));
-        
+
+        const [destination] = await db.select().from(destinations).where(eq(destinations.id, slug));
+
         if (!destination) {
           return res.status(404).json({ error: "Destination not found" });
         }
-        
+
         res.json({
           id: destination.id,
           name: destination.name,
@@ -1589,16 +1630,13 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response) => {
       try {
         const { slug } = req.params;
-        
-        const [destination] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, slug));
-        
+
+        const [destination] = await db.select().from(destinations).where(eq(destinations.id, slug));
+
         if (!destination) {
           return res.status(404).json({ error: "Destination not found" });
         }
-        
+
         // Return section configuration based on destination data
         const sections = [
           {
@@ -1623,7 +1661,7 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             itemCount: destination.featuredHighlights?.length || 0,
           },
         ];
-        
+
         res.json(sections);
       } catch (error) {
         logger.error({ error: String(error) }, "Failed to fetch destination sections");
@@ -1642,16 +1680,13 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response) => {
       try {
         const { slug } = req.params;
-        
-        const [destination] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, slug));
-        
+
+        const [destination] = await db.select().from(destinations).where(eq(destinations.id, slug));
+
         if (!destination) {
           return res.status(404).json({ error: "Destination not found" });
         }
-        
+
         res.json({
           metaTitle: destination.metaTitle,
           metaDescription: destination.metaDescription,
@@ -1679,28 +1714,26 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
       try {
         const { slug } = req.params;
         const { metaTitle, metaDescription } = req.body;
-        
-        const [existing] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, slug));
-        
+
+        const [existing] = await db.select().from(destinations).where(eq(destinations.id, slug));
+
         if (!existing) {
           return res.status(404).json({ error: "Destination not found" });
         }
-        
+
         const [updated] = await db
           .update(destinations)
           .set({
             metaTitle: metaTitle !== undefined ? metaTitle : existing.metaTitle,
-            metaDescription: metaDescription !== undefined ? metaDescription : existing.metaDescription,
+            metaDescription:
+              metaDescription !== undefined ? metaDescription : existing.metaDescription,
             updatedAt: new Date(),
           } as any)
           .where(eq(destinations.id, slug))
           .returning();
-        
+
         logger.info(`Updated SEO for destination ${slug}`);
-        
+
         res.json({
           success: true,
           metaTitle: updated.metaTitle,
@@ -1723,26 +1756,24 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
     async (req: Request, res: Response) => {
       try {
         const { name, country, destinationLevel = "city" } = req.body;
-        
+
         if (!name || !country) {
           return res.status(400).json({ error: "Name and country are required" });
         }
-        
+
         // Generate slug from name
-        const slug = name.toLowerCase()
+        const slug = name
+          .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-|-$/g, "");
-        
+
         // Check for duplicates
-        const [existing] = await db
-          .select()
-          .from(destinations)
-          .where(eq(destinations.id, slug));
-        
+        const [existing] = await db.select().from(destinations).where(eq(destinations.id, slug));
+
         if (existing) {
           return res.status(409).json({ error: "A destination with this name already exists" });
         }
-        
+
         const [newDestination] = await db
           .insert(destinations)
           .values({
@@ -1761,9 +1792,9 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
             h2Count: 0,
           } as any)
           .returning();
-        
+
         logger.info(`Created new destination: ${name} (${slug})`);
-        
+
         res.status(201).json(newDestination);
       } catch (error) {
         logger.error({ error: String(error) }, "Failed to create destination");
@@ -1771,36 +1802,30 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
       }
     }
   );
-
-  console.log(
-    "[DestinationIntelligence] Registered destination intelligence endpoints at /api/destination-intelligence/*"
-  );
-  console.log(
-    "[AdminDestinations] Registered admin destinations endpoints at /api/admin/destinations/*"
-  );
 }
 
 // Helper to generate alt text from filename
 function generateAltFromFilename(filename: string, destinationSlug: string): string {
   // Remove file extension
   let name = filename.replace(/\.webp\.webp$/i, "").replace(/\.webp$/i, "");
-  
+
   // Remove destination prefix (e.g., "tokyo-hero-" or "dubai-")
   const slugNormalized = destinationSlug.replace(/-/g, "");
   name = name.replace(new RegExp(`^${slugNormalized}-hero-`, "i"), "");
   name = name.replace(new RegExp(`^${slugNormalized}-`, "i"), "");
   name = name.replace(/^hero-/i, "");
-  
+
   // Replace hyphens with spaces and capitalize words
-  const words = name.split("-").map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-  );
-  
+  const words = name
+    .split("-")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+
   // Add destination name at the end
-  const destName = destinationSlug.split("-").map(w => 
-    w.charAt(0).toUpperCase() + w.slice(1)
-  ).join(" ");
-  
+  const destName = destinationSlug
+    .split("-")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
   return `${words.join(" ")} in ${destName}`;
 }
 

@@ -1,7 +1,7 @@
 /**
  * SSR Renderer for Bots
  * Generates complete HTML pages for search engine and AI crawlers
- * 
+ *
  * COMPREHENSIVE COVERAGE:
  * - Legacy routes: /, /articles, /attractions, /hotels, /dining, /about, /contact, /privacy
  * - Destination routes: /destinations, /destinations/:slug, /destinations/:slug/hotels|attractions
@@ -13,12 +13,18 @@
 import { storage } from "../storage";
 import { db } from "../db";
 import type { Content, ContentWithRelations, Locale, ContentBlock } from "@shared/schema";
-import { RTL_LOCALES, SUPPORTED_LOCALES, update9987Guides, tiqetsAttractions, contents } from "@shared/schema";
+import {
+  RTL_LOCALES,
+  SUPPORTED_LOCALES,
+  update9987Guides,
+  tiqetsAttractions,
+  contents,
+} from "@shared/schema";
 import { and, isNull } from "drizzle-orm";
 import { eq, desc, sql } from "drizzle-orm";
-import { 
-  generateMetaTags, 
-  generateStructuredData, 
+import {
+  generateMetaTags,
+  generateStructuredData,
   getCanonicalUrl,
   type MetaTagsOptions,
 } from "./meta-tags";
@@ -27,71 +33,80 @@ const BASE_URL = "https://travi.world";
 const SITE_NAME = "TRAVI";
 
 // Destination metadata for SSR (mirrors client/src/data/destinations.ts)
-const DESTINATION_DATA: Record<string, {
-  name: string;
-  country: string;
-  tagline: string;
-  description: string;
-  heroImage: string;
-  currency: string;
-  language: string;
-  timezone: string;
-}> = {
-  "singapore": {
+const DESTINATION_DATA: Record<
+  string,
+  {
+    name: string;
+    country: string;
+    tagline: string;
+    description: string;
+    heroImage: string;
+    currency: string;
+    language: string;
+    timezone: string;
+  }
+> = {
+  singapore: {
     name: "Singapore",
     country: "Singapore",
     tagline: "Where East Meets West",
-    description: "Discover Singapore - a stunning city-state where ultramodern architecture meets traditional culture. Experience world-class attractions, diverse cuisines, and vibrant neighborhoods.",
+    description:
+      "Discover Singapore - a stunning city-state where ultramodern architecture meets traditional culture. Experience world-class attractions, diverse cuisines, and vibrant neighborhoods.",
     heroImage: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1200&h=630&fit=crop",
     currency: "SGD",
     language: "English, Mandarin, Malay, Tamil",
     timezone: "GMT+8",
   },
-  "dubai": {
+  dubai: {
     name: "Dubai",
     country: "United Arab Emirates",
     tagline: "The City of Gold",
-    description: "Explore Dubai's iconic skyscrapers, luxury shopping, and desert adventures. From the Burj Khalifa to traditional souks, discover why millions visit this spectacular city.",
+    description:
+      "Explore Dubai's iconic skyscrapers, luxury shopping, and desert adventures. From the Burj Khalifa to traditional souks, discover why millions visit this spectacular city.",
     heroImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&h=630&fit=crop",
     currency: "AED",
     language: "Arabic, English",
     timezone: "GMT+4",
   },
-  "bangkok": {
+  bangkok: {
     name: "Bangkok",
     country: "Thailand",
     tagline: "The City of Angels",
-    description: "Experience Bangkok's grand temples, vibrant street food scene, and bustling markets. Thailand's capital offers an unforgettable blend of tradition and modernity.",
+    description:
+      "Experience Bangkok's grand temples, vibrant street food scene, and bustling markets. Thailand's capital offers an unforgettable blend of tradition and modernity.",
     heroImage: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&h=630&fit=crop",
     currency: "THB",
     language: "Thai, English",
     timezone: "GMT+7",
   },
-  "paris": {
+  paris: {
     name: "Paris",
     country: "France",
     tagline: "The City of Light",
-    description: "Discover Paris - the world's most romantic city. From the Eiffel Tower to world-class museums, charming cafés, and haute cuisine, Paris captivates visitors endlessly.",
+    description:
+      "Discover Paris - the world's most romantic city. From the Eiffel Tower to world-class museums, charming cafés, and haute cuisine, Paris captivates visitors endlessly.",
     heroImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=630&fit=crop",
     currency: "EUR",
     language: "French",
     timezone: "GMT+1",
   },
-  "london": {
+  london: {
     name: "London",
     country: "United Kingdom",
     tagline: "A World in One City",
-    description: "Explore London's iconic landmarks, world-class museums, and diverse neighborhoods. The British capital offers history, culture, and modern attractions for every traveler.",
+    description:
+      "Explore London's iconic landmarks, world-class museums, and diverse neighborhoods. The British capital offers history, culture, and modern attractions for every traveler.",
     heroImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&h=630&fit=crop",
     currency: "GBP",
     language: "English",
     timezone: "GMT",
   },
-  "istanbul": {
+  istanbul: {
     name: "Istanbul",
     country: "Turkey",
     tagline: "Where Continents Meet",
-    description: "Experience Istanbul's rich heritage spanning two continents. From the Blue Mosque to the Grand Bazaar, discover why this ancient city remains eternally captivating.",
+    description:
+      "Experience Istanbul's rich heritage spanning two continents. From the Blue Mosque to the Grand Bazaar, discover why this ancient city remains eternally captivating.",
     heroImage: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=1200&h=630&fit=crop",
     currency: "TRY",
     language: "Turkish",
@@ -101,17 +116,19 @@ const DESTINATION_DATA: Record<string, {
     name: "New York City",
     country: "United States",
     tagline: "The City That Never Sleeps",
-    description: "Discover New York City's iconic skyline, Broadway shows, and world-famous museums. From Central Park to Times Square, the Big Apple offers endless excitement.",
+    description:
+      "Discover New York City's iconic skyline, Broadway shows, and world-famous museums. From Central Park to Times Square, the Big Apple offers endless excitement.",
     heroImage: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1200&h=630&fit=crop",
     currency: "USD",
     language: "English",
     timezone: "GMT-5",
   },
-  "tokyo": {
+  tokyo: {
     name: "Tokyo",
     country: "Japan",
     tagline: "Where Tradition Meets Innovation",
-    description: "Explore Tokyo's fascinating blend of ancient temples and cutting-edge technology. Japan's capital offers unique culture, amazing food, and unforgettable experiences.",
+    description:
+      "Explore Tokyo's fascinating blend of ancient temples and cutting-edge technology. Japan's capital offers unique culture, amazing food, and unforgettable experiences.",
     heroImage: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200&h=630&fit=crop",
     currency: "JPY",
     language: "Japanese",
@@ -121,37 +138,41 @@ const DESTINATION_DATA: Record<string, {
     name: "Hong Kong",
     country: "China",
     tagline: "Asia's World City",
-    description: "Experience Hong Kong's dramatic skyline, dim sum delights, and vibrant street markets. This dynamic city offers the perfect blend of East and West.",
+    description:
+      "Experience Hong Kong's dramatic skyline, dim sum delights, and vibrant street markets. This dynamic city offers the perfect blend of East and West.",
     heroImage: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=1200&h=630&fit=crop",
     currency: "HKD",
     language: "Cantonese, English",
     timezone: "GMT+8",
   },
-  "rome": {
+  rome: {
     name: "Rome",
     country: "Italy",
     tagline: "The Eternal City",
-    description: "Walk through Rome's ancient ruins, Renaissance masterpieces, and vibrant piazzas. The Italian capital offers millennia of history and world-renowned cuisine.",
+    description:
+      "Walk through Rome's ancient ruins, Renaissance masterpieces, and vibrant piazzas. The Italian capital offers millennia of history and world-renowned cuisine.",
     heroImage: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&h=630&fit=crop",
     currency: "EUR",
     language: "Italian",
     timezone: "GMT+1",
   },
-  "barcelona": {
+  barcelona: {
     name: "Barcelona",
     country: "Spain",
     tagline: "Art, Architecture & Mediterranean Vibes",
-    description: "Discover Barcelona's Gaudí masterpieces, stunning beaches, and vibrant nightlife. This Catalan gem offers art, culture, and Mediterranean charm year-round.",
+    description:
+      "Discover Barcelona's Gaudí masterpieces, stunning beaches, and vibrant nightlife. This Catalan gem offers art, culture, and Mediterranean charm year-round.",
     heroImage: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=1200&h=630&fit=crop",
     currency: "EUR",
     language: "Spanish, Catalan",
     timezone: "GMT+1",
   },
-  "amsterdam": {
+  amsterdam: {
     name: "Amsterdam",
     country: "Netherlands",
     tagline: "City of Canals",
-    description: "Explore Amsterdam's iconic canals, world-class museums, and charming neighborhoods. The Dutch capital offers art, history, and a welcoming atmosphere.",
+    description:
+      "Explore Amsterdam's iconic canals, world-class museums, and charming neighborhoods. The Dutch capital offers art, history, and a welcoming atmosphere.",
     heroImage: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=1200&h=630&fit=crop",
     currency: "EUR",
     language: "Dutch, English",
@@ -161,7 +182,8 @@ const DESTINATION_DATA: Record<string, {
     name: "Abu Dhabi",
     country: "United Arab Emirates",
     tagline: "The Capital of Culture",
-    description: "Discover Abu Dhabi's stunning cultural landmarks, desert adventures, and luxury experiences. The UAE capital blends heritage with modern sophistication.",
+    description:
+      "Discover Abu Dhabi's stunning cultural landmarks, desert adventures, and luxury experiences. The UAE capital blends heritage with modern sophistication.",
     heroImage: "https://images.unsplash.com/photo-1512632578888-169bbfe94b38?w=1200&h=630&fit=crop",
     currency: "AED",
     language: "Arabic, English",
@@ -171,7 +193,8 @@ const DESTINATION_DATA: Record<string, {
     name: "Las Vegas",
     country: "United States",
     tagline: "Entertainment Capital of the World",
-    description: "Experience Las Vegas's world-famous casinos, shows, and nightlife. Beyond the Strip, discover incredible natural wonders and unforgettable adventures.",
+    description:
+      "Experience Las Vegas's world-famous casinos, shows, and nightlife. Beyond the Strip, discover incredible natural wonders and unforgettable adventures.",
     heroImage: "https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=1200&h=630&fit=crop",
     currency: "USD",
     language: "English",
@@ -181,17 +204,19 @@ const DESTINATION_DATA: Record<string, {
     name: "Los Angeles",
     country: "United States",
     tagline: "The City of Angels",
-    description: "Explore Los Angeles's iconic beaches, Hollywood glamour, and diverse neighborhoods. The entertainment capital offers endless sunshine and attractions.",
+    description:
+      "Explore Los Angeles's iconic beaches, Hollywood glamour, and diverse neighborhoods. The entertainment capital offers endless sunshine and attractions.",
     heroImage: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?w=1200&h=630&fit=crop",
     currency: "USD",
     language: "English, Spanish",
     timezone: "GMT-8",
   },
-  "miami": {
+  miami: {
     name: "Miami",
     country: "United States",
     tagline: "The Magic City",
-    description: "Experience Miami's stunning beaches, Art Deco architecture, and vibrant Latin culture. This tropical paradise offers nightlife, cuisine, and year-round sunshine.",
+    description:
+      "Experience Miami's stunning beaches, Art Deco architecture, and vibrant Latin culture. This tropical paradise offers nightlife, cuisine, and year-round sunshine.",
     heroImage: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1200&h=630&fit=crop",
     currency: "USD",
     language: "English, Spanish",
@@ -209,74 +234,78 @@ interface SSRRenderOptions {
  * Main SSR render function - routes to appropriate renderer
  * Note: The path should already be normalized (locale stripped) by ssr-middleware
  */
-export async function renderSSR(path: string, locale: Locale = "en", searchParams?: URLSearchParams): Promise<{ html: string; status: number; redirect?: string }> {
+export async function renderSSR(
+  path: string,
+  locale: Locale = "en",
+  searchParams?: URLSearchParams
+): Promise<{ html: string; status: number; redirect?: string }> {
   const options: SSRRenderOptions = { locale, path, searchParams };
-  
+
   // Normalize path - ensure it starts with / and handle empty paths
   // Do NOT strip locale here - middleware already handles that
-  const cleanPath = path === "" ? "/" : (path.startsWith("/") ? path : `/${path}`);
-  
+  const cleanPath = path === "" ? "/" : path.startsWith("/") ? path : `/${path}`;
+
   if (cleanPath === "/" || cleanPath === "") {
     return renderHomepage(options);
   }
-  
+
   if (cleanPath.startsWith("/article/")) {
     const slug = cleanPath.replace("/article/", "");
     return renderContentPage(slug, "article", options);
   }
-  
+
   if (cleanPath.startsWith("/attraction/")) {
     const slug = cleanPath.replace("/attraction/", "");
     // Redirect singular /attraction/ to plural /attractions/ for Tiqets data
     return renderTiqetsAttractionPage(slug, options);
   }
-  
+
   if (cleanPath.startsWith("/hotel/")) {
     const slug = cleanPath.replace("/hotel/", "");
     return renderContentPage(slug, "hotel", options);
   }
-  
+
   if (cleanPath === "/articles") {
     return renderCategoryPage("article", options);
   }
-  
+
   if (cleanPath === "/attractions") {
     return renderCategoryPage("attraction", options);
   }
-  
+
   if (cleanPath === "/hotels") {
     return renderCategoryPage("hotel", options);
   }
-  
+
   if (cleanPath === "/dining") {
     return renderCategoryPage("dining", options);
   }
-  
+
   if (cleanPath === "/about") {
     return renderStaticPage("about", options);
   }
-  
+
   if (cleanPath === "/contact") {
     return renderStaticPage("contact", options);
   }
-  
+
   if (cleanPath === "/privacy") {
     return renderStaticPage("privacy", options);
   }
-  
+
   // ====== NEW SSR ROUTES ======
-  
+
   // Destinations hub page
   if (cleanPath === "/destinations") {
     return renderDestinationsHub(options);
   }
-  
+
   // Destination detail pages: /destinations/:slug
   if (cleanPath.startsWith("/destinations/")) {
     const parts = cleanPath.replace("/destinations/", "").split("/");
     const slug = parts[0];
     const subpage = parts[1]; // hotels, attractions, dining, etc.
-    
+
     if (subpage === "hotels") {
       return renderDestinationSubpage(slug, "hotels", options);
     }
@@ -293,90 +322,92 @@ export async function renderSSR(path: string, locale: Locale = "en", searchParam
       return renderDestinationPage(slug, options);
     }
   }
-  
+
   // Travel guides hub
   if (cleanPath === "/guides" || cleanPath === "/travel-guides") {
     return renderGuidesHub(options);
   }
-  
+
   // Guide detail: /guides/:slug
   if (cleanPath.startsWith("/guides/")) {
     const slug = cleanPath.replace("/guides/", "");
     return renderGuidePage(slug, options);
   }
-  
+
   // City shortcut pages: /singapore, /dubai, /bangkok, etc.
   const citySlug = cleanPath.replace("/", "");
   if (DESTINATION_DATA[citySlug]) {
     return renderDestinationPage(citySlug, options);
   }
-  
+
   // Tiqets attraction detail: /attractions/:slug (different from /attraction/:slug)
   if (cleanPath.startsWith("/attractions/") && cleanPath !== "/attractions") {
     const slug = cleanPath.replace("/attractions/", "");
     return renderTiqetsAttractionPage(slug, options);
   }
-  
+
   // ====== ADDITIONAL SSR ROUTES (Phase 2) ======
-  
+
   // News hub page
   if (cleanPath === "/news") {
     return renderNewsHub(options);
   }
-  
+
   // Events hub page
   if (cleanPath === "/events") {
     return renderEventsHub(options);
   }
-  
+
   // Shopping hub page
   if (cleanPath === "/shopping") {
     return renderShoppingHub(options);
   }
-  
+
   // Districts hub page
   if (cleanPath === "/districts") {
     return renderDistrictsHub(options);
   }
-  
+
   // District detail pages: /districts/:slug
   if (cleanPath.startsWith("/districts/")) {
     const slug = cleanPath.replace("/districts/", "");
     return renderDistrictPage(slug, options);
   }
-  
+
   // Dining/Restaurant detail pages: /dining/:slug
   if (cleanPath.startsWith("/dining/")) {
     const slug = cleanPath.replace("/dining/", "");
     return renderRestaurantPage(slug, options);
   }
-  
+
   // Event detail pages: /events/:slug (if individual event pages exist)
   if (cleanPath.startsWith("/events/")) {
     const slug = cleanPath.replace("/events/", "");
     return renderEventPage(slug, options);
   }
-  
+
   return render404(options);
 }
 
 /**
  * Render homepage with featured content
  */
-async function renderHomepage(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderHomepage(
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   // Normalized attraction type for homepage
   interface FeaturedAttraction {
     title: string;
     slug: string;
     description?: string;
   }
-  
+
   let featuredAttractions: FeaturedAttraction[] = [];
   let hotels: Content[] = [];
   let articles: Content[] = [];
-  
+
   // Fetch Tiqets attractions separately (this is where real data is)
   try {
     const tiqetsResults = await db
@@ -391,16 +422,17 @@ async function renderHomepage(options: SSRRenderOptions): Promise<{ html: string
       .from(tiqetsAttractions)
       .orderBy(desc(tiqetsAttractions.updatedAt))
       .limit(6);
-    
+
     featuredAttractions = tiqetsResults.map(item => ({
       title: item.title || item.slug,
       slug: item.seoSlug || item.slug, // Prefer seo_slug for clean URLs
-      description: item.description || item.tiqetsSummary || `Attraction in ${item.cityName || 'various destinations'}`,
+      description:
+        item.description ||
+        item.tiqetsSummary ||
+        `Attraction in ${item.cityName || "various destinations"}`,
     }));
-  } catch (error) {
-    console.error("[SSR] Error fetching tiqets attractions for homepage:", error);
-  }
-  
+  } catch (error) {}
+
   // Fetch hotels and articles from contents table
   try {
     const results = await Promise.all([
@@ -409,16 +441,15 @@ async function renderHomepage(options: SSRRenderOptions): Promise<{ html: string
     ]);
     hotels = results[0] || [];
     articles = results[1] || [];
-  } catch (error) {
-    console.error("[SSR] Error fetching homepage content:", error);
-  }
+  } catch (error) {}
 
   const featuredHotels = hotels.slice(0, 6);
   const featuredArticles = articles.slice(0, 6);
 
   const metaTags = generateMetaTags({
     title: "TRAVI - Expert Travel Guides & Reviews",
-    description: "Discover the best hotels, attractions, restaurants, and local experiences worldwide. TRAVI provides expert travel guides with honest reviews and insider tips.",
+    description:
+      "Discover the best hotels, attractions, restaurants, and local experiences worldwide. TRAVI provides expert travel guides with honest reviews and insider tips.",
     url: getCanonicalUrl("/", locale),
     type: "website",
     locale,
@@ -456,56 +487,80 @@ async function renderHomepage(options: SSRRenderOptions): Promise<{ html: string
           <p>Discover curated recommendations for hotels, attractions, restaurants, and authentic local experiences. Our expert team provides honest reviews and insider tips.</p>
         </section>
         
-        ${featuredAttractions.length > 0 ? `
+        ${
+          featuredAttractions.length > 0
+            ? `
         <section aria-labelledby="attractions-heading">
           <h2 id="attractions-heading">Popular Attractions</h2>
           <ul>
-            ${featuredAttractions.map(item => `
+            ${featuredAttractions
+              .map(
+                item => `
               <li>
                 <article>
                   <h3><a href="${getCanonicalUrl(`/attractions/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h3>
                   ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
           <a href="${getCanonicalUrl("/attractions", locale)}">View all attractions</a>
         </section>
-        ` : ""}
+        `
+            : ""
+        }
         
-        ${featuredHotels.length > 0 ? `
+        ${
+          featuredHotels.length > 0
+            ? `
         <section aria-labelledby="hotels-heading">
           <h2 id="hotels-heading">Top Hotels</h2>
           <ul>
-            ${featuredHotels.map(item => `
+            ${featuredHotels
+              .map(
+                item => `
               <li>
                 <article>
                   <h3><a href="${getCanonicalUrl(`/hotel/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h3>
                   ${item.metaDescription ? `<p>${escapeHtml(item.metaDescription)}</p>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
           <a href="${getCanonicalUrl("/hotels", locale)}">View all hotels</a>
         </section>
-        ` : ""}
+        `
+            : ""
+        }
         
-        ${featuredArticles.length > 0 ? `
+        ${
+          featuredArticles.length > 0
+            ? `
         <section aria-labelledby="articles-heading">
           <h2 id="articles-heading">Latest Articles</h2>
           <ul>
-            ${featuredArticles.map(item => `
+            ${featuredArticles
+              .map(
+                item => `
               <li>
                 <article>
                   <h3><a href="${getCanonicalUrl(`/article/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h3>
                   ${item.metaDescription ? `<p>${escapeHtml(item.metaDescription)}</p>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
           <a href="${getCanonicalUrl("/articles", locale)}">View all articles</a>
         </section>
-        ` : ""}
+        `
+            : ""
+        }
       </main>
       
       ${renderFooter(locale)}
@@ -524,16 +579,15 @@ async function renderContentPage(
   options: SSRRenderOptions
 ): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   // Fetch content with proper error handling
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
   } catch (error) {
-    console.error(`[SSR] Error fetching content by slug "${slug}":`, error);
     return render404(options);
   }
-  
+
   // Return 404 if content doesn't exist or isn't published
   if (!content || content.status !== "published") {
     return render404(options);
@@ -541,7 +595,7 @@ async function renderContentPage(
 
   const urlPath = `/${contentType}/${slug}`;
   const image = getContentImage(content);
-  
+
   const metaTags = generateMetaTags({
     title: content.metaTitle || content.title,
     description: content.metaDescription || "",
@@ -554,9 +608,12 @@ async function renderContentPage(
     section: contentType,
   });
 
-  const schemaType = contentType === "hotel" ? "Hotel" 
-    : contentType === "attraction" ? "TouristAttraction" 
-    : "Article";
+  const schemaType =
+    contentType === "hotel"
+      ? "Hotel"
+      : contentType === "attraction"
+        ? "TouristAttraction"
+        : "Article";
 
   const structuredData = [
     generateStructuredData({ content, type: schemaType as any, locale }),
@@ -565,11 +622,16 @@ async function renderContentPage(
       type: "BreadcrumbList",
       breadcrumbs: [
         { name: "Home", url: getCanonicalUrl("/", locale) },
-        { name: capitalizeFirst(contentType) + "s", url: getCanonicalUrl(`/${contentType}s`, locale) },
+        {
+          name: capitalizeFirst(contentType) + "s",
+          url: getCanonicalUrl(`/${contentType}s`, locale),
+        },
         { name: content.title, url: getCanonicalUrl(urlPath, locale) },
       ],
     }),
-  ].filter(Boolean).join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   const bodyContent = renderContentBlocks(content.blocks || [], locale);
 
@@ -620,15 +682,15 @@ async function renderCategoryPage(
   options: SSRRenderOptions
 ): Promise<{ html: string; status: number }> {
   const { locale = "en", searchParams } = options;
-  
+
   // Pagination constants
   const ITEMS_PER_PAGE = 50;
-  
+
   // Parse page number from query params (only for attractions)
   let currentPage = 1;
   let totalPages = 1;
   let totalCount = 0;
-  
+
   if (contentType === "attraction" && searchParams) {
     const pageParam = searchParams.get("page");
     if (pageParam) {
@@ -638,7 +700,7 @@ async function renderCategoryPage(
       }
     }
   }
-  
+
   // Normalized content items for rendering
   interface NormalizedItem {
     title: string;
@@ -646,7 +708,7 @@ async function renderCategoryPage(
     description?: string;
   }
   let normalizedItems: NormalizedItem[] = [];
-  
+
   // For attractions, use tiqets_attractions table which has actual data (with pagination)
   if (contentType === "attraction") {
     try {
@@ -654,18 +716,18 @@ async function renderCategoryPage(
       const countResult = await db
         .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions);
-      
+
       totalCount = countResult[0]?.count || 0;
       totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-      
+
       // Ensure current page is valid
       if (currentPage > totalPages && totalPages > 0) {
         currentPage = totalPages;
       }
-      
+
       // Calculate offset
       const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-      
+
       const tiqetsResults = await db
         .select({
           slug: tiqetsAttractions.slug,
@@ -679,15 +741,16 @@ async function renderCategoryPage(
         .orderBy(desc(tiqetsAttractions.updatedAt))
         .limit(ITEMS_PER_PAGE)
         .offset(offset);
-      
+
       normalizedItems = tiqetsResults.map(item => ({
         title: item.title || item.slug,
         slug: item.seoSlug || item.slug, // Prefer seo_slug for clean URLs
-        description: item.description || item.tiqetsSummary || `Attraction in ${item.cityName || 'various destinations'}`,
+        description:
+          item.description ||
+          item.tiqetsSummary ||
+          `Attraction in ${item.cityName || "various destinations"}`,
       }));
-    } catch (error) {
-      console.error(`[SSR] Error fetching tiqets attractions:`, error);
-    }
+    } catch (error) {}
   } else {
     // For other content types, directly query contents table (no pagination for now)
     try {
@@ -707,49 +770,53 @@ async function renderCategoryPage(
         )
         .orderBy(desc(contents.createdAt))
         .limit(50);
-      
+
       normalizedItems = contentResults.map(item => ({
         title: item.title,
         slug: item.slug,
         description: item.metaDescription || undefined,
       }));
-      console.log(`[SSR] Fetched ${normalizedItems.length} ${contentType} items from database`);
-    } catch (error) {
-      console.error(`[SSR] Error fetching ${contentType} content:`, error);
-    }
+    } catch (error) {}
   }
-  
+
   const baseUrlPath = `/${contentType}s`;
   // For attractions with pagination, include page in canonical URL (except page 1)
-  const urlPath = contentType === "attraction" && currentPage > 1 
-    ? `${baseUrlPath}?page=${currentPage}` 
-    : baseUrlPath;
-  
+  const urlPath =
+    contentType === "attraction" && currentPage > 1
+      ? `${baseUrlPath}?page=${currentPage}`
+      : baseUrlPath;
+
   const titles: Record<string, string> = {
     article: "Travel Articles & Guides",
     attraction: "Tourist Attractions",
     hotel: "Hotels & Accommodations",
     dining: "Restaurants & Dining",
   };
-  
+
   const descriptions: Record<string, string> = {
-    article: "Browse our collection of expert travel guides, tips, and articles covering destinations worldwide.",
-    attraction: "Discover top tourist attractions, landmarks, and must-see places with reviews and visitor information.",
-    hotel: "Find the best hotels and accommodations with honest reviews, photos, and booking information.",
-    dining: "Explore restaurants, cafes, and dining experiences with menus, reviews, and recommendations.",
+    article:
+      "Browse our collection of expert travel guides, tips, and articles covering destinations worldwide.",
+    attraction:
+      "Discover top tourist attractions, landmarks, and must-see places with reviews and visitor information.",
+    hotel:
+      "Find the best hotels and accommodations with honest reviews, photos, and booking information.",
+    dining:
+      "Explore restaurants, cafes, and dining experiences with menus, reviews, and recommendations.",
   };
 
   const title = titles[contentType] || `${capitalizeFirst(contentType)}s`;
   // Add page number to description for SEO if paginated
   const baseDescription = descriptions[contentType] || `Browse all ${contentType}s on TRAVI.`;
-  const description = contentType === "attraction" && currentPage > 1
-    ? `${baseDescription} Page ${currentPage} of ${totalPages}.`
-    : baseDescription;
-  
+  const description =
+    contentType === "attraction" && currentPage > 1
+      ? `${baseDescription} Page ${currentPage} of ${totalPages}.`
+      : baseDescription;
+
   // Page title with pagination
-  const pageTitle = contentType === "attraction" && currentPage > 1
-    ? `${title} - Page ${currentPage} | ${SITE_NAME}`
-    : `${title} | ${SITE_NAME}`;
+  const pageTitle =
+    contentType === "attraction" && currentPage > 1
+      ? `${title} - Page ${currentPage} | ${SITE_NAME}`
+      : `${title} | ${SITE_NAME}`;
 
   const metaTags = generateMetaTags({
     title: pageTitle,
@@ -775,27 +842,36 @@ async function renderCategoryPage(
         { name: title, url: getCanonicalUrl(baseUrlPath, locale) },
       ],
     }),
-    listItems.length > 0 ? generateStructuredData({
-      type: "ItemList",
-      listItems,
-      locale,
-    }) : "",
-  ].filter(Boolean).join("\n");
+    listItems.length > 0
+      ? generateStructuredData({
+          type: "ItemList",
+          listItems,
+          locale,
+        })
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   // Generate pagination HTML for attractions
-  const paginationHtml = contentType === "attraction" && totalPages > 1 ? `
+  const paginationHtml =
+    contentType === "attraction" && totalPages > 1
+      ? `
           <nav aria-label="Pagination">
-            ${currentPage > 1 
-              ? `<a href="${getCanonicalUrl(`${baseUrlPath}${currentPage === 2 ? '' : `?page=${currentPage - 1}`}`, locale)}" rel="prev">Previous</a>`
-              : `<span>Previous</span>`
+            ${
+              currentPage > 1
+                ? `<a href="${getCanonicalUrl(`${baseUrlPath}${currentPage === 2 ? "" : `?page=${currentPage - 1}`}`, locale)}" rel="prev">Previous</a>`
+                : `<span>Previous</span>`
             }
             <span>Page ${currentPage} of ${totalPages}</span>
-            ${currentPage < totalPages 
-              ? `<a href="${getCanonicalUrl(`${baseUrlPath}?page=${currentPage + 1}`, locale)}" rel="next">Next</a>`
-              : `<span>Next</span>`
+            ${
+              currentPage < totalPages
+                ? `<a href="${getCanonicalUrl(`${baseUrlPath}?page=${currentPage + 1}`, locale)}" rel="next">Next</a>`
+                : `<span>Next</span>`
             }
           </nav>
-  ` : "";
+  `
+      : "";
 
   const html = wrapInHtml({
     metaTags,
@@ -819,19 +895,27 @@ async function renderCategoryPage(
           <h1 id="page-heading">${title}${contentType === "attraction" && currentPage > 1 ? ` - Page ${currentPage}` : ""}</h1>
           <p>${baseDescription}</p>
           
-          ${normalizedItems.length > 0 ? `
+          ${
+            normalizedItems.length > 0
+              ? `
           <ul class="content-list">
-            ${normalizedItems.map(item => `
+            ${normalizedItems
+              .map(
+                item => `
               <li>
                 <article>
                   <h2><a href="${getCanonicalUrl(`${itemUrlPrefix}/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h2>
                   ${item.description ? `<p>${escapeHtml(item.description)}</p>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
           ${paginationHtml}
-          ` : `<p>No ${contentType}s found.</p>`}
+          `
+              : `<p>No ${contentType}s found.</p>`
+          }
         </section>
       </main>
       
@@ -850,11 +934,12 @@ async function renderStaticPage(
   options: SSRRenderOptions
 ): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   const pages: Record<string, { title: string; description: string; content: string }> = {
     about: {
       title: "About TRAVI",
-      description: "Learn about TRAVI, your trusted source for expert travel guides, honest reviews, and insider tips for destinations worldwide.",
+      description:
+        "Learn about TRAVI, your trusted source for expert travel guides, honest reviews, and insider tips for destinations worldwide.",
       content: `
         <h1>About TRAVI</h1>
         <p>TRAVI is your trusted companion for travel discovery. Our team of travel experts and local insiders provides comprehensive guides to help you explore destinations worldwide.</p>
@@ -874,7 +959,8 @@ async function renderStaticPage(
     },
     contact: {
       title: "Contact TRAVI",
-      description: "Get in touch with the TRAVI team. We welcome your questions, feedback, and partnership inquiries.",
+      description:
+        "Get in touch with the TRAVI team. We welcome your questions, feedback, and partnership inquiries.",
       content: `
         <h1>Contact Us</h1>
         <p>We're here to help! Whether you have questions about our content, partnership opportunities, or feedback to share, we'd love to hear from you.</p>
@@ -888,7 +974,8 @@ async function renderStaticPage(
     },
     privacy: {
       title: "Privacy Policy",
-      description: "Read TRAVI's privacy policy to understand how we collect, use, and protect your personal information.",
+      description:
+        "Read TRAVI's privacy policy to understand how we collect, use, and protect your personal information.",
       content: `
         <h1>Privacy Policy</h1>
         <p>Last updated: December 2025</p>
@@ -966,9 +1053,11 @@ async function renderStaticPage(
 /**
  * Render destinations hub page
  */
-async function renderDestinationsHub(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderDestinationsHub(
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   const destinations = Object.entries(DESTINATION_DATA).map(([slug, data]) => ({
     slug,
     ...data,
@@ -976,7 +1065,8 @@ async function renderDestinationsHub(options: SSRRenderOptions): Promise<{ html:
 
   const metaTags = generateMetaTags({
     title: "Travel Destinations - Explore World Cities | TRAVI",
-    description: "Discover top travel destinations worldwide. From Singapore to Paris, Dubai to Tokyo - explore hotels, attractions, and travel guides for 16+ amazing cities.",
+    description:
+      "Discover top travel destinations worldwide. From Singapore to Paris, Dubai to Tokyo - explore hotels, attractions, and travel guides for 16+ amazing cities.",
     url: getCanonicalUrl("/destinations", locale),
     type: "website",
     locale,
@@ -985,21 +1075,21 @@ async function renderDestinationsHub(options: SSRRenderOptions): Promise<{ html:
   const structuredData = `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Travel Destinations",
-    "description": "Explore travel destinations worldwide with TRAVI",
-    "url": `${BASE_URL}/destinations`,
-    "mainEntity": {
+    name: "Travel Destinations",
+    description: "Explore travel destinations worldwide with TRAVI",
+    url: `${BASE_URL}/destinations`,
+    mainEntity: {
       "@type": "ItemList",
-      "itemListElement": destinations.map((dest, index) => ({
+      itemListElement: destinations.map((dest, index) => ({
         "@type": "ListItem",
-        "position": index + 1,
-        "item": {
+        position: index + 1,
+        item: {
           "@type": "City",
-          "name": dest.name,
-          "url": `${BASE_URL}/destinations/${dest.slug}`,
-        }
-      }))
-    }
+          name: dest.name,
+          url: `${BASE_URL}/destinations/${dest.slug}`,
+        },
+      })),
+    },
   })}</script>`;
 
   const html = wrapInHtml({
@@ -1025,7 +1115,9 @@ async function renderDestinationsHub(options: SSRRenderOptions): Promise<{ html:
           <p>Discover comprehensive travel guides, hotels, attractions, and local tips for the world's most exciting cities.</p>
           
           <ul class="content-list">
-            ${destinations.map(dest => `
+            ${destinations
+              .map(
+                dest => `
               <li>
                 <article>
                   <h2><a href="${getCanonicalUrl(`/destinations/${dest.slug}`, locale)}">${escapeHtml(dest.name)}, ${escapeHtml(dest.country)}</a></h2>
@@ -1037,7 +1129,9 @@ async function renderDestinationsHub(options: SSRRenderOptions): Promise<{ html:
                   </p>
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
         </section>
       </main>
@@ -1052,9 +1146,12 @@ async function renderDestinationsHub(options: SSRRenderOptions): Promise<{ html:
 /**
  * Render individual destination page
  */
-async function renderDestinationPage(slug: string, options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderDestinationPage(
+  slug: string,
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   const destination = DESTINATION_DATA[slug];
   if (!destination) {
     return render404(options);
@@ -1072,32 +1169,37 @@ async function renderDestinationPage(slug: string, options: SSRRenderOptions): P
   const structuredData = `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TravelGuide",
-    "name": `${destination.name} Travel Guide`,
-    "description": destination.description,
-    "url": `${BASE_URL}/destinations/${slug}`,
-    "image": destination.heroImage,
-    "about": {
+    name: `${destination.name} Travel Guide`,
+    description: destination.description,
+    url: `${BASE_URL}/destinations/${slug}`,
+    image: destination.heroImage,
+    about: {
       "@type": "City",
-      "name": destination.name,
-      "containedInPlace": {
+      name: destination.name,
+      containedInPlace: {
         "@type": "Country",
-        "name": destination.country
-      }
+        name: destination.country,
+      },
     },
-    "publisher": {
+    publisher: {
       "@type": "Organization",
-      "name": "TRAVI",
-      "url": BASE_URL
-    }
+      name: "TRAVI",
+      url: BASE_URL,
+    },
   })}</script>
   <script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-      { "@type": "ListItem", "position": 2, "name": "Destinations", "item": `${BASE_URL}/destinations` },
-      { "@type": "ListItem", "position": 3, "name": destination.name, "item": `${BASE_URL}/destinations/${slug}` }
-    ]
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Destinations", item: `${BASE_URL}/destinations` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: destination.name,
+        item: `${BASE_URL}/destinations/${slug}`,
+      },
+    ],
   })}</script>`;
 
   const html = wrapInHtml({
@@ -1187,12 +1289,12 @@ async function renderDestinationPage(slug: string, options: SSRRenderOptions): P
  * Render destination subpage (hotels/attractions/dining/guides)
  */
 async function renderDestinationSubpage(
-  slug: string, 
+  slug: string,
   subpage: "hotels" | "attractions" | "dining" | "guides",
   options: SSRRenderOptions
 ): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   const destination = DESTINATION_DATA[slug];
   if (!destination) {
     return render404(options);
@@ -1224,12 +1326,22 @@ async function renderDestinationSubpage(
   const structuredData = `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-      { "@type": "ListItem", "position": 2, "name": "Destinations", "item": `${BASE_URL}/destinations` },
-      { "@type": "ListItem", "position": 3, "name": destination.name, "item": `${BASE_URL}/destinations/${slug}` },
-      { "@type": "ListItem", "position": 4, "name": capitalizeFirst(subpage), "item": `${BASE_URL}/destinations/${slug}/${subpage}` }
-    ]
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Destinations", item: `${BASE_URL}/destinations` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: destination.name,
+        item: `${BASE_URL}/destinations/${slug}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: capitalizeFirst(subpage),
+        item: `${BASE_URL}/destinations/${slug}/${subpage}`,
+      },
+    ],
   })}</script>`;
 
   const html = wrapInHtml({
@@ -1281,9 +1393,11 @@ async function renderDestinationSubpage(
 /**
  * Render guides hub page
  */
-async function renderGuidesHub(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderGuidesHub(
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   // Fetch guides from database
   let guides: any[] = [];
   try {
@@ -1293,13 +1407,12 @@ async function renderGuidesHub(options: SSRRenderOptions): Promise<{ html: strin
       .where(eq(update9987Guides.status, "published"))
       .orderBy(desc(update9987Guides.publishedAt))
       .limit(50);
-  } catch (error) {
-    console.error("[SSR] Error fetching guides:", error);
-  }
+  } catch (error) {}
 
   const metaTags = generateMetaTags({
     title: "Travel Guides - Expert Tips & Destination Guides | TRAVI",
-    description: "Comprehensive travel guides with expert tips, itineraries, and insider knowledge. Explore destinations worldwide with TRAVI's curated travel content.",
+    description:
+      "Comprehensive travel guides with expert tips, itineraries, and insider knowledge. Explore destinations worldwide with TRAVI's curated travel content.",
     url: getCanonicalUrl("/guides", locale),
     type: "website",
     locale,
@@ -1309,27 +1422,27 @@ async function renderGuidesHub(options: SSRRenderOptions): Promise<{ html: strin
   const collectionPageData: Record<string, any> = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Travel Guides",
-    "description": "Expert travel guides for destinations worldwide",
-    "url": `${BASE_URL}/guides`,
+    name: "Travel Guides",
+    description: "Expert travel guides for destinations worldwide",
+    url: `${BASE_URL}/guides`,
   };
-  
+
   // Only add ItemList if we have guides to display
   if (guides.length > 0) {
     collectionPageData.mainEntity = {
       "@type": "ItemList",
-      "itemListElement": guides.slice(0, 20).map((guide, index) => ({
+      itemListElement: guides.slice(0, 20).map((guide, index) => ({
         "@type": "ListItem",
-        "position": index + 1,
-        "item": {
+        position: index + 1,
+        item: {
           "@type": "TravelGuide",
-          "name": guide.title,
-          "url": `${BASE_URL}/guides/${guide.slug}`,
-        }
-      }))
+          name: guide.title,
+          url: `${BASE_URL}/guides/${guide.slug}`,
+        },
+      })),
     };
   }
-  
+
   const structuredData = `<script type="application/ld+json">${JSON.stringify(collectionPageData)}</script>`;
 
   const html = wrapInHtml({
@@ -1360,20 +1473,28 @@ async function renderGuidesHub(options: SSRRenderOptions): Promise<{ html: strin
           <h1 id="guides-heading">Travel Guides</h1>
           <p>Expert travel guides with insider tips, detailed itineraries, and practical information for destinations worldwide.</p>
           
-          ${guides.length > 0 ? `
+          ${
+            guides.length > 0
+              ? `
           <ul class="content-list">
-            ${guides.map(guide => `
+            ${guides
+              .map(
+                guide => `
               <li>
                 <article>
                   <h2><a href="${getCanonicalUrl(`/guides/${guide.slug}`, locale)}">${escapeHtml(guide.title || guide.slug)}</a></h2>
                   ${guide.metaDescription ? `<p>${escapeHtml(guide.metaDescription)}</p>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
-          ` : `
+          `
+              : `
           <p>Travel guides are being prepared. Check back soon for comprehensive destination guides.</p>
-          `}
+          `
+          }
         </section>
       </main>
       
@@ -1387,9 +1508,12 @@ async function renderGuidesHub(options: SSRRenderOptions): Promise<{ html: strin
 /**
  * Render individual guide page
  */
-async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderGuidePage(
+  slug: string,
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   // Fetch guide from database
   let guide: any = null;
   try {
@@ -1399,9 +1523,7 @@ async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise
       .where(eq(update9987Guides.slug, slug))
       .limit(1);
     guide = results[0];
-  } catch (error) {
-    console.error(`[SSR] Error fetching guide "${slug}":`, error);
-  }
+  } catch (error) {}
 
   if (!guide) {
     // Try to find a destination match for the guide
@@ -1419,7 +1541,7 @@ async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise
   const rewrittenContent = guide.rewrittenContent as string | null;
   const originalContent = guide.originalContent as string | null;
   const faqs = guide.faqs as Array<{ question: string; answer: string }> | null;
-  
+
   // For backwards compatibility, also check sections
   const sections = guide.sections as any;
   const translation = sections?.translations?.[locale] || sections?.translations?.en || {};
@@ -1427,54 +1549,59 @@ async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise
 
   const metaTags = generateMetaTags({
     title: `${title} - Travel Guide | TRAVI`,
-    description: summary || `Comprehensive travel guide for ${title}. Expert tips, insider knowledge, and practical information.`,
+    description:
+      summary ||
+      `Comprehensive travel guide for ${title}. Expert tips, insider knowledge, and practical information.`,
     url: getCanonicalUrl(`/guides/${slug}`, locale),
     type: "article",
     locale,
   });
 
   // Build FAQ schema if FAQs exist
-  const faqSchema = faqs && faqs.length > 0 ? `
+  const faqSchema =
+    faqs && faqs.length > 0
+      ? `
   <script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
+    mainEntity: faqs.map(faq => ({
       "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
+      name: faq.question,
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": faq.answer
-      }
-    }))
-  })}</script>` : "";
+        text: faq.answer,
+      },
+    })),
+  })}</script>`
+      : "";
 
   const structuredData = `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TravelGuide",
-    "name": title,
-    "description": summary,
-    "url": `${BASE_URL}/guides/${slug}`,
-    "inLanguage": locale,
-    "datePublished": guide.publishedAt?.toISOString(),
-    "publisher": {
+    name: title,
+    description: summary,
+    url: `${BASE_URL}/guides/${slug}`,
+    inLanguage: locale,
+    datePublished: guide.publishedAt?.toISOString(),
+    publisher: {
       "@type": "Organization",
-      "name": "TRAVI",
-      "url": BASE_URL
-    }
+      name: "TRAVI",
+      url: BASE_URL,
+    },
   })}</script>
   <script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-      { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": `${BASE_URL}/guides` },
-      { "@type": "ListItem", "position": 3, "name": title, "item": `${BASE_URL}/guides/${slug}` }
-    ]
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Travel Guides", item: `${BASE_URL}/guides` },
+      { "@type": "ListItem", position: 3, name: title, item: `${BASE_URL}/guides/${slug}` },
+    ],
   })}</script>${faqSchema}`;
 
   // Render sections content - prioritize rewritten_content over sections
   let mainContentHtml = "";
-  
+
   if (rewrittenContent) {
     // Use the AI-rewritten HTML content directly (sanitize for safety)
     mainContentHtml = rewrittenContent;
@@ -1483,14 +1610,18 @@ async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise
     mainContentHtml = originalContent;
   } else if (Array.isArray(sectionContent) && sectionContent.length > 0) {
     // Fall back to structured sections
-    mainContentHtml = sectionContent.map((section: any) => `
+    mainContentHtml = sectionContent
+      .map(
+        (section: any) => `
       <section>
         <h${Math.min(section.level || 2, 6)}>${escapeHtml(section.heading || "")}</h${Math.min(section.level || 2, 6)}>
         <p>${escapeHtml(section.content || "")}</p>
       </section>
-    `).join("");
+    `
+      )
+      .join("");
   }
-  
+
   // Render FAQs if available
   let faqsHtml = "";
   if (faqs && Array.isArray(faqs) && faqs.length > 0) {
@@ -1498,12 +1629,16 @@ async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise
       <section class="faqs">
         <h2>Frequently Asked Questions</h2>
         <dl>
-          ${faqs.map(faq => `
+          ${faqs
+            .map(
+              faq => `
             <div class="faq-item">
               <dt>${escapeHtml(faq.question)}</dt>
               <dd>${escapeHtml(faq.answer)}</dd>
             </div>
-          `).join("")}
+          `
+            )
+            .join("")}
         </dl>
       </section>
     `;
@@ -1553,8 +1688,8 @@ async function renderGuidePage(slug: string, options: SSRRenderOptions): Promise
  * Fallback guide page when no DB entry exists but destination is valid
  */
 async function renderDestinationGuideFallback(
-  slug: string, 
-  destination: typeof DESTINATION_DATA[string],
+  slug: string,
+  destination: (typeof DESTINATION_DATA)[string],
   options: SSRRenderOptions
 ): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
@@ -1571,18 +1706,18 @@ async function renderDestinationGuideFallback(
   const structuredData = `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TravelGuide",
-    "name": `${destination.name} Travel Guide`,
-    "description": destination.description,
-    "url": `${BASE_URL}/guides/${slug}`,
-    "about": {
+    name: `${destination.name} Travel Guide`,
+    description: destination.description,
+    url: `${BASE_URL}/guides/${slug}`,
+    about: {
       "@type": "City",
-      "name": destination.name
+      name: destination.name,
     },
-    "publisher": {
+    publisher: {
       "@type": "Organization",
-      "name": "TRAVI",
-      "url": BASE_URL
-    }
+      name: "TRAVI",
+      url: BASE_URL,
+    },
   })}</script>`;
 
   const html = wrapInHtml({
@@ -1651,9 +1786,12 @@ async function renderDestinationGuideFallback(
 /**
  * Render Tiqets attraction detail page
  */
-async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderTiqetsAttractionPage(
+  slug: string,
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   // Try to fetch from tiqets_attractions table - prefer seo_slug (clean URL) then fall back to legacy slug
   let attraction: any = null;
   try {
@@ -1663,7 +1801,7 @@ async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOption
       .from(tiqetsAttractions)
       .where(eq(tiqetsAttractions.seoSlug, slug))
       .limit(1);
-    
+
     if (!results[0]) {
       // Fall back to legacy slug for backwards compatibility
       results = await db
@@ -1671,39 +1809,46 @@ async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOption
         .from(tiqetsAttractions)
         .where(eq(tiqetsAttractions.slug, slug))
         .limit(1);
-      
+
       // If found via legacy slug, redirect to seo_slug for SEO
       if (results[0] && results[0].seoSlug) {
         const redirectUrl = `/attractions/${results[0].seoSlug}`;
         return {
           html: `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"><link rel="canonical" href="${BASE_URL}${redirectUrl}"></head><body>Redirecting...</body></html>`,
           status: 301,
-          redirect: redirectUrl
+          redirect: redirectUrl,
         } as any;
       }
     }
     attraction = results[0];
-  } catch (error) {
-    console.error(`[SSR] Error fetching tiqets attraction "${slug}":`, error);
-  }
+  } catch (error) {}
 
   if (!attraction) {
     return render404(options);
   }
-  
+
   // Use seo_slug for canonical URL if available
   const canonicalSlug = attraction.seoSlug || slug;
 
   const title = attraction.title || slug;
   // Use correct field names from schema: metaDescription (100% coverage), description, tiqetsSummary, tiqetsDescription
-  const description = attraction.metaDescription || attraction.description || attraction.tiqetsSummary || attraction.tiqetsDescription || "";
+  const description =
+    attraction.metaDescription ||
+    attraction.description ||
+    attraction.tiqetsSummary ||
+    attraction.tiqetsDescription ||
+    "";
   // Schema uses cityName, not city
   const city = attraction.cityName || "";
   // Get image from tiqetsImages array or images array
   let imageUrl = `${BASE_URL}/ogImage.jpg`;
   if (attraction.images && Array.isArray(attraction.images) && attraction.images.length > 0) {
     imageUrl = attraction.images[0]?.url || imageUrl;
-  } else if (attraction.tiqetsImages && Array.isArray(attraction.tiqetsImages) && attraction.tiqetsImages.length > 0) {
+  } else if (
+    attraction.tiqetsImages &&
+    Array.isArray(attraction.tiqetsImages) &&
+    attraction.tiqetsImages.length > 0
+  ) {
     const firstImg = attraction.tiqetsImages[0];
     imageUrl = firstImg?.large || firstImg?.medium || firstImg?.small || imageUrl;
   }
@@ -1720,25 +1865,30 @@ async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOption
   const structuredData = `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
-    "name": title,
-    "description": description,
-    "url": `${BASE_URL}/attractions/${canonicalSlug}`,
-    "image": imageUrl,
+    name: title,
+    description: description,
+    url: `${BASE_URL}/attractions/${canonicalSlug}`,
+    image: imageUrl,
     ...(city && {
-      "address": {
+      address: {
         "@type": "PostalAddress",
-        "addressLocality": city
-      }
-    })
+        addressLocality: city,
+      },
+    }),
   })}</script>
   <script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-      { "@type": "ListItem", "position": 2, "name": "Attractions", "item": `${BASE_URL}/attractions` },
-      { "@type": "ListItem", "position": 3, "name": title, "item": `${BASE_URL}/attractions/${canonicalSlug}` }
-    ]
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Attractions", item: `${BASE_URL}/attractions` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: title,
+        item: `${BASE_URL}/attractions/${canonicalSlug}`,
+      },
+    ],
   })}</script>`;
 
   const html = wrapInHtml({
@@ -1794,22 +1944,24 @@ async function renderTiqetsAttractionPage(slug: string, options: SSRRenderOption
  */
 async function renderNewsHub(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   let newsArticles: Content[] = [];
   try {
     const results = await storage.getContents({ type: "article", status: "published" });
-    newsArticles = (results || []).filter(a => 
-      a.slug?.includes("news") || 
-      a.title?.toLowerCase().includes("news") ||
-      a.type === "article"
-    ).slice(0, 20);
-  } catch (error) {
-    console.error("[SSR] Error fetching news:", error);
-  }
+    newsArticles = (results || [])
+      .filter(
+        a =>
+          a.slug?.includes("news") ||
+          a.title?.toLowerCase().includes("news") ||
+          a.type === "article"
+      )
+      .slice(0, 20);
+  } catch (error) {}
 
   const metaTags = generateMetaTags({
     title: "Travel News & Updates | TRAVI",
-    description: "Stay updated with the latest travel news, destination updates, and industry insights. Get breaking news about airlines, hotels, and travel destinations worldwide.",
+    description:
+      "Stay updated with the latest travel news, destination updates, and industry insights. Get breaking news about airlines, hotels, and travel destinations worldwide.",
     url: getCanonicalUrl("/news", locale),
     type: "website",
     locale,
@@ -1845,9 +1997,13 @@ async function renderNewsHub(options: SSRRenderOptions): Promise<{ html: string;
           <h1 id="page-heading">Travel News & Updates</h1>
           <p>Stay informed with the latest travel news, destination updates, and industry insights from around the world.</p>
           
-          ${newsArticles.length > 0 ? `
+          ${
+            newsArticles.length > 0
+              ? `
           <ul class="content-list">
-            ${newsArticles.map(item => `
+            ${newsArticles
+              .map(
+                item => `
               <li>
                 <article>
                   <h2><a href="${getCanonicalUrl(`/article/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h2>
@@ -1855,9 +2011,13 @@ async function renderNewsHub(options: SSRRenderOptions): Promise<{ html: string;
                   ${item.publishedAt ? `<time datetime="${item.publishedAt.toISOString()}">${formatDate(item.publishedAt, locale)}</time>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
-          ` : `<p>No news articles available at this time.</p>`}
+          `
+              : `<p>No news articles available at this time.</p>`
+          }
         </section>
       </main>
       
@@ -1871,20 +2031,21 @@ async function renderNewsHub(options: SSRRenderOptions): Promise<{ html: string;
 /**
  * Render Events hub page
  */
-async function renderEventsHub(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderEventsHub(
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   let events: Content[] = [];
   try {
     const results = await storage.getContents({ type: "event", status: "published" });
     events = (results || []).slice(0, 20);
-  } catch (error) {
-    console.error("[SSR] Error fetching events:", error);
-  }
+  } catch (error) {}
 
   const metaTags = generateMetaTags({
     title: "Events & Festivals | TRAVI",
-    description: "Discover upcoming events, festivals, and celebrations around the world. Find cultural events, concerts, exhibitions, and local festivals to plan your travels.",
+    description:
+      "Discover upcoming events, festivals, and celebrations around the world. Find cultural events, concerts, exhibitions, and local festivals to plan your travels.",
     url: getCanonicalUrl("/events", locale),
     type: "website",
     locale,
@@ -1920,18 +2081,26 @@ async function renderEventsHub(options: SSRRenderOptions): Promise<{ html: strin
           <h1 id="page-heading">Events & Festivals</h1>
           <p>Explore upcoming events, festivals, and cultural celebrations at destinations worldwide. Plan your trip around unforgettable experiences.</p>
           
-          ${events.length > 0 ? `
+          ${
+            events.length > 0
+              ? `
           <ul class="content-list">
-            ${events.map(item => `
+            ${events
+              .map(
+                item => `
               <li>
                 <article>
                   <h2><a href="${getCanonicalUrl(`/events/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h2>
                   ${item.metaDescription ? `<p>${escapeHtml(item.metaDescription)}</p>` : ""}
                 </article>
               </li>
-            `).join("")}
+            `
+              )
+              .join("")}
           </ul>
-          ` : `<p>No upcoming events available at this time. Check back soon for new event listings.</p>`}
+          `
+              : `<p>No upcoming events available at this time. Check back soon for new event listings.</p>`
+          }
         </section>
       </main>
       
@@ -1945,12 +2114,15 @@ async function renderEventsHub(options: SSRRenderOptions): Promise<{ html: strin
 /**
  * Render Shopping hub page
  */
-async function renderShoppingHub(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderShoppingHub(
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
 
   const metaTags = generateMetaTags({
     title: "Shopping Guides & Destinations | TRAVI",
-    description: "Discover the best shopping destinations, markets, malls, and boutiques around the world. Find shopping guides with tips on local products, duty-free, and souvenirs.",
+    description:
+      "Discover the best shopping destinations, markets, malls, and boutiques around the world. Find shopping guides with tips on local products, duty-free, and souvenirs.",
     url: getCanonicalUrl("/shopping", locale),
     type: "website",
     locale,
@@ -2009,32 +2181,49 @@ async function renderShoppingHub(options: SSRRenderOptions): Promise<{ html: str
 /**
  * Render Districts hub page
  */
-async function renderDistrictsHub(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderDistrictsHub(
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   let districts: Content[] = [];
   try {
     const results = await storage.getContents({ type: "district", status: "published" });
     districts = results || [];
-  } catch (error) {
-    console.error("[SSR] Error fetching districts:", error);
-  }
+  } catch (error) {}
 
   // Fallback districts data
   const dubaiDistricts = [
-    { slug: "downtown-dubai", name: "Downtown Dubai", description: "Home to Burj Khalifa and Dubai Mall" },
+    {
+      slug: "downtown-dubai",
+      name: "Downtown Dubai",
+      description: "Home to Burj Khalifa and Dubai Mall",
+    },
     { slug: "dubai-marina", name: "Dubai Marina", description: "Waterfront living and dining" },
     { slug: "palm-jumeirah", name: "Palm Jumeirah", description: "Iconic palm-shaped island" },
-    { slug: "jbr-jumeirah-beach-residence", name: "JBR", description: "Beach lifestyle and dining" },
-    { slug: "business-bay", name: "Business Bay", description: "Modern business and residential hub" },
+    {
+      slug: "jbr-jumeirah-beach-residence",
+      name: "JBR",
+      description: "Beach lifestyle and dining",
+    },
+    {
+      slug: "business-bay",
+      name: "Business Bay",
+      description: "Modern business and residential hub",
+    },
     { slug: "old-dubai", name: "Old Dubai", description: "Historic heart with souks and Creek" },
     { slug: "difc", name: "DIFC", description: "Financial center with art galleries" },
-    { slug: "dubai-hills-estate", name: "Dubai Hills Estate", description: "Premium residential community" },
+    {
+      slug: "dubai-hills-estate",
+      name: "Dubai Hills Estate",
+      description: "Premium residential community",
+    },
   ];
 
   const metaTags = generateMetaTags({
     title: "Dubai Districts & Neighborhoods | TRAVI",
-    description: "Explore Dubai's diverse districts and neighborhoods. From Downtown's skyline to Marina's waterfront, discover the best areas to stay, dine, and experience.",
+    description:
+      "Explore Dubai's diverse districts and neighborhoods. From Downtown's skyline to Marina's waterfront, discover the best areas to stay, dine, and experience.",
     url: getCanonicalUrl("/districts", locale),
     type: "website",
     locale,
@@ -2071,23 +2260,32 @@ async function renderDistrictsHub(options: SSRRenderOptions): Promise<{ html: st
           <p>Discover Dubai's unique districts, each offering its own character, attractions, and experiences. Find the perfect neighborhood for your stay.</p>
           
           <ul class="content-list">
-            ${districts.length > 0 ? 
-              districts.map(item => `
+            ${
+              districts.length > 0
+                ? districts
+                    .map(
+                      item => `
                 <li>
                   <article>
                     <h2><a href="${getCanonicalUrl(`/districts/${item.slug}`, locale)}">${escapeHtml(item.title)}</a></h2>
                     ${item.metaDescription ? `<p>${escapeHtml(item.metaDescription)}</p>` : ""}
                   </article>
                 </li>
-              `).join("") :
-              dubaiDistricts.map(d => `
+              `
+                    )
+                    .join("")
+                : dubaiDistricts
+                    .map(
+                      d => `
                 <li>
                   <article>
                     <h2><a href="${getCanonicalUrl(`/districts/${d.slug}`, locale)}">${escapeHtml(d.name)}</a></h2>
                     <p>${escapeHtml(d.description)}</p>
                   </article>
                 </li>
-              `).join("")
+              `
+                    )
+                    .join("")
             }
           </ul>
         </section>
@@ -2103,19 +2301,27 @@ async function renderDistrictsHub(options: SSRRenderOptions): Promise<{ html: st
 /**
  * Render individual district page
  */
-async function renderDistrictPage(slug: string, options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderDistrictPage(
+  slug: string,
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
-  } catch (error) {
-    console.error(`[SSR] Error fetching district "${slug}":`, error);
-  }
+  } catch (error) {}
 
   // Generate district name from slug if no content found
-  const districtName = content?.title || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-  const description = content?.metaDescription || `Explore ${districtName} - one of Dubai's premier districts. Discover attractions, hotels, restaurants, and experiences in this vibrant neighborhood.`;
+  const districtName =
+    content?.title ||
+    slug
+      .split("-")
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+  const description =
+    content?.metaDescription ||
+    `Explore ${districtName} - one of Dubai's premier districts. Discover attractions, hotels, restaurants, and experiences in this vibrant neighborhood.`;
 
   const metaTags = generateMetaTags({
     title: `${districtName} - Dubai District Guide | TRAVI`,
@@ -2136,7 +2342,9 @@ async function renderDistrictPage(slug: string, options: SSRRenderOptions): Prom
     }),
   ].join("\n");
 
-  const bodyContent = content?.blocks ? renderContentBlocks(content.blocks, locale) : `
+  const bodyContent = content?.blocks
+    ? renderContentBlocks(content.blocks, locale)
+    : `
     <p>${escapeHtml(description)}</p>
     <section>
       <h2>About ${escapeHtml(districtName)}</h2>
@@ -2181,14 +2389,16 @@ async function renderDistrictPage(slug: string, options: SSRRenderOptions): Prom
 /**
  * Render individual restaurant/dining page
  */
-async function renderRestaurantPage(slug: string, options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderRestaurantPage(
+  slug: string,
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
   } catch (error) {
-    console.error(`[SSR] Error fetching restaurant "${slug}":`, error);
     return render404(options);
   }
 
@@ -2278,14 +2488,16 @@ async function renderRestaurantPage(slug: string, options: SSRRenderOptions): Pr
 /**
  * Render individual event page
  */
-async function renderEventPage(slug: string, options: SSRRenderOptions): Promise<{ html: string; status: number }> {
+async function renderEventPage(
+  slug: string,
+  options: SSRRenderOptions
+): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
   } catch (error) {
-    console.error(`[SSR] Error fetching event "${slug}":`, error);
     return render404(options);
   }
 
@@ -2322,7 +2534,10 @@ async function renderEventPage(slug: string, options: SSRRenderOptions): Promise
         addressCountry: "AE",
       },
     },
-    startDate: (content.event as any)?.startDate?.toISOString() || content.event?.eventDate?.toISOString() || content.publishedAt?.toISOString(),
+    startDate:
+      (content.event as any)?.startDate?.toISOString() ||
+      content.event?.eventDate?.toISOString() ||
+      content.publishedAt?.toISOString(),
     endDate: content.event?.endDate?.toISOString(),
     organizer: {
       "@type": "Organization",
@@ -2388,10 +2603,11 @@ async function renderEventPage(slug: string, options: SSRRenderOptions): Promise
  */
 async function render404(options: SSRRenderOptions): Promise<{ html: string; status: number }> {
   const { locale = "en" } = options;
-  
+
   const metaTags = generateMetaTags({
     title: "Page Not Found | TRAVI",
-    description: "The page you're looking for could not be found. Explore our travel guides and recommendations.",
+    description:
+      "The page you're looking for could not be found. Explore our travel guides and recommendations.",
     url: getCanonicalUrl("/404", locale),
     type: "website",
     locale,
@@ -2428,94 +2644,109 @@ async function render404(options: SSRRenderOptions): Promise<{ html: string; sta
  */
 function renderContentBlocks(blocks: ContentBlock[], locale: Locale): string {
   if (!blocks || !Array.isArray(blocks)) return "";
-  
+
   const sortedBlocks = [...blocks].sort((a, b) => (a.order || 0) - (b.order || 0));
-  
-  return sortedBlocks.map(block => {
-    const data = block.data || {};
-    
-    switch (block.type) {
-      case "hero":
-        return `
+
+  return sortedBlocks
+    .map(block => {
+      const data = block.data || {};
+
+      switch (block.type) {
+        case "hero":
+          return `
           <figure>
             ${data.imageUrl ? `<img src="${escapeHtml(String(data.imageUrl))}" alt="${escapeHtml(String(data.title || data.alt || ""))}" loading="lazy">` : ""}
             ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
           </figure>
         `;
-        
-      case "heading":
-        const level = Math.min(Math.max(Number(data.level) || 2, 1), 6);
-        return `<h${level}>${escapeHtml(String(data.text || ""))}</h${level}>`;
-        
-      case "text":
-      case "paragraph":
-        return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
-        
-      case "image":
-        return `
+
+        case "heading":
+          const level = Math.min(Math.max(Number(data.level) || 2, 1), 6);
+          return `<h${level}>${escapeHtml(String(data.text || ""))}</h${level}>`;
+
+        case "text":
+        case "paragraph":
+          return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
+
+        case "image":
+          return `
           <figure>
             <img src="${escapeHtml(String(data.src || data.url || ""))}" alt="${escapeHtml(String(data.alt || ""))}" loading="lazy">
             ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
           </figure>
         `;
-        
-      case "gallery":
-        const images = Array.isArray(data.images) ? data.images : [];
-        if (images.length === 0) return "";
-        return `
+
+        case "gallery":
+          const images = Array.isArray(data.images) ? data.images : [];
+          if (images.length === 0) return "";
+          return `
           <figure>
-            ${images.map((img: any) => `
+            ${images
+              .map(
+                (img: any) => `
               <img src="${escapeHtml(String(img.src || img.url || ""))}" alt="${escapeHtml(String(img.alt || ""))}" loading="lazy">
-            `).join("")}
+            `
+              )
+              .join("")}
             ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
           </figure>
         `;
-        
-      case "FAQ":
-      case "faq":
-        const items = Array.isArray(data.items) ? data.items : Array.isArray(data.faqs) ? data.faqs : [];
-        if (items.length === 0) return "";
-        return `
+
+        case "FAQ":
+        case "faq":
+          const items = Array.isArray(data.items)
+            ? data.items
+            : Array.isArray(data.faqs)
+              ? data.faqs
+              : [];
+          if (items.length === 0) return "";
+          return `
           <section aria-labelledby="faq-heading">
             <h2 id="faq-heading">Frequently Asked Questions</h2>
             <dl>
-              ${items.map((item: any) => `
+              ${items
+                .map(
+                  (item: any) => `
                 <dt>${escapeHtml(String(item.question || ""))}</dt>
                 <dd>${escapeHtml(String(item.answer || ""))}</dd>
-              `).join("")}
+              `
+                )
+                .join("")}
             </dl>
           </section>
         `;
-        
-      case "list":
-        const listItems = Array.isArray(data.items) ? data.items : [];
-        const ordered = data.ordered === true;
-        const tag = ordered ? "ol" : "ul";
-        return `
+
+        case "list":
+          const listItems = Array.isArray(data.items) ? data.items : [];
+          const ordered = data.ordered === true;
+          const tag = ordered ? "ol" : "ul";
+          return `
           <${tag}>
             ${listItems.map((item: any) => `<li>${escapeHtml(String(item.text || item || ""))}</li>`).join("")}
           </${tag}>
         `;
-        
-      case "quote":
-      case "blockquote":
-        return `
+
+        case "quote":
+        case "blockquote":
+          return `
           <blockquote>
             <p>${escapeHtml(String(data.text || data.quote || ""))}</p>
             ${data.author ? `<cite>${escapeHtml(String(data.author))}</cite>` : ""}
           </blockquote>
         `;
-        
-      case "divider":
-        return `<hr>`;
-        
-      default:
-        if (data.text || data.content) {
-          return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
-        }
-        return "";
-    }
-  }).filter(Boolean).join("\n");
+
+        case "divider":
+          return `<hr>`;
+
+        default:
+          if (data.text || data.content) {
+            return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
+          }
+          return "";
+      }
+    })
+    .filter(Boolean)
+    .join("\n");
 }
 
 /**
@@ -2584,7 +2815,7 @@ function getContentImage(content: ContentWithRelations): string {
   if (!content.blocks || !Array.isArray(content.blocks)) {
     return `${BASE_URL}/ogImage.jpg`;
   }
-  
+
   for (const block of content.blocks) {
     if (block.type === "hero" && block.data?.imageUrl) {
       return String(block.data.imageUrl);
@@ -2593,7 +2824,7 @@ function getContentImage(content: ContentWithRelations): string {
       return String(block.data.src);
     }
   }
-  
+
   return `${BASE_URL}/ogImage.jpg`;
 }
 

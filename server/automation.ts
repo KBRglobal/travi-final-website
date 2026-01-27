@@ -4,7 +4,14 @@
  */
 
 import { db } from "./db";
-import { contents, translations, mediaFiles, siteSettings, tags, contentTags } from "@shared/schema";
+import {
+  contents,
+  translations,
+  mediaFiles,
+  siteSettings,
+  tags,
+  contentTags,
+} from "@shared/schema";
 import { eq, desc, lt, gt, and, sql, like, isNull, or } from "drizzle-orm";
 import { cache, cacheKeys } from "./cache";
 import { jobQueue } from "./job-queue";
@@ -33,18 +40,16 @@ export const autoLinking = {
     if (!content || !content.blocks) return [];
 
     // Get all published content for potential targets
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      slug: contents.slug,
-      type: contents.type,
-      keywords: contents.metaTitle, // Using metaTitle as keyword source
-    })
-    .from(contents)
-    .where(and(
-      eq(contents.status, "published"),
-      sql`${contents.id} != ${contentId}`
-    ));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        slug: contents.slug,
+        type: contents.type,
+        keywords: contents.metaTitle, // Using metaTitle as keyword source
+      })
+      .from(contents)
+      .where(and(eq(contents.status, "published"), sql`${contents.id} != ${contentId}`));
 
     const suggestions: LinkSuggestion[] = [];
     const contentText = JSON.stringify(content.blocks).toLowerCase();
@@ -97,7 +102,8 @@ export const autoLinking = {
     let blocks = content.blocks as any[];
     let linksAdded = 0;
 
-    for (const suggestion of suggestions.slice(0, 5)) { // Max 5 links per content
+    for (const suggestion of suggestions.slice(0, 5)) {
+      // Max 5 links per content
       for (let i = 0; i < blocks.length; i++) {
         if (blocks[i].type === "text" || blocks[i].type === "paragraph") {
           const text = blocks[i].content || blocks[i].text || "";
@@ -118,7 +124,8 @@ export const autoLinking = {
     }
 
     if (linksAdded > 0) {
-      await db.update(contents)
+      await db
+        .update(contents)
         .set({ blocks: blocks as any, updatedAt: new Date() } as any)
         .where(eq(contents.id, contentId));
     }
@@ -130,7 +137,8 @@ export const autoLinking = {
    * Process all content for internal linking opportunities
    */
   async processAllContent(): Promise<{ processed: number; linksAdded: number }> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -169,12 +177,12 @@ interface FreshnessReport {
 export const freshnessMonitor = {
   // Days after which content is considered stale by type
   thresholds: {
-    hotel: 90,      // Hotels need updates every 3 months (prices, amenities)
+    hotel: 90, // Hotels need updates every 3 months (prices, amenities)
     restaurant: 60, // Restaurants every 2 months (menus, hours)
     attraction: 120, // Attractions every 4 months
-    event: 30,      // Events need frequent updates
-    article: 180,   // General articles every 6 months
-    itinerary: 90,  // Itineraries every 3 months
+    event: 30, // Events need frequent updates
+    article: 180, // General articles every 6 months
+    itinerary: 90, // Itineraries every 3 months
   } as Record<string, number>,
 
   /**
@@ -182,17 +190,20 @@ export const freshnessMonitor = {
    */
   async getReport(): Promise<FreshnessReport> {
     const now = new Date();
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      type: contents.type,
-      updatedAt: contents.updatedAt,
-    })
-    .from(contents)
-    .where(eq(contents.status, "published"));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        type: contents.type,
+        updatedAt: contents.updatedAt,
+      })
+      .from(contents)
+      .where(eq(contents.status, "published"));
 
     const staleContent: FreshnessReport["staleContent"] = [];
-    let fresh = 0, stale = 0, critical = 0;
+    let fresh = 0,
+      stale = 0,
+      critical = 0;
 
     for (const content of allContent) {
       const threshold = this.thresholds[content.type] || 180;
@@ -202,8 +213,12 @@ export const freshnessMonitor = {
       );
 
       if (daysSinceUpdate > threshold) {
-        const priority = daysSinceUpdate > threshold * 2 ? "high" :
-                        daysSinceUpdate > threshold * 1.5 ? "medium" : "low";
+        const priority =
+          daysSinceUpdate > threshold * 2
+            ? "high"
+            : daysSinceUpdate > threshold * 1.5
+              ? "medium"
+              : "low";
 
         if (priority === "high") critical++;
         stale++;
@@ -224,7 +239,10 @@ export const freshnessMonitor = {
     // Sort by priority and days since update
     staleContent.sort((a, b) => {
       const priorityOrder = { high: 0, medium: 1, low: 2 };
-      return priorityOrder[a.priority] - priorityOrder[b.priority] || b.daysSinceUpdate - a.daysSinceUpdate;
+      return (
+        priorityOrder[a.priority] - priorityOrder[b.priority] ||
+        b.daysSinceUpdate - a.daysSinceUpdate
+      );
     });
 
     return {
@@ -242,7 +260,8 @@ export const freshnessMonitor = {
    * Mark content as needing review
    */
   async flagForReview(contentId: string, reason: string): Promise<void> {
-    await db.update(contents)
+    await db
+      .update(contents)
       .set({
         status: "review" as any,
         updatedAt: new Date(),
@@ -282,7 +301,7 @@ export const autoMeta = {
     // Clean and truncate
     const cleanText = text
       .replace(/<[^>]*>/g, "") // Remove HTML tags
-      .replace(/\s+/g, " ")     // Normalize whitespace
+      .replace(/\s+/g, " ") // Normalize whitespace
       .trim();
 
     if (cleanText.length < 50) return null;
@@ -295,7 +314,8 @@ export const autoMeta = {
     }
 
     // Save
-    await db.update(contents)
+    await db
+      .update(contents)
       .set({ metaDescription: description } as any)
       .where(eq(contents.id, contentId));
 
@@ -324,7 +344,8 @@ export const autoMeta = {
     const suffix = typeNames[content.type] || "Dubai Travel";
     const metaTitle = `${content.title} | ${suffix}`;
 
-    await db.update(contents)
+    await db
+      .update(contents)
       .set({ metaTitle } as any)
       .where(eq(contents.id, contentId));
 
@@ -335,16 +356,20 @@ export const autoMeta = {
    * Process all content missing meta
    */
   async processAllMissingMeta(): Promise<{ descriptions: number; titles: number }> {
-    const contentMissingMeta = await db.select({ id: contents.id })
+    const contentMissingMeta = await db
+      .select({ id: contents.id })
       .from(contents)
-      .where(or(
-        isNull(contents.metaDescription),
-        isNull(contents.metaTitle),
-        eq(contents.metaDescription, ""),
-        eq(contents.metaTitle, "")
-      ));
+      .where(
+        or(
+          isNull(contents.metaDescription),
+          isNull(contents.metaTitle),
+          eq(contents.metaDescription, ""),
+          eq(contents.metaTitle, "")
+        )
+      );
 
-    let descriptions = 0, titles = 0;
+    let descriptions = 0,
+      titles = 0;
 
     for (const content of contentMissingMeta) {
       const desc = await this.generateMetaDescription(content.id);
@@ -385,8 +410,11 @@ export const brokenLinksDetector = {
       const url = match[1] || match[2];
       if (!url) continue;
 
-      const type = match[0].startsWith("src") ? "image" :
-                   url.startsWith("/") || url.includes(process.env.APP_URL || "") ? "internal" : "external";
+      const type = match[0].startsWith("src")
+        ? "image"
+        : url.startsWith("/") || url.includes(process.env.APP_URL || "")
+          ? "internal"
+          : "external";
 
       links.push({ url, type });
     }
@@ -402,11 +430,14 @@ export const brokenLinksDetector = {
       // For internal links, check database
       if (url.startsWith("/")) {
         const slug = url.replace(/^\//, "").split("?")[0];
-        const [exists] = await db.select({ id: contents.id })
+        const [exists] = await db
+          .select({ id: contents.id })
           .from(contents)
           .where(eq(contents.slug, slug));
 
-        return exists ? { ok: true, status: 200 } : { ok: false, status: 404, error: "Content not found" };
+        return exists
+          ? { ok: true, status: 200 }
+          : { ok: false, status: 404, error: "Content not found" };
       }
 
       // SSRF Protection: Validate URL before making request
@@ -437,14 +468,15 @@ export const brokenLinksDetector = {
    */
   async scanAllContent(): Promise<BrokenLink[]> {
     const brokenLinks: BrokenLink[] = [];
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      blocks: contents.blocks,
-      heroImage: contents.heroImage,
-    })
-    .from(contents)
-    .where(eq(contents.status, "published"));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        blocks: contents.blocks,
+        heroImage: contents.heroImage,
+      })
+      .from(contents)
+      .where(eq(contents.status, "published"));
 
     for (const content of allContent) {
       const blocks = (content.blocks as any[]) || [];
@@ -478,13 +510,14 @@ export const brokenLinksDetector = {
    */
   async quickScan(): Promise<BrokenLink[]> {
     const brokenLinks: BrokenLink[] = [];
-    const allContent = await db.select({
-      id: contents.id,
-      title: contents.title,
-      blocks: contents.blocks,
-    })
-    .from(contents)
-    .where(eq(contents.status, "published"));
+    const allContent = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        blocks: contents.blocks,
+      })
+      .from(contents)
+      .where(eq(contents.status, "published"));
 
     // Get all valid slugs
     const validSlugs = new Set(
@@ -599,10 +632,7 @@ export const performanceScoring = {
 
     // Overall Score
     const overall = Math.round(
-      (seoScore * 0.3) +
-      (freshnessScore * 0.2) +
-      (completenessScore * 0.3) +
-      (engagementScore * 0.2)
+      seoScore * 0.3 + freshnessScore * 0.2 + completenessScore * 0.3 + engagementScore * 0.2
     );
 
     return {
@@ -624,7 +654,8 @@ export const performanceScoring = {
    * Get scores for all content
    */
   async scoreAllContent(): Promise<PerformanceScore[]> {
-    const allContent = await db.select({ id: contents.id })
+    const allContent = await db
+      .select({ id: contents.id })
       .from(contents)
       .where(eq(contents.status, "published"));
 
@@ -746,12 +777,12 @@ export const schemaGenerator = {
     const baseSchema = {
       "@context": "https://schema.org",
       "@id": `${baseUrl}/${content.slug}`,
-      "url": `${baseUrl}/${content.slug}`,
-      "name": content.title,
-      "description": content.metaDescription || "",
-      "image": content.heroImage,
-      "datePublished": content.createdAt,
-      "dateModified": content.updatedAt,
+      url: `${baseUrl}/${content.slug}`,
+      name: content.title,
+      description: content.metaDescription || "",
+      image: content.heroImage,
+      datePublished: content.createdAt,
+      dateModified: content.updatedAt,
     };
 
     switch (content.type) {
@@ -759,58 +790,58 @@ export const schemaGenerator = {
         return {
           ...baseSchema,
           "@type": "Hotel",
-          "address": {
+          address: {
             "@type": "PostalAddress",
-            "addressLocality": "Dubai",
-            "addressCountry": "AE",
+            addressLocality: "Dubai",
+            addressCountry: "AE",
           },
-          "starRating": {
+          starRating: {
             "@type": "Rating",
-            "ratingValue": content.rating || 4,
+            ratingValue: content.rating || 4,
           },
-          "priceRange": content.priceRange || "$$$",
+          priceRange: content.priceRange || "$$$",
         };
 
       case "restaurant":
         return {
           ...baseSchema,
           "@type": "Restaurant",
-          "address": {
+          address: {
             "@type": "PostalAddress",
-            "addressLocality": "Dubai",
-            "addressCountry": "AE",
+            addressLocality: "Dubai",
+            addressCountry: "AE",
           },
-          "servesCuisine": content.cuisine || "International",
-          "priceRange": content.priceRange || "$$",
+          servesCuisine: content.cuisine || "International",
+          priceRange: content.priceRange || "$$",
         };
 
       case "attraction":
         return {
           ...baseSchema,
           "@type": "TouristAttraction",
-          "address": {
+          address: {
             "@type": "PostalAddress",
-            "addressLocality": "Dubai",
-            "addressCountry": "AE",
+            addressLocality: "Dubai",
+            addressCountry: "AE",
           },
-          "isAccessibleForFree": false,
+          isAccessibleForFree: false,
         };
 
       case "event":
         return {
           ...baseSchema,
           "@type": "Event",
-          "location": {
+          location: {
             "@type": "Place",
-            "name": "Dubai",
-            "address": {
+            name: "Dubai",
+            address: {
               "@type": "PostalAddress",
-              "addressLocality": "Dubai",
-              "addressCountry": "AE",
+              addressLocality: "Dubai",
+              addressCountry: "AE",
             },
           },
-          "startDate": content.startDate,
-          "endDate": content.endDate,
+          startDate: content.startDate,
+          endDate: content.endDate,
         };
 
       case "article":
@@ -818,16 +849,16 @@ export const schemaGenerator = {
         return {
           ...baseSchema,
           "@type": "Article",
-          "author": {
+          author: {
             "@type": "Organization",
-            "name": "Travi",
+            name: "Travi",
           },
-          "publisher": {
+          publisher: {
             "@type": "Organization",
-            "name": "Travi",
-            "logo": {
+            name: "Travi",
+            logo: {
               "@type": "ImageObject",
-              "url": `${baseUrl}/logo.png`,
+              url: `${baseUrl}/logo.png`,
             },
           },
         };
@@ -852,24 +883,24 @@ export const schemaGenerator = {
     return {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      "itemListElement": [
+      itemListElement: [
         {
           "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": baseUrl,
+          position: 1,
+          name: "Home",
+          item: baseUrl,
         },
         {
           "@type": "ListItem",
-          "position": 2,
-          "name": typeNames[content.type] || "Content",
-          "item": `${baseUrl}/${content.type}s`,
+          position: 2,
+          name: typeNames[content.type] || "Content",
+          item: `${baseUrl}/${content.type}s`,
         },
         {
           "@type": "ListItem",
-          "position": 3,
-          "name": content.title,
-          "item": `${baseUrl}/${content.slug}`,
+          position: 3,
+          name: content.title,
+          item: `${baseUrl}/${content.slug}`,
         },
       ],
     };
@@ -890,25 +921,17 @@ export const automationRunner = {
     brokenLinks: number;
     staleContent: number;
   }> {
-    console.log("[Automation] Starting daily tasks...");
-
     // 1. Process internal links
     const linkResults = await autoLinking.processAllContent();
-    console.log(`[Automation] Internal links: ${linkResults.linksAdded} added`);
 
     // 2. Generate missing meta
     const metaResults = await autoMeta.processAllMissingMeta();
-    console.log(`[Automation] Meta generated: ${metaResults.descriptions} descriptions, ${metaResults.titles} titles`);
 
     // 3. Quick broken links scan
     const brokenLinks = await brokenLinksDetector.quickScan();
-    console.log(`[Automation] Broken links found: ${brokenLinks.length}`);
 
     // 4. Check freshness
     const freshnessReport = await freshnessMonitor.getReport();
-    console.log(`[Automation] Stale content: ${freshnessReport.stats.stale}, critical: ${freshnessReport.stats.critical}`);
-
-    console.log("[Automation] Daily tasks completed");
 
     return {
       internalLinks: linkResults,
@@ -925,18 +948,12 @@ export const automationRunner = {
     performanceScores: PerformanceScore[];
     brokenLinksDetailed: BrokenLink[];
   }> {
-    console.log("[Automation] Starting weekly tasks...");
-
     // 1. Full performance scoring
     const scores = await performanceScoring.scoreAllContent();
     const underperformers = scores.filter(s => s.scores.overall < 60);
-    console.log(`[Automation] Underperforming content: ${underperformers.length}`);
 
     // 2. Full broken links scan (including external)
     const brokenLinks = await brokenLinksDetector.scanAllContent();
-    console.log(`[Automation] Total broken links: ${brokenLinks.length}`);
-
-    console.log("[Automation] Weekly tasks completed");
 
     return {
       performanceScores: underperformers,

@@ -3,7 +3,14 @@ import { contents, auditLogs } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { emitContentPublished, emitContentUpdated } from "../events";
 
-export type ContentStatus = "draft" | "in_review" | "reviewed" | "approved" | "scheduled" | "published" | "archived";
+export type ContentStatus =
+  | "draft"
+  | "in_review"
+  | "reviewed"
+  | "approved"
+  | "scheduled"
+  | "published"
+  | "archived";
 
 const VALID_TRANSITIONS: Record<ContentStatus, ContentStatus[]> = {
   draft: ["in_review", "reviewed", "approved", "scheduled", "published"],
@@ -22,10 +29,7 @@ export interface TransitionResult {
   error?: string;
 }
 
-export function isValidTransition(
-  currentStatus: ContentStatus,
-  newStatus: ContentStatus
-): boolean {
+export function isValidTransition(currentStatus: ContentStatus, newStatus: ContentStatus): boolean {
   const allowedTransitions = VALID_TRANSITIONS[currentStatus];
   return allowedTransitions?.includes(newStatus) ?? false;
 }
@@ -88,10 +92,7 @@ export async function transitionState(
     updateData.deletedAt = null;
   }
 
-  await db
-    .update(contents)
-    .set(updateData)
-    .where(eq(contents.id, contentId));
+  await db.update(contents).set(updateData).where(eq(contents.id, contentId));
 
   try {
     await db.insert(auditLogs).values({
@@ -106,13 +107,7 @@ export async function transitionState(
       ipAddress: "system",
       userAgent: "content-lifecycle",
     } as any);
-  } catch (error) {
-    console.warn("Failed to create audit log for status transition:", error);
-  }
-
-  console.log(
-    `[ContentLifecycle] Content ${contentId} transitioned: ${currentStatus} → ${newStatus}`
-  );
+  } catch (error) {}
 
   // Phase 15C: Emit content lifecycle events for downstream subscribers
   // This ensures search indexing, AEO generation, and other subscribers are triggered
@@ -132,9 +127,8 @@ export async function transitionState(
         content.title,
         fullContent.slug,
         currentStatus,
-        'manual' // Source: lifecycle module transition
+        "manual" // Source: lifecycle module transition
       );
-      console.log(`[ContentLifecycle] Emitted content.published event for ${contentId}`);
     }
   }
 
@@ -165,7 +159,9 @@ export async function bulkTransitionState(
   return { successful, failed };
 }
 
-export async function canPublish(contentId: string): Promise<{ canPublish: boolean; reason?: string }> {
+export async function canPublish(
+  contentId: string
+): Promise<{ canPublish: boolean; reason?: string }> {
   const [content] = await db
     .select({
       id: contents.id,

@@ -3,28 +3,28 @@
  * Executes content-related decisions by triggering rewrite/block/publish gates
  */
 
-import type { Decision, DecisionType } from '../types';
-import { BaseAdapter } from './base-adapter';
-import type { AdapterConfig, ContentActionPayload } from './types';
+import type { Decision, DecisionType } from "../types";
+import { BaseAdapter } from "./base-adapter";
+import type { AdapterConfig, ContentActionPayload } from "./types";
 
 // =============================================================================
 // CONTENT ADAPTER
 // =============================================================================
 
 export class ContentAdapter extends BaseAdapter {
-  readonly id = 'content-adapter';
-  readonly name = 'Content Adapter';
+  readonly id = "content-adapter";
+  readonly name = "Content Adapter";
   readonly supportedActions: DecisionType[] = [
-    'BLOCK_PUBLISH',
-    'TRIGGER_CONTENT_REVIEW',
-    'TRIGGER_CONTENT_REFRESH',
-    'TRIGGER_AEO_AUDIT',
-    'TRIGGER_ENGAGEMENT_OPTIMIZATION',
+    "BLOCK_PUBLISH",
+    "TRIGGER_CONTENT_REVIEW",
+    "TRIGGER_CONTENT_REFRESH",
+    "TRIGGER_AEO_AUDIT",
+    "TRIGGER_ENGAGEMENT_OPTIMIZATION",
   ];
 
   private baseUrl: string;
 
-  constructor(baseUrl: string = '/api/content', config: Partial<AdapterConfig> = {}) {
+  constructor(baseUrl: string = "/api/content", config: Partial<AdapterConfig> = {}) {
     super(config);
     this.baseUrl = baseUrl;
   }
@@ -54,8 +54,6 @@ export class ContentAdapter extends BaseAdapter {
     const payload = this.buildPayload(decision);
     const endpoint = this.getEndpoint(decision.type);
 
-    console.log(`[Content Adapter] Executing ${decision.type}:`, payload);
-
     // In production, make actual API calls
     return this.simulateExecution(decision, payload);
   }
@@ -66,8 +64,6 @@ export class ContentAdapter extends BaseAdapter {
     changes?: Record<string, unknown>;
   }> {
     const payload = this.buildPayload(decision);
-
-    console.log(`[Content Adapter] Dry run ${decision.type}:`, payload);
 
     return {
       success: true,
@@ -85,8 +81,7 @@ export class ContentAdapter extends BaseAdapter {
   // =========================================================================
 
   private buildPayload(decision: Decision): ContentActionPayload {
-    const contentId =
-      decision.impactedEntities.find(e => e.type === 'content')?.id || 'unknown';
+    const contentId = decision.impactedEntities.find(e => e.type === "content")?.id || "unknown";
 
     const base: ContentActionPayload = {
       contentId,
@@ -101,13 +96,13 @@ export class ContentAdapter extends BaseAdapter {
     };
 
     switch (decision.type) {
-      case 'BLOCK_PUBLISH':
+      case "BLOCK_PUBLISH":
         return {
           ...base,
           deadline: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h to resolve
           metadata: {
             ...base.metadata,
-            blockType: 'quality_gate',
+            blockType: "quality_gate",
             thresholdViolation: {
               metric: decision.signal.metricId,
               value: decision.signal.value,
@@ -116,43 +111,43 @@ export class ContentAdapter extends BaseAdapter {
           },
         };
 
-      case 'TRIGGER_CONTENT_REVIEW':
+      case "TRIGGER_CONTENT_REVIEW":
         return {
           ...base,
           deadline: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48h
           metadata: {
             ...base.metadata,
-            reviewType: 'data_triggered',
-            priority: decision.authority === 'blocking' ? 'high' : 'normal',
+            reviewType: "data_triggered",
+            priority: decision.authority === "blocking" ? "high" : "normal",
           },
         };
 
-      case 'TRIGGER_CONTENT_REFRESH':
+      case "TRIGGER_CONTENT_REFRESH":
         return {
           ...base,
           metadata: {
             ...base.metadata,
-            refreshReason: 'freshness_score_low',
+            refreshReason: "freshness_score_low",
             currentScore: decision.signal.value,
           },
         };
 
-      case 'TRIGGER_AEO_AUDIT':
+      case "TRIGGER_AEO_AUDIT":
         return {
           ...base,
           metadata: {
             ...base.metadata,
-            auditType: 'full',
-            focusAreas: ['citations', 'entity_coverage', 'question_answers'],
+            auditType: "full",
+            focusAreas: ["citations", "entity_coverage", "question_answers"],
           },
         };
 
-      case 'TRIGGER_ENGAGEMENT_OPTIMIZATION':
+      case "TRIGGER_ENGAGEMENT_OPTIMIZATION":
         return {
           ...base,
           metadata: {
             ...base.metadata,
-            targetMetrics: ['bounce_rate', 'time_on_page', 'scroll_depth'],
+            targetMetrics: ["bounce_rate", "time_on_page", "scroll_depth"],
             currentPerformance: decision.signal.value,
           },
         };
@@ -169,14 +164,14 @@ export class ContentAdapter extends BaseAdapter {
 
   private getEndpoint(actionType: DecisionType): string {
     const endpoints: Partial<Record<DecisionType, string>> = {
-      BLOCK_PUBLISH: '/gates/block',
-      TRIGGER_CONTENT_REVIEW: '/tasks/review',
-      TRIGGER_CONTENT_REFRESH: '/tasks/refresh',
-      TRIGGER_AEO_AUDIT: '/tasks/aeo-audit',
-      TRIGGER_ENGAGEMENT_OPTIMIZATION: '/tasks/optimize-engagement',
+      BLOCK_PUBLISH: "/gates/block",
+      TRIGGER_CONTENT_REVIEW: "/tasks/review",
+      TRIGGER_CONTENT_REFRESH: "/tasks/refresh",
+      TRIGGER_AEO_AUDIT: "/tasks/aeo-audit",
+      TRIGGER_ENGAGEMENT_OPTIMIZATION: "/tasks/optimize-engagement",
     };
 
-    return endpoints[actionType] || '/tasks/generic';
+    return endpoints[actionType] || "/tasks/generic";
   }
 
   // =========================================================================
@@ -218,26 +213,26 @@ export class ContentAdapter extends BaseAdapter {
     payload: ContentActionPayload
   ): Record<string, unknown> {
     switch (actionType) {
-      case 'BLOCK_PUBLISH':
+      case "BLOCK_PUBLISH":
         return {
           blocked: true,
           blockId: `block-${Date.now()}`,
           contentId: payload.contentId,
           expiresAt: payload.deadline,
         };
-      case 'TRIGGER_CONTENT_REVIEW':
+      case "TRIGGER_CONTENT_REVIEW":
         return {
           taskCreated: true,
           taskId: `task-${Date.now()}`,
-          assignedTo: 'content-queue',
+          assignedTo: "content-queue",
         };
-      case 'TRIGGER_CONTENT_REFRESH':
+      case "TRIGGER_CONTENT_REFRESH":
         return {
           taskQueued: true,
           position: 1,
-          estimatedStart: '1h',
+          estimatedStart: "1h",
         };
-      case 'TRIGGER_AEO_AUDIT':
+      case "TRIGGER_AEO_AUDIT":
         return {
           auditQueued: true,
           auditId: `audit-${Date.now()}`,

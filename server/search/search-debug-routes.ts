@@ -63,7 +63,6 @@ export function registerSearchDebugRoutes(app: Express) {
       const debugResult = await debugSearch(query);
       res.json(debugResult);
     } catch (error) {
-      console.error("[SearchDebug] Error debugging query:", error);
       res.status(500).json({
         error: "Failed to debug search query",
         query,
@@ -86,41 +85,44 @@ export function registerSearchDebugRoutes(app: Express) {
    * - Score breakdown
    * - Reasons for ranking
    */
-  app.get("/api/admin/search/debug/content/:contentId", requireAuth, async (req: Request, res: Response) => {
-    const { contentId } = req.params;
-    const query = req.query.q as string;
+  app.get(
+    "/api/admin/search/debug/content/:contentId",
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const { contentId } = req.params;
+      const query = req.query.q as string;
 
-    if (!query || typeof query !== "string") {
-      return res.status(400).json({
-        error: "Missing required query parameter 'q'",
-        example: `/api/admin/search/debug/content/${contentId}?q=dubai hotels`,
-      });
-    }
+      if (!query || typeof query !== "string") {
+        return res.status(400).json({
+          error: "Missing required query parameter 'q'",
+          example: `/api/admin/search/debug/content/${contentId}?q=dubai hotels`,
+        });
+      }
 
-    if (!contentId) {
-      return res.status(400).json({
-        error: "Missing content ID",
-      });
-    }
+      if (!contentId) {
+        return res.status(400).json({
+          error: "Missing content ID",
+        });
+      }
 
-    try {
-      const debugResult = await debugContentForQuery(contentId, query);
-      res.json({
-        contentId,
-        query,
-        ...debugResult,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error("[SearchDebug] Error debugging content:", error);
-      res.status(500).json({
-        error: "Failed to debug content for query",
-        contentId,
-        query,
-        timestamp: new Date().toISOString(),
-      });
+      try {
+        const debugResult = await debugContentForQuery(contentId, query);
+        res.json({
+          contentId,
+          query,
+          ...debugResult,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        res.status(500).json({
+          error: "Failed to debug content for query",
+          contentId,
+          query,
+          timestamp: new Date().toISOString(),
+        });
+      }
     }
-  });
+  );
 
   /**
    * GET /api/admin/search/debug/ranking-factors
@@ -154,10 +156,7 @@ export function registerSearchDebugRoutes(app: Express) {
     }
 
     try {
-      const [result1, result2] = await Promise.all([
-        debugSearch(query1),
-        debugSearch(query2),
-      ]);
+      const [result1, result2] = await Promise.all([debugSearch(query1), debugSearch(query2)]);
 
       // Calculate overlap
       const ids1 = new Set(result1.results.map(r => r.id));
@@ -189,9 +188,7 @@ export function registerSearchDebugRoutes(app: Express) {
         },
         comparison: {
           overlappingResults: overlap.length,
-          overlapPercentage: Math.round(
-            (overlap.length / Math.max(ids1.size, ids2.size)) * 100
-          ),
+          overlapPercentage: Math.round((overlap.length / Math.max(ids1.size, ids2.size)) * 100),
           uniqueToQuery1: [...ids1].filter(id => !ids2.has(id)).length,
           uniqueToQuery2: [...ids2].filter(id => !ids1.has(id)).length,
           sameIntent: result1.intentClassification.primary === result2.intentClassification.primary,
@@ -199,13 +196,10 @@ export function registerSearchDebugRoutes(app: Express) {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("[SearchDebug] Error comparing queries:", error);
       res.status(500).json({
         error: "Failed to compare queries",
         timestamp: new Date().toISOString(),
       });
     }
   });
-
-  console.log("[SearchDebug] Admin routes registered");
 }

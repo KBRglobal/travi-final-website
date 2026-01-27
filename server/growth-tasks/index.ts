@@ -5,9 +5,9 @@
  * Enable with: ENABLE_GROWTH_TASKS=true
  */
 
-export * from './types';
-export { detectors, runDetectors, runSingleDetector } from './detectors';
-export { generateTask, generateTasksFromDetections, batchGenerateTasks } from './task-generator';
+export * from "./types";
+export { detectors, runDetectors, runSingleDetector } from "./detectors";
+export { generateTask, generateTasksFromDetections, batchGenerateTasks } from "./task-generator";
 export {
   scoreTask,
   prioritizeTasks,
@@ -17,7 +17,7 @@ export {
   suggestNextAction,
   getBalancedWorkload,
   calculateGrowthMetrics,
-} from './prioritizer';
+} from "./prioritizer";
 export {
   addTask,
   addTasks,
@@ -35,16 +35,15 @@ export {
   getQueueStats,
   getGrowthMetrics,
   forceDetectionRun,
-} from './queue';
+} from "./queue";
 
-import { startQueue, stopQueue } from './queue';
+import { startQueue, stopQueue } from "./queue";
 
 /**
  * Initialize growth tasks module
  */
 export function initGrowthTasks(): void {
-  const enabled = process.env.ENABLE_GROWTH_TASKS === 'true';
-  console.log(`[GrowthTasks] Module initialized (enabled: ${enabled})`);
+  const enabled = process.env.ENABLE_GROWTH_TASKS === "true";
 
   if (enabled) {
     startQueue();
@@ -56,5 +55,4 @@ export function initGrowthTasks(): void {
  */
 export function shutdownGrowthTasks(): void {
   stopQueue();
-  console.log('[GrowthTasks] Module shutdown');
 }

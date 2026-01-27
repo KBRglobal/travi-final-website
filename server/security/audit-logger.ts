@@ -1,6 +1,6 @@
 /**
  * Security Audit Logger
- * 
+ *
  * Comprehensive security event logging with:
  * - Severity levels
  * - PII masking
@@ -8,47 +8,47 @@
  * - IP and User-Agent tracking
  */
 
-import { storage } from '../storage';
-import type { Request } from 'express';
+import { storage } from "../storage";
+import type { Request } from "express";
 
 /**
  * Security event types
  */
 export enum SecurityEventType {
-  LOGIN_SUCCESS = 'login_success',
-  LOGIN_FAILED = 'login_failed',
-  LOGOUT = 'logout',
-  PASSWORD_CHANGE = 'password_change',
-  PASSWORD_RESET_REQUEST = 'password_reset_request',
-  PASSWORD_RESET_SUCCESS = 'password_reset_success',
-  ACCOUNT_LOCKED = 'account_locked',
-  ACCOUNT_UNLOCKED = 'account_unlocked',
-  PERMISSION_DENIED = 'permission_denied',
-  RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded',
-  SUSPICIOUS_ACTIVITY = 'suspicious_activity',
-  SQL_INJECTION_ATTEMPT = 'sql_injection_attempt',
-  XSS_ATTEMPT = 'xss_attempt',
-  FILE_UPLOAD_REJECTED = 'file_upload_rejected',
-  INVALID_TOKEN = 'invalid_token',
-  SESSION_HIJACK_ATTEMPT = 'session_hijack_attempt',
-  BRUTE_FORCE_ATTEMPT = 'brute_force_attempt',
-  IP_BLOCKED = 'ip_blocked',
-  UNAUTHORIZED_ACCESS = 'unauthorized_access',
-  DATA_EXPORT = 'data_export',
-  SETTINGS_CHANGED = 'settings_changed',
-  USER_CREATED = 'user_created',
-  USER_DELETED = 'user_deleted',
-  ROLE_CHANGED = 'role_changed',
+  LOGIN_SUCCESS = "login_success",
+  LOGIN_FAILED = "login_failed",
+  LOGOUT = "logout",
+  PASSWORD_CHANGE = "password_change",
+  PASSWORD_RESET_REQUEST = "password_reset_request",
+  PASSWORD_RESET_SUCCESS = "password_reset_success",
+  ACCOUNT_LOCKED = "account_locked",
+  ACCOUNT_UNLOCKED = "account_unlocked",
+  PERMISSION_DENIED = "permission_denied",
+  RATE_LIMIT_EXCEEDED = "rate_limit_exceeded",
+  SUSPICIOUS_ACTIVITY = "suspicious_activity",
+  SQL_INJECTION_ATTEMPT = "sql_injection_attempt",
+  XSS_ATTEMPT = "xss_attempt",
+  FILE_UPLOAD_REJECTED = "file_upload_rejected",
+  INVALID_TOKEN = "invalid_token",
+  SESSION_HIJACK_ATTEMPT = "session_hijack_attempt",
+  BRUTE_FORCE_ATTEMPT = "brute_force_attempt",
+  IP_BLOCKED = "ip_blocked",
+  UNAUTHORIZED_ACCESS = "unauthorized_access",
+  DATA_EXPORT = "data_export",
+  SETTINGS_CHANGED = "settings_changed",
+  USER_CREATED = "user_created",
+  USER_DELETED = "user_deleted",
+  ROLE_CHANGED = "role_changed",
 }
 
 /**
  * Security severity levels
  */
 export enum SecuritySeverity {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+  CRITICAL = "critical",
 }
 
 /**
@@ -72,47 +72,45 @@ export interface SecurityEvent {
 /**
  * Mask PII data for logging
  */
-export function maskPii(data: string, type: 'email' | 'phone' | 'ip'): string {
-  if (!data) return '[masked]';
+export function maskPii(data: string, type: "email" | "phone" | "ip"): string {
+  if (!data) return "[masked]";
 
   switch (type) {
-    case 'email': {
+    case "email": {
       // Keep first 2 chars and domain, mask the rest
-      const [localPart, domain] = data.split('@');
-      if (!localPart || !domain) return '[masked]';
-      const maskedLocal = localPart.length > 2
-        ? localPart.substring(0, 2) + '***'
-        : '***';
+      const [localPart, domain] = data.split("@");
+      if (!localPart || !domain) return "[masked]";
+      const maskedLocal = localPart.length > 2 ? localPart.substring(0, 2) + "***" : "***";
       return `${maskedLocal}@${domain}`;
     }
 
-    case 'phone': {
+    case "phone": {
       // Keep last 4 digits, mask the rest
-      const digits = data.replace(/\D/g, '');
-      if (digits.length < 4) return '***';
-      return '***' + digits.slice(-4);
+      const digits = data.replace(/\D/g, "");
+      if (digits.length < 4) return "***";
+      return "***" + digits.slice(-4);
     }
 
-    case 'ip': {
+    case "ip": {
       // Mask last octet of IPv4 or last segments of IPv6
-      if (data.includes('.')) {
+      if (data.includes(".")) {
         // IPv4
-        const parts = data.split('.');
+        const parts = data.split(".");
         if (parts.length === 4) {
           return `${parts[0]}.${parts[1]}.${parts[2]}.***`;
         }
-      } else if (data.includes(':')) {
+      } else if (data.includes(":")) {
         // IPv6
-        const parts = data.split(':');
+        const parts = data.split(":");
         if (parts.length > 2) {
-          return parts.slice(0, -2).join(':') + ':***:***';
+          return parts.slice(0, -2).join(":") + ":***:***";
         }
       }
-      return '[masked]';
+      return "[masked]";
     }
 
     default:
-      return '[masked]';
+      return "[masked]";
   }
 }
 
@@ -155,33 +153,33 @@ function getSeverityForEventType(type: SecurityEventType): SecuritySeverity {
  */
 function mapToAuditActionType(type: SecurityEventType): string {
   const actionMap: Record<SecurityEventType, string> = {
-    [SecurityEventType.LOGIN_SUCCESS]: 'login',
-    [SecurityEventType.LOGIN_FAILED]: 'login',
-    [SecurityEventType.LOGOUT]: 'logout',
-    [SecurityEventType.PASSWORD_CHANGE]: 'update',
-    [SecurityEventType.PASSWORD_RESET_REQUEST]: 'update',
-    [SecurityEventType.PASSWORD_RESET_SUCCESS]: 'update',
-    [SecurityEventType.ACCOUNT_LOCKED]: 'update',
-    [SecurityEventType.ACCOUNT_UNLOCKED]: 'update',
-    [SecurityEventType.PERMISSION_DENIED]: 'update',
-    [SecurityEventType.RATE_LIMIT_EXCEEDED]: 'update',
-    [SecurityEventType.SUSPICIOUS_ACTIVITY]: 'update',
-    [SecurityEventType.SQL_INJECTION_ATTEMPT]: 'update',
-    [SecurityEventType.XSS_ATTEMPT]: 'update',
-    [SecurityEventType.FILE_UPLOAD_REJECTED]: 'update',
-    [SecurityEventType.INVALID_TOKEN]: 'update',
-    [SecurityEventType.SESSION_HIJACK_ATTEMPT]: 'update',
-    [SecurityEventType.BRUTE_FORCE_ATTEMPT]: 'update',
-    [SecurityEventType.IP_BLOCKED]: 'update',
-    [SecurityEventType.UNAUTHORIZED_ACCESS]: 'update',
-    [SecurityEventType.DATA_EXPORT]: 'update',
-    [SecurityEventType.SETTINGS_CHANGED]: 'settings_change',
-    [SecurityEventType.USER_CREATED]: 'user_create',
-    [SecurityEventType.USER_DELETED]: 'user_delete',
-    [SecurityEventType.ROLE_CHANGED]: 'role_change',
+    [SecurityEventType.LOGIN_SUCCESS]: "login",
+    [SecurityEventType.LOGIN_FAILED]: "login",
+    [SecurityEventType.LOGOUT]: "logout",
+    [SecurityEventType.PASSWORD_CHANGE]: "update",
+    [SecurityEventType.PASSWORD_RESET_REQUEST]: "update",
+    [SecurityEventType.PASSWORD_RESET_SUCCESS]: "update",
+    [SecurityEventType.ACCOUNT_LOCKED]: "update",
+    [SecurityEventType.ACCOUNT_UNLOCKED]: "update",
+    [SecurityEventType.PERMISSION_DENIED]: "update",
+    [SecurityEventType.RATE_LIMIT_EXCEEDED]: "update",
+    [SecurityEventType.SUSPICIOUS_ACTIVITY]: "update",
+    [SecurityEventType.SQL_INJECTION_ATTEMPT]: "update",
+    [SecurityEventType.XSS_ATTEMPT]: "update",
+    [SecurityEventType.FILE_UPLOAD_REJECTED]: "update",
+    [SecurityEventType.INVALID_TOKEN]: "update",
+    [SecurityEventType.SESSION_HIJACK_ATTEMPT]: "update",
+    [SecurityEventType.BRUTE_FORCE_ATTEMPT]: "update",
+    [SecurityEventType.IP_BLOCKED]: "update",
+    [SecurityEventType.UNAUTHORIZED_ACCESS]: "update",
+    [SecurityEventType.DATA_EXPORT]: "update",
+    [SecurityEventType.SETTINGS_CHANGED]: "settings_change",
+    [SecurityEventType.USER_CREATED]: "user_create",
+    [SecurityEventType.USER_DELETED]: "user_delete",
+    [SecurityEventType.ROLE_CHANGED]: "role_change",
   };
 
-  return actionMap[type] || 'update';
+  return actionMap[type] || "update";
 }
 
 /**
@@ -193,27 +191,16 @@ export async function logSecurityEvent(event: SecurityEvent): Promise<void> {
 
     // Log to console with severity indicator
     const severityPrefix = {
-      [SecuritySeverity.LOW]: '🔵',
-      [SecuritySeverity.MEDIUM]: '🟡',
-      [SecuritySeverity.HIGH]: '🟠',
-      [SecuritySeverity.CRITICAL]: '🔴',
+      [SecuritySeverity.LOW]: "🔵",
+      [SecuritySeverity.MEDIUM]: "🟡",
+      [SecuritySeverity.HIGH]: "🟠",
+      [SecuritySeverity.CRITICAL]: "🔴",
     }[severity];
-
-    console.log(
-      `${severityPrefix} [SECURITY] ${event.type}`,
-      {
-        severity,
-        userId: event.userId,
-        ip: maskPii(event.ipAddress, 'ip'),
-        success: event.success,
-        resource: event.resource,
-      }
-    );
 
     // Prepare details with masked PII
     const maskedDetails = { ...event.details };
     if (event.userEmail) {
-      maskedDetails.userEmail = maskPii(event.userEmail, 'email');
+      maskedDetails.userEmail = maskPii(event.userEmail, "email");
     }
 
     // Log to database
@@ -221,9 +208,9 @@ export async function logSecurityEvent(event: SecurityEvent): Promise<void> {
       userId: event.userId,
       userName: event.userName,
       actionType: mapToAuditActionType(event.type) as any,
-      entityType: 'session',
+      entityType: "session",
       entityId: event.userId,
-      description: `${event.type}: ${event.success ? 'Success' : 'Failed'}${event.errorMessage ? ` - ${event.errorMessage}` : ''}`,
+      description: `${event.type}: ${event.success ? "Success" : "Failed"}${event.errorMessage ? ` - ${event.errorMessage}` : ""}`,
       ipAddress: event.ipAddress,
       userAgent: event.userAgent,
       afterState: {
@@ -237,7 +224,6 @@ export async function logSecurityEvent(event: SecurityEvent): Promise<void> {
     });
   } catch (error) {
     // Don't fail the request if logging fails
-    console.error('[SECURITY] Failed to log security event:', error);
   }
 }
 
@@ -256,8 +242,8 @@ export async function logSecurityEventFromRequest(
   }
 ): Promise<void> {
   const user = (req as any).user;
-  const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
-  const userAgent = req.get('User-Agent');
+  const ipAddress = req.ip || req.socket.remoteAddress || "unknown";
+  const userAgent = req.get("User-Agent");
 
   await logSecurityEvent({
     type,
@@ -319,7 +305,6 @@ export async function getSecurityEvents(filters?: {
 
     return filtered;
   } catch (error) {
-    console.error('[SECURITY] Failed to get security events:', error);
     return [];
   }
 }
@@ -327,7 +312,7 @@ export async function getSecurityEvents(filters?: {
 /**
  * Get security summary statistics
  */
-export async function getSecuritySummary(timeRange: 'day' | 'week' | 'month' = 'day'): Promise<{
+export async function getSecuritySummary(timeRange: "day" | "week" | "month" = "day"): Promise<{
   totalEvents: number;
   byType: Record<string, number>;
   bySeverity: Record<string, number>;
@@ -339,13 +324,13 @@ export async function getSecuritySummary(timeRange: 'day' | 'week' | 'month' = '
   const startDate = new Date();
 
   switch (timeRange) {
-    case 'day':
+    case "day":
       startDate.setDate(now.getDate() - 1);
       break;
-    case 'week':
+    case "week":
       startDate.setDate(now.getDate() - 7);
       break;
-    case 'month':
+    case "month":
       startDate.setMonth(now.getMonth() - 1);
       break;
   }
@@ -365,7 +350,7 @@ export async function getSecuritySummary(timeRange: 'day' | 'week' | 'month' = '
     const afterState = log.afterState as any;
     if (!afterState) return;
 
-    const eventType = afterState.eventType || 'unknown';
+    const eventType = afterState.eventType || "unknown";
     const severity = afterState.severity || SecuritySeverity.LOW;
 
     summary.byType[eventType] = (summary.byType[eventType] || 0) + 1;

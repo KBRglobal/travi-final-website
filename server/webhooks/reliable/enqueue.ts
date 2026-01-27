@@ -83,15 +83,10 @@ export async function enqueueWebhook(
       const endpoints = await db
         .select({ id: webhooks.id, url: webhooks.url, events: webhooks.events })
         .from(webhooks)
-        .where(
-          and(
-            inArray(webhooks.id, endpointIds),
-            eq(webhooks.isActive, true)
-          )
-        );
+        .where(and(inArray(webhooks.id, endpointIds), eq(webhooks.isActive, true)));
 
       // Filter by event subscription
-      targetEndpoints = endpoints.filter((ep) => {
+      targetEndpoints = endpoints.filter(ep => {
         const events = (ep.events as string[]) || [];
         return events.length === 0 || events.includes(eventType);
       });
@@ -102,7 +97,7 @@ export async function enqueueWebhook(
         .from(webhooks)
         .where(eq(webhooks.isActive, true));
 
-      targetEndpoints = endpoints.filter((ep) => {
+      targetEndpoints = endpoints.filter(ep => {
         const events = (ep.events as string[]) || [];
         return events.length === 0 || events.includes(eventType);
       });
@@ -122,8 +117,7 @@ export async function enqueueWebhook(
     // Enqueue for each endpoint
     for (const endpoint of targetEndpoints) {
       const idempotencyKey =
-        options.idempotencyKey ||
-        generateIdempotencyKey(endpoint.id, eventType, payload);
+        options.idempotencyKey || generateIdempotencyKey(endpoint.id, eventType, payload);
 
       try {
         const [inserted] = await db
@@ -147,10 +141,7 @@ export async function enqueueWebhook(
         }
       } catch (error) {
         // Handle unique constraint violation gracefully
-        if (
-          error instanceof Error &&
-          error.message.includes("unique constraint")
-        ) {
+        if (error instanceof Error && error.message.includes("unique constraint")) {
           skipped++;
         } else {
           throw error;
@@ -158,17 +149,12 @@ export async function enqueueWebhook(
       }
     }
 
-    console.log(
-      `[ReliableWebhook] Enqueued ${outboxIds.length} webhooks for event ${eventType}, skipped ${skipped} duplicates`
-    );
-
     return {
       success: true,
       outboxIds,
       skipped,
     };
   } catch (error) {
-    console.error("[ReliableWebhook] Enqueue error:", error);
     return {
       success: false,
       outboxIds: [],

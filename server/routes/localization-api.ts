@@ -17,7 +17,7 @@ const updateTranslationSchema = z.object({
 
 /**
  * Localization API Routes
- * 
+ *
  * Handles all translation and localization endpoints:
  * - /api/locales - Get supported locales
  * - /api/translations - Translation CRUD operations
@@ -49,16 +49,23 @@ export function registerLocalizationApiRoutes(app: Express): void {
       const coverage: Record<string, { translated: number; total: number }> = {};
       for (const locale of supportedLocales) {
         if (locale === "en") {
-          coverage[locale] = { translated: publishedContents.length, total: publishedContents.length };
+          coverage[locale] = {
+            translated: publishedContents.length,
+            total: publishedContents.length,
+          };
         } else {
-          const localeTranslations = allTranslations.filter(t => t.locale === locale && t.status === "completed");
-          coverage[locale] = { translated: localeTranslations.length, total: publishedContents.length };
+          const localeTranslations = allTranslations.filter(
+            t => t.locale === locale && t.status === "completed"
+          );
+          coverage[locale] = {
+            translated: localeTranslations.length,
+            total: publishedContents.length,
+          };
         }
       }
 
       res.json(coverage);
     } catch (error) {
-      console.error("Error fetching translation coverage:", error);
       res.status(500).json({ error: "Failed to fetch translation coverage" });
     }
   });
@@ -69,19 +76,43 @@ export function registerLocalizationApiRoutes(app: Express): void {
       const contents = await storage.getContents();
       const publishedContents = contents.filter(c => c.status === "published");
       const allTranslations = await storage.getAllTranslations();
-      
-      const supportedLocales = ["ar", "hi", "zh", "ru", "ur", "fr", "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he"];
-      
+
+      const supportedLocales = [
+        "ar",
+        "hi",
+        "zh",
+        "ru",
+        "ur",
+        "fr",
+        "de",
+        "fa",
+        "bn",
+        "fil",
+        "es",
+        "tr",
+        "it",
+        "ja",
+        "ko",
+        "he",
+      ];
+
       const languageStats = supportedLocales.map(locale => {
-        const localeTranslations = allTranslations.filter(t => t.locale === locale && t.status === "completed");
+        const localeTranslations = allTranslations.filter(
+          t => t.locale === locale && t.status === "completed"
+        );
         const translated = localeTranslations.length;
         const pending = publishedContents.length - translated;
-        const percentage = publishedContents.length > 0 ? Math.round((translated / publishedContents.length) * 100) : 0;
+        const percentage =
+          publishedContents.length > 0
+            ? Math.round((translated / publishedContents.length) * 100)
+            : 0;
         return { locale, translated, pending: Math.max(0, pending), percentage };
       });
 
-      const totalTranslated = new Set(allTranslations.filter(t => t.status === "completed").map(t => t.contentId)).size;
-      
+      const totalTranslated = new Set(
+        allTranslations.filter(t => t.status === "completed").map(t => t.contentId)
+      ).size;
+
       res.json({
         totalContent: publishedContents.length,
         translatedContent: totalTranslated,
@@ -89,7 +120,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
         languageStats,
       });
     } catch (error) {
-      console.error("Error fetching translation stats:", error);
       res.status(500).json({ error: "Failed to fetch translation stats" });
     }
   });
@@ -97,9 +127,10 @@ export function registerLocalizationApiRoutes(app: Express): void {
   // Get DeepL usage stats
   router.get("/translations/usage", requirePermission("canViewAnalytics"), async (req, res) => {
     try {
-      const { getDeepLUsage, getDeepLSupportedLocales, getUnsupportedLocales } = await import("../services/translation-service");
+      const { getDeepLUsage, getDeepLSupportedLocales, getUnsupportedLocales } =
+        await import("../services/translation-service");
       const usage = await getDeepLUsage();
-      
+
       res.json({
         usage,
         supportedLocales: getDeepLSupportedLocales(),
@@ -107,7 +138,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
         totalLocales: SUPPORTED_LOCALES.length,
       });
     } catch (error) {
-      console.error("Error fetching DeepL usage:", error);
       res.status(500).json({ error: "Failed to fetch usage stats" });
     }
   });
@@ -121,7 +151,9 @@ export function registerLocalizationApiRoutes(app: Express): void {
 
       const contentTranslations = publishedContents.map(content => {
         const contentTrans = allTranslations.filter(t => t.contentId === content.id);
-        const completedLocales = contentTrans.filter(t => t.status === "completed").map(t => t.locale);
+        const completedLocales = contentTrans
+          .filter(t => t.status === "completed")
+          .map(t => t.locale);
         return {
           contentId: content.id,
           title: content.title,
@@ -134,7 +166,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
 
       res.json(contentTranslations);
     } catch (error) {
-      console.error("Error fetching translations:", error);
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -142,7 +173,7 @@ export function registerLocalizationApiRoutes(app: Express): void {
   // Get translation by ID (skip reserved paths)
   router.get("/translations/:id", async (req, res, next) => {
     if (["stats", "coverage", "usage"].includes(req.params.id)) {
-      return next('route');
+      return next("route");
     }
     try {
       const translation = await storage.getTranslationById(req.params.id);
@@ -151,39 +182,46 @@ export function registerLocalizationApiRoutes(app: Express): void {
       }
       res.json(translation);
     } catch (error) {
-      console.error("Error fetching translation:", error);
       res.status(500).json({ error: "Failed to fetch translation" });
     }
   });
 
   // Update translation
-  router.patch("/translations/:id", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
-    try {
-      const parsed = updateTranslationSchema.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({ error: "Validation error", details: parsed.error.errors });
+  router.patch(
+    "/translations/:id",
+    requirePermission("canEdit"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        const parsed = updateTranslationSchema.safeParse(req.body);
+        if (!parsed.success) {
+          return res.status(400).json({ error: "Validation error", details: parsed.error.errors });
+        }
+        const translation = await storage.updateTranslation(req.params.id, parsed.data);
+        if (!translation) {
+          return res.status(404).json({ error: "Translation not found" });
+        }
+        res.json(translation);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update translation" });
       }
-      const translation = await storage.updateTranslation(req.params.id, parsed.data);
-      if (!translation) {
-        return res.status(404).json({ error: "Translation not found" });
-      }
-      res.json(translation);
-    } catch (error) {
-      console.error("Error updating translation:", error);
-      res.status(500).json({ error: "Failed to update translation" });
     }
-  });
+  );
 
   // Delete translation
-  router.delete("/translations/:id", requirePermission("canDelete"), checkReadOnlyMode, async (req, res) => {
-    try {
-      await storage.deleteTranslation(req.params.id);
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting translation:", error);
-      res.status(500).json({ error: "Failed to delete translation" });
+  router.delete(
+    "/translations/:id",
+    requirePermission("canDelete"),
+    checkReadOnlyMode,
+    async (req, res) => {
+      try {
+        await storage.deleteTranslation(req.params.id);
+        res.status(204).send();
+      } catch (error) {
+        res.status(500).json({ error: "Failed to delete translation" });
+      }
     }
-  });
+  );
 
   // Get translations for a content item
   router.get("/translations/:contentId", async (req, res) => {
@@ -191,7 +229,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
       const translations = await storage.getTranslationsByContentId(req.params.contentId);
       res.json(translations);
     } catch (error) {
-      console.error("Error fetching translations:", error);
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -206,111 +243,54 @@ export function registerLocalizationApiRoutes(app: Express): void {
       }
       res.json(translation);
     } catch (error) {
-      console.error("Error fetching translation:", error);
       res.status(500).json({ error: "Failed to fetch translation" });
     }
   });
 
   // Translate content to a specific language using DeepL/Claude
-  router.post("/translations/:contentId/translate", requirePermission("canEdit"), async (req, res) => {
-    try {
-      const { contentId } = req.params;
-      const { targetLocale, sourceLocale = "en" } = req.body;
+  router.post(
+    "/translations/:contentId/translate",
+    requirePermission("canEdit"),
+    async (req, res) => {
+      try {
+        const { contentId } = req.params;
+        const { targetLocale, sourceLocale = "en" } = req.body;
 
-      if (!targetLocale) {
-        return res.status(400).json({ error: "Target locale is required" });
-      }
+        if (!targetLocale) {
+          return res.status(400).json({ error: "Target locale is required" });
+        }
 
-      const content = await storage.getContent(contentId);
-      if (!content) {
-        return res.status(404).json({ error: "Content not found" });
-      }
+        const content = await storage.getContent(contentId);
+        if (!content) {
+          return res.status(404).json({ error: "Content not found" });
+        }
 
-      const { translateContent, generateContentHash } = await import("../services/translation-service");
+        const { translateContent, generateContentHash } =
+          await import("../services/translation-service");
 
-      const translatedContent = await translateContent(
-        {
-          title: content.title,
-          metaTitle: content.metaTitle || undefined,
-          metaDescription: content.metaDescription || undefined,
-          blocks: content.blocks || [],
-        },
-        sourceLocale,
-        targetLocale
-      );
+        const translatedContent = await translateContent(
+          {
+            title: content.title,
+            metaTitle: content.metaTitle || undefined,
+            metaDescription: content.metaDescription || undefined,
+            blocks: content.blocks || [],
+          },
+          sourceLocale,
+          targetLocale
+        );
 
-      const existingTranslation = await storage.getTranslation(contentId, targetLocale);
+        const existingTranslation = await storage.getTranslation(contentId, targetLocale);
 
-      if (existingTranslation && existingTranslation.isManualOverride) {
-        return res.status(409).json({
-          error: "Manual override exists. Use force=true to overwrite.",
-          existingTranslation
-        });
-      }
-
-      const translationData = {
-        contentId,
-        locale: targetLocale,
-        status: "completed" as const,
-        title: translatedContent.title || null,
-        metaTitle: translatedContent.metaTitle || null,
-        metaDescription: translatedContent.metaDescription || null,
-        blocks: translatedContent.blocks || [],
-        sourceHash: translatedContent.sourceHash,
-        translatedBy: "claude",
-        translationProvider: "claude",
-        isManualOverride: false,
-      };
-
-      let translation;
-      if (existingTranslation) {
-        translation = await storage.updateTranslation(existingTranslation.id, translationData);
-      } else {
-        translation = await storage.createTranslation(translationData);
-      }
-
-      res.json(translation);
-    } catch (error) {
-      console.error("Error translating content:", error);
-      res.status(500).json({ error: "Failed to translate content" });
-    }
-  });
-
-  // Batch translate content to multiple languages
-  router.post("/translations/:contentId/translate-all", requirePermission("canEdit"), async (req, res) => {
-    try {
-      const { contentId } = req.params;
-      const { targetTiers = [1, 2], sourceLocale = "en" } = req.body;
-
-      const content = await storage.getContent(contentId);
-      if (!content) {
-        return res.status(404).json({ error: "Content not found" });
-      }
-
-      const { translateToAllLanguages, generateContentHash } = await import("../services/translation-service");
-
-      const translations = await translateToAllLanguages(
-        {
-          title: content.title,
-          metaTitle: content.metaTitle || undefined,
-          metaDescription: content.metaDescription || undefined,
-          blocks: content.blocks || [],
-        },
-        sourceLocale as any,
-        targetTiers
-      );
-
-      const savedTranslations = [];
-      for (const [locale, translatedContent] of translations) {
-        const existingTranslation = await storage.getTranslation(contentId, locale);
-
-        if (existingTranslation?.isManualOverride) {
-          continue;
+        if (existingTranslation && existingTranslation.isManualOverride) {
+          return res.status(409).json({
+            error: "Manual override exists. Use force=true to overwrite.",
+            existingTranslation,
+          });
         }
 
         const translationData = {
           contentId,
-          locale,
+          locale: targetLocale,
           status: "completed" as const,
           title: translatedContent.title || null,
           metaTitle: translatedContent.metaTitle || null,
@@ -328,20 +308,84 @@ export function registerLocalizationApiRoutes(app: Express): void {
         } else {
           translation = await storage.createTranslation(translationData);
         }
-        savedTranslations.push(translation);
-      }
 
-      res.json({
-        success: true,
-        translatedCount: savedTranslations.length,
-        targetLocales: SUPPORTED_LOCALES,
-        translations: savedTranslations,
-      });
-    } catch (error) {
-      console.error("Error batch translating content:", error);
-      res.status(500).json({ error: "Failed to batch translate content" });
+        res.json(translation);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to translate content" });
+      }
     }
-  });
+  );
+
+  // Batch translate content to multiple languages
+  router.post(
+    "/translations/:contentId/translate-all",
+    requirePermission("canEdit"),
+    async (req, res) => {
+      try {
+        const { contentId } = req.params;
+        const { targetTiers = [1, 2], sourceLocale = "en" } = req.body;
+
+        const content = await storage.getContent(contentId);
+        if (!content) {
+          return res.status(404).json({ error: "Content not found" });
+        }
+
+        const { translateToAllLanguages, generateContentHash } =
+          await import("../services/translation-service");
+
+        const translations = await translateToAllLanguages(
+          {
+            title: content.title,
+            metaTitle: content.metaTitle || undefined,
+            metaDescription: content.metaDescription || undefined,
+            blocks: content.blocks || [],
+          },
+          sourceLocale as any,
+          targetTiers
+        );
+
+        const savedTranslations = [];
+        for (const [locale, translatedContent] of translations) {
+          const existingTranslation = await storage.getTranslation(contentId, locale);
+
+          if (existingTranslation?.isManualOverride) {
+            continue;
+          }
+
+          const translationData = {
+            contentId,
+            locale,
+            status: "completed" as const,
+            title: translatedContent.title || null,
+            metaTitle: translatedContent.metaTitle || null,
+            metaDescription: translatedContent.metaDescription || null,
+            blocks: translatedContent.blocks || [],
+            sourceHash: translatedContent.sourceHash,
+            translatedBy: "claude",
+            translationProvider: "claude",
+            isManualOverride: false,
+          };
+
+          let translation;
+          if (existingTranslation) {
+            translation = await storage.updateTranslation(existingTranslation.id, translationData);
+          } else {
+            translation = await storage.createTranslation(translationData);
+          }
+          savedTranslations.push(translation);
+        }
+
+        res.json({
+          success: true,
+          translatedCount: savedTranslations.length,
+          targetLocales: SUPPORTED_LOCALES,
+          translations: savedTranslations,
+        });
+      } catch (error) {
+        res.status(500).json({ error: "Failed to batch translate content" });
+      }
+    }
+  );
 
   // Manual translation override
   router.put("/translations/:contentId/:locale", requirePermission("canEdit"), async (req, res) => {
@@ -350,7 +394,7 @@ export function registerLocalizationApiRoutes(app: Express): void {
       const { title, metaTitle, metaDescription, blocks } = req.body;
 
       const existingTranslation = await storage.getTranslation(contentId, locale as any);
-      
+
       const translationData = {
         contentId,
         locale: locale as any,
@@ -373,7 +417,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
 
       res.json(translation);
     } catch (error) {
-      console.error("Error saving manual translation:", error);
       res.status(500).json({ error: "Failed to save translation" });
     }
   });

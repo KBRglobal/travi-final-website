@@ -9,9 +9,16 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  LayoutPanelTop, Plus, Trash2, GripVertical, Edit2, Save, Lightbulb, 
-  ExternalLink, Link as LinkIcon
+import {
+  LayoutPanelTop,
+  Plus,
+  Trash2,
+  GripVertical,
+  Edit2,
+  Save,
+  Lightbulb,
+  ExternalLink,
+  Link as LinkIcon,
 } from "lucide-react";
 import {
   Dialog,
@@ -49,7 +56,13 @@ export default function FooterManagerPage() {
   const [showAddLinkDialog, setShowAddLinkDialog] = useState(false);
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   const [newSection, setNewSection] = useState({ title: "", titleHe: "", slug: "" });
-  const [newLink, setNewLink] = useState({ label: "", labelHe: "", href: "", icon: "", openInNewTab: false });
+  const [newLink, setNewLink] = useState({
+    label: "",
+    labelHe: "",
+    href: "",
+    icon: "",
+    openInNewTab: false,
+  });
 
   const { data: sections, isLoading } = useQuery<FooterSection[]>({
     queryKey: ["/api/site-config/footer"],
@@ -78,7 +91,14 @@ export default function FooterManagerPage() {
   });
 
   const createLinkMutation = useMutation({
-    mutationFn: async (data: { sectionId: string; label: string; labelHe: string; href: string; icon: string; openInNewTab: boolean }) => {
+    mutationFn: async (data: {
+      sectionId: string;
+      label: string;
+      labelHe: string;
+      href: string;
+      icon: string;
+      openInNewTab: boolean;
+    }) => {
       return apiRequest("POST", "/api/site-config/footer/links", data);
     },
     onSuccess: () => {
@@ -123,7 +143,9 @@ export default function FooterManagerPage() {
       <div className="space-y-6 p-6">
         <Skeleton className="h-10 w-64" />
         <div className="grid gap-4 md:grid-cols-2">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-48" />)}
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-48" />
+          ))}
         </div>
       </div>
     );
@@ -139,19 +161,15 @@ export default function FooterManagerPage() {
         <p className="text-muted-foreground mt-1">
           Configure your website's footer sections and links
         </p>
-        
+
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            איך זה עובד / How It Works
+            How It Works
           </h3>
-          <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-            ניהול הפוטר מאפשר לך לארגן את הלינקים בתחתית האתר לפי קטגוריות. 
-            צור קטגוריות חדשות והוסף לינקים לכל קטגוריה.
-          </p>
           <p className="text-sm text-muted-foreground">
-            Footer management lets you organize links at the bottom of your site by category.
-            Create new sections and add links to each section.
+            Footer management lets you organize links at the bottom of your site by category. Create
+            new sections and add links to each section.
           </p>
         </div>
       </div>
@@ -163,7 +181,7 @@ export default function FooterManagerPage() {
         </Button>
       </div>
 
-      {(!sections || sections.length === 0) ? (
+      {!sections || sections.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <LayoutPanelTop className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
@@ -175,13 +193,15 @@ export default function FooterManagerPage() {
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {sections.map((section) => (
+          {sections.map(section => (
             <Card key={section.id}>
               <CardHeader className="flex flex-row items-center justify-between gap-2">
                 <div>
                   <CardTitle className="text-lg">{section.title}</CardTitle>
                   {section.titleHe && (
-                    <p className="text-sm text-muted-foreground" dir="rtl">{section.titleHe}</p>
+                    <p className="text-sm text-muted-foreground" dir="rtl">
+                      {section.titleHe}
+                    </p>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -214,38 +234,45 @@ export default function FooterManagerPage() {
                   </p>
                 ) : (
                   <div className="space-y-2">
-                    {section.links.sort((a, b) => a.sortOrder - b.sortOrder).map((link) => (
-                      <div
-                        key={link.id}
-                        className="flex items-center gap-3 p-2 border rounded hover-elevate"
-                      >
-                        <LinkIcon className="h-4 w-4 text-muted-foreground" />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium truncate">{link.label}</span>
-                            {link.openInNewTab && (
-                              <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                            )}
-                          </div>
-                          <span className="text-xs text-muted-foreground truncate block">{link.href}</span>
-                        </div>
-                        <Switch
-                          checked={link.isActive}
-                          onCheckedChange={(checked) => 
-                            updateLinkMutation.mutate({ id: link.id, data: { isActive: checked } })
-                          }
-                          data-testid={`switch-link-active-${link.id}`}
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteLinkMutation.mutate(link.id)}
-                          data-testid={`button-delete-link-${link.id}`}
+                    {section.links
+                      .sort((a, b) => a.sortOrder - b.sortOrder)
+                      .map(link => (
+                        <div
+                          key={link.id}
+                          className="flex items-center gap-3 p-2 border rounded hover-elevate"
                         >
-                          <Trash2 className="h-3 w-3 text-destructive" />
-                        </Button>
-                      </div>
-                    ))}
+                          <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium truncate">{link.label}</span>
+                              {link.openInNewTab && (
+                                <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                              )}
+                            </div>
+                            <span className="text-xs text-muted-foreground truncate block">
+                              {link.href}
+                            </span>
+                          </div>
+                          <Switch
+                            checked={link.isActive}
+                            onCheckedChange={checked =>
+                              updateLinkMutation.mutate({
+                                id: link.id,
+                                data: { isActive: checked },
+                              })
+                            }
+                            data-testid={`switch-link-active-${link.id}`}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteLinkMutation.mutate(link.id)}
+                            data-testid={`button-delete-link-${link.id}`}
+                          >
+                            <Trash2 className="h-3 w-3 text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
                   </div>
                 )}
               </CardContent>
@@ -266,16 +293,16 @@ export default function FooterManagerPage() {
                 <Input
                   placeholder="Explore"
                   value={newSection.title}
-                  onChange={(e) => setNewSection({ ...newSection, title: e.target.value })}
+                  onChange={e => setNewSection({ ...newSection, title: e.target.value })}
                   data-testid="input-section-title"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Title (Hebrew)</Label>
                 <Input
-                  placeholder="גלה"
+                  placeholder="Explore"
                   value={newSection.titleHe}
-                  onChange={(e) => setNewSection({ ...newSection, titleHe: e.target.value })}
+                  onChange={e => setNewSection({ ...newSection, titleHe: e.target.value })}
                   dir="rtl"
                   data-testid="input-section-title-he"
                 />
@@ -286,14 +313,25 @@ export default function FooterManagerPage() {
               <Input
                 placeholder="explore"
                 value={newSection.slug}
-                onChange={(e) => setNewSection({ ...newSection, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                onChange={e =>
+                  setNewSection({
+                    ...newSection,
+                    slug: e.target.value.toLowerCase().replace(/\s+/g, "-"),
+                  })
+                }
                 data-testid="input-section-slug"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddSectionDialog(false)}>Cancel</Button>
-            <Button onClick={handleAddSection} disabled={createSectionMutation.isPending} data-testid="button-save-section">
+            <Button variant="outline" onClick={() => setShowAddSectionDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddSection}
+              disabled={createSectionMutation.isPending}
+              data-testid="button-save-section"
+            >
               <Save className="h-4 w-4 mr-2" />
               Create Section
             </Button>
@@ -313,16 +351,16 @@ export default function FooterManagerPage() {
                 <Input
                   placeholder="Attractions"
                   value={newLink.label}
-                  onChange={(e) => setNewLink({ ...newLink, label: e.target.value })}
+                  onChange={e => setNewLink({ ...newLink, label: e.target.value })}
                   data-testid="input-link-label"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Label (Hebrew)</Label>
                 <Input
-                  placeholder="אטרקציות"
+                  placeholder="Attractions"
                   value={newLink.labelHe}
-                  onChange={(e) => setNewLink({ ...newLink, labelHe: e.target.value })}
+                  onChange={e => setNewLink({ ...newLink, labelHe: e.target.value })}
                   dir="rtl"
                   data-testid="input-link-label-he"
                 />
@@ -333,22 +371,28 @@ export default function FooterManagerPage() {
               <Input
                 placeholder="/attractions"
                 value={newLink.href}
-                onChange={(e) => setNewLink({ ...newLink, href: e.target.value })}
+                onChange={e => setNewLink({ ...newLink, href: e.target.value })}
                 data-testid="input-link-href"
               />
             </div>
             <div className="flex items-center gap-2">
               <Switch
                 checked={newLink.openInNewTab}
-                onCheckedChange={(checked) => setNewLink({ ...newLink, openInNewTab: checked })}
+                onCheckedChange={checked => setNewLink({ ...newLink, openInNewTab: checked })}
                 data-testid="switch-link-new-tab"
               />
               <Label>Open in new tab</Label>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddLinkDialog(false)}>Cancel</Button>
-            <Button onClick={handleAddLink} disabled={createLinkMutation.isPending} data-testid="button-save-link">
+            <Button variant="outline" onClick={() => setShowAddLinkDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddLink}
+              disabled={createLinkMutation.isPending}
+              data-testid="button-save-link"
+            >
               <Save className="h-4 w-4 mr-2" />
               Add Link
             </Button>

@@ -4,8 +4,8 @@
  * Stores and manages backlog items.
  */
 
-import { BacklogItem, BacklogItemStatus, BacklogSource, BacklogSummary } from './types';
-import { calculatePriorityScore, scoreAndRankItems } from './scorer';
+import { BacklogItem, BacklogItemStatus, BacklogSource, BacklogSummary } from "./types";
+import { calculatePriorityScore, scoreAndRankItems } from "./scorer";
 
 // In-memory store (would be DB in production)
 const backlogStore = new Map<string, BacklogItem>();
@@ -17,22 +17,19 @@ const dedupeIndex = new Map<string, string>(); // hash -> itemId
  * Generate deduplication hash.
  */
 function generateDedupeHash(item: Partial<BacklogItem>): string {
-  const source = item.source || '';
-  const title = (item.title || '').toLowerCase().trim();
-  const keywords = (item.suggestedKeywords || []).sort().join(',');
+  const source = item.source || "";
+  const title = (item.title || "").toLowerCase().trim();
+  const keywords = (item.suggestedKeywords || []).sort().join(",");
   return `${source}:${title}:${keywords}`;
 }
 
 /**
  * Create a new backlog item.
  */
-export async function createBacklogItem(
-  item: Partial<BacklogItem>
-): Promise<BacklogItem | null> {
+export async function createBacklogItem(item: Partial<BacklogItem>): Promise<BacklogItem | null> {
   // Check for duplicates
   const hash = generateDedupeHash(item);
   if (dedupeIndex.has(hash)) {
-    console.log(`[backlog] Duplicate item skipped: ${item.title}`);
     return null;
   }
 
@@ -41,12 +38,12 @@ export async function createBacklogItem(
 
   const backlogItem: BacklogItem = {
     id,
-    title: item.title || 'Untitled',
-    description: item.description || '',
-    source: item.source || 'zero_result_search',
+    title: item.title || "Untitled",
+    description: item.description || "",
+    source: item.source || "zero_result_search",
     sourceDetails: item.sourceDetails || {},
     priorityScore: item.priorityScore || calculatePriorityScore(item),
-    status: 'new',
+    status: "new",
     suggestedKeywords: item.suggestedKeywords || [],
     relatedEntityIds: item.relatedEntityIds || [],
     createdAt: now,
@@ -117,9 +114,7 @@ export async function getBacklogItems(
     items = items.filter(i => i.priorityScore >= minScore);
   }
 
-  return items
-    .sort((a, b) => b.priorityScore - a.priorityScore)
-    .slice(0, limit);
+  return items.sort((a, b) => b.priorityScore - a.priorityScore).slice(0, limit);
 }
 
 /**
@@ -142,14 +137,11 @@ export async function updateBacklogItemStatus(
 /**
  * Convert backlog item to draft content.
  */
-export async function convertToContent(
-  id: string,
-  contentId: string
-): Promise<BacklogItem | null> {
+export async function convertToContent(id: string, contentId: string): Promise<BacklogItem | null> {
   const item = backlogStore.get(id);
   if (!item) return null;
 
-  item.status = 'converted';
+  item.status = "converted";
   item.convertedContentId = contentId;
   item.updatedAt = new Date();
 
@@ -201,7 +193,7 @@ export async function getBacklogSummary(): Promise<BacklogSummary> {
   }
 
   const topItems = items
-    .filter(i => i.status === 'new' || i.status === 'approved')
+    .filter(i => i.status === "new" || i.status === "approved")
     .sort((a, b) => b.priorityScore - a.priorityScore)
     .slice(0, 10);
 
@@ -223,7 +215,7 @@ export async function cleanupOldItems(olderThanDays: number = 30): Promise<numbe
 
   for (const [id, item] of backlogStore) {
     if (
-      (item.status === 'converted' || item.status === 'rejected') &&
+      (item.status === "converted" || item.status === "rejected") &&
       item.updatedAt.getTime() < cutoff
     ) {
       await deleteBacklogItem(id);

@@ -5,7 +5,7 @@
  * Feature-flagged: ENABLE_TRAFFIC_INTELLIGENCE
  */
 
-import type { TrafficChannel, AIPlatform, TrafficAttribution } from '../types';
+import type { TrafficChannel, AIPlatform, TrafficAttribution } from "../types";
 
 interface AttributionKey {
   contentId: string;
@@ -37,25 +37,25 @@ const MAX_ENTRIES = 10000; // Bounded size
 function generateKey(key: AttributionKey): string {
   return [
     key.contentId,
-    key.entityId || '_',
+    key.entityId || "_",
     key.channel,
     key.source,
-    key.aiPlatform || '_',
+    key.aiPlatform || "_",
     key.date,
-  ].join('::');
+  ].join("::");
 }
 
 /**
  * Parse key back to AttributionKey
  */
 function parseKey(keyStr: string): AttributionKey {
-  const parts = keyStr.split('::');
+  const parts = keyStr.split("::");
   return {
     contentId: parts[0],
-    entityId: parts[1] === '_' ? undefined : parts[1],
+    entityId: parts[1] === "_" ? undefined : parts[1],
     channel: parts[2] as TrafficChannel,
     source: parts[3],
-    aiPlatform: parts[4] === '_' ? undefined : (parts[4] as AIPlatform),
+    aiPlatform: parts[4] === "_" ? undefined : (parts[4] as AIPlatform),
     date: parts[5],
   };
 }
@@ -64,7 +64,7 @@ function parseKey(keyStr: string): AttributionKey {
  * Get today's date string
  */
 function getDateString(date: Date = new Date()): string {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 
 /**
@@ -272,7 +272,6 @@ export class AttributionStore {
       this.counters.clear();
       return data.length;
     } catch (error) {
-      console.error('[TrafficAttribution] Flush failed:', error);
       throw error;
     }
   }
@@ -288,14 +287,9 @@ export class AttributionStore {
       try {
         const flushed = await this.flush();
         if (flushed > 0) {
-          console.log(`[TrafficAttribution] Flushed ${flushed} entries`);
         }
-      } catch (error) {
-        console.error('[TrafficAttribution] Flush error:', error);
-      }
+      } catch (error) {}
     }, FLUSH_INTERVAL_MS);
-
-    console.log('[TrafficAttribution] Store started');
   }
 
   /**
@@ -307,7 +301,6 @@ export class AttributionStore {
       this.flushTimer = null;
     }
     this.isRunning = false;
-    console.log('[TrafficAttribution] Store stopped');
   }
 
   /**

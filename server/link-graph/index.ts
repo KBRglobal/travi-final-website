@@ -5,7 +5,7 @@
  * Enable with: ENABLE_LINK_GRAPH=true
  */
 
-export * from './types';
+export * from "./types";
 export {
   buildGraph,
   getGraph,
@@ -17,14 +17,14 @@ export {
   getGraphAge,
   isGraphStale,
   invalidateNode,
-} from './graph-builder';
+} from "./graph-builder";
 export {
   calculatePageRank,
   calculateHITS,
   calculateCentralityScores,
   updateAuthorityScores,
   getGraphMetrics,
-} from './centrality';
+} from "./centrality";
 export {
   generateSuggestionsForContent,
   getSuggestions,
@@ -33,7 +33,7 @@ export {
   rejectSuggestion,
   clearSuggestions,
   findLinkOpportunities,
-} from './suggestions';
+} from "./suggestions";
 export {
   initializeLinkGraph,
   rebuildGraph,
@@ -44,16 +44,15 @@ export {
   getLinkGraphStatus,
   onContentChanged,
   forceRefreshContent,
-} from './persistence';
+} from "./persistence";
 
-import { initializeLinkGraph, shutdownLinkGraph } from './persistence';
+import { initializeLinkGraph, shutdownLinkGraph } from "./persistence";
 
 /**
  * Initialize link graph module
  */
 export function initLinkGraph(): void {
-  const enabled = process.env.ENABLE_LINK_GRAPH === 'true';
-  console.log(`[LinkGraph] Module initialized (enabled: ${enabled})`);
+  const enabled = process.env.ENABLE_LINK_GRAPH === "true";
 
   if (enabled) {
     initializeLinkGraph();
@@ -65,5 +64,4 @@ export function initLinkGraph(): void {
  */
 export function shutdownLinkGraphModule(): void {
   shutdownLinkGraph();
-  console.log('[LinkGraph] Module shutdown');
 }

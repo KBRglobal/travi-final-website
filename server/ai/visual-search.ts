@@ -1,6 +1,6 @@
 /**
  * Visual Search
- * 
+ *
  * Uses OpenAI Vision API to analyze images and find similar content
  * - Analyze image content
  * - Extract visual features
@@ -12,7 +12,9 @@ import { db } from "../db";
 import { contents } from "@shared/schema";
 import { like, or } from "drizzle-orm";
 
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 export interface ImageAnalysis {
   description: string;
@@ -96,16 +98,15 @@ Respond in JSON format.`,
       };
 
       return {
-        description: analysis.description || '',
+        description: analysis.description || "",
         keywords: analysis.keywords || [],
         landmarks: analysis.landmarks || [],
         colors: analysis.colors || [],
-        mood: analysis.mood || '',
-        contentType: analysis.contentType || 'unknown',
+        mood: analysis.mood || "",
+        contentType: analysis.contentType || "unknown",
         confidence: analysis.confidence || 0,
       };
     } catch (error) {
-      console.error("[Visual Search] Error analyzing image:", error);
       return null;
     }
   },
@@ -134,10 +135,7 @@ Respond in JSON format.`,
 
       // Search for matching content
       const conditions = searchTerms.map(term =>
-        or(
-          like(contents.title, `%${term}%`),
-          like(contents.metaDescription, `%${term}%`)
-        )
+        or(like(contents.title, `%${term}%`), like(contents.metaDescription, `%${term}%`))
       );
 
       const matchingContent = await db
@@ -153,8 +151,8 @@ Respond in JSON format.`,
           let matchReasons: string[] = [];
 
           // Score based on keyword matches
-          const contentText = (content.title + ' ' + content.metaDescription).toLowerCase();
-          
+          const contentText = (content.title + " " + content.metaDescription).toLowerCase();
+
           searchTerms.forEach(term => {
             if (contentText.includes(term.toLowerCase())) {
               score += 10;
@@ -177,9 +175,9 @@ Respond in JSON format.`,
           return {
             contentId: content.id,
             title: content.title,
-            imageUrl: content.heroImage || '',
+            imageUrl: content.heroImage || "",
             relevanceScore: score,
-            matchReason: matchReasons.slice(0, 3).join(', '),
+            matchReason: matchReasons.slice(0, 3).join(", "),
           };
         })
         .filter(result => result.relevanceScore > 0)
@@ -188,7 +186,6 @@ Respond in JSON format.`,
 
       return results;
     } catch (error) {
-      console.error("[Visual Search] Error searching by image:", error);
       return [];
     }
   },
@@ -205,10 +202,7 @@ Respond in JSON format.`,
       }
 
       // Get all content with images
-      const allContent = await db
-        .select()
-        .from(contents)
-        .limit(100); // Limit for performance
+      const allContent = await db.select().from(contents).limit(100); // Limit for performance
 
       const results: VisualSearchResult[] = [];
 
@@ -223,9 +217,7 @@ Respond in JSON format.`,
         let score = 0;
 
         // Compare keywords
-        const commonKeywords = analysis.keywords.filter(k =>
-          contentAnalysis.keywords.includes(k)
-        );
+        const commonKeywords = analysis.keywords.filter(k => contentAnalysis.keywords.includes(k));
         score += commonKeywords.length * 10;
 
         // Compare landmarks
@@ -245,9 +237,7 @@ Respond in JSON format.`,
         }
 
         // Compare colors
-        const commonColors = analysis.colors.filter(c =>
-          contentAnalysis.colors.includes(c)
-        );
+        const commonColors = analysis.colors.filter(c => contentAnalysis.colors.includes(c));
         score += commonColors.length * 5;
 
         if (score > 0) {
@@ -262,11 +252,8 @@ Respond in JSON format.`,
       }
 
       // Sort by relevance and return top results
-      return results
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
-        .slice(0, limit);
+      return results.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, limit);
     } catch (error) {
-      console.error("[Visual Search] Error finding similar images:", error);
       return [];
     }
   },

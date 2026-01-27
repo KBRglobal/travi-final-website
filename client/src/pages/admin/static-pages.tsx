@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  FileText, Plus, Trash2, Edit2, Lightbulb, Eye, Globe
-} from "lucide-react";
+import { FileText, Plus, Trash2, Edit2, Lightbulb, Eye, Globe } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -68,7 +66,9 @@ export default function StaticPagesPage() {
       <div className="space-y-6 p-6">
         <Skeleton className="h-10 w-64" />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-32" />)}
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
         </div>
       </div>
     );
@@ -84,31 +84,30 @@ export default function StaticPagesPage() {
         <p className="text-muted-foreground mt-1">
           Manage static pages like Terms of Service, Privacy Policy, About, and Contact
         </p>
-        
+
         <div className="mt-4 p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
-            איך זה עובד / How It Works
+            How It Works
           </h3>
-          <p className="text-sm text-muted-foreground mb-2" dir="rtl">
-            דפים סטטיים הם דפי מידע קבועים כמו תנאי שימוש, מדיניות פרטיות, אודות ויצירת קשר.
-            ניתן לערוך את התוכן בעברית ובאנגלית ולקבוע אם הדף יופיע בפוטר.
-          </p>
           <p className="text-sm text-muted-foreground">
-            Static pages are fixed information pages like Terms of Service, Privacy Policy, About, and Contact.
-            You can edit contents in both Hebrew and English and choose whether to show them in the footer.
+            Static pages are fixed information pages like Terms of Service, Privacy Policy, About,
+            and Contact. You can edit contents and choose whether to show them in the footer.
           </p>
         </div>
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={() => navigate("/admin/static-pages/new")} data-testid="button-create-page">
+        <Button
+          onClick={() => navigate("/admin/static-pages/new")}
+          data-testid="button-create-page"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Create Page
         </Button>
       </div>
 
-      {(!pages || pages.length === 0) ? (
+      {!pages || pages.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
@@ -120,7 +119,7 @@ export default function StaticPagesPage() {
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {pages.map((page) => (
+          {pages.map(page => (
             <Card key={page.id} className="hover-elevate">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
@@ -134,7 +133,9 @@ export default function StaticPagesPage() {
                   </div>
                 </div>
                 {page.titleHe && (
-                  <p className="text-sm text-muted-foreground" dir="rtl">{page.titleHe}</p>
+                  <p className="text-sm text-muted-foreground" dir="rtl">
+                    {page.titleHe}
+                  </p>
                 )}
               </CardHeader>
               <CardContent>
@@ -144,9 +145,7 @@ export default function StaticPagesPage() {
                     <span>/{page.slug}</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {page.showInFooter && (
-                      <Badge variant="outline">Shows in footer</Badge>
-                    )}
+                    {page.showInFooter && <Badge variant="outline">Shows in footer</Badge>}
                     {page.blocks && page.blocks.length > 0 && (
                       <Badge variant="outline">{page.blocks.length} blocks</Badge>
                     )}
@@ -161,11 +160,7 @@ export default function StaticPagesPage() {
                       <Edit2 className="h-4 w-4 mr-1" />
                       Edit
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                    >
+                    <Button variant="ghost" size="sm" asChild>
                       <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
                         <Eye className="h-4 w-4 mr-1" />
                         Preview

@@ -55,7 +55,7 @@ export async function getApprovalStats(): Promise<{
 export async function getRequestsByStatus(
   status: ApprovalStatus,
   limit: number = 50
-): Promise<typeof approvalRequests.$inferSelect[]> {
+): Promise<(typeof approvalRequests.$inferSelect)[]> {
   if (!isEnabled()) return [];
 
   return db
@@ -72,7 +72,7 @@ export async function getRequestsByStatus(
 export async function getRequestsForResource(
   resourceType: string,
   resourceId: string
-): Promise<typeof approvalRequests.$inferSelect[]> {
+): Promise<(typeof approvalRequests.$inferSelect)[]> {
   if (!isEnabled()) return [];
 
   return db
@@ -93,7 +93,7 @@ export async function getRequestsForResource(
 export async function getRequestsByRequester(
   requesterId: string,
   limit: number = 50
-): Promise<typeof approvalRequests.$inferSelect[]> {
+): Promise<(typeof approvalRequests.$inferSelect)[]> {
   if (!isEnabled()) return [];
 
   return db
@@ -107,9 +107,7 @@ export async function getRequestsByRequester(
 /**
  * Get expired requests that need auto-processing
  */
-export async function getExpiredRequests(): Promise<
-  typeof approvalRequests.$inferSelect[]
-> {
+export async function getExpiredRequests(): Promise<(typeof approvalRequests.$inferSelect)[]> {
   if (!isEnabled()) return [];
 
   const now = new Date();
@@ -117,20 +115,13 @@ export async function getExpiredRequests(): Promise<
   return db
     .select()
     .from(approvalRequests)
-    .where(
-      and(
-        eq(approvalRequests.status, "pending"),
-        lte(approvalRequests.expiresAt, now)
-      )
-    );
+    .where(and(eq(approvalRequests.status, "pending"), lte(approvalRequests.expiresAt, now)));
 }
 
 /**
  * Get steps ready for auto-approval
  */
-export async function getAutoApproveSteps(): Promise<
-  typeof approvalSteps.$inferSelect[]
-> {
+export async function getAutoApproveSteps(): Promise<(typeof approvalSteps.$inferSelect)[]> {
   if (!isEnabled()) return [];
 
   const now = new Date();
@@ -138,12 +129,7 @@ export async function getAutoApproveSteps(): Promise<
   return db
     .select()
     .from(approvalSteps)
-    .where(
-      and(
-        eq(approvalSteps.status, "pending"),
-        lte(approvalSteps.autoApproveAt, now)
-      )
-    );
+    .where(and(eq(approvalSteps.status, "pending"), lte(approvalSteps.autoApproveAt, now)));
 }
 
 /**
@@ -182,14 +168,8 @@ export async function escalateRequest(requestId: string): Promise<void> {
  */
 export async function getRecentActivity(
   limit: number = 20
-): Promise<typeof approvalRequests.$inferSelect[]> {
+): Promise<(typeof approvalRequests.$inferSelect)[]> {
   if (!isEnabled()) return [];
 
-  return db
-    .select()
-    .from(approvalRequests)
-    .orderBy(desc(approvalRequests.updatedAt))
-    .limit(limit);
+  return db.select().from(approvalRequests).orderBy(desc(approvalRequests.updatedAt)).limit(limit);
 }
-
-console.log("[Approvals] Repository loaded");

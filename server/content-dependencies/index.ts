@@ -76,10 +76,7 @@ export async function removeDependency(sourceId: string, targetId: string): Prom
   await db
     .delete(contentDependencies)
     .where(
-      and(
-        eq(contentDependencies.sourceId, sourceId),
-        eq(contentDependencies.targetId, targetId)
-      )
+      and(eq(contentDependencies.sourceId, sourceId), eq(contentDependencies.targetId, targetId))
     );
 
   dependencyCache.delete(`deps:${sourceId}`);
@@ -108,7 +105,7 @@ export async function getDependencies(contentId: string): Promise<DependencyNode
       .leftJoin(contents, eq(contentDependencies.targetId, contents.id))
       .where(eq(contentDependencies.sourceId, contentId));
 
-    return deps.map((d) => ({
+    return deps.map(d => ({
       contentId: d.contentId,
       title: d.title || undefined,
       type: d.type || undefined,
@@ -129,10 +126,10 @@ export async function getDependencies(contentId: string): Promise<DependencyNode
     .leftJoin(contents, eq(contentDependencies.targetId, contents.id))
     .where(eq(contentDependencies.sourceId, contentId));
 
-  dependencyCache.set(cacheKey, { deps: deps.map((d) => d.contentId), ts: Date.now() });
+  dependencyCache.set(cacheKey, { deps: deps.map(d => d.contentId), ts: Date.now() });
   pruneCache();
 
-  return deps.map((d) => ({
+  return deps.map(d => ({
     contentId: d.contentId,
     title: d.title || undefined,
     type: d.type || undefined,
@@ -159,7 +156,7 @@ export async function getDependents(contentId: string): Promise<DependencyNode[]
     .leftJoin(contents, eq(contentDependencies.sourceId, contents.id))
     .where(eq(contentDependencies.targetId, contentId));
 
-  return deps.map((d) => ({
+  return deps.map(d => ({
     contentId: d.contentId,
     title: d.title || undefined,
     type: d.type || undefined,
@@ -172,7 +169,10 @@ export async function getDependents(contentId: string): Promise<DependencyNode[]
  * Analyze cascading impact when a content piece changes
  * Uses BFS to traverse the dependency graph
  */
-export async function analyzeImpact(contentId: string, maxDepth: number = 3): Promise<ImpactAnalysis> {
+export async function analyzeImpact(
+  contentId: string,
+  maxDepth: number = 3
+): Promise<ImpactAnalysis> {
   if (!isEnabled()) {
     return { contentId, directDependents: [], cascadingImpact: [], totalImpacted: 0 };
   }
@@ -182,7 +182,7 @@ export async function analyzeImpact(contentId: string, maxDepth: number = 3): Pr
   const cascading: DependencyNode[] = [];
 
   // BFS for cascading impact
-  let currentLevel = directDependents.map((d) => d.contentId);
+  let currentLevel = directDependents.map(d => d.contentId);
   let depth = 1;
 
   while (currentLevel.length > 0 && depth < maxDepth) {
@@ -226,5 +226,3 @@ export async function detectDependenciesFromLinks(
     await addDependency(contentId, targetId, "links", 1);
   }
 }
-
-console.log("[ContentDependencies] Module loaded");

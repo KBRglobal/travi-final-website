@@ -1,31 +1,31 @@
 /**
  * Key Rotation System
- * 
+ *
  * Implements secure key rotation for:
  * - Session secrets
  * - JWT tokens
  * - API keys
- * 
+ *
  * Best Practices:
  * - Keys are rotated on schedule (configurable)
  * - Old keys remain valid for grace period
  * - Automatic alerts when rotation is due
  */
 
-import crypto from 'crypto';
+import crypto from "crypto";
 
 /**
  * Key Rotation Configuration
  */
 export const KEY_ROTATION_CONFIG = {
   // Rotation intervals (in days)
-  sessionSecret: 30,   // Rotate every 30 days
-  jwtSecret: 90,       // Rotate every 90 days
-  apiKeys: 180,        // Rotate every 180 days
-  
+  sessionSecret: 30, // Rotate every 30 days
+  jwtSecret: 90, // Rotate every 90 days
+  apiKeys: 180, // Rotate every 180 days
+
   // Grace period (in days) - old keys still valid
   gracePeriod: 7,
-  
+
   // Alert threshold (in days before expiry)
   alertThreshold: 7,
 };
@@ -38,7 +38,7 @@ interface KeyMetadata {
   createdAt: Date;
   expiresAt: Date;
   rotatedAt?: Date;
-  keyType: 'session' | 'jwt' | 'api';
+  keyType: "session" | "jwt" | "api";
   isActive: boolean;
 }
 
@@ -49,7 +49,7 @@ const keyRegistry = new Map<string, KeyMetadata>();
  * Generate a secure random key
  */
 export function generateSecureKey(length: number = 64): string {
-  return crypto.randomBytes(length).toString('base64url');
+  return crypto.randomBytes(length).toString("base64url");
 }
 
 /**
@@ -57,12 +57,12 @@ export function generateSecureKey(length: number = 64): string {
  */
 export function registerKey(
   keyId: string,
-  keyType: KeyMetadata['keyType'],
+  keyType: KeyMetadata["keyType"],
   rotationDays: number = KEY_ROTATION_CONFIG.sessionSecret
 ): KeyMetadata {
   const now = new Date();
   const expiresAt = new Date(now.getTime() + rotationDays * 24 * 60 * 60 * 1000);
-  
+
   const metadata: KeyMetadata = {
     keyId,
     createdAt: now,
@@ -70,10 +70,9 @@ export function registerKey(
     keyType,
     isActive: true,
   };
-  
+
   keyRegistry.set(keyId, metadata);
-  console.log(`[KeyRotation] Registered key ${keyId} (type: ${keyType}, expires: ${expiresAt.toISOString()})`);
-  
+
   return metadata;
 }
 
@@ -82,14 +81,16 @@ export function registerKey(
  */
 export function needsRotation(keyId: string): { needsRotation: boolean; daysRemaining: number } {
   const metadata = keyRegistry.get(keyId);
-  
+
   if (!metadata) {
     return { needsRotation: true, daysRemaining: 0 };
   }
-  
+
   const now = new Date();
-  const daysRemaining = Math.ceil((metadata.expiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000));
-  
+  const daysRemaining = Math.ceil(
+    (metadata.expiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)
+  );
+
   return {
     needsRotation: daysRemaining <= 0,
     daysRemaining: Math.max(0, daysRemaining),
@@ -112,7 +113,6 @@ export function markRotated(keyId: string): void {
   if (metadata) {
     metadata.rotatedAt = new Date();
     metadata.isActive = false;
-    console.log(`[KeyRotation] Key ${keyId} marked as rotated`);
   }
 }
 
@@ -121,7 +121,7 @@ export function markRotated(keyId: string): void {
  */
 export function getKeysNeedingRotation(): KeyMetadata[] {
   const keysToRotate: KeyMetadata[] = [];
-  
+
   keyRegistry.forEach((metadata, keyId) => {
     if (metadata.isActive) {
       const { needsRotation: needs, daysRemaining } = needsRotation(keyId);
@@ -133,7 +133,7 @@ export function getKeysNeedingRotation(): KeyMetadata[] {
       }
     }
   });
-  
+
   return keysToRotate;
 }
 
@@ -149,35 +149,35 @@ export function getRotationStatus(): {
     keyId: string;
     keyType: string;
     daysRemaining: number;
-    status: 'ok' | 'alert' | 'expired';
+    status: "ok" | "alert" | "expired";
   }>;
 } {
   const details: Array<{
     keyId: string;
     keyType: string;
     daysRemaining: number;
-    status: 'ok' | 'alert' | 'expired';
+    status: "ok" | "alert" | "expired";
   }> = [];
-  
+
   let activeKeys = 0;
   let keysNeedingRotation = 0;
   let keysWithAlerts = 0;
-  
+
   keyRegistry.forEach((metadata, keyId) => {
     if (metadata.isActive) {
       activeKeys++;
       const { needsRotation: needs, daysRemaining } = needsRotation(keyId);
       const alert = shouldAlert(keyId);
-      
-      let status: 'ok' | 'alert' | 'expired' = 'ok';
+
+      let status: "ok" | "alert" | "expired" = "ok";
       if (needs) {
-        status = 'expired';
+        status = "expired";
         keysNeedingRotation++;
       } else if (alert) {
-        status = 'alert';
+        status = "alert";
         keysWithAlerts++;
       }
-      
+
       details.push({
         keyId,
         keyType: metadata.keyType,
@@ -186,7 +186,7 @@ export function getRotationStatus(): {
       });
     }
   });
-  
+
   return {
     totalKeys: keyRegistry.size,
     activeKeys,
@@ -198,11 +198,11 @@ export function getRotationStatus(): {
 
 /**
  * Session secret rotation helper
- * 
+ *
  * For Express session, you can use an array of secrets:
  * - First secret is used for signing new sessions
  * - All secrets are valid for verifying existing sessions
- * 
+ *
  * Example usage:
  * ```
  * const secrets = getSessionSecrets();
@@ -215,15 +215,15 @@ export function initializeSessionSecrets(): string[] {
   // Load from environment or generate new
   const primarySecret = process.env.SESSION_SECRET || generateSecureKey(64);
   const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
-  
+
   sessionSecrets = [primarySecret];
   if (previousSecret) {
     sessionSecrets.push(previousSecret);
   }
-  
+
   // Register for rotation tracking
-  registerKey('session-primary', 'session', KEY_ROTATION_CONFIG.sessionSecret);
-  
+  registerKey("session-primary", "session", KEY_ROTATION_CONFIG.sessionSecret);
+
   return sessionSecrets;
 }
 
@@ -245,14 +245,12 @@ export function rotateSessionSecret(newSecret: string): void {
   } else {
     sessionSecrets = [newSecret];
   }
-  
+
   // Mark old key as rotated
-  markRotated('session-primary');
-  
+  markRotated("session-primary");
+
   // Register new key
-  registerKey('session-primary', 'session', KEY_ROTATION_CONFIG.sessionSecret);
-  
-  console.log('[KeyRotation] Session secret rotated successfully');
+  registerKey("session-primary", "session", KEY_ROTATION_CONFIG.sessionSecret);
 }
 
 /**
@@ -260,20 +258,16 @@ export function rotateSessionSecret(newSecret: string): void {
  */
 export function logRotationStatus(): void {
   const status = getRotationStatus();
-  
+
   if (status.keysNeedingRotation > 0) {
-    console.warn(`[KeyRotation] WARNING: ${status.keysNeedingRotation} keys need immediate rotation!`);
   }
-  
+
   if (status.keysWithAlerts > 0) {
-    console.warn(`[KeyRotation] ALERT: ${status.keysWithAlerts} keys will expire soon`);
   }
-  
+
   status.details.forEach(detail => {
-    if (detail.status === 'expired') {
-      console.error(`[KeyRotation] EXPIRED: ${detail.keyId} (${detail.keyType})`);
-    } else if (detail.status === 'alert') {
-      console.warn(`[KeyRotation] EXPIRING SOON: ${detail.keyId} (${detail.keyType}) - ${detail.daysRemaining} days remaining`);
+    if (detail.status === "expired") {
+    } else if (detail.status === "alert") {
     }
   });
 }

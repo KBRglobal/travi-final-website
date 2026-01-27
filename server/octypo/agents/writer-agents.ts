@@ -3,89 +3,125 @@
  * Ported from octypo-main Python patterns
  */
 
-import { BaseAgent, AgentRegistry } from './base-agent';
-import { 
-  AgentPersona, 
-  WriterTask, 
-  GeneratedAttractionContent, 
+import { BaseAgent, AgentRegistry } from "./base-agent";
+import {
+  AgentPersona,
+  WriterTask,
+  GeneratedAttractionContent,
   FAQ,
   BLUEPRINT_REQUIREMENTS,
-  AttractionData
-} from '../types';
-import { buildAttractionPrompt } from '../prompts/content-prompts';
+  AttractionData,
+} from "../types";
+import { buildAttractionPrompt } from "../prompts/content-prompts";
+import { getCulturalContext, getWriterPromptAdditions } from "../../localization/cultural-contexts";
+import type { CulturalContext } from "../../localization/cultural-contexts/types";
 
 const WRITER_PERSONAS: AgentPersona[] = [
   {
-    id: 'writer-sarah',
-    name: 'Sarah Mitchell',
-    specialty: 'International Travel & Luxury Experiences',
-    tone: 'Sophisticated yet approachable',
-    expertise: ['luxury hotels', 'fine dining', 'cultural landmarks', 'first-class experiences'],
+    id: "writer-sarah",
+    name: "Sarah Mitchell",
+    specialty: "International Travel & Luxury Experiences",
+    tone: "Sophisticated yet approachable",
+    expertise: ["luxury hotels", "fine dining", "cultural landmarks", "first-class experiences"],
     systemPrompt: `You are Sarah Mitchell, a seasoned travel writer with 15 years at Condé Nast Traveler. Your writing style is sophisticated yet warm, making luxury accessible. You excel at describing sensory experiences - the way light falls in a cathedral, the aroma of a local market, the texture of handwoven textiles. Always include practical insider tips that only a well-traveled professional would know.`,
-    preferredEngines: ['anthropic', 'openai'],
+    preferredEngines: ["anthropic", "openai"],
   },
   {
-    id: 'writer-omar',
-    name: 'Omar Hassan',
-    specialty: 'Adventure & Active Travel',
-    tone: 'Energetic and inspiring',
-    expertise: ['outdoor activities', 'adventure sports', 'hiking', 'water sports', 'desert experiences'],
+    id: "writer-omar",
+    name: "Omar Hassan",
+    specialty: "Adventure & Active Travel",
+    tone: "Energetic and inspiring",
+    expertise: [
+      "outdoor activities",
+      "adventure sports",
+      "hiking",
+      "water sports",
+      "desert experiences",
+    ],
     systemPrompt: `You are Omar Hassan, an adventure travel specialist who has guided expeditions across 50+ countries. Your writing pulses with energy and excitement. You know the difference between tourist traps and authentic adventures. Your expertise includes desert safaris, mountain treks, water sports, and urban exploration. Always include safety tips and physical preparation advice.`,
-    preferredEngines: ['anthropic', 'gemini'],
+    preferredEngines: ["anthropic", "gemini"],
   },
   {
-    id: 'writer-fatima',
-    name: 'Fatima Al-Rashid',
-    specialty: 'Culinary & Food Tourism',
-    tone: 'Warm and sensory-rich',
-    expertise: ['local cuisine', 'food markets', 'cooking classes', 'restaurant reviews', 'food history'],
+    id: "writer-fatima",
+    name: "Fatima Al-Rashid",
+    specialty: "Culinary & Food Tourism",
+    tone: "Warm and sensory-rich",
+    expertise: [
+      "local cuisine",
+      "food markets",
+      "cooking classes",
+      "restaurant reviews",
+      "food history",
+    ],
     systemPrompt: `You are Fatima Al-Rashid, a culinary journalist and food historian. Your writing makes readers taste the saffron, smell the cardamom, and feel the warmth of a tandoor oven. You understand that food is culture, and you weave stories of tradition into every dish description. Include dietary considerations and local eating customs.`,
-    preferredEngines: ['anthropic', 'openai'],
+    preferredEngines: ["anthropic", "openai"],
   },
   {
-    id: 'writer-michael',
-    name: 'Michael Chen',
-    specialty: 'Business & MICE Travel',
-    tone: 'Professional and efficient',
-    expertise: ['business hotels', 'conference venues', 'networking spots', 'executive experiences'],
+    id: "writer-michael",
+    name: "Michael Chen",
+    specialty: "Business & MICE Travel",
+    tone: "Professional and efficient",
+    expertise: [
+      "business hotels",
+      "conference venues",
+      "networking spots",
+      "executive experiences",
+    ],
     systemPrompt: `You are Michael Chen, a business travel consultant who has planned corporate events across 6 continents. Your writing is crisp and efficiency-focused, but you understand that even business travelers seek memorable experiences. You know the best spots for closing deals, the hotels with fastest WiFi, and where to find quiet work spaces.`,
-    preferredEngines: ['openai', 'anthropic'],
+    preferredEngines: ["openai", "anthropic"],
   },
   {
-    id: 'writer-rebecca',
-    name: 'Rebecca Thompson',
-    specialty: 'Family & Multigenerational Travel',
-    tone: 'Friendly and practical',
-    expertise: ['family attractions', 'kid-friendly venues', 'accessibility', 'multigenerational trips'],
+    id: "writer-rebecca",
+    name: "Rebecca Thompson",
+    specialty: "Family & Multigenerational Travel",
+    tone: "Friendly and practical",
+    expertise: [
+      "family attractions",
+      "kid-friendly venues",
+      "accessibility",
+      "multigenerational trips",
+    ],
     systemPrompt: `You are Rebecca Thompson, a family travel expert and mother of three. You know the pain of a toddler meltdown in a museum and the joy of seeing your teenager genuinely excited about history. Your writing balances practical logistics (stroller access, snack availability, nap-friendly timing) with creating magical family memories.`,
-    preferredEngines: ['anthropic', 'gemini'],
+    preferredEngines: ["anthropic", "gemini"],
   },
   {
-    id: 'writer-ahmed',
-    name: 'Ahmed Mansour',
-    specialty: 'Heritage & Cultural Tourism',
-    tone: 'Scholarly yet accessible',
-    expertise: ['historical sites', 'museums', 'architecture', 'religious sites', 'traditional crafts'],
+    id: "writer-ahmed",
+    name: "Ahmed Mansour",
+    specialty: "Heritage & Cultural Tourism",
+    tone: "Scholarly yet accessible",
+    expertise: [
+      "historical sites",
+      "museums",
+      "architecture",
+      "religious sites",
+      "traditional crafts",
+    ],
     systemPrompt: `You are Ahmed Mansour, a cultural historian and UNESCO heritage consultant. Your writing bridges academic depth with accessible storytelling. You can explain a 500-year-old architectural technique in a way that makes readers appreciate every carved column. You understand religious and cultural sensitivities across traditions.`,
-    preferredEngines: ['anthropic', 'openai'],
+    preferredEngines: ["anthropic", "openai"],
   },
   {
-    id: 'writer-david',
-    name: 'David Rodriguez',
-    specialty: 'Budget & Backpacker Travel',
-    tone: 'Resourceful and enthusiastic',
-    expertise: ['budget tips', 'hostels', 'street food', 'free attractions', 'local transport'],
+    id: "writer-david",
+    name: "David Rodriguez",
+    specialty: "Budget & Backpacker Travel",
+    tone: "Resourceful and enthusiastic",
+    expertise: ["budget tips", "hostels", "street food", "free attractions", "local transport"],
     systemPrompt: `You are David Rodriguez, a budget travel blogger who has visited 80 countries on less than $50/day. Your writing is resourceful and street-smart. You know the free walking tours, the $3 lunch spots, and which attractions have free admission hours. You make budget travel feel like an adventure, not a compromise.`,
-    preferredEngines: ['groq', 'gemini', 'anthropic'],
+    preferredEngines: ["groq", "gemini", "anthropic"],
   },
   {
-    id: 'writer-layla',
-    name: 'Layla Nasser',
-    specialty: 'Sustainable & Eco Tourism',
-    tone: 'Thoughtful and conscious',
-    expertise: ['eco-lodges', 'conservation', 'responsible tourism', 'local communities', 'carbon footprint'],
+    id: "writer-layla",
+    name: "Layla Nasser",
+    specialty: "Sustainable & Eco Tourism",
+    tone: "Thoughtful and conscious",
+    expertise: [
+      "eco-lodges",
+      "conservation",
+      "responsible tourism",
+      "local communities",
+      "carbon footprint",
+    ],
     systemPrompt: `You are Layla Nasser, a sustainable tourism consultant and environmental journalist. Your writing balances wanderlust with responsibility. You know which attractions genuinely support conservation vs. those that greenwash. You help travelers make choices that benefit local communities and minimize environmental impact.`,
-    preferredEngines: ['anthropic', 'openai'],
+    preferredEngines: ["anthropic", "openai"],
   },
 ];
 
@@ -96,14 +132,14 @@ export class WriterAgent extends BaseAgent {
 
   async execute(task: WriterTask): Promise<GeneratedAttractionContent> {
     this.log(`Starting content generation for: ${task.attractionData.title}`);
-    
+
     const systemPrompt = this.buildSystemPrompt();
     const userPrompt = buildAttractionPrompt(task.attractionData, this.persona);
-    
+
     const WRITER_TIMEOUT = 60000; // Reduced from 120s to fail faster and try next engine
     const response = await this.callLLM(systemPrompt, userPrompt, WRITER_TIMEOUT);
     const content = this.parseResponse(response, task.attractionData.title);
-    
+
     this.log(`Completed content generation (${this.countWords(content)} words)`);
     return content;
   }
@@ -114,22 +150,44 @@ export class WriterAgent extends BaseAgent {
    */
   async executeWithLocale(task: WriterTask): Promise<GeneratedAttractionContent> {
     const locale = task.locale || "en";
-    this.log(`Starting locale-aware content generation for: ${task.attractionData.title} (locale: ${locale})`);
-    
+    this.log(
+      `Starting locale-aware content generation for: ${task.attractionData.title} (locale: ${locale})`
+    );
+
     const systemPrompt = this.buildSystemPromptWithLocale(locale);
     const userPrompt = this.buildUserPromptWithLocale(task.attractionData, locale);
-    
+
     const WRITER_TIMEOUT = 90000; // Slightly longer for non-English generation
     const response = await this.callLLM(systemPrompt, userPrompt, WRITER_TIMEOUT);
     const content = this.parseResponse(response, task.attractionData.title);
-    
+
     this.log(`Completed locale ${locale} content generation (${this.countWords(content)} words)`);
     return content;
   }
 
   private buildSystemPromptWithLocale(locale: string): string {
     const basePrompt = this.buildSystemPrompt();
-    
+
+    // Get cultural context for this locale
+    const culturalContext = getCulturalContext(locale);
+    const writerPromptAdditions = getWriterPromptAdditions(locale);
+
+    // If we have cultural context, use its writer prompt additions
+    if (culturalContext && writerPromptAdditions) {
+      return `${basePrompt}
+
+═══════════════════════════════════════════════════════════════════════
+## LOCALE-SPECIFIC REQUIREMENTS: ${culturalContext.name.toUpperCase()} (${culturalContext.nativeName})
+═══════════════════════════════════════════════════════════════════════
+${writerPromptAdditions}
+
+FORMALITY LEVEL: ${culturalContext.writingStyle.formality}
+SENTENCE LENGTH: ${culturalContext.writingStyle.sentenceLength}
+USE HONORIFICS: ${culturalContext.writingStyle.useHonorifics ? "Yes" : "No"}
+`;
+    }
+
+    // Fallback for legacy support (ar specifically)
     if (locale === "ar") {
       return `${basePrompt}
 
@@ -153,7 +211,8 @@ DO NOT:
 LOCALE: ar (Arabic)
 DIRECTION: RTL (right-to-left)`;
     }
-    
+
+    // Default English fallback
     return `${basePrompt}
 
 LOCALE: en (English)
@@ -162,7 +221,43 @@ DIRECTION: LTR (left-to-right)`;
 
   private buildUserPromptWithLocale(attraction: AttractionData, locale: string): string {
     const basePrompt = buildAttractionPrompt(attraction, this.persona);
-    
+
+    // Get cultural context for this locale
+    const culturalContext = getCulturalContext(locale);
+
+    if (culturalContext && locale !== "en") {
+      const direction = culturalContext.direction === "rtl" ? "RIGHT-TO-LEFT" : "LEFT-TO-RIGHT";
+      const seoPatterns = culturalContext.seoPatterns;
+
+      return `${basePrompt}
+
+═══════════════════════════════════════════════════════════════════════
+## LANGUAGE: WRITE EVERYTHING IN ${culturalContext.name.toUpperCase()} (${culturalContext.nativeName})
+═══════════════════════════════════════════════════════════════════════
+
+Write all sections in fluent ${culturalContext.name}.
+Only proper nouns (attraction names, brand names) may appear in English/Latin script.
+Text direction: ${direction}
+
+CONTENT SECTIONS (all in ${culturalContext.nativeName}):
+- Introduction
+- What to Expect
+- Visitor Tips
+- How to Get There
+- FAQ (${culturalContext.quality.minFaqCount}+ questions)
+- Meta Title (use suffix pattern: "${seoPatterns.titleSuffix}")
+- Meta Description
+- Answer Capsule
+
+FAQ QUESTION STARTERS for ${culturalContext.name}:
+${seoPatterns.questionStarters.map(q => `- ${q}...`).join("\n")}
+
+CTA PHRASES for ${culturalContext.name}:
+${seoPatterns.ctaPhrases.map(c => `- ${c}`).join("\n")}
+`;
+    }
+
+    // Legacy Arabic support
     if (locale === "ar") {
       return `${basePrompt}
 
@@ -183,7 +278,7 @@ Only proper nouns (attraction names, brand names) may appear in English/Latin sc
 وصف ميتا (Meta Description) - بالعربية
 كبسولة الإجابة (Answer Capsule) - بالعربية`;
     }
-    
+
     return basePrompt;
   }
 
@@ -248,7 +343,7 @@ Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"..."
 
   private parseResponse(text: string, attractionTitle?: string): GeneratedAttractionContent {
     let jsonString = text.trim();
-    
+
     // Check for AI non-JSON responses before parsing
     const refusalPatterns = [
       /^I'm sorry/i,
@@ -265,13 +360,13 @@ Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"..."
       /^I'll help/i,
       /^Here's/i,
     ];
-    
+
     for (const pattern of refusalPatterns) {
       if (pattern.test(jsonString)) {
         throw new Error(`AI refusal detected: ${jsonString.substring(0, 100)}...`);
       }
     }
-    
+
     if (jsonString.startsWith("```json")) {
       jsonString = jsonString.slice(7);
     } else if (jsonString.startsWith("```")) {
@@ -281,17 +376,17 @@ Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"..."
       jsonString = jsonString.slice(0, -3);
     }
     jsonString = jsonString.trim();
-    
+
     // Try to extract JSON from mixed content
     const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       jsonString = jsonMatch[0];
     }
-    
+
     jsonString = jsonString.replace(/,(\s*[}\]])/g, "$1");
-    
+
     const parsed = JSON.parse(jsonString);
-    
+
     return {
       introduction: parsed.introduction || "",
       whatToExpect: parsed.whatToExpect || parsed.what_to_expect || "",
@@ -314,8 +409,8 @@ Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"..."
       content.visitorTips,
       content.howToGetThere,
       ...content.faqs.map(f => `${f.question} ${f.answer}`),
-    ].join(' ');
-    
+    ].join(" ");
+
     return allText.split(/\s+/).filter(w => w.length > 0).length;
   }
 }
@@ -325,35 +420,34 @@ export function initializeWriterAgents(): void {
     const agent = new WriterAgent(persona);
     AgentRegistry.register(agent);
   }
-  console.log(`[WriterAgents] Initialized ${WRITER_PERSONAS.length} writer agents`);
 }
 
 export function getWriterForAttraction(category: string): WriterAgent | null {
   const categoryMap: Record<string, string> = {
-    'food': 'writer-fatima',
-    'dining': 'writer-fatima',
-    'culinary': 'writer-fatima',
-    'adventure': 'writer-omar',
-    'outdoor': 'writer-omar',
-    'sports': 'writer-omar',
-    'desert': 'writer-omar',
-    'family': 'writer-rebecca',
-    'kids': 'writer-rebecca',
-    'children': 'writer-rebecca',
-    'museum': 'writer-ahmed',
-    'heritage': 'writer-ahmed',
-    'historical': 'writer-ahmed',
-    'cultural': 'writer-ahmed',
-    'luxury': 'writer-sarah',
-    'premium': 'writer-sarah',
-    'vip': 'writer-sarah',
-    'budget': 'writer-david',
-    'free': 'writer-david',
-    'eco': 'writer-layla',
-    'sustainable': 'writer-layla',
-    'nature': 'writer-layla',
-    'business': 'writer-michael',
-    'conference': 'writer-michael',
+    food: "writer-fatima",
+    dining: "writer-fatima",
+    culinary: "writer-fatima",
+    adventure: "writer-omar",
+    outdoor: "writer-omar",
+    sports: "writer-omar",
+    desert: "writer-omar",
+    family: "writer-rebecca",
+    kids: "writer-rebecca",
+    children: "writer-rebecca",
+    museum: "writer-ahmed",
+    heritage: "writer-ahmed",
+    historical: "writer-ahmed",
+    cultural: "writer-ahmed",
+    luxury: "writer-sarah",
+    premium: "writer-sarah",
+    vip: "writer-sarah",
+    budget: "writer-david",
+    free: "writer-david",
+    eco: "writer-layla",
+    sustainable: "writer-layla",
+    nature: "writer-layla",
+    business: "writer-michael",
+    conference: "writer-michael",
   };
 
   const lowerCategory = category.toLowerCase();
@@ -363,5 +457,5 @@ export function getWriterForAttraction(category: string): WriterAgent | null {
     }
   }
 
-  return AgentRegistry.get('writer-sarah') as WriterAgent | null;
+  return AgentRegistry.get("writer-sarah") as WriterAgent | null;
 }

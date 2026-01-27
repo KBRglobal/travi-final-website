@@ -8,9 +8,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { 
-  Radar, Search, FileText, Database, Sparkles, 
-  RefreshCw, Lightbulb, TrendingUp, Link2 
+import {
+  Radar,
+  Search,
+  FileText,
+  Database,
+  Sparkles,
+  RefreshCw,
+  Lightbulb,
+  TrendingUp,
+  Link2,
 } from "lucide-react";
 
 interface SearchStats {
@@ -49,8 +56,7 @@ export default function SemanticSearchPage() {
   });
 
   const searchMutation = useMutation({
-    mutationFn: (query: string) => 
-      apiRequest("POST", "/api/analytics/semantic/search", { query }),
+    mutationFn: (query: string) => apiRequest("POST", "/api/analytics/semantic/search", { query }),
     onSuccess: (data: any) => {
       setSearchResults(data.results || []);
     },
@@ -89,15 +95,16 @@ export default function SemanticSearchPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3" data-testid="heading-semantic-search">
+          <h1
+            className="text-3xl font-bold flex items-center gap-3"
+            data-testid="heading-semantic-search"
+          >
             <Radar className="h-8 w-8 text-primary" />
             Semantic Search
           </h1>
-          <p className="text-muted-foreground mt-1">
-            AI-powered contents search and discovery
-          </p>
+          <p className="text-muted-foreground mt-1">AI-powered contents search and discovery</p>
         </div>
-        <Button 
+        <Button
           variant="outline"
           onClick={() => reindexMutation.mutate()}
           disabled={reindexMutation.isPending}
@@ -111,16 +118,12 @@ export default function SemanticSearchPage() {
       <div className="p-4 bg-muted rounded-lg border">
         <h3 className="font-medium flex items-center gap-2 mb-2">
           <Lightbulb className="h-4 w-4 text-primary" />
-          How It Works / איך זה עובד
+          How It Works
         </h3>
         <p className="text-sm text-muted-foreground">
-          Semantic search uses <strong>AI embeddings</strong> to understand the meaning of your contents.
-          Find related articles even if they don't share exact keywords. 
-          Automatically suggest internal links and discover contents gaps.
-          <br />
-          <span className="text-xs opacity-70">
-            (חיפוש סמנטי משתמש בבינה מלאכותית כדי להבין את המשמעות של התוכן שלך.)
-          </span>
+          Semantic search uses <strong>AI embeddings</strong> to understand the meaning of your
+          content. Find related articles even if they don't share exact keywords. Automatically
+          suggest internal links and discover content gaps.
         </p>
       </div>
 
@@ -192,20 +195,18 @@ export default function SemanticSearchPage() {
             <Search className="h-5 w-5" />
             Semantic Search Test
           </CardTitle>
-          <CardDescription>
-            Try a natural language search across your contents
-          </CardDescription>
+          <CardDescription>Try a natural language search across your contents</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
             <Input
               placeholder="Search your contents using natural language..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              onChange={e => setSearchQuery(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleSearch()}
               data-testid="input-semantic-search"
             />
-            <Button 
+            <Button
               onClick={handleSearch}
               disabled={searchMutation.isPending}
               data-testid="button-search"
@@ -217,7 +218,7 @@ export default function SemanticSearchPage() {
 
           {searchResults.length > 0 && (
             <div className="mt-4 space-y-3">
-              {searchResults.map((result) => (
+              {searchResults.map(result => (
                 <div
                   key={result.contentId}
                   className="p-4 border rounded-lg"
@@ -227,14 +228,10 @@ export default function SemanticSearchPage() {
                     <h4 className="font-medium">{result.title}</h4>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">{result.type}</Badge>
-                      <Badge variant="outline">
-                        {(result.similarity * 100).toFixed(0)}% match
-                      </Badge>
+                      <Badge variant="outline">{(result.similarity * 100).toFixed(0)}% match</Badge>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {result.snippet}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">{result.snippet}</p>
                 </div>
               ))}
             </div>
@@ -256,16 +253,11 @@ export default function SemanticSearchPage() {
           <ScrollArea className="h-[300px]">
             {relatedContent?.length ? (
               <div className="space-y-3">
-                {relatedContent.map((item) => (
-                  <div
-                    key={item.contentId}
-                    className="p-3 border rounded-lg"
-                  >
+                {relatedContent.map(item => (
+                  <div key={item.contentId} className="p-3 border rounded-lg">
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium">{item.title}</h4>
-                      <Badge variant="outline">
-                        {(item.similarity * 100).toFixed(0)}% related
-                      </Badge>
+                      <Badge variant="outline">{(item.similarity * 100).toFixed(0)}% related</Badge>
                     </div>
                     <div className="mt-2 flex gap-1 flex-wrap">
                       {item.relatedTo?.slice(0, 3).map((related, idx) => (

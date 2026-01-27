@@ -12,11 +12,7 @@
  */
 
 import { isSchedulingEnabled, type PublishResult } from "./types";
-import {
-  getContentDueForPublishing,
-  publishContent,
-  getContentById,
-} from "./repository";
+import { getContentDueForPublishing, publishContent, getContentById } from "./repository";
 import { emitContentPublished } from "../events";
 import { guardScheduledPublish } from "../publishing/eligibility";
 
@@ -60,26 +56,25 @@ async function processContentForPublishing(
     const content = await getContentById(contentId);
 
     if (!content) {
-      return { success: false, contentId, error: 'Content not found' };
+      return { success: false, contentId, error: "Content not found" };
     }
 
-    if (content.status === 'published') {
+    if (content.status === "published") {
       // Already published - idempotent success
       return { success: true, contentId, publishedAt: content.publishedAt || undefined };
     }
 
     if (content.deletedAt) {
-      return { success: false, contentId, error: 'Content was deleted' };
+      return { success: false, contentId, error: "Content was deleted" };
     }
 
     // Check publish eligibility
     const guardResult = await guardScheduledPublish(contentId);
     if (!guardResult.allowed) {
-      console.log(`[Scheduler] Blocked by eligibility: ${contentId}`, guardResult.reasons);
       return {
         success: false,
         contentId,
-        error: `Eligibility blocked: ${guardResult.reasons.join('; ')}`,
+        error: `Eligibility blocked: ${guardResult.reasons.join("; ")}`,
       };
     }
 
@@ -95,16 +90,7 @@ async function processContentForPublishing(
     }
 
     // Emit lifecycle event ONLY after successful DB write
-    emitContentPublished(
-      contentId,
-      type,
-      title,
-      slug,
-      'draft',
-      'scheduled'
-    );
-
-    console.log(`[Scheduler] Published content: ${contentId} (${title})`);
+    emitContentPublished(contentId, type, title, slug, "draft", "scheduled");
 
     return {
       success: true,
@@ -112,7 +98,6 @@ async function processContentForPublishing(
       publishedAt: new Date(),
     };
   } catch (error) {
-    console.error(`[Scheduler] Error publishing content ${contentId}:`, error);
     return {
       success: false,
       contentId,
@@ -130,7 +115,6 @@ async function runScheduler(): Promise<void> {
   }
 
   if (isProcessing) {
-    console.log('[Scheduler] Already processing, skipping run');
     return;
   }
 
@@ -144,8 +128,6 @@ async function runScheduler(): Promise<void> {
     if (dueContent.length === 0) {
       return;
     }
-
-    console.log(`[Scheduler] Processing ${dueContent.length} scheduled items`);
 
     for (const content of dueContent) {
       metrics.totalProcessed++;
@@ -161,11 +143,9 @@ async function runScheduler(): Promise<void> {
         metrics.totalPublished++;
       } else {
         metrics.totalFailed++;
-        console.error(`[Scheduler] Failed to publish ${content.id}: ${result.error}`);
       }
     }
   } catch (error) {
-    console.error('[Scheduler] Error in scheduler run:', error);
   } finally {
     isProcessing = false;
     metrics.isRunning = false;
@@ -177,23 +157,19 @@ async function runScheduler(): Promise<void> {
  */
 export function startScheduler(): void {
   if (!isSchedulingEnabled()) {
-    console.log('[Scheduler] Content scheduling is disabled');
     return;
   }
 
   if (schedulerInterval) {
-    console.log('[Scheduler] Already running');
     return;
   }
 
-  console.log('[Scheduler] Starting content scheduler');
-
   // Run immediately on start
-  runScheduler().catch(console.error);
+  runScheduler().catch(() => {});
 
   // Then run every minute
   schedulerInterval = setInterval(() => {
-    runScheduler().catch(console.error);
+    runScheduler().catch(() => {});
   }, SCHEDULER_INTERVAL_MS);
 }
 
@@ -204,7 +180,6 @@ export function stopScheduler(): void {
   if (schedulerInterval) {
     clearInterval(schedulerInterval);
     schedulerInterval = null;
-    console.log('[Scheduler] Stopped content scheduler');
   }
 }
 
@@ -220,7 +195,7 @@ export function getSchedulerMetrics(): SchedulerMetrics {
  */
 export async function triggerSchedulerRun(): Promise<void> {
   if (!isSchedulingEnabled()) {
-    throw new Error('Content scheduling is disabled');
+    throw new Error("Content scheduling is disabled");
   }
   await runScheduler();
 }

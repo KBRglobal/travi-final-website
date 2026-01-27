@@ -58,7 +58,13 @@ class ComplianceExportService {
     includeAnalytics?: boolean;
     ipAddress?: string;
   }): Promise<ComplianceExportRequest> {
-    const { requesterId, targetUserId, includeAuditLogs = true, includeAnalytics = false, ipAddress } = params;
+    const {
+      requesterId,
+      targetUserId,
+      includeAuditLogs = true,
+      includeAnalytics = false,
+      ipAddress,
+    } = params;
 
     const exportId = `gdpr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
@@ -182,11 +188,11 @@ class ComplianceExportService {
       },
       summary: {
         totalEvents: logs.length,
-        uniqueUsers: new Set(logs.map((l) => l.userId)).size,
+        uniqueUsers: new Set(logs.map(l => l.userId)).size,
         byAction: this.groupBy(logs, "action"),
         byResource: this.groupBy(logs, "resource"),
       },
-      events: logs.map((log) => ({
+      events: logs.map(log => ({
         id: log.id,
         timestamp: log.createdAt,
         userId: log.userId,
@@ -275,19 +281,19 @@ class ComplianceExportService {
       generatedAt: now.toISOString(),
       requestedBy: requesterId,
       summary: {
-        totalUsers: new Set(userRoles.map((ur) => ur.userId)).size,
+        totalUsers: new Set(userRoles.map(ur => ur.userId)).size,
         totalRoles: allRoles.length,
         byRole: this.groupBy(userRoles, "roleName"),
       },
-      roles: allRoles.map((role) => ({
+      roles: allRoles.map(role => ({
         name: role.name,
         displayName: role.displayName,
         description: role.description,
         priority: role.priority,
         isSystem: role.isSystem,
-        userCount: userRoles.filter((ur) => ur.roleName === role.name).length,
+        userCount: userRoles.filter(ur => ur.roleName === role.name).length,
       })),
-      assignments: userRoles.map((ur) => ({
+      assignments: userRoles.map(ur => ({
         userId: ur.userId,
         userName: ur.userName,
         userEmail: ur.userEmail,
@@ -493,7 +499,7 @@ class ComplianceExportService {
       .from(contents)
       .where(eq(contents.authorId, userId));
 
-    const contentOwnership: ContentOwnershipData[] = ownedContent.map((c) => ({
+    const contentOwnership: ContentOwnershipData[] = ownedContent.map(c => ({
       contentId: c.id,
       title: c.title,
       type: c.type,
@@ -514,7 +520,7 @@ class ComplianceExportService {
       .innerJoin(governanceRoles, eq(governanceRoles.id, userRoleAssignments.roleId))
       .where(eq(userRoleAssignments.userId, userId));
 
-    const permissions: PermissionData[] = roleAssignments.map((ra) => ({
+    const permissions: PermissionData[] = roleAssignments.map(ra => ({
       role: ra.roleName,
       scope: ra.scope,
       grantedAt: ra.grantedAt!,
@@ -531,7 +537,7 @@ class ComplianceExportService {
         .orderBy(desc(governanceAuditLogs.createdAt))
         .limit(1000);
 
-      auditLogEntries = logs.map((log) => ({
+      auditLogEntries = logs.map(log => ({
         timestamp: log.createdAt,
         action: log.action,
         resource: log.resource,
@@ -545,13 +551,7 @@ class ComplianceExportService {
     // Data retention info
     const dataRetention: DataRetentionInfo = {
       retentionPolicy: "Standard GDPR retention policy",
-      dataCategories: [
-        "profile",
-        "content_ownership",
-        "permissions",
-        "audit_logs",
-        "analytics",
-      ],
+      dataCategories: ["profile", "content_ownership", "permissions", "audit_logs", "analytics"],
     };
 
     return {
@@ -594,15 +594,16 @@ class ComplianceExportService {
    * Group items by field
    */
   private groupBy(items: any[], field: string): Record<string, number> {
-    return items.reduce((acc, item) => {
-      const key = item[field] || "unknown";
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    return items.reduce(
+      (acc, item) => {
+        const key = item[field] || "unknown";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
   }
 }
 
 // Singleton instance
 export const complianceExportService = new ComplianceExportService();
-
-console.log("[Governance] Compliance Export Service loaded");

@@ -14,10 +14,7 @@
  */
 
 // Core types
-export {
-  AutonomyBlockedError,
-  DEFAULT_ENFORCEMENT_CONFIG,
-} from './types';
+export { AutonomyBlockedError, DEFAULT_ENFORCEMENT_CONFIG } from "./types";
 
 export type {
   GuardedFeature,
@@ -28,7 +25,7 @@ export type {
   DegradedResponse,
   JobBlockResult,
   EnforcementConfig,
-} from './types';
+} from "./types";
 
 // Decision engine
 export {
@@ -36,7 +33,7 @@ export {
   enforceOrThrow,
   quickEnforcementCheck,
   shutdownDecisionEngine,
-} from './decision';
+} from "./decision";
 
 // Express middleware
 export {
@@ -44,9 +41,9 @@ export {
   createDegradedModeMiddleware,
   autonomyErrorHandler,
   enforcementLoggingMiddleware,
-} from './middleware';
+} from "./middleware";
 
-export type { EnforcedRequest } from './middleware';
+export type { EnforcedRequest } from "./middleware";
 
 // Wrappers for guarding operations
 export {
@@ -56,7 +53,7 @@ export {
   withEnforcement,
   isFeatureAllowed,
   getDegradedFallback,
-} from './wrappers';
+} from "./wrappers";
 
 // Budget consumption
 export {
@@ -68,24 +65,18 @@ export {
   getAllBudgetsSummary,
   isRateSustainable,
   shutdownBudgetConsumer,
-} from './budget-consumer';
+} from "./budget-consumer";
 
-import { shutdownDecisionEngine } from './decision';
-import { shutdownBudgetConsumer } from './budget-consumer';
+import { shutdownDecisionEngine } from "./decision";
+import { shutdownBudgetConsumer } from "./budget-consumer";
 
 /**
  * Initialize enforcement SDK
  * Called on server startup
  */
 export function initEnforcement(): void {
-  const enabled = process.env.ENABLE_AUTONOMY_POLICY === 'true';
-  const degradedMode = process.env.ENABLE_AUTONOMY_DEGRADED_MODE === 'true';
-
-  console.log('[Enforcement] Initialized:', {
-    enabled,
-    degradedMode,
-    blockMessage: process.env.AUTONOMY_BLOCK_MESSAGE || '(default)',
-  });
+  const enabled = process.env.ENABLE_AUTONOMY_POLICY === "true";
+  const degradedMode = process.env.ENABLE_AUTONOMY_DEGRADED_MODE === "true";
 }
 
 /**
@@ -93,8 +84,6 @@ export function initEnforcement(): void {
  * Called on server shutdown to flush buffers
  */
 export async function shutdownEnforcement(): Promise<void> {
-  console.log('[Enforcement] Shutting down...');
   shutdownDecisionEngine();
   shutdownBudgetConsumer();
-  console.log('[Enforcement] Shutdown complete');
 }

@@ -1,35 +1,35 @@
 /**
  * AI Orchestrator - Module Index
- * 
+ *
  * Central AI orchestration layer for all AI operations across TRAVI CMS.
- * 
+ *
  * ARCHITECTURE:
  * - AIOrchestrator: Main entry point, coordinates all AI requests
  * - ProviderPool: Manages provider configs, routing, availability
  * - RatePolicy: Rate limiting, backpressure, circuit breakers
  * - CreditMonitor: Credit/token tracking, quotas, starvation prevention
- * 
+ *
  * HARD INVARIANTS:
  * 1. All AI requests go through AIOrchestrator.submitTask()
  * 2. Image tasks MUST route through Image Engine (blocked at orchestrator level)
  * 3. No single system can exhaust all provider credits
  * 4. Rate limits are enforced per-provider with circuit breakers
- * 
+ *
  * USAGE:
  * ```typescript
  * import { getAIOrchestrator } from '@/server/ai-orchestrator';
- * 
+ *
  * const orchestrator = getAIOrchestrator();
  * await orchestrator.initialize();
- * 
+ *
  * const response = await orchestrator.submitTask({
  *   category: 'news',
  *   priority: 'high',
  *   payload: { content: 'Generate article about...' }
  * });
- * 
+ *
  * if (response.accepted) {
- *   console.log('Task accepted:', response.taskId);
+ *
  * }
  * ```
  */
@@ -40,25 +40,16 @@ export {
   getAIOrchestrator,
   type SubmitTaskRequest,
   type SubmitTaskResponse,
-} from './ai-orchestrator';
+} from "./ai-orchestrator";
 
 // Provider management
-export {
-  ProviderPool,
-  getProviderPool,
-} from './provider-pool';
+export { ProviderPool, getProviderPool } from "./provider-pool";
 
 // Rate limiting
-export {
-  RatePolicy,
-  getRatePolicy,
-} from './rate-policy';
+export { RatePolicy, getRatePolicy } from "./rate-policy";
 
 // Credit monitoring
-export {
-  CreditMonitor,
-  getCreditMonitor,
-} from './credit-monitor';
+export { CreditMonitor, getCreditMonitor } from "./credit-monitor";
 
 // Types
 export type {
@@ -76,7 +67,7 @@ export type {
   ProviderMetrics,
   BackpressureState,
   RoutingDecision,
-} from './types';
+} from "./types";
 
 // Diagnostics (DEBUG-ONLY, read-only visibility)
 export {
@@ -87,7 +78,7 @@ export {
   type DiagnosticsSnapshot,
   type ProviderSnapshot,
   type CreditCounters,
-} from './diagnostics';
+} from "./diagnostics";
 
 // Future hooks (INACTIVE by default, no behavior changes)
 export {
@@ -100,7 +91,7 @@ export {
   CREDIT_RESERVATION_CONFIG,
   BACKPRESSURE_CONFIG,
   HEALTH_CHECK_CONFIG,
-} from './future-hooks';
+} from "./future-hooks";
 
 // Health tracking (PHASE 5.1 - ACTIVE)
 export {
@@ -108,7 +99,7 @@ export {
   HealthTracker,
   type ProviderHealth,
   type HealthConfig,
-} from './health-tracker';
+} from "./health-tracker";
 
 // Credit guard (PHASE 5.2 - ACTIVE, observe-only mode)
 export {
@@ -116,7 +107,7 @@ export {
   CreditGuard,
   type CreditGuardConfig,
   type GuardDecision,
-} from './credit-guard';
+} from "./credit-guard";
 
 // Task governance (PHASE 4 - ACTIVE)
 export {
@@ -128,7 +119,7 @@ export {
   type GovernanceCheckResult,
   type FallbackEvent,
   type TaskGovernanceMetrics,
-} from './task-governance';
+} from "./task-governance";
 
 // Cost analytics (PHASE 4 EXTENSION - ACTIVE)
 export {
@@ -149,7 +140,7 @@ export {
   type ValueMetrics,
   type TaskValueRatioResult,
   type CostRecommendation,
-} from './cost-analytics';
+} from "./cost-analytics";
 
 // Provider strategy (TASK 6 - ACTIVE)
 export {
@@ -164,4 +155,4 @@ export {
   type ProviderScorecard,
   type ProviderRecommendation,
   type ProviderRemovalSimulation,
-} from './provider-strategy';
+} from "./provider-strategy";

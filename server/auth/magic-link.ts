@@ -1,6 +1,6 @@
 /**
  * Magic Link Authentication
- * 
+ *
  * Passwordless email authentication system
  * - Generate secure magic links
  * - Send via email
@@ -36,12 +36,12 @@ export const magicLinkAuth = {
   async sendMagicLink(email: string, baseUrl: string): Promise<MagicLinkResult> {
     try {
       // Validate email
-      if (!email || !email.includes('@')) {
+      if (!email || !email.includes("@")) {
         return { success: false, message: "Invalid email address" };
       }
 
       // Generate secure token
-      const token = crypto.randomBytes(32).toString('hex');
+      const token = crypto.randomBytes(32).toString("hex");
       const expiresAt = new Date(Date.now() + MAGIC_LINK_EXPIRY_MS);
 
       // Store token in database
@@ -70,7 +70,6 @@ export const magicLinkAuth = {
           `,
         });
       } else {
-        console.log(`[Magic Link] Email service not configured. Magic link: ${magicLink}`);
       }
 
       return {
@@ -79,7 +78,6 @@ export const magicLinkAuth = {
         token, // Only for testing purposes
       };
     } catch (error) {
-      console.error("[Magic Link] Error sending magic link:", error);
       return {
         success: false,
         message: "Failed to send magic link",
@@ -121,11 +119,7 @@ export const magicLinkAuth = {
         .where(eq(magicLinkTokens.token, token));
 
       // Find or create user
-      let user = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+      let user = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
       if (user.length === 0) {
         // Create new user
@@ -133,7 +127,7 @@ export const magicLinkAuth = {
           .insert(users)
           .values({
             email,
-            name: email.split('@')[0],
+            name: email.split("@")[0],
             role: "viewer",
             isActive: true,
           })
@@ -148,7 +142,6 @@ export const magicLinkAuth = {
         userId: user[0].id,
       };
     } catch (error) {
-      console.error("[Magic Link] Error verifying magic link:", error);
       return {
         success: false,
         error: "Failed to verify magic link",
@@ -167,7 +160,6 @@ export const magicLinkAuth = {
 
       return result.rowCount || 0;
     } catch (error) {
-      console.error("[Magic Link] Error cleaning up expired tokens:", error);
       return 0;
     }
   },

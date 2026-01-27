@@ -2,7 +2,7 @@
  * PILOT: Octypo × Localization Integration
  * ========================================
  * This is a minimal, isolated pilot for native locale content generation.
- * 
+ *
  * CONSTRAINTS:
  * - en + ar locales ONLY
  * - Attraction entity type ONLY
@@ -10,7 +10,7 @@
  * - LocalePurity ≥98% hard gate (no soft warnings)
  * - Atomic write (all validators pass or nothing written)
  * - No abstractions "for later"
- * 
+ *
  * SYSTEM STATUS:
  * - ready: Infrastructure complete, waiting for generation trigger
  * - blocked_ai: AI providers unavailable (rate limited/quota exceeded)
@@ -19,11 +19,24 @@
  */
 
 import { db } from "../../db";
-import { pilotLocalizedContent, type InsertPilotLocalizedContent } from "@shared/schema";
+import {
+  pilotLocalizedContent,
+  nativeLocalizedContent,
+  type InsertPilotLocalizedContent,
+  nativeLocales,
+} from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 import { OctypoOrchestrator } from "../orchestration/orchestrator";
 import type { AttractionData, GeneratedAttractionContent } from "../types";
 import { EngineRegistry } from "../../services/engine-registry";
+import {
+  getCulturalContext,
+  getLocaleTier,
+  getAllSupportedLocales,
+} from "../../localization/cultural-contexts";
+import { validateLocalePurity as validateLocalePurityExternal } from "../../localization/validators/locale-purity";
+import { runQualityGates } from "../../localization/validators/quality-gates";
+import { getPrimaryScripts, SCRIPT_REGEX } from "../../localization/validators/script-validators";
 
 // ============================================================================
 // LOCALIZATION SYSTEM STATUS
@@ -74,11 +87,10 @@ export async function getLocalizationSystemStatus(): Promise<LocalizationSystemS
     // The actual availability will be determined by whether generation succeeds
     aiProviders.healthyEngineCount = engineCount;
     aiProviders.available = engineCount > 0;
-    
+
     // Note: We can't get detailed engine health without modifying EngineRegistry
     // For now, we'll track blocked providers from generation failures
   } catch (error) {
-    console.log("[LocalizationSystem] Engine registry not initialized yet");
     aiProviders.available = false;
   }
 
@@ -88,15 +100,13 @@ export async function getLocalizationSystemStatus(): Promise<LocalizationSystemS
     const results = await db
       .select({ status: pilotLocalizedContent.status })
       .from(pilotLocalizedContent);
-    
+
     for (const row of results) {
       if (row.status === "published") execution.completedJobs++;
       else if (row.status === "failed") execution.failedJobs++;
       else execution.pendingJobs++;
     }
-  } catch (error) {
-    console.log("[LocalizationSystem] Could not query execution status");
-  }
+  } catch (error) {}
 
   // Determine overall status
   let status: LocalizationSystemStatus;
@@ -141,6 +151,18 @@ export interface PilotGenerationRequest {
   strict?: boolean; // Strict mode - fail immediately on any error
 }
 
+// All 30 supported locales for native content
+export type NativeLocale = (typeof nativeLocales)[number];
+
+export interface NativeGenerationRequest {
+  entityType: "attraction" | "guide" | "destination" | "district";
+  entityId: string;
+  destination: string;
+  locale: NativeLocale;
+  title?: string;
+  strict?: boolean;
+}
+
 export interface PilotValidationResults {
   completeness: { passed: boolean; missingSections: string[] };
   localePurity: { passed: boolean; score: number; threshold: number };
@@ -183,52 +205,52 @@ const UNIVERSAL_TECHNICAL_PATTERNS = [
 const FRENCH_LATIN_REGEX = /[a-zA-ZàâäæçéèêëïîôœùûüÿÀÂÄÆÇÉÈÊËÏÎÔŒÙÛÜŸ]/g;
 
 export function calculateLocalePurity(
-  text: string, 
+  text: string,
   targetLocale: "en" | "ar" | "fr",
   exemptions: string[] = []
 ): number {
   if (!text || text.trim().length === 0) return 1.0;
-  
+
   // Remove universal technical terms (they're acceptable in any locale)
   let cleanText = text;
   for (const pattern of UNIVERSAL_TECHNICAL_PATTERNS) {
     cleanText = cleanText.replace(pattern, "");
   }
-  
+
   // Remove dynamic exemptions (attraction name, venue name, etc.)
   for (const exemption of exemptions) {
     if (exemption && exemption.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      cleanText = cleanText.replace(new RegExp(escapedExemption, 'gi'), "");
+      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
-  
+
   // Remove punctuation and numbers
   cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—]/g, " ");
   cleanText = cleanText.trim();
-  
+
   if (cleanText.length === 0) return 1.0;
-  
+
   if (targetLocale === "ar") {
     // Count Arabic characters
     const arabicChars = (cleanText.match(ARABIC_REGEX) || []).length;
     // Count total non-whitespace characters
     const totalChars = cleanText.replace(/\s/g, "").length;
-    
+
     if (totalChars === 0) return 1.0;
     return arabicChars / totalChars;
   } else if (targetLocale === "fr") {
     // For French, count Latin characters including French accented characters
     const latinChars = (cleanText.match(FRENCH_LATIN_REGEX) || []).length;
     const totalChars = cleanText.replace(/\s/g, "").length;
-    
+
     if (totalChars === 0) return 1.0;
     return latinChars / totalChars;
   } else {
     // For English, count Latin characters
     const latinChars = (cleanText.match(/[a-zA-Z]/g) || []).length;
     const totalChars = cleanText.replace(/\s/g, "").length;
-    
+
     if (totalChars === 0) return 1.0;
     return latinChars / totalChars;
   }
@@ -249,12 +271,10 @@ export function validateLocalePurity(
     content.answerCapsule || "",
     ...(content.faqs?.map(f => `${f.question} ${f.answer}`) || []),
   ].join(" ");
-  
+
   const score = calculateLocalePurity(allText, locale, exemptions);
   const passed = score >= LOCALE_PURITY_THRESHOLD;
-  
-  console.log(`[LocalePurityValidator] Locale: ${locale}, Score: ${(score * 100).toFixed(1)}%, Threshold: ${LOCALE_PURITY_THRESHOLD * 100}%, Passed: ${passed}, Exemptions: ${exemptions.length}`);
-  
+
   return {
     passed,
     score,
@@ -268,7 +288,7 @@ export function validateLocalePurity(
 
 const REQUIRED_SECTIONS = [
   "introduction",
-  "whatToExpect", 
+  "whatToExpect",
   "visitorTips",
   "howToGetThere",
   "faq",
@@ -282,7 +302,7 @@ export function validateCompleteness(content: GeneratedAttractionContent): {
   missingSections: string[];
 } {
   const missingSections: string[] = [];
-  
+
   for (const section of REQUIRED_SECTIONS) {
     if (section === "faq") {
       if (!content.faqs || content.faqs.length === 0) {
@@ -295,10 +315,9 @@ export function validateCompleteness(content: GeneratedAttractionContent): {
       }
     }
   }
-  
+
   const passed = missingSections.length === 0;
-  console.log(`[CompletenessValidator] Passed: ${passed}, Missing: ${missingSections.join(", ") || "none"}`);
-  
+
   return { passed, missingSections };
 }
 
@@ -318,7 +337,10 @@ const BLUEPRINT_REQUIREMENTS = {
 
 function countWords(text: string | undefined): number {
   if (!text) return 0;
-  return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter(w => w.length > 0).length;
 }
 
 export function validateBlueprint(content: GeneratedAttractionContent): {
@@ -326,48 +348,65 @@ export function validateBlueprint(content: GeneratedAttractionContent): {
   issues: string[];
 } {
   const issues: string[] = [];
-  
+
   // Check section word counts
   const introWords = countWords(content.introduction);
   if (introWords < BLUEPRINT_REQUIREMENTS.introduction.min) {
-    issues.push(`Introduction too short: ${introWords} words (min: ${BLUEPRINT_REQUIREMENTS.introduction.min})`);
+    issues.push(
+      `Introduction too short: ${introWords} words (min: ${BLUEPRINT_REQUIREMENTS.introduction.min})`
+    );
   }
-  
+
   const whatWords = countWords(content.whatToExpect);
   if (whatWords < BLUEPRINT_REQUIREMENTS.whatToExpect.min) {
-    issues.push(`whatToExpect too short: ${whatWords} words (min: ${BLUEPRINT_REQUIREMENTS.whatToExpect.min})`);
+    issues.push(
+      `whatToExpect too short: ${whatWords} words (min: ${BLUEPRINT_REQUIREMENTS.whatToExpect.min})`
+    );
   }
-  
+
   const tipsWords = countWords(content.visitorTips);
   if (tipsWords < BLUEPRINT_REQUIREMENTS.visitorTips.min) {
-    issues.push(`visitorTips too short: ${tipsWords} words (min: ${BLUEPRINT_REQUIREMENTS.visitorTips.min})`);
+    issues.push(
+      `visitorTips too short: ${tipsWords} words (min: ${BLUEPRINT_REQUIREMENTS.visitorTips.min})`
+    );
   }
-  
+
   const directionsWords = countWords(content.howToGetThere);
   if (directionsWords < BLUEPRINT_REQUIREMENTS.howToGetThere.min) {
-    issues.push(`howToGetThere too short: ${directionsWords} words (min: ${BLUEPRINT_REQUIREMENTS.howToGetThere.min})`);
+    issues.push(
+      `howToGetThere too short: ${directionsWords} words (min: ${BLUEPRINT_REQUIREMENTS.howToGetThere.min})`
+    );
   }
-  
+
   // Check FAQ count
   const faqCount = content.faqs?.length || 0;
   if (faqCount < BLUEPRINT_REQUIREMENTS.faqCount.min) {
     issues.push(`FAQ count too low: ${faqCount} (min: ${BLUEPRINT_REQUIREMENTS.faqCount.min})`);
   }
-  
+
   // Check meta lengths
   const titleLength = (content.metaTitle || "").length;
-  if (titleLength < BLUEPRINT_REQUIREMENTS.metaTitle.min || titleLength > BLUEPRINT_REQUIREMENTS.metaTitle.max) {
-    issues.push(`Meta title length: ${titleLength} chars (should be ${BLUEPRINT_REQUIREMENTS.metaTitle.min}-${BLUEPRINT_REQUIREMENTS.metaTitle.max})`);
+  if (
+    titleLength < BLUEPRINT_REQUIREMENTS.metaTitle.min ||
+    titleLength > BLUEPRINT_REQUIREMENTS.metaTitle.max
+  ) {
+    issues.push(
+      `Meta title length: ${titleLength} chars (should be ${BLUEPRINT_REQUIREMENTS.metaTitle.min}-${BLUEPRINT_REQUIREMENTS.metaTitle.max})`
+    );
   }
-  
+
   const descLength = (content.metaDescription || "").length;
-  if (descLength < BLUEPRINT_REQUIREMENTS.metaDescription.min || descLength > BLUEPRINT_REQUIREMENTS.metaDescription.max) {
-    issues.push(`Meta description length: ${descLength} chars (should be ${BLUEPRINT_REQUIREMENTS.metaDescription.min}-${BLUEPRINT_REQUIREMENTS.metaDescription.max})`);
+  if (
+    descLength < BLUEPRINT_REQUIREMENTS.metaDescription.min ||
+    descLength > BLUEPRINT_REQUIREMENTS.metaDescription.max
+  ) {
+    issues.push(
+      `Meta description length: ${descLength} chars (should be ${BLUEPRINT_REQUIREMENTS.metaDescription.min}-${BLUEPRINT_REQUIREMENTS.metaDescription.max})`
+    );
   }
-  
+
   const passed = issues.length === 0;
-  console.log(`[BlueprintValidator] Passed: ${passed}, Issues: ${issues.length}`);
-  
+
   return { passed, issues };
 }
 
@@ -380,12 +419,12 @@ export function validateSeoAeo(content: GeneratedAttractionContent): {
   issues: string[];
 } {
   const issues: string[] = [];
-  
+
   // Check answer capsule exists and is substantive
   if (!content.answerCapsule || content.answerCapsule.length < 50) {
     issues.push("Answer capsule missing or too short (min 50 chars)");
   }
-  
+
   // Check FAQ format
   if (content.faqs) {
     for (let i = 0; i < content.faqs.length; i++) {
@@ -398,7 +437,7 @@ export function validateSeoAeo(content: GeneratedAttractionContent): {
       }
     }
   }
-  
+
   // Check meta description contains keywords (basic check)
   if (content.metaDescription && content.metaTitle) {
     // Ensure meta description doesn't start with the exact same words as title
@@ -408,10 +447,9 @@ export function validateSeoAeo(content: GeneratedAttractionContent): {
       issues.push("Meta description starts the same as title - needs variation");
     }
   }
-  
+
   const passed = issues.length === 0;
-  console.log(`[SEO/AEOValidator] Passed: ${passed}, Issues: ${issues.length}`);
-  
+
   return { passed, issues };
 }
 
@@ -451,7 +489,7 @@ async function atomicWrite(
     tokensUsed: metadata.tokensUsed,
     generationTimeMs: metadata.generationTimeMs,
   };
-  
+
   // Upsert: update if exists, insert if not
   const existing = await db
     .select()
@@ -464,7 +502,7 @@ async function atomicWrite(
       )
     )
     .limit(1);
-  
+
   if (existing.length > 0) {
     await db
       .update(pilotLocalizedContent)
@@ -489,12 +527,7 @@ export async function generatePilotContent(
   attractionData: AttractionData
 ): Promise<PilotGenerationResult> {
   const startTime = Date.now();
-  
-  console.log(`[PilotLocalization] Starting generation:`);
-  console.log(`  Entity: ${request.entityType}/${request.entityId}`);
-  console.log(`  Locale: ${request.locale}`);
-  console.log(`  Destination: ${request.destination}`);
-  
+
   // FAIL-FAST: Validate input contract
   if (!request.destination || request.destination.trim() === "") {
     throw new Error("PILOT_FAIL: destination is REQUIRED - no fallback allowed");
@@ -505,34 +538,41 @@ export async function generatePilotContent(
   if (request.entityType !== "attraction") {
     throw new Error("PILOT_FAIL: entityType must be 'attraction' only for pilot");
   }
-  
+
   try {
     // Step 1: Generate content with Octypo
     const orchestrator = new OctypoOrchestrator();
-    
+
     // Call the locale-aware generation
     const result = await orchestrator.generateAttractionContentWithLocale(
       attractionData,
       request.locale
     );
-    
+
     if (!result.success || !result.content) {
       // Mark as failed in DB
-      await db.insert(pilotLocalizedContent).values({
-        entityType: "attraction",
-        entityId: request.entityId,
-        locale: request.locale,
-        destination: request.destination,
-        status: "failed",
-        failureReason: "Octypo generation failed",
-        generationTimeMs: Date.now() - startTime,
-      } as any).onConflictDoUpdate({
-        target: [pilotLocalizedContent.entityType, pilotLocalizedContent.entityId, pilotLocalizedContent.locale],
-        set: {
+      await db
+        .insert(pilotLocalizedContent)
+        .values({
+          entityType: "attraction",
+          entityId: request.entityId,
+          locale: request.locale,
+          destination: request.destination,
+          status: "failed",
           failureReason: "Octypo generation failed",
-        } as any,
-      });
-      
+          generationTimeMs: Date.now() - startTime,
+        } as any)
+        .onConflictDoUpdate({
+          target: [
+            pilotLocalizedContent.entityType,
+            pilotLocalizedContent.entityId,
+            pilotLocalizedContent.locale,
+          ],
+          set: {
+            failureReason: "Octypo generation failed",
+          } as any,
+        });
+
       return {
         success: false,
         entityId: request.entityId,
@@ -542,70 +582,86 @@ export async function generatePilotContent(
         generationTimeMs: Date.now() - startTime,
       };
     }
-    
+
     // Step 2: Run ALL validators BEFORE any DB write
-    console.log(`[PilotLocalization] Running validators...`);
-    
+
     // Build dynamic exemptions list for locale purity (proper nouns that can appear in any locale)
     const localePurityExemptions: string[] = [
-      attractionData.title,                       // Attraction name is a proper noun
-      attractionData.venueName,                   // Venue name is a proper noun
-      attractionData.cityName,                    // City name is a proper noun
-      request.destination,                        // Destination name is a proper noun
+      attractionData.title, // Attraction name is a proper noun
+      attractionData.venueName, // Venue name is a proper noun
+      attractionData.cityName, // City name is a proper noun
+      request.destination, // Destination name is a proper noun
     ].filter((e): e is string => Boolean(e && e.trim()));
-    
+
     const completenessResult = validateCompleteness(result.content);
-    const localePurityResult = validateLocalePurity(result.content, request.locale, localePurityExemptions);
+    const localePurityResult = validateLocalePurity(
+      result.content,
+      request.locale,
+      localePurityExemptions
+    );
     const blueprintResult = validateBlueprint(result.content);
     const seoAeoResult = validateSeoAeo(result.content);
-    
+
     const validationResults: PilotValidationResults = {
       completeness: completenessResult,
       localePurity: localePurityResult,
       blueprint: blueprintResult,
       seoAeo: seoAeoResult,
     };
-    
+
     // Check if ALL validators passed
-    const allPassed = 
-      completenessResult.passed && 
-      localePurityResult.passed && 
-      blueprintResult.passed && 
+    const allPassed =
+      completenessResult.passed &&
+      localePurityResult.passed &&
+      blueprintResult.passed &&
       seoAeoResult.passed;
-    
+
     if (!allPassed) {
       // ATOMIC: Validation failed - write NOTHING to content, only failure record
       const failureReasons: string[] = [];
-      if (!completenessResult.passed) failureReasons.push(`Completeness: missing ${completenessResult.missingSections.join(", ")}`);
-      if (!localePurityResult.passed) failureReasons.push(`LocalePurity: ${(localePurityResult.score * 100).toFixed(1)}% < ${localePurityResult.threshold * 100}%`);
-      if (!blueprintResult.passed) failureReasons.push(`Blueprint: ${blueprintResult.issues.join("; ")}`);
+      if (!completenessResult.passed)
+        failureReasons.push(
+          `Completeness: missing ${completenessResult.missingSections.join(", ")}`
+        );
+      if (!localePurityResult.passed)
+        failureReasons.push(
+          `LocalePurity: ${(localePurityResult.score * 100).toFixed(1)}% < ${localePurityResult.threshold * 100}%`
+        );
+      if (!blueprintResult.passed)
+        failureReasons.push(`Blueprint: ${blueprintResult.issues.join("; ")}`);
       if (!seoAeoResult.passed) failureReasons.push(`SEO/AEO: ${seoAeoResult.issues.join("; ")}`);
-      
+
       const failureReason = failureReasons.join(" | ");
-      console.log(`[PilotLocalization] VALIDATION FAILED: ${failureReason}`);
-      
+
       // Record failure in DB (no content written)
-      await db.insert(pilotLocalizedContent).values({
-        entityType: "attraction",
-        entityId: request.entityId,
-        locale: request.locale,
-        destination: request.destination,
-        status: "failed",
-        failureReason,
-        localePurityScore: localePurityResult.score,
-        validationResults,
-        writerAgent: result.writerId,
-        engineUsed: result.engineUsed,
-        generationTimeMs: Date.now() - startTime,
-      } as any).onConflictDoUpdate({
-        target: [pilotLocalizedContent.entityType, pilotLocalizedContent.entityId, pilotLocalizedContent.locale],
-        set: {
+      await db
+        .insert(pilotLocalizedContent)
+        .values({
+          entityType: "attraction",
+          entityId: request.entityId,
+          locale: request.locale,
+          destination: request.destination,
+          status: "failed",
           failureReason,
           localePurityScore: localePurityResult.score,
           validationResults,
-        } as any,
-      });
-      
+          writerAgent: result.writerId,
+          engineUsed: result.engineUsed,
+          generationTimeMs: Date.now() - startTime,
+        } as any)
+        .onConflictDoUpdate({
+          target: [
+            pilotLocalizedContent.entityType,
+            pilotLocalizedContent.entityId,
+            pilotLocalizedContent.locale,
+          ],
+          set: {
+            failureReason,
+            localePurityScore: localePurityResult.score,
+            validationResults,
+          } as any,
+        });
+
       return {
         success: false,
         entityId: request.entityId,
@@ -618,25 +674,22 @@ export async function generatePilotContent(
         generationTimeMs: Date.now() - startTime,
       };
     }
-    
+
     // Step 3: All validators passed - ATOMIC WRITE
-    console.log(`[PilotLocalization] All validators passed - writing content`);
-    
+
     const contentId = await atomicWrite(request, result.content, validationResults, {
       writerAgent: result.writerId,
       engineUsed: result.engineUsed,
       tokensUsed: undefined, // TODO: track if needed
       generationTimeMs: Date.now() - startTime,
     });
-    
+
     // Mark as published (ready for rendering)
     await db
       .update(pilotLocalizedContent)
       .set({ status: "published" } as any)
       .where(eq(pilotLocalizedContent.id, contentId));
-    
-    console.log(`[PilotLocalization] SUCCESS: Content written with ID ${contentId}`);
-    
+
     return {
       success: true,
       entityId: request.entityId,
@@ -648,11 +701,9 @@ export async function generatePilotContent(
       engineUsed: result.engineUsed,
       generationTimeMs: Date.now() - startTime,
     };
-    
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`[PilotLocalization] ERROR: ${errorMessage}`);
-    
+
     return {
       success: false,
       entityId: request.entityId,
@@ -685,6 +736,369 @@ export async function getPilotContent(
       )
     )
     .limit(1);
-  
+
   return result[0] || null;
+}
+
+// ============================================================================
+// NATIVE CONTENT ARCHITECTURE - 30 LOCALE SUPPORT
+// ============================================================================
+
+/**
+ * Extended locale purity calculator for all 30 supported locales
+ * Uses script validators from the cultural contexts system
+ */
+export function calculateLocalePurityExtended(
+  text: string,
+  targetLocale: NativeLocale,
+  exemptions: string[] = []
+): number {
+  if (!text || text.trim().length === 0) return 1.0;
+
+  // Remove universal technical terms
+  let cleanText = text;
+  for (const pattern of UNIVERSAL_TECHNICAL_PATTERNS) {
+    cleanText = cleanText.replace(pattern, "");
+  }
+
+  // Remove dynamic exemptions
+  for (const exemption of exemptions) {
+    if (exemption && exemption.trim()) {
+      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
+    }
+  }
+
+  // Remove punctuation and numbers
+  cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—]/g, " ");
+  cleanText = cleanText.trim();
+
+  if (cleanText.length === 0) return 1.0;
+
+  // Get primary scripts for this locale
+  const primaryScripts = getPrimaryScripts(targetLocale);
+  const primaryScript = primaryScripts[0] || "latin";
+  const scriptRegex = SCRIPT_REGEX[primaryScript] || SCRIPT_REGEX.latin;
+
+  // Count characters in target script
+  const scriptMatches = cleanText.match(scriptRegex) || [];
+  const scriptCharCount = scriptMatches.length;
+
+  // Count total non-whitespace characters
+  const totalChars = cleanText.replace(/\s/g, "").length;
+
+  if (totalChars === 0) return 1.0;
+  return scriptCharCount / totalChars;
+}
+
+/**
+ * Validate content for native locale generation
+ */
+export function validateNativeContent(
+  content: GeneratedAttractionContent,
+  locale: NativeLocale,
+  exemptions: string[] = []
+): PilotValidationResults {
+  // Calculate locale purity
+  const allText = [
+    content.introduction || "",
+    content.whatToExpect || "",
+    content.visitorTips || "",
+    content.howToGetThere || "",
+    content.metaTitle || "",
+    content.metaDescription || "",
+    content.answerCapsule || "",
+    ...(content.faqs?.map(f => `${f.question} ${f.answer}`) || []),
+  ].join(" ");
+
+  const purityScore = calculateLocalePurityExtended(allText, locale, exemptions);
+  const culturalContext = getCulturalContext(locale);
+  const threshold = culturalContext?.quality.purityThreshold || 0.95;
+
+  const completenessResult = validateCompleteness(content);
+  const blueprintResult = validateBlueprint(content);
+  const seoAeoResult = validateSeoAeo(content);
+
+  return {
+    completeness: completenessResult,
+    localePurity: {
+      passed: purityScore >= threshold,
+      score: purityScore,
+      threshold,
+    },
+    blueprint: blueprintResult,
+    seoAeo: seoAeoResult,
+  };
+}
+
+/**
+ * Generate native content for any of the 30 supported locales
+ */
+export async function generateNativeContent(
+  request: NativeGenerationRequest,
+  attractionData: AttractionData
+): Promise<{
+  success: boolean;
+  entityType: string;
+  entityId: string;
+  locale: string;
+  destination: string;
+  contentId?: string;
+  validationResults?: PilotValidationResults;
+  failureReason?: string;
+  writerAgent?: string;
+  engineUsed?: string;
+  generationTimeMs?: number;
+  culturalContextVersion?: string;
+}> {
+  const startTime = Date.now();
+
+  // Validate locale is supported
+  if (!getAllSupportedLocales().includes(request.locale)) {
+    return {
+      success: false,
+      entityType: request.entityType,
+      entityId: request.entityId,
+      locale: request.locale,
+      destination: request.destination,
+      failureReason: `Unsupported locale: ${request.locale}`,
+      generationTimeMs: Date.now() - startTime,
+    };
+  }
+
+  const culturalContext = getCulturalContext(request.locale);
+  if (!culturalContext) {
+    return {
+      success: false,
+      entityType: request.entityType,
+      entityId: request.entityId,
+      locale: request.locale,
+      destination: request.destination,
+      failureReason: `No cultural context found for locale: ${request.locale}`,
+      generationTimeMs: Date.now() - startTime,
+    };
+  }
+
+  try {
+    // Use the orchestrator's native content generation
+    const orchestrator = new OctypoOrchestrator();
+    const result = await orchestrator.generateNativeContent(
+      request.entityType,
+      request.entityId,
+      request.destination,
+      request.locale,
+      attractionData
+    );
+
+    if (!result.success || !result.content) {
+      // Record failure in native content table
+      await db
+        .insert(nativeLocalizedContent)
+        .values({
+          entityType: request.entityType,
+          entityId: request.entityId,
+          destination: request.destination,
+          locale: request.locale,
+          tier: culturalContext.tier,
+          status: "failed",
+          failureReason: result.failureReason || "Generation failed",
+          localePurityScore: result.localePurityScore,
+          writerAgent: result.writerAgent,
+          engineUsed: result.engineUsed,
+          generationTimeMs: result.generationTimeMs,
+          culturalContextVersion: result.culturalContextVersion,
+        } as any)
+        .onConflictDoUpdate({
+          target: [
+            nativeLocalizedContent.entityType,
+            nativeLocalizedContent.entityId,
+            nativeLocalizedContent.locale,
+          ],
+          set: {
+            status: "failed",
+            failureReason: result.failureReason || "Generation failed",
+            updatedAt: new Date(),
+          } as any,
+        });
+
+      return {
+        success: false,
+        entityType: request.entityType,
+        entityId: request.entityId,
+        locale: request.locale,
+        destination: request.destination,
+        failureReason: result.failureReason,
+        writerAgent: result.writerAgent,
+        engineUsed: result.engineUsed,
+        generationTimeMs: result.generationTimeMs,
+        culturalContextVersion: result.culturalContextVersion,
+      };
+    }
+
+    // Build validation results
+    const exemptions = [
+      attractionData.title,
+      attractionData.venueName,
+      attractionData.cityName,
+      request.destination,
+    ].filter((e): e is string => Boolean(e));
+
+    const validationResults = validateNativeContent(result.content, request.locale, exemptions);
+
+    // Insert or update native content
+    const record = {
+      entityType: request.entityType,
+      entityId: request.entityId,
+      destination: request.destination,
+      locale: request.locale,
+      tier: culturalContext.tier,
+      title: request.title || attractionData.title,
+      introduction: result.content.introduction,
+      whatToExpect: result.content.whatToExpect,
+      visitorTips: result.content.visitorTips,
+      howToGetThere: result.content.howToGetThere,
+      highlights: result.content.sensoryDescriptions,
+      faq: result.content.faqs,
+      answerCapsule: result.content.answerCapsule,
+      metaTitle: result.content.metaTitle,
+      metaDescription: result.content.metaDescription,
+      localePurityScore: result.localePurityScore,
+      validationResults: validationResults,
+      status:
+        validationResults.localePurity.passed && validationResults.completeness.passed
+          ? "validated"
+          : "failed",
+      failureReason:
+        validationResults.localePurity.passed && validationResults.completeness.passed
+          ? undefined
+          : "Validation failed",
+      writerAgent: result.writerAgent,
+      engineUsed: result.engineUsed,
+      generationTimeMs: result.generationTimeMs,
+      culturalContextVersion: result.culturalContextVersion,
+    };
+
+    // Upsert
+    const existing = await db
+      .select()
+      .from(nativeLocalizedContent)
+      .where(
+        and(
+          eq(nativeLocalizedContent.entityType, request.entityType as any),
+          eq(nativeLocalizedContent.entityId, request.entityId),
+          eq(nativeLocalizedContent.locale, request.locale)
+        )
+      )
+      .limit(1);
+
+    let contentId: string;
+    if (existing.length > 0) {
+      await db
+        .update(nativeLocalizedContent)
+        .set({ ...record, updatedAt: new Date() } as any)
+        .where(eq(nativeLocalizedContent.id, existing[0].id));
+      contentId = existing[0].id;
+    } else {
+      const inserted = await db
+        .insert(nativeLocalizedContent)
+        .values(record as any)
+        .returning({ id: nativeLocalizedContent.id });
+      contentId = inserted[0].id;
+    }
+
+    // Mark as published if validation passed
+    if (validationResults.localePurity.passed && validationResults.completeness.passed) {
+      await db
+        .update(nativeLocalizedContent)
+        .set({ status: "published", publishedAt: new Date() } as any)
+        .where(eq(nativeLocalizedContent.id, contentId));
+    }
+
+    return {
+      success: validationResults.localePurity.passed && validationResults.completeness.passed,
+      entityType: request.entityType,
+      entityId: request.entityId,
+      locale: request.locale,
+      destination: request.destination,
+      contentId,
+      validationResults,
+      writerAgent: result.writerAgent,
+      engineUsed: result.engineUsed,
+      generationTimeMs: result.generationTimeMs,
+      culturalContextVersion: result.culturalContextVersion,
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return {
+      success: false,
+      entityType: request.entityType,
+      entityId: request.entityId,
+      locale: request.locale,
+      destination: request.destination,
+      failureReason: errorMessage,
+      generationTimeMs: Date.now() - startTime,
+    };
+  }
+}
+
+/**
+ * Get native content for any supported locale
+ */
+export async function getNativeContent(
+  entityType: string,
+  entityId: string,
+  locale: string
+): Promise<typeof nativeLocalizedContent.$inferSelect | null> {
+  const result = await db
+    .select()
+    .from(nativeLocalizedContent)
+    .where(
+      and(
+        eq(nativeLocalizedContent.entityType, entityType as any),
+        eq(nativeLocalizedContent.entityId, entityId),
+        eq(nativeLocalizedContent.locale, locale),
+        eq(nativeLocalizedContent.status, "published")
+      )
+    )
+    .limit(1);
+
+  return result[0] || null;
+}
+
+/**
+ * Get native content coverage for an entity
+ */
+export async function getNativeContentCoverage(
+  entityType: string,
+  entityId: string
+): Promise<{
+  total: number;
+  published: number;
+  failed: number;
+  locales: Array<{ locale: string; status: string; tier: number }>;
+}> {
+  const results = await db
+    .select({
+      locale: nativeLocalizedContent.locale,
+      status: nativeLocalizedContent.status,
+      tier: nativeLocalizedContent.tier,
+    })
+    .from(nativeLocalizedContent)
+    .where(
+      and(
+        eq(nativeLocalizedContent.entityType, entityType as any),
+        eq(nativeLocalizedContent.entityId, entityId)
+      )
+    );
+
+  return {
+    total: results.length,
+    published: results.filter(r => r.status === "published").length,
+    failed: results.filter(r => r.status === "failed").length,
+    locales: results.map(r => ({
+      locale: r.locale,
+      status: r.status,
+      tier: r.tier,
+    })),
+  };
 }

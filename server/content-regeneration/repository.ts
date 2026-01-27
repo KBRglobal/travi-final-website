@@ -11,7 +11,7 @@ import {
   ContentBlock,
   BlockDiff,
   RATE_LIMITS,
-} from './types';
+} from "./types";
 
 // In-memory store (would be DB in production)
 const proposalStore = new Map<string, RegenerationProposal>();
@@ -24,7 +24,7 @@ export async function createProposal(
   eligibility: EligibilityResult,
   generatedBlocks: ContentBlock[],
   originalBlocks: ContentBlock[],
-  aiModel: string = 'default'
+  aiModel: string = "default"
 ): Promise<RegenerationProposal> {
   const id = `prop-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -34,7 +34,7 @@ export async function createProposal(
   const proposal: RegenerationProposal = {
     id,
     contentId,
-    status: 'pending',
+    status: "pending",
     eligibility,
     diffs,
     generatedBlocks,
@@ -46,7 +46,6 @@ export async function createProposal(
   proposalStore.set(id, proposal);
 
   // Log creation
-  console.log(`[regeneration] Created proposal ${id} for content ${contentId}`);
 
   return proposal;
 }
@@ -69,21 +68,21 @@ function calculateDiffs(
       // New block inserted
       diffs.push({
         index: i,
-        action: 'insert',
+        action: "insert",
         newBlock: generated,
       });
     } else if (original && !generated) {
       // Block removed
       diffs.push({
         index: i,
-        action: 'delete',
+        action: "delete",
         originalBlock: original,
       });
     } else if (original && generated && !blocksEqual(original, generated)) {
       // Block replaced
       diffs.push({
         index: i,
-        action: 'replace',
+        action: "replace",
         originalBlock: original,
         newBlock: generated,
       });
@@ -111,9 +110,7 @@ export async function getProposal(proposalId: string): Promise<RegenerationPropo
 /**
  * Get proposals for content.
  */
-export async function getProposalsForContent(
-  contentId: string
-): Promise<RegenerationProposal[]> {
+export async function getProposalsForContent(contentId: string): Promise<RegenerationProposal[]> {
   return Array.from(proposalStore.values())
     .filter(p => p.contentId === contentId)
     .sort((a, b) => b.generatedAt.getTime() - a.generatedAt.getTime());
@@ -122,13 +119,11 @@ export async function getProposalsForContent(
 /**
  * Get all pending proposals.
  */
-export async function getPendingProposals(
-  limit: number = 50
-): Promise<RegenerationProposal[]> {
+export async function getPendingProposals(limit: number = 50): Promise<RegenerationProposal[]> {
   const now = new Date();
 
   return Array.from(proposalStore.values())
-    .filter(p => p.status === 'pending' && p.expiresAt > now)
+    .filter(p => p.status === "pending" && p.expiresAt > now)
     .sort((a, b) => b.eligibility.score - a.eligibility.score)
     .slice(0, limit);
 }
@@ -153,7 +148,7 @@ export async function getAllProposals(
   }
 
   if (!includeExpired) {
-    proposals = proposals.filter(p => p.expiresAt > now || p.status === 'applied');
+    proposals = proposals.filter(p => p.expiresAt > now || p.status === "applied");
   }
 
   return proposals
@@ -177,14 +172,12 @@ export async function updateProposalStatus(
 
   proposal.status = status;
 
-  if (status === 'applied') {
+  if (status === "applied") {
     proposal.appliedAt = new Date();
     proposal.appliedBy = appliedBy;
   }
 
   proposalStore.set(proposalId, proposal);
-
-  console.log(`[regeneration] Updated proposal ${proposalId} status to ${status}`);
 
   return proposal;
 }
@@ -204,15 +197,14 @@ export async function cleanupExpiredProposals(): Promise<number> {
   let cleaned = 0;
 
   for (const [id, proposal] of proposalStore) {
-    if (proposal.status === 'pending' && proposal.expiresAt < now) {
-      proposal.status = 'expired';
+    if (proposal.status === "pending" && proposal.expiresAt < now) {
+      proposal.status = "expired";
       proposalStore.set(id, proposal);
       cleaned++;
     }
   }
 
   if (cleaned > 0) {
-    console.log(`[regeneration] Cleaned up ${cleaned} expired proposals`);
   }
 
   return cleaned;
@@ -233,10 +225,10 @@ export async function getProposalStats(): Promise<{
 
   return {
     total: proposals.length,
-    pending: proposals.filter(p => p.status === 'pending').length,
-    approved: proposals.filter(p => p.status === 'approved').length,
-    applied: proposals.filter(p => p.status === 'applied').length,
-    rejected: proposals.filter(p => p.status === 'rejected').length,
-    expired: proposals.filter(p => p.status === 'expired').length,
+    pending: proposals.filter(p => p.status === "pending").length,
+    approved: proposals.filter(p => p.status === "approved").length,
+    applied: proposals.filter(p => p.status === "applied").length,
+    rejected: proposals.filter(p => p.status === "rejected").length,
+    expired: proposals.filter(p => p.status === "expired").length,
   };
 }

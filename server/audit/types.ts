@@ -85,5 +85,3 @@ export interface AuditSummary {
   topUsers: { userId: string; count: number }[];
   recentActivity: AuditLogEntry[];
 }
-
-console.log("[Audit] Types loaded");

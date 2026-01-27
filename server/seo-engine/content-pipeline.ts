@@ -13,22 +13,35 @@
  * - TOXIC: Harmful to site SEO (duplicate, cannibalization, spam)
  */
 
-import { db } from '../db';
-import { contents } from '../../shared/schema';
-import { eq, and, lt, gt, sql, or } from 'drizzle-orm';
-import { PageClassifier } from './page-classifier';
-import { SEOActionEngine, AutopilotMode } from '../seo-actions/action-engine';
+import { db } from "../db";
+import { contents } from "../../shared/schema";
+import { eq, and, lt, gt, sql, or } from "drizzle-orm";
+import { PageClassifier } from "./page-classifier";
+import { SEOActionEngine, AutopilotMode } from "../seo-actions/action-engine";
 
-export type ContentIssueType = 'ZERO' | 'THIN' | 'TOXIC' | 'STALE' | 'DUPLICATE' | 'CANNIBALIZATION';
+export type ContentIssueType =
+  | "ZERO"
+  | "THIN"
+  | "TOXIC"
+  | "STALE"
+  | "DUPLICATE"
+  | "CANNIBALIZATION";
 
-export type ContentAction = 'NOINDEX' | 'MERGE' | 'DELETE' | 'ENHANCE' | 'REDIRECT' | 'FLAG' | 'KEEP';
+export type ContentAction =
+  | "NOINDEX"
+  | "MERGE"
+  | "DELETE"
+  | "ENHANCE"
+  | "REDIRECT"
+  | "FLAG"
+  | "KEEP";
 
 export interface ContentIssue {
   contentId: string;
   title: string;
   url: string;
   issueType: ContentIssueType;
-  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
   details: string;
   metrics: {
     wordCount?: number;
@@ -81,7 +94,7 @@ export class ContentPipeline {
   private actionEngine: SEOActionEngine;
   private autopilotMode: AutopilotMode;
 
-  constructor(autopilotMode: AutopilotMode = 'supervised') {
+  constructor(autopilotMode: AutopilotMode = "supervised") {
     this.classifier = new PageClassifier();
     this.actionEngine = new SEOActionEngine(autopilotMode);
     this.autopilotMode = autopilotMode;
@@ -92,7 +105,7 @@ export class ContentPipeline {
    */
   async runPipeline(): Promise<PipelineResult> {
     const allContent = await db.query.contents.findMany({
-      where: eq(contents.status, 'published'),
+      where: eq(contents.status, "published"),
     });
 
     const issues: ContentIssue[] = [];
@@ -113,22 +126,22 @@ export class ContentPipeline {
       // Update summary
       for (const issue of contentIssues) {
         switch (issue.issueType) {
-          case 'ZERO':
+          case "ZERO":
             summary.zero++;
             break;
-          case 'THIN':
+          case "THIN":
             summary.thin++;
             break;
-          case 'TOXIC':
+          case "TOXIC":
             summary.toxic++;
             break;
-          case 'STALE':
+          case "STALE":
             summary.stale++;
             break;
-          case 'DUPLICATE':
+          case "DUPLICATE":
             summary.duplicate++;
             break;
-          case 'CANNIBALIZATION':
+          case "CANNIBALIZATION":
             summary.cannibalization++;
             break;
         }
@@ -137,7 +150,7 @@ export class ContentPipeline {
 
     // Stage 3 & 4: DECIDE and EXECUTE
     let actionsExecuted = 0;
-    if (this.autopilotMode !== 'off') {
+    if (this.autopilotMode !== "off") {
       for (const issue of issues) {
         if (issue.autoActionEnabled) {
           const executed = await this.executeAction(issue);
@@ -203,15 +216,15 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'ZERO',
-        severity: 'CRITICAL',
+        issueType: "ZERO",
+        severity: "CRITICAL",
         details: `No traffic for 90+ days (${ageInDays} days old)`,
         metrics: {
           trafficLast90Days: 0,
           daysWithoutTraffic: ageInDays,
         },
-        suggestedAction: 'NOINDEX',
-        autoActionEnabled: this.autopilotMode === 'full',
+        suggestedAction: "NOINDEX",
+        autoActionEnabled: this.autopilotMode === "full",
       };
     }
 
@@ -220,14 +233,14 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'ZERO',
-        severity: 'HIGH',
+        issueType: "ZERO",
+        severity: "HIGH",
         details: `Very low traffic (${trafficLast90Days} visits in 90 days)`,
         metrics: {
           trafficLast90Days,
           daysWithoutTraffic: ageInDays,
         },
-        suggestedAction: 'ENHANCE',
+        suggestedAction: "ENHANCE",
         autoActionEnabled: false,
       };
     }
@@ -240,7 +253,7 @@ export class ContentPipeline {
    */
   private checkThinContent(content: any): ContentIssue | null {
     const wordCount = content.wordCount || 0;
-    const contentType = content.type?.toLowerCase() || 'article';
+    const contentType = content.type?.toLowerCase() || "article";
     const minWords = MIN_WORD_COUNTS[contentType] || 800;
 
     const ratio = wordCount / minWords;
@@ -250,15 +263,15 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'THIN',
-        severity: 'CRITICAL',
+        issueType: "THIN",
+        severity: "CRITICAL",
         details: `Critically thin content: ${wordCount} words (need ${minWords}, only ${Math.round(ratio * 100)}%)`,
         metrics: {
           wordCount,
           seoScore: content.seoScore,
         },
-        suggestedAction: 'NOINDEX',
-        autoActionEnabled: this.autopilotMode === 'full',
+        suggestedAction: "NOINDEX",
+        autoActionEnabled: this.autopilotMode === "full",
       };
     }
 
@@ -267,14 +280,14 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'THIN',
-        severity: 'HIGH',
+        issueType: "THIN",
+        severity: "HIGH",
         details: `Thin content: ${wordCount} words (need ${minWords}, only ${Math.round(ratio * 100)}%)`,
         metrics: {
           wordCount,
           seoScore: content.seoScore,
         },
-        suggestedAction: 'ENHANCE',
+        suggestedAction: "ENHANCE",
         autoActionEnabled: false,
       };
     }
@@ -306,13 +319,13 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'STALE',
-        severity: 'HIGH',
+        issueType: "STALE",
+        severity: "HIGH",
         details: `Very stale content: not updated in ${daysSinceUpdate} days`,
         metrics: {
           daysSinceUpdate,
         },
-        suggestedAction: 'FLAG',
+        suggestedAction: "FLAG",
         autoActionEnabled: false,
       };
     }
@@ -322,13 +335,13 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'STALE',
-        severity: 'MEDIUM',
+        issueType: "STALE",
+        severity: "MEDIUM",
         details: `Stale content: not updated in ${daysSinceUpdate} days`,
         metrics: {
           daysSinceUpdate,
         },
-        suggestedAction: 'ENHANCE',
+        suggestedAction: "ENHANCE",
         autoActionEnabled: false,
       };
     }
@@ -348,14 +361,14 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'DUPLICATE',
-        severity: 'CRITICAL',
+        issueType: "DUPLICATE",
+        severity: "CRITICAL",
         details: `Near-duplicate content (${Math.round(duplicateSimilarity * 100)}% similar)`,
         metrics: {
           duplicateSimilarity,
         },
-        suggestedAction: 'MERGE',
-        autoActionEnabled: this.autopilotMode === 'full',
+        suggestedAction: "MERGE",
+        autoActionEnabled: this.autopilotMode === "full",
         relatedContentIds: duplicateOfId ? [duplicateOfId] : undefined,
       };
     }
@@ -365,13 +378,13 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'DUPLICATE',
-        severity: 'HIGH',
+        issueType: "DUPLICATE",
+        severity: "HIGH",
         details: `High duplicate similarity (${Math.round(duplicateSimilarity * 100)}%)`,
         metrics: {
           duplicateSimilarity,
         },
-        suggestedAction: 'FLAG',
+        suggestedAction: "FLAG",
         autoActionEnabled: false,
         relatedContentIds: duplicateOfId ? [duplicateOfId] : undefined,
       };
@@ -392,13 +405,13 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'CANNIBALIZATION',
-        severity: 'HIGH',
+        issueType: "CANNIBALIZATION",
+        severity: "HIGH",
         details: `High cannibalization risk (${Math.round(cannibalizationScore * 100)}%)`,
         metrics: {
           cannibalizationScore,
         },
-        suggestedAction: 'MERGE',
+        suggestedAction: "MERGE",
         autoActionEnabled: false,
         relatedContentIds: cannibalizedBy ? [cannibalizedBy] : undefined,
       };
@@ -409,13 +422,13 @@ export class ContentPipeline {
         contentId: content.id,
         title: content.title,
         url: content.slug || `/${content.type}/${content.id}`,
-        issueType: 'CANNIBALIZATION',
-        severity: 'MEDIUM',
+        issueType: "CANNIBALIZATION",
+        severity: "MEDIUM",
         details: `Moderate cannibalization risk (${Math.round(cannibalizationScore * 100)}%)`,
         metrics: {
           cannibalizationScore,
         },
-        suggestedAction: 'FLAG',
+        suggestedAction: "FLAG",
         autoActionEnabled: false,
         relatedContentIds: cannibalizedBy ? [cannibalizedBy] : undefined,
       };
@@ -430,7 +443,7 @@ export class ContentPipeline {
   private async executeAction(issue: ContentIssue): Promise<boolean> {
     try {
       switch (issue.suggestedAction) {
-        case 'NOINDEX':
+        case "NOINDEX":
           await db
             .update(contents)
             .set({
@@ -439,10 +452,10 @@ export class ContentPipeline {
               noindexedAt: new Date(),
             } as any)
             .where(eq(contents.id, issue.contentId));
-          console.log(`[PIPELINE] Set noindex for ${issue.contentId}: ${issue.details}`);
+
           return true;
 
-        case 'MERGE':
+        case "MERGE":
           await db
             .update(contents)
             .set({
@@ -452,10 +465,10 @@ export class ContentPipeline {
               mergeWithId: issue.relatedContentIds?.[0],
             } as any)
             .where(eq(contents.id, issue.contentId));
-          console.log(`[PIPELINE] Queued for merge: ${issue.contentId}`);
+
           return true;
 
-        case 'DELETE':
+        case "DELETE":
           await db
             .update(contents)
             .set({
@@ -464,10 +477,10 @@ export class ContentPipeline {
               deleteReason: issue.details,
             } as any)
             .where(eq(contents.id, issue.contentId));
-          console.log(`[PIPELINE] Queued for deletion: ${issue.contentId}`);
+
           return true;
 
-        case 'FLAG':
+        case "FLAG":
           await db
             .update(contents)
             .set({
@@ -476,10 +489,10 @@ export class ContentPipeline {
               flagReason: issue.details,
             } as any)
             .where(eq(contents.id, issue.contentId));
-          console.log(`[PIPELINE] Flagged for review: ${issue.contentId}`);
+
           return true;
 
-        case 'ENHANCE':
+        case "ENHANCE":
           await db
             .update(contents)
             .set({
@@ -488,15 +501,15 @@ export class ContentPipeline {
               enhancementReason: issue.details,
             } as any)
             .where(eq(contents.id, issue.contentId));
-          console.log(`[PIPELINE] Queued for enhancement: ${issue.contentId}`);
+
           return true;
 
-        case 'REDIRECT':
+        case "REDIRECT":
           // Would require additional redirect logic
-          console.log(`[PIPELINE] Redirect action for ${issue.contentId} requires manual setup`);
+
           return false;
 
-        case 'KEEP':
+        case "KEEP":
           // No action needed
           return true;
 
@@ -504,7 +517,6 @@ export class ContentPipeline {
           return false;
       }
     } catch (error) {
-      console.error(`[PIPELINE] Failed to execute action for ${issue.contentId}:`, error);
       return false;
     }
   }
@@ -514,15 +526,17 @@ export class ContentPipeline {
    */
   async getIssuesByType(issueType: ContentIssueType): Promise<ContentIssue[]> {
     const result = await this.runPipeline();
-    return result.issues.filter((i) => i.issueType === issueType);
+    return result.issues.filter(i => i.issueType === issueType);
   }
 
   /**
    * Get issues by severity
    */
-  async getIssuesBySeverity(severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'): Promise<ContentIssue[]> {
+  async getIssuesBySeverity(
+    severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"
+  ): Promise<ContentIssue[]> {
     const result = await this.runPipeline();
-    return result.issues.filter((i) => i.severity === severity);
+    return result.issues.filter(i => i.severity === severity);
   }
 
   /**
@@ -531,7 +545,7 @@ export class ContentPipeline {
   async getUrgentIssues(): Promise<ContentIssue[]> {
     const result = await this.runPipeline();
     return result.issues.filter(
-      (i) => i.severity === 'CRITICAL' || (i.severity === 'HIGH' && i.issueType === 'TOXIC')
+      i => i.severity === "CRITICAL" || (i.severity === "HIGH" && i.issueType === "TOXIC")
     );
   }
 

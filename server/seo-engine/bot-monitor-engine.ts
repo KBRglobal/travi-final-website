@@ -9,16 +9,10 @@
  * - Generates alerts
  */
 
-import { db } from '../db';
-import { aeoCrawlerLogs } from '../../shared/schema';
-import { eq, and, gte, lte, desc, count, sql } from 'drizzle-orm';
-import {
-  SEOEngineConfig,
-  BotVisit,
-  BotType,
-  BotStats,
-  BotBehaviorAlert,
-} from './types';
+import { db } from "../db";
+import { aeoCrawlerLogs } from "../../shared/schema";
+import { eq, and, gte, lte, desc, count, sql } from "drizzle-orm";
+import { SEOEngineConfig, BotVisit, BotType, BotStats, BotBehaviorAlert } from "./types";
 
 // Bot identification patterns
 const BOT_PATTERNS: Array<{
@@ -27,47 +21,47 @@ const BOT_PATTERNS: Array<{
   pattern: RegExp;
 }> = [
   // Search engines
-  { name: 'Googlebot', type: 'search_engine', pattern: /googlebot/i },
-  { name: 'Googlebot-Image', type: 'search_engine', pattern: /googlebot-image/i },
-  { name: 'Googlebot-News', type: 'search_engine', pattern: /googlebot-news/i },
-  { name: 'Googlebot-Video', type: 'search_engine', pattern: /googlebot-video/i },
-  { name: 'Bingbot', type: 'search_engine', pattern: /bingbot/i },
-  { name: 'Slurp', type: 'search_engine', pattern: /slurp/i },
-  { name: 'DuckDuckBot', type: 'search_engine', pattern: /duckduckbot/i },
-  { name: 'Baiduspider', type: 'search_engine', pattern: /baiduspider/i },
-  { name: 'YandexBot', type: 'search_engine', pattern: /yandexbot/i },
+  { name: "Googlebot", type: "search_engine", pattern: /googlebot/i },
+  { name: "Googlebot-Image", type: "search_engine", pattern: /googlebot-image/i },
+  { name: "Googlebot-News", type: "search_engine", pattern: /googlebot-news/i },
+  { name: "Googlebot-Video", type: "search_engine", pattern: /googlebot-video/i },
+  { name: "Bingbot", type: "search_engine", pattern: /bingbot/i },
+  { name: "Slurp", type: "search_engine", pattern: /slurp/i },
+  { name: "DuckDuckBot", type: "search_engine", pattern: /duckduckbot/i },
+  { name: "Baiduspider", type: "search_engine", pattern: /baiduspider/i },
+  { name: "YandexBot", type: "search_engine", pattern: /yandexbot/i },
 
   // AI crawlers
-  { name: 'GPTBot', type: 'ai_crawler', pattern: /gptbot/i },
-  { name: 'ChatGPT-User', type: 'ai_crawler', pattern: /chatgpt-user/i },
-  { name: 'Claude-Web', type: 'ai_crawler', pattern: /claude-web/i },
-  { name: 'anthropic-ai', type: 'ai_crawler', pattern: /anthropic-ai/i },
-  { name: 'PerplexityBot', type: 'ai_crawler', pattern: /perplexitybot/i },
-  { name: 'Google-Extended', type: 'ai_crawler', pattern: /google-extended/i },
-  { name: 'Cohere-AI', type: 'ai_crawler', pattern: /cohere-ai/i },
-  { name: 'Meta-ExternalAgent', type: 'ai_crawler', pattern: /meta-externalagent/i },
+  { name: "GPTBot", type: "ai_crawler", pattern: /gptbot/i },
+  { name: "ChatGPT-User", type: "ai_crawler", pattern: /chatgpt-user/i },
+  { name: "Claude-Web", type: "ai_crawler", pattern: /claude-web/i },
+  { name: "anthropic-ai", type: "ai_crawler", pattern: /anthropic-ai/i },
+  { name: "PerplexityBot", type: "ai_crawler", pattern: /perplexitybot/i },
+  { name: "Google-Extended", type: "ai_crawler", pattern: /google-extended/i },
+  { name: "Cohere-AI", type: "ai_crawler", pattern: /cohere-ai/i },
+  { name: "Meta-ExternalAgent", type: "ai_crawler", pattern: /meta-externalagent/i },
 
   // Social media
-  { name: 'Facebookbot', type: 'social_media', pattern: /facebookexternalhit|facebot/i },
-  { name: 'Twitterbot', type: 'social_media', pattern: /twitterbot/i },
-  { name: 'LinkedInBot', type: 'social_media', pattern: /linkedinbot/i },
-  { name: 'Pinterest', type: 'social_media', pattern: /pinterest/i },
-  { name: 'WhatsApp', type: 'social_media', pattern: /whatsapp/i },
-  { name: 'TelegramBot', type: 'social_media', pattern: /telegrambot/i },
-  { name: 'Slackbot', type: 'social_media', pattern: /slackbot/i },
-  { name: 'Discordbot', type: 'social_media', pattern: /discordbot/i },
+  { name: "Facebookbot", type: "social_media", pattern: /facebookexternalhit|facebot/i },
+  { name: "Twitterbot", type: "social_media", pattern: /twitterbot/i },
+  { name: "LinkedInBot", type: "social_media", pattern: /linkedinbot/i },
+  { name: "Pinterest", type: "social_media", pattern: /pinterest/i },
+  { name: "WhatsApp", type: "social_media", pattern: /whatsapp/i },
+  { name: "TelegramBot", type: "social_media", pattern: /telegrambot/i },
+  { name: "Slackbot", type: "social_media", pattern: /slackbot/i },
+  { name: "Discordbot", type: "social_media", pattern: /discordbot/i },
 
   // SEO tools
-  { name: 'AhrefsBot', type: 'seo_tool', pattern: /ahrefsbot/i },
-  { name: 'SemrushBot', type: 'seo_tool', pattern: /semrushbot/i },
-  { name: 'MJ12bot', type: 'seo_tool', pattern: /mj12bot/i },
-  { name: 'DotBot', type: 'seo_tool', pattern: /dotbot/i },
-  { name: 'Screaming Frog', type: 'seo_tool', pattern: /screaming frog/i },
+  { name: "AhrefsBot", type: "seo_tool", pattern: /ahrefsbot/i },
+  { name: "SemrushBot", type: "seo_tool", pattern: /semrushbot/i },
+  { name: "MJ12bot", type: "seo_tool", pattern: /mj12bot/i },
+  { name: "DotBot", type: "seo_tool", pattern: /dotbot/i },
+  { name: "Screaming Frog", type: "seo_tool", pattern: /screaming frog/i },
 
   // Monitoring
-  { name: 'UptimeRobot', type: 'monitoring', pattern: /uptimerobot/i },
-  { name: 'Pingdom', type: 'monitoring', pattern: /pingdom/i },
-  { name: 'StatusCake', type: 'monitoring', pattern: /statuscake/i },
+  { name: "UptimeRobot", type: "monitoring", pattern: /uptimerobot/i },
+  { name: "Pingdom", type: "monitoring", pattern: /pingdom/i },
+  { name: "StatusCake", type: "monitoring", pattern: /statuscake/i },
 ];
 
 // In-memory alerts
@@ -99,10 +93,10 @@ export class BotMonitorEngine {
 
     // Check for generic bot patterns
     if (/bot|crawler|spider|scraper/i.test(userAgent)) {
-      return { isBot: true, name: 'Unknown Bot', type: 'unknown' };
+      return { isBot: true, name: "Unknown Bot", type: "unknown" };
     }
 
-    return { isBot: false, name: '', type: 'unknown' };
+    return { isBot: false, name: "", type: "unknown" };
   }
 
   /**
@@ -129,7 +123,6 @@ export class BotMonitorEngine {
 
       return true;
     } catch (error) {
-      console.error('Failed to log bot visit:', error);
       return false;
     }
   }
@@ -172,7 +165,7 @@ export class BotMonitorEngine {
     const pathCounts = new Map<string, number>();
     for (const log of logs) {
       const pathMatch = log.requestPath.match(/^\/([^\/]+)/);
-      const pathKey = pathMatch ? pathMatch[1] : 'root';
+      const pathKey = pathMatch ? pathMatch[1] : "root";
       pathCounts.set(pathKey, (pathCounts.get(pathKey) || 0) + 1);
     }
     const byPath = Array.from(pathCounts.entries())
@@ -188,20 +181,16 @@ export class BotMonitorEngine {
 
     // Average response time
     const responseTimes = logs
-      .map((l) => l.responseTime)
+      .map(l => l.responseTime)
       .filter((t): t is number => t !== null && t !== undefined);
     const avgResponseTime =
       responseTimes.length > 0
-        ? Math.round(
-            responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length
-          )
+        ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
         : 0;
 
     // AI crawler share
     const aiCrawlerShare =
-      totalVisits > 0
-        ? Math.round((byType.ai_crawler / totalVisits) * 100)
-        : 0;
+      totalVisits > 0 ? Math.round((byType.ai_crawler / totalVisits) * 100) : 0;
 
     // Last visit
     const lastLog = logs.sort(
@@ -238,10 +227,10 @@ export class BotMonitorEngine {
 
     if (currentCount > baseline * 10) {
       this.createAlert({
-        type: 'spike',
+        type: "spike",
         botName,
         message: `Unusual spike in ${botName} activity: ${currentCount} visits this hour`,
-        severity: 'warning',
+        severity: "warning",
         timestamp: now,
         details: { currentCount, baseline },
       });
@@ -255,10 +244,10 @@ export class BotMonitorEngine {
 
       if (errorCount > 50) {
         this.createAlert({
-          type: 'error_rate',
+          type: "error_rate",
           botName,
           message: `High error rate for ${botName}: ${errorCount} errors today`,
-          severity: 'warning',
+          severity: "warning",
           timestamp: now,
           details: { errorCount, statusCode: visit.statusCode },
         });
@@ -270,10 +259,10 @@ export class BotMonitorEngine {
     if (isNewBot) {
       baselineData.set(`${botName}:seen`, 1);
       this.createAlert({
-        type: 'new_bot',
+        type: "new_bot",
         botName,
         message: `New bot detected: ${botName}`,
-        severity: 'info',
+        severity: "info",
         timestamp: now,
         details: { userAgent: visit.userAgent },
       });
@@ -286,7 +275,7 @@ export class BotMonitorEngine {
   private createAlert(alert: BotBehaviorAlert): void {
     // Deduplicate recent alerts
     const recentSimilar = alerts.find(
-      (a) =>
+      a =>
         a.type === alert.type &&
         a.botName === alert.botName &&
         Date.now() - a.timestamp.getTime() < 60 * 60 * 1000 // Within 1 hour
@@ -316,7 +305,7 @@ export class BotMonitorEngine {
     cutoff.setDate(cutoff.getDate() - olderThanDays);
 
     const initialLength = alerts.length;
-    const filtered = alerts.filter((a) => a.timestamp >= cutoff);
+    const filtered = alerts.filter(a => a.timestamp >= cutoff);
 
     alerts.length = 0;
     alerts.push(...filtered);
@@ -337,19 +326,15 @@ export class BotMonitorEngine {
     startDate.setDate(startDate.getDate() - days);
 
     // Get AI crawler names
-    const aiCrawlerNames = BOT_PATTERNS
-      .filter((b) => b.type === 'ai_crawler')
-      .map((b) => b.name);
+    const aiCrawlerNames = BOT_PATTERNS.filter(b => b.type === "ai_crawler").map(b => b.name);
 
     const logs = await db.query.aeoCrawlerLogs.findMany({
       where: gte(aeoCrawlerLogs.crawledAt, startDate),
     });
 
     // Filter to AI crawlers only
-    const aiLogs = logs.filter((l) =>
-      aiCrawlerNames.some((name) =>
-        l.crawler.toLowerCase().includes(name.toLowerCase())
-      )
+    const aiLogs = logs.filter(l =>
+      aiCrawlerNames.some(name => l.crawler.toLowerCase().includes(name.toLowerCase()))
     );
 
     const totalVisits = aiLogs.length;
@@ -371,10 +356,7 @@ export class BotMonitorEngine {
     const contentCounts = new Map<string, number>();
     for (const log of aiLogs) {
       if (log.contentId) {
-        contentCounts.set(
-          log.contentId,
-          (contentCounts.get(log.contentId) || 0) + 1
-        );
+        contentCounts.set(log.contentId, (contentCounts.get(log.contentId) || 0) + 1);
       }
     }
     const byContent = Array.from(contentCounts.entries())
@@ -386,7 +368,7 @@ export class BotMonitorEngine {
     const trendMap = new Map<string, number>();
     for (const log of aiLogs) {
       if (log.crawledAt) {
-        const dateKey = log.crawledAt.toISOString().split('T')[0];
+        const dateKey = log.crawledAt.toISOString().split("T")[0];
         trendMap.set(dateKey, (trendMap.get(dateKey) || 0) + 1);
       }
     }
@@ -407,7 +389,7 @@ export class BotMonitorEngine {
    */
   isAICrawler(userAgent: string): boolean {
     const botInfo = this.identifyBot(userAgent);
-    return botInfo.isBot && botInfo.type === 'ai_crawler';
+    return botInfo.isBot && botInfo.type === "ai_crawler";
   }
 
   /**
@@ -417,7 +399,7 @@ export class BotMonitorEngine {
     const engine = this;
 
     return async (req: any, res: any, next: any) => {
-      const userAgent = req.headers['user-agent'] || '';
+      const userAgent = req.headers["user-agent"] || "";
       const botInfo = engine.identifyBot(userAgent);
 
       if (botInfo.isBot) {

@@ -33,7 +33,7 @@ export type {
   ExperimentRecommendation,
   OptimizationSummary,
   ContentOptimizationView,
-} from './types';
+} from "./types";
 
 // Segments
 export {
@@ -46,43 +46,35 @@ export {
   inferDevice,
   calculateEngagementScore,
   analyzeSegmentPerformance,
-} from './segments';
+} from "./segments";
 
 // Bottlenecks
-export {
-  BottleneckDetector,
-  getBottleneckDetector,
-  resetBottleneckDetector,
-} from './bottlenecks';
+export { BottleneckDetector, getBottleneckDetector, resetBottleneckDetector } from "./bottlenecks";
 
 // Proposals
-export {
-  ProposalEngine,
-  getProposalEngine,
-  resetProposalEngine,
-} from './proposals';
+export { ProposalEngine, getProposalEngine, resetProposalEngine } from "./proposals";
 
 // Experiments
 export {
   ExperimentRecommender,
   getExperimentRecommender,
   resetExperimentRecommender,
-} from './experiments';
+} from "./experiments";
 
 // Import reset functions for internal use
-import { resetSegmentAnalyzer as _resetSegmentAnalyzer } from './segments';
-import { resetBottleneckDetector as _resetBottleneckDetector } from './bottlenecks';
-import { resetProposalEngine as _resetProposalEngine } from './proposals';
-import { resetExperimentRecommender as _resetExperimentRecommender } from './experiments';
+import { resetSegmentAnalyzer as _resetSegmentAnalyzer } from "./segments";
+import { resetBottleneckDetector as _resetBottleneckDetector } from "./bottlenecks";
+import { resetProposalEngine as _resetProposalEngine } from "./proposals";
+import { resetExperimentRecommender as _resetExperimentRecommender } from "./experiments";
 
 // Routes
-export { createTrafficOptimizationRouter } from './routes';
+export { createTrafficOptimizationRouter } from "./routes";
 
 /**
  * Check if feature is enabled
  */
 export function isTrafficOptimizationEnabled(): boolean {
-  return process.env.ENABLE_TRAFFIC_OPTIMIZATION === 'true';
+  return process.env.ENABLE_TRAFFIC_OPTIMIZATION === "true";
 }
 
 /**
@@ -90,17 +82,11 @@ export function isTrafficOptimizationEnabled(): boolean {
  */
 export function initTrafficOptimization(): void {
   if (!isTrafficOptimizationEnabled()) {
-    console.log('[TrafficOptimization] Feature disabled (ENABLE_TRAFFIC_OPTIMIZATION != true)');
     return;
   }
 
-  console.log('[TrafficOptimization] Traffic optimization engine initialized');
-
-  const proposalsEnabled = process.env.ENABLE_TRAFFIC_OPTIMIZATION_PROPOSALS !== 'false';
-  const experimentsEnabled = process.env.ENABLE_TRAFFIC_OPTIMIZATION_EXPERIMENTS !== 'false';
-
-  console.log(`[TrafficOptimization] Proposals: ${proposalsEnabled ? 'enabled' : 'disabled'}`);
-  console.log(`[TrafficOptimization] Experiments: ${experimentsEnabled ? 'enabled' : 'disabled'}`);
+  const proposalsEnabled = process.env.ENABLE_TRAFFIC_OPTIMIZATION_PROPOSALS !== "false";
+  const experimentsEnabled = process.env.ENABLE_TRAFFIC_OPTIMIZATION_EXPERIMENTS !== "false";
 }
 
 /**
@@ -111,5 +97,4 @@ export function shutdownTrafficOptimization(): void {
   (_resetBottleneckDetector as any)();
   (_resetProposalEngine as any)();
   (_resetExperimentRecommender as any)();
-  console.log('[TrafficOptimization] Traffic optimization engine shutdown');
 }

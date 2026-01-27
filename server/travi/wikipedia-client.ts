@@ -1,20 +1,20 @@
 /**
  * TRAVI Content Generation - Wikipedia API Client
- * 
+ *
  * Fetches location data from Wikipedia with CC BY-SA 3.0 attribution.
  * Used for initial location discovery and basic descriptions.
  */
 
-import { withRetry } from './retry-handler';
+import { withRetry } from "./retry-handler";
 
 // Wikipedia API endpoints
-const WIKIPEDIA_API = 'https://en.wikipedia.org/w/api.php';
+const WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php";
 
 // Attribution required for all Wikipedia content
 export const WIKIPEDIA_ATTRIBUTION = {
-  source: 'wikipedia' as const,
-  license: 'CC BY-SA 3.0',
-  licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+  source: "wikipedia" as const,
+  license: "CC BY-SA 3.0",
+  licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
 };
 
 export interface WikipediaLocation {
@@ -48,21 +48,21 @@ export async function searchNearbyLocations(
   limit: number = 50
 ): Promise<WikipediaSearchResult> {
   const params = new URLSearchParams({
-    action: 'query',
-    format: 'json',
-    generator: 'geosearch',
+    action: "query",
+    format: "json",
+    generator: "geosearch",
     ggscoord: `${lat}|${lon}`,
     ggsradius: String(Math.min(radius, 10000)), // Max 10km
     ggslimit: String(Math.min(limit, 50)),
-    prop: 'coordinates|extracts|info|categories|pageimages',
-    exintro: 'true',
-    explaintext: 'true',
-    exlimit: 'max',
-    inprop: 'url',
-    cllimit: 'max',
-    piprop: 'thumbnail',
-    pithumbsize: '400',
-    origin: '*',
+    prop: "coordinates|extracts|info|categories|pageimages",
+    exintro: "true",
+    explaintext: "true",
+    exlimit: "max",
+    inprop: "url",
+    cllimit: "max",
+    piprop: "thumbnail",
+    pithumbsize: "400",
+    origin: "*",
   });
 
   const result = await withRetry(
@@ -77,7 +77,6 @@ export async function searchNearbyLocations(
   );
 
   if (!result.success || !result.data) {
-    console.error('[Wikipedia] Search failed:', result.error);
     return { locations: [], attribution: WIKIPEDIA_ATTRIBUTION };
   }
 
@@ -85,13 +84,15 @@ export async function searchNearbyLocations(
   const locations = Object.values(pages).map((page: any) => ({
     pageid: page.pageid,
     title: page.title,
-    extract: page.extract || '',
+    extract: page.extract || "",
     fullurl: page.fullurl,
-    coordinates: page.coordinates?.[0] ? {
-      lat: page.coordinates[0].lat,
-      lon: page.coordinates[0].lon,
-    } : undefined,
-    categories: (page.categories || []).map((c: any) => c.title.replace('Category:', '')),
+    coordinates: page.coordinates?.[0]
+      ? {
+          lat: page.coordinates[0].lat,
+          lon: page.coordinates[0].lon,
+        }
+      : undefined,
+    categories: (page.categories || []).map((c: any) => c.title.replace("Category:", "")),
     thumbnail: page.thumbnail,
   }));
 
@@ -105,28 +106,29 @@ export async function searchNearbyLocations(
 // Search for attractions/points of interest in a city
 export async function searchCityAttractions(
   cityName: string,
-  category: 'attraction' | 'hotel' | 'restaurant',
+  category: "attraction" | "hotel" | "restaurant",
   limit: number = 100
 ): Promise<WikipediaSearchResult> {
   // Build category-specific search terms
   const categoryTerms: Record<string, string[]> = {
-    attraction: ['tourist attractions', 'landmarks', 'museums', 'monuments', 'parks'],
-    hotel: ['hotels', 'resorts', 'hospitality'],
-    restaurant: ['restaurants', 'cuisine', 'dining'],
+    attraction: ["tourist attractions", "landmarks", "museums", "monuments", "parks"],
+    hotel: ["hotels", "resorts", "hospitality"],
+    restaurant: ["restaurants", "cuisine", "dining"],
   };
 
   const searchCategories = categoryTerms[category] || categoryTerms.attraction;
   const allLocations: WikipediaLocation[] = [];
 
-  for (const term of searchCategories.slice(0, 2)) { // Limit API calls
+  for (const term of searchCategories.slice(0, 2)) {
+    // Limit API calls
     const params = new URLSearchParams({
-      action: 'query',
-      format: 'json',
-      list: 'categorymembers',
+      action: "query",
+      format: "json",
+      list: "categorymembers",
       cmtitle: `Category:${term} in ${cityName}`,
       cmlimit: String(Math.min(limit / 2, 50)),
-      cmprop: 'ids|title',
-      origin: '*',
+      cmprop: "ids|title",
+      origin: "*",
     });
 
     const result = await withRetry(
@@ -150,9 +152,7 @@ export async function searchCityAttractions(
   }
 
   // Deduplicate by pageid
-  const uniqueLocations = Array.from(
-    new Map(allLocations.map(l => [l.pageid, l])).values()
-  );
+  const uniqueLocations = Array.from(new Map(allLocations.map(l => [l.pageid, l])).values());
 
   return {
     locations: uniqueLocations.slice(0, limit),
@@ -169,20 +169,20 @@ export async function getPageDetails(pageIds: number[]): Promise<WikipediaLocati
 
   for (let i = 0; i < pageIds.length; i += batchSize) {
     const batch = pageIds.slice(i, i + batchSize);
-    
+
     const params = new URLSearchParams({
-      action: 'query',
-      format: 'json',
-      pageids: batch.join('|'),
-      prop: 'coordinates|extracts|info|categories|pageimages',
-      exintro: 'true',
-      explaintext: 'true',
-      exlimit: 'max',
-      inprop: 'url',
-      cllimit: 'max',
-      piprop: 'thumbnail',
-      pithumbsize: '400',
-      origin: '*',
+      action: "query",
+      format: "json",
+      pageids: batch.join("|"),
+      prop: "coordinates|extracts|info|categories|pageimages",
+      exintro: "true",
+      explaintext: "true",
+      exlimit: "max",
+      inprop: "url",
+      cllimit: "max",
+      piprop: "thumbnail",
+      pithumbsize: "400",
+      origin: "*",
     });
 
     const result = await withRetry(
@@ -199,19 +199,20 @@ export async function getPageDetails(pageIds: number[]): Promise<WikipediaLocati
     if (result.success && result.data?.query?.pages) {
       const pages = result.data.query.pages;
       for (const page of Object.values(pages) as any[]) {
-        if (page.pageid > 0) { // Skip invalid pages
+        if (page.pageid > 0) {
+          // Skip invalid pages
           allLocations.push({
             pageid: page.pageid,
             title: page.title,
-            extract: page.extract || '',
+            extract: page.extract || "",
             fullurl: page.fullurl,
-            coordinates: page.coordinates?.[0] ? {
-              lat: page.coordinates[0].lat,
-              lon: page.coordinates[0].lon,
-            } : undefined,
-            categories: (page.categories || []).map((c: any) => 
-              c.title.replace('Category:', '')
-            ),
+            coordinates: page.coordinates?.[0]
+              ? {
+                  lat: page.coordinates[0].lat,
+                  lon: page.coordinates[0].lon,
+                }
+              : undefined,
+            categories: (page.categories || []).map((c: any) => c.title.replace("Category:", "")),
             thumbnail: page.thumbnail,
           });
         }
@@ -223,21 +224,19 @@ export async function getPageDetails(pageIds: number[]): Promise<WikipediaLocati
 }
 
 // Search by title for specific location
-export async function searchByTitle(
-  title: string
-): Promise<WikipediaLocation | null> {
+export async function searchByTitle(title: string): Promise<WikipediaLocation | null> {
   const params = new URLSearchParams({
-    action: 'query',
-    format: 'json',
+    action: "query",
+    format: "json",
     titles: title,
-    prop: 'coordinates|extracts|info|categories|pageimages',
-    exintro: 'true',
-    explaintext: 'true',
-    inprop: 'url',
-    cllimit: 'max',
-    piprop: 'thumbnail',
-    pithumbsize: '400',
-    origin: '*',
+    prop: "coordinates|extracts|info|categories|pageimages",
+    exintro: "true",
+    explaintext: "true",
+    inprop: "url",
+    cllimit: "max",
+    piprop: "thumbnail",
+    pithumbsize: "400",
+    origin: "*",
   });
 
   const result = await withRetry(
@@ -265,15 +264,15 @@ export async function searchByTitle(
   return {
     pageid: page.pageid,
     title: page.title,
-    extract: page.extract || '',
+    extract: page.extract || "",
     fullurl: page.fullurl,
-    coordinates: page.coordinates?.[0] ? {
-      lat: page.coordinates[0].lat,
-      lon: page.coordinates[0].lon,
-    } : undefined,
-    categories: (page.categories || []).map((c: any) => 
-      c.title.replace('Category:', '')
-    ),
+    coordinates: page.coordinates?.[0]
+      ? {
+          lat: page.coordinates[0].lat,
+          lon: page.coordinates[0].lon,
+        }
+      : undefined,
+    categories: (page.categories || []).map((c: any) => c.title.replace("Category:", "")),
     thumbnail: page.thumbnail,
   };
 }
@@ -281,35 +280,44 @@ export async function searchByTitle(
 // Filter locations to tourism-relevant categories
 export function filterTourismLocations(
   locations: WikipediaLocation[],
-  category: 'attraction' | 'hotel' | 'restaurant'
+  category: "attraction" | "hotel" | "restaurant"
 ): WikipediaLocation[] {
   const categoryPatterns: Record<string, RegExp[]> = {
     attraction: [
-      /museum/i, /monument/i, /landmark/i, /park/i, /garden/i,
-      /palace/i, /castle/i, /tower/i, /bridge/i, /temple/i,
-      /church/i, /mosque/i, /beach/i, /island/i, /zoo/i,
-      /aquarium/i, /theme park/i, /historic/i, /heritage/i,
-      /tourist attraction/i, /observation/i, /viewpoint/i,
+      /museum/i,
+      /monument/i,
+      /landmark/i,
+      /park/i,
+      /garden/i,
+      /palace/i,
+      /castle/i,
+      /tower/i,
+      /bridge/i,
+      /temple/i,
+      /church/i,
+      /mosque/i,
+      /beach/i,
+      /island/i,
+      /zoo/i,
+      /aquarium/i,
+      /theme park/i,
+      /historic/i,
+      /heritage/i,
+      /tourist attraction/i,
+      /observation/i,
+      /viewpoint/i,
     ],
-    hotel: [
-      /hotel/i, /resort/i, /inn/i, /lodge/i, /motel/i,
-      /hospitality/i, /accommodation/i,
-    ],
-    restaurant: [
-      /restaurant/i, /cafe/i, /cuisine/i, /dining/i,
-      /food/i, /eatery/i, /bistro/i,
-    ],
+    hotel: [/hotel/i, /resort/i, /inn/i, /lodge/i, /motel/i, /hospitality/i, /accommodation/i],
+    restaurant: [/restaurant/i, /cafe/i, /cuisine/i, /dining/i, /food/i, /eatery/i, /bistro/i],
   };
 
   const patterns = categoryPatterns[category] || categoryPatterns.attraction;
 
   return locations.filter(loc => {
-    const categoryText = loc.categories.join(' ').toLowerCase();
+    const categoryText = loc.categories.join(" ").toLowerCase();
     const titleText = loc.title.toLowerCase();
-    
-    return patterns.some(pattern => 
-      pattern.test(categoryText) || pattern.test(titleText)
-    );
+
+    return patterns.some(pattern => pattern.test(categoryText) || pattern.test(titleText));
   });
 }
 

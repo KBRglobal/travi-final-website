@@ -1,37 +1,39 @@
-import { Resend } from 'resend';
-import { storage } from './storage';
-import type { User } from '@shared/schema';
+import { Resend } from "resend";
+import { storage } from "./storage";
+import type { User } from "@shared/schema";
 
 let connectionSettings: any;
 
 async function getResendCredentials() {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  const xReplitToken = process.env.REPL_IDENTITY 
-    ? 'repl ' + process.env.REPL_IDENTITY 
-    : process.env.WEB_REPL_RENEWAL 
-    ? 'depl ' + process.env.WEB_REPL_RENEWAL 
-    : null;
+  const xReplitToken = process.env.REPL_IDENTITY
+    ? "repl " + process.env.REPL_IDENTITY
+    : process.env.WEB_REPL_RENEWAL
+      ? "depl " + process.env.WEB_REPL_RENEWAL
+      : null;
 
   if (!xReplitToken) {
-    throw new Error('Replit token not found');
+    throw new Error("Replit token not found");
   }
 
   connectionSettings = await fetch(
-    'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=resend',
+    "https://" + hostname + "/api/v2/connection?include_secrets=true&connector_names=resend",
     {
       headers: {
-        'Accept': 'application/json',
-        'X_REPLIT_TOKEN': xReplitToken
-      }
+        Accept: "application/json",
+        X_REPLIT_TOKEN: xReplitToken,
+      },
     }
-  ).then(res => res.json()).then(data => data.items?.[0]);
+  )
+    .then(res => res.json())
+    .then(data => data.items?.[0]);
 
-  if (!connectionSettings || (!connectionSettings.settings.api_key)) {
-    throw new Error('Resend not connected');
+  if (!connectionSettings || !connectionSettings.settings.api_key) {
+    throw new Error("Resend not connected");
   }
   return {
-    apiKey: connectionSettings.settings.api_key, 
-    fromEmail: connectionSettings.settings.from_email
+    apiKey: connectionSettings.settings.api_key,
+    fromEmail: connectionSettings.settings.from_email,
   };
 }
 
@@ -39,7 +41,7 @@ export async function getResendClient() {
   const creds = await getResendCredentials();
   return {
     client: new Resend(creds.apiKey),
-    fromEmail: creds.fromEmail
+    fromEmail: creds.fromEmail,
   };
 }
 
@@ -50,11 +52,11 @@ export function generateOtpCode(): string {
 export async function sendOtpEmail(email: string, code: string): Promise<boolean> {
   try {
     const { client, fromEmail } = await getResendClient();
-    
+
     await client.emails.send({
       from: fromEmail,
       to: email,
-      subject: 'Your Travi CMS Login Code',
+      subject: "Your Travi CMS Login Code",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #0f172a;">Travi CMS Login</h2>
@@ -67,10 +69,9 @@ export async function sendOtpEmail(email: string, code: string): Promise<boolean
         </div>
       `,
     });
-    
+
     return true;
   } catch (error) {
-    console.error('Failed to send OTP email:', error);
     return false;
   }
 }
@@ -79,11 +80,11 @@ export async function requestOtp(email: string): Promise<{ success: boolean; mes
   const user = await storage.getUserByEmail(email);
 
   if (!user) {
-    return { success: false, message: 'No account found with this email address' };
+    return { success: false, message: "No account found with this email address" };
   }
 
   if (!user.isActive) {
-    return { success: false, message: 'This account has been deactivated' };
+    return { success: false, message: "This account has been deactivated" };
   }
 
   const code = generateOtpCode();
@@ -99,21 +100,23 @@ export async function requestOtp(email: string): Promise<{ success: boolean; mes
     const sent = await sendOtpEmail(email, code);
 
     if (!sent) {
-      return { success: false, message: 'Failed to send verification email' };
+      return { success: false, message: "Failed to send verification email" };
     }
 
-    return { success: true, message: 'Verification code sent to your email' };
+    return { success: true, message: "Verification code sent to your email" };
   } catch (error) {
-    console.error('Failed to create OTP:', error);
-    return { success: false, message: 'Failed to process OTP request' };
+    return { success: false, message: "Failed to process OTP request" };
   }
 }
 
-export async function verifyOtp(email: string, code: string): Promise<{ success: boolean; user?: User; message: string }> {
+export async function verifyOtp(
+  email: string,
+  code: string
+): Promise<{ success: boolean; user?: User; message: string }> {
   const otp = await storage.getValidOtpCode(email, code);
 
   if (!otp) {
-    return { success: false, message: 'Invalid or expired verification code' };
+    return { success: false, message: "Invalid or expired verification code" };
   }
 
   await storage.markOtpAsUsed(otp.id);
@@ -121,12 +124,12 @@ export async function verifyOtp(email: string, code: string): Promise<{ success:
   const user = await storage.getUserByEmail(email);
 
   if (!user) {
-    return { success: false, message: 'User not found' };
+    return { success: false, message: "User not found" };
   }
 
   if (!user.isActive) {
-    return { success: false, message: 'This account has been deactivated' };
+    return { success: false, message: "This account has been deactivated" };
   }
 
-  return { success: true, user, message: 'Login successful' };
+  return { success: true, user, message: "Login successful" };
 }

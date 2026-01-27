@@ -8,7 +8,7 @@
  * Feature flag: ENABLE_SECURITY_AUTHORITY
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   GateRequest,
   GateDecision,
@@ -23,8 +23,8 @@ import {
   ActorIdentity,
   GateContext,
   ResourceType,
-} from './types';
-import { SecuritySeverity, logSecurityEvent, SecurityEventType } from '../audit-logger';
+} from "./types";
+import { SecuritySeverity, logSecurityEvent, SecurityEventType } from "../audit-logger";
 
 // ============================================================================
 // SECURITY STATE MANAGEMENT
@@ -32,14 +32,14 @@ import { SecuritySeverity, logSecurityEvent, SecurityEventType } from '../audit-
 
 let currentSecurityMode: SecurityModeConfig = {
   mode: DEFAULT_SECURITY_AUTHORITY_CONFIG.defaultMode,
-  reason: 'System default',
+  reason: "System default",
   activatedAt: new Date(),
-  activatedBy: 'system',
+  activatedBy: "system",
   restrictions: MODE_RESTRICTIONS[DEFAULT_SECURITY_AUTHORITY_CONFIG.defaultMode],
 };
 
 let currentThreatState: ThreatState = {
-  level: 'normal',
+  level: "normal",
   sources: [],
   activeSince: new Date(),
 };
@@ -95,8 +95,7 @@ export const SecurityGate = {
 
     // Feature flag check - if disabled, allow everything (with warning)
     if (!DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
-      console.warn('[SecurityGate] DISABLED - all actions allowed without enforcement');
-      return createAllowDecision(auditId, 'Security authority disabled');
+      return createAllowDecision(auditId, "Security authority disabled");
     }
 
     try {
@@ -109,21 +108,19 @@ export const SecurityGate = {
       // Log performance
       const duration = Date.now() - startTime;
       if (duration > 100) {
-        console.warn(`[SecurityGate] Slow evaluation: ${duration}ms for ${request.action}`);
       }
 
       return decision;
     } catch (error) {
       // FAIL CLOSED - if evaluation fails, deny the action
-      console.error('[SecurityGate] Evaluation error:', error);
 
       if (DEFAULT_SECURITY_AUTHORITY_CONFIG.failClosed) {
-        return createDenyDecision(auditId, 'Security evaluation failed - fail closed', 'policy');
+        return createDenyDecision(auditId, "Security evaluation failed - fail closed", "policy");
       }
 
       // Only allow if explicitly configured to fail open (not recommended)
-      console.warn('[SecurityGate] FAIL OPEN - allowing action despite evaluation error');
-      return createAllowDecision(auditId, 'Evaluation failed - fail open mode');
+
+      return createAllowDecision(auditId, "Evaluation failed - fail open mode");
     }
   },
 
@@ -136,7 +133,7 @@ export const SecurityGate = {
     }
 
     try {
-      const decision = await evaluateRequest(request, 'dry-run');
+      const decision = await evaluateRequest(request, "dry-run");
       return decision.allowed;
     } catch {
       return !DEFAULT_SECURITY_AUTHORITY_CONFIG.failClosed;
@@ -153,7 +150,12 @@ export const SecurityGate = {
   /**
    * Set security mode
    */
-  async setMode(mode: SecurityMode, reason: string, activatedBy: string, autoExpireMinutes?: number): Promise<void> {
+  async setMode(
+    mode: SecurityMode,
+    reason: string,
+    activatedBy: string,
+    autoExpireMinutes?: number
+  ): Promise<void> {
     const previousMode = currentSecurityMode.mode;
 
     currentSecurityMode = {
@@ -161,20 +163,20 @@ export const SecurityGate = {
       reason,
       activatedAt: new Date(),
       activatedBy,
-      autoExpireAt: autoExpireMinutes ? new Date(Date.now() + autoExpireMinutes * 60 * 1000) : undefined,
+      autoExpireAt: autoExpireMinutes
+        ? new Date(Date.now() + autoExpireMinutes * 60 * 1000)
+        : undefined,
       restrictions: MODE_RESTRICTIONS[mode],
     };
-
-    console.log(`[SecurityGate] Mode changed: ${previousMode} -> ${mode} by ${activatedBy}`);
 
     // Audit mode change
     await logSecurityEvent({
       type: SecurityEventType.SETTINGS_CHANGED,
-      severity: mode === 'lockdown' ? SecuritySeverity.CRITICAL : SecuritySeverity.HIGH,
+      severity: mode === "lockdown" ? SecuritySeverity.CRITICAL : SecuritySeverity.HIGH,
       userId: activatedBy,
-      ipAddress: 'system',
-      resource: 'security_mode',
-      action: 'mode_change',
+      ipAddress: "system",
+      resource: "security_mode",
+      action: "mode_change",
       details: { previousMode, newMode: mode, reason },
       success: true,
     });
@@ -193,7 +195,11 @@ export const SecurityGate = {
   /**
    * Escalate threat level
    */
-  async escalateThreat(level: ThreatLevel, sources: ThreatState['sources'], reason: string): Promise<void> {
+  async escalateThreat(
+    level: ThreatLevel,
+    sources: ThreatState["sources"],
+    reason: string
+  ): Promise<void> {
     const previousLevel = currentThreatState.level;
 
     currentThreatState = {
@@ -203,11 +209,9 @@ export const SecurityGate = {
       autoDeescalateAt: new Date(Date.now() + 60 * 60 * 1000), // Auto-deescalate after 1 hour
     };
 
-    console.log(`[SecurityGate] Threat level escalated: ${previousLevel} -> ${level}`);
-
     // Auto-lockdown on critical threat
-    if (level === 'critical' && DEFAULT_SECURITY_AUTHORITY_CONFIG.autoLockdownOnCriticalThreat) {
-      await this.setMode('lockdown', `Critical threat: ${reason}`, 'system', 60);
+    if (level === "critical" && DEFAULT_SECURITY_AUTHORITY_CONFIG.autoLockdownOnCriticalThreat) {
+      await this.setMode("lockdown", `Critical threat: ${reason}`, "system", 60);
     }
 
     // Notify adapters
@@ -222,13 +226,11 @@ export const SecurityGate = {
 
     currentThreatState = {
       level,
-      sources: currentThreatState.sources.filter(s =>
-        s.severity === SecuritySeverity.CRITICAL || s.severity === SecuritySeverity.HIGH
+      sources: currentThreatState.sources.filter(
+        s => s.severity === SecuritySeverity.CRITICAL || s.severity === SecuritySeverity.HIGH
       ),
       activeSince: new Date(),
     };
-
-    console.log(`[SecurityGate] Threat level deescalated: ${previousLevel} -> ${level}`);
   },
 
   /**
@@ -310,13 +312,13 @@ async function evaluateRequest(request: GateRequest, auditId: string): Promise<G
   // 1. Check security mode restrictions
   const modeResult = evaluateSecurityMode(request);
   if (!modeResult.allowed) {
-    return createDenyDecision(auditId, modeResult.reason, 'mode', modeResult.severity);
+    return createDenyDecision(auditId, modeResult.reason, "mode", modeResult.severity);
   }
   if (modeResult.warning) {
     reasons.push({
-      code: 'MODE_WARNING',
+      code: "MODE_WARNING",
       message: modeResult.warning,
-      source: 'mode',
+      source: "mode",
       severity: SecuritySeverity.MEDIUM,
     });
   }
@@ -324,7 +326,7 @@ async function evaluateRequest(request: GateRequest, auditId: string): Promise<G
   // 2. Check threat level restrictions
   const threatResult = evaluateThreatLevel(request);
   if (!threatResult.allowed) {
-    return createDenyDecision(auditId, threatResult.reason, 'threat', threatResult.severity);
+    return createDenyDecision(auditId, threatResult.reason, "threat", threatResult.severity);
   }
 
   // 3. Check for active override
@@ -332,21 +334,25 @@ async function evaluateRequest(request: GateRequest, auditId: string): Promise<G
   const override = SecurityGate.hasOverride(overrideKey);
   if (override.valid) {
     reasons.push({
-      code: 'OVERRIDE_ACTIVE',
+      code: "OVERRIDE_ACTIVE",
       message: `Override ${override.overrideId} in effect`,
-      source: 'override',
+      source: "override",
       severity: SecuritySeverity.MEDIUM,
     });
-    return createAllowDecision(auditId, 'Override active', reasons);
+    return createAllowDecision(auditId, "Override active", reasons);
   }
 
   // 4. Check action-specific policies
   const policyResult = evaluateActionPolicies(request);
   if (!policyResult.allowed) {
     if (policyResult.requireApproval) {
-      return createApprovalRequiredDecision(auditId, policyResult.reason, policyResult.approverRole);
+      return createApprovalRequiredDecision(
+        auditId,
+        policyResult.reason,
+        policyResult.approverRole
+      );
     }
-    return createDenyDecision(auditId, policyResult.reason, 'policy', policyResult.severity);
+    return createDenyDecision(auditId, policyResult.reason, "policy", policyResult.severity);
   }
 
   // 5. Check rate limits
@@ -356,7 +362,7 @@ async function evaluateRequest(request: GateRequest, auditId: string): Promise<G
   }
 
   // 6. All checks passed
-  return createAllowDecision(auditId, 'All security checks passed', reasons);
+  return createAllowDecision(auditId, "All security checks passed", reasons);
 }
 
 function evaluateSecurityMode(request: GateRequest): {
@@ -377,7 +383,7 @@ function evaluateSecurityMode(request: GateRequest): {
   }
 
   // Check destructive actions
-  const destructiveActions: GatedAction[] = ['data_delete', 'content_delete', 'user_management'];
+  const destructiveActions: GatedAction[] = ["data_delete", "content_delete", "user_management"];
   if (destructiveActions.includes(request.action) && !restrictions.destructiveActionsAllowed) {
     return {
       allowed: false,
@@ -387,7 +393,7 @@ function evaluateSecurityMode(request: GateRequest): {
   }
 
   // Check bulk operations
-  if (request.action === 'bulk_operation' && !restrictions.bulkOperationsAllowed) {
+  if (request.action === "bulk_operation" && !restrictions.bulkOperationsAllowed) {
     return {
       allowed: false,
       reason: `Bulk operations blocked in ${currentSecurityMode.mode} mode`,
@@ -396,7 +402,10 @@ function evaluateSecurityMode(request: GateRequest): {
   }
 
   // Check deployments
-  if ((request.action === 'deployment' || request.action === 'cutover') && !restrictions.deploymentAllowed) {
+  if (
+    (request.action === "deployment" || request.action === "cutover") &&
+    !restrictions.deploymentAllowed
+  ) {
     return {
       allowed: false,
       reason: `Deployments blocked in ${currentSecurityMode.mode} mode`,
@@ -405,7 +414,7 @@ function evaluateSecurityMode(request: GateRequest): {
   }
 
   // Check external API calls
-  if (request.action === 'external_api_call' && !restrictions.externalApiCallsAllowed) {
+  if (request.action === "external_api_call" && !restrictions.externalApiCallsAllowed) {
     return {
       allowed: false,
       reason: `External API calls blocked in ${currentSecurityMode.mode} mode`,
@@ -414,15 +423,15 @@ function evaluateSecurityMode(request: GateRequest): {
   }
 
   // Warning for enforce mode
-  if (currentSecurityMode.mode === 'enforce' && isHighImpactAction(request)) {
+  if (currentSecurityMode.mode === "enforce" && isHighImpactAction(request)) {
     return {
       allowed: true,
-      reason: 'Allowed with enhanced monitoring',
+      reason: "Allowed with enhanced monitoring",
       warning: `High-impact action ${request.action} logged for review`,
     };
   }
 
-  return { allowed: true, reason: 'Mode check passed' };
+  return { allowed: true, reason: "Mode check passed" };
 }
 
 function evaluateThreatLevel(request: GateRequest): {
@@ -433,40 +442,40 @@ function evaluateThreatLevel(request: GateRequest): {
   const { level } = currentThreatState;
 
   // Critical threat - block all non-essential actions
-  if (level === 'critical') {
-    const essentialActions: GatedAction[] = ['data_read'];
+  if (level === "critical") {
+    const essentialActions: GatedAction[] = ["data_read"];
     if (!essentialActions.includes(request.action)) {
       return {
         allowed: false,
-        reason: 'System under critical threat - only essential read operations allowed',
+        reason: "System under critical threat - only essential read operations allowed",
         severity: SecuritySeverity.CRITICAL,
       };
     }
   }
 
   // High threat - block high-impact actions
-  if (level === 'high') {
+  if (level === "high") {
     if (isHighImpactAction(request) || request.actor.isAutopilot) {
       return {
         allowed: false,
-        reason: 'System under high threat - high-impact and autopilot actions blocked',
+        reason: "System under high threat - high-impact and autopilot actions blocked",
         severity: SecuritySeverity.HIGH,
       };
     }
   }
 
   // Elevated threat - block autopilot only
-  if (level === 'elevated') {
+  if (level === "elevated") {
     if (request.actor.isAutopilot) {
       return {
         allowed: false,
-        reason: 'System under elevated threat - autopilot actions suspended',
+        reason: "System under elevated threat - autopilot actions suspended",
         severity: SecuritySeverity.MEDIUM,
       };
     }
   }
 
-  return { allowed: true, reason: 'Threat check passed' };
+  return { allowed: true, reason: "Threat check passed" };
 }
 
 function evaluateActionPolicies(request: GateRequest): {
@@ -477,40 +486,38 @@ function evaluateActionPolicies(request: GateRequest): {
   severity?: SecuritySeverity;
 } {
   // Admin actions require super_admin or admin role
-  if (request.action === 'admin_action') {
-    const hasAdminRole = request.actor.roles?.some(r =>
-      r === 'super_admin' || r === 'admin'
-    );
+  if (request.action === "admin_action") {
+    const hasAdminRole = request.actor.roles?.some(r => r === "super_admin" || r === "admin");
     if (!hasAdminRole) {
       return {
         allowed: false,
-        reason: 'Admin actions require admin or super_admin role',
+        reason: "Admin actions require admin or super_admin role",
         severity: SecuritySeverity.HIGH,
       };
     }
   }
 
   // User management requires approval in enforce mode
-  if (request.action === 'user_management' && currentSecurityMode.mode === 'enforce') {
+  if (request.action === "user_management" && currentSecurityMode.mode === "enforce") {
     return {
       allowed: false,
-      reason: 'User management requires approval',
+      reason: "User management requires approval",
       requireApproval: true,
-      approverRole: 'super_admin',
+      approverRole: "super_admin",
     };
   }
 
   // Bulk operations with high record counts require approval
-  if (request.action === 'bulk_operation' && (request.context.affectedRecordCount || 0) > 100) {
+  if (request.action === "bulk_operation" && (request.context.affectedRecordCount || 0) > 100) {
     return {
       allowed: false,
       reason: `Bulk operation affects ${request.context.affectedRecordCount} records - approval required`,
       requireApproval: true,
-      approverRole: 'admin',
+      approverRole: "admin",
     };
   }
 
-  return { allowed: true, reason: 'Policy check passed' };
+  return { allowed: true, reason: "Policy check passed" };
 }
 
 function checkRateLimit(request: GateRequest): {
@@ -572,35 +579,43 @@ function checkRateLimit(request: GateRequest): {
 
 function isHighImpactAction(request: GateRequest): boolean {
   const highImpactActions: GatedAction[] = [
-    'data_delete',
-    'content_delete',
-    'bulk_operation',
-    'deployment',
-    'cutover',
-    'user_management',
-    'role_management',
-    'settings_change',
+    "data_delete",
+    "content_delete",
+    "bulk_operation",
+    "deployment",
+    "cutover",
+    "user_management",
+    "role_management",
+    "settings_change",
   ];
 
-  return highImpactActions.includes(request.action) ||
-    request.context.estimatedImpact === 'high' ||
-    request.context.estimatedImpact === 'critical';
+  return (
+    highImpactActions.includes(request.action) ||
+    request.context.estimatedImpact === "high" ||
+    request.context.estimatedImpact === "critical"
+  );
 }
 
 function buildOverrideKey(request: GateRequest): string {
-  return `${request.actor.userId || 'anon'}:${request.action}:${request.resource}:${request.resourceId || '*'}`;
+  return `${request.actor.userId || "anon"}:${request.action}:${request.resource}:${request.resourceId || "*"}`;
 }
 
-function createAllowDecision(auditId: string, reason: string, additionalReasons?: GateReason[]): GateDecision {
+function createAllowDecision(
+  auditId: string,
+  reason: string,
+  additionalReasons?: GateReason[]
+): GateDecision {
   return {
     allowed: true,
-    decision: 'ALLOW',
-    reasons: additionalReasons || [{
-      code: 'ALLOWED',
-      message: reason,
-      source: 'policy',
-      severity: SecuritySeverity.LOW,
-    }],
+    decision: "ALLOW",
+    reasons: additionalReasons || [
+      {
+        code: "ALLOWED",
+        message: reason,
+        source: "policy",
+        severity: SecuritySeverity.LOW,
+      },
+    ],
     auditId,
     evaluatedAt: new Date(),
     securityMode: currentSecurityMode.mode,
@@ -611,18 +626,20 @@ function createAllowDecision(auditId: string, reason: string, additionalReasons?
 function createDenyDecision(
   auditId: string,
   reason: string,
-  source: GateReason['source'],
+  source: GateReason["source"],
   severity: SecuritySeverity = SecuritySeverity.MEDIUM
 ): GateDecision {
   return {
     allowed: false,
-    decision: 'DENY',
-    reasons: [{
-      code: 'DENIED',
-      message: reason,
-      source,
-      severity,
-    }],
+    decision: "DENY",
+    reasons: [
+      {
+        code: "DENIED",
+        message: reason,
+        source,
+        severity,
+      },
+    ],
     auditId,
     evaluatedAt: new Date(),
     securityMode: currentSecurityMode.mode,
@@ -630,22 +647,30 @@ function createDenyDecision(
   };
 }
 
-function createApprovalRequiredDecision(auditId: string, reason: string, approverRole?: string): GateDecision {
+function createApprovalRequiredDecision(
+  auditId: string,
+  reason: string,
+  approverRole?: string
+): GateDecision {
   return {
     allowed: false,
-    decision: 'REQUIRE_APPROVAL',
-    reasons: [{
-      code: 'APPROVAL_REQUIRED',
-      message: reason,
-      source: 'policy',
-      severity: SecuritySeverity.MEDIUM,
-    }],
-    requiredApprovals: [{
-      approverRole: approverRole || 'admin',
-      minApprovers: 1,
-      expiresAfterMs: 24 * 60 * 60 * 1000, // 24 hours
-      reason,
-    }],
+    decision: "REQUIRE_APPROVAL",
+    reasons: [
+      {
+        code: "APPROVAL_REQUIRED",
+        message: reason,
+        source: "policy",
+        severity: SecuritySeverity.MEDIUM,
+      },
+    ],
+    requiredApprovals: [
+      {
+        approverRole: approverRole || "admin",
+        minApprovers: 1,
+        expiresAfterMs: 24 * 60 * 60 * 1000, // 24 hours
+        reason,
+      },
+    ],
     auditId,
     evaluatedAt: new Date(),
     securityMode: currentSecurityMode.mode,
@@ -656,13 +681,15 @@ function createApprovalRequiredDecision(auditId: string, reason: string, approve
 function createRateLimitedDecision(auditId: string, retryAfterMs: number): GateDecision {
   return {
     allowed: false,
-    decision: 'RATE_LIMITED',
-    reasons: [{
-      code: 'RATE_LIMITED',
-      message: `Rate limit exceeded. Retry after ${Math.ceil(retryAfterMs / 1000)} seconds`,
-      source: 'rate_limit',
-      severity: SecuritySeverity.LOW,
-    }],
+    decision: "RATE_LIMITED",
+    reasons: [
+      {
+        code: "RATE_LIMITED",
+        message: `Rate limit exceeded. Retry after ${Math.ceil(retryAfterMs / 1000)} seconds`,
+        source: "rate_limit",
+        severity: SecuritySeverity.LOW,
+      },
+    ],
     retryAfterMs,
     auditId,
     evaluatedAt: new Date(),
@@ -695,7 +722,7 @@ async function auditDecision(request: GateRequest, decision: GateDecision): Prom
       severity: decision.reasons[0]?.severity || SecuritySeverity.MEDIUM,
       userId: request.actor.userId,
       userName: request.actor.userName,
-      ipAddress: request.actor.ipAddress || 'unknown',
+      ipAddress: request.actor.ipAddress || "unknown",
       userAgent: request.actor.userAgent,
       resource: request.resource,
       action: request.action,
@@ -717,12 +744,10 @@ async function auditDecision(request: GateRequest, decision: GateDecision): Prom
 
 async function notifyAdaptersOfModeChange(_config: SecurityModeConfig): Promise<void> {
   // Will be implemented in adapters module
-  console.log('[SecurityGate] Mode change notification queued for adapters');
 }
 
 async function notifyAdaptersOfThreatEscalation(_threat: ThreatState): Promise<void> {
   // Will be implemented in adapters module
-  console.log('[SecurityGate] Threat escalation notification queued for adapters');
 }
 
 // ============================================================================
@@ -730,12 +755,12 @@ async function notifyAdaptersOfThreatEscalation(_threat: ThreatState): Promise<v
 // ============================================================================
 
 export class SecurityGateError extends Error {
-  public readonly code = 'SECURITY_GATE_DENIED';
+  public readonly code = "SECURITY_GATE_DENIED";
   public readonly decision: GateDecision;
 
   constructor(decision: GateDecision) {
-    super(`Security gate denied: ${decision.reasons[0]?.message || 'Unknown reason'}`);
-    this.name = 'SecurityGateError';
+    super(`Security gate denied: ${decision.reasons[0]?.message || "Unknown reason"}`);
+    this.name = "SecurityGateError";
     this.decision = decision;
   }
 
@@ -752,7 +777,7 @@ export class SecurityGateError extends Error {
 // EXPRESS MIDDLEWARE
 // ============================================================================
 
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from "express";
 
 /**
  * Middleware to enforce security gate on routes
@@ -766,9 +791,9 @@ export function requireSecurityGate(action: GatedAction, resource: ResourceType)
         userId: user?.claims?.sub,
         userName: user?.claims?.name,
         userEmail: user?.claims?.email,
-        roles: user?.roles || ['viewer'],
+        roles: user?.roles || ["viewer"],
         ipAddress: req.ip || req.socket.remoteAddress,
-        userAgent: req.get('User-Agent'),
+        userAgent: req.get("User-Agent"),
         sessionId: (req as any).sessionID,
         isSystem: false,
         isAutopilot: false,
@@ -789,8 +814,8 @@ export function requireSecurityGate(action: GatedAction, resource: ResourceType)
     const decision = await SecurityGate.assertAllowed(request);
 
     if (!decision.allowed) {
-      return res.status(decision.decision === 'RATE_LIMITED' ? 429 : 403).json({
-        error: 'Security gate denied',
+      return res.status(decision.decision === "RATE_LIMITED" ? 429 : 403).json({
+        error: "Security gate denied",
         code: decision.decision,
         message: decision.reasons[0]?.message,
         retryAfter: decision.retryAfterMs ? Math.ceil(decision.retryAfterMs / 1000) : undefined,
@@ -803,5 +828,3 @@ export function requireSecurityGate(action: GatedAction, resource: ResourceType)
     next();
   };
 }
-
-console.log('[SecurityGate] Global enforcement hook loaded');

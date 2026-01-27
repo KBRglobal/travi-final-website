@@ -1,9 +1,9 @@
 /**
  * Weekly Digest Scheduler
- * 
+ *
  * Sends automated weekly digest emails to subscribers with frequency: 'weekly'
  * Feature flag controlled via ENABLE_WEEKLY_DIGEST environment variable
- * 
+ *
  * PHASE 14 TASK 4: Safe Activation Mode
  * - Test endpoint: Send to single email for testing
  * - Dry-run mode: Generate content without sending
@@ -108,7 +108,7 @@ function getWeekNumber(date: Date): number {
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
 }
 
 /**
@@ -116,7 +116,7 @@ function getWeekNumber(date: Date): number {
  */
 function getCurrentMonthKey(): string {
   const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
 /**
@@ -126,18 +126,18 @@ function getNextScheduledTime(): Date {
   const now = new Date();
   const targetDay = getScheduledDay();
   const targetHour = getScheduledHour();
-  
+
   const next = new Date(now);
   next.setUTCHours(targetHour, 0, 0, 0);
-  
+
   const daysUntilTarget = (targetDay - now.getUTCDay() + 7) % 7;
-  
+
   if (daysUntilTarget === 0 && now.getUTCHours() >= targetHour) {
     next.setUTCDate(next.getUTCDate() + 7);
   } else {
     next.setUTCDate(next.getUTCDate() + daysUntilTarget);
   }
-  
+
   return next;
 }
 
@@ -147,7 +147,6 @@ function getNextScheduledTime(): Date {
 function getResendClient(): Resend | null {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("[Digest] RESEND_API_KEY not configured");
     return null;
   }
   return new Resend(apiKey);
@@ -199,7 +198,7 @@ async function setLastWeekNumber(weekNumber: number): Promise<void> {
 async function getKPIStats(): Promise<DigestKPIStats> {
   const cached = await cache.get(CACHE_KEY_KPI_STATS);
   const currentMonth = getCurrentMonthKey();
-  
+
   const defaultStats: DigestKPIStats = {
     totalDigestsSent: 0,
     totalRecipientsReached: 0,
@@ -233,7 +232,7 @@ async function updateKPIStats(recipientCount: number): Promise<void> {
   stats.totalRecipientsReached += recipientCount;
   stats.digestsSentThisMonth += 1;
   stats.lastUpdated = new Date().toISOString();
-  
+
   await cache.set(CACHE_KEY_KPI_STATS, JSON.stringify(stats), 60 * 60 * 24 * 365); // 1 year TTL
 }
 
@@ -243,7 +242,7 @@ async function updateKPIStats(recipientCount: number): Promise<void> {
 async function canSendDigest(): Promise<boolean> {
   const lastSent = await getLastDigestSent();
   if (!lastSent) return true;
-  
+
   const daysSinceLastSent = (Date.now() - lastSent.getTime()) / (1000 * 60 * 60 * 24);
   return daysSinceLastSent >= MIN_DAYS_BETWEEN_DIGESTS;
 }
@@ -281,7 +280,7 @@ async function generateDigestContent(): Promise<{
 }> {
   const generated = await campaigns.generateFromContent({
     days: 7,
-    limit: 5
+    limit: 5,
   });
   return generated;
 }
@@ -291,13 +290,9 @@ async function generateDigestContent(): Promise<{
  * Useful for verifying content before enabling
  */
 export async function dryRunDigest(): Promise<DryRunResult> {
-  console.log("[Digest] Starting dry-run generation...");
-  
   const generated = await generateDigestContent();
   const subscriberCount = await getWeeklySubscriberCount();
-  
-  console.log(`[Digest] Dry-run complete: ${generated.contentCount} articles, ${subscriberCount} potential recipients`);
-  
+
   return {
     previewHtml: generated.contentHtml,
     articleCount: generated.contentCount,
@@ -313,8 +308,6 @@ export async function dryRunDigest(): Promise<DryRunResult> {
  * Does not affect KPI counters or dedupe state
  */
 export async function sendTestDigest(recipientEmail: string): Promise<TestDigestResult> {
-  console.log(`[Digest] Sending test digest to: ${recipientEmail}`);
-  
   const resend = getResendClient();
   if (!resend) {
     return {
@@ -326,10 +319,10 @@ export async function sendTestDigest(recipientEmail: string): Promise<TestDigest
       error: "Resend not configured. Set RESEND_API_KEY environment variable.",
     };
   }
-  
+
   try {
     const generated = await generateDigestContent();
-    
+
     if (generated.contentCount === 0) {
       return {
         success: false,
@@ -340,11 +333,11 @@ export async function sendTestDigest(recipientEmail: string): Promise<TestDigest
         error: "No recent content found for digest",
       };
     }
-    
+
     // Get sender email from env or use default
     const fromEmail = process.env.NEWSLETTER_FROM_EMAIL || "noreply@travi.world";
     const fromName = process.env.NEWSLETTER_FROM_NAME || "Travi";
-    
+
     await resend.emails.send({
       from: `${fromName} <${fromEmail}>`,
       to: recipientEmail,
@@ -356,9 +349,7 @@ export async function sendTestDigest(recipientEmail: string): Promise<TestDigest
         ${generated.contentHtml}
       `,
     });
-    
-    console.log(`[Digest] Test digest sent successfully to ${recipientEmail}`);
-    
+
     return {
       success: true,
       previewHtml: generated.contentHtml,
@@ -368,8 +359,7 @@ export async function sendTestDigest(recipientEmail: string): Promise<TestDigest
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("[Digest] Test send failed:", errorMessage);
-    
+
     return {
       success: false,
       previewHtml: "",
@@ -385,11 +375,12 @@ export async function sendTestDigest(recipientEmail: string): Promise<TestDigest
  * Send weekly digest to all weekly subscribers
  * With week dedupe protection and KPI tracking
  */
-export async function sendWeeklyDigest(options: { force?: boolean } = {}): Promise<SendDigestResult> {
+export async function sendWeeklyDigest(
+  options: { force?: boolean } = {}
+): Promise<SendDigestResult> {
   const currentWeek = getWeekNumber(new Date());
-  
+
   if (!isWeeklyDigestEnabled()) {
-    console.log("[Digest] Feature is disabled, skipping");
     return { success: false, error: "Feature disabled" };
   }
 
@@ -398,9 +389,9 @@ export async function sendWeeklyDigest(options: { force?: boolean } = {}): Promi
     const alreadySentThisWeek = await wasDigestSentThisWeek();
     if (alreadySentThisWeek) {
       const message = `Digest already sent for week ${currentWeek}`;
-      console.log(`[Digest] ${message}`);
-      return { 
-        success: false, 
+
+      return {
+        success: false,
         error: message,
         skippedReason: "week_dedupe",
         weekNumber: currentWeek,
@@ -410,35 +401,27 @@ export async function sendWeeklyDigest(options: { force?: boolean } = {}): Promi
 
   const canSend = await canSendDigest();
   if (!canSend && !options.force) {
-    console.log("[Digest] Too soon since last digest, skipping");
     return { success: false, error: "Minimum interval not reached" };
   }
-
-  console.log("[Digest] Starting weekly digest generation...");
 
   try {
     const generated = await generateDigestContent();
 
     if (generated.contentCount === 0) {
-      console.log("[Digest] No recent content found, skipping");
       return { success: false, error: "No recent content" };
     }
-
-    console.log(`[Digest] Generated digest with ${generated.contentCount} articles`);
 
     const campaign = await campaigns.create({
       name: `Weekly Digest - ${new Date().toISOString().split("T")[0]}`,
       subject: generated.subject,
       subjectHe: generated.subjectHe,
       previewText: "Your weekly roundup of the best travel discoveries",
-      previewTextHe: "סיכום שבועי של התגליות הטובות ביותר",
+      previewTextHe: "",
       contentHtml: generated.contentHtml,
       contentHtmlHe: generated.contentHtmlHe,
       targetTags: undefined,
       targetLocales: undefined,
     });
-
-    console.log(`[Digest] Campaign created: ${campaign.id}`);
 
     const result = await campaigns.sendNow(campaign.id);
 
@@ -446,12 +429,10 @@ export async function sendWeeklyDigest(options: { force?: boolean } = {}): Promi
       // Update state
       await setLastDigestSent(new Date());
       await setLastWeekNumber(currentWeek);
-      
+
       // Update KPI counters
       await updateKPIStats(result.recipientCount);
-      
-      console.log(`[Digest] Weekly digest sent to ${result.recipientCount} subscribers`);
-      
+
       return {
         success: true,
         campaignId: campaign.id,
@@ -459,12 +440,11 @@ export async function sendWeeklyDigest(options: { force?: boolean } = {}): Promi
         weekNumber: currentWeek,
       };
     } else {
-      console.log("[Digest] Failed to send campaign");
       return { success: false, error: "Campaign send failed" };
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("[Digest] Error:", errorMessage);
+
     return { success: false, error: errorMessage };
   }
 }
@@ -480,7 +460,6 @@ async function checkAndSendDigest(): Promise<void> {
   const targetHour = getScheduledHour();
 
   if (now.getUTCDay() === targetDay && now.getUTCHours() === targetHour) {
-    console.log("[Digest] Scheduled time reached, triggering digest...");
     await sendWeeklyDigest();
   }
 }
@@ -495,7 +474,7 @@ export async function getDigestStatus(): Promise<DigestStatus> {
   const subscriberCount = await getWeeklySubscriberCount();
   const nextScheduled = enabled ? getNextScheduledTime() : null;
   const currentWeek = getWeekNumber(new Date());
-  const canSendThisWeek = !await wasDigestSentThisWeek();
+  const canSendThisWeek = !(await wasDigestSentThisWeek());
 
   return {
     enabled,
@@ -514,7 +493,7 @@ export async function getDigestStatus(): Promise<DigestStatus> {
 export async function getDigestKPIStats(): Promise<DigestKPIStats & { status: DigestStatus }> {
   const stats = await getKPIStats();
   const status = await getDigestStatus();
-  
+
   return {
     ...stats,
     status,
@@ -526,24 +505,19 @@ export async function getDigestKPIStats(): Promise<DigestKPIStats & { status: Di
  */
 export function startWeeklyDigestScheduler(): void {
   if (!isWeeklyDigestEnabled()) {
-    console.log("[Digest] Feature disabled, scheduler not started");
     return;
   }
 
   if (schedulerInterval) {
-    console.log("[Digest] Scheduler already running");
     return;
   }
 
-  console.log("[Digest] Starting scheduler...");
-  console.log(`[Digest] Configured: Day=${getScheduledDay()} (0=Sun, 1=Mon), Hour=${getScheduledHour()} UTC`);
-  console.log(`[Digest] Next scheduled: ${getNextScheduledTime().toISOString()}`);
-
-  schedulerInterval = setInterval(async () => {
-    await checkAndSendDigest();
-  }, 60 * 60 * 1000); // Check every hour
-
-  console.log("[Digest] Scheduler started (checking hourly)");
+  schedulerInterval = setInterval(
+    async () => {
+      await checkAndSendDigest();
+    },
+    60 * 60 * 1000
+  ); // Check every hour
 }
 
 /**
@@ -553,6 +527,5 @@ export function stopWeeklyDigestScheduler(): void {
   if (schedulerInterval) {
     clearInterval(schedulerInterval);
     schedulerInterval = null;
-    console.log("[Digest] Scheduler stopped");
   }
 }

@@ -60,9 +60,7 @@ export class ObjectStorageAdapter implements StorageAdapter {
     try {
       await this.ensureInitialized();
       await this.client.delete(key);
-    } catch (error) {
-      console.warn(`[ObjectStorage] Failed to delete ${key}:`, error);
-    }
+    } catch (error) {}
   }
 
   async exists(key: string): Promise<boolean> {
@@ -166,7 +164,6 @@ export class LocalStorageAdapter implements StorageAdapter {
     const resolvedPath = path.resolve(filePath);
     const resolvedBase = path.resolve(this.baseDir);
     if (!resolvedPath.startsWith(resolvedBase)) {
-      console.warn(`[LocalStorage] Path traversal attempt blocked: ${key}`);
       return;
     }
 
@@ -174,9 +171,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
-    } catch (error) {
-      console.warn(`[LocalStorage] Failed to delete ${key}:`, error);
-    }
+    } catch (error) {}
   }
 
   async exists(key: string): Promise<boolean> {
@@ -228,9 +223,7 @@ export class StorageManager {
     this.objectStorageEnabled = !!process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
 
     if (this.objectStorageEnabled) {
-      console.log("[StorageManager] Object Storage configured, will initialize on first use");
     } else {
-      console.log("[StorageManager] No Object Storage configured, using local storage");
     }
   }
 
@@ -254,12 +247,12 @@ export class StorageManager {
       await this.primaryAdapter.upload(testKey, Buffer.from("init-test"));
       await this.primaryAdapter.delete(testKey);
       this.primaryInitialized = true;
-      console.log("[StorageManager] Object Storage initialized successfully as primary");
+
       return this.primaryAdapter;
     } catch (error) {
       this.initError = error as Error;
       this.primaryInitialized = true;
-      console.warn("[StorageManager] Object Storage init failed, using local storage:", error);
+
       return null;
     }
   }
@@ -273,16 +266,14 @@ export class StorageManager {
     if (primary) {
       try {
         const url = await primary.upload(key, buffer);
-        console.log(`[StorageManager] Uploaded to ${primary.getName()}: ${key}`);
+
         return { url, storage: primary.getName() };
-      } catch (error) {
-        console.warn(`[StorageManager] Primary storage failed, falling back:`, error);
-      }
+      } catch (error) {}
     }
 
     // Fallback to local storage
     const url = await this.fallbackAdapter.upload(key, buffer);
-    console.log(`[StorageManager] Uploaded to ${this.fallbackAdapter.getName()}: ${key}`);
+
     return { url, storage: this.fallbackAdapter.getName() };
   }
 
@@ -333,7 +324,6 @@ export class StorageManager {
     const resolvedPath = path.resolve(localPath);
     const resolvedBase = path.resolve(uploadsDir);
     if (!resolvedPath.startsWith(resolvedBase)) {
-      console.warn(`[StorageManager] Path traversal attempt blocked: ${key}`);
       return null;
     }
 
@@ -359,6 +349,45 @@ export class StorageManager {
       fallback: this.fallbackAdapter.getName(),
       error: this.initError?.message || null,
     };
+  }
+
+  /**
+   * Health check - verify storage connectivity
+   */
+  async healthCheck(): Promise<{
+    status: "healthy" | "degraded" | "unhealthy";
+    primary: string | null;
+    fallback: string;
+    latency?: number;
+    error?: string;
+  }> {
+    const start = Date.now();
+
+    try {
+      // Test upload and delete
+      const testKey = `.health-check-${Date.now()}`;
+      const testData = Buffer.from("health-check");
+
+      await this.upload(testKey, testData);
+      await this.delete(testKey);
+
+      const primary = await this.ensurePrimaryAdapter();
+
+      return {
+        status: primary ? "healthy" : "degraded",
+        primary: primary?.getName() || null,
+        fallback: this.fallbackAdapter.getName(),
+        latency: Date.now() - start,
+      };
+    } catch (error) {
+      return {
+        status: "unhealthy",
+        primary: this.primaryAdapter?.getName() || null,
+        fallback: this.fallbackAdapter.getName(),
+        latency: Date.now() - start,
+        error: error instanceof Error ? error.message : "Storage health check failed",
+      };
+    }
   }
 }
 
@@ -388,32 +417,32 @@ export const IMAGE_CACHE_CONFIG = {
   // Immutable assets (versioned/hashed filenames) - cache for 1 year
   immutable: {
     "Cache-Control": "public, max-age=31536000, immutable",
-    "Vary": "Accept-Encoding",
+    Vary: "Accept-Encoding",
   },
   // Static images - cache for 30 days
   static: {
     "Cache-Control": "public, max-age=2592000",
-    "Vary": "Accept-Encoding, Accept",
+    Vary: "Accept-Encoding, Accept",
   },
   // Dynamic/user content - cache for 24 hours
   dynamic: {
     "Cache-Control": "public, max-age=86400",
-    "Vary": "Accept-Encoding",
+    Vary: "Accept-Encoding",
   },
   // AI-generated images - cache for 7 days (might be regenerated)
   aiGenerated: {
     "Cache-Control": "public, max-age=604800",
-    "Vary": "Accept-Encoding",
+    Vary: "Accept-Encoding",
   },
   // Thumbnails - cache for 30 days
   thumbnails: {
     "Cache-Control": "public, max-age=2592000",
-    "Vary": "Accept-Encoding",
+    Vary: "Accept-Encoding",
   },
   // Private/authenticated content - short cache
   private: {
     "Cache-Control": "private, max-age=3600",
-    "Vary": "Authorization, Accept-Encoding",
+    Vary: "Authorization, Accept-Encoding",
   },
 };
 
@@ -456,7 +485,7 @@ export function imageCacheMiddleware() {
   return (req: any, res: any, next: any) => {
     const originalSend = res.send;
 
-    res.send = function(body: any) {
+    res.send = function (body: any) {
       // Only apply to image responses
       const contentType = res.get("Content-Type") || "";
       if (contentType.startsWith("image/")) {

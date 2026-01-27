@@ -3,7 +3,7 @@
  * Implements the closed-loop system: Measure → Decide → Act → Observe → Adjust
  */
 
-import { randomUUID } from 'crypto';
+import { randomUUID } from "crypto";
 import type {
   LoopState,
   LoopCycle,
@@ -12,9 +12,9 @@ import type {
   Decision,
   AutopilotMode,
   MetricConflict,
-} from '../types';
-import { decisionEngine, type MetricData, type DecisionResult } from '../engine';
-import { confidenceEngine, type MetricHistory } from '../confidence';
+} from "../types";
+import { decisionEngine, type MetricData, type DecisionResult } from "../engine";
+import { confidenceEngine, type MetricHistory } from "../confidence";
 
 // =============================================================================
 // CONFIGURATION
@@ -78,8 +78,8 @@ export class AutonomousLoop {
 
   private createInitialState(): LoopState {
     return {
-      currentPhase: 'measure',
-      cycleId: '',
+      currentPhase: "measure",
+      cycleId: "",
       cycleNumber: 0,
       startedAt: new Date(),
       metrics: {
@@ -113,19 +113,16 @@ export class AutonomousLoop {
 
   private registerDefaultExecutors(): void {
     // Register default action executors
-    this.registerExecutor('LOG_AND_MONITOR', async (decision) => {
-      console.log(`[Loop] LOG_AND_MONITOR: ${decision.signal.metricId} = ${decision.signal.value}`);
+    this.registerExecutor("LOG_AND_MONITOR", async decision => {
       return { success: true };
     });
 
-    this.registerExecutor('ESCALATE_TO_HUMAN', async (decision) => {
-      console.log(`[Loop] ESCALATE_TO_HUMAN: ${decision.type} for ${decision.signal.metricId}`);
+    this.registerExecutor("ESCALATE_TO_HUMAN", async decision => {
       // In real implementation, this would send notifications
       return { success: true, result: { notificationSent: true } };
     });
 
-    this.registerExecutor('TRIGGER_INVESTIGATION', async (decision) => {
-      console.log(`[Loop] TRIGGER_INVESTIGATION: ${decision.signal.metricId}`);
+    this.registerExecutor("TRIGGER_INVESTIGATION", async decision => {
       return { success: true, result: { investigationQueued: true } };
     });
 
@@ -138,23 +135,17 @@ export class AutonomousLoop {
 
   start(): void {
     if (this.running) {
-      console.warn('[Loop] Already running');
       return;
     }
 
     this.running = true;
-    console.log('[Loop] Starting autonomous loop');
 
     // Run first cycle immediately
-    this.runCycle().catch(err => {
-      console.error('[Loop] Error in initial cycle:', err);
-    });
+    this.runCycle().catch(err => {});
 
     // Schedule recurring cycles
     this.intervalId = setInterval(() => {
-      this.runCycle().catch(err => {
-        console.error('[Loop] Error in cycle:', err);
-      });
+      this.runCycle().catch(err => {});
     }, this.config.cycleIntervalMs);
   }
 
@@ -168,8 +159,6 @@ export class AutonomousLoop {
       clearInterval(this.intervalId);
       this.intervalId = undefined;
     }
-
-    console.log('[Loop] Stopped autonomous loop');
   }
 
   isRunning(): boolean {
@@ -201,8 +190,6 @@ export class AutonomousLoop {
     const cycleNumber = this.state.cycleNumber + 1;
     const startedAt = new Date();
 
-    console.log(`[Loop] Starting cycle ${cycleNumber} (${cycleId})`);
-
     this.state.cycleId = cycleId;
     this.state.cycleNumber = cycleNumber;
     this.state.startedAt = startedAt;
@@ -211,7 +198,7 @@ export class AutonomousLoop {
       id: cycleId,
       number: cycleNumber,
       startedAt,
-      phases: {} as LoopCycle['phases'],
+      phases: {} as LoopCycle["phases"],
       summary: {
         totalDecisions: 0,
         executedActions: 0,
@@ -222,29 +209,29 @@ export class AutonomousLoop {
 
     try {
       // Phase 1: MEASURE
-      this.state.currentPhase = 'measure';
+      this.state.currentPhase = "measure";
       cycle.phases.measure = await this.phaseMeasure();
 
       // Phase 2: DECIDE
-      this.state.currentPhase = 'decide';
+      this.state.currentPhase = "decide";
       cycle.phases.decide = await this.phaseDecide(
         cycle.phases.measure.output.metrics as MetricData[]
       );
 
       // Phase 3: ACT
-      this.state.currentPhase = 'act';
+      this.state.currentPhase = "act";
       cycle.phases.act = await this.phaseAct(
         cycle.phases.decide.output.decisions as DecisionResult[]
       );
 
       // Phase 4: OBSERVE
-      this.state.currentPhase = 'observe';
+      this.state.currentPhase = "observe";
       cycle.phases.observe = await this.phaseObserve(
         cycle.phases.act.output.executedDecisions as Decision[]
       );
 
       // Phase 5: ADJUST
-      this.state.currentPhase = 'adjust';
+      this.state.currentPhase = "adjust";
       cycle.phases.adjust = await this.phaseAdjust(
         cycle.phases.observe.output as Record<string, unknown>
       );
@@ -269,14 +256,7 @@ export class AutonomousLoop {
       if (this.cycles.length > 100) {
         this.cycles.shift();
       }
-
-      console.log(
-        `[Loop] Cycle ${cycleNumber} completed in ${cycle.duration}ms - ` +
-        `${cycle.summary.totalDecisions} decisions, ${cycle.summary.executedActions} actions`
-      );
     } catch (error) {
-      console.error(`[Loop] Cycle ${cycleNumber} failed:`, error);
-
       // Record partial cycle
       cycle.completedAt = new Date();
       cycle.duration = cycle.completedAt.getTime() - startedAt.getTime();
@@ -300,17 +280,16 @@ export class AutonomousLoop {
         metrics = await Promise.race([
           this.metricsProvider(),
           new Promise<MetricData[]>((_, reject) =>
-            setTimeout(() => reject(new Error('Measure timeout')), this.config.measureTimeoutMs)
+            setTimeout(() => reject(new Error("Measure timeout")), this.config.measureTimeoutMs)
           ),
         ]);
       } else {
         // Default: empty metrics
-        console.warn('[Loop] No metrics provider configured');
       }
 
       this.state.metrics.collected = metrics.length;
     } catch (error) {
-      errors.push(`Measure error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      errors.push(`Measure error: ${error instanceof Error ? error.message : "Unknown"}`);
     }
 
     return {
@@ -354,7 +333,7 @@ export class AutonomousLoop {
       this.state.decisions.autoExecuted = decisions.filter(d => d.shouldExecute).length;
       this.state.decisions.pendingApproval = decisions.filter(d => d.requiresApproval).length;
       this.state.decisions.escalated = decisions.filter(
-        d => d.decision.category === 'escalation_only'
+        d => d.decision.category === "escalation_only"
       ).length;
 
       // Detect conflicts
@@ -362,7 +341,7 @@ export class AutonomousLoop {
       conflicts.push(...detectedConflicts);
       this.state.metrics.conflictsFound = conflicts.length;
     } catch (error) {
-      errors.push(`Decide error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      errors.push(`Decide error: ${error instanceof Error ? error.message : "Unknown"}`);
     }
 
     return {
@@ -380,9 +359,9 @@ export class AutonomousLoop {
 
     // Check for known conflict pairs
     const conflictPairs = [
-      ['seo.seo_score', 'revenue.total_revenue'],
-      ['engagement.bounce_rate', 'conversion.conversion_rate'],
-      ['traffic.organic_sessions', 'content.quality_score'],
+      ["seo.seo_score", "revenue.total_revenue"],
+      ["engagement.bounce_rate", "conversion.conversion_rate"],
+      ["traffic.organic_sessions", "content.quality_score"],
     ];
 
     for (const [metric1, metric2] of conflictPairs) {
@@ -390,8 +369,8 @@ export class AutonomousLoop {
       const m2 = metrics.find(m => m.metricId === metric2);
 
       if (m1 && m2 && m1.previousValue && m2.previousValue) {
-        const m1Trend = m1.currentValue > m1.previousValue ? 'up' : 'down';
-        const m2Trend = m2.currentValue > m2.previousValue ? 'up' : 'down';
+        const m1Trend = m1.currentValue > m1.previousValue ? "up" : "down";
+        const m2Trend = m2.currentValue > m2.previousValue ? "up" : "down";
 
         // Detect inverse correlation
         if (m1Trend !== m2Trend) {
@@ -402,17 +381,17 @@ export class AutonomousLoop {
           if (Math.abs(m1Change) > 10 && Math.abs(m2Change) > 10) {
             conflicts.push({
               id: `CONF-${Date.now()}-${randomUUID().substring(0, 4)}`,
-              type: 'inverse_correlation',
-              severity: Math.abs(m1Change) > 20 || Math.abs(m2Change) > 20 ? 'high' : 'medium',
+              type: "inverse_correlation",
+              severity: Math.abs(m1Change) > 20 || Math.abs(m2Change) > 20 ? "high" : "medium",
               metrics: [
                 { id: metric1, trend: m1Trend, value: m1.currentValue, change: m1Change },
                 { id: metric2, trend: m2Trend, value: m2.currentValue, change: m2Change },
               ],
               resolution: {
-                decision: 'pending_review',
-                action: 'ESCALATE_TO_HUMAN',
+                decision: "pending_review",
+                action: "ESCALATE_TO_HUMAN",
                 rationale: `Detected inverse correlation between ${metric1} and ${metric2}`,
-                decidedBy: 'automated',
+                decidedBy: "automated",
               },
               detectedAt: new Date(),
             });
@@ -447,29 +426,28 @@ export class AutonomousLoop {
             const execResult = await executor(result.decision);
 
             if (execResult.success) {
-              result.decision.outcome = 'success';
+              result.decision.outcome = "success";
               result.decision.outcomeDetails = execResult.result as Record<string, unknown>;
               successful++;
             } else {
-              result.decision.outcome = 'failure';
+              result.decision.outcome = "failure";
               result.decision.outcomeDetails = { error: execResult.error };
               failed++;
             }
 
             result.decision.executedAt = new Date();
-            result.decision.status = 'executed';
+            result.decision.status = "executed";
             executedDecisions.push(result.decision);
           } catch (error) {
-            result.decision.outcome = 'failure';
+            result.decision.outcome = "failure";
             result.decision.outcomeDetails = {
-              error: error instanceof Error ? error.message : 'Unknown',
+              error: error instanceof Error ? error.message : "Unknown",
             };
             failed++;
             errors.push(`Execution error for ${result.decision.type}: ${error}`);
           }
         } else {
           // No executor registered - mark as pending
-          console.warn(`[Loop] No executor for action type: ${result.decision.type}`);
         }
       }
 
@@ -477,7 +455,7 @@ export class AutonomousLoop {
       this.state.actions.successful = successful;
       this.state.actions.failed = failed;
     } catch (error) {
-      errors.push(`Act error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      errors.push(`Act error: ${error instanceof Error ? error.message : "Unknown"}`);
     }
 
     return {
@@ -513,9 +491,9 @@ export class AutonomousLoop {
             confidenceAtDecision: decision.confidence,
           });
 
-          if (decision.outcome === 'success') {
+          if (decision.outcome === "success") {
             improvements++;
-          } else if (decision.outcome === 'failure') {
+          } else if (decision.outcome === "failure") {
             regressions++;
           }
         }
@@ -525,7 +503,7 @@ export class AutonomousLoop {
       this.state.observations.improvements = improvements;
       this.state.observations.regressions = regressions;
     } catch (error) {
-      errors.push(`Observe error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      errors.push(`Observe error: ${error instanceof Error ? error.message : "Unknown"}`);
     }
 
     return {
@@ -566,13 +544,12 @@ export class AutonomousLoop {
       // If success rate is too low, consider raising confidence threshold
       if (stats.successRate < 60 && stats.totalOutcomes > 10) {
         // Would adjust thresholds here
-        console.log('[Loop] Low success rate detected - consider raising confidence threshold');
+
         thresholdChanges++;
       }
 
       // If success rate is very high, could lower threshold
       if (stats.successRate > 90 && stats.totalOutcomes > 20) {
-        console.log('[Loop] High success rate - thresholds are appropriately calibrated');
       }
 
       // Check for consistently failing bindings
@@ -581,7 +558,7 @@ export class AutonomousLoop {
       this.state.adjustments.thresholdChanges = thresholdChanges;
       this.state.adjustments.bindingUpdates = bindingUpdates;
     } catch (error) {
-      errors.push(`Adjust error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      errors.push(`Adjust error: ${error instanceof Error ? error.message : "Unknown"}`);
     }
 
     return {

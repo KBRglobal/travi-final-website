@@ -37,7 +37,7 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
   const body = (contentItem as any).body || "";
 
   // Check title promises
-  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === 'title')) {
+  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === "title")) {
     const match = title.match(pattern.pattern);
     if (match) {
       const promise = detectPromise(pattern, match, title, body);
@@ -52,7 +52,7 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
   }
 
   // Check meta description promises
-  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === 'meta_description')) {
+  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === "meta_description")) {
     const match = metaDescription.match(pattern.pattern);
     if (match) {
       const promise = detectPromise(pattern, match, metaDescription, body);
@@ -67,7 +67,7 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
   }
 
   // Check H1 promises (if different from title)
-  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === 'h1')) {
+  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === "h1")) {
     const h1Match = body.match(/<h1[^>]*>([^<]+)<\/h1>/i);
     if (h1Match) {
       const h1Text = h1Match[1];
@@ -85,9 +85,9 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
     }
   }
 
-  const brokenCount = promises.filter(p => p.status === 'broken').length;
-  const partialCount = promises.filter(p => p.status === 'partial').length;
-  const keptCount = promises.filter(p => p.status === 'kept').length;
+  const brokenCount = promises.filter(p => p.status === "broken").length;
+  const partialCount = promises.filter(p => p.status === "partial").length;
+  const keptCount = promises.filter(p => p.status === "kept").length;
 
   // Calculate trust score
   const trustScore = calculateTrustScore(promises);
@@ -118,7 +118,7 @@ function detectPromise(
   match: RegExpMatchArray,
   promiseText: string,
   body: string
-): Omit<BrokenPromise, 'id' | 'contentId'> | null {
+): Omit<BrokenPromise, "id" | "contentId"> | null {
   // Check for numbered list promises
   const numberMatch = match[1];
   if (numberMatch && /^\d+$/.test(numberMatch)) {
@@ -129,17 +129,17 @@ function detectPromise(
     // Use the higher of list items or headings as the actual count
     const deliveredCount = Math.max(actualCount, headingCount);
 
-    let status: PromiseStatus = 'kept';
-    let severity: PromiseSeverity = 'minor';
+    let status: PromiseStatus = "kept";
+    let severity: PromiseSeverity = "minor";
     let confidence = 80;
 
     if (deliveredCount < promisedCount * 0.5) {
-      status = 'broken';
-      severity = 'critical';
+      status = "broken";
+      severity = "critical";
       confidence = 90;
     } else if (deliveredCount < promisedCount) {
-      status = 'partial';
-      severity = 'major';
+      status = "partial";
+      severity = "major";
       confidence = 85;
     }
 
@@ -150,60 +150,66 @@ function detectPromise(
       severity,
       status,
       confidence,
-      recommendation: status === 'broken'
-        ? `Add ${promisedCount - deliveredCount} more items or update the title`
-        : status === 'partial'
-        ? `Consider adding more items or adjusting the promised count`
-        : 'Promise fulfilled',
+      recommendation:
+        status === "broken"
+          ? `Add ${promisedCount - deliveredCount} more items or update the title`
+          : status === "partial"
+            ? `Consider adding more items or adjusting the promised count`
+            : "Promise fulfilled",
       detectedAt: new Date(),
     };
   }
 
   // Check for how-to promises
-  if (pattern.description.includes('How-to')) {
+  if (pattern.description.includes("How-to")) {
     const hasSteps = /<(ol|ul)[^>]*>/.test(body) || /step\s+\d/i.test(body);
     const hasInstructions = /\b(first|then|next|finally|after|before)\b/i.test(body);
 
-    let status: PromiseStatus = 'kept';
+    let status: PromiseStatus = "kept";
     if (!hasSteps && !hasInstructions) {
-      status = 'broken';
+      status = "broken";
     } else if (!hasSteps || !hasInstructions) {
-      status = 'partial';
+      status = "partial";
     }
 
     return {
       type: pattern.type,
       promise: `How-to content promised: "${match[0]}"`,
       delivery: hasSteps
-        ? 'Content contains step-by-step instructions'
-        : 'Content lacks clear step-by-step format',
-      severity: status === 'broken' ? 'major' : 'minor',
+        ? "Content contains step-by-step instructions"
+        : "Content lacks clear step-by-step format",
+      severity: status === "broken" ? "major" : "minor",
       status,
       confidence: 75,
-      recommendation: status === 'broken'
-        ? 'Add numbered steps or clear instructions'
-        : status === 'partial'
-        ? 'Consider adding more explicit step formatting'
-        : 'How-to format is adequate',
+      recommendation:
+        status === "broken"
+          ? "Add numbered steps or clear instructions"
+          : status === "partial"
+            ? "Consider adding more explicit step formatting"
+            : "How-to format is adequate",
       detectedAt: new Date(),
     };
   }
 
   // Check for comprehensive promises
-  if (pattern.description.includes('Comprehensive') || pattern.description.includes('Ultimate') || pattern.description.includes('Definitive')) {
+  if (
+    pattern.description.includes("Comprehensive") ||
+    pattern.description.includes("Ultimate") ||
+    pattern.description.includes("Definitive")
+  ) {
     const wordCount = body.split(/\s+/).length;
     const headingCount = countHeadings(body);
 
-    let status: PromiseStatus = 'kept';
-    let severity: PromiseSeverity = 'minor';
+    let status: PromiseStatus = "kept";
+    let severity: PromiseSeverity = "minor";
 
     // Comprehensive content should be substantial
     if (wordCount < 500 || headingCount < 3) {
-      status = 'broken';
-      severity = 'critical';
+      status = "broken";
+      severity = "critical";
     } else if (wordCount < 1500 || headingCount < 5) {
-      status = 'partial';
-      severity = 'major';
+      status = "partial";
+      severity = "major";
     }
 
     return {
@@ -213,11 +219,12 @@ function detectPromise(
       severity,
       status,
       confidence: 70,
-      recommendation: status === 'broken'
-        ? 'Add more content sections to fulfill comprehensive promise'
-        : status === 'partial'
-        ? 'Consider expanding content depth'
-        : 'Content appears comprehensive',
+      recommendation:
+        status === "broken"
+          ? "Add more content sections to fulfill comprehensive promise"
+          : status === "partial"
+            ? "Consider expanding content depth"
+            : "Content appears comprehensive",
       detectedAt: new Date(),
     };
   }
@@ -244,15 +251,15 @@ function countHeadings(body: string): number {
 /**
  * Calculate trust score based on promises
  */
-function calculateTrustScore(promises: Omit<BrokenPromise, 'id' | 'contentId'>[]): number {
+function calculateTrustScore(promises: Omit<BrokenPromise, "id" | "contentId">[]): number {
   if (promises.length === 0) return 100;
 
   let score = 100;
   for (const promise of promises) {
-    if (promise.status === 'broken') {
-      score -= promise.severity === 'critical' ? 30 : promise.severity === 'major' ? 20 : 10;
-    } else if (promise.status === 'partial') {
-      score -= promise.severity === 'critical' ? 15 : promise.severity === 'major' ? 10 : 5;
+    if (promise.status === "broken") {
+      score -= promise.severity === "critical" ? 30 : promise.severity === "major" ? 20 : 10;
+    } else if (promise.status === "partial") {
+      score -= promise.severity === "critical" ? 15 : promise.severity === "major" ? 10 : 5;
     }
   }
 
@@ -292,7 +299,7 @@ export async function getPromiseStats(): Promise<PromiseStats> {
 
   for (const analysis of analyses) {
     for (const promise of analysis.promises) {
-      if (promise.status === 'broken' || promise.status === 'partial') {
+      if (promise.status === "broken" || promise.status === "partial") {
         totalBroken++;
         byType[promise.type]++;
         bySeverity[promise.severity]++;
@@ -306,9 +313,10 @@ export async function getPromiseStats(): Promise<PromiseStats> {
     .slice(0, 10)
     .map(([contentId, brokenCount]) => ({ contentId, brokenCount }));
 
-  const avgTrustScore = analyses.length > 0
-    ? analyses.reduce((sum, a) => sum + a.trustScore, 0) / analyses.length
-    : 100;
+  const avgTrustScore =
+    analyses.length > 0
+      ? analyses.reduce((sum, a) => sum + a.trustScore, 0) / analyses.length
+      : 100;
 
   return {
     totalAnalyzed: analyses.length,
@@ -329,9 +337,7 @@ export async function bulkAnalyze(contentIds: string[]): Promise<PromiseAnalysis
     try {
       const analysis = await analyzeContent(id);
       results.push(analysis);
-    } catch (error) {
-      console.error(`[BrokenPromise] Failed to analyze ${id}:`, error);
-    }
+    } catch (error) {}
   }
   return results;
 }

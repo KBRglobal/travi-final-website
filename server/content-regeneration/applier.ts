@@ -4,35 +4,35 @@
  * Applies approved proposals to content.
  */
 
-import { db } from '../db';
-import { contents as content } from '@shared/schema';
-import { eq } from 'drizzle-orm';
-import { RegenerationProposal, ContentBlock } from './types';
-import { getProposal, updateProposalStatus } from './repository';
-import { isAutoRegenerationEnabled } from './types';
+import { db } from "../db";
+import { contents as content } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { RegenerationProposal, ContentBlock } from "./types";
+import { getProposal, updateProposalStatus } from "./repository";
+import { isAutoRegenerationEnabled } from "./types";
 
 /**
  * Apply a proposal to content.
  */
 export async function applyProposal(
   proposalId: string,
-  appliedBy: string = 'system'
+  appliedBy: string = "system"
 ): Promise<{ success: boolean; error?: string }> {
   // Get proposal
   const proposal = await getProposal(proposalId);
 
   if (!proposal) {
-    return { success: false, error: 'Proposal not found' };
+    return { success: false, error: "Proposal not found" };
   }
 
-  if (proposal.status !== 'pending' && proposal.status !== 'approved') {
+  if (proposal.status !== "pending" && proposal.status !== "approved") {
     return { success: false, error: `Cannot apply proposal with status: ${proposal.status}` };
   }
 
   // Check if proposal is expired
   if (proposal.expiresAt < new Date()) {
-    await updateProposalStatus(proposalId, 'expired');
-    return { success: false, error: 'Proposal has expired' };
+    await updateProposalStatus(proposalId, "expired");
+    return { success: false, error: "Proposal has expired" };
   }
 
   try {
@@ -42,7 +42,7 @@ export async function applyProposal(
     });
 
     if (!contentRecord) {
-      return { success: false, error: 'Content not found' };
+      return { success: false, error: "Content not found" };
     }
 
     // Apply the generated blocks
@@ -55,16 +55,13 @@ export async function applyProposal(
       .where(eq(content.id, proposal.contentId));
 
     // Update proposal status
-    await updateProposalStatus(proposalId, 'applied', appliedBy);
-
-    console.log(`[regeneration] Applied proposal ${proposalId} to content ${proposal.contentId}`);
+    await updateProposalStatus(proposalId, "applied", appliedBy);
 
     return { success: true };
   } catch (error) {
-    console.error(`[regeneration] Failed to apply proposal ${proposalId}:`, error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -102,7 +99,7 @@ export async function autoApplyProposals(
   minScore: number = 70
 ): Promise<{ applied: string[]; skipped: string[]; errors: string[] }> {
   if (!isAutoRegenerationEnabled()) {
-    return { applied: [], skipped: [], errors: ['Auto-regeneration is disabled'] };
+    return { applied: [], skipped: [], errors: ["Auto-regeneration is disabled"] };
   }
 
   const applied: string[] = [];
@@ -119,7 +116,7 @@ export async function autoApplyProposals(
       continue;
     }
 
-    const result = await applyProposal(proposal.id, 'auto-system');
+    const result = await applyProposal(proposal.id, "auto-system");
 
     if (result.success) {
       applied.push(proposal.id);
@@ -128,21 +125,15 @@ export async function autoApplyProposals(
     }
   }
 
-  console.log(
-    `[regeneration] Auto-apply complete: ${applied.length} applied, ${skipped.length} skipped, ${errors.length} errors`
-  );
-
   return { applied, skipped, errors };
 }
 
 /**
  * Get pending proposals with high scores.
  */
-async function getPendingHighScoreProposals(
-  minScore: number
-): Promise<RegenerationProposal[]> {
+async function getPendingHighScoreProposals(minScore: number): Promise<RegenerationProposal[]> {
   // Import here to avoid circular dependency
-  const { getPendingProposals } = await import('./repository');
+  const { getPendingProposals } = await import("./repository");
   const proposals = await getPendingProposals(100);
 
   return proposals.filter(p => p.eligibility.score >= minScore);
@@ -158,7 +149,7 @@ function isProposalSafeForAutoApply(proposal: RegenerationProposal): boolean {
   }
 
   // Don't auto-apply if deleting blocks
-  const hasDeletes = proposal.diffs.some(d => d.action === 'delete');
+  const hasDeletes = proposal.diffs.some(d => d.action === "delete");
   if (hasDeletes) {
     return false;
   }
@@ -179,21 +170,19 @@ function isProposalSafeForAutoApply(proposal: RegenerationProposal): boolean {
  */
 export async function rejectProposal(
   proposalId: string,
-  rejectedBy: string = 'system'
+  rejectedBy: string = "system"
 ): Promise<{ success: boolean; error?: string }> {
   const proposal = await getProposal(proposalId);
 
   if (!proposal) {
-    return { success: false, error: 'Proposal not found' };
+    return { success: false, error: "Proposal not found" };
   }
 
-  if (proposal.status !== 'pending') {
+  if (proposal.status !== "pending") {
     return { success: false, error: `Cannot reject proposal with status: ${proposal.status}` };
   }
 
-  await updateProposalStatus(proposalId, 'rejected');
-
-  console.log(`[regeneration] Rejected proposal ${proposalId} by ${rejectedBy}`);
+  await updateProposalStatus(proposalId, "rejected");
 
   return { success: true };
 }
@@ -203,21 +192,19 @@ export async function rejectProposal(
  */
 export async function approveProposal(
   proposalId: string,
-  approvedBy: string = 'system'
+  approvedBy: string = "system"
 ): Promise<{ success: boolean; error?: string }> {
   const proposal = await getProposal(proposalId);
 
   if (!proposal) {
-    return { success: false, error: 'Proposal not found' };
+    return { success: false, error: "Proposal not found" };
   }
 
-  if (proposal.status !== 'pending') {
+  if (proposal.status !== "pending") {
     return { success: false, error: `Cannot approve proposal with status: ${proposal.status}` };
   }
 
-  await updateProposalStatus(proposalId, 'approved');
-
-  console.log(`[regeneration] Approved proposal ${proposalId} by ${approvedBy}`);
+  await updateProposalStatus(proposalId, "approved");
 
   return { success: true };
 }

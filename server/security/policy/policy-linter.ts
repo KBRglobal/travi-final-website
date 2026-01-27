@@ -10,7 +10,14 @@
  */
 
 import { policyEngine } from "../../governance/policy-engine";
-import { PolicyRule, PolicyCondition, PolicyEffect, Action, Resource, AdminRole } from "../../governance/types";
+import {
+  PolicyRule,
+  PolicyCondition,
+  PolicyEffect,
+  Action,
+  Resource,
+  AdminRole,
+} from "../../governance/types";
 
 // ============================================================================
 // LINT RESULT TYPES
@@ -69,14 +76,14 @@ function detectConflicts(policies: PolicyRule[]): LintIssue[] {
   for (const [key, groupedPolicies] of actionResourceMap) {
     if (groupedPolicies.length < 2) continue;
 
-    const effects = new Set(groupedPolicies.map((p) => p.effect));
+    const effects = new Set(groupedPolicies.map(p => p.effect));
 
     if (effects.size > 1) {
       // Different effects for same action/resource
       const [action, resource] = key.split(":");
 
-      const allowPolicies = groupedPolicies.filter((p) => p.effect === "allow");
-      const denyPolicies = groupedPolicies.filter((p) => p.effect === "deny");
+      const allowPolicies = groupedPolicies.filter(p => p.effect === "allow");
+      const denyPolicies = groupedPolicies.filter(p => p.effect === "deny");
 
       if (allowPolicies.length > 0 && denyPolicies.length > 0) {
         issues.push({
@@ -86,8 +93,9 @@ function detectConflicts(policies: PolicyRule[]): LintIssue[] {
           message: `Conflicting policies for ${action} on ${resource}: ${allowPolicies.length} allow, ${denyPolicies.length} deny`,
           policyId: groupedPolicies[0].id,
           policyName: groupedPolicies[0].name,
-          relatedPolicies: groupedPolicies.map((p) => p.id),
-          recommendation: "Review and consolidate conflicting policies. Deny typically takes precedence.",
+          relatedPolicies: groupedPolicies.map(p => p.id),
+          recommendation:
+            "Review and consolidate conflicting policies. Deny typically takes precedence.",
           autoFixable: false,
         });
       }
@@ -142,16 +150,16 @@ function detectShadows(policies: PolicyRule[]): LintIssue[] {
  */
 function checkIfShadowed(higher: PolicyRule, lower: PolicyRule): boolean {
   // Check if higher covers all actions of lower
-  const actionsMatch = lower.actions.every((a) => higher.actions.includes(a));
+  const actionsMatch = lower.actions.every(a => higher.actions.includes(a));
   if (!actionsMatch) return false;
 
   // Check if higher covers all resources of lower
-  const resourcesMatch = lower.resources.every((r) => higher.resources.includes(r));
+  const resourcesMatch = lower.resources.every(r => higher.resources.includes(r));
   if (!resourcesMatch) return false;
 
   // Check roles overlap
   if (higher.roles && lower.roles) {
-    const rolesMatch = lower.roles.every((r) => higher.roles!.includes(r));
+    const rolesMatch = lower.roles.every(r => higher.roles!.includes(r));
     if (!rolesMatch) return false;
   }
 
@@ -209,15 +217,23 @@ function detectRedundant(policies: PolicyRule[]): LintIssue[] {
 function detectOverlyPermissive(policies: PolicyRule[]): LintIssue[] {
   const issues: LintIssue[] = [];
 
-  const sensitiveActions: Action[] = ["delete", "manage_users", "manage_roles", "manage_policies", "configure"];
+  const sensitiveActions: Action[] = [
+    "delete",
+    "manage_users",
+    "manage_roles",
+    "manage_policies",
+    "configure",
+  ];
   const sensitiveResources: Resource[] = ["users", "roles", "policies", "system"];
 
   for (const policy of policies) {
     if (policy.effect !== "allow") continue;
 
     // Check for wildcard-like behavior
-    const hasSensitiveAction = policy.actions.some((a) => sensitiveActions.includes(a as Action));
-    const hasSensitiveResource = policy.resources.some((r) => sensitiveResources.includes(r as Resource));
+    const hasSensitiveAction = policy.actions.some(a => sensitiveActions.includes(a as Action));
+    const hasSensitiveResource = policy.resources.some(r =>
+      sensitiveResources.includes(r as Resource)
+    );
     const hasNoConditions = policy.conditions.length === 0;
     const hasNoRoleRestriction = !policy.roles || policy.roles.length === 0;
 
@@ -273,13 +289,14 @@ function detectNeverTriggers(policies: PolicyRule[]): LintIssue[] {
     }
 
     // Check for impossible conditions
-    const hasImpossibleCondition = policy.conditions.some((c) => {
+    const hasImpossibleCondition = policy.conditions.some(c => {
       // Check for contradictory conditions
-      const contradicts = policy.conditions.some((other) =>
-        c.field === other.field &&
-        c.operator === "equals" &&
-        other.operator === "not_equals" &&
-        c.value === other.value
+      const contradicts = policy.conditions.some(
+        other =>
+          c.field === other.field &&
+          c.operator === "equals" &&
+          other.operator === "not_equals" &&
+          c.value === other.value
       );
       return contradicts;
     });
@@ -344,7 +361,7 @@ function detectMissingDenies(policies: PolicyRule[]): LintIssue[] {
 
   for (const op of criticalOperations) {
     const hasDenyPolicy = policies.some(
-      (p) =>
+      p =>
         p.effect === "deny" &&
         p.actions.includes(op.action as any) &&
         p.resources.includes(op.resource as any) &&
@@ -352,7 +369,7 @@ function detectMissingDenies(policies: PolicyRule[]): LintIssue[] {
     );
 
     const hasApprovalPolicy = policies.some(
-      (p) =>
+      p =>
         p.effect === "require_approval" &&
         p.actions.includes(op.action as any) &&
         p.resources.includes(op.resource as any) &&
@@ -396,15 +413,12 @@ export function lintPolicies(): LintResult {
   allIssues.push(...detectMissingDenies(policies));
 
   // Calculate summary
-  const errors = allIssues.filter((i) => i.severity === "error").length;
-  const warnings = allIssues.filter((i) => i.severity === "warning").length;
-  const info = allIssues.filter((i) => i.severity === "info").length;
+  const errors = allIssues.filter(i => i.severity === "error").length;
+  const warnings = allIssues.filter(i => i.severity === "warning").length;
+  const info = allIssues.filter(i => i.severity === "info").length;
 
   // Calculate score (100 = perfect, deduct for issues)
-  const score = Math.max(
-    0,
-    100 - (errors * 20) - (warnings * 5) - (info * 1)
-  );
+  const score = Math.max(0, 100 - errors * 20 - warnings * 5 - info * 1);
 
   return {
     timestamp: new Date(),
@@ -420,7 +434,7 @@ export function lintPolicies(): LintResult {
  */
 export function getAutoFixableIssues(): LintIssue[] {
   const result = lintPolicies();
-  return result.issues.filter((i) => i.autoFixable);
+  return result.issues.filter(i => i.autoFixable);
 }
 
 /**
@@ -438,5 +452,3 @@ export function quickPolicyHealthCheck(): {
     score: result.score,
   };
 }
-
-console.log("[PolicyLinter] Module loaded");

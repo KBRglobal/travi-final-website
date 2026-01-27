@@ -1,10 +1,15 @@
 import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
 import crypto from "crypto";
-import { fetchWithTimeout } from '../lib/fetch-with-timeout';
+import { fetchWithTimeout } from "../lib/fetch-with-timeout";
 
 const EXTERNAL_API_TIMEOUT_MS = 30000;
-import { SUPPORTED_LOCALES, type Locale, type ContentBlock, translationBatchJobs } from "@shared/schema";
+import {
+  SUPPORTED_LOCALES,
+  type Locale,
+  type ContentBlock,
+  translationBatchJobs,
+} from "@shared/schema";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 
@@ -17,16 +22,16 @@ import { eq } from "drizzle-orm";
 export const TRANSLATION_ENABLED = false;
 
 export class TranslationDisabledError extends Error {
-  constructor(message: string = 'Automatic translation is permanently disabled') {
+  constructor(message: string = "Automatic translation is permanently disabled") {
     super(message);
-    this.name = 'TranslationDisabledError';
+    this.name = "TranslationDisabledError";
   }
 }
 
 /**
  * Guard function - throws if automatic translation is attempted
  */
-export function assertTranslationEnabled(context: string = 'translation'): void {
+export function assertTranslationEnabled(context: string = "translation"): void {
   if (!TRANSLATION_ENABLED) {
     throw new TranslationDisabledError(
       `[${context}] Automatic translation is disabled. Use manual translation in admin UI.`
@@ -68,40 +73,40 @@ export function generateContentHash(content: {
 // 3. OPTIONAL: DeepL Free tier only (500K chars/month limit)
 // 4. NEVER fall back to DeepL Pro API
 
-type TranslationProvider = 'claude' | 'gpt' | 'deepl_free_only' | 'auto';
+type TranslationProvider = "claude" | "gpt" | "deepl_free_only" | "auto";
 
 // DeepL supported language codes (official codes)
 const DEEPL_SUPPORTED_LANGUAGES: Record<string, string> = {
-  'en': 'EN',
-  'de': 'DE',
-  'fr': 'FR',
-  'es': 'ES',
-  'it': 'IT',
-  'nl': 'NL',
-  'pl': 'PL',
-  'pt': 'PT-BR',
-  'ru': 'RU',
-  'ja': 'JA',
-  'zh': 'ZH',
-  'ko': 'KO',
-  'ar': 'AR',
-  'tr': 'TR',
-  'uk': 'UK',
-  'id': 'ID',
-  'sv': 'SV',
-  'da': 'DA',
-  'fi': 'FI',
-  'nb': 'NB',
-  'el': 'EL',
-  'cs': 'CS',
-  'ro': 'RO',
-  'hu': 'HU',
-  'sk': 'SK',
-  'bg': 'BG',
-  'lt': 'LT',
-  'lv': 'LV',
-  'sl': 'SL',
-  'et': 'ET',
+  en: "EN",
+  de: "DE",
+  fr: "FR",
+  es: "ES",
+  it: "IT",
+  nl: "NL",
+  pl: "PL",
+  pt: "PT-BR",
+  ru: "RU",
+  ja: "JA",
+  zh: "ZH",
+  ko: "KO",
+  ar: "AR",
+  tr: "TR",
+  uk: "UK",
+  id: "ID",
+  sv: "SV",
+  da: "DA",
+  fi: "FI",
+  nb: "NB",
+  el: "EL",
+  cs: "CS",
+  ro: "RO",
+  hu: "HU",
+  sk: "SK",
+  bg: "BG",
+  lt: "LT",
+  lv: "LV",
+  sl: "SL",
+  et: "ET",
 };
 
 function isDeepLSupported(locale: string): boolean {
@@ -134,7 +139,11 @@ function getGeminiClient(): OpenAI | null {
 
 // OpenRouter - supports many models
 function getOpenRouterClient(): OpenAI | null {
-  const apiKey = process.env.OPENROUTER_API_KEY || process.env.openrouterapi || process.env.OPENROUTERAPI || process.env.travisite;
+  const apiKey =
+    process.env.OPENROUTER_API_KEY ||
+    process.env.openrouterapi ||
+    process.env.OPENROUTERAPI ||
+    process.env.travisite;
   if (!apiKey) return null;
   return new OpenAI({
     apiKey,
@@ -160,10 +169,14 @@ function getAIClient(): { client: OpenAI; provider: string } | null {
 // Get model for provider
 function getModelForProvider(provider: string): string {
   switch (provider) {
-    case "openai": return "gpt-4o-mini";
-    case "gemini": return "gemini-1.5-flash";
-    case "openrouter": return "google/gemini-flash-1.5";
-    default: return "gpt-4o-mini";
+    case "openai":
+      return "gpt-4o-mini";
+    case "gemini":
+      return "gemini-1.5-flash";
+    case "openrouter":
+      return "google/gemini-flash-1.5";
+    default:
+      return "gpt-4o-mini";
   }
 }
 
@@ -171,7 +184,6 @@ function getModelForProvider(provider: string): string {
 function getAnthropicClient(): Anthropic | null {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    console.log("[Translation] Anthropic API key not configured, will use GPT-4o-mini");
     return null;
   }
   return new Anthropic({ apiKey });
@@ -181,12 +193,11 @@ function getAnthropicClient(): Anthropic | null {
 function getDeepSeekClient(): OpenAI | null {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
-    console.log("[Translation] DeepSeek API key not configured");
     return null;
   }
   return new OpenAI({
     apiKey,
-    baseURL: "https://api.deepseek.com"
+    baseURL: "https://api.deepseek.com",
   });
 }
 
@@ -199,10 +210,10 @@ async function translateWithDeepSeek(
 ): Promise<{ text: string; success: boolean; error?: string }> {
   const deepseek = getDeepSeekClient();
   if (!deepseek) {
-    return { text: '', success: false, error: 'DeepSeek API key not configured' };
+    return { text: "", success: false, error: "DeepSeek API key not configured" };
   }
 
-  const targetLocaleInfo = SUPPORTED_LOCALES.find((l) => l.code === targetLocale);
+  const targetLocaleInfo = SUPPORTED_LOCALES.find(l => l.code === targetLocale);
   const targetLanguageName = targetLocaleInfo?.name || targetLocale;
 
   const contentTypeInstructions: Record<string, string> = {
@@ -255,7 +266,7 @@ FOR KOREAN (한국어):
 - Mention Korean-friendly services and Korean-speaking staff
 - Appeal to family travel and honeymoon destinations
 
-${contentTypeInstructions[contentType] || contentTypeInstructions.body}`
+${contentTypeInstructions[contentType] || contentTypeInstructions.body}`,
         },
         {
           role: "user",
@@ -264,18 +275,20 @@ ${contentTypeInstructions[contentType] || contentTypeInstructions.body}`
 Text to translate:
 ${text}
 
-Return ONLY the translated text, no explanations.`
-        }
-      ]
+Return ONLY the translated text, no explanations.`,
+        },
+      ],
     });
 
-    const translatedText = response.choices[0]?.message?.content?.trim() || '';
+    const translatedText = response.choices[0]?.message?.content?.trim() || "";
 
-    console.log(`[Translation] DeepSeek translated ${text.length} chars to ${targetLocale}`);
     return { text: translatedText, success: true };
   } catch (error) {
-    console.error('[Translation] DeepSeek error:', error);
-    return { text: '', success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      text: "",
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
@@ -288,10 +301,10 @@ async function translateWithClaude(
 ): Promise<{ text: string; success: boolean; error?: string }> {
   const anthropic = getAnthropicClient();
   if (!anthropic) {
-    return { text: '', success: false, error: 'Anthropic API key not configured' };
+    return { text: "", success: false, error: "Anthropic API key not configured" };
   }
 
-  const targetLocaleInfo = SUPPORTED_LOCALES.find((l) => l.code === targetLocale);
+  const targetLocaleInfo = SUPPORTED_LOCALES.find(l => l.code === targetLocale);
   const targetLanguageName = targetLocaleInfo?.name || targetLocale;
 
   const contentTypeInstructions: Record<string, string> = {
@@ -331,19 +344,21 @@ ${contentTypeInstructions[contentType] || contentTypeInstructions.body}
 Text to translate:
 ${text}
 
-Return ONLY the translated text, no explanations.`
-        }
-      ]
+Return ONLY the translated text, no explanations.`,
+        },
+      ],
     });
 
-    const textContent = response.content.find(c => c.type === 'text');
-    const translatedText = textContent ? textContent.text.trim() : '';
+    const textContent = response.content.find(c => c.type === "text");
+    const translatedText = textContent ? textContent.text.trim() : "";
 
-    console.log(`[Translation] Claude Haiku translated ${text.length} chars to ${targetLocale}`);
     return { text: translatedText, success: true };
   } catch (error) {
-    console.error('[Translation] Claude error:', error);
-    return { text: '', success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      text: "",
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
@@ -355,53 +370,57 @@ async function translateWithDeepL(
 ): Promise<{ text: string; success: boolean; error?: string }> {
   const apiKey = process.env.DEEPL_API_KEY;
   if (!apiKey) {
-    return { text: '', success: false, error: 'DeepL API key not configured' };
+    return { text: "", success: false, error: "DeepL API key not configured" };
   }
 
   try {
     const sourceCode = getDeepLLanguageCode(sourceLocale);
     const targetCode = getDeepLLanguageCode(targetLocale);
 
-    const response = await fetchWithTimeout('https://api-free.deepl.com/v2/translate', {
-      method: 'POST',
+    const response = await fetchWithTimeout("https://api-free.deepl.com/v2/translate", {
+      method: "POST",
       headers: {
-        'Authorization': `DeepL-Auth-Key ${apiKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `DeepL-Auth-Key ${apiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         text: [text],
         source_lang: sourceCode,
         target_lang: targetCode,
         preserve_formatting: true,
-        tag_handling: 'html',
+        tag_handling: "html",
       }),
       timeoutMs: EXTERNAL_API_TIMEOUT_MS,
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[DeepL] API error: ${response.status} - ${errorText}`);
 
       // IMPORTANT: Do NOT fall back to DeepL Pro API - it's extremely expensive ($25+/M chars)
       // If free tier limit is exceeded (456) or rate limited (429), return error
       // The calling code will automatically fall back to GPT-4o-mini (100x cheaper)
       if (response.status === 456) {
-        console.warn('[DeepL] FREE TIER LIMIT EXCEEDED - switching to GPT-4o-mini (100x cheaper)');
-        return { text: '', success: false, error: 'DeepL free tier limit exceeded. Using GPT instead.' };
+        return {
+          text: "",
+          success: false,
+          error: "DeepL free tier limit exceeded. Using GPT instead.",
+        };
       }
       if (response.status === 429) {
-        console.warn('[DeepL] Rate limited - switching to GPT-4o-mini');
-        return { text: '', success: false, error: 'DeepL rate limited. Using GPT instead.' };
+        return { text: "", success: false, error: "DeepL rate limited. Using GPT instead." };
       }
 
-      return { text: '', success: false, error: `DeepL API error: ${response.status}` };
+      return { text: "", success: false, error: `DeepL API error: ${response.status}` };
     }
 
     const data = await response.json();
     return { text: data.translations[0].text, success: true };
   } catch (error) {
-    console.error('[DeepL] Translation error:', error);
-    return { text: '', success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      text: "",
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
@@ -462,7 +481,7 @@ export async function translateText(
 ): Promise<TranslationResult> {
   const { text, sourceLocale, targetLocale, contentType = "body" } = request;
   // DEFAULT TO CLAUDE (best quality/cost ratio)
-  const provider = options?.provider || 'claude';
+  const provider = options?.provider || "claude";
 
   if (!text || text.trim() === "") {
     return { translatedText: "", locale: targetLocale, success: true };
@@ -472,14 +491,18 @@ export async function translateText(
     return { translatedText: text, locale: targetLocale, success: true };
   }
 
-  const targetLocaleInfo = SUPPORTED_LOCALES.find((l) => l.code === targetLocale);
+  const targetLocaleInfo = SUPPORTED_LOCALES.find(l => l.code === targetLocale);
   const targetLanguageName = targetLocaleInfo?.name || targetLocale;
 
   // ASIAN LANGUAGES: Use DeepSeek (excellent for Chinese, Japanese, Korean)
-  const asianLanguages = ['zh', 'ja', 'ko'];
+  const asianLanguages = ["zh", "ja", "ko"];
   if (asianLanguages.includes(targetLocale) && process.env.DEEPSEEK_API_KEY) {
-    console.log(`[Translation] Using DeepSeek for ${targetLocale} translation (optimized for Asian languages)`);
-    const deepseekResult = await translateWithDeepSeek(text, sourceLocale, targetLocale, contentType);
+    const deepseekResult = await translateWithDeepSeek(
+      text,
+      sourceLocale,
+      targetLocale,
+      contentType
+    );
     if (deepseekResult.success) {
       return {
         translatedText: deepseekResult.text,
@@ -488,13 +511,15 @@ export async function translateText(
       };
     }
     // DeepSeek failed - fall back to Claude/GPT
-    console.warn(`[Translation] DeepSeek failed: ${deepseekResult.error}, falling back to Claude`);
   }
 
   // Only use DeepL if explicitly requested AND it's free tier only
   // NEVER use DeepL Pro - it charged $100 for 4 uses!
-  if (provider === 'deepl_free_only' && isDeepLSupported(targetLocale) && process.env.DEEPL_API_KEY) {
-    console.log(`[Translation] Trying DeepL FREE tier for ${sourceLocale} -> ${targetLocale}`);
+  if (
+    provider === "deepl_free_only" &&
+    isDeepLSupported(targetLocale) &&
+    process.env.DEEPL_API_KEY
+  ) {
     const deeplResult = await translateWithDeepL(text, sourceLocale, targetLocale);
 
     if (deeplResult.success) {
@@ -505,11 +530,10 @@ export async function translateText(
       };
     }
     // DeepL failed - continue to Claude/GPT
-    console.warn(`[Translation] DeepL free tier failed: ${deeplResult.error}`);
   }
 
   // Try Claude Haiku first (RECOMMENDED - excellent quality, $0.80-$4.00/M tokens)
-  if (provider === 'claude' || provider === 'auto') {
+  if (provider === "claude" || provider === "auto") {
     const claudeResult = await translateWithClaude(text, sourceLocale, targetLocale, contentType);
     if (claudeResult.success) {
       return {
@@ -519,11 +543,9 @@ export async function translateText(
       };
     }
     // Claude failed - fall back to GPT
-    console.warn(`[Translation] Claude failed: ${claudeResult.error}, falling back to GPT-4o-mini`);
   }
 
   // FALLBACK: GPT-4o-mini (cheapest option: $0.15-$0.60/M tokens)
-  console.log(`[Translation] Using GPT-4o-mini for ${sourceLocale} -> ${targetLocale} (cost: ~$0.22/M chars)`);
 
   const contentTypeInstructions = {
     title: "This is a title/heading. Keep it concise, impactful, and SEO-friendly.",
@@ -574,7 +596,6 @@ ${text}`,
       success: true,
     };
   } catch (error) {
-    console.error(`Translation error for ${targetLocale}:`, error);
     return {
       translatedText: "",
       locale: targetLocale,
@@ -620,7 +641,7 @@ async function translateBlock(
       } else if (Array.isArray(value)) {
         // Handle arrays (like FAQ items, list items, etc.)
         const translatedArray = await Promise.all(
-          value.map(async (item) => {
+          value.map(async item => {
             if (typeof item === "string") {
               const result = await translateText({
                 text: item,
@@ -638,9 +659,7 @@ async function translateBlock(
                     text: itemValue,
                     sourceLocale,
                     targetLocale,
-                    contentType: itemKey.toLowerCase().includes("title")
-                      ? "title"
-                      : "body",
+                    contentType: itemKey.toLowerCase().includes("title") ? "title" : "body",
                   });
                   if (result.success) {
                     translatedItem[itemKey] = result.translatedText;
@@ -675,8 +694,8 @@ export async function translateContent(
   targetLocale: Locale
 ): Promise<ContentTranslation> {
   // HARD DISABLE: Check at every entry point
-  assertTranslationEnabled('translateContent');
-  
+  assertTranslationEnabled("translateContent");
+
   const result: ContentTranslation = {};
 
   // Translate title
@@ -721,7 +740,7 @@ export async function translateContent(
   // Translate blocks
   if (content.blocks && content.blocks.length > 0) {
     result.blocks = await Promise.all(
-      content.blocks.map((block) => translateBlock(block, sourceLocale, targetLocale))
+      content.blocks.map(block => translateBlock(block, sourceLocale, targetLocale))
     );
   }
 
@@ -744,14 +763,14 @@ export async function translateToAllLanguages(
   targetTiers?: number[] // Optional: only translate to specific tiers
 ): Promise<Map<Locale, ContentTranslation>> {
   // HARD DISABLE: Check at every entry point
-  assertTranslationEnabled('translateToAllLanguages');
-  
+  assertTranslationEnabled("translateToAllLanguages");
+
   const results = new Map<Locale, ContentTranslation>();
 
   // Filter locales based on tier if specified
-  let targetLocales = SUPPORTED_LOCALES.filter((l) => l.code !== sourceLocale);
+  let targetLocales = SUPPORTED_LOCALES.filter(l => l.code !== sourceLocale);
   if (targetTiers && targetTiers.length > 0) {
-    targetLocales = targetLocales.filter((l) => targetTiers.includes(l.tier));
+    targetLocales = targetLocales.filter(l => targetTiers.includes(l.tier));
   }
 
   // Process translations in batches to avoid rate limiting
@@ -759,7 +778,7 @@ export async function translateToAllLanguages(
   for (let i = 0; i < targetLocales.length; i += BATCH_SIZE) {
     const batch = targetLocales.slice(i, i + BATCH_SIZE);
     const batchResults = await Promise.all(
-      batch.map(async (locale) => {
+      batch.map(async locale => {
         const translation = await translateContent(content, sourceLocale, locale.code);
         return { locale: locale.code, translation };
       })
@@ -771,7 +790,7 @@ export async function translateToAllLanguages(
 
     // Small delay between batches to avoid rate limiting
     if (i + BATCH_SIZE < targetLocales.length) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
 
@@ -786,12 +805,12 @@ export async function translateTags(
   targetLocale: Locale
 ): Promise<string[]> {
   // HARD DISABLE: Check at every entry point
-  assertTranslationEnabled('translateTags');
-  
+  assertTranslationEnabled("translateTags");
+
   if (tags.length === 0) return [];
 
   const translatedTags = await Promise.all(
-    tags.map(async (tag) => {
+    tags.map(async tag => {
       const result = await translateText({
         text: tag,
         sourceLocale,
@@ -812,12 +831,12 @@ export function getTranslationProgress(
 ): { completed: number; total: number; percentage: number } {
   let targetLocales = SUPPORTED_LOCALES;
   if (targetTiers && targetTiers.length > 0) {
-    targetLocales = SUPPORTED_LOCALES.filter((l) => targetTiers.includes(l.tier));
+    targetLocales = SUPPORTED_LOCALES.filter(l => targetTiers.includes(l.tier));
   }
 
   const total = targetLocales.length;
-  const completed = translatedLocales.filter((locale) =>
-    targetLocales.some((l) => l.code === locale)
+  const completed = translatedLocales.filter(locale =>
+    targetLocales.some(l => l.code === locale)
   ).length;
 
   return {
@@ -835,7 +854,7 @@ export function getTranslationProgress(
 
 interface BatchTranslationJob {
   id: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
+  status: "pending" | "processing" | "completed" | "failed";
   requests: Array<{
     customId: string;
     text: string;
@@ -846,7 +865,7 @@ interface BatchTranslationJob {
   results?: Map<string, string>;
   createdAt: Date;
   completedAt?: Date;
-  batchId?: string;  // OpenAI batch ID
+  batchId?: string; // OpenAI batch ID
 }
 
 // Note: Batch jobs are now persisted to PostgreSQL via translationBatchJobs table
@@ -867,20 +886,23 @@ export const batchTranslation = {
     // Batch API is OpenAI-specific, requires direct OpenAI client
     const openai = getOpenAIClient();
     if (!openai) {
-      throw new Error("OpenAI client required for batch processing - OPENAI_API_KEY not configured");
+      throw new Error(
+        "OpenAI client required for batch processing - OPENAI_API_KEY not configured"
+      );
     }
 
     const jobId = `batch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 
     // Create batch request file (JSONL format)
     const batchRequests = requests.map((req, index) => {
-      const targetLocaleInfo = SUPPORTED_LOCALES.find((l) => l.code === req.targetLocale);
+      const targetLocaleInfo = SUPPORTED_LOCALES.find(l => l.code === req.targetLocale);
       const targetLanguageName = targetLocaleInfo?.name || req.targetLocale;
       const contentType = req.contentType || "body";
 
       const contentTypeInstructions: Record<string, string> = {
         title: "This is a title/heading. Keep it concise, impactful, and SEO-friendly.",
-        description: "This is a meta description for SEO. Keep it under 160 characters, compelling, and include key search terms.",
+        description:
+          "This is a meta description for SEO. Keep it under 160 characters, compelling, and include key search terms.",
         meta: "This is meta content for SEO. Optimize for search engines while being natural.",
         body: "This is body content. Maintain the tone, style, and formatting of the original.",
       };
@@ -911,27 +933,28 @@ ${req.text}`,
 
     try {
       // Convert to JSONL
-      const jsonlContent = batchRequests.map(r => JSON.stringify(r)).join('\n');
-      const jsonlBlob = new Blob([jsonlContent], { type: 'application/jsonl' });
+      const jsonlContent = batchRequests.map(r => JSON.stringify(r)).join("\n");
+      const jsonlBlob = new Blob([jsonlContent], { type: "application/jsonl" });
 
       // Upload file to OpenAI
       const file = await openai.files.create({
         file: jsonlBlob as any,
-        purpose: 'batch',
+        purpose: "batch",
       });
 
       // Create batch
       const batch = await openai.batches.create({
         input_file_id: file.id,
-        endpoint: '/v1/chat/completions',
-        completion_window: '24h',
+        endpoint: "/v1/chat/completions",
+        completion_window: "24h",
       });
 
       // Store job in database
-      const [row] = await db.insert(translationBatchJobs)
+      const [row] = await db
+        .insert(translationBatchJobs)
         .values({
           id: jobId,
-          status: 'processing',
+          status: "processing",
           batchId: batch.id,
           requests: requests.map((req, index) => ({
             customId: `req_${index}`,
@@ -945,7 +968,6 @@ ${req.text}`,
 
       return row.id;
     } catch (error) {
-      console.error("Error creating batch translation job:", error);
       throw error;
     }
   },
@@ -955,7 +977,8 @@ ${req.text}`,
    */
   async getJobStatus(jobId: string): Promise<BatchTranslationJob | null> {
     // Query from database
-    const [row] = await db.select()
+    const [row] = await db
+      .select()
       .from(translationBatchJobs)
       .where(eq(translationBatchJobs.id, jobId));
 
@@ -964,22 +987,22 @@ ${req.text}`,
     // Convert DB row to BatchTranslationJob format
     const job: BatchTranslationJob = {
       id: row.id,
-      status: row.status as BatchTranslationJob['status'],
-      requests: row.requests as BatchTranslationJob['requests'],
+      status: row.status as BatchTranslationJob["status"],
+      requests: row.requests as BatchTranslationJob["requests"],
       results: row.results ? new Map(Object.entries(row.results)) : undefined,
       createdAt: row.createdAt,
       completedAt: row.completedAt || undefined,
       batchId: row.batchId || undefined,
     };
 
-    if (job.status === 'processing' && job.batchId) {
+    if (job.status === "processing" && job.batchId) {
       const openai = getOpenAIClient();
       if (!openai) return job;
 
       try {
         const batch = await openai.batches.retrieve(job.batchId);
 
-        if (batch.status === 'completed') {
+        if (batch.status === "completed") {
           // Download results
           if (batch.output_file_id) {
             const outputFile = await openai.files.content(batch.output_file_id);
@@ -987,7 +1010,7 @@ ${req.text}`,
 
             // Parse JSONL results
             const results = new Map<string, string>();
-            for (const line of outputContent.split('\n').filter(Boolean)) {
+            for (const line of outputContent.split("\n").filter(Boolean)) {
               const result = JSON.parse(line);
               const translation = result.response?.body?.choices?.[0]?.message?.content?.trim();
               if (translation) {
@@ -996,29 +1019,33 @@ ${req.text}`,
             }
 
             // Update database with completed status
-            await db.update(translationBatchJobs)
+            await db
+              .update(translationBatchJobs)
               .set({
-                status: 'completed',
+                status: "completed",
                 results: Object.fromEntries(results),
                 completedAt: new Date(),
               })
               .where(eq(translationBatchJobs.id, jobId));
 
-            job.status = 'completed';
+            job.status = "completed";
             job.results = results;
             job.completedAt = new Date();
           }
-        } else if (batch.status === 'failed' || batch.status === 'expired' || batch.status === 'cancelled') {
+        } else if (
+          batch.status === "failed" ||
+          batch.status === "expired" ||
+          batch.status === "cancelled"
+        ) {
           // Update database with failed status
-          await db.update(translationBatchJobs)
-            .set({ status: 'failed' })
+          await db
+            .update(translationBatchJobs)
+            .set({ status: "failed" })
             .where(eq(translationBatchJobs.id, jobId));
 
-          job.status = 'failed';
+          job.status = "failed";
         }
-      } catch (error) {
-        console.error("Error checking batch status:", error);
-      }
+      } catch (error) {}
     }
 
     return job;
@@ -1029,7 +1056,7 @@ ${req.text}`,
    */
   async getResults(jobId: string): Promise<Map<string, string> | null> {
     const job = await this.getJobStatus(jobId);
-    if (!job || job.status !== 'completed') return null;
+    if (!job || job.status !== "completed") return null;
     return job.results || null;
   },
 
@@ -1046,9 +1073,9 @@ ${req.text}`,
     sourceLocale: Locale = "en",
     targetTiers?: number[]
   ): Promise<string> {
-    let targetLocales = SUPPORTED_LOCALES.filter((l) => l.code !== sourceLocale);
+    let targetLocales = SUPPORTED_LOCALES.filter(l => l.code !== sourceLocale);
     if (targetTiers && targetTiers.length > 0) {
-      targetLocales = targetLocales.filter((l) => targetTiers.includes(l.tier));
+      targetLocales = targetLocales.filter(l => targetTiers.includes(l.tier));
     }
 
     const requests: Array<{
@@ -1095,7 +1122,11 @@ ${req.text}`,
 // These are stub functions - DeepL Pro is disabled due to high costs ($100+ per use)
 // Translation now uses Claude Haiku 3.5 or GPT-4o-mini instead
 
-export async function getDeepLUsage(): Promise<{ characterCount: number; characterLimit: number; percentUsed: number }> {
+export async function getDeepLUsage(): Promise<{
+  characterCount: number;
+  characterLimit: number;
+  percentUsed: number;
+}> {
   // DeepL is disabled - return zero usage
   return {
     characterCount: 0,
@@ -1110,7 +1141,5 @@ export function getDeepLSupportedLocales(): string[] {
 
 export function getUnsupportedLocales(): string[] {
   const supported = new Set(Object.keys(DEEPL_SUPPORTED_LANGUAGES));
-  return SUPPORTED_LOCALES
-    .map(l => l.code)
-    .filter(code => !supported.has(code));
+  return SUPPORTED_LOCALES.map(l => l.code).filter(code => !supported.has(code));
 }

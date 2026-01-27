@@ -5,9 +5,9 @@
  * Falls back gracefully if unified-metrics is not available.
  */
 
-import { db } from '../../db';
-import { contents } from '../../../shared/schema';
-import { eq, sql, desc } from 'drizzle-orm';
+import { db } from "../../db";
+import { contents } from "../../../shared/schema";
+import { eq, sql, desc } from "drizzle-orm";
 
 // ============================================================================
 // Types
@@ -37,7 +37,7 @@ export interface ContentMetrics {
   trafficLast7Days: number;
   trafficLast30Days: number;
   trafficLast90Days: number;
-  trafficTrend: 'up' | 'down' | 'stable';
+  trafficTrend: "up" | "down" | "stable";
 
   // Freshness
   lastUpdated: Date | null;
@@ -85,7 +85,10 @@ function isCacheValid(timestamp: Date | null): boolean {
 /**
  * Get metrics for a specific content item
  */
-export async function getContentMetrics(contentId: string, bypassCache = false): Promise<ContentMetrics | null> {
+export async function getContentMetrics(
+  contentId: string,
+  bypassCache = false
+): Promise<ContentMetrics | null> {
   // Check cache
   const cached = cache.content.get(contentId);
   if (!bypassCache && cached && isCacheValid(cached.timestamp)) {
@@ -119,20 +122,18 @@ export async function getSiteMetrics(bypassCache = false): Promise<SiteMetrics> 
   }
 
   const allContent = await db.query.contents.findMany({
-    where: eq(contents.status, 'published'),
+    where: eq(contents.status, "published"),
   });
 
   // Calculate averages
   const seoScores = allContent.map(c => c.seoScore || 0).filter(s => s > 0);
   const aeoScores = allContent.map(c => (c as any).aeoScore || 0).filter(s => s > 0);
 
-  const avgSeoScore = seoScores.length > 0
-    ? Math.round(seoScores.reduce((a, b) => a + b, 0) / seoScores.length)
-    : 0;
+  const avgSeoScore =
+    seoScores.length > 0 ? Math.round(seoScores.reduce((a, b) => a + b, 0) / seoScores.length) : 0;
 
-  const avgAeoScore = aeoScores.length > 0
-    ? Math.round(aeoScores.reduce((a, b) => a + b, 0) / aeoScores.length)
-    : 0;
+  const avgAeoScore =
+    aeoScores.length > 0 ? Math.round(aeoScores.reduce((a, b) => a + b, 0) / aeoScores.length) : 0;
 
   // Sort by view count for top/bottom performers
   const sortedByViews = [...allContent].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
@@ -187,13 +188,15 @@ async function computeMetrics(content: any): Promise<ContentMetrics> {
 
   // Estimate traffic trend based on word count and age
   const wordCount = content.wordCount || 0;
-  const ageInDays = Math.floor((now - new Date(content.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+  const ageInDays = Math.floor(
+    (now - new Date(content.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+  );
   const expectedViewsPerDay = wordCount > 1000 ? 10 : 5;
   const expectedViews = expectedViewsPerDay * Math.min(ageInDays, 90);
 
-  let trafficTrend: 'up' | 'down' | 'stable' = 'stable';
-  if (viewCount > expectedViews * 1.2) trafficTrend = 'up';
-  if (viewCount < expectedViews * 0.5) trafficTrend = 'down';
+  let trafficTrend: "up" | "down" | "stable" = "stable";
+  if (viewCount > expectedViews * 1.2) trafficTrend = "up";
+  if (viewCount < expectedViews * 0.5) trafficTrend = "down";
 
   return {
     contentId: content.id,
@@ -254,5 +257,3 @@ export function clearMetricsCache(): void {
   cache.content.clear();
   cache.site = { data: null, timestamp: null };
 }
-
-console.log('[SEO Engine] Metrics adapter loaded');

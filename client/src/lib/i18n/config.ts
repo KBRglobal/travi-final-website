@@ -1,48 +1,48 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from '@shared/schema';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
+import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 
 // Import all locale files - 30 supported languages
 // Tier 1 - Core
-import enCommon from '../../locales/en/common.json';
-import arCommon from '../../locales/ar/common.json';
-import hiCommon from '../../locales/hi/common.json';
+import enCommon from "../../locales/en/common.json";
+import arCommon from "../../locales/ar/common.json";
+import hiCommon from "../../locales/hi/common.json";
 
 // Tier 2 - High ROI
-import zhCommon from '../../locales/zh/common.json';
-import ruCommon from '../../locales/ru/common.json';
-import urCommon from '../../locales/ur/common.json';
-import frCommon from '../../locales/fr/common.json';
-import idCommon from '../../locales/id/common.json';
+import zhCommon from "../../locales/zh/common.json";
+import ruCommon from "../../locales/ru/common.json";
+import urCommon from "../../locales/ur/common.json";
+import frCommon from "../../locales/fr/common.json";
+import idCommon from "../../locales/id/common.json";
 
 // Tier 3 - Growing (Southeast Asia focus)
-import deCommon from '../../locales/de/common.json';
-import faCommon from '../../locales/fa/common.json';
-import bnCommon from '../../locales/bn/common.json';
-import filCommon from '../../locales/fil/common.json';
-import thCommon from '../../locales/th/common.json';
-import viCommon from '../../locales/vi/common.json';
-import msCommon from '../../locales/ms/common.json';
+import deCommon from "../../locales/de/common.json";
+import faCommon from "../../locales/fa/common.json";
+import bnCommon from "../../locales/bn/common.json";
+import filCommon from "../../locales/fil/common.json";
+import thCommon from "../../locales/th/common.json";
+import viCommon from "../../locales/vi/common.json";
+import msCommon from "../../locales/ms/common.json";
 
 // Tier 4 - Niche
-import esCommon from '../../locales/es/common.json';
-import trCommon from '../../locales/tr/common.json';
-import itCommon from '../../locales/it/common.json';
-import jaCommon from '../../locales/ja/common.json';
-import koCommon from '../../locales/ko/common.json';
-import heCommon from '../../locales/he/common.json';
-import ptCommon from '../../locales/pt/common.json';
+import esCommon from "../../locales/es/common.json";
+import trCommon from "../../locales/tr/common.json";
+import itCommon from "../../locales/it/common.json";
+import jaCommon from "../../locales/ja/common.json";
+import koCommon from "../../locales/ko/common.json";
+import heCommon from "../../locales/he/common.json";
+import ptCommon from "../../locales/pt/common.json";
 
 // Tier 5 - European Expansion
-import nlCommon from '../../locales/nl/common.json';
-import plCommon from '../../locales/pl/common.json';
-import svCommon from '../../locales/sv/common.json';
-import elCommon from '../../locales/el/common.json';
-import csCommon from '../../locales/cs/common.json';
-import roCommon from '../../locales/ro/common.json';
-import ukCommon from '../../locales/uk/common.json';
-import huCommon from '../../locales/hu/common.json';
+import nlCommon from "../../locales/nl/common.json";
+import plCommon from "../../locales/pl/common.json";
+import svCommon from "../../locales/sv/common.json";
+import elCommon from "../../locales/el/common.json";
+import csCommon from "../../locales/cs/common.json";
+import roCommon from "../../locales/ro/common.json";
+import ukCommon from "../../locales/uk/common.json";
+import huCommon from "../../locales/hu/common.json";
 
 // Resources object - all 30 language translations
 const resources: Record<string, { common: any }> = {
@@ -93,8 +93,7 @@ const missingKeyHandler = (
   options: any
 ) => {
   // Only log in development to avoid console spam in production
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`[MISSING_TRANSLATION] locale="${lngs[0]}" ns="${ns}" key="${key}"`);
+  if (process.env.NODE_ENV === "development") {
   }
 };
 
@@ -104,22 +103,22 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    
+
     // CRITICAL: Disable fallback to prevent mixed-language UI
     // Set to false to completely disable fallback
     fallbackLng: false,
-    
-    defaultNS: 'common',
-    ns: ['common'],
-    
+
+    defaultNS: "common",
+    ns: ["common"],
+
     // Return the key itself when missing (we format it below)
     returnNull: false,
     returnEmptyString: false,
-    
+
     // Show visible marker for missing keys instead of silent fallback
     saveMissing: true,
     missingKeyHandler,
-    
+
     // Format missing keys as visible markers
     parseMissingKeyHandler: (key: string) => {
       return `[MISSING:${key}]`;
@@ -130,9 +129,9 @@ i18n
     },
 
     detection: {
-      order: ['path', 'localStorage'],
+      order: ["path", "localStorage"],
       lookupFromPathIndex: 0,
-      caches: ['localStorage'],
+      caches: ["localStorage"],
     },
 
     react: {
@@ -159,13 +158,13 @@ export const getLocalesByTier = (tier: number) => {
 export const changeLanguage = async (locale: Locale) => {
   await i18n.changeLanguage(locale);
   document.documentElement.lang = locale;
-  document.documentElement.dir = isRTL(locale) ? 'rtl' : 'ltr';
-  localStorage.setItem('i18nextLng', locale);
+  document.documentElement.dir = isRTL(locale) ? "rtl" : "ltr";
+  localStorage.setItem("i18nextLng", locale);
 };
 
 // Get current locale
 export const getCurrentLocale = (): Locale => {
-  return (i18n.language || 'en') as Locale;
+  return (i18n.language || "en") as Locale;
 };
 
 export default i18n;

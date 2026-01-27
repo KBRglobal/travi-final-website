@@ -13,27 +13,27 @@
  * - ENABLE_TRAFFIC_OPTIMIZATION_EXPERIMENTS (experiment recommendations)
  */
 
-import { Router, Request, Response, NextFunction } from 'express';
-import { getSegmentAnalyzer } from './segments';
-import { getBottleneckDetector } from './bottlenecks';
-import { getProposalEngine } from './proposals';
-import { getExperimentRecommender } from './experiments';
-import type { OptimizationSummary, ContentOptimizationView } from './types';
+import { Router, Request, Response, NextFunction } from "express";
+import { getSegmentAnalyzer } from "./segments";
+import { getBottleneckDetector } from "./bottlenecks";
+import { getProposalEngine } from "./proposals";
+import { getExperimentRecommender } from "./experiments";
+import type { OptimizationSummary, ContentOptimizationView } from "./types";
 
 // ============================================================================
 // FEATURE FLAG CHECKS
 // ============================================================================
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_TRAFFIC_OPTIMIZATION === 'true';
+  return process.env.ENABLE_TRAFFIC_OPTIMIZATION === "true";
 }
 
 function proposalsEnabled(): boolean {
-  return process.env.ENABLE_TRAFFIC_OPTIMIZATION_PROPOSALS !== 'false'; // Default true
+  return process.env.ENABLE_TRAFFIC_OPTIMIZATION_PROPOSALS !== "false"; // Default true
 }
 
 function experimentsEnabled(): boolean {
-  return process.env.ENABLE_TRAFFIC_OPTIMIZATION_EXPERIMENTS !== 'false'; // Default true
+  return process.env.ENABLE_TRAFFIC_OPTIMIZATION_EXPERIMENTS !== "false"; // Default true
 }
 
 // ============================================================================
@@ -43,8 +43,8 @@ function experimentsEnabled(): boolean {
 function requireEnabled(req: Request, res: Response, next: NextFunction): void {
   if (!isEnabled()) {
     res.status(404).json({
-      error: 'Traffic optimization feature is disabled',
-      hint: 'Set ENABLE_TRAFFIC_OPTIMIZATION=true to enable',
+      error: "Traffic optimization feature is disabled",
+      hint: "Set ENABLE_TRAFFIC_OPTIMIZATION=true to enable",
     });
     return;
   }
@@ -54,8 +54,8 @@ function requireEnabled(req: Request, res: Response, next: NextFunction): void {
 function requireProposals(req: Request, res: Response, next: NextFunction): void {
   if (!proposalsEnabled()) {
     res.status(404).json({
-      error: 'Proposal generation is disabled',
-      hint: 'Set ENABLE_TRAFFIC_OPTIMIZATION_PROPOSALS=true to enable',
+      error: "Proposal generation is disabled",
+      hint: "Set ENABLE_TRAFFIC_OPTIMIZATION_PROPOSALS=true to enable",
     });
     return;
   }
@@ -82,7 +82,7 @@ async function getSummary(req: Request, res: Response): Promise<void> {
     const proposalSummary = proposalEngine.getSummary();
     const experimentSummary = experimentRecommender.getSummary();
 
-    const pendingProposals = proposalEngine.getProposalsByStatus('pending');
+    const pendingProposals = proposalEngine.getProposalsByStatus("pending");
 
     const summary: OptimizationSummary = {
       generatedAt: new Date(),
@@ -104,7 +104,7 @@ async function getSummary(req: Request, res: Response): Promise<void> {
         topImprovement: null, // Would be calculated from historical data
         biggestOpportunity: bottleneckReport.topPriority[0]
           ? {
-              contentId: bottleneckReport.topPriority[0].affectedContent[0]?.contentId || '',
+              contentId: bottleneckReport.topPriority[0].affectedContent[0]?.contentId || "",
               potentialGain: bottleneckReport.topPriority[0].affectedContent[0]?.impactScore || 0,
             }
           : null,
@@ -113,8 +113,7 @@ async function getSummary(req: Request, res: Response): Promise<void> {
 
     res.json(summary);
   } catch (error) {
-    console.error('[TrafficOptimization] Error getting summary:', error);
-    res.status(500).json({ error: 'Failed to generate optimization summary' });
+    res.status(500).json({ error: "Failed to generate optimization summary" });
   }
 }
 
@@ -127,7 +126,7 @@ async function getContentOptimization(req: Request, res: Response): Promise<void
     const { id } = req.params;
 
     if (!id) {
-      res.status(400).json({ error: 'Content ID is required' });
+      res.status(400).json({ error: "Content ID is required" });
       return;
     }
 
@@ -148,7 +147,7 @@ async function getContentOptimization(req: Request, res: Response): Promise<void
     // Generate recommendations based on bottlenecks
     const recommendations: string[] = [];
     if (bottlenecks.length === 0) {
-      recommendations.push('No significant issues detected');
+      recommendations.push("No significant issues detected");
     } else {
       for (const bn of bottlenecks.slice(0, 3)) {
         recommendations.push(...bn.suggestedActions.slice(0, 2));
@@ -167,13 +166,13 @@ async function getContentOptimization(req: Request, res: Response): Promise<void
       },
       bottlenecks,
       proposals,
-      experiments: experiments.map((e) => ({
-        type: 'ab_test',
+      experiments: experiments.map(e => ({
+        type: "ab_test",
         name: `Experiment ${e.id}`,
-        description: '',
-        hypothesis: '',
+        description: "",
+        hypothesis: "",
         variants: [],
-        primaryMetric: '',
+        primaryMetric: "",
         secondaryMetrics: [],
         minimumSampleSize: 0,
         durationDays: 14,
@@ -185,8 +184,7 @@ async function getContentOptimization(req: Request, res: Response): Promise<void
 
     res.json(view);
   } catch (error) {
-    console.error('[TrafficOptimization] Error getting content optimization:', error);
-    res.status(500).json({ error: 'Failed to get content optimization view' });
+    res.status(500).json({ error: "Failed to get content optimization view" });
   }
 }
 
@@ -201,8 +199,7 @@ async function getSegments(req: Request, res: Response): Promise<void> {
 
     res.json(report);
   } catch (error) {
-    console.error('[TrafficOptimization] Error getting segments:', error);
-    res.status(500).json({ error: 'Failed to get segment report' });
+    res.status(500).json({ error: "Failed to get segment report" });
   }
 }
 
@@ -217,8 +214,7 @@ async function getBottlenecks(req: Request, res: Response): Promise<void> {
 
     res.json(report);
   } catch (error) {
-    console.error('[TrafficOptimization] Error getting bottlenecks:', error);
-    res.status(500).json({ error: 'Failed to get bottleneck report' });
+    res.status(500).json({ error: "Failed to get bottleneck report" });
   }
 }
 
@@ -233,12 +229,12 @@ async function getProposals(req: Request, res: Response): Promise<void> {
 
     let proposals = proposalEngine.getAllProposals();
 
-    if (status && typeof status === 'string') {
-      proposals = proposals.filter((p) => p.status === status);
+    if (status && typeof status === "string") {
+      proposals = proposals.filter(p => p.status === status);
     }
 
-    if (contentId && typeof contentId === 'string') {
-      proposals = proposals.filter((p) => p.contentId === contentId);
+    if (contentId && typeof contentId === "string") {
+      proposals = proposals.filter(p => p.contentId === contentId);
     }
 
     res.json({
@@ -246,8 +242,7 @@ async function getProposals(req: Request, res: Response): Promise<void> {
       proposals,
     });
   } catch (error) {
-    console.error('[TrafficOptimization] Error getting proposals:', error);
-    res.status(500).json({ error: 'Failed to get proposals' });
+    res.status(500).json({ error: "Failed to get proposals" });
   }
 }
 
@@ -261,12 +256,12 @@ async function approveProposal(req: Request, res: Response): Promise<void> {
     const { approvedBy } = req.body;
 
     if (!id) {
-      res.status(400).json({ error: 'Proposal ID is required' });
+      res.status(400).json({ error: "Proposal ID is required" });
       return;
     }
 
     if (!approvedBy) {
-      res.status(400).json({ error: 'approvedBy is required in request body' });
+      res.status(400).json({ error: "approvedBy is required in request body" });
       return;
     }
 
@@ -274,18 +269,17 @@ async function approveProposal(req: Request, res: Response): Promise<void> {
     const proposal = proposalEngine.approveProposal(id, approvedBy);
 
     if (!proposal) {
-      res.status(404).json({ error: 'Proposal not found or not in pending status' });
+      res.status(404).json({ error: "Proposal not found or not in pending status" });
       return;
     }
 
     res.json({
       success: true,
-      message: 'Proposal approved',
+      message: "Proposal approved",
       proposal,
     });
   } catch (error) {
-    console.error('[TrafficOptimization] Error approving proposal:', error);
-    res.status(500).json({ error: 'Failed to approve proposal' });
+    res.status(500).json({ error: "Failed to approve proposal" });
   }
 }
 
@@ -299,12 +293,12 @@ async function rejectProposal(req: Request, res: Response): Promise<void> {
     const { rejectedBy, reason } = req.body;
 
     if (!id) {
-      res.status(400).json({ error: 'Proposal ID is required' });
+      res.status(400).json({ error: "Proposal ID is required" });
       return;
     }
 
     if (!rejectedBy || !reason) {
-      res.status(400).json({ error: 'rejectedBy and reason are required in request body' });
+      res.status(400).json({ error: "rejectedBy and reason are required in request body" });
       return;
     }
 
@@ -312,18 +306,17 @@ async function rejectProposal(req: Request, res: Response): Promise<void> {
     const proposal = proposalEngine.rejectProposal(id, rejectedBy, reason);
 
     if (!proposal) {
-      res.status(404).json({ error: 'Proposal not found or not in pending status' });
+      res.status(404).json({ error: "Proposal not found or not in pending status" });
       return;
     }
 
     res.json({
       success: true,
-      message: 'Proposal rejected',
+      message: "Proposal rejected",
       proposal,
     });
   } catch (error) {
-    console.error('[TrafficOptimization] Error rejecting proposal:', error);
-    res.status(500).json({ error: 'Failed to reject proposal' });
+    res.status(500).json({ error: "Failed to reject proposal" });
   }
 }
 
@@ -336,7 +329,7 @@ async function implementProposal(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
 
     if (!id) {
-      res.status(400).json({ error: 'Proposal ID is required' });
+      res.status(400).json({ error: "Proposal ID is required" });
       return;
     }
 
@@ -344,18 +337,17 @@ async function implementProposal(req: Request, res: Response): Promise<void> {
     const proposal = proposalEngine.markImplemented(id);
 
     if (!proposal) {
-      res.status(404).json({ error: 'Proposal not found or not in approved status' });
+      res.status(404).json({ error: "Proposal not found or not in approved status" });
       return;
     }
 
     res.json({
       success: true,
-      message: 'Proposal marked as implemented',
+      message: "Proposal marked as implemented",
       proposal,
     });
   } catch (error) {
-    console.error('[TrafficOptimization] Error implementing proposal:', error);
-    res.status(500).json({ error: 'Failed to mark proposal as implemented' });
+    res.status(500).json({ error: "Failed to mark proposal as implemented" });
   }
 }
 
@@ -369,12 +361,12 @@ async function rollbackProposal(req: Request, res: Response): Promise<void> {
     const { reason } = req.body;
 
     if (!id) {
-      res.status(400).json({ error: 'Proposal ID is required' });
+      res.status(400).json({ error: "Proposal ID is required" });
       return;
     }
 
     if (!reason) {
-      res.status(400).json({ error: 'reason is required in request body' });
+      res.status(400).json({ error: "reason is required in request body" });
       return;
     }
 
@@ -383,19 +375,18 @@ async function rollbackProposal(req: Request, res: Response): Promise<void> {
 
     if (!proposal) {
       res.status(404).json({
-        error: 'Proposal not found, not implemented, or not reversible',
+        error: "Proposal not found, not implemented, or not reversible",
       });
       return;
     }
 
     res.json({
       success: true,
-      message: 'Proposal rolled back',
+      message: "Proposal rolled back",
       proposal,
     });
   } catch (error) {
-    console.error('[TrafficOptimization] Error rolling back proposal:', error);
-    res.status(500).json({ error: 'Failed to roll back proposal' });
+    res.status(500).json({ error: "Failed to roll back proposal" });
   }
 }
 
@@ -415,8 +406,7 @@ async function getExperiments(req: Request, res: Response): Promise<void> {
       summary,
     });
   } catch (error) {
-    console.error('[TrafficOptimization] Error getting experiments:', error);
-    res.status(500).json({ error: 'Failed to get experiments' });
+    res.status(500).json({ error: "Failed to get experiments" });
   }
 }
 
@@ -441,26 +431,26 @@ export function createTrafficOptimizationRouter(): Router {
   const router = Router();
 
   // Status endpoint (always available)
-  router.get('/status', getStatus);
+  router.get("/status", getStatus);
 
   // All other routes require feature to be enabled
   router.use(requireEnabled);
 
   // Summary and analytics
-  router.get('/summary', getSummary);
-  router.get('/segments', getSegments);
-  router.get('/bottlenecks', getBottlenecks);
-  router.get('/experiments', getExperiments);
+  router.get("/summary", getSummary);
+  router.get("/segments", getSegments);
+  router.get("/bottlenecks", getBottlenecks);
+  router.get("/experiments", getExperiments);
 
   // Content-specific
-  router.get('/content/:id', getContentOptimization);
+  router.get("/content/:id", getContentOptimization);
 
   // Proposals (require proposals enabled)
-  router.get('/proposals', requireProposals, getProposals);
-  router.post('/proposals/:id/approve', requireProposals, approveProposal);
-  router.post('/proposals/:id/reject', requireProposals, rejectProposal);
-  router.post('/proposals/:id/implement', requireProposals, implementProposal);
-  router.post('/proposals/:id/rollback', requireProposals, rollbackProposal);
+  router.get("/proposals", requireProposals, getProposals);
+  router.post("/proposals/:id/approve", requireProposals, approveProposal);
+  router.post("/proposals/:id/reject", requireProposals, rejectProposal);
+  router.post("/proposals/:id/implement", requireProposals, implementProposal);
+  router.post("/proposals/:id/rollback", requireProposals, rollbackProposal);
 
   return router;
 }

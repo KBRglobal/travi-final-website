@@ -157,7 +157,7 @@ export default function OctypoDashboardPage() {
   const [healthFilter, setHealthFilter] = useState("all");
   const [isJobDialogOpen, setIsJobDialogOpen] = useState(false);
   const [sourceType, setSourceType] = useState<"rss" | "topic" | "manual">("rss");
-  const [selectedDestination, setSelectedDestination] = useState<string>("all");
+  const [selectedDestination, setSelectedDestination] = useState<string>("");
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
   const [topicKeywords, setTopicKeywords] = useState("");
   const [priority, setPriority] = useState<"low" | "normal" | "high">("normal");
@@ -243,7 +243,7 @@ export default function OctypoDashboardPage() {
 
     createJobMutation.mutate({
       sourceType,
-      destination: selectedDestination === "all" ? undefined : selectedDestination,
+      destination: selectedDestination || undefined,
       rssFeedIds: sourceType === "rss" ? selectedFeeds : undefined,
       topicKeywords: sourceType === "topic" ? topicKeywords.split(",").map(k => k.trim()).filter(Boolean) : undefined,
       priority,
@@ -642,7 +642,7 @@ export default function OctypoDashboardPage() {
                   <SelectValue placeholder="All destinations" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All destinations</SelectItem>
+                  <SelectItem value="">All destinations</SelectItem>
                   {sourceDestinations?.destinations?.map((dest) => (
                     <SelectItem key={dest.id} value={dest.id}>
                       {dest.name} {dest.rssFeedCount > 0 && `(${dest.rssFeedCount} feeds)`}
