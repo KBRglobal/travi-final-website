@@ -6,7 +6,7 @@
  * Feature flag: ENABLE_INCIDENT_MANAGEMENT
  */
 
-import { log } from '../../lib/logger';
+import { log } from "../../lib/logger";
 import type {
   Incident,
   IncidentType,
@@ -17,13 +17,11 @@ import type {
   IncidentFilter,
   IncidentStats,
   IncidentEvent,
-} from './types';
+} from "./types";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[IncidentManager] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[IncidentManager] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[IncidentManager] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[IncidentManager] ${msg}`, data),
   error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[IncidentManager] ${msg}`, undefined, data),
   audit: (msg: string, data?: Record<string, unknown>) =>
@@ -42,9 +40,9 @@ class IncidentManager {
   private listeners: Array<(incident: Incident, event: IncidentEvent) => void> = [];
 
   constructor() {
-    this.enabled = process.env.ENABLE_INCIDENT_MANAGEMENT === 'true';
+    this.enabled = process.env.ENABLE_INCIDENT_MANAGEMENT === "true";
     if (this.enabled) {
-      logger.info('Incident management system enabled');
+      logger.info("Incident management system enabled");
     }
   }
 
@@ -64,7 +62,7 @@ class IncidentManager {
     // Deduplication: check for similar open incidents
     const existingIncident = this.findDuplicateIncident(type, source, metadata);
     if (existingIncident) {
-      logger.info('Duplicate incident suppressed', {
+      logger.info("Duplicate incident suppressed", {
         existingId: existingIncident.id,
         type,
         source,
@@ -80,7 +78,7 @@ class IncidentManager {
       id,
       type,
       severity,
-      status: 'open',
+      status: "open",
       source,
       title,
       description,
@@ -93,12 +91,12 @@ class IncidentManager {
 
     const event: IncidentEvent = {
       incidentId: id,
-      action: 'created',
+      action: "created",
       timestamp: new Date(),
     };
     this.recordEvent(event);
 
-    logger.warn('Incident created', {
+    logger.warn("Incident created", {
       id,
       type,
       severity,
@@ -106,7 +104,7 @@ class IncidentManager {
       title,
     });
 
-    logger.audit('INCIDENT_CREATED', {
+    logger.audit("INCIDENT_CREATED", {
       id,
       type,
       severity,
@@ -126,22 +124,22 @@ class IncidentManager {
   acknowledge(id: string, acknowledgedBy?: string): boolean {
     const incident = this.incidents.get(id);
     if (!incident) return false;
-    if (incident.status !== 'open') return false;
+    if (incident.status !== "open") return false;
 
-    incident.status = 'acknowledged';
+    incident.status = "acknowledged";
     incident.acknowledgedAt = new Date();
     incident.acknowledgedBy = acknowledgedBy;
 
     const event: IncidentEvent = {
       incidentId: id,
-      action: 'acknowledged',
+      action: "acknowledged",
       timestamp: new Date(),
       actor: acknowledgedBy,
     };
     this.recordEvent(event);
 
-    logger.info('Incident acknowledged', { id, acknowledgedBy });
-    logger.audit('INCIDENT_ACKNOWLEDGED', { id, acknowledgedBy });
+    logger.info("Incident acknowledged", { id, acknowledgedBy });
+    logger.audit("INCIDENT_ACKNOWLEDGED", { id, acknowledgedBy });
 
     this.notifyListeners(incident, event);
     return true;
@@ -153,9 +151,9 @@ class IncidentManager {
   mitigate(id: string, notes?: string): boolean {
     const incident = this.incidents.get(id);
     if (!incident) return false;
-    if (incident.status === 'resolved') return false;
+    if (incident.status === "resolved") return false;
 
-    incident.status = 'mitigated';
+    incident.status = "mitigated";
     incident.mitigatedAt = new Date();
     if (notes) {
       incident.resolutionNotes = notes;
@@ -163,14 +161,14 @@ class IncidentManager {
 
     const event: IncidentEvent = {
       incidentId: id,
-      action: 'mitigated',
+      action: "mitigated",
       timestamp: new Date(),
       notes,
     };
     this.recordEvent(event);
 
-    logger.info('Incident mitigated', { id, notes });
-    logger.audit('INCIDENT_MITIGATED', { id, notes });
+    logger.info("Incident mitigated", { id, notes });
+    logger.audit("INCIDENT_MITIGATED", { id, notes });
 
     this.notifyListeners(incident, event);
     return true;
@@ -182,9 +180,9 @@ class IncidentManager {
   resolve(id: string, resolvedBy?: string, notes?: string, autoResolved = false): boolean {
     const incident = this.incidents.get(id);
     if (!incident) return false;
-    if (incident.status === 'resolved') return false;
+    if (incident.status === "resolved") return false;
 
-    incident.status = 'resolved';
+    incident.status = "resolved";
     incident.resolvedAt = new Date();
     incident.resolvedBy = resolvedBy;
     incident.autoResolved = autoResolved;
@@ -194,15 +192,15 @@ class IncidentManager {
 
     const event: IncidentEvent = {
       incidentId: id,
-      action: 'resolved',
+      action: "resolved",
       timestamp: new Date(),
       actor: resolvedBy,
       notes,
     };
     this.recordEvent(event);
 
-    logger.info('Incident resolved', { id, resolvedBy, autoResolved });
-    logger.audit('INCIDENT_RESOLVED', { id, resolvedBy, autoResolved, notes });
+    logger.info("Incident resolved", { id, resolvedBy, autoResolved });
+    logger.audit("INCIDENT_RESOLVED", { id, resolvedBy, autoResolved, notes });
 
     this.notifyListeners(incident, event);
     return true;
@@ -214,12 +212,8 @@ class IncidentManager {
   autoResolve(type: IncidentType, source: IncidentSource, notes?: string): number {
     let count = 0;
     for (const incident of this.incidents.values()) {
-      if (
-        incident.type === type &&
-        incident.source === source &&
-        incident.status !== 'resolved'
-      ) {
-        this.resolve(incident.id, 'system', notes || 'Condition cleared automatically', true);
+      if (incident.type === type && incident.source === source && incident.status !== "resolved") {
+        this.resolve(incident.id, "system", notes || "Condition cleared automatically", true);
         count++;
       }
     }
@@ -272,7 +266,7 @@ class IncidentManager {
    * Get open incidents
    */
   getOpenIncidents(): Incident[] {
-    return this.listIncidents({ status: 'open' });
+    return this.listIncidents({ status: "open" });
   }
 
   /**
@@ -280,7 +274,7 @@ class IncidentManager {
    */
   getCriticalIncidents(): Incident[] {
     return Array.from(this.incidents.values()).filter(
-      i => i.severity === 'critical' && i.status !== 'resolved'
+      i => i.severity === "critical" && i.status !== "resolved"
     );
   }
 
@@ -320,7 +314,7 @@ class IncidentManager {
       bySeverity[incident.severity]++;
       byType[incident.type]++;
 
-      if (incident.status === 'resolved' && incident.resolvedAt) {
+      if (incident.status === "resolved" && incident.resolvedAt) {
         totalResolutionTime += incident.resolvedAt.getTime() - incident.detectedAt.getTime();
         resolvedCount++;
       }
@@ -355,7 +349,7 @@ class IncidentManager {
    */
   hasActiveIncident(type: IncidentType): boolean {
     for (const incident of this.incidents.values()) {
-      if (incident.type === type && incident.status !== 'resolved') {
+      if (incident.type === type && incident.status !== "resolved") {
         return true;
       }
     }
@@ -373,16 +367,18 @@ class IncidentManager {
     const now = Date.now();
 
     for (const incident of this.incidents.values()) {
-      if (incident.status === 'resolved') continue;
+      if (incident.status === "resolved") continue;
       if (incident.type !== type || incident.source !== source) continue;
 
       // Within dedup window
       if (now - incident.detectedAt.getTime() < DEDUP_WINDOW_MS) {
         // Check metadata similarity (component or provider match)
-        if (
-          metadata.component === incident.metadata.component ||
-          metadata.provider === incident.metadata.provider
-        ) {
+        // Only consider it a match if at least one field is defined
+        const componentMatch =
+          metadata.component !== undefined && metadata.component === incident.metadata.component;
+        const providerMatch =
+          metadata.provider !== undefined && metadata.provider === incident.metadata.provider;
+        if (componentMatch || providerMatch) {
           return incident;
         }
       }
@@ -409,7 +405,7 @@ class IncidentManager {
 
     // Remove oldest resolved incidents
     const resolved = Array.from(this.incidents.entries())
-      .filter(([_, i]) => i.status === 'resolved')
+      .filter(([_, i]) => i.status === "resolved")
       .sort((a, b) => a[1].resolvedAt!.getTime() - b[1].resolvedAt!.getTime());
 
     const toRemove = resolved.slice(0, Math.max(100, resolved.length - MAX_INCIDENTS / 2));
@@ -426,7 +422,7 @@ class IncidentManager {
       try {
         listener(incident, event);
       } catch (err) {
-        logger.error('Incident listener error', { error: String(err) });
+        logger.error("Incident listener error", { error: String(err) });
       }
     }
   }

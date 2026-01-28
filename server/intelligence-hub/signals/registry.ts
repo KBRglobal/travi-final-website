@@ -5,8 +5,8 @@
  * Manages adapters and provides unified signal access.
  */
 
-import { log } from '../../lib/logger';
-import { normalizeSignals } from './normalizer';
+import { log } from "../../lib/logger";
+import { normalizeSignals } from "./normalizer";
 import type {
   SignalSource,
   SignalAdapter,
@@ -17,13 +17,11 @@ import type {
   SignalBatch,
   SignalSeverity,
   SignalCategory,
-} from './types';
+} from "./types";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[SignalRegistry] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[SignalRegistry] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[SignalRegistry] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[SignalRegistry] ${msg}`, data),
   error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[SignalRegistry] ${msg}`, undefined, data),
 };
@@ -40,9 +38,9 @@ class SignalRegistry {
   private refreshInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
-    this.enabled = process.env.ENABLE_INTELLIGENCE_HUB === 'true';
+    this.enabled = process.env.ENABLE_INTELLIGENCE_HUB === "true";
     if (this.enabled) {
-      logger.info('Signal Registry initialized');
+      logger.info("Signal Registry initialized");
     }
   }
 
@@ -51,7 +49,7 @@ class SignalRegistry {
    */
   registerAdapter(adapter: SignalAdapter): void {
     this.adapters.set(adapter.source, adapter);
-    logger.info('Adapter registered', { source: adapter.source });
+    logger.info("Adapter registered", { source: adapter.source });
   }
 
   /**
@@ -78,7 +76,7 @@ class SignalRegistry {
 
     for (const [source, adapter] of this.adapters.entries()) {
       if (!adapter.isAvailable()) {
-        logger.warn('Adapter not available', { source });
+        logger.warn("Adapter not available", { source });
         continue;
       }
 
@@ -103,15 +101,15 @@ class SignalRegistry {
             this.addSignal(signal);
           }
 
-          logger.info('Signals refreshed from source', {
+          logger.info("Signals refreshed from source", {
             source,
             count: normalized.length,
           });
         }
       } catch (err) {
-        logger.error('Failed to refresh from source', {
+        logger.error("Failed to refresh from source", {
           source,
-          error: err instanceof Error ? err.message : 'Unknown error',
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
     }
@@ -134,6 +132,13 @@ class SignalRegistry {
   }
 
   /**
+   * Ingest a single signal (alias for addSignal)
+   */
+  ingestSignal(signal: UnifiedSignal): void {
+    this.addSignal(signal);
+  }
+
+  /**
    * Add multiple signals
    */
   addSignals(signals: UnifiedSignal[]): void {
@@ -141,6 +146,22 @@ class SignalRegistry {
       this.signals.set(signal.id, signal);
     }
     this.pruneSignals();
+  }
+
+  /**
+   * Ingest a batch of signals
+   */
+  ingestBatch(signals: UnifiedSignal[], source: string): void {
+    this.addSignals(signals);
+
+    const batch: SignalBatch = {
+      signals,
+      source: source as SignalSource,
+      batchId: `batch-${source}-${Date.now()}`,
+      processedAt: new Date(),
+    };
+    this.batches.push(batch);
+    this.pruneBatches();
   }
 
   /**
@@ -222,7 +243,7 @@ class SignalRegistry {
    * Get critical signals
    */
   getCriticalSignals(): UnifiedSignal[] {
-    return this.querySignals({ severities: ['critical', 'high'] });
+    return this.querySignals({ severities: ["critical", "high"] });
   }
 
   /**
@@ -259,8 +280,9 @@ class SignalRegistry {
   private pruneSignals(): void {
     if (this.signals.size <= MAX_SIGNALS) return;
 
-    const sorted = Array.from(this.signals.entries())
-      .sort((a, b) => a[1].timestamp.getTime() - b[1].timestamp.getTime());
+    const sorted = Array.from(this.signals.entries()).sort(
+      (a, b) => a[1].timestamp.getTime() - b[1].timestamp.getTime()
+    );
 
     const toRemove = sorted.slice(0, this.signals.size - MAX_SIGNALS);
     for (const [id] of toRemove) {
@@ -285,13 +307,13 @@ class SignalRegistry {
 
     this.refreshInterval = setInterval(() => {
       this.refreshSignals().catch(err => {
-        logger.error('Auto-refresh failed', {
-          error: err instanceof Error ? err.message : 'Unknown error',
+        logger.error("Auto-refresh failed", {
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       });
     }, intervalMs);
 
-    logger.info('Signal Registry started', { intervalMs });
+    logger.info("Signal Registry started", { intervalMs });
   }
 
   /**
@@ -302,7 +324,7 @@ class SignalRegistry {
       clearInterval(this.refreshInterval);
       this.refreshInterval = null;
     }
-    logger.info('Signal Registry stopped');
+    logger.info("Signal Registry stopped");
   }
 
   /**

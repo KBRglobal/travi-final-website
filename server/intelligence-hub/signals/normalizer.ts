@@ -4,14 +4,8 @@
  * Normalizes raw signals from various sources into unified format.
  */
 
-import { log } from '../../lib/logger';
-import type {
-  RawSignal,
-  UnifiedSignal,
-  SignalSeverity,
-  SignalCategory,
-  EntityType,
-} from './types';
+import { log } from "../../lib/logger";
+import type { RawSignal, UnifiedSignal, SignalSeverity, SignalCategory, EntityType } from "./types";
 
 const logger = {
   info: (msg: string, data?: Record<string, unknown>) =>
@@ -24,16 +18,16 @@ const logger = {
  * Score normalization ranges per source
  */
 const SCORE_RANGES: Record<string, { min: number; max: number }> = {
-  'content-confidence': { min: 0, max: 100 },
-  'content-decay': { min: 0, max: 1 },
-  'growth-recommendations': { min: 0, max: 10 },
-  'search-zero': { min: 0, max: 100 },
-  'ai-audit': { min: 0, max: 100 },
-  'cost-guards': { min: 0, max: 100 },
-  'backpressure': { min: 0, max: 100 },
-  'incidents': { min: 0, max: 100 },
-  'data-integrity': { min: 0, max: 100 },
-  'external': { min: 0, max: 100 },
+  "content-confidence": { min: 0, max: 100 },
+  "content-decay": { min: 0, max: 1 },
+  "growth-recommendations": { min: 0, max: 10 },
+  "search-zero": { min: 0, max: 100 },
+  "ai-audit": { min: 0, max: 100 },
+  "cost-guards": { min: 0, max: 100 },
+  backpressure: { min: 0, max: 100 },
+  incidents: { min: 0, max: 100 },
+  "data-integrity": { min: 0, max: 100 },
+  external: { min: 0, max: 100 },
 };
 
 /**
@@ -41,50 +35,48 @@ const SCORE_RANGES: Record<string, { min: number; max: number }> = {
  */
 const SEVERITY_MAP: Record<string, SignalSeverity> = {
   // Standard
-  info: 'info',
-  low: 'low',
-  medium: 'medium',
-  high: 'high',
-  critical: 'critical',
+  info: "info",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  critical: "critical",
   // Aliases
-  warning: 'medium',
-  warn: 'medium',
-  error: 'high',
-  fatal: 'critical',
-  urgent: 'critical',
-  minor: 'low',
-  major: 'high',
+  warning: "medium",
+  warn: "medium",
+  error: "high",
+  fatal: "critical",
+  urgent: "critical",
+  minor: "low",
+  major: "high",
   // Numeric
-  '1': 'info',
-  '2': 'low',
-  '3': 'medium',
-  '4': 'high',
-  '5': 'critical',
+  "1": "info",
+  "2": "low",
+  "3": "medium",
+  "4": "high",
+  "5": "critical",
 };
 
 /**
  * Category inference from source
  */
 const SOURCE_CATEGORY_MAP: Record<string, SignalCategory> = {
-  'content-confidence': 'quality',
-  'content-decay': 'quality',
-  'growth-recommendations': 'engagement',
-  'search-zero': 'performance',
-  'ai-audit': 'cost',
-  'cost-guards': 'cost',
-  'backpressure': 'health',
-  'incidents': 'health',
-  'data-integrity': 'integrity',
-  'external': 'performance',
+  "content-confidence": "quality",
+  "content-decay": "quality",
+  "growth-recommendations": "engagement",
+  "search-zero": "performance",
+  "ai-audit": "cost",
+  "cost-guards": "cost",
+  backpressure: "health",
+  incidents: "health",
+  "data-integrity": "integrity",
+  external: "performance",
+  revenue: "revenue",
 };
 
 /**
  * Normalize a raw score to 0-100 scale
  */
-export function normalizeScore(
-  rawScore: number | undefined,
-  source: string
-): number {
+export function normalizeScore(rawScore: number | undefined, source: string): number {
   if (rawScore === undefined || rawScore === null) return 50;
 
   const range = SCORE_RANGES[source] || { min: 0, max: 100 };
@@ -95,61 +87,65 @@ export function normalizeScore(
 
 /**
  * Normalize severity string to standard enum
+ * If rawSeverity is not provided but score is, infer severity from score
  */
-export function normalizeSeverity(rawSeverity?: string): SignalSeverity {
-  if (!rawSeverity) return 'info';
+export function normalizeSeverity(rawSeverity?: string, score?: number): SignalSeverity {
+  if (!rawSeverity) {
+    if (score !== undefined) {
+      return inferSeverityFromScore(score);
+    }
+    return "info";
+  }
 
   const normalized = rawSeverity.toLowerCase().trim();
-  return SEVERITY_MAP[normalized] || 'info';
+  return SEVERITY_MAP[normalized] || "low";
 }
 
 /**
  * Infer severity from normalized score
  */
 export function inferSeverityFromScore(score: number): SignalSeverity {
-  if (score >= 90) return 'critical';
-  if (score >= 70) return 'high';
-  if (score >= 50) return 'medium';
-  if (score >= 30) return 'low';
-  return 'info';
+  if (score >= 90) return "critical";
+  if (score >= 70) return "high";
+  if (score >= 50) return "medium";
+  if (score >= 30) return "low";
+  return "info";
 }
 
 /**
  * Infer category from source
  */
 export function inferCategory(source: string): SignalCategory {
-  return SOURCE_CATEGORY_MAP[source] || 'performance';
+  return SOURCE_CATEGORY_MAP[source] || "health";
 }
 
 /**
  * Infer entity type from context
  */
-export function inferEntityType(
-  raw: RawSignal
-): EntityType {
+export function inferEntityType(raw: RawSignal): EntityType {
   if (raw.entityType) return raw.entityType;
 
   // Infer from source
   switch (raw.source) {
-    case 'content-confidence':
-    case 'content-decay':
-      return 'content';
-    case 'growth-recommendations':
-      return 'entity';
-    case 'search-zero':
-      return 'content';
-    case 'ai-audit':
-      return 'system';
-    case 'cost-guards':
-      return 'system';
-    case 'backpressure':
-      return 'system';
-    case 'incidents':
-      return 'system';
-    case 'data-integrity':
-      return 'content';
+    case "content-confidence":
+    case "content-decay":
+      return "content";
+    case "growth-recommendations":
+      return "entity";
+    case "search-zero":
+      return "content";
+    case "ai-audit":
+      return "system";
+    case "cost-guards":
+      return "system";
+    case "backpressure":
+      return "system";
+    case "incidents":
+      return "system";
+    case "data-integrity":
+      return "content";
     default:
-      return 'system';
+      return "system";
   }
 }
 
@@ -177,7 +173,7 @@ export function normalizeSignal(raw: RawSignal): UnifiedSignal | null {
       source: raw.source,
       category: inferCategory(raw.source),
       entityType: inferEntityType(raw),
-      entityId: raw.entityId || 'system',
+      entityId: raw.entityId || "system",
       severity,
       score,
       reason: raw.message || `Signal from ${raw.source}`,
@@ -187,9 +183,9 @@ export function normalizeSignal(raw: RawSignal): UnifiedSignal | null {
 
     return signal;
   } catch (err) {
-    logger.warn('Failed to normalize signal', {
+    logger.warn("Failed to normalize signal", {
       source: raw.source,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
     });
     return null;
   }
@@ -208,10 +204,47 @@ export function normalizeSignals(raws: RawSignal[]): UnifiedSignal[] {
     }
   }
 
-  logger.info('Batch normalization complete', {
+  logger.info("Batch normalization complete", {
     input: raws.length,
     output: normalized.length,
   });
 
   return normalized;
+}
+
+/**
+ * Create signal options interface
+ */
+export interface CreateSignalOptions {
+  source: string;
+  severity: SignalSeverity;
+  score: number;
+  reason: string;
+  entityId?: string;
+  entityType?: EntityType;
+  details?: Record<string, unknown>;
+  timestamp?: Date;
+}
+
+/**
+ * Create a new unified signal directly (convenience function for testing)
+ */
+export function createSignal(options: CreateSignalOptions): UnifiedSignal {
+  const id = generateSignalId({
+    source: options.source as any,
+    timestamp: options.timestamp,
+  });
+
+  return {
+    id,
+    source: options.source as any,
+    category: inferCategory(options.source),
+    entityType: options.entityType || "system",
+    entityId: options.entityId || "system",
+    severity: options.severity,
+    score: Math.max(0, Math.min(100, options.score)),
+    reason: options.reason,
+    details: options.details || {},
+    timestamp: options.timestamp || new Date(),
+  };
 }
