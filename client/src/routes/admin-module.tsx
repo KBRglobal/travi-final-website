@@ -93,25 +93,14 @@ const Analytics = lazy(() => import("@/pages/analytics"));
 const GrowthDashboard = lazy(() => import("@/pages/admin/growth-dashboard"));
 const SeoHub = lazy(() => import("@/pages/admin/seo-hub"));
 const SeoEngineDashboard = lazy(() => import("@/pages/admin/seo-engine/SeoEngineDashboard"));
-const SeoEngineContentReport = lazy(
-  () => import("@/pages/admin/seo-engine/SeoEngineContentReport")
-);
-const SeoEngineActionsQueue = lazy(() => import("@/pages/admin/seo-engine/SeoEngineActionsQueue"));
-const SEOAuditPage = lazy(() => import("@/pages/seo-audit"));
-const AEODashboard = lazy(() => import("@/pages/admin/aeo-dashboard"));
 
 // ============================================================================
 // SETTINGS Category Pages
 // ============================================================================
 
 const SettingsHub = lazy(() => import("@/pages/admin/settings-hub"));
-const SiteSettingsPage = lazy(() => import("@/pages/admin/site-settings"));
 const UsersPage = lazy(() => import("@/pages/users"));
 const TraviApiKeys = lazy(() => import("@/pages/admin/travi/api-keys"));
-const SecurityPage = lazy(() => import("@/pages/admin/security"));
-const NavigationManagerPage = lazy(() => import("@/pages/admin/navigation-manager"));
-const FooterManagerPage = lazy(() => import("@/pages/admin/footer-manager"));
-const Settings = lazy(() => import("@/pages/settings"));
 
 // ============================================================================
 // OPERATIONS Category Pages
@@ -262,19 +251,10 @@ function AdminRouter() {
         <Route path="/admin/growth-dashboard" component={GrowthDashboard} />
         <Route path="/admin/seo-hub" component={SeoHub} />
         <Route path="/admin/seo-engine" component={SeoEngineDashboard} />
-        <Route path="/admin/seo-engine/contents" component={SeoEngineContentReport} />
-        <Route path="/admin/seo-engine/actions" component={SeoEngineActionsQueue} />
-        <Route path="/admin/seo-audit" component={SEOAuditPage} />
-        <Route path="/admin/aeo" component={AEODashboard} />
-
         {/* ============== SETTINGS ============== */}
         <Route path="/admin/settings-hub" component={SettingsHub} />
-        <Route path="/admin/site-settings" component={SiteSettingsPage} />
-        <Route path="/admin/settings" component={Settings} />
+        <Route path="/admin/settings" component={SettingsHub} />
         <Route path="/admin/users" component={UsersPage} />
-        <Route path="/admin/security" component={SecurityPage} />
-        <Route path="/admin/navigation" component={NavigationManagerPage} />
-        <Route path="/admin/footer" component={FooterManagerPage} />
         <Route path="/admin/travi/api-keys" component={TraviApiKeys} />
         <Route path="/admin/travi/config" component={TraviConfiguration} />
 
