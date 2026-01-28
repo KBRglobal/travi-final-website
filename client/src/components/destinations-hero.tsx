@@ -290,43 +290,43 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
             </motion.div>
 
             <motion.div
-              className="flex items-center gap-8"
+              className="flex flex-wrap items-center justify-start gap-4 sm:gap-8"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <div className="text-center">
+              <div className="text-center min-w-[60px]">
                 <div
-                  className="text-3xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 >
                   {destinationCount}
                 </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
+                <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                   {t("destinations.stats.destinations")}
                 </div>
               </div>
-              <div className="w-px h-10 bg-slate-200 dark:bg-slate-700" />
-              <div className="text-center">
+              <div className="hidden sm:block w-px h-10 bg-slate-200 dark:bg-slate-700" />
+              <div className="text-center min-w-[60px]">
                 <div
-                  className="text-3xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 >
                   {regionCount}
                 </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
+                <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                   {t("destinations.stats.regions")}
                 </div>
               </div>
-              <div className="w-px h-10 bg-slate-200 dark:bg-slate-700" />
-              <div className="text-center">
+              <div className="hidden sm:block w-px h-10 bg-slate-200 dark:bg-slate-700" />
+              <div className="text-center min-w-[60px]">
                 <div
-                  className="text-3xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white"
                   style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 >
                   17
                 </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
+                <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                   {t("destinations.stats.languages")}
                 </div>
               </div>

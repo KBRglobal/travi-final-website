@@ -44,7 +44,7 @@ export function CategoryHero({
 }: CategoryHeroProps) {
   return (
     <section
-      className="relative min-h-[420px] sm:min-h-[480px] lg:min-h-[560px] flex items-center overflow-hidden bg-[#1e1b4b]"
+      className="relative min-h-[320px] sm:min-h-[400px] lg:min-h-[560px] flex items-center overflow-hidden bg-[#1e1b4b]"
       aria-labelledby="category-hero-heading"
     >
       {/* Background Pattern */}
