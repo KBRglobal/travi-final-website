@@ -975,6 +975,22 @@ function SplitHero({
             </Link>
           </div>
 
+          {/* Trust Signals */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 justify-center lg:justify-start text-xs text-slate-500 dark:text-slate-400 mt-4">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true" />
+              Free to use
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true" />
+              No signup required
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true" />
+              Updated daily
+            </span>
+          </div>
+
           {/* Dots */}
           <div
             className="flex gap-2 mt-8 justify-center lg:justify-start"
