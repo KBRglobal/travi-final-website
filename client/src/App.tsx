@@ -17,8 +17,12 @@ import { createAliasRoutes } from "@/lib/navigation-aliases";
 import { dubaiRoutes } from "@/routes/dubai-routes";
 import { DESTINATION_IDS } from "@/types/destination";
 
-const CookieConsentBanner = lazy(() => import("@/components/cookie-consent-banner").then(m => ({ default: m.CookieConsentBanner })));
-const PWAInstallPrompt = lazy(() => import("@/components/pwa-install-prompt").then(m => ({ default: m.PWAInstallPrompt })));
+const CookieConsentBanner = lazy(() =>
+  import("@/components/cookie-consent-banner").then(m => ({ default: m.CookieConsentBanner }))
+);
+const PWAInstallPrompt = lazy(() =>
+  import("@/components/pwa-install-prompt").then(m => ({ default: m.PWAInstallPrompt }))
+);
 
 const Homepage = lazy(() => import("@/pages/homepage-fast"));
 const Attractions = lazy(() => import("@/pages/attractions"));
@@ -37,11 +41,17 @@ const PublicOffPlan = lazy(() => import("@/pages/public-off-plan"));
 const GlossaryHub = lazy(() => import("@/pages/glossary-hub"));
 const RasAlKhaimahPage = lazy(() => import("@/pages/public/ras-al-khaimah"));
 const WynnAlMarjanGuidePage = lazy(() => import("@/pages/public/guides/wynn-al-marjan-guide"));
-const JebelJaisAdventureGuidePage = lazy(() => import("@/pages/public/guides/jebel-jais-adventure-guide"));
+const JebelJaisAdventureGuidePage = lazy(
+  () => import("@/pages/public/guides/jebel-jais-adventure-guide")
+);
 const DubaiToRakTransportPage = lazy(() => import("@/pages/public/guides/dubai-to-rak-transport"));
-const DubaiVsRakComparisonPage = lazy(() => import("@/pages/public/guides/dubai-vs-rak-comparison"));
+const DubaiVsRakComparisonPage = lazy(
+  () => import("@/pages/public/guides/dubai-vs-rak-comparison")
+);
 const WhereToStayRakPage = lazy(() => import("@/pages/public/guides/where-to-stay-rak"));
-const RakRealEstateInvestmentPage = lazy(() => import("@/pages/public/guides/rak-real-estate-investment"));
+const RakRealEstateInvestmentPage = lazy(
+  () => import("@/pages/public/guides/rak-real-estate-investment")
+);
 const DestinationsLanding = lazy(() => import("@/pages/destinations"));
 const DestinationPage = lazy(() => import("@/pages/destination-page"));
 const TraviLocationPage = lazy(() => import("@/pages/public/travi-location-page"));
@@ -74,9 +84,9 @@ const AdminLayout = lazy(() => import("@/routes/admin-module"));
 function PageLoader() {
   return (
     <div className="min-h-[400px] flex flex-col items-center justify-center gap-4">
-      <img 
-        src="/logos/Mascot_for_Dark_Background.png" 
-        alt="TRAVI" 
+      <img
+        src="/logos/Mascot_for_Dark_Background.png"
+        alt="TRAVI"
         className="w-16 h-16 object-contain animate-bounce"
       />
       <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -209,11 +219,43 @@ const publicRoutes = [
   ...dubaiRoutes,
 ];
 
+// Must match SUPPORTED_LOCALES from @shared/schema - 30 languages
 const LOCALE_PREFIXES = [
-  "en", "ar", "hi", "zh", "ru", "ur", "fr",
-  "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he",
-  "pt", "nl", "pl", "sv", "th", "vi", "id", "ms", "cs", "el", "da", "no", "ro",
-  "hu", "uk"
+  // Tier 1 - Core
+  "en",
+  "ar",
+  "hi",
+  // Tier 2 - High ROI
+  "zh",
+  "ru",
+  "ur",
+  "fr",
+  "id",
+  // Tier 3 - Growing (Southeast Asia focus)
+  "de",
+  "fa",
+  "bn",
+  "fil",
+  "th",
+  "vi",
+  "ms",
+  // Tier 4 - Niche
+  "es",
+  "tr",
+  "it",
+  "ja",
+  "ko",
+  "he",
+  "pt",
+  // Tier 5 - European Expansion
+  "nl",
+  "pl",
+  "sv",
+  "el",
+  "cs",
+  "ro",
+  "uk",
+  "hu",
 ];
 
 function PublicRouter() {
@@ -221,14 +263,24 @@ function PublicRouter() {
     <Switch>
       {/* Redirect routes - must be BEFORE generic routes */}
       <Route path="/attractions/search">{() => <AttractionsSearchRedirect />}</Route>
-      <Route path="/destinations/:city/attractions">{(params) => <CityAttractionsRedirect params={params} />}</Route>
+      <Route path="/destinations/:city/attractions">
+        {params => <CityAttractionsRedirect params={params} />}
+      </Route>
       {/* NOTE: Hotel redirects disabled - no hotel content in CMS yet */}
       {/* <Route path="/destinations/:city/hotels">{(params) => <DestinationHotelsRedirect params={params} />}</Route> */}
-      <Route path="/destinations/:city/news">{(params) => <DestinationNewsRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/when-to-go">{(params) => <DestinationWhenToGoRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/getting-around">{(params) => <DestinationGettingAroundRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/faq">{(params) => <DestinationFaqRedirect params={params} />}</Route>
-      {DESTINATION_IDS.map((city) => (
+      <Route path="/destinations/:city/news">
+        {params => <DestinationNewsRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/when-to-go">
+        {params => <DestinationWhenToGoRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/getting-around">
+        {params => <DestinationGettingAroundRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/faq">
+        {params => <DestinationFaqRedirect params={params} />}
+      </Route>
+      {DESTINATION_IDS.map(city => (
         <Route key={`city-attractions-${city}`} path={`/${city}/attractions`}>
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
@@ -239,36 +291,48 @@ function PublicRouter() {
           {() => <HashRedirect city={city} hash="hotels" />}
         </Route>
       ))} */}
-      {DESTINATION_IDS.map((city) => (
+      {DESTINATION_IDS.map(city => (
         <Route key={`guides-city-${city}`} path={`/guides/${city}`}>
           {() => <Redirect to={`/guides/${city}-travel-guide`} />}
         </Route>
       ))}
       {/* Smart redirect: /attractions/:city -> /attractions/list/:city for valid destination IDs */}
-      {DESTINATION_IDS.map((city) => (
+      {DESTINATION_IDS.map(city => (
         <Route key={`attractions-city-redirect-${city}`} path={`/attractions/${city}`}>
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
       ))}
 
       {/* Travel style year-based URL redirects (SEO: 301 equivalent) */}
-      <Route path="/travel-styles/luxury-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/luxury-travel-complete-guide" />}</Route>
-      <Route path="/travel-styles/adventure-outdoors-complete-guide-2026">{() => <Redirect to="/travel-styles/adventure-outdoors-complete-guide" />}</Route>
-      <Route path="/travel-styles/family-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/family-travel-complete-guide" />}</Route>
-      <Route path="/travel-styles/budget-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/budget-travel-complete-guide" />}</Route>
-      <Route path="/travel-styles/honeymoon-romance-complete-guide-2026">{() => <Redirect to="/travel-styles/honeymoon-romance-complete-guide" />}</Route>
-      <Route path="/travel-styles/solo-travel-complete-guide-2026">{() => <Redirect to="/travel-styles/solo-travel-complete-guide" />}</Route>
+      <Route path="/travel-styles/luxury-travel-complete-guide-2026">
+        {() => <Redirect to="/travel-styles/luxury-travel-complete-guide" />}
+      </Route>
+      <Route path="/travel-styles/adventure-outdoors-complete-guide-2026">
+        {() => <Redirect to="/travel-styles/adventure-outdoors-complete-guide" />}
+      </Route>
+      <Route path="/travel-styles/family-travel-complete-guide-2026">
+        {() => <Redirect to="/travel-styles/family-travel-complete-guide" />}
+      </Route>
+      <Route path="/travel-styles/budget-travel-complete-guide-2026">
+        {() => <Redirect to="/travel-styles/budget-travel-complete-guide" />}
+      </Route>
+      <Route path="/travel-styles/honeymoon-romance-complete-guide-2026">
+        {() => <Redirect to="/travel-styles/honeymoon-romance-complete-guide" />}
+      </Route>
+      <Route path="/travel-styles/solo-travel-complete-guide-2026">
+        {() => <Redirect to="/travel-styles/solo-travel-complete-guide" />}
+      </Route>
 
       <Route path="/en/:city/attractions/:slug" component={TraviLocationPage} />
       {/* NOTE: Hotel routes disabled - no hotel content in CMS yet */}
       {/* <Route path="/en/:city/hotels/:slug" component={TraviLocationPage} /> */}
       <Route path="/en/:city/restaurants/:slug" component={TraviLocationPage} />
-      
-      {LOCALE_PREFIXES.map((locale) => (
+
+      {LOCALE_PREFIXES.map(locale => (
         <Route key={`${locale}-home`} path={`/${locale}`} component={Homepage} />
       ))}
-      {LOCALE_PREFIXES.flatMap((locale) =>
-        publicRoutes.map((route) => (
+      {LOCALE_PREFIXES.flatMap(locale =>
+        publicRoutes.map(route => (
           <Route
             key={`${locale}-${route.path}`}
             path={`/${locale}${route.path}`}
@@ -277,7 +341,7 @@ function PublicRouter() {
         ))
       )}
 
-      {publicRoutes.map((route) => (
+      {publicRoutes.map(route => (
         <Route key={route.path} path={route.path} component={route.component} />
       ))}
       <Route path="/bangkok">{() => <Redirect to="/destinations/bangkok" />}</Route>
@@ -316,15 +380,15 @@ function App() {
               </a>
               <Suspense fallback={<PageLoader />}>
                 <main id="main-content" tabIndex={-1}>
-                {isAdminRoute ? (
-                  <AdminLayout />
-                ) : isV2Route ? (
-                  <GeographicProvider>
+                  {isAdminRoute ? (
+                    <AdminLayout />
+                  ) : isV2Route ? (
+                    <GeographicProvider>
+                      <PublicRouter />
+                    </GeographicProvider>
+                  ) : (
                     <PublicRouter />
-                  </GeographicProvider>
-                ) : (
-                  <PublicRouter />
-                )}
+                  )}
                 </main>
               </Suspense>
               <Toaster />
