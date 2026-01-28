@@ -127,8 +127,8 @@ const navigationCategories: NavCategory[] = [
         requiredPermission: "canViewAnalytics",
       },
       {
-        title: "SEO Engine",
-        url: "/admin/seo-engine",
+        title: "SEO Hub",
+        url: "/admin/seo-hub",
         icon: Search,
         requiredPermission: "canViewAnalytics",
       },
@@ -148,7 +148,7 @@ const navigationCategories: NavCategory[] = [
     items: [
       {
         title: "Site Config",
-        url: "/admin/site-settings",
+        url: "/admin/settings-hub",
         icon: Settings,
         requiredPermission: "canManageSettings",
       },
@@ -157,12 +157,6 @@ const navigationCategories: NavCategory[] = [
         url: "/admin/users",
         icon: Users,
         requiredPermission: "canManageUsers",
-      },
-      {
-        title: "Integrations",
-        url: "/admin/travi/api-keys",
-        icon: Link2,
-        requiredPermission: "canManageSettings",
       },
     ],
   },
