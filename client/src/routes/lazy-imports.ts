@@ -82,7 +82,7 @@ export const TranslationsPage = lazy(() => import("@/pages/translations"));
 export const ContentCalendarPage = lazy(() => import("@/pages/content-calendar"));
 export const ContentTemplatesPage = lazy(() => import("@/pages/content-templates"));
 export const SEOAuditPage = lazy(() => import("@/pages/seo-audit"));
-export const AutoPilotPage = lazy(() => import("@/pages/admin/auto-pilot"));
+// AutoPilotPage removed - duplicate of OctypoAutopilot
 export const SocialDashboard = lazy(() => import("@/pages/admin/social/social-dashboard"));
 export const GrowthDashboard = lazy(() => import("@/pages/admin/growth-dashboard"));
 export const AEODashboard = lazy(() => import("@/pages/admin/aeo-dashboard"));
@@ -141,15 +141,7 @@ export const DestinationBrowser = lazy(() => import("@/pages/destination-browser
 // Internal Links Management
 export const LinksDashboard = lazy(() => import("@/pages/admin/links/dashboard"));
 
-// Monetization Pages
-export const MonetizationPremium = lazy(() => import("@/pages/admin/monetization/premium-content"));
-export const MonetizationListings = lazy(
-  () => import("@/pages/admin/monetization/business-listings")
-);
-export const MonetizationLeads = lazy(() => import("@/pages/admin/monetization/lead-management"));
-export const MonetizationAffiliates = lazy(
-  () => import("@/pages/admin/monetization/affiliate-dashboard")
-);
+// Monetization Pages removed - orphaned, no routes
 
 // Enterprise Pages
 export const EnterpriseTeams = lazy(() => import("@/pages/admin/enterprise/teams"));
@@ -166,10 +158,7 @@ export const GovernancePolicies = lazy(() => import("@/pages/admin/governance/po
 export const GovernanceApprovals = lazy(() => import("@/pages/admin/governance/approvals"));
 export const GovernanceAudit = lazy(() => import("@/pages/admin/governance/audit"));
 
-// Advanced Analytics Pages
-export const CustomerJourney = lazy(() => import("@/pages/admin/analytics/customer-journey"));
-export const SemanticSearchAdmin = lazy(() => import("@/pages/admin/analytics/semantic-search"));
-export const PlagiarismCheck = lazy(() => import("@/pages/admin/analytics/plagiarism-check"));
+// Advanced Analytics Pages removed - orphaned, no routes
 export const LiveConsole = lazy(() => import("@/pages/admin/console"));
 
 // Survey Builder Pages
