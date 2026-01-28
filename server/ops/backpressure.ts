@@ -9,20 +9,18 @@
  * Feature flag: ENABLE_BACKPRESSURE=true
  */
 
-import { log } from '../lib/logger';
-import { getOpsConfig } from './config';
-import type { BackpressureState } from './types';
+import { log } from "../lib/logger";
+import { getOpsConfig } from "./config";
+import type { BackpressureState } from "./types";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[Backpressure] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[Backpressure] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[Backpressure] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[Backpressure] ${msg}`, data),
   alert: (msg: string, data?: Record<string, unknown>) =>
     log.warn(`[Backpressure][ALERT] ${msg}`, data),
 };
 
-type BackpressureLevel = 'none' | 'light' | 'heavy';
+type BackpressureLevel = "none" | "light" | "heavy";
 
 interface ThrottleConfig {
   maxConcurrentAiCalls: number;
@@ -64,7 +62,7 @@ interface MetricsSnapshot {
 }
 
 class BackpressureController {
-  private currentLevel: BackpressureLevel = 'none';
+  private currentLevel: BackpressureLevel = "none";
   private activatedAt?: Date;
   private lastDeactivatedAt?: Date;
   private metricsHistory: MetricsSnapshot[] = [];
@@ -79,7 +77,7 @@ class BackpressureController {
   getState(): BackpressureState {
     const metrics = this.getCurrentMetrics();
     return {
-      isActive: this.currentLevel !== 'none',
+      isActive: this.currentLevel !== "none",
       level: this.currentLevel,
       reason: this.getActivationReason(),
       activatedAt: this.activatedAt,
@@ -90,7 +88,7 @@ class BackpressureController {
   /**
    * Get current system metrics
    */
-  private getCurrentMetrics(): BackpressureState['metrics'] {
+  private getCurrentMetrics(): BackpressureState["metrics"] {
     const memUsage = process.memoryUsage();
     const memoryUsage = (memUsage.heapUsed / memUsage.heapTotal) * 100;
 
@@ -127,10 +125,10 @@ class BackpressureController {
     const config = getOpsConfig();
 
     if (!config.backpressureEnabled) {
-      if (this.currentLevel !== 'none') {
-        this.setLevel('none', 'Feature disabled');
+      if (this.currentLevel !== "none") {
+        this.setLevel("none", "Feature disabled");
       }
-      return 'none';
+      return "none";
     }
 
     const metrics = await this.collectMetrics();
@@ -156,7 +154,7 @@ class BackpressureController {
     // Get queue depth
     let queueDepth = 0;
     try {
-      const { jobQueue } = await import('../job-queue');
+      const { jobQueue } = await import("../job-queue");
       const stats = await jobQueue.getStats();
       queueDepth = stats.pending + stats.processing;
     } catch {
@@ -166,11 +164,12 @@ class BackpressureController {
     // Get AI latency from health tracker
     let aiLatencyMs = 0;
     try {
-      const { getHealthTracker } = await import('../ai-orchestrator/health-tracker');
+      const { getHealthTracker } = await import("../ai-orchestrator/health-tracker");
       const tracker = getHealthTracker();
       const healthData = tracker.getAllHealth();
       if (healthData.length > 0) {
-        const avgLatency = healthData.reduce((sum, h) => sum + h.averageLatencyMs, 0) / healthData.length;
+        const avgLatency =
+          healthData.reduce((sum, h) => sum + h.averageLatencyMs, 0) / healthData.length;
         aiLatencyMs = avgLatency;
       }
     } catch {
@@ -209,7 +208,7 @@ class BackpressureController {
       metrics.queueDepth > config.backpressure.queueDepthThreshold * 2 ||
       metrics.aiLatencyMs > config.backpressure.aiLatencyThresholdMs * 2
     ) {
-      return 'heavy';
+      return "heavy";
     }
 
     // Light backpressure conditions
@@ -219,25 +218,25 @@ class BackpressureController {
       metrics.queueDepth > config.backpressure.queueDepthThreshold ||
       metrics.aiLatencyMs > config.backpressure.aiLatencyThresholdMs
     ) {
-      return 'light';
+      return "light";
     }
 
     // Check cooldown before returning to none
-    if (this.currentLevel !== 'none' && this.activatedAt) {
+    if (this.currentLevel !== "none" && this.activatedAt) {
       const elapsed = Date.now() - this.activatedAt.getTime();
       if (elapsed < config.backpressure.cooldownMs) {
         return this.currentLevel;
       }
     }
 
-    return 'none';
+    return "none";
   }
 
   /**
    * Get reason for current activation
    */
   private getActivationReason(metrics?: MetricsSnapshot): string | undefined {
-    if (this.currentLevel === 'none') return undefined;
+    if (this.currentLevel === "none") return undefined;
 
     const m = metrics || this.getCurrentMetrics();
     const config = getOpsConfig();
@@ -256,7 +255,7 @@ class BackpressureController {
       reasons.push(`AI latency: ${Math.round(m.aiLatencyMs)}ms`);
     }
 
-    return reasons.join(', ') || 'Unknown';
+    return reasons.join(", ") || "Unknown";
   }
 
   /**
@@ -266,24 +265,22 @@ class BackpressureController {
     const previousLevel = this.currentLevel;
     this.currentLevel = level;
 
-    if (level !== 'none' && previousLevel === 'none') {
+    if (level !== "none" && previousLevel === "none") {
       this.activatedAt = new Date();
-      logger.alert('Backpressure ACTIVATED', { level, reason });
-    } else if (level === 'none' && previousLevel !== 'none') {
+      logger.alert("Backpressure ACTIVATED", { level, reason });
+    } else if (level === "none" && previousLevel !== "none") {
       this.lastDeactivatedAt = new Date();
-      const duration = this.activatedAt
-        ? Date.now() - this.activatedAt.getTime()
-        : 0;
-      logger.info('Backpressure DEACTIVATED', {
+      const duration = this.activatedAt ? Date.now() - this.activatedAt.getTime() : 0;
+      logger.info("Backpressure DEACTIVATED", {
         previousLevel,
-        durationMs: duration
+        durationMs: duration,
       });
       this.activatedAt = undefined;
     } else if (level !== previousLevel) {
-      logger.warn('Backpressure level changed', {
+      logger.warn("Backpressure level changed", {
         from: previousLevel,
         to: level,
-        reason
+        reason,
       });
     }
   }
@@ -292,6 +289,10 @@ class BackpressureController {
    * Check if a request should be allowed based on current backpressure
    */
   shouldAllowRequest(isCritical: boolean = false): boolean {
+    // If backpressure feature is disabled, always allow
+    const opsConfig = getOpsConfig();
+    if (!opsConfig.backpressureEnabled) return true;
+
     const config = LEVEL_CONFIGS[this.currentLevel];
 
     if (isCritical) return true;
@@ -364,7 +365,7 @@ class BackpressureController {
 
     const config = getOpsConfig();
     if (!config.backpressureEnabled) {
-      logger.info('Backpressure monitoring disabled by feature flag');
+      logger.info("Backpressure monitoring disabled by feature flag");
       return;
     }
 
@@ -373,16 +374,16 @@ class BackpressureController {
     // Check every 5 seconds
     this.checkInterval = setInterval(() => {
       this.checkAndAdjust().catch(err => {
-        logger.warn('Backpressure check failed', { error: String(err) });
+        logger.warn("Backpressure check failed", { error: String(err) });
       });
     }, 5000);
 
     // Initial check
     this.checkAndAdjust().catch(err => {
-      logger.warn('Initial backpressure check failed', { error: String(err) });
+      logger.warn("Initial backpressure check failed", { error: String(err) });
     });
 
-    logger.info('Backpressure controller started');
+    logger.info("Backpressure controller started");
   }
 
   /**
@@ -394,7 +395,7 @@ class BackpressureController {
       this.checkInterval = null;
     }
     this.isRunning = false;
-    logger.info('Backpressure controller stopped');
+    logger.info("Backpressure controller stopped");
   }
 
   /**

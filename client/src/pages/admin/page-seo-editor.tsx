@@ -8,10 +8,22 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Save, Globe, FileText, Image, Link as LinkIcon, 
-  Bot, Eye, RefreshCw, Search, Code, Wand2, Loader2,
-  CheckCircle2, AlertTriangle, XCircle
+import {
+  Save,
+  Globe,
+  FileText,
+  Image,
+  Link as LinkIcon,
+  Bot,
+  Eye,
+  RefreshCw,
+  Search,
+  Code,
+  Wand2,
+  Loader2,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -89,11 +101,11 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
           throw new Error("Invalid JSON-LD schema format");
         }
       }
-      
+
       // Filter out database metadata fields per field ownership contract
       // Only send SEO-specific fields that are allowed by the contract
       const { id, createdAt, updatedAt, _meta, ...seoFields } = data as any;
-      
+
       return apiRequest("PUT", `/api/admin/page-seo${pagePath}`, {
         ...seoFields,
         pageLabel,
@@ -125,7 +137,11 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
   };
 
   // AI SEO Generation
-  const [aiScore, setAiScore] = useState<{ titleScore: number; descriptionScore: number; overall: number } | null>(null);
+  const [aiScore, setAiScore] = useState<{
+    titleScore: number;
+    descriptionScore: number;
+    overall: number;
+  } | null>(null);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
 
   const generateMutation = useMutation({
@@ -133,10 +149,10 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
       const res = await fetch("/api/ai/generate-page-seo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          pagePath, 
+        body: JSON.stringify({
+          pagePath,
           pageLabel,
-          context: `This is the main ${pageLabel.toLowerCase()} index page for the Travi travel platform.` 
+          context: `This is the main ${pageLabel.toLowerCase()} index page for the Travi travel platform.`,
         }),
       });
       if (!res.ok) {
@@ -145,7 +161,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
       }
       return res.json() as Promise<AIGeneratedSeo>;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       setFormData(prev => ({
         ...prev,
         metaTitle: data.metaTitle || prev.metaTitle,
@@ -202,12 +218,16 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
           {pageLabel} SEO Settings
         </CardTitle>
         <CardDescription>
-          Configure SEO metadata for the {pageLabel} page. All values are stored in the database with no auto-generation or fallbacks.
+          Configure SEO metadata for the {pageLabel} page. All values are stored in the database
+          with no auto-generation or fallbacks.
         </CardDescription>
         {isNewRecord && (
           <div className="mt-3 flex items-center gap-2 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-md border border-amber-200 dark:border-amber-800">
             <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-            <span className="text-sm">No SEO data exists in the database for this page. Fill in the fields below and save to create the record.</span>
+            <span className="text-sm">
+              No SEO data exists in the database for this page. Fill in the fields below and save to
+              create the record.
+            </span>
           </div>
         )}
       </CardHeader>
@@ -236,11 +256,13 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
             <div className="space-y-2">
               <Label htmlFor="metaTitle" className="flex items-center justify-between">
                 <span>Meta Title</span>
-                <span className={`text-xs ${
-                  titleLength > 0 && (titleLength < 30 || titleLength > 60) 
-                    ? "text-destructive font-medium" 
-                    : "text-muted-foreground"
-                }`}>
+                <span
+                  className={`text-xs ${
+                    titleLength > 0 && (titleLength < 30 || titleLength > 60)
+                      ? "text-destructive font-medium"
+                      : "text-muted-foreground"
+                  }`}
+                >
                   {titleLength}/60 {titleLength > 0 && titleLength < 30 && "(min 30)"}
                 </span>
               </Label>
@@ -249,8 +271,12 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 data-testid="input-meta-title"
                 placeholder="Enter page title for search engines"
                 value={formData.metaTitle || ""}
-                onChange={(e) => handleInputChange("metaTitle", e.target.value)}
-                className={titleLength > 0 && (titleLength < 30 || titleLength > 60) ? "border-destructive" : ""}
+                onChange={e => handleInputChange("metaTitle", e.target.value)}
+                className={
+                  titleLength > 0 && (titleLength < 30 || titleLength > 60)
+                    ? "border-destructive"
+                    : ""
+                }
               />
               {titleLength > 0 && (titleLength < 30 || titleLength > 60) && (
                 <p className="text-xs text-destructive">
@@ -265,11 +291,13 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
             <div className="space-y-2">
               <Label htmlFor="metaDescription" className="flex items-center justify-between">
                 <span>Meta Description</span>
-                <span className={`text-xs ${
-                  descLength > 0 && (descLength < 120 || descLength > 160) 
-                    ? "text-destructive font-medium" 
-                    : "text-muted-foreground"
-                }`}>
+                <span
+                  className={`text-xs ${
+                    descLength > 0 && (descLength < 120 || descLength > 160)
+                      ? "text-destructive font-medium"
+                      : "text-muted-foreground"
+                  }`}
+                >
                   {descLength}/160 {descLength > 0 && descLength < 120 && "(min 120)"}
                 </span>
               </Label>
@@ -279,8 +307,12 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 placeholder="Enter page description for search engines"
                 rows={3}
                 value={formData.metaDescription || ""}
-                onChange={(e) => handleInputChange("metaDescription", e.target.value)}
-                className={descLength > 0 && (descLength < 120 || descLength > 160) ? "border-destructive" : ""}
+                onChange={e => handleInputChange("metaDescription", e.target.value)}
+                className={
+                  descLength > 0 && (descLength < 120 || descLength > 160)
+                    ? "border-destructive"
+                    : ""
+                }
               />
               {descLength > 0 && (descLength < 120 || descLength > 160) && (
                 <p className="text-xs text-destructive">
@@ -301,7 +333,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                   data-testid="input-canonical-url"
                   placeholder="https://travi.world/destinations"
                   value={formData.canonicalUrl || ""}
-                  onChange={(e) => handleInputChange("canonicalUrl", e.target.value)}
+                  onChange={e => handleInputChange("canonicalUrl", e.target.value)}
                 />
               </div>
             </div>
@@ -313,7 +345,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 data-testid="input-robots-meta"
                 placeholder="index, follow"
                 value={formData.robotsMeta || ""}
-                onChange={(e) => handleInputChange("robotsMeta", e.target.value)}
+                onChange={e => handleInputChange("robotsMeta", e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
                 Options: index, noindex, follow, nofollow
@@ -329,7 +361,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 data-testid="input-og-title"
                 placeholder="Title for social media shares"
                 value={formData.ogTitle || ""}
-                onChange={(e) => handleInputChange("ogTitle", e.target.value)}
+                onChange={e => handleInputChange("ogTitle", e.target.value)}
               />
             </div>
 
@@ -341,7 +373,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 placeholder="Description for social media shares"
                 rows={3}
                 value={formData.ogDescription || ""}
-                onChange={(e) => handleInputChange("ogDescription", e.target.value)}
+                onChange={e => handleInputChange("ogDescription", e.target.value)}
               />
             </div>
 
@@ -354,7 +386,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                   data-testid="input-og-image"
                   placeholder="https://travi.world/images/destinations-og.jpg"
                   value={formData.ogImage || ""}
-                  onChange={(e) => handleInputChange("ogImage", e.target.value)}
+                  onChange={e => handleInputChange("ogImage", e.target.value)}
                 />
               </div>
               <p className="text-xs text-muted-foreground">
@@ -381,7 +413,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 rows={12}
                 className="font-mono text-sm"
                 value={jsonLdInput}
-                onChange={(e) => setJsonLdInput(e.target.value)}
+                onChange={e => setJsonLdInput(e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
                 Enter valid JSON-LD schema for structured data. Leave empty if not needed.
@@ -390,7 +422,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
           </TabsContent>
 
           <TabsContent value="preview" className="space-y-6">
-            {(!formData.metaTitle && !formData.metaDescription) ? (
+            {!formData.metaTitle && !formData.metaDescription ? (
               <div className="border border-dashed rounded-lg p-8 text-center bg-muted/20">
                 <XCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="font-medium text-lg mb-2">No SEO Data Available</h3>
@@ -403,7 +435,9 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
             ) : (
               <>
                 <div className="border rounded-lg p-6 bg-muted/30">
-                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">Google Search Preview</h3>
+                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+                    Google Search Preview
+                  </h3>
                   <div className="space-y-1">
                     {formData.metaTitle ? (
                       <div className="text-blue-600 text-lg hover:underline cursor-pointer">
@@ -418,9 +452,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                       {formData.canonicalUrl || `https://travi.world${pagePath}`}
                     </div>
                     {formData.metaDescription ? (
-                      <div className="text-sm text-gray-600">
-                        {formData.metaDescription}
-                      </div>
+                      <div className="text-sm text-gray-600">{formData.metaDescription}</div>
                     ) : (
                       <div className="text-destructive text-sm border border-dashed border-destructive/50 rounded px-2 py-1 bg-destructive/5">
                         Required: Set meta description in Meta Tags tab
@@ -430,12 +462,14 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 </div>
 
                 <div className="border rounded-lg p-6 bg-muted/30">
-                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">Social Media Preview</h3>
+                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+                    Social Media Preview
+                  </h3>
                   <div className="border rounded-lg overflow-hidden max-w-md">
                     {formData.ogImage ? (
-                      <img 
-                        src={formData.ogImage} 
-                        alt="OG Preview" 
+                      <img
+                        src={formData.ogImage}
+                        alt="OG Preview"
                         className="w-full h-40 object-cover"
                       />
                     ) : (
@@ -445,19 +479,23 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                     )}
                     <div className="p-3 bg-card">
                       <div className="text-xs text-muted-foreground uppercase">travi.world</div>
-                      {(formData.ogTitle || formData.metaTitle) ? (
+                      {formData.ogTitle || formData.metaTitle ? (
                         <div className="font-medium mt-1">
                           {formData.ogTitle || formData.metaTitle}
                         </div>
                       ) : (
-                        <div className="text-destructive text-sm mt-1">Required: Set OG or meta title</div>
+                        <div className="text-destructive text-sm mt-1">
+                          Required: Set OG or meta title
+                        </div>
                       )}
-                      {(formData.ogDescription || formData.metaDescription) ? (
+                      {formData.ogDescription || formData.metaDescription ? (
                         <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
                           {formData.ogDescription || formData.metaDescription}
                         </div>
                       ) : (
-                        <div className="text-destructive text-sm mt-1">Required: Set OG or meta description</div>
+                        <div className="text-destructive text-sm mt-1">
+                          Required: Set OG or meta description
+                        </div>
                       )}
                     </div>
                   </div>
@@ -475,7 +513,15 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
                 <Wand2 className="w-4 h-4" />
                 AI SEO Score
               </h4>
-              <Badge variant={aiScore.overall >= 80 ? "default" : aiScore.overall >= 50 ? "secondary" : "destructive"}>
+              <Badge
+                variant={
+                  aiScore.overall >= 80
+                    ? "default"
+                    : aiScore.overall >= 50
+                      ? "secondary"
+                      : "destructive"
+                }
+              >
                 {aiScore.overall >= 80 ? "Good" : aiScore.overall >= 50 ? "Needs Work" : "Poor"}
               </Badge>
             </div>
@@ -487,14 +533,20 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span>Title</span>
-                  <span className={aiScore.titleScore >= 80 ? "text-green-600" : "text-amber-600"}>{aiScore.titleScore}%</span>
+                  <span className={aiScore.titleScore >= 80 ? "text-green-600" : "text-amber-600"}>
+                    {aiScore.titleScore}%
+                  </span>
                 </div>
                 <Progress value={aiScore.titleScore} className="h-1.5" />
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span>Description</span>
-                  <span className={aiScore.descriptionScore >= 80 ? "text-green-600" : "text-amber-600"}>{aiScore.descriptionScore}%</span>
+                  <span
+                    className={aiScore.descriptionScore >= 80 ? "text-green-600" : "text-amber-600"}
+                  >
+                    {aiScore.descriptionScore}%
+                  </span>
                 </div>
                 <Progress value={aiScore.descriptionScore} className="h-1.5" />
               </div>
@@ -514,7 +566,7 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
         )}
 
         <div className="flex justify-between items-center mt-6 pt-6 border-t">
-          <Button 
+          <Button
             variant="outline"
             onClick={() => generateMutation.mutate()}
             disabled={generateMutation.isPending}
@@ -532,8 +584,8 @@ export function PageSeoEditor({ pagePath, pageLabel }: PageSeoEditorProps) {
               </>
             )}
           </Button>
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={saveMutation.isPending}
             data-testid="button-save-seo"
           >
@@ -565,32 +617,37 @@ export default function PageSeoManagement() {
   ];
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Search className="w-8 h-8" />
-          Page SEO Management
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Configure SEO metadata for key pages. All values are stored in the database - no auto-generation or fallbacks.
-        </p>
+    <div className="min-h-screen bg-[hsl(var(--admin-bg))]">
+      <div className="border-b border-[hsl(var(--admin-border))] bg-white">
+        <div className="px-6 py-4">
+          <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))] flex items-center gap-2">
+            <Search className="w-5 h-5" />
+            Page SEO Management
+          </h1>
+          <p className="text-sm text-[hsl(var(--admin-text-secondary))] mt-1">
+            Configure SEO metadata for key pages. All values are stored in the database - no
+            auto-generation or fallbacks.
+          </p>
+        </div>
       </div>
 
-      <Tabs defaultValue="/destinations" className="w-full">
-        <TabsList className="mb-6">
-          {pages.map(page => (
-            <TabsTrigger key={page.path} value={page.path}>
-              {page.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <div className="p-6">
+        <Tabs defaultValue="/destinations" className="w-full max-w-4xl">
+          <TabsList className="mb-6">
+            {pages.map(page => (
+              <TabsTrigger key={page.path} value={page.path}>
+                {page.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        {pages.map(page => (
-          <TabsContent key={page.path} value={page.path}>
-            <PageSeoEditor pagePath={page.path} pageLabel={page.label} />
-          </TabsContent>
-        ))}
-      </Tabs>
+          {pages.map(page => (
+            <TabsContent key={page.path} value={page.path}>
+              <PageSeoEditor pagePath={page.path} pageLabel={page.label} />
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 }

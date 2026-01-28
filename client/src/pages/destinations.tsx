@@ -15,6 +15,7 @@ import {
   ArrowRight,
   RefreshCw,
   Loader2,
+  Ticket,
 } from "lucide-react";
 import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
@@ -73,6 +74,8 @@ interface APIDestination {
   moodVibe: string | null;
   moodTagline: string | null;
   moodPrimaryColor: string | null;
+  attractionCount?: number;
+  bestFor?: string[];
 }
 
 const SUPPORTED_LANGUAGES = [
@@ -132,7 +135,9 @@ function DestinationChip({ destination, index }: { destination: APIDestination; 
               {destination.name}
             </span>
             <span className="text-slate-500 dark:text-slate-400 text-[10px] leading-tight">
-              {destination.country}
+              {destination.attractionCount
+                ? `${destination.attractionCount}+ things to do`
+                : destination.country}
             </span>
           </div>
         </div>
@@ -425,7 +430,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   transition={{ delay: 0.5 }}
                 >
                   <Link href={`/destinations/${current.id}`}>
-                    <Button className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                    <Button className="rounded-[--radius-card] bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
                       {t("destinations.card.explore")} {current.name}
                       <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                     </Button>
@@ -483,10 +488,35 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
   );
 }
 
+// Default "Best for" tags based on destination characteristics
+const DESTINATION_BEST_FOR: Record<string, string[]> = {
+  dubai: ["Families", "Luxury"],
+  paris: ["Couples", "Culture"],
+  tokyo: ["Foodies", "Culture"],
+  "new-york": ["Solo", "Culture"],
+  barcelona: ["Couples", "Beach"],
+  singapore: ["Families", "Foodies"],
+  london: ["Culture", "History"],
+  bangkok: ["Budget", "Foodies"],
+  "abu-dhabi": ["Families", "Luxury"],
+  amsterdam: ["Couples", "Culture"],
+  "hong-kong": ["Foodies", "Shopping"],
+  istanbul: ["History", "Foodies"],
+  "las-vegas": ["Nightlife", "Entertainment"],
+  "los-angeles": ["Beach", "Entertainment"],
+  miami: ["Beach", "Nightlife"],
+  rome: ["History", "Culture"],
+};
+
 function DestinationCard({ destination, index }: { destination: APIDestination; index: number }) {
   const { t } = useTranslation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  // Get "Best for" tags - from API or fallback to defaults
+  const bestForTags = destination.bestFor?.length
+    ? destination.bestFor
+    : DESTINATION_BEST_FOR[destination.id] || [];
 
   return (
     <motion.article
@@ -536,11 +566,32 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
           </div>
 
           <CardContent className="p-4 bg-white dark:bg-slate-800/80">
+            {/* Attraction count badge */}
+            {destination.attractionCount && destination.attractionCount > 0 && (
+              <div className="flex items-center gap-1.5 text-[#6443F4] text-xs font-semibold mb-2">
+                <Ticket className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>{destination.attractionCount}+ things to do</span>
+              </div>
+            )}
             <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
               {destination.summary ||
                 destination.moodTagline ||
                 t("destinations.card.exploreFallback", { name: destination.name })}
             </p>
+            {/* Best for tags */}
+            {bestForTags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className="text-[10px] text-slate-400 dark:text-slate-500">Best for:</span>
+                {bestForTags.slice(0, 2).map(tag => (
+                  <span
+                    key={tag}
+                    className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/50">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 {destination.destinationLevel || t("destinations.card.defaultLevel")}
@@ -651,7 +702,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         <p className="text-slate-600 dark:text-slate-400 mb-6">{t("destinations.error.message")}</p>
         <Button
           onClick={onRetry}
-          className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
+          className="rounded-[--radius-card] bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
         >
           <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
           {t("destinations.error.refresh")}
@@ -834,6 +885,37 @@ export default function DestinationsPage() {
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Popular Searches */}
+                <div className="flex flex-wrap items-center gap-2 mb-8">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Popular:
+                  </span>
+                  {["Dubai", "Paris", "Tokyo", "New York", "Barcelona", "Singapore"].map(query => (
+                    <button
+                      key={query}
+                      onClick={() => setSearchQuery(query)}
+                      className={cn(
+                        "px-3 py-1.5 text-xs rounded-full border transition-all duration-200 cursor-pointer",
+                        searchQuery.toLowerCase() === query.toLowerCase()
+                          ? "bg-[#6443F4] text-white border-[#6443F4]"
+                          : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[#6443F4]/50 hover:text-[#6443F4]"
+                      )}
+                      data-testid={`popular-search-${query.toLowerCase()}`}
+                    >
+                      {query}
+                    </button>
+                  ))}
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="px-3 py-1.5 text-xs rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+                      data-testid="clear-search"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
 
                 <FeaturedCarousel destinations={destinations} />

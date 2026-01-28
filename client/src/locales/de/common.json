@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "VAE", "cardAlt": "Dubai Skyline mit Burj Khalifa bei Sonnenuntergang" },
-      "london": { "name": "London", "country": "Großbritannien", "cardAlt": "London Big Ben und Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "Frankreich", "cardAlt": "Paris Eiffelturm beleuchtet bei Sonnenuntergang" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan Skyline mit Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya Kreuzung mit Neonlichtern bei Nacht" },
-      "singapore": { "name": "Singapur", "country": "Singapur", "cardAlt": "Singapur Marina Bay Sands und Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spanien", "cardAlt": "Barcelona Sagrada Familia zur goldenen Stunde" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Großer Palast Tempel bei Sonnenaufgang" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "VAE", "cardAlt": "Abu Dhabi Scheich-Zayid-Moschee" },
-      "amsterdam": { "name": "Amsterdam", "country": "Niederlande", "cardAlt": "Amsterdam Gracht mit historischen Gebäuden" },
-      "hongKong": { "name": "Hongkong", "country": "China", "cardAlt": "Hongkong Skyline bei Nacht" },
-      "istanbul": { "name": "Istanbul", "country": "Türkei", "cardAlt": "Istanbul Blaue Moschee bei Sonnenuntergang" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip bei Nacht" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood-Schild" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art-Déco-Viertel" },
-      "rome": { "name": "Rom", "country": "Italien", "cardAlt": "Rom Kolosseum zur goldenen Stunde" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "VAE",
+        "cardAlt": "Dubai Skyline mit Burj Khalifa bei Sonnenuntergang"
+      },
+      "london": {
+        "name": "London",
+        "country": "Großbritannien",
+        "cardAlt": "London Big Ben und Houses of Parliament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Frankreich",
+        "cardAlt": "Paris Eiffelturm beleuchtet bei Sonnenuntergang"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan Skyline mit Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Tokyo Shibuya Kreuzung mit Neonlichtern bei Nacht"
+      },
+      "singapore": {
+        "name": "Singapur",
+        "country": "Singapur",
+        "cardAlt": "Singapur Marina Bay Sands und Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanien",
+        "cardAlt": "Barcelona Sagrada Familia zur goldenen Stunde"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Bangkok Großer Palast Tempel bei Sonnenaufgang"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "VAE",
+        "cardAlt": "Abu Dhabi Scheich-Zayid-Moschee"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Niederlande",
+        "cardAlt": "Amsterdam Gracht mit historischen Gebäuden"
+      },
+      "hongKong": {
+        "name": "Hongkong",
+        "country": "China",
+        "cardAlt": "Hongkong Skyline bei Nacht"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Türkei",
+        "cardAlt": "Istanbul Blaue Moschee bei Sonnenuntergang"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip bei Nacht"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles Hollywood-Schild"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Miami Beach Art-Déco-Viertel"
+      },
+      "rome": {
+        "name": "Rom",
+        "country": "Italien",
+        "cardAlt": "Rom Kolosseum zur goldenen Stunde"
+      }
     },
     "hero": {
       "badge": "{{count}} Reiseziele weltweit",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "Ihre vertrauenswürdige Quelle für umfassende Reiseinformationen und Reiseführer, die Millionen helfen, die Welt mit Vertrauen zu erkunden.",
       "ctaExplore": "Reiseziele erkunden",
-      "ctaContact": "Kontakt aufnehmen"
+      "ctaContact": "Kontakt aufnehmen",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "Kontakt | TRAVI World",

@@ -9,20 +9,27 @@ export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Travi",
+    name: "TRAVI World",
     url: "https://travi.world",
     logo: "https://travi.world/logo.png",
-    description: "Your ultimate guide to Dubai - attractions, hotels, dining, and more.",
+    description:
+      "Comprehensive travel information for 17 destinations worldwide. Detailed guides for 3,000+ attractions with opening hours, prices, and visitor tips.",
     inLanguage: locale,
-    sameAs: [
-      "https://twitter.com/travi",
-      "https://facebook.com/travi",
-      "https://instagram.com/travi",
-    ],
+    sameAs: ["https://www.instagram.com/travi_world", "https://www.tiktok.com/@travi.world"],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      availableLanguage: ["English", "Arabic", "French", "German", "Spanish", "Portuguese", "Chinese", "Japanese", "Hindi"],
+      availableLanguage: [
+        "English",
+        "Arabic",
+        "French",
+        "German",
+        "Spanish",
+        "Portuguese",
+        "Chinese",
+        "Japanese",
+        "Hindi",
+      ],
     },
   };
 
@@ -81,7 +88,7 @@ export function AttractionSchema({
         }
       : undefined,
     priceRange,
-    openingHoursSpecification: openingHours?.map((hours) => ({
+    openingHoursSpecification: openingHours?.map(hours => ({
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
       opens: hours.split("-")[0],
@@ -341,6 +348,452 @@ export function BreadcrumbSchema({ items, locale = "en" }: BreadcrumbSchemaProps
       name: item.name,
       item: item.url,
     })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// HowTo schema for travel tips and guides
+interface HowToStep {
+  name: string;
+  text: string;
+  image?: string;
+  url?: string;
+}
+
+interface HowToSchemaProps {
+  name: string;
+  description: string;
+  image?: string;
+  totalTime?: string; // ISO 8601 duration format, e.g., "PT30M" for 30 minutes
+  estimatedCost?: {
+    value: number;
+    currency: string;
+  };
+  steps: HowToStep[];
+  locale?: string;
+}
+
+export function HowToSchema({
+  name,
+  description,
+  image,
+  totalTime,
+  estimatedCost,
+  steps,
+  locale = "en",
+}: HowToSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name,
+    description,
+    image,
+    inLanguage: locale,
+    totalTime,
+    estimatedCost: estimatedCost
+      ? {
+          "@type": "MonetaryAmount",
+          value: estimatedCost.value,
+          currency: estimatedCost.currency,
+        }
+      : undefined,
+    step: steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+      image: step.image,
+      url: step.url,
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// Place schema for geographic locations
+interface PlaceSchemaProps {
+  name: string;
+  description: string;
+  image?: string;
+  address?: {
+    streetAddress?: string;
+    addressLocality: string;
+    addressRegion?: string;
+    postalCode?: string;
+    addressCountry: string;
+  };
+  geo?: {
+    latitude: number;
+    longitude: number;
+  };
+  telephone?: string;
+  url?: string;
+  openingHours?: string[];
+  locale?: string;
+}
+
+export function PlaceSchema({
+  name,
+  description,
+  image,
+  address,
+  geo,
+  telephone,
+  url,
+  openingHours,
+  locale = "en",
+}: PlaceSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Place",
+    name,
+    description,
+    image,
+    inLanguage: locale,
+    url,
+    telephone,
+    address: address
+      ? {
+          "@type": "PostalAddress",
+          streetAddress: address.streetAddress,
+          addressLocality: address.addressLocality,
+          addressRegion: address.addressRegion,
+          postalCode: address.postalCode,
+          addressCountry: address.addressCountry,
+        }
+      : undefined,
+    geo: geo
+      ? {
+          "@type": "GeoCoordinates",
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+        }
+      : undefined,
+    openingHoursSpecification: openingHours?.map(hours => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      opens: hours.split("-")[0]?.trim(),
+      closes: hours.split("-")[1]?.trim(),
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// TravelGuide schema - more specific than Article for travel content
+interface TravelGuideSchemaProps {
+  name: string;
+  description: string;
+  image?: string;
+  datePublished?: string;
+  dateModified?: string;
+  author?: string;
+  about: {
+    name: string;
+    type: "City" | "Country" | "TouristDestination" | "Place";
+  };
+  audience?: string;
+  locale?: string;
+}
+
+export function TravelGuideSchema({
+  name,
+  description,
+  image,
+  datePublished,
+  dateModified,
+  author = "Travi Team",
+  about,
+  audience = "Travelers",
+  locale = "en",
+}: TravelGuideSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "TravelGuide",
+    name,
+    description,
+    image,
+    inLanguage: locale,
+    datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      "@type": "Person",
+      name: author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Travi",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://travi.world/logo.png",
+      },
+    },
+    about: {
+      "@type": about.type,
+      name: about.name,
+    },
+    audience: {
+      "@type": "Audience",
+      audienceType: audience,
+    },
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// LocalBusiness schema for attractions, shops, etc.
+interface LocalBusinessSchemaProps {
+  name: string;
+  description: string;
+  image?: string;
+  businessType?:
+    | "LocalBusiness"
+    | "TouristAttraction"
+    | "Store"
+    | "FoodEstablishment"
+    | "LodgingBusiness";
+  address?: {
+    streetAddress?: string;
+    addressLocality: string;
+    addressRegion?: string;
+    postalCode?: string;
+    addressCountry: string;
+  };
+  geo?: {
+    latitude: number;
+    longitude: number;
+  };
+  telephone?: string;
+  url?: string;
+  priceRange?: string;
+  rating?: number;
+  reviewCount?: number;
+  openingHours?: string[];
+  locale?: string;
+}
+
+export function LocalBusinessSchema({
+  name,
+  description,
+  image,
+  businessType = "LocalBusiness",
+  address,
+  geo,
+  telephone,
+  url,
+  priceRange,
+  rating,
+  reviewCount,
+  openingHours,
+  locale = "en",
+}: LocalBusinessSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": businessType,
+    name,
+    description,
+    image,
+    inLanguage: locale,
+    url,
+    telephone,
+    priceRange,
+    address: address
+      ? {
+          "@type": "PostalAddress",
+          streetAddress: address.streetAddress,
+          addressLocality: address.addressLocality,
+          addressRegion: address.addressRegion,
+          postalCode: address.postalCode,
+          addressCountry: address.addressCountry,
+        }
+      : undefined,
+    geo: geo
+      ? {
+          "@type": "GeoCoordinates",
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+        }
+      : undefined,
+    aggregateRating: rating
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: rating,
+          reviewCount: reviewCount || 1,
+          bestRating: 5,
+          worstRating: 1,
+        }
+      : undefined,
+    openingHoursSpecification: openingHours?.map(hours => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      opens: hours.split("-")[0]?.trim(),
+      closes: hours.split("-")[1]?.trim(),
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// City schema for destination pages
+interface CitySchemaProps {
+  name: string;
+  description: string;
+  image?: string;
+  country: string;
+  countryCode: string;
+  population?: number;
+  url?: string;
+  containsPlace?: { name: string; type: string }[];
+  locale?: string;
+}
+
+export function CitySchema({
+  name,
+  description,
+  image,
+  country,
+  countryCode,
+  population,
+  url,
+  containsPlace,
+  locale = "en",
+}: CitySchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "City",
+    name,
+    description,
+    image,
+    inLanguage: locale,
+    url,
+    population,
+    containedInPlace: {
+      "@type": "Country",
+      name: country,
+      identifier: countryCode,
+    },
+    containsPlace: containsPlace?.map(place => ({
+      "@type": place.type,
+      name: place.name,
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// SpeakableSpecification for voice search optimization
+interface SpeakableSchemaProps {
+  cssSelector?: string[];
+  xpath?: string[];
+}
+
+export function SpeakableSchema({ cssSelector, xpath }: SpeakableSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: cssSelector || [".speakable", "article h1", "article p:first-of-type"],
+      xpath: xpath,
+    },
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// FAQPage schema for FAQ sections
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface FAQPageSchemaProps {
+  faqs: FAQItem[];
+  locale?: string;
+}
+
+export function FAQPageSchema({ faqs, locale = "en" }: FAQPageSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    inLanguage: locale,
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// WebSite schema for homepage with SearchAction
+interface WebSiteSchemaProps {
+  name?: string;
+  url?: string;
+  description?: string;
+  searchUrl?: string;
+  locale?: string;
+}
+
+export function WebSiteSchema({
+  name = "TRAVI World",
+  url = "https://travi.world",
+  description = "Comprehensive travel information for 17 destinations worldwide",
+  searchUrl = "https://travi.world/search?q=",
+  locale = "en",
+}: WebSiteSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name,
+    url,
+    description,
+    inLanguage: locale,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${searchUrl}{search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 
   return (

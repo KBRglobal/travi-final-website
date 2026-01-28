@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Panorama Dubai dengan menara Burj Khalifa ketika matahari terbenam" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "Big Ben London dan Bangunan Parlimen" },
-      "paris": { "name": "Paris", "country": "Perancis", "cardAlt": "Menara Eiffel Paris bercahaya ketika matahari terbenam" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "Panorama Manhattan New York dengan Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Jepun", "cardAlt": "Persimpangan Shibuya Tokyo dengan lampu neon pada waktu malam" },
-      "singapore": { "name": "Singapura", "country": "Singapura", "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Sepanyol", "cardAlt": "Sagrada Familia Barcelona pada waktu emas" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Istana Besar Bangkok ketika matahari terbit" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi" },
-      "amsterdam": { "name": "Amsterdam", "country": "Belanda", "cardAlt": "Terusan Amsterdam dengan bangunan bersejarah" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Panorama Hong Kong pada waktu malam" },
-      "istanbul": { "name": "Istanbul", "country": "Turki", "cardAlt": "Masjid Biru Istanbul ketika matahari terbenam" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip pada waktu malam" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Papan tanda Hollywood Los Angeles" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Daerah Art Deco Miami Beach" },
-      "rome": { "name": "Rom", "country": "Itali", "cardAlt": "Colosseum Rom pada waktu emas" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Panorama Dubai dengan menara Burj Khalifa ketika matahari terbenam"
+      },
+      "london": {
+        "name": "London",
+        "country": "UK",
+        "cardAlt": "Big Ben London dan Bangunan Parlimen"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Perancis",
+        "cardAlt": "Menara Eiffel Paris bercahaya ketika matahari terbenam"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "Panorama Manhattan New York dengan Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Jepun",
+        "cardAlt": "Persimpangan Shibuya Tokyo dengan lampu neon pada waktu malam"
+      },
+      "singapore": {
+        "name": "Singapura",
+        "country": "Singapura",
+        "cardAlt": "Marina Bay Sands Singapura dan Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Sepanyol",
+        "cardAlt": "Sagrada Familia Barcelona pada waktu emas"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Istana Besar Bangkok ketika matahari terbit"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Masjid Agung Sheikh Zayed Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Belanda",
+        "cardAlt": "Terusan Amsterdam dengan bangunan bersejarah"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Panorama Hong Kong pada waktu malam"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turki",
+        "cardAlt": "Masjid Biru Istanbul ketika matahari terbenam"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip pada waktu malam"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Papan tanda Hollywood Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Daerah Art Deco Miami Beach"
+      },
+      "rome": {
+        "name": "Rom",
+        "country": "Itali",
+        "cardAlt": "Colosseum Rom pada waktu emas"
+      }
     },
     "hero": {
       "badge": "{{count}} Destinasi Di Seluruh Dunia",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "Sumber anda yang dipercayai untuk maklumat pelancongan komprehensif dan panduan destinasi, membantu berjuta-juta orang meneroka dunia dengan yakin.",
       "ctaExplore": "Terokai Destinasi",
-      "ctaContact": "Hubungi Kami"
+      "ctaContact": "Hubungi Kami",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "Hubungi Kami | TRAVI World",

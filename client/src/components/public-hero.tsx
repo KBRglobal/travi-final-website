@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 interface BreadcrumbItem {
   label: string;
-  labelHe?: string;
   href?: string;
 }
 
@@ -37,14 +36,13 @@ export function PublicHero({
   const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
 
   const heightClasses = {
-    small: "min-h-[280px] md:min-h-[320px]",
-    default: "min-h-[380px] md:min-h-[440px]",
-    large: "min-h-[480px] md:min-h-[560px]",
+    small: "min-h-[240px] sm:min-h-[280px] md:min-h-[320px]",
+    default: "min-h-[320px] sm:min-h-[380px] md:min-h-[440px]",
+    large: "min-h-[400px] sm:min-h-[480px] md:min-h-[560px]",
   };
 
   // Build breadcrumb items with automatic destination insertion
   const getLabel = (crumb: BreadcrumbItem) => {
-    if (locale === "he" && crumb.labelHe) return crumb.labelHe;
     return crumb.label;
   };
 
@@ -114,7 +112,7 @@ export function PublicHero({
       <div className="absolute inset-0 bg-gradient-to-br from-[#6443F4]/20 via-transparent to-[#6443F4]/20" />
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-8 lg:px-[140px] py-12 md:py-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-10 sm:py-12 md:py-16">
         {/* Breadcrumbs */}
         {finalBreadcrumbs.length > 0 && (
           <nav
@@ -149,25 +147,28 @@ export function PublicHero({
 
         {/* Headline */}
         <h1
-          className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4"
+          className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3 sm:mb-4"
           data-testid="hero-title"
         >
           {title}
         </h1>
 
-        {/* Subtitle */}
+        {/* Subtitle - Better line length for readability */}
         {subtitle && (
           <p
-            className="text-lg md:text-xl text-white/90 max-w-2xl leading-relaxed mb-8"
+            className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl leading-relaxed mb-6 sm:mb-8"
             data-testid="hero-subtitle"
           >
             {subtitle}
           </p>
         )}
 
-        {/* CTA Buttons Slot */}
+        {/* CTA Buttons Slot - Ensure min touch targets */}
         {children && (
-          <div className="flex flex-wrap items-center gap-4" data-testid="hero-cta-container">
+          <div
+            className="flex flex-wrap items-center gap-3 sm:gap-4"
+            data-testid="hero-cta-container"
+          >
             {children}
           </div>
         )}

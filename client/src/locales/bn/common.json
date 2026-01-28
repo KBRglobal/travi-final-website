@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "দুবাই", "country": "সংযুক্ত আরব আমিরাত", "cardAlt": "সূর্যাস্তে বুর্জ খলিফা টাওয়ার সহ দুবাইয়ের স্কাইলাইন" },
-      "london": { "name": "লন্ডন", "country": "যুক্তরাজ্য", "cardAlt": "লন্ডনের বিগ বেন এবং পার্লামেন্ট ভবন" },
-      "paris": { "name": "প্যারিস", "country": "ফ্রান্স", "cardAlt": "সূর্যাস্তে আলোকিত আইফেল টাওয়ার" },
-      "newYork": { "name": "নিউ ইয়র্ক", "country": "যুক্তরাষ্ট্র", "cardAlt": "এম্পায়ার স্টেট বিল্ডিং সহ ম্যানহাটন স্কাইলাইন" },
-      "tokyo": { "name": "টোকিও", "country": "জাপান", "cardAlt": "রাতে নিয়ন লাইট সহ টোকিও শিবুয়া ক্রসিং" },
-      "singapore": { "name": "সিঙ্গাপুর", "country": "সিঙ্গাপুর", "cardAlt": "মেরিনা বে স্যান্ডস এবং গার্ডেন বাই দ্য বে" },
-      "barcelona": { "name": "বার্সেলোনা", "country": "স্পেন", "cardAlt": "গোল্ডেন আওয়ারে সাগ্রাদা ফামিলিয়া" },
-      "bangkok": { "name": "ব্যাংকক", "country": "থাইল্যান্ড", "cardAlt": "সূর্যোদয়ে ব্যাংকক গ্র্যান্ড প্যালেস মন্দির" },
-      "abuDhabi": { "name": "আবুধাবি", "country": "সংযুক্ত আরব আমিরাত", "cardAlt": "শেখ জায়েদ গ্র্যান্ড মসজিদ" },
-      "amsterdam": { "name": "আমস্টারডাম", "country": "নেদারল্যান্ডস", "cardAlt": "ঐতিহাসিক ভবন সহ আমস্টারডাম খাল" },
-      "hongKong": { "name": "হংকং", "country": "চীন", "cardAlt": "রাতে হংকং স্কাইলাইন" },
-      "istanbul": { "name": "ইস্তাম্বুল", "country": "তুরস্ক", "cardAlt": "সূর্যাস্তে ব্লু মসজিদ" },
-      "lasVegas": { "name": "লাস ভেগাস", "country": "যুক্তরাষ্ট্র", "cardAlt": "রাতে লাস ভেগাস স্ট্রিপ" },
-      "losAngeles": { "name": "লস এঞ্জেলেস", "country": "যুক্তরাষ্ট্র", "cardAlt": "হলিউড সাইন" },
-      "miami": { "name": "মায়ামি", "country": "যুক্তরাষ্ট্র", "cardAlt": "মায়ামি বিচ আর্ট ডেকো জেলা" },
-      "rome": { "name": "রোম", "country": "ইতালি", "cardAlt": "গোল্ডেন আওয়ারে কলোসিয়াম" }
+      "dubai": {
+        "name": "দুবাই",
+        "country": "সংযুক্ত আরব আমিরাত",
+        "cardAlt": "সূর্যাস্তে বুর্জ খলিফা টাওয়ার সহ দুবাইয়ের স্কাইলাইন"
+      },
+      "london": {
+        "name": "লন্ডন",
+        "country": "যুক্তরাজ্য",
+        "cardAlt": "লন্ডনের বিগ বেন এবং পার্লামেন্ট ভবন"
+      },
+      "paris": {
+        "name": "প্যারিস",
+        "country": "ফ্রান্স",
+        "cardAlt": "সূর্যাস্তে আলোকিত আইফেল টাওয়ার"
+      },
+      "newYork": {
+        "name": "নিউ ইয়র্ক",
+        "country": "যুক্তরাষ্ট্র",
+        "cardAlt": "এম্পায়ার স্টেট বিল্ডিং সহ ম্যানহাটন স্কাইলাইন"
+      },
+      "tokyo": {
+        "name": "টোকিও",
+        "country": "জাপান",
+        "cardAlt": "রাতে নিয়ন লাইট সহ টোকিও শিবুয়া ক্রসিং"
+      },
+      "singapore": {
+        "name": "সিঙ্গাপুর",
+        "country": "সিঙ্গাপুর",
+        "cardAlt": "মেরিনা বে স্যান্ডস এবং গার্ডেন বাই দ্য বে"
+      },
+      "barcelona": {
+        "name": "বার্সেলোনা",
+        "country": "স্পেন",
+        "cardAlt": "গোল্ডেন আওয়ারে সাগ্রাদা ফামিলিয়া"
+      },
+      "bangkok": {
+        "name": "ব্যাংকক",
+        "country": "থাইল্যান্ড",
+        "cardAlt": "সূর্যোদয়ে ব্যাংকক গ্র্যান্ড প্যালেস মন্দির"
+      },
+      "abuDhabi": {
+        "name": "আবুধাবি",
+        "country": "সংযুক্ত আরব আমিরাত",
+        "cardAlt": "শেখ জায়েদ গ্র্যান্ড মসজিদ"
+      },
+      "amsterdam": {
+        "name": "আমস্টারডাম",
+        "country": "নেদারল্যান্ডস",
+        "cardAlt": "ঐতিহাসিক ভবন সহ আমস্টারডাম খাল"
+      },
+      "hongKong": {
+        "name": "হংকং",
+        "country": "চীন",
+        "cardAlt": "রাতে হংকং স্কাইলাইন"
+      },
+      "istanbul": {
+        "name": "ইস্তাম্বুল",
+        "country": "তুরস্ক",
+        "cardAlt": "সূর্যাস্তে ব্লু মসজিদ"
+      },
+      "lasVegas": {
+        "name": "লাস ভেগাস",
+        "country": "যুক্তরাষ্ট্র",
+        "cardAlt": "রাতে লাস ভেগাস স্ট্রিপ"
+      },
+      "losAngeles": {
+        "name": "লস এঞ্জেলেস",
+        "country": "যুক্তরাষ্ট্র",
+        "cardAlt": "হলিউড সাইন"
+      },
+      "miami": {
+        "name": "মায়ামি",
+        "country": "যুক্তরাষ্ট্র",
+        "cardAlt": "মায়ামি বিচ আর্ট ডেকো জেলা"
+      },
+      "rome": {
+        "name": "রোম",
+        "country": "ইতালি",
+        "cardAlt": "গোল্ডেন আওয়ারে কলোসিয়াম"
+      }
     },
     "hero": {
       "badge": "বিশ্বজুড়ে {{count}}টি গন্তব্য",
@@ -783,7 +847,79 @@
       "titleHighlight": "ট্র্যাভি ওয়ার্ল্ড",
       "subtitle": "বিস্তারিত ভ্রমণ তথ্য এবং গন্তব্য গাইডের জন্য আপনার বিশ্বস্ত উৎস, লক্ষ লক্ষ মানুষকে আত্মবিশ্বাসের সাথে বিশ্ব ঘুরতে সাহায্য করছে।",
       "ctaExplore": "গন্তব্য ঘুরে দেখুন",
-      "ctaContact": "যোগাযোগ করুন"
+      "ctaContact": "যোগাযোগ করুন",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "যোগাযোগ করুন | ট্র্যাভি ওয়ার্ল্ড",

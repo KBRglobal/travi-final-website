@@ -10,9 +10,9 @@ import {
   RollbackRequest,
   RollbackResult,
   ExecutionCheckpoint,
-} from './types';
-import { logAuditEvent } from './audit';
-import { getCapability } from '../capabilities/registry';
+} from "./types";
+import { logAuditEvent } from "./audit";
+import { getCapability } from "../capabilities/registry";
 
 // Checkpoint storage (bounded)
 const MAX_CHECKPOINTS = 100;
@@ -21,10 +21,7 @@ const checkpoints = new Map<string, ExecutionCheckpoint>();
 /**
  * Create a checkpoint before execution
  */
-export function createCheckpoint(
-  executionId: string,
-  stepIndex: number
-): ExecutionCheckpoint {
+export function createCheckpoint(executionId: string, stepIndex: number): ExecutionCheckpoint {
   // Capture current state
   const state = new Map<string, boolean>();
 
@@ -46,13 +43,10 @@ export function createCheckpoint(
   }
   checkpoints.set(executionId, checkpoint);
 
-  logAuditEvent(
-    'checkpoint_created',
-    `Checkpoint created at step ${stepIndex}`,
-    'system',
-    true,
-    { executionId, stepIndex }
-  );
+  logAuditEvent("checkpoint_created", `Checkpoint created at step ${stepIndex}`, "system", true, {
+    executionId,
+    stepIndex,
+  });
 
   return checkpoint;
 }
@@ -76,18 +70,16 @@ export async function rollback(
   let stepsRolledBack = 0;
   let stepsFailed = 0;
 
-  logAuditEvent(
-    'rollback_started',
-    `Rollback initiated: ${request.reason}`,
-    request.actor,
-    true,
-    { executionId: request.executionId, reason: request.reason }
-  );
+  logAuditEvent("rollback_started", `Rollback initiated: ${request.reason}`, request.actor, true, {
+    executionId: request.executionId,
+    reason: request.reason,
+  });
 
   // Determine which steps to rollback
-  const stepsToRollback = request.steps && request.steps.length > 0
-    ? completedSteps.filter(s => request.steps!.includes(s.id))
-    : completedSteps.filter(s => s.status === 'success' && s.rollbackable);
+  const stepsToRollback =
+    request.steps && request.steps.length > 0
+      ? completedSteps.filter(s => request.steps!.includes(s.id))
+      : completedSteps.filter(s => s.status === "success" && s.rollbackable);
 
   // Rollback in reverse order
   const reversedSteps = [...stepsToRollback].reverse();
@@ -98,7 +90,7 @@ export async function rollback(
       stepsRolledBack++;
     } catch (err) {
       stepsFailed++;
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      const errorMsg = err instanceof Error ? err.message : "Unknown error";
       errors.push(`Failed to rollback ${step.capabilityName}: ${errorMsg}`);
     }
   }
@@ -106,8 +98,8 @@ export async function rollback(
   const success = stepsFailed === 0;
 
   logAuditEvent(
-    success ? 'rollback_completed' : 'rollback_failed',
-    `Rollback ${success ? 'completed' : 'failed'}: ${stepsRolledBack} steps rolled back, ${stepsFailed} failed`,
+    success ? "rollback_completed" : "rollback_failed",
+    `Rollback ${success ? "completed" : "failed"}: ${stepsRolledBack} steps rolled back, ${stepsFailed} failed`,
     request.actor,
     success,
     { executionId: request.executionId, stepsRolledBack, stepsFailed }
@@ -140,16 +132,16 @@ async function rollbackStep(step: ExecutionStep): Promise<void> {
   // 4. Update feature flag service
 
   // For now, we simulate the rollback
-  const rollbackAction = step.action === 'enable' ? 'disable' : 'enable';
+  const rollbackAction = step.action === "enable" ? "disable" : "enable";
 
   // Simulate async operation
   await new Promise(resolve => setTimeout(resolve, 10));
 
   // Log the rollback
   logAuditEvent(
-    'step_completed',
+    "step_completed",
     `Rolled back ${step.capabilityName} (${rollbackAction})`,
-    'system',
+    "system",
     true,
     { stepId: step.id, capabilityId: step.capabilityId, action: rollbackAction }
   );
@@ -166,27 +158,27 @@ export function canRollback(result: ExecutionResult): {
   if (result.rolledBack) {
     return {
       canRollback: false,
-      reason: 'Execution already rolled back',
+      reason: "Execution already rolled back",
       rollbackableSteps: 0,
     };
   }
 
-  if (result.status === 'pending' || result.status === 'in_progress') {
+  if (result.status === "pending" || result.status === "in_progress") {
     return {
       canRollback: false,
-      reason: 'Execution still in progress',
+      reason: "Execution still in progress",
       rollbackableSteps: 0,
     };
   }
 
   const rollbackableSteps = result.steps.filter(
-    s => s.status === 'success' && s.rollbackable
+    s => s.status === "success" && s.rollbackable
   ).length;
 
   if (rollbackableSteps === 0) {
     return {
       canRollback: false,
-      reason: 'No rollbackable steps',
+      reason: "No rollbackable steps",
       rollbackableSteps: 0,
     };
   }
@@ -200,29 +192,27 @@ export function canRollback(result: ExecutionResult): {
 /**
  * Get rollback instructions (for manual rollback)
  */
-export function getRollbackInstructions(
-  completedSteps: ExecutionStep[]
-): string[] {
+export function getRollbackInstructions(completedSteps: ExecutionStep[]): string[] {
   const instructions: string[] = [];
 
   const rollbackableSteps = completedSteps
-    .filter(s => s.status === 'success' && s.rollbackable)
+    .filter(s => s.status === "success" && s.rollbackable)
     .reverse();
 
   for (const step of rollbackableSteps) {
     const cap = getCapability(step.capabilityId);
     if (!cap) continue;
 
-    if (step.action === 'enable') {
-      instructions.push(`Disable ${cap.name}: unset ${(cap as any).envVarName} or set to 'false'`);
+    if (step.action === "enable") {
+      instructions.push(`Disable ${cap.name}: unset ${cap.flagName} or set to 'false'`);
     } else {
-      instructions.push(`Re-enable ${cap.name}: set ${(cap as any).envVarName}=true`);
+      instructions.push(`Re-enable ${cap.name}: set ${cap.flagName}=true`);
     }
   }
 
   if (instructions.length > 0) {
-    instructions.push('Restart affected services after making changes');
-    instructions.push('Verify system health using: GET /api/glcp/health');
+    instructions.push("Restart affected services after making changes");
+    instructions.push("Verify system health using: GET /api/glcp/health");
   }
 
   return instructions;
@@ -238,9 +228,9 @@ export async function restoreFromCheckpoint(
   let restored = 0;
 
   logAuditEvent(
-    'checkpoint_restored',
+    "checkpoint_restored",
     `Restoring from checkpoint at step ${checkpoint.stepIndex}`,
-    'system',
+    "system",
     true,
     { executionId: checkpoint.executionId }
   );
@@ -254,7 +244,7 @@ export async function restoreFromCheckpoint(
       // await setFlagState(capId, enabled);
       restored++;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Unknown error';
+      const msg = err instanceof Error ? err.message : "Unknown error";
       errors.push(`Failed to restore ${capId}: ${msg}`);
     }
   }

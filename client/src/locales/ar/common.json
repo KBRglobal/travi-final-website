@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "دبي", "country": "الإمارات", "cardAlt": "أفق دبي مع برج خليفة عند الغروب" },
-      "london": { "name": "لندن", "country": "المملكة المتحدة", "cardAlt": "ساعة بيج بن ومبنى البرلمان في لندن" },
-      "paris": { "name": "باريس", "country": "فرنسا", "cardAlt": "برج إيفل مضاء عند الغروب" },
-      "newYork": { "name": "نيويورك", "country": "الولايات المتحدة", "cardAlt": "أفق مانهاتن مع مبنى إمباير ستيت" },
-      "tokyo": { "name": "طوكيو", "country": "اليابان", "cardAlt": "معبر شيبويا بأضواء النيون في الليل" },
-      "singapore": { "name": "سنغافورة", "country": "سنغافورة", "cardAlt": "مارينا باي ساندز وحدائق الخليج" },
-      "barcelona": { "name": "برشلونة", "country": "إسبانيا", "cardAlt": "كنيسة العائلة المقدسة في الساعة الذهبية" },
-      "bangkok": { "name": "بانكوك", "country": "تايلاند", "cardAlt": "القصر الكبير في بانكوك عند الشروق" },
-      "abuDhabi": { "name": "أبوظبي", "country": "الإمارات", "cardAlt": "جامع الشيخ زايد الكبير" },
-      "amsterdam": { "name": "أمستردام", "country": "هولندا", "cardAlt": "قناة أمستردام مع المباني التاريخية" },
-      "hongKong": { "name": "هونغ كونغ", "country": "الصين", "cardAlt": "أفق هونغ كونغ في الليل" },
-      "istanbul": { "name": "إسطنبول", "country": "تركيا", "cardAlt": "المسجد الأزرق عند الغروب" },
-      "lasVegas": { "name": "لاس فيغاس", "country": "الولايات المتحدة", "cardAlt": "شارع لاس فيغاس في الليل" },
-      "losAngeles": { "name": "لوس أنجلوس", "country": "الولايات المتحدة", "cardAlt": "لافتة هوليوود" },
-      "miami": { "name": "ميامي", "country": "الولايات المتحدة", "cardAlt": "شاطئ ميامي وحي آرت ديكو" },
-      "rome": { "name": "روما", "country": "إيطاليا", "cardAlt": "الكولوسيوم في الساعة الذهبية" }
+      "dubai": {
+        "name": "دبي",
+        "country": "الإمارات",
+        "cardAlt": "أفق دبي مع برج خليفة عند الغروب"
+      },
+      "london": {
+        "name": "لندن",
+        "country": "المملكة المتحدة",
+        "cardAlt": "ساعة بيج بن ومبنى البرلمان في لندن"
+      },
+      "paris": {
+        "name": "باريس",
+        "country": "فرنسا",
+        "cardAlt": "برج إيفل مضاء عند الغروب"
+      },
+      "newYork": {
+        "name": "نيويورك",
+        "country": "الولايات المتحدة",
+        "cardAlt": "أفق مانهاتن مع مبنى إمباير ستيت"
+      },
+      "tokyo": {
+        "name": "طوكيو",
+        "country": "اليابان",
+        "cardAlt": "معبر شيبويا بأضواء النيون في الليل"
+      },
+      "singapore": {
+        "name": "سنغافورة",
+        "country": "سنغافورة",
+        "cardAlt": "مارينا باي ساندز وحدائق الخليج"
+      },
+      "barcelona": {
+        "name": "برشلونة",
+        "country": "إسبانيا",
+        "cardAlt": "كنيسة العائلة المقدسة في الساعة الذهبية"
+      },
+      "bangkok": {
+        "name": "بانكوك",
+        "country": "تايلاند",
+        "cardAlt": "القصر الكبير في بانكوك عند الشروق"
+      },
+      "abuDhabi": {
+        "name": "أبوظبي",
+        "country": "الإمارات",
+        "cardAlt": "جامع الشيخ زايد الكبير"
+      },
+      "amsterdam": {
+        "name": "أمستردام",
+        "country": "هولندا",
+        "cardAlt": "قناة أمستردام مع المباني التاريخية"
+      },
+      "hongKong": {
+        "name": "هونغ كونغ",
+        "country": "الصين",
+        "cardAlt": "أفق هونغ كونغ في الليل"
+      },
+      "istanbul": {
+        "name": "إسطنبول",
+        "country": "تركيا",
+        "cardAlt": "المسجد الأزرق عند الغروب"
+      },
+      "lasVegas": {
+        "name": "لاس فيغاس",
+        "country": "الولايات المتحدة",
+        "cardAlt": "شارع لاس فيغاس في الليل"
+      },
+      "losAngeles": {
+        "name": "لوس أنجلوس",
+        "country": "الولايات المتحدة",
+        "cardAlt": "لافتة هوليوود"
+      },
+      "miami": {
+        "name": "ميامي",
+        "country": "الولايات المتحدة",
+        "cardAlt": "شاطئ ميامي وحي آرت ديكو"
+      },
+      "rome": {
+        "name": "روما",
+        "country": "إيطاليا",
+        "cardAlt": "الكولوسيوم في الساعة الذهبية"
+      }
     },
     "hero": {
       "badge": "{{count}} وجهة حول العالم",
@@ -783,7 +847,79 @@
       "titleHighlight": "ترافي",
       "subtitle": "مصدرك الموثوق للمعلومات الشاملة عن السفر وأدلة الوجهات، مساعدة الملايين على استكشاف العالم بثقة.",
       "ctaExplore": "استكشف الوجهات",
-      "ctaContact": "تواصل معنا"
+      "ctaContact": "تواصل معنا",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "تواصل معنا | ترافي",

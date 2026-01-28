@@ -3,9 +3,9 @@
  * Main service for publish gate operations
  */
 
-import { db } from '../db';
-import { contents } from '@shared/schema';
-import { eq } from 'drizzle-orm';
+import { db } from "../db";
+import { contents } from "@shared/schema";
+import { eq } from "drizzle-orm";
 import {
   PublishGateConfig,
   GateEvaluationContext,
@@ -13,9 +13,11 @@ import {
   GateOverrideRequest,
   GateOverrideRecord,
   DEFAULT_GATE_CONFIG,
-} from './types';
-import { rulesRegistry } from './rules';
-import { evaluatePublishGates } from './evaluator';
+} from "./types";
+import { rulesRegistry } from "./rules";
+import { evaluatePublishGates } from "./evaluator";
+import { evaluateGates } from "./gate-evaluator";
+import { PublishBlockedError } from "./errors";
 
 // In-memory override storage (use DB in production)
 const overrides: Map<string, GateOverrideRecord> = new Map();
@@ -30,14 +32,14 @@ const auditLog: Array<{
 const MAX_AUDIT_LOG_SIZE = 10000;
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_PUBLISH_GATES === 'true';
+  return process.env.ENABLE_PUBLISH_GATES === "true";
 }
 
 function getConfig(): PublishGateConfig {
   return {
     ...DEFAULT_GATE_CONFIG,
     enabled: isEnabled(),
-    strictMode: process.env.PUBLISH_GATES_STRICT === 'true',
+    strictMode: process.env.PUBLISH_GATES_STRICT === "true",
   };
 }
 
@@ -92,7 +94,7 @@ export const gateService = {
     // Check for existing override
     const override = this.getOverride(context.contentId);
     if (override && (!override.expiresAt || override.expiresAt > new Date())) {
-      addAuditEntry('evaluate_with_override', context.contentId, context.userId, {
+      addAuditEntry("evaluate_with_override", context.contentId, context.userId, {
         overrideId: override.id,
       });
 
@@ -111,7 +113,7 @@ export const gateService = {
 
     const result = await evaluatePublishGates(context);
 
-    addAuditEntry('evaluate', context.contentId, context.userId, {
+    addAuditEntry("evaluate", context.contentId, context.userId, {
       passed: result.passed,
       passedRules: result.passedRules,
       failedRules: result.failedRules,
@@ -164,10 +166,10 @@ export const gateService = {
           passedRules: 0,
           failedRules: 0,
           results: [],
-          blockedBy: ['content_not_found'],
+          blockedBy: ["content_not_found"],
           canOverride: false,
         },
-        error: 'Content not found',
+        error: "Content not found",
       };
     }
 
@@ -181,7 +183,7 @@ export const gateService = {
     const result = await this.evaluate(context);
 
     if (!result.passed) {
-      addAuditEntry('publish_blocked', contentId, userId, {
+      addAuditEntry("publish_blocked", contentId, userId, {
         blockedBy: result.blockedBy,
         failedRules: result.failedRules,
       });
@@ -189,11 +191,11 @@ export const gateService = {
       return {
         success: false,
         result,
-        error: `Publishing blocked by: ${result.blockedBy.join(', ')}`,
+        error: `Publishing blocked by: ${result.blockedBy.join(", ")}`,
       };
     }
 
-    addAuditEntry('publish_allowed', contentId, userId, {
+    addAuditEntry("publish_allowed", contentId, userId, {
       passedRules: result.passedRules,
     });
 
@@ -217,7 +219,7 @@ export const gateService = {
 
     overrides.set(request.contentId, record);
 
-    addAuditEntry('override_created', request.contentId, request.userId, {
+    addAuditEntry("override_created", request.contentId, request.userId, {
       overrideId: record.id,
       reason: request.reason,
       approvedBy: request.approvedBy,
@@ -243,7 +245,7 @@ export const gateService = {
 
     overrides.delete(contentId);
 
-    addAuditEntry('override_revoked', contentId, userId, {
+    addAuditEntry("override_revoked", contentId, userId, {
       overrideId: existing.id,
     });
 
@@ -255,9 +257,7 @@ export const gateService = {
    */
   getActiveOverrides(): GateOverrideRecord[] {
     const now = new Date();
-    return Array.from(overrides.values()).filter(
-      o => !o.expiresAt || o.expiresAt > now
-    );
+    return Array.from(overrides.values()).filter(o => !o.expiresAt || o.expiresAt > now);
   },
 
   /**
@@ -304,8 +304,8 @@ export const gateService = {
 
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentLogs = auditLog.filter(e => e.timestamp > oneDayAgo);
-    const recentBlocks = recentLogs.filter(e => e.action === 'publish_blocked').length;
-    const recentPasses = recentLogs.filter(e => e.action === 'publish_allowed').length;
+    const recentBlocks = recentLogs.filter(e => e.action === "publish_blocked").length;
+    const recentPasses = recentLogs.filter(e => e.action === "publish_allowed").length;
 
     return {
       enabled: isEnabled(),
@@ -341,3 +341,23 @@ export const gateService = {
     return rulesRegistry.getRule(ruleId);
   },
 };
+
+/**
+ * Enforce publish gates - throws PublishBlockedError if blocked.
+ * Simple function API for integration testing.
+ */
+export async function enforcePublishGates(contentId: string): Promise<void> {
+  const report = await evaluateGates(contentId);
+
+  if (!report.canPublish) {
+    throw new PublishBlockedError(report);
+  }
+}
+
+/**
+ * Check publish eligibility without throwing.
+ * Returns the report regardless of pass/block status.
+ */
+export async function checkPublishEligibility(contentId: string): Promise<any> {
+  return evaluateGates(contentId);
+}

@@ -82,14 +82,18 @@ export const TranslationsPage = lazy(() => import("@/pages/translations"));
 export const ContentCalendarPage = lazy(() => import("@/pages/content-calendar"));
 export const ContentTemplatesPage = lazy(() => import("@/pages/content-templates"));
 export const SEOAuditPage = lazy(() => import("@/pages/seo-audit"));
-export const AutoPilotPage = lazy(() => import("@/pages/admin/auto-pilot"));
+// AutoPilotPage removed - duplicate of OctypoAutopilot
 export const SocialDashboard = lazy(() => import("@/pages/admin/social/social-dashboard"));
 export const GrowthDashboard = lazy(() => import("@/pages/admin/growth-dashboard"));
 export const AEODashboard = lazy(() => import("@/pages/admin/aeo-dashboard"));
 export const ContentIntelligencePage = lazy(() => import("@/pages/admin/content-intelligence"));
 export const AIQualityToolsPage = lazy(() => import("@/pages/admin/ai-quality-tools"));
-export const DestinationIntelligencePage = lazy(() => import("@/pages/admin/destination-intelligence"));
-export const DestinationsListPage = lazy(() => import("@/pages/admin/destinations/destinations-list"));
+export const DestinationIntelligencePage = lazy(
+  () => import("@/pages/admin/destination-intelligence")
+);
+export const DestinationsListPage = lazy(
+  () => import("@/pages/admin/destinations/destinations-list")
+);
 export const DestinationHubPage = lazy(() => import("@/pages/admin/destinations/destination-hub"));
 export const SecurityPage = lazy(() => import("@/pages/admin/security"));
 export const SiteSettingsPage = lazy(() => import("@/pages/admin/site-settings"));
@@ -99,19 +103,15 @@ export const HomepageEditorPage = lazy(() => import("@/pages/admin/homepage-edit
 export const StaticPagesPage = lazy(() => import("@/pages/admin/static-pages"));
 export const StaticPageEditorPage = lazy(() => import("@/pages/admin/static-page-editor"));
 export const PageBuilderPage = lazy(() => import("@/pages/admin/page-builder"));
-export const VisualEditorDashboard = lazy(() => import("@/pages/admin/visual-editor/sites-dashboard"));
+export const VisualEditorDashboard = lazy(
+  () => import("@/pages/admin/visual-editor/sites-dashboard")
+);
 export const VisualEditorSiteEditor = lazy(() => import("@/pages/admin/visual-editor/site-editor"));
 export const WritersManagement = lazy(() => import("@/pages/admin/writers/WritersManagement"));
 export const NewsroomDashboard = lazy(() => import("@/pages/admin/writers/NewsroomDashboard"));
 export const AdminChatInbox = lazy(() => import("@/pages/admin/chat-inbox"));
-export const OffPlanManagement = lazy(() => import("@/pages/admin/off-plan-management"));
-export const LandingPagesManagement = lazy(() => import("@/pages/admin/landing-pages-management"));
-export const DistrictsManagement = lazy(() => import("@/pages/admin/districts-management"));
-export const RealEstateManagement = lazy(() => import("@/pages/admin/real-estate-management"));
-export const RealEstateEditor = lazy(() => import("@/pages/admin/real-estate-editor"));
-
-// Octopus Content Generation Engine
-export const OctopusDashboard = lazy(() => import("@/pages/admin/octypo-dashboard"));
+// Octopus Content Generation Engine (now uses octypo/dashboard)
+export const OctopusDashboard = lazy(() => import("@/pages/admin/octypo/dashboard"));
 
 // TRAVI Content Generation Engine
 export const TraviLocationsList = lazy(() => import("@/pages/admin/travi/locations-list"));
@@ -136,16 +136,12 @@ export const IngestionDashboard = lazy(() => import("@/pages/admin/ingestion/das
 export const POIExplorer = lazy(() => import("@/pages/poi-explorer"));
 export const PublicHolidays = lazy(() => import("@/pages/public-holidays"));
 export const DestinationBrowser = lazy(() => import("@/pages/destination-browser"));
-export const ExternalDataExplorer = lazy(() => import("@/pages/admin/external-data-explorer"));
+// ExternalDataExplorer removed - functionality merged into console
 
 // Internal Links Management
 export const LinksDashboard = lazy(() => import("@/pages/admin/links/dashboard"));
 
-// Monetization Pages
-export const MonetizationPremium = lazy(() => import("@/pages/admin/monetization/premium-content"));
-export const MonetizationListings = lazy(() => import("@/pages/admin/monetization/business-listings"));
-export const MonetizationLeads = lazy(() => import("@/pages/admin/monetization/lead-management"));
-export const MonetizationAffiliates = lazy(() => import("@/pages/admin/monetization/affiliate-dashboard"));
+// Monetization Pages removed - orphaned, no routes
 
 // Enterprise Pages
 export const EnterpriseTeams = lazy(() => import("@/pages/admin/enterprise/teams"));
@@ -162,10 +158,7 @@ export const GovernancePolicies = lazy(() => import("@/pages/admin/governance/po
 export const GovernanceApprovals = lazy(() => import("@/pages/admin/governance/approvals"));
 export const GovernanceAudit = lazy(() => import("@/pages/admin/governance/audit"));
 
-// Advanced Analytics Pages
-export const CustomerJourney = lazy(() => import("@/pages/admin/analytics/customer-journey"));
-export const SemanticSearchAdmin = lazy(() => import("@/pages/admin/analytics/semantic-search"));
-export const PlagiarismCheck = lazy(() => import("@/pages/admin/analytics/plagiarism-check"));
+// Advanced Analytics Pages removed - orphaned, no routes
 export const LiveConsole = lazy(() => import("@/pages/admin/console"));
 
 // Survey Builder Pages
@@ -179,99 +172,243 @@ export const AdminReferrals = lazy(() => import("@/pages/admin/referrals"));
 // QA & System Pages
 export const AdminQaDashboard = lazy(() => import("@/pages/admin/qa-dashboard"));
 export const SystemHealthDashboard = lazy(() => import("@/pages/admin/system-health"));
-export const OperationsDashboard = lazy(() => import("@/pages/admin/operations-dashboard"));
-export const IntelligenceDashboard = lazy(() => import("@/pages/admin/IntelligenceDashboard"));
+// OperationsDashboard removed - merged into system-health
+// IntelligenceDashboard removed - merged into destination-intelligence
 export const SearchDebugPage = lazy(() => import("@/pages/admin/search-debug"));
-export const ContentCalendar = lazy(() => import("@/pages/admin/Calendar"));
-export const EntityMergePage = lazy(() => import("@/pages/admin/entity-merge"));
+export const ContentCalendar = lazy(() => import("@/pages/content-calendar"));
+// EntityMergePage removed - moved to operations
 
 // Help Center Admin
 export const HelpCenterAdmin = lazy(() => import("@/pages/admin/help"));
 export const HelpArticleEditor = lazy(() => import("@/pages/admin/help/article-editor"));
-export const ChangeManagement = lazy(() => import("@/pages/admin/change-management"));
+// ChangeManagement removed - moved to operations
 
 // Dubai Pages - Districts (17)
-export const DistrictsGateway = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictsGateway })));
-export const DistrictDowntownDubai = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictDowntownDubai })));
-export const DistrictDubaiMarina = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiMarina })));
-export const DistrictJBR = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictJBR })));
-export const DistrictPalmJumeirah = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictPalmJumeirah })));
-export const DistrictJumeirah = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictJumeirah })));
-export const DistrictBusinessBay = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictBusinessBay })));
-export const DistrictOldDubai = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictOldDubai })));
-export const DistrictDubaiCreekHarbour = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiCreekHarbour })));
-export const DistrictDubaiSouth = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiSouth })));
-export const DistrictAlBarsha = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictAlBarsha })));
-export const DistrictDIFC = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictDIFC })));
-export const DistrictDubaiHills = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiHills })));
-export const DistrictJVC = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictJVC })));
-export const DistrictBluewaters = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictBluewaters })));
-export const DistrictInternationalCity = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictInternationalCity })));
-export const DistrictAlKarama = lazy(() => import("@/pages/dubai").then(m => ({ default: m.DistrictAlKarama })));
+export const DistrictsGateway = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictsGateway }))
+);
+export const DistrictDowntownDubai = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictDowntownDubai }))
+);
+export const DistrictDubaiMarina = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiMarina }))
+);
+export const DistrictJBR = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictJBR }))
+);
+export const DistrictPalmJumeirah = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictPalmJumeirah }))
+);
+export const DistrictJumeirah = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictJumeirah }))
+);
+export const DistrictBusinessBay = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictBusinessBay }))
+);
+export const DistrictOldDubai = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictOldDubai }))
+);
+export const DistrictDubaiCreekHarbour = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiCreekHarbour }))
+);
+export const DistrictDubaiSouth = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiSouth }))
+);
+export const DistrictAlBarsha = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictAlBarsha }))
+);
+export const DistrictDIFC = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictDIFC }))
+);
+export const DistrictDubaiHills = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictDubaiHills }))
+);
+export const DistrictJVC = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictJVC }))
+);
+export const DistrictBluewaters = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictBluewaters }))
+);
+export const DistrictInternationalCity = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictInternationalCity }))
+);
+export const DistrictAlKarama = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.DistrictAlKarama }))
+);
 
 // Dubai Pages - Off-Plan (22)
-export const OffPlanInvestmentGuide = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanInvestmentGuide })));
-export const OffPlanHowToBuy = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanHowToBuy })));
-export const OffPlanPaymentPlans = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanPaymentPlans })));
-export const OffPlanBest2026 = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanBest2026 })));
-export const OffPlanBusinessBay = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanBusinessBay })));
-export const OffPlanDubaiMarina = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanDubaiMarina })));
-export const OffPlanJVC = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanJVC })));
-export const OffPlanPalmJumeirah = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanPalmJumeirah })));
-export const OffPlanCreekHarbour = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanCreekHarbour })));
-export const OffPlanAlFurjan = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanAlFurjan })));
-export const OffPlanVillas = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanVillas })));
-export const OffPlanEmaar = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanEmaar })));
-export const OffPlanDamac = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanDamac })));
-export const OffPlanNakheel = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanNakheel })));
-export const OffPlanMeraas = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanMeraas })));
-export const OffPlanSobha = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanSobha })));
-export const OffPlanCryptoPayments = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanCryptoPayments })));
-export const OffPlanUSDT = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanUSDT })));
-export const OffPlanGoldenVisa = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanGoldenVisa })));
-export const OffPlanPostHandover = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanPostHandover })));
-export const OffPlanEscrow = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanEscrow })));
-export const OffPlanVsReady = lazy(() => import("@/pages/dubai").then(m => ({ default: m.OffPlanVsReady })));
+export const OffPlanInvestmentGuide = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanInvestmentGuide }))
+);
+export const OffPlanHowToBuy = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanHowToBuy }))
+);
+export const OffPlanPaymentPlans = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanPaymentPlans }))
+);
+export const OffPlanBest2026 = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanBest2026 }))
+);
+export const OffPlanBusinessBay = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanBusinessBay }))
+);
+export const OffPlanDubaiMarina = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanDubaiMarina }))
+);
+export const OffPlanJVC = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanJVC }))
+);
+export const OffPlanPalmJumeirah = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanPalmJumeirah }))
+);
+export const OffPlanCreekHarbour = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanCreekHarbour }))
+);
+export const OffPlanAlFurjan = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanAlFurjan }))
+);
+export const OffPlanVillas = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanVillas }))
+);
+export const OffPlanEmaar = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanEmaar }))
+);
+export const OffPlanDamac = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanDamac }))
+);
+export const OffPlanNakheel = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanNakheel }))
+);
+export const OffPlanMeraas = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanMeraas }))
+);
+export const OffPlanSobha = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanSobha }))
+);
+export const OffPlanCryptoPayments = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanCryptoPayments }))
+);
+export const OffPlanUSDT = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanUSDT }))
+);
+export const OffPlanGoldenVisa = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanGoldenVisa }))
+);
+export const OffPlanPostHandover = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanPostHandover }))
+);
+export const OffPlanEscrow = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanEscrow }))
+);
+export const OffPlanVsReady = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.OffPlanVsReady }))
+);
 
 // Dubai Pages - Comparisons (12)
-export const CompareOffPlanVsReady = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareOffPlanVsReady })));
-export const CompareJVCvsDubaiSouth = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareJVCvsDubaiSouth })));
-export const CompareEmaarVsDamac = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareEmaarVsDamac })));
-export const CompareDowntownVsMarina = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareDowntownVsMarina })));
-export const Compare6040vs8020 = lazy(() => import("@/pages/dubai").then(m => ({ default: m.Compare6040vs8020 })));
-export const CompareSobhaVsMeraas = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareSobhaVsMeraas })));
-export const CompareCryptoVsBankTransfer = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareCryptoVsBankTransfer })));
-export const CompareBusinessBayVsJLT = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareBusinessBayVsJLT })));
-export const CompareNewVsResale = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareNewVsResale })));
-export const CompareNakheelVsAzizi = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareNakheelVsAzizi })));
-export const CompareVillaVsApartment = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareVillaVsApartment })));
-export const CompareStudioVs1Bed = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CompareStudioVs1Bed })));
+export const CompareOffPlanVsReady = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareOffPlanVsReady }))
+);
+export const CompareJVCvsDubaiSouth = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareJVCvsDubaiSouth }))
+);
+export const CompareEmaarVsDamac = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareEmaarVsDamac }))
+);
+export const CompareDowntownVsMarina = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareDowntownVsMarina }))
+);
+export const Compare6040vs8020 = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.Compare6040vs8020 }))
+);
+export const CompareSobhaVsMeraas = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareSobhaVsMeraas }))
+);
+export const CompareCryptoVsBankTransfer = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareCryptoVsBankTransfer }))
+);
+export const CompareBusinessBayVsJLT = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareBusinessBayVsJLT }))
+);
+export const CompareNewVsResale = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareNewVsResale }))
+);
+export const CompareNakheelVsAzizi = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareNakheelVsAzizi }))
+);
+export const CompareVillaVsApartment = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareVillaVsApartment }))
+);
+export const CompareStudioVs1Bed = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CompareStudioVs1Bed }))
+);
 
 // Dubai Pages - Tools (7)
-export const ToolsROICalculator = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsROICalculator })));
-export const ToolsPaymentCalculator = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsPaymentCalculator })));
-export const ToolsAffordabilityCalculator = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsAffordabilityCalculator })));
-export const ToolsCurrencyConverter = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsCurrencyConverter })));
-export const ToolsFeesCalculator = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsFeesCalculator })));
-export const ToolsRentalYieldCalculator = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsRentalYieldCalculator })));
-export const ToolsMortgageCalculator = lazy(() => import("@/pages/dubai").then(m => ({ default: m.ToolsMortgageCalculator })));
+export const ToolsROICalculator = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsROICalculator }))
+);
+export const ToolsPaymentCalculator = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsPaymentCalculator }))
+);
+export const ToolsAffordabilityCalculator = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsAffordabilityCalculator }))
+);
+export const ToolsCurrencyConverter = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsCurrencyConverter }))
+);
+export const ToolsFeesCalculator = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsFeesCalculator }))
+);
+export const ToolsRentalYieldCalculator = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsRentalYieldCalculator }))
+);
+export const ToolsMortgageCalculator = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.ToolsMortgageCalculator }))
+);
 
 // Dubai Pages - Case Studies (8)
-export const CaseStudyInvestorJVC = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyInvestorJVC })));
-export const CaseStudyCryptoBuyer = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyCryptoBuyer })));
-export const CaseStudyGoldenVisa = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyGoldenVisa })));
-export const CaseStudyExpatFamily = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyExpatFamily })));
-export const CaseStudyInvestorFlip = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyInvestorFlip })));
-export const CaseStudyPortfolioDiversification = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyPortfolioDiversification })));
-export const CaseStudyOffPlanLaunch = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyOffPlanLaunch })));
-export const CaseStudyRetirementPlanning = lazy(() => import("@/pages/dubai").then(m => ({ default: m.CaseStudyRetirementPlanning })));
+export const CaseStudyInvestorJVC = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyInvestorJVC }))
+);
+export const CaseStudyCryptoBuyer = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyCryptoBuyer }))
+);
+export const CaseStudyGoldenVisa = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyGoldenVisa }))
+);
+export const CaseStudyExpatFamily = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyExpatFamily }))
+);
+export const CaseStudyInvestorFlip = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyInvestorFlip }))
+);
+export const CaseStudyPortfolioDiversification = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyPortfolioDiversification }))
+);
+export const CaseStudyOffPlanLaunch = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyOffPlanLaunch }))
+);
+export const CaseStudyRetirementPlanning = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.CaseStudyRetirementPlanning }))
+);
 
 // Dubai Pages - Pillar (2)
-export const PillarROIRentalYields = lazy(() => import("@/pages/dubai").then(m => ({ default: m.PillarROIRentalYields })));
-export const PillarLegalSecurity = lazy(() => import("@/pages/dubai").then(m => ({ default: m.PillarLegalSecurity })));
+export const PillarROIRentalYields = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.PillarROIRentalYields }))
+);
+export const PillarLegalSecurity = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.PillarLegalSecurity }))
+);
 
 // Dubai Pages - Landing (4)
-export const LandingFreeDubai = lazy(() => import("@/pages/dubai").then(m => ({ default: m.LandingFreeDubai })));
-export const LandingDubaiLaws = lazy(() => import("@/pages/dubai").then(m => ({ default: m.LandingDubaiLaws })));
-export const LandingSheikhMohammed = lazy(() => import("@/pages/dubai").then(m => ({ default: m.LandingSheikhMohammed })));
-export const LandingDubai247 = lazy(() => import("@/pages/dubai").then(m => ({ default: m.LandingDubai247 })));
+export const LandingFreeDubai = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.LandingFreeDubai }))
+);
+export const LandingDubaiLaws = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.LandingDubaiLaws }))
+);
+export const LandingSheikhMohammed = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.LandingSheikhMohammed }))
+);
+export const LandingDubai247 = lazy(() =>
+  import("@/pages/dubai").then(m => ({ default: m.LandingDubai247 }))
+);

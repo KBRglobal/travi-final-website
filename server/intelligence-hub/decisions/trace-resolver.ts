@@ -4,9 +4,9 @@
  * Resolves decision traces by gathering signals and building explanations.
  */
 
-import { log } from '../../lib/logger';
-import { getSignalRegistry } from '../signals/registry';
-import { buildCausalChain, explainCausalChain, createSystemEventCause } from './causal-chain';
+import { log } from "../../lib/logger";
+import { getSignalRegistry } from "../signals/registry";
+import { buildFullCausalChain, explainCausalChain, createSystemEventCause } from "./causal-chain";
 import type {
   Decision,
   DecisionType,
@@ -14,14 +14,12 @@ import type {
   ExplanationRequest,
   ExplanationResponse,
   Cause,
-} from './types';
-import type { UnifiedSignal } from '../signals/types';
+} from "./types";
+import type { UnifiedSignal } from "../signals/types";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[TraceResolver] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[TraceResolver] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[TraceResolver] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[TraceResolver] ${msg}`, data),
 };
 
 /**
@@ -56,23 +54,23 @@ async function resolveEntitySignals(
 function inferDecisionType(signals: UnifiedSignal[]): DecisionType {
   // Check for specific patterns
   for (const signal of signals) {
-    if (signal.source === 'cost-guards' && signal.score >= 80) {
-      return 'cost_limit_hit';
+    if (signal.source === "cost-guards" && signal.score >= 80) {
+      return "cost_limit_hit";
     }
-    if (signal.source === 'ai-audit' && signal.severity === 'critical') {
-      return 'provider_disabled';
+    if (signal.source === "ai-audit" && signal.severity === "critical") {
+      return "provider_disabled";
     }
-    if (signal.source === 'data-integrity') {
-      return 'quality_flagged';
+    if (signal.source === "data-integrity") {
+      return "quality_flagged";
     }
-    if (signal.category === 'quality' && signal.score >= 70) {
-      return 'content_regenerated';
+    if (signal.category === "quality" && signal.score >= 70) {
+      return "content_regenerated";
     }
   }
 
   // Default based on severity
-  const hasBlocking = signals.some(s => s.severity === 'critical' || s.severity === 'high');
-  return hasBlocking ? 'publish_blocked' : 'quality_flagged';
+  const hasBlocking = signals.some(s => s.severity === "critical" || s.severity === "high");
+  return hasBlocking ? "publish_blocked" : "quality_flagged";
 }
 
 /**
@@ -84,7 +82,7 @@ export function buildDecision(
   signals: UnifiedSignal[],
   additionalCauses: Cause[] = []
 ): Decision {
-  const causalChain = buildCausalChain(signals, additionalCauses);
+  const causalChain = buildFullCausalChain(signals, additionalCauses);
   const decisionType = inferDecisionType(signals);
 
   return {
@@ -95,7 +93,7 @@ export function buildDecision(
     outcome: explainCausalChain(causalChain),
     timestamp: new Date(),
     causalChain,
-    reversible: !signals.some(s => s.severity === 'critical'),
+    reversible: !signals.some(s => s.severity === "critical"),
     automated: true,
   };
 }
@@ -103,10 +101,7 @@ export function buildDecision(
 /**
  * Build a full decision trace
  */
-export function buildDecisionTrace(
-  decision: Decision,
-  signals: UnifiedSignal[]
-): DecisionTrace {
+export function buildDecisionTrace(decision: Decision, signals: UnifiedSignal[]): DecisionTrace {
   const recommendations = generateRecommendations(decision, signals);
 
   return {
@@ -121,40 +116,37 @@ export function buildDecisionTrace(
 /**
  * Generate recommendations based on decision
  */
-function generateRecommendations(
-  decision: Decision,
-  signals: UnifiedSignal[]
-): string[] {
+function generateRecommendations(decision: Decision, signals: UnifiedSignal[]): string[] {
   const recommendations: string[] = [];
 
   switch (decision.type) {
-    case 'cost_limit_hit':
-      recommendations.push('Review and increase cost limits if needed');
-      recommendations.push('Identify high-cost features and optimize');
+    case "cost_limit_hit":
+      recommendations.push("Review and increase cost limits if needed");
+      recommendations.push("Identify high-cost features and optimize");
       break;
-    case 'provider_disabled':
-      recommendations.push('Check AI provider status and error rates');
-      recommendations.push('Consider switching to backup provider');
+    case "provider_disabled":
+      recommendations.push("Check AI provider status and error rates");
+      recommendations.push("Consider switching to backup provider");
       break;
-    case 'quality_flagged':
-      recommendations.push('Review content quality signals');
-      recommendations.push('Consider manual content review');
+    case "quality_flagged":
+      recommendations.push("Review content quality signals");
+      recommendations.push("Consider manual content review");
       break;
-    case 'publish_blocked':
-      recommendations.push('Resolve blocking issues before republishing');
-      recommendations.push('Check data integrity for affected entities');
+    case "publish_blocked":
+      recommendations.push("Resolve blocking issues before republishing");
+      recommendations.push("Check data integrity for affected entities");
       break;
-    case 'content_regenerated':
-      recommendations.push('Verify regeneration improved content quality');
-      recommendations.push('Monitor for regeneration loops');
+    case "content_regenerated":
+      recommendations.push("Verify regeneration improved content quality");
+      recommendations.push("Monitor for regeneration loops");
       break;
     default:
-      recommendations.push('Review related signals for more context');
+      recommendations.push("Review related signals for more context");
   }
 
   // Add signal-specific recommendations
   for (const signal of signals.slice(0, 3)) {
-    if (signal.severity === 'critical') {
+    if (signal.severity === "critical") {
       recommendations.push(`Address critical signal: ${signal.reason}`);
     }
   }
@@ -168,14 +160,14 @@ function generateRecommendations(
 export async function resolveExplanation(
   request: ExplanationRequest
 ): Promise<ExplanationResponse> {
-  const enabled = process.env.ENABLE_DECISION_EXPLAINABILITY === 'true';
+  const enabled = process.env.ENABLE_DECISION_EXPLAINABILITY === "true";
 
   if (!enabled) {
     return {
       entityType: request.entityType,
       entityId: request.entityId,
-      question: request.question || 'general',
-      answer: 'Decision explainability is not enabled',
+      question: request.question || "general",
+      answer: "Decision explainability is not enabled",
       confidence: 0,
       rootCause: null,
       contributingFactors: [],
@@ -189,7 +181,7 @@ export async function resolveExplanation(
   const signals = await resolveEntitySignals(request.entityId, request.entityType);
 
   if (signals.length === 0) {
-    logger.warn('No signals found for entity', {
+    logger.warn("No signals found for entity", {
       entityType: request.entityType,
       entityId: request.entityId,
     });
@@ -197,8 +189,8 @@ export async function resolveExplanation(
     return {
       entityType: request.entityType,
       entityId: request.entityId,
-      question: request.question || 'general',
-      answer: 'No signals found for this entity. The system has no recorded decisions.',
+      question: request.question || "general",
+      answer: "No signals found for this entity. The system has no recorded decisions.",
       confidence: 10,
       rootCause: null,
       contributingFactors: [],
@@ -209,21 +201,21 @@ export async function resolveExplanation(
   }
 
   // Build causal chain
-  const causalChain = buildCausalChain(signals);
+  const causalChain = buildFullCausalChain(signals);
 
   // Build answer based on question
   let answer: string;
   switch (request.question) {
-    case 'why_blocked':
+    case "why_blocked":
       answer = buildBlockedExplanation(signals, causalChain);
       break;
-    case 'why_regenerated':
+    case "why_regenerated":
       answer = buildRegeneratedExplanation(signals, causalChain);
       break;
-    case 'why_recommended':
+    case "why_recommended":
       answer = buildRecommendedExplanation(signals, causalChain);
       break;
-    case 'why_failed':
+    case "why_failed":
       answer = buildFailedExplanation(signals, causalChain);
       break;
     default:
@@ -233,7 +225,7 @@ export async function resolveExplanation(
   // Build related decisions
   const decision = buildDecision(request.entityType, request.entityId, signals);
 
-  logger.info('Explanation resolved', {
+  logger.info("Explanation resolved", {
     entityId: request.entityId,
     signalCount: signals.length,
     confidence: causalChain.totalConfidence,
@@ -242,7 +234,7 @@ export async function resolveExplanation(
   return {
     entityType: request.entityType,
     entityId: request.entityId,
-    question: request.question || 'general',
+    question: request.question || "general",
     answer,
     confidence: causalChain.totalConfidence,
     rootCause: causalChain.rootCause,
@@ -253,46 +245,60 @@ export async function resolveExplanation(
   };
 }
 
-function buildBlockedExplanation(signals: UnifiedSignal[], chain: ReturnType<typeof buildCausalChain>): string {
-  const critical = signals.filter(s => s.severity === 'critical' || s.severity === 'high');
+function buildBlockedExplanation(
+  signals: UnifiedSignal[],
+  chain: ReturnType<typeof buildFullCausalChain>
+): string {
+  const critical = signals.filter(s => s.severity === "critical" || s.severity === "high");
 
   if (critical.length === 0) {
     return `Content is not currently blocked. ${explainCausalChain(chain)}`;
   }
 
-  const reasons = critical.map(s => s.reason).join('; ');
+  const reasons = critical.map(s => s.reason).join("; ");
   return `Content is blocked due to: ${reasons}. ${explainCausalChain(chain)}`;
 }
 
-function buildRegeneratedExplanation(signals: UnifiedSignal[], chain: ReturnType<typeof buildCausalChain>): string {
-  const qualitySignals = signals.filter(s => s.category === 'quality');
+function buildRegeneratedExplanation(
+  signals: UnifiedSignal[],
+  chain: ReturnType<typeof buildFullCausalChain>
+): string {
+  const qualitySignals = signals.filter(s => s.category === "quality");
 
   if (qualitySignals.length === 0) {
     return `No quality issues detected that would trigger regeneration. ${explainCausalChain(chain)}`;
   }
 
-  const issues = qualitySignals.map(s => s.reason).join('; ');
+  const issues = qualitySignals.map(s => s.reason).join("; ");
   return `Content was regenerated due to quality issues: ${issues}. ${explainCausalChain(chain)}`;
 }
 
-function buildRecommendedExplanation(signals: UnifiedSignal[], chain: ReturnType<typeof buildCausalChain>): string {
-  const engagementSignals = signals.filter(s => s.category === 'engagement' || s.category === 'revenue');
+function buildRecommendedExplanation(
+  signals: UnifiedSignal[],
+  chain: ReturnType<typeof buildFullCausalChain>
+): string {
+  const engagementSignals = signals.filter(
+    s => s.category === "engagement" || s.category === "revenue"
+  );
 
   if (engagementSignals.length === 0) {
     return `No specific recommendation signals found. ${explainCausalChain(chain)}`;
   }
 
-  const reasons = engagementSignals.map(s => s.reason).join('; ');
+  const reasons = engagementSignals.map(s => s.reason).join("; ");
   return `This was recommended because: ${reasons}. ${explainCausalChain(chain)}`;
 }
 
-function buildFailedExplanation(signals: UnifiedSignal[], chain: ReturnType<typeof buildCausalChain>): string {
-  const errorSignals = signals.filter(s => s.severity === 'critical' || s.category === 'health');
+function buildFailedExplanation(
+  signals: UnifiedSignal[],
+  chain: ReturnType<typeof buildFullCausalChain>
+): string {
+  const errorSignals = signals.filter(s => s.severity === "critical" || s.category === "health");
 
   if (errorSignals.length === 0) {
     return `No failure signals detected. ${explainCausalChain(chain)}`;
   }
 
-  const errors = errorSignals.map(s => s.reason).join('; ');
+  const errors = errorSignals.map(s => s.reason).join("; ");
   return `Operation failed due to: ${errors}. ${explainCausalChain(chain)}`;
 }

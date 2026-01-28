@@ -13,9 +13,9 @@ import type {
   RiskLevel,
   GrowthQuery,
   QueryResult,
-} from './types';
-import { GrowthAggregator, getGrowthAggregator } from './aggregator';
-import { GrowthScorer, getGrowthScorer } from './scorer';
+} from "./types";
+import { GrowthAggregator, getGrowthAggregator } from "./aggregator";
+import { GrowthScorer, getGrowthScorer } from "./scorer";
 
 // ============================================================================
 // CONFIGURATION
@@ -76,7 +76,7 @@ export class GrowthPrioritizer {
     const scores = this.scorer.scoreAll(opportunities);
 
     const list: PrioritizedList = {
-      id: `list-${Date.now().toString(36)}`,
+      id: `list-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
       name,
       criteria,
       weights: this.scorer.getWeights(),
@@ -96,7 +96,7 @@ export class GrowthPrioritizer {
     opportunities: GrowthOpportunity[],
     criteria: PrioritizationCriteria
   ): GrowthOpportunity[] {
-    return opportunities.filter((opp) => {
+    return opportunities.filter(opp => {
       // Min impact score
       if (criteria.minImpactScore !== undefined && opp.impactScore < criteria.minImpactScore) {
         return false;
@@ -104,7 +104,7 @@ export class GrowthPrioritizer {
 
       // Max risk level
       if (criteria.maxRiskLevel !== undefined) {
-        const riskOrder: RiskLevel[] = ['minimal', 'low', 'medium', 'high', 'critical'];
+        const riskOrder: RiskLevel[] = ["minimal", "low", "medium", "high", "critical"];
         const oppRiskIndex = riskOrder.indexOf(opp.riskLevel);
         const maxRiskIndex = riskOrder.indexOf(criteria.maxRiskLevel);
         if (oppRiskIndex > maxRiskIndex) {
@@ -114,7 +114,7 @@ export class GrowthPrioritizer {
 
       // Max effort level
       if (criteria.maxEffortLevel !== undefined) {
-        const effortOrder = ['trivial', 'low', 'medium', 'high', 'major'];
+        const effortOrder = ["trivial", "low", "medium", "high", "major"];
         const oppEffortIndex = effortOrder.indexOf(opp.effortLevel);
         const maxEffortIndex = effortOrder.indexOf(criteria.maxEffortLevel);
         if (oppEffortIndex > maxEffortIndex) {
@@ -163,40 +163,40 @@ export class GrowthPrioritizer {
     const limit = query.limit || 10;
 
     switch (query.type) {
-      case 'top_opportunities':
+      case "top_opportunities":
         opportunities = this.getTopOpportunities(limit);
         break;
 
-      case 'ready_to_execute':
+      case "ready_to_execute":
         opportunities = this.getReadyToExecute(limit);
         break;
 
-      case 'high_roi':
+      case "high_roi":
         opportunities = this.getHighROI(limit, query.params?.minROI);
         break;
 
-      case 'low_risk':
+      case "low_risk":
         opportunities = this.getLowRisk(limit);
         break;
 
-      case 'quick_wins':
+      case "quick_wins":
         opportunities = this.getQuickWins(limit);
         break;
 
-      case 'strategic':
+      case "strategic":
         opportunities = this.getStrategic(limit);
         break;
 
-      case 'by_category':
+      case "by_category":
         opportunities = this.getByCategory(query.params?.category, limit);
         break;
 
-      case 'by_source':
+      case "by_source":
         opportunities = this.getBySource(query.params?.source, limit);
         break;
     }
 
-    const scores = opportunities.map((o) => this.scorer.scoreOpportunity(o));
+    const scores = opportunities.map(o => this.scorer.scoreOpportunity(o));
 
     return {
       query,
@@ -216,7 +216,7 @@ export class GrowthPrioritizer {
     const topScores = this.scorer.getTopOpportunities(limit);
 
     return topScores
-      .map((s) => this.aggregator.getOpportunity(s.opportunityId))
+      .map(s => this.aggregator.getOpportunity(s.opportunityId))
       .filter((o): o is GrowthOpportunity => o !== undefined);
   }
 
@@ -226,7 +226,7 @@ export class GrowthPrioritizer {
   private getReadyToExecute(limit: number): GrowthOpportunity[] {
     return this.aggregator
       .getAllOpportunities()
-      .filter((o) => o.executionReadiness.isReady && o.executionReadiness.score >= 80)
+      .filter(o => o.executionReadiness.isReady && o.executionReadiness.score >= 80)
       .sort((a, b) => b.impactScore - a.impactScore)
       .slice(0, limit);
   }
@@ -237,7 +237,7 @@ export class GrowthPrioritizer {
   private getHighROI(limit: number, minROI: number = 100): GrowthOpportunity[] {
     return this.aggregator
       .getAllOpportunities()
-      .filter((o) => o.expectedROI >= minROI)
+      .filter(o => o.expectedROI >= minROI)
       .sort((a, b) => b.expectedROI - a.expectedROI)
       .slice(0, limit);
   }
@@ -248,7 +248,7 @@ export class GrowthPrioritizer {
   private getLowRisk(limit: number): GrowthOpportunity[] {
     return this.aggregator
       .getAllOpportunities()
-      .filter((o) => o.riskLevel === 'minimal' || o.riskLevel === 'low')
+      .filter(o => o.riskLevel === "minimal" || o.riskLevel === "low")
       .sort((a, b) => b.impactScore - a.impactScore)
       .slice(0, limit);
   }
@@ -259,10 +259,7 @@ export class GrowthPrioritizer {
   private getQuickWins(limit: number): GrowthOpportunity[] {
     return this.aggregator
       .getAllOpportunities()
-      .filter((o) =>
-        (o.effortLevel === 'trivial' || o.effortLevel === 'low') &&
-        o.impactScore >= 40
-      )
+      .filter(o => (o.effortLevel === "trivial" || o.effortLevel === "low") && o.impactScore >= 40)
       .sort((a, b) => {
         // Sort by impact/effort ratio
         const ratioA = a.impactScore / (a.effortScore || 1);
@@ -276,14 +273,19 @@ export class GrowthPrioritizer {
    * Get strategic opportunities (high impact, aligned)
    */
   private getStrategic(limit: number): GrowthOpportunity[] {
-    const strategicCategories = ['conversion_optimization', 'funnel_optimization', 'revenue_optimization'];
+    const strategicCategories = [
+      "conversion_optimization",
+      "funnel_optimization",
+      "revenue_optimization",
+    ];
 
     return this.aggregator
       .getAllOpportunities()
-      .filter((o) =>
-        strategicCategories.includes(o.category) &&
-        o.impactScore >= 60 &&
-        o.confidenceLevel >= 0.6
+      .filter(
+        o =>
+          strategicCategories.includes(o.category) &&
+          o.impactScore >= 60 &&
+          o.confidenceLevel >= 0.6
       )
       .sort((a, b) => b.impactScore - a.impactScore)
       .slice(0, limit);
@@ -297,7 +299,7 @@ export class GrowthPrioritizer {
 
     return this.aggregator
       .getAllOpportunities()
-      .filter((o) => o.category === category)
+      .filter(o => o.category === category)
       .sort((a, b) => b.impactScore - a.impactScore)
       .slice(0, limit);
   }
@@ -372,7 +374,10 @@ export class GrowthPrioritizer {
       return {
         opportunity: null,
         score: null,
-        reasoning: ['No opportunities currently identified', 'Run data collection to find opportunities'],
+        reasoning: [
+          "No opportunities currently identified",
+          "Run data collection to find opportunities",
+        ],
       };
     }
 
@@ -380,7 +385,7 @@ export class GrowthPrioritizer {
     const scores = this.scorer.scoreAll(opportunities);
 
     // Get top execute_now recommendation
-    const executeNow = scores.find((s) => s.recommendation === 'execute_now');
+    const executeNow = scores.find(s => s.recommendation === "execute_now");
     if (executeNow) {
       const opportunity = this.aggregator.getOpportunity(executeNow.opportunityId);
       return {
@@ -396,7 +401,7 @@ export class GrowthPrioritizer {
     }
 
     // Get top queued
-    const queued = scores.find((s) => s.recommendation === 'queue');
+    const queued = scores.find(s => s.recommendation === "queue");
     if (queued) {
       const opportunity = this.aggregator.getOpportunity(queued.opportunityId);
       return {

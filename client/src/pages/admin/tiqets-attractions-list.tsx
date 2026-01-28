@@ -45,7 +45,14 @@ interface AttractionsResponse {
   total: number | string;
 }
 
-const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; icon: React.ReactNode }> = {
+const statusConfig: Record<
+  string,
+  {
+    label: string;
+    variant: "default" | "secondary" | "outline" | "destructive";
+    icon: React.ReactNode;
+  }
+> = {
   imported: { label: "Imported", variant: "secondary", icon: <Clock className="h-3 w-3" /> },
   ready: { label: "Ready", variant: "outline", icon: <CheckCircle2 className="h-3 w-3" /> },
   published: { label: "Published", variant: "default", icon: <CheckCircle2 className="h-3 w-3" /> },
@@ -88,12 +95,12 @@ export default function TiqetsAttractionsList() {
   const total = typeof data?.total === "string" ? parseInt(data.total, 10) : (data?.total ?? 0);
 
   const cities = useMemo(() => {
-    const uniqueCities = [...new Set(attractions.map((a) => a.cityName))].sort();
+    const uniqueCities = [...new Set(attractions.map(a => a.cityName))].sort();
     return uniqueCities;
   }, [attractions]);
 
   const filteredAttractions = useMemo(() => {
-    return attractions.filter((attraction) => {
+    return attractions.filter(attraction => {
       const matchesSearch =
         !searchQuery ||
         attraction.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -118,7 +125,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "title",
       header: "Attraction",
-      cell: (attraction) => (
+      cell: attraction => (
         <div className="flex flex-col gap-1">
           <Link
             href={`/admin/attractions/${attraction.id}`}
@@ -135,7 +142,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "cityName",
       header: "City",
-      cell: (attraction) => (
+      cell: attraction => (
         <div className="flex items-center gap-1.5">
           <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
           <span>{attraction.cityName}</span>
@@ -146,7 +153,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "status",
       header: "Status",
-      cell: (attraction) => {
+      cell: attraction => {
         const config = statusConfig[attraction.status] || statusConfig.imported;
         return (
           <Badge variant={config.variant} className="gap-1">
@@ -160,7 +167,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "contentGenerationStatus",
       header: "AI Content",
-      cell: (attraction) => {
+      cell: attraction => {
         const status = attraction.contentGenerationStatus || "pending";
         const config = contentStatusConfig[status] || contentStatusConfig.pending;
         return (
@@ -177,136 +184,150 @@ export default function TiqetsAttractionsList() {
     {
       label: "Edit",
       icon: <Edit2 className="h-4 w-4" />,
-      onClick: (attraction) => {
+      onClick: attraction => {
         window.location.href = `/admin/attractions/${attraction.id}`;
       },
     },
     {
       label: "View on Site",
       icon: <ExternalLink className="h-4 w-4" />,
-      onClick: (attraction) => {
-        window.open(`/attractions/${attraction.cityName.toLowerCase()}/${attraction.slug}`, "_blank");
+      onClick: attraction => {
+        window.open(
+          `/attractions/${attraction.cityName.toLowerCase()}/${attraction.slug}`,
+          "_blank"
+        );
       },
     },
   ];
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-10 w-32" />
+      <div className="min-h-screen bg-[hsl(var(--admin-bg))]">
+        <div className="border-b border-[hsl(var(--admin-border))] bg-white">
+          <div className="px-6 py-4">
+            <Skeleton className="h-6 w-48" />
+            <Skeleton className="h-4 w-32 mt-1" />
+          </div>
         </div>
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <div className="p-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-16 w-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <MapPin className="h-6 w-6" />
+    <div className="min-h-screen bg-[hsl(var(--admin-bg))]">
+      <div className="border-b border-[hsl(var(--admin-border))] bg-white">
+        <div className="px-6 py-4">
+          <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))] flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
             Attractions
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-sm text-[hsl(var(--admin-text-secondary))] mt-1">
             {total.toLocaleString()} attractions from Tiqets
           </p>
         </div>
       </div>
 
-      <Card>
-        <CardHeader className="pb-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search attractions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-                data-testid="input-search-attractions"
-              />
-            </div>
+      <div className="p-6 space-y-6">
+        <Card>
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search attractions..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                  data-testid="input-search-attractions"
+                />
+              </div>
 
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[140px]" data-testid="select-status-filter">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="imported">Imported</SelectItem>
-                  <SelectItem value="ready">Ready</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex gap-2">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[140px]" data-testid="select-status-filter">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="imported">Imported</SelectItem>
+                    <SelectItem value="ready">Ready</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <Select value={cityFilter} onValueChange={setCityFilter}>
-                <SelectTrigger className="w-[160px]" data-testid="select-city-filter">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cities</SelectItem>
-                  {cities.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select value={cityFilter} onValueChange={setCityFilter}>
+                  <SelectTrigger className="w-[160px]" data-testid="select-city-filter">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="City" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Cities</SelectItem>
+                    {cities.map(city => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              {hasActiveFilters && (
-                <Button variant="ghost" size="icon" onClick={clearFilters} data-testid="button-clear-filters">
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          {filteredAttractions.length === 0 ? (
-            <EmptyState
-              title="No attractions found"
-              description={
-                hasActiveFilters
-                  ? "Try adjusting your filters to see more results."
-                  : "No attractions have been imported yet."
-              }
-              icon={<AlertCircle className="h-12 w-12 text-muted-foreground" />}
-              action={
-                hasActiveFilters ? (
-                  <Button variant="outline" onClick={clearFilters}>
-                    Clear Filters
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={clearFilters}
+                    data-testid="button-clear-filters"
+                  >
+                    <X className="h-4 w-4" />
                   </Button>
-                ) : undefined
-              }
-            />
-          ) : (
-            <DataTable
-              data={filteredAttractions}
-              columns={columns}
-              actions={actions}
-              selectable
-              selectedIds={selectedIds}
-              onSelectionChange={setSelectedIds}
-              getItemId={(row) => row.id}
-            />
-          )}
-        </CardContent>
-      </Card>
+                )}
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent>
+            {filteredAttractions.length === 0 ? (
+              <EmptyState
+                title="No attractions found"
+                description={
+                  hasActiveFilters
+                    ? "Try adjusting your filters to see more results."
+                    : "No attractions have been imported yet."
+                }
+                icon={<AlertCircle className="h-12 w-12 text-muted-foreground" />}
+                action={
+                  hasActiveFilters ? (
+                    <Button variant="outline" onClick={clearFilters}>
+                      Clear Filters
+                    </Button>
+                  ) : undefined
+                }
+              />
+            ) : (
+              <DataTable
+                data={filteredAttractions}
+                columns={columns}
+                actions={actions}
+                selectable
+                selectedIds={selectedIds}
+                onSelectionChange={setSelectedIds}
+                getItemId={row => row.id}
+              />
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "두바이", "country": "UAE", "cardAlt": "일몰의 부르즈 칼리파 타워와 두바이 스카이라인" },
-      "london": { "name": "런던", "country": "영국", "cardAlt": "런던 빅벤과 국회의사당" },
-      "paris": { "name": "파리", "country": "프랑스", "cardAlt": "일몰에 조명이 켜진 파리 에펠탑" },
-      "newYork": { "name": "뉴욕", "country": "미국", "cardAlt": "엠파이어 스테이트 빌딩이 있는 뉴욕 맨해튼 스카이라인" },
-      "tokyo": { "name": "도쿄", "country": "일본", "cardAlt": "밤의 네온 불빛이 있는 도쿄 시부야 교차로" },
-      "singapore": { "name": "싱가포르", "country": "싱가포르", "cardAlt": "싱가포르 마리나 베이 샌즈와 가든스 바이 더 베이" },
-      "barcelona": { "name": "바르셀로나", "country": "스페인", "cardAlt": "골든 아워의 바르셀로나 사그라다 파밀리아" },
-      "bangkok": { "name": "방콕", "country": "태국", "cardAlt": "일출의 방콕 왕궁 사원" },
-      "abuDhabi": { "name": "아부다비", "country": "UAE", "cardAlt": "아부다비 셰이크 자이드 그랜드 모스크" },
-      "amsterdam": { "name": "암스테르담", "country": "네덜란드", "cardAlt": "역사적인 건물이 있는 암스테르담 운하" },
-      "hongKong": { "name": "홍콩", "country": "중국", "cardAlt": "밤의 홍콩 스카이라인" },
-      "istanbul": { "name": "이스탄불", "country": "터키", "cardAlt": "일몰의 이스탄불 블루 모스크" },
-      "lasVegas": { "name": "라스베이거스", "country": "미국", "cardAlt": "밤의 라스베이거스 스트립" },
-      "losAngeles": { "name": "로스앤젤레스", "country": "미국", "cardAlt": "로스앤젤레스 할리우드 사인" },
-      "miami": { "name": "마이애미", "country": "미국", "cardAlt": "마이애미 비치 아르데코 지구" },
-      "rome": { "name": "로마", "country": "이탈리아", "cardAlt": "골든 아워의 로마 콜로세움" }
+      "dubai": {
+        "name": "두바이",
+        "country": "UAE",
+        "cardAlt": "일몰의 부르즈 칼리파 타워와 두바이 스카이라인"
+      },
+      "london": {
+        "name": "런던",
+        "country": "영국",
+        "cardAlt": "런던 빅벤과 국회의사당"
+      },
+      "paris": {
+        "name": "파리",
+        "country": "프랑스",
+        "cardAlt": "일몰에 조명이 켜진 파리 에펠탑"
+      },
+      "newYork": {
+        "name": "뉴욕",
+        "country": "미국",
+        "cardAlt": "엠파이어 스테이트 빌딩이 있는 뉴욕 맨해튼 스카이라인"
+      },
+      "tokyo": {
+        "name": "도쿄",
+        "country": "일본",
+        "cardAlt": "밤의 네온 불빛이 있는 도쿄 시부야 교차로"
+      },
+      "singapore": {
+        "name": "싱가포르",
+        "country": "싱가포르",
+        "cardAlt": "싱가포르 마리나 베이 샌즈와 가든스 바이 더 베이"
+      },
+      "barcelona": {
+        "name": "바르셀로나",
+        "country": "스페인",
+        "cardAlt": "골든 아워의 바르셀로나 사그라다 파밀리아"
+      },
+      "bangkok": {
+        "name": "방콕",
+        "country": "태국",
+        "cardAlt": "일출의 방콕 왕궁 사원"
+      },
+      "abuDhabi": {
+        "name": "아부다비",
+        "country": "UAE",
+        "cardAlt": "아부다비 셰이크 자이드 그랜드 모스크"
+      },
+      "amsterdam": {
+        "name": "암스테르담",
+        "country": "네덜란드",
+        "cardAlt": "역사적인 건물이 있는 암스테르담 운하"
+      },
+      "hongKong": {
+        "name": "홍콩",
+        "country": "중국",
+        "cardAlt": "밤의 홍콩 스카이라인"
+      },
+      "istanbul": {
+        "name": "이스탄불",
+        "country": "터키",
+        "cardAlt": "일몰의 이스탄불 블루 모스크"
+      },
+      "lasVegas": {
+        "name": "라스베이거스",
+        "country": "미국",
+        "cardAlt": "밤의 라스베이거스 스트립"
+      },
+      "losAngeles": {
+        "name": "로스앤젤레스",
+        "country": "미국",
+        "cardAlt": "로스앤젤레스 할리우드 사인"
+      },
+      "miami": {
+        "name": "마이애미",
+        "country": "미국",
+        "cardAlt": "마이애미 비치 아르데코 지구"
+      },
+      "rome": {
+        "name": "로마",
+        "country": "이탈리아",
+        "cardAlt": "골든 아워의 로마 콜로세움"
+      }
     },
     "hero": {
       "badge": "전 세계 {{count}}개 여행지",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "수백만 명이 자신감 있게 세계를 탐험할 수 있도록 돕는 종합 여행 정보 및 여행지 가이드를 위한 신뢰할 수 있는 소스.",
       "ctaExplore": "여행지 둘러보기",
-      "ctaContact": "연락하기"
+      "ctaContact": "연락하기",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "문의하기 | TRAVI World",

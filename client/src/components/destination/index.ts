@@ -20,4 +20,5 @@ export { UpcomingHolidays } from "./upcoming-holidays";
 export { SafetyBanner } from "./safety-banner";
 export { QuickInfoRail } from "./quick-info-rail";
 export { TopPOIs } from "./top-pois";
+export { RelatedDestinations } from "./RelatedDestinations";
 export { DestinationPageTemplate } from "./DestinationPageTemplate";

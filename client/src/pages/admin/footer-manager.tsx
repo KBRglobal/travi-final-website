@@ -152,17 +152,18 @@ export default function FooterManagerPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <LayoutPanelTop className="h-8 w-8 text-primary" />
-          Footer Manager
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Configure your website's footer sections and links
-        </p>
+    <div className="min-h-screen bg-[hsl(var(--admin-bg))]">
+      <div className="border-b border-[hsl(var(--admin-border))] bg-white">
+        <div className="px-6 py-4">
+          <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))]">Footer Manager</h1>
+          <p className="text-sm text-[hsl(var(--admin-text-secondary))] mt-1">
+            Configure your website's footer sections and links
+          </p>
+        </div>
+      </div>
 
-        <div className="mt-4 p-4 bg-muted rounded-lg border">
+      <div className="p-6 space-y-6">
+        <div className="p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
             How It Works
@@ -172,233 +173,233 @@ export default function FooterManagerPage() {
             new sections and add links to each section.
           </p>
         </div>
-      </div>
 
-      <div className="flex justify-end">
-        <Button onClick={() => setShowAddSectionDialog(true)} data-testid="button-add-section">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Section
-        </Button>
-      </div>
-
-      {!sections || sections.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <LayoutPanelTop className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg font-medium mb-2">No Footer Sections</h3>
-            <p className="text-muted-foreground mb-4">
-              Create sections to organize your footer links
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {sections.map(section => (
-            <Card key={section.id}>
-              <CardHeader className="flex flex-row items-center justify-between gap-2">
-                <div>
-                  <CardTitle className="text-lg">{section.title}</CardTitle>
-                  {section.titleHe && (
-                    <p className="text-sm text-muted-foreground" dir="rtl">
-                      {section.titleHe}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedSectionId(section.id);
-                      setShowAddLinkDialog(true);
-                    }}
-                    data-testid={`button-add-link-${section.slug}`}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Link
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteSectionMutation.mutate(section.id)}
-                    data-testid={`button-delete-section-${section.slug}`}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {section.links.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    No links in this section
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {section.links
-                      .sort((a, b) => a.sortOrder - b.sortOrder)
-                      .map(link => (
-                        <div
-                          key={link.id}
-                          className="flex items-center gap-3 p-2 border rounded hover-elevate"
-                        >
-                          <LinkIcon className="h-4 w-4 text-muted-foreground" />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium truncate">{link.label}</span>
-                              {link.openInNewTab && (
-                                <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                              )}
-                            </div>
-                            <span className="text-xs text-muted-foreground truncate block">
-                              {link.href}
-                            </span>
-                          </div>
-                          <Switch
-                            checked={link.isActive}
-                            onCheckedChange={checked =>
-                              updateLinkMutation.mutate({
-                                id: link.id,
-                                data: { isActive: checked },
-                              })
-                            }
-                            data-testid={`switch-link-active-${link.id}`}
-                          />
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => deleteLinkMutation.mutate(link.id)}
-                            data-testid={`button-delete-link-${link.id}`}
-                          >
-                            <Trash2 className="h-3 w-3 text-destructive" />
-                          </Button>
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+        <div className="flex justify-end">
+          <Button onClick={() => setShowAddSectionDialog(true)} data-testid="button-add-section">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Section
+          </Button>
         </div>
-      )}
 
-      <Dialog open={showAddSectionDialog} onOpenChange={setShowAddSectionDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Footer Section</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Title (English)</Label>
-                <Input
-                  placeholder="Explore"
-                  value={newSection.title}
-                  onChange={e => setNewSection({ ...newSection, title: e.target.value })}
-                  data-testid="input-section-title"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Title (Hebrew)</Label>
-                <Input
-                  placeholder="Explore"
-                  value={newSection.titleHe}
-                  onChange={e => setNewSection({ ...newSection, titleHe: e.target.value })}
-                  dir="rtl"
-                  data-testid="input-section-title-he"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Slug</Label>
-              <Input
-                placeholder="explore"
-                value={newSection.slug}
-                onChange={e =>
-                  setNewSection({
-                    ...newSection,
-                    slug: e.target.value.toLowerCase().replace(/\s+/g, "-"),
-                  })
-                }
-                data-testid="input-section-slug"
-              />
-            </div>
+        {!sections || sections.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <LayoutPanelTop className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 className="text-lg font-medium mb-2">No Footer Sections</h3>
+              <p className="text-muted-foreground mb-4">
+                Create sections to organize your footer links
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {sections.map(section => (
+              <Card key={section.id}>
+                <CardHeader className="flex flex-row items-center justify-between gap-2">
+                  <div>
+                    <CardTitle className="text-lg">{section.title}</CardTitle>
+                    {section.titleHe && (
+                      <p className="text-sm text-muted-foreground" dir="rtl">
+                        {section.titleHe}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedSectionId(section.id);
+                        setShowAddLinkDialog(true);
+                      }}
+                      data-testid={`button-add-link-${section.slug}`}
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Link
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteSectionMutation.mutate(section.id)}
+                      data-testid={`button-delete-section-${section.slug}`}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {section.links.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      No links in this section
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {section.links
+                        .sort((a, b) => a.sortOrder - b.sortOrder)
+                        .map(link => (
+                          <div
+                            key={link.id}
+                            className="flex items-center gap-3 p-2 border rounded hover-elevate"
+                          >
+                            <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium truncate">{link.label}</span>
+                                {link.openInNewTab && (
+                                  <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                                )}
+                              </div>
+                              <span className="text-xs text-muted-foreground truncate block">
+                                {link.href}
+                              </span>
+                            </div>
+                            <Switch
+                              checked={link.isActive}
+                              onCheckedChange={checked =>
+                                updateLinkMutation.mutate({
+                                  id: link.id,
+                                  data: { isActive: checked },
+                                })
+                              }
+                              data-testid={`switch-link-active-${link.id}`}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteLinkMutation.mutate(link.id)}
+                              data-testid={`button-delete-link-${link.id}`}
+                            >
+                              <Trash2 className="h-3 w-3 text-destructive" />
+                            </Button>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddSectionDialog(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddSection}
-              disabled={createSectionMutation.isPending}
-              data-testid="button-save-section"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Create Section
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        )}
 
-      <Dialog open={showAddLinkDialog} onOpenChange={setShowAddLinkDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Footer Link</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Label (English)</Label>
-                <Input
-                  placeholder="Attractions"
-                  value={newLink.label}
-                  onChange={e => setNewLink({ ...newLink, label: e.target.value })}
-                  data-testid="input-link-label"
-                />
+        <Dialog open={showAddSectionDialog} onOpenChange={setShowAddSectionDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Footer Section</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Title (English)</Label>
+                  <Input
+                    placeholder="Explore"
+                    value={newSection.title}
+                    onChange={e => setNewSection({ ...newSection, title: e.target.value })}
+                    data-testid="input-section-title"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Title (Hebrew)</Label>
+                  <Input
+                    placeholder="Explore"
+                    value={newSection.titleHe}
+                    onChange={e => setNewSection({ ...newSection, titleHe: e.target.value })}
+                    dir="rtl"
+                    data-testid="input-section-title-he"
+                  />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label>Label (Hebrew)</Label>
+                <Label>Slug</Label>
                 <Input
-                  placeholder="Attractions"
-                  value={newLink.labelHe}
-                  onChange={e => setNewLink({ ...newLink, labelHe: e.target.value })}
-                  dir="rtl"
-                  data-testid="input-link-label-he"
+                  placeholder="explore"
+                  value={newSection.slug}
+                  onChange={e =>
+                    setNewSection({
+                      ...newSection,
+                      slug: e.target.value.toLowerCase().replace(/\s+/g, "-"),
+                    })
+                  }
+                  data-testid="input-section-slug"
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>URL</Label>
-              <Input
-                placeholder="/attractions"
-                value={newLink.href}
-                onChange={e => setNewLink({ ...newLink, href: e.target.value })}
-                data-testid="input-link-href"
-              />
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddSectionDialog(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAddSection}
+                disabled={createSectionMutation.isPending}
+                data-testid="button-save-section"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Create Section
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showAddLinkDialog} onOpenChange={setShowAddLinkDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Footer Link</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Label (English)</Label>
+                  <Input
+                    placeholder="Attractions"
+                    value={newLink.label}
+                    onChange={e => setNewLink({ ...newLink, label: e.target.value })}
+                    data-testid="input-link-label"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Label (Hebrew)</Label>
+                  <Input
+                    placeholder="Attractions"
+                    value={newLink.labelHe}
+                    onChange={e => setNewLink({ ...newLink, labelHe: e.target.value })}
+                    dir="rtl"
+                    data-testid="input-link-label-he"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>URL</Label>
+                <Input
+                  placeholder="/attractions"
+                  value={newLink.href}
+                  onChange={e => setNewLink({ ...newLink, href: e.target.value })}
+                  data-testid="input-link-href"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={newLink.openInNewTab}
+                  onCheckedChange={checked => setNewLink({ ...newLink, openInNewTab: checked })}
+                  data-testid="switch-link-new-tab"
+                />
+                <Label>Open in new tab</Label>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={newLink.openInNewTab}
-                onCheckedChange={checked => setNewLink({ ...newLink, openInNewTab: checked })}
-                data-testid="switch-link-new-tab"
-              />
-              <Label>Open in new tab</Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddLinkDialog(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddLink}
-              disabled={createLinkMutation.isPending}
-              data-testid="button-save-link"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Add Link
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddLinkDialog(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAddLink}
+                disabled={createLinkMutation.isPending}
+                data-testid="button-save-link"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Add Link
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }

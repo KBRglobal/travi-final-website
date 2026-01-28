@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubaj", "country": "SAE", "cardAlt": "Panorama Dubaje s věží Burj Khalifa při západu slunce" },
-      "london": { "name": "Londýn", "country": "UK", "cardAlt": "Londýnský Big Ben a budovy parlamentu" },
-      "paris": { "name": "Paříž", "country": "Francie", "cardAlt": "Pařížská Eiffelova věž osvětlená při západu slunce" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "Panorama Manhattanu v New Yorku s Empire State Building" },
-      "tokyo": { "name": "Tokio", "country": "Japonsko", "cardAlt": "Křižovatka Shibuya v Tokiu s neonovými světly v noci" },
-      "singapore": { "name": "Singapur", "country": "Singapur", "cardAlt": "Marina Bay Sands v Singapuru a Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Španělsko", "cardAlt": "Sagrada Familia v Barceloně za zlaté hodiny" },
-      "bangkok": { "name": "Bangkok", "country": "Thajsko", "cardAlt": "Velký palác v Bangkoku za východu slunce" },
-      "abuDhabi": { "name": "Abú Dhabí", "country": "SAE", "cardAlt": "Velká mešita šejka Zayeda v Abú Dhabí" },
-      "amsterdam": { "name": "Amsterdam", "country": "Nizozemsko", "cardAlt": "Amsterdamský kanál s historickými budovami" },
-      "hongKong": { "name": "Hongkong", "country": "Čína", "cardAlt": "Panorama Hongkongu v noci" },
-      "istanbul": { "name": "Istanbul", "country": "Turecko", "cardAlt": "Modrá mešita v Istanbulu při západu slunce" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Strip v Las Vegas v noci" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Nápis Hollywood v Los Angeles" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Čtvrť Art Deco na Miami Beach" },
-      "rome": { "name": "Řím", "country": "Itálie", "cardAlt": "Koloseum v Římě za zlaté hodiny" }
+      "dubai": {
+        "name": "Dubaj",
+        "country": "SAE",
+        "cardAlt": "Panorama Dubaje s věží Burj Khalifa při západu slunce"
+      },
+      "london": {
+        "name": "Londýn",
+        "country": "UK",
+        "cardAlt": "Londýnský Big Ben a budovy parlamentu"
+      },
+      "paris": {
+        "name": "Paříž",
+        "country": "Francie",
+        "cardAlt": "Pařížská Eiffelova věž osvětlená při západu slunce"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "Panorama Manhattanu v New Yorku s Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokio",
+        "country": "Japonsko",
+        "cardAlt": "Křižovatka Shibuya v Tokiu s neonovými světly v noci"
+      },
+      "singapore": {
+        "name": "Singapur",
+        "country": "Singapur",
+        "cardAlt": "Marina Bay Sands v Singapuru a Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Španělsko",
+        "cardAlt": "Sagrada Familia v Barceloně za zlaté hodiny"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thajsko",
+        "cardAlt": "Velký palác v Bangkoku za východu slunce"
+      },
+      "abuDhabi": {
+        "name": "Abú Dhabí",
+        "country": "SAE",
+        "cardAlt": "Velká mešita šejka Zayeda v Abú Dhabí"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Nizozemsko",
+        "cardAlt": "Amsterdamský kanál s historickými budovami"
+      },
+      "hongKong": {
+        "name": "Hongkong",
+        "country": "Čína",
+        "cardAlt": "Panorama Hongkongu v noci"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turecko",
+        "cardAlt": "Modrá mešita v Istanbulu při západu slunce"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Strip v Las Vegas v noci"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Nápis Hollywood v Los Angeles"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Čtvrť Art Deco na Miami Beach"
+      },
+      "rome": {
+        "name": "Řím",
+        "country": "Itálie",
+        "cardAlt": "Koloseum v Římě za zlaté hodiny"
+      }
     },
     "hero": {
       "badge": "{{count}} destinací po celém světě",
@@ -561,31 +625,136 @@
       "languages": "Jazyky"
     },
     "journey": {
-      "title": "Začněte svou cestu",
-      "description": "Vyberte si z našich odborně připravených průvodců"
+      "badge": "Vaše cesta, naše vedení",
+      "title": "Každá skvělá cesta začíná průvodcem",
+      "subtitle": "Od snění po sdílení, jsme s vámi na každém kroku"
     },
-    "faq": {
-      "title": "Často kladené otázky",
-      "subtitle": "Vše o našich cestovních průvodcích",
-      "q1": "Co jsou cestovní průvodce TRAVI?",
-      "a1": "Cestovní průvodce TRAVI jsou komplexní, odborně připravené příručky pokrývající destinace po celém světě s podrobnými informacemi o atrakcích, ubytování, stravování a místních tipech.",
-      "q2": "Jak často jsou průvodce aktualizovány?",
-      "a2": "Naše průvodce jsou pravidelně aktualizovány, aby odrážely nejnovější informace, změny a nové atrakce v každé destinaci.",
-      "q3": "Mohu si průvodce stáhnout offline?",
-      "a3": "Ano, vybrané průvodce jsou k dispozici ke stažení pro offline použití, abyste k nim měli přístup i bez internetového připojení.",
-      "q4": "Jsou průvodce dostupné ve více jazycích?",
-      "a4": "Ano, naše průvodce jsou k dispozici ve více jazycích, abychom vám poskytli nejlepší cestovní informace ve vašem preferovaném jazyce."
+    "ideaLab": {
+      "badge": "Idea Lab",
+      "title": "Curated Inspiration",
+      "readGuide": "Read Guide"
     },
-    "sections": {
-      "featured": "Doporučené průvodce",
-      "featuredDesc": "Naše nejoblíbenější a nejkomplexnější cestovní průvodce",
-      "all": "Všechny průvodce",
-      "allDesc": "Procházejte naši kompletní knihovnu cestovních průvodců"
+    "archetype": {
+      "badge": "Personalized for You",
+      "title": "What Kind of Traveler Are You?",
+      "subtitle": "Select your travel style and discover guides curated just for you",
+      "viewGuides": "View {{type}} Guides"
     },
-    "cta": {
-      "readGuide": "Číst průvodce",
-      "downloadPdf": "Stáhnout PDF",
-      "shareGuide": "Sdílet průvodce"
+    "archetypes": {
+      "adventure": {
+        "name": "Adventure Seeker",
+        "description": "Thrilling experiences and adrenaline rushes"
+      },
+      "culture": {
+        "name": "Culture Explorer",
+        "description": "Art, history, and local traditions"
+      },
+      "relaxation": {
+        "name": "Relaxation Guru",
+        "description": "Wellness retreats and peaceful escapes"
+      },
+      "foodie": {
+        "name": "Culinary Nomad",
+        "description": "Local flavors and gastronomic adventures"
+      },
+      "wellness": {
+        "name": "Wellness Seeker",
+        "description": "Relaxation, spas, and mindful retreats"
+      },
+      "budget": {
+        "name": "Smart Traveler",
+        "description": "Maximum experience, minimal budget"
+      },
+      "solo": {
+        "name": "Solo Explorer",
+        "description": "Independent journeys and self-discovery"
+      },
+      "luxury": {
+        "name": "Luxury Connoisseur",
+        "description": "Premium experiences and fine living"
+      }
+    },
+    "milestones": {
+      "dream": {
+        "title": "Dream",
+        "subtitle": "Discover inspiration",
+        "guides": ["Destination Guides", "Photo Essays"]
+      },
+      "plan": {
+        "title": "Plan",
+        "subtitle": "Map your journey",
+        "guides": ["Trip Planning", "Visa Requirements"]
+      },
+      "prepare": {
+        "title": "Prepare",
+        "subtitle": "Get ready to go",
+        "guides": ["Packing Lists", "Safety Tips"]
+      },
+      "experience": {
+        "title": "Experience",
+        "subtitle": "Live the adventure",
+        "guides": ["Local Insights", "Hidden Gems"]
+      },
+      "share": {
+        "title": "Share",
+        "subtitle": "Tell your story",
+        "guides": ["Travel Writing", "Photography"]
+      }
+    },
+    "categories": {
+      "weekendEscapes": "Weekend Escapes",
+      "offBeatenPath": "Off the Beaten Path",
+      "smartTravel": "Smart Travel",
+      "bucketList": "Bucket List",
+      "culinary": "Culinary",
+      "natureWonder": "Nature & Wonder"
+    },
+    "seo": {
+      "title": "Travel Guides | Expert Destination Insights",
+      "description": "Discover expert travel guides, destination insights, and insider tips from our global network of travel writers. Plan your perfect trip today."
+    },
+    "editorial": {
+      "badge": "From Our Editors",
+      "title": "Editorial Features",
+      "readFull": "Read Full Essay"
+    },
+    "gallery": {
+      "badge": "Visual Stories",
+      "title": "Destinations That Inspire",
+      "categories": {
+        "city": "City",
+        "mountains": "Mountains",
+        "beach": "Beach",
+        "safari": "Safari",
+        "nature": "Nature"
+      }
+    },
+    "writers": {
+      "badge": "Expert Voices",
+      "title": "Meet Our Writers",
+      "subtitle": "The expert voices behind our most trusted travel guides",
+      "articleCount": "{{count}} Articles",
+      "viewProfile": "View Profile"
+    },
+    "map": {
+      "badge": "Explore by Region",
+      "title": "Guides Around the World",
+      "subtitle": "Click any destination to discover our expert coverage",
+      "guidesAvailable": "{{count}} guides available",
+      "legendDestination": "Destination",
+      "legendHighlighted": "Highlighted"
+    },
+    "newsletter": {
+      "badge": "Join the Journey",
+      "title": "Travel Stories, Weekly",
+      "description": "Curated travel inspiration, expert tips, and insider perspectives delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "joinCount": "Join 50,000+ travelers who read our weekly digest",
+      "invalidEmail": "Please enter a valid email",
+      "successTitle": "Welcome to the journey!",
+      "successDesc": "You're now subscribed to our editorial digest."
     }
   },
   "news": {

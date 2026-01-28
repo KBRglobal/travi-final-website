@@ -73,7 +73,18 @@ interface DeleteWarning {
 }
 
 interface ContentListProps {
-  type: "attraction" | "hotel" | "article" | "dining" | "district" | "transport" | "event" | "itinerary" | "landing_page" | "case_study" | "off_plan";
+  type:
+    | "attraction"
+    | "hotel"
+    | "article"
+    | "dining"
+    | "district"
+    | "transport"
+    | "event"
+    | "itinerary"
+    | "landing_page"
+    | "case_study"
+    | "off_plan";
 }
 
 const typeConfig = {
@@ -185,7 +196,9 @@ export default function ContentList({ type }: ContentListProps) {
     queryKey: [`/api/contents?type=${type}`],
   });
 
-  const { data: writersData } = useQuery<{ writers: Array<{ id: string; name: string; avatar: string }> }>({
+  const { data: writersData } = useQuery<{
+    writers: Array<{ id: string; name: string; avatar: string }>;
+  }>({
     queryKey: ["/api/writers"],
   });
 
@@ -198,10 +211,12 @@ export default function ContentList({ type }: ContentListProps) {
     // Optimistic update: remove item immediately
     onMutate: async (id: string) => {
       await queryClient.cancelQueries({ queryKey: [`/api/contents?type=${type}`] });
-      const previousContents = queryClient.getQueryData<ContentWithRelations[]>([`/api/contents?type=${type}`]);
+      const previousContents = queryClient.getQueryData<ContentWithRelations[]>([
+        `/api/contents?type=${type}`,
+      ]);
       queryClient.setQueryData<ContentWithRelations[]>(
         [`/api/contents?type=${type}`],
-        (old) => old?.filter((item) => item.id !== id) ?? []
+        old => old?.filter(item => item.id !== id) ?? []
       );
       return { previousContents };
     },
@@ -236,11 +251,13 @@ export default function ContentList({ type }: ContentListProps) {
     // Optimistic update: change status immediately
     onMutate: async (data: { ids: string[]; status: string }) => {
       await queryClient.cancelQueries({ queryKey: [`/api/contents?type=${type}`] });
-      const previousContents = queryClient.getQueryData<ContentWithRelations[]>([`/api/contents?type=${type}`]);
+      const previousContents = queryClient.getQueryData<ContentWithRelations[]>([
+        `/api/contents?type=${type}`,
+      ]);
       queryClient.setQueryData<ContentWithRelations[]>(
         [`/api/contents?type=${type}`],
-        (old) =>
-          old?.map((item) =>
+        old =>
+          old?.map(item =>
             data.ids.includes(item.id)
               ? { ...item, status: data.status as ContentWithRelations["status"] }
               : item
@@ -270,10 +287,12 @@ export default function ContentList({ type }: ContentListProps) {
     // Optimistic update: remove items immediately
     onMutate: async (ids: string[]) => {
       await queryClient.cancelQueries({ queryKey: [`/api/contents?type=${type}`] });
-      const previousContents = queryClient.getQueryData<ContentWithRelations[]>([`/api/contents?type=${type}`]);
+      const previousContents = queryClient.getQueryData<ContentWithRelations[]>([
+        `/api/contents?type=${type}`,
+      ]);
       queryClient.setQueryData<ContentWithRelations[]>(
         [`/api/contents?type=${type}`],
-        (old) => old?.filter((item) => !ids.includes(item.id)) ?? []
+        old => old?.filter(item => !ids.includes(item.id)) ?? []
       );
       return { previousContents };
     },
@@ -320,12 +339,14 @@ export default function ContentList({ type }: ContentListProps) {
 
   const handleBulkDeleteClick = async () => {
     if (selectedIds.length === 0) return;
-    
+
     setIsCheckingDelete(true);
     try {
-      const response = await apiRequest("POST", "/api/contents/bulk-delete-check", { ids: selectedIds });
+      const response = await apiRequest("POST", "/api/contents/bulk-delete-check", {
+        ids: selectedIds,
+      });
       const data = await response.json();
-      
+
       if (data.warnings && data.warnings.length > 0) {
         setDeleteWarnings(data.warnings);
         setShowDeleteWarning(true);
@@ -350,18 +371,20 @@ export default function ContentList({ type }: ContentListProps) {
     setDeleteWarnings([]);
   };
 
-  const filteredContents = contents?.filter((contents) => {
-    const matchesSearch = contents.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      contents.slug.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || contents.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  }) ?? [];
+  const filteredContents =
+    contents?.filter(contents => {
+      const matchesSearch =
+        contents.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contents.slug.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || contents.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    }) ?? [];
 
   const columns: Column<ContentWithRelations>[] = [
     {
       key: "title",
       header: "Title",
-      cell: (item) => (
+      cell: item => (
         <div className="max-w-md">
           <div className="font-medium truncate">{item.title}</div>
           <div className="text-xs text-muted-foreground font-mono">/{item.slug}</div>
@@ -371,21 +394,19 @@ export default function ContentList({ type }: ContentListProps) {
     {
       key: "status",
       header: "Status",
-      cell: (item) => <StatusBadge status={item.status} />,
+      cell: item => <StatusBadge status={item.status} />,
     },
     {
       key: "writer",
       header: "Writer",
-      cell: (item) => {
+      cell: item => {
         const writer = item.writerId ? writersMap.get(item.writerId) : null;
         return writer ? (
           <div className="flex items-center gap-2">
-            <img
-              src={writer.avatar}
-              alt={writer.name}
-              className="w-5 h-5 rounded-full"
-            />
-            <span className="text-sm text-muted-foreground truncate max-w-[120px]">{writer.name}</span>
+            <img src={writer.avatar} alt={writer.name} className="w-5 h-5 rounded-full" />
+            <span className="text-sm text-muted-foreground truncate max-w-[120px]">
+              {writer.name}
+            </span>
           </div>
         ) : (
           <span className="text-sm text-muted-foreground">-</span>
@@ -395,14 +416,12 @@ export default function ContentList({ type }: ContentListProps) {
     {
       key: "wordCount",
       header: "Words",
-      cell: (item) => (
-        <span className="text-sm text-muted-foreground">{item.wordCount ?? 0}</span>
-      ),
+      cell: item => <span className="text-sm text-muted-foreground">{item.wordCount ?? 0}</span>,
     },
     {
       key: "updatedAt",
       header: "Updated",
-      cell: (item) => (
+      cell: item => (
         <span className="text-sm text-muted-foreground">
           {item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : "-"}
         </span>
@@ -413,11 +432,11 @@ export default function ContentList({ type }: ContentListProps) {
   const actions: Action<ContentWithRelations>[] = [
     {
       label: "Edit",
-      onClick: (item) => navigate(`${config.basePath}/${item.id}`),
+      onClick: item => navigate(`${config.basePath}/${item.id}`),
     },
     {
       label: "Preview",
-      onClick: (item) => {
+      onClick: item => {
         const pathMap: Record<string, string> = {
           attraction: "attractions",
           hotel: "hotels",
@@ -436,7 +455,7 @@ export default function ContentList({ type }: ContentListProps) {
     },
     {
       label: "Delete",
-      onClick: (item) => {
+      onClick: item => {
         if (confirm("Are you sure you want to delete this contents?")) {
           deleteMutation.mutate(item.id);
         }
@@ -455,8 +474,8 @@ export default function ContentList({ type }: ContentListProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-semibold">{config.title}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))]">{config.title}</h1>
+          <p className="text-[13px] text-[hsl(var(--admin-text-secondary))] mt-0.5">
             Manage your {config.title.toLowerCase()} pages ({config.wordTarget})
           </p>
         </div>
@@ -504,15 +523,15 @@ export default function ContentList({ type }: ContentListProps) {
         </div>
       </div>
 
-      <Card>
+      <Card className="border-[hsl(var(--admin-border-subtle))]">
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--admin-text-muted))]" />
               <Input
                 placeholder={`Search ${config.title.toLowerCase()}...`}
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-9"
                 data-testid="input-search"
               />
@@ -533,7 +552,12 @@ export default function ContentList({ type }: ContentListProps) {
                 </SelectContent>
               </Select>
               {hasFilters && (
-                <Button variant="ghost" size="icon" onClick={handleClearFilters} data-testid="button-clear-filters">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClearFilters}
+                  data-testid="button-clear-filters"
+                >
                   <X className="h-4 w-4" />
                 </Button>
               )}
@@ -562,7 +586,10 @@ export default function ContentList({ type }: ContentListProps) {
         </CardHeader>
         <CardContent>
           {selectedIds.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 p-3 bg-muted rounded-md mb-4" data-testid="bulk-actions-toolbar">
+            <div
+              className="flex flex-wrap items-center gap-2 p-3 bg-muted rounded-md mb-4"
+              data-testid="bulk-actions-toolbar"
+            >
               <span className="text-sm font-medium">{selectedIds.length} selected</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -571,7 +598,7 @@ export default function ContentList({ type }: ContentListProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {["draft", "in_review", "approved", "scheduled", "published"].map((s) => (
+                  {["draft", "in_review", "approved", "scheduled", "published"].map(s => (
                     <DropdownMenuItem
                       key={s}
                       onClick={() => bulkStatusMutation.mutate({ ids: selectedIds, status: s })}
@@ -592,7 +619,7 @@ export default function ContentList({ type }: ContentListProps) {
                   {tags?.length === 0 && (
                     <DropdownMenuItem disabled>No tags available</DropdownMenuItem>
                   )}
-                  {tags?.map((tag) => (
+                  {tags?.map(tag => (
                     <DropdownMenuItem
                       key={tag.id}
                       onClick={() => bulkAddTagMutation.mutate({ ids: selectedIds, tagId: tag.id })}
@@ -613,10 +640,12 @@ export default function ContentList({ type }: ContentListProps) {
                   {tags?.length === 0 && (
                     <DropdownMenuItem disabled>No tags available</DropdownMenuItem>
                   )}
-                  {tags?.map((tag) => (
+                  {tags?.map(tag => (
                     <DropdownMenuItem
                       key={tag.id}
-                      onClick={() => bulkRemoveTagMutation.mutate({ ids: selectedIds, tagId: tag.id })}
+                      onClick={() =>
+                        bulkRemoveTagMutation.mutate({ ids: selectedIds, tagId: tag.id })
+                      }
                       data-testid={`menu-item-remove-tag-${tag.id}`}
                     >
                       {tag.name}
@@ -627,7 +656,9 @@ export default function ContentList({ type }: ContentListProps) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.open(`/api/contents/export?ids=${selectedIds.join(",")}&format=csv`)}
+                onClick={() =>
+                  window.open(`/api/contents/export?ids=${selectedIds.join(",")}&format=csv`)
+                }
                 data-testid="button-bulk-export"
               >
                 <Download className="mr-1 h-4 w-4" /> Export
@@ -678,11 +709,7 @@ export default function ContentList({ type }: ContentListProps) {
               onAction={hasFilters ? handleClearFilters : () => navigate(`${config.basePath}/new`)}
             />
           ) : viewMode === "kanban" ? (
-            <ContentKanban
-              contents={filteredContents}
-              type={type}
-              basePath={config.basePath}
-            />
+            <ContentKanban contents={filteredContents} type={type} basePath={config.basePath} />
           ) : (
             <DataTable
               data={filteredContents}
@@ -691,9 +718,9 @@ export default function ContentList({ type }: ContentListProps) {
               selectable
               selectedIds={selectedIds}
               onSelectionChange={setSelectedIds}
-              getItemId={(item) => item.id}
+              getItemId={item => item.id}
               pageSize={10}
-              onRowClick={(item) => navigate(`${config.basePath}/${item.id}`)}
+              onRowClick={item => navigate(`${config.basePath}/${item.id}`)}
             />
           )}
         </CardContent>
@@ -709,24 +736,36 @@ export default function ContentList({ type }: ContentListProps) {
             <AlertDialogDescription asChild>
               <div className="space-y-3">
                 <p>
-                  The following items are published or scheduled and deleting them will remove them from the public site:
+                  The following items are published or scheduled and deleting them will remove them
+                  from the public site:
                 </p>
                 <div className="max-h-48 overflow-y-auto space-y-2">
-                  {deleteWarnings.map((warning) => (
+                  {deleteWarnings.map(warning => (
                     <div
                       key={warning.id}
                       className="flex items-center justify-between p-2 bg-muted rounded-md text-sm"
                       data-testid={`warning-item-${warning.id}`}
                     >
                       <span className="font-medium truncate flex-1 mr-2">{warning.title}</span>
-                      <StatusBadge status={warning.status as "draft" | "in_review" | "approved" | "scheduled" | "published"} />
+                      <StatusBadge
+                        status={
+                          warning.status as
+                            | "draft"
+                            | "in_review"
+                            | "approved"
+                            | "scheduled"
+                            | "published"
+                        }
+                      />
                     </div>
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Are you sure you want to delete {deleteWarnings.length === selectedIds.length 
-                    ? "all" 
-                    : `${deleteWarnings.length} of ${selectedIds.length}`} selected items?
+                  Are you sure you want to delete{" "}
+                  {deleteWarnings.length === selectedIds.length
+                    ? "all"
+                    : `${deleteWarnings.length} of ${selectedIds.length}`}{" "}
+                  selected items?
                 </p>
               </div>
             </AlertDialogDescription>

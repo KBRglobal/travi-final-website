@@ -184,28 +184,24 @@ const SUPPORTED_LANGUAGES = [
 // ============================================
 const FAQ_ITEMS = [
   {
-    q: "What is TRAVI World?",
-    a: "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities. Our multilingual platform is updated daily, with additional languages rolling out.",
+    q: "What kind of information does TRAVI provide?",
+    a: "TRAVI gives you the practical details you need: opening hours, ticket prices, how to get there, best times to visit, and insider tips. We cover 3,000+ attractions across 17 destinations including Dubai, Paris, Tokyo, and more.",
   },
   {
-    q: "How many destinations does TRAVI cover?",
-    a: "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+    q: "Which destinations are covered?",
+    a: "Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome. We add more destinations regularly.",
   },
   {
-    q: "Is TRAVI World content available in multiple languages?",
-    a: "Yes, TRAVI World is a multilingual platform with additional languages rolling out. We're expanding support to include Arabic, Hebrew, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Thai, Turkish, Dutch, Polish, and Vietnamese.",
+    q: "Is TRAVI available in multiple languages?",
+    a: "Yes, TRAVI supports 30+ languages including English, Arabic, Chinese, Spanish, French, German, Japanese, Korean, Hindi, Russian, and many more. All content is professionally translated.",
   },
   {
-    q: "What type of travel information does TRAVI provide?",
-    a: "TRAVI provides comprehensive information about hotels and accommodation, tourist attractions and landmarks, restaurants and dining options, activities and tours, travel news and updates, and complete destination guides with tickets, opening hours, and visitor tips.",
+    q: "Is there a cost to use TRAVI?",
+    a: "TRAVI is completely free. No subscriptions, no paywalls. We earn a small commission when you book tickets through our partner links, but our recommendations are based on what's actually worth visiting.",
   },
   {
-    q: "Is TRAVI World free to use?",
-    a: "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-  },
-  {
-    q: "How often is TRAVI World content updated?",
-    a: "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations.",
+    q: "How current is the information?",
+    a: "We update our content daily. Opening hours, prices, and seasonal information are verified regularly so you can plan with confidence.",
   },
 ];
 
@@ -713,7 +709,7 @@ function SplitHero({
     },
     image: `${SITE_URL}/ogImage.jpg`,
     description:
-      "Your trusted travel resource for 17 destinations worldwide with 3,000+ attractions, hotels, and restaurants reviewed.",
+      "Comprehensive travel information for 17 destinations worldwide. Detailed guides for 3,000+ attractions with opening hours, prices, and visitor tips.",
     foundingDate: "2021",
     sameAs: [
       "https://www.instagram.com/travi_world",
@@ -786,6 +782,50 @@ function SplitHero({
     },
   });
 
+  // HowTo schema for featured snippets on travel research queries
+  const howToSchema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to Research Your Travel Destination on TRAVI",
+    description:
+      "A step-by-step guide to finding comprehensive travel information on TRAVI World for your next trip.",
+    totalTime: "PT5M",
+    step: [
+      {
+        "@type": "HowToStep",
+        position: 1,
+        name: "Choose Your Destination",
+        text: "Browse our 17 destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, and more. Each destination has detailed information about attractions, hotels, and local experiences.",
+        url: `${SITE_URL}/destinations`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 2,
+        name: "Explore Attractions",
+        text: "Discover top attractions with detailed information including opening hours, ticket prices, visitor tips, and honest reviews. We cover 3,000+ attractions across all destinations.",
+        url: `${SITE_URL}/attractions`,
+      },
+      {
+        "@type": "HowToStep",
+        position: 3,
+        name: "Find Accommodation",
+        text: "Browse hotels and accommodation options filtered by location, amenities, and traveler ratings. Get insider tips on the best areas to stay.",
+      },
+      {
+        "@type": "HowToStep",
+        position: 4,
+        name: "Discover Local Experiences",
+        text: "Explore restaurants, tours, activities, and local experiences curated by destination. Find hidden gems and popular spots alike.",
+      },
+      {
+        "@type": "HowToStep",
+        position: 5,
+        name: "Check Travel Essentials",
+        text: "Review practical information including best times to visit, local transportation, visa requirements, and cultural tips for your destination.",
+      },
+    ],
+  });
+
   return (
     <section
       className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
@@ -801,6 +841,7 @@ function SplitHero({
         <script type="application/ld+json">{breadcrumbSchema}</script>
         <script type="application/ld+json">{destinationsListSchema}</script>
         <script type="application/ld+json">{collectionPageSchema}</script>
+        <script type="application/ld+json">{howToSchema}</script>
       </Helmet>
 
       {/* Decorative blobs - CSS animated for performance */}
@@ -932,6 +973,22 @@ function SplitHero({
                 {t("common.viewAll")}
               </Button>
             </Link>
+          </div>
+
+          {/* Trust Signals */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 justify-center lg:justify-start text-xs text-slate-500 dark:text-slate-400 mt-4">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true" />
+              Free to use
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true" />
+              No signup required
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true" />
+              Updated daily
+            </span>
           </div>
 
           {/* Dots */}
