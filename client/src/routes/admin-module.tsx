@@ -121,6 +121,12 @@ const SystemHealthDashboard = lazy(() => import("@/pages/admin/system-health"));
 const AuditLogs = lazy(() => import("@/pages/audit-logs"));
 const AdminLogs = lazy(() => import("@/pages/admin-logs"));
 const LiveConsole = lazy(() => import("@/pages/admin/console"));
+const AutonomyControlPlane = lazy(() => import("@/pages/admin/AutonomyControlPlane"));
+const AIQualityTools = lazy(() => import("@/pages/admin/ai-quality-tools"));
+const AlertsPage = lazy(() => import("@/pages/admin/alerts"));
+const SearchDebug = lazy(() => import("@/pages/admin/search-debug"));
+const ChatInbox = lazy(() => import("@/pages/admin/chat-inbox"));
+const ReferralsPage = lazy(() => import("@/pages/admin/referrals"));
 
 // ============================================================================
 // Additional Pages (accessible but not in main navigation)
@@ -281,6 +287,12 @@ function AdminRouter() {
         <Route path="/admin/logs" component={AdminLogs} />
         <Route path="/admin/console" component={LiveConsole} />
         <Route path="/admin/qa" component={AdminQaDashboard} />
+        <Route path="/admin/autonomy" component={AutonomyControlPlane} />
+        <Route path="/admin/ai-quality" component={AIQualityTools} />
+        <Route path="/admin/alerts" component={AlertsPage} />
+        <Route path="/admin/search-debug" component={SearchDebug} />
+        <Route path="/admin/chat-inbox" component={ChatInbox} />
+        <Route path="/admin/referrals" component={ReferralsPage} />
 
         {/* ============== ADDITIONAL PAGES ============== */}
         {/* Content Management */}

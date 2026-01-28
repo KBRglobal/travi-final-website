@@ -8,7 +8,7 @@ const SiteSettingsContent = lazy(() => import("./site-settings"));
 const NavigationContent = lazy(() => import("./navigation-manager"));
 const FooterContent = lazy(() => import("./footer-manager"));
 const SecurityContent = lazy(() => import("./security"));
-const ApiKeysContent = lazy(() => import("./api-keys-setup"));
+const ApiKeysContent = lazy(() => import("./travi/api-keys"));
 
 function LoadingSkeleton() {
   return (

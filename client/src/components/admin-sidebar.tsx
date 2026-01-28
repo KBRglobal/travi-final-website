@@ -35,6 +35,10 @@ import {
   ChevronDown,
   ChevronRight,
   LogOut,
+  Bell,
+  MessageSquare,
+  Sparkles,
+  Gift,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -112,6 +116,8 @@ const navigationCategories: NavCategory[] = [
       { title: "Autopilot", url: "/admin/octypo/autopilot", icon: Zap },
       { title: "AI Agents", url: "/admin/octypo/ai-agents", icon: Bot },
       { title: "Queue", url: "/admin/octypo/queue-monitor", icon: Activity },
+      { title: "AI Quality", url: "/admin/ai-quality", icon: Sparkles },
+      { title: "Autonomy", url: "/admin/autonomy", icon: Shield },
     ],
   },
   {
@@ -158,6 +164,12 @@ const navigationCategories: NavCategory[] = [
         icon: Users,
         requiredPermission: "canManageUsers",
       },
+      {
+        title: "Referrals",
+        url: "/admin/referrals",
+        icon: Gift,
+        requiredPermission: "canManageSettings",
+      },
     ],
   },
   {
@@ -173,6 +185,18 @@ const navigationCategories: NavCategory[] = [
         requiredPermission: "canManageSettings",
       },
       {
+        title: "Alerts",
+        url: "/admin/alerts",
+        icon: Bell,
+        requiredPermission: "canManageSettings",
+      },
+      {
+        title: "Chat Inbox",
+        url: "/admin/chat-inbox",
+        icon: MessageSquare,
+        requiredPermission: "canManageSettings",
+      },
+      {
         title: "Audit Logs",
         url: "/admin/audit-logs",
         icon: ScrollText,
@@ -182,6 +206,12 @@ const navigationCategories: NavCategory[] = [
         title: "Console",
         url: "/admin/console",
         icon: Terminal,
+        requiredPermission: "canManageSettings",
+      },
+      {
+        title: "Search Debug",
+        url: "/admin/search-debug",
+        icon: Search,
         requiredPermission: "canManageSettings",
       },
     ],

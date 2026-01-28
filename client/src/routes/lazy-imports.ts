@@ -186,7 +186,7 @@ export const SystemHealthDashboard = lazy(() => import("@/pages/admin/system-hea
 // OperationsDashboard removed - merged into system-health
 // IntelligenceDashboard removed - merged into destination-intelligence
 export const SearchDebugPage = lazy(() => import("@/pages/admin/search-debug"));
-export const ContentCalendar = lazy(() => import("@/pages/admin/Calendar"));
+export const ContentCalendar = lazy(() => import("@/pages/content-calendar"));
 // EntityMergePage removed - moved to operations
 
 // Help Center Admin
