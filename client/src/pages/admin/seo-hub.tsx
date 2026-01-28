@@ -3,12 +3,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, FileText, Bot } from "lucide-react";
+import { Search, FileText, Bot, ClipboardCheck } from "lucide-react";
 import { PageSeoEditor } from "./page-seo-editor";
 
 // Lazy load the individual SEO pages
 const SeoEngineDashboard = lazy(() => import("./seo-engine/SeoEngineDashboard"));
 const AeoDashboard = lazy(() => import("./aeo-dashboard"));
+const SeoAuditPage = lazy(() => import("@/pages/seo-audit"));
 
 // PageSeoEditor wrapper for the hub (selects page to edit)
 function PageSeoEditorWrapper() {
@@ -48,6 +49,7 @@ function LoadingSkeleton() {
 
 const tabs = [
   { id: "engine", label: "SEO Engine", icon: Search },
+  { id: "audit", label: "SEO Audit", icon: ClipboardCheck },
   { id: "page-seo", label: "Page SEO", icon: FileText },
   { id: "aeo", label: "AEO (AI Engines)", icon: Bot },
 ];
@@ -91,6 +93,12 @@ export default function SeoHub() {
           <TabsContent value="engine" className="mt-0">
             <Suspense fallback={<LoadingSkeleton />}>
               <SeoEngineDashboard />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="audit" className="mt-0">
+            <Suspense fallback={<LoadingSkeleton />}>
+              <SeoAuditPage />
             </Suspense>
           </TabsContent>
 
