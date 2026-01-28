@@ -663,16 +663,20 @@ export default function DestinationIntelligencePage() {
   const healthScore = status?.healthScore || 88;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <Globe className="h-8 w-8 text-primary" />
-          Destination Intelligence Hub
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          AI-powered destination contents generation and health monitoring
-        </p>
-        <div className="mt-4 p-4 bg-muted rounded-lg border">
+    <div className="min-h-screen bg-[hsl(var(--admin-bg))]">
+      <div className="border-b border-[hsl(var(--admin-border))] bg-white">
+        <div className="px-6 py-4">
+          <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))]">
+            Destination Intelligence Hub
+          </h1>
+          <p className="text-sm text-[hsl(var(--admin-text-secondary))] mt-1">
+            AI-powered destination contents generation and health monitoring
+          </p>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className="p-4 bg-muted rounded-lg border">
           <h3 className="font-medium flex items-center gap-2 mb-2">
             <Lightbulb className="h-4 w-4 text-primary" />
             How It Works
@@ -684,938 +688,940 @@ export default function DestinationIntelligencePage() {
             tracks SEO scores, word counts, and internal linking for quality assurance.
           </p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              Total Destinations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-total-destinations">
-              15
-            </div>
-            <p className="text-xs text-muted-foreground">Worldwide coverage</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4" />
-              Active (with contents)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-active-destinations">
-              {activeCount}
-            </div>
-            <p className="text-xs text-muted-foreground">Published pages</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4" />
-              Missing Content
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-missing-contents">
-              {missingCount}
-            </div>
-            <p className="text-xs text-muted-foreground">Pending generation</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" />
-              Content Health Score
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" data-testid="text-health-score">
-              {healthScore}%
-            </div>
-            <Progress value={healthScore} className="mt-2 h-2" />
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                Destination Map
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Total Destinations
               </CardTitle>
-              <CardDescription>
-                All 15 destinations with contents status and generation controls
-              </CardDescription>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => scanHealthMutation.mutate()}
-                disabled={scanHealthMutation.isPending}
-                data-testid="button-scan-health"
-              >
-                {scanHealthMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                )}
-                Scan Content Health
-              </Button>
-              <Button
-                onClick={() => generateAllMutation.mutate()}
-                disabled={bulkGenerating || missingCount === 0}
-                data-testid="button-generate-all-missing"
-              >
-                {bulkGenerating ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Wand2 className="h-4 w-4 mr-2" />
-                )}
-                Generate All Missing
-              </Button>
-            </div>
-          </div>
-          {bulkGenerating && (
-            <div className="mt-4">
-              <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Bulk generation in progress...</span>
-                <span className="font-medium">{bulkProgress}%</span>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold" data-testid="text-total-destinations">
+                15
               </div>
-              <Progress
-                value={bulkProgress}
-                className="h-2"
-                data-testid="progress-bulk-generation"
-              />
+              <p className="text-xs text-muted-foreground">Worldwide coverage</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4" />
+                Active (with contents)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold" data-testid="text-active-destinations">
+                {activeCount}
+              </div>
+              <p className="text-xs text-muted-foreground">Published pages</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                Missing Content
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold" data-testid="text-missing-contents">
+                {missingCount}
+              </div>
+              <p className="text-xs text-muted-foreground">Pending generation</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                Content Health Score
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold" data-testid="text-health-score">
+                {healthScore}%
+              </div>
+              <Progress value={healthScore} className="mt-2 h-2" />
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Destination Map
+                </CardTitle>
+                <CardDescription>
+                  All 15 destinations with contents status and generation controls
+                </CardDescription>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => scanHealthMutation.mutate()}
+                  disabled={scanHealthMutation.isPending}
+                  data-testid="button-scan-health"
+                >
+                  {scanHealthMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                  )}
+                  Scan Content Health
+                </Button>
+                <Button
+                  onClick={() => generateAllMutation.mutate()}
+                  disabled={bulkGenerating || missingCount === 0}
+                  data-testid="button-generate-all-missing"
+                >
+                  {bulkGenerating ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Wand2 className="h-4 w-4 mr-2" />
+                  )}
+                  Generate All Missing
+                </Button>
+              </div>
             </div>
-          )}
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[500px]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {destinations.map(destination => {
-                const isGenerating = generatingIds.has(destination.id);
-                return (
-                  <Card
-                    key={destination.id}
-                    className={
-                      destination.hasPage ? "border-green-500/20" : "border-destructive/20"
-                    }
-                    data-testid={`card-destination-${destination.id}`}
-                  >
-                    <CardContent className="pt-4">
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <div>
-                          <h4 className="font-semibold">{destination.name}</h4>
-                          <p className="text-sm text-muted-foreground">{destination.country}</p>
-                        </div>
-                        {getStatusBadge(destination.status)}
-                      </div>
-
-                      {destination.hasPage && (
-                        <div className="space-y-2 mb-4 text-sm">
-                          <div className="mb-3">
-                            {getQualityTierBadge(destination.qualityTier, destination.seoScore)}
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <Search className="h-3 w-3" />
-                              SEO Score
-                            </span>
-                            <span
-                              className={`font-medium ${getSeoScoreColor(destination.seoScore)}`}
-                            >
-                              {destination.seoScore}%
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <FileText className="h-3 w-3" />
-                              Word Count
-                            </span>
-                            <span
-                              className={`font-medium ${(destination.wordCount || 0) >= 1800 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
-                            >
-                              {destination.wordCount?.toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <Heading2 className="h-3 w-3" />
-                              H2 Headers
-                            </span>
-                            <span
-                              className={`font-medium ${(destination.h2Count || 0) >= 4 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
-                            >
-                              {destination.h2Count || 0}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <Link2 className="h-3 w-3" />
-                              Internal Links
-                            </span>
-                            <span
-                              className={`font-medium ${(destination.internalLinks || 0) >= 5 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
-                            >
-                              {destination.internalLinks || 0}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex gap-2 flex-wrap">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openHeroEditor(destination.id)}
-                          data-testid={`button-edit-hero-${destination.id}`}
-                        >
-                          <ImageIcon className="h-4 w-4 mr-2" />
-                          Hero
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            openFeaturedSectionsEditor(destination.id, destination.name)
-                          }
-                          data-testid={`button-featured-sections-${destination.id}`}
-                        >
-                          <LayoutGrid className="h-4 w-4 mr-2" />
-                          Sections
-                        </Button>
-                        <Button
-                          variant={destination.hasPage ? "outline" : "default"}
-                          size="sm"
-                          disabled={destination.status === "complete" || isGenerating}
-                          onClick={() => generateMutation.mutate(destination.id)}
-                          data-testid={`button-generate-${destination.id}`}
-                        >
-                          {isGenerating ? (
-                            <>
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Generating...
-                            </>
-                          ) : destination.status === "complete" ? (
-                            <>
-                              <CheckCircle2 className="h-4 w-4 mr-2" />
-                              Complete
-                            </>
-                          ) : (
-                            <>
-                              <Wand2 className="h-4 w-4 mr-2" />
-                              Generate
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-
-      {/* Hero Editor Dialog */}
-      <Dialog
-        open={!!editingDestinationId}
-        onOpenChange={open => !open && setEditingDestinationId(null)}
-      >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <ImageIcon className="h-5 w-5" />
-              Edit Hero - {heroFormData.name}
-            </DialogTitle>
-            <DialogDescription>
-              Manage hero contents, images, and visual theming for this destination
-            </DialogDescription>
-          </DialogHeader>
-
-          {loadingHero ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : (
-            <Tabs defaultValue="contents" className="mt-4">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="contents">Content</TabsTrigger>
-                <TabsTrigger value="images">Images ({folderImages.length})</TabsTrigger>
-                <TabsTrigger value="mood">Mood & Theme</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="contents" className="space-y-4 mt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="heroTitle">Hero Title</Label>
-                  <Input
-                    id="heroTitle"
-                    placeholder="e.g., Discover Tokyo"
-                    value={heroFormData.heroTitle || ""}
-                    onChange={e =>
-                      setHeroFormData(prev => ({ ...prev, heroTitle: e.target.value }))
-                    }
-                    data-testid="input-hero-title"
-                  />
+            {bulkGenerating && (
+              <div className="mt-4">
+                <div className="flex items-center justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Bulk generation in progress...</span>
+                  <span className="font-medium">{bulkProgress}%</span>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="heroSubtitle">Hero Subtitle</Label>
-                  <Textarea
-                    id="heroSubtitle"
-                    placeholder="A compelling subtitle that captures the essence of the destination..."
-                    value={heroFormData.heroSubtitle || ""}
-                    onChange={e =>
-                      setHeroFormData(prev => ({ ...prev, heroSubtitle: e.target.value }))
-                    }
-                    data-testid="input-hero-subtitle"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="heroCTAText">CTA Button Text</Label>
-                    <Input
-                      id="heroCTAText"
-                      placeholder="Start Exploring"
-                      value={heroFormData.heroCTAText || ""}
-                      onChange={e =>
-                        setHeroFormData(prev => ({ ...prev, heroCTAText: e.target.value }))
+                <Progress
+                  value={bulkProgress}
+                  className="h-2"
+                  data-testid="progress-bulk-generation"
+                />
+              </div>
+            )}
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[500px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {destinations.map(destination => {
+                  const isGenerating = generatingIds.has(destination.id);
+                  return (
+                    <Card
+                      key={destination.id}
+                      className={
+                        destination.hasPage ? "border-green-500/20" : "border-destructive/20"
                       }
-                      data-testid="input-hero-cta-text"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="heroCTALink">CTA Link</Label>
-                    <Input
-                      id="heroCTALink"
-                      placeholder="#experiences"
-                      value={heroFormData.heroCTALink || ""}
-                      onChange={e =>
-                        setHeroFormData(prev => ({ ...prev, heroCTALink: e.target.value }))
-                      }
-                      data-testid="input-hero-cta-link"
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="images" className="space-y-4 mt-4">
-                <div className="text-sm text-muted-foreground mb-4">
-                  Select images from the destination folder to include in the hero carousel.
-                  Selected images will rotate automatically.
-                </div>
-
-                {folderImages.length === 0 ? (
-                  <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
-                    <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                    <p>No images found in destinations-hero/{editingDestinationId}/</p>
-                    <p className="text-xs mt-1">Upload .webp images to this folder</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {folderImages.map((image, index) => {
-                      const isSelected = (heroFormData.heroImages || []).some(
-                        img => img.url === image.url
-                      );
-                      return (
-                        <div
-                          key={index}
-                          className={`relative border-2 rounded-lg overflow-hidden cursor-pointer transition-all ${
-                            isSelected
-                              ? "border-primary ring-2 ring-primary/20"
-                              : "border-transparent"
-                          }`}
-                          onClick={() => selectImageFromFolder(image)}
-                          data-testid={`image-select-${index}`}
-                        >
-                          <img
-                            src={image.url}
-                            alt={image.alt}
-                            className="w-full h-24 object-cover"
-                          />
-                          {isSelected && (
-                            <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                              <CheckCircle2 className="h-3 w-3" />
-                            </div>
-                          )}
-                          <div className="p-2 bg-background">
-                            <p className="text-xs truncate">{image.alt}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-                <div className="text-sm text-muted-foreground">
-                  Selected: {(heroFormData.heroImages || []).length} image(s)
-                </div>
-              </TabsContent>
-
-              <TabsContent value="mood" className="space-y-4 mt-4">
-                <div className="text-sm text-muted-foreground mb-4">
-                  Define the visual personality and color theme for this destination.
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="moodTagline">Tagline</Label>
-                  <Input
-                    id="moodTagline"
-                    placeholder="e.g., Where Tradition Meets Tomorrow"
-                    value={heroFormData.moodTagline || ""}
-                    onChange={e =>
-                      setHeroFormData(prev => ({ ...prev, moodTagline: e.target.value }))
-                    }
-                    data-testid="input-mood-tagline"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="moodVibe">Vibe</Label>
-                    <Input
-                      id="moodVibe"
-                      placeholder="e.g., luxury, adventure, cultural"
-                      value={heroFormData.moodVibe || ""}
-                      onChange={e =>
-                        setHeroFormData(prev => ({ ...prev, moodVibe: e.target.value }))
-                      }
-                      data-testid="input-mood-vibe"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="moodPrimaryColor">Primary Color (HSL)</Label>
-                    <Input
-                      id="moodPrimaryColor"
-                      placeholder="e.g., hsl(200, 80%, 50%)"
-                      value={heroFormData.moodPrimaryColor || ""}
-                      onChange={e =>
-                        setHeroFormData(prev => ({ ...prev, moodPrimaryColor: e.target.value }))
-                      }
-                      data-testid="input-mood-primary-color"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="moodGradientFrom">Gradient From (HSLA)</Label>
-                    <Input
-                      id="moodGradientFrom"
-                      placeholder="e.g., hsla(200, 80%, 20%, 0.8)"
-                      value={heroFormData.moodGradientFrom || ""}
-                      onChange={e =>
-                        setHeroFormData(prev => ({ ...prev, moodGradientFrom: e.target.value }))
-                      }
-                      data-testid="input-mood-gradient-from"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="moodGradientTo">Gradient To (HSLA)</Label>
-                    <Input
-                      id="moodGradientTo"
-                      placeholder="e.g., hsla(200, 80%, 10%, 0.9)"
-                      value={heroFormData.moodGradientTo || ""}
-                      onChange={e =>
-                        setHeroFormData(prev => ({ ...prev, moodGradientTo: e.target.value }))
-                      }
-                      data-testid="input-mood-gradient-to"
-                    />
-                  </div>
-                </div>
-
-                {/* Color Preview */}
-                {heroFormData.moodPrimaryColor && (
-                  <div className="mt-4 p-4 rounded-lg border">
-                    <p className="text-sm font-medium mb-2">Color Preview</p>
-                    <div
-                      className="h-16 rounded-md"
-                      style={{
-                        background: `linear-gradient(180deg, ${heroFormData.moodGradientFrom || "transparent"} 0%, ${heroFormData.moodGradientTo || "transparent"} 100%)`,
-                      }}
+                      data-testid={`card-destination-${destination.id}`}
                     >
-                      <div
-                        className="w-8 h-8 rounded-full m-4"
-                        style={{ background: heroFormData.moodPrimaryColor }}
+                      <CardContent className="pt-4">
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <div>
+                            <h4 className="font-semibold">{destination.name}</h4>
+                            <p className="text-sm text-muted-foreground">{destination.country}</p>
+                          </div>
+                          {getStatusBadge(destination.status)}
+                        </div>
+
+                        {destination.hasPage && (
+                          <div className="space-y-2 mb-4 text-sm">
+                            <div className="mb-3">
+                              {getQualityTierBadge(destination.qualityTier, destination.seoScore)}
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <Search className="h-3 w-3" />
+                                SEO Score
+                              </span>
+                              <span
+                                className={`font-medium ${getSeoScoreColor(destination.seoScore)}`}
+                              >
+                                {destination.seoScore}%
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <FileText className="h-3 w-3" />
+                                Word Count
+                              </span>
+                              <span
+                                className={`font-medium ${(destination.wordCount || 0) >= 1800 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
+                              >
+                                {destination.wordCount?.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <Heading2 className="h-3 w-3" />
+                                H2 Headers
+                              </span>
+                              <span
+                                className={`font-medium ${(destination.h2Count || 0) >= 4 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
+                              >
+                                {destination.h2Count || 0}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <Link2 className="h-3 w-3" />
+                                Internal Links
+                              </span>
+                              <span
+                                className={`font-medium ${(destination.internalLinks || 0) >= 5 ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}
+                              >
+                                {destination.internalLinks || 0}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex gap-2 flex-wrap">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openHeroEditor(destination.id)}
+                            data-testid={`button-edit-hero-${destination.id}`}
+                          >
+                            <ImageIcon className="h-4 w-4 mr-2" />
+                            Hero
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              openFeaturedSectionsEditor(destination.id, destination.name)
+                            }
+                            data-testid={`button-featured-sections-${destination.id}`}
+                          >
+                            <LayoutGrid className="h-4 w-4 mr-2" />
+                            Sections
+                          </Button>
+                          <Button
+                            variant={destination.hasPage ? "outline" : "default"}
+                            size="sm"
+                            disabled={destination.status === "complete" || isGenerating}
+                            onClick={() => generateMutation.mutate(destination.id)}
+                            data-testid={`button-generate-${destination.id}`}
+                          >
+                            {isGenerating ? (
+                              <>
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                Generating...
+                              </>
+                            ) : destination.status === "complete" ? (
+                              <>
+                                <CheckCircle2 className="h-4 w-4 mr-2" />
+                                Complete
+                              </>
+                            ) : (
+                              <>
+                                <Wand2 className="h-4 w-4 mr-2" />
+                                Generate
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        {/* Hero Editor Dialog */}
+        <Dialog
+          open={!!editingDestinationId}
+          onOpenChange={open => !open && setEditingDestinationId(null)}
+        >
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                Edit Hero - {heroFormData.name}
+              </DialogTitle>
+              <DialogDescription>
+                Manage hero contents, images, and visual theming for this destination
+              </DialogDescription>
+            </DialogHeader>
+
+            {loadingHero ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <Tabs defaultValue="contents" className="mt-4">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="contents">Content</TabsTrigger>
+                  <TabsTrigger value="images">Images ({folderImages.length})</TabsTrigger>
+                  <TabsTrigger value="mood">Mood & Theme</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="contents" className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="heroTitle">Hero Title</Label>
+                    <Input
+                      id="heroTitle"
+                      placeholder="e.g., Discover Tokyo"
+                      value={heroFormData.heroTitle || ""}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, heroTitle: e.target.value }))
+                      }
+                      data-testid="input-hero-title"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="heroSubtitle">Hero Subtitle</Label>
+                    <Textarea
+                      id="heroSubtitle"
+                      placeholder="A compelling subtitle that captures the essence of the destination..."
+                      value={heroFormData.heroSubtitle || ""}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, heroSubtitle: e.target.value }))
+                      }
+                      data-testid="input-hero-subtitle"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="heroCTAText">CTA Button Text</Label>
+                      <Input
+                        id="heroCTAText"
+                        placeholder="Start Exploring"
+                        value={heroFormData.heroCTAText || ""}
+                        onChange={e =>
+                          setHeroFormData(prev => ({ ...prev, heroCTAText: e.target.value }))
+                        }
+                        data-testid="input-hero-cta-text"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="heroCTALink">CTA Link</Label>
+                      <Input
+                        id="heroCTALink"
+                        placeholder="#experiences"
+                        value={heroFormData.heroCTALink || ""}
+                        onChange={e =>
+                          setHeroFormData(prev => ({ ...prev, heroCTALink: e.target.value }))
+                        }
+                        data-testid="input-hero-cta-link"
                       />
                     </div>
                   </div>
+                </TabsContent>
+
+                <TabsContent value="images" className="space-y-4 mt-4">
+                  <div className="text-sm text-muted-foreground mb-4">
+                    Select images from the destination folder to include in the hero carousel.
+                    Selected images will rotate automatically.
+                  </div>
+
+                  {folderImages.length === 0 ? (
+                    <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p>No images found in destinations-hero/{editingDestinationId}/</p>
+                      <p className="text-xs mt-1">Upload .webp images to this folder</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {folderImages.map((image, index) => {
+                        const isSelected = (heroFormData.heroImages || []).some(
+                          img => img.url === image.url
+                        );
+                        return (
+                          <div
+                            key={index}
+                            className={`relative border-2 rounded-lg overflow-hidden cursor-pointer transition-all ${
+                              isSelected
+                                ? "border-primary ring-2 ring-primary/20"
+                                : "border-transparent"
+                            }`}
+                            onClick={() => selectImageFromFolder(image)}
+                            data-testid={`image-select-${index}`}
+                          >
+                            <img
+                              src={image.url}
+                              alt={image.alt}
+                              className="w-full h-24 object-cover"
+                            />
+                            {isSelected && (
+                              <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                                <CheckCircle2 className="h-3 w-3" />
+                              </div>
+                            )}
+                            <div className="p-2 bg-background">
+                              <p className="text-xs truncate">{image.alt}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  <div className="text-sm text-muted-foreground">
+                    Selected: {(heroFormData.heroImages || []).length} image(s)
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="mood" className="space-y-4 mt-4">
+                  <div className="text-sm text-muted-foreground mb-4">
+                    Define the visual personality and color theme for this destination.
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="moodTagline">Tagline</Label>
+                    <Input
+                      id="moodTagline"
+                      placeholder="e.g., Where Tradition Meets Tomorrow"
+                      value={heroFormData.moodTagline || ""}
+                      onChange={e =>
+                        setHeroFormData(prev => ({ ...prev, moodTagline: e.target.value }))
+                      }
+                      data-testid="input-mood-tagline"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="moodVibe">Vibe</Label>
+                      <Input
+                        id="moodVibe"
+                        placeholder="e.g., luxury, adventure, cultural"
+                        value={heroFormData.moodVibe || ""}
+                        onChange={e =>
+                          setHeroFormData(prev => ({ ...prev, moodVibe: e.target.value }))
+                        }
+                        data-testid="input-mood-vibe"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="moodPrimaryColor">Primary Color (HSL)</Label>
+                      <Input
+                        id="moodPrimaryColor"
+                        placeholder="e.g., hsl(200, 80%, 50%)"
+                        value={heroFormData.moodPrimaryColor || ""}
+                        onChange={e =>
+                          setHeroFormData(prev => ({ ...prev, moodPrimaryColor: e.target.value }))
+                        }
+                        data-testid="input-mood-primary-color"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="moodGradientFrom">Gradient From (HSLA)</Label>
+                      <Input
+                        id="moodGradientFrom"
+                        placeholder="e.g., hsla(200, 80%, 20%, 0.8)"
+                        value={heroFormData.moodGradientFrom || ""}
+                        onChange={e =>
+                          setHeroFormData(prev => ({ ...prev, moodGradientFrom: e.target.value }))
+                        }
+                        data-testid="input-mood-gradient-from"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="moodGradientTo">Gradient To (HSLA)</Label>
+                      <Input
+                        id="moodGradientTo"
+                        placeholder="e.g., hsla(200, 80%, 10%, 0.9)"
+                        value={heroFormData.moodGradientTo || ""}
+                        onChange={e =>
+                          setHeroFormData(prev => ({ ...prev, moodGradientTo: e.target.value }))
+                        }
+                        data-testid="input-mood-gradient-to"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Color Preview */}
+                  {heroFormData.moodPrimaryColor && (
+                    <div className="mt-4 p-4 rounded-lg border">
+                      <p className="text-sm font-medium mb-2">Color Preview</p>
+                      <div
+                        className="h-16 rounded-md"
+                        style={{
+                          background: `linear-gradient(180deg, ${heroFormData.moodGradientFrom || "transparent"} 0%, ${heroFormData.moodGradientTo || "transparent"} 100%)`,
+                        }}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-full m-4"
+                          style={{ background: heroFormData.moodPrimaryColor }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            )}
+
+            <DialogFooter className="mt-6">
+              <Button variant="outline" onClick={() => setEditingDestinationId(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveHero} disabled={updateHeroMutation.isPending}>
+                {updateHeroMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Hero
+                  </>
                 )}
-              </TabsContent>
-            </Tabs>
-          )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-          <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setEditingDestinationId(null)}>
-              Cancel
-            </Button>
-            <Button onClick={handleSaveHero} disabled={updateHeroMutation.isPending}>
-              {updateHeroMutation.isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Hero
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        {/* Featured Sections Editor Dialog */}
+        <Dialog
+          open={!!featuredSectionsDestinationId}
+          onOpenChange={open => !open && setFeaturedSectionsDestinationId(null)}
+        >
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <LayoutGrid className="h-5 w-5" />
+                Featured Sections - {featuredSectionsData.name}
+              </DialogTitle>
+              <DialogDescription>
+                Manage image-led contents sections. Sections without images will be hidden on the
+                frontend.
+              </DialogDescription>
+            </DialogHeader>
 
-      {/* Featured Sections Editor Dialog */}
-      <Dialog
-        open={!!featuredSectionsDestinationId}
-        onOpenChange={open => !open && setFeaturedSectionsDestinationId(null)}
-      >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <LayoutGrid className="h-5 w-5" />
-              Featured Sections - {featuredSectionsData.name}
-            </DialogTitle>
-            <DialogDescription>
-              Manage image-led contents sections. Sections without images will be hidden on the
-              frontend.
-            </DialogDescription>
-          </DialogHeader>
+            {loadingFeaturedSections ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <Tabs defaultValue="attractions" className="mt-4">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="attractions">
+                    Attractions ({featuredSectionsData.featuredAttractions.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="areas">
+                    Where to Stay ({featuredSectionsData.featuredAreas.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="highlights">
+                    Highlights ({featuredSectionsData.featuredHighlights.length})
+                  </TabsTrigger>
+                </TabsList>
 
-          {loadingFeaturedSections ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : (
-            <Tabs defaultValue="attractions" className="mt-4">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="attractions">
-                  Attractions ({featuredSectionsData.featuredAttractions.length})
-                </TabsTrigger>
-                <TabsTrigger value="areas">
-                  Where to Stay ({featuredSectionsData.featuredAreas.length})
-                </TabsTrigger>
-                <TabsTrigger value="highlights">
-                  Highlights ({featuredSectionsData.featuredHighlights.length})
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="attractions" className="space-y-4 mt-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Top attractions with stunning imagery
-                  </p>
-                  <Button size="sm" variant="outline" onClick={addFeaturedAttraction}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Attraction
-                  </Button>
-                </div>
-                {featuredSectionsData.featuredAttractions.length === 0 ? (
-                  <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
-                    <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                    <p>No featured attractions yet</p>
-                    <p className="text-xs mt-1">
-                      Add attractions with images to display this section
+                <TabsContent value="attractions" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      Top attractions with stunning imagery
                     </p>
+                    <Button size="sm" variant="outline" onClick={addFeaturedAttraction}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Attraction
+                    </Button>
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    {featuredSectionsData.featuredAttractions.map((attraction, idx) => (
-                      <Card key={attraction.id} className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <div className="space-y-2">
-                            <Label>Title</Label>
-                            <Input
-                              placeholder="Burj Khalifa"
-                              value={attraction.title}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAttractions];
-                                updated[idx] = { ...attraction, title: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAttractions: updated,
-                                }));
-                              }}
-                              data-testid={`input-attraction-title-${idx}`}
-                            />
+                  {featuredSectionsData.featuredAttractions.length === 0 ? (
+                    <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p>No featured attractions yet</p>
+                      <p className="text-xs mt-1">
+                        Add attractions with images to display this section
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {featuredSectionsData.featuredAttractions.map((attraction, idx) => (
+                        <Card key={attraction.id} className="p-4">
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                              <Label>Title</Label>
+                              <Input
+                                placeholder="Burj Khalifa"
+                                value={attraction.title}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAttractions];
+                                  updated[idx] = { ...attraction, title: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAttractions: updated,
+                                  }));
+                                }}
+                                data-testid={`input-attraction-title-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Image URL</Label>
+                              <Input
+                                placeholder="/attractions/burj-khalifa.webp"
+                                value={attraction.image}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAttractions];
+                                  updated[idx] = { ...attraction, image: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAttractions: updated,
+                                  }));
+                                }}
+                                data-testid={`input-attraction-image-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Image Alt</Label>
+                              <Input
+                                placeholder="Burj Khalifa tower at sunset"
+                                value={attraction.imageAlt}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAttractions];
+                                  updated[idx] = { ...attraction, imageAlt: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAttractions: updated,
+                                  }));
+                                }}
+                                data-testid={`input-attraction-alt-${idx}`}
+                              />
+                            </div>
+                            <div className="flex items-end gap-2">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  const updated = featuredSectionsData.featuredAttractions.filter(
+                                    a => a.id !== attraction.id
+                                  );
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAttractions: updated,
+                                  }));
+                                }}
+                                data-testid={`button-delete-attraction-${idx}`}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
                           </div>
-                          <div className="space-y-2">
-                            <Label>Image URL</Label>
-                            <Input
-                              placeholder="/attractions/burj-khalifa.webp"
-                              value={attraction.image}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAttractions];
-                                updated[idx] = { ...attraction, image: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAttractions: updated,
-                                }));
-                              }}
-                              data-testid={`input-attraction-image-${idx}`}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Image Alt</Label>
-                            <Input
-                              placeholder="Burj Khalifa tower at sunset"
-                              value={attraction.imageAlt}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAttractions];
-                                updated[idx] = { ...attraction, imageAlt: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAttractions: updated,
-                                }));
-                              }}
-                              data-testid={`input-attraction-alt-${idx}`}
-                            />
-                          </div>
-                          <div className="flex items-end gap-2">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => {
-                                const updated = featuredSectionsData.featuredAttractions.filter(
-                                  a => a.id !== attraction.id
-                                );
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAttractions: updated,
-                                }));
-                              }}
-                              data-testid={`button-delete-attraction-${idx}`}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
 
-              <TabsContent value="areas" className="space-y-4 mt-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">Neighborhoods and where to stay</p>
-                  <Button size="sm" variant="outline" onClick={addFeaturedArea}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Area
-                  </Button>
+                <TabsContent value="areas" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Neighborhoods and where to stay</p>
+                    <Button size="sm" variant="outline" onClick={addFeaturedArea}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Area
+                    </Button>
+                  </div>
+                  {featuredSectionsData.featuredAreas.length === 0 ? (
+                    <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p>No featured areas yet</p>
+                      <p className="text-xs mt-1">Add areas with images to display this section</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {featuredSectionsData.featuredAreas.map((area, idx) => (
+                        <Card key={area.id} className="p-4">
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div className="space-y-2">
+                              <Label>Name</Label>
+                              <Input
+                                placeholder="Downtown Dubai"
+                                value={area.name}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAreas];
+                                  updated[idx] = { ...area, name: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAreas: updated,
+                                  }));
+                                }}
+                                data-testid={`input-area-name-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Image URL</Label>
+                              <Input
+                                placeholder="/areas/downtown.webp"
+                                value={area.image}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAreas];
+                                  updated[idx] = { ...area, image: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAreas: updated,
+                                  }));
+                                }}
+                                data-testid={`input-area-image-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Vibe</Label>
+                              <Input
+                                placeholder="luxury"
+                                value={area.vibe}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAreas];
+                                  updated[idx] = { ...area, vibe: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAreas: updated,
+                                  }));
+                                }}
+                                data-testid={`input-area-vibe-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Price Level</Label>
+                              <Input
+                                placeholder="$$$"
+                                value={area.priceLevel || ""}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredAreas];
+                                  updated[idx] = { ...area, priceLevel: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAreas: updated,
+                                  }));
+                                }}
+                                data-testid={`input-area-price-${idx}`}
+                              />
+                            </div>
+                            <div className="flex items-end gap-2">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  const updated = featuredSectionsData.featuredAreas.filter(
+                                    a => a.id !== area.id
+                                  );
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredAreas: updated,
+                                  }));
+                                }}
+                                data-testid={`button-delete-area-${idx}`}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="highlights" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Stunning visual highlights</p>
+                    <Button size="sm" variant="outline" onClick={addFeaturedHighlight}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Highlight
+                    </Button>
+                  </div>
+                  {featuredSectionsData.featuredHighlights.length === 0 ? (
+                    <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
+                      <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p>No featured highlights yet</p>
+                      <p className="text-xs mt-1">
+                        Add highlights with images to display this section
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {featuredSectionsData.featuredHighlights.map((highlight, idx) => (
+                        <Card key={highlight.id} className="p-4">
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                              <Label>Title</Label>
+                              <Input
+                                placeholder="Sunset at Marina"
+                                value={highlight.title}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredHighlights];
+                                  updated[idx] = { ...highlight, title: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredHighlights: updated,
+                                  }));
+                                }}
+                                data-testid={`input-highlight-title-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Image URL</Label>
+                              <Input
+                                placeholder="/highlights/marina-sunset.webp"
+                                value={highlight.image}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredHighlights];
+                                  updated[idx] = { ...highlight, image: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredHighlights: updated,
+                                  }));
+                                }}
+                                data-testid={`input-highlight-image-${idx}`}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Caption</Label>
+                              <Input
+                                placeholder="Golden hour over the marina"
+                                value={highlight.caption || ""}
+                                onChange={e => {
+                                  const updated = [...featuredSectionsData.featuredHighlights];
+                                  updated[idx] = { ...highlight, caption: e.target.value };
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredHighlights: updated,
+                                  }));
+                                }}
+                                data-testid={`input-highlight-caption-${idx}`}
+                              />
+                            </div>
+                            <div className="flex items-end gap-2">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  const updated = featuredSectionsData.featuredHighlights.filter(
+                                    h => h.id !== highlight.id
+                                  );
+                                  setFeaturedSectionsData(prev => ({
+                                    ...prev,
+                                    featuredHighlights: updated,
+                                  }));
+                                }}
+                                data-testid={`button-delete-highlight-${idx}`}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            )}
+
+            <DialogFooter className="mt-6">
+              <Button variant="outline" onClick={() => setFeaturedSectionsDestinationId(null)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveFeaturedSections}
+                disabled={updateFeaturedSectionsMutation.isPending}
+              >
+                {updateFeaturedSectionsMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Sections
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5" />
+              Quality Gates
+            </CardTitle>
+            <CardDescription>
+              Content quality validation checks for all destinations
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="p-4 rounded-lg border bg-muted">
+                <div className="flex items-center gap-2 mb-2">
+                  <Search className="h-4 w-4 text-primary" />
+                  <span className="font-medium">SEO Score</span>
                 </div>
-                {featuredSectionsData.featuredAreas.length === 0 ? (
-                  <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
-                    <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                    <p>No featured areas yet</p>
-                    <p className="text-xs mt-1">Add areas with images to display this section</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {featuredSectionsData.featuredAreas.map((area, idx) => (
-                      <Card key={area.id} className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                          <div className="space-y-2">
-                            <Label>Name</Label>
-                            <Input
-                              placeholder="Downtown Dubai"
-                              value={area.name}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAreas];
-                                updated[idx] = { ...area, name: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAreas: updated,
-                                }));
-                              }}
-                              data-testid={`input-area-name-${idx}`}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Image URL</Label>
-                            <Input
-                              placeholder="/areas/downtown.webp"
-                              value={area.image}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAreas];
-                                updated[idx] = { ...area, image: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAreas: updated,
-                                }));
-                              }}
-                              data-testid={`input-area-image-${idx}`}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Vibe</Label>
-                            <Input
-                              placeholder="luxury"
-                              value={area.vibe}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAreas];
-                                updated[idx] = { ...area, vibe: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAreas: updated,
-                                }));
-                              }}
-                              data-testid={`input-area-vibe-${idx}`}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Price Level</Label>
-                            <Input
-                              placeholder="$$$"
-                              value={area.priceLevel || ""}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredAreas];
-                                updated[idx] = { ...area, priceLevel: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAreas: updated,
-                                }));
-                              }}
-                              data-testid={`input-area-price-${idx}`}
-                            />
-                          </div>
-                          <div className="flex items-end gap-2">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => {
-                                const updated = featuredSectionsData.featuredAreas.filter(
-                                  a => a.id !== area.id
-                                );
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredAreas: updated,
-                                }));
-                              }}
-                              data-testid={`button-delete-area-${idx}`}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="highlights" className="space-y-4 mt-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">Stunning visual highlights</p>
-                  <Button size="sm" variant="outline" onClick={addFeaturedHighlight}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Highlight
-                  </Button>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Min 80% for publish, 90% for auto-approve
+                </p>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">{activeCount} destinations passing</span>
                 </div>
-                {featuredSectionsData.featuredHighlights.length === 0 ? (
-                  <div className="py-8 text-center text-muted-foreground border rounded-lg bg-muted">
-                    <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                    <p>No featured highlights yet</p>
-                    <p className="text-xs mt-1">
-                      Add highlights with images to display this section
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {featuredSectionsData.featuredHighlights.map((highlight, idx) => (
-                      <Card key={highlight.id} className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <div className="space-y-2">
-                            <Label>Title</Label>
-                            <Input
-                              placeholder="Sunset at Marina"
-                              value={highlight.title}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredHighlights];
-                                updated[idx] = { ...highlight, title: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredHighlights: updated,
-                                }));
-                              }}
-                              data-testid={`input-highlight-title-${idx}`}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Image URL</Label>
-                            <Input
-                              placeholder="/highlights/marina-sunset.webp"
-                              value={highlight.image}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredHighlights];
-                                updated[idx] = { ...highlight, image: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredHighlights: updated,
-                                }));
-                              }}
-                              data-testid={`input-highlight-image-${idx}`}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Caption</Label>
-                            <Input
-                              placeholder="Golden hour over the marina"
-                              value={highlight.caption || ""}
-                              onChange={e => {
-                                const updated = [...featuredSectionsData.featuredHighlights];
-                                updated[idx] = { ...highlight, caption: e.target.value };
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredHighlights: updated,
-                                }));
-                              }}
-                              data-testid={`input-highlight-caption-${idx}`}
-                            />
-                          </div>
-                          <div className="flex items-end gap-2">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => {
-                                const updated = featuredSectionsData.featuredHighlights.filter(
-                                  h => h.id !== highlight.id
-                                );
-                                setFeaturedSectionsData(prev => ({
-                                  ...prev,
-                                  featuredHighlights: updated,
-                                }));
-                              }}
-                              data-testid={`button-delete-highlight-${idx}`}
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
-          )}
-
-          <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setFeaturedSectionsDestinationId(null)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveFeaturedSections}
-              disabled={updateFeaturedSectionsMutation.isPending}
-            >
-              {updateFeaturedSectionsMutation.isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Sections
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5" />
-            Quality Gates
-          </CardTitle>
-          <CardDescription>Content quality validation checks for all destinations</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="p-4 rounded-lg border bg-muted">
-              <div className="flex items-center gap-2 mb-2">
-                <Search className="h-4 w-4 text-primary" />
-                <span className="font-medium">SEO Score</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">
-                Min 80% for publish, 90% for auto-approve
-              </p>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm">{activeCount} destinations passing</span>
+
+              <div className="p-4 rounded-lg border bg-muted">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Word Count</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  1,800 - 3,500 words per destination
+                </p>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">{activeCount} destinations passing</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg border bg-muted">
+                <div className="flex items-center gap-2 mb-2">
+                  <Heading2 className="h-4 w-4 text-primary" />
+                  <span className="font-medium">H2 Headers</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">4-6 H2 headers per destination</p>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">{activeCount} destinations passing</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg border bg-muted">
+                <div className="flex items-center gap-2 mb-2">
+                  <Link2 className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Internal Links</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  5-8 internal links per destination
+                </p>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">{activeCount} destinations passing</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg border bg-muted">
+                <div className="flex items-center gap-2 mb-2">
+                  <XCircle className="h-4 w-4 text-primary" />
+                  <span className="font-medium">Banned Phrases</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">No clickbait or cliche terms</p>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">All contents clean</span>
+                </div>
               </div>
             </div>
-
-            <div className="p-4 rounded-lg border bg-muted">
-              <div className="flex items-center gap-2 mb-2">
-                <FileText className="h-4 w-4 text-primary" />
-                <span className="font-medium">Word Count</span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-2">
-                1,800 - 3,500 words per destination
-              </p>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm">{activeCount} destinations passing</span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border bg-muted">
-              <div className="flex items-center gap-2 mb-2">
-                <Heading2 className="h-4 w-4 text-primary" />
-                <span className="font-medium">H2 Headers</span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-2">4-6 H2 headers per destination</p>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm">{activeCount} destinations passing</span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border bg-muted">
-              <div className="flex items-center gap-2 mb-2">
-                <Link2 className="h-4 w-4 text-primary" />
-                <span className="font-medium">Internal Links</span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-2">
-                5-8 internal links per destination
-              </p>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm">{activeCount} destinations passing</span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg border bg-muted">
-              <div className="flex items-center gap-2 mb-2">
-                <XCircle className="h-4 w-4 text-primary" />
-                <span className="font-medium">Banned Phrases</span>
-              </div>
-              <p className="text-sm text-muted-foreground mb-2">No clickbait or cliche terms</p>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm">All contents clean</span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

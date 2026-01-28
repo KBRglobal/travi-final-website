@@ -11,9 +11,26 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Home, Plus, Trash2, Edit2, Save, Image, Type, Link as LinkIcon, 
-  Eye, EyeOff, Layers, Grid3X3, Compass, MapPin, Megaphone, Search, Globe, Languages, Loader2
+import {
+  Home,
+  Plus,
+  Trash2,
+  Edit2,
+  Save,
+  Image,
+  Type,
+  Link as LinkIcon,
+  Eye,
+  EyeOff,
+  Layers,
+  Grid3X3,
+  Compass,
+  MapPin,
+  Megaphone,
+  Search,
+  Globe,
+  Languages,
+  Loader2,
 } from "lucide-react";
 import {
   Select,
@@ -38,9 +55,9 @@ const AVAILABLE_LOCALES = [
   { code: "it", name: "Italian" },
 ];
 
-const LocaleContext = createContext<{ locale: string; setLocale: (l: string) => void }>({ 
-  locale: "en", 
-  setLocale: () => {} 
+const LocaleContext = createContext<{ locale: string; setLocale: (l: string) => void }>({
+  locale: "en",
+  setLocale: () => {},
 });
 
 interface HeroSlide {
@@ -151,15 +168,16 @@ export default function HomepageEditorPage() {
       const response = await apiRequest("POST", "/api/admin/homepage/generate-translations");
       return response.json();
     },
-    onSuccess: (data) => {
-      const skippedMsg = data.skipped > 0 ? ` (${data.skipped} existing translations preserved)` : "";
+    onSuccess: data => {
+      const skippedMsg =
+        data.skipped > 0 ? ` (${data.skipped} existing translations preserved)` : "";
       toast({
         title: "Translations Generated",
         description: `Successfully generated ${data.translated} translations across ${data.locales?.length || 0} languages.${skippedMsg}`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/homepage"] });
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: "Translation Failed",
         description: error instanceof Error ? error.message : "Failed to generate translations",
@@ -170,109 +188,114 @@ export default function HomepageEditorPage() {
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
-      <div className="space-y-6 p-6">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <Home className="h-8 w-8 text-primary" />
-              Homepage Editor
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Manage all homepage contents, sections, and SEO settings
-            </p>
+      <div className="min-h-screen bg-[hsl(var(--admin-bg))]">
+        <div className="border-b border-[hsl(var(--admin-border))] bg-white">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))]">
+                  Homepage Editor
+                </h1>
+                <p className="text-sm text-[hsl(var(--admin-text-secondary))] mt-1">
+                  Manage all homepage contents, sections, and SEO settings
+                </p>
+              </div>
+              <Button
+                onClick={() => generateTranslationsMutation.mutate()}
+                disabled={generateTranslationsMutation.isPending}
+                data-testid="button-generate-translations"
+              >
+                {generateTranslationsMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Languages className="h-4 w-4 mr-2" />
+                )}
+                Generate All Languages
+              </Button>
+            </div>
           </div>
-          <Button
-            onClick={() => generateTranslationsMutation.mutate()}
-            disabled={generateTranslationsMutation.isPending}
-            data-testid="button-generate-translations"
-          >
-            {generateTranslationsMutation.isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Languages className="h-4 w-4 mr-2" />
-            )}
-            Generate All Languages
-          </Button>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Globe className="h-5 w-5 text-muted-foreground" />
-          <Label htmlFor="locale-select">Editing Language:</Label>
-          <Select value={locale} onValueChange={setLocale}>
-            <SelectTrigger className="w-[200px]" data-testid="select-locale">
-              <SelectValue placeholder="Select language" />
-            </SelectTrigger>
-            <SelectContent>
-              {AVAILABLE_LOCALES.map((loc) => (
-                <SelectItem key={loc.code} value={loc.code}>
-                  {loc.name} ({loc.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="p-6 space-y-6">
+          <div className="flex items-center gap-3">
+            <Globe className="h-5 w-5 text-muted-foreground" />
+            <Label htmlFor="locale-select">Editing Language:</Label>
+            <Select value={locale} onValueChange={setLocale}>
+              <SelectTrigger className="w-[200px]" data-testid="select-locale">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {AVAILABLE_LOCALES.map(loc => (
+                  <SelectItem key={loc.code} value={loc.code}>
+                    {loc.name} ({loc.code})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-8 gap-1" data-testid="homepage-editor-tabs">
+              <TabsTrigger value="seo" data-testid="tab-seo" className="gap-1">
+                <Search className="h-4 w-4" />
+                <span className="hidden lg:inline">SEO</span>
+              </TabsTrigger>
+              <TabsTrigger value="hero" data-testid="tab-hero" className="gap-1">
+                <Image className="h-4 w-4" />
+                <span className="hidden lg:inline">Hero</span>
+              </TabsTrigger>
+              <TabsTrigger value="sections" data-testid="tab-sections" className="gap-1">
+                <Layers className="h-4 w-4" />
+                <span className="hidden lg:inline">Sections</span>
+              </TabsTrigger>
+              <TabsTrigger value="cards" data-testid="tab-cards" className="gap-1">
+                <Grid3X3 className="h-4 w-4" />
+                <span className="hidden lg:inline">Cards</span>
+              </TabsTrigger>
+              <TabsTrigger value="experiences" data-testid="tab-experiences" className="gap-1">
+                <Compass className="h-4 w-4" />
+                <span className="hidden lg:inline">Experiences</span>
+              </TabsTrigger>
+              <TabsTrigger value="destinations" data-testid="tab-destinations" className="gap-1">
+                <Globe className="h-4 w-4" />
+                <span className="hidden lg:inline">Destinations</span>
+              </TabsTrigger>
+              <TabsTrigger value="regions" data-testid="tab-regions" className="gap-1">
+                <MapPin className="h-4 w-4" />
+                <span className="hidden lg:inline">Regions</span>
+              </TabsTrigger>
+              <TabsTrigger value="cta" data-testid="tab-cta" className="gap-1">
+                <Megaphone className="h-4 w-4" />
+                <span className="hidden lg:inline">CTA</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="seo">
+              <SeoMetaEditor />
+            </TabsContent>
+            <TabsContent value="hero">
+              <HeroSlidesEditor />
+            </TabsContent>
+            <TabsContent value="sections">
+              <SectionsManager />
+            </TabsContent>
+            <TabsContent value="cards">
+              <QuickCategoriesEditor />
+            </TabsContent>
+            <TabsContent value="experiences">
+              <ExperienceCategoriesEditor />
+            </TabsContent>
+            <TabsContent value="destinations">
+              <DestinationsEditor />
+            </TabsContent>
+            <TabsContent value="regions">
+              <RegionLinksEditor />
+            </TabsContent>
+            <TabsContent value="cta">
+              <HomepageCtaEditor />
+            </TabsContent>
+          </Tabs>
         </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8 gap-1" data-testid="homepage-editor-tabs">
-            <TabsTrigger value="seo" data-testid="tab-seo" className="gap-1">
-              <Search className="h-4 w-4" />
-              <span className="hidden lg:inline">SEO</span>
-            </TabsTrigger>
-            <TabsTrigger value="hero" data-testid="tab-hero" className="gap-1">
-              <Image className="h-4 w-4" />
-              <span className="hidden lg:inline">Hero</span>
-            </TabsTrigger>
-            <TabsTrigger value="sections" data-testid="tab-sections" className="gap-1">
-              <Layers className="h-4 w-4" />
-              <span className="hidden lg:inline">Sections</span>
-            </TabsTrigger>
-            <TabsTrigger value="cards" data-testid="tab-cards" className="gap-1">
-              <Grid3X3 className="h-4 w-4" />
-              <span className="hidden lg:inline">Cards</span>
-            </TabsTrigger>
-            <TabsTrigger value="experiences" data-testid="tab-experiences" className="gap-1">
-              <Compass className="h-4 w-4" />
-              <span className="hidden lg:inline">Experiences</span>
-            </TabsTrigger>
-            <TabsTrigger value="destinations" data-testid="tab-destinations" className="gap-1">
-              <Globe className="h-4 w-4" />
-              <span className="hidden lg:inline">Destinations</span>
-            </TabsTrigger>
-            <TabsTrigger value="regions" data-testid="tab-regions" className="gap-1">
-              <MapPin className="h-4 w-4" />
-              <span className="hidden lg:inline">Regions</span>
-            </TabsTrigger>
-            <TabsTrigger value="cta" data-testid="tab-cta" className="gap-1">
-              <Megaphone className="h-4 w-4" />
-              <span className="hidden lg:inline">CTA</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="seo">
-            <SeoMetaEditor />
-          </TabsContent>
-          <TabsContent value="hero">
-            <HeroSlidesEditor />
-          </TabsContent>
-          <TabsContent value="sections">
-            <SectionsManager />
-          </TabsContent>
-          <TabsContent value="cards">
-            <QuickCategoriesEditor />
-          </TabsContent>
-          <TabsContent value="experiences">
-            <ExperienceCategoriesEditor />
-          </TabsContent>
-          <TabsContent value="destinations">
-            <DestinationsEditor />
-          </TabsContent>
-          <TabsContent value="regions">
-            <RegionLinksEditor />
-          </TabsContent>
-          <TabsContent value="cta">
-            <HomepageCtaEditor />
-          </TabsContent>
-        </Tabs>
       </div>
     </LocaleContext.Provider>
   );
@@ -286,7 +309,9 @@ function SeoMetaEditor() {
   const { data: seoMeta, isLoading } = useQuery<HomepageSeoMeta | null>({
     queryKey: ["/api/admin/homepage/seo-meta", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/seo-meta?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/seo-meta?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -295,7 +320,11 @@ function SeoMetaEditor() {
   const updateMutation = useMutation({
     mutationFn: async (data: Partial<HomepageSeoMeta>) => {
       if (!seoMeta?.id) return;
-      return apiRequest("PATCH", `/api/admin/homepage/seo-meta/${seoMeta.id}?locale=${locale}`, data);
+      return apiRequest(
+        "PATCH",
+        `/api/admin/homepage/seo-meta/${seoMeta.id}?locale=${locale}`,
+        data
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/homepage/seo-meta", locale] });
@@ -311,7 +340,12 @@ function SeoMetaEditor() {
   };
 
   if (isLoading) {
-    return <div className="space-y-4"><Skeleton className="h-48" /><Skeleton className="h-48" /></div>;
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-48" />
+        <Skeleton className="h-48" />
+      </div>
+    );
   }
 
   const currentData = { ...seoMeta, ...formData };
@@ -332,7 +366,7 @@ function SeoMetaEditor() {
             id="metaTitle"
             data-testid="input-meta-title"
             value={currentData.metaTitle || ""}
-            onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
+            onChange={e => setFormData({ ...formData, metaTitle: e.target.value })}
             placeholder="TRAVI - Expert Travel Guides"
             dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}
           />
@@ -344,7 +378,7 @@ function SeoMetaEditor() {
             id="metaDescription"
             data-testid="input-meta-description"
             value={currentData.metaDescription || ""}
-            onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
+            onChange={e => setFormData({ ...formData, metaDescription: e.target.value })}
             placeholder="Discover expert travel guides..."
             rows={3}
             dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}
@@ -357,7 +391,7 @@ function SeoMetaEditor() {
             id="metaKeywords"
             data-testid="input-meta-keywords"
             value={currentData.metaKeywords || ""}
-            onChange={(e) => setFormData({ ...formData, metaKeywords: e.target.value })}
+            onChange={e => setFormData({ ...formData, metaKeywords: e.target.value })}
             placeholder="travel, guides, destinations"
           />
         </div>
@@ -369,7 +403,7 @@ function SeoMetaEditor() {
               id="ogTitle"
               data-testid="input-og-title"
               value={currentData.ogTitle || ""}
-              onChange={(e) => setFormData({ ...formData, ogTitle: e.target.value })}
+              onChange={e => setFormData({ ...formData, ogTitle: e.target.value })}
               dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}
             />
           </div>
@@ -379,7 +413,7 @@ function SeoMetaEditor() {
               id="ogDescription"
               data-testid="input-og-description"
               value={currentData.ogDescription || ""}
-              onChange={(e) => setFormData({ ...formData, ogDescription: e.target.value })}
+              onChange={e => setFormData({ ...formData, ogDescription: e.target.value })}
               dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}
             />
           </div>
@@ -392,7 +426,7 @@ function SeoMetaEditor() {
               id="ogImage"
               data-testid="input-og-image"
               value={currentData.ogImage || ""}
-              onChange={(e) => setFormData({ ...formData, ogImage: e.target.value })}
+              onChange={e => setFormData({ ...formData, ogImage: e.target.value })}
               placeholder="https://..."
             />
           </div>
@@ -402,7 +436,7 @@ function SeoMetaEditor() {
               id="canonicalUrl"
               data-testid="input-canonical-url"
               value={currentData.canonicalUrl || ""}
-              onChange={(e) => setFormData({ ...formData, canonicalUrl: e.target.value })}
+              onChange={e => setFormData({ ...formData, canonicalUrl: e.target.value })}
             />
           </div>
         </div>
@@ -414,7 +448,7 @@ function SeoMetaEditor() {
               id="robotsMeta"
               data-testid="input-robots-meta"
               value={currentData.robotsMeta || ""}
-              onChange={(e) => setFormData({ ...formData, robotsMeta: e.target.value })}
+              onChange={e => setFormData({ ...formData, robotsMeta: e.target.value })}
               placeholder="index, follow"
             />
           </div>
@@ -423,15 +457,15 @@ function SeoMetaEditor() {
               id="schemaEnabled"
               data-testid="switch-schema-enabled"
               checked={currentData.schemaEnabled ?? true}
-              onCheckedChange={(checked) => setFormData({ ...formData, schemaEnabled: checked })}
+              onCheckedChange={checked => setFormData({ ...formData, schemaEnabled: checked })}
             />
             <Label htmlFor="schemaEnabled">Enable Schema.org structured data</Label>
           </div>
         </div>
 
         <div className="flex justify-end">
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={updateMutation.isPending}
             data-testid="button-save-seo"
           >
@@ -444,12 +478,12 @@ function SeoMetaEditor() {
   );
 }
 
-function ServerImagePicker({ 
-  value, 
+function ServerImagePicker({
+  value,
   onSelect,
-  folder = "hero"
-}: { 
-  value: string; 
+  folder = "hero",
+}: {
+  value: string;
   onSelect: (url: string) => void;
   folder?: "hero" | "cards" | "experiences" | "regions";
 }) {
@@ -459,10 +493,16 @@ function ServerImagePicker({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const { data: images, isLoading, refetch } = useQuery<AvailableImage[]>({
+  const {
+    data: images,
+    isLoading,
+    refetch,
+  } = useQuery<AvailableImage[]>({
     queryKey: ["/api/admin/homepage/available-images", folder],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/available-images?folder=${folder}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/available-images?folder=${folder}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -474,7 +514,11 @@ function ServerImagePicker({
       // Validate file type
       const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
       if (!validTypes.includes(file.type)) {
-        toast({ title: "Invalid file type", description: "Please select a JPG, PNG, WebP, or GIF image", variant: "destructive" });
+        toast({
+          title: "Invalid file type",
+          description: "Please select a JPG, PNG, WebP, or GIF image",
+          variant: "destructive",
+        });
         return;
       }
       setSelectedFile(file);
@@ -483,7 +527,10 @@ function ServerImagePicker({
       setPreviewUrl(url);
       // Suggest filename based on original
       if (!customFilename) {
-        const baseName = file.name.replace(/\.[^.]+$/, "").toLowerCase().replace(/[^a-z0-9\-_]/g, "-");
+        const baseName = file.name
+          .replace(/\.[^.]+$/, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9\-_]/g, "-");
         setCustomFilename(baseName);
       }
     }
@@ -491,7 +538,7 @@ function ServerImagePicker({
 
   const handleUpload = async () => {
     if (!selectedFile) return;
-    
+
     setIsUploading(true);
     try {
       const formData = new FormData();
@@ -506,7 +553,7 @@ function ServerImagePicker({
       });
 
       const result = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(result.error || "Upload failed");
       }
@@ -518,10 +565,10 @@ function ServerImagePicker({
       setCustomFilename("");
       refetch(); // Refresh the image list
     } catch (error) {
-      toast({ 
-        title: "Upload failed", 
+      toast({
+        title: "Upload failed",
         description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive" 
+        variant: "destructive",
       });
     } finally {
       setIsUploading(false);
@@ -542,7 +589,7 @@ function ServerImagePicker({
           <Image className="h-4 w-4" />
           Upload New Image (converts to WebP)
         </Label>
-        
+
         {!selectedFile ? (
           <div className="flex items-center gap-2">
             <Input
@@ -563,14 +610,20 @@ function ServerImagePicker({
               )}
               <div className="flex-1 space-y-2">
                 <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">Custom Filename (without extension)</Label>
+                  <Label className="text-xs text-muted-foreground">
+                    Custom Filename (without extension)
+                  </Label>
                   <Input
                     value={customFilename}
-                    onChange={(e) => setCustomFilename(e.target.value.toLowerCase().replace(/[^a-z0-9\-_]/g, "-"))}
+                    onChange={e =>
+                      setCustomFilename(e.target.value.toLowerCase().replace(/[^a-z0-9\-_]/g, "-"))
+                    }
                     placeholder="my-image-name"
                     data-testid="input-custom-filename"
                   />
-                  <p className="text-xs text-muted-foreground">Will be saved as: {customFilename || "image"}.webp</p>
+                  <p className="text-xs text-muted-foreground">
+                    Will be saved as: {customFilename || "image"}.webp
+                  </p>
                 </div>
               </div>
             </div>
@@ -578,7 +631,12 @@ function ServerImagePicker({
               <Button size="sm" variant="ghost" onClick={cancelUpload} disabled={isUploading}>
                 Cancel
               </Button>
-              <Button size="sm" onClick={handleUpload} disabled={isUploading || !customFilename} data-testid="button-confirm-upload">
+              <Button
+                size="sm"
+                onClick={handleUpload}
+                disabled={isUploading || !customFilename}
+                data-testid="button-confirm-upload"
+              >
                 {isUploading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-1 animate-spin" />
@@ -603,7 +661,7 @@ function ServerImagePicker({
         <div className="space-y-2">
           <Label className="text-muted-foreground text-sm">Or select from existing images</Label>
           <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1">
-            {images.map((img) => (
+            {images.map(img => (
               <button
                 key={img.filename}
                 type="button"
@@ -613,14 +671,12 @@ function ServerImagePicker({
                 }`}
                 data-testid={`button-select-image-${img.filename}`}
               >
-                <img 
-                  src={img.url} 
-                  alt={img.name} 
-                  className="w-full h-full object-cover"
-                />
+                <img src={img.url} alt={img.name} className="w-full h-full object-cover" />
                 {value === img.url && (
                   <div className="absolute inset-0 bg-blue-200 dark:bg-blue-900 flex items-center justify-center">
-                    <Badge variant="default" className="text-xs">Selected</Badge>
+                    <Badge variant="default" className="text-xs">
+                      Selected
+                    </Badge>
                   </div>
                 )}
               </button>
@@ -632,13 +688,13 @@ function ServerImagePicker({
   );
 }
 
-function HeroSlideItem({ 
-  slide, 
-  onUpdate, 
+function HeroSlideItem({
+  slide,
+  onUpdate,
   onDelete,
-  isRtl 
-}: { 
-  slide: HeroSlide; 
+  isRtl,
+}: {
+  slide: HeroSlide;
   onUpdate: (data: Partial<HeroSlide>) => void;
   onDelete: () => void;
   isRtl: boolean;
@@ -679,9 +735,9 @@ function HeroSlideItem({
         <div className="flex items-start gap-4">
           <div className="w-32 h-20 bg-muted rounded-md overflow-hidden flex-shrink-0">
             {slide.imageUrl && (
-              <img 
-                src={slide.imageUrl} 
-                alt={slide.imageAlt || "Hero slide"} 
+              <img
+                src={slide.imageUrl}
+                alt={slide.imageAlt || "Hero slide"}
                 className="w-full h-full object-cover"
               />
             )}
@@ -689,13 +745,19 @@ function HeroSlideItem({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <Badge variant={slide.isActive ? "default" : "secondary"}>
-                {slide.isActive ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                {slide.isActive ? (
+                  <Eye className="h-3 w-3 mr-1" />
+                ) : (
+                  <EyeOff className="h-3 w-3 mr-1" />
+                )}
                 {slide.isActive ? "Active" : "Inactive"}
               </Badge>
               <Badge variant="outline">Order: {slide.sortOrder}</Badge>
             </div>
             <p className="font-medium truncate">{slide.headline || "No headline"}</p>
-            <p className="text-sm text-muted-foreground truncate">{slide.subheadline || "No subheadline"}</p>
+            <p className="text-sm text-muted-foreground truncate">
+              {slide.subheadline || "No subheadline"}
+            </p>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Switch
@@ -705,17 +767,33 @@ function HeroSlideItem({
             />
             {isEditing ? (
               <>
-                <Button size="sm" onClick={handleSave} data-testid={`button-save-slide-${slide.id}`}>
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  data-testid={`button-save-slide-${slide.id}`}
+                >
                   <Save className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost" onClick={handleCancel}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={handleCancel}>
+                  Cancel
+                </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} data-testid={`button-edit-slide-${slide.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsEditing(true)}
+                  data-testid={`button-edit-slide-${slide.id}`}
+                >
                   <Edit2 className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={onDelete} data-testid={`button-delete-slide-${slide.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onDelete}
+                  data-testid={`button-delete-slide-${slide.id}`}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </>
@@ -729,16 +807,16 @@ function HeroSlideItem({
             {/* Server image picker */}
             <ServerImagePicker
               value={formData.imageUrl}
-              onSelect={(url) => setFormData({ ...formData, imageUrl: url })}
+              onSelect={url => setFormData({ ...formData, imageUrl: url })}
             />
-            
+
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label>Image URL (or enter custom)</Label>
                 <Input
                   data-testid={`input-slide-image-url-${slide.id}`}
                   value={formData.imageUrl}
-                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
                   placeholder="https://... or select above"
                 />
               </div>
@@ -747,7 +825,7 @@ function HeroSlideItem({
                 <Input
                   data-testid={`input-slide-image-alt-${slide.id}`}
                   value={formData.imageAlt}
-                  onChange={(e) => setFormData({ ...formData, imageAlt: e.target.value })}
+                  onChange={e => setFormData({ ...formData, imageAlt: e.target.value })}
                 />
               </div>
             </div>
@@ -757,7 +835,7 @@ function HeroSlideItem({
                 <Input
                   data-testid={`input-slide-headline-${slide.id}`}
                   value={formData.headline}
-                  onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
+                  onChange={e => setFormData({ ...formData, headline: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -766,7 +844,7 @@ function HeroSlideItem({
                 <Input
                   data-testid={`input-slide-subheadline-${slide.id}`}
                   value={formData.subheadline}
-                  onChange={(e) => setFormData({ ...formData, subheadline: e.target.value })}
+                  onChange={e => setFormData({ ...formData, subheadline: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -777,7 +855,7 @@ function HeroSlideItem({
                 <Input
                   data-testid={`input-slide-cta-text-${slide.id}`}
                   value={formData.ctaText}
-                  onChange={(e) => setFormData({ ...formData, ctaText: e.target.value })}
+                  onChange={e => setFormData({ ...formData, ctaText: e.target.value })}
                   placeholder="Explore Now"
                   dir={isRtl ? "rtl" : "ltr"}
                 />
@@ -787,7 +865,7 @@ function HeroSlideItem({
                 <Input
                   data-testid={`input-slide-cta-link-${slide.id}`}
                   value={formData.ctaLink}
-                  onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
+                  onChange={e => setFormData({ ...formData, ctaLink: e.target.value })}
                   placeholder="/destinations"
                 />
               </div>
@@ -797,7 +875,9 @@ function HeroSlideItem({
                   data-testid={`input-slide-sort-order-${slide.id}`}
                   type="number"
                   value={formData.sortOrder}
-                  onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -817,7 +897,9 @@ function HeroSlidesEditor() {
   const { data: slides, isLoading } = useQuery<HeroSlide[]>({
     queryKey: ["/api/admin/homepage/hero-slides", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/hero-slides?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/hero-slides?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -862,7 +944,12 @@ function HeroSlidesEditor() {
   const isRtl = locale === "he" || locale === "ar";
 
   if (isLoading) {
-    return <div className="space-y-4"><Skeleton className="h-32" /><Skeleton className="h-32" /></div>;
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+      </div>
+    );
   }
 
   return (
@@ -890,29 +977,41 @@ function HeroSlidesEditor() {
               <div className="flex items-center justify-between">
                 <p className="font-medium text-primary">New Hero Slide</p>
                 <div className="flex items-center gap-1">
-                  <Button size="sm" onClick={handleCreateNew} disabled={createMutation.isPending} data-testid="button-save-new-slide">
+                  <Button
+                    size="sm"
+                    onClick={handleCreateNew}
+                    disabled={createMutation.isPending}
+                    data-testid="button-save-new-slide"
+                  >
                     <Save className="h-4 w-4 mr-1" />
                     {createMutation.isPending ? "Saving..." : "Save"}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setIsAddingNew(false); setNewSlideData({}); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsAddingNew(false);
+                      setNewSlideData({});
+                    }}
+                  >
                     Cancel
                   </Button>
                 </div>
               </div>
-              
+
               {/* Server image picker */}
               <ServerImagePicker
                 value={newSlideData.imageUrl || ""}
-                onSelect={(url) => setNewSlideData({ ...newSlideData, imageUrl: url })}
+                onSelect={url => setNewSlideData({ ...newSlideData, imageUrl: url })}
               />
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Image URL (or enter custom)</Label>
                   <Input
                     data-testid="input-new-slide-image-url"
                     value={newSlideData.imageUrl || ""}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, imageUrl: e.target.value })}
+                    onChange={e => setNewSlideData({ ...newSlideData, imageUrl: e.target.value })}
                     placeholder="https://... or select above"
                   />
                 </div>
@@ -921,7 +1020,7 @@ function HeroSlidesEditor() {
                   <Input
                     data-testid="input-new-slide-image-alt"
                     value={newSlideData.imageAlt || ""}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, imageAlt: e.target.value })}
+                    onChange={e => setNewSlideData({ ...newSlideData, imageAlt: e.target.value })}
                   />
                 </div>
               </div>
@@ -931,7 +1030,7 @@ function HeroSlidesEditor() {
                   <Input
                     data-testid="input-new-slide-headline"
                     value={newSlideData.headline || ""}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, headline: e.target.value })}
+                    onChange={e => setNewSlideData({ ...newSlideData, headline: e.target.value })}
                     dir={isRtl ? "rtl" : "ltr"}
                   />
                 </div>
@@ -940,7 +1039,9 @@ function HeroSlidesEditor() {
                   <Input
                     data-testid="input-new-slide-subheadline"
                     value={newSlideData.subheadline || ""}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, subheadline: e.target.value })}
+                    onChange={e =>
+                      setNewSlideData({ ...newSlideData, subheadline: e.target.value })
+                    }
                     dir={isRtl ? "rtl" : "ltr"}
                   />
                 </div>
@@ -951,7 +1052,7 @@ function HeroSlidesEditor() {
                   <Input
                     data-testid="input-new-slide-cta-text"
                     value={newSlideData.ctaText || ""}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, ctaText: e.target.value })}
+                    onChange={e => setNewSlideData({ ...newSlideData, ctaText: e.target.value })}
                     placeholder="Explore Now"
                     dir={isRtl ? "rtl" : "ltr"}
                   />
@@ -961,7 +1062,7 @@ function HeroSlidesEditor() {
                   <Input
                     data-testid="input-new-slide-cta-link"
                     value={newSlideData.ctaLink || ""}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, ctaLink: e.target.value })}
+                    onChange={e => setNewSlideData({ ...newSlideData, ctaLink: e.target.value })}
                     placeholder="/destinations"
                   />
                 </div>
@@ -971,7 +1072,9 @@ function HeroSlidesEditor() {
                     data-testid="input-new-slide-sort-order"
                     type="number"
                     value={newSlideData.sortOrder ?? 0}
-                    onChange={(e) => setNewSlideData({ ...newSlideData, sortOrder: parseInt(e.target.value) || 0 })}
+                    onChange={e =>
+                      setNewSlideData({ ...newSlideData, sortOrder: parseInt(e.target.value) || 0 })
+                    }
                   />
                 </div>
               </div>
@@ -980,17 +1083,17 @@ function HeroSlidesEditor() {
         )}
 
         {/* Existing slides list */}
-        {(!slides || slides.length === 0) ? (
+        {!slides || slides.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             No hero slides configured. Add your first slide.
           </div>
         ) : (
           <div className="space-y-3">
-            {slides.map((slide) => (
+            {slides.map(slide => (
               <HeroSlideItem
                 key={slide.id}
                 slide={slide}
-                onUpdate={(data) => updateMutation.mutate({ id: slide.id, data })}
+                onUpdate={data => updateMutation.mutate({ id: slide.id, data })}
                 onDelete={() => deleteMutation.mutate(slide.id)}
                 isRtl={isRtl}
               />
@@ -1009,7 +1112,9 @@ function SectionsManager() {
   const { data: sections, isLoading } = useQuery<HomepageSection[]>({
     queryKey: ["/api/admin/homepage/sections", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/sections?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/sections?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -1026,7 +1131,13 @@ function SectionsManager() {
   });
 
   if (isLoading) {
-    return <div className="space-y-4">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-24" />)}</div>;
+    return (
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-24" />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -1039,14 +1150,16 @@ function SectionsManager() {
         <CardDescription>Control visibility and order of homepage sections</CardDescription>
       </CardHeader>
       <CardContent>
-        {(!sections || sections.length === 0) ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No sections configured.
-          </div>
+        {!sections || sections.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">No sections configured.</div>
         ) : (
           <div className="space-y-3">
-            {sections.map((section) => (
-              <SectionItem key={section.id} section={section} onUpdate={(data) => updateMutation.mutate({ id: section.id, data })} />
+            {sections.map(section => (
+              <SectionItem
+                key={section.id}
+                section={section}
+                onUpdate={data => updateMutation.mutate({ id: section.id, data })}
+              />
             ))}
           </div>
         )}
@@ -1055,7 +1168,13 @@ function SectionsManager() {
   );
 }
 
-function SectionItem({ section, onUpdate }: { section: HomepageSection; onUpdate: (data: Partial<HomepageSection>) => void }) {
+function SectionItem({
+  section,
+  onUpdate,
+}: {
+  section: HomepageSection;
+  onUpdate: (data: Partial<HomepageSection>) => void;
+}) {
   const { locale } = useContext(LocaleContext);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -1079,7 +1198,11 @@ function SectionItem({ section, onUpdate }: { section: HomepageSection; onUpdate
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="outline">{section.sectionKey}</Badge>
               <Badge variant={section.isVisible ? "default" : "secondary"}>
-                {section.isVisible ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                {section.isVisible ? (
+                  <Eye className="h-3 w-3 mr-1" />
+                ) : (
+                  <EyeOff className="h-3 w-3 mr-1" />
+                )}
                 {section.isVisible ? "Visible" : "Hidden"}
               </Badge>
               <Badge variant="outline">Order: {section.sortOrder}</Badge>
@@ -1091,7 +1214,7 @@ function SectionItem({ section, onUpdate }: { section: HomepageSection; onUpdate
                   <Input
                     placeholder="Title"
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={e => setFormData({ ...formData, title: e.target.value })}
                     data-testid={`input-section-title-${section.id}`}
                     dir={isRtl ? "rtl" : "ltr"}
                   />
@@ -1101,7 +1224,7 @@ function SectionItem({ section, onUpdate }: { section: HomepageSection; onUpdate
                   <Input
                     placeholder="Subtitle"
                     value={formData.subtitle}
-                    onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+                    onChange={e => setFormData({ ...formData, subtitle: e.target.value })}
                     data-testid={`input-section-subtitle-${section.id}`}
                     dir={isRtl ? "rtl" : "ltr"}
                   />
@@ -1112,7 +1235,9 @@ function SectionItem({ section, onUpdate }: { section: HomepageSection; onUpdate
                     type="number"
                     className="w-20"
                     value={formData.sortOrder}
-                    onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                    onChange={e =>
+                      setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                    }
                     data-testid={`input-section-order-${section.id}`}
                   />
                 </div>
@@ -1132,13 +1257,24 @@ function SectionItem({ section, onUpdate }: { section: HomepageSection; onUpdate
             />
             {isEditing ? (
               <>
-                <Button size="sm" onClick={handleSave} data-testid={`button-save-section-${section.id}`}>
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  data-testid={`button-save-section-${section.id}`}
+                >
                   <Save className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>
+                  Cancel
+                </Button>
               </>
             ) : (
-              <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)} data-testid={`button-edit-section-${section.id}`}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setIsEditing(true)}
+                data-testid={`button-edit-section-${section.id}`}
+              >
                 <Edit2 className="h-4 w-4" />
               </Button>
             )}
@@ -1193,13 +1329,19 @@ function QuickCategoryItem({
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <Badge variant="outline">{card.icon || "No icon"}</Badge>
               <Badge variant={card.isActive ? "default" : "secondary"}>
-                {card.isActive ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                {card.isActive ? (
+                  <Eye className="h-3 w-3 mr-1" />
+                ) : (
+                  <EyeOff className="h-3 w-3 mr-1" />
+                )}
                 {card.isActive ? "Active" : "Inactive"}
               </Badge>
               <Badge variant="outline">Order: {card.sortOrder}</Badge>
             </div>
             <p className="font-medium truncate">{card.title || "No title"}</p>
-            <p className="text-sm text-muted-foreground truncate">{card.subtitle || "No subtitle"}</p>
+            <p className="text-sm text-muted-foreground truncate">
+              {card.subtitle || "No subtitle"}
+            </p>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Switch
@@ -1212,14 +1354,26 @@ function QuickCategoryItem({
                 <Button size="sm" onClick={handleSave} data-testid={`button-save-card-${card.id}`}>
                   <Save className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost" onClick={handleCancel}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={handleCancel}>
+                  Cancel
+                </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} data-testid={`button-edit-card-${card.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsEditing(true)}
+                  data-testid={`button-edit-card-${card.id}`}
+                >
                   <Edit2 className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={onDelete} data-testid={`button-delete-card-${card.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onDelete}
+                  data-testid={`button-delete-card-${card.id}`}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </>
@@ -1235,7 +1389,7 @@ function QuickCategoryItem({
                 <Input
                   data-testid={`input-card-icon-${card.id}`}
                   value={formData.icon}
-                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                  onChange={e => setFormData({ ...formData, icon: e.target.value })}
                   placeholder="e.g. MapPin, Hotel, Utensils"
                 />
               </div>
@@ -1244,7 +1398,7 @@ function QuickCategoryItem({
                 <Input
                   data-testid={`input-card-title-${card.id}`}
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -1254,7 +1408,7 @@ function QuickCategoryItem({
               <Input
                 data-testid={`input-card-subtitle-${card.id}`}
                 value={formData.subtitle}
-                onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+                onChange={e => setFormData({ ...formData, subtitle: e.target.value })}
                 dir={isRtl ? "rtl" : "ltr"}
               />
             </div>
@@ -1264,7 +1418,7 @@ function QuickCategoryItem({
                 <Input
                   data-testid={`input-card-link-${card.id}`}
                   value={formData.linkUrl}
-                  onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
+                  onChange={e => setFormData({ ...formData, linkUrl: e.target.value })}
                   placeholder="/attractions"
                 />
               </div>
@@ -1274,7 +1428,9 @@ function QuickCategoryItem({
                   data-testid={`input-card-sort-order-${card.id}`}
                   type="number"
                   value={formData.sortOrder}
-                  onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -1294,7 +1450,9 @@ function QuickCategoriesEditor() {
   const { data: cards, isLoading } = useQuery<HomepageCard[]>({
     queryKey: ["/api/admin/homepage/cards", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/cards?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/cards?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -1339,7 +1497,13 @@ function QuickCategoriesEditor() {
   const isRtl = locale === "he" || locale === "ar";
 
   if (isLoading) {
-    return <div className="grid gap-4 md:grid-cols-3"><Skeleton className="h-32" /><Skeleton className="h-32" /><Skeleton className="h-32" /></div>;
+    return (
+      <div className="grid gap-4 md:grid-cols-3">
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+      </div>
+    );
   }
 
   return (
@@ -1366,11 +1530,23 @@ function QuickCategoriesEditor() {
               <div className="flex items-center justify-between">
                 <p className="font-medium text-primary">New Quick Category</p>
                 <div className="flex items-center gap-1">
-                  <Button size="sm" onClick={handleCreateNew} disabled={createMutation.isPending} data-testid="button-save-new-card">
+                  <Button
+                    size="sm"
+                    onClick={handleCreateNew}
+                    disabled={createMutation.isPending}
+                    data-testid="button-save-new-card"
+                  >
                     <Save className="h-4 w-4 mr-1" />
                     {createMutation.isPending ? "Saving..." : "Save"}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setIsAddingNew(false); setNewCardData({}); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsAddingNew(false);
+                      setNewCardData({});
+                    }}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -1381,7 +1557,7 @@ function QuickCategoriesEditor() {
                   <Input
                     data-testid="input-new-card-icon"
                     value={newCardData.icon || ""}
-                    onChange={(e) => setNewCardData({ ...newCardData, icon: e.target.value })}
+                    onChange={e => setNewCardData({ ...newCardData, icon: e.target.value })}
                     placeholder="e.g. MapPin, Hotel, Utensils"
                   />
                 </div>
@@ -1390,7 +1566,7 @@ function QuickCategoriesEditor() {
                   <Input
                     data-testid="input-new-card-title"
                     value={newCardData.title || ""}
-                    onChange={(e) => setNewCardData({ ...newCardData, title: e.target.value })}
+                    onChange={e => setNewCardData({ ...newCardData, title: e.target.value })}
                     dir={isRtl ? "rtl" : "ltr"}
                   />
                 </div>
@@ -1400,7 +1576,7 @@ function QuickCategoriesEditor() {
                 <Input
                   data-testid="input-new-card-subtitle"
                   value={newCardData.subtitle || ""}
-                  onChange={(e) => setNewCardData({ ...newCardData, subtitle: e.target.value })}
+                  onChange={e => setNewCardData({ ...newCardData, subtitle: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -1410,7 +1586,7 @@ function QuickCategoriesEditor() {
                   <Input
                     data-testid="input-new-card-link"
                     value={newCardData.linkUrl || ""}
-                    onChange={(e) => setNewCardData({ ...newCardData, linkUrl: e.target.value })}
+                    onChange={e => setNewCardData({ ...newCardData, linkUrl: e.target.value })}
                     placeholder="/attractions"
                   />
                 </div>
@@ -1420,7 +1596,9 @@ function QuickCategoriesEditor() {
                     data-testid="input-new-card-sort-order"
                     type="number"
                     value={newCardData.sortOrder ?? 0}
-                    onChange={(e) => setNewCardData({ ...newCardData, sortOrder: parseInt(e.target.value) || 0 })}
+                    onChange={e =>
+                      setNewCardData({ ...newCardData, sortOrder: parseInt(e.target.value) || 0 })
+                    }
                   />
                 </div>
               </div>
@@ -1428,15 +1606,15 @@ function QuickCategoriesEditor() {
           </Card>
         )}
 
-        {(!cards || cards.length === 0) ? (
+        {!cards || cards.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">No cards configured.</div>
         ) : (
           <div className="space-y-4">
-            {cards.map((card) => (
+            {cards.map(card => (
               <QuickCategoryItem
                 key={card.id}
                 card={card}
-                onUpdate={(data) => updateMutation.mutate({ id: card.id, data })}
+                onUpdate={data => updateMutation.mutate({ id: card.id, data })}
                 onDelete={() => deleteMutation.mutate(card.id)}
                 isRtl={isRtl}
               />
@@ -1496,20 +1674,30 @@ function ExperienceCategoryItem({
         <div className="flex items-start gap-4">
           <div className="w-24 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
             {category.image && (
-              <img src={category.image} alt={category.imageAlt || category.name || ""} className="w-full h-full object-cover" />
+              <img
+                src={category.image}
+                alt={category.imageAlt || category.name || ""}
+                className="w-full h-full object-cover"
+              />
             )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <Badge variant="outline">{category.icon || "No icon"}</Badge>
               <Badge variant={category.isActive ? "default" : "secondary"}>
-                {category.isActive ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                {category.isActive ? (
+                  <Eye className="h-3 w-3 mr-1" />
+                ) : (
+                  <EyeOff className="h-3 w-3 mr-1" />
+                )}
                 {category.isActive ? "Active" : "Inactive"}
               </Badge>
               <Badge variant="outline">Order: {category.sortOrder}</Badge>
             </div>
             <p className="font-medium truncate">{category.name || "No name"}</p>
-            <p className="text-sm text-muted-foreground line-clamp-1">{category.description || "No description"}</p>
+            <p className="text-sm text-muted-foreground line-clamp-1">
+              {category.description || "No description"}
+            </p>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Switch
@@ -1519,17 +1707,33 @@ function ExperienceCategoryItem({
             />
             {isEditing ? (
               <>
-                <Button size="sm" onClick={handleSave} data-testid={`button-save-experience-${category.id}`}>
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  data-testid={`button-save-experience-${category.id}`}
+                >
                   <Save className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost" onClick={handleCancel}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={handleCancel}>
+                  Cancel
+                </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} data-testid={`button-edit-experience-${category.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsEditing(true)}
+                  data-testid={`button-edit-experience-${category.id}`}
+                >
                   <Edit2 className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={onDelete} data-testid={`button-delete-experience-${category.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onDelete}
+                  data-testid={`button-delete-experience-${category.id}`}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </>
@@ -1545,7 +1749,7 @@ function ExperienceCategoryItem({
                 <Input
                   data-testid={`input-experience-name-${category.id}`}
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -1554,7 +1758,7 @@ function ExperienceCategoryItem({
                 <Input
                   data-testid={`input-experience-slug-${category.id}`}
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  onChange={e => setFormData({ ...formData, slug: e.target.value })}
                   placeholder="luxury-travel"
                 />
               </div>
@@ -1564,7 +1768,7 @@ function ExperienceCategoryItem({
               <Textarea
                 data-testid={`input-experience-description-${category.id}`}
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
                 rows={2}
                 dir={isRtl ? "rtl" : "ltr"}
               />
@@ -1575,7 +1779,7 @@ function ExperienceCategoryItem({
                 <Input
                   data-testid={`input-experience-icon-${category.id}`}
                   value={formData.icon}
-                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                  onChange={e => setFormData({ ...formData, icon: e.target.value })}
                   placeholder="Crown, Compass, Mountain"
                 />
               </div>
@@ -1584,7 +1788,7 @@ function ExperienceCategoryItem({
                 <Input
                   data-testid={`input-experience-href-${category.id}`}
                   value={formData.href}
-                  onChange={(e) => setFormData({ ...formData, href: e.target.value })}
+                  onChange={e => setFormData({ ...formData, href: e.target.value })}
                   placeholder="/experiences/luxury"
                 />
               </div>
@@ -1592,7 +1796,7 @@ function ExperienceCategoryItem({
             {/* Image upload/select */}
             <ServerImagePicker
               value={formData.image}
-              onSelect={(url) => setFormData({ ...formData, image: url })}
+              onSelect={url => setFormData({ ...formData, image: url })}
               folder="experiences"
             />
             <div className="grid gap-4 md:grid-cols-2">
@@ -1601,7 +1805,7 @@ function ExperienceCategoryItem({
                 <Input
                   data-testid={`input-experience-image-${category.id}`}
                   value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  onChange={e => setFormData({ ...formData, image: e.target.value })}
                   placeholder="https://... or use uploader above"
                 />
               </div>
@@ -1610,7 +1814,7 @@ function ExperienceCategoryItem({
                 <Input
                   data-testid={`input-experience-image-alt-${category.id}`}
                   value={formData.imageAlt}
-                  onChange={(e) => setFormData({ ...formData, imageAlt: e.target.value })}
+                  onChange={e => setFormData({ ...formData, imageAlt: e.target.value })}
                 />
               </div>
             </div>
@@ -1621,7 +1825,9 @@ function ExperienceCategoryItem({
                 type="number"
                 className="w-24"
                 value={formData.sortOrder}
-                onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                onChange={e =>
+                  setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                }
               />
             </div>
           </div>
@@ -1640,7 +1846,9 @@ function ExperienceCategoriesEditor() {
   const { data: categories, isLoading } = useQuery<ExperienceCategory[]>({
     queryKey: ["/api/admin/homepage/experience-categories", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/experience-categories?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/experience-categories?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -1651,7 +1859,9 @@ function ExperienceCategoriesEditor() {
       return apiRequest("POST", `/api/admin/homepage/experience-categories?locale=${locale}`, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/homepage/experience-categories", locale] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/admin/homepage/experience-categories", locale],
+      });
       toast({ title: "Category created" });
       setIsAddingNew(false);
       setNewCategoryData({});
@@ -1660,10 +1870,16 @@ function ExperienceCategoriesEditor() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<ExperienceCategory> }) => {
-      return apiRequest("PATCH", `/api/admin/homepage/experience-categories/${id}?locale=${locale}`, data);
+      return apiRequest(
+        "PATCH",
+        `/api/admin/homepage/experience-categories/${id}?locale=${locale}`,
+        data
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/homepage/experience-categories", locale] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/admin/homepage/experience-categories", locale],
+      });
       toast({ title: "Category updated" });
     },
   });
@@ -1673,7 +1889,9 @@ function ExperienceCategoriesEditor() {
       return apiRequest("DELETE", `/api/admin/homepage/experience-categories/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/homepage/experience-categories", locale] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/admin/homepage/experience-categories", locale],
+      });
       toast({ title: "Category deleted" });
     },
   });
@@ -1685,7 +1903,12 @@ function ExperienceCategoriesEditor() {
   const isRtl = locale === "he" || locale === "ar";
 
   if (isLoading) {
-    return <div className="grid gap-4 md:grid-cols-2"><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
+    return (
+      <div className="grid gap-4 md:grid-cols-2">
+        <Skeleton className="h-40" />
+        <Skeleton className="h-40" />
+      </div>
+    );
   }
 
   return (
@@ -1712,11 +1935,23 @@ function ExperienceCategoriesEditor() {
               <div className="flex items-center justify-between">
                 <p className="font-medium text-primary">New Experience Category</p>
                 <div className="flex items-center gap-1">
-                  <Button size="sm" onClick={handleCreateNew} disabled={createMutation.isPending} data-testid="button-save-new-experience">
+                  <Button
+                    size="sm"
+                    onClick={handleCreateNew}
+                    disabled={createMutation.isPending}
+                    data-testid="button-save-new-experience"
+                  >
                     <Save className="h-4 w-4 mr-1" />
                     {createMutation.isPending ? "Saving..." : "Save"}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setIsAddingNew(false); setNewCategoryData({}); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsAddingNew(false);
+                      setNewCategoryData({});
+                    }}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -1727,7 +1962,7 @@ function ExperienceCategoriesEditor() {
                   <Input
                     data-testid="input-new-experience-name"
                     value={newCategoryData.name || ""}
-                    onChange={(e) => setNewCategoryData({ ...newCategoryData, name: e.target.value })}
+                    onChange={e => setNewCategoryData({ ...newCategoryData, name: e.target.value })}
                     dir={isRtl ? "rtl" : "ltr"}
                   />
                 </div>
@@ -1736,7 +1971,7 @@ function ExperienceCategoriesEditor() {
                   <Input
                     data-testid="input-new-experience-slug"
                     value={newCategoryData.slug || ""}
-                    onChange={(e) => setNewCategoryData({ ...newCategoryData, slug: e.target.value })}
+                    onChange={e => setNewCategoryData({ ...newCategoryData, slug: e.target.value })}
                     placeholder="luxury-travel"
                   />
                 </div>
@@ -1746,7 +1981,9 @@ function ExperienceCategoriesEditor() {
                 <Textarea
                   data-testid="input-new-experience-description"
                   value={newCategoryData.description || ""}
-                  onChange={(e) => setNewCategoryData({ ...newCategoryData, description: e.target.value })}
+                  onChange={e =>
+                    setNewCategoryData({ ...newCategoryData, description: e.target.value })
+                  }
                   rows={2}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
@@ -1757,7 +1994,7 @@ function ExperienceCategoriesEditor() {
                   <Input
                     data-testid="input-new-experience-icon"
                     value={newCategoryData.icon || ""}
-                    onChange={(e) => setNewCategoryData({ ...newCategoryData, icon: e.target.value })}
+                    onChange={e => setNewCategoryData({ ...newCategoryData, icon: e.target.value })}
                     placeholder="Crown, Compass, Mountain"
                   />
                 </div>
@@ -1766,7 +2003,7 @@ function ExperienceCategoriesEditor() {
                   <Input
                     data-testid="input-new-experience-href"
                     value={newCategoryData.href || ""}
-                    onChange={(e) => setNewCategoryData({ ...newCategoryData, href: e.target.value })}
+                    onChange={e => setNewCategoryData({ ...newCategoryData, href: e.target.value })}
                     placeholder="/experiences/luxury"
                   />
                 </div>
@@ -1774,7 +2011,7 @@ function ExperienceCategoriesEditor() {
               {/* Image upload/select */}
               <ServerImagePicker
                 value={newCategoryData.image || ""}
-                onSelect={(url) => setNewCategoryData({ ...newCategoryData, image: url })}
+                onSelect={url => setNewCategoryData({ ...newCategoryData, image: url })}
                 folder="experiences"
               />
               <div className="grid gap-4 md:grid-cols-2">
@@ -1783,7 +2020,9 @@ function ExperienceCategoriesEditor() {
                   <Input
                     data-testid="input-new-experience-image"
                     value={newCategoryData.image || ""}
-                    onChange={(e) => setNewCategoryData({ ...newCategoryData, image: e.target.value })}
+                    onChange={e =>
+                      setNewCategoryData({ ...newCategoryData, image: e.target.value })
+                    }
                     placeholder="https://... or use uploader above"
                   />
                 </div>
@@ -1792,7 +2031,9 @@ function ExperienceCategoriesEditor() {
                   <Input
                     data-testid="input-new-experience-image-alt"
                     value={newCategoryData.imageAlt || ""}
-                    onChange={(e) => setNewCategoryData({ ...newCategoryData, imageAlt: e.target.value })}
+                    onChange={e =>
+                      setNewCategoryData({ ...newCategoryData, imageAlt: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -1803,22 +2044,29 @@ function ExperienceCategoriesEditor() {
                   type="number"
                   className="w-24"
                   value={newCategoryData.sortOrder ?? 0}
-                  onChange={(e) => setNewCategoryData({ ...newCategoryData, sortOrder: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setNewCategoryData({
+                      ...newCategoryData,
+                      sortOrder: parseInt(e.target.value) || 0,
+                    })
+                  }
                 />
               </div>
             </CardContent>
           </Card>
         )}
 
-        {(!categories || categories.length === 0) ? (
-          <div className="text-center py-8 text-muted-foreground">No experience categories configured.</div>
+        {!categories || categories.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            No experience categories configured.
+          </div>
         ) : (
           <div className="space-y-4">
-            {categories.map((category) => (
+            {categories.map(category => (
               <ExperienceCategoryItem
                 key={category.id}
                 category={category}
-                onUpdate={(data) => updateMutation.mutate({ id: category.id, data })}
+                onUpdate={data => updateMutation.mutate({ id: category.id, data })}
                 onDelete={() => deleteMutation.mutate(category.id)}
                 isRtl={isRtl}
               />
@@ -1854,10 +2102,13 @@ function RegionLinkItem({
   );
 
   const handleSave = () => {
-    const destinations = destinationsText.split("\n").filter(Boolean).map(line => {
-      const [name, slug] = line.split(":");
-      return { name: name?.trim() || "", slug: slug?.trim() || "" };
-    });
+    const destinations = destinationsText
+      .split("\n")
+      .filter(Boolean)
+      .map(line => {
+        const [name, slug] = line.split(":");
+        return { name: name?.trim() || "", slug: slug?.trim() || "" };
+      });
     onUpdate({ ...formData, destinations });
     setIsEditing(false);
   };
@@ -1882,14 +2133,22 @@ function RegionLinkItem({
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <Badge variant="outline">{link.icon || "No icon"}</Badge>
               <Badge variant={link.isActive ? "default" : "secondary"}>
-                {link.isActive ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                {link.isActive ? (
+                  <Eye className="h-3 w-3 mr-1" />
+                ) : (
+                  <EyeOff className="h-3 w-3 mr-1" />
+                )}
                 {link.isActive ? "Active" : "Inactive"}
               </Badge>
               <Badge variant="outline">Order: {link.sortOrder}</Badge>
             </div>
             <p className="font-medium truncate">{link.regionName}</p>
-            <p className="text-sm text-muted-foreground truncate">{link.name || "No display name"}</p>
-            <p className="text-xs text-muted-foreground">{link.destinations?.length || 0} destinations</p>
+            <p className="text-sm text-muted-foreground truncate">
+              {link.name || "No display name"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {link.destinations?.length || 0} destinations
+            </p>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Switch
@@ -1899,17 +2158,33 @@ function RegionLinkItem({
             />
             {isEditing ? (
               <>
-                <Button size="sm" onClick={handleSave} data-testid={`button-save-region-${link.id}`}>
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  data-testid={`button-save-region-${link.id}`}
+                >
                   <Save className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost" onClick={handleCancel}>Cancel</Button>
+                <Button size="sm" variant="ghost" onClick={handleCancel}>
+                  Cancel
+                </Button>
               </>
             ) : (
               <>
-                <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)} data-testid={`button-edit-region-${link.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsEditing(true)}
+                  data-testid={`button-edit-region-${link.id}`}
+                >
                   <Edit2 className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={onDelete} data-testid={`button-delete-region-${link.id}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onDelete}
+                  data-testid={`button-delete-region-${link.id}`}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </>
@@ -1925,7 +2200,7 @@ function RegionLinkItem({
                 <Input
                   data-testid={`input-region-name-${link.id}`}
                   value={formData.regionName}
-                  onChange={(e) => setFormData({ ...formData, regionName: e.target.value })}
+                  onChange={e => setFormData({ ...formData, regionName: e.target.value })}
                   placeholder="Middle East"
                 />
               </div>
@@ -1934,7 +2209,7 @@ function RegionLinkItem({
                 <Input
                   data-testid={`input-region-icon-${link.id}`}
                   value={formData.icon}
-                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                  onChange={e => setFormData({ ...formData, icon: e.target.value })}
                   placeholder="Globe, MapPin"
                 />
               </div>
@@ -1944,7 +2219,7 @@ function RegionLinkItem({
               <Input
                 data-testid={`input-region-display-name-${link.id}`}
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
                 dir={isRtl ? "rtl" : "ltr"}
               />
             </div>
@@ -1954,7 +2229,7 @@ function RegionLinkItem({
                 <Input
                   data-testid={`input-region-link-url-${link.id}`}
                   value={formData.linkUrl}
-                  onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
+                  onChange={e => setFormData({ ...formData, linkUrl: e.target.value })}
                   placeholder="/regions/middle-east"
                 />
               </div>
@@ -1964,7 +2239,9 @@ function RegionLinkItem({
                   data-testid={`input-region-sort-order-${link.id}`}
                   type="number"
                   value={formData.sortOrder}
-                  onChange={(e) => setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -1973,7 +2250,7 @@ function RegionLinkItem({
               <Textarea
                 data-testid={`input-region-destinations-${link.id}`}
                 value={destinationsText}
-                onChange={(e) => setDestinationsText(e.target.value)}
+                onChange={e => setDestinationsText(e.target.value)}
                 placeholder="Dubai:dubai&#10;Abu Dhabi:abu-dhabi&#10;Qatar:qatar"
                 rows={4}
               />
@@ -1996,7 +2273,9 @@ function RegionLinksEditor() {
   const { data: links, isLoading } = useQuery<RegionLink[]>({
     queryKey: ["/api/admin/homepage/region-links", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/region-links?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/region-links?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -2036,17 +2315,29 @@ function RegionLinksEditor() {
   });
 
   const handleCreateNew = () => {
-    const destinations = newDestinationsText.split("\n").filter(Boolean).map(line => {
-      const [name, slug] = line.split(":");
-      return { name: name?.trim() || "", slug: slug?.trim() || "" };
+    const destinations = newDestinationsText
+      .split("\n")
+      .filter(Boolean)
+      .map(line => {
+        const [name, slug] = line.split(":");
+        return { name: name?.trim() || "", slug: slug?.trim() || "" };
+      });
+    createMutation.mutate({
+      ...newLinkData,
+      destinations,
+      regionName: newLinkData.regionName || "",
     });
-    createMutation.mutate({ ...newLinkData, destinations, regionName: newLinkData.regionName || "" });
   };
 
   const isRtl = locale === "he" || locale === "ar";
 
   if (isLoading) {
-    return <div className="grid gap-4 md:grid-cols-2"><Skeleton className="h-32" /><Skeleton className="h-32" /></div>;
+    return (
+      <div className="grid gap-4 md:grid-cols-2">
+        <Skeleton className="h-32" />
+        <Skeleton className="h-32" />
+      </div>
+    );
   }
 
   return (
@@ -2073,11 +2364,24 @@ function RegionLinksEditor() {
               <div className="flex items-center justify-between">
                 <p className="font-medium text-primary">New Region Link</p>
                 <div className="flex items-center gap-1">
-                  <Button size="sm" onClick={handleCreateNew} disabled={createMutation.isPending} data-testid="button-save-new-region">
+                  <Button
+                    size="sm"
+                    onClick={handleCreateNew}
+                    disabled={createMutation.isPending}
+                    data-testid="button-save-new-region"
+                  >
                     <Save className="h-4 w-4 mr-1" />
                     {createMutation.isPending ? "Saving..." : "Save"}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setIsAddingNew(false); setNewLinkData({}); setNewDestinationsText(""); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsAddingNew(false);
+                      setNewLinkData({});
+                      setNewDestinationsText("");
+                    }}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -2088,7 +2392,7 @@ function RegionLinksEditor() {
                   <Input
                     data-testid="input-new-region-name"
                     value={newLinkData.regionName || ""}
-                    onChange={(e) => setNewLinkData({ ...newLinkData, regionName: e.target.value })}
+                    onChange={e => setNewLinkData({ ...newLinkData, regionName: e.target.value })}
                     placeholder="Middle East"
                   />
                 </div>
@@ -2097,7 +2401,7 @@ function RegionLinksEditor() {
                   <Input
                     data-testid="input-new-region-icon"
                     value={newLinkData.icon || ""}
-                    onChange={(e) => setNewLinkData({ ...newLinkData, icon: e.target.value })}
+                    onChange={e => setNewLinkData({ ...newLinkData, icon: e.target.value })}
                     placeholder="Globe, MapPin"
                   />
                 </div>
@@ -2107,7 +2411,7 @@ function RegionLinksEditor() {
                 <Input
                   data-testid="input-new-region-display-name"
                   value={newLinkData.name || ""}
-                  onChange={(e) => setNewLinkData({ ...newLinkData, name: e.target.value })}
+                  onChange={e => setNewLinkData({ ...newLinkData, name: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -2117,7 +2421,7 @@ function RegionLinksEditor() {
                   <Input
                     data-testid="input-new-region-link-url"
                     value={newLinkData.linkUrl || ""}
-                    onChange={(e) => setNewLinkData({ ...newLinkData, linkUrl: e.target.value })}
+                    onChange={e => setNewLinkData({ ...newLinkData, linkUrl: e.target.value })}
                     placeholder="/regions/middle-east"
                   />
                 </div>
@@ -2127,7 +2431,9 @@ function RegionLinksEditor() {
                     data-testid="input-new-region-sort-order"
                     type="number"
                     value={newLinkData.sortOrder ?? 0}
-                    onChange={(e) => setNewLinkData({ ...newLinkData, sortOrder: parseInt(e.target.value) || 0 })}
+                    onChange={e =>
+                      setNewLinkData({ ...newLinkData, sortOrder: parseInt(e.target.value) || 0 })
+                    }
                   />
                 </div>
               </div>
@@ -2136,7 +2442,7 @@ function RegionLinksEditor() {
                 <Textarea
                   data-testid="input-new-region-destinations"
                   value={newDestinationsText}
-                  onChange={(e) => setNewDestinationsText(e.target.value)}
+                  onChange={e => setNewDestinationsText(e.target.value)}
                   placeholder="Dubai:dubai&#10;Abu Dhabi:abu-dhabi&#10;Qatar:qatar"
                   rows={4}
                 />
@@ -2146,15 +2452,15 @@ function RegionLinksEditor() {
           </Card>
         )}
 
-        {(!links || links.length === 0) ? (
+        {!links || links.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">No region links configured.</div>
         ) : (
           <div className="space-y-4">
-            {links.map((link) => (
+            {links.map(link => (
               <RegionLinkItem
                 key={link.id}
                 link={link}
-                onUpdate={(data) => updateMutation.mutate({ id: link.id, data })}
+                onUpdate={data => updateMutation.mutate({ id: link.id, data })}
                 onDelete={() => deleteMutation.mutate(link.id)}
                 isRtl={isRtl}
               />
@@ -2174,7 +2480,9 @@ function HomepageCtaEditor() {
   const { data: cta, isLoading } = useQuery<HomepageCta | null>({
     queryKey: ["/api/admin/homepage/cta", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/cta?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/cta?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -2221,7 +2529,7 @@ function HomepageCtaEditor() {
             id="ctaVisible"
             data-testid="switch-cta-visible"
             checked={currentData.isVisible ?? true}
-            onCheckedChange={(checked) => setFormData({ ...formData, isVisible: checked })}
+            onCheckedChange={checked => setFormData({ ...formData, isVisible: checked })}
           />
           <Label htmlFor="ctaVisible">Show CTA section on homepage</Label>
         </div>
@@ -2232,7 +2540,7 @@ function HomepageCtaEditor() {
             id="ctaHeadline"
             data-testid="input-cta-headline"
             value={currentData.headline || ""}
-            onChange={(e) => setFormData({ ...formData, headline: e.target.value })}
+            onChange={e => setFormData({ ...formData, headline: e.target.value })}
             placeholder="Stay Updated with Travel Insights"
             dir={isRtl ? "rtl" : "ltr"}
           />
@@ -2244,7 +2552,7 @@ function HomepageCtaEditor() {
             id="ctaSubheadline"
             data-testid="input-cta-subheadline"
             value={currentData.subheadline || ""}
-            onChange={(e) => setFormData({ ...formData, subheadline: e.target.value })}
+            onChange={e => setFormData({ ...formData, subheadline: e.target.value })}
             dir={isRtl ? "rtl" : "ltr"}
           />
         </div>
@@ -2255,7 +2563,7 @@ function HomepageCtaEditor() {
             id="ctaButtonText"
             data-testid="input-cta-button-text"
             value={currentData.buttonText || ""}
-            onChange={(e) => setFormData({ ...formData, buttonText: e.target.value })}
+            onChange={e => setFormData({ ...formData, buttonText: e.target.value })}
             placeholder="Subscribe"
             dir={isRtl ? "rtl" : "ltr"}
           />
@@ -2267,7 +2575,7 @@ function HomepageCtaEditor() {
             id="ctaInputPlaceholder"
             data-testid="input-cta-placeholder"
             value={currentData.inputPlaceholder || ""}
-            onChange={(e) => setFormData({ ...formData, inputPlaceholder: e.target.value })}
+            onChange={e => setFormData({ ...formData, inputPlaceholder: e.target.value })}
             placeholder="Enter your email"
             dir={isRtl ? "rtl" : "ltr"}
           />
@@ -2279,15 +2587,15 @@ function HomepageCtaEditor() {
             id="ctaHelperText"
             data-testid="input-cta-helper-text"
             value={currentData.helperText || ""}
-            onChange={(e) => setFormData({ ...formData, helperText: e.target.value })}
+            onChange={e => setFormData({ ...formData, helperText: e.target.value })}
             placeholder="We respect your privacy"
             dir={isRtl ? "rtl" : "ltr"}
           />
         </div>
 
         <div className="flex justify-end">
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={updateMutation.isPending}
             data-testid="button-save-cta"
           >
@@ -2335,7 +2643,7 @@ function DestinationItem({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           imageUrl: formData.cardImage,
           filename: formData.cardImage.split("/").pop() || "",
         }),
@@ -2351,22 +2659,26 @@ function DestinationItem({
           summary: meta.seoDescription || prev.summary,
           slug: meta.slug ? `/destinations/${meta.slug}` : prev.slug,
         }));
-        toast({ 
-          title: "Auto Meta generated", 
-          description: `Applied: ${meta.destination || 'metadata'} (${meta.confidence}% confidence)` 
+        toast({
+          title: "Auto Meta generated",
+          description: `Applied: ${meta.destination || "metadata"} (${meta.confidence}% confidence)`,
         });
       } else {
         // Display specific error message from backend
         const errorMsg = data.error?.message || data.error || "Unknown error";
         const errorCode = data.error?.code || "UNKNOWN";
-        toast({ 
-          title: `Auto Meta Failed (${errorCode})`, 
-          description: errorMsg, 
-          variant: "destructive" 
+        toast({
+          title: `Auto Meta Failed (${errorCode})`,
+          description: errorMsg,
+          variant: "destructive",
         });
       }
     } catch (err) {
-      toast({ title: "Auto Meta error", description: "Network or server error", variant: "destructive" });
+      toast({
+        title: "Auto Meta error",
+        description: "Network or server error",
+        variant: "destructive",
+      });
     } finally {
       setIsAnalyzing(false);
     }
@@ -2393,13 +2705,19 @@ function DestinationItem({
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-medium truncate">{destination.name || "Unnamed"}</span>
                 {destination.country && (
-                  <Badge variant="secondary" className="text-xs">{destination.country}</Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    {destination.country}
+                  </Badge>
                 )}
                 {!destination.isActive && (
-                  <Badge variant="outline" className="text-xs">Inactive</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Inactive
+                  </Badge>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground truncate">{destination.summary || "No summary"}</p>
+              <p className="text-sm text-muted-foreground truncate">
+                {destination.summary || "No summary"}
+              </p>
               <p className="text-xs text-muted-foreground">{destination.slug}</p>
             </div>
           </div>
@@ -2429,13 +2747,17 @@ function DestinationItem({
               <div className="flex items-center gap-2">
                 <Switch
                   checked={formData.isActive}
-                  onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                  onCheckedChange={checked => setFormData({ ...formData, isActive: checked })}
                   data-testid={`switch-destination-active-${destination.id}`}
                 />
                 <Label className="text-sm">Active</Label>
               </div>
               <div className="flex items-center gap-1">
-                <Button size="sm" onClick={handleSave} data-testid={`button-save-destination-${destination.id}`}>
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  data-testid={`button-save-destination-${destination.id}`}
+                >
                   <Save className="h-4 w-4 mr-1" />
                   Save
                 </Button>
@@ -2451,7 +2773,7 @@ function DestinationItem({
                 <Input
                   data-testid={`input-destination-name-${destination.id}`}
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
               </div>
@@ -2460,7 +2782,7 @@ function DestinationItem({
                 <Input
                   data-testid={`input-destination-country-${destination.id}`}
                   value={formData.country}
-                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                  onChange={e => setFormData({ ...formData, country: e.target.value })}
                 />
               </div>
             </div>
@@ -2470,7 +2792,7 @@ function DestinationItem({
               <Input
                 data-testid={`input-destination-slug-${destination.id}`}
                 value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                onChange={e => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="/destinations/dubai"
               />
             </div>
@@ -2480,7 +2802,7 @@ function DestinationItem({
               <Textarea
                 data-testid={`input-destination-summary-${destination.id}`}
                 value={formData.summary}
-                onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                onChange={e => setFormData({ ...formData, summary: e.target.value })}
                 rows={2}
                 dir={isRtl ? "rtl" : "ltr"}
               />
@@ -2488,7 +2810,7 @@ function DestinationItem({
 
             <ServerImagePicker
               value={formData.cardImage}
-              onSelect={(url) => setFormData({ ...formData, cardImage: url })}
+              onSelect={url => setFormData({ ...formData, cardImage: url })}
               folder="cards"
             />
 
@@ -2498,7 +2820,7 @@ function DestinationItem({
                 <Input
                   data-testid={`input-destination-image-${destination.id}`}
                   value={formData.cardImage}
-                  onChange={(e) => setFormData({ ...formData, cardImage: e.target.value })}
+                  onChange={e => setFormData({ ...formData, cardImage: e.target.value })}
                   placeholder="https://... or use uploader above"
                 />
               </div>
@@ -2520,7 +2842,7 @@ function DestinationItem({
                 <Input
                   data-testid={`input-destination-image-alt-${destination.id}`}
                   value={formData.cardImageAlt}
-                  onChange={(e) => setFormData({ ...formData, cardImageAlt: e.target.value })}
+                  onChange={e => setFormData({ ...formData, cardImageAlt: e.target.value })}
                   placeholder="Descriptive alt text for SEO"
                 />
               </div>
@@ -2542,7 +2864,9 @@ function DestinationsEditor() {
   const { data: destinationsList, isLoading } = useQuery<Destination[]>({
     queryKey: ["/api/admin/homepage/destinations", locale],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/homepage/destinations?locale=${locale}`, { credentials: "include" });
+      const res = await fetch(`/api/admin/homepage/destinations?locale=${locale}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -2594,7 +2918,7 @@ function DestinationsEditor() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           imageUrl: newDestinationData.cardImage,
           filename: newDestinationData.cardImage.split("/").pop() || "",
         }),
@@ -2612,22 +2936,26 @@ function DestinationsEditor() {
           cardImageAlt: meta.altText || prev.cardImageAlt,
           summary: meta.seoDescription || prev.summary,
         }));
-        toast({ 
-          title: "Auto Meta generated", 
-          description: `Applied: ${meta.destination || 'metadata'} (${meta.confidence}% confidence)` 
+        toast({
+          title: "Auto Meta generated",
+          description: `Applied: ${meta.destination || "metadata"} (${meta.confidence}% confidence)`,
         });
       } else {
         // Display specific error message from backend
         const errorMsg = data.error?.message || data.error || "Unknown error";
         const errorCode = data.error?.code || "UNKNOWN";
-        toast({ 
-          title: `Auto Meta Failed (${errorCode})`, 
-          description: errorMsg, 
-          variant: "destructive" 
+        toast({
+          title: `Auto Meta Failed (${errorCode})`,
+          description: errorMsg,
+          variant: "destructive",
         });
       }
     } catch (err) {
-      toast({ title: "Auto Meta error", description: "Network or server error", variant: "destructive" });
+      toast({
+        title: "Auto Meta error",
+        description: "Network or server error",
+        variant: "destructive",
+      });
     } finally {
       setIsAnalyzingNew(false);
     }
@@ -2644,7 +2972,12 @@ function DestinationsEditor() {
   const isRtl = locale === "he" || locale === "ar";
 
   if (isLoading) {
-    return <div className="grid gap-4 md:grid-cols-2"><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
+    return (
+      <div className="grid gap-4 md:grid-cols-2">
+        <Skeleton className="h-40" />
+        <Skeleton className="h-40" />
+      </div>
+    );
   }
 
   return (
@@ -2655,7 +2988,9 @@ function DestinationsEditor() {
             <Globe className="h-5 w-5" />
             Destinations
           </CardTitle>
-          <CardDescription>Travel destinations displayed on the homepage (countries, cities, areas)</CardDescription>
+          <CardDescription>
+            Travel destinations displayed on the homepage (countries, cities, areas)
+          </CardDescription>
         </div>
         {!isAddingNew && (
           <Button onClick={() => setIsAddingNew(true)} data-testid="button-add-destination">
@@ -2671,11 +3006,23 @@ function DestinationsEditor() {
               <div className="flex items-center justify-between">
                 <p className="font-medium text-primary">New Destination</p>
                 <div className="flex items-center gap-1">
-                  <Button size="sm" onClick={handleCreateNew} disabled={createMutation.isPending} data-testid="button-save-new-destination">
+                  <Button
+                    size="sm"
+                    onClick={handleCreateNew}
+                    disabled={createMutation.isPending}
+                    data-testid="button-save-new-destination"
+                  >
                     <Save className="h-4 w-4 mr-1" />
                     {createMutation.isPending ? "Saving..." : "Save"}
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setIsAddingNew(false); setNewDestinationData({}); }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsAddingNew(false);
+                      setNewDestinationData({});
+                    }}
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -2687,7 +3034,9 @@ function DestinationsEditor() {
                   <Input
                     data-testid="input-new-destination-id"
                     value={newDestinationData.id || ""}
-                    onChange={(e) => setNewDestinationData({ ...newDestinationData, id: e.target.value })}
+                    onChange={e =>
+                      setNewDestinationData({ ...newDestinationData, id: e.target.value })
+                    }
                     placeholder="dubai"
                   />
                 </div>
@@ -2696,7 +3045,9 @@ function DestinationsEditor() {
                   <Input
                     data-testid="input-new-destination-name"
                     value={newDestinationData.name || ""}
-                    onChange={(e) => setNewDestinationData({ ...newDestinationData, name: e.target.value })}
+                    onChange={e =>
+                      setNewDestinationData({ ...newDestinationData, name: e.target.value })
+                    }
                     dir={isRtl ? "rtl" : "ltr"}
                   />
                 </div>
@@ -2705,7 +3056,9 @@ function DestinationsEditor() {
                   <Input
                     data-testid="input-new-destination-country"
                     value={newDestinationData.country || ""}
-                    onChange={(e) => setNewDestinationData({ ...newDestinationData, country: e.target.value })}
+                    onChange={e =>
+                      setNewDestinationData({ ...newDestinationData, country: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -2715,7 +3068,9 @@ function DestinationsEditor() {
                 <Input
                   data-testid="input-new-destination-slug"
                   value={newDestinationData.slug || ""}
-                  onChange={(e) => setNewDestinationData({ ...newDestinationData, slug: e.target.value })}
+                  onChange={e =>
+                    setNewDestinationData({ ...newDestinationData, slug: e.target.value })
+                  }
                   placeholder="/destinations/dubai"
                 />
               </div>
@@ -2725,7 +3080,9 @@ function DestinationsEditor() {
                 <Textarea
                   data-testid="input-new-destination-summary"
                   value={newDestinationData.summary || ""}
-                  onChange={(e) => setNewDestinationData({ ...newDestinationData, summary: e.target.value })}
+                  onChange={e =>
+                    setNewDestinationData({ ...newDestinationData, summary: e.target.value })
+                  }
                   rows={2}
                   dir={isRtl ? "rtl" : "ltr"}
                 />
@@ -2733,7 +3090,7 @@ function DestinationsEditor() {
 
               <ServerImagePicker
                 value={newDestinationData.cardImage || ""}
-                onSelect={(url) => setNewDestinationData({ ...newDestinationData, cardImage: url })}
+                onSelect={url => setNewDestinationData({ ...newDestinationData, cardImage: url })}
                 folder="cards"
               />
 
@@ -2743,7 +3100,9 @@ function DestinationsEditor() {
                   <Input
                     data-testid="input-new-destination-image"
                     value={newDestinationData.cardImage || ""}
-                    onChange={(e) => setNewDestinationData({ ...newDestinationData, cardImage: e.target.value })}
+                    onChange={e =>
+                      setNewDestinationData({ ...newDestinationData, cardImage: e.target.value })
+                    }
                     placeholder="https://... or use uploader above"
                   />
                 </div>
@@ -2765,7 +3124,9 @@ function DestinationsEditor() {
                   <Input
                     data-testid="input-new-destination-image-alt"
                     value={newDestinationData.cardImageAlt || ""}
-                    onChange={(e) => setNewDestinationData({ ...newDestinationData, cardImageAlt: e.target.value })}
+                    onChange={e =>
+                      setNewDestinationData({ ...newDestinationData, cardImageAlt: e.target.value })
+                    }
                     placeholder="Descriptive alt text for SEO"
                   />
                 </div>
@@ -2774,15 +3135,15 @@ function DestinationsEditor() {
           </Card>
         )}
 
-        {(!destinationsList || destinationsList.length === 0) ? (
+        {!destinationsList || destinationsList.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">No destinations configured.</div>
         ) : (
           <div className="space-y-4">
-            {destinationsList.map((destination) => (
+            {destinationsList.map(destination => (
               <DestinationItem
                 key={destination.id}
                 destination={destination}
-                onUpdate={(data) => updateMutation.mutate({ id: destination.id, data })}
+                onUpdate={data => updateMutation.mutate({ id: destination.id, data })}
                 onDelete={() => deleteMutation.mutate(destination.id)}
                 isRtl={isRtl}
               />

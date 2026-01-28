@@ -1116,9 +1116,9 @@ export default function StaticPageEditor() {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="border-b bg-background sticky top-0 z-10">
-        <div className="flex items-center justify-between gap-4 p-4">
+    <div className="min-h-screen bg-[hsl(var(--admin-bg))] flex flex-col">
+      <div className="border-b border-[hsl(var(--admin-border))] bg-white sticky top-0 z-10">
+        <div className="flex items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
@@ -1129,10 +1129,12 @@ export default function StaticPageEditor() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-lg font-semibold">
+              <h1 className="text-xl font-semibold text-[hsl(var(--admin-text))]">
                 {isNew ? "Create Static Page" : `Edit: ${page?.title || ""}`}
               </h1>
-              {!isNew && page && <p className="text-sm text-muted-foreground">/{page.slug}</p>}
+              {!isNew && page && (
+                <p className="text-sm text-[hsl(var(--admin-text-secondary))] mt-1">/{page.slug}</p>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -1199,242 +1201,247 @@ export default function StaticPageEditor() {
 
       <div className="flex-1 overflow-hidden">
         <div className="h-full flex">
-          <ScrollArea className="flex-1 p-6">
-            <div className="max-w-3xl mx-auto space-y-6">
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="text-base">Page Settings</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Edit contents in English. Use "Translate to All Languages" button to
-                    auto-translate to 16 languages.
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Slug (URL path)</Label>
-                      <Input
-                        value={formData.slug}
-                        onChange={e =>
-                          updateFormField("slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))
-                        }
-                        placeholder="privacy-policy"
-                        data-testid="input-slug"
-                      />
+          <ScrollArea className="flex-1">
+            <div className="p-6">
+              <div className="max-w-3xl mx-auto space-y-6">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="text-base">Page Settings</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Edit contents in English. Use "Translate to All Languages" button to
+                      auto-translate to 16 languages.
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Slug (URL path)</Label>
+                        <Input
+                          value={formData.slug}
+                          onChange={e =>
+                            updateFormField(
+                              "slug",
+                              e.target.value.toLowerCase().replace(/\s+/g, "-")
+                            )
+                          }
+                          placeholder="privacy-policy"
+                          data-testid="input-slug"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Title</Label>
+                        <Input
+                          value={formData.title}
+                          onChange={e => updateFormField("title", e.target.value)}
+                          placeholder="Page title"
+                          data-testid="input-title"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label>Title</Label>
+                      <Label>Meta Title</Label>
                       <Input
-                        value={formData.title}
-                        onChange={e => updateFormField("title", e.target.value)}
-                        placeholder="Page title"
-                        data-testid="input-title"
+                        value={formData.metaTitle}
+                        onChange={e => updateFormField("metaTitle", e.target.value)}
+                        placeholder="Page Title | Site Name"
+                        data-testid="input-meta-title"
                       />
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Meta Title</Label>
-                    <Input
-                      value={formData.metaTitle}
-                      onChange={e => updateFormField("metaTitle", e.target.value)}
-                      placeholder="Page Title | Site Name"
-                      data-testid="input-meta-title"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Meta Description</Label>
-                    <Textarea
-                      value={formData.metaDescription}
-                      onChange={e => updateFormField("metaDescription", e.target.value)}
-                      rows={2}
-                      placeholder="Brief description for search engines..."
-                      data-testid="input-meta-description"
-                    />
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        checked={formData.isActive}
-                        onCheckedChange={checked => updateFormField("isActive", checked)}
-                        data-testid="switch-active"
+                    <div className="space-y-2">
+                      <Label>Meta Description</Label>
+                      <Textarea
+                        value={formData.metaDescription}
+                        onChange={e => updateFormField("metaDescription", e.target.value)}
+                        rows={2}
+                        placeholder="Brief description for search engines..."
+                        data-testid="input-meta-description"
                       />
-                      <Label>Active</Label>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        checked={formData.showInFooter}
-                        onCheckedChange={checked => updateFormField("showInFooter", checked)}
-                        data-testid="switch-footer"
-                      />
-                      <Label>Show in footer</Label>
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          checked={formData.isActive}
+                          onCheckedChange={checked => updateFormField("isActive", checked)}
+                          data-testid="switch-active"
+                        />
+                        <Label>Active</Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          checked={formData.showInFooter}
+                          onCheckedChange={checked => updateFormField("showInFooter", checked)}
+                          data-testid="switch-footer"
+                        />
+                        <Label>Show in footer</Label>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h2 className="text-lg font-semibold">Content Blocks</h2>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="hidden"
-                      accept=".docx,.doc"
-                      onChange={handleFileSelect}
-                      data-testid="input-file-upload"
-                    />
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" data-testid="button-import-document">
-                          <FileUp className="h-4 w-4 mr-2" />
-                          Import Document
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56">
-                        <DropdownMenuItem
-                          onClick={() => fileInputRef.current?.click()}
-                          data-testid="import-from-file"
-                        >
-                          <FileUp className="h-4 w-4 mr-2" />
-                          <div>
-                            <div className="font-medium">Upload DOCX File</div>
-                            <div className="text-xs text-muted-foreground">
-                              Import from Word document
-                            </div>
-                          </div>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={importDocumentFromClipboard}
-                          data-testid="import-from-clipboard"
-                        >
-                          <ClipboardPaste className="h-4 w-4 mr-2" />
-                          <div>
-                            <div className="font-medium">Paste from Clipboard</div>
-                            <div className="text-xs text-muted-foreground">
-                              Copy from Word or Google Docs
-                            </div>
-                          </div>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button data-testid="button-add-block">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Block
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56">
-                        {blockTypes.map(blockType => (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="text-lg font-semibold">Content Blocks</h2>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept=".docx,.doc"
+                        onChange={handleFileSelect}
+                        data-testid="input-file-upload"
+                      />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" data-testid="button-import-document">
+                            <FileUp className="h-4 w-4 mr-2" />
+                            Import Document
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
                           <DropdownMenuItem
-                            key={blockType.type}
-                            onClick={() => addBlock(blockType.type)}
-                            data-testid={`add-block-${blockType.type}`}
+                            onClick={() => fileInputRef.current?.click()}
+                            data-testid="import-from-file"
                           >
-                            <blockType.icon className="h-4 w-4 mr-2" />
+                            <FileUp className="h-4 w-4 mr-2" />
                             <div>
-                              <div className="font-medium">{blockType.label}</div>
+                              <div className="font-medium">Upload DOCX File</div>
                               <div className="text-xs text-muted-foreground">
-                                {blockType.description}
+                                Import from Word document
                               </div>
                             </div>
                           </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                          <DropdownMenuItem
+                            onClick={importDocumentFromClipboard}
+                            data-testid="import-from-clipboard"
+                          >
+                            <ClipboardPaste className="h-4 w-4 mr-2" />
+                            <div>
+                              <div className="font-medium">Paste from Clipboard</div>
+                              <div className="text-xs text-muted-foreground">
+                                Copy from Word or Google Docs
+                              </div>
+                            </div>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button data-testid="button-add-block">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Block
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                          {blockTypes.map(blockType => (
+                            <DropdownMenuItem
+                              key={blockType.type}
+                              onClick={() => addBlock(blockType.type)}
+                              data-testid={`add-block-${blockType.type}`}
+                            >
+                              <blockType.icon className="h-4 w-4 mr-2" />
+                              <div>
+                                <div className="font-medium">{blockType.label}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {blockType.description}
+                                </div>
+                              </div>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
-                </div>
 
-                {formData.blocks.length === 0 ? (
-                  <Card>
-                    <CardContent className="py-12 text-center">
-                      <Type className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                      <h3 className="text-lg font-medium mb-2">No contents blocks</h3>
-                      <p className="text-muted-foreground mb-4">
-                        Paste a document from Word/Google Docs or add blocks manually
-                      </p>
-                      <div className="flex items-center justify-center gap-3 flex-wrap">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" data-testid="button-import-first-document">
-                              <FileUp className="h-4 w-4 mr-2" />
-                              Import Document
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56">
-                            <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
-                              <FileUp className="h-4 w-4 mr-2" />
-                              <div>
-                                <div className="font-medium">Upload DOCX File</div>
-                                <div className="text-xs text-muted-foreground">
-                                  Import from Word document
-                                </div>
-                              </div>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={importDocumentFromClipboard}>
-                              <ClipboardPaste className="h-4 w-4 mr-2" />
-                              <div>
-                                <div className="font-medium">Paste from Clipboard</div>
-                                <div className="text-xs text-muted-foreground">
-                                  Copy from Word or Google Docs
-                                </div>
-                              </div>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button data-testid="button-add-first-block">
-                              <Plus className="h-4 w-4 mr-2" />
-                              Add Block
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-56">
-                            {blockTypes.map(blockType => (
-                              <DropdownMenuItem
-                                key={blockType.type}
-                                onClick={() => addBlock(blockType.type)}
-                              >
-                                <blockType.icon className="h-4 w-4 mr-2" />
+                  {formData.blocks.length === 0 ? (
+                    <Card>
+                      <CardContent className="py-12 text-center">
+                        <Type className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                        <h3 className="text-lg font-medium mb-2">No contents blocks</h3>
+                        <p className="text-muted-foreground mb-4">
+                          Paste a document from Word/Google Docs or add blocks manually
+                        </p>
+                        <div className="flex items-center justify-center gap-3 flex-wrap">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" data-testid="button-import-first-document">
+                                <FileUp className="h-4 w-4 mr-2" />
+                                Import Document
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                              <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                                <FileUp className="h-4 w-4 mr-2" />
                                 <div>
-                                  <div className="font-medium">{blockType.label}</div>
+                                  <div className="font-medium">Upload DOCX File</div>
                                   <div className="text-xs text-muted-foreground">
-                                    {blockType.description}
+                                    Import from Word document
                                   </div>
                                 </div>
                               </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <SortableContext
-                      items={formData.blocks.map(b => b.id)}
-                      strategy={verticalListSortingStrategy}
+                              <DropdownMenuItem onClick={importDocumentFromClipboard}>
+                                <ClipboardPaste className="h-4 w-4 mr-2" />
+                                <div>
+                                  <div className="font-medium">Paste from Clipboard</div>
+                                  <div className="text-xs text-muted-foreground">
+                                    Copy from Word or Google Docs
+                                  </div>
+                                </div>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button data-testid="button-add-first-block">
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add Block
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                              {blockTypes.map(blockType => (
+                                <DropdownMenuItem
+                                  key={blockType.type}
+                                  onClick={() => addBlock(blockType.type)}
+                                >
+                                  <blockType.icon className="h-4 w-4 mr-2" />
+                                  <div>
+                                    <div className="font-medium">{blockType.label}</div>
+                                    <div className="text-xs text-muted-foreground">
+                                      {blockType.description}
+                                    </div>
+                                  </div>
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
                     >
-                      {formData.blocks.map(block => (
-                        <SortableBlock
-                          key={block.id}
-                          block={block}
-                          isExpanded={expandedBlocks.has(block.id)}
-                          onToggleExpand={() => toggleBlockExpand(block.id)}
-                          onDelete={() => deleteBlock(block.id)}
-                          onDuplicate={() => duplicateBlock(block.id)}
-                          onUpdate={data => updateBlock(block.id, data)}
-                          activeTab="en"
-                        />
-                      ))}
-                    </SortableContext>
-                  </DndContext>
-                )}
+                      <SortableContext
+                        items={formData.blocks.map(b => b.id)}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        {formData.blocks.map(block => (
+                          <SortableBlock
+                            key={block.id}
+                            block={block}
+                            isExpanded={expandedBlocks.has(block.id)}
+                            onToggleExpand={() => toggleBlockExpand(block.id)}
+                            onDelete={() => deleteBlock(block.id)}
+                            onDuplicate={() => duplicateBlock(block.id)}
+                            onUpdate={data => updateBlock(block.id, data)}
+                            activeTab="en"
+                          />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
+                  )}
+                </div>
               </div>
             </div>
           </ScrollArea>
