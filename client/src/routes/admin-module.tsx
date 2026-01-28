@@ -143,6 +143,7 @@ const VisualEditorSiteEditor = lazy(() => import("@/pages/admin/visual-editor/si
 const HomepageEditorPage = lazy(() => import("@/pages/admin/homepage-editor"));
 
 // AI/Writers
+const WritersHub = lazy(() => import("@/pages/admin/writers-hub"));
 const WritersManagement = lazy(() => import("@/pages/admin/writers/WritersManagement"));
 const NewsroomDashboard = lazy(() => import("@/pages/admin/writers/NewsroomDashboard"));
 const ContentIntelligencePage = lazy(() => import("@/pages/admin/content-intelligence"));
@@ -163,6 +164,7 @@ const SocialDashboard = lazy(() => import("@/pages/admin/social/social-dashboard
 // Enterprise Features
 const EnterpriseWorkflows = lazy(() => import("@/pages/admin/enterprise/workflows"));
 const EnterpriseWebhooks = lazy(() => import("@/pages/admin/enterprise/webhooks"));
+const GovernanceHub = lazy(() => import("@/pages/admin/governance-hub"));
 const GovernanceDashboard = lazy(() => import("@/pages/admin/governance"));
 const GovernanceRoles = lazy(() => import("@/pages/admin/governance/roles"));
 const GovernanceUsers = lazy(() => import("@/pages/admin/governance/users"));
@@ -313,8 +315,7 @@ function AdminRouter() {
         <Route path="/admin/calendar" component={ContentCalendarPage} />
 
         {/* AI/Writers */}
-        <Route path="/admin/writers" component={WritersManagement} />
-        <Route path="/admin/writers/newsroom" component={NewsroomDashboard} />
+        <Route path="/admin/writers" component={WritersHub} />
         <Route path="/admin/contents-intelligence" component={ContentIntelligencePage} />
         <Route path="/admin/destination-intelligence" component={DestinationIntelligencePage} />
 
@@ -329,9 +330,7 @@ function AdminRouter() {
         <Route path="/admin/enterprise/workflows" component={EnterpriseWorkflows} />
         <Route path="/admin/enterprise/webhooks" component={EnterpriseWebhooks} />
         <Route path="/admin/enterprise/teams" component={EnterpriseTeams} />
-        <Route path="/admin/governance" component={GovernanceDashboard} />
-        <Route path="/admin/governance/roles" component={GovernanceRoles} />
-        <Route path="/admin/governance/users" component={GovernanceUsers} />
+        <Route path="/admin/governance" component={GovernanceHub} />
 
         {/* SEO & Links */}
         <Route path="/admin/links" component={LinksDashboard} />
