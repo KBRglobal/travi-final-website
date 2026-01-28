@@ -144,8 +144,6 @@ const HomepageEditorPage = lazy(() => import("@/pages/admin/homepage-editor"));
 
 // AI/Writers
 const WritersHub = lazy(() => import("@/pages/admin/writers-hub"));
-const WritersManagement = lazy(() => import("@/pages/admin/writers/WritersManagement"));
-const NewsroomDashboard = lazy(() => import("@/pages/admin/writers/NewsroomDashboard"));
 const ContentIntelligencePage = lazy(() => import("@/pages/admin/content-intelligence"));
 const DestinationIntelligencePage = lazy(() => import("@/pages/admin/destination-intelligence"));
 
@@ -155,26 +153,17 @@ const NewsletterSubscribers = lazy(() => import("@/pages/newsletter-subscribers"
 const AffiliateLinks = lazy(() => import("@/pages/affiliate-links"));
 
 // Enterprise & Operations
-const EnterpriseTeams = lazy(() => import("@/pages/admin/enterprise/teams"));
+const EnterpriseHub = lazy(() => import("@/pages/admin/enterprise-hub"));
 const LinksDashboard = lazy(() => import("@/pages/admin/links/dashboard"));
 const HelpCenterAdmin = lazy(() => import("@/pages/admin/help"));
 const HelpArticleEditor = lazy(() => import("@/pages/admin/help/article-editor"));
 const SocialDashboard = lazy(() => import("@/pages/admin/social/social-dashboard"));
 
-// Enterprise Features
-const EnterpriseWorkflows = lazy(() => import("@/pages/admin/enterprise/workflows"));
-const EnterpriseWebhooks = lazy(() => import("@/pages/admin/enterprise/webhooks"));
+// Governance
 const GovernanceHub = lazy(() => import("@/pages/admin/governance-hub"));
-const GovernanceDashboard = lazy(() => import("@/pages/admin/governance"));
-const GovernanceRoles = lazy(() => import("@/pages/admin/governance/roles"));
-const GovernanceUsers = lazy(() => import("@/pages/admin/governance/users"));
 
 // Integrations
-const TiqetsDashboard = lazy(() => import("@/pages/admin/tiqets/dashboard"));
-const TiqetsDestinations = lazy(() => import("@/pages/admin/tiqets/destinations"));
-const TiqetsIntegrations = lazy(() => import("@/pages/admin/tiqets/integrations"));
-const TiqetsConfiguration = lazy(() => import("@/pages/admin/tiqets/configuration"));
-const ContentQualityDashboard = lazy(() => import("@/pages/admin/tiqets/content-quality"));
+const TiqetsHub = lazy(() => import("@/pages/admin/tiqets-hub"));
 const IngestionDashboard = lazy(() => import("@/pages/admin/ingestion/dashboard"));
 const TraviConfiguration = lazy(() => import("@/pages/admin/travi/configuration"));
 
@@ -327,9 +316,7 @@ function AdminRouter() {
         <Route path="/admin/translations" component={TranslationsPage} />
 
         {/* Enterprise */}
-        <Route path="/admin/enterprise/workflows" component={EnterpriseWorkflows} />
-        <Route path="/admin/enterprise/webhooks" component={EnterpriseWebhooks} />
-        <Route path="/admin/enterprise/teams" component={EnterpriseTeams} />
+        <Route path="/admin/enterprise" component={EnterpriseHub} />
         <Route path="/admin/governance" component={GovernanceHub} />
 
         {/* SEO & Links */}
@@ -340,12 +327,8 @@ function AdminRouter() {
         <Route path="/admin/help/article/:id" component={HelpArticleEditor} />
 
         {/* Integrations */}
-        <Route path="/admin/tiqets" component={TiqetsDashboard} />
-        <Route path="/admin/tiqets/destinations" component={TiqetsDestinations} />
-        <Route path="/admin/tiqets/integrations" component={TiqetsIntegrations} />
-        <Route path="/admin/tiqets/configuration" component={TiqetsConfiguration} />
+        <Route path="/admin/tiqets" component={TiqetsHub} />
         <Route path="/admin/tiqets/attractions/:id" component={TiqetsAttractionDetail} />
-        <Route path="/admin/tiqets/content-quality" component={ContentQualityDashboard} />
         <Route path="/admin/ingestion" component={IngestionDashboard} />
 
         {/* Fallback */}
