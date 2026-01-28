@@ -415,7 +415,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                           <span className="text-2xl font-bold text-white ms-2">{dest.name}</span>
                         </div>
                         <Link href={`/destinations/${dest.slug}`}>
-                          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
+                          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-[--radius-card] bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                             {t("destinations.hero.discoverButton")}
                             <ArrowRight className="w-5 h-5 rtl:rotate-180" />
                           </button>

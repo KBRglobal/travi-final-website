@@ -282,7 +282,7 @@ function HeroSection({
                 target="_blank"
                 rel="noopener noreferrer sponsored"
                 onClick={onAffiliateClick}
-                className="inline-flex items-center gap-2.5 bg-[#6443F4] hover:bg-[#5539d4] text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-[#6443F4]/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#6443F4]/40 active:scale-[0.98]"
+                className="inline-flex items-center gap-2.5 bg-[#6443F4] hover:bg-[#5539d4] text-white font-semibold px-8 py-4 rounded-[--radius-card] shadow-lg shadow-[#6443F4]/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#6443F4]/40 active:scale-[0.98]"
                 data-testid="button-hero-cta"
               >
                 <Ticket className="w-5 h-5" />

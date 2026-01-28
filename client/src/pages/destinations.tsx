@@ -430,7 +430,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   transition={{ delay: 0.5 }}
                 >
                   <Link href={`/destinations/${current.id}`}>
-                    <Button className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                    <Button className="rounded-[--radius-card] bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
                       {t("destinations.card.explore")} {current.name}
                       <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                     </Button>
@@ -702,7 +702,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         <p className="text-slate-600 dark:text-slate-400 mb-6">{t("destinations.error.message")}</p>
         <Button
           onClick={onRetry}
-          className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
+          className="rounded-[--radius-card] bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
         >
           <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
           {t("destinations.error.refresh")}

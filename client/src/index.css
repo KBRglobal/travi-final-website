@@ -98,6 +98,11 @@
   --elevate-1: rgba(36, 16, 62, 0.06);
   --elevate-2: rgba(36, 16, 62, 0.12);
 
+  /* UI Consistency Tokens */
+  --radius-card: 1rem; /* 16px - cards, panels */
+  --radius-button: 0.75rem; /* 12px - buttons, inputs */
+  --radius-chip: 9999px; /* full - badges, pills */
+
   /* Official Brand Color Tokens (definition only - controlled usage via CMS) */
   --color-background-base: 0 0% 100%; /* White for cards */
   --color-primary: 251 89% 61%;
