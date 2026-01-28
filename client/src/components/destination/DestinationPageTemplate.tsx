@@ -23,6 +23,7 @@ import { BestTimeToVisit } from "./BestTimeToVisit";
 import { GettingAround } from "./GettingAround";
 import { DestinationFAQ } from "./DestinationFAQ";
 import { DestinationCTA } from "./DestinationCTA";
+import { RelatedDestinations } from "./RelatedDestinations";
 import { CategoryBentoGrid } from "@/components/category-bento-grid";
 import { usePublicDestination } from "@/hooks/use-public-destination";
 import { useQuery } from "@tanstack/react-query";
@@ -264,12 +265,17 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
           <GettingAround destinationSlug={data.id} destinationName={data.name} />
         </div>
 
-        {/* 9. FAQ Section */}
+        {/* 9. Related Destinations - Internal Linking */}
+        <div id="related-destinations" className="scroll-mt-24">
+          <RelatedDestinations currentDestination={data.id} currentCountry={data.country} />
+        </div>
+
+        {/* 10. FAQ Section */}
         <div id="faq" className="scroll-mt-24">
           <DestinationFAQ faqs={data.faqs} destinationName={data.name} />
         </div>
 
-        {/* 10. Bottom CTA Section */}
+        {/* 11. Bottom CTA Section */}
         <DestinationCTA cta={data.cta} destinationName={data.name} />
 
         {/* Last Updated Footer */}
