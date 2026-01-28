@@ -3,31 +3,77 @@
  * Main template combining all destination sections.
  * REDESIGNED: Visual storytelling first, editorial magazine style.
  * Each destination page = standalone premium landing experience.
+ *
+ * PERFORMANCE: Below-the-fold sections are lazy loaded to reduce initial bundle.
  */
 
+import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { SEOHead } from "@/components/seo-head";
 import { PublicFooter } from "@/components/public-footer";
 import { SkipLink } from "@/components/ui/skip-link";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DestinationHero } from "./DestinationHero";
 import { DestinationNav } from "./DestinationNav";
-import { EditorialAttractions } from "./EditorialAttractions";
-import { FeaturedAttractions } from "./FeaturedSections";
-import { TopPOIs } from "./top-pois";
-import { EditorialNews } from "./EditorialNews";
-import { UpcomingEvents } from "./upcoming-events";
-import { UpcomingHolidays } from "./upcoming-holidays";
 import { SafetyBanner } from "./safety-banner";
-import { QuickInfoRail } from "./quick-info-rail";
-import { BestTimeToVisit } from "./BestTimeToVisit";
-import { GettingAround } from "./GettingAround";
-import { DestinationFAQ } from "./DestinationFAQ";
-import { DestinationCTA } from "./DestinationCTA";
-import { RelatedDestinations } from "./RelatedDestinations";
-import { CategoryBentoGrid } from "@/components/category-bento-grid";
 import { usePublicDestination } from "@/hooks/use-public-destination";
 import { useQuery } from "@tanstack/react-query";
 import type { DestinationPageData, SeasonInfo } from "@/types/destination";
+
+// Lazy load below-the-fold components for better initial load performance
+const CategoryBentoGrid = lazy(() =>
+  import("@/components/category-bento-grid").then(m => ({ default: m.CategoryBentoGrid }))
+);
+const EditorialAttractions = lazy(() =>
+  import("./EditorialAttractions").then(m => ({ default: m.EditorialAttractions }))
+);
+const FeaturedAttractions = lazy(() =>
+  import("./FeaturedSections").then(m => ({ default: m.FeaturedAttractions }))
+);
+const TopPOIs = lazy(() => import("./top-pois").then(m => ({ default: m.TopPOIs })));
+const EditorialNews = lazy(() =>
+  import("./EditorialNews").then(m => ({ default: m.EditorialNews }))
+);
+const UpcomingEvents = lazy(() =>
+  import("./upcoming-events").then(m => ({ default: m.UpcomingEvents }))
+);
+const UpcomingHolidays = lazy(() =>
+  import("./upcoming-holidays").then(m => ({ default: m.UpcomingHolidays }))
+);
+const QuickInfoRail = lazy(() =>
+  import("./quick-info-rail").then(m => ({ default: m.QuickInfoRail }))
+);
+const BestTimeToVisit = lazy(() =>
+  import("./BestTimeToVisit").then(m => ({ default: m.BestTimeToVisit }))
+);
+const GettingAround = lazy(() =>
+  import("./GettingAround").then(m => ({ default: m.GettingAround }))
+);
+const DestinationFAQ = lazy(() =>
+  import("./DestinationFAQ").then(m => ({ default: m.DestinationFAQ }))
+);
+const DestinationCTA = lazy(() =>
+  import("./DestinationCTA").then(m => ({ default: m.DestinationCTA }))
+);
+const RelatedDestinations = lazy(() =>
+  import("./RelatedDestinations").then(m => ({ default: m.RelatedDestinations }))
+);
+
+// Loading fallback for lazy sections
+function SectionSkeleton({ className = "py-16" }: { className?: string }) {
+  return (
+    <div className={`${className} bg-background`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Skeleton className="h-8 w-64 mb-6" />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-48 w-full rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 interface DestinationPageTemplateProps {
   data: DestinationPageData;
@@ -196,49 +242,61 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
         <SafetyBanner destinationCode={data.id} destinationName={data.name} />
 
         {/* 2. CATEGORY BENTO GRID - Explore section with new category images */}
-        <CategoryBentoGrid destinationSlug={data.id} destinationName={data.name} />
+        <Suspense fallback={<SectionSkeleton />}>
+          <CategoryBentoGrid destinationSlug={data.id} destinationName={data.name} />
+        </Suspense>
 
         {/* 3. ATTRACTIONS - Uses CMS data if available, else fallback to static */}
         <div id="attractions" className="scroll-mt-24">
-          {hasCMSAttractions ? (
-            <FeaturedAttractions
-              attractions={featuredAttractions}
-              destinationName={data.name}
-              destinationId={data.id}
-            />
-          ) : (
-            <EditorialAttractions
-              experiences={data.experiences}
-              destinationName={data.name}
-              destinationSlug={data.id}
-            />
-          )}
+          <Suspense fallback={<SectionSkeleton />}>
+            {hasCMSAttractions ? (
+              <FeaturedAttractions
+                attractions={featuredAttractions}
+                destinationName={data.name}
+                destinationId={data.id}
+              />
+            ) : (
+              <EditorialAttractions
+                experiences={data.experiences}
+                destinationName={data.name}
+                destinationSlug={data.id}
+              />
+            )}
+          </Suspense>
         </div>
 
         {/* 4b. TOP POIs - Restaurants from TourPedia (barcelona, amsterdam) */}
         {/* NOTE: Hotels section disabled - no hotel content in CMS yet */}
         <div id="restaurants" className="scroll-mt-24">
-          <TopPOIs destinationId={data.id} destinationName={data.name} />
+          <Suspense fallback={<SectionSkeleton />}>
+            <TopPOIs destinationId={data.id} destinationName={data.name} />
+          </Suspense>
         </div>
 
         {/* 5. EDITORIAL NEWS - Magazine/media style headlines */}
         <div id="news" className="scroll-mt-24">
-          <EditorialNews destinationName={data.name} destinationSlug={data.id} />
+          <Suspense fallback={<SectionSkeleton />}>
+            <EditorialNews destinationName={data.name} destinationSlug={data.id} />
+          </Suspense>
         </div>
 
         {/* 6. UPCOMING EVENTS - Travel intelligence events from database */}
         <div id="events" className="scroll-mt-24">
-          <UpcomingEvents
-            destinationId={data.id}
-            destinationName={data.name}
-            limit={4}
-            showViewAll={true}
-          />
+          <Suspense fallback={<SectionSkeleton />}>
+            <UpcomingEvents
+              destinationId={data.id}
+              destinationName={data.name}
+              limit={4}
+              showViewAll={true}
+            />
+          </Suspense>
         </div>
 
         {/* 7. UPCOMING HOLIDAYS - Public holidays for destination country */}
         <div id="holidays" className="scroll-mt-24">
-          <UpcomingHolidays destinationId={data.id} destinationName={data.name} limit={4} />
+          <Suspense fallback={<SectionSkeleton />}>
+            <UpcomingHolidays destinationId={data.id} destinationName={data.name} limit={4} />
+          </Suspense>
         </div>
 
         {/* TRAVEL ESSENTIALS - Visa requirements and entry info */}
@@ -248,7 +306,9 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
               <h2 className="text-3xl font-bold text-foreground mb-8">
                 Travel Essentials for {data.name}
               </h2>
-              <QuickInfoRail destinationCode={data.id} destinationName={data.name} />
+              <Suspense fallback={<Skeleton className="h-32 w-full" />}>
+                <QuickInfoRail destinationCode={data.id} destinationName={data.name} />
+              </Suspense>
             </div>
           </section>
         </div>
@@ -256,27 +316,37 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
         {/* 7. Best Time to Visit Section - Only renders when real climate data exists */}
         {apiSeasons && apiSeasons.length > 0 && (
           <div id="best-time" className="scroll-mt-24">
-            <BestTimeToVisit seasons={apiSeasons} destinationName={data.name} />
+            <Suspense fallback={<SectionSkeleton />}>
+              <BestTimeToVisit seasons={apiSeasons} destinationName={data.name} />
+            </Suspense>
           </div>
         )}
 
         {/* 8. Getting Around Section */}
         <div id="getting-around" className="scroll-mt-24">
-          <GettingAround destinationSlug={data.id} destinationName={data.name} />
+          <Suspense fallback={<SectionSkeleton />}>
+            <GettingAround destinationSlug={data.id} destinationName={data.name} />
+          </Suspense>
         </div>
 
         {/* 9. Related Destinations - Internal Linking */}
         <div id="related-destinations" className="scroll-mt-24">
-          <RelatedDestinations currentDestination={data.id} currentCountry={data.country} />
+          <Suspense fallback={<SectionSkeleton />}>
+            <RelatedDestinations currentDestination={data.id} currentCountry={data.country} />
+          </Suspense>
         </div>
 
         {/* 10. FAQ Section */}
         <div id="faq" className="scroll-mt-24">
-          <DestinationFAQ faqs={data.faqs} destinationName={data.name} />
+          <Suspense fallback={<SectionSkeleton />}>
+            <DestinationFAQ faqs={data.faqs} destinationName={data.name} />
+          </Suspense>
         </div>
 
         {/* 11. Bottom CTA Section */}
-        <DestinationCTA cta={data.cta} destinationName={data.name} />
+        <Suspense fallback={<SectionSkeleton className="py-8" />}>
+          <DestinationCTA cta={data.cta} destinationName={data.name} />
+        </Suspense>
 
         {/* Last Updated Footer */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">

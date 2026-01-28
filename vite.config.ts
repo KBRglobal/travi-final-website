@@ -131,9 +131,27 @@ export default defineConfig({
           if (id.includes("/pages/admin/static-page-editor")) {
             return "static-page-editor";
           }
-          // Destination page - complex public page
+          // Destination page - split into core and sections
           if (id.includes("/pages/destination-page")) {
             return "destination-page";
+          }
+          // Destination components - separate chunks for lazy loading
+          if (id.includes("/components/destination/")) {
+            // Core above-fold components stay with main page
+            if (
+              id.includes("DestinationHero") ||
+              id.includes("DestinationNav") ||
+              id.includes("safety-banner") ||
+              id.includes("DestinationPageTemplate")
+            ) {
+              return "destination-page";
+            }
+            // Below-fold sections load separately
+            return "destination-sections";
+          }
+          // Category bento grid - used in destination page
+          if (id.includes("/components/category-bento-grid")) {
+            return "destination-sections";
           }
           // Guide and attraction pages
           if (id.includes("/pages/guide-detail") || id.includes("/pages/attraction-detail")) {
