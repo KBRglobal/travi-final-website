@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "דובאי", "country": "איחוד האמירויות", "cardAlt": "קו הרקיע של דובאי עם מגדל בורג' ח'ליפה בשקיעה" },
-      "london": { "name": "לונדון", "country": "בריטניה", "cardAlt": "ביג בן וארמון ווסטמינסטר בלונדון" },
-      "paris": { "name": "פריז", "country": "צרפת", "cardAlt": "מגדל אייפל מואר בשקיעה" },
-      "newYork": { "name": "ניו יורק", "country": "ארה״ב", "cardAlt": "קו הרקיע של מנהטן עם בניין האמפייר סטייט" },
-      "tokyo": { "name": "טוקיו", "country": "יפן", "cardAlt": "מעבר החציה שיבויה בטוקיו עם אורות ניאון בלילה" },
-      "singapore": { "name": "סינגפור", "country": "סינגפור", "cardAlt": "מרינה ביי סאנדס וגנים ליד המפרץ בסינגפור" },
-      "barcelona": { "name": "ברצלונה", "country": "ספרד", "cardAlt": "הסגרדה פמיליה בברצלונה בשעת הזהב" },
-      "bangkok": { "name": "בנגקוק", "country": "תאילנד", "cardAlt": "הארמון המלכותי בבנגקוק בזריחה" },
-      "abuDhabi": { "name": "אבו דאבי", "country": "איחוד האמירויות", "cardAlt": "מסגד שייח' זאיד הגדול באבו דאבי" },
-      "amsterdam": { "name": "אמסטרדם", "country": "הולנד", "cardAlt": "תעלה באמסטרדם עם בניינים היסטוריים" },
-      "hongKong": { "name": "הונג קונג", "country": "סין", "cardAlt": "קו הרקיע של הונג קונג בלילה" },
-      "istanbul": { "name": "איסטנבול", "country": "טורקיה", "cardAlt": "המסגד הכחול באיסטנבול בשקיעה" },
-      "lasVegas": { "name": "לאס וגאס", "country": "ארה״ב", "cardAlt": "רצועת לאס וגאס בלילה" },
-      "losAngeles": { "name": "לוס אנג'לס", "country": "ארה״ב", "cardAlt": "שלט הוליווד בלוס אנג'לס" },
-      "miami": { "name": "מיאמי", "country": "ארה״ב", "cardAlt": "חוף מיאמי ורובע ארט דקו" },
-      "rome": { "name": "רומא", "country": "איטליה", "cardAlt": "הקולוסיאום ברומא בשעת הזהב" }
+      "dubai": {
+        "name": "דובאי",
+        "country": "איחוד האמירויות",
+        "cardAlt": "קו הרקיע של דובאי עם מגדל בורג' ח'ליפה בשקיעה"
+      },
+      "london": {
+        "name": "לונדון",
+        "country": "בריטניה",
+        "cardAlt": "ביג בן וארמון ווסטמינסטר בלונדון"
+      },
+      "paris": {
+        "name": "פריז",
+        "country": "צרפת",
+        "cardAlt": "מגדל אייפל מואר בשקיעה"
+      },
+      "newYork": {
+        "name": "ניו יורק",
+        "country": "ארה״ב",
+        "cardAlt": "קו הרקיע של מנהטן עם בניין האמפייר סטייט"
+      },
+      "tokyo": {
+        "name": "טוקיו",
+        "country": "יפן",
+        "cardAlt": "מעבר החציה שיבויה בטוקיו עם אורות ניאון בלילה"
+      },
+      "singapore": {
+        "name": "סינגפור",
+        "country": "סינגפור",
+        "cardAlt": "מרינה ביי סאנדס וגנים ליד המפרץ בסינגפור"
+      },
+      "barcelona": {
+        "name": "ברצלונה",
+        "country": "ספרד",
+        "cardAlt": "הסגרדה פמיליה בברצלונה בשעת הזהב"
+      },
+      "bangkok": {
+        "name": "בנגקוק",
+        "country": "תאילנד",
+        "cardAlt": "הארמון המלכותי בבנגקוק בזריחה"
+      },
+      "abuDhabi": {
+        "name": "אבו דאבי",
+        "country": "איחוד האמירויות",
+        "cardAlt": "מסגד שייח' זאיד הגדול באבו דאבי"
+      },
+      "amsterdam": {
+        "name": "אמסטרדם",
+        "country": "הולנד",
+        "cardAlt": "תעלה באמסטרדם עם בניינים היסטוריים"
+      },
+      "hongKong": {
+        "name": "הונג קונג",
+        "country": "סין",
+        "cardAlt": "קו הרקיע של הונג קונג בלילה"
+      },
+      "istanbul": {
+        "name": "איסטנבול",
+        "country": "טורקיה",
+        "cardAlt": "המסגד הכחול באיסטנבול בשקיעה"
+      },
+      "lasVegas": {
+        "name": "לאס וגאס",
+        "country": "ארה״ב",
+        "cardAlt": "רצועת לאס וגאס בלילה"
+      },
+      "losAngeles": {
+        "name": "לוס אנג'לס",
+        "country": "ארה״ב",
+        "cardAlt": "שלט הוליווד בלוס אנג'לס"
+      },
+      "miami": {
+        "name": "מיאמי",
+        "country": "ארה״ב",
+        "cardAlt": "חוף מיאמי ורובע ארט דקו"
+      },
+      "rome": {
+        "name": "רומא",
+        "country": "איטליה",
+        "cardAlt": "הקולוסיאום ברומא בשעת הזהב"
+      }
     },
     "hero": {
       "badge": "{{count}} יעדים ברחבי העולם",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "המקור המהימן שלכם למידע מקיף על טיולים ומדריכי יעדים, עוזר למיליונים לחקור את העולם בביטחון.",
       "ctaExplore": "גלו יעדים",
-      "ctaContact": "צרו קשר"
+      "ctaContact": "צרו קשר",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "צרו קשר | TRAVI World",

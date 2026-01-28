@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubaj", "country": "UAE", "cardAlt": "Dubaj látképe a Burj Khalifa toronnyal naplementekor" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben és a Parlament" },
-      "paris": { "name": "Párizs", "country": "Franciaország", "cardAlt": "Párizs Eiffel-torony kivilágítva naplementekor" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan látképe az Empire State Buildinggel" },
-      "tokyo": { "name": "Tokió", "country": "Japán", "cardAlt": "Tokió Shibuya átkelő neon fényekkel éjszaka" },
-      "singapore": { "name": "Szingapúr", "country": "Szingapúr", "cardAlt": "Szingapúr Marina Bay Sands és Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spanyolország", "cardAlt": "Barcelona Sagrada Familia aranyórában" },
-      "bangkok": { "name": "Bangkok", "country": "Thaiföld", "cardAlt": "Bangkok Nagy Palota templom napkeltekor" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Nagymecset" },
-      "amsterdam": { "name": "Amszterdam", "country": "Hollandia", "cardAlt": "Amszterdam csatorna történelmi épületekkel" },
-      "hongKong": { "name": "Hongkong", "country": "Kína", "cardAlt": "Hongkong látképe éjszaka" },
-      "istanbul": { "name": "Isztambul", "country": "Törökország", "cardAlt": "Isztambul Kék mecset naplementekor" },
-      "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip éjszaka" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood felirat" },
-      "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco negyed" },
-      "rome": { "name": "Róma", "country": "Olaszország", "cardAlt": "Róma Colosseum aranyórában" }
+      "dubai": {
+        "name": "Dubaj",
+        "country": "UAE",
+        "cardAlt": "Dubaj látképe a Burj Khalifa toronnyal naplementekor"
+      },
+      "london": {
+        "name": "London",
+        "country": "UK",
+        "cardAlt": "London Big Ben és a Parlament"
+      },
+      "paris": {
+        "name": "Párizs",
+        "country": "Franciaország",
+        "cardAlt": "Párizs Eiffel-torony kivilágítva naplementekor"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan látképe az Empire State Buildinggel"
+      },
+      "tokyo": {
+        "name": "Tokió",
+        "country": "Japán",
+        "cardAlt": "Tokió Shibuya átkelő neon fényekkel éjszaka"
+      },
+      "singapore": {
+        "name": "Szingapúr",
+        "country": "Szingapúr",
+        "cardAlt": "Szingapúr Marina Bay Sands és Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanyolország",
+        "cardAlt": "Barcelona Sagrada Familia aranyórában"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thaiföld",
+        "cardAlt": "Bangkok Nagy Palota templom napkeltekor"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Abu Dhabi Sheikh Zayed Nagymecset"
+      },
+      "amsterdam": {
+        "name": "Amszterdam",
+        "country": "Hollandia",
+        "cardAlt": "Amszterdam csatorna történelmi épületekkel"
+      },
+      "hongKong": {
+        "name": "Hongkong",
+        "country": "Kína",
+        "cardAlt": "Hongkong látképe éjszaka"
+      },
+      "istanbul": {
+        "name": "Isztambul",
+        "country": "Törökország",
+        "cardAlt": "Isztambul Kék mecset naplementekor"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "USA",
+        "cardAlt": "Las Vegas Strip éjszaka"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles Hollywood felirat"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "USA",
+        "cardAlt": "Miami Beach Art Deco negyed"
+      },
+      "rome": {
+        "name": "Róma",
+        "country": "Olaszország",
+        "cardAlt": "Róma Colosseum aranyórában"
+      }
     },
     "hero": {
       "badge": "{{count}} úticél világszerte",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World-ről",
       "subtitle": "Megbízható forrásod átfogó utazási információkhoz és úticél útmutatókhoz, segítve milliók világszerte felfedezését magabiztosan.",
       "ctaExplore": "Úticélok felfedezése",
-      "ctaContact": "Lépj kapcsolatba"
+      "ctaContact": "Lépj kapcsolatba",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "Kapcsolat | TRAVI World",

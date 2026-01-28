@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "दुबई", "country": "UAE", "cardAlt": "सूर्यास्त के समय बुर्ज खलीफा टॉवर के साथ दुबई स्काईलाइन" },
-      "london": { "name": "लंदन", "country": "UK", "cardAlt": "लंदन बिग बेन और हाउस ऑफ पार्लियामेंट" },
-      "paris": { "name": "पेरिस", "country": "फ्रांस", "cardAlt": "सूर्यास्त के समय रोशन एफिल टॉवर पेरिस" },
-      "newYork": { "name": "न्यूयॉर्क", "country": "USA", "cardAlt": "एम्पायर स्टेट बिल्डिंग के साथ न्यूयॉर्क मैनहट्टन स्काईलाइन" },
-      "tokyo": { "name": "टोक्यो", "country": "जापान", "cardAlt": "रात में नियॉन लाइट्स के साथ टोक्यो शिबुया क्रॉसिंग" },
-      "singapore": { "name": "सिंगापुर", "country": "सिंगापुर", "cardAlt": "सिंगापुर मरीना बे सैंड्स और गार्डन्स बाय द बे" },
-      "barcelona": { "name": "बार्सिलोना", "country": "स्पेन", "cardAlt": "गोल्डन आवर में बार्सिलोना सागराडा फैमिलिया" },
-      "bangkok": { "name": "बैंकॉक", "country": "थाईलैंड", "cardAlt": "सूर्योदय के समय बैंकॉक ग्रांड पैलेस मंदिर" },
-      "abuDhabi": { "name": "अबू धाबी", "country": "UAE", "cardAlt": "अबू धाबी शेख जायद ग्रांड मस्जिद" },
-      "amsterdam": { "name": "एम्स्टर्डम", "country": "नीदरलैंड", "cardAlt": "ऐतिहासिक इमारतों के साथ एम्स्टर्डम नहर" },
-      "hongKong": { "name": "हांगकांग", "country": "चीन", "cardAlt": "रात में हांगकांग स्काईलाइन" },
-      "istanbul": { "name": "इस्तांबुल", "country": "तुर्की", "cardAlt": "सूर्यास्त के समय इस्तांबुल ब्लू मस्जिद" },
-      "lasVegas": { "name": "लास वेगास", "country": "USA", "cardAlt": "रात में लास वेगास स्ट्रिप" },
-      "losAngeles": { "name": "लॉस एंजिल्स", "country": "USA", "cardAlt": "लॉस एंजिल्स हॉलीवुड साइन" },
-      "miami": { "name": "मियामी", "country": "USA", "cardAlt": "मियामी बीच आर्ट डेको जिला" },
-      "rome": { "name": "रोम", "country": "इटली", "cardAlt": "गोल्डन आवर में रोम कोलोसियम" }
+      "dubai": {
+        "name": "दुबई",
+        "country": "UAE",
+        "cardAlt": "सूर्यास्त के समय बुर्ज खलीफा टॉवर के साथ दुबई स्काईलाइन"
+      },
+      "london": {
+        "name": "लंदन",
+        "country": "UK",
+        "cardAlt": "लंदन बिग बेन और हाउस ऑफ पार्लियामेंट"
+      },
+      "paris": {
+        "name": "पेरिस",
+        "country": "फ्रांस",
+        "cardAlt": "सूर्यास्त के समय रोशन एफिल टॉवर पेरिस"
+      },
+      "newYork": {
+        "name": "न्यूयॉर्क",
+        "country": "USA",
+        "cardAlt": "एम्पायर स्टेट बिल्डिंग के साथ न्यूयॉर्क मैनहट्टन स्काईलाइन"
+      },
+      "tokyo": {
+        "name": "टोक्यो",
+        "country": "जापान",
+        "cardAlt": "रात में नियॉन लाइट्स के साथ टोक्यो शिबुया क्रॉसिंग"
+      },
+      "singapore": {
+        "name": "सिंगापुर",
+        "country": "सिंगापुर",
+        "cardAlt": "सिंगापुर मरीना बे सैंड्स और गार्डन्स बाय द बे"
+      },
+      "barcelona": {
+        "name": "बार्सिलोना",
+        "country": "स्पेन",
+        "cardAlt": "गोल्डन आवर में बार्सिलोना सागराडा फैमिलिया"
+      },
+      "bangkok": {
+        "name": "बैंकॉक",
+        "country": "थाईलैंड",
+        "cardAlt": "सूर्योदय के समय बैंकॉक ग्रांड पैलेस मंदिर"
+      },
+      "abuDhabi": {
+        "name": "अबू धाबी",
+        "country": "UAE",
+        "cardAlt": "अबू धाबी शेख जायद ग्रांड मस्जिद"
+      },
+      "amsterdam": {
+        "name": "एम्स्टर्डम",
+        "country": "नीदरलैंड",
+        "cardAlt": "ऐतिहासिक इमारतों के साथ एम्स्टर्डम नहर"
+      },
+      "hongKong": {
+        "name": "हांगकांग",
+        "country": "चीन",
+        "cardAlt": "रात में हांगकांग स्काईलाइन"
+      },
+      "istanbul": {
+        "name": "इस्तांबुल",
+        "country": "तुर्की",
+        "cardAlt": "सूर्यास्त के समय इस्तांबुल ब्लू मस्जिद"
+      },
+      "lasVegas": {
+        "name": "लास वेगास",
+        "country": "USA",
+        "cardAlt": "रात में लास वेगास स्ट्रिप"
+      },
+      "losAngeles": {
+        "name": "लॉस एंजिल्स",
+        "country": "USA",
+        "cardAlt": "लॉस एंजिल्स हॉलीवुड साइन"
+      },
+      "miami": {
+        "name": "मियामी",
+        "country": "USA",
+        "cardAlt": "मियामी बीच आर्ट डेको जिला"
+      },
+      "rome": {
+        "name": "रोम",
+        "country": "इटली",
+        "cardAlt": "गोल्डन आवर में रोम कोलोसियम"
+      }
     },
     "hero": {
       "badge": "दुनियाभर में {{count}} गंतव्य",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "संपूर्ण यात्रा जानकारी और गंतव्य गाइड के लिए आपका विश्वसनीय स्रोत, जो लाखों लोगों को आत्मविश्वास के साथ दुनिया का पता लगाने में मदद करता है।",
       "ctaExplore": "गंतव्य एक्सप्लोर करें",
-      "ctaContact": "संपर्क में रहें"
+      "ctaContact": "संपर्क में रहें",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "हमसे संपर्क करें | TRAVI World",

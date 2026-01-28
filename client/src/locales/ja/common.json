@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "ドバイ", "country": "UAE", "cardAlt": "夕暮れのブルジュ・ハリファとドバイのスカイライン" },
-      "london": { "name": "ロンドン", "country": "イギリス", "cardAlt": "ロンドンのビッグベンと国会議事堂" },
-      "paris": { "name": "パリ", "country": "フランス", "cardAlt": "夕暮れに輝くパリのエッフェル塔" },
-      "newYork": { "name": "ニューヨーク", "country": "アメリカ", "cardAlt": "エンパイアステートビルとマンハッタンのスカイライン" },
-      "tokyo": { "name": "東京", "country": "日本", "cardAlt": "夜の東京渋谷スクランブル交差点のネオン" },
-      "singapore": { "name": "シンガポール", "country": "シンガポール", "cardAlt": "シンガポールのマリーナベイサンズとガーデンズ・バイ・ザ・ベイ" },
-      "barcelona": { "name": "バルセロナ", "country": "スペイン", "cardAlt": "黄金の時間帯のバルセロナのサグラダ・ファミリア" },
-      "bangkok": { "name": "バンコク", "country": "タイ", "cardAlt": "日の出のバンコクの王宮寺院" },
-      "abuDhabi": { "name": "アブダビ", "country": "UAE", "cardAlt": "アブダビのシェイク・ザイード・グランドモスク" },
-      "amsterdam": { "name": "アムステルダム", "country": "オランダ", "cardAlt": "歴史的建造物が立ち並ぶアムステルダムの運河" },
-      "hongKong": { "name": "香港", "country": "中国", "cardAlt": "夜の香港のスカイライン" },
-      "istanbul": { "name": "イスタンブール", "country": "トルコ", "cardAlt": "夕暮れのイスタンブールのブルーモスク" },
-      "lasVegas": { "name": "ラスベガス", "country": "アメリカ", "cardAlt": "夜のラスベガス・ストリップ" },
-      "losAngeles": { "name": "ロサンゼルス", "country": "アメリカ", "cardAlt": "ロサンゼルスのハリウッドサイン" },
-      "miami": { "name": "マイアミ", "country": "アメリカ", "cardAlt": "マイアミビーチのアールデコ地区" },
-      "rome": { "name": "ローマ", "country": "イタリア", "cardAlt": "黄金の時間帯のローマのコロッセオ" }
+      "dubai": {
+        "name": "ドバイ",
+        "country": "UAE",
+        "cardAlt": "夕暮れのブルジュ・ハリファとドバイのスカイライン"
+      },
+      "london": {
+        "name": "ロンドン",
+        "country": "イギリス",
+        "cardAlt": "ロンドンのビッグベンと国会議事堂"
+      },
+      "paris": {
+        "name": "パリ",
+        "country": "フランス",
+        "cardAlt": "夕暮れに輝くパリのエッフェル塔"
+      },
+      "newYork": {
+        "name": "ニューヨーク",
+        "country": "アメリカ",
+        "cardAlt": "エンパイアステートビルとマンハッタンのスカイライン"
+      },
+      "tokyo": {
+        "name": "東京",
+        "country": "日本",
+        "cardAlt": "夜の東京渋谷スクランブル交差点のネオン"
+      },
+      "singapore": {
+        "name": "シンガポール",
+        "country": "シンガポール",
+        "cardAlt": "シンガポールのマリーナベイサンズとガーデンズ・バイ・ザ・ベイ"
+      },
+      "barcelona": {
+        "name": "バルセロナ",
+        "country": "スペイン",
+        "cardAlt": "黄金の時間帯のバルセロナのサグラダ・ファミリア"
+      },
+      "bangkok": {
+        "name": "バンコク",
+        "country": "タイ",
+        "cardAlt": "日の出のバンコクの王宮寺院"
+      },
+      "abuDhabi": {
+        "name": "アブダビ",
+        "country": "UAE",
+        "cardAlt": "アブダビのシェイク・ザイード・グランドモスク"
+      },
+      "amsterdam": {
+        "name": "アムステルダム",
+        "country": "オランダ",
+        "cardAlt": "歴史的建造物が立ち並ぶアムステルダムの運河"
+      },
+      "hongKong": {
+        "name": "香港",
+        "country": "中国",
+        "cardAlt": "夜の香港のスカイライン"
+      },
+      "istanbul": {
+        "name": "イスタンブール",
+        "country": "トルコ",
+        "cardAlt": "夕暮れのイスタンブールのブルーモスク"
+      },
+      "lasVegas": {
+        "name": "ラスベガス",
+        "country": "アメリカ",
+        "cardAlt": "夜のラスベガス・ストリップ"
+      },
+      "losAngeles": {
+        "name": "ロサンゼルス",
+        "country": "アメリカ",
+        "cardAlt": "ロサンゼルスのハリウッドサイン"
+      },
+      "miami": {
+        "name": "マイアミ",
+        "country": "アメリカ",
+        "cardAlt": "マイアミビーチのアールデコ地区"
+      },
+      "rome": {
+        "name": "ローマ",
+        "country": "イタリア",
+        "cardAlt": "黄金の時間帯のローマのコロッセオ"
+      }
     },
     "hero": {
       "badge": "世界{{count}}都市",
@@ -783,7 +847,79 @@
       "titleHighlight": "について",
       "subtitle": "包括的な旅行情報と目的地ガイドのための信頼できるソース。何百万人もの人々が自信を持って世界を探索するのを支援しています。",
       "ctaExplore": "目的地を探索",
-      "ctaContact": "お問い合わせ"
+      "ctaContact": "お問い合わせ",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "お問い合わせ | TRAVI World",

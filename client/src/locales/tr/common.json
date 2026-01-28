@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "BAE", "cardAlt": "Gün batımında Burj Khalifa kulesi ile Dubai manzarası" },
-      "london": { "name": "Londra", "country": "İngiltere", "cardAlt": "Londra Big Ben ve Parlamento Binası" },
-      "paris": { "name": "Paris", "country": "Fransa", "cardAlt": "Gün batımında aydınlatılmış Paris Eyfel Kulesi" },
-      "newYork": { "name": "New York", "country": "ABD", "cardAlt": "Empire State Building ile New York Manhattan manzarası" },
-      "tokyo": { "name": "Tokyo", "country": "Japonya", "cardAlt": "Gece neon ışıkları ile Tokyo Shibuya kavşağı" },
-      "singapore": { "name": "Singapur", "country": "Singapur", "cardAlt": "Singapur Marina Bay Sands ve Gardens by the Bay" },
-      "barcelona": { "name": "Barselona", "country": "İspanya", "cardAlt": "Altın saatte Barselona Sagrada Familia" },
-      "bangkok": { "name": "Bangkok", "country": "Tayland", "cardAlt": "Gün doğumunda Bangkok Büyük Saray tapınağı" },
-      "abuDhabi": { "name": "Abu Dabi", "country": "BAE", "cardAlt": "Abu Dabi Şeyh Zayed Büyük Camii" },
-      "amsterdam": { "name": "Amsterdam", "country": "Hollanda", "cardAlt": "Tarihi binalarla Amsterdam kanalı" },
-      "hongKong": { "name": "Hong Kong", "country": "Çin", "cardAlt": "Gece Hong Kong manzarası" },
-      "istanbul": { "name": "İstanbul", "country": "Türkiye", "cardAlt": "Gün batımında İstanbul Sultanahmet Camii" },
-      "lasVegas": { "name": "Las Vegas", "country": "ABD", "cardAlt": "Gece Las Vegas Strip" },
-      "losAngeles": { "name": "Los Angeles", "country": "ABD", "cardAlt": "Los Angeles Hollywood yazısı" },
-      "miami": { "name": "Miami", "country": "ABD", "cardAlt": "Miami Beach Art Deco bölgesi" },
-      "rome": { "name": "Roma", "country": "İtalya", "cardAlt": "Altın saatte Roma Kolezyumu" }
+      "dubai": {
+        "name": "Dubai",
+        "country": "BAE",
+        "cardAlt": "Gün batımında Burj Khalifa kulesi ile Dubai manzarası"
+      },
+      "london": {
+        "name": "Londra",
+        "country": "İngiltere",
+        "cardAlt": "Londra Big Ben ve Parlamento Binası"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Fransa",
+        "cardAlt": "Gün batımında aydınlatılmış Paris Eyfel Kulesi"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "ABD",
+        "cardAlt": "Empire State Building ile New York Manhattan manzarası"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japonya",
+        "cardAlt": "Gece neon ışıkları ile Tokyo Shibuya kavşağı"
+      },
+      "singapore": {
+        "name": "Singapur",
+        "country": "Singapur",
+        "cardAlt": "Singapur Marina Bay Sands ve Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barselona",
+        "country": "İspanya",
+        "cardAlt": "Altın saatte Barselona Sagrada Familia"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Tayland",
+        "cardAlt": "Gün doğumunda Bangkok Büyük Saray tapınağı"
+      },
+      "abuDhabi": {
+        "name": "Abu Dabi",
+        "country": "BAE",
+        "cardAlt": "Abu Dabi Şeyh Zayed Büyük Camii"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Hollanda",
+        "cardAlt": "Tarihi binalarla Amsterdam kanalı"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "Çin",
+        "cardAlt": "Gece Hong Kong manzarası"
+      },
+      "istanbul": {
+        "name": "İstanbul",
+        "country": "Türkiye",
+        "cardAlt": "Gün batımında İstanbul Sultanahmet Camii"
+      },
+      "lasVegas": {
+        "name": "Las Vegas",
+        "country": "ABD",
+        "cardAlt": "Gece Las Vegas Strip"
+      },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "ABD",
+        "cardAlt": "Los Angeles Hollywood yazısı"
+      },
+      "miami": {
+        "name": "Miami",
+        "country": "ABD",
+        "cardAlt": "Miami Beach Art Deco bölgesi"
+      },
+      "rome": {
+        "name": "Roma",
+        "country": "İtalya",
+        "cardAlt": "Altın saatte Roma Kolezyumu"
+      }
     },
     "hero": {
       "badge": "Dünya Çapında {{count}} Destinasyon",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "Milyonlarca kişinin güvenle dünyayı keşfetmesine yardımcı olan, kapsamlı seyahat bilgisi ve destinasyon rehberleri için güvenilir kaynağınız.",
       "ctaExplore": "Destinasyonları Keşfet",
-      "ctaContact": "İletişime Geç"
+      "ctaContact": "İletişime Geç",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "Bize Ulaşın | TRAVI World",

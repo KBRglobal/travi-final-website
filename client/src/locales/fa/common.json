@@ -310,22 +310,86 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "دبی", "country": "امارات", "cardAlt": "افق دبی با برج خلیفه در غروب آفتاب" },
-      "london": { "name": "لندن", "country": "بریتانیا", "cardAlt": "لندن بیگ‌بن و ساختمان پارلمان" },
-      "paris": { "name": "پاریس", "country": "فرانسه", "cardAlt": "برج ایفل پاریس در غروب آفتاب" },
-      "newYork": { "name": "نیویورک", "country": "آمریکا", "cardAlt": "افق منهتن نیویورک با ساختمان امپایر استیت" },
-      "tokyo": { "name": "توکیو", "country": "ژاپن", "cardAlt": "چهارراه شیبویا توکیو با چراغ‌های نئون در شب" },
-      "singapore": { "name": "سنگاپور", "country": "سنگاپور", "cardAlt": "سنگاپور مارینا بِی سَندز و باغ‌های خلیج" },
-      "barcelona": { "name": "بارسلونا", "country": "اسپانیا", "cardAlt": "ساگرادا فامیلیا بارسلونا در ساعت طلایی" },
-      "bangkok": { "name": "بانکوک", "country": "تایلند", "cardAlt": "معبد کاخ بزرگ بانکوک در طلوع آفتاب" },
-      "abuDhabi": { "name": "ابوظبی", "country": "امارات", "cardAlt": "مسجد شیخ زاید ابوظبی" },
-      "amsterdam": { "name": "آمستردام", "country": "هلند", "cardAlt": "کانال آمستردام با ساختمان‌های تاریخی" },
-      "hongKong": { "name": "هنگ‌کنگ", "country": "چین", "cardAlt": "افق هنگ‌کنگ در شب" },
-      "istanbul": { "name": "استانبول", "country": "ترکیه", "cardAlt": "مسجد آبی استانبول در غروب آفتاب" },
-      "lasVegas": { "name": "لاس‌وگاس", "country": "آمریکا", "cardAlt": "خیابان اصلی لاس‌وگاس در شب" },
-      "losAngeles": { "name": "لس‌آنجلس", "country": "آمریکا", "cardAlt": "تابلوی هالیوود لس‌آنجلس" },
-      "miami": { "name": "میامی", "country": "آمریکا", "cardAlt": "ساحل میامی منطقه آرت‌دکو" },
-      "rome": { "name": "رم", "country": "ایتالیا", "cardAlt": "کلوسئوم رم در ساعت طلایی" }
+      "dubai": {
+        "name": "دبی",
+        "country": "امارات",
+        "cardAlt": "افق دبی با برج خلیفه در غروب آفتاب"
+      },
+      "london": {
+        "name": "لندن",
+        "country": "بریتانیا",
+        "cardAlt": "لندن بیگ‌بن و ساختمان پارلمان"
+      },
+      "paris": {
+        "name": "پاریس",
+        "country": "فرانسه",
+        "cardAlt": "برج ایفل پاریس در غروب آفتاب"
+      },
+      "newYork": {
+        "name": "نیویورک",
+        "country": "آمریکا",
+        "cardAlt": "افق منهتن نیویورک با ساختمان امپایر استیت"
+      },
+      "tokyo": {
+        "name": "توکیو",
+        "country": "ژاپن",
+        "cardAlt": "چهارراه شیبویا توکیو با چراغ‌های نئون در شب"
+      },
+      "singapore": {
+        "name": "سنگاپور",
+        "country": "سنگاپور",
+        "cardAlt": "سنگاپور مارینا بِی سَندز و باغ‌های خلیج"
+      },
+      "barcelona": {
+        "name": "بارسلونا",
+        "country": "اسپانیا",
+        "cardAlt": "ساگرادا فامیلیا بارسلونا در ساعت طلایی"
+      },
+      "bangkok": {
+        "name": "بانکوک",
+        "country": "تایلند",
+        "cardAlt": "معبد کاخ بزرگ بانکوک در طلوع آفتاب"
+      },
+      "abuDhabi": {
+        "name": "ابوظبی",
+        "country": "امارات",
+        "cardAlt": "مسجد شیخ زاید ابوظبی"
+      },
+      "amsterdam": {
+        "name": "آمستردام",
+        "country": "هلند",
+        "cardAlt": "کانال آمستردام با ساختمان‌های تاریخی"
+      },
+      "hongKong": {
+        "name": "هنگ‌کنگ",
+        "country": "چین",
+        "cardAlt": "افق هنگ‌کنگ در شب"
+      },
+      "istanbul": {
+        "name": "استانبول",
+        "country": "ترکیه",
+        "cardAlt": "مسجد آبی استانبول در غروب آفتاب"
+      },
+      "lasVegas": {
+        "name": "لاس‌وگاس",
+        "country": "آمریکا",
+        "cardAlt": "خیابان اصلی لاس‌وگاس در شب"
+      },
+      "losAngeles": {
+        "name": "لس‌آنجلس",
+        "country": "آمریکا",
+        "cardAlt": "تابلوی هالیوود لس‌آنجلس"
+      },
+      "miami": {
+        "name": "میامی",
+        "country": "آمریکا",
+        "cardAlt": "ساحل میامی منطقه آرت‌دکو"
+      },
+      "rome": {
+        "name": "رم",
+        "country": "ایتالیا",
+        "cardAlt": "کلوسئوم رم در ساعت طلایی"
+      }
     },
     "hero": {
       "badge": "{{count}} مقصد در سراسر جهان",
@@ -783,7 +847,79 @@
       "titleHighlight": "TRAVI World",
       "subtitle": "منبع قابل اعتماد شما برای اطلاعات کامل سفر و راهنماهای مقصد، کمک به میلیون‌ها نفر برای کاوش جهان با اعتماد.",
       "ctaExplore": "کاوش مقاصد",
-      "ctaContact": "تماس بگیرید"
+      "ctaContact": "تماس بگیرید",
+      "stats": {
+        "destinations": "Destinations",
+        "articles": "Articles",
+        "support": "Travel Support",
+        "coverage": "Coverage",
+        "cities": "16+ Cities"
+      },
+      "whoWeAre": {
+        "title": "Who We Are"
+      },
+      "mission": {
+        "title": "Our Mission"
+      },
+      "services": {
+        "badge": "Our Services",
+        "title": "What We Offer"
+      },
+      "offerings": {
+        "destinations": {
+          "title": "Destination Guides",
+          "description": "Comprehensive information about cities and regions around the world"
+        },
+        "attractions": {
+          "title": "Attraction Information",
+          "description": "Details about must-see sights and unique experiences"
+        },
+        "hotels": {
+          "title": "Hotel Guides",
+          "description": "Information about accommodation options for every budget"
+        },
+        "restaurants": {
+          "title": "Restaurant Recommendations",
+          "description": "Dining options for every taste and preference"
+        },
+        "articles": {
+          "title": "Travel Articles",
+          "description": "Tips, insights, and travel inspiration"
+        },
+        "news": {
+          "title": "Latest Travel News",
+          "description": "Stay informed with curated travel updates"
+        }
+      },
+      "editorial": {
+        "title": "Editorial Independence",
+        "affiliateTitle": "Affiliate Disclosure"
+      },
+      "values": {
+        "badge": "Our Foundation",
+        "title": "Our Values",
+        "accuracy": {
+          "title": "Accuracy",
+          "description": "We strive to provide accurate and reliable information, regularly updating our contents"
+        },
+        "transparency": {
+          "title": "Transparency",
+          "description": "We are clear about our affiliate relationships and how we operate"
+        },
+        "userFocused": {
+          "title": "User-Focused",
+          "description": "Our contents is designed to help travelers make informed decisions"
+        }
+      },
+      "connect": {
+        "badge": "Let's Connect",
+        "title": "Get in Touch"
+      },
+      "company": {
+        "title": "Company Information",
+        "contactTitle": "Contact Information",
+        "contactForm": "Contact Form"
+      }
     },
     "contact": {
       "metaTitle": "تماس با ما | TRAVI World",
