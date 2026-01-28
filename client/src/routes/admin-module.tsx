@@ -152,6 +152,12 @@ const DestinationIntelligencePage = lazy(() => import("@/pages/admin/destination
 const Campaigns = lazy(() => import("@/pages/campaigns"));
 const NewsletterSubscribers = lazy(() => import("@/pages/newsletter-subscribers"));
 const AffiliateLinks = lazy(() => import("@/pages/affiliate-links"));
+
+// Enterprise & Operations
+const EnterpriseTeams = lazy(() => import("@/pages/admin/enterprise/teams"));
+const LinksDashboard = lazy(() => import("@/pages/admin/links/dashboard"));
+const HelpCenterAdmin = lazy(() => import("@/pages/admin/help"));
+const HelpArticleEditor = lazy(() => import("@/pages/admin/help/article-editor"));
 const SocialDashboard = lazy(() => import("@/pages/admin/social/social-dashboard"));
 
 // Enterprise Features
@@ -322,9 +328,17 @@ function AdminRouter() {
         {/* Enterprise */}
         <Route path="/admin/enterprise/workflows" component={EnterpriseWorkflows} />
         <Route path="/admin/enterprise/webhooks" component={EnterpriseWebhooks} />
+        <Route path="/admin/enterprise/teams" component={EnterpriseTeams} />
         <Route path="/admin/governance" component={GovernanceDashboard} />
         <Route path="/admin/governance/roles" component={GovernanceRoles} />
         <Route path="/admin/governance/users" component={GovernanceUsers} />
+
+        {/* SEO & Links */}
+        <Route path="/admin/links" component={LinksDashboard} />
+
+        {/* Help Center */}
+        <Route path="/admin/help" component={HelpCenterAdmin} />
+        <Route path="/admin/help/article/:id" component={HelpArticleEditor} />
 
         {/* Integrations */}
         <Route path="/admin/tiqets" component={TiqetsDashboard} />
