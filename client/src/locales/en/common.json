@@ -55,25 +55,25 @@
   },
   "home": {
     "hero": {
-      "title": "Explore the World with TRAVI",
-      "subtitle": "Your comprehensive travel guide to 17 destinations worldwide",
-      "searchPlaceholder": "Search attractions, hotels, restaurants...",
-      "cta": "Start Exploring",
-      "badge": "Your Gateway to World Adventures",
-      "headlinePart1": "Your Trusted Travel",
-      "headlinePart2": "Resource",
-      "description": "Comprehensive travel information for {{destinations}} destinations worldwide. Discover detailed guides for {{attractions}}+ attractions.",
-      "descriptionPart1": "Comprehensive travel information for",
-      "descriptionPart2": "destinations worldwide. Discover detailed guides for",
+      "title": "Find Everything About Your Next Destination",
+      "subtitle": "Detailed guides for 3,000+ attractions across 17 cities — accurate, current, and free",
+      "searchPlaceholder": "Search Eiffel Tower, Burj Khalifa, Colosseum...",
+      "cta": "Explore Destinations",
+      "badge": "17 Destinations · 3,000+ Attractions",
+      "headlinePart1": "Know Before",
+      "headlinePart2": "You Go",
+      "description": "Detailed travel information for {{destinations}} destinations. Hours, prices, tips, and honest recommendations for {{attractions}}+ attractions.",
+      "descriptionPart1": "Detailed travel information for",
+      "descriptionPart2": "destinations. Hours, prices, tips, and honest recommendations for",
       "descriptionPart3": "attractions.",
       "carouselLabel": "Destination carousel navigation",
       "viewDestination": "View {{name}} - {{tagline}}",
       "worldwide": "Worldwide",
       "exploreWorld": "Explore the World",
       "welcomeAriaLabel": "Welcome to TRAVI World",
-      "pageTitle": "TRAVI World - Travel Guides for Hotels, Attractions & Things to Do",
-      "pageDescription": "Your complete travel guide for 17 destinations worldwide. Expert information about hotels, attractions, restaurants, and activities for 3,000+ places.",
-      "orgDescription": "Your trusted travel resource for 17 destinations worldwide."
+      "pageTitle": "TRAVI World — Travel Guides for 17 Destinations | 3,000+ Attractions",
+      "pageDescription": "Find detailed travel information for Dubai, Paris, Tokyo, and more. Opening hours, ticket prices, insider tips, and honest recommendations. Updated daily.",
+      "orgDescription": "Comprehensive travel information for 17 destinations worldwide."
     },
     "srLabel": {
       "attractions": "Over {{count}} attractions covered",
@@ -86,26 +86,26 @@
     "bestHotels": "Best Hotels",
     "latestNews": "Latest News & Guides",
     "sections": {
-      "destinations": "Explore Destinations",
-      "destinationsDesc": "Discover our curated collection of global travel destinations",
-      "categories": "Browse by Category",
-      "categoriesDesc": "Find exactly what you're looking for",
-      "experiences": "Travel by Experience",
-      "experiencesDesc": "Choose your travel style",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Everything you need to know about TRAVI",
-      "regions": "Explore by Region",
-      "newsletter": "Stay Updated",
+      "destinations": "Pick Your Destination",
+      "destinationsDesc": "Detailed guides for each city — attractions, hotels, restaurants, and local tips",
+      "categories": "What Are You Looking For?",
+      "categoriesDesc": "Jump straight to what matters",
+      "experiences": "Plan by Travel Style",
+      "experiencesDesc": "Find places that match how you like to travel",
+      "faq": "Common Questions",
+      "faqDesc": "What travelers ask before using TRAVI",
+      "regions": "Browse by Region",
+      "newsletter": "Get Weekly Travel Tips",
       "allDestinationsTitle": "Travel Guides for All {{count}} Destinations",
-      "completeGuide": "{{name}}, {{country}} - Complete Travel Guide"
+      "completeGuide": "{{name}}, {{country}} — Complete Travel Guide"
     },
     "cta": {
       "exploreDestinations": "Explore Destinations",
-      "viewGuides": "View Guides",
-      "viewAll": "View All",
-      "startExploring": "Start Exploring",
-      "planTrip": "Plan Your Trip",
-      "viewExperience": "View {{name}}"
+      "viewGuides": "See All Guides",
+      "viewAll": "See All",
+      "startExploring": "Find Your Destination",
+      "planTrip": "Start Researching",
+      "viewExperience": "See {{name}} Guides"
     },
     "stats": {
       "destinations": "DESTINATIONS",
@@ -142,32 +142,32 @@
       "soloDesc": "Perfect destinations for solo travelers"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Everything you need to know about TRAVI World",
-      "whatIsTravi": "What is TRAVI World?",
-      "whatIsTraviAnswer": "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities.",
-      "howManyDestinations": "How many destinations does TRAVI cover?",
-      "howManyDestinationsAnswer": "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
-      "isFree": "Is TRAVI World free to use?",
-      "isFreeAnswer": "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-      "updateFrequency": "How often is content updated?",
-      "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
+      "title": "Common Questions",
+      "subtitle": "What travelers ask before using TRAVI",
+      "whatIsTravi": "What kind of information does TRAVI provide?",
+      "whatIsTraviAnswer": "TRAVI gives you the practical details you need: opening hours, ticket prices, how to get there, best times to visit, and insider tips. We cover 3,000+ attractions across 17 destinations including Dubai, Paris, Tokyo, and more.",
+      "howManyDestinations": "Which destinations are covered?",
+      "howManyDestinationsAnswer": "Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome. We add more destinations regularly.",
+      "isFree": "Is there a cost to use TRAVI?",
+      "isFreeAnswer": "TRAVI is completely free. No subscriptions, no paywalls. We earn a small commission when you book tickets through our partner links, but our recommendations are based on what's actually worth visiting.",
+      "updateFrequency": "How current is the information?",
+      "updateFrequencyAnswer": "We update our content daily. Opening hours, prices, and seasonal information are verified regularly so you can plan with confidence."
     },
     "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
     "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
     "title": "Dubai Attractions",
-    "subtitle": "Explore iconic landmarks and hidden gems",
+    "subtitle": "Opening hours, prices, and visitor tips for every attraction",
     "hero": {
       "badge": "{{count}} attractions in {{cities}} cities",
-      "badgeThousands": "Thousands of attractions worldwide",
-      "headlinePart1": "Things to Do",
-      "headlinePart2": "Worldwide",
-      "description": "<span class=\"font-medium text-slate-700 dark:text-slate-300\">Skip-the-line tickets</span> to Eiffel Tower, Colosseum, Burj Khalifa and top attractions in Paris, Rome, Dubai and more.",
+      "badgeThousands": "3,000+ attractions covered",
+      "headlinePart1": "Find Things",
+      "headlinePart2": "to Do",
+      "description": "Opening hours, ticket prices, best times to visit, and skip-the-line options for <span class=\"font-medium text-slate-700 dark:text-slate-300\">Eiffel Tower, Colosseum, Burj Khalifa</span> and 3,000+ more attractions.",
       "searchPlaceholder": "Search Eiffel Tower, Colosseum, Burj Khalifa...",
       "carouselLabel": "Featured attractions carousel",
-      "sectionLabel": "Book tickets to top attractions worldwide",
+      "sectionLabel": "Find attractions and book tickets",
       "searchAriaLabel": "Search attractions by name or city",
       "searchButton": "Search",
       "searchButtonAriaLabel": "Search attractions"
@@ -208,22 +208,22 @@
       "tips": "Insider Tips"
     },
     "sections": {
-      "destinations": "Explore Attractions by Destination",
-      "destinationsDesc": "Choose a city to discover amazing things to do",
-      "faq": "Frequently Asked Questions",
-      "faqDesc": "Get answers about booking attractions worldwide",
-      "whyBookBadge": "Why Book With Us",
-      "whyBookTitle": "Skip the Lines, Save Time",
-      "whyBookDesc": "Book tickets in advance and enjoy hassle-free entry to top attractions",
+      "destinations": "Attractions by Destination",
+      "destinationsDesc": "Pick a city to see what's worth visiting",
+      "faq": "Common Questions",
+      "faqDesc": "What travelers ask about attractions",
+      "whyBookBadge": "Skip the Queues",
+      "whyBookTitle": "Book Tickets in Advance",
+      "whyBookDesc": "Get skip-the-line tickets to popular attractions and walk straight in",
       "allDestinations": "All Destinations"
     },
     "features": {
-      "skipTheLine": "Skip-the-Line Tickets",
-      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican and more",
+      "skipTheLine": "Skip-the-Line Entry",
+      "skipTheLineDesc": "Walk past the queues at Eiffel Tower, Colosseum, Vatican, and more",
       "mobileTickets": "Mobile Tickets",
-      "mobileTicketsDesc": "Instant delivery to your phone - show your ticket and enter",
+      "mobileTicketsDesc": "Tickets delivered to your phone instantly. Show and enter.",
       "freeCancellation": "Free Cancellation",
-      "freeCancellationDesc": "Plans change? Cancel up to 24 hours before for a full refund"
+      "freeCancellationDesc": "Cancel up to 24 hours before for a full refund"
     },
     "browse": {
       "title": "Things to Do by Destination",
@@ -310,36 +310,88 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
-      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
-      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Dubai skyline featuring Burj Khalifa at sunset"
+      },
+      "london": {
+        "name": "London",
+        "country": "UK",
+        "cardAlt": "Big Ben and Houses of Parliament in London"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "France",
+        "cardAlt": "Eiffel Tower illuminated at sunset in Paris"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "Manhattan skyline with Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Shibuya crossing with neon lights in Tokyo"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Marina Bay Sands and Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spain",
+        "cardAlt": "Sagrada Familia basilica in Barcelona"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Grand Palace temple in Bangkok"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Sheikh Zayed Grand Mosque in Abu Dhabi"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Netherlands",
+        "cardAlt": "Amsterdam canal with historic buildings"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Hong Kong skyline at night"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turkey",
+        "cardAlt": "Blue Mosque at sunset in Istanbul"
+      },
       "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Hollywood sign in Los Angeles"
+      },
       "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
-      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
+      "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Colosseum at golden hour in Rome" }
     },
     "hero": {
-      "badge": "{{count}} Destinations Worldwide",
-      "trustedBy": "Trusted by {{count}} destinations worldwide",
-      "discover": "Discover",
-      "worldClass": "World-Class",
-      "destinations": "Destinations",
-      "description": "Curated travel guides with local expertise for the world's most captivating cities. From iconic landmarks to hidden gems.",
-      "exploreAll": "Explore All Destinations",
+      "badge": "{{count}} Destinations Covered",
+      "trustedBy": "{{count}} destinations with detailed guides",
+      "discover": "Find Your",
+      "worldClass": "Next",
+      "destinations": "Destination",
+      "description": "Detailed information for every major attraction. Opening hours, ticket prices, how to get there, and what to expect.",
+      "exploreAll": "See All Destinations",
       "travelGuides": "Travel Guides",
       "explorePlaceholder": "Explore Destinations",
-      "browseCollection": "Browse our collection of handpicked travel destinations below",
+      "browseCollection": "Choose a destination to start researching",
       "explore": "Explore",
-      "discoverButton": "Discover",
+      "discoverButton": "Explore",
       "ariaLabel": "Destinations overview",
       "exploreTitle": "Explore {{name}}",
       "galleryAriaLabel": "Featured destination gallery",
@@ -442,9 +494,9 @@
     "tryAgain": "Try different keywords"
   },
   "footer": {
-    "about": "About Travi",
-    "aboutTravi": "About Travi",
-    "aboutText": "Comprehensive travel information for 17 destinations worldwide.",
+    "about": "About TRAVI",
+    "aboutTravi": "About TRAVI",
+    "aboutText": "Detailed travel information for 17 destinations. Opening hours, prices, tips.",
     "aboutUs": "About Us",
     "quickLinks": "Quick Links",
     "legal": "Legal",
@@ -462,7 +514,7 @@
     "cookies": "Cookies",
     "security": "Security",
     "cookieSettings": "Cookie Settings",
-    "tagline": "Your Trusted Travel Resource",
+    "tagline": "Know Before You Go",
     "ariaLabel": "Site footer",
     "featuredGuides": "Featured Guides",
     "tools": "Tools",
@@ -499,12 +551,12 @@
     }
   },
   "newsletter": {
-    "badge": "Join the Adventure",
-    "title": "Get Travel Magic in Your Inbox",
-    "description": "Weekly tips, hidden gems, and exclusive deals - no spam, just wanderlust.",
+    "badge": "Free Weekly Updates",
+    "title": "Get Destination Tips Every Week",
+    "description": "Practical travel tips, new attraction guides, and destination updates. One email per week.",
     "emailPlaceholder": "your@email.com",
     "subscribe": "Subscribe",
-    "success": "You're subscribed! Check your inbox."
+    "success": "Done! Check your inbox to confirm."
   },
   "cookies": {
     "title": "We value your privacy",

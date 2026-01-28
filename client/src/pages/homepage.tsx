@@ -184,28 +184,24 @@ const SUPPORTED_LANGUAGES = [
 // ============================================
 const FAQ_ITEMS = [
   {
-    q: "What is TRAVI World?",
-    a: "TRAVI World is a comprehensive travel information platform covering 17 destinations worldwide with detailed guides for 3,000+ attractions, hotels, restaurants, and activities. Our multilingual platform is updated daily, with additional languages rolling out.",
+    q: "What kind of information does TRAVI provide?",
+    a: "TRAVI gives you the practical details you need: opening hours, ticket prices, how to get there, best times to visit, and insider tips. We cover 3,000+ attractions across 17 destinations including Dubai, Paris, Tokyo, and more.",
   },
   {
-    q: "How many destinations does TRAVI cover?",
-    a: "TRAVI World covers 17 major travel destinations including Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome.",
+    q: "Which destinations are covered?",
+    a: "Dubai, Paris, Tokyo, New York, Barcelona, Singapore, London, Bangkok, Abu Dhabi, Amsterdam, Hong Kong, Istanbul, Las Vegas, Los Angeles, Miami, and Rome. We add more destinations regularly.",
   },
   {
-    q: "Is TRAVI World content available in multiple languages?",
-    a: "Yes, TRAVI World is a multilingual platform with additional languages rolling out. We're expanding support to include Arabic, Hebrew, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Korean, Chinese, Thai, Turkish, Dutch, Polish, and Vietnamese.",
+    q: "Is TRAVI available in multiple languages?",
+    a: "Yes, TRAVI supports 30+ languages including English, Arabic, Chinese, Spanish, French, German, Japanese, Korean, Hindi, Russian, and many more. All content is professionally translated.",
   },
   {
-    q: "What type of travel information does TRAVI provide?",
-    a: "TRAVI provides comprehensive information about hotels and accommodation, tourist attractions and landmarks, restaurants and dining options, activities and tours, travel news and updates, and complete destination guides with tickets, opening hours, and visitor tips.",
+    q: "Is there a cost to use TRAVI?",
+    a: "TRAVI is completely free. No subscriptions, no paywalls. We earn a small commission when you book tickets through our partner links, but our recommendations are based on what's actually worth visiting.",
   },
   {
-    q: "Is TRAVI World free to use?",
-    a: "Yes, TRAVI World is completely free to use. Browse thousands of travel guides, attraction reviews, hotel recommendations, and restaurant suggestions at no cost.",
-  },
-  {
-    q: "How often is TRAVI World content updated?",
-    a: "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations.",
+    q: "How current is the information?",
+    a: "We update our content daily. Opening hours, prices, and seasonal information are verified regularly so you can plan with confidence.",
   },
 ];
 
@@ -713,7 +709,7 @@ function SplitHero({
     },
     image: `${SITE_URL}/ogImage.jpg`,
     description:
-      "Your trusted travel resource for 17 destinations worldwide with 3,000+ attractions, hotels, and restaurants reviewed.",
+      "Comprehensive travel information for 17 destinations worldwide. Detailed guides for 3,000+ attractions with opening hours, prices, and visitor tips.",
     foundingDate: "2021",
     sameAs: [
       "https://www.instagram.com/travi_world",

@@ -40,18 +40,19 @@ export function CategoryHero({
   accentColorLight,
   icon: Icon,
   stats,
-  updatedDate
+  updatedDate,
 }: CategoryHeroProps) {
   return (
-    <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-[#1e1b4b]">
+    <section
+      className="relative min-h-[420px] sm:min-h-[480px] lg:min-h-[560px] flex items-center overflow-hidden bg-[#1e1b4b]"
+      aria-labelledby="category-hero-heading"
+    >
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div 
-          className="absolute inset-0 bg-[#6443F4]/10" 
-        />
+      <div className="absolute inset-0 opacity-10" aria-hidden="true">
+        <div className="absolute inset-0 bg-[#6443F4]/10" />
       </div>
 
-      <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-24">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 sm:py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Text Column - Left */}
           <motion.div
@@ -61,15 +62,19 @@ export function CategoryHero({
             className="max-w-xl"
           >
             {/* Category Label */}
-            <div className="flex items-center gap-3 mb-6">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: `${accentColor}20`, border: `1px solid ${accentColor}40` }}
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{
+                  backgroundColor: `${accentColor}20`,
+                  border: `1px solid ${accentColor}40`,
+                }}
+                aria-hidden="true"
               >
-                <Icon className="w-5 h-5" style={{ color: accentColor }} />
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: accentColor }} />
               </div>
-              <span 
-                className="text-sm font-semibold tracking-[0.2em] uppercase"
+              <span
+                className="text-xs sm:text-sm font-semibold tracking-[0.15em] sm:tracking-[0.2em] uppercase"
                 style={{ color: accentColor }}
                 data-testid="hero-label"
               >
@@ -77,41 +82,45 @@ export function CategoryHero({
               </span>
             </div>
 
-            {/* Headline - Professional proportions */}
-            <h1 
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-[1.1] tracking-[-0.02em]"
+            {/* Headline - Professional proportions with better mobile sizing */}
+            <h1
+              id="category-hero-heading"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-[1.15] tracking-[-0.02em]"
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               data-testid="hero-headline"
             >
               {headline}
             </h1>
 
-            {/* Description */}
-            <p 
-              className="text-lg lg:text-xl text-white/80 mb-8 leading-relaxed"
+            {/* Description - Better line length for readability */}
+            <p
+              className="text-base sm:text-lg lg:text-xl text-white/80 mb-6 sm:mb-8 leading-relaxed max-w-[65ch]"
               data-testid="hero-description"
             >
               {description}
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-4 mb-8">
+            {/* CTAs - Min 44px touch targets for mobile */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
               <Link href={primaryCta.href}>
-                <Button 
+                <Button
                   size="lg"
-                  className="px-8 text-white border-0 bg-[#6443F4] hover:bg-[#5539d4]"
+                  className="min-h-[44px] px-6 sm:px-8 text-white border-0 bg-[#6443F4] hover:bg-[#5539d4] transition-colors cursor-pointer"
                   data-testid="button-primary-cta"
                 >
                   {primaryCta.text}
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <ArrowRight
+                    className="ml-2 w-4 h-4 rtl:ml-0 rtl:mr-2 rtl:rotate-180"
+                    aria-hidden="true"
+                  />
                 </Button>
               </Link>
               {secondaryCta && (
                 <Link href={secondaryCta.href}>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="lg"
-                    className="border-white/30 text-white hover:bg-white/10"
+                    className="min-h-[44px] px-6 sm:px-8 border-white/30 text-white hover:bg-white/10 transition-colors cursor-pointer"
                     data-testid="button-secondary-cta"
                   >
                     {secondaryCta.text}
@@ -121,11 +130,7 @@ export function CategoryHero({
             </div>
 
             {/* Meta Info */}
-            {updatedDate && (
-              <p className="text-sm text-white/60">
-                Last updated: {updatedDate}
-              </p>
-            )}
+            {updatedDate && <p className="text-sm text-white/60">Last updated: {updatedDate}</p>}
           </motion.div>
 
           {/* Image Column - Right */}
@@ -137,16 +142,10 @@ export function CategoryHero({
           >
             <div className="relative aspect-[4/3] lg:aspect-[3/4] rounded-2xl overflow-hidden">
               {/* Image */}
-              <img 
-                src={image}
-                alt={imageAlt}
-                className="w-full h-full object-cover"
-              />
-              
+              <img src={image} alt={imageAlt} className="w-full h-full object-cover" />
+
               {/* Overlay */}
-              <div 
-                className="absolute inset-0 bg-[#6443F4]/10"
-              />
+              <div className="absolute inset-0 bg-[#6443F4]/10" />
 
               {/* Stats Chips */}
               {stats && stats.length > 0 && (
@@ -158,11 +157,13 @@ export function CategoryHero({
                       style={{
                         background: "rgba(255, 255, 255, 0.15)",
                         border: `1px solid ${accentColor}50`,
-                        color: "white"
+                        color: "white",
                       }}
                       data-testid={`stat-chip-${index}`}
                     >
-                      <span className="font-bold mr-1" style={{ color: accentColor }}>{stat.value}</span>
+                      <span className="font-bold mr-1" style={{ color: accentColor }}>
+                        {stat.value}
+                      </span>
                       {stat.label}
                     </Badge>
                   ))}

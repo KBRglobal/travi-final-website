@@ -9,16 +9,13 @@ export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Travi",
+    name: "TRAVI World",
     url: "https://travi.world",
     logo: "https://travi.world/logo.png",
-    description: "Your ultimate guide to Dubai - attractions, hotels, dining, and more.",
+    description:
+      "Comprehensive travel information for 17 destinations worldwide. Detailed guides for 3,000+ attractions with opening hours, prices, and visitor tips.",
     inLanguage: locale,
-    sameAs: [
-      "https://twitter.com/travi",
-      "https://facebook.com/travi",
-      "https://instagram.com/travi",
-    ],
+    sameAs: ["https://www.instagram.com/travi_world", "https://www.tiktok.com/@travi.world"],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
@@ -723,6 +720,79 @@ export function SpeakableSchema({ cssSelector, xpath }: SpeakableSchemaProps) {
       "@type": "SpeakableSpecification",
       cssSelector: cssSelector || [".speakable", "article h1", "article p:first-of-type"],
       xpath: xpath,
+    },
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// FAQPage schema for FAQ sections
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface FAQPageSchemaProps {
+  faqs: FAQItem[];
+  locale?: string;
+}
+
+export function FAQPageSchema({ faqs, locale = "en" }: FAQPageSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    inLanguage: locale,
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+}
+
+// WebSite schema for homepage with SearchAction
+interface WebSiteSchemaProps {
+  name?: string;
+  url?: string;
+  description?: string;
+  searchUrl?: string;
+  locale?: string;
+}
+
+export function WebSiteSchema({
+  name = "TRAVI World",
+  url = "https://travi.world",
+  description = "Comprehensive travel information for 17 destinations worldwide",
+  searchUrl = "https://travi.world/search?q=",
+  locale = "en",
+}: WebSiteSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name,
+    url,
+    description,
+    inLanguage: locale,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${searchUrl}{search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
     },
   };
 
