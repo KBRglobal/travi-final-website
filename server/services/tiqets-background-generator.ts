@@ -218,8 +218,9 @@ async function isQueueActiveWithFreshLocks(): Promise<{
  */
 async function triggerParallelGeneration(): Promise<boolean> {
   try {
-    const port = process.env.PORT || "5000";
-    const response = await fetch(`http://localhost:${port}/api/admin/tiqets/generate-parallel`, {
+    const baseUrl =
+      process.env.INTERNAL_API_URL || `http://localhost:${process.env.PORT || "5000"}`;
+    const response = await fetch(`${baseUrl}/api/admin/tiqets/generate-parallel`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
@@ -267,10 +268,11 @@ async function triggerOctypoGeneration(): Promise<boolean> {
     octypoState.setRunning(true);
     lastOctypoTrigger = Date.now();
 
-    const port = process.env.PORT || "5000";
+    const baseUrl =
+      process.env.INTERNAL_API_URL || `http://localhost:${process.env.PORT || "5000"}`;
     // Maximum parallelism - use all healthy engines simultaneously (36 writers with 72 engines)
     const response = await fetch(
-      `http://localhost:${port}/api/admin/tiqets/generate-octypo?concurrency=36&batch=150`,
+      `${baseUrl}/api/admin/tiqets/generate-octypo?concurrency=36&batch=150`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

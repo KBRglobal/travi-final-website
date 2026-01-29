@@ -200,7 +200,6 @@ export const payoutManager = {
       console.warn("PayPal payment skipped: PAYPAL_CLIENT_ID/PAYPAL_CLIENT_SECRET not configured");
       return null;
     }
-    console.log(`Processing PayPal payment: $${amount} to ${email}`);
     return `PAYPAL-${Date.now()}`;
   },
 
@@ -213,7 +212,6 @@ export const payoutManager = {
       console.warn("Stripe payment skipped: STRIPE_SECRET_KEY not configured");
       return null;
     }
-    console.log(`Processing Stripe payment: $${amount} to account ${accountId}`);
     return `STRIPE-${Date.now()}`;
   },
 
@@ -225,7 +223,6 @@ export const payoutManager = {
     amount: number,
     bankAccount: Record<string, unknown>
   ): Promise<string | null> {
-    console.log(`Processing bank transfer: $${amount}`, { bankAccount: Object.keys(bankAccount) });
     return `BANK-${Date.now()}`;
   },
 
@@ -233,7 +230,6 @@ export const payoutManager = {
    * Check processing
    */
   async processCheck(amount: number, address: string): Promise<string | null> {
-    console.log(`Processing check: $${amount} to ${address}`);
     return `CHECK-${Date.now()}`;
   },
 

@@ -21,16 +21,16 @@ const DEFAULT_NOTIFICATION_CONFIG: Partial<NotificationConfig> = {
   defaultChannel: "log",
   logOnly: true, // Safe default
   recipientMapping: {
-    "ops-critical": ["ops-team@example.com"],
-    "ops-lead": ["ops-lead@example.com"],
-    "seo-lead": ["seo-lead@example.com"],
-    "content-lead": ["content-lead@example.com"],
-    "finance-lead": ["finance@example.com"],
-    "finance-ops": ["finance-ops@example.com"],
-    "product-lead": ["product-lead@example.com"],
-    "data-lead": ["data-lead@example.com"],
-    exec: ["exec@example.com"],
-    engineering: ["engineering@example.com"],
+    "ops-critical": [process.env.OPS_CRITICAL_EMAIL || "ops@travi.world"],
+    "ops-lead": [process.env.OPS_LEAD_EMAIL || "ops@travi.world"],
+    "seo-lead": [process.env.SEO_LEAD_EMAIL || "info@travi.world"],
+    "content-lead": [process.env.CONTENT_LEAD_EMAIL || "info@travi.world"],
+    "finance-lead": [process.env.FINANCE_LEAD_EMAIL || "info@travi.world"],
+    "finance-ops": [process.env.FINANCE_OPS_EMAIL || "info@travi.world"],
+    "product-lead": [process.env.PRODUCT_LEAD_EMAIL || "info@travi.world"],
+    "data-lead": [process.env.DATA_LEAD_EMAIL || "info@travi.world"],
+    exec: [process.env.EXEC_EMAIL || "info@travi.world"],
+    engineering: [process.env.ENGINEERING_EMAIL || "info@travi.world"],
   },
 };
 

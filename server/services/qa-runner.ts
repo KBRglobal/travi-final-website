@@ -10,8 +10,8 @@ interface CheckResult {
 }
 
 export class QaRunner {
-  // Use localhost for internal server-to-server requests to avoid DNS/networking issues
-  private static readonly BASE_URL = "http://localhost:5000";
+  private static readonly BASE_URL =
+    process.env.INTERNAL_API_URL || `http://localhost:${process.env.PORT || "5000"}`;
 
   static async run(runId: string): Promise<void> {
     try {

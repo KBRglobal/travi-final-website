@@ -160,7 +160,9 @@ export const signalDetectors: Record<
           detectedAt: new Date(),
         };
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("AEO missing signal check failed:", error);
+    }
 
     return null;
   },
@@ -188,7 +190,9 @@ export const signalDetectors: Record<
           data: { daysSinceUpdate, staleDays },
         };
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("AEO stale signal check failed:", error);
+    }
 
     return null;
   },
@@ -340,7 +344,9 @@ export async function detectSignals(ctx: ContentContext): Promise<ContentHealthS
       if (signal) {
         signals.push(signal);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(`Health signal detector "${signalType}" failed:`, error);
+    }
   }
 
   return signals;

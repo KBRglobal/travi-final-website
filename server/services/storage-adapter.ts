@@ -60,7 +60,9 @@ export class ObjectStorageAdapter implements StorageAdapter {
     try {
       await this.ensureInitialized();
       await this.client.delete(key);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Cloud storage delete failed:", error);
+    }
   }
 
   async exists(key: string): Promise<boolean> {
@@ -171,7 +173,9 @@ export class LocalStorageAdapter implements StorageAdapter {
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Local file delete failed:", error);
+    }
   }
 
   async exists(key: string): Promise<boolean> {
@@ -268,7 +272,9 @@ export class StorageManager {
         const url = await primary.upload(key, buffer);
 
         return { url, storage: primary.getName() };
-      } catch (error) {}
+      } catch (error) {
+        console.error("Primary storage upload failed, falling back to local:", error);
+      }
     }
 
     // Fallback to local storage

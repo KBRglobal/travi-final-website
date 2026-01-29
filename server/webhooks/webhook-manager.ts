@@ -276,7 +276,9 @@ export const webhookManager = {
         attempts,
         error,
       } as any);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Webhook log insert failed:", error);
+    }
   },
 
   /**
@@ -306,7 +308,9 @@ export const webhookManager = {
           .set({ status: "failed" } as any)
           .where(eq(webhooks.id, webhookId));
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Webhook status update failed:", error);
+    }
   },
 
   /**
@@ -328,7 +332,9 @@ export const webhookManager = {
         .map(webhook => this.deliverWebhook(webhook.id, event, data));
 
       await Promise.allSettled(deliveryPromises);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Webhook broadcast failed:", error);
+    }
   },
 
   /**

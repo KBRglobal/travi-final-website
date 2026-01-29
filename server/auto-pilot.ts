@@ -847,7 +847,9 @@ export const autoRss = {
             itemsProcessed: imported,
             lastRunTime: new Date(),
           });
-        } catch (itemError: any) {}
+        } catch (itemError: any) {
+          console.error("RSS item processing failed:", itemError?.message);
+        }
       }
 
       // Update lastFetchedAt on the feed
@@ -858,7 +860,9 @@ export const autoRss = {
           .set({ lastFetchedAt: now } as any)
           .where(eq(rssFeeds.id, feedId))
           .returning({ id: rssFeeds.id, lastFetchedAt: rssFeeds.lastFetchedAt });
-      } catch (updateError: any) {}
+      } catch (updateError: any) {
+        console.error("RSS feed update failed:", updateError?.message);
+      }
 
       return { fetched: items.length, imported };
     } catch (error: any) {
@@ -1534,7 +1538,9 @@ export const autoPilot = {
           lowSeoScoreThreshold: autoPilotConfig.destinationFreshness.lowSeoScoreThreshold,
         });
         freshnessResult = await runDestinationFreshnessCheck();
-      } catch (error) {}
+      } catch (error) {
+        console.error("Destination freshness check failed:", error);
+      }
     }
 
     // 3. Generate and send weekly report
@@ -1689,7 +1695,9 @@ class AutoPilotScheduler {
         await autoPilot.runWeeklyTasks();
         this.lastRuns.weekly = now;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Auto-pilot scheduler task failed:", error);
+    }
   }
 
   private shouldRunHourly(now: Date): boolean {

@@ -63,7 +63,7 @@ function getNotificationConfig(): NotificationConfig {
     emailEnabled: process.env.ENABLE_APPROVAL_EMAIL_NOTIFICATIONS === "true",
     webhookEnabled: process.env.ENABLE_APPROVAL_WEBHOOKS === "true",
     slackEnabled: process.env.ENABLE_APPROVAL_SLACK === "true",
-    emailFrom: process.env.APPROVAL_EMAIL_FROM || "noreply@example.com",
+    emailFrom: process.env.APPROVAL_EMAIL_FROM || "noreply@travi.world",
     webhookUrl: process.env.APPROVAL_WEBHOOK_URL,
     webhookSecret: process.env.APPROVAL_WEBHOOK_SECRET,
     slackWebhookUrl: process.env.APPROVAL_SLACK_WEBHOOK_URL,

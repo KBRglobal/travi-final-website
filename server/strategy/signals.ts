@@ -59,7 +59,9 @@ export const contentHealthCollector: SignalCollector = {
           });
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Content health signal collection failed:", error);
+    }
 
     return signals;
   },
@@ -106,7 +108,9 @@ export const revenueIntelCollector: SignalCollector = {
           contributionScore: 0,
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Revenue intel signal failed:", error);
+    }
 
     return signals;
   },
@@ -149,7 +153,9 @@ export const linkGraphCollector: SignalCollector = {
           data: { isOrphan: linkStats.isOrphan },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Link graph signal failed:", error);
+    }
 
     return signals;
   },
@@ -206,7 +212,9 @@ export const searchIntelCollector: SignalCollector = {
           data: { daysSinceUpdate: Math.round(daysSinceUpdate) },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Search intel signal failed:", error);
+    }
 
     return signals;
   },
