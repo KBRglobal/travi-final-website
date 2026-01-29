@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import ArticlePage, { ArticlePageProps } from "@/pages/article-page";
+import { SITE_URL } from "@/lib/constants";
 
 const dubaiToRakTransportData: ArticlePageProps = {
   title: "Dubai to Ras Al Khaimah: The 2026 Transport Guide",
@@ -135,7 +136,7 @@ const dubaiToRakTransportData: ArticlePageProps = {
     {
       question: "Can I do a day trip to Oman (Musandam) from RAK?",
       answer:
-        "Yes, the Musandam peninsula in Oman is just 30-40 minutes north of Ras Al Khaimah. You will need your passport for the border crossing and \"Orange Card\" car insurance if you're driving a rental car into Oman.",
+        'Yes, the Musandam peninsula in Oman is just 30-40 minutes north of Ras Al Khaimah. You will need your passport for the border crossing and "Orange Card" car insurance if you\'re driving a rental car into Oman.',
     },
   ],
   ctaTitle: "Plan Your RAK Adventure",
@@ -196,7 +197,7 @@ export default function DubaiToRakTransportPage() {
           content="All the ways to travel between Dubai and RAK. Shuttle services, public bus, rental cars, and local transport options."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://travi.world/guides/dubai-to-rak-transport" />
+        <meta property="og:url" content={`${SITE_URL}/guides/dubai-to-rak-transport`} />
         <meta
           property="og:image"
           content="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=630&fit=crop"
@@ -207,7 +208,7 @@ export default function DubaiToRakTransportPage() {
           name="twitter:description"
           content="Complete transport guide from Dubai to RAK - shuttles, buses, rental cars, and local transport."
         />
-        <link rel="canonical" href="https://travi.world/guides/dubai-to-rak-transport" />
+        <link rel="canonical" href={`${SITE_URL}/guides/dubai-to-rak-transport`} />
       </Helmet>
 
       <PublicNav />

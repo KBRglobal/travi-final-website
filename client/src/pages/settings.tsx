@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { SITE_URL } from "@/lib/constants";
 
 interface SettingsData {
   site?: {
@@ -50,7 +51,7 @@ export default function Settings() {
   });
 
   const [formData, setFormData] = useState<SettingsData>({
-    site: { siteName: "TRAVI", siteUrl: "https://travi.world", defaultLanguage: "English" },
+    site: { siteName: "TRAVI", siteUrl: SITE_URL, defaultLanguage: "English" },
     api: { gygAffiliateId: "", bookingAffiliateId: "" },
     contents: { autoSlug: true, autoSave: true, aiSuggestions: true },
     notifications: { emailNotifications: false, browserNotifications: false },

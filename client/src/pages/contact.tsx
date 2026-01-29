@@ -2,21 +2,30 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useDocumentMeta } from "@/hooks/use-document-meta";
 import { useLocale } from "@/hooks/use-locale";
-import { 
-  Mail, MapPin, Globe, Clock, HelpCircle, 
-  Building2, MessageSquare, Shield, Send, Sparkles
+import {
+  Mail,
+  MapPin,
+  Globe,
+  Clock,
+  HelpCircle,
+  Building2,
+  MessageSquare,
+  Shield,
+  Send,
+  Sparkles,
 } from "lucide-react";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { PublicNav } from "@/components/public-nav";
+import { SITE_URL } from "@/lib/constants";
 import { PublicFooter } from "@/components/public-footer";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 const stagger = {
-  visible: { transition: { staggerChildren: 0.1 } }
+  visible: { transition: { staggerChildren: 0.1 } },
 };
 
 export default function ContactPage() {
@@ -50,7 +59,7 @@ export default function ContactPage() {
       title: t("pages.contact.options.visitWebsite.title"),
       description: t("pages.contact.options.visitWebsite.description"),
       action: "travi.world",
-      href: "https://travi.world",
+      href: SITE_URL,
       testId: "link-contact-website",
     },
     {
@@ -80,38 +89,42 @@ export default function ContactPage() {
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex flex-col lg:flex-row items-center gap-12">
-            <motion.div 
+            <motion.div
               className="flex-1 text-center lg:text-start"
               initial="hidden"
               animate="visible"
               variants={stagger}
             >
-              <motion.div 
+              <motion.div
                 variants={fadeInUp}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 mb-6"
               >
                 <Sparkles className="w-4 h-4 text-[#6443F4]" />
-                <span className="text-sm font-medium text-[#6443F4] dark:text-[#6443F4]">{t("pages.contact.badge")}</span>
+                <span className="text-sm font-medium text-[#6443F4] dark:text-[#6443F4]">
+                  {t("pages.contact.badge")}
+                </span>
               </motion.div>
 
-              <motion.h1 
+              <motion.h1
                 variants={fadeInUp}
                 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                 data-testid="heading-contact"
               >
-                <span className="text-slate-900 dark:text-white">{t("pages.contact.titlePart1")} </span>
+                <span className="text-slate-900 dark:text-white">
+                  {t("pages.contact.titlePart1")}{" "}
+                </span>
                 <span className="text-[#6443F4]">{t("pages.contact.titlePart2")}</span>
               </motion.h1>
 
-              <motion.p 
+              <motion.p
                 variants={fadeInUp}
                 className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 mb-8"
               >
                 {t("pages.contact.subtitle")}
               </motion.p>
 
-              <motion.a 
+              <motion.a
                 variants={fadeInUp}
                 href="mailto:info@travi.world"
                 className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white font-medium shadow-lg shadow-[#6443F4]/25 transition-all duration-300"
@@ -122,7 +135,7 @@ export default function ContactPage() {
               </motion.a>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="flex-1 relative"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -130,8 +143,8 @@ export default function ContactPage() {
             >
               <div className="relative">
                 <div className="absolute -inset-4 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl" />
-                
-                <img 
+
+                <img
                   src="/hero/travi-world-mascot-canyon-viewpoint.webp"
                   alt="Travi mascot at a scenic canyon viewpoint"
                   className="relative w-full max-w-md mx-auto rounded-2xl shadow-xl"
@@ -141,7 +154,9 @@ export default function ContactPage() {
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg border border-slate-200 dark:border-slate-700">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="w-5 h-5 text-[#6443F4]" />
-                    <span className="font-medium text-slate-900 dark:text-white">{t("pages.contact.travelCompanion")}</span>
+                    <span className="font-medium text-slate-900 dark:text-white">
+                      {t("pages.contact.travelCompanion")}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -152,13 +167,13 @@ export default function ContactPage() {
 
       <section className="py-20 bg-white dark:bg-slate-950" data-testid="section-contact-info">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 
+            <h2
               className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4"
               style={{ fontFamily: "'Chillax', var(--font-sans)" }}
             >
@@ -169,7 +184,7 @@ export default function ContactPage() {
             </p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
             whileInView="visible"
@@ -181,7 +196,7 @@ export default function ContactPage() {
                 key={index}
                 variants={fadeInUp}
                 className="group relative bg-white dark:bg-slate-900 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                data-testid={`card-contact-${option.title.toLowerCase().replace(/\s+/g, '-')}`}
+                data-testid={`card-contact-${option.title.toLowerCase().replace(/\s+/g, "-")}`}
               >
                 <div className="w-14 h-14 rounded-xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
                   <option.icon className="w-7 h-7 text-[#6443F4]" />
@@ -195,7 +210,7 @@ export default function ContactPage() {
                 </p>
 
                 {option.href ? (
-                  <a 
+                  <a
                     href={option.href}
                     className="text-[#6443F4] dark:text-[#6443F4] font-medium hover:underline inline-flex items-center gap-1"
                     data-testid={option.testId}
@@ -203,7 +218,7 @@ export default function ContactPage() {
                     {option.action}
                   </a>
                 ) : (
-                  <span 
+                  <span
                     className="text-slate-700 dark:text-slate-300 font-medium"
                     data-testid={option.testId}
                   >
@@ -229,7 +244,7 @@ export default function ContactPage() {
                 <HelpCircle className="w-6 h-6 text-[#6443F4]" />
               </div>
 
-              <h2 
+              <h2
                 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4"
                 style={{ fontFamily: "'Chillax', var(--font-sans)" }}
               >
@@ -241,8 +256,8 @@ export default function ContactPage() {
 
               <ul className="space-y-4">
                 {helpTopics.map((topic, index) => (
-                  <motion.li 
-                    key={index} 
+                  <motion.li
+                    key={index}
                     className="flex items-start gap-4 group"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -260,8 +275,8 @@ export default function ContactPage() {
               </ul>
             </motion.div>
 
-            <motion.div 
-              className="relative" 
+            <motion.div
+              className="relative"
               data-testid="section-important-notes"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -286,15 +301,17 @@ export default function ContactPage() {
                 {/* OUT_OF_SCOPE: Legal body text */}
                 <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl p-5">
                   <p className="text-amber-800 dark:text-amber-200 text-sm leading-relaxed">
-                    <strong>TRAVI World</strong> is an independent travel information resource. 
-                    We do not provide booking services, travel agency services, or payment processing. 
-                    For booking-related inquiries, refunds, or service issues, please contact the respective 
-                    hotels, airlines, tour operators, or booking platforms directly.
+                    <strong>TRAVI World</strong> is an independent travel information resource. We
+                    do not provide booking services, travel agency services, or payment processing.
+                    For booking-related inquiries, refunds, or service issues, please contact the
+                    respective hotels, airlines, tour operators, or booking platforms directly.
                   </p>
                 </div>
 
                 <p className="mt-5 text-sm text-slate-600 dark:text-slate-400">
-                  {t("pages.contact.urgentNote", { urgentLabel: `"${t("pages.contact.urgentLabel")}"` })}
+                  {t("pages.contact.urgentNote", {
+                    urgentLabel: `"${t("pages.contact.urgentLabel")}"`,
+                  })}
                 </p>
               </div>
             </motion.div>
@@ -304,7 +321,7 @@ export default function ContactPage() {
 
       <section className="py-20 bg-white dark:bg-slate-950" data-testid="section-postal-address">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             className="relative"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -317,7 +334,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="flex-1">
-                  <h2 
+                  <h2
                     className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
                     style={{ fontFamily: "'Chillax', var(--font-sans)" }}
                   >
@@ -334,7 +351,9 @@ export default function ContactPage() {
                         KBR Global Creative Consulting Ltd
                       </p>
                       <p className="text-slate-600 dark:text-slate-400">Company No. 125571</p>
-                      <p className="text-slate-600 dark:text-slate-400">Suite 4.3.02, Block 4, Eurotowers</p>
+                      <p className="text-slate-600 dark:text-slate-400">
+                        Suite 4.3.02, Block 4, Eurotowers
+                      </p>
                       <p className="text-slate-600 dark:text-slate-400">Gibraltar GX11 1AA</p>
                       <p className="text-slate-600 dark:text-slate-400">Gibraltar</p>
                     </div>

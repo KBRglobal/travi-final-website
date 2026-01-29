@@ -21,6 +21,17 @@ import {
   type InsertBehavioralTrigger,
 } from "@shared/schema";
 import { eq, desc, and, lte } from "drizzle-orm";
+import { Resend } from "resend";
+
+function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  return new Resend(apiKey);
+}
+
+function getFromEmail(): string {
+  return process.env.NEWSLETTER_FROM_EMAIL || "noreply@travi.world";
+}
 
 // ============================================================================
 // DRIP CAMPAIGNS
@@ -208,9 +219,29 @@ export async function processDueEmails(): Promise<number> {
     const step = campaign.steps[currentStepIndex];
     if (!step) continue;
 
-    // TODO: Implement actual email sending
-    // This should integrate with your email service (Resend, SendGrid, etc.)
-    // Example: await sendEmail({ to: subscriber.email, subject: step.subject, html: step.htmlContent });
+    // Look up subscriber email from enrollment
+    const [subscriber] = await db
+      .select()
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.id, enrollment.subscriberId))
+      .limit(1);
+
+    if (subscriber) {
+      const resend = getResendClient();
+      if (resend) {
+        try {
+          await resend.emails.send({
+            from: getFromEmail(),
+            to: subscriber.email,
+            subject: (step as any).subject || campaign.name,
+            html: (step as any).htmlContent || (step as any).content || "",
+          });
+        } catch (emailError) {
+          console.error(`Failed to send drip email to ${subscriber.email}:`, emailError);
+          continue;
+        }
+      }
+    }
 
     // Move to next step
     const nextStepIndex = currentStepIndex + 1;
@@ -353,9 +384,23 @@ export async function processEventForTriggers(event: {
 
     if (!subscriber) continue;
 
-    // TODO: Implement actual email sending for behavioral triggers
-    // This should integrate with your email service (Resend, SendGrid, etc.)
-    // Example: await sendEmail({ to: subscriber.email, subject: trigger.emailSubject, html: trigger.emailContent });
+    const resend = getResendClient();
+    if (resend) {
+      try {
+        await resend.emails.send({
+          from: getFromEmail(),
+          to: subscriber.email,
+          subject: (trigger as any).emailSubject || "TRAVI Update",
+          html: (trigger as any).emailContent || "",
+        });
+      } catch (emailError) {
+        console.error(
+          `Failed to send behavioral trigger email to ${subscriber.email}:`,
+          emailError
+        );
+        continue;
+      }
+    }
 
     // Increment trigger count
     await db

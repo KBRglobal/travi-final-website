@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import ArticlePage, { ArticlePageProps } from "@/pages/article-page";
+import { SITE_URL } from "@/lib/constants";
 
 const dubaiVsRakData: ArticlePageProps = {
   title: "Dubai vs. Ras Al Khaimah: 2026 Holiday Comparison",
@@ -19,7 +20,7 @@ const dubaiVsRakData: ArticlePageProps = {
   },
   readTime: "8 min read",
   excerpt:
-    "For years, a trip to the UAE meant one thing: Dubai. But in 2026, the script has flipped. With hotel prices in Dubai reaching record highs and crowds swelling, savvy travelers are looking 45 minutes north to Ras Al Khaimah (RAK). Is RAK just a \"cheaper Dubai\"? Absolutely not. It is a completely different animal—wilder, greener, and significantly more relaxed.",
+    'For years, a trip to the UAE meant one thing: Dubai. But in 2026, the script has flipped. With hotel prices in Dubai reaching record highs and crowds swelling, savvy travelers are looking 45 minutes north to Ras Al Khaimah (RAK). Is RAK just a "cheaper Dubai"? Absolutely not. It is a completely different animal—wilder, greener, and significantly more relaxed.',
   quickInfo: {
     location: "UAE - Dubai & Ras Al Khaimah",
     duration: "Compare before booking",
@@ -82,7 +83,7 @@ const dubaiVsRakData: ArticlePageProps = {
     },
     {
       id: "vibe-check",
-      title: "2. The \"Vibe\" Check",
+      title: '2. The "Vibe" Check',
       content: `
         <h3 class="text-xl font-semibold mt-6 mb-3">Choose Dubai if:</h3>
         <ul class="list-disc pl-6 space-y-2">
@@ -241,7 +242,7 @@ export default function DubaiVsRakComparisonPage() {
           content="Should you visit Dubai or RAK in 2026? Compare prices, vibes, and experiences. RAK offers 30-50% savings on a 5-star beach vacation."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://travi.world/guides/dubai-vs-rak" />
+        <meta property="og:url" content={`${SITE_URL}/guides/dubai-vs-rak`} />
         <meta
           property="og:image"
           content="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&h=630&fit=crop"
@@ -252,7 +253,7 @@ export default function DubaiVsRakComparisonPage() {
           name="twitter:description"
           content="Compare Dubai and Ras Al Khaimah for your 2026 holiday. Complete price breakdown, vibe check, and travel tips."
         />
-        <link rel="canonical" href="https://travi.world/guides/dubai-vs-rak" />
+        <link rel="canonical" href={`${SITE_URL}/guides/dubai-vs-rak`} />
       </Helmet>
 
       <PublicNav />

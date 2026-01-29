@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import ArticlePage, { ArticlePageProps } from "@/pages/article-page";
+import { SITE_URL } from "@/lib/constants";
 
 const jebelJaisGuideData: ArticlePageProps = {
   title: "Jebel Jais Adventure Guide: UAE's Ultimate Mountain Escape 2026",
@@ -201,13 +202,16 @@ export default function JebelJaisAdventureGuidePage() {
           name="keywords"
           content="Jebel Jais, Ras Al Khaimah, Jais Flight zipline, UAE hiking, 1484 by Puro, Suwaidi Pearls, Al Jazirat Al Hamra, Dhayah Fort, Bear Grylls Camp, RAK adventure"
         />
-        <meta property="og:title" content="Jebel Jais Adventure Guide 2026: UAE's Ultimate Mountain Escape" />
+        <meta
+          property="og:title"
+          content="Jebel Jais Adventure Guide 2026: UAE's Ultimate Mountain Escape"
+        />
         <meta
           property="og:description"
           content="Discover Ras Al Khaimah's adventure capital. World's longest zipline, mountain hiking, pearl farms, ghost towns, and more at UAE's highest peak."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://travi.world/guides/jebel-jais-adventure" />
+        <meta property="og:url" content={`${SITE_URL}/guides/jebel-jais-adventure`} />
         <meta
           property="og:image"
           content="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&h=630&fit=crop"
@@ -218,7 +222,7 @@ export default function JebelJaisAdventureGuidePage() {
           name="twitter:description"
           content="Complete guide to UAE's highest peak - ziplines, hiking, hidden gems, and adventure activities in Ras Al Khaimah."
         />
-        <link rel="canonical" href="https://travi.world/guides/jebel-jais-adventure" />
+        <link rel="canonical" href={`${SITE_URL}/guides/jebel-jais-adventure`} />
       </Helmet>
 
       <PublicNav />

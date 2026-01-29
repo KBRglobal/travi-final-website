@@ -164,8 +164,26 @@ async function sendReport(
   data: any,
   format: string
 ): Promise<void> {
-  // TODO: Implement email sending with report data
-  // Convert to PDF/CSV as needed based on format
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(`Report email skipped (no RESEND_API_KEY): ${reportName} → ${recipient}`);
+    return;
+  }
+
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(apiKey);
+    const htmlContent = `<h2>${reportName}</h2><pre>${JSON.stringify(data, null, 2)}</pre><p>Format: ${format}</p>`;
+
+    await resend.emails.send({
+      from: process.env.NEWSLETTER_FROM_EMAIL || "noreply@travi.world",
+      to: recipient,
+      subject: `[TRAVI] ${reportName} Report`,
+      html: htmlContent,
+    });
+  } catch (error) {
+    console.error(`Failed to send report "${reportName}" to ${recipient}:`, error);
+  }
 }
 
 /**

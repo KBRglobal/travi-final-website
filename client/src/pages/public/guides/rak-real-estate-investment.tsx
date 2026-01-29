@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import ArticlePage, { ArticlePageProps } from "@/pages/article-page";
+import { SITE_URL } from "@/lib/constants";
 
 const rakRealEstateInvestmentData: ArticlePageProps = {
   title: "RAK Real Estate Investment Guide: The Next Dubai?",
@@ -28,7 +29,7 @@ const rakRealEstateInvestmentData: ArticlePageProps = {
   sections: [
     {
       id: "wynn-effect",
-      title: "1. The \"Wynn Effect\" - Game Changer for Property Values",
+      title: '1. The "Wynn Effect" - Game Changer for Property Values',
       content: `
         <p>The announcement of <strong>Wynn Al Marjan Island</strong> has fundamentally changed the investment landscape in Ras Al Khaimah. Opening in early 2027, this will be the <strong>UAE's first integrated gaming resort</strong> - a catalyst that promises to transform the emirate's real estate market.</p>
         
@@ -94,7 +95,7 @@ const rakRealEstateInvestmentData: ArticlePageProps = {
       subsections: [
         {
           id: "al-marjan-island",
-          title: "A. Al Marjan Island - The \"Palm Jumeirah of RAK\"",
+          title: 'A. Al Marjan Island - The "Palm Jumeirah of RAK"',
           content: `
             <p><strong>Al Marjan Island</strong> is the epicenter of RAK's transformation - a man-made archipelago that's drawing comparisons to Dubai's iconic Palm Jumeirah.</p>
             
@@ -267,7 +268,7 @@ export default function RakRealEstateInvestmentPage() {
           content="Discover why Ras Al Khaimah is becoming the hottest real estate investment frontier in the Middle East. Entry prices 50% below Dubai with higher yields."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://travi.world/guides/rak-real-estate-investment" />
+        <meta property="og:url" content={`${SITE_URL}/guides/rak-real-estate-investment`} />
         <meta
           property="og:image"
           content="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&h=630&fit=crop"
@@ -278,7 +279,7 @@ export default function RakRealEstateInvestmentPage() {
           name="twitter:description"
           content="RAK offers 8-12% rental yields vs 5-7% in Dubai, with entry prices at roughly half. The Wynn Effect is transforming this emirate."
         />
-        <link rel="canonical" href="https://travi.world/guides/rak-real-estate-investment" />
+        <link rel="canonical" href={`${SITE_URL}/guides/rak-real-estate-investment`} />
       </Helmet>
 
       <PublicNav />

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { SITE_URL } from "@/lib/constants";
 import {
   Star,
   MapPin,
@@ -625,19 +626,19 @@ export default function GlobalHotels() {
           name="twitter:description"
           content="10,000+ hotels across 17 destinations. From budget to luxury."
         />
-        <link rel="canonical" href="https://travi.world/hotels" />
+        <link rel="canonical" href={`${SITE_URL}/hotels`} />
 
         {/* Preload critical images */}
         <link rel="preload" as="image" href="/cards/dubai.webp" fetchPriority="high" />
 
         {/* hreflang tags */}
-        <link rel="alternate" hrefLang="x-default" href="https://travi.world/hotels" />
+        <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/hotels`} />
         {SUPPORTED_LANGUAGES.map(lang => (
           <link
             key={lang.code}
             rel="alternate"
             hrefLang={lang.code}
-            href={`https://travi.world/${lang.code}/hotels`}
+            href={`${SITE_URL}/${lang.code}/hotels`}
           />
         ))}
 
@@ -647,8 +648,8 @@ export default function GlobalHotels() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "TRAVI",
-            url: "https://travi.world",
-            logo: "https://travi.world/logo.png",
+            url: SITE_URL,
+            logo: `${SITE_URL}/logo.png`,
           })}
         </script>
 
@@ -665,11 +666,11 @@ export default function GlobalHotels() {
               position: index + 1,
               item: {
                 "@type": "LodgingBusiness",
-                "@id": `https://travi.world/hotels/${dest.slug}`,
+                "@id": `${SITE_URL}/hotels/${dest.slug}`,
                 name: `${dest.name} Hotels`,
                 description: `${dest.hotelCount} hotels in ${dest.name}, ${dest.country}`,
-                url: `https://travi.world/hotels/${dest.slug}`,
-                image: `https://travi.world${dest.image}`,
+                url: `${SITE_URL}/hotels/${dest.slug}`,
+                image: `${SITE_URL}${dest.image}`,
                 priceRange: dest.priceRange,
                 amenityFeature: [
                   { "@type": "LocationFeatureSpecification", name: "Free WiFi", value: true },
@@ -690,12 +691,12 @@ export default function GlobalHotels() {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Home", item: "https://travi.world" },
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Hotels",
-                item: "https://travi.world/hotels",
+                item: `${SITE_URL}/hotels`,
               },
             ],
           })}

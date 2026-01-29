@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import ArticlePage, { ArticlePageProps } from "@/pages/article-page";
+import { SITE_URL } from "@/lib/constants";
 
 const wynnGuideData: ArticlePageProps = {
   title: "Wynn Al Marjan Island: The Complete 2027 Guide",
@@ -227,7 +228,9 @@ export default function WynnAlMarjanGuidePage() {
   return (
     <div data-testid="page-wynn-guide" className="min-h-screen bg-white dark:bg-slate-950">
       <Helmet>
-        <title>Wynn Al Marjan Island: Complete 2027 Guide | Opening Date, Casino Rules, Hotels | TRAVI</title>
+        <title>
+          Wynn Al Marjan Island: Complete 2027 Guide | Opening Date, Casino Rules, Hotels | TRAVI
+        </title>
         <meta
           name="description"
           content="Complete guide to Wynn Al Marjan Island - UAE's first licensed casino resort opening Spring 2027. $5.1B investment, 1,530 rooms, 194,000 sq ft casino, 22 restaurants. Everything you need to know."
@@ -242,7 +245,7 @@ export default function WynnAlMarjanGuidePage() {
           content="Everything you need to know about UAE's first licensed casino resort. Opening Spring 2027 with 1,530 rooms and a 194,000 sq ft gaming floor."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://travi.world/guides/wynn-al-marjan-island" />
+        <meta property="og:url" content={`${SITE_URL}/guides/wynn-al-marjan-island`} />
         <meta
           property="og:image"
           content="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&h=630&fit=crop"
@@ -253,7 +256,7 @@ export default function WynnAlMarjanGuidePage() {
           name="twitter:description"
           content="UAE's first licensed casino resort opening Spring 2027. Complete guide to rooms, gaming, dining, and more."
         />
-        <link rel="canonical" href="https://travi.world/guides/wynn-al-marjan-island" />
+        <link rel="canonical" href={`${SITE_URL}/guides/wynn-al-marjan-island`} />
       </Helmet>
 
       <PublicNav />

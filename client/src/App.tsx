@@ -12,6 +12,7 @@ import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { FavoritesProvider } from "@/hooks/use-favorites";
 // LiveEditProvider removed from public routes for better performance - only needed in admin
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { GeographicProvider } from "@/contexts/geographic-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 import { dubaiRoutes } from "@/routes/dubai-routes";
@@ -341,37 +342,39 @@ function App() {
   useAnalytics();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <CookieConsentProvider>
-        <LocaleProvider>
-          <FavoritesProvider>
-            <TooltipProvider>
-              <a href="#main-content" className="skip-link">
-                Skip to main content
-              </a>
-              <Suspense fallback={<PageLoader />}>
-                <main id="main-content" tabIndex={-1}>
-                  {isAdminRoute ? (
-                    <AdminLayout />
-                  ) : isV2Route ? (
-                    <GeographicProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <CookieConsentProvider>
+          <LocaleProvider>
+            <FavoritesProvider>
+              <TooltipProvider>
+                <a href="#main-content" className="skip-link">
+                  Skip to main content
+                </a>
+                <Suspense fallback={<PageLoader />}>
+                  <main id="main-content" tabIndex={-1}>
+                    {isAdminRoute ? (
+                      <AdminLayout />
+                    ) : isV2Route ? (
+                      <GeographicProvider>
+                        <PublicRouter />
+                      </GeographicProvider>
+                    ) : (
                       <PublicRouter />
-                    </GeographicProvider>
-                  ) : (
-                    <PublicRouter />
-                  )}
-                </main>
-              </Suspense>
-              <Toaster />
-              <Suspense fallback={null}>
-                <CookieConsentBanner />
-                <PWAInstallPrompt />
-              </Suspense>
-            </TooltipProvider>
-          </FavoritesProvider>
-        </LocaleProvider>
-      </CookieConsentProvider>
-    </QueryClientProvider>
+                    )}
+                  </main>
+                </Suspense>
+                <Toaster />
+                <Suspense fallback={null}>
+                  <CookieConsentBanner />
+                  <PWAInstallPrompt />
+                </Suspense>
+              </TooltipProvider>
+            </FavoritesProvider>
+          </LocaleProvider>
+        </CookieConsentProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

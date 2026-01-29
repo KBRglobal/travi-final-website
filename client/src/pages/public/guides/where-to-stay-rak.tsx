@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import ArticlePage, { ArticlePageProps } from "@/pages/article-page";
+import { SITE_URL } from "@/lib/constants";
 
 const whereToStayRakData: ArticlePageProps = {
   title: "Where to Stay in Ras Al Khaimah 2026: Complete Accommodation Guide",
@@ -19,7 +20,7 @@ const whereToStayRakData: ArticlePageProps = {
   },
   readTime: "10 min read",
   excerpt:
-    "Choosing where to stay in Ras Al Khaimah is harder than Dubai. In Dubai, you just pick a neighborhood. In RAK, you have to pick an ecosystem: waves on Al Marjan Island, luxury tent in the desert, or \"Maldives experience\" in overwater villas?",
+    'Choosing where to stay in Ras Al Khaimah is harder than Dubai. In Dubai, you just pick a neighborhood. In RAK, you have to pick an ecosystem: waves on Al Marjan Island, luxury tent in the desert, or "Maldives experience" in overwater villas?',
   quickInfo: {
     location: "Ras Al Khaimah, UAE",
     bestTime: "November - March (winter season)",
@@ -27,7 +28,7 @@ const whereToStayRakData: ArticlePageProps = {
   sections: [
     {
       id: "wynn-watchers",
-      title: "1. \"Wynn Watchers\" - Al Marjan Island",
+      title: '1. "Wynn Watchers" - Al Marjan Island',
       content: `
         <p><strong>Best For:</strong> Investors, Casino-curious, Beach Lovers</p>
         <p>Al Marjan Island is the epicenter of RAK's transformation, home to the upcoming Wynn resort and the emirate's most vibrant beachfront hotels.</p>
@@ -59,7 +60,7 @@ const whereToStayRakData: ArticlePageProps = {
     },
     {
       id: "desert-dreamers",
-      title: "2. \"Desert Dreamers\" - Glamping & Wilderness",
+      title: '2. "Desert Dreamers" - Glamping & Wilderness',
       content: `
         <p><strong>Best For:</strong> Couples, Nature Lovers, Instagrammers</p>
         <p>RAK's desert offers something Dubai can't match - genuine wilderness experiences with world-class luxury.</p>
@@ -92,7 +93,7 @@ const whereToStayRakData: ArticlePageProps = {
     },
     {
       id: "maldives-uae",
-      title: "3. \"Maldives of UAE\" - Lagoons & Mangroves",
+      title: '3. "Maldives of UAE" - Lagoons & Mangroves',
       content: `
         <p><strong>Best For:</strong> Honeymooners, Eco-tourists</p>
         <p>RAK has done what Dubai couldn't - created a genuine "Maldives of the Middle East" experience with overwater villas and protected ecosystems.</p>
@@ -242,13 +243,16 @@ export default function WhereToStayRakPage() {
           name="keywords"
           content="Ras Al Khaimah hotels, RAK resorts, Al Marjan Island hotels, Ritz-Carlton Al Wadi Desert, Anantara Mina Al Arab, overwater villas UAE, Mövenpick RAK, DoubleTree Marjan, RAK accommodation, where to stay RAK"
         />
-        <meta property="og:title" content="Where to Stay in Ras Al Khaimah 2026: Complete Accommodation Guide" />
+        <meta
+          property="og:title"
+          content="Where to Stay in Ras Al Khaimah 2026: Complete Accommodation Guide"
+        />
         <meta
           property="og:description"
           content="Beach resorts, desert glamping, UAE's first overwater villas - discover the best places to stay in RAK for every budget and travel style."
         />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://travi.world/guides/where-to-stay-rak" />
+        <meta property="og:url" content={`${SITE_URL}/guides/where-to-stay-rak`} />
         <meta
           property="og:image"
           content="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1200&h=630&fit=crop"
@@ -259,7 +263,7 @@ export default function WhereToStayRakPage() {
           name="twitter:description"
           content="Complete guide to RAK hotels - beach resorts, desert glamping, overwater villas, and budget options."
         />
-        <link rel="canonical" href="https://travi.world/guides/where-to-stay-rak" />
+        <link rel="canonical" href={`${SITE_URL}/guides/where-to-stay-rak`} />
       </Helmet>
 
       <PublicNav />
