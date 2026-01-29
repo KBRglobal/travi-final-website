@@ -25,6 +25,7 @@ import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { cn } from "@/lib/utils";
 import { DestinationsHero } from "@/components/destinations-hero";
 import { useQuery } from "@tanstack/react-query";
+import { SITE_URL } from "@/lib/constants";
 
 const heroAnimationStyles = `
   @keyframes gradient-flow {
@@ -806,10 +807,7 @@ export default function DestinationsPage() {
         )}
         {pageSeo?.ogImage && <meta property="og:image" content={pageSeo.ogImage} />}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content={pageSeo?.canonicalUrl || "https://travi.world/destinations"}
-        />
+        <meta property="og:url" content={pageSeo?.canonicalUrl || `${SITE_URL}/destinations`} />
 
         {/* Twitter Card - derived from OG if available */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -820,13 +818,13 @@ export default function DestinationsPage() {
         {pageSeo?.ogImage && <meta name="twitter:image" content={pageSeo.ogImage} />}
 
         {/* Hreflang tags */}
-        <link rel="alternate" hrefLang="x-default" href="https://travi.world/destinations" />
+        <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/destinations`} />
         {SUPPORTED_LANGUAGES.map(lang => (
           <link
             key={lang.code}
             rel="alternate"
             hrefLang={lang.code}
-            href={`https://travi.world/${lang.code}/destinations`}
+            href={`${SITE_URL}/${lang.code}/destinations`}
           />
         ))}
 

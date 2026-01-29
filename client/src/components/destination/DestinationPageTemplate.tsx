@@ -19,6 +19,7 @@ import { SafetyBanner } from "./safety-banner";
 import { usePublicDestination } from "@/hooks/use-public-destination";
 import { useQuery } from "@tanstack/react-query";
 import type { DestinationPageData, SeasonInfo } from "@/types/destination";
+import { SITE_URL } from "@/lib/constants";
 
 // Lazy load below-the-fold components for better initial load performance
 const CategoryBentoGrid = lazy(() =>
@@ -196,13 +197,13 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://travi.world",
+                item: SITE_URL,
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Destinations",
-                item: "https://travi.world/destinations",
+                item: `${SITE_URL}/destinations`,
               },
               {
                 "@type": "ListItem",

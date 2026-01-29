@@ -39,6 +39,7 @@ import { PublicFooter } from "@/components/public-footer";
 import { sanitizeHTML } from "@/lib/sanitize";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import type { TiqetsAttraction } from "@shared/schema";
+import { SITE_URL } from "@/lib/constants";
 
 const heroAnimationStyles = `
   @keyframes gradient-flow {
@@ -1311,30 +1312,30 @@ export default function AttractionDetail() {
     tiqetsImages[0]?.medium ||
     "/cards/dubai.webp";
 
-  const canonicalUrl = `https://travi.world/${destination.toLowerCase()}/attractions/${slug}`;
+  const canonicalUrl = `${SITE_URL}/${destination.toLowerCase()}/attractions/${slug}`;
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://travi.world" },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
       {
         "@type": "ListItem",
         position: 2,
         name: "Attractions",
-        item: "https://travi.world/attractions",
+        item: `${SITE_URL}/attractions`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: attraction.cityName,
-        item: `https://travi.world/destinations/${destination.toLowerCase()}`,
+        item: `${SITE_URL}/destinations/${destination.toLowerCase()}`,
       },
       {
         "@type": "ListItem",
         position: 4,
         name: `${attraction.cityName} Attractions`,
-        item: `https://travi.world/attractions/list/${destination.toLowerCase()}`,
+        item: `${SITE_URL}/attractions/list/${destination.toLowerCase()}`,
       },
       { "@type": "ListItem", position: 5, name: title },
     ],

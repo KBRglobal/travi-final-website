@@ -64,7 +64,8 @@ interface DestinationsApiResponse {
   total: number;
 }
 
-const BASE_URL = "https://travi.world";
+import { SITE_URL } from "@/lib/constants";
+const BASE_URL = SITE_URL;
 const CANONICAL_URL = `${BASE_URL}/attractions`;
 
 /**

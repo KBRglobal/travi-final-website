@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
+import { SITE_URL } from "@/lib/constants";
 
 export interface SEOHeadProps {
   title: string;
@@ -19,13 +20,38 @@ export interface SEOHeadProps {
 }
 
 const OG_LOCALE_MAP: Record<string, string> = {
-  en: "en_US", ar: "ar_AE", hi: "hi_IN", zh: "zh_CN", ru: "ru_RU",
-  ur: "ur_PK", fr: "fr_FR", de: "de_DE", fa: "fa_IR", bn: "bn_BD",
-  fil: "fil_PH", es: "es_ES", tr: "tr_TR", it: "it_IT", ja: "ja_JP",
-  ko: "ko_KR", he: "he_IL", pt: "pt_PT", nl: "nl_NL", pl: "pl_PL",
-  sv: "sv_SE", th: "th_TH", vi: "vi_VN", id: "id_ID", ms: "ms_MY",
-  cs: "cs_CZ", el: "el_GR", da: "da_DK", no: "nb_NO", ro: "ro_RO",
-  hu: "hu_HU", uk: "uk_UA"
+  en: "en_US",
+  ar: "ar_AE",
+  hi: "hi_IN",
+  zh: "zh_CN",
+  ru: "ru_RU",
+  ur: "ur_PK",
+  fr: "fr_FR",
+  de: "de_DE",
+  fa: "fa_IR",
+  bn: "bn_BD",
+  fil: "fil_PH",
+  es: "es_ES",
+  tr: "tr_TR",
+  it: "it_IT",
+  ja: "ja_JP",
+  ko: "ko_KR",
+  he: "he_IL",
+  pt: "pt_PT",
+  nl: "nl_NL",
+  pl: "pl_PL",
+  sv: "sv_SE",
+  th: "th_TH",
+  vi: "vi_VN",
+  id: "id_ID",
+  ms: "ms_MY",
+  cs: "cs_CZ",
+  el: "el_GR",
+  da: "da_DK",
+  no: "nb_NO",
+  ro: "ro_RO",
+  hu: "hu_HU",
+  uk: "uk_UA",
 };
 
 export function SEOHead({
@@ -60,16 +86,14 @@ export function SEOHead({
     return canonicalMappings[path] || path;
   };
 
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://travi.world";
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : SITE_URL;
   const normalizedCanonicalPath = getCanonicalPath(canonicalPath);
   const canonicalUrl = `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, locale)}`;
 
-  const hreflangUrls = (availableTranslations || SUPPORTED_LOCALES.map((l) => l.code)).map(
-    (loc) => ({
-      locale: loc,
-      url: `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, loc)}`,
-    })
-  );
+  const hreflangUrls = (availableTranslations || SUPPORTED_LOCALES.map(l => l.code)).map(loc => ({
+    locale: loc,
+    url: `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, loc)}`,
+  }));
 
   const ogLocale = OG_LOCALE_MAP[locale] || `${locale}_${locale.toUpperCase()}`;
   const xDefaultUrl = `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, "en")}`;
@@ -78,12 +102,10 @@ export function SEOHead({
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
-      {keywords && keywords.length > 0 && (
-        <meta name="keywords" content={keywords.join(", ")} />
-      )}
+      {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
       {author && <meta name="author" content={author} />}
       <meta name="robots" content={shouldNoIndex ? "noindex, nofollow" : "index, follow"} />
-      
+
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
@@ -91,24 +113,22 @@ export function SEOHead({
       <meta property="og:site_name" content="TRAVI World" />
       <meta property="og:locale" content={ogLocale} />
       {ogImage && <meta property="og:image" content={ogImage} />}
-      
+
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       {ogImage && <meta name="twitter:image" content={ogImage} />}
-      
+
       {ogType === "article" && publishedTime && (
         <meta property="article:published_time" content={publishedTime} />
       )}
       {ogType === "article" && modifiedTime && (
         <meta property="article:modified_time" content={modifiedTime} />
       )}
-      {ogType === "article" && author && (
-        <meta property="article:author" content={author} />
-      )}
-      
+      {ogType === "article" && author && <meta property="article:author" content={author} />}
+
       <link rel="canonical" href={canonicalUrl} />
-      
+
       {hreflangUrls.map(({ locale: loc, url }) => (
         <link key={loc} rel="alternate" hrefLang={loc} href={url} />
       ))}
@@ -185,7 +205,7 @@ export function generateArticleStructuredData(article: {
       name: "Travi",
       logo: {
         "@type": "ImageObject",
-        url: "https://travi.world/logo.png",
+        url: `${SITE_URL}/logo.png`,
       },
     },
   };
@@ -315,7 +335,7 @@ export function generateImageObjectStructuredData(image: ImageSeoStructuredData,
   const formatMatch = image.contentUrl.match(/\.(webp|jpg|jpeg|png|gif)(\?|$)/i);
   if (formatMatch) {
     const format = formatMatch[1].toLowerCase();
-    schema.encodingFormat = `image/${format === 'jpg' ? 'jpeg' : format}`;
+    schema.encodingFormat = `image/${format === "jpg" ? "jpeg" : format}`;
   }
 
   if (image.contentLocation) {
@@ -353,11 +373,8 @@ export function generateImageObjectStructuredData(image: ImageSeoStructuredData,
 /**
  * Generate multiple ImageObject schemas for a gallery
  */
-export function generateGalleryStructuredData(
-  images: ImageSeoStructuredData[],
-  pageUrl?: string
-) {
-  return images.map((image) => generateImageObjectStructuredData(image, pageUrl));
+export function generateGalleryStructuredData(images: ImageSeoStructuredData[], pageUrl?: string) {
+  return images.map(image => generateImageObjectStructuredData(image, pageUrl));
 }
 
 /**
@@ -372,7 +389,7 @@ export function ImageStructuredData({ image, pageUrl }: ImageStructuredDataProps
   const { locale } = useLocale();
 
   useEffect(() => {
-    const scriptId = `structured-data-image-${image.contentUrl.replace(/[^a-z0-9]/gi, '')}`;
+    const scriptId = `structured-data-image-${image.contentUrl.replace(/[^a-z0-9]/gi, "")}`;
     let script = document.getElementById(scriptId) as HTMLScriptElement;
 
     if (!script) {

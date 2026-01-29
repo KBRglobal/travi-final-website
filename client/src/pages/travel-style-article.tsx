@@ -35,7 +35,7 @@ import { sanitizeHTML } from "@/lib/sanitize";
 // ============================================
 // SEO CONSTANTS
 // ============================================
-const SITE_URL = "https://travi.world";
+import { SITE_URL } from "@/lib/constants";
 const SITE_NAME = "TRAVI World";
 const LOGO_URL = `${SITE_URL}/logo.png`;
 const DEFAULT_OG_IMAGE = `${SITE_URL}/ogImage.jpg`;

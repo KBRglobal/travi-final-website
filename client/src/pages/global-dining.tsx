@@ -51,6 +51,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { MultiDestinationInsights, DESTINATIONS_WITH_GUIDES } from "@/components/guide-insights";
+import { SITE_URL } from "@/lib/constants";
 
 // ============================================
 // ANIMATION STYLES (matching other pages)
@@ -726,19 +727,19 @@ export default function GlobalDining() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Dining Guide Worldwide | TRAVI" />
         <meta name="twitter:description" content="9,000+ restaurants across 17 destinations." />
-        <link rel="canonical" href="https://travi.world/dining" />
+        <link rel="canonical" href={`${SITE_URL}/dining`} />
 
         {/* Preload critical images */}
         <link rel="preload" as="image" href="/cards/paris.webp" fetchPriority="high" />
 
         {/* hreflang tags */}
-        <link rel="alternate" hrefLang="x-default" href="https://travi.world/dining" />
+        <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/dining`} />
         {SUPPORTED_LANGUAGES.map(lang => (
           <link
             key={lang.code}
             rel="alternate"
             hrefLang={lang.code}
-            href={`https://travi.world/${lang.code}/dining`}
+            href={`${SITE_URL}/${lang.code}/dining`}
           />
         ))}
 
@@ -748,8 +749,8 @@ export default function GlobalDining() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "TRAVI",
-            url: "https://travi.world",
-            logo: "https://travi.world/logo.png",
+            url: SITE_URL,
+            logo: `${SITE_URL}/logo.png`,
           })}
         </script>
 
@@ -766,11 +767,11 @@ export default function GlobalDining() {
               position: index + 1,
               item: {
                 "@type": "FoodEstablishment",
-                "@id": `https://travi.world/dining/${dest.slug}`,
+                "@id": `${SITE_URL}/dining/${dest.slug}`,
                 name: `${dest.name} Restaurants`,
                 description: `${dest.restaurantCount} restaurants in ${dest.name}, ${dest.country}. Top cuisine: ${dest.topCuisine}`,
-                url: `https://travi.world/dining/${dest.slug}`,
-                image: `https://travi.world${dest.image}`,
+                url: `${SITE_URL}/dining/${dest.slug}`,
+                image: `${SITE_URL}${dest.image}`,
                 servesCuisine: dest.topCuisine,
               },
             })),
@@ -783,12 +784,12 @@ export default function GlobalDining() {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Home", item: "https://travi.world" },
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Dining",
-                item: "https://travi.world/dining",
+                item: `${SITE_URL}/dining`,
               },
             ],
           })}

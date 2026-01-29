@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { Router } from "express";
 import { db } from "../db";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, desc, sql } from "drizzle-orm";
 import {
   homepageSections,
   homepageCards,
@@ -13,6 +13,7 @@ import {
   destinations,
   pageSeo,
   destinationsIndexConfig,
+  auditLogs,
   SUPPORTED_LOCALES,
   DestinationsIndexHeroSlide,
 } from "@shared/schema";
@@ -1423,9 +1424,33 @@ export function registerAdminApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (_req: Request, res: Response) => {
       try {
-        // Return empty array - activity tracking to be implemented
-        // In production, this would query an activity_logs table
-        const activities: any[] = [];
+        const recentLogs = await db
+          .select({
+            id: auditLogs.id,
+            actionType: auditLogs.actionType,
+            entityType: auditLogs.entityType,
+            description: auditLogs.description,
+            userName: auditLogs.userName,
+            timestamp: auditLogs.timestamp,
+          })
+          .from(auditLogs)
+          .orderBy(desc(auditLogs.timestamp))
+          .limit(20);
+
+        const activities = recentLogs.map(log => ({
+          id: log.id,
+          type:
+            log.actionType === "create"
+              ? "content_created"
+              : log.actionType === "update"
+                ? "content_edited"
+                : log.actionType === "publish"
+                  ? "content_published"
+                  : "system_event",
+          description: log.description,
+          user: log.userName || "System",
+          timestamp: log.timestamp?.toISOString() || new Date().toISOString(),
+        }));
         res.json(activities);
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch activity feed" });

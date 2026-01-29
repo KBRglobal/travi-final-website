@@ -52,7 +52,7 @@ interface CategoryListingTemplateProps {
   isLoading?: boolean;
 }
 
-const SITE_URL = "https://travi.world";
+import { SITE_URL } from "@/lib/constants";
 
 export function CategoryListingTemplate({
   category,

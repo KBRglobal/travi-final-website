@@ -51,6 +51,7 @@ import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
 import { AnimatedSection } from "@/components/destination/AnimatedSection";
 import { cn } from "@/lib/utils";
+import { SITE_URL } from "@/lib/constants";
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English", nativeName: "English" },
@@ -989,12 +990,12 @@ export default function GuideDetailPage() {
     "@type": "TravelGuide",
     name: seoTitle,
     description: seoDescription,
-    url: `https://travi.world/guides/${slug}`,
+    url: `${SITE_URL}/guides/${slug}`,
     inLanguage: locale,
     publisher: {
       "@type": "Organization",
       name: "TRAVI",
-      url: "https://travi.world",
+      url: SITE_URL,
     },
     about: {
       "@type": "Place",
@@ -1062,18 +1063,18 @@ export default function GuideDetailPage() {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Home", item: "https://travi.world" },
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Travel Guides",
-                item: "https://travi.world/guides",
+                item: `${SITE_URL}/guides`,
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: seoTitle,
-                item: `https://travi.world/guides/${slug}`,
+                item: `${SITE_URL}/guides/${slug}`,
               },
             ],
           })}

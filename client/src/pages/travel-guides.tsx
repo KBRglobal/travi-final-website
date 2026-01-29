@@ -33,6 +33,7 @@ import { PublicFooter } from "@/components/public-footer";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { SITE_URL } from "@/lib/constants";
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English", nativeName: "English" },
@@ -415,7 +416,7 @@ export default function TravelGuidesPage() {
           "@type": "TravelGuide",
           name: guide.title,
           description: guide.summary,
-          url: `https://travi.world/guides/${guide.slug}`,
+          url: `${SITE_URL}/guides/${guide.slug}`,
           inLanguage: guide.locale,
         },
       })) || [],
@@ -439,16 +440,16 @@ export default function TravelGuidesPage() {
         />
 
         <Helmet>
-          <link rel="canonical" href="https://travi.world/guides" />
+          <link rel="canonical" href={`${SITE_URL}/guides`} />
           {SUPPORTED_LANGUAGES.map(lang => (
             <link
               key={lang.code}
               rel="alternate"
               hrefLang={lang.code}
-              href={`https://travi.world/guides?locale=${lang.code}`}
+              href={`${SITE_URL}/guides?locale=${lang.code}`}
             />
           ))}
-          <link rel="alternate" hrefLang="x-default" href="https://travi.world/guides" />
+          <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/guides`} />
           <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
         </Helmet>
 

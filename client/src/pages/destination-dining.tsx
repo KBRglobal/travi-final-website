@@ -26,6 +26,7 @@ import {
   UtensilsCrossed,
   Star,
 } from "lucide-react";
+import { SITE_URL } from "@/lib/constants";
 
 interface POI {
   id: number;
@@ -201,7 +202,7 @@ export default function DestinationDiningPage() {
           name="description"
           content={`Discover ${restaurantCount}+ restaurants and dining options in ${cityName}. Find the best places to eat for your trip.`}
         />
-        <link rel="canonical" href={`https://travi.world/destinations/${slug}/dining`} />
+        <link rel="canonical" href={`${SITE_URL}/destinations/${slug}/dining`} />
       </Helmet>
 
       <PublicNav />

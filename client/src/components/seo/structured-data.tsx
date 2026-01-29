@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/constants";
 
 // Base organization schema for the site
 interface OrganizationSchemaProps {
@@ -10,8 +11,8 @@ export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "TRAVI World",
-    url: "https://travi.world",
-    logo: "https://travi.world/logo.png",
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
     description:
       "Comprehensive travel information for 17 destinations worldwide. Detailed guides for 3,000+ attractions with opening hours, prices, and visitor tips.",
     inLanguage: locale,
@@ -260,7 +261,7 @@ export function ArticleSchema({
       name: "Travi",
       logo: {
         "@type": "ImageObject",
-        url: "https://travi.world/logo.png",
+        url: `${SITE_URL}/logo.png`,
       },
     },
   };
@@ -538,7 +539,7 @@ export function TravelGuideSchema({
       name: "Travi",
       logo: {
         "@type": "ImageObject",
-        url: "https://travi.world/logo.png",
+        url: `${SITE_URL}/logo.png`,
       },
     },
     about: {
@@ -774,9 +775,9 @@ interface WebSiteSchemaProps {
 
 export function WebSiteSchema({
   name = "TRAVI World",
-  url = "https://travi.world",
+  url = SITE_URL,
   description = "Comprehensive travel information for 17 destinations worldwide",
-  searchUrl = "https://travi.world/search?q=",
+  searchUrl = `${SITE_URL}/search?q=`,
   locale = "en",
 }: WebSiteSchemaProps) {
   const schema = {

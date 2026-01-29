@@ -90,16 +90,27 @@ export default function HelpCenterAdmin() {
   const queryClient = useQueryClient();
 
   // Fetch data
-  const { data: categoriesData, isLoading: loadingCategories } = useQuery<{ categories: HelpCategory[] }>({
+  const {
+    data: categoriesData,
+    isLoading: loadingCategories,
+    isError: categoriesError,
+  } = useQuery<{ categories: HelpCategory[] }>({
     queryKey: ["/api/admin/help/categories"],
+    retry: false,
   });
 
-  const { data: articlesData, isLoading: loadingArticles } = useQuery<{ articles: HelpArticle[] }>({
+  const {
+    data: articlesData,
+    isLoading: loadingArticles,
+    isError: articlesError,
+  } = useQuery<{ articles: HelpArticle[] }>({
     queryKey: ["/api/admin/help/articles"],
+    retry: false,
   });
 
   const { data: statsData } = useQuery<{ stats: HelpStats }>({
     queryKey: ["/api/admin/help/stats"],
+    retry: false,
   });
 
   // Mutations
@@ -112,7 +123,8 @@ export default function HelpCenterAdmin() {
       setCategoryDialogOpen(false);
       toast({ title: "Category created" });
     },
-    onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+    onError: (err: Error) =>
+      toast({ title: "Error", description: err.message, variant: "destructive" }),
   });
 
   const updateCategory = useMutation({
@@ -124,7 +136,8 @@ export default function HelpCenterAdmin() {
       setEditingCategory(null);
       toast({ title: "Category updated" });
     },
-    onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+    onError: (err: Error) =>
+      toast({ title: "Error", description: err.message, variant: "destructive" }),
   });
 
   const deleteCategory = useMutation({
@@ -135,7 +148,8 @@ export default function HelpCenterAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/stats"] });
       toast({ title: "Category deleted" });
     },
-    onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+    onError: (err: Error) =>
+      toast({ title: "Error", description: err.message, variant: "destructive" }),
   });
 
   const publishArticle = useMutation({
@@ -159,8 +173,7 @@ export default function HelpCenterAdmin() {
   });
 
   const deleteArticle = useMutation({
-    mutationFn: (id: string) =>
-      apiRequest(`/api/admin/help/articles/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => apiRequest(`/api/admin/help/articles/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/articles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/help/stats"] });
@@ -171,6 +184,28 @@ export default function HelpCenterAdmin() {
   const categories = categoriesData?.categories || [];
   const articles = articlesData?.articles || [];
   const stats = statsData?.stats;
+
+  if (categoriesError || articlesError) {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Help Center
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              The Help Center module is not enabled. Set{" "}
+              <code className="bg-muted px-1 py-0.5 rounded text-sm">ENABLE_HELP_CENTER=true</code>{" "}
+              in your environment variables to activate this feature.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (loadingCategories || loadingArticles) {
     return (
@@ -280,12 +315,15 @@ export default function HelpCenterAdmin() {
             </Card>
           ) : (
             <div className="space-y-2">
-              {articles.map((article) => (
+              {articles.map(article => (
                 <Card key={article.id}>
                   <CardContent className="py-4 flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Link href={`/admin/help/articles/${article.id}`} className="font-medium hover:underline">
+                        <Link
+                          href={`/admin/help/articles/${article.id}`}
+                          className="font-medium hover:underline"
+                        >
                           {article.title}
                         </Link>
                         <Badge variant={article.status === "published" ? "default" : "secondary"}>
@@ -293,17 +331,26 @@ export default function HelpCenterAdmin() {
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {article.category?.title || "No category"} &middot; {article.viewCount} views
+                        {article.category?.title || "No category"} &middot; {article.viewCount}{" "}
+                        views
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       {article.status === "draft" ? (
-                        <Button size="sm" variant="outline" onClick={() => publishArticle.mutate(article.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => publishArticle.mutate(article.id)}
+                        >
                           <Eye className="h-4 w-4 mr-1" />
                           Publish
                         </Button>
                       ) : (
-                        <Button size="sm" variant="outline" onClick={() => unpublishArticle.mutate(article.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => unpublishArticle.mutate(article.id)}
+                        >
                           <EyeOff className="h-4 w-4 mr-1" />
                           Unpublish
                         </Button>
@@ -322,7 +369,9 @@ export default function HelpCenterAdmin() {
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete article?</AlertDialogTitle>
-                            <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                            <AlertDialogDescription>
+                              This action cannot be undone.
+                            </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -343,10 +392,13 @@ export default function HelpCenterAdmin() {
         {/* Categories Tab */}
         <TabsContent value="categories" className="space-y-4">
           <div className="flex justify-end">
-            <Dialog open={categoryDialogOpen} onOpenChange={(open) => {
-              setCategoryDialogOpen(open);
-              if (!open) setEditingCategory(null);
-            }}>
+            <Dialog
+              open={categoryDialogOpen}
+              onOpenChange={open => {
+                setCategoryDialogOpen(open);
+                if (!open) setEditingCategory(null);
+              }}
+            >
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
@@ -359,7 +411,7 @@ export default function HelpCenterAdmin() {
                 </DialogHeader>
                 <CategoryForm
                   category={editingCategory}
-                  onSubmit={(data) => {
+                  onSubmit={data => {
                     if (editingCategory) {
                       updateCategory.mutate({ id: editingCategory.id, ...data });
                     } else {
@@ -382,7 +434,7 @@ export default function HelpCenterAdmin() {
             </Card>
           ) : (
             <div className="space-y-2">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <Card key={category.id}>
                   <CardContent className="py-4 flex items-center justify-between">
                     <div>
@@ -448,7 +500,9 @@ export default function HelpCenterAdmin() {
                 <div className="space-y-4">
                   {stats?.topViewedArticles.map((article, index) => (
                     <div key={article.id} className="flex items-center gap-4">
-                      <span className="text-2xl font-bold text-muted-foreground w-8">{index + 1}</span>
+                      <span className="text-2xl font-bold text-muted-foreground w-8">
+                        {index + 1}
+                      </span>
                       <div className="flex-1">
                         <p className="font-medium">{article.title}</p>
                         <p className="text-sm text-muted-foreground">{article.categoryTitle}</p>
@@ -495,7 +549,7 @@ function CategoryForm({
         <Input
           id="title"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={e => setFormData({ ...formData, title: e.target.value })}
           required
         />
       </div>
@@ -504,7 +558,7 @@ function CategoryForm({
         <Input
           id="slug"
           value={formData.slug}
-          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+          onChange={e => setFormData({ ...formData, slug: e.target.value })}
           required
         />
       </div>
@@ -513,7 +567,7 @@ function CategoryForm({
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={e => setFormData({ ...formData, description: e.target.value })}
         />
       </div>
       <div className="space-y-2">
@@ -522,7 +576,7 @@ function CategoryForm({
           id="order"
           type="number"
           value={formData.order}
-          onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
+          onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
         />
       </div>
       <Button type="submit" className="w-full" disabled={isLoading}>
