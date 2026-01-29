@@ -25,35 +25,35 @@ import {
   EvidenceGenerator,
   initSecurityAuthority,
   DEFAULT_SECURITY_AUTHORITY_CONFIG,
-} from '../server/security/authority';
-import { AdapterManager, initializeAdapters } from '../server/security/adapters';
+} from "../server/security/authority";
+import { AdapterManager, initializeAdapters } from "../server/security/adapters";
 
 // Colors for console output
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
 };
 
-function log(message: string, color: keyof typeof colors = 'reset') {
+function log(message: string, color: keyof typeof colors = "reset") {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
 function pass(test: string) {
-  log(`  ✓ ${test}`, 'green');
+  log(`  ✓ ${test}`, "green");
 }
 
 function fail(test: string, error?: string) {
-  log(`  ✗ ${test}`, 'red');
-  if (error) log(`    Error: ${error}`, 'red');
+  log(`  ✗ ${test}`, "red");
+  if (error) log(`    Error: ${error}`, "red");
 }
 
 function section(name: string) {
-  console.log('');
-  log(`━━━ ${name} ━━━`, 'cyan');
+  console.log("");
+  log(`━━━ ${name} ━━━`, "cyan");
 }
 
 // Test results tracking
@@ -75,215 +75,164 @@ function assert(condition: boolean, test: string, error?: string) {
 // ============================================================================
 
 async function runSmokeTests() {
-  log('\n🔒 SECURITY OS SMOKE TESTS', 'blue');
-  log('=============================', 'blue');
+  log("\n🔒 SECURITY OS SMOKE TESTS", "blue");
+  log("=============================", "blue");
 
   // Check if enabled
-  section('Configuration');
+  section("Configuration");
   assert(
     DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled !== undefined,
-    'Security authority config loaded',
-    'Config not loaded'
+    "Security authority config loaded",
+    "Config not loaded"
   );
 
   if (!DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
-    log('\n⚠️  Security Authority is DISABLED', 'yellow');
-    log('Set ENABLE_SECURITY_AUTHORITY=true to enable', 'yellow');
-    log('Running tests in simulation mode...\n', 'yellow');
+    log("\n⚠️  Security Authority is DISABLED", "yellow");
+    log("Set ENABLE_SECURITY_AUTHORITY=true to enable", "yellow");
+    log("Running tests in simulation mode...\n", "yellow");
   } else {
-    log('\n✓ Security Authority is ENABLED\n', 'green');
+    log("\n✓ Security Authority is ENABLED\n", "green");
   }
 
-  assert(
-    DEFAULT_SECURITY_AUTHORITY_CONFIG.failClosed !== undefined,
-    'Fail-closed mode configured',
-  );
+  assert(DEFAULT_SECURITY_AUTHORITY_CONFIG.failClosed !== undefined, "Fail-closed mode configured");
 
   // ============================================================================
   // SECURITY GATE TESTS
   // ============================================================================
 
-  section('Security Gate');
+  section("Security Gate");
 
   // Test 1: Gate can be called
   try {
     const decision = await SecurityGate.assertAllowed({
-      actor: { userId: 'smoke-test', roles: ['viewer'] },
-      action: 'data_read',
-      resource: 'content',
+      actor: { userId: "smoke-test", roles: ["viewer"] },
+      action: "data_read",
+      resource: "content",
       context: {},
     });
+    assert(decision.auditId !== undefined, "SecurityGate returns audit ID");
+    assert(decision.evaluatedAt instanceof Date, "SecurityGate returns evaluation timestamp");
     assert(
-      decision.auditId !== undefined,
-      'SecurityGate returns audit ID',
-    );
-    assert(
-      decision.evaluatedAt instanceof Date,
-      'SecurityGate returns evaluation timestamp',
-    );
-    assert(
-      ['ALLOW', 'DENY', 'REQUIRE_APPROVAL', 'RATE_LIMITED'].includes(decision.decision),
-      'SecurityGate returns valid decision type',
+      ["ALLOW", "DENY", "REQUIRE_APPROVAL", "RATE_LIMITED"].includes(decision.decision),
+      "SecurityGate returns valid decision type"
     );
   } catch (error) {
-    fail('SecurityGate.assertAllowed()', String(error));
+    fail("SecurityGate.assertAllowed()", String(error));
   }
 
   // Test 2: Gate blocks admin actions for viewers
   try {
     const decision = await SecurityGate.assertAllowed({
-      actor: { userId: 'smoke-test-viewer', roles: ['viewer'] },
-      action: 'admin_action',
-      resource: 'system',
+      actor: { userId: "smoke-test-viewer", roles: ["viewer"] },
+      action: "admin_action",
+      resource: "system",
       context: {},
     });
-    assert(
-      !decision.allowed,
-      'Gate blocks admin actions for viewers',
-    );
+    assert(!decision.allowed, "Gate blocks admin actions for viewers");
   } catch (error) {
-    fail('Admin action blocking', String(error));
+    fail("Admin action blocking", String(error));
   }
 
   // Test 3: Gate stats are available
   try {
     const stats = SecurityGate.getStats();
-    assert(
-      stats.mode !== undefined,
-      'Gate stats include current mode',
-    );
-    assert(
-      stats.threatLevel !== undefined,
-      'Gate stats include threat level',
-    );
+    assert(stats.mode !== undefined, "Gate stats include current mode");
+    assert(stats.threatLevel !== undefined, "Gate stats include threat level");
   } catch (error) {
-    fail('SecurityGate.getStats()', String(error));
+    fail("SecurityGate.getStats()", String(error));
   }
 
   // ============================================================================
   // SECURITY MODES TESTS
   // ============================================================================
 
-  section('Security Modes');
+  section("Security Modes");
 
   // Test 1: Get current mode
   try {
     const mode = SecurityModeManager.getMode();
-    assert(
-      ['lockdown', 'enforce', 'monitor'].includes(mode.mode),
-      'Current mode is valid',
-    );
-    assert(
-      mode.restrictions !== undefined,
-      'Mode includes restrictions',
-    );
+    assert(["lockdown", "enforce", "monitor"].includes(mode.mode), "Current mode is valid");
+    assert(mode.restrictions !== undefined, "Mode includes restrictions");
   } catch (error) {
-    fail('SecurityModeManager.getMode()', String(error));
+    fail("SecurityModeManager.getMode()", String(error));
   }
 
   // Test 2: Mode restrictions are applied
   try {
     const restrictions = SecurityModeManager.getRestrictions();
     assert(
-      typeof restrictions.autopilotAllowed === 'boolean',
-      'Restrictions include autopilotAllowed',
+      typeof restrictions.autopilotAllowed === "boolean",
+      "Restrictions include autopilotAllowed"
     );
     assert(
-      typeof restrictions.destructiveActionsAllowed === 'boolean',
-      'Restrictions include destructiveActionsAllowed',
+      typeof restrictions.destructiveActionsAllowed === "boolean",
+      "Restrictions include destructiveActionsAllowed"
     );
   } catch (error) {
-    fail('SecurityModeManager.getRestrictions()', String(error));
+    fail("SecurityModeManager.getRestrictions()", String(error));
   }
 
   // Test 3: Mode stats are available
   try {
     const stats = SecurityModeManager.getModeStats();
-    assert(
-      stats.currentMode !== undefined,
-      'Mode stats include current mode',
-    );
-    assert(
-      stats.totalChanges !== undefined,
-      'Mode stats include change count',
-    );
+    assert(stats.currentMode !== undefined, "Mode stats include current mode");
+    assert(stats.totalChanges !== undefined, "Mode stats include change count");
   } catch (error) {
-    fail('SecurityModeManager.getModeStats()', String(error));
+    fail("SecurityModeManager.getModeStats()", String(error));
   }
 
   // ============================================================================
   // OVERRIDE REGISTRY TESTS
   // ============================================================================
 
-  section('Override Registry');
+  section("Override Registry");
 
   // Test 1: Get active overrides
   try {
     const overrides = OverrideRegistry.getActiveOverrides();
-    assert(
-      Array.isArray(overrides),
-      'Can get active overrides list',
-    );
+    assert(Array.isArray(overrides), "Can get active overrides list");
   } catch (error) {
-    fail('OverrideRegistry.getActiveOverrides()', String(error));
+    fail("OverrideRegistry.getActiveOverrides()", String(error));
   }
 
   // Test 2: Get override stats
   try {
     const stats = OverrideRegistry.getStats();
-    assert(
-      stats.totalOverrides !== undefined,
-      'Override stats include total count',
-    );
-    assert(
-      stats.activeOverrides !== undefined,
-      'Override stats include active count',
-    );
+    assert(stats.totalOverrides !== undefined, "Override stats include total count");
+    assert(stats.activeOverrides !== undefined, "Override stats include active count");
   } catch (error) {
-    fail('OverrideRegistry.getStats()', String(error));
+    fail("OverrideRegistry.getStats()", String(error));
   }
 
   // Test 3: Get override policies
   try {
     const policies = OverrideRegistry.getPolicies();
-    assert(
-      policies.length > 0,
-      'Override policies are defined',
-    );
-    assert(
-      policies[0].allowedRoles !== undefined,
-      'Override policies include allowed roles',
-    );
+    assert(policies.length > 0, "Override policies are defined");
+    assert(policies[0].allowedRoles !== undefined, "Override policies include allowed roles");
   } catch (error) {
-    fail('OverrideRegistry.getPolicies()', String(error));
+    fail("OverrideRegistry.getPolicies()", String(error));
   }
 
   // ============================================================================
   // EVIDENCE GENERATOR TESTS
   // ============================================================================
 
-  section('Evidence Generator');
+  section("Evidence Generator");
 
   // Test 1: Query evidence
   try {
     const evidence = EvidenceGenerator.queryEvidence({ limit: 10 });
-    assert(
-      Array.isArray(evidence),
-      'Can query evidence',
-    );
+    assert(Array.isArray(evidence), "Can query evidence");
   } catch (error) {
-    fail('EvidenceGenerator.queryEvidence()', String(error));
+    fail("EvidenceGenerator.queryEvidence()", String(error));
   }
 
   // Test 2: Get evidence stats
   try {
     const stats = EvidenceGenerator.getStats();
-    assert(
-      stats.totalEvidence !== undefined,
-      'Evidence stats include total count',
-    );
+    assert(stats.totalEvidence !== undefined, "Evidence stats include total count");
   } catch (error) {
-    fail('EvidenceGenerator.getStats()', String(error));
+    fail("EvidenceGenerator.getStats()", String(error));
   }
 
   // Test 3: Generate compliance bundle
@@ -291,109 +240,88 @@ async function runSmokeTests() {
     const now = new Date();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const bundle = await EvidenceGenerator.generateSOC2Bundle(weekAgo, now);
-    assert(
-      bundle.bundleId !== undefined,
-      'SOC2 bundle has ID',
-    );
-    assert(
-      bundle.framework === 'SOC2',
-      'SOC2 bundle has correct framework',
-    );
-    assert(
-      bundle.summary !== undefined,
-      'SOC2 bundle includes summary',
-    );
+    assert(bundle.bundleId !== undefined, "SOC2 bundle has ID");
+    assert(bundle.framework === "SOC2", "SOC2 bundle has correct framework");
+    assert(bundle.summary !== undefined, "SOC2 bundle includes summary");
   } catch (error) {
-    fail('EvidenceGenerator.generateSOC2Bundle()', String(error));
+    fail("EvidenceGenerator.generateSOC2Bundle()", String(error));
   }
 
   // ============================================================================
   // ADAPTERS TESTS
   // ============================================================================
 
-  section('Security Adapters');
+  section("Security Adapters");
 
   // Initialize adapters
   try {
     initializeAdapters();
-    pass('Adapters initialized');
+    pass("Adapters initialized");
   } catch (error) {
-    fail('initializeAdapters()', String(error));
+    fail("initializeAdapters()", String(error));
   }
 
   // Test 1: Get adapter health
   try {
     const health = await AdapterManager.getHealthStatus();
-    assert(
-      Object.keys(health).length >= 0,
-      'Can get adapter health status',
-    );
+    assert(Object.keys(health).length >= 0, "Can get adapter health status");
   } catch (error) {
-    fail('AdapterManager.getHealthStatus()', String(error));
+    fail("AdapterManager.getHealthStatus()", String(error));
   }
 
   // Test 2: Get health summary
   try {
     const summary = AdapterManager.getHealthSummary();
-    assert(
-      summary.totalAdapters !== undefined,
-      'Health summary includes adapter count',
-    );
-    assert(
-      Array.isArray(summary.unhealthyAdapters),
-      'Health summary includes unhealthy list',
-    );
+    assert(summary.totalAdapters !== undefined, "Health summary includes adapter count");
+    assert(Array.isArray(summary.unhealthyAdapters), "Health summary includes unhealthy list");
   } catch (error) {
-    fail('AdapterManager.getHealthSummary()', String(error));
+    fail("AdapterManager.getHealthSummary()", String(error));
   }
 
   // ============================================================================
   // THREAT HANDLING TESTS
   // ============================================================================
 
-  section('Threat Handling');
+  section("Threat Handling");
 
   // Test 1: Get current threat state
   try {
     const threat = SecurityGate.getThreatState();
     assert(
-      ['normal', 'elevated', 'high', 'critical'].includes(threat.level),
-      'Threat level is valid',
+      ["normal", "elevated", "high", "critical"].includes(threat.level),
+      "Threat level is valid"
     );
-    assert(
-      threat.activeSince instanceof Date,
-      'Threat state includes timestamp',
-    );
+    assert(threat.activeSince instanceof Date, "Threat state includes timestamp");
   } catch (error) {
-    fail('SecurityGate.getThreatState()', String(error));
+    fail("SecurityGate.getThreatState()", String(error));
   }
 
   // ============================================================================
   // INTEGRATION TESTS
   // ============================================================================
 
-  section('Integration');
+  section("Integration");
 
   // Test 1: Full flow - request -> decision -> evidence
   try {
     const request = {
-      actor: { userId: 'integration-test', roles: ['editor'] },
-      action: 'content_update' as const,
-      resource: 'content' as const,
-      context: { contentId: 'test-123' },
+      actor: { userId: "integration-test", roles: ["editor"] },
+      action: "content_update" as const,
+      resource: "content" as const,
+      context: { contentId: "test-123" },
     };
 
     const decision = await SecurityGate.assertAllowed(request);
     assert(
       decision.securityMode === SecurityModeManager.getMode().mode,
-      'Decision reflects current security mode',
+      "Decision reflects current security mode"
     );
     assert(
       decision.threatLevel === SecurityGate.getThreatState().level,
-      'Decision reflects current threat level',
+      "Decision reflects current threat level"
     );
   } catch (error) {
-    fail('Full integration flow', String(error));
+    fail("Full integration flow", String(error));
   }
 
   // Test 2: Rate limiting works
@@ -403,43 +331,40 @@ async function runSmokeTests() {
 
     for (const _ of requests) {
       const decision = await SecurityGate.assertAllowed({
-        actor: { userId: 'rate-limit-test', roles: ['viewer'] },
-        action: 'data_export',
-        resource: 'content',
+        actor: { userId: "rate-limit-test", roles: ["viewer"] },
+        action: "data_export",
+        resource: "content",
         context: {},
       });
-      if (decision.decision === 'RATE_LIMITED') {
+      if (decision.decision === "RATE_LIMITED") {
         rateLimited = true;
         break;
       }
     }
 
-    assert(
-      rateLimited,
-      'Rate limiting is functional',
-    );
+    assert(rateLimited, "Rate limiting is functional");
   } catch (error) {
-    fail('Rate limiting test', String(error));
+    fail("Rate limiting test", String(error));
   }
 
   // ============================================================================
   // SUMMARY
   // ============================================================================
 
-  console.log('\n');
-  log('━━━ SUMMARY ━━━', 'cyan');
-  console.log('');
+  console.log("\n");
+  log("━━━ SUMMARY ━━━", "cyan");
+  console.log("");
 
   if (failCount === 0) {
-    log(`✓ All ${passCount} tests passed!`, 'green');
-    log('\nSecurity OS is operational.', 'green');
+    log(`✓ All ${passCount} tests passed!`, "green");
+    log("\nSecurity OS is operational.", "green");
   } else {
-    log(`✓ ${passCount} tests passed`, 'green');
-    log(`✗ ${failCount} tests failed`, 'red');
-    log('\n⚠️  Some tests failed. Review the errors above.', 'yellow');
+    log(`✓ ${passCount} tests passed`, "green");
+    log(`✗ ${failCount} tests failed`, "red");
+    log("\n⚠️  Some tests failed. Review the errors above.", "yellow");
   }
 
-  console.log('');
+  console.log("");
 
   // Return exit code
   process.exit(failCount > 0 ? 1 : 0);
@@ -447,8 +372,9 @@ async function runSmokeTests() {
 
 // Run tests
 runSmokeTests().catch(error => {
-  log('\n✗ Fatal error running smoke tests:', 'red');
+  log("\n✗ Fatal error running smoke tests:", "red");
   console.error(error);
+});
 
 /**
  * Security OS Smoke Test Script
@@ -481,12 +407,22 @@ interface TestResult {
 
 const results: TestResult[] = [];
 
-function pass(name: string, message: string, category: string, severity: TestResult["severity"] = "medium"): void {
+function pass(
+  name: string,
+  message: string,
+  category: string,
+  severity: TestResult["severity"] = "medium"
+): void {
   results.push({ name, passed: true, message, category, severity });
   console.log(`✓ [${category}] ${name}`);
 }
 
-function fail(name: string, message: string, category: string, severity: TestResult["severity"] = "high"): void {
+function fail(
+  name: string,
+  message: string,
+  category: string,
+  severity: TestResult["severity"] = "high"
+): void {
   results.push({ name, passed: false, message, category, severity });
   console.log(`✗ [${category}] ${name}: ${message}`);
 }
@@ -538,15 +474,11 @@ function testEnvVarBypassAttempts(): void {
   // Test that detection works
   process.env.TEST_DISABLE_RBAC = "true";
   const detected = Object.keys(process.env).some(
-    (k) => k.includes("DISABLE_RBAC") || k.includes("SKIP_AUTH")
+    k => k.includes("DISABLE_RBAC") || k.includes("SKIP_AUTH")
   );
 
   if (detected) {
-    pass(
-      "Bypass detection working",
-      "Successfully detected suspicious env vars",
-      "env_bypass"
-    );
+    pass("Bypass detection working", "Successfully detected suspicious env vars", "env_bypass");
   } else {
     fail(
       "Bypass detection failed",
@@ -596,11 +528,7 @@ function testSelfApprovalPrevention(): void {
   const selfApprovalBlocked = requesterId === approverId;
 
   if (selfApprovalBlocked) {
-    pass(
-      "Self-approval blocked",
-      "Cannot approve your own requests",
-      "approval_abuse"
-    );
+    pass("Self-approval blocked", "Cannot approve your own requests", "approval_abuse");
   } else {
     fail(
       "Self-approval allowed",
@@ -616,25 +544,14 @@ function testSelfApprovalPrevention(): void {
     { requesterId: "userB", approverId: "userA", action: "delete" },
   ];
 
-  const hasCircular = approvalHistory.some((h1) =>
-    approvalHistory.some(
-      (h2) =>
-        h1.requesterId === h2.approverId && h1.approverId === h2.requesterId
-    )
+  const hasCircular = approvalHistory.some(h1 =>
+    approvalHistory.some(h2 => h1.requesterId === h2.approverId && h1.approverId === h2.requesterId)
   );
 
   if (hasCircular) {
-    pass(
-      "Circular chain detected",
-      "Circular approval patterns are detected",
-      "approval_abuse"
-    );
+    pass("Circular chain detected", "Circular approval patterns are detected", "approval_abuse");
   } else {
-    fail(
-      "Circular chain detection",
-      "Could not detect circular approval chain",
-      "approval_abuse"
-    );
+    fail("Circular chain detection", "Could not detect circular approval chain", "approval_abuse");
   }
 
   // Test 3: Rubber-stamping (too fast)
@@ -648,29 +565,17 @@ function testSelfApprovalPrevention(): void {
       "approval_abuse"
     );
   } else {
-    fail(
-      "Rubber-stamping detection",
-      "Fast approvals not being caught",
-      "approval_abuse"
-    );
+    fail("Rubber-stamping detection", "Fast approvals not being caught", "approval_abuse");
   }
 
   // Test 4: Collusion pattern (same approver > 80%)
   const approverStats = { userA: 85, userB: 10, userC: 5 }; // percentages
-  const hasCollusion = Object.values(approverStats).some((pct) => pct > 80);
+  const hasCollusion = Object.values(approverStats).some(pct => pct > 80);
 
   if (hasCollusion) {
-    pass(
-      "Collusion detection",
-      "Concentrated approval patterns detected",
-      "approval_abuse"
-    );
+    pass("Collusion detection", "Concentrated approval patterns detected", "approval_abuse");
   } else {
-    fail(
-      "Collusion detection",
-      "Could not detect collusion patterns",
-      "approval_abuse"
-    );
+    fail("Collusion detection", "Could not detect collusion patterns", "approval_abuse");
   }
 }
 
@@ -773,9 +678,7 @@ function testPrivilegeEscalation(): void {
   const viewerPermissions = ["view"];
   const sensitiveOps = ["delete", "manage_users", "manage_policies"];
 
-  const viewerHasSensitive = viewerPermissions.some((p) =>
-    sensitiveOps.includes(p)
-  );
+  const viewerHasSensitive = viewerPermissions.some(p => sensitiveOps.includes(p));
 
   if (!viewerHasSensitive) {
     pass(
@@ -841,11 +744,7 @@ function testExfiltrationPrevention(): void {
       "exfiltration"
     );
   } else {
-    fail(
-      "Hourly limit bypassed",
-      "Hourly limit was not enforced",
-      "exfiltration"
-    );
+    fail("Hourly limit bypassed", "Hourly limit was not enforced", "exfiltration");
   }
 
   // Test 3: Bulk export requires approval
@@ -859,11 +758,7 @@ function testExfiltrationPrevention(): void {
       "exfiltration"
     );
   } else {
-    fail(
-      "Bulk export no approval",
-      "Large exports don't require approval",
-      "exfiltration"
-    );
+    fail("Bulk export no approval", "Large exports don't require approval", "exfiltration");
   }
 
   // Test 4: Sensitive data export blocked for low roles
@@ -893,17 +788,9 @@ function testExfiltrationPrevention(): void {
   const exportLogged = true; // Should always log
 
   if (exportLogged) {
-    pass(
-      "Export operations logged",
-      "All export operations are logged for audit",
-      "exfiltration"
-    );
+    pass("Export operations logged", "All export operations are logged for audit", "exfiltration");
   } else {
-    fail(
-      "Export logging missing",
-      "Export operations are not being logged",
-      "exfiltration"
-    );
+    fail("Export logging missing", "Export operations are not being logged", "exfiltration");
   }
 }
 
@@ -958,17 +845,9 @@ function testSecurityModeEnforcement(): void {
   const modeChangeLogged = true;
 
   if (modeChangeLogged) {
-    pass(
-      "Mode changes logged",
-      "All security mode changes are logged",
-      "security_modes"
-    );
+    pass("Mode changes logged", "All security mode changes are logged", "security_modes");
   } else {
-    fail(
-      "Mode changes not logged",
-      "Security mode changes are not being logged",
-      "security_modes"
-    );
+    fail("Mode changes not logged", "Security mode changes are not being logged", "security_modes");
   }
 
   // Test 4: Cannot force MONITOR in production
@@ -1030,11 +909,7 @@ function testFailClosedBehavior(): void {
   const undefinedDenied = undefinedPermResult !== true;
 
   if (undefinedDenied) {
-    pass(
-      "Undefined permission denied",
-      "Unknown permissions default to deny",
-      "fail_closed"
-    );
+    pass("Undefined permission denied", "Unknown permissions default to deny", "fail_closed");
   } else {
     fail(
       "Undefined permission allowed",
@@ -1123,18 +998,14 @@ function testSecurityGateIntegration(): void {
       "security_gate"
     );
   } else {
-    fail(
-      "Block evidence missing",
-      "No compliance evidence for blocked actions",
-      "security_gate"
-    );
+    fail("Block evidence missing", "No compliance evidence for blocked actions", "security_gate");
   }
 
   // Test 3: Gate integrated with all critical operations
   const criticalOps = ["delete", "manage_users", "export", "deploy"];
   const gatedOps = ["delete", "manage_users", "export", "deploy"];
 
-  const allGated = criticalOps.every((op) => gatedOps.includes(op));
+  const allGated = criticalOps.every(op => gatedOps.includes(op));
 
   if (allGated) {
     pass(
@@ -1355,11 +1226,9 @@ async function main(): Promise<void> {
   console.log("SUMMARY");
   console.log("=".repeat(60));
 
-  const passed = results.filter((r) => r.passed).length;
-  const failed = results.filter((r) => !r.passed).length;
-  const criticalFailed = results.filter(
-    (r) => !r.passed && r.severity === "critical"
-  ).length;
+  const passed = results.filter(r => r.passed).length;
+  const failed = results.filter(r => !r.passed).length;
+  const criticalFailed = results.filter(r => !r.passed && r.severity === "critical").length;
 
   console.log(`\nTotal Tests: ${results.length}`);
   console.log(`Passed: ${passed}`);
@@ -1386,7 +1255,7 @@ async function main(): Promise<void> {
   }
 
   // List failures
-  const failures = results.filter((r) => !r.passed);
+  const failures = results.filter(r => !r.passed);
   if (failures.length > 0) {
     console.log("\nFailures:");
     for (const f of failures) {
@@ -1410,7 +1279,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error("Smoke test failed:", error);
   process.exit(1);
 });
