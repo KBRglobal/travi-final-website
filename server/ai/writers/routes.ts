@@ -89,6 +89,33 @@ export function registerWriterRoutes(app: Express) {
     }
   });
 
+  // GET /api/writers/assignments - List all recent assignments across writers
+  app.get("/api/writers/assignments", async (req: Request, res: Response) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 20;
+      const offset = parseInt(req.query.offset as string) || 0;
+
+      const assignments = await db
+        .select()
+        .from(writerAssignments)
+        .orderBy(desc(writerAssignments.createdAt))
+        .limit(limit)
+        .offset(offset);
+
+      const total = await db.select({ count: sql<number>`count(*)` }).from(writerAssignments);
+
+      res.json({
+        assignments,
+        total: total[0]?.count || 0,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Failed to fetch assignments",
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  });
+
   // GET /api/writers/:id - Get writer profile
   app.get("/api/writers/:id", async (req: Request, res: Response) => {
     try {

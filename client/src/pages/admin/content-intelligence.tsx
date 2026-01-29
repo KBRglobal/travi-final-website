@@ -100,6 +100,15 @@ export default function ContentIntelligencePage() {
     queryKey: ["/api/intelligence/clusters/areas"],
   });
 
+  const { data: internalLinksData, isLoading: linksLoading } = useQuery<{
+    totalLinks: number;
+    brokenLinks: Array<{ id: string; source: string; target: string; reason: string }>;
+    orphanPages: Array<{ id: string; title: string; type: string; slug: string }>;
+    stats: { total: number; broken: number; orphans: number };
+  }>({
+    queryKey: ["/api/intelligence/internal-links"],
+  });
+
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case "high":
@@ -339,137 +348,124 @@ export default function ContentIntelligencePage() {
           </TabsContent>
 
           <TabsContent value="internal-links">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <Card>
+                <CardContent className="pt-4">
+                  <div className="text-2xl font-bold">{internalLinksData?.stats?.total ?? 0}</div>
+                  <p className="text-xs text-muted-foreground">Total Internal Links</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-4">
+                  <div className="text-2xl font-bold text-red-600">
+                    {internalLinksData?.stats?.broken ?? 0}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Broken Links</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-4">
+                  <div className="text-2xl font-bold text-amber-600">
+                    {internalLinksData?.stats?.orphans ?? 0}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Orphan Pages</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {(internalLinksData?.brokenLinks?.length ?? 0) > 0 && (
+              <Card className="mb-4">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                    Broken Links
+                  </CardTitle>
+                  <CardDescription>
+                    Internal links pointing to content that no longer exists
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-[300px]">
+                    <div className="space-y-2">
+                      {internalLinksData?.brokenLinks?.map((link, idx) => (
+                        <div
+                          key={link.id}
+                          className="flex items-center justify-between gap-4 p-3 rounded-md bg-muted border-l-4 border-l-red-500"
+                          data-testid={`broken-link-${idx}`}
+                        >
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{link.source}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Target: {link.target} — {link.reason}
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant="destructive">Broken</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Link2 className="h-5 w-5" />
-                  Internal Linking Suggestions
+                  Orphan Pages
                 </CardTitle>
                 <CardDescription>
-                  AI-powered recommendations for internal links to improve SEO and user experience
+                  Published content with no inbound internal links — consider adding links to
+                  improve discoverability
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px]">
-                  <div className="space-y-4">
-                    {/* Mock internal linking suggestions */}
-                    {[
-                      {
-                        sourceTitle: "Top 10 Dubai Attractions",
-                        sourceSlug: "/attractions/top-10-dubai",
-                        suggestions: [
-                          {
-                            targetTitle: "Burj Khalifa Guide",
-                            targetSlug: "/attractions/burj-khalifa",
-                            anchor: "Burj Khalifa",
-                            reason: "Mentioned but not linked",
-                          },
-                          {
-                            targetTitle: "Dubai Mall Complete Guide",
-                            targetSlug: "/attractions/dubai-mall",
-                            anchor: "Dubai Mall",
-                            reason: "Related topic",
-                          },
-                          {
-                            targetTitle: "Dubai Fountain Show Times",
-                            targetSlug: "/attractions/dubai-fountain",
-                            anchor: "Dubai Fountain",
-                            reason: "Geographic proximity",
-                          },
-                        ],
-                      },
-                      {
-                        sourceTitle: "Dubai Marina Hotels",
-                        sourceSlug: "/hotels/dubai-marina",
-                        suggestions: [
-                          {
-                            targetTitle: "Dubai Marina Guide",
-                            targetSlug: "/districts/dubai-marina",
-                            anchor: "Dubai Marina",
-                            reason: "District context",
-                          },
-                          {
-                            targetTitle: "JBR Beach Guide",
-                            targetSlug: "/attractions/jbr-beach",
-                            anchor: "JBR Beach",
-                            reason: "Nearby attraction",
-                          },
-                        ],
-                      },
-                      {
-                        sourceTitle: "Desert Safari Experience",
-                        sourceSlug: "/attractions/desert-safari",
-                        suggestions: [
-                          {
-                            targetTitle: "Best Time to Visit Dubai",
-                            targetSlug: "/articles/best-time-dubai",
-                            anchor: "best time to visit",
-                            reason: "Seasonal relevance",
-                          },
-                          {
-                            targetTitle: "Dubai Day Trips",
-                            targetSlug: "/articles/dubai-day-trips",
-                            anchor: "day trips",
-                            reason: "Content cluster",
-                          },
-                        ],
-                      },
-                    ].map((item, idx) => (
-                      <Card
-                        key={idx}
-                        className="border-l-4 border-l-blue-500"
-                        data-testid={`card-link-suggestion-${idx}`}
-                      >
-                        <CardContent className="pt-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <div>
-                              <h4 className="font-medium">{item.sourceTitle}</h4>
-                              <p className="text-xs text-muted-foreground">{item.sourceSlug}</p>
+                  <div className="space-y-2">
+                    {linksLoading ? (
+                      <div className="space-y-2">
+                        {[...Array(3)].map((_, i) => (
+                          <Skeleton key={i} className="h-14 w-full" />
+                        ))}
+                      </div>
+                    ) : (internalLinksData?.orphanPages?.length ?? 0) === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Link2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>No orphan pages found</p>
+                        <p className="text-sm mt-1">All published content has inbound links</p>
+                      </div>
+                    ) : (
+                      internalLinksData?.orphanPages?.map((page, idx) => (
+                        <div
+                          key={page.id}
+                          className="flex items-center justify-between gap-4 p-3 rounded-md bg-muted border-l-4 border-l-amber-500"
+                          data-testid={`orphan-page-${idx}`}
+                        >
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium truncate">{page.title}</p>
+                              <p className="text-xs text-muted-foreground">{page.slug}</p>
                             </div>
-                            <Badge variant="outline">{item.suggestions.length} suggestions</Badge>
                           </div>
-                          <div className="space-y-2">
-                            {item.suggestions.map((sug, sugIdx) => (
-                              <div
-                                key={sugIdx}
-                                className="flex items-center justify-between gap-4 p-2 rounded-md bg-muted"
-                                data-testid={`link-suggestion-${idx}-${sugIdx}`}
-                              >
-                                <div className="flex items-center gap-2 flex-1 min-w-0">
-                                  <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                                  <div className="min-w-0">
-                                    <p className="text-sm font-medium truncate">
-                                      {sug.targetTitle}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      Anchor: "<span className="text-blue-600">{sug.anchor}</span>"
-                                      - {sug.reason}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    data-testid={`button-add-link-${idx}-${sugIdx}`}
-                                  >
-                                    <Link2 className="h-3 w-3 mr-1" />
-                                    Add Link
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    data-testid={`button-preview-${idx}-${sugIdx}`}
-                                  >
-                                    <ExternalLink className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Badge variant="outline">{page.type}</Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => navigate(getEditorPath(page.id, page.type))}
+                              data-testid={`button-edit-orphan-${idx}`}
+                            >
+                              <Pencil className="h-3 w-3 mr-1" />
+                              Edit
+                            </Button>
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                        </div>
+                      ))
+                    )}
                   </div>
                 </ScrollArea>
               </CardContent>
