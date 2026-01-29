@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import crypto from "crypto";
 import { storage } from "./storage";
 import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
 
@@ -846,17 +847,25 @@ export function auditLogMiddleware(action: AuditLogEntry["action"], resourceType
 // CONTENT SECURITY POLICY HEADERS
 // ============================================================================
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
-  // Content Security Policy
-  // TODO: Remove 'unsafe-inline' and 'unsafe-eval' by implementing CSP nonces
-  // Currently required for:
-  // - 'unsafe-inline': Inline styles from Tailwind, Radix UI components
-  // - 'unsafe-eval': Development hot reload, some third-party analytics
+  // Content Security Policy with nonce for inline scripts/styles
+  const nonce = crypto.randomBytes(16).toString("base64");
+  (res as any).cspNonce = nonce;
+  res.locals.cspNonce = nonce;
+
+  const isProduction = process.env.NODE_ENV === "production";
+  // In production: use nonce-based CSP (no unsafe-inline/eval)
+  // In development: allow unsafe-eval for hot reload
+  const scriptSrc = isProduction
+    ? `'self' 'nonce-${nonce}' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd`
+    : `'self' 'nonce-${nonce}' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd`;
+  const styleSrc = `'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com`;
+
   res.setHeader(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com",
+      `script-src ${scriptSrc}`,
+      `style-src ${styleSrc}`,
       "font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:",
       "img-src 'self' data: blob: https: http:",
       "connect-src 'self' https://*.replit.dev https://*.replit.app https://api.deepl.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai https://images.unsplash.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd wss:",

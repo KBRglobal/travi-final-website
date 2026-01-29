@@ -645,9 +645,31 @@ export const genericWorkflowEngine = {
     config: Record<string, unknown>,
     data: Record<string, unknown>
   ): Promise<unknown> {
-    // TODO: Implement notification system
-
-    return { notified: true };
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn("Notification skipped: RESEND_API_KEY not configured");
+      return { notified: false, reason: "RESEND_API_KEY not configured" };
+    }
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(apiKey);
+      const to = (config.recipientEmail ||
+        config.to ||
+        process.env.OPS_CRITICAL_EMAIL ||
+        "ops@travi.world") as string;
+      const subject = (config.subject || `Notification: ${data.event || "workflow"}`) as string;
+      const body = (config.message || config.body || JSON.stringify(data, null, 2)) as string;
+      await resend.emails.send({
+        from: process.env.NEWSLETTER_FROM_EMAIL || "noreply@travi.world",
+        to,
+        subject,
+        html: `<div style="font-family:sans-serif;padding:20px"><h2>${subject}</h2><pre>${body}</pre></div>`,
+      });
+      return { notified: true, to };
+    } catch (error) {
+      console.error("Notification send failed:", error);
+      return { notified: false, error: error instanceof Error ? error.message : "Send failed" };
+    }
   },
 
   /**

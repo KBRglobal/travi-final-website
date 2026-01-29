@@ -5709,21 +5709,26 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
           ...attr,
           name: attr.title,
           destination: attr.cityName,
-          country: "UAE", // TODO: get from city mapping
+          country:
+            attr.cityName === "Dubai" ||
+            attr.cityName === "Abu Dhabi" ||
+            attr.cityName === "Ras Al Khaimah"
+              ? "UAE"
+              : attr.cityName,
           relatedAttractions: relatedAttractions.map(r => ({
             id: r.id,
             name: r.title,
             image:
               (r.tiqetsImages as Array<{ small?: string; medium?: string; large?: string }>)?.[0]
-                ?.medium || "", // TODO: Column not in schema - imageUrl
+                ?.medium || "",
             category: r.primaryCategory || "Attraction",
-            price: Number(r.priceUsd) || 0, // TODO: Column not in schema - priceFrom (using priceUsd instead)
-            currency: "USD", // TODO: Column not in schema - currency (hardcoded USD)
+            price: Number(r.priceUsd) || 0,
+            currency: "USD",
             href: `/${citySlug}/attractions/${r.seoSlug || r.slug}`,
             affiliateLink: TIQETS_AFFILIATE_LINK,
           })),
         },
-        affiliateLink: TIQETS_AFFILIATE_LINK, // TODO: Column not in schema - bookingUrl
+        affiliateLink: TIQETS_AFFILIATE_LINK,
         aiGenerated: !!attr.aiContent,
         ...(shouldRedirect ? { redirect: `/${citySlug}/attractions/${canonicalSlug}` } : {}),
       });
@@ -5987,18 +5992,20 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       };
 
       // Build enriched attraction response (exclude price fields from public API)
-      // TODO: Columns not in schema - priceLocal, priceFrom (only priceUsd exists)
       const { priceUsd, ...attrWithoutPrices } = attr;
       const enrichedAttraction = {
         ...attrWithoutPrices,
         name: attr.title,
         destination: attr.cityName,
-        country: destination === "dubai" ? "UAE" : destination,
+        country:
+          destination === "dubai" || destination === "abu-dhabi" || destination === "ras-al-khaimah"
+            ? "UAE"
+            : destination,
         image:
           (attr.tiqetsImages as Array<{ small?: string; medium?: string; large?: string }>)?.[0]
-            ?.medium || "", // TODO: Column not in schema - imageUrl (using tiqetsImages)
-        rating: Number(attr.tiqetsRating) || 4.5, // TODO: Column not in schema - rating (using tiqetsRating)
-        reviews: Number(attr.tiqetsReviewCount) || 100, // TODO: Column not in schema - reviewCount (using tiqetsReviewCount)
+            ?.medium || "",
+        rating: Number(attr.tiqetsRating) || 0,
+        reviews: Number(attr.tiqetsReviewCount) || 0,
         duration: attr.duration || "2-3 hours",
         category: attr.primaryCategory || "Attraction",
         location: {
@@ -6060,7 +6067,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
           name: r.title,
           image:
             (r.tiqetsImages as Array<{ small?: string; medium?: string; large?: string }>)?.[0]
-              ?.medium || "", // TODO: Column not in schema - imageUrl (using tiqetsImages)
+              ?.medium || "",
           category: r.primaryCategory || "Attraction",
           href: `/${destination}/attractions/${r.seoSlug || r.slug}`,
           seoSlug: r.seoSlug,
@@ -6730,7 +6737,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // DEV ONLY: Auto-login endpoint for testing (bypasses password and 2FA)
   // This endpoint is ONLY available in development environment
   // NOTE: Must be registered AFTER setupAuth so session middleware is available
-  if (process.env.NODE_ENV !== "production" && process.env.REPL_SLUG) {
+  if (
+    process.env.NODE_ENV !== "production" &&
+    process.env.REPL_SLUG &&
+    !process.env.RAILWAY_ENVIRONMENT
+  ) {
     app.post("/api/dev/auto-login", async (req: Request, res: Response) => {
       try {
         // Find admin user or first user with admin role

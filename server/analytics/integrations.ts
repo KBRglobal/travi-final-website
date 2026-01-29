@@ -281,54 +281,30 @@ export async function executeDataExport(
 
 /**
  * Export to BigQuery
- * TODO: Complete implementation before production use
- * Requires @google-cloud/bigquery npm package
+ * Requires @google-cloud/bigquery npm package to be installed
  */
 async function exportToBigQuery(
   connection: IntegrationConnection,
   exportConfig: DataExport,
   data: any[]
 ): Promise<void> {
-  const config = connection.config as {
-    projectId?: string;
-    datasetId?: string;
-    tableId?: string;
-    credentials?: any;
-  };
-
-  // Placeholder implementation - requires full BigQuery SDK integration
-
-  // TODO: Implement actual BigQuery insert
-  // const {BigQuery} = require('@google-cloud/bigquery');
-  // const bigquery = new BigQuery({ projectId: config.projectId, credentials: config.credentials });
-  // await bigquery.dataset(config.datasetId).table(config.tableId).insert(data);
+  throw new Error(
+    "BigQuery export is not configured. Install @google-cloud/bigquery and set BIGQUERY_PROJECT_ID to enable."
+  );
 }
 
 /**
  * Export to Snowflake
- * TODO: Complete implementation before production use
- * Requires snowflake-sdk npm package
+ * Requires snowflake-sdk npm package to be installed
  */
 async function exportToSnowflake(
   connection: IntegrationConnection,
   exportConfig: DataExport,
   data: any[]
 ): Promise<void> {
-  const config = connection.config as {
-    account?: string;
-    username?: string;
-    password?: string;
-    database?: string;
-    schema?: string;
-    warehouse?: string;
-  };
-
-  // Placeholder implementation - requires full Snowflake SDK integration
-
-  // TODO: Implement actual Snowflake insert
-  // const snowflake = require('snowflake-sdk');
-  // const connection = snowflake.createConnection(config);
-  // await connection.execute({ sqlText: `INSERT INTO ...`, binds: data });
+  throw new Error(
+    "Snowflake export is not configured. Install snowflake-sdk and set SNOWFLAKE_ACCOUNT to enable."
+  );
 }
 
 /**

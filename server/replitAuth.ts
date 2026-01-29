@@ -241,8 +241,13 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  // DEV_AUTO_AUTH bypass for development - use real admin user from database
-  if (process.env.DEV_AUTO_AUTH === "true" && process.env.NODE_ENV !== "production") {
+  // DEV_AUTO_AUTH bypass - ONLY for local development, never in production or staging
+  if (
+    process.env.DEV_AUTO_AUTH === "true" &&
+    process.env.NODE_ENV !== "production" &&
+    !process.env.RAILWAY_ENVIRONMENT &&
+    !process.env.RAILWAY_PROJECT_ID
+  ) {
     const devAdminId = "1c932a80-c8c1-4ca5-b4f3-de09914947ba"; // admin@local.admin
     (req as any).user = {
       id: devAdminId,
