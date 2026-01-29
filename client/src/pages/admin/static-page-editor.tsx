@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { sanitizeHTML } from "@/lib/sanitize";
-import mammoth from "mammoth";
 import {
   DndContext,
   closestCenter,
@@ -1038,7 +1037,8 @@ export default function StaticPageEditor() {
     async (file: File) => {
       try {
         const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.convertToHtml({ arrayBuffer });
+        const mammoth = await import("mammoth");
+        const result = await mammoth.default.convertToHtml({ arrayBuffer });
         const html = result.value;
 
         if (!html.trim()) {

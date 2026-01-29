@@ -6,7 +6,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 export default defineConfig({
   plugins: [
     react(),
-    runtimeErrorOverlay(),
+    ...(process.env.NODE_ENV !== "production" ? [runtimeErrorOverlay()] : []),
     ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
       ? [
           await import("@replit/vite-plugin-cartographer").then(m => m.cartographer()),
@@ -37,14 +37,17 @@ export default defineConfig({
     cssMinify: true,
     cssCodeSplit: true,
     rollupOptions: {
+      onwarn(warning, defaultHandler) {
+        // Suppress circular chunk warnings caused by shared transitive deps (React, UI vendor, schema)
+        if (warning.code === "CIRCULAR_DEPENDENCY" || warning.message?.includes("Circular chunk")) {
+          return;
+        }
+        defaultHandler(warning);
+      },
       output: {
         manualChunks(id) {
-          // React core and routing
-          if (
-            id.includes("node_modules/react/") ||
-            id.includes("node_modules/react-dom/") ||
-            id.includes("node_modules/wouter/")
-          ) {
+          // React core
+          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/")) {
             return "react-vendor";
           }
           // Radix UI components
@@ -91,6 +94,45 @@ export default defineConfig({
           if (id.includes("node_modules/i18next") || id.includes("node_modules/react-i18next")) {
             return "i18n-vendor";
           }
+          // Locale translation JSON files — split by tier
+          if (id.includes("/locales/")) {
+            // Tier 1 — Core (en, ar, hi)
+            if (
+              id.includes("/locales/en/") ||
+              id.includes("/locales/ar/") ||
+              id.includes("/locales/hi/")
+            ) {
+              return "i18n-locales-core";
+            }
+            // Tier 2 — High ROI (zh, ru, ur, fr, id)
+            if (
+              id.includes("/locales/zh/") ||
+              id.includes("/locales/ru/") ||
+              id.includes("/locales/ur/") ||
+              id.includes("/locales/fr/") ||
+              id.includes("/locales/id/")
+            ) {
+              return "i18n-locales-t2";
+            }
+            // Tier 3 — Growing (de, fa, bn, fil, th, vi, ms)
+            if (
+              id.includes("/locales/de/") ||
+              id.includes("/locales/fa/") ||
+              id.includes("/locales/bn/") ||
+              id.includes("/locales/fil/") ||
+              id.includes("/locales/th/") ||
+              id.includes("/locales/vi/") ||
+              id.includes("/locales/ms/")
+            ) {
+              return "i18n-locales-t3";
+            }
+            // Remaining tiers (es, tr, it, ja, ko, he, pt, nl, pl, sv, el, cs, ro, uk, hu)
+            return "i18n-locales-t4";
+          }
+          // i18n config — separate from vendor
+          if (id.includes("/lib/i18n/")) {
+            return "i18n-config";
+          }
           // Editor libraries - heavy, separate chunk
           if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
             return "editor-vendor";
@@ -98,6 +140,10 @@ export default defineConfig({
           // Analytics
           if (id.includes("node_modules/posthog-js/")) {
             return "analytics-vendor";
+          }
+          // Shared admin layout/sidebar components — own chunk to prevent cross-references
+          if (id.includes("/components/admin/")) {
+            return "admin-shared";
           }
           // Admin pages - split into smaller chunks by feature
           if (id.includes("/pages/admin/")) {
@@ -112,24 +158,60 @@ export default defineConfig({
             ) {
               return "admin-analytics";
             }
-            // Content management pages
-            if (id.includes("/admin/homepage-editor") || id.includes("/admin/static-page-editor")) {
-              return "admin-content";
+            // Homepage editor — separate heavy chunk
+            if (id.includes("/admin/homepage-editor")) {
+              return "admin-homepage-editor";
+            }
+            // Static page editor — imports mammoth, separate chunk
+            if (id.includes("/admin/static-page-editor")) {
+              return "admin-static-editor";
+            }
+            // SEO pages
+            if (
+              id.includes("/admin/seo-hub") ||
+              id.includes("/admin/seo-engine") ||
+              id.includes("/admin/page-seo-editor")
+            ) {
+              return "admin-seo";
+            }
+            // Octypo suite (autopilot, writers room, AI agents, workflows)
+            if (id.includes("/admin/octypo") || id.includes("/admin/writers")) {
+              return "admin-octypo";
             }
             // QA and monitoring pages
-            if (id.includes("/admin/qa-dashboard") || id.includes("/admin/octypo")) {
+            if (id.includes("/admin/qa-dashboard")) {
               return "admin-qa";
             }
-            // Remaining admin pages
+            // Travi location management pages
+            if (id.includes("/admin/travi/")) {
+              return "admin-travi";
+            }
+            // Destination management pages
+            if (id.includes("/admin/destinations/")) {
+              return "admin-destinations-mgmt";
+            }
+            // Tiqets integration pages
+            if (id.includes("/admin/tiqets/") || id.includes("/admin/tiqets-")) {
+              return "admin-tiqets";
+            }
+            // Visual editor pages
+            if (id.includes("/admin/visual-editor/")) {
+              return "admin-visual-editor";
+            }
+            // Remaining admin pages (fallback)
             return "admin-pages";
           }
           // Content editor - large page
           if (id.includes("/pages/content-editor")) {
             return "content-editor";
           }
-          // Static page editor - large page
-          if (id.includes("/pages/admin/static-page-editor")) {
-            return "static-page-editor";
+          // Shared schema — large file used across many chunks
+          if (id.includes("/shared/schema")) {
+            return "shared-schema";
+          }
+          // Destination data — large static dataset, own chunk
+          if (id.includes("/data/destinations")) {
+            return "destination-data";
           }
           // Destination page - split into core and sections
           if (id.includes("/pages/destination-page")) {
@@ -137,9 +219,12 @@ export default defineConfig({
           }
           // Destination components - separate chunks for lazy loading
           if (id.includes("/components/destination/")) {
-            // Core above-fold components stay with main page
+            // Hero pulls framer-motion heavily — separate chunk
+            if (id.includes("DestinationHero")) {
+              return "destination-hero";
+            }
+            // Nav, safety banner, and template — above-fold, stay with page
             if (
-              id.includes("DestinationHero") ||
               id.includes("DestinationNav") ||
               id.includes("safety-banner") ||
               id.includes("DestinationPageTemplate")

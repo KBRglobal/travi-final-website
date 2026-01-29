@@ -16,7 +16,7 @@ async function runTranslationParityCheck(): Promise<void> {
   }
 
   console.log("[Build] Running translation parity check...");
-  
+
   const LOCALES_DIR = path.join(process.cwd(), "client/src/locales");
   const REFERENCE_LOCALE = "en";
   const TARGET_LOCALES = ["ar"];
@@ -56,15 +56,17 @@ async function runTranslationParityCheck(): Promise<void> {
   for (const locale of TARGET_LOCALES) {
     const targetData = loadTranslations(locale);
     const targetKeys = flattenKeys(targetData);
-    
+
     const missingInTarget = referenceKeys.filter(k => !targetKeys.includes(k));
     const extraInTarget = targetKeys.filter(k => !referenceKeys.includes(k));
-    
+
     totalMissing += missingInTarget.length;
     totalExtra += extraInTarget.length;
 
-    console.log(`  ${locale.toUpperCase()}: ${targetKeys.length} keys, ${missingInTarget.length} missing, ${extraInTarget.length} extra`);
-    
+    console.log(
+      `  ${locale.toUpperCase()}: ${targetKeys.length} keys, ${missingInTarget.length} missing, ${extraInTarget.length} extra`
+    );
+
     if (missingInTarget.length > 0) {
       console.error(`\n[FAIL] Missing keys in ${locale}:`);
       missingInTarget.slice(0, 5).forEach(key => console.error(`    - ${key}`));
@@ -75,14 +77,15 @@ async function runTranslationParityCheck(): Promise<void> {
   }
 
   if (totalMissing > 0) {
-    throw new Error(`Translation parity check failed: ${totalMissing} missing keys. Build aborted.`);
+    throw new Error(
+      `Translation parity check failed: ${totalMissing} missing keys. Build aborted.`
+    );
   }
 
   console.log("[Build] Translation parity check PASSED");
 }
 
 const allowlist = [
-  "@google/generative-ai",
   "axios",
   "connect-pg-simple",
   "cors",
@@ -97,7 +100,6 @@ const allowlist = [
   "multer",
   "nanoid",
   "nodemailer",
-  "openai",
   "passport",
   "passport-local",
   "pg",
@@ -143,7 +145,7 @@ async function buildAll() {
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.devDependencies || {}),
   ];
-  const externals = allDeps.filter((dep) => !allowlist.includes(dep));
+  const externals = allDeps.filter(dep => !allowlist.includes(dep));
 
   await esbuild({
     entryPoints: ["server/index.ts"],
@@ -161,7 +163,7 @@ async function buildAll() {
   });
 }
 
-buildAll().catch((err) => {
+buildAll().catch(err => {
   console.error(err);
   process.exit(1);
 });
