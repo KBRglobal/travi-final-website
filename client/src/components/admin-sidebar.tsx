@@ -39,6 +39,13 @@ import {
   MessageSquare,
   Sparkles,
   Gift,
+  Home,
+  Ticket,
+  Pen,
+  CheckCircle,
+  Brain,
+  Globe,
+  Mail,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -103,7 +110,9 @@ const navigationCategories: NavCategory[] = [
       { title: "Attractions", url: "/admin/attractions", icon: MapPin },
       { title: "Articles", url: "/admin/articles", icon: FileText },
       { title: "Static Pages", url: "/admin/static-pages", icon: FileText },
+      { title: "Homepage", url: "/admin/homepage", icon: Home },
       { title: "Media", url: "/admin/media", icon: Image },
+      { title: "Tiqets", url: "/admin/tiqets", icon: Ticket },
     ],
   },
   {
@@ -115,6 +124,8 @@ const navigationCategories: NavCategory[] = [
       { title: "Dashboard", url: "/admin/octypo/dashboard", icon: LayoutDashboard },
       { title: "Autopilot", url: "/admin/octypo/autopilot", icon: Zap },
       { title: "AI Agents", url: "/admin/octypo/ai-agents", icon: Bot },
+      { title: "Writers", url: "/admin/writers", icon: Pen },
+      { title: "Review Queue", url: "/admin/octypo/review-queue", icon: CheckCircle },
       { title: "Queue", url: "/admin/octypo/queue-monitor", icon: Activity },
       { title: "AI Quality", url: "/admin/ai-quality", icon: Sparkles },
       { title: "Autonomy", url: "/admin/autonomy", icon: Shield },
@@ -136,6 +147,18 @@ const navigationCategories: NavCategory[] = [
         title: "SEO Hub",
         url: "/admin/seo-hub",
         icon: Search,
+        requiredPermission: "canViewAnalytics",
+      },
+      {
+        title: "SEO Engine",
+        url: "/admin/seo-engine",
+        icon: Search,
+        requiredPermission: "canViewAnalytics",
+      },
+      {
+        title: "Content Intel",
+        url: "/admin/contents-intelligence",
+        icon: Brain,
         requiredPermission: "canViewAnalytics",
       },
       {
@@ -165,6 +188,24 @@ const navigationCategories: NavCategory[] = [
         requiredPermission: "canManageUsers",
       },
       {
+        title: "Newsletter",
+        url: "/admin/newsletter",
+        icon: Mail,
+        requiredPermission: "canManageSettings",
+      },
+      {
+        title: "Affiliates",
+        url: "/admin/affiliate-links",
+        icon: Link2,
+        requiredPermission: "canAccessAffiliates",
+      },
+      {
+        title: "Translations",
+        url: "/admin/translations",
+        icon: Globe,
+        requiredPermission: "canManageSettings",
+      },
+      {
         title: "Referrals",
         url: "/admin/referrals",
         icon: Gift,
@@ -178,6 +219,12 @@ const navigationCategories: NavCategory[] = [
     icon: Shield,
     collapsedByDefault: true,
     items: [
+      {
+        title: "QA Dashboard",
+        url: "/admin/qa",
+        icon: CheckCircle,
+        requiredPermission: "canManageSettings",
+      },
       {
         title: "System Health",
         url: "/admin/system-health",
