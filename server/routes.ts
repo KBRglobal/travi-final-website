@@ -201,7 +201,6 @@ import { registerGrowthRoutes } from "./routes/admin/growth-routes";
 import { registerObservabilityRoutes } from "./routes/admin/observability-routes";
 import adminJobsRoutes from "./routes/admin/jobs-routes";
 
-import { generateLocationContent } from "./travi/content-generator";
 import { alertRoutes, startAlertEngine, isAlertingEnabled } from "./alerts";
 
 import { coverageRoutes } from "./intelligence/coverage";
@@ -1512,8 +1511,9 @@ async function processImageBlocks(
   for (const block of blocks) {
     if (block.type === "image" && block.data) {
       const rawSearchQuery =
-        block.data.searchQuery || block.data.query || block.data.alt || "dubai travel";
-      const searchQuery = typeof rawSearchQuery === "string" ? rawSearchQuery : "dubai travel";
+        block.data.searchQuery || block.data.query || block.data.alt || "travel destination";
+      const searchQuery =
+        typeof rawSearchQuery === "string" ? rawSearchQuery : "travel destination";
 
       try {
         // Use existing image finder function
@@ -1566,142 +1566,6 @@ async function processImageBlocks(
   }
 
   return processedBlocks;
-}
-
-// RTL languages that need special handling
-const RTL_LOCALES = ["ar", "fa", "ur"];
-
-// All target languages for translation (excluding English which is source)
-// Note: DeepL does NOT support: Bengali (bn), Filipino (fil), Hebrew (he), Hindi (hi), Urdu (ur), Persian (fa)
-// For unsupported languages, we use GPT as fallback translator
-const DEEPL_SUPPORTED_LOCALES = [
-  "ar",
-  "zh",
-  "ru",
-  "fr",
-  "de",
-  "es",
-  "tr",
-  "it",
-  "ja",
-  "ko",
-  "pt",
-] as const;
-const GPT_FALLBACK_LOCALES = ["hi", "ur", "fa"] as const; // Languages supported by GPT but not DeepL
-const TARGET_LOCALES = [...DEEPL_SUPPORTED_LOCALES, ...GPT_FALLBACK_LOCALES] as const;
-
-/**
- * DISABLED (January 2026): Automatic translation is permanently disabled.
- * All translations must be done manually via admin UI.
- * This function now returns immediately without performing any translation.
- */
-async function translateArticleToAllLanguages(
-  contentId: string,
-  content: {
-    title: string;
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    blocks?: any[];
-  }
-): Promise<{ success: number; failed: number; errors: string[] }> {
-  // HARD DISABLE: Automatic translation is permanently disabled
-
-  return { success: 0, failed: 0, errors: ["Automatic translation is disabled"] };
-
-  // ORIGINAL CODE PRESERVED BELOW FOR REFERENCE (NEVER EXECUTED)
-  const result = { success: 0, failed: 0, errors: [] as string[] };
-
-  try {
-    // Use translation-service (Claude Haiku) instead of deepl-service
-    const { translateContent, generateContentHash } =
-      await import("./services/translation-service");
-
-    const BATCH_SIZE = 3;
-    for (let i = 0; i < TARGET_LOCALES.length; i += BATCH_SIZE) {
-      const batch = TARGET_LOCALES.slice(i, i + BATCH_SIZE);
-
-      const batchResults = await Promise.allSettled(
-        batch.map(async locale => {
-          try {
-            // Note: translation-service uses (content, sourceLocale, targetLocale) order
-            const translatedContent = await translateContent(
-              {
-                title: content.title,
-                metaTitle: content.metaTitle || undefined,
-                metaDescription: content.metaDescription || undefined,
-                blocks: content.blocks || [],
-              },
-              "en" as any,
-              locale as any
-            );
-
-            const existingTranslation = await storage.getTranslation(contentId, locale as any);
-
-            const isRtl = RTL_LOCALES.includes(locale);
-            const translationData = {
-              contentId,
-              locale: locale as any,
-              status: "completed" as const,
-              title: translatedContent.title || null,
-              metaTitle: translatedContent.metaTitle || null,
-              metaDescription: translatedContent.metaDescription || null,
-              blocks: translatedContent.blocks || [],
-              sourceHash: translatedContent.sourceHash,
-              translatedBy: "claude-auto",
-              translationProvider: "claude",
-              isManualOverride: false,
-            };
-
-            if (existingTranslation && !existingTranslation.isManualOverride) {
-              await storage.updateTranslation(existingTranslation.id, translationData);
-            } else if (!existingTranslation) {
-              await storage.createTranslation(translationData);
-            }
-
-            return { locale, success: true };
-          } catch (error) {
-            const errorMsg = `Failed to translate to ${locale}: ${error instanceof Error ? error.message : "Unknown error"}`;
-
-            return { locale, success: false, error: errorMsg };
-          }
-        })
-      );
-
-      for (const batchResult of batchResults) {
-        if (batchResult.status === "fulfilled") {
-          const value = (
-            batchResult as PromiseFulfilledResult<{
-              locale: string;
-              success: boolean;
-              error?: string;
-            }>
-          ).value;
-          if (value.success) {
-            result.success++;
-          } else {
-            result.failed++;
-            if (value.error) {
-              result.errors.push(value.error);
-            }
-          }
-        } else {
-          result.failed++;
-          const reason = (batchResult as PromiseRejectedResult).reason;
-          result.errors.push(`Batch error: ${reason}`);
-        }
-      }
-
-      if (i + BATCH_SIZE < TARGET_LOCALES.length) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-    }
-  } catch (error) {
-    const errorMsg = `Translation process error: ${error instanceof Error ? error.message : "Unknown error"}`;
-
-    result.errors.push(errorMsg);
-  }
-
-  return result;
 }
 
 export type AutoProcessResult = {
@@ -2774,11 +2638,9 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       // FAIL-FAST: Do not use implicit Dubai fallback for hotel city
       const cityInfo = xoteloLocationKeys[citySlug];
       if (!cityInfo) {
-        return res
-          .status(400)
-          .json({
-            error: `City "${citySlug}" not supported - must be one of: ${Object.keys(xoteloLocationKeys).join(", ")}`,
-          });
+        return res.status(400).json({
+          error: `City "${citySlug}" not supported - must be one of: ${Object.keys(xoteloLocationKeys).join(", ")}`,
+        });
       }
 
       // Use Xotelo free hotel list API
@@ -8597,25 +8459,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     }
   });
 
-  // DEPRECATED: Migrated to Tiqets system
-  // Public API for TRAVI locations list by category and city
-  app.get("/api/public/travi/locations", async (req, res) => {
-    res.json({
-      message: "Deprecated - use Tiqets API",
-      locations: [],
-      migration: "This endpoint has been migrated to the Tiqets integration system",
-    });
-  });
-
-  // DEPRECATED: Migrated to Tiqets system
-  // Public API for single TRAVI location by slug
-  app.get("/api/public/travi/locations/:city/:slug", async (req, res) => {
-    res.json({
-      message: "Deprecated - use Tiqets API",
-      migration: "This endpoint has been migrated to the Tiqets integration system",
-    });
-  });
-
   // Public API for attraction destinations with live counts from DB
   // SINGLE SOURCE OF TRUTH - replaces all hardcoded destination arrays
   // Derives all data from tiqets_attractions + optional destinations metadata
@@ -10861,12 +10704,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         // Use AI to merge the articles with enhanced prompting
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "No AI provider configured. Please set OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "No AI provider configured. Please set OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -11574,12 +11415,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -11646,12 +11485,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
             "ai",
             "AI article generation failed - no AI provider configured (need OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, or openrouterapi)"
           );
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, or openrouterapi to Secrets.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, or openrouterapi to Secrets.",
+          });
         }
 
         addSystemLog(
@@ -12080,12 +11917,10 @@ Return JSON only:
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -12212,12 +12047,10 @@ Return valid JSON-LD that can be embedded in a webpage.`,
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -12552,78 +12385,6 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
     }
   );
 
-  // TEMPORARILY DISABLED - Will be enabled later
-  // app.post("/api/ai/generate-transport", requirePermission("canCreate"), rateLimiters.ai, checkAiUsageLimit, async (req, res) => {
-  //   if (safeMode.aiDisabled) {
-  //     return res.status(503).json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
-  //   }
-  //   try {
-  //     const { name } = req.body;
-  //     if (!name || typeof name !== "string" || name.trim().length === 0) {
-  //       return res.status(400).json({ error: "Transport type is required" });
-  //     }
-  //
-  //     const result = await generateTransportContent(name.trim());
-  //     if (!result) {
-  //       return res.status(500).json({ error: "Failed to generate transport content" });
-  //     }
-  //
-  //     res.json(result);
-  //   } catch (error) {
-  //
-  //     const message = error instanceof Error ? error.message : "Failed to generate transport content";
-  //     res.status(500).json({ error: message });
-  //   }
-  // });
-
-  // TEMPORARILY DISABLED - Will be enabled later
-  // app.post("/api/ai/generate-event", requirePermission("canCreate"), rateLimiters.ai, checkAiUsageLimit, async (req, res) => {
-  //   if (safeMode.aiDisabled) {
-  //     return res.status(503).json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
-  //   }
-  //   try {
-  //     const { name } = req.body;
-  //     if (!name || typeof name !== "string" || name.trim().length === 0) {
-  //       return res.status(400).json({ error: "Event name is required" });
-  //     }
-  //
-  //     const result = await generateEventContent(name.trim());
-  //     if (!result) {
-  //       return res.status(500).json({ error: "Failed to generate event content" });
-  //     }
-  //
-  //     res.json(result);
-  //   } catch (error) {
-  //
-  //     const message = error instanceof Error ? error.message : "Failed to generate event content";
-  //     res.status(500).json({ error: message });
-  //   }
-  // });
-
-  // TEMPORARILY DISABLED - Will be enabled later
-  // app.post("/api/ai/generate-itinerary", requirePermission("canCreate"), rateLimiters.ai, checkAiUsageLimit, async (req, res) => {
-  //   if (safeMode.aiDisabled) {
-  //     return res.status(503).json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
-  //   }
-  //   try {
-  //     const { duration, tripType } = req.body;
-  //     if (!duration || typeof duration !== "string" || duration.trim().length === 0) {
-  //       return res.status(400).json({ error: "Duration is required (e.g., '3 days', '1 week')" });
-  //     }
-  //
-  //     const result = await generateItineraryContent(duration.trim(), tripType);
-  //     if (!result) {
-  //       return res.status(500).json({ error: "Failed to generate itinerary content" });
-  //     }
-  //
-  //     res.json(result);
-  //   } catch (error) {
-  //
-  //     const message = error instanceof Error ? error.message : "Failed to generate itinerary content";
-  //     res.status(500).json({ error: message });
-  //   }
-  // });
-
   app.post(
     "/api/ai/generate-article-simple",
     requirePermission("canCreate"),
@@ -12913,12 +12674,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -13002,12 +12761,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -13246,12 +13003,9 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
     try {
       const aiClient = getAIClient();
       if (!aiClient) {
-        return res
-          .status(503)
-          .json({
-            error:
-              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-          });
+        return res.status(503).json({
+          error: "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+        });
       }
       const { client: openai, provider } = aiClient;
 
@@ -13456,12 +13210,10 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -13639,12 +13391,9 @@ RULES:
     try {
       const aiClient = getAIClient();
       if (!aiClient) {
-        return res
-          .status(503)
-          .json({
-            error:
-              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-          });
+        return res.status(503).json({
+          error: "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+        });
       }
       const { client: openai, provider } = aiClient;
 
@@ -19303,115 +19052,6 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     }
   );
 
-  // ============================================================================
-  // TRAVI CMS - Locations Management (DEPRECATED: Migrated to Tiqets system)
-  // ============================================================================
-
-  // DEPRECATED: Migrated to Tiqets system
-  // GET /api/admin/travi/locations - List locations with filters and pagination
-  app.get(
-    "/api/admin/travi/locations",
-    requireAuth,
-    requirePermission("canViewAll"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        locations: [],
-        total: 0,
-        page: 1,
-        limit: 50,
-        totalPages: 0,
-        filters: { cities: [], categories: [], statuses: [] },
-        migration:
-          "This endpoint has been migrated to the Tiqets integration system. Use /api/admin/tiqets/* endpoints instead.",
-      });
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // GET /api/admin/travi/locations/:id - Get single location with all related data
-  app.get(
-    "/api/admin/travi/locations/:id",
-    requireAuth,
-    requirePermission("canViewAll"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration:
-          "This endpoint has been migrated to the Tiqets integration system. Use /api/admin/tiqets/* endpoints instead.",
-      });
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // PATCH /api/admin/travi/locations/:id - Update location
-  app.patch(
-    "/api/admin/travi/locations/:id",
-    requireAuth,
-    requirePermission("canEdit"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration:
-          "This endpoint has been migrated to the Tiqets integration system. Use /api/admin/tiqets/* endpoints instead.",
-      });
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // GET /api/admin/travi/locations/:id/history - Get edit history for a location
-  app.get(
-    "/api/admin/travi/locations/:id/history",
-    requireAuth,
-    requirePermission("canViewAll"),
-    async (req, res) => {
-      res.json([]);
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // DELETE /api/admin/travi/locations/:id - Delete location
-  app.delete(
-    "/api/admin/travi/locations/:id",
-    requireAuth,
-    requirePermission("canDelete"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration: "This endpoint has been migrated to the Tiqets integration system.",
-      });
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // POST /api/admin/travi/locations/bulk - Bulk operations
-  app.post(
-    "/api/admin/travi/locations/bulk",
-    requireAuth,
-    requirePermission("canEdit"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration: "This endpoint has been migrated to the Tiqets integration system.",
-        affected: 0,
-      });
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // POST /api/admin/travi/locations/:id/generate-content - Generate AI content for a location
-  app.post(
-    "/api/admin/travi/locations/:id/generate-content",
-    requireAuth,
-    requirePermission("canEdit"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration: "This endpoint has been migrated to the Tiqets integration system.",
-      });
-    }
-  );
-
   // GET /api/admin/travi/config - Get configuration settings (still functional - uses traviConfig which exists)
   app.get(
     "/api/admin/travi/config",
@@ -19629,41 +19269,6 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch districts" });
       }
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // POST /api/admin/travi/districts/auto-assign - Auto-assign locations to districts based on coordinates
-  app.post(
-    "/api/admin/travi/districts/auto-assign",
-    requireAuth,
-    requirePermission("canEdit"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration: "This endpoint has been migrated to the Tiqets integration system.",
-        success: true,
-        assigned: 0,
-        skipped: 0,
-      });
-    }
-  );
-
-  // DEPRECATED: Migrated to Tiqets system
-  // POST /api/admin/travi/locations/bulk-process - Bulk process discovered locations with AI
-  app.post(
-    "/api/admin/travi/locations/bulk-process",
-    requireAuth,
-    requirePermission("canEdit"),
-    async (req, res) => {
-      res.json({
-        message: "Deprecated - use Tiqets API",
-        migration: "This endpoint has been migrated to the Tiqets integration system.",
-        success: true,
-        processed: 0,
-        failed: 0,
-        results: [],
-      });
     }
   );
 
@@ -23289,11 +22894,9 @@ Return as valid JSON.`,
           await import("./newsletter/weekly-digest");
 
         if (!isWeeklyDigestEnabled()) {
-          return res
-            .status(400)
-            .json({
-              error: "Weekly digest feature is disabled. Set ENABLE_WEEKLY_DIGEST=true to enable.",
-            });
+          return res.status(400).json({
+            error: "Weekly digest feature is disabled. Set ENABLE_WEEKLY_DIGEST=true to enable.",
+          });
         }
 
         // Allow force flag to bypass week dedupe protection

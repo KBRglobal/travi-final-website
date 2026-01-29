@@ -197,7 +197,7 @@ function ReadingProgressBar() {
   );
 }
 
-const FALLBACK_HERO_IMAGE = "/cards/dubai.webp";
+const FALLBACK_HERO_IMAGE = "/cards/default-destination.webp";
 
 function CinematicHero({
   heroImage,

@@ -2404,7 +2404,7 @@ export default function ContentEditor() {
       case "spacer":
         return { height: 40 };
       case "map":
-        return { address: "", lat: 25.2048, lng: 55.2708, zoom: 14 }; // Dubai default
+        return { address: "", lat: 0, lng: 0, zoom: 2 }; // World view default
       case "social":
         return { links: [] };
       case "accordion":
