@@ -13,25 +13,27 @@ if (import.meta.env.VITE_POSTHOG_KEY) {
 }
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then(registration => {
-        registration.addEventListener("updatefound", () => {
-          const newWorker = registration.installing;
-          if (newWorker) {
-            newWorker.addEventListener("statechange", () => {
-              if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-                if (window.confirm("A new version of TRAVI is available. Reload to update?")) {
-                  newWorker.postMessage({ type: "SKIP_WAITING" });
-                  window.location.reload();
-                }
-              }
-            });
+  window.addEventListener("load", async () => {
+    const swCleanupKey = "travi_sw_cleanup_v1";
+    if (!sessionStorage.getItem(swCleanupKey)) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        if (registrations.length > 0) {
+          for (const registration of registrations) {
+            await registration.unregister();
           }
-        });
-      })
-      .catch(error => {});
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            await caches.delete(cacheName);
+          }
+          sessionStorage.setItem(swCleanupKey, "done");
+          window.location.reload();
+          return;
+        }
+      } catch (e) {
+        console.error("SW cleanup error:", e);
+      }
+    }
   });
 }
 
