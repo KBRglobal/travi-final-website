@@ -3,6 +3,28 @@
   <head>
     <meta charset="UTF-8">
 
+    <!-- Emergency Service Worker cleanup - runs FIRST before any other JS -->
+    <script>
+      (function() {
+        try {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+              registrations.forEach(function(registration) {
+                registration.unregister();
+              });
+            });
+            if ('caches' in window) {
+              caches.keys().then(function(names) {
+                names.forEach(function(name) {
+                  caches.delete(name);
+                });
+              });
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Google Tag Manager - Loaded conditionally via cookie consent -->
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
