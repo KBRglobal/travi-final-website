@@ -183,8 +183,9 @@ import {
 } from "./enterprise-security";
 import { registerEnterpriseRoutes } from "./enterprise-routes";
 import { registerSiteConfigRoutes } from "./site-config-routes";
-import { registerReliableWebhookAdminRoutes } from "./webhooks/reliable/admin-routes";
-import { startWebhookWorker } from "./webhooks/reliable/worker";
+// Webhook routes disabled - module deleted
+// import { registerReliableWebhookAdminRoutes } from "./webhooks/reliable/admin-routes";
+// import { startWebhookWorker } from "./webhooks/reliable/worker";
 import { registerFeatureRoutes } from "./feature-routes";
 import { enterprise } from "./enterprise";
 import { registerImageRoutes } from "./routes/image-routes";
@@ -278,7 +279,8 @@ import { registerLifecycleRoutes } from "./content-lifecycle";
 import { registerChangeManagementRoutes } from "./change-management";
 // Search Admin Debug Mode
 import { registerSearchDebugRoutes } from "./search/search-debug-routes";
-import { registerWriterRoutes } from "./ai/writers/routes";
+// Writer routes disabled - module deleted
+// import { registerWriterRoutes } from "./ai/writers/routes";
 import { registerPageBuilderRoutes } from "./page-builder-routes";
 import { registerSocialRoutes } from "./social-routes";
 import { registerReferralRoutes } from "./routes/referral-routes";
@@ -18986,9 +18988,9 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
   registerEnterpriseRoutes(app);
   registerSiteConfigRoutes(app);
 
-  // Reliable Webhooks (feature-flagged via ENABLE_RELIABLE_WEBHOOKS)
-  registerReliableWebhookAdminRoutes(app);
-  startWebhookWorker();
+  // Reliable Webhooks disabled - module deleted
+  // registerReliableWebhookAdminRoutes(app);
+  // startWebhookWorker();
 
   // Feature Routes (all feature-flagged)
   registerFeatureRoutes(app);
@@ -21788,9 +21790,9 @@ Return as valid JSON.`,
   );
 
   // ============================================================================
-  // AI WRITERS ROUTES - Virtual Newsroom with 10 AI writers
+  // AI WRITERS ROUTES - Virtual Newsroom (disabled - module deleted)
   // ============================================================================
-  registerWriterRoutes(app);
+  // registerWriterRoutes(app);
 
   // ============================================================================
   // PAGE BUILDER ROUTES (Universal section editor with version history)
