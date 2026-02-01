@@ -102,16 +102,19 @@ app.use((req, res, next) => {
   }
 
   // Content Security Policy with Trusted Types
+  // Note: 'unsafe-inline' and 'unsafe-eval' required for Vite HMR in development
   res.setHeader(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://emrld.ltd https://*.emrld.ltd",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' data: https: blob:",
-      "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://www.google-analytics.com https://api.tiqets.com wss: ws:",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd https://*.emrld.ltd",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com",
+      "img-src 'self' data: https: http: blob:",
+      "font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:",
+      "connect-src 'self' https://*.replit.dev https://*.replit.app https://www.google-analytics.com https://api.tiqets.com https://api.deepl.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai https://images.unsplash.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd https://*.emrld.ltd wss: ws:",
       "frame-ancestors 'self'",
+      "form-action 'self'",
+      "base-uri 'self'",
     ].join("; ")
   );
 
