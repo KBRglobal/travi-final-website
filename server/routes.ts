@@ -242,8 +242,7 @@ import {
   localizationGovernanceRoutes,
   isLocalizationGovernanceEnabled,
 } from "./localization-governance";
-// Simulation Mode (TASK 9 - Read-only "what if" analysis)
-import { registerSimulationRoutes } from "./simulation";
+// Simulation Mode removed during cleanup
 // Content Scheduling (Calendar + Auto-publish)
 import { registerSchedulingRoutes, startScheduler } from "./scheduling";
 // Publishing Control & Safety
@@ -22891,11 +22890,7 @@ Return as valid JSON.`,
   }
 
   // ============================================================================
-  // SIMULATION MODE (TASK 9)
-  // Read-only "what if" analysis for traffic, outages, content explosions
-  // Admin access only, no production side effects
-  // ============================================================================
-  registerSimulationRoutes(app);
+  // SIMULATION MODE removed during cleanup
 
   // ============================================================================
   // OPENAPI/SWAGGER DOCUMENTATION
