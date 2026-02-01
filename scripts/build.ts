@@ -16,6 +16,9 @@ async function buildApp() {
     outfile: 'dist/index.cjs',
     external: [
       'bcrypt',
+      'jsdom',
+      'isomorphic-dompurify',
+      'dompurify',
       'pg-native',
       'better-sqlite3',
       'mysql2',
