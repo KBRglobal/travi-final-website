@@ -40,9 +40,7 @@ import plCommon from "../../locales/pl/common.json";
 import svCommon from "../../locales/sv/common.json";
 import elCommon from "../../locales/el/common.json";
 import csCommon from "../../locales/cs/common.json";
-import roCommon from "../../locales/ro/common.json";
 import ukCommon from "../../locales/uk/common.json";
-import huCommon from "../../locales/hu/common.json";
 
 // Resources object - all 30 language translations
 const resources: Record<string, { common: any }> = {
@@ -78,9 +76,7 @@ const resources: Record<string, { common: any }> = {
   sv: { common: svCommon },
   el: { common: elCommon },
   cs: { common: csCommon },
-  ro: { common: roCommon },
   uk: { common: ukCommon },
-  hu: { common: huCommon },
 };
 
 // Missing key handler - logs and returns visible marker
