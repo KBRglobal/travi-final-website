@@ -107,6 +107,34 @@ Preferred communication style: Simple, everyday language.
 - **Multi-language Sitemaps**: Sitemap index with per-locale sitemaps including hreflang attributes
 - **Key Files**: client/public/robots.txt, client/public/llms.txt, server/lib/ssr-renderer.ts, server/lib/meta-tags.ts, server/routes/seo-routes.ts
 
+## Recent Changes - February 2026
+
+### Codebase Cleanup (February 1, 2026)
+Massive cleanup to simplify the codebase by removing unused and legacy modules:
+
+**Deleted Directories:**
+- `infrastructure/`, `dist/`, `docs/`, `scripts/`, `tests/`, `uploads/`, `data/`
+- 70+ unused server directories including simulation, legacy integrations, and unused features
+
+**Stub Modules Created:**
+To maintain compatibility with remaining code that referenced deleted modules, minimal stub files were created:
+- `server/ai-orchestrator/` - AI orchestration stubs
+- `server/navigation/entity-resolver.ts` - Entity link resolution
+- `server/session/intent-memory.ts` - Intent tracking
+- `server/analytics/` - Analytics tracking
+- `server/cognitive/unified-layer.ts` - Cognitive processing
+- `server/system/load-tiers.ts` - Load management
+- `server/system/alerts.ts` - System alerts
+- `server/deployment-safety/` - Deployment safety checks
+- `server/scripts/publish-articles.ts` - Article publishing
+- `server/data-decisions/` - Data decision loop
+- `server/content-health/scheduler.ts` - Content health monitoring
+- `server/seo-actions/action-engine.ts` - SEO automation
+
+**Note:** These stubs provide no-op implementations to prevent import errors. Full functionality would require reimplementation if needed.
+
+**Known Issue:** Database seed for destinations fails due to missing `normalized_name` column. This is a schema migration issue that needs to be addressed separately.
+
 ## External Dependencies
 
 - **Database**: PostgreSQL.
