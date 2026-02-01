@@ -118,6 +118,8 @@ Massive cleanup to simplify the codebase by removing unused and legacy modules:
 
 **Stub Modules Created:**
 To maintain compatibility with remaining code that referenced deleted modules, minimal stub files were created:
+
+*Server Stubs:*
 - `server/ai-orchestrator/` - AI orchestration stubs
 - `server/navigation/entity-resolver.ts` - Entity link resolution
 - `server/session/intent-memory.ts` - Intent tracking
@@ -127,9 +129,22 @@ To maintain compatibility with remaining code that referenced deleted modules, m
 - `server/system/alerts.ts` - System alerts
 - `server/deployment-safety/` - Deployment safety checks
 - `server/scripts/publish-articles.ts` - Article publishing
+- `server/scripts/backup-db.ts` - Database backup utilities
 - `server/data-decisions/` - Data decision loop
 - `server/content-health/scheduler.ts` - Content health monitoring
 - `server/seo-actions/action-engine.ts` - SEO automation
+
+*Client Stubs (components/destination/):*
+- `EditorialAttractions.tsx`, `FeaturedSections.tsx`, `top-pois.tsx`
+- `EditorialNews.tsx`, `upcoming-events.tsx`, `upcoming-holidays.tsx`
+- `safety-banner.tsx`, `quick-info-rail.tsx`, `GettingAround.tsx`
+- `DestinationFAQ.tsx`, `DestinationCTA.tsx`
+
+*Hooks:*
+- `client/src/hooks/use-referral-tracking.ts` - Referral tracking no-op
+
+**Admin Module Simplified:**
+Reduced `admin-module.tsx` from 405 lines to ~160 lines by removing imports for deleted pages. Only existing pages are now imported (Dashboard, Settings, Octypo, Destinations, Tiqets).
 
 **Note:** These stubs provide no-op implementations to prevent import errors. Full functionality would require reimplementation if needed.
 
