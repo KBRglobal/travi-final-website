@@ -15,6 +15,7 @@ async function buildApp() {
     format: 'cjs',
     outfile: 'dist/index.cjs',
     external: [
+      'bcrypt',
       'pg-native',
       'better-sqlite3',
       'mysql2',
