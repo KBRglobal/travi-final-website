@@ -14,7 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { MapPin, ArrowLeft, Loader2 } from "lucide-react";
-import { useLocale } from "@/lib/i18n/locale-context";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { DestinationPageData } from "@/types/destination";
 
 interface APIDestinationData {
