@@ -15942,97 +15942,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     }
   });
 
-  // Newsletter subscription (public) - Double Opt-In flow with rate limiting
-  app.post("/api/newsletter/subscribe", rateLimiters.newsletter, async (req, res) => {
-    try {
-      const { email, firstName, lastName, source } = req.body;
-      if (!email || typeof email !== "string" || !email.includes("@")) {
-        return res.status(400).json({ error: "Valid email required" });
-      }
-
-      // Get IP address
-      const ipAddress =
-        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
-
-      // Check if already subscribed
-      const existing = await storage.getNewsletterSubscriberByEmail(email);
-      if (existing) {
-        if (existing.status === "subscribed") {
-          return res.json({ success: true, message: "Already subscribed" });
-        }
-        if (existing.status === "pending_confirmation") {
-          return res.json({
-            success: true,
-            message: "Confirmation email already sent. Please check your inbox.",
-          });
-        }
-        // Allow resubscription for unsubscribed users
-        if (existing.status === "unsubscribed") {
-          const confirmToken = crypto.randomUUID();
-          const consentEntry = {
-            action: "resubscribe" as const,
-            timestamp: new Date().toISOString(),
-            ipAddress,
-            userAgent: req.headers["user-agent"],
-            source: source || "coming_soon",
-          };
-          const consentLog = [...(existing.consentLog || []), consentEntry];
-
-          await storage.updateNewsletterSubscriber(existing.id, {
-            status: "pending_confirmation",
-            confirmToken,
-            consentLog,
-            ipAddress,
-            firstName: firstName || existing.firstName,
-            lastName: lastName || existing.lastName,
-          });
-
-          // Send confirmation email
-          await sendConfirmationEmail(
-            email,
-            confirmToken,
-            firstName || existing.firstName || undefined
-          );
-
-          return res.json({
-            success: true,
-            message: "Please check your email to confirm your subscription",
-          });
-        }
-      }
-
-      // Generate confirmation token
-      const confirmToken = crypto.randomUUID();
-
-      // Create consent log entry
-      const consentEntry = {
-        action: "subscribe" as const,
-        timestamp: new Date().toISOString(),
-        ipAddress,
-        userAgent: req.headers["user-agent"],
-        source: source || "coming_soon",
-      };
-
-      // Save to database with pending status
-      await storage.createNewsletterSubscriber({
-        email,
-        firstName: firstName || null,
-        lastName: lastName || null,
-        source: source || "coming_soon",
-        status: "pending_confirmation",
-        ipAddress,
-        confirmToken,
-        consentLog: [consentEntry],
-      });
-
-      // Send confirmation email
-      await sendConfirmationEmail(email, confirmToken, firstName || undefined);
-
-      res.json({ success: true, message: "Please check your email to confirm your subscription" });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to subscribe" });
-    }
-  });
+  // Newsletter subscribe endpoint - Defined in enhancement-routes.ts via registerAllRoutes()
 
   // Newsletter confirmation endpoint - Double Opt-In step 2
   app.get("/api/newsletter/confirm/:token", async (req, res) => {
@@ -16097,67 +16007,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
     }
   });
 
-  // Newsletter unsubscribe endpoint (public) - requires token for security
-  app.get("/api/newsletter/unsubscribe", async (req, res) => {
-    try {
-      const { token } = req.query;
-
-      if (!token) {
-        return res
-          .status(400)
-          .send(
-            renderUnsubscribePage(
-              false,
-              "Invalid unsubscribe link. Please use the link from your email."
-            )
-          );
-      }
-
-      const subscriber = await storage.getNewsletterSubscriberByToken(token as string);
-
-      if (!subscriber) {
-        return res.send(
-          renderUnsubscribePage(false, "Unsubscribe link not found or already used.")
-        );
-      }
-
-      if (subscriber.status === "unsubscribed") {
-        return res.send(renderUnsubscribePage(true, "You have already been unsubscribed."));
-      }
-
-      // Get IP address
-      const ipAddress =
-        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
-
-      // Create consent log entry
-      const consentEntry = {
-        action: "unsubscribe" as const,
-        timestamp: new Date().toISOString(),
-        ipAddress,
-        userAgent: req.headers["user-agent"],
-      };
-      const consentLog = [...(subscriber.consentLog || []), consentEntry];
-
-      // Update subscriber status
-      await storage.updateNewsletterSubscriber(subscriber.id, {
-        status: "unsubscribed",
-        consentLog,
-        isActive: false,
-      });
-
-      // Set unsubscribedAt
-      await db
-        .update(newsletterSubscribers)
-        .set({ unsubscribedAt: new Date() } as any)
-        .where(eq(newsletterSubscribers.id, subscriber.id));
-
-      res.send(
-        renderUnsubscribePage(true, "You have been successfully unsubscribed from our newsletter.")
-      );
-    } catch (error) {
-      res.status(500).send(renderUnsubscribePage(false, "Something went wrong. Please try again."));
-    }
-  });
+  // Newsletter unsubscribe endpoint - Defined in enhancement-routes.ts via registerAllRoutes()
 
   // Newsletter subscribers list (admin only)
   app.get(
@@ -22110,57 +21960,8 @@ Return as valid JSON.`,
   });
 
   // ============================================================================
-  // WEBHOOKS
+  // WEBHOOKS - Defined in enterprise-routes.ts via registerAllRoutes()
   // ============================================================================
-  app.post("/api/webhooks", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const webhook = await db
-        .insert(webhooks)
-        .values({
-          ...req.body,
-          createdBy: getUserId(req as AuthRequest),
-        })
-        .returning();
-      res.json(webhook[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create webhook" });
-    }
-  });
-
-  app.get("/api/webhooks", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const allWebhooks = await db.select().from(webhooks);
-      res.json(allWebhooks);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch webhooks" });
-    }
-  });
-
-  app.post("/api/webhooks/:id/test", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const { webhookManager } = await import("./webhooks/webhook-manager");
-      const { id } = req.params;
-      const result = await webhookManager.testWebhook(id);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to test webhook" });
-    }
-  });
-
-  app.get("/api/webhooks/:id/logs", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const { id } = req.params;
-      const logs = await db
-        .select()
-        .from(webhookLogs)
-        .where(eq(webhookLogs.webhookId, id))
-        .orderBy(desc(webhookLogs.createdAt))
-        .limit(50);
-      res.json(logs);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch webhook logs" });
-    }
-  });
 
   // ============================================================================
   // WORKFLOWS

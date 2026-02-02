@@ -1,0 +1,47 @@
+  🎯 משימה: ניקוי כפילויות מ-routes.ts                                                                                  
+                                                                                                                        
+  מה לעשות:                                                                                                             
+                                                                                                                        
+  שלב 1 - מצא ומחק endpoints כפולים                                                                                     
+                                                                                                                        
+  הקוד הבא קיים גם ב-routes.ts וגם בקבצים המפוצלים. מחק מ-routes.ts בלבד:                                               
+                                                                                                                        
+  מ-content-routes.ts (14 endpoints):                                                                                   
+  - /api/contents/*                                                                                                     
+  - /api/locales                                                                                                        
+  - /api/public/content/*                                                                                               
+  - /api/public/contents                                                                                                
+  - /api/public/destinations                                                                                            
+  - /api/public/homepage-*                                                                                              
+                                                                                                                        
+  מ-enterprise-routes.ts (8 endpoints):                                                                                 
+  - /api/teams/*                                                                                                        
+  - /api/webhooks/*                                                                                                     
+  - /api/workflows/*                                                                                                    
+                                                                                                                        
+  מ-content-intelligence-routes.ts (4 endpoints):                                                                       
+  - /api/intelligence/*                                                                                                 
+                                                                                                                        
+  מ-enhancement-routes.ts (3 endpoints):                                                                                
+  - /api/enhance/*                                                                                                      
+  - /api/security/*                                                                                                     
+                                                                                                                        
+  שלב 2 - וודא שה-imports קיימים                                                                                        
+                                                                                                                        
+  ב-routes.ts צריך להיות:                                                                                               
+  import { registerContentRoutes } from "./routes/content-routes";                                                      
+  import { registerEnterpriseRoutes } from "./enterprise-routes";                                                       
+  // וכו'...                                                                                                            
+                                                                                                                        
+  שלב 3 - וודא שהפונקציות נקראות                                                                                        
+                                                                                                                        
+  בפונקציה registerRoutes:                                                                                              
+  registerContentRoutes(app);                                                                                           
+  registerEnterpriseRoutes(app);                                                                                        
+  // וכו'...                                                                                                            
+                                                                                                                        
+  חשוב:                                                                                                                 
+                                                                                                                        
+  - אל תמחק endpoints שלא קיימים בקבצים אחרים                                                                           
+  - בדוק אחרי כל מחיקה שהאפליקציה עולה                                                                                  
+  - דווח כמה שורות נמחקו                                                                                                
