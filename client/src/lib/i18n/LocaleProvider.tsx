@@ -1,27 +1,11 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { I18nextProvider } from "react-i18next";
 import i18n, { isRTL, changeLanguage, getCurrentLocale } from "./config";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
+import { getLocaleContext, type LocaleContextType } from "./locale-context";
 
-interface LocaleContextType {
-  locale: Locale;
-  setLocale: (locale: Locale) => Promise<void>;
-  isRTL: boolean;
-  localeInfo: (typeof SUPPORTED_LOCALES)[number] | undefined;
-  availableLocales: typeof SUPPORTED_LOCALES;
-  localePath: (path: string) => string;
-}
-
-const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
-
-export function useLocale() {
-  const context = useContext(LocaleContext);
-  if (!context) {
-    throw new Error("useLocale must be used within a LocaleProvider");
-  }
-  return context;
-}
+export { useLocale } from "./locale-context";
 
 interface LocaleProviderProps {
   children: ReactNode;
@@ -102,10 +86,11 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
     localePath,
   };
 
+  const Context = getLocaleContext();
   return (
-    <LocaleContext.Provider value={value}>
+    <Context.Provider value={value}>
       <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
-    </LocaleContext.Provider>
+    </Context.Provider>
   );
 }
 

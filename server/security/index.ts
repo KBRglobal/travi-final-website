@@ -200,6 +200,7 @@ export function setupSecurityMiddleware(app: Express): void {
         "https://emrld.ltd", // Travelpayouts affiliate verification
         "https://us-assets.i.posthog.com", // PostHog analytics assets
         "https://us.i.posthog.com", // PostHog analytics
+        "https://static.cloudflareinsights.com", // Cloudflare Web Analytics
       ];
 
   // Helmet - Security headers
