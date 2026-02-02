@@ -21177,6 +21177,30 @@ Return as valid JSON.`,
     }
   });
 
+  // POST /api/admin/tiqets/bulk-publish - Publish all imported attractions
+  app.post("/api/admin/tiqets/bulk-publish", requireAuth, async (req, res) => {
+    try {
+      const result = await db
+        .update(tiqetsAttractions)
+        .set({ status: "published" })
+        .where(eq(tiqetsAttractions.status, "imported"));
+      
+      const readyResult = await db
+        .update(tiqetsAttractions)
+        .set({ status: "published" })
+        .where(eq(tiqetsAttractions.status, "ready"));
+
+      res.json({
+        success: true,
+        message: "All imported and ready attractions have been published",
+        publishedFromImported: result.rowCount || 0,
+        publishedFromReady: readyResult.rowCount || 0,
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // ============================================================================
   // CONTENT QUALITY MANAGEMENT (V2 Regeneration System)
   // ============================================================================
