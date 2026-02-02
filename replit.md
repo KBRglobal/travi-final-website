@@ -1,7 +1,7 @@
 # Travi CMS - Dubai Travel Content Management System
 
 ## Overview
-Travi CMS is a content management system for Dubai Travel, focused on managing travel content like attractions, hotels, and articles from RSS feeds. Its primary goals are SEO optimization, seamless affiliate link integration, and a draft-first content workflow. The system aims to be a user-friendly, multi-language platform with tools for social media marketing, offering a "Discover Dubai Like a Local" experience through advanced content generation.
+Travi CMS is a content management system for Dubai Travel. It focuses on managing travel content like attractions, hotels, and articles from RSS feeds with a primary goal of SEO optimization, seamless affiliate link integration, and a draft-first content workflow. The system aims to be a user-friendly, multi-language platform with tools for social media marketing, offering a "Discover Dubai Like a Local" experience through advanced content generation capabilities.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -13,7 +13,7 @@ Preferred communication style: Simple, everyday language.
 - **Content Model**: Base `contents` table extended for specific types (attractions, hotels, articles) using JSONB.
 - **Workflow**: Content moves through draft, in_review, approved, scheduled, and published statuses.
 - **UI/UX**: Material Design 3 / Modern Admin principles, Tailwind CSS, `shadcn/ui` with Radix primitives, supporting light/dark mode. Emphasizes opaque surfaces, a fixed blue/cyan sky gradient background, and white content cards.
-- **Multi-language Support**: Supports 17 languages, including RTL, `hreflang` tags, and multi-language sitemaps, but with automatic translation permanently disabled as of January 2026. All translations must be manual.
+- **Multi-language Support**: Supports 17 languages, including RTL, `hreflang` tags, and multi-language sitemaps. Automatic translation is permanently disabled; all translations must be manual.
 - **SEO Focus**: Adherence to SEO best practices, including meta data, headings, linking, keyword integration, and a dedicated Dubai keyword database.
 - **Admin Panel Structure**: Organized into Core Content Management, Site Configuration, Automation, Monetization, Enterprise features, and Advanced Analytics.
 
@@ -28,44 +28,13 @@ Preferred communication style: Simple, everyday language.
 - **API**: Swagger UI for documentation, OpenAPI Spec, URL-based API versioning.
 - **CI/CD**: GitHub Actions for automated testing and deployment.
 - **Octopus v2 Content Engine**: Graph-based content generation with PostgreSQL persistence, queue infrastructure, entity resolution, AI tagging, and placement rules.
-- **Localization System (NO-AUTOMATIC-TRANSLATION Architecture)**: Automatic translation is permanently disabled. Manual translation via admin UI. Infrastructure for i18next, locale middleware, multi-locale sitemaps, HTTP headers, and `hreflang` tags are active.
-- **Pilot Localization System (INFRASTRUCTURE COMPLETE - January 2026)**: Native multilingual content generation via Octypo:
-  - **STATUS**: Infrastructure complete, waiting on AI provider availability for execution.
-  - **System Status API**: `GET /api/octypo/pilot/system-status` returns status (ready, blocked_ai, running, done).
-  - **Architecture**: Content generated natively in target locale (NOT translated). Uses Octypo AI orchestrator with 72 AI engines.
-  - **Database**: `pilot_localized_content` table with unique constraint on (entityType, entityId, locale).
-  - **API Routes**: POST generate, GET content, GET status, GET system-status, GET execution-payload.
-  - **LocalePurityValidator**: HARD gate ≥98% target language. Dynamic exemptions for proper nouns.
-  - **Atomic Write**: All validators (completeness, localePurity, blueprint, seoAeo) must pass before ANY database write.
-  - **Frontend**: `/pilot/:locale/attractions/:entityId` with RTL support. Non-English locales show "Pending Generation" - NO English fallback.
-  - **Locales**: en, ar (expandable to 30 languages including 4 RTL: ar, he, fa, ur).
-  - **Principle**: Localization is COMPLETE when infrastructure exists - actual generation is execution, not system completeness.
-- **Guide Localization Pilot (BATCH PILOT COMPLETE - January 2026)**: Extends pilot to travel guides:
-  - **STATUS**: Batch pilot complete with 5 guides × 3 locales (en, ar, fr) = 15 guide-locale pairs published.
-  - **Database**: `pilot_localized_guides` table with unique constraint on (guide_slug, locale). Uses `pilot_locale_status` enum.
-  - **API Routes**: POST `/api/octypo/pilot/guides/save`, GET `/api/octypo/pilot/guides/content/:guideSlug/:locale`, GET `/api/octypo/pilot/guides/status/:guideSlug`.
-  - **Validators**: Completeness (all sections present), LocalePurity (≥98% - extended for French accented characters), Blueprint (introduction 40-80 words, whatToExpect 100-300 words, tips 100-250 words, 3-10 highlights, 5-10 FAQs, meta title 30-60 chars, meta description 120-160 chars), SEO/AEO (answer capsule 50-200 chars), RTL (for Arabic only).
-  - **SEO/AEO Artifact Builder**: Template-based, deterministic builder (`buildSeoArtifacts()`) generates structured data:
-    - **OpenGraph**: og:title, og:description, og:type=article, og:locale (en_US, ar_AE, fr_FR), og:url (absolute), og:site_name
-    - **Twitter Cards**: twitter:card=summary_large_image, twitter:title, twitter:description
-    - **JSON-LD @graph**: Article schema (inLanguage), FAQPage schema (if FAQs exist), WebPage schema with Speakable specification
-    - **Speakable**: Targets `[data-testid="text-answer-capsule"]` and `[data-testid="text-introduction"]` for voice search/AEO
-    - **Design Principle**: Backend builds, frontend only renders - maintains separation of concerns
-    - **API Response**: `seoArtifacts` field included in guide content endpoint response
-  - **Frontend**: `/pilot/:locale/guides/:guideSlug` with RTL support. NO English fallback for non-English locales. UI labels localized for en, ar, fr.
-  - **Batch Content**: Rome, Paris, Dubai, Tokyo, New York travel guides with all 3 locales validated and stored.
-  - **Scaling to 30 Locales - Blockers Identified**:
-    1. **LOCALE_LABELS expansion**: Need to add 27 more locale entries in `pilot-guide.tsx` for all UI text.
-    2. **calculateLocalePurity regex**: Need additional script regexes for CJK (Chinese, Japanese, Korean), Cyrillic (Russian, Ukrainian), Thai, Greek, Hebrew, Persian, Hindi/Devanagari, etc.
-    3. **RTL_LOCALES array**: Need to expand for Hebrew (he), Persian/Farsi (fa), Urdu (ur).
-    4. **og:locale meta tag**: Need mapping for all 30 locale codes.
-    5. **AI Provider Availability**: Native content generation requires AI providers to generate content natively in each target language.
-    6. **Validator word counting**: May need locale-specific word counting for languages without whitespace (CJK).
+- **Localization System (NO-AUTOMATIC-TRANSLATION Architecture)**: Manual translation via admin UI. Infrastructure for i18next, locale middleware, multi-locale sitemaps, HTTP headers, and `hreflang` tags.
+- **Pilot Localization System (INFRASTRUCTURE COMPLETE)**: Native multilingual content generation via Octypo. Content generated natively in target locale (NOT translated) using Octypo AI orchestrator with 72 AI engines. Database uses `pilot_localized_content` table.
+- **Guide Localization Pilot (BATCH PILOT COMPLETE)**: Extends pilot to travel guides, with 5 guides × 3 locales (en, ar, fr) = 15 guide-locale pairs published. Includes comprehensive validators (Completeness, LocalePurity, Blueprint, SEO/AEO) and an SEO/AEO Artifact Builder for structured data (OpenGraph, Twitter Cards, JSON-LD @graph, Speakable).
 - **Localized Assets System**: Manages per-locale media with fallback logic.
 - **SEO/AEO Module**: Centralized SEO optimization with versioned prompt templates and output normalization.
 - **Image Handling**: Tracks image usage and ensures safety with error fallbacks.
 - **Tiqets Integration**: Attraction data import system for whitelisted cities; AI-generated images and descriptions.
-- **Octypo V2 Content Engine**: High-quality AI content generation for travel attractions using a multi-agent architecture and a multi-provider AI pool.
 - **Travel Intelligence Data Ingestion**: Modular system for cron-scheduled updates of visa requirements, health alerts, and events.
 - **External Data Integration**: Integrates 180M+ external travel POIs with AI content quality tools and utilizes `pgvector` for semantic search and H3 for spatial indexing.
 - **Admin Panel Redesign**: Consolidated UI with a new sidebar, `AdminDashboard`, `MagicAIButton` (AI content generation for 30 languages), and `MultiLanguageEditor` (rich text editor for 30 languages with RTL support).
@@ -96,63 +65,19 @@ Preferred communication style: Simple, everyday language.
 - **AI SEO Generation**: Endpoint for AI-powered SEO generation with quality scoring and improvement suggestions.
 - **Capability-Based Field Ownership**: `canEditPageSeo` permission enforces exclusive write access to the `page_seo` table.
 
-### AEO (Answer Engine Optimization) Infrastructure - January 2026
-- **SSR for Bots**: Server-side rendering for search engine and AI crawler user-agents (Googlebot, Bingbot, GPTBot, etc.)
-- **Locale-Aware Canonicals**: Self-canonical URLs per language (e.g., /ar → https://travi.world/ar/) via SSR middleware
-- **og:locale Mapping**: Proper country code mapping for all 30 locales (ar → ar_AE, fr → fr_FR, zh → zh_CN, etc.)
-- **hreflang Tags**: 30 alternate language links generated for every page, with x-default pointing to English
-- **robots.txt**: Allows all 30 locale paths, permits all major crawlers including AI bots (GPTBot, Anthropic, Perplexity, etc.)
-- **llms.txt**: AI-native discovery file at /llms.txt with site description and key pages for AI crawlers
-- **IndexNow Protocol**: API endpoint at /api/seo/indexnow for instant Bing/Yandex indexing of new content
-- **Multi-language Sitemaps**: Sitemap index with per-locale sitemaps including hreflang attributes
-- **Key Files**: client/public/robots.txt, client/public/llms.txt, server/lib/ssr-renderer.ts, server/lib/meta-tags.ts, server/routes/seo-routes.ts
-
-## Recent Changes - February 2026
-
-### Codebase Cleanup (February 1, 2026)
-Massive cleanup to simplify the codebase by removing unused and legacy modules:
-
-**Deleted Directories:**
-- `infrastructure/`, `dist/`, `docs/`, `scripts/`, `tests/`, `uploads/`, `data/`
-- 70+ unused server directories including simulation, legacy integrations, and unused features
-
-**Stub Modules Created:**
-To maintain compatibility with remaining code that referenced deleted modules, minimal stub files were created:
-
-*Server Stubs:*
-- `server/ai-orchestrator/` - AI orchestration stubs
-- `server/navigation/entity-resolver.ts` - Entity link resolution
-- `server/session/intent-memory.ts` - Intent tracking
-- `server/analytics/` - Analytics tracking
-- `server/cognitive/unified-layer.ts` - Cognitive processing
-- `server/system/load-tiers.ts` - Load management
-- `server/system/alerts.ts` - System alerts
-- `server/deployment-safety/` - Deployment safety checks
-- `server/scripts/publish-articles.ts` - Article publishing
-- `server/scripts/backup-db.ts` - Database backup utilities
-- `server/data-decisions/` - Data decision loop
-- `server/content-health/scheduler.ts` - Content health monitoring
-- `server/seo-actions/action-engine.ts` - SEO automation
-
-*Client Stubs (components/destination/):*
-- `EditorialAttractions.tsx`, `FeaturedSections.tsx`, `top-pois.tsx`
-- `EditorialNews.tsx`, `upcoming-events.tsx`, `upcoming-holidays.tsx`
-- `safety-banner.tsx`, `quick-info-rail.tsx`, `GettingAround.tsx`
-- `DestinationFAQ.tsx`, `DestinationCTA.tsx`
-
-*Hooks:*
-- `client/src/hooks/use-referral-tracking.ts` - Referral tracking no-op
-
-**Admin Module Simplified:**
-Reduced `admin-module.tsx` from 405 lines to ~160 lines by removing imports for deleted pages. Only existing pages are now imported (Dashboard, Settings, Octypo, Destinations, Tiqets).
-
-**Note:** These stubs provide no-op implementations to prevent import errors. Full functionality would require reimplementation if needed.
-
-**Known Issue:** Database seed for destinations fails due to missing `normalized_name` column. This is a schema migration issue that needs to be addressed separately.
+### AEO (Answer Engine Optimization) Infrastructure
+- **SSR for Bots**: Server-side rendering for search engine and AI crawler user-agents.
+- **Locale-Aware Canonicals**: Self-canonical URLs per language via SSR middleware.
+- **og:locale Mapping**: Proper country code mapping for all 30 locales.
+- **hreflang Tags**: 30 alternate language links generated for every page, with x-default pointing to English.
+- **robots.txt**: Allows all 30 locale paths and major crawlers including AI bots.
+- **llms.txt**: AI-native discovery file at /llms.txt with site description and key pages for AI crawlers.
+- **IndexNow Protocol**: API endpoint at /api/seo/indexnow for instant Bing/Yandex indexing of new content.
+- **Multi-language Sitemaps**: Sitemap index with per-locale sitemaps including hreflang attributes.
 
 ## External Dependencies
 
-- **Database**: PostgreSQL.
+- **Database**: PostgreSQL (Replit Neon as primary, Railway as configured fallback).
 - **Object Storage**: Replit Object Storage.
 - **AI Services**: Anthropic, OpenAI, DeepSeek, OpenRouter.
 - **Social Media APIs**: LinkedIn, Twitter/X, Facebook, Instagram.
