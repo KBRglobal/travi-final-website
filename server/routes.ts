@@ -8916,12 +8916,14 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     }
   });
 
-  // Unified Homepage Config API - returns all homepage data in single payload
-  // This is the single source of truth for the homepage frontend
-  // Accepts ?locale=xx parameter (defaults to 'en')
+  // NOTE: /api/public/homepage-config is now defined in server/routes/content-routes.ts
+  // That route is registered first via registerAllRoutes() and takes precedence.
+  // The duplicate definition below has been disabled to avoid confusion.
+  // If you need to modify the homepage-config endpoint, edit content-routes.ts
+  
+  /* DISABLED - DUPLICATE ROUTE (see content-routes.ts)
   app.get("/api/public/homepage-config", async (req, res) => {
     try {
-      // Get locale from query param, default to 'en'
       const locale = (req.query.locale as string) || "en";
 
       // Fetch all homepage data in parallel
@@ -9157,9 +9159,25 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
       res.json(renderSafeConfig);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch homepage configuration" });
+      console.error("[homepage-config] Error:", error);
+      
+      const fallbackConfig = {
+        locale: "en",
+        sections: {},
+        sectionsList: [],
+        hero: { slides: [] },
+        quickCategories: [],
+        experienceCategories: [],
+        regionLinks: [],
+        cta: null,
+        seoMeta: null,
+        featuredDestinations: [],
+        featuredArticles: [],
+      };
+      res.json(fallbackConfig);
     }
   });
+  // END DISABLED DUPLICATE ROUTE */
 
   // Content creation - requires authentication and permission
   app.post(
