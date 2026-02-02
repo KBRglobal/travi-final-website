@@ -8,13 +8,13 @@
 import { useEffect } from "react";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { DestinationPageTemplate } from "@/components/destination";
+import { DestinationPageTemplate } from "@/components/destination/DestinationPageTemplate";
 import { getDestinationBySlug } from "@/data/destinations";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { MapPin, ArrowLeft, Loader2 } from "lucide-react";
-import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocale } from "@/lib/i18n/locale-context";
 import type { DestinationPageData } from "@/types/destination";
 
 interface APIDestinationData {
