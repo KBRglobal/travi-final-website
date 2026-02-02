@@ -703,7 +703,22 @@ export function registerContentRoutes(app: Express): void {
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
       res.json(renderSafeConfig);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch homepage configuration" });
+      console.error("[homepage-config] Error:", error);
+      
+      const fallbackConfig = {
+        locale: "en",
+        sections: {},
+        sectionsList: [],
+        hero: { slides: [] },
+        quickCategories: [],
+        experienceCategories: [],
+        regionLinks: [],
+        cta: null,
+        seoMeta: null,
+        featuredDestinations: [],
+        featuredArticles: [],
+      };
+      res.json(fallbackConfig);
     }
   });
 
