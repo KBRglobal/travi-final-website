@@ -1,5 +1,10 @@
 # Travi CMS - Dubai Travel Content Management System
 
+## Recent Changes (February 2, 2026)
+- **Production Build Fix**: Resolved critical circular dependency in Vite production bundle that caused "blue screen" error
+- **Build Configuration**: Updated `scripts/build.ts` with custom manualChunks to prevent react-vendor ↔ destination-page cycle
+- **Cleanup**: Removed unused shared-helpers module
+
 ## Overview
 Travi CMS is a content management system for Dubai Travel. It focuses on managing travel content like attractions, hotels, and articles from RSS feeds with a primary goal of SEO optimization, seamless affiliate link integration, and a draft-first content workflow. The system aims to be a user-friendly, multi-language platform with tools for social media marketing, offering a "Discover Dubai Like a Local" experience through advanced content generation capabilities.
 
