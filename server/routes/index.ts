@@ -8,6 +8,14 @@ import { registerAutomationApiRoutes } from "./automation-api";
 import { registerCmsApiRoutes } from "./cms-api";
 import { registerMetricsRoutes } from "./metrics-routes";
 import { registerMediaIntelligenceRoutes } from "../media-intelligence/routes";
+import { registerNewsletterRoutes } from "./newsletter-routes";
+import { registerSurveyRoutes } from "./survey-routes";
+import { registerGdprRoutes } from "./gdpr-routes";
+import { registerWeeklyDigestRoutes } from "./weekly-digest-routes";
+import { registerWebhookWorkflowRoutes } from "./webhook-workflow-routes";
+import { registerAffiliateRoutes } from "./affiliate-routes";
+import { registerAiToolsRoutes } from "./ai-tools-routes";
+import { registerEmailMarketingRoutes } from "./email-marketing-routes";
 
 /**
  * Main router registry that coordinates all domain-specific route modules.
@@ -40,6 +48,30 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 
   // Media Intelligence routes
   registerMediaIntelligenceRoutes(app);
+
+  // Newsletter routes
+  registerNewsletterRoutes(app);
+
+  // Survey routes
+  registerSurveyRoutes(app);
+
+  // GDPR compliance routes
+  registerGdprRoutes(app);
+
+  // Weekly digest routes
+  registerWeeklyDigestRoutes(app);
+
+  // Webhook and workflow routes
+  registerWebhookWorkflowRoutes(app);
+
+  // Affiliate and partner routes
+  registerAffiliateRoutes(app);
+
+  // AI tools routes
+  registerAiToolsRoutes(app);
+
+  // Email marketing routes
+  registerEmailMarketingRoutes(app);
 }
 
 // Export individual registrars for selective usage
