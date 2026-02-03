@@ -37,6 +37,7 @@ import { registerAdminLogsRoutes } from "./admin-logs-routes";
 import { registerObjectStorageRoutes } from "./object-storage-routes";
 import { registerAdminAuditRoutes } from "./admin-audit-routes";
 import { registerGoogleDriveRoutes } from "./google-drive-routes";
+import octypoRouter from "./admin/octypo-routes";
 
 /**
  * Main router registry that coordinates all domain-specific route modules.
@@ -156,6 +157,9 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 
   // Google Drive asset sync routes
   registerGoogleDriveRoutes(app);
+
+  // Octypo AI content generation admin routes
+  app.use("/api/octypo", octypoRouter);
 }
 
 // Export individual registrars for selective usage

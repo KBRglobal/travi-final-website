@@ -17,6 +17,13 @@ function sanitizeForLog(input: string): string {
   return input.replace(/[\r\n\x00]/g, "").substring(0, 200);
 }
 
+// SECURITY: Define valid file types - MIME type MUST match expected extension
+const FILE_TYPE_MAP: Record<string, string[]> = {
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+  "application/msword": [".doc"],
+  "text/plain": [".txt"],
+};
+
 // Configure multer for file uploads
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -24,24 +31,34 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
   fileFilter: (req, file, cb) => {
-    // Accept DOCX, DOC, and TXT files
-    const allowedMimes = [
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/msword",
-      "text/plain",
-    ];
-    const allowedExtensions = [".docx", ".doc", ".txt"];
+    // SECURITY FIX: Validate BOTH MIME type AND extension match
+    // Previously used OR which allowed spoofed files
+    const extension = file.originalname.toLowerCase().slice(file.originalname.lastIndexOf("."));
+    const validExtensions = FILE_TYPE_MAP[file.mimetype];
 
-    const hasValidMime = allowedMimes.includes(file.mimetype);
-    const hasValidExt = allowedExtensions.some(ext =>
-      file.originalname.toLowerCase().endsWith(ext)
-    );
-
-    if (hasValidMime || hasValidExt) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only .docx, .doc, and .txt files are allowed"));
+    // MIME type must be in our allowed list
+    if (!validExtensions) {
+      cb(new Error(`Unsupported file type: ${file.mimetype}`));
+      return;
     }
+
+    // Extension must match what's expected for this MIME type
+    if (!validExtensions.includes(extension)) {
+      cb(new Error(`File extension ${extension} does not match MIME type ${file.mimetype}`));
+      return;
+    }
+
+    // Additional security: check file name doesn't contain path characters
+    if (
+      file.originalname.includes("..") ||
+      file.originalname.includes("/") ||
+      file.originalname.includes("\\")
+    ) {
+      cb(new Error("Invalid file name"));
+      return;
+    }
+
+    cb(null, true);
   },
 });
 
