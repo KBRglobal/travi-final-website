@@ -7,18 +7,14 @@ import type { Express, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { storage } from "../storage";
+import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";
+import { requireSelfOrAdmin, requireAdmin } from "../middleware/idor-protection";
 import {
-  requireAuth,
-  requirePermission,
-  requireSelfOrAdmin,
-  requireAdmin,
-  checkReadOnlyMode,
   validatePasswordStrength,
   validatePasswordChange,
   PASSWORD_POLICY,
-  logSecurityEventFromRequest,
-  SecurityEventType,
-} from "../security";
+} from "../security/password-policy";
+import { logSecurityEventFromRequest, SecurityEventType } from "../security/audit-logger";
 import { logAuditEvent } from "../utils/audit-logger";
 
 export function registerUserRoutes(app: Express): void {
