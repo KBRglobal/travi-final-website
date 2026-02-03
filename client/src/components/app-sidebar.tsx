@@ -21,7 +21,6 @@ import {
   Users,
   LogOut,
   LayoutTemplate,
-  Zap,
   PenTool,
   Activity,
   Radar,
@@ -111,8 +110,6 @@ const sidebarModules: NavModule[] = [
     defaultOpen: true,
     items: [
       { title: "Dashboard", url: "/admin/octypo/dashboard", icon: LayoutDashboard },
-      { title: "Autopilot", url: "/admin/octypo/autopilot", icon: Zap },
-      { title: "Content", url: "/admin/octypo/content", icon: FileText },
       { title: "Review Queue", url: "/admin/octypo/review-queue", icon: Eye },
       { title: "Writers Room", url: "/admin/octypo/writers-room", icon: PenTool },
       { title: "AI Agents", url: "/admin/octypo/ai-agents", icon: Bot },
