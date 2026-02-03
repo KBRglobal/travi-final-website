@@ -117,20 +117,20 @@ export default function OctypoAIAgentsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-4">
-              <p className="text-xs text-muted-foreground">Total Attractions</p>
-              <p className="text-2xl font-bold">{statsData.totalAttractions}</p>
+              <p className="text-xs text-muted-foreground">Writers</p>
+              <p className="text-2xl font-bold">{statsData.writerAgentCount}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-4">
+              <p className="text-xs text-muted-foreground">Validators</p>
+              <p className="text-2xl font-bold">{statsData.validatorAgentCount}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-4">
               <p className="text-xs text-muted-foreground">Generated Content</p>
               <p className="text-2xl font-bold">{statsData.generatedContent}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-4">
-              <p className="text-xs text-muted-foreground">Pending</p>
-              <p className="text-2xl font-bold">{statsData.pendingContent}</p>
             </CardContent>
           </Card>
           <Card>
