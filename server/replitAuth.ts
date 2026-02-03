@@ -42,7 +42,9 @@ const getOidcConfig = memoize(
 );
 
 export function getSession() {
-  const sessionTtl = 24 * 60 * 60 * 1000; // 24 hours (reduced from 7 days for security)
+  // SECURITY: Session TTL - balance between security and usability
+  // 8 hours for a typical work day; session is refreshed on each request via resave:true
+  const sessionTtl = 8 * 60 * 60 * 1000; // 8 hours (reduced from 24 hours for better security)
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,

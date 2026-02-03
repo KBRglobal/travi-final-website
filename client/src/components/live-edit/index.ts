@@ -25,16 +25,6 @@ export { RecoveryDialog } from "./dialogs/RecoveryDialog";
 // Editors
 export { InlineTextEditor } from "./editors/InlineTextEditor";
 
-// Component Registry
-export {
-  componentRegistry,
-  getComponentConfig,
-  getComponentsByCategory,
-  getAllComponents,
-  getComponentCategories,
-  getCategoryLabel,
-} from "@/lib/live-edit/componentRegistry";
-
 // Store and Hooks
 export {
   useLiveEditStore,
@@ -62,5 +52,3 @@ export type {
   EditableField,
   ComponentCategory,
 } from "@/types/liveEdit";
-
-export type { EditableComponentConfig } from "@/lib/live-edit/componentRegistry";

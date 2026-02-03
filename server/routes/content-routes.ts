@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
 import { z } from "zod";
 import { db } from "../db";
+import { log } from "../lib/logger";
 import { eq, and, desc, notIlike } from "drizzle-orm";
 import {
   insertContentSchema,
@@ -703,8 +704,8 @@ export function registerContentRoutes(app: Express): void {
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
       res.json(renderSafeConfig);
     } catch (error) {
-      console.error("[homepage-config] Error:", error);
-      
+      log.error("[homepage-config] Error:", error);
+
       const fallbackConfig = {
         locale: "en",
         sections: {},

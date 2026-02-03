@@ -13,6 +13,7 @@ import type { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
 import { getUserId, isAuthenticatedUser } from "../security";
+import { log, logSecurityEvent } from "../lib/logger";
 
 type PermissionKey = keyof typeof ROLE_PERMISSIONS.admin;
 
@@ -30,10 +31,65 @@ interface AuthorizationFailure {
   method: string;
 }
 
+// Track failed authorization attempts per IP for rate limiting
+const failedAuthAttempts = new Map<string, { count: number; firstAttempt: number }>();
+const FAILURE_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_FAILURES_PER_WINDOW = 10;
+
 /**
  * Log authorization failure for security audit
+ * SECURITY: Logs all authorization failures and tracks repeated attempts
  */
-function logAuthorizationFailure(failure: AuthorizationFailure): void {}
+function logAuthorizationFailure(failure: AuthorizationFailure): void {
+  // Log to console in development, structured for production logging
+  const logEntry = {
+    timestamp: failure.timestamp,
+    type: "AUTHORIZATION_FAILURE",
+    subtype: failure.type,
+    userId: failure.userId || "anonymous",
+    userRole: failure.userRole || "none",
+    resourceType: failure.resourceType,
+    resourceId: failure.resourceId,
+    requiredPermission: failure.requiredPermission,
+    ip: failure.ip,
+    path: failure.path,
+    method: failure.method,
+  };
+
+  // Always log authorization failures - critical for security monitoring
+  log.warn("[SECURITY:IDOR]", logEntry);
+
+  // Track repeated failures from same IP
+  const now = Date.now();
+  const ipRecord = failedAuthAttempts.get(failure.ip);
+
+  if (ipRecord) {
+    // Reset if window expired
+    if (now - ipRecord.firstAttempt > FAILURE_WINDOW_MS) {
+      failedAuthAttempts.set(failure.ip, { count: 1, firstAttempt: now });
+    } else {
+      ipRecord.count++;
+      if (ipRecord.count >= MAX_FAILURES_PER_WINDOW) {
+        log.error(
+          `[SECURITY:IDOR] ALERT: IP ${failure.ip} has ${ipRecord.count} authorization failures - possible attack`,
+          undefined,
+          { ip: failure.ip, count: ipRecord.count, windowMinutes: FAILURE_WINDOW_MS / 60000 }
+        );
+      }
+    }
+  } else {
+    failedAuthAttempts.set(failure.ip, { count: 1, firstAttempt: now });
+  }
+
+  // Clean up old entries periodically (every 100 failures)
+  if (failedAuthAttempts.size > 100) {
+    for (const [ip, record] of failedAuthAttempts.entries()) {
+      if (now - record.firstAttempt > FAILURE_WINDOW_MS) {
+        failedAuthAttempts.delete(ip);
+      }
+    }
+  }
+}
 
 /**
  * Check if a role has a specific permission

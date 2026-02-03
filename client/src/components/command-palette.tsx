@@ -37,6 +37,7 @@ import type { ContentWithRelations } from "@shared/schema";
 interface CommandPaletteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onShortcutsOpen?: () => void;
 }
 
 // Quick actions configuration

@@ -13,12 +13,15 @@ import {
   insertSocialCampaignSchema,
   insertSocialPostSchema,
   insertSocialAnalyticsSchema,
+  contents,
   type SocialPost,
   type SocialCampaign,
 } from "@shared/schema";
 import { requireAuth, requirePermission } from "./security";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import { z } from "zod";
+import { getAllUnifiedProviders } from "./ai/providers";
+import { log } from "./lib/logger";
 
 export function registerSocialRoutes(app: Express) {
   // ============================================================================
@@ -279,16 +282,86 @@ export function registerSocialRoutes(app: Express) {
     requirePermission("canEdit"),
     async (req: Request, res: Response) => {
       try {
-        const { contentId, platform, tone, includeHashtags } = req.body;
+        const { contentId, platform, tone = "professional", includeHashtags = true } = req.body;
 
-        // TODO: Integrate with existing AI system to generate post
-        // For now, return a placeholder
-        res.json({
-          text: `Generated ${platform} post for content ${contentId}`,
-          hashtags: includeHashtags ? ["#Dubai", "#Travel"] : [],
-          generatedByAi: true,
+        // Validate platform
+        const validPlatforms = ["linkedin", "twitter", "facebook", "instagram"];
+        if (!validPlatforms.includes(platform)) {
+          return res
+            .status(400)
+            .json({ error: `Invalid platform. Must be one of: ${validPlatforms.join(", ")}` });
+        }
+
+        // Get content from database
+        const [content] = await db
+          .select()
+          .from(contents)
+          .where(eq(contents.id, contentId))
+          .limit(1);
+
+        if (!content) {
+          return res.status(404).json({ error: "Content not found" });
+        }
+
+        // Get an AI provider
+        const providers = getAllUnifiedProviders();
+        if (providers.length === 0) {
+          // Fallback to basic generation if no AI provider
+          return res.json({
+            text: content.metaDescription || `Check out: ${content.title}`,
+            hashtags: includeHashtags ? ["#Travel", "#Dubai", "#Explore"] : [],
+            generatedByAi: false,
+          });
+        }
+
+        const provider = providers[0];
+
+        // Platform-specific constraints
+        const platformConfig: Record<string, { maxLength: number; hashtagStyle: string }> = {
+          twitter: { maxLength: 280, hashtagStyle: "inline" },
+          linkedin: { maxLength: 3000, hashtagStyle: "end" },
+          facebook: { maxLength: 500, hashtagStyle: "end" },
+          instagram: { maxLength: 2200, hashtagStyle: "end" },
+        };
+
+        const config = platformConfig[platform];
+
+        // Generate with AI
+        const result = await provider.generateCompletion({
+          messages: [
+            {
+              role: "system",
+              content: `You are a social media marketing expert. Generate a ${platform} post with a ${tone} tone. Max length: ${config.maxLength} characters. Return JSON: {"text": "post text", "hashtags": ["tag1", "tag2"]}`,
+            },
+            {
+              role: "user",
+              content: `Create a ${platform} post for this travel content:\nTitle: ${content.title}\nDescription: ${content.metaDescription || ""}\n${includeHashtags ? "Include 3-5 relevant hashtags" : "No hashtags needed"}`,
+            },
+          ],
+          temperature: 0.7,
+          maxTokens: 500,
+          responseFormat: { type: "json_object" },
         });
+
+        try {
+          const parsed = JSON.parse(result.content);
+          res.json({
+            text: parsed.text || content.title,
+            hashtags: includeHashtags ? parsed.hashtags || [] : [],
+            generatedByAi: true,
+            provider: result.provider,
+          });
+        } catch {
+          // If JSON parsing fails, use the raw text
+          res.json({
+            text: result.content.slice(0, config.maxLength),
+            hashtags: includeHashtags ? ["#Travel", "#Explore"] : [],
+            generatedByAi: true,
+            provider: result.provider,
+          });
+        }
       } catch (error) {
+        log.error("[Social] Failed to generate post:", error);
         res.status(500).json({ error: "Failed to generate post" });
       }
     }

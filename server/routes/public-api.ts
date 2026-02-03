@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { Router } from "express";
 import { db } from "../db";
 import { storage } from "../storage";
+import { log } from "../lib/logger";
 import { eq, and, desc, sql, ilike, or, not, notIlike } from "drizzle-orm";
 import {
   destinations,
@@ -691,8 +692,8 @@ export function registerPublicApiRoutes(app: Express): void {
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
       res.json(renderSafeConfig);
     } catch (error) {
-      console.error("[homepage-config] Error:", error);
-      
+      log.error("[homepage-config] Error:", error);
+
       const fallbackConfig = {
         locale: "en",
         sections: {},
@@ -1279,7 +1280,7 @@ export function registerPublicApiRoutes(app: Express): void {
         publishedContent: publishedContentCount?.count || 0,
       });
     } catch (error) {
-      console.error("[stats] Error:", error);
+      log.error("[stats] Error:", error);
       res.json({
         destinations: 0,
         attractions: 0,

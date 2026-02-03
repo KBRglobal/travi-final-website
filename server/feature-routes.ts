@@ -6,6 +6,7 @@
  */
 
 import type { Express } from "express";
+import { log } from "./lib/logger";
 
 // Feature route registrations - only include routes that exist
 import { registerLinkManagementRoutes } from "./routes/link-management-routes";
@@ -30,7 +31,7 @@ export function registerFeatureRoutes(app: Express): void {
     registeredCount++;
   }
 
-  console.log(`[FeatureRoutes] Registered ${registeredCount} feature routes`);
+  log.info(`[FeatureRoutes] Registered ${registeredCount} feature routes`);
 }
 
 /**

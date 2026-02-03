@@ -6,40 +6,31 @@
  * Feature flag: ENABLE_RELEASE_GUARDS
  */
 
-import { log } from '../../lib/logger';
+import { log } from "../../lib/logger";
 import type {
   GuardSeverity,
   GuardCategory,
   GuardCheckResult,
   ReleaseGuardConfig,
   SafetyReport,
-} from './types';
+} from "./types";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[ReleaseGuard] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[ReleaseGuard] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[ReleaseGuard] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[ReleaseGuard] ${msg}`, data),
   error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[ReleaseGuard] ${msg}`, undefined, data),
 };
 
 const DEFAULT_CONFIG: ReleaseGuardConfig = {
-  requiredEnvVars: [
-    'DATABASE_URL',
-    'NODE_ENV',
-  ],
+  requiredEnvVars: ["DATABASE_URL", "NODE_ENV"],
   incompatibleFlags: [
     {
-      flags: ['ENABLE_COST_GUARDS', 'DISABLE_ALL_LIMITS'],
-      reason: 'Cost guards and disable limits cannot both be active',
+      flags: ["ENABLE_COST_GUARDS", "DISABLE_ALL_LIMITS"],
+      reason: "Cost guards and disable limits cannot both be active",
     },
   ],
-  requiredTables: [
-    'users',
-    'destinations',
-    'media',
-  ],
+  requiredTables: ["users", "destinations", "media"],
   warnOnDisabledKillSwitches: true,
   customValidators: [],
 };
@@ -51,7 +42,7 @@ class ReleaseGuard {
 
   constructor(config?: Partial<ReleaseGuardConfig>) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    this.enabled = process.env.ENABLE_RELEASE_GUARDS === 'true';
+    this.enabled = process.env.ENABLE_RELEASE_GUARDS === "true";
   }
 
   /**
@@ -66,9 +57,9 @@ class ReleaseGuard {
     for (const envVar of this.config.requiredEnvVars) {
       const result = this.checkEnvVar(envVar);
       checks.push(result);
-      if (result.severity === 'block') {
+      if (result.severity === "block") {
         blockingIssues.push(result.message);
-      } else if (result.severity === 'warn') {
+      } else if (result.severity === "warn") {
         warnings.push(result.message);
       }
     }
@@ -77,7 +68,7 @@ class ReleaseGuard {
     for (const combo of this.config.incompatibleFlags) {
       const result = this.checkFlagCombo(combo.flags, combo.reason);
       checks.push(result);
-      if (result.severity === 'block') {
+      if (result.severity === "block") {
         blockingIssues.push(result.message);
       }
     }
@@ -86,18 +77,18 @@ class ReleaseGuard {
     for (const table of this.config.requiredTables) {
       const result = await this.checkDatabaseTable(table);
       checks.push(result);
-      if (result.severity === 'block') {
+      if (result.severity === "block") {
         blockingIssues.push(result.message);
-      } else if (result.severity === 'warn') {
+      } else if (result.severity === "warn") {
         warnings.push(result.message);
       }
     }
 
     // Check kill switches in production
-    if (this.config.warnOnDisabledKillSwitches && process.env.NODE_ENV === 'production') {
+    if (this.config.warnOnDisabledKillSwitches && process.env.NODE_ENV === "production") {
       const result = await this.checkKillSwitches();
       checks.push(result);
-      if (result.severity === 'warn') {
+      if (result.severity === "warn") {
         warnings.push(result.message);
       }
     }
@@ -107,30 +98,30 @@ class ReleaseGuard {
       try {
         const result = await validator.validate();
         checks.push(result);
-        if (result.severity === 'block') {
+        if (result.severity === "block") {
           blockingIssues.push(result.message);
-        } else if (result.severity === 'warn') {
+        } else if (result.severity === "warn") {
           warnings.push(result.message);
         }
       } catch (err) {
         checks.push({
           name: validator.name,
-          category: 'dependency',
-          severity: 'warn',
-          message: `Validator ${validator.name} failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
+          category: "dependency",
+          severity: "warn",
+          message: `Validator ${validator.name} failed: ${err instanceof Error ? err.message : "Unknown error"}`,
           failedAt: new Date(),
         });
       }
     }
 
     // Determine overall severity
-    let overallSeverity: GuardSeverity = 'ok';
-    if (warnings.length > 0) overallSeverity = 'warn';
-    if (blockingIssues.length > 0) overallSeverity = 'block';
+    let overallSeverity: GuardSeverity = "ok";
+    if (warnings.length > 0) overallSeverity = "warn";
+    if (blockingIssues.length > 0) overallSeverity = "block";
 
     const report: SafetyReport = {
       timestamp: new Date(),
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env.NODE_ENV || "development",
       overallSeverity,
       canProceed: blockingIssues.length === 0,
       checks,
@@ -141,16 +132,16 @@ class ReleaseGuard {
     this.lastReport = report;
 
     if (blockingIssues.length > 0) {
-      logger.error('Release safety checks FAILED', {
+      logger.error("Release safety checks FAILED", {
         blockingIssues,
         warningCount: warnings.length,
       });
     } else if (warnings.length > 0) {
-      logger.warn('Release safety checks passed with warnings', {
+      logger.warn("Release safety checks passed with warnings", {
         warnings,
       });
     } else {
-      logger.info('All release safety checks passed');
+      logger.info("All release safety checks passed");
     }
 
     return report;
@@ -161,12 +152,12 @@ class ReleaseGuard {
    */
   private checkEnvVar(name: string): GuardCheckResult {
     const value = process.env[name];
-    const isSet = value !== undefined && value !== '';
+    const isSet = value !== undefined && value !== "";
 
     return {
       name: `env:${name}`,
-      category: 'env_var',
-      severity: isSet ? 'ok' : 'block',
+      category: "env_var",
+      severity: isSet ? "ok" : "block",
       message: isSet
         ? `Environment variable ${name} is set`
         : `Missing required environment variable: ${name}`,
@@ -180,15 +171,15 @@ class ReleaseGuard {
    * Check for incompatible flag combinations
    */
   private checkFlagCombo(flags: string[], reason: string): GuardCheckResult {
-    const activeFlags = flags.filter(f => process.env[f] === 'true');
+    const activeFlags = flags.filter(f => process.env[f] === "true");
     const allActive = activeFlags.length === flags.length;
 
     return {
-      name: `flags:${flags.join('+')}`,
-      category: 'feature_flag',
-      severity: allActive ? 'block' : 'ok',
+      name: `flags:${flags.join("+")}`,
+      category: "feature_flag",
+      severity: allActive ? "block" : "ok",
       message: allActive
-        ? `Incompatible flags active: ${flags.join(', ')} - ${reason}`
+        ? `Incompatible flags active: ${flags.join(", ")} - ${reason}`
         : `Flag combination check passed`,
       details: { flags, activeFlags, reason },
       passedAt: allActive ? undefined : new Date(),
@@ -198,34 +189,71 @@ class ReleaseGuard {
 
   /**
    * Check if a database table exists
+   * SECURITY: Uses whitelist validation to prevent SQL injection
    */
   private async checkDatabaseTable(table: string): Promise<GuardCheckResult> {
-    try {
-      const { pool } = await import('../../db');
+    // SECURITY: Whitelist of allowed table names to prevent SQL injection
+    const ALLOWED_TABLES = new Set([
+      "users",
+      "destinations",
+      "media",
+      "contents",
+      "articles",
+      "attractions",
+      "hotels",
+      "events",
+      "itineraries",
+      "media_files",
+      "rss_feeds",
+      "affiliate_links",
+      "tags",
+      "translations",
+      "newsletter_subscribers",
+      "newsletter_campaigns",
+      "audit_logs",
+      "sessions",
+      "homepage_sections",
+      "homepage_cards",
+      "content_versions",
+    ]);
 
+    // SECURITY: Reject any table name not in whitelist
+    if (!ALLOWED_TABLES.has(table.toLowerCase())) {
+      return {
+        name: `table:${table}`,
+        category: "database",
+        severity: "warn",
+        message: `Table ${table} not in allowed list - skipping check for security`,
+        details: { table, reason: "not_whitelisted" },
+        failedAt: new Date(),
+      };
+    }
+
+    try {
+      const { pool } = await import("../../db");
+
+      // SECURITY: Table name is validated against whitelist above
       const result = await Promise.race([
-        pool.query(`SELECT 1 FROM ${table} LIMIT 1`),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), 5000)
-        ),
+        pool.query(`SELECT 1 FROM "${table}" LIMIT 1`),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000)),
       ]);
 
       return {
         name: `table:${table}`,
-        category: 'database',
-        severity: 'ok',
+        category: "database",
+        severity: "ok",
         message: `Database table ${table} exists`,
         details: { table },
         passedAt: new Date(),
       };
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
-      const isTimeout = message.includes('Timeout');
+      const message = err instanceof Error ? err.message : "Unknown error";
+      const isTimeout = message.includes("Timeout");
 
       return {
         name: `table:${table}`,
-        category: 'database',
-        severity: isTimeout ? 'warn' : 'block',
+        category: "database",
+        severity: isTimeout ? "warn" : "block",
         message: isTimeout
           ? `Database check timed out for ${table}`
           : `Database table ${table} missing or inaccessible: ${message}`,
@@ -239,15 +267,15 @@ class ReleaseGuard {
    * Check if kill switches are properly configured in production
    */
   private async checkKillSwitches(): Promise<GuardCheckResult> {
-    const killSwitchEnabled = process.env.ENABLE_KILL_SWITCHES === 'true';
+    const killSwitchEnabled = process.env.ENABLE_KILL_SWITCHES === "true";
 
     return {
-      name: 'kill_switches:enabled',
-      category: 'kill_switch',
-      severity: killSwitchEnabled ? 'ok' : 'warn',
+      name: "kill_switches:enabled",
+      category: "kill_switch",
+      severity: killSwitchEnabled ? "ok" : "warn",
       message: killSwitchEnabled
-        ? 'Kill switches are enabled in production'
-        : 'Kill switches are disabled in production - recommend enabling for safety',
+        ? "Kill switches are enabled in production"
+        : "Kill switches are disabled in production - recommend enabling for safety",
       details: { killSwitchEnabled },
       passedAt: killSwitchEnabled ? new Date() : undefined,
       failedAt: killSwitchEnabled ? undefined : new Date(),
@@ -259,22 +287,20 @@ class ReleaseGuard {
    */
   async validateStartup(): Promise<boolean> {
     if (!this.enabled) {
-      logger.info('Release guards disabled, skipping validation');
+      logger.info("Release guards disabled, skipping validation");
       return true;
     }
 
     const report = await this.runChecks();
 
     if (!report.canProceed) {
-      logger.error('BLOCKING STARTUP: Release safety checks failed', {
+      logger.error("BLOCKING STARTUP: Release safety checks failed", {
         blockingIssues: report.blockingIssues,
       });
 
       // In production, could throw to halt startup
-      if (process.env.NODE_ENV === 'production') {
-        throw new Error(
-          `Release safety check failed: ${report.blockingIssues.join('; ')}`
-        );
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(`Release safety check failed: ${report.blockingIssues.join("; ")}`);
       }
     }
 

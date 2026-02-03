@@ -184,9 +184,6 @@ import {
 } from "./enterprise-security";
 import { registerEnterpriseRoutes } from "./enterprise-routes";
 import { registerSiteConfigRoutes } from "./site-config-routes";
-// Webhook routes disabled - module deleted
-// import { registerReliableWebhookAdminRoutes } from "./webhooks/reliable/admin-routes";
-// import { startWebhookWorker } from "./webhooks/reliable/worker";
 import { registerFeatureRoutes } from "./feature-routes";
 import { enterprise } from "./enterprise";
 import { registerImageRoutes } from "./routes/image-routes";
@@ -281,8 +278,6 @@ import { registerLifecycleRoutes } from "./content-lifecycle";
 import { registerChangeManagementRoutes } from "./change-management";
 // Search Admin Debug Mode
 import { registerSearchDebugRoutes } from "./search/search-debug-routes";
-// Writer routes disabled - module deleted
-// import { registerWriterRoutes } from "./ai/writers/routes";
 import { registerPageBuilderRoutes } from "./page-builder-routes";
 import { registerSocialRoutes } from "./social-routes";
 import { registerReferralRoutes } from "./routes/referral-routes";

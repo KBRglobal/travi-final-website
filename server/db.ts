@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "@shared/schema";
+import { log } from "./lib/logger";
 
 const { Pool } = pg;
 
@@ -15,7 +16,7 @@ if (!databaseUrl) {
 
 // Log which database is being used (without exposing credentials)
 const dbSource = process.env.DATABASE_URL ? "Replit" : "Railway";
-console.log(`[DB] Using ${dbSource} PostgreSQL database`);
+log.info(`[DB] Using ${dbSource} PostgreSQL database`);
 
 // Connection pool configuration - optimized for production workloads
 // Railway PostgreSQL supports up to 97 connections (100 - 3 reserved)
@@ -32,7 +33,7 @@ export const pool = new Pool({
 
 // Handle pool errors gracefully - log but don't crash
 pool.on("error", (err: Error) => {
-  console.error("[DB Pool Error]", err.message || err);
+  log.error("[DB Pool Error]", err);
   // Don't exit - pool can recover from transient errors
 });
 

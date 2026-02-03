@@ -267,10 +267,6 @@ export const OverrideRegistry = {
       return { valid: false, error: "Override not found" };
     }
 
-    if (!override.active) {
-      return { valid: false, error: "Override is not active" };
-    }
-
     if (override.expiresAt <= new Date()) {
       override.active = false;
       return { valid: false, error: "Override has expired" };
@@ -279,6 +275,10 @@ export const OverrideRegistry = {
     if (override.maxUses && override.usedCount >= override.maxUses) {
       override.active = false;
       return { valid: false, error: "Override has reached max uses" };
+    }
+
+    if (!override.active) {
+      return { valid: false, error: "Override is not active" };
     }
 
     // Increment usage

@@ -9,6 +9,35 @@ import {
   attractionsByDestination,
 } from "../data/attractions-data";
 
+/**
+ * Get country from city name by looking up in tiqetsDestinations
+ */
+function getCountryFromCity(cityName: string): string {
+  const citySlug = cityName.toLowerCase().replace(/\s+/g, "-");
+  const destInfo = tiqetsDestinations[citySlug];
+  if (destInfo) {
+    return destInfo.country;
+  }
+  // Fallback mapping for common cities
+  const cityCountryMap: Record<string, string> = {
+    dubai: "United Arab Emirates",
+    "abu dhabi": "United Arab Emirates",
+    sharjah: "United Arab Emirates",
+    ajman: "United Arab Emirates",
+    "ras al khaimah": "United Arab Emirates",
+    london: "United Kingdom",
+    paris: "France",
+    "new york": "United States",
+    tokyo: "Japan",
+    singapore: "Singapore",
+    bangkok: "Thailand",
+    barcelona: "Spain",
+    rome: "Italy",
+    amsterdam: "Netherlands",
+  };
+  return cityCountryMap[cityName.toLowerCase()] || "Unknown";
+}
+
 export function registerAttractionsRoutes(app: Express): void {
   // Get list of attractions for a destination
   app.get("/api/attractions/search", async (req: Request, res: Response) => {
@@ -113,21 +142,24 @@ export function registerAttractionsRoutes(app: Express): void {
           ...attr,
           name: attr.title,
           destination: attr.cityName,
-          country: "UAE", // TODO: get from city mapping
+          country: getCountryFromCity(attr.cityName || ""),
           relatedAttractions: relatedAttractions.map(r => ({
             id: r.id,
             name: r.title,
+            // Using tiqetsImages array - schema stores images as JSON array
             image:
               (r.tiqetsImages as Array<{ small?: string; medium?: string; large?: string }>)?.[0]
-                ?.medium || "", // TODO: Column not in schema - imageUrl
+                ?.medium || "",
             category: r.primaryCategory || "Attraction",
-            price: Number(r.priceUsd) || 0, // TODO: Column not in schema - priceFrom (using priceUsd instead)
-            currency: "USD", // TODO: Column not in schema - currency (hardcoded USD)
+            // Using priceUsd - attractions are priced in USD from Tiqets API
+            price: Number(r.priceUsd) || 0,
+            currency: "USD",
             href: `/${citySlug}/attractions/${r.seoSlug || r.slug}`,
             affiliateLink: TIQETS_AFFILIATE_LINK,
           })),
         },
-        affiliateLink: TIQETS_AFFILIATE_LINK, // TODO: Column not in schema - bookingUrl
+        // Tiqets affiliate link for all booking CTAs
+        affiliateLink: TIQETS_AFFILIATE_LINK,
         aiGenerated: !!attr.aiContent,
         ...(shouldRedirect ? { redirect: `/${citySlug}/attractions/${canonicalSlug}` } : {}),
       });

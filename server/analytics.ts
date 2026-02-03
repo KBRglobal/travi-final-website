@@ -1,7 +1,15 @@
-// Analytics module - stub file (original was deleted)
-// This provides no-op implementations to satisfy imports
+/**
+ * Analytics Module - Re-exports from analytics/index.ts
+ * Provides unified analytics tracking for the application
+ */
 
-export function recordLoopEntry(..._args: any[]) {}
-export function recordLoopStep(..._args: any[]) {}
+export {
+  recordLoopEntry,
+  recordLoopStep,
+  trackEvent,
+  trackPageView,
+  type LoopEntry,
+  type LoopStep,
+} from "./analytics/index";
 
 export default {};

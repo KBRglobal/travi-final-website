@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { Router } from "express";
 import { db } from "../db";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, desc, sql } from "drizzle-orm";
 import {
   homepageSections,
   homepageCards,
@@ -15,6 +15,8 @@ import {
   destinationsIndexConfig,
   SUPPORTED_LOCALES,
   DestinationsIndexHeroSlide,
+  auditLogs,
+  contents,
 } from "@shared/schema";
 import { requirePermission, checkReadOnlyMode } from "../security";
 import {
@@ -1421,12 +1423,43 @@ export function registerAdminApiRoutes(app: Express): void {
   router.get(
     "/activity-feed",
     requirePermission("canManageSettings"),
-    async (_req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       try {
-        // Return empty array - activity tracking to be implemented
-        // In production, this would query an activity_logs table
-        const activities: any[] = [];
-        res.json(activities);
+        const limit = parseInt(req.query.limit as string, 10) || 50;
+
+        // Query real audit logs from the database
+        const activities = await db
+          .select({
+            id: auditLogs.id,
+            timestamp: auditLogs.timestamp,
+            userId: auditLogs.userId,
+            userName: auditLogs.userName,
+            userRole: auditLogs.userRole,
+            actionType: auditLogs.actionType,
+            entityType: auditLogs.entityType,
+            entityId: auditLogs.entityId,
+            description: auditLogs.description,
+          })
+          .from(auditLogs)
+          .orderBy(desc(auditLogs.timestamp))
+          .limit(limit);
+
+        // Transform to user-friendly format
+        const formattedActivities = activities.map(activity => ({
+          id: activity.id,
+          timestamp: activity.timestamp,
+          user: {
+            id: activity.userId,
+            name: activity.userName || "System",
+            role: activity.userRole || "system",
+          },
+          action: activity.actionType,
+          entityType: activity.entityType,
+          entityId: activity.entityId,
+          description: activity.description,
+        }));
+
+        res.json(formattedActivities);
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch activity feed" });
       }
@@ -1438,8 +1471,76 @@ export function registerAdminApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (_req: Request, res: Response) => {
       try {
-        // Return system notifications
-        const notifications: any[] = [];
+        const notifications: Array<{
+          id: string;
+          type: "info" | "warning" | "error" | "success";
+          title: string;
+          message: string;
+          timestamp: Date;
+          actionUrl?: string;
+        }> = [];
+
+        // Check for content pending review
+        const [pendingReview] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(contents)
+          .where(eq(contents.status, "in_review"));
+
+        if (pendingReview && pendingReview.count > 0) {
+          notifications.push({
+            id: "pending-review",
+            type: "warning",
+            title: "Content Pending Review",
+            message: `${pendingReview.count} article(s) waiting for review`,
+            timestamp: new Date(),
+            actionUrl: "/admin/content?status=pending_review",
+          });
+        }
+
+        // Check for draft content older than 7 days
+        const [staleDrafts] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(contents)
+          .where(
+            and(
+              eq(contents.status, "draft"),
+              sql`${contents.createdAt} < NOW() - INTERVAL '7 days'`
+            )
+          );
+
+        if (staleDrafts && staleDrafts.count > 0) {
+          notifications.push({
+            id: "stale-drafts",
+            type: "info",
+            title: "Stale Drafts",
+            message: `${staleDrafts.count} draft(s) haven't been updated in over a week`,
+            timestamp: new Date(),
+            actionUrl: "/admin/content?status=draft",
+          });
+        }
+
+        // Check for recent errors in audit logs (last 24 hours)
+        const [recentErrors] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(auditLogs)
+          .where(
+            and(
+              eq(auditLogs.actionType, "delete"),
+              sql`${auditLogs.timestamp} > NOW() - INTERVAL '24 hours'`
+            )
+          );
+
+        if (recentErrors && recentErrors.count > 5) {
+          notifications.push({
+            id: "high-deletion-activity",
+            type: "warning",
+            title: "High Deletion Activity",
+            message: `${recentErrors.count} deletions in the last 24 hours`,
+            timestamp: new Date(),
+            actionUrl: "/admin/audit-logs",
+          });
+        }
+
         res.json(notifications);
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch notifications" });

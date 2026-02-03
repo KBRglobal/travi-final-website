@@ -13,6 +13,7 @@ import {
 import { getStorageManager } from "../services/storage-adapter";
 import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
 import { requireAuth } from "../security";
+import { log } from "../lib/logger";
 
 const router = Router();
 
@@ -128,7 +129,7 @@ router.post(
         metadata: result.metadata,
       });
     } catch (error) {
-      console.error("[MediaIntelligence] Process error:", error);
+      log.error("[MediaIntelligence] Process error:", error);
       res.status(500).json({
         error: "Image processing failed",
         message: error instanceof Error ? error.message : "Unknown error",
@@ -168,7 +169,7 @@ router.post(
         analysis,
       });
     } catch (error) {
-      console.error("[MediaIntelligence] Analyze error:", error);
+      log.error("[MediaIntelligence] Analyze error:", error);
       res.status(500).json({
         error: "Image analysis failed",
         message: error instanceof Error ? error.message : "Unknown error",
@@ -222,7 +223,7 @@ router.post("/generate-alt", requireAuth, async (req: Request, res: Response) =>
       altTexts,
     });
   } catch (error) {
-    console.error("[MediaIntelligence] Generate alt error:", error);
+    log.error("[MediaIntelligence] Generate alt error:", error);
     res.status(500).json({
       error: "Alt text generation failed",
       message: error instanceof Error ? error.message : "Unknown error",
@@ -264,7 +265,7 @@ router.post(
 
       res.send(buffer);
     } catch (error) {
-      console.error("[MediaIntelligence] Compress error:", error);
+      log.error("[MediaIntelligence] Compress error:", error);
       res.status(500).json({
         error: "Image compression failed",
         message: error instanceof Error ? error.message : "Unknown error",
@@ -372,7 +373,7 @@ router.post(
         results: uploadResults,
       });
     } catch (error) {
-      console.error("[MediaIntelligence] Batch error:", error);
+      log.error("[MediaIntelligence] Batch error:", error);
       res.status(500).json({
         error: "Batch processing failed",
         message: error instanceof Error ? error.message : "Unknown error",

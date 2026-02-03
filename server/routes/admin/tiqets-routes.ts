@@ -153,45 +153,6 @@ export function registerAdminTiqetsRoutes(app: Express): void {
     }
   });
 
-  // POST /api/admin/tiqets/attractions/bulk-publish - Bulk publish all imported attractions
-  app.post("/api/admin/tiqets/attractions/bulk-publish", requireAuth, async (req, res) => {
-    try {
-      const { fromStatus = "imported", toStatus = "published" } = req.body;
-      
-      // Count before update
-      const [beforeCount] = await db
-        .select({ count: sql<number>`count(*)::int` })
-        .from(tiqetsAttractions)
-        .where(eq(tiqetsAttractions.status, fromStatus));
-      
-      // Bulk update
-      const result = await db
-        .update(tiqetsAttractions)
-        .set({ 
-          status: toStatus,
-          updatedAt: new Date()
-        })
-        .where(eq(tiqetsAttractions.status, fromStatus));
-      
-      // Count after update
-      const [afterCount] = await db
-        .select({ count: sql<number>`count(*)::int` })
-        .from(tiqetsAttractions)
-        .where(eq(tiqetsAttractions.status, toStatus));
-      
-      res.json({
-        success: true,
-        updated: beforeCount?.count || 0,
-        fromStatus,
-        toStatus,
-        newTotal: afterCount?.count || 0
-      });
-    } catch (error) {
-      console.error("[bulk-publish] Error:", error);
-      res.status(500).json({ error: "Failed to bulk publish attractions" });
-    }
-  });
-
   // GET /api/admin/tiqets/attractions/by-city/:cityName - Get attractions for a specific city
   app.get("/api/admin/tiqets/attractions/by-city/:cityName", requireAuth, async (req, res) => {
     try {
@@ -923,7 +884,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       try {
         const { getOctypoOrchestrator } = await import("../../octypo");
         // AttractionData type is internal to octypo, not exported - use inline type
-        const { pool } = await import("./db");
+        const { pool } = await import("../../db");
 
         // STRICT: Quality threshold is 90 - NO EXCEPTIONS
         const orchestrator = getOctypoOrchestrator({ maxRetries: 3, qualityThreshold: 90 });

@@ -18,6 +18,8 @@ export interface AuthenticatedUser {
   claims: AuthUserClaims;
 }
 
+export type AuthRequest = Request & { user?: AuthenticatedUser };
+
 /**
  * Type guard to check if req.user is an authenticated user
  */
@@ -379,8 +381,18 @@ export async function checkAiUsageLimit(req: Request, res: Response, next: NextF
 let devAutoAuthUser: any = null;
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
-  // DEV ONLY: Auto-authenticate as admin when DEV_AUTO_AUTH=true
-  if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
+  // SECURITY: DEV ONLY - Auto-authenticate as admin when DEV_AUTO_AUTH=true
+  // Only enabled when NODE_ENV is explicitly "development" or "test" (not undefined or any other value)
+  const isDevEnvironment =
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
+  if (isDevEnvironment && process.env.DEV_AUTO_AUTH === "true") {
+    // Log warning once to make dev mode obvious
+    if (!process.env._DEV_AUTH_WARNED) {
+      console.warn(
+        "[SECURITY] DEV_AUTO_AUTH is enabled - all requests auto-authenticated as admin"
+      );
+      process.env._DEV_AUTH_WARNED = "true";
+    }
     // Use cached user or fallback to known admin
     const devAdminId = devAutoAuthUser?.id || "1c932a80-c8c1-4ca5-b4f3-de09914947ba";
     (req as any).user = { claims: { sub: devAdminId }, id: devAdminId };
@@ -398,8 +410,11 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 }
 
 // DEV: Initialize auto-auth user cache
+// SECURITY: Only runs when NODE_ENV is explicitly "development" or "test"
 export async function initDevAutoAuth(getAdminUser: () => Promise<any>) {
-  if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
+  const isDevEnvironment =
+    process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
+  if (isDevEnvironment && process.env.DEV_AUTO_AUTH === "true") {
     try {
       devAutoAuthUser = await getAdminUser();
     } catch (e) {}
@@ -431,8 +446,11 @@ function hasPermission(role: UserRole, permission: PermissionKey): boolean {
 
 export function requirePermission(permission: PermissionKey) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // DEV ONLY: Auto-authenticate as admin when DEV_AUTO_AUTH=true
-    if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
+    // SECURITY: DEV ONLY - Auto-authenticate as admin when DEV_AUTO_AUTH=true
+    // Only enabled when NODE_ENV is explicitly "development" or "test"
+    const isDevEnvironment =
+      process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
+    if (isDevEnvironment && process.env.DEV_AUTO_AUTH === "true") {
       const devAdminId = devAutoAuthUser?.id || "1c932a80-c8c1-4ca5-b4f3-de09914947ba";
       (req as any).user = { claims: { sub: devAdminId }, id: devAdminId };
       (req as any).dbUser = devAutoAuthUser || { id: devAdminId, role: "admin" };

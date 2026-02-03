@@ -19,8 +19,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useLiveEditStore } from "@/stores/liveEditStore";
-import { getComponentConfig } from "@/lib/live-edit/componentRegistry";
 import { cn } from "@/lib/utils";
+
+// Stub function - componentRegistry module was removed
+const getComponentConfig = (_type: string): { icon: string; displayName: string; defaultProps: Record<string, unknown> } | null => null;
 
 interface DragDropProviderProps {
   children: ReactNode;
