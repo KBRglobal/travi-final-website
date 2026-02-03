@@ -1,15 +1,22 @@
 import { useDraggable } from "@dnd-kit/core";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  getAllComponents,
-  getComponentCategories,
-  getCategoryLabel,
-  EditableComponentConfig,
-} from "@/lib/live-edit/componentRegistry";
 import { useLiveEditStore } from "@/stores/liveEditStore";
 import { useLocale } from "@/lib/i18n/LocaleRouter";
 import { cn } from "@/lib/utils";
+
+// Stub types and functions - componentRegistry module was removed
+interface EditableComponentConfig {
+  type: string;
+  displayName: string;
+  icon: string;
+  category: string;
+  defaultProps: Record<string, unknown>;
+}
+
+const getAllComponents = (): EditableComponentConfig[] => [];
+const getComponentCategories = (): string[] => [];
+const getCategoryLabel = (category: string): string => category;
 
 interface DraggableComponentProps {
   config: EditableComponentConfig;

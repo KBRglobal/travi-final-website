@@ -93,8 +93,9 @@ export const SecurityGate = {
     const startTime = Date.now();
     const auditId = uuidv4();
 
-    // Feature flag check - if disabled, allow everything (with warning)
-    if (!DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
+    // Feature flag check - check env var directly for runtime evaluation
+    const isEnabled = process.env.ENABLE_SECURITY_AUTHORITY === "true";
+    if (!isEnabled) {
       return createAllowDecision(auditId, "Security authority disabled");
     }
 
@@ -128,7 +129,8 @@ export const SecurityGate = {
    * Check if action would be allowed (dry run, no audit)
    */
   async wouldBeAllowed(request: GateRequest): Promise<boolean> {
-    if (!DEFAULT_SECURITY_AUTHORITY_CONFIG.enabled) {
+    const isEnabled = process.env.ENABLE_SECURITY_AUTHORITY === "true";
+    if (!isEnabled) {
       return true;
     }
 
@@ -312,6 +314,9 @@ async function evaluateRequest(request: GateRequest, auditId: string): Promise<G
   // 1. Check security mode restrictions
   const modeResult = evaluateSecurityMode(request);
   if (!modeResult.allowed) {
+    if (modeResult.requireApproval) {
+      return createApprovalRequiredDecision(auditId, modeResult.reason, modeResult.approverRole);
+    }
     return createDenyDecision(auditId, modeResult.reason, "mode", modeResult.severity);
   }
   if (modeResult.warning) {
@@ -370,6 +375,8 @@ function evaluateSecurityMode(request: GateRequest): {
   reason: string;
   warning?: string;
   severity?: SecuritySeverity;
+  requireApproval?: boolean;
+  approverRole?: string;
 } {
   const { restrictions } = currentSecurityMode;
 
@@ -385,9 +392,20 @@ function evaluateSecurityMode(request: GateRequest): {
   // Check destructive actions
   const destructiveActions: GatedAction[] = ["data_delete", "content_delete", "user_management"];
   if (destructiveActions.includes(request.action) && !restrictions.destructiveActionsAllowed) {
+    // In enforce mode, destructive actions require approval (not blocked entirely)
+    // In lockdown mode, they are fully blocked
+    if (currentSecurityMode.mode === "enforce") {
+      return {
+        allowed: false,
+        reason: `Destructive actions require approval in ${currentSecurityMode.mode} mode`,
+        severity: SecuritySeverity.HIGH,
+        requireApproval: true,
+        approverRole: "super_admin",
+      };
+    }
     return {
       allowed: false,
-      reason: `Destructive actions require approval in ${currentSecurityMode.mode} mode`,
+      reason: `Destructive actions blocked in ${currentSecurityMode.mode} mode`,
       severity: SecuritySeverity.HIGH,
     };
   }

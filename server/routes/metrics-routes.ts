@@ -4,6 +4,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import { log } from "../lib/logger";
 
 // In-memory metrics storage
 interface MetricValue {
@@ -238,7 +239,7 @@ export function registerMetricsRoutes(app: Express) {
     res.json(result);
   });
 
-  console.log("[Metrics] Prometheus metrics endpoint registered at /api/metrics");
+  log.info("[Metrics] Prometheus metrics endpoint registered at /api/metrics");
 }
 
 // Export for use in other modules

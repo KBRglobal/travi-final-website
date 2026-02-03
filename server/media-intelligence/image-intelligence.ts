@@ -12,6 +12,7 @@ import OpenAI from "openai";
 import sharp from "sharp";
 import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
 import { getAllUnifiedProviders, getValidOpenAIKey } from "../ai/providers";
+import { log } from "../lib/logger";
 import {
   processImage,
   generateThumbnail,
@@ -215,7 +216,7 @@ Provide analysis in JSON format with these fields:
     const analysis = JSON.parse(content) as ImageAnalysis;
     return analysis;
   } catch (error) {
-    console.error("[ImageIntelligence] AI analysis failed:", error);
+    log.error("[ImageIntelligence] AI analysis failed:", error);
     return analyzeImageBasic(imageBuffer, context);
   }
 }
@@ -335,7 +336,7 @@ export async function generateMultiLanguageAltText(
 
       results.push(...translations);
     } catch (error) {
-      console.error("[ImageIntelligence] Translation batch failed:", error);
+      log.error("[ImageIntelligence] Translation batch failed:", error);
       // Add fallback English for failed locales
       for (const locale of batch) {
         results.push({

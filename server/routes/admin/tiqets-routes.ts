@@ -884,7 +884,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       try {
         const { getOctypoOrchestrator } = await import("../../octypo");
         // AttractionData type is internal to octypo, not exported - use inline type
-        const { pool } = await import("./db");
+        const { pool } = await import("../../db");
 
         // STRICT: Quality threshold is 90 - NO EXCEPTIONS
         const orchestrator = getOctypoOrchestrator({ maxRetries: 3, qualityThreshold: 90 });

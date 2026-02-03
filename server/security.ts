@@ -18,6 +18,8 @@ export interface AuthenticatedUser {
   claims: AuthUserClaims;
 }
 
+export type AuthRequest = Request & { user?: AuthenticatedUser };
+
 /**
  * Type guard to check if req.user is an authenticated user
  */

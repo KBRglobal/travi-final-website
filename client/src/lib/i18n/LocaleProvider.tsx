@@ -3,9 +3,9 @@ import { useLocation } from "wouter";
 import { I18nextProvider } from "react-i18next";
 import i18n, { isRTL, changeLanguage, getCurrentLocale } from "./config";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
-import { getLocaleContext, type LocaleContextType } from "./locale-context";
+import { getLocaleContext, useLocale, type LocaleContextType } from "./locale-context";
 
-export { useLocale } from "./locale-context";
+export { useLocale };
 
 interface LocaleProviderProps {
   children: ReactNode;

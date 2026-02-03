@@ -5,28 +5,22 @@
  * Integration test for: plan → dry-run → apply → rollback restores state.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import {
-  createPlan,
-  getPlan,
-  updatePlanStatus,
-  listPlans,
-  deletePlan,
-} from "../plans";
-import {
-  generateChangeDiff,
-  generateHumanReadableSummary,
-} from "../diff";
-import {
-  evaluateGuards,
-  hasBlockingFailures,
-  canApprove,
-} from "../guards";
-import {
-  generateRollbackPlan,
-  canRollback,
-  previewRollback,
-} from "../rollback";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+
+// Mock the database to avoid SSL connection issues in tests
+vi.mock("../../db", () => ({
+  db: {
+    select: vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([]),
+      }),
+    }),
+  },
+}));
+import { createPlan, getPlan, updatePlanStatus, listPlans, deletePlan } from "../plans";
+import { generateChangeDiff, generateHumanReadableSummary } from "../diff";
+import { evaluateGuards, hasBlockingFailures, canApprove } from "../guards";
+import { generateRollbackPlan, canRollback, previewRollback } from "../rollback";
 import type { ChangeItem, DiffBlock } from "../types";
 
 // ============================================================================
@@ -110,32 +104,25 @@ describe("Diff Engine", () => {
   });
 
   it("should generate human-readable summary", () => {
-    const plan = createPlan(
-      "Test Plan",
-      "Test description",
-      "content",
-      "admin",
-      "user-1",
-      [
-        {
-          type: "content_update",
-          targetType: "content",
-          targetId: "1",
-          targetTitle: "Article 1",
-          field: "title",
-          beforeValue: "Old",
-          afterValue: "New",
-        },
-        {
-          type: "content_publish",
-          targetType: "content",
-          targetId: "2",
-          targetTitle: "Article 2",
-          beforeValue: "draft",
-          afterValue: "published",
-        },
-      ]
-    );
+    const plan = createPlan("Test Plan", "Test description", "content", "admin", "user-1", [
+      {
+        type: "content_update",
+        targetType: "content",
+        targetId: "1",
+        targetTitle: "Article 1",
+        field: "title",
+        beforeValue: "Old",
+        afterValue: "New",
+      },
+      {
+        type: "content_publish",
+        targetType: "content",
+        targetId: "2",
+        targetTitle: "Article 2",
+        beforeValue: "draft",
+        afterValue: "published",
+      },
+    ]);
 
     const summary = generateHumanReadableSummary(plan);
 
@@ -152,23 +139,16 @@ describe("Diff Engine", () => {
 
 describe("Guard System", () => {
   it("should pass guards for low-risk plan", async () => {
-    const plan = createPlan(
-      "Low Risk Plan",
-      "Simple update",
-      "content",
-      "admin",
-      "user-1",
-      [
-        {
-          type: "content_update",
-          targetType: "content",
-          targetId: "1",
-          field: "title",
-          beforeValue: "Old",
-          afterValue: "New",
-        },
-      ]
-    );
+    const plan = createPlan("Low Risk Plan", "Simple update", "content", "admin", "user-1", [
+      {
+        type: "content_update",
+        targetType: "content",
+        targetId: "1",
+        field: "title",
+        beforeValue: "Old",
+        afterValue: "New",
+      },
+    ]);
 
     const { passed, failed } = await evaluateGuards(plan, "user-1");
 
@@ -178,14 +158,29 @@ describe("Guard System", () => {
 
   it("should detect blocking failures correctly", () => {
     const failed = [
-      { guard: "kill_switch" as const, passed: false, message: "Killed", severity: "blocker" as const },
-      { guard: "high_traffic" as const, passed: false, message: "Warning", severity: "warning" as const },
+      {
+        guard: "kill_switch" as const,
+        passed: false,
+        message: "Killed",
+        severity: "blocker" as const,
+      },
+      {
+        guard: "high_traffic" as const,
+        passed: false,
+        message: "Warning",
+        severity: "warning" as const,
+      },
     ];
 
     expect(hasBlockingFailures(failed)).toBe(true);
 
     const onlyWarnings = [
-      { guard: "high_traffic" as const, passed: false, message: "Warning", severity: "warning" as const },
+      {
+        guard: "high_traffic" as const,
+        passed: false,
+        message: "Warning",
+        severity: "warning" as const,
+      },
     ];
 
     expect(hasBlockingFailures(onlyWarnings)).toBe(false);
@@ -227,23 +222,16 @@ describe("Guard System", () => {
 
 describe("Plan Repository", () => {
   it("should create and retrieve plans", () => {
-    const plan = createPlan(
-      "New Plan",
-      "Description",
-      "content",
-      "admin",
-      "user-1",
-      [
-        {
-          type: "content_update",
-          targetType: "content",
-          targetId: "1",
-          field: "title",
-          beforeValue: "Old",
-          afterValue: "New",
-        },
-      ]
-    );
+    const plan = createPlan("New Plan", "Description", "content", "admin", "user-1", [
+      {
+        type: "content_update",
+        targetType: "content",
+        targetId: "1",
+        field: "title",
+        beforeValue: "Old",
+        afterValue: "New",
+      },
+    ]);
 
     expect(plan.id).toBeDefined();
     expect(plan.status).toBe("draft");
@@ -263,9 +251,27 @@ describe("Plan Repository", () => {
       "admin",
       "user-1",
       [
-        { type: "content_update", targetType: "content", targetId: "1", beforeValue: {}, afterValue: {} },
-        { type: "content_update", targetType: "content", targetId: "2", beforeValue: {}, afterValue: {} },
-        { type: "entity_update", targetType: "entity", targetId: "e1", beforeValue: {}, afterValue: {} },
+        {
+          type: "content_update",
+          targetType: "content",
+          targetId: "1",
+          beforeValue: {},
+          afterValue: {},
+        },
+        {
+          type: "content_update",
+          targetType: "content",
+          targetId: "2",
+          beforeValue: {},
+          afterValue: {},
+        },
+        {
+          type: "entity_update",
+          targetType: "entity",
+          targetId: "e1",
+          beforeValue: {},
+          afterValue: {},
+        },
         { type: "link_add", targetType: "link", targetId: "l1", beforeValue: null, afterValue: {} },
       ]
     );
@@ -310,23 +316,16 @@ describe("Plan Repository", () => {
 
 describe("Rollback Engine", () => {
   it("should generate rollback plan from applied changes", () => {
-    const plan = createPlan(
-      "Rollback Test",
-      "Testing rollback",
-      "content",
-      "admin",
-      "user-1",
-      [
-        {
-          type: "content_update",
-          targetType: "content",
-          targetId: "1",
-          field: "title",
-          beforeValue: "Original",
-          afterValue: "Updated",
-        },
-      ]
-    );
+    const plan = createPlan("Rollback Test", "Testing rollback", "content", "admin", "user-1", [
+      {
+        type: "content_update",
+        targetType: "content",
+        targetId: "1",
+        field: "title",
+        beforeValue: "Original",
+        afterValue: "Updated",
+      },
+    ]);
 
     // Simulate applied state
     plan.status = "applied";
@@ -349,24 +348,17 @@ describe("Rollback Engine", () => {
   });
 
   it("should preview rollback changes", () => {
-    const plan = createPlan(
-      "Preview Test",
-      "Testing preview",
-      "content",
-      "admin",
-      "user-1",
-      [
-        {
-          type: "content_update",
-          targetType: "content",
-          targetId: "1",
-          targetTitle: "Test Article",
-          field: "title",
-          beforeValue: "Original",
-          afterValue: "Updated",
-        },
-      ]
-    );
+    const plan = createPlan("Preview Test", "Testing preview", "content", "admin", "user-1", [
+      {
+        type: "content_update",
+        targetType: "content",
+        targetId: "1",
+        targetTitle: "Test Article",
+        field: "title",
+        beforeValue: "Original",
+        afterValue: "Updated",
+      },
+    ]);
 
     // Can't preview draft plans
     const preview = previewRollback(plan.id);
@@ -487,10 +479,34 @@ describe("Edge Cases", () => {
       "automation",
       "system",
       [
-        { type: "content_update", targetType: "content", targetId: "1", beforeValue: {}, afterValue: {} },
-        { type: "entity_merge", targetType: "entity", targetId: "e1", beforeValue: {}, afterValue: {} },
-        { type: "canonical_set", targetType: "canonical", targetId: "c1", beforeValue: null, afterValue: "c2" },
-        { type: "aeo_regenerate", targetType: "content", targetId: "1", beforeValue: {}, afterValue: {} },
+        {
+          type: "content_update",
+          targetType: "content",
+          targetId: "1",
+          beforeValue: {},
+          afterValue: {},
+        },
+        {
+          type: "entity_merge",
+          targetType: "entity",
+          targetId: "e1",
+          beforeValue: {},
+          afterValue: {},
+        },
+        {
+          type: "canonical_set",
+          targetType: "canonical",
+          targetId: "c1",
+          beforeValue: null,
+          afterValue: "c2",
+        },
+        {
+          type: "aeo_regenerate",
+          targetType: "content",
+          targetId: "1",
+          beforeValue: {},
+          afterValue: {},
+        },
       ]
     );
 

@@ -13,6 +13,7 @@ import type { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
 import { getUserId, isAuthenticatedUser } from "../security";
+import { log, logSecurityEvent } from "../lib/logger";
 
 type PermissionKey = keyof typeof ROLE_PERMISSIONS.admin;
 
@@ -56,7 +57,7 @@ function logAuthorizationFailure(failure: AuthorizationFailure): void {
   };
 
   // Always log authorization failures - critical for security monitoring
-  console.warn("[SECURITY:IDOR]", JSON.stringify(logEntry));
+  log.warn("[SECURITY:IDOR]", logEntry);
 
   // Track repeated failures from same IP
   const now = Date.now();
@@ -69,8 +70,10 @@ function logAuthorizationFailure(failure: AuthorizationFailure): void {
     } else {
       ipRecord.count++;
       if (ipRecord.count >= MAX_FAILURES_PER_WINDOW) {
-        console.error(
-          `[SECURITY:IDOR] ALERT: IP ${failure.ip} has ${ipRecord.count} authorization failures in ${FAILURE_WINDOW_MS / 60000} minutes - possible attack`
+        log.error(
+          `[SECURITY:IDOR] ALERT: IP ${failure.ip} has ${ipRecord.count} authorization failures - possible attack`,
+          undefined,
+          { ip: failure.ip, count: ipRecord.count, windowMinutes: FAILURE_WINDOW_MS / 60000 }
         );
       }
     }
