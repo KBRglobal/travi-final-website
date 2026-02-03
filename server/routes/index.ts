@@ -21,6 +21,7 @@ import { registerTranslationRoutes } from "./translation-routes";
 import { registerUserRoutes } from "./user-routes";
 import { registerPageLayoutRoutes } from "./page-layout-routes";
 import { registerWriterPromotionRoutes } from "./writer-promotion-routes";
+import { registerRssFeedRoutes } from "./rss-feed-routes";
 
 /**
  * Main router registry that coordinates all domain-specific route modules.
@@ -92,6 +93,9 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 
   // AI writers and homepage promotions routes
   registerWriterPromotionRoutes(app);
+
+  // RSS feed management routes
+  registerRssFeedRoutes(app);
 }
 
 // Export individual registrars for selective usage
