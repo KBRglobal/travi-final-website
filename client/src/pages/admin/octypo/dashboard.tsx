@@ -6,8 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,17 +33,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Globe,
   RefreshCw,
   Plus,
   Search,
   AlertTriangle,
   TrendingUp,
-  Heart,
-  DollarSign,
-  MoreHorizontal,
-  Trash2,
-  Eye,
   Play,
   Square,
   Bot,
@@ -53,30 +45,12 @@ import {
   FileText,
   Lightbulb,
   Loader2,
+  Clock,
+  CheckCircle,
+  ExternalLink,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-interface Destination {
-  id: string;
-  name: string;
-  status: string;
-  health: number;
-  coverage: number;
-  budgetToday: number;
-  budgetLimit: number;
-  alerts: number;
-  contentCount: number;
-  totalAttractions: number;
-  avgQuality: number;
-}
 
 interface StatsData {
-  totalAttractions: number;
   pendingContent: number;
   generatedContent: number;
   writerAgentCount: number;
@@ -128,36 +102,23 @@ interface RssFeed {
   language: string | null;
 }
 
-interface SourceDestination {
+interface RssItem {
   id: string;
-  name: string;
-  country: string | null;
-  destinationLevel: string | null;
-  rssFeedCount: number;
-}
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case "Running":
-      return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-    case "Growing":
-      return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
-    case "Initializing":
-      return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
-    case "New":
-      return "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400";
-    default:
-      return "bg-gray-100 text-gray-700";
-  }
+  title: string;
+  url: string;
+  summary: string | null;
+  publishedDate: string | null;
+  source: string;
+  feedId: string;
+  category: string | null;
+  processed: boolean;
+  createdAt: string;
 }
 
 export default function OctypoDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [healthFilter, setHealthFilter] = useState("all");
   const [isJobDialogOpen, setIsJobDialogOpen] = useState(false);
   const [sourceType, setSourceType] = useState<"rss" | "topic" | "manual">("rss");
-  const [selectedDestination, setSelectedDestination] = useState<string>("");
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
   const [topicKeywords, setTopicKeywords] = useState("");
   const [priority, setPriority] = useState<"low" | "normal" | "high">("normal");
@@ -167,14 +128,6 @@ export default function OctypoDashboardPage() {
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
-
-  const {
-    data: destinationsData,
-    isLoading,
-    refetch,
-  } = useQuery<{ destinations: Destination[] }>({
-    queryKey: ["/api/octypo/destinations"],
-  });
 
   const { data: statsData } = useQuery<StatsData>({
     queryKey: ["/api/octypo/stats"],
@@ -194,22 +147,56 @@ export default function OctypoDashboardPage() {
     refetchInterval: 10000,
   });
 
-  const { data: sourceDestinations } = useQuery<{ destinations: SourceDestination[] }>({
-    queryKey: ["/api/octypo/sources/destinations"],
-    enabled: isJobDialogOpen,
+  const { data: rssFeedsData } = useQuery<{ feeds: RssFeed[] }>({
+    queryKey: ["/api/octypo/sources/rss"],
   });
 
-  const { data: rssFeeds } = useQuery<{ feeds: RssFeed[] }>({
-    queryKey: ["/api/octypo/sources/rss", selectedDestination],
+  const {
+    data: rssItemsData,
+    isLoading,
+    refetch,
+  } = useQuery<{ items: RssItem[]; count: number }>({
+    queryKey: ["/api/octypo/rss/items/recent"],
+  });
+
+  const { data: dialogFeeds } = useQuery<{ feeds: RssFeed[] }>({
+    queryKey: ["/api/octypo/sources/rss", "dialog"],
     enabled: isJobDialogOpen && sourceType === "rss",
+  });
+
+  const generateFromItemMutation = useMutation({
+    mutationFn: (item: RssItem) =>
+      apiRequest("/api/octypo/jobs/create", {
+        method: "POST",
+        body: {
+          sourceType: "manual",
+          manualContent: [{ title: item.title, description: item.summary || item.url }],
+          priority: "normal",
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/rss/items/recent"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/job-queue/status"] });
+      toast({
+        title: "Job Created",
+        description: "Content generation job created successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create job",
+        variant: "destructive",
+      });
+    },
   });
 
   const createJobMutation = useMutation({
     mutationFn: (config: {
       sourceType: string;
-      destination?: string;
       rssFeedIds?: string[];
       topicKeywords?: string[];
+      manualContent?: { title: string; description: string }[];
       priority: string;
     }) => apiRequest("/api/octypo/jobs/create", { method: "POST", body: config }),
     onSuccess: (data: any) => {
@@ -232,7 +219,6 @@ export default function OctypoDashboardPage() {
 
   const resetJobForm = () => {
     setSourceType("rss");
-    setSelectedDestination("");
     setSelectedFeeds([]);
     setTopicKeywords("");
     setPriority("normal");
@@ -280,7 +266,6 @@ export default function OctypoDashboardPage() {
 
     createJobMutation.mutate({
       sourceType,
-      destination: selectedDestination || undefined,
       rssFeedIds: sourceType === "rss" ? selectedFeeds : undefined,
       topicKeywords:
         sourceType === "topic"
@@ -323,34 +308,27 @@ export default function OctypoDashboardPage() {
     },
   });
 
-  const destinations = destinationsData?.destinations || [];
-  const totalSites = statsData?.totalAttractions || destinations.length;
+  const feeds = rssFeedsData?.feeds || [];
+  const rssItems = rssItemsData?.items || [];
   const generatedContent = statsData?.generatedContent || 0;
+  const pendingContent = statsData?.pendingContent || 0;
   const writerAgentCount = statsData?.writerAgentCount || 0;
   const validatorAgentCount = statsData?.validatorAgentCount || 0;
-  const healthySites = destinations.filter(d => d.health >= 70).length;
-  const totalAlerts = destinations.reduce((sum, d) => sum + d.alerts, 0);
-  const spendToday = destinations.reduce((sum, d) => sum + d.budgetToday, 0);
   const isAutopilotRunning = autopilotData?.running || false;
+  const todayStats = autopilotData?.stats;
 
-  const filteredDestinations = destinations.filter(d => {
-    const matchesSearch = d.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || d.status.toLowerCase() === statusFilter.toLowerCase();
-    const matchesHealth =
-      healthFilter === "all" ||
-      (healthFilter === "healthy" && d.health >= 70) ||
-      (healthFilter === "warning" && d.health >= 50 && d.health < 70) ||
-      (healthFilter === "critical" && d.health < 50);
-    return matchesSearch && matchesStatus && matchesHealth;
-  });
+  const filteredItems = rssItems.filter(
+    item =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.source.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64" data-testid="loading-state">
         <div className="flex flex-col items-center gap-2">
           <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
-          <p className="text-muted-foreground">Loading destinations...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -425,18 +403,20 @@ export default function OctypoDashboardPage() {
         </div>
       </div>
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Attractions
-            </CardTitle>
-            <Globe className="h-4 w-4 text-primary" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">RSS Feeds</CardTitle>
+            <Rss className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold" data-testid="text-total-sites">
-              {totalSites}
+            <div className="text-3xl font-bold" data-testid="text-total-feeds">
+              {feeds.length}
             </div>
+            <p className="text-xs text-muted-foreground">
+              {feeds.filter(f => f.isActive).length} active
+            </p>
           </CardContent>
         </Card>
 
@@ -449,19 +429,24 @@ export default function OctypoDashboardPage() {
             <div className="text-3xl font-bold text-green-600" data-testid="text-generated">
               {generatedContent}
             </div>
+            <p className="text-xs text-muted-foreground">
+              {todayStats?.contentGeneratedToday || 0} today
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Healthy</CardTitle>
-            <Heart className="h-4 w-4 text-blue-500" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">In Queue</CardTitle>
+            <Clock className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold" data-testid="text-healthy">
-              <span className="text-blue-600">{healthySites}</span>
-              <span className="text-muted-foreground">/{destinations.length}</span>
+            <div className="text-3xl font-bold text-blue-600" data-testid="text-pending">
+              {pendingContent}
             </div>
+            <p className="text-xs text-muted-foreground">
+              {aiQueueStatus?.queue?.activeRequests || 0} processing
+            </p>
           </CardContent>
         </Card>
 
@@ -480,17 +465,19 @@ export default function OctypoDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Alerts</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Errors</CardTitle>
             <AlertTriangle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-orange-600" data-testid="text-alerts">
-              {totalAlerts}
+            <div className="text-3xl font-bold text-orange-600" data-testid="text-errors">
+              {todayStats?.errorsToday || 0}
             </div>
+            <p className="text-xs text-muted-foreground">today</p>
           </CardContent>
         </Card>
       </div>
 
+      {/* AI Infrastructure */}
       <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
@@ -552,143 +539,101 @@ export default function OctypoDashboardPage() {
         </CardContent>
       </Card>
 
+      {/* RSS News Items Table */}
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            News from RSS Feeds
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search destinations..."
+                placeholder="Search news..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
                 data-testid="input-search"
               />
             </div>
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[140px]" data-testid="select-status">
-                  <SelectValue placeholder="All Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="running">Running</SelectItem>
-                  <SelectItem value="growing">Growing</SelectItem>
-                  <SelectItem value="initializing">Initializing</SelectItem>
-                  <SelectItem value="new">New</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={healthFilter} onValueChange={setHealthFilter}>
-                <SelectTrigger className="w-[140px]" data-testid="select-health">
-                  <SelectValue placeholder="All Health" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Health</SelectItem>
-                  <SelectItem value="healthy">Healthy (≥70%)</SelectItem>
-                  <SelectItem value="warning">Warning (50-70%)</SelectItem>
-                  <SelectItem value="critical">Critical (&lt;50%)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
 
-          {filteredDestinations.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground" data-testid="empty-state">
-              <Globe className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No destinations found</p>
-              <p className="text-sm">Try adjusting your filters or add a new destination.</p>
+              <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-medium">No news items found</p>
+              <p className="text-sm">Fetch RSS feeds to get news items.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Destination</TableHead>
-                  <TableHead>Health ↓</TableHead>
+                  <TableHead className="w-[40%]">Title</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Coverage</TableHead>
-                  <TableHead>Content</TableHead>
-                  <TableHead>Alerts</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDestinations.map(destination => (
-                  <TableRow key={destination.id} data-testid={`row-destination-${destination.id}`}>
+                {filteredItems.map(item => (
+                  <TableRow key={item.id} data-testid={`row-item-${item.id}`}>
                     <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8 bg-primary">
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                            {destination.name.substring(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{destination.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {destination.totalAttractions} attractions
-                          </div>
-                        </div>
+                      <div className="space-y-1">
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium hover:text-primary hover:underline line-clamp-2"
+                        >
+                          {item.title}
+                        </a>
+                        {item.category && (
+                          <Badge variant="outline" className="text-xs">
+                            {item.category}
+                          </Badge>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{destination.health}%</span>
-                        <Progress value={destination.health} className="w-16 h-2" />
-                      </div>
+                      <span className="text-sm text-muted-foreground">{item.source}</span>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className={getStatusColor(destination.status)}>
-                        {destination.status}
-                      </Badge>
+                      <span className="text-sm text-muted-foreground">
+                        {item.publishedDate
+                          ? new Date(item.publishedDate).toLocaleDateString("he-IL")
+                          : "—"}
+                      </span>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span>{destination.coverage}%</span>
-                        <Progress value={destination.coverage} className="w-16 h-2" />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{destination.contentCount}</span>
-                        <span className="text-xs text-muted-foreground">
-                          Avg: {destination.avgQuality.toFixed(1)}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {destination.alerts > 0 ? (
-                        <Badge variant="destructive" className="gap-1">
-                          <AlertTriangle className="h-3 w-3" />
-                          {destination.alerts}
+                      {item.processed ? (
+                        <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Generated
                         </Badge>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <Badge variant="secondary">Pending</Badge>
                       )}
                     </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            data-testid={`button-actions-${destination.id}`}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem data-testid={`action-view-${destination.id}`}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-destructive"
-                            data-testid={`action-delete-${destination.id}`}
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <TableCell className="text-right">
+                      <Button
+                        size="sm"
+                        onClick={() => generateFromItemMutation.mutate(item)}
+                        disabled={item.processed || generateFromItemMutation.isPending}
+                        data-testid={`button-generate-${item.id}`}
+                      >
+                        {generateFromItemMutation.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <>
+                            <Bot className="h-4 w-4 mr-1" />
+                            Generate
+                          </>
+                        )}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -698,6 +643,7 @@ export default function OctypoDashboardPage() {
         </CardContent>
       </Card>
 
+      {/* Create Job Dialog */}
       <Dialog open={isJobDialogOpen} onOpenChange={setIsJobDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -706,28 +652,11 @@ export default function OctypoDashboardPage() {
               Create Content Generation Job
             </DialogTitle>
             <DialogDescription>
-              Configure a new content generation job. Select your data source and destination.
+              Configure a new content generation job. Select your data source.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label>Destination (Optional)</Label>
-              <Select value={selectedDestination} onValueChange={setSelectedDestination}>
-                <SelectTrigger data-testid="select-job-destination">
-                  <SelectValue placeholder="All destinations" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All destinations</SelectItem>
-                  {sourceDestinations?.destinations?.map(dest => (
-                    <SelectItem key={dest.id} value={dest.id}>
-                      {dest.name} {dest.rssFeedCount > 0 && `(${dest.rssFeedCount} feeds)`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="space-y-2">
               <Label>Source Type</Label>
               <div className="grid grid-cols-3 gap-3">
@@ -773,11 +702,11 @@ export default function OctypoDashboardPage() {
                   </span>
                 </div>
                 <div className="border rounded-lg max-h-[200px] overflow-y-auto">
-                  {rssFeeds?.feeds && rssFeeds.feeds.length > 0 ? (
-                    rssFeeds.feeds.map(feed => (
+                  {dialogFeeds?.feeds && dialogFeeds.feeds.length > 0 ? (
+                    dialogFeeds.feeds.map(feed => (
                       <div
                         key={feed.id}
-                        className="flex items-center gap-3 p-3 border-b last:border-b-0 hover-elevate cursor-pointer"
+                        className="flex items-center gap-3 p-3 border-b last:border-b-0 hover:bg-muted/50 cursor-pointer"
                         onClick={() => toggleFeedSelection(feed.id)}
                         data-testid={`feed-item-${feed.id}`}
                       >
@@ -788,8 +717,7 @@ export default function OctypoDashboardPage() {
                         <div className="flex-1 min-w-0">
                           <div className="font-medium truncate">{feed.name}</div>
                           <div className="text-xs text-muted-foreground truncate">
-                            {feed.destinationName || "No destination"}
-                            {feed.category && ` • ${feed.category}`}
+                            {feed.category || "No category"}
                           </div>
                         </div>
                         {feed.isActive ? (
@@ -808,9 +736,6 @@ export default function OctypoDashboardPage() {
                     <div className="p-4 text-center text-muted-foreground">
                       <Rss className="h-8 w-8 mx-auto mb-2 opacity-50" />
                       <p>No RSS feeds available</p>
-                      {selectedDestination && (
-                        <p className="text-sm">Try selecting a different destination</p>
-                      )}
                     </div>
                   )}
                 </div>

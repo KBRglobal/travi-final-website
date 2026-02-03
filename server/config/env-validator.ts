@@ -36,13 +36,12 @@ export function validateRequiredEnvVars(): void {
     result.isValid = false;
   }
 
-  // AI Service Keys (At least one required)
+  // AI Service Keys (Optional for local development)
   const hasOpenAI = !!process.env.OPENAI_API_KEY;
   const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
   if (!hasOpenAI && !hasAnthropic) {
-    result.errors.push("At least one AI API key is required: OPENAI_API_KEY or ANTHROPIC_API_KEY");
-    result.isValid = false;
+    result.warnings.push("No AI API key set - content generation disabled");
   }
 
   // ========================================
