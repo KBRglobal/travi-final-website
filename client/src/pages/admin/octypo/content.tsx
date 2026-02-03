@@ -3,6 +3,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -60,13 +70,25 @@ interface ContentResponse {
 function getStatusBadge(status: string) {
   switch (status) {
     case "published":
-      return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Published</Badge>;
+      return (
+        <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+          Published
+        </Badge>
+      );
     case "draft":
       return <Badge variant="secondary">Draft</Badge>;
     case "in_review":
-      return <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">Needs Review</Badge>;
+      return (
+        <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+          Needs Review
+        </Badge>
+      );
     case "approved":
-      return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Approved</Badge>;
+      return (
+        <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+          Approved
+        </Badge>
+      );
     default:
       return <Badge variant="outline">{status}</Badge>;
   }
@@ -85,7 +107,7 @@ function formatDate(dateString: string | null): string {
 function LoadingSkeleton() {
   return (
     <div className="space-y-4">
-      {[1, 2, 3, 4, 5].map((i) => (
+      {[1, 2, 3, 4, 5].map(i => (
         <div key={i} className="flex items-center gap-4">
           <Skeleton className="h-6 w-[300px]" />
           <Skeleton className="h-6 w-[80px]" />
@@ -106,23 +128,55 @@ export default function OctypoContentPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [, setLocation] = useLocation();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newContent, setNewContent] = useState({
+    title: "",
+    type: "article",
+    description: "",
+  });
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: contentData, isLoading, error, refetch } = useQuery<ContentResponse>({
-    queryKey: ['/api/octypo/content'],
+  const createContentMutation = useMutation({
+    mutationFn: (data: typeof newContent) =>
+      apiRequest("/api/contents", { method: "POST", body: data }),
+    onSuccess: (response: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/content"] });
+      toast({ title: "Content created", description: "New content has been created as draft." });
+      setIsCreateDialogOpen(false);
+      setNewContent({ title: "", type: "article", description: "" });
+      if (response?.id) {
+        setLocation(`/admin/contents/${response.id}/edit`);
+      }
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to create content",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const {
+    data: contentData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery<ContentResponse>({
+    queryKey: ["/api/octypo/content"],
   });
   const content = contentData?.content || [];
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => apiRequest(`/api/contents/${id}`, { method: 'DELETE' }),
+    mutationFn: (id: string) => apiRequest(`/api/contents/${id}`, { method: "DELETE" }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/content'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/content"] });
       toast({ title: "Content deleted" });
     },
     onError: (error: Error) => {
-      toast({ 
+      toast({
         title: "Failed to delete content",
         description: error.message,
         variant: "destructive",
@@ -130,7 +184,7 @@ export default function OctypoContentPage() {
     },
   });
 
-  const filteredContent = content.filter((item) => {
+  const filteredContent = content.filter(item => {
     const matchesSearch = item.title?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || item.status === statusFilter;
     const matchesType = typeFilter === "all" || item.type?.toLowerCase() === typeFilter;
@@ -157,10 +211,12 @@ export default function OctypoContentPage() {
     <div className="space-y-6" data-testid="octypo-content-page">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold" data-testid="text-page-title">Content</h1>
+          <h1 className="text-2xl font-semibold" data-testid="text-page-title">
+            Content
+          </h1>
           <p className="text-muted-foreground">Manage and monitor your AI-generated content</p>
         </div>
-        <Button data-testid="button-create-content">
+        <Button onClick={() => setIsCreateDialogOpen(true)} data-testid="button-create-content">
           <Plus className="h-4 w-4 mr-2" />
           Create Content
         </Button>
@@ -186,7 +242,7 @@ export default function OctypoContentPage() {
               <Input
                 placeholder="Search content..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
                 data-testid="input-search"
               />
@@ -239,13 +295,13 @@ export default function OctypoContentPage() {
                   {filteredContent.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                        {content.length === 0 
+                        {content.length === 0
                           ? "No content found. Create your first piece of content to get started."
                           : "No content matches your filters."}
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredContent.map((item) => (
+                    filteredContent.map(item => (
                       <TableRow key={item.id} data-testid={`row-content-${item.id}`}>
                         <TableCell>
                           <span className="font-medium">{item.title}</span>
@@ -270,24 +326,24 @@ export default function OctypoContentPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="icon"
                               onClick={() => handleView(item.id)}
                               data-testid={`button-view-${item.id}`}
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="icon"
                               onClick={() => handleEdit(item.id)}
                               data-testid={`button-edit-${item.id}`}
                             >
                               <Pencil className="h-4 w-4" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="icon"
                               onClick={() => handleDelete(item.id)}
                               disabled={deleteMutation.isPending}
@@ -312,8 +368,8 @@ export default function OctypoContentPage() {
                   Showing 1 to {totalResults} of {contentData?.total || totalResults} results
                 </span>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(p => p - 1)}
@@ -321,15 +377,11 @@ export default function OctypoContentPage() {
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <Button 
-                    variant="default" 
-                    size="sm"
-                    data-testid="button-page-1"
-                  >
+                  <Button variant="default" size="sm" data-testid="button-page-1">
                     1
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     disabled
                     onClick={() => setCurrentPage(p => p + 1)}
@@ -343,6 +395,73 @@ export default function OctypoContentPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Content</DialogTitle>
+            <DialogDescription>
+              Create a new content item. It will be saved as a draft.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                placeholder="Enter content title..."
+                value={newContent.title}
+                onChange={e => setNewContent({ ...newContent, title: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="type">Type</Label>
+              <Select
+                value={newContent.type}
+                onValueChange={v => setNewContent({ ...newContent, type: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="article">Article</SelectItem>
+                  <SelectItem value="guide">Guide</SelectItem>
+                  <SelectItem value="review">Review</SelectItem>
+                  <SelectItem value="list">List</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description (optional)</Label>
+              <Textarea
+                id="description"
+                placeholder="Brief description of the content..."
+                value={newContent.description}
+                onChange={e => setNewContent({ ...newContent, description: e.target.value })}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => createContentMutation.mutate(newContent)}
+              disabled={!newContent.title || createContentMutation.isPending}
+            >
+              {createContentMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

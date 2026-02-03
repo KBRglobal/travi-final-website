@@ -161,6 +161,9 @@ export default function OctypoDashboardPage() {
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
   const [topicKeywords, setTopicKeywords] = useState("");
   const [priority, setPriority] = useState<"low" | "normal" | "high">("normal");
+  const [manualEntries, setManualEntries] = useState<{ title: string; description: string }[]>([
+    { title: "", description: "" },
+  ]);
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -233,6 +236,21 @@ export default function OctypoDashboardPage() {
     setSelectedFeeds([]);
     setTopicKeywords("");
     setPriority("normal");
+    setManualEntries([{ title: "", description: "" }]);
+  };
+
+  const addManualEntry = () => {
+    setManualEntries(prev => [...prev, { title: "", description: "" }]);
+  };
+
+  const removeManualEntry = (index: number) => {
+    setManualEntries(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateManualEntry = (index: number, field: "title" | "description", value: string) => {
+    setManualEntries(prev =>
+      prev.map((entry, i) => (i === index ? { ...entry, [field]: value } : entry))
+    );
   };
 
   const handleCreateJob = () => {
@@ -248,6 +266,17 @@ export default function OctypoDashboardPage() {
       toast({ title: "Error", description: "Please enter topic keywords", variant: "destructive" });
       return;
     }
+    if (sourceType === "manual") {
+      const validEntries = manualEntries.filter(e => e.title.trim());
+      if (validEntries.length === 0) {
+        toast({
+          title: "Error",
+          description: "Please add at least one content item with a title",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
 
     createJobMutation.mutate({
       sourceType,
@@ -260,6 +289,8 @@ export default function OctypoDashboardPage() {
               .map(k => k.trim())
               .filter(Boolean)
           : undefined,
+      manualContent:
+        sourceType === "manual" ? manualEntries.filter(e => e.title.trim()) : undefined,
       priority,
     });
   };
@@ -803,10 +834,55 @@ export default function OctypoDashboardPage() {
             )}
 
             {sourceType === "manual" && (
-              <div className="p-4 border rounded-lg bg-muted/50 text-center">
-                <FileText className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  Manual content entry coming soon. Use RSS or Topics for now.
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label>Content Items</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addManualEntry}
+                    data-testid="button-add-manual-entry"
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Item
+                  </Button>
+                </div>
+                <div className="space-y-3 max-h-[250px] overflow-y-auto">
+                  {manualEntries.map((entry, index) => (
+                    <div key={index} className="p-3 border rounded-lg space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Item {index + 1}</span>
+                        {manualEntries.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeManualEntry(index)}
+                            className="h-6 w-6 p-0 text-destructive"
+                          >
+                            ×
+                          </Button>
+                        )}
+                      </div>
+                      <Input
+                        placeholder="Title"
+                        value={entry.title}
+                        onChange={e => updateManualEntry(index, "title", e.target.value)}
+                        data-testid={`input-manual-title-${index}`}
+                      />
+                      <Textarea
+                        placeholder="Description or content outline (optional)"
+                        value={entry.description}
+                        onChange={e => updateManualEntry(index, "description", e.target.value)}
+                        rows={2}
+                        data-testid={`input-manual-description-${index}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  AI will expand these items into full content articles
                 </p>
               </div>
             )}
@@ -836,7 +912,7 @@ export default function OctypoDashboardPage() {
             </Button>
             <Button
               onClick={handleCreateJob}
-              disabled={createJobMutation.isPending || sourceType === "manual"}
+              disabled={createJobMutation.isPending}
               data-testid="button-create-job"
             >
               {createJobMutation.isPending ? (

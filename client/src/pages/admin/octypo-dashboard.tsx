@@ -1,8 +1,12 @@
+import { useEffect } from "react";
+import { useLocation } from "wouter";
+
 export default function OctypoDashboard() {
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">לוח Octypo</h1>
-      <p className="text-gray-600">העמוד בפיתוח</p>
-    </div>
-  );
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    setLocation("/admin/octypo/dashboard");
+  }, [setLocation]);
+
+  return null;
 }
