@@ -165,60 +165,64 @@ export default function OctypoDashboardPage() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: destinationsData, isLoading, refetch } = useQuery<{ destinations: Destination[] }>({
-    queryKey: ['/api/octypo/destinations'],
+  const {
+    data: destinationsData,
+    isLoading,
+    refetch,
+  } = useQuery<{ destinations: Destination[] }>({
+    queryKey: ["/api/octypo/destinations"],
   });
 
   const { data: statsData } = useQuery<StatsData>({
-    queryKey: ['/api/octypo/stats'],
+    queryKey: ["/api/octypo/stats"],
   });
 
   const { data: autopilotData } = useQuery<AutopilotData>({
-    queryKey: ['/api/octypo/autopilot/status'],
+    queryKey: ["/api/octypo/autopilot/status"],
   });
 
   const { data: engineStats } = useQuery<EngineStats>({
-    queryKey: ['/api/octypo/engines/stats'],
+    queryKey: ["/api/octypo/engines/stats"],
     refetchInterval: 30000,
   });
 
   const { data: aiQueueStatus } = useQuery<AIQueueStatus>({
-    queryKey: ['/api/octypo/ai-queue/status'],
+    queryKey: ["/api/octypo/ai-queue/status"],
     refetchInterval: 10000,
   });
 
   const { data: sourceDestinations } = useQuery<{ destinations: SourceDestination[] }>({
-    queryKey: ['/api/octypo/sources/destinations'],
+    queryKey: ["/api/octypo/sources/destinations"],
     enabled: isJobDialogOpen,
   });
 
   const { data: rssFeeds } = useQuery<{ feeds: RssFeed[] }>({
-    queryKey: ['/api/octypo/sources/rss', selectedDestination],
-    enabled: isJobDialogOpen && sourceType === 'rss',
+    queryKey: ["/api/octypo/sources/rss", selectedDestination],
+    enabled: isJobDialogOpen && sourceType === "rss",
   });
 
   const createJobMutation = useMutation({
-    mutationFn: (config: { 
-      sourceType: string; 
+    mutationFn: (config: {
+      sourceType: string;
       destination?: string;
       rssFeedIds?: string[];
       topicKeywords?: string[];
       priority: string;
-    }) => apiRequest('/api/octypo/jobs/create', { method: 'POST', body: config }),
+    }) => apiRequest("/api/octypo/jobs/create", { method: "POST", body: config }),
     onSuccess: (data: any) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/job-queue/status'] });
-      toast({ 
-        title: "Content Job Created", 
-        description: `Created ${data.jobsCreated} content generation job(s)` 
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/job-queue/status"] });
+      toast({
+        title: "Content Job Created",
+        description: `Created ${data.jobsCreated} content generation job(s)`,
       });
       setIsJobDialogOpen(false);
       resetJobForm();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.message || "Failed to create content job", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create content job",
+        variant: "destructive",
       });
     },
   });
@@ -233,7 +237,11 @@ export default function OctypoDashboardPage() {
 
   const handleCreateJob = () => {
     if (sourceType === "rss" && selectedFeeds.length === 0) {
-      toast({ title: "Error", description: "Please select at least one RSS feed", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: "Please select at least one RSS feed",
+        variant: "destructive",
+      });
       return;
     }
     if (sourceType === "topic" && !topicKeywords.trim()) {
@@ -245,23 +253,27 @@ export default function OctypoDashboardPage() {
       sourceType,
       destination: selectedDestination || undefined,
       rssFeedIds: sourceType === "rss" ? selectedFeeds : undefined,
-      topicKeywords: sourceType === "topic" ? topicKeywords.split(",").map(k => k.trim()).filter(Boolean) : undefined,
+      topicKeywords:
+        sourceType === "topic"
+          ? topicKeywords
+              .split(",")
+              .map(k => k.trim())
+              .filter(Boolean)
+          : undefined,
       priority,
     });
   };
 
   const toggleFeedSelection = (feedId: string) => {
-    setSelectedFeeds(prev => 
-      prev.includes(feedId) 
-        ? prev.filter(id => id !== feedId)
-        : [...prev, feedId]
+    setSelectedFeeds(prev =>
+      prev.includes(feedId) ? prev.filter(id => id !== feedId) : [...prev, feedId]
     );
   };
 
   const startAutopilot = useMutation({
-    mutationFn: () => apiRequest('/api/octypo/autopilot/start', { method: 'POST' }),
+    mutationFn: () => apiRequest("/api/octypo/autopilot/start", { method: "POST" }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/autopilot/status'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/autopilot/status"] });
       toast({ title: "Autopilot Started", description: "Content generation is now running." });
     },
     onError: () => {
@@ -270,9 +282,9 @@ export default function OctypoDashboardPage() {
   });
 
   const stopAutopilot = useMutation({
-    mutationFn: () => apiRequest('/api/octypo/autopilot/stop', { method: 'POST' }),
+    mutationFn: () => apiRequest("/api/octypo/autopilot/stop", { method: "POST" }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/autopilot/status'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/autopilot/status"] });
       toast({ title: "Autopilot Stopped", description: "Content generation has been paused." });
     },
     onError: () => {
@@ -292,8 +304,10 @@ export default function OctypoDashboardPage() {
 
   const filteredDestinations = destinations.filter(d => {
     const matchesSearch = d.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || d.status.toLowerCase() === statusFilter.toLowerCase();
-    const matchesHealth = healthFilter === "all" || 
+    const matchesStatus =
+      statusFilter === "all" || d.status.toLowerCase() === statusFilter.toLowerCase();
+    const matchesHealth =
+      healthFilter === "all" ||
       (healthFilter === "healthy" && d.health >= 70) ||
       (healthFilter === "warning" && d.health >= 50 && d.health < 70) ||
       (healthFilter === "critical" && d.health < 50);
@@ -315,8 +329,10 @@ export default function OctypoDashboardPage() {
     <div className="space-y-6" data-testid="octypo-dashboard-page">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-semibold" data-testid="text-page-title">Destinations</h1>
-          <p className="text-muted-foreground">Manage your autonomous tourism sites</p>
+          <h1 className="text-2xl font-semibold" data-testid="text-page-title">
+            Octypo Content Engine
+          </h1>
+          <p className="text-muted-foreground">AI-powered content generation from RSS feeds</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
@@ -324,12 +340,15 @@ export default function OctypoDashboardPage() {
             <span className="text-sm font-medium">Autopilot:</span>
             {isAutopilotRunning ? (
               <>
-                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <Badge
+                  variant="secondary"
+                  className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                >
                   Running
                 </Badge>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => stopAutopilot.mutate()}
                   disabled={stopAutopilot.isPending}
                   data-testid="button-stop-autopilot"
@@ -340,12 +359,15 @@ export default function OctypoDashboardPage() {
               </>
             ) : (
               <>
-                <Badge variant="secondary" className="bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400">
+                <Badge
+                  variant="secondary"
+                  className="bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"
+                >
                   Stopped
                 </Badge>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => startAutopilot.mutate()}
                   disabled={startAutopilot.isPending}
                   data-testid="button-start-autopilot"
@@ -356,8 +378,13 @@ export default function OctypoDashboardPage() {
               </>
             )}
           </div>
-          <Button variant="outline" onClick={() => refetch()} disabled={isLoading} data-testid="button-refresh">
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            disabled={isLoading}
+            data-testid="button-refresh"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
           <Button onClick={() => setIsJobDialogOpen(true)} data-testid="button-new-content-job">
@@ -370,11 +397,15 @@ export default function OctypoDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Attractions</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Total Attractions
+            </CardTitle>
             <Globe className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold" data-testid="text-total-sites">{totalSites}</div>
+            <div className="text-3xl font-bold" data-testid="text-total-sites">
+              {totalSites}
+            </div>
           </CardContent>
         </Card>
 
@@ -384,7 +415,9 @@ export default function OctypoDashboardPage() {
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-600" data-testid="text-generated">{generatedContent}</div>
+            <div className="text-3xl font-bold text-green-600" data-testid="text-generated">
+              {generatedContent}
+            </div>
           </CardContent>
         </Card>
 
@@ -407,7 +440,9 @@ export default function OctypoDashboardPage() {
             <Bot className="h-4 w-4 text-purple-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-purple-600" data-testid="text-writers">{writerAgentCount}</div>
+            <div className="text-3xl font-bold text-purple-600" data-testid="text-writers">
+              {writerAgentCount}
+            </div>
             <p className="text-xs text-muted-foreground">{validatorAgentCount} validators</p>
           </CardContent>
         </Card>
@@ -418,7 +453,9 @@ export default function OctypoDashboardPage() {
             <AlertTriangle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-orange-600" data-testid="text-alerts">{totalAlerts}</div>
+            <div className="text-3xl font-bold text-orange-600" data-testid="text-alerts">
+              {totalAlerts}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -463,18 +500,23 @@ export default function OctypoDashboardPage() {
               <div className="text-xs text-muted-foreground">Active Providers</div>
             </div>
             <div className="p-3 rounded-lg bg-white/60 dark:bg-white/10">
-              <div className="text-2xl font-bold text-emerald-600" data-testid="text-completed-requests">
+              <div
+                className="text-2xl font-bold text-emerald-600"
+                data-testid="text-completed-requests"
+              >
                 {aiQueueStatus?.queue?.completedRequests || 0}
               </div>
               <div className="text-xs text-muted-foreground">Completed</div>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            {Object.entries(engineStats?.byProvider || {}).slice(0, 6).map(([provider, count]) => (
-              <Badge key={provider} variant="outline" className="capitalize">
-                {provider}: {count}
-              </Badge>
-            ))}
+            {Object.entries(engineStats?.byProvider || {})
+              .slice(0, 6)
+              .map(([provider, count]) => (
+                <Badge key={provider} variant="outline" className="capitalize">
+                  {provider}: {count}
+                </Badge>
+              ))}
           </div>
         </CardContent>
       </Card>
@@ -487,7 +529,7 @@ export default function OctypoDashboardPage() {
               <Input
                 placeholder="Search destinations..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
                 data-testid="input-search"
               />
@@ -539,7 +581,7 @@ export default function OctypoDashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDestinations.map((destination) => (
+                {filteredDestinations.map(destination => (
                   <TableRow key={destination.id} data-testid={`row-destination-${destination.id}`}>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -550,17 +592,16 @@ export default function OctypoDashboardPage() {
                         </Avatar>
                         <div>
                           <div className="font-medium">{destination.name}</div>
-                          <div className="text-xs text-muted-foreground">{destination.totalAttractions} attractions</div>
+                          <div className="text-xs text-muted-foreground">
+                            {destination.totalAttractions} attractions
+                          </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{destination.health}%</span>
-                        <Progress 
-                          value={destination.health} 
-                          className="w-16 h-2"
-                        />
+                        <Progress value={destination.health} className="w-16 h-2" />
                       </div>
                     </TableCell>
                     <TableCell>
@@ -595,7 +636,11 @@ export default function OctypoDashboardPage() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" data-testid={`button-actions-${destination.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            data-testid={`button-actions-${destination.id}`}
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -604,7 +649,7 @@ export default function OctypoDashboardPage() {
                             <Eye className="h-4 w-4 mr-2" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-destructive"
                             data-testid={`action-delete-${destination.id}`}
                           >
@@ -643,7 +688,7 @@ export default function OctypoDashboardPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All destinations</SelectItem>
-                  {sourceDestinations?.destinations?.map((dest) => (
+                  {sourceDestinations?.destinations?.map(dest => (
                     <SelectItem key={dest.id} value={dest.id}>
                       {dest.name} {dest.rssFeedCount > 0 && `(${dest.rssFeedCount} feeds)`}
                     </SelectItem>
@@ -698,7 +743,7 @@ export default function OctypoDashboardPage() {
                 </div>
                 <div className="border rounded-lg max-h-[200px] overflow-y-auto">
                   {rssFeeds?.feeds && rssFeeds.feeds.length > 0 ? (
-                    rssFeeds.feeds.map((feed) => (
+                    rssFeeds.feeds.map(feed => (
                       <div
                         key={feed.id}
                         className="flex items-center gap-3 p-3 border-b last:border-b-0 hover-elevate cursor-pointer"
@@ -712,12 +757,17 @@ export default function OctypoDashboardPage() {
                         <div className="flex-1 min-w-0">
                           <div className="font-medium truncate">{feed.name}</div>
                           <div className="text-xs text-muted-foreground truncate">
-                            {feed.destinationName || "No destination"} 
+                            {feed.destinationName || "No destination"}
                             {feed.category && ` • ${feed.category}`}
                           </div>
                         </div>
                         {feed.isActive ? (
-                          <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Active</Badge>
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          >
+                            Active
+                          </Badge>
                         ) : (
                           <Badge variant="secondary">Inactive</Badge>
                         )}
@@ -742,7 +792,7 @@ export default function OctypoDashboardPage() {
                 <Textarea
                   placeholder="Enter keywords separated by commas (e.g., Dubai Marina, Burj Khalifa, desert safari)"
                   value={topicKeywords}
-                  onChange={(e) => setTopicKeywords(e.target.value)}
+                  onChange={e => setTopicKeywords(e.target.value)}
                   className="min-h-[100px]"
                   data-testid="input-topic-keywords"
                 />
@@ -763,7 +813,7 @@ export default function OctypoDashboardPage() {
 
             <div className="space-y-2">
               <Label>Priority</Label>
-              <Select value={priority} onValueChange={(v) => setPriority(v as any)}>
+              <Select value={priority} onValueChange={v => setPriority(v as any)}>
                 <SelectTrigger data-testid="select-priority">
                   <SelectValue />
                 </SelectTrigger>

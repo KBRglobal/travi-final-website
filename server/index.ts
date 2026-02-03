@@ -47,7 +47,7 @@ import { startBackgroundServices, stopBackgroundServices } from "./services/back
 import { db } from "./db";
 import { destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { redirectMiddleware } from "./middleware/redirects";
+import { redirectMiddleware, attractionSlugRedirectMiddleware } from "./middleware/redirects";
 import { localeMiddleware } from "./middleware/locale";
 
 // Validate environment variables before starting the application
@@ -174,6 +174,12 @@ app.use(localeMiddleware);
 // 301 Redirects Middleware - handles SEO redirects AFTER locale detection
 // This ensures Content-Language/Vary headers are set even for redirected responses
 app.use(redirectMiddleware);
+
+// Attraction slug redirects - redirects old slugs (with random IDs) to clean seoSlugs
+// This is async because it requires DB lookup
+app.use((req, res, next) => {
+  attractionSlugRedirectMiddleware(req, res, next).catch(next);
+});
 
 // SEO Fix: 301 Redirects for legacy Dubai paths to new /destinations/dubai/ hierarchy
 // This ensures search engines and users are directed to the canonical URLs

@@ -6,9 +6,13 @@
  * - Privacy policy redirect
  * - Search query parameter stripping
  * - www to non-www domain redirect
+ * - Old attraction URL format to new SEO-friendly format
  */
 
 import { Request, Response, NextFunction } from "express";
+import { db } from "../db";
+import { tiqetsAttractions } from "@shared/schema";
+import { eq, ilike, and } from "drizzle-orm";
 
 interface RedirectRule {
   from: string;
@@ -21,6 +25,27 @@ const STATIC_REDIRECTS: RedirectRule[] = [
   { from: "/family", to: "/travel-styles/family-travel-complete-guide", exact: true },
   { from: "/romance", to: "/travel-styles/honeymoon-romance-complete-guide", exact: true },
   { from: "/privacy-policy", to: "/privacy", exact: true },
+];
+
+// Valid destination cities for attraction redirects
+const VALID_DESTINATIONS = [
+  "abu-dhabi",
+  "amsterdam",
+  "bangkok",
+  "barcelona",
+  "dubai",
+  "hong-kong",
+  "istanbul",
+  "las-vegas",
+  "london",
+  "los-angeles",
+  "miami",
+  "new-york",
+  "paris",
+  "ras-al-khaimah",
+  "rome",
+  "singapore",
+  "tokyo",
 ];
 
 /**
@@ -46,6 +71,11 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
   const path = req.path;
   const fullUrl = req.originalUrl;
 
+  // Debug log for attraction redirects
+  if (path.includes("/attractions/")) {
+    console.log(`[Redirect] Checking path: ${path}`);
+  }
+
   if (host.startsWith("www.")) {
     const canonicalHost = getCanonicalHost(host);
     const protocol = getProtocol(req);
@@ -69,6 +99,81 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
       res.redirect(301, rule.to);
       return;
     }
+  }
+
+  // Handle old attraction URL format: /attractions/:city/:slug -> /:city/attractions/:slug
+  const oldAttractionMatch = path.match(/^\/attractions\/([^/]+)\/([^/]+)$/i);
+  if (oldAttractionMatch) {
+    const [, city, slug] = oldAttractionMatch;
+    const cityLower = city.toLowerCase();
+    console.log(
+      `[Redirect] Old attraction URL detected: ${path} -> city=${cityLower}, slug=${slug}`
+    );
+
+    // Check if it's a valid destination
+    if (VALID_DESTINATIONS.includes(cityLower)) {
+      const newUrl = `/${cityLower}/attractions/${slug}`;
+      console.log(`[Redirect] 301 redirect to: ${newUrl}`);
+      res.redirect(301, newUrl);
+      return;
+    }
+  }
+
+  next();
+}
+
+/**
+ * Async middleware to handle old slug -> seoSlug redirects
+ * Must be registered separately since it's async and requires DB lookup
+ */
+export async function attractionSlugRedirectMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  const path = req.path;
+
+  // Match /:city/attractions/:slug pattern
+  const attractionMatch = path.match(/^\/([^/]+)\/attractions\/([^/]+)$/i);
+  if (!attractionMatch) {
+    return next();
+  }
+
+  const [, city, slug] = attractionMatch;
+  const cityLower = city.toLowerCase();
+
+  // Skip if not a valid destination
+  if (!VALID_DESTINATIONS.includes(cityLower)) {
+    return next();
+  }
+
+  // Skip API requests
+  if (path.startsWith("/api/")) {
+    return next();
+  }
+
+  try {
+    // Convert URL format (new-york) to DB format (New York) for city matching
+    const cityForDb = cityLower.replace(/-/g, " ");
+
+    // Check if slug is an old slug that has a seoSlug
+    const attraction = await db
+      .select({
+        slug: tiqetsAttractions.slug,
+        seoSlug: tiqetsAttractions.seoSlug,
+      })
+      .from(tiqetsAttractions)
+      .where(and(ilike(tiqetsAttractions.cityName, cityForDb), eq(tiqetsAttractions.slug, slug)))
+      .limit(1);
+
+    // If found by old slug and has a different seoSlug, redirect
+    if (attraction.length && attraction[0].seoSlug && attraction[0].seoSlug !== slug) {
+      res.redirect(301, `/${cityLower}/attractions/${attraction[0].seoSlug}`);
+      return;
+    }
+  } catch (error) {
+    // If DB error, just continue without redirect
+    console.error("[Redirect] Error checking slug:", error);
   }
 
   next();

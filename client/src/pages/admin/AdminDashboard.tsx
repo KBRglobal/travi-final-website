@@ -1,6 +1,6 @@
 /**
  * Admin Dashboard - Main entry point for TRAVI CMS admin panel
- * 
+ *
  * Displays overview stats, activity feed, quick actions, and notifications.
  * According to spec: Stats Cards, Activity Feed, Quick Actions Grid, Notifications Panel
  */
@@ -81,7 +81,13 @@ interface DashboardStats {
 
 interface ActivityItem {
   id: string;
-  type: "content_created" | "content_edited" | "content_published" | "ai_generated" | "user_login" | "system_event";
+  type:
+    | "content_created"
+    | "content_edited"
+    | "content_published"
+    | "ai_generated"
+    | "user_login"
+    | "system_event";
   description: string;
   timestamp: string;
   user: {
@@ -166,7 +172,7 @@ function ClickableStatsCard({
   href?: string;
 }) {
   const [, setLocation] = useLocation();
-  
+
   if (loading) return <StatsCardSkeleton />;
 
   const handleClick = () => {
@@ -176,12 +182,9 @@ function ClickableStatsCard({
   };
 
   return (
-    <Card 
+    <Card
       data-testid={`card-stat-${title.toLowerCase().replace(/\s+/g, "-")}`}
-      className={cn(
-        "transition-all",
-        href && "cursor-pointer hover-elevate"
-      )}
+      className={cn("transition-all", href && "cursor-pointer hover-elevate")}
       onClick={href ? handleClick : undefined}
     >
       <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
@@ -190,9 +193,7 @@ function ClickableStatsCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        {description && (
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
         {href && (
           <div className="flex items-center gap-1 text-xs text-primary mt-2">
             <span>View details</span>
@@ -215,20 +216,28 @@ function SystemHealthCard({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "healthy": return "text-green-500";
-      case "warning": 
-      case "degraded": return "text-yellow-500";
-      case "unhealthy": return "text-red-500";
-      default: return "text-muted-foreground";
+      case "healthy":
+        return "text-green-500";
+      case "warning":
+      case "degraded":
+        return "text-yellow-500";
+      case "unhealthy":
+        return "text-red-500";
+      default:
+        return "text-muted-foreground";
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "healthy": return "default";
-      case "degraded": return "secondary";
-      case "unhealthy": return "destructive";
-      default: return "outline";
+      case "healthy":
+        return "default";
+      case "degraded":
+        return "secondary";
+      case "unhealthy":
+        return "destructive";
+      default:
+        return "outline";
     }
   };
 
@@ -246,11 +255,26 @@ function SystemHealthCard({
     <Card data-testid="card-system-health">
       <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">System Health</CardTitle>
-        <Heart className={cn("h-4 w-4", health ? getStatusColor(health.status) : "text-muted-foreground")} />
+        <Heart
+          className={cn(
+            "h-4 w-4",
+            health ? getStatusColor(health.status) : "text-muted-foreground"
+          )}
+        />
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant={health ? getStatusBadge(health.status) as "default" | "secondary" | "destructive" | "outline" : "outline"}>
+          <Badge
+            variant={
+              health
+                ? (getStatusBadge(health.status) as
+                    | "default"
+                    | "secondary"
+                    | "destructive"
+                    | "outline")
+                : "outline"
+            }
+          >
             {health?.status?.toUpperCase() ?? "UNKNOWN"}
           </Badge>
         </div>
@@ -262,7 +286,9 @@ function SystemHealthCard({
             </div>
             {health.checks?.database && (
               <div className="flex items-center gap-2 text-xs">
-                <Database className={cn("h-3 w-3", getStatusColor(health.checks.database.status))} />
+                <Database
+                  className={cn("h-3 w-3", getStatusColor(health.checks.database.status))}
+                />
                 <span className="text-muted-foreground">
                   DB: {health.checks.database.latency ?? 0}ms
                 </span>
@@ -351,17 +377,11 @@ function getActivityBadgeVariant(type: ActivityItem["type"]): "default" | "secon
   }
 }
 
-function ActivityFeed({
-  activities,
-  loading,
-}: {
-  activities?: ActivityItem[];
-  loading?: boolean;
-}) {
+function ActivityFeed({ activities, loading }: { activities?: ActivityItem[]; loading?: boolean }) {
   if (loading) {
     return (
       <div className="space-y-1">
-        {[1, 2, 3, 4, 5].map((i) => (
+        {[1, 2, 3, 4, 5].map(i => (
           <ActivityItemSkeleton key={i} />
         ))}
       </div>
@@ -373,14 +393,16 @@ function ActivityFeed({
       <div className="p-6 text-center text-muted-foreground">
         <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
         <p>No recent activity</p>
-        <p className="text-xs mt-1">Activity will appear here when content is created or modified</p>
+        <p className="text-xs mt-1">
+          Activity will appear here when content is created or modified
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-1">
-      {activities.map((activity) => (
+      {activities.map(activity => (
         <div
           key={activity.id}
           className="flex items-start gap-3 p-3 rounded-lg border-b border-border/50 last:border-b-0 hover-elevate cursor-pointer"
@@ -389,7 +411,10 @@ function ActivityFeed({
           <Avatar className="h-8 w-8">
             <AvatarImage src={activity.user.avatar} alt={activity.user.name} />
             <AvatarFallback className="text-xs">
-              {activity.user.name.split(" ").map((n) => n[0]).join("")}
+              {activity.user.name
+                .split(" ")
+                .map(n => n[0])
+                .join("")}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
@@ -404,7 +429,10 @@ function ActivityFeed({
               <span className="text-xs text-muted-foreground">by {activity.user.name}</span>
             </div>
             {activity.metadata?.entityLink && (
-              <Link href={activity.metadata.entityLink} className="text-xs text-primary mt-1 inline-flex items-center gap-1">
+              <Link
+                href={activity.metadata.entityLink}
+                className="text-xs text-primary mt-1 inline-flex items-center gap-1"
+              >
                 View <ArrowRight className="h-3 w-3" />
               </Link>
             )}
@@ -423,15 +451,19 @@ function ActivityFeed({
 function NotificationItem({ notification }: { notification: Notification }) {
   const getIcon = () => {
     switch (notification.type) {
-      case "success": return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "warning": return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case "error": return <AlertCircle className="h-4 w-4 text-red-500" />;
-      default: return <Info className="h-4 w-4 text-blue-500" />;
+      case "success":
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "warning":
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case "error":
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return <Info className="h-4 w-4 text-blue-500" />;
     }
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "p-3 rounded-lg border-b border-border/50 last:border-b-0",
         !notification.read && "bg-muted/30"
@@ -451,17 +483,17 @@ function NotificationItem({ notification }: { notification: Notification }) {
   );
 }
 
-function NotificationsPanel({ 
-  notifications, 
-  loading 
-}: { 
-  notifications?: Notification[]; 
+function NotificationsPanel({
+  notifications,
+  loading,
+}: {
+  notifications?: Notification[];
   loading?: boolean;
 }) {
   if (loading) {
     return (
       <div className="space-y-2 p-4">
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3].map(i => (
           <Skeleton key={i} className="h-16 w-full" />
         ))}
       </div>
@@ -481,7 +513,7 @@ function NotificationsPanel({
   return (
     <ScrollArea className="h-[300px]">
       <div className="space-y-1">
-        {notifications.map((notification) => (
+        {notifications.map(notification => (
           <NotificationItem key={notification.id} notification={notification} />
         ))}
       </div>
@@ -491,32 +523,11 @@ function NotificationsPanel({
 
 const quickActions = [
   {
-    label: "New Article",
-    icon: Newspaper,
-    href: "/admin/articles/new",
-    testId: "button-new-article",
-    description: "Create article with AI",
-  },
-  {
     label: "Destinations",
     icon: Globe,
     href: "/admin/destinations",
     testId: "button-destinations",
     description: "Manage destinations",
-  },
-  {
-    label: "Image Engine",
-    icon: ImagePlus,
-    href: "/admin/image-engine",
-    testId: "button-image-engine",
-    description: "AI image generator",
-  },
-  {
-    label: "Run Octypo",
-    icon: Bot,
-    href: "/admin/octypo",
-    testId: "button-run-octypo",
-    description: "AI content generation engine",
   },
   {
     label: "Attractions",
@@ -526,32 +537,62 @@ const quickActions = [
     description: "Manage attractions content",
   },
   {
-    label: "SEO Actions",
-    icon: ClipboardList,
-    href: "/admin/seo-engine/actions",
-    testId: "button-seo-actions",
-    description: "Review pending SEO items",
+    label: "Octypo Engine",
+    icon: Bot,
+    href: "/admin/octypo",
+    testId: "button-run-octypo",
+    description: "AI content generation",
+  },
+  {
+    label: "Homepage Editor",
+    icon: FileText,
+    href: "/admin/homepage",
+    testId: "button-homepage",
+    description: "Edit homepage sections",
+  },
+  {
+    label: "Site Settings",
+    icon: Settings,
+    href: "/admin/site-settings",
+    testId: "button-site-settings",
+    description: "Configure site options",
   },
 ];
 
 export default function AdminDashboard() {
-  const { data: statsData, isLoading: statsLoading, refetch: refetchStats } = useQuery<DashboardStats>({
+  const {
+    data: statsData,
+    isLoading: statsLoading,
+    refetch: refetchStats,
+  } = useQuery<DashboardStats>({
     queryKey: ["/api/admin/analytics/stats"],
     staleTime: 60000,
   });
 
-  const { data: activityData, isLoading: activityLoading, refetch: refetchActivity } = useQuery<ActivityItem[]>({
+  const {
+    data: activityData,
+    isLoading: activityLoading,
+    refetch: refetchActivity,
+  } = useQuery<ActivityItem[]>({
     queryKey: ["/api/admin/activity-feed"],
     staleTime: 30000,
   });
 
-  const { data: notificationsData, isLoading: notificationsLoading, refetch: refetchNotifications } = useQuery<Notification[]>({
+  const {
+    data: notificationsData,
+    isLoading: notificationsLoading,
+    refetch: refetchNotifications,
+  } = useQuery<Notification[]>({
     queryKey: ["/api/admin/notifications"],
     staleTime: 30000,
   });
 
   // Query real system health endpoint
-  const { data: healthData, isLoading: healthLoading, refetch: refetchHealth } = useQuery<SystemHealthResponse>({
+  const {
+    data: healthData,
+    isLoading: healthLoading,
+    refetch: refetchHealth,
+  } = useQuery<SystemHealthResponse>({
     queryKey: ["/api/health"],
     staleTime: 30000,
   });
@@ -579,9 +620,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome back to TRAVI CMS
-          </p>
+          <p className="text-muted-foreground">Welcome back to TRAVI CMS</p>
         </div>
         <Button
           variant="outline"
@@ -590,7 +629,9 @@ export default function AdminDashboard() {
           disabled={statsLoading || activityLoading}
           data-testid="button-refresh-dashboard"
         >
-          <RefreshCw className={cn("h-4 w-4 mr-2", (statsLoading || activityLoading) && "animate-spin")} />
+          <RefreshCw
+            className={cn("h-4 w-4 mr-2", (statsLoading || activityLoading) && "animate-spin")}
+          />
           Refresh
         </Button>
       </div>
@@ -607,11 +648,15 @@ export default function AdminDashboard() {
             title="Total Content"
             value={stats?.contents?.total?.toLocaleString() ?? "N/A"}
             icon={FileText}
-            description={stats?.contents ? `${stats.contents.attractions} attractions, ${stats.contents.destinations} destinations, ${stats.contents.articles} articles` : undefined}
+            description={
+              stats?.contents
+                ? `${stats.contents.attractions} attractions, ${stats.contents.destinations} destinations, ${stats.contents.articles} articles`
+                : undefined
+            }
             loading={isStatsLoading}
             href="/admin/contents-intelligence"
           />
-          
+
           {/* Media Assets - REAL: queries images table only */}
           <ClickableStatsCard
             title="Images"
@@ -621,7 +666,7 @@ export default function AdminDashboard() {
             loading={isStatsLoading}
             href="/admin/media"
           />
-          
+
           {/* Active Users - REAL: queries users table */}
           <ClickableStatsCard
             title="Registered Users"
@@ -631,17 +676,19 @@ export default function AdminDashboard() {
             loading={isStatsLoading}
             href="/admin/users"
           />
-          
+
           {/* Pending Tasks - REAL: queries draft content */}
           <ClickableStatsCard
             title="Pending Review"
             value={totalPendingTasks.toString()}
             icon={ClipboardList}
-            description={stats?.pendingTasks ? `${stats.pendingTasks.review} drafts to review` : undefined}
+            description={
+              stats?.pendingTasks ? `${stats.pendingTasks.review} drafts to review` : undefined
+            }
             loading={isStatsLoading}
             href="/admin/seo-engine/actions"
           />
-          
+
           {/* AI Generation - REAL: queries ai_generation_logs + tiqets */}
           <AIGenerationCard stats={stats?.aiGeneration} loading={isStatsLoading} />
         </div>
@@ -652,13 +699,21 @@ export default function AdminDashboard() {
         {/* Published vs Draft - REAL: queries contents by status */}
         <ClickableStatsCard
           title="Published vs Draft"
-          value={stats?.status ? `${stats.status.published} published / ${stats.status.draft} drafts` : "N/A"}
+          value={
+            stats?.status
+              ? `${stats.status.published} published / ${stats.status.draft} drafts`
+              : "N/A"
+          }
           icon={CheckCircle2}
-          description={stats?.status && stats?.contents?.total && stats.contents.total > 0 ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published` : undefined}
+          description={
+            stats?.status && stats?.contents?.total && stats.contents.total > 0
+              ? `${Math.round((stats.status.published / stats.contents.total) * 100)}% published`
+              : undefined
+          }
           loading={isStatsLoading}
           href="/admin/contents-intelligence"
         />
-        
+
         {/* Attractions Count - REAL: from contents table */}
         <ClickableStatsCard
           title="Attractions"
@@ -668,7 +723,7 @@ export default function AdminDashboard() {
           loading={isStatsLoading}
           href="/admin/attractions"
         />
-        
+
         {/* System Health - REAL: from /api/health endpoint */}
         <SystemHealthCard health={health} loading={isHealthLoading} />
       </div>
@@ -683,9 +738,7 @@ export default function AdminDashboard() {
                 <Activity className="h-5 w-5" />
                 Recent Activity
               </CardTitle>
-              <CardDescription>
-                Latest content changes and system events
-              </CardDescription>
+              <CardDescription>Latest content changes and system events</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[400px] px-6 pb-4">
@@ -704,13 +757,11 @@ export default function AdminDashboard() {
                 <Zap className="h-5 w-5" />
                 Quick Actions
               </CardTitle>
-              <CardDescription>
-                Common tasks for content management
-              </CardDescription>
+              <CardDescription>Common tasks for content management</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-2">
-                {quickActions.map((action) => (
+                {quickActions.map(action => (
                   <Button
                     key={action.href}
                     variant="ghost"
@@ -738,9 +789,7 @@ export default function AdminDashboard() {
                 <Bell className="h-5 w-5" />
                 Notifications
               </CardTitle>
-              <CardDescription>
-                System alerts and updates
-              </CardDescription>
+              <CardDescription>System alerts and updates</CardDescription>
             </CardHeader>
             <CardContent className="p-0 px-4 pb-4">
               <NotificationsPanel notifications={notifications} loading={notificationsLoading} />

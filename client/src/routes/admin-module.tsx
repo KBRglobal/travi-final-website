@@ -7,13 +7,21 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ErrorBoundary } from "@/components/error-boundary";
 
-const AIAssistant = lazy(() => import("@/components/ai-assistant").then(m => ({ default: m.AIAssistant })));
-const CommandPalette = lazy(() => import("@/components/command-palette").then(m => ({ default: m.CommandPalette })));
-const KeyboardShortcuts = lazy(() => import("@/components/keyboard-shortcuts").then(m => ({ default: m.KeyboardShortcuts })));
-const NotificationsCenter = lazy(() => import("@/components/notifications-center").then(m => ({ default: m.NotificationsCenter })));
-const MultiTabProvider = lazy(() => import("@/components/multi-tab-editor").then(m => ({ default: m.MultiTabProvider })));
-const TabCountBadge = lazy(() => import("@/components/multi-tab-editor").then(m => ({ default: m.TabCountBadge })));
-const ContentExpiryAlerts = lazy(() => import("@/components/content-expiry-alerts").then(m => ({ default: m.ContentExpiryAlerts })));
+const CommandPalette = lazy(() =>
+  import("@/components/command-palette").then(m => ({ default: m.CommandPalette }))
+);
+const KeyboardShortcuts = lazy(() =>
+  import("@/components/keyboard-shortcuts").then(m => ({ default: m.KeyboardShortcuts }))
+);
+const NotificationsCenter = lazy(() =>
+  import("@/components/notifications-center").then(m => ({ default: m.NotificationsCenter }))
+);
+const MultiTabProvider = lazy(() =>
+  import("@/components/multi-tab-editor").then(m => ({ default: m.MultiTabProvider }))
+);
+const TabCountBadge = lazy(() =>
+  import("@/components/multi-tab-editor").then(m => ({ default: m.TabCountBadge }))
+);
 
 const Dashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const Settings = lazy(() => import("@/pages/settings"));
@@ -22,8 +30,11 @@ const HomepageEditorPage = lazy(() => import("@/pages/admin/homepage-editor"));
 const DestinationsListPage = lazy(() => import("@/pages/admin/destinations/destinations-list"));
 const DestinationHubPage = lazy(() => import("@/pages/admin/destinations/destination-hub"));
 const DestinationNewPage = lazy(() => import("@/pages/admin/destinations/destination-new"));
-const DestinationsIndexEditorPage = lazy(() => import("@/pages/admin/destinations/destinations-index-editor"));
+const DestinationsIndexEditorPage = lazy(
+  () => import("@/pages/admin/destinations/destinations-index-editor")
+);
 const TiqetsAttractionsList = lazy(() => import("@/pages/admin/tiqets-attractions-list"));
+const AttractionDetailPage = lazy(() => import("@/pages/admin/tiqets/attraction-detail"));
 const OctypoDashboardNew = lazy(() => import("@/pages/admin/octypo/dashboard"));
 const OctypoAutopilot = lazy(() => import("@/pages/admin/octypo/autopilot"));
 const OctypoContent = lazy(() => import("@/pages/admin/octypo/content"));
@@ -33,6 +44,7 @@ const OctypoAIAgents = lazy(() => import("@/pages/admin/octypo/ai-agents"));
 const OctypoWorkflows = lazy(() => import("@/pages/admin/octypo/workflows"));
 const OctypoEngines = lazy(() => import("@/pages/admin/octypo/engines"));
 const OctypoQueueMonitor = lazy(() => import("@/pages/admin/octypo/queue-monitor"));
+const RssFeedsPage = lazy(() => import("@/pages/admin/rss-feeds"));
 const DestinationBrowser = lazy(() => import("@/pages/destination-browser"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
@@ -50,6 +62,7 @@ function AdminRouter() {
       <Switch>
         <Route path="/admin" component={Dashboard} />
         <Route path="/admin/attractions" component={TiqetsAttractionsList} />
+        <Route path="/admin/attractions/:id" component={AttractionDetailPage} />
         <Route path="/admin/settings" component={Settings} />
         <Route path="/admin/site-settings" component={SiteSettingsPage} />
         <Route path="/admin/homepage" component={HomepageEditorPage} />
@@ -68,6 +81,7 @@ function AdminRouter() {
         <Route path="/admin/octypo/workflows" component={OctypoWorkflows} />
         <Route path="/admin/octypo/engines" component={OctypoEngines} />
         <Route path="/admin/octypo/queue-monitor" component={OctypoQueueMonitor} />
+        <Route path="/admin/rss-feeds" component={RssFeedsPage} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
@@ -78,15 +92,15 @@ export default function AdminLayout() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  
+
   const style = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",
   };
 
   useEffect(() => {
-    import('@/lib/i18n/config').then(({ changeLanguage }) => {
-      changeLanguage('en');
+    import("@/lib/i18n/config").then(({ changeLanguage }) => {
+      changeLanguage("en");
     });
   }, []);
 
@@ -137,9 +151,7 @@ export default function AdminLayout() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Suspense fallback={null}>
-                    <ContentExpiryAlerts />
                     <NotificationsCenter />
-                    <AIAssistant />
                   </Suspense>
                   <ThemeToggle />
                 </div>
@@ -153,15 +165,12 @@ export default function AdminLayout() {
           </div>
         </SidebarProvider>
         <Suspense fallback={null}>
-          <CommandPalette 
-            open={commandPaletteOpen} 
+          <CommandPalette
+            open={commandPaletteOpen}
             onOpenChange={setCommandPaletteOpen}
             onShortcutsOpen={() => setShortcutsOpen(true)}
           />
-          <KeyboardShortcuts 
-            open={shortcutsOpen} 
-            onOpenChange={setShortcutsOpen} 
-          />
+          <KeyboardShortcuts open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
         </Suspense>
       </MultiTabProvider>
     </Suspense>

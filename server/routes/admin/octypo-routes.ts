@@ -1,34 +1,34 @@
 /**
  * Octypo Admin Routes
- * 
+ *
  * Admin dashboard API for managing the AI content generation system
  */
 
-import { Router, type Request, type Response } from 'express';
-import { db } from '../../db';
-import { tiqetsAttractions, contents, workflowInstances, aiWriters } from '@shared/schema';
-import { eq, isNull, isNotNull, sql, desc, and, gte } from 'drizzle-orm';
-import { log } from '../../lib/logger';
-import { 
-  AgentRegistry, 
-  initializeWriterAgents, 
+import { Router, type Request, type Response } from "express";
+import { db } from "../../db";
+import { tiqetsAttractions, contents, workflowInstances, aiWriters } from "@shared/schema";
+import { eq, isNull, isNotNull, sql, desc, and, gte } from "drizzle-orm";
+import { log } from "../../lib/logger";
+import {
+  AgentRegistry,
+  initializeWriterAgents,
   initializeValidatorAgents,
   generateAttractionWithOctypo,
   getOctypoOrchestrator,
-} from '../../octypo';
-import { octypoState } from '../../octypo/state';
-import { EngineRegistry } from '../../services/engine-registry';
-import { getQueueStats } from '../../ai/request-queue';
-import { jobQueue } from '../../job-queue';
-import { manuallyProcessJob } from '../../octypo/job-handler';
+} from "../../octypo";
+import { octypoState } from "../../octypo/state";
+import { EngineRegistry } from "../../services/engine-registry";
+import { getQueueStats } from "../../ai/request-queue";
+import { jobQueue } from "../../job-queue";
+import { manuallyProcessRSSJob } from "../../octypo/job-handler";
 import {
   startRSSScheduler,
   stopRSSScheduler,
   updateRSSSchedulerConfig,
   getRSSSchedulerStatus,
-  manualTrigger as triggerRSSScheduler
-} from '../../octypo/rss-scheduler';
-import { rssReader } from '../../octypo/rss-reader';
+  manualTrigger as triggerRSSScheduler,
+} from "../../octypo/rss-scheduler";
+import { rssReader } from "../../octypo/rss-reader";
 
 const router = Router();
 
@@ -69,28 +69,32 @@ interface OctypoStats {
  * GET /api/octypo/stats
  * Returns system stats for the dashboard
  */
-router.get('/stats', async (_req: Request, res: Response) => {
+router.get("/stats", async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
     const [totalResult, pendingResult, generatedResult, avgScoreResult] = await Promise.all([
-      db.select({ count: sql<number>`count(*)::int` })
+      db
+        .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions)
         .then(r => r[0]?.count ?? 0),
-      
-      db.select({ count: sql<number>`count(*)::int` })
+
+      db
+        .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions)
         .where(isNull(tiqetsAttractions.aiContent))
         .then(r => r[0]?.count ?? 0),
-      
-      db.select({ count: sql<number>`count(*)::int` })
+
+      db
+        .select({ count: sql<number>`count(*)::int` })
         .from(tiqetsAttractions)
         .where(isNotNull(tiqetsAttractions.aiContent))
         .then(r => r[0]?.count ?? 0),
-      
-      db.select({ 
-        avgScore: sql<number>`COALESCE(AVG((ai_content->>'qualityScore')::numeric), 0)::numeric(5,2)` 
-      })
+
+      db
+        .select({
+          avgScore: sql<number>`COALESCE(AVG((ai_content->>'qualityScore')::numeric), 0)::numeric(5,2)`,
+        })
         .from(tiqetsAttractions)
         .where(isNotNull(tiqetsAttractions.aiContent))
         .then(r => parseFloat(String(r[0]?.avgScore ?? 0))),
@@ -110,8 +114,8 @@ router.get('/stats', async (_req: Request, res: Response) => {
 
     res.json(stats);
   } catch (error) {
-    log.error('[Octypo] Failed to get stats', error);
-    res.status(500).json({ error: 'Failed to retrieve stats' });
+    log.error("[Octypo] Failed to get stats", error);
+    res.status(500).json({ error: "Failed to retrieve stats" });
   }
 });
 
@@ -119,12 +123,12 @@ router.get('/stats', async (_req: Request, res: Response) => {
  * GET /api/octypo/agents/writers
  * Returns all writer agents with their specialties and expertise
  */
-router.get('/agents/writers', async (_req: Request, res: Response) => {
+router.get("/agents/writers", async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
     const writers = AgentRegistry.getAllWriters();
-    
+
     const writerInfos: WriterAgentInfo[] = writers.map(writer => ({
       id: writer.id,
       name: writer.name,
@@ -135,8 +139,8 @@ router.get('/agents/writers', async (_req: Request, res: Response) => {
 
     res.json(writerInfos);
   } catch (error) {
-    log.error('[Octypo] Failed to get writers', error);
-    res.status(500).json({ error: 'Failed to retrieve writers' });
+    log.error("[Octypo] Failed to get writers", error);
+    res.status(500).json({ error: "Failed to retrieve writers" });
   }
 });
 
@@ -144,12 +148,12 @@ router.get('/agents/writers', async (_req: Request, res: Response) => {
  * GET /api/octypo/agents/validators
  * Returns all validator agents
  */
-router.get('/agents/validators', async (_req: Request, res: Response) => {
+router.get("/agents/validators", async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
     const validators = AgentRegistry.getAllValidators();
-    
+
     const validatorInfos: ValidatorAgentInfo[] = validators.map(validator => ({
       id: validator.id,
       name: validator.name,
@@ -158,8 +162,8 @@ router.get('/agents/validators', async (_req: Request, res: Response) => {
 
     res.json(validatorInfos);
   } catch (error) {
-    log.error('[Octypo] Failed to get validators', error);
-    res.status(500).json({ error: 'Failed to retrieve validators' });
+    log.error("[Octypo] Failed to get validators", error);
+    res.status(500).json({ error: "Failed to retrieve validators" });
   }
 });
 
@@ -167,7 +171,7 @@ router.get('/agents/validators', async (_req: Request, res: Response) => {
  * GET /api/octypo/queue
  * Returns attractions pending content generation
  */
-router.get('/queue', async (req: Request, res: Response) => {
+router.get("/queue", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
     const offset = parseInt(req.query.offset as string) || 0;
@@ -181,15 +185,16 @@ router.get('/queue', async (req: Request, res: Response) => {
 
     let attractions: any[] = [];
     if (total > 0) {
-      attractions = await db.select({
-        id: tiqetsAttractions.id,
-        title: tiqetsAttractions.title,
-        cityName: tiqetsAttractions.cityName,
-        primaryCategory: tiqetsAttractions.primaryCategory,
-        priceFrom: tiqetsAttractions.priceUsd,
-        rating: tiqetsAttractions.tiqetsRating,
-        reviewCount: tiqetsAttractions.tiqetsReviewCount,
-      })
+      attractions = await db
+        .select({
+          id: tiqetsAttractions.id,
+          title: tiqetsAttractions.title,
+          cityName: tiqetsAttractions.cityName,
+          primaryCategory: tiqetsAttractions.primaryCategory,
+          priceFrom: tiqetsAttractions.priceUsd,
+          rating: tiqetsAttractions.tiqetsRating,
+          reviewCount: tiqetsAttractions.tiqetsReviewCount,
+        })
         .from(tiqetsAttractions)
         .where(isNull(tiqetsAttractions.aiContent))
         .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
@@ -204,8 +209,8 @@ router.get('/queue', async (req: Request, res: Response) => {
       offset,
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get queue', error);
-    res.status(500).json({ error: 'Failed to retrieve queue' });
+    log.error("[Octypo] Failed to get queue", error);
+    res.status(500).json({ error: "Failed to retrieve queue" });
   }
 });
 
@@ -213,28 +218,29 @@ router.get('/queue', async (req: Request, res: Response) => {
  * POST /api/octypo/generate/:attractionId
  * Triggers content generation for a single attraction
  */
-router.post('/generate/:attractionId', async (req: Request, res: Response) => {
+router.post("/generate/:attractionId", async (req: Request, res: Response) => {
   try {
     ensureInitialized();
 
     const attractionId = req.params.attractionId;
     if (!attractionId) {
-      return res.status(400).json({ error: 'Invalid attraction ID' });
+      return res.status(400).json({ error: "Invalid attraction ID" });
     }
 
-    const [attraction] = await db.select()
+    const [attraction] = await db
+      .select()
       .from(tiqetsAttractions)
       .where(eq(tiqetsAttractions.id, attractionId))
       .limit(1);
 
     if (!attraction) {
-      return res.status(404).json({ error: 'Attraction not found' });
+      return res.status(404).json({ error: "Attraction not found" });
     }
 
     const attractionData = {
       id: parseInt(String(attraction.id), 10) || Date.now(),
-      title: attraction.title || '',
-      cityName: attraction.cityName || '',
+      title: attraction.title || "",
+      cityName: attraction.cityName || "",
       venueName: attraction.venueName || undefined,
       duration: attraction.duration || undefined,
       primaryCategory: attraction.primaryCategory || undefined,
@@ -247,17 +253,24 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
       rating: attraction.tiqetsRating ? parseFloat(String(attraction.tiqetsRating)) : undefined,
       reviewCount: attraction.tiqetsReviewCount || undefined,
       address: attraction.venueAddress || undefined,
-      coordinates: attraction.latitude && attraction.longitude 
-        ? { lat: parseFloat(String(attraction.latitude)), lng: parseFloat(String(attraction.longitude)) }
-        : undefined,
+      coordinates:
+        attraction.latitude && attraction.longitude
+          ? {
+              lat: parseFloat(String(attraction.latitude)),
+              lng: parseFloat(String(attraction.longitude)),
+            }
+          : undefined,
     };
 
-    log.info(`[Octypo] Starting content generation for attraction ${attractionId}: ${attraction.title}`);
+    log.info(
+      `[Octypo] Starting content generation for attraction ${attractionId}: ${attraction.title}`
+    );
 
     const result = await generateAttractionWithOctypo(attractionData);
 
     if (result.success && result.content) {
-      await db.update(tiqetsAttractions)
+      await db
+        .update(tiqetsAttractions)
         .set({
           aiContent: {
             ...result.content,
@@ -267,15 +280,16 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
             generatedAt: new Date().toISOString(),
             processingTimeMs: result.generationTimeMs,
           },
-          contentGenerationStatus: 'completed',
+          contentGenerationStatus: "completed",
         } as any)
         .where(eq(tiqetsAttractions.id, attractionId as any));
 
       log.info(`[Octypo] Content generation completed for attraction ${attractionId}`);
     } else {
-      await db.update(tiqetsAttractions)
+      await db
+        .update(tiqetsAttractions)
         .set({
-          contentGenerationStatus: 'failed',
+          contentGenerationStatus: "failed",
         } as any)
         .where(eq(tiqetsAttractions.id, attractionId));
     }
@@ -290,8 +304,13 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
       errors: result.errors,
     });
   } catch (error) {
-    log.error('[Octypo] Generation failed', error);
-    res.status(500).json({ error: 'Content generation failed', message: error instanceof Error ? error.message : 'Unknown error' });
+    log.error("[Octypo] Generation failed", error);
+    res
+      .status(500)
+      .json({
+        error: "Content generation failed",
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
   }
 });
 
@@ -299,17 +318,18 @@ router.post('/generate/:attractionId', async (req: Request, res: Response) => {
  * GET /api/octypo/jobs/recent
  * Returns recent content generation jobs
  */
-router.get('/jobs/recent', async (req: Request, res: Response) => {
+router.get("/jobs/recent", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
 
-    const recentJobs = await db.select({
-      id: tiqetsAttractions.id,
-      title: tiqetsAttractions.title,
-      cityName: tiqetsAttractions.cityName,
-      status: tiqetsAttractions.contentGenerationStatus,
-      aiContent: tiqetsAttractions.aiContent,
-    })
+    const recentJobs = await db
+      .select({
+        id: tiqetsAttractions.id,
+        title: tiqetsAttractions.title,
+        cityName: tiqetsAttractions.cityName,
+        status: tiqetsAttractions.contentGenerationStatus,
+        aiContent: tiqetsAttractions.aiContent,
+      })
       .from(tiqetsAttractions)
       .where(isNotNull(tiqetsAttractions.contentGenerationStatus))
       .orderBy(desc(tiqetsAttractions.id))
@@ -332,8 +352,8 @@ router.get('/jobs/recent', async (req: Request, res: Response) => {
 
     res.json({ jobs });
   } catch (error) {
-    log.error('[Octypo] Failed to get recent jobs', error);
-    res.status(500).json({ error: 'Failed to retrieve jobs' });
+    log.error("[Octypo] Failed to get recent jobs", error);
+    res.status(500).json({ error: "Failed to retrieve jobs" });
   }
 });
 
@@ -341,26 +361,27 @@ router.get('/jobs/recent', async (req: Request, res: Response) => {
  * GET /api/octypo/jobs/:jobId
  * Returns status of a specific job
  */
-router.get('/jobs/:jobId', async (req: Request, res: Response) => {
+router.get("/jobs/:jobId", async (req: Request, res: Response) => {
   try {
     const jobId = parseInt(req.params.jobId, 10);
     if (isNaN(jobId)) {
-      return res.status(400).json({ error: 'Invalid job ID' });
+      return res.status(400).json({ error: "Invalid job ID" });
     }
 
-    const [job] = await db.select({
-      id: tiqetsAttractions.id,
-      title: tiqetsAttractions.title,
-      cityName: tiqetsAttractions.cityName,
-      status: tiqetsAttractions.contentGenerationStatus,
-      aiContent: tiqetsAttractions.aiContent,
-    })
+    const [job] = await db
+      .select({
+        id: tiqetsAttractions.id,
+        title: tiqetsAttractions.title,
+        cityName: tiqetsAttractions.cityName,
+        status: tiqetsAttractions.contentGenerationStatus,
+        aiContent: tiqetsAttractions.aiContent,
+      })
       .from(tiqetsAttractions)
       .where(eq(tiqetsAttractions.id, jobId as any))
       .limit(1);
 
     if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
+      return res.status(404).json({ error: "Job not found" });
     }
 
     const content = job.aiContent as any;
@@ -377,8 +398,8 @@ router.get('/jobs/:jobId', async (req: Request, res: Response) => {
       content: content?.content || null,
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get job', error);
-    res.status(500).json({ error: 'Failed to retrieve job' });
+    log.error("[Octypo] Failed to get job", error);
+    res.status(500).json({ error: "Failed to retrieve job" });
   }
 });
 
@@ -386,12 +407,12 @@ router.get('/jobs/:jobId', async (req: Request, res: Response) => {
  * GET /api/octypo/queue-status
  * Returns status of the background job queue
  */
-router.get('/queue-status', async (_req: Request, res: Response) => {
+router.get("/queue-status", async (_req: Request, res: Response) => {
   try {
     const stats = await jobQueue.getStats();
-    const pendingJobs = await jobQueue.getJobsByStatus('pending');
-    const processingJobs = await jobQueue.getJobsByStatus('processing');
-    
+    const pendingJobs = await jobQueue.getJobsByStatus("pending");
+    const processingJobs = await jobQueue.getJobsByStatus("processing");
+
     res.json({
       stats,
       pendingJobs: pendingJobs.slice(0, 20).map(j => ({
@@ -410,8 +431,8 @@ router.get('/queue-status', async (_req: Request, res: Response) => {
       })),
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get queue status', error);
-    res.status(500).json({ error: 'Failed to retrieve queue status' });
+    log.error("[Octypo] Failed to get queue status", error);
+    res.status(500).json({ error: "Failed to retrieve queue status" });
   }
 });
 
@@ -445,7 +466,7 @@ let autopilotConfig: AutopilotConfig = {
  * GET /api/octypo/destinations
  * Returns list of destinations with health metrics from real database
  */
-router.get('/destinations', async (_req: Request, res: Response) => {
+router.get("/destinations", async (_req: Request, res: Response) => {
   try {
     const destinationStats = await db.execute(sql`
       SELECT 
@@ -466,21 +487,21 @@ router.get('/destinations', async (_req: Request, res: Response) => {
       const withContent = row.with_content || 0;
       const health = total > 0 ? Math.round((withContent / total) * 100) : 0;
       const coverage = total > 0 ? Math.round((withContent / total) * 100) : 0;
-      
-      let status = 'Initializing';
-      if (health >= 90) status = 'Running';
-      else if (health >= 50) status = 'Growing';
-      else if (health >= 20) status = 'Initializing';
-      else status = 'New';
+
+      let status = "Initializing";
+      if (health >= 90) status = "Running";
+      else if (health >= 50) status = "Growing";
+      else if (health >= 20) status = "Initializing";
+      else status = "New";
 
       return {
-        id: row.city_name.toLowerCase().replace(/\s+/g, '-'),
+        id: row.city_name.toLowerCase().replace(/\s+/g, "-"),
         name: row.city_name,
         health,
         status,
         coverage,
         budgetToday: 0,
-        budgetLimit: 50.00,
+        budgetLimit: 50.0,
         alerts: health < 50 ? Math.floor((100 - health) / 20) : 0,
         contentCount: withContent,
         totalAttractions: total,
@@ -491,8 +512,8 @@ router.get('/destinations', async (_req: Request, res: Response) => {
 
     res.json({ destinations });
   } catch (error) {
-    log.error('[Octypo] Failed to get destinations', error);
-    res.status(500).json({ error: 'Failed to retrieve destinations' });
+    log.error("[Octypo] Failed to get destinations", error);
+    res.status(500).json({ error: "Failed to retrieve destinations" });
   }
 });
 
@@ -504,17 +525,17 @@ router.get('/destinations', async (_req: Request, res: Response) => {
  * GET /api/octypo/autopilot/status
  * Returns autopilot status using real OctypoRunState
  */
-router.get('/autopilot/status', async (_req: Request, res: Response) => {
+router.get("/autopilot/status", async (_req: Request, res: Response) => {
   try {
     const isRunning = octypoState.isRunning();
     const lastCompleted = octypoState.getLastCompleted();
     const lastActivity = octypoState.getLastActivity();
     const stateStats = octypoState.getStats();
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const todayIso = today.toISOString().split('T')[0];
-    
+    const todayIso = today.toISOString().split("T")[0];
+
     const todayStats = await db.execute(sql`
       SELECT 
         COUNT(CASE WHEN ai_content->>'generatedAt' >= ${todayIso} THEN 1 END)::int as content_generated_today,
@@ -522,12 +543,12 @@ router.get('/autopilot/status', async (_req: Request, res: Response) => {
       FROM tiqets_attractions
       WHERE ai_content IS NOT NULL
     `);
-    
+
     const statsRow = (todayStats.rows[0] as any) || {};
 
     const status = {
       running: isRunning,
-      mode: 'full' as const,
+      mode: "full" as const,
       startedAt: lastActivity?.toISOString() || null,
       lastCompleted: lastCompleted?.toISOString() || null,
       stats: {
@@ -541,15 +562,13 @@ router.get('/autopilot/status', async (_req: Request, res: Response) => {
         successRate: Math.round(stateStats.successRate * 100),
         concurrency: stateStats.concurrency,
       },
-      uptime: lastActivity 
-        ? Math.floor((Date.now() - lastActivity.getTime()) / 1000)
-        : 0,
+      uptime: lastActivity ? Math.floor((Date.now() - lastActivity.getTime()) / 1000) : 0,
     };
 
     res.json(status);
   } catch (error) {
-    log.error('[Octypo] Failed to get autopilot status', error);
-    res.status(500).json({ error: 'Failed to retrieve autopilot status' });
+    log.error("[Octypo] Failed to get autopilot status", error);
+    res.status(500).json({ error: "Failed to retrieve autopilot status" });
   }
 });
 
@@ -557,16 +576,16 @@ router.get('/autopilot/status', async (_req: Request, res: Response) => {
  * POST /api/octypo/autopilot/start
  * Start the autopilot
  */
-router.post('/autopilot/start', async (req: Request, res: Response) => {
+router.post("/autopilot/start", async (req: Request, res: Response) => {
   try {
-    const { mode = 'full' } = req.body;
-    
+    const { mode = "full" } = req.body;
+
     octypoState.setRunning(true);
-    
+
     log.info(`[Octypo] Autopilot started in ${mode} mode`);
-    
-    res.json({ 
-      success: true, 
+
+    res.json({
+      success: true,
       message: `Autopilot started in ${mode} mode`,
       state: {
         running: true,
@@ -575,8 +594,8 @@ router.post('/autopilot/start', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to start autopilot', error);
-    res.status(500).json({ error: 'Failed to start autopilot' });
+    log.error("[Octypo] Failed to start autopilot", error);
+    res.status(500).json({ error: "Failed to start autopilot" });
   }
 });
 
@@ -584,24 +603,24 @@ router.post('/autopilot/start', async (req: Request, res: Response) => {
  * POST /api/octypo/autopilot/stop
  * Stop the autopilot
  */
-router.post('/autopilot/stop', async (_req: Request, res: Response) => {
+router.post("/autopilot/stop", async (_req: Request, res: Response) => {
   try {
     octypoState.setRunning(false);
 
-    log.info('[Octypo] Autopilot stopped');
-    
-    res.json({ 
-      success: true, 
-      message: 'Autopilot stopped',
+    log.info("[Octypo] Autopilot stopped");
+
+    res.json({
+      success: true,
+      message: "Autopilot stopped",
       state: {
         running: false,
-        mode: 'full',
+        mode: "full",
         startedAt: null,
       },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to stop autopilot', error);
-    res.status(500).json({ error: 'Failed to stop autopilot' });
+    log.error("[Octypo] Failed to stop autopilot", error);
+    res.status(500).json({ error: "Failed to stop autopilot" });
   }
 });
 
@@ -609,12 +628,12 @@ router.post('/autopilot/stop', async (_req: Request, res: Response) => {
  * GET /api/octypo/autopilot/config
  * Returns autopilot configuration
  */
-router.get('/autopilot/config', async (_req: Request, res: Response) => {
+router.get("/autopilot/config", async (_req: Request, res: Response) => {
   try {
     res.json(autopilotConfig);
   } catch (error) {
-    log.error('[Octypo] Failed to get autopilot config', error);
-    res.status(500).json({ error: 'Failed to retrieve autopilot config' });
+    log.error("[Octypo] Failed to get autopilot config", error);
+    res.status(500).json({ error: "Failed to retrieve autopilot config" });
   }
 });
 
@@ -622,34 +641,34 @@ router.get('/autopilot/config', async (_req: Request, res: Response) => {
  * PATCH /api/octypo/autopilot/config
  * Update autopilot configuration
  */
-router.patch('/autopilot/config', async (req: Request, res: Response) => {
+router.patch("/autopilot/config", async (req: Request, res: Response) => {
   try {
     const updates = req.body;
-    
+
     const validKeys: (keyof AutopilotConfig)[] = [
-      'autoExplodeContent',
-      'autoTranslate',
-      'autoFetchImages',
-      'autoPublish',
-      'rssIngestion',
-      'googleDriveSync',
+      "autoExplodeContent",
+      "autoTranslate",
+      "autoFetchImages",
+      "autoPublish",
+      "rssIngestion",
+      "googleDriveSync",
     ];
 
     for (const key of validKeys) {
-      if (typeof updates[key] === 'boolean') {
+      if (typeof updates[key] === "boolean") {
         autopilotConfig[key] = updates[key];
       }
     }
 
-    log.info('[Octypo] Autopilot config updated', updates);
-    
-    res.json({ 
-      success: true, 
+    log.info("[Octypo] Autopilot config updated", updates);
+
+    res.json({
+      success: true,
       config: autopilotConfig,
     });
   } catch (error) {
-    log.error('[Octypo] Failed to update autopilot config', error);
-    res.status(500).json({ error: 'Failed to update autopilot config' });
+    log.error("[Octypo] Failed to update autopilot config", error);
+    res.status(500).json({ error: "Failed to update autopilot config" });
   }
 });
 
@@ -657,7 +676,7 @@ router.patch('/autopilot/config', async (req: Request, res: Response) => {
  * GET /api/octypo/autopilot/pipeline
  * Returns pipeline status based on real queue state
  */
-router.get('/autopilot/pipeline', async (_req: Request, res: Response) => {
+router.get("/autopilot/pipeline", async (_req: Request, res: Response) => {
   try {
     const queueStats = await db.execute(sql`
       SELECT 
@@ -666,25 +685,25 @@ router.get('/autopilot/pipeline', async (_req: Request, res: Response) => {
         COUNT(CASE WHEN content_generation_status = 'failed' THEN 1 END)::int as failed
       FROM tiqets_attractions
     `);
-    
+
     const stats = (queueStats.rows[0] as any) || {};
     const failedQueue = octypoState.getFailedQueue();
 
     const pipeline = [
       {
-        id: 'content-generation',
-        name: 'Content Generation',
-        status: octypoState.isRunning() ? 'running' : 'idle',
+        id: "content-generation",
+        name: "Content Generation",
+        status: octypoState.isRunning() ? "running" : "idle",
         itemsProcessed: stats.processed || 0,
         itemsPending: stats.pending || 0,
         lastRun: octypoState.getLastActivity()?.toISOString() || null,
         avgProcessingTime: 45.0,
-        errorRate: stats.processed > 0 ? ((stats.failed / stats.processed) * 100) : 0,
+        errorRate: stats.processed > 0 ? (stats.failed / stats.processed) * 100 : 0,
       },
       {
-        id: 'failed-retry',
-        name: 'Failed Retry Queue',
-        status: failedQueue.length > 0 ? 'pending' : 'idle',
+        id: "failed-retry",
+        name: "Failed Retry Queue",
+        status: failedQueue.length > 0 ? "pending" : "idle",
         itemsProcessed: 0,
         itemsPending: failedQueue.length,
         lastRun: null,
@@ -695,8 +714,8 @@ router.get('/autopilot/pipeline', async (_req: Request, res: Response) => {
 
     res.json({ pipeline });
   } catch (error) {
-    log.error('[Octypo] Failed to get pipeline status', error);
-    res.status(500).json({ error: 'Failed to retrieve pipeline status' });
+    log.error("[Octypo] Failed to get pipeline status", error);
+    res.status(500).json({ error: "Failed to retrieve pipeline status" });
   }
 });
 
@@ -704,22 +723,22 @@ router.get('/autopilot/pipeline', async (_req: Request, res: Response) => {
  * GET /api/octypo/autopilot/tasks
  * Returns active tasks from the failed queue
  */
-router.get('/autopilot/tasks', async (_req: Request, res: Response) => {
+router.get("/autopilot/tasks", async (_req: Request, res: Response) => {
   try {
     const failedQueue = octypoState.getFailedQueue();
-    
+
     const tasks = failedQueue.map((item, idx) => ({
       id: `task-${item.id}`,
       title: item.title,
-      type: 'content-generation',
+      type: "content-generation",
       progress: 0,
-      status: 'pending',
+      status: "pending",
       retryCount: item.retryCount,
       lastError: item.lastError,
       failedAt: item.failedAt.toISOString(),
     }));
 
-    res.json({ 
+    res.json({
       tasks,
       summary: {
         running: 0,
@@ -728,8 +747,8 @@ router.get('/autopilot/tasks', async (_req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get tasks', error);
-    res.status(500).json({ error: 'Failed to retrieve tasks' });
+    log.error("[Octypo] Failed to get tasks", error);
+    res.status(500).json({ error: "Failed to retrieve tasks" });
   }
 });
 
@@ -741,7 +760,7 @@ router.get('/autopilot/tasks', async (_req: Request, res: Response) => {
  * GET /api/octypo/content
  * Returns content list from real contents table
  */
-router.get('/content', async (req: Request, res: Response) => {
+router.get("/content", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
     const offset = parseInt(req.query.offset as string) || 0;
@@ -749,7 +768,7 @@ router.get('/content', async (req: Request, res: Response) => {
     const typeFilter = req.query.type as string;
 
     let whereConditions: any[] = [];
-    
+
     if (statusFilter) {
       whereConditions.push(eq(contents.status, statusFilter as any));
     }
@@ -757,30 +776,30 @@ router.get('/content', async (req: Request, res: Response) => {
       whereConditions.push(eq(contents.type, typeFilter as any));
     }
 
-    const whereClause = whereConditions.length > 0 
-      ? and(...whereConditions)
-      : undefined;
+    const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
 
     const [contentItems, countResult] = await Promise.all([
-      db.select({
-        id: contents.id,
-        title: contents.title,
-        type: contents.type,
-        status: contents.status,
-        seoScore: contents.seoScore,
-        wordCount: contents.wordCount,
-        writerId: contents.writerId,
-        publishedAt: contents.publishedAt,
-        updatedAt: contents.updatedAt,
-        createdAt: contents.createdAt,
-      })
+      db
+        .select({
+          id: contents.id,
+          title: contents.title,
+          type: contents.type,
+          status: contents.status,
+          seoScore: contents.seoScore,
+          wordCount: contents.wordCount,
+          writerId: contents.writerId,
+          publishedAt: contents.publishedAt,
+          updatedAt: contents.updatedAt,
+          createdAt: contents.createdAt,
+        })
         .from(contents)
         .where(whereClause)
         .orderBy(desc(contents.updatedAt))
         .limit(limit)
         .offset(offset),
-      
-      db.select({ count: sql<number>`count(*)::int` })
+
+      db
+        .select({ count: sql<number>`count(*)::int` })
         .from(contents)
         .where(whereClause)
         .then(r => r[0]?.count ?? 0),
@@ -806,8 +825,8 @@ router.get('/content', async (req: Request, res: Response) => {
       offset,
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get content', error);
-    res.status(500).json({ error: 'Failed to retrieve content' });
+    log.error("[Octypo] Failed to get content", error);
+    res.status(500).json({ error: "Failed to retrieve content" });
   }
 });
 
@@ -819,21 +838,22 @@ router.get('/content', async (req: Request, res: Response) => {
  * GET /api/octypo/review-queue
  * Returns items pending review from real contents table
  */
-router.get('/review-queue', async (_req: Request, res: Response) => {
+router.get("/review-queue", async (_req: Request, res: Response) => {
   try {
-    const reviewItems = await db.select({
-      id: contents.id,
-      title: contents.title,
-      type: contents.type,
-      status: contents.status,
-      seoScore: contents.seoScore,
-      wordCount: contents.wordCount,
-      writerId: contents.writerId,
-      createdAt: contents.createdAt,
-      updatedAt: contents.updatedAt,
-    })
+    const reviewItems = await db
+      .select({
+        id: contents.id,
+        title: contents.title,
+        type: contents.type,
+        status: contents.status,
+        seoScore: contents.seoScore,
+        wordCount: contents.wordCount,
+        writerId: contents.writerId,
+        createdAt: contents.createdAt,
+        updatedAt: contents.updatedAt,
+      })
       .from(contents)
-      .where(eq(contents.status, 'in_review'))
+      .where(eq(contents.status, "in_review"))
       .orderBy(desc(contents.createdAt))
       .limit(100);
 
@@ -842,7 +862,7 @@ router.get('/review-queue', async (_req: Request, res: Response) => {
       contentId: item.id,
       title: item.title,
       type: item.type,
-      priority: item.seoScore && item.seoScore < 70 ? 'high' : 'medium',
+      priority: item.seoScore && item.seoScore < 70 ? "high" : "medium",
       createdAt: item.createdAt?.toISOString() || null,
       quality: item.seoScore || 0,
       seo: item.seoScore || 0,
@@ -852,9 +872,9 @@ router.get('/review-queue', async (_req: Request, res: Response) => {
     }));
 
     const byPriority = {
-      high: formattedItems.filter(r => r.priority === 'high').length,
-      medium: formattedItems.filter(r => r.priority === 'medium').length,
-      low: formattedItems.filter(r => r.priority === 'low').length,
+      high: formattedItems.filter(r => r.priority === "high").length,
+      medium: formattedItems.filter(r => r.priority === "medium").length,
+      low: formattedItems.filter(r => r.priority === "low").length,
     };
 
     res.json({
@@ -863,8 +883,8 @@ router.get('/review-queue', async (_req: Request, res: Response) => {
       byPriority,
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get review queue', error);
-    res.status(500).json({ error: 'Failed to retrieve review queue' });
+    log.error("[Octypo] Failed to get review queue", error);
+    res.status(500).json({ error: "Failed to retrieve review queue" });
   }
 });
 
@@ -872,14 +892,15 @@ router.get('/review-queue', async (_req: Request, res: Response) => {
  * POST /api/octypo/review-queue/:id/approve
  * Approve a review item - updates real content status
  */
-router.post('/review-queue/:id/approve', async (req: Request, res: Response) => {
+router.post("/review-queue/:id/approve", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { notes, publishImmediately = false } = req.body;
 
-    const newStatus = publishImmediately ? 'published' : 'approved';
-    
-    await db.update(contents)
+    const newStatus = publishImmediately ? "published" : "approved";
+
+    await db
+      .update(contents)
       .set({
         status: newStatus,
         approvedAt: new Date(),
@@ -893,12 +914,12 @@ router.post('/review-queue/:id/approve', async (req: Request, res: Response) => 
     res.json({
       success: true,
       message: `Review item ${id} approved`,
-      action: publishImmediately ? 'Published' : 'Approved',
+      action: publishImmediately ? "Published" : "Approved",
       reviewedAt: new Date().toISOString(),
     });
   } catch (error) {
-    log.error('[Octypo] Failed to approve review item', error);
-    res.status(500).json({ error: 'Failed to approve review item' });
+    log.error("[Octypo] Failed to approve review item", error);
+    res.status(500).json({ error: "Failed to approve review item" });
   }
 });
 
@@ -906,14 +927,15 @@ router.post('/review-queue/:id/approve', async (req: Request, res: Response) => 
  * POST /api/octypo/review-queue/:id/reject
  * Reject a review item - updates real content status
  */
-router.post('/review-queue/:id/reject', async (req: Request, res: Response) => {
+router.post("/review-queue/:id/reject", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { reason, sendBackToWriter = true } = req.body;
 
-    const newStatus = sendBackToWriter ? 'draft' : 'archived';
-    
-    await db.update(contents)
+    const newStatus = sendBackToWriter ? "draft" : "archived";
+
+    await db
+      .update(contents)
       .set({
         status: newStatus,
         updatedAt: new Date(),
@@ -925,12 +947,12 @@ router.post('/review-queue/:id/reject', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: `Review item ${id} rejected`,
-      action: sendBackToWriter ? 'Sent back to writer' : 'Archived',
+      action: sendBackToWriter ? "Sent back to writer" : "Archived",
       reviewedAt: new Date().toISOString(),
     });
   } catch (error) {
-    log.error('[Octypo] Failed to reject review item', error);
-    res.status(500).json({ error: 'Failed to reject review item' });
+    log.error("[Octypo] Failed to reject review item", error);
+    res.status(500).json({ error: "Failed to reject review item" });
   }
 });
 
@@ -942,12 +964,12 @@ router.post('/review-queue/:id/reject', async (req: Request, res: Response) => {
  * GET /api/octypo/agents/writers/detailed
  * Returns writers with full personality info and real stats from database
  */
-router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
+router.get("/agents/writers/detailed", async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
     const writers = AgentRegistry.getAllWriters();
-    
+
     const writerStatsResult = await db.execute(sql`
       SELECT 
         ai_content->>'writerUsed' as writer_id,
@@ -959,7 +981,7 @@ router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
       WHERE ai_content IS NOT NULL AND ai_content->>'writerUsed' IS NOT NULL
       GROUP BY ai_content->>'writerUsed'
     `);
-    
+
     const statsMap = new Map<string, any>();
     for (const row of writerStatsResult.rows as any[]) {
       statsMap.set(row.writer_id, row);
@@ -967,7 +989,12 @@ router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
 
     const writerDetails = writers.map(writer => {
       const persona = (writer as any).persona || {};
-      const stats = statsMap.get(writer.id) || { generated: 0, successful: 0, avg_quality: 0, avg_time: 0 };
+      const stats = statsMap.get(writer.id) || {
+        generated: 0,
+        successful: 0,
+        avg_quality: 0,
+        avg_time: 0,
+      };
       const successRate = stats.generated > 0 ? (stats.successful / stats.generated) * 100 : 0;
 
       return {
@@ -977,7 +1004,7 @@ router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
         experienceYears: 10,
         languagesCount: 3,
         traits: persona.tone ? [persona.tone] : [],
-        quote: '',
+        quote: "",
         avatar: null,
         stats: {
           generated: parseInt(stats.generated) || 0,
@@ -988,15 +1015,15 @@ router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
           avgProcessingTimeMs: parseInt(stats.avg_time) || 0,
         },
         expertise: persona.expertise || [],
-        tone: persona.tone || '',
+        tone: persona.tone || "",
         preferredDestinations: [],
       };
     });
 
     res.json({ writers: writerDetails });
   } catch (error) {
-    log.error('[Octypo] Failed to get detailed writers', error);
-    res.status(500).json({ error: 'Failed to retrieve detailed writers' });
+    log.error("[Octypo] Failed to get detailed writers", error);
+    res.status(500).json({ error: "Failed to retrieve detailed writers" });
   }
 });
 
@@ -1004,12 +1031,14 @@ router.get('/agents/writers/detailed', async (_req: Request, res: Response) => {
  * GET /api/octypo/agents/stats
  * Returns aggregate agent performance stats from real database
  */
-router.get('/agents/stats', async (_req: Request, res: Response) => {
+router.get("/agents/stats", async (_req: Request, res: Response) => {
   try {
     ensureInitialized();
 
     const [overallStats, writerStats, recentStats] = await Promise.all([
-      db.execute(sql`
+      db
+        .execute(
+          sql`
         SELECT 
           COUNT(*)::int as total_generated,
           COUNT(CASE WHEN content_generation_status = 'completed' THEN 1 END)::int as successful,
@@ -1017,9 +1046,13 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
           COALESCE(AVG((ai_content->>'processingTimeMs')::numeric), 0)::numeric(10,0) as avg_time
         FROM tiqets_attractions
         WHERE ai_content IS NOT NULL
-      `).then(r => r.rows[0] as any),
+      `
+        )
+        .then(r => r.rows[0] as any),
 
-      db.execute(sql`
+      db
+        .execute(
+          sql`
         SELECT 
           ai_content->>'writerUsed' as writer_id,
           COUNT(*)::int as generated,
@@ -1029,9 +1062,13 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
         WHERE ai_content IS NOT NULL AND ai_content->>'writerUsed' IS NOT NULL
         GROUP BY ai_content->>'writerUsed'
         ORDER BY generated DESC
-      `).then(r => r.rows as any[]),
+      `
+        )
+        .then(r => r.rows as any[]),
 
-      db.execute(sql`
+      db
+        .execute(
+          sql`
         SELECT 
           COUNT(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '7 days' THEN 1 END)::int as last_7_days,
           COUNT(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '30 days' THEN 1 END)::int as last_30_days,
@@ -1039,14 +1076,17 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
           COALESCE(AVG(CASE WHEN ai_content->>'generatedAt' >= NOW() - INTERVAL '30 days' THEN (ai_content->>'qualityScore')::numeric END), 0)::numeric(5,2) as quality_30_days
         FROM tiqets_attractions
         WHERE ai_content IS NOT NULL
-      `).then(r => r.rows[0] as any),
+      `
+        )
+        .then(r => r.rows[0] as any),
     ]);
 
     const writers = AgentRegistry.getAllWriters();
     const writerNameMap = new Map(writers.map(w => [w.id, w.name]));
 
     const totalGenerated = parseInt(overallStats.total_generated) || 0;
-    const successRate = totalGenerated > 0 ? (parseInt(overallStats.successful) / totalGenerated) * 100 : 0;
+    const successRate =
+      totalGenerated > 0 ? (parseInt(overallStats.successful) / totalGenerated) * 100 : 0;
 
     const byWriter = writerStats.map(row => {
       const generated = parseInt(row.generated) || 0;
@@ -1061,15 +1101,14 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
       };
     });
 
-    const topByQuality = byWriter.length > 0 
-      ? byWriter.reduce((a, b) => a.avgQuality > b.avgQuality ? a : b)
-      : null;
-    const topByVolume = byWriter.length > 0 
-      ? byWriter.reduce((a, b) => a.generated > b.generated ? a : b)
-      : null;
-    const topBySuccessRate = byWriter.length > 0 
-      ? byWriter.reduce((a, b) => a.successRate > b.successRate ? a : b)
-      : null;
+    const topByQuality =
+      byWriter.length > 0 ? byWriter.reduce((a, b) => (a.avgQuality > b.avgQuality ? a : b)) : null;
+    const topByVolume =
+      byWriter.length > 0 ? byWriter.reduce((a, b) => (a.generated > b.generated ? a : b)) : null;
+    const topBySuccessRate =
+      byWriter.length > 0
+        ? byWriter.reduce((a, b) => (a.successRate > b.successRate ? a : b))
+        : null;
 
     const stats = {
       overall: {
@@ -1081,21 +1120,37 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
       },
       byWriter,
       topPerformers: {
-        byQuality: topByQuality ? { id: topByQuality.id, name: topByQuality.name, score: topByQuality.avgQuality } : null,
+        byQuality: topByQuality
+          ? { id: topByQuality.id, name: topByQuality.name, score: topByQuality.avgQuality }
+          : null,
         bySEO: null,
-        byVolume: topByVolume ? { id: topByVolume.id, name: topByVolume.name, count: topByVolume.generated } : null,
-        bySuccessRate: topBySuccessRate ? { id: topBySuccessRate.id, name: topBySuccessRate.name, rate: topBySuccessRate.successRate } : null,
+        byVolume: topByVolume
+          ? { id: topByVolume.id, name: topByVolume.name, count: topByVolume.generated }
+          : null,
+        bySuccessRate: topBySuccessRate
+          ? {
+              id: topBySuccessRate.id,
+              name: topBySuccessRate.name,
+              rate: topBySuccessRate.successRate,
+            }
+          : null,
       },
       trends: {
-        last7Days: { generated: parseInt(recentStats.last_7_days) || 0, avgQuality: parseFloat(recentStats.quality_7_days) || 0 },
-        last30Days: { generated: parseInt(recentStats.last_30_days) || 0, avgQuality: parseFloat(recentStats.quality_30_days) || 0 },
+        last7Days: {
+          generated: parseInt(recentStats.last_7_days) || 0,
+          avgQuality: parseFloat(recentStats.quality_7_days) || 0,
+        },
+        last30Days: {
+          generated: parseInt(recentStats.last_30_days) || 0,
+          avgQuality: parseFloat(recentStats.quality_30_days) || 0,
+        },
       },
     };
 
     res.json(stats);
   } catch (error) {
-    log.error('[Octypo] Failed to get agent stats', error);
-    res.status(500).json({ error: 'Failed to retrieve agent stats' });
+    log.error("[Octypo] Failed to get agent stats", error);
+    res.status(500).json({ error: "Failed to retrieve agent stats" });
   }
 });
 
@@ -1107,37 +1162,39 @@ router.get('/agents/stats', async (_req: Request, res: Response) => {
  * GET /api/octypo/workflows
  * Returns workflow list from real workflow_instances table
  */
-router.get('/workflows', async (_req: Request, res: Response) => {
+router.get("/workflows", async (_req: Request, res: Response) => {
   try {
-    const workflowData = await db.select({
-      id: workflowInstances.id,
-      contentId: workflowInstances.contentId,
-      status: workflowInstances.status,
-      currentStep: workflowInstances.currentStep,
-      submittedAt: workflowInstances.submittedAt,
-      completedAt: workflowInstances.completedAt,
-      metadata: workflowInstances.metadata,
-      contentTitle: contents.title,
-      contentType: contents.type,
-      writerId: contents.writerId,
-    })
+    const workflowData = await db
+      .select({
+        id: workflowInstances.id,
+        contentId: workflowInstances.contentId,
+        status: workflowInstances.status,
+        currentStep: workflowInstances.currentStep,
+        submittedAt: workflowInstances.submittedAt,
+        completedAt: workflowInstances.completedAt,
+        metadata: workflowInstances.metadata,
+        contentTitle: contents.title,
+        contentType: contents.type,
+        writerId: contents.writerId,
+      })
       .from(workflowInstances)
       .leftJoin(contents, eq(workflowInstances.contentId, contents.id))
       .orderBy(desc(workflowInstances.submittedAt))
       .limit(100);
 
     const workflows = workflowData.map(wf => {
-      const steps = ['draft', 'review', 'translation', 'images', 'seo-check', 'published'];
+      const steps = ["draft", "review", "translation", "images", "seo-check", "published"];
       const completedSteps = wf.currentStep || 0;
-      const duration = wf.submittedAt && wf.completedAt 
-        ? wf.completedAt.getTime() - wf.submittedAt.getTime()
-        : null;
+      const duration =
+        wf.submittedAt && wf.completedAt
+          ? wf.completedAt.getTime() - wf.submittedAt.getTime()
+          : null;
 
       return {
         id: wf.id,
-        contentTitle: wf.contentTitle || 'Untitled',
+        contentTitle: wf.contentTitle || "Untitled",
         contentId: wf.contentId,
-        status: wf.status || 'pending',
+        status: wf.status || "pending",
         currentStep: steps[Math.min(completedSteps, steps.length - 1)],
         steps,
         completedSteps,
@@ -1150,12 +1207,14 @@ router.get('/workflows', async (_req: Request, res: Response) => {
     });
 
     const summary = {
-      completed: workflows.filter(w => (w.status as string) === 'completed' || w.status === 'approved').length,
-      running: workflows.filter(w => w.status === 'in_progress' || w.status === 'pending').length,
-      pending: workflows.filter(w => w.status === 'pending').length,
-      avgCompletionTime: workflows
-        .filter(w => w.duration)
-        .reduce((sum, w) => sum + (w.duration || 0), 0) / (workflows.filter(w => w.duration).length || 1),
+      completed: workflows.filter(
+        w => (w.status as string) === "completed" || w.status === "approved"
+      ).length,
+      running: workflows.filter(w => w.status === "in_progress" || w.status === "pending").length,
+      pending: workflows.filter(w => w.status === "pending").length,
+      avgCompletionTime:
+        workflows.filter(w => w.duration).reduce((sum, w) => sum + (w.duration || 0), 0) /
+        (workflows.filter(w => w.duration).length || 1),
     };
 
     res.json({
@@ -1163,8 +1222,8 @@ router.get('/workflows', async (_req: Request, res: Response) => {
       summary,
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get workflows', error);
-    res.status(500).json({ error: 'Failed to retrieve workflows' });
+    log.error("[Octypo] Failed to get workflows", error);
+    res.status(500).json({ error: "Failed to retrieve workflows" });
   }
 });
 
@@ -1172,12 +1231,12 @@ router.get('/workflows', async (_req: Request, res: Response) => {
  * GET /api/octypo/engines
  * Returns all AI engines with their status
  */
-router.get('/engines', async (_req: Request, res: Response) => {
+router.get("/engines", async (_req: Request, res: Response) => {
   try {
     EngineRegistry.initialize();
     const engines = EngineRegistry.getAllEngines();
     const stats = EngineRegistry.getStats();
-    
+
     const engineList = engines.map(engine => ({
       id: engine.id,
       name: engine.name,
@@ -1198,11 +1257,11 @@ router.get('/engines', async (_req: Request, res: Response) => {
         unhealthy: stats.total - stats.healthy,
         byProvider: stats.byProvider,
       },
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get engines', error);
-    res.status(500).json({ error: 'Failed to retrieve engines' });
+    log.error("[Octypo] Failed to get engines", error);
+    res.status(500).json({ error: "Failed to retrieve engines" });
   }
 });
 
@@ -1210,15 +1269,16 @@ router.get('/engines', async (_req: Request, res: Response) => {
  * GET /api/octypo/engines/stats
  * Returns aggregate engine statistics
  */
-router.get('/engines/stats', async (_req: Request, res: Response) => {
+router.get("/engines/stats", async (_req: Request, res: Response) => {
   try {
     EngineRegistry.initialize();
     const engines = EngineRegistry.getAllEngines();
     const stats = EngineRegistry.getStats();
-    
+
     const totalRequests = engines.reduce((sum, e) => sum + e.successCount + e.errorCount, 0);
     const totalSuccess = engines.reduce((sum, e) => sum + e.successCount, 0);
-    const successRate = totalRequests > 0 ? (totalSuccess / totalRequests * 100).toFixed(1) : '100.0';
+    const successRate =
+      totalRequests > 0 ? ((totalSuccess / totalRequests) * 100).toFixed(1) : "100.0";
 
     res.json({
       total: stats.total,
@@ -1231,11 +1291,11 @@ router.get('/engines/stats', async (_req: Request, res: Response) => {
         failedRequests: totalRequests - totalSuccess,
         successRate: parseFloat(successRate),
       },
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get engine stats', error);
-    res.status(500).json({ error: 'Failed to retrieve engine stats' });
+    log.error("[Octypo] Failed to get engine stats", error);
+    res.status(500).json({ error: "Failed to retrieve engine stats" });
   }
 });
 
@@ -1243,10 +1303,10 @@ router.get('/engines/stats', async (_req: Request, res: Response) => {
  * GET /api/octypo/ai-queue/status
  * Returns AI request queue status with rate limiting info
  */
-router.get('/ai-queue/status', async (_req: Request, res: Response) => {
+router.get("/ai-queue/status", async (_req: Request, res: Response) => {
   try {
     const queueStats = getQueueStats();
-    
+
     res.json({
       queue: {
         length: queueStats.queueLength,
@@ -1268,11 +1328,11 @@ router.get('/ai-queue/status', async (_req: Request, res: Response) => {
       })),
       estimatedWait: queueStats.estimatedWait,
       estimatedWaitSeconds: queueStats.estimatedWaitSeconds,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get AI queue status', error);
-    res.status(500).json({ error: 'Failed to retrieve AI queue status' });
+    log.error("[Octypo] Failed to get AI queue status", error);
+    res.status(500).json({ error: "Failed to retrieve AI queue status" });
   }
 });
 
@@ -1280,11 +1340,11 @@ router.get('/ai-queue/status', async (_req: Request, res: Response) => {
  * GET /api/octypo/job-queue/status
  * Returns background job queue status from PostgreSQL
  */
-router.get('/job-queue/status', async (_req: Request, res: Response) => {
+router.get("/job-queue/status", async (_req: Request, res: Response) => {
   try {
     const stats = await jobQueue.getStats();
     const recentJobs = await jobQueue.getRecentJobs(20);
-    
+
     res.json({
       stats,
       recentJobs: recentJobs.map(job => ({
@@ -1299,11 +1359,11 @@ router.get('/job-queue/status', async (_req: Request, res: Response) => {
         startedAt: job.startedAt?.toISOString() || null,
         completedAt: job.completedAt?.toISOString() || null,
       })),
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get job queue status', error);
-    res.status(500).json({ error: 'Failed to retrieve job queue status' });
+    log.error("[Octypo] Failed to get job queue status", error);
+    res.status(500).json({ error: "Failed to retrieve job queue status" });
   }
 });
 
@@ -1313,117 +1373,132 @@ router.get('/job-queue/status', async (_req: Request, res: Response) => {
 
 interface ContentJobConfig {
   destination?: string;
-  sourceType: 'rss' | 'topic' | 'manual';
+  sourceType: "rss" | "topic" | "manual";
   rssFeedIds?: string[];
   topicKeywords?: string[];
   manualContent?: { title: string; description: string }[];
   quantity?: number;
-  priority?: 'low' | 'normal' | 'high';
+  priority?: "low" | "normal" | "high";
 }
 
 /**
  * POST /api/octypo/jobs/create
  * Create a new content generation job
  */
-router.post('/jobs/create', async (req: Request, res: Response) => {
+router.post("/jobs/create", async (req: Request, res: Response) => {
   try {
     ensureInitialized();
-    
+
     const config: ContentJobConfig = req.body;
-    
+
     if (!config.sourceType) {
-      return res.status(400).json({ error: 'Source type is required' });
+      return res.status(400).json({ error: "Source type is required" });
     }
 
-    const priority = config.priority === 'high' ? 10 : config.priority === 'low' ? 1 : 5;
+    const priority = config.priority === "high" ? 10 : config.priority === "low" ? 1 : 5;
     const createdJobs: { id: string; type: string; destination?: string }[] = [];
-    
-    if (config.sourceType === 'rss') {
+
+    if (config.sourceType === "rss") {
       if (!config.rssFeedIds || config.rssFeedIds.length === 0) {
-        return res.status(400).json({ error: 'At least one RSS feed is required' });
+        return res.status(400).json({ error: "At least one RSS feed is required" });
       }
-      
-      const { rssFeeds } = await import('@shared/schema');
-      const { inArray } = await import('drizzle-orm');
-      
-      const feeds = await db.select()
-        .from(rssFeeds)
-        .where(inArray(rssFeeds.id, config.rssFeedIds));
-      
+
+      const { rssFeeds } = await import("@shared/schema");
+      const { inArray } = await import("drizzle-orm");
+
+      const feeds = await db.select().from(rssFeeds).where(inArray(rssFeeds.id, config.rssFeedIds));
+
       for (const feed of feeds) {
-        const jobId = await jobQueue.addJob('ai_generate' as any, {
-          jobType: 'rss-content-generation',
-          feedId: feed.id,
-          feedUrl: feed.url,
-          feedName: feed.name,
-          destination: config.destination || feed.destinationId,
-          category: feed.category,
-        }, { priority });
-        
+        const jobId = await jobQueue.addJob(
+          "ai_generate" as any,
+          {
+            jobType: "rss-content-generation",
+            feedId: feed.id,
+            feedUrl: feed.url,
+            feedName: feed.name,
+            destination: config.destination || feed.destinationId,
+            category: feed.category,
+          },
+          { priority }
+        );
+
         createdJobs.push({
           id: jobId,
-          type: 'rss-content-generation',
+          type: "rss-content-generation",
           destination: config.destination || feed.destinationId || undefined,
         });
       }
-      
+
       log.info(`[Octypo] Created ${createdJobs.length} RSS content jobs`);
-    } 
-    else if (config.sourceType === 'topic') {
+    } else if (config.sourceType === "topic") {
       if (!config.topicKeywords || config.topicKeywords.length === 0) {
-        return res.status(400).json({ error: 'At least one topic keyword is required' });
+        return res.status(400).json({ error: "At least one topic keyword is required" });
       }
-      
+
       const quantity = Math.min(config.quantity || 5, 20);
-      
-      const jobId = await jobQueue.addJob('ai_generate' as any, {
-        jobType: 'topic-content-generation',
-        keywords: config.topicKeywords,
-        destination: config.destination,
-        quantity,
-      }, { priority });
-      
+
+      const jobId = await jobQueue.addJob(
+        "ai_generate" as any,
+        {
+          jobType: "topic-content-generation",
+          keywords: config.topicKeywords,
+          destination: config.destination,
+          quantity,
+        },
+        { priority }
+      );
+
       createdJobs.push({
         id: jobId,
-        type: 'topic-content-generation',
+        type: "topic-content-generation",
         destination: config.destination,
       });
-      
-      log.info(`[Octypo] Created topic content job for keywords: ${config.topicKeywords.join(', ')}`);
-    }
-    else if (config.sourceType === 'manual') {
+
+      log.info(
+        `[Octypo] Created topic content job for keywords: ${config.topicKeywords.join(", ")}`
+      );
+    } else if (config.sourceType === "manual") {
       if (!config.manualContent || config.manualContent.length === 0) {
-        return res.status(400).json({ error: 'Manual content items required' });
+        return res.status(400).json({ error: "Manual content items required" });
       }
-      
+
       for (const item of config.manualContent) {
-        const jobId = await jobQueue.addJob('ai_generate' as any, {
-          jobType: 'manual-content-generation',
-          title: item.title,
-          description: item.description,
-          destination: config.destination,
-        }, { priority });
-        
+        const jobId = await jobQueue.addJob(
+          "ai_generate" as any,
+          {
+            jobType: "manual-content-generation",
+            title: item.title,
+            description: item.description,
+            destination: config.destination,
+          },
+          { priority }
+        );
+
         createdJobs.push({
           id: jobId,
-          type: 'manual-content-generation',
+          type: "manual-content-generation",
           destination: config.destination,
         });
       }
-      
+
       log.info(`[Octypo] Created ${createdJobs.length} manual content jobs`);
     }
-    
+
     res.json({
       success: true,
       jobsCreated: createdJobs.length,
       jobs: createdJobs,
       message: `Created ${createdJobs.length} content generation job(s)`,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to create content job', error);
-    res.status(500).json({ error: 'Failed to create content job', message: error instanceof Error ? error.message : 'Unknown error' });
+    log.error("[Octypo] Failed to create content job", error);
+    res
+      .status(500)
+      .json({
+        error: "Failed to create content job",
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
   }
 });
 
@@ -1431,57 +1506,61 @@ router.post('/jobs/create', async (req: Request, res: Response) => {
  * GET /api/octypo/sources/rss
  * Get available RSS feeds for content generation
  */
-router.get('/sources/rss', async (req: Request, res: Response) => {
+router.get("/sources/rss", async (req: Request, res: Response) => {
   try {
-    const { rssFeeds, destinations } = await import('@shared/schema');
-    const { eq, isNull } = await import('drizzle-orm');
-    
+    const { rssFeeds, destinations } = await import("@shared/schema");
+    const { eq, isNull } = await import("drizzle-orm");
+
     const destinationId = req.query.destination as string | undefined;
-    
+
     let feeds;
     if (destinationId) {
-      feeds = await db.select({
-        id: rssFeeds.id,
-        name: rssFeeds.name,
-        url: rssFeeds.url,
-        category: rssFeeds.category,
-        isActive: rssFeeds.isActive,
-        destinationId: rssFeeds.destinationId,
-        language: rssFeeds.language,
-      })
+      feeds = await db
+        .select({
+          id: rssFeeds.id,
+          name: rssFeeds.name,
+          url: rssFeeds.url,
+          category: rssFeeds.category,
+          isActive: rssFeeds.isActive,
+          destinationId: rssFeeds.destinationId,
+          language: rssFeeds.language,
+        })
         .from(rssFeeds)
         .where(eq(rssFeeds.destinationId, destinationId));
     } else {
-      feeds = await db.select({
-        id: rssFeeds.id,
-        name: rssFeeds.name,
-        url: rssFeeds.url,
-        category: rssFeeds.category,
-        isActive: rssFeeds.isActive,
-        destinationId: rssFeeds.destinationId,
-        language: rssFeeds.language,
-      })
+      feeds = await db
+        .select({
+          id: rssFeeds.id,
+          name: rssFeeds.name,
+          url: rssFeeds.url,
+          category: rssFeeds.category,
+          isActive: rssFeeds.isActive,
+          destinationId: rssFeeds.destinationId,
+          language: rssFeeds.language,
+        })
         .from(rssFeeds);
     }
-    
-    const allDestinations = await db.select({
-      id: destinations.id,
-      name: destinations.name,
-    }).from(destinations);
-    
+
+    const allDestinations = await db
+      .select({
+        id: destinations.id,
+        name: destinations.name,
+      })
+      .from(destinations);
+
     const destMap = new Map(allDestinations.map(d => [d.id, d.name]));
-    
+
     res.json({
       feeds: feeds.map(f => ({
         ...f,
         destinationName: f.destinationId ? destMap.get(f.destinationId) : null,
       })),
       totalCount: feeds.length,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get RSS sources', error);
-    res.status(500).json({ error: 'Failed to retrieve RSS sources' });
+    log.error("[Octypo] Failed to get RSS sources", error);
+    res.status(500).json({ error: "Failed to retrieve RSS sources" });
   }
 });
 
@@ -1489,38 +1568,40 @@ router.get('/sources/rss', async (req: Request, res: Response) => {
  * GET /api/octypo/sources/destinations
  * Get list of destinations for job creation
  */
-router.get('/sources/destinations', async (_req: Request, res: Response) => {
+router.get("/sources/destinations", async (_req: Request, res: Response) => {
   try {
-    const { destinations } = await import('@shared/schema');
-    
-    const allDests = await db.select({
-      id: destinations.id,
-      name: destinations.name,
-      country: destinations.country,
-      destinationLevel: destinations.destinationLevel,
-    }).from(destinations);
-    
+    const { destinations } = await import("@shared/schema");
+
+    const allDests = await db
+      .select({
+        id: destinations.id,
+        name: destinations.name,
+        country: destinations.country,
+        destinationLevel: destinations.destinationLevel,
+      })
+      .from(destinations);
+
     const feedCounts = await db.execute(sql`
       SELECT destination_id, COUNT(*)::int as feed_count 
       FROM rss_feeds 
       WHERE destination_id IS NOT NULL 
       GROUP BY destination_id
     `);
-    
+
     const feedCountMap = new Map(
       (feedCounts.rows as any[]).map(r => [r.destination_id, r.feed_count])
     );
-    
+
     res.json({
       destinations: allDests.map(d => ({
         ...d,
         rssFeedCount: feedCountMap.get(d.id) || 0,
       })),
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get destinations', error);
-    res.status(500).json({ error: 'Failed to retrieve destinations' });
+    log.error("[Octypo] Failed to get destinations", error);
+    res.status(500).json({ error: "Failed to retrieve destinations" });
   }
 });
 
@@ -1528,40 +1609,40 @@ router.get('/sources/destinations', async (_req: Request, res: Response) => {
  * POST /api/octypo/jobs/:jobId/process
  * Manually trigger processing of a specific job
  */
-router.post('/jobs/:jobId/process', async (req: Request, res: Response) => {
+router.post("/jobs/:jobId/process", async (req: Request, res: Response) => {
   try {
     const { jobId } = req.params;
-    
+
     if (!jobId) {
-      return res.status(400).json({ error: 'Job ID is required' });
+      return res.status(400).json({ error: "Job ID is required" });
     }
-    
+
     log.info(`[Octypo] Manually processing job: ${jobId}`);
-    
-    const result = await manuallyProcessJob(jobId);
-    
+
+    const result = await manuallyProcessRSSJob(jobId);
+
     if (result.success) {
       res.json({
         success: true,
         jobId,
         result: result.result,
-        message: 'Job processed successfully',
-        _meta: { apiVersion: 'v1' },
+        message: "Job processed successfully",
+        _meta: { apiVersion: "v1" },
       });
     } else {
       res.status(400).json({
         success: false,
         jobId,
         error: result.error,
-        _meta: { apiVersion: 'v1' },
+        _meta: { apiVersion: "v1" },
       });
     }
   } catch (error) {
-    log.error('[Octypo] Failed to process job', error);
-    res.status(500).json({ 
-      error: 'Failed to process job', 
-      message: error instanceof Error ? error.message : 'Unknown error',
-      _meta: { apiVersion: 'v1' },
+    log.error("[Octypo] Failed to process job", error);
+    res.status(500).json({
+      error: "Failed to process job",
+      message: error instanceof Error ? error.message : "Unknown error",
+      _meta: { apiVersion: "v1" },
     });
   }
 });
@@ -1570,16 +1651,16 @@ router.post('/jobs/:jobId/process', async (req: Request, res: Response) => {
  * GET /api/octypo/rss-scheduler/status
  * Get RSS scheduler status and configuration
  */
-router.get('/rss-scheduler/status', async (_req: Request, res: Response) => {
+router.get("/rss-scheduler/status", async (_req: Request, res: Response) => {
   try {
     const status = getRSSSchedulerStatus();
     res.json({
       ...status,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get RSS scheduler status', error);
-    res.status(500).json({ error: 'Failed to get scheduler status' });
+    log.error("[Octypo] Failed to get RSS scheduler status", error);
+    res.status(500).json({ error: "Failed to get scheduler status" });
   }
 });
 
@@ -1587,25 +1668,25 @@ router.get('/rss-scheduler/status', async (_req: Request, res: Response) => {
  * POST /api/octypo/rss-scheduler/start
  * Start the RSS scheduler with optional config
  */
-router.post('/rss-scheduler/start', async (req: Request, res: Response) => {
+router.post("/rss-scheduler/start", async (req: Request, res: Response) => {
   try {
     const { dailyLimit, intervalMinutes } = req.body || {};
-    
+
     const config: Record<string, number | boolean> = { enabled: true };
     if (dailyLimit !== undefined) config.dailyLimit = dailyLimit;
     if (intervalMinutes !== undefined) config.intervalMinutes = intervalMinutes;
-    
+
     startRSSScheduler(config);
-    
+
     const status = getRSSSchedulerStatus();
     res.json({
-      message: 'RSS scheduler started',
+      message: "RSS scheduler started",
       ...status,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to start RSS scheduler', error);
-    res.status(500).json({ error: 'Failed to start scheduler' });
+    log.error("[Octypo] Failed to start RSS scheduler", error);
+    res.status(500).json({ error: "Failed to start scheduler" });
   }
 });
 
@@ -1613,17 +1694,17 @@ router.post('/rss-scheduler/start', async (req: Request, res: Response) => {
  * POST /api/octypo/rss-scheduler/stop
  * Stop the RSS scheduler
  */
-router.post('/rss-scheduler/stop', async (_req: Request, res: Response) => {
+router.post("/rss-scheduler/stop", async (_req: Request, res: Response) => {
   try {
     stopRSSScheduler();
     res.json({
-      message: 'RSS scheduler stopped',
+      message: "RSS scheduler stopped",
       running: false,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to stop RSS scheduler', error);
-    res.status(500).json({ error: 'Failed to stop scheduler' });
+    log.error("[Octypo] Failed to stop RSS scheduler", error);
+    res.status(500).json({ error: "Failed to stop scheduler" });
   }
 });
 
@@ -1631,26 +1712,26 @@ router.post('/rss-scheduler/stop', async (_req: Request, res: Response) => {
  * POST /api/octypo/rss-scheduler/config
  * Update RSS scheduler configuration
  */
-router.post('/rss-scheduler/config', async (req: Request, res: Response) => {
+router.post("/rss-scheduler/config", async (req: Request, res: Response) => {
   try {
     const { dailyLimit, intervalMinutes, enabled } = req.body || {};
-    
+
     const config: Record<string, number | boolean> = {};
     if (dailyLimit !== undefined) config.dailyLimit = dailyLimit;
     if (intervalMinutes !== undefined) config.intervalMinutes = intervalMinutes;
     if (enabled !== undefined) config.enabled = enabled;
-    
+
     updateRSSSchedulerConfig(config);
-    
+
     const status = getRSSSchedulerStatus();
     res.json({
-      message: 'RSS scheduler config updated',
+      message: "RSS scheduler config updated",
       ...status,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to update RSS scheduler config', error);
-    res.status(500).json({ error: 'Failed to update config' });
+    log.error("[Octypo] Failed to update RSS scheduler config", error);
+    res.status(500).json({ error: "Failed to update config" });
   }
 });
 
@@ -1658,19 +1739,19 @@ router.post('/rss-scheduler/config', async (req: Request, res: Response) => {
  * POST /api/octypo/rss-scheduler/trigger
  * Manually trigger RSS scheduler cycle
  */
-router.post('/rss-scheduler/trigger', async (_req: Request, res: Response) => {
+router.post("/rss-scheduler/trigger", async (_req: Request, res: Response) => {
   try {
-    log.info('[Octypo] Manual RSS scheduler trigger requested');
+    log.info("[Octypo] Manual RSS scheduler trigger requested");
     const result = await triggerRSSScheduler();
     res.json({
-      message: 'RSS scheduler cycle triggered',
+      message: "RSS scheduler cycle triggered",
       created: result.created,
       remaining: result.remaining,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to trigger RSS scheduler', error);
-    res.status(500).json({ error: 'Failed to trigger scheduler' });
+    log.error("[Octypo] Failed to trigger RSS scheduler", error);
+    res.status(500).json({ error: "Failed to trigger scheduler" });
   }
 });
 
@@ -1682,16 +1763,16 @@ router.post('/rss-scheduler/trigger', async (_req: Request, res: Response) => {
  * GET /api/octypo/rss/stats
  * Get RSS reader statistics
  */
-router.get('/rss/stats', async (_req: Request, res: Response) => {
+router.get("/rss/stats", async (_req: Request, res: Response) => {
   try {
     const stats = await rssReader.getStats();
     res.json({
       ...stats,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get RSS stats', error);
-    res.status(500).json({ error: 'Failed to get RSS stats' });
+    log.error("[Octypo] Failed to get RSS stats", error);
+    res.status(500).json({ error: "Failed to get RSS stats" });
   }
 });
 
@@ -1699,12 +1780,12 @@ router.get('/rss/stats', async (_req: Request, res: Response) => {
  * POST /api/octypo/rss/fetch/:feedId
  * Fetch and store items from a specific RSS feed
  */
-router.post('/rss/fetch/:feedId', async (req: Request, res: Response) => {
+router.post("/rss/fetch/:feedId", async (req: Request, res: Response) => {
   try {
     const { feedId } = req.params;
 
     if (!feedId) {
-      return res.status(400).json({ error: 'Feed ID is required' });
+      return res.status(400).json({ error: "Feed ID is required" });
     }
 
     log.info(`[Octypo] Fetching RSS feed: ${feedId}`);
@@ -1712,11 +1793,11 @@ router.post('/rss/fetch/:feedId', async (req: Request, res: Response) => {
 
     res.json({
       ...result,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to fetch RSS feed', error);
-    res.status(500).json({ error: 'Failed to fetch RSS feed' });
+    log.error("[Octypo] Failed to fetch RSS feed", error);
+    res.status(500).json({ error: "Failed to fetch RSS feed" });
   }
 });
 
@@ -1724,9 +1805,9 @@ router.post('/rss/fetch/:feedId', async (req: Request, res: Response) => {
  * POST /api/octypo/rss/fetch-all
  * Fetch and store items from all active RSS feeds
  */
-router.post('/rss/fetch-all', async (_req: Request, res: Response) => {
+router.post("/rss/fetch-all", async (_req: Request, res: Response) => {
   try {
-    log.info('[Octypo] Fetching all RSS feeds');
+    log.info("[Octypo] Fetching all RSS feeds");
     const results = await rssReader.fetchAllFeeds();
 
     const summary = {
@@ -1740,11 +1821,11 @@ router.post('/rss/fetch-all', async (_req: Request, res: Response) => {
     res.json({
       summary,
       results,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to fetch all RSS feeds', error);
-    res.status(500).json({ error: 'Failed to fetch all feeds' });
+    log.error("[Octypo] Failed to fetch all RSS feeds", error);
+    res.status(500).json({ error: "Failed to fetch all feeds" });
   }
 });
 
@@ -1752,7 +1833,7 @@ router.post('/rss/fetch-all', async (_req: Request, res: Response) => {
  * GET /api/octypo/rss/items/unprocessed
  * Get unprocessed RSS feed items ready for content generation
  */
-router.get('/rss/items/unprocessed', async (req: Request, res: Response) => {
+router.get("/rss/items/unprocessed", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
     const feedId = req.query.feedId as string | undefined;
@@ -1762,11 +1843,11 @@ router.get('/rss/items/unprocessed', async (req: Request, res: Response) => {
     res.json({
       items,
       count: items.length,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get unprocessed items', error);
-    res.status(500).json({ error: 'Failed to get unprocessed items' });
+    log.error("[Octypo] Failed to get unprocessed items", error);
+    res.status(500).json({ error: "Failed to get unprocessed items" });
   }
 });
 
@@ -1774,7 +1855,7 @@ router.get('/rss/items/unprocessed', async (req: Request, res: Response) => {
  * GET /api/octypo/rss/items/recent
  * Get recent RSS feed items
  */
-router.get('/rss/items/recent', async (req: Request, res: Response) => {
+router.get("/rss/items/recent", async (req: Request, res: Response) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
     const sinceHours = parseInt(req.query.sinceHours as string) || undefined;
@@ -1789,11 +1870,11 @@ router.get('/rss/items/recent', async (req: Request, res: Response) => {
     res.json({
       items,
       count: items.length,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to get recent items', error);
-    res.status(500).json({ error: 'Failed to get recent items' });
+    log.error("[Octypo] Failed to get recent items", error);
+    res.status(500).json({ error: "Failed to get recent items" });
   }
 });
 
@@ -1801,27 +1882,27 @@ router.get('/rss/items/recent', async (req: Request, res: Response) => {
  * POST /api/octypo/rss/items/:itemId/mark-processed
  * Mark an RSS item as processed
  */
-router.post('/rss/items/:itemId/mark-processed', async (req: Request, res: Response) => {
+router.post("/rss/items/:itemId/mark-processed", async (req: Request, res: Response) => {
   try {
     const { itemId } = req.params;
     const { contentId } = req.body;
 
     if (!itemId) {
-      return res.status(400).json({ error: 'Item ID is required' });
+      return res.status(400).json({ error: "Item ID is required" });
     }
 
     await rssReader.markProcessed(itemId, contentId);
 
     res.json({
       success: true,
-      message: 'Item marked as processed',
+      message: "Item marked as processed",
       itemId,
       contentId,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to mark item as processed', error);
-    res.status(500).json({ error: 'Failed to mark item as processed' });
+    log.error("[Octypo] Failed to mark item as processed", error);
+    res.status(500).json({ error: "Failed to mark item as processed" });
   }
 });
 
@@ -1829,9 +1910,9 @@ router.post('/rss/items/:itemId/mark-processed', async (req: Request, res: Respo
  * POST /api/octypo/rss/generate-from-items
  * Generate content from unprocessed RSS items with locale support
  */
-router.post('/rss/generate-from-items', async (req: Request, res: Response) => {
+router.post("/rss/generate-from-items", async (req: Request, res: Response) => {
   try {
-    const { limit = 5, feedId, locale = 'en', destinationId } = req.body;
+    const { limit = 5, feedId, locale = "en", destinationId } = req.body;
     const itemLimit = Math.min(limit, 20);
 
     log.info(`[Octypo] Generating content from RSS items`, { limit: itemLimit, feedId, locale });
@@ -1842,9 +1923,9 @@ router.post('/rss/generate-from-items', async (req: Request, res: Response) => {
     if (items.length === 0) {
       return res.json({
         success: true,
-        message: 'No unprocessed items found',
+        message: "No unprocessed items found",
         generated: 0,
-        _meta: { apiVersion: 'v1' },
+        _meta: { apiVersion: "v1" },
       });
     }
 
@@ -1852,15 +1933,19 @@ router.post('/rss/generate-from-items', async (req: Request, res: Response) => {
     const createdJobs: string[] = [];
 
     for (const item of items) {
-      const jobId = await jobQueue.addJob('ai_generate' as any, {
-        jobType: 'rss-content-generation',
-        feedId: item.feedId,
-        feedUrl: '',
-        feedName: item.source,
-        destination: destinationId || undefined,
-        category: item.category,
-        locale: locale as 'en' | 'ar',
-      }, { priority: 5 });
+      const jobId = await jobQueue.addJob(
+        "ai_generate" as any,
+        {
+          jobType: "rss-content-generation",
+          feedId: item.feedId,
+          feedUrl: "",
+          feedName: item.source,
+          destination: destinationId || undefined,
+          category: item.category,
+          locale: locale as "en" | "ar",
+        },
+        { priority: 5 }
+      );
 
       createdJobs.push(jobId);
     }
@@ -1871,11 +1956,11 @@ router.post('/rss/generate-from-items', async (req: Request, res: Response) => {
       itemsFound: items.length,
       jobsCreated: createdJobs.length,
       jobs: createdJobs,
-      _meta: { apiVersion: 'v1' },
+      _meta: { apiVersion: "v1" },
     });
   } catch (error) {
-    log.error('[Octypo] Failed to generate from RSS items', error);
-    res.status(500).json({ error: 'Failed to generate from RSS items' });
+    log.error("[Octypo] Failed to generate from RSS items", error);
+    res.status(500).json({ error: "Failed to generate from RSS items" });
   }
 });
 

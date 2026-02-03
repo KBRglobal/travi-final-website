@@ -147,7 +147,7 @@ export type PartialDestinationPageData = Partial<DestinationPageData> & {
 // All 17 destination IDs for the factory pattern
 export const DESTINATION_IDS = [
   "abu-dhabi",
-  "amsterdam", 
+  "amsterdam",
   "bangkok",
   "barcelona",
   "dubai",
@@ -159,9 +159,10 @@ export const DESTINATION_IDS = [
   "miami",
   "new-york",
   "paris",
+  "ras-al-khaimah",
   "rome",
   "singapore",
   "tokyo",
 ] as const;
 
-export type DestinationId = typeof DESTINATION_IDS[number];
+export type DestinationId = (typeof DESTINATION_IDS)[number];
