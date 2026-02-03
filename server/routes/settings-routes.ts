@@ -8,27 +8,11 @@ import { storage } from "../storage";
 import { isAuthenticated } from "../replitAuth";
 import { requireRole } from "../security/rbac/enforcer";
 import { type AuthRequest } from "../security";
+import { logAuditEvent } from "../utils/audit-logger";
 
 // Helper to get user ID from auth request
 function getUserId(req: AuthRequest): string | undefined {
   return (req as any).user?.claims?.sub || (req as any).user?.id;
-}
-
-// Import logAuditEvent for audit trail
-async function logAuditEvent(
-  req: any,
-  action: string,
-  entityType: string,
-  entityId: string,
-  description: string,
-  oldData?: any,
-  newData?: any
-) {
-  // This is a simplified version - the actual implementation is in routes.ts
-  // For now, just log to console in development
-  if (process.env.NODE_ENV === "development") {
-    console.log(`[AUDIT] ${action} ${entityType}:${entityId} - ${description}`);
-  }
 }
 
 export function registerSettingsRoutes(app: Express): void {
