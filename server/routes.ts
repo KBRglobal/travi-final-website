@@ -302,6 +302,7 @@ import { registerGdprRoutes } from "./routes/gdpr-routes";
 import { registerWeeklyDigestRoutes } from "./routes/weekly-digest-routes";
 import { registerWebhookWorkflowRoutes } from "./routes/webhook-workflow-routes";
 import { registerAffiliateRoutes } from "./routes/affiliate-routes";
+import { registerAiToolsRoutes } from "./routes/ai-tools-routes";
 // Ops features (Feature-flagged, default OFF)
 import { incidentsRoutes } from "./incidents";
 import { auditV2Routes } from "./audit-v2";
@@ -13736,6 +13737,11 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
   registerAffiliateRoutes(app);
 
   // ============================================================================
+  // AI TOOLS ROUTES (Scoring, Plagiarism, Visual Search)
+  // ============================================================================
+  registerAiToolsRoutes(app);
+
+  // ============================================================================
   // AI WRITERS ROUTES - Virtual Newsroom (disabled - module deleted)
   // ============================================================================
   // registerWriterRoutes(app);
@@ -13925,95 +13931,6 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       }
     }
   );
-
-  // ============================================================================
-  // AI CONTENT SCORING
-  // ============================================================================
-  app.post("/api/ai/score-content/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { contentScorer } = await import("./ai/content-scorer");
-      const { contentId } = req.params;
-      const result = await contentScorer.scoreContent(contentId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(500).json({ error: "Failed to score content" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to score content" });
-    }
-  });
-
-  app.get("/api/ai/content-score/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { contentScorer } = await import("./ai/content-scorer");
-      const { contentId } = req.params;
-      const result = await contentScorer.getContentScore(contentId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(404).json({ error: "No score found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to get content score" });
-    }
-  });
-
-  // ============================================================================
-  // AI PLAGIARISM DETECTION
-  // ============================================================================
-  app.post("/api/ai/check-plagiarism/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { plagiarismDetector } = await import("./ai/plagiarism-detector");
-      const { contentId } = req.params;
-      const { threshold } = req.body;
-      const result = await plagiarismDetector.checkPlagiarism(contentId, threshold);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to check plagiarism" });
-    }
-  });
-
-  app.post("/api/ai/compare-texts", requireAuth, async (req, res) => {
-    try {
-      const { plagiarismDetector } = await import("./ai/plagiarism-detector");
-      const { text1, text2 } = req.body;
-      const similarity = await plagiarismDetector.compareTexts(text1, text2);
-      res.json({ similarity });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to compare texts" });
-    }
-  });
-
-  // ============================================================================
-  // AI VISUAL SEARCH
-  // ============================================================================
-  app.post("/api/ai/visual-search", async (req, res) => {
-    try {
-      const { visualSearch } = await import("./ai/visual-search");
-      const { imageUrl, limit } = req.body;
-      const results = await visualSearch.searchByImage(imageUrl, limit);
-      res.json({ results });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to perform visual search" });
-    }
-  });
-
-  app.post("/api/ai/analyze-image", async (req, res) => {
-    try {
-      const { visualSearch } = await import("./ai/visual-search");
-      const { imageUrl } = req.body;
-      const analysis = await visualSearch.analyzeImage(imageUrl);
-      if (analysis) {
-        res.json(analysis);
-      } else {
-        res.status(500).json({ error: "Failed to analyze image" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to analyze image" });
-    }
-  });
-
 
   // ============================================================================
   // AEO (Answer Engine Optimization) ROUTES
