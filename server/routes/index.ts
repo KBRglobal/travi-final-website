@@ -17,6 +17,10 @@ import { registerAffiliateRoutes } from "./affiliate-routes";
 import { registerAiToolsRoutes } from "./ai-tools-routes";
 import { registerEmailMarketingRoutes } from "./email-marketing-routes";
 import { registerContentOrganizationRoutes } from "./content-organization-routes";
+import { registerTranslationRoutes } from "./translation-routes";
+import { registerUserRoutes } from "./user-routes";
+import { registerPageLayoutRoutes } from "./page-layout-routes";
+import { registerWriterPromotionRoutes } from "./writer-promotion-routes";
 
 /**
  * Main router registry that coordinates all domain-specific route modules.
@@ -76,6 +80,18 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 
   // Content organization routes
   registerContentOrganizationRoutes(app);
+
+  // Translation routes
+  registerTranslationRoutes(app);
+
+  // User management routes
+  registerUserRoutes(app);
+
+  // Page layout and sitemap routes
+  registerPageLayoutRoutes(app);
+
+  // AI writers and homepage promotions routes
+  registerWriterPromotionRoutes(app);
 }
 
 // Export individual registrars for selective usage
