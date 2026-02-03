@@ -16,6 +16,7 @@ import { registerWebhookWorkflowRoutes } from "./webhook-workflow-routes";
 import { registerAffiliateRoutes } from "./affiliate-routes";
 import { registerAiToolsRoutes } from "./ai-tools-routes";
 import { registerEmailMarketingRoutes } from "./email-marketing-routes";
+import { registerContentOrganizationRoutes } from "./content-organization-routes";
 
 /**
  * Main router registry that coordinates all domain-specific route modules.
@@ -72,6 +73,9 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 
   // Email marketing routes
   registerEmailMarketingRoutes(app);
+
+  // Content organization routes
+  registerContentOrganizationRoutes(app);
 }
 
 // Export individual registrars for selective usage
