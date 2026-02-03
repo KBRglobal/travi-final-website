@@ -36,10 +36,7 @@ import {
   RefreshCw,
   Plus,
   Search,
-  AlertTriangle,
   TrendingUp,
-  Play,
-  Square,
   Bot,
   Rss,
   FileText,
@@ -47,7 +44,6 @@ import {
   Loader2,
   Clock,
   CheckCircle,
-  ExternalLink,
 } from "lucide-react";
 
 interface StatsData {
@@ -58,18 +54,6 @@ interface StatsData {
   avgQualityScore: number;
 }
 
-interface AutopilotData {
-  running: boolean;
-  mode: string;
-  stats: {
-    contentGeneratedToday: number;
-    translationsToday: number;
-    publishedToday: number;
-    tasksCompletedToday: number;
-    imagesProcessedToday: number;
-    errorsToday: number;
-  };
-}
 
 interface EngineStats {
   total: number;
@@ -133,9 +117,6 @@ export default function OctypoDashboardPage() {
     queryKey: ["/api/octypo/stats"],
   });
 
-  const { data: autopilotData } = useQuery<AutopilotData>({
-    queryKey: ["/api/octypo/autopilot/status"],
-  });
 
   const { data: engineStats } = useQuery<EngineStats>({
     queryKey: ["/api/octypo/engines/stats"],
@@ -286,27 +267,6 @@ export default function OctypoDashboardPage() {
     );
   };
 
-  const startAutopilot = useMutation({
-    mutationFn: () => apiRequest("/api/octypo/autopilot/start", { method: "POST" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/octypo/autopilot/status"] });
-      toast({ title: "Autopilot Started", description: "Content generation is now running." });
-    },
-    onError: () => {
-      toast({ title: "Error", description: "Failed to start autopilot.", variant: "destructive" });
-    },
-  });
-
-  const stopAutopilot = useMutation({
-    mutationFn: () => apiRequest("/api/octypo/autopilot/stop", { method: "POST" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/octypo/autopilot/status"] });
-      toast({ title: "Autopilot Stopped", description: "Content generation has been paused." });
-    },
-    onError: () => {
-      toast({ title: "Error", description: "Failed to stop autopilot.", variant: "destructive" });
-    },
-  });
 
   const feeds = rssFeedsData?.feeds || [];
   const rssItems = rssItemsData?.items || [];
@@ -314,8 +274,6 @@ export default function OctypoDashboardPage() {
   const pendingContent = statsData?.pendingContent || 0;
   const writerAgentCount = statsData?.writerAgentCount || 0;
   const validatorAgentCount = statsData?.validatorAgentCount || 0;
-  const isAutopilotRunning = autopilotData?.running || false;
-  const todayStats = autopilotData?.stats;
 
   const filteredItems = rssItems.filter(
     item =>
@@ -344,49 +302,6 @@ export default function OctypoDashboardPage() {
           <p className="text-muted-foreground">AI-powered content generation from RSS feeds</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-            <Bot className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Autopilot:</span>
-            {isAutopilotRunning ? (
-              <>
-                <Badge
-                  variant="secondary"
-                  className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                >
-                  Running
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => stopAutopilot.mutate()}
-                  disabled={stopAutopilot.isPending}
-                  data-testid="button-stop-autopilot"
-                >
-                  <Square className="h-4 w-4 mr-1" />
-                  Stop
-                </Button>
-              </>
-            ) : (
-              <>
-                <Badge
-                  variant="secondary"
-                  className="bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"
-                >
-                  Stopped
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => startAutopilot.mutate()}
-                  disabled={startAutopilot.isPending}
-                  data-testid="button-start-autopilot"
-                >
-                  <Play className="h-4 w-4 mr-1" />
-                  Start
-                </Button>
-              </>
-            )}
-          </div>
           <Button
             variant="outline"
             onClick={() => refetch()}
@@ -429,9 +344,7 @@ export default function OctypoDashboardPage() {
             <div className="text-3xl font-bold text-green-600" data-testid="text-generated">
               {generatedContent}
             </div>
-            <p className="text-xs text-muted-foreground">
-              {todayStats?.contentGeneratedToday || 0} today
-            </p>
+            <p className="text-xs text-muted-foreground">total articles</p>
           </CardContent>
         </Card>
 
@@ -465,14 +378,14 @@ export default function OctypoDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Errors</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-orange-500" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">RSS Items</CardTitle>
+            <FileText className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-orange-600" data-testid="text-errors">
-              {todayStats?.errorsToday || 0}
+            <div className="text-3xl font-bold text-orange-600" data-testid="text-rss-items">
+              {rssItems.length}
             </div>
-            <p className="text-xs text-muted-foreground">today</p>
+            <p className="text-xs text-muted-foreground">recent news</p>
           </CardContent>
         </Card>
       </div>
