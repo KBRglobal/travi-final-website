@@ -30,14 +30,9 @@ const HomepageEditorPage = lazy(() => import("@/pages/admin/homepage-editor"));
 const DestinationsListPage = lazy(() => import("@/pages/admin/destinations/destinations-list"));
 const DestinationHubPage = lazy(() => import("@/pages/admin/destinations/destination-hub"));
 const DestinationNewPage = lazy(() => import("@/pages/admin/destinations/destination-new"));
-const DestinationsIndexEditorPage = lazy(
-  () => import("@/pages/admin/destinations/destinations-index-editor")
-);
 const TiqetsAttractionsList = lazy(() => import("@/pages/admin/tiqets-attractions-list"));
 const AttractionDetailPage = lazy(() => import("@/pages/admin/tiqets/attraction-detail"));
 const OctypoDashboardNew = lazy(() => import("@/pages/admin/octypo/dashboard"));
-const OctypoAutopilot = lazy(() => import("@/pages/admin/octypo/autopilot"));
-const OctypoContent = lazy(() => import("@/pages/admin/octypo/content"));
 const OctypoReviewQueue = lazy(() => import("@/pages/admin/octypo/review-queue"));
 const OctypoWritersRoom = lazy(() => import("@/pages/admin/octypo/writers-room"));
 const OctypoAIAgents = lazy(() => import("@/pages/admin/octypo/ai-agents"));
@@ -47,7 +42,6 @@ const OctypoQueueMonitor = lazy(() => import("@/pages/admin/octypo/queue-monitor
 const OctypoSettings = lazy(() => import("@/pages/admin/octypo/settings"));
 const GatekeeperDashboard = lazy(() => import("@/pages/admin/gatekeeper/dashboard"));
 const RssFeedsPage = lazy(() => import("@/pages/admin/rss-feeds"));
-const DestinationBrowser = lazy(() => import("@/pages/destination-browser"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function AdminPageLoader() {
@@ -70,13 +64,9 @@ function AdminRouter() {
         <Route path="/admin/homepage" component={HomepageEditorPage} />
         <Route path="/admin/destinations" component={DestinationsListPage} />
         <Route path="/admin/destinations/new" component={DestinationNewPage} />
-        <Route path="/admin/destinations/index-editor" component={DestinationsIndexEditorPage} />
         <Route path="/admin/destinations/:slug" component={DestinationHubPage} />
-        <Route path="/admin/destinations-browser" component={DestinationBrowser} />
         <Route path="/admin/octypo" component={OctypoDashboardNew} />
         <Route path="/admin/octypo/dashboard" component={OctypoDashboardNew} />
-        <Route path="/admin/octypo/autopilot" component={OctypoAutopilot} />
-        <Route path="/admin/octypo/content" component={OctypoContent} />
         <Route path="/admin/octypo/review-queue" component={OctypoReviewQueue} />
         <Route path="/admin/octypo/writers-room" component={OctypoWritersRoom} />
         <Route path="/admin/octypo/ai-agents" component={OctypoAIAgents} />
