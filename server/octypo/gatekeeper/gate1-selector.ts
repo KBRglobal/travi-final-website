@@ -26,98 +26,14 @@ import {
 } from "./types";
 import { logger } from "../../lib/logger";
 import { getDeduplicationEngine } from "./deduplication";
+import { EVALUATOR_PROMPTS } from "./prompts/evaluator-prompts";
+import { DECISION_ENGINE_RULES } from "./prompts/decision-engine-rules";
 
-const GATE1_SYSTEM_PROMPT = `You are an intelligent editorial gatekeeper for a travel content platform (TRAVI).
-Your job is to evaluate news items and decide if they're worth turning into articles.
+// Use the 2026-optimized prompts from the prompts module
+const GATE1_SYSTEM_PROMPT = EVALUATOR_PROMPTS.SYSTEM;
 
-You evaluate on 3 dimensions:
-
-## 1. SEO Potential (40% weight)
-- Search volume potential for related keywords
-- Competition level (prefer low competition + high interest)
-- E-E-A-T potential (Experience, Expertise, Authoritativeness, Trustworthiness)
-- Alignment with traveler journey stages (inspiration → research → booking → experience)
-- Long-tail keyword opportunities
-
-## 2. AEO Potential (35% weight) - Answer Engine Optimization
-- How easily can AI assistants (ChatGPT, Perplexity) extract and cite this?
-- Schema markup opportunities (FAQ, HowTo, Event, Place)
-- Semantic clarity - can this provide direct answers?
-- Entity authority building potential
-- Featured snippet / AI Overview potential
-
-## 3. Virality Potential (25% weight)
-- Emotional triggers (surprise, excitement, urgency, FOMO)
-- Cultural relevance and timeliness
-- Connection to mega-events (World Cup, Olympics, etc.)
-- Shareability factor (K-factor)
-- "Whycation" trend alignment (purpose-driven travel)
-
-## Content Tiers
-- S1: Breaking news, exclusives, major industry shifts. High resources needed.
-- S2: High-value news, quick to produce. Fast publication with AEO optimization.
-- S3: General updates. Only write if score > 50, otherwise skip.
-
-## Value Matrix
-- High value + Low cost = Quick Win (publish immediately)
-- High value + High cost = Strategic Investment (deep analysis)
-- Low value + Low cost = Gap Filler (publish if capacity allows)
-- Low value + High cost = Skip (don't waste resources)
-
-Be decisive. Most content should be SKIPPED. Only truly newsworthy items deserve articles.
-Boring press releases, minor updates, and rehashed content = SKIP.
-
-Respond in JSON format only.`;
-
-const GATE1_EVALUATION_PROMPT = `Evaluate this news item for our travel content platform:
-
-**Title:** {title}
-
-**Summary:** {summary}
-
-**Source:** {sourceName}
-**Category:** {category}
-**Destination:** {destination}
-**Published:** {publishedDate}
-
-Analyze and respond with this exact JSON structure:
-{
-  "seoAnalysis": {
-    "score": <0-100>,
-    "searchVolumePotential": "high" | "medium" | "low",
-    "competitionLevel": "high" | "medium" | "low",
-    "keywordOpportunities": ["keyword1", "keyword2", ...],
-    "travelJourneyStage": "inspiration" | "research" | "booking" | "experience",
-    "eeaTScore": <0-100>,
-    "reasoning": "<brief explanation>"
-  },
-  "aeoAnalysis": {
-    "score": <0-100>,
-    "extractability": "high" | "medium" | "low",
-    "schemaPotential": ["FAQ", "HowTo", "Event", "Place", "Review"],
-    "answerBoxPotential": true | false,
-    "semanticClarity": <0-100>,
-    "entityAuthority": ["entity1", "entity2"],
-    "reasoning": "<brief explanation>"
-  },
-  "viralityAnalysis": {
-    "score": <0-100>,
-    "emotionalTriggers": ["trigger1", "trigger2"],
-    "culturalRelevance": "high" | "medium" | "low",
-    "timeliness": "breaking" | "trending" | "evergreen" | "stale",
-    "shareability": <0-2 K-factor>,
-    "megaEventConnection": "<event name or null>",
-    "reasoning": "<brief explanation>"
-  },
-  "decision": "write" | "skip" | "queue",
-  "tier": "S1" | "S2" | "S3",
-  "estimatedValue": "high" | "medium" | "low",
-  "estimatedCost": "high" | "medium" | "low",
-  "recommendedWriterCategory": "<category matching our writers>",
-  "reasoning": "<2-3 sentences explaining your overall decision>"
-}
-
-Be strict. If this is boring, generic, or low-value content, score it low and recommend SKIP.`;
+// User prompt template from the 2026 optimized prompts
+const GATE1_EVALUATION_PROMPT = EVALUATOR_PROMPTS.USER_TEMPLATE;
 
 export class Gate1Selector {
   private config: GatekeeperConfig;
@@ -255,9 +171,11 @@ export class Gate1Selector {
   }
 
   private buildPrompt(input: ContentSelectionInput): string {
-    return GATE1_EVALUATION_PROMPT.replace("{title}", input.title)
+    return GATE1_EVALUATION_PROMPT
+      .replace("{title}", input.title)
       .replace("{summary}", input.summary || "No summary available")
       .replace("{sourceName}", input.sourceName || "Unknown")
+      .replace("{sourceCredibility}", "medium") // TODO: Add source credibility scoring
       .replace("{category}", input.category || "General")
       .replace("{destination}", input.destinationId || "Not specified")
       .replace("{publishedDate}", input.publishedDate?.toISOString() || "Unknown");
