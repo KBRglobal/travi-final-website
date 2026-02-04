@@ -48,6 +48,9 @@ self.addEventListener('install', (event) => {
         });
       })
       .then(() => self.skipWaiting())
+      .catch((error) => {
+        console.error('[SW Install] Failed to install service worker:', error);
+      })
   );
 });
 
@@ -62,6 +65,9 @@ self.addEventListener('activate', (event) => {
         );
       })
       .then(() => self.clients.claim())
+      .catch((error) => {
+        console.error('[SW Activate] Failed to activate service worker:', error);
+      })
   );
 });
 

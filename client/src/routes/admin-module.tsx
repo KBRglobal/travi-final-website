@@ -8,19 +8,44 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { ErrorBoundary } from "@/components/error-boundary";
 
 const CommandPalette = lazy(() =>
-  import("@/components/command-palette").then(m => ({ default: m.CommandPalette }))
+  import("@/components/command-palette")
+    .then(m => ({ default: m.CommandPalette }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load CommandPalette:", err);
+      throw err;
+    })
 );
 const KeyboardShortcuts = lazy(() =>
-  import("@/components/keyboard-shortcuts").then(m => ({ default: m.KeyboardShortcuts }))
+  import("@/components/keyboard-shortcuts")
+    .then(m => ({ default: m.KeyboardShortcuts }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load KeyboardShortcuts:", err);
+      throw err;
+    })
 );
 const NotificationsCenter = lazy(() =>
-  import("@/components/notifications-center").then(m => ({ default: m.NotificationsCenter }))
+  import("@/components/notifications-center")
+    .then(m => ({ default: m.NotificationsCenter }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load NotificationsCenter:", err);
+      throw err;
+    })
 );
 const MultiTabProvider = lazy(() =>
-  import("@/components/multi-tab-editor").then(m => ({ default: m.MultiTabProvider }))
+  import("@/components/multi-tab-editor")
+    .then(m => ({ default: m.MultiTabProvider }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load MultiTabProvider:", err);
+      throw err;
+    })
 );
 const TabCountBadge = lazy(() =>
-  import("@/components/multi-tab-editor").then(m => ({ default: m.TabCountBadge }))
+  import("@/components/multi-tab-editor")
+    .then(m => ({ default: m.TabCountBadge }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load TabCountBadge:", err);
+      throw err;
+    })
 );
 
 const Dashboard = lazy(() => import("@/pages/admin/AdminDashboard"));

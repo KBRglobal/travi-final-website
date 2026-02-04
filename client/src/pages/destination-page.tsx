@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { MapPin, ArrowLeft, Loader2 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import type { DestinationPageData } from "@/types/destination";
+import type { DestinationPageData, DestinationMood } from "@/types/destination";
 
 interface FeaturedItem {
   id: string;
@@ -144,7 +144,7 @@ export default function DestinationPage() {
       primaryColor: apiData?.mood?.primaryColor || "#1E40AF",
       gradientFrom: apiData?.mood?.gradientFrom || "rgba(0,0,0,0.6)",
       gradientTo: apiData?.mood?.gradientTo || "rgba(0,0,0,0.3)",
-      vibe: (apiData?.mood?.vibe || "cultural") as any,
+      vibe: (apiData?.mood?.vibe || "cultural") as DestinationMood["vibe"],
       tagline: apiData?.mood?.tagline || "",
     },
 

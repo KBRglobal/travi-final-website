@@ -13,8 +13,22 @@ import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 import { DESTINATION_IDS } from "@/types/destination";
 
-const CookieConsentBanner = lazy(() => import("@/components/cookie-consent-banner").then(m => ({ default: m.CookieConsentBanner })));
-const PWAInstallPrompt = lazy(() => import("@/components/pwa-install-prompt").then(m => ({ default: m.PWAInstallPrompt })));
+const CookieConsentBanner = lazy(() =>
+  import("@/components/cookie-consent-banner")
+    .then(m => ({ default: m.CookieConsentBanner }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load CookieConsentBanner:", err);
+      throw err;
+    })
+);
+const PWAInstallPrompt = lazy(() =>
+  import("@/components/pwa-install-prompt")
+    .then(m => ({ default: m.PWAInstallPrompt }))
+    .catch(err => {
+      console.error("[LazyLoad] Failed to load PWAInstallPrompt:", err);
+      throw err;
+    })
+);
 
 const Homepage = lazy(() => import("@/pages/homepage"));
 const Attractions = lazy(() => import("@/pages/attractions"));
@@ -42,9 +56,9 @@ const AdminLayout = lazy(() => import("@/routes/admin-module"));
 function PageLoader() {
   return (
     <div className="min-h-[400px] flex flex-col items-center justify-center gap-4">
-      <img 
-        src="/logos/Mascot_for_Dark_Background.png" 
-        alt="TRAVI" 
+      <img
+        src="/logos/Mascot_for_Dark_Background.png"
+        alt="TRAVI"
         className="w-16 h-16 object-contain animate-bounce"
       />
       <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -109,33 +123,68 @@ const publicRoutes = [
 ];
 
 const LOCALE_PREFIXES = [
-  "en", "ar", "hi", "zh", "ru", "ur", "fr",
-  "de", "fa", "bn", "fil", "es", "tr", "it", "ja", "ko", "he",
-  "pt", "nl", "pl", "sv", "th", "vi", "id", "ms", "cs", "el", "uk"
+  "en",
+  "ar",
+  "hi",
+  "zh",
+  "ru",
+  "ur",
+  "fr",
+  "de",
+  "fa",
+  "bn",
+  "fil",
+  "es",
+  "tr",
+  "it",
+  "ja",
+  "ko",
+  "he",
+  "pt",
+  "nl",
+  "pl",
+  "sv",
+  "th",
+  "vi",
+  "id",
+  "ms",
+  "cs",
+  "el",
+  "uk",
 ];
 
 function PublicRouter() {
   return (
     <Switch>
-      <Route path="/destinations/:city/attractions">{(params) => <CityAttractionsRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/news">{(params) => <DestinationNewsRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/when-to-go">{(params) => <DestinationWhenToGoRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/getting-around">{(params) => <DestinationGettingAroundRedirect params={params} />}</Route>
-      <Route path="/destinations/:city/faq">{(params) => <DestinationFaqRedirect params={params} />}</Route>
-      
-      {DESTINATION_IDS.map((city) => (
+      <Route path="/destinations/:city/attractions">
+        {params => <CityAttractionsRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/news">
+        {params => <DestinationNewsRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/when-to-go">
+        {params => <DestinationWhenToGoRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/getting-around">
+        {params => <DestinationGettingAroundRedirect params={params} />}
+      </Route>
+      <Route path="/destinations/:city/faq">
+        {params => <DestinationFaqRedirect params={params} />}
+      </Route>
+
+      {DESTINATION_IDS.map(city => (
         <Route key={`city-attractions-${city}`} path={`/${city}/attractions`}>
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
       ))}
-      
-      {DESTINATION_IDS.map((city) => (
+
+      {DESTINATION_IDS.map(city => (
         <Route key={`guides-city-${city}`} path={`/guides/${city}`}>
           {() => <Redirect to={`/guides/${city}-travel-guide`} />}
         </Route>
       ))}
-      
-      {DESTINATION_IDS.map((city) => (
+
+      {DESTINATION_IDS.map(city => (
         <Route key={`attractions-city-redirect-${city}`} path={`/attractions/${city}`}>
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
@@ -143,13 +192,13 @@ function PublicRouter() {
 
       <Route path="/en/:city/attractions/:slug" component={TraviLocationPage} />
       <Route path="/en/:city/restaurants/:slug" component={TraviLocationPage} />
-      
-      {LOCALE_PREFIXES.map((locale) => (
+
+      {LOCALE_PREFIXES.map(locale => (
         <Route key={`${locale}-home`} path={`/${locale}`} component={Homepage} />
       ))}
-      
-      {LOCALE_PREFIXES.flatMap((locale) =>
-        publicRoutes.map((route) => (
+
+      {LOCALE_PREFIXES.flatMap(locale =>
+        publicRoutes.map(route => (
           <Route
             key={`${locale}-${route.path}`}
             path={`/${locale}${route.path}`}
@@ -158,17 +207,17 @@ function PublicRouter() {
         ))
       )}
 
-      {publicRoutes.map((route) => (
+      {publicRoutes.map(route => (
         <Route key={route.path} path={route.path} component={route.component} />
       ))}
-      
+
       <Route path="/bangkok">{() => <Redirect to="/destinations/bangkok" />}</Route>
       <Route path="/paris">{() => <Redirect to="/destinations/paris" />}</Route>
       <Route path="/istanbul">{() => <Redirect to="/destinations/istanbul" />}</Route>
       <Route path="/london">{() => <Redirect to="/destinations/london" />}</Route>
       <Route path="/new-york">{() => <Redirect to="/destinations/new-york" />}</Route>
       <Route path="/singapore">{() => <Redirect to="/destinations/singapore" />}</Route>
-      
+
       <Route path="/">{() => <Redirect to="/en" />}</Route>
       <Route path="/en" component={Homepage} />
       <Route component={NotFound} />
@@ -197,11 +246,7 @@ function App() {
               </a>
               <Suspense fallback={<PageLoader />}>
                 <main id="main-content" tabIndex={-1}>
-                  {isAdminRoute ? (
-                    <AdminLayout />
-                  ) : (
-                    <PublicRouter />
-                  )}
+                  {isAdminRoute ? <AdminLayout /> : <PublicRouter />}
                 </main>
               </Suspense>
               <Toaster />

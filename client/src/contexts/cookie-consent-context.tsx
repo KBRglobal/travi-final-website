@@ -26,24 +26,25 @@ const CookieConsentContext = createContext<CookieConsentContextType | undefined>
 declare global {
   interface Window {
     __gtm_loaded?: boolean;
+    // dataLayer is already declared in analytics.ts
   }
 }
 
 function loadGTM() {
   if (typeof window === "undefined") return;
   if (window.__gtm_loaded) return;
-  
+
   window.__gtm_loaded = true;
-  
-  (window as any).dataLayer = (window as any).dataLayer || [];
-  (window as any).dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-  
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+
   const f = document.getElementsByTagName("script")[0];
   const j = document.createElement("script");
   j.async = true;
   j.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
   f.parentNode?.insertBefore(j, f);
-  
+
   const noscript = document.createElement("noscript");
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.googletagmanager.com/ns.html?id=${GTM_ID}`;
@@ -109,7 +110,10 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     setConsent(prefs.analytics || prefs.marketing ? "all" : "essential");
     setShowBanner(false);
     setShowSettings(false);
-    localStorage.setItem(COOKIE_CONSENT_KEY, prefs.analytics || prefs.marketing ? "all" : "essential");
+    localStorage.setItem(
+      COOKIE_CONSENT_KEY,
+      prefs.analytics || prefs.marketing ? "all" : "essential"
+    );
     localStorage.setItem(COOKIE_PREFS_KEY, JSON.stringify(prefs));
     if (prefs.analytics) {
       loadGTM();

@@ -12,10 +12,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { 
-  MapPin, 
-  Clock, 
-  Ticket, 
+import {
+  MapPin,
+  Clock,
+  Ticket,
   Star,
   X,
   ZoomIn,
@@ -34,7 +34,7 @@ import {
   Camera,
   LightbulbIcon,
   HelpCircle,
-  Backpack
+  Backpack,
 } from "lucide-react";
 
 interface TraviLocationDetails {
@@ -95,7 +95,7 @@ const categoryIcons = {
 
 const categoryLabels = {
   attraction: "Attraction",
-  restaurant: "Restaurant", 
+  restaurant: "Restaurant",
   hotel: "Hotel",
 };
 
@@ -105,15 +105,15 @@ const categoryColors = {
   hotel: "bg-emerald-500",
 };
 
-function LocationHero({ 
-  name, 
+function LocationHero({
+  name,
   category,
   city,
   country,
   heroImage,
   imageAttribution,
-  affiliateLink
-}: { 
+  affiliateLink,
+}: {
   name: string;
   category: "attraction" | "restaurant" | "hotel";
   city: string;
@@ -123,40 +123,41 @@ function LocationHero({
   affiliateLink: string;
 }) {
   const CategoryIcon = categoryIcons[category];
-  
+
   return (
-    <section 
+    <section
       className="relative w-full min-h-[50vh] md:min-h-[60vh] lg:min-h-[70vh] overflow-hidden"
       data-testid="section-location-hero"
     >
       <div className="absolute inset-0">
-        <img 
+        <img
           src={heroImage}
           alt={name}
           className="w-full h-full object-cover"
           loading="eager"
-          {...{ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/cards/dubai.webp";
+          {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
+          onError={e => {
+            (e.target as HTMLImageElement).src = "/placeholder-image.svg";
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
       </div>
-      
+
       <div className="relative container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 lg:py-20 flex flex-col justify-end min-h-[50vh] md:min-h-[60vh] lg:min-h-[70vh]">
         <div className="max-w-4xl space-y-4 md:space-y-5">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className="bg-white/90 backdrop-blur-sm text-foreground border-0 px-3 py-1.5"
               data-testid="badge-location"
             >
               <MapPin className="w-3.5 h-3.5 mr-1.5" />
-              {city}{country ? `, ${country}` : ""}
+              {city}
+              {country ? `, ${country}` : ""}
             </Badge>
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className={`${categoryColors[category]} backdrop-blur-sm text-white border-0 px-3 py-1.5`}
               data-testid="badge-category"
             >
@@ -164,8 +165,8 @@ function LocationHero({
               {categoryLabels[category]}
             </Badge>
           </div>
-          
-          <h1 
+
+          <h1
             className="font-chillax text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.1]"
             data-testid="text-location-name"
           >
@@ -176,15 +177,19 @@ function LocationHero({
             <Button
               size="lg"
               className="bg-[#6443F4] hover:bg-[#5339D9] text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg"
-              onClick={() => window.open(affiliateLink, '_blank', 'noopener,noreferrer')}
+              onClick={() => window.open(affiliateLink, "_blank", "noopener,noreferrer")}
               data-testid="button-book-tickets-hero"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
-              {category === "attraction" ? "Book Tickets" : category === "hotel" ? "Book Now" : "Reserve a Table"}
+              {category === "attraction"
+                ? "Book Tickets"
+                : category === "hotel"
+                  ? "Book Now"
+                  : "Reserve a Table"}
               <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
           </div>
-          
+
           {imageAttribution && (
             <p className="text-xs text-white/60 mt-4" data-testid="text-image-attribution">
               {imageAttribution}
@@ -196,11 +201,11 @@ function LocationHero({
   );
 }
 
-function QuickInfoSidebar({ 
+function QuickInfoSidebar({
   details,
   category,
-  affiliateLink
-}: { 
+  affiliateLink,
+}: {
   details: TraviLocationDetails | null;
   category: "attraction" | "restaurant" | "hotel";
   affiliateLink: string;
@@ -230,9 +235,9 @@ function QuickInfoSidebar({
                   {item.label}
                 </p>
                 {item.isLink ? (
-                  <a 
-                    href={item.value} 
-                    target="_blank" 
+                  <a
+                    href={item.value}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-[#6443F4] hover:underline truncate block"
                   >
@@ -245,7 +250,7 @@ function QuickInfoSidebar({
             </div>
           );
         })}
-        
+
         {details?.openingHours && Object.keys(details.openingHours).length > 0 && (
           <div className="pt-2 border-t" data-testid="opening-hours">
             <div className="flex items-center gap-2 mb-2">
@@ -268,11 +273,15 @@ function QuickInfoSidebar({
         <div className="pt-4">
           <Button
             className="w-full bg-[#6443F4] hover:bg-[#5339D9] text-white"
-            onClick={() => window.open(affiliateLink, '_blank', 'noopener,noreferrer')}
+            onClick={() => window.open(affiliateLink, "_blank", "noopener,noreferrer")}
             data-testid="button-book-sidebar"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            {category === "attraction" ? "Book Tickets" : category === "hotel" ? "Book Now" : "Reserve"}
+            {category === "attraction"
+              ? "Book Tickets"
+              : category === "hotel"
+                ? "Book Now"
+                : "Reserve"}
             <ExternalLink className="w-3 h-3 ml-2" />
           </Button>
         </div>
@@ -283,9 +292,9 @@ function QuickInfoSidebar({
 
 function ImageGallery({ images }: { images: TraviLocationImage[] }) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  
+
   if (!images || images.length === 0) return null;
-  
+
   const displayImages = images.slice(0, 6);
 
   return (
@@ -294,7 +303,7 @@ function ImageGallery({ images }: { images: TraviLocationImage[] }) {
         <Camera className="w-6 h-6 text-[#6443F4]" />
         Gallery
       </h2>
-      
+
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         {displayImages.map((image, index) => (
           <div
@@ -344,9 +353,11 @@ function ImageGallery({ images }: { images: TraviLocationImage[] }) {
                     size="icon"
                     variant="ghost"
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
-                      setSelectedIndex((prev) => (prev === 0 ? displayImages.length - 1 : (prev || 0) - 1));
+                      setSelectedIndex(prev =>
+                        prev === 0 ? displayImages.length - 1 : (prev || 0) - 1
+                      );
                     }}
                   >
                     <ChevronLeft className="w-6 h-6" />
@@ -355,9 +366,11 @@ function ImageGallery({ images }: { images: TraviLocationImage[] }) {
                     size="icon"
                     variant="ghost"
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
-                      setSelectedIndex((prev) => (prev === displayImages.length - 1 ? 0 : (prev || 0) + 1));
+                      setSelectedIndex(prev =>
+                        prev === displayImages.length - 1 ? 0 : (prev || 0) + 1
+                      );
                     }}
                   >
                     <ChevronRight className="w-6 h-6" />
@@ -377,42 +390,36 @@ function ImageGallery({ images }: { images: TraviLocationImage[] }) {
   );
 }
 
-function ContentSection({ 
-  id, 
+function ContentSection({
+  id,
   title,
   icon: Icon,
-  children 
-}: { 
-  id: string; 
+  children,
+}: {
+  id: string;
   title: string;
   icon?: React.ComponentType<{ className?: string }>;
   children: React.ReactNode;
 }) {
   return (
-    <section 
-      id={id}
-      className="scroll-mt-24 mb-12"
-      data-testid={`section-${id}`}
-    >
+    <section id={id} className="scroll-mt-24 mb-12" data-testid={`section-${id}`}>
       <h2 className="font-chillax text-2xl md:text-3xl font-bold tracking-tight mb-6 flex items-center gap-2">
         {Icon && <Icon className="w-6 h-6 text-[#6443F4]" />}
         {title}
       </h2>
-      <div className="text-foreground leading-[1.75]">
-        {children}
-      </div>
+      <div className="text-foreground leading-[1.75]">{children}</div>
     </section>
   );
 }
 
 function HighlightsSection({ highlights }: { highlights: string[] }) {
   if (!highlights || highlights.length === 0) return null;
-  
+
   return (
     <ContentSection id="highlights" title="Key Highlights" icon={Star}>
       <div className="grid gap-3 md:gap-4">
         {highlights.map((highlight, index) => (
-          <div 
+          <div
             key={index}
             className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-[#6443F4]/5 to-[#6443F4]/10 border border-[#6443F4]/10"
             data-testid={`highlight-${index}`}
@@ -428,12 +435,12 @@ function HighlightsSection({ highlights }: { highlights: string[] }) {
 
 function WhatToBringSection({ items }: { items: { item: string; reason: string }[] }) {
   if (!items || items.length === 0) return null;
-  
+
   return (
     <ContentSection id="what-to-bring" title="What to Bring" icon={Backpack}>
       <div className="grid gap-4 md:grid-cols-2">
         {items.map((item, index) => (
-          <div 
+          <div
             key={index}
             className="p-4 rounded-xl bg-muted/50 border border-border"
             data-testid={`bring-item-${index}`}
@@ -447,35 +454,44 @@ function WhatToBringSection({ items }: { items: { item: string; reason: string }
   );
 }
 
-function FAQSection({ faqItems, locationName }: { faqItems: { question: string; answer: string }[]; locationName: string }) {
+function FAQSection({
+  faqItems,
+  locationName,
+}: {
+  faqItems: { question: string; answer: string }[];
+  locationName: string;
+}) {
   if (!faqItems || faqItems.length === 0) return null;
 
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqItems.map(item => ({
+    mainEntity: faqItems.map(item => ({
       "@type": "Question",
-      "name": item.question,
-      "acceptedAnswer": {
+      name: item.question,
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": item.answer
-      }
-    }))
+        text: item.answer,
+      },
+    })),
   };
 
   return (
     <section id="faqs" className="scroll-mt-24 mb-12" data-testid="section-faqs">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       <h2 className="font-chillax text-2xl md:text-3xl font-bold tracking-tight mb-6 flex items-center gap-2">
         <HelpCircle className="w-6 h-6 text-[#6443F4]" />
         Frequently Asked Questions
       </h2>
-      
+
       <Accordion type="single" collapsible className="w-full">
         {faqItems.map((item, index) => (
-          <AccordionItem 
-            key={index} 
+          <AccordionItem
+            key={index}
             value={`faq-${index}`}
             className="border border-border rounded-xl mb-3 px-4 bg-card"
             data-testid={`faq-item-${index}`}
@@ -493,41 +509,42 @@ function FAQSection({ faqItems, locationName }: { faqItems: { question: string; 
   );
 }
 
-function BookingCTASection({ 
-  name, 
+function BookingCTASection({
+  name,
   category,
-  affiliateLink 
-}: { 
+  affiliateLink,
+}: {
   name: string;
   category: "attraction" | "restaurant" | "hotel";
   affiliateLink: string;
 }) {
   return (
-    <section 
-      className="mb-12"
-      data-testid="section-booking-cta"
-    >
+    <section className="mb-12" data-testid="section-booking-cta">
       <Card className="bg-gradient-to-br from-[#6443F4] to-[#5339D9] border-0 rounded-2xl overflow-hidden">
         <CardContent className="p-8 md:p-12 text-center">
           <h2 className="font-chillax text-2xl md:text-3xl font-bold text-white mb-4">
             Ready to Visit {name}?
           </h2>
           <p className="text-white/80 mb-6 max-w-lg mx-auto">
-            {category === "attraction" 
+            {category === "attraction"
               ? "Book your tickets now and skip the lines! Best prices guaranteed."
               : category === "hotel"
-              ? "Reserve your stay and enjoy exclusive rates!"
-              : "Make a reservation and experience culinary excellence!"}
+                ? "Reserve your stay and enjoy exclusive rates!"
+                : "Make a reservation and experience culinary excellence!"}
           </p>
           <Button
             size="lg"
             variant="outline"
             className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-xl border-0"
-            onClick={() => window.open(affiliateLink, '_blank', 'noopener,noreferrer')}
+            onClick={() => window.open(affiliateLink, "_blank", "noopener,noreferrer")}
             data-testid="button-book-cta"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
-            {category === "attraction" ? "Book Tickets Now" : category === "hotel" ? "Book Your Stay" : "Reserve a Table"}
+            {category === "attraction"
+              ? "Book Tickets Now"
+              : category === "hotel"
+                ? "Book Your Stay"
+                : "Reserve a Table"}
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
         </CardContent>
@@ -539,16 +556,21 @@ function BookingCTASection({
 function generateSchemaOrg(location: TraviLocation) {
   const baseSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": location.category === "hotel" ? "Hotel" : location.category === "restaurant" ? "Restaurant" : "TouristAttraction",
-    "name": location.name,
-    "description": location.content?.shortDescription || location.content?.metaDescription || "",
-    "address": {
+    "@type":
+      location.category === "hotel"
+        ? "Hotel"
+        : location.category === "restaurant"
+          ? "Restaurant"
+          : "TouristAttraction",
+    name: location.name,
+    description: location.content?.shortDescription || location.content?.metaDescription || "",
+    address: {
       "@type": "PostalAddress",
-      "addressLocality": location.city,
-      "addressCountry": location.country || "",
-      "streetAddress": location.details?.address || ""
+      addressLocality: location.city,
+      addressCountry: location.country || "",
+      streetAddress: location.details?.address || "",
     },
-    "url": typeof window !== "undefined" ? window.location.href : "",
+    url: typeof window !== "undefined" ? window.location.href : "",
   };
 
   if (location.details?.phone) {
@@ -566,8 +588,8 @@ function generateSchemaOrg(location: TraviLocation) {
   if (location.details?.latitude && location.details?.longitude) {
     baseSchema.geo = {
       "@type": "GeoCoordinates",
-      "latitude": parseFloat(location.details.latitude),
-      "longitude": parseFloat(location.details.longitude)
+      latitude: parseFloat(location.details.latitude),
+      longitude: parseFloat(location.details.longitude),
     };
   }
 
@@ -576,8 +598,12 @@ function generateSchemaOrg(location: TraviLocation) {
 
 export default function TraviLocationPage() {
   const { city, slug } = useParams<{ city: string; slug: string }>();
-  
-  const { data: location, isLoading, error } = useQuery<TraviLocation>({
+
+  const {
+    data: location,
+    isLoading,
+    error,
+  } = useQuery<TraviLocation>({
     queryKey: ["/api/public/travi/locations", city, slug],
     enabled: !!city && !!slug,
   });
@@ -602,10 +628,7 @@ export default function TraviLocationPage() {
           <p className="text-muted-foreground mb-6">
             The location you're looking for doesn't exist or isn't available yet.
           </p>
-          <Button 
-            onClick={() => window.history.back()}
-            variant="outline"
-          >
+          <Button onClick={() => window.history.back()} variant="outline">
             Go Back
           </Button>
         </div>
@@ -613,12 +636,19 @@ export default function TraviLocationPage() {
     );
   }
 
-  const heroImage = location.images?.find(img => img.isHero)?.imageUrl || location.images?.[0]?.imageUrl || "/cards/dubai.webp";
-  const heroAttribution = location.images?.find(img => img.isHero)?.attribution || location.images?.[0]?.attribution;
+  const heroImage =
+    location.images?.find(img => img.isHero)?.imageUrl ||
+    location.images?.[0]?.imageUrl ||
+    "/placeholder-image.svg";
+  const heroAttribution =
+    location.images?.find(img => img.isHero)?.attribution || location.images?.[0]?.attribution;
   const schemaOrg = generateSchemaOrg(location);
 
   const metaTitle = location.content?.metaTitle || `${location.name} - ${location.city} | TRAVI`;
-  const metaDescription = location.content?.metaDescription || location.content?.shortDescription || `Discover ${location.name} in ${location.city}. Plan your visit with TRAVI.`;
+  const metaDescription =
+    location.content?.metaDescription ||
+    location.content?.shortDescription ||
+    `Discover ${location.name} in ${location.city}. Plan your visit with TRAVI.`;
 
   return (
     <>
@@ -630,9 +660,7 @@ export default function TraviLocationPage() {
         <meta property="og:image" content={heroImage} />
         <meta property="og:type" content="website" />
         <link rel="canonical" href={typeof window !== "undefined" ? window.location.href : ""} />
-        <script type="application/ld+json">
-          {JSON.stringify(schemaOrg)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -643,9 +671,12 @@ export default function TraviLocationPage() {
             size="sm"
             className="text-muted-foreground hover:text-foreground"
             onClick={() => {
-              const categoryPath = location.category === "attraction" ? "/attractions" 
-                : location.category === "hotel" ? "/hotels" 
-                : "/dining";
+              const categoryPath =
+                location.category === "attraction"
+                  ? "/attractions"
+                  : location.category === "hotel"
+                    ? "/hotels"
+                    : "/dining";
               window.location.href = categoryPath;
             }}
             data-testid="button-back-to-category"
@@ -722,10 +753,7 @@ export default function TraviLocationPage() {
                 </ContentSection>
               )}
 
-              <FAQSection 
-                faqItems={location.content?.faq || []} 
-                locationName={location.name} 
-              />
+              <FAQSection faqItems={location.content?.faq || []} locationName={location.name} />
 
               <BookingCTASection
                 name={location.name}

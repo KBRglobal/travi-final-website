@@ -180,7 +180,7 @@ function HeroSection({
           loading="eager"
           {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
           onError={e => {
-            (e.target as HTMLImageElement).src = "/cards/dubai.webp";
+            (e.target as HTMLImageElement).src = "/placeholder-image.svg";
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/30" />
@@ -793,7 +793,7 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     loading="lazy"
                     onError={e => {
-                      (e.target as HTMLImageElement).src = "/cards/dubai.webp";
+                      (e.target as HTMLImageElement).src = "/placeholder-image.svg";
                     }}
                   />
                 </div>
@@ -1106,7 +1106,8 @@ function RelatedAttractionsSection({
         <div className="flex overflow-x-auto gap-6 pb-4 -mx-4 px-4 snap-x snap-mandatory scrollbar-hide">
           {attractions.slice(0, 6).map((attraction, index) => {
             const tiqetsImages = (attraction.tiqetsImages as TiqetsImage[]) || [];
-            const image = tiqetsImages[0]?.large || tiqetsImages[0]?.medium || "/cards/dubai.webp";
+            const image =
+              tiqetsImages[0]?.large || tiqetsImages[0]?.medium || "/placeholder-image.svg";
 
             return (
               <Link
@@ -1125,7 +1126,7 @@ function RelatedAttractionsSection({
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                       loading="lazy"
                       onError={e => {
-                        (e.target as HTMLImageElement).src = "/cards/dubai.webp";
+                        (e.target as HTMLImageElement).src = "/placeholder-image.svg";
                       }}
                     />
                     {attraction.primaryCategory && (

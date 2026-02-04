@@ -12,12 +12,16 @@
               registrations.forEach(function(registration) {
                 registration.unregister();
               });
+            }).catch(function(err) {
+              console.error('[SW Cleanup] Failed to get registrations:', err);
             });
             if ('caches' in window) {
               caches.keys().then(function(names) {
                 names.forEach(function(name) {
                   caches.delete(name);
                 });
+              }).catch(function(err) {
+                console.error('[Cache Cleanup] Failed to clear caches:', err);
               });
             }
           }

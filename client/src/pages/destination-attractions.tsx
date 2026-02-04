@@ -284,7 +284,7 @@ function transformApiResponse(
   const transformedAttractions: Attraction[] = apiResponse.attractions.map((a, index) => {
     const category = inferCategory(a.title, a.venueName);
     const tiqetsImages = a.tiqetsImages || [];
-    const image = tiqetsImages[0]?.large || tiqetsImages[0]?.medium || "/cards/dubai.webp";
+    const image = tiqetsImages[0]?.large || tiqetsImages[0]?.medium || "/placeholder-image.svg";
     return {
       id: a.id,
       slug: a.slug,
@@ -722,7 +722,7 @@ function DestinationAttractionsPage() {
     })),
   };
 
-  const ogImage = data.top10[0]?.image || data.attractions[0]?.image || "/cards/dubai.webp";
+  const ogImage = data.top10[0]?.image || data.attractions[0]?.image || "/placeholder-image.svg";
 
   return (
     <>

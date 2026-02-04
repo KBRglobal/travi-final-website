@@ -727,7 +727,10 @@ export default function OctypoDashboardPage() {
 
             <div className="space-y-2">
               <Label>Priority</Label>
-              <Select value={priority} onValueChange={v => setPriority(v as any)}>
+              <Select
+                value={priority}
+                onValueChange={v => setPriority(v as "low" | "normal" | "high")}
+              >
                 <SelectTrigger data-testid="select-priority">
                   <SelectValue />
                 </SelectTrigger>
