@@ -5,8 +5,11 @@
  * Includes encrypted secrets management and optimization settings.
  */
 
+// Type export (interface)
+export type { OctypoSecrets } from "./secrets";
+
+// Value exports (functions)
 export {
-  OctypoSecrets,
   encryptSecrets,
   decryptSecrets,
   saveSecrets,
