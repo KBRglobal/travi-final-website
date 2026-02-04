@@ -57,9 +57,10 @@ async function getTodaysCountsPerDestination(): Promise<DestinationCounts> {
   today.setHours(0, 0, 0, 0);
 
   // Count AI-generated articles per destination today
+  // related_destination_ids is JSONB, use ->> 0 to get first element
   const result = await db.execute(sql`
     SELECT
-      a.related_destination_ids[1] as destination_id,
+      a.related_destination_ids ->> 0 as destination_id,
       COUNT(*) as count
     FROM contents c
     JOIN articles a ON a.content_id = c.id
@@ -67,8 +68,8 @@ async function getTodaysCountsPerDestination(): Promise<DestinationCounts> {
       AND c.generated_by_ai = true
       AND c.created_at >= ${today}
       AND a.related_destination_ids IS NOT NULL
-      AND array_length(a.related_destination_ids, 1) > 0
-    GROUP BY a.related_destination_ids[1]
+      AND jsonb_array_length(a.related_destination_ids) > 0
+    GROUP BY a.related_destination_ids ->> 0
   `);
 
   const counts: DestinationCounts = {};

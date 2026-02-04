@@ -84,10 +84,25 @@ class RSSReader {
     if (this.initialized) return;
 
     try {
+      // Drop old table if it has wrong column types (uuid instead of varchar)
+      await db.execute(sql`
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'rss_feed_items'
+            AND column_name = 'feed_id'
+            AND data_type = 'uuid'
+          ) THEN
+            DROP TABLE rss_feed_items CASCADE;
+          END IF;
+        END $$
+      `);
+
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS rss_feed_items (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          feed_id UUID NOT NULL REFERENCES rss_feeds(id) ON DELETE CASCADE,
+          id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          feed_id VARCHAR NOT NULL REFERENCES rss_feeds(id) ON DELETE CASCADE,
           title VARCHAR(500) NOT NULL,
           url VARCHAR(2000) NOT NULL UNIQUE,
           summary TEXT,
@@ -95,7 +110,7 @@ class RSSReader {
           source VARCHAR(200),
           category VARCHAR(100),
           processed BOOLEAN DEFAULT FALSE,
-          content_id UUID REFERENCES contents(id),
+          content_id VARCHAR REFERENCES contents(id),
           created_at TIMESTAMPTZ DEFAULT NOW(),
           processed_at TIMESTAMPTZ
         )
@@ -208,7 +223,7 @@ class RSSReader {
           await db.execute(sql`
             INSERT INTO rss_feed_items (feed_id, title, url, summary, published_date, source, category)
             VALUES (
-              ${feed.id}::uuid,
+              ${feed.id},
               ${(item.title || '').substring(0, 500)},
               ${item.link.substring(0, 2000)},
               ${summary.substring(0, 5000)},
@@ -329,7 +344,7 @@ class RSSReader {
     `;
 
     if (feedId) {
-      query = sql`${query} AND feed_id = ${feedId}::uuid`;
+      query = sql`${query} AND feed_id = ${feedId}`;
     }
 
     query = sql`${query} ORDER BY published_date DESC NULLS LAST, created_at DESC LIMIT ${limit}`;
@@ -347,14 +362,14 @@ class RSSReader {
     if (contentId) {
       await db.execute(sql`
         UPDATE rss_feed_items
-        SET processed = TRUE, content_id = ${contentId}::uuid, processed_at = NOW()
-        WHERE id = ${itemId}::uuid
+        SET processed = TRUE, content_id = ${contentId}, processed_at = NOW()
+        WHERE id = ${itemId}
       `);
     } else {
       await db.execute(sql`
         UPDATE rss_feed_items
         SET processed = TRUE, processed_at = NOW()
-        WHERE id = ${itemId}::uuid
+        WHERE id = ${itemId}
       `);
     }
   }
@@ -367,7 +382,7 @@ class RSSReader {
 
     await this.initialize();
 
-    const placeholders = itemIds.map((_, i) => `$${i + 1}::uuid`).join(', ');
+    const placeholders = itemIds.map((_, i) => `$${i + 1}`).join(', ');
     await db.execute(sql.raw(`
       UPDATE rss_feed_items
       SET processed = TRUE, processed_at = NOW()
