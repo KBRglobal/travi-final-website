@@ -401,14 +401,14 @@ export default function NotFound() {
                 Go to homepage
               </Button>
             </Link>
-            <Link href={localePath("/destinations/dubai/attractions")} data-testid="button-404-attractions">
-              <Button 
+            <Link href={localePath("/destinations")} data-testid="button-404-destinations">
+              <Button
                 size="lg"
                 variant="outline"
                 className="rounded-full px-6 border-border"
               >
                 <MapPin className="w-4 h-4 mr-2" />
-                Explore Dubai attractions
+                Explore Destinations
               </Button>
             </Link>
           </div>

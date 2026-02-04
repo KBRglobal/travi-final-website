@@ -157,7 +157,7 @@
     "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
   },
   "attractions": {
-    "title": "Dubai Attractions",
+    "title": "Attractions",
     "subtitle": "Explore iconic landmarks and hidden gems",
     "hero": {
       "badge": "{{count}} attractions in {{cities}} cities",
@@ -267,7 +267,7 @@
     }
   },
   "hotels": {
-    "title": "Dubai Hotels",
+    "title": "Hotels",
     "subtitle": "Find your perfect stay",
     "filters": {
       "all": "All Hotels",
@@ -289,7 +289,7 @@
     "bookNow": "Book Now"
   },
   "dining": {
-    "title": "Dubai Dining",
+    "title": "Dining",
     "subtitle": "Culinary experiences for every taste",
     "filters": {
       "all": "All Restaurants",
@@ -457,12 +457,12 @@
     }
   },
   "districts": {
-    "title": "Dubai Districts",
-    "subtitle": "Explore Dubai's diverse neighborhoods",
+    "title": "Districts",
+    "subtitle": "Explore diverse neighborhoods",
     "explore": "Explore District"
   },
   "realEstate": {
-    "title": "Dubai Real Estate",
+    "title": "Real Estate",
     "subtitle": "Invest in the future",
     "offPlan": {
       "title": "Off-Plan Properties",
