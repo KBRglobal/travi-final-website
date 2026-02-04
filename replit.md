@@ -1,12 +1,26 @@
 # Travi CMS - Dubai Travel Content Management System
 
-## Recent Changes (February 2, 2026)
-- **Production Build Fix**: Resolved critical circular dependency in Vite production bundle that caused "blue screen" error
-- **Build Configuration**: Updated `scripts/build.ts` with custom manualChunks to prevent react-vendor ↔ destination-page cycle
-- **Cleanup**: Removed unused shared-helpers module
+## Recent Changes (February 4, 2026)
+
+### Gatekeeper Command Center
+New editorial control dashboard at `/admin/gatekeeper/dashboard`:
+- **KPIs Tab**: Items processed (24h), filter rate, SEO accuracy, duplicates blocked, engine health
+- **Editorial Queue Tab**: RSS items with score breakdown, tier classification, **human-in-the-loop override**
+- **Value Matrix Tab**: 2x2 visualization (Quick Wins, Strategic Investments, Gap Fillers, Skip)
+- **Bias Detection Tab**: Geographic, source, and temporal bias analysis with automatic alerts
+
+### Destination-Agnostic Refactor (Client-side COMPLETE)
+- `use-destination-context.ts` - New hook with `currentDestination`, `destinationSlug`, `hasDestinationContent`
+- All breadcrumb, AI assistant, and SEO schema components now use dynamic destination data
+- Legacy `isDubai` pattern deprecated but maintained for backward compatibility
+- 17 destinations supported: Dubai, Bangkok, Paris, Istanbul, London, NYC, Singapore, Tokyo, Barcelona, Rome, Amsterdam, Hong Kong, Sydney, LA, Miami, Las Vegas, Berlin
+
+### Previous Changes (February 2, 2026)
+- **Production Build Fix**: Resolved critical circular dependency in Vite production bundle
+- **Build Configuration**: Updated `scripts/build.ts` with custom manualChunks
 
 ## Overview
-Travi CMS is a content management system for Dubai Travel. It focuses on managing travel content like attractions, hotels, and articles from RSS feeds with a primary goal of SEO optimization, seamless affiliate link integration, and a draft-first content workflow. The system aims to be a user-friendly, multi-language platform with tools for social media marketing, offering a "Discover Dubai Like a Local" experience through advanced content generation capabilities.
+Travi CMS is a destination-agnostic content management system for global travel. It supports 17 major destinations (Dubai, Paris, Tokyo, NYC, etc.) with a primary goal of SEO optimization, seamless affiliate link integration, and a draft-first content workflow. The system includes an Intelligent Gatekeeper for autonomous content pipeline (RSS selection → article writing → 30 language publishing) with human-in-the-loop oversight. Features AI-powered content scoring (SEO 40%, AEO 35%, Virality 25%) and LSH-based deduplication.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -69,6 +83,15 @@ Preferred communication style: Simple, everyday language.
 - **Character Limits**: Enforced limits for Meta Title, Meta Description, OG Title, and OG Description.
 - **AI SEO Generation**: Endpoint for AI-powered SEO generation with quality scoring and improvement suggestions.
 - **Capability-Based Field Ownership**: `canEditPageSeo` permission enforces exclusive write access to the `page_seo` table.
+
+### Intelligent Gatekeeper System
+- **Gate 1 (RSS Selection)**: AI evaluates RSS items with 2026-optimized prompts (SEO 40%, AEO 35%, Virality 25%)
+- **Tier Classification**: S1 (>85 score, deep writing), S2 (60-85, fast writing), S3 (40-60, auto Gate 2), Skip (<40)
+- **Deduplication**: LSH with MinHash fingerprinting (128 hash functions, 85% similarity threshold)
+- **Writer Matching**: 10 AI writer personas matched to content type
+- **Command Center**: Editorial oversight dashboard with override capability
+- **Bias Detection**: Monitors for geographic, source, and temporal algorithmic bias
+- **2026 Event Boost**: World Cup +15 points, Olympics +12 points for mega-event coverage
 
 ### AEO (Answer Engine Optimization) Infrastructure
 - **SSR for Bots**: Server-side rendering for search engine and AI crawler user-agents.
