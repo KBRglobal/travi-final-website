@@ -856,53 +856,6 @@ export function registerImageRoutes(app: Express) {
   );
 
   // ============================================================================
-  // AI ALT-TEXT GENERATION ROUTES
-  // ============================================================================
-
-  /**
-   * POST /api/images/generate-alt-text
-   * @deprecated Use Octypo system for alt text generation
-   */
-  app.post(
-    "/api/images/generate-alt-text",
-    requirePermission("canEdit"),
-    async (_req: Request, res: Response) => {
-      res.status(410).json({
-        error: "This endpoint has been deprecated. Use Octypo system for alt text generation.",
-      });
-    }
-  );
-
-  /**
-   * POST /api/images/generate-alt-text/batch
-   * @deprecated Use Octypo system for alt text generation
-   */
-  app.post(
-    "/api/images/generate-alt-text/batch",
-    requirePermission("canEdit"),
-    async (_req: Request, res: Response) => {
-      res.status(410).json({
-        error:
-          "This endpoint has been deprecated. Use Octypo system for batch alt text generation.",
-      });
-    }
-  );
-
-  /**
-   * POST /api/images/validate-alt-text
-   * @deprecated Use Octypo system for alt text validation
-   */
-  app.post(
-    "/api/images/validate-alt-text",
-    requirePermission("canEdit"),
-    async (_req: Request, res: Response) => {
-      res.status(410).json({
-        error: "This endpoint has been deprecated. Use Octypo system for alt text validation.",
-      });
-    }
-  );
-
-  // ============================================================================
   // STATUS ROUTES
   // ============================================================================
 

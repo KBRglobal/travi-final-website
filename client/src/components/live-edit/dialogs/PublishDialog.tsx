@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Upload, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useLiveEditStore } from "@/stores/liveEditStore";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useState } from "react";
 
 export function PublishDialog() {

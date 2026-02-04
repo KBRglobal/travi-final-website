@@ -323,25 +323,6 @@ export function registerPublicApiRoutes(app: Express): void {
     }
   });
 
-  // DEPRECATED: Migrated to Tiqets system
-  // Original: /api/public/travi/locations (line ~5857)
-  router.get("/travi/locations", async (req, res) => {
-    res.json({
-      message: "Deprecated - use Tiqets API",
-      locations: [],
-      migration: "This endpoint has been migrated to the Tiqets integration system",
-    });
-  });
-
-  // DEPRECATED: Migrated to Tiqets system
-  // Original: /api/public/travi/locations/:city/:slug (line ~5867)
-  router.get("/travi/locations/:city/:slug", async (req, res) => {
-    res.json({
-      message: "Deprecated - use Tiqets API",
-      migration: "This endpoint has been migrated to the Tiqets integration system",
-    });
-  });
-
   // Public API for attraction destinations with live counts from DB
   // Original: /api/public/attraction-destinations (line ~5877)
   router.get("/attraction-destinations", async (req, res) => {

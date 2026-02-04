@@ -17,93 +17,20 @@ export interface DestinationContext {
   hasDestinationContent: boolean;
   /** The destination that owns the current route (if destination-specific) */
   routeDestination: string | null;
-  /** @deprecated Use destinationSlug === 'dubai' instead */
-  isDubai: boolean;
-  /** @deprecated Use isDestinationSpecificRoute() instead */
-  isDubaiOnlyRoute: boolean;
 }
 
 /**
  * Destination-specific routes mapping
  * Routes that belong to a specific destination and show that destination's sub-nav
+ *
+ * Note: Dubai-specific routes have been removed as part of destination-agnostic cleanup.
+ * Add destination-specific routes here as needed for future destinations.
  */
 export const DESTINATION_SPECIFIC_ROUTES: Record<string, string[]> = {
-  dubai: [
-  // Districts
-  "/districts",
-  // Real Estate
-  "/dubai-real-estate",
-  "/dubai-off-plan-properties",
-  "/dubai-off-plan-investment-guide",
-  "/how-to-buy-dubai-off-plan",
-  "/dubai-off-plan-payment-plans",
-  "/best-off-plan-projects-dubai-2026",
-  "/dubai-off-plan-business-bay",
-  "/dubai-off-plan-marina",
-  "/dubai-off-plan-jvc",
-  "/dubai-off-plan-palm-jumeirah",
-  "/dubai-off-plan-creek-harbour",
-  "/dubai-off-plan-al-furjan",
-  "/dubai-off-plan-villas",
-  "/off-plan-emaar",
-  "/off-plan-damac",
-  "/off-plan-nakheel",
-  "/off-plan-meraas",
-  "/off-plan-sobha",
-  "/off-plan-crypto-payments",
-  "/off-plan-usdt",
-  "/off-plan-golden-visa",
-  "/off-plan-post-handover",
-  "/off-plan-escrow",
-  "/off-plan-vs-ready",
-  // Tools
-  "/tools-roi-calculator",
-  "/tools-payment-calculator",
-  "/tools-affordability-calculator",
-  "/tools-currency-converter",
-  "/tools-mortgage-calculator",
-  "/tools-rental-yield-calculator",
-  "/tools-fees-calculator",
-  // Landing pages
-  "/dubai/free-things-to-do",
-  "/dubai/laws-for-tourists",
-  "/dubai/sheikh-mohammed-bin-rashid",
-  "/dubai/24-hours-open",
-  // Case studies
-  "/case-study-jvc-investor",
-  "/case-study-crypto-buyer",
-  "/case-study-golden-visa",
-  "/case-study-expat-family",
-  "/case-study-investor-flip",
-  "/case-study-portfolio-diversification",
-  "/case-study-off-plan-launch",
-  "/case-study-retirement-planning",
-  // Pillar articles
-  "/dubai-roi-rental-yields",
-  "/dubai-legal-security-guide",
-  // Compare pages
-  "/compare-off-plan-vs-ready",
-  "/compare-jvc-vs-dubai-south",
-  "/compare-emaar-vs-damac",
-  "/compare-downtown-vs-marina",
-  "/compare-60-40-vs-80-20",
-  "/compare-sobha-vs-meraas",
-  "/compare-crypto-vs-bank-transfer",
-  "/compare-business-bay-vs-jlt",
-  "/compare-new-vs-resale",
-  "/compare-nakheel-vs-azizi",
-  "/compare-villa-vs-apartment",
-  "/compare-studio-vs-1bed",
-  // Shopping (Dubai only)
-    "/shopping",
-  ],
-  // Add other destinations here as they get specific content:
+  // Add destination-specific routes here as they get specific content:
   // paris: ["/paris-arrondissements", ...],
   // tokyo: ["/tokyo-districts", ...],
 };
-
-// Legacy export for backward compatibility
-export const DUBAI_ONLY_ROUTES = DESTINATION_SPECIFIC_ROUTES.dubai || [];
 
 /**
  * Find which destination owns a given route
@@ -164,18 +91,12 @@ export function useDestinationContext(): DestinationContext {
       currentDestination = DESTINATION_NAMES[routeDestination];
     }
 
-    // Legacy: isDubai for backward compatibility
-    const isDubai = destinationSlug === "dubai" || routeDestination === "dubai";
-
     return {
       currentDestination,
       destinationSlug,
       isDestinationPage: !!destinationSlug,
       hasDestinationContent,
       routeDestination,
-      // Deprecated - kept for backward compatibility
-      isDubai,
-      isDubaiOnlyRoute: routeDestination === "dubai",
     };
   }, [location]);
 }
@@ -195,22 +116,8 @@ export function getRouteDestinationSlug(path: string): string | null {
 }
 
 /**
- * @deprecated Use isDestinationSpecificRoute() or getRouteDestinationSlug() instead
- */
-export function isDubaiOnlyRoute(path: string): boolean {
-  return getRouteDestination(path) === "dubai";
-}
-
-/**
  * Get the destination page path for a given slug
  */
 export function getDestinationPath(slug: string): string {
   return `/destinations/${slug}`;
-}
-
-/**
- * @deprecated Use getDestinationPath('dubai') instead
- */
-export function getDubaiRedirectPath(): string {
-  return getDestinationPath("dubai");
 }

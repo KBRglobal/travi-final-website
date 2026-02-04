@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useLiveEditStore } from "@/stores/liveEditStore";
 import { ComponentLibrary } from "./ComponentLibrary";
 import { ComponentSettings } from "./ComponentSettings";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 
 export function LiveEditSidebar() {

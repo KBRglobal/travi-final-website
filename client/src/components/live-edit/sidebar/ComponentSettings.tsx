@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Trash2, Copy } from "lucide-react";
 import { useLiveEditStore, useSelectedComponent } from "@/stores/liveEditStore";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 // Stub function - componentRegistry module was removed
 const getComponentConfig = (_type: string): { icon: string; displayName: string; editableFields: Array<{ name: string; type: string; label: string; required?: boolean; placeholder?: string; defaultValue?: unknown; options?: Array<{ value: string; label: string }> }> } | null => null;

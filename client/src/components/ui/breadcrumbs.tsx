@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { ChevronRight, Home } from "lucide-react";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 import { DESTINATION_NAMES } from "@/hooks/use-destination-context";
 
@@ -85,7 +86,8 @@ function useAutoBreadcrumbs(): BreadcrumbItem[] {
 }
 
 export function Breadcrumbs({ items, showHome = true, className }: BreadcrumbsProps) {
-  const { t, localePath, isRTL } = useLocale();
+  const { t } = useTranslation();
+  const { localePath, isRTL } = useLocale();
   const autoBreadcrumbs = useAutoBreadcrumbs();
   const breadcrumbs = items || autoBreadcrumbs;
 

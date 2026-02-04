@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Trash2, Clock } from "lucide-react";
 import { useLiveEditStore } from "@/stores/liveEditStore";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useMemo } from "react";
 
 export function RecoveryDialog() {

@@ -5,8 +5,6 @@
  * All flags default to OFF for safe deployment.
  */
 
-import { registerFeatureContract } from "../feature-contract";
-
 // ============================================================================
 // Feature Flags
 // ============================================================================
@@ -173,60 +171,3 @@ export function actionRequiresApproval(actionType: string): boolean {
   return false;
 }
 
-// ============================================================================
-// Feature Contracts Registration
-// ============================================================================
-
-// Register SEO Engine master contract
-registerFeatureContract({
-  name: "seo_engine",
-  displayName: "SEO Engine v2",
-  description: "Autonomous SEO Growth Operating System with classification, actions, and autopilot",
-  dependencies: [],
-  risks: [
-    {
-      id: "SEO-R001",
-      severity: "high",
-      description: "Autopilot may make unwanted changes to content indexing",
-      mitigation: "Start with autopilot OFF, enable supervised mode first",
-    },
-    {
-      id: "SEO-R002",
-      severity: "medium",
-      description: "Classification changes may affect sitemap priorities",
-      mitigation: "Monitor sitemap changes after enabling",
-    },
-  ],
-  requiredReadinessLevel: "STAGING",
-  approvalRequirements: ["admin"],
-  allowedDegradedModes: ["limited", "read_only"],
-  featureFlag: "ENABLE_SEO_ENGINE",
-  version: "2.0.0",
-});
-
-// Register autopilot contract
-registerFeatureContract({
-  name: "seo_autopilot",
-  displayName: "SEO Autopilot",
-  description: "Autonomous execution of SEO actions based on governance rules",
-  dependencies: ["seo_engine"],
-  risks: [
-    {
-      id: "AUTO-R001",
-      severity: "critical",
-      description: "Full autopilot may make destructive changes without review",
-      mitigation: "Only enable full mode after extensive testing in supervised mode",
-    },
-    {
-      id: "AUTO-R002",
-      severity: "high",
-      description: "Batch operations may overwhelm the system",
-      mitigation: "Implement rate limiting and backpressure",
-    },
-  ],
-  requiredReadinessLevel: "GO_LIVE",
-  approvalRequirements: ["admin", "seo_lead"],
-  allowedDegradedModes: ["limited"],
-  featureFlag: "ENABLE_SEO_AUTOPILOT",
-  version: "1.0.0",
-});

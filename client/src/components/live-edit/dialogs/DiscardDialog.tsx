@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertTriangle } from "lucide-react";
 import { useLiveEditStore } from "@/stores/liveEditStore";
-import { useLocale } from "@/lib/i18n/LocaleRouter";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function DiscardDialog() {
   const { isRTL } = useLocale();
