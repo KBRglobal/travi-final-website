@@ -535,18 +535,31 @@ export async function seedRssFeeds(
   options: {
     dryRun?: boolean;
     skipExisting?: boolean;
+    clean?: boolean;
   } = {}
 ): Promise<{
   created: number;
   skipped: number;
+  deleted: number;
   errors: string[];
 }> {
-  const { dryRun = false, skipExisting = true } = options;
-  const results = { created: 0, skipped: 0, errors: [] as string[] };
+  const { dryRun = false, skipExisting = true, clean = false } = options;
+  const results = { created: 0, skipped: 0, deleted: 0, errors: [] as string[] };
 
   console.log(`\n📡 Seeding RSS Feeds (${RSS_FEEDS.length} total)...`);
   console.log(`   Mode: ${dryRun ? "DRY RUN" : "LIVE"}`);
+  console.log(`   Clean existing: ${clean}`);
   console.log(`   Skip existing: ${skipExisting}\n`);
+
+  // Clean existing feeds if requested
+  if (clean) {
+    console.log("🗑️  Deleting all existing RSS feeds...");
+    if (!dryRun) {
+      const deleted = await db.delete(rssFeeds);
+      results.deleted = deleted.rowCount || 0;
+    }
+    console.log(`   ✅ ${dryRun ? "[DRY] Would delete" : "Deleted"} all existing feeds\n`);
+  }
 
   // Get all destinations for mapping
   const allDestinations = await db.select().from(destinations);
@@ -597,6 +610,9 @@ export async function seedRssFeeds(
   }
 
   console.log(`\n📊 Results:`);
+  if (results.deleted > 0) {
+    console.log(`   Deleted: ${results.deleted}`);
+  }
   console.log(`   Created: ${results.created}`);
   console.log(`   Skipped: ${results.skipped}`);
   console.log(`   Errors: ${results.errors.length}`);
@@ -612,8 +628,26 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
   const force = args.includes("--force");
+  const clean = args.includes("--clean");
 
-  seedRssFeeds({ dryRun, skipExisting: !force })
+  if (args.includes("--help") || args.includes("-h")) {
+    console.log(`
+Usage: npx tsx server/seeds/seed-rss-feeds.ts [options]
+
+Options:
+  --dry-run   Show what would be done without making changes
+  --clean     Delete ALL existing feeds before seeding
+  --force     Overwrite existing feeds (don't skip)
+  --help, -h  Show this help message
+
+Examples:
+  npx tsx server/seeds/seed-rss-feeds.ts --clean          # Delete old + add 51 new
+  npx tsx server/seeds/seed-rss-feeds.ts --clean --dry-run # Preview what would happen
+`);
+    process.exit(0);
+  }
+
+  seedRssFeeds({ dryRun, skipExisting: !force, clean })
     .then(results => {
       console.log("\n✨ Done!");
       process.exit(results.errors.length > 0 ? 1 : 0);
