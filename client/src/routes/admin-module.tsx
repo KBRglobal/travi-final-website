@@ -44,6 +44,7 @@ const OctypoAIAgents = lazy(() => import("@/pages/admin/octypo/ai-agents"));
 const OctypoWorkflows = lazy(() => import("@/pages/admin/octypo/workflows"));
 const OctypoEngines = lazy(() => import("@/pages/admin/octypo/engines"));
 const OctypoQueueMonitor = lazy(() => import("@/pages/admin/octypo/queue-monitor"));
+const OctypoSettings = lazy(() => import("@/pages/admin/octypo/settings"));
 const RssFeedsPage = lazy(() => import("@/pages/admin/rss-feeds"));
 const DestinationBrowser = lazy(() => import("@/pages/destination-browser"));
 const NotFound = lazy(() => import("@/pages/not-found"));
@@ -81,6 +82,7 @@ function AdminRouter() {
         <Route path="/admin/octypo/workflows" component={OctypoWorkflows} />
         <Route path="/admin/octypo/engines" component={OctypoEngines} />
         <Route path="/admin/octypo/queue-monitor" component={OctypoQueueMonitor} />
+        <Route path="/admin/octypo/settings" component={OctypoSettings} />
         <Route path="/admin/rss-feeds" component={RssFeedsPage} />
         <Route component={NotFound} />
       </Switch>

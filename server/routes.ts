@@ -217,6 +217,7 @@ import { helpAdminRoutes, helpPublicRoutes } from "./help";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
 import octypoRoutes from "./routes/admin/octypo-routes";
 import gatekeeperRoutes from "./routes/admin/gatekeeper-routes";
+import octypoSettingsRoutes from "./routes/admin/octypo-settings-routes";
 import pilotLocalizationRoutes from "./octypo/pilot/routes";
 import { vamsRoutes } from "./vams";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
@@ -2502,6 +2503,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // Two gates: 1) RSS Selection 2) Article Approval → 30 languages
   // ============================================================================
   app.use("/api/admin/gatekeeper", requireAuth, requirePermission("canEdit"), gatekeeperRoutes);
+  app.use("/api/admin/octypo", requireAuth, requirePermission("canEdit"), octypoSettingsRoutes);
 
   // ============================================================================
   // PILOT: Octypo × Localization Integration (Isolated for pilot testing)
