@@ -337,7 +337,9 @@ export function registerUserRoutes(app: Express): void {
               );
               deletedCount++;
             }
-          } catch (err) {}
+          } catch (err) {
+            console.error(err);
+          }
         }
 
         res.json({ success: true, deletedCount });

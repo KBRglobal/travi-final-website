@@ -1,8 +1,8 @@
 /**
  * Multi-Model AI Provider with Automatic Fallback Chain
- * 
+ *
  * Priority: Anthropic (Claude) -> OpenAI (GPT-4) -> Google (Gemini)
- * 
+ *
  * Features:
  * - Automatic fallback on rate limits (429) or errors
  * - Latency tracking
@@ -105,7 +105,10 @@ function markClientRateLimited(provider: string, clientIndex: number): void {
     rateLimitedClients.set(provider, new Map());
   }
   rateLimitedClients.get(provider)!.set(clientIndex, Date.now() + RATE_LIMIT_COOLDOWN_MS);
-  logger.warn({ provider, clientIndex }, `Client ${clientIndex + 1} for ${provider} rate limited for 5 minutes`);
+  logger.warn(
+    { provider, clientIndex },
+    `Client ${clientIndex + 1} for ${provider} rate limited for 5 minutes`
+  );
 }
 
 // ============================================================================
@@ -155,17 +158,23 @@ export class MultiModelProvider {
     const anthropicBaseUrl = process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL;
     if (anthropicKeys.length > 0) {
       try {
-        this.anthropicClients = anthropicKeys.map(key => new Anthropic({
-          apiKey: key,
-          baseURL: anthropicBaseUrl || undefined,
-        }));
+        this.anthropicClients = anthropicKeys.map(
+          key =>
+            new Anthropic({
+              apiKey: key,
+              baseURL: anthropicBaseUrl || undefined,
+            })
+        );
         this.providers.push({
           name: "anthropic",
           available: true,
           priority: 1,
           model: "claude-sonnet-4-5",
         });
-        logger.info({ keyCount: anthropicKeys.length }, `Anthropic provider initialized with ${anthropicKeys.length} parallel API keys`);
+        logger.info(
+          { keyCount: anthropicKeys.length },
+          `Anthropic provider initialized with ${anthropicKeys.length} parallel API keys`
+        );
       } catch (error) {
         logger.warn({ error: String(error) }, "Failed to initialize Anthropic provider");
       }
@@ -336,17 +345,23 @@ export class MultiModelProvider {
     const heliconeKeys = this.getAllHeliconeKeys();
     if (heliconeKeys.length > 0) {
       try {
-        this.heliconeClients = heliconeKeys.map(key => new OpenAI({
-          apiKey: key,
-          baseURL: "https://ai-gateway.helicone.ai",
-        }));
+        this.heliconeClients = heliconeKeys.map(
+          key =>
+            new OpenAI({
+              apiKey: key,
+              baseURL: "https://ai-gateway.helicone.ai",
+            })
+        );
         this.providers.push({
           name: "helicone",
           available: true,
           priority: 9,
           model: "gpt-4o-mini",
         });
-        logger.info({ keyCount: heliconeKeys.length }, `Helicone provider initialized with ${heliconeKeys.length} parallel API keys`);
+        logger.info(
+          { keyCount: heliconeKeys.length },
+          `Helicone provider initialized with ${heliconeKeys.length} parallel API keys`
+        );
       } catch (error) {
         logger.warn({ error: String(error) }, "Failed to initialize Helicone provider");
       }
@@ -386,7 +401,7 @@ export class MultiModelProvider {
     // Sort by priority
     this.providers.sort((a, b) => a.priority - b.priority);
 
-    const availableCount = this.providers.filter((p) => p.available).length;
+    const availableCount = this.providers.filter(p => p.available).length;
     logger.info(
       { availableProviders: availableCount, totalProviders: this.providers.length },
       `Multi-model provider initialized with ${availableCount} available providers`
@@ -396,7 +411,7 @@ export class MultiModelProvider {
   // Get all available Anthropic API keys for parallel processing (up to 6)
   private getAllAnthropicKeys(): string[] {
     const keys: string[] = [];
-    
+
     // Check numbered keys first (ANTHROPIC_API_KEY_1 through ANTHROPIC_API_KEY_6)
     for (let i = 1; i <= 6; i++) {
       const key = process.env[`ANTHROPIC_API_KEY_${i}`];
@@ -404,7 +419,7 @@ export class MultiModelProvider {
         keys.push(key);
       }
     }
-    
+
     // If no numbered keys, fall back to standard keys
     if (keys.length === 0) {
       const integrationKey = process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY;
@@ -416,14 +431,14 @@ export class MultiModelProvider {
         keys.push(standardKey);
       }
     }
-    
+
     return keys;
   }
 
   // Get all available Helicone API keys for parallel processing (up to 6)
   private getAllHeliconeKeys(): string[] {
     const keys: string[] = [];
-    
+
     // Check numbered keys first (HELICONE_API_KEY_1 through HELICONE_API_KEY_6)
     for (let i = 1; i <= 6; i++) {
       const key = process.env[`HELICONE_API_KEY_${i}`];
@@ -431,7 +446,7 @@ export class MultiModelProvider {
         keys.push(key);
       }
     }
-    
+
     // If no numbered keys, fall back to standard key
     if (keys.length === 0) {
       const standardKey = process.env.HELICONE_API_KEY;
@@ -439,7 +454,7 @@ export class MultiModelProvider {
         keys.push(standardKey);
       }
     }
-    
+
     return keys;
   }
 
@@ -484,20 +499,15 @@ export class MultiModelProvider {
    * Generate content using the fallback chain
    * Tries Anthropic first, then OpenAI, then Gemini
    */
-  async generate(
-    prompt: string,
-    options: GenerationOptions = {}
-  ): Promise<GenerationResult> {
+  async generate(prompt: string, options: GenerationOptions = {}): Promise<GenerationResult> {
     const { maxTokens = 8192, temperature = 0.7, systemPrompt } = options;
 
-    const availableProviders = this.providers.filter(
-      (p) => p.available && !isRateLimited(p.name)
-    );
+    const availableProviders = this.providers.filter(p => p.available && !isRateLimited(p.name));
 
     if (availableProviders.length === 0) {
       throw new Error(
         "No AI providers available. All providers are either not configured or rate limited. " +
-        "Please configure at least one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, or GEMINI_API_KEY"
+          "Please configure at least one of: ANTHROPIC_API_KEY, OPENAI_API_KEY, or GEMINI_API_KEY"
       );
     }
 
@@ -528,12 +538,8 @@ export class MultiModelProvider {
     }
 
     // All providers failed
-    const errorDetails = errors
-      .map((e) => `${e.provider}: ${e.error}`)
-      .join("; ");
-    throw new Error(
-      `All AI providers failed. Errors: ${errorDetails}`
-    );
+    const errorDetails = errors.map(e => `${e.provider}: ${e.error}`).join("; ");
+    throw new Error(`All AI providers failed. Errors: ${errorDetails}`);
   }
 
   /**
@@ -584,7 +590,10 @@ export class MultiModelProvider {
 
     const model = "claude-sonnet-4-5";
     const clientCount = this.anthropicClients.length;
-    logger.debug({ model, promptLength: prompt.length, clientCount }, "Generating with Anthropic (round-robin)");
+    logger.debug(
+      { model, promptLength: prompt.length, clientCount },
+      "Generating with Anthropic (round-robin)"
+    );
 
     const response = await client.messages.create({
       model,
@@ -606,8 +615,7 @@ export class MultiModelProvider {
     }
 
     const latencyMs = Date.now() - startTime;
-    const tokensUsed =
-      (response.usage?.input_tokens || 0) + (response.usage?.output_tokens || 0);
+    const tokensUsed = (response.usage?.input_tokens || 0) + (response.usage?.output_tokens || 0);
 
     logger.info(
       { provider: "anthropic", model, latencyMs, tokensUsed },
@@ -965,7 +973,10 @@ export class MultiModelProvider {
 
     const model = "gpt-4o-mini";
     const clientCount = this.heliconeClients.length;
-    logger.debug({ model, promptLength: prompt.length, clientCount }, "Generating with Helicone (round-robin)");
+    logger.debug(
+      { model, promptLength: prompt.length, clientCount },
+      "Generating with Helicone (round-robin)"
+    );
 
     const messages: Array<{ role: "system" | "user"; content: string }> = [];
     if (options.systemPrompt) {
@@ -1023,7 +1034,7 @@ export class MultiModelProvider {
     const response = await fetch("https://api.edenai.run/v2/llm/chat", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${this.edenClient.apiKey}`,
+        Authorization: `Bearer ${this.edenClient.apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -1039,12 +1050,12 @@ export class MultiModelProvider {
       throw new Error(`Eden AI error: ${response.status} - ${errorText}`);
     }
 
-    const data = await response.json() as { 
+    const data = (await response.json()) as {
       choices?: Array<{ message?: { content?: string } }>;
       usage?: { total_tokens?: number };
     };
     const content = data.choices?.[0]?.message?.content;
-    
+
     if (!content) {
       throw new Error("Empty response from Eden AI");
     }
@@ -1071,13 +1082,23 @@ export class MultiModelProvider {
    * Used for parallel processing where each provider handles a specific workload
    */
   async generateWithSpecificProvider(
-    providerName: "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity" | "groq" | "mistral" | "helicone" | "eden",
+    providerName:
+      | "anthropic"
+      | "openai"
+      | "gemini"
+      | "openrouter"
+      | "deepseek"
+      | "perplexity"
+      | "groq"
+      | "mistral"
+      | "helicone"
+      | "eden",
     prompt: string,
     options: GenerationOptions = {}
   ): Promise<GenerationResult> {
     const { maxTokens = 8192, temperature = 0.7, systemPrompt } = options;
 
-    const provider = this.providers.find((p) => p.name === providerName);
+    const provider = this.providers.find(p => p.name === providerName);
     if (!provider || !provider.available) {
       throw new Error(`Provider ${providerName} is not available`);
     }
@@ -1103,9 +1124,9 @@ export class MultiModelProvider {
   /**
    * Check availability of all providers
    */
-  async checkAvailability(): Promise<AIProviderConfig[]> {
+  checkAvailability(): AIProviderConfig[] {
     // Refresh provider states with rate limit status
-    return this.providers.map((provider) => ({
+    return this.providers.map(provider => ({
       ...provider,
       available: provider.available && !isRateLimited(provider.name),
       reason: isRateLimited(provider.name)
@@ -1118,9 +1139,7 @@ export class MultiModelProvider {
    * Get the next available provider
    */
   getNextAvailableProvider(): AIProviderConfig | null {
-    const available = this.providers.find(
-      (p) => p.available && !isRateLimited(p.name)
-    );
+    const available = this.providers.find(p => p.available && !isRateLimited(p.name));
     return available || null;
   }
 
@@ -1157,5 +1176,5 @@ export async function generateWithFallback(
   options?: GenerationOptions
 ): Promise<GenerationResult> {
   const provider = getMultiModelProvider();
-  return provider.generate(prompt, options);
+  return await provider.generate(prompt, options);
 }

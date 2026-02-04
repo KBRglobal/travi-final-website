@@ -195,21 +195,14 @@ export async function generateAttractionWithOctypo(
  * Call this during server startup
  */
 export async function initializeOctypo(): Promise<boolean> {
-  console.log("[Octypo] Initializing autonomous content system...");
-
   // Step 1: Load encrypted secrets (if available)
   try {
     const { initializeOctypoConfig, secretsExist } = await import("./config");
     if (secretsExist()) {
-      const secretsLoaded = initializeOctypoConfig();
-      if (!secretsLoaded) {
-        console.log("[Octypo] ⚠️  Failed to load secrets. Check password.");
-      }
-    } else {
-      console.log("[Octypo] ℹ️  No secrets file. Run: npx tsx scripts/setup-octypo-secrets.ts");
+      initializeOctypoConfig();
     }
   } catch (error) {
-    console.log("[Octypo] ℹ️  Secrets module not configured, using env vars");
+    // Secrets module not configured, using env vars - this is acceptable
   }
 
   // Step 2: Initialize RSS reader
@@ -217,7 +210,7 @@ export async function initializeOctypo(): Promise<boolean> {
     const { rssReader: rssReaderModule } = await import("./rss-reader");
     await rssReaderModule.initialize();
   } catch (error) {
-    console.error("[Octypo] ⚠️  RSS reader initialization failed:", error);
+    console.error("[Octypo] RSS reader initialization failed:", error);
   }
 
   // Step 3: Initialize Gatekeeper job handlers
@@ -225,10 +218,9 @@ export async function initializeOctypo(): Promise<boolean> {
     const { initializeGatekeeper } = await import("./gatekeeper");
     initializeGatekeeper();
   } catch (error) {
-    console.error("[Octypo] ⚠️  Gatekeeper initialization failed:", error);
+    console.error("[Octypo] Gatekeeper initialization failed:", error);
   }
 
-  console.log("[Octypo] ✅ System initialized");
   return true;
 }
 

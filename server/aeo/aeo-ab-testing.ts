@@ -3,14 +3,15 @@
  * Allows testing different capsule variants to optimize for AI citations
  */
 
-import { db } from '../db';
-import { aeoAnswerCapsules, aeoCitations, contents } from '../../shared/schema';
-import { eq, and, gte, sql, desc } from 'drizzle-orm';
-import { generateAnswerCapsule } from './answer-capsule-generator';
-import { log } from '../lib/logger';
+import { db } from "../db";
+import { aeoAnswerCapsules, aeoCitations, contents } from "../../shared/schema";
+import { eq, and, gte, sql, desc } from "drizzle-orm";
+import { generateAnswerCapsule } from "./answer-capsule-generator";
+import { log } from "../lib/logger";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO A/B] ${msg}`, undefined, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO A/B] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO A/B] ${msg}`, data),
 };
 
@@ -21,10 +22,10 @@ export interface ABTest {
   contentId: string;
   variantA: CapsuleVariant;
   variantB: CapsuleVariant;
-  status: 'draft' | 'running' | 'completed' | 'paused';
+  status: "draft" | "running" | "completed" | "paused";
   startDate: Date | null;
   endDate: Date | null;
-  winningVariant: 'A' | 'B' | null;
+  winningVariant: "A" | "B" | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,7 +45,7 @@ export interface ABTestResult {
   variantA: VariantStats;
   variantB: VariantStats;
   statisticalSignificance: number;
-  recommendedWinner: 'A' | 'B' | 'inconclusive';
+  recommendedWinner: "A" | "B" | "inconclusive";
   sampleSize: number;
 }
 
@@ -59,7 +60,7 @@ export interface VariantStats {
 
 // In-memory storage for A/B tests (in production, use database)
 const abTests = new Map<string, ABTest>();
-const variantAssignments = new Map<string, 'A' | 'B'>(); // sessionId -> variant
+const variantAssignments = new Map<string, "A" | "B">(); // sessionId -> variant
 
 /**
  * Create a new A/B test
@@ -76,7 +77,7 @@ export async function createABTest(
   });
 
   if (!existingCapsule) {
-    throw new Error('Content must have an existing capsule before A/B testing');
+    throw new Error("Content must have an existing capsule before A/B testing");
   }
 
   const testId = `abt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -85,9 +86,9 @@ export async function createABTest(
   const variantA: CapsuleVariant = {
     id: `${testId}_A`,
     capsuleText: existingCapsule.capsuleText,
-    quickAnswer: existingCapsule.quickAnswer || '',
+    quickAnswer: existingCapsule.quickAnswer || "",
     keyFacts: (existingCapsule.keyFacts as string[]) || [],
-    differentiator: existingCapsule.differentiator || '',
+    differentiator: existingCapsule.differentiator || "",
     ...variantAConfig,
   };
 
@@ -99,16 +100,16 @@ export async function createABTest(
     variantB = {
       id: `${testId}_B`,
       capsuleText: variantBConfig.capsuleText,
-      quickAnswer: variantBConfig.quickAnswer || '',
+      quickAnswer: variantBConfig.quickAnswer || "",
       keyFacts: variantBConfig.keyFacts || [],
-      differentiator: variantBConfig.differentiator || '',
+      differentiator: variantBConfig.differentiator || "",
       ...variantBConfig,
     };
   } else {
     // Generate new variant with different parameters
     const newCapsule = await generateAnswerCapsule({
       contentId,
-      locale: 'en',
+      locale: "en",
       forceRegenerate: true,
     });
 
@@ -128,7 +129,7 @@ export async function createABTest(
     contentId,
     variantA,
     variantB,
-    status: 'draft',
+    status: "draft",
     startDate: null,
     endDate: null,
     winningVariant: null,
@@ -137,7 +138,7 @@ export async function createABTest(
   };
 
   abTests.set(testId, test);
-  aeoLogger.info('A/B test created', { testId, contentId, name });
+  aeoLogger.info("A/B test created", { testId, contentId, name });
 
   return test;
 }
@@ -145,22 +146,22 @@ export async function createABTest(
 /**
  * Start an A/B test
  */
-export async function startABTest(testId: string): Promise<ABTest> {
+export function startABTest(testId: string): ABTest {
   const test = abTests.get(testId);
   if (!test) {
-    throw new Error('A/B test not found');
+    throw new Error("A/B test not found");
   }
 
-  if (test.status !== 'draft' && test.status !== 'paused') {
-    throw new Error('Test must be in draft or paused status to start');
+  if (test.status !== "draft" && test.status !== "paused") {
+    throw new Error("Test must be in draft or paused status to start");
   }
 
-  test.status = 'running';
+  test.status = "running";
   test.startDate = test.startDate || new Date();
   test.updatedAt = new Date();
 
   abTests.set(testId, test);
-  aeoLogger.info('A/B test started', { testId });
+  aeoLogger.info("A/B test started", { testId });
 
   return test;
 }
@@ -171,21 +172,20 @@ export async function startABTest(testId: string): Promise<ABTest> {
 export async function stopABTest(testId: string): Promise<ABTest> {
   const test = abTests.get(testId);
   if (!test) {
-    throw new Error('A/B test not found');
+    throw new Error("A/B test not found");
   }
 
-  test.status = 'completed';
+  test.status = "completed";
   test.endDate = new Date();
   test.updatedAt = new Date();
 
   // Analyze results and determine winner
   const results = await getABTestResults(testId);
-  test.winningVariant = results.recommendedWinner !== 'inconclusive'
-    ? results.recommendedWinner
-    : null;
+  test.winningVariant =
+    results.recommendedWinner !== "inconclusive" ? results.recommendedWinner : null;
 
   abTests.set(testId, test);
-  aeoLogger.info('A/B test stopped', { testId, winner: test.winningVariant });
+  aeoLogger.info("A/B test stopped", { testId, winner: test.winningVariant });
 
   return test;
 }
@@ -193,7 +193,7 @@ export async function stopABTest(testId: string): Promise<ABTest> {
 /**
  * Get variant for a session (consistent assignment)
  */
-export function getVariantForSession(testId: string, sessionId: string): 'A' | 'B' {
+export function getVariantForSession(testId: string, sessionId: string): "A" | "B" {
   const key = `${testId}:${sessionId}`;
 
   if (variantAssignments.has(key)) {
@@ -201,12 +201,12 @@ export function getVariantForSession(testId: string, sessionId: string): 'A' | '
   }
 
   // Simple hash-based assignment for consistency
-  const hash = sessionId.split('').reduce((a, b) => {
-    a = ((a << 5) - a) + b.charCodeAt(0);
+  const hash = sessionId.split("").reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0);
     return a & a;
   }, 0);
 
-  const variant = Math.abs(hash) % 2 === 0 ? 'A' : 'B';
+  const variant = Math.abs(hash) % 2 === 0 ? "A" : "B";
   variantAssignments.set(key, variant);
 
   return variant;
@@ -218,10 +218,10 @@ export function getVariantForSession(testId: string, sessionId: string): 'A' | '
 export async function getABTestedCapsule(
   contentId: string,
   sessionId: string
-): Promise<{ capsuleText: string; testId: string | null; variant: 'A' | 'B' | null }> {
+): Promise<{ capsuleText: string; testId: string | null; variant: "A" | "B" | null }> {
   // Find active test for this content
   const activeTest = Array.from(abTests.values()).find(
-    t => t.contentId === contentId && t.status === 'running'
+    t => t.contentId === contentId && t.status === "running"
   );
 
   if (!activeTest) {
@@ -231,14 +231,14 @@ export async function getABTestedCapsule(
     });
 
     return {
-      capsuleText: capsule?.capsuleText || '',
+      capsuleText: capsule?.capsuleText || "",
       testId: null,
       variant: null,
     };
   }
 
   const variant = getVariantForSession(activeTest.id, sessionId);
-  const capsuleVariant = variant === 'A' ? activeTest.variantA : activeTest.variantB;
+  const capsuleVariant = variant === "A" ? activeTest.variantA : activeTest.variantB;
 
   return {
     capsuleText: capsuleVariant.capsuleText,
@@ -250,19 +250,19 @@ export async function getABTestedCapsule(
 /**
  * Record an event for A/B test tracking
  */
-export async function recordABTestEvent(
+export function recordABTestEvent(
   testId: string,
-  variant: 'A' | 'B',
-  eventType: 'impression' | 'citation' | 'clickthrough'
-): Promise<void> {
+  variant: "A" | "B",
+  eventType: "impression" | "citation" | "clickthrough"
+): void {
   const test = abTests.get(testId);
-  if (!test || test.status !== 'running') {
+  if (!test || test.status !== "running") {
     return;
   }
 
   // In production, store these events in a database
   // For now, we'll track them in the test metadata
-  aeoLogger.info('A/B test event', { testId, variant, eventType });
+  aeoLogger.info("A/B test event", { testId, variant, eventType });
 }
 
 /**
@@ -271,7 +271,7 @@ export async function recordABTestEvent(
 export async function getABTestResults(testId: string): Promise<ABTestResult> {
   const test = abTests.get(testId);
   if (!test) {
-    throw new Error('A/B test not found');
+    throw new Error("A/B test not found");
   }
 
   // Get citations for this content during the test period
@@ -282,10 +282,7 @@ export async function getABTestResults(testId: string): Promise<ABTestResult> {
     .select()
     .from(aeoCitations)
     .where(
-      and(
-        eq(aeoCitations.contentId, test.contentId),
-        gte(aeoCitations.detectedAt, startDate)
-      )
+      and(eq(aeoCitations.contentId, test.contentId), gte(aeoCitations.detectedAt, startDate))
     );
 
   // In a real implementation, we'd track which variant was shown
@@ -317,12 +314,12 @@ export async function getABTestResults(testId: string): Promise<ABTestResult> {
   const significance = calculateStatisticalSignificance(variantA, variantB);
 
   // Determine winner
-  let recommendedWinner: 'A' | 'B' | 'inconclusive' = 'inconclusive';
+  let recommendedWinner: "A" | "B" | "inconclusive" = "inconclusive";
   if (significance >= 0.95) {
     if (variantB.citationRate > variantA.citationRate) {
-      recommendedWinner = 'B';
+      recommendedWinner = "B";
     } else if (variantA.citationRate > variantB.citationRate) {
-      recommendedWinner = 'A';
+      recommendedWinner = "A";
     }
   }
 
@@ -339,10 +336,7 @@ export async function getABTestResults(testId: string): Promise<ABTestResult> {
 /**
  * Calculate statistical significance between two variants
  */
-function calculateStatisticalSignificance(
-  variantA: VariantStats,
-  variantB: VariantStats
-): number {
+function calculateStatisticalSignificance(variantA: VariantStats, variantB: VariantStats): number {
   // Simplified chi-squared test for proportions
   const n1 = variantA.impressions;
   const n2 = variantB.impressions;
@@ -352,7 +346,7 @@ function calculateStatisticalSignificance(
   if (n1 === 0 || n2 === 0) return 0;
 
   const pooledP = (p1 * n1 + p2 * n2) / (n1 + n2);
-  const se = Math.sqrt(pooledP * (1 - pooledP) * (1/n1 + 1/n2));
+  const se = Math.sqrt(pooledP * (1 - pooledP) * (1 / n1 + 1 / n2));
 
   if (se === 0) return 0;
 
@@ -361,9 +355,9 @@ function calculateStatisticalSignificance(
   // Convert z-score to confidence level (approximation)
   if (z >= 2.576) return 0.99;
   if (z >= 1.96) return 0.95;
-  if (z >= 1.645) return 0.90;
-  if (z >= 1.28) return 0.80;
-  return 0.5 + (z / 5);
+  if (z >= 1.645) return 0.9;
+  if (z >= 1.28) return 0.8;
+  return 0.5 + z / 5;
 }
 
 /**
@@ -372,12 +366,10 @@ function calculateStatisticalSignificance(
 export async function applyWinningVariant(testId: string): Promise<void> {
   const test = abTests.get(testId);
   if (!test || !test.winningVariant) {
-    throw new Error('No winning variant to apply');
+    throw new Error("No winning variant to apply");
   }
 
-  const winningCapsule = test.winningVariant === 'A'
-    ? test.variantA
-    : test.variantB;
+  const winningCapsule = test.winningVariant === "A" ? test.variantA : test.variantB;
 
   // Update the capsule in the database
   await db
@@ -400,7 +392,7 @@ export async function applyWinningVariant(testId: string): Promise<void> {
     } as any)
     .where(eq(contents.id, test.contentId));
 
-  aeoLogger.info('Winning variant applied', { testId, variant: test.winningVariant });
+  aeoLogger.info("Winning variant applied", { testId, variant: test.winningVariant });
 }
 
 /**
@@ -429,6 +421,6 @@ export function deleteABTest(testId: string): boolean {
  */
 export function getActiveTestsForContent(contentId: string): ABTest[] {
   return Array.from(abTests.values()).filter(
-    t => t.contentId === contentId && t.status === 'running'
+    t => t.contentId === contentId && t.status === "running"
   );
 }

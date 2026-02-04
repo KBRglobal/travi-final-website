@@ -85,6 +85,7 @@ export function MagicAIButton({
           });
         }
       } catch (error) {
+        console.error(error);
         toast({
           title: "Error",
           description: error instanceof Error ? error.message : "Failed to generate content",
@@ -108,7 +109,7 @@ export function MagicAIButton({
   };
 
   const handleGenerateTier = (tier: number) => {
-    const tierLocales = getLocalesByTier(tier).map((l) => l.code);
+    const tierLocales = getLocalesByTier(tier).map(l => l.code);
     handleGenerate(tierLocales);
   };
 
@@ -146,11 +147,7 @@ export function MagicAIButton({
             size="icon"
             variant="ghost"
             disabled={disabled || isGenerating}
-            className={cn(
-              "relative",
-              isGenerating && "animate-pulse",
-              className
-            )}
+            className={cn("relative", isGenerating && "animate-pulse", className)}
             data-testid={`magic-ai-icon-${field}`}
           >
             {buttonContent}
@@ -183,11 +180,7 @@ export function MagicAIButton({
             size="sm"
             variant="ghost"
             disabled={disabled || isGenerating}
-            className={cn(
-              "text-xs gap-1",
-              isGenerating && "animate-pulse",
-              className
-            )}
+            className={cn("text-xs gap-1", isGenerating && "animate-pulse", className)}
             data-testid={`magic-ai-inline-${field}`}
           >
             <Sparkles className="h-3 w-3" />
@@ -255,21 +248,13 @@ export function MagicAIButton({
             </div>
             <Progress value={progressPercent} className="h-2" />
             <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
-              {progress.completed.map((item) => (
-                <LocaleBadge
-                  key={item.locale}
-                  locale={item.locale}
-                  status="completed"
-                />
+              {progress.completed.map(item => (
+                <LocaleBadge key={item.locale} locale={item.locale} status="completed" />
               ))}
-              {progress.failed.map((item) => (
-                <LocaleBadge
-                  key={item.locale}
-                  locale={item.locale}
-                  status="failed"
-                />
+              {progress.failed.map(item => (
+                <LocaleBadge key={item.locale} locale={item.locale} status="failed" />
               ))}
-              {progress.pending.map((locale) => (
+              {progress.pending.map(locale => (
                 <LocaleBadge key={locale} locale={locale} status="pending" />
               ))}
             </div>
@@ -328,11 +313,9 @@ function MagicAIDropdownContent({
       </DropdownMenuItem>
 
       <DropdownMenuSeparator />
-      <DropdownMenuLabel className="text-xs text-muted-foreground">
-        By Tier
-      </DropdownMenuLabel>
+      <DropdownMenuLabel className="text-xs text-muted-foreground">By Tier</DropdownMenuLabel>
 
-      {[1, 2, 3, 4, 5].map((tier) => (
+      {[1, 2, 3, 4, 5].map(tier => (
         <DropdownMenuSub key={tier}>
           <DropdownMenuSubTrigger disabled={isGenerating}>
             {getTierLabel(tier)}
@@ -346,7 +329,7 @@ function MagicAIDropdownContent({
               All Tier {tier} Languages
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {getLocalesByTier(tier).map((locale) => (
+            {getLocalesByTier(tier).map(locale => (
               <DropdownMenuItem
                 key={locale.code}
                 onClick={() => onGenerateSingle(locale.code)}

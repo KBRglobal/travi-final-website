@@ -11,10 +11,10 @@
  * - Automatic fetch scheduling
  */
 
-import Parser from 'rss-parser';
-import { db } from '../db';
-import { rssFeeds, contents, backgroundJobs } from '@shared/schema';
-import { eq, and, gte, sql, desc, inArray, isNull } from 'drizzle-orm';
+import Parser from "rss-parser";
+import { db } from "../db";
+import { rssFeeds, contents, backgroundJobs } from "@shared/schema";
+import { eq, and, gte, sql, desc, inArray, isNull } from "drizzle-orm";
 
 // ============================================================================
 // TYPES
@@ -58,20 +58,20 @@ export interface FetchResult {
 
 class RSSReader {
   private parser: Parser;
-  private feedItemsTable = 'rss_feed_items';
+  private feedItemsTable = "rss_feed_items";
   private initialized = false;
 
   constructor() {
     this.parser = new Parser({
       timeout: 30000,
       headers: {
-        'User-Agent': 'Travi-RSS-Reader/1.0 (+https://travi.com)',
-        'Accept': 'application/rss+xml, application/xml, text/xml',
+        "User-Agent": "Travi-RSS-Reader/1.0 (+https://travi.com)",
+        Accept: "application/rss+xml, application/xml, text/xml",
       },
       customFields: {
         item: [
-          ['media:content', 'media'],
-          ['content:encoded', 'contentEncoded'],
+          ["media:content", "media"],
+          ["content:encoded", "contentEncoded"],
         ],
       },
     });
@@ -178,9 +178,7 @@ class RSSReader {
       `);
 
       this.initialized = true;
-      
     } catch (error) {
-      
       throw error;
     }
   }
@@ -191,19 +189,16 @@ class RSSReader {
   async fetchFeed(feedId: string): Promise<FetchResult> {
     await this.initialize();
 
-    const [feed] = await db.select()
-      .from(rssFeeds)
-      .where(eq(rssFeeds.id, feedId))
-      .limit(1);
+    const [feed] = await db.select().from(rssFeeds).where(eq(rssFeeds.id, feedId)).limit(1);
 
     if (!feed) {
       return {
         feedId,
-        feedName: 'Unknown',
+        feedName: "Unknown",
         itemsFetched: 0,
         newItems: 0,
         duplicatesSkipped: 0,
-        errors: ['Feed not found in database'],
+        errors: ["Feed not found in database"],
       };
     }
 
@@ -211,7 +206,7 @@ class RSSReader {
       id: feed.id,
       url: feed.url,
       name: feed.name,
-      category: feed.category || 'news',
+      category: feed.category || "news",
       destinationId: feed.destinationId,
       isActive: feed.isActive,
       lastFetchedAt: feed.lastFetchedAt,
@@ -234,13 +229,9 @@ class RSSReader {
     };
 
     try {
-      
-
       // Parse the RSS feed
       const parsedFeed = await this.parser.parseURL(feed.url);
       const feedTitle = parsedFeed.title || feed.name;
-
-      
 
       // Process each item
       for (const item of parsedFeed.items) {
@@ -273,7 +264,7 @@ class RSSReader {
             INSERT INTO rss_feed_items (feed_id, title, url, summary, published_date, source, category)
             VALUES (
               ${feed.id},
-              ${(item.title || '').substring(0, 500)},
+              ${(item.title || "").substring(0, 500)},
               ${item.link.substring(0, 2000)},
               ${summary.substring(0, 5000)},
               ${publishedDate},
@@ -291,15 +282,13 @@ class RSSReader {
       }
 
       // Update last fetched timestamp
-      await db.update(rssFeeds)
+      await db
+        .update(rssFeeds)
         .set({ lastFetchedAt: new Date() } as any)
         .where(eq(rssFeeds.id, feed.id));
-
-      
-
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      
+
       result.errors.push(errorMsg);
     }
 
@@ -326,7 +315,7 @@ class RSSReader {
     }
 
     // Fallback to contentSnippet
-    return item.contentSnippet || '';
+    return item.contentSnippet || "";
   }
 
   /**
@@ -334,9 +323,9 @@ class RSSReader {
    */
   private stripHtml(html: string): string {
     return html
-      .replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/\s+/g, ' ')
+      .replace(/<!\[CDATA\[(.*?)\]\]>/gs, "$1")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
       .trim();
   }
 
@@ -346,11 +335,7 @@ class RSSReader {
   async fetchAllFeeds(): Promise<FetchResult[]> {
     await this.initialize();
 
-    const feeds = await db.select()
-      .from(rssFeeds)
-      .where(eq(rssFeeds.isActive, true));
-
-    
+    const feeds = await db.select().from(rssFeeds).where(eq(rssFeeds.isActive, true));
 
     const results: FetchResult[] = [];
 
@@ -359,7 +344,7 @@ class RSSReader {
         id: feed.id,
         url: feed.url,
         name: feed.name,
-        category: feed.category || 'news',
+        category: feed.category || "news",
         destinationId: feed.destinationId,
         isActive: feed.isActive,
         lastFetchedAt: feed.lastFetchedAt,
@@ -431,12 +416,14 @@ class RSSReader {
 
     await this.initialize();
 
-    const placeholders = itemIds.map((_, i) => `$${i + 1}`).join(', ');
-    await db.execute(sql.raw(`
+    const placeholders = itemIds.map((_, i) => `$${i + 1}`).join(", ");
+    await db.execute(
+      sql.raw(`
       UPDATE rss_feed_items
       SET processed = TRUE, processed_at = NOW()
       WHERE id IN (${placeholders})
-    `));
+    `)
+    );
   }
 
   /**
@@ -477,10 +464,12 @@ class RSSReader {
   }> {
     await this.initialize();
 
-    const [feedStats] = await db.select({
-      total: sql<number>`count(*)::int`,
-      active: sql<number>`count(*) FILTER (WHERE is_active = TRUE)::int`,
-    }).from(rssFeeds);
+    const [feedStats] = await db
+      .select({
+        total: sql<number>`count(*)::int`,
+        active: sql<number>`count(*) FILTER (WHERE is_active = TRUE)::int`,
+      })
+      .from(rssFeeds);
 
     const itemStatsResult = await db.execute(sql`
       SELECT
@@ -546,7 +535,6 @@ export const rssReader = new RSSReader();
 export async function initializeRssFeedItemsTable(): Promise<void> {
   try {
     await rssReader.initialize();
-    console.log("[RSS Reader] Feed items table initialized with Gate1 columns");
   } catch (error) {
     console.error("[RSS Reader] Failed to initialize feed items table:", error);
   }
@@ -557,20 +545,56 @@ export async function initializeRssFeedItemsTable(): Promise<void> {
 // ============================================================================
 
 const SENSITIVE_TOPIC_KEYWORDS = [
-  'kill', 'dead', 'death', 'die', 'dies', 'died', 'dying',
-  'murder', 'murdered', 'homicide', 'manslaughter',
-  'crash', 'collision', 'accident', 'fatal',
-  'terror', 'terrorist', 'attack', 'bomb', 'bombing', 'explosion',
-  'war', 'conflict', 'invasion', 'military strike',
-  'disaster', 'tragedy', 'catastrophe',
-  'shooting', 'shot', 'gunfire', 'gunman',
-  'victim', 'victims', 'casualties',
-  'hostage', 'kidnap', 'abduct',
-  'suicide', 'suicide bombing',
-  'epidemic', 'pandemic', 'outbreak', 'virus spread',
+  "kill",
+  "dead",
+  "death",
+  "die",
+  "dies",
+  "died",
+  "dying",
+  "murder",
+  "murdered",
+  "homicide",
+  "manslaughter",
+  "crash",
+  "collision",
+  "accident",
+  "fatal",
+  "terror",
+  "terrorist",
+  "attack",
+  "bomb",
+  "bombing",
+  "explosion",
+  "war",
+  "conflict",
+  "invasion",
+  "military strike",
+  "disaster",
+  "tragedy",
+  "catastrophe",
+  "shooting",
+  "shot",
+  "gunfire",
+  "gunman",
+  "victim",
+  "victims",
+  "casualties",
+  "hostage",
+  "kidnap",
+  "abduct",
+  "suicide",
+  "suicide bombing",
+  "epidemic",
+  "pandemic",
+  "outbreak",
+  "virus spread",
 ];
 
-export function isSensitiveTopic(title: string, description: string): { sensitive: boolean; reason?: string } {
+export function isSensitiveTopic(
+  title: string,
+  description: string
+): { sensitive: boolean; reason?: string } {
   const combined = `${title} ${description}`.toLowerCase();
 
   for (const keyword of SENSITIVE_TOPIC_KEYWORDS) {
@@ -587,18 +611,21 @@ export function isSensitiveTopic(title: string, description: string): { sensitiv
 // ============================================================================
 
 const DESTINATION_KEYWORDS: Array<{ keywords: string[]; destinationId: string }> = [
-  { keywords: ['japan', 'tokyo', 'osaka', 'kyoto', 'japanese', 'shinkansen'], destinationId: 'tokyo' },
-  { keywords: ['thailand', 'bangkok', 'thai', 'phuket'], destinationId: 'bangkok' },
-  { keywords: ['singapore', 'singaporean'], destinationId: 'singapore' },
-  { keywords: ['dubai', 'uae', 'emirati', 'emirates', 'burj'], destinationId: 'dubai' },
-  { keywords: ['abu dhabi', 'abu-dhabi'], destinationId: 'abu-dhabi' },
-  { keywords: ['ras al khaimah', 'ras-al-khaimah'], destinationId: 'ras-al-khaimah' },
-  { keywords: ['paris', 'france', 'french', 'eiffel'], destinationId: 'paris' },
-  { keywords: ['london', 'britain', 'british', 'uk', 'england'], destinationId: 'london' },
-  { keywords: ['istanbul', 'turkey', 'turkish'], destinationId: 'istanbul' },
-  { keywords: ['new york', 'nyc', 'manhattan', 'brooklyn'], destinationId: 'new-york' },
-  { keywords: ['los angeles', 'hollywood', 'california', 'la'], destinationId: 'los-angeles' },
-  { keywords: ['miami', 'florida'], destinationId: 'miami' },
+  {
+    keywords: ["japan", "tokyo", "osaka", "kyoto", "japanese", "shinkansen"],
+    destinationId: "tokyo",
+  },
+  { keywords: ["thailand", "bangkok", "thai", "phuket"], destinationId: "bangkok" },
+  { keywords: ["singapore", "singaporean"], destinationId: "singapore" },
+  { keywords: ["dubai", "uae", "emirati", "emirates", "burj"], destinationId: "dubai" },
+  { keywords: ["abu dhabi", "abu-dhabi"], destinationId: "abu-dhabi" },
+  { keywords: ["ras al khaimah", "ras-al-khaimah"], destinationId: "ras-al-khaimah" },
+  { keywords: ["paris", "france", "french", "eiffel"], destinationId: "paris" },
+  { keywords: ["london", "britain", "british", "uk", "england"], destinationId: "london" },
+  { keywords: ["istanbul", "turkey", "turkish"], destinationId: "istanbul" },
+  { keywords: ["new york", "nyc", "manhattan", "brooklyn"], destinationId: "new-york" },
+  { keywords: ["los angeles", "hollywood", "california", "la"], destinationId: "los-angeles" },
+  { keywords: ["miami", "florida"], destinationId: "miami" },
 ];
 
 export function detectDestinationFromContent(title: string, description: string): string | null {

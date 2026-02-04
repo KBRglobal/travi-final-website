@@ -215,7 +215,7 @@ export function MagicAllButton({
 
         // Show metadata if available
         if (data.metadata) {
-          console.log("Magic All metadata:", data.metadata);
+          // metadata available for debugging
         }
       } else {
         throw new Error(data.error || "Failed to generate content");

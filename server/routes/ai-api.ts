@@ -238,7 +238,9 @@ async function findOrCreateArticleImage(
             source: "library" as const,
           };
         }
-      } catch (aiError) {}
+      } catch (aiError) {
+        console.error(aiError);
+      }
 
       return null;
     }
@@ -850,9 +852,10 @@ Return JSON only:
               source: imageResult.source,
               imageId: imageResult.imageId,
             };
-          } else {
           }
-        } catch (imageError) {}
+        } catch (imageError) {
+          console.error(imageError);
+        }
 
         const enforcedArticle = enforceArticleSEO(generatedArticle);
 
@@ -1614,9 +1617,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
                 ...image,
                 url: result.image.url,
               });
-            } else {
             }
-          } catch (imgError) {}
+          } catch (imgError) {
+            console.error(imgError);
+          }
         }
 
         res.json({ images: storedImages, count: storedImages.length });

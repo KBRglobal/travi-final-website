@@ -252,9 +252,7 @@ router.post("/api/admin/guides/import-all-wikivoyage", async (req: Request, res:
       locales: getAvailableLocales(),
     });
 
-    runFullWikivoyageIngestion()
-      .then(result => {})
-      .catch(error => {});
+    runFullWikivoyageIngestion().catch(console.error);
   } catch (error) {
     res.status(500).json({ error: "Failed to start full Wikivoyage import" });
   }

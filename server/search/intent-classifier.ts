@@ -165,6 +165,7 @@ async function getDynamicLocations(): Promise<string[]> {
 
     return cachedLocations;
   } catch (error) {
+    console.error(error);
     return FALLBACK_LOCATIONS;
   }
 }

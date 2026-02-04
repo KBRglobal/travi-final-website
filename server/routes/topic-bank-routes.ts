@@ -892,7 +892,9 @@ RULES:
               heroImageUrl = persistedUrl || heroImage.url;
             }
           }
-        } catch (imageError) {}
+        } catch (imageError) {
+          console.error(imageError);
+        }
 
         // Create news article
         const content = await storage.createContent({
@@ -1028,7 +1030,9 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
                 heroImageUrl = persistedUrl || heroImage.url;
               }
             }
-          } catch (imageError) {}
+          } catch (imageError) {
+            console.error(imageError);
+          }
 
           const content = await storage.createContent({
             title: generated.title || topic.title,

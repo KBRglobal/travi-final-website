@@ -59,7 +59,7 @@ export const searchIndexer = {
       const result = await embeddings.generate(embeddingText);
       embeddingVector = `[${result.vector.join(",")}]`;
     } catch (error) {
-      // Continue without embedding - semantic search won't work but full-text will
+      console.error(error);
     }
 
     // Upsert to search index
@@ -119,6 +119,7 @@ export const searchIndexer = {
         await this.indexContent(content.id);
         indexed++;
       } catch (error) {
+        console.error(error);
         errors++;
       }
     }

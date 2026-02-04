@@ -135,6 +135,7 @@ Return JSON with these exact fields:
       }
       parsed = JSON.parse(jsonContent);
     } catch (parseError) {
+      console.error(parseError);
       return null;
     }
 

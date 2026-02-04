@@ -106,7 +106,9 @@ export async function getLocalizationSystemStatus(): Promise<LocalizationSystemS
       else if (row.status === "failed") execution.failedJobs++;
       else execution.pendingJobs++;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error("[LocalizationPilot] Error getting execution status:", error);
+  }
 
   // Determine overall status
   let status: LocalizationSystemStatus;

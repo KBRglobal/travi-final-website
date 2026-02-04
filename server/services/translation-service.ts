@@ -1045,7 +1045,9 @@ ${req.text}`,
 
           job.status = "failed";
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     return job;

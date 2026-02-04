@@ -1296,8 +1296,8 @@ export default function AttractionDetail() {
           destination: destination,
         }),
       });
-    } catch (e) {
-      // Silent fail - don't block user
+    } catch (error) {
+      console.error(error);
     }
   };
   const metaDescription =

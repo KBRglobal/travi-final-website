@@ -63,7 +63,9 @@ export function PWAInstallPrompt() {
 
       setShowPrompt(false);
       setDeferredPrompt(null);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDismiss = () => {

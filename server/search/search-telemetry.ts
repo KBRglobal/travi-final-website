@@ -73,6 +73,9 @@ class SearchTelemetry {
     const zeroResultRate = zeroResultCount / recentEvents.length;
 
     if (zeroResultRate > 0.2) {
+      console.error(
+        `[SearchTelemetry] High zero result rate: ${(zeroResultRate * 100).toFixed(1)}%`
+      );
     }
   }
 

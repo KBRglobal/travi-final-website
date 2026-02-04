@@ -41,7 +41,7 @@ class OctypoRunState {
         try {
           cb();
         } catch (e) {
-          /* ignore */
+          console.error("[OctypoRunState] Completion callback error:", e);
         }
       });
     }

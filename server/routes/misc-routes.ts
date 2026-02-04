@@ -336,7 +336,9 @@ export function registerMiscRoutes(app: Express): void {
 </html>
               `,
             });
-          } catch (emailError) {}
+          } catch (emailError) {
+            console.error(emailError);
+          }
         }
       }
 

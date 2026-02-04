@@ -113,7 +113,8 @@ export class QaRunner {
       }).catch(() => null);
 
       results.server = response?.ok || response?.status === 404; // 404 means server running but no health endpoint
-    } catch {
+    } catch (error) {
+      console.error(error);
       results.server = false;
     }
 
@@ -121,7 +122,8 @@ export class QaRunner {
     try {
       await db.query.qaRuns.findFirst();
       results.database = true;
-    } catch {
+    } catch (error) {
+      console.error(error);
       results.database = false;
     }
 

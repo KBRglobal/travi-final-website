@@ -77,6 +77,7 @@ export const searchEngine = {
           threshold: 0.3,
         })
         .catch(err => {
+          console.error(err);
           return [];
         }),
     ]);
@@ -219,6 +220,7 @@ export const searchEngine = {
         };
       });
     } catch (error) {
+      console.error(error);
       return [];
     }
   },
@@ -264,6 +266,7 @@ export const searchEngine = {
         };
       });
     } catch (error) {
+      console.error(error);
       return [];
     }
   },
@@ -275,7 +278,7 @@ export const searchEngine = {
     try {
       await searchAnalytics.logSearch(query.q, resultsCount, query.locale || "en");
     } catch (error) {
-      // Don't fail the search if logging fails
+      console.error(error);
     }
   },
 };

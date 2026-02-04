@@ -52,5 +52,4 @@ export async function runGatekeeperPipeline(maxItems: number = 10) {
 export async function initializeGatekeeper(): Promise<void> {
   const { registerGatekeeperJobHandlers } = await import("./job-handlers");
   registerGatekeeperJobHandlers();
-  console.log("[Gatekeeper] System initialized - autonomous pipeline ready");
 }

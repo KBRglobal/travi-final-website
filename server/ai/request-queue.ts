@@ -6,37 +6,49 @@
  * C) Exponential Backoff - Jittered backoff for error recovery
  */
 
-import { getAllUnifiedProviders, UnifiedAIProvider, AICompletionOptions, AICompletionResult } from './providers';
-import pino from 'pino';
+import {
+  getAllUnifiedProviders,
+  UnifiedAIProvider,
+  AICompletionOptions,
+  AICompletionResult,
+} from "./providers";
+import pino from "pino";
 
-const logger = pino({ level: 'info' });
+const logger = pino({ level: "info" });
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export enum RequestPriority {
-  CRITICAL = 1,    // System-critical requests (e.g., user-facing real-time)
-  HIGH = 2,        // Important requests (e.g., content generation)
-  NORMAL = 5,      // Standard requests
-  LOW = 8,         // Background tasks
-  BATCH = 10,      // Bulk processing, can wait
+  CRITICAL = 1, // System-critical requests (e.g., user-facing real-time)
+  HIGH = 2, // Important requests (e.g., content generation)
+  NORMAL = 5, // Standard requests
+  LOW = 8, // Background tasks
+  BATCH = 10, // Bulk processing, can wait
 }
 
 /**
  * Task category for AI orchestrator governance
  * PHASE 14: All AI calls MUST specify an explicit category
  */
-export type AITaskCategory = 
-  | 'news' | 'evergreen' | 'enrichment' | 'content' 
-  | 'translation' | 'image' | 'research' | 'localization' 
-  | 'seo' | 'internal';
+export type AITaskCategory =
+  | "news"
+  | "evergreen"
+  | "enrichment"
+  | "content"
+  | "translation"
+  | "image"
+  | "research"
+  | "localization"
+  | "seo"
+  | "internal";
 
 interface QueuedRequest {
   id: string;
   options: AICompletionOptions;
   priority: RequestPriority;
-  effectivePriority: number;  // Adjusted priority considering age
+  effectivePriority: number; // Adjusted priority considering age
   addedAt: number;
   resolve: (result: AICompletionResult) => void;
   reject: (error: Error) => void;
@@ -44,20 +56,20 @@ interface QueuedRequest {
   maxRetries: number;
   preferredProvider?: string;
   lastError?: string;
-  backoffUntil?: number;  // When this request can be retried
-  category?: AITaskCategory;  // PHASE 14: Task category for governance
+  backoffUntil?: number; // When this request can be retried
+  category?: AITaskCategory; // PHASE 14: Task category for governance
 }
 
 interface TokenBucket {
-  tokens: number;           // Current available tokens
-  maxTokens: number;        // Maximum burst capacity
-  refillRate: number;       // Tokens per second
-  lastRefill: number;       // Last refill timestamp
+  tokens: number; // Current available tokens
+  maxTokens: number; // Maximum burst capacity
+  refillRate: number; // Tokens per second
+  lastRefill: number; // Last refill timestamp
   requestsThisMinute: number;
   requestsThisHour: number;
   minuteResetAt: number;
   hourResetAt: number;
-  blockedUntil: number;     // Hard block from rate limit errors
+  blockedUntil: number; // Hard block from rate limit errors
   consecutiveErrors: number;
   lastErrorType?: string;
 }
@@ -88,56 +100,56 @@ interface QueueStats {
 // ============================================================================
 
 const PROVIDER_CONFIG = {
-  anthropic: { 
-    maxTokens: 20,      // Burst capacity
-    refillRate: 0.25,   // 15 per minute = 0.25 per second
-    perMinute: 15, 
+  anthropic: {
+    maxTokens: 20, // Burst capacity
+    refillRate: 0.25, // 15 per minute = 0.25 per second
+    perMinute: 15,
     perHour: 200,
     baseBackoffMs: 5000,
   },
-  openrouter: { 
+  openrouter: {
     maxTokens: 40,
-    refillRate: 0.5,    // 30 per minute
-    perMinute: 30, 
+    refillRate: 0.5, // 30 per minute
+    perMinute: 30,
     perHour: 500,
     baseBackoffMs: 3000,
   },
-  deepseek: { 
+  deepseek: {
     maxTokens: 25,
-    refillRate: 0.33,   // 20 per minute
-    perMinute: 20, 
+    refillRate: 0.33, // 20 per minute
+    perMinute: 20,
     perHour: 300,
     baseBackoffMs: 4000,
   },
-  openai: { 
+  openai: {
     maxTokens: 25,
     refillRate: 0.33,
-    perMinute: 20, 
+    perMinute: 20,
     perHour: 300,
     baseBackoffMs: 4000,
   },
-  'replit-ai': { 
+  "replit-ai": {
     maxTokens: 15,
-    refillRate: 0.17,   // 10 per minute
-    perMinute: 10, 
+    refillRate: 0.17, // 10 per minute
+    perMinute: 10,
     perHour: 100,
     baseBackoffMs: 6000,
   },
-  default: { 
+  default: {
     maxTokens: 15,
     refillRate: 0.17,
-    perMinute: 10, 
+    perMinute: 10,
     perHour: 100,
     baseBackoffMs: 5000,
   },
 };
 
 const MAX_RETRIES = 5;
-const QUEUE_PROCESS_INTERVAL_MS = 50;  // Check queue every 50ms
-const PRIORITY_AGE_FACTOR = 0.05;      // Priority boost per second of waiting (slower aging)
-const MIN_EFFECTIVE_PRIORITY = 0;      // Clamp effective priority to prevent negative values
-const MAX_CONCURRENT_REQUESTS = 10;     // Increased from 3 - better utilization of burst capacity
-const JITTER_FACTOR = 0.3;              // 30% jitter on backoff times
+const QUEUE_PROCESS_INTERVAL_MS = 50; // Check queue every 50ms
+const PRIORITY_AGE_FACTOR = 0.05; // Priority boost per second of waiting (slower aging)
+const MIN_EFFECTIVE_PRIORITY = 0; // Clamp effective priority to prevent negative values
+const MAX_CONCURRENT_REQUESTS = 10; // Increased from 3 - better utilization of burst capacity
+const JITTER_FACTOR = 0.3; // 30% jitter on backoff times
 
 // ============================================================================
 // Exponential Backoff with Jitter
@@ -146,37 +158,43 @@ const JITTER_FACTOR = 0.3;              // 30% jitter on backoff times
 function calculateBackoff(
   baseMs: number,
   attempt: number,
-  maxBackoffMs: number = 300000  // 5 minutes max
+  maxBackoffMs: number = 300000 // 5 minutes max
 ): number {
   // Exponential: base * 2^attempt
   const exponentialBackoff = baseMs * Math.pow(2, attempt);
-  
+
   // Cap at max
   const cappedBackoff = Math.min(exponentialBackoff, maxBackoffMs);
-  
+
   // Add jitter: ±30%
   const jitter = cappedBackoff * JITTER_FACTOR * (Math.random() * 2 - 1);
-  
+
   return Math.max(baseMs, Math.floor(cappedBackoff + jitter));
 }
 
-function categorizeError(error: any): 'rate_limit' | 'server_error' | 'client_error' | 'network' | 'unknown' {
+function categorizeError(
+  error: any
+): "rate_limit" | "server_error" | "client_error" | "network" | "unknown" {
   const status = error?.status || error?.response?.status;
-  const message = (error?.message || '').toLowerCase();
-  
-  if (status === 429 || message.includes('rate limit') || message.includes('too many requests')) {
-    return 'rate_limit';
+  const message = (error?.message || "").toLowerCase();
+
+  if (status === 429 || message.includes("rate limit") || message.includes("too many requests")) {
+    return "rate_limit";
   }
   if (status >= 500) {
-    return 'server_error';
+    return "server_error";
   }
   if (status >= 400 && status < 500) {
-    return 'client_error';
+    return "client_error";
   }
-  if (message.includes('network') || message.includes('timeout') || message.includes('econnrefused')) {
-    return 'network';
+  if (
+    message.includes("network") ||
+    message.includes("timeout") ||
+    message.includes("econnrefused")
+  ) {
+    return "network";
   }
-  return 'unknown';
+  return "unknown";
 }
 
 // ============================================================================
@@ -196,7 +214,7 @@ class TokenBucketRateLimiter {
       const config = this.getConfig(providerName);
       const now = Date.now();
       bucket = {
-        tokens: config.maxTokens,  // Start with full bucket
+        tokens: config.maxTokens, // Start with full bucket
         maxTokens: config.maxTokens,
         refillRate: config.refillRate,
         lastRefill: now,
@@ -218,10 +236,7 @@ class TokenBucketRateLimiter {
   private calculateCurrentTokens(bucket: TokenBucket): number {
     const now = Date.now();
     const elapsedSeconds = (now - bucket.lastRefill) / 1000;
-    return Math.min(
-      bucket.maxTokens,
-      bucket.tokens + (elapsedSeconds * bucket.refillRate)
-    );
+    return Math.min(bucket.maxTokens, bucket.tokens + elapsedSeconds * bucket.refillRate);
   }
 
   /**
@@ -229,8 +244,8 @@ class TokenBucketRateLimiter {
    */
   private refillAndConsume(bucket: TokenBucket): boolean {
     const now = Date.now();
-    const config = this.getConfig(bucket.maxTokens === 20 ? 'anthropic' : 'default');
-    
+    const config = this.getConfig(bucket.maxTokens === 20 ? "anthropic" : "default");
+
     // Calculate current tokens with refill
     bucket.tokens = this.calculateCurrentTokens(bucket);
     bucket.lastRefill = now;
@@ -344,20 +359,20 @@ class TokenBucketRateLimiter {
     bucket.lastErrorType = errorType;
 
     // Calculate backoff with jitter
-    const backoffMs = calculateBackoff(
-      config.baseBackoffMs,
-      bucket.consecutiveErrors - 1
-    );
+    const backoffMs = calculateBackoff(config.baseBackoffMs, bucket.consecutiveErrors - 1);
 
     bucket.blockedUntil = Date.now() + backoffMs;
-    bucket.tokens = 0;  // Empty the bucket on error
+    bucket.tokens = 0; // Empty the bucket on error
 
-    logger.warn({
-      provider: providerName,
-      errorType,
-      backoffSeconds: Math.ceil(backoffMs / 1000),
-      consecutiveErrors: bucket.consecutiveErrors,
-    }, '[TokenBucket] Provider blocked with exponential backoff');
+    logger.warn(
+      {
+        provider: providerName,
+        errorType,
+        backoffSeconds: Math.ceil(backoffMs / 1000),
+        consecutiveErrors: bucket.consecutiveErrors,
+      },
+      "[TokenBucket] Provider blocked with exponential backoff"
+    );
   }
 
   /**
@@ -372,7 +387,7 @@ class TokenBucketRateLimiter {
   /**
    * Get stats for all providers (without modifying state)
    */
-  getProviderStats(providerNames: string[]): QueueStats['providers'] {
+  getProviderStats(providerNames: string[]): QueueStats["providers"] {
     const now = Date.now();
 
     return providerNames.map(name => {
@@ -390,23 +405,23 @@ class TokenBucketRateLimiter {
       const available = !isBlocked && hasTokens && underHourLimit;
 
       let waitTimeSeconds = 0;
-      let status = 'ready';
+      let status = "ready";
 
       if (isBlocked) {
         waitTimeSeconds = Math.ceil((bucket.blockedUntil - now) / 1000);
-        status = `blocked (${bucket.lastErrorType || 'error'})`;
+        status = `blocked (${bucket.lastErrorType || "error"})`;
       } else if (!hasTokens) {
         waitTimeSeconds = Math.ceil((1 - currentTokens) / bucket.refillRate);
-        status = 'refilling';
+        status = "refilling";
       } else if (!underHourLimit) {
         waitTimeSeconds = Math.ceil((bucket.hourResetAt - now) / 1000);
-        status = 'hourly limit';
+        status = "hourly limit";
       }
 
       return {
         name,
         available,
-        tokens: Math.floor(currentTokens * 10) / 10,  // Round to 1 decimal
+        tokens: Math.floor(currentTokens * 10) / 10, // Round to 1 decimal
         maxTokens: bucket.maxTokens,
         requestsThisMinute: minuteRequestCount,
         requestsThisHour: hourlyRequestCount,
@@ -441,7 +456,7 @@ class PriorityQueueManager {
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
       this.updateEffectivePriority(this.queue[mid]);
-      
+
       if (this.queue[mid].effectivePriority > request.effectivePriority) {
         right = mid;
       } else {
@@ -450,7 +465,7 @@ class PriorityQueueManager {
     }
 
     this.queue.splice(left, 0, request);
-    return left + 1;  // 1-based position
+    return left + 1; // 1-based position
   }
 
   /**
@@ -461,7 +476,7 @@ class PriorityQueueManager {
     const ageSeconds = (Date.now() - request.addedAt) / 1000;
     // Lower priority number = higher priority
     // Subtract age factor to boost priority over time, but clamp to minimum
-    const aged = request.priority - (ageSeconds * PRIORITY_AGE_FACTOR);
+    const aged = request.priority - ageSeconds * PRIORITY_AGE_FACTOR;
     request.effectivePriority = Math.max(MIN_EFFECTIVE_PRIORITY, aged);
   }
 
@@ -477,7 +492,7 @@ class PriorityQueueManager {
 
     // Find first request that's not in backoff
     const index = this.queue.findIndex(r => !r.backoffUntil || r.backoffUntil <= now);
-    
+
     if (index === -1) return null;
 
     return this.queue.splice(index, 1)[0];
@@ -490,7 +505,7 @@ class PriorityQueueManager {
     const now = Date.now();
     this.queue.forEach(r => this.updateEffectivePriority(r));
     this.queue.sort((a, b) => a.effectivePriority - b.effectivePriority);
-    
+
     return this.queue.find(r => !r.backoffUntil || r.backoffUntil <= now) || null;
   }
 
@@ -577,12 +592,15 @@ class AIRequestQueue {
 
       const position = this.priorityQueue.enqueue(request);
 
-      logger.info({
-        requestId: request.id,
-        queuePosition: position,
-        queueLength: this.priorityQueue.length,
-        priority: RequestPriority[priority] || priority,
-      }, '[Queue] Request added to priority queue');
+      logger.info(
+        {
+          requestId: request.id,
+          queuePosition: position,
+          queueLength: this.priorityQueue.length,
+          priority: RequestPriority[priority] || priority,
+        },
+        "[Queue] Request added to priority queue"
+      );
     });
   }
 
@@ -595,21 +613,23 @@ class AIRequestQueue {
 
     // Calculate estimated wait time
     const availableProviders = providerStats.filter(p => p.available).length;
-    const avgRequestTime = 3;  // seconds per request
-    
+    const avgRequestTime = 3; // seconds per request
+
     let estimatedWaitSeconds: number;
     if (availableProviders > 0) {
       estimatedWaitSeconds = Math.ceil(
-        (this.priorityQueue.length * avgRequestTime) / Math.max(availableProviders, MAX_CONCURRENT_REQUESTS)
+        (this.priorityQueue.length * avgRequestTime) /
+          Math.max(availableProviders, MAX_CONCURRENT_REQUESTS)
       );
     } else {
       const minWait = Math.min(...providerStats.map(p => p.waitTimeSeconds));
-      estimatedWaitSeconds = minWait + (this.priorityQueue.length * avgRequestTime);
+      estimatedWaitSeconds = minWait + this.priorityQueue.length * avgRequestTime;
     }
 
-    const estimatedWait = estimatedWaitSeconds < 60
-      ? `${estimatedWaitSeconds} seconds`
-      : `${Math.ceil(estimatedWaitSeconds / 60)} minutes`;
+    const estimatedWait =
+      estimatedWaitSeconds < 60
+        ? `${estimatedWaitSeconds} seconds`
+        : `${Math.ceil(estimatedWaitSeconds / 60)} minutes`;
 
     return {
       queueLength: this.priorityQueue.length,
@@ -681,58 +701,67 @@ class AIRequestQueue {
     this.activeRequests++;
 
     try {
-      logger.info({
-        requestId: request.id,
-        provider: provider.name,
-        remainingQueue: this.priorityQueue.length,
-        priority: RequestPriority[request.priority] || request.priority,
-        retries: request.retries,
-      }, '[Queue] Processing request');
+      logger.info(
+        {
+          requestId: request.id,
+          provider: provider.name,
+          remainingQueue: this.priorityQueue.length,
+          priority: RequestPriority[request.priority] || request.priority,
+          retries: request.retries,
+        },
+        "[Queue] Processing request"
+      );
 
       const result = await provider.generateCompletion(request.options);
-      
+
       this.rateLimiter.recordSuccess(provider.name);
       this.priorityQueue.recordComplete();
       request.resolve(result);
-
     } catch (error: any) {
       const errorType = categorizeError(error);
-      
-      logger.error({
-        requestId: request.id,
-        provider: provider.name,
-        errorType,
-        error: error.message,
-        retries: request.retries,
-      }, '[Queue] Request failed');
 
-      if (errorType === 'rate_limit') {
+      logger.error(
+        {
+          requestId: request.id,
+          provider: provider.name,
+          errorType,
+          error: error.message,
+          retries: request.retries,
+        },
+        "[Queue] Request failed"
+      );
+
+      if (errorType === "rate_limit") {
         this.rateLimiter.recordError(provider.name, errorType);
       }
 
       // Retry logic with exponential backoff
-      if (request.retries < request.maxRetries && errorType !== 'client_error') {
+      if (request.retries < request.maxRetries && errorType !== "client_error") {
         request.retries++;
         request.lastError = error.message;
-        
+
         // Calculate backoff for request retry
-        const config = PROVIDER_CONFIG[provider.name as keyof typeof PROVIDER_CONFIG] || PROVIDER_CONFIG.default;
+        const config =
+          PROVIDER_CONFIG[provider.name as keyof typeof PROVIDER_CONFIG] || PROVIDER_CONFIG.default;
         const backoffMs = calculateBackoff(config.baseBackoffMs, request.retries - 1, 60000);
         request.backoffUntil = Date.now() + backoffMs;
 
-        logger.info({
-          requestId: request.id,
-          retry: request.retries,
-          maxRetries: request.maxRetries,
-          backoffSeconds: Math.ceil(backoffMs / 1000),
-        }, '[Queue] Request re-queued with backoff');
+        logger.info(
+          {
+            requestId: request.id,
+            retry: request.retries,
+            maxRetries: request.maxRetries,
+            backoffSeconds: Math.ceil(backoffMs / 1000),
+          },
+          "[Queue] Request re-queued with backoff"
+        );
 
         this.priorityQueue.requeue(request);
       } else {
         this.priorityQueue.recordFailure();
-        request.reject(new Error(
-          `Request failed after ${request.retries} retries: ${error.message}`
-        ));
+        request.reject(
+          new Error(`Request failed after ${request.retries} retries: ${error.message}`)
+        );
       }
     } finally {
       this.activeRequests--;
@@ -744,8 +773,8 @@ class AIRequestQueue {
    */
   clear(): void {
     const rejected = this.priorityQueue.clear();
-    rejected.forEach(r => r.reject(new Error('Queue cleared')));
-    logger.info({ clearedCount: rejected.length }, '[Queue] Queue cleared');
+    rejected.forEach(r => r.reject(new Error("Queue cleared")));
+    logger.info({ clearedCount: rejected.length }, "[Queue] Queue cleared");
   }
 
   /**
@@ -774,7 +803,7 @@ export const aiQueue = new AIRequestQueue();
  * PHASE 14: All AI calls MUST specify an explicit category
  */
 export interface QueuedAIRequestOptions {
-  category: AITaskCategory;  // REQUIRED: Task category for governance
+  category: AITaskCategory; // REQUIRED: Task category for governance
   priority?: RequestPriority | number;
   preferredProvider?: string;
 }
@@ -791,15 +820,18 @@ export class AITaskRejectionError extends Error {
     public provider?: string
   ) {
     super(`[AI] Task rejected: ${reason}`);
-    this.name = 'AITaskRejectionError';
-    
+    this.name = "AITaskRejectionError";
+
     // PHASE 14: Structured log event for rejections
-    logger.warn({
-      taskId,
-      provider: provider || 'unknown',
-      category,
-      reason,
-    }, '[AI] Task rejected');
+    logger.warn(
+      {
+        taskId,
+        provider: provider || "unknown",
+        category,
+        reason,
+      },
+      "[AI] Task rejected"
+    );
   }
 }
 
@@ -811,17 +843,20 @@ export async function queuedAIRequest(
   options: AICompletionOptions,
   priority: RequestPriority | number = RequestPriority.NORMAL,
   preferredProvider?: string,
-  category: AITaskCategory = 'internal'
+  category: AITaskCategory = "internal"
 ): Promise<AICompletionResult> {
   // PHASE 14: Log if category is missing (default to 'internal' but warn)
-  if (!category || category === 'internal') {
-    logger.warn({
-      priority,
-      preferredProvider,
-    }, '[Queue] AI request missing explicit category - defaulting to internal');
+  if (!category || category === "internal") {
+    logger.warn(
+      {
+        priority,
+        preferredProvider,
+      },
+      "[Queue] AI request missing explicit category - defaulting to internal"
+    );
   }
-  
-  return aiQueue.enqueue(options, priority as RequestPriority, preferredProvider);
+
+  return await aiQueue.enqueue(options, priority as RequestPriority, preferredProvider);
 }
 
 /**
@@ -833,30 +868,40 @@ export async function categorizedAIRequest(
   requestOptions: QueuedAIRequestOptions
 ): Promise<AICompletionResult> {
   const { category, priority = RequestPriority.NORMAL, preferredProvider } = requestOptions;
-  
+
   // PHASE 14: Validate category
   const validCategories: AITaskCategory[] = [
-    'news', 'evergreen', 'enrichment', 'content', 
-    'translation', 'image', 'research', 'localization', 
-    'seo', 'internal'
+    "news",
+    "evergreen",
+    "enrichment",
+    "content",
+    "translation",
+    "image",
+    "research",
+    "localization",
+    "seo",
+    "internal",
   ];
-  
+
   if (!validCategories.includes(category)) {
     const taskId = `req_${Date.now()}_validation`;
     throw new AITaskRejectionError(
       taskId,
       category,
-      `Invalid category "${category}". Valid: ${validCategories.join(', ')}`
+      `Invalid category "${category}". Valid: ${validCategories.join(", ")}`
     );
   }
-  
-  logger.info({
-    category,
-    priority: RequestPriority[priority as RequestPriority] || priority,
-    preferredProvider,
-  }, '[Queue] Categorized AI request queued');
-  
-  return aiQueue.enqueue(options, priority as RequestPriority, preferredProvider);
+
+  logger.info(
+    {
+      category,
+      priority: RequestPriority[priority as RequestPriority] || priority,
+      preferredProvider,
+    },
+    "[Queue] Categorized AI request queued"
+  );
+
+  return await aiQueue.enqueue(options, priority as RequestPriority, preferredProvider);
 }
 
 /**
@@ -873,10 +918,8 @@ export async function batchQueuedRequests(
   requests: { options: AICompletionOptions; preferredProvider?: string }[],
   priority: RequestPriority = RequestPriority.BATCH
 ): Promise<AICompletionResult[]> {
-  const promises = requests.map(r => 
-    aiQueue.enqueue(r.options, priority, r.preferredProvider)
-  );
-  return Promise.all(promises);
+  const promises = requests.map(r => aiQueue.enqueue(r.options, priority, r.preferredProvider));
+  return await Promise.all(promises);
 }
 
 /**

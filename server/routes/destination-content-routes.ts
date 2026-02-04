@@ -763,8 +763,10 @@ router.post("/api/destination-content/guides/rewrite-all", async (req: Request, 
     // Use setImmediate to ensure the response is sent first
     setImmediate(async () => {
       try {
-        const results = await guideRewriteService.rewriteAllDestinations();
-      } catch (error) {}
+        await guideRewriteService.rewriteAllDestinations();
+      } catch (error) {
+        console.error(error);
+      }
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to start batch rewrite" });
@@ -787,8 +789,10 @@ router.post(
       // Process in background
       setImmediate(async () => {
         try {
-          const results = await guideRewriteService.forceRewriteAllDestinations();
-        } catch (error) {}
+          await guideRewriteService.forceRewriteAllDestinations();
+        } catch (error) {
+          console.error(error);
+        }
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to start force rewrite" });

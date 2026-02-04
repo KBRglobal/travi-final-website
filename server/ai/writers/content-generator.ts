@@ -31,7 +31,7 @@ export const aiWritersContentGenerator = {
 
     const { min, max } = sectionConfig[length] || sectionConfig.medium;
 
-    return generateContent({
+    return await generateContent({
       contentType: contentType as ContentType,
       topic,
       targetKeyword: keywords[0],

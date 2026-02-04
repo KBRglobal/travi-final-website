@@ -1,33 +1,45 @@
 /**
  * Auto-Translation Service
  * Automatically translates newly generated destination content
- * 
+ *
  * Triggered after:
  * - Destination content generation
  * - Article publishing
  */
 
 import { db } from "../db";
-import { 
-  destinations, destinationContent, aiGenerationLogs,
-  SUPPORTED_LOCALES, type Locale 
+import {
+  destinations,
+  destinationContent,
+  aiGenerationLogs,
+  SUPPORTED_LOCALES,
+  type Locale,
 } from "@shared/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { createLogger } from "../lib/logger";
-import { 
-  translateContent, 
+import {
+  translateContent,
   generateContentHash,
   assertTranslationEnabled,
-  TranslationDisabledError
+  TranslationDisabledError,
 } from "./translation-service";
 
 const logger = createLogger("auto-translation");
 
 // Priority order for translation (tier 1 markets first)
 const TRANSLATION_PRIORITY: Locale[] = [
-  "ar", "he", "ru", "zh", "hi", // Tier 1 - Core markets
-  "fr", "de", "es", "it", "ja", // Tier 2 - Major markets
-  "ko", "tr",                   // Tier 3 - Secondary markets
+  "ar",
+  "he",
+  "ru",
+  "zh",
+  "hi", // Tier 1 - Core markets
+  "fr",
+  "de",
+  "es",
+  "it",
+  "ja", // Tier 2 - Major markets
+  "ko",
+  "tr", // Tier 3 - Secondary markets
 ];
 
 // ============================================================================
@@ -60,7 +72,7 @@ interface DestinationTranslationResult {
 /**
  * Queue translations for a newly generated destination
  * Called automatically after destination content generation
- * 
+ *
  * DISABLED (January 2026): All automatic translation is permanently disabled.
  * This function now throws TranslationDisabledError immediately.
  */
@@ -72,8 +84,8 @@ export async function translateDestinationContent(
   }
 ): Promise<DestinationTranslationResult> {
   // HARD DISABLE: Throws TranslationDisabledError
-  assertTranslationEnabled('translateDestinationContent');
-  
+  assertTranslationEnabled("translateDestinationContent");
+
   if (!autoTranslationConfig.enabled) {
     logger.info("Auto-translation is disabled");
     return { queued: 0, completed: 0, failed: 0, errors: [] };
@@ -149,14 +161,10 @@ export async function translateDestinationContent(
     if (options?.immediate) {
       // Immediate translation mode - translate now one by one
       const translatedResults: Record<string, any> = {};
-      
+
       for (const locale of targetLocales) {
         try {
-          const translatedContent = await translateContent(
-            translatableContent,
-            "en",
-            locale.code
-          );
+          const translatedContent = await translateContent(translatableContent, "en", locale.code);
 
           if (translatedContent) {
             // Store translated content for logging
@@ -172,7 +180,7 @@ export async function translateDestinationContent(
           }
 
           // Add delay between translations
-          await new Promise(resolve => 
+          await new Promise(resolve =>
             setTimeout(resolve, autoTranslationConfig.delayBetweenTranslations)
           );
         } catch (error) {
@@ -189,15 +197,15 @@ export async function translateDestinationContent(
           .select({ translations: destinations.translations })
           .from(destinations)
           .where(eq(destinations.id, destinationId));
-        
+
         const existingTranslations = (freshDest?.translations as Record<string, any>) || {};
         const mergedTranslations = { ...existingTranslations, ...translatedResults };
 
         await db
           .update(destinations)
-          .set({ 
+          .set({
             translations: mergedTranslations,
-            updatedAt: new Date() 
+            updatedAt: new Date(),
           } as any)
           .where(eq(destinations.id, destinationId));
 
@@ -243,9 +251,7 @@ export async function translateDestinationContent(
           } as any);
 
           result.queued = targetLocales.length;
-          logger.info(
-            `Queued batch translation for ${destination.name} - Job ID: ${batchJobId}`
-          );
+          logger.info(`Queued batch translation for ${destination.name} - Job ID: ${batchJobId}`);
         } catch (error) {
           result.errors.push(`Failed to create batch job: ${error}`);
           logger.error({ error: String(error) }, "Batch translation job creation failed");
@@ -253,7 +259,7 @@ export async function translateDestinationContent(
       } else {
         // Queue for individual processing later
         result.queued = targetLocales.length;
-        
+
         // Log the queued translations
         await db.insert(aiGenerationLogs).values({
           targetType: "destination_translation_queue",
@@ -267,9 +273,7 @@ export async function translateDestinationContent(
           duration: 0,
         } as any);
 
-        logger.info(
-          `Queued ${result.queued} translations for ${destination.name}`
-        );
+        logger.info(`Queued ${result.queued} translations for ${destination.name}`);
       }
     }
 
@@ -287,7 +291,12 @@ export async function translateDestinationContent(
  */
 export async function getDestinationTranslations(
   destinationId: string
-): Promise<Record<string, { title: string; metaTitle: string; metaDescription: string; translatedAt: string }>> {
+): Promise<
+  Record<
+    string,
+    { title: string; metaTitle: string; metaDescription: string; translatedAt: string }
+  >
+> {
   const [destination] = await db
     .select({ translations: destinations.translations })
     .from(destinations)
@@ -297,7 +306,10 @@ export async function getDestinationTranslations(
     return {};
   }
 
-  return destination.translations as Record<string, { title: string; metaTitle: string; metaDescription: string; translatedAt: string }>;
+  return destination.translations as Record<
+    string,
+    { title: string; metaTitle: string; metaDescription: string; translatedAt: string }
+  >;
 }
 
 /**
@@ -310,20 +322,20 @@ export async function getAllDestinationTranslations(): Promise<
 
   // Get all destinations with translations
   const allDestinations = await db
-    .select({ 
-      id: destinations.id, 
+    .select({
+      id: destinations.id,
       translations: destinations.translations,
-      updatedAt: destinations.updatedAt 
+      updatedAt: destinations.updatedAt,
     })
     .from(destinations)
     .where(eq(destinations.hasPage, true));
 
   for (const dest of allDestinations) {
-    if (!dest.translations || typeof dest.translations !== 'object') continue;
-    
+    if (!dest.translations || typeof dest.translations !== "object") continue;
+
     const translations = dest.translations as Record<string, any>;
     const locales = Object.keys(translations);
-    
+
     if (locales.length > 0) {
       // Get latest translatedAt from translations
       let latestTranslatedAt = "";
@@ -333,7 +345,7 @@ export async function getAllDestinationTranslations(): Promise<
           latestTranslatedAt = t.translatedAt;
         }
       }
-      
+
       result.set(dest.id, {
         locales,
         translatedAt: latestTranslatedAt || dest.updatedAt?.toISOString() || "",
@@ -353,7 +365,7 @@ export async function getDestinationTranslationCoverage(): Promise<{
   overallCoverage: number;
 }> {
   const coverage: Record<string, { translated: number; pending: number; percentage: number }> = {};
-  
+
   // Initialize all locales
   for (const locale of SUPPORTED_LOCALES) {
     if (locale.code !== "en") {
@@ -382,26 +394,24 @@ export async function getDestinationTranslationCoverage(): Promise<{
   // Calculate percentages
   let totalTranslated = 0;
   const totalLocales = Object.keys(coverage).length;
-  
+
   for (const localeCode of Object.keys(coverage)) {
     const translated = coverage[localeCode].translated;
-    coverage[localeCode].percentage = totalDestinations > 0
-      ? Math.round((translated / totalDestinations) * 100)
-      : 0;
+    coverage[localeCode].percentage =
+      totalDestinations > 0 ? Math.round((translated / totalDestinations) * 100) : 0;
     coverage[localeCode].pending = totalDestinations - translated;
     totalTranslated += translated;
   }
 
   // Overall coverage is average across all locales
   const maxTranslations = totalDestinations * totalLocales;
-  const overallCoverage = maxTranslations > 0
-    ? Math.round((totalTranslated / maxTranslations) * 100)
-    : 0;
+  const overallCoverage =
+    maxTranslations > 0 ? Math.round((totalTranslated / maxTranslations) * 100) : 0;
 
-  return { 
-    totalDestinations: totalDestinations || 0, 
-    byLocale: coverage, 
-    overallCoverage 
+  return {
+    totalDestinations: totalDestinations || 0,
+    byLocale: coverage,
+    overallCoverage,
   };
 }
 
@@ -437,10 +447,10 @@ export async function processPendingTranslations(): Promise<{
     for (const log of pendingLogs) {
       try {
         // Process the translation
-        const translationResult = await translateDestinationContent(
-          log.targetId || "",
-          { priorityOnly: true, immediate: true }
-        );
+        const translationResult = await translateDestinationContent(log.targetId || "", {
+          priorityOnly: true,
+          immediate: true,
+        });
 
         processed++;
         succeeded += translationResult.completed;
@@ -449,24 +459,18 @@ export async function processPendingTranslations(): Promise<{
         // Mark as processed by updating the log
         await db
           .update(aiGenerationLogs)
-          .set({ 
+          .set({
             targetType: "destination_translation_completed",
             duration: translationResult.completed,
           } as any)
           .where(eq(aiGenerationLogs.id, log.id));
-
       } catch (error) {
         failed++;
-        logger.error(
-          { error: String(error), logId: log.id },
-          "Translation processing failed"
-        );
+        logger.error({ error: String(error), logId: log.id }, "Translation processing failed");
       }
     }
 
-    logger.info(
-      `Translation processing complete: ${succeeded} succeeded, ${failed} failed`
-    );
+    logger.info(`Translation processing complete: ${succeeded} succeeded, ${failed} failed`);
   } catch (error) {
     logger.error({ error: String(error) }, "Pending translation processing failed");
   }
@@ -478,7 +482,10 @@ export async function processPendingTranslations(): Promise<{
  * One-time migration: Backfill translations from aiGenerationLogs to destinations.translations
  * Run this to migrate any translations that were stored in logs before the schema change
  */
-export async function backfillTranslationsFromLogs(): Promise<{ migrated: number; skipped: number }> {
+export async function backfillTranslationsFromLogs(): Promise<{
+  migrated: number;
+  skipped: number;
+}> {
   let migrated = 0;
   let skipped = 0;
 
@@ -501,8 +508,12 @@ export async function backfillTranslationsFromLogs(): Promise<{ migrated: number
       try {
         const data = JSON.parse(log.prompt);
         const logTranslations = data.translations;
-        
-        if (!logTranslations || typeof logTranslations !== 'object' || Object.keys(logTranslations).length === 0) {
+
+        if (
+          !logTranslations ||
+          typeof logTranslations !== "object" ||
+          Object.keys(logTranslations).length === 0
+        ) {
           skipped++;
           continue;
         }
@@ -519,7 +530,7 @@ export async function backfillTranslationsFromLogs(): Promise<{ migrated: number
         }
 
         const existingTranslations = (dest.translations as Record<string, any>) || {};
-        
+
         // Merge log translations into existing (existing takes precedence as it's more current)
         let hasNewTranslations = false;
         for (const [locale, translation] of Object.entries(logTranslations)) {
@@ -538,7 +549,8 @@ export async function backfillTranslationsFromLogs(): Promise<{ migrated: number
         } else {
           skipped++;
         }
-      } catch {
+      } catch (error) {
+        console.error(error);
         skipped++;
       }
     }

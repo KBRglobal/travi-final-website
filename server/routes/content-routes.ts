@@ -138,7 +138,9 @@ async function logAuditEvent(
         null,
       userAgent: req.headers["user-agent"] || null,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export function registerContentRoutes(app: Express): void {

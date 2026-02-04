@@ -303,7 +303,9 @@ async function runWatchdog(): Promise<void> {
 
     if (released > 0) {
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**

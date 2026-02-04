@@ -266,7 +266,9 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
           priority: 0.85,
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // Dynamic content pages
@@ -308,7 +310,9 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         });
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 
   // Tiqets attractions pages (English only for now)
   if (locale === "en") {
@@ -337,7 +341,9 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
           addedCount++;
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // Help Center pages - DISABLED: Help center is currently broken

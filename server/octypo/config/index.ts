@@ -28,19 +28,14 @@ export {
  */
 export function initializeOctypoConfig(): boolean {
   if (!_secretsExist()) {
-    console.log(
-      "[Octypo Config] No secrets file found. Run: npx tsx server/octypo/config/secrets.ts --setup"
-    );
     return false;
   }
 
   try {
     const loaded = _loadSecretsToEnv();
     if (loaded) {
-      console.log("[Octypo Config] Secrets loaded successfully");
       return true;
     } else {
-      console.log("[Octypo Config] Failed to load secrets");
       return false;
     }
   } catch (error) {

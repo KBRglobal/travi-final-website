@@ -66,6 +66,7 @@ export const plagiarismDetector = {
 
       return response.data[0].embedding;
     } catch (error) {
+      console.error(error);
       return null;
     }
   },
@@ -227,6 +228,7 @@ export const plagiarismDetector = {
         checkedAgainst: otherContent.length,
       };
     } catch (error) {
+      console.error(error);
       return {
         isPlagiarized: false,
         overallSimilarity: 0,
@@ -250,6 +252,7 @@ export const plagiarismDetector = {
 
       return this.cosineSimilarity(embedding1, embedding2);
     } catch (error) {
+      console.error(error);
       return 0;
     }
   },

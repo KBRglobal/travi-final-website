@@ -39,15 +39,15 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { toast } = useToast();
-  
+
   const prefersReducedMotion = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !email.includes("@")) {
       toast({
         title: "Invalid email",
@@ -67,6 +67,7 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
         description: "You're now subscribed to travel magic.",
       });
     } catch (error) {
+      console.error(error);
       toast({
         title: "Oops!",
         description: "Something went wrong. Please try again.",
@@ -87,18 +88,10 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
   } = config;
 
   return (
-    <section 
-      className="relative py-20 md:py-28 overflow-hidden"
-      data-testid="newsletter-section"
-    >
+    <section className="relative py-20 md:py-28 overflow-hidden" data-testid="newsletter-section">
       {/* Full-bleed Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={backgroundImage}
-          alt=""
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+        <img src={backgroundImage} alt="" className="w-full h-full object-cover" loading="lazy" />
       </div>
 
       {/* Content Container - Positioned left to keep character visible on right */}
@@ -107,9 +100,9 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ 
-            duration: prefersReducedMotion ? 0 : 0.8, 
-            ease: [0.4, 0, 0.2, 1] 
+          transition={{
+            duration: prefersReducedMotion ? 0 : 0.8,
+            ease: [0.4, 0, 0.2, 1],
           }}
           className="max-w-xl ml-0 md:ml-8 lg:ml-16 mr-auto"
         >
@@ -186,7 +179,7 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
                   <Input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     placeholder={placeholder}
                     className="w-full h-12 sm:h-14 px-5 text-base rounded-full bg-white/80 backdrop-blur-sm border-white/50 shadow-sm focus:border-[#6443F4] focus:ring-[#6443F4] placeholder:text-slate-400"
                     disabled={isLoading}

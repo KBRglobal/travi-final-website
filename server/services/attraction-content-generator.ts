@@ -398,7 +398,8 @@ function parseAIResponse(rawContent: string): GeneratedAttractionContent {
       const repaired = repairJSON(rawContent);
       parsed = JSON.parse(repaired);
       // Log that we auto-repaired
-    } catch {
+    } catch (error) {
+      console.error(error);
       // If repair also fails, throw original error for better debugging
       throw firstError;
     }

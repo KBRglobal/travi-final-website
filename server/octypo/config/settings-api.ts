@@ -3,33 +3,37 @@
  * Simple encrypted settings storage in database
  */
 
-import { db } from '../../db';
-import { sql } from 'drizzle-orm';
-import * as crypto from 'crypto';
+import { db } from "../../db";
+import { sql } from "drizzle-orm";
+import * as crypto from "crypto";
 
 // Encryption key from environment (or generate one)
-const ENCRYPTION_KEY = process.env.OCTYPO_ENCRYPTION_KEY ||
-  crypto.createHash('sha256').update(process.env.DATABASE_URL || 'octypo-default-key').digest();
+const ENCRYPTION_KEY =
+  process.env.OCTYPO_ENCRYPTION_KEY ||
+  crypto
+    .createHash("sha256")
+    .update(process.env.DATABASE_URL || "octypo-default-key")
+    .digest();
 
-const ALGORITHM = 'aes-256-gcm';
+const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;
 
 function encrypt(text: string): string {
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv(ALGORITHM, ENCRYPTION_KEY, iv);
-  const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+  const encrypted = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
   const authTag = cipher.getAuthTag();
-  return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted.toString('hex')}`;
+  return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted.toString("hex")}`;
 }
 
 function decrypt(encrypted: string): string {
-  const [ivHex, authTagHex, encryptedHex] = encrypted.split(':');
-  const iv = Buffer.from(ivHex, 'hex');
-  const authTag = Buffer.from(authTagHex, 'hex');
-  const encryptedBuffer = Buffer.from(encryptedHex, 'hex');
+  const [ivHex, authTagHex, encryptedHex] = encrypted.split(":");
+  const iv = Buffer.from(ivHex, "hex");
+  const authTag = Buffer.from(authTagHex, "hex");
+  const encryptedBuffer = Buffer.from(encryptedHex, "hex");
   const decipher = crypto.createDecipheriv(ALGORITHM, ENCRYPTION_KEY, iv);
   decipher.setAuthTag(authTag);
-  return Buffer.concat([decipher.update(encryptedBuffer), decipher.final()]).toString('utf8');
+  return Buffer.concat([decipher.update(encryptedBuffer), decipher.final()]).toString("utf8");
 }
 
 export interface OctypoSettings {
@@ -60,7 +64,7 @@ export interface OctypoSettings {
   maxDailyArticles?: number;
 }
 
-const SETTINGS_KEY = 'octypo_settings';
+const SETTINGS_KEY = "octypo_settings";
 
 // Ensure table exists
 let tableChecked = false;
@@ -76,7 +80,8 @@ async function ensureTable(): Promise<void> {
     `);
     tableChecked = true;
   } catch (error) {
-    // Table might already exist
+    // Table might already exist - this is expected
+    console.error("[Octypo Settings] Table creation notice:", error);
     tableChecked = true;
   }
 }
@@ -101,9 +106,16 @@ export async function getSettings(): Promise<OctypoSettings> {
     // Decrypt API keys
     const decrypted: OctypoSettings = { ...settings };
     const keyFields = [
-      'anthropicApiKey', 'openaiApiKey', 'openrouterApiKey', 'geminiApiKey',
-      'groqApiKey', 'mistralApiKey', 'deepseekApiKey', 'togetherApiKey',
-      'perplexityApiKey', 'heliconeApiKey'
+      "anthropicApiKey",
+      "openaiApiKey",
+      "openrouterApiKey",
+      "geminiApiKey",
+      "groqApiKey",
+      "mistralApiKey",
+      "deepseekApiKey",
+      "togetherApiKey",
+      "perplexityApiKey",
+      "heliconeApiKey",
     ];
 
     for (const field of keyFields) {
@@ -119,7 +131,7 @@ export async function getSettings(): Promise<OctypoSettings> {
 
     return decrypted;
   } catch (error) {
-    console.error('[Octypo Settings] Error loading:', error);
+    console.error("[Octypo Settings] Error loading:", error);
     return getDefaultSettings();
   }
 }
@@ -137,9 +149,16 @@ export async function saveSettings(settings: Partial<OctypoSettings>): Promise<b
     // Encrypt API keys
     const toSave: any = { ...merged };
     const keyFields = [
-      'anthropicApiKey', 'openaiApiKey', 'openrouterApiKey', 'geminiApiKey',
-      'groqApiKey', 'mistralApiKey', 'deepseekApiKey', 'togetherApiKey',
-      'perplexityApiKey', 'heliconeApiKey'
+      "anthropicApiKey",
+      "openaiApiKey",
+      "openrouterApiKey",
+      "geminiApiKey",
+      "groqApiKey",
+      "mistralApiKey",
+      "deepseekApiKey",
+      "togetherApiKey",
+      "perplexityApiKey",
+      "heliconeApiKey",
     ];
 
     for (const field of keyFields) {
@@ -162,7 +181,7 @@ export async function saveSettings(settings: Partial<OctypoSettings>): Promise<b
 
     return true;
   } catch (error) {
-    console.error('[Octypo Settings] Error saving:', error);
+    console.error("[Octypo Settings] Error saving:", error);
     return false;
   }
 }
@@ -190,23 +209,31 @@ export async function initializeSettings(): Promise<void> {
   try {
     const settings = await getSettings();
     loadSettingsToEnv(settings);
-    console.log('[Octypo Settings] Loaded from database');
   } catch (error) {
-    console.log('[Octypo Settings] Using environment variables');
+    // Using environment variables as fallback - this is expected behavior
   }
 }
 
 /**
  * Get settings for display (masked API keys)
  */
-export async function getSettingsForDisplay(): Promise<OctypoSettings & { _masked: Record<string, boolean> }> {
+export async function getSettingsForDisplay(): Promise<
+  OctypoSettings & { _masked: Record<string, boolean> }
+> {
   const settings = await getSettings();
   const masked: Record<string, boolean> = {};
 
   const keyFields = [
-    'anthropicApiKey', 'openaiApiKey', 'openrouterApiKey', 'geminiApiKey',
-    'groqApiKey', 'mistralApiKey', 'deepseekApiKey', 'togetherApiKey',
-    'perplexityApiKey', 'heliconeApiKey'
+    "anthropicApiKey",
+    "openaiApiKey",
+    "openrouterApiKey",
+    "geminiApiKey",
+    "groqApiKey",
+    "mistralApiKey",
+    "deepseekApiKey",
+    "togetherApiKey",
+    "perplexityApiKey",
+    "heliconeApiKey",
   ];
 
   const display: any = { ...settings };
@@ -214,7 +241,7 @@ export async function getSettingsForDisplay(): Promise<OctypoSettings & { _maske
     if (display[field]) {
       masked[field] = true;
       // Show only last 4 chars
-      display[field] = '••••••••' + display[field].slice(-4);
+      display[field] = "••••••••" + display[field].slice(-4);
     }
   }
 
@@ -223,7 +250,7 @@ export async function getSettingsForDisplay(): Promise<OctypoSettings & { _maske
 
 function getDefaultSettings(): OctypoSettings {
   return {
-    preferredProvider: 'anthropic',
+    preferredProvider: "anthropic",
     seoWeight: 40,
     aeoWeight: 35,
     viralityWeight: 25,

@@ -315,10 +315,10 @@ export async function generateImage(
 
     // Always fallback to DALL-E if Flux fails (regardless of provider setting)
 
-    return generateWithDalle(prompt, options);
+    return await generateWithDalle(prompt, options);
   }
 
-  return generateWithDalle(prompt, options);
+  return await generateWithDalle(prompt, options);
 }
 
 /**

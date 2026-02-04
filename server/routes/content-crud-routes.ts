@@ -887,10 +887,12 @@ export function registerContentCrudRoutes(app: Express): void {
                     status: "completed",
                   });
                 }
-              } catch (err) {}
+              } catch (err) {
+                console.error(err);
+              }
             }
           })
-          .catch(err => {});
+          .catch(console.error);
 
         res.json({
           message: "Translation started",

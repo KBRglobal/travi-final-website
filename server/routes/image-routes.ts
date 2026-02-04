@@ -88,7 +88,9 @@ export function registerImageRoutes(app: Express) {
         if (seoContext) {
           try {
             parsedSeoContext = typeof seoContext === "string" ? JSON.parse(seoContext) : seoContext;
-          } catch (e) {}
+          } catch (e) {
+            console.error(e);
+          }
         }
 
         const result = await uploadImage(

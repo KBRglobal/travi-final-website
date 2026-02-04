@@ -288,7 +288,7 @@ export function getSearchLocationsSync(): string[] {
   }
 
   // Trigger background refresh
-  refreshLocationCache().catch(() => {});
+  refreshLocationCache().catch(console.error);
 
   // Return cached or fallback
   return locationCache?.locations || FALLBACK_LOCATIONS;

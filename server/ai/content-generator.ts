@@ -624,7 +624,7 @@ export async function generateDestinationContent(
   country: string,
   additionalContext?: string
 ): Promise<GeneratedContent> {
-  return generateContent({
+  return await generateContent({
     contentType: "destination",
     topic: `Complete travel guide to ${destination}, ${country}`,
     destination: `${destination}, ${country}`,
@@ -649,7 +649,7 @@ export async function generateArticleContent(
     additionalContext?: string;
   }
 ): Promise<GeneratedContent> {
-  return generateContent({
+  return await generateContent({
     contentType: "article",
     topic,
     destination: options?.destination,
@@ -684,7 +684,7 @@ export async function generateHotelContent(
     additionalContext += ` Price range: ${hotelDetails.priceRange}.`;
   }
 
-  return generateContent({
+  return await generateContent({
     contentType: "hotel",
     topic: `${hotelName} - Hotel Review and Guide`,
     destination,
@@ -718,7 +718,7 @@ export async function generateAttractionContent(
     additionalContext += ` Ticket price: ${attractionDetails.ticketPrice}.`;
   }
 
-  return generateContent({
+  return await generateContent({
     contentType: "attraction",
     topic: `${attractionName} - Complete Visitor Guide`,
     destination,
@@ -761,7 +761,7 @@ export async function generateSeoAeoContent(
     );
   }
 
-  return generateContent({
+  return await generateContent({
     contentType: options?.contentType || "attraction",
     topic,
     destination: options.destination,
@@ -795,7 +795,7 @@ export async function generateListicleContent(
     );
   }
 
-  return generateContent({
+  return await generateContent({
     contentType: "article",
     topic: `Top ${count} ${topic}`,
     destination: options.destination,
@@ -831,7 +831,7 @@ export async function generateComparisonContent(
     );
   }
 
-  return generateContent({
+  return await generateContent({
     contentType: "article",
     topic: `${optionA} vs ${optionB}`,
     destination: options.destination,
@@ -868,7 +868,7 @@ export async function generateBudgetGuideContent(
     );
   }
 
-  return generateContent({
+  return await generateContent({
     contentType: "article",
     topic: `${topic} on a Budget`,
     destination: options.destination,

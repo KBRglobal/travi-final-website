@@ -148,7 +148,8 @@ export function saveSecrets(secrets: OctypoSecrets, password: string): void {
   try {
     fs.chmodSync(SECRETS_PATH, 0o600);
   } catch (e) {
-    // Windows doesn't support chmod
+    // Windows doesn't support chmod - this is expected and safe to ignore
+    console.error("[Secrets] chmod not supported on this platform:", e);
   }
 
   console.log(`✅ Secrets saved to ${SECRETS_FILE}`);

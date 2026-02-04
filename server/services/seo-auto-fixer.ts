@@ -49,13 +49,24 @@ export class SEOAutoFixer {
     "Book now and save!",
     "Discover more inside!",
     "Start planning now!",
-    "Get your tickets today!"
+    "Get your tickets today!",
   ];
 
   private dubaiLocations = [
-    "downtown dubai", "dubai marina", "palm jumeirah", "jbr",
-    "deira", "bur dubai", "business bay", "jumeirah", "al barsha",
-    "dubai creek", "city walk", "la mer", "dubai hills", "jvc"
+    "downtown dubai",
+    "dubai marina",
+    "palm jumeirah",
+    "jbr",
+    "deira",
+    "bur dubai",
+    "business bay",
+    "jumeirah",
+    "al barsha",
+    "dubai creek",
+    "city walk",
+    "la mer",
+    "dubai hills",
+    "jvc",
   ];
 
   constructor() {
@@ -145,12 +156,13 @@ export class SEOAutoFixer {
       if (result.success) {
         try {
           fixedArticle.ogTags = JSON.parse(result.fixedValue);
-        } catch {
+        } catch (error) {
+          console.error(error);
           // If parsing fails, create a simple object
           fixedArticle.ogTags = {
             "og:title": fixedArticle.metaTitle || fixedArticle.title,
             "og:description": fixedArticle.metaDescription,
-            "og:image": (fixedArticle.heroImage as Record<string, unknown>)?.url || ""
+            "og:image": (fixedArticle.heroImage as Record<string, unknown>)?.url || "",
           };
         }
       }
@@ -194,7 +206,7 @@ export class SEOAutoFixer {
         fixedValue: `Injected ${internalLinksResult.count} internal links`,
         fixType: "generate",
         success: true,
-        message: `Injected ${internalLinksResult.count} internal links into content`
+        message: `Injected ${internalLinksResult.count} internal links into content`,
       });
       fixedArticle.blocks = internalLinksResult.blocks;
     }
@@ -208,7 +220,7 @@ export class SEOAutoFixer {
         fixedValue: "Injected authoritative external link",
         fixType: "generate",
         success: true,
-        message: "Injected authoritative external link into content"
+        message: "Injected authoritative external link into content",
       });
       fixedArticle.blocks = externalLinksResult.blocks;
     }
@@ -221,7 +233,7 @@ export class SEOAutoFixer {
     logger.seo.info(`Auto-fix complete: ${applied} fixes applied, ${failed} failed`, {
       fixesApplied: applied,
       fixesFailed: failed,
-      fixTypes: fixes.map(f => f.field)
+      fixTypes: fixes.map(f => f.field),
     });
 
     return {
@@ -229,7 +241,7 @@ export class SEOAutoFixer {
       fixesFailed: failed,
       articleUpdated: fixedArticle,
       fixDetails: fixes,
-      remainingIssues: remaining
+      remainingIssues: remaining,
     };
   }
 
@@ -250,7 +262,8 @@ export class SEOAutoFixer {
   private hasValidAltText(article: Record<string, unknown>): boolean {
     const image = article.heroImage || article.image;
     if (typeof image === "object" && image) {
-      const alt = (image as Record<string, unknown>).altText || (image as Record<string, unknown>).alt;
+      const alt =
+        (image as Record<string, unknown>).altText || (image as Record<string, unknown>).alt;
       return typeof alt === "string" && alt.length >= 20;
     }
     return false;
@@ -259,9 +272,11 @@ export class SEOAutoFixer {
   private hasValidOgTags(article: Record<string, unknown>): boolean {
     const og = article.ogTags as Record<string, string> | undefined;
     if (!og) return false;
-    return !!(og["og:title"] || og.ogTitle) &&
-           !!(og["og:description"] || og.ogDescription) &&
-           !!(og["og:image"] || og.ogImage);
+    return (
+      !!(og["og:title"] || og.ogTitle) &&
+      !!(og["og:description"] || og.ogDescription) &&
+      !!(og["og:image"] || og.ogImage)
+    );
   }
 
   // ============================================================================
@@ -315,7 +330,7 @@ export class SEOAutoFixer {
         fixedValue: metaTitle,
         fixType: "generate",
         success: true,
-        message: `Generated meta title (${metaTitle.length} chars): ${metaTitle.substring(0, 40)}...`
+        message: `Generated meta title (${metaTitle.length} chars): ${metaTitle.substring(0, 40)}...`,
       };
     } catch (e) {
       return {
@@ -324,7 +339,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to generate meta title: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to generate meta title: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -348,9 +363,14 @@ export class SEOAutoFixer {
       const kwPrefix = `${primaryKw}: `;
       const contentBudget = 155 - ctaLen - kwPrefix.length;
 
-      let content = firstSentence.length > contentBudget
-        ? firstSentence.substring(0, contentBudget - 3).split(" ").slice(0, -1).join(" ") + "..."
-        : firstSentence;
+      let content =
+        firstSentence.length > contentBudget
+          ? firstSentence
+              .substring(0, contentBudget - 3)
+              .split(" ")
+              .slice(0, -1)
+              .join(" ") + "..."
+          : firstSentence;
 
       let desc = `${kwPrefix}${content} ${cta}`;
 
@@ -369,7 +389,7 @@ export class SEOAutoFixer {
         fixedValue: desc,
         fixType: "generate",
         success: true,
-        message: `Generated meta description (${desc.length} chars)`
+        message: `Generated meta description (${desc.length} chars)`,
       };
     } catch (e) {
       return {
@@ -378,7 +398,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to generate meta description: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to generate meta description: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -404,16 +424,22 @@ export class SEOAutoFixer {
               fixedValue: keyword.charAt(0).toUpperCase() + keyword.slice(1),
               fixType: "extract",
               success: true,
-              message: `Extracted primary keyword: ${keyword}`
+              message: `Extracted primary keyword: ${keyword}`,
             };
           }
         }
       }
 
       // Fallback: significant word from title
-      const words = title.split(/\s+/).filter(w =>
-        w.length > 4 && !["guide", "complete", "best", "dubai", "ultimate", "top", "things"].includes(w.toLowerCase())
-      );
+      const words = title
+        .split(/\s+/)
+        .filter(
+          w =>
+            w.length > 4 &&
+            !["guide", "complete", "best", "dubai", "ultimate", "top", "things"].includes(
+              w.toLowerCase()
+            )
+        );
 
       if (words.length > 0) {
         return {
@@ -422,7 +448,7 @@ export class SEOAutoFixer {
           fixedValue: words[0].charAt(0).toUpperCase() + words[0].slice(1),
           fixType: "extract",
           success: true,
-          message: `Extracted primary keyword: ${words[0]}`
+          message: `Extracted primary keyword: ${words[0]}`,
         };
       }
 
@@ -433,7 +459,8 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "fallback",
         success: false,
-        message: "FAIL: No primary keyword available - destination context required (no implicit defaults)"
+        message:
+          "FAIL: No primary keyword available - destination context required (no implicit defaults)",
       };
     } catch (e) {
       return {
@@ -442,7 +469,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "extract",
         success: false,
-        message: `Failed to extract primary keyword: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to extract primary keyword: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -453,11 +480,29 @@ export class SEOAutoFixer {
       const primary = ((article.primaryKeyword as string) || "").toLowerCase();
 
       const candidates = [
-        "tickets", "prices", "hours", "location", "tips", "time to visit",
-        "restaurants", "hotels", "nearby", "parking", "directions",
-        "opening hours", "entry fee", "booking", "reservations",
-        "best time", "what to wear", "photography", "sunset",
-        "sunrise", "view", "observation", "deck"
+        "tickets",
+        "prices",
+        "hours",
+        "location",
+        "tips",
+        "time to visit",
+        "restaurants",
+        "hotels",
+        "nearby",
+        "parking",
+        "directions",
+        "opening hours",
+        "entry fee",
+        "booking",
+        "reservations",
+        "best time",
+        "what to wear",
+        "photography",
+        "sunset",
+        "sunrise",
+        "view",
+        "observation",
+        "deck",
       ];
 
       const found = candidates.filter(kw => fullText.includes(kw) && kw !== primary);
@@ -475,7 +520,7 @@ export class SEOAutoFixer {
         fixedValue: keywords,
         fixType: "extract",
         success: found.length >= 3,
-        message: `Extracted ${found.length} secondary keywords`
+        message: `Extracted ${found.length} secondary keywords`,
       };
     } catch (e) {
       return {
@@ -484,7 +529,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "extract",
         success: false,
-        message: `Failed to extract secondary keywords: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to extract secondary keywords: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -499,12 +544,19 @@ export class SEOAutoFixer {
       let location = "Dubai";
       for (const loc of this.dubaiLocations) {
         if (titleLower.includes(loc)) {
-          location = loc.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+          location = loc
+            .split(" ")
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(" ");
           break;
         }
       }
 
-      const altText = `${title.replace(/\s*-\s*Complete Guide.*/i, "").replace(/\s*Guide$/i, "")} - scenic view in ${location}, UAE`.substring(0, 125);
+      const altText =
+        `${title.replace(/\s*-\s*Complete Guide.*/i, "").replace(/\s*Guide$/i, "")} - scenic view in ${location}, UAE`.substring(
+          0,
+          125
+        );
 
       return {
         field: "heroImageAlt",
@@ -512,7 +564,7 @@ export class SEOAutoFixer {
         fixedValue: altText,
         fixType: "generate",
         success: altText.length >= 20,
-        message: `Generated hero alt text: ${altText.substring(0, 50)}...`
+        message: `Generated hero alt text: ${altText.substring(0, 50)}...`,
       };
     } catch (e) {
       return {
@@ -521,12 +573,16 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to generate hero alt text: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to generate hero alt text: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
 
-  private fixImageAltText(article: Record<string, unknown>, index: number, image: Record<string, unknown>): FixResult {
+  private fixImageAltText(
+    article: Record<string, unknown>,
+    index: number,
+    image: Record<string, unknown>
+  ): FixResult {
     try {
       // FAIL-FAST: Do not use implicit Dubai fallback for image alt text
       const title = (article.title as string) || "Image";
@@ -543,7 +599,7 @@ export class SEOAutoFixer {
         fixedValue: altText,
         fixType: "generate",
         success: true,
-        message: `Generated alt text for image ${index}`
+        message: `Generated alt text for image ${index}`,
       };
     } catch (e) {
       return {
@@ -552,7 +608,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to generate alt text for image ${index}: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to generate alt text for image ${index}: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -566,7 +622,7 @@ export class SEOAutoFixer {
 
       let imageUrl = "";
       if (typeof heroImage === "object" && heroImage) {
-        imageUrl = (heroImage as Record<string, unknown>).url as string || "";
+        imageUrl = ((heroImage as Record<string, unknown>).url as string) || "";
       } else if (typeof heroImage === "string") {
         imageUrl = heroImage;
       }
@@ -577,7 +633,7 @@ export class SEOAutoFixer {
         "og:image": imageUrl || "/default-og-image.jpg",
         "og:url": url,
         "og:type": "article",
-        "og:site_name": this.brandName
+        "og:site_name": this.brandName,
       };
 
       return {
@@ -586,7 +642,7 @@ export class SEOAutoFixer {
         fixedValue: JSON.stringify(ogTags),
         fixType: "generate",
         success: true,
-        message: "Generated Open Graph tags"
+        message: "Generated Open Graph tags",
       };
     } catch (e) {
       return {
@@ -595,7 +651,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to generate OG tags: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to generate OG tags: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -608,10 +664,17 @@ export class SEOAutoFixer {
 
       let canonical: string;
       if (slug) {
-        const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/\s+/g, "-");
+        const cleanSlug = slug
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/\s+/g, "-");
         canonical = `/${category}/${cleanSlug}`;
       } else {
-        const cleanSlug = title.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/\s+/g, "-").substring(0, 50);
+        const cleanSlug = title
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/\s+/g, "-")
+          .substring(0, 50);
         canonical = `/${category}/${cleanSlug}`;
       }
 
@@ -621,7 +684,7 @@ export class SEOAutoFixer {
         fixedValue: canonical,
         fixType: "generate",
         success: true,
-        message: `Set canonical URL: ${canonical}`
+        message: `Set canonical URL: ${canonical}`,
       };
     } catch (e) {
       return {
@@ -630,15 +693,18 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to set canonical URL: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to set canonical URL: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
 
   private fixBreadcrumb(article: Record<string, unknown>): FixResult {
     try {
-      const category = ((article.type as string) || (article.category as string) || "attractions")
-        .charAt(0).toUpperCase() + ((article.type as string) || (article.category as string) || "attractions").slice(1);
+      const category =
+        ((article.type as string) || (article.category as string) || "attractions")
+          .charAt(0)
+          .toUpperCase() +
+        ((article.type as string) || (article.category as string) || "attractions").slice(1);
       const title = (article.title as string) || "Page";
 
       // Shorten title for breadcrumb
@@ -652,7 +718,7 @@ export class SEOAutoFixer {
         fixedValue: breadcrumb,
         fixType: "generate",
         success: true,
-        message: `Generated breadcrumb: ${breadcrumb}`
+        message: `Generated breadcrumb: ${breadcrumb}`,
       };
     } catch (e) {
       return {
@@ -661,7 +727,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "generate",
         success: false,
-        message: `Failed to generate breadcrumb: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to generate breadcrumb: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -676,7 +742,7 @@ export class SEOAutoFixer {
         fixedValue: now,
         fixType: "set",
         success: true,
-        message: `Set publication and update dates to ${now.substring(0, 10)}`
+        message: `Set publication and update dates to ${now.substring(0, 10)}`,
       };
     } catch (e) {
       return {
@@ -685,7 +751,7 @@ export class SEOAutoFixer {
         fixedValue: "",
         fixType: "set",
         success: false,
-        message: `Failed to set dates: ${e instanceof Error ? e.message : "Unknown error"}`
+        message: `Failed to set dates: ${e instanceof Error ? e.message : "Unknown error"}`,
       };
     }
   }
@@ -740,7 +806,11 @@ export class SEOAutoFixer {
   // LINK INJECTION METHODS
   // ============================================================================
 
-  private fixInternalLinksInBlocks(article: Record<string, unknown>): { fixed: boolean; count: number; blocks: Array<Record<string, unknown>> } {
+  private fixInternalLinksInBlocks(article: Record<string, unknown>): {
+    fixed: boolean;
+    count: number;
+    blocks: Array<Record<string, unknown>>;
+  } {
     try {
       const blocks = (article.blocks as Array<Record<string, unknown>>) || [];
       if (blocks.length === 0) {
@@ -782,7 +852,7 @@ export class SEOAutoFixer {
             const linkHtml = ` <span class="related-content">See also: <a href="${link.url}">${link.title}</a>.</span>`;
             updatedBlocks[i] = {
               ...block,
-              content: content + linkHtml
+              content: content + linkHtml,
             };
             injectedCount++;
           }
@@ -791,12 +861,21 @@ export class SEOAutoFixer {
 
       return { fixed: injectedCount > 0, count: injectedCount, blocks: updatedBlocks };
     } catch (e) {
-      logger.seo.error("Failed to inject internal links", { error: e instanceof Error ? e.message : String(e) });
-      return { fixed: false, count: 0, blocks: (article.blocks as Array<Record<string, unknown>>) || [] };
+      logger.seo.error("Failed to inject internal links", {
+        error: e instanceof Error ? e.message : String(e),
+      });
+      return {
+        fixed: false,
+        count: 0,
+        blocks: (article.blocks as Array<Record<string, unknown>>) || [],
+      };
     }
   }
 
-  private fixExternalLinksInBlocks(article: Record<string, unknown>): { fixed: boolean; blocks: Array<Record<string, unknown>> } {
+  private fixExternalLinksInBlocks(article: Record<string, unknown>): {
+    fixed: boolean;
+    blocks: Array<Record<string, unknown>>;
+  } {
     try {
       const blocks = (article.blocks as Array<Record<string, unknown>>) || [];
       if (blocks.length === 0) {
@@ -833,7 +912,7 @@ export class SEOAutoFixer {
             const linkHtml = ` <p class="external-reference">For official information, visit <a href="${link.url}" target="_blank" rel="noopener">${link.title}</a>.</p>`;
             updatedBlocks[i] = {
               ...block,
-              content: content + linkHtml
+              content: content + linkHtml,
             };
             injected = true;
             break;
@@ -843,7 +922,9 @@ export class SEOAutoFixer {
 
       return { fixed: injected, blocks: updatedBlocks };
     } catch (e) {
-      logger.seo.error("Failed to inject external links", { error: e instanceof Error ? e.message : String(e) });
+      logger.seo.error("Failed to inject external links", {
+        error: e instanceof Error ? e.message : String(e),
+      });
       return { fixed: false, blocks: (article.blocks as Array<Record<string, unknown>>) || [] };
     }
   }

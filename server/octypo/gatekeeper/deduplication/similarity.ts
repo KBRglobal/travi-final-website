@@ -132,6 +132,7 @@ export async function isDuplicate(
       }
     } catch (error) {
       // Skip malformed fingerprints
+      console.error("[Dedup] Error processing candidate fingerprint:", error);
       continue;
     }
   }
@@ -191,7 +192,8 @@ export async function findSimilarContent(
           similarity,
         });
       }
-    } catch {
+    } catch (error) {
+      console.error("[Dedup] Error in findSimilarContent candidate:", error);
       continue;
     }
   }

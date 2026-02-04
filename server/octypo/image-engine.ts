@@ -19,8 +19,8 @@ export interface ImageResult {
 }
 
 export class ImageEngine {
-  async acquireImage(_request: ImageRequest): Promise<ImageResult> {
-    return { success: false, source: "none" };
+  acquireImage(_request: ImageRequest): Promise<ImageResult> {
+    return Promise.resolve({ success: false, source: "none" });
   }
 }
 

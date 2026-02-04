@@ -60,7 +60,9 @@ export class ObjectStorageAdapter implements StorageAdapter {
     try {
       await this.ensureInitialized();
       await this.client.delete(key);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async exists(key: string): Promise<boolean> {
@@ -68,7 +70,8 @@ export class ObjectStorageAdapter implements StorageAdapter {
       await this.ensureInitialized();
       const result = await this.client.downloadAsBytes(key);
       return result.ok;
-    } catch {
+    } catch (error) {
+      console.error(error);
       return false;
     }
   }
@@ -86,7 +89,8 @@ export class ObjectStorageAdapter implements StorageAdapter {
       // Result is [Buffer] tuple when successful
       const [buffer] = result.value;
       return buffer;
-    } catch {
+    } catch (error) {
+      console.error(error);
       return null;
     }
   }
@@ -171,7 +175,9 @@ export class LocalStorageAdapter implements StorageAdapter {
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async exists(key: string): Promise<boolean> {
@@ -268,7 +274,9 @@ export class StorageManager {
         const url = await primary.upload(key, buffer);
 
         return { url, storage: primary.getName() };
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     // Fallback to local storage

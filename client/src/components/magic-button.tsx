@@ -124,6 +124,7 @@ export function MagicButton({
         throw new Error(data.error || "Failed to generate content");
       }
     } catch (error) {
+      console.error(error);
       toast({
         title: "Generation failed",
         description: error instanceof Error ? error.message : "Failed to generate content",
@@ -225,6 +226,7 @@ export function MagicAllButton({
         throw new Error(data.error || "Failed to generate content");
       }
     } catch (error) {
+      console.error(error);
       toast({
         title: "Generation failed",
         description: error instanceof Error ? error.message : "Failed to generate content",

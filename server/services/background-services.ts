@@ -277,8 +277,8 @@ async function startDataDecisionsService(config: BackgroundServicesConfig): Prom
           dataDecisionsInterval = null;
         }
         shutdownDataDecisionSystem();
-      } catch {
-        // Ignore shutdown errors
+      } catch (error) {
+        console.error(error);
       }
     });
 
@@ -409,8 +409,9 @@ export async function getBackgroundServicesStatus(): Promise<{
   try {
     const { getRSSSchedulerStatus } = await import("../octypo/rss-scheduler");
     rssSchedulerStatus = getRSSSchedulerStatus();
-  } catch {
+  } catch (error) {
     // Scheduler not available
+    console.error(error);
   }
 
   let translationQueueStatus = "not_started";
@@ -418,8 +419,9 @@ export async function getBackgroundServicesStatus(): Promise<{
     const { getQueueStatus } = await import("../localization/translation-queue");
     const qStatus = await getQueueStatus();
     translationQueueStatus = qStatus.isRunning ? "running" : qStatus.isPaused ? "paused" : "idle";
-  } catch {
+  } catch (error) {
     // Queue not available
+    console.error(error);
   }
 
   let seoAutopilotStatus = "stopped";
@@ -430,8 +432,9 @@ export async function getBackgroundServicesStatus(): Promise<{
       const status = autopilot.getStatus();
       seoAutopilotStatus = status.mode !== "off" ? "running" : "paused";
     }
-  } catch {
+  } catch (error) {
     // Autopilot not available
+    console.error(error);
   }
 
   return {
