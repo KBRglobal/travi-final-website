@@ -216,7 +216,7 @@ export default function SiteSettingsPage() {
                     <Label htmlFor="siteTagline">Tagline</Label>
                     <Input
                       id="siteTagline"
-                      placeholder="Your Dubai Travel Guide"
+                      placeholder="Your Global Travel Guide"
                       defaultValue={settings?.siteTagline || ""}
                       onBlur={e => handleSave("siteTagline", e.target.value)}
                       data-testid="input-site-tagline"
@@ -227,7 +227,7 @@ export default function SiteSettingsPage() {
                   <Label htmlFor="brandDescription">Brand Description</Label>
                   <Textarea
                     id="brandDescription"
-                    placeholder="Your friendly guide to Dubai's wonders..."
+                    placeholder="Your friendly guide to world travel..."
                     defaultValue={settings?.brandDescription || ""}
                     onBlur={e => handleSave("brandDescription", e.target.value)}
                     rows={3}
@@ -253,7 +253,7 @@ export default function SiteSettingsPage() {
                   <Label htmlFor="defaultMetaTitle">Default Meta Title</Label>
                   <Input
                     id="defaultMetaTitle"
-                    placeholder="Travi - Discover Dubai Like a Local"
+                    placeholder="TRAVI World - Discover Amazing Destinations"
                     defaultValue={settings?.defaultMetaTitle || ""}
                     onBlur={e => handleSave("defaultMetaTitle", e.target.value)}
                     data-testid="input-default-meta-title"
@@ -266,7 +266,7 @@ export default function SiteSettingsPage() {
                   <Label htmlFor="defaultMetaDescription">Default Meta Description</Label>
                   <Textarea
                     id="defaultMetaDescription"
-                    placeholder="Discover Dubai's best attractions, hotels, restaurants, and hidden gems..."
+                    placeholder="Discover the world's best attractions, hotels, restaurants, and hidden gems..."
                     defaultValue={settings?.defaultMetaDescription || ""}
                     onBlur={e => handleSave("defaultMetaDescription", e.target.value)}
                     rows={2}
@@ -402,7 +402,7 @@ export default function SiteSettingsPage() {
                   <Label htmlFor="contactAddress">Address</Label>
                   <Textarea
                     id="contactAddress"
-                    placeholder="Dubai, United Arab Emirates"
+                    placeholder="Your business address"
                     defaultValue={settings?.contactAddress || ""}
                     onBlur={e => handleSave("contactAddress", e.target.value)}
                     rows={2}
