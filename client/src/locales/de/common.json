@@ -29,6 +29,12 @@
     "ariaLabel": "Breadcrumb-Navigation",
     "dubai": "Dubai"
   },
+  "destination": {
+    "heroTitle": "Entdecken Sie {{destination}}",
+    "activitiesInDestination": "Aktivitäten in {{destination}}",
+    "madeWithLove": "Mit Liebe gemacht",
+    "exploreDestinations": "Reiseziele erkunden"
+  },
   "common": {
     "readMore": "Mehr erfahren",
     "viewAll": "Alle anzeigen",
@@ -310,22 +316,78 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "VAE", "cardAlt": "Dubai Skyline mit Burj Khalifa bei Sonnenuntergang" },
-      "london": { "name": "London", "country": "Großbritannien", "cardAlt": "London Big Ben und Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "Frankreich", "cardAlt": "Paris Eiffelturm beleuchtet bei Sonnenuntergang" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan Skyline mit Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya Kreuzung mit Neonlichtern bei Nacht" },
-      "singapore": { "name": "Singapur", "country": "Singapur", "cardAlt": "Singapur Marina Bay Sands und Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spanien", "cardAlt": "Barcelona Sagrada Familia zur goldenen Stunde" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Großer Palast Tempel bei Sonnenaufgang" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "VAE", "cardAlt": "Abu Dhabi Scheich-Zayid-Moschee" },
-      "amsterdam": { "name": "Amsterdam", "country": "Niederlande", "cardAlt": "Amsterdam Gracht mit historischen Gebäuden" },
-      "hongKong": { "name": "Hongkong", "country": "China", "cardAlt": "Hongkong Skyline bei Nacht" },
-      "istanbul": { "name": "Istanbul", "country": "Türkei", "cardAlt": "Istanbul Blaue Moschee bei Sonnenuntergang" },
+      "dubai": {
+        "name": "Dubai",
+        "country": "VAE",
+        "cardAlt": "Dubai Skyline mit Burj Khalifa bei Sonnenuntergang"
+      },
+      "london": {
+        "name": "London",
+        "country": "Großbritannien",
+        "cardAlt": "London Big Ben und Houses of Parliament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "Frankreich",
+        "cardAlt": "Paris Eiffelturm beleuchtet bei Sonnenuntergang"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan Skyline mit Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Tokyo Shibuya Kreuzung mit Neonlichtern bei Nacht"
+      },
+      "singapore": {
+        "name": "Singapur",
+        "country": "Singapur",
+        "cardAlt": "Singapur Marina Bay Sands und Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spanien",
+        "cardAlt": "Barcelona Sagrada Familia zur goldenen Stunde"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Bangkok Großer Palast Tempel bei Sonnenaufgang"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "VAE",
+        "cardAlt": "Abu Dhabi Scheich-Zayid-Moschee"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Niederlande",
+        "cardAlt": "Amsterdam Gracht mit historischen Gebäuden"
+      },
+      "hongKong": {
+        "name": "Hongkong",
+        "country": "China",
+        "cardAlt": "Hongkong Skyline bei Nacht"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Türkei",
+        "cardAlt": "Istanbul Blaue Moschee bei Sonnenuntergang"
+      },
       "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip bei Nacht" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood-Schild" },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles Hollywood-Schild"
+      },
       "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art-Déco-Viertel" },
-      "rome": { "name": "Rom", "country": "Italien", "cardAlt": "Rom Kolosseum zur goldenen Stunde" }
+      "rome": {
+        "name": "Rom",
+        "country": "Italien",
+        "cardAlt": "Rom Kolosseum zur goldenen Stunde"
+      }
     },
     "hero": {
       "badge": "{{count}} Reiseziele weltweit",

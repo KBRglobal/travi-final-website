@@ -124,8 +124,8 @@ export interface ImageObjectSchema {
       "@type": "PostalAddress";
       streetAddress?: string;
       addressLocality: string;
-      addressRegion: string;
-      addressCountry: string;
+      addressRegion?: string;
+      addressCountry?: string;
     };
     geo?: {
       "@type": "GeoCoordinates";
@@ -644,7 +644,6 @@ export class ImageSEOService {
           // FAIL-FAST: Do not use implicit Dubai fallback for location - use context or omit
           addressLocality: areaInfo?.name || context.location?.area || context.entityName,
           addressRegion: context.location?.area || areaInfo?.name || undefined,
-          addressCountry: "AE",
         },
         // FAIL-FAST: Only include geo coordinates if explicitly provided - no implicit Dubai fallback
         ...(context.location?.coordinates || areaInfo?.coordinates

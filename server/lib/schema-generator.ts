@@ -61,7 +61,7 @@ export function generateTouristAttractionSchema(
   }
 
   if (attraction.highlights && attraction.highlights.length > 0) {
-    schema.amenityFeature = attraction.highlights.map((h) => ({
+    schema.amenityFeature = attraction.highlights.map(h => ({
       "@type": "LocationFeatureSpecification",
       name: h.title,
       value: h.description || true,
@@ -73,10 +73,7 @@ export function generateTouristAttractionSchema(
   return schema;
 }
 
-export function generateHotelSchema(
-  content: Content,
-  hotel: Hotel
-): SchemaOrg {
+export function generateHotelSchema(content: Content, hotel: Hotel): SchemaOrg {
   const schema: SchemaOrg = {
     "@context": "https://schema.org",
     "@type": "Hotel",
@@ -115,7 +112,7 @@ export function generateHotelSchema(
   }
 
   if (hotel.amenities && hotel.amenities.length > 0) {
-    schema.amenityFeature = hotel.amenities.map((amenity) => ({
+    schema.amenityFeature = hotel.amenities.map(amenity => ({
       "@type": "LocationFeatureSpecification",
       name: amenity,
       value: true,
@@ -123,7 +120,7 @@ export function generateHotelSchema(
   }
 
   if (hotel.roomTypes && hotel.roomTypes.length > 0) {
-    schema.containsPlace = hotel.roomTypes.map((room) => ({
+    schema.containsPlace = hotel.roomTypes.map(room => ({
       "@type": "HotelRoom",
       name: room.title,
       description: room.features?.join(", "),
@@ -196,10 +193,7 @@ export function generateArticleSchema(
   }
 
   if (content.primaryKeyword) {
-    schema.keywords = [
-      content.primaryKeyword,
-      ...(content.secondaryKeywords || []),
-    ].join(", ");
+    schema.keywords = [content.primaryKeyword, ...(content.secondaryKeywords || [])].join(", ");
   }
 
   if (content.wordCount) {
@@ -217,7 +211,7 @@ export function generateFAQPageSchema(faqItems: FaqItem[]): SchemaOrg | null {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
+    mainEntity: faqItems.map(item => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: {
@@ -228,9 +222,7 @@ export function generateFAQPageSchema(faqItems: FaqItem[]): SchemaOrg | null {
   };
 }
 
-export function generateBreadcrumbSchema(
-  breadcrumbs: { name: string; url: string }[]
-): SchemaOrg {
+export function generateBreadcrumbSchema(breadcrumbs: { name: string; url: string }[]): SchemaOrg {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -243,10 +235,7 @@ export function generateBreadcrumbSchema(
   };
 }
 
-export function generateWebPageSchema(
-  content: Content,
-  contentType: string
-): SchemaOrg {
+export function generateWebPageSchema(content: Content, contentType: string): SchemaOrg {
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -258,12 +247,8 @@ export function generateWebPageSchema(
       name: SITE_NAME,
       url: SITE_URL,
     },
-    datePublished: content.publishedAt
-      ? new Date(content.publishedAt).toISOString()
-      : undefined,
-    dateModified: content.updatedAt
-      ? new Date(content.updatedAt).toISOString()
-      : undefined,
+    datePublished: content.publishedAt ? new Date(content.publishedAt).toISOString() : undefined,
+    dateModified: content.updatedAt ? new Date(content.updatedAt).toISOString() : undefined,
   };
 }
 
@@ -306,11 +291,12 @@ export function generateEventSchema(
       "@type": "Place",
       // FAIL-FAST: Do not use implicit Dubai fallback - use provided venue or content title
       name: event.venue || content.title,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: event.venueAddress,
-        addressCountry: "AE",
-      },
+      ...(event.venueAddress && {
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: event.venueAddress,
+        },
+      }),
     };
   }
 
@@ -407,11 +393,29 @@ export function generateAllSchemas(
       faqItems = (typeData as Article).faq ?? undefined;
       break;
     case "dining":
-      primary = generateRestaurantSchema(content, typeData as { location?: string | null; cuisineType?: string | null; priceRange?: string | null });
+      primary = generateRestaurantSchema(
+        content,
+        typeData as {
+          location?: string | null;
+          cuisineType?: string | null;
+          priceRange?: string | null;
+        }
+      );
       faqItems = (typeData as { faq?: FaqItem[] | null }).faq ?? undefined;
       break;
     case "event":
-      primary = generateEventSchema(content, typeData as { eventDate?: Date | null; endDate?: Date | null; venue?: string | null; venueAddress?: string | null; ticketUrl?: string | null; ticketPrice?: string | null; organizer?: string | null });
+      primary = generateEventSchema(
+        content,
+        typeData as {
+          eventDate?: Date | null;
+          endDate?: Date | null;
+          venue?: string | null;
+          venueAddress?: string | null;
+          ticketUrl?: string | null;
+          ticketPrice?: string | null;
+          organizer?: string | null;
+        }
+      );
       faqItems = (typeData as { faq?: FaqItem[] | null }).faq ?? undefined;
       break;
     default:
@@ -428,7 +432,10 @@ export function generateAllSchemas(
   const contentTypePlural = content.type === "dining" ? "dining" : `${content.type}s`;
   result.breadcrumb = generateBreadcrumbSchema([
     { name: "Home", url: "/" },
-    { name: contentTypePlural.charAt(0).toUpperCase() + contentTypePlural.slice(1), url: `/${contentTypePlural}` },
+    {
+      name: contentTypePlural.charAt(0).toUpperCase() + contentTypePlural.slice(1),
+      url: `/${contentTypePlural}`,
+    },
     { name: content.title, url: `/${contentTypePlural}/${content.slug}` },
   ]);
 
@@ -439,7 +446,7 @@ export function generateAllSchemas(
 
 export function schemasToJsonLd(schemas: GeneratedSchemas): string {
   const allSchemas: SchemaOrg[] = [schemas.primary];
-  
+
   if (schemas.faq) {
     allSchemas.push(schemas.faq);
   }

@@ -785,16 +785,24 @@ export const schemaGenerator = {
       dateModified: content.updatedAt,
     };
 
+    // Extract location from content (destination-agnostic)
+    const contentLocation =
+      content.hotel?.location ||
+      content.dining?.location ||
+      content.attraction?.location ||
+      content.location;
+
     switch (content.type) {
       case "hotel":
         return {
           ...baseSchema,
           "@type": "Hotel",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Dubai",
-            addressCountry: "AE",
-          },
+          ...(contentLocation && {
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: contentLocation,
+            },
+          }),
           starRating: {
             "@type": "Rating",
             ratingValue: content.rating || 4,
@@ -806,11 +814,12 @@ export const schemaGenerator = {
         return {
           ...baseSchema,
           "@type": "Restaurant",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Dubai",
-            addressCountry: "AE",
-          },
+          ...(contentLocation && {
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: contentLocation,
+            },
+          }),
           servesCuisine: content.cuisine || "International",
           priceRange: content.priceRange || "$$",
         };
@@ -819,11 +828,12 @@ export const schemaGenerator = {
         return {
           ...baseSchema,
           "@type": "TouristAttraction",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Dubai",
-            addressCountry: "AE",
-          },
+          ...(contentLocation && {
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: contentLocation,
+            },
+          }),
           isAccessibleForFree: false,
         };
 
@@ -831,15 +841,16 @@ export const schemaGenerator = {
         return {
           ...baseSchema,
           "@type": "Event",
-          location: {
-            "@type": "Place",
-            name: "Dubai",
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: "Dubai",
-              addressCountry: "AE",
+          ...(contentLocation && {
+            location: {
+              "@type": "Place",
+              name: contentLocation,
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: contentLocation,
+              },
             },
-          },
+          }),
           startDate: content.startDate,
           endDate: content.endDate,
         };

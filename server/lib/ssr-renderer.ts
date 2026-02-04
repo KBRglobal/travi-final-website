@@ -2418,6 +2418,7 @@ async function renderRestaurantPage(
   });
 
   // Generate Restaurant schema (new addition for SEO)
+  const restaurantLocation = content.dining?.location;
   const restaurantSchema = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -2425,11 +2426,12 @@ async function renderRestaurantPage(
     description: content.metaDescription || "",
     image: image,
     url: getCanonicalUrl(`/dining/${slug}`, locale),
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Dubai",
-      addressCountry: "AE",
-    },
+    ...(restaurantLocation && {
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: restaurantLocation,
+      },
+    }),
     servesCuisine: content.dining?.cuisineType || "International",
   };
 
@@ -2528,11 +2530,12 @@ async function renderEventPage(
       "@type": "Place",
       // FAIL-FAST: Do not use implicit Dubai fallback - use provided venue or event title
       name: (content.event as any)?.venueName || content.event?.venue || content.title,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: (content.event as any)?.location || undefined,
-        addressCountry: "AE",
-      },
+      ...((content.event as any)?.location && {
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: (content.event as any)?.location,
+        },
+      }),
     },
     startDate:
       (content.event as any)?.startDate?.toISOString() ||

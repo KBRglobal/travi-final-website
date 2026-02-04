@@ -29,6 +29,12 @@
     "ariaLabel": "Drobečková navigace",
     "dubai": "Dubaj"
   },
+  "destination": {
+    "heroTitle": "Objevte {{destination}}",
+    "activitiesInDestination": "Aktivity v {{destination}}",
+    "madeWithLove": "Vytvořeno s láskou",
+    "exploreDestinations": "Prozkoumejte destinace"
+  },
   "common": {
     "readMore": "Číst více",
     "viewAll": "Zobrazit vše",
@@ -310,20 +316,68 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubaj", "country": "SAE", "cardAlt": "Panorama Dubaje s věží Burj Khalifa při západu slunce" },
-      "london": { "name": "Londýn", "country": "UK", "cardAlt": "Londýnský Big Ben a budovy parlamentu" },
-      "paris": { "name": "Paříž", "country": "Francie", "cardAlt": "Pařížská Eiffelova věž osvětlená při západu slunce" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "Panorama Manhattanu v New Yorku s Empire State Building" },
-      "tokyo": { "name": "Tokio", "country": "Japonsko", "cardAlt": "Křižovatka Shibuya v Tokiu s neonovými světly v noci" },
-      "singapore": { "name": "Singapur", "country": "Singapur", "cardAlt": "Marina Bay Sands v Singapuru a Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Španělsko", "cardAlt": "Sagrada Familia v Barceloně za zlaté hodiny" },
-      "bangkok": { "name": "Bangkok", "country": "Thajsko", "cardAlt": "Velký palác v Bangkoku za východu slunce" },
-      "abuDhabi": { "name": "Abú Dhabí", "country": "SAE", "cardAlt": "Velká mešita šejka Zayeda v Abú Dhabí" },
-      "amsterdam": { "name": "Amsterdam", "country": "Nizozemsko", "cardAlt": "Amsterdamský kanál s historickými budovami" },
+      "dubai": {
+        "name": "Dubaj",
+        "country": "SAE",
+        "cardAlt": "Panorama Dubaje s věží Burj Khalifa při západu slunce"
+      },
+      "london": {
+        "name": "Londýn",
+        "country": "UK",
+        "cardAlt": "Londýnský Big Ben a budovy parlamentu"
+      },
+      "paris": {
+        "name": "Paříž",
+        "country": "Francie",
+        "cardAlt": "Pařížská Eiffelova věž osvětlená při západu slunce"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "Panorama Manhattanu v New Yorku s Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokio",
+        "country": "Japonsko",
+        "cardAlt": "Křižovatka Shibuya v Tokiu s neonovými světly v noci"
+      },
+      "singapore": {
+        "name": "Singapur",
+        "country": "Singapur",
+        "cardAlt": "Marina Bay Sands v Singapuru a Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Španělsko",
+        "cardAlt": "Sagrada Familia v Barceloně za zlaté hodiny"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thajsko",
+        "cardAlt": "Velký palác v Bangkoku za východu slunce"
+      },
+      "abuDhabi": {
+        "name": "Abú Dhabí",
+        "country": "SAE",
+        "cardAlt": "Velká mešita šejka Zayeda v Abú Dhabí"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Nizozemsko",
+        "cardAlt": "Amsterdamský kanál s historickými budovami"
+      },
       "hongKong": { "name": "Hongkong", "country": "Čína", "cardAlt": "Panorama Hongkongu v noci" },
-      "istanbul": { "name": "Istanbul", "country": "Turecko", "cardAlt": "Modrá mešita v Istanbulu při západu slunce" },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turecko",
+        "cardAlt": "Modrá mešita v Istanbulu při západu slunce"
+      },
       "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Strip v Las Vegas v noci" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Nápis Hollywood v Los Angeles" },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Nápis Hollywood v Los Angeles"
+      },
       "miami": { "name": "Miami", "country": "USA", "cardAlt": "Čtvrť Art Deco na Miami Beach" },
       "rome": { "name": "Řím", "country": "Itálie", "cardAlt": "Koloseum v Římě za zlaté hodiny" }
     },

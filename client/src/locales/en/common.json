@@ -29,6 +29,12 @@
     "ariaLabel": "Breadcrumb navigation",
     "dubai": "Dubai"
   },
+  "destination": {
+    "heroTitle": "Discover {{destination}}",
+    "activitiesInDestination": "Activities in {{destination}}",
+    "madeWithLove": "Made with love",
+    "exploreDestinations": "Explore Destinations"
+  },
   "common": {
     "readMore": "Read More",
     "viewAll": "View All",

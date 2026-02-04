@@ -166,3 +166,27 @@ export const DESTINATION_IDS = [
 ] as const;
 
 export type DestinationId = (typeof DESTINATION_IDS)[number];
+
+// Map destination slugs to display names
+export const DESTINATION_NAMES: Record<string, string> = {
+  "abu-dhabi": "Abu Dhabi",
+  amsterdam: "Amsterdam",
+  bangkok: "Bangkok",
+  barcelona: "Barcelona",
+  dubai: "Dubai",
+  "hong-kong": "Hong Kong",
+  istanbul: "Istanbul",
+  "las-vegas": "Las Vegas",
+  london: "London",
+  "los-angeles": "Los Angeles",
+  miami: "Miami",
+  "new-york": "New York",
+  nyc: "New York",
+  paris: "Paris",
+  "ras-al-khaimah": "Ras Al Khaimah",
+  rome: "Rome",
+  singapore: "Singapore",
+  tokyo: "Tokyo",
+  berlin: "Berlin",
+  sydney: "Sydney",
+};

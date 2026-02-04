@@ -195,7 +195,6 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
           ? {
               "@type": "PostalAddress",
               addressLocality: attraction.location,
-              addressCountry: "AE",
             }
           : undefined,
         ...(attraction.priceFrom && {
@@ -227,7 +226,6 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
           ? {
               "@type": "PostalAddress",
               addressLocality: hotel.location,
-              addressCountry: "AE",
             }
           : undefined,
         ...(hotel.starRating && {
@@ -265,7 +263,6 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
           ? {
               "@type": "PostalAddress",
               addressLocality: restaurant.location,
-              addressCountry: "AE",
             }
           : undefined,
         ...(restaurant.cuisineType && {

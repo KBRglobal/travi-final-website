@@ -29,6 +29,12 @@
     "ariaLabel": "Πλοήγηση breadcrumb",
     "dubai": "Ντουμπάι"
   },
+  "destination": {
+    "heroTitle": "Ανακαλύψτε {{destination}}",
+    "activitiesInDestination": "Δραστηριότητες στο {{destination}}",
+    "madeWithLove": "Φτιαγμένο με αγάπη",
+    "exploreDestinations": "Εξερευνήστε Προορισμούς"
+  },
   "common": {
     "readMore": "Διαβάστε Περισσότερα",
     "viewAll": "Προβολή Όλων",
@@ -310,20 +316,76 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Ντουμπάι", "country": "ΗΑΕ", "cardAlt": "Ντουμπάι skyline με τον πύργο Burj Khalifa στο ηλιοβασίλεμα" },
-      "london": { "name": "Λονδίνο", "country": "Ηνωμένο Βασίλειο", "cardAlt": "Λονδίνο Big Ben και Βουλή των Κοινοτήτων" },
-      "paris": { "name": "Παρίσι", "country": "Γαλλία", "cardAlt": "Παρίσι Πύργος του Άιφελ φωτισμένος στο ηλιοβασίλεμα" },
-      "newYork": { "name": "Νέα Υόρκη", "country": "ΗΠΑ", "cardAlt": "Νέα Υόρκη Manhattan skyline με το Empire State Building" },
-      "tokyo": { "name": "Τόκιο", "country": "Ιαπωνία", "cardAlt": "Τόκιο Shibuya crossing με νέον φώτα τη νύχτα" },
-      "singapore": { "name": "Σιγκαπούρη", "country": "Σιγκαπούρη", "cardAlt": "Σιγκαπούρη Marina Bay Sands και Gardens by the Bay" },
-      "barcelona": { "name": "Βαρκελώνη", "country": "Ισπανία", "cardAlt": "Βαρκελώνη Sagrada Familia στη χρυσή ώρα" },
-      "bangkok": { "name": "Μπανγκόκ", "country": "Ταϊλάνδη", "cardAlt": "Μπανγκόκ Μεγάλο Παλάτι ναός στην ανατολή" },
-      "abuDhabi": { "name": "Άμπου Ντάμπι", "country": "ΗΑΕ", "cardAlt": "Άμπου Ντάμπι Τέμενος Sheikh Zayed" },
-      "amsterdam": { "name": "Άμστερνταμ", "country": "Ολλανδία", "cardAlt": "Άμστερνταμ κανάλι με ιστορικά κτίρια" },
-      "hongKong": { "name": "Χονγκ Κονγκ", "country": "Κίνα", "cardAlt": "Χονγκ Κονγκ skyline τη νύχτα" },
-      "istanbul": { "name": "Κωνσταντινούπολη", "country": "Τουρκία", "cardAlt": "Κωνσταντινούπολη Γαλάζιο Τέμενος στο ηλιοβασίλεμα" },
-      "lasVegas": { "name": "Λας Βέγκας", "country": "ΗΠΑ", "cardAlt": "Λας Βέγκας Strip τη νύχτα" },
-      "losAngeles": { "name": "Λος Άντζελες", "country": "ΗΠΑ", "cardAlt": "Λος Άντζελες πινακίδα Hollywood" },
+      "dubai": {
+        "name": "Ντουμπάι",
+        "country": "ΗΑΕ",
+        "cardAlt": "Ντουμπάι skyline με τον πύργο Burj Khalifa στο ηλιοβασίλεμα"
+      },
+      "london": {
+        "name": "Λονδίνο",
+        "country": "Ηνωμένο Βασίλειο",
+        "cardAlt": "Λονδίνο Big Ben και Βουλή των Κοινοτήτων"
+      },
+      "paris": {
+        "name": "Παρίσι",
+        "country": "Γαλλία",
+        "cardAlt": "Παρίσι Πύργος του Άιφελ φωτισμένος στο ηλιοβασίλεμα"
+      },
+      "newYork": {
+        "name": "Νέα Υόρκη",
+        "country": "ΗΠΑ",
+        "cardAlt": "Νέα Υόρκη Manhattan skyline με το Empire State Building"
+      },
+      "tokyo": {
+        "name": "Τόκιο",
+        "country": "Ιαπωνία",
+        "cardAlt": "Τόκιο Shibuya crossing με νέον φώτα τη νύχτα"
+      },
+      "singapore": {
+        "name": "Σιγκαπούρη",
+        "country": "Σιγκαπούρη",
+        "cardAlt": "Σιγκαπούρη Marina Bay Sands και Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Βαρκελώνη",
+        "country": "Ισπανία",
+        "cardAlt": "Βαρκελώνη Sagrada Familia στη χρυσή ώρα"
+      },
+      "bangkok": {
+        "name": "Μπανγκόκ",
+        "country": "Ταϊλάνδη",
+        "cardAlt": "Μπανγκόκ Μεγάλο Παλάτι ναός στην ανατολή"
+      },
+      "abuDhabi": {
+        "name": "Άμπου Ντάμπι",
+        "country": "ΗΑΕ",
+        "cardAlt": "Άμπου Ντάμπι Τέμενος Sheikh Zayed"
+      },
+      "amsterdam": {
+        "name": "Άμστερνταμ",
+        "country": "Ολλανδία",
+        "cardAlt": "Άμστερνταμ κανάλι με ιστορικά κτίρια"
+      },
+      "hongKong": {
+        "name": "Χονγκ Κονγκ",
+        "country": "Κίνα",
+        "cardAlt": "Χονγκ Κονγκ skyline τη νύχτα"
+      },
+      "istanbul": {
+        "name": "Κωνσταντινούπολη",
+        "country": "Τουρκία",
+        "cardAlt": "Κωνσταντινούπολη Γαλάζιο Τέμενος στο ηλιοβασίλεμα"
+      },
+      "lasVegas": {
+        "name": "Λας Βέγκας",
+        "country": "ΗΠΑ",
+        "cardAlt": "Λας Βέγκας Strip τη νύχτα"
+      },
+      "losAngeles": {
+        "name": "Λος Άντζελες",
+        "country": "ΗΠΑ",
+        "cardAlt": "Λος Άντζελες πινακίδα Hollywood"
+      },
       "miami": { "name": "Μαϊάμι", "country": "ΗΠΑ", "cardAlt": "Μαϊάμι Beach Art Deco περιοχή" },
       "rome": { "name": "Ρώμη", "country": "Ιταλία", "cardAlt": "Ρώμη Κολοσσαίο στη χρυσή ώρα" }
     },
