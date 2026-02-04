@@ -354,16 +354,14 @@ export function generateStructuredData(options: StructuredDataOptions): string {
           url: getCanonicalUrl(`/events/${content.slug}`, locale),
           startDate: eventInfo.startDate || content.publishedAt?.toISOString(),
           ...(eventInfo.endDate && { endDate: eventInfo.endDate }),
-          location: {
+          location: eventInfo.venue || eventInfo.location ? {
             "@type": "Place",
-            // FAIL-FAST: Do not use implicit Dubai fallback - use provided venue/location or generic
-            name: eventInfo.venue || eventInfo.location || content.title,
-            address: {
+            name: eventInfo.venue || eventInfo.location,
+            address: eventInfo.location ? {
               "@type": "PostalAddress",
-              addressLocality: eventInfo.location || undefined,
-              addressCountry: "AE",
-            },
-          },
+              addressLocality: eventInfo.location,
+            } : undefined,
+          } : undefined,
           organizer: {
             "@type": "Organization",
             name: SITE_NAME,
