@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { MagicButton, MagicAllButton } from "@/components/magic-button";
 import {
   Image as ImageIcon,
   Save,
@@ -48,18 +49,22 @@ interface DestinationHeroTabProps {
   destination: {
     id: string;
     name: string;
+    country?: string;
     heroTitle: string | null;
     heroSubtitle: string | null;
   };
 }
 
-export default function DestinationHeroTab({ destinationId, destination }: DestinationHeroTabProps) {
+export default function DestinationHeroTab({
+  destinationId,
+  destination,
+}: DestinationHeroTabProps) {
   const { toast } = useToast();
   const [heroTitle, setHeroTitle] = useState(destination.heroTitle || "");
   const [heroSubtitle, setHeroSubtitle] = useState(destination.heroSubtitle || "");
 
   const heroUrl = `/api/destination-intelligence/${destinationId}/hero`;
-  
+
   const { data: heroData, isLoading } = useQuery<HeroData>({
     queryKey: [heroUrl],
     enabled: !!destinationId,
@@ -125,35 +130,74 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ImageIcon className="w-5 h-5" />
-              Hero Content
-            </CardTitle>
-            <CardDescription>
-              Set the headline and tagline for {destination.name}'s hero section
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5" />
+                  Hero Content
+                </CardTitle>
+                <CardDescription>
+                  Set the headline and tagline for {destination.name}'s hero section
+                </CardDescription>
+              </div>
+              <MagicAllButton
+                contentType="destination"
+                entityName={destination.name}
+                existingFields={{
+                  country: destination.country,
+                  heroTitle,
+                  heroSubtitle,
+                }}
+                fields={["heroTitle", "heroSubtitle"]}
+                onResults={results => {
+                  if (results.heroTitle) setHeroTitle(results.heroTitle as string);
+                  if (results.heroSubtitle) setHeroSubtitle(results.heroSubtitle as string);
+                }}
+              />
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="heroTitle">Hero Title</Label>
-                <span 
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="heroTitle">Hero Title</Label>
+                  <MagicButton
+                    fieldId="heroTitle"
+                    fieldType="headline"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: {
+                        country: destination.country,
+                        heroSubtitle,
+                      },
+                    }}
+                    onResult={value => setHeroTitle(value as string)}
+                    size="sm"
+                  />
+                </div>
+                <span
                   className={`text-xs ${
-                    heroTitle.length < 20 || heroTitle.length > 60 
-                      ? 'text-destructive font-medium' 
-                      : 'text-muted-foreground'
+                    heroTitle.length < 20 || heroTitle.length > 60
+                      ? "text-destructive font-medium"
+                      : "text-muted-foreground"
                   }`}
                   data-testid="text-hero-title-count"
                 >
-                  {heroTitle.length}/60 {heroTitle.length > 0 && heroTitle.length < 20 && "(min 20)"}
+                  {heroTitle.length}/60{" "}
+                  {heroTitle.length > 0 && heroTitle.length < 20 && "(min 20)"}
                 </span>
               </div>
               <Input
                 id="heroTitle"
                 value={heroTitle}
-                onChange={(e) => setHeroTitle(e.target.value)}
+                onChange={e => setHeroTitle(e.target.value)}
                 placeholder={`Discover ${destination.name}`}
-                className={heroTitle.length > 0 && (heroTitle.length < 20 || heroTitle.length > 60) ? 'border-destructive' : ''}
+                className={
+                  heroTitle.length > 0 && (heroTitle.length < 20 || heroTitle.length > 60)
+                    ? "border-destructive"
+                    : ""
+                }
                 data-testid="input-hero-title"
               />
               {heroTitle.length > 0 && (heroTitle.length < 20 || heroTitle.length > 60) && (
@@ -164,35 +208,58 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="heroSubtitle">Hero Subtitle</Label>
-                <span 
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="heroSubtitle">Hero Subtitle</Label>
+                  <MagicButton
+                    fieldId="heroSubtitle"
+                    fieldType="subtitle"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: {
+                        country: destination.country,
+                        heroTitle,
+                      },
+                    }}
+                    onResult={value => setHeroSubtitle(value as string)}
+                    size="sm"
+                  />
+                </div>
+                <span
                   className={`text-xs ${
-                    heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120)
-                      ? 'text-destructive font-medium' 
-                      : 'text-muted-foreground'
+                    heroSubtitle.length > 0 &&
+                    (heroSubtitle.length < 40 || heroSubtitle.length > 120)
+                      ? "text-destructive font-medium"
+                      : "text-muted-foreground"
                   }`}
                   data-testid="text-hero-subtitle-count"
                 >
-                  {heroSubtitle.length}/120 {heroSubtitle.length > 0 && heroSubtitle.length < 40 && "(min 40)"}
+                  {heroSubtitle.length}/120{" "}
+                  {heroSubtitle.length > 0 && heroSubtitle.length < 40 && "(min 40)"}
                 </span>
               </div>
               <Textarea
                 id="heroSubtitle"
                 value={heroSubtitle}
-                onChange={(e) => setHeroSubtitle(e.target.value)}
+                onChange={e => setHeroSubtitle(e.target.value)}
                 placeholder="Enter a compelling description..."
                 rows={3}
-                className={heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120) ? 'border-destructive' : ''}
+                className={
+                  heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120)
+                    ? "border-destructive"
+                    : ""
+                }
                 data-testid="input-hero-subtitle"
               />
-              {heroSubtitle.length > 0 && (heroSubtitle.length < 40 || heroSubtitle.length > 120) && (
-                <p className="text-xs text-destructive" data-testid="text-hero-subtitle-warning">
-                  Subtitle should be 40-120 characters for optimal display
-                </p>
-              )}
+              {heroSubtitle.length > 0 &&
+                (heroSubtitle.length < 40 || heroSubtitle.length > 120) && (
+                  <p className="text-xs text-destructive" data-testid="text-hero-subtitle-warning">
+                    Subtitle should be 40-120 characters for optimal display
+                  </p>
+                )}
             </div>
-            <Button 
-              onClick={handleSave} 
+            <Button
+              onClick={handleSave}
               disabled={saveMutation.isPending}
               data-testid="button-save-hero"
             >
@@ -212,9 +279,7 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
               <Palette className="w-5 h-5" />
               Mood & Theme
             </CardTitle>
-            <CardDescription>
-              Visual personality for {destination.name}
-            </CardDescription>
+            <CardDescription>Visual personality for {destination.name}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -257,9 +322,7 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
           <div className="flex items-center justify-between gap-2">
             <div>
               <CardTitle>Hero Carousel</CardTitle>
-              <CardDescription>
-                Images from /destinations-hero/{destinationId}/
-              </CardDescription>
+              <CardDescription>Images from /destinations-hero/{destinationId}/</CardDescription>
             </div>
             <Badge variant="outline">{images.length} images</Badge>
           </div>
@@ -268,11 +331,10 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
           {images.length === 0 ? (
             <div className="text-center py-8 border-2 border-dashed rounded-lg">
               <ImageIcon className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground mb-3">
-                No hero images found
-              </p>
+              <p className="text-muted-foreground mb-3">No hero images found</p>
               <p className="text-sm text-muted-foreground">
-                Add images to <code className="bg-muted px-1 rounded">/destinations-hero/{destinationId}/</code>
+                Add images to{" "}
+                <code className="bg-muted px-1 rounded">/destinations-hero/{destinationId}/</code>
               </p>
             </div>
           ) : (
@@ -284,11 +346,7 @@ export default function DestinationHeroTab({ destinationId, destination }: Desti
                 >
                   <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
                   <div className="w-20 h-14 rounded overflow-hidden bg-muted flex-shrink-0">
-                    <img
-                      src={img.url}
-                      alt={img.alt}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{img.filename}</p>

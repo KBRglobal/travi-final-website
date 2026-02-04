@@ -8,9 +8,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { MagicButton, MagicAllButton } from "@/components/magic-button";
 import {
   Train,
   Save,
@@ -101,6 +107,7 @@ interface DestinationMobilityTabProps {
   destination: {
     id: string;
     name: string;
+    country?: string;
   };
 }
 
@@ -135,7 +142,10 @@ const emptyMobilityData: MobilityData = {
   sources: [],
 };
 
-export default function DestinationMobilityTab({ destinationId, destination }: DestinationMobilityTabProps) {
+export default function DestinationMobilityTab({
+  destinationId,
+  destination,
+}: DestinationMobilityTabProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<MobilityData>(emptyMobilityData);
 
@@ -161,8 +171,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/admin/destinations/${destinationId}/mobility`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/public/destinations/${destinationId}/mobility`] });
+      queryClient.invalidateQueries({
+        queryKey: [`/api/admin/destinations/${destinationId}/mobility`],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`/api/public/destinations/${destinationId}/mobility`],
+      });
       toast({
         title: "Mobility data saved",
         description: "Your changes have been saved successfully.",
@@ -222,7 +236,10 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
   const addSource = () => {
     setFormData(prev => ({
       ...prev,
-      sources: [...(prev.sources || []), { name: "", url: "", accessedAt: new Date().toISOString().split('T')[0] }],
+      sources: [
+        ...(prev.sources || []),
+        { name: "", url: "", accessedAt: new Date().toISOString().split("T")[0] },
+      ],
     }));
   };
 
@@ -264,17 +281,92 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
             </p>
           )}
         </div>
-        <Button onClick={handleSave} disabled={saveMutation.isPending} data-testid="button-save-mobility">
-          {saveMutation.isPending ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <Save className="w-4 h-4 mr-2" />
-          )}
-          Save Changes
-        </Button>
+        <div className="flex items-center gap-2">
+          <MagicAllButton
+            contentType="destination"
+            entityName={destination.name}
+            existingFields={{
+              country: destination.country,
+              ...formData,
+            }}
+            fields={[
+              "transportOverview",
+              "transportModes",
+              "transitCard",
+              "contactlessPayments",
+              "officialApps",
+              "taxiApps",
+              "taxiInfo",
+              "airportInfo",
+              "bikeShare",
+              "scootersAvailable",
+              "walkabilitySummary",
+              "bestWalkAreas",
+            ]}
+            onResults={results => {
+              setFormData(prev => {
+                const updated = { ...prev };
+                if (results.transportOverview && updated.publicTransport) {
+                  updated.publicTransport.overview = results.transportOverview as string;
+                }
+                if (results.transportModes && updated.publicTransport) {
+                  updated.publicTransport.keyModes = results.transportModes as TransportMode[];
+                }
+                if (results.transitCard && updated.publicTransport?.payment) {
+                  updated.publicTransport.payment.cardName = results.transitCard as string;
+                }
+                if (results.contactlessPayments !== undefined && updated.publicTransport?.payment) {
+                  updated.publicTransport.payment.contactless =
+                    results.contactlessPayments as boolean;
+                }
+                if (results.officialApps && updated.publicTransport) {
+                  updated.publicTransport.officialApps = results.officialApps as string[];
+                }
+                if (results.taxiApps && updated.taxisRideHailing) {
+                  updated.taxisRideHailing.primaryApps = results.taxiApps as string[];
+                }
+                if (results.taxiInfo && updated.taxisRideHailing) {
+                  updated.taxisRideHailing.officialTaxiInfo = results.taxiInfo as string;
+                }
+                if (results.airportInfo && updated.airportTransfers) {
+                  updated.airportTransfers.airports = results.airportInfo as Airport[];
+                }
+                if (results.bikeShare && updated.micromobility?.bikeShare) {
+                  updated.micromobility.bikeShare.name = results.bikeShare as string;
+                }
+                if (results.scootersAvailable !== undefined && updated.micromobility?.scooters) {
+                  updated.micromobility.scooters.available = results.scootersAvailable as boolean;
+                }
+                if (results.walkabilitySummary && updated.walkability) {
+                  updated.walkability.summary = results.walkabilitySummary as string;
+                }
+                if (results.bestWalkAreas && updated.walkability) {
+                  updated.walkability.bestWalkAreas = results.bestWalkAreas as string[];
+                }
+                return updated;
+              });
+            }}
+          />
+          <Button
+            onClick={handleSave}
+            disabled={saveMutation.isPending}
+            data-testid="button-save-mobility"
+          >
+            {saveMutation.isPending ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
+            Save Changes
+          </Button>
+        </div>
       </div>
 
-      <Accordion type="multiple" defaultValue={["public-transport", "sources"]} className="space-y-4">
+      <Accordion
+        type="multiple"
+        defaultValue={["public-transport", "sources"]}
+        className="space-y-4"
+      >
         <AccordionItem value="public-transport" className="border rounded-lg px-4">
           <AccordionTrigger className="hover:no-underline" data-testid="accordion-public-transport">
             <div className="flex items-center gap-2">
@@ -284,13 +376,36 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label>Overview</Label>
+              <div className="flex items-center gap-2">
+                <Label>Overview</Label>
+                <MagicButton
+                  fieldId="transportOverview"
+                  fieldType="description"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: {
+                      country: destination.country,
+                      transportModes: formData.publicTransport?.keyModes,
+                    },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      publicTransport: { ...prev.publicTransport!, overview: value as string },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Textarea
                 value={formData.publicTransport?.overview || ""}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  publicTransport: { ...prev.publicTransport!, overview: e.target.value }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    publicTransport: { ...prev.publicTransport!, overview: e.target.value },
+                  }))
+                }
                 placeholder="Describe the public transport system..."
                 rows={3}
                 data-testid="input-transport-overview"
@@ -299,8 +414,37 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label>Transport Modes</Label>
-                <Button size="sm" variant="outline" onClick={addTransportMode} data-testid="button-add-transport-mode">
+                <div className="flex items-center gap-2">
+                  <Label>Transport Modes</Label>
+                  <MagicButton
+                    fieldId="transportModes"
+                    fieldType="transport_modes"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: {
+                        country: destination.country,
+                        overview: formData.publicTransport?.overview,
+                      },
+                    }}
+                    onResult={value =>
+                      setFormData(prev => ({
+                        ...prev,
+                        publicTransport: {
+                          ...prev.publicTransport!,
+                          keyModes: value as TransportMode[],
+                        },
+                      }))
+                    }
+                    size="sm"
+                  />
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={addTransportMode}
+                  data-testid="button-add-transport-mode"
+                >
                   <Plus className="w-3 h-3 mr-1" /> Add Mode
                 </Button>
               </div>
@@ -310,12 +454,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                     className="col-span-3"
                     placeholder="Type (metro, bus...)"
                     value={mode.type}
-                    onChange={(e) => {
+                    onChange={e => {
                       const modes = [...(formData.publicTransport?.keyModes || [])];
                       modes[index] = { ...modes[index], type: e.target.value };
                       setFormData(prev => ({
                         ...prev,
-                        publicTransport: { ...prev.publicTransport!, keyModes: modes }
+                        publicTransport: { ...prev.publicTransport!, keyModes: modes },
                       }));
                     }}
                   />
@@ -323,12 +467,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                     className="col-span-4"
                     placeholder="Name"
                     value={mode.name}
-                    onChange={(e) => {
+                    onChange={e => {
                       const modes = [...(formData.publicTransport?.keyModes || [])];
                       modes[index] = { ...modes[index], name: e.target.value };
                       setFormData(prev => ({
                         ...prev,
-                        publicTransport: { ...prev.publicTransport!, keyModes: modes }
+                        publicTransport: { ...prev.publicTransport!, keyModes: modes },
                       }));
                     }}
                   />
@@ -336,16 +480,21 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                     className="col-span-4"
                     placeholder="Notes"
                     value={mode.notes || ""}
-                    onChange={(e) => {
+                    onChange={e => {
                       const modes = [...(formData.publicTransport?.keyModes || [])];
                       modes[index] = { ...modes[index], notes: e.target.value };
                       setFormData(prev => ({
                         ...prev,
-                        publicTransport: { ...prev.publicTransport!, keyModes: modes }
+                        publicTransport: { ...prev.publicTransport!, keyModes: modes },
                       }));
                     }}
                   />
-                  <Button size="icon" variant="ghost" onClick={() => removeTransportMode(index)} className="col-span-1">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => removeTransportMode(index)}
+                    className="col-span-1"
+                  >
                     <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>
                 </div>
@@ -354,45 +503,123 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Transit Card Name</Label>
+                <div className="flex items-center gap-2">
+                  <Label>Transit Card Name</Label>
+                  <MagicButton
+                    fieldId="transitCard"
+                    fieldType="transit_card"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: { country: destination.country },
+                    }}
+                    onResult={value =>
+                      setFormData(prev => ({
+                        ...prev,
+                        publicTransport: {
+                          ...prev.publicTransport!,
+                          payment: { ...prev.publicTransport?.payment!, cardName: value as string },
+                        },
+                      }))
+                    }
+                    size="sm"
+                  />
+                </div>
                 <Input
                   value={formData.publicTransport?.payment?.cardName || ""}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    publicTransport: {
-                      ...prev.publicTransport!,
-                      payment: { ...prev.publicTransport?.payment!, cardName: e.target.value }
-                    }
-                  }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      publicTransport: {
+                        ...prev.publicTransport!,
+                        payment: { ...prev.publicTransport?.payment!, cardName: e.target.value },
+                      },
+                    }))
+                  }
                   placeholder="e.g., Oyster Card, Navigo"
                 />
               </div>
               <div className="flex items-center gap-2 pt-6">
                 <Switch
                   checked={formData.publicTransport?.payment?.contactless || false}
-                  onCheckedChange={(checked) => setFormData(prev => ({
-                    ...prev,
-                    publicTransport: {
-                      ...prev.publicTransport!,
-                      payment: { ...prev.publicTransport?.payment!, contactless: checked }
-                    }
-                  }))}
+                  onCheckedChange={checked =>
+                    setFormData(prev => ({
+                      ...prev,
+                      publicTransport: {
+                        ...prev.publicTransport!,
+                        payment: { ...prev.publicTransport?.payment!, contactless: checked },
+                      },
+                    }))
+                  }
                 />
                 <Label>Contactless payments accepted</Label>
+                <MagicButton
+                  fieldId="contactlessPayments"
+                  fieldType="boolean_research"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      publicTransport: {
+                        ...prev.publicTransport!,
+                        payment: {
+                          ...prev.publicTransport?.payment!,
+                          contactless: value as boolean,
+                        },
+                      },
+                    }))
+                  }
+                  size="sm"
+                />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Official Apps (comma-separated)</Label>
+              <div className="flex items-center gap-2">
+                <Label>Official Apps (comma-separated)</Label>
+                <MagicButton
+                  fieldId="officialApps"
+                  fieldType="list_research"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      publicTransport: {
+                        ...prev.publicTransport!,
+                        officialApps: Array.isArray(value)
+                          ? (value as string[])
+                          : (value as string)
+                              .split(",")
+                              .map(s => s.trim())
+                              .filter(Boolean),
+                      },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Input
                 value={(formData.publicTransport?.officialApps || []).join(", ")}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  publicTransport: {
-                    ...prev.publicTransport!,
-                    officialApps: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
-                  }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    publicTransport: {
+                      ...prev.publicTransport!,
+                      officialApps: e.target.value
+                        .split(",")
+                        .map(s => s.trim())
+                        .filter(Boolean),
+                    },
+                  }))
+                }
                 placeholder="e.g., TfL Go, Citymapper"
               />
             </div>
@@ -408,28 +635,85 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label>Primary Apps (comma-separated)</Label>
+              <div className="flex items-center gap-2">
+                <Label>Primary Apps (comma-separated)</Label>
+                <MagicButton
+                  fieldId="taxiApps"
+                  fieldType="taxi_apps"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      taxisRideHailing: {
+                        ...prev.taxisRideHailing!,
+                        primaryApps: Array.isArray(value)
+                          ? (value as string[])
+                          : (value as string)
+                              .split(",")
+                              .map(s => s.trim())
+                              .filter(Boolean),
+                      },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Input
                 value={(formData.taxisRideHailing?.primaryApps || []).join(", ")}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  taxisRideHailing: {
-                    ...prev.taxisRideHailing!,
-                    primaryApps: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
-                  }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    taxisRideHailing: {
+                      ...prev.taxisRideHailing!,
+                      primaryApps: e.target.value
+                        .split(",")
+                        .map(s => s.trim())
+                        .filter(Boolean),
+                    },
+                  }))
+                }
                 placeholder="e.g., Uber, Bolt, Careem"
                 data-testid="input-ride-apps"
               />
             </div>
             <div className="space-y-2">
-              <Label>Official Taxi Info</Label>
+              <div className="flex items-center gap-2">
+                <Label>Official Taxi Info</Label>
+                <MagicButton
+                  fieldId="taxiInfo"
+                  fieldType="taxi_info"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      taxisRideHailing: {
+                        ...prev.taxisRideHailing!,
+                        officialTaxiInfo: value as string,
+                      },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Textarea
                 value={formData.taxisRideHailing?.officialTaxiInfo || ""}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  taxisRideHailing: { ...prev.taxisRideHailing!, officialTaxiInfo: e.target.value }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    taxisRideHailing: {
+                      ...prev.taxisRideHailing!,
+                      officialTaxiInfo: e.target.value,
+                    },
+                  }))
+                }
                 placeholder="Info about official taxis..."
                 rows={2}
               />
@@ -446,8 +730,31 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <div className="flex items-center justify-between">
-              <Label>Airports</Label>
-              <Button size="sm" variant="outline" onClick={addAirport} data-testid="button-add-airport">
+              <div className="flex items-center gap-2">
+                <Label>Airports</Label>
+                <MagicButton
+                  fieldId="airportInfo"
+                  fieldType="airport_info"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      airportTransfers: { airports: value as Airport[] },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={addAirport}
+                data-testid="button-add-airport"
+              >
                 <Plus className="w-3 h-3 mr-1" /> Add Airport
               </Button>
             </div>
@@ -458,12 +765,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                     <Label>Code</Label>
                     <Input
                       value={airport.code || ""}
-                      onChange={(e) => {
+                      onChange={e => {
                         const airports = [...(formData.airportTransfers?.airports || [])];
                         airports[index] = { ...airports[index], code: e.target.value };
                         setFormData(prev => ({
                           ...prev,
-                          airportTransfers: { airports }
+                          airportTransfers: { airports },
                         }));
                       }}
                       placeholder="e.g., LHR"
@@ -473,12 +780,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                     <Label>Name</Label>
                     <Input
                       value={airport.name}
-                      onChange={(e) => {
+                      onChange={e => {
                         const airports = [...(formData.airportTransfers?.airports || [])];
                         airports[index] = { ...airports[index], name: e.target.value };
                         setFormData(prev => ({
                           ...prev,
-                          airportTransfers: { airports }
+                          airportTransfers: { airports },
                         }));
                       }}
                       placeholder="e.g., Heathrow"
@@ -489,12 +796,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                   <Label>Best Default Option</Label>
                   <Input
                     value={airport.bestDefault}
-                    onChange={(e) => {
+                    onChange={e => {
                       const airports = [...(formData.airportTransfers?.airports || [])];
                       airports[index] = { ...airports[index], bestDefault: e.target.value };
                       setFormData(prev => ({
                         ...prev,
-                        airportTransfers: { airports }
+                        airportTransfers: { airports },
                       }));
                     }}
                     placeholder="e.g., Elizabeth Line to Paddington"
@@ -504,18 +811,23 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                   <Label>Notes</Label>
                   <Input
                     value={airport.notes || ""}
-                    onChange={(e) => {
+                    onChange={e => {
                       const airports = [...(formData.airportTransfers?.airports || [])];
                       airports[index] = { ...airports[index], notes: e.target.value };
                       setFormData(prev => ({
                         ...prev,
-                        airportTransfers: { airports }
+                        airportTransfers: { airports },
                       }));
                     }}
                     placeholder="Additional info..."
                   />
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => removeAirport(index)} className="mt-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => removeAirport(index)}
+                  className="mt-2"
+                >
                   <Trash2 className="w-4 h-4 mr-1 text-destructive" /> Remove
                 </Button>
               </Card>
@@ -533,16 +845,39 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
           <AccordionContent className="space-y-4 pt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Bike Share Name</Label>
+                <div className="flex items-center gap-2">
+                  <Label>Bike Share Name</Label>
+                  <MagicButton
+                    fieldId="bikeShare"
+                    fieldType="bike_share"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: { country: destination.country },
+                    }}
+                    onResult={value =>
+                      setFormData(prev => ({
+                        ...prev,
+                        micromobility: {
+                          ...prev.micromobility!,
+                          bikeShare: { ...prev.micromobility?.bikeShare!, name: value as string },
+                        },
+                      }))
+                    }
+                    size="sm"
+                  />
+                </div>
                 <Input
                   value={formData.micromobility?.bikeShare?.name || ""}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    micromobility: {
-                      ...prev.micromobility!,
-                      bikeShare: { ...prev.micromobility?.bikeShare!, name: e.target.value }
-                    }
-                  }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      micromobility: {
+                        ...prev.micromobility!,
+                        bikeShare: { ...prev.micromobility?.bikeShare!, name: e.target.value },
+                      },
+                    }))
+                  }
                   placeholder="e.g., Santander Cycles"
                 />
               </div>
@@ -550,13 +885,15 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                 <Label>Bike Share App</Label>
                 <Input
                   value={formData.micromobility?.bikeShare?.app || ""}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    micromobility: {
-                      ...prev.micromobility!,
-                      bikeShare: { ...prev.micromobility?.bikeShare!, app: e.target.value }
-                    }
-                  }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      micromobility: {
+                        ...prev.micromobility!,
+                        bikeShare: { ...prev.micromobility?.bikeShare!, app: e.target.value },
+                      },
+                    }))
+                  }
                   placeholder="App name"
                 />
               </div>
@@ -564,28 +901,51 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
             <div className="flex items-center gap-2">
               <Switch
                 checked={formData.micromobility?.scooters?.available || false}
-                onCheckedChange={(checked) => setFormData(prev => ({
-                  ...prev,
-                  micromobility: {
-                    ...prev.micromobility!,
-                    scooters: { ...prev.micromobility?.scooters!, available: checked }
-                  }
-                }))}
+                onCheckedChange={checked =>
+                  setFormData(prev => ({
+                    ...prev,
+                    micromobility: {
+                      ...prev.micromobility!,
+                      scooters: { ...prev.micromobility?.scooters!, available: checked },
+                    },
+                  }))
+                }
               />
               <Label>E-scooters available</Label>
+              <MagicButton
+                fieldId="scootersAvailable"
+                fieldType="boolean_research"
+                context={{
+                  contentType: "destination",
+                  entityName: destination.name,
+                  existingFields: { country: destination.country },
+                }}
+                onResult={value =>
+                  setFormData(prev => ({
+                    ...prev,
+                    micromobility: {
+                      ...prev.micromobility!,
+                      scooters: { ...prev.micromobility?.scooters!, available: value as boolean },
+                    },
+                  }))
+                }
+                size="sm"
+              />
             </div>
             {formData.micromobility?.scooters?.available && (
               <div className="space-y-2">
                 <Label>Scooter Notes</Label>
                 <Input
                   value={formData.micromobility?.scooters?.notes || ""}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    micromobility: {
-                      ...prev.micromobility!,
-                      scooters: { ...prev.micromobility?.scooters!, notes: e.target.value }
-                    }
-                  }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      micromobility: {
+                        ...prev.micromobility!,
+                        scooters: { ...prev.micromobility?.scooters!, notes: e.target.value },
+                      },
+                    }))
+                  }
                   placeholder="e.g., Available through Lime, Tier"
                 />
               </div>
@@ -604,10 +964,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
             <div className="flex items-center gap-2">
               <Switch
                 checked={formData.drivingParking?.rentCarRecommended || false}
-                onCheckedChange={(checked) => setFormData(prev => ({
-                  ...prev,
-                  drivingParking: { ...prev.drivingParking!, rentCarRecommended: checked }
-                }))}
+                onCheckedChange={checked =>
+                  setFormData(prev => ({
+                    ...prev,
+                    drivingParking: { ...prev.drivingParking!, rentCarRecommended: checked },
+                  }))
+                }
               />
               <Label>Car rental recommended</Label>
             </div>
@@ -616,10 +978,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                 <Label>Recommended When</Label>
                 <Input
                   value={formData.drivingParking?.recommendedWhen || ""}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    drivingParking: { ...prev.drivingParking!, recommendedWhen: e.target.value }
-                  }))}
+                  onChange={e =>
+                    setFormData(prev => ({
+                      ...prev,
+                      drivingParking: { ...prev.drivingParking!, recommendedWhen: e.target.value },
+                    }))
+                  }
                   placeholder="e.g., For day trips outside the city"
                 />
               </div>
@@ -628,10 +992,12 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
               <Label>Parking Notes</Label>
               <Textarea
                 value={formData.drivingParking?.parkingNotes || ""}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  drivingParking: { ...prev.drivingParking!, parkingNotes: e.target.value }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    drivingParking: { ...prev.drivingParking!, parkingNotes: e.target.value },
+                  }))
+                }
                 placeholder="Info about parking in the city..."
                 rows={2}
               />
@@ -648,43 +1014,128 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <div className="space-y-2">
-              <Label>Summary</Label>
+              <div className="flex items-center gap-2">
+                <Label>Summary</Label>
+                <MagicButton
+                  fieldId="walkabilitySummary"
+                  fieldType="walkability"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: {
+                      country: destination.country,
+                      bestWalkAreas: formData.walkability?.bestWalkAreas,
+                    },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      walkability: { ...prev.walkability!, summary: value as string },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Textarea
                 value={formData.walkability?.summary || ""}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  walkability: { ...prev.walkability!, summary: e.target.value }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    walkability: { ...prev.walkability!, summary: e.target.value },
+                  }))
+                }
                 placeholder="Describe walking conditions in the city..."
                 rows={3}
                 data-testid="input-walkability-summary"
               />
             </div>
             <div className="space-y-2">
-              <Label>Best Walking Areas (comma-separated)</Label>
+              <div className="flex items-center gap-2">
+                <Label>Best Walking Areas (comma-separated)</Label>
+                <MagicButton
+                  fieldId="bestWalkAreas"
+                  fieldType="list_research"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      walkability: {
+                        ...prev.walkability!,
+                        bestWalkAreas: Array.isArray(value)
+                          ? (value as string[])
+                          : (value as string)
+                              .split(",")
+                              .map(s => s.trim())
+                              .filter(Boolean),
+                      },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Input
                 value={(formData.walkability?.bestWalkAreas || []).join(", ")}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  walkability: {
-                    ...prev.walkability!,
-                    bestWalkAreas: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
-                  }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    walkability: {
+                      ...prev.walkability!,
+                      bestWalkAreas: e.target.value
+                        .split(",")
+                        .map(s => s.trim())
+                        .filter(Boolean),
+                    },
+                  }))
+                }
                 placeholder="e.g., Historic center, Waterfront"
               />
             </div>
             <div className="space-y-2">
-              <Label>Cautions (comma-separated)</Label>
+              <div className="flex items-center gap-2">
+                <Label>Cautions (comma-separated)</Label>
+                <MagicButton
+                  fieldId="walkabilityCautions"
+                  fieldType="list_research"
+                  context={{
+                    contentType: "destination",
+                    entityName: destination.name,
+                    existingFields: { country: destination.country },
+                  }}
+                  onResult={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      walkability: {
+                        ...prev.walkability!,
+                        cautions: Array.isArray(value)
+                          ? (value as string[])
+                          : (value as string)
+                              .split(",")
+                              .map(s => s.trim())
+                              .filter(Boolean),
+                      },
+                    }))
+                  }
+                  size="sm"
+                />
+              </div>
               <Input
                 value={(formData.walkability?.cautions || []).join(", ")}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  walkability: {
-                    ...prev.walkability!,
-                    cautions: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
-                  }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    walkability: {
+                      ...prev.walkability!,
+                      cautions: e.target.value
+                        .split(",")
+                        .map(s => s.trim())
+                        .filter(Boolean),
+                    },
+                  }))
+                }
                 placeholder="e.g., Uneven cobblestones, Hot summers"
               />
             </div>
@@ -696,13 +1147,20 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
             <div className="flex items-center gap-2">
               <LinkIcon className="w-4 h-4" />
               Sources
-              <Badge variant="outline" className="ml-2">{formData.sources?.length || 0}</Badge>
+              <Badge variant="outline" className="ml-2">
+                {formData.sources?.length || 0}
+              </Badge>
             </div>
           </AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <div className="flex items-center justify-between">
               <Label>Data Sources</Label>
-              <Button size="sm" variant="outline" onClick={addSource} data-testid="button-add-source">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={addSource}
+                data-testid="button-add-source"
+              >
                 <Plus className="w-3 h-3 mr-1" /> Add Source
               </Button>
             </div>
@@ -712,7 +1170,7 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                   className="col-span-3"
                   placeholder="Source name"
                   value={source.name}
-                  onChange={(e) => {
+                  onChange={e => {
                     const sources = [...(formData.sources || [])];
                     sources[index] = { ...sources[index], name: e.target.value };
                     setFormData(prev => ({ ...prev, sources }));
@@ -722,7 +1180,7 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                   className="col-span-5"
                   placeholder="URL"
                   value={source.url}
-                  onChange={(e) => {
+                  onChange={e => {
                     const sources = [...(formData.sources || [])];
                     sources[index] = { ...sources[index], url: e.target.value };
                     setFormData(prev => ({ ...prev, sources }));
@@ -732,13 +1190,18 @@ export default function DestinationMobilityTab({ destinationId, destination }: D
                   className="col-span-3"
                   type="date"
                   value={source.accessedAt}
-                  onChange={(e) => {
+                  onChange={e => {
                     const sources = [...(formData.sources || [])];
                     sources[index] = { ...sources[index], accessedAt: e.target.value };
                     setFormData(prev => ({ ...prev, sources }));
                   }}
                 />
-                <Button size="icon" variant="ghost" onClick={() => removeSource(index)} className="col-span-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => removeSource(index)}
+                  className="col-span-1"
+                >
                   <Trash2 className="w-4 h-4 text-destructive" />
                 </Button>
               </div>

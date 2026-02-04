@@ -305,6 +305,7 @@ import { registerWeeklyDigestRoutes } from "./routes/weekly-digest-routes";
 import { registerWebhookWorkflowRoutes } from "./routes/webhook-workflow-routes";
 import { registerAffiliateRoutes } from "./routes/affiliate-routes";
 import { registerAiToolsRoutes } from "./routes/ai-tools-routes";
+import { registerMagicRoutes } from "./routes/magic-routes";
 // Ops features (Feature-flagged, default OFF)
 import { incidentsRoutes } from "./incidents";
 import { auditV2Routes } from "./audit-v2";
@@ -2498,6 +2499,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // OCTYPO ENGINE (AI Content Generation System - Writers, Validators, Orchestrator)
   // ============================================================================
   app.use("/api/octypo", requireAuth, requirePermission("canEdit"), octypoRoutes);
+
+  // ============================================================================
+  // MAGIC ENGINE (AI-powered field generation for CMS content)
+  // ============================================================================
+  registerMagicRoutes(app);
 
   // ============================================================================
   // GATEKEEPER (Autonomous Content Selection & Approval System)

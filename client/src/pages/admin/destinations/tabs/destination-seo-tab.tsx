@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { MagicButton, MagicAllButton } from "@/components/magic-button";
 import {
   Search,
   Save,
@@ -47,6 +48,7 @@ interface DestinationSeoTabProps {
   destination: {
     id: string;
     name: string;
+    country?: string;
   };
 }
 
@@ -56,7 +58,7 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
   const [metaDescription, setMetaDescription] = useState("");
 
   const seoUrl = `/api/admin/destinations/${destinationId}/seo`;
-  
+
   const { data: seoData, isLoading } = useQuery<SEOData>({
     queryKey: [seoUrl],
     enabled: !!destinationId,
@@ -111,7 +113,7 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
 
   const titleLength = metaTitle.length || seoData?.metaTitle?.length || 0;
   const descLength = metaDescription.length || seoData?.metaDescription?.length || 0;
-  
+
   const titleScore = titleLength >= 30 && titleLength <= 60 ? 100 : titleLength > 0 ? 60 : 0;
   const descScore = descLength >= 120 && descLength <= 160 ? 100 : descLength > 0 ? 60 : 0;
   const overallScore = Math.round((titleScore + descScore) / 2);
@@ -121,64 +123,111 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="w-5 h-5" />
-              Meta Tags
-            </CardTitle>
-            <CardDescription>
-              Search engine optimization for {destination.name}
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="w-5 h-5" />
+                  Meta Tags
+                </CardTitle>
+                <CardDescription>Search engine optimization for {destination.name}</CardDescription>
+              </div>
+              <MagicAllButton
+                contentType="destination"
+                entityName={destination.name}
+                existingFields={{
+                  country: destination.country,
+                  metaTitle,
+                  metaDescription,
+                }}
+                fields={["metaTitle", "metaDescription"]}
+                onResults={results => {
+                  if (results.metaTitle) setMetaTitle(results.metaTitle as string);
+                  if (results.metaDescription)
+                    setMetaDescription(results.metaDescription as string);
+                }}
+              />
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="metaTitle">Meta Title</Label>
-                <span className={`text-xs ${titleLength > 60 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="metaTitle">Meta Title</Label>
+                  <MagicButton
+                    fieldId="metaTitle"
+                    fieldType="meta_title"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: {
+                        country: destination.country,
+                        metaDescription,
+                      },
+                    }}
+                    onResult={value => setMetaTitle(value as string)}
+                    size="sm"
+                  />
+                </div>
+                <span
+                  className={`text-xs ${titleLength > 60 ? "text-destructive" : "text-muted-foreground"}`}
+                >
                   {titleLength}/60
                 </span>
               </div>
               <Input
                 id="metaTitle"
                 value={metaTitle || seoData?.metaTitle || ""}
-                onChange={(e) => setMetaTitle(e.target.value)}
+                onChange={e => setMetaTitle(e.target.value)}
                 placeholder={`${destination.name} Travel Guide | Travi`}
                 data-testid="input-meta-title"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="metaDescription">Meta Description</Label>
-                <span className={`text-xs ${descLength > 160 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="metaDescription">Meta Description</Label>
+                  <MagicButton
+                    fieldId="metaDescription"
+                    fieldType="meta_description"
+                    context={{
+                      contentType: "destination",
+                      entityName: destination.name,
+                      existingFields: {
+                        country: destination.country,
+                        metaTitle,
+                      },
+                    }}
+                    onResult={value => setMetaDescription(value as string)}
+                    size="sm"
+                  />
+                </div>
+                <span
+                  className={`text-xs ${descLength > 160 ? "text-destructive" : "text-muted-foreground"}`}
+                >
                   {descLength}/160
                 </span>
               </div>
               <Textarea
                 id="metaDescription"
                 value={metaDescription || seoData?.metaDescription || ""}
-                onChange={(e) => setMetaDescription(e.target.value)}
+                onChange={e => setMetaDescription(e.target.value)}
                 placeholder="Enter a compelling meta description..."
                 rows={3}
                 data-testid="input-meta-description"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <Button 
-                onClick={() => saveMutation.mutate({ metaTitle, metaDescription })}
-                disabled={saveMutation.isPending}
-                data-testid="button-save-seo"
-              >
-                {saveMutation.isPending ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
-                )}
-                Save Changes
-              </Button>
-              <Button variant="outline" data-testid="button-generate-seo">
-                <Wand2 className="w-4 h-4 mr-2" />
-                AI Generate
-              </Button>
-            </div>
+            <Button
+              onClick={() => saveMutation.mutate({ metaTitle, metaDescription })}
+              disabled={saveMutation.isPending}
+              data-testid="button-save-seo"
+            >
+              {saveMutation.isPending ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save Changes
+            </Button>
           </CardContent>
         </Card>
 
@@ -188,9 +237,7 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
               <Globe className="w-5 h-5" />
               Open Graph
             </CardTitle>
-            <CardDescription>
-              Social media preview settings
-            </CardDescription>
+            <CardDescription>Social media preview settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -206,8 +253,8 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
               <Label>OG Image</Label>
               <div className="border rounded-lg p-3 bg-muted">
                 {seoData?.ogImage ? (
-                  <img 
-                    src={seoData.ogImage} 
+                  <img
+                    src={seoData.ogImage}
                     alt="OG preview"
                     className="w-full h-32 object-cover rounded"
                   />
@@ -228,16 +275,16 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
             <FileText className="w-5 h-5" />
             SEO Score
           </CardTitle>
-          <CardDescription>
-            Content quality analysis for {destination.name}
-          </CardDescription>
+          <CardDescription>Content quality analysis for {destination.name}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">
-            <div className="text-5xl font-bold mb-2">
-              {overallScore}
-            </div>
-            <Badge variant={overallScore >= 80 ? "default" : overallScore >= 50 ? "secondary" : "destructive"}>
+            <div className="text-5xl font-bold mb-2">{overallScore}</div>
+            <Badge
+              variant={
+                overallScore >= 80 ? "default" : overallScore >= 50 ? "secondary" : "destructive"
+              }
+            >
               {overallScore >= 80 ? "Good" : overallScore >= 50 ? "Needs Work" : "Poor"}
             </Badge>
           </div>

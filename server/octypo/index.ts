@@ -64,6 +64,44 @@ export { calculateQuality108Score, getGrade } from "./quality/quality-108";
 // State management
 export { octypoState } from "./state";
 
+// Magic Engine - AI-powered field generation for Magic buttons
+export {
+  MagicEngine,
+  getMagicEngine,
+  generateField,
+  generateAll,
+  generateBatch,
+  type ContentType as MagicContentType,
+  type GenerationMode,
+  type MagicFieldInput,
+  type MagicGenerateResult,
+  type MagicGenerateAllResult,
+  type MagicBatchResult,
+} from "./magic";
+export {
+  generateTitle,
+  generateDescription,
+  generateMetaTitle,
+  generateMetaDescription,
+  generateSlug,
+  generateCoordinates,
+  generateFAQs,
+  generateSocialFacebook,
+  generateSocialTwitter,
+  generateHighlights,
+  generateAmenities,
+  generatePriceRange,
+  type FieldType as MagicFieldType,
+} from "./magic";
+export {
+  validateMetaTitle,
+  validateMetaDescription,
+  validateSlug,
+  validateFAQs,
+  validateCoordinates,
+  BANNED_PHRASES,
+} from "./magic";
+
 // ============================================
 // LEGACY EXPORTS FOR BACKWARDS COMPATIBILITY
 // These are used by attraction content generation
