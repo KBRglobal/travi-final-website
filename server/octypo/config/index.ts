@@ -24,8 +24,6 @@ export {
  * Call this at server startup to load encrypted secrets
  */
 export function initializeOctypoConfig(): boolean {
-  const { loadSecretsToEnv, secretsExist } = require("./secrets");
-
   if (!secretsExist()) {
     console.log(
       "[Octypo Config] No secrets file found. Run: npx tsx server/octypo/config/secrets.ts --setup"
