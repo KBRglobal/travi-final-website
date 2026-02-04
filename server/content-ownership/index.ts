@@ -1,7 +1,6 @@
-/**
- * Content Ownership & Responsibility Module
- */
+// Stub - Content Ownership module disabled
+import { Express } from "express";
 
-export { registerContentOwnershipRoutes } from "./routes";
-export * from "./repository";
-export * from "./types";
+export function registerContentOwnershipRoutes(_app: Express): void {
+  // Disabled
+}

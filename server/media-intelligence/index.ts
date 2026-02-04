@@ -1,11 +1,9 @@
-/**
- * Media Intelligence Module
- * Re-exports from v2 for backwards compatibility
- */
+// Stub - Media Intelligence module disabled
+import { Router, Express } from "express";
 
-export * from "./index-v2";
-export { mediaIntelligenceRoutesV2 as mediaIntelligenceRoutes } from "./routes-v2";
+export const mediaIntelligenceRoutes = Router();
+export const mediaIntelligenceRoutesV2 = Router();
 
-// Image Intelligence - AI-powered image processing
-export * from "./image-intelligence";
-export { registerMediaIntelligenceRoutes } from "./routes";
+export function registerMediaIntelligenceRoutes(_app: Express): void {
+  // Disabled
+}

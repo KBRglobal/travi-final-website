@@ -1,7 +1,6 @@
-/**
- * Content Experiments / A-B Testing Module
- */
+// Stub - Content Experiments module disabled
+import { Express } from "express";
 
-export { registerContentExperimentsRoutes } from "./routes";
-export * from "./service";
-export * from "./types";
+export function registerContentExperimentsRoutes(_app: Express): void {
+  // Disabled
+}

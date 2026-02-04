@@ -1,28 +1,40 @@
-/**
- * Content Lifecycle Timeline Module
- *
- * FEATURE 10: Content Lifecycle Timeline (Audit-grade)
- */
+// Stub - Content Lifecycle module disabled
+import { Express } from "express";
 
-export { registerLifecycleRoutes } from "./routes";
-export {
-  recordEvent,
-  getContentLifecycle,
-  queryEvents,
-  getTimelineStats,
-  exportAudit,
-  getRecentEvents,
-  compareSnapshots,
-  EventRecorders,
-} from "./service";
-export type {
-  LifecycleEvent,
-  ContentLifecycle,
-  TimelineFilter,
-  TimelineStats,
-  AuditExport,
-  EventType,
-  EventSource,
-  StateSnapshot,
-} from "./types";
-export { isLifecycleTimelineEnabled } from "./types";
+export function registerLifecycleRoutes(_app: Express): void {
+  // Disabled
+}
+
+export const isLifecycleTimelineEnabled = () => false;
+
+export async function recordEvent() {
+  return null;
+}
+export async function getContentLifecycle() {
+  return null;
+}
+export async function queryEvents() {
+  return [];
+}
+export async function getTimelineStats() {
+  return { total: 0 };
+}
+export async function exportAudit() {
+  return null;
+}
+export async function getRecentEvents() {
+  return [];
+}
+export async function compareSnapshots() {
+  return null;
+}
+export const EventRecorders = {};
+
+export type LifecycleEvent = { id: string };
+export type ContentLifecycle = { events: LifecycleEvent[] };
+export type TimelineFilter = Record<string, unknown>;
+export type TimelineStats = { total: number };
+export type AuditExport = { data: unknown };
+export type EventType = string;
+export type EventSource = string;
+export type StateSnapshot = Record<string, unknown>;

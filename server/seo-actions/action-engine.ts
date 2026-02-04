@@ -1,41 +1,32 @@
-// Stub - SEO actions engine disabled
-export type AutopilotMode = "off" | "suggest" | "auto" | "supervised" | "full";
+// Stub - SEO Action Engine disabled
 
-export interface SEOAction {
-  id: string;
-  type: string;
-  priority: number;
-  status: string;
-}
-
-export interface ValidationResult {
-  canPublish: boolean;
-  blocks: string[];
-  warnings: string[];
-  requiredActions: SEOAction[];
-}
+export type AutopilotMode = "off" | "suggest" | "auto" | "disabled" | "supervised" | "full";
 
 export class SEOActionEngine {
-  private mode: AutopilotMode;
+  private mode: AutopilotMode = "off";
 
-  constructor(mode: AutopilotMode = "off") {
-    this.mode = mode;
+  async run(_config?: unknown): Promise<void> {}
+  getStatus() {
+    return { running: false };
   }
-
-  async executeAction(action: any): Promise<any> {
-    return { success: true };
-  }
-  async executeActions(actions: any[]): Promise<any> {
-    return { success: true };
-  }
-  async getAvailableActions(): Promise<SEOAction[]> {
+  async getActions(_contentId?: string) {
     return [];
   }
-  async getActionHistory(): Promise<any[]> {
+  async executeAction(_action: SEOAction): Promise<void> {}
+  async executeActions(_actions: SEOAction[]): Promise<void> {}
+  async evaluateContent(_contentId: string): Promise<SEOAction[]> {
     return [];
   }
   async getPendingActions(): Promise<SEOAction[]> {
     return [];
+  }
+  async validatePrePublish(_contentId: string): Promise<{
+    canPublish: boolean;
+    blocks: string[];
+    warnings: string[];
+    requiredActions: SEOAction[];
+  }> {
+    return { canPublish: true, blocks: [], warnings: [], requiredActions: [] };
   }
   setAutopilotMode(mode: AutopilotMode): void {
     this.mode = mode;
@@ -43,18 +34,14 @@ export class SEOActionEngine {
   getAutopilotMode(): AutopilotMode {
     return this.mode;
   }
-  async validatePrePublish(content: any): Promise<ValidationResult> {
-    return { canPublish: true, blocks: [], warnings: [], requiredActions: [] };
-  }
-  async evaluateContent(content: any): Promise<any> {
-    return { score: 100 };
-  }
 }
 
 export const seoActionEngine = new SEOActionEngine();
-export async function executeSEOAction(action: any): Promise<any> {
-  return { success: true };
-}
-export async function getSEOActionStatus(): Promise<any> {
-  return {};
+
+export interface SEOAction {
+  id: string;
+  type: string;
+  status: string;
+  contentId?: string;
+  priority?: number;
 }

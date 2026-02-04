@@ -1,11 +1,11 @@
-// Stub - content health scheduler disabled
-export function startContentHealthMonitor(): void {}
-export function stopContentHealthMonitor(): void {}
-export function getContentHealthStatus(): { running: boolean } {
-  return { running: false };
-}
-export function startHealthScanner(): void {}
-export function stopHealthScanner(): void {}
-export function isHealthScannerRunning(): boolean {
+// Stub - Content Health Scheduler disabled
+export function startHealthScheduler(): void {}
+export function stopHealthScheduler(): void {}
+export function isHealthSchedulerRunning(): boolean {
   return false;
 }
+
+// Aliases for background-services.ts
+export const startHealthScanner = startHealthScheduler;
+export const stopHealthScanner = stopHealthScheduler;
+export const isHealthScannerRunning = isHealthSchedulerRunning;

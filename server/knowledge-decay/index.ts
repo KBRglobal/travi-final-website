@@ -1,23 +1,33 @@
-/**
- * Knowledge Decay Detection Module
- *
- * FEATURE 8: Knowledge Decay Detection
- */
+// Stub - Knowledge Decay module disabled
+import { Express } from "express";
 
-export { registerKnowledgeDecayRoutes } from "./routes";
-export {
-  analyzeDecay,
-  getCachedAnalysis,
-  getDecayStats,
-  getContentNeedingAttention,
-  updateIndicatorStatus,
-} from "./detector";
-export type {
-  DecayIndicator,
-  DecayAnalysis,
-  DecayStats,
-  DecayType,
-  DecaySeverity,
-  DecayStatus,
-} from "./types";
-export { isKnowledgeDecayEnabled, DECAY_PATTERNS, DECAY_THRESHOLDS } from "./types";
+export function registerKnowledgeDecayRoutes(_app: Express): void {
+  // Disabled
+}
+
+export const isKnowledgeDecayEnabled = () => false;
+export const DECAY_PATTERNS = {};
+export const DECAY_THRESHOLDS = {};
+
+export async function analyzeDecay() {
+  return null;
+}
+export async function getCachedAnalysis() {
+  return null;
+}
+export async function getDecayStats() {
+  return { total: 0 };
+}
+export async function getContentNeedingAttention() {
+  return [];
+}
+export async function updateIndicatorStatus() {
+  return null;
+}
+
+export type DecayIndicator = { id: string };
+export type DecayAnalysis = { indicators: DecayIndicator[] };
+export type DecayStats = { total: number };
+export type DecayType = string;
+export type DecaySeverity = string;
+export type DecayStatus = string;

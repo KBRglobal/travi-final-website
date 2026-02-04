@@ -1,31 +1,5 @@
-/**
- * Admin Module Exports
- *
- * Central export for admin intelligence functionality.
- *
- * PHASE 17: Admin Intelligence & Visibility Layer
- */
+// Stub - Admin Intelligence routes disabled
+import { Express } from "express";
 
-export { registerAdminIntelligenceRoutes } from './intelligence-routes';
-export { registerAdminIngestionRoutes } from './ingestion-routes';
-export {
-  generateIntelligenceSnapshot,
-  evaluateContentCoverage,
-  evaluateAllContentCoverage,
-  isIntelligenceEnabled,
-  type IntelligenceSnapshot,
-  type ContentCoverageMetrics,
-  type ContentStateSnapshot,
-  type AIActivitySnapshot,
-  type SearchHealthSnapshot,
-  type RSSHealthSnapshot,
-  type SystemWarningsSnapshot,
-} from './intelligence-snapshot';
-export {
-  getContentHealthScore,
-  getSearchHealthScore,
-  getAIHealthScore,
-  getBlockingIssues,
-  type HealthScore,
-  type BlockingIssue,
-} from './intelligence-scorers';
+export function registerAdminIntelligenceRoutes(_app: Express): void {}
+export function registerAdminIngestionRoutes(_app: Express): void {}

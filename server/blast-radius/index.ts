@@ -1,33 +1,37 @@
-/**
- * Blast Radius & Impact Simulator
- * Feature Flag: ENABLE_BLAST_RADIUS=false
- *
- * Calculates impacted users, content, and revenue for a given
- * feature, entity, or locale. Provides impact breakdown and
- * dependency analysis.
- */
+// Stub - Blast Radius module disabled
+import { Router } from "express";
 
-export { isBlastRadiusEnabled, BLAST_RADIUS_CONFIG } from './config';
-export {
-  simulateBlastRadius,
-  simulateMultiple,
-  compareScenarios,
-  getSimulationHistory,
-  getStatus,
-  clearCache,
-  clearHistory,
-  clearAll,
-} from './simulator';
-export type {
-  ImpactScope,
-  ImpactSeverity,
-  ImpactTarget,
-  ImpactMetrics,
-  ImpactBreakdown,
-  BlastRadiusResult,
-  DependencyNode,
-  SimulationScenario,
-  SimulationHistory,
-  BlastRadiusStatus,
-} from './types';
-export { default as blastRadiusRoutes } from './routes';
+export const isBlastRadiusEnabled = () => false;
+export const BLAST_RADIUS_CONFIG = {};
+export default Router();
+export const blastRadiusRoutes = Router();
+
+export async function simulateBlastRadius() {
+  return null;
+}
+export async function simulateMultiple() {
+  return [];
+}
+export async function compareScenarios() {
+  return null;
+}
+export async function getSimulationHistory() {
+  return [];
+}
+export function getStatus() {
+  return { enabled: false };
+}
+export function clearCache() {}
+export function clearHistory() {}
+export function clearAll() {}
+
+export type ImpactScope = string;
+export type ImpactSeverity = string;
+export type ImpactTarget = { type: string };
+export type ImpactMetrics = { affected: number };
+export type ImpactBreakdown = Record<string, unknown>;
+export type BlastRadiusResult = { impact: ImpactMetrics };
+export type DependencyNode = { id: string };
+export type SimulationScenario = { id: string };
+export type SimulationHistory = { scenarios: SimulationScenario[] };
+export type BlastRadiusStatus = { enabled: boolean };

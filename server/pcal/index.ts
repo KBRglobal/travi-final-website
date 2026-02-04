@@ -1,138 +1,117 @@
-/**
- * Platform Command & Accountability Layer (PCAL)
- * Feature Flag: ENABLE_PCAL=false
- *
- * The final layer that makes the platform auditable, governable, and explainable:
- * - Who decided what
- * - Why it was allowed
- * - Who approved it
- * - What happened after
- * - How do we learn from it
- */
+// Stub - PCAL (Platform Command & Accountability Layer) disabled
+import { Router } from "express";
 
-// Configuration
-export { isPCALEnabled, PCAL_CONFIG } from './config';
+export default Router();
+export const pcalRoutes = Router();
 
-// Phase 1: Decision Stream
-export {
-  ingestDecision,
-  ingestManualDecision,
-  ingestOverride,
-  ingestFromGLCP,
-  ingestFromCutover,
-  ingestFromGovernor,
-  ingestFromIncidents,
-  getDecision,
-  getRecentDecisions,
-  getDecisionsBySource,
-  getDecisionsByScope,
-  getDecisionsByOutcome,
-  getDecisionsInTimeRange,
-  getOverrides,
-  getIrreversibleDecisions,
-  getHighRiskDecisions,
-  getDecisionStats,
-  exportDecisions,
-  clearAll as clearDecisions,
-} from './decision-stream';
+export const isPCALEnabled = () => false;
+export const PCAL_CONFIG = {};
 
-// Phase 2: Authority Chain
-export {
-  resolveAuthorityChain,
-  answerAccountability,
-  recordApproval,
-  recordOverride,
-  expireOverride,
-  getRecentApprovals,
-  getApprovalsByActor,
-  getActiveOverrides,
-  getOverridesForDecision,
-  getApprovalLineage,
-  getAuthorityStats,
-  clearAll as clearAuthority,
-} from './authority-chain';
+// Decision Stream stubs
+export const ingestDecision = async () => null;
+export const ingestManualDecision = async () => null;
+export const ingestOverride = async () => null;
+export const ingestFromGLCP = async () => null;
+export const ingestFromCutover = async () => null;
+export const ingestFromGovernor = async () => null;
+export const ingestFromIncidents = async () => null;
+export const getDecision = async () => null;
+export const getRecentDecisions = async () => [];
+export const getDecisionsBySource = async () => [];
+export const getDecisionsByScope = async () => [];
+export const getDecisionsByOutcome = async () => [];
+export const getDecisionsInTimeRange = async () => [];
+export const getOverrides = async () => [];
+export const getIrreversibleDecisions = async () => [];
+export const getHighRiskDecisions = async () => [];
+export const getDecisionStats = async () => ({ total: 0 });
+export const exportDecisions = async () => [];
+export const clearDecisions = () => {};
 
-// Phase 3: Platform Memory
-export {
-  detectPatterns,
-  getPatterns,
-  getPatternById,
-  linkIncidentToDecision,
-  autoLinkIncidents,
-  getLinksForIncident,
-  getLinksForDecision,
-  recordMTTR,
-  getSubsystemHealth,
-  getAllSubsystemHealth,
-  recordMetric,
-  getSilentRegressions,
-  detectRepeatedMistakes,
-  getRepeatedMistakes,
-  captureMemorySnapshot,
-  clearAll as clearMemory,
-} from './platform-memory';
+// Authority Chain stubs
+export const resolveAuthorityChain = async () => null;
+export const answerAccountability = async () => null;
+export const recordApproval = async () => null;
+export const recordOverride = async () => null;
+export const expireOverride = async () => null;
+export const getRecentApprovals = async () => [];
+export const getApprovalsByActor = async () => [];
+export const getActiveOverrides = async () => [];
+export const getOverridesForDecision = async () => [];
+export const getApprovalLineage = async () => null;
+export const getAuthorityStats = async () => ({ total: 0 });
+export const clearAuthority = () => {};
 
-// Phase 4: Narrative Generation
-export {
-  generateNarrative,
-  generateRiskReport,
-  getNarrativeHistory,
-  getRiskReportHistory,
-  clearAll as clearNarratives,
-} from './narrative';
+// Platform Memory stubs
+export const detectPatterns = async () => [];
+export const getPatterns = async () => [];
+export const getPatternById = async () => null;
+export const linkIncidentToDecision = async () => null;
+export const autoLinkIncidents = async () => [];
+export const getLinksForIncident = async () => [];
+export const getLinksForDecision = async () => [];
+export const recordMTTR = async () => null;
+export const getSubsystemHealth = async () => null;
+export const getAllSubsystemHealth = async () => [];
+export const recordMetric = async () => null;
+export const getSilentRegressions = async () => [];
+export const detectRepeatedMistakes = async () => [];
+export const getRepeatedMistakes = async () => [];
+export const captureMemorySnapshot = async () => null;
+export const clearMemory = () => {};
 
-// Phase 5: Feedback Loop
-export {
-  detectFeedbackSignals,
-  generateRecommendations,
-  runFeedbackCycle,
-  acknowledgeRecommendation,
-  getPendingRecommendations,
-  getAppliedRecommendations,
-  getConfidenceAdjustment,
-  getApprovalLevelAdjustment,
-  getOverrideTtlMultiplier,
-  applyConfidenceAdjustment,
-  applyApprovalLevelAdjustment,
-  applyOverrideTtlMultiplier,
-  pushFeedbackToSystems,
-  getFeedbackStats,
-  getState as getFeedbackState,
-  clearAll as clearFeedback,
-} from './feedback-loop';
+// Narrative stubs
+export const generateNarrative = async () => null;
+export const generateRiskReport = async () => null;
+export const getNarrativeHistory = async () => [];
+export const getRiskReportHistory = async () => [];
+export const clearNarratives = () => {};
+
+// Feedback Loop stubs
+export const detectFeedbackSignals = async () => [];
+export const generateRecommendations = async () => [];
+export const runFeedbackCycle = async () => null;
+export const acknowledgeRecommendation = async () => null;
+export const getPendingRecommendations = async () => [];
+export const getAppliedRecommendations = async () => [];
+export const getConfidenceAdjustment = () => 0;
+export const getApprovalLevelAdjustment = () => 0;
+export const getOverrideTtlMultiplier = () => 1;
+export const applyConfidenceAdjustment = () => {};
+export const applyApprovalLevelAdjustment = () => {};
+export const applyOverrideTtlMultiplier = () => {};
+export const pushFeedbackToSystems = async () => null;
+export const getFeedbackStats = async () => ({ total: 0 });
+export const getFeedbackState = () => ({});
+export const clearFeedback = () => {};
 
 // Types
-export type {
-  DecisionScope,
-  DecisionAuthority,
-  DecisionOutcome,
-  DecisionSource,
-  DecisionRecord,
-  DecisionSignal,
-  AuthorityChain,
-  AuthorityNode,
-  ApprovalLineage,
-  ApprovalRecord,
-  OverrideRecord,
-  FailurePattern,
-  IncidentDecisionLink,
-  SubsystemHealth,
-  SilentRegression,
-  PlatformMemorySnapshot,
-  RepeatedMistake,
-  NarrativeQuery,
-  NarrativeRequest,
-  ExecutiveNarrative,
-  TimelineEvent,
-  SystemicRisk,
-  ImprovementOpportunity,
-  PlatformRiskReport,
-  FeedbackSignal,
-  FeedbackRecommendation,
-  FeedbackAction,
-  FeedbackLoopState,
-  PCALStatus,
-} from './types';
-
-// Routes
-export { default as pcalRoutes } from './routes';
+export type DecisionScope = string;
+export type DecisionAuthority = string;
+export type DecisionOutcome = string;
+export type DecisionSource = string;
+export type DecisionRecord = { id: string };
+export type DecisionSignal = { type: string };
+export type AuthorityChain = { nodes: AuthorityNode[] };
+export type AuthorityNode = { id: string };
+export type ApprovalLineage = { approvals: ApprovalRecord[] };
+export type ApprovalRecord = { id: string };
+export type OverrideRecord = { id: string };
+export type FailurePattern = { id: string };
+export type IncidentDecisionLink = { incidentId: string };
+export type SubsystemHealth = { name: string };
+export type SilentRegression = { id: string };
+export type PlatformMemorySnapshot = { timestamp: number };
+export type RepeatedMistake = { id: string };
+export type NarrativeQuery = { scope: string };
+export type NarrativeRequest = { type: string };
+export type ExecutiveNarrative = { text: string };
+export type TimelineEvent = { timestamp: number };
+export type SystemicRisk = { level: string };
+export type ImprovementOpportunity = { id: string };
+export type PlatformRiskReport = { risks: SystemicRisk[] };
+export type FeedbackSignal = { type: string };
+export type FeedbackRecommendation = { id: string };
+export type FeedbackAction = { type: string };
+export type FeedbackLoopState = Record<string, unknown>;
+export type PCALStatus = { enabled: boolean };

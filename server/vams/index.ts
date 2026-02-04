@@ -1,46 +1,36 @@
-/**
- * VAMS (Visual Asset Management System)
- * Multi-source image management with stock APIs and AI generation
- */
+// Stub - VAMS (Visual Asset Management System) disabled
+import { Router } from "express";
 
-// Types
-export * from "./types";
+export default Router();
+export const vamsRoutes = Router();
 
-// Providers
-export {
-  UnsplashProvider,
-  unsplashProvider,
-  PexelsProvider,
-  pexelsProvider,
-  PixabayProvider,
-  pixabayProvider,
-  getAvailableProviders,
-  getProvider,
-  getProviderStatus,
-} from "./providers";
+// Provider stubs
+export class UnsplashProvider {}
+export const unsplashProvider = new UnsplashProvider();
+export class PexelsProvider {}
+export const pexelsProvider = new PexelsProvider();
+export class PixabayProvider {}
+export const pixabayProvider = new PixabayProvider();
+export const getAvailableProviders = () => [];
+export const getProvider = () => null;
+export const getProviderStatus = () => ({ enabled: false });
 
-// Services
-export {
-  VamsSearchService,
-  vamsSearchService,
-  VamsIngestionService,
-  vamsIngestionService,
-  VamsGenerationService,
-  vamsGenerationService,
-} from "./services";
+// Service stubs
+export class VamsSearchService {}
+export const vamsSearchService = new VamsSearchService();
+export class VamsIngestionService {}
+export const vamsIngestionService = new VamsIngestionService();
+export class VamsGenerationService {}
+export const vamsGenerationService = new VamsGenerationService();
 
-// Hooks
-export {
-  enrichContentWithImages,
-  getContentHeroImage,
-  getContentCardImage,
-  getContentGalleryImages,
-  postGenerationImageHook,
-  contentNeedsImages,
-  getContentImages,
-  type ContentImageOptions,
-  type ContentImageResult,
-} from "./hooks";
+// Hook stubs
+export const enrichContentWithImages = async () => null;
+export const getContentHeroImage = async () => null;
+export const getContentCardImage = async () => null;
+export const getContentGalleryImages = async () => [];
+export const postGenerationImageHook = async () => null;
+export const contentNeedsImages = () => false;
+export const getContentImages = async () => [];
 
-// Routes
-export { default as vamsRoutes } from "./routes";
+export type ContentImageOptions = Record<string, unknown>;
+export type ContentImageResult = { url?: string };

@@ -1,114 +1,89 @@
-/**
- * Load Tiers (Stub)
- * System load management was simplified during cleanup.
- */
+// Stub - Load Tiers disabled
 
-export type LoadTier = "idle" | "low" | "medium" | "high" | "critical" | "green" | "yellow" | "red";
+// LoadTier is a string alias for compatibility with existing code
+export type LoadTier = "green" | "low" | "normal" | "high" | "critical" | "yellow" | "red";
 
-export interface LoadTierTransition {
-  fromTier: LoadTier;
-  toTier: LoadTier;
-  capacity: number;
-  timestamp: Date;
-}
-
-export interface LoadTierDeferral {
-  category: string;
-  tier: LoadTier;
-  reason: string;
-  taskId: string;
-  timestamp: Date;
+export interface LoadTierConfig {
+  name: string;
+  threshold: number;
+  multiplier: number;
 }
 
 export interface LoadTierState {
-  transitionCount: number;
-  deferredTaskCount: number;
-  lastTransitionAt: Date;
-}
-
-export interface LoadTierBehaviors {
-  deferLowPriority: boolean;
-  reduceBatchSize: boolean;
-  enableBackpressure: boolean;
-}
-
-export interface LoadTierManager {
-  getCurrentTier: () => LoadTier;
-  getLoadTier: () => LoadTier;
-  setTier: (tier: LoadTier) => void;
-  getMetrics: () => LoadTierMetrics;
+  current: LoadTier;
+  previous: LoadTier;
+  changedAt: Date;
 }
 
 export interface LoadTierMetrics {
   currentTier: LoadTier;
-  cpuUsage: number;
-  memoryUsage: number;
-  requestsPerSecond: number;
+  load: number;
+  timestamp: Date;
   tier: LoadTier;
   capacity: number;
-  thresholds: { greenThreshold: number; yellowThreshold: number };
-  behaviors: LoadTierBehaviors;
+  thresholds: Record<string, number>;
+  behaviors: Record<string, unknown>;
   state: LoadTierState;
-  recentTransitions: LoadTierTransition[];
-  recentDeferrals: LoadTierDeferral[];
+  recentTransitions: Array<{ from: LoadTier; to: LoadTier; at: Date }>;
 }
 
-export interface LoadTierThresholds {
-  idle: number;
-  low: number;
-  medium: number;
-  high: number;
-  greenThreshold?: number;
-  yellowThreshold?: number;
-}
-
-const defaultManager: LoadTierManager = {
-  getCurrentTier: () => "green",
-  getLoadTier: () => "green",
-  setTier: () => {},
-  getMetrics: () => ({
-    currentTier: "green",
-    cpuUsage: 10,
-    memoryUsage: 20,
-    requestsPerSecond: 5,
-    tier: "green",
-    capacity: 10,
-    thresholds: { greenThreshold: 50, yellowThreshold: 80 },
-    behaviors: {
-      deferLowPriority: false,
-      reduceBatchSize: false,
-      enableBackpressure: false,
-    },
-    state: {
-      transitionCount: 0,
-      deferredTaskCount: 0,
-      lastTransitionAt: new Date(),
-    },
-    recentTransitions: [],
-    recentDeferrals: [],
-  }),
+export const LOAD_TIERS: Record<string, LoadTierConfig> = {
+  green: { name: "green", threshold: 0, multiplier: 0.5 },
+  low: { name: "low", threshold: 10, multiplier: 0.75 },
+  normal: { name: "normal", threshold: 30, multiplier: 1 },
+  yellow: { name: "yellow", threshold: 50, multiplier: 1.25 },
+  high: { name: "high", threshold: 70, multiplier: 1.5 },
+  red: { name: "red", threshold: 85, multiplier: 1.75 },
+  critical: { name: "critical", threshold: 90, multiplier: 2 },
 };
+
+const defaultState: LoadTierState = { current: "green", previous: "green", changedAt: new Date() };
+
+class LoadTierManager {
+  getCurrentTier(): LoadTierConfig {
+    return LOAD_TIERS.green;
+  }
+  getLoadTier(): LoadTier {
+    return "green";
+  }
+  getThrottleDelay(): number {
+    return 0;
+  }
+  shouldThrottle(): boolean {
+    return false;
+  }
+  recordLoad(): void {}
+  getMetrics(): LoadTierMetrics {
+    return {
+      currentTier: "green",
+      load: 0,
+      timestamp: new Date(),
+      tier: "green",
+      capacity: 100,
+      thresholds: { green: 0, yellow: 50, red: 80 },
+      behaviors: {},
+      state: defaultState,
+      recentTransitions: [],
+    };
+  }
+}
+
+let instance: LoadTierManager | null = null;
 
 export function getLoadTierManager(): LoadTierManager {
-  return defaultManager;
+  if (!instance) instance = new LoadTierManager();
+  return instance;
 }
 
-export const LOAD_TIER_THRESHOLDS: LoadTierThresholds = {
-  idle: 0,
-  low: 25,
-  medium: 50,
-  high: 75,
-};
-
-export interface LoadTierConfig {
-  capacityProvider?: () => number;
-  greenThreshold?: number;
-  yellowThreshold?: number;
+// Alias for initLoadTierManager
+export function initLoadTierManager(_config?: unknown, _alerts?: unknown): LoadTierManager {
+  return getLoadTierManager();
 }
 
-export function initLoadTierManager(
-  config?: LoadTierConfig,
-  capacityProvider?: () => number
-): LoadTierManager {
-  return defaultManager;
+export function getCurrentTier(): LoadTierConfig {
+  return getLoadTierManager().getCurrentTier();
+}
+
+export function getThrottleDelay(): number {
+  return getLoadTierManager().getThrottleDelay();
 }

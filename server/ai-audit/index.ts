@@ -1,7 +1,6 @@
-/**
- * AI Output Audit Trail Module
- */
+// Stub - AI Audit module disabled
+import { Express } from "express";
 
-export { registerAiAuditRoutes } from "./routes";
-export * from "./service";
-export * from "./types";
+export function registerAiAuditRoutes(_app: Express): void {
+  // Disabled
+}

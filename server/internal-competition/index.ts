@@ -1,26 +1,40 @@
-/**
- * Internal Competition Detector Module
- *
- * FEATURE 9: Internal Competition (Cannibalization) Detector
- */
+// Stub - Internal Competition module disabled
+import { Express } from "express";
 
-export { registerInternalCompetitionRoutes } from "./routes";
-export {
-  analyzeCompetition,
-  getCachedAnalysis,
-  getCompetitionStats,
-  getHighPriorityPairs,
-  resolvePair,
-  createCluster,
-  getClusters,
-} from "./detector";
-export type {
-  CompetitionPair,
-  CompetitionAnalysis,
-  CompetitionCluster,
-  CompetitionStats,
-  CompetitionType,
-  CompetitionSeverity,
-  ResolutionStrategy,
-} from "./types";
-export { isInternalCompetitionEnabled, OVERLAP_WEIGHTS, SEVERITY_THRESHOLDS } from "./types";
+export function registerInternalCompetitionRoutes(_app: Express): void {
+  // Disabled
+}
+
+export const isInternalCompetitionEnabled = () => false;
+export const OVERLAP_WEIGHTS = {};
+export const SEVERITY_THRESHOLDS = {};
+
+export async function analyzeCompetition() {
+  return null;
+}
+export async function getCachedAnalysis() {
+  return null;
+}
+export async function getCompetitionStats() {
+  return { total: 0 };
+}
+export async function getHighPriorityPairs() {
+  return [];
+}
+export async function resolvePair() {
+  return { success: false };
+}
+export async function createCluster() {
+  return null;
+}
+export async function getClusters() {
+  return [];
+}
+
+export type CompetitionPair = { id1: string; id2: string };
+export type CompetitionAnalysis = { pairs: CompetitionPair[] };
+export type CompetitionCluster = { id: string };
+export type CompetitionStats = { total: number };
+export type CompetitionType = string;
+export type CompetitionSeverity = string;
+export type ResolutionStrategy = string;

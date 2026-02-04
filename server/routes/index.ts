@@ -7,7 +7,7 @@ import { registerLocalizationApiRoutes } from "./localization-api";
 import { registerAutomationApiRoutes } from "./automation-api";
 import { registerCmsApiRoutes } from "./cms-api";
 import { registerMetricsRoutes } from "./metrics-routes";
-import { registerMediaIntelligenceRoutes } from "../media-intelligence/routes";
+import { registerMediaIntelligenceRoutes } from "../media-intelligence";
 import { registerNewsletterRoutes } from "./newsletter-routes";
 import { registerSurveyRoutes } from "./survey-routes";
 import { registerGdprRoutes } from "./gdpr-routes";
