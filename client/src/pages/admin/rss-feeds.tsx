@@ -194,6 +194,41 @@ export default function RssFeedsPage() {
     },
   });
 
+  // Fetch all feeds mutation
+  const [fetchAllProgress, setFetchAllProgress] = useState({ current: 0, total: 0, isRunning: false });
+
+  const fetchAllFeeds = async () => {
+    const activeFeeds = feeds.filter(f => f.isActive);
+    if (activeFeeds.length === 0) {
+      toast({ title: "No active feeds", description: "Enable some feeds first.", variant: "destructive" });
+      return;
+    }
+
+    setFetchAllProgress({ current: 0, total: activeFeeds.length, isRunning: true });
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (let i = 0; i < activeFeeds.length; i++) {
+      const feed = activeFeeds[i];
+      setFetchAllProgress(prev => ({ ...prev, current: i + 1 }));
+
+      try {
+        await apiRequest("POST", `/api/rss-feeds/${feed.id}/fetch`);
+        successCount++;
+      } catch {
+        errorCount++;
+      }
+    }
+
+    setFetchAllProgress({ current: 0, total: 0, isRunning: false });
+    queryClient.invalidateQueries({ queryKey: ["/api/rss-feeds"] });
+
+    toast({
+      title: "Fetch complete",
+      description: `Fetched ${successCount} feeds successfully${errorCount > 0 ? `, ${errorCount} failed` : ""}.`,
+    });
+  };
+
   const handleFetchAndPreview = (feed: RssFeed) => {
     setSelectedFeed(feed);
     fetchItemsMutation.mutate(feed.id);
@@ -216,13 +251,24 @@ export default function RssFeedsPage() {
           </h1>
           <p className="text-muted-foreground">Manage RSS feeds for automatic content generation</p>
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Feed
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={fetchAllFeeds}
+            disabled={fetchAllProgress.isRunning || feeds.filter(f => f.isActive).length === 0}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${fetchAllProgress.isRunning ? "animate-spin" : ""}`} />
+            {fetchAllProgress.isRunning
+              ? `Fetching ${fetchAllProgress.current}/${fetchAllProgress.total}...`
+              : `Fetch All (${feeds.filter(f => f.isActive).length})`}
+          </Button>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Feed
+              </Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add RSS Feed</DialogTitle>
@@ -298,7 +344,8 @@ export default function RssFeedsPage() {
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
+          </Dialog>
+        </div>
       </div>
 
       {/* Stats Cards */}
