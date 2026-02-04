@@ -31,6 +31,7 @@ import {
   Bot,
   Cpu,
   Rss,
+  Shield,
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -104,10 +105,17 @@ const sidebarModules: NavModule[] = [
     ],
   },
   {
+    id: "gatekeeper",
+    title: "Gatekeeper",
+    icon: Shield,
+    defaultOpen: true,
+    items: [{ title: "Command Center", url: "/admin/gatekeeper/dashboard", icon: LayoutDashboard }],
+  },
+  {
     id: "octypo-engine",
     title: "Octypo Engine",
     icon: Bot,
-    defaultOpen: true,
+    defaultOpen: false,
     items: [
       { title: "Dashboard", url: "/admin/octypo/dashboard", icon: LayoutDashboard },
       { title: "Review Queue", url: "/admin/octypo/review-queue", icon: Eye },
