@@ -11,12 +11,7 @@ import { fileURLToPath } from "url";
 interface RssFeedSeed {
   name: string;
   url: string;
-  category:
-    | "travel_tips"
-    | "destination_news"
-    | "food_culture"
-    | "hotels_resorts"
-    | "events_festivals";
+  category: "attractions" | "hotels" | "food" | "transport" | "events" | "tips" | "news" | "shopping";
   destinationSlug: string | null; // null for global feeds
   language: string;
   region: string;
@@ -29,7 +24,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Hospitality Net - Global Hotel News",
     url: "https://hospitalitynet.org/news/global.xml",
-    category: "hotels_resorts",
+    category: "hotels",
     destinationSlug: null,
     language: "en",
     region: "global",
@@ -37,7 +32,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Skift - Travel Trends",
     url: "https://skift.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: null,
     language: "en",
     region: "global",
@@ -45,7 +40,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Breaking Travel News - Hotels",
     url: "https://feeds.feedburner.com/breakingtravelnews/news/hotel",
-    category: "hotels_resorts",
+    category: "hotels",
     destinationSlug: null,
     language: "en",
     region: "global",
@@ -57,7 +52,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "What's On Dubai",
     url: "https://whatson.ae/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "dubai",
     language: "en",
     region: "middle-east",
@@ -65,7 +60,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Dubai City Guide Blog",
     url: "https://blog.dubaicityguide.com/site/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "dubai",
     language: "en",
     region: "middle-east",
@@ -73,7 +68,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Dubai.com Blog",
     url: "https://www.dubai.com/blog/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "dubai",
     language: "en",
     region: "middle-east",
@@ -85,7 +80,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Abu Dhabi Travel Blog",
     url: "https://www.abudhabi.com/blog/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "abu-dhabi",
     language: "en",
     region: "middle-east",
@@ -93,7 +88,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Abu Dhabi City Guide",
     url: "https://blog.abudhabicityguide.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "abu-dhabi",
     language: "en",
     region: "middle-east",
@@ -101,7 +96,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Arabian Notes",
     url: "https://arabiannotes.com/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "abu-dhabi",
     language: "en",
     region: "middle-east",
@@ -113,7 +108,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "RAKTDA Official Blog",
     url: "https://raktda.com/blog/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "ras-al-khaimah",
     language: "en",
     region: "middle-east",
@@ -121,7 +116,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Hotelier Middle East",
     url: "https://www.hoteliermiddleeast.com/rss",
-    category: "hotels_resorts",
+    category: "hotels",
     destinationSlug: "ras-al-khaimah",
     language: "en",
     region: "middle-east",
@@ -129,7 +124,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "TravelMole Middle East",
     url: "https://www.travelmole.com/rss",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "ras-al-khaimah",
     language: "en",
     region: "middle-east",
@@ -141,7 +136,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Time Out London",
     url: "https://www.timeout.com/london/blog/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "london",
     language: "en",
     region: "europe",
@@ -149,7 +144,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "A Lady in London",
     url: "https://www.aladyinlondon.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "london",
     language: "en",
     region: "europe",
@@ -157,7 +152,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Sunny in London",
     url: "https://sunnyinlondon.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "london",
     language: "en",
     region: "europe",
@@ -169,7 +164,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Paris Perfect Blog",
     url: "https://www.parisperfect.com/blog/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "paris",
     language: "en",
     region: "europe",
@@ -177,7 +172,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Secrets of Paris",
     url: "https://www.secretsofparis.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "paris",
     language: "en",
     region: "europe",
@@ -185,7 +180,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "HiP Paris",
     url: "https://hipparis.com/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "paris",
     language: "en",
     region: "europe",
@@ -197,7 +192,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Barcelona Life",
     url: "https://www.barcelona-life.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "barcelona",
     language: "en",
     region: "europe",
@@ -205,7 +200,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Barcelona Navigator",
     url: "https://www.barcelonanavigator.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "barcelona",
     language: "en",
     region: "europe",
@@ -213,7 +208,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Spain by Hanne",
     url: "https://spainbyhanne.dk/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "barcelona",
     language: "en",
     region: "europe",
@@ -225,7 +220,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Romeing",
     url: "https://www.romeing.it/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "rome",
     language: "en",
     region: "europe",
@@ -233,7 +228,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Mama Loves Rome",
     url: "https://mamalovesrome.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "rome",
     language: "en",
     region: "europe",
@@ -241,7 +236,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Roman Vacations",
     url: "https://www.roman-vacations.com/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "rome",
     language: "en",
     region: "europe",
@@ -253,7 +248,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Your Little Black Book Amsterdam",
     url: "https://www.yourlittleblackbook.me/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "amsterdam",
     language: "en",
     region: "europe",
@@ -261,7 +256,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Amsterdam Foodie",
     url: "https://www.amsterdamfoodie.nl/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "amsterdam",
     language: "en",
     region: "europe",
@@ -269,7 +264,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Amsterdamian",
     url: "https://amsterdamian.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "amsterdam",
     language: "en",
     region: "europe",
@@ -281,7 +276,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Tokyo Cheapo",
     url: "https://tokyocheapo.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "tokyo",
     language: "en",
     region: "asia",
@@ -289,7 +284,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Time Out Tokyo",
     url: "https://www.timeout.com/tokyo/blog/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "tokyo",
     language: "en",
     region: "asia",
@@ -297,7 +292,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Nippon.com Travel",
     url: "https://www.nippon.com/en/rss_list/",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "tokyo",
     language: "en",
     region: "asia",
@@ -309,7 +304,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "I Wandered Singapore",
     url: "https://iwandered.net/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "singapore",
     language: "en",
     region: "asia",
@@ -317,7 +312,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "The Occasional Traveller",
     url: "https://theoccasionaltraveller.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "singapore",
     language: "en",
     region: "asia",
@@ -325,7 +320,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Alvinology Singapore",
     url: "https://alvinology.com/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "singapore",
     language: "en",
     region: "asia",
@@ -337,7 +332,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "TAT Newsroom Thailand",
     url: "https://www.tatnews.org/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "bangkok",
     language: "en",
     region: "asia",
@@ -345,7 +340,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Bangkok Post Life",
     url: "https://www.bangkokpost.com/rss/data/life.xml",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "bangkok",
     language: "en",
     region: "asia",
@@ -353,7 +348,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Thaizer Blog",
     url: "https://www.thaizer.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "bangkok",
     language: "en",
     region: "asia",
@@ -365,7 +360,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Sassy Hong Kong",
     url: "https://www.sassyhongkong.com/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "hong-kong",
     language: "en",
     region: "asia",
@@ -373,7 +368,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Hello Hong Kong",
     url: "https://www.hellohongkong.com.hk/blog/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "hong-kong",
     language: "en",
     region: "asia",
@@ -381,7 +376,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "The HK Hub Travel",
     url: "https://thehkhub.com/hub/travel/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "hong-kong",
     language: "en",
     region: "asia",
@@ -393,7 +388,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Time Out New York",
     url: "https://www.timeout.com/newyork/blog/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "new-york",
     language: "en",
     region: "north-america",
@@ -401,7 +396,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "I Love NY Blog",
     url: "https://www.iloveny.com/blog/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "new-york",
     language: "en",
     region: "north-america",
@@ -409,7 +404,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "City Guide NY",
     url: "https://www.cityguideny.com/articles/tourism-news",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "new-york",
     language: "en",
     region: "north-america",
@@ -421,7 +416,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Las Vegas Weekly",
     url: "https://lasvegasweekly.com/feeds/headlines",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "las-vegas",
     language: "en",
     region: "north-america",
@@ -429,7 +424,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "VegasNews.com",
     url: "https://www.vegasnews.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "las-vegas",
     language: "en",
     region: "north-america",
@@ -437,7 +432,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Las Vegas Advisor",
     url: "https://www.lasvegasadvisor.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "las-vegas",
     language: "en",
     region: "north-america",
@@ -449,7 +444,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Eater LA",
     url: "https://la.eater.com/rss/index.xml",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "los-angeles",
     language: "en",
     region: "north-america",
@@ -457,7 +452,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "We Like LA",
     url: "https://www.welikela.com/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "los-angeles",
     language: "en",
     region: "north-america",
@@ -465,7 +460,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Time Out LA",
     url: "https://www.timeout.com/los-angeles/blog/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "los-angeles",
     language: "en",
     region: "north-america",
@@ -477,7 +472,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Eater Miami",
     url: "https://miami.eater.com/rss/index.xml",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "miami",
     language: "en",
     region: "north-america",
@@ -485,7 +480,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Miami Art Scene",
     url: "https://www.themiamiartscene.com/feed",
-    category: "events_festivals",
+    category: "events",
     destinationSlug: "miami",
     language: "en",
     region: "north-america",
@@ -493,7 +488,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Miami Luxury Homes",
     url: "https://miamiluxuryhomes.com/feed",
-    category: "hotels_resorts",
+    category: "hotels",
     destinationSlug: "miami",
     language: "en",
     region: "north-america",
@@ -505,7 +500,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Inside Out In Istanbul",
     url: "https://www.insideoutinistanbul.com/feed",
-    category: "travel_tips",
+    category: "tips",
     destinationSlug: "istanbul",
     language: "en",
     region: "europe",
@@ -513,7 +508,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Istanbul Clues",
     url: "https://istanbulclues.com/feed",
-    category: "destination_news",
+    category: "news",
     destinationSlug: "istanbul",
     language: "en",
     region: "europe",
@@ -521,7 +516,7 @@ const RSS_FEEDS: RssFeedSeed[] = [
   {
     name: "Turkey's For Life",
     url: "https://www.turkeysforlife.com/feed",
-    category: "food_culture",
+    category: "food",
     destinationSlug: "istanbul",
     language: "en",
     region: "europe",
