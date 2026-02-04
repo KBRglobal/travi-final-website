@@ -1,4 +1,4 @@
-// Stub - deployment safety disabled
+// Stub - Deployment Safety disabled
 import { Router } from "express";
 
 export const deploymentSafetyRoutes = Router();
