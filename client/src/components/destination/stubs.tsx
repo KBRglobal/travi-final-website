@@ -1,38 +1,13 @@
-/**
- * Destination Component Stubs
- * Placeholder components for future implementation
- */
-
-export function EditorialAttractions(_props: any) {
-  return null;
-}
-export function FeaturedAttractions(_props: any) {
-  return null;
-}
-export function TopPOIs(_props: any) {
-  return null;
-}
-export function EditorialNews(_props: any) {
-  return null;
-}
-export function UpcomingEvents(_props: any) {
-  return null;
-}
-export function UpcomingHolidays(_props: any) {
-  return null;
-}
-export function SafetyBanner(_props: any) {
-  return null;
-}
-export function QuickInfoRail(_props: any) {
-  return null;
-}
-export function GettingAround(_props: any) {
-  return null;
-}
-export function DestinationFAQ(_props: any) {
-  return null;
-}
-export function DestinationCTA(_props: any) {
-  return null;
-}
+// Stub components - placeholders for future features
+// Accept any props to avoid TypeScript errors
+export const EditorialAttractions = (_props: any) => null;
+export const FeaturedAttractions = (_props: any) => null;
+export const TopPOIs = (_props: any) => null;
+export const EditorialNews = (_props: any) => null;
+export const UpcomingEvents = (_props: any) => null;
+export const UpcomingHolidays = (_props: any) => null;
+export const SafetyBanner = (_props: any) => null;
+export const QuickInfoRail = (_props: any) => null;
+export const GettingAround = (_props: any) => null;
+export const DestinationFAQ = (_props: any) => null;
+export const DestinationCTA = (_props: any) => null;

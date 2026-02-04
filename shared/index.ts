@@ -6,4 +6,3 @@
  */
 
 export * from "./invariants";
-export * from "./magic-types";

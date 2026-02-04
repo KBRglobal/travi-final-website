@@ -33,8 +33,6 @@ export type {
   GeneratedTransportContent,
   GeneratedEventContent,
   GeneratedItineraryContent,
-  SeoScoreResult,
-  SeoImprovementResult,
 } from "./types";
 
 // ============================================================================
@@ -76,10 +74,7 @@ export {
   generateContentImages,
 } from "./image-generation";
 
-// ============================================================================
-// SEO Tools Exports
-// ============================================================================
-export { analyzeSeoScore, improveContentForSeo } from "./seo-tools";
+// SEO tools removed - unused
 
 // ============================================================================
 // Research Analyzer Exports (Octopus Model) - DELETED
