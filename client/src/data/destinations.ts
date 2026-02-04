@@ -209,6 +209,7 @@ const DESTINATION_MOODS: Record<DestinationId, DestinationMood> = {
   "rome": { primaryColor: "hsl(30 60% 45%)", gradientFrom: "rgba(160, 100, 60, 0.4)", gradientTo: "rgba(80, 50, 40, 0.6)", vibe: "cultural", tagline: "Eternal City, Timeless Beauty" },
   "singapore": { primaryColor: "hsl(160 60% 45%)", gradientFrom: "rgba(50, 150, 120, 0.4)", gradientTo: "rgba(30, 60, 80, 0.6)", vibe: "modern", tagline: "The Garden City" },
   "tokyo": { primaryColor: "hsl(350 80% 60%)", gradientFrom: "rgba(200, 60, 100, 0.4)", gradientTo: "rgba(40, 30, 80, 0.6)", vibe: "modern", tagline: "Tradition Meets Tomorrow" },
+  "ras-al-khaimah": { primaryColor: "hsl(200 60% 50%)", gradientFrom: "rgba(50, 150, 180, 0.4)", gradientTo: "rgba(100, 80, 60, 0.6)", vibe: "adventure", tagline: "Nature's Hidden Gem" },
 };
 
 // Create destination data factory
@@ -327,6 +328,9 @@ const baseDestinationData: Record<DestinationId, DestinationPageData> = {
   ),
   "tokyo": createDestinationData(
     "tokyo", "Tokyo", "Japan", "JPY (Yen)", "Japanese, English"
+  ),
+  "ras-al-khaimah": createDestinationData(
+    "ras-al-khaimah", "Ras Al Khaimah", "United Arab Emirates", "AED (Dirham)", "Arabic, English"
   ),
 };
 

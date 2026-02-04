@@ -37,7 +37,8 @@ const REGIONS = {
   all: {
     name: "All",
     nameHe: "הכל",
-    destinations: []
+    destinations: [] as string[],
+    image: "",
   },
   uae: {
     name: "UAE",
@@ -725,7 +726,7 @@ export default function PublicNews() {
       <SEOHead
         title="Travel News & Stories | TRAVI"
         description="Stay updated with the latest travel news, destination guides, hotel openings, and insider tips from around the world."
-        path="/news"
+        canonicalPath="/news"
       />
 
       <div className="min-h-screen bg-gray-50">
