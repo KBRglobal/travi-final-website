@@ -1,6 +1,9 @@
 /**
  * Destination Context Hook
- * Determines current destination from URL and provides Dubai-specific navigation logic
+ * Determines current destination from URL and provides destination-aware navigation logic
+ *
+ * Supports destination-specific content (e.g., Dubai real estate, districts)
+ * while maintaining a destination-agnostic architecture.
  */
 
 import { useLocation } from "wouter";
@@ -8,14 +11,24 @@ import { useMemo } from "react";
 
 export interface DestinationContext {
   currentDestination: string | null;
-  isDubai: boolean;
-  isDubaiOnlyRoute: boolean;
-  isDestinationPage: boolean;
   destinationSlug: string | null;
+  isDestinationPage: boolean;
+  /** True if current route has destination-specific content */
+  hasDestinationContent: boolean;
+  /** The destination that owns the current route (if destination-specific) */
+  routeDestination: string | null;
+  /** @deprecated Use destinationSlug === 'dubai' instead */
+  isDubai: boolean;
+  /** @deprecated Use isDestinationSpecificRoute() instead */
+  isDubaiOnlyRoute: boolean;
 }
 
-// List of Dubai-specific routes that should only be accessible from Dubai context
-export const DUBAI_ONLY_ROUTES = [
+/**
+ * Destination-specific routes mapping
+ * Routes that belong to a specific destination and show that destination's sub-nav
+ */
+export const DESTINATION_SPECIFIC_ROUTES: Record<string, string[]> = {
+  dubai: [
   // Districts
   "/districts",
   // Real Estate
@@ -82,15 +95,31 @@ export const DUBAI_ONLY_ROUTES = [
   "/compare-villa-vs-apartment",
   "/compare-studio-vs-1bed",
   // Shopping (Dubai only)
-  "/shopping",
-];
+    "/shopping",
+  ],
+  // Add other destinations here as they get specific content:
+  // paris: ["/paris-arrondissements", ...],
+  // tokyo: ["/tokyo-districts", ...],
+};
 
-// Routes that indicate we're explicitly in Dubai context (NOT including Dubai-only routes)
-// These are the "entry points" to Dubai content
-const DUBAI_CONTEXT_ROUTES = [
-  "/destination/dubai",
-  "/destinations/dubai", // Also support plural route format
-];
+// Legacy export for backward compatibility
+export const DUBAI_ONLY_ROUTES = DESTINATION_SPECIFIC_ROUTES.dubai || [];
+
+/**
+ * Find which destination owns a given route
+ */
+function getRouteDestination(path: string): string | null {
+  const normalizedPath = path.toLowerCase();
+  for (const [destination, routes] of Object.entries(DESTINATION_SPECIFIC_ROUTES)) {
+    if (routes.some(route =>
+      normalizedPath === route.toLowerCase() ||
+      normalizedPath.startsWith(route.toLowerCase() + "/")
+    )) {
+      return destination;
+    }
+  }
+  return null;
+}
 
 // Map destination slugs to display names
 export const DESTINATION_NAMES: Record<string, string> = {
@@ -123,50 +152,65 @@ export function useDestinationContext(): DestinationContext {
     const destinationMatch = path.match(/\/destinations?\/([^\/]+)/);
     const destinationSlug = destinationMatch ? destinationMatch[1] : null;
 
-    // Check if we're on a Dubai-only route
-    const onDubaiOnlyRoute = DUBAI_ONLY_ROUTES.some(
-      route => path === route.toLowerCase() || path.startsWith(route.toLowerCase() + "/")
-    );
+    // Check if this route belongs to a specific destination
+    const routeDestination = getRouteDestination(path);
+    const hasDestinationContent = routeDestination !== null;
 
-    // Check if we're explicitly in Dubai context (NOT just on a Dubai-only route)
-    // Dubai context means: destination/dubai page OR any Dubai-only route (since those are Dubai content)
-    const isDubai =
-      destinationSlug === "dubai" ||
-      DUBAI_CONTEXT_ROUTES.some(route => path.startsWith(route.toLowerCase())) ||
-      onDubaiOnlyRoute; // Dubai-only routes ARE Dubai content, so show the sub-nav
-
-    // Get current destination name
+    // Determine current destination (from URL or from route ownership)
     let currentDestination: string | null = null;
     if (destinationSlug && DESTINATION_NAMES[destinationSlug]) {
       currentDestination = DESTINATION_NAMES[destinationSlug];
-    } else if (isDubai) {
-      currentDestination = "Dubai";
+    } else if (routeDestination && DESTINATION_NAMES[routeDestination]) {
+      currentDestination = DESTINATION_NAMES[routeDestination];
     }
+
+    // Legacy: isDubai for backward compatibility
+    const isDubai = destinationSlug === "dubai" || routeDestination === "dubai";
 
     return {
       currentDestination,
-      isDubai,
-      isDubaiOnlyRoute: onDubaiOnlyRoute,
-      isDestinationPage: !!destinationSlug,
       destinationSlug,
+      isDestinationPage: !!destinationSlug,
+      hasDestinationContent,
+      routeDestination,
+      // Deprecated - kept for backward compatibility
+      isDubai,
+      isDubaiOnlyRoute: routeDestination === "dubai",
     };
   }, [location]);
 }
 
 /**
- * Check if a route is Dubai-only
+ * Check if a route is destination-specific (belongs to a particular destination)
  */
-export function isDubaiOnlyRoute(path: string): boolean {
-  const normalizedPath = path.toLowerCase();
-  return DUBAI_ONLY_ROUTES.some(
-    route =>
-      normalizedPath === route.toLowerCase() || normalizedPath.startsWith(route.toLowerCase() + "/")
-  );
+export function isDestinationSpecificRoute(path: string): boolean {
+  return getRouteDestination(path) !== null;
 }
 
 /**
- * Get the Dubai destination redirect path
+ * Get which destination a route belongs to
+ */
+export function getRouteDestinationSlug(path: string): string | null {
+  return getRouteDestination(path);
+}
+
+/**
+ * @deprecated Use isDestinationSpecificRoute() or getRouteDestinationSlug() instead
+ */
+export function isDubaiOnlyRoute(path: string): boolean {
+  return getRouteDestination(path) === "dubai";
+}
+
+/**
+ * Get the destination page path for a given slug
+ */
+export function getDestinationPath(slug: string): string {
+  return `/destinations/${slug}`;
+}
+
+/**
+ * @deprecated Use getDestinationPath('dubai') instead
  */
 export function getDubaiRedirectPath(): string {
-  return "/destinations/dubai";
+  return getDestinationPath("dubai");
 }

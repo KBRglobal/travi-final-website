@@ -42,7 +42,7 @@ export default function Settings() {
   });
 
   const [formData, setFormData] = useState<SettingsData>({
-    site: { siteName: "Dubai Travel Guide", siteUrl: "https://dubaitravelguide.com", defaultLanguage: "English" },
+    site: { siteName: "Travi - Travel Guide", siteUrl: "https://travi.guide", defaultLanguage: "English" },
     api: { gygAffiliateId: "", bookingAffiliateId: "" },
     contents: { autoSlug: true, autoSave: true, aiSuggestions: true },
     notifications: { emailNotifications: false, browserNotifications: false },
