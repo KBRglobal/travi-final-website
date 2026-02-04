@@ -42,7 +42,7 @@ export class RealAutopilot {
       this.state = {
         mode: existingState.mode as AutopilotMode,
         config: (existingState.config as AutopilotConfig) || DEFAULT_AUTOPILOT_CONFIG,
-        stats: (existingState.stats as AutopilotStats) || {
+        stats: (existingState.stats as unknown as AutopilotStats) || {
           totalTasksCreated: 0,
           totalTasksCompleted: 0,
           totalContentGenerated: 0,
@@ -196,7 +196,7 @@ export class RealAutopilot {
         config,
         scheduledFor: options?.scheduledFor,
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      })
+      } as any)
       .returning();
 
     // Update stats

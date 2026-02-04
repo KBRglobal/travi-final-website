@@ -5,11 +5,13 @@
 export interface HealthTracker {
   isHealthy: () => boolean;
   getStatus: () => any;
+  getMetricsSnapshot: () => Record<string, any>;
 }
 
 export function getHealthTracker(): HealthTracker {
   return {
     isHealthy: () => true,
-    getStatus: () => ({ status: 'healthy' }),
+    getStatus: () => ({ status: "healthy" }),
+    getMetricsSnapshot: () => ({}),
   };
 }

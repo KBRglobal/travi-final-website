@@ -76,9 +76,12 @@ router.post("/generate", async (req: Request, res: Response) => {
       });
     }
 
-    const attractionData: AttractionData = {
+    const attractionData = {
       id: parseInt(attraction[0].id, 10),
+      name: attraction[0].title,
       title: attraction[0].title,
+      slug: attraction[0].slug || "",
+      destination: attraction[0].cityName || "",
       cityName: attraction[0].cityName,
       venueName: attraction[0].venueName || undefined,
       duration: attraction[0].duration || undefined,
@@ -88,7 +91,7 @@ router.post("/generate", async (req: Request, res: Response) => {
       tiqetsDescription: attraction[0].tiqetsDescription || undefined,
       tiqetsHighlights: (attraction[0].tiqetsHighlights as string[]) || [],
       priceFrom: attraction[0].priceUsd ? parseFloat(attraction[0].priceUsd) : undefined,
-    };
+    } as any;
 
     const request: PilotGenerationRequest = {
       entityType,

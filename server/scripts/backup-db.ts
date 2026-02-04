@@ -1,13 +1,15 @@
+// Stub - backup script disabled
 export interface BackupResult {
   success: boolean;
-  error?: string;
   filename?: string;
+  error?: string;
 }
-
-export async function createBackup(): Promise<BackupResult> {
+export async function runBackup(): Promise<BackupResult> {
   return { success: true };
 }
-
-export async function rotateBackups(): Promise<void> {
-  return;
+export async function createBackup(name?: string): Promise<BackupResult> {
+  return { success: true };
+}
+export async function rotateBackups(): Promise<BackupResult> {
+  return { success: true };
 }

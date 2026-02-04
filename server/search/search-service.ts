@@ -1,15 +1,15 @@
 /**
  * Search Service
- * 
+ *
  * Provides search with GUARANTEED non-empty results
  * Uses deterministic fallback when no results match
- * 
+ *
  * SEARCH INTELLIGENCE FEATURES:
  * - Query expansion with synonyms and city aliases
  * - Ranking signals: popularity, recency, entity type weighting
  * - Telemetry tracking for observability
  * - Intent-aware ranking via unified cognitive layer
- * 
+ *
  * SEARCH QUALITY GUARDRAILS (Phase 14):
  * - Query normalization (lowercase, trim, special chars)
  * - Typo-tolerant fallback via spell-checker
@@ -18,13 +18,13 @@
  * - Zero result rate tracking with warning logs (>20%)
  */
 
-import { 
-  searchIndex, 
-  searchAll, 
-  getPopularDestinations, 
+import {
+  searchIndex,
+  searchAll,
+  getPopularDestinations,
   getRecentArticles,
   getPopularSearchSuggestions,
-  type SearchResult 
+  type SearchResult,
 } from "./search-index";
 import { queryExpander, expandQuery } from "./query-expander";
 import { queryProcessor } from "./query-processor";
@@ -34,27 +34,27 @@ import { searchTelemetry } from "./search-telemetry";
 import { getEntityTypeFrequencies } from "../session/intent-memory";
 
 type IntentEntityType = any;
-import { 
-  type UnifiedIntentType, 
+import {
+  type UnifiedIntentType,
   type IntentSignal,
   INTENT_ENTITY_BOOSTS,
 } from "../../shared/intent-schema";
-import { 
-  syncSearchIntentToChat, 
+import {
+  syncSearchIntentToChat,
   getIntentBoostForEntityType,
-  getDominantUnifiedIntent 
+  getDominantUnifiedIntent,
 } from "../cognitive/unified-layer";
 import { recordLoopEntry, recordLoopStep } from "../analytics";
 
 /**
  * Fallback stage tracking for debugging and metrics
  */
-export type FallbackStage = 
-  | "exact_match"      // Direct query match found
-  | "fuzzy_match"      // Spell-corrected query found results  
-  | "synonym_match"    // Synonym-expanded query found results
+export type FallbackStage =
+  | "exact_match" // Direct query match found
+  | "fuzzy_match" // Spell-corrected query found results
+  | "synonym_match" // Synonym-expanded query found results
   | "popular_fallback" // No matches, showing popular content
-  | "none";            // Direct match, no fallback needed
+  | "none"; // Direct match, no fallback needed
 
 export interface PublicSearchResponse {
   results: SearchResult[];
@@ -115,23 +115,23 @@ const RECENCY_PRIME_DAYS = 7;
  */
 function calculateRecencyBoost(publishedAt: Date | null | undefined): number {
   if (!publishedAt) return 1.0;
-  
+
   const now = Date.now();
   const publishedTime = new Date(publishedAt).getTime();
   const daysSincePublished = (now - publishedTime) / (1000 * 60 * 60 * 24);
-  
+
   if (daysSincePublished <= RECENCY_PRIME_DAYS) {
     return RECENCY_MAX_BOOST;
   }
-  
+
   if (daysSincePublished >= RECENCY_DECAY_DAYS) {
     return 1.0;
   }
-  
+
   const decayRange = RECENCY_DECAY_DAYS - RECENCY_PRIME_DAYS;
   const daysIntoDecay = daysSincePublished - RECENCY_PRIME_DAYS;
-  const decayFactor = 1 - (daysIntoDecay / decayRange);
-  
+  const decayFactor = 1 - daysIntoDecay / decayRange;
+
   return 1.0 + (RECENCY_MAX_BOOST - 1.0) * decayFactor;
 }
 
@@ -141,7 +141,7 @@ function calculateRecencyBoost(publishedAt: Date | null | undefined): number {
  */
 function calculatePopularityBoost(viewCount: number | null | undefined): number {
   if (!viewCount || viewCount <= 0) return 1.0;
-  
+
   if (viewCount >= 10000) return 1.25;
   if (viewCount >= 5000) return 1.2;
   if (viewCount >= 1000) return 1.15;
@@ -160,7 +160,7 @@ function calculateIntentMemoryBoost(
   entityTypeFrequencies: Map<IntentEntityType, number>
 ): number {
   const frequency = entityTypeFrequencies.get(resultType as IntentEntityType) || 0;
-  
+
   if (frequency === 0) return 1.0;
   if (frequency >= 5) return 1.2;
   if (frequency >= 3) return 1.15;
@@ -170,7 +170,7 @@ function calculateIntentMemoryBoost(
 
 /**
  * Calculate combined ranking score for a search result
- * 
+ *
  * @param result - The search result to score
  * @param queryTerms - Normalized query terms for relevance matching
  * @param entityTypeFrequencies - Map of entity type to view frequency for intent memory boost
@@ -178,7 +178,7 @@ function calculateIntentMemoryBoost(
  * @returns Adjusted score combining multiple signals
  */
 function calculateRankingScore(
-  result: SearchResult, 
+  result: SearchResult,
   queryTerms: string[],
   entityTypeFrequencies?: Map<IntentEntityType, number>,
   unifiedIntent?: UnifiedIntentType | null
@@ -228,25 +228,21 @@ function calculateRankingScore(
  * Now includes unified intent from cognitive layer
  */
 function applyRankingSignals(
-  results: SearchResult[], 
+  results: SearchResult[],
   query: string,
   sessionId?: string,
   explicitIntent?: UnifiedIntentType
 ): SearchResult[] {
   const queryTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
-  
-  const entityTypeFrequencies = sessionId 
-    ? getEntityTypeFrequencies(sessionId) 
-    : undefined;
-  
+
+  const entityTypeFrequencies = sessionId ? getEntityTypeFrequencies(sessionId) : undefined;
+
   // Get unified intent from cognitive layer or use explicit intent
-  const unifiedIntent = explicitIntent || (sessionId 
-    ? getDominantUnifiedIntent(sessionId) 
-    : null);
-  
+  const unifiedIntent = explicitIntent || (sessionId ? getDominantUnifiedIntent(sessionId) : null);
+
   const rankedResults = results.map(result => ({
     ...result,
-    score: calculateRankingScore(result, queryTerms, entityTypeFrequencies, unifiedIntent),
+    score: calculateRankingScore(result, queryTerms, entityTypeFrequencies as any, unifiedIntent),
   }));
 
   return rankedResults.sort((a, b) => b.score - a.score);
@@ -255,10 +251,10 @@ function applyRankingSignals(
 /**
  * Apply intent-based boost to search results
  * Used by chat to get intent-aware results from recent chat intents
- * 
+ *
  * If recent chat intent is 'compare', boost comparison-friendly entities (hotels, destinations)
  * If recent chat intent is 'plan', boost itinerary-friendly entities (destinations, attractions, hotels)
- * 
+ *
  * @param results - Raw search results to boost
  * @param recentIntents - Recent intent signals from chat/search
  * @returns Boosted and re-sorted results
@@ -297,27 +293,27 @@ export function applyIntentBoost(
  * Based on spell correction and popular search terms
  */
 function generateSuggestions(
-  query: string, 
+  query: string,
   spellResult: { corrected: string; wasChanged: boolean; suggestions?: string[] },
   popularSuggestions: string[] = []
 ): string[] {
   const suggestions: string[] = [];
-  
+
   // Add spell correction if different
   if (spellResult.wasChanged && spellResult.corrected !== query.toLowerCase()) {
     suggestions.push(spellResult.corrected);
   }
-  
+
   // Add spell checker suggestions
   if (spellResult.suggestions) {
     suggestions.push(...spellResult.suggestions.slice(0, 2));
   }
-  
+
   // Add popular suggestions
   if (popularSuggestions.length > 0) {
     suggestions.push(...popularSuggestions.slice(0, 3));
   }
-  
+
   // Dedupe and limit
   return [...new Set(suggestions)].slice(0, 5);
 }
@@ -353,20 +349,20 @@ function normalizeQuery(query: string): string {
   return query
     .trim()
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ') // Keep letters, numbers, spaces
-    .replace(/\s+/g, ' ')
+    .replace(/[^\p{L}\p{N}\s]/gu, " ") // Keep letters, numbers, spaces
+    .replace(/\s+/g, " ")
     .trim();
 }
 
 /**
  * Main public search function with SEARCH QUALITY GUARDRAILS
- * 
+ *
  * FALLBACK CHAIN (deterministic, typo-tolerant):
  * 1. Exact match - Direct query search
  * 2. Fuzzy match - Spell-corrected query search
  * 3. Synonym match - Synonym-expanded query search
  * 4. Popular fallback - Show popular destinations/articles
- * 
+ *
  * NEVER returns empty results - always provides usable content
  * ALWAYS returns structured response with suggestions and message
  */
@@ -376,25 +372,25 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   const trimmedQuery = query?.trim() || "";
 
   // Record search loop entry for growth metrics
-  const entryPointType = sessionId ? 'session' : 'api';
-  recordLoopEntry('search', entryPointType);
+  const entryPointType = sessionId ? "session" : "api";
+  recordLoopEntry("search", { source: entryPointType } as any);
 
   // Detect intent from query and sync to cognitive layer
   let detectedIntent: UnifiedIntentType | null = null;
   if (trimmedQuery && sessionId) {
-    const intentSignal = syncSearchIntentToChat(sessionId, trimmedQuery);
-    detectedIntent = intentSignal?.type || null;
+    syncSearchIntentToChat(trimmedQuery, "search" as UnifiedIntentType);
+    detectedIntent = getDominantUnifiedIntent(sessionId);
   }
-  
+
   const activeIntent = explicitIntent || detectedIntent;
 
   // === EMPTY QUERY: Return popular content ===
   if (!trimmedQuery) {
     const [fallbackResults, popularSuggestions] = await Promise.all([
       getFallbackResults(limit),
-      getPopularSearchSuggestions(5)
+      getPopularSearchSuggestions(5),
     ]);
-    
+
     searchTelemetry.track({
       query: "",
       resultCount: fallbackResults.length,
@@ -447,9 +443,14 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   // Check if exact match found
   if (allResults.length > 0) {
     const totalBeforePagination = allResults.length;
-    allResults = applyRankingSignals(allResults, trimmedQuery, sessionId, activeIntent || undefined);
+    allResults = applyRankingSignals(
+      allResults,
+      trimmedQuery,
+      sessionId,
+      activeIntent || undefined
+    );
     const paginatedResults = allResults.slice(0, limit);
-    recordLoopStep('search', 'content_discovery');
+    recordLoopStep("search", 1, "content_discovery");
 
     searchTelemetry.track({
       query: trimmedQuery,
@@ -478,7 +479,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
 
   // === STEP 2: FUZZY MATCH (Spell Correction) ===
   const spellResult = await spellChecker.check(trimmedQuery);
-  
+
   if (spellResult.wasChanged && spellResult.confidence >= 0.6) {
     const fuzzyResults = await searchAll({
       query: spellResult.corrected,
@@ -487,10 +488,15 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
     });
 
     if (fuzzyResults.length > 0) {
-      let rankedResults = applyRankingSignals(fuzzyResults, spellResult.corrected, sessionId, activeIntent || undefined);
+      let rankedResults = applyRankingSignals(
+        fuzzyResults,
+        spellResult.corrected,
+        sessionId,
+        activeIntent || undefined
+      );
       const totalFuzzy = rankedResults.length;
       const paginatedFuzzy = rankedResults.slice(0, limit);
-      recordLoopStep('search', 'content_discovery');
+      recordLoopStep("search", 2, "content_discovery");
 
       searchTelemetry.track({
         query: trimmedQuery,
@@ -506,7 +512,11 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
         fallbackStage: "fuzzy_match",
         query: trimmedQuery,
         total: totalFuzzy, // Total BEFORE pagination
-        suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
+        suggestions: generateSuggestions(
+          trimmedQuery,
+          spellResult,
+          await getPopularSearchSuggestions(3)
+        ),
         message: generateFallbackMessage("fuzzy_match", trimmedQuery, spellResult.corrected),
         expansion: {
           original: expansion.original,
@@ -526,7 +536,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
 
   // === STEP 3: SYNONYM MATCH ===
   const synonymExpansion = synonymExpander.expand(processed.tokens, processed.language);
-  
+
   if (synonymExpansion.expanded.length > processed.tokens.length) {
     for (const synonymTerm of synonymExpansion.expanded) {
       const synonymResults = await searchAll({
@@ -544,10 +554,15 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
     }
 
     if (allResults.length > 0) {
-      allResults = applyRankingSignals(allResults, trimmedQuery, sessionId, activeIntent || undefined);
+      allResults = applyRankingSignals(
+        allResults,
+        trimmedQuery,
+        sessionId,
+        activeIntent || undefined
+      );
       const totalSynonym = allResults.length;
       const paginatedSynonym = allResults.slice(0, limit);
-      recordLoopStep('search', 'content_discovery');
+      recordLoopStep("search", 3, "content_discovery");
 
       searchTelemetry.track({
         query: trimmedQuery,
@@ -563,7 +578,11 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
         fallbackStage: "synonym_match",
         query: trimmedQuery,
         total: totalSynonym, // Total BEFORE pagination
-        suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
+        suggestions: generateSuggestions(
+          trimmedQuery,
+          spellResult,
+          await getPopularSearchSuggestions(3)
+        ),
         message: generateFallbackMessage("synonym_match", trimmedQuery),
         expansion: {
           original: expansion.original,
@@ -578,7 +597,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   // === STEP 4: POPULAR FALLBACK ===
   // No results found in any stage - return popular content with helpful messaging
   const fallbackResults = await getFallbackResults(limit);
-  
+
   searchTelemetry.track({
     query: trimmedQuery,
     resultCount: 0,
@@ -593,19 +612,25 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
     fallbackStage: "popular_fallback",
     query: trimmedQuery,
     total: fallbackResults.length,
-    suggestions: generateSuggestions(trimmedQuery, spellResult, await getPopularSearchSuggestions(3)),
+    suggestions: generateSuggestions(
+      trimmedQuery,
+      spellResult,
+      await getPopularSearchSuggestions(3)
+    ),
     message: generateFallbackMessage("popular_fallback", trimmedQuery),
     expansion: {
       original: expansion.original,
       synonymsApplied: expansion.synonymsApplied,
       resolvedCity: expansion.resolvedCity,
     },
-    spellCorrection: spellResult.wasChanged ? {
-      original: spellResult.original,
-      corrected: spellResult.corrected,
-      wasChanged: spellResult.wasChanged,
-      confidence: spellResult.confidence,
-    } : undefined,
+    spellCorrection: spellResult.wasChanged
+      ? {
+          original: spellResult.original,
+          corrected: spellResult.corrected,
+          wasChanged: spellResult.wasChanged,
+          confidence: spellResult.confidence,
+        }
+      : undefined,
     intentDetected: activeIntent || undefined,
   };
 }
@@ -626,7 +651,7 @@ async function getFallbackResults(limit: number): Promise<SearchResult[]> {
   // Interleave results for variety
   const combined: SearchResult[] = [];
   const maxLen = Math.max(destinations.length, articles.length);
-  
+
   for (let i = 0; i < maxLen; i++) {
     if (i < destinations.length) {
       combined.push(destinations[i]);
@@ -644,7 +669,7 @@ async function getFallbackResults(limit: number): Promise<SearchResult[]> {
  * Returns quick matches for search-as-you-type
  */
 export async function getSearchSuggestions(
-  query: string, 
+  query: string,
   limit: number = 5
 ): Promise<SearchResult[]> {
   if (!query || query.trim().length < 2) {
@@ -652,7 +677,7 @@ export async function getSearchSuggestions(
   }
 
   const trimmed = query.trim();
-  
+
   // Check for city alias first
   const resolved = queryExpander.resolveCityAlias(trimmed);
   const searchQuery = resolved || trimmed;

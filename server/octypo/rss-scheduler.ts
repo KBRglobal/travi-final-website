@@ -352,7 +352,7 @@ export function updateRSSSchedulerConfig(config: Partial<RSSSchedulerConfig>): v
   const wasEnabled = currentConfig.enabled;
   currentConfig = { ...currentConfig, ...config };
 
-  log.info("[RSSScheduler] Config updated", currentConfig);
+  log.info(`[RSSScheduler] Config updated: ${JSON.stringify(currentConfig)}`);
 
   if (config.enabled === false && wasEnabled) {
     stopRSSScheduler();

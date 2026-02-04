@@ -1,20 +1,11 @@
-/**
- * Content Health Scheduler (Stub)
- * Content health monitoring was simplified during cleanup.
- */
-
-let isRunning = false;
-
-export function startHealthScanner(): void {
-  isRunning = true;
-  // Stub - no-op
+// Stub - content health scheduler disabled
+export function startContentHealthMonitor(): void {}
+export function stopContentHealthMonitor(): void {}
+export async function getContentHealthStatus(): Promise<any> {
+  return { healthy: true };
 }
-
-export function stopHealthScanner(): void {
-  isRunning = false;
-  // Stub - no-op
-}
-
+export function startHealthScanner(): void {}
+export function stopHealthScanner(): void {}
 export function isHealthScannerRunning(): boolean {
-  return isRunning;
+  return false;
 }

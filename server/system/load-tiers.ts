@@ -3,10 +3,38 @@
  * System load management was simplified during cleanup.
  */
 
-export type LoadTier = 'idle' | 'low' | 'medium' | 'high' | 'critical';
+export type LoadTier = "idle" | "low" | "medium" | "high" | "critical" | "green" | "yellow" | "red";
+
+export interface LoadTierTransition {
+  fromTier: LoadTier;
+  toTier: LoadTier;
+  capacity: number;
+  timestamp: Date;
+}
+
+export interface LoadTierDeferral {
+  category: string;
+  tier: LoadTier;
+  reason: string;
+  taskId: string;
+  timestamp: Date;
+}
+
+export interface LoadTierState {
+  transitionCount: number;
+  deferredTaskCount: number;
+  lastTransitionAt: Date;
+}
+
+export interface LoadTierBehaviors {
+  deferLowPriority: boolean;
+  reduceBatchSize: boolean;
+  enableBackpressure: boolean;
+}
 
 export interface LoadTierManager {
   getCurrentTier: () => LoadTier;
+  getLoadTier: () => LoadTier;
   setTier: (tier: LoadTier) => void;
   getMetrics: () => LoadTierMetrics;
 }
@@ -16,6 +44,13 @@ export interface LoadTierMetrics {
   cpuUsage: number;
   memoryUsage: number;
   requestsPerSecond: number;
+  tier: LoadTier;
+  capacity: number;
+  thresholds: { greenThreshold: number; yellowThreshold: number };
+  behaviors: LoadTierBehaviors;
+  state: LoadTierState;
+  recentTransitions: LoadTierTransition[];
+  recentDeferrals: LoadTierDeferral[];
 }
 
 export interface LoadTierThresholds {
@@ -23,16 +58,34 @@ export interface LoadTierThresholds {
   low: number;
   medium: number;
   high: number;
+  greenThreshold?: number;
+  yellowThreshold?: number;
 }
 
 const defaultManager: LoadTierManager = {
-  getCurrentTier: () => 'low',
+  getCurrentTier: () => "green",
+  getLoadTier: () => "green",
   setTier: () => {},
   getMetrics: () => ({
-    currentTier: 'low',
+    currentTier: "green",
     cpuUsage: 10,
     memoryUsage: 20,
     requestsPerSecond: 5,
+    tier: "green",
+    capacity: 10,
+    thresholds: { greenThreshold: 50, yellowThreshold: 80 },
+    behaviors: {
+      deferLowPriority: false,
+      reduceBatchSize: false,
+      enableBackpressure: false,
+    },
+    state: {
+      transitionCount: 0,
+      deferredTaskCount: 0,
+      lastTransitionAt: new Date(),
+    },
+    recentTransitions: [],
+    recentDeferrals: [],
   }),
 };
 
@@ -49,8 +102,13 @@ export const LOAD_TIER_THRESHOLDS: LoadTierThresholds = {
 
 export interface LoadTierConfig {
   capacityProvider?: () => number;
+  greenThreshold?: number;
+  yellowThreshold?: number;
 }
 
-export function initLoadTierManager(config?: LoadTierConfig): LoadTierManager {
+export function initLoadTierManager(
+  config?: LoadTierConfig,
+  capacityProvider?: () => number
+): LoadTierManager {
   return defaultManager;
 }

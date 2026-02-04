@@ -86,12 +86,12 @@ export class VamsGenerationService {
         aiPrompt: options.prompt,
         aiModel: model,
         status: "processing",
-      });
+      } as any);
 
       // 5. Mark as ready
       await db
         .update(vamsAssets)
-        .set({ status: "ready", updatedAt: new Date() })
+        .set({ status: "ready", updatedAt: new Date() } as any)
         .where(eq(vamsAssets.id, assetId));
 
       log.info(`[VamsGeneration] Completed generation for asset ${assetId}`);
@@ -112,7 +112,7 @@ export class VamsGenerationService {
       try {
         await db
           .update(vamsAssets)
-          .set({ status: "failed", updatedAt: new Date() })
+          .set({ status: "failed", updatedAt: new Date() } as any)
           .where(eq(vamsAssets.id, assetId));
       } catch {
         // Ignore cleanup errors
@@ -139,23 +139,21 @@ export class VamsGenerationService {
       const size = this.mapAspectRatioToSize(options.aspectRatio || "1:1", model);
 
       if (model === "dalle") {
-        const result = await dalleGenerate({
-          prompt: options.prompt,
-          size,
+        const result = await dalleGenerate(options.prompt, {
+          size: size as any,
           style: options.style as "vivid" | "natural" | undefined,
           quality: options.quality,
         });
 
-        return result;
+        return { success: !!result, url: result || undefined };
       } else {
         // Flux generation - use the same interface
-        const result = await dalleGenerate({
-          prompt: options.prompt,
-          size,
-          model: "flux",
+        const result = await dalleGenerate(options.prompt, {
+          size: size as any,
+          provider: "flux" as any,
         });
 
-        return result;
+        return { success: !!result, url: result || undefined };
       }
     } catch (error) {
       log.error(`[VamsGeneration] ${model} error:`, error);

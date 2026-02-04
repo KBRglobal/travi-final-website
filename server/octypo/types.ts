@@ -38,7 +38,12 @@ export type ContentSection =
   | "faq"
   | "answerCapsule"
   | "metaTitle"
-  | "metaDescription";
+  | "metaDescription"
+  | "whatToExpect"
+  | "visitorTips"
+  | "howToGetThere"
+  | "honestLimitations"
+  | "sensoryDescriptions";
 
 export interface ContentSource {
   type: "rss" | "manual" | "topic-bank";
@@ -62,11 +67,12 @@ export interface ContentData {
 }
 
 export interface WriterTask {
-  contentId: number | string;
-  contentData: ContentData;
+  contentId?: number | string;
+  contentData?: ContentData;
   sections: ContentSection[];
   targetWordCount: number;
   locale: string;
+  attractionData: AttractionData;
 }
 
 export interface ValidationTask {
@@ -123,10 +129,65 @@ export interface ContentQualityScore {
   aeoScore: number;
   factCheckScore: number;
   styleScore: number;
+  culturalScore?: number;
   overallScore: number;
   passed: boolean;
   validationResults: ValidationResult[];
   wordCounts: Record<ContentSection, number>;
+  blueprintCompliance?: BlueprintCompliance;
+}
+
+export interface BlueprintCompliance {
+  introductionWordCount: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  whatToExpectWordCount: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  visitorTipsWordCount: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  howToGetThereWordCount: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  faqCount: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  faqAnswerLengths: {
+    actual: number[];
+    target: readonly [number, number] | [number, number];
+    allPassed: boolean;
+  };
+  metaTitleLength: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  metaDescriptionLength: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
+  sensoryDescriptionCount: {
+    actual: number;
+    target: number;
+    passed: boolean;
+  };
+  honestLimitationCount: {
+    actual: number;
+    target: readonly [number, number] | [number, number];
+    passed: boolean;
+  };
 }
 
 export interface EngineCapability {
@@ -142,6 +203,7 @@ export interface OrchestratorConfig {
   qualityThreshold: number;
   parallelWriters: number;
   parallelValidators: number;
+  enableImageGeneration?: boolean;
 }
 
 // ============================================
@@ -159,6 +221,12 @@ export interface LinkProcessorResult {
     targetType: string;
   }>;
   processedSections: string[];
+  processedContent?: {
+    introduction?: string;
+    whatToExpect?: string;
+    visitorTips?: string;
+    howToGetThere?: string;
+  };
   error?: string;
 }
 
@@ -195,6 +263,11 @@ export const BLUEPRINT_REQUIREMENTS = {
   metaTitle: { min: 40, max: 70 },
   metaDescription: { min: 130, max: 170 },
   totalArticle: { min: 800, max: 2500 },
+  whatToExpect: { min: 100, max: 300, sensoryDescriptions: 3 },
+  visitorTips: { min: 100, max: 300 },
+  howToGetThere: { min: 100, max: 300 },
+  honestLimitations: { min: 50, max: 200 },
+  sensoryDescriptions: { min: 100, max: 300 },
 } as const;
 
 // ============================================
@@ -220,6 +293,7 @@ export const QUALITY_CATEGORIES = {
   aeo: { maxPoints: 8, weight: "medium" },
   paa: { maxPoints: 6, weight: "core" },
   completeness: { maxPoints: 12, weight: "high" },
+  cultural_depth: { maxPoints: 10, weight: "medium" },
 } as const;
 
 export type QualityGrade = keyof typeof GRADE_THRESHOLDS;
@@ -272,4 +346,46 @@ export interface RSSGenerationJob {
   createdAt: Date;
   completedAt?: Date;
   error?: string;
+}
+
+// ============================================
+// ATTRACTION TYPES (for attraction content generation)
+// ============================================
+
+export interface AttractionData {
+  id: string | number;
+  name: string;
+  title?: string;
+  slug: string;
+  destination: string;
+  cityName?: string;
+  venueName?: string;
+  category?: string;
+  primaryCategory?: string;
+  location?: string;
+  coordinates?: { lat: number; lng: number };
+  openingHours?: string;
+  admissionFee?: string;
+  priceFrom?: number;
+  rating?: number;
+  reviewCount?: number;
+  bestTimeToVisit?: string;
+  averageVisitDuration?: string;
+  accessibility?: string;
+  nearbyAttractions?: string[];
+  tags?: string[];
+}
+
+export interface GeneratedAttractionContent extends GeneratedContent {
+  whatToExpect?: string;
+  visitorTips?: string;
+  howToGetThere?: string;
+  honestLimitations?: string;
+  sensoryDescriptions?: string;
+  bestTimeToVisit?: string;
+  practicalInfo?: {
+    openingHours?: string;
+    admissionFee?: string;
+    accessibility?: string;
+  };
 }

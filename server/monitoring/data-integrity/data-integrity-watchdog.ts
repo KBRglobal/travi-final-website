@@ -12,7 +12,7 @@
  * Feature flag: ENABLE_DATA_INTEGRITY_WATCHDOG
  */
 
-import { log } from '../../lib/logger';
+import { log } from "../../lib/logger";
 import type {
   IntegritySeverity,
   IntegrityCheckType,
@@ -20,13 +20,11 @@ import type {
   IntegrityCheckResult,
   IntegrityScanConfig,
   IntegrityScanReport,
-} from './types';
+} from "./types";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) =>
-    log.info(`[DataIntegrity] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) =>
-    log.warn(`[DataIntegrity] ${msg}`, data),
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[DataIntegrity] ${msg}`, data),
+  warn: (msg: string, data?: Record<string, unknown>) => log.warn(`[DataIntegrity] ${msg}`, data),
   error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[DataIntegrity] ${msg}`, undefined, data),
   audit: (msg: string, data?: Record<string, unknown>) =>
@@ -35,11 +33,11 @@ const logger = {
 
 const DEFAULT_CONFIG: IntegrityScanConfig = {
   enabledChecks: [
-    'orphaned_content',
-    'missing_entities',
-    'unindexed_content',
-    'orphaned_links',
-    'failed_transitions',
+    "orphaned_content",
+    "missing_entities",
+    "unindexed_content",
+    "orphaned_links",
+    "failed_transitions",
   ],
   maxIssuesPerCheck: 100,
   scanTimeoutMs: 60000, // 1 minute per check
@@ -60,26 +58,28 @@ class DataIntegrityWatchdog {
 
   constructor(config?: Partial<IntegrityScanConfig>) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    this.enabled = process.env.ENABLE_DATA_INTEGRITY_WATCHDOG === 'true';
+    this.enabled = process.env.ENABLE_DATA_INTEGRITY_WATCHDOG === "true";
 
     if (this.enabled) {
-      logger.info('Data Integrity Watchdog enabled');
+      logger.info("Data Integrity Watchdog enabled");
     }
   }
 
   /**
    * Run a full integrity scan
    */
-  async runScan(triggeredBy: 'scheduled' | 'manual' | 'incident' = 'manual'): Promise<IntegrityScanReport> {
+  async runScan(
+    triggeredBy: "scheduled" | "manual" | "incident" = "manual"
+  ): Promise<IntegrityScanReport> {
     if (this.isScanning) {
-      throw new Error('Scan already in progress');
+      throw new Error("Scan already in progress");
     }
 
     this.isScanning = true;
     const startedAt = new Date();
     const results: IntegrityCheckResult[] = [];
 
-    logger.info('Starting data integrity scan', { triggeredBy });
+    logger.info("Starting data integrity scan", { triggeredBy });
 
     try {
       for (const checkType of this.config.enabledChecks) {
@@ -93,7 +93,7 @@ class DataIntegrityWatchdog {
           }
         } catch (err) {
           logger.error(`Check ${checkType} failed`, {
-            error: err instanceof Error ? err.message : 'Unknown error',
+            error: err instanceof Error ? err.message : "Unknown error",
           });
           results.push({
             type: checkType,
@@ -139,7 +139,7 @@ class DataIntegrityWatchdog {
 
     this.addReport(report);
 
-    logger.info('Data integrity scan completed', {
+    logger.info("Data integrity scan completed", {
       reportId: report.id,
       durationMs: report.durationMs,
       totalIssuesFound,
@@ -163,31 +163,31 @@ class DataIntegrityWatchdog {
 
     try {
       switch (type) {
-        case 'orphaned_content':
+        case "orphaned_content":
           await this.checkOrphanedContent(issues);
           break;
-        case 'missing_entities':
+        case "missing_entities":
           await this.checkMissingEntities(issues);
           break;
-        case 'unindexed_content':
+        case "unindexed_content":
           await this.checkUnindexedContent(issues);
           break;
-        case 'orphaned_links':
+        case "orphaned_links":
           await this.checkOrphanedLinks(issues);
           break;
-        case 'failed_transitions':
+        case "failed_transitions":
           await this.checkFailedTransitions(issues);
           break;
-        case 'stale_cache':
+        case "stale_cache":
           await this.checkStaleCache(issues);
           break;
-        case 'missing_media':
+        case "missing_media":
           await this.checkMissingMedia(issues);
           break;
       }
     } catch (err) {
       logger.error(`Check ${type} error`, {
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : "Unknown error",
       });
     }
 
@@ -209,8 +209,8 @@ class DataIntegrityWatchdog {
    */
   private async checkOrphanedContent(issues: IntegrityIssue[]): Promise<void> {
     try {
-      const { db } = await import('../../db');
-      const { sql } = await import('drizzle-orm');
+      const { db } = await import("../../db");
+      const { sql } = await import("drizzle-orm");
 
       // Check for destinations without translations
       const orphaned = await db.execute(sql`
@@ -222,15 +222,17 @@ class DataIntegrityWatchdog {
       `);
 
       for (const row of orphaned.rows as Array<{ id: string; slug: string }>) {
-        issues.push(this.createIssue(
-          'orphaned_content',
-          'warning',
-          `Published destination missing translations: ${row.slug}`,
-          `Destination ${row.id} is published but has no translations`,
-          row.id,
-          'destination',
-          { slug: row.slug }
-        ));
+        issues.push(
+          this.createIssue(
+            "orphaned_content",
+            "warning",
+            `Published destination missing translations: ${row.slug}`,
+            `Destination ${row.id} is published but has no translations`,
+            row.id,
+            "destination",
+            { slug: row.slug }
+          )
+        );
       }
     } catch {
       // DB queries might fail if tables don't exist
@@ -242,8 +244,8 @@ class DataIntegrityWatchdog {
    */
   private async checkMissingEntities(issues: IntegrityIssue[]): Promise<void> {
     try {
-      const { db } = await import('../../db');
-      const { sql } = await import('drizzle-orm');
+      const { db } = await import("../../db");
+      const { sql } = await import("drizzle-orm");
 
       // Check for media referenced but missing
       const missing = await db.execute(sql`
@@ -260,15 +262,17 @@ class DataIntegrityWatchdog {
 
       // This is informational, not an error
       if ((missing.rows as unknown[]).length > 50) {
-        issues.push(this.createIssue(
-          'missing_entities',
-          'info',
-          'Large number of unused media files',
-          `Found ${(missing.rows as unknown[]).length} media files not linked to any destination`,
-          undefined,
-          'media',
-          { count: (missing.rows as unknown[]).length }
-        ));
+        issues.push(
+          this.createIssue(
+            "missing_entities",
+            "info",
+            "Large number of unused media files",
+            `Found ${(missing.rows as unknown[]).length} media files not linked to any destination`,
+            undefined,
+            "media",
+            { count: (missing.rows as unknown[]).length }
+          )
+        );
       }
     } catch {
       // DB queries might fail
@@ -280,8 +284,8 @@ class DataIntegrityWatchdog {
    */
   private async checkUnindexedContent(issues: IntegrityIssue[]): Promise<void> {
     try {
-      const { db } = await import('../../db');
-      const { sql } = await import('drizzle-orm');
+      const { db } = await import("../../db");
+      const { sql } = await import("drizzle-orm");
 
       // Check for published content that might be missing from search
       const unindexed = await db.execute(sql`
@@ -294,16 +298,18 @@ class DataIntegrityWatchdog {
       `);
 
       for (const row of unindexed.rows as Array<{ id: string; slug: string }>) {
-        issues.push(this.createIssue(
-          'unindexed_content',
-          'warning',
-          `Content not indexed: ${row.slug}`,
-          `Destination ${row.id} was updated but not re-indexed`,
-          row.id,
-          'destination',
-          { slug: row.slug },
-          true
-        ));
+        issues.push(
+          this.createIssue(
+            "unindexed_content",
+            "warning",
+            `Content not indexed: ${row.slug}`,
+            `Destination ${row.id} was updated but not re-indexed`,
+            row.id,
+            "destination",
+            { slug: row.slug },
+            true
+          )
+        );
       }
     } catch {
       // Column might not exist
@@ -323,8 +329,8 @@ class DataIntegrityWatchdog {
    */
   private async checkFailedTransitions(issues: IntegrityIssue[]): Promise<void> {
     try {
-      const { db } = await import('../../db');
-      const { sql } = await import('drizzle-orm');
+      const { db } = await import("../../db");
+      const { sql } = await import("drizzle-orm");
 
       // Check for content stuck in transitional states
       const stuck = await db.execute(sql`
@@ -336,15 +342,17 @@ class DataIntegrityWatchdog {
       `);
 
       for (const row of stuck.rows as Array<{ id: string; slug: string; status: string }>) {
-        issues.push(this.createIssue(
-          'failed_transitions',
-          'error',
-          `Content stuck in ${row.status} state: ${row.slug}`,
-          `Destination ${row.id} has been in ${row.status} state for over 24 hours`,
-          row.id,
-          'destination',
-          { slug: row.slug, status: row.status }
-        ));
+        issues.push(
+          this.createIssue(
+            "failed_transitions",
+            "error",
+            `Content stuck in ${row.status} state: ${row.slug}`,
+            `Destination ${row.id} has been in ${row.status} state for over 24 hours`,
+            row.id,
+            "destination",
+            { slug: row.slug, status: row.status }
+          )
+        );
       }
     } catch {
       // Tables might not exist
@@ -436,32 +444,32 @@ class DataIntegrityWatchdog {
    */
   private async notifyIncidentSystem(report: IntegrityScanReport): Promise<void> {
     try {
-      const { createIncident } = await import('../../ops/incidents');
+      const { createIncident } = await import("../../ops/incidents");
 
       if (report.issuesBySeverity.critical > 0) {
-        createIncident(
-          'data_integrity_risk',
-          'critical',
-          'data_integrity',
-          `Critical data integrity issues detected`,
-          `Found ${report.issuesBySeverity.critical} critical integrity issues`,
-          {
+        createIncident({
+          type: "data_integrity_risk",
+          severity: "critical",
+          category: "data_integrity",
+          title: `Critical data integrity issues detected`,
+          description: `Found ${report.issuesBySeverity.critical} critical integrity issues`,
+          metadata: {
             reportId: report.id,
             issuesBySeverity: report.issuesBySeverity,
-          }
-        );
+          },
+        });
       } else if (report.issuesBySeverity.error > 0) {
-        createIncident(
-          'data_integrity_risk',
-          'high',
-          'data_integrity',
-          `Data integrity errors detected`,
-          `Found ${report.issuesBySeverity.error} integrity errors`,
-          {
+        createIncident({
+          type: "data_integrity_risk",
+          severity: "high",
+          category: "data_integrity",
+          title: `Data integrity errors detected`,
+          description: `Found ${report.issuesBySeverity.error} integrity errors`,
+          metadata: {
             reportId: report.id,
             issuesBySeverity: report.issuesBySeverity,
-          }
-        );
+          },
+        });
       }
     } catch {
       // Incident system not available
@@ -492,7 +500,7 @@ class DataIntegrityWatchdog {
     if (!issue) return false;
 
     issue.resolvedAt = new Date();
-    logger.info('Issue resolved', { issueId, type: issue.type });
+    logger.info("Issue resolved", { issueId, type: issue.type });
     return true;
   }
 
@@ -517,14 +525,14 @@ class DataIntegrityWatchdog {
     if (!this.enabled) return;
 
     this.scanInterval = setInterval(() => {
-      this.runScan('scheduled').catch(err => {
-        logger.error('Scheduled scan failed', {
-          error: err instanceof Error ? err.message : 'Unknown error',
+      this.runScan("scheduled").catch(err => {
+        logger.error("Scheduled scan failed", {
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       });
     }, this.config.scanIntervalMs);
 
-    logger.info('Data Integrity Watchdog started', {
+    logger.info("Data Integrity Watchdog started", {
       interval: this.config.scanIntervalMs,
     });
   }
@@ -537,7 +545,7 @@ class DataIntegrityWatchdog {
       clearInterval(this.scanInterval);
       this.scanInterval = null;
     }
-    logger.info('Data Integrity Watchdog stopped');
+    logger.info("Data Integrity Watchdog stopped");
   }
 
   /**

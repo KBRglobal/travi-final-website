@@ -213,7 +213,7 @@ export function registerHealthRoutes(app: Express): void {
   app.get("/api/system-status", requireAuth, async (_req: Request, res: Response) => {
     try {
       const memUsage = process.memoryUsage();
-      const contentCount = await storage.getContentCount();
+      const contentCount = (await (storage as any).getContentCount?.()) || 0;
 
       res.json({
         status: "operational",

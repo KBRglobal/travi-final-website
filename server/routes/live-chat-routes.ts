@@ -83,106 +83,101 @@ export function registerLiveChatRoutes(app: Express): void {
   });
 
   // Admin: Get all conversations
-  app.get(
-    "/api/admin/live-chat/conversations",
-    isAuthenticated,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const status = req.query.status as string | undefined;
-        const conversations = await storage.getLiveChatConversations(status);
-        res.json(conversations);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to fetch conversations" });
-      }
+  app.get("/api/admin/live-chat/conversations", isAuthenticated, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const status = req.query.status as string | undefined;
+      const conversations = await storage.getLiveChatConversations(status);
+      res.json(conversations);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch conversations" });
     }
-  );
+  }) as any);
 
   // Admin: Get single conversation with all messages
-  app.get(
-    "/api/admin/live-chat/conversations/:id",
-    isAuthenticated,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const { id } = req.params;
-        const conversation = await storage.getLiveChatConversation(id);
+  app.get("/api/admin/live-chat/conversations/:id", isAuthenticated, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const { id } = req.params;
+      const conversation = await storage.getLiveChatConversation(id);
 
-        if (!conversation) {
-          return res.status(404).json({ error: "Conversation not found" });
-        }
-
-        res.json(conversation);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to fetch conversation" });
+      if (!conversation) {
+        return res.status(404).json({ error: "Conversation not found" });
       }
+
+      res.json(conversation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch conversation" });
     }
-  );
+  }) as any);
 
   // Admin: Send message as admin
-  app.post(
-    "/api/admin/live-chat/conversations/:id/messages",
-    isAuthenticated,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const { id } = req.params;
-        const { content } = req.body;
-        const userId = getUserId(req);
+  app.post("/api/admin/live-chat/conversations/:id/messages", isAuthenticated, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const { id } = req.params;
+      const { content } = req.body;
+      const userId = getUserId(req);
 
-        if (!content) {
-          return res.status(400).json({ error: "Message content is required" });
-        }
-
-        const message = await storage.createLiveChatMessage({
-          conversationId: id,
-          senderType: "admin",
-          senderId: userId,
-          content,
-          isRead: false,
-        });
-
-        res.json(message);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to send message" });
+      if (!content) {
+        return res.status(400).json({ error: "Message content is required" });
       }
+
+      const message = await storage.createLiveChatMessage({
+        conversationId: id,
+        senderType: "admin",
+        senderId: userId,
+        content,
+        isRead: false,
+      });
+
+      res.json(message);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send message" });
     }
-  );
+  }) as any);
 
   // Admin: Update conversation status
-  app.patch(
-    "/api/admin/live-chat/conversations/:id",
-    isAuthenticated,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const { id } = req.params;
-        const { status, assignedToId } = req.body;
+  app.patch("/api/admin/live-chat/conversations/:id", isAuthenticated, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const { id } = req.params;
+      const { status, assignedToId } = req.body;
 
-        const conversation = await storage.updateLiveChatConversation(id, {
-          status,
-          assignedToId,
-        });
+      const conversation = await storage.updateLiveChatConversation(id, {
+        status,
+        assignedToId,
+      });
 
-        if (!conversation) {
-          return res.status(404).json({ error: "Conversation not found" });
-        }
-
-        res.json(conversation);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to update conversation" });
+      if (!conversation) {
+        return res.status(404).json({ error: "Conversation not found" });
       }
+
+      res.json(conversation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update conversation" });
     }
-  );
+  }) as any);
 
   // Admin: Mark messages as read
-  app.post(
-    "/api/admin/live-chat/conversations/:id/read",
-    isAuthenticated,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const { id } = req.params;
-        await storage.markMessagesAsRead(id, "admin");
-        res.json({ success: true });
-      } catch (error) {
-        res.status(500).json({ error: "Failed to mark messages as read" });
-      }
+  app.post("/api/admin/live-chat/conversations/:id/read", isAuthenticated, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const { id } = req.params;
+      await storage.markMessagesAsRead(id, "admin");
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to mark messages as read" });
     }
-  );
+  }) as any);
 }

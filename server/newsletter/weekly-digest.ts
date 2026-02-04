@@ -44,7 +44,7 @@ export async function sendWeeklyDigest(): Promise<DigestResult> {
 }
 
 export async function sendTestDigest(email: string): Promise<DigestResult> {
-  log.info({ email }, "[WeeklyDigest] Sending test digest");
+  log.info(`[WeeklyDigest] Sending test digest to ${email}`);
   return {
     success: true,
     sentCount: 1,

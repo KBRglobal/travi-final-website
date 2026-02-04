@@ -87,7 +87,6 @@ export class OctypoOrchestrator {
         const content =
           retryCount === 0
             ? await writer.execute({
-                attractionId: attraction.id,
                 attractionData: attraction,
                 sections: [
                   "introduction",
@@ -456,7 +455,6 @@ export class OctypoOrchestrator {
       if (!writer) throw new Error("No writer available");
 
       return writer.execute({
-        attractionId: attraction.id,
         attractionData: attraction,
         sections: [
           "introduction",
@@ -491,6 +489,8 @@ export class OctypoOrchestrator {
     const parsed = JSON.parse(jsonString.trim());
 
     return {
+      title: parsed.title || previousContent.title,
+      body: parsed.body || previousContent.body,
       introduction: parsed.introduction || previousContent.introduction,
       whatToExpect: parsed.whatToExpect || parsed.what_to_expect || previousContent.whatToExpect,
       visitorTips: parsed.visitorTips || parsed.visitor_tips || previousContent.visitorTips,
@@ -551,7 +551,6 @@ export class OctypoOrchestrator {
         const content =
           retryCount === 0
             ? await writer.executeWithLocale({
-                attractionId: attraction.id,
                 attractionData: attraction,
                 sections: [
                   "introduction",
@@ -690,15 +689,17 @@ export class OctypoOrchestrator {
       // Generate content with locale-aware prompts
       const numericId = attractionData?.id || parseInt(entityId, 10) || 0;
       const content = await selectedWriter.executeWithLocale({
-        attractionId: numericId,
         attractionData:
           attractionData ||
           ({
             id: numericId,
+            name: "",
+            slug: "",
+            destination: destination,
             title: "",
             cityName: destination,
             primaryCategory: "general",
-          } as unknown as AttractionData),
+          } as AttractionData),
         sections: [
           "introduction",
           "whatToExpect",

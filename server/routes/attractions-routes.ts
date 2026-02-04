@@ -213,8 +213,8 @@ export function registerAttractionsRoutes(app: Express): void {
             attraction.name,
             destInfo.name,
             attraction.category,
-            `${attraction.price} ${attraction.currency}`,
-            attraction.duration
+            `${(attraction as any).price} ${(attraction as any).currency}`,
+            (attraction as any).duration
           );
 
           fullAttraction.introduction = aiResult.introduction;
@@ -245,7 +245,7 @@ export function registerAttractionsRoutes(app: Express): void {
           fullAttraction.faqItems = [
             {
               question: `How much are tickets for ${attraction.name}?`,
-              answer: `Tickets start from ${attraction.price} ${attraction.currency}. Check the booking page for the latest prices.`,
+              answer: `Tickets start from ${(attraction as any).price} ${(attraction as any).currency}. Check the booking page for the latest prices.`,
             },
             {
               question: "What are the opening hours?",
@@ -253,7 +253,7 @@ export function registerAttractionsRoutes(app: Express): void {
             },
             {
               question: `How long should I spend at ${attraction.name}?`,
-              answer: `Most visitors spend ${attraction.duration || "2-3 hours"} at this attraction.`,
+              answer: `Most visitors spend ${(attraction as any).duration || "2-3 hours"} at this attraction.`,
             },
           ];
           fullAttraction.metaTitle = `${attraction.name} – Complete Guide 2026`;
@@ -268,10 +268,10 @@ export function registerAttractionsRoutes(app: Express): void {
         .map(a => ({
           id: a.id,
           name: a.name,
-          image: a.image,
+          image: (a as any).image,
           category: a.category,
-          price: a.price,
-          currency: a.currency,
+          price: (a as any).price,
+          currency: (a as any).currency,
           href: `/attractions/${destSlug}/${a.id}`,
           affiliateLink: TIQETS_AFFILIATE_LINK,
         }));

@@ -18,11 +18,8 @@ export interface WorkflowResult {
 }
 
 class WorkflowEngine {
-  async executeWorkflow(
-    workflowId: string,
-    context: WorkflowContext
-  ): Promise<WorkflowResult> {
-    log.info("[WorkflowEngine] Executing workflow:", workflowId, context);
+  async executeWorkflow(workflowId: string, context: WorkflowContext): Promise<WorkflowResult> {
+    log.info("[WorkflowEngine] Executing workflow:", { workflowId, context } as any);
     return {
       success: true,
       executionId: `exec-${Date.now()}`,
@@ -35,7 +32,7 @@ class WorkflowEngine {
     status: "pending" | "running" | "completed" | "failed";
     progress: number;
   }> {
-    log.info("[WorkflowEngine] Getting workflow status:", executionId);
+    log.info("[WorkflowEngine] Getting workflow status:", { executionId } as any);
     return {
       status: "completed",
       progress: 100,
@@ -43,7 +40,7 @@ class WorkflowEngine {
   }
 
   async cancelWorkflow(executionId: string): Promise<boolean> {
-    log.info("[WorkflowEngine] Cancelling workflow:", executionId);
+    log.info("[WorkflowEngine] Cancelling workflow:", { executionId } as any);
     return true;
   }
 }

@@ -3,28 +3,62 @@
  * User's custom prompt template for high-quality travel content
  */
 
-import { AttractionData, AgentPersona } from '../types';
+import { AttractionData, AgentPersona } from "../types";
 
 const AI_BANNED_PHRASES = [
-  'nestled', 'hidden gem', 'tapestry', 'vibrant', 'bustling',
-  "whether you're", "there's something for everyone", 'unforgettable',
-  'breathtaking', 'stunning', 'amazing', 'incredible', 'delve into',
-  'embark on', 'unlock', 'in conclusion', 'ultimately',
-  'at the end of the day', "it's worth noting", 'interestingly',
-  'it is important to note', 'one cannot help but', 'serves as a testament',
-  'a must-visit', 'truly unique', 'like no other', 'world-class',
-  'second to none', 'state-of-the-art', 'cutting-edge', 'iconic',
-  'legendary', 'paradise', 'oasis', 'sanctuary', 'mecca',
-  'crown jewel', 'jewel in the crown', 'feast for the senses',
-  'treat for the senses', 'a treat for', 'a feast for',
-  'once-in-a-lifetime', 'must-see', 'absolutely stunning', 'truly amazing',
+  "nestled",
+  "hidden gem",
+  "tapestry",
+  "vibrant",
+  "bustling",
+  "whether you're",
+  "there's something for everyone",
+  "unforgettable",
+  "breathtaking",
+  "stunning",
+  "amazing",
+  "incredible",
+  "delve into",
+  "embark on",
+  "unlock",
+  "in conclusion",
+  "ultimately",
+  "at the end of the day",
+  "it's worth noting",
+  "interestingly",
+  "it is important to note",
+  "one cannot help but",
+  "serves as a testament",
+  "a must-visit",
+  "truly unique",
+  "like no other",
+  "world-class",
+  "second to none",
+  "state-of-the-art",
+  "cutting-edge",
+  "iconic",
+  "legendary",
+  "paradise",
+  "oasis",
+  "sanctuary",
+  "mecca",
+  "crown jewel",
+  "jewel in the crown",
+  "feast for the senses",
+  "treat for the senses",
+  "a treat for",
+  "a feast for",
+  "once-in-a-lifetime",
+  "must-see",
+  "absolutely stunning",
+  "truly amazing",
 ];
 
 export function buildAttractionPrompt(attraction: AttractionData, persona: AgentPersona): string {
   const currentYear = new Date().getFullYear();
   const attractionName = attraction.title?.split(":")[0]?.trim() || "this attraction";
   const city = attraction.cityName || "the city";
-  
+
   return `You are TRAVI's expert travel content writer. Your mission is to create 
 authoritative, trustworthy attraction pages that serve as the ultimate 
 pre-visit research resource—NOT a booking platform.
@@ -56,14 +90,14 @@ COUNTING METHOD:
 Name: ${attraction.title}
 City: ${city}
 Venue: ${attraction.venueName || "Main location"}
-Duration: ${attraction.duration || "2-3 hours"}
-Category: ${attraction.primaryCategory || "Attraction"}
+Duration: ${(attraction as any).duration || attraction.averageVisitDuration || "2-3 hours"}
+Category: ${attraction.primaryCategory || attraction.category || "Attraction"}
 Rating: ${attraction.rating || "N/A"} (${attraction.reviewCount || 0} reviews)
 
 Source Description (rewrite completely, never copy):
-${attraction.tiqetsDescription || "General tourist attraction"}
+${(attraction as any).tiqetsDescription || "General tourist attraction"}
 
-Highlights: ${attraction.tiqetsHighlights?.join("; ") || "No highlights provided"}
+Highlights: ${(attraction as any).tiqetsHighlights?.join("; ") || "No highlights provided"}
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -246,7 +280,7 @@ AVOID:
 ❌ Marketing fluff: "once-in-a-lifetime", "unforgettable", "breathtaking"
 ❌ Passive voice: "The views can be enjoyed"
 ❌ Vague claims: "very popular", "many visitors"
-❌ These banned phrases: ${AI_BANNED_PHRASES.slice(0, 15).join(', ')}
+❌ These banned phrases: ${AI_BANNED_PHRASES.slice(0, 15).join(", ")}
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -313,13 +347,17 @@ OUTPUT: Valid JSON only. No markdown code blocks. No text before or after the JS
 }
 
 export function buildCorrectionPrompt(
-  originalContent: any, 
+  originalContent: any,
   issues: Array<{ section: string; message: string; fix: string }>
 ): string {
   return `Fix these specific issues in the content:
 
-${issues.map((issue, i) => `${i + 1}. [${issue.section}] ${issue.message}
-   → ${issue.fix}`).join('\n\n')}
+${issues
+  .map(
+    (issue, i) => `${i + 1}. [${issue.section}] ${issue.message}
+   → ${issue.fix}`
+  )
+  .join("\n\n")}
 
 ORIGINAL CONTENT:
 ${JSON.stringify(originalContent, null, 2)}

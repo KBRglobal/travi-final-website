@@ -59,6 +59,32 @@ export interface OverrideConfig {
 
 // Default configurations by mode
 const MODE_DEFAULTS: Record<AutopilotMode, Partial<AutopilotConfig>> = {
+  auto: {
+    enabledActions: [
+      { action: "GENERATE_SCHEMA", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "SET_CANONICAL", enabled: true, requiresApproval: false, autoExecute: true },
+      { action: "QUEUE_REINDEX", enabled: true, requiresApproval: false, autoExecute: true },
+    ],
+    schedule: {
+      contentPipelineInterval: 12,
+      linkGraphRebuildInterval: 4,
+      riskCheckInterval: 30,
+      classificationUpdateInterval: 12,
+    },
+  },
+  suggest: {
+    enabledActions: [
+      { action: "GENERATE_SCHEMA", enabled: true, requiresApproval: true, autoExecute: false },
+      { action: "SET_CANONICAL", enabled: true, requiresApproval: true, autoExecute: false },
+      { action: "QUEUE_REINDEX", enabled: true, requiresApproval: true, autoExecute: false },
+    ],
+    schedule: {
+      contentPipelineInterval: 24,
+      linkGraphRebuildInterval: 12,
+      riskCheckInterval: 120,
+      classificationUpdateInterval: 24,
+    },
+  },
   off: {
     enabledActions: [
       { action: "GENERATE_SCHEMA", enabled: false, requiresApproval: true, autoExecute: false },

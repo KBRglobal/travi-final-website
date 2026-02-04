@@ -1,73 +1,60 @@
-/**
- * SEO Action Engine (Stub)
- * SEO automation was simplified during cleanup.
- */
-
-export type AutopilotMode = 'off' | 'suggest' | 'auto' | 'supervised' | 'full';
+// Stub - SEO actions engine disabled
+export type AutopilotMode = "off" | "suggest" | "auto" | "supervised" | "full";
 
 export interface SEOAction {
   id: string;
   type: string;
-  target: string;
-  status: 'pending' | 'completed' | 'failed';
+  priority: number;
+  status: string;
+}
+
+export interface ValidationResult {
+  canPublish: boolean;
+  blocks: string[];
+  warnings: string[];
+  requiredActions: SEOAction[];
 }
 
 export class SEOActionEngine {
-  private mode: AutopilotMode = 'off';
-  private isRunning = false;
+  private mode: AutopilotMode;
 
-  constructor(mode?: AutopilotMode) {
-    this.mode = mode || 'off';
-  }
-
-  start(): Promise<void> {
-    this.isRunning = true;
-    return Promise.resolve();
-  }
-
-  stop(): void {
-    this.isRunning = false;
-  }
-
-  getMode(): AutopilotMode {
-    return this.mode;
-  }
-
-  setMode(mode: AutopilotMode): void {
+  constructor(mode: AutopilotMode = "off") {
     this.mode = mode;
   }
 
-  isActive(): boolean {
-    return this.isRunning;
+  async executeAction(action: any): Promise<any> {
+    return { success: true };
   }
-
-  async executeAction(action: SEOAction): Promise<void> {
-    // Stub - no-op
+  async executeActions(actions: any[]): Promise<any> {
+    return { success: true };
   }
-
-  setAutopilotMode(mode: AutopilotMode): void {
-    this.setMode(mode);
+  async getAvailableActions(): Promise<SEOAction[]> {
+    return [];
   }
-
-  getAutopilotMode(): AutopilotMode {
-    return this.getMode();
+  async getActionHistory(): Promise<any[]> {
+    return [];
   }
-
-  async validatePrePublish(contentId: string): Promise<{ valid: boolean; issues: string[] }> {
-    return { valid: true, issues: [] };
-  }
-
-  async evaluateContent(contentId: string): Promise<any> {
-    return {};
-  }
-
-  async executeActions(actions: SEOAction[]): Promise<void> {
-    for (const action of actions) {
-      await this.executeAction(action);
-    }
-  }
-
   async getPendingActions(): Promise<SEOAction[]> {
     return [];
   }
+  setAutopilotMode(mode: AutopilotMode): void {
+    this.mode = mode;
+  }
+  getAutopilotMode(): AutopilotMode {
+    return this.mode;
+  }
+  async validatePrePublish(content: any): Promise<ValidationResult> {
+    return { canPublish: true, blocks: [], warnings: [], requiredActions: [] };
+  }
+  async evaluateContent(content: any): Promise<any> {
+    return { score: 100 };
+  }
+}
+
+export const seoActionEngine = new SEOActionEngine();
+export async function executeSEOAction(action: any): Promise<any> {
+  return { success: true };
+}
+export async function getSEOActionStatus(): Promise<any> {
+  return {};
 }

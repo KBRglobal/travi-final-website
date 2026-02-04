@@ -1,25 +1,11 @@
-/**
- * Entity Resolver (Stub)
- * Navigation functionality was simplified during cleanup.
- */
-
-export type EntityType = 'attraction' | 'hotel' | 'destination' | 'article' | 'guide';
-
-export function resolveEntityLink(entityType: EntityType, slug: string, locale?: string): string {
-  const basePath = locale && locale !== 'en' ? `/${locale}` : '';
-  
-  switch (entityType) {
-    case 'attraction':
-      return `${basePath}/attractions/${slug}`;
-    case 'hotel':
-      return `${basePath}/hotels/${slug}`;
-    case 'destination':
-      return `${basePath}/destinations/${slug}`;
-    case 'article':
-      return `${basePath}/articles/${slug}`;
-    case 'guide':
-      return `${basePath}/guides/${slug}`;
-    default:
-      return `${basePath}/${slug}`;
-  }
+// Stub - entity resolver disabled
+export type EntityType = "destination" | "attraction" | "hotel" | "article" | "guide";
+export async function resolveEntity(query: string): Promise<any> {
+  return null;
+}
+export async function resolveEntities(queries: string[]): Promise<any[]> {
+  return [];
+}
+export async function resolveEntityLink(type: EntityType, id: string): Promise<string | null> {
+  return null;
 }

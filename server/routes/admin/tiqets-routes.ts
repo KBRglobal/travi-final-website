@@ -380,7 +380,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         .set({ contentGenerationStatus: "generating", updatedAt: new Date() } as any)
         .where(eq(tiqetsAttractions.id, id));
 
-      const { generateAttractionContent } = await import("../../services/attraction-content-generator");
+      const { generateAttractionContent } =
+        await import("../../services/attraction-content-generator");
 
       try {
         const result = await generateAttractionContent(attraction);
@@ -474,7 +475,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         return;
       }
 
-      const { generateAttractionContent } = await import("../../services/attraction-content-generator");
+      const { generateAttractionContent } =
+        await import("../../services/attraction-content-generator");
 
       let processed = 0;
       let errors = 0;
@@ -587,7 +589,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         return;
       }
 
-      const { generateAttractionContent } = await import("../../services/attraction-content-generator");
+      const { generateAttractionContent } =
+        await import("../../services/attraction-content-generator");
 
       let globalProcessed = 0;
       let globalErrors = 0;
@@ -771,7 +774,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         return;
       }
 
-      const { generateAttractionContent } = await import("../../services/attraction-content-generator");
+      const { generateAttractionContent } =
+        await import("../../services/attraction-content-generator");
 
       // Shared progress tracking
       let globalProcessed = 0;
@@ -947,14 +951,22 @@ export function registerAdminTiqetsRoutes(app: Express): void {
               const mappedContent = {
                 introduction: content.introduction || "",
                 whyVisit: content.introduction?.substring(0, 300) || "",
-                proTip: content.honestLimitations?.[0] || "",
+                proTip: (content as any).honestLimitations?.[0] || "",
                 whatToExpect: [
-                  { title: "Experience", description: content.whatToExpect || "", icon: "star" },
+                  {
+                    title: "Experience",
+                    description: (content as any).whatToExpect || "",
+                    icon: "star",
+                  },
                 ],
                 visitorTips: [
-                  { title: "Tips", description: content.visitorTips || "", icon: "lightbulb" },
+                  {
+                    title: "Tips",
+                    description: (content as any).visitorTips || "",
+                    icon: "lightbulb",
+                  },
                 ],
-                howToGetThere: { description: content.howToGetThere || "", transport: [] },
+                howToGetThere: { description: (content as any).howToGetThere || "", transport: [] },
                 answerCapsule: content.answerCapsule || "",
                 schemaPayload: content.schemaPayload || {},
               };
@@ -1070,7 +1082,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
   // GET /api/admin/tiqets/octypo-status - Get current octypo generation status
   app.get("/api/admin/tiqets/octypo-status", async (req, res) => {
     try {
-      const { pool } = await import("./db");
+      const { pool } = await import("../../db");
 
       // STRICT: Quality threshold is 90 - NO EXCEPTIONS
       const { rows: stats } = await pool.query(`
@@ -1105,7 +1117,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
   // GET /api/admin/tiqets/generation-progress - Detailed generation progress dashboard
   app.get("/api/admin/tiqets/generation-progress", async (req, res) => {
     try {
-      const { pool } = await import("./db");
+      const { pool } = await import("../../db");
       const { octypoState } = await import("../../octypo/state");
 
       const { rows: stats } = await pool.query(`

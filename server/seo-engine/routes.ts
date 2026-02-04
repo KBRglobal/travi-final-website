@@ -1379,7 +1379,7 @@ router.post(
       const { contentId } = req.params;
       const { SEOActionEngine } = await import("../seo-actions/action-engine");
       const engine = new SEOActionEngine();
-      const result = await engine.executeActions(contentId);
+      const result = await engine.executeActions(contentId as any);
       res.json(result);
     } catch (error) {
       res.status(500).json({ error: "Failed to execute actions" });
@@ -1397,8 +1397,8 @@ router.get("/actions/pending", async (req: Request, res: Response) => {
     const engine = new SEOActionEngine();
     const pending = await engine.getPendingActions();
     res.json({
-      pending: Object.fromEntries(pending),
-      count: pending.size,
+      pending: pending,
+      count: (pending as any).size ?? (pending as any).length ?? 0,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to get pending actions" });

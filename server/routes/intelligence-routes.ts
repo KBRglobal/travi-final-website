@@ -11,7 +11,7 @@ export function registerIntelligenceRoutes(app: Express): void {
   // ========== Content Intelligence Endpoints ==========
 
   // Content gaps analysis - finds missing content opportunities
-  app.get("/api/intelligence/gaps", requireAuth, async (req: AuthRequest, res: Response) => {
+  app.get("/api/intelligence/gaps", requireAuth, (async (req: AuthRequest, res: Response) => {
     try {
       const allContent = await storage.getContentsWithRelations({});
       const publishedContent = allContent.filter(c => c.status === "published");
@@ -103,10 +103,10 @@ export function registerIntelligenceRoutes(app: Express): void {
     } catch (error) {
       res.status(500).json({ error: "Failed to analyze content gaps" });
     }
-  });
+  }) as any);
 
   // Watchlist - content that may need updates (prices, hours, events)
-  app.get("/api/intelligence/watchlist", requireAuth, async (req: AuthRequest, res: Response) => {
+  app.get("/api/intelligence/watchlist", requireAuth, (async (req: AuthRequest, res: Response) => {
     try {
       const allContent = await storage.getContentsWithRelations({ status: "published" });
       const watchlist: Array<{
@@ -177,10 +177,10 @@ export function registerIntelligenceRoutes(app: Express): void {
     } catch (error) {
       res.status(500).json({ error: "Failed to build watchlist" });
     }
-  });
+  }) as any);
 
   // Events tracking - content tied to dates/events
-  app.get("/api/intelligence/events", requireAuth, async (req: AuthRequest, res: Response) => {
+  app.get("/api/intelligence/events", requireAuth, (async (req: AuthRequest, res: Response) => {
     try {
       const allContent = await storage.getContentsWithRelations({});
       const events: Array<{
@@ -231,104 +231,101 @@ export function registerIntelligenceRoutes(app: Express): void {
     } catch (error) {
       res.status(500).json({ error: "Failed to track events" });
     }
-  });
+  }) as any);
 
   // Topic clusters for SEO - groups related content
-  app.get(
-    "/api/intelligence/clusters/areas",
-    requireAuth,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const allContent = await storage.getContentsWithRelations({ status: "published" });
+  app.get("/api/intelligence/clusters/areas", requireAuth, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const allContent = await storage.getContentsWithRelations({ status: "published" });
 
-        // Group content by type
-        const clusters: Record<string, { name: string; count: number; items: string[] }> = {
-          attractions: { name: "Attractions", count: 0, items: [] },
-          hotels: { name: "Hotels", count: 0, items: [] },
-          articles: { name: "Articles", count: 0, items: [] },
-          dining: { name: "Dining", count: 0, items: [] },
-          districts: { name: "Districts", count: 0, items: [] },
-        };
+      // Group content by type
+      const clusters: Record<string, { name: string; count: number; items: string[] }> = {
+        attractions: { name: "Attractions", count: 0, items: [] },
+        hotels: { name: "Hotels", count: 0, items: [] },
+        articles: { name: "Articles", count: 0, items: [] },
+        dining: { name: "Dining", count: 0, items: [] },
+        districts: { name: "Districts", count: 0, items: [] },
+      };
 
-        for (const content of allContent) {
-          const type = content.type;
-          if (type === "attraction") {
-            clusters.attractions.count++;
-            clusters.attractions.items.push(content.title);
-          } else if (type === "hotel") {
-            clusters.hotels.count++;
-            clusters.hotels.items.push(content.title);
-          } else if (type === "article") {
-            clusters.articles.count++;
-            clusters.articles.items.push(content.title);
-          } else if (type === "dining") {
-            clusters.dining.count++;
-            clusters.dining.items.push(content.title);
-          } else if (type === "district") {
-            clusters.districts.count++;
-            clusters.districts.items.push(content.title);
-          }
+      for (const content of allContent) {
+        const type = content.type;
+        if (type === "attraction") {
+          clusters.attractions.count++;
+          clusters.attractions.items.push(content.title);
+        } else if (type === "hotel") {
+          clusters.hotels.count++;
+          clusters.hotels.items.push(content.title);
+        } else if (type === "article") {
+          clusters.articles.count++;
+          clusters.articles.items.push(content.title);
+        } else if (type === "dining") {
+          clusters.dining.count++;
+          clusters.dining.items.push(content.title);
+        } else if (type === "district") {
+          clusters.districts.count++;
+          clusters.districts.items.push(content.title);
         }
-
-        res.json({
-          clusters: Object.values(clusters).filter(c => c.count > 0),
-          total: allContent.length,
-        });
-      } catch (error) {
-        res.status(500).json({ error: "Failed to build clusters" });
       }
+
+      res.json({
+        clusters: Object.values(clusters).filter(c => c.count > 0),
+        total: allContent.length,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to build clusters" });
     }
-  );
+  }) as any);
 
   // Internal links analysis - shows link structure and orphan pages
-  app.get(
-    "/api/intelligence/internal-links",
-    requireAuth,
-    async (req: AuthRequest, res: Response) => {
-      try {
-        const links = await storage.getInternalLinks();
-        const allContent = await storage.getContentsWithRelations({ status: "published" });
+  app.get("/api/intelligence/internal-links", requireAuth, (async (
+    req: AuthRequest,
+    res: Response
+  ) => {
+    try {
+      const links = await storage.getInternalLinks();
+      const allContent = await storage.getContentsWithRelations({ status: "published" });
 
-        // Find broken links (target doesn't exist)
-        const brokenLinks: Array<{ id: string; source: string; target: string; reason: string }> =
-          [];
-        for (const link of links) {
-          if (link.targetContentId) {
-            const target = await storage.getContent(link.targetContentId);
-            if (!target) {
-              const source = await storage.getContent(link.sourceContentId || "");
-              brokenLinks.push({
-                id: link.id,
-                source: source?.title || "Unknown",
-                target: link.targetContentId,
-                reason: "Target content not found (404)",
-              });
-            }
+      // Find broken links (target doesn't exist)
+      const brokenLinks: Array<{ id: string; source: string; target: string; reason: string }> = [];
+      for (const link of links) {
+        if (link.targetContentId) {
+          const target = await storage.getContent(link.targetContentId);
+          if (!target) {
+            const source = await storage.getContent(link.sourceContentId || "");
+            brokenLinks.push({
+              id: link.id,
+              source: source?.title || "Unknown",
+              target: link.targetContentId,
+              reason: "Target content not found (404)",
+            });
           }
         }
-
-        // Find orphan pages (no inbound links)
-        const contentWithInboundLinks = new Set(links.map(l => l.targetContentId).filter(Boolean));
-        const orphanPages = allContent.filter(c => !contentWithInboundLinks.has(c.id));
-
-        res.json({
-          totalLinks: links.length,
-          brokenLinks,
-          orphanPages: orphanPages.slice(0, 20).map(p => ({
-            id: p.id,
-            title: p.title,
-            type: p.type,
-            slug: p.slug,
-          })),
-          stats: {
-            total: links.length,
-            broken: brokenLinks.length,
-            orphans: orphanPages.length,
-          },
-        });
-      } catch (error) {
-        res.status(500).json({ error: "Failed to analyze internal links" });
       }
+
+      // Find orphan pages (no inbound links)
+      const contentWithInboundLinks = new Set(links.map(l => l.targetContentId).filter(Boolean));
+      const orphanPages = allContent.filter(c => !contentWithInboundLinks.has(c.id));
+
+      res.json({
+        totalLinks: links.length,
+        brokenLinks,
+        orphanPages: orphanPages.slice(0, 20).map(p => ({
+          id: p.id,
+          title: p.title,
+          type: p.type,
+          slug: p.slug,
+        })),
+        stats: {
+          total: links.length,
+          broken: brokenLinks.length,
+          orphans: orphanPages.length,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze internal links" });
     }
-  );
+  }) as any);
 }

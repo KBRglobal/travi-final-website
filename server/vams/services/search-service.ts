@@ -41,7 +41,7 @@ export class VamsSearchService {
     const cached = await this.getFromCache(cacheKey);
 
     if (cached) {
-      log.debug({ message: `[VamsSearch] Cache hit for: ${options.query}` });
+      log.debug(`[VamsSearch] Cache hit for: ${options.query}`);
       return {
         ...cached,
         cached: true,

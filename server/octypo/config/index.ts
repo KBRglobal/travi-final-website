@@ -5,6 +5,9 @@
  * Includes encrypted secrets management and optimization settings.
  */
 
+// Import for local use
+import { secretsExist as _secretsExist, loadSecretsToEnv as _loadSecretsToEnv } from "./secrets";
+
 // Type export (interface)
 export type { OctypoSecrets } from "./secrets";
 
@@ -24,7 +27,7 @@ export {
  * Call this at server startup to load encrypted secrets
  */
 export function initializeOctypoConfig(): boolean {
-  if (!secretsExist()) {
+  if (!_secretsExist()) {
     console.log(
       "[Octypo Config] No secrets file found. Run: npx tsx server/octypo/config/secrets.ts --setup"
     );
@@ -32,7 +35,7 @@ export function initializeOctypoConfig(): boolean {
   }
 
   try {
-    const loaded = loadSecretsToEnv();
+    const loaded = _loadSecretsToEnv();
     if (loaded) {
       console.log("[Octypo Config] Secrets loaded successfully");
       return true;

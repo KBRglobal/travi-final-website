@@ -1,76 +1,42 @@
-/**
- * Unified Cognitive Layer (Stub)
- * Cognitive processing was simplified during cleanup.
- */
+// Stub - cognitive layer disabled
+// Re-export the shared type to ensure consistency
+export type { UnifiedIntentType } from "@shared/intent-schema";
+import type { UnifiedIntentType } from "@shared/intent-schema";
 
-import type { 
-  UnifiedIntentType,
-  SearchResultForChat,
-  SearchEnhancedChatContext 
-} from '../../shared/intent-schema';
-
-export interface UnifiedIntent {
-  type: UnifiedIntentType;
-  confidence: number;
-  context?: string;
+export class UnifiedCognitiveLayer {
+  async process(input: any): Promise<any> {
+    return {};
+  }
+  async analyze(content: string): Promise<any> {
+    return {};
+  }
 }
+export const cognitiveLayer = new UnifiedCognitiveLayer();
 
-export interface EntitySuggestion {
-  id: string;
-  type: string;
-  name: string;
-  score: number;
+// Intent functions
+export async function getUnifiedIntent(query: string): Promise<UnifiedIntentType | null> {
+  return null;
 }
-
-export function getUnifiedIntent(message: string): UnifiedIntent {
-  return {
-    type: 'search' as UnifiedIntentType,
-    confidence: 0.5,
-  };
+export async function applySearchToChat(searchResults: any, chatContext: any): Promise<any> {
+  return {};
 }
-
-export function applySearchToChat(
-  searchResults: SearchResultForChat[],
-  context: SearchEnhancedChatContext
-): SearchEnhancedChatContext {
-  return context;
-}
-
-export function recordIntentSignal(
-  sessionId: string,
-  intentType: UnifiedIntentType,
-  metadata?: Record<string, any>
-): void {
-  // Stub - no-op
-}
-
-export function getIntentBasedEntitySuggestions(
-  intentType: UnifiedIntentType,
-  limit: number = 5
-): EntitySuggestion[] {
+export async function recordIntentSignal(signal: any): Promise<void> {}
+export async function getIntentBasedEntitySuggestions(intent: any): Promise<any[]> {
   return [];
 }
-
-export function describeSearchContextForChat(
-  searchResults: SearchResultForChat[]
-): string {
-  return '';
+export async function describeSearchContextForChat(context: any): Promise<string> {
+  return "";
 }
-
-export function syncSearchIntentToChat(
-  searchQuery: string,
-  intent: UnifiedIntentType
-): void {
-  // Stub - no-op
-}
-
+export async function syncSearchIntentToChat(
+  query: string,
+  intent?: UnifiedIntentType
+): Promise<void> {}
 export function getIntentBoostForEntityType(
-  entityType: string,
-  intentType: UnifiedIntentType
+  type: string,
+  intent?: UnifiedIntentType | null
 ): number {
-  return 1.0;
+  return 1;
 }
-
-export function getDominantUnifiedIntent(sessionId?: string): UnifiedIntentType {
-  return 'search' as UnifiedIntentType;
+export function getDominantUnifiedIntent(context?: any): UnifiedIntentType | null {
+  return null;
 }

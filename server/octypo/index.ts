@@ -181,7 +181,9 @@ export async function generateAttractionWithOctypo(
     qualityThreshold: 0,
   });
 
-  return orchestrator.generateAttractionContent(attraction);
+  return orchestrator.generateAttractionContent(
+    attraction as any
+  ) as unknown as Promise<LegacyGenerationResult>;
 }
 
 // ============================================
@@ -212,7 +214,8 @@ export async function initializeOctypo(): Promise<boolean> {
 
   // Step 2: Initialize RSS reader
   try {
-    await rssReader.initialize();
+    const { rssReader: rssReaderModule } = await import("./rss-reader");
+    await rssReaderModule.initialize();
   } catch (error) {
     console.error("[Octypo] ⚠️  RSS reader initialization failed:", error);
   }

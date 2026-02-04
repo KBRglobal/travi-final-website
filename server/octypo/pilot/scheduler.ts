@@ -163,7 +163,7 @@ export class AutopilotScheduler {
         enabled: schedule.enabled,
         config: schedule.config,
         nextRunAt: nextRun,
-      });
+      } as any);
     }
 
     log.info(`[AutopilotScheduler] Created ${schedules.length} default schedules`);

@@ -68,7 +68,7 @@ router.get("/dashboard/kpis", async (req, res) => {
             ? Math.round((Number(row.skipped_24h) / Number(row.processed_24h)) * 100)
             : 0,
         seoAccuracy: seoAccuracyPct,
-        duplicatesBlocked: dedupStats.duplicatesFound || 0,
+        duplicatesBlocked: (dedupStats as any).duplicatesFound || 0,
         enginesHealthy: engineStats.healthy,
         enginesTotal: engineStats.total,
       },

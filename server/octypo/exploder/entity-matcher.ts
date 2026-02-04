@@ -121,7 +121,7 @@ export class EntityMatcher {
     for (const dupId of duplicateIds) {
       await db
         .update(contentEntities)
-        .set({ mergedIntoId: primaryId })
+        .set({ mergedIntoId: primaryId } as any)
         .where(eq(contentEntities.id, dupId));
     }
 
@@ -133,10 +133,10 @@ export class EntityMatcher {
       .limit(1);
 
     if (primary.length > 0) {
-      const totalArticles = (primary[0].articleCount || 0) + duplicateIds.length;
+      const totalArticles = ((primary[0] as any).articleCount || 0) + duplicateIds.length;
       await db
         .update(contentEntities)
-        .set({ articleCount: totalArticles })
+        .set({ articleCount: totalArticles } as any)
         .where(eq(contentEntities.id, primaryId));
     }
   }

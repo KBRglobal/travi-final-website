@@ -388,6 +388,8 @@ Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"..."
     const parsed = JSON.parse(jsonString);
 
     return {
+      title: parsed.title || "",
+      body: parsed.body || parsed.introduction || "",
       introduction: parsed.introduction || "",
       whatToExpect: parsed.whatToExpect || parsed.what_to_expect || "",
       visitorTips: parsed.visitorTips || parsed.visitor_tips || "",

@@ -172,7 +172,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        await storage.removeClusterMember(req.params.id, req.params.contentId);
+        await (storage as any).removeClusterMember(req.params.id, req.params.contentId);
         res.json({ success: true });
       } catch (error) {
         res.status(500).json({ error: "Failed to remove cluster member" });
@@ -188,9 +188,13 @@ export function registerContentOrganizationRoutes(app: Express): void {
     async (req, res) => {
       try {
         const { role } = req.body;
-        const member = await storage.updateClusterMember(req.params.id, req.params.contentId, {
-          role,
-        });
+        const member = await (storage as any).updateClusterMember(
+          req.params.id,
+          req.params.contentId,
+          {
+            role,
+          }
+        );
         res.json(member);
       } catch (error) {
         res.status(500).json({ error: "Failed to update cluster member" });

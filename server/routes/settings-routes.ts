@@ -22,23 +22,23 @@ export function registerSettingsRoutes(app: Express): void {
   app.get(
     "/api/settings",
     isAuthenticated,
-    requireRole("admin"),
-    async (req: AuthRequest, res: Response) => {
+    requireRole("system_admin") as any,
+    (async (req: AuthRequest, res: Response) => {
       try {
         const settings = await storage.getSettings();
         res.json(settings);
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch settings" });
       }
-    }
+    }) as any
   );
 
   // Get settings by category (for frontend grouping)
   app.get(
     "/api/settings/grouped",
     isAuthenticated,
-    requireRole("admin"),
-    async (req: AuthRequest, res: Response) => {
+    requireRole("system_admin") as any,
+    (async (req: AuthRequest, res: Response) => {
       try {
         const settings = await storage.getSettings();
         const grouped: Record<string, Record<string, unknown>> = {};
@@ -52,15 +52,15 @@ export function registerSettingsRoutes(app: Express): void {
       } catch (error) {
         res.status(500).json({ error: "Failed to fetch settings" });
       }
-    }
+    }) as any
   );
 
   // Update multiple settings at once
   app.post(
     "/api/settings/bulk",
     isAuthenticated,
-    requireRole("admin"),
-    async (req: AuthRequest, res: Response) => {
+    requireRole("system_admin") as any,
+    (async (req: AuthRequest, res: Response) => {
       try {
         const { settings } = req.body;
         if (!settings || typeof settings !== "object" || Array.isArray(settings)) {
@@ -124,7 +124,7 @@ export function registerSettingsRoutes(app: Express): void {
       } catch (error) {
         res.status(500).json({ error: "Failed to update settings" });
       }
-    }
+    }) as any
   );
 
   // ========== Content Safety Check Endpoints ==========
@@ -133,8 +133,8 @@ export function registerSettingsRoutes(app: Express): void {
   app.get(
     "/api/content/broken-links",
     isAuthenticated,
-    requireRole(["admin", "editor"]),
-    async (req: AuthRequest, res: Response) => {
+    requireRole("system_admin", "editor") as any,
+    (async (req: AuthRequest, res: Response) => {
       try {
         const links = await storage.getInternalLinks();
         const brokenLinks: {
@@ -163,15 +163,15 @@ export function registerSettingsRoutes(app: Express): void {
       } catch (error) {
         res.status(500).json({ error: "Failed to check broken links" });
       }
-    }
+    }) as any
   );
 
   // Check content status before bulk delete
   app.post(
     "/api/content/bulk-delete-check",
     isAuthenticated,
-    requireRole(["admin", "editor"]),
-    async (req: AuthRequest, res: Response) => {
+    requireRole("system_admin", "editor") as any,
+    (async (req: AuthRequest, res: Response) => {
       try {
         const { ids } = req.body;
         if (!Array.isArray(ids)) {
@@ -210,6 +210,6 @@ export function registerSettingsRoutes(app: Express): void {
       } catch (error) {
         res.status(500).json({ error: "Failed to check bulk delete" });
       }
-    }
+    }) as any
   );
 }

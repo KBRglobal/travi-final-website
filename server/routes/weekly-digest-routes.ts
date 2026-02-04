@@ -34,32 +34,19 @@ export function registerWeeklyDigestRoutes(app: Express): void {
     requirePermission("canManageUsers"),
     async (req, res) => {
       try {
-        const { sendWeeklyDigest, isWeeklyDigestEnabled } =
-          await import("../newsletter/weekly-digest");
+        const { sendWeeklyDigest } = await import("../newsletter/weekly-digest");
 
-        if (!isWeeklyDigestEnabled()) {
-          return res.status(400).json({
-            error: "Weekly digest feature is disabled. Set ENABLE_WEEKLY_DIGEST=true to enable.",
-          });
-        }
-
-        // Allow force flag to bypass week dedupe protection
-        const { force } = req.body || {};
-        const result = await sendWeeklyDigest({ force: !!force });
+        const result = await sendWeeklyDigest();
 
         if (result.success) {
           res.json({
             success: true,
-            message: `Weekly digest sent successfully to ${result.recipientCount} subscribers`,
-            campaignId: result.campaignId,
-            recipientCount: result.recipientCount,
-            weekNumber: result.weekNumber,
+            message: `Weekly digest sent successfully to ${result.sentCount} subscribers`,
+            sentCount: result.sentCount,
           });
         } else {
           res.status(400).json({
-            error: result.error || "Failed to send digest",
-            skippedReason: result.skippedReason,
-            weekNumber: result.weekNumber,
+            error: result.errors.join(", ") || "Failed to send digest",
           });
         }
       } catch (error) {
@@ -93,17 +80,12 @@ export function registerWeeklyDigestRoutes(app: Express): void {
         if (result.success) {
           res.json({
             success: true,
-            previewHtml: result.previewHtml,
-            sentTo: result.sentTo,
-            generatedAt: result.generatedAt,
-            articleCount: result.articleCount,
+            sentCount: result.sentCount,
           });
         } else {
           res.status(400).json({
             success: false,
-            error: result.error,
-            sentTo: result.sentTo,
-            generatedAt: result.generatedAt,
+            error: result.errors.join(", "),
           });
         }
       } catch (error) {
@@ -123,12 +105,8 @@ export function registerWeeklyDigestRoutes(app: Express): void {
         const result = await dryRunDigest();
 
         res.json({
-          previewHtml: result.previewHtml,
-          articleCount: result.articleCount,
-          estimatedRecipients: result.estimatedRecipients,
-          generatedAt: result.generatedAt,
-          subject: result.subject,
-          subjectHe: result.subjectHe,
+          preview: result.preview,
+          wouldSendTo: result.wouldSendTo,
         });
       } catch (error) {
         res.status(500).json({ error: "Failed to generate dry-run digest" });

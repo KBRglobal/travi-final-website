@@ -154,7 +154,7 @@ export class EntityExtractor {
     if (content.blocks && Array.isArray(content.blocks)) {
       for (const block of content.blocks) {
         if (typeof block === "object" && block !== null) {
-          const blockObj = block as Record<string, unknown>;
+          const blockObj = block as unknown as Record<string, unknown>;
           if (blockObj.contents && typeof blockObj.contents === "object") {
             const contents = blockObj.contents as Record<string, unknown>;
             if (contents.text && typeof contents.text === "string") {
@@ -318,12 +318,7 @@ export class EntityExtractor {
           entityType: entity.type,
           name: entity.name,
           normalizedName,
-          description: entity.description,
-          location: entity.location,
-          attributes: entity.attributes || {},
-          confidence: entity.confidence,
-          verified: false,
-        });
+        } as any);
       }
     }
   }

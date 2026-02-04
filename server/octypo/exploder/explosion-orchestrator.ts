@@ -23,6 +23,7 @@ import {
   ExplodedArticleType,
   ARTICLE_TYPE_METADATA,
 } from "./types";
+import { GeneratedAttractionContent } from "../types";
 
 export class ExplosionOrchestrator {
   private readonly extractor = getEntityExtractor();
@@ -42,7 +43,7 @@ export class ExplosionOrchestrator {
         status: "pending",
         articlesTarget: config.maxArticles || 10,
         config: config,
-      })
+      } as any)
       .returning();
 
     // Start processing asynchronously
@@ -84,7 +85,7 @@ export class ExplosionOrchestrator {
 
       await db
         .update(explosionJobs)
-        .set({ entitiesExtracted: extractionResult.entities.length })
+        .set({ entitiesExtracted: extractionResult.entities.length } as any)
         .where(eq(explosionJobs.id, jobId));
 
       // Step 2: Deduplicate entities
@@ -104,7 +105,7 @@ export class ExplosionOrchestrator {
 
       await db
         .update(explosionJobs)
-        .set({ ideasGenerated: ideationResult.ideas.length })
+        .set({ ideasGenerated: ideationResult.ideas.length } as any)
         .where(eq(explosionJobs.id, jobId));
 
       // Step 4: Create exploded article records
@@ -119,7 +120,7 @@ export class ExplosionOrchestrator {
             ideaDescription: idea.description,
             targetKeywords: idea.targetKeywords,
             status: "pending",
-          })
+          } as any)
           .returning();
 
         articleRecords.push(article.id);
@@ -139,7 +140,7 @@ export class ExplosionOrchestrator {
 
             await db
               .update(explosionJobs)
-              .set({ articlesGenerated })
+              .set({ articlesGenerated } as any)
               .where(eq(explosionJobs.id, jobId));
           }
         } catch (error) {
@@ -149,7 +150,7 @@ export class ExplosionOrchestrator {
             .set({
               status: "failed",
               generationAttempts: sql`generation_attempts + 1`,
-            })
+            } as any)
             .where(eq(explodedArticles.id, articleId));
         }
       }
@@ -205,7 +206,7 @@ export class ExplosionOrchestrator {
       .set({
         status: "generating",
         generationAttempts: sql`generation_attempts + 1`,
-      })
+      } as any)
       .where(eq(explodedArticles.id, articleId));
 
     // Get article type metadata
@@ -231,7 +232,7 @@ export class ExplosionOrchestrator {
     if (!result.success || !result.content) {
       await db
         .update(explodedArticles)
-        .set({ status: "failed" })
+        .set({ status: "failed" } as any)
         .where(eq(explodedArticles.id, articleId));
       return null;
     }
@@ -250,19 +251,20 @@ export class ExplosionOrchestrator {
       console.warn(`[ExplosionOrchestrator] Slug already exists: ${slug}`);
       await db
         .update(explodedArticles)
-        .set({ status: "failed" })
+        .set({ status: "failed" } as any)
         .where(eq(explodedArticles.id, articleId));
       return null;
     }
 
     // Calculate word count
+    const attractionContent = result.content as GeneratedAttractionContent;
     const wordCount = this.countWords(
       [
-        result.content.introduction,
-        result.content.whatToExpect,
-        result.content.visitorTips,
-        result.content.howToGetThere,
-        ...result.content.faqs.map(f => f.answer),
+        attractionContent.introduction,
+        attractionContent.whatToExpect,
+        attractionContent.visitorTips,
+        attractionContent.howToGetThere,
+        ...attractionContent.faqs.map(f => f.answer),
       ].join(" ")
     );
 
@@ -274,18 +276,18 @@ export class ExplosionOrchestrator {
         status: "draft", // Requires approval in semi-auto mode
         title: article.ideaTitle,
         slug,
-        metaTitle: result.content.metaTitle || article.ideaTitle.substring(0, 70),
+        metaTitle: attractionContent.metaTitle || article.ideaTitle.substring(0, 70),
         metaDescription:
-          result.content.metaDescription || result.content.introduction?.substring(0, 160),
-        summary: result.content.introduction?.substring(0, 200),
-        answerCapsule: result.content.answerCapsule,
+          attractionContent.metaDescription || attractionContent.introduction?.substring(0, 160),
+        summary: attractionContent.introduction?.substring(0, 200),
+        answerCapsule: attractionContent.answerCapsule,
         blocks: [
-          { type: "text", contents: { text: result.content.introduction || "" } },
-          { type: "text", contents: { text: result.content.whatToExpect || "" } },
-          { type: "text", contents: { text: result.content.visitorTips || "" } },
-          { type: "text", contents: { text: result.content.howToGetThere || "" } },
+          { type: "text", contents: { text: attractionContent.introduction || "" } },
+          { type: "text", contents: { text: attractionContent.whatToExpect || "" } },
+          { type: "text", contents: { text: attractionContent.visitorTips || "" } },
+          { type: "text", contents: { text: attractionContent.howToGetThere || "" } },
         ].filter(b => b.contents.text),
-        seoSchema: result.content.schemaPayload,
+        seoSchema: attractionContent.schemaPayload,
         primaryKeyword: article.targetKeywords?.[0] || undefined,
         secondaryKeywords: article.targetKeywords?.slice(1) || [],
         generatedByAI: true,
@@ -297,8 +299,8 @@ export class ExplosionOrchestrator {
     await db.insert(articles).values({
       contentId: contentRecord.id,
       category: "tips",
-      excerpt: result.content.introduction?.substring(0, 200),
-      faq: result.content.faqs || [],
+      excerpt: attractionContent.introduction?.substring(0, 200),
+      faq: attractionContent.faqs || [],
     } as any);
 
     // Update exploded article record
@@ -309,7 +311,7 @@ export class ExplosionOrchestrator {
         status: "generated",
         generatedAt: new Date(),
         quality108Score: (result.qualityScore as any)?.quality108?.totalScore || null,
-      })
+      } as any)
       .where(eq(explodedArticles.id, articleId));
 
     return contentRecord.id;

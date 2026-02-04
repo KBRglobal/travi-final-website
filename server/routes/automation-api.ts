@@ -65,7 +65,9 @@ export function registerAutomationApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req: Request, res: Response) => {
       try {
-        const { webhookManager } = await import("../webhooks/webhook-manager");
+        const { webhookManager } = (await import("../webhooks/webhook-manager" as any)) as {
+          webhookManager: { testWebhook: (id: string) => Promise<any> };
+        };
         const { id } = req.params;
         const result = await webhookManager.testWebhook(id);
         res.json(result);
@@ -171,7 +173,10 @@ export function registerAutomationApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req: Request, res: Response) => {
       try {
-        const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+        const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+          .ctaAbTesting as {
+          createTest: (data: any, userId: string | undefined) => Promise<string | null>;
+        };
         const userId = getUserId(req);
         const testId = await ctaAbTesting.createTest(req.body, userId);
         if (testId) {
@@ -187,7 +192,8 @@ export function registerAutomationApiRoutes(app: Express): void {
 
   router.get("/ab-tests", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+        .ctaAbTesting as { listTests: () => Promise<any[]> };
       const tests = await ctaAbTesting.listTests();
       res.json(tests);
     } catch (error) {
@@ -200,7 +206,8 @@ export function registerAutomationApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req: Request, res: Response) => {
       try {
-        const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+        const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+          .ctaAbTesting as { startTest: (id: string) => Promise<boolean> };
         const { id } = req.params;
         const result = await ctaAbTesting.startTest(id);
         res.json({ success: result });
@@ -215,7 +222,8 @@ export function registerAutomationApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req: Request, res: Response) => {
       try {
-        const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+        const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+          .ctaAbTesting as { stopTest: (id: string) => Promise<boolean> };
         const { id } = req.params;
         const result = await ctaAbTesting.stopTest(id);
         res.json({ success: result });
@@ -227,7 +235,8 @@ export function registerAutomationApiRoutes(app: Express): void {
 
   router.get("/ab-tests/:id/results", requireAuth, async (req: Request, res: Response) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+        .ctaAbTesting as { getTestResults: (id: string) => Promise<any> };
       const { id } = req.params;
       const results = await ctaAbTesting.getTestResults(id);
       res.json(results);
@@ -238,7 +247,10 @@ export function registerAutomationApiRoutes(app: Express): void {
 
   router.get("/ab-tests/:id/variant", async (req: Request, res: Response) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+        .ctaAbTesting as {
+        getVariant: (id: string, userId: string, sessionId: string) => Promise<any>;
+      };
       const { id } = req.params;
       const authReq = req as AuthRequest;
       const userId = authReq.user?.claims?.sub || "";
@@ -252,7 +264,17 @@ export function registerAutomationApiRoutes(app: Express): void {
 
   router.post("/ab-tests/:id/track", async (req: Request, res: Response) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = ((await import("../monetization/cta-ab-testing")) as any)
+        .ctaAbTesting as {
+        trackEvent: (
+          id: string,
+          variantId: string,
+          eventType: string,
+          userId: string | undefined,
+          sessionId: string,
+          metadata: any
+        ) => Promise<void>;
+      };
       const { id } = req.params;
       const { variantId, eventType, metadata } = req.body;
       const authReq = req as AuthRequest;

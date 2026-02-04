@@ -299,23 +299,31 @@ export async function storeQuality108Score(
       .insert(seoMetadata)
       .values({
         contentId,
-        quality108Score: score.totalScore,
-        quality108Details: score as any,
-        aeoReadiness: score.percentage >= 70,
-        internalLinkingScore: score.categories.internalLinking.score,
+        quality108Total: score.totalScore,
+        quality108Breakdown: score.categories as any,
+        quality108Grade: score.grade,
+        quality108Passed: score.passed,
+        aeoScore: score.categories.aeo,
+        internalLinksOut: score.categories.internalLinking.metrics.outboundLinks,
+        internalLinksIn: score.categories.internalLinking.metrics.inboundLinks,
+        isOrphan: score.categories.internalLinking.metrics.orphanStatus,
         lastAuditAt: now,
         updatedAt: now,
-      })
+      } as any)
       .onConflictDoUpdate({
         target: seoMetadata.contentId,
         set: {
-          quality108Score: score.totalScore,
-          quality108Details: score as any,
-          aeoReadiness: score.percentage >= 70,
-          internalLinkingScore: score.categories.internalLinking.score,
+          quality108Total: score.totalScore,
+          quality108Breakdown: score.categories as any,
+          quality108Grade: score.grade,
+          quality108Passed: score.passed,
+          aeoScore: score.categories.aeo,
+          internalLinksOut: score.categories.internalLinking.metrics.outboundLinks,
+          internalLinksIn: score.categories.internalLinking.metrics.inboundLinks,
+          isOrphan: score.categories.internalLinking.metrics.orphanStatus,
           lastAuditAt: now,
           updatedAt: now,
-        },
+        } as any,
       });
 
     log.info(
@@ -337,9 +345,9 @@ export async function getStoredQuality108Score(
       where: eq(seoMetadata.contentId, contentId),
     });
 
-    if (!metadata?.quality108Details) return null;
+    if (!metadata?.quality108Breakdown) return null;
 
-    return metadata.quality108Details as FullQuality108Score;
+    return metadata.quality108Breakdown as any as FullQuality108Score;
   } catch (error) {
     log.error("[UnifiedQualityScorer] Get score error:", error);
     return null;

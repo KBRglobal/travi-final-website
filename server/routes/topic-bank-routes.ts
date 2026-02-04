@@ -1,7 +1,347 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
 import { requirePermission, checkReadOnlyMode } from "../security";
-import { generateContentImages } from "../ai";
+import {
+  generateContentImages,
+  getAIClient,
+  getModelForProvider,
+  type GeneratedImage,
+} from "../ai";
+import { insertTopicBankSchema, type ContentBlock } from "@shared/schema";
+import { z } from "zod";
+import { getStorageManager } from "../services/storage-adapter";
+
+// Helper to clean JSON from markdown code blocks
+function cleanJsonFromMarkdown(content: string): string {
+  if (!content) return "{}";
+  let cleaned = content.trim();
+  if (cleaned.startsWith("```")) {
+    const firstNewline = cleaned.indexOf("\n");
+    if (firstNewline !== -1) {
+      cleaned = cleaned.substring(firstNewline + 1);
+    }
+    if (cleaned.endsWith("```")) {
+      cleaned = cleaned.substring(0, cleaned.length - 3);
+    }
+  }
+  cleaned = cleaned.trim() || "{}";
+
+  cleaned = cleaned.replace(/"([^"\\]|\\.)*"/g, match => {
+    return match.replace(/[\x00-\x1F\x7F]/g, char => {
+      const code = char.charCodeAt(0);
+      if (code === 0x09) return "\\t";
+      if (code === 0x0a) return "\\n";
+      if (code === 0x0d) return "\\r";
+      return `\\u${code.toString(16).padStart(4, "0")}`;
+    });
+  });
+
+  return cleaned;
+}
+
+// Safe JSON parse that handles markdown-wrapped JSON
+function safeParseJson(content: string, fallback: Record<string, unknown> = {}): any {
+  try {
+    const cleaned = cleanJsonFromMarkdown(content);
+    return JSON.parse(cleaned);
+  } catch (e) {
+    return fallback;
+  }
+}
+
+// Persist DALL-E image to storage (DALL-E URLs expire in ~1 hour)
+async function persistImageToStorage(imageUrl: string, filename: string): Promise<string | null> {
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      return null;
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const storagePath = `public/generated/${filename}`;
+    const storageManager = getStorageManager();
+    const result = await storageManager.upload(storagePath, buffer);
+
+    return result.url;
+  } catch (error) {
+    return null;
+  }
+}
+
+// Create default blocks for when validation fails
+function createDefaultBlocks(title: string): ContentBlock[] {
+  const timestamp = Date.now();
+  return [
+    {
+      id: `hero-${timestamp}-0`,
+      type: "hero",
+      data: { title, subtitle: "Discover Travel Destinations", overlayText: "" },
+      order: 0,
+    },
+    {
+      id: `text-${timestamp}-1`,
+      type: "text",
+      data: {
+        heading: "Overview",
+        content: "Content generation incomplete. Please edit this article to add more details.",
+      },
+      order: 1,
+    },
+    {
+      id: `highlights-${timestamp}-2`,
+      type: "highlights",
+      data: { content: "Feature 1\nFeature 2\nFeature 3\nFeature 4\nFeature 5\nFeature 6" },
+      order: 2,
+    },
+    {
+      id: `tips-${timestamp}-3`,
+      type: "tips",
+      data: {
+        content:
+          "Plan ahead\nBook in advance\nVisit early morning\nStay hydrated\nRespect local customs\nBring camera\nCheck weather",
+      },
+      order: 3,
+    },
+    {
+      id: `faq-${timestamp}-4`,
+      type: "faq",
+      data: {
+        question: "What are the opening hours?",
+        answer: "Check official website for current hours.",
+      },
+      order: 4,
+    },
+    {
+      id: `cta-${timestamp}-5`,
+      type: "cta",
+      data: {
+        title: "Plan Your Visit",
+        content: "Ready to experience this amazing destination? Book your trip today!",
+        buttonText: "Book Now",
+        buttonLink: "#",
+      },
+      order: 5,
+    },
+  ];
+}
+
+// Normalize a single block
+function normalizeBlock(
+  type: string,
+  data: Record<string, unknown>
+): Omit<ContentBlock, "id" | "order"> | null {
+  switch (type) {
+    case "hero":
+      return { type: "hero" as const, data };
+
+    case "text":
+      return { type: "text" as const, data };
+
+    case "highlights":
+      let highlightItems = (data as any).items || (data as any).highlights;
+      if (Array.isArray(highlightItems) && highlightItems.length > 0) {
+        const highlightContent = highlightItems
+          .map((item: unknown) => {
+            if (typeof item === "string") return item;
+            if (typeof item === "object" && item && (item as any).title) {
+              const t = item as { title?: string; description?: string };
+              return t.description ? `${t.title}: ${t.description}` : t.title;
+            }
+            return String(item);
+          })
+          .join("\n");
+        return { type: "highlights" as const, data: { ...data, content: highlightContent } };
+      }
+      if (typeof (data as any).content === "string" && (data as any).content.length > 0) {
+        return { type: "highlights" as const, data };
+      }
+      return {
+        type: "highlights" as const,
+        data: {
+          ...data,
+          content:
+            "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity",
+        },
+      };
+
+    case "tips":
+      let tipsArray = (data as any).tips || (data as any).items;
+      if (Array.isArray(tipsArray) && tipsArray.length > 0) {
+        const tipsContent = tipsArray.map((tip: unknown) => String(tip)).join("\n");
+        return { type: "tips" as const, data: { ...data, content: tipsContent } };
+      }
+      if (typeof (data as any).content === "string" && (data as any).content.length > 0) {
+        return { type: "tips" as const, data };
+      }
+      return {
+        type: "tips" as const,
+        data: {
+          ...data,
+          content:
+            "Visit during off-peak hours\nBook in advance\nWear comfortable clothing\nStay hydrated\nCheck local customs",
+        },
+      };
+
+    case "faq":
+      if (typeof (data as any).question === "string" && (data as any).question.length > 0) {
+        return { type: "faq" as const, data };
+      }
+      let faqsArray = (data as any).faqs || (data as any).items || (data as any).questions;
+      if (Array.isArray(faqsArray) && faqsArray.length > 0) {
+        const firstFaq = faqsArray[0];
+        if (typeof firstFaq === "object" && firstFaq) {
+          const q = (firstFaq as any).question || (firstFaq as any).q || "Question?";
+          const a = (firstFaq as any).answer || (firstFaq as any).a || "Answer pending.";
+          return {
+            type: "faq" as const,
+            data: { question: q, answer: a, _remainingFaqs: faqsArray.slice(1) },
+          };
+        }
+      }
+      return {
+        type: "faq" as const,
+        data: {
+          question: "What are the opening hours?",
+          answer: "Check the official website for current timings.",
+        },
+      };
+
+    case "cta":
+      return { type: "cta" as const, data };
+
+    case "image":
+      return { type: "image" as const, data };
+    case "gallery":
+      return { type: "gallery" as const, data };
+    case "info_grid":
+      return { type: "info_grid" as const, data };
+    case "quote":
+      return { type: "quote" as const, data };
+    case "banner":
+      return { type: "banner" as const, data };
+    case "recommendations":
+      return { type: "recommendations" as const, data };
+    case "related_articles":
+      return { type: "related_articles" as const, data };
+    case "room_cards":
+      return { type: "room_cards" as const, data };
+
+    default:
+      return null;
+  }
+}
+
+// Validate and normalize AI-generated content blocks
+function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBlock[] {
+  if (!Array.isArray(blocks) || blocks.length === 0) {
+    return createDefaultBlocks(title);
+  }
+
+  const normalizedBlocks: Omit<ContentBlock, "id" | "order">[] = [];
+  const blockTypes = new Set<string>();
+
+  for (const block of blocks) {
+    if (typeof block !== "object" || !block) continue;
+    const b = block as Record<string, unknown>;
+    if (typeof b.type !== "string" || !b.data) continue;
+
+    const normalized = normalizeBlock(b.type, b.data as Record<string, unknown>);
+    if (normalized) {
+      normalizedBlocks.push(normalized);
+      blockTypes.add(normalized.type);
+
+      if (normalized.type === "faq" && (normalized.data as any)._remainingFaqs) {
+        const remainingFaqs = (normalized.data as any)._remainingFaqs as Array<{
+          question?: string;
+          answer?: string;
+          q?: string;
+          a?: string;
+        }>;
+        delete (normalized.data as any)._remainingFaqs;
+
+        for (const faq of remainingFaqs) {
+          const q = faq.question || faq.q || "Question?";
+          const a = faq.answer || faq.a || "Answer pending.";
+          normalizedBlocks.push({
+            type: "faq" as const,
+            data: { question: q, answer: a },
+          });
+        }
+      }
+    }
+  }
+
+  if (!blockTypes.has("hero")) {
+    normalizedBlocks.unshift({
+      type: "hero",
+      data: { title, subtitle: "Discover Travel Destinations", overlayText: "" },
+    });
+  }
+
+  if (!blockTypes.has("highlights")) {
+    normalizedBlocks.push({
+      type: "highlights",
+      data: {
+        content:
+          "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity\nEssential stop\nNotable landmark",
+      },
+    });
+  }
+
+  if (!blockTypes.has("tips")) {
+    normalizedBlocks.push({
+      type: "tips",
+      data: {
+        content:
+          "Plan your visit during cooler months\nBook tickets in advance\nArrive early to avoid crowds\nBring comfortable walking shoes\nStay hydrated\nCheck dress codes beforehand\nConsider guided tours for insights",
+      },
+    });
+  }
+
+  if (!blockTypes.has("faq")) {
+    const defaultFaqs = [
+      {
+        question: "What are the opening hours?",
+        answer: "Opening hours vary by season. Check the official website for current timings.",
+      },
+      {
+        question: "How much does entry cost?",
+        answer:
+          "Pricing varies depending on the package selected. Visit the official website for current rates.",
+      },
+      {
+        question: "Is parking available?",
+        answer: "Yes, parking is available on-site for visitors.",
+      },
+    ];
+    for (const faq of defaultFaqs) {
+      normalizedBlocks.push({
+        type: "faq",
+        data: { question: faq.question, answer: faq.answer },
+      });
+    }
+  }
+
+  if (!blockTypes.has("cta")) {
+    normalizedBlocks.push({
+      type: "cta",
+      data: {
+        title: "Plan Your Visit",
+        content: "Ready to experience this amazing destination? Book your trip today!",
+        buttonText: "Book Now",
+        buttonLink: "#",
+      },
+    });
+  }
+
+  return normalizedBlocks.map((block, index) => ({
+    ...block,
+    id: `${block.type}-${Date.now()}-${index}`,
+    order: index,
+  }));
+}
 
 export function registerTopicBankRoutes(app: Express): void {
   // Topic Bank CRUD

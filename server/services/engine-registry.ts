@@ -560,6 +560,10 @@ class EngineRegistryClass {
     }
   }
 
+  reportFailure(engineId: string, error: string): void {
+    this.reportError(engineId, error);
+  }
+
   reportError(engineId: string, error: string): void {
     const engine = this.engines.find(e => e.id === engineId);
     if (engine) {

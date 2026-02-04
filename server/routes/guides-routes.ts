@@ -229,7 +229,7 @@ router.post("/api/admin/guides/import-wikivoyage", async (req: Request, res: Res
       .replace(/\b\w/g, (c: string) => c.toUpperCase());
     const targetLocales = locales || getAvailableLocales();
 
-    const result = await importWikivoyageGuide(destinationId, destName, targetLocales);
+    const result = await (importWikivoyageGuide as any)(destinationId, destName, targetLocales);
 
     res.json({
       success: result.success,

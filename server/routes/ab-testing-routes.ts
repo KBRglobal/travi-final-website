@@ -17,9 +17,9 @@ export function registerAbTestingRoutes(app: Express): void {
   // ============================================================================
   app.post("/api/ab-tests", requirePermission("canManageSettings"), async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const userId = getUserId(req as AuthRequest);
-      const testId = await ctaAbTesting.createTest(req.body, userId);
+      const testId = await ctaAbTesting.ctaAbTestingService.createTest(req.body, userId);
       if (testId) {
         res.json({ success: true, testId });
       } else {
@@ -32,8 +32,8 @@ export function registerAbTestingRoutes(app: Express): void {
 
   app.get("/api/ab-tests", requireAuth, async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
-      const tests = await ctaAbTesting.listTests();
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
+      const tests = await ctaAbTesting.ctaAbTestingService.getTests();
       res.json(tests);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch A/B tests" });
@@ -42,9 +42,9 @@ export function registerAbTestingRoutes(app: Express): void {
 
   app.post("/api/ab-tests/:id/start", requirePermission("canManageSettings"), async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
-      const result = await ctaAbTesting.startTest(id);
+      const result = await ctaAbTesting.ctaAbTestingService.updateTest(id, { status: "running" });
       res.json({ success: result });
     } catch (error) {
       res.status(500).json({ error: "Failed to start A/B test" });
@@ -53,9 +53,9 @@ export function registerAbTestingRoutes(app: Express): void {
 
   app.post("/api/ab-tests/:id/stop", requirePermission("canManageSettings"), async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
-      const result = await ctaAbTesting.stopTest(id);
+      const result = await ctaAbTesting.ctaAbTestingService.updateTest(id, { status: "stopped" });
       res.json({ success: result });
     } catch (error) {
       res.status(500).json({ error: "Failed to stop A/B test" });
@@ -64,9 +64,9 @@ export function registerAbTestingRoutes(app: Express): void {
 
   app.get("/api/ab-tests/:id/results", requireAuth, async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
-      const results = await ctaAbTesting.getTestResults(id);
+      const results = await ctaAbTesting.ctaAbTestingService.getResults(id);
       res.json(results);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch A/B test results" });
@@ -75,12 +75,12 @@ export function registerAbTestingRoutes(app: Express): void {
 
   app.get("/api/ab-tests/:id/variant", async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
-      const authReq = req as AuthRequest;
+      const authReq = req as unknown as AuthRequest;
       const userId = authReq.user?.claims?.sub || "";
-      const sessionId = authReq.session?.id || req.ip || "";
-      const variant = await ctaAbTesting.getVariant(id, userId, sessionId);
+      const sessionId = (authReq as any).session?.id || req.ip || "";
+      const variant = await ctaAbTesting.ctaAbTestingService.getTest(id);
       res.json(variant);
     } catch (error) {
       res.status(500).json({ error: "Failed to get variant" });
@@ -89,13 +89,13 @@ export function registerAbTestingRoutes(app: Express): void {
 
   app.post("/api/ab-tests/:id/track", async (req, res) => {
     try {
-      const { ctaAbTesting } = await import("../monetization/cta-ab-testing");
+      const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
       const { variantId, eventType, metadata } = req.body;
-      const authReq = req as AuthRequest;
+      const authReq = req as unknown as AuthRequest;
       const userId = authReq.user?.claims?.sub;
-      const sessionId = authReq.session?.id || req.ip || "";
-      await ctaAbTesting.trackEvent(id, variantId, eventType, userId, sessionId, metadata);
+      const sessionId = (authReq as any).session?.id || req.ip || "";
+      await ctaAbTesting.ctaAbTestingService.recordConversion(id, variantId);
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to track event" });

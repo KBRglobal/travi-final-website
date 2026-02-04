@@ -15,8 +15,6 @@ export {
 
 export { MagicAIButton, type MagicAIButtonProps, type GeneratedContent } from "./MagicAIButton";
 
-export { MultiLanguageEditor, type MultiLanguageEditorProps } from "./MultiLanguageEditor";
-
 // Universal Magic Button System
 export {
   MagicButton,

@@ -14,7 +14,7 @@ import { jobQueue } from "../job-queue";
 import { db } from "../db";
 import { rssFeeds, contents, articles, backgroundJobs } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { GeneratedContent } from "./types";
+import { GeneratedContent, GeneratedAttractionContent } from "./types";
 import { rssReader, isSensitiveTopic, detectDestinationFromContent } from "./rss-reader";
 import { getOctypoOrchestrator } from "./orchestration/orchestrator";
 import { onContentStatusChange } from "../localization/publish-hooks";
@@ -56,11 +56,12 @@ async function saveGeneratedArticle(
   autoPublish: boolean = false
 ): Promise<{ contentId: string; articleId: string; published: boolean }> {
   // Calculate word count
+  const attractionContent = content as GeneratedAttractionContent;
   const allText = [
     content.introduction,
-    content.whatToExpect,
-    content.visitorTips,
-    content.howToGetThere,
+    attractionContent.whatToExpect,
+    attractionContent.visitorTips,
+    attractionContent.howToGetThere,
     content.body,
     content.conclusion,
   ]
@@ -127,6 +128,7 @@ async function saveGeneratedArticle(
 
 function buildContentBlocks(content: GeneratedContent): any[] {
   const blocks: any[] = [];
+  const attractionContent = content as GeneratedAttractionContent;
 
   if (content.introduction) {
     blocks.push({
@@ -136,7 +138,7 @@ function buildContentBlocks(content: GeneratedContent): any[] {
     });
   }
 
-  if (content.whatToExpect) {
+  if (attractionContent.whatToExpect) {
     blocks.push({
       type: "heading",
       id: `h-expect-${Date.now()}`,
@@ -145,11 +147,11 @@ function buildContentBlocks(content: GeneratedContent): any[] {
     blocks.push({
       type: "text",
       id: `expect-${Date.now()}`,
-      data: { content: content.whatToExpect },
+      data: { content: attractionContent.whatToExpect },
     });
   }
 
-  if (content.visitorTips) {
+  if (attractionContent.visitorTips) {
     blocks.push({
       type: "heading",
       id: `h-tips-${Date.now()}`,
@@ -158,11 +160,11 @@ function buildContentBlocks(content: GeneratedContent): any[] {
     blocks.push({
       type: "text",
       id: `tips-${Date.now()}`,
-      data: { content: content.visitorTips },
+      data: { content: attractionContent.visitorTips },
     });
   }
 
-  if (content.howToGetThere) {
+  if (attractionContent.howToGetThere) {
     blocks.push({
       type: "heading",
       id: `h-directions-${Date.now()}`,
@@ -171,7 +173,7 @@ function buildContentBlocks(content: GeneratedContent): any[] {
     blocks.push({
       type: "text",
       id: `directions-${Date.now()}`,
-      data: { content: content.howToGetThere },
+      data: { content: attractionContent.howToGetThere },
     });
   }
 
@@ -289,7 +291,7 @@ async function processRSSJob(
   // Step 1: Fetch and store new items from RSS
   const fetchResult = await rssReader.fetchFeed(feed.id);
   if (fetchResult.errors.length > 0) {
-    log.warn("[OctypoJobHandler] RSS fetch had errors:", fetchResult.errors);
+    log.warn("[OctypoJobHandler] RSS fetch had errors:", { errors: fetchResult.errors });
   }
 
   // Step 2: Get unprocessed items (limit to respect per-destination quota)
@@ -432,7 +434,7 @@ async function handleOctypoJob(
   data: OctypoJobData,
   jobId?: string
 ): Promise<{ success: boolean; result: unknown }> {
-  log.info("[OctypoJobHandler] Handling job:", data.jobType);
+  log.info("[OctypoJobHandler] Handling job:", { jobType: data.jobType });
 
   let result: {
     success: boolean;

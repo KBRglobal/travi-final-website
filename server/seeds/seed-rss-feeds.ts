@@ -11,7 +11,15 @@ import { fileURLToPath } from "url";
 interface RssFeedSeed {
   name: string;
   url: string;
-  category: "attractions" | "hotels" | "food" | "transport" | "events" | "tips" | "news" | "shopping";
+  category:
+    | "attractions"
+    | "hotels"
+    | "food"
+    | "transport"
+    | "events"
+    | "tips"
+    | "news"
+    | "shopping";
   destinationSlug: string | null; // null for global feeds
   language: string;
   region: string;
@@ -593,7 +601,7 @@ export async function seedRssFeeds(
           region: feed.region,
           isActive: true,
           fetchIntervalMinutes: 60,
-        });
+        } as any);
       }
 
       console.log(`   ✅ ${dryRun ? "[DRY] " : ""}Created: ${feed.name}`);

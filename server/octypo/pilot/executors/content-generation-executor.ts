@@ -147,7 +147,7 @@ async function generateFromRSS(
               answerCapsule: result.content.answerCapsule,
               blocks: [
                 { type: "text", contents: { text: result.content.introduction || "" } },
-                { type: "text", contents: { text: result.content.whatToExpect || "" } },
+                { type: "text", contents: { text: (result.content as any).whatToExpect || "" } },
               ].filter(b => b.contents.text),
               generatedByAI: true,
             } as any)

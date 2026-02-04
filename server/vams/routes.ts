@@ -198,11 +198,11 @@ router.get("/assets", async (req: Request, res: Response) => {
     const conditions: any[] = [];
 
     if (provider) {
-      conditions.push(eq(vamsAssets.provider, provider as string));
+      conditions.push(eq(vamsAssets.provider as any, provider as string));
     }
 
     if (status) {
-      conditions.push(eq(vamsAssets.status, status as string));
+      conditions.push(eq(vamsAssets.status as any, status as string));
     }
 
     if (search) {
@@ -305,7 +305,7 @@ router.delete("/assets/:id", async (req: Request, res: Response) => {
 
     await db
       .update(vamsAssets)
-      .set({ status: "archived", updatedAt: new Date() })
+      .set({ status: "archived", updatedAt: new Date() } as any)
       .where(eq(vamsAssets.id, id));
 
     res.json({

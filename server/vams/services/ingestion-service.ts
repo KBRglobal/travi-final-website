@@ -68,7 +68,7 @@ export class VamsIngestionService {
         fileSize: imageBuffer.length,
         tags: options.tags || [],
         status: "ready",
-      });
+      } as any);
 
       log.info(`[VamsIngestion] Completed ingestion for asset ${assetId}`);
 
@@ -86,7 +86,7 @@ export class VamsIngestionService {
       try {
         await db
           .update(vamsAssets)
-          .set({ status: "failed", updatedAt: new Date() })
+          .set({ status: "failed", updatedAt: new Date() } as any)
           .where(eq(vamsAssets.id, assetId));
       } catch {
         // Ignore cleanup errors
@@ -159,7 +159,7 @@ export class VamsIngestionService {
         position: options?.position,
         caption: options?.caption,
         altTextOverride: options?.altTextOverride,
-      });
+      } as any);
 
       return true;
     } catch (error) {
