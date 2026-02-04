@@ -282,7 +282,7 @@ export default function PublicNews() {
     },
   });
 
-  const articles: Article[] = articlesData?.contents || [];
+  const articles: Article[] = Array.isArray(articlesData) ? articlesData : [];
 
   // Filter articles based on selections
   const filteredArticles = useMemo(() => {
