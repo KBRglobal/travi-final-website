@@ -256,10 +256,11 @@ router.get("/assets", async (req: Request, res: Response) => {
       perPage: perPageNum,
     });
   } catch (error) {
-    log.error("[VAMS Routes] List assets error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    log.error("[VAMS Routes] List assets error:", { message: errorMessage });
     res.status(500).json({
       success: false,
-      error: "Failed to list assets",
+      error: `Failed to list assets: ${errorMessage}`,
     });
   }
 });

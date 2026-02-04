@@ -1,10 +1,35 @@
 /**
- * Script to create VAMS tables directly
+ * Script to create/fix VAMS tables directly
  */
 import { pool } from "../server/db";
 
+async function fixVamsSchema() {
+  try {
+    console.log("Fixing VAMS schema...");
+
+    // Fix vams_asset_variants: rename 'type' to 'variant_type' if needed
+    await pool.query(`
+      DO $$ BEGIN
+        ALTER TABLE vams_asset_variants RENAME COLUMN type TO variant_type;
+      EXCEPTION WHEN undefined_column THEN
+        NULL;
+      WHEN duplicate_column THEN
+        NULL;
+      END $$;
+    `);
+
+    console.log("Schema fixed!");
+    return;
+  } catch (error) {
+    console.error("Fix error:", error instanceof Error ? error.message : error);
+  }
+}
+
 async function createVamsTables() {
   try {
+    // First try to fix existing schema
+    await fixVamsSchema();
+
     console.log("Creating VAMS enums...");
 
     // Create enums
