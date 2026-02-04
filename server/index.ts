@@ -44,6 +44,7 @@ import {
 import { runProductionSeed } from "./lib/production-seed";
 import { registerOctypoJobHandler } from "./octypo/job-handler";
 import { initializeGatekeeper } from "./octypo/gatekeeper";
+import { initializeRssFeedItemsTable } from "./octypo/rss-reader";
 import { startBackgroundServices, stopBackgroundServices } from "./services/background-services";
 import { db } from "./db";
 import { destinations } from "@shared/schema";
@@ -552,7 +553,10 @@ async function initializeServer() {
     registerOctypoJobHandler();
     log("[OctypoV2] Content generation job handler registered", "server");
 
-    initializeGatekeeper();
+    // Initialize RSS feed items table with Gate1 columns
+    await initializeRssFeedItemsTable();
+
+    await initializeGatekeeper();
     log("[Gatekeeper] Autonomous content pipeline initialized", "server");
 
     // Start all background services (translation, RSS scheduler, governance)

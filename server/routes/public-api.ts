@@ -1290,4 +1290,9 @@ export function registerPublicApiRoutes(app: Express): void {
   });
 
   app.use("/api/public", router);
+
+  // Alias for backward compatibility - redirect /api/destinations to /api/public/destinations
+  app.get("/api/destinations", (req, res) => {
+    res.redirect(307, `/api/public/destinations${req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : ""}`);
+  });
 }

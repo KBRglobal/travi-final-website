@@ -539,6 +539,19 @@ class RSSReader {
 
 export const rssReader = new RSSReader();
 
+/**
+ * Initialize RSS feed items table with Gate1 columns
+ * Call this on server startup to ensure schema is ready
+ */
+export async function initializeRssFeedItemsTable(): Promise<void> {
+  try {
+    await rssReader.initialize();
+    console.log("[RSS Reader] Feed items table initialized with Gate1 columns");
+  } catch (error) {
+    console.error("[RSS Reader] Failed to initialize feed items table:", error);
+  }
+}
+
 // ============================================================================
 // SENSITIVE TOPIC FILTER
 // ============================================================================
