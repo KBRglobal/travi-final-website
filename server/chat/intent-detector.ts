@@ -1,9 +1,9 @@
 /**
  * Intent Detector - Keyword-based intent detection for chat messages
- * 
+ *
  * Detects user intent WITHOUT using AI - pure keyword/pattern matching.
  * This keeps chat responses fast and avoids extra API calls.
- * 
+ *
  * Intent Types:
  * - browse: User wants to explore/see destinations, hotels, attractions
  * - compare: User wants to compare two or more options
@@ -15,7 +15,7 @@
 /**
  * Intent type enum (per requirements: browse, compare, plan, learn)
  */
-export type Intent = 'browse' | 'compare' | 'plan' | 'learn';
+export type Intent = "browse" | "compare" | "plan" | "learn";
 
 /**
  * Intent detection result with numeric confidence (0-1) and extracted entities
@@ -25,7 +25,7 @@ export interface IntentResult {
   confidence: number;
   extractedEntities: {
     destinations?: string[];
-    contentTypes?: ('hotel' | 'attraction' | 'article' | 'restaurant')[];
+    contentTypes?: ("hotel" | "attraction" | "article" | "restaurant")[];
     comparisonTerms?: string[];
   };
 }
@@ -58,7 +58,7 @@ const INTENT_PATTERNS: Record<Intent, RegExp[]> = {
     /things?\s+to\s+do/i,
     /places?\s+to\s+(visit|go|see|eat|stay)/i,
   ],
-  
+
   compare: [
     /compare/i,
     /vs\.?/i,
@@ -71,7 +71,7 @@ const INTENT_PATTERNS: Record<Intent, RegExp[]> = {
     /should\s+i\s+(go\s+to|visit|choose)/i,
     /what('s|\s+is)\s+the\s+difference/i,
   ],
-  
+
   plan: [
     /plan\s+(a\s+|my\s+)?trip/i,
     /planning\s+(a\s+|my\s+)?/i,
@@ -90,7 +90,7 @@ const INTENT_PATTERNS: Record<Intent, RegExp[]> = {
     /help\s+me\s+plan/i,
     /organize\s+(a\s+|my\s+)?trip/i,
   ],
-  
+
   learn: [
     /what\s+(is|are|was|were)/i,
     /who\s+(is|are|was|were)/i,
@@ -120,81 +120,105 @@ const INTENT_PATTERNS: Record<Intent, RegExp[]> = {
 /**
  * Keywords that indicate specific content types
  */
-const CONTENT_TYPE_KEYWORDS: Record<string, 'hotel' | 'attraction' | 'article' | 'restaurant'> = {
-  hotel: 'hotel',
-  hotels: 'hotel',
-  accommodation: 'hotel',
-  stay: 'hotel',
-  resort: 'hotel',
-  hostel: 'hotel',
-  airbnb: 'hotel',
-  lodging: 'hotel',
-  
-  attraction: 'attraction',
-  attractions: 'attraction',
-  landmark: 'attraction',
-  landmarks: 'attraction',
-  sight: 'attraction',
-  sights: 'attraction',
-  sightseeing: 'attraction',
-  museum: 'attraction',
-  museums: 'attraction',
-  monument: 'attraction',
-  monuments: 'attraction',
-  
-  restaurant: 'restaurant',
-  restaurants: 'restaurant',
-  food: 'restaurant',
-  dining: 'restaurant',
-  eat: 'restaurant',
-  eating: 'restaurant',
-  cuisine: 'restaurant',
-  cafe: 'restaurant',
-  cafes: 'restaurant',
-  
-  article: 'article',
-  articles: 'article',
-  guide: 'article',
-  guides: 'article',
-  blog: 'article',
-  post: 'article',
-  read: 'article',
-  tip: 'article',
-  tips: 'article',
+const CONTENT_TYPE_KEYWORDS: Record<string, "hotel" | "attraction" | "article" | "restaurant"> = {
+  hotel: "hotel",
+  hotels: "hotel",
+  accommodation: "hotel",
+  stay: "hotel",
+  resort: "hotel",
+  hostel: "hotel",
+  airbnb: "hotel",
+  lodging: "hotel",
+
+  attraction: "attraction",
+  attractions: "attraction",
+  landmark: "attraction",
+  landmarks: "attraction",
+  sight: "attraction",
+  sights: "attraction",
+  sightseeing: "attraction",
+  museum: "attraction",
+  museums: "attraction",
+  monument: "attraction",
+  monuments: "attraction",
+
+  restaurant: "restaurant",
+  restaurants: "restaurant",
+  food: "restaurant",
+  dining: "restaurant",
+  eat: "restaurant",
+  eating: "restaurant",
+  cuisine: "restaurant",
+  cafe: "restaurant",
+  cafes: "restaurant",
+
+  article: "article",
+  articles: "article",
+  guide: "article",
+  guides: "article",
+  blog: "article",
+  post: "article",
+  read: "article",
+  tip: "article",
+  tips: "article",
 };
 
 /**
  * Common destination names for extraction
  */
+// Destinations with actual content in our database
+// Kept in sync with DESTINATIONS_WITH_GUIDES in guide-insights.tsx
 const KNOWN_DESTINATIONS = [
-  'dubai', 'abu dhabi', 'abudhabi', 'abu-dhabi',
-  'paris', 'london', 'new york', 'nyc', 'newyork',
-  'tokyo', 'singapore', 'bangkok', 'hong kong', 'hongkong',
-  'barcelona', 'rome', 'amsterdam', 'istanbul',
-  'las vegas', 'lasvegas', 'los angeles', 'losangeles', 'la',
-  'miami', 'chicago', 'san francisco',
-  'bali', 'maldives', 'phuket', 'seoul', 'sydney',
-  'cairo', 'marrakech', 'cape town', 'zanzibar',
+  // UAE
+  "dubai",
+  "abu dhabi",
+  "abudhabi",
+  "abu-dhabi",
+  "ras al khaimah",
+  "ras-al-khaimah",
+  // Europe
+  "paris",
+  "london",
+  "barcelona",
+  "rome",
+  "amsterdam",
+  "istanbul",
+  // Asia
+  "tokyo",
+  "singapore",
+  "bangkok",
+  "hong kong",
+  "hongkong",
+  // USA
+  "new york",
+  "nyc",
+  "newyork",
+  "las vegas",
+  "lasvegas",
+  "los angeles",
+  "losangeles",
+  "la",
+  "miami",
 ];
 
 /**
  * Detect intent from a chat message using keyword matching
- * 
+ *
  * @param message - The user's chat message
  * @returns IntentResult with detected intent, confidence, and extracted entities
  */
 export function detectIntent(message: string): IntentResult {
   const normalizedMessage = message.toLowerCase().trim();
-  
+
   // Default to 'browse' if intent is unclear (per requirements)
   const result: IntentResult = {
-    intent: 'browse',
+    intent: "browse",
     confidence: 0.3,
     extractedEntities: {},
   };
-  
+
   // Extract content types mentioned
-  const contentTypes = new Set<'hotel' | 'attraction' | 'article' | 'restaurant'>();
+  const contentTypes = new Set<"hotel" | "attraction" | "article" | "restaurant">();
   for (const [keyword, type] of Object.entries(CONTENT_TYPE_KEYWORDS)) {
     if (normalizedMessage.includes(keyword)) {
       contentTypes.add(type);
@@ -203,20 +227,20 @@ export function detectIntent(message: string): IntentResult {
   if (contentTypes.size > 0) {
     result.extractedEntities.contentTypes = Array.from(contentTypes);
   }
-  
+
   // Extract destinations mentioned
   const destinations: string[] = [];
   for (const dest of KNOWN_DESTINATIONS) {
     if (normalizedMessage.includes(dest)) {
       // Normalize the destination name
       const normalized = dest
-        .replace(/\s+/g, '-')
-        .replace('abudhabi', 'abu-dhabi')
-        .replace('newyork', 'new-york')
-        .replace('hongkong', 'hong-kong')
-        .replace('lasvegas', 'las-vegas')
-        .replace('losangeles', 'los-angeles');
-      
+        .replace(/\s+/g, "-")
+        .replace("abudhabi", "abu-dhabi")
+        .replace("newyork", "new-york")
+        .replace("hongkong", "hong-kong")
+        .replace("lasvegas", "las-vegas")
+        .replace("losangeles", "los-angeles");
+
       if (!destinations.includes(normalized)) {
         destinations.push(normalized);
       }
@@ -225,13 +249,13 @@ export function detectIntent(message: string): IntentResult {
   if (destinations.length > 0) {
     result.extractedEntities.destinations = destinations;
   }
-  
+
   // Check for comparison intent first (higher priority due to specific pattern)
   const comparisonMatch = normalizedMessage.match(/(\w+)\s+(vs\.?|versus|or)\s+(\w+)/i);
   if (comparisonMatch) {
     result.extractedEntities.comparisonTerms = [comparisonMatch[1], comparisonMatch[3]];
   }
-  
+
   // Score each intent based on pattern matches
   const scores: Record<Intent, number> = {
     browse: 0,
@@ -239,7 +263,7 @@ export function detectIntent(message: string): IntentResult {
     plan: 0,
     learn: 0,
   };
-  
+
   for (const [intent, patterns] of Object.entries(INTENT_PATTERNS) as [Intent, RegExp[]][]) {
     for (const pattern of patterns) {
       if (pattern.test(normalizedMessage)) {
@@ -247,20 +271,20 @@ export function detectIntent(message: string): IntentResult {
       }
     }
   }
-  
+
   // Find the highest scoring intent (default to 'browse' if unclear)
   let maxScore = 0;
-  let detectedIntent: Intent = 'browse';
-  
+  let detectedIntent: Intent = "browse";
+
   for (const [intent, score] of Object.entries(scores) as [Intent, number][]) {
     if (score > maxScore) {
       maxScore = score;
       detectedIntent = intent;
     }
   }
-  
+
   result.intent = detectedIntent;
-  
+
   // Set confidence based on score (numeric 0-1 scale)
   // Max possible patterns per intent is around 20, normalize to 0-1
   const maxPossiblePatterns = 5; // Use a reasonable threshold for high confidence
@@ -275,15 +299,18 @@ export function detectIntent(message: string): IntentResult {
   } else {
     result.confidence = 0.3;
   }
-  
+
   // Boost compare intent if comparison terms were found
-  if (result.extractedEntities.comparisonTerms && result.extractedEntities.comparisonTerms.length >= 2) {
-    if (result.intent !== 'compare' && scores.compare > 0) {
-      result.intent = 'compare';
+  if (
+    result.extractedEntities.comparisonTerms &&
+    result.extractedEntities.comparisonTerms.length >= 2
+  ) {
+    if (result.intent !== "compare" && scores.compare > 0) {
+      result.intent = "compare";
       result.confidence = 0.95;
     }
   }
-  
+
   return result;
 }
 
@@ -292,21 +319,21 @@ export function detectIntent(message: string): IntentResult {
  */
 export function describeIntent(intentResult: IntentResult): string {
   const { intent, confidence, extractedEntities } = intentResult;
-  
-  const confidenceLabel = confidence >= 0.8 ? 'high' : confidence >= 0.5 ? 'medium' : 'low';
+
+  const confidenceLabel = confidence >= 0.8 ? "high" : confidence >= 0.5 ? "medium" : "low";
   let description = `Intent: ${intent} (${confidenceLabel}, ${(confidence * 100).toFixed(0)}%)`;
-  
+
   if (extractedEntities.destinations?.length) {
-    description += ` | Destinations: ${extractedEntities.destinations.join(', ')}`;
+    description += ` | Destinations: ${extractedEntities.destinations.join(", ")}`;
   }
-  
+
   if (extractedEntities.contentTypes?.length) {
-    description += ` | Content: ${extractedEntities.contentTypes.join(', ')}`;
+    description += ` | Content: ${extractedEntities.contentTypes.join(", ")}`;
   }
-  
+
   if (extractedEntities.comparisonTerms?.length) {
-    description += ` | Comparing: ${extractedEntities.comparisonTerms.join(' vs ')}`;
+    description += ` | Comparing: ${extractedEntities.comparisonTerms.join(" vs ")}`;
   }
-  
+
   return description;
 }

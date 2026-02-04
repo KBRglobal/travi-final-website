@@ -6,27 +6,46 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Link } from "wouter";
 import DOMPurify from "isomorphic-dompurify";
-import { 
-  BookOpen, Bed, Utensils, Camera, ShoppingBag, MapPin, 
-  Plane, Train, ArrowRight, Sparkles, Globe
+import {
+  BookOpen,
+  Bed,
+  Utensils,
+  Camera,
+  ShoppingBag,
+  MapPin,
+  Plane,
+  Train,
+  ArrowRight,
+  Sparkles,
+  Globe,
 } from "lucide-react";
 
 type SectionType = "sleep" | "eat" | "see" | "do" | "buy" | "drink" | "get-in" | "get-around";
 
 // Destinations that have imported travel guide content
-// Update this list as more guides are imported
+// TODO: Fetch from /api/destinations instead of hardcoding
 export const DESTINATIONS_WITH_GUIDES = [
+  // UAE
   { slug: "dubai", name: "Dubai" },
   { slug: "abu-dhabi", name: "Abu Dhabi" },
+  { slug: "ras-al-khaimah", name: "Ras Al Khaimah" },
+  // Europe
   { slug: "london", name: "London" },
-  { slug: "bangkok", name: "Bangkok" },
+  { slug: "paris", name: "Paris" },
   { slug: "barcelona", name: "Barcelona" },
+  { slug: "rome", name: "Rome" },
   { slug: "amsterdam", name: "Amsterdam" },
-  { slug: "bali", name: "Bali" },
-  { slug: "hong-kong", name: "Hong Kong" },
   { slug: "istanbul", name: "Istanbul" },
+  // Asia
+  { slug: "tokyo", name: "Tokyo" },
+  { slug: "singapore", name: "Singapore" },
+  { slug: "bangkok", name: "Bangkok" },
+  { slug: "hong-kong", name: "Hong Kong" },
+  // USA
+  { slug: "new-york", name: "New York" },
   { slug: "las-vegas", name: "Las Vegas" },
   { slug: "los-angeles", name: "Los Angeles" },
+  { slug: "miami", name: "Miami" },
 ] as const;
 
 interface GuideInsightsProps {
@@ -81,15 +100,18 @@ const SECTION_TITLES: Record<SectionType, string> = {
 
 function sanitizeAndTruncateHTML(html: string, maxLength: number = 600): string {
   const clean = DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li', 'a', 'span'],
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+    ALLOWED_TAGS: ["p", "br", "strong", "em", "b", "i", "ul", "ol", "li", "a", "span"],
+    ALLOWED_ATTR: ["href", "target", "rel", "class"],
   });
-  
-  const text = clean.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const text = clean
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   if (text.length <= maxLength) return clean;
-  
+
   const truncatedText = text.slice(0, maxLength);
-  const lastSpace = truncatedText.lastIndexOf(' ');
+  const lastSpace = truncatedText.lastIndexOf(" ");
   return `<p>${truncatedText.slice(0, lastSpace > 0 ? lastSpace : maxLength)}...</p>`;
 }
 
@@ -151,7 +173,7 @@ export function GuideInsights({
   const guideSlug = data.slug || `${destinationSlug}-travel-guide`;
 
   return (
-    <Card 
+    <Card
       className="overflow-hidden border-l-4 border-l-primary hover-elevate transition-all"
       data-testid={`guide-insights-${destinationSlug}-${sectionType}`}
     >
@@ -176,9 +198,9 @@ export function GuideInsights({
             </div>
           </div>
         </div>
-        
+
         <ScrollArea style={{ maxHeight }} className="pr-4">
-          <div 
+          <div
             className="prose prose-sm prose-slate max-w-none text-muted-foreground 
                        prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 prose-a:text-primary
                        prose-strong:text-foreground prose-headings:text-foreground"
@@ -189,11 +211,14 @@ export function GuideInsights({
 
         {showViewGuide && (
           <div className="mt-4 pt-3 border-t flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">
-              Read the full guide for more details
-            </p>
+            <p className="text-xs text-muted-foreground">Read the full guide for more details</p>
             <Link href={`/guides/${guideSlug}?locale=${locale}`}>
-              <Button variant="ghost" size="sm" className="text-primary" data-testid={`view-guide-${destinationSlug}`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-primary"
+                data-testid={`view-guide-${destinationSlug}`}
+              >
                 View Full Guide
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
@@ -221,7 +246,7 @@ export function GuideInsightsCarousel({
   return (
     <ScrollArea className="w-full">
       <div className="flex gap-4 pb-4">
-        {sections.map((sectionType) => (
+        {sections.map(sectionType => (
           <div key={sectionType} className="w-[350px] flex-shrink-0">
             <GuideInsights
               destinationSlug={destinationSlug}
@@ -262,17 +287,13 @@ export function MultiDestinationInsights({
             <Icon className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold">
-              {title || `${sectionTitle} Insider Tips`}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Local insights from our travel guides
-            </p>
+            <h2 className="text-2xl font-bold">{title || `${sectionTitle} Insider Tips`}</h2>
+            <p className="text-sm text-muted-foreground">Local insights from our travel guides</p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {destinations.slice(0, 6).map((dest) => (
+          {destinations.slice(0, 6).map(dest => (
             <GuideInsights
               key={dest.slug}
               destinationSlug={dest.slug}

@@ -274,7 +274,6 @@ export const FALLBACK_REGION_LINKS: FallbackRegionLink[] = [
       { name: "Tokyo", slug: "/destinations/tokyo" },
       { name: "Singapore", slug: "/destinations/singapore" },
       { name: "Bangkok", slug: "/destinations/bangkok" },
-      { name: "Bali", slug: "/destinations/bali" },
       { name: "Hong Kong", slug: "/destinations/hong-kong" },
     ],
     sortOrder: 2,
