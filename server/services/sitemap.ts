@@ -1,13 +1,7 @@
-import {
-  SUPPORTED_LOCALES,
-  type Locale,
-  tiqetsAttractions,
-  helpCategories,
-  helpArticles,
-} from "@shared/schema";
+import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions } from "@shared/schema";
 import { storage } from "../storage";
 import { db } from "../db";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 const BASE_URL = "https://travi.world";
 

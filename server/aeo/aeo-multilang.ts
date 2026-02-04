@@ -4,7 +4,7 @@
  */
 
 import { db } from "../db";
-import { aeoAnswerCapsules, contents, translations } from "../../shared/schema";
+import { aeoAnswerCapsules } from "../../shared/schema";
 import { eq, and } from "drizzle-orm";
 import { getAllUnifiedProviders } from "../ai/providers";
 import { AEO_LOCALE_PRIORITY, ANSWER_CAPSULE_CONFIG } from "./aeo-config";

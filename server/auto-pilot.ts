@@ -274,11 +274,7 @@ export const autoPublisher = {
    * Actions to take after content is published
    */
   async onContentPublished(contentId: string): Promise<void> {
-    // 1. Auto-translate - DISABLED (January 2026)
-    // Translation is now manual-only via admin UI
-    // if (autoPilotConfig.autoTranslateOnPublish) {
-    //   await autoTranslator.triggerTranslation(contentId);
-    // }
+    // 1. Auto-translate is disabled - translation is manual-only via admin UI
 
     // 2. Auto-place affiliate links
     if (autoPilotConfig.autoPlaceAffiliates) {
@@ -1098,24 +1094,7 @@ export const autoDestinationGenerator = {
         `Auto-generated content for ${destination.name} - SEO Score: ${validationResult.score}, Links: ${linksAdded}`
       );
 
-      // Queue translations for the newly generated content - DISABLED (January 2026)
-      // Translation is now manual-only via admin UI
-      // if (autoPilotConfig.autoTranslateOnPublish) {
-      //   try {
-      //     const translationResult = await translateDestinationContent(destinationId, {
-      //       priorityOnly: true,
-      //       immediate: false,
-      //     });
-      //     destinationLogger.info(
-      //       `Queued ${translationResult.queued} translations for ${destination.name}`
-      //     );
-      //   } catch (translateError) {
-      //     destinationLogger.warn(
-      //       { error: String(translateError) },
-      //       `Translation queueing failed for ${destination.name} - content was still generated successfully`
-      //     );
-      //   }
-      // }
+      // Auto-translation disabled - use admin UI for translations
       destinationLogger.info(`Auto-translation DISABLED - use admin UI for ${destination.name}`);
 
       return {

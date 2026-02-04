@@ -13,11 +13,36 @@ import {
   districts,
   articles,
   events,
+  destinations,
   aeoAnswerCapsules,
   aeoSchemaEnhancements,
 } from "../../shared/schema";
 import { eq, and } from "drizzle-orm";
-import { AEO_SCHEMA_TYPES } from "./aeo-config";
+
+// City to currency mapping (destination-agnostic)
+const CITY_CURRENCY_MAP: Record<string, string> = {
+  dubai: "AED",
+  "abu dhabi": "AED",
+  "ras al khaimah": "AED",
+  paris: "EUR",
+  london: "GBP",
+  "new york": "USD",
+  tokyo: "JPY",
+  singapore: "SGD",
+  barcelona: "EUR",
+  rome: "EUR",
+  amsterdam: "EUR",
+  bangkok: "THB",
+  "hong kong": "HKD",
+  istanbul: "TRY",
+  "las vegas": "USD",
+  "los angeles": "USD",
+  miami: "USD",
+};
+
+function getCurrencyForCity(cityName: string): string | undefined {
+  return CITY_CURRENCY_MAP[cityName.toLowerCase()];
+}
 
 // Types
 export interface SchemaOptions {
@@ -280,6 +305,15 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
       });
       if (!district) return null;
 
+      // Get country from destination if available (destination-agnostic)
+      let countryCode: string | undefined;
+      if (district.destinationId) {
+        const dest = await db.query.destinations.findFirst({
+          where: eq(destinations.id, district.destinationId),
+        });
+        countryCode = dest?.country;
+      }
+
       return {
         "@type": ["Place", "TouristDestination"],
         "@id": `${siteUrl}/districts/${content.slug}#district`,
@@ -290,7 +324,8 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
         address: {
           "@type": "PostalAddress",
           addressLocality: district.neighborhood || district.location,
-          addressCountry: "AE",
+          // Only include country if known (destination-agnostic)
+          ...(countryCode && { addressCountry: countryCode }),
         },
         touristType: district.targetAudience || [],
       };
@@ -301,6 +336,10 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
         where: eq(events.contentId, contentId),
       });
       if (!event) return null;
+
+      // Try to infer currency from venue location (destination-agnostic)
+      const venueLower = (event.venue || "").toLowerCase();
+      const currency = getCurrencyForCity(venueLower);
 
       return {
         "@type": "Event",
@@ -323,7 +362,8 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
             "@type": "Offer",
             url: event.ticketUrl,
             ...(event.ticketPrice && { price: event.ticketPrice }),
-            priceCurrency: "AED",
+            // Only include currency if we can determine it (destination-agnostic)
+            ...(currency && { priceCurrency: currency }),
             availability: "https://schema.org/InStock",
           },
         }),

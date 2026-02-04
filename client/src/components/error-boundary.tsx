@@ -32,11 +32,6 @@ export class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Error Boundary caught an error:", error, errorInfo);
     this.setState({ errorInfo });
-
-    // TODO: Send to error tracking service (e.g., Sentry)
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(error);
-    // }
   }
 
   private handleRetry = () => {
@@ -61,9 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
               <CardTitle>Something went wrong</CardTitle>
-              <CardDescription>
-                An unexpected error occurred. Please try again.
-              </CardDescription>
+              <CardDescription>An unexpected error occurred. Please try again.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {process.env.NODE_ENV === "development" && this.state.error && (
@@ -76,9 +69,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   <RefreshCcw className="mr-2 h-4 w-4" />
                   Try Again
                 </Button>
-                <Button onClick={this.handleReload}>
-                  Reload Page
-                </Button>
+                <Button onClick={this.handleReload}>Reload Page</Button>
               </div>
             </CardContent>
           </Card>

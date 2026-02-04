@@ -10,16 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { MagicButton, MagicAllButton } from "@/components/magic-button";
-import {
-  Image as ImageIcon,
-  Save,
-  Loader2,
-  Plus,
-  Trash2,
-  GripVertical,
-  Eye,
-  Palette,
-} from "lucide-react";
+import { Image as ImageIcon, Save, Loader2, GripVertical, Palette } from "lucide-react";
 
 interface HeroImage {
   filename: string;

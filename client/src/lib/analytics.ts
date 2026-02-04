@@ -1,10 +1,24 @@
 // Google Analytics Integration
 // Using Replit blueprint for GA4 integration
 
+// Google Analytics types
+type GtagCommand = "config" | "event" | "js" | "set";
+type GtagConfigParams = { page_path?: string; [key: string]: unknown };
+type GtagEventParams = {
+  event_category?: string;
+  event_label?: string;
+  value?: number;
+  [key: string]: unknown;
+};
+
 declare global {
   interface Window {
-    dataLayer: any[];
-    gtag: (...args: any[]) => void;
+    dataLayer: Array<unknown>;
+    gtag: (
+      command: GtagCommand,
+      targetOrDate: string | Date,
+      params?: GtagConfigParams | GtagEventParams
+    ) => void;
   }
 }
 

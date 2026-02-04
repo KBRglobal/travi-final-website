@@ -7,10 +7,10 @@
  * - CAPTCHA verification
  */
 
+import type { Request, Response, NextFunction } from "express";
 import { db } from "./db";
-import { users, auditLogs, twoFactorSecrets } from "@shared/schema";
+import { auditLogs, twoFactorSecrets } from "@shared/schema";
 import { eq, desc, and, gte, lte, sql, like } from "drizzle-orm";
-import { cache } from "./cache";
 import * as crypto from "crypto";
 import { authenticator } from "otplib";
 
@@ -149,9 +149,10 @@ export const rateLimiter = {
    * Get Express middleware
    */
   middleware(action: string) {
-    return async (req: any, res: any, next: any) => {
-      const ip = req.ip || req.connection.remoteAddress;
-      const userId = req.user?.id;
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const ip = req.ip || req.socket?.remoteAddress;
+      const userId = (req as Request & { user?: { id?: string; claims?: { sub?: string } } }).user
+        ?.id;
 
       const result = await this.check(ip, action, userId);
 
@@ -924,20 +925,21 @@ export const captcha = {
    * Express middleware for CAPTCHA verification
    */
   middleware(options?: { action?: string; scoreThreshold?: number }) {
-    return async (req: any, res: any, next: any) => {
-      const token = req.body.captchaToken || req.headers["x-captcha-token"];
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const token = req.body?.captchaToken || req.headers["x-captcha-token"];
 
       if (!token) {
         return res.status(400).json({ error: "CAPTCHA token required" });
       }
 
-      const ip = req.ip || req.connection.remoteAddress;
+      const ip = req.ip || req.socket?.remoteAddress || "";
       const result = await this.verify(token, ip);
+      const userId = (req as Request & { user?: { id?: string } }).user?.id;
 
       if (!result.success) {
         await auditLogger.log({
           action: "security:captcha_failed",
-          userId: req.user?.id || null,
+          userId: userId || null,
           ipAddress: ip,
           details: { errorCodes: result.errorCodes, action: options?.action },
           severity: "warning",

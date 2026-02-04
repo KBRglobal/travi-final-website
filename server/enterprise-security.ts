@@ -11,6 +11,7 @@
  * - Secure Session Management
  */
 
+import type { Request, Response, NextFunction } from "express";
 import { db } from "./db";
 import { users, sessions } from "@shared/schema";
 import { eq, and, gte, desc, sql } from "drizzle-orm";
@@ -130,18 +131,22 @@ export const deviceFingerprint = {
   /**
    * Extract fingerprint from request
    */
-  extractFromRequest(req: any): DeviceFingerprint {
+  extractFromRequest(req: Request): DeviceFingerprint {
+    const getHeader = (name: string): string => {
+      const val = req.headers[name];
+      return typeof val === "string" ? val : "";
+    };
     return {
-      userAgent: req.headers["user-agent"] || "",
-      acceptLanguage: req.headers["accept-language"] || "",
-      acceptEncoding: req.headers["accept-encoding"] || "",
-      timezone: req.headers["x-timezone"] || req.body?.timezone,
-      screenResolution: req.headers["x-screen-resolution"] || req.body?.screenResolution,
-      platform: req.headers["x-platform"] || req.body?.platform,
-      colorDepth: parseInt(req.headers["x-color-depth"]) || undefined,
-      hardwareConcurrency: parseInt(req.headers["x-hardware-concurrency"]) || undefined,
-      deviceMemory: parseFloat(req.headers["x-device-memory"]) || undefined,
-      touchSupport: req.headers["x-touch-support"] === "true",
+      userAgent: getHeader("user-agent"),
+      acceptLanguage: getHeader("accept-language"),
+      acceptEncoding: getHeader("accept-encoding"),
+      timezone: getHeader("x-timezone") || req.body?.timezone,
+      screenResolution: getHeader("x-screen-resolution") || req.body?.screenResolution,
+      platform: getHeader("x-platform") || req.body?.platform,
+      colorDepth: parseInt(getHeader("x-color-depth")) || undefined,
+      hardwareConcurrency: parseInt(getHeader("x-hardware-concurrency")) || undefined,
+      deviceMemory: parseFloat(getHeader("x-device-memory")) || undefined,
+      touchSupport: getHeader("x-touch-support") === "true",
     };
   },
 
@@ -403,7 +408,8 @@ export const contextualAuth = {
     }
 
     // Check for impossible travel (if we have previous login)
-    // TODO: Implement with session history
+    // TODO: Implement impossible travel detection - requires storing previous login
+    // location/timestamp in session history and comparing geo distance vs time elapsed
 
     // 3. Time-based Check
     const now = new Date();
@@ -518,7 +524,7 @@ interface AbacPolicy {
 interface AbacCondition {
   attribute: string;
   operator: "eq" | "ne" | "in" | "nin" | "gt" | "gte" | "lt" | "lte" | "contains" | "regex";
-  value: any;
+  value: string | number | boolean | string[] | number[];
 }
 
 // Policy store
@@ -610,9 +616,9 @@ const abacPolicies: AbacPolicy[] = [
   },
 ];
 
-function evaluateCondition(condition: AbacCondition, context: Record<string, any>): boolean {
+function evaluateCondition(condition: AbacCondition, context: Record<string, unknown>): boolean {
   // Get attribute value from nested path (e.g., "subject.role")
-  const getValue = (path: string): any => {
+  const getValue = (path: string): unknown => {
     // Handle special $subject reference
     let actualPath = path;
     if (path.startsWith("$subject.")) {
@@ -620,16 +626,16 @@ function evaluateCondition(condition: AbacCondition, context: Record<string, any
     }
 
     const parts = actualPath.split(".");
-    let value = context;
+    let value: unknown = context;
     for (const part of parts) {
       if (value === undefined || value === null) return undefined;
-      value = value[part];
+      value = (value as Record<string, unknown>)[part];
     }
     return value;
   };
 
   const attrValue = getValue(condition.attribute);
-  let compareValue = condition.value;
+  let compareValue: unknown = condition.value;
 
   // Resolve $references in value
   if (typeof compareValue === "string" && compareValue.startsWith("$")) {
@@ -642,21 +648,29 @@ function evaluateCondition(condition: AbacCondition, context: Record<string, any
     case "ne":
       return attrValue !== compareValue;
     case "in":
-      return Array.isArray(compareValue) && compareValue.includes(attrValue);
+      return Array.isArray(compareValue) && compareValue.includes(attrValue as never);
     case "nin":
-      return Array.isArray(compareValue) && !compareValue.includes(attrValue);
+      return Array.isArray(compareValue) && !compareValue.includes(attrValue as never);
     case "gt":
-      return attrValue > compareValue;
+      return (attrValue as number) > (compareValue as number);
     case "gte":
-      return attrValue >= compareValue;
+      return (attrValue as number) >= (compareValue as number);
     case "lt":
-      return attrValue < compareValue;
+      return (attrValue as number) < (compareValue as number);
     case "lte":
-      return attrValue <= compareValue;
+      return (attrValue as number) <= (compareValue as number);
     case "contains":
-      return typeof attrValue === "string" && attrValue.includes(compareValue);
+      return (
+        typeof attrValue === "string" &&
+        typeof compareValue === "string" &&
+        attrValue.includes(compareValue)
+      );
     case "regex":
-      return typeof attrValue === "string" && new RegExp(compareValue).test(attrValue);
+      return (
+        typeof attrValue === "string" &&
+        typeof compareValue === "string" &&
+        new RegExp(compareValue).test(attrValue)
+      );
     default:
       return false;
   }
@@ -866,12 +880,13 @@ export const exponentialBackoff = {
    * Express middleware for rate limiting with backoff
    */
   middleware(keyPrefix: string) {
-    return async (req: any, res: any, next: any) => {
-      const ip = req.ip || req.connection.remoteAddress || "unknown";
-      const userId = req.user?.claims?.sub;
+    const self = this;
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const ip = req.ip || req.socket?.remoteAddress || "unknown";
+      const userId = (req as Request & { user?: { claims?: { sub?: string } } }).user?.claims?.sub;
       const key = `${keyPrefix}:${userId || ip}`;
 
-      const status = this.isBlocked(key);
+      const status = self.isBlocked(key);
 
       if (status.blocked) {
         res.setHeader("Retry-After", Math.ceil((status.retryAfterMs || 0) / 1000));
@@ -882,13 +897,13 @@ export const exponentialBackoff = {
         });
       }
 
-      // Attach failure handler to response
-      res.recordFailure = () => {
-        return this.recordFailure(key);
+      // Attach failure handler to response using res.locals
+      res.locals.recordFailure = () => {
+        return self.recordFailure(key);
       };
 
-      res.resetBackoff = () => {
-        this.reset(key);
+      res.locals.resetBackoff = () => {
+        self.reset(key);
       };
 
       next();
@@ -1261,7 +1276,7 @@ export const threatIntelligence = {
   /**
    * Analyze request for threat patterns
    */
-  analyzeRequest(req: any): {
+  analyzeRequest(req: Request): {
     isThreat: boolean;
     indicators: ThreatIndicator[];
     riskScore: number;
@@ -1269,7 +1284,7 @@ export const threatIntelligence = {
     const indicators: ThreatIndicator[] = [];
     let riskScore = 0;
 
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.ip || req.socket?.remoteAddress || "";
     const userAgent = req.headers["user-agent"] || "";
     const path = req.path;
 
@@ -1338,22 +1353,28 @@ export const threatIntelligence = {
    * Express middleware for threat detection
    */
   middleware() {
-    return async (req: any, res: any, next: any) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       // Skip threat detection for approved bots (AI crawlers, search engines)
       const userAgent = req.headers["user-agent"];
-      if (req.isApprovedBot || isApprovedBot(userAgent)) {
-        req.threatAnalysis = { isThreat: false, indicators: [], riskScore: 0 };
+      const extReq = req as Request & {
+        isApprovedBot?: boolean;
+        threatAnalysis?: { isThreat: boolean; indicators: ThreatIndicator[]; riskScore: number };
+      };
+      if (extReq.isApprovedBot || isApprovedBot(userAgent)) {
+        extReq.threatAnalysis = { isThreat: false, indicators: [], riskScore: 0 };
         return next();
       }
 
       const analysis = this.analyzeRequest(req);
 
       if (analysis.isThreat) {
-        const ip = req.ip || req.connection.remoteAddress;
+        const ip = req.ip || req.socket?.remoteAddress || "";
+        const userId = (req as Request & { user?: { claims?: { sub?: string } } }).user?.claims
+          ?.sub;
 
         await auditLogger.log({
           action: "security:threat_detected",
-          userId: req.user?.claims?.sub || null,
+          userId: userId || null,
           ipAddress: ip,
           details: {
             path: req.path,
@@ -1372,7 +1393,7 @@ export const threatIntelligence = {
       }
 
       // Attach threat info for use by other middleware
-      req.threatAnalysis = analysis;
+      extReq.threatAnalysis = analysis;
       next();
     };
   },

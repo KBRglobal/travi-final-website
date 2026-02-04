@@ -211,15 +211,6 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 /**
- * Account lockout tracking - Legacy (single identifier)
- */
-interface LockoutEntry {
-  failedAttempts: number;
-  lockedUntil?: number;
-  lastFailedAttempt?: number;
-}
-
-/**
  * Dual lockout entry - tracks both IP and username failures
  */
 interface DualLockoutEntry {
@@ -231,12 +222,8 @@ interface DualLockoutEntry {
 }
 
 // In-memory stores for dual lockout tracking
-// Key prefix: "ip:" for IP entries, "user:" for username entries
 const ipLockoutStore = new Map<string, DualLockoutEntry>();
 const usernameLockoutStore = new Map<string, DualLockoutEntry>();
-
-// Legacy store for backward compatibility
-const lockoutStore = new Map<string, LockoutEntry>();
 
 // Store timer reference for cleanup
 let cleanupTimerId: NodeJS.Timeout | null = null;
@@ -248,13 +235,6 @@ function startCleanupTimer() {
   cleanupTimerId = setInterval(
     () => {
       const now = Date.now();
-
-      // Clean legacy store
-      lockoutStore.forEach((entry, key) => {
-        if (entry.lockedUntil && entry.lockedUntil < now) {
-          lockoutStore.delete(key);
-        }
-      });
 
       // Clean IP lockout store
       ipLockoutStore.forEach((entry, key) => {
@@ -304,27 +284,6 @@ export function cleanupLockoutTimer(): void {
     clearInterval(cleanupTimerId);
     cleanupTimerId = null;
   }
-}
-
-/**
- * Record a failed login attempt (legacy - single identifier)
- * @deprecated Use recordDualLockoutFailure instead
- */
-export function recordFailedLogin(identifier: string): void {
-  const now = Date.now();
-  const entry = lockoutStore.get(identifier) || {
-    failedAttempts: 0,
-  };
-
-  entry.failedAttempts++;
-  entry.lastFailedAttempt = now;
-
-  // Lock account if threshold exceeded
-  if (entry.failedAttempts >= PASSWORD_POLICY.maxFailedAttempts) {
-    entry.lockedUntil = now + PASSWORD_POLICY.lockoutDuration;
-  }
-
-  lockoutStore.set(identifier, entry);
 }
 
 /**
@@ -399,44 +358,6 @@ export function recordDualLockoutFailure(username: string, ip: string): void {
   }
 
   usernameLockoutStore.set(normalizedUsername, userEntry);
-}
-
-/**
- * Check if account is locked (legacy - single identifier)
- * @deprecated Use checkDualLockout instead
- */
-export function isAccountLocked(identifier: string): {
-  locked: boolean;
-  remainingTime?: number;
-  attempts?: number;
-} {
-  const entry = lockoutStore.get(identifier);
-
-  if (!entry) {
-    return { locked: false };
-  }
-
-  const now = Date.now();
-
-  // Check if lockout period has expired
-  if (entry.lockedUntil && entry.lockedUntil > now) {
-    return {
-      locked: true,
-      remainingTime: Math.ceil((entry.lockedUntil - now) / 1000 / 60), // minutes
-      attempts: entry.failedAttempts,
-    };
-  }
-
-  // Lockout expired, clean up
-  if (entry.lockedUntil && entry.lockedUntil <= now) {
-    lockoutStore.delete(identifier);
-    return { locked: false };
-  }
-
-  return {
-    locked: false,
-    attempts: entry.failedAttempts,
-  };
 }
 
 /**
@@ -519,13 +440,6 @@ export function checkDualLockout(
 }
 
 /**
- * Clear failed login attempts (on successful login)
- */
-export function clearFailedLogins(identifier: string): void {
-  lockoutStore.delete(identifier);
-}
-
-/**
  * Clear dual lockout entries on successful login
  */
 export function clearDualLockout(username: string, ip: string): void {
@@ -536,34 +450,55 @@ export function clearDualLockout(username: string, ip: string): void {
 
   // Clear username lockout
   usernameLockoutStore.delete(normalizedUsername);
-
-  // Also clear legacy store
-  lockoutStore.delete(normalizedUsername);
 }
 
 /**
  * Get lockout status for admin/debugging
  */
-export function getLockoutStats(): Array<{
-  identifier: string;
-  failedAttempts: number;
-  lockedUntil?: Date;
-}> {
-  const stats: Array<{
-    identifier: string;
+export function getLockoutStats(): {
+  ipLockouts: Array<{
+    ip: string;
+    failedAttempts: number;
+    lockedUntil?: Date;
+  }>;
+  usernameLockouts: Array<{
+    username: string;
+    failedAttempts: number;
+    lockedUntil?: Date;
+    distinctIps: number;
+  }>;
+} {
+  const ipLockouts: Array<{
+    ip: string;
     failedAttempts: number;
     lockedUntil?: Date;
   }> = [];
 
-  lockoutStore.forEach((entry, identifier) => {
-    stats.push({
-      identifier,
+  const usernameLockouts: Array<{
+    username: string;
+    failedAttempts: number;
+    lockedUntil?: Date;
+    distinctIps: number;
+  }> = [];
+
+  ipLockoutStore.forEach((entry, ip) => {
+    ipLockouts.push({
+      ip,
       failedAttempts: entry.failedAttempts,
       lockedUntil: entry.lockedUntil ? new Date(entry.lockedUntil) : undefined,
     });
   });
 
-  return stats;
+  usernameLockoutStore.forEach((entry, username) => {
+    usernameLockouts.push({
+      username,
+      failedAttempts: entry.failedAttempts,
+      lockedUntil: entry.lockedUntil ? new Date(entry.lockedUntil) : undefined,
+      distinctIps: entry.failingIps?.size || 0,
+    });
+  });
+
+  return { ipLockouts, usernameLockouts };
 }
 
 /**

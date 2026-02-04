@@ -5,9 +5,32 @@
 
 import { db } from "./db";
 import {
-  contents, translations, users, teams, teamMembers,
-  mediaFiles, rssFeeds, affiliateLinks, tags, contentTags,
-  siteSettings, contentClusters, clusterMembers
+  contents,
+  translations,
+  users,
+  teams,
+  teamMembers,
+  mediaFiles,
+  rssFeeds,
+  affiliateLinks,
+  tags,
+  contentTags,
+  siteSettings,
+  contentClusters,
+  clusterMembers,
+  type Content,
+  type Translation,
+  type User,
+  type Team,
+  type TeamMember,
+  type MediaFile,
+  type RssFeed,
+  type AffiliateLink,
+  type Tag,
+  type ContentTag,
+  type SiteSetting,
+  type ContentCluster,
+  type ClusterMember,
 } from "@shared/schema";
 import { desc } from "drizzle-orm";
 import { Readable } from "stream";
@@ -32,24 +55,35 @@ export interface ExportOptions {
   toDate?: Date;
 }
 
+/** Sanitized user for export (excludes sensitive data) */
+export interface ExportUser {
+  id: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  role: User["role"];
+  isActive: boolean;
+  createdAt: Date | null;
+}
+
 export interface ExportData {
   version: string;
   exportedAt: string;
   options: ExportOptions;
   data: {
-    contents?: any[];
-    translations?: any[];
-    users?: any[];
-    teams?: any[];
-    teamMembers?: any[];
-    mediaFiles?: any[];
-    settings?: any[];
-    tags?: any[];
-    contentTags?: any[];
-    clusters?: any[];
-    clusterMembers?: any[];
-    affiliateLinks?: any[];
-    rssFeeds?: any[];
+    contents?: Content[];
+    translations?: Translation[];
+    users?: ExportUser[];
+    teams?: Team[];
+    teamMembers?: TeamMember[];
+    mediaFiles?: MediaFile[];
+    settings?: SiteSetting[];
+    tags?: Tag[];
+    contentTags?: ContentTag[];
+    clusters?: ContentCluster[];
+    clusterMembers?: ClusterMember[];
+    affiliateLinks?: AffiliateLink[];
+    rssFeeds?: RssFeed[];
   };
   stats: {
     totalRecords: number;
@@ -91,7 +125,7 @@ export const exportService = {
       includeRssFeeds = true,
     } = options;
 
-    const data: ExportData['data'] = {};
+    const data: ExportData["data"] = {};
     const stats: Record<string, number> = {};
 
     // Export contents
@@ -220,7 +254,12 @@ export const importService = {
   },
 
   async importData(exportData: ExportData, options: ImportOptions = {}): Promise<ImportResult> {
-    const { overwriteExisting = false, skipUsers = true, skipSettings = false, dryRun = false } = options;
+    const {
+      overwriteExisting = false,
+      skipUsers = true,
+      skipSettings = false,
+      dryRun = false,
+    } = options;
 
     const result: ImportResult = {
       success: true,
@@ -236,7 +275,11 @@ export const importService = {
       // Import tags first (they might be referenced by content)
       if (data.tags && data.tags.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          tags, data.tags, 'id', overwriteExisting, dryRun
+          tags,
+          data.tags,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.tags = imported;
         result.skipped.tags = skipped;
@@ -245,7 +288,11 @@ export const importService = {
       // Import clusters
       if (data.clusters && data.clusters.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          contentClusters, data.clusters, 'id', overwriteExisting, dryRun
+          contentClusters,
+          data.clusters,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.clusters = imported;
         result.skipped.clusters = skipped;
@@ -254,7 +301,11 @@ export const importService = {
       // Import teams
       if (data.teams && data.teams.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          teams, data.teams, 'id', overwriteExisting, dryRun
+          teams,
+          data.teams,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.teams = imported;
         result.skipped.teams = skipped;
@@ -263,7 +314,11 @@ export const importService = {
       // Import users (if not skipped)
       if (!skipUsers && data.users && data.users.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          users, data.users, 'id', overwriteExisting, dryRun
+          users,
+          data.users,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.users = imported;
         result.skipped.users = skipped;
@@ -272,7 +327,11 @@ export const importService = {
       // Import team members
       if (data.teamMembers && data.teamMembers.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          teamMembers, data.teamMembers, 'id', overwriteExisting, dryRun
+          teamMembers,
+          data.teamMembers,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.teamMembers = imported;
         result.skipped.teamMembers = skipped;
@@ -281,7 +340,11 @@ export const importService = {
       // Import contents
       if (data.contents && data.contents.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          contents, data.contents, 'id', overwriteExisting, dryRun
+          contents,
+          data.contents,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.contents = imported;
         result.skipped.contents = skipped;
@@ -290,7 +353,11 @@ export const importService = {
       // Import translations
       if (data.translations && data.translations.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          translations, data.translations, 'id', overwriteExisting, dryRun
+          translations,
+          data.translations,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.translations = imported;
         result.skipped.translations = skipped;
@@ -299,7 +366,11 @@ export const importService = {
       // Import content-tag associations
       if (data.contentTags && data.contentTags.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          contentTags, data.contentTags, 'id', overwriteExisting, dryRun
+          contentTags,
+          data.contentTags,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.contentTags = imported;
         result.skipped.contentTags = skipped;
@@ -308,7 +379,11 @@ export const importService = {
       // Import cluster members
       if (data.clusterMembers && data.clusterMembers.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          clusterMembers, data.clusterMembers, 'id', overwriteExisting, dryRun
+          clusterMembers,
+          data.clusterMembers,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.clusterMembers = imported;
         result.skipped.clusterMembers = skipped;
@@ -317,7 +392,11 @@ export const importService = {
       // Import settings (if not skipped)
       if (!skipSettings && data.settings && data.settings.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          siteSettings, data.settings, 'key', overwriteExisting, dryRun
+          siteSettings,
+          data.settings,
+          "key",
+          overwriteExisting,
+          dryRun
         );
         result.imported.settings = imported;
         result.skipped.settings = skipped;
@@ -326,7 +405,11 @@ export const importService = {
       // Import affiliate links
       if (data.affiliateLinks && data.affiliateLinks.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          affiliateLinks, data.affiliateLinks, 'id', overwriteExisting, dryRun
+          affiliateLinks,
+          data.affiliateLinks,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.affiliateLinks = imported;
         result.skipped.affiliateLinks = skipped;
@@ -335,7 +418,11 @@ export const importService = {
       // Import RSS feeds
       if (data.rssFeeds && data.rssFeeds.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          rssFeeds, data.rssFeeds, 'id', overwriteExisting, dryRun
+          rssFeeds,
+          data.rssFeeds,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.rssFeeds = imported;
         result.skipped.rssFeeds = skipped;
@@ -344,16 +431,19 @@ export const importService = {
       // Import media file metadata
       if (data.mediaFiles && data.mediaFiles.length > 0) {
         const [imported, skipped] = await this.importRecords(
-          mediaFiles, data.mediaFiles, 'id', overwriteExisting, dryRun
+          mediaFiles,
+          data.mediaFiles,
+          "id",
+          overwriteExisting,
+          dryRun
         );
         result.imported.mediaFiles = imported;
         result.skipped.mediaFiles = skipped;
       }
-
     } catch (error) {
       result.success = false;
       result.errors.push({
-        type: 'general',
+        type: "general",
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -361,9 +451,9 @@ export const importService = {
     return result;
   },
 
-  async importRecords(
+  async importRecords<T extends Record<string, unknown>>(
     table: any,
-    records: any[],
+    records: T[],
     idField: string,
     overwrite: boolean,
     dryRun: boolean
@@ -378,15 +468,13 @@ export const importService = {
     for (const record of records) {
       try {
         if (overwrite) {
-          await db.insert(table).values(record as any)
-            .onConflictDoUpdate({
-              target: (table as any)[idField],
-              set: record,
-            });
+          await db.insert(table).values(record).onConflictDoUpdate({
+            target: table[idField],
+            set: record,
+          });
           imported++;
         } else {
-          await db.insert(table).values(record as any)
-            .onConflictDoNothing();
+          await db.insert(table).values(record).onConflictDoNothing();
           imported++;
         }
       } catch (error) {
@@ -438,13 +526,34 @@ export const backupService = {
       settingsCount,
       tagsCount,
     ] = await Promise.all([
-      db.select().from(contents).then(r => r.length),
-      db.select().from(translations).then(r => r.length),
-      db.select().from(users).then(r => r.length),
-      db.select().from(teams).then(r => r.length),
-      db.select().from(mediaFiles).then(r => r.length),
-      db.select().from(siteSettings).then(r => r.length),
-      db.select().from(tags).then(r => r.length),
+      db
+        .select()
+        .from(contents)
+        .then(r => r.length),
+      db
+        .select()
+        .from(translations)
+        .then(r => r.length),
+      db
+        .select()
+        .from(users)
+        .then(r => r.length),
+      db
+        .select()
+        .from(teams)
+        .then(r => r.length),
+      db
+        .select()
+        .from(mediaFiles)
+        .then(r => r.length),
+      db
+        .select()
+        .from(siteSettings)
+        .then(r => r.length),
+      db
+        .select()
+        .from(tags)
+        .then(r => r.length),
     ]);
 
     return {

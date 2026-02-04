@@ -29,8 +29,6 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  TrendingUp,
-  TrendingDown,
   Filter,
   Zap,
   Target,
@@ -98,6 +96,32 @@ interface BiasAlert {
   message: string;
 }
 
+interface SourceBiasData {
+  source: string;
+  approval_rate: string | number;
+  total?: number;
+}
+
+interface CategoryBiasData {
+  category: string;
+  total: number;
+  approved: number;
+  avg_score: number;
+  approval_rate: string | number;
+}
+
+interface BiasAnalysis {
+  source?: SourceBiasData[];
+  geographic?: CategoryBiasData[];
+}
+
+interface ValueMatrixSummary {
+  quickWins: number;
+  strategicInvestments: number;
+  gapFillers: number;
+  skip: number;
+}
+
 function KPICard({
   title,
   value,
@@ -108,7 +132,7 @@ function KPICard({
   title: string;
   value: string | number;
   subtitle?: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   trend?: "up" | "down" | "neutral";
 }) {
   return (
@@ -162,7 +186,10 @@ function TierBadge({ tier }: { tier: string }) {
 }
 
 function DecisionBadge({ decision }: { decision: string }) {
-  const config: Record<string, { icon: any; color: string; label: string }> = {
+  const config: Record<
+    string,
+    { icon: React.ComponentType<{ className?: string }>; color: string; label: string }
+  > = {
     write: { icon: CheckCircle2, color: "text-green-600", label: "Write" },
     skip: { icon: XCircle, color: "text-red-600", label: "Skip" },
     queue: { icon: Clock, color: "text-yellow-600", label: "Queue" },
@@ -188,7 +215,7 @@ export default function GatekeeperDashboard() {
   });
 
   // Fetch Value Matrix
-  const { data: matrixData } = useQuery<{ matrix: ValueMatrix; summary: any }>({
+  const { data: matrixData } = useQuery<{ matrix: ValueMatrix; summary: ValueMatrixSummary }>({
     queryKey: ["/api/admin/gatekeeper/dashboard/value-matrix"],
   });
 
@@ -202,7 +229,7 @@ export default function GatekeeperDashboard() {
 
   // Fetch Bias Analysis
   const { data: biasData } = useQuery<{
-    biasAnalysis: any;
+    biasAnalysis: BiasAnalysis;
     alerts: BiasAlert[];
     overallHealth: string;
   }>({
@@ -583,7 +610,7 @@ export default function GatekeeperDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {biasData?.biasAnalysis?.source?.slice(0, 5).map((source: any) => (
+                  {biasData?.biasAnalysis?.source?.slice(0, 5).map((source: SourceBiasData) => (
                     <div key={source.source}>
                       <div className="flex justify-between text-sm mb-1">
                         <span>{source.source}</span>
@@ -614,7 +641,7 @@ export default function GatekeeperDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {biasData?.biasAnalysis?.geographic?.map((cat: any) => (
+                    {biasData?.biasAnalysis?.geographic?.map((cat: CategoryBiasData) => (
                       <TableRow key={cat.category}>
                         <TableCell className="font-medium">{cat.category}</TableCell>
                         <TableCell>{cat.total}</TableCell>

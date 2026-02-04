@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   MapPin,
   Instagram,
@@ -11,7 +10,6 @@ import {
   ArrowRight,
   Globe,
   Star,
-  Calendar,
   Sparkles,
   Tent,
   Baby,
@@ -27,7 +25,6 @@ import {
   MapPinned,
   Bed,
   Camera,
-  Coffee,
   Compass,
   Newspaper,
   BookOpen,
@@ -532,7 +529,7 @@ const FALLBACK_REGION_LINKS = [
   },
 ];
 
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Hotel,
   Landmark,
   UtensilsCrossed,
@@ -555,15 +552,76 @@ function getIconComponent(iconName: string | null) {
 // ============================================
 // INTERFACES
 // ============================================
+interface HomepageSectionConfig {
+  title?: string;
+  subtitle?: string;
+  enabled?: boolean;
+}
+
+interface QuickCategory {
+  id: number | string;
+  name: string;
+  icon: string;
+  href: string;
+}
+
+interface ExperienceCategory {
+  id: number | string;
+  name: string;
+  description: string;
+  slug: string;
+  image?: string;
+  imageAlt?: string;
+  icon?: string;
+  href: string;
+}
+
+interface RegionLink {
+  id: number | string;
+  name: string;
+  destinations: Array<{ name: string; slug: string }>;
+}
+
+interface CTAConfig {
+  eyebrow?: string;
+  headline: string;
+  subheadline?: string;
+  inputPlaceholder?: string;
+  buttonText?: string;
+  backgroundImage?: string;
+}
+
+interface SEOMetaConfig {
+  metaTitle?: string;
+  metaDescription?: string;
+}
+
+interface FeaturedDestination {
+  id: string;
+  name: string;
+  country: string;
+  slug?: string;
+  cardImage?: string;
+  cardImageAlt?: string;
+}
+
+interface FeaturedArticle {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  image?: string;
+}
+
 interface HomepageConfig {
-  sections: Record<string, any>;
-  quickCategories: any[];
-  experienceCategories: any[];
-  regionLinks: any[];
-  cta: any;
-  seoMeta: any;
-  featuredDestinations: any[];
-  featuredArticles: any[];
+  sections: Record<string, HomepageSectionConfig>;
+  quickCategories: QuickCategory[];
+  experienceCategories: ExperienceCategory[];
+  regionLinks: RegionLink[];
+  cta: CTAConfig | null;
+  seoMeta: SEOMetaConfig | null;
+  featuredDestinations: FeaturedDestination[];
+  featuredArticles: FeaturedArticle[];
 }
 
 // ============================================
@@ -839,17 +897,11 @@ function SplitHero({
 
           {/* Gradient Headline */}
           <h1 className="mb-6">
-            <span
-              className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
-              style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-            >
+            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2 font-chillax">
               {t("home.hero.headlinePart1")}
             </span>
             <span className="relative inline-block">
-              <span
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-              >
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                 {t("home.hero.headlinePart2")}
               </span>
               {/* Gradient underline accent */}
@@ -890,10 +942,7 @@ function SplitHero({
               <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                 <div className="text-center lg:text-left">
                   <dt className="sr-only">{stat.srLabel}</dt>
-                  <dd
-                    className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white"
-                    style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                  >
+                  <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
                     {stat.num}
                   </dd>
                   <div
@@ -1121,10 +1170,7 @@ function CategoriesSection() {
               Browse Travel Categories
             </span>
           </div>
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4"
-            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-          >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
             Explore by Type
           </h2>
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
@@ -1162,10 +1208,7 @@ function CategoriesSection() {
                     </div>
 
                     {/* Content */}
-                    <h3
-                      className="font-bold text-slate-900 dark:text-white text-lg mb-1"
-                      style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                    >
+                    <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1 font-chillax">
                       {card.title}
                     </h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
@@ -1231,10 +1274,7 @@ function FAQSection() {
 
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h2
-            className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4"
-            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-          >
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
             {t("home.sections.faq")}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
@@ -1363,7 +1403,7 @@ export default function Homepage() {
     name: "Travel Styles",
     description: "Explore destinations by travel experience type",
     numberOfItems: experienceCategories.length,
-    itemListElement: experienceCategories.map((cat: any, i: number) => ({
+    itemListElement: experienceCategories.map((cat: ExperienceCategory, i: number) => ({
       "@type": "ListItem",
       position: i + 1,
       item: {
@@ -1517,10 +1557,7 @@ export default function Homepage() {
             <div className="max-w-7xl mx-auto">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 sm:mb-14 gap-4">
                 <div>
-                  <h2
-                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3"
-                    style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                  >
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 font-chillax">
                     {sections["destinations"]?.title || "Explore Popular Destinations"}
                   </h2>
                   <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
@@ -1538,57 +1575,62 @@ export default function Homepage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                {featuredDestinations.slice(0, 8).map((dest: any, index: number) => (
-                  <article
-                    key={dest.id}
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <Link
-                      href={dest.slug || `/destinations/${dest.id}`}
-                      title={`${dest.name} Travel Guide - Hotels, Attractions & Things to Do`}
+                {featuredDestinations
+                  .slice(0, 8)
+                  .map((dest: FeaturedDestination, index: number) => (
+                    <article
+                      key={dest.id}
+                      className="animate-fade-in-up"
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 h-full">
-                        <div className="relative h-48 sm:h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
-                          {dest.cardImage ? (
-                            <img
-                              src={dest.cardImage}
-                              alt={
-                                dest.cardImageAlt ||
-                                `${dest.name} travel guide - top attractions and hotels`
-                              }
-                              title={`${dest.name}, ${dest.country} - Travel Guide`}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              loading="lazy"
-                              width={400}
-                              height={300}
-                              decoding="async"
+                      <Link
+                        href={dest.slug || `/destinations/${dest.id}`}
+                        title={`${dest.name} Travel Guide - Hotels, Attractions & Things to Do`}
+                      >
+                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 h-full">
+                          <div className="relative h-48 sm:h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                            {dest.cardImage ? (
+                              <img
+                                src={dest.cardImage}
+                                alt={
+                                  dest.cardImageAlt ||
+                                  `${dest.name} travel guide - top attractions and hotels`
+                                }
+                                title={`${dest.name}, ${dest.country} - Travel Guide`}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                loading="lazy"
+                                width={400}
+                                height={300}
+                                decoding="async"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <MapPinned
+                                  className="w-12 h-12 text-slate-300"
+                                  aria-hidden="true"
+                                />
+                              </div>
+                            )}
+                            <div
+                              className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              aria-hidden="true"
                             />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <MapPinned className="w-12 h-12 text-slate-300" aria-hidden="true" />
+                            <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                              <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-medium px-3 py-1.5 rounded-full">
+                                <MapPin className="w-3 h-3" aria-hidden="true" /> Explore Guide
+                              </span>
                             </div>
-                          )}
-                          <div
-                            className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                            aria-hidden="true"
-                          />
-                          <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                            <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-medium px-3 py-1.5 rounded-full">
-                              <MapPin className="w-3 h-3" aria-hidden="true" /> Explore Guide
-                            </span>
                           </div>
-                        </div>
-                        <CardContent className="p-4 sm:p-5">
-                          <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg mb-1">
-                            {dest.name}
-                          </h3>
-                          <p className="text-sm text-slate-500">{dest.country}</p>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </article>
-                ))}
+                          <CardContent className="p-4 sm:p-5">
+                            <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg mb-1">
+                              {dest.name}
+                            </h3>
+                            <p className="text-sm text-slate-500">{dest.country}</p>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </article>
+                  ))}
               </div>
 
               <div className="text-center mt-8 sm:hidden">
@@ -1615,10 +1657,7 @@ export default function Homepage() {
 
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-10 sm:mb-14">
-                <h2
-                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4"
-                  style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                >
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
                   {sections["experience_categories"]?.title || "Find Your Perfect Travel Style"}
                 </h2>
                 <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
@@ -1628,7 +1667,7 @@ export default function Homepage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {experienceCategories.map((category: any, index: number) => {
+                {experienceCategories.map((category: ExperienceCategory, index: number) => {
                   const IconComponent = getIconComponent(category.icon);
                   return (
                     <article
@@ -1669,10 +1708,7 @@ export default function Homepage() {
                               aria-hidden="true"
                             />
                             <div className="absolute bottom-4 left-4 right-4">
-                              <h3
-                                className="text-lg sm:text-xl font-bold text-white mb-1"
-                                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                              >
+                              <h3 className="text-lg sm:text-xl font-bold text-white mb-1 font-chillax">
                                 {category.name}
                               </h3>
                               <p className="text-sm text-white/80 line-clamp-2">
@@ -1724,10 +1760,7 @@ export default function Homepage() {
           >
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-10 sm:mb-14">
-                <h2
-                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4"
-                  style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                >
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
                   {sections["region_links"]?.title || "Explore by Region"}
                 </h2>
                 <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
@@ -1736,33 +1769,32 @@ export default function Homepage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {regionLinks.map((region: any, index: number) => (
+                {regionLinks.map((region: RegionLink, index: number) => (
                   <div
                     key={region.id}
                     className="animate-fade-in-up"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm p-6 h-full">
-                      <h3
-                        className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2"
-                        style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                      >
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 font-chillax">
                         <Globe className="w-5 h-5 text-[#6443F4]" aria-hidden="true" />
                         {region.name}
                       </h3>
                       <ul className="space-y-1">
-                        {region.destinations.map((dest: any, i: number) => (
-                          <li key={i}>
-                            <Link
-                              href={dest.slug.startsWith("/") ? dest.slug : `/${dest.slug}`}
-                              className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:text-[#6443F4] hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all"
-                              title={`${dest.name} Travel Guide`}
-                            >
-                              <MapPin className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-                              {dest.name}
-                            </Link>
-                          </li>
-                        ))}
+                        {region.destinations.map(
+                          (dest: { name: string; slug: string }, i: number) => (
+                            <li key={i}>
+                              <Link
+                                href={dest.slug.startsWith("/") ? dest.slug : `/${dest.slug}`}
+                                className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:text-[#6443F4] hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all"
+                                title={`${dest.name} Travel Guide`}
+                              >
+                                <MapPin className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                                {dest.name}
+                              </Link>
+                            </li>
+                          )
+                        )}
                       </ul>
                     </Card>
                   </div>

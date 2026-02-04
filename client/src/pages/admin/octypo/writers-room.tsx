@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Users, ShieldCheck, Target } from "lucide-react";
@@ -61,7 +61,7 @@ const AVATAR_COLORS = [
 function getInitials(name: string): string {
   return name
     .split(" ")
-    .map((n) => n[0])
+    .map(n => n[0])
     .join("")
     .toUpperCase()
     .slice(0, 2);
@@ -84,9 +84,10 @@ function mapWriterToDisplay(writer: WriterFromAPI, index: number): DisplayWriter
 }
 
 function mapValidatorToDisplay(validator: ValidatorFromAPI, index: number): DisplayWriter {
-  const isValidator = validator.specialty.toLowerCase().includes("fact") || 
-                      validator.specialty.toLowerCase().includes("valid") ||
-                      validator.specialty.toLowerCase().includes("accuracy");
+  const isValidator =
+    validator.specialty.toLowerCase().includes("fact") ||
+    validator.specialty.toLowerCase().includes("valid") ||
+    validator.specialty.toLowerCase().includes("accuracy");
   return {
     id: validator.id,
     name: validator.name,
@@ -106,12 +107,14 @@ export default function OctypoWritersRoomPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
-  const { data: writersData, isLoading: isLoadingWriters } = useQuery<{ writers: WriterFromAPI[] }>({
-    queryKey: ['/api/octypo/agents/writers/detailed'],
-  });
+  const { data: writersData, isLoading: isLoadingWriters } = useQuery<{ writers: WriterFromAPI[] }>(
+    {
+      queryKey: ["/api/octypo/agents/writers/detailed"],
+    }
+  );
 
   const { data: validatorsData, isLoading: isLoadingValidators } = useQuery<ValidatorFromAPI[]>({
-    queryKey: ['/api/octypo/agents/validators'],
+    queryKey: ["/api/octypo/agents/validators"],
   });
 
   const isLoading = isLoadingWriters || isLoadingValidators;
@@ -124,11 +127,11 @@ export default function OctypoWritersRoomPage() {
   const validators = allAgents.filter(w => w.type === "validator");
   const seoSpecialists = allAgents.filter(w => w.type === "seo");
 
-  const filteredWriters = allAgents.filter((writer) => {
-    const matchesSearch = 
+  const filteredWriters = allAgents.filter(writer => {
+    const matchesSearch =
       writer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       writer.specialty.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTab = 
+    const matchesTab =
       activeTab === "all" ||
       (activeTab === "writers" && writer.type === "writer") ||
       (activeTab === "validators" && writer.type === "validator") ||
@@ -139,10 +142,12 @@ export default function OctypoWritersRoomPage() {
   return (
     <div className="space-y-6" data-testid="octypo-writers-room-page">
       <div className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a87] rounded-xl p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2" data-testid="text-page-title">Writers Room</h1>
+        <h1 className="text-3xl font-bold mb-2" data-testid="text-page-title">
+          Writers Room
+        </h1>
         <p className="text-white/80 max-w-2xl">
-          Meet our team of AI agents - specialized writers, validators, and SEO experts working 
-          together to create high-quality travel content. Each agent has their own personality, 
+          Meet our team of AI agents - specialized writers, validators, and SEO experts working
+          together to create high-quality travel content. Each agent has their own personality,
           expertise, and writing style.
         </p>
         <div className="flex items-center gap-6 mt-6 text-sm">
@@ -167,12 +172,12 @@ export default function OctypoWritersRoomPage() {
           <Input
             placeholder="Search by name, specialty, or expertise..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
             data-testid="input-search"
           />
         </div>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList data-testid="tabs-filter">
             <TabsTrigger value="all" data-testid="tab-all">
@@ -194,12 +199,13 @@ export default function OctypoWritersRoomPage() {
       <div>
         <h2 className="text-lg font-semibold mb-4">Writer Agents</h2>
         <p className="text-muted-foreground mb-6">
-          Our specialized writers create engaging travel content across different formats and styles.
+          Our specialized writers create engaging travel content across different formats and
+          styles.
         </p>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3, 4, 5, 6].map(i => (
               <Card key={i} className="overflow-hidden">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4 mb-4">
@@ -224,53 +230,57 @@ export default function OctypoWritersRoomPage() {
             ))}
           </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredWriters.map((writer) => (
-            <Card key={writer.id} className="overflow-hidden" data-testid={`writer-card-${writer.id}`}>
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-4 mb-4">
-                  <Avatar className={`h-12 w-12 ${writer.color}`}>
-                    <AvatarFallback className={`${writer.color} text-white font-semibold`}>
-                      {writer.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold">{writer.name}</h3>
-                      <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize">
-                        {writer.type}
-                      </Badge>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredWriters.map(writer => (
+              <Card
+                key={writer.id}
+                className="overflow-hidden"
+                data-testid={`writer-card-${writer.id}`}
+              >
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <Avatar className={`h-12 w-12 ${writer.color}`}>
+                      <AvatarFallback className={`${writer.color} text-white font-semibold`}>
+                        {writer.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold">{writer.name}</h3>
+                        <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 capitalize">
+                          {writer.type}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{writer.specialty}</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">{writer.specialty}</p>
                   </div>
-                </div>
 
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                  {writer.description}
-                </p>
-
-                <div className="flex items-center gap-4 text-sm mb-4">
-                  <span className="font-medium">{writer.experience} years exp.</span>
-                  <span className="text-muted-foreground">{writer.languages} languages</span>
-                </div>
-
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {writer.traits.map((trait, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {trait}
-                    </Badge>
-                  ))}
-                </div>
-
-                {writer.quote && (
-                  <p className="text-sm italic text-muted-foreground border-l-2 border-primary/30 pl-3">
-                    "{writer.quote}"
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                    {writer.description}
                   </p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
+                  <div className="flex items-center gap-4 text-sm mb-4">
+                    <span className="font-medium">{writer.experience} years exp.</span>
+                    <span className="text-muted-foreground">{writer.languages} languages</span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {writer.traits.map((trait, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {trait}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  {writer.quote && (
+                    <p className="text-sm italic text-muted-foreground border-l-2 border-primary/30 pl-3">
+                      "{writer.quote}"
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
     </div>

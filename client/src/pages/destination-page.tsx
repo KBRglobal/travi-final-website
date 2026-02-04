@@ -17,6 +17,14 @@ import { MapPin, ArrowLeft, Loader2 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { DestinationPageData } from "@/types/destination";
 
+interface FeaturedItem {
+  id: string;
+  name: string;
+  slug?: string;
+  image?: string;
+  description?: string;
+}
+
 interface APIDestinationData {
   id: string;
   name: string;
@@ -40,9 +48,9 @@ interface APIDestinationData {
     ogTitle: string | null;
     ogDescription: string | null;
   };
-  featuredAttractions: any[];
-  featuredAreas: any[];
-  featuredHighlights: any[];
+  featuredAttractions: FeaturedItem[];
+  featuredAreas: FeaturedItem[];
+  featuredHighlights: FeaturedItem[];
   mood: {
     primaryColor: string;
     gradientFrom: string;
@@ -56,21 +64,25 @@ export default function DestinationPage() {
   const { localePath } = useLocale();
   const params = useParams<{ slug: string }>();
   const slug = params?.slug;
-  
+
   // Scroll to top when navigating to a destination page
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
-  
+
   // Fetch destination data from API (DATABASE as single source of truth)
-  const { data: apiData, isLoading, error } = useQuery<APIDestinationData>({
-    queryKey: ['/api/public/destinations', slug],
+  const {
+    data: apiData,
+    isLoading,
+    error,
+  } = useQuery<APIDestinationData>({
+    queryKey: ["/api/public/destinations", slug],
     enabled: !!slug,
   });
-  
+
   // Get static placeholder data for FAQs, experiences, etc.
   const staticData = slug ? getDestinationBySlug(slug) : undefined;
-  
+
   // Show loading state
   if (isLoading) {
     return (
@@ -82,7 +94,7 @@ export default function DestinationPage() {
       </main>
     );
   }
-  
+
   // 404 handling - API is single source of truth
   if (!apiData) {
     return (
@@ -94,8 +106,8 @@ export default function DestinationPage() {
             </div>
             <h1 className="text-2xl font-bold mb-3">Destination Not Found</h1>
             <p className="text-muted-foreground mb-6">
-              We couldn't find the destination you're looking for. 
-              Please check the URL or explore our other destinations.
+              We couldn't find the destination you're looking for. Please check the URL or explore
+              our other destinations.
             </p>
             <div className="space-y-3">
               <Link href={localePath("/destinations")}>
@@ -116,17 +128,17 @@ export default function DestinationPage() {
       </main>
     );
   }
-  
+
   // Merge API data (database) with static placeholder data
   // DATABASE is source of truth for: hero, mood, SEO, featured sections
   // Static data provides: FAQs, experiences, neighborhoods, transport, etc.
   // CRITICAL: No static fallbacks for database-managed fields - API must provide complete data
   const mergedData: DestinationPageData = {
     // Core identity from API/database
-    id: apiData?.id || slug || '',
-    name: apiData?.name || '',
-    country: apiData?.country || '',
-    
+    id: apiData?.id || slug || "",
+    name: apiData?.name || "",
+    country: apiData?.country || "",
+
     // Mood/theme from DATABASE ONLY (API provides defaults for null fields)
     mood: {
       primaryColor: apiData?.mood?.primaryColor || "#1E40AF",
@@ -135,7 +147,7 @@ export default function DestinationPage() {
       vibe: (apiData?.mood?.vibe || "cultural") as any,
       tagline: apiData?.mood?.tagline || "",
     },
-    
+
     // Hero data from DATABASE ONLY (API provides defaults for null fields)
     hero: {
       title: apiData?.hero?.title || "",
@@ -146,7 +158,7 @@ export default function DestinationPage() {
       imageAlt: apiData?.hero?.images?.[0]?.alt || "",
       images: apiData?.hero?.images || [],
     },
-    
+
     // SEO from DATABASE ONLY (API provides defaults for null fields)
     seo: {
       metaTitle: apiData?.seo?.metaTitle || "",
@@ -155,12 +167,12 @@ export default function DestinationPage() {
       ogImage: apiData?.seo?.ogImage || null,
       lastUpdated: new Date().toISOString(),
     },
-    
+
     // Featured sections from DATABASE
     featuredAttractions: apiData?.featuredAttractions || [],
     featuredAreas: apiData?.featuredAreas || [],
     featuredHighlights: apiData?.featuredHighlights || [],
-    
+
     // Placeholder content from static file (to be migrated later)
     quickFacts: staticData?.quickFacts || [],
     experiences: staticData?.experiences || [],
@@ -170,12 +182,12 @@ export default function DestinationPage() {
     transport: staticData?.transportOptions || staticData?.transport || [], // Fallback to either property
     faqs: staticData?.faqs || [],
     cta: staticData?.cta || {
-      headline: `Start planning your trip to ${apiData?.name || ''}`,
-      subheadline: 'Discover amazing experiences and create unforgettable memories.',
-      buttonText: 'Plan Your Trip',
+      headline: `Start planning your trip to ${apiData?.name || ""}`,
+      subheadline: "Discover amazing experiences and create unforgettable memories.",
+      buttonText: "Plan Your Trip",
       buttonLink: `/destinations/${slug}/attractions`,
     },
   };
-  
+
   return <DestinationPageTemplate data={mergedData} />;
 }

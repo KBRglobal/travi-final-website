@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DataTable, type Column, type Action } from "@/components/data-table";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
@@ -22,7 +22,6 @@ import {
   Filter,
   X,
   ExternalLink,
-  Eye,
   Sparkles,
   CheckCircle2,
   Clock,
@@ -45,7 +44,14 @@ interface AttractionsResponse {
   total: number | string;
 }
 
-const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive"; icon: React.ReactNode }> = {
+const statusConfig: Record<
+  string,
+  {
+    label: string;
+    variant: "default" | "secondary" | "outline" | "destructive";
+    icon: React.ReactNode;
+  }
+> = {
   imported: { label: "Imported", variant: "secondary", icon: <Clock className="h-3 w-3" /> },
   ready: { label: "Ready", variant: "outline", icon: <CheckCircle2 className="h-3 w-3" /> },
   published: { label: "Published", variant: "default", icon: <CheckCircle2 className="h-3 w-3" /> },
@@ -88,12 +94,12 @@ export default function TiqetsAttractionsList() {
   const total = typeof data?.total === "string" ? parseInt(data.total, 10) : (data?.total ?? 0);
 
   const cities = useMemo(() => {
-    const uniqueCities = [...new Set(attractions.map((a) => a.cityName))].sort();
+    const uniqueCities = [...new Set(attractions.map(a => a.cityName))].sort();
     return uniqueCities;
   }, [attractions]);
 
   const filteredAttractions = useMemo(() => {
-    return attractions.filter((attraction) => {
+    return attractions.filter(attraction => {
       const matchesSearch =
         !searchQuery ||
         attraction.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -118,7 +124,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "title",
       header: "Attraction",
-      cell: (attraction) => (
+      cell: attraction => (
         <div className="flex flex-col gap-1">
           <Link
             href={`/admin/attractions/${attraction.id}`}
@@ -135,7 +141,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "cityName",
       header: "City",
-      cell: (attraction) => (
+      cell: attraction => (
         <div className="flex items-center gap-1.5">
           <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
           <span>{attraction.cityName}</span>
@@ -146,7 +152,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "status",
       header: "Status",
-      cell: (attraction) => {
+      cell: attraction => {
         const config = statusConfig[attraction.status] || statusConfig.imported;
         return (
           <Badge variant={config.variant} className="gap-1">
@@ -160,7 +166,7 @@ export default function TiqetsAttractionsList() {
     {
       key: "contentGenerationStatus",
       header: "AI Content",
-      cell: (attraction) => {
+      cell: attraction => {
         const status = attraction.contentGenerationStatus || "pending";
         const config = contentStatusConfig[status] || contentStatusConfig.pending;
         return (
@@ -177,15 +183,18 @@ export default function TiqetsAttractionsList() {
     {
       label: "Edit",
       icon: <Edit2 className="h-4 w-4" />,
-      onClick: (attraction) => {
+      onClick: attraction => {
         window.location.href = `/admin/attractions/${attraction.id}`;
       },
     },
     {
       label: "View on Site",
       icon: <ExternalLink className="h-4 w-4" />,
-      onClick: (attraction) => {
-        window.open(`/attractions/${attraction.cityName.toLowerCase()}/${attraction.slug}`, "_blank");
+      onClick: attraction => {
+        window.open(
+          `/attractions/${attraction.cityName.toLowerCase()}/${attraction.slug}`,
+          "_blank"
+        );
       },
     },
   ];
@@ -232,7 +241,7 @@ export default function TiqetsAttractionsList() {
               <Input
                 placeholder="Search attractions..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-9"
                 data-testid="input-search-attractions"
               />
@@ -259,7 +268,7 @@ export default function TiqetsAttractionsList() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Cities</SelectItem>
-                  {cities.map((city) => (
+                  {cities.map(city => (
                     <SelectItem key={city} value={city}>
                       {city}
                     </SelectItem>
@@ -268,7 +277,12 @@ export default function TiqetsAttractionsList() {
               </Select>
 
               {hasActiveFilters && (
-                <Button variant="ghost" size="icon" onClick={clearFilters} data-testid="button-clear-filters">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={clearFilters}
+                  data-testid="button-clear-filters"
+                >
                   <X className="h-4 w-4" />
                 </Button>
               )}
@@ -302,7 +316,7 @@ export default function TiqetsAttractionsList() {
               selectable
               selectedIds={selectedIds}
               onSelectionChange={setSelectedIds}
-              getItemId={(row) => row.id}
+              getItemId={row => row.id}
             />
           )}
         </CardContent>

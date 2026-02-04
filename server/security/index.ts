@@ -65,14 +65,14 @@ function detectXss(input: string): boolean {
 /**
  * Log security event (simplified - just console log)
  */
-function logSecurityEvent(type: string, details: any) {}
+function logSecurityEvent(type: string, details: Record<string, unknown>) {}
 
 /**
  * Attack detection middleware
  * Detects and blocks SQL injection and XSS attempts
  */
 export function attackDetectionMiddleware(req: Request, res: Response, next: NextFunction) {
-  const checkData = (data: any, path: string = ""): boolean => {
+  const checkData = (data: unknown, path: string = ""): boolean => {
     if (typeof data === "string") {
       // Check for SQL injection
       if (detectSqlInjection(data)) {

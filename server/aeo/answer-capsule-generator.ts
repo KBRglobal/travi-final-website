@@ -5,14 +5,23 @@
  */
 
 import { db } from "../db";
-import { contents, aeoAnswerCapsules, attractions, hotels, dining, districts, articles } from "../../shared/schema";
-import { eq, and, sql } from "drizzle-orm";
-import { getAllUnifiedProviders, markProviderFailed, type UnifiedAIProvider } from "../ai/providers";
-import { ANSWER_CAPSULE_CONFIG, TRAVELER_PERSONAS } from "./aeo-config";
+import {
+  contents,
+  aeoAnswerCapsules,
+  attractions,
+  hotels,
+  dining,
+  districts,
+  articles,
+} from "../../shared/schema";
+import { eq, and } from "drizzle-orm";
+import { getAllUnifiedProviders, markProviderFailed } from "../ai/providers";
+import { ANSWER_CAPSULE_CONFIG } from "./aeo-config";
 import { log } from "../lib/logger";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO] ${msg}`, undefined, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO] ${msg}`, data),
 };
 
@@ -58,7 +67,7 @@ export interface ContentData {
 export async function generateAnswerCapsule(
   input: AnswerCapsuleInput
 ): Promise<AnswerCapsuleResult> {
-  const { contentId, locale = 'en', forceRegenerate = false } = input;
+  const { contentId, locale = "en", forceRegenerate = false } = input;
 
   // Check for existing capsule if not forcing regeneration
   if (!forceRegenerate) {
@@ -69,12 +78,16 @@ export async function generateAnswerCapsule(
       ),
     });
 
-    if (existing && existing.qualityScore && existing.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable) {
+    if (
+      existing &&
+      existing.qualityScore &&
+      existing.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable
+    ) {
       return {
         capsuleText: existing.capsuleText,
-        quickAnswer: existing.quickAnswer || '',
+        quickAnswer: existing.quickAnswer || "",
         keyFacts: (existing.keyFacts as string[]) || [],
-        differentiator: existing.differentiator || '',
+        differentiator: existing.differentiator || "",
         qualityScore: existing.qualityScore,
         wordCount: countWords(existing.capsuleText),
       };
@@ -110,7 +123,7 @@ async function fetchContentData(contentId: string): Promise<ContentData | null> 
 
   // Fetch type-specific data
   switch (content.type) {
-    case 'attraction': {
+    case "attraction": {
       const attraction = await db.query.attractions.findFirst({
         where: eq(attractions.contentId, contentId),
       });
@@ -127,7 +140,7 @@ async function fetchContentData(contentId: string): Promise<ContentData | null> 
       }
       break;
     }
-    case 'hotel': {
+    case "hotel": {
       const hotel = await db.query.hotels.findFirst({
         where: eq(hotels.contentId, contentId),
       });
@@ -142,7 +155,7 @@ async function fetchContentData(contentId: string): Promise<ContentData | null> 
       }
       break;
     }
-    case 'dining': {
+    case "dining": {
       const restaurant = await db.query.dining.findFirst({
         where: eq(dining.contentId, contentId),
       });
@@ -158,7 +171,7 @@ async function fetchContentData(contentId: string): Promise<ContentData | null> 
       }
       break;
     }
-    case 'district': {
+    case "district": {
       const district = await db.query.districts.findFirst({
         where: eq(districts.contentId, contentId),
       });
@@ -173,7 +186,7 @@ async function fetchContentData(contentId: string): Promise<ContentData | null> 
       }
       break;
     }
-    case 'article': {
+    case "article": {
       const article = await db.query.articles.findFirst({
         where: eq(articles.contentId, contentId),
       });
@@ -207,7 +220,7 @@ async function generateCapsuleWithAI(
 ): Promise<AnswerCapsuleResult> {
   const providers = getAllUnifiedProviders();
   if (providers.length === 0) {
-    throw new Error('No AI provider available');
+    throw new Error("No AI provider available");
   }
 
   const prompt = buildCapsulePrompt(content, locale);
@@ -219,26 +232,26 @@ async function generateCapsuleWithAI(
       const result = await provider.generateCompletion({
         messages: [
           {
-            role: 'system',
+            role: "system",
             content: getSystemPrompt(locale),
           },
           {
-            role: 'user',
+            role: "user",
             content: prompt,
           },
         ],
         temperature: 0.3, // Low temperature for factual consistency
         maxTokens: 500,
-        responseFormat: { type: 'json_object' },
+        responseFormat: { type: "json_object" },
       });
 
       const parsed = JSON.parse(result.content);
 
       // Validate and score the result
-      const capsuleText = parsed.capsuleText || parsed.capsule_text || '';
-      const quickAnswer = parsed.quickAnswer || parsed.quick_answer || '';
+      const capsuleText = parsed.capsuleText || parsed.capsule_text || "";
+      const quickAnswer = parsed.quickAnswer || parsed.quick_answer || "";
       const keyFacts = parsed.keyFacts || parsed.key_facts || [];
-      const differentiator = parsed.differentiator || '';
+      const differentiator = parsed.differentiator || "";
 
       const qualityScore = evaluateQuality(capsuleText, quickAnswer, keyFacts, differentiator);
 
@@ -252,13 +265,18 @@ async function generateCapsuleWithAI(
       };
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      markProviderFailed(provider.name, 'error');
-      aeoLogger.error('Provider failed, trying next', { provider: provider.name, error: String(error) });
+      markProviderFailed(provider.name, "error");
+      aeoLogger.error("Provider failed, trying next", {
+        provider: provider.name,
+        error: String(error),
+      });
     }
   }
 
-  aeoLogger.error('Failed to generate answer capsule - all providers failed', { contentId: content.id });
-  throw lastError || new Error('All AI providers failed');
+  aeoLogger.error("Failed to generate answer capsule - all providers failed", {
+    contentId: content.id,
+  });
+  throw lastError || new Error("All AI providers failed");
 }
 
 /**
@@ -272,14 +290,14 @@ function buildCapsulePrompt(content: ContentData, locale: string): string {
 CONTENT DETAILS:
 Title: ${content.title}
 Type: ${content.type}
-${content.location ? `Location: ${content.location}` : ''}
-${content.priceFrom ? `Price: ${content.priceFrom}` : ''}
-${content.duration ? `Duration: ${content.duration}` : ''}
-${content.starRating ? `Star Rating: ${content.starRating} stars` : ''}
-${content.cuisineType ? `Cuisine: ${content.cuisineType}` : ''}
-${content.priceRange ? `Price Range: ${content.priceRange}` : ''}
-${content.category ? `Category: ${content.category}` : ''}
-${content.metaDescription ? `Description: ${content.metaDescription}` : ''}
+${content.location ? `Location: ${content.location}` : ""}
+${content.priceFrom ? `Price: ${content.priceFrom}` : ""}
+${content.duration ? `Duration: ${content.duration}` : ""}
+${content.starRating ? `Star Rating: ${content.starRating} stars` : ""}
+${content.cuisineType ? `Cuisine: ${content.cuisineType}` : ""}
+${content.priceRange ? `Price Range: ${content.priceRange}` : ""}
+${content.category ? `Category: ${content.category}` : ""}
+${content.metaDescription ? `Description: ${content.metaDescription}` : ""}
 
 ${contentSummary}
 
@@ -300,7 +318,7 @@ REQUIREMENTS:
 
 4. differentiator: One sentence explaining what makes this unique
 
-${locale !== 'en' ? `Generate all content in ${getLocaleName(locale)} language.` : ''}
+${locale !== "en" ? `Generate all content in ${getLocaleName(locale)} language.` : ""}
 
 Respond with valid JSON only:
 {
@@ -324,7 +342,7 @@ function extractContentSummary(content: ContentData): string {
       .map((h: any) => h.title || h.text || h)
       .filter(Boolean);
     if (highlightTexts.length > 0) {
-      parts.push(`Highlights: ${highlightTexts.join(', ')}`);
+      parts.push(`Highlights: ${highlightTexts.join(", ")}`);
     }
   }
 
@@ -335,28 +353,28 @@ function extractContentSummary(content: ContentData): string {
       .map((f: any) => f.question)
       .filter(Boolean);
     if (faqTopics.length > 0) {
-      parts.push(`Common questions: ${faqTopics.join('; ')}`);
+      parts.push(`Common questions: ${faqTopics.join("; ")}`);
     }
   }
 
   // Add target audience
   if (content.targetAudience && Array.isArray(content.targetAudience)) {
-    parts.push(`Best for: ${content.targetAudience.join(', ')}`);
+    parts.push(`Best for: ${content.targetAudience.join(", ")}`);
   }
 
   // Extract text from blocks
   if (content.blocks && Array.isArray(content.blocks)) {
     const textBlocks = content.blocks
-      .filter((b: any) => b.type === 'paragraph' || b.type === 'text')
+      .filter((b: any) => b.type === "paragraph" || b.type === "text")
       .slice(0, 2)
       .map((b: any) => b.content || b.text)
       .filter(Boolean);
     if (textBlocks.length > 0) {
-      parts.push(`Content: ${textBlocks.join(' ').substring(0, 500)}`);
+      parts.push(`Content: ${textBlocks.join(" ").substring(0, 500)}`);
     }
   }
 
-  return parts.join('\n');
+  return parts.join("\n");
 }
 
 /**
@@ -399,8 +417,10 @@ function evaluateQuality(
 
   // Quick answer check (0-15 points)
   const quickWordCount = countWords(quickAnswer);
-  if (quickWordCount >= ANSWER_CAPSULE_CONFIG.quickAnswerMinWords &&
-      quickWordCount <= ANSWER_CAPSULE_CONFIG.quickAnswerMaxWords) {
+  if (
+    quickWordCount >= ANSWER_CAPSULE_CONFIG.quickAnswerMinWords &&
+    quickWordCount <= ANSWER_CAPSULE_CONFIG.quickAnswerMaxWords
+  ) {
     score += 15;
   } else if (quickWordCount > 0 && quickWordCount <= 25) {
     score += 8;
@@ -427,7 +447,14 @@ function evaluateQuality(
   }
 
   // Check for no marketing clichés
-  const cliches = ['must-visit', 'hidden gem', 'breathtaking', 'amazing', 'incredible', 'jaw-dropping'];
+  const cliches = [
+    "must-visit",
+    "hidden gem",
+    "breathtaking",
+    "amazing",
+    "incredible",
+    "jaw-dropping",
+  ];
   const hasCliches = cliches.some(c => capsuleText.toLowerCase().includes(c));
   if (!hasCliches) {
     score += 10;
@@ -439,7 +466,7 @@ function evaluateQuality(
   }
 
   // Check for factual tone (no exclamation marks)
-  if (!capsuleText.includes('!')) {
+  if (!capsuleText.includes("!")) {
     score += 5;
   }
 
@@ -464,7 +491,8 @@ async function saveCapsule(
 
   if (existing) {
     // Update existing
-    await db.update(aeoAnswerCapsules)
+    await db
+      .update(aeoAnswerCapsules)
       .set({
         capsuleText: result.capsuleText,
         quickAnswer: result.quickAnswer,
@@ -490,7 +518,8 @@ async function saveCapsule(
   }
 
   // Also update the content's answerCapsule field
-  await db.update(contents)
+  await db
+    .update(contents)
     .set({
       answerCapsule: result.capsuleText,
       aeoScore: result.qualityScore,
@@ -512,21 +541,21 @@ function countWords(text: string): number {
  */
 function getLocaleName(locale: string): string {
   const names: Record<string, string> = {
-    en: 'English',
-    ar: 'Arabic',
-    hi: 'Hindi',
-    zh: 'Chinese',
-    ru: 'Russian',
-    fr: 'French',
-    de: 'German',
-    es: 'Spanish',
-    he: 'Hebrew',
-    ja: 'Japanese',
-    ko: 'Korean',
-    it: 'Italian',
-    tr: 'Turkish',
+    en: "English",
+    ar: "Arabic",
+    hi: "Hindi",
+    zh: "Chinese",
+    ru: "Russian",
+    fr: "French",
+    de: "German",
+    es: "Spanish",
+    he: "Hebrew",
+    ja: "Japanese",
+    ko: "Korean",
+    it: "Italian",
+    tr: "Turkish",
   };
-  return names[locale] || 'English';
+  return names[locale] || "English";
 }
 
 /**
@@ -534,7 +563,7 @@ function getLocaleName(locale: string): string {
  */
 export async function batchGenerateCapsules(
   contentIds: string[],
-  locale: string = 'en',
+  locale: string = "en",
   options: { concurrency?: number; skipExisting?: boolean } = {}
 ): Promise<{ success: number; failed: number; skipped: number; errors: string[] }> {
   const { concurrency = 3, skipExisting = true } = options;
@@ -545,7 +574,7 @@ export async function batchGenerateCapsules(
     const batch = contentIds.slice(i, i + concurrency);
 
     await Promise.all(
-      batch.map(async (contentId) => {
+      batch.map(async contentId => {
         try {
           if (skipExisting) {
             const existing = await db.query.aeoAnswerCapsules.findFirst({
@@ -555,7 +584,11 @@ export async function batchGenerateCapsules(
               ),
             });
 
-            if (existing && existing.qualityScore && existing.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable) {
+            if (
+              existing &&
+              existing.qualityScore &&
+              existing.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable
+            ) {
               results.skipped++;
               return;
             }
@@ -565,7 +598,9 @@ export async function batchGenerateCapsules(
           results.success++;
         } catch (error) {
           results.failed++;
-          results.errors.push(`${contentId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          results.errors.push(
+            `${contentId}: ${error instanceof Error ? error.message : "Unknown error"}`
+          );
         }
       })
     );
@@ -602,7 +637,9 @@ export async function getCapsuleStats(): Promise<{
   // Calculate average quality
   const qualityScores = allCapsules.map(c => c.qualityScore).filter((s): s is number => s !== null);
   if (qualityScores.length > 0) {
-    stats.averageQuality = Math.round(qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length);
+    stats.averageQuality = Math.round(
+      qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length
+    );
   }
 
   // Count by locale

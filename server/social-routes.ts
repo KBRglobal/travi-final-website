@@ -12,13 +12,11 @@ import {
   socialCredentials,
   insertSocialCampaignSchema,
   insertSocialPostSchema,
-  insertSocialAnalyticsSchema,
   contents,
   type SocialPost,
-  type SocialCampaign,
 } from "@shared/schema";
 import { requireAuth, requirePermission } from "./security";
-import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
+import { eq, desc, and, lte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getAllUnifiedProviders } from "./ai/providers";
 import { log } from "./lib/logger";
@@ -139,13 +137,13 @@ export function registerSocialRoutes(app: Express) {
       const { status, platform, campaignId } = req.query;
       let query = db.select().from(socialPosts);
 
-      const conditions: any[] = [];
-      if (status) conditions.push(eq(socialPosts.status, status as any));
-      if (platform) conditions.push(eq(socialPosts.platform, platform as any));
+      const conditions: ReturnType<typeof eq>[] = [];
+      if (status) conditions.push(eq(socialPosts.status, status as SocialPost["status"]));
+      if (platform) conditions.push(eq(socialPosts.platform, platform as SocialPost["platform"]));
       if (campaignId) conditions.push(eq(socialPosts.campaignId, campaignId as string));
 
       if (conditions.length > 0) {
-        query = query.where(and(...conditions)) as any;
+        query = query.where(and(...conditions)) as typeof query;
       }
 
       const posts = await query.orderBy(desc(socialPosts.scheduledAt));

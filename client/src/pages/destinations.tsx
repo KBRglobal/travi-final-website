@@ -202,22 +202,13 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
               transition={{ duration: 0.8, delay: 0.2 }}
               data-testid="destinations-page-h1"
             >
-              <span
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-              >
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2 font-chillax">
                 {t("destinations.hero.discover")}
               </span>
-              <span
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-              >
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                 {t("destinations.hero.worldClass")}
               </span>
-              <span
-                className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-              >
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight font-chillax">
                 {t("destinations.hero.destinations")}
               </span>
             </motion.h1>
@@ -256,10 +247,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
                       <stat.icon className="w-5 h-5 text-[#6443F4]" />
                     </div>
                     <div>
-                      <dd
-                        className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white"
-                        style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                      >
+                      <dd className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white font-chillax">
                         {stat.num}
                       </dd>
                       <div className="text-[10px] sm:text-[11px] text-slate-400 tracking-wider">
@@ -395,8 +383,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3"
-                  style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+                  className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 font-chillax"
                 >
                   {current.name}
                 </motion.h3>
@@ -526,10 +513,7 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
                 <MapPin className="w-3.5 h-3.5 text-[#E84C9A]" aria-hidden="true" />
                 <span>{destination.country}</span>
               </div>
-              <h3
-                className="text-xl sm:text-2xl font-bold text-white leading-tight"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-              >
+              <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight font-chillax">
                 {destination.name}
               </h3>
             </div>
@@ -578,8 +562,7 @@ function DestinationsFAQ() {
         >
           <h2
             id="faq-heading"
-            className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3"
-            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+            className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3 font-chillax"
           >
             {t("destinations.faq.title")}
           </h2>
@@ -621,10 +604,7 @@ function LoadingState() {
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6443F4] to-[#E84C9A] flex items-center justify-center mx-auto mb-4 animate-pulse">
           <Loader2 className="w-8 h-8 text-white animate-spin" aria-hidden="true" />
         </div>
-        <h2
-          className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 font-chillax">
           {t("destinations.loading.title")}
         </h2>
         <p className="text-slate-600 dark:text-slate-400">{t("destinations.loading.message")}</p>
@@ -642,10 +622,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mx-auto mb-4">
           <Globe className="w-8 h-8 text-slate-400 dark:text-slate-500" aria-hidden="true" />
         </div>
-        <h2
-          className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 font-chillax">
           {t("destinations.error.title")}
         </h2>
         <p className="text-slate-600 dark:text-slate-400 mb-6">{t("destinations.error.message")}</p>
@@ -670,16 +647,20 @@ function EmptyState() {
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center mx-auto mb-4">
           <Globe className="w-8 h-8 text-slate-400" aria-hidden="true" />
         </div>
-        <h2
-          className="text-2xl font-bold text-slate-900 dark:text-white mb-2"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 font-chillax">
           {t("destinations.empty.title")}
         </h2>
         <p className="text-slate-600 dark:text-slate-400">{t("destinations.empty.message")}</p>
       </div>
     </div>
   );
+}
+
+interface JsonLdSchema {
+  "@context"?: string;
+  "@type"?: string;
+  "@id"?: string;
+  [key: string]: unknown;
 }
 
 interface PageSeoData {
@@ -691,7 +672,7 @@ interface PageSeoData {
   ogDescription: string | null;
   ogImage: string | null;
   robotsMeta: string | null;
-  jsonLdSchema: any;
+  jsonLdSchema: JsonLdSchema | null;
 }
 
 export default function DestinationsPage() {
@@ -810,10 +791,7 @@ export default function DestinationsPage() {
               >
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
                   <div>
-                    <h2
-                      className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3"
-                      style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                    >
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 font-chillax">
                       {t("destinations.sections.featured")}
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 text-base max-w-xl">
@@ -846,10 +824,7 @@ export default function DestinationsPage() {
                   viewport={{ once: true }}
                   className="mb-10"
                 >
-                  <h2
-                    className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2"
-                    style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                  >
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2 font-chillax">
                     {t("destinations.sections.all")}
                   </h2>
                   <p className="text-slate-600 dark:text-slate-400">

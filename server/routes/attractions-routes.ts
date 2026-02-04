@@ -423,7 +423,7 @@ export function registerAttractionsRoutes(app: Express): void {
       };
 
       // Build enriched attraction response (exclude price fields from public API)
-      // TODO: Columns not in schema - priceLocal, priceFrom (only priceUsd exists)
+      // Note: Only priceUsd exists in schema (priceLocal, priceFrom not available)
       const { priceUsd, ...attrWithoutPrices } = attr;
       const enrichedAttraction = {
         ...attrWithoutPrices,
@@ -432,9 +432,9 @@ export function registerAttractionsRoutes(app: Express): void {
         country: destination === "dubai" ? "UAE" : destination,
         image:
           (attr.tiqetsImages as Array<{ small?: string; medium?: string; large?: string }>)?.[0]
-            ?.medium || "", // TODO: Column not in schema - imageUrl (using tiqetsImages)
-        rating: Number(attr.tiqetsRating) || 4.5, // TODO: Column not in schema - rating (using tiqetsRating)
-        reviews: Number(attr.tiqetsReviewCount) || 100, // TODO: Column not in schema - reviewCount (using tiqetsReviewCount)
+            ?.medium || "", // Using tiqetsImages (no imageUrl column in schema)
+        rating: Number(attr.tiqetsRating) || 4.5, // Using tiqetsRating (no rating column in schema)
+        reviews: Number(attr.tiqetsReviewCount) || 100, // Using tiqetsReviewCount (no reviewCount column in schema)
         duration: attr.duration || "2-3 hours",
         category: attr.primaryCategory || "Attraction",
         location: {
@@ -496,7 +496,7 @@ export function registerAttractionsRoutes(app: Express): void {
           name: r.title,
           image:
             (r.tiqetsImages as Array<{ small?: string; medium?: string; large?: string }>)?.[0]
-              ?.medium || "", // TODO: Column not in schema - imageUrl (using tiqetsImages)
+              ?.medium || "", // Using tiqetsImages (no imageUrl column in schema)
           category: r.primaryCategory || "Attraction",
           href: `/${destination}/attractions/${r.seoSlug || r.slug}`,
           seoSlug: r.seoSlug,

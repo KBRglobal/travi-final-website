@@ -1,10 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -42,31 +39,127 @@ interface CommandPaletteProps {
 
 // Quick actions configuration
 const quickActions = [
-  { id: "new-attraction", label: "New Attraction", icon: MapPin, href: "/admin/attractions/new", category: "create" },
-  { id: "new-hotel", label: "New Hotel", icon: Building2, href: "/admin/hotels/new", category: "create" },
-  { id: "new-article", label: "New Article", icon: FileText, href: "/admin/articles/new", category: "create" },
-  { id: "new-dining", label: "New Restaurant", icon: Utensils, href: "/admin/dining/new", category: "create" },
+  {
+    id: "new-attraction",
+    label: "New Attraction",
+    icon: MapPin,
+    href: "/admin/attractions/new",
+    category: "create",
+  },
+  {
+    id: "new-hotel",
+    label: "New Hotel",
+    icon: Building2,
+    href: "/admin/hotels/new",
+    category: "create",
+  },
+  {
+    id: "new-article",
+    label: "New Article",
+    icon: FileText,
+    href: "/admin/articles/new",
+    category: "create",
+  },
+  {
+    id: "new-dining",
+    label: "New Restaurant",
+    icon: Utensils,
+    href: "/admin/dining/new",
+    category: "create",
+  },
 ];
 
 const navigationItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/admin", category: "navigate" },
-  { id: "calendar", label: "Content Calendar", icon: Calendar, href: "/admin/calendar", category: "navigate" },
-  { id: "attractions", label: "Attractions", icon: MapPin, href: "/admin/attractions", category: "navigate" },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/admin",
+    category: "navigate",
+  },
+  {
+    id: "calendar",
+    label: "Content Calendar",
+    icon: Calendar,
+    href: "/admin/calendar",
+    category: "navigate",
+  },
+  {
+    id: "attractions",
+    label: "Attractions",
+    icon: MapPin,
+    href: "/admin/attractions",
+    category: "navigate",
+  },
   { id: "hotels", label: "Hotels", icon: Building2, href: "/admin/hotels", category: "navigate" },
-  { id: "articles", label: "Articles", icon: FileText, href: "/admin/articles", category: "navigate" },
+  {
+    id: "articles",
+    label: "Articles",
+    icon: FileText,
+    href: "/admin/articles",
+    category: "navigate",
+  },
   { id: "dining", label: "Dining", icon: Utensils, href: "/admin/dining", category: "navigate" },
   { id: "media", label: "Media Library", icon: Image, href: "/admin/media", category: "navigate" },
   { id: "rss", label: "RSS Feeds", icon: Rss, href: "/admin/rss-feeds", category: "navigate" },
-  { id: "topics", label: "Topic Bank", icon: Lightbulb, href: "/admin/topic-bank", category: "navigate" },
+  {
+    id: "topics",
+    label: "Topic Bank",
+    icon: Lightbulb,
+    href: "/admin/topic-bank",
+    category: "navigate",
+  },
   { id: "keywords", label: "Keywords", icon: Hash, href: "/admin/keywords", category: "navigate" },
-  { id: "translations", label: "Translations", icon: Globe, href: "/admin/translations", category: "navigate" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, href: "/admin/analytics", category: "navigate" },
-  { id: "seo-audit", label: "SEO Audit", icon: SearchCheck, href: "/admin/seo-audit", category: "navigate" },
-  { id: "affiliates", label: "Affiliate Links", icon: Link2, href: "/admin/affiliate-links", category: "navigate" },
-  { id: "ai-generator", label: "AI Generator", icon: Sparkles, href: "/admin/ai-generator", category: "navigate" },
-  { id: "templates", label: "Templates", icon: LayoutTemplate, href: "/admin/templates", category: "navigate" },
+  {
+    id: "translations",
+    label: "Translations",
+    icon: Globe,
+    href: "/admin/translations",
+    category: "navigate",
+  },
+  {
+    id: "analytics",
+    label: "Analytics",
+    icon: BarChart3,
+    href: "/admin/analytics",
+    category: "navigate",
+  },
+  {
+    id: "seo-audit",
+    label: "SEO Audit",
+    icon: SearchCheck,
+    href: "/admin/seo-audit",
+    category: "navigate",
+  },
+  {
+    id: "affiliates",
+    label: "Affiliate Links",
+    icon: Link2,
+    href: "/admin/affiliate-links",
+    category: "navigate",
+  },
+  {
+    id: "ai-generator",
+    label: "AI Generator",
+    icon: Sparkles,
+    href: "/admin/ai-generator",
+    category: "navigate",
+  },
+  {
+    id: "templates",
+    label: "Templates",
+    icon: LayoutTemplate,
+    href: "/admin/templates",
+    category: "navigate",
+  },
   { id: "users", label: "Users", icon: Users, href: "/admin/users", category: "navigate" },
-  { id: "settings", label: "Settings", icon: Settings, href: "/admin/settings", category: "navigate" },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: Settings,
+    href: "/admin/settings",
+    category: "navigate",
+  },
 ];
 
 // Content type icons
@@ -109,21 +202,18 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     }
 
     // Filter quick actions
-    const filteredActions = quickActions.filter(
-      (item) => item.label.toLowerCase().includes(q)
-    );
+    const filteredActions = quickActions.filter(item => item.label.toLowerCase().includes(q));
 
     // Filter navigation
-    const filteredNav = navigationItems.filter(
-      (item) => item.label.toLowerCase().includes(q)
-    );
+    const filteredNav = navigationItems.filter(item => item.label.toLowerCase().includes(q));
 
     // Filter contents
     const filteredContent = contents
-      .filter((c) =>
-        c.title?.toLowerCase().includes(q) ||
-        c.slug?.toLowerCase().includes(q) ||
-        c.type?.toLowerCase().includes(q)
+      .filter(
+        c =>
+          c.title?.toLowerCase().includes(q) ||
+          c.slug?.toLowerCase().includes(q) ||
+          c.type?.toLowerCase().includes(q)
       )
       .slice(0, 8);
 
@@ -134,13 +224,21 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     };
   }, [query, contents]);
 
+  // Define types for flattened results
+  type QuickAction = (typeof quickActions)[number];
+  type NavigationItem = (typeof navigationItems)[number];
+  type FlatResult =
+    | { type: "action"; item: QuickAction }
+    | { type: "nav"; item: NavigationItem }
+    | { type: "contents"; item: ContentWithRelations };
+
   // Flatten results for keyboard navigation
   const flatResults = useMemo(() => {
-    const items: Array<{ type: "action" | "nav" | "contents"; item: any }> = [];
+    const items: FlatResult[] = [];
 
-    results.actions.forEach((item) => items.push({ type: "action", item }));
-    results.navigation.forEach((item) => items.push({ type: "nav", item }));
-    results.contents.forEach((item) => items.push({ type: "contents", item }));
+    results.actions.forEach(item => items.push({ type: "action", item }));
+    results.navigation.forEach(item => items.push({ type: "nav", item }));
+    results.contents.forEach(item => items.push({ type: "contents", item }));
 
     return items;
   }, [results]);
@@ -151,31 +249,34 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   }, [query]);
 
   // Handle keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setSelectedIndex((i) => Math.min(i + 1, flatResults.length - 1));
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setSelectedIndex((i) => Math.max(i - 1, 0));
-        break;
-      case "Enter":
-        e.preventDefault();
-        const selected = flatResults[selectedIndex];
-        if (selected) {
-          handleSelect(selected);
-        }
-        break;
-      case "Escape":
-        onOpenChange(false);
-        break;
-    }
-  }, [flatResults, selectedIndex, onOpenChange]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setSelectedIndex(i => Math.min(i + 1, flatResults.length - 1));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setSelectedIndex(i => Math.max(i - 1, 0));
+          break;
+        case "Enter":
+          e.preventDefault();
+          const selected = flatResults[selectedIndex];
+          if (selected) {
+            handleSelect(selected);
+          }
+          break;
+        case "Escape":
+          onOpenChange(false);
+          break;
+      }
+    },
+    [flatResults, selectedIndex, onOpenChange]
+  );
 
   // Handle selection
-  const handleSelect = (result: { type: string; item: any }) => {
+  const handleSelect = (result: FlatResult) => {
     onOpenChange(false);
     setQuery("");
 
@@ -204,7 +305,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
           <Search className="h-5 w-5 text-muted-foreground mr-3" />
           <Input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search contents, pages, actions..."
             className="border-0 focus-visible:ring-0 text-lg placeholder:text-muted-foreground/60"
@@ -224,7 +325,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Quick Actions
                 </div>
-                {results.actions.map((action) => {
+                {results.actions.map(action => {
                   const Icon = action.icon;
                   const isSelected = currentIndex === selectedIndex;
                   const itemIndex = currentIndex++;
@@ -238,11 +339,15 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                         isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-md ${isSelected ? "bg-primary/20" : "bg-muted"}`}>
+                      <div
+                        className={`p-1.5 rounded-md ${isSelected ? "bg-primary/20" : "bg-muted"}`}
+                      >
                         <Plus className="h-4 w-4" />
                       </div>
                       <span className="flex-1 font-medium">{action.label}</span>
-                      <ArrowRight className={`h-4 w-4 ${isSelected ? "opacity-100" : "opacity-0"}`} />
+                      <ArrowRight
+                        className={`h-4 w-4 ${isSelected ? "opacity-100" : "opacity-0"}`}
+                      />
                     </button>
                   );
                 })}
@@ -255,7 +360,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Pages
                 </div>
-                {results.navigation.map((item) => {
+                {results.navigation.map(item => {
                   const Icon = item.icon;
                   const isSelected = currentIndex === selectedIndex;
                   const itemIndex = currentIndex++;
@@ -269,11 +374,15 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                         isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-md ${isSelected ? "bg-primary/20" : "bg-muted"}`}>
+                      <div
+                        className={`p-1.5 rounded-md ${isSelected ? "bg-primary/20" : "bg-muted"}`}
+                      >
                         <Icon className="h-4 w-4" />
                       </div>
                       <span className="flex-1">{item.label}</span>
-                      <ArrowRight className={`h-4 w-4 ${isSelected ? "opacity-100" : "opacity-0"}`} />
+                      <ArrowRight
+                        className={`h-4 w-4 ${isSelected ? "opacity-100" : "opacity-0"}`}
+                      />
                     </button>
                   );
                 })}
@@ -286,7 +395,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Content
                 </div>
-                {results.contents.map((contents) => {
+                {results.contents.map(contents => {
                   const Icon = contentTypeIcons[contents.type] || FileText;
                   const colorClass = contentTypeColors[contents.type] || "text-gray-600";
                   const isSelected = currentIndex === selectedIndex;
@@ -301,7 +410,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                         isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-md ${isSelected ? "bg-primary/20" : "bg-muted"}`}>
+                      <div
+                        className={`p-1.5 rounded-md ${isSelected ? "bg-primary/20" : "bg-muted"}`}
+                      >
                         <Icon className={`h-4 w-4 ${colorClass}`} />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -312,7 +423,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                           <span className="capitalize">{contents.status}</span>
                         </div>
                       </div>
-                      <ArrowRight className={`h-4 w-4 shrink-0 ${isSelected ? "opacity-100" : "opacity-0"}`} />
+                      <ArrowRight
+                        className={`h-4 w-4 shrink-0 ${isSelected ? "opacity-100" : "opacity-0"}`}
+                      />
                     </button>
                   );
                 })}
@@ -358,7 +471,7 @@ export function useCommandPalette() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setOpen((prev) => !prev);
+        setOpen(prev => !prev);
       }
     };
 

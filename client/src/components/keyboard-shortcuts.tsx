@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Keyboard,
@@ -104,7 +98,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
 
         <ScrollArea className="h-[60vh]">
           <div className="space-y-6 pr-4">
-            {shortcutGroups.map((group) => (
+            {shortcutGroups.map(group => (
               <div key={group.title}>
                 <h3 className="font-medium text-sm text-muted-foreground mb-3 uppercase tracking-wider">
                   {group.title}
@@ -149,7 +143,8 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
         </ScrollArea>
 
         <div className="text-xs text-muted-foreground text-center pt-2 border-t">
-          Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] mx-1">?</kbd> anywhere to toggle this help
+          Press <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] mx-1">?</kbd> anywhere to
+          toggle this help
         </div>
       </DialogContent>
     </Dialog>
@@ -165,13 +160,11 @@ export function useKeyboardShortcuts() {
       // Check if user is typing in an input field
       const target = e.target as HTMLElement;
       const isInputField =
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable;
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
 
       if (e.key === "?" && !isInputField) {
         e.preventDefault();
-        setOpen((prev) => !prev);
+        setOpen(prev => !prev);
       }
     };
 

@@ -17,7 +17,6 @@ import {
   XCircle,
   RefreshCw,
   Zap,
-  AlertTriangle,
   Timer,
   Layers,
 } from "lucide-react";
@@ -86,13 +85,21 @@ function getStatusColor(status: string): string {
 }
 
 export default function OctypoQueueMonitorPage() {
-  const { data: aiQueue, isLoading: aiLoading, refetch: refetchAI } = useQuery<AIQueueStatus>({
-    queryKey: ['/api/octypo/ai-queue/status'],
+  const {
+    data: aiQueue,
+    isLoading: aiLoading,
+    refetch: refetchAI,
+  } = useQuery<AIQueueStatus>({
+    queryKey: ["/api/octypo/ai-queue/status"],
     refetchInterval: 3000,
   });
 
-  const { data: jobQueue, isLoading: jobLoading, refetch: refetchJob } = useQuery<JobQueueStatus>({
-    queryKey: ['/api/octypo/job-queue/status'],
+  const {
+    data: jobQueue,
+    isLoading: jobLoading,
+    refetch: refetchJob,
+  } = useQuery<JobQueueStatus>({
+    queryKey: ["/api/octypo/job-queue/status"],
     refetchInterval: 5000,
   });
 
@@ -255,14 +262,14 @@ export default function OctypoQueueMonitorPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(aiQueue?.providers || []).map((provider) => (
+                {(aiQueue?.providers || []).map(provider => (
                   <TableRow key={provider.name} data-testid={`row-provider-${provider.name}`}>
                     <TableCell className="font-medium capitalize">{provider.name}</TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(provider.status)}>
-                        {provider.status === 'ready' && <CheckCircle2 className="h-3 w-3 mr-1" />}
-                        {provider.status === 'limited' && <Clock className="h-3 w-3 mr-1" />}
-                        {provider.status === 'blocked' && <XCircle className="h-3 w-3 mr-1" />}
+                        {provider.status === "ready" && <CheckCircle2 className="h-3 w-3 mr-1" />}
+                        {provider.status === "limited" && <Clock className="h-3 w-3 mr-1" />}
+                        {provider.status === "blocked" && <XCircle className="h-3 w-3 mr-1" />}
                         {provider.status}
                       </Badge>
                     </TableCell>
@@ -318,14 +325,12 @@ export default function OctypoQueueMonitorPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(jobQueue?.recentJobs || []).map((job) => (
+                {(jobQueue?.recentJobs || []).map(job => (
                   <TableRow key={job.id} data-testid={`row-job-${job.id}`}>
                     <TableCell className="font-mono text-sm">{job.id.slice(0, 8)}...</TableCell>
                     <TableCell>{job.type}</TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(job.status)}>
-                        {job.status}
-                      </Badge>
+                      <Badge className={getStatusColor(job.status)}>{job.status}</Badge>
                     </TableCell>
                     <TableCell className="font-mono">{job.priority}</TableCell>
                     <TableCell>

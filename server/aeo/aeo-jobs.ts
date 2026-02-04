@@ -3,17 +3,18 @@
  * Handles scheduled tasks, auto-generation, and notifications
  */
 
-import { db } from '../db';
-import { contents, aeoAnswerCapsules, aeoCitations, aeoPerformanceMetrics } from '../../shared/schema';
-import { eq, and, gte, lte, sql, isNull, lt, desc } from 'drizzle-orm';
-import { generateAnswerCapsule, batchGenerateCapsules } from './answer-capsule-generator';
-import { getCitationInsights, getCrawlerStats } from './aeo-tracking';
-import { invalidateDashboardCache, invalidateCitationCache } from './aeo-cache';
-import { log } from '../lib/logger';
-import { ANSWER_CAPSULE_CONFIG, AEO_LOCALE_PRIORITY } from './aeo-config';
+import { db } from "../db";
+import { contents, aeoAnswerCapsules } from "../../shared/schema";
+import { eq, and, isNull, lt, desc } from "drizzle-orm";
+import { generateAnswerCapsule, batchGenerateCapsules } from "./answer-capsule-generator";
+import { getCitationInsights, getCrawlerStats } from "./aeo-tracking";
+import { invalidateDashboardCache, invalidateCitationCache } from "./aeo-cache";
+import { log } from "../lib/logger";
+import { ANSWER_CAPSULE_CONFIG, AEO_LOCALE_PRIORITY } from "./aeo-config";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO Jobs] ${msg}`, undefined, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO Jobs] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO Jobs] ${msg}`, data),
 };
 
@@ -45,7 +46,7 @@ async function sendNotification(message: string, data?: any): Promise<void> {
     try {
       await handler(message, data);
     } catch (error) {
-      aeoLogger.error('Notification handler failed', { error });
+      aeoLogger.error("Notification handler failed", { error });
     }
   }
 }
@@ -61,7 +62,7 @@ export async function runAutoGenerateCapsules(): Promise<{
   skipped: number;
 }> {
   if (jobStatuses.autoGenerate.isRunning) {
-    aeoLogger.info('Auto-generate job already running, skipping');
+    aeoLogger.info("Auto-generate job already running, skipping");
     return { processed: 0, success: 0, failed: 0, skipped: 0 };
   }
 
@@ -69,23 +70,18 @@ export async function runAutoGenerateCapsules(): Promise<{
   jobStatuses.autoGenerate.errors = [];
 
   try {
-    aeoLogger.info('Starting auto-generate capsules job');
+    aeoLogger.info("Starting auto-generate capsules job");
 
     // Find published content without capsules
     const contentWithoutCapsules = await db
       .select({ id: contents.id, type: contents.type })
       .from(contents)
-      .where(
-        and(
-          eq(contents.status, 'published'),
-          isNull(contents.answerCapsule)
-        )
-      )
+      .where(and(eq(contents.status, "published"), isNull(contents.answerCapsule)))
       .orderBy(desc(contents.viewCount))
       .limit(50); // Process max 50 per run
 
     if (contentWithoutCapsules.length === 0) {
-      aeoLogger.info('No content needs capsule generation');
+      aeoLogger.info("No content needs capsule generation");
       return { processed: 0, success: 0, failed: 0, skipped: 0 };
     }
 
@@ -110,10 +106,9 @@ export async function runAutoGenerateCapsules(): Promise<{
 
     // Send notification if there were failures
     if (result.failed > 0) {
-      await sendNotification(
-        `AEO Auto-Generate: ${result.failed} capsules failed to generate`,
-        { errors: result.errors.slice(0, 5) }
-      );
+      await sendNotification(`AEO Auto-Generate: ${result.failed} capsules failed to generate`, {
+        errors: result.errors.slice(0, 5),
+      });
     }
 
     // Send success notification for significant runs
@@ -123,12 +118,12 @@ export async function runAutoGenerateCapsules(): Promise<{
       );
     }
 
-    aeoLogger.info('Auto-generate capsules completed', jobResult);
+    aeoLogger.info("Auto-generate capsules completed", jobResult);
     return jobResult;
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
     jobStatuses.autoGenerate.errors.push(errorMsg);
-    aeoLogger.error('Auto-generate job failed', { error: errorMsg });
+    aeoLogger.error("Auto-generate job failed", { error: errorMsg });
     throw error;
   } finally {
     jobStatuses.autoGenerate.isRunning = false;
@@ -144,15 +139,13 @@ export async function runRegenerateLowQualityCapsules(): Promise<{
   improved: number;
   unchanged: number;
 }> {
-  aeoLogger.info('Starting low-quality capsule regeneration');
+  aeoLogger.info("Starting low-quality capsule regeneration");
 
   // Find capsules below acceptable threshold
   const lowQualityCapsules = await db
     .select()
     .from(aeoAnswerCapsules)
-    .where(
-      lt(aeoAnswerCapsules.qualityScore, ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable)
-    )
+    .where(lt(aeoAnswerCapsules.qualityScore, ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable))
     .limit(20);
 
   let improved = 0;
@@ -173,7 +166,7 @@ export async function runRegenerateLowQualityCapsules(): Promise<{
         unchanged++;
       }
     } catch (error) {
-      aeoLogger.error('Failed to regenerate capsule', { contentId: capsule.contentId, error });
+      aeoLogger.error("Failed to regenerate capsule", { contentId: capsule.contentId, error });
     }
   }
 
@@ -183,7 +176,7 @@ export async function runRegenerateLowQualityCapsules(): Promise<{
     unchanged,
   };
 
-  aeoLogger.info('Low-quality regeneration completed', result);
+  aeoLogger.info("Low-quality regeneration completed", result);
   return result;
 }
 
@@ -202,7 +195,7 @@ export async function runCitationScan(): Promise<{
   jobStatuses.citationScan.isRunning = true;
 
   try {
-    aeoLogger.info('Starting citation scan');
+    aeoLogger.info("Starting citation scan");
 
     // This is a placeholder - in production, this would integrate with
     // external APIs to detect citations (e.g., searching AI platforms)
@@ -210,10 +203,13 @@ export async function runCitationScan(): Promise<{
 
     const result = {
       newCitations: insights.totalCitations,
-      platforms: insights.byPlatform.reduce((acc, p) => {
-        acc[p.platform] = p.count;
-        return acc;
-      }, {} as Record<string, number>),
+      platforms: insights.byPlatform.reduce(
+        (acc, p) => {
+          acc[p.platform] = p.count;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
     };
 
     jobStatuses.citationScan.lastResult = result;
@@ -230,10 +226,10 @@ export async function runCitationScan(): Promise<{
     // Invalidate caches
     await invalidateCitationCache();
 
-    aeoLogger.info('Citation scan completed', result);
+    aeoLogger.info("Citation scan completed", result);
     return result;
   } catch (error) {
-    aeoLogger.error('Citation scan failed', { error });
+    aeoLogger.error("Citation scan failed", { error });
     throw error;
   } finally {
     jobStatuses.citationScan.isRunning = false;
@@ -249,13 +245,13 @@ export async function runPerformanceReport(): Promise<{
   metrics: any;
 }> {
   if (jobStatuses.performanceReport.isRunning) {
-    return { period: '', metrics: null };
+    return { period: "", metrics: null };
   }
 
   jobStatuses.performanceReport.isRunning = true;
 
   try {
-    aeoLogger.info('Generating performance report');
+    aeoLogger.info("Generating performance report");
 
     const endDate = new Date();
     const startDate = new Date();
@@ -268,12 +264,12 @@ export async function runPerformanceReport(): Promise<{
       crawlerVisits: crawlerStats.totalVisits,
       avgResponseTime: crawlerStats.avgResponseTime,
       citations: citationInsights.totalCitations,
-      topPlatform: citationInsights.byPlatform[0]?.platform || 'N/A',
-      topContent: citationInsights.topCitedContent[0]?.title || 'N/A',
+      topPlatform: citationInsights.byPlatform[0]?.platform || "N/A",
+      topContent: citationInsights.topCitedContent[0]?.title || "N/A",
     };
 
     const result = {
-      period: `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`,
+      period: `${startDate.toISOString().split("T")[0]} to ${endDate.toISOString().split("T")[0]}`,
       metrics,
     };
 
@@ -286,10 +282,10 @@ export async function runPerformanceReport(): Promise<{
       metrics
     );
 
-    aeoLogger.info('Performance report generated', result);
+    aeoLogger.info("Performance report generated", result);
     return result;
   } catch (error) {
-    aeoLogger.error('Performance report failed', { error });
+    aeoLogger.error("Performance report failed", { error });
     throw error;
   } finally {
     jobStatuses.performanceReport.isRunning = false;
@@ -311,7 +307,7 @@ export async function runCleanup(): Promise<{
   jobStatuses.cleanup.isRunning = true;
 
   try {
-    aeoLogger.info('Starting AEO cleanup');
+    aeoLogger.info("Starting AEO cleanup");
 
     // Keep crawler logs for 90 days
     const logsThreshold = new Date();
@@ -332,10 +328,10 @@ export async function runCleanup(): Promise<{
     jobStatuses.cleanup.lastResult = result;
     jobStatuses.cleanup.lastRun = new Date();
 
-    aeoLogger.info('Cleanup completed', result);
+    aeoLogger.info("Cleanup completed", result);
     return result;
   } catch (error) {
-    aeoLogger.error('Cleanup failed', { error });
+    aeoLogger.error("Cleanup failed", { error });
     throw error;
   } finally {
     jobStatuses.cleanup.isRunning = false;
@@ -363,32 +359,53 @@ export async function runAllJobs(): Promise<void> {
  * In production, consider using a proper job scheduler like Bull or Agenda
  */
 export function startScheduler(): void {
-  aeoLogger.info('Starting AEO job scheduler');
+  aeoLogger.info("Starting AEO job scheduler");
 
   // Auto-generate every hour
-  setInterval(() => {
-    runAutoGenerateCapsules().catch((e) => aeoLogger.error('Scheduled auto-generate failed', { error: e }));
-  }, 60 * 60 * 1000);
+  setInterval(
+    () => {
+      runAutoGenerateCapsules().catch(e =>
+        aeoLogger.error("Scheduled auto-generate failed", { error: e })
+      );
+    },
+    60 * 60 * 1000
+  );
 
   // Citation scan every 6 hours
-  setInterval(() => {
-    runCitationScan().catch((e) => aeoLogger.error('Scheduled citation scan failed', { error: e }));
-  }, 6 * 60 * 60 * 1000);
+  setInterval(
+    () => {
+      runCitationScan().catch(e => aeoLogger.error("Scheduled citation scan failed", { error: e }));
+    },
+    6 * 60 * 60 * 1000
+  );
 
   // Performance report daily (every 24 hours)
-  setInterval(() => {
-    runPerformanceReport().catch((e) => aeoLogger.error('Scheduled performance report failed', { error: e }));
-  }, 24 * 60 * 60 * 1000);
+  setInterval(
+    () => {
+      runPerformanceReport().catch(e =>
+        aeoLogger.error("Scheduled performance report failed", { error: e })
+      );
+    },
+    24 * 60 * 60 * 1000
+  );
 
   // Cleanup weekly (every 7 days)
-  setInterval(() => {
-    runCleanup().catch((e) => aeoLogger.error('Scheduled cleanup failed', { error: e }));
-  }, 7 * 24 * 60 * 60 * 1000);
+  setInterval(
+    () => {
+      runCleanup().catch(e => aeoLogger.error("Scheduled cleanup failed", { error: e }));
+    },
+    7 * 24 * 60 * 60 * 1000
+  );
 
   // Low quality regeneration daily
-  setInterval(() => {
-    runRegenerateLowQualityCapsules().catch((e) => aeoLogger.error('Scheduled regeneration failed', { error: e }));
-  }, 24 * 60 * 60 * 1000);
+  setInterval(
+    () => {
+      runRegenerateLowQualityCapsules().catch(e =>
+        aeoLogger.error("Scheduled regeneration failed", { error: e })
+      );
+    },
+    24 * 60 * 60 * 1000
+  );
 }
 
 /**
@@ -396,11 +413,11 @@ export function startScheduler(): void {
  */
 export async function onContentPublished(contentId: string): Promise<void> {
   try {
-    aeoLogger.info('Content published, generating capsule', { contentId });
-    await generateAnswerCapsule({ contentId, locale: 'en' });
+    aeoLogger.info("Content published, generating capsule", { contentId });
+    await generateAnswerCapsule({ contentId, locale: "en" });
     await invalidateDashboardCache();
   } catch (error) {
-    aeoLogger.error('Failed to generate capsule on publish', { contentId, error });
+    aeoLogger.error("Failed to generate capsule on publish", { contentId, error });
   }
 }
 
@@ -414,11 +431,11 @@ export async function onContentUpdated(contentId: string): Promise<void> {
     });
 
     if (existingCapsule) {
-      aeoLogger.info('Content updated, regenerating capsule', { contentId });
-      await generateAnswerCapsule({ contentId, locale: 'en', forceRegenerate: true });
+      aeoLogger.info("Content updated, regenerating capsule", { contentId });
+      await generateAnswerCapsule({ contentId, locale: "en", forceRegenerate: true });
       await invalidateDashboardCache();
     }
   } catch (error) {
-    aeoLogger.error('Failed to regenerate capsule on update', { contentId, error });
+    aeoLogger.error("Failed to regenerate capsule on update", { contentId, error });
   }
 }

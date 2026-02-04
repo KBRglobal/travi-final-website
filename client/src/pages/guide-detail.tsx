@@ -13,7 +13,6 @@ import {
   Languages,
   Calendar,
   Plane,
-  Train,
   Bus,
   Map,
   Utensils,
@@ -30,7 +29,6 @@ import {
   Hotel,
   Ticket,
   Star,
-  FileText,
   Layers,
   RefreshCw,
 } from "lucide-react";
@@ -404,10 +402,7 @@ function ContentSection({ section, index }: { section: GuideSection; index: numb
           <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/20 to-[#E84C9A]/20 text-[#6443F4]">
             {getSectionIcon(section.heading)}
           </div>
-          <h2
-            className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white"
-            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white font-chillax">
             {section.heading}
           </h2>
         </div>

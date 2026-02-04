@@ -6,8 +6,5 @@
  * New prompts should be destination-agnostic.
  */
 
-// Future exports when prompts are modularized:
-// export { ATTRACTION_SYSTEM_PROMPT } from "./attraction";
-// export { ARTICLE_SYSTEM_PROMPT } from "./article";
-// export { HOTEL_SYSTEM_PROMPT } from "./hotel";
-// export { DINING_SYSTEM_PROMPT } from "./dining";
+// Future exports when prompts are modularized will include:
+// attraction, article, hotel, dining system prompts

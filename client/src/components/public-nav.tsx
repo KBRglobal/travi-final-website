@@ -1,11 +1,33 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Search, ChevronDown, MapPin, Camera, Building2, Utensils, Sparkles, Compass, ShoppingBag, LucideIcon, Circle, Newspaper, Instagram } from "lucide-react";
+import {
+  Menu,
+  X,
+  Search,
+  MapPin,
+  Camera,
+  Building2,
+  Utensils,
+  Sparkles,
+  Compass,
+  ShoppingBag,
+  LucideIcon,
+  Circle,
+  Newspaper,
+  Instagram,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
 const traviLogo = "/logos/Logotype_for_Dark_Background.svg";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SiTiktok } from "react-icons/si";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -19,7 +41,16 @@ const NAV_ITEMS = [
 ];
 
 const iconMap: Record<string, LucideIcon> = {
-  Camera, Building2, MapPin, Utensils, ShoppingBag, Compass, Sparkles, Menu, Search, Newspaper
+  Camera,
+  Building2,
+  MapPin,
+  Utensils,
+  ShoppingBag,
+  Compass,
+  Sparkles,
+  Menu,
+  Search,
+  Newspaper,
 };
 
 function getIcon(iconName?: string | null): LucideIcon {
@@ -59,17 +90,18 @@ interface PublicNavProps {
   externalMobileMenuOpen?: boolean;
 }
 
-export function PublicNav({ 
-  className = "", 
+export function PublicNav({
+  className = "",
   variant = "default",
   transparentTone = "dark",
   hideOnMobile = false,
   onMobileMenuToggle,
-  externalMobileMenuOpen
+  externalMobileMenuOpen,
 }: PublicNavProps) {
   const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false);
-  
-  const mobileMenuOpen = externalMobileMenuOpen !== undefined ? externalMobileMenuOpen : internalMobileMenuOpen;
+
+  const mobileMenuOpen =
+    externalMobileMenuOpen !== undefined ? externalMobileMenuOpen : internalMobileMenuOpen;
   const setMobileMenuOpen = (value: boolean) => {
     setInternalMobileMenuOpen(value);
     onMobileMenuToggle?.(value);
@@ -88,43 +120,40 @@ export function PublicNav({
   }, []);
 
   const isTransparent = variant === "transparent";
-  const normalizedLocation = location.split('?')[0].split('#')[0].replace(/\/$/, '') || '/';
-  const isActive = (href: string) => normalizedLocation === href || normalizedLocation.startsWith(href + '/');
+  const normalizedLocation = location.split("?")[0].split("#")[0].replace(/\/$/, "") || "/";
+  const isActive = (href: string) =>
+    normalizedLocation === href || normalizedLocation.startsWith(href + "/");
 
   return (
     <header className={className}>
-      <nav 
+      <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           hideOnMobile ? "hidden lg:block" : ""
         } ${
           scrolled
             ? "backdrop-blur-xl shadow-lg shadow-black/20"
-            : isTransparent 
-              ? "bg-transparent" 
+            : isTransparent
+              ? "bg-transparent"
               : ""
         }`}
         style={{
-          background: scrolled 
-            ? 'rgba(100, 67, 244, 0.95)'
-            : isTransparent 
-              ? 'transparent'
-              : '#6443F4'
+          background: scrolled
+            ? "rgba(100, 67, 244, 0.95)"
+            : isTransparent
+              ? "transparent"
+              : "#6443F4",
         }}
-        data-testid="nav-header" 
+        data-testid="nav-header"
         aria-label={t("nav.mainNavigation")}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <Link href={localePath("/")} data-testid="link-header-logo">
-              <img 
-                src={traviLogo} 
-                alt={t("nav.logoAlt")} 
-                className="h-8 md:h-10"
-              />
+              <img src={traviLogo} alt={t("nav.logoAlt")} className="h-8 md:h-10" />
             </Link>
 
             <nav className="hidden lg:flex items-center gap-1" aria-label={t("nav.mainNavigation")}>
-              {NAV_ITEMS.map((item) => {
+              {NAV_ITEMS.map(item => {
                 const active = isActive(item.href);
                 const label = t(item.key);
                 return (
@@ -132,11 +161,11 @@ export function PublicNav({
                     key={item.href}
                     href={localePath(item.href)}
                     className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
-                      active 
-                        ? "text-white bg-white/20" 
+                      active
+                        ? "text-white bg-white/20"
                         : "text-white/70 hover:text-white hover:bg-white/10"
                     }`}
-                    data-testid={`link-nav-${item.href.replace('/', '')}`}
+                    data-testid={`link-nav-${item.href.replace("/", "")}`}
                     aria-current={active ? "page" : undefined}
                   >
                     {label}
@@ -148,11 +177,11 @@ export function PublicNav({
             <div className="flex items-center gap-2 sm:gap-4">
               <LanguageSwitcher className="hidden sm:flex" />
               <LanguageSwitcher variant="compact" className="sm:hidden" />
-              
+
               <div className="hidden md:flex items-center gap-3">
-                <a 
-                  href="https://www.instagram.com/travi_world" 
-                  target="_blank" 
+                <a
+                  href="https://www.instagram.com/travi_world"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/70 hover:text-[#E4405F] transition-colors"
                   data-testid="link-social-instagram"
@@ -160,9 +189,9 @@ export function PublicNav({
                 >
                   <Instagram className="w-5 h-5" />
                 </a>
-                <a 
-                  href="https://www.tiktok.com/@travi.world" 
-                  target="_blank" 
+                <a
+                  href="https://www.tiktok.com/@travi.world"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/70 hover:text-white transition-colors"
                   data-testid="link-social-tiktok"
@@ -175,9 +204,9 @@ export function PublicNav({
               {/* Mobile Menu - Simple Sheet matching homepage */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="lg:hidden rounded-full text-white/70 hover:text-white hover:bg-white/10"
                     data-testid="button-mobile-menu"
                     aria-label={t("nav.openMenu")}
@@ -185,11 +214,11 @@ export function PublicNav({
                     <Menu className="w-5 h-5" aria-hidden="true" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent 
+                <SheetContent
                   side={isRTL ? "left" : "right"}
                   className="w-[300px] sm:w-[350px] border-0"
                   style={{
-                    background: '#6443F4'
+                    background: "#6443F4",
                   }}
                 >
                   <SheetHeader className="flex flex-row items-center justify-between pb-4 border-b border-white/10">
@@ -197,11 +226,11 @@ export function PublicNav({
                       <img src={traviLogo} alt={t("nav.logoAlt")} className="h-8" />
                     </SheetTitle>
                     <SheetClose asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="text-white/70 hover:text-white hover:bg-white/10 rounded-full" 
-                        data-testid="button-mobile-menu-close" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-white/70 hover:text-white hover:bg-white/10 rounded-full"
+                        data-testid="button-mobile-menu-close"
                         aria-label={t("nav.closeMenu")}
                       >
                         <X className="w-5 h-5" aria-hidden="true" />
@@ -210,11 +239,11 @@ export function PublicNav({
                     </SheetClose>
                   </SheetHeader>
                   <div className="mt-6 space-y-1">
-                    {NAV_ITEMS.map((item) => {
+                    {NAV_ITEMS.map(item => {
                       const active = isActive(item.href);
                       const label = t(item.key);
                       return (
-                        <Link 
+                        <Link
                           key={item.href}
                           href={localePath(item.href)}
                           onClick={() => setMobileMenuOpen(false)}
@@ -223,7 +252,7 @@ export function PublicNav({
                               ? "text-white bg-white/15"
                               : "text-white/70 hover:text-white hover:bg-white/10"
                           }`}
-                          data-testid={`link-mobile-${item.href.replace('/', '')}`}
+                          data-testid={`link-mobile-${item.href.replace("/", "")}`}
                           aria-current={active ? "page" : undefined}
                         >
                           {label}
@@ -236,7 +265,6 @@ export function PublicNav({
             </div>
           </div>
         </div>
-
       </nav>
     </header>
   );

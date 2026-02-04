@@ -4,20 +4,14 @@
  */
 
 import { db } from "../db";
-import {
-  aeoCitations,
-  aeoCrawlerLogs,
-  aeoPerformanceMetrics,
-  aeoAnswerCapsules,
-  contents,
-} from "../../shared/schema";
-import { eq, and, gte, lte, sql, desc, count } from "drizzle-orm";
-import { identifyAICrawler, identifyAIReferrer, AI_CRAWLERS } from "./aeo-static-files";
-import { AEO_METRICS } from "./aeo-config";
+import { aeoCitations, aeoCrawlerLogs, aeoPerformanceMetrics, contents } from "../../shared/schema";
+import { eq, and, gte, lte, sql } from "drizzle-orm";
+import { identifyAICrawler, identifyAIReferrer } from "./aeo-static-files";
 import { log } from "../lib/logger";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO] ${msg}`, undefined, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO] ${msg}`, data),
 };
 
@@ -69,7 +63,9 @@ export async function logCrawlerVisit(input: CrawlerLogInput): Promise<boolean> 
 
   // Find content ID from path if possible
   let contentId: string | undefined;
-  const pathMatch = input.requestPath.match(/\/(attractions|hotels|dining|districts|articles|events|transport)\/([^\/\?]+)/);
+  const pathMatch = input.requestPath.match(
+    /\/(attractions|hotels|dining|districts|articles|events|transport)\/([^\/\?]+)/
+  );
   if (pathMatch) {
     const [, type, slug] = pathMatch;
     const content = await db.query.contents.findFirst({
@@ -91,10 +87,10 @@ export async function logCrawlerVisit(input: CrawlerLogInput): Promise<boolean> 
       referer: input.referer,
     } as any);
 
-    aeoLogger.info( `Crawler visit logged: ${crawlerInfo.name} -> ${input.requestPath}`);
+    aeoLogger.info(`Crawler visit logged: ${crawlerInfo.name} -> ${input.requestPath}`);
     return true;
   } catch (error) {
-    aeoLogger.error( "Failed to log crawler visit", { error });
+    aeoLogger.error("Failed to log crawler visit", { error });
     return false;
   }
 }
@@ -104,20 +100,23 @@ export async function logCrawlerVisit(input: CrawlerLogInput): Promise<boolean> 
  */
 export async function logCitation(input: CitationInput): Promise<string | null> {
   try {
-    const result = await db.insert(aeoCitations).values({
-      contentId: input.contentId,
-      platform: input.platform,
-      query: input.query,
-      citationType: input.citationType,
-      citedText: input.citedText,
-      responseContext: input.responseContext,
-      url: input.url,
-      position: input.position,
-      competitorsCited: input.competitorsCited || [],
-      sessionId: input.sessionId,
-      userAgent: input.userAgent,
-      ipCountry: input.ipCountry,
-    } as any).returning({ id: aeoCitations.id });
+    const result = await db
+      .insert(aeoCitations)
+      .values({
+        contentId: input.contentId,
+        platform: input.platform,
+        query: input.query,
+        citationType: input.citationType,
+        citedText: input.citedText,
+        responseContext: input.responseContext,
+        url: input.url,
+        position: input.position,
+        competitorsCited: input.competitorsCited || [],
+        sessionId: input.sessionId,
+        userAgent: input.userAgent,
+        ipCountry: input.ipCountry,
+      } as any)
+      .returning({ id: aeoCitations.id });
 
     // Update citation count in answer capsule
     await db.execute(sql`
@@ -128,10 +127,10 @@ export async function logCitation(input: CitationInput): Promise<string | null> 
       WHERE content_id = ${input.contentId}
     `);
 
-    aeoLogger.info( `Citation logged: ${input.platform} for content ${input.contentId}`);
+    aeoLogger.info(`Citation logged: ${input.platform} for content ${input.contentId}`);
     return result[0]?.id || null;
   } catch (error) {
-    aeoLogger.error( "Failed to log citation", { error });
+    aeoLogger.error("Failed to log citation", { error });
     return null;
   }
 }
@@ -185,7 +184,7 @@ export async function trackAITraffic(input: TrafficInput): Promise<void> {
       } as any);
     }
   } catch (error) {
-    aeoLogger.error( "Failed to track AI traffic", { error });
+    aeoLogger.error("Failed to track AI traffic", { error });
   }
 }
 
@@ -237,33 +236,20 @@ export async function getAEODashboard(
     .select()
     .from(aeoPerformanceMetrics)
     .where(
-      and(
-        gte(aeoPerformanceMetrics.date, startDate),
-        lte(aeoPerformanceMetrics.date, endDate)
-      )
+      and(gte(aeoPerformanceMetrics.date, startDate), lte(aeoPerformanceMetrics.date, endDate))
     );
 
   // Get citations for date range
   const citations = await db
     .select()
     .from(aeoCitations)
-    .where(
-      and(
-        gte(aeoCitations.detectedAt, startDate),
-        lte(aeoCitations.detectedAt, endDate)
-      )
-    );
+    .where(and(gte(aeoCitations.detectedAt, startDate), lte(aeoCitations.detectedAt, endDate)));
 
   // Get crawler logs for date range
   const crawlerLogs = await db
     .select()
     .from(aeoCrawlerLogs)
-    .where(
-      and(
-        gte(aeoCrawlerLogs.crawledAt, startDate),
-        lte(aeoCrawlerLogs.crawledAt, endDate)
-      )
-    );
+    .where(and(gte(aeoCrawlerLogs.crawledAt, startDate), lte(aeoCrawlerLogs.crawledAt, endDate)));
 
   // Calculate overview
   const overview = {
@@ -275,9 +261,16 @@ export async function getAEODashboard(
   };
 
   // Aggregate by platform
-  const platformMap = new Map<string, { citations: number; clickThroughs: number; conversions: number }>();
+  const platformMap = new Map<
+    string,
+    { citations: number; clickThroughs: number; conversions: number }
+  >();
   for (const metric of metrics) {
-    const existing = platformMap.get(metric.platform) || { citations: 0, clickThroughs: 0, conversions: 0 };
+    const existing = platformMap.get(metric.platform) || {
+      citations: 0,
+      clickThroughs: 0,
+      conversions: 0,
+    };
     platformMap.set(metric.platform, {
       citations: existing.citations + (metric.citations || 0),
       clickThroughs: existing.clickThroughs + (metric.clickThroughs || 0),
@@ -285,7 +278,11 @@ export async function getAEODashboard(
     });
   }
   for (const citation of citations) {
-    const existing = platformMap.get(citation.platform) || { citations: 0, clickThroughs: 0, conversions: 0 };
+    const existing = platformMap.get(citation.platform) || {
+      citations: 0,
+      clickThroughs: 0,
+      conversions: 0,
+    };
     platformMap.set(citation.platform, {
       ...existing,
       citations: existing.citations + 1,
@@ -310,12 +307,12 @@ export async function getAEODashboard(
     .map(([id]) => id);
 
   const topContentData = await Promise.all(
-    topContentIds.map(async (contentId) => {
+    topContentIds.map(async contentId => {
       const content = await db.query.contents.findFirst({
         where: eq(contents.id, contentId),
       });
       const clickThroughs = metrics
-        .filter((m) => m.contentId === contentId)
+        .filter(m => m.contentId === contentId)
         .reduce((sum, m) => sum + (m.clickThroughs || 0), 0);
 
       return {
@@ -408,7 +405,7 @@ export async function getAEODashboard(
  */
 function calculateAvgPosition(metrics: any[]): number {
   const positions = metrics
-    .map((m) => m.avgPosition)
+    .map(m => m.avgPosition)
     .filter((p): p is number => p !== null && p !== undefined);
 
   if (positions.length === 0) return 0;
@@ -471,7 +468,7 @@ export async function getCrawlerStats(days: number = 30): Promise<{
 
   // Average response time
   const responseTimes = logs
-    .map((l) => l.responseTime)
+    .map(l => l.responseTime)
     .filter((t): t is number => t !== null && t !== undefined);
   const avgResponseTime =
     responseTimes.length > 0
@@ -562,7 +559,7 @@ export async function getCitationInsights(days: number = 30): Promise<{
 
   // Average position
   const positions = citationData
-    .map((c) => c.position)
+    .map(c => c.position)
     .filter((p): p is number => p !== null && p !== undefined);
   const averagePosition =
     positions.length > 0

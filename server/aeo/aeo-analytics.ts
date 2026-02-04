@@ -3,21 +3,20 @@
  * ROI tracking, query mapping, content gap analysis
  */
 
-import { db } from '../db';
+import { db } from "../db";
 import {
   contents,
   aeoAnswerCapsules,
   aeoCitations,
   aeoPerformanceMetrics,
-  aeoCrawlerLogs,
-} from '../../shared/schema';
-import { eq, and, gte, lte, sql, desc, count, isNull, not } from 'drizzle-orm';
-import { log } from '../lib/logger';
-import { CONTENT_PRIORITY, TRAVELER_PERSONAS, PLATFORM_PREFERENCES } from './aeo-config';
-import { getCachedROIMetrics } from './aeo-cache';
+} from "../../shared/schema";
+import { eq, and, gte, lte, count } from "drizzle-orm";
+import { log } from "../lib/logger";
+import { TRAVELER_PERSONAS, PLATFORM_PREFERENCES } from "./aeo-config";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO Analytics] ${msg}`, undefined, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO Analytics] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO Analytics] ${msg}`, data),
 };
 
@@ -81,10 +80,7 @@ export async function calculateROI(
     .select()
     .from(aeoPerformanceMetrics)
     .where(
-      and(
-        gte(aeoPerformanceMetrics.date, startDate),
-        lte(aeoPerformanceMetrics.date, endDate)
-      )
+      and(gte(aeoPerformanceMetrics.date, startDate), lte(aeoPerformanceMetrics.date, endDate))
     );
 
   // Get capsule count (represents AI API calls)
@@ -128,7 +124,7 @@ export async function calculateROI(
   const typeMap = new Map<string, { traffic: number; conversions: number; revenue: number }>();
 
   return {
-    period: `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`,
+    period: `${startDate.toISOString().split("T")[0]} to ${endDate.toISOString().split("T")[0]}`,
     investment: {
       aiApiCosts,
       laborHours: estimatedLaborHours,
@@ -212,7 +208,7 @@ export async function mapQueriesToContent(days: number = 30): Promise<QueryMappi
       metaDescription: contents.metaDescription,
     })
     .from(contents)
-    .where(eq(contents.status, 'published'));
+    .where(eq(contents.status, "published"));
 
   const results: QueryMapping[] = [];
 
@@ -253,7 +249,7 @@ function calculateRelevanceScore(
 ): number {
   const queryWords = query.toLowerCase().split(/\s+/);
   const titleWords = content.title.toLowerCase().split(/\s+/);
-  const descWords = (content.metaDescription || '').toLowerCase().split(/\s+/);
+  const descWords = (content.metaDescription || "").toLowerCase().split(/\s+/);
 
   let score = 0;
   let maxScore = queryWords.length * 2;
@@ -282,9 +278,9 @@ function suggestContentForQuery(
     const match = query.match(/(.+?)\s+(?:vs|versus|compare|between)\s+(.+)/i);
     if (match) {
       suggestions.push({
-        type: 'article',
+        type: "article",
         title: `${match[1].trim()} vs ${match[2].trim()}: Complete Comparison Guide`,
-        reason: 'Query indicates comparison intent - create detailed comparison content',
+        reason: "Query indicates comparison intent - create detailed comparison content",
       });
     }
   }
@@ -294,8 +290,8 @@ function suggestContentForQuery(
     const match = query.match(/best\s+(.+?)(?:\s+in\s+|\s+for\s+)?(.+)?/i);
     if (match) {
       suggestions.push({
-        type: 'article',
-        title: `Top 10 Best ${match[1].trim()}${match[2] ? ` in ${match[2].trim()}` : ''}`,
+        type: "article",
+        title: `Top 10 Best ${match[1].trim()}${match[2] ? ` in ${match[2].trim()}` : ""}`,
         reason: 'Query seeks "best" options - create ranked list content',
       });
     }
@@ -304,27 +300,27 @@ function suggestContentForQuery(
   // Check for "how to" patterns
   if (/how\s+to/i.test(query)) {
     suggestions.push({
-      type: 'article',
-      title: query.replace(/^how\s+to\s+/i, 'Complete Guide: How to '),
-      reason: 'Query seeks instructions - create step-by-step guide',
+      type: "article",
+      title: query.replace(/^how\s+to\s+/i, "Complete Guide: How to "),
+      reason: "Query seeks instructions - create step-by-step guide",
     });
   }
 
   // Check for cost/price patterns
   if (/cost|price|how\s+much/i.test(query)) {
     suggestions.push({
-      type: 'article',
-      title: `${query.replace(/cost|price|how\s+much/i, '').trim()} Cost Guide: Complete Pricing Breakdown`,
-      reason: 'Query seeks pricing information - create detailed cost guide',
+      type: "article",
+      title: `${query.replace(/cost|price|how\s+much/i, "").trim()} Cost Guide: Complete Pricing Breakdown`,
+      reason: "Query seeks pricing information - create detailed cost guide",
     });
   }
 
   // If low relevance matches, suggest more targeted content
   if (existingMatches.every(m => m.relevanceScore < 0.5)) {
     suggestions.push({
-      type: 'article',
+      type: "article",
       title: `Everything You Need to Know About ${query}`,
-      reason: 'No highly relevant existing content - create comprehensive guide',
+      reason: "No highly relevant existing content - create comprehensive guide",
     });
   }
 
@@ -338,7 +334,7 @@ function suggestContentForQuery(
 export interface ContentGap {
   category: string;
   description: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
   suggestedContent: Array<{
     title: string;
     type: string;
@@ -361,7 +357,7 @@ export async function analyzeContentGaps(): Promise<ContentGap[]> {
       count: count(),
     })
     .from(contents)
-    .where(eq(contents.status, 'published'))
+    .where(eq(contents.status, "published"))
     .groupBy(contents.type);
 
   const typeCount = new Map(contentStats.map(s => [s.type, s.count]));
@@ -374,81 +370,80 @@ export async function analyzeContentGaps(): Promise<ContentGap[]> {
     .from(aeoAnswerCapsules);
 
   const totalContent = contentStats.reduce((sum, s) => sum + s.count, 0);
-  const capsuleCoverage = totalContent > 0
-    ? (capsuleStats[0]?.count || 0) / totalContent
-    : 0;
+  const capsuleCoverage = totalContent > 0 ? (capsuleStats[0]?.count || 0) / totalContent : 0;
 
   // Gap 1: Low capsule coverage
   if (capsuleCoverage < 0.8) {
     gaps.push({
-      category: 'Capsule Coverage',
+      category: "Capsule Coverage",
       description: `Only ${Math.round(capsuleCoverage * 100)}% of content has answer capsules`,
-      priority: 'high',
+      priority: "high",
       suggestedContent: [],
     });
   }
 
   // Gap 2: Missing comparison content (articles with comparison focus)
-  const articleCount = typeCount.get('article') || 0;
+  const articleCount = typeCount.get("article") || 0;
   if (articleCount < 20) {
     gaps.push({
-      category: 'Comparison Content',
-      description: 'Limited comparison content for AI platform citations',
-      priority: 'high',
+      category: "Comparison Content",
+      description: "Limited comparison content for AI platform citations",
+      priority: "high",
       suggestedContent: [
         {
-          title: 'Downtown Dubai vs Dubai Marina: Where to Stay',
-          type: 'article',
-          targetPersona: 'familyTraveler',
-          estimatedValue: 'High - comparison queries have 4.4x higher CTR',
+          title: "Downtown Dubai vs Dubai Marina: Where to Stay",
+          type: "article",
+          targetPersona: "familyTraveler",
+          estimatedValue: "High - comparison queries have 4.4x higher CTR",
         },
         {
-          title: 'JBR vs Palm Jumeirah Beach Comparison',
-          type: 'article',
-          targetPersona: 'luxurySeeker',
-          estimatedValue: 'High',
+          title: "JBR vs Palm Jumeirah Beach Comparison",
+          type: "article",
+          targetPersona: "luxurySeeker",
+          estimatedValue: "High",
         },
       ],
-      competitorExamples: ['timeout.com', 'tripadvisor.com'],
+      competitorExamples: ["timeout.com", "tripadvisor.com"],
     });
   }
 
   // Gap 3: Missing FAQ hubs
   gaps.push({
-    category: 'FAQ Hub Pages',
-    description: 'Need dedicated FAQ hub pages for AI-optimized answers',
-    priority: 'high',
+    category: "FAQ Hub Pages",
+    description: "Need dedicated FAQ hub pages for AI-optimized answers",
+    priority: "high",
     suggestedContent: [
       {
-        title: 'Dubai Travel FAQ: 100 Questions Answered',
-        type: 'article',
-        targetPersona: 'budgetExplorer',
-        estimatedValue: 'Very High - FAQ pages dominate AI citations',
+        title: "Dubai Travel FAQ: 100 Questions Answered",
+        type: "article",
+        targetPersona: "budgetExplorer",
+        estimatedValue: "Very High - FAQ pages dominate AI citations",
       },
     ],
   });
 
   // Gap 4: Cost guide content
-  const hasCostGuides = Array.from(typeCount.entries())
-    .some(([type]) => type.includes('cost') || type.includes('price'));
+  const hasCostGuides = Array.from(typeCount.entries()).some(
+    ([type]) => type.includes("cost") || type.includes("price")
+  );
 
   if (!hasCostGuides) {
     gaps.push({
-      category: 'Cost & Budget Guides',
-      description: 'Missing cost breakdown content for budget-conscious travelers',
-      priority: 'medium',
+      category: "Cost & Budget Guides",
+      description: "Missing cost breakdown content for budget-conscious travelers",
+      priority: "medium",
       suggestedContent: [
         {
-          title: 'How Much Does a Trip to Dubai Cost in 2024',
-          type: 'article',
-          targetPersona: 'budgetExplorer',
-          estimatedValue: 'High - cost queries are common AI questions',
+          title: "How Much Does a Trip to Dubai Cost in 2024",
+          type: "article",
+          targetPersona: "budgetExplorer",
+          estimatedValue: "High - cost queries are common AI questions",
         },
         {
-          title: 'Dubai on a Budget: Complete Daily Cost Breakdown',
-          type: 'article',
-          targetPersona: 'budgetExplorer',
-          estimatedValue: 'High',
+          title: "Dubai on a Budget: Complete Daily Cost Breakdown",
+          type: "article",
+          targetPersona: "budgetExplorer",
+          estimatedValue: "High",
         },
       ],
     });
@@ -461,21 +456,21 @@ export async function analyzeContentGaps(): Promise<ContentGap[]> {
     gaps.push({
       category: `${persona.name} Content`,
       description: `Content optimized for ${persona.name.toLowerCase()} persona`,
-      priority: 'medium',
+      priority: "medium",
       suggestedContent: persona.interests.slice(0, 2).map(interest => ({
         title: `Best ${interest} for ${persona.name}s in Dubai`,
-        type: 'article',
+        type: "article",
         targetPersona: personaKey,
-        estimatedValue: 'Medium',
+        estimatedValue: "Medium",
       })),
     });
   }
 
   // Gap 6: Multi-language capsules
   gaps.push({
-    category: 'Arabic Content',
-    description: '30% of Dubai visitors speak Arabic - ensure Arabic capsules',
-    priority: 'high',
+    category: "Arabic Content",
+    description: "30% of Dubai visitors speak Arabic - ensure Arabic capsules",
+    priority: "high",
     suggestedContent: [],
   });
 
@@ -513,9 +508,7 @@ export interface PlatformAnalysis {
 /**
  * Analyze performance by AI platform
  */
-export async function analyzePlatformPerformance(
-  days: number = 30
-): Promise<PlatformAnalysis[]> {
+export async function analyzePlatformPerformance(days: number = 30): Promise<PlatformAnalysis[]> {
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
@@ -529,10 +522,7 @@ export async function analyzePlatformPerformance(
     .select()
     .from(aeoPerformanceMetrics)
     .where(
-      and(
-        gte(aeoPerformanceMetrics.date, startDate),
-        lte(aeoPerformanceMetrics.date, endDate)
-      )
+      and(gte(aeoPerformanceMetrics.date, startDate), lte(aeoPerformanceMetrics.date, endDate))
     );
 
   // Get previous period for comparison
@@ -553,7 +543,7 @@ export async function analyzePlatformPerformance(
     .where(gte(aeoCitations.detectedAt, startDate));
 
   // Aggregate by platform
-  const platforms = ['chatgpt', 'perplexity', 'google_aio', 'claude', 'bing_chat', 'gemini'];
+  const platforms = ["chatgpt", "perplexity", "google_aio", "claude", "bing_chat", "gemini"];
   const results: PlatformAnalysis[] = [];
 
   for (const platform of platforms) {
@@ -567,9 +557,12 @@ export async function analyzePlatformPerformance(
       0
     );
 
-    const citationGrowth = previousCitationCount > 0
-      ? ((currentCitationCount - previousCitationCount) / previousCitationCount) * 100
-      : currentCitationCount > 0 ? 100 : 0;
+    const citationGrowth =
+      previousCitationCount > 0
+        ? ((currentCitationCount - previousCitationCount) / previousCitationCount) * 100
+        : currentCitationCount > 0
+          ? 100
+          : 0;
 
     // Get top content for this platform
     const contentCounts = new Map<string, number>();
@@ -588,7 +581,7 @@ export async function analyzePlatformPerformance(
         });
         return {
           contentId,
-          title: content?.title || 'Unknown',
+          title: content?.title || "Unknown",
           citations: count,
         };
       })
@@ -607,10 +600,10 @@ export async function analyzePlatformPerformance(
       .map(([query, count]) => ({ query, count }));
 
     // Generate recommendations based on platform preferences
-    const recommendations = generatePlatformRecommendations(
-      platform,
-      { citationGrowth, citationCount: currentCitationCount }
-    );
+    const recommendations = generatePlatformRecommendations(platform, {
+      citationGrowth,
+      citationCount: currentCitationCount,
+    });
 
     results.push({
       platform,
@@ -649,23 +642,27 @@ function generatePlatformRecommendations(
   if (!prefs) return recommendations;
 
   if (stats.citationCount < 10) {
-    recommendations.push(`Focus on creating ${prefs.contentTypes.join(', ')} content to increase ${platform} citations`);
+    recommendations.push(
+      `Focus on creating ${prefs.contentTypes.join(", ")} content to increase ${platform} citations`
+    );
   }
 
   if (stats.citationGrowth < 0) {
-    recommendations.push(`Citation decline detected - review and update existing content for ${platform}`);
+    recommendations.push(
+      `Citation decline detected - review and update existing content for ${platform}`
+    );
   }
 
   if ((prefs as any).prefersSchemaMarkup) {
-    recommendations.push('Ensure all content has proper schema markup');
+    recommendations.push("Ensure all content has proper schema markup");
   }
 
   if ((prefs as any).prefersFAQSchema) {
-    recommendations.push('Add FAQ sections to high-value content');
+    recommendations.push("Add FAQ sections to high-value content");
   }
 
   if ((prefs as any).prefersDirectAnswers) {
-    recommendations.push('Optimize answer capsules to be more direct and concise');
+    recommendations.push("Optimize answer capsules to be more direct and concise");
   }
 
   return recommendations.slice(0, 3);

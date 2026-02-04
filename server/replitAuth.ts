@@ -73,17 +73,33 @@ export function getSession() {
   });
 }
 
-function updateUserSession(
-  user: any,
-  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
-) {
-  user.claims = tokens.claims();
-  user.access_token = tokens.access_token;
-  user.refresh_token = tokens.refresh_token;
-  user.expires_at = user.claims?.exp;
+interface UserSession {
+  claims?: Record<string, unknown>;
+  access_token?: string;
+  refresh_token?: string;
+  expires_at?: number;
 }
 
-async function upsertUser(claims: any) {
+interface OIDCClaims {
+  sub: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  profile_image_url?: string;
+  exp?: number;
+}
+
+function updateUserSession(
+  user: UserSession,
+  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
+) {
+  user.claims = tokens.claims() as Record<string, unknown>;
+  user.access_token = tokens.access_token;
+  user.refresh_token = tokens.refresh_token;
+  user.expires_at = (user.claims?.exp as number) ?? undefined;
+}
+
+async function upsertUser(claims: OIDCClaims) {
   // Check if user exists to preserve their role, otherwise default to admin for new OIDC users
   const existingUser = await storage.getUser(claims["sub"]);
   await storage.upsertUser({
@@ -208,18 +224,21 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, (err: any, user: any) => {
-      if (err || !user) {
-        // Redirect to access denied page with error message
-        return res.redirect("/access-denied");
-      }
-      req.logIn(user, loginErr => {
-        if (loginErr) {
+    passport.authenticate(
+      `replitauth:${req.hostname}`,
+      (err: Error | null, user: Express.User | false | null) => {
+        if (err || !user) {
+          // Redirect to access denied page with error message
           return res.redirect("/access-denied");
         }
-        return res.redirect("/");
-      });
-    })(req, res, next);
+        req.logIn(user, loginErr => {
+          if (loginErr) {
+            return res.redirect("/access-denied");
+          }
+          return res.redirect("/");
+        });
+      }
+    )(req, res, next);
   });
 
   // Access denied page

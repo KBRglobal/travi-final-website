@@ -5,8 +5,8 @@
  */
 
 import { db } from "../db";
-import { update9987Guides, update9987Cities } from "@shared/schema";
-import { eq, and, isNull, sql, inArray } from "drizzle-orm";
+import { update9987Guides } from "@shared/schema";
+import { eq } from "drizzle-orm";
 import { createLogger } from "../lib/logger";
 
 const guideLogger = createLogger("guide-rewrite");

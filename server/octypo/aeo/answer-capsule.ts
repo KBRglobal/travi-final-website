@@ -4,7 +4,7 @@
  * Ported from octypo-main Python patterns
  */
 
-import { GeneratedAttractionContent, AttractionData, FAQ } from '../types';
+import { GeneratedAttractionContent, AttractionData, FAQ } from "../types";
 
 export interface AnswerCapsule {
   question: string;
@@ -34,8 +34,8 @@ export class AnswerCapsuleGenerator {
   generateCapsule(question: string, fullAnswer: string): AnswerCapsule {
     const sentences = fullAnswer.match(/[^.!?]+[.!?]+/g) || [fullAnswer];
     const directAnswer = sentences[0]?.trim() || fullAnswer.substring(0, 100);
-    const supportingDetails = sentences.slice(1).join(' ').trim();
-    
+    const supportingDetails = sentences.slice(1).join(" ").trim();
+
     return {
       question,
       directAnswer,
@@ -47,7 +47,7 @@ export class AnswerCapsuleGenerator {
 
   validateCapsule(capsule: AnswerCapsule): { valid: boolean; issues: string[] } {
     const issues: string[] = [];
-    
+
     // NEW: Flexible range 35-70 words (target 40-60)
     if (capsule.wordCount < 35) {
       issues.push(`Answer too short: ${capsule.wordCount} words (need 35-70, target 40-60)`);
@@ -55,19 +55,19 @@ export class AnswerCapsuleGenerator {
       issues.push(`Answer too long: ${capsule.wordCount} words (need 35-70, target 40-60)`);
     }
     // Note: 35-70 is acceptable, only flag outside that range
-    
+
     if (!capsule.directAnswer.match(/^[A-Z]/)) {
-      issues.push('Answer should start with a direct statement');
+      issues.push("Answer should start with a direct statement");
     }
-    
-    const hedgingPhrases = ['it depends', 'generally', 'usually', 'typically', 'often'];
-    const startsWithHedge = hedgingPhrases.some(phrase => 
+
+    const hedgingPhrases = ["it depends", "generally", "usually", "typically", "often"];
+    const startsWithHedge = hedgingPhrases.some(phrase =>
       capsule.directAnswer.toLowerCase().startsWith(phrase)
     );
     if (startsWithHedge) {
-      issues.push('Answer should start with a direct answer, not hedging');
+      issues.push("Answer should start with a direct answer, not hedging");
     }
-    
+
     return {
       valid: issues.length === 0,
       issues,
@@ -87,38 +87,38 @@ export class SchemaGenerator {
     return {
       "@context": "https://schema.org",
       "@type": "TouristAttraction",
-      "name": attraction.title,
-      "description": content.introduction,
-      "url": `https://travi.world/${attraction.cityName.toLowerCase()}/attractions/${this.slugify(attraction.title)}`,
-      "address": {
+      name: attraction.title,
+      description: content.introduction,
+      url: `https://travi.world/${attraction.cityName.toLowerCase()}/attractions/${this.slugify(attraction.title)}`,
+      address: {
         "@type": "PostalAddress",
-        "addressLocality": attraction.cityName,
-        "addressCountry": this.getCountryCode(attraction.cityName),
+        addressLocality: attraction.cityName,
+        addressCountry: this.getCountryCode(attraction.cityName),
       },
       ...(attraction.coordinates && {
-        "geo": {
+        geo: {
           "@type": "GeoCoordinates",
-          "latitude": attraction.coordinates.lat,
-          "longitude": attraction.coordinates.lng,
+          latitude: attraction.coordinates.lat,
+          longitude: attraction.coordinates.lng,
         },
       }),
       ...(attraction.rating && {
-        "aggregateRating": {
+        aggregateRating: {
           "@type": "AggregateRating",
-          "ratingValue": attraction.rating,
-          "reviewCount": attraction.reviewCount || 0,
+          ratingValue: attraction.rating,
+          reviewCount: attraction.reviewCount || 0,
         },
       }),
       ...(attraction.priceFrom && {
-        "offers": {
+        offers: {
           "@type": "Offer",
-          "price": attraction.priceFrom,
-          "priceCurrency": "AED",
-          "availability": "https://schema.org/InStock",
+          price: attraction.priceFrom,
+          priceCurrency: this.getCurrency(attraction.cityName),
+          availability: "https://schema.org/InStock",
         },
       }),
-      "touristType": attraction.primaryCategory || "General",
-      "isAccessibleForFree": attraction.priceFrom === 0,
+      touristType: attraction.primaryCategory || "General",
+      isAccessibleForFree: attraction.priceFrom === 0,
     };
   }
 
@@ -126,47 +126,44 @@ export class SchemaGenerator {
     return {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": faqs.map(faq => ({
+      mainEntity: faqs.map(faq => ({
         "@type": "Question",
-        "name": faq.question,
-        "acceptedAnswer": {
+        name: faq.question,
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": faq.answer,
+          text: faq.answer,
         },
       })),
     };
   }
 
-  generateBreadcrumbSchema(
-    cityName: string,
-    attractionTitle: string
-  ): Record<string, any> {
+  generateBreadcrumbSchema(cityName: string, attractionTitle: string): Record<string, any> {
     return {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      "itemListElement": [
+      itemListElement: [
         {
           "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://travi.world",
+          position: 1,
+          name: "Home",
+          item: "https://travi.world",
         },
         {
           "@type": "ListItem",
-          "position": 2,
-          "name": cityName,
-          "item": `https://travi.world/${cityName.toLowerCase()}`,
+          position: 2,
+          name: cityName,
+          item: `https://travi.world/${cityName.toLowerCase()}`,
         },
         {
           "@type": "ListItem",
-          "position": 3,
-          "name": "Attractions",
-          "item": `https://travi.world/${cityName.toLowerCase()}/attractions`,
+          position: 3,
+          name: "Attractions",
+          item: `https://travi.world/${cityName.toLowerCase()}/attractions`,
         },
         {
           "@type": "ListItem",
-          "position": 4,
-          "name": attractionTitle,
+          position: 4,
+          name: attractionTitle,
         },
       ],
     };
@@ -186,30 +183,56 @@ export class SchemaGenerator {
   private slugify(text: string): string {
     return text
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
   }
 
   private getCountryCode(cityName: string): string {
     const cityCountryMap: Record<string, string> = {
-      'dubai': 'AE',
-      'abu dhabi': 'AE',
-      'paris': 'FR',
-      'london': 'GB',
-      'new york': 'US',
-      'tokyo': 'JP',
-      'singapore': 'SG',
-      'barcelona': 'ES',
-      'rome': 'IT',
-      'amsterdam': 'NL',
-      'bangkok': 'TH',
-      'hong kong': 'HK',
-      'istanbul': 'TR',
-      'las vegas': 'US',
-      'los angeles': 'US',
-      'miami': 'US',
+      dubai: "AE",
+      "abu dhabi": "AE",
+      "ras al khaimah": "AE",
+      paris: "FR",
+      london: "GB",
+      "new york": "US",
+      tokyo: "JP",
+      singapore: "SG",
+      barcelona: "ES",
+      rome: "IT",
+      amsterdam: "NL",
+      bangkok: "TH",
+      "hong kong": "HK",
+      istanbul: "TR",
+      "las vegas": "US",
+      "los angeles": "US",
+      miami: "US",
     };
-    return cityCountryMap[cityName.toLowerCase()] || 'AE';
+    // FAIL-FAST: Return undefined if city not found - no implicit fallback
+    return cityCountryMap[cityName.toLowerCase()] || "";
+  }
+
+  private getCurrency(cityName: string): string {
+    const cityCurrencyMap: Record<string, string> = {
+      dubai: "AED",
+      "abu dhabi": "AED",
+      "ras al khaimah": "AED",
+      paris: "EUR",
+      london: "GBP",
+      "new york": "USD",
+      tokyo: "JPY",
+      singapore: "SGD",
+      barcelona: "EUR",
+      rome: "EUR",
+      amsterdam: "EUR",
+      bangkok: "THB",
+      "hong kong": "HKD",
+      istanbul: "TRY",
+      "las vegas": "USD",
+      "los angeles": "USD",
+      miami: "USD",
+    };
+    // FAIL-FAST: Return USD as universal fallback only if city unknown
+    return cityCurrencyMap[cityName.toLowerCase()] || "USD";
   }
 }
 
@@ -219,10 +242,10 @@ export class AEOValidator {
   validate(content: GeneratedAttractionContent): AEOScore {
     const issues: string[] = [];
     const suggestions: string[] = [];
-    
+
     let answerCapsuleScore = 100;
     const capsules = this.capsuleGenerator.processFAQs(content.faqs);
-    
+
     let validCapsules = 0;
     for (const capsule of capsules) {
       const validation = this.capsuleGenerator.validateCapsule(capsule);
@@ -233,32 +256,32 @@ export class AEOValidator {
         answerCapsuleScore -= 10;
       }
     }
-    
+
     // NEW: 15-20 FAQs target
     if (capsules.length < 15) {
       issues.push(`Only ${capsules.length} FAQs (need 15-20)`);
       answerCapsuleScore -= Math.max(0, (15 - capsules.length) * 3); // Proportional penalty
     }
-    
+
     let schemaScore = 100;
     if (!content.schemaPayload || Object.keys(content.schemaPayload).length === 0) {
-      issues.push('Missing schema payload');
+      issues.push("Missing schema payload");
       schemaScore = 0;
     } else {
-      if (!content.schemaPayload['@type']) {
-        issues.push('Schema missing @type');
+      if (!content.schemaPayload["@type"]) {
+        issues.push("Schema missing @type");
         schemaScore -= 20;
       }
-      if (!content.schemaPayload['@context']) {
-        issues.push('Schema missing @context');
+      if (!content.schemaPayload["@context"]) {
+        issues.push("Schema missing @context");
         schemaScore -= 20;
       }
     }
-    
+
     let faqScore = 100;
     for (let i = 0; i < content.faqs.length; i++) {
       const faq = content.faqs[i];
-      if (!faq.question.endsWith('?')) {
+      if (!faq.question.endsWith("?")) {
         issues.push(`FAQ ${i + 1} question should end with ?`);
         faqScore -= 5;
       }
@@ -266,15 +289,15 @@ export class AEOValidator {
         suggestions.push(`FAQ ${i + 1} answer could be more comprehensive`);
       }
     }
-    
+
     const answerCapsuleClipped = Math.max(0, Math.min(100, answerCapsuleScore));
     const schemaClipped = Math.max(0, Math.min(100, schemaScore));
     const faqClipped = Math.max(0, Math.min(100, faqScore));
-    
+
     const overallScore = Math.round(
-      (answerCapsuleClipped * 0.4) + (schemaClipped * 0.3) + (faqClipped * 0.3)
+      answerCapsuleClipped * 0.4 + schemaClipped * 0.3 + faqClipped * 0.3
     );
-    
+
     return {
       answerCapsuleScore: answerCapsuleClipped,
       schemaScore: schemaClipped,

@@ -54,7 +54,6 @@ interface StatsData {
   avgQualityScore: number;
 }
 
-
 interface EngineStats {
   total: number;
   healthy: number;
@@ -117,7 +116,6 @@ export default function OctypoDashboardPage() {
     queryKey: ["/api/octypo/stats"],
   });
 
-
   const { data: engineStats } = useQuery<EngineStats>({
     queryKey: ["/api/octypo/engines/stats"],
     refetchInterval: 30000,
@@ -163,7 +161,7 @@ export default function OctypoDashboardPage() {
         description: "Content generation job created successfully",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create job",
@@ -173,14 +171,17 @@ export default function OctypoDashboardPage() {
   });
 
   const createJobMutation = useMutation({
-    mutationFn: (config: {
+    mutationFn: async (config: {
       sourceType: string;
       rssFeedIds?: string[];
       topicKeywords?: string[];
       manualContent?: { title: string; description: string }[];
       priority: string;
-    }) => apiRequest("/api/octypo/jobs/create", { method: "POST", body: config }),
-    onSuccess: (data: any) => {
+    }): Promise<{ jobsCreated: number }> => {
+      const res = await apiRequest("/api/octypo/jobs/create", { method: "POST", body: config });
+      return (await res.json()) as { jobsCreated: number };
+    },
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ["/api/octypo/job-queue/status"] });
       toast({
         title: "Content Job Created",
@@ -189,7 +190,7 @@ export default function OctypoDashboardPage() {
       setIsJobDialogOpen(false);
       resetJobForm();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create content job",
@@ -266,7 +267,6 @@ export default function OctypoDashboardPage() {
       prev.includes(feedId) ? prev.filter(id => id !== feedId) : [...prev, feedId]
     );
   };
-
 
   const feeds = rssFeedsData?.feeds || [];
   const rssItems = rssItemsData?.items || [];

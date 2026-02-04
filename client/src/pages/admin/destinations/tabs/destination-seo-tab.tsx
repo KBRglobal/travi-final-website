@@ -20,8 +20,6 @@ import {
   XCircle,
   Globe,
   FileText,
-  Link2,
-  Wand2,
 } from "lucide-react";
 
 interface SEOData {

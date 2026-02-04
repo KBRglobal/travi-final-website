@@ -171,11 +171,10 @@ export class Gate1Selector {
   }
 
   private buildPrompt(input: ContentSelectionInput): string {
-    return GATE1_EVALUATION_PROMPT
-      .replace("{title}", input.title)
+    return GATE1_EVALUATION_PROMPT.replace("{title}", input.title)
       .replace("{summary}", input.summary || "No summary available")
       .replace("{sourceName}", input.sourceName || "Unknown")
-      .replace("{sourceCredibility}", "medium") // TODO: Add source credibility scoring
+      .replace("{sourceCredibility}", "medium") // TODO: Implement source credibility scoring based on domain reputation, historical accuracy
       .replace("{category}", input.category || "General")
       .replace("{destination}", input.destinationId || "Not specified")
       .replace("{publishedDate}", input.publishedDate?.toISOString() || "Unknown");

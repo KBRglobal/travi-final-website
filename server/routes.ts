@@ -393,11 +393,14 @@ function cleanJsonFromMarkdown(content: string): string {
 }
 
 // Safe JSON parse that handles markdown-wrapped JSON
-// Returns 'any' type to maintain compatibility with existing code that accesses dynamic properties
-function safeParseJson(content: string, fallback: Record<string, unknown> = {}): any {
+// Returns Record<string, unknown> - callers should type assert if needed for specific properties
+function safeParseJson(
+  content: string,
+  fallback: Record<string, unknown> = {}
+): Record<string, unknown> {
   try {
     const cleaned = cleanJsonFromMarkdown(content);
-    return JSON.parse(cleaned);
+    return JSON.parse(cleaned) as Record<string, unknown>;
   } catch (e) {
     return fallback;
   }
@@ -972,7 +975,8 @@ function normalizeBlock(
 
     case "recommendations":
       // Ensure recommendations have items with images
-      let recItems = (data as any).items;
+      const recData = data as Record<string, unknown>;
+      let recItems = recData.items as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(recItems)) {
         const defaultImages = [
           "https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=400",
@@ -980,7 +984,7 @@ function normalizeBlock(
           "https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=400",
           "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400",
         ];
-        recItems = recItems.map((item: any, index: number) => ({
+        recItems = recItems.map((item: Record<string, unknown>, index: number) => ({
           ...item,
           image: item.image || defaultImages[index % defaultImages.length],
         }));
@@ -989,7 +993,8 @@ function normalizeBlock(
 
     case "related_articles":
       // Ensure related articles have images
-      let articles = (data as any).articles;
+      const articleData = data as Record<string, unknown>;
+      let articles = articleData.articles as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(articles)) {
         const defaultArticleImages = [
           "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400",
@@ -997,7 +1002,7 @@ function normalizeBlock(
           "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=400",
           "https://images.unsplash.com/photo-1546412414-e1885259563a?w=400",
         ];
-        articles = articles.map((article: any, index: number) => ({
+        articles = articles.map((article: Record<string, unknown>, index: number) => ({
           ...article,
           image: article.image || defaultArticleImages[index % defaultArticleImages.length],
         }));
@@ -1006,7 +1011,7 @@ function normalizeBlock(
 
     default:
       // Check if type is valid, otherwise return text
-      if (validTypes.includes(type as any)) {
+      if (validTypes.includes(type as ContentBlock["type"])) {
         return { type: type as ContentBlock["type"], data };
       }
       return { type: "text" as const, data };
@@ -1398,7 +1403,7 @@ async function translateArticleToAllLanguages(
     title: string;
     metaTitle?: string | null;
     metaDescription?: string | null;
-    blocks?: any[];
+    blocks?: ContentBlock[];
   }
 ): Promise<{ success: number; failed: number; errors: string[] }> {
   // HARD DISABLE: Automatic translation is permanently disabled
@@ -1674,17 +1679,18 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
               markProviderSuccess(provider.name); // Clear any failure states
 
               break; // Exit provider loop on success
-            } catch (providerError: any) {
+            } catch (providerError: unknown) {
+              const err = providerError as { status?: number; code?: string; message?: string };
               const isRateLimitError =
-                providerError?.status === 429 ||
-                providerError?.code === "insufficient_quota" ||
-                providerError?.message?.includes("quota") ||
-                providerError?.message?.includes("429");
+                err?.status === 429 ||
+                err?.code === "insufficient_quota" ||
+                err?.message?.includes("quota") ||
+                err?.message?.includes("429");
               const isCreditsError =
-                providerError?.status === 402 ||
-                providerError?.message?.includes("credits") ||
-                providerError?.message?.includes("Insufficient Balance") ||
-                providerError?.message?.includes("insufficient_funds");
+                err?.status === 402 ||
+                err?.message?.includes("credits") ||
+                err?.message?.includes("Insufficient Balance") ||
+                err?.message?.includes("insufficient_funds");
 
               if (isCreditsError) {
                 markProviderFailed(provider.name, "no_credits");
@@ -2134,7 +2140,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // This makes ALL /api requests behave as if logged in as admin
   // SECURITY: This is ONLY enabled in development AND with DEV_AUTO_AUTH=true
   if (process.env.NODE_ENV !== "production" && process.env.DEV_AUTO_AUTH === "true") {
-    let cachedAdminUser: any = null;
+    let cachedAdminUser: Awaited<ReturnType<typeof storage.getUsers>>[number] | null = null;
 
     app.use("/api", async (req: Request, res: Response, next: NextFunction) => {
       // Skip if already authenticated
@@ -2230,10 +2236,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============================================================================
   registerEnterpriseRoutes(app);
   registerSiteConfigRoutes(app);
-
-  // Reliable Webhooks disabled - module deleted
-  // registerReliableWebhookAdminRoutes(app);
-  // startWebhookWorker();
 
   // Feature Routes (all feature-flagged)
   registerFeatureRoutes(app);
@@ -2641,11 +2643,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // AI TOOLS ROUTES (Scoring, Plagiarism, Visual Search)
   // ============================================================================
   registerAiToolsRoutes(app);
-
-  // ============================================================================
-  // AI WRITERS ROUTES - Virtual Newsroom (disabled - module deleted)
-  // ============================================================================
-  // registerWriterRoutes(app);
 
   // ============================================================================
   // PAGE BUILDER ROUTES (Universal section editor with version history)

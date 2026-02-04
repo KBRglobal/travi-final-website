@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,7 +18,6 @@ import {
   Eye,
   EyeOff,
   ChevronRight,
-  Loader2,
 } from "lucide-react";
 
 interface ContentSection {
@@ -61,11 +59,14 @@ const SECTION_TYPES = {
   },
 };
 
-export default function DestinationSectionsTab({ destinationId, destination }: DestinationSectionsTabProps) {
+export default function DestinationSectionsTab({
+  destinationId,
+  destination,
+}: DestinationSectionsTabProps) {
   const { toast } = useToast();
 
   const sectionsUrl = `/api/admin/destinations/${destinationId}/sections`;
-  
+
   const { data: sections = [], isLoading } = useQuery<ContentSection[]>({
     queryKey: [sectionsUrl],
     enabled: !!destinationId,
@@ -109,9 +110,27 @@ export default function DestinationSectionsTab({ destinationId, destination }: D
   }
 
   const defaultSections: ContentSection[] = [
-    { id: "featured_attractions", type: "featured_attractions", title: "Top Attractions", isVisible: true, itemCount: 0 },
-    { id: "featured_areas", type: "featured_areas", title: "Where to Stay", isVisible: true, itemCount: 0 },
-    { id: "featured_highlights", type: "featured_highlights", title: "Visual Highlights", isVisible: true, itemCount: 0 },
+    {
+      id: "featured_attractions",
+      type: "featured_attractions",
+      title: "Top Attractions",
+      isVisible: true,
+      itemCount: 0,
+    },
+    {
+      id: "featured_areas",
+      type: "featured_areas",
+      title: "Where to Stay",
+      isVisible: true,
+      itemCount: 0,
+    },
+    {
+      id: "featured_highlights",
+      type: "featured_highlights",
+      title: "Visual Highlights",
+      isVisible: true,
+      itemCount: 0,
+    },
   ];
 
   const displaySections = sections.length > 0 ? sections : defaultSections;
@@ -132,10 +151,10 @@ export default function DestinationSectionsTab({ destinationId, destination }: D
       </div>
 
       <div className="space-y-3">
-        {displaySections.map((section) => {
+        {displaySections.map(section => {
           const config = SECTION_TYPES[section.type] || SECTION_TYPES.custom;
           const Icon = config.icon;
-          
+
           return (
             <Card key={section.id} className="hover-elevate">
               <CardContent className="p-4">
@@ -151,13 +170,14 @@ export default function DestinationSectionsTab({ destinationId, destination }: D
                         {section.itemCount} items
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {config.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{config.description}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <Label htmlFor={`visible-${section.id}`} className="text-sm text-muted-foreground">
+                      <Label
+                        htmlFor={`visible-${section.id}`}
+                        className="text-sm text-muted-foreground"
+                      >
                         {section.isVisible ? (
                           <Eye className="w-4 h-4" />
                         ) : (
@@ -167,15 +187,15 @@ export default function DestinationSectionsTab({ destinationId, destination }: D
                       <Switch
                         id={`visible-${section.id}`}
                         checked={section.isVisible}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                           toggleMutation.mutate({ sectionId: section.id, isVisible: checked });
                         }}
                         disabled={toggleMutation.isPending}
                         data-testid={`switch-section-visible-${section.id}`}
                       />
                     </div>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="sm"
                       data-testid={`button-edit-section-${section.id}`}
                     >

@@ -52,22 +52,89 @@ export class SEOAutoFixer {
     "Get your tickets today!",
   ];
 
-  private dubaiLocations = [
-    "downtown dubai",
-    "dubai marina",
-    "palm jumeirah",
-    "jbr",
-    "deira",
-    "bur dubai",
-    "business bay",
-    "jumeirah",
-    "al barsha",
-    "dubai creek",
-    "city walk",
-    "la mer",
-    "dubai hills",
-    "jvc",
-  ];
+  // Location recognition patterns for various destinations (destination-agnostic)
+  private locationPatterns: Record<string, string[]> = {
+    dubai: [
+      "downtown dubai",
+      "dubai marina",
+      "palm jumeirah",
+      "jbr",
+      "deira",
+      "bur dubai",
+      "business bay",
+      "jumeirah",
+      "al barsha",
+      "dubai creek",
+      "city walk",
+      "la mer",
+      "dubai hills",
+      "jvc",
+    ],
+    paris: [
+      "eiffel tower",
+      "champs elysees",
+      "montmartre",
+      "le marais",
+      "louvre",
+      "latin quarter",
+      "saint germain",
+      "opera",
+      "bastille",
+    ],
+    london: [
+      "westminster",
+      "soho",
+      "covent garden",
+      "shoreditch",
+      "kensington",
+      "notting hill",
+      "camden",
+      "greenwich",
+      "mayfair",
+    ],
+    "new york": [
+      "manhattan",
+      "times square",
+      "central park",
+      "brooklyn",
+      "soho",
+      "tribeca",
+      "chelsea",
+      "harlem",
+      "upper east side",
+    ],
+    tokyo: [
+      "shibuya",
+      "shinjuku",
+      "harajuku",
+      "ginza",
+      "asakusa",
+      "akihabara",
+      "roppongi",
+      "odaiba",
+      "ueno",
+    ],
+    singapore: [
+      "marina bay",
+      "orchard road",
+      "sentosa",
+      "chinatown",
+      "little india",
+      "clarke quay",
+      "bugis",
+      "jurong",
+    ],
+    bangkok: [
+      "sukhumvit",
+      "silom",
+      "khao san",
+      "chatuchak",
+      "thonburi",
+      "pratunam",
+      "siam",
+      "riverside",
+    ],
+  };
 
   constructor() {
     logger.seo.debug("SEO Auto-Fixer initialized");
@@ -536,27 +603,42 @@ export class SEOAutoFixer {
 
   private fixHeroAltText(article: Record<string, unknown>): FixResult {
     try {
-      const title = (article.title as string) || "Dubai attraction";
+      const title = (article.title as string) || "attraction";
       const category = (article.type as string) || (article.category as string) || "tourism";
 
-      // Find location context
+      // Find location context from title (destination-agnostic)
       const titleLower = title.toLowerCase();
-      let location = "Dubai";
-      for (const loc of this.dubaiLocations) {
-        if (titleLower.includes(loc)) {
-          location = loc
-            .split(" ")
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(" ");
-          break;
+      let location = "";
+      let foundCity = "";
+
+      // Search all destination location patterns
+      for (const [city, locations] of Object.entries(this.locationPatterns)) {
+        // Check if city name is in title
+        if (titleLower.includes(city.toLowerCase())) {
+          foundCity = city.charAt(0).toUpperCase() + city.slice(1);
         }
+        // Check for specific locations within the city
+        for (const loc of locations) {
+          if (titleLower.includes(loc)) {
+            location = loc
+              .split(" ")
+              .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(" ");
+            foundCity = city.charAt(0).toUpperCase() + city.slice(1);
+            break;
+          }
+        }
+        if (location) break;
       }
 
-      const altText =
-        `${title.replace(/\s*-\s*Complete Guide.*/i, "").replace(/\s*Guide$/i, "")} - scenic view in ${location}, UAE`.substring(
-          0,
-          125
-        );
+      // Build alt text without assuming specific location
+      const cleanTitle = title.replace(/\s*-\s*Complete Guide.*/i, "").replace(/\s*Guide$/i, "");
+      const locationSuffix = location
+        ? ` - scenic view in ${location}`
+        : foundCity
+          ? ` - scenic view in ${foundCity}`
+          : " - scenic travel view";
+      const altText = `${cleanTitle}${locationSuffix}`.substring(0, 125);
 
       return {
         field: "heroImageAlt",

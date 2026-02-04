@@ -4,22 +4,36 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { 
-  Shield, Lock, Server, Eye, AlertTriangle, 
-  Mail, CheckCircle, Globe, Key, Fingerprint,
-  ShieldCheck, RefreshCw
+import {
+  Shield,
+  Lock,
+  Server,
+  Eye,
+  AlertTriangle,
+  Mail,
+  CheckCircle,
+  Globe,
+  Key,
+  Fingerprint,
+  ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 
 export default function SecurityPage() {
   const { localePath } = useLocale();
   useDocumentMeta({
     title: "Security Policy | TRAVI World",
-    description: "Learn about TRAVI World's comprehensive security measures and how we protect your data and privacy.",
+    description:
+      "Learn about TRAVI World's comprehensive security measures and how we protect your data and privacy.",
   });
 
   const securityFeatures = [
     { icon: Lock, title: "HTTPS Encryption", description: "All traffic encrypted with TLS 1.3" },
-    { icon: Fingerprint, title: "Data Protection", description: "Industry-standard security protocols" },
+    {
+      icon: Fingerprint,
+      title: "Data Protection",
+      description: "Industry-standard security protocols",
+    },
     { icon: RefreshCw, title: "Regular Updates", description: "Continuous security patches" },
     { icon: Key, title: "Access Controls", description: "Strict authentication measures" },
   ];
@@ -30,11 +44,11 @@ export default function SecurityPage() {
       <section className="relative pt-28 pb-20 overflow-hidden">
         {/* Gradient background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background" />
-        
+
         {/* Decorative elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-[#6443F4]/10 rounded-full blur-3xl" />
         <div className="absolute top-40 right-10 w-80 h-80 bg-[#6443F4]/10 rounded-full blur-3xl" />
-        
+
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
@@ -43,25 +57,20 @@ export default function SecurityPage() {
                 <Shield className="w-4 h-4 text-[#6443F4]" />
                 <span className="text-sm font-medium text-[#6443F4]">Your Security Matters</span>
               </div>
-              
-              <h1 
-                className="text-4xl md:text-5xl font-bold mb-6"
-                style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+
+              <h1
+                className="text-4xl md:text-5xl font-bold mb-6 font-chillax"
                 data-testid="heading-security"
               >
-                <span className="text-[#6443F4]">
-                  Security Policy
-                </span>
+                <span className="text-[#6443F4]">Security Policy</span>
               </h1>
-              
+
               <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-                At TRAVI World, we take the security and privacy of your data seriously. 
-                Learn about our comprehensive security measures and how we protect your information.
+                At TRAVI World, we take the security and privacy of your data seriously. Learn about
+                our comprehensive security measures and how we protect your information.
               </p>
 
-              <p className="text-sm text-muted-foreground">
-                Last updated: 1 January 2026
-              </p>
+              <p className="text-sm text-muted-foreground">Last updated: 1 January 2026</p>
             </div>
 
             {/* Mascot Visual */}
@@ -69,15 +78,15 @@ export default function SecurityPage() {
               <div className="relative">
                 {/* Glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#6443F4]/30 to-[#6443F4]/30 rounded-3xl blur-2xl transform scale-110" />
-                
+
                 {/* Mascot image with glassmorphism frame */}
                 <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/30">
-                  <img 
-                    src="/hero/travi-world-mascot-colorful-pool-arches.webp" 
+                  <img
+                    src="/hero/travi-world-mascot-colorful-pool-arches.webp"
                     alt="TRAVI mascot ensuring your security"
                     className="w-64 h-64 object-cover rounded-2xl"
                   />
-                  
+
                   {/* Security badge overlay */}
                   <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-[#6443F4] to-[#6443F4] rounded-full p-3 shadow-lg">
                     <ShieldCheck className="w-8 h-8 text-white" />
@@ -94,7 +103,7 @@ export default function SecurityPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {securityFeatures.map((feature, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
               >
@@ -112,7 +121,6 @@ export default function SecurityPage() {
       {/* Main Content */}
       <section className="py-16 bg-white dark:bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
           <Card className="border border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
@@ -124,10 +132,10 @@ export default function SecurityPage() {
             </CardHeader>
             <CardContent className="text-muted-foreground">
               <p>
-                At TRAVI World, we take the security of your data seriously. We implement 
-                industry-standard security measures to protect the confidentiality, integrity, 
-                and availability of information on our platform. Our commitment extends to 
-                continuous improvement of our security practices.
+                At TRAVI World, we take the security of your data seriously. We implement
+                industry-standard security measures to protect the confidentiality, integrity, and
+                availability of information on our platform. Our commitment extends to continuous
+                improvement of our security practices.
               </p>
             </CardContent>
           </Card>
@@ -150,7 +158,7 @@ export default function SecurityPage() {
                   "Encryption of data in transit and at rest",
                   "Multi-layer access controls",
                   "Continuous software updates",
-                  "Vulnerability scanning and patching"
+                  "Vulnerability scanning and patching",
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -172,10 +180,10 @@ export default function SecurityPage() {
             </CardHeader>
             <CardContent className="text-muted-foreground">
               <p>
-                We implement appropriate organizational and technical measures to protect 
-                personal data against accidental or unlawful destruction, loss, alteration, 
-                unauthorized disclosure, or access. Our data protection practices comply with 
-                applicable regulations including GDPR and other data protection laws.
+                We implement appropriate organizational and technical measures to protect personal
+                data against accidental or unlawful destruction, loss, alteration, unauthorized
+                disclosure, or access. Our data protection practices comply with applicable
+                regulations including GDPR and other data protection laws.
               </p>
             </CardContent>
           </Card>
@@ -191,10 +199,10 @@ export default function SecurityPage() {
             </CardHeader>
             <CardContent className="text-muted-foreground">
               <p>
-                We carefully select third-party service providers and require them to maintain 
-                appropriate security measures. We regularly review our partners' security 
-                practices. However, we cannot guarantee the security of third-party services, 
-                and recommend reviewing their individual security policies.
+                We carefully select third-party service providers and require them to maintain
+                appropriate security measures. We regularly review our partners' security practices.
+                However, we cannot guarantee the security of third-party services, and recommend
+                reviewing their individual security policies.
               </p>
             </CardContent>
           </Card>
@@ -210,12 +218,12 @@ export default function SecurityPage() {
             </CardHeader>
             <CardContent className="text-amber-900 dark:text-amber-100 space-y-4">
               <p>
-                If you discover a security vulnerability or have concerns about the security 
-                of our website, please contact us immediately. We appreciate responsible 
-                disclosure and will investigate all reports promptly.
+                If you discover a security vulnerability or have concerns about the security of our
+                website, please contact us immediately. We appreciate responsible disclosure and
+                will investigate all reports promptly.
               </p>
-              <a 
-                href="mailto:info@travi.world?subject=Security%20Report" 
+              <a
+                href="mailto:info@travi.world?subject=Security%20Report"
                 className="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 data-testid="button-report-security"
               >
@@ -241,7 +249,7 @@ export default function SecurityPage() {
                   "Keep your browser up to date",
                   "Watch for phishing attempts",
                   "Avoid sharing sensitive info publicly",
-                  "Use secure networks"
+                  "Use secure networks",
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
@@ -263,9 +271,9 @@ export default function SecurityPage() {
             </CardHeader>
             <CardContent className="text-muted-foreground">
               <p>
-                We may update this security policy from time to time to reflect changes in 
-                our practices or for operational, legal, or regulatory reasons. We encourage 
-                you to review this policy periodically.
+                We may update this security policy from time to time to reflect changes in our
+                practices or for operational, legal, or regulatory reasons. We encourage you to
+                review this policy periodically.
               </p>
             </CardContent>
           </Card>
@@ -275,22 +283,30 @@ export default function SecurityPage() {
       {/* Contact CTA */}
       <section className="py-16 bg-gradient-to-r from-[#6443F4] to-[#6443F4]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4" style={{ fontFamily: "'Chillax', var(--font-sans)" }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-chillax">
             Questions About Our Security?
           </h2>
           <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-            We're committed to transparency. If you have any questions about our security 
-            practices or how we protect your data, please don't hesitate to reach out.
+            We're committed to transparency. If you have any questions about our security practices
+            or how we protect your data, please don't hesitate to reach out.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a href="mailto:info@travi.world" data-testid="link-contact-email">
-              <Button variant="secondary" size="lg" className="bg-white text-[#6443F4] hover:bg-white/90">
+              <Button
+                variant="secondary"
+                size="lg"
+                className="bg-white text-[#6443F4] hover:bg-white/90"
+              >
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Us
               </Button>
             </a>
             <Link href={localePath("/privacy")} data-testid="link-privacy-policy">
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white/10"
+              >
                 <Lock className="w-4 h-4 mr-2" />
                 Privacy Policy
               </Button>

@@ -42,8 +42,11 @@ import elCommon from "../../locales/el/common.json";
 import csCommon from "../../locales/cs/common.json";
 import ukCommon from "../../locales/uk/common.json";
 
+// Translation object type - keys map to translation strings
+type TranslationResource = Record<string, unknown>;
+
 // Resources object - all 30 language translations
-const resources: Record<string, { common: any }> = {
+const resources: Record<string, { common: TranslationResource }> = {
   // Tier 1
   en: { common: enCommon },
   ar: { common: arCommon },
@@ -86,7 +89,7 @@ const missingKeyHandler = (
   key: string,
   fallbackValue: string,
   updateMissing: boolean,
-  options: any
+  _options: Record<string, unknown>
 ) => {
   // Only log in development to avoid console spam in production
   if (process.env.NODE_ENV === "development") {

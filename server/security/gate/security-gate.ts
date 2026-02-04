@@ -515,18 +515,26 @@ export function securityGateMiddleware(action: Action | string, resource: Resour
  * Decorator for async functions that require security gate
  */
 export function requiresSecurityGate(action: Action | string, resource: Resource | string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  // Decorator target must use any - this is standard TypeScript decorator pattern
+
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       // Extract actor from first argument or context
-      const context = args[0];
+      const context = args[0] as
+        | {
+            actor?: { userId?: string; id?: string; role?: string };
+            user?: { userId?: string; id?: string; role?: string };
+            gateContext?: Record<string, unknown>;
+          }
+        | undefined;
       const actor = context?.actor || context?.user || { userId: "unknown", role: "viewer" };
 
       const result = await assertAllowed({
         actor: {
-          userId: actor.userId || actor.id,
-          role: actor.role,
+          userId: actor.userId || actor.id || "unknown",
+          role: actor.role || "viewer",
         },
         action,
         resource,

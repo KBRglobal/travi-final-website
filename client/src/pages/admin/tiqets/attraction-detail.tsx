@@ -28,7 +28,6 @@ import {
   Save,
   ExternalLink,
   FileText,
-  Image as ImageIcon,
   Settings,
   Sparkles,
   HelpCircle,

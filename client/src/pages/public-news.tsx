@@ -22,7 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { SEOHead } from "@/components/seo-head";
@@ -44,119 +43,119 @@ const REGIONS = {
     name: "UAE",
     nameHe: "איחוד האמירויות",
     destinations: ["dubai", "abu-dhabi", "ras-al-khaimah"],
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=80"
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=80",
   },
   europe: {
     name: "Europe",
     nameHe: "אירופה",
     destinations: ["london", "paris", "barcelona", "rome", "amsterdam"],
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80"
+    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80",
   },
   asia: {
     name: "Asia",
     nameHe: "אסיה",
     destinations: ["tokyo", "singapore", "bangkok", "hong-kong"],
-    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80"
+    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80",
   },
   usa: {
     name: "USA",
-    nameHe: "ארה\"ב",
+    nameHe: 'ארה"ב',
     destinations: ["new-york", "las-vegas", "los-angeles", "miami"],
-    image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&q=80"
+    image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&q=80",
   },
   turkey: {
     name: "Turkey",
     nameHe: "טורקיה",
     destinations: ["istanbul"],
-    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=80"
+    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=80",
   },
 };
 
 const DESTINATIONS: Record<string, { name: string; nameHe: string; image: string }> = {
-  "dubai": {
+  dubai: {
     name: "Dubai",
     nameHe: "דובאי",
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80",
   },
   "abu-dhabi": {
     name: "Abu Dhabi",
     nameHe: "אבו דאבי",
-    image: "https://images.unsplash.com/photo-1558452919-08ae4aea8e29?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1558452919-08ae4aea8e29?w=600&q=80",
   },
   "ras-al-khaimah": {
     name: "Ras Al Khaimah",
     nameHe: "ראס אל ח'ימה",
-    image: "https://images.unsplash.com/photo-1582672060674-bc2bd808a8c5?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1582672060674-bc2bd808a8c5?w=600&q=80",
   },
-  "london": {
+  london: {
     name: "London",
     nameHe: "לונדון",
-    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80",
   },
-  "paris": {
+  paris: {
     name: "Paris",
     nameHe: "פריז",
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80",
   },
-  "barcelona": {
+  barcelona: {
     name: "Barcelona",
     nameHe: "ברצלונה",
-    image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600&q=80",
   },
-  "rome": {
+  rome: {
     name: "Rome",
     nameHe: "רומא",
-    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80",
   },
-  "amsterdam": {
+  amsterdam: {
     name: "Amsterdam",
     nameHe: "אמסטרדם",
-    image: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=600&q=80",
   },
-  "tokyo": {
+  tokyo: {
     name: "Tokyo",
     nameHe: "טוקיו",
-    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80",
   },
-  "singapore": {
+  singapore: {
     name: "Singapore",
     nameHe: "סינגפור",
-    image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80",
   },
-  "bangkok": {
+  bangkok: {
     name: "Bangkok",
     nameHe: "בנגקוק",
-    image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",
   },
   "hong-kong": {
     name: "Hong Kong",
     nameHe: "הונג קונג",
-    image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=600&q=80",
   },
   "new-york": {
     name: "New York",
     nameHe: "ניו יורק",
-    image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&q=80",
   },
   "las-vegas": {
     name: "Las Vegas",
     nameHe: "לאס וגאס",
-    image: "https://images.unsplash.com/photo-1581351721010-8cf859cb14a4?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1581351721010-8cf859cb14a4?w=600&q=80",
   },
   "los-angeles": {
     name: "Los Angeles",
     nameHe: "לוס אנג'לס",
-    image: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?w=600&q=80",
   },
-  "miami": {
+  miami: {
     name: "Miami",
     nameHe: "מיאמי",
-    image: "https://images.unsplash.com/photo-1535498730771-e735b998cd64?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1535498730771-e735b998cd64?w=600&q=80",
   },
-  "istanbul": {
+  istanbul: {
     name: "Istanbul",
     nameHe: "איסטנבול",
-    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80"
+    image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",
   },
 };
 
@@ -210,7 +209,7 @@ function formatTimeAgo(dateString: string): string {
 
 function HeroSection({
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
 }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -219,9 +218,12 @@ function HeroSection({
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
 
       {/* Gradient Orbs */}
@@ -269,8 +271,8 @@ function HeroSection({
             </h1>
 
             <p className="text-xl text-white/70 mb-10 max-w-2xl leading-relaxed">
-              Stay ahead with curated travel news, destination guides, hotel openings,
-              and insider tips from our global network of travel experts.
+              Stay ahead with curated travel news, destination guides, hotel openings, and insider
+              tips from our global network of travel experts.
             </p>
 
             {/* Search */}
@@ -282,7 +284,7 @@ function HeroSection({
                   type="text"
                   placeholder="Search destinations, topics, or articles..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-14 pr-5 py-7 text-lg bg-transparent border-white/20 text-white placeholder:text-white/40 rounded-2xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
                 />
               </div>
@@ -301,7 +303,7 @@ function HeroSection({
             { value: "17+", label: "Destinations" },
             { value: "54", label: "News Sources" },
             { value: "24/7", label: "Updates" },
-          ].map((stat) => (
+          ].map(stat => (
             <div key={stat.label} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</div>
               <div className="text-sm text-white/50">{stat.label}</div>
@@ -315,7 +317,7 @@ function HeroSection({
 
 function RegionFilter({
   selectedRegion,
-  onRegionChange
+  onRegionChange,
 }: {
   selectedRegion: string;
   onRegionChange: (region: string) => void;
@@ -356,7 +358,7 @@ function CategoryFilter({
 }) {
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      {CATEGORIES.map((category) => {
+      {CATEGORIES.map(category => {
         const Icon = category.icon;
         return (
           <button
@@ -419,7 +421,10 @@ function FeaturedArticle({ article }: { article: Article }) {
               </Badge>
             )}
             {destination && (
-              <Badge variant="outline" className="bg-white/10 backdrop-blur-sm text-white border-white/30 text-xs">
+              <Badge
+                variant="outline"
+                className="bg-white/10 backdrop-blur-sm text-white border-white/30 text-xs"
+              >
                 <MapPin className="w-3 h-3 mr-1" />
                 {destination.name}
               </Badge>
@@ -431,9 +436,7 @@ function FeaturedArticle({ article }: { article: Article }) {
           </h2>
 
           {article.excerpt && (
-            <p className="text-white/70 text-lg line-clamp-2 mb-6 max-w-2xl">
-              {article.excerpt}
-            </p>
+            <p className="text-white/70 text-lg line-clamp-2 mb-6 max-w-2xl">{article.excerpt}</p>
           )}
 
           <div className="flex items-center justify-between">
@@ -442,9 +445,7 @@ function FeaturedArticle({ article }: { article: Article }) {
                 <Clock className="w-4 h-4" />
                 {formatTimeAgo(article.publishedAt || article.createdAt)}
               </span>
-              {article.readingTime && (
-                <span>{article.readingTime} min read</span>
-              )}
+              {article.readingTime && <span>{article.readingTime} min read</span>}
             </div>
 
             <span className="flex items-center gap-2 text-white font-medium group-hover:gap-3 transition-all">
@@ -521,9 +522,7 @@ function ArticleCard({ article, index = 0 }: { article: Article; index?: number 
 
           {/* Excerpt */}
           {article.excerpt && (
-            <p className="text-sm text-gray-500 line-clamp-2 mb-4">
-              {article.excerpt}
-            </p>
+            <p className="text-sm text-gray-500 line-clamp-2 mb-4">{article.excerpt}</p>
           )}
 
           {/* Footer */}
@@ -562,7 +561,7 @@ function ArticleCardSkeleton() {
 function DestinationCard({
   destId,
   onClick,
-  articleCount
+  articleCount,
 }: {
   destId: string;
   onClick: () => void;
@@ -584,9 +583,7 @@ function DestinationCard({
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20 group-hover:from-black/80 transition-colors" />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
         <span className="font-semibold text-lg">{destination.name}</span>
-        {articleCount > 0 && (
-          <span className="text-xs text-white/70">{articleCount} articles</span>
-        )}
+        {articleCount > 0 && <span className="text-xs text-white/70">{articleCount} articles</span>}
       </div>
     </button>
   );
@@ -604,8 +601,8 @@ function EmptyState({ onClear }: { onClear: () => void }) {
       </div>
       <h3 className="text-2xl font-semibold text-gray-800 mb-3">No articles found</h3>
       <p className="text-gray-500 mb-8 max-w-md mx-auto">
-        We couldn't find any articles matching your criteria.
-        Try adjusting your filters or check back later for new content.
+        We couldn't find any articles matching your criteria. Try adjusting your filters or check
+        back later for new content.
       </p>
       <Button onClick={onClear} size="lg" className="rounded-full px-8">
         <X className="w-4 h-4 mr-2" />
@@ -649,9 +646,10 @@ export default function PublicNews() {
     let result = articles;
 
     if (selectedRegion !== "all") {
-      const regionDestinations = REGIONS[selectedRegion as keyof typeof REGIONS]?.destinations || [];
-      result = result.filter(article =>
-        article.destinationId && regionDestinations.includes(article.destinationId)
+      const regionDestinations =
+        REGIONS[selectedRegion as keyof typeof REGIONS]?.destinations || [];
+      result = result.filter(
+        article => article.destinationId && regionDestinations.includes(article.destinationId)
       );
     }
 
@@ -665,9 +663,10 @@ export default function PublicNews() {
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(article =>
-        article.title.toLowerCase().includes(query) ||
-        article.excerpt?.toLowerCase().includes(query)
+      result = result.filter(
+        article =>
+          article.title.toLowerCase().includes(query) ||
+          article.excerpt?.toLowerCase().includes(query)
       );
     }
 
@@ -719,7 +718,11 @@ export default function PublicNews() {
     setCurrentPage(1);
   };
 
-  const hasActiveFilters = selectedRegion !== "all" || selectedDestination !== "all" || selectedCategory !== "all" || searchQuery !== "";
+  const hasActiveFilters =
+    selectedRegion !== "all" ||
+    selectedDestination !== "all" ||
+    selectedCategory !== "all" ||
+    searchQuery !== "";
 
   return (
     <>
@@ -733,7 +736,10 @@ export default function PublicNews() {
         {/* Hero */}
         <HeroSection
           searchQuery={searchQuery}
-          setSearchQuery={(q) => { setSearchQuery(q); setCurrentPage(1); }}
+          setSearchQuery={q => {
+            setSearchQuery(q);
+            setCurrentPage(1);
+          }}
         />
 
         {/* Main Content */}
@@ -741,10 +747,7 @@ export default function PublicNews() {
           {/* Filters */}
           <div className="mb-10 space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <RegionFilter
-                selectedRegion={selectedRegion}
-                onRegionChange={handleRegionChange}
-              />
+              <RegionFilter selectedRegion={selectedRegion} onRegionChange={handleRegionChange} />
 
               {hasActiveFilters && (
                 <Button
@@ -762,7 +765,10 @@ export default function PublicNews() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <CategoryFilter
                 selectedCategory={selectedCategory}
-                onCategoryChange={(c) => { setSelectedCategory(c); setCurrentPage(1); }}
+                onCategoryChange={c => {
+                  setSelectedCategory(c);
+                  setCurrentPage(1);
+                }}
               />
 
               <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -856,14 +862,12 @@ export default function PublicNews() {
                 <h2 className="font-heading text-3xl font-bold text-gray-900 mb-2">
                   Explore Destinations
                 </h2>
-                <p className="text-gray-500">
-                  Browse news by your favorite travel destinations
-                </p>
+                <p className="text-gray-500">Browse news by your favorite travel destinations</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {availableDestinations.slice(0, 12).map((destId) => (
+              {availableDestinations.slice(0, 12).map(destId => (
                 <DestinationCard
                   key={destId}
                   destId={destId}
@@ -896,8 +900,8 @@ export default function PublicNews() {
                   Never Miss a Story
                 </h2>
                 <p className="text-white/80 text-lg mb-8">
-                  Get the latest travel news, exclusive deals, and insider tips
-                  delivered straight to your inbox every week.
+                  Get the latest travel news, exclusive deals, and insider tips delivered straight
+                  to your inbox every week.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -906,7 +910,10 @@ export default function PublicNews() {
                     placeholder="Enter your email"
                     className="flex-1 bg-white/10 border-white/30 text-white placeholder:text-white/50 rounded-xl h-12"
                   />
-                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-xl h-12 px-8 font-semibold">
+                  <Button
+                    size="lg"
+                    className="bg-white text-primary hover:bg-white/90 rounded-xl h-12 px-8 font-semibold"
+                  >
                     Subscribe
                   </Button>
                 </div>

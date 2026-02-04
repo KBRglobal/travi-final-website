@@ -12,6 +12,7 @@
  * - Manual override
  */
 
+import type { Request, Response, NextFunction } from "express";
 import { logAdminEvent } from "../../governance/security-logger";
 import { getIntelligenceSummary } from "../intelligence/security-intelligence";
 import { scanForDrift, DriftScanResult } from "../drift/drift-scanner";
@@ -609,7 +610,7 @@ export function startAutoModeMonitoring(intervalMs?: number): NodeJS.Timer {
  * Middleware to check mode restrictions
  */
 export function modeCheckMiddleware(operation: string) {
-  return (req: any, res: any, next: any) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const check = securityModeManager.isOperationAllowed(operation);
 
     if (!check.allowed) {

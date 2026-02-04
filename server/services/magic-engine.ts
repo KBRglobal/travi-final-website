@@ -9,7 +9,7 @@
  * - Articles
  */
 
-import { getAIClient, getAllUnifiedProviders } from "../ai/providers";
+import { getAllUnifiedProviders } from "../ai/providers";
 import { log } from "../lib/logger";
 
 // ============================================================================

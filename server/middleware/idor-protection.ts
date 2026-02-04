@@ -11,7 +11,7 @@
 
 import type { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
-import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
+import { ROLE_PERMISSIONS, type UserRole, type User } from "@shared/schema";
 import { getUserId, isAuthenticatedUser } from "../security";
 import { log, logSecurityEvent } from "../lib/logger";
 
@@ -104,7 +104,7 @@ function hasPermission(role: UserRole, permission: PermissionKey): boolean {
  */
 async function getAuthenticatedDbUser(req: Request): Promise<{
   userId: string;
-  dbUser: any;
+  dbUser: User | null;
   userRole: UserRole;
 } | null> {
   const userId = getUserId(req);

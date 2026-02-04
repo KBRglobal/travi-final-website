@@ -11,7 +11,7 @@
 
 import { db } from "../db";
 import { contents, aeoAnswerCapsules } from "../../shared/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { log } from "../lib/logger";
 
 export type SnippetType = "paragraph" | "ordered_list" | "unordered_list" | "table";

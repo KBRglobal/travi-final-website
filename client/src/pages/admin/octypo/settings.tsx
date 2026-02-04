@@ -14,7 +14,6 @@ import {
   TestTube,
   Loader2,
   CheckCircle2,
-  XCircle,
   Shield,
   Settings2,
   Cpu,
@@ -63,14 +62,24 @@ interface EngineStats {
 const API_KEY_FIELDS = [
   { key: "anthropicApiKey", label: "Anthropic", provider: "anthropic", placeholder: "sk-ant-..." },
   { key: "openaiApiKey", label: "OpenAI", provider: "openai", placeholder: "sk-..." },
-  { key: "openrouterApiKey", label: "OpenRouter", provider: "openrouter", placeholder: "sk-or-..." },
+  {
+    key: "openrouterApiKey",
+    label: "OpenRouter",
+    provider: "openrouter",
+    placeholder: "sk-or-...",
+  },
   { key: "geminiApiKey", label: "Gemini", provider: "gemini", placeholder: "AI..." },
   { key: "groqApiKey", label: "Groq", provider: "groq", placeholder: "gsk_..." },
   { key: "mistralApiKey", label: "Mistral", provider: "mistral", placeholder: "..." },
   { key: "deepseekApiKey", label: "DeepSeek", provider: "deepseek", placeholder: "sk-..." },
   { key: "togetherApiKey", label: "Together", provider: "together", placeholder: "..." },
   { key: "perplexityApiKey", label: "Perplexity", provider: "perplexity", placeholder: "pplx-..." },
-  { key: "heliconeApiKey", label: "Helicone (Monitoring)", provider: "helicone", placeholder: "sk-..." },
+  {
+    key: "heliconeApiKey",
+    label: "Helicone (Monitoring)",
+    provider: "helicone",
+    placeholder: "sk-...",
+  },
 ];
 
 export default function OctypoSettingsPage() {
@@ -94,7 +103,7 @@ export default function OctypoSettingsPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/octypo/settings"] });
       setLocalSettings({});
     },
-    onError: (error) => {
+    onError: error => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     },
   });
@@ -115,7 +124,7 @@ export default function OctypoSettingsPage() {
       }
       setTestingKey(null);
     },
-    onError: (error) => {
+    onError: error => {
       toast({ title: "Test Failed", description: error.message, variant: "destructive" });
       setTestingKey(null);
     },
@@ -124,8 +133,8 @@ export default function OctypoSettingsPage() {
   const settings = { ...data?.settings, ...localSettings };
   const engines = data?.engines;
 
-  const handleChange = (key: string, value: any) => {
-    setLocalSettings((prev) => ({ ...prev, [key]: value }));
+  const handleChange = (key: string, value: string | number | boolean) => {
+    setLocalSettings(prev => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
@@ -133,9 +142,14 @@ export default function OctypoSettingsPage() {
   };
 
   const handleTestKey = (provider: string, keyField: string) => {
-    const apiKey = localSettings[keyField as keyof OctypoSettings] || settings[keyField as keyof OctypoSettings];
-    if (!apiKey || (typeof apiKey === 'string' && apiKey.startsWith('••••'))) {
-      toast({ title: "No key to test", description: "Enter a new key first", variant: "destructive" });
+    const apiKey =
+      localSettings[keyField as keyof OctypoSettings] || settings[keyField as keyof OctypoSettings];
+    if (!apiKey || (typeof apiKey === "string" && apiKey.startsWith("••••"))) {
+      toast({
+        title: "No key to test",
+        description: "Enter a new key first",
+        variant: "destructive",
+      });
       return;
     }
     setTestingKey(keyField);
@@ -205,14 +219,17 @@ export default function OctypoSettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {API_KEY_FIELDS.map((field) => {
-                const currentValue = settings[field.key as keyof OctypoSettings] as string || "";
+              {API_KEY_FIELDS.map(field => {
+                const currentValue = (settings[field.key as keyof OctypoSettings] as string) || "";
                 const isMasked = data?.settings?._masked?.[field.key];
                 const isVisible = showKeys[field.key];
                 const engineCount = engines?.byProvider?.[field.provider] || 0;
 
                 return (
-                  <div key={field.key} className="grid grid-cols-[200px_1fr_auto_auto] gap-4 items-center">
+                  <div
+                    key={field.key}
+                    className="grid grid-cols-[200px_1fr_auto_auto] gap-4 items-center"
+                  >
                     <Label className="flex items-center gap-2">
                       {field.label}
                       {engineCount > 0 && (
@@ -225,8 +242,11 @@ export default function OctypoSettingsPage() {
                       <Input
                         type={isVisible ? "text" : "password"}
                         placeholder={field.placeholder}
-                        value={localSettings[field.key as keyof OctypoSettings] as string ?? currentValue}
-                        onChange={(e) => handleChange(field.key, e.target.value)}
+                        value={
+                          (localSettings[field.key as keyof OctypoSettings] as string) ??
+                          currentValue
+                        }
+                        onChange={e => handleChange(field.key, e.target.value)}
                         className="pr-10"
                       />
                       <Button
@@ -234,7 +254,9 @@ export default function OctypoSettingsPage() {
                         variant="ghost"
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3"
-                        onClick={() => setShowKeys((prev) => ({ ...prev, [field.key]: !prev[field.key] }))}
+                        onClick={() =>
+                          setShowKeys(prev => ({ ...prev, [field.key]: !prev[field.key] }))
+                        }
                       >
                         {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -265,9 +287,7 @@ export default function OctypoSettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Content Scoring Weights</CardTitle>
-              <CardDescription>
-                Adjust how Gate 1 evaluates content for publication
-              </CardDescription>
+              <CardDescription>Adjust how Gate 1 evaluates content for publication</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -371,9 +391,7 @@ export default function OctypoSettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Pipeline Settings</CardTitle>
-              <CardDescription>
-                Control the autonomous content pipeline
-              </CardDescription>
+              <CardDescription>Control the autonomous content pipeline</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
@@ -385,7 +403,7 @@ export default function OctypoSettingsPage() {
                 </div>
                 <Switch
                   checked={settings.enabled ?? true}
-                  onCheckedChange={(v) => handleChange("enabled", v)}
+                  onCheckedChange={v => handleChange("enabled", v)}
                 />
               </div>
 
@@ -398,7 +416,7 @@ export default function OctypoSettingsPage() {
                 </div>
                 <Switch
                   checked={settings.autoPublish ?? false}
-                  onCheckedChange={(v) => handleChange("autoPublish", v)}
+                  onCheckedChange={v => handleChange("autoPublish", v)}
                 />
               </div>
 

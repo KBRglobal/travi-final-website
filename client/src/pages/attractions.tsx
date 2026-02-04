@@ -6,18 +6,13 @@ import {
   MapPin,
   Star,
   Clock,
-  X,
-  Filter,
   ChevronDown,
   Ticket,
   TrendingUp,
   Globe2,
   ArrowRight,
   Sparkles,
-  Camera,
   Globe,
-  Building2,
-  Utensils,
 } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +20,7 @@ import { useTranslation } from "react-i18next";
 
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -437,7 +432,17 @@ export default function Attractions() {
         );
         if (res.ok) {
           const data = await res.json();
-          data.attractions?.forEach((a: any) => {
+          interface AttractionSearchResult {
+            id: string;
+            title: string;
+            cityName: string;
+            slug: string;
+            tiqetsImages?: Array<{ medium?: string }>;
+            tiqetsRating?: string | number;
+            duration?: string;
+            priceFrom?: number;
+          }
+          data.attractions?.forEach((a: AttractionSearchResult) => {
             next.push({
               type: "attraction",
               id: a.id,
@@ -651,17 +656,11 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.2 }}
                     >
-                      <span
-                        className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
-                        style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                      >
+                      <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2 font-chillax">
                         {t("attractions.hero.headlinePart1")}
                       </span>
                       <span className="relative inline-block">
-                        <span
-                          className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
-                          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                        >
+                        <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                           {t("attractions.hero.headlinePart2")}
                         </span>
                         {/* Gradient underline accent */}
@@ -710,10 +709,7 @@ export default function Attractions() {
                         <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                           <div className="text-center lg:text-left">
                             <dt className="sr-only">{stat.srLabel}</dt>
-                            <dd
-                              className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white"
-                              style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                            >
+                            <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
                               {stat.num}
                             </dd>
                             <div

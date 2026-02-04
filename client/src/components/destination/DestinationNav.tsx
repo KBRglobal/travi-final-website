@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MapPin, Hotel, Newspaper, Calendar, Car, HelpCircle, Menu, X } from "lucide-react";
+import { ArrowLeft, MapPin, Newspaper, Calendar, Car, HelpCircle, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
@@ -17,10 +17,10 @@ interface DestinationNavProps {
   destinationSlug: string;
 }
 
-// TODO: Re-enable hotels tab after hotel content is added to CMS
+// Hotels tab disabled until hotel content is added to CMS
 const NAV_SECTIONS = [
   { id: "attractions", label: "Attractions", icon: MapPin },
-  // { id: "hotels", label: "Stay", icon: Hotel }, // DISABLED - no hotel content in CMS yet
+  // { id: "hotels", label: "Stay", icon: Hotel }, // Enable when hotel content available in CMS
   { id: "news", label: "News", icon: Newspaper },
   { id: "best-time", label: "When to Go", icon: Calendar },
   { id: "getting-around", label: "Getting Around", icon: Car },
@@ -35,7 +35,7 @@ export function DestinationNav({ destinationName, destinationSlug }: Destination
   useEffect(() => {
     // Intersection Observer for active section highlighting
     const observers: IntersectionObserver[] = [];
-    
+
     NAV_SECTIONS.forEach(section => {
       const element = document.getElementById(section.id);
       if (element) {
@@ -64,11 +64,8 @@ export function DestinationNav({ destinationName, destinationSlug }: Destination
   };
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50"
-      data-testid="destination-nav"
-    >
-      <div 
+    <nav className="fixed top-0 left-0 right-0 z-50" data-testid="destination-nav">
+      <div
         className="mx-4 mt-4 rounded-2xl"
         style={{
           background: "rgba(255, 255, 255, 0.85)",
@@ -83,8 +80,8 @@ export function DestinationNav({ destinationName, destinationSlug }: Destination
             {/* Back Button + Destination Name */}
             <div className="flex items-center gap-3">
               <Link href={localePath("/destinations")}>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="icon"
                   className="rounded-full hover:bg-slate-100"
                   data-testid="button-back-to-destinations"

@@ -10,20 +10,23 @@ import {
   aeoAnswerCapsules,
   aeoCitations,
   aeoPerformanceMetrics,
-  aeoCrawlerLogs,
   aeoProgrammaticContent,
   aeoAbTests,
-  aeoSchemaEnhancements,
 } from "../../shared/schema";
-import { eq, and, desc, gte, lte, sql, count, isNull } from "drizzle-orm";
+import { eq, and, desc, gte, count } from "drizzle-orm";
 import { generateLlmsTxt, generateLlmsFullTxt } from "./aeo-static-files";
-import { generateAnswerCapsule, batchGenerateCapsules, getCapsuleStats } from "./answer-capsule-generator";
+import {
+  generateAnswerCapsule,
+  batchGenerateCapsules,
+  getCapsuleStats,
+} from "./answer-capsule-generator";
 import { generateAEOSchema, batchGenerateSchemas, validateSchema } from "./aeo-schema-generator";
 import { logCitation, getAEODashboard, getCrawlerStats, getCitationInsights } from "./aeo-tracking";
 import { log } from "../lib/logger";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO] ${msg}`, undefined, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO] ${msg}`, data),
 };
 
@@ -42,16 +45,18 @@ router.get("/.well-known/ai-plugin.json", (_req: Request, res: Response) => {
     schema_version: "v1",
     name_for_human: "TRAVI World",
     name_for_model: "travi_world",
-    description_for_human: "Travel guide for 16+ destinations with attractions, hotels, and local tips.",
-    description_for_model: "TRAVI World provides comprehensive travel information including tourist attractions, hotels, restaurants, transportation guides, and local tips for destinations like Dubai, Paris, Tokyo, London, and more. Use this for travel planning queries.",
+    description_for_human:
+      "Travel guide for 16+ destinations with attractions, hotels, and local tips.",
+    description_for_model:
+      "TRAVI World provides comprehensive travel information including tourist attractions, hotels, restaurants, transportation guides, and local tips for destinations like Dubai, Paris, Tokyo, London, and more. Use this for travel planning queries.",
     auth: { type: "none" },
     api: {
       type: "openapi",
-      url: "https://travi.world/openapi.json"
+      url: "https://travi.world/openapi.json",
     },
     logo_url: "https://travi.world/logo.png",
     contact_email: "info@travi.world",
-    legal_info_url: "https://travi.world/terms"
+    legal_info_url: "https://travi.world/terms",
   };
 
   res.set("Content-Type", "application/json");
@@ -126,7 +131,7 @@ router.get("/api/aeo/capsules", async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    aeoLogger.error( "Failed to list capsules", { error });
+    aeoLogger.error("Failed to list capsules", { error });
     res.status(500).json({ error: "Failed to list capsules" });
   }
 });
@@ -153,7 +158,7 @@ router.get("/api/aeo/capsules/:contentId", async (req: Request, res: Response) =
 
     res.json(capsule);
   } catch (error) {
-    aeoLogger.error( "Failed to get capsule", { error });
+    aeoLogger.error("Failed to get capsule", { error });
     res.status(500).json({ error: "Failed to get capsule" });
   }
 });
@@ -181,7 +186,7 @@ router.post("/api/aeo/capsules/generate", async (req: Request, res: Response) =>
       capsule: result,
     });
   } catch (error) {
-    aeoLogger.error( "Failed to generate capsule", { error });
+    aeoLogger.error("Failed to generate capsule", { error });
     res.status(500).json({ error: "Failed to generate capsule" });
   }
 });
@@ -205,7 +210,7 @@ router.post("/api/aeo/capsules/batch", async (req: Request, res: Response) => {
       completed: true,
     });
   } catch (error) {
-    aeoLogger.error( "Failed to batch generate capsules", { error });
+    aeoLogger.error("Failed to batch generate capsules", { error });
     res.status(500).json({ error: "Failed to batch generate capsules" });
   }
 });
@@ -230,7 +235,7 @@ router.put("/api/aeo/capsules/:id/approve", async (req: Request, res: Response) 
 
     res.json({ success: true });
   } catch (error) {
-    aeoLogger.error( "Failed to approve capsule", { error });
+    aeoLogger.error("Failed to approve capsule", { error });
     res.status(500).json({ error: "Failed to approve capsule" });
   }
 });
@@ -257,7 +262,7 @@ router.put("/api/aeo/capsules/:id", async (req: Request, res: Response) => {
 
     res.json({ success: true });
   } catch (error) {
-    aeoLogger.error( "Failed to update capsule", { error });
+    aeoLogger.error("Failed to update capsule", { error });
     res.status(500).json({ error: "Failed to update capsule" });
   }
 });
@@ -270,7 +275,7 @@ router.get("/api/aeo/capsules/stats", async (req: Request, res: Response) => {
     const stats = await getCapsuleStats();
     res.json(stats);
   } catch (error) {
-    aeoLogger.error( "Failed to get capsule stats", { error });
+    aeoLogger.error("Failed to get capsule stats", { error });
     res.status(500).json({ error: "Failed to get capsule stats" });
   }
 });
@@ -302,7 +307,7 @@ router.get("/api/aeo/schema/:contentId", async (req: Request, res: Response) => 
       validation,
     });
   } catch (error) {
-    aeoLogger.error( "Failed to get schema", { error });
+    aeoLogger.error("Failed to get schema", { error });
     res.status(500).json({ error: "Failed to get schema" });
   }
 });
@@ -350,7 +355,7 @@ router.post("/api/aeo/citations", async (req: Request, res: Response) => {
       res.status(500).json({ error: "Failed to log citation" });
     }
   } catch (error) {
-    aeoLogger.error( "Failed to log citation", { error });
+    aeoLogger.error("Failed to log citation", { error });
     res.status(500).json({ error: "Failed to log citation" });
   }
 });
@@ -385,7 +390,7 @@ router.get("/api/aeo/citations", async (req: Request, res: Response) => {
 
     res.json({ citations });
   } catch (error) {
-    aeoLogger.error( "Failed to list citations", { error });
+    aeoLogger.error("Failed to list citations", { error });
     res.status(500).json({ error: "Failed to list citations" });
   }
 });
@@ -399,7 +404,7 @@ router.get("/api/aeo/citations/insights", async (req: Request, res: Response) =>
     const insights = await getCitationInsights(parseInt(days as string));
     res.json(insights);
   } catch (error) {
-    aeoLogger.error( "Failed to get citation insights", { error });
+    aeoLogger.error("Failed to get citation insights", { error });
     res.status(500).json({ error: "Failed to get citation insights" });
   }
 });
@@ -422,7 +427,7 @@ router.get("/api/aeo/dashboard", async (req: Request, res: Response) => {
     const dashboard = await getAEODashboard(startDate, endDate);
     res.json(dashboard);
   } catch (error) {
-    aeoLogger.error( "Failed to get dashboard", { error });
+    aeoLogger.error("Failed to get dashboard", { error });
     res.status(500).json({ error: "Failed to get dashboard" });
   }
 });
@@ -436,7 +441,7 @@ router.get("/api/aeo/crawlers", async (req: Request, res: Response) => {
     const stats = await getCrawlerStats(parseInt(days as string));
     res.json(stats);
   } catch (error) {
-    aeoLogger.error( "Failed to get crawler stats", { error });
+    aeoLogger.error("Failed to get crawler stats", { error });
     res.status(500).json({ error: "Failed to get crawler stats" });
   }
 });
@@ -485,7 +490,7 @@ router.get("/api/aeo/performance", async (req: Request, res: Response) => {
       totals,
     });
   } catch (error) {
-    aeoLogger.error( "Failed to get performance metrics", { error });
+    aeoLogger.error("Failed to get performance metrics", { error });
     res.status(500).json({ error: "Failed to get performance metrics" });
   }
 });
@@ -506,7 +511,7 @@ router.get("/api/aeo/programmatic", async (req: Request, res: Response) => {
 
     res.json({ templates });
   } catch (error) {
-    aeoLogger.error( "Failed to list programmatic templates", { error });
+    aeoLogger.error("Failed to list programmatic templates", { error });
     res.status(500).json({ error: "Failed to list programmatic templates" });
   }
 });
@@ -518,19 +523,22 @@ router.post("/api/aeo/programmatic", async (req: Request, res: Response) => {
   try {
     const { format, templateName, templatePattern, variables, targetCount, priority } = req.body;
 
-    const result = await db.insert(aeoProgrammaticContent).values({
-      format,
-      templateName,
-      templatePattern,
-      variables: variables || {},
-      targetCount: targetCount || 0,
-      priority: priority || 0,
-      isActive: true,
-    } as any).returning();
+    const result = await db
+      .insert(aeoProgrammaticContent)
+      .values({
+        format,
+        templateName,
+        templatePattern,
+        variables: variables || {},
+        targetCount: targetCount || 0,
+        priority: priority || 0,
+        isActive: true,
+      } as any)
+      .returning();
 
     res.json({ success: true, template: result[0] });
   } catch (error) {
-    aeoLogger.error( "Failed to create programmatic template", { error });
+    aeoLogger.error("Failed to create programmatic template", { error });
     res.status(500).json({ error: "Failed to create programmatic template" });
   }
 });
@@ -556,7 +564,7 @@ router.get("/api/aeo/tests", async (req: Request, res: Response) => {
 
     res.json({ tests });
   } catch (error) {
-    aeoLogger.error( "Failed to list A/B tests", { error });
+    aeoLogger.error("Failed to list A/B tests", { error });
     res.status(500).json({ error: "Failed to list A/B tests" });
   }
 });
@@ -573,19 +581,22 @@ router.post("/api/aeo/tests", async (req: Request, res: Response) => {
       return;
     }
 
-    const result = await db.insert(aeoAbTests).values({
-      name,
-      description,
-      contentId,
-      variants,
-      status: "draft",
-      minSampleSize: minSampleSize || 100,
-      confidenceLevel: confidenceLevel || 95,
-    } as any).returning();
+    const result = await db
+      .insert(aeoAbTests)
+      .values({
+        name,
+        description,
+        contentId,
+        variants,
+        status: "draft",
+        minSampleSize: minSampleSize || 100,
+        confidenceLevel: confidenceLevel || 95,
+      } as any)
+      .returning();
 
     res.json({ success: true, test: result[0] });
   } catch (error) {
-    aeoLogger.error( "Failed to create A/B test", { error });
+    aeoLogger.error("Failed to create A/B test", { error });
     res.status(500).json({ error: "Failed to create A/B test" });
   }
 });
@@ -608,7 +619,7 @@ router.put("/api/aeo/tests/:id/start", async (req: Request, res: Response) => {
 
     res.json({ success: true });
   } catch (error) {
-    aeoLogger.error( "Failed to start A/B test", { error });
+    aeoLogger.error("Failed to start A/B test", { error });
     res.status(500).json({ error: "Failed to start A/B test" });
   }
 });
@@ -633,7 +644,7 @@ router.put("/api/aeo/tests/:id/stop", async (req: Request, res: Response) => {
 
     res.json({ success: true });
   } catch (error) {
-    aeoLogger.error( "Failed to stop A/B test", { error });
+    aeoLogger.error("Failed to stop A/B test", { error });
     res.status(500).json({ error: "Failed to stop A/B test" });
   }
 });
@@ -654,7 +665,7 @@ router.get("/api/aeo/content/missing-capsules", async (req: Request, res: Respon
       .select({ contentId: aeoAnswerCapsules.contentId })
       .from(aeoAnswerCapsules);
 
-    const idsWithCapsules = new Set(capsuleContentIds.map((c) => c.contentId));
+    const idsWithCapsules = new Set(capsuleContentIds.map(c => c.contentId));
 
     // Get published content with optional type filter
     const whereCondition = type
@@ -675,7 +686,7 @@ router.get("/api/aeo/content/missing-capsules", async (req: Request, res: Respon
       .limit(parseInt(limit as string));
 
     // Filter out content with capsules
-    const contentWithoutCapsules = allContent.filter((c) => !idsWithCapsules.has(c.id));
+    const contentWithoutCapsules = allContent.filter(c => !idsWithCapsules.has(c.id));
 
     res.json({
       content: contentWithoutCapsules,
@@ -1036,11 +1047,7 @@ router.post("/api/aeo/capsules/:contentId/translate", async (req: Request, res: 
       return;
     }
 
-    const translation = await translateCapsule(
-      req.params.contentId,
-      sourceLocale,
-      targetLocale
-    );
+    const translation = await translateCapsule(req.params.contentId, sourceLocale, targetLocale);
     res.json({ success: true, translation });
   } catch (error) {
     aeoLogger.error("Failed to translate capsule", { error });

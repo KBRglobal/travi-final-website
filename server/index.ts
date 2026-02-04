@@ -564,20 +564,24 @@ async function initializeServer() {
       log(`[BackgroundServices] Failed to start: ${err}`, "error");
     });
 
-    import("./scripts/publish-articles").then(({ publishAllArticles }) => {
-      publishAllArticles()
-        .then(result => {
-          if (result.articles > 0 || result.hotels > 0) {
-            log(
-              `[AutoPublish] Published ${result.articles} articles, ${result.hotels} hotels`,
-              "server"
-            );
-          }
-        })
-        .catch(err => {
-          log(`[AutoPublish] Error: ${err}`, "server");
-        });
-    });
+    import("./scripts/publish-articles")
+      .then(({ publishAllArticles }) => {
+        publishAllArticles()
+          .then(result => {
+            if (result.articles > 0 || result.hotels > 0) {
+              log(
+                `[AutoPublish] Published ${result.articles} articles, ${result.hotels} hotels`,
+                "server"
+              );
+            }
+          })
+          .catch(err => {
+            log(`[AutoPublish] Error: ${err}`, "server");
+          });
+      })
+      .catch(err => {
+        log(`[AutoPublish] Failed to load publish-articles module: ${err}`, "error");
+      });
 
     initializeFoundationEvents();
   } catch (error) {

@@ -24,7 +24,6 @@ import {
   type GeneratedContent,
   type GenerationResult,
 } from "@/lib/magic-ai";
-import { SUPPORTED_LOCALES } from "@shared/schema";
 
 export interface MagicAIButtonProps {
   field: string;

@@ -11,6 +11,10 @@ import {
   siteSettings,
   tags,
   contentTags,
+  attractions,
+  hotels,
+  dining,
+  destinations,
 } from "@shared/schema";
 import { eq, desc, lt, gt, and, sql, like, isNull, or } from "drizzle-orm";
 import { cache, cacheKeys } from "./cache";
@@ -709,15 +713,63 @@ export const socialPostsGenerator = {
       .replace(/<[^>]*>/g, "")
       .substring(0, 200);
 
-    // Generate hashtags based on type and content
-    const typeHashtags: Record<string, string[]> = {
-      hotel: ["DubaiHotels", "LuxuryDubai", "DubaiTravel"],
-      restaurant: ["DubaiFoodie", "DubaiDining", "DubaiEats"],
-      attraction: ["DubaiAttractions", "VisitDubai", "DubaiTourism"],
-      article: ["DubaiGuide", "DubaiTips", "TravelDubai"],
-      event: ["DubaiEvents", "DubaiNightlife", "WhatsOnDubai"],
+    // Get destination for content (destination-agnostic hashtags)
+    let destinationName = "";
+    if (content.type === "attraction") {
+      const attraction = await db.query.attractions.findFirst({
+        where: eq(attractions.contentId, contentId),
+      });
+      if (attraction?.destinationId) {
+        const dest = await db.query.destinations.findFirst({
+          where: eq(destinations.id, attraction.destinationId),
+        });
+        destinationName = dest?.name || "";
+      }
+    } else if (content.type === "hotel") {
+      const hotel = await db.query.hotels.findFirst({
+        where: eq(hotels.contentId, contentId),
+      });
+      if (hotel?.destinationId) {
+        const dest = await db.query.destinations.findFirst({
+          where: eq(destinations.id, hotel.destinationId),
+        });
+        destinationName = dest?.name || "";
+      }
+    } else if (content.type === "restaurant") {
+      const restaurant = await db.query.dining.findFirst({
+        where: eq(dining.contentId, contentId),
+      });
+      if (restaurant?.destinationId) {
+        const dest = await db.query.destinations.findFirst({
+          where: eq(destinations.id, restaurant.destinationId),
+        });
+        destinationName = dest?.name || "";
+      }
+    }
+
+    // Generate hashtags based on type and destination (destination-agnostic)
+    const destTag = destinationName.replace(/\s+/g, "");
+    const typeHashtags: Record<string, (dest: string) => string[]> = {
+      hotel: dest =>
+        dest
+          ? [`${dest}Hotels`, `Luxury${dest}`, `${dest}Travel`]
+          : ["TravelHotels", "LuxuryTravel"],
+      restaurant: dest =>
+        dest ? [`${dest}Foodie`, `${dest}Dining`, `${dest}Eats`] : ["TravelFoodie", "FoodieTravel"],
+      attraction: dest =>
+        dest
+          ? [`${dest}Attractions`, `Visit${dest}`, `${dest}Tourism`]
+          : ["TravelAttractions", "Tourism"],
+      article: dest =>
+        dest ? [`${dest}Guide`, `${dest}Tips`, `Travel${dest}`] : ["TravelGuide", "TravelTips"],
+      event: dest =>
+        dest
+          ? [`${dest}Events`, `${dest}Nightlife`, `WhatsOn${dest}`]
+          : ["TravelEvents", "WhatsOn"],
     };
-    const hashtags = ["Dubai", ...(typeHashtags[content.type] || ["DubaiTravel"])];
+    const hashtags = destinationName
+      ? [destTag, ...(typeHashtags[content.type]?.(destTag) || [`${destTag}Travel`])]
+      : ["Travel", ...(typeHashtags[content.type]?.("") || ["TravelWorld"])];
 
     const posts: SocialPost[] = [];
 

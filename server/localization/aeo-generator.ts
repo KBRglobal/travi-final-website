@@ -1,35 +1,34 @@
 /**
  * Phase 6: AEO (Answer Engine Optimization) Generator
- * 
+ *
  * Generates AI-optimized content for answer engines:
  * - answerCapsule: 40-60 word concise summary
  * - FAQ: 5-8 Q&A pairs
  * - JSON-LD schema markup
  * - Quick Facts / Key Takeaways
- * 
+ *
  * CONSTRAINTS:
  * - Deterministic output (low temperature, strict schemas)
  * - No hallucinated facts or fake statistics
  * - Must reference structured data from entity fields
  */
 
-import { db } from '../db';
-import { 
+import { db } from "../db";
+import {
   contents,
   hotels,
   attractions,
   destinations,
   districts,
   type Content,
-} from '@shared/schema';
-import { eq } from 'drizzle-orm';
-import { log } from '../lib/logger';
-import { z } from 'zod';
+} from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { log } from "../lib/logger";
+import { z } from "zod";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) => 
-    log.info(`[AEOGenerator] ${msg}`, data),
-  error: (msg: string, data?: Record<string, unknown>) => 
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEOGenerator] ${msg}`, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[AEOGenerator] ${msg}`, undefined, data),
 };
 
@@ -57,47 +56,51 @@ const FaqSchema = z.object({
 });
 
 // JSON-LD Schema types
-type JsonLdType = 'Hotel' | 'TouristAttraction' | 'Restaurant' | 'Article' | 'WebPage';
+type JsonLdType = "Hotel" | "TouristAttraction" | "Restaurant" | "Article" | "WebPage";
 
 /**
  * Generate answer capsule for content
  * 40-60 words, factual, no marketing fluff
  */
-export async function generateAnswerCapsule(
-  contentId: string
-): Promise<string | null> {
+export async function generateAnswerCapsule(contentId: string): Promise<string | null> {
   const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
   if (!content) {
-    logger.error('Content not found', { contentId });
+    logger.error("Content not found", { contentId });
     return null;
   }
 
   // Gather structured data based on content type
   const entityData = await gatherEntityData(content);
-  
+
   const prompt = buildAnswerCapsulePrompt(content, entityData);
-  
+
   try {
     const response = await callAI(prompt, AnswerCapsuleSchema);
-    
+
     // Validate word count
     const wordCount = response.capsule.split(/\s+/).length;
-    if (wordCount < CONFIG.ANSWER_CAPSULE_MIN_WORDS || wordCount > CONFIG.ANSWER_CAPSULE_MAX_WORDS) {
-      logger.error('Answer capsule word count out of range', { contentId, wordCount });
+    if (
+      wordCount < CONFIG.ANSWER_CAPSULE_MIN_WORDS ||
+      wordCount > CONFIG.ANSWER_CAPSULE_MAX_WORDS
+    ) {
+      logger.error("Answer capsule word count out of range", { contentId, wordCount });
       return null;
     }
 
     // Update content with answer capsule
-    await db.update(contents).set({
-      answerCapsule: response.capsule,
-    } as any).where(eq(contents.id, contentId));
+    await db
+      .update(contents)
+      .set({
+        answerCapsule: response.capsule,
+      } as any)
+      .where(eq(contents.id, contentId));
 
-    logger.info('Answer capsule generated', { contentId, wordCount });
+    logger.info("Answer capsule generated", { contentId, wordCount });
     return response.capsule;
   } catch (error) {
-    logger.error('Failed to generate answer capsule', { 
-      contentId, 
-      error: error instanceof Error ? error.message : String(error) 
+    logger.error("Failed to generate answer capsule", {
+      contentId,
+      error: error instanceof Error ? error.message : String(error),
     });
     return null;
   }
@@ -112,25 +115,25 @@ export async function generateFaq(
 ): Promise<Array<{ question: string; answer: string }> | null> {
   const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
   if (!content) {
-    logger.error('Content not found', { contentId });
+    logger.error("Content not found", { contentId });
     return null;
   }
 
   const entityData = await gatherEntityData(content);
   const prompt = buildFaqPrompt(content, entityData);
-  
+
   try {
     const response = await callAI(prompt, FaqSchema);
-    
+
     // Update entity with FAQ (stored on entity tables, not contents)
     await updateEntityFaq(content, response.items as any);
 
-    logger.info('FAQ generated', { contentId, items: response.items.length });
+    logger.info("FAQ generated", { contentId, items: response.items.length });
     return response.items as any;
   } catch (error) {
-    logger.error('Failed to generate FAQ', { 
-      contentId, 
-      error: error instanceof Error ? error.message : String(error) 
+    logger.error("Failed to generate FAQ", {
+      contentId,
+      error: error instanceof Error ? error.message : String(error),
     });
     return null;
   }
@@ -139,26 +142,27 @@ export async function generateFaq(
 /**
  * Generate JSON-LD schema for content
  */
-export async function generateJsonLd(
-  contentId: string
-): Promise<Record<string, unknown> | null> {
+export async function generateJsonLd(contentId: string): Promise<Record<string, unknown> | null> {
   const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
   if (!content) {
-    logger.error('Content not found', { contentId });
+    logger.error("Content not found", { contentId });
     return null;
   }
 
   const entityData = await gatherEntityData(content);
   const schemaType = determineSchemaType(content);
-  
-  const schema = buildJsonLdSchema(content, entityData, schemaType);
-  
-  // Update content with schema
-  await db.update(contents).set({
-    seoSchema: schema,
-  } as any).where(eq(contents.id, contentId));
 
-  logger.info('JSON-LD generated', { contentId, type: schemaType });
+  const schema = buildJsonLdSchema(content, entityData, schemaType);
+
+  // Update content with schema
+  await db
+    .update(contents)
+    .set({
+      seoSchema: schema,
+    } as any)
+    .where(eq(contents.id, contentId));
+
+  logger.info("JSON-LD generated", { contentId, type: schemaType });
   return schema;
 }
 
@@ -199,9 +203,12 @@ export async function calculateAeoScore(contentId: string): Promise<number> {
   }
 
   // Update score
-  await db.update(contents).set({
-    aeoScore: score,
-  } as any).where(eq(contents.id, contentId));
+  await db
+    .update(contents)
+    .set({
+      aeoScore: score,
+    } as any)
+    .where(eq(contents.id, contentId));
 
   return score;
 }
@@ -218,13 +225,13 @@ async function gatherEntityData(content: Content): Promise<{
   faq?: Array<{ question: string; answer: string }>;
 }> {
   const entityData: ReturnType<typeof gatherEntityData> extends Promise<infer T> ? T : never = {
-    type: content.type || 'article',
+    type: content.type || "article",
   };
 
   // Get entity-specific data to find destination
   const [hotel] = await db.select().from(hotels).where(eq(hotels.contentId, content.id));
   if (hotel) {
-    entityData.type = 'hotel';
+    entityData.type = "hotel";
     entityData.hotel = {
       starRating: hotel.starRating ?? undefined,
     };
@@ -232,9 +239,12 @@ async function gatherEntityData(content: Content): Promise<{
 
     // Get destination from hotel
     if (hotel.destinationId) {
-      const [dest] = await db.select().from(destinations).where(eq(destinations.id, hotel.destinationId));
+      const [dest] = await db
+        .select()
+        .from(destinations)
+        .where(eq(destinations.id, hotel.destinationId));
       if (dest) {
-        entityData.destination = { 
+        entityData.destination = {
           name: dest.name,
           country: dest.country || undefined,
         };
@@ -242,16 +252,22 @@ async function gatherEntityData(content: Content): Promise<{
     }
   }
 
-  const [attraction] = await db.select().from(attractions).where(eq(attractions.contentId, content.id));
+  const [attraction] = await db
+    .select()
+    .from(attractions)
+    .where(eq(attractions.contentId, content.id));
   if (attraction) {
-    entityData.type = 'attraction';
+    entityData.type = "attraction";
     entityData.faq = attraction.faq || undefined;
-    
+
     // Get destination from attraction
     if (attraction.destinationId) {
-      const [dest] = await db.select().from(destinations).where(eq(destinations.id, attraction.destinationId));
+      const [dest] = await db
+        .select()
+        .from(destinations)
+        .where(eq(destinations.id, attraction.destinationId));
       if (dest) {
-        entityData.destination = { 
+        entityData.destination = {
           name: dest.name,
           country: dest.country || undefined,
         };
@@ -270,7 +286,7 @@ function buildAnswerCapsulePrompt(
   entityData: Awaited<ReturnType<typeof gatherEntityData>>
 ): string {
   const context = [];
-  
+
   if (entityData.destination) {
     context.push(`Located in ${entityData.destination.name}`);
   }
@@ -285,8 +301,8 @@ function buildAnswerCapsulePrompt(
 
 Content Title: ${content.title}
 Type: ${entityData.type}
-${context.length > 0 ? `Context: ${context.join(', ')}` : ''}
-${content.metaDescription ? `Description: ${content.metaDescription}` : ''}
+${context.length > 0 ? `Context: ${context.join(", ")}` : ""}
+${content.metaDescription ? `Description: ${content.metaDescription}` : ""}
 
 RULES:
 - Must be factual and specific
@@ -305,9 +321,9 @@ function buildFaqPrompt(
   content: Content,
   entityData: Awaited<ReturnType<typeof gatherEntityData>>
 ): string {
-  let specificQuestions = '';
-  
-  if (entityData.type === 'hotel') {
+  let specificQuestions = "";
+
+  if (entityData.type === "hotel") {
     specificQuestions = `
 Focus on:
 - Check-in/check-out times (if unknown, omit)
@@ -315,7 +331,7 @@ Focus on:
 - Location and neighborhood
 - Key amenities
 - Nearby attractions or highlights`;
-  } else if (entityData.type === 'attraction') {
+  } else if (entityData.type === "attraction") {
     specificQuestions = `
 Focus on:
 - Best time to visit
@@ -335,8 +351,8 @@ Focus on:
   return `Generate 5-8 FAQ items for "${content.title}".
 
 Type: ${entityData.type}
-${entityData.destination ? `Location: ${entityData.destination.name}` : ''}
-${content.metaDescription ? `About: ${content.metaDescription}` : ''}
+${entityData.destination ? `Location: ${entityData.destination.name}` : ""}
+${content.metaDescription ? `About: ${content.metaDescription}` : ""}
 ${specificQuestions}
 
 RULES:
@@ -354,16 +370,16 @@ Return JSON: { "items": [{ "question": "...", "answer": "..." }, ...] }`;
  */
 function determineSchemaType(content: Content): JsonLdType {
   switch (content.type) {
-    case 'hotel':
-      return 'Hotel';
-    case 'attraction':
-      return 'TouristAttraction';
-    case 'dining':
-      return 'Restaurant';
-    case 'article':
-      return 'Article';
+    case "hotel":
+      return "Hotel";
+    case "attraction":
+      return "TouristAttraction";
+    case "dining":
+      return "Restaurant";
+    case "article":
+      return "Article";
     default:
-      return 'WebPage';
+      return "WebPage";
   }
 }
 
@@ -376,27 +392,28 @@ function buildJsonLdSchema(
   schemaType: JsonLdType
 ): Record<string, unknown> {
   const baseSchema: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': schemaType,
+    "@context": "https://schema.org",
+    "@type": schemaType,
     name: content.title,
     description: content.metaDescription || undefined,
     url: content.slug ? `/${content.slug}` : undefined,
   };
 
-  // Add address if destination available
+  // Add address if destination available (destination-agnostic - no fallback)
   if (entityData.destination) {
     baseSchema.address = {
-      '@type': 'PostalAddress',
+      "@type": "PostalAddress",
       addressLocality: entityData.destination.name,
-      addressCountry: entityData.destination.country || 'AE',
+      // Only include country if explicitly provided (no hardcoded fallback)
+      ...(entityData.destination.country && { addressCountry: entityData.destination.country }),
     };
   }
 
   // Type-specific additions
-  if (schemaType === 'Hotel' && entityData.hotel) {
+  if (schemaType === "Hotel" && entityData.hotel) {
     if (entityData.hotel.starRating) {
       baseSchema.starRating = {
-        '@type': 'Rating',
+        "@type": "Rating",
         ratingValue: entityData.hotel.starRating,
       };
     }
@@ -405,12 +422,12 @@ function buildJsonLdSchema(
   // Add FAQ schema if available
   if (entityData.faq && entityData.faq.length > 0) {
     baseSchema.mainEntity = {
-      '@type': 'FAQPage',
+      "@type": "FAQPage",
       mainEntity: entityData.faq.map(item => ({
-        '@type': 'Question',
+        "@type": "Question",
         name: item.question,
         acceptedAnswer: {
-          '@type': 'Answer',
+          "@type": "Answer",
           text: item.answer,
         },
       })),
@@ -430,46 +447,53 @@ async function updateEntityFaq(
   // Update hotel FAQ
   const [hotel] = await db.select().from(hotels).where(eq(hotels.contentId, content.id));
   if (hotel) {
-    await db.update(hotels).set({ faq: faqItems } as any).where(eq(hotels.id, hotel.id));
+    await db
+      .update(hotels)
+      .set({ faq: faqItems } as any)
+      .where(eq(hotels.id, hotel.id));
     return;
   }
 
   // Update attraction FAQ
-  const [attraction] = await db.select().from(attractions).where(eq(attractions.contentId, content.id));
+  const [attraction] = await db
+    .select()
+    .from(attractions)
+    .where(eq(attractions.contentId, content.id));
   if (attraction) {
-    await db.update(attractions).set({ faq: faqItems } as any).where(eq(attractions.id, attraction.id));
+    await db
+      .update(attractions)
+      .set({ faq: faqItems } as any)
+      .where(eq(attractions.id, attraction.id));
   }
 }
 
 /**
  * Call AI with structured output
  */
-async function callAI<T extends z.ZodType>(
-  prompt: string,
-  schema: T
-): Promise<z.infer<T>> {
-  const apiKey = process.env.ANTHROPIC_API_KEY || 
-                 process.env.OPENAI_API_KEY || 
-                 process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
-  
+async function callAI<T extends z.ZodType>(prompt: string, schema: T): Promise<z.infer<T>> {
+  const apiKey =
+    process.env.ANTHROPIC_API_KEY ||
+    process.env.OPENAI_API_KEY ||
+    process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+
   if (!apiKey) {
-    throw new Error('No AI API key configured');
+    throw new Error("No AI API key configured");
   }
 
   // Try Anthropic first
   if (process.env.ANTHROPIC_API_KEY) {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
       headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'Content-Type': 'application/json',
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: "claude-sonnet-4-20250514",
         max_tokens: 2048,
         temperature: CONFIG.TEMPERATURE,
-        messages: [{ role: 'user', content: prompt }],
+        messages: [{ role: "user", content: prompt }],
       }),
     });
 
@@ -478,31 +502,31 @@ async function callAI<T extends z.ZodType>(
     }
 
     const data = await response.json();
-    const text = data.content?.[0]?.text || '';
-    
+    const text = data.content?.[0]?.text || "";
+
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('No JSON found in response');
+      throw new Error("No JSON found in response");
     }
-    
+
     const parsed = JSON.parse(jsonMatch[0]);
     return schema.parse(parsed);
   }
 
   // Fallback to OpenAI
-  const baseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || 'https://api.openai.com/v1';
+  const baseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || "https://api.openai.com/v1";
   const response = await fetch(`${baseUrl}/chat/completions`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: "gpt-4o-mini",
       temperature: CONFIG.TEMPERATURE,
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' },
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
     }),
   });
 
@@ -511,7 +535,7 @@ async function callAI<T extends z.ZodType>(
   }
 
   const data = await response.json();
-  const text = data.choices?.[0]?.message?.content || '';
+  const text = data.choices?.[0]?.message?.content || "";
   const parsed = JSON.parse(text);
   return schema.parse(parsed);
 }
@@ -525,7 +549,7 @@ export async function generateFullAeo(contentId: string): Promise<{
   jsonLd: Record<string, unknown> | null;
   aeoScore: number;
 }> {
-  logger.info('Starting full AEO generation', { contentId });
+  logger.info("Starting full AEO generation", { contentId });
 
   const [answerCapsule, faq, jsonLd] = await Promise.all([
     generateAnswerCapsule(contentId),
@@ -535,7 +559,7 @@ export async function generateFullAeo(contentId: string): Promise<{
 
   const aeoScore = await calculateAeoScore(contentId);
 
-  logger.info('Full AEO generation complete', { contentId, aeoScore });
+  logger.info("Full AEO generation complete", { contentId, aeoScore });
 
   return { answerCapsule, faq, jsonLd, aeoScore };
 }

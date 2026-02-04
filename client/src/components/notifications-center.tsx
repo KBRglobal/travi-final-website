@@ -1,13 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,14 +11,11 @@ import {
   Clock,
   AlertTriangle,
   CheckCircle,
-  Globe,
   FileText,
   Rss,
   CalendarClock,
   TrendingDown,
   Eye,
-  Languages,
-  X,
   Info,
 } from "lucide-react";
 import type { ContentWithRelations } from "@shared/schema";
@@ -110,10 +101,14 @@ export function NotificationsCenter() {
   // Get icon for API notification type
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case "warning": return AlertTriangle;
-      case "success": return CheckCircle;
-      case "error": return AlertTriangle;
-      default: return Info;
+      case "warning":
+        return AlertTriangle;
+      case "success":
+        return CheckCircle;
+      case "error":
+        return AlertTriangle;
+      default:
+        return Info;
     }
   };
 
@@ -124,10 +119,13 @@ export function NotificationsCenter() {
 
     // Add API notifications first (from database)
     if (apiNotifications?.notifications) {
-      apiNotifications.notifications.forEach((apiNotif) => {
+      apiNotifications.notifications.forEach(apiNotif => {
         items.push({
           id: apiNotif.id,
-          type: apiNotif.type === "error" ? "warning" : apiNotif.type as "info" | "warning" | "success",
+          type:
+            apiNotif.type === "error"
+              ? "warning"
+              : (apiNotif.type as "info" | "warning" | "success"),
           icon: getNotificationIcon(apiNotif.type),
           title: apiNotif.title,
           description: apiNotif.message,
@@ -141,7 +139,7 @@ export function NotificationsCenter() {
 
     // Scheduled contents notifications
     if (attentionItems?.scheduledToday?.length) {
-      attentionItems.scheduledToday.forEach((item) => {
+      attentionItems.scheduledToday.forEach(item => {
         items.push({
           id: `scheduled-${item.id}`,
           type: "info",
@@ -156,9 +154,7 @@ export function NotificationsCenter() {
 
     // Low SEO score alerts
     if (attentionItems?.lowSeo?.length) {
-      const critical = attentionItems.lowSeo.filter(
-        (c) => c.seoScore !== null && c.seoScore < 50
-      );
+      const critical = attentionItems.lowSeo.filter(c => c.seoScore !== null && c.seoScore < 50);
       if (critical.length > 0) {
         items.push({
           id: "low-seo-critical",
@@ -199,7 +195,7 @@ export function NotificationsCenter() {
     }
 
     // Draft contents that's been sitting for a while
-    const oldDrafts = contents.filter((c) => {
+    const oldDrafts = contents.filter(c => {
       if (c.status !== "draft") return false;
       const updatedAt = c.updatedAt ? new Date(c.updatedAt) : null;
       if (!updatedAt) return false;
@@ -219,7 +215,7 @@ export function NotificationsCenter() {
     }
 
     // In-review contents waiting for approval
-    const inReview = contents.filter((c) => c.status === "in_review");
+    const inReview = contents.filter(c => c.status === "in_review");
     if (inReview.length > 0) {
       items.push({
         id: "in-review",
@@ -236,7 +232,7 @@ export function NotificationsCenter() {
   }, [contents, rssStats, attentionItems, apiNotifications]);
 
   // Unread count - check both local state and API read status
-  const unreadCount = notifications.filter((n) => {
+  const unreadCount = notifications.filter(n => {
     if (n.isApiNotification) {
       return !n.read;
     }
@@ -248,7 +244,7 @@ export function NotificationsCenter() {
     if (isApiNotification) {
       markAsReadMutation.mutate(id);
     } else {
-      setLocalReadIds((prev) => new Set([...prev, id]));
+      setLocalReadIds(prev => new Set([...prev, id]));
     }
   };
 
@@ -257,7 +253,7 @@ export function NotificationsCenter() {
     // Mark API notifications via API
     markAllAsReadMutation.mutate();
     // Mark local notifications
-    setLocalReadIds(new Set(notifications.filter(n => !n.isApiNotification).map((n) => n.id)));
+    setLocalReadIds(new Set(notifications.filter(n => !n.isApiNotification).map(n => n.id)));
   };
 
   // Handle notification click
@@ -318,9 +314,7 @@ export function NotificationsCenter() {
             <SheetTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5" />
               Notifications
-              {unreadCount > 0 && (
-                <Badge variant="secondary">{unreadCount} new</Badge>
-              )}
+              {unreadCount > 0 && <Badge variant="secondary">{unreadCount} new</Badge>}
             </SheetTitle>
             {unreadCount > 0 && (
               <Button variant="ghost" size="sm" onClick={markAllAsRead}>
@@ -332,9 +326,15 @@ export function NotificationsCenter() {
 
         <Tabs defaultValue="all" className="mt-4">
           <TabsList className="w-full">
-            <TabsTrigger value="all" className="flex-1">All</TabsTrigger>
-            <TabsTrigger value="actions" className="flex-1">Actions</TabsTrigger>
-            <TabsTrigger value="alerts" className="flex-1">Alerts</TabsTrigger>
+            <TabsTrigger value="all" className="flex-1">
+              All
+            </TabsTrigger>
+            <TabsTrigger value="actions" className="flex-1">
+              Actions
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="flex-1">
+              Alerts
+            </TabsTrigger>
           </TabsList>
 
           <ScrollArea className="h-[calc(100vh-200px)] mt-4">
@@ -347,7 +347,7 @@ export function NotificationsCenter() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {notifications.map((notification) => {
+                  {notifications.map(notification => {
                     const Icon = notification.icon;
                     const isUnread = notification.isApiNotification
                       ? !notification.read
@@ -358,26 +358,18 @@ export function NotificationsCenter() {
                         key={notification.id}
                         onClick={() => handleNotificationClick(notification)}
                         className={`w-full text-left p-3 rounded-lg transition-colors ${
-                          isUnread
-                            ? "bg-muted/50 hover:bg-muted"
-                            : "hover:bg-muted/30"
+                          isUnread ? "bg-muted/50 hover:bg-muted" : "hover:bg-muted/30"
                         }`}
                       >
                         <div className="flex gap-3">
                           <div
-                            className={`p-2 rounded-lg shrink-0 ${getIconColor(
-                              notification.type
-                            )}`}
+                            className={`p-2 rounded-lg shrink-0 ${getIconColor(notification.type)}`}
                           >
                             <Icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
-                              <h4
-                                className={`text-sm ${
-                                  isUnread ? "font-medium" : ""
-                                }`}
-                              >
+                              <h4 className={`text-sm ${isUnread ? "font-medium" : ""}`}>
                                 {notification.title}
                               </h4>
                               {isUnread && (
@@ -400,7 +392,7 @@ export function NotificationsCenter() {
             </TabsContent>
 
             <TabsContent value="actions" className="mt-0">
-              {notifications.filter((n) => n.type === "action").length === 0 ? (
+              {notifications.filter(n => n.type === "action").length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <CheckCircle className="h-10 w-10 mx-auto mb-3 opacity-50" />
                   <p>No pending actions</p>
@@ -408,8 +400,8 @@ export function NotificationsCenter() {
               ) : (
                 <div className="space-y-2">
                   {notifications
-                    .filter((n) => n.type === "action")
-                    .map((notification) => {
+                    .filter(n => n.type === "action")
+                    .map(notification => {
                       const Icon = notification.icon;
                       const isUnread = notification.isApiNotification
                         ? !notification.read
@@ -420,9 +412,7 @@ export function NotificationsCenter() {
                           key={notification.id}
                           onClick={() => handleNotificationClick(notification)}
                           className={`w-full text-left p-3 rounded-lg transition-colors ${
-                            isUnread
-                              ? "bg-muted/50 hover:bg-muted"
-                              : "hover:bg-muted/30"
+                            isUnread ? "bg-muted/50 hover:bg-muted" : "hover:bg-muted/30"
                           }`}
                         >
                           <div className="flex gap-3">
@@ -430,9 +420,7 @@ export function NotificationsCenter() {
                               <Icon className="h-4 w-4" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium">
-                                {notification.title}
-                              </h4>
+                              <h4 className="text-sm font-medium">{notification.title}</h4>
                               <p className="text-xs text-muted-foreground mt-0.5">
                                 {notification.description}
                               </p>
@@ -446,7 +434,7 @@ export function NotificationsCenter() {
             </TabsContent>
 
             <TabsContent value="alerts" className="mt-0">
-              {notifications.filter((n) => n.type === "warning").length === 0 ? (
+              {notifications.filter(n => n.type === "warning").length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <CheckCircle className="h-10 w-10 mx-auto mb-3 opacity-50" />
                   <p>No alerts</p>
@@ -454,8 +442,8 @@ export function NotificationsCenter() {
               ) : (
                 <div className="space-y-2">
                   {notifications
-                    .filter((n) => n.type === "warning")
-                    .map((notification) => {
+                    .filter(n => n.type === "warning")
+                    .map(notification => {
                       const Icon = notification.icon;
 
                       return (
@@ -469,9 +457,7 @@ export function NotificationsCenter() {
                               <Icon className="h-4 w-4" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium">
-                                {notification.title}
-                              </h4>
+                              <h4 className="text-sm font-medium">{notification.title}</h4>
                               <p className="text-xs text-muted-foreground mt-0.5">
                                 {notification.description}
                               </p>

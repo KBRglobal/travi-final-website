@@ -131,10 +131,7 @@ function AttractionError({ message }: { message: string }) {
       <SubtleSkyBackground />
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-24 text-center relative z-10">
         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
-        <h1
-          className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4 font-chillax">
           Attraction Not Found
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mb-8" data-testid="error-message">
@@ -239,8 +236,7 @@ function HeroSection({
           </nav>
 
           <h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05]"
-            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] font-chillax"
             data-testid="text-h1-title"
           >
             {title}
@@ -345,10 +341,7 @@ function LivePricingWidget({
       data-testid="section-live-pricing"
     >
       <div className="max-w-6xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-3"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-3 font-chillax">
           Available Ticket Options
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-10 flex items-center gap-2">
@@ -479,10 +472,7 @@ function IntroductionSection({ attraction }: { attraction: TiqetsAttraction }) {
       data-testid="section-introduction"
     >
       <div className="max-w-5xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-8 font-chillax">
           Why Visit <span className="hero-gradient-text">{title}</span> in 2026?
         </h2>
 
@@ -567,10 +557,7 @@ function QuickFactsBox({ attraction }: { attraction: TiqetsAttraction }) {
       <div className="max-w-6xl mx-auto">
         <Card className="border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardContent className="p-6 md:p-8">
-            <h3
-              className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-8"
-              style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-            >
+            <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-8 font-chillax">
               Quick Facts
             </h3>
 
@@ -653,10 +640,7 @@ function TicketOptionsTable({
       data-testid="section-ticket-options"
     >
       <div className="max-w-6xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10 font-chillax">
           Compare Ticket Options
         </h2>
 
@@ -786,10 +770,7 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
       data-testid="section-what-to-expect"
     >
       <div className="max-w-6xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10 font-chillax">
           What to Expect at {attraction.title}
         </h2>
 
@@ -885,10 +866,7 @@ function VisitorTipsSection({ attraction }: { attraction: TiqetsAttraction }) {
       data-testid="section-visitor-tips"
     >
       <div className="max-w-6xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10 font-chillax">
           Insider Tips for Your Visit
         </h2>
 
@@ -964,10 +942,7 @@ function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) 
       data-testid="section-how-to-get-there"
     >
       <div className="max-w-6xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10 font-chillax">
           How to Get to {attraction.title}
         </h2>
 
@@ -980,7 +955,7 @@ function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) 
               src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d${attraction.longitude}!3d${attraction.latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z${attraction.latitude}%C2%B0${attraction.longitude}%C2%B0!5e0!3m2!1sen!2sae!4v1700000000000!5m2!1sen!2sae`}
               width="100%"
               height="100%"
-              style={{ border: 0 }}
+              className="border-0"
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -1070,10 +1045,7 @@ function FAQSection({ faqs, attractionName }: { faqs: FAQItem[] | null; attracti
       data-testid="section-faq"
     >
       <div className="max-w-5xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10 font-chillax">
           Frequently Asked Questions
         </h2>
 
@@ -1127,10 +1099,7 @@ function RelatedAttractionsSection({
       data-testid="section-related-attractions"
     >
       <div className="max-w-6xl mx-auto">
-        <h2
-          className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10"
-          style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-        >
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-10 font-chillax">
           You Might Also Like
         </h2>
 

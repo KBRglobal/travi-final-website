@@ -262,6 +262,7 @@ export function generateEventSchema(
     ticketUrl?: string | null;
     ticketPrice?: string | null;
     organizer?: string | null;
+    priceCurrency?: string | null;
   }
 ): SchemaOrg {
   const schema: SchemaOrg = {
@@ -305,7 +306,8 @@ export function generateEventSchema(
       "@type": "Offer",
       url: event.ticketUrl,
       price: event.ticketPrice,
-      priceCurrency: "AED",
+      // Use provided currency or omit if unknown (schema.org allows missing priceCurrency)
+      ...(event.priceCurrency && { priceCurrency: event.priceCurrency }),
       availability: "https://schema.org/InStock",
     };
   }

@@ -270,8 +270,7 @@ export class MultiModelProvider {
       });
     }
 
-    // Priority 5: DeepSeek - DISABLED due to connection issues
-    // const deepseekKey = process.env.DEEPSEEK_API_KEY;
+    // Priority 5: DeepSeek - disabled due to connection issues
     this.providers.push({
       name: "deepseek",
       available: false,

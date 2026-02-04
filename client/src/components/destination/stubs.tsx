@@ -1,13 +1,15 @@
 // Stub components - placeholders for future features
-// Accept any props to avoid TypeScript errors
-export const EditorialAttractions = (_props: any) => null;
-export const FeaturedAttractions = (_props: any) => null;
-export const TopPOIs = (_props: any) => null;
-export const EditorialNews = (_props: any) => null;
-export const UpcomingEvents = (_props: any) => null;
-export const UpcomingHolidays = (_props: any) => null;
-export const SafetyBanner = (_props: any) => null;
-export const QuickInfoRail = (_props: any) => null;
-export const GettingAround = (_props: any) => null;
-export const DestinationFAQ = (_props: any) => null;
-export const DestinationCTA = (_props: any) => null;
+// Accept generic props and return null
+type StubProps = Record<string, unknown>;
+
+export const EditorialAttractions = (_props: StubProps): null => null;
+export const FeaturedAttractions = (_props: StubProps): null => null;
+export const TopPOIs = (_props: StubProps): null => null;
+export const EditorialNews = (_props: StubProps): null => null;
+export const UpcomingEvents = (_props: StubProps): null => null;
+export const UpcomingHolidays = (_props: StubProps): null => null;
+export const SafetyBanner = (_props: StubProps): null => null;
+export const QuickInfoRail = (_props: StubProps): null => null;
+export const GettingAround = (_props: StubProps): null => null;
+export const DestinationFAQ = (_props: StubProps): null => null;
+export const DestinationCTA = (_props: StubProps): null => null;

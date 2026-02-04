@@ -1,18 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   X,
-  MoreHorizontal,
   ChevronDown,
   FileText,
   MapPin,
@@ -87,40 +76,36 @@ export function MultiTabProvider({ children }: MultiTabProviderProps) {
   const [tabs, setTabs] = useState<EditorTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
 
-  const openTab = useCallback(
-    (newTab: Omit<EditorTab, "isDirty" | "isNew">) => {
-      setTabs((current) => {
-        // Check if tab already exists
-        const existing = current.find(
-          (t) =>
-            t.contentId === newTab.contentId && t.contentType === newTab.contentType
-        );
-        if (existing) {
-          setActiveTabId(existing.id);
-          return current;
-        }
+  const openTab = useCallback((newTab: Omit<EditorTab, "isDirty" | "isNew">) => {
+    setTabs(current => {
+      // Check if tab already exists
+      const existing = current.find(
+        t => t.contentId === newTab.contentId && t.contentType === newTab.contentType
+      );
+      if (existing) {
+        setActiveTabId(existing.id);
+        return current;
+      }
 
-        // Create new tab
-        const tab: EditorTab = {
-          ...newTab,
-          isDirty: false,
-          isNew: newTab.contentId === "new",
-        };
+      // Create new tab
+      const tab: EditorTab = {
+        ...newTab,
+        isDirty: false,
+        isNew: newTab.contentId === "new",
+      };
 
-        setActiveTabId(tab.id);
-        return [...current, tab];
-      });
-    },
-    []
-  );
+      setActiveTabId(tab.id);
+      return [...current, tab];
+    });
+  }, []);
 
   const closeTab = useCallback(
     (id: string) => {
-      setTabs((current) => {
-        const index = current.findIndex((t) => t.id === id);
+      setTabs(current => {
+        const index = current.findIndex(t => t.id === id);
         if (index === -1) return current;
 
-        const newTabs = current.filter((t) => t.id !== id);
+        const newTabs = current.filter(t => t.id !== id);
 
         // If closing active tab, switch to adjacent tab
         if (activeTabId === id && newTabs.length > 0) {
@@ -137,7 +122,7 @@ export function MultiTabProvider({ children }: MultiTabProviderProps) {
   );
 
   const closeOtherTabs = useCallback((id: string) => {
-    setTabs((current) => current.filter((t) => t.id === id));
+    setTabs(current => current.filter(t => t.id === id));
     setActiveTabId(id);
   }, []);
 
@@ -151,21 +136,14 @@ export function MultiTabProvider({ children }: MultiTabProviderProps) {
   }, []);
 
   const markDirty = useCallback((id: string, dirty: boolean) => {
-    setTabs((current) =>
-      current.map((t) => (t.id === id ? { ...t, isDirty: dirty } : t))
-    );
+    setTabs(current => current.map(t => (t.id === id ? { ...t, isDirty: dirty } : t)));
   }, []);
 
   const updateTabTitle = useCallback((id: string, title: string) => {
-    setTabs((current) =>
-      current.map((t) => (t.id === id ? { ...t, title, isNew: false } : t))
-    );
+    setTabs(current => current.map(t => (t.id === id ? { ...t, title, isNew: false } : t)));
   }, []);
 
-  const getTab = useCallback(
-    (id: string) => tabs.find((t) => t.id === id),
-    [tabs]
-  );
+  const getTab = useCallback((id: string) => tabs.find(t => t.id === id), [tabs]);
 
   return (
     <MultiTabContext.Provider
@@ -204,8 +182,7 @@ interface TabBarProps {
 
 export function EditorTabBar({ className }: TabBarProps) {
   const [, navigate] = useLocation();
-  const { tabs, activeTabId, closeTab, closeOtherTabs, closeAllTabs, setActiveTab } =
-    useMultiTab();
+  const { tabs, activeTabId, closeTab, closeOtherTabs, closeAllTabs, setActiveTab } = useMultiTab();
 
   if (tabs.length === 0) return null;
 
@@ -230,7 +207,7 @@ export function EditorTabBar({ className }: TabBarProps) {
       <div className="flex items-center">
         <ScrollArea className="flex-1">
           <div className="flex items-center gap-0.5 p-1">
-            {tabs.map((tab) => {
+            {tabs.map(tab => {
               const Icon = typeIcons[tab.contentType] || FileText;
               const isActive = tab.id === activeTabId;
 
@@ -238,9 +215,7 @@ export function EditorTabBar({ className }: TabBarProps) {
                 <div
                   key={tab.id}
                   className={`group flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors min-w-0 max-w-[200px] ${
-                    isActive
-                      ? "bg-background shadow-sm border"
-                      : "hover:bg-background/50"
+                    isActive ? "bg-background shadow-sm border" : "hover:bg-background/50"
                   }`}
                   onClick={() => handleTabClick(tab)}
                 >
@@ -248,21 +223,17 @@ export function EditorTabBar({ className }: TabBarProps) {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="text-sm truncate flex items-center gap-1">
-                        {tab.isDirty && (
-                          <Dot className="h-4 w-4 -ml-2 text-orange-500" />
-                        )}
+                        {tab.isDirty && <Dot className="h-4 w-4 -ml-2 text-orange-500" />}
                         {tab.title || "Untitled"}
                       </span>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>{tab.title || "Untitled"}</p>
-                      <p className="text-xs text-muted-foreground capitalize">
-                        {tab.contentType}
-                      </p>
+                      <p className="text-xs text-muted-foreground capitalize">{tab.contentType}</p>
                     </TooltipContent>
                   </Tooltip>
                   <button
-                    onClick={(e) => handleCloseTab(e, tab)}
+                    onClick={e => handleCloseTab(e, tab)}
                     className={`h-4 w-4 rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-muted ${
                       isActive ? "opacity-100" : ""
                     }`}
@@ -287,7 +258,7 @@ export function EditorTabBar({ className }: TabBarProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() => {
-                  const activeTab = tabs.find((t) => t.id === activeTabId);
+                  const activeTab = tabs.find(t => t.id === activeTabId);
                   if (activeTab) {
                     window.open(activeTab.path, "_blank");
                   }
@@ -314,11 +285,7 @@ export function EditorTabBar({ className }: TabBarProps) {
 }
 
 // Hook to register current editor as a tab
-export function useRegisterTab(
-  contentType: string,
-  contentId: string,
-  title: string
-) {
+export function useRegisterTab(contentType: string, contentId: string, title: string) {
   const context = useMultiTabOptional();
   const [, navigate] = useLocation();
 
@@ -368,15 +335,13 @@ export function TabCountBadge({ className }: TabCountBadgeProps) {
 
   if (!context || context.tabs.length === 0) return null;
 
-  const dirtyCount = context.tabs.filter((t) => t.isDirty).length;
+  const dirtyCount = context.tabs.filter(t => t.isDirty).length;
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       <Layers className="h-4 w-4 text-muted-foreground" />
       <span className="text-sm">{context.tabs.length}</span>
-      {dirtyCount > 0 && (
-        <span className="text-xs text-orange-500">({dirtyCount} unsaved)</span>
-      )}
+      {dirtyCount > 0 && <span className="text-xs text-orange-500">({dirtyCount} unsaved)</span>}
     </div>
   );
 }

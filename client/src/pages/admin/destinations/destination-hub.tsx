@@ -10,7 +10,6 @@ import {
   Image as ImageIcon,
   Search as SearchIcon,
   Eye,
-  Settings,
   ExternalLink,
   Train,
 } from "lucide-react";
@@ -38,8 +37,12 @@ export default function DestinationHubPage() {
   const [activeTab, setActiveTab] = useState("hero");
 
   const destinationUrl = `/api/admin/destinations/${slug}`;
-  
-  const { data: destination, isLoading, error } = useQuery<DestinationDetail>({
+
+  const {
+    data: destination,
+    isLoading,
+    error,
+  } = useQuery<DestinationDetail>({
     queryKey: [destinationUrl],
     enabled: !!slug,
   });
@@ -70,12 +73,8 @@ export default function DestinationHubPage() {
           </Button>
         </Link>
         <div className="text-center py-12">
-          <h2 className="text-xl font-semibold text-foreground mb-2">
-            Destination not found
-          </h2>
-          <p className="text-muted-foreground">
-            The destination "{slug}" could not be found.
-          </p>
+          <h2 className="text-xl font-semibold text-foreground mb-2">Destination not found</h2>
+          <p className="text-muted-foreground">The destination "{slug}" could not be found.</p>
         </div>
       </div>
     );
@@ -92,7 +91,10 @@ export default function DestinationHubPage() {
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-foreground" data-testid="heading-destination-name">
+              <h1
+                className="text-2xl font-bold text-foreground"
+                data-testid="heading-destination-name"
+              >
                 {destination.name}
               </h1>
               <Badge variant={destination.isActive ? "default" : "secondary"}>

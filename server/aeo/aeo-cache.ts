@@ -3,21 +3,21 @@
  * Provides caching for answer capsules, dashboard data, and crawler stats
  */
 
-import { cache, cacheKeys } from '../cache';
+import { cache } from "../cache";
 
 // AEO-specific cache keys
 export const aeoCacheKeys = {
   // Answer capsules
   capsule: (contentId: string, locale: string) => `aeo:capsule:${contentId}:${locale}`,
-  capsuleStats: () => 'aeo:capsule:stats',
+  capsuleStats: () => "aeo:capsule:stats",
 
   // Dashboard data
   dashboard: (startDate: string, endDate: string) => `aeo:dashboard:${startDate}:${endDate}`,
-  dashboardOverview: () => 'aeo:dashboard:overview',
+  dashboardOverview: () => "aeo:dashboard:overview",
 
   // Crawler stats
   crawlerStats: (days: number) => `aeo:crawler:stats:${days}`,
-  crawlerActivity: () => 'aeo:crawler:activity',
+  crawlerActivity: () => "aeo:crawler:activity",
 
   // Citation data
   citations: (days: number) => `aeo:citations:${days}`,
@@ -34,40 +34,37 @@ export const aeoCacheKeys = {
 
   // Analytics
   roiMetrics: (period: string) => `aeo:analytics:roi:${period}`,
-  contentGaps: () => 'aeo:analytics:gaps',
+  contentGaps: () => "aeo:analytics:gaps",
 
   // Patterns for invalidation
   patterns: {
-    allCapsules: 'aeo:capsule:*',
-    allDashboard: 'aeo:dashboard:*',
-    allCrawler: 'aeo:crawler:*',
-    allCitations: 'aeo:citations:*',
-    allPerformance: 'aeo:performance:*',
-    allAnalytics: 'aeo:analytics:*',
-    allAEO: 'aeo:*',
+    allCapsules: "aeo:capsule:*",
+    allDashboard: "aeo:dashboard:*",
+    allCrawler: "aeo:crawler:*",
+    allCitations: "aeo:citations:*",
+    allPerformance: "aeo:performance:*",
+    allAnalytics: "aeo:analytics:*",
+    allAEO: "aeo:*",
   },
 };
 
 // Cache TTL values (in seconds)
 export const AEO_CACHE_TTL = {
-  capsule: 3600,           // 1 hour - capsules don't change often
-  capsuleStats: 300,       // 5 minutes
-  dashboard: 300,          // 5 minutes
-  crawlerStats: 600,       // 10 minutes
-  citations: 300,          // 5 minutes
-  performance: 600,        // 10 minutes
-  abTest: 60,              // 1 minute - needs to be fresh for testing
-  analytics: 900,          // 15 minutes
-  contentGaps: 3600,       // 1 hour
+  capsule: 3600, // 1 hour - capsules don't change often
+  capsuleStats: 300, // 5 minutes
+  dashboard: 300, // 5 minutes
+  crawlerStats: 600, // 10 minutes
+  citations: 300, // 5 minutes
+  performance: 600, // 10 minutes
+  abTest: 60, // 1 minute - needs to be fresh for testing
+  analytics: 900, // 15 minutes
+  contentGaps: 3600, // 1 hour
 };
 
 /**
  * Get cached answer capsule
  */
-export async function getCachedCapsule(
-  contentId: string,
-  locale: string
-): Promise<any | null> {
+export async function getCachedCapsule(contentId: string, locale: string): Promise<any | null> {
   const key = aeoCacheKeys.capsule(contentId, locale);
   return cache.get(key);
 }
@@ -93,8 +90,8 @@ export async function getCachedDashboard<T>(
   compute: () => Promise<T>
 ): Promise<T> {
   const key = aeoCacheKeys.dashboard(
-    startDate.toISOString().split('T')[0],
-    endDate.toISOString().split('T')[0]
+    startDate.toISOString().split("T")[0],
+    endDate.toISOString().split("T")[0]
   );
   return cache.getOrSet(key, compute, AEO_CACHE_TTL.dashboard);
 }
@@ -174,7 +171,7 @@ export async function invalidateAllAEOCache(): Promise<void> {
  * Get cache statistics for AEO
  */
 export async function getAEOCacheStats(): Promise<{
-  type: 'redis' | 'memory';
+  type: "redis" | "memory";
   connected: boolean;
 }> {
   return cache.getStats();

@@ -7,7 +7,7 @@
 
 import { db } from "../../db";
 import { contents, internalLinks, seoMetadata } from "../../../shared/schema";
-import { eq, and, count } from "drizzle-orm";
+import { eq, count } from "drizzle-orm";
 import { log } from "../../lib/logger";
 
 /**

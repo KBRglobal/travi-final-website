@@ -112,7 +112,9 @@ class JobQueue {
         priority: options?.priority ?? 0,
       } as any)
       .then(() => {})
-      .catch(() => {});
+      .catch(err => {
+        console.error(`[JobQueue] Failed to insert job ${id}:`, err);
+      });
 
     return id;
   }

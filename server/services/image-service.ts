@@ -5,15 +5,10 @@
 
 import { getStorageManager, StorageManager } from "./storage-adapter";
 import {
-  processImage,
   processImageWithThumbnail,
   validateAndProcess,
   generateUniqueFilename,
-  getImageMetadata,
-  ProcessedImage,
-  ProcessingOptions,
   SUPPORTED_MIME_TYPES,
-  convertToWebP,
 } from "./image-processing";
 import {
   getImageSEOService,

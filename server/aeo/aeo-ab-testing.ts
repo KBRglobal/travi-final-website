@@ -5,7 +5,7 @@
 
 import { db } from "../db";
 import { aeoAnswerCapsules, aeoCitations, contents } from "../../shared/schema";
-import { eq, and, gte, sql, desc } from "drizzle-orm";
+import { eq, and, gte } from "drizzle-orm";
 import { generateAnswerCapsule } from "./answer-capsule-generator";
 import { log } from "../lib/logger";
 

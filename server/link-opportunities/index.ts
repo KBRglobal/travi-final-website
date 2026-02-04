@@ -19,6 +19,8 @@ export async function getLinkOpportunities(
   return [];
 }
 
-export function registerLinkOpportunityRoutes(app: any): void {
+import type { Express } from "express";
+
+export function registerLinkOpportunityRoutes(app: Express): void {
   // Stub - no routes registered
 }

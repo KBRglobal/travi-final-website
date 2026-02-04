@@ -18,20 +18,53 @@ export default function NotFound() {
     gameInitializedRef.current = true;
 
     const container = gameContainerRef.current;
-    
+
     // Game constants
-    const GRAVITY = 0.35, JUMP_FORCE = -7.5, GAME_WIDTH = 380, GAME_HEIGHT = 450;
-    const DUCK_SIZE = 60, OBSTACLE_WIDTH = 60, STAMP_SIZE = 35;
+    const GRAVITY = 0.35,
+      JUMP_FORCE = -7.5,
+      GAME_WIDTH = 380,
+      GAME_HEIGHT = 450;
+    const DUCK_SIZE = 60,
+      OBSTACLE_WIDTH = 60,
+      STAMP_SIZE = 35;
 
-    let gameState: 'start' | 'playing' | 'gameover' = 'start';
+    let gameState: "start" | "playing" | "gameover" = "start";
     let score = 0;
-    let highScore = parseInt(localStorage.getItem('travi404HighScore') || '0', 10);
-    let duckY = 195, duckVelocity = 0;
-    let obstacles: any[] = [], stamps: any[] = [], particles: any[] = [];
-    let frameCount = 0, gameLoop: number | null = null;
+    let highScore = parseInt(localStorage.getItem("travi404HighScore") || "0", 10);
+    let duckY = 195,
+      duckVelocity = 0;
+    interface Obstacle {
+      x: number;
+      gapY: number;
+      gapHeight: number;
+      cloud: string;
+      passed: boolean;
+      elements: HTMLElement[];
+    }
 
-    const destinations = ['🗼', '🗽', '🏰', '🕌', '⛩️', '🏛️', '🎡', '🗿', '🌴', '🏝️', '⛱️'];
-    const cloudTypes = ['⛈️', '🌧️', '☁️', '🌩️'];
+    interface Stamp {
+      x: number;
+      y: number;
+      emoji: string;
+      collected: boolean;
+      element: HTMLElement | null;
+    }
+
+    interface ParticleData {
+      element: HTMLDivElement;
+      vx: number;
+      vy: number;
+      life: number;
+    }
+
+    let obstacles: Obstacle[] = [],
+      stamps: Stamp[] = [],
+      particles: ParticleData[] = [];
+    let frameCount = 0,
+      gameLoop: number | null = null;
+
+    const destinations = ["🗼", "🗽", "🏰", "🕌", "⛩️", "🏛️", "🎡", "🗿", "🌴", "🏝️", "⛱️"];
+    const cloudTypes = ["⛈️", "🌧️", "☁️", "🌩️"];
 
     // Create game HTML
     container.innerHTML = `
@@ -94,61 +127,61 @@ export default function NotFound() {
     `;
 
     // Get elements
-    const duckEl = container.querySelector('#duck') as HTMLElement;
-    const scoreEl = container.querySelector('#score') as HTMLElement;
-    const scoreDisplayEl = container.querySelector('#score-display') as HTMLElement;
-    const highscoreDisplayEl = container.querySelector('#highscore-display') as HTMLElement;
-    const highscoreEl = container.querySelector('#highscore') as HTMLElement;
-    const startScreen = container.querySelector('#start-screen') as HTMLElement;
-    const gameoverScreen = container.querySelector('#gameover-screen') as HTMLElement;
-    const finalScoreEl = container.querySelector('#final-score') as HTMLElement;
-    const finalHighscoreEl = container.querySelector('#final-highscore') as HTMLElement;
-    const gameElementsEl = container.querySelector('#game-elements') as HTMLElement;
-    const bgCloudsEl = container.querySelector('#bg-clouds') as HTMLElement;
-    const startBtn = container.querySelector('#start-btn') as HTMLElement;
-    const restartBtn = container.querySelector('#restart-btn') as HTMLElement;
+    const duckEl = container.querySelector("#duck") as HTMLElement;
+    const scoreEl = container.querySelector("#score") as HTMLElement;
+    const scoreDisplayEl = container.querySelector("#score-display") as HTMLElement;
+    const highscoreDisplayEl = container.querySelector("#highscore-display") as HTMLElement;
+    const highscoreEl = container.querySelector("#highscore") as HTMLElement;
+    const startScreen = container.querySelector("#start-screen") as HTMLElement;
+    const gameoverScreen = container.querySelector("#gameover-screen") as HTMLElement;
+    const finalScoreEl = container.querySelector("#final-score") as HTMLElement;
+    const finalHighscoreEl = container.querySelector("#final-highscore") as HTMLElement;
+    const gameElementsEl = container.querySelector("#game-elements") as HTMLElement;
+    const bgCloudsEl = container.querySelector("#bg-clouds") as HTMLElement;
+    const startBtn = container.querySelector("#start-btn") as HTMLElement;
+    const restartBtn = container.querySelector("#restart-btn") as HTMLElement;
 
     highscoreEl.textContent = highScore.toString();
 
     // Create background clouds
     for (let i = 0; i < 5; i++) {
-      const cloud = document.createElement('div');
-      cloud.className = 'absolute text-4xl opacity-30';
+      const cloud = document.createElement("div");
+      cloud.className = "absolute text-4xl opacity-30";
       cloud.style.left = `${Math.random() * 100}%`;
       cloud.style.top = `${Math.random() * 70}%`;
       cloud.style.animation = `float 3s ease-in-out ${Math.random() * 3}s infinite`;
-      cloud.textContent = '☁️';
+      cloud.textContent = "☁️";
       bgCloudsEl.appendChild(cloud);
     }
 
     function jump() {
-      if (gameState === 'start') {
+      if (gameState === "start") {
         startGame();
-      } else if (gameState === 'playing') {
+      } else if (gameState === "playing") {
         duckVelocity = JUMP_FORCE;
-        createParticles(70, duckY + DUCK_SIZE / 2, '✨', 3);
+        createParticles(70, duckY + DUCK_SIZE / 2, "✨", 3);
         duckEl.style.transform = `translateY(${duckY}px) rotate(-20deg) scale(1.1)`;
         setTimeout(() => {
-          if (gameState === 'playing') {
+          if (gameState === "playing") {
             duckEl.style.transform = `translateY(${duckY}px) rotate(${Math.min(duckVelocity * 3, 30)}deg) scale(1)`;
           }
         }, 100);
-      } else if (gameState === 'gameover') {
+      } else if (gameState === "gameover") {
         resetGame();
       }
     }
 
     function startGame() {
-      gameState = 'playing';
-      startScreen.classList.add('hidden');
-      scoreDisplayEl.classList.remove('hidden');
-      highscoreDisplayEl.classList.remove('hidden');
+      gameState = "playing";
+      startScreen.classList.add("hidden");
+      scoreDisplayEl.classList.remove("hidden");
+      highscoreDisplayEl.classList.remove("hidden");
       duckVelocity = JUMP_FORCE;
       runGameLoop();
     }
 
     function resetGame() {
-      gameState = 'start';
+      gameState = "start";
       score = 0;
       duckY = 195;
       duckVelocity = 0;
@@ -156,44 +189,46 @@ export default function NotFound() {
       stamps = [];
       particles = [];
       frameCount = 0;
-      scoreEl.textContent = '0';
-      gameElementsEl.innerHTML = '';
-      gameoverScreen.classList.add('hidden');
-      startScreen.classList.remove('hidden');
-      scoreDisplayEl.classList.add('hidden');
-      highscoreDisplayEl.classList.add('hidden');
+      scoreEl.textContent = "0";
+      gameElementsEl.innerHTML = "";
+      gameoverScreen.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+      scoreDisplayEl.classList.add("hidden");
+      highscoreDisplayEl.classList.add("hidden");
       duckEl.style.transform = `translateY(${duckY}px) rotate(0deg)`;
     }
 
     function gameOver() {
-      gameState = 'gameover';
+      gameState = "gameover";
       if (gameLoop) {
         cancelAnimationFrame(gameLoop);
         gameLoop = null;
       }
       if (score > highScore) {
         highScore = score;
-        localStorage.setItem('travi404HighScore', highScore.toString());
+        localStorage.setItem("travi404HighScore", highScore.toString());
         highscoreEl.textContent = highScore.toString();
       }
       finalScoreEl.textContent = score.toString();
       finalHighscoreEl.textContent = highScore.toString();
-      gameoverScreen.classList.remove('hidden');
+      gameoverScreen.classList.remove("hidden");
       duckEl.style.transform = `translateY(${duckY}px) rotate(180deg) scale(0.8)`;
-      createParticles(70, duckY + DUCK_SIZE / 2, '💥', 6);
+      createParticles(70, duckY + DUCK_SIZE / 2, "💥", 6);
     }
 
     function createParticles(x: number, y: number, emoji: string, count: number) {
       for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'absolute pointer-events-none';
-        p.style.cssText = `left:${x}px;top:${y}px;font-size:18px`;
-        p.textContent = emoji;
-        (p as any).vx = (Math.random() - 0.5) * 6;
-        (p as any).vy = (Math.random() - 0.5) * 6;
-        (p as any).life = 25;
-        gameElementsEl.appendChild(p);
-        particles.push(p);
+        const element = document.createElement("div");
+        element.className = "absolute pointer-events-none";
+        element.style.cssText = `left:${x}px;top:${y}px;font-size:18px`;
+        element.textContent = emoji;
+        gameElementsEl.appendChild(element);
+        particles.push({
+          element,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6,
+          life: 25,
+        });
       }
     }
 
@@ -201,15 +236,22 @@ export default function NotFound() {
       const gapY = Math.random() * (GAME_HEIGHT - 240) + 120;
       const gapHeight = Math.max(145 - Math.floor(score / 5) * 5, 105);
       const cloud = cloudTypes[Math.floor(Math.random() * cloudTypes.length)];
-      const obs = { x: GAME_WIDTH, gapY, gapHeight, cloud, passed: false, elements: [] as HTMLElement[] };
+      const obs = {
+        x: GAME_WIDTH,
+        gapY,
+        gapHeight,
+        cloud,
+        passed: false,
+        elements: [] as HTMLElement[],
+      };
 
-      const top = document.createElement('div');
-      top.className = 'absolute flex flex-col items-center justify-end';
+      const top = document.createElement("div");
+      top.className = "absolute flex flex-col items-center justify-end";
       top.style.cssText = `left:${GAME_WIDTH}px;top:0;width:${OBSTACLE_WIDTH}px;height:${gapY - gapHeight / 2}px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15))`;
       top.innerHTML = `<div class="text-4xl">${cloud}</div><div class="text-3xl -mt-1">${cloud}</div><div class="text-4xl -mt-1">${cloud}</div>`;
 
-      const bot = document.createElement('div');
-      bot.className = 'absolute flex flex-col items-center justify-start';
+      const bot = document.createElement("div");
+      bot.className = "absolute flex flex-col items-center justify-start";
       bot.style.cssText = `left:${GAME_WIDTH}px;top:${gapY + gapHeight / 2}px;width:${OBSTACLE_WIDTH}px;height:${GAME_HEIGHT - gapY - gapHeight / 2}px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15))`;
       bot.innerHTML = `<div class="text-4xl">${cloud}</div><div class="text-3xl -mt-1">${cloud}</div><div class="text-4xl -mt-1">${cloud}</div>`;
 
@@ -220,15 +262,15 @@ export default function NotFound() {
     }
 
     function spawnStamp() {
-      const s = { 
-        x: GAME_WIDTH, 
-        y: Math.random() * (GAME_HEIGHT - 130) + 65, 
-        emoji: destinations[Math.floor(Math.random() * destinations.length)], 
+      const s = {
+        x: GAME_WIDTH,
+        y: Math.random() * (GAME_HEIGHT - 130) + 65,
+        emoji: destinations[Math.floor(Math.random() * destinations.length)],
         collected: false,
-        element: null as HTMLElement | null
+        element: null as HTMLElement | null,
       };
-      const el = document.createElement('div');
-      el.className = 'absolute';
+      const el = document.createElement("div");
+      el.className = "absolute";
       el.style.cssText = `left:${s.x}px;top:${s.y}px;font-size:${STAMP_SIZE}px;filter:drop-shadow(0 0 5px #FACC15);animation:pulse 0.5s ease-in-out infinite`;
       el.textContent = s.emoji;
       gameElementsEl.appendChild(el);
@@ -237,7 +279,7 @@ export default function NotFound() {
     }
 
     function runGameLoop() {
-      if (gameState !== 'playing') return;
+      if (gameState !== "playing") return;
       frameCount++;
       duckVelocity += GRAVITY;
       duckY += duckVelocity;
@@ -256,10 +298,18 @@ export default function NotFound() {
 
       obstacles = obstacles.filter(o => {
         o.x -= speed;
-        o.elements.forEach((e: HTMLElement) => e.style.left = o.x + 'px');
-        const dL = 60, dR = 60 + DUCK_SIZE - 18, dT = duckY + 12, dB = duckY + DUCK_SIZE - 12;
-        const oL = o.x + 8, oR = o.x + OBSTACLE_WIDTH - 8;
-        if (dR > oL && dL < oR && (dT < o.gapY - o.gapHeight / 2 || dB > o.gapY + o.gapHeight / 2)) {
+        o.elements.forEach((e: HTMLElement) => (e.style.left = o.x + "px"));
+        const dL = 60,
+          dR = 60 + DUCK_SIZE - 18,
+          dT = duckY + 12,
+          dB = duckY + DUCK_SIZE - 12;
+        const oL = o.x + 8,
+          oR = o.x + OBSTACLE_WIDTH - 8;
+        if (
+          dR > oL &&
+          dL < oR &&
+          (dT < o.gapY - o.gapHeight / 2 || dB > o.gapY + o.gapHeight / 2)
+        ) {
           gameOver();
           return false;
         }
@@ -277,18 +327,18 @@ export default function NotFound() {
 
       stamps = stamps.filter(s => {
         s.x -= speed * 0.85;
-        if (s.element) s.element.style.left = s.x + 'px';
+        if (s.element) s.element.style.left = s.x + "px";
         if (!s.collected) {
-          const dx = (60 + DUCK_SIZE / 2) - (s.x + STAMP_SIZE / 2);
-          const dy = (duckY + DUCK_SIZE / 2) - (s.y + STAMP_SIZE / 2);
+          const dx = 60 + DUCK_SIZE / 2 - (s.x + STAMP_SIZE / 2);
+          const dy = duckY + DUCK_SIZE / 2 - (s.y + STAMP_SIZE / 2);
           if (Math.sqrt(dx * dx + dy * dy) < (DUCK_SIZE + STAMP_SIZE) / 2) {
             s.collected = true;
             score += 3;
             scoreEl.textContent = score.toString();
-            createParticles(s.x + STAMP_SIZE / 2, s.y + STAMP_SIZE / 2, '⭐', 4);
+            createParticles(s.x + STAMP_SIZE / 2, s.y + STAMP_SIZE / 2, "⭐", 4);
             if (s.element) {
-              s.element.style.transform = 'scale(1.5)';
-              s.element.style.opacity = '0';
+              s.element.style.transform = "scale(1.5)";
+              s.element.style.opacity = "0";
               setTimeout(() => s.element?.remove(), 200);
             }
             return false;
@@ -302,16 +352,16 @@ export default function NotFound() {
       });
 
       particles = particles.filter(p => {
-        const life = (p as any).life - 1;
+        const life = p.life - 1;
         if (life <= 0) {
-          p.remove();
+          p.element.remove();
           return false;
         }
-        p.style.left = (parseFloat(p.style.left) + (p as any).vx) + 'px';
-        p.style.top = (parseFloat(p.style.top) + (p as any).vy) + 'px';
-        p.style.opacity = (life / 25).toString();
-        (p as any).life = life;
-        (p as any).vy = (p as any).vy + 0.15;
+        p.element.style.left = parseFloat(p.element.style.left) + p.vx + "px";
+        p.element.style.top = parseFloat(p.element.style.top) + p.vy + "px";
+        p.element.style.opacity = (life / 25).toString();
+        p.life = life;
+        p.vy = p.vy + 0.15;
         return true;
       });
 
@@ -319,26 +369,26 @@ export default function NotFound() {
     }
 
     // Event listeners
-    container.addEventListener('click', jump);
-    container.addEventListener('touchstart', (e) => {
+    container.addEventListener("click", jump);
+    container.addEventListener("touchstart", e => {
       e.preventDefault();
       jump();
     });
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.code === 'ArrowUp') {
+      if (e.code === "Space" || e.code === "ArrowUp") {
         e.preventDefault();
         jump();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
-    startBtn.addEventListener('click', (e) => {
+    startBtn.addEventListener("click", e => {
       e.stopPropagation();
       jump();
     });
 
-    restartBtn.addEventListener('click', (e) => {
+    restartBtn.addEventListener("click", e => {
       e.stopPropagation();
       jump();
     });
@@ -347,7 +397,7 @@ export default function NotFound() {
 
     // Cleanup function
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
       if (gameLoop) cancelAnimationFrame(gameLoop);
     };
   }, []);
@@ -367,18 +417,31 @@ export default function NotFound() {
 
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-6">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6443F4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 8v4l2 2"/>
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#6443F4"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4l2 2" />
             </svg>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-4 font-display" data-testid="text-404-title">
+          <h1
+            className="text-3xl md:text-4xl font-bold text-foreground text-center mb-4 font-display"
+            data-testid="text-404-title"
+          >
             This page is still coming together
           </h1>
 
           <p className="text-muted-foreground text-center max-w-lg mb-2">
-            Travi is being built step by step — connecting destinations, contents, and real-time travel recommendations.
+            Travi is being built step by step — connecting destinations, contents, and real-time
+            travel recommendations.
           </p>
           <p className="text-muted-foreground text-center max-w-lg mb-6">
             While you wait, help our mascot find their way home!
@@ -393,7 +456,7 @@ export default function NotFound() {
 
           <div className="flex gap-3 flex-wrap justify-center">
             <Link href={localePath("/")} data-testid="button-404-home">
-              <Button 
+              <Button
                 size="lg"
                 className="rounded-full bg-[#6443F4] hover:bg-[#5339D9] text-white px-6"
               >
@@ -402,11 +465,7 @@ export default function NotFound() {
               </Button>
             </Link>
             <Link href={localePath("/destinations")} data-testid="button-404-destinations">
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full px-6 border-border"
-              >
+              <Button size="lg" variant="outline" className="rounded-full px-6 border-border">
                 <MapPin className="w-4 h-4 mr-2" />
                 Explore Destinations
               </Button>

@@ -22,7 +22,7 @@ const adapterHealth = new Map<string, { healthy: boolean; lastCheck: Date; error
 const MAX_EVENT_QUEUE = 100;
 const pendingEvents: Array<{
   type: "threat" | "mode" | "emergency";
-  payload: any;
+  payload: ThreatState | SecurityModeConfig | Record<string, unknown>;
   timestamp: Date;
   attempts: number;
 }> = [];
@@ -267,7 +267,10 @@ export const AdapterManager = {
   /**
    * Queue event for retry
    */
-  queueEvent(type: "threat" | "mode" | "emergency", payload: any): void {
+  queueEvent(
+    type: "threat" | "mode" | "emergency",
+    payload: ThreatState | SecurityModeConfig | Record<string, unknown>
+  ): void {
     if (pendingEvents.length >= MAX_EVENT_QUEUE) {
       pendingEvents.shift();
     }

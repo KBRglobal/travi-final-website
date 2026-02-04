@@ -1,8 +1,26 @@
 import type { Express, Request, Response } from "express";
 import { eq, and, sql, ilike, desc, or, inArray } from "drizzle-orm";
 import { db } from "../../db";
-import { tiqetsAttractions, tiqetsCities } from "@shared/schema";
+import { tiqetsAttractions, tiqetsCities, type TiqetsCity } from "@shared/schema";
 import { requireAuth } from "../../security";
+
+/** Raw attraction row from pg query for Octypo processing */
+interface TiqetsAttractionRow {
+  id: string;
+  title: string | null;
+  city_name: string | null;
+  venue_name: string | null;
+  duration: string | null;
+  primary_category: string | null;
+  secondary_categories: string[] | null;
+  languages: string[] | null;
+  wheelchair_access: boolean | null;
+  tiqets_description: string | null;
+  tiqets_highlights: string[] | null;
+  price_usd: string | null;
+  tiqets_rating: string | null;
+  tiqets_review_count: number | null;
+}
 
 export function registerAdminTiqetsRoutes(app: Express): void {
   // GET /api/admin/tiqets/cities - Get all Tiqets cities
@@ -21,7 +39,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       const { id } = req.params;
       const { tiqetsCityId, countryName, attractionCount, isActive } = req.body;
 
-      const updateData: Record<string, any> = { updatedAt: new Date() };
+      // Build update data with proper typing for tiqets_cities table
+      const updateData: Partial<TiqetsCity> = { updatedAt: new Date() };
       if (tiqetsCityId !== undefined) updateData.tiqetsCityId = tiqetsCityId;
       if (countryName !== undefined) updateData.countryName = countryName;
       if (attractionCount !== undefined) updateData.attractionCount = attractionCount;
@@ -920,7 +939,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         }
 
         // Process with bounded concurrency using Promise pool
-        const processAttraction = async (attr: any) => {
+        const processAttraction = async (attr: TiqetsAttractionRow) => {
           const attractionData = {
             id: 0,
             originalId: attr.id,
@@ -1021,18 +1040,26 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
               // Report success for adaptive concurrency
               octypoState.reportSuccess();
-              octypoState.removeFromFailedQueue(attr.id);
+              // Note: octypoState uses number IDs, but tiqets uses string UUIDs
+              // Using hash for compatibility
+              const numericId = Math.abs(
+                attr.id.split("").reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)
+              );
+              octypoState.removeFromFailedQueue(numericId);
             } else {
               errors++;
-              octypoState.addToFailedQueue(attr.id, attr.title || "Unknown", "Generation failed");
+              const numericId = Math.abs(
+                attr.id.split("").reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)
+              );
+              octypoState.addToFailedQueue(numericId, attr.title || "Unknown", "Generation failed");
             }
-          } catch (err: any) {
+          } catch (err: unknown) {
             errors++;
-            octypoState.addToFailedQueue(
-              attr.id,
-              attr.title || "Unknown",
-              err.message || "Unknown error"
+            const numericId = Math.abs(
+              attr.id.split("").reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)
             );
+            const errorMessage = err instanceof Error ? err.message : "Unknown error";
+            octypoState.addToFailedQueue(numericId, attr.title || "Unknown", errorMessage);
           }
         };
 

@@ -499,7 +499,7 @@ class EngineRegistryClass {
         id: "perplexity",
         name: "Perplexity AI",
         provider: "perplexity",
-        model: "sonar", // Updated: old model name deprecated
+        model: "sonar", // Current Perplexity model (formerly pplx-*-online)
         apiKey: key,
         baseURL: "https://api.perplexity.ai",
         maxTokens: 8192,

@@ -94,9 +94,13 @@ export default function AdminLayout() {
   };
 
   useEffect(() => {
-    import("@/lib/i18n/config").then(({ changeLanguage }) => {
-      changeLanguage("en");
-    });
+    import("@/lib/i18n/config")
+      .then(({ changeLanguage }) => {
+        changeLanguage("en");
+      })
+      .catch(err => {
+        console.error("[AdminModule] Failed to load i18n config:", err);
+      });
   }, []);
 
   useEffect(() => {

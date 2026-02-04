@@ -1,8 +1,8 @@
 import { useEffect, useState, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { I18nextProvider } from "react-i18next";
-import i18n, { isRTL, changeLanguage, getCurrentLocale } from "./config";
-import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
+import i18n, { isRTL, changeLanguage } from "./config";
+import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
 import { getLocaleContext, useLocale, type LocaleContextType } from "./locale-context";
 
 export { useLocale };
@@ -17,17 +17,17 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
     // Try to get locale from URL first
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     const urlLocale = pathParts[0] as Locale;
-    if (SUPPORTED_LOCALES.some((l) => l.code === urlLocale)) {
+    if (SUPPORTED_LOCALES.some(l => l.code === urlLocale)) {
       return urlLocale;
     }
     // Fall back to stored preference or browser detection
     const stored = localStorage.getItem("i18nextLng") as Locale;
-    if (stored && SUPPORTED_LOCALES.some((l) => l.code === stored)) {
+    if (stored && SUPPORTED_LOCALES.some(l => l.code === stored)) {
       return stored;
     }
     // Fall back to browser language
     const browserLang = navigator.language.split("-")[0] as Locale;
-    if (SUPPORTED_LOCALES.some((l) => l.code === browserLang)) {
+    if (SUPPORTED_LOCALES.some(l => l.code === browserLang)) {
       return browserLang;
     }
     return "en";
@@ -44,7 +44,7 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
   useEffect(() => {
     const pathParts = location.split("/").filter(Boolean);
     const urlLocale = pathParts[0] as Locale;
-    if (SUPPORTED_LOCALES.some((l) => l.code === urlLocale) && urlLocale !== locale) {
+    if (SUPPORTED_LOCALES.some(l => l.code === urlLocale) && urlLocale !== locale) {
       handleSetLocale(urlLocale);
     }
   }, [location]);
@@ -69,7 +69,7 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
     setLocaleState(newLocale);
   };
 
-  const localeInfo = SUPPORTED_LOCALES.find((l) => l.code === locale);
+  const localeInfo = SUPPORTED_LOCALES.find(l => l.code === locale);
 
   const localePath = (path: string): string => {
     if (locale === "en") return path;
@@ -101,7 +101,10 @@ export function useLocalizedUrl() {
   const getLocalizedUrl = (path: string, targetLocale?: Locale) => {
     const loc = targetLocale || locale;
     // Remove any existing locale prefix
-    const cleanPath = path.replace(/^\/(en|ar|hi|ru|zh|de|fr|es|it|pt|nl|pl|uk|ta|te|bn|mr|gu|ml|kn|pa|ur|si|ne|ja|ko|th|vi|id|ms|tl|zh-TW|fa|tr|he|kk|uz|az|cs|el|sv|no|da|fi|hu|ro|sw|am)\//, "/");
+    const cleanPath = path.replace(
+      /^\/(en|ar|hi|ru|zh|de|fr|es|it|pt|nl|pl|uk|ta|te|bn|mr|gu|ml|kn|pa|ur|si|ne|ja|ko|th|vi|id|ms|tl|zh-TW|fa|tr|he|kk|uz|az|cs|el|sv|no|da|fi|hu|ro|sw|am)\//,
+      "/"
+    );
     return `/${loc}${cleanPath}`;
   };
 
@@ -110,7 +113,7 @@ export function useLocalizedUrl() {
     const pathParts = currentPath.split("/").filter(Boolean);
 
     // Check if current path has a locale prefix
-    const hasLocalePrefix = SUPPORTED_LOCALES.some((l) => l.code === pathParts[0]);
+    const hasLocalePrefix = SUPPORTED_LOCALES.some(l => l.code === pathParts[0]);
 
     if (hasLocalePrefix) {
       pathParts[0] = targetLocale;

@@ -10,7 +10,6 @@
  */
 
 import { pool } from "../db";
-import { log } from "../index";
 
 let isRunning = false;
 let intervalId: NodeJS.Timeout | null = null;

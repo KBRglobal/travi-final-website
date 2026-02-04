@@ -682,7 +682,7 @@ export async function generatePilotContent(
     const contentId = await atomicWrite(request, result.content, validationResults, {
       writerAgent: result.writerId,
       engineUsed: result.engineUsed,
-      tokensUsed: undefined, // TODO: track if needed
+      tokensUsed: undefined,
       generationTimeMs: Date.now() - startTime,
     });
 

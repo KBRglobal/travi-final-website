@@ -9,6 +9,7 @@
  * - Rate limit bypasses
  */
 
+import type { Request, Response, NextFunction } from "express";
 import { AdminRole, ROLE_HIERARCHY } from "../../governance/types";
 import { logDataAccessEvent } from "../../governance/security-logger";
 
@@ -591,16 +592,18 @@ export function recordDataAccess(
  * Middleware to check exfiltration
  */
 export function exfiltrationMiddleware(resourceType: string) {
-  return async (req: any, res: any, next: any) => {
-    const userId = req.user?.id;
-    const userRole = req.user?.role || "viewer";
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const extReq = req as Request & { user?: { id?: string; role?: string } };
+    const userId = extReq.user?.id;
+    const userRole = extReq.user?.role || "viewer";
 
     if (!userId) {
       return res.status(401).json({ error: "Authentication required" });
     }
 
     // Estimate records and bytes from query
-    const limit = parseInt(req.query.limit) || 100;
+    const limitParam = req.query.limit;
+    const limit = parseInt(typeof limitParam === "string" ? limitParam : "100") || 100;
     const estimatedBytes = limit * 1024; // Rough estimate
 
     const check = await checkDataAccess(
@@ -622,7 +625,7 @@ export function exfiltrationMiddleware(resourceType: string) {
     }
 
     // Attach check to request for logging after response
-    req.exfiltrationCheck = check;
+    (req as Request & { exfiltrationCheck?: ExfiltrationCheck }).exfiltrationCheck = check;
     next();
   };
 }

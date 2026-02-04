@@ -3,29 +3,9 @@ import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  BookOpen,
-  Globe,
-  Languages,
-  ChevronRight,
-  Map,
-  Compass,
-  Sparkles,
-  Star,
-  Clock,
-  Users,
-  ArrowRight,
-  Search,
-} from "lucide-react";
+import { BookOpen, Globe, Languages, Sparkles, ArrowRight, Search } from "lucide-react";
 import { SEOHead } from "@/components/seo-head";
 import { Helmet } from "react-helmet-async";
 import { PublicNav } from "@/components/public-nav";
@@ -525,17 +505,11 @@ export default function TravelGuidesPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    <span
-                      className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2"
-                      style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                    >
+                    <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2 font-chillax">
                       Travel
                     </span>
                     <span className="relative inline-block">
-                      <span
-                        className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text"
-                        style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                      >
+                      <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                         Guides
                       </span>
                       {/* Gradient underline accent */}
@@ -580,10 +554,7 @@ export default function TravelGuidesPage() {
                       <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                         <div className="text-center lg:text-left">
                           <dt className="sr-only">{stat.srLabel}</dt>
-                          <dd
-                            className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white"
-                            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                          >
+                          <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
                             {stat.num}
                           </dd>
                           <div
@@ -716,10 +687,7 @@ export default function TravelGuidesPage() {
 
                         {/* Bottom Content */}
                         <div>
-                          <h3
-                            className="text-2xl sm:text-3xl font-bold text-white mb-2"
-                            style={{ fontFamily: "'Chillax', var(--font-sans)" }}
-                          >
+                          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-chillax">
                             {dest.name}
                           </h3>
                           <p className="text-white/80 mb-4">{dest.city} Travel Guide</p>

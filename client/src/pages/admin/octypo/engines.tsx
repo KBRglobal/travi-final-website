@@ -10,16 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Cpu,
-  Activity,
-  CheckCircle2,
-  XCircle,
-  RefreshCw,
-  Zap,
-  Server,
-  AlertTriangle,
-} from "lucide-react";
+import { Cpu, CheckCircle2, XCircle, RefreshCw, Zap, Server, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Engine {
@@ -74,25 +65,32 @@ function getProviderColor(provider: string): string {
 }
 
 export default function OctypoEnginesPage() {
-  const { data: enginesData, isLoading, refetch } = useQuery<EnginesResponse>({
-    queryKey: ['/api/octypo/engines'],
+  const {
+    data: enginesData,
+    isLoading,
+    refetch,
+  } = useQuery<EnginesResponse>({
+    queryKey: ["/api/octypo/engines"],
     refetchInterval: 10000,
   });
 
   const { data: statsData } = useQuery<EngineStats>({
-    queryKey: ['/api/octypo/engines/stats'],
+    queryKey: ["/api/octypo/engines/stats"],
     refetchInterval: 10000,
   });
 
   const engines = enginesData?.engines || [];
   const stats = statsData || enginesData?.stats;
 
-  const groupedEngines = engines.reduce((acc, engine) => {
-    const provider = engine.provider;
-    if (!acc[provider]) acc[provider] = [];
-    acc[provider].push(engine);
-    return acc;
-  }, {} as Record<string, Engine[]>);
+  const groupedEngines = engines.reduce(
+    (acc, engine) => {
+      const provider = engine.provider;
+      if (!acc[provider]) acc[provider] = [];
+      acc[provider].push(engine);
+      return acc;
+    },
+    {} as Record<string, Engine[]>
+  );
 
   const healthPercent = stats ? (stats.healthy / stats.total) * 100 : 100;
 
@@ -105,7 +103,8 @@ export default function OctypoEnginesPage() {
             AI Engines Dashboard
           </h1>
           <p className="text-muted-foreground">
-            {stats?.total || 0} engines across {Object.keys(stats?.byProvider || {}).length} providers
+            {stats?.total || 0} engines across {Object.keys(stats?.byProvider || {}).length}{" "}
+            providers
           </p>
         </div>
         <Button
@@ -152,7 +151,7 @@ export default function OctypoEnginesPage() {
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{stats?.unhealthy || 0}</div>
             <p className="text-xs text-muted-foreground">
-              {((stats?.unhealthy || 0) / (stats?.total || 1) * 100).toFixed(1)}% failure rate
+              {(((stats?.unhealthy || 0) / (stats?.total || 1)) * 100).toFixed(1)}% failure rate
             </p>
           </CardContent>
         </Card>
@@ -197,7 +196,9 @@ export default function OctypoEnginesPage() {
             <CardHeader className="flex flex-row items-center gap-2">
               <Badge className={getProviderColor(provider)}>{provider}</Badge>
               <CardTitle className="text-lg capitalize">{provider} Engines</CardTitle>
-              <span className="ml-auto text-muted-foreground">{providerEngines.length} engines</span>
+              <span className="ml-auto text-muted-foreground">
+                {providerEngines.length} engines
+              </span>
             </CardHeader>
             <CardContent>
               <Table>
@@ -212,10 +213,12 @@ export default function OctypoEnginesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {providerEngines.map((engine) => (
+                  {providerEngines.map(engine => (
                     <TableRow key={engine.id} data-testid={`row-engine-${engine.id}`}>
                       <TableCell className="font-mono text-sm">{engine.id}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{engine.model}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {engine.model}
+                      </TableCell>
                       <TableCell>
                         {engine.isHealthy ? (
                           <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
@@ -236,9 +239,7 @@ export default function OctypoEnginesPage() {
                         {engine.errorCount}
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm">
-                        {engine.lastUsed 
-                          ? new Date(engine.lastUsed).toLocaleTimeString() 
-                          : "Never"}
+                        {engine.lastUsed ? new Date(engine.lastUsed).toLocaleTimeString() : "Never"}
                       </TableCell>
                     </TableRow>
                   ))}
