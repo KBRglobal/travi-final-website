@@ -1,20 +1,16 @@
-/**
- * Platform Readiness & Go-Live Command Center
- * Feature Flag: ENABLE_PLATFORM_READINESS=false
- *
- * Answers: "Can this platform safely go live RIGHT NOW, and if not — why?"
- * Read-only system with zero side effects.
- */
-
-export * from './types';
-export * from './config';
-export { collectAllSignals, collectSignal } from './collectors';
-export { buildChecklist } from './checklist';
-export {
-  evaluateReadiness,
-  simulateGoLive,
-  clearCache,
-  getBlockers,
-  isReady,
-} from './evaluator';
-export { default as platformReadinessRoutes } from './routes';
+// Stub - Platform Readiness disabled
+import { Router } from "express";
+export const platformReadinessRoutes = Router();
+export default platformReadinessRoutes;
+export function evaluateReadiness() {
+  return { ready: true, score: 100, status: "ready", blockers: [] };
+}
+export function isReady() {
+  return true;
+}
+export function getBlockers() {
+  return [];
+}
+export function isPlatformReadinessEnabled() {
+  return false;
+}

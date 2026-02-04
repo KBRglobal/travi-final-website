@@ -1,10 +1,7 @@
-// Stub - SEO Engine routes disabled
-import { Express, Router } from "express";
-
+// Stub - SEO Engine disabled
+import type { Express } from "express";
+import { Router } from "express";
 const router = Router();
-
-export function registerSEOEngineRoutes(app: Express): void {
-  app.use("/api/seo", router);
-}
-
 export default router;
+export function registerSEOEngineRoutes(_app: Express) {}
+export const seoEngineRoutes = router;

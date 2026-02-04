@@ -22,7 +22,6 @@ import { registerUserRoutes } from "./user-routes";
 import { registerPageLayoutRoutes } from "./page-layout-routes";
 import { registerWriterPromotionRoutes } from "./writer-promotion-routes";
 import { registerRssFeedRoutes } from "./rss-feed-routes";
-import { registerTraviRoutes } from "./travi-routes";
 import { registerSecurityRoutes } from "./security-routes";
 import { registerContentMetricsRoutes } from "./content-metrics-routes";
 import { registerTopicClustersRoutes } from "./topic-clusters-routes";
@@ -112,9 +111,6 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 
   // RSS feed management routes
   registerRssFeedRoutes(app);
-
-  // TRAVI content generator admin routes
-  registerTraviRoutes(app);
 
   // Enterprise security and TOTP 2FA routes
   registerSecurityRoutes(app);

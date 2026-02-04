@@ -1,21 +1,12 @@
-/**
- * Webhook Manager - Stub Module
- */
-
-interface WebhookTestResult {
-  success: boolean;
-  statusCode?: number;
-  responseTime?: number;
-  error?: string;
+// Stub - Webhooks disabled
+export function sendWebhook(_url: string, _data?: unknown) {
+  return Promise.resolve({ sent: false });
 }
-
-class WebhookManager {
-  async testWebhook(id: string): Promise<WebhookTestResult> {
-    return {
-      success: false,
-      error: "Webhook testing not configured",
-    };
-  }
+export function testWebhook(_id: string) {
+  return Promise.resolve({ success: false });
 }
-
-export const webhookManager = new WebhookManager();
+export function registerWebhook() {}
+export const webhookManager = {
+  send: (_url: string, _data?: unknown) => Promise.resolve({ sent: false }),
+  testWebhook: (_id: string) => Promise.resolve({ success: false }),
+};

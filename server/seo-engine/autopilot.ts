@@ -1,26 +1,22 @@
-// Stub - SEO Autopilot disabled
-
-export function startAutopilot(): void {}
-export function stopAutopilot(): void {}
-export function isAutopilotRunning(): boolean {
-  return false;
-}
+// Stub - SEO Engine Autopilot disabled
+export function startAutopilot() {}
+export function stopAutopilot() {}
 export function getAutopilotStatus() {
-  return { running: false };
+  return { running: false, mode: "disabled" };
 }
-export function setAutopilotMode(_mode: string): void {}
-export function getAutopilotMode(): string {
-  return "off";
+export function getAutopilot(_config?: unknown) {
+  return {
+    start: () => {},
+    stop: () => {},
+    status: () => ({ running: false, mode: "disabled" }),
+    runCycle: () => Promise.resolve(),
+    getStatus: () => ({ running: false, mode: "disabled" }),
+  };
 }
-
-class AutopilotInstance {
-  async runCycle(): Promise<void> {}
-  stop(): void {}
-  getStatus() {
-    return { running: false, mode: "off" };
-  }
-}
-
-export function getAutopilot(_mode?: string): AutopilotInstance {
-  return new AutopilotInstance();
-}
+export const seoAutopilot = {
+  start: () => {},
+  stop: () => {},
+  status: () => ({ running: false, mode: "disabled" }),
+  runCycle: () => Promise.resolve(),
+  getStatus: () => ({ running: false, mode: "disabled" }),
+};

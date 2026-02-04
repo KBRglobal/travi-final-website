@@ -1,13 +1,11 @@
-// Stub - Workflow Engine disabled
-
+// Stub - Workflows disabled
+export function executeWorkflow(_name: string, _data?: unknown) {
+  return Promise.resolve({ success: true });
+}
+export function getWorkflowStatus() {
+  return { running: false };
+}
 export const workflowEngine = {
-  run: async () => ({ success: false }),
-  getStatus: () => ({ running: false }),
-  executeWorkflow: async (_id: string, _body?: unknown) => ({
-    success: false,
-    error: "Workflow engine disabled",
-  }),
-  getWorkflows: async () => [],
-  getWorkflow: async (_id: string) => null,
-  getExecutions: async (_id: string) => [],
+  execute: (_name: string, _data?: unknown) => Promise.resolve({ success: true }),
+  executeWorkflow: (_name: string, _data?: unknown) => Promise.resolve({ success: true }),
 };

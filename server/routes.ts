@@ -202,7 +202,6 @@ import { registerObservabilityRoutes } from "./routes/admin/observability-routes
 import adminJobsRoutes from "./routes/admin/jobs-routes";
 import { registerAdminJobsRoutes } from "./routes/admin-jobs-routes";
 
-import { generateLocationContent } from "./travi/content-generator";
 import { alertRoutes, startAlertEngine, isAlertingEnabled } from "./alerts";
 
 import { coverageRoutes } from "./intelligence/coverage";
@@ -213,7 +212,6 @@ import {
 } from "./autonomy/policy";
 import { controlPlaneRoutes, initControlPlane } from "./autonomy/control-plane";
 import { initEnforcement } from "./autonomy/enforcement";
-import { helpAdminRoutes, helpPublicRoutes } from "./help";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
 import octypoRoutes from "./routes/admin/octypo-routes";
 import gatekeeperRoutes from "./routes/admin/gatekeeper-routes";
@@ -223,7 +221,6 @@ import pilotLocalizationRoutes from "./octypo/pilot/routes";
 import { vamsRoutes } from "./vams";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
 import { growthOSRoutes } from "./growth-os";
-import traviRoutes from "./travi/routes";
 import localizedAssetsRoutes from "./routes/localized-assets-routes";
 
 import { registerEnhancementRoutes } from "./enhancement-routes";
@@ -2421,11 +2418,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   app.use("/api/admin/autonomy", requireAuth, autonomyPolicyRoutes);
   app.use("/api/admin/autonomy/control-plane", requireAuth, controlPlaneRoutes);
 
-  // ============================================================================
-  // HELP CENTER (Knowledge Base System)
-  // ============================================================================
-  app.use("/api/admin/help", requireAuth, requirePermission("canEdit"), helpAdminRoutes);
-  app.use("/api/help", helpPublicRoutes);
   // OPS FEATURES (Feature-flagged, default OFF)
   // ============================================================================
   app.use("/api/admin/incidents", requireAuth, requirePermission("canEdit"), incidentsRoutes);
@@ -2489,11 +2481,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // Feature flags: ENABLE_GROWTH_OS=true, ENABLE_GROWTH_OS_*=true
   // ============================================================================
   app.use("/api/growth-os", growthOSRoutes);
-
-  // ============================================================================
-  // TRAVI CONTENT GENERATION (Data collection, AI processing, location discovery)
-  // ============================================================================
-  app.use("/api/travi", requireAuth, requirePermission("canEdit"), traviRoutes);
 
   // ============================================================================
   // OCTYPO ENGINE (AI Content Generation System - Writers, Validators, Orchestrator)

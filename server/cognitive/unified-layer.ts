@@ -1,31 +1,12 @@
-// Stub - Cognitive Unified Layer disabled
-import type { UnifiedIntentType } from "../../shared/intent-schema";
-
-export function syncSearchIntentToChat(_query: string, _intent?: UnifiedIntentType): void {}
-
-export function getIntentBoostForEntityType(
-  _intent: UnifiedIntentType | string,
-  _entityType?: string
-): number {
-  return 1.0;
+// Stub - Cognitive Layer disabled
+export function getCognitiveInsights() {
+  return {};
 }
-
-export function getDominantUnifiedIntent(_sessionId?: string): UnifiedIntentType | null {
+export function syncSearchIntentToChat(_intent: unknown, _chatId?: string) {}
+export function getIntentBoostForEntityType(_entityType: string, _extra?: unknown) {
+  return 1;
+}
+export function getDominantUnifiedIntent(_intents: unknown) {
   return null;
 }
-
-export function getUnifiedContext() {
-  return null;
-}
-
-export function enhanceQuery(query: string) {
-  return query;
-}
-
-export function getRelatedConcepts() {
-  return [];
-}
-
-export function expandQuery(query: string) {
-  return [query];
-}
+export const cognitiveLayer = { getInsights: () => ({}) };
