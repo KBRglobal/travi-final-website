@@ -43,6 +43,7 @@ import {
 } from "./services/tiqets-background-generator";
 import { runProductionSeed } from "./lib/production-seed";
 import { registerOctypoJobHandler } from "./octypo/job-handler";
+import { initializeGatekeeper } from "./octypo/gatekeeper";
 import { startBackgroundServices, stopBackgroundServices } from "./services/background-services";
 import { db } from "./db";
 import { destinations } from "@shared/schema";
@@ -550,6 +551,9 @@ async function initializeServer() {
 
     registerOctypoJobHandler();
     log("[OctypoV2] Content generation job handler registered", "server");
+
+    initializeGatekeeper();
+    log("[Gatekeeper] Autonomous content pipeline initialized", "server");
 
     // Start all background services (translation, RSS scheduler, governance)
     startBackgroundServices().catch(err => {

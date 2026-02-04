@@ -216,6 +216,7 @@ import { initEnforcement } from "./autonomy/enforcement";
 import { helpAdminRoutes, helpPublicRoutes } from "./help";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
 import octypoRoutes from "./routes/admin/octypo-routes";
+import gatekeeperRoutes from "./routes/admin/gatekeeper-routes";
 import pilotLocalizationRoutes from "./octypo/pilot/routes";
 import { vamsRoutes } from "./vams";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
@@ -2495,6 +2496,12 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // OCTYPO ENGINE (AI Content Generation System - Writers, Validators, Orchestrator)
   // ============================================================================
   app.use("/api/octypo", requireAuth, requirePermission("canEdit"), octypoRoutes);
+
+  // ============================================================================
+  // GATEKEEPER (Autonomous Content Selection & Approval System)
+  // Two gates: 1) RSS Selection 2) Article Approval → 30 languages
+  // ============================================================================
+  app.use("/api/admin/gatekeeper", requireAuth, requirePermission("canEdit"), gatekeeperRoutes);
 
   // ============================================================================
   // PILOT: Octypo × Localization Integration (Isolated for pilot testing)

@@ -1,7 +1,13 @@
 /**
- * Octypo Module - Main Entry Point
+ * Octypo Module - Autonomous Content Intelligence System
  *
- * This module is designed for RSS/Article content generation.
+ * Zero-touch content pipeline:
+ * RSS → Gate1 (Selection) → Writer → Gate2 (Approval) → Publish → 30 Languages
+ *
+ * Components:
+ * - Config: Encrypted secrets management
+ * - Gatekeeper: Intelligent content selection and approval
+ * - RSS Reader: Feed aggregation and processing
  *
  * NOTE: Attraction content uses legacy functions below for backwards compatibility.
  * New attraction content should use:
@@ -11,6 +17,19 @@
 
 // Core types
 export * from "./types";
+
+// Configuration (encrypted secrets)
+export { initializeOctypoConfig, loadSecretsToEnv, secretsExist } from "./config";
+
+// Gatekeeper (Gate 1 & Gate 2)
+export {
+  runGatekeeperPipeline,
+  initializeGatekeeper,
+  getGate1Selector,
+  getGate2Approver,
+  getDeduplicationEngine,
+  getGatekeeperOrchestrator,
+} from "./gatekeeper";
 
 // Agent system
 export { BaseAgent, AgentRegistry, MessageBus } from "./agents/base-agent";
@@ -125,4 +144,58 @@ export async function generateAttractionWithOctypo(
   });
 
   return orchestrator.generateAttractionContent(attraction);
+}
+
+// ============================================
+// OCTYPO SYSTEM INITIALIZATION
+// ============================================
+
+/**
+ * Initialize the complete Octypo system
+ * Call this during server startup
+ */
+export async function initializeOctypo(): Promise<boolean> {
+  console.log("[Octypo] Initializing autonomous content system...");
+
+  // Step 1: Load encrypted secrets (if available)
+  try {
+    const { initializeOctypoConfig, secretsExist } = await import("./config");
+    if (secretsExist()) {
+      const secretsLoaded = initializeOctypoConfig();
+      if (!secretsLoaded) {
+        console.log("[Octypo] ⚠️  Failed to load secrets. Check password.");
+      }
+    } else {
+      console.log("[Octypo] ℹ️  No secrets file. Run: npx tsx scripts/setup-octypo-secrets.ts");
+    }
+  } catch (error) {
+    console.log("[Octypo] ℹ️  Secrets module not configured, using env vars");
+  }
+
+  // Step 2: Initialize RSS reader
+  try {
+    await rssReader.initialize();
+  } catch (error) {
+    console.error("[Octypo] ⚠️  RSS reader initialization failed:", error);
+  }
+
+  // Step 3: Initialize Gatekeeper job handlers
+  try {
+    const { initializeGatekeeper } = await import("./gatekeeper");
+    initializeGatekeeper();
+  } catch (error) {
+    console.error("[Octypo] ⚠️  Gatekeeper initialization failed:", error);
+  }
+
+  console.log("[Octypo] ✅ System initialized");
+  return true;
+}
+
+/**
+ * Run the autonomous content pipeline
+ * @param maxItems Maximum items to process in this run
+ */
+export async function runOctypoPipeline(maxItems: number = 10): Promise<void> {
+  const { runGatekeeperPipeline } = await import("./gatekeeper");
+  await runGatekeeperPipeline(maxItems);
 }
