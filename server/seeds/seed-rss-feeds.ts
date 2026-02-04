@@ -6,6 +6,7 @@
 import { db } from "../db";
 import { rssFeeds, destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { fileURLToPath } from "url";
 
 interface RssFeedSeed {
   name: string;
@@ -621,10 +622,12 @@ export async function seedRssFeeds(
 }
 
 // =============================================================================
-// CLI RUNNER
+// CLI RUNNER (ESM compatible)
 // =============================================================================
 
-if (require.main === module) {
+const isMainModule = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+
+if (isMainModule) {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
   const force = args.includes("--force");
