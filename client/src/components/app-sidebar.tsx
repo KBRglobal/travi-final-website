@@ -116,6 +116,7 @@ const sidebarModules: NavModule[] = [
       { title: "Workflows", url: "/admin/octypo/workflows", icon: Workflow },
       { title: "AI Engines", url: "/admin/octypo/engines", icon: Cpu },
       { title: "Queue Monitor", url: "/admin/octypo/queue-monitor", icon: Activity },
+      { title: "Settings", url: "/admin/octypo/settings", icon: Settings },
     ],
   },
   {
