@@ -824,47 +824,15 @@ export function registerAdminApiRoutes(app: Express): void {
     }
   );
 
+  // Image analysis endpoint - deprecated, use Octypo system
   router.post(
     "/homepage/destinations/analyze-image",
     requirePermission("canEdit"),
     checkReadOnlyMode,
-    async (req, res) => {
-      try {
-        const { imageUrl } = req.body;
-        if (!imageUrl) {
-          return res.status(400).json({ error: "imageUrl is required" });
-        }
-
-        const { visualSearch } = await import("../ai/visual-search");
-        const analysis = await visualSearch.analyzeImage(imageUrl);
-
-        if (!analysis) {
-          return res.status(500).json({ error: "Failed to analyze image" });
-        }
-
-        const suggestedAlt = analysis.description.slice(0, 125);
-        const suggestedKeywords = analysis.keywords.slice(0, 5);
-
-        res.json({
-          success: true,
-          analysis: {
-            description: analysis.description,
-            keywords: analysis.keywords,
-            landmarks: analysis.landmarks,
-            colors: analysis.colors,
-            mood: analysis.mood,
-            contentType: analysis.contentType,
-            confidence: analysis.confidence,
-          },
-          suggestions: {
-            altText: suggestedAlt,
-            keywords: suggestedKeywords,
-          },
-        });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to analyze image";
-        res.status(500).json({ error: message });
-      }
+    async (_req, res) => {
+      res.status(410).json({
+        error: "This endpoint has been deprecated. Use Octypo system for image analysis.",
+      });
     }
   );
 
@@ -872,45 +840,15 @@ export function registerAdminApiRoutes(app: Express): void {
   // AUTO META GENERATOR
   // ============================================================================
 
-  router.post("/auto-meta", requirePermission("canEdit"), checkReadOnlyMode, async (req, res) => {
-    const { imageUrl, filename } = req.body;
-
-    if (!imageUrl) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: "INVALID_REQUEST",
-          message: "imageUrl is required",
-        },
-      });
-    }
-
-    try {
-      const { visualSearch } = await import("../ai/visual-search");
-      const result = await (visualSearch as any).generateAutoMeta(imageUrl, filename);
-
-      if (result.success) {
-        return res.json({
-          success: true,
-          meta: result.meta,
-        });
-      } else {
-        return res.status(500).json({
-          success: false,
-          error: result.error,
-        });
-      }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unexpected error";
-      return res.status(500).json({
-        success: false,
-        error: {
-          code: "UNKNOWN",
-          message: "Unexpected server error",
-          details: message,
-        },
-      });
-    }
+  // Auto-meta endpoint - deprecated, use Octypo system
+  router.post("/auto-meta", requirePermission("canEdit"), checkReadOnlyMode, async (_req, res) => {
+    res.status(410).json({
+      success: false,
+      error: {
+        code: "DEPRECATED",
+        message: "This endpoint has been deprecated. Use Octypo system for meta generation.",
+      },
+    });
   });
 
   // ============================================================================

@@ -152,7 +152,7 @@ export function registerDocUploadRoutes(app: Express) {
             faqs: result.content.faqs,
             starRating: 5, // Default, can be edited
             priceRange: "$$$$", // Default, can be edited
-            location: "Dubai, UAE", // Default, can be edited
+            location: "", // To be specified by editor
           } as any)
           .returning({ id: hotels.id });
         insertedId = Number(hotelResult.id);
@@ -198,7 +198,7 @@ export function registerDocUploadRoutes(app: Express) {
             summary: result.content.summary,
             content: result.content.content,
             category: category || "Landmarks",
-            location: "Dubai, UAE", // Default, can be edited
+            location: "", // To be specified by editor
             quickFacts: result.content.quickFacts,
             proTips: result.content.proTips,
             faqs: result.content.faqs,
@@ -275,7 +275,7 @@ export function registerDocUploadRoutes(app: Express) {
                     content: result.content.content,
                     starRating: 5,
                     priceRange: "$$$$",
-                    location: "Dubai, UAE",
+                    location: "",
                   } as any)
                   .returning({ id: hotels.id });
                 insertedId = Number(hotelResult.id);
@@ -317,7 +317,7 @@ export function registerDocUploadRoutes(app: Express) {
                     summary: result.content.summary,
                     content: result.content.content,
                     category: "Landmarks",
-                    location: "Dubai, UAE",
+                    location: "",
                   } as any)
                   .returning({ id: attractions.id });
                 insertedId = Number(attractionResult.id);

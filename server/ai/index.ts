@@ -1,7 +1,7 @@
 /**
  * AI Module Main Entry Point
  *
- * This module provides AI-powered content generation for Dubai travel content.
+ * This module provides AI-powered content generation for travel content.
  * It supports multiple AI providers (OpenAI, Gemini, OpenRouter) with automatic
  * fallback and cost optimization through tiered model selection.
  *
@@ -64,10 +64,7 @@ export type {
 // ============================================================================
 // Utility Exports
 // ============================================================================
-export {
-  generateBlockId,
-  generateSlug,
-} from "./utils";
+export { generateBlockId, generateSlug } from "./utils";
 
 // ============================================================================
 // Image Generation Exports
@@ -82,10 +79,7 @@ export {
 // ============================================================================
 // SEO Tools Exports
 // ============================================================================
-export {
-  analyzeSeoScore,
-  improveContentForSeo,
-} from "./seo-tools";
+export { analyzeSeoScore, improveContentForSeo } from "./seo-tools";
 
 // ============================================================================
 // Research Analyzer Exports (Octopus Model) - DELETED

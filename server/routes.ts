@@ -653,7 +653,7 @@ function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBl
   if (!blockTypes.has("hero")) {
     normalizedBlocks.unshift({
       type: "hero",
-      data: { title, subtitle: "Discover Dubai Travel", overlayText: "" },
+      data: { title, subtitle: "Discover Travel Destinations", overlayText: "" },
     });
   }
 
@@ -720,8 +720,8 @@ function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBl
     normalizedBlocks.splice(insertIndex, 0, {
       type: "quote",
       data: {
-        text: "Dubai is a city that never stops surprising you. Every corner reveals a new wonder.",
-        author: "Dubai Tourism",
+        text: "Travel opens doors to new experiences. Every destination has a story waiting to be discovered.",
+        author: "TRAVI World",
         source: "",
       },
     });
@@ -733,7 +733,7 @@ function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBl
     normalizedBlocks.splice(insertIndex, 0, {
       type: "banner",
       data: {
-        title: "EXPERIENCE DUBAI",
+        title: "EXPLORE THE WORLD",
         subtitle: "Discover the magic",
         image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920",
         ctaText: "Explore More",
@@ -748,39 +748,39 @@ function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBl
       type: "recommendations",
       data: {
         title: "Travi Recommends",
-        subtitle: "Handpicked experiences to enhance your Dubai visit",
+        subtitle: "Handpicked experiences to enhance your visit",
         items: [
           {
-            title: "Burj Khalifa Sky Experience",
-            description: "See Dubai from the world's tallest building",
+            title: "Top Attraction Experience",
+            description: "See the destination from its most iconic spot",
             image: "https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=400",
             ctaText: "Book Now",
-            ctaLink: "/attractions/burj-khalifa",
-            price: "From AED 149",
+            ctaLink: "/attractions",
+            price: "Check prices",
           },
           {
-            title: "Desert Safari Adventure",
-            description: "Experience the golden dunes at sunset",
+            title: "Local Adventure",
+            description: "Experience authentic local culture",
             image: "https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=400",
             ctaText: "Book Now",
-            ctaLink: "/attractions/desert-safari",
-            price: "From AED 199",
+            ctaLink: "/attractions",
+            price: "Check prices",
           },
           {
-            title: "Dubai Marina Cruise",
-            description: "Luxury dinner cruise with skyline views",
+            title: "Scenic Cruise",
+            description: "Luxury cruise with beautiful views",
             image: "https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=400",
             ctaText: "Book Now",
-            ctaLink: "/dining/marina-cruise",
-            price: "From AED 299",
+            ctaLink: "/attractions",
+            price: "Check prices",
           },
           {
-            title: "Miracle Garden Entry",
-            description: "World's largest natural flower garden",
+            title: "Nature Experience",
+            description: "Explore beautiful natural attractions",
             image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400",
             ctaText: "Book Now",
-            ctaLink: "/attractions/miracle-garden",
-            price: "From AED 55",
+            ctaLink: "/attractions",
+            price: "Check prices",
           },
         ],
       },
@@ -793,39 +793,39 @@ function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBl
       type: "related_articles",
       data: {
         title: "Related Articles",
-        subtitle: "Explore more Dubai travel guides and tips",
+        subtitle: "Explore more travel guides and tips",
         articles: [
           {
-            title: "Top 10 Things to Do in Dubai",
+            title: "Top Things to Do",
             description: "Essential experiences for first-time visitors",
             image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400",
             date: "25",
-            category: "Dubai Guide",
-            slug: "top-things-to-do-dubai",
+            category: "Travel Guide",
+            slug: "top-things-to-do",
           },
           {
-            title: "Dubai on a Budget",
-            description: "How to enjoy luxury for less",
+            title: "Travel on a Budget",
+            description: "How to enjoy your trip for less",
             image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400",
             date: "25",
             category: "Tips",
-            slug: "dubai-budget-guide",
+            slug: "budget-travel-guide",
           },
           {
-            title: "Best Dubai Restaurants 2025",
+            title: "Best Restaurants 2025",
             description: "Where to eat from casual to fine dining",
             image: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=400",
             date: "25",
             category: "Dining",
-            slug: "best-dubai-restaurants",
+            slug: "best-restaurants",
           },
           {
-            title: "Dubai Hidden Gems",
+            title: "Hidden Gems",
             description: "Secret spots the locals love",
             image: "https://images.unsplash.com/photo-1546412414-e1885259563a?w=400",
             date: "25",
             category: "Attractions",
-            slug: "dubai-hidden-gems",
+            slug: "hidden-gems",
           },
         ],
       },
@@ -1021,7 +1021,7 @@ function createDefaultBlocks(title: string): ContentBlock[] {
     {
       id: `hero-${timestamp}-0`,
       type: "hero",
-      data: { title, subtitle: "Discover Dubai Travel", overlayText: "" },
+      data: { title, subtitle: "Discover Travel Destinations", overlayText: "" },
       order: 0,
     },
     {
@@ -1167,7 +1167,7 @@ async function findOrCreateArticleImage(
 
       return {
         url: foundImage.url,
-        altText: foundImage.altText || `${topic} - Dubai Travel`,
+        altText: foundImage.altText || `${topic} - Travel Guide`,
         imageId: foundImage.id,
         source: "library",
       };
@@ -1206,7 +1206,7 @@ async function findOrCreateArticleImage(
         const aiImages = await generateContentImages({
           contentType: "article",
           title: topic,
-          description: `Dubai travel article about ${topic}`,
+          description: `Travel article about ${topic}`,
           style: "photorealistic",
           generateHero: true,
           generateContentImages: false,
@@ -1225,9 +1225,9 @@ async function findOrCreateArticleImage(
               category: category || "general",
               imageType: "hero",
               source: "openai" as const,
-              prompt: `Dubai travel image for: ${topic}`,
+              prompt: `Travel image for: ${topic}`,
               keywords: keywords.slice(0, 10),
-              altText: aiImage.alt || `${topic} - Dubai Travel`,
+              altText: aiImage.alt || `${topic} - Travel Guide`,
               caption: aiImage.caption || topic,
               size: 0,
               usageCount: 1,
@@ -1236,7 +1236,7 @@ async function findOrCreateArticleImage(
 
           return {
             url: aiImage.url,
-            altText: aiImage.alt || `${topic} - Dubai Travel`,
+            altText: aiImage.alt || `${topic} - Travel Guide`,
             imageId: savedImage.id,
             source: "library" as const,
           };
@@ -1268,7 +1268,7 @@ async function findOrCreateArticleImage(
     const result = await storageManager.upload(storagePath, Buffer.from(imageBuffer));
     const persistedUrl = result.url;
 
-    const altText = bestResult.title || `${topic} - Dubai Travel`;
+    const altText = bestResult.title || `${topic} - Travel Guide`;
 
     const [savedImage] = await db
       .insert(aiGeneratedImages)
@@ -1342,7 +1342,7 @@ async function processImageBlocks(
               ...block.data,
               url: `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80`,
               imageUrl: `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80`,
-              alt: block.data.alt || `${searchQuery} - Dubai`,
+              alt: block.data.alt || `${searchQuery} - Travel`,
             },
           });
         }
@@ -1824,9 +1824,9 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           id: `image-${timestamp}-${blockOrder}`,
           type: "image",
           data: {
-            searchQuery: `Dubai ${category} tourism ${(mergedData.secondaryKeywords || [])[0] || "travel"}`,
-            alt: `Dubai ${category} - ${mergedData.title}`,
-            caption: `Explore the best of Dubai ${category}`,
+            searchQuery: `${category} tourism ${(mergedData.secondaryKeywords || [])[0] || "travel"}`,
+            alt: `${category} - ${mergedData.title}`,
+            caption: `Explore the best ${category}`,
           },
           order: blockOrder++,
         });
@@ -1844,9 +1844,9 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           id: `image-${timestamp}-${blockOrder}`,
           type: "image",
           data: {
-            searchQuery: `Dubai ${(mergedData.secondaryKeywords || [])[1] || "attractions"} experience`,
-            alt: `Dubai travel experience - ${mergedData.title}`,
-            caption: `Discover Dubai's unique experiences`,
+            searchQuery: `${(mergedData.secondaryKeywords || [])[1] || "attractions"} travel experience`,
+            alt: `Travel experience - ${mergedData.title}`,
+            caption: `Discover unique experiences`,
           },
           order: blockOrder++,
         });
@@ -1864,9 +1864,9 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           id: `image-${timestamp}-${blockOrder}`,
           type: "image",
           data: {
-            searchQuery: `Dubai ${(mergedData.secondaryKeywords || [])[2] || "landmarks"} skyline`,
-            alt: `Dubai skyline and landmarks - ${mergedData.title}`,
-            caption: `The stunning Dubai skyline`,
+            searchQuery: `${(mergedData.secondaryKeywords || [])[2] || "landmarks"} scenic view`,
+            alt: `Scenic landmarks - ${mergedData.title}`,
+            caption: `Stunning scenic views`,
           },
           order: blockOrder++,
         });
@@ -1909,7 +1909,7 @@ export async function autoProcessRssFeeds(): Promise<AutoProcessResult> {
           type: "cta",
           data: {
             title: "Plan Your Visit",
-            content: "Ready to experience this? Start planning your Dubai adventure today!",
+            content: "Ready to experience this? Start planning your adventure today!",
             buttonText: "Explore More",
             buttonLink: "/articles",
           },

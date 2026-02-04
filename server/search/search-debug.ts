@@ -7,11 +7,7 @@
  * ZERO IMPACT on public search performance.
  */
 
-import {
-  searchAll,
-  getPopularDestinations,
-  type SearchResult
-} from "./search-index";
+import { searchAll, getPopularDestinations, type SearchResult } from "./search-index";
 import { queryExpander, expandQuery } from "./query-expander";
 import { queryProcessor, type ProcessedQuery } from "./query-processor";
 import { spellChecker, type SpellCheckResult } from "./spell-checker";
@@ -176,7 +172,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   const normalized = query.trim().toLowerCase();
 
   pipeline.push({
-    step: 'query_processing',
+    step: "query_processing",
     query: query,
     resultCount: 0,
     durationMs: Date.now() - processStart,
@@ -189,11 +185,11 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   const synonymResult = synonymExpander.expand(processed.tokens, processed.language);
 
   pipeline.push({
-    step: 'query_expansion',
+    step: "query_expansion",
     query: expansion.original,
     resultCount: 0,
     durationMs: Date.now() - expandStart,
-    details: `Expanded with ${synonymResult.expanded.length - processed.tokens.length} synonyms, city resolved: ${expansion.resolvedCity || 'none'}`,
+    details: `Expanded with ${synonymResult.expanded.length - processed.tokens.length} synonyms, city resolved: ${expansion.resolvedCity || "none"}`,
   });
 
   // Step 3: Spell check
@@ -201,13 +197,13 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   const spellResult = await spellChecker.check(query);
 
   pipeline.push({
-    step: 'spell_check',
+    step: "spell_check",
     query: spellResult.corrected,
     resultCount: 0,
     durationMs: Date.now() - spellStart,
     details: spellResult.wasChanged
       ? `Corrected to "${spellResult.corrected}" (confidence: ${(spellResult.confidence * 100).toFixed(0)}%)`
-      : 'No corrections needed',
+      : "No corrections needed",
   });
 
   // Step 4: Intent classification
@@ -215,7 +211,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   const intent = intentClassifier.classify(query) as any;
 
   pipeline.push({
-    step: 'intent_classification',
+    step: "intent_classification",
     query: query,
     resultCount: 0,
     durationMs: Date.now() - intentStart,
@@ -230,13 +226,14 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   });
 
   pipeline.push({
-    step: 'primary_search',
+    step: "primary_search",
     query: query,
     resultCount: searchResults.length,
     durationMs: Date.now() - searchStart,
-    details: searchResults.length > 0
-      ? `Found ${searchResults.length} results`
-      : 'No direct matches found',
+    details:
+      searchResults.length > 0
+        ? `Found ${searchResults.length} results`
+        : "No direct matches found",
   });
 
   // Step 6: Fallback search if needed
@@ -249,7 +246,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
     });
 
     pipeline.push({
-      step: 'spell_corrected_search',
+      step: "spell_corrected_search",
       query: spellResult.corrected,
       resultCount: fallbackResults.length,
       durationMs: Date.now() - fallbackStart,
@@ -264,18 +261,20 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
     noResultsReasons.push(`No content matches the query "${query}"`);
 
     if (processed.tokens.length === 1 && processed.tokens[0].length < 3) {
-      noResultsReasons.push('Query is too short (less than 3 characters)');
-      recommendations.push('Try using longer or more specific search terms');
+      noResultsReasons.push("Query is too short (less than 3 characters)");
+      recommendations.push("Try using longer or more specific search terms");
     }
 
     if (!expansion.resolvedCity) {
-      noResultsReasons.push('No location/city detected in query');
-      recommendations.push('Include a location like "Dubai" or "Palm Jumeirah" in your query');
+      noResultsReasons.push("No location/city detected in query");
+      recommendations.push("Include a destination or specific location in your query");
     }
 
     if (Object.keys((intent as any).entities).length === 0) {
-      noResultsReasons.push('No entities could be extracted from the query');
-      recommendations.push('Be more specific about what you\'re looking for (hotel, restaurant, attraction)');
+      noResultsReasons.push("No entities could be extracted from the query");
+      recommendations.push(
+        "Be more specific about what you're looking for (hotel, restaurant, attraction)"
+      );
     }
   }
 
@@ -289,20 +288,23 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
     const titleLower = result.title.toLowerCase();
     const titleMatch = queryTerms.some(term => titleLower === term);
     const titleContains = queryTerms.some(term => titleLower.includes(term));
-    const titleMatchBoost = titleMatch ? 2.0 : (titleContains ? 1.3 : 1.0);
+    const titleMatchBoost = titleMatch ? 2.0 : titleContains ? 1.3 : 1.0;
 
-    const matchedTerms = queryTerms.filter(term =>
-      titleLower.includes(term) || ((result as any).description?.toLowerCase().includes(term) ?? false)
+    const matchedTerms = queryTerms.filter(
+      term =>
+        titleLower.includes(term) ||
+        ((result as any).description?.toLowerCase().includes(term) ?? false)
     );
 
     const intentBoost = 1.0; // Simplified for debug
-    const totalMultiplier = typeWeight * titleMatchBoost * recencyBoost * popularityBoost * intentBoost;
+    const totalMultiplier =
+      typeWeight * titleMatchBoost * recencyBoost * popularityBoost * intentBoost;
 
     return {
       id: result.id,
       title: result.title,
       type: result.type,
-      slug: result.slug || '',
+      slug: result.slug || "",
       baseScore: result.score,
       adjustedScore: result.score * totalMultiplier,
       scoreBreakdown: {
@@ -331,13 +333,17 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   // Build filter reasons
   const filterReasons: string[] = [];
   if ((intent as any).suggestedFilters.contentTypes) {
-    filterReasons.push(`Content types filtered to: ${(intent as any).suggestedFilters.contentTypes.join(', ')}`);
+    filterReasons.push(
+      `Content types filtered to: ${(intent as any).suggestedFilters.contentTypes.join(", ")}`
+    );
   }
   if ((intent as any).suggestedFilters.location) {
     filterReasons.push(`Location filter: ${(intent as any).suggestedFilters.location}`);
   }
   if ((intent as any).suggestedFilters.priceRange) {
-    filterReasons.push(`Price range: ${(intent as any).suggestedFilters.priceRange[0]} - ${(intent as any).suggestedFilters.priceRange[1]}`);
+    filterReasons.push(
+      `Price range: ${(intent as any).suggestedFilters.priceRange[0]} - ${(intent as any).suggestedFilters.priceRange[1]}`
+    );
   }
 
   return {
@@ -396,21 +402,25 @@ export async function debugContentForQuery(
   const reasons: string[] = [];
 
   if (!result) {
-    reasons.push('Content was not returned in search results');
+    reasons.push("Content was not returned in search results");
     reasons.push(`Query "${query}" may not match the content's title or description`);
 
     // Check if content type matches intent filters
     if (debugResult.intentClassification.suggestedFilters.contentTypes) {
-      reasons.push(`Search filtered to content types: ${(debugResult.intentClassification.suggestedFilters.contentTypes as string[]).join(', ')}`);
+      reasons.push(
+        `Search filtered to content types: ${(debugResult.intentClassification.suggestedFilters.contentTypes as string[]).join(", ")}`
+      );
     }
   } else {
     reasons.push(`Content ranked #${rank} out of ${debugResult.results.length} results`);
-    reasons.push(`Adjusted score: ${result.adjustedScore.toFixed(2)} (base: ${result.baseScore.toFixed(2)})`);
+    reasons.push(
+      `Adjusted score: ${result.adjustedScore.toFixed(2)} (base: ${result.baseScore.toFixed(2)})`
+    );
 
     if (result.matchDetails.titleMatch) {
-      reasons.push('Title exactly matches a query term (+2.0x boost)');
+      reasons.push("Title exactly matches a query term (+2.0x boost)");
     } else if (result.matchDetails.titleContains) {
-      reasons.push('Title contains query term (+1.3x boost)');
+      reasons.push("Title contains query term (+1.3x boost)");
     }
   }
 
@@ -427,10 +437,13 @@ export async function debugContentForQuery(
  */
 export function getRankingFactorExplanations(): Record<string, string> {
   return {
-    typeWeight: 'Entity type priority: destination (1.6) > attraction (1.4) > hotel (1.2) > article (1.0) > category (0.9)',
-    titleMatchBoost: 'Exact title match: 2.0x, title contains term: 1.3x, no match: 1.0x',
-    recencyBoost: 'Content published within 7 days: 1.3x, within 90 days: linear decay to 1.0x, older: 1.0x',
-    popularityBoost: '10k+ views: 1.25x, 5k+: 1.2x, 1k+: 1.15x, 500+: 1.1x, 100+: 1.05x',
-    intentBoost: 'Boosts results matching detected user intent (e.g., hotel_search boosts hotel results)',
+    typeWeight:
+      "Entity type priority: destination (1.6) > attraction (1.4) > hotel (1.2) > article (1.0) > category (0.9)",
+    titleMatchBoost: "Exact title match: 2.0x, title contains term: 1.3x, no match: 1.0x",
+    recencyBoost:
+      "Content published within 7 days: 1.3x, within 90 days: linear decay to 1.0x, older: 1.0x",
+    popularityBoost: "10k+ views: 1.25x, 5k+: 1.2x, 1k+: 1.15x, 500+: 1.1x, 100+: 1.05x",
+    intentBoost:
+      "Boosts results matching detected user intent (e.g., hotel_search boosts hotel results)",
   };
 }

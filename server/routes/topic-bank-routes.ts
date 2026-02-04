@@ -220,7 +220,7 @@ export function registerTopicBankRoutes(app: Express): void {
 
       const outlineContext = topic.outline ? `Content Outline:\n${topic.outline}` : "";
 
-      const systemPrompt = `You are an expert Dubai travel content writer. Generate a complete, SEO-optimized article based on the provided topic information.
+      const systemPrompt = `You are an expert travel content writer. Generate a complete, SEO-optimized article based on the provided topic information.
 
 OUTPUT FORMAT - Return valid JSON matching this exact structure:
 {
@@ -316,14 +316,14 @@ RULES:
 9. Include 5-8 internal links to related content
 10. Include 2-3 external links to authoritative sources`;
 
-      const userPrompt = `Generate a complete article for this Dubai travel topic:
+      const userPrompt = `Generate a complete article for this travel topic:
 
 Topic: ${topic.title}
 Category: ${topic.category}
 ${keywordsContext}
 ${outlineContext}
 
-Create engaging, informative content that would appeal to Dubai travelers. Return valid JSON only.`;
+Create engaging, informative content that would appeal to travelers. Return valid JSON only.`;
 
       const response = await openai.chat.completions.create({
         model: provider === "openai" ? "gpt-4o" : getModelForProvider(provider),
@@ -382,7 +382,7 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
         status: "draft",
         metaDescription: generated.metaDescription || null,
         heroImage: heroImageUrl,
-        heroImageAlt: generated.heroImageAlt || `${generated.title || topic.title} - Dubai Travel`,
+        heroImageAlt: generated.heroImageAlt || `${generated.title || topic.title} - Travel Guide`,
         blocks: blocks,
       });
 
@@ -426,7 +426,7 @@ Create engaging, informative content that would appeal to Dubai travelers. Retur
           ? `Target Keywords: ${topic.keywords.join(", ")}`
           : "";
 
-        const systemPrompt = `You are an expert Dubai news and viral content writer. Generate a news/trending article based on the topic.
+        const systemPrompt = `You are an expert travel news and viral content writer. Generate a news/trending article based on the topic.
 
 This should be written in a NEWS/trending format - engaging, timely-feeling, and shareable.
 
@@ -449,7 +449,7 @@ OUTPUT FORMAT - Return valid JSON:
       "data": {
         "title": "Main headline",
         "subtitle": "Breaking/Trending subheader",
-        "overlayText": "Dubai 2025"
+        "overlayText": "Travel 2025"
       }
     },
     {
@@ -562,7 +562,7 @@ RULES:
           status: "draft",
           metaDescription: generated.metaDescription || null,
           heroImage: heroImageUrl,
-          heroImageAlt: generated.heroImageAlt || `${topic.title} - Dubai News`,
+          heroImageAlt: generated.heroImageAlt || `${topic.title} - Travel News`,
           blocks: blocks,
           primaryKeyword: topic.keywords?.[0] || null,
           secondaryKeywords: topic.keywords?.slice(1) || [],
@@ -637,7 +637,7 @@ RULES:
             messages: [
               {
                 role: "system",
-                content: `You are an expert Dubai travel content writer. Generate a complete, SEO-optimized article.
+                content: `You are an expert travel content writer. Generate a complete, SEO-optimized article.
 
 Return JSON with: title, metaDescription, slug, heroImageAlt, blocks (array with hero, 4-6 text sections, highlights with 6 items, tips with 7 tips, faq with 5 items using "faqs" key, cta).
 Article MUST be MINIMUM 1800-2500 words (this is CRITICAL for SEO compliance). Each H2 section should be 300-500 words.
@@ -698,7 +698,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             metaDescription: generated.metaDescription || null,
             heroImage: heroImageUrl,
             heroImageAlt:
-              generated.heroImageAlt || `${generated.title || topic.title} - Dubai Travel`,
+              generated.heroImageAlt || `${generated.title || topic.title} - Travel Guide`,
             blocks: blocks,
           });
 

@@ -309,7 +309,7 @@ export function registerSocialRoutes(app: Express) {
           // Fallback to basic generation if no AI provider
           return res.json({
             text: content.metaDescription || `Check out: ${content.title}`,
-            hashtags: includeHashtags ? ["#Travel", "#Dubai", "#Explore"] : [],
+            hashtags: includeHashtags ? ["#Travel", "#Explore", "#TravelGuide"] : [],
             generatedByAi: false,
           });
         }

@@ -15,7 +15,7 @@ import type { GeneratedImage, ImageGenerationOptions, ImageProvider } from "./ty
 // Image Generation Master Prompt
 // ============================================================================
 
-export const IMAGE_MASTER_PROMPT = `You are an Image Content Strategist for Dubai travel articles. Analyze articles and recommend strategically chosen images with complete SEO optimization.
+export const IMAGE_MASTER_PROMPT = `You are an Image Content Strategist for travel articles. Analyze articles and recommend strategically chosen images with complete SEO optimization.
 
 ARTICLE ANALYSIS (Mandatory):
 1. Identify content type: New attraction, Hotel, Restaurant, Activity, Event, Practical guide, Comparison, Transportation, Shopping
@@ -36,7 +36,7 @@ IMAGE SELECTION CRITERIA:
 - Show what words cannot describe (scale, design, atmosphere)
 - Answer visual questions (crowding, space, dress code)
 - Match article tone perfectly
-- Support SEO (recognizable subjects, Dubai landmarks)
+- Support SEO (recognizable subjects, iconic landmarks)
 - Drive engagement (inspiring, practical, shareable)
 - Provide value (scale indicators, accessibility, helpful signage)
 
@@ -49,7 +49,7 @@ IMAGE SELECTION CRITERIA:
 - Undermine article goals
 
 SEO OPTIMIZATION REQUIREMENTS:
-Filename: [primary-keyword]-[descriptor]-dubai-[detail].jpg (under 60 chars, keyword first)
+Filename: [primary-keyword]-[descriptor]-[location]-[detail].jpg (under 60 chars, keyword first)
 ALT Text: 125-150 chars, descriptive with location, keyword naturally integrated
 Title Tag: [Keyword] - [Location] - [Detail] (under 60 chars)
 Caption: 1-2 sentences, informative + useful context
@@ -93,13 +93,12 @@ OUTPUT FORMAT for each image:
   }
 }
 
-DUBAI-SPECIFIC ELEMENTS:
-- Iconic landmarks: Burj Khalifa, Palm Jumeirah, Dubai Frame, Museum of Future
-- Locations: Downtown Dubai, Dubai Marina, JBR, Old Dubai, Dubai Creek
-- Cultural: Traditional souks, heritage sites, mosques, cultural shows
-- Modern: Luxury malls, skyscrapers, metro, modern architecture
-- Nature: Desert dunes, beaches, waterparks, parks
-- Hospitality: 5-star hotels, fine dining, spas, rooftop venues
+DESTINATION-SPECIFIC ELEMENTS:
+- Adapt to the destination's iconic landmarks and locations
+- Cultural: Local heritage sites, traditional markets, cultural attractions
+- Modern: Contemporary architecture, shopping areas, transportation
+- Nature: Natural landscapes, beaches, parks, outdoor spaces
+- Hospitality: Hotels, restaurants, spas, entertainment venues
 
 Always recommend 3-5 images total, balanced between inspiration and practical value.`;
 
@@ -125,7 +124,7 @@ export async function generateImagePrompt(options: ImageGenerationOptions): Prom
         },
         {
           role: "user",
-          content: `Create a detailed DALL-E prompt for a ${options.generateHero ? "hero banner" : "content"} image for this Dubai travel content:
+          content: `Create a detailed DALL-E prompt for a ${options.generateHero ? "hero banner" : "content"} image for this travel content:
 
 CONTENT TYPE: ${options.contentType}
 TITLE: ${options.title}
@@ -138,7 +137,7 @@ Generate a single, detailed prompt (150-200 words) that will create a stunning, 
 2. Include lighting, atmosphere, and mood details
 3. Specify camera angle and perspective
 4. Mention colors and textures
-5. Be specific to Dubai and the content type
+5. Be specific to the location and content type
 
 Return ONLY the prompt text, no additional explanation.`,
         },
@@ -290,7 +289,7 @@ async function generateWithDalle(
 /**
  * Main image generation with provider selection
  * Auto-selects provider based on image type for cost optimization:
- * - Hero images: Flux (67% cheaper, excellent for photorealistic Dubai scenes)
+ * - Hero images: Flux (67% cheaper, excellent for photorealistic travel scenes)
  * - Content images: DALL-E (better for specific detailed scenes)
  */
 export async function generateImage(
@@ -351,8 +350,8 @@ export async function generateContentImages(
         images.push({
           url: heroUrl,
           filename: `${slug}-hero-${timestamp}.jpg`,
-          alt: `${options.title} - Dubai Travel`,
-          caption: `Explore ${options.title} in Dubai`,
+          alt: `${options.title} - Travel Guide`,
+          caption: `Explore ${options.title}`,
           type: "hero",
         });
       } else {

@@ -310,20 +310,72 @@
   },
   "destinations": {
     "cities": {
-      "dubai": { "name": "Dubai", "country": "UAE", "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset" },
-      "london": { "name": "London", "country": "UK", "cardAlt": "London Big Ben and Houses of Parliament" },
-      "paris": { "name": "Paris", "country": "France", "cardAlt": "Paris Eiffel Tower illuminated at sunset" },
-      "newYork": { "name": "New York", "country": "USA", "cardAlt": "New York Manhattan skyline with Empire State Building" },
-      "tokyo": { "name": "Tokyo", "country": "Japan", "cardAlt": "Tokyo Shibuya crossing neon lights at night" },
-      "singapore": { "name": "Singapore", "country": "Singapore", "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay" },
-      "barcelona": { "name": "Barcelona", "country": "Spain", "cardAlt": "Barcelona Sagrada Familia at golden hour" },
-      "bangkok": { "name": "Bangkok", "country": "Thailand", "cardAlt": "Bangkok Grand Palace temple at sunrise" },
-      "abuDhabi": { "name": "Abu Dhabi", "country": "UAE", "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque" },
-      "amsterdam": { "name": "Amsterdam", "country": "Netherlands", "cardAlt": "Amsterdam canal with historic buildings" },
-      "hongKong": { "name": "Hong Kong", "country": "China", "cardAlt": "Hong Kong skyline at night" },
-      "istanbul": { "name": "Istanbul", "country": "Turkey", "cardAlt": "Istanbul Blue Mosque at sunset" },
+      "dubai": {
+        "name": "Dubai",
+        "country": "UAE",
+        "cardAlt": "Dubai skyline with Burj Khalifa tower at sunset"
+      },
+      "london": {
+        "name": "London",
+        "country": "UK",
+        "cardAlt": "London Big Ben and Houses of Parliament"
+      },
+      "paris": {
+        "name": "Paris",
+        "country": "France",
+        "cardAlt": "Paris Eiffel Tower illuminated at sunset"
+      },
+      "newYork": {
+        "name": "New York",
+        "country": "USA",
+        "cardAlt": "New York Manhattan skyline with Empire State Building"
+      },
+      "tokyo": {
+        "name": "Tokyo",
+        "country": "Japan",
+        "cardAlt": "Tokyo Shibuya crossing neon lights at night"
+      },
+      "singapore": {
+        "name": "Singapore",
+        "country": "Singapore",
+        "cardAlt": "Singapore Marina Bay Sands and Gardens by the Bay"
+      },
+      "barcelona": {
+        "name": "Barcelona",
+        "country": "Spain",
+        "cardAlt": "Barcelona Sagrada Familia at golden hour"
+      },
+      "bangkok": {
+        "name": "Bangkok",
+        "country": "Thailand",
+        "cardAlt": "Bangkok Grand Palace temple at sunrise"
+      },
+      "abuDhabi": {
+        "name": "Abu Dhabi",
+        "country": "UAE",
+        "cardAlt": "Abu Dhabi Sheikh Zayed Grand Mosque"
+      },
+      "amsterdam": {
+        "name": "Amsterdam",
+        "country": "Netherlands",
+        "cardAlt": "Amsterdam canal with historic buildings"
+      },
+      "hongKong": {
+        "name": "Hong Kong",
+        "country": "China",
+        "cardAlt": "Hong Kong skyline at night"
+      },
+      "istanbul": {
+        "name": "Istanbul",
+        "country": "Turkey",
+        "cardAlt": "Istanbul Blue Mosque at sunset"
+      },
       "lasVegas": { "name": "Las Vegas", "country": "USA", "cardAlt": "Las Vegas Strip at night" },
-      "losAngeles": { "name": "Los Angeles", "country": "USA", "cardAlt": "Los Angeles Hollywood sign" },
+      "losAngeles": {
+        "name": "Los Angeles",
+        "country": "USA",
+        "cardAlt": "Los Angeles Hollywood sign"
+      },
       "miami": { "name": "Miami", "country": "USA", "cardAlt": "Miami Beach Art Deco district" },
       "rome": { "name": "Rome", "country": "Italy", "cardAlt": "Rome Colosseum at golden hour" }
     },
@@ -475,7 +527,7 @@
     "tributeToSheikh": "Tribute to HH Sheikh Mohammed",
     "lawsForTourists": "Laws for Tourists",
     "newsletter": "Subscribe to our newsletter",
-    "newsletterDescription": "Get the latest Dubai travel tips and updates.",
+    "newsletterDescription": "Get the latest travel tips and updates.",
     "emailPlaceholder": "Enter your email",
     "allRightsReserved": "All rights reserved.",
     "copyright": "© {{year}} {{brand}}. All rights reserved.",
@@ -529,20 +581,20 @@
   },
   "meta": {
     "home": {
-      "title": "Travi - Discover Dubai | Your Ultimate Dubai Travel Guide",
-      "description": "Explore Dubai's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect Dubai trip with insider tips and local recommendations."
+      "title": "Travi World | Your Ultimate Travel Guide",
+      "description": "Explore the world's best attractions, hotels, restaurants, and neighborhoods. Plan your perfect trip with insider tips and local recommendations."
     },
     "attractions": {
-      "title": "Dubai Attractions | Top Things to Do in Dubai",
-      "description": "Discover the best attractions in Dubai - from Burj Khalifa to hidden gems. Plan your Dubai sightseeing adventure."
+      "title": "Top Attractions | Things to Do Worldwide",
+      "description": "Discover the best attractions worldwide - from iconic landmarks to hidden gems. Plan your sightseeing adventure."
     },
     "hotels": {
-      "title": "Dubai Hotels | Best Places to Stay in Dubai",
-      "description": "Find the perfect hotel in Dubai for any budget. From luxury resorts to budget-friendly options."
+      "title": "Hotels | Best Places to Stay Worldwide",
+      "description": "Find the perfect hotel for any budget. From luxury resorts to budget-friendly options around the world."
     },
     "dining": {
-      "title": "Dubai Restaurants | Best Dining in Dubai",
-      "description": "Explore Dubai's culinary scene - fine dining, street food, and everything in between."
+      "title": "Restaurants | Best Dining Worldwide",
+      "description": "Explore culinary scenes around the world - fine dining, street food, and everything in between."
     }
   },
   "guides": {

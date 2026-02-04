@@ -293,9 +293,9 @@ export function registerAiGenerationRoutes(app: Express): void {
         if (sourceText) contextInfo += `\nSource text: ${sourceText}`;
         if (sourceUrl) contextInfo += `\nSource URL: ${sourceUrl}`;
 
-        const systemPrompt = `You are an expert travel content writer specializing in Dubai.
+        const systemPrompt = `You are an expert travel content writer.
 Write a comprehensive, SEO-optimized article based on the given information.
-The article should be engaging, informative, and helpful for tourists planning to visit Dubai.
+The article should be engaging, informative, and helpful for tourists planning their trip.
 
 Return your response as a valid JSON object with this exact structure:
 {
@@ -318,9 +318,9 @@ Guidelines:
 - Use local insights and insider tips
 - Make content scannable with headers and lists
 - Include 3-5 FAQs based on common tourist questions
-- Ensure all information is accurate for Dubai`;
+- Ensure all information is accurate for the destination`;
 
-        const userPrompt = `Write a comprehensive Dubai travel article based on this information:
+        const userPrompt = `Write a comprehensive travel article based on this information:
 
 ${contextInfo}
 
@@ -517,7 +517,7 @@ Generate a complete, SEO-optimized article ready for publication.`;
           contentType: contentType as any,
           title,
           description,
-          location: location || "Dubai, UAE",
+          location: location || "",
           generateHero: generateHero !== false,
           generateContentImages: genContentImages !== false,
           contentImageCount: contentImageCount || 3,
@@ -631,7 +631,7 @@ Generate a complete, SEO-optimized article ready for publication.`;
           return res.status(400).json({ error: "Invalid action" });
         }
 
-        let systemPrompt = "You are a professional content editor for a Dubai travel website.";
+        let systemPrompt = "You are a professional content editor for a travel website.";
         let userPrompt = "";
 
         switch (action) {
@@ -716,14 +716,14 @@ Generate a complete, SEO-optimized article ready for publication.`;
           messages: [
             {
               role: "system",
-              content: `You are a helpful Dubai travel content assistant. Help users with questions about:
+              content: `You are a helpful travel content assistant. Help users with questions about:
 - Writing and improving travel content
-- SEO optimization for Dubai tourism topics
+- SEO optimization for tourism topics
 - Creating engaging descriptions for hotels, attractions, restaurants
-- Answering questions about Dubai travel
+- Answering questions about travel destinations
 
 Keep responses concise but helpful. Use bullet points and formatting when appropriate.
-Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.`,
+Focus on travel, tourism, hotels, attractions, dining, and related topics.`,
             },
             { role: "user", content: prompt },
           ],

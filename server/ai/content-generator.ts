@@ -1,6 +1,6 @@
 /**
  * Centralized AI Content Generator Service
- * 
+ *
  * Unified content generation that enforces SEO standards across all content types.
  * Uses the unified AI provider system with automatic fallback.
  */
@@ -19,51 +19,54 @@ import {
   type SEOValidationResult,
 } from "../lib/seo-standards";
 import { DUBAI_KEYWORDS, searchTopics, type TopicKeyword } from "@shared/dubai-keywords";
-import { 
-  type ArticleTemplate, 
+import {
+  type ArticleTemplate,
   SEO_AEO_TOURISM_TEMPLATE,
   getTemplateById,
   generateTemplatePrompt,
-  substituteVariables 
+  substituteVariables,
 } from "@shared/article-templates";
 
 const logger = createLogger("content-generator");
 
 // ============================================================================
-// DUBAI KEYWORD HELPERS
+// DESTINATION KEYWORD HELPERS
 // ============================================================================
 
 /**
- * Find relevant Dubai keywords for a given topic
+ * Find relevant keywords for a given topic (Dubai-specific data)
  * Returns keywords to help the AI use SEO-optimized terminology
+ * Note: Currently only supports Dubai; other destinations use generic SEO
  */
-function findRelevantDubaiKeywords(topic: string): { 
+function findRelevantDubaiKeywords(topic: string): {
   relatedTopics: TopicKeyword[];
   suggestedKeywords: string[];
   categoryHint: string;
 } {
   const matchingTopics = searchTopics(topic);
-  
+
   // Find which category the topic might belong to
   let categoryHint = "";
   const topicLower = topic.toLowerCase();
-  
+
   for (const [key, category] of Object.entries(DUBAI_KEYWORDS)) {
-    if (category.topics.some(t => 
-      topicLower.includes(t.topic.toLowerCase()) ||
-      t.keywords.some(k => topicLower.includes(k))
-    )) {
+    if (
+      category.topics.some(
+        t =>
+          topicLower.includes(t.topic.toLowerCase()) || t.keywords.some(k => topicLower.includes(k))
+      )
+    ) {
       categoryHint = category.name;
       break;
     }
   }
-  
+
   // Collect all keywords from matching topics
   const suggestedKeywords: string[] = [];
   for (const topic of matchingTopics.slice(0, 5)) {
     suggestedKeywords.push(...topic.keywords);
   }
-  
+
   return {
     relatedTopics: matchingTopics.slice(0, 5),
     suggestedKeywords: [...new Set(suggestedKeywords)].slice(0, 15),
@@ -153,14 +156,14 @@ export interface GenerationOptions {
 function buildSystemPrompt(contentType: ContentType, writerPersonality?: string): string {
   const requirements = CONTENT_TYPE_REQUIREMENTS[contentType];
   const bannedList = BANNED_PHRASES.slice(0, 20).join('", "');
-  
+
   let personalitySection = "";
   if (writerPersonality) {
     personalitySection = `\n\nWRITING STYLE:
 You are writing with this personality: ${writerPersonality}
 Adapt your tone, vocabulary, and approach to match this personality while maintaining professionalism.`;
   }
-  
+
   return `You are a professional travel content writer for Travi, a premium travel guide website.
 
 CRITICAL SEO REQUIREMENTS (MUST FOLLOW):
@@ -192,9 +195,11 @@ Respond ONLY with valid JSON matching the specified structure. No markdown, no e
 function buildTemplateBasedPrompt(template: ArticleTemplate, options: GenerationOptions): string {
   // FAIL-FAST: Destination is required for template-based prompts - no silent defaults
   if (!options.destination) {
-    throw new Error('[ContentGenerator] FAIL: destination is required for content generation - no implicit defaults allowed');
+    throw new Error(
+      "[ContentGenerator] FAIL: destination is required for content generation - no implicit defaults allowed"
+    );
   }
-  
+
   const year = new Date().getFullYear();
   const variables: Record<string, string> = {
     topic: options.topic,
@@ -203,17 +208,20 @@ function buildTemplateBasedPrompt(template: ArticleTemplate, options: Generation
     primary_keyword: options.targetKeyword || options.topic,
     ...(options.templateVariables ?? {}),
   };
-  
+
   // Generate template structure for AI
   const templatePrompt = generateTemplatePrompt(template, variables);
-  
-  // Find relevant Dubai keywords
-  const dubaiKeywords = findRelevantDubaiKeywords(options.topic);
+
+  // Find relevant Dubai keywords (only for Dubai content)
   let keywordSuggestions = "";
-  if (dubaiKeywords.suggestedKeywords.length > 0) {
-    keywordSuggestions = `\n\nSEO KEYWORD SUGGESTIONS: ${dubaiKeywords.suggestedKeywords.slice(0, 10).join(", ")}`;
+  const isDubaiContent = options.destination?.toLowerCase() === "dubai";
+  if (isDubaiContent) {
+    const dubaiKeywords = findRelevantDubaiKeywords(options.topic);
+    if (dubaiKeywords.suggestedKeywords.length > 0) {
+      keywordSuggestions = `\n\nSEO KEYWORD SUGGESTIONS: ${dubaiKeywords.suggestedKeywords.slice(0, 10).join(", ")}`;
+    }
   }
-  
+
   return `${templatePrompt}
 ${options.additionalContext ? `\nADDITIONAL CONTEXT: ${options.additionalContext}` : ""}${keywordSuggestions}
 
@@ -277,7 +285,7 @@ Respond with JSON ONLY.`;
 function buildContentPrompt(options: GenerationOptions): string {
   const requirements = CONTENT_TYPE_REQUIREMENTS[options.contentType];
   const sectionCount = options.minSections || requirements.h2Count.min;
-  
+
   // Check if using a template
   if (options.templateId) {
     const template = getTemplateById(options.templateId);
@@ -285,27 +293,30 @@ function buildContentPrompt(options: GenerationOptions): string {
       return buildTemplateBasedPrompt(template, options);
     }
   }
-  
+
   let destinationContext = "";
   if (options.destination) {
     destinationContext = `\nDESTINATION CONTEXT: This content is about ${options.destination}. Include location-specific information.`;
   }
-  
+
   let keywordContext = "";
   if (options.targetKeyword) {
     keywordContext = `\nPRIMARY KEYWORD: "${options.targetKeyword}" - Use this naturally 1-2% throughout the content.`;
   }
-  
-  // Find relevant Dubai keywords for SEO optimization
-  const dubaiKeywords = findRelevantDubaiKeywords(options.topic);
+
+  // Find relevant Dubai keywords for SEO optimization (only for Dubai content)
   let dubaiKeywordContext = "";
-  if (dubaiKeywords.suggestedKeywords.length > 0) {
-    dubaiKeywordContext = `\nSEO KEYWORD SUGGESTIONS: Consider naturally incorporating these Dubai-relevant terms: ${dubaiKeywords.suggestedKeywords.slice(0, 8).join(", ")}`;
-    if (dubaiKeywords.categoryHint) {
-      dubaiKeywordContext += `\nCONTENT CATEGORY: ${dubaiKeywords.categoryHint}`;
+  const isDubaiContent = options.destination?.toLowerCase() === "dubai";
+  if (isDubaiContent) {
+    const dubaiKeywords = findRelevantDubaiKeywords(options.topic);
+    if (dubaiKeywords.suggestedKeywords.length > 0) {
+      dubaiKeywordContext = `\nSEO KEYWORD SUGGESTIONS: Consider naturally incorporating these destination-relevant terms: ${dubaiKeywords.suggestedKeywords.slice(0, 8).join(", ")}`;
+      if (dubaiKeywords.categoryHint) {
+        dubaiKeywordContext += `\nCONTENT CATEGORY: ${dubaiKeywords.categoryHint}`;
+      }
     }
   }
-  
+
   return `Generate comprehensive ${options.contentType} content about: ${options.topic}
 ${destinationContext}${keywordContext}${dubaiKeywordContext}
 ${options.additionalContext ? `\nADDITIONAL CONTEXT: ${options.additionalContext}` : ""}
@@ -353,57 +364,67 @@ Respond with JSON ONLY.`;
  */
 export async function generateContent(options: GenerationOptions): Promise<GeneratedContent> {
   const providers = getAllUnifiedProviders();
-  
+
   if (providers.length === 0) {
     throw new Error("No AI providers available for content generation");
   }
-  
+
   const systemPrompt = buildSystemPrompt(options.contentType, options.writerPersonality);
   const userPrompt = buildContentPrompt(options);
-  
+
   const messages: AIMessage[] = [
     { role: "system", content: systemPrompt },
     { role: "user", content: userPrompt },
   ];
-  
+
   let lastError: Error | null = null;
-  
+
   for (const provider of providers) {
     try {
-      logger.info(`Generating ${options.contentType} content for "${options.topic}" using ${provider.name}`);
-      
+      logger.info(
+        `Generating ${options.contentType} content for "${options.topic}" using ${provider.name}`
+      );
+
       const result = await provider.generateCompletion({
         messages,
         temperature: 0.7,
         maxTokens: 8000,
         responseFormat: { type: "json_object" },
       });
-      
+
       // Parse and validate the response
       const content = parseAndValidateResponse(result.content, options);
-      
-      logger.info(`Successfully generated content using ${provider.name}: ${content.wordCount} words, SEO score: ${content.seoValidation.score}`);
-      
+
+      logger.info(
+        `Successfully generated content using ${provider.name}: ${content.wordCount} words, SEO score: ${content.seoValidation.score}`
+      );
+
       return {
         ...content,
         provider: provider.name,
         model: result.model,
       };
     } catch (error) {
-      logger.warn({ error: String(error) }, `Provider ${provider.name} failed for content generation`);
+      logger.warn(
+        { error: String(error) },
+        `Provider ${provider.name} failed for content generation`
+      );
       markProviderFailed(provider.name);
       lastError = error instanceof Error ? error : new Error(String(error));
       continue;
     }
   }
-  
+
   throw lastError || new Error("All AI providers failed to generate content");
 }
 
 /**
  * Parse AI response and validate against SEO standards
  */
-function parseAndValidateResponse(responseContent: string, options: GenerationOptions): Omit<GeneratedContent, "provider" | "model"> {
+function parseAndValidateResponse(
+  responseContent: string,
+  options: GenerationOptions
+): Omit<GeneratedContent, "provider" | "model"> {
   // Clean up response
   let jsonStr = responseContent.trim();
   if (jsonStr.startsWith("```json")) {
@@ -411,50 +432,58 @@ function parseAndValidateResponse(responseContent: string, options: GenerationOp
   } else if (jsonStr.startsWith("```")) {
     jsonStr = jsonStr.replace(/^```\n?/, "").replace(/\n?```$/, "");
   }
-  
+
   let parsed;
   try {
     parsed = JSON.parse(jsonStr);
   } catch (e) {
     throw new Error(`Failed to parse AI response as JSON: ${e}`);
   }
-  
+
   // Extract and structure content
-  const sections: ContentSection[] = (parsed.sections || []).map((s: { heading?: string; content?: string; imageHint?: string }) => ({
-    heading: s.heading || "",
-    content: s.content || "",
-    imageHint: s.imageHint,
-  }));
-  
+  const sections: ContentSection[] = (parsed.sections || []).map(
+    (s: { heading?: string; content?: string; imageHint?: string }) => ({
+      heading: s.heading || "",
+      content: s.content || "",
+      imageHint: s.imageHint,
+    })
+  );
+
   const faqs: FAQ[] = (parsed.faqs || []).map((f: { question?: string; answer?: string }) => ({
     question: f.question || "",
     answer: f.answer || "",
   }));
-  
+
   // Build HTML content for validation
   let htmlContent = "";
   for (const section of sections) {
     htmlContent += `<h2>${section.heading}</h2>\n${section.content}\n`;
   }
-  
+
   // Calculate word count
   const textContent = htmlContent.replace(/<[^>]+>/g, " ");
   const wordCount = textContent.split(/\s+/).filter(Boolean).length;
-  
+
   // Generate proper meta title and description if they don't meet requirements
   let metaTitle = parsed.metaTitle || generateMetaTitle(parsed.title, options.destination);
   let metaDescription = parsed.metaDescription || generateMetaDescription(parsed.title);
-  
+
   // Fix meta title length if needed
-  if (metaTitle.length < SEO_REQUIREMENTS.metaTitle.minLength || metaTitle.length > SEO_REQUIREMENTS.metaTitle.maxLength) {
+  if (
+    metaTitle.length < SEO_REQUIREMENTS.metaTitle.minLength ||
+    metaTitle.length > SEO_REQUIREMENTS.metaTitle.maxLength
+  ) {
     metaTitle = generateMetaTitle(parsed.title, options.destination);
   }
-  
+
   // Fix meta description length if needed
-  if (metaDescription.length < SEO_REQUIREMENTS.metaDescription.minLength || metaDescription.length > SEO_REQUIREMENTS.metaDescription.maxLength) {
+  if (
+    metaDescription.length < SEO_REQUIREMENTS.metaDescription.minLength ||
+    metaDescription.length > SEO_REQUIREMENTS.metaDescription.maxLength
+  ) {
     metaDescription = generateMetaDescription(parsed.title);
   }
-  
+
   // Validate content against SEO standards
   const seoValidation = validateContent(
     {
@@ -466,16 +495,16 @@ function parseAndValidateResponse(responseContent: string, options: GenerationOp
     },
     options.contentType
   );
-  
+
   // Extract template-specific fields if present
   const openingParagraph = parsed.openingParagraph;
   const audienceSuitability = parsed.audienceSuitability as AudienceSuitability | undefined;
   const practicalInfo = parsed.practicalInfo as PracticalInfo | undefined;
-  const tips = Array.isArray(parsed.tips) ? parsed.tips as string[] : undefined;
-  const nearbyAttractions = Array.isArray(parsed.nearbyAttractions) 
-    ? (parsed.nearbyAttractions as NearbyAttraction[]) 
+  const tips = Array.isArray(parsed.tips) ? (parsed.tips as string[]) : undefined;
+  const nearbyAttractions = Array.isArray(parsed.nearbyAttractions)
+    ? (parsed.nearbyAttractions as NearbyAttraction[])
     : undefined;
-  
+
   return {
     title: parsed.title || options.topic,
     metaTitle,
@@ -508,19 +537,19 @@ export async function improveContent(
   if (content.seoValidation.score >= targetScore) {
     return content;
   }
-  
+
   const providers = getAllUnifiedProviders();
   if (providers.length === 0) {
     throw new Error("No AI providers available");
   }
-  
+
   const issues = [
-    ...content.seoValidation.errors.map((e) => e.message),
-    ...content.seoValidation.warnings.map((w) => w.message),
+    ...content.seoValidation.errors.map(e => e.message),
+    ...content.seoValidation.warnings.map(w => w.message),
   ].join("\n- ");
-  
-  const currentHtml = content.content.map((s) => `<h2>${s.heading}</h2>\n${s.content}`).join("\n");
-  
+
+  const currentHtml = content.content.map(s => `<h2>${s.heading}</h2>\n${s.content}`).join("\n");
+
   const messages: AIMessage[] = [
     {
       role: "system",
@@ -534,18 +563,22 @@ Return the improved content in the same JSON structure, with all issues resolved
     {
       role: "user",
       content: `Current content:
-${JSON.stringify({
-  title: content.title,
-  metaTitle: content.metaTitle,
-  metaDescription: content.metaDescription,
-  sections: content.content,
-  faqs: content.faqs,
-}, null, 2)}
+${JSON.stringify(
+  {
+    title: content.title,
+    metaTitle: content.metaTitle,
+    metaDescription: content.metaDescription,
+    sections: content.content,
+    faqs: content.faqs,
+  },
+  null,
+  2
+)}
 
 Fix all SEO issues and return improved JSON.`,
     },
   ];
-  
+
   for (const provider of providers) {
     try {
       const result = await provider.generateCompletion({
@@ -554,12 +587,12 @@ Fix all SEO issues and return improved JSON.`,
         maxTokens: 8000,
         responseFormat: { type: "json_object" },
       });
-      
+
       const improved = parseAndValidateResponse(result.content, {
         contentType: "article",
         topic: content.title,
       });
-      
+
       if (improved.seoValidation.score > content.seoValidation.score) {
         return {
           ...improved,
@@ -568,11 +601,14 @@ Fix all SEO issues and return improved JSON.`,
         };
       }
     } catch (error) {
-      logger.warn({ error: String(error) }, `Provider ${provider.name} failed for content improvement`);
+      logger.warn(
+        { error: String(error) },
+        `Provider ${provider.name} failed for content improvement`
+      );
       continue;
     }
   }
-  
+
   return content;
 }
 
@@ -593,7 +629,9 @@ export async function generateDestinationContent(
     topic: `Complete travel guide to ${destination}, ${country}`,
     destination: `${destination}, ${country}`,
     targetKeyword: `${destination} travel guide`,
-    additionalContext: additionalContext || `Include information about attractions, hotels, dining, transportation, and travel tips for ${destination}.`,
+    additionalContext:
+      additionalContext ||
+      `Include information about attractions, hotels, dining, transportation, and travel tips for ${destination}.`,
     minSections: 6,
     maxSections: 8,
   });
@@ -645,7 +683,7 @@ export async function generateHotelContent(
   if (hotelDetails?.priceRange) {
     additionalContext += ` Price range: ${hotelDetails.priceRange}.`;
   }
-  
+
   return generateContent({
     contentType: "hotel",
     topic: `${hotelName} - Hotel Review and Guide`,
@@ -679,7 +717,7 @@ export async function generateAttractionContent(
   if (attractionDetails?.ticketPrice) {
     additionalContext += ` Ticket price: ${attractionDetails.ticketPrice}.`;
   }
-  
+
   return generateContent({
     contentType: "attraction",
     topic: `${attractionName} - Complete Visitor Guide`,
@@ -715,12 +753,14 @@ export async function generateSeoAeoContent(
     language: options?.language || "en",
     word_count: String(options?.wordCount || 2500),
   };
-  
+
   // FAIL-FAST: Destination is required - no silent defaults
   if (!options?.destination) {
-    throw new Error('[ContentGenerator] FAIL: destination is required for attraction content generation - no implicit defaults allowed');
+    throw new Error(
+      "[ContentGenerator] FAIL: destination is required for attraction content generation - no implicit defaults allowed"
+    );
   }
-  
+
   return generateContent({
     contentType: options?.contentType || "attraction",
     topic,
@@ -750,9 +790,11 @@ export async function generateListicleContent(
 ): Promise<GeneratedContent> {
   // FAIL-FAST: Destination is required - no silent defaults
   if (!options?.destination) {
-    throw new Error('[ContentGenerator] FAIL: destination is required for listicle content generation - no implicit defaults allowed');
+    throw new Error(
+      "[ContentGenerator] FAIL: destination is required for listicle content generation - no implicit defaults allowed"
+    );
   }
-  
+
   return generateContent({
     contentType: "article",
     topic: `Top ${count} ${topic}`,
@@ -784,9 +826,11 @@ export async function generateComparisonContent(
 ): Promise<GeneratedContent> {
   // FAIL-FAST: Destination is required - no silent defaults
   if (!options?.destination) {
-    throw new Error('[ContentGenerator] FAIL: destination is required for comparison content generation - no implicit defaults allowed');
+    throw new Error(
+      "[ContentGenerator] FAIL: destination is required for comparison content generation - no implicit defaults allowed"
+    );
   }
-  
+
   return generateContent({
     contentType: "article",
     topic: `${optionA} vs ${optionB}`,
@@ -819,9 +863,11 @@ export async function generateBudgetGuideContent(
 ): Promise<GeneratedContent> {
   // FAIL-FAST: Destination is required - no silent defaults
   if (!options?.destination) {
-    throw new Error('[ContentGenerator] FAIL: destination is required for budget guide content generation - no implicit defaults allowed');
+    throw new Error(
+      "[ContentGenerator] FAIL: destination is required for budget guide content generation - no implicit defaults allowed"
+    );
   }
-  
+
   return generateContent({
     contentType: "article",
     topic: `${topic} on a Budget`,
@@ -845,8 +891,10 @@ export async function generateBudgetGuideContent(
  * Check if content meets minimum quality threshold
  */
 export function meetsQualityThreshold(content: GeneratedContent, minScore: number = 80): boolean {
-  return content.seoValidation.score >= minScore && 
-         content.seoValidation.errors.filter((e) => e.severity === "critical").length === 0;
+  return (
+    content.seoValidation.score >= minScore &&
+    content.seoValidation.errors.filter(e => e.severity === "critical").length === 0
+  );
 }
 
 /**
@@ -854,17 +902,19 @@ export function meetsQualityThreshold(content: GeneratedContent, minScore: numbe
  */
 export function getImprovementSuggestions(content: GeneratedContent): string[] {
   const suggestions: string[] = [...content.seoValidation.suggestions];
-  
+
   // Add word count suggestions
   const requirements = CONTENT_TYPE_REQUIREMENTS.article;
   if (content.wordCount < requirements.minWords) {
-    suggestions.push(`Add ${requirements.minWords - content.wordCount} more words to meet minimum word count`);
+    suggestions.push(
+      `Add ${requirements.minWords - content.wordCount} more words to meet minimum word count`
+    );
   }
-  
+
   // Add section suggestions
   if (content.content.length < requirements.h2Count.min) {
     suggestions.push(`Add ${requirements.h2Count.min - content.content.length} more H2 sections`);
   }
-  
+
   return suggestions;
 }

@@ -1,45 +1,15 @@
 /**
  * AI Tools Routes
- * Content scoring, plagiarism detection, and visual search endpoints
+ * Plagiarism detection endpoints
+ *
+ * Note: Content scoring and visual search have been removed.
+ * Use Octypo system for content generation and scoring.
  */
 
 import type { Express, Request, Response } from "express";
 import { requireAuth, type AuthRequest } from "../security";
 
 export function registerAiToolsRoutes(app: Express): void {
-  // ============================================================================
-  // AI CONTENT SCORING
-  // ============================================================================
-  app.post("/api/ai/score-content/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { contentScorer } = await import("../ai/content-scorer");
-      const { contentId } = req.params;
-      const result = await contentScorer.scoreContent(contentId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(500).json({ error: "Failed to score content" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to score content" });
-    }
-  });
-
-  app.get("/api/ai/content-score/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { contentScorer } = await import("../ai/content-scorer");
-      const { contentId } = req.params;
-      const result = await contentScorer.getContentScore(contentId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(404).json({ error: "No score found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to get content score" });
-    }
-  });
-
   // ============================================================================
   // AI PLAGIARISM DETECTION
   // ============================================================================
@@ -63,35 +33,6 @@ export function registerAiToolsRoutes(app: Express): void {
       res.json({ similarity });
     } catch (error) {
       res.status(500).json({ error: "Failed to compare texts" });
-    }
-  });
-
-  // ============================================================================
-  // AI VISUAL SEARCH
-  // ============================================================================
-  app.post("/api/ai/visual-search", async (req, res) => {
-    try {
-      const { visualSearch } = await import("../ai/visual-search");
-      const { imageUrl, limit } = req.body;
-      const results = await visualSearch.searchByImage(imageUrl, limit);
-      res.json({ results });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to perform visual search" });
-    }
-  });
-
-  app.post("/api/ai/analyze-image", async (req, res) => {
-    try {
-      const { visualSearch } = await import("../ai/visual-search");
-      const { imageUrl } = req.body;
-      const analysis = await visualSearch.analyzeImage(imageUrl);
-      if (analysis) {
-        res.json(analysis);
-      } else {
-        res.status(500).json({ error: "Failed to analyze image" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to analyze image" });
     }
   });
 }

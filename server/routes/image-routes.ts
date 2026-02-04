@@ -861,121 +861,44 @@ export function registerImageRoutes(app: Express) {
 
   /**
    * POST /api/images/generate-alt-text
-   * Generate AI-powered SEO-compliant alt text for an image
+   * @deprecated Use Octypo system for alt text generation
    */
   app.post(
     "/api/images/generate-alt-text",
     requirePermission("canEdit"),
-    checkReadOnlyMode,
-    checkAiUsageLimit,
-    async (req: Request, res: Response) => {
-      try {
-        const { imageContext, location, contentType, imageUrl } = req.body;
-
-        if (!imageContext) {
-          return res
-            .status(400)
-            .json({ error: "imageContext is required - describe what the image shows" });
-        }
-
-        // Import the alt-text generator dynamically
-        const { generateAltText } = await import("../ai/alt-text-generator");
-
-        const result = await generateAltText({
-          imageContext,
-          location,
-          contentType,
-          imageUrl,
-        });
-
-        res.json({
-          success: true,
-          altText: result.altText,
-          wordCount: result.wordCount,
-          charCount: result.charCount,
-          isValid: result.isValid,
-          errors: result.errors,
-        });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Alt-text generation failed";
-        res.status(500).json({ error: message });
-      }
+    async (_req: Request, res: Response) => {
+      res.status(410).json({
+        error: "This endpoint has been deprecated. Use Octypo system for alt text generation.",
+      });
     }
   );
 
   /**
    * POST /api/images/generate-alt-text/batch
-   * Generate AI-powered alt text for multiple images
+   * @deprecated Use Octypo system for alt text generation
    */
   app.post(
     "/api/images/generate-alt-text/batch",
     requirePermission("canEdit"),
-    checkReadOnlyMode,
-    checkAiUsageLimit,
-    async (req: Request, res: Response) => {
-      try {
-        const { images } = req.body;
-
-        if (!images || !Array.isArray(images) || images.length === 0) {
-          return res.status(400).json({ error: "images array is required" });
-        }
-
-        if (images.length > 20) {
-          return res.status(400).json({ error: "Maximum 20 images per batch" });
-        }
-
-        // Import the alt-text generator dynamically
-        const { generateBatchAltText } = await import("../ai/alt-text-generator");
-
-        const results = await generateBatchAltText(images);
-
-        const successful = results.filter(r => r.isValid).length;
-        const failed = results.length - successful;
-
-        res.json({
-          success: true,
-          total: results.length,
-          successful,
-          failed,
-          results,
-        });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Batch alt-text generation failed";
-        res.status(500).json({ error: message });
-      }
+    async (_req: Request, res: Response) => {
+      res.status(410).json({
+        error:
+          "This endpoint has been deprecated. Use Octypo system for batch alt text generation.",
+      });
     }
   );
 
   /**
    * POST /api/images/validate-alt-text
-   * Validate existing alt text and get improvement suggestions
+   * @deprecated Use Octypo system for alt text validation
    */
   app.post(
     "/api/images/validate-alt-text",
     requirePermission("canEdit"),
-    async (req: Request, res: Response) => {
-      try {
-        const { altText } = req.body;
-
-        if (!altText) {
-          return res.status(400).json({ error: "altText is required" });
-        }
-
-        // Import the alt-text generator dynamically
-        const { validateAndSuggestAltText } = await import("../ai/alt-text-generator");
-
-        const result = validateAndSuggestAltText(altText);
-
-        res.json({
-          success: true,
-          isValid: result.isValid,
-          issues: result.issues,
-          suggestions: result.suggestions,
-        });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Alt-text validation failed";
-        res.status(500).json({ error: message });
-      }
+    async (_req: Request, res: Response) => {
+      res.status(410).json({
+        error: "This endpoint has been deprecated. Use Octypo system for alt text validation.",
+      });
     }
   );
 

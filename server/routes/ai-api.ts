@@ -394,12 +394,10 @@ export function registerAiApiRoutes(app: Express): void {
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -464,12 +462,10 @@ export function registerAiApiRoutes(app: Express): void {
             "ai",
             "AI article generation failed - no AI provider configured (need OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, or openrouterapi)"
           );
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, or openrouterapi to Secrets.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, or openrouterapi to Secrets.",
+          });
         }
 
         addSystemLog(
@@ -884,12 +880,10 @@ Return JSON only:
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -944,12 +938,10 @@ Return valid JSON-LD that can be embedded in a webpage.`,
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -1095,12 +1087,10 @@ Remember to follow the character limits strictly!`,
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -1702,12 +1692,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -1790,12 +1778,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
       try {
         const aiClient = getAIClient();
         if (!aiClient) {
-          return res
-            .status(503)
-            .json({
-              error:
-                "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
-            });
+          return res.status(503).json({
+            error:
+              "AI service not configured. Please add OPENAI_API_KEY, GEMINI, or openrouterapi.",
+          });
         }
         const { client: openai, provider } = aiClient;
 
@@ -1835,34 +1821,17 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
     }
   );
 
-  router.post("/score-content/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { contentScorer } = await import("../ai/content-scorer");
-      const { contentId } = req.params;
-      const result = await contentScorer.scoreContent(contentId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(500).json({ error: "Failed to score content" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to score content" });
-    }
+  // Content scoring - deprecated, use Octypo system
+  router.post("/score-content/:contentId", requireAuth, async (_req, res) => {
+    res
+      .status(410)
+      .json({ error: "This endpoint has been deprecated. Use Octypo system for content scoring." });
   });
 
-  router.get("/content-score/:contentId", requireAuth, async (req, res) => {
-    try {
-      const { contentScorer } = await import("../ai/content-scorer");
-      const { contentId } = req.params;
-      const result = await contentScorer.getContentScore(contentId);
-      if (result) {
-        res.json(result);
-      } else {
-        res.status(404).json({ error: "No score found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to get content score" });
-    }
+  router.get("/content-score/:contentId", requireAuth, async (_req, res) => {
+    res
+      .status(410)
+      .json({ error: "This endpoint has been deprecated. Use Octypo system for content scoring." });
   });
 
   router.post("/check-plagiarism/:contentId", requireAuth, async (req, res) => {
@@ -1888,30 +1857,17 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
     }
   });
 
-  router.post("/visual-search", async (req, res) => {
-    try {
-      const { visualSearch } = await import("../ai/visual-search");
-      const { imageUrl, limit } = req.body;
-      const results = await visualSearch.searchByImage(imageUrl, limit);
-      res.json({ results });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to perform visual search" });
-    }
+  // Visual search - deprecated, use Octypo system
+  router.post("/visual-search", async (_req, res) => {
+    res
+      .status(410)
+      .json({ error: "This endpoint has been deprecated. Use Octypo system for visual search." });
   });
 
-  router.post("/analyze-image", async (req, res) => {
-    try {
-      const { visualSearch } = await import("../ai/visual-search");
-      const { imageUrl } = req.body;
-      const analysis = await visualSearch.analyzeImage(imageUrl);
-      if (analysis) {
-        res.json(analysis);
-      } else {
-        res.status(500).json({ error: "Failed to analyze image" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to analyze image" });
-    }
+  router.post("/analyze-image", async (_req, res) => {
+    res
+      .status(410)
+      .json({ error: "This endpoint has been deprecated. Use Octypo system for image analysis." });
   });
 
   app.use("/api/ai", router);

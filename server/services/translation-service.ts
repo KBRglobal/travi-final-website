@@ -231,11 +231,11 @@ async function translateWithDeepSeek(
       messages: [
         {
           role: "system",
-          content: `You are an expert tourism content translator specializing in Dubai travel content.
+          content: `You are an expert tourism content translator.
 
 CRITICAL RULES:
 1. Translate naturally using LOCAL expressions that tourists from the target language actually use
-2. Keep proper nouns in their original form: "Burj Khalifa", "Dubai Mall", "Palm Jumeirah"
+2. Keep proper nouns (place names, landmarks, brand names) in their original form
 3. Preserve all HTML tags, markdown formatting, and special characters exactly
 4. Use culturally appropriate marketing tone for the target audience
 5. For Chinese: Use Simplified Chinese (简体中文) unless Traditional is specified
@@ -321,11 +321,11 @@ async function translateWithClaude(
       messages: [
         {
           role: "user",
-          content: `You are an expert tourism content translator specializing in Dubai travel content.
+          content: `You are an expert tourism content translator.
 
 CRITICAL RULES:
 1. Translate naturally using LOCAL expressions that tourists from the target language actually use
-2. Keep proper nouns in their original form: "Burj Khalifa", "Dubai Mall", "Palm Jumeirah"
+2. Keep proper nouns (place names, landmarks, brand names) in their original form
 3. Preserve all HTML tags, markdown formatting, and special characters exactly
 4. Use culturally appropriate marketing tone for the target audience
 5. For RTL languages (Arabic, Hebrew): ensure proper text flow
@@ -424,13 +424,13 @@ async function translateWithDeepL(
   }
 }
 
-// Translation prompts optimized for Dubai tourism content
-const TRANSLATION_SYSTEM_PROMPT = `You are an expert tourism content translator specializing in Dubai travel content.
+// Translation prompts optimized for tourism content
+const TRANSLATION_SYSTEM_PROMPT = `You are an expert tourism content translator.
 
 CRITICAL RULES:
 1. Translate naturally using LOCAL expressions and slang that tourists from the target language actually use
-2. Keep proper nouns in their original form: "Burj Khalifa", "Dubai Mall", "Palm Jumeirah"
-3. Adapt currency mentions: Keep AED but add local equivalent in parentheses when relevant
+2. Keep proper nouns (place names, landmarks, brand names) in their original form
+3. Adapt currency mentions appropriately for the target audience
 4. Use culturally appropriate marketing tone for the target audience
 5. Preserve all HTML tags, markdown formatting, and special characters exactly
 6. Maintain SEO-friendly structure with proper headings and keywords in target language
