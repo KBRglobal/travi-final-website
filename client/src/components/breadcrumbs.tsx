@@ -24,14 +24,14 @@ interface BreadcrumbsProps {
   showDestination?: boolean;
 }
 
-export function Breadcrumbs({ 
-  items = [], 
+export function Breadcrumbs({
+  items = [],
   className,
   showHome = true,
-  showDestination = true
+  showDestination = true,
 }: BreadcrumbsProps) {
   const { localePath, isRTL } = useLocale();
-  const { isDubai } = useDestinationContext();
+  const { currentDestination, destinationSlug } = useDestinationContext();
   const { t } = useTranslation();
 
   const getLabel = (item: BreadcrumbItem) => {
@@ -40,38 +40,36 @@ export function Breadcrumbs({
   };
 
   const allItems: BreadcrumbItem[] = [];
-  
+
   if (showHome) {
     allItems.push({
       labelKey: "nav.home",
-      href: "/"
+      href: "/",
     });
   }
 
-  if (showDestination && isDubai) {
+  if (showDestination && destinationSlug && currentDestination) {
     allItems.push({
-      labelKey: "breadcrumbs.dubai",
-      href: "/destination/dubai"
+      label: currentDestination,
+      href: `/destination/${destinationSlug}`,
     });
   }
 
   allItems.push(...items);
 
-  const Separator = () => (
-    isRTL 
-      ? <ChevronLeft className="w-3 h-3 text-gray-400 flex-shrink-0 mx-1" aria-hidden="true" />
-      : <ChevronRight className="w-3 h-3 text-gray-400 flex-shrink-0 mx-1" aria-hidden="true" />
-  );
+  const Separator = () =>
+    isRTL ? (
+      <ChevronLeft className="w-3 h-3 text-gray-400 flex-shrink-0 mx-1" aria-hidden="true" />
+    ) : (
+      <ChevronRight className="w-3 h-3 text-gray-400 flex-shrink-0 mx-1" aria-hidden="true" />
+    );
 
   if (allItems.length <= 1) return null;
 
   return (
-    <nav 
+    <nav
       aria-label={t("breadcrumbs.ariaLabel")}
-      className={cn(
-        "flex items-center gap-1 text-sm",
-        className
-      )}
+      className={cn("flex items-center gap-1 text-sm", className)}
       data-testid="breadcrumbs"
     >
       {allItems.map((item, index) => {
@@ -79,12 +77,14 @@ export function Breadcrumbs({
         const isFirst = index === 0;
         const displayLabel = getLabel(item);
         const itemKey = item.labelKey || item.label || item.href || `breadcrumb-${index}`;
-        const testIdSuffix = (item.labelKey || item.label || item.href || `item-${index}`).toLowerCase().replace(/[.\s]/g, '-');
-        
+        const testIdSuffix = (item.labelKey || item.label || item.href || `item-${index}`)
+          .toLowerCase()
+          .replace(/[.\s]/g, "-");
+
         return (
           <div key={itemKey} className="flex items-center">
             {index > 0 && <Separator />}
-            
+
             {item.href && !isLast ? (
               <Link
                 href={localePath(item.href)}
@@ -95,7 +95,7 @@ export function Breadcrumbs({
                 <span>{displayLabel}</span>
               </Link>
             ) : (
-              <span 
+              <span
                 className="text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap truncate max-w-[200px]"
                 data-testid="breadcrumb-current"
                 aria-current="page"
@@ -116,16 +116,12 @@ interface BackButtonProps {
   className?: string;
 }
 
-export function BackButton({ 
-  href, 
-  labelKey = "common.back",
-  className 
-}: BackButtonProps) {
+export function BackButton({ href, labelKey = "common.back", className }: BackButtonProps) {
   const { localePath, isRTL } = useLocale();
-  const { isDubai } = useDestinationContext();
+  const { destinationSlug } = useDestinationContext();
   const { t } = useTranslation();
-  
-  const targetHref = href || (isDubai ? "/destination/dubai" : "/");
+
+  const targetHref = href || (destinationSlug ? `/destination/${destinationSlug}` : "/");
   const displayLabel = t(labelKey);
 
   const ArrowIcon = isRTL ? ChevronRight : ChevronLeft;
@@ -173,41 +169,27 @@ export function PageHeader({
   const displaySubtitle = subtitleKey ? t(subtitleKey) : subtitle;
 
   return (
-    <div 
-      className={cn(
-        "bg-white dark:bg-card rounded-xl p-6 mb-6 shadow-sm",
-        className
-      )}
+    <div
+      className={cn("bg-white dark:bg-card rounded-xl p-6 mb-6 shadow-sm", className)}
       data-testid="page-header"
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <Breadcrumbs items={breadcrumbs} />
-          {showBackButton && (
-            <BackButton 
-              href={backHref} 
-              labelKey={backLabelKey}
-            />
-          )}
+          {showBackButton && <BackButton href={backHref} labelKey={backLabelKey} />}
         </div>
-        
+
         <div>
-          <h1 
-            className="text-2xl md:text-3xl font-bold text-foreground"
-            data-testid="page-title"
-          >
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground" data-testid="page-title">
             {displayTitle}
           </h1>
           {displaySubtitle && (
-            <p 
-              className="mt-2 text-gray-600 dark:text-gray-400"
-              data-testid="page-subtitle"
-            >
+            <p className="mt-2 text-gray-600 dark:text-gray-400" data-testid="page-subtitle">
               {displaySubtitle}
             </p>
           )}
         </div>
-        
+
         {children}
       </div>
     </div>

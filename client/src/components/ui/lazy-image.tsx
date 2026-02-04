@@ -10,7 +10,7 @@ import { generateSrcset, generateSizes, ImageLocation } from "@/lib/image-seo-ut
 
 // ==================== Types ====================
 
-export interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'loading'> {
+export interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "loading"> {
   // Required
   src: string;
   alt: string;
@@ -35,20 +35,20 @@ export interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageEl
 
   // Loading behavior
   priority?: boolean; // For LCP images (above the fold)
-  loading?: 'lazy' | 'eager';
-  fetchPriority?: 'high' | 'low' | 'auto';
+  loading?: "lazy" | "eager";
+  fetchPriority?: "high" | "low" | "auto";
 
   // Responsive images
   srcset?: string;
   sizes?: string;
-  imageType?: 'hero' | 'featured' | 'content' | 'thumbnail' | 'gallery';
+  imageType?: "hero" | "featured" | "content" | "thumbnail" | "gallery";
 
   // Fallback
   fallback?: string;
 
   // Display options
-  aspectRatio?: 'video' | 'square' | 'portrait' | 'auto' | '4/3' | '3/2';
-  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+  aspectRatio?: "video" | "square" | "portrait" | "auto" | "4/3" | "3/2";
+  objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 
   // Figure/Caption
   showCaption?: boolean;
@@ -73,14 +73,14 @@ export function LazyImage({
   altAr,
   contentLocation,
   datePublished,
-  author = 'TripMD',
+  author = "TripMD",
   pageUrl,
   priority = false,
   loading: loadingProp,
   fetchPriority: fetchPriorityProp,
   srcset: srcsetProp,
   sizes: sizesProp,
-  imageType = 'content',
+  imageType = "content",
   fallback = "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop",
   aspectRatio = "auto",
   objectFit = "cover",
@@ -99,11 +99,12 @@ export function LazyImage({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Determine loading strategy
-  const loading = loadingProp || (priority ? 'eager' : 'lazy');
-  const fetchPriority = fetchPriorityProp || (priority ? 'high' : 'auto');
+  const loading = loadingProp || (priority ? "eager" : "lazy");
+  const fetchPriority = fetchPriorityProp || (priority ? "high" : "auto");
 
   // Generate responsive attributes automatically for supported sources
-  const shouldGenerateSrcset = src.includes('unsplash.com') || src.includes('cloudinary') || src.includes('imgix');
+  const shouldGenerateSrcset =
+    src.includes("unsplash.com") || src.includes("cloudinary") || src.includes("imgix");
   const srcset = srcsetProp || (shouldGenerateSrcset ? generateSrcset(src) : undefined);
   const sizes = sizesProp || (srcset ? generateSizes(imageType) : undefined);
 
@@ -142,9 +143,10 @@ export function LazyImage({
   };
 
   // Calculate aspect ratio style for auto mode
-  const containerStyle = aspectRatio === 'auto' && width && height
-    ? { ...style, aspectRatio: `${width}/${height}` }
-    : style;
+  const containerStyle =
+    aspectRatio === "auto" && width && height
+      ? { ...style, aspectRatio: `${width}/${height}` }
+      : style;
 
   // Object fit classes
   const objectFitClasses: Record<string, string> = {
@@ -180,19 +182,22 @@ export function LazyImage({
     const formatMatch = src.match(/\.(webp|jpg|jpeg|png|gif)(\?|$)/i);
     if (formatMatch) {
       const format = formatMatch[1].toLowerCase();
-      schema.encodingFormat = `image/${format === 'jpg' ? 'jpeg' : format}`;
+      schema.encodingFormat = `image/${format === "jpg" ? "jpeg" : format}`;
     }
 
     if (contentLocation) {
       schema.contentLocation = {
         "@type": "Place",
         name: contentLocation.name,
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: contentLocation.address?.addressLocality || "Dubai",
-          addressRegion: contentLocation.address?.addressRegion || "Dubai",
-          addressCountry: contentLocation.address?.addressCountry || "AE",
-        },
+        address:
+          contentLocation.address?.addressLocality || contentLocation.address?.addressCountry
+            ? {
+                "@type": "PostalAddress",
+                addressLocality: contentLocation.address?.addressLocality,
+                addressRegion: contentLocation.address?.addressRegion,
+                addressCountry: contentLocation.address?.addressCountry,
+              }
+            : undefined,
       };
       if (contentLocation.geo) {
         (schema.contentLocation as Record<string, unknown>).geo = {
@@ -226,10 +231,10 @@ export function LazyImage({
       {isInView && (
         <picture>
           {/* WebP source for supported CDNs */}
-          {srcset && src.includes('unsplash.com') && (
+          {srcset && src.includes("unsplash.com") && (
             <source
               type="image/webp"
-              srcSet={srcset.replace(/\.(jpg|jpeg|png)/gi, '.webp')}
+              srcSet={srcset.replace(/\.(jpg|jpeg|png)/gi, ".webp")}
               sizes={sizes}
             />
           )}
@@ -282,10 +287,7 @@ export function LazyImage({
       {(showCaption || caption) && caption && (
         <figcaption
           itemProp={showSchema ? "caption" : undefined}
-          className={cn(
-            "mt-2 text-sm text-muted-foreground",
-            captionClassName
-          )}
+          className={cn("mt-2 text-sm text-muted-foreground", captionClassName)}
         >
           {caption}
         </figcaption>
@@ -316,7 +318,10 @@ export function LazyImage({
 
 // ==================== Hero Variant ====================
 
-export interface HeroImageProps extends Omit<LazyImageProps, 'priority' | 'imageType' | 'aspectRatio'> {
+export interface HeroImageProps extends Omit<
+  LazyImageProps,
+  "priority" | "imageType" | "aspectRatio"
+> {
   overlayOpacity?: number;
   children?: React.ReactNode;
   minHeight?: string;
@@ -349,9 +354,7 @@ export function HeroImage({
 
       {/* Content */}
       {children && (
-        <div className="relative z-10 h-full flex items-center justify-center">
-          {children}
-        </div>
+        <div className="relative z-10 h-full flex items-center justify-center">{children}</div>
       )}
     </div>
   );
@@ -359,23 +362,20 @@ export function HeroImage({
 
 // ==================== Gallery Variant ====================
 
-export interface GalleryImageProps extends Omit<LazyImageProps, 'imageType'> {
+export interface GalleryImageProps extends Omit<LazyImageProps, "imageType"> {
   onClick?: () => void;
 }
 
-export function GalleryImage({
-  onClick,
-  className,
-  ...props
-}: GalleryImageProps) {
+export function GalleryImage({ onClick, className, ...props }: GalleryImageProps) {
   return (
     <div
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
       onClick={onClick}
-      onKeyDown={onClick ? (e) => e.key === "Enter" && onClick() : undefined}
+      onKeyDown={onClick ? e => e.key === "Enter" && onClick() : undefined}
       className={cn(
-        onClick && "cursor-pointer hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary",
+        onClick &&
+          "cursor-pointer hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary",
         className
       )}
     >
@@ -386,7 +386,7 @@ export function GalleryImage({
 
 // ==================== Thumbnail Variant ====================
 
-export function ThumbnailImage(props: Omit<LazyImageProps, 'imageType' | 'aspectRatio'>) {
+export function ThumbnailImage(props: Omit<LazyImageProps, "imageType" | "aspectRatio">) {
   return <LazyImage {...props} imageType="thumbnail" aspectRatio="video" />;
 }
 

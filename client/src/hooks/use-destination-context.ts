@@ -89,11 +89,11 @@ export const DUBAI_ONLY_ROUTES = [
 // These are the "entry points" to Dubai content
 const DUBAI_CONTEXT_ROUTES = [
   "/destination/dubai",
-  "/destinations/dubai",  // Also support plural route format
+  "/destinations/dubai", // Also support plural route format
 ];
 
 // Map destination slugs to display names
-const DESTINATION_NAMES: Record<string, string> = {
+export const DESTINATION_NAMES: Record<string, string> = {
   dubai: "Dubai",
   bangkok: "Bangkok",
   paris: "Paris",
@@ -101,6 +101,16 @@ const DESTINATION_NAMES: Record<string, string> = {
   london: "London",
   nyc: "New York",
   singapore: "Singapore",
+  tokyo: "Tokyo",
+  barcelona: "Barcelona",
+  rome: "Rome",
+  amsterdam: "Amsterdam",
+  "hong-kong": "Hong Kong",
+  sydney: "Sydney",
+  "los-angeles": "Los Angeles",
+  miami: "Miami",
+  "las-vegas": "Las Vegas",
+  berlin: "Berlin",
 };
 
 export function useDestinationContext(): DestinationContext {
@@ -108,19 +118,19 @@ export function useDestinationContext(): DestinationContext {
 
   return useMemo(() => {
     const path = location.toLowerCase();
-    
+
     // Check if we're on a destination page (support both /destination/slug and /destinations/slug)
     const destinationMatch = path.match(/\/destinations?\/([^\/]+)/);
     const destinationSlug = destinationMatch ? destinationMatch[1] : null;
-    
+
     // Check if we're on a Dubai-only route
-    const onDubaiOnlyRoute = DUBAI_ONLY_ROUTES.some(route => 
-      path === route.toLowerCase() || path.startsWith(route.toLowerCase() + "/")
+    const onDubaiOnlyRoute = DUBAI_ONLY_ROUTES.some(
+      route => path === route.toLowerCase() || path.startsWith(route.toLowerCase() + "/")
     );
-    
+
     // Check if we're explicitly in Dubai context (NOT just on a Dubai-only route)
     // Dubai context means: destination/dubai page OR any Dubai-only route (since those are Dubai content)
-    const isDubai = 
+    const isDubai =
       destinationSlug === "dubai" ||
       DUBAI_CONTEXT_ROUTES.some(route => path.startsWith(route.toLowerCase())) ||
       onDubaiOnlyRoute; // Dubai-only routes ARE Dubai content, so show the sub-nav
@@ -148,9 +158,9 @@ export function useDestinationContext(): DestinationContext {
  */
 export function isDubaiOnlyRoute(path: string): boolean {
   const normalizedPath = path.toLowerCase();
-  return DUBAI_ONLY_ROUTES.some(route => 
-    normalizedPath === route.toLowerCase() || 
-    normalizedPath.startsWith(route.toLowerCase() + "/")
+  return DUBAI_ONLY_ROUTES.some(
+    route =>
+      normalizedPath === route.toLowerCase() || normalizedPath.startsWith(route.toLowerCase() + "/")
   );
 }
 

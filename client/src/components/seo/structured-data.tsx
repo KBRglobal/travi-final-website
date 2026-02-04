@@ -12,7 +12,8 @@ export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
     name: "Travi",
     url: "https://travi.world",
     logo: "https://travi.world/logo.png",
-    description: "Your ultimate guide to Dubai - attractions, hotels, dining, and more.",
+    description:
+      "Your ultimate travel guide - attractions, hotels, dining, and experiences worldwide.",
     inLanguage: locale,
     sameAs: [
       "https://twitter.com/travi",
@@ -22,7 +23,17 @@ export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      availableLanguage: ["English", "Arabic", "French", "German", "Spanish", "Portuguese", "Chinese", "Japanese", "Hindi"],
+      availableLanguage: [
+        "English",
+        "Arabic",
+        "French",
+        "German",
+        "Spanish",
+        "Portuguese",
+        "Chinese",
+        "Japanese",
+        "Hindi",
+      ],
     },
   };
 
@@ -31,6 +42,13 @@ export function OrganizationSchema({ locale = "en" }: OrganizationSchemaProps) {
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );
+}
+
+// Location prop interface for destination-agnostic schemas
+interface LocationProp {
+  city?: string;
+  country?: string;
+  countryCode?: string;
 }
 
 // Tourism attraction schema
@@ -44,6 +62,7 @@ interface AttractionSchemaProps {
   priceRange?: string;
   openingHours?: string[];
   locale?: string;
+  location?: LocationProp;
 }
 
 export function AttractionSchema({
@@ -56,6 +75,7 @@ export function AttractionSchema({
   priceRange,
   openingHours,
   locale = "en",
+  location,
 }: AttractionSchemaProps) {
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -67,8 +87,8 @@ export function AttractionSchema({
     address: address
       ? {
           "@type": "PostalAddress",
-          addressLocality: "Dubai",
-          addressCountry: "AE",
+          addressLocality: location?.city,
+          addressCountry: location?.countryCode,
           streetAddress: address,
         }
       : undefined,
@@ -81,7 +101,7 @@ export function AttractionSchema({
         }
       : undefined,
     priceRange,
-    openingHoursSpecification: openingHours?.map((hours) => ({
+    openingHoursSpecification: openingHours?.map(hours => ({
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
       opens: hours.split("-")[0],
@@ -107,6 +127,7 @@ interface HotelSchemaProps {
   priceRange?: string;
   starRating?: number;
   locale?: string;
+  location?: LocationProp;
 }
 
 export function HotelSchema({
@@ -119,6 +140,7 @@ export function HotelSchema({
   priceRange,
   starRating,
   locale = "en",
+  location,
 }: HotelSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -127,12 +149,14 @@ export function HotelSchema({
     description,
     image,
     inLanguage: locale,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Dubai",
-      addressCountry: "AE",
-      streetAddress: address,
-    },
+    address: address
+      ? {
+          "@type": "PostalAddress",
+          addressLocality: location?.city,
+          addressCountry: location?.countryCode,
+          streetAddress: address,
+        }
+      : undefined,
     aggregateRating: rating
       ? {
           "@type": "AggregateRating",
@@ -169,6 +193,7 @@ interface RestaurantSchemaProps {
   cuisineType?: string;
   servesCuisine?: string[];
   locale?: string;
+  location?: LocationProp;
 }
 
 export function RestaurantSchema({
@@ -182,6 +207,7 @@ export function RestaurantSchema({
   cuisineType,
   servesCuisine,
   locale = "en",
+  location,
 }: RestaurantSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -190,12 +216,14 @@ export function RestaurantSchema({
     description,
     image,
     inLanguage: locale,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Dubai",
-      addressCountry: "AE",
-      streetAddress: address,
-    },
+    address: address
+      ? {
+          "@type": "PostalAddress",
+          addressLocality: location?.city,
+          addressCountry: location?.countryCode,
+          streetAddress: address,
+        }
+      : undefined,
     aggregateRating: rating
       ? {
           "@type": "AggregateRating",
@@ -271,11 +299,12 @@ interface EventSchemaProps {
   description: string;
   startDate: string;
   endDate?: string;
-  location?: string;
+  venue?: string;
   image?: string;
   price?: number;
   currency?: string;
   locale?: string;
+  location?: LocationProp;
 }
 
 export function EventSchema({
@@ -283,11 +312,12 @@ export function EventSchema({
   description,
   startDate,
   endDate,
-  location,
+  venue,
   image,
   price,
-  currency = "AED",
+  currency = "USD",
   locale = "en",
+  location,
 }: EventSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
@@ -298,15 +328,20 @@ export function EventSchema({
     endDate: endDate || startDate,
     image,
     inLanguage: locale,
-    location: {
-      "@type": "Place",
-      name: location || "Dubai",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Dubai",
-        addressCountry: "AE",
-      },
-    },
+    location:
+      venue || location?.city
+        ? {
+            "@type": "Place",
+            name: venue || location?.city,
+            address: location?.city
+              ? {
+                  "@type": "PostalAddress",
+                  addressLocality: location.city,
+                  addressCountry: location.countryCode,
+                }
+              : undefined,
+          }
+        : undefined,
     offers: price
       ? {
           "@type": "Offer",

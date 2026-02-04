@@ -27,7 +27,17 @@ export interface MetaTagsOptions {
 
 export interface StructuredDataOptions {
   content?: ContentWithRelations;
-  type: "Article" | "Hotel" | "TouristAttraction" | "WebSite" | "FAQPage" | "BreadcrumbList" | "Organization" | "ItemList" | "Restaurant" | "Event";
+  type:
+    | "Article"
+    | "Hotel"
+    | "TouristAttraction"
+    | "WebSite"
+    | "FAQPage"
+    | "BreadcrumbList"
+    | "Organization"
+    | "ItemList"
+    | "Restaurant"
+    | "Event";
   locale?: Locale;
   breadcrumbs?: { name: string; url: string }[];
   listItems?: { name: string; url: string; image?: string; description?: string }[];
@@ -74,7 +84,7 @@ export function generateMetaTags(options: MetaTagsOptions): string {
     `<title>${escapeHtml(fullTitle)}</title>`,
     `<meta name="description" content="${escapeHtml(description)}">`,
     `<link rel="canonical" href="${escapeHtml(url)}">`,
-    
+
     `<meta property="og:title" content="${escapeHtml(title)}">`,
     `<meta property="og:description" content="${escapeHtml(description)}">`,
     `<meta property="og:image" content="${escapeHtml(image)}">`,
@@ -85,14 +95,14 @@ export function generateMetaTags(options: MetaTagsOptions): string {
     `<meta property="og:type" content="${ogType}">`,
     `<meta property="og:site_name" content="${SITE_NAME}">`,
     `<meta property="og:locale" content="${getOgLocale(locale)}">`,
-    
+
     `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:title" content="${escapeHtml(title)}">`,
     `<meta name="twitter:description" content="${escapeHtml(description)}">`,
     `<meta name="twitter:image" content="${escapeHtml(image)}">`,
     `<meta name="twitter:image:alt" content="${escapeHtml(title)}">`,
-    
-    noIndex 
+
+    noIndex
       ? `<meta name="robots" content="noindex, nofollow">`
       : `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">`,
   ];
@@ -127,7 +137,7 @@ export function generateMetaTags(options: MetaTagsOptions): string {
  */
 export function generateStructuredData(options: StructuredDataOptions): string {
   const { content, type, locale = "en", breadcrumbs, listItems, eventData } = options;
-  
+
   const schemas: object[] = [];
 
   switch (type) {
@@ -137,7 +147,8 @@ export function generateStructuredData(options: StructuredDataOptions): string {
         "@type": "WebSite",
         name: SITE_NAME,
         url: BASE_URL,
-        description: "Expert travel guides, reviews, and insights for destinations worldwide. Discover hotels, attractions, restaurants, and local experiences.",
+        description:
+          "Expert travel guides, reviews, and insights for destinations worldwide. Discover hotels, attractions, restaurants, and local experiences.",
         potentialAction: {
           "@type": "SearchAction",
           target: {
@@ -183,6 +194,7 @@ export function generateStructuredData(options: StructuredDataOptions): string {
 
     case "Hotel":
       if (content) {
+        const hotelLocation = extractLocation(content);
         schemas.push({
           "@context": "https://schema.org",
           "@type": "Hotel",
@@ -190,11 +202,12 @@ export function generateStructuredData(options: StructuredDataOptions): string {
           description: content.metaDescription || "",
           image: getContentImage(content),
           url: getCanonicalUrl(`/hotel/${content.slug}`, locale),
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: extractLocation(content),
-            addressCountry: "AE",
-          },
+          address: hotelLocation
+            ? {
+                "@type": "PostalAddress",
+                addressLocality: hotelLocation,
+              }
+            : undefined,
         });
       }
       break;
@@ -264,7 +277,8 @@ export function generateStructuredData(options: StructuredDataOptions): string {
           width: 512,
           height: 512,
         },
-        description: "Expert travel guides, reviews, and insights for destinations worldwide. Discover hotels, attractions, restaurants, and local experiences.",
+        description:
+          "Expert travel guides, reviews, and insights for destinations worldwide. Discover hotels, attractions, restaurants, and local experiences.",
         sameAs: [
           "https://twitter.com/traviworld",
           "https://www.facebook.com/traviworld",
@@ -308,6 +322,7 @@ export function generateStructuredData(options: StructuredDataOptions): string {
 
     case "Restaurant":
       if (content) {
+        const restaurantLocation = extractLocation(content);
         schemas.push({
           "@context": "https://schema.org",
           "@type": "Restaurant",
@@ -315,11 +330,12 @@ export function generateStructuredData(options: StructuredDataOptions): string {
           description: content.metaDescription || "",
           image: getContentImage(content),
           url: getCanonicalUrl(`/dining/${content.slug}`, locale),
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: extractLocation(content),
-            addressCountry: "AE",
-          },
+          address: restaurantLocation
+            ? {
+                "@type": "PostalAddress",
+                addressLocality: restaurantLocation,
+              }
+            : undefined,
           servesCuisine: content.dining?.cuisineType || "International",
           priceRange: content.dining?.priceRange || "$$",
         });
@@ -361,11 +377,10 @@ export function generateStructuredData(options: StructuredDataOptions): string {
   }
 
   if (schemas.length === 0) return "";
-  
-  const schemaJson = schemas.length === 1 
-    ? JSON.stringify(schemas[0], null, 2)
-    : JSON.stringify(schemas, null, 2);
-    
+
+  const schemaJson =
+    schemas.length === 1 ? JSON.stringify(schemas[0], null, 2) : JSON.stringify(schemas, null, 2);
+
   return `<script type="application/ld+json">${schemaJson}</script>`;
 }
 
@@ -376,7 +391,7 @@ function getContentImage(content: ContentWithRelations): string {
   if (!content.blocks || !Array.isArray(content.blocks)) {
     return DEFAULT_IMAGE;
   }
-  
+
   for (const block of content.blocks) {
     if (block.type === "hero" && block.data?.imageUrl) {
       return String(block.data.imageUrl);
@@ -385,21 +400,25 @@ function getContentImage(content: ContentWithRelations): string {
       return String(block.data.src);
     }
   }
-  
+
   return DEFAULT_IMAGE;
 }
 
 /**
  * Extract location from content
+ * Returns empty string if no location is found - avoids hardcoding any destination
  */
-function extractLocation(content: ContentWithRelations): string {
+function extractLocation(content: ContentWithRelations, fallbackDestination?: string): string {
   if (content.attraction?.location) {
     return content.attraction.location;
   }
   if (content.hotel?.location) {
     return content.hotel.location;
   }
-  return "Dubai, UAE";
+  if (content.dining?.location) {
+    return content.dining.location;
+  }
+  return fallbackDestination || "";
 }
 
 /**
@@ -407,7 +426,7 @@ function extractLocation(content: ContentWithRelations): string {
  */
 function extractFAQs(blocks: any[]): { question: string; answer: string }[] {
   const faqs: { question: string; answer: string }[] = [];
-  
+
   for (const block of blocks) {
     if (block.type === "FAQ" || block.type === "faq") {
       const items = block.data?.items || block.data?.faqs || [];
@@ -421,7 +440,7 @@ function extractFAQs(blocks: any[]): { question: string; answer: string }[] {
       }
     }
   }
-  
+
   return faqs;
 }
 

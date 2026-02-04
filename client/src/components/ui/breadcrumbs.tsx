@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { ChevronRight, Home } from "lucide-react";
 import { useLocale } from "@/lib/i18n/LocaleRouter";
 import { cn } from "@/lib/utils";
+import { DESTINATION_NAMES } from "@/hooks/use-destination-context";
 
 interface BreadcrumbItem {
   label: string;
@@ -21,7 +22,28 @@ function useAutoBreadcrumbs(): BreadcrumbItem[] {
 
   const pathSegments = location
     .split("/")
-    .filter((seg) => seg && !["ar", "he", "hi", "zh", "ru", "fa", "ur", "fr", "de", "es", "it", "tr", "bn", "fil", "ja", "ko"].includes(seg));
+    .filter(
+      seg =>
+        seg &&
+        ![
+          "ar",
+          "he",
+          "hi",
+          "zh",
+          "ru",
+          "fa",
+          "ur",
+          "fr",
+          "de",
+          "es",
+          "it",
+          "tr",
+          "bn",
+          "fil",
+          "ja",
+          "ko",
+        ].includes(seg)
+    );
 
   const breadcrumbs: BreadcrumbItem[] = [];
   let currentPath = "";
@@ -33,17 +55,28 @@ function useAutoBreadcrumbs(): BreadcrumbItem[] {
     search: "Search",
     "real-estate": "Real Estate",
     "off-plan": "Off-Plan Properties",
-    dubai: "Dubai",
     "free-things-to-do": "Free Things to Do",
     "laws-for-tourists": "Laws for Tourists",
+    destination: "Destinations",
+    destinations: "Destinations",
   };
 
   pathSegments.forEach((segment, index) => {
     currentPath += `/${segment}`;
     const isLast = index === pathSegments.length - 1;
 
+    // Check if this segment is a destination slug
+    const destinationName = DESTINATION_NAMES[segment];
+    const label =
+      destinationName ||
+      labelMap[segment] ||
+      segment
+        .split("-")
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+
     breadcrumbs.push({
-      label: labelMap[segment] || segment.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+      label,
       href: isLast ? undefined : localePath(currentPath),
     });
   });
@@ -81,10 +114,7 @@ export function Breadcrumbs({ items, showHome = true, className }: BreadcrumbsPr
         {breadcrumbs.map((item, index) => (
           <li key={index} className="flex items-center">
             {item.href ? (
-              <Link
-                href={item.href}
-                className="hover:text-foreground transition-colors"
-              >
+              <Link href={item.href} className="hover:text-foreground transition-colors">
                 {item.label}
               </Link>
             ) : (

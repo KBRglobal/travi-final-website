@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { useDestinationContext } from "@/hooks/use-destination-context";
 import { apiRequest } from "@/lib/queryClient";
 import {
   Sparkles,
@@ -32,37 +33,43 @@ interface SuggestionChip {
   prompt: string;
 }
 
-const suggestions: SuggestionChip[] = [
-  {
-    icon: Lightbulb,
-    label: "Topic ideas",
-    prompt: "Suggest 5 engaging article topics about Dubai travel for tourists",
-  },
-  {
-    icon: FileText,
-    label: "Content outline",
-    prompt: "Create a contents outline for a Dubai travel guide article",
-  },
-  {
-    icon: Hash,
-    label: "SEO keywords",
-    prompt: "Suggest SEO keywords for Dubai tourism contents",
-  },
-  {
-    icon: PenLine,
-    label: "Writing tips",
-    prompt: "Give me tips for writing engaging travel contents",
-  },
-];
+function getSuggestions(destination: string): SuggestionChip[] {
+  const dest = destination || "travel";
+  return [
+    {
+      icon: Lightbulb,
+      label: "Topic ideas",
+      prompt: `Suggest 5 engaging article topics about ${dest} travel for tourists`,
+    },
+    {
+      icon: FileText,
+      label: "Content outline",
+      prompt: `Create a contents outline for a ${dest} travel guide article`,
+    },
+    {
+      icon: Hash,
+      label: "SEO keywords",
+      prompt: `Suggest SEO keywords for ${dest} tourism contents`,
+    },
+    {
+      icon: PenLine,
+      label: "Writing tips",
+      prompt: "Give me tips for writing engaging travel contents",
+    },
+  ];
+}
 
 export function AIAssistant() {
   const { toast } = useToast();
+  const { currentDestination } = useDestinationContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const suggestions = useMemo(() => getSuggestions(currentDestination || ""), [currentDestination]);
 
   const chatMutation = useMutation({
     mutationFn: async (prompt: string) => {
@@ -73,16 +80,16 @@ export function AIAssistant() {
       }
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
         contents: data.response,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages(prev => [...prev, assistantMessage]);
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: "AI Assistant Error",
         description: error.message || "Failed to get response. Please try again.",
@@ -106,7 +113,7 @@ export function AIAssistant() {
       contents: input.trim(),
       timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     chatMutation.mutate(input.trim());
     setInput("");
   };
@@ -118,7 +125,7 @@ export function AIAssistant() {
       contents: prompt,
       timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     chatMutation.mutate(prompt);
   };
 
@@ -165,11 +172,7 @@ export function AIAssistant() {
             onClick={() => setIsExpanded(!isExpanded)}
             data-testid="button-ai-assistant-expand"
           >
-            {isExpanded ? (
-              <Minimize2 className="h-4 w-4" />
-            ) : (
-              <Maximize2 className="h-4 w-4" />
-            )}
+            {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
           <Button
             size="icon"
@@ -187,11 +190,11 @@ export function AIAssistant() {
           {messages.length === 0 ? (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground text-center">
-                Hi! I'm your AI assistant. I can help you with contents ideas,
-                writing tips, SEO optimization, and more.
+                Hi! I'm your AI assistant. I can help you with contents ideas, writing tips, SEO
+                optimization, and more.
               </p>
               <div className="flex flex-wrap gap-2 justify-center">
-                {suggestions.map((suggestion) => (
+                {suggestions.map(suggestion => (
                   <Button
                     key={suggestion.label}
                     variant="outline"
@@ -209,18 +212,14 @@ export function AIAssistant() {
             </div>
           ) : (
             <div className="space-y-4">
-              {messages.map((message) => (
+              {messages.map(message => (
                 <div
                   key={message.id}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
                     className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
+                      message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                     }`}
                     data-testid={`message-${message.role}-${message.id}`}
                   >
@@ -244,7 +243,7 @@ export function AIAssistant() {
             <Textarea
               ref={textareaRef}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything about contents creation..."
               className="min-h-[40px] max-h-[100px] resize-none"
