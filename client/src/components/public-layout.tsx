@@ -6,7 +6,6 @@ import { LiveChatWidget } from "@/components/live-chat-widget";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useReferralTracking } from "@/hooks/use-referral-tracking";
 
 /* =============================================================================
    PageContainer - Main layout wrapper with nav and footer
@@ -27,7 +26,6 @@ export function PageContainer({
   navTone = "dark",
 }: PageContainerProps) {
   const { isRTL } = useLocale();
-  useReferralTracking();
 
   return (
     <div
@@ -36,10 +34,7 @@ export function PageContainer({
       data-testid="page-container"
     >
       <PublicNav variant={navVariant} transparentTone={navTone} />
-      <main 
-        className="flex-1" 
-        data-testid="page-main"
-      >
+      <main className="flex-1" data-testid="page-main">
         {children}
       </main>
       <PublicFooter />
@@ -77,17 +72,14 @@ export function Section({
   const variantClasses = {
     default: "bg-background",
     alternate: "bg-muted/50",
-    gradient: "bg-gradient-to-br from-[#6443F4]/5 via-[#6443F4]/5 to-[#F4C542]/5 dark:from-[#6443F4]/10 dark:via-[#6443F4]/10 dark:to-[#F4C542]/10",
+    gradient:
+      "bg-gradient-to-br from-[#6443F4]/5 via-[#6443F4]/5 to-[#F4C542]/5 dark:from-[#6443F4]/10 dark:via-[#6443F4]/10 dark:to-[#F4C542]/10",
   };
 
   return (
     <section
       id={id}
-      className={cn(
-        "py-[60px]",
-        variantClasses[variant],
-        className
-      )}
+      className={cn("py-[60px]", variantClasses[variant], className)}
       dir={isRTL ? "rtl" : "ltr"}
       data-testid={`section-${id || "default"}`}
     >
@@ -167,10 +159,7 @@ export function ContentCard({
       {/* Image Container */}
       {image && (
         <div
-          className={cn(
-            "relative overflow-hidden rounded-t-[16px]",
-            aspectClasses[aspectRatio]
-          )}
+          className={cn("relative overflow-hidden rounded-t-[16px]", aspectClasses[aspectRatio])}
         >
           <img
             src={image}
@@ -185,15 +174,8 @@ export function ContentCard({
           )}
           {/* Badge on image */}
           {badge && (
-            <div className={cn(
-              "absolute top-3",
-              isRTL ? "right-3" : "left-3"
-            )}>
-              <Badge
-                variant={badgeVariant}
-                className="text-xs"
-                data-testid="contents-card-badge"
-              >
+            <div className={cn("absolute top-3", isRTL ? "right-3" : "left-3")}>
+              <Badge variant={badgeVariant} className="text-xs" data-testid="contents-card-badge">
                 {badge}
               </Badge>
             </div>
@@ -246,11 +228,7 @@ interface CategoryGridProps {
   className?: string;
 }
 
-export function CategoryGrid({
-  children,
-  columns = 3,
-  className,
-}: CategoryGridProps) {
+export function CategoryGrid({ children, columns = 3, className }: CategoryGridProps) {
   const columnClasses = {
     2: "grid-cols-1 sm:grid-cols-2",
     3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
@@ -259,11 +237,7 @@ export function CategoryGrid({
 
   return (
     <div
-      className={cn(
-        "grid gap-[30px]",
-        columnClasses[columns],
-        className
-      )}
+      className={cn("grid gap-[30px]", columnClasses[columns], className)}
       data-testid="category-grid"
     >
       {children}
@@ -295,13 +269,7 @@ export function ContentSection({
   id,
 }: ContentSectionProps) {
   return (
-    <Section
-      title={title}
-      subtitle={subtitle}
-      variant={variant}
-      className={className}
-      id={id}
-    >
+    <Section title={title} subtitle={subtitle} variant={variant} className={className} id={id}>
       <CategoryGrid columns={columns}>{children}</CategoryGrid>
     </Section>
   );

@@ -1,8 +1,8 @@
 /* TRAVI Brand Fonts - Self-hosted */
 /* Chillax Variable - Headlines only */
 @font-face {
-  font-family: 'Chillax';
-  src: url('/fonts/Chillax-Variable_1767041885348.ttf') format('truetype');
+  font-family: "Chillax";
+  src: url("/fonts/Chillax-Variable_1767041885348.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -10,24 +10,24 @@
 
 /* Satoshi - Body text, UI, navigation */
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Regular_1767041885349.ttf') format('truetype');
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Regular_1767041885349.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Medium_1767041885349.ttf') format('truetype');
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Medium_1767041885349.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('/fonts/Satoshi-Bold_1767041885349.ttf') format('truetype');
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Bold_1767041885349.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -55,7 +55,8 @@
 
 /* TRAVI Global Typography & Background */
 @layer base {
-  html, body {
+  html,
+  body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -63,51 +64,55 @@
   }
 
   html {
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     background-color: #d4e6f0;
   }
-  
+
   body {
-    font-family: 'Satoshi';
+    font-family: "Satoshi";
     background-color: transparent;
     margin: 0;
     padding: 0;
   }
-  
+
   #root {
     min-height: 100vh;
     width: 100%;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Chillax';
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Chillax";
   }
 }
 
-
 /* TRAVI Design System - Light Mode */
 :root {
-  --button-outline: rgba(36, 16, 62, 0.30);
-  --badge-outline: rgba(36, 16, 62, 0.10);
+  --button-outline: rgba(36, 16, 62, 0.3);
+  --badge-outline: rgba(36, 16, 62, 0.1);
   --opaque-button-border-intensity: -8;
   --elevate-1: rgba(36, 16, 62, 0.06);
   --elevate-2: rgba(36, 16, 62, 0.12);
 
   /* Official Brand Color Tokens (definition only - controlled usage via CMS) */
-  --color-background-base: 0 0% 100%;  /* White for cards */
+  --color-background-base: 0 0% 100%; /* White for cards */
   --color-primary: 251 89% 61%;
   --color-secondary: 48 98% 52%;
   --color-accent: 251 89% 61%;
 
   /* TRAVI Brand Colors - from brand palette */
-  --travi-purple: 251 89% 61%;      /* #6443F4 - Primary brand purple */
+  --travi-purple: 251 89% 61%; /* #6443F4 - Primary brand purple */
   /* --travi-pink: DEPRECATED - Use --travi-purple instead */
-  --travi-yellow: 44 88% 61%;       /* #F4C542 - Warm golden yellow */
-  --travi-green: 153 98% 33%;       /* Keep existing green */
-  
+  --travi-yellow: 44 88% 61%; /* #F4C542 - Warm golden yellow */
+  --travi-green: 153 98% 33%; /* Keep existing green */
+
   /* Legacy - mapped to new palette */
-  --travi-orange: 44 88% 61%;       /* Now uses yellow */
-  
+  --travi-orange: 44 88% 61%; /* Now uses yellow */
+
   /* TRAVI Neutrals */
   --travi-neutral-black: 270 30% 10%;
   --travi-neutral-gray-100: 269 61% 15%;
@@ -116,15 +121,15 @@
   --travi-neutral-gray-25: 272 11% 83%;
 
   /* Core Semantic Colors */
-  --background: 0 0% 100%;  /* White - sits on top of background image */
+  --background: 0 0% 100%; /* White - sits on top of background image */
   --foreground: 269 61% 15%;
   --border: 272 11% 83%;
-  
+
   /* Card */
-  --card: 0 0% 100%;  /* White */
+  --card: 0 0% 100%; /* White */
   --card-foreground: 269 61% 15%;
   --card-border: 272 11% 88%;
-  
+
   /* Sidebar */
   --sidebar: 0 0% 98%;
   --sidebar-foreground: 269 61% 15%;
@@ -134,80 +139,80 @@
   --sidebar-accent: 251 60% 96%;
   --sidebar-accent-foreground: 269 61% 15%;
   --sidebar-ring: 251 89% 61%;
-  
+
   /* Popover */
   --popover: 0 0% 100%;
   --popover-foreground: 269 61% 15%;
   --popover-border: 272 11% 85%;
-  
+
   /* Primary - TRAVI Purple (Main CTA color #6443F4) */
   --primary: 251 89% 61%;
   --primary-foreground: 0 0% 100%;
-  
+
   /* Brand Purple - for links and secondary elements */
   --brand-purple: 251 89% 61%;
   --brand-purple-foreground: 0 0% 100%;
-  
+
   /* Brand Yellow - for warm accents */
   --brand-yellow: 44 88% 61%;
   --brand-yellow-foreground: 269 61% 15%;
-  
+
   /* Legacy orange - mapped to yellow */
   --brand-orange: 44 88% 61%;
   --brand-orange-foreground: 269 61% 15%;
-  
+
   /* Secondary */
   --secondary: 270 10% 94%;
   --secondary-foreground: 269 61% 15%;
-  
+
   /* Muted */
   --muted: 270 8% 92%;
   --muted-foreground: 264 23% 40%;
-  
+
   /* Accent - Purple tint */
   --accent: 251 60% 96%;
   --accent-foreground: 269 61% 15%;
-  
+
   /* Destructive - Red for errors */
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  
+
   /* Input */
   --input: 272 11% 75%;
   --ring: hsl(var(--color-accent));
-  
+
   /* Chart colors using TRAVI palette */
   --chart-1: 272 38% 47%;
   --chart-2: 153 98% 40%;
   --chart-3: 44 88% 55%;
   --chart-4: 251 89% 61%;
   --chart-5: 44 88% 65%;
-  
+
   /* Typography - TRAVI Brand Fonts */
-  --font-sans: 'Satoshi';
-  --font-heading: 'Chillax';
+  --font-sans: "Satoshi";
+  --font-heading: "Chillax";
   --font-mono: JetBrains Mono, monospace;
-  
+
   /* TRAVI Spacing */
   --radius: 0.75rem;
   --radius-sm: 0.5rem;
   --radius-lg: 1rem;
   --radius-full: 999px;
-  
+
   /* TRAVI Shadows */
   --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.14);
-  
+
   --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.08);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.10);
-  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.14);
   --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.18);
   --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.22);
-  
+
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -246,15 +251,15 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255, 255, 255, 0.06);
   --elevate-2: rgba(255, 255, 255, 0.12);
-  
+
   --background: 269 61% 8%;
   --foreground: 0 0% 98%;
   --border: 269 30% 18%;
-  
+
   --card: 269 50% 10%;
   --card-foreground: 0 0% 98%;
   --card-border: 269 30% 14%;
-  
+
   --sidebar: 269 60% 6%;
   --sidebar-foreground: 0 0% 98%;
   --sidebar-border: 269 30% 12%;
@@ -263,56 +268,56 @@
   --sidebar-accent: 251 40% 18%;
   --sidebar-accent-foreground: 0 0% 98%;
   --sidebar-ring: 251 89% 66%;
-  
+
   --popover: 269 50% 12%;
   --popover-foreground: 0 0% 98%;
   --popover-border: 269 30% 16%;
-  
+
   --primary: 251 89% 66%;
   --primary-foreground: 0 0% 100%;
-  
+
   --brand-purple: 251 89% 66%;
   --brand-purple-foreground: 0 0% 100%;
-  
+
   --brand-yellow: 44 88% 65%;
   --brand-yellow-foreground: 269 61% 15%;
-  
+
   --brand-orange: 44 88% 65%;
   --brand-orange-foreground: 0 0% 100%;
-  
+
   --secondary: 269 30% 18%;
   --secondary-foreground: 0 0% 98%;
-  
+
   --muted: 269 25% 14%;
   --muted-foreground: 270 10% 66%;
-  
+
   --accent: 251 40% 20%;
   --accent-foreground: 0 0% 98%;
-  
+
   --destructive: 0 84% 65%;
   --destructive-foreground: 0 0% 100%;
-  
+
   --input: 269 30% 28%;
   --ring: hsl(var(--color-accent));
-  
+
   --chart-1: 272 38% 55%;
   --chart-2: 153 80% 55%;
   --chart-3: 44 88% 60%;
   --chart-4: 251 89% 66%;
   --chart-5: 44 88% 70%;
-  
-  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.20);
-  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.30);
-  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.40);
-  
+
+  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.4);
+
   --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.20);
+  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.2);
   --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.25);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.30);
-  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.30);
-  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.40);
-  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.50);
-  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.60);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.5);
+  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.6);
 
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-accent-border: hsl(var(--sidebar-accent));
@@ -342,8 +347,13 @@
     @apply font-sans antialiased text-foreground;
     background-color: transparent;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
   }
 }
@@ -371,7 +381,7 @@
 }
 
 .nav-item-active-icon {
-  color: #6443F4;
+  color: #6443f4;
 }
 
 /* TRAVI Brand Gradients - DISABLED (NO GRADIENTS except SubtleSkyBackground)
@@ -397,7 +407,7 @@
 
 /* Brand Gold Text */
 .text-brand-gold {
-  color: #FACC15;
+  color: #facc15;
 }
 
 /* Subtle noise texture overlay */
@@ -425,8 +435,10 @@
     pointer-events: none;
   }
 
-  .no-default-hover-elevate {}
-  .no-default-active-elevate {}
+  .no-default-hover-elevate {
+  }
+  .no-default-active-elevate {
+  }
 
   .toggle-elevate::before,
   .toggle-elevate-2::before {
@@ -484,253 +496,6 @@
   }
 }
 
-/* ============================================
-   SKY THEME - Dream Homepage Styles
-   ============================================ */
-
-/* Script/Cursive font for accent text */
-.font-script {
-  font-family: 'Dancing Script', cursive;
-}
-
-/* Sky Background Gradient */
-.sky-gradient {
-  background: linear-gradient(180deg, #87CEEB 0%, #B8E0F7 40%, #E8F4FD 100%);
-}
-
-.sky-gradient-light {
-  background: linear-gradient(180deg, #E8F4FD 0%, #F0F8FF 50%, #FFFFFF 100%);
-}
-
-/* Cloud Styles */
-.cloud {
-  background: white;
-  border-radius: 50%;
-  box-shadow: 
-    0 8px 32px rgba(255, 255, 255, 0.8),
-    inset 0 -8px 20px rgba(200, 220, 240, 0.3);
-}
-
-.cloud::before,
-.cloud::after {
-  content: '';
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-}
-
-/* Tilted Card Styles */
-.tilted-card {
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.tilted-card:hover {
-  transform: rotate(0deg) scale(1.02) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.tilt-left {
-  transform: rotate(-3deg);
-}
-
-.tilt-right {
-  transform: rotate(3deg);
-}
-
-.tilt-left-sm {
-  transform: rotate(-2deg);
-}
-
-.tilt-right-sm {
-  transform: rotate(2deg);
-}
-
-/* Floating Animation Keyframes */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-}
-
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes float-gentle {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
-}
-
-@keyframes drift-right {
-  0% { transform: translateX(-100px) translateY(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(calc(100vw + 100px)) translateY(-20px); opacity: 0; }
-}
-
-@keyframes drift-left {
-  0% { transform: translateX(100vw) translateY(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(-200px) translateY(-30px); opacity: 0; }
-}
-
-@keyframes cloud-drift {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(30px); }
-}
-
-@keyframes bird-fly {
-  0% { transform: translateX(-50px) translateY(0); }
-  25% { transform: translateX(25vw) translateY(-20px); }
-  50% { transform: translateX(50vw) translateY(5px); }
-  75% { transform: translateX(75vw) translateY(-15px); }
-  100% { transform: translateX(100vw) translateY(0); }
-}
-
-@keyframes balloon-rise {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
-}
-
-@keyframes plane-fly {
-  0% { transform: translateX(-100px) translateY(20px) rotate(-5deg); }
-  50% { transform: translateX(50vw) translateY(-10px) rotate(0deg); }
-  100% { transform: translateX(calc(100vw + 100px)) translateY(0) rotate(5deg); }
-}
-
-/* Floating Element Classes */
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float-slow 6s ease-in-out infinite;
-}
-
-.animate-float-gentle {
-  animation: float-gentle 5s ease-in-out infinite;
-}
-
-.animate-drift-right {
-  animation: drift-right 25s linear infinite;
-}
-
-.animate-drift-left {
-  animation: drift-left 30s linear infinite;
-}
-
-.animate-cloud-drift {
-  animation: cloud-drift 8s ease-in-out infinite alternate;
-}
-
-.animate-balloon {
-  animation: balloon-rise 6s ease-in-out infinite;
-}
-
-.animate-plane {
-  animation: plane-fly 20s linear infinite;
-}
-
-.animate-bird {
-  animation: bird-fly 15s linear infinite;
-}
-
-/* Watermark/Background Text */
-.watermark-text {
-  font-size: clamp(4rem, 12vw, 10rem);
-  font-weight: 800;
-  color: rgba(135, 206, 235, 0.15);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
-  user-select: none;
-  pointer-events: none;
-}
-
-/* Wavy Section Divider */
-.wavy-divider {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
-}
-
-.wavy-divider svg {
-  position: relative;
-  display: block;
-  width: calc(100% + 1.3px);
-  height: 60px;
-}
-
-.wavy-divider-top {
-  transform: rotate(180deg);
-}
-
-/* Letter mask effect for TRAVI text with images */
-.travi-letter-mask {
-  background-size: cover;
-  background-position: center;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Animated flowing logo texture */
-@keyframes logo-flow {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-logo-flow {
-  animation: logo-flow 60s linear infinite;
-}
-
-/* Orange/Gold Button Style */
-.btn-gold {
-  background: linear-gradient(135deg, #F59E0B 0%, #FACC15 100%);
-  color: #1E1B4B;
-  font-weight: 600;
-  border: none;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-}
-
-/* Overlapping Cards Layout */
-.overlap-cards {
-  display: flex;
-  position: relative;
-}
-
-.overlap-cards > *:not(:first-child) {
-  margin-left: -30px;
-}
-
-/* Delay utilities for staggered animations */
-.animation-delay-100 { animation-delay: 100ms; }
-.animation-delay-200 { animation-delay: 200ms; }
-.animation-delay-300 { animation-delay: 300ms; }
-.animation-delay-500 { animation-delay: 500ms; }
-.animation-delay-700 { animation-delay: 700ms; }
-.animation-delay-1000 { animation-delay: 1000ms; }
-.animation-delay-2000 { animation-delay: 2000ms; }
-.animation-delay-3000 { animation-delay: 3000ms; }
-
-/* Hot Air Balloon SVG styling */
-.balloon-icon {
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-}
-
-/* Plane icon styling */
-.plane-icon {
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-}
-
 /* =============================================================================
    Accessibility: Skip Link & Focus Styles
    ============================================================================= */
@@ -772,8 +537,14 @@ textarea:focus-visible,
 }
 
 /* Flip margins and paddings for common layout patterns */
-[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
-[dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
 
 /* Flip flex direction for horizontal layouts */
 [dir="rtl"] .rtl-flip {
@@ -810,12 +581,6 @@ textarea:focus-visible,
 [dir="rtl"] th,
 [dir="rtl"] td {
   text-align: right;
-}
-
-/* Overlap cards RTL - reverse the margin direction */
-[dir="rtl"] .overlap-cards > *:not(:first-child) {
-  margin-left: 0;
-  margin-right: -30px;
 }
 
 /* Lists RTL */
