@@ -194,40 +194,24 @@ export default function RssFeedsPage() {
     },
   });
 
-  // Fetch all feeds mutation
-  const [fetchAllProgress, setFetchAllProgress] = useState({ current: 0, total: 0, isRunning: false });
-
-  const fetchAllFeeds = async () => {
-    const activeFeeds = feeds.filter(f => f.isActive);
-    if (activeFeeds.length === 0) {
-      toast({ title: "No active feeds", description: "Enable some feeds first.", variant: "destructive" });
-      return;
-    }
-
-    setFetchAllProgress({ current: 0, total: activeFeeds.length, isRunning: true });
-    let successCount = 0;
-    let errorCount = 0;
-
-    for (let i = 0; i < activeFeeds.length; i++) {
-      const feed = activeFeeds[i];
-      setFetchAllProgress(prev => ({ ...prev, current: i + 1 }));
-
-      try {
-        await apiRequest("POST", `/api/rss-feeds/${feed.id}/fetch`);
-        successCount++;
-      } catch {
-        errorCount++;
-      }
-    }
-
-    setFetchAllProgress({ current: 0, total: 0, isRunning: false });
-    queryClient.invalidateQueries({ queryKey: ["/api/rss-feeds"] });
-
-    toast({
-      title: "Fetch complete",
-      description: `Fetched ${successCount} feeds successfully${errorCount > 0 ? `, ${errorCount} failed` : ""}.`,
-    });
-  };
+  // Fetch all feeds mutation - uses the proper Octypo endpoint that stores items
+  const fetchAllMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/octypo/rss/fetch-all");
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/rss-feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/rss/items/recent"] });
+      toast({
+        title: "Fetch complete",
+        description: `Fetched ${data.summary?.feedsProcessed || 0} feeds, ${data.summary?.newItems || 0} new items stored.`,
+      });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to fetch feeds.", variant: "destructive" });
+    },
+  });
 
   const handleFetchAndPreview = (feed: RssFeed) => {
     setSelectedFeed(feed);
@@ -254,12 +238,12 @@ export default function RssFeedsPage() {
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            onClick={fetchAllFeeds}
-            disabled={fetchAllProgress.isRunning || feeds.filter(f => f.isActive).length === 0}
+            onClick={() => fetchAllMutation.mutate()}
+            disabled={fetchAllMutation.isPending || feeds.filter(f => f.isActive).length === 0}
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${fetchAllProgress.isRunning ? "animate-spin" : ""}`} />
-            {fetchAllProgress.isRunning
-              ? `Fetching ${fetchAllProgress.current}/${fetchAllProgress.total}...`
+            <RefreshCw className={`h-4 w-4 mr-2 ${fetchAllMutation.isPending ? "animate-spin" : ""}`} />
+            {fetchAllMutation.isPending
+              ? "Fetching all feeds..."
               : `Fetch All (${feeds.filter(f => f.isActive).length})`}
           </Button>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
