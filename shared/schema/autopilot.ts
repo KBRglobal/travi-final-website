@@ -21,17 +21,8 @@ import {
   autopilotTaskStatusEnum,
 } from "./enums";
 
-// ============================================
-// FORWARD REFERENCE PLACEHOLDER FOR CIRCULAR DEPENDENCIES
-// ============================================
-
-// Placeholder for contents table - used for foreign key references
-// The actual contents table is defined in the main schema.ts
-// This allows this module to reference contents without circular imports
-declare const _contents: {
-  id: any;
-};
-const contents = _contents;
+// Note: Contents references are commented out to avoid circular dependencies.
+// Foreign key constraints exist at the database level.
 
 // ============================================
 // CONTENT EXPLODER TABLES

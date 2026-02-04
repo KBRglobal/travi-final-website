@@ -18,11 +18,7 @@ import {
   anomalySeverityEnum,
   anomalyTypeEnum,
 } from "./enums";
-
-// Forward reference placeholder for users table (circular dependency)
-// This will be replaced with the actual reference when imported
-declare const _users: { id: any };
-const users = _users;
+import { users } from "./auth";
 
 // ============================================================================
 // METRIC SNAPSHOTS - Historical point-in-time captures

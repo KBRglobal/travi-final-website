@@ -30,15 +30,7 @@ import {
   destinationEventTypeEnum,
   destinationEventStatusEnum,
 } from "./enums";
-
-// ============================================================================
-// FORWARD REFERENCES - Placeholders for circular dependencies
-// ============================================================================
-
-// Forward reference placeholder for destinations table (defined in main schema.ts)
-// This allows us to reference destinations without creating circular imports
-declare const _destinations: ReturnType<typeof pgTable> & { id: any };
-const destinations = _destinations;
+import { destinations } from "./destinations";
 
 // ============================================================================
 // TRAVI LOCATION CATEGORY ENUM (imported from ./enums)

@@ -42,29 +42,9 @@ import {
   helpArticleStatusEnum,
 } from "./enums";
 import { ContentBlock } from "./types";
-
-// =====================================================
-// FORWARD REFERENCES (for circular dependencies)
-// These are placeholders for tables defined in main schema.ts
-// In production, import these from the main schema
-// =====================================================
-
-// Placeholder type for users table reference
-declare const users: {
-  id: ReturnType<typeof varchar>;
-};
-
-// Placeholder type for contents table reference
-declare const contents: {
-  id: ReturnType<typeof varchar>;
-};
-
-// Placeholder for helpCategories table (defined in help-webhooks.ts)
-// This allows helpArticles to reference helpCategories without circular imports
-declare const _helpCategories: {
-  id: any;
-};
-const helpCategories = _helpCategories;
+import { users } from "./auth";
+import { contents } from "./content-base";
+import { helpCategories } from "./help-webhooks";
 
 // =====================================================
 // AI COST TRACKING (for forecasting)

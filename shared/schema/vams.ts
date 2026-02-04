@@ -21,20 +21,7 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { vamsProviderEnum, vamsAssetStatusEnum, vamsVariantTypeEnum } from "./enums";
-
-// ============================================
-// FORWARD REFERENCE PLACEHOLDER
-// ============================================
-
-/**
- * Forward reference for the contents table.
- * This is used to avoid circular dependencies when the contents table
- * is defined in the main schema.ts file.
- *
- * The actual foreign key references will be resolved at runtime by Drizzle.
- */
-declare const _contents: ReturnType<typeof pgTable> & { id: any };
-const contents = _contents;
+import { contents } from "./content-base";
 
 // ============================================
 // VAMS (Visual Asset Management) TABLES

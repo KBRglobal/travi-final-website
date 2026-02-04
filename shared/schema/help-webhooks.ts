@@ -14,24 +14,8 @@ import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { helpArticleStatusEnum, webhookOutboxStatusEnum } from "./enums";
-
-// =====================================================
-// FORWARD REFERENCES FOR CIRCULAR DEPENDENCIES
-// =====================================================
-
-// Placeholder for webhooks table (defined in webhooks.ts)
-// This allows webhookOutbox to reference webhooks without circular imports
-declare const _webhooks: {
-  id: any;
-};
-const webhooks = _webhooks;
-
-// Placeholder for contents table (defined in contents.ts)
-// This allows contentDependencies to reference contents without circular imports
-declare const _contents: {
-  id: any;
-};
-const contents = _contents;
+import { webhooks } from "./jobs";
+import { contents } from "./content-base";
 
 // =====================================================
 // HELP CENTER SCHEMA

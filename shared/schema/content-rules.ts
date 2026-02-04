@@ -13,9 +13,8 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { contentTypeEnum } from "./enums";
 
-// Forward reference placeholder for users table (circular dependency)
-declare const _users: { id: any };
-const users = _users;
+// Note: Users/contents references removed to avoid circular dependencies.
+// Foreign key constraints exist at the database level.
 
 // ============================================================================
 // CONTENT RULES TABLE
@@ -133,10 +132,6 @@ export const DEFAULT_CONTENT_RULES = {
 // ============================================================================
 // CONTENT SCORES TABLE
 // ============================================================================
-
-// Forward reference for contents table
-declare const _contents: { id: any };
-const contents = _contents;
 
 export const contentScores = pgTable(
   "content_scores",
