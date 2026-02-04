@@ -711,7 +711,6 @@ export default function AdminDashboard() {
               : undefined
           }
           loading={isStatsLoading}
-          href="/admin/contents-intelligence"
         />
 
         {/* Attractions Count - REAL: from contents table */}
