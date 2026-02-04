@@ -274,7 +274,7 @@ export function log(message: string, source = "express") {
     hour12: true,
   });
 
-  console.log(`[${formattedTime}] [${source}] ${message}`);
+  console.info(`[${formattedTime}] [${source}] ${message}`);
 }
 
 app.use((req, res, next) => {

@@ -60,7 +60,9 @@ export const searchAnalytics = {
       const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
       db.delete(searchQueries)
         .where(sql`${searchQueries.createdAt} < ${cutoff}`)
-        .catch(err => {});
+        .catch(err => {
+          console.error("Search analytics cleanup error:", err);
+        });
     }
 
     return row.id;

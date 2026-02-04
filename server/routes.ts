@@ -1239,7 +1239,9 @@ async function findOrCreateArticleImage(
             source: "library" as const,
           };
         }
-      } catch (aiError) {}
+      } catch (aiError) {
+        console.error("AI image generation error:", aiError);
+      }
 
       return null;
     }

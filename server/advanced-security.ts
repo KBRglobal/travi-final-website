@@ -543,7 +543,9 @@ export const auditLogger = {
         ipAddress: entry.ipAddress || null,
         userAgent: entry.userAgent || null,
       } as any);
-    } catch (dbError) {}
+    } catch (dbError) {
+      console.error("Audit log database error:", dbError);
+    }
 
     // For critical events, send alert
     if (entry.severity === "critical") {

@@ -550,19 +550,19 @@ export async function seedRssFeeds(
   const { dryRun = false, skipExisting = true, clean = false } = options;
   const results = { created: 0, skipped: 0, deleted: 0, errors: [] as string[] };
 
-  console.log(`\n📡 Seeding RSS Feeds (${RSS_FEEDS.length} total)...`);
-  console.log(`   Mode: ${dryRun ? "DRY RUN" : "LIVE"}`);
-  console.log(`   Clean existing: ${clean}`);
-  console.log(`   Skip existing: ${skipExisting}\n`);
+  console.info(`\n📡 Seeding RSS Feeds (${RSS_FEEDS.length} total)...`);
+  console.info(`   Mode: ${dryRun ? "DRY RUN" : "LIVE"}`);
+  console.info(`   Clean existing: ${clean}`);
+  console.info(`   Skip existing: ${skipExisting}\n`);
 
   // Clean existing feeds if requested
   if (clean) {
-    console.log("🗑️  Deleting all existing RSS feeds...");
+    console.info("🗑️  Deleting all existing RSS feeds...");
     if (!dryRun) {
       const deleted = await db.delete(rssFeeds);
       results.deleted = deleted.rowCount || 0;
     }
-    console.log(`   ✅ ${dryRun ? "[DRY] Would delete" : "Deleted"} all existing feeds\n`);
+    console.info(`   ✅ ${dryRun ? "[DRY] Would delete" : "Deleted"} all existing feeds\n`);
   }
 
   // Get all destinations for mapping
@@ -576,7 +576,7 @@ export async function seedRssFeeds(
 
       if (existing.length > 0) {
         if (skipExisting) {
-          console.log(`   ⏭️  Skipping existing: ${feed.name}`);
+          console.info(`   ⏭️  Skipping existing: ${feed.name}`);
           results.skipped++;
           continue;
         }
@@ -604,7 +604,7 @@ export async function seedRssFeeds(
         } as any);
       }
 
-      console.log(`   ✅ ${dryRun ? "[DRY] " : ""}Created: ${feed.name}`);
+      console.info(`   ✅ ${dryRun ? "[DRY] " : ""}Created: ${feed.name}`);
       results.created++;
     } catch (error) {
       const errorMsg = `Failed to create ${feed.name}: ${error}`;
@@ -613,13 +613,13 @@ export async function seedRssFeeds(
     }
   }
 
-  console.log(`\n📊 Results:`);
+  console.info(`\n📊 Results:`);
   if (results.deleted > 0) {
-    console.log(`   Deleted: ${results.deleted}`);
+    console.info(`   Deleted: ${results.deleted}`);
   }
-  console.log(`   Created: ${results.created}`);
-  console.log(`   Skipped: ${results.skipped}`);
-  console.log(`   Errors: ${results.errors.length}`);
+  console.info(`   Created: ${results.created}`);
+  console.info(`   Skipped: ${results.skipped}`);
+  console.info(`   Errors: ${results.errors.length}`);
 
   return results;
 }
@@ -637,7 +637,7 @@ if (isMainModule) {
   const clean = args.includes("--clean");
 
   if (args.includes("--help") || args.includes("-h")) {
-    console.log(`
+    console.info(`
 Usage: npx tsx server/seeds/seed-rss-feeds.ts [options]
 
 Options:
@@ -655,7 +655,7 @@ Examples:
 
   seedRssFeeds({ dryRun, skipExisting: !force, clean })
     .then(results => {
-      console.log("\n✨ Done!");
+      console.info("\n✨ Done!");
       process.exit(results.errors.length > 0 ? 1 : 0);
     })
     .catch(error => {

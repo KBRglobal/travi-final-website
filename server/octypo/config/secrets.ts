@@ -152,7 +152,7 @@ export function saveSecrets(secrets: OctypoSecrets, password: string): void {
     console.error("[Secrets] chmod not supported on this platform:", e);
   }
 
-  console.log(`✅ Secrets saved to ${SECRETS_FILE}`);
+  console.info(`✅ Secrets saved to ${SECRETS_FILE}`);
 }
 
 /**
@@ -329,9 +329,9 @@ async function interactiveSetup(): Promise<void> {
     });
   };
 
-  console.log("\n🔐 Octypo Secrets Setup\n");
-  console.log("This will create an encrypted secrets file for your API keys.");
-  console.log("The file will be encrypted with AES-256-GCM.\n");
+  console.info("\n🔐 Octypo Secrets Setup\n");
+  console.info("This will create an encrypted secrets file for your API keys.");
+  console.info("The file will be encrypted with AES-256-GCM.\n");
 
   // Get or create password
   let password: string;
@@ -339,26 +339,26 @@ async function interactiveSetup(): Promise<void> {
     password = await questionHidden("Enter existing password: ");
     const existing = loadSecrets(password);
     if (!existing) {
-      console.log("❌ Wrong password. Exiting.");
+      console.info("❌ Wrong password. Exiting.");
       rl.close();
       return;
     }
-    console.log("✅ Loaded existing secrets\n");
+    console.info("✅ Loaded existing secrets\n");
   } else {
     password = await questionHidden("Create a password: ");
     const confirm = await questionHidden("Confirm password: ");
     if (password !== confirm) {
-      console.log("❌ Passwords do not match. Exiting.");
+      console.info("❌ Passwords do not match. Exiting.");
       rl.close();
       return;
     }
-    console.log("");
+    console.info("");
   }
 
   // Load existing or create new
   const secrets: OctypoSecrets = loadSecrets(password) || {};
 
-  console.log("Enter API keys (leave empty to skip):\n");
+  console.info("Enter API keys (leave empty to skip):\n");
 
   // Anthropic
   const anthropicKey = await question(
@@ -441,7 +441,7 @@ async function interactiveSetup(): Promise<void> {
   }
 
   // Optimization settings
-  console.log("\n⚙️  Optimization Settings:\n");
+  console.info("\n⚙️  Optimization Settings:\n");
 
   const preferredProvider = await question(
     `Preferred Provider [${secrets.optimization?.preferredProvider || "anthropic"}]: `
@@ -463,21 +463,21 @@ async function interactiveSetup(): Promise<void> {
   // Save
   saveSecrets(secrets, password);
 
-  console.log("\n📋 Summary:");
-  console.log(`   Anthropic: ${secrets.anthropic?.apiKey ? "✅" : "❌"}`);
-  console.log(`   OpenAI: ${secrets.openai?.apiKey ? "✅" : "❌"}`);
-  console.log(`   OpenRouter: ${secrets.openrouter?.apiKey ? "✅" : "❌"}`);
-  console.log(`   Gemini: ${secrets.gemini?.apiKey ? "✅" : "❌"}`);
-  console.log(`   Groq: ${secrets.groq?.apiKey ? "✅" : "❌"}`);
-  console.log(`   Mistral: ${secrets.mistral?.apiKey ? "✅" : "❌"}`);
-  console.log(`   DeepSeek: ${secrets.deepseek?.apiKey ? "✅" : "❌"}`);
-  console.log(`   Together: ${secrets.together?.apiKey ? "✅" : "❌"}`);
-  console.log(`   Perplexity: ${secrets.perplexity?.apiKey ? "✅" : "❌"}`);
-  console.log(`   Helicone: ${secrets.helicone?.apiKey ? "✅" : "❌"}`);
+  console.info("\n📋 Summary:");
+  console.info(`   Anthropic: ${secrets.anthropic?.apiKey ? "✅" : "❌"}`);
+  console.info(`   OpenAI: ${secrets.openai?.apiKey ? "✅" : "❌"}`);
+  console.info(`   OpenRouter: ${secrets.openrouter?.apiKey ? "✅" : "❌"}`);
+  console.info(`   Gemini: ${secrets.gemini?.apiKey ? "✅" : "❌"}`);
+  console.info(`   Groq: ${secrets.groq?.apiKey ? "✅" : "❌"}`);
+  console.info(`   Mistral: ${secrets.mistral?.apiKey ? "✅" : "❌"}`);
+  console.info(`   DeepSeek: ${secrets.deepseek?.apiKey ? "✅" : "❌"}`);
+  console.info(`   Together: ${secrets.together?.apiKey ? "✅" : "❌"}`);
+  console.info(`   Perplexity: ${secrets.perplexity?.apiKey ? "✅" : "❌"}`);
+  console.info(`   Helicone: ${secrets.helicone?.apiKey ? "✅" : "❌"}`);
 
-  console.log("\n🚀 To use in production:");
-  console.log('   export OCTYPO_SECRETS_PASSWORD="your-password"');
-  console.log("\n✅ Setup complete!\n");
+  console.info("\n🚀 To use in production:");
+  console.info('   export OCTYPO_SECRETS_PASSWORD="your-password"');
+  console.info("\n✅ Setup complete!\n");
 
   rl.close();
 }
@@ -497,29 +497,29 @@ if (isMainModule) {
     const password = process.env.OCTYPO_SECRETS_PASSWORD || getSecretsPassword();
     const secrets = loadSecrets(password);
     if (secrets) {
-      console.log("✅ Secrets file valid");
-      console.log(`   Version: ${secrets._meta?.version}`);
-      console.log(`   Updated: ${secrets._meta?.updatedAt}`);
+      console.info("✅ Secrets file valid");
+      console.info(`   Version: ${secrets._meta?.version}`);
+      console.info(`   Updated: ${secrets._meta?.updatedAt}`);
     } else {
-      console.log("❌ Could not load secrets");
+      console.info("❌ Could not load secrets");
       process.exit(1);
     }
   } else if (args.includes("--export-env")) {
     // Export as environment variables (for debugging only)
     const password = process.env.OCTYPO_SECRETS_PASSWORD || getSecretsPassword();
     if (loadSecretsToEnv(password)) {
-      console.log("✅ Secrets loaded to environment");
+      console.info("✅ Secrets loaded to environment");
     } else {
-      console.log("❌ Could not load secrets");
+      console.info("❌ Could not load secrets");
       process.exit(1);
     }
   } else {
-    console.log("Octypo Secrets Manager\n");
-    console.log("Usage:");
-    console.log("  npx tsx server/octypo/config/secrets.ts --setup    Interactive setup");
-    console.log("  npx tsx server/octypo/config/secrets.ts --verify   Verify secrets file");
-    console.log("  npx tsx server/octypo/config/secrets.ts --export-env  Load to env vars");
-    console.log("\nEnvironment:");
-    console.log("  OCTYPO_SECRETS_PASSWORD  Password for encryption/decryption");
+    console.info("Octypo Secrets Manager\n");
+    console.info("Usage:");
+    console.info("  npx tsx server/octypo/config/secrets.ts --setup    Interactive setup");
+    console.info("  npx tsx server/octypo/config/secrets.ts --verify   Verify secrets file");
+    console.info("  npx tsx server/octypo/config/secrets.ts --export-env  Load to env vars");
+    console.info("\nEnvironment:");
+    console.info("  OCTYPO_SECRETS_PASSWORD  Password for encryption/decryption");
   }
 }

@@ -3,7 +3,6 @@
  * Handles image validation, conversion, resizing, and optimization
  */
 
-// @ts-ignore - sharp has complex types
 import sharp from "sharp";
 
 export interface ImageMetadata {
@@ -29,12 +28,7 @@ export interface ProcessingOptions {
   thumbnailSize?: number;
 }
 
-export const SUPPORTED_MIME_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-] as const;
+export const SUPPORTED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"] as const;
 
 export type SupportedMimeType = (typeof SUPPORTED_MIME_TYPES)[number];
 
@@ -78,9 +72,7 @@ export async function convertToWebP(
   buffer: Buffer,
   quality: number = DEFAULT_QUALITY
 ): Promise<Buffer> {
-  return sharp(buffer)
-    .webp({ quality })
-    .toBuffer();
+  return sharp(buffer).webp({ quality }).toBuffer();
 }
 
 /**
@@ -98,9 +90,7 @@ export async function resizeImage(
     withoutEnlargement: true,
   };
 
-  return sharp(buffer)
-    .resize(options)
-    .toBuffer();
+  return sharp(buffer).resize(options).toBuffer();
 }
 
 /**
@@ -127,12 +117,7 @@ export async function processImage(
   originalFilename: string,
   options: ProcessingOptions = {}
 ): Promise<ProcessedImage> {
-  const {
-    format = "webp",
-    quality = DEFAULT_QUALITY,
-    maxWidth,
-    maxHeight,
-  } = options;
+  const { format = "webp", quality = DEFAULT_QUALITY, maxWidth, maxHeight } = options;
 
   let processedBuffer = buffer;
   let sharpInstance = sharp(buffer);

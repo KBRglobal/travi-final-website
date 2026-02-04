@@ -283,7 +283,9 @@ export function setupSecurityMiddleware(app: Express): void {
   try {
     initializeSessionSecrets();
     logRotationStatus();
-  } catch (err) {}
+  } catch (err) {
+    console.error("Session secret initialization error:", err);
+  }
 }
 
 // ============================================================================

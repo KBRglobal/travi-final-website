@@ -59,10 +59,14 @@ export function startAlertEngine(): void {
 
   isRunning = true;
 
-  runDetection().catch(() => {});
+  runDetection().catch(err => {
+    console.error("Alert detection error:", err);
+  });
 
   detectionInterval = setInterval(() => {
-    runDetection().catch(() => {});
+    runDetection().catch(err => {
+      console.error("Alert detection interval error:", err);
+    });
   }, DETECTION_INTERVAL_MS);
 }
 

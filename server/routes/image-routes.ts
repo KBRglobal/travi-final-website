@@ -4,7 +4,6 @@
  */
 
 import { Express, Request, Response, NextFunction } from "express";
-// @ts-ignore - multer has complex types
 import multer from "multer";
 import {
   getImageService,

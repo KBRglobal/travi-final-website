@@ -3,5 +3,6 @@
  */
 
 export async function seedQaChecklist(): Promise<void> {
-  console.log("[QA Seed] QA checklist seeding not implemented");
+  // Stub - QA checklist seeding not yet implemented
+  console.info("[QA Seed] QA checklist seeding not implemented");
 }

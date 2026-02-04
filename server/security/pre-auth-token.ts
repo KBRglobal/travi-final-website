@@ -66,7 +66,9 @@ async function ensureTableExists(): Promise<void> {
         CREATE INDEX IF NOT EXISTS "IDX_pre_auth_expires" ON pre_auth_tokens(expires_at);
       `;
       await pool.query(fallbackSQL);
-    } catch (fallbackError) {}
+    } catch (fallbackError) {
+      console.error("Pre-auth token table creation error:", fallbackError);
+    }
   }
 }
 

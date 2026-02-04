@@ -71,11 +71,6 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
   const path = req.path;
   const fullUrl = req.originalUrl;
 
-  // Debug log for attraction redirects
-  if (path.includes("/attractions/")) {
-    console.log(`[Redirect] Checking path: ${path}`);
-  }
-
   if (host.startsWith("www.")) {
     const canonicalHost = getCanonicalHost(host);
     const protocol = getProtocol(req);
@@ -106,14 +101,10 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
   if (oldAttractionMatch) {
     const [, city, slug] = oldAttractionMatch;
     const cityLower = city.toLowerCase();
-    console.log(
-      `[Redirect] Old attraction URL detected: ${path} -> city=${cityLower}, slug=${slug}`
-    );
 
     // Check if it's a valid destination
     if (VALID_DESTINATIONS.includes(cityLower)) {
       const newUrl = `/${cityLower}/attractions/${slug}`;
-      console.log(`[Redirect] 301 redirect to: ${newUrl}`);
       res.redirect(301, newUrl);
       return;
     }

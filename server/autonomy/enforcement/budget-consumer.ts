@@ -113,7 +113,9 @@ export async function consumeBudget(
 
     // Flush if batch threshold reached
     if (existing.actionsExecuted >= BATCH_THRESHOLD) {
-      flushConsumptionBuffer().catch(() => {});
+      flushConsumptionBuffer().catch(err => {
+        console.error("Budget consumption buffer flush error:", err);
+      });
     }
   }
 }
@@ -307,5 +309,7 @@ export function shutdownBudgetConsumer() {
     clearInterval(flushTimer);
     flushTimer = null;
   }
-  flushConsumptionBuffer().catch(() => {});
+  flushConsumptionBuffer().catch(err => {
+    console.error("Budget consumer shutdown flush error:", err);
+  });
 }
