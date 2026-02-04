@@ -27,6 +27,7 @@ import {
   updateRSSSchedulerConfig,
   getRSSSchedulerStatus,
   manualTrigger as triggerRSSScheduler,
+  getSchedulerStats,
 } from "../../octypo/rss-scheduler";
 import { rssReader } from "../../octypo/rss-reader";
 
@@ -1740,12 +1741,39 @@ router.post("/rss-scheduler/trigger", async (_req: Request, res: Response) => {
     res.json({
       message: "RSS scheduler cycle triggered",
       created: result.created,
-      remaining: result.remaining,
+      destinations: result.destinations,
+      globalRemaining: result.globalRemaining,
       _meta: { apiVersion: "v1" },
     });
   } catch (error) {
     log.error("[Octypo] Failed to trigger RSS scheduler", error);
     res.status(500).json({ error: "Failed to trigger scheduler" });
+  }
+});
+
+/**
+ * GET /api/octypo/rss-scheduler/stats
+ * Get detailed scheduler statistics per destination
+ */
+router.get("/rss-scheduler/stats", async (_req: Request, res: Response) => {
+  try {
+    const stats = await getSchedulerStats();
+    const status = getRSSSchedulerStatus();
+
+    res.json({
+      running: status.running,
+      config: status.config,
+      stats: {
+        totalToday: stats.totalToday,
+        globalRemaining: stats.globalRemaining,
+        perDestination: stats.perDestination,
+        perDestinationRemaining: stats.perDestinationRemaining,
+      },
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get RSS scheduler stats", error);
+    res.status(500).json({ error: "Failed to get scheduler stats" });
   }
 });
 

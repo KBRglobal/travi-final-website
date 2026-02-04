@@ -28,8 +28,10 @@ interface BackgroundServicesConfig {
   enableDataDecisions: boolean;
   enableContentHealth: boolean;
   rssSchedulerConfig: {
-    dailyLimit: number;
+    dailyLimitPerDestination: number;
+    globalDailyLimit: number;
     intervalMinutes: number;
+    minQualityScore: number;
   };
   seoAutopilotConfig: {
     mode: "off" | "supervised" | "full";
@@ -65,10 +67,12 @@ function getConfig(): BackgroundServicesConfig {
     // Content Health Scheduler - enabled by default (set to 'false' to disable)
     enableContentHealth: process.env.ENABLE_CONTENT_HEALTH !== "false",
 
-    // RSS scheduler settings
+    // RSS scheduler settings (per-destination limits)
     rssSchedulerConfig: {
-      dailyLimit: parseInt(process.env.RSS_DAILY_LIMIT || "20", 10),
+      dailyLimitPerDestination: parseInt(process.env.RSS_DAILY_LIMIT_PER_DESTINATION || "4", 10),
+      globalDailyLimit: parseInt(process.env.RSS_GLOBAL_DAILY_LIMIT || "68", 10), // 17 destinations × 4
       intervalMinutes: parseInt(process.env.RSS_INTERVAL_MINUTES || "60", 10),
+      minQualityScore: parseInt(process.env.RSS_MIN_QUALITY_SCORE || "85", 10),
     },
 
     // SEO Autopilot settings
@@ -142,13 +146,15 @@ async function startRSSSchedulerService(config: BackgroundServicesConfig): Promi
 
     startRSSScheduler({
       enabled: true,
-      dailyLimit: config.rssSchedulerConfig.dailyLimit,
+      dailyLimitPerDestination: config.rssSchedulerConfig.dailyLimitPerDestination,
+      globalDailyLimit: config.rssSchedulerConfig.globalDailyLimit,
       intervalMinutes: config.rssSchedulerConfig.intervalMinutes,
+      minQualityScore: config.rssSchedulerConfig.minQualityScore,
     });
 
     shutdownHandlers.push(stopRSSScheduler);
     log.info(
-      `[BackgroundServices] RSS scheduler STARTED (limit: ${config.rssSchedulerConfig.dailyLimit}/day, interval: ${config.rssSchedulerConfig.intervalMinutes}min)`
+      `[BackgroundServices] RSS scheduler STARTED (limit: ${config.rssSchedulerConfig.dailyLimitPerDestination}/dest/day, global: ${config.rssSchedulerConfig.globalDailyLimit}/day, interval: ${config.rssSchedulerConfig.intervalMinutes}min)`
     );
   } catch (error) {
     log.error(`[BackgroundServices] Failed to start RSS scheduler: ${error}`);
