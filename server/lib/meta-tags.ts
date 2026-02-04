@@ -293,8 +293,12 @@ export function generateStructuredData(options: StructuredDataOptions): string {
         },
         address: {
           "@type": "PostalAddress",
-          addressCountry: "AE",
-          addressLocality: "Dubai",
+          addressCountry: "GI",
+          addressLocality: "Gibraltar",
+        },
+        parentOrganization: {
+          "@type": "Organization",
+          name: "KBR Global",
         },
       });
       break;
