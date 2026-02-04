@@ -32,6 +32,7 @@ const CookiePolicy = lazy(() => import("@/pages/cookies"));
 const SecurityPolicy = lazy(() => import("@/pages/security"));
 const PublicAbout = lazy(() => import("@/pages/about"));
 const PublicContact = lazy(() => import("@/pages/contact"));
+const PublicNews = lazy(() => import("@/pages/public-news"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const Login = lazy(() => import("@/pages/login"));
 const AccessDenied = lazy(() => import("@/pages/access-denied"));
@@ -103,6 +104,7 @@ const publicRoutes = [
   { path: "/security", component: SecurityPolicy },
   { path: "/about", component: PublicAbout },
   { path: "/contact", component: PublicContact },
+  { path: "/news", component: PublicNews },
   ...createAliasRoutes(),
 ];
 
