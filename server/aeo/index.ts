@@ -126,5 +126,14 @@ export {
   getValidationSummary,
 } from "./seo-aeo-validator";
 
+// Featured Snippet Optimizer
+export {
+  FeaturedSnippetOptimizer,
+  featuredSnippetOptimizer,
+  type SnippetType,
+  type FeaturedSnippetOpportunity,
+  type SnippetAnalysis,
+} from "./featured-snippet-optimizer";
+
 // API routes
 export { default as aeoRoutes } from "./aeo-routes";

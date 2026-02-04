@@ -14,7 +14,13 @@ import {
   isAeoRequired,
   isEntityRequired,
   isIntelligenceCoverageRequired,
+  isQuality108Required,
+  isInternalLinkingRequired,
+  isFaqRequired,
+  getSEOGates,
 } from "./types";
+import { calculateFullQuality108 } from "../../services/seo/unified-quality-scorer";
+import { internalLinkingAnalyzer } from "../../services/seo/internal-linking-analyzer";
 
 /**
  * Evaluate publishing eligibility for a content item
@@ -121,6 +127,75 @@ export async function evaluateEligibility(
     if (content.seoScore && content.seoScore < 40) {
       warnings.push(`SEO score is low (${content.seoScore}/100)`);
       score -= 5;
+    }
+
+    // Rule 9: Quality 108 check (if enabled)
+    if (isQuality108Required() && !options.skipQuality108Check) {
+      try {
+        const quality108 = await calculateFullQuality108(contentId, {
+          contentScore: 60, // placeholder - would come from actual scoring
+          seoScore: content.seoScore || 0,
+          aeoScore: content.aeoScore || 0,
+        });
+
+        const seoGates = getSEOGates();
+
+        if (quality108.totalScore < seoGates.quality108Minimum) {
+          blockingReasons.push(
+            `Quality 108 score too low: ${quality108.totalScore}/${seoGates.quality108Minimum} minimum`
+          );
+          score -= 25;
+        }
+
+        if (quality108.criticalIssues.length > 0) {
+          blockingReasons.push(
+            `Quality 108 critical issues: ${quality108.criticalIssues.join(", ")}`
+          );
+          score -= 15;
+        }
+
+        if (quality108.categories.internalLinking.metrics.orphanStatus && seoGates.noOrphanPages) {
+          blockingReasons.push("Content is orphaned (no inbound links)");
+          score -= 20;
+        }
+      } catch (error) {
+        warnings.push("Could not evaluate Quality 108 score");
+      }
+    }
+
+    // Rule 10: Internal linking check (if enabled)
+    if (isInternalLinkingRequired() && !options.skipInternalLinkingCheck) {
+      try {
+        const seoGates = getSEOGates();
+        const linkSuggestions = await internalLinkingAnalyzer.suggestLinksForContent(contentId);
+
+        // Check for minimum outbound links (using suggestions as indicator)
+        if (linkSuggestions.length >= seoGates.minInternalLinks) {
+          warnings.push(
+            `Consider adding ${Math.min(3, linkSuggestions.length)} more internal links`
+          );
+          score -= 5;
+        }
+      } catch (error) {
+        // Non-blocking warning
+        warnings.push("Could not evaluate internal linking");
+      }
+    }
+
+    // Rule 11: FAQ requirement check (if enabled)
+    if (isFaqRequired() && !options.skipFaqCheck) {
+      const seoGates = getSEOGates();
+      const blocks = content.blocks as any[] | null;
+
+      // Simple check for FAQ presence in blocks
+      const hasFaq = blocks?.some(
+        b => b.type === "faq" || b.type === "accordion" || b.data?.type === "faq"
+      );
+
+      if (!hasFaq && seoGates.mustHaveFAQ) {
+        warnings.push("Content has no FAQ section (recommended for SEO/AEO)");
+        score -= 10;
+      }
     }
 
     // Ensure score is within bounds

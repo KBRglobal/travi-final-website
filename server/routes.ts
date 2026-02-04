@@ -217,6 +217,7 @@ import { helpAdminRoutes, helpPublicRoutes } from "./help";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
 import octypoRoutes from "./routes/admin/octypo-routes";
 import pilotLocalizationRoutes from "./octypo/pilot/routes";
+import { vamsRoutes } from "./vams";
 import { mediaIntelligenceRoutes } from "./media-intelligence";
 import { growthOSRoutes } from "./growth-os";
 import traviRoutes from "./travi/routes";
@@ -2499,6 +2500,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // PILOT: Octypo × Localization Integration (Isolated for pilot testing)
   // ============================================================================
   app.use("/api/octypo/pilot", requireAuth, requirePermission("canEdit"), pilotLocalizationRoutes);
+
+  // ============================================================================
+  // VAMS (Visual Asset Management System - Stock Images + AI Generation)
+  // ============================================================================
+  app.use("/api/vams", requireAuth, requirePermission("canEdit"), vamsRoutes);
 
   // ============================================================================
   // ENHANCEMENTS (Readability, CTAs, Search, Popups, Newsletter, Monetization, PWA)

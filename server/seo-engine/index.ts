@@ -13,27 +13,28 @@
  * - Bot behavior monitoring
  */
 
-export * from './schema-engine';
-export * from './canonical-engine';
-export * from './aeo-score-engine';
-export * from './index-health-engine';
-export * from './content-quality-engine';
-export * from './internal-linking-engine';
-export * from './reindex-engine';
-export * from './bot-monitor-engine';
-export * from './snippet-engine';
-export * from './types';
+export * from "./schema-engine";
+export * from "./canonical-engine";
+export * from "./aeo-score-engine";
+export * from "./index-health-engine";
+export * from "./content-quality-engine";
+export * from "./internal-linking-engine";
+export * from "./reindex-engine";
+export * from "./bot-monitor-engine";
+export * from "./snippet-engine";
+export * from "./speakable-generator";
+export * from "./types";
 
-import { SchemaEngine } from './schema-engine';
-import { CanonicalEngine } from './canonical-engine';
-import { AEOScoreEngine } from './aeo-score-engine';
-import { IndexHealthEngine } from './index-health-engine';
-import { ContentQualityEngine } from './content-quality-engine';
-import { InternalLinkingEngine } from './internal-linking-engine';
-import { ReindexEngine } from './reindex-engine';
-import { BotMonitorEngine } from './bot-monitor-engine';
-import { SnippetEngine } from './snippet-engine';
-import { SEOEngineConfig, SEOEngineStatus, ContentSEOReport } from './types';
+import { SchemaEngine } from "./schema-engine";
+import { CanonicalEngine } from "./canonical-engine";
+import { AEOScoreEngine } from "./aeo-score-engine";
+import { IndexHealthEngine } from "./index-health-engine";
+import { ContentQualityEngine } from "./content-quality-engine";
+import { InternalLinkingEngine } from "./internal-linking-engine";
+import { ReindexEngine } from "./reindex-engine";
+import { BotMonitorEngine } from "./bot-monitor-engine";
+import { SnippetEngine } from "./snippet-engine";
+import { SEOEngineConfig, SEOEngineStatus, ContentSEOReport } from "./types";
 
 /**
  * Main SEO Engine class - orchestrates all SEO/AEO functionality
@@ -53,12 +54,27 @@ export class SEOEngine {
 
   constructor(config: Partial<SEOEngineConfig> = {}) {
     this.config = {
-      baseUrl: config.baseUrl || process.env.BASE_URL || 'https://travi.world',
-      siteName: config.siteName || 'TRAVI',
-      defaultLocale: config.defaultLocale || 'en',
+      baseUrl: config.baseUrl || process.env.BASE_URL || "https://travi.world",
+      siteName: config.siteName || "TRAVI",
+      defaultLocale: config.defaultLocale || "en",
       supportedLocales: config.supportedLocales || [
-        'en', 'ar', 'zh', 'hi', 'ru', 'de', 'fr', 'ja', 'ko', 'pt',
-        'es', 'it', 'nl', 'tr', 'fa', 'ur', 'he'
+        "en",
+        "ar",
+        "zh",
+        "hi",
+        "ru",
+        "de",
+        "fr",
+        "ja",
+        "ko",
+        "pt",
+        "es",
+        "it",
+        "nl",
+        "tr",
+        "fa",
+        "ur",
+        "he",
       ],
       enableAEO: config.enableAEO !== false,
       enableReindexTriggers: config.enableReindexTriggers !== false,
@@ -83,21 +99,15 @@ export class SEOEngine {
    * Generate complete SEO report for a piece of content
    */
   async generateContentReport(contentId: string): Promise<ContentSEOReport> {
-    const [
-      schemaData,
-      canonicalUrl,
-      aeoScore,
-      qualityScore,
-      internalLinks,
-      snippetReadiness
-    ] = await Promise.all([
-      this.schema.generateForContent(contentId),
-      this.canonical.getCanonicalUrl(contentId),
-      this.aeoScore.calculate(contentId),
-      this.contentQuality.analyze(contentId),
-      this.internalLinking.getLinksForContent(contentId),
-      this.snippet.analyzeReadiness(contentId)
-    ]);
+    const [schemaData, canonicalUrl, aeoScore, qualityScore, internalLinks, snippetReadiness] =
+      await Promise.all([
+        this.schema.generateForContent(contentId),
+        this.canonical.getCanonicalUrl(contentId),
+        this.aeoScore.calculate(contentId),
+        this.contentQuality.analyze(contentId),
+        this.internalLinking.getLinksForContent(contentId),
+        this.snippet.analyzeReadiness(contentId),
+      ]);
 
     return {
       contentId,
@@ -111,8 +121,8 @@ export class SEOEngine {
       overallScore: this.calculateOverallScore({
         aeoScore: aeoScore.score,
         qualityScore: qualityScore.score,
-        snippetScore: snippetReadiness.score
-      })
+        snippetScore: snippetReadiness.score,
+      }),
     };
   }
 
@@ -122,7 +132,7 @@ export class SEOEngine {
   async getStatus(): Promise<SEOEngineStatus> {
     const [indexHealth, botStats] = await Promise.all([
       this.indexHealth.getSummary(),
-      this.botMonitor.getStats()
+      this.botMonitor.getStats(),
     ]);
 
     return {
@@ -130,7 +140,7 @@ export class SEOEngine {
       config: this.config,
       indexHealth,
       botActivity: botStats,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
   }
 
@@ -154,9 +164,7 @@ export class SEOEngine {
   }): number {
     // Weighted average: AEO 40%, Quality 35%, Snippet 25%
     return Math.round(
-      scores.aeoScore * 0.4 +
-      scores.qualityScore * 0.35 +
-      scores.snippetScore * 0.25
+      scores.aeoScore * 0.4 + scores.qualityScore * 0.35 + scores.snippetScore * 0.25
     );
   }
 }

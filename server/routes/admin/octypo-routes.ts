@@ -1958,4 +1958,560 @@ router.post("/rss/generate-from-items", async (req: Request, res: Response) => {
   }
 });
 
+// ============================================================================
+// CONTENT EXPLODER ENDPOINTS
+// ============================================================================
+
+import { getExplosionOrchestrator } from "../../octypo/exploder";
+import { getEntityExtractor } from "../../octypo/exploder/entity-extractor";
+import { contentEntities, explosionJobs, explodedArticles } from "@shared/schema";
+
+/**
+ * POST /api/octypo/exploder/entities/extract/:contentId
+ * Extract entities from content for explosion
+ */
+router.post("/exploder/entities/extract/:contentId", async (req: Request, res: Response) => {
+  try {
+    const { contentId } = req.params;
+
+    if (!contentId) {
+      return res.status(400).json({ error: "Content ID is required" });
+    }
+
+    log.info(`[Octypo] Extracting entities from content: ${contentId}`);
+
+    const extractor = getEntityExtractor();
+    const result = await extractor.extractFromContent(contentId);
+
+    if (result.success) {
+      res.json({
+        success: true,
+        contentId,
+        entitiesExtracted: result.entities.length,
+        entities: result.entities,
+        extractionTimeMs: result.extractionTimeMs,
+        _meta: { apiVersion: "v1" },
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        contentId,
+        error: result.error,
+        extractionTimeMs: result.extractionTimeMs,
+        _meta: { apiVersion: "v1" },
+      });
+    }
+  } catch (error) {
+    log.error("[Octypo] Entity extraction failed", error);
+    res.status(500).json({
+      error: "Entity extraction failed",
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+/**
+ * POST /api/octypo/exploder/jobs
+ * Start a content explosion job
+ */
+router.post("/exploder/jobs", async (req: Request, res: Response) => {
+  try {
+    const { contentId, config } = req.body;
+
+    if (!contentId) {
+      return res.status(400).json({ error: "Content ID is required" });
+    }
+
+    log.info(`[Octypo] Starting explosion job for content: ${contentId}`);
+
+    const orchestrator = getExplosionOrchestrator();
+    const jobId = await orchestrator.startExplosion(contentId, config || {});
+
+    res.json({
+      success: true,
+      jobId,
+      contentId,
+      message: "Explosion job started",
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to start explosion job", error);
+    res.status(500).json({
+      error: "Failed to start explosion job",
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
+/**
+ * GET /api/octypo/exploder/jobs/:id
+ * Get explosion job progress
+ */
+router.get("/exploder/jobs/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const orchestrator = getExplosionOrchestrator();
+    const progress = await orchestrator.getJobProgress(id);
+
+    if (!progress) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.json({
+      jobId: id,
+      ...progress,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get explosion job", error);
+    res.status(500).json({ error: "Failed to get job progress" });
+  }
+});
+
+/**
+ * POST /api/octypo/exploder/jobs/:id/cancel
+ * Cancel an explosion job
+ */
+router.post("/exploder/jobs/:id/cancel", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const orchestrator = getExplosionOrchestrator();
+    const cancelled = await orchestrator.cancelJob(id);
+
+    if (cancelled) {
+      res.json({
+        success: true,
+        jobId: id,
+        message: "Job cancelled",
+        _meta: { apiVersion: "v1" },
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        jobId: id,
+        error: "Job cannot be cancelled (already completed or not found)",
+        _meta: { apiVersion: "v1" },
+      });
+    }
+  } catch (error) {
+    log.error("[Octypo] Failed to cancel explosion job", error);
+    res.status(500).json({ error: "Failed to cancel job" });
+  }
+});
+
+/**
+ * GET /api/octypo/exploder/stats
+ * Get explosion statistics
+ */
+router.get("/exploder/stats", async (_req: Request, res: Response) => {
+  try {
+    const [jobStats, entityStats, articleStats] = await Promise.all([
+      db
+        .execute(
+          sql`
+        SELECT
+          COUNT(*)::int as total_jobs,
+          COUNT(CASE WHEN status = 'completed' THEN 1 END)::int as completed,
+          COUNT(CASE WHEN status = 'failed' THEN 1 END)::int as failed,
+          COUNT(CASE WHEN status IN ('pending', 'extracting', 'ideating', 'generating') THEN 1 END)::int as running,
+          SUM(entities_extracted)::int as total_entities,
+          SUM(ideas_generated)::int as total_ideas,
+          SUM(articles_generated)::int as total_articles
+        FROM explosion_jobs
+      `
+        )
+        .then(r => r.rows[0] as any),
+
+      db
+        .execute(
+          sql`
+        SELECT
+          COUNT(*)::int as total_entities,
+          COUNT(CASE WHEN verified = true THEN 1 END)::int as verified,
+          COUNT(DISTINCT entity_type)::int as unique_types
+        FROM content_entities
+        WHERE merged_into_id IS NULL
+      `
+        )
+        .then(r => r.rows[0] as any),
+
+      db
+        .execute(
+          sql`
+        SELECT
+          COUNT(*)::int as total_articles,
+          COUNT(CASE WHEN status = 'generated' THEN 1 END)::int as generated,
+          COUNT(CASE WHEN status = 'published' THEN 1 END)::int as published,
+          COALESCE(AVG(quality_108_score), 0)::numeric(5,2) as avg_quality
+        FROM exploded_articles
+      `
+        )
+        .then(r => r.rows[0] as any),
+    ]);
+
+    res.json({
+      jobs: {
+        total: jobStats?.total_jobs || 0,
+        completed: jobStats?.completed || 0,
+        failed: jobStats?.failed || 0,
+        running: jobStats?.running || 0,
+      },
+      entities: {
+        total: entityStats?.total_entities || 0,
+        verified: entityStats?.verified || 0,
+        uniqueTypes: entityStats?.unique_types || 0,
+      },
+      articles: {
+        total: articleStats?.total_articles || 0,
+        generated: articleStats?.generated || 0,
+        published: articleStats?.published || 0,
+        avgQuality: parseFloat(articleStats?.avg_quality) || 0,
+      },
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get exploder stats", error);
+    res.status(500).json({ error: "Failed to get exploder stats" });
+  }
+});
+
+/**
+ * GET /api/octypo/exploder/entities
+ * List extracted entities with pagination
+ */
+router.get("/exploder/entities", async (req: Request, res: Response) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+    const offset = parseInt(req.query.offset as string) || 0;
+    const entityType = req.query.type as string | undefined;
+
+    let whereClause;
+    if (entityType) {
+      whereClause = and(
+        sql`merged_into_id IS NULL`,
+        eq(contentEntities.entityType, entityType as any)
+      );
+    } else {
+      whereClause = sql`merged_into_id IS NULL`;
+    }
+
+    const [entities, countResult] = await Promise.all([
+      db
+        .select()
+        .from(contentEntities)
+        .where(whereClause)
+        .orderBy(desc(contentEntities.createdAt))
+        .limit(limit)
+        .offset(offset),
+
+      db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(contentEntities)
+        .where(whereClause)
+        .then(r => r[0]?.count ?? 0),
+    ]);
+
+    res.json({
+      entities,
+      total: countResult,
+      limit,
+      offset,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get entities", error);
+    res.status(500).json({ error: "Failed to get entities" });
+  }
+});
+
+// ============================================================================
+// REAL AUTOPILOT ENDPOINTS (4-MODE SYSTEM)
+// ============================================================================
+
+import { autopilotAPI, getRealAutopilot, getAutopilotScheduler } from "../../octypo/pilot";
+import { autopilotTasks, autopilotSchedules } from "@shared/schema";
+
+/**
+ * GET /api/octypo/real-autopilot/status
+ * Get full autopilot status
+ */
+router.get("/real-autopilot/status", async (_req: Request, res: Response) => {
+  try {
+    const status = await autopilotAPI.getStatus();
+    res.json({
+      ...status,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get real autopilot status", error);
+    res.status(500).json({ error: "Failed to get autopilot status" });
+  }
+});
+
+/**
+ * POST /api/octypo/real-autopilot/mode
+ * Set autopilot mode
+ */
+router.post("/real-autopilot/mode", async (req: Request, res: Response) => {
+  try {
+    const { mode } = req.body;
+    const userId = (req as any).user?.id || "system";
+
+    if (!["off", "monitor", "semi_auto", "full_auto"].includes(mode)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid mode. Must be: off, monitor, semi_auto, or full_auto" });
+    }
+
+    log.info(`[Octypo] Setting real autopilot mode to: ${mode} by ${userId}`);
+
+    const state = await autopilotAPI.setMode(mode, userId);
+
+    res.json({
+      success: true,
+      mode,
+      state,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to set autopilot mode", error);
+    res.status(500).json({ error: "Failed to set autopilot mode" });
+  }
+});
+
+/**
+ * GET /api/octypo/real-autopilot/tasks
+ * Get autopilot tasks with optional status filter
+ */
+router.get("/real-autopilot/tasks", async (req: Request, res: Response) => {
+  try {
+    const status = req.query.status as string | undefined;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    const autopilot = getRealAutopilot();
+    const tasks = await autopilot.getTasks(status as any, limit, offset);
+
+    const [countResult] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(autopilotTasks)
+      .where(status ? eq(autopilotTasks.status, status as any) : undefined);
+
+    res.json({
+      tasks,
+      total: countResult?.count || 0,
+      limit,
+      offset,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get autopilot tasks", error);
+    res.status(500).json({ error: "Failed to get tasks" });
+  }
+});
+
+/**
+ * GET /api/octypo/real-autopilot/tasks/awaiting-approval
+ * Get tasks awaiting approval
+ */
+router.get("/real-autopilot/tasks/awaiting-approval", async (req: Request, res: Response) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+    const tasks = await autopilotAPI.getAwaitingApproval(limit);
+
+    res.json({
+      tasks,
+      count: tasks.length,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get tasks awaiting approval", error);
+    res.status(500).json({ error: "Failed to get tasks" });
+  }
+});
+
+/**
+ * POST /api/octypo/real-autopilot/tasks/:id/approve
+ * Approve a task
+ */
+router.post("/real-autopilot/tasks/:id/approve", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = (req as any).user?.id || "system";
+
+    const success = await autopilotAPI.processApproval(id, "approve", userId);
+
+    if (success) {
+      res.json({
+        success: true,
+        taskId: id,
+        action: "approved",
+        approvedBy: userId,
+        _meta: { apiVersion: "v1" },
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: "Task cannot be approved (not awaiting approval or not found)",
+        _meta: { apiVersion: "v1" },
+      });
+    }
+  } catch (error) {
+    log.error("[Octypo] Failed to approve task", error);
+    res.status(500).json({ error: "Failed to approve task" });
+  }
+});
+
+/**
+ * POST /api/octypo/real-autopilot/tasks/:id/reject
+ * Reject a task
+ */
+router.post("/real-autopilot/tasks/:id/reject", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const userId = (req as any).user?.id || "system";
+
+    const success = await autopilotAPI.processApproval(id, "reject", userId, reason);
+
+    if (success) {
+      res.json({
+        success: true,
+        taskId: id,
+        action: "rejected",
+        rejectedBy: userId,
+        reason,
+        _meta: { apiVersion: "v1" },
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: "Task cannot be rejected (not awaiting approval or not found)",
+        _meta: { apiVersion: "v1" },
+      });
+    }
+  } catch (error) {
+    log.error("[Octypo] Failed to reject task", error);
+    res.status(500).json({ error: "Failed to reject task" });
+  }
+});
+
+/**
+ * POST /api/octypo/real-autopilot/run-now
+ * Trigger immediate processing
+ */
+router.post("/real-autopilot/run-now", async (req: Request, res: Response) => {
+  try {
+    const { taskTypes } = req.body;
+
+    log.info("[Octypo] Manual run-now triggered", { taskTypes });
+
+    const result = await autopilotAPI.runNow(taskTypes);
+
+    res.json({
+      success: true,
+      ...result,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to run autopilot", error);
+    res.status(500).json({ error: "Failed to run autopilot" });
+  }
+});
+
+/**
+ * POST /api/octypo/real-autopilot/tasks
+ * Create a new task
+ */
+router.post("/real-autopilot/tasks", async (req: Request, res: Response) => {
+  try {
+    const { taskType, title, description, config, priority, scheduledFor } = req.body;
+
+    if (!taskType || !title) {
+      return res.status(400).json({ error: "taskType and title are required" });
+    }
+
+    const autopilot = getRealAutopilot();
+    const taskId = await autopilot.createTask(taskType, title, config || {}, {
+      description,
+      priority,
+      scheduledFor: scheduledFor ? new Date(scheduledFor) : undefined,
+    });
+
+    res.json({
+      success: true,
+      taskId,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to create task", error);
+    res.status(500).json({ error: "Failed to create task" });
+  }
+});
+
+/**
+ * GET /api/octypo/real-autopilot/schedules
+ * Get all schedules
+ */
+router.get("/real-autopilot/schedules", async (_req: Request, res: Response) => {
+  try {
+    const schedules = await autopilotAPI.getSchedules();
+
+    res.json({
+      schedules,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to get schedules", error);
+    res.status(500).json({ error: "Failed to get schedules" });
+  }
+});
+
+/**
+ * PATCH /api/octypo/real-autopilot/schedules/:id
+ * Update a schedule
+ */
+router.patch("/real-autopilot/schedules/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { enabled, cronExpression, config } = req.body;
+
+    await autopilotAPI.updateSchedule(id, { enabled, cronExpression });
+
+    res.json({
+      success: true,
+      scheduleId: id,
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to update schedule", error);
+    res.status(500).json({ error: "Failed to update schedule" });
+  }
+});
+
+/**
+ * POST /api/octypo/real-autopilot/schedules/:id/trigger
+ * Trigger a schedule immediately
+ */
+router.post("/real-autopilot/schedules/:id/trigger", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const scheduler = getAutopilotScheduler();
+    await scheduler.triggerSchedule(id);
+
+    res.json({
+      success: true,
+      scheduleId: id,
+      message: "Schedule triggered",
+      _meta: { apiVersion: "v1" },
+    });
+  } catch (error) {
+    log.error("[Octypo] Failed to trigger schedule", error);
+    res.status(500).json({ error: "Failed to trigger schedule" });
+  }
+});
+
 export default router;
