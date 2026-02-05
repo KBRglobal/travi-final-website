@@ -16,7 +16,6 @@ import {
   EditorialAttractions,
   FeaturedAttractions,
   TopPOIs,
-  EditorialNews,
   UpcomingEvents,
   UpcomingHolidays,
   SafetyBanner,
@@ -25,6 +24,7 @@ import {
   DestinationFAQ,
   DestinationCTA,
 } from "./stubs";
+import { EditorialNews } from "./EditorialNews";
 import { CategoryBentoGrid } from "@/components/category-bento-grid";
 import { usePublicDestination } from "@/hooks/use-public-destination";
 import { useQuery } from "@tanstack/react-query";

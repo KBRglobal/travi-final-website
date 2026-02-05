@@ -133,3 +133,6 @@ export * from "./vams";
 
 // Content rules, scores, and workflows
 export * from "./content-rules";
+
+// Editorial placements system
+export * from "./editorial-placements";

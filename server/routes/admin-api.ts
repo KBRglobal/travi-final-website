@@ -28,6 +28,7 @@ import {
 import { DESTINATIONS_INDEX_SEO, validateCharacterLimits } from "@shared/field-ownership";
 import multer from "multer";
 import sharp from "sharp";
+import editorialPlacementsRouter from "./admin/editorial-placements-routes";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -2014,6 +2015,9 @@ export function registerAdminApiRoutes(app: Express): void {
       }
     }
   );
+
+  // Mount editorial placements routes
+  router.use("/editorial", editorialPlacementsRouter);
 
   // Mount the router at /api/admin
   app.use("/api/admin", router);

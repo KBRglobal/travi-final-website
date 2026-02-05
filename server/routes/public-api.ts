@@ -1270,10 +1270,107 @@ export function registerPublicApiRoutes(app: Express): void {
     }
   });
 
+  // ============================================================================
+  // EDITORIAL PLACEMENTS PUBLIC API - Content placement for homepage/destination pages
+  // ============================================================================
+
+  /**
+   * Get active placements for a zone (what visitors see)
+   * Used by frontend to render editorial sections like "Breaking News", "Featured", etc.
+   */
+  router.get("/placements/:zone", async (req: Request, res: Response) => {
+    try {
+      const { zone } = req.params;
+      const { destinationId } = req.query;
+
+      const placements = await storage.getActivePlacements(
+        zone as any,
+        destinationId as string | undefined
+      );
+
+      // Enrich placements with content data
+      const enrichedPlacements = await Promise.all(
+        placements.map(async placement => {
+          const content = await storage.getContent(placement.contentId);
+          if (!content) return null;
+
+          // Track impression
+          storage.incrementPlacementImpressions(placement.id).catch(() => {});
+
+          return {
+            id: placement.id,
+            zone: placement.zone,
+            position: placement.position,
+            priority: placement.priority,
+            isBreaking: placement.isBreaking,
+            isFeatured: placement.isFeatured,
+            // Use custom overrides if set, otherwise use content data
+            headline: placement.customHeadline || content.title,
+            image: placement.customImage || content.heroImage || content.cardImage,
+            excerpt: placement.customExcerpt || content.summary,
+            // Content info
+            content: {
+              id: content.id,
+              title: content.title,
+              slug: content.slug,
+              type: content.type,
+              cardImage: content.cardImage,
+              heroImage: content.heroImage,
+              summary: content.summary,
+              publishedAt: content.publishedAt,
+            },
+          };
+        })
+      );
+
+      res.json(enrichedPlacements.filter(Boolean));
+    } catch (error) {
+      log.error("[placements] Error:", error);
+      res.status(500).json({ error: "Failed to fetch placements" });
+    }
+  });
+
+  /**
+   * Track placement click
+   * Called when user clicks on a placement to track CTR
+   */
+  router.post("/placements/:id/click", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      await storage.incrementPlacementClicks(id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to track click" });
+    }
+  });
+
+  /**
+   * Get all zone configurations (for frontend to know what zones exist)
+   */
+  router.get("/placement-zones", async (_req: Request, res: Response) => {
+    try {
+      const configs = await storage.getZoneConfigs();
+      res.json(
+        configs
+          .filter(c => c.isActive)
+          .map(c => ({
+            zone: c.zone,
+            displayName: c.displayName,
+            maxItems: c.maxItems,
+          }))
+      );
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch zone configs" });
+    }
+  });
+
   app.use("/api/public", router);
 
   // Alias for backward compatibility - redirect /api/destinations to /api/public/destinations
   app.get("/api/destinations", (req, res) => {
-    res.redirect(307, `/api/public/destinations${req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : ""}`);
+    res.redirect(
+      307,
+      `/api/public/destinations${req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : ""}`
+    );
   });
 }

@@ -5,7 +5,7 @@ type StubProps = Record<string, unknown>;
 export const EditorialAttractions = (_props: StubProps): null => null;
 export const FeaturedAttractions = (_props: StubProps): null => null;
 export const TopPOIs = (_props: StubProps): null => null;
-export const EditorialNews = (_props: StubProps): null => null;
+// EditorialNews - moved to EditorialNews.tsx (real implementation)
 export const UpcomingEvents = (_props: StubProps): null => null;
 export const UpcomingHolidays = (_props: StubProps): null => null;
 export const SafetyBanner = (_props: StubProps): null => null;

@@ -1167,6 +1167,48 @@ export const autopilotTaskStatusEnum = pgEnum("autopilot_task_status", [
 ]);
 
 // ============================================================================
+// EDITORIAL PLACEMENTS ENUMS
+// ============================================================================
+
+export const editorialZoneEnum = pgEnum("editorial_zone", [
+  "homepage_hero",
+  "homepage_featured",
+  "homepage_secondary",
+  "homepage_sidebar",
+  "destination_hero",
+  "destination_featured",
+  "destination_news",
+  "category_hero",
+  "category_featured",
+  "breaking_news",
+  "trending",
+  "editor_picks",
+]);
+
+export const placementPriorityEnum = pgEnum("placement_priority", [
+  "breaking",
+  "headline",
+  "featured",
+  "standard",
+  "filler",
+]);
+
+export const placementStatusEnum = pgEnum("placement_status", [
+  "scheduled",
+  "active",
+  "rotated_out",
+  "expired",
+  "manual_removed",
+]);
+
+export const placementSourceEnum = pgEnum("placement_source", [
+  "ai_agent",
+  "manual",
+  "rule_based",
+  "rss_auto",
+]);
+
+// ============================================================================
 // VAMS (VISUAL ASSET MANAGEMENT) ENUMS
 // ============================================================================
 

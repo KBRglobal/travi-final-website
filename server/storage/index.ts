@@ -26,6 +26,11 @@ import { AIWritersStorage, aiWritersStorage } from "./ai-writers.storage";
 import { LiveChatStorage, liveChatStorage } from "./live-chat.storage";
 import { SurveysStorage, surveysStorage } from "./surveys.storage";
 import { ReferralsStorage, referralsStorage } from "./referrals.storage";
+import {
+  EditorialPlacementsStorage,
+  editorialPlacementsStorage,
+} from "./editorial-placements.storage";
+import { VamsStorage, vamsStorage } from "./vams.storage";
 
 // Export all storage classes
 export {
@@ -77,6 +82,10 @@ export {
   surveysStorage,
   ReferralsStorage,
   referralsStorage,
+  EditorialPlacementsStorage,
+  editorialPlacementsStorage,
+  VamsStorage,
+  vamsStorage,
 };
 
 // Import schema types for IStorage interface
@@ -176,6 +185,16 @@ import type {
   InsertReferral,
   ReferralCommission,
   InsertReferralCommission,
+  EditorialPlacement,
+  InsertEditorialPlacement,
+  EditorialRotationHistory,
+  InsertEditorialRotationHistory,
+  EditorialZoneConfig,
+  InsertEditorialZoneConfig,
+  EditorialSchedule,
+  InsertEditorialSchedule,
+  EditorialZone,
+  PlacementStatus,
 } from "./base";
 
 // IStorage interface for backward compatibility
@@ -854,6 +873,64 @@ export class DatabaseStorage implements IStorage {
   createCommission = referralsStorage.createCommission.bind(referralsStorage);
   updateCommission = referralsStorage.updateCommission.bind(referralsStorage);
   getReferralStats = referralsStorage.getReferralStats.bind(referralsStorage);
+
+  // Editorial Placements
+  getPlacementsByZone = editorialPlacementsStorage.getPlacementsByZone.bind(
+    editorialPlacementsStorage
+  );
+  getActivePlacements = editorialPlacementsStorage.getActivePlacements.bind(
+    editorialPlacementsStorage
+  );
+  getPlacement = editorialPlacementsStorage.getPlacement.bind(editorialPlacementsStorage);
+  getPlacementByContent = editorialPlacementsStorage.getPlacementByContent.bind(
+    editorialPlacementsStorage
+  );
+  createPlacement = editorialPlacementsStorage.createPlacement.bind(editorialPlacementsStorage);
+  updatePlacement = editorialPlacementsStorage.updatePlacement.bind(editorialPlacementsStorage);
+  deletePlacement = editorialPlacementsStorage.deletePlacement.bind(editorialPlacementsStorage);
+  rotatePlacement = editorialPlacementsStorage.rotatePlacement.bind(editorialPlacementsStorage);
+  incrementPlacementImpressions = editorialPlacementsStorage.incrementImpressions.bind(
+    editorialPlacementsStorage
+  );
+  incrementPlacementClicks = editorialPlacementsStorage.incrementClicks.bind(
+    editorialPlacementsStorage
+  );
+  reorderPlacements = editorialPlacementsStorage.reorderPlacements.bind(editorialPlacementsStorage);
+  createRotationHistory = editorialPlacementsStorage.createRotationHistory.bind(
+    editorialPlacementsStorage
+  );
+  getRotationHistory = editorialPlacementsStorage.getRotationHistory.bind(
+    editorialPlacementsStorage
+  );
+  getZoneConfigs = editorialPlacementsStorage.getZoneConfigs.bind(editorialPlacementsStorage);
+  getZoneConfig = editorialPlacementsStorage.getZoneConfig.bind(editorialPlacementsStorage);
+  upsertZoneConfig = editorialPlacementsStorage.upsertZoneConfig.bind(editorialPlacementsStorage);
+  getScheduledItems = editorialPlacementsStorage.getScheduledItems.bind(editorialPlacementsStorage);
+  createScheduledItem = editorialPlacementsStorage.createScheduledItem.bind(
+    editorialPlacementsStorage
+  );
+  updateScheduledItem = editorialPlacementsStorage.updateScheduledItem.bind(
+    editorialPlacementsStorage
+  );
+  markScheduleExecuted = editorialPlacementsStorage.markScheduleExecuted.bind(
+    editorialPlacementsStorage
+  );
+  deleteScheduledItem = editorialPlacementsStorage.deleteScheduledItem.bind(
+    editorialPlacementsStorage
+  );
+  getDueScheduledItems = editorialPlacementsStorage.getDueScheduledItems.bind(
+    editorialPlacementsStorage
+  );
+  getPlacementsNeedingRotation = editorialPlacementsStorage.getPlacementsNeedingRotation.bind(
+    editorialPlacementsStorage
+  );
+  getExpiredPlacements = editorialPlacementsStorage.getExpiredPlacements.bind(
+    editorialPlacementsStorage
+  );
+  getZoneStats = editorialPlacementsStorage.getZoneStats.bind(editorialPlacementsStorage);
+  getTopPerformingContent = editorialPlacementsStorage.getTopPerformingContent.bind(
+    editorialPlacementsStorage
+  );
 }
 
 // Export singleton instance for backward compatibility

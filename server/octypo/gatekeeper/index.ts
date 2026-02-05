@@ -26,6 +26,16 @@ export { Gate1Selector, getGate1Selector } from "./gate1-selector";
 // Gate 2: Article Approval
 export { Gate2Approver, getGate2Approver } from "./gate2-approver";
 
+// Attraction Detector (Phase 4)
+export {
+  AttractionDetector,
+  getAttractionDetector,
+  attractionDetector,
+  type AttractionDetection,
+  type DetectionResult,
+  type AttractionType,
+} from "./attraction-detector";
+
 // Orchestrator
 export {
   GatekeeperOrchestrator,

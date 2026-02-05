@@ -46,7 +46,13 @@ import { Helmet } from "react-helmet-async";
 import { PublicFooter } from "@/components/public-footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { LiveChatWidget } from "@/components/live-chat-widget";
-import { NewsletterSection } from "@/components/homepage/NewsletterSection";
+import {
+  NewsletterSection,
+  EditorialHero,
+  EditorialSecondary,
+  EditorialNewsGrid,
+  TrendingSection,
+} from "@/components/homepage";
 import { useQuery } from "@tanstack/react-query";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { useTranslation } from "react-i18next";
@@ -1546,6 +1552,15 @@ export default function Homepage() {
             siteStats={siteStats}
           />
 
+          {/* EDITORIAL HERO - Featured Article from homepage_hero zone */}
+          <EditorialHero />
+
+          {/* EDITORIAL SECONDARY - 3 secondary articles from homepage_secondary zone */}
+          <EditorialSecondary />
+
+          {/* TRENDING - Horizontal scrollable trending strip */}
+          <TrendingSection />
+
           {/* CATEGORIES */}
           <CategoriesSection />
 
@@ -1645,6 +1660,9 @@ export default function Homepage() {
               </div>
             </div>
           </AnimatedSection>
+
+          {/* EDITORIAL NEWS GRID - 4x2 grid from homepage_featured zone */}
+          <EditorialNewsGrid />
 
           {/* EXPERIENCE CATEGORIES */}
           <AnimatedSection

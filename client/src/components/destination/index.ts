@@ -8,3 +8,4 @@ export { DestinationHero } from "./DestinationHero";
 export { DestinationNav } from "./DestinationNav";
 export { BestTimeToVisit } from "./BestTimeToVisit";
 export { DestinationPageTemplate } from "./DestinationPageTemplate";
+export { EditorialNews } from "./EditorialNews";
