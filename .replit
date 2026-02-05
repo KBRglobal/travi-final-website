@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "postgresql-16"]
+modules = ["nodejs-20"]
 run = "fuser -k 5000/tcp 2>/dev/null; npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 

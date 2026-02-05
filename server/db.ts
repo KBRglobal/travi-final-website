@@ -5,17 +5,16 @@ import { log } from "./lib/logger";
 
 const { Pool } = pg;
 
-// Use Replit's DATABASE_URL as primary (has synced schema), Railway as fallback
-const databaseUrl = process.env.DATABASE_URL || process.env.RAILWAY_DATABASE_URL;
+// Use DATABASE_URL from .env (Railway) - do NOT use Replit's auto-provisioned DB
+const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
-  throw new Error(
-    "DATABASE_URL or RAILWAY_DATABASE_URL must be set. Did you forget to provision a database?"
-  );
+  throw new Error("DATABASE_URL must be set in .env file. Use Railway PostgreSQL URL.");
 }
 
-// Log which database is being used (without exposing credentials)
-const dbSource = process.env.DATABASE_URL ? "Replit" : "Railway";
+// Log database connection (Railway)
+const dbHost = new URL(databaseUrl).host;
+const dbSource = dbHost.includes("rlwy.net") ? "Railway" : dbHost;
 log.info(`[DB] Using ${dbSource} PostgreSQL database`);
 
 // Connection pool configuration - optimized for production workloads
