@@ -1082,7 +1082,9 @@ function SplitHero({
                 <span className="absolute w-2.5 h-2.5 rounded-full bg-[#6443F4] animate-ping opacity-75" />
                 <span className="relative w-2 h-2 rounded-full bg-[#6443F4]" />
               </div>
-              <span className="text-xs font-semibold text-[#6443F4]">Popular</span>
+              <span className="text-xs font-semibold text-[#6443F4]">
+                {t("home.popular", "Popular")}
+              </span>
             </div>
           </div>
 
@@ -1093,8 +1095,12 @@ function SplitHero({
                 <Ticket className="w-4 h-4 text-white" aria-hidden="true" />
               </div>
               <div className="text-xs">
-                <div className="font-semibold text-slate-900 dark:text-white">500+ Tours</div>
-                <div className="text-slate-500">Available</div>
+                <div className="font-semibold text-slate-900 dark:text-white">
+                  {t("home.floatingCards.tours", "500+ Tours")}
+                </div>
+                <div className="text-slate-500">
+                  {t("home.floatingCards.available", "Available")}
+                </div>
               </div>
             </div>
           </div>
@@ -1105,8 +1111,10 @@ function SplitHero({
                 <Star className="w-4 h-4 text-white" aria-hidden="true" />
               </div>
               <div className="text-xs">
-                <div className="font-semibold text-slate-900 dark:text-white">4.9 Rating</div>
-                <div className="text-slate-500">Reviews</div>
+                <div className="font-semibold text-slate-900 dark:text-white">
+                  {t("home.floatingCards.rating", "4.9 Rating")}
+                </div>
+                <div className="text-slate-500">{t("home.floatingCards.reviews", "Reviews")}</div>
               </div>
             </div>
           </div>
@@ -1135,6 +1143,7 @@ function SplitHero({
 // CATEGORIES SECTION WITH IMPROVED SCHEMA
 // ============================================
 function CategoriesSection() {
+  const { t } = useTranslation("common");
   const { localePath } = useLocale();
   const categoriesSchema = JSON.stringify({
     "@context": "https://schema.org",
@@ -1173,14 +1182,17 @@ function CategoriesSection() {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4">
             <Compass className="w-4 h-4 text-[#6443F4]" aria-hidden="true" />
             <span className="text-xs font-semibold tracking-wide text-[#6443F4] uppercase">
-              Browse Travel Categories
+              {t("home.categoriesSection.badge", "Browse Travel Categories")}
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
-            Explore by Type
+            {t("home.categoriesSection.title", "Explore by Type")}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Find exactly what you're looking for with our curated travel categories
+            {t(
+              "home.categoriesSection.subtitle",
+              "Find exactly what you're looking for with our curated travel categories"
+            )}
           </p>
         </div>
 
@@ -1223,7 +1235,7 @@ function CategoriesSection() {
 
                     {/* Arrow */}
                     <div className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                      <span>Explore</span>
+                      <span>{t("home.categoriesSection.explore", "Explore")}</span>
                       <ArrowRight
                         className="w-4 h-4 group-hover:translate-x-1 transition-transform"
                         aria-hidden="true"
@@ -1573,11 +1585,15 @@ export default function Homepage() {
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 sm:mb-14 gap-4">
                 <div>
                   <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 font-chillax">
-                    {sections["destinations"]?.title || "Explore Popular Destinations"}
+                    {sections["destinations"]?.title ||
+                      t("home.destinationsSection.title", "Explore Popular Destinations")}
                   </h2>
                   <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
                     {sections["destinations"]?.subtitle ||
-                      "Discover travel guides for destinations around the world"}
+                      t(
+                        "home.destinationsSection.subtitle",
+                        "Discover travel guides for destinations around the world"
+                      )}
                   </p>
                 </div>
                 <Link
@@ -1585,7 +1601,8 @@ export default function Homepage() {
                   className="hidden sm:inline-flex items-center gap-2 text-[#6443F4] font-semibold hover:gap-3 transition-all"
                   title="View all travel destinations"
                 >
-                  View All <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  {t("home.destinationsSection.viewAll", "View All")}{" "}
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>
               </div>
 
@@ -1632,7 +1649,8 @@ export default function Homepage() {
                             />
                             <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                               <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-medium px-3 py-1.5 rounded-full">
-                                <MapPin className="w-3 h-3" aria-hidden="true" /> Explore Guide
+                                <MapPin className="w-3 h-3" aria-hidden="true" />{" "}
+                                {t("home.destinationsSection.exploreGuide", "Explore Guide")}
                               </span>
                             </div>
                           </div>
@@ -1654,7 +1672,8 @@ export default function Homepage() {
                   asChild
                 >
                   <Link href={localePath("/destinations")} title="Browse all travel destinations">
-                    View All Destinations <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                    {t("home.destinationsSection.viewAllDestinations", "View All Destinations")}{" "}
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </Link>
                 </Button>
               </div>
@@ -1676,11 +1695,15 @@ export default function Homepage() {
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-10 sm:mb-14">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
-                  {sections["experience_categories"]?.title || "Find Your Perfect Travel Style"}
+                  {sections["experience_categories"]?.title ||
+                    t("home.experiencesSection.title", "Find Your Perfect Travel Style")}
                 </h2>
                 <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                   {sections["experience_categories"]?.subtitle ||
-                    "Explore destinations by travel experience"}
+                    t(
+                      "home.experiencesSection.subtitle",
+                      "Explore destinations by travel experience"
+                    )}
                 </p>
               </div>
 
@@ -1736,7 +1759,7 @@ export default function Homepage() {
                           </div>
                           <CardContent className="p-4 flex items-center justify-between">
                             <span className="text-sm font-medium text-[#6443F4]">
-                              Explore guides
+                              {t("home.experiencesSection.exploreGuides", "Explore guides")}
                             </span>
                             <ArrowRight
                               className="w-4 h-4 text-[#6443F4] group-hover:translate-x-1 transition-transform"
@@ -1779,10 +1802,12 @@ export default function Homepage() {
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-10 sm:mb-14">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
-                  {sections["region_links"]?.title || "Explore by Region"}
+                  {sections["region_links"]?.title ||
+                    t("home.regionsSection.title", "Explore by Region")}
                 </h2>
                 <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
-                  {sections["region_links"]?.subtitle || "Browse destinations by geographic region"}
+                  {sections["region_links"]?.subtitle ||
+                    t("home.regionsSection.subtitle", "Browse destinations by geographic region")}
                 </p>
               </div>
 
@@ -1835,6 +1860,7 @@ export default function Homepage() {
 // MASCOT HELPER
 // ============================================
 function TraviMascotHelper() {
+  const { t } = useTranslation("common");
   const [isVisible, setIsVisible] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -1859,7 +1885,7 @@ function TraviMascotHelper() {
           <Mascot size={64} variant="light-bg" />
         </button>
         <span className="text-[10px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 bg-white/90 dark:bg-slate-800/90 px-2 py-0.5 rounded-full shadow-sm">
-          Chat with us
+          {t("home.chatWithUs", "Chat with us")}
         </span>
       </div>
 

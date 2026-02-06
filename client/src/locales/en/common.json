@@ -160,7 +160,37 @@
       "updateFrequencyAnswer": "TRAVI World content is updated daily with the latest travel news, new attraction reviews, and updated information about hotels and restaurants across all 17 destinations."
     },
     "mascotAlt": "TRAVI mascot with world landmarks - explore travel guides for Dubai, Paris, London, Rome and more",
-    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations"
+    "mascotTitle": "TRAVI World - Travel Guides for Global Destinations",
+    "popular": "Popular",
+    "floatingCards": {
+      "tours": "500+ Tours",
+      "available": "Available",
+      "rating": "4.9 Rating",
+      "reviews": "Reviews"
+    },
+    "categoriesSection": {
+      "badge": "Browse Travel Categories",
+      "title": "Explore by Type",
+      "subtitle": "Find exactly what you're looking for with our curated travel categories",
+      "explore": "Explore"
+    },
+    "destinationsSection": {
+      "title": "Explore Popular Destinations",
+      "subtitle": "Discover travel guides for destinations around the world",
+      "viewAll": "View All",
+      "viewAllDestinations": "View All Destinations",
+      "exploreGuide": "Explore Guide"
+    },
+    "experiencesSection": {
+      "title": "Find Your Perfect Travel Style",
+      "subtitle": "Explore destinations by travel experience",
+      "exploreGuides": "Explore guides"
+    },
+    "regionsSection": {
+      "title": "Explore by Region",
+      "subtitle": "Browse destinations by geographic region"
+    },
+    "chatWithUs": "Chat with us"
   },
   "attractions": {
     "title": "Attractions",
