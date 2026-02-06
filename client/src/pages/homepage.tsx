@@ -1544,7 +1544,7 @@ export default function Homepage() {
           </div>
         </header>
 
-        <main id="main-content" role="main" tabIndex={-1}>
+        <div>
           {/* HERO */}
           <SplitHero
             currentIndex={currentHeroIndex}
@@ -1823,7 +1823,7 @@ export default function Homepage() {
 
           {/* MASCOT */}
           <TraviMascotHelper />
-        </main>
+        </div>
 
         <PublicFooter />
       </div>
