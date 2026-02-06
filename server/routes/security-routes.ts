@@ -4,6 +4,7 @@
  */
 
 import type { Express, Request, Response } from "express";
+import crypto from "crypto";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import { storage } from "../storage";
@@ -333,12 +334,10 @@ export function registerSecurityRoutes(app: Express): void {
         return res.status(400).json({ error: "Invalid verification code" });
       }
 
-      // Generate 10 recovery codes
+      // Generate 8 recovery codes using cryptographically secure random bytes
       const recoveryCodes: string[] = [];
-      for (let i = 0; i < 10; i++) {
-        const recoveryCode =
-          Math.random().toString(36).substring(2, 8).toUpperCase() +
-          Math.random().toString(36).substring(2, 8).toUpperCase();
+      for (let i = 0; i < 8; i++) {
+        const recoveryCode = crypto.randomBytes(6).toString("hex").toUpperCase();
         recoveryCodes.push(recoveryCode);
       }
 
