@@ -59,19 +59,19 @@ export function DataTable<T>({
   showSelectAllBanner = true,
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const totalPages = Math.ceil(data.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedData = data.slice(startIndex, startIndex + pageSize);
 
-  const allPageSelected = paginatedData.length > 0 && 
-    paginatedData.every(item => selectedIds.includes(getItemId(item)));
-  
-  const allDataSelected = data.length > 0 && 
-    data.every(item => selectedIds.includes(getItemId(item)));
+  const allPageSelected =
+    paginatedData.length > 0 && paginatedData.every(item => selectedIds.includes(getItemId(item)));
+
+  const allDataSelected =
+    data.length > 0 && data.every(item => selectedIds.includes(getItemId(item)));
 
   const someSelected = selectedIds.length > 0 && selectedIds.length < data.length;
-  
+
   const handleSelectAll = (checked: boolean) => {
     if (!onSelectionChange) return;
     if (checked) {
@@ -103,33 +103,39 @@ export function DataTable<T>({
   };
 
   if (data.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        {emptyMessage}
-      </div>
-    );
+    return <div className="text-center py-8 text-muted-foreground">{emptyMessage}</div>;
   }
 
   return (
     <div className="space-y-4">
-      {selectable && showSelectAllBanner && allPageSelected && !allDataSelected && data.length > pageSize && (
-        <div className="flex items-center justify-center gap-2 p-2 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-md text-sm" data-testid="select-all-banner">
-          <span className="text-blue-700 dark:text-blue-300">
-            {paginatedData.length} of {data.length} items selected (this page only).
-          </span>
-          <button
-            type="button"
-            onClick={handleSelectAllData}
-            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-            data-testid="button-select-all-items"
+      {selectable &&
+        showSelectAllBanner &&
+        allPageSelected &&
+        !allDataSelected &&
+        data.length > pageSize && (
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-2 p-2 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-md text-sm"
+            data-testid="select-all-banner"
           >
-            Select all {data.length} items across all pages
-          </button>
-        </div>
-      )}
+            <span className="text-blue-700 dark:text-blue-300 text-center">
+              {paginatedData.length} of {data.length} items selected (this page only).
+            </span>
+            <button
+              type="button"
+              onClick={handleSelectAllData}
+              className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+              data-testid="button-select-all-items"
+            >
+              Select all {data.length} items across all pages
+            </button>
+          </div>
+        )}
       {selectable && showSelectAllBanner && allDataSelected && data.length > pageSize && (
-        <div className="flex items-center justify-center gap-2 p-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md text-sm" data-testid="all-selected-banner">
-          <span className="text-amber-700 dark:text-amber-300 font-medium">
+        <div
+          className="flex flex-col sm:flex-row items-center justify-center gap-2 p-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md text-sm"
+          data-testid="all-selected-banner"
+        >
+          <span className="text-amber-700 dark:text-amber-300 font-medium text-center">
             All {data.length} items are selected across all pages.
           </span>
           <button
@@ -142,8 +148,11 @@ export function DataTable<T>({
           </button>
         </div>
       )}
-      <div className="rounded-md border">
-        <Table>
+      <div
+        className="rounded-md border overflow-x-auto"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow>
               {selectable && (
@@ -155,26 +164,28 @@ export function DataTable<T>({
                   />
                 </TableHead>
               )}
-              {columns.map((column) => (
+              {columns.map(column => (
                 <TableHead key={column.key}>{column.header}</TableHead>
               ))}
-              {actions && actions.length > 0 && (
-                <TableHead className="w-12">Actions</TableHead>
-              )}
+              {actions && actions.length > 0 && <TableHead className="w-12">Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((item) => {
+            {paginatedData.map(item => {
               const id = getItemId(item);
               return (
-                <TableRow 
-                  key={id} 
+                <TableRow
+                  key={id}
                   data-testid={`row-${id}`}
                   className={onRowClick ? "cursor-pointer hover-elevate" : ""}
-                  onClick={(e) => {
+                  onClick={e => {
                     // Don't trigger row click when clicking on checkbox or actions
                     const target = e.target as HTMLElement;
-                    if (target.closest('button') || target.closest('[role="checkbox"]') || target.closest('[data-radix-collection-item]')) {
+                    if (
+                      target.closest("button") ||
+                      target.closest('[role="checkbox"]') ||
+                      target.closest("[data-radix-collection-item]")
+                    ) {
                       return;
                     }
                     onRowClick?.(item);
@@ -184,28 +195,24 @@ export function DataTable<T>({
                     <TableCell>
                       <Checkbox
                         checked={selectedIds.includes(id)}
-                        onCheckedChange={(checked) => handleSelectOne(id, !!checked)}
+                        onCheckedChange={checked => handleSelectOne(id, !!checked)}
                         data-testid={`checkbox-row-${id}`}
                       />
                     </TableCell>
                   )}
-                  {columns.map((column) => (
+                  {columns.map(column => (
                     <TableCell key={column.key}>{column.cell(item)}</TableCell>
                   ))}
                   {actions && actions.length > 0 && (
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            data-testid={`button-actions-${id}`}
-                          >
+                          <Button variant="ghost" size="icon" data-testid={`button-actions-${id}`}>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          {actions.map((action) => (
+                          {actions.map(action => (
                             <DropdownMenuItem
                               key={action.label}
                               onClick={() => action.onClick(item)}
@@ -227,9 +234,10 @@ export function DataTable<T>({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {startIndex + 1} to {Math.min(startIndex + pageSize, data.length)} of {data.length} items
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="text-sm text-muted-foreground text-center sm:text-start">
+            Showing {startIndex + 1} to {Math.min(startIndex + pageSize, data.length)} of{" "}
+            {data.length} items
           </div>
           <div className="flex items-center gap-2">
             <Button
