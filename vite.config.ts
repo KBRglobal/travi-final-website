@@ -66,10 +66,6 @@ export default defineConfig({
           if (id.includes("node_modules/@tanstack/react-query")) {
             return "query-vendor";
           }
-          // State management
-          if (id.includes("node_modules/zustand/")) {
-            return "state-vendor";
-          }
           // Icons
           if (id.includes("node_modules/lucide-react/")) {
             return "icons-vendor";
