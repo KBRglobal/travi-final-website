@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { ErrorBoundary } from "@/components/error-boundary";
+import { TranslatedErrorBoundary } from "@/components/error-boundary";
 
 const CommandPalette = lazy(() =>
   import("@/components/command-palette")
@@ -181,9 +181,9 @@ export default function AdminLayout() {
                 </div>
               </header>
               <main className="flex-1 overflow-auto p-4 md:p-6">
-                <ErrorBoundary>
+                <TranslatedErrorBoundary>
                   <AdminRouter />
-                </ErrorBoundary>
+                </TranslatedErrorBoundary>
               </main>
             </div>
           </div>

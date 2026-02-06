@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { AlertTriangle, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  fallbackTitle?: string;
+  fallbackMessage?: string;
+  tryAgainText?: string;
+  reloadText?: string;
 }
 
 interface State {
@@ -48,6 +53,12 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      const title = this.props.fallbackTitle ?? "Something went wrong";
+      const message =
+        this.props.fallbackMessage ?? "An unexpected error occurred. Please try again.";
+      const tryAgain = this.props.tryAgainText ?? "Try Again";
+      const reload = this.props.reloadText ?? "Reload Page";
+
       return (
         <div className="min-h-[400px] flex items-center justify-center p-4">
           <Card className="max-w-lg w-full">
@@ -55,8 +66,8 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
                 <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
-              <CardTitle>Something went wrong</CardTitle>
-              <CardDescription>An unexpected error occurred. Please try again.</CardDescription>
+              <CardTitle>{title}</CardTitle>
+              <CardDescription>{message}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {process.env.NODE_ENV === "development" && this.state.error && (
@@ -67,9 +78,9 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="flex gap-2 justify-center">
                 <Button variant="outline" onClick={this.handleRetry}>
                   <RefreshCcw className="mr-2 h-4 w-4" />
-                  Try Again
+                  {tryAgain}
                 </Button>
-                <Button onClick={this.handleReload}>Reload Page</Button>
+                <Button onClick={this.handleReload}>{reload}</Button>
               </div>
             </CardContent>
           </Card>
@@ -82,7 +93,34 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 
 /**
- * HOC to wrap a component with an error boundary
+ * Functional wrapper that provides i18n-translated strings to ErrorBoundary
+ */
+export function TranslatedErrorBoundary({
+  children,
+  fallback,
+}: {
+  children: ReactNode;
+  fallback?: ReactNode;
+}) {
+  const { t } = useTranslation("common");
+  return (
+    <ErrorBoundary
+      fallback={fallback}
+      fallbackTitle={t("errors.boundary.title", "Something went wrong")}
+      fallbackMessage={t(
+        "errors.boundary.message",
+        "An unexpected error occurred. Please try again."
+      )}
+      tryAgainText={t("errors.boundary.tryAgain", "Try Again")}
+      reloadText={t("errors.boundary.reloadPage", "Reload Page")}
+    >
+      {children}
+    </ErrorBoundary>
+  );
+}
+
+/**
+ * HOC to wrap a component with a translated error boundary
  */
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
@@ -90,9 +128,9 @@ export function withErrorBoundary<P extends object>(
 ) {
   return function WithErrorBoundary(props: P) {
     return (
-      <ErrorBoundary fallback={fallback}>
+      <TranslatedErrorBoundary fallback={fallback}>
         <Component {...props} />
-      </ErrorBoundary>
+      </TranslatedErrorBoundary>
     );
   };
 }
