@@ -47,7 +47,11 @@ import {
   SUPPORTED_LOCALES,
   type ContentBlock,
   type InsertContent,
+  contents,
 } from "@shared/schema";
+import { parsePagination, createPaginatedResponse } from "../lib/pagination";
+import { db } from "../db";
+import { eq, and, ilike, desc, sql, isNull } from "drizzle-orm";
 
 /**
  * Register all content CRUD routes
@@ -59,20 +63,54 @@ export function registerContentCrudRoutes(app: Express): void {
 
   /**
    * GET /api/contents
-   * List all contents with optional filters (type, status, search)
+   * List contents with optional filters (type, status, search).
+   * Supports pagination via ?page=1&pageSize=20 or legacy ?offset=0&limit=20.
+   * When page/offset params are present, returns { data, pagination } envelope.
+   * Without pagination params, returns a plain array for backward compatibility.
    */
   app.get("/api/contents", requireAuth, async (req: Request, res: Response) => {
     try {
       const { type, status, search } = req.query;
-      const filters = {
-        type: type as string | undefined,
-        status: status as string | undefined,
-        search: search as string | undefined,
-      };
+      const wantsPagination =
+        req.query.page !== undefined ||
+        req.query.offset !== undefined ||
+        req.query.limit !== undefined;
 
-      // Always include relations (author, type-specific extensions) for consistency
-      const contents = await storage.getContentsWithRelations(filters);
-      res.json(contents);
+      if (wantsPagination) {
+        const pg = parsePagination(req);
+        const filters = {
+          type: type as string | undefined,
+          status: status as string | undefined,
+          search: search as string | undefined,
+          limit: pg.pageSize,
+          offset: pg.offset,
+        };
+
+        const data = await storage.getContentsWithRelations(filters);
+
+        // Build count query with same filters
+        const conditions: any[] = [isNull(contents.deletedAt)];
+        if (type) conditions.push(eq(contents.type, type as any));
+        if (status) conditions.push(eq(contents.status, status as any));
+        if (search) conditions.push(ilike(contents.title, `%${search}%`));
+
+        const [countRow] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(contents)
+          .where(and(...conditions));
+        const total = Number(countRow?.count || 0);
+
+        res.json(createPaginatedResponse(data, total, pg));
+      } else {
+        // Legacy: return plain array for existing clients
+        const filters = {
+          type: type as string | undefined,
+          status: status as string | undefined,
+          search: search as string | undefined,
+        };
+        const data = await storage.getContentsWithRelations(filters);
+        res.json(data);
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch contents" });
     }

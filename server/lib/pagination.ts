@@ -111,3 +111,21 @@ export function paginationMeta(total: number, params: PaginationParams): Paginat
     hasPrev: params.page > 1,
   };
 }
+
+/**
+ * Build a complete paginated response envelope.
+ *
+ * @param data    The page of results
+ * @param total   Total number of records matching the query
+ * @param params  The pagination params used for the query
+ */
+export function createPaginatedResponse<T>(
+  data: T[],
+  total: number,
+  params: PaginationParams
+): PaginatedResponse<T> {
+  return {
+    data,
+    pagination: paginationMeta(total, params),
+  };
+}

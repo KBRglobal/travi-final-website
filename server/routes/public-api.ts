@@ -22,7 +22,7 @@ import {
 } from "@shared/schema";
 import { makeRenderSafeHomepageConfig } from "../lib/homepage-fallbacks";
 import { getTranslations, getBulkTranslations } from "../cms-translations";
-import { parsePagination, paginationMeta } from "../lib/pagination";
+import { parsePagination, paginationMeta, createPaginatedResponse } from "../lib/pagination";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -45,19 +45,55 @@ export function registerPublicApiRoutes(app: Express): void {
 
   // Public API for published content only (for public website)
   // Original: /api/public/contents (line ~5741)
+  // Supports pagination via ?page=1&pageSize=20 or legacy ?offset=0&limit=20.
+  // When page/offset params are present, returns { data, pagination } envelope.
+  // Without pagination params, returns a plain array for backward compatibility.
   router.get("/contents", async (req, res) => {
     try {
-      const { type, search, limit } = req.query;
-      const filters = {
-        type: type as string | undefined,
-        status: "published",
-        search: search as string | undefined,
-      };
+      const { type, search } = req.query;
+      const wantsPagination = req.query.page !== undefined || req.query.offset !== undefined;
 
-      const contents = await storage.getContentsWithRelations(filters);
-      const maxLimit = Math.min(parseInt(limit as string) || 50, 100);
-      const sanitizedContents = contents.slice(0, maxLimit).map(sanitizeContentForPublic);
-      res.json(sanitizedContents);
+      if (wantsPagination) {
+        const pg = parsePagination(req);
+        const filters = {
+          type: type as string | undefined,
+          status: "published",
+          search: search as string | undefined,
+          limit: pg.pageSize,
+          offset: pg.offset,
+        };
+
+        const results = await storage.getContentsWithRelations(filters);
+        const sanitized = results.map(sanitizeContentForPublic);
+
+        // Count query with same filters
+        const conditions: any[] = [
+          eq(contents.status, "published" as any),
+          sql`${contents.deletedAt} IS NULL`,
+        ];
+        if (type) conditions.push(eq(contents.type, type as any));
+        if (search) conditions.push(ilike(contents.title, `%${search}%`));
+
+        const [countRow] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(contents)
+          .where(and(...conditions));
+        const total = Number(countRow?.count || 0);
+
+        res.json(createPaginatedResponse(sanitized, total, pg));
+      } else {
+        // Legacy: return plain array
+        const { limit } = req.query;
+        const filters = {
+          type: type as string | undefined,
+          status: "published",
+          search: search as string | undefined,
+        };
+        const results = await storage.getContentsWithRelations(filters);
+        const maxLimit = Math.min(parseInt(limit as string) || 50, 100);
+        const sanitized = results.slice(0, maxLimit).map(sanitizeContentForPublic);
+        res.json(sanitized);
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch contents" });
     }
