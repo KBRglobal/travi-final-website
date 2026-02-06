@@ -121,9 +121,13 @@ export function LiveChatWidget({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50" data-testid="live-chat-widget">
+    <div className="fixed bottom-4 right-4 left-4 sm:left-auto z-50" data-testid="live-chat-widget">
       {isOpen ? (
-        <Card className="w-80 h-96 flex flex-col shadow-xl" role="region" aria-label="Live chat">
+        <Card
+          className="w-full sm:w-80 max-h-[80vh] h-96 flex flex-col shadow-xl box-border"
+          role="region"
+          aria-label="Live chat"
+        >
           <div className="flex items-center justify-between gap-2 p-3 border-b bg-gradient-to-r from-[#6443F4] to-[#6443F4] rounded-t-lg">
             <div className="flex items-center gap-2">
               <img
@@ -219,7 +223,7 @@ export function LiveChatWidget({
       ) : showFloatingButton ? (
         <Button
           size="icon"
-          className="w-14 h-14 rounded-full shadow-lg bg-[#6443F4] hover:bg-[#5339D9]"
+          className="w-14 h-14 rounded-full shadow-lg bg-[#6443F4] hover:bg-[#5339D9] ml-auto"
           onClick={() => setIsOpen(true)}
           aria-label="Open live chat"
           aria-expanded={isOpen}
