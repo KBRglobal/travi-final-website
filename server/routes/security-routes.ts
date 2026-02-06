@@ -5,6 +5,7 @@
 
 import type { Express, Request, Response } from "express";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import { storage } from "../storage";
@@ -341,9 +342,11 @@ export function registerSecurityRoutes(app: Express): void {
         recoveryCodes.push(recoveryCode);
       }
 
-      // Store hashed recovery codes
-      await storage.updateUser(userId, { totpEnabled: true, totpRecoveryCodes: recoveryCodes });
+      // Hash recovery codes with bcrypt before storing in DB
+      const hashedCodes = await Promise.all(recoveryCodes.map(code => bcrypt.hash(code, 10)));
+      await storage.updateUser(userId, { totpEnabled: true, totpRecoveryCodes: hashedCodes });
 
+      // Return plaintext codes to the user (they must save them now)
       res.json({
         success: true,
         message: "Two-factor authentication enabled",
@@ -612,7 +615,16 @@ export function registerSecurityRoutes(app: Express): void {
 
       const recoveryCodes = (user as any).totpRecoveryCodes || [];
       const normalizedCode = recoveryCode.toUpperCase().replace(/-/g, "");
-      const codeIndex = recoveryCodes.findIndex((c: string) => c === normalizedCode);
+
+      // Compare against bcrypt-hashed recovery codes
+      let codeIndex = -1;
+      for (let i = 0; i < recoveryCodes.length; i++) {
+        const matches = await bcrypt.compare(normalizedCode, recoveryCodes[i]);
+        if (matches) {
+          codeIndex = i;
+          break;
+        }
+      }
 
       if (codeIndex === -1) {
         // Track failed attempt
