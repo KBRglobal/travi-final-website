@@ -8,6 +8,8 @@ vite.config.ts.*
 .env
 .env.local
 .env.*.local
+.env.staging
+.env.development
 database-exports/
 .octypo-secrets.enc
 uploads/
