@@ -100,7 +100,7 @@ function updateUserSession(
 }
 
 async function upsertUser(claims: OIDCClaims) {
-  // Check if user exists to preserve their role, otherwise default to admin for new OIDC users
+  // Check if user exists to preserve their role, otherwise default to viewer (least privilege)
   const existingUser = await storage.getUser(claims["sub"]);
   await storage.upsertUser({
     id: claims["sub"],
@@ -108,7 +108,7 @@ async function upsertUser(claims: OIDCClaims) {
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
-    role: existingUser?.role || "admin",
+    role: existingUser?.role || "viewer",
   });
 }
 
