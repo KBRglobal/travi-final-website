@@ -36,7 +36,6 @@ const defaultConfig = {
     "span",
     "figure",
     "figcaption",
-    "iframe",
   ],
   ALLOWED_ATTR: [
     "href",
@@ -52,10 +51,6 @@ const defaultConfig = {
     "style",
     "data-*",
     "loading",
-    "allow",
-    "allowfullscreen",
-    "frameborder",
-    "scrolling",
   ],
   ALLOW_DATA_ATTR: true,
   ADD_ATTR: ["target"],
@@ -69,4 +64,51 @@ const defaultConfig = {
 export function sanitizeHTML(dirty: string): string {
   if (!dirty) return "";
   return DOMPurify.sanitize(dirty, defaultConfig);
+}
+
+/**
+ * Trusted embed domains for iframe allowlist
+ */
+const TRUSTED_EMBED_DOMAINS = [
+  "www.youtube.com",
+  "youtube.com",
+  "www.youtube-nocookie.com",
+  "player.vimeo.com",
+  "www.google.com",
+  "maps.google.com",
+];
+
+/**
+ * Sanitize HTML content allowing iframes only from trusted embed domains.
+ * Use this for content sections that legitimately need video/map embeds.
+ */
+export function sanitizeWithEmbeds(dirty: string): string {
+  if (!dirty) return "";
+
+  const clean = DOMPurify.sanitize(dirty, {
+    ...defaultConfig,
+    ALLOWED_TAGS: [...defaultConfig.ALLOWED_TAGS, "iframe"],
+    ALLOWED_ATTR: [
+      ...defaultConfig.ALLOWED_ATTR,
+      "allow",
+      "allowfullscreen",
+      "frameborder",
+      "scrolling",
+    ],
+  });
+
+  const container = document.createElement("div");
+  container.innerHTML = clean;
+  container.querySelectorAll("iframe").forEach(iframe => {
+    try {
+      const url = new URL(iframe.src);
+      if (!TRUSTED_EMBED_DOMAINS.includes(url.hostname)) {
+        iframe.remove();
+      }
+    } catch {
+      iframe.remove();
+    }
+  });
+
+  return container.innerHTML;
 }

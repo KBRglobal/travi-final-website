@@ -3,7 +3,7 @@ import { useRoute, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import DOMPurify from "dompurify";
+import { sanitizeWithEmbeds } from "@/lib/sanitize";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
 import {
   BookOpen,
@@ -387,10 +387,7 @@ function CinematicHero({
 
 function ContentSection({ section, index }: { section: GuideSection; index: number }) {
   const sanitizedContent = useMemo(() => {
-    return DOMPurify.sanitize(section.content, {
-      ADD_TAGS: ["iframe"],
-      ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
-    });
+    return sanitizeWithEmbeds(section.content);
   }, [section.content]);
 
   const sectionId = slugify(section.heading);
@@ -901,23 +898,7 @@ export default function GuideDetailPage() {
   const sanitizedOriginalContent = useMemo(() => {
     const contentToDisplay = guide?.rewrittenContent || guide?.originalContent;
     if (!contentToDisplay) return null;
-    return DOMPurify.sanitize(contentToDisplay, {
-      ADD_TAGS: [
-        "iframe",
-        "figure",
-        "figcaption",
-        "table",
-        "thead",
-        "tbody",
-        "tr",
-        "th",
-        "td",
-        "dl",
-        "dt",
-        "dd",
-      ],
-      ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling", "class"],
-    });
+    return sanitizeWithEmbeds(contentToDisplay);
   }, [guide?.originalContent, guide?.rewrittenContent]);
 
   const countryCodeMap: Record<string, string> = {

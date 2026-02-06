@@ -48,6 +48,7 @@ import { initializeRssFeedItemsTable } from "./octypo/rss-reader";
 import { startBackgroundServices, stopBackgroundServices } from "./services/background-services";
 import { db } from "./db";
 import { destinations } from "@shared/schema";
+import { sendProblemResponse, zodToProblemDetails, ErrorTypes } from "./lib/error-response";
 import { eq } from "drizzle-orm";
 import { redirectMiddleware, attractionSlugRedirectMiddleware } from "./middleware/redirects";
 import { localeMiddleware } from "./middleware/locale";
@@ -484,18 +485,17 @@ async function initializeServer() {
       }
 
       if (err.name === "ZodError" && err.errors) {
-        return res.status(400).json({
-          error: "Validation Error",
-          details: err.errors.map((e: any) => ({
-            field: e.path?.join(".") || "unknown",
-            message: e.message,
-          })),
-        });
+        const problem = zodToProblemDetails(err, `${req.method} ${req.path}`);
+        return sendProblemResponse(res, problem);
       }
 
       if (err.isOperational) {
-        return res.status(err.statusCode || err.status || 400).json({
-          error: err.message,
+        const opStatus = err.statusCode || err.status || 400;
+        return sendProblemResponse(res, {
+          type: opStatus === 404 ? ErrorTypes.NOT_FOUND : undefined,
+          title: err.message,
+          status: opStatus,
+          instance: `${req.method} ${req.path}`,
         });
       }
 
@@ -505,14 +505,22 @@ async function initializeServer() {
           ? "Internal Server Error"
           : err.message || "Internal Server Error";
 
-      res.status(status).json({ error: message });
+      sendProblemResponse(res, {
+        type: ErrorTypes.INTERNAL,
+        title: message,
+        status,
+        instance: `${req.method} ${req.path}`,
+      });
     });
 
     // API catch-all: Return JSON 404 for unmatched /api/* routes
     app.all("/api/*", (req: Request, res: Response) => {
-      res.status(404).json({
-        error: "Not Found",
-        message: `API endpoint ${req.method} ${req.path} does not exist`,
+      sendProblemResponse(res, {
+        type: ErrorTypes.NOT_FOUND,
+        title: "Not Found",
+        status: 404,
+        detail: `API endpoint ${req.method} ${req.path} does not exist`,
+        instance: `${req.method} ${req.path}`,
         _meta: { apiVersion: "v1" },
       });
     });
