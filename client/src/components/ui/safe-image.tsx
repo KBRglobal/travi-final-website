@@ -1,27 +1,27 @@
 /**
  * SafeImage Component
- * 
+ *
  * PHASE 8: Frontend image safety
- * 
+ *
  * Features:
  * - onError fallback to placeholder
  * - Empty src protection
  * - Visual-only (NO backend calls)
- * 
+ *
  * ACTIVATION: ENABLED
  */
 
-import { useState, useCallback, useEffect, type ImgHTMLAttributes } from 'react';
+import { useState, useCallback, useEffect, type ImgHTMLAttributes } from "react";
 
-interface SafeImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'onError' | 'src'> {
+interface SafeImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "onError" | "src"> {
   src: string | undefined | null;
   alt: string;
   fallbackSrc?: string;
   fallbackElement?: React.ReactNode;
-  'data-testid'?: string;
+  "data-testid"?: string;
 }
 
-const DEFAULT_FALLBACK = '/placeholder-image.svg';
+const DEFAULT_FALLBACK = "/placeholder-image.svg";
 
 export function SafeImage({
   src,
@@ -29,7 +29,7 @@ export function SafeImage({
   fallbackSrc = DEFAULT_FALLBACK,
   fallbackElement,
   className,
-  'data-testid': testId,
+  "data-testid": testId,
   ...props
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
@@ -45,7 +45,7 @@ export function SafeImage({
   }, []);
 
   // Empty src protection
-  const safeSrc = src && src.trim() !== '' ? src : fallbackSrc;
+  const safeSrc = src && src.trim() !== "" ? src : fallbackSrc;
   const displaySrc = hasError ? fallbackSrc : safeSrc;
 
   // If we have a custom fallback element and error occurred
@@ -56,20 +56,21 @@ export function SafeImage({
   return (
     <>
       {isLoading && !hasError && (
-        <div 
-          className={`${className || ''} bg-muted animate-pulse`}
-          style={{ aspectRatio: 'inherit' }}
+        <div
+          className={`${className || ""} bg-muted animate-pulse`}
+          style={{ aspectRatio: "inherit" }}
           aria-hidden="true"
         />
       )}
       <img
         src={displaySrc}
         alt={alt}
-        className={`${className || ''} ${isLoading ? 'opacity-0 absolute' : 'opacity-100'}`}
+        className={`${className || ""} ${isLoading ? "opacity-0 absolute" : "opacity-100"}`}
         onError={handleError}
         onLoad={handleLoad}
         data-testid={testId}
         loading="lazy"
+        decoding="async"
         {...props}
       />
     </>
@@ -78,7 +79,7 @@ export function SafeImage({
 
 /**
  * SafeBackgroundImage Component
- * 
+ *
  * For elements that use background-image instead of <img>
  */
 interface SafeBackgroundImageProps {
@@ -86,7 +87,7 @@ interface SafeBackgroundImageProps {
   fallbackSrc?: string;
   className?: string;
   children?: React.ReactNode;
-  'data-testid'?: string;
+  "data-testid"?: string;
 }
 
 export function SafeBackgroundImage({
@@ -94,19 +95,19 @@ export function SafeBackgroundImage({
   fallbackSrc = DEFAULT_FALLBACK,
   className,
   children,
-  'data-testid': testId,
+  "data-testid": testId,
 }: SafeBackgroundImageProps) {
   const [hasError, setHasError] = useState(false);
 
   // Empty src protection
-  const safeSrc = src && src.trim() !== '' ? src : fallbackSrc;
+  const safeSrc = src && src.trim() !== "" ? src : fallbackSrc;
   const displaySrc = hasError ? fallbackSrc : safeSrc;
 
   // Preload image to detect errors (browser-only, SSR-safe)
   useEffect(() => {
-    if (typeof window === 'undefined') return; // SSR guard
+    if (typeof window === "undefined") return; // SSR guard
     if (!safeSrc || safeSrc === fallbackSrc) return;
-    
+
     const img = new window.Image();
     img.onerror = () => setHasError(true);
     img.src = safeSrc;
@@ -117,8 +118,8 @@ export function SafeBackgroundImage({
       className={className}
       style={{
         backgroundImage: `url(${displaySrc})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
       data-testid={testId}
     >

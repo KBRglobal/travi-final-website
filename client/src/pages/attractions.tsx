@@ -228,22 +228,6 @@ const FAQ_DATA: FAQItem[] = [
 ];
 
 const heroAnimationStyles = `
-  @keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  @keyframes morph {
-    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-    50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-  }
-
-  @keyframes rotate-slow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
   .animated-gradient-text {
     background: linear-gradient(
       135deg,
@@ -257,14 +241,6 @@ const heroAnimationStyles = `
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: gradient-flow 6s ease infinite;
-  }
-
-  .morph-blob {
-    animation: morph 8s ease-in-out infinite;
-  }
-
-  .rotate-slow {
-    animation: rotate-slow 20s linear infinite;
   }
 
   .decorative-line {
@@ -318,6 +294,7 @@ function DestinationChip({ destination, index }: { destination: Destination; ind
             title={`${destination.name} attractions`}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
             loading="lazy"
+            decoding="async"
           />
           <div className="flex flex-col">
             <span className="text-slate-900 dark:text-white font-medium text-sm leading-tight">
@@ -1037,6 +1014,7 @@ export default function Attractions() {
                               alt={`${attraction.name} ${attraction.city}`}
                               className="w-full h-full object-cover"
                               loading="lazy"
+                              decoding="async"
                             />
                           </button>
                         ))}
@@ -1167,6 +1145,7 @@ export default function Attractions() {
                               title={`${dest.name} attractions`}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               loading="lazy"
+                              decoding="async"
                               onError={e => {
                                 e.currentTarget.style.display = "none";
                               }}

@@ -26,17 +26,6 @@ import { DestinationsHero } from "@/components/destinations-hero";
 import { useQuery } from "@tanstack/react-query";
 
 const heroAnimationStyles = `
-  @keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  @keyframes rotate-slow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
   .animated-gradient-text {
     background: linear-gradient(
       135deg,
@@ -52,10 +41,6 @@ const heroAnimationStyles = `
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: gradient-flow 6s ease infinite;
-  }
-
-  .rotate-slow {
-    animation: rotate-slow 20s linear infinite;
   }
 `;
 
@@ -122,6 +107,7 @@ function DestinationChip({ destination, index }: { destination: APIDestination; 
             alt={destination.name}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
             loading="lazy"
+            decoding="async"
             onError={e => {
               const target = e.target as HTMLImageElement;
               target.src = `https://placehold.co/100x100/6443F4/white?text=${destination.name.charAt(0)}`;

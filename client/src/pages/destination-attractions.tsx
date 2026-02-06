@@ -1031,6 +1031,7 @@ function DestinationAttractionsPage() {
                         alt={attraction.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
+                        decoding="async"
                         onError={e => {
                           (e.target as HTMLImageElement).src = "/cards/paris.webp";
                         }}
@@ -1111,6 +1112,7 @@ function DestinationAttractionsPage() {
                               alt={attraction.name}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                               loading="lazy"
+                              decoding="async"
                               onError={e => {
                                 (e.target as HTMLImageElement).src = "/cards/paris.webp";
                               }}

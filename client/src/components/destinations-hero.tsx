@@ -428,6 +428,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                           alt={`${destination.alt || destination.name} - thumbnail`}
                           className="w-full h-full object-cover"
                           loading="lazy"
+                          decoding="async"
                         />
                       </button>
                     ))}

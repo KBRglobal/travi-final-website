@@ -5,8 +5,10 @@
  */
 
 import { Express, Request, Response } from "express";
+import { z } from "zod";
 import { requirePermission } from "../security";
 import { createLogger } from "../lib/logger";
+import { validate } from "../lib/validate";
 import { db } from "../db";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
@@ -252,9 +254,7 @@ Respond ONLY with the JSON object, no additional text.`;
 }
 
 // Generate content using AI providers with fallback and logging
-async function generateDestinationContent(
-  destination: Destination
-): Promise<{
+async function generateDestinationContent(destination: Destination): Promise<{
   content: GeneratedDestinationContent;
   provider: string;
   model: string;
@@ -1750,16 +1750,19 @@ export function registerDestinationIntelligenceRoutes(app: Express) {
    * POST /api/admin/destinations
    * Create a new destination
    */
+  const createDestinationBody = z.object({
+    name: z.string().min(1, "Name is required").max(200),
+    country: z.string().min(1, "Country is required").max(200),
+    destinationLevel: z.enum(["city", "region", "country"]).optional().default("city"),
+  });
+
   app.post(
     "/api/admin/destinations",
     requirePermission("canEdit"),
+    validate({ body: createDestinationBody }),
     async (req: Request, res: Response) => {
       try {
         const { name, country, destinationLevel = "city" } = req.body;
-
-        if (!name || !country) {
-          return res.status(400).json({ error: "Name and country are required" });
-        }
 
         // Generate slug from name
         const slug = name

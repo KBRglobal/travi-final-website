@@ -73,7 +73,7 @@ export function Section({
     default: "bg-background",
     alternate: "bg-muted/50",
     gradient:
-      "bg-gradient-to-br from-[#6443F4]/5 via-[#6443F4]/5 to-[#F4C542]/5 dark:from-[#6443F4]/10 dark:via-[#6443F4]/10 dark:to-[#F4C542]/10",
+      "bg-gradient-to-br from-travi-purple/5 via-travi-purple/5 to-[#F4C542]/5 dark:from-travi-purple/10 dark:via-travi-purple/10 dark:to-[#F4C542]/10",
   };
 
   return (
@@ -166,6 +166,7 @@ export function ContentCard({
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            decoding="async"
             data-testid="contents-card-image"
           />
           {/* Gradient Overlay for image cards */}

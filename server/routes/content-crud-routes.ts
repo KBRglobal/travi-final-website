@@ -50,8 +50,48 @@ import {
   contents,
 } from "@shared/schema";
 import { parsePagination, createPaginatedResponse } from "../lib/pagination";
+import { validate, idParamSchema } from "../lib/validate";
 import { db } from "../db";
 import { eq, and, ilike, desc, sql, isNull } from "drizzle-orm";
+
+// ============================================================================
+// VALIDATION SCHEMAS
+// ============================================================================
+
+const contentTypes = [
+  "attraction",
+  "hotel",
+  "article",
+  "event",
+  "itinerary",
+  "dining",
+  "district",
+  "transport",
+] as const;
+
+const contentStatuses = ["draft", "published", "scheduled", "archived"] as const;
+
+/** Validates POST /api/contents body */
+const createContentBody = z
+  .object({
+    title: z.string().min(1, "Title is required").max(500),
+    slug: z.string().max(200).optional(),
+    type: z.enum(contentTypes, { message: "Invalid content type" }),
+    status: z.enum(contentStatuses).optional().default("draft"),
+    blocks: z.array(z.any()).optional(),
+    locale: z.string().max(10).optional(),
+    destinationId: z.string().optional(),
+    metaTitle: z.string().max(200).optional(),
+    metaDescription: z.string().max(500).optional(),
+    primaryKeyword: z.string().max(200).optional(),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().max(500).optional(),
+    summary: z.string().max(2000).optional(),
+  })
+  .passthrough(); // Allow type-specific extension fields (attraction, hotel, etc.)
+
+/** Validates PATCH /api/contents/:id body */
+const updateContentBody = createContentBody.partial().passthrough();
 
 /**
  * Register all content CRUD routes
@@ -274,6 +314,7 @@ export function registerContentCrudRoutes(app: Express): void {
     requirePermission("canCreate"),
     checkReadOnlyMode,
     rateLimiters.contentWrite,
+    validate({ body: createContentBody }),
     async (req: Request, res: Response) => {
       try {
         // Type assertion needed because drizzle-zod createInsertSchema infers as {}
@@ -411,6 +452,7 @@ export function registerContentCrudRoutes(app: Express): void {
     checkOptimisticLock(),
     checkReadOnlyMode,
     rateLimiters.contentWrite,
+    validate({ params: idParamSchema, body: updateContentBody }),
     async (req: Request, res: Response) => {
       try {
         const existingContent = await storage.getContent(req.params.id);
@@ -633,6 +675,7 @@ export function registerContentCrudRoutes(app: Express): void {
     "/api/contents/:id",
     requireOwnershipOrPermission("canDelete"),
     checkReadOnlyMode,
+    validate({ params: idParamSchema }),
     async (req: Request, res: Response) => {
       try {
         const existingContent = await storage.getContent(req.params.id);

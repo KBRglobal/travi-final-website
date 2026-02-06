@@ -792,6 +792,7 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     loading="lazy"
+                    decoding="async"
                     onError={e => {
                       (e.target as HTMLImageElement).src = "/placeholder-image.svg";
                     }}
@@ -1125,6 +1126,7 @@ function RelatedAttractionsSection({
                       alt={attraction.title}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                       loading="lazy"
+                      decoding="async"
                       onError={e => {
                         (e.target as HTMLImageElement).src = "/placeholder-image.svg";
                       }}
