@@ -406,4 +406,98 @@ router.get("/stats/writers", async (req, res) => {
   }
 });
 
+// ============================================
+// FULL PIPELINE HEALTH OVERVIEW
+// ============================================
+
+/**
+ * Get comprehensive pipeline stats including RSS scheduler,
+ * Gatekeeper, native content generation, and background services
+ * GET /api/admin/gatekeeper/pipeline/stats
+ */
+router.get("/pipeline/stats", async (req, res) => {
+  try {
+    const orchestrator = getGatekeeperOrchestrator();
+
+    // Gatekeeper stats
+    const gatekeeperStats = orchestrator.getStats();
+
+    // RSS Scheduler stats
+    let rssStats: any = { running: false };
+    try {
+      const { getRSSSchedulerStatus, getSchedulerStats } =
+        await import("../../octypo/rss-scheduler");
+      const status = getRSSSchedulerStatus();
+      const schedulerStats = await getSchedulerStats();
+      rssStats = { ...status, ...schedulerStats };
+    } catch {
+      // RSS scheduler not available
+    }
+
+    // Native content generation stats
+    let nativeContentStats: any = { available: false };
+    try {
+      const { getNativeContentStats } = await import("../../localization/native-content-handler");
+      nativeContentStats = { available: true, ...getNativeContentStats() };
+    } catch {
+      // Native content handler not registered yet
+    }
+
+    // Background services status
+    let backgroundStatus: any = { started: false };
+    try {
+      const { getBackgroundServicesStatus } = await import("../../services/background-services");
+      backgroundStatus = await getBackgroundServicesStatus();
+    } catch {
+      // Background services not available
+    }
+
+    // Database content counts
+    const contentCounts = await db.execute(sql`
+      SELECT
+        COUNT(*) FILTER (WHERE status = 'draft') as drafts,
+        COUNT(*) FILTER (WHERE status = 'approved') as approved,
+        COUNT(*) FILTER (WHERE status = 'published') as published,
+        COUNT(*) FILTER (WHERE created_at >= CURRENT_DATE) as created_today,
+        COUNT(*) FILTER (WHERE published_at >= CURRENT_DATE) as published_today
+      FROM contents
+      WHERE generated_by_ai = true
+    `);
+
+    // Native content per locale
+    const localeProgress = await db.execute(sql`
+      SELECT
+        locale,
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE status = 'completed') as completed
+      FROM translations
+      GROUP BY locale
+      ORDER BY total DESC
+    `);
+
+    res.json({
+      success: true,
+      pipeline: {
+        gatekeeper: {
+          isRunning: orchestrator.isActive(),
+          stats: gatekeeperStats,
+        },
+        rssScheduler: rssStats,
+        nativeContent: nativeContentStats,
+        backgroundServices: backgroundStatus.started
+          ? { started: true, services: backgroundStatus.services }
+          : { started: false },
+        content: (contentCounts as any).rows?.[0] || {},
+        localeProgress: (localeProgress as any).rows || [],
+      },
+    });
+  } catch (error) {
+    logger.error({ error }, "[GatekeeperAPI] Pipeline stats failed");
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+});
+
 export default router;

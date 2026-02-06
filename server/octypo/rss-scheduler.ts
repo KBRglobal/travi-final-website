@@ -1,19 +1,20 @@
 /**
- * RSS Content Scheduler v2
+ * RSS Content Scheduler v3
  *
- * Automatically generates news content from RSS feeds using Octypo
+ * Routes RSS content through the Gatekeeper Pipeline (Pipeline B):
+ * RSS -> Gate1 (Selection) -> Writer -> Gate2 (Approval) -> Publish
  *
  * Key features:
- * - Per-destination daily limits (default: 4 items/day per destination)
- * - Fair distribution across all destinations
- * - Integration with publish hooks for localization
- * - Quality threshold enforcement
+ * - Global daily limit enforcement
+ * - Pending job throttling (octypo_write jobs)
+ * - Delegates item selection and evaluation to Gatekeeper
+ * - Quality threshold enforcement via Gate1 + Gate2
  */
 
 import { db } from "../db";
-import { rssFeeds, contents, backgroundJobs } from "@shared/schema";
-import { eq, desc, and, gte, sql, inArray } from "drizzle-orm";
-import { jobQueue } from "../job-queue";
+import { contents, backgroundJobs } from "@shared/schema";
+import { eq, and, gte, sql } from "drizzle-orm";
+import { getGatekeeperOrchestrator } from "./gatekeeper";
 import { log } from "../lib/logger";
 
 // ============================================
@@ -21,11 +22,11 @@ import { log } from "../lib/logger";
 // ============================================
 
 interface RSSSchedulerConfig {
-  /** Items per destination per day (default: 4) */
+  /** Items per destination per day (default: 5) */
   dailyLimitPerDestination: number;
-  /** Global daily limit across all destinations (default: 68 = 17 destinations × 4) */
+  /** Global daily limit across all destinations (default: 50) */
   globalDailyLimit: number;
-  /** Interval between scheduler runs in minutes (default: 60) */
+  /** Interval between scheduler runs in minutes (default: 30) */
   intervalMinutes: number;
   /** Whether scheduler is enabled */
   enabled: boolean;
@@ -34,9 +35,9 @@ interface RSSSchedulerConfig {
 }
 
 const DEFAULT_CONFIG: RSSSchedulerConfig = {
-  dailyLimitPerDestination: 4,
-  globalDailyLimit: 68, // 17 destinations × 4
-  intervalMinutes: 60,
+  dailyLimitPerDestination: 5,
+  globalDailyLimit: 50,
+  intervalMinutes: 30,
   enabled: true,
   minQualityScore: 85,
 };
@@ -101,134 +102,6 @@ async function getTodaysTotalCount(): Promise<number> {
 }
 
 // ============================================
-// FEED SELECTION (FAIR DISTRIBUTION)
-// ============================================
-
-interface FeedWithPriority {
-  feed: typeof rssFeeds.$inferSelect;
-  priority: number;
-  destinationCount: number;
-  remainingSlots: number;
-}
-
-async function selectFeedsForProcessing(
-  maxJobs: number,
-  destinationCounts: DestinationCounts
-): Promise<Array<typeof rssFeeds.$inferSelect>> {
-  // Get all active feeds with destinationId
-  const feeds = await db
-    .select()
-    .from(rssFeeds)
-    .where(eq(rssFeeds.isActive, true))
-    .orderBy(desc(rssFeeds.lastFetchedAt));
-
-  // Filter feeds that have destinations with remaining slots
-  const feedsWithPriority: FeedWithPriority[] = [];
-
-  for (const feed of feeds) {
-    if (!feed.destinationId) continue;
-
-    const currentCount = destinationCounts[feed.destinationId] || 0;
-    const remainingSlots = currentConfig.dailyLimitPerDestination - currentCount;
-
-    if (remainingSlots <= 0) continue;
-
-    // Calculate priority (higher = more urgent)
-    // - Destinations with fewer articles today get higher priority
-    // - Feeds that haven't been fetched recently get higher priority
-    const lastFetchAge = feed.lastFetchedAt
-      ? Date.now() - new Date(feed.lastFetchedAt).getTime()
-      : Infinity;
-    const agePriority = Math.min(lastFetchAge / (60 * 60 * 1000), 24); // Max 24 hours
-
-    const priority = remainingSlots * 10 + agePriority;
-
-    feedsWithPriority.push({
-      feed,
-      priority,
-      destinationCount: currentCount,
-      remainingSlots,
-    });
-  }
-
-  // Sort by priority (descending) and take top feeds
-  feedsWithPriority.sort((a, b) => b.priority - a.priority);
-
-  // Ensure we distribute across different destinations
-  const selectedFeeds: Array<typeof rssFeeds.$inferSelect> = [];
-  const selectedDestinations = new Set<string>();
-
-  for (const item of feedsWithPriority) {
-    if (selectedFeeds.length >= maxJobs) break;
-
-    // Prefer destinations we haven't selected yet in this cycle
-    if (!selectedDestinations.has(item.feed.destinationId!)) {
-      selectedFeeds.push(item.feed);
-      selectedDestinations.add(item.feed.destinationId!);
-    }
-  }
-
-  // If we still have slots and exhausted unique destinations, add more
-  if (selectedFeeds.length < maxJobs) {
-    for (const item of feedsWithPriority) {
-      if (selectedFeeds.length >= maxJobs) break;
-      if (!selectedFeeds.includes(item.feed)) {
-        selectedFeeds.push(item.feed);
-      }
-    }
-  }
-
-  return selectedFeeds;
-}
-
-// ============================================
-// JOB CREATION
-// ============================================
-
-async function createRSSJob(
-  feed: typeof rssFeeds.$inferSelect,
-  destinationCount: number
-): Promise<string | null> {
-  if (!feed.destinationId) {
-    log.warn(`[RSSScheduler] Skipping feed without destinationId: ${feed.name}`);
-    return null;
-  }
-
-  try {
-    const jobData = {
-      jobType: "rss-content-generation" as const,
-      feedId: feed.id,
-      feedUrl: feed.url,
-      feedName: feed.name,
-      destination: feed.destinationId,
-      category: feed.category || "news",
-      minQualityScore: currentConfig.minQualityScore,
-      currentDestinationCount: destinationCount,
-      maxForDestination: currentConfig.dailyLimitPerDestination,
-    };
-
-    const jobId = await jobQueue.addJob("ai_generate", jobData, { priority: 5 });
-
-    // Update last fetched time
-    await db
-      .update(rssFeeds)
-      .set({ lastFetchedAt: new Date() } as any)
-      .where(eq(rssFeeds.id, feed.id));
-
-    log.info(`[RSSScheduler] Created job for ${feed.name} (${feed.destinationId})`, {
-      jobId,
-      destination: feed.destinationId,
-      currentCount: destinationCount,
-    });
-
-    return jobId;
-  } catch (error) {
-    log.error(`[RSSScheduler] Failed to create job for ${feed.name}:`, error);
-    return null;
-  }
-}
-
-// ============================================
 // SCHEDULER CYCLE
 // ============================================
 
@@ -250,62 +123,46 @@ async function runSchedulerCycle(): Promise<{
     return { created: 0, destinations: [], globalRemaining: 0 };
   }
 
-  // Get per-destination counts
-  const destinationCounts = await getTodaysCountsPerDestination();
-
-  // Check pending jobs to avoid creating too many
+  // Check pending octypo_write jobs to avoid creating too many
   const pendingJobs = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(backgroundJobs)
-    .where(and(eq(backgroundJobs.type, "ai_generate"), eq(backgroundJobs.status, "pending")));
+    .where(and(sql`${backgroundJobs.type} = 'octypo_write'`, eq(backgroundJobs.status, "pending")));
 
   const pendingCount = pendingJobs[0]?.count || 0;
   if (pendingCount >= 10) {
-    log.info("[RSSScheduler] Too many pending jobs, skipping cycle", { pendingCount });
+    log.info("[RSSScheduler] Too many pending octypo_write jobs, skipping cycle", { pendingCount });
     return { created: 0, destinations: [], globalRemaining };
   }
 
-  // Calculate how many jobs to create this cycle
-  const jobsToCreate = Math.min(
+  // Calculate how many items to process this cycle
+  const maxItems = Math.min(
     globalRemaining,
-    4, // Max 4 jobs per cycle
+    8, // Max 8 items per cycle
     10 - pendingCount // Don't exceed 10 pending jobs
   );
 
-  if (jobsToCreate <= 0) {
+  if (maxItems <= 0) {
     return { created: 0, destinations: [], globalRemaining };
   }
 
-  // Select feeds for processing
-  const feeds = await selectFeedsForProcessing(jobsToCreate, destinationCounts);
+  // Run the Gatekeeper pipeline — it fetches unprocessed RSS items,
+  // evaluates them through Gate1, and queues octypo_write jobs
+  const orchestrator = getGatekeeperOrchestrator();
+  const stats = await orchestrator.runPipeline(maxItems);
 
-  if (feeds.length === 0) {
-    log.info("[RSSScheduler] No eligible feeds for processing");
-    return { created: 0, destinations: [], globalRemaining };
-  }
-
-  // Create jobs
-  let created = 0;
-  const destinations: string[] = [];
-
-  for (const feed of feeds) {
-    const count = destinationCounts[feed.destinationId!] || 0;
-    const jobId = await createRSSJob(feed, count);
-    if (jobId) {
-      created++;
-      destinations.push(feed.destinationId!);
-      // Update local count to prevent over-scheduling
-      destinationCounts[feed.destinationId!] = count + 1;
-    }
-  }
-
-  log.info(`[RSSScheduler] Cycle complete`, {
-    created,
-    destinations,
-    globalRemaining: globalRemaining - created,
+  log.info("[RSSScheduler] Cycle complete (Gatekeeper pipeline)", {
+    itemsEvaluated: stats.itemsEvaluated,
+    itemsApprovedForWriting: stats.itemsApprovedForWriting,
+    itemsSkipped: stats.itemsSkipped,
+    globalRemaining: globalRemaining - stats.itemsApprovedForWriting,
   });
 
-  return { created, destinations, globalRemaining: globalRemaining - created };
+  return {
+    created: stats.itemsApprovedForWriting,
+    destinations: [], // Gatekeeper handles destination assignment internally
+    globalRemaining: globalRemaining - stats.itemsApprovedForWriting,
+  };
 }
 
 // ============================================

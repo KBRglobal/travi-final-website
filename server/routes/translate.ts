@@ -7,7 +7,16 @@
  */
 
 import { Router, Request, Response } from "express";
-import { translateText } from "../services/translation-service";
+// Stub: translation-service deleted in Phase 4.2 cleanup
+// Automatic translation is permanently disabled
+async function translateText(
+  _opts: { text: string; sourceLocale: Locale; targetLocale: Locale; contentType?: string },
+  _config?: { provider?: string }
+): Promise<{ translatedText: string }> {
+  throw new Error(
+    "Automatic translation is permanently disabled. Use manual translation in admin UI."
+  );
+}
 import type { Locale } from "@shared/schema";
 
 const router = Router();

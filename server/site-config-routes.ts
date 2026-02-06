@@ -303,7 +303,12 @@ router.post("/pages/:id/translate", async (req: Request, res: Response) => {
     }
 
     // Lazy import translation service to avoid circular dependencies
-    const { translateText } = await import("./services/translation-service");
+    // translation-service deleted in Phase 4.2 cleanup
+    const translateText = async (
+      _opts: any
+    ): Promise<{ success: boolean; translatedText: string }> => {
+      throw new Error("Automatic translation is permanently disabled");
+    };
 
     // Helper to translate with fallback
     const translateWithFallback = async (
@@ -613,14 +618,12 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "News", labelHe: "", href: "/news", icon: "Compass", sortOrder: 5 },
     ];
     for (const link of exploreLinksData) {
-      await db
-        .insert(footerLinks)
-        .values({
-          sectionId: createdSections.explore,
-          ...link,
-          isActive: true,
-          openInNewTab: false,
-        } as any);
+      await db.insert(footerLinks).values({
+        sectionId: createdSections.explore,
+        ...link,
+        isActive: true,
+        openInNewTab: false,
+      } as any);
     }
 
     // Add featured guides
@@ -655,14 +658,12 @@ router.post("/seed", async (_req: Request, res: Response) => {
       },
     ];
     for (const link of guidesData) {
-      await db
-        .insert(footerLinks)
-        .values({
-          sectionId: createdSections.guides,
-          ...link,
-          isActive: true,
-          openInNewTab: false,
-        } as any);
+      await db.insert(footerLinks).values({
+        sectionId: createdSections.guides,
+        ...link,
+        isActive: true,
+        openInNewTab: false,
+      } as any);
     }
 
     // Add tools
@@ -678,14 +679,12 @@ router.post("/seed", async (_req: Request, res: Response) => {
       { label: "Glossary", labelHe: "", href: "/glossary", sortOrder: 4 },
     ];
     for (const link of toolsData) {
-      await db
-        .insert(footerLinks)
-        .values({
-          sectionId: createdSections.tools,
-          ...link,
-          isActive: true,
-          openInNewTab: false,
-        } as any);
+      await db.insert(footerLinks).values({
+        sectionId: createdSections.tools,
+        ...link,
+        isActive: true,
+        openInNewTab: false,
+      } as any);
     }
 
     // Add social links

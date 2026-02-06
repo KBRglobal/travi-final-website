@@ -41,6 +41,7 @@ Evaluate the K-factor and shareability:
 - **Key Entities**: List main entities (destinations, airlines, hotels, events)
 - **Content Freshness**: breaking/trending/evergreen/stale
 - **Competitive Gap**: Is this covered by competitors already?
+- **Content Type**: Classify as: article (general news/guide), attraction (new tourist attraction, theme park, museum), hotel (accommodation), restaurant (dining/food venue), event (festival, concert, exhibition)
 
 Respond ONLY in valid JSON format.`,
 
@@ -96,6 +97,7 @@ Provide your analysis in this exact JSON structure:
     "targetAudience": "<primary audience segment>",
     "contentType": "breaking_news" | "analysis" | "guide" | "listicle" | "opinion"
   },
+  "contentType": "article" | "attraction" | "hotel" | "restaurant" | "event",
   "decision": "write" | "skip" | "queue",
   "tier": "S1" | "S2" | "S3",
   "estimatedValue": "high" | "medium" | "low",

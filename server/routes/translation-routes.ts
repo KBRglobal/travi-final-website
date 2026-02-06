@@ -169,9 +169,19 @@ export function registerTranslationRoutes(app: Express): void {
           return res.status(404).json({ error: "Content not found" });
         }
 
-        // Use translation-service (Claude Haiku) instead of deepl-service
-        const { translateContent, generateContentHash } =
-          await import("../services/translation-service");
+        // translation-service deleted in Phase 4.2 cleanup
+        const translateContent = async (
+          ..._args: any[]
+        ): Promise<{
+          title: string | null;
+          metaTitle: string | null;
+          metaDescription: string | null;
+          blocks: any[];
+          sourceHash: string;
+        }> => {
+          throw new Error("Automatic translation is permanently disabled");
+        };
+        const generateContentHash = () => "disabled";
 
         // Note: translation-service uses (content, sourceLocale, targetLocale) order
         const translatedContent = await translateContent(
@@ -236,9 +246,11 @@ export function registerTranslationRoutes(app: Express): void {
           return res.status(404).json({ error: "Content not found" });
         }
 
-        // Use translation-service (Claude Haiku) instead of deepl-service
-        const { translateToAllLanguages, generateContentHash } =
-          await import("../services/translation-service");
+        // translation-service deleted in Phase 4.2 cleanup
+        const translateToAllLanguages = async (..._args: any[]): Promise<Map<string, any>> => {
+          throw new Error("Automatic translation is permanently disabled");
+        };
+        const generateContentHash = () => "disabled";
 
         // translateToAllLanguages handles tier filtering internally
         const translations = await translateToAllLanguages(
@@ -254,7 +266,7 @@ export function registerTranslationRoutes(app: Express): void {
 
         const savedTranslations = [];
         for (const [locale, translatedContent] of translations) {
-          const existingTranslation = await storage.getTranslation(contentId, locale);
+          const existingTranslation = await storage.getTranslation(contentId, locale as any);
 
           if (existingTranslation?.isManualOverride) {
             continue;
@@ -336,9 +348,10 @@ export function registerTranslationRoutes(app: Express): void {
   // Get DeepL usage stats
   app.get("/api/translations/usage", requirePermission("canViewAnalytics"), async (req, res) => {
     try {
-      const { getDeepLUsage, getDeepLSupportedLocales, getUnsupportedLocales } =
-        await import("../services/translation-service");
-      const usage = await getDeepLUsage();
+      // translation-service deleted in Phase 4.2 cleanup
+      const usage = { character_count: 0, character_limit: 0 };
+      const getDeepLSupportedLocales = () => [] as string[];
+      const getUnsupportedLocales = () => [] as string[];
 
       res.json({
         usage,

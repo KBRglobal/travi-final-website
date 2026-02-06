@@ -127,7 +127,7 @@ import {
   type ProviderStatus,
   type FailureReason,
 } from "./ai/providers";
-// AI Hotel Description Generator
+// AI generators (stub modules - originals replaced by Octypo pipeline)
 import { generateHotelDescription } from "./ai/hotel-description-generator";
 import { generateAttractionContent } from "./ai/attraction-description-generator";
 // Security validators (single source of truth for sanitization)
@@ -190,12 +190,12 @@ import { registerLogRoutes } from "./routes/log-routes";
 import { registerMiscRoutes } from "./routes/misc-routes";
 import { registerSEORoutes } from "./routes/seo-routes";
 import { registerSEOEngineRoutes } from "./seo-engine/routes";
-import { registerAutomationRoutes } from "./automation-routes";
+// [REMOVED] automation-routes deleted in Phase 4.1 cleanup
 import { enforceArticleSEO, enforceWriterEngineSEO } from "./seo-enforcement";
-import { registerContentIntelligenceRoutes } from "./content-intelligence-routes";
-import { registerDestinationIntelligenceRoutes } from "./routes/destination-intelligence";
+// [REMOVED] content-intelligence-routes deleted in Phase 4.1 cleanup
+// [REMOVED] destination-intelligence deleted in Phase 4.1 cleanup
 import { registerAdminIntelligenceRoutes, registerAdminIngestionRoutes } from "./admin";
-import { registerAutoPilotRoutes } from "./auto-pilot-routes";
+// [REMOVED] auto-pilot-routes deleted in Phase 4.1 cleanup
 import { registerGrowthRoutes } from "./routes/admin/growth-routes";
 import { registerObservabilityRoutes } from "./routes/admin/observability-routes";
 import adminJobsRoutes from "./routes/admin/jobs-routes";
@@ -222,7 +222,7 @@ import { mediaIntelligenceRoutes } from "./media-intelligence";
 import { growthOSRoutes } from "./growth-os";
 import localizedAssetsRoutes from "./routes/localized-assets-routes";
 
-import { registerEnhancementRoutes } from "./enhancement-routes";
+// [REMOVED] enhancement-routes deleted in Phase 4.1 cleanup
 import { registerCustomerJourneyRoutes } from "./customer-journey-routes";
 import { registerDocUploadRoutes } from "./doc-upload-routes";
 import { registerSearchRoutes } from "./search/routes";
@@ -260,8 +260,7 @@ import { registerContentOwnershipRoutes } from "./content-ownership";
 import { registerEditorialSlaRoutes } from "./editorial-sla";
 // Canonical & Duplicate Content Manager (Feature 3)
 import { registerCanonicalManagerRoutes as registerCanonicalRoutes } from "./canonical-manager";
-// AI Output Audit Trail (Feature 4)
-import { registerAiAuditRoutes } from "./ai-audit";
+// [REMOVED] AI Output Audit Trail deleted in Phase 4.1 cleanup
 // Content Experiments / A-B Testing (Feature 5)
 import { registerContentExperimentsRoutes } from "./content-experiments";
 // Entity Quality Scoring (Feature 6)
@@ -357,26 +356,8 @@ import {
   validateAndNormalizeBlocks,
 } from "./routes/helpers";
 
-// ============================================================================
-// MODULARIZED RSS PROCESSING (from routes/rss-processing.ts)
-// ============================================================================
-import {
-  parseRssFeed,
-  generateFingerprint,
-  findOrCreateArticleImage,
-  processImageBlocks,
-  translateArticleToAllLanguages,
-  autoProcessRssFeeds,
-  type AutoProcessResult,
-  type ArticleImageResult,
-  RTL_LOCALES,
-  DEEPL_SUPPORTED_LOCALES,
-  GPT_FALLBACK_LOCALES,
-  TARGET_LOCALES,
-} from "./routes/rss-processing";
-
-// Re-export for backward compatibility
-export { autoProcessRssFeeds, type AutoProcessResult };
+// [REMOVED] rss-processing deleted in Phase 4.1 cleanup
+// autoProcessRssFeeds is no longer needed - Gatekeeper pipeline handles RSS
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -689,20 +670,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============================================================================
   registerSEOEngineRoutes(app);
 
-  // ============================================================================
-  // AUTOMATION ROUTES (Auto SEO, linking, freshness, etc.)
-  // ============================================================================
-  registerAutomationRoutes(app);
+  // [REMOVED] Automation routes deleted in Phase 4.1 cleanup
 
-  // ============================================================================
-  // CONTENT INTELLIGENCE (Clusters, Gaps, A/B Testing, ROI)
-  // ============================================================================
-  registerContentIntelligenceRoutes(app);
+  // [REMOVED] Content intelligence routes deleted in Phase 4.1 cleanup
 
-  // ============================================================================
-  // DESTINATION INTELLIGENCE (Content health, AI generation, scanning)
-  // ============================================================================
-  registerDestinationIntelligenceRoutes(app);
+  // [REMOVED] Destination intelligence routes deleted in Phase 4.1 cleanup
 
   // ============================================================================
   // ADMIN INTELLIGENCE (System health, coverage metrics, blocking issues)
@@ -710,10 +682,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   registerAdminIntelligenceRoutes(app);
   registerAdminIngestionRoutes(app);
 
-  // ============================================================================
-  // AUTO-PILOT (Zero-touch automation - supervisor only)
-  // ============================================================================
-  registerAutoPilotRoutes(app);
+  // [REMOVED] Auto-pilot routes deleted in Phase 4.1 cleanup
 
   // ============================================================================
   // GROWTH DASHBOARD (Unified view of auto-pilot activities and metrics)
@@ -777,10 +746,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============================================================================
   registerCanonicalRoutes(app);
 
-  // ============================================================================
-  // AI OUTPUT AUDIT TRAIL (Feature 4)
-  // ============================================================================
-  registerAiAuditRoutes(app);
+  // [REMOVED] AI Output Audit Trail deleted in Phase 4.1 cleanup
 
   // ============================================================================
   // CONTENT EXPERIMENTS / A-B TESTING (Feature 5)
@@ -938,10 +904,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============================================================================
   app.use("/api/vams", requireAuth, requirePermission("canEdit"), vamsRoutes);
 
-  // ============================================================================
-  // ENHANCEMENTS (Readability, CTAs, Search, Popups, Newsletter, Monetization, PWA)
-  // ============================================================================
-  registerEnhancementRoutes(app);
+  // [REMOVED] Enhancement routes deleted in Phase 4.1 cleanup
 
   // ============================================================================
   // SEMANTIC SEARCH ENGINE (Full-text + Vector + Intent + Hybrid Ranking)

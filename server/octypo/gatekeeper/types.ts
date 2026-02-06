@@ -78,6 +78,9 @@ export interface ContentSelectionResult {
   // Explanation
   reasoning: string;
 
+  // Content type classification
+  contentType: "article" | "attraction" | "hotel" | "restaurant" | "event";
+
   // Metadata
   evaluatedAt: Date;
   processingTimeMs: number;

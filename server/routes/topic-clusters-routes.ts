@@ -489,11 +489,9 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const { autoProcessRssFeeds } = await import("../routes");
-        const result = await autoProcessRssFeeds();
-        res.status(200).json({
-          message: "RSS auto-processing completed",
-          ...result,
+        // rss-processing deleted in Phase 4.1 cleanup - Gatekeeper pipeline handles RSS
+        res.status(410).json({
+          message: "Legacy RSS auto-processing has been removed. Use Gatekeeper pipeline instead.",
         });
       } catch (error) {
         res.status(500).json({ error: "Failed to auto-process RSS feeds" });

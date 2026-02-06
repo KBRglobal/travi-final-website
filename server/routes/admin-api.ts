@@ -1094,7 +1094,10 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const { translateText } = await import("../services/translation-service");
+        // translation-service deleted in Phase 4.2 cleanup
+        const translateText = async (..._args: any[]): Promise<{ translatedText: string }> => {
+          throw new Error("Automatic translation is permanently disabled");
+        };
         const { cmsTranslations } = await import("@shared/schema");
 
         const overwrite = req.body?.overwrite === true;

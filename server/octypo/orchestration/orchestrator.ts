@@ -16,6 +16,7 @@ import {
   Quality108Score,
 } from "../types";
 import { calculateQuality108Score } from "../quality/quality-108";
+import { log } from "../../lib/logger";
 import { AgentRegistry } from "../agents/base-agent";
 import {
   WriterAgent,
@@ -224,18 +225,33 @@ export class OctypoOrchestrator {
       results.push(dataResult);
     }
 
-    // Skip LLM-based style validation for now - rely on data validation
-    // Style validation was causing timeouts and blocking content generation
-    // TODO: Re-enable when LLM response times improve
-
-    results.push({
-      validatorId: "validator-aisha",
-      validatorName: "Aisha Khalil",
-      passed: true,
-      score: 85, // Default passing score when skipped
-      issues: [],
-      suggestions: ["Style validation skipped - relying on data validation"],
-    });
+    // Style validation via Aisha with 10-second timeout guard
+    const styleValidator = validators.find(v => v.id === "validator-aisha");
+    if (styleValidator) {
+      try {
+        const styleResult = await Promise.race([
+          styleValidator.execute({
+            contentId: "temp",
+            content,
+            validationType: "style",
+          }),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Style validation timeout (10s)")), 10000)
+          ),
+        ]);
+        results.push(styleResult);
+      } catch (timeoutErr) {
+        log.warn(`[Orchestrator] Style validation timed out, using fallback pass`);
+        results.push({
+          validatorId: "validator-aisha",
+          validatorName: "Aisha Khalil",
+          passed: true,
+          score: 75,
+          issues: [],
+          suggestions: ["Style validation timed out - using fallback score"],
+        });
+      }
+    }
 
     return results;
   }

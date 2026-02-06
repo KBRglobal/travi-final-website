@@ -23,6 +23,7 @@ interface BackgroundServicesConfig {
   enableTranslationQueue: boolean;
   enableTranslationWorker: boolean;
   enableRSSScheduler: boolean;
+  enableGatekeeperPipeline: boolean;
   enableLocalizationGovernance: boolean;
   enableSEOAutopilot: boolean;
   enableDataDecisions: boolean;
@@ -55,6 +56,9 @@ function getConfig(): BackgroundServicesConfig {
     // RSS scheduler - enabled by default
     enableRSSScheduler: process.env.ENABLE_RSS_SCHEDULER !== "false",
 
+    // Gatekeeper pipeline - runs autonomous content evaluation every 30 min
+    enableGatekeeperPipeline: process.env.ENABLE_GATEKEEPER_PIPELINE === "true",
+
     // Localization governance - enabled by default
     enableLocalizationGovernance: process.env.ENABLE_LOCALIZATION_GOVERNANCE !== "false",
 
@@ -69,9 +73,9 @@ function getConfig(): BackgroundServicesConfig {
 
     // RSS scheduler settings (per-destination limits)
     rssSchedulerConfig: {
-      dailyLimitPerDestination: parseInt(process.env.RSS_DAILY_LIMIT_PER_DESTINATION || "4", 10),
-      globalDailyLimit: parseInt(process.env.RSS_GLOBAL_DAILY_LIMIT || "68", 10), // 17 destinations × 4
-      intervalMinutes: parseInt(process.env.RSS_INTERVAL_MINUTES || "60", 10),
+      dailyLimitPerDestination: parseInt(process.env.RSS_DAILY_LIMIT_PER_DESTINATION || "5", 10),
+      globalDailyLimit: parseInt(process.env.RSS_GLOBAL_DAILY_LIMIT || "50", 10),
+      intervalMinutes: parseInt(process.env.RSS_INTERVAL_MINUTES || "30", 10),
       minQualityScore: parseInt(process.env.RSS_MIN_QUALITY_SCORE || "85", 10),
     },
 
@@ -291,6 +295,66 @@ async function startDataDecisionsService(config: BackgroundServicesConfig): Prom
 }
 
 // ============================================================================
+// GATEKEEPER PIPELINE SERVICE
+// ============================================================================
+
+let gatekeeperInterval: ReturnType<typeof setInterval> | null = null;
+
+async function startGatekeeperService(config: BackgroundServicesConfig): Promise<void> {
+  if (!config.enableGatekeeperPipeline) {
+    log.info(
+      "[BackgroundServices] Gatekeeper Pipeline DISABLED (set ENABLE_GATEKEEPER_PIPELINE=true)"
+    );
+    return;
+  }
+
+  try {
+    const { getGatekeeperOrchestrator } = await import("../octypo/gatekeeper");
+    const orchestrator = getGatekeeperOrchestrator();
+
+    log.info("[BackgroundServices] Gatekeeper Pipeline starting...");
+
+    // Run initial cycle after 2 min delay (let other services start first)
+    setTimeout(async () => {
+      try {
+        const stats = await orchestrator.runPipeline(10);
+        log.info(
+          `[BackgroundServices] Gatekeeper initial cycle: ${stats.itemsEvaluated} evaluated, ${stats.itemsApprovedForWriting} approved`
+        );
+      } catch (err: any) {
+        log.warn(`[BackgroundServices] Gatekeeper initial cycle error: ${err.message}`);
+      }
+    }, 120000);
+
+    // Run every 30 minutes
+    const intervalMs = 30 * 60 * 1000;
+    gatekeeperInterval = setInterval(async () => {
+      try {
+        const stats = await orchestrator.runPipeline(10);
+        if (stats.itemsEvaluated > 0) {
+          log.info(
+            `[BackgroundServices] Gatekeeper cycle: ${stats.itemsEvaluated} evaluated, ${stats.itemsApprovedForWriting} approved`
+          );
+        }
+      } catch (err: any) {
+        log.error(`[BackgroundServices] Gatekeeper cycle error: ${err.message}`);
+      }
+    }, intervalMs);
+
+    shutdownHandlers.push(() => {
+      if (gatekeeperInterval) {
+        clearInterval(gatekeeperInterval);
+        gatekeeperInterval = null;
+      }
+    });
+
+    log.info("[BackgroundServices] Gatekeeper Pipeline STARTED (interval: 30min)");
+  } catch (error) {
+    log.error(`[BackgroundServices] Failed to start Gatekeeper Pipeline: ${error}`);
+  }
+}
+
+// ============================================================================
 // CONTENT HEALTH SCHEDULER
 // ============================================================================
 
@@ -353,6 +417,7 @@ export async function startBackgroundServices(): Promise<void> {
   await Promise.all([
     startTranslationServices(config),
     startRSSSchedulerService(config),
+    startGatekeeperService(config),
     startLocalizationGovernance(config),
     startSEOAutopilotService(config),
     startDataDecisionsService(config),
@@ -397,6 +462,7 @@ export async function getBackgroundServicesStatus(): Promise<{
     translationQueue: { enabled: boolean; status: string };
     translationWorker: { enabled: boolean; status: string };
     rssScheduler: { enabled: boolean; status: any };
+    gatekeeperPipeline: { enabled: boolean; status: string };
     localizationGovernance: { enabled: boolean; status: string };
     seoAutopilot: { enabled: boolean; mode: string; status: string };
     dataDecisions: { enabled: boolean; mode: string; status: string };
@@ -452,6 +518,10 @@ export async function getBackgroundServicesStatus(): Promise<{
       rssScheduler: {
         enabled: config.enableRSSScheduler,
         status: rssSchedulerStatus,
+      },
+      gatekeeperPipeline: {
+        enabled: config.enableGatekeeperPipeline,
+        status: config.enableGatekeeperPipeline && gatekeeperInterval ? "running" : "stopped",
       },
       localizationGovernance: {
         enabled: config.enableLocalizationGovernance,

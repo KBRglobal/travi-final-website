@@ -923,7 +923,10 @@ export function registerContentCrudRoutes(app: Express): void {
         }
 
         const { tiers } = req.body; // Optional: only translate to specific tiers (1-7)
-        const { translateToAllLanguages } = await import("../services/translation-service");
+        // translation-service deleted in Phase 4.2 cleanup
+        const translateToAllLanguages = async (..._args: any[]): Promise<Map<string, any>> => {
+          throw new Error("Automatic translation is permanently disabled");
+        };
 
         // Start translation in background
         const translationPromise = translateToAllLanguages(

@@ -27,7 +27,7 @@ process.on("warning", warning => {
 
 import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
-import { registerRoutes, autoProcessRssFeeds } from "./routes";
+import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { securityHeaders, corsMiddleware, sanitizeInput, approvedBotMiddleware } from "./security";
@@ -46,7 +46,7 @@ import {
   stopTiqetsBackgroundGenerator,
 } from "./services/tiqets-background-generator";
 import { runProductionSeed } from "./lib/production-seed";
-import { registerOctypoJobHandler } from "./octypo/job-handler";
+
 import { initializeGatekeeper } from "./octypo/gatekeeper";
 import { initializeRssFeedItemsTable } from "./octypo/rss-reader";
 import { startBackgroundServices, stopBackgroundServices } from "./services/background-services";
@@ -538,8 +538,7 @@ async function initializeServer() {
     startTiqetsBackgroundGenerator();
     log("[TiqetsBackground] Content generation automation ENABLED", "server");
 
-    registerOctypoJobHandler();
-    log("[OctypoV2] Content generation job handler registered", "server");
+    // Old Pipeline A handler removed — Gatekeeper pipeline handles all RSS content generation
 
     // Initialize RSS feed items table with Gate1 columns
     await initializeRssFeedItemsTable();
@@ -551,25 +550,6 @@ async function initializeServer() {
     startBackgroundServices().catch(err => {
       log(`[BackgroundServices] Failed to start: ${err}`, "error");
     });
-
-    import("./scripts/publish-articles")
-      .then(({ publishAllArticles }) => {
-        publishAllArticles()
-          .then(result => {
-            if (result.articles > 0 || result.hotels > 0) {
-              log(
-                `[AutoPublish] Published ${result.articles} articles, ${result.hotels} hotels`,
-                "server"
-              );
-            }
-          })
-          .catch(err => {
-            log(`[AutoPublish] Error: ${err}`, "server");
-          });
-      })
-      .catch(err => {
-        log(`[AutoPublish] Failed to load publish-articles module: ${err}`, "error");
-      });
 
     initializeFoundationEvents();
   } catch (error) {

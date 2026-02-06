@@ -520,6 +520,9 @@ export const nativeLocalizedContent = pgTable(
     status: pilotLocaleStatusEnum("status").notNull().default("generating"),
     failureReason: text("failure_reason"),
 
+    // Source hash for idempotency (skip regeneration if source unchanged)
+    sourceHash: varchar("source_hash", { length: 64 }),
+
     // Generation metadata
     writerAgent: varchar("writer_agent", { length: 100 }),
     engineUsed: varchar("engine_used", { length: 100 }),
@@ -567,6 +570,7 @@ export const insertNativeLocalizedContentSchema = z.object({
   validationResults: z.any().nullable().optional(),
   status: z.string().optional(),
   failureReason: z.string().nullable().optional(),
+  sourceHash: z.string().nullable().optional(),
   writerAgent: z.string().nullable().optional(),
   engineUsed: z.string().nullable().optional(),
   tokensUsed: z.number().nullable().optional(),

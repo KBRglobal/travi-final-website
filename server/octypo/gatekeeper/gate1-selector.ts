@@ -104,6 +104,7 @@ export class Gate1Selector {
           estimatedCost: "low",
           valueMatrixQuadrant: "skip",
           reasoning: `Duplicate content (${Math.round((dedupResult.duplicateOf?.similarity || 0) * 100)}% similar to: ${dedupResult.duplicateOf?.sourceTitle || "existing content"})`,
+          contentType: "article",
           evaluatedAt: new Date(),
           processingTimeMs: Date.now() - startTime,
         };
@@ -154,6 +155,7 @@ export class Gate1Selector {
         estimatedCost: evaluation.estimatedCost,
         valueMatrixQuadrant,
         reasoning: evaluation.reasoning,
+        contentType: evaluation.contentType || "article",
         evaluatedAt: new Date(),
         processingTimeMs: Date.now() - startTime,
       };

@@ -11,6 +11,7 @@ import { contents, articles } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { Gate1Selector, getGate1Selector } from "./gate1-selector";
 import { Gate2Approver, getGate2Approver } from "./gate2-approver";
+import { getAttractionDetector } from "./attraction-detector";
 import {
   ContentSelectionInput,
   ContentSelectionResult,
@@ -152,8 +153,36 @@ export class GatekeeperOrchestrator {
       // Decision is 'write' - proceed to writing
       this.stats.itemsApprovedForWriting++;
 
-      // Queue writing job
-      await this.queueWritingJob(item, selection);
+      // Check if this is an attraction (from Gate1 contentType or attraction detector)
+      if (selection.contentType === "attraction") {
+        await this.queueAttractionWritingJob(item, selection);
+      } else {
+        // Run attraction detector as a secondary check for non-classified items
+        try {
+          const detector = getAttractionDetector();
+          const detection = await detector.detect({
+            id: item.id,
+            title: item.title,
+            summary: item.summary || "",
+            url: item.url,
+            category: item.category,
+          });
+
+          if (detection.isAttraction && detection.confidence >= 70) {
+            await this.queueAttractionWritingJob(item, selection, detection);
+            return;
+          }
+        } catch (detectionError) {
+          // Attraction detection is non-critical, continue with regular write
+          logger.warn(
+            { feedItemId: item.id },
+            "[Gatekeeper] Attraction detection failed, falling back to article"
+          );
+        }
+
+        // Queue regular writing job
+        await this.queueWritingJob(item, selection);
+      }
     } catch (error) {
       logger.error(
         {
@@ -373,6 +402,46 @@ export class GatekeeperOrchestrator {
         tier: selection.tier,
       },
       "[Gatekeeper] Item queued for later"
+    );
+  }
+
+  /**
+   * Queue attraction-specific writing job
+   */
+  private async queueAttractionWritingJob(
+    item: FeedItem,
+    selection: ContentSelectionResult,
+    detection?: any
+  ): Promise<void> {
+    await jobQueue.addJob(
+      "gatekeeper_attraction_write" as JobType,
+      {
+        feedItemId: item.id,
+        title: item.title,
+        summary: item.summary,
+        sourceUrl: item.url,
+        category: item.category,
+        writerId: selection.recommendedWriterId,
+        tier: selection.tier,
+        gate1Score: selection.totalScore,
+        gate1Reasoning: selection.reasoning,
+        contentType: "attraction",
+        attractionName: detection?.attractionName || item.title,
+        attractionType: detection?.attractionType || "other",
+        cityName: detection?.cityName || null,
+        openingDate: detection?.openingDate || null,
+        description: detection?.description || item.summary,
+      },
+      { priority: selection.tier === "S1" ? 1 : selection.tier === "S2" ? 3 : 5 }
+    );
+
+    logger.info(
+      {
+        feedItemId: item.id,
+        attractionName: detection?.attractionName || item.title,
+        tier: selection.tier,
+      },
+      "[Gatekeeper] Attraction writing job queued"
     );
   }
 

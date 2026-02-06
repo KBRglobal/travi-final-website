@@ -29,6 +29,15 @@ interface GatekeeperWriteJobData {
   gate1Reasoning: string;
 }
 
+interface GatekeeperAttractionWriteJobData extends GatekeeperWriteJobData {
+  contentType: "attraction";
+  attractionName: string;
+  attractionType: string;
+  cityName: string | null;
+  openingDate: string | null;
+  description: string;
+}
+
 interface GatekeeperRevisionJobData {
   contentId: string;
   revisionPrompt: string;
@@ -417,6 +426,186 @@ function buildContentBlocks(content: any): any[] {
 }
 
 // ============================================
+// ATTRACTION WRITE JOB HANDLER
+// ============================================
+
+async function handleAttractionWriteJob(
+  data: GatekeeperAttractionWriteJobData
+): Promise<{ success: boolean; result: any }> {
+  logger.info(
+    {
+      feedItemId: data.feedItemId,
+      attractionName: data.attractionName,
+      attractionType: data.attractionType,
+      tier: data.tier,
+    },
+    "[Gatekeeper] Handling attraction write job"
+  );
+
+  try {
+    const orchestrator = getOctypoOrchestrator();
+
+    // Generate unique slug
+    const baseSlug = data.attractionName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .substring(0, 80);
+    const slug = `${baseSlug}-${Date.now().toString(36)}`;
+
+    // Build attraction data for the orchestrator
+    const attractionData = {
+      id: Date.now(),
+      title: data.attractionName,
+      venueName: data.attractionName,
+      cityName: data.cityName || "global",
+      primaryCategory: data.attractionType || "Attraction",
+      description: data.description || data.summary,
+      sourceUrl: data.sourceUrl,
+      contentType: "attraction",
+      preferredWriterId: data.writerId,
+    };
+
+    // Generate content
+    const result = await orchestrator.generateAttractionContent(attractionData as any);
+
+    if (!result.success || !result.content) {
+      logger.error(
+        { feedItemId: data.feedItemId, error: result.error },
+        "[Gatekeeper] Attraction content generation failed"
+      );
+      return { success: false, result: { error: result.error } };
+    }
+
+    // Calculate word count
+    const allText = [result.content.introduction, result.content.body, result.content.conclusion]
+      .filter(Boolean)
+      .join(" ");
+    const wordCount = allText.split(/\s+/).length;
+
+    // Search Tiqets for affiliate link
+    let tiqetsLink: string | null = null;
+    try {
+      const { getTiqetsClient } = await import("../../lib/tiqets-client");
+      const tiqetsClient = getTiqetsClient();
+      const searchResult = await tiqetsClient.searchProducts(data.attractionName, {
+        perPage: 3,
+      });
+
+      if (searchResult.products.length > 0) {
+        const product = searchResult.products[0];
+        tiqetsLink = tiqetsClient.getAffiliateLink(product.product_url || "");
+        logger.info(
+          { attractionName: data.attractionName, productId: product.id },
+          "[Gatekeeper] Tiqets product found for attraction"
+        );
+      }
+    } catch (tiqetsError) {
+      logger.warn(
+        { error: tiqetsError instanceof Error ? tiqetsError.message : "Unknown" },
+        "[Gatekeeper] Tiqets search failed (non-critical)"
+      );
+    }
+
+    // Build content blocks, inject Tiqets link if found
+    const blocks = buildContentBlocks(result.content);
+    if (tiqetsLink) {
+      blocks.push({
+        type: "cta",
+        id: `tiqets-${Date.now()}`,
+        data: {
+          text: `Book tickets for ${data.attractionName}`,
+          url: tiqetsLink,
+          source: "tiqets",
+        },
+      });
+    }
+
+    // Save as draft with type "attraction"
+    const [contentRecord] = await db
+      .insert(contents)
+      .values({
+        type: "attraction",
+        status: "draft",
+        title: data.attractionName,
+        slug,
+        metaTitle: result.content.metaTitle || data.attractionName.substring(0, 70),
+        metaDescription:
+          result.content.metaDescription || result.content.introduction?.substring(0, 160),
+        summary: result.content.introduction?.substring(0, 200),
+        answerCapsule: result.content.answerCapsule,
+        blocks,
+        seoSchema: result.content.schemaPayload,
+        generatedByAI: true,
+        writerId: data.writerId,
+        wordCount,
+      } as any)
+      .returning();
+
+    // Create article record (used for both articles and attractions)
+    const [articleRecord] = await db
+      .insert(articles)
+      .values({
+        contentId: contentRecord.id,
+        category: data.attractionType || "attraction",
+        sourceUrl: data.sourceUrl,
+        excerpt: result.content.introduction?.substring(0, 200),
+        relatedDestinationIds: data.destinationId ? [data.destinationId] : [],
+        faq: result.content.faqs || [],
+      } as any)
+      .returning();
+
+    // Update RSS item
+    await db.execute(sql`
+      UPDATE rss_feed_items
+      SET processed = TRUE, content_id = ${contentRecord.id}, processed_at = NOW()
+      WHERE id = ${data.feedItemId}
+    `);
+
+    logger.info(
+      {
+        contentId: contentRecord.id,
+        wordCount,
+        hasTiqetsLink: !!tiqetsLink,
+      },
+      "[Gatekeeper] Attraction written, queuing for Gate 2 review"
+    );
+
+    // Queue Gate 2 review
+    await jobQueue.addJob(
+      "gatekeeper_review" as JobType,
+      {
+        contentId: contentRecord.id,
+        revisionCount: 0,
+      },
+      { priority: data.tier === "S1" ? 1 : data.tier === "S2" ? 2 : 4 }
+    );
+
+    return {
+      success: true,
+      result: {
+        contentId: contentRecord.id,
+        articleId: articleRecord.id,
+        wordCount,
+        hasTiqetsLink: !!tiqetsLink,
+      },
+    };
+  } catch (error) {
+    logger.error(
+      {
+        feedItemId: data.feedItemId,
+        error: error instanceof Error ? error.message : "Unknown",
+      },
+      "[Gatekeeper] Attraction write job failed"
+    );
+    return {
+      success: false,
+      result: { error: error instanceof Error ? error.message : "Unknown" },
+    };
+  }
+}
+
+// ============================================
 // REGISTER HANDLERS
 // ============================================
 
@@ -432,6 +621,14 @@ export function registerGatekeeperJobHandlers(): void {
   jobQueue.registerHandler<GatekeeperReviewJobData>("gatekeeper_review" as JobType, async data => {
     return handleReviewJob(data);
   });
+
+  // Handler for attraction writing (after Gate 1 approval + attraction detection)
+  jobQueue.registerHandler<GatekeeperAttractionWriteJobData>(
+    "gatekeeper_attraction_write" as JobType,
+    async data => {
+      return handleAttractionWriteJob(data);
+    }
+  );
 
   // Handler for revisions
   jobQueue.registerHandler<GatekeeperRevisionJobData>(
