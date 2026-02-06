@@ -25,7 +25,7 @@ interface Conversation {
 function generateVisitorId(): string {
   const stored = localStorage.getItem("liveChatVisitorId");
   if (stored) return stored;
-  
+
   const id = `visitor_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   localStorage.setItem("liveChatVisitorId", id);
   return id;
@@ -37,10 +37,10 @@ interface LiveChatWidgetProps {
   showFloatingButton?: boolean;
 }
 
-export function LiveChatWidget({ 
-  isOpen: externalIsOpen, 
-  onOpenChange, 
-  showFloatingButton = true 
+export function LiveChatWidget({
+  isOpen: externalIsOpen,
+  onOpenChange,
+  showFloatingButton = true,
 }: LiveChatWidgetProps = {}) {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -48,7 +48,7 @@ export function LiveChatWidget({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const visitorId = generateVisitorId();
-  
+
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const setIsOpen = onOpenChange || setInternalIsOpen;
 
@@ -71,7 +71,7 @@ export function LiveChatWidget({
       });
       return res.json();
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       setConversation(data);
     },
   });
@@ -79,10 +79,14 @@ export function LiveChatWidget({
   const sendMessage = useMutation({
     mutationFn: async (contents: string) => {
       if (!conversation?.id) throw new Error("No conversation");
-      const res = await apiRequest("POST", `/api/live-chat/conversations/${conversation.id}/messages`, {
-        contents,
-        senderType: "visitor",
-      });
+      const res = await apiRequest(
+        "POST",
+        `/api/live-chat/conversations/${conversation.id}/messages`,
+        {
+          contents,
+          senderType: "visitor",
+        }
+      );
       return res.json();
     },
     onSuccess: () => {
@@ -119,12 +123,13 @@ export function LiveChatWidget({
   return (
     <div className="fixed bottom-4 right-4 z-50" data-testid="live-chat-widget">
       {isOpen ? (
-        <Card className="w-80 h-96 flex flex-col shadow-xl">
+        <Card className="w-80 h-96 flex flex-col shadow-xl" role="region" aria-label="Live chat">
           <div className="flex items-center justify-between gap-2 p-3 border-b bg-gradient-to-r from-[#6443F4] to-[#6443F4] rounded-t-lg">
             <div className="flex items-center gap-2">
-              <img 
-                src="/logos/Mascot_for_Dark_Background.png" 
-                alt="TRAVI" 
+              <img
+                src="/logos/Mascot_for_Dark_Background.png"
+                alt=""
+                aria-hidden="true"
                 className="w-8 h-8 object-contain"
               />
               <span className="font-medium text-white">Chat with us</span>
@@ -134,25 +139,37 @@ export function LiveChatWidget({
               variant="ghost"
               className="text-white hover:bg-white/20"
               onClick={() => setIsOpen(false)}
+              aria-label="Close chat"
               data-testid="button-close-chat"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" aria-hidden="true" />
             </Button>
           </div>
 
-          <ScrollArea className="flex-1 p-3">
+          <ScrollArea
+            className="flex-1 p-3"
+            role="log"
+            aria-live="polite"
+            aria-label="Chat messages"
+          >
             {messagesLoading ? (
               <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                <Loader2
+                  className="w-6 h-6 animate-spin text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Loading messages</span>
               </div>
             ) : (
               <div className="space-y-3">
                 {/* Automatic welcome message */}
                 <div className="max-w-[85%] p-2 rounded-lg text-sm bg-muted">
                   <p>Welcome to Travi! How can we help you today?</p>
-                  <p className="text-xs text-muted-foreground mt-1">Response time: up to 48 hours</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Response time: up to 48 hours
+                  </p>
                 </div>
-                {messages.map((msg) => (
+                {messages.map(msg => (
                   <div
                     key={msg.id}
                     className={cn(
@@ -175,9 +192,10 @@ export function LiveChatWidget({
             <div className="flex gap-2">
               <Input
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={e => setMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type a message..."
+                aria-label="Type your message"
                 className="flex-1"
                 disabled={sendMessage.isPending || !conversation}
                 data-testid="input-chat-message"
@@ -186,12 +204,13 @@ export function LiveChatWidget({
                 size="icon"
                 onClick={handleSend}
                 disabled={!message.trim() || sendMessage.isPending || !conversation}
+                aria-label="Send message"
                 data-testid="button-send-message"
               >
                 {sendMessage.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
                 ) : (
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4" aria-hidden="true" />
                 )}
               </Button>
             </div>
@@ -202,9 +221,11 @@ export function LiveChatWidget({
           size="icon"
           className="w-14 h-14 rounded-full shadow-lg bg-[#6443F4] hover:bg-[#5339D9]"
           onClick={() => setIsOpen(true)}
+          aria-label="Open live chat"
+          aria-expanded={isOpen}
           data-testid="button-open-chat"
         >
-          <MessageCircle className="w-6 h-6" />
+          <MessageCircle className="w-6 h-6" aria-hidden="true" />
         </Button>
       ) : null}
     </div>
