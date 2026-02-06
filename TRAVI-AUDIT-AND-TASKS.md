@@ -417,16 +417,16 @@
 
 ### Phase 1: EMERGENCY (Week 1)
 
-| Task                                                                       | Assignee       | Dependencies | Status |
-| -------------------------------------------------------------------------- | -------------- | ------------ | ------ |
-| 1.1 Add `.env.staging`, `.env.development` to `.gitignore`                 | DevOps         | None         | TODO   |
-| 1.2 Replace `Math.random()` with `crypto.randomBytes()` for recovery codes | Security       | None         | TODO   |
-| 1.3 Hash recovery codes with bcrypt before DB storage                      | Security       | 1.2          | TODO   |
-| 1.4 Move IndexNow API key to env var                                       | SEO/AEO        | None         | TODO   |
-| 1.5 Change OIDC default role from `admin` to `viewer`                      | Security       | None         | TODO   |
-| 1.6 Add auth middleware to unprotected admin routes                        | Security + API | None         | TODO   |
-| 1.7 Set up basic GitHub Actions CI (lint → typecheck → build)              | DevOps         | None         | TODO   |
-| 1.8 Consolidate robots.txt to single dynamic source                        | SEO/AEO        | None         | TODO   |
+| Task                                                                       | Assignee       | Dependencies | Status  |
+| -------------------------------------------------------------------------- | -------------- | ------------ | ------- |
+| 1.1 Add `.env.staging`, `.env.development` to `.gitignore`                 | DevOps         | None         | DONE ✅ |
+| 1.2 Replace `Math.random()` with `crypto.randomBytes()` for recovery codes | Security       | None         | DONE ✅ |
+| 1.3 Hash recovery codes with bcrypt before DB storage                      | Security       | 1.2          | DONE ✅ |
+| 1.4 Move IndexNow API key to env var                                       | SEO/AEO        | None         | DONE ✅ |
+| 1.5 Change OIDC default role from `admin` to `viewer`                      | Security       | None         | DONE ✅ |
+| 1.6 Add auth middleware to unprotected admin routes                        | Security + API | None         | DONE ✅ |
+| 1.7 Set up basic GitHub Actions CI (lint → typecheck → build)              | DevOps         | None         | DONE ✅ |
+| 1.8 Consolidate robots.txt to single dynamic source                        | SEO/AEO        | None         | DONE ✅ |
 
 ### Phase 2: STABILITY (Week 2-3)
 
@@ -494,12 +494,20 @@
 
 ## COMPLETION TRACKING
 
-- [ ] Phase 1: Emergency (0/8 tasks)
+- [x] Phase 1: Emergency (8/8 tasks) — COMPLETED
+  - 1.1 ✅ `2b58c83` .gitignore updated (DevOps)
+  - 1.2 ✅ `7135058` crypto.randomBytes for recovery codes (Security)
+  - 1.3 ✅ `19a4c01` bcrypt hash recovery codes (Security)
+  - 1.4 ✅ `0117ef3` IndexNow API key to env var (SEO)
+  - 1.5 ✅ `0322b5d` OIDC default role to viewer (Security)
+  - 1.6 ✅ `eb3b6c9` Auth middleware on admin routes (API)
+  - 1.7 ✅ `808c992` GitHub Actions CI pipeline (DevOps)
+  - 1.8 ✅ `88d5f29` Consolidated robots.txt (SEO)
 - [ ] Phase 2: Stability (0/12 tasks)
 - [ ] Phase 3: Quality (0/15 tasks)
 - [ ] Phase 4: Optimization (0/20 tasks)
 
-**Total: 0/55 tasks completed**
+**Total: 8/55 tasks completed**
 
 ---
 
