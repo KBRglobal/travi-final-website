@@ -3,84 +3,70 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 
-// Import all locale files - 30 supported languages
-// Tier 1 - Core
+// Only English is bundled statically - all other languages are lazy-loaded on demand.
+// This saves ~1.3MB from the initial bundle (28 language JSON files).
 import enCommon from "../../locales/en/common.json";
-import arCommon from "../../locales/ar/common.json";
-import hiCommon from "../../locales/hi/common.json";
 
-// Tier 2 - High ROI
-import zhCommon from "../../locales/zh/common.json";
-import ruCommon from "../../locales/ru/common.json";
-import urCommon from "../../locales/ur/common.json";
-import frCommon from "../../locales/fr/common.json";
-import idCommon from "../../locales/id/common.json";
-
-// Tier 3 - Growing (Southeast Asia focus)
-import deCommon from "../../locales/de/common.json";
-import faCommon from "../../locales/fa/common.json";
-import bnCommon from "../../locales/bn/common.json";
-import filCommon from "../../locales/fil/common.json";
-import thCommon from "../../locales/th/common.json";
-import viCommon from "../../locales/vi/common.json";
-import msCommon from "../../locales/ms/common.json";
-
-// Tier 4 - Niche
-import esCommon from "../../locales/es/common.json";
-import trCommon from "../../locales/tr/common.json";
-import itCommon from "../../locales/it/common.json";
-import jaCommon from "../../locales/ja/common.json";
-import koCommon from "../../locales/ko/common.json";
-import heCommon from "../../locales/he/common.json";
-import ptCommon from "../../locales/pt/common.json";
-
-// Tier 5 - European Expansion
-import nlCommon from "../../locales/nl/common.json";
-import plCommon from "../../locales/pl/common.json";
-import svCommon from "../../locales/sv/common.json";
-import elCommon from "../../locales/el/common.json";
-import csCommon from "../../locales/cs/common.json";
-import ukCommon from "../../locales/uk/common.json";
-
-// Translation object type - keys map to translation strings
 type TranslationResource = Record<string, unknown>;
 
-// Resources object - all 30 language translations
-const resources: Record<string, { common: TranslationResource }> = {
-  // Tier 1
-  en: { common: enCommon },
-  ar: { common: arCommon },
-  hi: { common: hiCommon },
-  // Tier 2
-  zh: { common: zhCommon },
-  ru: { common: ruCommon },
-  ur: { common: urCommon },
-  fr: { common: frCommon },
-  id: { common: idCommon },
-  // Tier 3
-  de: { common: deCommon },
-  fa: { common: faCommon },
-  bn: { common: bnCommon },
-  fil: { common: filCommon },
-  th: { common: thCommon },
-  vi: { common: viCommon },
-  ms: { common: msCommon },
-  // Tier 4
-  es: { common: esCommon },
-  tr: { common: trCommon },
-  it: { common: itCommon },
-  ja: { common: jaCommon },
-  ko: { common: koCommon },
-  he: { common: heCommon },
-  pt: { common: ptCommon },
-  // Tier 5
-  nl: { common: nlCommon },
-  pl: { common: plCommon },
-  sv: { common: svCommon },
-  el: { common: elCommon },
-  cs: { common: csCommon },
-  uk: { common: ukCommon },
+// Dynamic import map for lazy-loaded locale files.
+// Vite will code-split each import into its own chunk.
+const localeImporters: Record<string, () => Promise<{ default: TranslationResource }>> = {
+  ar: () => import("../../locales/ar/common.json"),
+  hi: () => import("../../locales/hi/common.json"),
+  zh: () => import("../../locales/zh/common.json"),
+  ru: () => import("../../locales/ru/common.json"),
+  ur: () => import("../../locales/ur/common.json"),
+  fr: () => import("../../locales/fr/common.json"),
+  id: () => import("../../locales/id/common.json"),
+  de: () => import("../../locales/de/common.json"),
+  fa: () => import("../../locales/fa/common.json"),
+  bn: () => import("../../locales/bn/common.json"),
+  fil: () => import("../../locales/fil/common.json"),
+  th: () => import("../../locales/th/common.json"),
+  vi: () => import("../../locales/vi/common.json"),
+  ms: () => import("../../locales/ms/common.json"),
+  es: () => import("../../locales/es/common.json"),
+  tr: () => import("../../locales/tr/common.json"),
+  it: () => import("../../locales/it/common.json"),
+  ja: () => import("../../locales/ja/common.json"),
+  ko: () => import("../../locales/ko/common.json"),
+  he: () => import("../../locales/he/common.json"),
+  pt: () => import("../../locales/pt/common.json"),
+  nl: () => import("../../locales/nl/common.json"),
+  pl: () => import("../../locales/pl/common.json"),
+  sv: () => import("../../locales/sv/common.json"),
+  el: () => import("../../locales/el/common.json"),
+  cs: () => import("../../locales/cs/common.json"),
+  uk: () => import("../../locales/uk/common.json"),
 };
+
+// Track which locales have already been loaded to avoid redundant fetches
+const loadedLocales = new Set<string>(["en"]);
+
+// Initial resources - only English bundled
+const resources: Record<string, { common: TranslationResource }> = {
+  en: { common: enCommon },
+};
+
+/**
+ * Load a locale's translation bundle on demand.
+ * Returns immediately if already loaded or if the locale is English.
+ */
+export async function loadLocaleResources(locale: string): Promise<void> {
+  if (loadedLocales.has(locale)) return;
+
+  const importer = localeImporters[locale];
+  if (!importer) return;
+
+  try {
+    const module = await importer();
+    i18n.addResourceBundle(locale, "common", module.default, true, true);
+    loadedLocales.add(locale);
+  } catch (err) {
+    console.error(`[i18n] Failed to load locale "${locale}":`, err);
+  }
+}
 
 // Missing key handler - logs and returns visible marker
 const missingKeyHandler = (
@@ -96,16 +82,17 @@ const missingKeyHandler = (
   }
 };
 
-// Initialize i18next with NO silent fallback - single locale only
+// Initialize i18next with English as fallback.
+// Since only English is bundled, it serves as a safe fallback while
+// other locale bundles are being lazy-loaded.
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
 
-    // CRITICAL: Disable fallback to prevent mixed-language UI
-    // Set to false to completely disable fallback
-    fallbackLng: false,
+    // English is always available as the bundled fallback
+    fallbackLng: "en",
 
     defaultNS: "common",
     ns: ["common"],
@@ -153,8 +140,10 @@ export const getLocalesByTier = (tier: number) => {
   return SUPPORTED_LOCALES.filter(l => l.tier === tier);
 };
 
-// Helper function to change language and update document direction
+// Helper function to change language and update document direction.
+// Lazy-loads the locale bundle before switching so translations are available immediately.
 export const changeLanguage = async (locale: Locale) => {
+  await loadLocaleResources(locale);
   await i18n.changeLanguage(locale);
   document.documentElement.lang = locale;
   document.documentElement.dir = isRTL(locale) ? "rtl" : "ltr";
