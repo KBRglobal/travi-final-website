@@ -439,9 +439,62 @@ export function checkReadOnlyMode(req: Request, res: Response, next: NextFunctio
 // ============================================================================
 type PermissionKey = keyof typeof ROLE_PERMISSIONS.admin;
 
+const ROLE_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 function hasPermission(role: UserRole, permission: PermissionKey): boolean {
   const permissions = ROLE_PERMISSIONS[role];
   return permissions ? permissions[permission] : false;
+}
+
+/**
+ * Fetch user from DB or session cache.
+ * Caches the user record in req.session to avoid
+ * hitting the database on every authenticated request.
+ */
+async function getCachedUser(
+  req: Request,
+  userId: string
+): Promise<{ dbUser: any; userRole: UserRole }> {
+  const sess = req.session as any;
+  const now = Date.now();
+
+  if (
+    sess?.cachedUserRole &&
+    sess?.cachedUserRoleAt &&
+    sess?.cachedUserId === userId &&
+    now - sess.cachedUserRoleAt < ROLE_CACHE_TTL_MS
+  ) {
+    return {
+      dbUser: sess.cachedDbUser ?? { id: userId, role: sess.cachedUserRole },
+      userRole: sess.cachedUserRole as UserRole,
+    };
+  }
+
+  const dbUser = await storage.getUser(userId);
+  const userRole: UserRole = dbUser?.role || "viewer";
+
+  if (sess) {
+    sess.cachedUserId = userId;
+    sess.cachedUserRole = userRole;
+    sess.cachedDbUser = dbUser;
+    sess.cachedUserRoleAt = now;
+  }
+
+  return { dbUser, userRole };
+}
+
+/**
+ * Invalidate the cached role in a session.
+ * Call after updating a user's role so the next request re-fetches from DB.
+ */
+export function invalidateRoleCache(req: Request): void {
+  const sess = req.session as any;
+  if (sess) {
+    delete sess.cachedUserRole;
+    delete sess.cachedUserRoleAt;
+    delete sess.cachedUserId;
+    delete sess.cachedDbUser;
+  }
 }
 
 export function requirePermission(permission: PermissionKey) {
@@ -466,8 +519,7 @@ export function requirePermission(permission: PermissionKey) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    const dbUser = await storage.getUser(userId);
-    const userRole: UserRole = dbUser?.role || "viewer";
+    const { dbUser, userRole } = await getCachedUser(req, userId);
 
     if (!hasPermission(userRole, permission)) {
       return res.status(403).json({
@@ -495,8 +547,7 @@ export function requireOwnContentOrPermission(permission: PermissionKey) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    const dbUser = await storage.getUser(user.claims.sub);
-    const userRole: UserRole = dbUser?.role || "viewer";
+    const { dbUser, userRole } = await getCachedUser(req, user.claims.sub);
 
     // Admin and Editor can edit any content
     if (hasPermission(userRole, permission)) {
@@ -864,40 +915,11 @@ export function auditLogMiddleware(action: AuditLogEntry["action"], resourceType
 // CONTENT SECURITY POLICY HEADERS
 // ============================================================================
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
-  // Content Security Policy
-  // TODO: Remove 'unsafe-inline' and 'unsafe-eval' by implementing CSP nonces
-  // Currently required for:
-  // - 'unsafe-inline': Inline styles from Tailwind, Radix UI components
-  // - 'unsafe-eval': Development hot reload, some third-party analytics
-  res.setHeader(
-    "Content-Security-Policy",
-    [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd https://*.emrld.ltd",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com",
-      "font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:",
-      "img-src 'self' data: blob: https: http:",
-      "connect-src 'self' https://*.replit.dev https://*.replit.app https://api.deepl.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai https://images.unsplash.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd https://*.emrld.ltd wss:",
-      "frame-ancestors 'self'",
-      "form-action 'self'",
-      "base-uri 'self'",
-    ].join("; ")
-  );
+  // CSP is now handled centrally by Helmet in server/security/index.ts.
+  // This middleware only sets supplemental headers not covered by Helmet.
 
-  // Additional security headers
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "SAMEORIGIN");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
-  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-
-  // Additional security headers for improved protection
-  // NOTE: HSTS is handled by Replit infrastructure - do not set here to avoid duplicates
-  // res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.setHeader("X-Download-Options", "noopen");
   res.setHeader("X-Permitted-Cross-Domain-Policies", "none");
-
-  // Remove server fingerprinting headers
   res.removeHeader("X-Powered-By");
   res.setHeader("X-DNS-Prefetch-Control", "off");
 

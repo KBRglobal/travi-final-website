@@ -7,7 +7,12 @@ import type { Express, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { storage } from "../storage";
-import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";
+import {
+  requireAuth,
+  requirePermission,
+  checkReadOnlyMode,
+  invalidateRoleCache,
+} from "../security";
 import { requireSelfOrAdmin, requireAdmin } from "../middleware/idor-protection";
 import {
   validatePasswordStrength,
@@ -242,6 +247,11 @@ export function registerUserRoutes(app: Express): void {
             action: "password_change",
             details: { targetUserId: user.id },
           });
+        }
+
+        // Invalidate cached role so the updated user re-fetches from DB
+        if (existingUser?.role !== user.role) {
+          invalidateRoleCache(req);
         }
 
         // Security audit: Log role/privilege change (critical security event)

@@ -135,9 +135,12 @@ export function attackDetectionMiddleware(req: Request, res: Response, next: Nex
 // ============================================================================
 // CSP CONFIGURATION
 // ============================================================================
-// STRICT_CSP=true: Removes unsafe-inline/unsafe-eval (breaks Vite HMR in dev)
-// Default: false (allows Vite/React development tooling)
-const STRICT_CSP = process.env.STRICT_CSP === "true";
+// Production: strict CSP (no unsafe-inline/unsafe-eval for scripts)
+// Development: relaxed CSP (allows Vite HMR, inline scripts)
+// Override with STRICT_CSP=false in production to temporarily relax
+const isProduction = process.env.NODE_ENV === "production";
+const STRICT_CSP =
+  process.env.STRICT_CSP !== undefined ? process.env.STRICT_CSP === "true" : isProduction;
 
 /**
  * Setup security middleware on Express app
@@ -179,28 +182,25 @@ export function setupSecurityMiddleware(app: Express): void {
 
   // Build script-src based on STRICT_CSP mode
   // PostHog domains: us.i.posthog.com (ingestion), us-assets.i.posthog.com (assets)
+  // Common script sources shared by both modes
+  const commonScriptSrc = [
+    "'self'",
+    "https://replit.com",
+    "https://www.googletagmanager.com",
+    "https://www.google-analytics.com",
+    "https://emrld.ltd", // Travelpayouts affiliate verification
+    "https://*.emrld.ltd", // Travelpayouts subdomains
+    "https://us-assets.i.posthog.com", // PostHog analytics assets
+    "https://us.i.posthog.com", // PostHog analytics
+    "https://static.cloudflareinsights.com", // Cloudflare Web Analytics
+  ];
+
   const scriptSrcDirective = STRICT_CSP
-    ? [
-        "'self'",
-        // In strict mode, no unsafe-inline/unsafe-eval - requires nonce-based CSP (not implemented)
-        "https://replit.com",
-        "https://www.googletagmanager.com",
-        "https://www.google-analytics.com",
-        "https://emrld.ltd", // Travelpayouts affiliate verification
-        "https://us-assets.i.posthog.com", // PostHog analytics assets
-        "https://us.i.posthog.com", // PostHog analytics
-      ]
+    ? commonScriptSrc // Strict: no unsafe-inline/unsafe-eval
     : [
-        "'self'",
-        "'unsafe-inline'", // Required: Vite HMR, React inline handlers, styled-components
+        ...commonScriptSrc,
+        "'unsafe-inline'", // Required: Vite HMR, React inline handlers
         "'unsafe-eval'", // Required: Vite dev server hot module replacement
-        "https://replit.com",
-        "https://www.googletagmanager.com",
-        "https://www.google-analytics.com",
-        "https://emrld.ltd", // Travelpayouts affiliate verification
-        "https://us-assets.i.posthog.com", // PostHog analytics assets
-        "https://us.i.posthog.com", // PostHog analytics
-        "https://static.cloudflareinsights.com", // Cloudflare Web Analytics
       ];
 
   // Helmet - Security headers
@@ -239,11 +239,14 @@ export function setupSecurityMiddleware(app: Express): void {
             "https://*.replit.app",
             "https://api.deepl.com",
             "https://api.openai.com",
+            "https://api.anthropic.com", // Anthropic AI API
             "https://generativelanguage.googleapis.com",
             "https://openrouter.ai",
             "https://images.unsplash.com",
             "https://www.google-analytics.com",
+            "https://api.tiqets.com", // Tiqets ticket API
             "https://emrld.ltd", // Travelpayouts affiliate tracking
+            "https://*.emrld.ltd", // Travelpayouts subdomains
             "https://us.i.posthog.com", // PostHog analytics ingestion
             "https://us-assets.i.posthog.com", // PostHog assets
             "wss:", // WebSocket connections
@@ -252,6 +255,10 @@ export function setupSecurityMiddleware(app: Express): void {
           frameSrc: [
             "'self'",
             "https://www.googletagmanager.com", // GTM preview/debug mode
+            "https://www.youtube.com", // YouTube video embeds
+            "https://www.youtube-nocookie.com", // YouTube privacy-enhanced embeds
+            "https://player.vimeo.com", // Vimeo video embeds
+            "https://www.google.com", // Google Maps embeds
           ],
           frameAncestors: ["'self'"], // Prevents clickjacking - only allow embedding from same origin
           formAction: ["'self'"], // Forms can only submit to same origin

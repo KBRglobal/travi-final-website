@@ -97,37 +97,8 @@ setupMonitoring(app);
 // Apply CORS to all requests (from existing security.ts)
 app.use(corsMiddleware);
 
-// Lighthouse Security Headers Middleware (HSTS, CSP, Trusted Types)
-app.use((req, res, next) => {
-  // HSTS - Force HTTPS (only in production)
-  if (process.env.NODE_ENV === "production") {
-    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
-  }
-
-  // Content Security Policy with Trusted Types
-  // Note: 'unsafe-inline' and 'unsafe-eval' required for Vite HMR in development
-  res.setHeader(
-    "Content-Security-Policy",
-    [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://replit.com https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd https://*.emrld.ltd",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com",
-      "img-src 'self' data: https: http: blob:",
-      "font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:",
-      "connect-src 'self' https://*.replit.dev https://*.replit.app https://www.google-analytics.com https://api.tiqets.com https://api.deepl.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai https://images.unsplash.com https://us.i.posthog.com https://us-assets.i.posthog.com https://emrld.ltd https://*.emrld.ltd wss: ws:",
-      "frame-ancestors 'self'",
-      "form-action 'self'",
-      "base-uri 'self'",
-    ].join("; ")
-  );
-
-  // Additional security headers
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "SAMEORIGIN");
-  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-
-  next();
-});
+// CSP and security headers are handled by setupSecurityMiddleware (Helmet) above.
+// HSTS is handled by Cloudflare — no duplicate header needed here.
 
 // Enable gzip/deflate compression for all responses
 app.use(
