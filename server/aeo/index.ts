@@ -6,9 +6,9 @@
 // Configuration
 export * from "./aeo-config";
 
-// Static file generators (robots.txt, llms.txt)
+// Static file generators (llms.txt) and AI crawler identification
+// Note: robots.txt generation is handled by server/services/sitemap.ts
 export {
-  generateRobotsTxt,
   generateLlmsTxt,
   generateLlmsFullTxt,
   identifyAICrawler,
