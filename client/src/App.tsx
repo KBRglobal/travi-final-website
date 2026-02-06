@@ -12,6 +12,7 @@ import { FavoritesProvider } from "@/hooks/use-favorites";
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
 import { createAliasRoutes } from "@/lib/navigation-aliases";
 import { DESTINATION_IDS } from "@/types/destination";
+import { TranslatedErrorBoundary } from "@/components/error-boundary";
 
 const CookieConsentBanner = lazy(() =>
   import("@/components/cookie-consent-banner")
@@ -265,7 +266,7 @@ function App() {
               </a>
               <Suspense fallback={<PageLoader />}>
                 <main id="main-content" tabIndex={-1}>
-                  {isAdminRoute ? <AdminLayout /> : <PublicRouter />}
+                  {isAdminRoute ? <AdminLayout /> : <TranslatedErrorBoundary><PublicRouter /></TranslatedErrorBoundary>}
                 </main>
               </Suspense>
               <Toaster />
