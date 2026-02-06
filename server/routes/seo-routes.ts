@@ -374,7 +374,10 @@ export function registerSEORoutes(app: Express) {
           return res.status(400).json({ error: "Maximum 10000 URLs per request" });
         }
 
-        const INDEXNOW_KEY = "2f24e2993ac8e17c604fc78ae6550dd6";
+        const INDEXNOW_KEY = process.env.INDEXNOW_API_KEY || "";
+        if (!INDEXNOW_KEY) {
+          return res.status(503).json({ error: "IndexNow API key not configured" });
+        }
         const HOST = "travi.world";
 
         const response = await fetch("https://api.indexnow.org/indexnow", {
