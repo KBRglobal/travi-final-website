@@ -48,15 +48,6 @@ interface DisplayDestination {
 }
 
 const heroAnimationStyles = `
-  @keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  @keyframes rotate-slow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
   .animated-gradient-text {
     background: linear-gradient(135deg, #6443F4 0%, #8B5CF6 30%, #F24294 70%, #6443F4 100%);
     background-size: 300% 300%;
@@ -65,7 +56,6 @@ const heroAnimationStyles = `
     -webkit-text-fill-color: transparent;
     animation: gradient-flow 6s ease infinite;
   }
-  .rotate-slow { animation: rotate-slow 20s linear infinite; }
   .bento-card {
     border-radius: 1.5rem;
     overflow: hidden;

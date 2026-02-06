@@ -33,17 +33,6 @@ export const CURRENT_YEAR = new Date().getFullYear();
 // ANIMATION STYLES
 // ============================================
 export const heroAnimationStyles = `
-  @keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  @keyframes rotate-slow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
   @keyframes blob-pulse-1 {
     0%, 100% { transform: scale(1); opacity: 0.3; }
     50% { transform: scale(1.1); opacity: 0.4; }
@@ -112,10 +101,6 @@ export const heroAnimationStyles = `
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: gradient-flow 6s ease infinite;
-  }
-
-  .rotate-slow {
-    animation: rotate-slow 20s linear infinite;
   }
 `;
 

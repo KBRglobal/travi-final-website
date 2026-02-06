@@ -41,12 +41,6 @@ import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import type { TiqetsAttraction } from "@shared/schema";
 
 const heroAnimationStyles = `
-  @keyframes gradient-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
   .hero-gradient-text {
     background: linear-gradient(
       135deg,
