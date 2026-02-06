@@ -882,7 +882,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // MEDIA LIBRARY (Asset indexing, orphan detection, cleanup)
   // Feature flag: ENABLE_MEDIA_LIBRARY=true
   // ============================================================================
-  app.use("/api/admin/media", mediaLibraryRoutes);
+  app.use("/api/admin/media", requireAuth, mediaLibraryRoutes);
 
   // ============================================================================
   // MEDIA INTELLIGENCE (Performance analysis, recommendations, alt text quality)
@@ -1067,12 +1067,12 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============================================================================
   // TRANSLATION ROUTES (Multi-provider translation: Claude, GPT, DeepL)
   // ============================================================================
-  app.use("/api/translate", translateRouter);
+  app.use("/api/translate", requireAuth, translateRouter);
 
   // ============================================================================
   // CHAT ROUTES (AI Orchestrator-based contextual chat)
   // ============================================================================
-  app.use("/api/chat", chatRouter);
+  app.use("/api/chat", requireAuth, chatRouter);
 
   // ============================================================================
   // DOC/DOCX UPLOAD (Import content directly from Word documents)
