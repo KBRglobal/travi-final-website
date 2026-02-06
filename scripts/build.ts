@@ -259,6 +259,7 @@ async function buildApp() {
       "ws",
       "dotenv",
       "file-type",
+      "@sentry/node",
     ],
     sourcemap: true,
     minify: true,

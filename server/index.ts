@@ -1,25 +1,28 @@
 // Load environment variables from .env file FIRST (before any other imports)
 import "dotenv/config";
 
+// Initialize Sentry early (before other imports) for error tracking
+import { initSentry, Sentry } from "./lib/sentry";
+initSentry();
+
 // =============================================================================
 // CRITICAL: Global Error Handlers - Must be registered BEFORE anything else
 // =============================================================================
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("[CRITICAL] Unhandled Promise Rejection:", reason);
-  console.error("Promise:", promise);
-  // Log to monitoring system if available
-  // Don't exit - let the process continue but alert
+// Pino logger imported early for process-level handlers
+import { createLogger } from "./lib/logger";
+const processLog = createLogger("process");
+
+process.on("unhandledRejection", (reason, _promise) => {
+  processLog.fatal({ reason }, "Unhandled Promise Rejection");
 });
 
 process.on("uncaughtException", error => {
-  console.error("[CRITICAL] Uncaught Exception:", error);
-  // Attempt graceful shutdown
-  console.error("[CRITICAL] Initiating emergency shutdown...");
+  processLog.fatal({ err: error }, "Uncaught Exception — initiating emergency shutdown");
   process.exit(1);
 });
 
 process.on("warning", warning => {
-  console.warn("[WARNING]", warning.name, warning.message);
+  processLog.warn({ name: warning.name }, warning.message);
 });
 
 import express, { type Request, Response, NextFunction } from "express";
@@ -242,15 +245,13 @@ app.use(apiVersioningMiddleware);
 // Feature flagged via ENABLE_FOUNDATION=true (default: OFF)
 bootstrapFoundationMiddleware(app);
 
+const serverLog = createLogger("server");
 export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.info(`[${formattedTime}] [${source}] ${message}`);
+  if (source === "error") {
+    serverLog.error(message);
+  } else {
+    serverLog.info({ source }, message);
+  }
 }
 
 app.use((req, res, next) => {
@@ -452,11 +453,15 @@ async function initializeServer() {
     // Register all routes (heavy operation)
     await registerRoutes(httpServer, app);
 
+    // Sentry error handler (must be before custom error handler)
+    Sentry.setupExpressErrorHandler(app);
+
     // Global error handler middleware
     app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+      Sentry.captureException(err);
       log(`Error: ${err.message || "Unknown error"} - ${req.method} ${req.path}`, "error");
       if (process.env.NODE_ENV === "development") {
-        console.error("[ERROR]", err.stack);
+        serverLog.debug({ stack: err.stack }, "Error stack trace");
       }
 
       if (err.name === "ZodError" && err.errors) {
