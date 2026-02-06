@@ -43,7 +43,7 @@ const getOidcConfig = memoize(
 
 export function getSession() {
   // SECURITY: Session TTL - balance between security and usability
-  // 8 hours for a typical work day; session is refreshed on each request via resave:true
+  // 8 hours for a typical work day
   const sessionTtl = 8 * 60 * 60 * 1000; // 8 hours (reduced from 24 hours for better security)
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
@@ -60,7 +60,7 @@ export function getSession() {
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,

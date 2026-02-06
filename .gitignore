@@ -11,5 +11,6 @@ vite.config.ts.*
 .env.staging
 .env.development
 database-exports/
+backups/
 .octypo-secrets.enc
 uploads/
