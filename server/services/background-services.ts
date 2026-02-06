@@ -278,7 +278,7 @@ async function startDataDecisionsService(config: BackgroundServicesConfig): Prom
         }
         shutdownDataDecisionSystem();
       } catch (error) {
-        console.error(error);
+        log.error("Background service error", error);
       }
     });
 

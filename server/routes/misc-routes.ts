@@ -14,6 +14,7 @@ import { contentRules } from "@shared/schema";
 import { storage } from "../storage";
 import { rateLimiters, requireAuth, requirePermission, checkReadOnlyMode } from "../security";
 import { getStorageManager } from "../services/storage-adapter";
+import { createLogger } from "../lib/logger";
 
 // ============================================================================
 // EMAIL HELPER
@@ -30,6 +31,8 @@ function getResendClient(): Resend | null {
 // ============================================================================
 // REGISTER MISCELLANEOUS ROUTES
 // ============================================================================
+
+const miscLog = createLogger("misc-routes");
 
 export function registerMiscRoutes(app: Express): void {
   // ============================================================================
@@ -337,7 +340,7 @@ export function registerMiscRoutes(app: Express): void {
               `,
             });
           } catch (emailError) {
-            console.error(emailError);
+            miscLog.error({ err: emailError }, "Failed to send lead notification email");
           }
         }
       }

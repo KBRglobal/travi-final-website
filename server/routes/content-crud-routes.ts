@@ -35,6 +35,7 @@ import {
 import { checkOptimisticLock } from "../middleware/optimistic-locking";
 import { requireOwnershipOrPermission } from "../middleware/idor-protection";
 import { logAuditEvent } from "../utils/audit-logger";
+import { createLogger } from "../lib/logger";
 import { sanitizeContentBlocks } from "../lib/sanitize-ai-output";
 import { emitContentPublished, emitContentUpdated } from "../events";
 import { enterprise } from "../enterprise";
@@ -53,6 +54,8 @@ import { parsePagination, createPaginatedResponse } from "../lib/pagination";
 import { validate, idParamSchema } from "../lib/validate";
 import { db } from "../db";
 import { eq, and, ilike, desc, sql, isNull } from "drizzle-orm";
+
+const crudLog = createLogger("content-crud");
 
 // ============================================================================
 // VALIDATION SCHEMAS
@@ -969,11 +972,11 @@ export function registerContentCrudRoutes(app: Express): void {
                   });
                 }
               } catch (err) {
-                console.error(err);
+                crudLog.error({ err }, "Translation save failed");
               }
             }
           })
-          .catch(console.error);
+          .catch((err: unknown) => crudLog.error({ err }, "Translation batch failed"));
 
         res.json({
           message: "Translation started",

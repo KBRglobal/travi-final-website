@@ -21,6 +21,9 @@ import {
 } from "../security/password-policy";
 import { logSecurityEventFromRequest, SecurityEventType } from "../security/audit-logger";
 import { logAuditEvent } from "../utils/audit-logger";
+import { createLogger } from "../lib/logger";
+
+const userLog = createLogger("user-routes");
 
 export function registerUserRoutes(app: Express): void {
   // =====================
@@ -348,7 +351,7 @@ export function registerUserRoutes(app: Express): void {
               deletedCount++;
             }
           } catch (err) {
-            console.error(err);
+            userLog.error({ err }, "Bulk delete user failed");
           }
         }
 

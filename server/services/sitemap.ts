@@ -2,6 +2,9 @@ import { SUPPORTED_LOCALES, type Locale, tiqetsAttractions } from "@shared/schem
 import { storage } from "../storage";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
+import { createLogger } from "../lib/logger";
+
+const sitemapLog = createLogger("sitemap");
 
 const BASE_URL = "https://travi.world";
 
@@ -261,7 +264,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         });
       }
     } catch (error) {
-      console.error(error);
+      sitemapLog.error({ err: error }, "Sitemap generation error");
     }
   }
 
@@ -336,7 +339,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         }
       }
     } catch (error) {
-      console.error(error);
+      sitemapLog.error({ err: error }, "Sitemap generation error");
     }
   }
 

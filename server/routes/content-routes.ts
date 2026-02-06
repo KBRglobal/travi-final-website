@@ -139,7 +139,7 @@ async function logAuditEvent(
       userAgent: req.headers["user-agent"] || null,
     });
   } catch (error) {
-    console.error(error);
+    log.error("View tracking failed", error);
   }
 }
 
