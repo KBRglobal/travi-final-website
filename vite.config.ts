@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import viteCompression from "vite-plugin-compression";
 
 export default defineConfig({
   plugins: [
@@ -13,6 +14,8 @@ export default defineConfig({
           await import("@replit/vite-plugin-dev-banner").then(m => m.devBanner()),
         ]
       : []),
+    viteCompression({ algorithm: "gzip" }),
+    viteCompression({ algorithm: "brotliCompress" }),
   ],
   resolve: {
     alias: {
