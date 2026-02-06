@@ -200,7 +200,7 @@ export function SplitHero({
       >
         <div
           className="w-full h-full rounded-full border-[40px] border-transparent"
-          style={{ borderTopColor: "#6443F4", borderRightColor: "#F24294" }}
+          style={{ borderTopColor: "hsl(var(--travi-purple))", borderRightColor: "#F24294" }}
         />
       </div>
 
@@ -209,7 +209,7 @@ export function SplitHero({
         <div className="flex-1 max-w-xl text-center lg:text-left">
           <div className="mb-6">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-travi-purple" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {t("home.hero.badge", { count: siteStats?.destinations || 17 })}
               </span>
@@ -224,7 +224,7 @@ export function SplitHero({
               <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                 {t("home.hero.headlinePart2")}
               </span>
-              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
+              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-travi-purple via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
             </span>
           </h1>
 
@@ -285,7 +285,7 @@ export function SplitHero({
           <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
             <Link href={localePath("/destinations")}>
               <Button
-                className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
+                className="rounded-full bg-gradient-to-r from-travi-purple to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                 aria-describedby="hero-description"
               >
                 {t("home.cta.exploreDestinations")}
@@ -318,7 +318,7 @@ export function SplitHero({
                 className={cn(
                   "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
                   currentIndex === i
-                    ? "w-8 bg-gradient-to-r from-[#6443F4] to-[#8B5CF6]"
+                    ? "w-8 bg-gradient-to-r from-travi-purple to-[#8B5CF6]"
                     : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
                 )}
               />
@@ -329,7 +329,7 @@ export function SplitHero({
         {/* Right Image */}
         <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
           <div
-            className="absolute -inset-4 bg-gradient-to-r from-[#6443F4]/20 via-[#F24294]/10 to-[#6443F4]/20 rounded-[2rem] blur-xl opacity-60"
+            className="absolute -inset-4 bg-gradient-to-r from-travi-purple/20 via-[#F24294]/10 to-travi-purple/20 rounded-[2rem] blur-xl opacity-60"
             aria-hidden="true"
           />
 
@@ -375,7 +375,7 @@ export function SplitHero({
             >
               <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-500/30">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-travi-purple to-[#8B5CF6] flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-500/30">
                     <MapPin className="w-5 h-5 text-white" aria-hidden="true" />
                   </div>
                   <div>
@@ -389,12 +389,12 @@ export function SplitHero({
             </div>
 
             {/* Popular badge */}
-            <div className="absolute top-6 right-6 inline-flex items-center gap-2 bg-white/95 dark:bg-slate-800 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-purple-500/10 border border-[#6443F4]/20 float-badge">
+            <div className="absolute top-6 right-6 inline-flex items-center gap-2 bg-white/95 dark:bg-slate-800 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-purple-500/10 border border-travi-purple/20 float-badge">
               <div className="relative flex items-center justify-center">
-                <span className="absolute w-2.5 h-2.5 rounded-full bg-[#6443F4] animate-ping opacity-75" />
-                <span className="relative w-2 h-2 rounded-full bg-[#6443F4]" />
+                <span className="absolute w-2.5 h-2.5 rounded-full bg-travi-purple animate-ping opacity-75" />
+                <span className="relative w-2 h-2 rounded-full bg-travi-purple" />
               </div>
-              <span className="text-xs font-semibold text-[#6443F4]">
+              <span className="text-xs font-semibold text-travi-purple">
                 {t("home.popular", "Popular")}
               </span>
             </div>

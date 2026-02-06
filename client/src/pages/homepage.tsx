@@ -175,7 +175,7 @@ export default function Homepage() {
                 </div>
                 <Link
                   href={localePath("/destinations")}
-                  className="hidden sm:inline-flex items-center gap-2 text-[#6443F4] font-semibold hover:gap-3 transition-all"
+                  className="hidden sm:inline-flex items-center gap-2 text-travi-purple font-semibold hover:gap-3 transition-all"
                   title="View all travel destinations"
                 >
                   {t("home.destinationsSection.viewAll", "View All")}{" "}
@@ -245,7 +245,7 @@ export default function Homepage() {
 
               <div className="text-center mt-8 sm:hidden">
                 <Button
-                  className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white gap-2"
+                  className="rounded-full bg-travi-purple hover:bg-travi-purple/90 text-white gap-2"
                   asChild
                 >
                   <Link href={localePath("/destinations")} title="Browse all travel destinations">

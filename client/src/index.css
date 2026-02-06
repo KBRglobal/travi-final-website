@@ -377,11 +377,11 @@
 
 /* TRAVI Navigation Active State */
 .nav-item-active {
-  @apply bg-[#6443F4]/10 dark:bg-[#6443F4]/20;
+  @apply bg-travi-purple/10 dark:bg-travi-purple/20;
 }
 
 .nav-item-active-icon {
-  color: #6443f4;
+  color: hsl(var(--travi-purple));
 }
 
 /* TRAVI Brand Gradients - DISABLED (NO GRADIENTS except SubtleSkyBackground)
@@ -740,4 +740,48 @@ textarea:focus-visible,
 
 .dark .maplibregl-ctrl-group {
   background: hsl(var(--background)) !important;
+}
+
+/* =============================================================================
+   Shared Animations
+   Keyframes used across multiple page/component hero sections.
+   ============================================================================= */
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes rotate-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes morph {
+  0%,
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+}
+
+.rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+.morph-blob {
+  animation: morph 8s ease-in-out infinite;
 }

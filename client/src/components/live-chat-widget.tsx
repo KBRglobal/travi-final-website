@@ -128,7 +128,7 @@ export function LiveChatWidget({
           role="region"
           aria-label="Live chat"
         >
-          <div className="flex items-center justify-between gap-2 p-3 border-b bg-gradient-to-r from-[#6443F4] to-[#6443F4] rounded-t-lg">
+          <div className="flex items-center justify-between gap-2 p-3 border-b bg-travi-purple rounded-t-lg">
             <div className="flex items-center gap-2">
               <img
                 src="/logos/Mascot_for_Dark_Background.png"
@@ -179,7 +179,7 @@ export function LiveChatWidget({
                     className={cn(
                       "max-w-[85%] p-2 rounded-lg text-sm",
                       msg.senderType === "visitor"
-                        ? "ml-auto bg-gradient-to-r from-[#6443F4] to-[#6443F4] text-white"
+                        ? "ml-auto bg-travi-purple text-white"
                         : "bg-muted"
                     )}
                     data-testid={`message-${msg.id}`}
@@ -223,7 +223,7 @@ export function LiveChatWidget({
       ) : showFloatingButton ? (
         <Button
           size="icon"
-          className="w-14 h-14 rounded-full shadow-lg bg-[#6443F4] hover:bg-[#5339D9] ml-auto"
+          className="w-14 h-14 rounded-full shadow-lg bg-travi-purple hover:bg-travi-purple/90 ml-auto"
           onClick={() => setIsOpen(true)}
           aria-label="Open live chat"
           aria-expanded={isOpen}

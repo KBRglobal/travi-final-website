@@ -45,8 +45,8 @@ export function CategoriesSection() {
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4">
-            <Compass className="w-4 h-4 text-[#6443F4]" aria-hidden="true" />
-            <span className="text-xs font-semibold tracking-wide text-[#6443F4] uppercase">
+            <Compass className="w-4 h-4 text-travi-purple" aria-hidden="true" />
+            <span className="text-xs font-semibold tracking-wide text-travi-purple uppercase">
               {t("home.categoriesSection.badge", "Browse Travel Categories")}
             </span>
           </div>

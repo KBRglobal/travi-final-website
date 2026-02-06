@@ -138,10 +138,10 @@ export function PublicNav({
         }`}
         style={{
           background: scrolled
-            ? "rgba(100, 67, 244, 0.95)"
+            ? "hsla(var(--travi-purple) / 0.95)"
             : isTransparent
               ? "transparent"
-              : "#6443F4",
+              : "hsl(var(--travi-purple))",
         }}
         data-testid="nav-header"
         aria-label={t("nav.mainNavigation")}
@@ -218,7 +218,7 @@ export function PublicNav({
                   side={isRTL ? "left" : "right"}
                   className="w-[300px] sm:w-[350px] border-0"
                   style={{
-                    background: "#6443F4",
+                    background: "hsl(var(--travi-purple))",
                   }}
                 >
                   <SheetHeader className="flex flex-row items-center justify-between pb-4 border-b border-white/10">
