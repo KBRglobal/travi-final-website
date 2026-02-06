@@ -28,6 +28,13 @@ export function SplitHero({
   const { t } = useTranslation();
   const { localePath } = useLocale();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    setPrefersReducedMotion(
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
+    );
+  }, []);
   const dest = HERO_DESTINATIONS[currentIndex];
 
   useEffect(() => {
@@ -341,10 +348,10 @@ export function SplitHero({
               <motion.div
                 key={currentIndex}
                 className="absolute inset-0"
-                initial={{ opacity: 0, scale: 1.1 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.1 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.05 }}
-                transition={{ duration: 0.7 }}
+                exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 1.05 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
               >
                 <img
                   src={dest.image}
