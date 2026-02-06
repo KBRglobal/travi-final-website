@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { storage } from "./storage";
 import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
+import { cache } from "./cache";
 
 // ============================================================================
 // AUTH USER TYPES
@@ -207,30 +208,30 @@ export const safeMode = {
 };
 
 // ============================================================================
-// RATE LIMITING (In-memory for performance, Redis recommended for production)
+// RATE LIMITING — Redis-backed via Upstash, with in-memory fallback
 // ============================================================================
 // Architecture:
-// - Short-term limits: In-memory (acceptable data loss on restart)
+// - All rate limit counters are stored in Redis (Upstash) when available
+// - Falls back to in-memory Map when Redis is not configured (dev)
 // - Long-term AI limits: Database-backed with cache (see aiUsageCache)
 // - IP blocking: In-memory transient (see suspiciousIps)
-// For multi-instance/distributed deployments, replace with Redis.
 // ============================================================================
 interface RateLimitEntry {
   count: number;
   resetTime: number;
 }
 
-// In-memory rate limit store - use Redis for distributed deployments
-const rateLimitStore = new Map<string, RateLimitEntry>();
+// In-memory fallback store for when Redis is unavailable
+const rateLimitFallback = new Map<string, RateLimitEntry>();
 
-// Clean up expired entries every 5 minutes - only when not in publishing mode
+// Clean up expired fallback entries every 5 minutes
 if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEPLOYMENT !== "1") {
   setInterval(
     () => {
       const now = Date.now();
-      rateLimitStore.forEach((entry, key) => {
+      rateLimitFallback.forEach((entry, key) => {
         if (entry.resetTime < now) {
-          rateLimitStore.delete(key);
+          rateLimitFallback.delete(key);
         }
       });
     },
@@ -246,8 +247,9 @@ interface RateLimitConfig {
 
 export function createRateLimiter(config: RateLimitConfig) {
   const { windowMs, maxRequests, keyPrefix = "" } = config;
+  const windowSec = Math.ceil(windowMs / 1000);
 
-  return (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     // Skip rate limiting for approved bots (AI crawlers, search engines)
     if ((req as any).isApprovedBot || isApprovedBot(req.headers["user-agent"])) {
       return next();
@@ -255,13 +257,33 @@ export function createRateLimiter(config: RateLimitConfig) {
 
     const ip = req.ip || req.socket.remoteAddress || "unknown";
     const userId = getUserId(req) || "anonymous";
-    const key = `${keyPrefix}:${ip}:${userId}`;
+    const key = `rl:${keyPrefix}:${ip}:${userId}`;
 
+    try {
+      if (cache.usingRedis) {
+        // Redis path: atomic increment with TTL
+        const count = await cache.incr(key, windowSec);
+        if (count > maxRequests) {
+          const ttl = await cache.ttl(key);
+          const retryAfter = ttl > 0 ? ttl : windowSec;
+          res.setHeader("Retry-After", retryAfter);
+          return res.status(429).json({
+            error: "Too many requests",
+            retryAfter,
+          });
+        }
+        return next();
+      }
+    } catch {
+      // Redis failed — fall through to in-memory
+    }
+
+    // In-memory fallback
     const now = Date.now();
-    const entry = rateLimitStore.get(key);
+    const entry = rateLimitFallback.get(key);
 
     if (!entry || entry.resetTime < now) {
-      rateLimitStore.set(key, { count: 1, resetTime: now + windowMs });
+      rateLimitFallback.set(key, { count: 1, resetTime: now + windowMs });
       return next();
     }
 

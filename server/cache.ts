@@ -74,11 +74,25 @@ class MemoryCache {
     return keys.length;
   }
 
-  async incr(key: string): Promise<number> {
-    const current = (await this.get<number>(key)) || 0;
-    const newValue = current + 1;
-    await this.set(key, newValue, CACHE_TTL.day);
-    return newValue;
+  async incr(key: string, ttlSeconds?: number): Promise<number> {
+    const entry = this.cache.get(key);
+    const now = Date.now();
+    if (entry && now <= entry.expiresAt) {
+      const newValue = (entry.value as number) + 1;
+      entry.value = newValue;
+      return newValue;
+    }
+    // New key — set with TTL
+    const ttl = ttlSeconds ?? CACHE_TTL.day;
+    await this.set(key, 1, ttl);
+    return 1;
+  }
+
+  async ttl(key: string): Promise<number> {
+    const entry = this.cache.get(key);
+    if (!entry) return -2;
+    const remaining = Math.ceil((entry.expiresAt - Date.now()) / 1000);
+    return remaining > 0 ? remaining : -2;
   }
 
   private cleanup() {
@@ -190,16 +204,36 @@ class CacheService {
   }
 
   /**
-   * Increment a counter
+   * Increment a counter. When ttlSeconds is provided the key's expiry is set
+   * only on the first increment (count === 1) so the window stays fixed.
    */
-  async incr(key: string): Promise<number> {
+  async incr(key: string, ttlSeconds?: number): Promise<number> {
     try {
       if (this.redis && this.isRedisAvailable) {
-        return await this.redis.incr(key);
+        const count = await this.redis.incr(key);
+        if (count === 1 && ttlSeconds) {
+          await this.redis.expire(key, ttlSeconds);
+        }
+        return count;
       }
-      return await this.memory.incr(key);
+      return await this.memory.incr(key, ttlSeconds);
     } catch (error) {
-      return await this.memory.incr(key);
+      return await this.memory.incr(key, ttlSeconds);
+    }
+  }
+
+  /**
+   * Get remaining TTL in seconds for a key.
+   * Returns -2 if key does not exist, -1 if no expiry is set.
+   */
+  async ttl(key: string): Promise<number> {
+    try {
+      if (this.redis && this.isRedisAvailable) {
+        return await this.redis.ttl(key);
+      }
+      return await this.memory.ttl(key);
+    } catch (error) {
+      return await this.memory.ttl(key);
     }
   }
 

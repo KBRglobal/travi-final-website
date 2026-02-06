@@ -441,7 +441,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
-  app.use("/uploads", (await import("express")).default.static(uploadsDir));
+  app.use(
+    "/uploads",
+    (await import("./middleware/cache-headers")).uploadsCacheHeaders,
+    (await import("express")).default.static(uploadsDir)
+  );
 
   // Phase 1 Foundation: Register domain routes (feature flagged, default OFF)
   bootstrapFoundationDomains(app);

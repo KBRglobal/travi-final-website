@@ -33,6 +33,7 @@ import { consoleLogger } from "./console-logger";
 import { ssrMiddleware } from "./lib/ssr-middleware";
 import { setupMonitoring } from "./monitoring";
 import { apiVersioningMiddleware } from "./middleware/api-versioning";
+import { cdnCacheHeaders } from "./middleware/cache-headers";
 // [REMOVED] Octopus imports - migrated to Octypo v2
 import { initializeContentSubscribers } from "./events";
 import { bootstrapFoundationMiddleware, initializeFoundationEvents } from "./foundation";
@@ -99,6 +100,9 @@ app.use(corsMiddleware);
 
 // CSP and security headers are handled by setupSecurityMiddleware (Helmet) above.
 // HSTS is handled by Cloudflare — no duplicate header needed here.
+
+// CDN-ready cache headers (Vary: Accept-Encoding for static assets)
+app.use(cdnCacheHeaders);
 
 // Enable gzip/deflate compression for all responses
 app.use(
