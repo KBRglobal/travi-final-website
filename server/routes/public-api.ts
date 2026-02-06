@@ -22,6 +22,7 @@ import {
 } from "@shared/schema";
 import { makeRenderSafeHomepageConfig } from "../lib/homepage-fallbacks";
 import { getTranslations, getBulkTranslations } from "../cms-translations";
+import { parsePagination, paginationMeta } from "../lib/pagination";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -1040,11 +1041,7 @@ export function registerPublicApiRoutes(app: Express): void {
   router.get("/attractions/:city", async (req: Request, res: Response) => {
     try {
       const { city } = req.params;
-      const { page = "1", pageSize = "20" } = req.query;
-
-      const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-      const pageSizeNum = Math.min(50, Math.max(1, parseInt(String(pageSize), 10) || 20));
-      const offset = (pageNum - 1) * pageSizeNum;
+      const pg = parsePagination(req, { maxPageSize: 50 });
 
       const countResult = await db
         .select({ count: sql<number>`count(*)::int` })
@@ -1054,7 +1051,6 @@ export function registerPublicApiRoutes(app: Express): void {
         );
 
       const total = countResult[0]?.count || 0;
-      const totalPages = Math.ceil(total / pageSizeNum);
 
       const attractions = await db
         .select()
@@ -1062,17 +1058,14 @@ export function registerPublicApiRoutes(app: Express): void {
         .where(
           and(eq(tiqetsAttractions.status, "published"), ilike(tiqetsAttractions.cityName, city))
         )
-        .limit(pageSizeNum)
-        .offset(offset);
+        .limit(pg.pageSize)
+        .offset(pg.offset);
 
       res.json({
         attractions,
         city,
         affiliateLink: TIQETS_AFFILIATE_LINK,
-        total,
-        page: pageNum,
-        pageSize: pageSizeNum,
-        totalPages,
+        pagination: paginationMeta(total, pg),
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch attractions" });
@@ -1083,11 +1076,8 @@ export function registerPublicApiRoutes(app: Express): void {
   // Original: /api/public/attractions (line ~3615)
   router.get("/attractions", async (req: Request, res: Response) => {
     try {
-      const { page = "1", pageSize = "24", city, q } = req.query;
-
-      const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-      const pageSizeNum = Math.min(100, Math.max(1, parseInt(String(pageSize), 10) || 24));
-      const offset = (pageNum - 1) * pageSizeNum;
+      const { city, q } = req.query;
+      const pg = parsePagination(req, { defaultPageSize: 24 });
 
       const conditions = [eq(tiqetsAttractions.status, "published")];
 
@@ -1115,7 +1105,6 @@ export function registerPublicApiRoutes(app: Express): void {
         .where(and(...conditions));
 
       const total = countResult[0]?.count || 0;
-      const totalPages = Math.ceil(total / pageSizeNum);
 
       const attractions = await db
         .select({
@@ -1136,8 +1125,8 @@ export function registerPublicApiRoutes(app: Express): void {
         .from(tiqetsAttractions)
         .where(and(...conditions))
         .orderBy(desc(tiqetsAttractions.qualityScore))
-        .limit(pageSizeNum)
-        .offset(offset);
+        .limit(pg.pageSize)
+        .offset(pg.offset);
 
       const transformedAttractions = attractions.map(attr => {
         const images = attr.images as any;
@@ -1186,10 +1175,7 @@ export function registerPublicApiRoutes(app: Express): void {
       res.json({
         attractions: transformedAttractions,
         affiliateLink: TIQETS_AFFILIATE_LINK,
-        total,
-        page: pageNum,
-        pageSize: pageSizeNum,
-        totalPages,
+        pagination: paginationMeta(total, pg),
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch attractions" });

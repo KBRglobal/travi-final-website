@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { db } from "../db";
 import { update9987Guides, destinations } from "@shared/schema";
 import { eq, desc, ilike, and, isNotNull, sql } from "drizzle-orm";
+import { parsePagination, paginationMeta } from "../lib/pagination";
 import {
   importWikivoyageGuide,
   runFullWikivoyageIngestion,
@@ -28,16 +29,15 @@ interface GuideSections {
 router.get("/api/public/guides", async (req: Request, res: Response) => {
   try {
     const locale = (req.query.locale as string) || "en";
-    const limit = parseInt(req.query.limit as string) || 20;
-    const offset = parseInt(req.query.offset as string) || 0;
+    const pg = parsePagination(req);
 
     const guides = await db
       .select()
       .from(update9987Guides)
       .where(eq(update9987Guides.status, "published"))
       .orderBy(desc(update9987Guides.publishedAt))
-      .limit(limit)
-      .offset(offset);
+      .limit(pg.pageSize)
+      .offset(pg.offset);
 
     const formattedGuides = guides.map(guide => {
       const sections = guide.sections as GuideSections | null;
@@ -56,17 +56,17 @@ router.get("/api/public/guides", async (req: Request, res: Response) => {
       };
     });
 
-    const total = await db
+    const countResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(update9987Guides)
       .where(eq(update9987Guides.status, "published"));
 
+    const total = Number(countResult[0]?.count || 0);
+
     res.json({
       guides: formattedGuides,
-      total: Number(total[0]?.count || 0),
+      pagination: paginationMeta(total, pg),
       locale,
-      limit,
-      offset,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch guides" });
