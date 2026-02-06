@@ -1,4 +1,4 @@
-import { useEffect, Suspense, lazy } from "react";
+import { useMemo, useEffect, Suspense, lazy } from "react";
 import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -122,7 +122,8 @@ const publicRoutes = [
   ...createAliasRoutes(),
 ];
 
-const LOCALE_PREFIXES = [
+// Set for O(1) locale prefix lookups
+const LOCALE_SET = new Set([
   "en",
   "ar",
   "hi",
@@ -151,11 +152,37 @@ const LOCALE_PREFIXES = [
   "cs",
   "el",
   "uk",
-];
+]);
+
+/**
+ * Strip a leading locale prefix from the path for route matching.
+ * e.g. "/ar/destinations/dubai" -> "/destinations/dubai"
+ *      "/destinations/dubai"    -> "/destinations/dubai"
+ *      "/ar"                    -> "/"
+ */
+function stripLocalePrefix(path: string): string {
+  const segments = path.split("/").filter(Boolean);
+  if (segments.length > 0 && LOCALE_SET.has(segments[0])) {
+    const rest = "/" + segments.slice(1).join("/");
+    return rest === "/" ? "/" : rest;
+  }
+  return path;
+}
 
 function PublicRouter() {
+  const [location] = useLocation();
+
+  // Detect whether the current path starts with a known locale prefix.
+  const firstSegment = location.split("/").filter(Boolean)[0] || "";
+  const hasLocalePrefix = LOCALE_SET.has(firstSegment);
+
+  // Strip locale prefix so the Switch only needs ~24 route patterns instead of 672+.
+  // Components inside the matched Route still see the full URL via useLocation().
+  const matchLocation = useMemo(() => stripLocalePrefix(location), [location]);
+
   return (
-    <Switch>
+    <Switch location={matchLocation}>
+      {/* Destination sub-page redirects */}
       <Route path="/destinations/:city/attractions">
         {params => <CityAttractionsRedirect params={params} />}
       </Route>
@@ -172,45 +199,37 @@ function PublicRouter() {
         {params => <DestinationFaqRedirect params={params} />}
       </Route>
 
+      {/* City shortcut redirects */}
       {DESTINATION_IDS.map(city => (
         <Route key={`city-attractions-${city}`} path={`/${city}/attractions`}>
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
       ))}
-
       {DESTINATION_IDS.map(city => (
         <Route key={`guides-city-${city}`} path={`/guides/${city}`}>
           {() => <Redirect to={`/guides/${city}-travel-guide`} />}
         </Route>
       ))}
-
       {DESTINATION_IDS.map(city => (
         <Route key={`attractions-city-redirect-${city}`} path={`/attractions/${city}`}>
           {() => <Redirect to={`/attractions/list/${city}`} />}
         </Route>
       ))}
 
-      <Route path="/en/:city/attractions/:slug" component={TraviLocationPage} />
-      <Route path="/en/:city/restaurants/:slug" component={TraviLocationPage} />
-
-      {LOCALE_PREFIXES.map(locale => (
-        <Route key={`${locale}-home`} path={`/${locale}`} component={Homepage} />
-      ))}
-
-      {LOCALE_PREFIXES.flatMap(locale =>
-        publicRoutes.map(route => (
-          <Route
-            key={`${locale}-${route.path}`}
-            path={`/${locale}${route.path}`}
-            component={route.component}
-          />
-        ))
+      {/* Travi location pages - only under /en prefix (preserved from original routing) */}
+      {hasLocalePrefix && firstSegment === "en" && (
+        <>
+          <Route path="/:city/attractions/:slug" component={TraviLocationPage} />
+          <Route path="/:city/restaurants/:slug" component={TraviLocationPage} />
+        </>
       )}
 
+      {/* Public routes - defined once, match with or without locale prefix */}
       {publicRoutes.map(route => (
         <Route key={route.path} path={route.path} component={route.component} />
       ))}
 
+      {/* Legacy city-name redirects */}
       <Route path="/bangkok">{() => <Redirect to="/destinations/bangkok" />}</Route>
       <Route path="/paris">{() => <Redirect to="/destinations/paris" />}</Route>
       <Route path="/istanbul">{() => <Redirect to="/destinations/istanbul" />}</Route>
@@ -218,8 +237,8 @@ function PublicRouter() {
       <Route path="/new-york">{() => <Redirect to="/destinations/new-york" />}</Route>
       <Route path="/singapore">{() => <Redirect to="/destinations/singapore" />}</Route>
 
-      <Route path="/">{() => <Redirect to="/en" />}</Route>
-      <Route path="/en" component={Homepage} />
+      {/* Root path: show Homepage if locale prefix present (e.g. /ar), redirect to /en if bare / */}
+      <Route path="/">{() => (hasLocalePrefix ? <Homepage /> : <Redirect to="/en" />)}</Route>
       <Route component={NotFound} />
     </Switch>
   );
