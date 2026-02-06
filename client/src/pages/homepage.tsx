@@ -13,7 +13,6 @@ import {
   FAQSection,
   LoadingScreen,
   TraviMascotHelper,
-  HomepageHeader,
   AnimatedSection,
   NewsletterSection,
   EditorialHero,
@@ -21,6 +20,7 @@ import {
   EditorialNewsGrid,
   TrendingSection,
 } from "@/components/homepage";
+import { PublicNav } from "@/components/public-nav";
 import {
   SITE_URL,
   SITE_NAME,
@@ -42,7 +42,6 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function Homepage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [location] = useLocation();
   const { t } = useTranslation();
   const { locale, isRTL, localePath } = useLocale();
@@ -58,12 +57,6 @@ export default function Homepage() {
   }>({
     queryKey: ["/api/public/stats"],
   });
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (location.startsWith("/sv/") || location.startsWith("/bn/")) {
@@ -131,7 +124,7 @@ export default function Homepage() {
       <SubtleSkyBackground />
 
       <div className="min-h-screen relative">
-        <HomepageHeader isScrolled={isScrolled} />
+        <PublicNav />
 
         <div>
           {/* HERO */}
