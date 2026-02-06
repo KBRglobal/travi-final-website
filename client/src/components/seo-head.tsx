@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
@@ -145,32 +144,18 @@ interface StructuredDataProps {
 export function StructuredData({ type, data }: StructuredDataProps) {
   const { locale } = useLocale();
 
-  useEffect(() => {
-    const scriptId = `structured-data-${type}`;
-    let script = document.getElementById(scriptId) as HTMLScriptElement;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": type,
+    inLanguage: locale,
+    ...data,
+  };
 
-    if (!script) {
-      script = document.createElement("script");
-      script.id = scriptId;
-      script.type = "application/ld+json";
-      document.head.appendChild(script);
-    }
-
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": type,
-      inLanguage: locale,
-      ...data,
-    };
-
-    script.textContent = JSON.stringify(structuredData);
-
-    return () => {
-      script.remove();
-    };
-  }, [type, data, locale]);
-
-  return null;
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+    </Helmet>
+  );
 }
 
 // Pre-made structured data generators
@@ -391,31 +376,17 @@ interface ImageStructuredDataProps {
 export function ImageStructuredData({ image, pageUrl }: ImageStructuredDataProps) {
   const { locale } = useLocale();
 
-  useEffect(() => {
-    const scriptId = `structured-data-image-${image.contentUrl.replace(/[^a-z0-9]/gi, "")}`;
-    let script = document.getElementById(scriptId) as HTMLScriptElement;
+  const structuredData = {
+    "@context": "https://schema.org",
+    inLanguage: locale,
+    ...generateImageObjectStructuredData(image, pageUrl),
+  };
 
-    if (!script) {
-      script = document.createElement("script");
-      script.id = scriptId;
-      script.type = "application/ld+json";
-      document.head.appendChild(script);
-    }
-
-    const structuredData = {
-      "@context": "https://schema.org",
-      inLanguage: locale,
-      ...generateImageObjectStructuredData(image, pageUrl),
-    };
-
-    script.textContent = JSON.stringify(structuredData);
-
-    return () => {
-      script.remove();
-    };
-  }, [image, pageUrl, locale]);
-
-  return null;
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+    </Helmet>
+  );
 }
 
 /**
@@ -429,30 +400,16 @@ interface GalleryStructuredDataProps {
 export function GalleryStructuredData({ images, pageUrl }: GalleryStructuredDataProps) {
   const { locale } = useLocale();
 
-  useEffect(() => {
-    const scriptId = `structured-data-gallery`;
-    let script = document.getElementById(scriptId) as HTMLScriptElement;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    inLanguage: locale,
+    image: generateGalleryStructuredData(images, pageUrl),
+  };
 
-    if (!script) {
-      script = document.createElement("script");
-      script.id = scriptId;
-      script.type = "application/ld+json";
-      document.head.appendChild(script);
-    }
-
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "ImageGallery",
-      inLanguage: locale,
-      image: generateGalleryStructuredData(images, pageUrl),
-    };
-
-    script.textContent = JSON.stringify(structuredData);
-
-    return () => {
-      script.remove();
-    };
-  }, [images, pageUrl, locale]);
-
-  return null;
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+    </Helmet>
+  );
 }
