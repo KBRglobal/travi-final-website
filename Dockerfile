@@ -7,7 +7,7 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++ vips-dev
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts && npm rebuild bcrypt sharp
 
 COPY . .
 RUN npm run build
@@ -24,7 +24,7 @@ ENV PORT=5000
 RUN apk add --no-cache vips
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts && npm rebuild bcrypt
 
 COPY --from=builder /app/dist ./dist
 
