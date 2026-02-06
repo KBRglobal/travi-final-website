@@ -430,40 +430,40 @@
 
 ### Phase 2: STABILITY (Week 2-3)
 
-| Task                                                        | Assignee         | Dependencies | Status |
-| ----------------------------------------------------------- | ---------------- | ------------ | ------ |
-| 2.1 Lazy-load i18n language files (dynamic imports)         | Frontend         | None         | TODO   |
-| 2.2 Fix route explosion — locale-aware router wrapper       | Frontend         | None         | TODO   |
-| 2.3 Decompose homepage.tsx into modules                     | Frontend + UX/UI | None         | TODO   |
-| 2.4 Remove duplicate `<main>` element from homepage         | UX/UI            | 2.3          | TODO   |
-| 2.5 Fix ErrorBoundary i18n (wrap with functional component) | UX/UI            | None         | TODO   |
-| 2.6 Translate hardcoded English strings in homepage         | UX/UI            | 2.3          | TODO   |
-| 2.7 Implement real DB backup (pg_dump)                      | DevOps + Backend | None         | TODO   |
-| 2.8 Activate monitoring (replace stub)                      | DevOps + Backend | None         | TODO   |
-| 2.9 Unify error response format to RFC 7807                 | API + Backend    | None         | TODO   |
-| 2.10 Standardize pagination pattern                         | API + Backend    | None         | TODO   |
-| 2.11 Set `resave: false` in session config                  | Security         | None         | TODO   |
-| 2.12 Remove `iframe` from DOMPurify allowed tags            | Security         | None         | TODO   |
+| Task                                                        | Assignee         | Dependencies | Status  |
+| ----------------------------------------------------------- | ---------------- | ------------ | ------- |
+| 2.1 Lazy-load i18n language files (dynamic imports)         | Frontend         | None         | ✅ DONE |
+| 2.2 Fix route explosion — locale-aware router wrapper       | Frontend         | None         | ✅ DONE |
+| 2.3 Decompose homepage.tsx into modules                     | Frontend + UX/UI | None         | ✅ DONE |
+| 2.4 Remove duplicate `<main>` element from homepage         | UX/UI            | 2.3          | ✅ DONE |
+| 2.5 Fix ErrorBoundary i18n (wrap with functional component) | UX/UI            | None         | ✅ DONE |
+| 2.6 Translate hardcoded English strings in homepage         | UX/UI            | 2.3          | ✅ DONE |
+| 2.7 Implement real DB backup (pg_dump)                      | DevOps + Backend | None         | ✅ DONE |
+| 2.8 Activate monitoring (replace stub)                      | DevOps + Backend | None         | ✅ DONE |
+| 2.9 Unify error response format to RFC 7807                 | API + Backend    | None         | ✅ DONE |
+| 2.10 Standardize pagination pattern                         | API + Backend    | None         | ✅ DONE |
+| 2.11 Set `resave: false` in session config                  | Security         | None         | ✅ DONE |
+| 2.12 Remove `iframe` from DOMPurify allowed tags            | Security         | None         | ✅ DONE |
 
 ### Phase 3: QUALITY (Week 3-5)
 
-| Task                                                      | Assignee                 | Dependencies | Status |
-| --------------------------------------------------------- | ------------------------ | ------------ | ------ |
-| 3.1 Add P0 tests: auth routes, sanitize, Zod schemas      | QA                       | None         | TODO   |
-| 3.2 Add integration tests with supertest for content CRUD | QA                       | 2.9          | TODO   |
-| 3.3 Add responsive images (srcset/picture)                | Responsive + Frontend    | None         | TODO   |
-| 3.4 Fix DataTable mobile adaptation                       | Responsive               | None         | TODO   |
-| 3.5 Fix Live Chat widget overflow on 320px                | Responsive               | None         | TODO   |
-| 3.6 Add ARIA roles to cookie consent banner               | UX/UI                    | None         | TODO   |
-| 3.7 Add aria-labels to live chat widget                   | UX/UI                    | None         | TODO   |
-| 3.8 Implement SSR/prerender for SEO                       | SEO + Frontend + Backend | None         | TODO   |
-| 3.9 Fix StructuredData to use Helmet instead of useEffect | SEO + Frontend           | None         | TODO   |
-| 3.10 Add BreadcrumbList JSON-LD to breadcrumbs component  | SEO                      | None         | TODO   |
-| 3.11 Remove duplicate WebSite schema from index.html      | SEO                      | None         | TODO   |
-| 3.12 Enable OpenAPI/Swagger documentation                 | API                      | None         | TODO   |
-| 3.13 Add input validation (Zod) to admin routes           | API + Backend            | None         | TODO   |
-| 3.14 Use design tokens instead of hardcoded `#6443F4`     | UX/UI + Frontend         | None         | TODO   |
-| 3.15 Move shared animations to index.css                  | UX/UI + Frontend         | None         | TODO   |
+| Task                                                      | Assignee                 | Dependencies | Status   |
+| --------------------------------------------------------- | ------------------------ | ------------ | -------- |
+| 3.1 Add P0 tests: auth routes, sanitize, Zod schemas      | QA                       | None         | ✅ DONE  |
+| 3.2 Add integration tests with supertest for content CRUD | QA                       | 2.9          | ✅ DONE  |
+| 3.3 Add responsive images (srcset/picture)                | Responsive + Frontend    | None         | ✅ DONE  |
+| 3.4 Fix DataTable mobile adaptation                       | Responsive               | None         | ✅ DONE  |
+| 3.5 Fix Live Chat widget overflow on 320px                | Responsive               | None         | ✅ DONE  |
+| 3.6 Add ARIA roles to cookie consent banner               | UX/UI                    | None         | ✅ DONE  |
+| 3.7 Add aria-labels to live chat widget                   | UX/UI                    | None         | ✅ DONE  |
+| 3.8 Implement SSR/prerender for SEO                       | SEO + Frontend + Backend | None         | DEFERRED |
+| 3.9 Fix StructuredData to use Helmet instead of useEffect | SEO + Frontend           | None         | ✅ DONE  |
+| 3.10 Add BreadcrumbList JSON-LD to breadcrumbs component  | SEO                      | None         | ✅ DONE  |
+| 3.11 Remove duplicate WebSite schema from index.html      | SEO                      | None         | ✅ DONE  |
+| 3.12 Enable OpenAPI/Swagger documentation                 | API                      | None         | ✅ DONE  |
+| 3.13 Add input validation (Zod) to admin routes           | API + Backend            | None         | ✅ DONE  |
+| 3.14 Use design tokens instead of hardcoded `#6443F4`     | UX/UI + Frontend         | None         | ✅ DONE  |
+| 3.15 Move shared animations to index.css                  | UX/UI + Frontend         | None         | ✅ DONE  |
 
 ### Phase 4: OPTIMIZATION (Week 5-8)
 
@@ -503,11 +503,38 @@
   - 1.6 ✅ `eb3b6c9` Auth middleware on admin routes (API)
   - 1.7 ✅ `808c992` GitHub Actions CI pipeline (DevOps)
   - 1.8 ✅ `88d5f29` Consolidated robots.txt (SEO)
-- [ ] Phase 2: Stability (0/12 tasks)
-- [ ] Phase 3: Quality (0/15 tasks)
+- [x] Phase 2: Stability (12/12 tasks) — COMPLETED
+  - 2.1 ✅ `7e5cba9` Lazy-load i18n language files (Frontend)
+  - 2.2 ✅ `297cf9a` Fix route explosion with locale-aware router (Frontend)
+  - 2.3 ✅ `d36f7a7` Decompose homepage.tsx into modules (Frontend)
+  - 2.4 ✅ `fb8e646` Remove duplicate main element (UX/UI)
+  - 2.5 ✅ `fb7117a` Fix ErrorBoundary i18n wrapper (UX/UI)
+  - 2.6 ✅ `c16efdd` Translate hardcoded English strings (UX/UI)
+  - 2.7 ✅ `b344721` Implement real DB backup with pg_dump (DevOps)
+  - 2.8 ✅ Already implemented — full monitoring system active (Backend)
+  - 2.9 ✅ Already implemented — RFC 7807 error-response.ts (API)
+  - 2.10 ✅ `6d03815` Standardize pagination pattern across API (API)
+  - 2.11 ✅ Already correct — resave:false was already set (Security)
+  - 2.12 ✅ `fab0092` Remove iframe from DOMPurify allowed tags (Security)
+- [x] Phase 3: Quality (14/15 tasks) — COMPLETED (3.8 SSR deferred)
+  - 3.1 ✅ `96f3398` P0 tests: auth, sanitize, Zod (QA)
+  - 3.2 ✅ `7f42629` Integration tests with supertest (QA)
+  - 3.3 ✅ `0c9fad0` Responsive images with lazy loading (Responsive)
+  - 3.4 ✅ Already implemented — DataTable mobile (Responsive)
+  - 3.5 ✅ `d10ca0e` Live Chat widget overflow fix (Responsive)
+  - 3.6 ✅ `6f9969f` ARIA roles cookie consent (UX/UI)
+  - 3.7 ✅ `3ea07b0` aria-labels live chat widget (UX/UI)
+  - 3.8 ⏳ DEFERRED — SSR/prerender (too complex for batch)
+  - 3.9 ✅ `92e14dc` StructuredData with Helmet (SEO)
+  - 3.10 ✅ `56575d7` BreadcrumbList JSON-LD (SEO)
+  - 3.11 ✅ Already in `a736ab2` — duplicate WebSite schema removed (SEO)
+  - 3.12 ✅ `a736ab2` OpenAPI/Swagger documentation (API)
+  - 3.13 ✅ Already in `0c9fad0` — Zod validation admin routes (API)
+  - 3.14 ✅ `3cf58d2` Design tokens replace hardcoded #6443F4 (UX/UI)
+  - 3.15 ✅ Already in concurrent commits — shared animations consolidated (Frontend)
 - [ ] Phase 4: Optimization (0/20 tasks)
 
-**Total: 8/55 tasks completed**
+**Total: 34/55 tasks completed (62%)**
 
 ---
 
