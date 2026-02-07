@@ -570,7 +570,7 @@ export default function RasAlKhaimahPage() {
                   icon: Trophy,
                   label: "Activities",
                   value: "50+ Unique",
-                  color: "text-purple-600",
+                  color: "text-primary",
                 },
               ].map((stat, idx) => (
                 <motion.div

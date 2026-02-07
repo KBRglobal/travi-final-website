@@ -285,7 +285,7 @@ export function MagicButton({
                   disabled={disabled || isLoading}
                   className={cn(
                     config.button,
-                    "relative text-purple-500 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/30",
+                    "relative text-primary hover:text-primary/80 hover:bg-primary/5 dark:hover:bg-primary/10",
                     className
                   )}
                   data-testid={`magic-button-${fieldId}`}
@@ -301,7 +301,7 @@ export function MagicButton({
           </Tooltip>
           <DropdownMenuContent align="end" className="w-64 max-h-72 overflow-y-auto">
             <DropdownMenuLabel className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-purple-500" />
+              <Sparkles className="h-4 w-4 text-primary" />
               Alternative Suggestions
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -322,7 +322,7 @@ export function MagicButton({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleGenerate} className="cursor-pointer text-purple-600">
+            <DropdownMenuItem onClick={handleGenerate} className="cursor-pointer text-primary">
               <Sparkles className="h-4 w-4 mr-2" />
               Regenerate
             </DropdownMenuItem>
@@ -345,7 +345,7 @@ export function MagicButton({
             onClick={handleGenerate}
             className={cn(
               config.button,
-              "relative text-purple-500 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/30",
+              "relative text-primary hover:text-primary/80 hover:bg-primary/5 dark:hover:bg-primary/10",
               isLoading && "animate-pulse",
               className
             )}
@@ -357,7 +357,7 @@ export function MagicButton({
               <Sparkles className={config.icon} />
             )}
             {isLoading && (
-              <span className="absolute inset-0 rounded-md bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 animate-pulse" />
+              <span className="absolute inset-0 rounded-md bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 animate-pulse" />
             )}
           </Button>
         </TooltipTrigger>

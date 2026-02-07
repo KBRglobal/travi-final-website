@@ -152,7 +152,7 @@ export function MagicAIButton({
             {buttonContent}
             {isGenerating && progress && (
               <div
-                className="absolute inset-0 rounded-md bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-purple-500/20 animate-gradient-x"
+                className="absolute inset-0 rounded-md bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 animate-gradient-x"
                 style={{ backgroundSize: "200% 200%" }}
               />
             )}
@@ -215,8 +215,8 @@ export function MagicAIButton({
             className={cn(
               "gap-2",
               isGenerating && [
-                "bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10",
-                "border-purple-500/30",
+                "bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10",
+                "border-primary/30",
               ]
             )}
             data-testid={`magic-ai-button-${field}`}
@@ -288,7 +288,7 @@ function MagicAIDropdownContent({
   return (
     <DropdownMenuContent align="end" className="w-56">
       <DropdownMenuLabel className="flex items-center gap-2">
-        <Sparkles className="h-4 w-4 text-purple-500" />
+        <Sparkles className="h-4 w-4 text-primary" />
         Magic AI Generation
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
@@ -307,7 +307,7 @@ function MagicAIDropdownContent({
         disabled={isGenerating}
         data-testid="magic-ai-generate-all"
       >
-        <Sparkles className="h-4 w-4 mr-2 text-purple-500" />
+        <Sparkles className="h-4 w-4 mr-2 text-primary" />
         <span className="font-medium">All 30 Languages</span>
       </DropdownMenuItem>
 
