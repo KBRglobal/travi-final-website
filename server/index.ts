@@ -319,7 +319,7 @@ app.get("/health/db", async (_req, res) => {
 app.get("/sitemap", async (_req, res) => {
   try {
     // Fetch live destinations with failsafe
-    let liveDestinations: { id: string; name: string; slug: string }[] = [];
+    let liveDestinations: { id: number; name: string; slug: string | null }[] = [];
     try {
       liveDestinations = await db
         .select({
@@ -334,9 +334,7 @@ app.get("/sitemap", async (_req, res) => {
       // Continue with empty destinations - never fail
     }
 
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : "https://travi.travel";
+    const baseUrl = process.env.SITE_URL || "https://travi.travel";
 
     const html = `<!DOCTYPE html>
 <html lang="en">

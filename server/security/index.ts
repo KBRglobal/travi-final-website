@@ -185,7 +185,6 @@ export function setupSecurityMiddleware(app: Express): void {
   // Common script sources shared by both modes
   const commonScriptSrc = [
     "'self'",
-    "https://replit.com",
     "https://www.googletagmanager.com",
     "https://www.google-analytics.com",
     "https://emrld.ltd", // Travelpayouts affiliate verification
@@ -235,8 +234,10 @@ export function setupSecurityMiddleware(app: Express): void {
           ],
           connectSrc: [
             "'self'",
-            "https://*.replit.dev",
-            "https://*.replit.app",
+            "https://travi.world",
+            "https://www.travi.world",
+            "https://travi.travel",
+            "https://www.travi.travel",
             "https://api.deepl.com",
             "https://api.openai.com",
             "https://api.anthropic.com", // Anthropic AI API

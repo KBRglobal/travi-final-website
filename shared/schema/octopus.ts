@@ -21,14 +21,10 @@ import { z } from "zod";
 // Import enums from ./enums
 import { octopusJobStatusEnum, octopusArtifactActionEnum, publishStatusEnum } from "./enums";
 
-// Forward reference placeholders to avoid circular dependencies
-// Actual foreign key constraints exist at database level
-declare const destinations: { id: any };
-declare const users: { id: any };
-declare const contents: { id: any };
-declare const hotels: { id: any };
-declare const districts: { id: any };
-declare const attractions: { id: any };
+import { destinations } from "./destinations";
+import { users } from "./auth";
+import { contents } from "./content-base";
+import { attractions, hotels, districts } from "./content-types";
 
 // ============================================================================
 // OCTOPUS V2 - CONTENT GENERATION ENGINE
@@ -46,7 +42,7 @@ export const octopusJobs = pgTable(
     fileSize: integer("file_size"),
     mimeType: varchar("mime_type"),
     destinationHint: varchar("destination_hint"),
-    destinationId: varchar("destination_id").references(() => destinations.id),
+    destinationId: varchar("destination_id"),
     locale: varchar("locale").notNull().default("en"),
     status: octopusJobStatusEnum("status").notNull().default("pending"),
     progressPct: integer("progress_pct").notNull().default(0),

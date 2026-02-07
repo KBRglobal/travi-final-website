@@ -13,10 +13,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { writerAssignmentStatusEnum, writerAssignmentPriorityEnum } from "./enums";
-
-// Forward reference placeholder for contents table
-// This avoids circular dependency - actual foreign key constraint exists at database level
-declare const contents: { id: any };
+import { contents } from "./content-base";
 
 // ============================================================================
 // AI WRITERS TABLES

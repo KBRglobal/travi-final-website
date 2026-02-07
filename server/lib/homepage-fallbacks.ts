@@ -480,7 +480,7 @@ interface HomepageDbResult {
   experienceCategories: unknown[];
   regionLinks: unknown[];
   featuredDestinations: Array<{
-    id: string;
+    id: number | string;
     cardImage: string | null;
     slug?: string;
     [key: string]: unknown;

@@ -9,6 +9,7 @@ import {
   getAvailableDestinations,
   getAvailableLocales,
 } from "../services/wikivoyage-ingestion";
+import { requireAuth } from "../security";
 
 const router = Router();
 
@@ -216,88 +217,100 @@ router.get("/api/public/guides/destination/:destinationId", async (req: Request,
   }
 });
 
-router.post("/api/admin/guides/import-wikivoyage", async (req: Request, res: Response) => {
-  try {
-    const { destinationId, locales } = req.body;
+router.post(
+  "/api/admin/guides/import-wikivoyage",
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { destinationId, locales } = req.body;
 
-    if (!destinationId) {
-      return res.status(400).json({ error: "destinationId is required" });
+      if (!destinationId) {
+        return res.status(400).json({ error: "destinationId is required" });
+      }
+
+      const destName = destinationId
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (c: string) => c.toUpperCase());
+      const targetLocales = locales || getAvailableLocales();
+
+      const result = await (importWikivoyageGuide as any)(destinationId, destName, targetLocales);
+
+      res.json({
+        success: result.success,
+        imported: result.imported,
+        errors: result.errors,
+        message: result.success
+          ? `Successfully imported ${result.imported} language versions for ${destName}`
+          : `Failed to import guide for ${destName}`,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to import guide from Wikivoyage" });
     }
-
-    const destName = destinationId
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (c: string) => c.toUpperCase());
-    const targetLocales = locales || getAvailableLocales();
-
-    const result = await (importWikivoyageGuide as any)(destinationId, destName, targetLocales);
-
-    res.json({
-      success: result.success,
-      imported: result.imported,
-      errors: result.errors,
-      message: result.success
-        ? `Successfully imported ${result.imported} language versions for ${destName}`
-        : `Failed to import guide for ${destName}`,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to import guide from Wikivoyage" });
   }
-});
+);
 
-router.post("/api/admin/guides/import-all-wikivoyage", async (req: Request, res: Response) => {
-  try {
-    res.json({
-      message: "Full Wikivoyage ingestion started in background",
-      destinations: getAvailableDestinations(),
-      locales: getAvailableLocales(),
-    });
+router.post(
+  "/api/admin/guides/import-all-wikivoyage",
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      res.json({
+        message: "Full Wikivoyage ingestion started in background",
+        destinations: getAvailableDestinations(),
+        locales: getAvailableLocales(),
+      });
 
-    runFullWikivoyageIngestion().catch(console.error);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to start full Wikivoyage import" });
+      runFullWikivoyageIngestion().catch(console.error);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to start full Wikivoyage import" });
+    }
   }
-});
+);
 
-router.get("/api/admin/guides/wikivoyage-status", async (req: Request, res: Response) => {
-  try {
-    const guides = await db
-      .select({
-        id: update9987Guides.id,
-        title: update9987Guides.title,
-        slug: update9987Guides.slug,
-        status: update9987Guides.status,
-        publishedAt: update9987Guides.publishedAt,
-        sections: update9987Guides.sections,
-        rawData: update9987Guides.rawData,
-      })
-      .from(update9987Guides)
-      .orderBy(desc(update9987Guides.publishedAt));
+router.get(
+  "/api/admin/guides/wikivoyage-status",
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const guides = await db
+        .select({
+          id: update9987Guides.id,
+          title: update9987Guides.title,
+          slug: update9987Guides.slug,
+          status: update9987Guides.status,
+          publishedAt: update9987Guides.publishedAt,
+          sections: update9987Guides.sections,
+          rawData: update9987Guides.rawData,
+        })
+        .from(update9987Guides)
+        .orderBy(desc(update9987Guides.publishedAt));
 
-    const summary = guides.map(g => {
-      const sections = g.sections as GuideSections | null;
-      const rawData = g.rawData as { source?: string; locales?: string[] } | null;
+      const summary = guides.map(g => {
+        const sections = g.sections as GuideSections | null;
+        const rawData = g.rawData as { source?: string; locales?: string[] } | null;
 
-      return {
-        id: g.id,
-        title: g.title,
-        slug: g.slug,
-        status: g.status,
-        publishedAt: g.publishedAt,
-        source: rawData?.source || "unknown",
-        localesCount: sections?.translations ? Object.keys(sections.translations).length : 0,
-        locales: sections?.translations ? Object.keys(sections.translations) : [],
-      };
-    });
+        return {
+          id: g.id,
+          title: g.title,
+          slug: g.slug,
+          status: g.status,
+          publishedAt: g.publishedAt,
+          source: rawData?.source || "unknown",
+          localesCount: sections?.translations ? Object.keys(sections.translations).length : 0,
+          locales: sections?.translations ? Object.keys(sections.translations) : [],
+        };
+      });
 
-    res.json({
-      total: guides.length,
-      guides: summary,
-      availableDestinations: getAvailableDestinations(),
-      availableLocales: getAvailableLocales(),
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to get Wikivoyage status" });
+      res.json({
+        total: guides.length,
+        guides: summary,
+        availableDestinations: getAvailableDestinations(),
+        availableLocales: getAvailableLocales(),
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get Wikivoyage status" });
+    }
   }
-});
+);
 
 export default router;

@@ -1,16 +1,16 @@
 /**
  * Central Search Index
- * 
+ *
  * Queries across destinations, hotels, articles/contents, and categories
  * Uses PostgreSQL ILIKE for simple, deterministic full-text search
  */
 
 import { db } from "../db";
 import { sql, or, ilike, eq, desc, and, isNull } from "drizzle-orm";
-import { 
-  destinations, 
-  contents, 
-  hotels, 
+import {
+  destinations,
+  contents,
+  hotels,
   articles,
   attractions,
   categoryPages,
@@ -41,7 +41,7 @@ export interface SearchIndexQuery {
  */
 async function searchDestinations(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
-  
+
   const results = await db
     .select({
       id: destinations.id,
@@ -69,9 +69,9 @@ async function searchDestinations(query: string): Promise<SearchResult[]> {
 
   return results.map((r, idx) => ({
     type: "destination" as const,
-    id: r.id,
+    id: String(r.id),
     title: r.name,
-    slug: r.slug,
+    slug: r.slug || "",
     thumbnail: r.thumbnail,
     excerpt: r.excerpt || `Explore ${r.name}, ${r.country}`,
     score: 100 - idx,
@@ -86,7 +86,7 @@ async function searchDestinations(query: string): Promise<SearchResult[]> {
  */
 async function searchHotels(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
-  
+
   const results = await db
     .select({
       id: contents.id,
@@ -135,7 +135,7 @@ async function searchHotels(query: string): Promise<SearchResult[]> {
  */
 async function searchArticles(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
-  
+
   const results = await db
     .select({
       id: contents.id,
@@ -185,7 +185,7 @@ async function searchArticles(query: string): Promise<SearchResult[]> {
  */
 async function searchCategories(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
-  
+
   const results = await db
     .select({
       id: categoryPages.id,
@@ -223,7 +223,7 @@ async function searchCategories(query: string): Promise<SearchResult[]> {
  */
 async function searchAttractions(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
-  
+
   const results = await db
     .select({
       id: contents.id,
@@ -274,7 +274,7 @@ async function searchAttractions(query: string): Promise<SearchResult[]> {
  */
 async function searchTiqetsAttractions(query: string): Promise<SearchResult[]> {
   const searchPattern = `%${query}%`;
-  
+
   const results = await db
     .select({
       id: tiqetsAttractions.id,
@@ -302,16 +302,23 @@ async function searchTiqetsAttractions(query: string): Promise<SearchResult[]> {
     .orderBy(desc(tiqetsAttractions.tiqetsReviewCount));
 
   return results.map((r, idx) => {
-    const images = r.tiqetsImages as Array<{ medium?: string; large?: string; alt_text?: string }> | null;
+    const images = r.tiqetsImages as Array<{
+      medium?: string;
+      large?: string;
+      alt_text?: string;
+    }> | null;
     const thumbnail = images?.[0]?.medium || images?.[0]?.large || null;
-    
+
     return {
       type: "attraction" as const,
       id: r.id,
       title: r.title,
       slug: r.seoSlug || r.id,
       thumbnail,
-      excerpt: r.metaDescription || r.description?.substring(0, 160) || `Explore ${r.title} in ${r.cityName}`,
+      excerpt:
+        r.metaDescription ||
+        r.description?.substring(0, 160) ||
+        `Explore ${r.title} in ${r.cityName}`,
       score: 92 - idx,
       publishedAt: r.updatedAt,
       viewCount: null,
@@ -325,7 +332,7 @@ async function searchTiqetsAttractions(query: string): Promise<SearchResult[]> {
  */
 export async function searchAll(options: SearchIndexQuery): Promise<SearchResult[]> {
   const { query, limit = 50, types } = options;
-  
+
   if (!query || query.trim().length === 0) {
     return [];
   }
@@ -353,10 +360,10 @@ export async function searchAll(options: SearchIndexQuery): Promise<SearchResult
   }
 
   const results = await Promise.all(searchPromises);
-  
+
   // Flatten, sort by score, THEN apply limit (pagination done by caller)
   const allResults = results.flat().sort((a, b) => b.score - a.score);
-  
+
   // Return total count for pagination
   return limit > 0 ? allResults.slice(0, limit) : allResults;
 }
@@ -381,9 +388,9 @@ export async function getPopularDestinations(limit: number = 6): Promise<SearchR
 
   return results.map((r, idx) => ({
     type: "destination" as const,
-    id: r.id,
+    id: String(r.id),
     title: r.name,
-    slug: r.slug,
+    slug: r.slug || "",
     thumbnail: r.thumbnail,
     excerpt: r.excerpt || `Explore ${r.name}, ${r.country}`,
     score: 50 - idx,
@@ -395,7 +402,7 @@ export async function getPopularDestinations(limit: number = 6): Promise<SearchR
  */
 export async function getPopularSearchSuggestions(limit: number = 10): Promise<string[]> {
   const suggestions: string[] = [];
-  
+
   // 1. Get top destinations
   const topDestinations = await db
     .select({ name: destinations.name })
@@ -403,9 +410,9 @@ export async function getPopularSearchSuggestions(limit: number = 10): Promise<s
     .where(eq(destinations.isActive, true))
     .orderBy(desc(destinations.seoScore))
     .limit(Math.ceil(limit / 2));
-    
+
   suggestions.push(...topDestinations.map(d => d.name));
-  
+
   // 2. Get popular Tiqets attractions if we need more
   if (suggestions.length < limit) {
     const topAttractions = await db
@@ -413,10 +420,10 @@ export async function getPopularSearchSuggestions(limit: number = 10): Promise<s
       .from(tiqetsAttractions)
       .orderBy(desc(tiqetsAttractions.tiqetsReviewCount))
       .limit(limit - suggestions.length);
-      
+
     suggestions.push(...topAttractions.map(a => a.title));
   }
-  
+
   // 3. Get popular articles if still need more
   if (suggestions.length < limit) {
     const topArticles = await db
@@ -425,10 +432,10 @@ export async function getPopularSearchSuggestions(limit: number = 10): Promise<s
       .where(and(eq(contents.type, "article"), eq(contents.status, "published")))
       .orderBy(desc(contents.viewCount))
       .limit(limit - suggestions.length);
-      
+
     suggestions.push(...topArticles.map(a => a.title));
   }
-  
+
   // Dedupe and limit
   return [...new Set(suggestions)].slice(0, limit);
 }

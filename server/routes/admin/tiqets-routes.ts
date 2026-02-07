@@ -1107,7 +1107,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
   });
 
   // GET /api/admin/tiqets/octypo-status - Get current octypo generation status
-  app.get("/api/admin/tiqets/octypo-status", async (req, res) => {
+  app.get("/api/admin/tiqets/octypo-status", requireAuth, async (req, res) => {
     try {
       const { pool } = await import("../../db");
 
@@ -1142,7 +1142,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
   });
 
   // GET /api/admin/tiqets/generation-progress - Detailed generation progress dashboard
-  app.get("/api/admin/tiqets/generation-progress", async (req, res) => {
+  app.get("/api/admin/tiqets/generation-progress", requireAuth, async (req, res) => {
     try {
       const { pool } = await import("../../db");
       const { octypoState } = await import("../../octypo/state");

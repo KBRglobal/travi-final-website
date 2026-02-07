@@ -15,14 +15,6 @@ import { z } from "zod";
 import { contentTypeEnum, contentStatusEnum, contentIntentEnum } from "./enums";
 import type { ContentBlock } from "./types";
 
-// Forward reference placeholder for users table (use varchar without actual reference)
-// This avoids circular dependency - actual foreign key constraint exists at database level
-declare const users: { id: any };
-
-// Forward reference placeholder for aiWriters table
-// This avoids circular dependency - actual foreign key constraint exists at database level
-declare const aiWriters: { id: any };
-
 // Content table - base table for all content types
 export const contents = pgTable(
   "contents",

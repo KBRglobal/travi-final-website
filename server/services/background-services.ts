@@ -413,19 +413,26 @@ export async function startBackgroundServices(): Promise<void> {
   const config = getConfig();
   log.info("[BackgroundServices] Starting background services...");
 
-  // Start all services in parallel
-  await Promise.all([
-    startTranslationServices(config),
-    startRSSSchedulerService(config),
-    startGatekeeperService(config),
-    startLocalizationGovernance(config),
-    startSEOAutopilotService(config),
-    startDataDecisionsService(config),
-    startContentHealthService(config),
-  ]);
+  // Start critical services immediately
+  await startTranslationServices(config);
 
   servicesStarted = true;
-  log.info("[BackgroundServices] All background services initialized");
+  log.info("[BackgroundServices] Critical services initialized");
+
+  // Delay non-critical services by 30 seconds to reduce startup load
+  const NON_CRITICAL_DELAY = 30000;
+  setTimeout(async () => {
+    log.info("[BackgroundServices] Starting non-critical services (30s delay)...");
+    await Promise.all([
+      startRSSSchedulerService(config),
+      startGatekeeperService(config),
+      startLocalizationGovernance(config),
+      startSEOAutopilotService(config),
+      startDataDecisionsService(config),
+      startContentHealthService(config),
+    ]);
+    log.info("[BackgroundServices] All non-critical services initialized");
+  }, NON_CRITICAL_DELAY);
 }
 
 /**

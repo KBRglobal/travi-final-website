@@ -7,6 +7,7 @@ import {
   destinationContent,
 } from "@shared/schema";
 import { eq, desc, and, gte, sql } from "drizzle-orm";
+import { requireAuth } from "../security";
 
 const router = Router();
 
@@ -883,100 +884,108 @@ router.get("/api/public/destinations/:slug/mobility", async (req: Request, res: 
 });
 
 // Admin: GET mobility data for editing
-router.get("/api/admin/destinations/:slug/mobility", async (req: Request, res: Response) => {
-  try {
-    const { slug } = req.params;
+router.get(
+  "/api/admin/destinations/:slug/mobility",
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { slug } = req.params;
 
-    const mobilityData = await db
-      .select()
-      .from(destinationContent)
-      .where(
-        and(
-          eq(destinationContent.destinationId, slug),
-          eq(destinationContent.contentType, "mobility")
+      const mobilityData = await db
+        .select()
+        .from(destinationContent)
+        .where(
+          and(
+            eq(destinationContent.destinationId, slug),
+            eq(destinationContent.contentType, "mobility")
+          )
         )
-      )
-      .limit(1);
+        .limit(1);
 
-    if (!mobilityData.length) {
-      return res.json({
+      if (!mobilityData.length) {
+        return res.json({
+          destinationId: slug,
+          exists: false,
+          data: null,
+        });
+      }
+
+      const record = mobilityData[0];
+
+      res.json({
         destinationId: slug,
-        exists: false,
-        data: null,
+        exists: true,
+        data: record.content,
+        isActive: record.isActive,
+        version: record.version,
+        updatedAt: record.updatedAt,
+        createdAt: record.createdAt,
       });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch mobility data" });
     }
-
-    const record = mobilityData[0];
-
-    res.json({
-      destinationId: slug,
-      exists: true,
-      data: record.content,
-      isActive: record.isActive,
-      version: record.version,
-      updatedAt: record.updatedAt,
-      createdAt: record.createdAt,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch mobility data" });
   }
-});
+);
 
 // Admin: PUT (upsert) mobility data
-router.put("/api/admin/destinations/:slug/mobility", async (req: Request, res: Response) => {
-  try {
-    const { slug } = req.params;
-    const mobilityContent = req.body;
+router.put(
+  "/api/admin/destinations/:slug/mobility",
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { slug } = req.params;
+      const mobilityContent = req.body;
 
-    // Check if record exists
-    const existing = await db
-      .select()
-      .from(destinationContent)
-      .where(
-        and(
-          eq(destinationContent.destinationId, slug),
-          eq(destinationContent.contentType, "mobility")
+      // Check if record exists
+      const existing = await db
+        .select()
+        .from(destinationContent)
+        .where(
+          and(
+            eq(destinationContent.destinationId, slug),
+            eq(destinationContent.contentType, "mobility")
+          )
         )
-      )
-      .limit(1);
+        .limit(1);
 
-    if (existing.length) {
-      // Update existing record
-      await db
-        .update(destinationContent)
-        .set({
+      if (existing.length) {
+        // Update existing record
+        await db
+          .update(destinationContent)
+          .set({
+            content: mobilityContent,
+            isActive: true,
+            version: (existing[0].version || 1) + 1,
+            updatedAt: new Date(),
+          } as any)
+          .where(eq(destinationContent.id, existing[0].id));
+
+        res.json({
+          success: true,
+          message: "Mobility data updated",
+          version: (existing[0].version || 1) + 1,
+        });
+      } else {
+        // Insert new record
+        await db.insert(destinationContent).values({
+          destinationId: slug,
+          contentType: "mobility",
           content: mobilityContent,
           isActive: true,
-          version: (existing[0].version || 1) + 1,
-          updatedAt: new Date(),
-        } as any)
-        .where(eq(destinationContent.id, existing[0].id));
+          version: 1,
+        } as any);
 
-      res.json({
-        success: true,
-        message: "Mobility data updated",
-        version: (existing[0].version || 1) + 1,
-      });
-    } else {
-      // Insert new record
-      await db.insert(destinationContent).values({
-        destinationId: slug,
-        contentType: "mobility",
-        content: mobilityContent,
-        isActive: true,
-        version: 1,
-      } as any);
-
-      res.json({
-        success: true,
-        message: "Mobility data created",
-        version: 1,
-      });
+        res.json({
+          success: true,
+          message: "Mobility data created",
+          version: 1,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to save mobility data" });
     }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to save mobility data" });
   }
-});
+);
 
 router.get("/api/public/destinations/:slug/seasons", async (req: Request, res: Response) => {
   try {

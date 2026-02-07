@@ -309,7 +309,7 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
       let countryCode: string | undefined;
       if (district.destinationId) {
         const dest = await db.query.destinations.findFirst({
-          where: eq(destinations.id, district.destinationId),
+          where: eq(destinations.id, Number(district.destinationId)),
         });
         countryCode = dest?.country;
       }

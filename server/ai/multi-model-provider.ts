@@ -10,10 +10,37 @@
  * - Provider availability checking
  */
 
-import Anthropic from "@anthropic-ai/sdk";
-import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import type Anthropic from "@anthropic-ai/sdk";
+import type OpenAI from "openai";
+import type { GoogleGenerativeAI } from "@google/generative-ai";
 import { createLogger } from "../lib/logger";
+
+// Lazy-loaded SDK constructors to avoid heavy imports at startup
+let _Anthropic: typeof import("@anthropic-ai/sdk").default | null = null;
+let _OpenAI: typeof import("openai").default | null = null;
+let _GoogleGenerativeAI: typeof GoogleGenerativeAI | null = null;
+
+async function lazyAnthropic() {
+  if (!_Anthropic) {
+    const m = await import("@anthropic-ai/sdk");
+    _Anthropic = m.default;
+  }
+  return _Anthropic;
+}
+async function lazyOpenAI() {
+  if (!_OpenAI) {
+    const m = await import("openai");
+    _OpenAI = m.default;
+  }
+  return _OpenAI;
+}
+async function lazyGoogleGenAI() {
+  if (!_GoogleGenerativeAI) {
+    const m = await import("@google/generative-ai");
+    _GoogleGenerativeAI = m.GoogleGenerativeAI;
+  }
+  return _GoogleGenerativeAI;
+}
 
 const logger = createLogger("multi-model-provider");
 
@@ -130,8 +157,16 @@ export class MultiModelProvider {
   private anthropicKeyIndex: number = 0;
   private heliconeKeyIndex: number = 0;
 
+  private _initialized = false;
+
   constructor() {
-    this.initializeProviders();
+    // Providers initialized lazily on first use
+  }
+
+  private async ensureInitialized(): Promise<void> {
+    if (this._initialized) return;
+    await this.initializeProviders();
+    this._initialized = true;
   }
 
   // Get next available Anthropic client (round-robin)
@@ -150,8 +185,14 @@ export class MultiModelProvider {
     return client;
   }
 
-  private initializeProviders(): void {
+  private async initializeProviders(): Promise<void> {
     this.providers = [];
+
+    const [AnthropicCtor, OpenAICtor, GoogleGenAICtor] = await Promise.all([
+      lazyAnthropic(),
+      lazyOpenAI(),
+      lazyGoogleGenAI(),
+    ]);
 
     // Priority 1: Anthropic (Claude) - Support for 6 parallel API keys
     const anthropicKeys = this.getAllAnthropicKeys();
@@ -160,7 +201,7 @@ export class MultiModelProvider {
       try {
         this.anthropicClients = anthropicKeys.map(
           key =>
-            new Anthropic({
+            new AnthropicCtor({
               apiKey: key,
               baseURL: anthropicBaseUrl || undefined,
             })
@@ -192,7 +233,7 @@ export class MultiModelProvider {
     const openaiBaseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
     if (openaiKey) {
       try {
-        this.openaiClient = new OpenAI({
+        this.openaiClient = new OpenAICtor({
           apiKey: openaiKey,
           baseURL: openaiBaseUrl || undefined,
         });
@@ -219,7 +260,7 @@ export class MultiModelProvider {
     const geminiKey = this.getGeminiKey();
     if (geminiKey) {
       try {
-        this.geminiClient = new GoogleGenerativeAI(geminiKey);
+        this.geminiClient = new GoogleGenAICtor(geminiKey);
         this.providers.push({
           name: "gemini",
           available: true,
@@ -243,7 +284,7 @@ export class MultiModelProvider {
     const openrouterKey = this.getOpenRouterKey();
     if (openrouterKey) {
       try {
-        this.openrouterClient = new OpenAI({
+        this.openrouterClient = new OpenAICtor({
           apiKey: openrouterKey,
           baseURL: "https://openrouter.ai/api/v1",
           defaultHeaders: {
@@ -282,7 +323,7 @@ export class MultiModelProvider {
     const perplexityKey = process.env.PERPLEXITY_API_KEY;
     if (perplexityKey) {
       try {
-        this.perplexityClient = new OpenAI({
+        this.perplexityClient = new OpenAICtor({
           apiKey: perplexityKey,
           baseURL: "https://api.perplexity.ai",
         });
@@ -317,7 +358,7 @@ export class MultiModelProvider {
     const mistralKey = process.env.MISTRAL_API_KEY;
     if (mistralKey) {
       try {
-        this.mistralClient = new OpenAI({
+        this.mistralClient = new OpenAICtor({
           apiKey: mistralKey,
           baseURL: "https://api.mistral.ai/v1",
         });
@@ -346,7 +387,7 @@ export class MultiModelProvider {
       try {
         this.heliconeClients = heliconeKeys.map(
           key =>
-            new OpenAI({
+            new OpenAICtor({
               apiKey: key,
               baseURL: "https://ai-gateway.helicone.ai",
             })
@@ -499,6 +540,7 @@ export class MultiModelProvider {
    * Tries Anthropic first, then OpenAI, then Gemini
    */
   async generate(prompt: string, options: GenerationOptions = {}): Promise<GenerationResult> {
+    await this.ensureInitialized();
     const { maxTokens = 8192, temperature = 0.7, systemPrompt } = options;
 
     const availableProviders = this.providers.filter(p => p.available && !isRateLimited(p.name));
@@ -1095,6 +1137,7 @@ export class MultiModelProvider {
     prompt: string,
     options: GenerationOptions = {}
   ): Promise<GenerationResult> {
+    await this.ensureInitialized();
     const { maxTokens = 8192, temperature = 0.7, systemPrompt } = options;
 
     const provider = this.providers.find(p => p.name === providerName);
@@ -1124,7 +1167,7 @@ export class MultiModelProvider {
    * Check availability of all providers
    */
   checkAvailability(): AIProviderConfig[] {
-    // Refresh provider states with rate limit status
+    // Note: Returns stale data if ensureInitialized hasn't been called yet
     return this.providers.map(provider => ({
       ...provider,
       available: provider.available && !isRateLimited(provider.name),
@@ -1145,12 +1188,13 @@ export class MultiModelProvider {
   /**
    * Force refresh of provider initialization
    */
-  refresh(): void {
+  async refresh(): Promise<void> {
     (this as any).anthropicClients = [];
     (this as any).openaiClients = [];
     (this as any).geminiClient = null;
     this.providers = [];
-    this.initializeProviders();
+    this._initialized = false;
+    await this.ensureInitialized();
   }
 }
 

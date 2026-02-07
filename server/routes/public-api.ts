@@ -134,7 +134,7 @@ export function registerPublicApiRoutes(app: Express): void {
             country: destinations.country,
           })
           .from(destinations)
-          .where(eq(destinations.id, slide.destinationId))
+          .where(eq(destinations.id, Number(slide.destinationId)))
           .limit(1);
 
         if (destination) {
@@ -203,7 +203,7 @@ export function registerPublicApiRoutes(app: Express): void {
       const [destination] = await db
         .select()
         .from(destinations)
-        .where(and(eq(destinations.id, id), eq(destinations.isActive, true)))
+        .where(and(eq(destinations.id, Number(id)), eq(destinations.isActive, true)))
         .limit(1);
 
       if (!destination) {
@@ -387,7 +387,7 @@ export function registerPublicApiRoutes(app: Express): void {
 
       const metaMap = new Map<string, (typeof destinationMeta)[0]>();
       for (const d of destinationMeta) {
-        metaMap.set(d.id, d);
+        metaMap.set(String(d.id), d);
       }
 
       const cityCountryFallback: Record<string, string> = {

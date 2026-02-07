@@ -567,7 +567,7 @@ export async function seedRssFeeds(
 
   // Get all destinations for mapping
   const allDestinations = await db.select().from(destinations);
-  const destinationMap = new Map(allDestinations.map(d => [d.slug, d.id]));
+  const destinationMap = new Map(allDestinations.map(d => [d.slug, String(d.id)]));
 
   for (const feed of RSS_FEEDS) {
     try {

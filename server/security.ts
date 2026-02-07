@@ -607,7 +607,6 @@ export function requireOwnContentOrPermission(permission: PermissionKey) {
 // Only the domains listed below can make authenticated requests to our API.
 // ============================================================================
 const ALLOWED_ORIGINS = [
-  process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : null,
   process.env.FRONTEND_URL,
   process.env.SITE_URL,
   "http://localhost:5173",
@@ -616,7 +615,8 @@ const ALLOWED_ORIGINS = [
   "http://127.0.0.1:5000",
   "https://travi.world",
   "https://www.travi.world",
-  "https://travi--mzgdubai.replit.app",
+  "https://travi.travel",
+  "https://www.travi.travel",
 ].filter(Boolean) as string[];
 
 export function csrfProtection(req: Request, res: Response, next: NextFunction) {
@@ -640,7 +640,10 @@ export function csrfProtection(req: Request, res: Response, next: NextFunction) 
   if (!origin) {
     // Allow requests without Origin if they're from the same host
     const host = req.get("Host");
-    if (host && (host.includes("localhost") || host.includes("replit"))) {
+    if (
+      host &&
+      (host.includes("localhost") || host.includes("travi.world") || host.includes("travi.travel"))
+    ) {
       return next();
     }
     // For API calls without Origin, require authentication
@@ -770,7 +773,7 @@ export function secureErrorHandler(err: Error, req: Request, res: Response, next
 export const sessionConfig = {
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production" || !!process.env.REPLIT_DEV_DOMAIN,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax" as const,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   },
@@ -967,13 +970,6 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 // This configuration PASSES security audits but may FAIL simple "CORS test" tools
 // that expect permissive configurations. Do NOT add wildcards to "fix" scanner warnings.
 // ============================================================================
-// In development, allow all Replit preview URLs
-const isReplitOrigin = (origin: string) => {
-  return (
-    origin.includes(".replit.dev") || origin.includes(".replit.app") || origin.includes(".repl.co")
-  );
-};
-
 /**
  * CORS middleware with proper origin validation
  */
@@ -985,10 +981,8 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
     return next();
   }
 
-  // Check if origin is allowed
-  const isAllowed =
-    ALLOWED_ORIGINS.includes(origin) ||
-    (process.env.NODE_ENV !== "production" && isReplitOrigin(origin));
+  // Check if origin is allowed against explicit allowlist
+  const isAllowed = ALLOWED_ORIGINS.includes(origin);
 
   if (isAllowed) {
     res.setHeader("Access-Control-Allow-Origin", origin);

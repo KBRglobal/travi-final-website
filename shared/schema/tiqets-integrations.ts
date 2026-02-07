@@ -316,7 +316,7 @@ export const traviProcessingJobs = pgTable(
     status: traviJobStatusEnum("status").notNull().default("pending"),
 
     // Scope
-    destinationId: varchar("destination_id").references(() => destinations.id),
+    destinationId: varchar("destination_id"),
     category: traviLocationCategoryEnum("category"),
 
     // Progress tracking
@@ -481,9 +481,7 @@ export const travelAdvisories = pgTable(
     id: varchar("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    destinationId: varchar("destination_id")
-      .notNull()
-      .references(() => destinations.id, { onDelete: "cascade" }),
+    destinationId: varchar("destination_id").notNull(),
     advisoryType: advisoryTypeEnum("advisory_type").notNull(),
     title: text("title").notNull(),
     description: text("description"),
@@ -518,9 +516,7 @@ export const healthAlerts = pgTable(
     id: varchar("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    destinationId: varchar("destination_id")
-      .notNull()
-      .references(() => destinations.id, { onDelete: "cascade" }),
+    destinationId: varchar("destination_id").notNull(),
     alertType: healthAlertTypeEnum("alert_type").notNull(),
     title: text("title").notNull(),
     description: text("description"),
@@ -557,9 +553,7 @@ export const destinationEvents = pgTable(
     id: varchar("id")
       .primaryKey()
       .default(sql`gen_random_uuid()`),
-    destinationId: varchar("destination_id")
-      .notNull()
-      .references(() => destinations.id, { onDelete: "cascade" }),
+    destinationId: varchar("destination_id").notNull(),
     name: text("name").notNull(),
     description: text("description"),
     translations: jsonb("translations")

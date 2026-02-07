@@ -6,7 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Settings as SettingsIcon, Database, Key, Globe, Bell, Shield, Loader2 } from "lucide-react";
+import {
+  Settings as SettingsIcon,
+  Database,
+  Key,
+  Globe,
+  Bell,
+  Shield,
+  Loader2,
+} from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
@@ -36,13 +44,17 @@ interface SettingsData {
 
 export default function Settings() {
   const { toast } = useToast();
-  
+
   const { data: settings, isLoading } = useQuery<SettingsData>({
     queryKey: ["/api/settings/grouped"],
   });
 
   const [formData, setFormData] = useState<SettingsData>({
-    site: { siteName: "Travi - Travel Guide", siteUrl: "https://travi.guide", defaultLanguage: "English" },
+    site: {
+      siteName: "Travi - Travel Guide",
+      siteUrl: "https://travi.guide",
+      defaultLanguage: "English",
+    },
     api: { gygAffiliateId: "", bookingAffiliateId: "" },
     contents: { autoSlug: true, autoSave: true, aiSuggestions: true },
     notifications: { emailNotifications: false, browserNotifications: false },
@@ -125,7 +137,7 @@ export default function Settings() {
               <Input
                 id="site-name"
                 value={formData.site?.siteName || ""}
-                onChange={(e) => updateField("site", "siteName", e.target.value)}
+                onChange={e => updateField("site", "siteName", e.target.value)}
                 placeholder="Your site name"
                 data-testid="input-site-name"
               />
@@ -135,7 +147,7 @@ export default function Settings() {
               <Input
                 id="site-url"
                 value={formData.site?.siteUrl || ""}
-                onChange={(e) => updateField("site", "siteUrl", e.target.value)}
+                onChange={e => updateField("site", "siteUrl", e.target.value)}
                 placeholder="https://example.com"
                 data-testid="input-site-url"
               />
@@ -145,7 +157,7 @@ export default function Settings() {
               <Input
                 id="default-language"
                 value={formData.site?.defaultLanguage || ""}
-                onChange={(e) => updateField("site", "defaultLanguage", e.target.value)}
+                onChange={e => updateField("site", "defaultLanguage", e.target.value)}
                 placeholder="English"
                 data-testid="input-default-language"
               />
@@ -172,7 +184,7 @@ export default function Settings() {
                 data-testid="input-openai-key"
               />
               <p className="text-xs text-muted-foreground">
-                OpenAI is configured via Replit AI Integrations
+                OpenAI is configured via environment variables
               </p>
             </div>
             <Separator />
@@ -181,7 +193,7 @@ export default function Settings() {
               <Input
                 id="gyg-key"
                 value={formData.api?.gygAffiliateId || ""}
-                onChange={(e) => updateField("api", "gygAffiliateId", e.target.value)}
+                onChange={e => updateField("api", "gygAffiliateId", e.target.value)}
                 placeholder="Your affiliate ID"
                 data-testid="input-gyg-key"
               />
@@ -191,7 +203,7 @@ export default function Settings() {
               <Input
                 id="booking-key"
                 value={formData.api?.bookingAffiliateId || ""}
-                onChange={(e) => updateField("api", "bookingAffiliateId", e.target.value)}
+                onChange={e => updateField("api", "bookingAffiliateId", e.target.value)}
                 placeholder="Your affiliate ID"
                 data-testid="input-booking-key"
               />
@@ -215,10 +227,10 @@ export default function Settings() {
                   Automatically generate URL slugs from titles
                 </p>
               </div>
-              <Switch 
+              <Switch
                 checked={formData.contents?.autoSlug ?? true}
-                onCheckedChange={(checked) => updateField("contents", "autoSlug", checked)}
-                data-testid="switch-auto-slug" 
+                onCheckedChange={checked => updateField("contents", "autoSlug", checked)}
+                data-testid="switch-auto-slug"
               />
             </div>
             <Separator />
@@ -229,24 +241,22 @@ export default function Settings() {
                   Automatically save contents while editing
                 </p>
               </div>
-              <Switch 
+              <Switch
                 checked={formData.contents?.autoSave ?? true}
-                onCheckedChange={(checked) => updateField("contents", "autoSave", checked)}
-                data-testid="switch-auto-save" 
+                onCheckedChange={checked => updateField("contents", "autoSave", checked)}
+                data-testid="switch-auto-save"
               />
             </div>
             <Separator />
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-0.5">
                 <Label>AI contents suggestions</Label>
-                <p className="text-sm text-muted-foreground">
-                  Show AI-powered writing suggestions
-                </p>
+                <p className="text-sm text-muted-foreground">Show AI-powered writing suggestions</p>
               </div>
-              <Switch 
+              <Switch
                 checked={formData.contents?.aiSuggestions ?? true}
-                onCheckedChange={(checked) => updateField("contents", "aiSuggestions", checked)}
-                data-testid="switch-ai-suggestions" 
+                onCheckedChange={checked => updateField("contents", "aiSuggestions", checked)}
+                data-testid="switch-ai-suggestions"
               />
             </div>
           </CardContent>
@@ -264,28 +274,28 @@ export default function Settings() {
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-0.5">
                 <Label>Email notifications</Label>
-                <p className="text-sm text-muted-foreground">
-                  Receive emails for contents updates
-                </p>
+                <p className="text-sm text-muted-foreground">Receive emails for contents updates</p>
               </div>
-              <Switch 
+              <Switch
                 checked={formData.notifications?.emailNotifications ?? false}
-                onCheckedChange={(checked) => updateField("notifications", "emailNotifications", checked)}
-                data-testid="switch-email-notifications" 
+                onCheckedChange={checked =>
+                  updateField("notifications", "emailNotifications", checked)
+                }
+                data-testid="switch-email-notifications"
               />
             </div>
             <Separator />
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-0.5">
                 <Label>Browser notifications</Label>
-                <p className="text-sm text-muted-foreground">
-                  Show browser push notifications
-                </p>
+                <p className="text-sm text-muted-foreground">Show browser push notifications</p>
               </div>
-              <Switch 
+              <Switch
                 checked={formData.notifications?.browserNotifications ?? false}
-                onCheckedChange={(checked) => updateField("notifications", "browserNotifications", checked)}
-                data-testid="switch-browser-notifications" 
+                onCheckedChange={checked =>
+                  updateField("notifications", "browserNotifications", checked)
+                }
+                data-testid="switch-browser-notifications"
               />
             </div>
           </CardContent>
@@ -303,9 +313,7 @@ export default function Settings() {
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-0.5">
                 <Label>Two-factor authentication</Label>
-                <p className="text-sm text-muted-foreground">
-                  Configure in your Profile page
-                </p>
+                <p className="text-sm text-muted-foreground">Configure in your Profile page</p>
               </div>
               <Button variant="outline" size="sm" disabled data-testid="button-configure-2fa">
                 Configure in Profile
@@ -319,18 +327,18 @@ export default function Settings() {
                   Automatically log out after inactivity
                 </p>
               </div>
-              <Switch 
+              <Switch
                 checked={formData.security?.sessionTimeout ?? true}
-                onCheckedChange={(checked) => updateField("security", "sessionTimeout", checked)}
-                data-testid="switch-session-timeout" 
+                onCheckedChange={checked => updateField("security", "sessionTimeout", checked)}
+                data-testid="switch-session-timeout"
               />
             </div>
           </CardContent>
         </Card>
 
         <div className="flex justify-end">
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={saveMutation.isPending}
             data-testid="button-save-settings"
           >
