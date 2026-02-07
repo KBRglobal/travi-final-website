@@ -28,6 +28,11 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // Disable modulepreload to prevent browser from fetching admin/unused chunks on public pages.
+    // Without this, Vite injects <link rel="modulepreload"> for lazy chunks like admin-content,
+    // admin-pages, analytics-vendor, travel-details, and form-vendor — causing 403 errors from
+    // Cloudflare and ~167KB of wasted JS on the homepage.
+    modulePreload: false,
     // Use esbuild for faster minification (terser is slower with marginal gains)
     minify: "esbuild",
     // CSS optimization
