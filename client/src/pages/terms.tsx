@@ -64,28 +64,26 @@ export default function TermsPage() {
         {/* Hero Section with gradient and mascot */}
         <section className="relative pt-28 pb-20 overflow-hidden">
           {/* Gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-white dark:from-primary/20 dark:via-primary/10 dark:to-background" />
 
           {/* Decorative elements */}
-          <div className="absolute top-20 left-10 w-64 h-64 bg-[#6443F4]/10 rounded-full blur-3xl" />
-          <div className="absolute top-40 right-10 w-80 h-80 bg-[#6443F4]/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute top-40 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Hero Content */}
               <div className="text-center lg:text-start">
-                <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#6443F4]/20">
-                  <FileText className="w-4 h-4 text-[#6443F4]" />
-                  <span className="text-sm font-medium text-[#6443F4]">
-                    {t("pages.terms.badge")}
-                  </span>
+                <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-primary/20">
+                  <FileText className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">{t("pages.terms.badge")}</span>
                 </div>
 
                 <h1
                   className="text-4xl md:text-5xl font-bold mb-6 font-chillax"
                   data-testid="heading-terms"
                 >
-                  <span className="text-[#6443F4]">{t("pages.terms.title")}</span>
+                  <span className="text-primary">{t("pages.terms.title")}</span>
                 </h1>
 
                 <p className="text-lg text-muted-foreground mb-8 max-w-xl">
@@ -99,7 +97,7 @@ export default function TermsPage() {
               <div className="relative flex justify-center">
                 <div className="relative">
                   {/* Glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#6443F4]/30 to-[#6443F4]/30 rounded-3xl blur-2xl transform scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur-2xl transform scale-110" />
 
                   {/* Mascot image with glassmorphism frame */}
                   <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/30">
@@ -110,7 +108,7 @@ export default function TermsPage() {
                     />
 
                     {/* Badge overlay */}
-                    <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-[#6443F4] to-[#6443F4] rounded-full p-3 shadow-lg">
+                    <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-primary to-primary rounded-full p-3 shadow-lg">
                       <BookOpen className="w-8 h-8 text-white" />
                     </div>
                   </div>
@@ -129,8 +127,8 @@ export default function TermsPage() {
                   key={index}
                   className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
                 >
-                  <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-3">
-                    <point.icon className="w-6 h-6 text-[#6443F4]" />
+                  <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-primary/10 to-primary/10 flex items-center justify-center mb-3">
+                    <point.icon className="w-6 h-6 text-primary" />
                   </div>
                   <h4 className="font-semibold text-sm mb-1">{point.title}</h4>
                   <p className="text-xs text-muted-foreground">{point.description}</p>
@@ -169,10 +167,10 @@ export default function TermsPage() {
         {/* Main Content */}
         <section className="py-16 bg-white dark:bg-background">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            <Card className="border-l-4 border-l-[#6443F4]">
+            <Card className="border-l-4 border-l-primary">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Building2 className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.operator")}
@@ -195,7 +193,7 @@ export default function TermsPage() {
                   For general and legal inquiries, contact us at:{" "}
                   <a
                     href="mailto:info@travi.world"
-                    className="text-[#6443F4] hover:underline font-medium"
+                    className="text-primary hover:underline font-medium"
                     data-testid="link-contact-email"
                   >
                     info@travi.world
@@ -207,7 +205,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Globe className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.purpose")}
@@ -222,7 +220,7 @@ export default function TermsPage() {
                   providers (such as Booking.com, GetYourGuide, Viator, Skyscanner, Expedia, and
                   others).
                 </p>
-                <div className="bg-[#6443F4]/5 rounded-lg p-4 border border-[#6443F4]/10">
+                <div className="bg-primary/5 rounded-lg p-4 border border-primary/10">
                   <p className="font-medium text-foreground">
                     We do not sell any products or services directly and do not process bookings or
                     payments.
@@ -234,14 +232,14 @@ export default function TermsPage() {
                   personal, non-commercial purposes only and is subject to these Terms, our{" "}
                   <Link
                     href={localePath("/privacy")}
-                    className="text-[#6443F4] hover:underline font-medium"
+                    className="text-primary hover:underline font-medium"
                   >
                     Privacy Policy
                   </Link>
                   , and our{" "}
                   <Link
                     href={localePath("/cookies")}
-                    className="text-[#6443F4] hover:underline font-medium"
+                    className="text-primary hover:underline font-medium"
                   >
                     Cookie Policy
                   </Link>
@@ -253,7 +251,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Scale className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.affiliateDisclosure")}
@@ -331,7 +329,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Mail className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.newsletter")}
@@ -352,7 +350,7 @@ export default function TermsPage() {
                     "Acknowledge processing per our Privacy Policy",
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
                   ))}
@@ -363,7 +361,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Users className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.userConduct")}
@@ -394,7 +392,7 @@ export default function TermsPage() {
                     Attempt to reverse-engineer, decompile, or extract source code from the Website
                   </li>
                 </ul>
-                <div className="bg-[#6443F4]/5 rounded-lg p-4 border border-[#6443F4]/10">
+                <div className="bg-primary/5 rounded-lg p-4 border border-primary/10">
                   <p className="font-medium text-foreground">
                     We reserve the right to suspend or terminate your access without prior notice
                     for any violation of these Terms.
@@ -406,7 +404,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.intellectualProperty")}
@@ -442,7 +440,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <FileText className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.dmca")}
@@ -463,7 +461,7 @@ export default function TermsPage() {
                     <strong className="text-foreground">Email:</strong>{" "}
                     <a
                       href="mailto:info@travi.world"
-                      className="text-[#6443F4] hover:underline"
+                      className="text-primary hover:underline"
                       data-testid="link-dmca-email"
                     >
                       info@travi.world
@@ -495,7 +493,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Eye className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.disclaimers")}
@@ -534,7 +532,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Scale className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.liability")}
@@ -583,7 +581,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.indemnification")}
@@ -607,7 +605,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Lock className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.privacyCookies")}
@@ -619,7 +617,7 @@ export default function TermsPage() {
                   Our data collection and processing practices are described in detail in our{" "}
                   <Link
                     href={localePath("/privacy")}
-                    className="text-[#6443F4] hover:underline font-medium"
+                    className="text-primary hover:underline font-medium"
                     data-testid="link-privacy-policy"
                   >
                     Privacy Policy
@@ -627,7 +625,7 @@ export default function TermsPage() {
                   and{" "}
                   <Link
                     href={localePath("/cookies")}
-                    className="text-[#6443F4] hover:underline font-medium"
+                    className="text-primary hover:underline font-medium"
                     data-testid="link-cookie-policy"
                   >
                     Cookie Policy
@@ -657,7 +655,7 @@ export default function TermsPage() {
                     Policy or contact us at{" "}
                     <a
                       href="mailto:privacy@travi.world"
-                      className="text-[#6443F4] hover:underline"
+                      className="text-primary hover:underline"
                       data-testid="link-privacy-email"
                     >
                       privacy@travi.world
@@ -671,7 +669,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Accessibility className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.accessibility")}
@@ -686,7 +684,7 @@ export default function TermsPage() {
                   the Website, please contact us at{" "}
                   <a
                     href="mailto:info@travi.world"
-                    className="text-[#6443F4] hover:underline"
+                    className="text-primary hover:underline"
                     data-testid="link-accessibility-email"
                   >
                     info@travi.world
@@ -701,7 +699,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <Gavel className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.governingLaw")}
@@ -749,7 +747,7 @@ export default function TermsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                     <RefreshCw className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.terms.sections.modifications")}
@@ -807,7 +805,7 @@ export default function TermsPage() {
         </section>
 
         {/* CTA Footer Section */}
-        <section className="py-16 bg-gradient-to-r from-[#6443F4] to-[#6443F4]">
+        <section className="py-16 bg-gradient-to-r from-primary to-primary">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-chillax">
               Questions About These Terms?
@@ -820,7 +818,7 @@ export default function TermsPage() {
             <div className="flex flex-wrap justify-center gap-4 mb-12">
               <a
                 href="mailto:info@travi.world?subject=Terms%20Inquiry"
-                className="inline-flex items-center gap-2 bg-white text-[#6443F4] px-6 py-3 rounded-lg font-medium transition-colors"
+                className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-lg font-medium transition-colors"
                 data-testid="button-contact-legal"
               >
                 <Mail className="w-4 h-4" />

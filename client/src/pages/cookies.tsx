@@ -43,26 +43,26 @@ export default function CookiesPage() {
       {/* Hero Section with gradient and mascot */}
       <section className="relative pt-28 pb-20 overflow-hidden">
         {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-white dark:from-primary/20 dark:via-primary/10 dark:to-background" />
 
         {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#6443F4]/10 rounded-full blur-3xl" />
-        <div className="absolute top-40 right-10 w-80 h-80 bg-[#6443F4]/10 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute top-40 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Hero Content */}
             <div className="text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#6443F4]/20">
-                <Cookie className="w-4 h-4 text-[#6443F4]" />
-                <span className="text-sm font-medium text-[#6443F4]">Transparency Matters</span>
+              <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-primary/20">
+                <Cookie className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-primary">Transparency Matters</span>
               </div>
 
               <h1
                 className="text-4xl md:text-5xl font-bold mb-6 font-chillax"
                 data-testid="heading-cookies"
               >
-                <span className="text-[#6443F4]">Cookie Policy</span>
+                <span className="text-primary">Cookie Policy</span>
               </h1>
 
               <p className="text-lg text-muted-foreground mb-8 max-w-xl">
@@ -73,7 +73,7 @@ export default function CookiesPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button
                   onClick={openCookieSettings}
-                  className="gap-2 bg-[#6443F4] hover:bg-[#5339D9] text-white"
+                  className="gap-2 bg-primary hover:bg-primary/90 text-white"
                   data-testid="button-manage-cookies-hero"
                 >
                   <Settings className="w-4 h-4" />
@@ -88,7 +88,7 @@ export default function CookiesPage() {
             <div className="relative flex justify-center">
               <div className="relative">
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#6443F4]/30 to-[#6443F4]/30 rounded-3xl blur-2xl transform scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur-2xl transform scale-110" />
 
                 {/* Mascot image with glassmorphism frame */}
                 <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/30">
@@ -99,7 +99,7 @@ export default function CookiesPage() {
                   />
 
                   {/* Cookie badge overlay */}
-                  <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-[#6443F4] to-[#6443F4] rounded-full p-3 shadow-lg">
+                  <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-primary to-primary rounded-full p-3 shadow-lg">
                     <Cookie className="w-8 h-8 text-white" />
                   </div>
                 </div>
@@ -118,8 +118,8 @@ export default function CookiesPage() {
                 key={index}
                 className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
               >
-                <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-3">
-                  <feature.icon className="w-6 h-6 text-[#6443F4]" />
+                <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-primary/10 to-primary/10 flex items-center justify-center mb-3">
+                  <feature.icon className="w-6 h-6 text-primary" />
                 </div>
                 <h4 className="font-semibold text-sm mb-1">{feature.title}</h4>
                 <p className="text-xs text-muted-foreground">{feature.description}</p>
@@ -138,10 +138,10 @@ export default function CookiesPage() {
             policy should be read together with our Privacy Policy.
           </p>
 
-          <Card className="border-l-4 border-l-[#6443F4]">
+          <Card className="border-l-4 border-l-primary">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                   <Cookie className="w-5 h-5 text-white" />
                 </div>
                 1. What Are Cookies?
@@ -165,7 +165,7 @@ export default function CookiesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
                 2. Types of Cookies We Use
@@ -277,7 +277,7 @@ export default function CookiesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
                 3. Third-Party Cookies
@@ -296,7 +296,7 @@ export default function CookiesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                   <Settings className="w-5 h-5 text-white" />
                 </div>
                 4. Managing Your Cookie Preferences
@@ -340,7 +340,7 @@ export default function CookiesPage() {
                     "Set your browser to notify you when a cookie is set",
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-[#6443F4] mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                       <span className="text-sm text-muted-foreground">{item}</span>
                     </div>
                   ))}
@@ -353,7 +353,7 @@ export default function CookiesPage() {
                     href="https://support.google.com/chrome/answer/95647"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#6443F4] hover:underline"
+                    className="text-sm text-primary hover:underline"
                   >
                     Chrome
                   </a>
@@ -362,7 +362,7 @@ export default function CookiesPage() {
                     href="https://support.mozilla.org/en-US/kb/cookies"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#6443F4] hover:underline"
+                    className="text-sm text-primary hover:underline"
                   >
                     Firefox
                   </a>
@@ -371,7 +371,7 @@ export default function CookiesPage() {
                     href="https://support.apple.com/guide/safari/manage-cookies"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#6443F4] hover:underline"
+                    className="text-sm text-primary hover:underline"
                   >
                     Safari
                   </a>
@@ -380,7 +380,7 @@ export default function CookiesPage() {
                     href="https://support.microsoft.com/en-us/microsoft-edge/cookies"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#6443F4] hover:underline"
+                    className="text-sm text-primary hover:underline"
                   >
                     Edge
                   </a>
@@ -395,7 +395,7 @@ export default function CookiesPage() {
                     href="https://tools.google.com/dlpage/gaoptout"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#6443F4] hover:underline"
+                    className="text-primary hover:underline"
                   >
                     Google Analytics Opt-out Browser Add-on
                   </a>
@@ -435,7 +435,7 @@ export default function CookiesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                   <RefreshCw className="w-5 h-5 text-white" />
                 </div>
                 6. Updates to This Policy
@@ -454,7 +454,7 @@ export default function CookiesPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-lg">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
                   <Mail className="w-5 h-5 text-white" />
                 </div>
                 7. Contact Us
@@ -465,7 +465,7 @@ export default function CookiesPage() {
               <div className="space-y-2">
                 <p>
                   <strong>Email:</strong>{" "}
-                  <a href="mailto:privacy@travi.world" className="text-[#6443F4] hover:underline">
+                  <a href="mailto:privacy@travi.world" className="text-primary hover:underline">
                     privacy@travi.world
                   </a>
                 </p>
@@ -485,10 +485,10 @@ export default function CookiesPage() {
       </section>
 
       {/* CTA Footer Section */}
-      <section className="py-16 bg-gradient-to-br from-[#6443F4]/5 via-[#6443F4]/5 to-white dark:from-[#6443F4]/10 dark:via-[#6443F4]/10 dark:to-background">
+      <section className="py-16 bg-gradient-to-br from-primary/5 via-primary/5 to-white dark:from-primary/10 dark:via-primary/10 dark:to-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 font-chillax">
-            <span className="text-[#6443F4]">Your Privacy, Your Choice</span>
+            <span className="text-primary">Your Privacy, Your Choice</span>
           </h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             We respect your privacy and give you control over your data. Manage your cookie
@@ -497,7 +497,7 @@ export default function CookiesPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={openCookieSettings}
-              className="gap-2 bg-[#6443F4] hover:bg-[#5339D9] text-white"
+              className="gap-2 bg-primary hover:bg-primary/90 text-white"
               data-testid="button-manage-cookies-footer"
             >
               <Settings className="w-4 h-4" />
@@ -511,7 +511,7 @@ export default function CookiesPage() {
             </Link>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-[#6443F4]/10">
+          <div className="mt-12 pt-8 border-t border-primary/10">
             <p className="text-sm text-muted-foreground">
               © 2026 TRAVI World. All rights reserved.
             </p>
