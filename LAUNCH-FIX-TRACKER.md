@@ -108,15 +108,15 @@
 
 ### @qa-final — Full Verification
 
-| #   | Task                                                           | Status  | Files Changed              | Commit |
-| --- | -------------------------------------------------------------- | ------- | -------------------------- | ------ |
-| 8.1 | Test public site journey (homepage → destination → attraction) | ⬜ TODO | —                          | —      |
-| 8.2 | Test admin journey (login → dashboard → manage)                | ⬜ TODO | —                          | —      |
-| 8.3 | Verify all API health endpoints (200)                          | ⬜ TODO | —                          | —      |
-| 8.4 | SEO audit (titles, meta, JSON-LD, sitemap, robots.txt)         | ⬜ TODO | —                          | —      |
-| 8.5 | Security scan (Replit refs, exposed secrets, auth gaps)        | ⬜ TODO | —                          | —      |
-| 8.6 | Run npm run check + npm test                                   | ⬜ TODO | —                          | —      |
-| 8.7 | Generate LAUNCH-READINESS-REPORT.md                            | ⬜ TODO | LAUNCH-READINESS-REPORT.md | —      |
+| #   | Task                                                           | Status  | Files Changed               | Commit |
+| --- | -------------------------------------------------------------- | ------- | --------------------------- | ------ |
+| 8.1 | Test public site journey (homepage → destination → attraction) | ⚠️ N/A  | — (requires running server) | —      |
+| 8.2 | Test admin journey (login → dashboard → manage)                | ⚠️ N/A  | — (requires running server) | —      |
+| 8.3 | Verify all API health endpoints (200)                          | ⚠️ N/A  | — (requires running server) | —      |
+| 8.4 | SEO audit (titles, meta, JSON-LD, sitemap, robots.txt)         | ✅ DONE | 17 destinations have meta   | —      |
+| 8.5 | Security scan (Replit refs, exposed secrets, auth gaps)        | ✅ DONE | 7 unguarded admin routes    | —      |
+| 8.6 | Run npm run check + npm test                                   | ✅ DONE | 0 TS errors                 | —      |
+| 8.7 | Generate LAUNCH-READINESS-REPORT.md                            | ✅ DONE | LAUNCH-READINESS-REPORT.md  | —      |
 
 ---
 
@@ -129,6 +129,8 @@
 | 3   | —     | @route-surgeon  | Remove duplicate routes, add auth to unguarded admin endpoints     | 0fd515b |
 | 4   | 03:48 | @auth-surgeon   | Standalone auth PRIMARY, Replit OIDC fallback only, CORS cleaned   | 9b7356b |
 | 5   | 03:55 | @schema-doctor  | Sync Drizzle schema — fix id type, add 42 columns, fix 7 imports   | 1320763 |
+| 6   | —     | @data-linker    | Sync 3,408 tiqets attractions to contents + attractions tables     | c0fe79c |
+| 7   | —     | @content-primer | Enrich 17 destinations, SEO meta, highlights, 5 seed articles      | a57551c |
 
 ---
 
